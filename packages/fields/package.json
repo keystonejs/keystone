@@ -4,5 +4,8 @@
   "version": "5.0.0",
   "author": "Jed Watson",
   "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
   "dependencies": {}
 }

@@ -1,1 +1,1 @@
-exports.AdminUI = require('./lib/AdminUI');
+exports.AdminUI = require('./server/AdminUI');

@@ -7,6 +7,9 @@
   "scripts": {
     "start": "node index.js"
   },
+  "engines": {
+    "node": ">=8.4.0"
+  },
   "dependencies": {
     "@keystone/admin-ui": "^5.0.0",
     "@keystone/core": "^5.0.0",
