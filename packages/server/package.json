@@ -1,0 +1,10 @@
+{
+  "name": "@keystone/server",
+  "private": true,
+  "version": "5.0.0",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}

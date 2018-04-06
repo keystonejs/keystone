@@ -1,0 +1,16 @@
+{
+  "name": "@keystone/test-project",
+  "private": true,
+  "version": "5.0.0",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@keystone/admin-ui": "^5.0.0",
+    "@keystone/core": "^5.0.0",
+    "@keystone/fields": "^5.0.0",
+    "@keystone/server": "^5.0.0"
+  }
+}

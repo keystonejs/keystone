@@ -1,0 +1,11 @@
+{
+  "name": "@keystone/admin-ui",
+  "private": true,
+  "version": "5.0.0",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1"
+  }
+}

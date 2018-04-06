@@ -1,0 +1,19 @@
+{
+  "name": "keystone",
+  "version": "5.0.0",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "scripts": {
+    "start": "cd packages/test-project && npm start"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1"
+  },
+  "bolt": {
+    "workspaces": [
+      "packages/*"
+    ]
+  }
+}
