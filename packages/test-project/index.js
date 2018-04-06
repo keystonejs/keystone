@@ -5,7 +5,7 @@ const { WebServer } = require('@keystone/server');
 
 const keystone = new Keystone();
 
-const User = keystone.createList('User', {
+keystone.createList('User', {
   formatName: item => item.fields.name.format(),
   fields: {
     name: { type: Name },
