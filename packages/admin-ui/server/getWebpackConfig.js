@@ -29,6 +29,10 @@ module.exports = function({ adminPath }) {
             },
           ],
         },
+        {
+          test: /\.(png|svg|jpg|gif)$/,
+          use: ['file-loader'],
+        },
       ],
     },
   };
