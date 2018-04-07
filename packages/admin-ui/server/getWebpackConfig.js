@@ -6,7 +6,7 @@ const { mode } = require('./env');
 module.exports = function({ adminPath }) {
   return {
     mode,
-    context: path.resolve(__dirname, '../src/'),
+    context: path.resolve(__dirname, '../client/'),
     entry: './index.js',
     output: {
       filename: 'bundle.js',
