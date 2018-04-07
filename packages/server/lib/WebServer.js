@@ -7,10 +7,9 @@ module.exports = class Keystone {
     this.config = initConfig(config);
     this.app = express();
 
-    const admin = config['admin ui'];
-    if (admin) {
-      const adminPath = '/admin';
-      this.app.use(admin.createDevMiddleware({ adminPath }));
+    const { adminUI, adminPath, cookieSecret } = this.config;
+    if (adminUI) {
+      this.app.use(adminUI.createDevMiddleware({ adminPath, cookieSecret }));
     }
   }
   start() {
