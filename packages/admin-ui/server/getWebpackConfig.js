@@ -4,10 +4,11 @@ const path = require('path');
 
 const { mode } = require('./env');
 
-module.exports = function({ adminMeta, adminPath }) {
+module.exports = function({ adminMeta, adminPath, apiPath }) {
   return {
     mode,
     context: path.resolve(__dirname, '../client/'),
+    devtool: mode === 'development' ? 'inline-source-map' : undefined,
     entry: './index.js',
     output: {
       filename: 'bundle.js',
@@ -15,7 +16,11 @@ module.exports = function({ adminMeta, adminPath }) {
     },
     plugins: [
       new webpack.DefinePlugin({
-        KEYSTONE_ADMIN_META: JSON.stringify(adminMeta),
+        KEYSTONE_ADMIN_META: JSON.stringify({
+          adminPath,
+          apiPath,
+          ...adminMeta,
+        }),
       }),
       new HtmlWebpackPlugin({
         title: 'KeystoneJS',

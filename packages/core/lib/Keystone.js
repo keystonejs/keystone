@@ -16,6 +16,8 @@ module.exports = class Keystone {
           label: 'Users',
           plural: 'Users',
           singular: 'User',
+          listQueryName: 'users',
+          itemQueryName: 'user',
           fields: [
             { path: 'name', type: 'Name' },
             { path: 'email', type: 'Email' },
@@ -34,6 +36,24 @@ module.exports = class Keystone {
           email: 'jed@keystonejs.com',
           password: 'password',
         },
+        {
+          id: '91fb341a-c046-4c8d-9d37-f10d097d2508',
+          name: 'Boris Bozic',
+          email: 'boris@keystonejs.com',
+          password: 'password',
+        },
+        {
+          id: '9c04f6f0-8929-4802-a383-9d16227c9c2f',
+          name: 'Joss Mackison',
+          email: 'joss@keystonejs.com',
+          password: 'password',
+        },
+        {
+          id: 'fbdfb967-a5f5-4c1b-95ce-14ed5f75dd85',
+          name: 'John Molomby',
+          email: 'john@keystonejs.com',
+          password: 'password',
+        },
       ],
     };
     const typeDefs = `
@@ -42,13 +62,17 @@ module.exports = class Keystone {
         user(id: String!): User
       }
       type User {
+        id: String
         name: String
         email: String
         password: String
       }
     `;
     const resolvers = {
-      Query: { users: () => data.users },
+      Query: {
+        users: () => data.users,
+        user: id => data.users.filter(i => i.id === id)[0],
+      },
     };
     return makeExecutableSchema({
       typeDefs,
