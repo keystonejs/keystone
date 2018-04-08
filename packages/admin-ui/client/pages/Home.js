@@ -4,7 +4,7 @@ import Nav from '../components/Nav';
 import { Page } from '../primitives/layout';
 import { H1 } from '../primitives/typography';
 
-const Home = () => (
+const HomePage = () => (
   <Fragment>
     <Nav />
     <Page>
@@ -13,4 +13,4 @@ const Home = () => (
   </Fragment>
 );
 
-export default Home;
+export default HomePage;

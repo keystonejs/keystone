@@ -49,7 +49,7 @@ module.exports = class AdminUI {
 
     // ensure any non-resource requests are rewritten for history api fallback
     app.use(adminPath, (req, res, next) => {
-      if (/^[\w\/]+$/.test(req.url)) req.url = '/';
+      if (/^[\w\/\-]+$/.test(req.url)) req.url = '/';
       next();
     });
 

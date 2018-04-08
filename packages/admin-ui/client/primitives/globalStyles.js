@@ -11,4 +11,11 @@ injectGlobal`
     font-size: 14px;
     margin: 0;
   }
+  a {
+    color: #1385e5;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
 `;

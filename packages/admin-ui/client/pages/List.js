@@ -50,7 +50,7 @@ class ItemsList extends Component {
   }
 }
 
-const List = ({ list }) => (
+const ListPage = ({ list }) => (
   <Fragment>
     <Nav />
     <Page>
@@ -60,4 +60,4 @@ const List = ({ list }) => (
   </Fragment>
 );
 
-export default List;
+export default ListPage;

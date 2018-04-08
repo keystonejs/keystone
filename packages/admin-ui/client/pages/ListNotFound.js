@@ -5,7 +5,7 @@ import Nav from '../components/Nav';
 import { Page } from '../primitives/layout';
 import { H1 } from '../primitives/typography';
 
-const ListNotFound = ({ listKey }) => (
+const ListNotFoundPage = ({ listKey }) => (
   <Fragment>
     <Nav />
     <Page>
@@ -16,4 +16,4 @@ const ListNotFound = ({ listKey }) => (
   </Fragment>
 );
 
-export default ListNotFound;
+export default ListNotFoundPage;

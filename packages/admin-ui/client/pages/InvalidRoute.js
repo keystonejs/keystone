@@ -5,7 +5,7 @@ import Nav from '../components/Nav';
 import { Page } from '../primitives/layout';
 import { H1 } from '../primitives/typography';
 
-const InvalidRoute = () => (
+const InvalidRoutePage = () => (
   <Fragment>
     <Nav />
     <Page>
@@ -15,4 +15,4 @@ const InvalidRoute = () => (
   </Fragment>
 );
 
-export default InvalidRoute;
+export default InvalidRoutePage;

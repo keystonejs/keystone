@@ -71,7 +71,10 @@ module.exports = class Keystone {
     const resolvers = {
       Query: {
         users: () => data.users,
-        user: id => data.users.filter(i => i.id === id)[0],
+        user: (_, { id }) => {
+          console.log(id);
+          return data.users.filter(i => i.id === id)[0];
+        },
       },
     };
     return makeExecutableSchema({
