@@ -15,8 +15,8 @@ const Keystone = () => (
   <BrowserRouter>
     <ScrollToTop>
       <Switch>
-        <Route exact path="/admin" component={HomePage} />
         <Route exact path="/admin/signin" component={SessionPage} />
+        <Route exact path="/admin" component={HomePage} />
         <Route exact path="/admin/:list" component={ListPage} />
         <Route exact path="/admin/:list/:itemId" component={ItemPage} />
       </Switch>
