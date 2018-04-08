@@ -1,80 +1,53 @@
 const { makeExecutableSchema } = require('graphql-tools');
 
+const List = require('./List');
+
 module.exports = class Keystone {
-  constructor() {
+  constructor(stubs) {
+    this.stubs = stubs;
     this.lists = {};
+    this.listsArray = [];
   }
   createList(key, config) {
-    this.lists[key] = config;
+    const list = new List(key, config);
+    this.lists[key] = list;
+    this.listsArray.push(list);
   }
   getAdminMeta() {
-    return {
-      brand: 'Keystone',
-      lists: {
-        User: {
-          path: 'users',
-          label: 'Users',
-          plural: 'Users',
-          singular: 'User',
-          listQueryName: 'users',
-          itemQueryName: 'user',
-          fields: [
-            { path: 'name', label: 'Name', type: 'Name' },
-            { path: 'email', label: 'Email', type: 'Email' },
-            { path: 'password', label: 'Password', type: 'Password' },
-          ],
-        },
-      },
-    };
+    const lists = this.listsArray.reduce((acc, list) => {
+      acc[list.key] = list.getAdminMeta();
+      return acc;
+    }, {});
+    return { lists };
   }
   getAdminSchema() {
-    const data = {
-      users: [
-        {
-          id: '91fb341a-c046-4c8d-9d37-f10d097d2508',
-          name: 'Boris Bozic',
-          email: 'boris@keystonejs.com',
-          password: 'password',
-        },
-        {
-          id: 'b2a1467e-a74b-470f-a137-f089c791a0ec',
-          name: 'Jed Watson',
-          email: 'jed@keystonejs.com',
-          password: 'password',
-        },
-        {
-          id: 'fbdfb967-a5f5-4c1b-95ce-14ed5f75dd85',
-          name: 'John Molomby',
-          email: 'john@keystonejs.com',
-          password: 'password',
-        },
-        {
-          id: '9c04f6f0-8929-4802-a383-9d16227c9c2f',
-          name: 'Joss Mackison',
-          email: 'joss@keystonejs.com',
-          password: 'password',
-        },
-      ],
-    };
-    const typeDefs = `
-      type Query {
-        users: [User]
-        user(id: String!): User
-      }
-      type User {
+    const { stubs } = this;
+    const listQueries = this.listsArray.map(
+      list => `
+        ${list.listQueryName}: [${list.key}]
+        ${list.itemQueryName}(id: String!): ${list.key}`
+    );
+    const listTypes = this.listsArray.map(
+      list => `
+      type ${list.key} {
         id: String
-        name: String
-        email: String
-        password: String
+        ${list.fields
+          .map(i => `${i.path}: ${i.graphQLType}`)
+          .join('\n        ')}
       }
+    `
+    );
+    const typeDefs = `
+      type Query {${listQueries.join('')}}
+      ${listTypes.join()}
     `;
     const resolvers = {
-      Query: {
-        users: () => data.users,
-        user: (_, { id }) => {
-          return data.users.filter(i => i.id === id)[0];
-        },
-      },
+      Query: this.listsArray.reduce((Query, list) => {
+        Query[list.listQueryName] = () => stubs[list.path];
+        Query[list.itemQueryName] = (_, { id }) =>
+          stubs[list.path].filter(i => i.id === id)[0];
+        return Query;
+      }, {}),
     };
     return makeExecutableSchema({
       typeDefs,

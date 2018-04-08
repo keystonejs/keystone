@@ -8,6 +8,8 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "graphql-tools": "^2.23.1"
+    "graphql-tools": "^2.23.1",
+    "inflection": "^1.12.0",
+    "pluralize": "^7.0.0"
   }
 }

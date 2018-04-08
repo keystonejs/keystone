@@ -1,16 +1,22 @@
 const { AdminUI } = require('@keystone/admin-ui');
 const { Keystone } = require('@keystone/core');
-const { Name, Email, Password } = require('@keystone/fields');
+const { Text, Email, Password } = require('@keystone/fields');
 const { WebServer } = require('@keystone/server');
 
-const keystone = new Keystone();
+const stubData = require('./data');
+const keystone = new Keystone(stubData);
 
-keystone.createList('User', {
-  formatName: item => item.fields.name.format(),
+keystone.createList('Users', {
   fields: {
-    name: { type: Name },
+    name: { type: Text },
     email: { type: Email },
     password: { type: Password },
+  },
+});
+
+keystone.createList('Posts', {
+  fields: {
+    name: { type: Text },
   },
 });
 
