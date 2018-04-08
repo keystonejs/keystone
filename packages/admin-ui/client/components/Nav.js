@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'react-emotion';
 
-import AdminMeta from '../providers/AdminMeta';
+import AdminMetaProvider from '../providers/AdminMeta';
 
 const NavBar = styled('div')`
   background-color: #1385e5;
@@ -68,4 +68,6 @@ class Home extends Component {
   }
 }
 
-export default () => <AdminMeta>{props => <Home {...props} />}</AdminMeta>;
+export default () => (
+  <AdminMetaProvider>{props => <Home {...props} />}</AdminMetaProvider>
+);
