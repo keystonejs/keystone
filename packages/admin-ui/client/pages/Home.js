@@ -1,14 +1,29 @@
 import React, { Fragment } from 'react';
+import styled from 'react-emotion';
+import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
 import { Page } from '../primitives/layout';
-import { H1 } from '../primitives/typography';
+import { Title } from '../primitives/typography';
 
-const HomePage = () => (
+const ListLink = styled(Link)`
+  margin: 24px 0;
+  font-size: 24px;
+`;
+
+const HomePage = ({ lists, listKeys }) => (
   <Fragment>
     <Nav />
     <Page>
-      <H1>Home</H1>
+      <Title>Home</Title>
+      {listKeys.map(key => {
+        const list = lists[key];
+        return (
+          <ListLink key={key} to={`/admin/${list.path}`}>
+            {list.label}
+          </ListLink>
+        );
+      })}
     </Page>
   </Fragment>
 );

@@ -1,29 +1,84 @@
 import React, { Component, Fragment } from 'react';
+import styled from 'react-emotion';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
 import { Page } from '../primitives/layout';
-import { H1 } from '../primitives/typography';
+import { Title } from '../primitives/typography';
+import { Input, PrimaryButton } from '../primitives/forms';
 
 const getItemQuery = ({ list, itemId }) => gql`
   {
     ${list.itemQueryName}(id: "${itemId}") {
       id
-      name
+      ${list.fields.map(field => field.path).join(' ')}
     }
   }
 `;
+
+const ItemId = styled('div')`
+  color: #aaa;
+  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+`;
+
+const Form = styled('div')`
+  margin: 24px 0;
+`;
+
+const FieldContainer = styled('div')`
+  display: flex;
+  margin-bottom: 8px;
+`;
+
+const FieldLabel = styled('div')`
+  padding-top: 8px;
+  color: #7f7f7f;
+  width: 180px;
+`;
+
+const FieldInput = styled('div')`
+  width: 500px;
+`;
+
+const Toolbar = styled('div')`
+  box-shadow: rgba(0, 0, 0, 0.1) 0px -2px 0px;
+  margin: 24px 0;
+  padding: 24px 0;
+`;
+
+class ItemField extends Component {
+  render() {
+    const { field, item } = this.props;
+    return (
+      <FieldContainer>
+        <FieldLabel>{field.label}</FieldLabel>
+        <FieldInput>
+          <Input type="text" value={item[field.path]} onChange={() => null} />
+        </FieldInput>
+      </FieldContainer>
+    );
+  }
+}
 
 class ItemDetails extends Component {
   render() {
     const { list, item } = this.props;
     return (
       <Fragment>
-        <H1>
+        <Title>
           <Link to={`/admin/${list.path}`}>{list.label}</Link>: {item.name}
-        </H1>
+        </Title>
+        <ItemId>ID: {item.id}</ItemId>
+        <Form>
+          {list.fields.map(field => (
+            <ItemField item={item} field={field} key={field.path} />
+          ))}
+        </Form>
+        <Toolbar>
+          <PrimaryButton>Save Changes</PrimaryButton>
+        </Toolbar>
       </Fragment>
     );
   }
@@ -31,7 +86,7 @@ class ItemDetails extends Component {
 
 const ItemNotFound = ({ itemId, list }) => (
   <Fragment>
-    <H1>Item Not Found.</H1>
+    <Title>Item Not Found.</Title>
     <p>The item {itemId} does not exist.</p>
     <Link to={`/admin/${list.path}`}>Back to {list.label}</Link>
     {' • '}
@@ -45,12 +100,19 @@ const ItemPage = ({ list, itemId }) => (
     <Page>
       <Query query={getItemQuery({ list, itemId })}>
         {({ loading, error, data }) => {
-          if (loading) return 'Loading...';
-          if (error) return `Error! ${error.message}`;
-          const item = data[list.itemQueryName];
+          if (loading) return <Title>Loading...</Title>;
+          if (error) {
+            return (
+              <Fragment>
+                <Title>Error</Title>
+                <p>{error.message}</p>
+              </Fragment>
+            );
+          }
 
+          const item = data[list.itemQueryName];
           return item ? (
-            <ItemDetails list={list} item={item} />
+            <ItemDetails list={list} item={item} key={itemId} />
           ) : (
             <ItemNotFound list={list} itemId={itemId} />
           );

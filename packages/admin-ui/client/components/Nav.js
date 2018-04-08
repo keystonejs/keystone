@@ -42,8 +42,7 @@ const Separator = styled('div')`
 
 class Home extends Component {
   render() {
-    const { lists } = this.props;
-    const listKeys = Object.keys(lists);
+    const { lists, listKeys } = this.props;
     return (
       <NavBar>
         <Container>

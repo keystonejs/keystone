@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
 import { Page } from '../primitives/layout';
-import { H1 } from '../primitives/typography';
+import { Title } from '../primitives/typography';
 
 const ListNotFoundPage = ({ listKey }) => (
   <Fragment>
     <Nav />
     <Page>
-      <H1>Invalid List.</H1>
+      <Title>Invalid List.</Title>
       <p>The list {listKey} hasn't been defined.</p>
       <Link to="/admin">Go Home</Link>
     </Page>

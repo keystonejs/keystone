@@ -1,3 +1,8 @@
-import React from 'react';
+import styled from 'react-emotion';
 
-export const H1 = ({ children }) => <h1 css={{ color: '#333' }}>{children}</h1>;
+export const Title = styled('div')`
+  font-size: 28px;
+  font-weight: 300;
+  color: #222;
+  margin: 24px 0;
+`;

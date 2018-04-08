@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
 import { Page } from '../primitives/layout';
-import { H1 } from '../primitives/typography';
+import { Title } from '../primitives/typography';
 
 const InvalidRoutePage = () => (
   <Fragment>
     <Nav />
     <Page>
-      <H1>404</H1>
+      <Title>404</Title>
       <Link to="/admin">Go Home</Link>
     </Page>
   </Fragment>
