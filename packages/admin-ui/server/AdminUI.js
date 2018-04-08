@@ -54,7 +54,8 @@ module.exports = class AdminUI {
     });
 
     // add the webpack dev middleware
-    const webpackConfig = getWebpackConfig({ adminPath });
+    const adminMeta = this.keystone.getAdminMeta();
+    const webpackConfig = getWebpackConfig({ adminMeta, adminPath });
     const compiler = webpack(webpackConfig);
     app.use(
       webpackDevMiddleware(compiler, {

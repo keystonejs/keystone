@@ -1,9 +1,10 @@
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 const { mode } = require('./env');
 
-module.exports = function({ adminPath }) {
+module.exports = function({ adminMeta, adminPath }) {
   return {
     mode,
     context: path.resolve(__dirname, '../client/'),
@@ -13,6 +14,9 @@ module.exports = function({ adminPath }) {
       publicPath: adminPath,
     },
     plugins: [
+      new webpack.DefinePlugin({
+        KEYSTONE_ADMIN_META: JSON.stringify(adminMeta),
+      }),
       new HtmlWebpackPlugin({
         title: 'KeystoneJS',
         template: 'index.html',
