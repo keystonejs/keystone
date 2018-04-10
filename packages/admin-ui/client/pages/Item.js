@@ -7,7 +7,17 @@ import { Link } from 'react-router-dom';
 import Nav from '../components/Nav';
 import { Page } from '../primitives/layout';
 import { Title } from '../primitives/typography';
-import { Input, PrimaryButton } from '../primitives/forms';
+import { PrimaryButton } from '../primitives/forms';
+
+import TextField from '../fields/Text/Field';
+import PasswordField from '../fields/Password/Field';
+import SelectField from '../fields/Select/Field';
+
+const FieldTypes = {
+  Text: TextField,
+  Password: PasswordField,
+  Select: SelectField,
+};
 
 const getItemQuery = ({ list, itemId }) => gql`
   {
@@ -27,44 +37,29 @@ const Form = styled('div')`
   margin: 24px 0;
 `;
 
-const FieldContainer = styled('div')`
-  display: flex;
-  margin-bottom: 8px;
-`;
-
-const FieldLabel = styled('div')`
-  padding-top: 8px;
-  color: #7f7f7f;
-  width: 180px;
-`;
-
-const FieldInput = styled('div')`
-  width: 500px;
-`;
-
 const Toolbar = styled('div')`
   box-shadow: rgba(0, 0, 0, 0.1) 0px -2px 0px;
   margin: 24px 0;
   padding: 24px 0;
 `;
 
-class ItemField extends Component {
-  render() {
-    const { field, item } = this.props;
-    return (
-      <FieldContainer>
-        <FieldLabel>{field.label}</FieldLabel>
-        <FieldInput>
-          <Input type="text" value={item[field.path]} onChange={() => null} />
-        </FieldInput>
-      </FieldContainer>
-    );
-  }
-}
-
 class ItemDetails extends Component {
+  constructor(props) {
+    super();
+    this.state = { item: props.item };
+  }
+  onChange = (field, value) => {
+    const { item } = this.state;
+    this.setState({
+      item: {
+        ...item,
+        [field.path]: value,
+      },
+    });
+  };
   render() {
-    const { list, item } = this.props;
+    const { list } = this.props;
+    const { item } = this.state;
     return (
       <Fragment>
         <Title>
@@ -72,9 +67,17 @@ class ItemDetails extends Component {
         </Title>
         <ItemId>ID: {item.id}</ItemId>
         <Form>
-          {list.fields.map(field => (
-            <ItemField item={item} field={field} key={field.path} />
-          ))}
+          {list.fields.map(field => {
+            const Field = FieldTypes[field.type];
+            return (
+              <Field
+                item={item}
+                field={field}
+                key={field.path}
+                onChange={this.onChange}
+              />
+            );
+          })}
         </Form>
         <Toolbar>
           <PrimaryButton>Save Changes</PrimaryButton>

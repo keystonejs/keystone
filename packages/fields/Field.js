@@ -7,10 +7,13 @@ module.exports = class Field {
     this.label = config.label || inflection.humanize(path);
   }
   getAdminMeta() {
-    return {
+    return this.extendAdminMeta({
       label: this.label,
       path: this.path,
       type: this.constructor.name,
-    };
+    });
+  }
+  extendAdminMeta(meta) {
+    return meta;
   }
 };

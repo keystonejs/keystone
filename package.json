@@ -37,12 +37,11 @@
     "react-dom": "^16.3.1",
     "react-emotion": "^9.1.1",
     "react-router-dom": "^4.2.2",
+    "react-select": "^2.0.0-alpha.9",
     "webpack": "^4.5.0",
     "webpack-dev-middleware": "^3.1.2"
   },
   "bolt": {
-    "workspaces": [
-      "packages/*"
-    ]
+    "workspaces": ["packages/*"]
   }
 }
