@@ -9,15 +9,7 @@ import { Page } from '../primitives/layout';
 import { Title } from '../primitives/typography';
 import { PrimaryButton } from '../primitives/forms';
 
-import TextField from '../fields/Text/Field';
-import PasswordField from '../fields/Password/Field';
-import SelectField from '../fields/Select/Field';
-
-const FieldTypes = {
-  Text: TextField,
-  Password: PasswordField,
-  Select: SelectField,
-};
+import FieldTypes from '../fields';
 
 const getItemQuery = ({ list, itemId }) => gql`
   {
@@ -68,7 +60,7 @@ class ItemDetails extends Component {
         <ItemId>ID: {item.id}</ItemId>
         <Form>
           {list.fields.map(field => {
-            const Field = FieldTypes[field.type];
+            const { Field } = FieldTypes[field.type];
             return (
               <Field
                 item={item}

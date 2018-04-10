@@ -3780,9 +3780,9 @@ react-router@^4.2.0:
     prop-types "^15.5.4"
     warning "^3.0.0"
 
-react-select@^2.0.0-alpha.9:
-  version "2.0.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/react-select/-/react-select-2.0.0-alpha.9.tgz#66942aa39ca01e8596b80f2856180cc2f01087a4"
+react-select@^2.0.0-alpha.10:
+  version "2.0.0-alpha.10"
+  resolved "https://registry.yarnpkg.com/react-select/-/react-select-2.0.0-alpha.10.tgz#91b384fd587441434602592763a682236a071412"
   dependencies:
     classnames "^2.2.5"
     glam "^5.0.1"

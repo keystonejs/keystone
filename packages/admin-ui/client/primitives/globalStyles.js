@@ -1,18 +1,26 @@
 /* eslint-disable no-unused-expressions */
 import { injectGlobal } from 'emotion';
+import {
+  pageBackgroundColor,
+  fontFamily,
+  fontSize,
+  primaryColor,
+} from '../theme';
+
+console.log(fontFamily);
 
 injectGlobal`
   * {
     box-sizing: border-box;
   }
   body {
-    background-color: #fafafa;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    font-size: 14px;
+    background-color: ${pageBackgroundColor};
+    font-family: ${fontFamily};
+    font-size: ${fontSize}px;
     margin: 0;
   }
   a {
-    color: #1385e5;
+    color: ${primaryColor};
     text-decoration: none;
   }
   a:hover {
