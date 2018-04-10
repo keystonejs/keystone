@@ -35,6 +35,25 @@ module.exports = class List {
 
     this.model = mongoose.model(this.key, schema);
   }
+  getAdminQueries() {
+    return `
+      ${this.listQueryName}: [${this.key}]
+      ${this.itemQueryName}(id: String!): ${this.key}`;
+  }
+  getAdminSchemaType() {
+    return `
+      type ${this.key} {
+        id: String
+        ${this.fields.map(i => i.getGraphqlSchema()).join('\n        ')}
+      }
+    `;
+  }
+  getAdminResolvers() {
+    return {
+      [this.listQueryName]: () => this.model.find(),
+      [this.itemQueryName]: (_, { id }) => this.model.findById(id),
+    };
+  }
   getAdminMeta() {
     return {
       key: this.key,

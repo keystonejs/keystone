@@ -2,7 +2,7 @@ const inflection = require('inflection');
 const { makeExecutableSchema } = require('graphql-tools');
 const { Mongoose } = require('mongoose');
 
-const List = require('./List');
+const List = require('../List');
 
 function getMongoURI({ dbName, name }) {
   return (
@@ -43,31 +43,17 @@ module.exports = class Keystone {
     return { lists };
   }
   getAdminSchema() {
-    const listQueries = this.listsArray.map(
-      list => `
-        ${list.listQueryName}: [${list.key}]
-        ${list.itemQueryName}(id: String!): ${list.key}`
-    );
-    const listTypes = this.listsArray.map(
-      list => `
-      type ${list.key} {
-        id: String
-        ${list.fields
-          .map(i => `${i.path}: ${i.graphQLType}`)
-          .join('\n        ')}
-      }
-    `
-    );
+    const listQueries = this.listsArray.map(i => i.getAdminQueries());
+    const schemaTypes = this.listsArray.map(i => i.getAdminSchemaType());
     const typeDefs = `
       type Query {${listQueries.join('')}}
-      ${listTypes.join()}
+      ${schemaTypes.join()}
     `;
     const resolvers = {
-      Query: this.listsArray.reduce((Query, list) => {
-        Query[list.listQueryName] = () => list.model.find();
-        Query[list.itemQueryName] = (_, { id }) => list.model.findById(id);
-        return Query;
-      }, {}),
+      Query: this.listsArray.reduce(
+        (acc, i) => ({ ...acc, ...i.getAdminResolvers() }),
+        {}
+      ),
     };
     return makeExecutableSchema({
       typeDefs,

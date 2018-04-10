@@ -13,6 +13,14 @@ module.exports = class Field {
       }] does not implement addToMongooseSchema()`
     );
   }
+  getGraphqlSchema() {
+    if (!this.graphQLType) {
+      throw new Error(
+        `Field type [${this.constructor.name}] does not implement graphQLType`
+      );
+    }
+    return `${this.path}: ${this.graphQLType}`;
+  }
   getAdminMeta() {
     return this.extendAdminMeta({
       label: this.label,

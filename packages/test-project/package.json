@@ -1,14 +1,14 @@
 {
   "name": "@keystone/test-project",
   "private": true,
-  "version": "5.0.0",
+  "version": "1.0.0",
   "author": "Jed Watson",
   "license": "MIT",
-  "scripts": {
-    "start": "node index.js"
-  },
   "engines": {
     "node": ">=8.4.0"
+  },
+  "scripts": {
+    "start": "node index.js"
   },
   "dependencies": {
     "@keystone/admin-ui": "^5.0.0",

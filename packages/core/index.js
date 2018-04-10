@@ -1,1 +1,1 @@
-exports.Keystone = require('./lib/Keystone');
+exports.Keystone = require('./Keystone');

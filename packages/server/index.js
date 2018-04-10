@@ -1,1 +1,1 @@
-exports.WebServer = require('./lib/WebServer');
+exports.WebServer = require('./WebServer');
