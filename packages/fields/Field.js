@@ -6,6 +6,13 @@ module.exports = class Field {
     this.config = config;
     this.label = config.label || inflection.humanize(path);
   }
+  addToMongooseSchema() {
+    throw new Error(
+      `Field type [${
+        this.constructor.name
+      }] does not implement addToMongooseSchema()`
+    );
+  }
   getAdminMeta() {
     return this.extendAdminMeta({
       label: this.label,

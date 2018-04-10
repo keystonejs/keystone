@@ -2,8 +2,9 @@ const express = require('express');
 
 const initConfig = require('./initConfig');
 
-module.exports = class Keystone {
-  constructor(config) {
+module.exports = class WebServer {
+  constructor(keystone, config) {
+    this.keystone = keystone;
     this.config = initConfig(config);
     this.app = express();
 
@@ -13,10 +14,10 @@ module.exports = class Keystone {
     }
   }
   start() {
-    const { port } = this.config;
-    this.app.get('/', (req, res) => res.send('<h1>Hello Keystone</h1>'));
-    this.app.listen(port, () =>
-      console.log(`KeystoneJS 5 ready on port ${port}`)
-    );
+    const { app, config: { port } } = this;
+    app.get('/', (req, res) => res.send('<h1>Hello Keystone</h1>'));
+    app.listen(port, () => {
+      console.log(`KeystoneJS 5 ready on port ${port}`);
+    });
   }
 };

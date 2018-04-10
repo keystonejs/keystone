@@ -10,6 +10,7 @@
   "dependencies": {
     "graphql-tools": "^2.23.1",
     "inflection": "^1.12.0",
+    "mongoose": "^5.0.14",
     "pluralize": "^7.0.0"
   }
 }

@@ -1,9 +1,8 @@
 const Field = require('../../Field');
 
-module.exports = class Select extends Field {
+module.exports = class Password extends Field {
   constructor(path, config) {
     super(path, config);
-    this.options = config.options;
     this.graphQLType = 'String';
   }
   addToMongooseSchema(schema) {
@@ -11,8 +10,5 @@ module.exports = class Select extends Field {
     schema.add({
       [this.path]: { type: String, ...mongooseOptions },
     });
-  }
-  extendAdminMeta(meta) {
-    return { ...meta, options: this.options };
   }
 };

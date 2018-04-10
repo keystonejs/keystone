@@ -1,10 +1,14 @@
 const inflection = require('inflection');
 const pluralize = require('pluralize');
 
+const initConfig = (key, config) => ({
+  ...config,
+});
+
 module.exports = class List {
-  constructor(key, config) {
+  constructor(key, config, { mongoose, lists }) {
     this.key = key;
-    this.config = config;
+    this.config = initConfig(key, config);
 
     this.label = config.label || inflection.titleize(key);
     this.singular = config.singular || pluralize.singular(this.label);
@@ -18,10 +22,18 @@ module.exports = class List {
     this.fields = config.fields
       ? Object.keys(config.fields).map(path => {
           const { type, ...fieldSpec } = config.fields[path];
-          const field = new type(path, fieldSpec);
-          return field;
+          return new type(path, fieldSpec);
         })
       : [];
+
+    const schema = new mongoose.Schema({}, this.config.mongooseSchemaOptions);
+    this.fields.forEach(i => i.addToMongooseSchema(schema));
+
+    if (this.config.configureMongooseSchema) {
+      this.config.configureMongooseSchema(schema, { mongoose, lists });
+    }
+
+    this.model = mongoose.model(this.key, schema);
   }
   getAdminMeta() {
     return {
