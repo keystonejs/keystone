@@ -14,6 +14,8 @@ First make sure you've got Bolt installed:
 yarn global add bolt
 ```
 
+Also make sure you have a local MongoDB server running ([instructions](https://docs.mongodb.com/getting-started/shell/installation/)).
+
 Then install the dependencies and start the test project:
 
 ```
