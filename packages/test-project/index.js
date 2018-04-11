@@ -16,8 +16,8 @@ keystone.createList('User', {
     company: {
       type: Select,
       options: [
-        { label: 'Thinkmill', value: 'tm' },
-        { label: 'Atlassian', value: 'team' },
+        { label: 'Thinkmill', value: 'thinkmill' },
+        { label: 'Atlassian', value: 'atlassian' },
       ],
     },
     password: { type: Password },

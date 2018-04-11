@@ -18,3 +18,6 @@ exports.checkRequiredConfig = (config, requiredKeys = {}) => {
     if (config[key] === undefined) throw requiredKeys[key];
   });
 };
+
+exports.escapeRegExp = str =>
+  str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');

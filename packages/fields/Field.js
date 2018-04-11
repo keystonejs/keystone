@@ -1,9 +1,10 @@
 const inflection = require('inflection');
 
 module.exports = class Field {
-  constructor(path, config) {
+  constructor(path, { listKey, ...config }) {
     this.path = path;
     this.config = config;
+    this.listKey = listKey;
     this.label = config.label || inflection.humanize(path);
   }
   addToMongooseSchema() {
@@ -21,6 +22,9 @@ module.exports = class Field {
     }
     return `${this.path}: ${this.graphQLType}`;
   }
+  getGraphqlTypes() {}
+  getGraphqlQueryArgs() {}
+  addFiltersToQuery() {}
   getAdminMeta() {
     return this.extendAdminMeta({
       label: this.label,
@@ -32,3 +36,20 @@ module.exports = class Field {
     return meta;
   }
 };
+
+/*
+Idea for field spec export:
+
+module.exports = {
+  type: 'Password',
+  implementation: Password,
+  views: {
+    Field: './views/Field',
+    Column: './views/Column',
+  },
+  adapters: {
+    mongoose: require('./adapters/mongoose'),
+    postgres: require('./adapters/postgres'),
+  }
+}
+*/

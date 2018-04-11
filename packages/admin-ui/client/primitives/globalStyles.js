@@ -7,8 +7,6 @@ import {
   primaryColor,
 } from '../theme';
 
-console.log(fontFamily);
-
 injectGlobal`
   * {
     box-sizing: border-box;

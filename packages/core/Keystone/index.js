@@ -43,11 +43,12 @@ module.exports = class Keystone {
     return { lists };
   }
   getAdminSchema() {
-    const listQueries = this.listsArray.map(i => i.getAdminQueries());
-    const schemaTypes = this.listsArray.map(i => i.getAdminSchemaType());
-    const typeDefs = `
-      type Query {${listQueries.join('')}}
-      ${schemaTypes.join()}
+    const listTypes = this.listsArray.map(i => i.getAdminGraphqlTypes());
+    const listQueries = this.listsArray.map(i => i.getAdminGraphqlQueries());
+    const queryType = `
+      type Query {
+        ${listQueries.join('')}
+      }
     `;
     const resolvers = {
       Query: this.listsArray.reduce(
@@ -55,8 +56,9 @@ module.exports = class Keystone {
         {}
       ),
     };
+
     return makeExecutableSchema({
-      typeDefs,
+      typeDefs: [...listTypes, queryType],
       resolvers,
     });
   }
