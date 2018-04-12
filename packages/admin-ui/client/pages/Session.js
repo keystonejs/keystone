@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'react-emotion';
 
-import { Input, PrimaryButton } from '../primitives/forms';
+import { Input, PrimaryButton } from '@keystone/ui/src/primitives/forms';
 
 import logo from '../assets/logo.png';
 

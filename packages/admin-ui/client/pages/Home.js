@@ -3,8 +3,8 @@ import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
-import { Page } from '../primitives/layout';
-import { Title } from '../primitives/typography';
+import { Page } from '@keystone/ui/src/primitives/layout';
+import { Title } from '@keystone/ui/src/primitives/typography';
 
 const ListContainer = styled('div')`
   margin: 8px 0;

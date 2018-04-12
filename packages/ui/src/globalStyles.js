@@ -1,13 +1,12 @@
 /* eslint-disable no-unused-expressions */
-import { injectGlobal } from 'emotion';
 import {
   pageBackgroundColor,
   fontFamily,
   fontSize,
   primaryColor,
-} from '../theme';
+} from './theme';
 
-injectGlobal`
+export default `
   * {
     box-sizing: border-box;
   }

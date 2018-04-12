@@ -5,8 +5,8 @@ import { Query } from 'react-apollo';
 import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
-import { Page } from '../primitives/layout';
-import { Title } from '../primitives/typography';
+import { Page } from '@keystone/ui/src/primitives/layout';
+import { Title } from '@keystone/ui/src/primitives/typography';
 
 const getListQuery = ({ list }) => gql`
   {

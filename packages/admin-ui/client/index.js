@@ -2,8 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { injectGlobal } from 'emotion';
 
-import './primitives/globalStyles';
+import globalStyles from '@keystone/ui/src/globalStyles';
+injectGlobal(globalStyles);
 
 import ScrollToTop from './components/ScrollToTop';
 import AdminMetaProvider from './providers/AdminMeta';

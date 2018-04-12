@@ -8,6 +8,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
+    "@keystone/ui": "^5.0.0",
     "apollo-boost": "^0.1.4",
     "apollo-client": "^2.2.8",
     "apollo-server-express": "^1.3.4",

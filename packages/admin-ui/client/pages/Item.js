@@ -5,9 +5,9 @@ import { Query } from 'react-apollo';
 import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
-import { Page } from '../primitives/layout';
-import { Title } from '../primitives/typography';
-import { PrimaryButton } from '../primitives/forms';
+import { Page } from '@keystone/ui/src/primitives/layout';
+import { Title } from '@keystone/ui/src/primitives/typography';
+import { PrimaryButton } from '@keystone/ui/src/primitives/forms';
 
 import FieldTypes from '../fields';
 
@@ -49,6 +49,7 @@ class ItemDetails extends Component {
       },
     });
   };
+  saveChanges = () => {};
   render() {
     const { list } = this.props;
     const { item } = this.state;
@@ -72,7 +73,7 @@ class ItemDetails extends Component {
           })}
         </Form>
         <Toolbar>
-          <PrimaryButton>Save Changes</PrimaryButton>
+          <PrimaryButton onClick={this.saveChanges}>Save Changes</PrimaryButton>
         </Toolbar>
       </Fragment>
     );
