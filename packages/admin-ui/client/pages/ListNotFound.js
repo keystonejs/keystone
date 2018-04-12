@@ -2,8 +2,8 @@ import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
-import { Page } from '@keystone/ui/src/primitives/layout';
-import { Title } from '@keystone/ui/src/primitives/typography';
+import { Page } from '@keystonejs/ui/src/primitives/layout';
+import { Title } from '@keystonejs/ui/src/primitives/typography';
 
 const ListNotFoundPage = ({ listKey }) => (
   <Fragment>

@@ -1,5 +1,5 @@
 {
-  "name": "@keystone/admin-ui",
+  "name": "@keystonejs/admin-ui",
   "private": true,
   "version": "5.0.0",
   "author": "Jed Watson",
@@ -8,7 +8,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone/ui": "^5.0.0",
+    "@keystonejs/ui": "^5.0.0",
     "apollo-boost": "^0.1.4",
     "apollo-client": "^2.2.8",
     "apollo-server-express": "^1.3.4",

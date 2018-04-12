@@ -1,5 +1,5 @@
 {
-  "name": "@keystone/fields",
+  "name": "@keystonejs/fields",
   "private": true,
   "version": "5.0.0",
   "author": "Jed Watson",
@@ -8,6 +8,6 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone/utils": "^1.0.0"
+    "@keystonejs/utils": "^1.0.0"
   }
 }

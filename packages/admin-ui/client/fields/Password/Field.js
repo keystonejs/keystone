@@ -4,8 +4,8 @@ import {
   FieldContainer,
   FieldLabel,
   FieldInput,
-} from '@keystone/ui/src/primitives/fields';
-import { Input } from '@keystone/ui/src/primitives/forms';
+} from '@keystonejs/ui/src/primitives/fields';
+import { Input } from '@keystonejs/ui/src/primitives/forms';
 
 export default class PasswordField extends Component {
   onChange = event => {

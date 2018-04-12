@@ -1,7 +1,7 @@
-const { AdminUI } = require('@keystone/admin-ui');
-const { Keystone } = require('@keystone/core');
-const { Text, Password, Select } = require('@keystone/fields');
-const { WebServer } = require('@keystone/server');
+const { AdminUI } = require('@keystonejs/admin-ui');
+const { Keystone } = require('@keystonejs/core');
+const { Text, Password, Select } = require('@keystonejs/fields');
+const { WebServer } = require('@keystonejs/server');
 
 const initialData = require('./data');
 

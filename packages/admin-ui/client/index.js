@@ -4,7 +4,7 @@ import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { injectGlobal } from 'emotion';
 
-import globalStyles from '@keystone/ui/src/globalStyles';
+import globalStyles from '@keystonejs/ui/src/globalStyles';
 injectGlobal(globalStyles);
 
 import ScrollToTop from './components/ScrollToTop';

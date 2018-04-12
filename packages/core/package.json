@@ -1,5 +1,5 @@
 {
-  "name": "@keystone/core",
+  "name": "@keystonejs/core",
   "private": true,
   "version": "5.0.0",
   "author": "Jed Watson",

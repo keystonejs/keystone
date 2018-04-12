@@ -1,4 +1,4 @@
-const { fixConfigKeys, checkRequiredConfig } = require('@keystone/utils');
+const { fixConfigKeys, checkRequiredConfig } = require('@keystonejs/utils');
 
 const requiredConfig = {
   name: 'You must provide a name for the project',

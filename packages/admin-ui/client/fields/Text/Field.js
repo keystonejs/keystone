@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@keystone/ui/src/primitives/fields';
-import { Input } from '@keystone/ui/src/primitives/forms';
+import {
+  FieldContainer,
+  FieldLabel,
+  FieldInput,
+} from '@keystonejs/ui/src/primitives/fields';
+import { Input } from '@keystonejs/ui/src/primitives/forms';
 
 export default class TextField extends Component {
   onChange = event => {

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 
-import { fontFamily, gridSize } from '@keystone/ui/src/theme';
+import { fontFamily, gridSize } from '@keystonejs/ui/src/theme';
 import {
   FieldContainer,
   FieldLabel,
   FieldInput,
-} from '@keystone/ui/src/primitives/fields';
+} from '@keystonejs/ui/src/primitives/fields';
 
 const styles = {
   control: (base, { isFocused }) => ({
