@@ -52,7 +52,7 @@ module.exports = class List {
       .map(i => i.getGraphqlQueryArgs())
       .filter(i => i)
       .join('\n');
-    const listQueryArgString = `(search: String ${listQueryArgs})`;
+    const listQueryArgString = `(search: String sort: String ${listQueryArgs})`;
     return `
         ${this.listQueryName}${listQueryArgString}: [${this.key}]
         ${this.itemQueryName}(id: String!): ${this.key}`;
@@ -68,6 +68,9 @@ module.exports = class List {
     this.fields.forEach(i => i.addFiltersToQuery(query, args));
     if (args.search) {
       query.where('name', new RegExp(`^${escapeRegExp(args.search)}`, 'i'));
+    }
+    if (args.sort) {
+      query.sort(args.sort);
     }
     return query;
   }
