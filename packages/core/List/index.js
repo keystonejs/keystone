@@ -1,5 +1,6 @@
 const inflection = require('inflection');
 const pluralize = require('pluralize');
+const { escapeRegExp } = require('@keystonejs/utils');
 
 const initConfig = (key, config) => ({
   ...config,
@@ -51,7 +52,7 @@ module.exports = class List {
       .map(i => i.getGraphqlQueryArgs())
       .filter(i => i)
       .join('\n');
-    const listQueryArgString = listQueryArgs.length ? `(${listQueryArgs})` : '';
+    const listQueryArgString = `(search: String ${listQueryArgs})`;
     return `
         ${this.listQueryName}${listQueryArgString}: [${this.key}]
         ${this.itemQueryName}(id: String!): ${this.key}`;
@@ -65,6 +66,9 @@ module.exports = class List {
   buildItemsQuery(args) {
     const query = this.model.find();
     this.fields.forEach(i => i.addFiltersToQuery(query, args));
+    if (args.search) {
+      query.where('name', new RegExp(`^${escapeRegExp(args.search)}`, 'i'));
+    }
     return query;
   }
   getAdminMeta() {

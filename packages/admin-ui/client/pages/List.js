@@ -8,9 +8,11 @@ import Nav from '../components/Nav';
 import { Page } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 
-const getListQuery = ({ list }) => gql`
+const getListQueryArguments = search => (search ? `(search: "${search}")` : '');
+
+const getListQuery = ({ list, search }) => gql`
   {
-    ${list.listQueryName} {
+    ${list.listQueryName}${getListQueryArguments(search)} {
       id
       name
     }
@@ -53,10 +55,14 @@ class ItemRow extends Component {
 }
 
 class ItemsList extends Component {
+  state = {
+    search: '',
+  };
   render() {
     const { list } = this.props;
+    const { search } = this.state;
     return (
-      <Query query={getListQuery({ list })}>
+      <Query query={getListQuery({ list, search })}>
         {({ loading, error, data }) => {
           if (loading) return <Title>Loading...</Title>;
           if (error) {
@@ -67,7 +73,6 @@ class ItemsList extends Component {
               </Fragment>
             );
           }
-
           const items = data[list.listQueryName];
           return (
             <Table>
