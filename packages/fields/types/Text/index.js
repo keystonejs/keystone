@@ -1,6 +1,6 @@
 const Field = require('../../Field');
 
-const { escapeRegExp: esc } = require('@keystone/utils');
+const { escapeRegExp: esc } = require('@keystonejs/utils');
 
 /* TODO: need to re-think how query filters are built up. currently, the last
 one will override any previous ones, and we can't pass a regexp to .ne so will
