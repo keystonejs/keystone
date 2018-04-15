@@ -2,12 +2,13 @@ import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'react-emotion';
 
+import { colors } from '@keystonejs/ui/src/theme';
 import AdminMetaProvider from '../providers/AdminMeta';
 
-const NavBar = styled('div')`
-  background-color: #1385e5;
-  color: white;
-`;
+const NavBar = styled.div({
+  backgroundColor: colors.primary,
+  color: 'white',
+});
 
 const Container = styled('div')`
   display: flex;

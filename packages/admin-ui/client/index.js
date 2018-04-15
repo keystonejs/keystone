@@ -17,6 +17,7 @@ import ListPage from './pages/List';
 import ListNotFoundPage from './pages/ListNotFound';
 import ItemPage from './pages/Item';
 import InvalidRoutePage from './pages/InvalidRoute';
+import StyleGuidePage from './pages/StyleGuide';
 
 const Keystone = () => (
   <ApolloProvider client={apolloClient}>
@@ -25,6 +26,11 @@ const Keystone = () => (
         <BrowserRouter>
           <ScrollToTop>
             <Switch>
+              <Route
+                exact
+                path="/admin/style-guide"
+                component={StyleGuidePage}
+              />
               <Route
                 exact
                 path="/admin/signin"

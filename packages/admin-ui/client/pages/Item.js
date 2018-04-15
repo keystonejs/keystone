@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import Nav from '../components/Nav';
 import { Page } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
-import { PrimaryButton } from '@keystonejs/ui/src/primitives/forms';
+import { PrimaryButton } from '@keystonejs/ui/src/primitives/buttons';
 
 import FieldTypes from '../fields';
 
