@@ -1,5 +1,4 @@
 const inflection = require('inflection');
-
 const Field = require('../../Field');
 
 function initOptions(options) {
@@ -17,6 +16,10 @@ module.exports = class Select extends Field {
   constructor(path, config) {
     super(path, config);
     this.options = initOptions(config.options);
+    this.views = {
+      Field: './views/Field'
+    };
+    this.basePath = __dirname;
   }
   getGraphqlSchema() {
     return `${this.path}: ${this.getTypeName()}`;

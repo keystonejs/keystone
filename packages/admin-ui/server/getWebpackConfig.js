@@ -42,6 +42,17 @@ module.exports = function({ adminMeta, adminPath, apiPath }) {
           test: /\.(png|svg|jpg|gif)$/,
           use: ['file-loader'],
         },
+        {
+          test: /KEYSTONE_FIELD_VIEWS/,
+          use: [
+            {
+              loader: '@keystone/field-views-loader',
+              options: {
+                adminMeta
+              }
+            }
+          ]
+        }
       ],
     },
   };

@@ -10,6 +10,10 @@ module.exports = class Text extends Field {
   constructor(path, config) {
     super(path, config);
     this.graphQLType = 'String';
+    this.views = {
+      Field: './views/Field'
+    };
+    this.basePath = __dirname;
   }
   addToMongooseSchema(schema) {
     const { mongooseOptions } = this.config;
