@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'react-emotion';
 
-import { Input, PrimaryButton } from '@keystonejs/ui/src/primitives/forms';
+import { Input } from '@keystonejs/ui/src/primitives/forms';
+import { Button } from '@keystonejs/ui/src/primitives/buttons';
 
 import logo from '../assets/logo.png';
 
@@ -56,7 +57,9 @@ class Session extends Component {
               <FieldLabel>Password</FieldLabel>
               <Input />
             </Fields>
-            <PrimaryButton to="/admin">Sign In</PrimaryButton>
+            <Button appearance="primary" to="/admin">
+              Sign In
+            </Button>
           </div>
         </Box>
       </Container>

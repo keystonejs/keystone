@@ -16,7 +16,7 @@ export default class StyleGuide extends Component {
           <Button>Default</Button>
           <Button appearance="primary">Primary</Button>
           <Button appearance="create">Create</Button>
-          <Button appearance="delete">Delete</Button>
+          <Button appearance="danger">Destructive</Button>
         </Page>
       </Fragment>
     );

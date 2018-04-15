@@ -11,14 +11,14 @@ const NavBar = styled.div({
 });
 
 const Container = styled('div')`
+  align-items: center;
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
-  align-items: center;
   margin: auto;
+  max-width: 1160px;
   padding-left: 10px;
   padding-right: 10px;
-  max-width: 1160px;
 `;
 
 const Group = styled('div')`

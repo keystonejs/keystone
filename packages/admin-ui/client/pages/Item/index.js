@@ -4,12 +4,12 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import { Link } from 'react-router-dom';
 
-import Nav from '../components/Nav';
+import Nav from '../../components/Nav';
+import Footer from './Footer';
 import { Page } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
-import { PrimaryButton } from '@keystonejs/ui/src/primitives/buttons';
 
-import FieldTypes from '../fields';
+import FieldTypes from '../../fields';
 
 const getItemQuery = ({ list, itemId }) => gql`
   {
@@ -27,12 +27,6 @@ const ItemId = styled('div')`
 
 const Form = styled('div')`
   margin: 24px 0;
-`;
-
-const Toolbar = styled('div')`
-  box-shadow: rgba(0, 0, 0, 0.1) 0px -2px 0px;
-  margin: 24px 0;
-  padding: 24px 0;
 `;
 
 class ItemDetails extends Component {
@@ -72,9 +66,11 @@ class ItemDetails extends Component {
             );
           })}
         </Form>
-        <Toolbar>
-          <PrimaryButton onClick={this.saveChanges}>Save Changes</PrimaryButton>
-        </Toolbar>
+        <Footer
+          onSave={this.saveChanges}
+          onDelete={() => {}}
+          onReset={() => {}}
+        />
       </Fragment>
     );
   }

@@ -2,7 +2,9 @@ import React from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 import tinycolor from 'tinycolor2';
+
 import { colors } from '../theme';
+import { buttonAndInputBase } from './forms';
 
 const ButtonElement = props => {
   if (props.to) return <Link {...props} />;
@@ -10,9 +12,41 @@ const ButtonElement = props => {
   return <button type="button" {...props} />;
 };
 
-const borderRadius = '0.25em';
-const appearanceVariants = {
-  default: { bg: '#eee', border: '#ccc', text: '#333' },
+const linkAppearance = {
+  default: {
+    text: colors.primary,
+    textHover: colors.primary,
+  },
+  text: {
+    text: colors.text,
+    textHover: colors.primary,
+  },
+  subtle: {
+    text: colors.N40,
+    textHover: colors.primary,
+  },
+  reset: {
+    text: colors.N40,
+    textHover: colors.danger,
+  },
+  delete: {
+    text: colors.danger,
+    textHover: colors.danger,
+    isSolidOnHover: true,
+  },
+};
+const solidDangerConfig = {
+  bg: colors.danger,
+  border: t(colors.danger).darken(8),
+  text: 'white',
+};
+const solidAppearance = {
+  default: {
+    bg: colors.N05,
+    border: colors.N20,
+    focusRing: colors.primary,
+    text: colors.text,
+  },
   primary: {
     bg: colors.primary,
     border: t(colors.primary).darken(8),
@@ -23,11 +57,9 @@ const appearanceVariants = {
     border: t(colors.create).darken(8),
     text: 'white',
   },
-  delete: {
-    bg: colors.delete,
-    border: t(colors.delete).darken(8),
-    text: 'white',
-  },
+  reset: solidDangerConfig,
+  delete: solidDangerConfig,
+  danger: solidDangerConfig,
   warning: {
     bg: colors.warning,
     border: t(colors.warning).darken(8),
@@ -35,43 +67,39 @@ const appearanceVariants = {
   },
 };
 
-export const Button = styled(ButtonElement)(props => {
-  const appearanceObj = appearanceVariants[props.appearance];
-  const focusColor = props.appearance === 'default' ? colors.primary : null;
-  const variant = makeButtonVariant(appearanceObj, focusColor);
+export const Button = styled(ButtonElement)(
+  ({ appearance, isDisabled, variant }) => {
+    const variantStyles =
+      variant === 'link'
+        ? makeLinkVariant(appearance)
+        : makeSolidVariant(appearance);
 
-  return {
-    appearance: 'none',
-    background: 'none',
-    border: '1px solid transparent',
-    borderRadius: borderRadius,
-    cursor: props.isDisabled ? 'default' : 'pointer',
-    display: 'inline-block',
-    fontSize: 14,
-    fontWeight: 500,
-    lineHeight: '1.2em',
-    padding: '8px 12px',
-    textAlign: 'center',
-    touchAction: 'manipulation', // Disables "double-tap to zoom" on mobile; removes delay of click events
-    userSelect: 'none',
-    verticalAlign: 'middle',
-    whiteSpace: 'nowrap',
+    return {
+      ...buttonAndInputBase,
+      cursor: isDisabled ? 'default' : 'pointer',
+      display: 'inline-block',
+      lineHeight: '1.2em',
+      textAlign: 'center',
+      touchAction: 'manipulation', // Disables "double-tap to zoom" for mobile; removes delay on click events
+      userSelect: 'none',
 
-    '&:hover': {
-      backgroundRepeat: 'repeat-x',
-      textDecoration: 'none',
-    },
+      '&:hover': {
+        backgroundRepeat: 'repeat-x',
+        textDecoration: 'none',
+      },
 
-    '&:focus': {
-      outline: 0,
-    },
+      '&:focus': {
+        outline: 0,
+      },
 
-    // apply appearance styles
-    ...variant,
-  };
-});
+      // apply appearance styles
+      ...variantStyles,
+    };
+  }
+);
 Button.defaultProps = {
   appearance: 'default',
+  variant: 'solid',
 };
 
 // maintain immutability
@@ -83,7 +111,21 @@ function t(c) {
   }
 }
 
-function makeButtonVariant({ bg, border, text }, focusColor) {
+function makeLinkVariant(appearance) {
+  const { text, textHover, isSolidOnHover } = linkAppearance[appearance];
+
+  return {
+    color: text,
+
+    ':hover, :focus': isSolidOnHover
+      ? makeSolidVariant(appearance)
+      : {
+          color: textHover,
+        },
+  };
+}
+function makeSolidVariant(appearance) {
+  const { bg, border, focusRing, text } = solidAppearance[appearance];
   const bgTop = t(bg).brighten(8);
   const bgBottom = t(bg).darken(10);
   const borderTop = t(border).lighten(8);
@@ -93,6 +135,7 @@ function makeButtonVariant({ bg, border, text }, focusColor) {
     background: `linear-gradient(to bottom, ${bgTop} 0%, ${bgBottom} 100%)`,
     borderColor: `${borderTop} ${border} ${borderBottom}`,
     color: text,
+    fontWeight: 500,
 
     ':hover': {
       background: `linear-gradient(to bottom, ${t(bgTop).lighten(3)} 0%, ${t(
@@ -102,17 +145,17 @@ function makeButtonVariant({ bg, border, text }, focusColor) {
     },
 
     ':focus': {
-      borderColor: focusColor,
-      boxShadow: `0 0 0 3px ${t(focusColor || bg)
+      borderColor: focusRing,
+      boxShadow: `0 0 0 3px ${t(focusRing || bg)
         .setAlpha(0.2)
         .toRgbString()}`,
     },
 
     ':active': {
       background: t(bgBottom).toString(),
-      borderColor: `${t(border).darken(12)} ${t(border).darken(9)} ${t(
+      borderColor: `${t(border).darken(16)} ${t(border).darken(12)} ${t(
         border
-      ).darken(6)}`,
+      ).darken(8)}`,
       boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.12)',
     },
   };
