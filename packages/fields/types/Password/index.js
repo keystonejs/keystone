@@ -1,18 +1,14 @@
-const Field = require('../../Field');
+const Password = require('./Password');
 
-module.exports = class Password extends Field {
-  constructor(path, config) {
-    super(path, config);
-    this.graphQLType = 'String';
-    this.views = {
-      Field: './views/Field'
-    };
-    this.basePath = __dirname;
-  }
-  addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
-    schema.add({
-      [this.path]: { type: String, ...mongooseOptions },
-    });
+module.exports = {
+  type: 'Password',
+  implementation: Password,
+  basePath: __dirname,
+  views: {
+    Field: './views/Field',
+  },
+  adapters: {
+    // TODO: Extract mongo specific logic out of implementation
+    // mongoose: require('./adapters/mongoose'),
   }
 };

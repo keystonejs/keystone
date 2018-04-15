@@ -6,9 +6,6 @@ module.exports = class Field {
     this.config = config;
     this.listKey = listKey;
     this.label = config.label || inflection.humanize(path);
-    // LB: At some point we might like to allow extending views from the config
-    this.views = {};
-    this.basePath = '';
   }
   addToMongooseSchema() {
     throw new Error(
@@ -32,9 +29,7 @@ module.exports = class Field {
     return this.extendAdminMeta({
       label: this.label,
       path: this.path,
-      type: this.constructor.name,
-      views: this.views,
-      basePath: this.basePath
+      type: this.constructor.name
     });
   }
   extendAdminMeta(meta) {

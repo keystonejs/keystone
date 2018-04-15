@@ -1,3 +1,4 @@
+const path = require('path');
 const { AdminUI } = require('@keystonejs/admin-ui');
 const { Keystone } = require('@keystonejs/core');
 const { Text, Password, Select } = require('@keystonejs/fields');
@@ -20,7 +21,12 @@ keystone.createList('User', {
         { label: 'Atlassian', value: 'atlassian' },
       ],
     },
-    password: { type: Password },
+    password: {
+      type: Password,
+      views: {
+        Field: path.resolve('./custom-fields/Password/views/Field')
+      }
+    },
   },
 });
 

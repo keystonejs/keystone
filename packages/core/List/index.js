@@ -1,4 +1,5 @@
 const inflection = require('inflection');
+const nodePath = require('path');
 const pluralize = require('pluralize');
 const { escapeRegExp } = require('@keystonejs/utils');
 
@@ -23,9 +24,27 @@ module.exports = class List {
     this.fields = config.fields
       ? Object.keys(config.fields).map(path => {
           const { type, ...fieldSpec } = config.fields[path];
-          return new type(path, { ...fieldSpec, listKey: key });
+          const implementation = type.implementation;
+          return new implementation(path, { ...fieldSpec, listKey: key });
         })
       : [];
+
+    this.views = {};
+    Object.entries(config.fields).forEach(([path, fieldConfig]) => {
+      const defaultFieldViews = fieldConfig.type.views;
+      const defaultFieldViewsBasePath = fieldConfig.type.basePath;
+      this.views[path] = {};
+
+      Object.entries(defaultFieldViews).forEach(([fieldViewType, fieldViewPath]) => {
+        // Allow the config to override the fields view path
+        if (fieldConfig.views && fieldConfig.views[fieldViewType]) {
+          this.views[path][fieldViewType] = fieldConfig.views[fieldViewType];
+        } else {
+          const resolvedPath = nodePath.resolve(nodePath.join(defaultFieldViewsBasePath, fieldViewPath));
+          this.views[path][fieldViewType] = resolvedPath;
+        }
+      });
+    });
 
     const schema = new mongoose.Schema({}, this.config.mongooseSchemaOptions);
     this.fields.forEach(i => i.addToMongooseSchema(schema));
@@ -84,6 +103,7 @@ module.exports = class List {
       listQueryName: this.listQueryName,
       itemQueryName: this.itemQueryName,
       fields: this.fields.map(i => i.getAdminMeta()),
+      views: this.views
     };
   }
 };
