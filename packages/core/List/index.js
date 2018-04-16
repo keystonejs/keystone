@@ -31,18 +31,11 @@ module.exports = class List {
 
     this.views = {};
     Object.entries(config.fields).forEach(([path, fieldConfig]) => {
-      const defaultFieldViews = fieldConfig.type.views;
-      const defaultFieldViewsBasePath = fieldConfig.type.basePath;
+      const fieldType = fieldConfig.type;
       this.views[path] = {};
 
-      Object.entries(defaultFieldViews).forEach(([fieldViewType, fieldViewPath]) => {
-        // Allow the config to override the fields view path
-        if (fieldConfig.views && fieldConfig.views[fieldViewType]) {
-          this.views[path][fieldViewType] = fieldConfig.views[fieldViewType];
-        } else {
-          const resolvedPath = nodePath.resolve(nodePath.join(defaultFieldViewsBasePath, fieldViewPath));
-          this.views[path][fieldViewType] = resolvedPath;
-        }
+      Object.entries(fieldType.views).forEach(([fieldViewType, fieldViewPath]) => {
+        this.views[path][fieldViewType] = fieldViewPath;
       });
     });
 

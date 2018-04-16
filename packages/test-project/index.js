@@ -1,8 +1,9 @@
-const path = require('path');
 const { AdminUI } = require('@keystonejs/admin-ui');
 const { Keystone } = require('@keystonejs/core');
-const { Text, Password, Select } = require('@keystonejs/fields');
+const { Text, Select } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
+
+const SecurePassword = require('./custom-fields/SecurePassword');
 
 const initialData = require('./data');
 
@@ -22,10 +23,7 @@ keystone.createList('User', {
       ],
     },
     password: {
-      type: Password,
-      views: {
-        Field: path.resolve('./custom-fields/Password/views/Field')
-      }
+      type: SecurePassword
     },
   },
 });

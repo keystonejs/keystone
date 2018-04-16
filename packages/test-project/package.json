@@ -15,6 +15,7 @@
     "@keystonejs/core": "^5.0.0",
     "@keystonejs/fields": "^5.0.0",
     "@keystonejs/server": "^5.0.0",
-    "@keystonejs/ui": "^5.0.0"
+    "@keystonejs/ui": "^5.0.0",
+    "react": "^16.3.1"
   }
 }

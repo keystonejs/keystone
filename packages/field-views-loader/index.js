@@ -3,29 +3,44 @@ const loaderUtils =  require('loader-utils');
 module.exports = function() {
   const options = loaderUtils.getOptions(this);
   const adminMeta = options.adminMeta;
-  const allFieldTypeViews = {};
 
-  Object.entries(adminMeta.lists).forEach(([listPath, list]) => {
-    allFieldTypeViews[listPath] = {};
+  /* adminMeta gives us a `lists` object in the shape:
+    {
+      [listPath]: {  // e.g "User"
+        ...
+        views: {
+          [fieldPath]: {  // e.g 'email'
+            [fieldTypeView]: 'absolute/path/to/view', // e.g 'Field'
+            [fieldTypeView]: 'another/absolute/path'  // e.g 'Column'
+            ...
+          }
+          ...
+        }
+      }
+    }
 
-    Object.entries(list.views).forEach(([fieldName, views]) => {
-      allFieldTypeViews[listPath][fieldName] = {};
+  and our loader simply tranforms it into usuable code that looks like this:
 
-      Object.entries(views).forEach(([viewType, viewPath]) => {
-        const webpackSafePath = loaderUtils.stringifyRequest(this, viewPath);
-        const loaderString = `require(${webpackSafePath}).default`;
-        allFieldTypeViews[listPath][fieldName][viewType] = loaderString;
-      });
-    });
-  });
+  module.exports = {
+    "User": {
+      "email": {
+        "Field": require('relative/path/to/view'),
+        "Column": require('another/relative/path')
+        ...
+      },
+      ...
+    }
+    ...
+  }
+   */
 
   const stringifiedObject = `{
-    ${Object.entries(allFieldTypeViews).map(([listPath, list]) => {
+    ${Object.entries(adminMeta.lists).map(([listPath, list]) => {
       return `"${listPath}": {
-        ${Object.entries(list).map(([fieldName, views]) => {
-          return `"${fieldName}": {
+        ${Object.entries(list.views).map(([fieldPath, views]) => {
+          return `"${fieldPath}": {
             ${Object.entries(views).map(([viewType, resolution]) => {
-              return `"${viewType}": ${resolution}`;
+              return `"${viewType}": require('${resolution}').default`;
             }).join(',\n')}
           }`;
         }).join(',\n')}

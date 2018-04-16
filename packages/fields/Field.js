@@ -29,7 +29,7 @@ module.exports = class Field {
     return this.extendAdminMeta({
       label: this.label,
       path: this.path,
-      type: this.constructor.name
+      type: this.constructor.name,
     });
   }
   extendAdminMeta(meta) {

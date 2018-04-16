@@ -12,7 +12,7 @@ import { colors } from '@keystonejs/ui/src/theme';
 
 // This import is loaded by the @keystone/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
-import FieldViews from './KEYSTONE_FIELD_VIEWS';
+import FieldViews from '../KEYSTONE_FIELD_VIEWS';
 
 const getItemQuery = ({ list, itemId }) => gql`
   {
