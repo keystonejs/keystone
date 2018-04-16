@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 
 import Nav from '../components/Nav';
-import { Page } from '@keystonejs/ui/src/primitives/layout';
+import { Container } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button, ButtonGroup } from '@keystonejs/ui/src/primitives/buttons';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
@@ -16,13 +16,13 @@ export default class StyleGuide extends Component {
     return (
       <Fragment>
         <Nav />
-        <Page>
+        <Container>
           <Title>Style Guide</Title>
           <div style={{ marginBottom: 200 }}>
             <ButtonGuide />
             <FieldGuide />
           </div>
-        </Page>
+        </Container>
       </Fragment>
     );
   }

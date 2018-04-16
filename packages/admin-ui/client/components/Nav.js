@@ -3,22 +3,22 @@ import { Link } from 'react-router-dom';
 import styled from 'react-emotion';
 
 import { colors } from '@keystonejs/ui/src/theme';
+import { Container } from '@keystonejs/ui/src/primitives/layout';
 import AdminMetaProvider from '../providers/AdminMeta';
+
+const padding = 20;
 
 const NavBar = styled.div({
   backgroundColor: colors.primary,
   color: 'white',
 });
-
-const Container = styled.div({
+const FlexProvider = styled.div({
   alignItems: 'center',
   display: 'flex',
   flexWrap: 'nowrap',
   justifyContent: 'space-between',
-  margin: 'auto',
-  maxWidth: 1160,
-  paddingLeft: 10,
-  paddingRight: 10,
+  marginLeft: -padding,
+  marginRight: -padding,
 });
 const Group = styled.div({
   alignItems: 'center',
@@ -30,7 +30,7 @@ const Separator = styled.div({
 });
 const NavItem = styled(Link)({
   color: 'white',
-  padding: 20,
+  padding: padding,
   textDecoration: 'none',
 
   ':hover': {
@@ -44,21 +44,23 @@ class Home extends Component {
     return (
       <NavBar>
         <Container>
-          <Group>
-            <NavItem to="/admin">Home</NavItem>
-            {listKeys.map(key => {
-              const list = lists[key];
-              return (
-                <Fragment key={key}>
-                  <Separator />
-                  <NavItem to={`/admin/${list.path}`}>{list.label}</NavItem>
-                </Fragment>
-              );
-            })}
-          </Group>
-          <Group>
-            <NavItem to="/admin/signin">Sign Out</NavItem>
-          </Group>
+          <FlexProvider>
+            <Group>
+              <NavItem to="/admin">Home</NavItem>
+              {listKeys.map(key => {
+                const list = lists[key];
+                return (
+                  <Fragment key={key}>
+                    <Separator />
+                    <NavItem to={`/admin/${list.path}`}>{list.label}</NavItem>
+                  </Fragment>
+                );
+              })}
+            </Group>
+            <Group>
+              <NavItem to="/admin/signin">Sign Out</NavItem>
+            </Group>
+          </FlexProvider>
         </Container>
       </NavBar>
     );

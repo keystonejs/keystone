@@ -5,7 +5,7 @@ import { Query } from 'react-apollo';
 import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
-import { Page } from '@keystonejs/ui/src/primitives/layout';
+import { Container } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 import { colors } from '@keystonejs/ui/src/theme';
 
@@ -98,10 +98,10 @@ class ItemsList extends Component {
 const ListPage = ({ list }) => (
   <Fragment>
     <Nav />
-    <Page>
+    <Container>
       <Title>{list.label}</Title>
       <ItemsList list={list} />
-    </Page>
+    </Container>
   </Fragment>
 );
 

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 import Nav from '../../components/Nav';
 import Footer from './Footer';
-import { Page } from '@keystonejs/ui/src/primitives/layout';
+import { Container } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 import { colors } from '@keystonejs/ui/src/theme';
 
@@ -90,7 +90,7 @@ const ItemNotFound = ({ itemId, list }) => (
 const ItemPage = ({ list, itemId }) => (
   <Fragment>
     <Nav />
-    <Page>
+    <Container>
       <Query query={getItemQuery({ list, itemId })}>
         {({ loading, error, data }) => {
           if (loading) return <Title>Loading...</Title>;
@@ -111,7 +111,7 @@ const ItemPage = ({ list, itemId }) => (
           );
         }}
       </Query>
-    </Page>
+    </Container>
   </Fragment>
 );
 
