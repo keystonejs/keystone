@@ -10,36 +10,33 @@ const NavBar = styled.div({
   color: 'white',
 });
 
-const Container = styled('div')`
-  align-items: center;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  margin: auto;
-  max-width: 1160px;
-  padding-left: 10px;
-  padding-right: 10px;
-`;
+const Container = styled.div({
+  alignItems: 'center',
+  display: 'flex',
+  flexWrap: 'nowrap',
+  justifyContent: 'space-between',
+  margin: 'auto',
+  maxWidth: 1160,
+  paddingLeft: 10,
+  paddingRight: 10,
+});
+const Group = styled.div({
+  alignItems: 'center',
+  display: 'flex',
+});
+const Separator = styled.div({
+  borderLeft: '1px solid rgba(255, 255, 255, 0.2)',
+  height: 20,
+});
+const NavItem = styled(Link)({
+  color: 'white',
+  padding: 20,
+  textDecoration: 'none',
 
-const Group = styled('div')`
-  display: flex;
-  align-items: center;
-`;
-
-const NavItem = styled(Link)`
-  padding: 20px;
-  color: white;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const Separator = styled('div')`
-  border-left: 1px solid rgba(255, 255, 255, 0.2);
-  height: 20px;
-`;
+  ':hover': {
+    textDecoration: 'underline',
+  },
+});
 
 class Home extends Component {
   render() {

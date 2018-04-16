@@ -8,6 +8,7 @@ import Nav from '../../components/Nav';
 import Footer from './Footer';
 import { Page } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
+import { colors } from '@keystonejs/ui/src/theme';
 
 import FieldTypes from '../../fields';
 
@@ -20,14 +21,14 @@ const getItemQuery = ({ list, itemId }) => gql`
   }
 `;
 
-const ItemId = styled('div')`
-  color: #aaa;
-  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
-`;
+const ItemId = styled.div({
+  color: colors.N30,
+  fontFamily: 'Menlo, Monaco, Consolas, "Courier New", monospace',
+});
 
-const Form = styled('div')`
-  margin: 24px 0;
-`;
+const Form = styled.div({
+  margin: '24px 0',
+});
 
 class ItemDetails extends Component {
   constructor(props) {

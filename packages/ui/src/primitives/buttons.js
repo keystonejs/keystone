@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Children } from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 import tinycolor from 'tinycolor2';
@@ -121,6 +121,7 @@ function makeLinkVariant(appearance) {
       ? makeSolidVariant(appearance)
       : {
           color: textHover,
+          textDecoration: 'underline',
         },
   };
 }
@@ -130,12 +131,17 @@ function makeSolidVariant(appearance) {
   const bgBottom = t(bg).darken(10);
   const borderTop = t(border).lighten(8);
   const borderBottom = t(border).darken(8);
+  const textShadow =
+    appearance === 'default'
+      ? '0 1px 0 rgba(255, 255, 255, 0.5)'
+      : '0 -1px 0 rgba(0, 0, 0, 0.25)';
 
   return {
     background: `linear-gradient(to bottom, ${bgTop} 0%, ${bgBottom} 100%)`,
     borderColor: `${borderTop} ${border} ${borderBottom}`,
     color: text,
     fontWeight: 500,
+    textShadow,
 
     ':hover': {
       background: `linear-gradient(to bottom, ${t(bgTop).lighten(3)} 0%, ${t(
@@ -160,3 +166,29 @@ function makeSolidVariant(appearance) {
     },
   };
 }
+
+// ==============================
+// Button Group
+// ==============================
+
+export const ButtonGroup = ({ children, growIndices = [], ...props }) => {
+  const gutter = 4;
+  return (
+    <div
+      css={{ display: 'flex', marginLeft: -gutter, marginRight: -gutter }}
+      {...props}
+    >
+      {Children.map(children, (c, i) => (
+        <div
+          css={{
+            flex: growIndices.includes(i) ? 1 : null,
+            marginLeft: gutter,
+            marginRight: gutter,
+          }}
+        >
+          {c}
+        </div>
+      ))}
+    </div>
+  );
+};

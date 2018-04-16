@@ -3,45 +3,46 @@ import styled from 'react-emotion';
 
 import { Input } from '@keystonejs/ui/src/primitives/forms';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
+import { colors } from '@keystonejs/ui/src/theme';
 
 import logo from '../assets/logo.png';
 
-const Container = styled('div')`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+const Container = styled.div({
+  alignItems: 'center',
+  display: 'flex',
+  justifyContent: 'center',
+});
 
-const Box = styled('div')`
-  box-shadow: 0 2px 1px #f1f1f1;
-  background-color: white;
-  border: 1px solid #e9e9e9;
-  border-radius: 0.3em;
-  margin: 200px auto;
-  padding: 40px;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  align-items: center;
-`;
+const Box = styled.div({
+  boxShadow: '0 2px 1px #f1f1f1',
+  backgroundColor: 'white',
+  border: '1px solid #e9e9e9',
+  borderRadius: '0.3em',
+  margin: '200px auto',
+  padding: 40,
+  display: 'flex',
+  flexWrap: 'nowrap',
+  justifyContent: 'center',
+  alignItems: 'center',
+});
 
-const Divider = styled('div')`
-  border-right: 1px solid #eee;
-  min-height: 185px;
-  line-height: 185px;
-  margin: 0 40px;
-`;
+const Divider = styled.div({
+  borderRight: '1px solid #eee',
+  minHeight: 185,
+  lineHeight: 185,
+  margin: '0 40px',
+});
 
-const FieldLabel = styled('div')`
-  color: #7f7f7f;
-  margin-bottom: 8px;
-  font-size: 16px;
-`;
+const FieldLabel = styled.div({
+  color: colors.N60,
+  marginBottom: 8,
+  fontSize: 16,
+});
 
-const Fields = styled('div')`
-  margin-bottom: 8px;
-  width: 280px;
-`;
+const Fields = styled.div({
+  marginBottom: 8,
+  width: 280,
+});
 
 class Session extends Component {
   render() {
