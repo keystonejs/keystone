@@ -10,7 +10,9 @@ import { Container } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 import { colors } from '@keystonejs/ui/src/theme';
 
-import FieldTypes from '../../fields';
+// This import is loaded by the @keystone/field-views-loader loader.
+// It imports all the views required for a keystone app by looking at the adminMetaData
+import FieldViews from '../KEYSTONE_FIELD_VIEWS';
 
 const getItemQuery = ({ list, itemId }) => gql`
   {
@@ -56,7 +58,7 @@ class ItemDetails extends Component {
         <ItemId>ID: {item.id}</ItemId>
         <Form>
           {list.fields.map(field => {
-            const { Field } = FieldTypes[field.type];
+            const { Field } = FieldViews[list.key][field.path];
             return (
               <Field
                 item={item}

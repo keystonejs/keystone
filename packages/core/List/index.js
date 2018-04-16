@@ -1,4 +1,5 @@
 const inflection = require('inflection');
+const nodePath = require('path');
 const pluralize = require('pluralize');
 const { escapeRegExp } = require('@keystonejs/utils');
 
@@ -23,9 +24,20 @@ module.exports = class List {
     this.fields = config.fields
       ? Object.keys(config.fields).map(path => {
           const { type, ...fieldSpec } = config.fields[path];
-          return new type(path, { ...fieldSpec, listKey: key });
+          const implementation = type.implementation;
+          return new implementation(path, { ...fieldSpec, listKey: key });
         })
       : [];
+
+    this.views = {};
+    Object.entries(config.fields).forEach(([path, fieldConfig]) => {
+      const fieldType = fieldConfig.type;
+      this.views[path] = {};
+
+      Object.entries(fieldType.views).forEach(([fieldViewType, fieldViewPath]) => {
+        this.views[path][fieldViewType] = fieldViewPath;
+      });
+    });
 
     const schema = new mongoose.Schema({}, this.config.mongooseSchemaOptions);
     this.fields.forEach(i => i.addToMongooseSchema(schema));
@@ -84,6 +96,7 @@ module.exports = class List {
       listQueryName: this.listQueryName,
       itemQueryName: this.itemQueryName,
       fields: this.fields.map(i => i.getAdminMeta()),
+      views: this.views
     };
   }
 };
