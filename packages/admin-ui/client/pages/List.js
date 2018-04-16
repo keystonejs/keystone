@@ -5,8 +5,9 @@ import { Query } from 'react-apollo';
 import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
-import { Page } from '@keystonejs/ui/src/primitives/layout';
+import { Container } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
+import { colors } from '@keystonejs/ui/src/theme';
 
 const getListQueryArguments = search => (search ? `(search: "${search}")` : '');
 
@@ -19,27 +20,27 @@ const getListQuery = ({ list, search }) => gql`
   }
 `;
 
-const Table = styled('table')`
-  border-collapse: collapse;
-  border-spacing: 0;
-  table-layout: fixed;
-  width: 100%;
-`;
+const Table = styled.table({
+  borderCollapse: 'collapse',
+  borderSpacing: 0,
+  tableLayout: 'fixed',
+  width: '100%',
+});
 
-const HeaderCell = styled('td')`
-  border-bottom: 2px solid rgba(0, 0, 0, 0.06);
-  color: #999;
-  padding-bottom: 8px;
-  display: table-cell;
-  font-weight: normal;
-  text-align: left;
-  vertical-align: bottom;
-`;
+const HeaderCell = styled.td({
+  borderBottom: '2px solid rgba(0, 0, 0, 0.06)',
+  color: colors.N40,
+  paddingBottom: 8,
+  display: 'table-cell',
+  fontWeight: 'normal',
+  textAlign: 'left',
+  verticalAlign: 'bottom',
+});
 
-const BodyCell = styled('td')`
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  padding: 8px 0;
-`;
+const BodyCell = styled.td({
+  borderTop: '1px solid rgba(0, 0, 0, 0.06)',
+  padding: '8px 0',
+});
 
 class ItemRow extends Component {
   render() {
@@ -97,10 +98,10 @@ class ItemsList extends Component {
 const ListPage = ({ list }) => (
   <Fragment>
     <Nav />
-    <Page>
+    <Container>
       <Title>{list.label}</Title>
       <ItemsList list={list} />
-    </Page>
+    </Container>
   </Fragment>
 );
 

@@ -3,21 +3,21 @@ import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
-import { Page } from '@keystonejs/ui/src/primitives/layout';
+import { Container } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 
-const ListContainer = styled('div')`
-  margin: 8px 0;
-`;
-const ListLink = styled(Link)`
-  margin: 24px 0;
-  font-size: 24px;
-`;
+const ListContainer = styled.div({
+  margin: '8px 0',
+});
+const ListLink = styled(Link)({
+  fontSize: 24,
+  margin: '24px 0',
+});
 
 const HomePage = ({ lists, listKeys }) => (
   <Fragment>
     <Nav />
-    <Page>
+    <Container>
       <Title>Home</Title>
       {listKeys.map(key => {
         const list = lists[key];
@@ -27,7 +27,7 @@ const HomePage = ({ lists, listKeys }) => (
           </ListContainer>
         );
       })}
-    </Page>
+    </Container>
   </Fragment>
 );
 

@@ -12,5 +12,5 @@ export const fontFamily = `
 `;
 export const gridSize = 8;
 export const fontSize = 14;
-export const pageBackgroundColor = '#fafafa';
-export const primaryColor = '#1385e5';
+
+export { default as colors } from './colors';
