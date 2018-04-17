@@ -4,12 +4,15 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import { Link } from 'react-router-dom';
 
-import Nav from '../components/Nav';
-import { Page } from '@keystonejs/ui/src/primitives/layout';
+import Nav from '../../components/Nav';
+import Footer from './Footer';
+import { Container } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
-import { PrimaryButton } from '@keystonejs/ui/src/primitives/forms';
+import { colors } from '@keystonejs/ui/src/theme';
 
-import FieldTypes from '../fields';
+// This import is loaded by the @keystone/field-views-loader loader.
+// It imports all the views required for a keystone app by looking at the adminMetaData
+import FieldViews from '../KEYSTONE_FIELD_VIEWS';
 
 const getItemQuery = ({ list, itemId }) => gql`
   {
@@ -20,20 +23,14 @@ const getItemQuery = ({ list, itemId }) => gql`
   }
 `;
 
-const ItemId = styled('div')`
-  color: #aaa;
-  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
-`;
+const ItemId = styled.div({
+  color: colors.N30,
+  fontFamily: 'Menlo, Monaco, Consolas, "Courier New", monospace',
+});
 
-const Form = styled('div')`
-  margin: 24px 0;
-`;
-
-const Toolbar = styled('div')`
-  box-shadow: rgba(0, 0, 0, 0.1) 0px -2px 0px;
-  margin: 24px 0;
-  padding: 24px 0;
-`;
+const Form = styled.div({
+  margin: '24px 0',
+});
 
 class ItemDetails extends Component {
   constructor(props) {
@@ -61,7 +58,7 @@ class ItemDetails extends Component {
         <ItemId>ID: {item.id}</ItemId>
         <Form>
           {list.fields.map(field => {
-            const { Field } = FieldTypes[field.type];
+            const { Field } = FieldViews[list.key][field.path];
             return (
               <Field
                 item={item}
@@ -72,9 +69,11 @@ class ItemDetails extends Component {
             );
           })}
         </Form>
-        <Toolbar>
-          <PrimaryButton onClick={this.saveChanges}>Save Changes</PrimaryButton>
-        </Toolbar>
+        <Footer
+          onSave={this.saveChanges}
+          onDelete={() => {}}
+          onReset={() => {}}
+        />
       </Fragment>
     );
   }
@@ -93,7 +92,7 @@ const ItemNotFound = ({ itemId, list }) => (
 const ItemPage = ({ list, itemId }) => (
   <Fragment>
     <Nav />
-    <Page>
+    <Container>
       <Query query={getItemQuery({ list, itemId })}>
         {({ loading, error, data }) => {
           if (loading) return <Title>Loading...</Title>;
@@ -114,7 +113,7 @@ const ItemPage = ({ list, itemId }) => (
           );
         }}
       </Query>
-    </Page>
+    </Container>
   </Fragment>
 );
 

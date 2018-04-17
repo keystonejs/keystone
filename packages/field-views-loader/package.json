@@ -1,0 +1,11 @@
+{
+  "name": "@keystone/field-views-loader",
+  "version": "1.0.0",
+  "description": "A webpack loader used to load all thew field views used in an app",
+  "main": "index.js",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "dependencies": {
+    "loader-utils": "^1.1.0"
+  }
+}

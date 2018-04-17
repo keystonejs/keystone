@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
-import { Page } from '@keystonejs/ui/src/primitives/layout';
+import { Container } from '@keystonejs/ui/src/primitives/layout';
 import {
   Table,
   HeaderCell,
@@ -263,7 +263,7 @@ class ListPage extends Component {
     return (
       <Fragment>
         <Nav />
-        <Page>
+        <Container>
           <Query query={query}>
             {({ data, error }) => {
               if (error) {
@@ -319,7 +319,7 @@ class ListPage extends Component {
               );
             }}
           </Query>
-        </Page>
+        </Container>
       </Fragment>
     );
   }

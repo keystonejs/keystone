@@ -8,6 +8,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystonejs/utils": "^1.0.0"
+    "@keystonejs/utils": "^1.0.0",
+    "@keystonejs/ui": "^5.0.0"
   }
 }

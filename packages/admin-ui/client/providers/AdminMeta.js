@@ -1,6 +1,7 @@
 /* global KEYSTONE_ADMIN_META */
 
-const { lists } = KEYSTONE_ADMIN_META;
+const sourceMeta = KEYSTONE_ADMIN_META;
+const { lists } = sourceMeta;
 const listKeys = Object.keys(lists);
 const listsByPath = listKeys.reduce((map, key) => {
   const list = lists[key];
@@ -9,7 +10,7 @@ const listsByPath = listKeys.reduce((map, key) => {
 }, {});
 
 const adminMeta = {
-  ...KEYSTONE_ADMIN_META,
+  ...sourceMeta,
   listKeys,
   getListByKey(key) {
     return lists[key];
