@@ -8,6 +8,11 @@ import { Link } from 'react-router-dom';
 import Nav from '../components/Nav';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
 import { Page } from '@keystonejs/ui/src/primitives/layout';
+import {
+  Table,
+  HeaderCell,
+  BodyCell,
+} from '@keystonejs/ui/src/primitives/tables';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 
 const getListQueryArguments = ({ search, sort }) => {
@@ -33,28 +38,6 @@ const getListQuery = ({ fields, list, search, sort }) => {
 }
   `;
 };
-
-const Table = styled('table')`
-  border-collapse: collapse;
-  border-spacing: 0;
-  table-layout: fixed;
-  width: 100%;
-`;
-
-const HeaderCell = styled('td')`
-  border-bottom: 2px solid rgba(0, 0, 0, 0.06);
-  color: #999;
-  padding-bottom: 8px;
-  display: table-cell;
-  font-weight: normal;
-  text-align: left;
-  vertical-align: bottom;
-`;
-
-const BodyCell = styled('td')`
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  padding: 8px 0;
-`;
 
 const getSelectedButtonStyles = ({ isSelected }) =>
   isSelected
