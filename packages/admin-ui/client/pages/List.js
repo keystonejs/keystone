@@ -15,28 +15,22 @@ import {
 } from '@keystonejs/ui/src/primitives/tables';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 
-const getListQueryArguments = ({ search, sort }) => {
-  const args = [];
-  if (search) {
-    args.push(`search: "${search}"`);
-  }
-  if (sort) {
-    args.push(`sort: "${sort}"`);
-  }
-  return args.length ? `(${args.join(' ')})` : '';
+const getQueryArgs = args => {
+  const queryArgs = Object.keys(args).map(
+    argName => `${argName}: "${args[argName]}"`
+  );
+  return queryArgs.length ? `(${queryArgs.join(' ')})` : '';
 };
 
-const getListQuery = ({ fields, list, search, sort }) => {
-  const args = getListQueryArguments({ search, sort });
-  console.log(args);
+const getQuery = ({ fields, list, search, sort }) => {
+  const queryArgs = getQueryArgs({ search, sort });
+  const queryFields = ['id', ...fields.map(({ path }) => path)];
 
-  return gql`
-{
-  ${list.listQueryName}${args} {
-    ${['id', ...fields.map(({ path }) => path)].join('\n')}
+  return gql`{
+  ${list.listQueryName}${queryArgs} {
+    ${queryFields.join('\n')}
   }
-}
-  `;
+}`;
 };
 
 const getSelectedButtonStyles = ({ isSelected }) =>
@@ -251,14 +245,12 @@ class ListPage extends Component {
 
     const sort = `${order === 'DESC' ? '-' : ''}${orderBy.path}`;
 
-    const query = getListQuery({
+    const query = getQuery({
       fields: displayedFields,
       list,
       search,
       sort,
     });
-
-    console.log(query);
 
     return (
       <Fragment>
