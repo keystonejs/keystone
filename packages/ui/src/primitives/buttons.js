@@ -1,4 +1,6 @@
-import React, { Children } from 'react';
+// @flow
+
+import React from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 import tinycolor from 'tinycolor2';
@@ -166,29 +168,3 @@ function makeSolidVariant(appearance) {
     },
   };
 }
-
-// ==============================
-// Button Group
-// ==============================
-
-export const ButtonGroup = ({ children, growIndices = [], ...props }) => {
-  const gutter = 4;
-  return (
-    <div
-      css={{ display: 'flex', marginLeft: -gutter, marginRight: -gutter }}
-      {...props}
-    >
-      {Children.map(children, (c, i) => (
-        <div
-          css={{
-            flex: growIndices.includes(i) ? 1 : null,
-            marginLeft: gutter,
-            marginRight: gutter,
-          }}
-        >
-          {c}
-        </div>
-      ))}
-    </div>
-  );
-};
