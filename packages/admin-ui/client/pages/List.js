@@ -6,14 +6,12 @@ import { Query } from 'react-apollo';
 import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
+import { ButtonGroup } from '@keystonejs/ui/src/primitives/buttons';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
 import { Container } from '@keystonejs/ui/src/primitives/layout';
-import {
-  Table,
-  HeaderCell,
-  BodyCell,
-} from '@keystonejs/ui/src/primitives/tables';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
+
+import ListTable from '../components/ListTable';
 
 const getQueryArgs = args => {
   const queryArgs = Object.keys(args).map(
@@ -61,58 +59,6 @@ const Button = styled('button')`
   }
 `;
 
-class ItemRow extends Component {
-  render() {
-    const { list, item, fields } = this.props;
-
-    return (
-      <tr>
-        {fields.map(({ path }, index) => (
-          <BodyCell key={path}>
-            {!index ? (
-              <Link to={`/admin/${list.path}/${item.id}`}>{item[path]}</Link>
-            ) : (
-              item[path]
-            )}
-          </BodyCell>
-        ))}
-      </tr>
-    );
-  }
-}
-
-class ItemsList extends Component {
-  render() {
-    const { items, fields, list, search } = this.props;
-    return items.length ? (
-      <Table>
-        <thead>
-          <tr>
-            {fields.map(({ label }) => (
-              <HeaderCell key={label}>{label}</HeaderCell>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {items.map(item => (
-            <ItemRow key={item.id} list={list} fields={fields} item={item} />
-          ))}
-        </tbody>
-      </Table>
-    ) : (
-      `No ${list.plural.toLowerCase()} found matching ${search}.`
-    );
-  }
-}
-
-const FieldsSelectorWrapper = styled('div')`
-  align-items: center;
-  display: flex;
-  margin: 12px 0;
-`;
-const FieldsSelectorChild = styled('div')`
-  margin-right: 4px;
-`;
 class FieldsSelector extends Component {
   handleClick = field => {
     const { activeFields, fields, onChange } = this.props;
@@ -129,24 +75,23 @@ class FieldsSelector extends Component {
     const { activeFields, fields } = this.props;
 
     return (
-      <FieldsSelectorWrapper>
-        <FieldsSelectorChild key="label">Display: </FieldsSelectorChild>
+      <ButtonGroup>
+        <span key="label">Display: </span>
         {fields.map(field => {
           const { label, path } = field;
           const isActive = activeFields.indexOf(field) >= 0;
 
           return (
-            <FieldsSelectorChild key={path}>
-              <Button
-                isSelected={isActive}
-                onClick={() => this.handleClick(field)}
-              >
-                {label}
-              </Button>
-            </FieldsSelectorChild>
+            <Button
+              isSelected={isActive}
+              key={path}
+              onClick={() => this.handleClick(field)}
+            >
+              {label}
+            </Button>
           );
         })}
-      </FieldsSelectorWrapper>
+      </ButtonGroup>
     );
   }
 }
@@ -179,37 +124,29 @@ class ListItemSorter extends Component {
     );
 
     return (
-      <FieldsSelectorWrapper>
-        <FieldsSelectorChild>
-          <strong>Sort:</strong>
-        </FieldsSelectorChild>
-        <FieldsSelectorChild>
-          <Select
-            onChange={newOrderBy =>
-              this.handleChange({ orderBy: newOrderBy, order })
-            }
-            options={orderByOptions}
-            selectedOption={orderBy}
-            styles={{
-              control: provided => ({ ...provided, width: '250px' }),
-            }}
-            value={orderBy}
-          />
-        </FieldsSelectorChild>
-        <FieldsSelectorChild>
-          <Select
-            onChange={newOrder =>
-              this.handleChange({ orderBy, order: newOrder })
-            }
-            options={ListItemSorter.orderOptions}
-            selectedOption={order}
-            styles={{
-              control: provided => ({ ...provided, width: '150px' }),
-            }}
-            value={order}
-          />
-        </FieldsSelectorChild>
-      </FieldsSelectorWrapper>
+      <ButtonGroup>
+        <span>Sort:</span>
+        <Select
+          onChange={newOrderBy =>
+            this.handleChange({ orderBy: newOrderBy, order })
+          }
+          options={orderByOptions}
+          selectedOption={orderBy}
+          styles={{
+            control: provided => ({ ...provided, width: '250px' }),
+          }}
+          value={orderBy}
+        />
+        <Select
+          onChange={newOrder => this.handleChange({ orderBy, order: newOrder })}
+          options={ListItemSorter.orderOptions}
+          selectedOption={order}
+          styles={{
+            control: provided => ({ ...provided, width: '150px' }),
+          }}
+          value={order}
+        />
+      </ButtonGroup>
     );
   }
 }
@@ -298,7 +235,7 @@ class ListPage extends Component {
                     orderBy={orderBy}
                   />
                   {items ? (
-                    <ItemsList
+                    <ListTable
                       items={items}
                       list={list}
                       fields={displayedFields}
