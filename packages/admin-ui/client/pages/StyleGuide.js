@@ -1,16 +1,21 @@
 import React, { Component, Fragment } from 'react';
+import styled from 'react-emotion';
 
 import Nav from '../components/Nav';
 import {
   Container,
-  ContiguousGroup,
-  FluidGroup,
+  FlexGroup,
   Grid,
   Cell,
 } from '@keystonejs/ui/src/primitives/layout';
+import { colors } from '@keystonejs/ui/src/theme';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
+import {
+  LoadingIndicator,
+  LoadingSpinner,
+} from '@keystonejs/ui/src/primitives/loading';
 import {
   FieldContainer,
   FieldLabel,
@@ -28,6 +33,7 @@ export default class StyleGuide extends Component {
             <ButtonGuide />
             <FieldGuide />
             <LayoutGuide />
+            <ProgressGuide />
             <GridGuide />
           </div>
         </Container>
@@ -40,15 +46,22 @@ const ButtonGuide = () => (
   <Fragment>
     <h2>Buttons</h2>
     <h4>Variant: Solid</h4>
-    <FluidGroup isInline>
-      <Button>Default</Button>
-      <Button appearance="primary">Primary</Button>
-      <Button appearance="create">Create</Button>
-      <Button appearance="warning">Warning</Button>
-      <Button appearance="danger">Danger</Button>
-    </FluidGroup>
+    <FlexGroup>
+      <FlexGroup isInline>
+        <Button>Default</Button>
+        <Button appearance="primary">Primary</Button>
+        <Button appearance="create">Create</Button>
+        <Button appearance="warning">Warning</Button>
+        <Button appearance="danger">Danger</Button>
+      </FlexGroup>
+      <FlexGroup isInline isContiguous>
+        <Button>First</Button>
+        <Button>Second</Button>
+        <Button>Third</Button>
+      </FlexGroup>
+    </FlexGroup>
     <h4>Variant: Link</h4>
-    <FluidGroup isInline>
+    <FlexGroup isInline>
       <Button variant="link">Default</Button>
       <Button variant="link" appearance="text">
         Text
@@ -62,7 +75,7 @@ const ButtonGuide = () => (
       <Button variant="link" appearance="delete">
         Delete
       </Button>
-    </FluidGroup>
+    </FlexGroup>
   </Fragment>
 );
 
@@ -80,44 +93,53 @@ const FieldGuide = () => (
     </FieldContainer>
   </Fragment>
 );
-
+const FlexGroupExample = ({ heading, groupProps }) => (
+  <Fragment>
+    <h4>{heading}</h4>
+    <FlexGroup {...groupProps}>
+      <Button>Alpha</Button>
+      <Input placeholder="All the space!" />
+      <Button appearance="primary">Omega</Button>
+    </FlexGroup>
+  </Fragment>
+);
 const LayoutGuide = () => (
   <Fragment>
-    <h2>Layout</h2>
-    <h4>Fluid Group</h4>
-    <FluidGroup growIndexes={[1]}>
-      <Button>Alpha</Button>
-      <Input placeholder="All the space!" />
-      <Button appearance="primary">Omega</Button>
-    </FluidGroup>
-    <h4>Contiguous Group</h4>
-    <ContiguousGroup growIndexes={[1]}>
-      <Button>Alpha</Button>
-      <Input placeholder="All the space!" />
-      <Button appearance="primary">Omega</Button>
-    </ContiguousGroup>
+    <h2>Flex Group</h2>
+    <FlexGroupExample heading="Default" groupProps={{ growIndexes: [1] }} />
+    <FlexGroupExample
+      heading="Contiguous"
+      groupProps={{ isContiguous: true, growIndexes: [1] }}
+    />
+    <FlexGroupExample
+      heading="Inline"
+      groupProps={{ isInline: true, growIndexes: [1] }}
+    />
+    <FlexGroupExample
+      heading="Justify"
+      groupProps={{ justify: 'space-between' }}
+    />
   </Fragment>
 );
 
-const Box = p => (
-  <div
-    css={{
-      alignItems: 'center',
-      background: 'rgba(9, 30, 66, 0.04)',
-      borderRadius: 2,
-      boxShadow: 'inset 0 0 0 1px rgba(9, 30, 66, 0.04)',
-      display: 'flex',
-      justifyContent: 'center',
-      height: 40,
-    }}
-    {...p}
-  />
-);
+// ==============================
+// Grid
+// ==============================
+
+const GridBox = styled.div({
+  alignItems: 'center',
+  background: 'rgba(9, 30, 66, 0.04)',
+  borderRadius: 2,
+  boxShadow: 'inset 0 0 0 1px rgba(9, 30, 66, 0.04)',
+  display: 'flex',
+  justifyContent: 'center',
+  height: 40,
+});
 const makeRow = width => (c, i, a) => (
   <Cell width={width} key={i}>
-    <Box>
+    <GridBox>
       {i + 1}/{a.length}
-    </Box>
+    </GridBox>
   </Cell>
 );
 const GridGuide = () => {
@@ -139,3 +161,79 @@ const GridGuide = () => {
     </Fragment>
   );
 };
+
+// ==============================
+// Progress
+// ==============================
+
+const LoadingBox = styled.div(({ on, size }) => ({
+  alignItems: 'center',
+  background: on ? colors.text : null,
+  borderRadius: 2,
+  display: 'flex',
+  justifyContent: 'center',
+  height: size * 6,
+  width: size * 8,
+}));
+
+const appearances = ['default', 'dark', 'primary', 'inverted'];
+type State = {
+  size: number,
+  appearance: 'default' | 'dark' | 'primary' | 'inverted',
+};
+class ProgressGuide extends Component<*, State> {
+  state = { appearance: 'default', size: 8 };
+  handleAppearance = ({ target: { value } }) => {
+    this.setState({ appearance: value });
+  };
+  handleSize = ({ target: { value } }) => {
+    this.setState({ size: parseInt(value, 10) });
+  };
+  render() {
+    const { appearance, size } = this.state;
+    return (
+      <Fragment>
+        <h2>Loading</h2>
+        <FlexGroup style={{ marginBottom: '1em' }}>
+          <div css={{ alignItems: 'center', display: 'flex' }}>
+            <input
+              type="range"
+              min="4"
+              max="16"
+              value={size}
+              onChange={this.handleSize}
+            />
+          </div>
+          <div>
+            {appearances.map(a => (
+              <label key={a} css={{ padding: '0.5em' }}>
+                <input
+                  type="radio"
+                  name="appearance"
+                  value={a}
+                  onChange={this.handleAppearance}
+                  checked={a === appearance}
+                />
+                <code css={{ marginLeft: '0.25em' }}>{a}</code>
+              </label>
+            ))}
+          </div>
+        </FlexGroup>
+        <FlexGroup>
+          <div css={{ height: 120 }}>
+            <h4 css={{ marginBottom: 4, marginTop: 0 }}>Indicator</h4>
+            <LoadingBox size={size} on={appearance === 'inverted'}>
+              <LoadingIndicator size={size} appearance={appearance} />
+            </LoadingBox>
+          </div>
+          <div css={{ height: 120 }}>
+            <h4 css={{ marginBottom: 4, marginTop: 0 }}>Spinner</h4>
+            <LoadingBox size={size} on={appearance === 'inverted'}>
+              <LoadingSpinner size={size * 3} appearance={appearance} />
+            </LoadingBox>
+          </div>
+        </FlexGroup>
+      </Fragment>
+    );
+  }
+}

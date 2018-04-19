@@ -27,66 +27,41 @@ export const Container = styled.div({
 // Fluid Group
 // ==============================
 
-type FluidGroupProps = {
+type FlexGroupProps = {
+  align: 'stretch' | 'center' | 'flex-start' | 'flex-start',
   children: Node,
   growIndexes: Array<number>,
+  isContiguous: boolean,
   isInline: boolean,
+  justify:
+    | 'space-between'
+    | 'space-around'
+    | 'center'
+    | 'flex-end'
+    | 'flex-start',
   spacing: number,
 };
-export const FluidGroup = ({
+export const FlexGroup = ({
+  align = 'stretch',
   children,
   growIndexes = [],
+  isContiguous,
   isInline,
+  justify = 'flex-start',
   spacing = gridSize,
   ...props
-}: FluidGroupProps) => {
+}: FlexGroupProps) => {
   const gutter = spacing / 2;
-  return (
-    <div
-      css={{
-        alignItems: 'center',
-        display: isInline ? 'inline-flex' : 'flex',
-        marginLeft: -gutter,
-        marginRight: -gutter,
-      }}
-      {...props}
-    >
-      {Children.map(children, (c, i) => (
-        <div
-          css={{
-            flex: growIndexes.includes(i) ? 1 : null,
-            marginLeft: gutter,
-            marginRight: gutter,
-          }}
-        >
-          {c}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-// ==============================
-// Contiguous Group
-// ==============================
-
-type ContiguousGroupProps = {
-  children: Node,
-  growIndexes: Array<number>,
-  isInline: boolean,
-  spacing: number,
-};
-export const ContiguousGroup = ({
-  children,
-  growIndexes = [],
-  isInline,
-  ...props
-}: ContiguousGroupProps) => {
   const length = Children.count(children);
+
   return (
     <div
       css={{
         display: isInline ? 'inline-flex' : 'flex',
+        alignItems: align,
+        justifyContent: justify,
+        marginLeft: isContiguous ? null : -gutter,
+        marginRight: isContiguous ? null : -gutter,
       }}
       {...props}
     >
@@ -108,7 +83,8 @@ export const ContiguousGroup = ({
           <div
             css={{
               flex: growIndexes.includes(idx) ? 1 : null,
-              marginLeft: idx ? -1 : null,
+              marginLeft: isContiguous && idx ? -1 : gutter,
+              marginRight: isContiguous ? null : gutter,
 
               // bring the focus styles over the top of siblings
               '&:focus-within': {
@@ -116,7 +92,7 @@ export const ContiguousGroup = ({
               },
             }}
           >
-            {cloneElement(child, { style })}
+            {isContiguous ? cloneElement(child, { style }) : child}
           </div>
         );
       })}

@@ -1,0 +1,4 @@
+{
+  "extends": "../../.babelrc",
+  "presets": ["flow"]
+}

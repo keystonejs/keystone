@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 
-import { fontFamily, gridSize } from '@keystonejs/ui/src/theme';
 import {
   FieldContainer,
   FieldLabel,
@@ -12,8 +11,7 @@ const styles = {
   control: (base, { isFocused }) => ({
     ...base,
     backgroundColor: 'white',
-    marginBottom: gridSize,
-    fontFamily: fontFamily,
+    fontFamily: 'inherit',
     borderRadius: '0.3rem',
     boxShadow: isFocused
       ? 'inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(19, 133, 229, 0.1)'
