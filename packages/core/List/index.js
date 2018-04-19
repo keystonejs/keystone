@@ -11,9 +11,9 @@ module.exports = class List {
     this.key = key;
     this.config = initConfig(key, config);
 
-    this.label = config.label || inflection.titleize(key);
+    this.label = config.label || pluralize.plural(inflection.titleize(key));
     this.singular = config.singular || pluralize.singular(this.label);
-    this.plural = config.singular || pluralize.plural(this.label);
+    this.plural = config.plural || pluralize.plural(this.label);
     this.path = config.path || inflection.dasherize(this.plural).toLowerCase();
     this.listQueryName =
       config.listQueryName || inflection.camelize(this.plural, true);
@@ -33,9 +33,11 @@ module.exports = class List {
       const fieldType = fieldConfig.type;
       this.views[path] = {};
 
-      Object.entries(fieldType.views).forEach(([fieldViewType, fieldViewPath]) => {
-        this.views[path][fieldViewType] = fieldViewPath;
-      });
+      Object.entries(fieldType.views).forEach(
+        ([fieldViewType, fieldViewPath]) => {
+          this.views[path][fieldViewType] = fieldViewPath;
+        }
+      );
     });
 
     const schema = new mongoose.Schema({}, this.config.mongooseSchemaOptions);
@@ -95,7 +97,7 @@ module.exports = class List {
       listQueryName: this.listQueryName,
       itemQueryName: this.itemQueryName,
       fields: this.fields.map(i => i.getAdminMeta()),
-      views: this.views
+      views: this.views,
     };
   }
 };
