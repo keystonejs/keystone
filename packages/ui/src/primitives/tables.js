@@ -22,4 +22,5 @@ export const HeaderCell = styled('td')({
 export const BodyCell = styled('td')({
   borderTop: '1px solid rgba(0, 0, 0, 0.06)',
   padding: '8px 0',
+  fontSize: 15,
 });

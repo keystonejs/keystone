@@ -6,10 +6,6 @@ import Nav from '../components/Nav';
 import { Container, FluidGroup } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 
-const Lists = styled(Link)`
-  display: flex;
-`;
-
 const ListLink = styled(Link)`
   transition: box-shadow 80ms linear;
   background-color: white;

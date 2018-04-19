@@ -179,7 +179,7 @@ class ListPage extends Component {
                     placeholder="Search"
                     value={search}
                   />
-                  <div css={{ margin: '12px 0' }}>
+                  <div css={{ margin: '12px 0 24px' }}>
                     <FluidGroup>
                       <div>
                         <Label>Display:</Label>

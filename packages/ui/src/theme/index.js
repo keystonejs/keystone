@@ -11,6 +11,6 @@ export const fontFamily = `
   "Segoe UI Symbol"
 `;
 export const gridSize = 8;
-export const fontSize = 14;
+export const fontSize = 16;
 
 export { default as colors } from './colors';
