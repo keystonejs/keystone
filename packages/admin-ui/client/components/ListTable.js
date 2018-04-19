@@ -27,8 +27,7 @@ class ListTableRow extends Component {
 
 export default class ListTable extends Component {
   render() {
-    const { items, fields, list, search } = this.props;
-    console.log(items, fields, list);
+    const { items, fields, list, noResultsMessage } = this.props;
     return items.length ? (
       <Table>
         <thead>
@@ -50,7 +49,7 @@ export default class ListTable extends Component {
         </tbody>
       </Table>
     ) : (
-      `No ${list.plural.toLowerCase()} found matching ${search}.`
+      noResultsMessage
     );
   }
 }

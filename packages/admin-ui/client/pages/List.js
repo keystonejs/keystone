@@ -3,12 +3,10 @@ import styled from 'react-emotion';
 import gql from 'graphql-tag';
 import Select from 'react-select';
 import { Query } from 'react-apollo';
-import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
-import { ButtonGroup } from '@keystonejs/ui/src/primitives/buttons';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
-import { Container } from '@keystonejs/ui/src/primitives/layout';
+import { Container, FluidGroup } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 
 import ListTable from '../components/ListTable';
@@ -31,133 +29,72 @@ const getQuery = ({ fields, list, search, sort }) => {
 }`;
 };
 
-const getSelectedButtonStyles = ({ isSelected }) =>
-  isSelected
-    ? `
-  background-color: #333;
-  color: #fff;
-`
-    : `
-  background-color: #fff;
-  color: #333;
-`;
-const Button = styled('button')`
-  border: 1px solid #333;
-  border-radius: 4px;
-  cursor: pointer;
-  display: inline-block;
-  font-size: 12px;
-  outline: none;
-  padding: 4px 8px;
-
-  ${getSelectedButtonStyles};
-
-  &:active {
-    background-color: #111;
-    border-color: #111;
-    color: #fff;
-  }
-`;
-
-class FieldsSelector extends Component {
-  handleClick = field => {
-    const { activeFields, fields, onChange } = this.props;
-
-    const newActiveFields = fields.filter(potentiallyActiveField => {
-      const isClickedField = field === potentiallyActiveField;
-      const isAlreadyActive = activeFields.indexOf(potentiallyActiveField) >= 0;
-      return isClickedField ? !isAlreadyActive : isAlreadyActive;
-    });
-    onChange(newActiveFields);
+/**
+ * Handy little bridge that converts a list's fields into the format that
+ * react-select expects, then converts them back before calling onChange. This
+ * is necessary because fields can contain an 'options' property which causes
+ * react-select to interpret it as an option-group.
+ */
+class FieldsSelect extends Component {
+  handleChange = selected => {
+    const { fields, isMulti, onChange } = this.props;
+    const selectedFields = isMulti
+      ? selected.map(({ value }) => fields.find(({ path }) => path === value))
+      : fields.find(({ path }) => path === selected.value);
+    onChange(selectedFields);
   };
 
   render() {
-    const { activeFields, fields } = this.props;
+    const { fields, onChange, value, ...props } = this.props;
+
+    // Convert the fields data into the format react-select expects.
+    const options = fields.map(({ label, path }) => ({ label, value: path }));
+
+    // Pick out the selected option(s). This is slightly different if it's a
+    // multi-select. We need to filter it/them out of `options` rather than
+    // transforming `value` here because react-select appears to determine which
+    // option to focus by doing some kind of reference equality check.
+    const selected = (() => {
+      if (props.isMulti) {
+        const selectedFieldPaths = value.map(({ path }) => path);
+        return options.filter(option =>
+          selectedFieldPaths.includes(option.value)
+        );
+      }
+      return options.find(option => option.value === value.path);
+    })();
 
     return (
-      <ButtonGroup>
-        <span key="label">Display: </span>
-        {fields.map(field => {
-          const { label, path } = field;
-          const isActive = activeFields.indexOf(field) >= 0;
-
-          return (
-            <Button
-              isSelected={isActive}
-              key={path}
-              onClick={() => this.handleClick(field)}
-            >
-              {label}
-            </Button>
-          );
-        })}
-      </ButtonGroup>
+      <Select
+        onChange={this.handleChange}
+        options={options}
+        value={selected}
+        {...props}
+      />
     );
   }
 }
 
-class ListItemSorter extends Component {
-  static orderOptions = [
-    { label: 'Ascending', value: 'ASC' },
-    { label: 'Descending', value: 'DESC' },
-  ];
-
-  handleChange = ({ order: orderOption, orderBy: orderByOption }) => {
-    const { fields, onChange } = this.props;
-    const order = orderOption.value;
-    const orderBy = fields.find(({ path }) => path === orderByOption.value);
-    onChange({ order, orderBy });
-  };
-
-  render() {
-    const { fields, orderBy: orderByOption, order: orderKey } = this.props;
-    const order = ListItemSorter.orderOptions.find(
-      ({ value }) => value === orderKey
-    );
-
-    const orderByOptions = fields.map(({ label, path }) => ({
-      label,
-      value: path,
-    }));
-    const orderBy = orderByOptions.find(
-      ({ value }) => value === orderByOption.path
-    );
-
-    return (
-      <ButtonGroup>
-        <span>Sort:</span>
-        <Select
-          onChange={newOrderBy =>
-            this.handleChange({ orderBy: newOrderBy, order })
-          }
-          options={orderByOptions}
-          selectedOption={orderBy}
-          styles={{
-            control: provided => ({ ...provided, width: '250px' }),
-          }}
-          value={orderBy}
-        />
-        <Select
-          onChange={newOrder => this.handleChange({ orderBy, order: newOrder })}
-          options={ListItemSorter.orderOptions}
-          selectedOption={order}
-          styles={{
-            control: provided => ({ ...provided, width: '150px' }),
-          }}
-          value={order}
-        />
-      </ButtonGroup>
-    );
-  }
-}
+const Label = styled('label')({
+  color: '#999',
+  display: 'block',
+  fontSize: '12px',
+  marginBottom: '4px',
+});
 
 class ListPage extends Component {
   constructor(props) {
     super(props);
     const displayedFields = this.props.list.fields.slice(0, 2);
+    const order = ListPage.orderOptions[0];
     const orderBy = displayedFields[0];
-    this.state = { displayedFields, order: 'ASC', orderBy, search: '' };
+    this.state = { displayedFields, order, orderBy, search: '' };
   }
+
+  static orderOptions = [
+    { label: 'Ascending', value: 'ASC' },
+    { label: 'Descending', value: 'DESC' },
+  ];
 
   // We record the number of items returned by the latest query so that the
   // previous count can be displayed during a loading state.
@@ -168,19 +105,30 @@ class ListPage extends Component {
     this.setState({ search });
   };
 
-  handleFieldSelect = displayedFields => {
-    this.setState({ displayedFields });
+  handleSelectedFieldsChange = selectedFields => {
+    // Ensure that the displayed fields maintain their original order when
+    // they're added/removed
+    const displayedFields = this.props.list.fields.filter(field =>
+      selectedFields.includes(field)
+    );
+
+    // Reset orderBy if we were ordering by a field which has been removed.
+    const orderBy = displayedFields.includes(this.state.orderBy)
+      ? this.state.orderBy
+      : displayedFields[0];
+
+    this.setState({ displayedFields, orderBy });
   };
 
-  handleSortChange = ({ order, orderBy }) => {
-    this.setState({ order, orderBy });
-  };
+  handleOrderByChange = orderBy => this.setState({ orderBy });
+
+  handleOrderChange = order => this.setState({ order });
 
   render() {
     const { list } = this.props;
     const { displayedFields, order, orderBy, search } = this.state;
 
-    const sort = `${order === 'DESC' ? '-' : ''}${orderBy.path}`;
+    const sort = `${order.value === 'DESC' ? '-' : ''}${orderBy.path}`;
 
     const query = getQuery({
       fields: displayedFields,
@@ -188,6 +136,10 @@ class ListPage extends Component {
       search,
       sort,
     });
+
+    const selectStyles = {
+      control: provided => ({ ...provided, minWidth: '200px' }),
+    };
 
     return (
       <Fragment>
@@ -223,23 +175,45 @@ class ListPage extends Component {
                     placeholder="Search"
                     value={search}
                   />
-                  <FieldsSelector
-                    activeFields={displayedFields}
-                    fields={list.fields}
-                    onChange={this.handleFieldSelect}
-                  />
-                  <ListItemSorter
-                    fields={displayedFields}
-                    onChange={this.handleSortChange}
-                    order={order}
-                    orderBy={orderBy}
-                  />
+                  <div css={{ margin: '12px 0' }}>
+                    <FluidGroup>
+                      <div>
+                        <Label>Display:</Label>
+                        <FieldsSelect
+                          styles={selectStyles}
+                          fields={list.fields}
+                          isClearable={false}
+                          isMulti
+                          onChange={this.handleSelectedFieldsChange}
+                          value={displayedFields}
+                        />
+                      </div>
+                      <div>
+                        <Label>Order by:</Label>
+                        <FieldsSelect
+                          styles={selectStyles}
+                          fields={displayedFields}
+                          onChange={this.handleOrderByChange}
+                          value={orderBy}
+                        />
+                      </div>
+                      <div>
+                        <Label>Order:</Label>
+                        <Select
+                          styles={selectStyles}
+                          options={ListPage.orderOptions}
+                          onChange={this.handleOrderChange}
+                          value={order}
+                        />
+                      </div>
+                    </FluidGroup>
+                  </div>
                   {items ? (
                     <ListTable
                       items={items}
                       list={list}
                       fields={displayedFields}
-                      search={search}
+                      noResultsMessage={`No ${list.plural.toLowerCase()} found matching ${search}.`}
                     />
                   ) : (
                     <Title>Loading...</Title>
