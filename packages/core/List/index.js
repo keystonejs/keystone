@@ -1,5 +1,4 @@
 const inflection = require('inflection');
-const nodePath = require('path');
 const pluralize = require('pluralize');
 const { escapeRegExp } = require('@keystonejs/utils');
 
