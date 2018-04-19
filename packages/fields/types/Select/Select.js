@@ -42,4 +42,32 @@ module.exports = class Select extends Field {
   extendAdminMeta(meta) {
     return { ...meta, options: this.options };
   }
+  getGraphqlQueryArgs() {
+    return `
+      ${this.path}: ${this.getTypeName()}
+      ${this.path}_not: ${this.getTypeName()}
+      ${this.path}_in: [${this.getTypeName()}!]
+      ${this.path}_not_in: [${this.getTypeName()}!]
+    `;
+  }
+  getQueryConditions(args) {
+    const conditions = [];
+    const eq = this.path;
+    if (eq in args) {
+      conditions.push({ $eq: args[eq] });
+    }
+    const not = `${this.path}_not`;
+    if (not in args) {
+      conditions.push({ $ne: args[not] });
+    }
+    const is_in = `${this.path}_in`;
+    if (is_in in args) {
+      conditions.push({ $in: args[is_in] });
+    }
+    const not_in = `${this.path}_not_in`;
+    if (not_in in args) {
+      conditions.push({ $nin: args[not_in] });
+    }
+    return conditions;
+  }
 };
