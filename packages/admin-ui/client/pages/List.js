@@ -1,108 +1,250 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'react-emotion';
 import gql from 'graphql-tag';
+import Select, { components } from 'react-select';
 import { Query } from 'react-apollo';
-import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
-import { Container } from '@keystonejs/ui/src/primitives/layout';
+import { Input } from '@keystonejs/ui/src/primitives/forms';
+import { Container, FluidGroup } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
-import { colors } from '@keystonejs/ui/src/theme';
 
-const getListQueryArguments = search => (search ? `(search: "${search}")` : '');
+import ListTable from '../components/ListTable';
 
-const getListQuery = ({ list, search }) => gql`
-  {
-    ${list.listQueryName}${getListQueryArguments(search)} {
-      id
-      name
-    }
+const getQueryArgs = args => {
+  const queryArgs = Object.keys(args).map(
+    argName => `${argName}: "${args[argName]}"`
+  );
+  return queryArgs.length ? `(${queryArgs.join(' ')})` : '';
+};
+
+const getQuery = ({ fields, list, search, sort }) => {
+  const queryArgs = getQueryArgs({ search, sort });
+  const queryFields = ['id', ...fields.map(({ path }) => path)];
+
+  return gql`{
+  ${list.listQueryName}${queryArgs} {
+    ${queryFields.join('\n')}
   }
-`;
+}`;
+};
 
-const Table = styled.table({
-  borderCollapse: 'collapse',
-  borderSpacing: 0,
-  tableLayout: 'fixed',
-  width: '100%',
-});
+/**
+ * Handy little bridge that converts a list's fields into the format that
+ * react-select expects, then converts them back before calling onChange. This
+ * is necessary because fields can contain an 'options' property which causes
+ * react-select to interpret it as an option-group.
+ */
+class FieldsSelect extends Component {
+  handleChange = selected => {
+    const { fields, isMulti, onChange } = this.props;
+    const selectedFields = isMulti
+      ? selected.map(({ value }) => fields.find(({ path }) => path === value))
+      : fields.find(({ path }) => path === selected.value);
+    onChange(selectedFields);
+  };
 
-const HeaderCell = styled.td({
-  borderBottom: '2px solid rgba(0, 0, 0, 0.06)',
-  color: colors.N40,
-  paddingBottom: 8,
-  display: 'table-cell',
-  fontWeight: 'normal',
-  textAlign: 'left',
-  verticalAlign: 'bottom',
-});
-
-const BodyCell = styled.td({
-  borderTop: '1px solid rgba(0, 0, 0, 0.06)',
-  padding: '8px 0',
-});
-
-class ItemRow extends Component {
   render() {
-    const { list, item } = this.props;
+    const { fields, onChange, value, ...props } = this.props;
+
+    // Convert the fields data into the format react-select expects.
+    const options = fields.map(({ label, path }) => ({ label, value: path }));
+
+    // Pick out the selected option(s). This is slightly different if it's a
+    // multi-select. We need to filter it/them out of `options` rather than
+    // transforming `value` here because react-select appears to determine which
+    // option to focus by doing some kind of reference equality check.
+    const selected = (() => {
+      if (props.isMulti) {
+        const selectedFieldPaths = value.map(({ path }) => path);
+        return options.filter(option =>
+          selectedFieldPaths.includes(option.value)
+        );
+      }
+      return options.find(option => option.value === value.path);
+    })();
+
     return (
-      <tr>
-        <BodyCell>
-          <Link to={`/admin/${list.path}/${item.id}`}>{item.name}</Link>
-        </BodyCell>
-      </tr>
+      <Select
+        onChange={this.handleChange}
+        options={options}
+        value={selected}
+        {...props}
+      />
     );
   }
 }
 
-class ItemsList extends Component {
-  state = {
-    search: '',
+const Label = styled('label')({
+  color: '#999',
+  display: 'block',
+  fontSize: '12px',
+  marginBottom: '4px',
+});
+
+class ListPage extends Component {
+  constructor(props) {
+    super(props);
+    const displayedFields = this.props.list.fields.slice(0, 2);
+    const order = ListPage.orderOptions[0];
+    const orderBy = displayedFields[0];
+    this.state = { displayedFields, order, orderBy, search: '' };
+  }
+
+  static orderOptions = [
+    { label: 'Ascending', value: 'ASC' },
+    { label: 'Descending', value: 'DESC' },
+  ];
+
+  // We record the number of items returned by the latest query so that the
+  // previous count can be displayed during a loading state.
+  itemsCount: 0;
+
+  handleSearch = e => {
+    const { value: search } = e.target;
+    this.setState({ search });
   };
+
+  handleSelectedFieldsChange = selectedFields => {
+    if (!selectedFields.length) {
+      return;
+    }
+
+    // Ensure that the displayed fields maintain their original order when
+    // they're added/removed
+    const displayedFields = this.props.list.fields.filter(field =>
+      selectedFields.includes(field)
+    );
+
+    // Reset orderBy if we were ordering by a field which has been removed.
+    const orderBy = displayedFields.includes(this.state.orderBy)
+      ? this.state.orderBy
+      : displayedFields[0];
+
+    this.setState({ displayedFields, orderBy });
+  };
+
+  handleOrderByChange = orderBy => this.setState({ orderBy });
+
+  handleOrderChange = order => this.setState({ order });
+
   render() {
     const { list } = this.props;
-    const { search } = this.state;
+    const { displayedFields, order, orderBy, search } = this.state;
+
+    const sort = `${order.value === 'DESC' ? '-' : ''}${orderBy.path}`;
+
+    const query = getQuery({
+      fields: displayedFields,
+      list,
+      search,
+      sort,
+    });
+
+    const selectStyles = {
+      control: provided => ({ ...provided, minWidth: '200px' }),
+    };
+
     return (
-      <Query query={getListQuery({ list, search })}>
-        {({ loading, error, data }) => {
-          if (loading) return <Title>Loading...</Title>;
-          if (error) {
-            return (
-              <Fragment>
-                <Title>Error</Title>
-                <p>{error.message}</p>
-              </Fragment>
-            );
-          }
-          const items = data[list.listQueryName];
-          return (
-            <Table>
-              <thead>
-                <tr>
-                  <HeaderCell>Name</HeaderCell>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map(item => (
-                  <ItemRow key={item.id} list={list} item={item} />
-                ))}
-              </tbody>
-            </Table>
-          );
-        }}
-      </Query>
+      <Fragment>
+        <Nav />
+        <Container>
+          <Query query={query}>
+            {({ data, error }) => {
+              if (error) {
+                return (
+                  <Fragment>
+                    <Title>Error</Title>
+                    <p>{error.message}</p>
+                  </Fragment>
+                );
+              }
+
+              const items = data && data[list.listQueryName];
+              this.count =
+                items && typeof items.length === 'number'
+                  ? items.length
+                  : this.count;
+
+              return (
+                <Fragment>
+                  <Title>
+                    {this.count}{' '}
+                    {this.count === 1
+                      ? list.label.toLowerCase()
+                      : list.plural.toLowerCase()}
+                  </Title>
+                  <Input
+                    onChange={this.handleSearch}
+                    placeholder="Search"
+                    value={search}
+                  />
+                  <div css={{ margin: '12px 0' }}>
+                    <FluidGroup>
+                      <div>
+                        <Label>Display:</Label>
+                        <FieldsSelect
+                          components={{
+                            MultiValueRemove:
+                              displayedFields.length > 1
+                                ? components.MultiValueRemove
+                                : () => null,
+                          }}
+                          fields={list.fields}
+                          isClearable={false}
+                          isMulti
+                          onChange={this.handleSelectedFieldsChange}
+                          styles={{
+                            ...selectStyles,
+                            multiValueLabel:
+                              displayedFields.length === 1
+                                ? provided => ({
+                                    ...provided,
+                                    paddingRight: '6px',
+                                  })
+                                : null,
+                          }}
+                          value={displayedFields}
+                        />
+                      </div>
+                      <div>
+                        <Label>Order by:</Label>
+                        <FieldsSelect
+                          fields={displayedFields}
+                          onChange={this.handleOrderByChange}
+                          styles={selectStyles}
+                          value={orderBy}
+                        />
+                      </div>
+                      <div>
+                        <Label>Order:</Label>
+                        <Select
+                          options={ListPage.orderOptions}
+                          onChange={this.handleOrderChange}
+                          styles={selectStyles}
+                          value={order}
+                        />
+                      </div>
+                    </FluidGroup>
+                  </div>
+                  {items ? (
+                    <ListTable
+                      items={items}
+                      list={list}
+                      fields={displayedFields}
+                      noResultsMessage={`No ${list.plural.toLowerCase()} found matching ${search}.`}
+                    />
+                  ) : (
+                    <Title>Loading...</Title>
+                  )}
+                </Fragment>
+              );
+            }}
+          </Query>
+        </Container>
+      </Fragment>
     );
   }
 }
-
-const ListPage = ({ list }) => (
-  <Fragment>
-    <Nav />
-    <Container>
-      <Title>{list.label}</Title>
-      <ItemsList list={list} />
-    </Container>
-  </Fragment>
-);
 
 export default ListPage;
