@@ -108,12 +108,13 @@ class ListPage extends Component {
   };
 
   handleSelectedFieldsChange = selectedFields => {
+    // Don't remove the last field.
     if (!selectedFields.length) {
       return;
     }
 
     // Ensure that the displayed fields maintain their original order when
-    // they're added/removed
+    // they're added/removed.
     const displayedFields = this.props.list.fields.filter(field =>
       selectedFields.includes(field)
     );
