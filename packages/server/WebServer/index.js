@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 
 const initConfig = require('./initConfig');
 
@@ -15,7 +16,9 @@ module.exports = class WebServer {
   }
   start() {
     const { app, config: { port } } = this;
-    app.get('/', (req, res) => res.send('<h1>Hello Keystone</h1>'));
+    app.get('/', (req, res) =>
+      res.sendFile(path.resolve(__dirname, './default.html'))
+    );
     app.listen(port, () => {
       console.log(`KeystoneJS 5 ready on port ${port}`);
     });
