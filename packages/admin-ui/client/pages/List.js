@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'react-emotion';
 import gql from 'graphql-tag';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import { Query } from 'react-apollo';
 
 import Nav from '../components/Nav';
@@ -106,6 +106,10 @@ class ListPage extends Component {
   };
 
   handleSelectedFieldsChange = selectedFields => {
+    if (!selectedFields.length) {
+      return;
+    }
+
     // Ensure that the displayed fields maintain their original order when
     // they're added/removed
     const displayedFields = this.props.list.fields.filter(field =>
@@ -180,29 +184,44 @@ class ListPage extends Component {
                       <div>
                         <Label>Display:</Label>
                         <FieldsSelect
-                          styles={selectStyles}
+                          components={{
+                            MultiValueRemove:
+                              displayedFields.length > 1
+                                ? components.MultiValueRemove
+                                : () => null,
+                          }}
                           fields={list.fields}
                           isClearable={false}
                           isMulti
                           onChange={this.handleSelectedFieldsChange}
+                          styles={{
+                            ...selectStyles,
+                            multiValueLabel:
+                              displayedFields.length === 1
+                                ? provided => ({
+                                    ...provided,
+                                    paddingRight: '6px',
+                                  })
+                                : null,
+                          }}
                           value={displayedFields}
                         />
                       </div>
                       <div>
                         <Label>Order by:</Label>
                         <FieldsSelect
-                          styles={selectStyles}
                           fields={displayedFields}
                           onChange={this.handleOrderByChange}
+                          styles={selectStyles}
                           value={orderBy}
                         />
                       </div>
                       <div>
                         <Label>Order:</Label>
                         <Select
-                          styles={selectStyles}
                           options={ListPage.orderOptions}
                           onChange={this.handleOrderChange}
+                          styles={selectStyles}
                           value={order}
                         />
                       </div>
