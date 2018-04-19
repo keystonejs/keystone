@@ -121,7 +121,7 @@ const makeRow = width => (c, i, a) => (
   </Cell>
 );
 const GridGuide = () => {
-  const twelths = new Array(12).fill('');
+  const twelfths = new Array(12).fill('');
   const sixths = new Array(6).fill('');
   const quarters = new Array(4).fill('');
   const halves = new Array(2).fill('');
@@ -131,7 +131,7 @@ const GridGuide = () => {
       <h2>Grid</h2>
       <h4>Traditional</h4>
       <Grid columns={12}>
-        {twelths.map(makeRow(1))}
+        {twelfths.map(makeRow(1))}
         {sixths.map(makeRow(2))}
         {quarters.map(makeRow(3))}
         {halves.map(makeRow(6))}
