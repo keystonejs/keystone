@@ -77,11 +77,22 @@ module.exports = class List {
     };
   }
   buildItemsQuery(args) {
-    const query = this.model.find();
-    this.fields.forEach(i => i.addFiltersToQuery(query, args));
+    let conditions = this.fields.reduce((conds, field) => {
+      const fieldConditions = field.getQueryConditions(args);
+      if (!fieldConditions.length) return conds;
+      return [...conds, ...fieldConditions.map(i => ({ [field.path]: i }))];
+    }, []);
     if (args.search) {
-      query.where('name', new RegExp(`^${escapeRegExp(args.search)}`, 'i'));
+      conditions.push({
+        name: new RegExp(`^${escapeRegExp(args.search)}`, 'i'),
+      });
     }
+    if (!conditions.length) conditions = undefined;
+    else if (conditions.length === 1) conditions = conditions[0];
+    else conditions = { $and: conditions };
+
+    const query = this.model.find(conditions);
+
     if (args.sort) {
       query.sort(args.sort);
     }

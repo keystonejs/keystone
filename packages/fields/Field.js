@@ -24,7 +24,9 @@ module.exports = class Field {
   }
   getGraphqlTypes() {}
   getGraphqlQueryArgs() {}
-  addFiltersToQuery() {}
+  getQueryConditions() {
+    return [];
+  }
   getAdminMeta() {
     return this.extendAdminMeta({
       label: this.label,
@@ -36,20 +38,3 @@ module.exports = class Field {
     return meta;
   }
 };
-
-/*
-Idea for field spec export:
-
-module.exports = {
-  type: 'Password',
-  implementation: Password,
-  views: {
-    Field: './views/Field',
-    Column: './views/Column',
-  },
-  adapters: {
-    mongoose: require('./adapters/mongoose'),
-    postgres: require('./adapters/postgres'),
-  }
-}
-*/
