@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'react-emotion';
+import { Link } from 'react-router-dom';
 import gql from 'graphql-tag';
 import Select, { components } from 'react-select';
 import { Query } from 'react-apollo';
@@ -7,6 +8,7 @@ import { Query } from 'react-apollo';
 import Nav from '../components/Nav';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
 import { Container, FluidGroup } from '@keystonejs/ui/src/primitives/layout';
+import { BodyCell } from '@keystonejs/ui/src/primitives/tables';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 
 import ListTable from '../components/ListTable';
@@ -229,9 +231,19 @@ class ListPage extends Component {
                   </div>
                   {items ? (
                     <ListTable
-                      items={items}
-                      list={list}
+                      cellComponent={({ children, index, item }) =>
+                        !index ? (
+                          <BodyCell>
+                            <Link to={`/admin/${list.path}/${item.id}`}>
+                              {children}
+                            </Link>
+                          </BodyCell>
+                        ) : (
+                          <BodyCell>{children}</BodyCell>
+                        )
+                      }
                       fields={displayedFields}
+                      items={items}
                       noResultsMessage={`No ${list.plural.toLowerCase()} found matching ${search}.`}
                     />
                   ) : (

@@ -1,7 +1,6 @@
 // @flow
 
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 
 import {
   BodyCell,
@@ -10,15 +9,25 @@ import {
 } from '@keystonejs/ui/src/primitives/tables';
 
 class ListTableRow extends Component {
+  static defaultProps = {
+    cellComponent: BodyCell,
+  };
+
   render() {
-    const { link, item, fields } = this.props;
+    const { cellComponent: Cell, item, fields } = this.props;
 
     return (
       <tr>
-        {fields.map(({ path }, index) => (
-          <BodyCell key={path}>
-            {!index ? <Link to={link}>{item[path]}</Link> : item[path]}
-          </BodyCell>
+        {fields.map((field, index) => (
+          <Cell
+            field={field}
+            fields={fields}
+            index={index}
+            item={item}
+            key={field.path}
+          >
+            {item[field.path]}
+          </Cell>
         ))}
       </tr>
     );
@@ -27,7 +36,7 @@ class ListTableRow extends Component {
 
 export default class ListTable extends Component {
   render() {
-    const { items, fields, list, noResultsMessage } = this.props;
+    const { cellComponent, fields, items, noResultsMessage } = this.props;
     return items.length ? (
       <Table>
         <thead>
@@ -40,10 +49,10 @@ export default class ListTable extends Component {
         <tbody>
           {items.map(item => (
             <ListTableRow
-              key={item.id}
-              link={`/admin/${list.path}/${item.id}`}
+              cellComponent={cellComponent}
               fields={fields}
               item={item}
+              key={item.id}
             />
           ))}
         </tbody>
