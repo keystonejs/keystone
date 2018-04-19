@@ -44,6 +44,7 @@ export const FluidGroup = ({
   return (
     <div
       css={{
+        alignItems: 'center',
         display: isInline ? 'inline-flex' : 'flex',
         marginLeft: -gutter,
         marginRight: -gutter,
