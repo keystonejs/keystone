@@ -1,7 +1,13 @@
 import React, { Component, Fragment } from 'react';
 
 import Nav from '../components/Nav';
-import { Container, FluidGroup } from '@keystonejs/ui/src/primitives/layout';
+import {
+  Container,
+  ContiguousGroup,
+  FluidGroup,
+  Grid,
+  Cell,
+} from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
@@ -22,6 +28,7 @@ export default class StyleGuide extends Component {
             <ButtonGuide />
             <FieldGuide />
             <LayoutGuide />
+            <GridGuide />
           </div>
         </Container>
       </Fragment>
@@ -83,5 +90,52 @@ const LayoutGuide = () => (
       <Input placeholder="All the space!" />
       <Button appearance="primary">Omega</Button>
     </FluidGroup>
+    <h4>Contiguous Group</h4>
+    <ContiguousGroup growIndexes={[1]}>
+      <Button>Alpha</Button>
+      <Input placeholder="All the space!" />
+      <Button appearance="primary">Omega</Button>
+    </ContiguousGroup>
   </Fragment>
 );
+
+const Box = p => (
+  <div
+    css={{
+      alignItems: 'center',
+      background: 'rgba(9, 30, 66, 0.04)',
+      borderRadius: 2,
+      boxShadow: 'inset 0 0 0 1px rgba(9, 30, 66, 0.04)',
+      display: 'flex',
+      justifyContent: 'center',
+      height: 40,
+    }}
+    {...p}
+  />
+);
+const makeRow = width => (c, i, a) => (
+  <Cell width={width} key={i}>
+    <Box>
+      {i + 1}/{a.length}
+    </Box>
+  </Cell>
+);
+const GridGuide = () => {
+  const twelths = new Array(12).fill('');
+  const sixths = new Array(6).fill('');
+  const quarters = new Array(4).fill('');
+  const halves = new Array(2).fill('');
+
+  return (
+    <Fragment>
+      <h2>Grid</h2>
+      <h4>Traditional</h4>
+      <Grid columns={12}>
+        {twelths.map(makeRow(1))}
+        {sixths.map(makeRow(2))}
+        {quarters.map(makeRow(3))}
+        {halves.map(makeRow(6))}
+      </Grid>
+    </Fragment>
+  );
+};
