@@ -80,9 +80,11 @@ function alpha(color: Color, opacity: Decimal = 1) {
 
 // Shade Color
 // ==============================
+
 const shader = (c, t, p) => Math.round((t - c) * p) + c;
+
 function shade(color: Color, percent: Percent) {
-  const df = percent / 100;
+  const df = percent / 100; // decimal fraction
   const { r, g, b } = anyToRGB(color);
   const t = df < 0 ? 0 : 255;
   const p = Math.abs(df);
@@ -100,4 +102,21 @@ function darken(color: Color, percent: Percent) {
   return shade(color, percent * -1);
 }
 
-export { alpha, darken, lighten };
+// Mix Colors
+// ==============================
+
+const mixer = (c1, c2, df) => Math.round((c2 - c1) * df) + c1;
+
+function mix(color1: Color, color2: Color, percent: Percent) {
+  const df = percent / 100; // decimal fraction
+  const { r: r1, g: g1, b: b1 } = anyToRGB(color1);
+  const { r: r2, g: g2, b: b2 } = anyToRGB(color2);
+
+  return toRgbString({
+    r: mixer(r1, r2, df),
+    g: mixer(g1, g2, df),
+    b: mixer(b1, b2, df),
+  });
+}
+
+export { alpha, darken, lighten, mix };
