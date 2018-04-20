@@ -11,7 +11,7 @@ import {
 import { colors } from '@keystonejs/ui/src/theme';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Input } from '@keystonejs/ui/src/primitives/forms';
+import { Checkbox, Input, Radio } from '@keystonejs/ui/src/primitives/forms';
 import {
   LoadingIndicator,
   LoadingSpinner,
@@ -22,25 +22,115 @@ import {
   FieldInput,
 } from '@keystonejs/ui/src/primitives/fields';
 
-export default class StyleGuide extends Component {
+const SubNav = styled.div({
+  backgroundColor: colors.N05,
+  borderBottom: `1px solid ${colors.N10}`,
+});
+const SubnavItem = styled.div(({ isSelected }) => ({
+  boxShadow: isSelected ? '0 2px' : null,
+  color: isSelected ? colors.text : colors.N60,
+  cursor: 'pointer',
+  fontWeight: isSelected ? 500 : 'normal',
+  marginRight: 10,
+  paddingBottom: 10,
+  paddingTop: 10,
+
+  ':hover': {
+    color: colors.text,
+  },
+}));
+
+const sections = ['components', 'palette'];
+const upCase = s => s.charAt(0).toUpperCase() + s.slice(1);
+type State = { currentSection: 'components' | 'palette' };
+export default class StyleGuide extends Component<*, State> {
+  state = { currentSection: sections[0] };
   render() {
+    const { currentSection } = this.state;
     return (
       <Fragment>
         <Nav />
+        <SubNav>
+          <Container>
+            <FlexGroup>
+              {sections.map(s => (
+                <SubnavItem
+                  isSelected={currentSection === s}
+                  onClick={() => this.setState({ currentSection: s })}
+                >
+                  {upCase(s)}
+                </SubnavItem>
+              ))}
+            </FlexGroup>
+          </Container>
+        </SubNav>
         <Container>
-          <Title>Style Guide</Title>
+          <Title>Style Guide: {upCase(currentSection)}</Title>
           <div style={{ marginBottom: 200 }}>
-            <ButtonGuide />
-            <FieldGuide />
-            <LayoutGuide />
-            <ProgressGuide />
-            <GridGuide />
+            {currentSection === 'palette' ? (
+              <PaletteGuide />
+            ) : (
+              <Fragment>
+                <ButtonGuide />
+                <FieldGuide />
+                <LayoutGuide />
+                <ProgressGuide />
+                <GridGuide />
+              </Fragment>
+            )}
           </div>
         </Container>
       </Fragment>
     );
   }
 }
+const Swatch = ({ color, name, prefix }) => (
+  <div
+    style={{ backgroundColor: color }}
+    css={{
+      borderRadius: 2,
+      boxSizing: 'border-box',
+      color: 'white',
+      textShadow: '1px 1px 1px rgba(0,0,0,0.1)',
+      fontWeight: 500,
+      paddingBottom: '100%',
+      position: 'relative',
+    }}
+  >
+    <code css={{ position: 'absolute', left: 8, top: 8 }}>
+      {prefix}.{name}
+    </code>
+  </div>
+);
+const Hue = ({ heading, group }) => {
+  const groupList = Object.keys(group).reverse();
+  return (
+    <Fragment>
+      <h4>{heading}</h4>
+      <Grid>
+        {groupList.map(k => {
+          const clr = group[k];
+          return (
+            <Cell key={k}>
+              <Swatch prefix={heading.slice(0, 1)} color={clr} name={k} />
+            </Cell>
+          );
+        })}
+      </Grid>
+    </Fragment>
+  );
+};
+const PaletteGuide = () => {
+  return (
+    <Fragment>
+      <h2>Palette</h2>
+      <Hue heading="Reds" group={colors.R} />
+      <Hue heading="Greens" group={colors.G} />
+      <Hue heading="Blues" group={colors.B} />
+      <Hue heading="Yellows" group={colors.Y} />
+    </Fragment>
+  );
+};
 
 const ButtonGuide = () => (
   <Fragment>
@@ -91,6 +181,23 @@ const FieldGuide = () => (
         <Input placeholder="Max width 500px" />
       </FieldInput>
     </FieldContainer>
+    <h4>Controls</h4>
+    <FlexGroup>
+      <Checkbox value="one">Checkbox 1</Checkbox>
+      <Checkbox value="two">Checkbox 2</Checkbox>
+      <Checkbox value="three">Checkbox 3</Checkbox>
+    </FlexGroup>
+    <FlexGroup>
+      <Radio name="radio" value="one">
+        Radio 1
+      </Radio>
+      <Radio name="radio" value="two">
+        Radio 2
+      </Radio>
+      <Radio name="radio" value="three">
+        Radio 3
+      </Radio>
+    </FlexGroup>
   </Fragment>
 );
 const FlexGroupExample = ({ heading, groupProps }) => (

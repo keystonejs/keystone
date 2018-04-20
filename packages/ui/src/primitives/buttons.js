@@ -5,7 +5,7 @@ import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
 import { colors } from '../theme';
-import { alpha, darken, lighten } from '../theme/color-utils';
+import { alpha, darken, lighten, mix } from '../theme/color-utils';
 import { buttonAndInputBase } from './forms';
 
 const ButtonElement = props => {
@@ -40,7 +40,7 @@ const linkAppearance = {
 const solidDangerConfig = {
   bg: colors.danger,
   border: darken(colors.danger, 8),
-  text: 'white',
+  text: mix(colors.danger, '#fff', 90),
 };
 const solidAppearance = {
   default: {
@@ -52,12 +52,12 @@ const solidAppearance = {
   primary: {
     bg: colors.primary,
     border: darken(colors.primary, 8),
-    text: 'white',
+    text: mix(colors.primary, '#fff', 90),
   },
   create: {
     bg: colors.create,
     border: darken(colors.create, 8),
-    text: 'white',
+    text: mix(colors.create, '#fff', 90),
   },
   reset: solidDangerConfig,
   delete: solidDangerConfig,
@@ -65,7 +65,7 @@ const solidAppearance = {
   warning: {
     bg: colors.warning,
     border: darken(colors.warning, 8),
-    text: 'white',
+    text: mix(colors.warning, '#fff', 90),
   },
 };
 

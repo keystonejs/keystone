@@ -62,6 +62,7 @@ export const FlexGroup = ({
         justifyContent: justify,
         marginLeft: isContiguous ? null : -gutter,
         marginRight: isContiguous ? null : -gutter,
+        flexWrap: 'nowrap',
       }}
       {...props}
     >

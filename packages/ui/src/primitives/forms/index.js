@@ -1,7 +1,9 @@
+// @flow
 import styled from 'react-emotion';
 
-import { colors, gridSize } from '../theme';
-import { alpha } from '../theme/color-utils';
+import { colors, gridSize } from '../../theme';
+import { alpha } from '../../theme/color-utils';
+export { Checkbox, Radio } from './Controls';
 
 const borderRadius = '0.3em';
 

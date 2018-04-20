@@ -34,15 +34,15 @@ const DotsContainer = styled.div(({ size }: LoadingIndicatorProps) => ({
   verticalAlign: 'middle',
   display: 'inline-flex',
 }));
-type DotProps = { appearance: Appearance, delay?: number, offset?: boolean };
-const Dot = styled.span(({ appearance, delay = 0, offset }: DotProps) => ({
+type DotProps = { appearance: Appearance, delay?: number, isOffset?: boolean };
+const Dot = styled.span(({ appearance, delay = 0, isOffset }: DotProps) => ({
   animation: `${fadeAnim} 1s infinite ${delay}ms`,
   animationTimingFunction: 'ease-in-out',
   backgroundColor: appearanceColor[appearance],
   borderRadius: '1em',
   display: 'inline-block',
   height: '1em',
-  marginLeft: offset ? '1em' : null,
+  marginLeft: isOffset ? '1em' : null,
   verticalAlign: 'top',
   width: '1em',
 }));
@@ -52,8 +52,8 @@ export const LoadingIndicator = ({
 }: LoadingIndicatorProps) => (
   <DotsContainer size={size}>
     <Dot appearance={appearance} />
-    <Dot appearance={appearance} delay={160} offset />
-    <Dot appearance={appearance} delay={320} offset />
+    <Dot appearance={appearance} delay={160} isOffset />
+    <Dot appearance={appearance} delay={320} isOffset />
     <A11yText>Loading</A11yText>
   </DotsContainer>
 );
