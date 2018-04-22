@@ -22,39 +22,40 @@ import StyleGuidePage from './pages/StyleGuide';
 const Keystone = () => (
   <ApolloProvider client={apolloClient}>
     <AdminMetaProvider>
-      {adminMeta => (
-        <BrowserRouter>
+      {adminMeta => {
+        const { adminPath } = adminMeta;
+        return (<BrowserRouter>
           <ScrollToTop>
             <Switch>
               <Route
                 exact
-                path="/admin/style-guide"
+                path={`${adminPath}/style-guide`}
                 component={StyleGuidePage}
               />
               <Route
                 exact
-                path="/admin/signin"
+                path={`${adminPath}/signin`}
                 render={() => <SessionPage {...adminMeta} />}
               />
               <Route
                 exact
-                path="/admin"
+                path={`${adminPath}`}
                 render={() => <HomePage {...adminMeta} />}
               />
               <Route
-                path="/admin/:listKey"
+                path={`${adminPath}/:listKey`}
                 render={({ match: { params: { listKey } } }) => {
                   const list = adminMeta.getListByPath(listKey);
                   return list ? (
                     <Switch>
                       <Route
                         exact
-                        path="/admin/:list"
+                        path={`${adminPath}/:list`}
                         render={() => <ListPage list={list} {...adminMeta} />}
                       />
                       <Route
                         exact
-                        path="/admin/:list/:itemId"
+                        path={`${adminPath}/:list/:itemId`}
                         render={({ match: { params: { itemId } } }) => (
                           <ItemPage
                             list={list}
@@ -74,8 +75,9 @@ const Keystone = () => (
               />
             </Switch>
           </ScrollToTop>
-        </BrowserRouter>
-      )}
+        </BrowserRouter>);
+      }
+    }
     </AdminMetaProvider>
   </ApolloProvider>
 );

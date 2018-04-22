@@ -25,7 +25,8 @@ class ListTableRow extends Component {
 
 export default class ListTable extends Component {
   render() {
-    const { items, fields, list, noResultsMessage } = this.props;
+    const { items, fields, list, noResultsMessage, adminPath } = this.props;
+
     return items.length ? (
       <Table>
         <thead>
@@ -39,7 +40,7 @@ export default class ListTable extends Component {
           {items.map(item => (
             <ListTableRow
               key={item.id}
-              link={`/admin/${list.path}/${item.id}`}
+              link={`${adminPath}/${list.path}/${item.id}`}
               fields={fields}
               item={item}
             />

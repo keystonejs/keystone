@@ -5,12 +5,12 @@ import Nav from '../components/Nav';
 import { Container } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 
-const InvalidRoutePage = () => (
+const InvalidRoutePage = ({ adminPath }) => (
   <Fragment>
     <Nav />
     <Container>
       <Title>404</Title>
-      <Link to="/admin">Go Home</Link>
+      <Link to={adminPath}>Go Home</Link>
     </Container>
   </Fragment>
 );

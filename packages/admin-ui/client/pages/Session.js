@@ -46,6 +46,7 @@ const Fields = styled.div({
 
 class Session extends Component {
   render() {
+    const { adminPath } = this.props;
     return (
       <Container>
         <Box>
@@ -58,7 +59,7 @@ class Session extends Component {
               <FieldLabel>Password</FieldLabel>
               <Input />
             </Fields>
-            <Button appearance="primary" to="/admin">
+            <Button appearance="primary" to={adminPath}>
               Sign In
             </Button>
           </div>
