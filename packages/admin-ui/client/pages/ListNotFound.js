@@ -5,13 +5,13 @@ import Nav from '../components/Nav';
 import { Container } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 
-const ListNotFoundPage = ({ listKey }) => (
+const ListNotFoundPage = ({ listKey, adminPath }) => (
   <Fragment>
     <Nav />
     <Container>
       <Title>Invalid List.</Title>
       <p>The list {listKey} hasn't been defined.</p>
-      <Link to="/admin">Go Home</Link>
+      <Link to={adminPath}>Go Home</Link>
     </Container>
   </Fragment>
 );

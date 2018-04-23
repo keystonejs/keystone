@@ -39,7 +39,7 @@ const ListName = styled('span')`
   font-weight: 500;
 `;
 
-const HomePage = ({ lists, listKeys }) => (
+const HomePage = ({ lists, listKeys, adminPath }) => (
   <Fragment>
     <Nav />
     <Container>
@@ -48,7 +48,7 @@ const HomePage = ({ lists, listKeys }) => (
         {listKeys.map(key => {
           const list = lists[key];
           return (
-            <ListLink key={key} to={`/admin/${list.path}`}>
+            <ListLink key={key} to={`${adminPath}/${list.path}`}>
               <ListName>{list.label}</ListName>
             </ListLink>
           );

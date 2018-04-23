@@ -129,7 +129,7 @@ class ListPage extends Component {
   handleOrderChange = order => this.setState({ order });
 
   render() {
-    const { list } = this.props;
+    const { list, adminPath } = this.props;
     const { displayedFields, order, orderBy, search } = this.state;
 
     const sort = `${order.value === 'DESC' ? '-' : ''}${orderBy.path}`;
@@ -232,6 +232,7 @@ class ListPage extends Component {
                       items={items}
                       list={list}
                       fields={displayedFields}
+                      adminPath={adminPath}
                       noResultsMessage={`No ${list.plural.toLowerCase()} found matching ${search}.`}
                     />
                   ) : (

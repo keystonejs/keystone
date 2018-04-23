@@ -48,12 +48,12 @@ class ItemDetails extends Component {
   };
   saveChanges = () => {};
   render() {
-    const { list } = this.props;
+    const { list, adminPath } = this.props;
     const { item } = this.state;
     return (
       <Fragment>
         <Title>
-          <Link to={`/admin/${list.path}`}>{list.label}</Link>: {item.name}
+          <Link to={`${adminPath}/${list.path}`}>{list.label}</Link>: {item.name}
         </Title>
         <ItemId>ID: {item.id}</ItemId>
         <Form>
@@ -79,17 +79,17 @@ class ItemDetails extends Component {
   }
 }
 
-const ItemNotFound = ({ itemId, list }) => (
+const ItemNotFound = ({ itemId, list, adminPath }) => (
   <Fragment>
     <Title>Item Not Found.</Title>
     <p>The item {itemId} does not exist.</p>
-    <Link to={`/admin/${list.path}`}>Back to {list.label}</Link>
+    <Link to={`${adminPath}/${list.path}`}>Back to {list.label}</Link>
     {' • '}
-    <Link to="/admin">Go Home</Link>
+    <Link to={adminPath}>Go Home</Link>
   </Fragment>
 );
 
-const ItemPage = ({ list, itemId }) => (
+const ItemPage = ({ list, itemId, adminPath }) => (
   <Fragment>
     <Nav />
     <Container>
@@ -107,9 +107,9 @@ const ItemPage = ({ list, itemId }) => (
 
           const item = data[list.itemQueryName];
           return item ? (
-            <ItemDetails list={list} item={item} key={itemId} />
+            <ItemDetails list={list} item={item} key={itemId} adminPath={adminPath} />
           ) : (
-            <ItemNotFound list={list} itemId={itemId} />
+            <ItemNotFound list={list} itemId={itemId} adminPath={adminPath} />
           );
         }}
       </Query>

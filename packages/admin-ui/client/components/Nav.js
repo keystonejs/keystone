@@ -40,25 +40,25 @@ const NavItem = styled(Link)({
 
 class Home extends Component {
   render() {
-    const { lists, listKeys } = this.props;
+    const { lists, listKeys, adminPath } = this.props;
     return (
       <NavBar>
         <Container>
           <FlexProvider>
             <Group>
-              <NavItem to="/admin">Home</NavItem>
+              <NavItem to={adminPath}>Home</NavItem>
               {listKeys.map(key => {
                 const list = lists[key];
                 return (
                   <Fragment key={key}>
                     <Separator />
-                    <NavItem to={`/admin/${list.path}`}>{list.label}</NavItem>
+                    <NavItem to={`${adminPath}/${list.path}`}>{list.label}</NavItem>
                   </Fragment>
                 );
               })}
             </Group>
             <Group>
-              <NavItem to="/admin/signin">Sign Out</NavItem>
+              <NavItem to={`${adminPath}/signin`}>Sign Out</NavItem>
             </Group>
           </FlexProvider>
         </Container>
