@@ -50,13 +50,16 @@ const Keystone = () => (
                       <Route
                         exact
                         path="/admin/:list"
-                        render={() => <ListPage list={list} {...adminMeta} />}
+                        render={() => (
+                          <ListPage key={listKey} list={list} {...adminMeta} />
+                        )}
                       />
                       <Route
                         exact
                         path="/admin/:list/:itemId"
                         render={({ match: { params: { itemId } } }) => (
                           <ItemPage
+                            key={`${listKey}-${itemId}`}
                             list={list}
                             itemId={itemId}
                             {...adminMeta}
