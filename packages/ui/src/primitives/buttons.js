@@ -3,9 +3,9 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
-import tinycolor from 'tinycolor2';
 
 import { colors } from '../theme';
+import { alpha, darken, lighten } from '../theme/color-utils';
 import { buttonAndInputBase } from './forms';
 
 const ButtonElement = props => {
@@ -39,7 +39,7 @@ const linkAppearance = {
 };
 const solidDangerConfig = {
   bg: colors.danger,
-  border: t(colors.danger).darken(8),
+  border: darken(colors.danger, 8),
   text: 'white',
 };
 const solidAppearance = {
@@ -51,12 +51,12 @@ const solidAppearance = {
   },
   primary: {
     bg: colors.primary,
-    border: t(colors.primary).darken(8),
+    border: darken(colors.primary, 8),
     text: 'white',
   },
   create: {
     bg: colors.create,
-    border: t(colors.create).darken(8),
+    border: darken(colors.create, 8),
     text: 'white',
   },
   reset: solidDangerConfig,
@@ -64,7 +64,7 @@ const solidAppearance = {
   danger: solidDangerConfig,
   warning: {
     bg: colors.warning,
-    border: t(colors.warning).darken(8),
+    border: darken(colors.warning, 8),
     text: 'white',
   },
 };
@@ -104,15 +104,6 @@ Button.defaultProps = {
   variant: 'solid',
 };
 
-// maintain immutability
-function t(c) {
-  if (typeof c === 'string') {
-    return tinycolor(c).clone();
-  } else {
-    return c.clone();
-  }
-}
-
 function makeLinkVariant(appearance) {
   const { text, textHover, isSolidOnHover } = linkAppearance[appearance];
 
@@ -129,10 +120,11 @@ function makeLinkVariant(appearance) {
 }
 function makeSolidVariant(appearance) {
   const { bg, border, focusRing, text } = solidAppearance[appearance];
-  const bgTop = t(bg).brighten(8);
-  const bgBottom = t(bg).darken(10);
-  const borderTop = t(border).lighten(8);
-  const borderBottom = t(border).darken(8);
+  const bgTop = lighten(bg, 8);
+  const bgBottom = darken(bg, 8);
+  const borderTop = lighten(border, 8);
+  const borderBottom = darken(border, 12);
+  const activeBg = darken(bg, 12);
   const textShadow =
     appearance === 'default'
       ? '0 1px 0 rgba(255, 255, 255, 0.5)'
@@ -145,25 +137,25 @@ function makeSolidVariant(appearance) {
     fontWeight: 500,
     textShadow,
 
+    ':hover, :focus': {
+      background: `linear-gradient(to bottom, ${lighten(
+        bgTop,
+        6
+      )} 0%, ${lighten(bgBottom, 6)} 100%)`,
+    },
     ':hover': {
-      background: `linear-gradient(to bottom, ${t(bgTop).lighten(3)} 0%, ${t(
-        bgBottom
-      ).lighten(3)} 100%)`,
       boxShadow: '0 1px 0 rgba(0, 0, 0, 0.1)',
     },
-
     ':focus': {
       borderColor: focusRing,
-      boxShadow: `0 0 0 3px ${t(focusRing || bg)
-        .setAlpha(0.2)
-        .toRgbString()}`,
+      boxShadow: `0 0 0 3px ${alpha(focusRing || bg, 0.2)}`,
     },
-
     ':active': {
-      background: t(bgBottom).toString(),
-      borderColor: `${t(border).darken(16)} ${t(border).darken(12)} ${t(
-        border
-      ).darken(8)}`,
+      background: activeBg,
+      borderColor: `${darken(border, 24)} ${darken(border, 16)} ${darken(
+        border,
+        12
+      )}`,
       boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.12)',
     },
   };
