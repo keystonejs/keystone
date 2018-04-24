@@ -44,7 +44,7 @@ export const NavItem = styled(ItemElement)({
     textDecoration: 'underline',
   },
 });
-export const Navbar = ({ children }: Node) => (
+export const Navbar = ({ children }: { children: Node }) => (
   <Wrapper>
     <Container>
       <FlexProvider>{children}</FlexProvider>

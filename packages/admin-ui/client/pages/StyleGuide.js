@@ -11,7 +11,13 @@ import {
 import { colors } from '@keystonejs/ui/src/theme';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Checkbox, Input, Radio } from '@keystonejs/ui/src/primitives/forms';
+import {
+  Checkbox,
+  CheckboxGroup,
+  Input,
+  RadioGroup,
+  Radio,
+} from '@keystonejs/ui/src/primitives/forms';
 import {
   LoadingIndicator,
   LoadingSpinner,
@@ -55,6 +61,7 @@ export default class StyleGuide extends Component<*, State> {
             <FlexGroup>
               {sections.map(s => (
                 <SubnavItem
+                  key={s}
                   isSelected={currentSection === s}
                   onClick={() => this.setState({ currentSection: s })}
                 >
@@ -181,23 +188,28 @@ const FieldGuide = () => (
         <Input placeholder="Max width 500px" />
       </FieldInput>
     </FieldContainer>
-    <h4>Controls</h4>
-    <FlexGroup>
+    <h4>Controls: Horizontal</h4>
+    <CheckboxGroup component={FlexGroup}>
       <Checkbox value="one">Checkbox 1</Checkbox>
       <Checkbox value="two">Checkbox 2</Checkbox>
       <Checkbox value="three">Checkbox 3</Checkbox>
-    </FlexGroup>
-    <FlexGroup>
-      <Radio name="radio" value="one">
-        Radio 1
-      </Radio>
-      <Radio name="radio" value="two">
-        Radio 2
-      </Radio>
-      <Radio name="radio" value="three">
-        Radio 3
-      </Radio>
-    </FlexGroup>
+    </CheckboxGroup>
+    <RadioGroup component={FlexGroup}>
+      <Radio value="one">Radio 1</Radio>
+      <Radio value="two">Radio 2</Radio>
+      <Radio value="three">Radio 3</Radio>
+    </RadioGroup>
+    <h4>Controls: Vertical</h4>
+    <CheckboxGroup component={FlexGroup} isVertical>
+      <Checkbox value="one">Checkbox 1</Checkbox>
+      <Checkbox value="two">Checkbox 2</Checkbox>
+      <Checkbox value="three">Checkbox 3</Checkbox>
+    </CheckboxGroup>
+    <RadioGroup component={FlexGroup} isVertical>
+      <Radio value="one">Radio 1</Radio>
+      <Radio value="two">Radio 2</Radio>
+      <Radio value="three">Radio 3</Radio>
+    </RadioGroup>
   </Fragment>
 );
 const FlexGroupExample = ({ heading, groupProps }) => (

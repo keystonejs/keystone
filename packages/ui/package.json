@@ -13,7 +13,7 @@
     "raf-schd": "^2.1.1",
     "react": "^16.3.1",
     "react-emotion": "^9.1.1",
-    "react-radio-group": "^3.0.3",
+    "react-radios": "^1.1.0",
     "react-router-dom": "^4.2.2"
   },
   "devDependencies": {

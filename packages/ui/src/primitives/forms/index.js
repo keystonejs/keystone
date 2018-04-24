@@ -3,7 +3,7 @@ import styled from 'react-emotion';
 
 import { colors, gridSize } from '../../theme';
 import { alpha } from '../../theme/color-utils';
-export { Checkbox, Radio } from './Controls';
+export { Checkbox, CheckboxGroup, Radio, RadioGroup } from './Controls';
 
 const borderRadius = '0.3em';
 

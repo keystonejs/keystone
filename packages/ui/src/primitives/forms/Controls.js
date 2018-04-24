@@ -1,7 +1,12 @@
 // @flow
-import React, { Component, type ComponentType, type ElementRef } from 'react';
+import React, { Component } from 'react';
 import styled from 'react-emotion';
-import RadioGroup from 'react-radio-group';
+import {
+  CheckboxGroup as ReactCheckboxGroup,
+  Checkbox as ReactCheckbox,
+  RadioGroup as ReactRadioGroup,
+  Radio as ReactRadio,
+} from 'react-radios';
 
 import { colors } from '../../theme';
 
@@ -19,6 +24,7 @@ const HiddenInput = styled.input({
   clip: 'rect(1px, 1px, 1px, 1px)',
   height: 1,
   overflow: 'hidden',
+  margin: 0,
   padding: 0,
   position: 'absolute',
   whiteSpace: 'nowrap',
@@ -39,7 +45,7 @@ type Props = {
   /** Marks this as a required field */
   isRequired?: boolean,
   /** Set the field as selected */
-  isChecked?: boolean,
+  checked?: boolean,
   /** Field name */
   name?: string,
   /** onChange event handler */
@@ -54,38 +60,38 @@ type ControlProps = Props & {
 
 type IconProps = {
   isActive: boolean,
-  isChecked: boolean,
+  checked: boolean,
   isDisabled: boolean,
   isFocused: boolean,
 };
 const Icon = styled.div(
-  ({ isDisabled, isFocused, isChecked, isActive }: IconProps) => {
+  ({ isDisabled, isFocused, checked, isActive }: IconProps) => {
     // background
     let bg = colors.N05;
-    if (isDisabled && isChecked) {
+    if (isDisabled && checked) {
       bg = colors.B.D20;
     } else if (isDisabled) {
       bg = colors.N10;
     } else if (isActive) {
-      bg = isChecked ? colors.B.D10 : colors.N10;
-    } else if (isFocused && !isChecked) {
+      bg = checked ? colors.B.D10 : colors.N10;
+    } else if (isFocused && !checked) {
       bg = 'white';
-    } else if (isChecked) {
+    } else if (checked) {
       bg = colors.B.base;
     }
 
     // fill
     let fill = 'white';
-    if (isDisabled && isChecked) {
+    if (isDisabled && checked) {
       fill = colors.N70;
-    } else if (!isChecked) {
+    } else if (!checked) {
       fill = 'transparent';
     }
 
     // stroke
     let innerStroke = isFocused ? colors.B.L20 : colors.N30;
     let innerStrokeWidth = 1;
-    if (isChecked) {
+    if (checked) {
       innerStroke = isActive ? colors.B.D20 : colors.B.base;
     }
     let outerStroke = 'transparent';
@@ -116,7 +122,7 @@ const Icon = styled.div(
 
 class Control extends Component<ControlProps, State> {
   static defaultProps = {
-    isChecked: false,
+    checked: false,
     isDisabled: false,
   };
 
@@ -167,21 +173,20 @@ class Control extends Component<ControlProps, State> {
   onMouseEnter = () => this.setState({ isHovered: true });
   onMouseUp = () => this.undoActive();
   onMouseDown = () => this.doActive();
-  onChange = event => {
-    this.props.onChange(event.target.checked);
-  };
+
   render() {
     const {
       children,
       isDisabled,
       isRequired,
-      isChecked,
+      checked,
       name,
+      onChange,
       svg,
       type,
       value,
     } = this.props;
-    const iconProps = { ...this.state, isChecked, isDisabled };
+    const iconProps = { ...this.state, checked, isDisabled };
 
     return (
       <Wrapper>
@@ -194,13 +199,13 @@ class Control extends Component<ControlProps, State> {
           onMouseEnter={this.onMouseEnter}
           onMouseLeave={this.onMouseLeave}
         >
-          <input
-            // checked={isChecked}
+          <HiddenInput
+            checked={checked}
             disabled={isDisabled}
             innerRef={this.getRef}
             name={name}
             onBlur={this.onBlur}
-            onChange={this.onChange}
+            onChange={onChange}
             onFocus={this.onFocus}
             required={isRequired}
             type={type}
@@ -228,66 +233,8 @@ const Svg = ({ html, ...props }) => (
   />
 );
 
-// ==============================
-// State Manager
-// ==============================
-
-type ManagerProps = { isChecked?: boolean, defaultIsChecked: boolean };
-type ManagerState = { isChecked: boolean };
-
-const manageState = (ControlComponent: ComponentType<*>) =>
-  class StateManager extends Component<ManagerProps, ManagerState> {
-    static defaultProps = {
-      defaultIsChecked: false,
-    };
-
-    control: ElementRef<*>;
-
-    state = {
-      isChecked:
-        this.props.isChecked !== undefined
-          ? this.props.isChecked
-          : this.props.defaultIsChecked,
-    };
-    focus() {
-      this.control.focus();
-    }
-    blur() {
-      this.control.blur();
-    }
-    getProp(key: string) {
-      return this.props[key] !== undefined ? this.props[key] : this.state[key];
-    }
-    callProp(name: string, ...args: any) {
-      if (typeof this.props[name] === 'function') {
-        return this.props[name](...args);
-      }
-    }
-    onChange = (isChecked: any) => {
-      this.callProp('onChange', isChecked);
-      this.setState({ isChecked });
-    };
-    getRef = (ref: ElementRef<*>) => {
-      this.control = ref;
-    };
-    render() {
-      if (this.props.type === 'radio') {
-        console.log('manager', this.state.isChecked);
-      }
-      return (
-        <ControlComponent
-          {...this.props}
-          ref={this.getRef}
-          onChange={this.onChange}
-          isChecked={this.getProp('isChecked')}
-        />
-      );
-    }
-  };
-
-const ManagedControl = manageState(Control);
-export const Checkbox = (props: Props) => (
-  <ManagedControl
+export const CheckboxControl = (props: Props) => (
+  <Control
     svg={`<g fillRule="evenodd">
       <rect class="outer-stroke" fill="transparent" x="6" y="6" width="12" height="12" rx="2" />
       <rect class="inner-stroke" fill="currentColor" x="6" y="6" width="12" height="12" rx="2" />
@@ -300,17 +247,24 @@ export const Checkbox = (props: Props) => (
     {...props}
   />
 );
-export const Radio = (props: Props, context) => {
-  console.log('Radio', context);
-  return (
-    <ManagedControl
-      svg={`<g fillRule="evenodd">
-      <circle class="outer-stroke" fill="transparent" cx="12" cy="12" r="7" />
-      <circle class="inner-stroke" fill="currentColor" cx="12" cy="12" r="7" />
-      <circle fill="inherit" cx="12" cy="12" r="3" />
-    </g>`}
-      type="radio"
-      {...props}
-    />
-  );
-};
+export const Checkbox = (props: Props) => (
+  <ReactCheckbox component={CheckboxControl} {...props} />
+);
+export const CheckboxGroup = (props: Props) => (
+  <ReactCheckboxGroup {...props} />
+);
+const RadioControl = (props: Props) => (
+  <Control
+    svg={`<g fillRule="evenodd">
+    <circle class="outer-stroke" fill="transparent" cx="12" cy="12" r="7" />
+    <circle class="inner-stroke" fill="currentColor" cx="12" cy="12" r="7" />
+    <circle fill="inherit" cx="12" cy="12" r="2" />
+  </g>`}
+    type="radio"
+    {...props}
+  />
+);
+export const Radio = (props: Props) => (
+  <ReactRadio component={RadioControl} {...props} />
+);
+export const RadioGroup = (props: Props) => <ReactRadioGroup {...props} />;
