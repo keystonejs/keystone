@@ -27,6 +27,7 @@ import {
   FieldLabel,
   FieldInput,
 } from '@keystonejs/ui/src/primitives/fields';
+import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 
 const SubNav = styled.div({
   backgroundColor: colors.N05,
@@ -78,6 +79,7 @@ export default class StyleGuide extends Component<*, State> {
               <PaletteGuide />
             ) : (
               <Fragment>
+                <ModalGuide />
                 <ButtonGuide />
                 <FieldGuide />
                 <LayoutGuide />
@@ -91,53 +93,6 @@ export default class StyleGuide extends Component<*, State> {
     );
   }
 }
-const Swatch = ({ color, name, prefix }) => (
-  <div
-    style={{ backgroundColor: color }}
-    css={{
-      borderRadius: 2,
-      boxSizing: 'border-box',
-      color: 'white',
-      textShadow: '1px 1px 1px rgba(0,0,0,0.1)',
-      fontWeight: 500,
-      paddingBottom: '100%',
-      position: 'relative',
-    }}
-  >
-    <code css={{ position: 'absolute', left: 8, top: 8 }}>
-      {prefix}.{name}
-    </code>
-  </div>
-);
-const Hue = ({ heading, group }) => {
-  const groupList = Object.keys(group).reverse();
-  return (
-    <Fragment>
-      <h4>{heading}</h4>
-      <Grid>
-        {groupList.map(k => {
-          const clr = group[k];
-          return (
-            <Cell key={k}>
-              <Swatch prefix={heading.slice(0, 1)} color={clr} name={k} />
-            </Cell>
-          );
-        })}
-      </Grid>
-    </Fragment>
-  );
-};
-const PaletteGuide = () => {
-  return (
-    <Fragment>
-      <h2>Palette</h2>
-      <Hue heading="Reds" group={colors.R} />
-      <Hue heading="Greens" group={colors.G} />
-      <Hue heading="Blues" group={colors.B} />
-      <Hue heading="Yellows" group={colors.Y} />
-    </Fragment>
-  );
-};
 
 const ButtonGuide = () => (
   <Fragment>
@@ -175,6 +130,61 @@ const ButtonGuide = () => (
     </FlexGroup>
   </Fragment>
 );
+
+class ModalGuide extends Component {
+  state = { dialogIsOpen: false };
+  toggleDialog = () => {
+    this.setState(state => ({ dialogIsOpen: !state.dialogIsOpen }));
+  };
+  render() {
+    const { dialogIsOpen } = this.state;
+    return (
+      <Fragment>
+        <h2>Modals</h2>
+        <h4>Dialog</h4>
+        <Button onClick={this.toggleDialog}>Open Dialog</Button>
+        {dialogIsOpen ? (
+          <Dialog onClose={this.toggleDialog} heading="Dialog">
+            <p>
+              Cupcake ipsum dolor. Sit amet gummi bears toffee. Dessert danish
+              fruitcake cupcake powder pie soufflé macaroon cake.
+            </p>
+            <p>
+              Icing cheesecake topping. Jelly jujubes lemon drops tart jujubes.
+              Biscuit jujubes jelly-o chupa chups tiramisu. Fruitcake brownie
+              donut.
+            </p>
+            <p>
+              Soufflé chocolate bar tart sweet. Gummies sweet roll danish sesame
+              snaps danish liquorice apple pie pie. Apple pie donut pudding
+              dragée gummies soufflé powder.
+            </p>
+            <p>
+              Chocolate bear claw dragée fruitcake liquorice. Caramels wafer
+              fruitcake brownie caramels jelly. Tiramisu jelly-o jelly pastry
+              bear claw gummies.
+            </p>
+            <p>
+              Liquorice jelly-o icing oat cake oat cake halvah tootsie roll.
+              Fruitcake caramels danish tart gingerbread candy macaroon
+              gingerbread sweet. Sugar plum fruitcake wafer.
+            </p>
+            <Button appearance="primary" onClick={this.toggleDialog}>
+              Do Thing
+            </Button>
+            <Button
+              appearance="reset"
+              variant="link"
+              onClick={this.toggleDialog}
+            >
+              Cancel
+            </Button>
+          </Dialog>
+        ) : null}
+      </Fragment>
+    );
+  }
+}
 
 const FieldGuide = () => (
   <Fragment>
@@ -356,3 +366,50 @@ class ProgressGuide extends Component<*, State> {
     );
   }
 }
+const Swatch = ({ color, name, prefix }) => (
+  <div
+    style={{ backgroundColor: color }}
+    css={{
+      borderRadius: 2,
+      boxSizing: 'border-box',
+      color: 'white',
+      textShadow: '1px 1px 1px rgba(0,0,0,0.1)',
+      fontWeight: 500,
+      paddingBottom: '100%',
+      position: 'relative',
+    }}
+  >
+    <code css={{ position: 'absolute', left: 8, top: 8 }}>
+      {prefix}.{name}
+    </code>
+  </div>
+);
+const Hue = ({ heading, group }) => {
+  const groupList = Object.keys(group).reverse();
+  return (
+    <Fragment>
+      <h4>{heading}</h4>
+      <Grid>
+        {groupList.map(k => {
+          const clr = group[k];
+          return (
+            <Cell key={k}>
+              <Swatch prefix={heading.slice(0, 1)} color={clr} name={k} />
+            </Cell>
+          );
+        })}
+      </Grid>
+    </Fragment>
+  );
+};
+const PaletteGuide = () => {
+  return (
+    <Fragment>
+      <h2>Palette</h2>
+      <Hue heading="Reds" group={colors.R} />
+      <Hue heading="Greens" group={colors.G} />
+      <Hue heading="Blues" group={colors.B} />
+      <Hue heading="Yellows" group={colors.Y} />
+    </Fragment>
+  );
+};
