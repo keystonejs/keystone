@@ -27,12 +27,29 @@ export const Container = styled.div({
 // Fluid Group
 // ==============================
 
+function collapseBorderRadii(index, length) {
+  let style;
+
+  const isFirst = index === 0;
+  const isLast = index === length - 1;
+
+  if (isLast && !isFirst) {
+    style = { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 };
+  } else if (isFirst && !isLast) {
+    style = { borderTopRightRadius: 0, borderBottomRightRadius: 0 };
+  } else if (!isFirst && !isLast) {
+    style = { borderRadius: 0 };
+  }
+  return style;
+}
+
 type FlexGroupProps = {
   align: 'stretch' | 'center' | 'flex-start' | 'flex-start',
   children: Node,
   growIndexes: Array<number>,
   isContiguous: boolean,
   isInline: boolean,
+  isVertical: boolean,
   justify:
     | 'space-between'
     | 'space-around'
@@ -47,6 +64,7 @@ export const FlexGroup = ({
   growIndexes = [],
   isContiguous,
   isInline,
+  isVertical,
   justify = 'flex-start',
   spacing = gridSize,
   ...props
@@ -57,35 +75,31 @@ export const FlexGroup = ({
   return (
     <div
       css={{
-        display: isInline ? 'inline-flex' : 'flex',
         alignItems: align,
-        justifyContent: justify,
-        marginLeft: isContiguous ? null : -gutter,
-        marginRight: isContiguous ? null : -gutter,
+        display: isInline ? 'inline-flex' : 'flex',
+        flexDirection: isVertical ? 'column' : 'row',
         flexWrap: 'nowrap',
+        justifyContent: justify,
+        marginBottom: isVertical ? -gutter : null,
+        marginLeft: isContiguous || isVertical ? null : -gutter,
+        marginRight: isContiguous || isVertical ? null : -gutter,
+        marginTop: isVertical ? -gutter : null,
       }}
       {...props}
     >
       {Children.map(children, (child, idx) => {
-        let style;
-
-        const isFirst = idx === 0;
-        const isLast = idx === length - 1;
-
-        if (isLast && !isFirst) {
-          style = { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 };
-        } else if (isFirst && !isLast) {
-          style = { borderTopRightRadius: 0, borderBottomRightRadius: 0 };
-        } else if (!isFirst && !isLast) {
-          style = { borderRadius: 0 };
-        }
+        const style = isContiguous ? collapseBorderRadii(idx, length) : null;
+        const leftOffset = isContiguous && idx ? -1 : gutter;
+        const rightOffset = isContiguous ? null : gutter;
 
         return (
           <div
             css={{
               flex: growIndexes.includes(idx) ? 1 : null,
-              marginLeft: isContiguous && idx ? -1 : gutter,
-              marginRight: isContiguous ? null : gutter,
+              marginLeft: isVertical ? null : leftOffset,
+              marginRight: isVertical ? null : rightOffset,
+              marginTop: isVertical ? gutter : null,
+              marginBottom: isVertical ? gutter : null,
 
               // bring the focus styles over the top of siblings
               '&:focus-within': {
