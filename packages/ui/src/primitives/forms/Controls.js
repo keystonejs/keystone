@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, type Node } from 'react';
 import styled from 'react-emotion';
 import {
   CheckboxGroup as ReactCheckboxGroup,

@@ -129,7 +129,7 @@ function formatAreas(areas) {
 type GridProps = {
   alignContent: string,
   areas: Array<string>,
-  columns: string | number,
+  columns: number,
   flow: string,
   gap: number,
   justifyContent: string,
