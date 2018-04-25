@@ -3,7 +3,7 @@ import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
-import { Container, FluidGroup } from '@keystonejs/ui/src/primitives/layout';
+import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 
 const ListLink = styled(Link)`
@@ -44,7 +44,7 @@ const HomePage = ({ lists, listKeys, adminPath }) => (
     <Nav />
     <Container>
       <Title>Home</Title>
-      <FluidGroup>
+      <FlexGroup>
         {listKeys.map(key => {
           const list = lists[key];
           return (
@@ -53,7 +53,7 @@ const HomePage = ({ lists, listKeys, adminPath }) => (
             </ListLink>
           );
         })}
-      </FluidGroup>
+      </FlexGroup>
     </Container>
   </Fragment>
 );

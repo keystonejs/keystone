@@ -6,7 +6,7 @@ import { Query } from 'react-apollo';
 
 import Nav from '../components/Nav';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
-import { Container, FluidGroup } from '@keystonejs/ui/src/primitives/layout';
+import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 
 import ListTable from '../components/ListTable';
@@ -180,7 +180,7 @@ class ListPage extends Component {
                     value={search}
                   />
                   <div css={{ margin: '12px 0 24px' }}>
-                    <FluidGroup>
+                    <FlexGroup>
                       <div>
                         <Label>Display:</Label>
                         <FieldsSelect
@@ -225,7 +225,7 @@ class ListPage extends Component {
                           value={order}
                         />
                       </div>
-                    </FluidGroup>
+                    </FlexGroup>
                   </div>
                   {items ? (
                     <ListTable
