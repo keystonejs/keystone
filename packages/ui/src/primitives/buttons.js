@@ -80,7 +80,6 @@ export const Button = styled(ButtonElement)(
       ...buttonAndInputBase,
       cursor: isDisabled ? 'default' : 'pointer',
       display: 'inline-block',
-      lineHeight: '1.2em',
       textAlign: 'center',
       touchAction: 'manipulation', // Disables "double-tap to zoom" for mobile; removes delay on click events
       userSelect: 'none',
