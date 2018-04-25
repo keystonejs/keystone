@@ -51,12 +51,12 @@ const solidAppearance = {
   },
   primary: {
     bg: colors.primary,
-    border: darken(colors.primary, 8),
+    border: darken(colors.primary, 16),
     text: 'white',
   },
   create: {
     bg: colors.create,
-    border: darken(colors.create, 8),
+    border: darken(colors.create, 16),
     text: 'white',
   },
   reset: solidDangerConfig,
@@ -64,7 +64,7 @@ const solidAppearance = {
   danger: solidDangerConfig,
   warning: {
     bg: colors.warning,
-    border: darken(colors.warning, 8),
+    border: darken(colors.warning, 12),
     text: 'white',
   },
 };
@@ -119,10 +119,10 @@ function makeLinkVariant(appearance) {
 }
 function makeSolidVariant(appearance) {
   const { bg, border, focusRing, text } = solidAppearance[appearance];
-  const bgTop = lighten(bg, 8);
-  const bgBottom = darken(bg, 8);
+  const bgTop = lighten(bg, 10);
+  const bgBottom = darken(bg, 10);
   const borderTop = lighten(border, 8);
-  const borderBottom = darken(border, 12);
+  const borderBottom = darken(border, 16);
   const activeBg = darken(bg, 12);
   const textShadow =
     appearance === 'default'
@@ -137,13 +137,17 @@ function makeSolidVariant(appearance) {
     textShadow,
 
     ':hover, :focus': {
+      borderColor: `${darken(borderTop, 8)} ${darken(border, 8)} ${darken(
+        borderBottom,
+        8
+      )}`,
       background: `linear-gradient(to bottom, ${lighten(
         bgTop,
-        6
-      )} 0%, ${lighten(bgBottom, 6)} 100%)`,
+        10
+      )} 0%, ${lighten(bgBottom, 8)} 100%)`,
     },
     ':hover': {
-      boxShadow: '0 1px 0 rgba(0, 0, 0, 0.1)',
+      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
     },
     ':focus': {
       borderColor: focusRing,
