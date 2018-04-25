@@ -1,5 +1,7 @@
 /* global KEYSTONE_ADMIN_META */
 
+import React from 'react';
+
 const sourceMeta = KEYSTONE_ADMIN_META;
 const { lists } = sourceMeta;
 const listKeys = Object.keys(lists);
@@ -20,6 +22,18 @@ const adminMeta = {
   },
 };
 
-const AdminMetaProvider = ({ children }) => children(adminMeta);
+// Provider
 
-export default AdminMetaProvider;
+export default function AdminMetaProvider({ children }) {
+  return children(adminMeta);
+}
+
+// HOC Wrapper
+
+function enhanceDisplayName(c) {
+  c.displayName = `withAdminMeta(${c.name || c.displayName})`;
+}
+export const withAdminMeta = Component => props => {
+  enhanceDisplayName(Component);
+  return <Component {...props} adminMeta={adminMeta} />;
+};
