@@ -261,7 +261,10 @@ const FieldGuide = () => (
   <Fragment>
     <h2>Forms</h2>
     <h4>Input</h4>
-    <Input placeholder="Input field" />
+    <FlexGroup isVertical>
+      <Input placeholder="Input field" />
+      <Input isMultiline placeholder="Textarea field" />
+    </FlexGroup>
     <h4>Fields</h4>
     <FieldContainer>
       <FieldLabel>Label</FieldLabel>
