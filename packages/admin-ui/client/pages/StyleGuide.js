@@ -143,44 +143,51 @@ class ModalGuide extends Component {
         <h2>Modals</h2>
         <h4>Dialog</h4>
         <Button onClick={this.toggleDialog}>Open Dialog</Button>
-        {dialogIsOpen ? (
-          <Dialog onClose={this.toggleDialog} heading="Dialog">
-            <p>
-              Cupcake ipsum dolor. Sit amet gummi bears toffee. Dessert danish
-              fruitcake cupcake powder pie soufflé macaroon cake.
-            </p>
-            <p>
-              Icing cheesecake topping. Jelly jujubes lemon drops tart jujubes.
-              Biscuit jujubes jelly-o chupa chups tiramisu. Fruitcake brownie
-              donut.
-            </p>
-            <p>
-              Soufflé chocolate bar tart sweet. Gummies sweet roll danish sesame
-              snaps danish liquorice apple pie pie. Apple pie donut pudding
-              dragée gummies soufflé powder.
-            </p>
-            <p>
-              Chocolate bear claw dragée fruitcake liquorice. Caramels wafer
-              fruitcake brownie caramels jelly. Tiramisu jelly-o jelly pastry
-              bear claw gummies.
-            </p>
-            <p>
-              Liquorice jelly-o icing oat cake oat cake halvah tootsie roll.
-              Fruitcake caramels danish tart gingerbread candy macaroon
-              gingerbread sweet. Sugar plum fruitcake wafer.
-            </p>
-            <Button appearance="primary" onClick={this.toggleDialog}>
-              Do Thing
-            </Button>
-            <Button
-              appearance="reset"
-              variant="link"
-              onClick={this.toggleDialog}
-            >
-              Cancel
-            </Button>
-          </Dialog>
-        ) : null}
+
+        <Dialog
+          isOpen={dialogIsOpen}
+          onClose={this.toggleDialog}
+          heading="Dialog"
+          footer={
+            <Fragment>
+              <Button appearance="primary" onClick={this.toggleDialog}>
+                Do Thing
+              </Button>
+              <Button
+                appearance="reset"
+                variant="link"
+                onClick={this.toggleDialog}
+              >
+                Cancel
+              </Button>
+            </Fragment>
+          }
+        >
+          <p>
+            Cupcake ipsum dolor. Sit amet gummi bears toffee. Dessert danish
+            fruitcake cupcake powder pie soufflé macaroon cake.
+          </p>
+          <p>
+            Icing cheesecake topping. Jelly jujubes lemon drops tart jujubes.
+            Biscuit jujubes jelly-o chupa chups tiramisu. Fruitcake brownie
+            donut.
+          </p>
+          <p>
+            Soufflé chocolate bar tart sweet. Gummies sweet roll danish sesame
+            snaps danish liquorice apple pie pie. Apple pie donut pudding dragée
+            gummies soufflé powder.
+          </p>
+          <p>
+            Chocolate bear claw dragée fruitcake liquorice. Caramels wafer
+            fruitcake brownie caramels jelly. Tiramisu jelly-o jelly pastry bear
+            claw gummies.
+          </p>
+          <p>
+            Liquorice jelly-o icing oat cake oat cake halvah tootsie roll.
+            Fruitcake caramels danish tart gingerbread candy macaroon
+            gingerbread sweet. Sugar plum fruitcake wafer.
+          </p>
+        </Dialog>
       </Fragment>
     );
   }
