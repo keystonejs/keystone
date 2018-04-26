@@ -76,7 +76,6 @@ export default class FocusTrap extends Component<Props> {
     const defaultOptions = {
       escapeDeactivates: false,
       fallbackFocus: this.boundary,
-      returnFocusOnDeactivate: false,
     };
 
     const createOptions = { ...defaultOptions, ...options };
