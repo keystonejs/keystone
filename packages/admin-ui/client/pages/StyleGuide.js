@@ -10,6 +10,7 @@ import {
 } from '@keystonejs/ui/src/primitives/layout';
 import { colors } from '@keystonejs/ui/src/theme';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
+import { Badge } from '@keystonejs/ui/src/primitives/badge';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import {
   Checkbox,
@@ -79,8 +80,9 @@ export default class StyleGuide extends Component<*, State> {
               <PaletteGuide />
             ) : (
               <Fragment>
-                <ModalGuide />
+                <BadgeGuide />
                 <ButtonGuide />
+                <ModalGuide />
                 <FieldGuide />
                 <LayoutGuide />
                 <ProgressGuide />
@@ -93,6 +95,26 @@ export default class StyleGuide extends Component<*, State> {
     );
   }
 }
+
+const BadgeGuide = () => (
+  <Fragment>
+    <h2>Badges</h2>
+    <h4>Variant: Subtle</h4>
+    <FlexGroup>
+      <Badge value={55} />
+      <Badge value={55} appearance="primary" />
+      <Badge value={55} appearance="important" />
+      <Badge value={55} appearance="created" />
+    </FlexGroup>
+    <h4>Variant: Bold</h4>
+    <FlexGroup>
+      <Badge value={55} variant="bold" />
+      <Badge value={55} appearance="primary" variant="bold" />
+      <Badge value={55} appearance="important" variant="bold" />
+      <Badge value={55} appearance="created" variant="bold" />
+    </FlexGroup>
+  </Fragment>
+);
 
 const ButtonGuide = () => (
   <Fragment>
