@@ -34,6 +34,7 @@ const Item = styled(ItemElement)({
     backgroundColor: colors.B.L90,
     color: colors.primary,
     outline: 0,
+    textDecoration: 'none',
   },
 });
 const Menu = styled.div({
@@ -68,13 +69,14 @@ function focus(el) {
 }
 
 export default class Dropdown extends Component<Props, State> {
-  state = { isOpen: this.props.defaultIsOpen };
-  target: HTMLElement;
+  lastHover: HTMLElement;
   menu: HTMLElement;
-  tabbable: Array<HTMLElement> = [];
+  target: HTMLElement;
+  state = { isOpen: this.props.defaultIsOpen };
   static defaultProps = {
     selectClosesMenu: true,
   };
+
   componentDidMount() {
     document.addEventListener('click', this.handleClick);
     document.addEventListener('keydown', this.handleKeyDown, false);
@@ -141,6 +143,18 @@ export default class Dropdown extends Component<Props, State> {
     else if (isPageUp) focus(firstItem);
     else if (isPageDown) focus(lastItem);
   };
+  handleMouseOver = ({ target }: MouseEvent) => {
+    if (target instanceof HTMLElement) {
+      this.lastHover = target;
+    }
+
+    if (document.activeElement) {
+      document.activeElement.blur();
+    }
+  };
+  handleMenuLeave = () => {
+    this.lastHover.focus();
+  };
 
   getTarget = (ref: HTMLElement) => {
     this.target = ref;
@@ -157,9 +171,14 @@ export default class Dropdown extends Component<Props, State> {
       <Fragment>
         <NodeResolver innerRef={this.getTarget}>{children}</NodeResolver>
         {isOpen ? (
-          <Menu innerRef={this.getMenu}>
+          <Menu innerRef={this.getMenu} onMouseLeave={this.handleMenuLeave}>
             {items.map(({ content, ...rest }, idx) => (
-              <Item {...rest} onClick={this.handleItemClick(rest)} key={idx}>
+              <Item
+                {...rest}
+                onClick={this.handleItemClick(rest)}
+                onMouseOver={this.handleMouseOver}
+                key={idx}
+              >
                 {content}
               </Item>
             ))}
