@@ -162,7 +162,7 @@ const BadgeGuide = () => (
 const ButtonGuide = () => (
   <Fragment>
     <h2>Buttons</h2>
-    <h4>Variant: Solid</h4>
+    <h4>Variant: Bold</h4>
     <FlexGroup>
       <FlexGroup isInline>
         <Button>Default</Button>
@@ -177,20 +177,19 @@ const ButtonGuide = () => (
         <Button>Third</Button>
       </FlexGroup>
     </FlexGroup>
-    <h4>Variant: Link</h4>
+    <h4>Variant: Subtle</h4>
     <FlexGroup isInline>
-      <Button variant="link">Default</Button>
-      <Button variant="link" appearance="text">
-        Text
+      <Button variant="subtle" appearance="default">
+        Default
       </Button>
-      <Button variant="link" appearance="subtle">
-        Subtle
+      <Button variant="subtle" appearance="primary">
+        Primary
       </Button>
-      <Button variant="link" appearance="reset">
-        Reset
+      <Button variant="subtle" appearance="warning">
+        Warning
       </Button>
-      <Button variant="link" appearance="delete">
-        Delete
+      <Button variant="subtle" appearance="danger">
+        Danger
       </Button>
     </FlexGroup>
   </Fragment>
@@ -219,8 +218,8 @@ class ModalGuide extends Component {
                 Do Thing
               </Button>
               <Button
-                appearance="reset"
-                variant="link"
+                appearance="warning"
+                variant="subtle"
                 onClick={this.toggleDialog}
               >
                 Cancel
