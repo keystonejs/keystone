@@ -138,10 +138,15 @@ export default class Dropdown extends Component<Props, State> {
 
     if (preventScroll) event.preventDefault();
 
+    // typical item traversal
     if (isArrowUp) focus(target.previousSibling);
-    else if (isArrowDown) focus(target.nextSibling);
-    else if (isPageUp) focus(firstItem);
-    else if (isPageDown) focus(lastItem);
+    if (isArrowDown) focus(target.nextSibling);
+    if (isPageUp) focus(firstItem);
+    if (isPageDown) focus(lastItem);
+
+    // support looping
+    if (target === firstItem && isArrowUp) focus(lastItem);
+    if (target === lastItem && isArrowDown) focus(firstItem);
   };
   handleMouseOver = ({ target }: MouseEvent) => {
     if (target instanceof HTMLElement) {
