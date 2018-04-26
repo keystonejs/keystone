@@ -10,6 +10,7 @@ export const fontFamily = `
   "Segoe UI Emoji",
   "Segoe UI Symbol"
 `;
+export const borderRadius = 4;
 export const gridSize = 8;
 export const fontSize = 16;
 

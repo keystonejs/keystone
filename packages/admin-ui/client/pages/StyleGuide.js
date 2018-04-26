@@ -10,6 +10,7 @@ import {
 } from '@keystonejs/ui/src/primitives/layout';
 import { colors } from '@keystonejs/ui/src/theme';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
+import { Alert } from '@keystonejs/ui/src/primitives/alert';
 import { Badge } from '@keystonejs/ui/src/primitives/badge';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import {
@@ -80,6 +81,7 @@ export default class StyleGuide extends Component<*, State> {
               <PaletteGuide />
             ) : (
               <Fragment>
+                <AlertGuide />
                 <BadgeGuide />
                 <ButtonGuide />
                 <ModalGuide />
@@ -95,6 +97,47 @@ export default class StyleGuide extends Component<*, State> {
     );
   }
 }
+
+const AlertGuide = () => (
+  <Fragment>
+    <h2>Alerts</h2>
+    <h4>Variant: Subtle</h4>
+    <FlexGroup isVertical>
+      <Alert appearance="info">
+        <code>info</code>: Amet soufflé chocolate bar sugar plum topping sweet
+        jelly jujubes.
+      </Alert>
+      <Alert appearance="danger">
+        <code>danger</code>: Dessert gummi bears pudding cheesecake oat cake
+        carrot cake pastry jelly beans jelly-o.
+      </Alert>
+      <Alert appearance="warning">
+        <code>warning</code>: Croissant candy biscuit bear claw cotton candy
+        sugar plum.
+      </Alert>
+      <Alert appearance="success">
+        <code>success</code>: Bear claw chocolate cheesecake candy canes
+        soufflé.
+      </Alert>
+    </FlexGroup>
+    <h4>Variant: Bold</h4>
+    <FlexGroup isVertical>
+      <Alert appearance="info" variant="bold">
+        <code>info</code>: Jujubes gummies candy liquorice biscuit soufflé.
+      </Alert>
+      <Alert appearance="danger" variant="bold">
+        <code>danger</code>: Tiramisu cupcake brownie soufflé toffee cake sweet
+        roll candy soufflé.
+      </Alert>
+      <Alert appearance="warning" variant="bold">
+        <code>warning</code>: Bear claw dessert cake jelly beans cake.
+      </Alert>
+      <Alert appearance="success" variant="bold">
+        <code>success</code>: Toffee cheesecake chocolate cake macaroon soufflé.
+      </Alert>
+    </FlexGroup>
+  </Fragment>
+);
 
 const BadgeGuide = () => (
   <Fragment>

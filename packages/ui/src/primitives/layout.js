@@ -57,6 +57,7 @@ type FlexGroupProps = {
     | 'flex-end'
     | 'flex-start',
   spacing: number,
+  stretch: boolean,
 };
 export const FlexGroup = ({
   align = 'stretch',
@@ -67,6 +68,7 @@ export const FlexGroup = ({
   isVertical,
   justify = 'flex-start',
   spacing = gridSize,
+  stretch,
   ...props
 }: FlexGroupProps) => {
   const gutter = spacing / 2;
@@ -95,7 +97,7 @@ export const FlexGroup = ({
         return (
           <div
             css={{
-              flex: growIndexes.includes(idx) ? 1 : null,
+              flex: stretch || growIndexes.includes(idx) ? 1 : null,
               marginLeft: isVertical ? null : leftOffset,
               marginRight: isVertical ? null : rightOffset,
               marginTop: isVertical ? gutter : null,

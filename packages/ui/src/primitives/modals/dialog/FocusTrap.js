@@ -73,15 +73,12 @@ export default class FocusTrap extends Component<Props> {
   componentDidMount() {
     const { active, options, paused } = this.props;
 
-    // We need to hijack the returnFocusOnDeactivate option,
-    // because React can move focus into the element before we arrived at
-    // this lifecycle hook (e.g. with autoFocus inputs). So the component
-    // captures the previouslyFocusedElement in componentWillMount,
-    // then (optionally) returns focus to it in componentWillUnmount.
     const defaultOptions = {
       escapeDeactivates: false,
       fallbackFocus: this.boundary,
+      returnFocusOnDeactivate: false,
     };
+
     const createOptions = { ...defaultOptions, ...options };
 
     this.focusTrap = this.createFocusTrap(this.boundary, createOptions);
@@ -106,8 +103,9 @@ export default class FocusTrap extends Component<Props> {
 
   componentWillUnmount() {
     this.focusTrap.deactivate();
+
     if (
-      this.props.options.returnFocusOnDeactivate !== false &&
+      this.props.options.returnFocusOnDeactivate &&
       this.previouslyFocusedElement &&
       this.previouslyFocusedElement.focus
     ) {
