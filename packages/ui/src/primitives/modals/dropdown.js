@@ -120,13 +120,21 @@ export default class Dropdown extends Component<Props, State> {
     const { key, target } = event;
     const { isOpen } = this.state;
 
+    // bail when closed
     if (!isOpen || !(target instanceof HTMLElement)) return;
 
+    // bail when escape
     if (key === 'Escape') {
       this.close({ returnFocus: true });
       return;
     }
 
+    // bail on unused keys
+    if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown'].indexOf(key) === -1) {
+      return;
+    }
+
+    // prep shorthand key/node helpers
     const isArrowUp = key === 'ArrowUp';
     const isArrowDown = key === 'ArrowDown';
     const isPageUp = key === 'PageUp';
@@ -136,6 +144,7 @@ export default class Dropdown extends Component<Props, State> {
     const lastItem = this.menu.lastChild;
     const preventScroll = isArrowUp || isArrowDown || isPageUp || isPageDown;
 
+    // kill scroll that occurs on arrow/page key press
     if (preventScroll) event.preventDefault();
 
     // typical item traversal
