@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import styled from 'react-emotion';
 import ScrollLock from 'react-scrolllock';
 
-import FocusTrap, { type FocusTarget } from './FocusTrap';
+import FocusTrap, { type FocusTarget } from '../FocusTrap';
 import { Fade, Slide } from './transitions';
 import { colors } from '../../../theme';
 import { alpha } from '../../../theme/color-utils';

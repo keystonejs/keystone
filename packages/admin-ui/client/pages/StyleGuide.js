@@ -29,7 +29,7 @@ import {
   FieldLabel,
   FieldInput,
 } from '@keystonejs/ui/src/primitives/fields';
-import { Dialog } from '@keystonejs/ui/src/primitives/modals';
+import { Dialog, Dropdown } from '@keystonejs/ui/src/primitives/modals';
 
 const SubNav = styled.div({
   backgroundColor: colors.N05,
@@ -84,6 +84,7 @@ export default class StyleGuide extends Component<*, State> {
                 <AlertGuide />
                 <BadgeGuide />
                 <ButtonGuide />
+                <DropdownGuide />
                 <ModalGuide />
                 <FieldGuide />
                 <LayoutGuide />
@@ -156,6 +157,25 @@ const BadgeGuide = () => (
       <Badge value={55} appearance="important" variant="bold" />
       <Badge value={55} appearance="created" variant="bold" />
     </FlexGroup>
+  </Fragment>
+);
+
+const DropdownGuide = () => (
+  <Fragment>
+    <h2>Dropdowns</h2>
+    <Dropdown
+      // selectClosesMenu={false}
+      items={[
+        { to: '/admin', content: 'Home' },
+        { content: 'Macaroon', onClick: console.log },
+        { content: 'Cupcake', onClick: console.log },
+        { content: 'Liquorice', onClick: console.log },
+        { content: 'Cookie', onClick: console.log },
+        { content: 'Cake', onClick: console.log },
+      ]}
+    >
+      <Button>Show menu</Button>
+    </Dropdown>
   </Fragment>
 );
 
