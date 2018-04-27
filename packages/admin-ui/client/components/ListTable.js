@@ -81,17 +81,24 @@ class DeleteItemModal extends Component {
 
 class ListTableRow extends Component {
   state = {
-    promptDelete: false,
+    showDeleteModal: false,
   };
-  promptDelete = () => {
-    this.setState({ promptDelete: true });
+  componentDidMount() {
+    this.isMounted = true;
+  }
+  componentWillUnmount() {
+    this.isMounted = false;
+  }
+  showDeleteModal = () => {
+    this.setState({ showDeleteModal: true });
   };
-  cancelDelete = () => {
-    this.setState({ promptDelete: false });
+  closeDeleteModal = () => {
+    if (!this.isMounted) return;
+    this.setState({ showDeleteModal: false });
   };
   renderDeleteModal() {
-    const { promptDelete } = this.state;
-    if (!promptDelete) return;
+    const { showDeleteModal } = this.state;
+    if (!showDeleteModal) return;
 
     const { item, list, query } = this.props;
 
@@ -99,7 +106,7 @@ class ListTableRow extends Component {
       <DeleteItemModal
         item={item}
         list={list}
-        onClose={this.cancelDelete}
+        onClose={this.closeDeleteModal}
         refetchQueries={() => [{ query }]}
       />
     );
@@ -110,7 +117,7 @@ class ListTableRow extends Component {
     return (
       <tr>
         <BodyCell>
-          <button onClick={this.promptDelete}>x</button>
+          <button onClick={this.showDeleteModal}>x</button>
           {this.renderDeleteModal()}
         </BodyCell>
         {fields.map(({ path }, index) => (
