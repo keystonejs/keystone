@@ -149,8 +149,8 @@ class ListPage extends Component {
       <Fragment>
         <Nav />
         <Container>
-          <Query query={query}>
-            {({ data, error }) => {
+          <Query query={query} fetchPolicy="cache-and-network">
+            {({ data, error, refetch }) => {
               if (error) {
                 return (
                   <Fragment>
@@ -233,7 +233,7 @@ class ListPage extends Component {
                       list={list}
                       fields={displayedFields}
                       adminPath={adminPath}
-                      query={query}
+                      onChange={refetch}
                       noResultsMessage={`No ${list.plural.toLowerCase()} found matching ${search}.`}
                     />
                   ) : (

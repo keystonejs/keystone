@@ -1,83 +1,13 @@
-import React, { Component, Fragment } from 'react';
-import gql from 'graphql-tag';
-import { Mutation } from 'react-apollo';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Dialog } from '@keystonejs/ui/src/primitives/modals';
+
+import DeleteItemModal from './DeleteItemModal';
 
 import {
   BodyCell,
   HeaderCell,
   Table,
 } from '@keystonejs/ui/src/primitives/tables';
-
-const getDeleteMutation = ({ list }) => {
-  return gql`
-    mutation delete($id: String!) {
-      ${list.deleteMutationName}(id: $id) {
-        id
-      }
-    }
-  `;
-};
-
-class DeleteItemModal extends Component {
-  onClose = () => {
-    if (this.isLoading) return;
-    this.props.onClose();
-  };
-  onKeyDown = e => {
-    if (e.key === 'Escape') {
-      this.props.onClose();
-    }
-  };
-  render() {
-    const { item, list, refetchQueries } = this.props;
-    const deleteMutation = getDeleteMutation({ list });
-    return (
-      <Mutation mutation={deleteMutation} refetchQueries={refetchQueries}>
-        {(deleteItem, { loading }) => {
-          this.isLoading = loading;
-          return (
-            <Dialog
-              isOpen
-              onClose={this.onClose}
-              heading={`Delete ${list.singular}`}
-              onKeyDown={this.onKeyDown}
-              footer={
-                <Fragment>
-                  <Button
-                    appearance="danger"
-                    onClick={() => {
-                      if (loading) return;
-                      deleteItem({ variables: { id: item.id } }).then(
-                        this.props.onClose
-                      );
-                    }}
-                  >
-                    Delete
-                  </Button>
-                  <Button
-                    appearance="primary"
-                    variant="subtle"
-                    onClick={this.onClose}
-                  >
-                    Cancel
-                  </Button>
-                </Fragment>
-              }
-            >
-              <p>
-                Are you sure you want to delete{' '}
-                <strong>{item.name || item.id}</strong>?
-              </p>
-            </Dialog>
-          );
-        }}
-      </Mutation>
-    );
-  }
-}
 
 class ListTableRow extends Component {
   state = {
@@ -93,6 +23,10 @@ class ListTableRow extends Component {
     this.setState({ showDeleteModal: true });
   };
   closeDeleteModal = () => {
+    this.setState({ showDeleteModal: false });
+  };
+  onDelete = result => {
+    if (this.props.onDelete) this.props.onDelete(result);
     if (!this.mounted) return;
     this.setState({ showDeleteModal: false });
   };
@@ -100,14 +34,14 @@ class ListTableRow extends Component {
     const { showDeleteModal } = this.state;
     if (!showDeleteModal) return;
 
-    const { item, list, query } = this.props;
+    const { item, list } = this.props;
 
     return (
       <DeleteItemModal
         item={item}
         list={list}
         onClose={this.closeDeleteModal}
-        refetchQueries={() => [{ query }]}
+        onDelete={this.onDelete}
       />
     );
   }
@@ -138,7 +72,7 @@ export default class ListTable extends Component {
       items,
       list,
       noResultsMessage,
-      query,
+      onChange,
     } = this.props;
 
     return items.length ? (
@@ -165,7 +99,7 @@ export default class ListTable extends Component {
               list={list}
               fields={fields}
               item={item}
-              query={query}
+              onDelete={onChange}
             />
           ))}
         </tbody>

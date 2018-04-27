@@ -2,9 +2,10 @@ import React, { Component, Fragment } from 'react';
 import styled from 'react-emotion';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 import Nav from '../../components/Nav';
+import DeleteItemModal from '../../components/DeleteItemModal';
 import Footer from './Footer';
 import { Container } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
@@ -32,52 +33,98 @@ const Form = styled.div({
   margin: '24px 0',
 });
 
-class ItemDetails extends Component {
-  constructor(props) {
-    super();
-    this.state = { item: props.item };
-  }
-  onChange = (field, value) => {
-    const { item } = this.state;
-    this.setState({
-      item: {
-        ...item,
-        [field.path]: value,
-      },
-    });
-  };
-  saveChanges = () => {};
-  render() {
-    const { list, adminPath } = this.props;
-    const { item } = this.state;
-    return (
-      <Fragment>
-        <Title>
-          <Link to={`${adminPath}/${list.path}`}>{list.label}</Link>: {item.name}
-        </Title>
-        <ItemId>ID: {item.id}</ItemId>
-        <Form>
-          {list.fields.map(field => {
-            const { Field } = FieldViews[list.key][field.path];
-            return (
-              <Field
-                item={item}
-                field={field}
-                key={field.path}
-                onChange={this.onChange}
-              />
-            );
-          })}
-        </Form>
-        <Footer
-          onSave={this.saveChanges}
-          onDelete={() => {}}
-          onReset={() => {}}
+const ItemDetails = withRouter(
+  class ItemDetails extends Component {
+    constructor(props) {
+      super();
+      this.state = {
+        item: props.item,
+        showDeleteModal: false,
+      };
+    }
+    componentDidMount() {
+      this.mounted = true;
+    }
+    componentWillUnmount() {
+      this.mounted = false;
+    }
+    showDeleteModal = () => {
+      this.setState({ showDeleteModal: true });
+    };
+    closeDeleteModal = () => {
+      this.setState({ showDeleteModal: false });
+    };
+    onDelete = () => {
+      const { adminPath, history, list } = this.props;
+      if (this.mounted) {
+        this.setState({ showDeleteModal: false });
+      }
+      history.push(`${adminPath}/${list.path}`);
+    };
+    onReset = () => {
+      this.setState({
+        item: this.props.item,
+      });
+    };
+    onChange = (field, value) => {
+      const { item } = this.state;
+      this.setState({
+        item: {
+          ...item,
+          [field.path]: value,
+        },
+      });
+    };
+    renderDeleteModal() {
+      const { showDeleteModal } = this.state;
+      if (!showDeleteModal) return;
+
+      const { item, list } = this.props;
+
+      return (
+        <DeleteItemModal
+          item={item}
+          list={list}
+          onClose={this.closeDeleteModal}
+          onDelete={this.onDelete}
         />
-      </Fragment>
-    );
+      );
+    }
+    onSave = () => {};
+    render() {
+      const { adminPath, list } = this.props;
+      const { item } = this.state;
+      return (
+        <Fragment>
+          <Title>
+            <Link to={`${adminPath}/${list.path}`}>{list.label}</Link>:{' '}
+            {item.name}
+          </Title>
+          <ItemId>ID: {item.id}</ItemId>
+          <Form>
+            {list.fields.map(field => {
+              const { Field } = FieldViews[list.key][field.path];
+              return (
+                <Field
+                  item={item}
+                  field={field}
+                  key={field.path}
+                  onChange={this.onChange}
+                />
+              );
+            })}
+          </Form>
+          <Footer
+            onSave={this.onSave}
+            onDelete={this.showDeleteModal}
+            onReset={this.onReset}
+          />
+          {this.renderDeleteModal()}
+        </Fragment>
+      );
+    }
   }
-}
+);
 
 const ItemNotFound = ({ itemId, list, adminPath }) => (
   <Fragment>
@@ -107,7 +154,12 @@ const ItemPage = ({ list, itemId, adminPath }) => (
 
           const item = data[list.itemQueryName];
           return item ? (
-            <ItemDetails list={list} item={item} key={itemId} adminPath={adminPath} />
+            <ItemDetails
+              list={list}
+              item={item}
+              key={itemId}
+              adminPath={adminPath}
+            />
           ) : (
             <ItemNotFound list={list} itemId={itemId} adminPath={adminPath} />
           );
