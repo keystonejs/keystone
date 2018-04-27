@@ -31,7 +31,7 @@
     "focus-trap": "^2.4.3",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.8.0",
-    "graphql-tools": "^2.23.1",
+    "graphql-tools": "^3.0.0",
     "html-webpack-plugin": "^3.2.0",
     "inflection": "^1.12.0",
     "loader-utils": "^1.1.0",
