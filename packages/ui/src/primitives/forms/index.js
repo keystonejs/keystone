@@ -1,4 +1,6 @@
 // @flow
+
+import React from 'react';
 import styled from 'react-emotion';
 
 import { colors, gridSize } from '../../theme';
@@ -21,7 +23,11 @@ export const buttonAndInputBase = {
   whiteSpace: 'nowrap',
 };
 
-export const Input = styled.input({
+type InputProps = { isMultiline: boolean };
+export const InputField = ({ isMultiline, ...props }: InputProps) =>
+  isMultiline ? <textarea {...props} /> : <input {...props} />;
+
+export const Input = styled(InputField)({
   ...buttonAndInputBase,
   backgroundColor: 'white',
   borderColor: colors.N20,

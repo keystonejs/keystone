@@ -14,35 +14,26 @@ const ButtonElement = props => {
   return <button type="button" {...props} />;
 };
 
-const linkAppearance = {
+const subtleAppearance = {
   default: {
-    text: colors.primary,
-    textHover: colors.primary,
+    text: colors.N40,
+    textHover: colors.text,
   },
-  text: {
-    text: colors.text,
-    textHover: colors.primary,
-  },
-  subtle: {
+  primary: {
     text: colors.N40,
     textHover: colors.primary,
   },
-  reset: {
+  warning: {
     text: colors.N40,
     textHover: colors.danger,
   },
-  delete: {
+  danger: {
     text: colors.danger,
     textHover: colors.danger,
     isSolidOnHover: true,
   },
 };
-const solidDangerConfig = {
-  bg: colors.danger,
-  border: darken(colors.danger, 8),
-  text: 'white',
-};
-const solidAppearance = {
+const boldAppearance = {
   default: {
     bg: colors.N05,
     border: colors.N20,
@@ -59,9 +50,11 @@ const solidAppearance = {
     border: darken(colors.create, 16),
     text: 'white',
   },
-  reset: solidDangerConfig,
-  delete: solidDangerConfig,
-  danger: solidDangerConfig,
+  danger: {
+    bg: colors.danger,
+    border: darken(colors.danger, 8),
+    text: 'white',
+  },
   warning: {
     bg: colors.warning,
     border: darken(colors.warning, 12),
@@ -72,9 +65,9 @@ const solidAppearance = {
 export const Button = styled(ButtonElement)(
   ({ appearance, isDisabled, variant }) => {
     const variantStyles =
-      variant === 'link'
-        ? makeLinkVariant(appearance)
-        : makeSolidVariant(appearance);
+      variant === 'subtle'
+        ? makeLinkVariant({ appearance })
+        : makeSolidVariant({ appearance });
 
     return {
       ...buttonAndInputBase,
@@ -100,25 +93,25 @@ export const Button = styled(ButtonElement)(
 );
 Button.defaultProps = {
   appearance: 'default',
-  variant: 'solid',
+  variant: 'bold',
 };
 
-function makeLinkVariant(appearance) {
-  const { text, textHover, isSolidOnHover } = linkAppearance[appearance];
+function makeLinkVariant({ appearance }) {
+  const { text, textHover, isSolidOnHover } = subtleAppearance[appearance];
 
   return {
     color: text,
 
     ':hover, :focus': isSolidOnHover
-      ? makeSolidVariant(appearance)
+      ? makeSolidVariant({ appearance })
       : {
           color: textHover,
           textDecoration: 'underline',
         },
   };
 }
-function makeSolidVariant(appearance) {
-  const { bg, border, focusRing, text } = solidAppearance[appearance];
+function makeSolidVariant({ appearance }) {
+  const { bg, border, focusRing, text } = boldAppearance[appearance];
   const bgTop = lighten(bg, 10);
   const bgBottom = darken(bg, 10);
   const borderTop = lighten(border, 8);
