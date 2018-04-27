@@ -84,16 +84,16 @@ class ListTableRow extends Component {
     showDeleteModal: false,
   };
   componentDidMount() {
-    this.isMounted = true;
+    this.mounted = true;
   }
   componentWillUnmount() {
-    this.isMounted = false;
+    this.mounted = false;
   }
   showDeleteModal = () => {
     this.setState({ showDeleteModal: true });
   };
   closeDeleteModal = () => {
-    if (!this.isMounted) return;
+    if (!this.mounted) return;
     this.setState({ showDeleteModal: false });
   };
   renderDeleteModal() {
