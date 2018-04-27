@@ -84,6 +84,7 @@ type Props = {
   initialFocus?: FocusTarget,
   isOpen: boolean,
   onClose: (*) => void,
+  onKeyDown: (*) => void,
   width?: number,
 };
 
@@ -91,6 +92,15 @@ export default class ModalDialog extends Component<Props> {
   static defaultProps = {
     attachTo: document.body,
     width: 640,
+  };
+  componentDidMount() {
+    document.addEventListener('keydown', this.onKeyDown, false);
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.onKeyDown, false);
+  }
+  onKeyDown = (e: any) => {
+    if (this.props.onKeyDown) this.props.onKeyDown(e);
   };
   render() {
     const {

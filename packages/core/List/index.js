@@ -118,6 +118,7 @@ module.exports = class List {
       path: this.path,
       listQueryName: this.listQueryName,
       itemQueryName: this.itemQueryName,
+      deleteMutationName: this.deleteMutationName,
       fields: this.fields.map(i => i.getAdminMeta()),
       views: this.views,
     };

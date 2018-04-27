@@ -23,10 +23,10 @@ const getQuery = ({ fields, list, search, sort }) => {
   const queryFields = ['id', ...fields.map(({ path }) => path)];
 
   return gql`{
-  ${list.listQueryName}${queryArgs} {
-    ${queryFields.join('\n')}
-  }
-}`;
+    ${list.listQueryName}${queryArgs} {
+      ${queryFields.join('\n')}
+    }
+  }`;
 };
 
 /**
@@ -233,6 +233,7 @@ class ListPage extends Component {
                       list={list}
                       fields={displayedFields}
                       adminPath={adminPath}
+                      query={query}
                       noResultsMessage={`No ${list.plural.toLowerCase()} found matching ${search}.`}
                     />
                   ) : (
