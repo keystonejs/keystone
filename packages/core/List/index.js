@@ -15,10 +15,11 @@ module.exports = class List {
     this.singular = config.singular || pluralize.singular(this.label);
     this.plural = config.plural || pluralize.plural(this.label);
     this.path = config.path || inflection.dasherize(this.plural).toLowerCase();
-    this.listQueryName =
-      config.listQueryName || inflection.camelize(this.plural, true);
     this.itemQueryName =
-      config.itemQueryName || inflection.camelize(this.singular, true);
+      config.itemQueryName || inflection.camelize(this.singular);
+    this.listQueryName =
+      config.listQueryName || `all${inflection.camelize(this.plural)}`;
+    this.deleteMutationName = `delete${this.itemQueryName}`;
 
     this.fields = config.fields
       ? Object.keys(config.fields).map(path => {
@@ -70,10 +71,20 @@ module.exports = class List {
         ${this.listQueryName}${listQueryArgString}: [${this.key}]
         ${this.itemQueryName}(id: String!): ${this.key}`;
   }
-  getAdminResolvers() {
+  getAdminQueryResolvers() {
     return {
       [this.listQueryName]: (_, args) => this.buildItemsQuery(args),
       [this.itemQueryName]: (_, { id }) => this.model.findById(id),
+    };
+  }
+  getAdminGraphqlMutations() {
+    return `
+        ${this.deleteMutationName}(id: String!): ${this.key}`;
+  }
+  getAdminMutationResolvers() {
+    return {
+      [this.deleteMutationName]: (_, { id }) =>
+        this.model.findByIdAndRemove(id),
     };
   }
   buildItemsQuery(args) {

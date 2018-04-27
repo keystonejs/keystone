@@ -44,21 +44,27 @@ module.exports = class Keystone {
   }
   getAdminSchema() {
     const listTypes = this.listsArray.map(i => i.getAdminGraphqlTypes());
-    const listQueries = this.listsArray.map(i => i.getAdminGraphqlQueries());
-    const queryType = `
+    const typeDefs = `
       type Query {
-        ${listQueries.join('')}
+        ${this.listsArray.map(i => i.getAdminGraphqlQueries()).join('')}
+      }
+      type Mutation {
+        ${this.listsArray.map(i => i.getAdminGraphqlMutations()).join('')}
       }
     `;
     const resolvers = {
       Query: this.listsArray.reduce(
-        (acc, i) => ({ ...acc, ...i.getAdminResolvers() }),
+        (acc, i) => ({ ...acc, ...i.getAdminQueryResolvers() }),
+        {}
+      ),
+      Mutation: this.listsArray.reduce(
+        (acc, i) => ({ ...acc, ...i.getAdminMutationResolvers() }),
         {}
       ),
     };
 
     return makeExecutableSchema({
-      typeDefs: [...listTypes, queryType],
+      typeDefs: [...listTypes, typeDefs],
       resolvers,
     });
   }
