@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'react-emotion';
 import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
+import { Mutation, Query } from 'react-apollo';
 import { Link, withRouter } from 'react-router-dom';
 
 import Nav from '../../components/Nav';
@@ -24,6 +24,19 @@ const getItemQuery = ({ list, itemId }) => gql`
   }
 `;
 
+const getUpdateMutation = ({ list }) => {
+  return gql`
+    mutation delete(
+      $id: String!,
+      $data: ${list.key}UpdateInput)
+    {
+      ${list.updateMutationName}(id: $id, data: $data) {
+        id
+      }
+    }
+  `;
+};
+
 const ItemId = styled.div({
   color: colors.N30,
   fontFamily: 'Menlo, Monaco, Consolas, "Courier New", monospace',
@@ -32,6 +45,8 @@ const ItemId = styled.div({
 const Form = styled.div({
   margin: '24px 0',
 });
+
+// TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
 const ItemDetails = withRouter(
   class ItemDetails extends Component {
@@ -90,7 +105,12 @@ const ItemDetails = withRouter(
         />
       );
     }
-    onSave = () => {};
+    onSave = () => {
+      const { onUpdate, updateItem } = this.props;
+      // TODO: smarter selection of data to send, should come from field types ?
+      const { id, __typename, ...data } = this.state.item;
+      updateItem({ variables: { id, data } }).then(onUpdate);
+    };
     render() {
       const { adminPath, list } = this.props;
       const { item } = this.state;
@@ -136,37 +156,48 @@ const ItemNotFound = ({ itemId, list, adminPath }) => (
   </Fragment>
 );
 
-const ItemPage = ({ list, itemId, adminPath }) => (
-  <Fragment>
-    <Nav />
-    <Container>
-      <Query query={getItemQuery({ list, itemId })}>
-        {({ loading, error, data }) => {
-          if (loading) return <Title>Loading...</Title>;
-          if (error) {
-            return (
-              <Fragment>
-                <Title>Error</Title>
-                <p>{error.message}</p>
-              </Fragment>
-            );
-          }
+const ItemPage = ({ list, itemId, adminPath }) => {
+  const itemQuery = getItemQuery({ list, itemId });
+  return (
+    <Fragment>
+      <Nav />
+      <Container>
+        <Query query={itemQuery}>
+          {({ loading, error, data, refetch }) => {
+            if (loading) return <Title>Loading...</Title>;
+            if (error) {
+              return (
+                <Fragment>
+                  <Title>Error</Title>
+                  <p>{error.message}</p>
+                </Fragment>
+              );
+            }
 
-          const item = data[list.itemQueryName];
-          return item ? (
-            <ItemDetails
-              list={list}
-              item={item}
-              key={itemId}
-              adminPath={adminPath}
-            />
-          ) : (
-            <ItemNotFound list={list} itemId={itemId} adminPath={adminPath} />
-          );
-        }}
-      </Query>
-    </Container>
-  </Fragment>
-);
+            const item = data[list.itemQueryName];
+            const updateMutation = getUpdateMutation({ list });
+            return item ? (
+              <Mutation mutation={updateMutation}>
+                {(updateItem, { loading: updateInProgress }) => (
+                  <ItemDetails
+                    adminPath={adminPath}
+                    item={item}
+                    key={itemId}
+                    list={list}
+                    onUpdate={refetch}
+                    updateInProgress={updateInProgress}
+                    updateItem={updateItem}
+                  />
+                )}
+              </Mutation>
+            ) : (
+              <ItemNotFound adminPath={adminPath} itemId={itemId} list={list} />
+            );
+          }}
+        </Query>
+      </Container>
+    </Fragment>
+  );
+};
 
 export default ItemPage;
