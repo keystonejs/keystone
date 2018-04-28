@@ -50,6 +50,11 @@ module.exports = class Select extends Field {
       ${this.path}_not_in: [${this.getTypeName()}!]
     `;
   }
+  getGraphqlUpdateArgs() {
+    return `
+      ${this.path}: ${this.getTypeName()}
+    `;
+  }
   getQueryConditions(args) {
     const conditions = [];
     const eq = this.path;

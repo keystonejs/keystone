@@ -28,6 +28,11 @@ module.exports = class Text extends Field {
       ${this.path}_not_in: [String!]
     `;
   }
+  getGraphqlUpdateArgs() {
+    return `
+      ${this.path}: String
+    `;
+  }
   getQueryConditions(args) {
     const conditions = [];
     const caseSensitive = args[`${this.path}_case_sensitive`];

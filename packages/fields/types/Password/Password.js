@@ -16,6 +16,11 @@ module.exports = class Password extends Field {
       ${this.path}_is_set: Boolean
     `;
   }
+  getGraphqlUpdateArgs() {
+    return `
+      ${this.path}: String
+    `;
+  }
   getQueryConditions(args) {
     const conditions = [];
     const is_set = `${this.path}_is_set`;

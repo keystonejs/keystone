@@ -20,6 +20,7 @@ module.exports = class List {
     this.listQueryName =
       config.listQueryName || `all${inflection.camelize(this.plural)}`;
     this.deleteMutationName = `delete${this.itemQueryName}`;
+    this.updateMutationName = `update${this.itemQueryName}`;
 
     this.fields = config.fields
       ? Object.keys(config.fields).map(path => {
@@ -51,25 +52,44 @@ module.exports = class List {
     this.model = mongoose.model(this.key, schema);
   }
   getAdminGraphqlTypes() {
-    const fieldSchemas = this.fields.map(i => i.getGraphqlSchema());
-    const fieldTypes = this.fields.map(i => i.getGraphqlTypes()).filter(j => j);
+    const fieldSchemas = this.fields
+      .map(i => i.getGraphqlSchema())
+      .join('\n        ');
+    const fieldTypes = this.fields
+      .map(i => i.getGraphqlTypes())
+      .filter(j => j)
+      .join('\n     ');
+    const updateArgs = this.fields
+      .map(i => i.getGraphqlUpdateArgs())
+      .filter(i => i)
+      .map(i => i.split(/\n\s+/g).join('\n        '))
+      .join('')
+      .trim();
     return `
       type ${this.key} {
         id: String
-        ${fieldSchemas.join('\n        ')}
+        ${fieldSchemas}
       }
-      ${fieldTypes.join('\n     ')}
+      input ${this.key}UpdateInput {
+        ${updateArgs}
+      }
+      ${fieldTypes}
     `;
   }
   getAdminGraphqlQueries() {
-    const listQueryArgs = this.fields
+    const queryArgs = this.fields
       .map(i => i.getGraphqlQueryArgs())
       .filter(i => i)
-      .join('\n');
-    const listQueryArgString = `(search: String sort: String ${listQueryArgs})`;
+      .map(i => i.split(/\n\s+/g).join('\n          '))
+      .join('');
     return `
-        ${this.listQueryName}${listQueryArgString}: [${this.key}]
-        ${this.itemQueryName}(id: String!): ${this.key}`;
+        ${this.listQueryName}(
+          search: String
+          sort: String
+          ${queryArgs}
+        ): [${this.key}]
+        ${this.itemQueryName}(id: String!): ${this.key}
+    `;
   }
   getAdminQueryResolvers() {
     return {
@@ -79,12 +99,25 @@ module.exports = class List {
   }
   getAdminGraphqlMutations() {
     return `
-        ${this.deleteMutationName}(id: String!): ${this.key}`;
+        ${this.deleteMutationName}(
+          id: String!
+        ): ${this.key}
+        ${this.updateMutationName}(
+          id: String!
+          data: ${this.key}UpdateInput
+        ): ${this.key}
+    `;
   }
   getAdminMutationResolvers() {
     return {
       [this.deleteMutationName]: (_, { id }) =>
         this.model.findByIdAndRemove(id),
+      [this.updateMutationName]: async (_, { id, data }) => {
+        const item = await this.model.findById(id);
+        // TODO: Loop through each field and have it apply the update
+        item.set(data);
+        return item.save();
+      },
     };
   }
   buildItemsQuery(args) {
@@ -119,6 +152,7 @@ module.exports = class List {
       listQueryName: this.listQueryName,
       itemQueryName: this.itemQueryName,
       deleteMutationName: this.deleteMutationName,
+      updateMutationName: this.updateMutationName,
       fields: this.fields.map(i => i.getAdminMeta()),
       views: this.views,
     };
