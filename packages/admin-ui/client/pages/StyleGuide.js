@@ -81,7 +81,6 @@ export default class StyleGuide extends Component<*, State> {
               <PaletteGuide />
             ) : (
               <Fragment>
-                <AlertGuide />
                 <BadgeGuide />
                 <ButtonGuide />
                 <DropdownGuide />
@@ -89,6 +88,7 @@ export default class StyleGuide extends Component<*, State> {
                 <FieldGuide />
                 <LayoutGuide />
                 <ProgressGuide />
+                <AlertGuide />
                 <GridGuide />
               </Fragment>
             )}
