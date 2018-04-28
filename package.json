@@ -4,8 +4,7 @@
   "author": "Jed Watson",
   "license": "MIT",
   "scripts": {
-    "start": "cd packages/test-project && npm start",
-    "heroku": "npx bolt && npm start"
+    "start": "cd packages/test-project && npm start"
   },
   "dependencies": {
     "apollo-boost": "^0.1.4",
