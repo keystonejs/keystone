@@ -4,6 +4,15 @@ This is a prototype architecture for Keystone 5.
 
 Everything is WIP.
 
+## Demo
+
+Check out the demo: [keystone-next.herokuapp.com](http://keystone-next.herokuapp.com)
+
+It is updated automatically when commits are merged into `master`.
+
+You can reset the database by hitting the [/reset-db](http://keystone-next.herokuapp.com/reset-db)
+page.
+
 ## Getting Started
 
 Keystone 5 is set up as a monorepo, using [Bolt](http://boltpkg.com/)
