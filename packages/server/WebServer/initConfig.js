@@ -6,7 +6,7 @@ const requiredConfig = {
 
 const defaultConfig = {
   adminPath: '/admin',
-  port: 3000,
+  port: process.env.PORT || 3000,
 };
 
 const remapKeys = {
