@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "@keystone/field-views-loader": "^1.0.0",
-    "@keystonejs/ui": "^5.0.0",
+    "@keystonejs/icons": "^1.0.0",
+    "@keystonejs/fields": "^5.0.0",
     "@keystonejs/fields": "^5.0.0",
     "apollo-boost": "^0.1.4",
     "apollo-client": "^2.2.8",

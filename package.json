@@ -29,6 +29,7 @@
     "file-loader": "^1.1.11",
     "flow-bin": "^0.70.0",
     "focus-trap": "^2.4.3",
+    "fs-extra": "^5.0.0",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.8.0",
     "graphql-tools": "^3.0.0",
@@ -36,6 +37,7 @@
     "inflection": "^1.12.0",
     "loader-utils": "^1.1.0",
     "mongoose": "^5.0.14",
+    "octicons": "^7.2.0",
     "pluralize": "^7.0.0",
     "prop-types": "^15.6.1",
     "raf-schd": "^2.1.1",
@@ -49,10 +51,13 @@
     "react-scrolllock": "^2.0.2",
     "react-select": "^2.0.0-beta.2",
     "react-transition-group": "^2.3.1",
+    "to-pascal-case": "^1.0.0",
     "webpack": "^4.5.0",
     "webpack-dev-middleware": "^3.1.2"
   },
   "bolt": {
-    "workspaces": ["packages/*"]
+    "workspaces": [
+      "packages/*"
+    ]
   }
 }
