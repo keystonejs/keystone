@@ -20,14 +20,19 @@ const Form = styled.div({
   margin: '24px 0',
 });
 
+const getInitialItemData = list => {
+  return list.fields.reduce((data, field) => {
+    const { Field } = FieldViews[list.key][field.path];
+    data[field.path] = Field.getInitialData ? Field.getInitialData() : '';
+    return data;
+  }, {});
+};
+
 export default class CreateItemModal extends Component {
   constructor(props) {
     super(props);
-    let { list } = props;
-    let item = list.fields.reduce((acc, i) => {
-      acc[i.path] = '';
-      return acc;
-    }, {});
+    const { list } = props;
+    const item = getInitialItemData(list);
     this.state = { item };
   }
 

@@ -20,7 +20,7 @@ const styles = {
   }),
 };
 
-export default class SelectField extends Component {
+class SelectField extends Component {
   onChange = option => {
     const { field, onChange } = this.props;
     onChange(field, option.value);
@@ -43,3 +43,5 @@ export default class SelectField extends Component {
     );
   }
 }
+SelectField.getInitialData = () => null;
+export default SelectField;
