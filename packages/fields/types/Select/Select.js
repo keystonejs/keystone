@@ -55,6 +55,11 @@ module.exports = class Select extends Field {
       ${this.path}: ${this.getTypeName()}
     `;
   }
+  getGraphqlCreateArgs() {
+    return `
+      ${this.path}: ${this.getTypeName()}
+    `;
+  }
   getQueryConditions(args) {
     const conditions = [];
     const eq = this.path;

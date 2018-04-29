@@ -3,13 +3,16 @@ import styled from 'react-emotion';
 import gql from 'graphql-tag';
 import Select, { components } from 'react-select';
 import { Query } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
 
 import Nav from '../components/Nav';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
+import { Button } from '@keystonejs/ui/src/primitives/buttons';
 
 import ListTable from '../components/ListTable';
+import CreateItemModal from '../components/CreateItemModal';
 
 const getQueryArgs = args => {
   const queryArgs = Object.keys(args).map(
@@ -88,7 +91,13 @@ class ListPage extends Component {
     const displayedFields = this.props.list.fields.slice(0, 2);
     const order = ListPage.orderOptions[0];
     const orderBy = displayedFields[0];
-    this.state = { displayedFields, order, orderBy, search: '' };
+    this.state = {
+      displayedFields,
+      order,
+      orderBy,
+      search: '',
+      showCreateModal: false,
+    };
   }
 
   static orderOptions = [
@@ -127,6 +136,28 @@ class ListPage extends Component {
   handleOrderByChange = orderBy => this.setState({ orderBy });
 
   handleOrderChange = order => this.setState({ order });
+
+  closeCreateModal = () => this.setState({ showCreateModal: false });
+  openCreateModal = () => this.setState({ showCreateModal: true });
+  onCreate = ({ data }) => {
+    let { list, adminPath, history } = this.props;
+    let id = data[list.createMutationName].id;
+    history.push(`${adminPath}/${list.path}/${id}`);
+  };
+
+  renderCreateModal() {
+    const { showCreateModal } = this.state;
+    if (!showCreateModal) return;
+    const { list } = this.props;
+
+    return (
+      <CreateItemModal
+        list={list}
+        onClose={this.closeCreateModal}
+        onCreate={this.onCreate}
+      />
+    );
+  }
 
   render() {
     const { list, adminPath } = this.props;
@@ -225,7 +256,20 @@ class ListPage extends Component {
                           value={order}
                         />
                       </div>
+                      <div>
+                        <Button
+                          css={{
+                            marginTop: '20px',
+                            marginLeft: '20px',
+                          }}
+                          appearance="create"
+                          onClick={this.openCreateModal}
+                        >
+                          {`Create new ${list.singular}`}
+                        </Button>
+                      </div>
                     </FlexGroup>
+                    {this.renderCreateModal()}
                   </div>
                   {items ? (
                     <ListTable
@@ -249,4 +293,4 @@ class ListPage extends Component {
   }
 }
 
-export default ListPage;
+export default withRouter(ListPage);

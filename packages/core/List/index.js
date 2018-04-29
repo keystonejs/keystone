@@ -21,6 +21,7 @@ module.exports = class List {
       config.listQueryName || `all${inflection.camelize(this.plural)}`;
     this.deleteMutationName = `delete${this.itemQueryName}`;
     this.updateMutationName = `update${this.itemQueryName}`;
+    this.createMutationName = `create${this.itemQueryName}`;
 
     this.fields = config.fields
       ? Object.keys(config.fields).map(path => {
@@ -65,6 +66,12 @@ module.exports = class List {
       .map(i => i.split(/\n\s+/g).join('\n        '))
       .join('')
       .trim();
+    const createArgs = this.fields
+      .map(i => i.getGraphqlCreateArgs())
+      .filter(i => i)
+      .map(i => i.split(/\n\s+/g).join('\n        '))
+      .join('')
+      .trim();
     return `
       type ${this.key} {
         id: String
@@ -72,6 +79,9 @@ module.exports = class List {
       }
       input ${this.key}UpdateInput {
         ${updateArgs}
+      }
+      input ${this.key}CreateInput {
+        ${createArgs}
       }
       ${fieldTypes}
     `;
@@ -106,6 +116,9 @@ module.exports = class List {
           id: String!
           data: ${this.key}UpdateInput
         ): ${this.key}
+        ${this.createMutationName}(
+          data: ${this.key}UpdateInput
+        ): ${this.key}
     `;
   }
   getAdminMutationResolvers() {
@@ -117,6 +130,9 @@ module.exports = class List {
         // TODO: Loop through each field and have it apply the update
         item.set(data);
         return item.save();
+      },
+      [this.createMutationName]: async (_, { data }) => {
+        return this.model.create(data);
       },
     };
   }
@@ -153,6 +169,7 @@ module.exports = class List {
       itemQueryName: this.itemQueryName,
       deleteMutationName: this.deleteMutationName,
       updateMutationName: this.updateMutationName,
+      createMutationName: this.createMutationName,
       fields: this.fields.map(i => i.getAdminMeta()),
       views: this.views,
     };
