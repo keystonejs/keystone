@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'react-emotion';
+import * as icons from '@keystonejs/icons';
 
 import Nav from '../components/Nav';
 import {
@@ -49,11 +50,34 @@ const SubnavItem = styled.div(({ isSelected }) => ({
   },
 }));
 
-const sections = ['components', 'palette'];
+const sections = ['components', 'palette', 'icons'];
 const upCase = s => s.charAt(0).toUpperCase() + s.slice(1);
 type State = { currentSection: 'components' | 'palette' };
 export default class StyleGuide extends Component<*, State> {
   state = { currentSection: sections[0] };
+  renderCurrentSection() {
+    const { currentSection } = this.state;
+    switch (currentSection) {
+      case 'palette':
+        return <PaletteGuide />;
+      case 'icons':
+        return <IconsGuide />;
+      default:
+        return (
+          <Fragment>
+            <BadgeGuide />
+            <ButtonGuide />
+            <DropdownGuide />
+            <ModalGuide />
+            <FieldGuide />
+            <LayoutGuide />
+            <ProgressGuide />
+            <AlertGuide />
+            <GridGuide />
+          </Fragment>
+        );
+    }
+  }
   render() {
     const { currentSection } = this.state;
     return (
@@ -76,28 +100,54 @@ export default class StyleGuide extends Component<*, State> {
         </SubNav>
         <Container>
           <Title>Style Guide: {upCase(currentSection)}</Title>
-          <div style={{ marginBottom: 200 }}>
-            {currentSection === 'palette' ? (
-              <PaletteGuide />
-            ) : (
-              <Fragment>
-                <BadgeGuide />
-                <ButtonGuide />
-                <DropdownGuide />
-                <ModalGuide />
-                <FieldGuide />
-                <LayoutGuide />
-                <ProgressGuide />
-                <AlertGuide />
-                <GridGuide />
-              </Fragment>
-            )}
-          </div>
+          <div style={{ marginBottom: 200 }}>{this.renderCurrentSection()}</div>
         </Container>
       </Fragment>
     );
   }
 }
+
+const IconsGrid = styled('div')`
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  flex-wrap: wrap;
+  justify-content: space-between;
+`;
+
+const IconContainer = styled('div')`
+  transition: box-shadow 80ms linear;
+  background-color: white;
+  border-radius: 0.3em;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.075), 0 0 0 1px rgba(0, 0, 0, 0.1);
+  color: #666;
+  display: inline-block;
+  padding: 16px;
+  margin: 8px;
+  text-align: center;
+
+  &:hover {
+    color: #333;
+  }
+`;
+
+const IconName = styled('div')`
+  margin-top: 8px;
+`;
+
+const IconsGuide = () => (
+  <IconsGrid>
+    {Object.keys(icons).map(name => {
+      const Icon = icons[name];
+      return (
+        <IconContainer key={name}>
+          <Icon css={{ width: 24, height: 24 }} />
+          <IconName>{name}</IconName>
+        </IconContainer>
+      );
+    })}
+  </IconsGrid>
+);
 
 const AlertGuide = () => (
   <Fragment>
