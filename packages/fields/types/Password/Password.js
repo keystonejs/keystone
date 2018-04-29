@@ -21,6 +21,11 @@ module.exports = class Password extends Field {
       ${this.path}: String
     `;
   }
+  getGraphqlCreateArgs() {
+    return `
+      ${this.path}: String
+    `;
+  }
   getQueryConditions(args) {
     const conditions = [];
     const is_set = `${this.path}_is_set`;
