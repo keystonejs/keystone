@@ -83,7 +83,7 @@ export const Fade = (props: TransitionProps) => (
 export const Slide = (props: TransitionProps) => {
   const out = {
     opacity: 0,
-    transform: 'scale(0.93) translate3d(0,60px,0)',
+    transform: 'scale(0.95) translate3d(0,20px,0)',
   };
   return (
     <TransitionHandler
