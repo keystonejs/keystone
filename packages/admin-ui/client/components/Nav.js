@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { HomeIcon, SignOutIcon } from '@keystonejs/icons';
 
 import {
   Navbar,
@@ -11,7 +12,9 @@ import { withAdminMeta } from '../providers/AdminMeta';
 const Nav = ({ adminMeta: { lists, listKeys, adminPath } }) => (
   <Navbar>
     <NavGroup>
-      <NavItem to={adminPath}>Home</NavItem>
+      <NavItem to={adminPath}>
+        <HomeIcon />
+      </NavItem>
       {listKeys.map(key => {
         const list = lists[key];
         return (
@@ -23,7 +26,9 @@ const Nav = ({ adminMeta: { lists, listKeys, adminPath } }) => (
       })}
     </NavGroup>
     <NavGroup>
-      <NavItem to={`${adminPath}/signin`}>Sign Out</NavItem>
+      <NavItem to={`${adminPath}/signin`}>
+        <SignOutIcon />
+      </NavItem>
     </NavGroup>
   </Navbar>
 );

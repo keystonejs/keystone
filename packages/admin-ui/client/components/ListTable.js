@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+import { TrashcanIcon } from '@keystonejs/icons';
+import { colors } from '@keystonejs/ui/src/theme';
 import DeleteItemModal from './DeleteItemModal';
 
 import {
@@ -8,6 +10,33 @@ import {
   HeaderCell,
   Table,
 } from '@keystonejs/ui/src/primitives/tables';
+
+class DeleteButton extends Component {
+  state = {
+    isHovered: false,
+  };
+  onMouseEnter = () => this.setState({ isHovered: true });
+  onMouseLeave = () => this.setState({ isHovered: false });
+  render() {
+    const { onClick } = this.props;
+    const { isHovered } = this.state;
+    return (
+      <div
+        css={{
+          color: isHovered ? colors.R.base : colors.N30,
+          cursor: 'pointer',
+          padding: '2px 4px',
+          display: 'inline-block',
+        }}
+        onClick={onClick}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+      >
+        <TrashcanIcon width={16} height={16} />
+      </div>
+    );
+  }
+}
 
 class ListTableRow extends Component {
   state = {
@@ -51,7 +80,7 @@ class ListTableRow extends Component {
     return (
       <tr>
         <BodyCell>
-          <button onClick={this.showDeleteModal}>x</button>
+          <DeleteButton onClick={this.showDeleteModal} />
           {this.renderDeleteModal()}
         </BodyCell>
         {fields.map(({ path }, index) => (
@@ -78,7 +107,7 @@ export default class ListTable extends Component {
     return items.length ? (
       <Table>
         <colgroup>
-          <col width="40" />
+          <col width="32" />
           <col />
           <col />
         </colgroup>
