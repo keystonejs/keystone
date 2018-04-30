@@ -11,15 +11,13 @@
   "scripts": {
     "build": "node build/octicons"
   },
-  "dependencies": {
-    "to-pascal-case": "^1.0.0"
-  },
+  "dependencies": {},
   "peerDependencies": {
     "react": "^16.3.1"
   },
   "devDependencies": {
     "fs-extra": "^5.0.0",
-    "inflection": "^1.12.0",
-    "octicons": "^7.2.0"
+    "octicons": "^7.2.0",
+    "to-pascal-case": "^1.0.0"
   }
 }
