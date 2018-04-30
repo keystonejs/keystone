@@ -12,4 +12,10 @@ export default class List {
       return new Controller(fieldConfig);
     });
   }
+  getInitialItemData() {
+    return this.fields.reduce((data, field) => {
+      data[field.path] = field.getInitialData();
+      return data;
+    }, {});
+  }
 }

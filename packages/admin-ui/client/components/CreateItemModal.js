@@ -16,32 +16,37 @@ const getCreateMutation = ({ list }) => {
   `;
 };
 
-const Form = styled.div({
-  margin: '24px 0',
-});
+const Form = styled('div')`
+  margin: 24px 0;
+`;
 
-const getInitialItemData = list => {
-  return list.fields.reduce((data, field) => {
-    data[field.path] = field.getInitialData();
-    return data;
-  }, {});
-};
-
-export default class CreateItemModal extends Component {
+class CreateItemModal extends Component {
   constructor(props) {
     super(props);
     const { list } = props;
-    const item = getInitialItemData(list);
+    const item = list.getInitialItemData();
     this.state = { item };
   }
-
+  onCreate = () => {
+    const { createItem, isLoading } = this.props;
+    if (isLoading) return;
+    const { item } = this.state;
+    createItem({
+      variables: { data: item },
+    }).then(this.props.onCreate);
+  };
   onClose = () => {
-    if (this.isLoading) return;
+    const { isLoading } = this.props;
+    if (isLoading) return;
     this.props.onClose();
   };
-  onKeyDown = e => {
-    if (e.key === 'Escape') {
-      this.props.onClose();
+  onKeyDown = event => {
+    if (event.defaultPrevented) return;
+    switch (event.key) {
+      case 'Escape':
+        return this.onClose();
+      case 'Enter':
+        return this.onCreate();
     }
   };
   onChange = (field, value) => {
@@ -54,58 +59,60 @@ export default class CreateItemModal extends Component {
     });
   };
   render() {
-    const { list } = this.props;
+    const { isLoading, list } = this.props;
     const { item } = this.state;
+    return (
+      <Dialog
+        isOpen
+        onClose={this.onClose}
+        heading={`Create ${list.singular}`}
+        onKeyDown={this.onKeyDown}
+        footer={
+          <Fragment>
+            <Button appearance="create" onClick={this.onCreate}>
+              {isLoading ? 'Loading...' : `Create ${list.singular}`}
+            </Button>
+            <Button
+              appearance="primary"
+              variant="subtle"
+              onClick={this.onClose}
+            >
+              Cancel
+            </Button>
+          </Fragment>
+        }
+      >
+        <Form>
+          {list.fields.map(field => {
+            const { Field } = FieldViews[list.key][field.path];
+            return (
+              <Field
+                item={item}
+                field={field}
+                key={field.path}
+                onChange={this.onChange}
+              />
+            );
+          })}
+        </Form>
+      </Dialog>
+    );
+  }
+}
+
+export default class CreateItemModalWithMutation extends Component {
+  render() {
+    const { list } = this.props;
     const createMutation = getCreateMutation({ list });
     return (
       <Mutation mutation={createMutation}>
-        {(createItem, { loading }) => {
-          this.isLoading = loading;
-          return (
-            <Dialog
-              isOpen
-              onClose={this.onClose}
-              heading={`Create ${list.singular}`}
-              onKeyDown={this.onKeyDown}
-              footer={
-                <Fragment>
-                  <Button
-                    appearance="create"
-                    onClick={() => {
-                      if (loading) return;
-                      createItem({
-                        variables: { data: item },
-                      }).then(this.props.onCreate);
-                    }}
-                  >
-                    {loading ? 'Loading...' : `Create ${list.singular}`}
-                  </Button>
-                  <Button
-                    appearance="primary"
-                    variant="subtle"
-                    onClick={this.onClose}
-                  >
-                    Cancel
-                  </Button>
-                </Fragment>
-              }
-            >
-              <Form>
-                {list.fields.map(field => {
-                  const { Field } = FieldViews[list.key][field.path];
-                  return (
-                    <Field
-                      item={item}
-                      field={field}
-                      key={field.path}
-                      onChange={this.onChange}
-                    />
-                  );
-                })}
-              </Form>
-            </Dialog>
-          );
-        }}
+        {(createItem, { loading }) => (
+          <CreateItemModal
+            createItem={createItem}
+            isLoading={loading}
+            {...this.props}
+          />
+        )}
       </Mutation>
     );
   }
