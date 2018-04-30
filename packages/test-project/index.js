@@ -32,6 +32,14 @@ keystone.createList('User', {
 keystone.createList('Post', {
   fields: {
     name: { type: Text },
+    status: {
+      type: Select,
+      defaultValue: 'draft',
+      options: [
+        { label: 'Draft', value: 'draft' },
+        { label: 'Published', value: 'published' },
+      ],
+    },
   },
 });
 

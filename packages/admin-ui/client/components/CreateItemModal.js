@@ -22,8 +22,7 @@ const Form = styled.div({
 
 const getInitialItemData = list => {
   return list.fields.reduce((data, field) => {
-    const { Field } = FieldViews[list.key][field.path];
-    data[field.path] = Field.getInitialData ? Field.getInitialData() : '';
+    data[field.path] = field.getInitialData();
     return data;
   }, {});
 };
