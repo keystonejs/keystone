@@ -13,12 +13,13 @@ export default class TextField extends Component {
     onChange(field, event.target.value);
   };
   render() {
-    const { field, item } = this.props;
+    const { autoFocus, field, item } = this.props;
     return (
       <FieldContainer>
         <FieldLabel>{field.label}</FieldLabel>
         <FieldInput>
           <Input
+            autoFocus={autoFocus}
             type="text"
             value={item[field.path]}
             onChange={this.onChange}

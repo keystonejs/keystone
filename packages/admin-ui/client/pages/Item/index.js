@@ -122,12 +122,13 @@ const ItemDetails = withRouter(
           </Title>
           <ItemId>ID: {item.id}</ItemId>
           <Form>
-            {list.fields.map(field => {
+            {list.fields.map((field, i) => {
               const { Field } = FieldViews[list.key][field.path];
               return (
                 <Field
-                  item={item}
+                  autoFocus={!i}
                   field={field}
+                  item={item}
                   key={field.path}
                   onChange={this.onChange}
                 />

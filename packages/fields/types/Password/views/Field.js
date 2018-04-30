@@ -13,12 +13,13 @@ export default class PasswordField extends Component {
     onChange(field, event.target.value);
   };
   render() {
-    const { field, item } = this.props;
+    const { autoFocus, field, item } = this.props;
     return (
       <FieldContainer>
         <FieldLabel>{field.label}</FieldLabel>
         <FieldInput>
           <Input
+            autoFocus={autoFocus}
             type="password"
             value={item[field.path]}
             onChange={this.onChange}

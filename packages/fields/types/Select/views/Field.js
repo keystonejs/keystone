@@ -26,13 +26,14 @@ export default class SelectField extends Component {
     onChange(field, option.value);
   };
   render() {
-    const { field, item } = this.props;
+    const { autoFocus, field, item } = this.props;
     const value = field.options.filter(i => i.value === item[field.path])[0];
     return (
       <FieldContainer>
         <FieldLabel>{field.label}</FieldLabel>
         <FieldInput>
           <Select
+            autoFocus={autoFocus}
             styles={styles}
             value={value}
             options={field.options}
