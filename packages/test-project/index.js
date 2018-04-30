@@ -1,9 +1,10 @@
 const { AdminUI } = require('@keystonejs/admin-ui');
 const { Keystone } = require('@keystonejs/core');
-const { Text, Select } = require('@keystonejs/fields');
+const { Text, Select, Password } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
 
-const SecurePassword = require('./custom-fields/SecurePassword');
+// TODO: Make this work again
+// const SecurePassword = require('./custom-fields/SecurePassword');
 
 const initialData = require('./data');
 
@@ -23,7 +24,7 @@ keystone.createList('User', {
       ],
     },
     password: {
-      type: SecurePassword,
+      type: Password,
     },
   },
 });

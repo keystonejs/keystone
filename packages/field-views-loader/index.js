@@ -1,4 +1,4 @@
-const loaderUtils =  require('loader-utils');
+const loaderUtils = require('loader-utils');
 
 module.exports = function() {
   const options = loaderUtils.getOptions(this);
@@ -10,6 +10,7 @@ module.exports = function() {
         ...
         views: {
           [fieldPath]: {  // e.g 'email'
+            Controller: 'absolute/path/to/controller',
             [fieldTypeView]: 'absolute/path/to/view', // e.g 'Field'
             [fieldTypeView]: 'another/absolute/path'  // e.g 'Column'
             ...
@@ -24,8 +25,9 @@ module.exports = function() {
   module.exports = {
     "User": {
       "email": {
-        "Field": require('relative/path/to/view'),
-        "Column": require('another/relative/path')
+        Controller: require('absolute/path/to/controller'),
+        Field: require('relative/path/to/view'),
+        Column: require('another/relative/path')
         ...
       },
       ...
@@ -35,17 +37,23 @@ module.exports = function() {
    */
 
   const stringifiedObject = `{
-    ${Object.entries(adminMeta.lists).map(([listPath, list]) => {
-      return `"${listPath}": {
-        ${Object.entries(list.views).map(([fieldPath, views]) => {
-          return `"${fieldPath}": {
-            ${Object.entries(views).map(([viewType, resolution]) => {
-              return `"${viewType}": require('${resolution}').default`;
-            }).join(',\n')}
+    ${Object.entries(adminMeta.lists)
+      .map(([listPath, list]) => {
+        return `"${listPath}": {
+        ${Object.entries(list.views)
+          .map(([fieldPath, views]) => {
+            return `"${fieldPath}": {
+              ${Object.entries(views)
+                .map(([viewType, resolution]) => {
+                  return `${viewType}: require('${resolution}').default`;
+                })
+                .join(',\n')}
           }`;
-        }).join(',\n')}
+          })
+          .join(',\n')}
       }`;
-    }).join(',\n')}
+      })
+      .join(',\n')}
   }`;
 
   return `module.exports = ${stringifiedObject}`;

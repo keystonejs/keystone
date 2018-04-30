@@ -33,6 +33,7 @@ module.exports = class Field {
       label: this.label,
       path: this.path,
       type: this.constructor.name,
+      defaultValue: this.config.defaultValue,
     });
   }
   extendAdminMeta(meta) {

@@ -2,12 +2,19 @@
 
 import React from 'react';
 
+import List from '../classes/List';
+
 const sourceMeta = KEYSTONE_ADMIN_META;
+
 const { lists } = sourceMeta;
 const listKeys = Object.keys(lists);
 const listsByPath = listKeys.reduce((map, key) => {
-  const list = lists[key];
-  map[list.path] = list;
+  const listConfig = lists[key];
+  const list = new List(listConfig);
+  // replace the config with the list instance
+  lists[key] = list;
+  // make the list available in the path map
+  map[listConfig.path] = list;
   return map;
 }, {});
 
