@@ -21,6 +21,7 @@ keystone.createList('User', {
       options: [
         { label: 'Thinkmill', value: 'thinkmill' },
         { label: 'Atlassian', value: 'atlassian' },
+        { label: 'Thomas Walker Gelato', value: 'gelato' },
       ],
     },
     password: {

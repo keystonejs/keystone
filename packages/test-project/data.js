@@ -40,5 +40,10 @@ module.exports = {
       email: 'jared@keystonejs.com',
       company: 'atlassian',
     },
+    {
+      name: 'Tom Walker',
+      email: 'gelato@thinkmill.com.au',
+      company: 'gelato',
+    },
   ].map(user => ({ ...user, password: 'password' })),
 };
