@@ -3976,6 +3976,10 @@ react-node-resolver@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-node-resolver/-/react-node-resolver-1.0.1.tgz#1798a729c0e218bf2f0e8ddf79c550d4af61d83a"
 
+react-pseudo-state@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-pseudo-state/-/react-pseudo-state-1.0.1.tgz#d3edbb8ea8953ddc0be1d4463b161a58e0e37485"
+
 react-radios@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/react-radios/-/react-radios-1.1.0.tgz#c1b94bbd498bfb9eecf1d00b10ef6a52213739a4"

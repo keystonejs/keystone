@@ -1,6 +1,7 @@
 // @flow
 
 import React, {
+  cloneElement,
   Component,
   Fragment,
   type ComponentType,
@@ -89,10 +90,13 @@ export default function withModalHandlers(
     render() {
       const { children } = this.props;
       const { isOpen } = this.state;
+      const cloneProps = isOpen ? { isActive: true } : {};
 
       return (
         <Fragment>
-          <NodeResolver innerRef={this.getTarget}>{children}</NodeResolver>
+          <NodeResolver innerRef={this.getTarget}>
+            {cloneElement(children, cloneProps)}
+          </NodeResolver>
           <Transition in={isOpen}>
             <WrappedComponent
               close={this.close}
