@@ -35,35 +35,29 @@ export default class DeleteItemModal extends Component {
             <Dialog
               isOpen
               onClose={this.onClose}
-              heading={`Delete ${list.singular}`}
               onKeyDown={this.onKeyDown}
-              footer={
-                <Fragment>
-                  <Button
-                    appearance="danger"
-                    onClick={() => {
-                      if (loading) return;
-                      deleteItem({ variables: { id: item.id } }).then(
-                        this.props.onDelete
-                      );
-                    }}
-                  >
-                    Delete
-                  </Button>
-                  <Button
-                    appearance="primary"
-                    variant="subtle"
-                    onClick={this.onClose}
-                  >
-                    Cancel
-                  </Button>
-                </Fragment>
-              }
+              width={400}
             >
-              <p>
+              <p style={{ marginTop: 0 }}>
                 Are you sure you want to delete{' '}
                 <strong>{item.name || item.id}</strong>?
               </p>
+              <footer>
+                <Button
+                  appearance="danger"
+                  onClick={() => {
+                    if (loading) return;
+                    deleteItem({ variables: { id: item.id } }).then(
+                      this.props.onDelete
+                    );
+                  }}
+                >
+                  Delete
+                </Button>
+                <Button variant="subtle" onClick={this.onClose}>
+                  Cancel
+                </Button>
+              </footer>
             </Dialog>
           );
         }}
