@@ -1,11 +1,12 @@
 // @flow
 
-import React, { Component, Fragment, type Element, type Node } from 'react';
+import React, { Component, type Element, type Node } from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
-import NodeResolver from 'react-node-resolver';
 
 import { borderRadius, colors, gridSize } from '../../theme';
+import { SlideDown } from './transitions';
+import withModalHandlers, { type CloseType } from './withModalHandlers';
 
 const ItemElement = props => {
   if (props.to) return <Link {...props} />;
@@ -44,6 +45,8 @@ const Menu = styled.div({
   marginTop: gridSize,
   maxHeight: '100%',
   minWidth: 160,
+  paddingBottom: gridSize / 2,
+  paddingTop: gridSize / 2,
   position: 'absolute',
 });
 
@@ -56,11 +59,13 @@ type ItemType = {
 type ClickArgs = { onClick?: MouseEvent => void };
 type Props = {
   children: Element<*>,
+  close: CloseType,
   defaultIsOpen: boolean,
+  getModalRef: HTMLElement => void,
   items: Array<ItemType>,
   selectClosesMenu: boolean,
+  style: Object,
 };
-type State = { isOpen: boolean };
 
 function focus(el) {
   if (el && typeof el.focus === 'function') {
@@ -68,66 +73,30 @@ function focus(el) {
   }
 }
 
-export default class Dropdown extends Component<Props, State> {
-  lastHover: HTMLElement;
+class Dropdown extends Component<Props> {
   menu: HTMLElement;
-  target: HTMLElement;
-  state = { isOpen: this.props.defaultIsOpen };
+  lastHover: HTMLElement;
   static defaultProps = {
     selectClosesMenu: true,
   };
 
   componentDidMount() {
-    document.addEventListener('click', this.handleClick);
     document.addEventListener('keydown', this.handleKeyDown, false);
   }
   componentWillUnmount() {
-    document.removeEventListener('click', this.handleClick);
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
-  open = () => {
-    this.setState({ isOpen: true });
-    focus(this.menu.firstChild);
-  };
-  close = ({ returnFocus }: { returnFocus: boolean }) => {
-    this.setState({ isOpen: false });
-    if (returnFocus) this.target.focus();
-  };
-
-  handleClick = ({ target }: MouseEvent) => {
-    const { isOpen } = this.state;
-
-    // appease flow
-    if (!(target instanceof HTMLElement)) return;
-
-    // close on outside click
-    if (isOpen && !this.menu.contains(target)) {
-      this.close({ returnFocus: false });
-    }
-
-    // open on target click
-    if (!isOpen && this.target.contains(target)) {
-      this.open();
-    }
-  };
   handleItemClick = ({ onClick }: ClickArgs) => (event: MouseEvent) => {
-    const { selectClosesMenu } = this.props;
-    if (selectClosesMenu) this.close({ returnFocus: true });
+    const { close, selectClosesMenu } = this.props;
+    if (selectClosesMenu) close({ returnFocus: true });
     if (onClick) onClick(event);
   };
   handleKeyDown = (event: KeyboardEvent) => {
     const { key, target } = event;
-    const { isOpen } = this.state;
 
-    // bail when closed
-    if (!isOpen || !(target instanceof HTMLElement)) return;
-
-    // bail when escape
-    if (key === 'Escape') {
-      this.close({ returnFocus: true });
-      return;
-    }
+    // appease flow
+    if (!(target instanceof HTMLElement)) return;
 
     // bail on unused keys
     if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown'].indexOf(key) === -1) {
@@ -169,36 +138,33 @@ export default class Dropdown extends Component<Props, State> {
   handleMenuLeave = () => {
     this.lastHover.focus();
   };
-
-  getTarget = (ref: HTMLElement) => {
-    this.target = ref;
-  };
   getMenu = (ref: HTMLElement) => {
     this.menu = ref;
+    this.props.getModalRef(ref);
   };
 
   render() {
-    const { children, items } = this.props;
-    const { isOpen } = this.state;
+    const { items, style } = this.props;
 
     return (
-      <Fragment>
-        <NodeResolver innerRef={this.getTarget}>{children}</NodeResolver>
-        {isOpen ? (
-          <Menu innerRef={this.getMenu} onMouseLeave={this.handleMenuLeave}>
-            {items.map(({ content, ...rest }, idx) => (
-              <Item
-                {...rest}
-                onClick={this.handleItemClick(rest)}
-                onMouseOver={this.handleMouseOver}
-                key={idx}
-              >
-                {content}
-              </Item>
-            ))}
-          </Menu>
-        ) : null}
-      </Fragment>
+      <Menu
+        innerRef={this.getMenu}
+        onMouseLeave={this.handleMenuLeave}
+        style={style}
+      >
+        {items.map(({ content, ...rest }, idx) => (
+          <Item
+            {...rest}
+            onClick={this.handleItemClick(rest)}
+            onMouseOver={this.handleMouseOver}
+            key={idx}
+          >
+            {content}
+          </Item>
+        ))}
+      </Menu>
     );
   }
 }
+
+export default withModalHandlers(Dropdown, { Transition: SlideDown });
