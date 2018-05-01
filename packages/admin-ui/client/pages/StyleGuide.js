@@ -14,7 +14,7 @@ import { colors } from '@keystonejs/ui/src/theme';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
 import { Badge } from '@keystonejs/ui/src/primitives/badge';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
+import { Button, LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
 import {
   Checkbox,
   CheckboxGroup,
@@ -259,41 +259,61 @@ const DropdownGuide = () => (
   </Fragment>
 );
 
-const ButtonGuide = () => (
-  <Fragment>
-    <h2>Buttons</h2>
-    <h4>Variant: Bold</h4>
-    <FlexGroup>
-      <FlexGroup isInline>
-        <Button>Default</Button>
-        <Button appearance="primary">Primary</Button>
-        <Button appearance="create">Create</Button>
-        <Button appearance="warning">Warning</Button>
-        <Button appearance="danger">Danger</Button>
-      </FlexGroup>
-      <FlexGroup isInline isContiguous>
-        <Button>First</Button>
-        <Button>Second</Button>
-        <Button>Third</Button>
-      </FlexGroup>
-    </FlexGroup>
-    <h4>Variant: Subtle</h4>
-    <FlexGroup isInline>
-      <Button variant="subtle" appearance="default">
-        Default
-      </Button>
-      <Button variant="subtle" appearance="primary">
-        Primary
-      </Button>
-      <Button variant="subtle" appearance="warning">
-        Warning
-      </Button>
-      <Button variant="subtle" appearance="danger">
-        Danger
-      </Button>
-    </FlexGroup>
-  </Fragment>
-);
+class ButtonGuide extends Component {
+  state = { loading: '' };
+  loadingClick = variant => () => {
+    const loading = variant === this.state.loading ? '' : variant;
+    this.setState({ loading });
+  };
+  render() {
+    const { loading } = this.state;
+    const loadingTypes = [
+      { appearance: 'default', variant: 'dots' },
+      { appearance: 'primary', variant: 'dots' },
+      { appearance: 'default', variant: 'spinner' },
+      { appearance: 'primary', variant: 'spinner' },
+    ];
+    return (
+      <Fragment>
+        <h2>Buttons</h2>
+        <h4>Variant: Bold</h4>
+        <FlexGroup>
+          <FlexGroup isInline>
+            {['Default', 'Primary', 'Create', 'Warning', 'Danger'].map(s => (
+              <Button appearance={s.toLowerCase()}>{s}</Button>
+            ))}
+          </FlexGroup>
+          <FlexGroup isInline isContiguous>
+            <Button>First</Button>
+            <Button>Second</Button>
+            <Button>Third</Button>
+          </FlexGroup>
+        </FlexGroup>
+        <h4>Variant: Subtle</h4>
+        <FlexGroup isInline>
+          {['Default', 'Primary', 'Warning', 'Danger'].map(s => (
+            <Button variant="subtle" appearance={s.toLowerCase()}>
+              {s}
+            </Button>
+          ))}
+        </FlexGroup>
+        <h4>Loading Buttons</h4>
+        <FlexGroup isInline>
+          {loadingTypes.map(b => (
+            <LoadingButton
+              appearance={b.appearance}
+              isLoading={loading === `${b.variant}-${b.appearance}`}
+              onClick={this.loadingClick(`${b.variant}-${b.appearance}`)}
+              indicatorVariant={b.variant}
+            >
+              {`${b.variant} ${b.appearance}`}
+            </LoadingButton>
+          ))}
+        </FlexGroup>
+      </Fragment>
+    );
+  }
+}
 
 class ModalGuide extends Component {
   state = { dialogIsOpen: false };
