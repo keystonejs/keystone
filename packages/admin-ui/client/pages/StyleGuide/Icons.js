@@ -51,7 +51,7 @@ export default class IconsGuide extends Component {
         {Object.keys(icons).map(name => {
           const isCopied = copyText === name;
           const Icon = isCopied ? icons.CheckIcon : icons[name];
-          const importText = `import { ${name} } from '@keystonejs/icons'`;
+          const importText = `import { ${name} } from '@keystonejs/icons';`;
           return (
             <Cell width={2} key={name}>
               <CopyToClipboard text={importText} onCopy={this.handleCopy(name)}>

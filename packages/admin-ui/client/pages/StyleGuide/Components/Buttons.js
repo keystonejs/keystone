@@ -35,6 +35,22 @@ export default class ButtonGuide extends Component {
             <Button>Third</Button>
           </FlexGroup>
         </FlexGroup>
+        <FlexGroup style={{ marginTop: '1em' }}>
+          <FlexGroup isInline>
+            {['Default', 'Primary'].map(s => (
+              <Button key={s} appearance={s.toLowerCase()} isDisabled>
+                {s}: <code>isDisabled</code>
+              </Button>
+            ))}
+          </FlexGroup>
+          <FlexGroup isInline>
+            {['Default', 'Primary'].map(s => (
+              <Button key={s} appearance={s.toLowerCase()} isActive>
+                {s}: <code>isActive</code>
+              </Button>
+            ))}
+          </FlexGroup>
+        </FlexGroup>
         <h4>Variant: Subtle</h4>
         <FlexGroup isInline>
           {['Default', 'Primary', 'Warning', 'Danger'].map(s => (
