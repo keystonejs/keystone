@@ -13,7 +13,7 @@ import { colors } from '@keystonejs/ui/src/theme';
 
 // This import is loaded by the @keystone/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
-import FieldViews from '../KEYSTONE_FIELD_VIEWS';
+import FieldTypes from '../../FIELD_TYPES';
 
 const getItemQuery = ({ list, itemId }) => gql`
   {
@@ -123,7 +123,7 @@ const ItemDetails = withRouter(
           <ItemId>ID: {item.id}</ItemId>
           <Form>
             {list.fields.map((field, i) => {
-              const { Field } = FieldViews[list.key][field.path];
+              const { Field } = FieldTypes[list.key][field.path];
               return (
                 <Field
                   autoFocus={!i}

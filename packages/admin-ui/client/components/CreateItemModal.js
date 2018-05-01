@@ -4,7 +4,7 @@ import { Mutation } from 'react-apollo';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import styled from 'react-emotion';
-import FieldViews from '../pages/KEYSTONE_FIELD_VIEWS';
+import FieldTypes from '../FIELD_TYPES';
 
 const getCreateMutation = ({ list }) => {
   return gql`
@@ -84,7 +84,7 @@ class CreateItemModal extends Component {
       >
         <Form>
           {list.fields.map(field => {
-            const { Field } = FieldViews[list.key][field.path];
+            const { Field } = FieldTypes[list.key][field.path];
             return (
               <Field
                 item={item}

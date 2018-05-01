@@ -1,4 +1,4 @@
-import FieldTypes from '../pages/KEYSTONE_FIELD_VIEWS';
+import FieldTypes from '../FIELD_TYPES';
 
 export default class List {
   constructor(config) {

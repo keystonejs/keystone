@@ -43,7 +43,7 @@ module.exports = function({ adminMeta, adminPath, apiPath }) {
           use: ['file-loader'],
         },
         {
-          test: /KEYSTONE_FIELD_VIEWS/,
+          test: /FIELD_TYPES/,
           use: [
             {
               loader: '@keystone/field-views-loader',
