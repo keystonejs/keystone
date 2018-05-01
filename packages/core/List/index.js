@@ -58,7 +58,7 @@ module.exports = class List {
       .join('\n        ');
     const fieldTypes = this.fields
       .map(i => i.getGraphqlTypes())
-      .filter(j => j)
+      .filter(i => i)
       .join('\n     ');
     const updateArgs = this.fields
       .map(i => i.getGraphqlUpdateArgs())
