@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'react-emotion';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import * as icons from '@keystonejs/icons';
 
 import Nav from '../components/Nav';
@@ -13,7 +14,7 @@ import { colors } from '@keystonejs/ui/src/theme';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
 import { Badge } from '@keystonejs/ui/src/primitives/badge';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
+import { Button, LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
 import {
   Checkbox,
   CheckboxGroup,
@@ -52,7 +53,7 @@ const SubnavItem = styled.div(({ isSelected }) => ({
 
 const sections = ['components', 'palette', 'icons'];
 const upCase = s => s.charAt(0).toUpperCase() + s.slice(1);
-type State = { currentSection: 'components' | 'palette' };
+type State = { currentSection: 'components' | 'palette' | 'icons' };
 export default class StyleGuide extends Component<*, State> {
   state = { currentSection: sections[0] };
   renderCurrentSection() {
@@ -107,48 +108,77 @@ export default class StyleGuide extends Component<*, State> {
   }
 }
 
-const IconsGrid = styled('div')`
-  display: flex;
-  align-items: stretch;
-  align-content: stretch;
-  flex-wrap: wrap;
-  justify-content: space-between;
-`;
-
 const IconContainer = styled('div')`
-  transition: box-shadow 80ms linear;
   background-color: white;
-  border-radius: 0.3em;
+  border-radius: 0.2em;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.075), 0 0 0 1px rgba(0, 0, 0, 0.1);
   color: #666;
-  display: inline-block;
+  cursor: pointer;
   padding: 16px;
-  margin: 8px;
+  position: relative;
   text-align: center;
+  transition: box-shadow 80ms linear;
 
   &:hover {
-    color: #333;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.2);
+    color: #222;
+  }
+  &:active {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.24);
+    top: 1px;
   }
 `;
 
 const IconName = styled('div')`
+  font-size: 13px;
   margin-top: 8px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
-const IconsGuide = () => (
-  <IconsGrid>
-    {Object.keys(icons).map(name => {
-      const Icon = icons[name];
-      return (
-        <IconContainer key={name}>
-          <Icon css={{ width: 24, height: 24 }} />
-          <IconName>{name}</IconName>
-        </IconContainer>
-      );
-    })}
-  </IconsGrid>
-);
-
+class IconsGuide extends Component {
+  state = { copyText: '' };
+  handleCopy = text => () => {
+    this.setState({ copyText: text }, () => {
+      setTimeout(() => {
+        this.setState({ copyText: '' });
+      }, 500);
+    });
+  };
+  render() {
+    const { copyText } = this.state;
+    return (
+      <Grid gap={16}>
+        {Object.keys(icons).map(name => {
+          const isCopied = copyText === name;
+          const Icon = isCopied ? icons.CheckIcon : icons[name];
+          const importText = `import { ${name} } from '@keystonejs/icons'`;
+          return (
+            <Cell width={2} key={name}>
+              <CopyToClipboard text={importText} onCopy={this.handleCopy(name)}>
+                <IconContainer>
+                  <Icon
+                    css={{
+                      fill: isCopied
+                        ? `${colors.create} !important`
+                        : 'inherit',
+                      width: 24,
+                      height: 24,
+                    }}
+                  />
+                  <IconName className="icon-text">
+                    {isCopied ? 'Copied!' : name}
+                  </IconName>
+                </IconContainer>
+              </CopyToClipboard>
+            </Cell>
+          );
+        })}
+      </Grid>
+    );
+  }
+}
 const AlertGuide = () => (
   <Fragment>
     <h2>Alerts</h2>
@@ -229,41 +259,67 @@ const DropdownGuide = () => (
   </Fragment>
 );
 
-const ButtonGuide = () => (
-  <Fragment>
-    <h2>Buttons</h2>
-    <h4>Variant: Bold</h4>
-    <FlexGroup>
-      <FlexGroup isInline>
-        <Button>Default</Button>
-        <Button appearance="primary">Primary</Button>
-        <Button appearance="create">Create</Button>
-        <Button appearance="warning">Warning</Button>
-        <Button appearance="danger">Danger</Button>
-      </FlexGroup>
-      <FlexGroup isInline isContiguous>
-        <Button>First</Button>
-        <Button>Second</Button>
-        <Button>Third</Button>
-      </FlexGroup>
-    </FlexGroup>
-    <h4>Variant: Subtle</h4>
-    <FlexGroup isInline>
-      <Button variant="subtle" appearance="default">
-        Default
-      </Button>
-      <Button variant="subtle" appearance="primary">
-        Primary
-      </Button>
-      <Button variant="subtle" appearance="warning">
-        Warning
-      </Button>
-      <Button variant="subtle" appearance="danger">
-        Danger
-      </Button>
-    </FlexGroup>
-  </Fragment>
-);
+class ButtonGuide extends Component {
+  state = { loading: '' };
+  loadingClick = variant => () => {
+    const loading = variant === this.state.loading ? '' : variant;
+    this.setState({ loading });
+  };
+  render() {
+    const { loading } = this.state;
+    const loadingTypes = [
+      { appearance: 'default', variant: 'dots' },
+      { appearance: 'primary', variant: 'dots' },
+      { appearance: 'default', variant: 'spinner' },
+      { appearance: 'primary', variant: 'spinner' },
+    ];
+    return (
+      <Fragment>
+        <h2>Buttons</h2>
+        <h4>Variant: Bold</h4>
+        <FlexGroup>
+          <FlexGroup isInline>
+            {['Default', 'Primary', 'Create', 'Warning', 'Danger'].map(s => (
+              <Button key={s} appearance={s.toLowerCase()}>
+                {s}
+              </Button>
+            ))}
+          </FlexGroup>
+          <FlexGroup isInline isContiguous>
+            <Button>First</Button>
+            <Button>Second</Button>
+            <Button>Third</Button>
+          </FlexGroup>
+        </FlexGroup>
+        <h4>Variant: Subtle</h4>
+        <FlexGroup isInline>
+          {['Default', 'Primary', 'Warning', 'Danger'].map(s => (
+            <Button key={s} variant="subtle" appearance={s.toLowerCase()}>
+              {s}
+            </Button>
+          ))}
+        </FlexGroup>
+        <h4>Loading Buttons</h4>
+        <FlexGroup isInline>
+          {loadingTypes.map(b => {
+            const key = `${b.variant}-${b.appearance}`;
+            return (
+              <LoadingButton
+                appearance={b.appearance}
+                key={key}
+                isLoading={loading === key}
+                onClick={this.loadingClick(key)}
+                indicatorVariant={b.variant}
+              >
+                {`${b.variant} ${b.appearance}`}
+              </LoadingButton>
+            );
+          })}
+        </FlexGroup>
+      </Fragment>
+    );
+  }
+}
 
 class ModalGuide extends Component {
   state = { dialogIsOpen: false };

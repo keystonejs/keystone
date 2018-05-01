@@ -4,7 +4,8 @@
   "author": "Jed Watson",
   "license": "MIT",
   "scripts": {
-    "start": "cd packages/test-project && npm start"
+    "start": "cd packages/test-project && npm start",
+    "fresh": "rm -rf node_modules && bolt"
   },
   "dependencies": {
     "apollo-boost": "^0.1.4",
@@ -43,6 +44,7 @@
     "raf-schd": "^2.1.1",
     "react": "^16.3.1",
     "react-apollo": "^2.1.3",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.3.1",
     "react-emotion": "^9.1.1",
     "react-node-resolver": "^1.0.1",

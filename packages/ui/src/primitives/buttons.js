@@ -1,17 +1,27 @@
 // @flow
 
-import React from 'react';
+import React, { type Node } from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
 import { colors } from '../theme';
 import { alpha, darken, lighten } from '../theme/color-utils';
 import { buttonAndInputBase } from './forms';
+import { LoadingIndicator, LoadingSpinner } from './loading';
 
-const ButtonElement = props => {
+type Props = {
+  appearance: 'default' | 'primary' | 'warning' | 'danger',
+  children: Node,
+  href?: string,
+  isDisabled: boolean,
+  to?: string,
+  variant: 'bold' | 'subtle',
+};
+
+const ButtonElement = ({ isDisabled, ...props }: Props) => {
   if (props.to) return <Link {...props} />;
   if (props.href) return <a {...props} />;
-  return <button type="button" {...props} />;
+  return <button type="button" disabled={isDisabled} {...props} />;
 };
 
 const subtleAppearance = {
@@ -66,13 +76,14 @@ export const Button = styled(ButtonElement)(
   ({ appearance, isDisabled, variant }) => {
     const variantStyles =
       variant === 'subtle'
-        ? makeLinkVariant({ appearance })
-        : makeSolidVariant({ appearance });
-
+        ? makeLinkVariant({ appearance, isDisabled })
+        : makeSolidVariant({ appearance, isDisabled });
     return {
       ...buttonAndInputBase,
       cursor: isDisabled ? 'default' : 'pointer',
       display: 'inline-block',
+      opacity: isDisabled ? 0.66 : null,
+      pointerEvents: isDisabled ? 'none' : null,
       textAlign: 'center',
       touchAction: 'manipulation', // Disables "double-tap to zoom" for mobile; removes delay on click events
       userSelect: 'none',
@@ -96,21 +107,74 @@ Button.defaultProps = {
   variant: 'bold',
 };
 
-function makeLinkVariant({ appearance }) {
+// ==============================
+// Loading Variant
+// ==============================
+
+const LoadingButtonWrapper = styled(Button)({ position: 'relative' });
+const LoadingIndicatorWrapper = styled.div({
+  left: '50%',
+  position: 'absolute',
+  top: '50%',
+  transform: 'translate(-50%, -50%)',
+});
+
+function getAppearance(appearance) {
+  if (appearance === 'default') return 'dark';
+  return 'inverted';
+}
+
+type Loading = Props & {
+  isLoading: boolean,
+  indicatorVariant: 'spinner' | 'dots',
+};
+export const LoadingButton = ({
+  children,
+  indicatorVariant,
+  isLoading,
+  ...props
+}: Loading) => {
+  const appearance = getAppearance(props.appearance);
+  const textCSS = isLoading ? { visibility: 'hidden' } : null;
+  const isSpinner = indicatorVariant === 'spinner';
+
+  return (
+    <LoadingButtonWrapper {...props} isDisabled={isLoading}>
+      {isLoading ? (
+        <LoadingIndicatorWrapper>
+          {isSpinner ? (
+            <LoadingSpinner appearance={appearance} size={16} />
+          ) : (
+            <LoadingIndicator appearance={appearance} size={4} />
+          )}
+        </LoadingIndicatorWrapper>
+      ) : null}
+      <span css={textCSS}>{children}</span>
+    </LoadingButtonWrapper>
+  );
+};
+LoadingButton.defaultProps = {
+  appearance: 'default',
+  isLoading: false,
+  variant: 'bold',
+  indicatorVariant: 'dots',
+};
+
+function makeLinkVariant({ appearance, isDisabled }) {
   const { text, textHover, isSolidOnHover } = subtleAppearance[appearance];
 
   return {
     color: text,
 
     ':hover, :focus': isSolidOnHover
-      ? makeSolidVariant({ appearance })
+      ? makeSolidVariant({ appearance, isDisabled })
       : {
           color: textHover,
           textDecoration: 'underline',
         },
   };
 }
-function makeSolidVariant({ appearance }) {
+function makeSolidVariant({ appearance, isDisabled }) {
   const { bg, border, focusRing, text } = boldAppearance[appearance];
   const bgTop = lighten(bg, 10);
   const bgBottom = darken(bg, 10);
@@ -123,8 +187,11 @@ function makeSolidVariant({ appearance }) {
       : '0 -1px 0 rgba(0, 0, 0, 0.25)';
 
   return {
-    background: `linear-gradient(to bottom, ${bgTop} 0%, ${bgBottom} 100%)`,
-    borderColor: `${borderTop} ${border} ${borderBottom}`,
+    backgroundColor: bgBottom,
+    background: isDisabled
+      ? null
+      : `linear-gradient(to bottom, ${bgTop} 0%, ${bgBottom} 100%)`,
+    borderColor: isDisabled ? null : `${borderTop} ${border} ${borderBottom}`,
     color: text,
     fontWeight: 500,
     textShadow,
