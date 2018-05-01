@@ -31,7 +31,7 @@ import {
   FieldLabel,
   FieldInput,
 } from '@keystonejs/ui/src/primitives/fields';
-import { Dialog, Dropdown } from '@keystonejs/ui/src/primitives/modals';
+import { Dialog, Dropdown, Popout } from '@keystonejs/ui/src/primitives/modals';
 
 const SubNav = styled.div({
   backgroundColor: colors.N05,
@@ -68,7 +68,6 @@ export default class StyleGuide extends Component<*, State> {
           <Fragment>
             <BadgeGuide />
             <ButtonGuide />
-            <DropdownGuide />
             <ModalGuide />
             <FieldGuide />
             <LayoutGuide />
@@ -240,25 +239,6 @@ const BadgeGuide = () => (
   </Fragment>
 );
 
-const DropdownGuide = () => (
-  <Fragment>
-    <h2>Dropdowns</h2>
-    <Dropdown
-      // selectClosesMenu={false}
-      items={[
-        { to: '/admin', content: 'Home' },
-        { content: 'Macaroon', onClick: console.log },
-        { content: 'Cupcake', onClick: console.log },
-        { content: 'Liquorice', onClick: console.log },
-        { content: 'Cookie', onClick: console.log },
-        { content: 'Cake', onClick: console.log },
-      ]}
-    >
-      <Button>Show menu</Button>
-    </Dropdown>
-  </Fragment>
-);
-
 class ButtonGuide extends Component {
   state = { loading: '' };
   loadingClick = variant => () => {
@@ -321,6 +301,10 @@ class ButtonGuide extends Component {
   }
 }
 
+const PopoutContent = styled.div({
+  padding: 20,
+});
+
 class ModalGuide extends Component {
   state = { dialogIsOpen: false };
   toggleDialog = () => {
@@ -331,9 +315,43 @@ class ModalGuide extends Component {
     return (
       <Fragment>
         <h2>Modals</h2>
+
+        <h4>Dropdowns</h4>
+        <Dropdown
+          // selectClosesMenu={false}
+          items={[
+            { to: '/admin', content: 'Home' },
+            { content: 'Macaroon', onClick: console.log },
+            { content: 'Cupcake', onClick: console.log },
+            { content: 'Liquorice', onClick: console.log },
+            { content: 'Cookie', onClick: console.log },
+            { content: 'Cake', onClick: console.log },
+          ]}
+        >
+          <Button>Show menu</Button>
+        </Dropdown>
+
+        <h4>Popouts</h4>
+        <FlexGroup justify="space-between">
+          <Popout content={<PopoutContent>Left</PopoutContent>}>
+            <Button>Left</Button>
+          </Popout>
+          <Popout content={<PopoutContent>Intermediate Left</PopoutContent>}>
+            <Button>Intermediate Left</Button>
+          </Popout>
+          <Popout content={<PopoutContent>Middle</PopoutContent>}>
+            <Button>Middle</Button>
+          </Popout>
+          <Popout content={<PopoutContent>Intermediate Right</PopoutContent>}>
+            <Button>Intermediate Right</Button>
+          </Popout>
+          <Popout content={<PopoutContent>Right</PopoutContent>}>
+            <Button>Right</Button>
+          </Popout>
+        </FlexGroup>
+
         <h4>Dialog</h4>
         <Button onClick={this.toggleDialog}>Open Dialog</Button>
-
         <Dialog
           isOpen={dialogIsOpen}
           onClose={this.toggleDialog}

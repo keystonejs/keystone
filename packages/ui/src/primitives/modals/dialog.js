@@ -5,10 +5,10 @@ import { createPortal } from 'react-dom';
 import styled from 'react-emotion';
 import ScrollLock from 'react-scrolllock';
 
-import FocusTrap, { type FocusTarget } from '../FocusTrap';
-import { Fade, Slide } from './transitions';
-import { colors } from '../../../theme';
-import { alpha } from '../../../theme/color-utils';
+import FocusTrap, { type FocusTarget } from './FocusTrap';
+import { Fade, SlideUp } from './transitions';
+import { colors } from '../../theme';
+import { alpha } from '../../theme/color-utils';
 
 const outerGutter = 40;
 const innerGutter = 20;
@@ -119,7 +119,7 @@ export default class ModalDialog extends Component<Props> {
         <Fade in={isOpen}>
           <Blanket onClick={onClose} />
         </Fade>
-        <Slide in={isOpen}>
+        <SlideUp in={isOpen}>
           <Positioner width={width}>
             <FocusTrap options={{ initialFocus }}>
               <Dialog>
@@ -133,7 +133,7 @@ export default class ModalDialog extends Component<Props> {
               </Dialog>
             </FocusTrap>
           </Positioner>
-        </Slide>
+        </SlideUp>
         {isOpen ? <ScrollLock /> : null}
       </Fragment>,
       attachTo

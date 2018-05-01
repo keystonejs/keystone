@@ -80,10 +80,33 @@ export const Fade = (props: TransitionProps) => (
   />
 );
 
-export const Slide = (props: TransitionProps) => {
+export const SlideUp = (props: TransitionProps) => {
   const out = {
     opacity: 0,
     transform: 'scale(0.95) translate3d(0,20px,0)',
+  };
+  return (
+    <TransitionHandler
+      defaultStyles={{
+        transitionProperty: 'opacity, transform',
+        transitionDuration,
+        transitionTimingFunction,
+        opacity: 0,
+      }}
+      transitionStyles={{
+        entered: { opacity: 1, transform: 'translate3d(0,0,0)' },
+        exiting: out,
+        entering: out,
+      }}
+      {...props}
+    />
+  );
+};
+
+export const SlideDown = (props: TransitionProps) => {
+  const out = {
+    opacity: 0,
+    transform: 'translate3d(0,-8px,0)',
   };
   return (
     <TransitionHandler
