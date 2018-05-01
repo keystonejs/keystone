@@ -280,7 +280,9 @@ class ButtonGuide extends Component {
         <FlexGroup>
           <FlexGroup isInline>
             {['Default', 'Primary', 'Create', 'Warning', 'Danger'].map(s => (
-              <Button appearance={s.toLowerCase()}>{s}</Button>
+              <Button key={s} appearance={s.toLowerCase()}>
+                {s}
+              </Button>
             ))}
           </FlexGroup>
           <FlexGroup isInline isContiguous>
@@ -292,23 +294,27 @@ class ButtonGuide extends Component {
         <h4>Variant: Subtle</h4>
         <FlexGroup isInline>
           {['Default', 'Primary', 'Warning', 'Danger'].map(s => (
-            <Button variant="subtle" appearance={s.toLowerCase()}>
+            <Button key={s} variant="subtle" appearance={s.toLowerCase()}>
               {s}
             </Button>
           ))}
         </FlexGroup>
         <h4>Loading Buttons</h4>
         <FlexGroup isInline>
-          {loadingTypes.map(b => (
-            <LoadingButton
-              appearance={b.appearance}
-              isLoading={loading === `${b.variant}-${b.appearance}`}
-              onClick={this.loadingClick(`${b.variant}-${b.appearance}`)}
-              indicatorVariant={b.variant}
-            >
-              {`${b.variant} ${b.appearance}`}
-            </LoadingButton>
-          ))}
+          {loadingTypes.map(b => {
+            const key = `${b.variant}-${b.appearance}`;
+            return (
+              <LoadingButton
+                appearance={b.appearance}
+                key={key}
+                isLoading={loading === key}
+                onClick={this.loadingClick(key)}
+                indicatorVariant={b.variant}
+              >
+                {`${b.variant} ${b.appearance}`}
+              </LoadingButton>
+            );
+          })}
         </FlexGroup>
       </Fragment>
     );

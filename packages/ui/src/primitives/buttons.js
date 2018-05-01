@@ -18,10 +18,10 @@ type Props = {
   variant: 'bold' | 'subtle',
 };
 
-const ButtonElement = (props: Props) => {
+const ButtonElement = ({ isDisabled, ...props }: Props) => {
   if (props.to) return <Link {...props} />;
   if (props.href) return <a {...props} />;
-  return <button type="button" disabled={props.isDisabled} {...props} />;
+  return <button type="button" disabled={isDisabled} {...props} />;
 };
 
 const subtleAppearance = {
