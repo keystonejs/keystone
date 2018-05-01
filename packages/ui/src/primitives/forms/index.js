@@ -2,6 +2,7 @@
 
 import React from 'react';
 import styled from 'react-emotion';
+import ReactSelect from 'react-select';
 
 import { colors, gridSize } from '../../theme';
 import { alpha } from '../../theme/color-utils';
@@ -46,3 +47,39 @@ export const Input = styled(InputField)({
     outline: 0,
   },
 });
+
+export const selectStyles = {
+  control: (base: any, { isFocused }: { isFocused: Boolean }) => ({
+    ...base,
+    backgroundColor: 'white',
+    color: 'inherit',
+    borderRadius: '0.3rem',
+    borderColor: isFocused ? colors.primary : colors.N20,
+    boxShadow: isFocused
+      ? `inset 0 1px 1px rgba(0, 0, 0, 0.075),
+        0 0 0 3px ${alpha(colors.primary, 0.2)}`
+      : 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
+    fontFamily: 'inherit',
+    fontSize: 14,
+    transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s',
+    '&:hover': {
+      borderColor: isFocused ? colors.primary : colors.N30,
+    },
+  }),
+  option: (base: any) => ({
+    ...base,
+    fontSize: 14,
+  }),
+  singleValue: (base: any) => ({
+    ...base,
+    color: 'inherit',
+  }),
+  multiValue: (base: any) => ({
+    ...base,
+    color: 'inherit',
+  }),
+};
+
+export const Select = (props: any) => (
+  <ReactSelect styles={selectStyles} {...props} />
+);

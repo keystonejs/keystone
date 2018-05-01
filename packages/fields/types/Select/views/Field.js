@@ -1,24 +1,11 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
 
 import {
   FieldContainer,
   FieldLabel,
   FieldInput,
+  Select,
 } from '@keystonejs/ui/src/primitives/fields';
-
-const styles = {
-  control: (base, { isFocused }) => ({
-    ...base,
-    backgroundColor: 'white',
-    fontFamily: 'inherit',
-    borderRadius: '0.3rem',
-    boxShadow: isFocused
-      ? 'inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(19, 133, 229, 0.1)'
-      : 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
-    transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s',
-  }),
-};
 
 export default class SelectField extends Component {
   onChange = option => {
@@ -34,7 +21,6 @@ export default class SelectField extends Component {
         <FieldInput>
           <Select
             autoFocus={autoFocus}
-            styles={styles}
             value={value}
             options={field.options}
             onChange={this.onChange}

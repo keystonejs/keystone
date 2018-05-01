@@ -11,6 +11,7 @@ import {
   Input,
   RadioGroup,
   Radio,
+  Select,
 } from '@keystonejs/ui/src/primitives/forms';
 import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 
@@ -21,6 +22,7 @@ const FieldGuide = () => (
     <FlexGroup isVertical>
       <Input placeholder="Input field" />
       <Input isMultiline placeholder="Textarea field" />
+      <Select options={[{ label: 'Select Field', value: 'react-select' }]} />
     </FlexGroup>
     <h4>Fields</h4>
     <FieldContainer>
