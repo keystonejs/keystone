@@ -4,8 +4,9 @@ import {
   FieldContainer,
   FieldLabel,
   FieldInput,
-  Select,
 } from '@keystonejs/ui/src/primitives/fields';
+
+import { Select } from '@keystonejs/ui/src/primitives/forms';
 
 export default class SelectField extends Component {
   onChange = option => {
