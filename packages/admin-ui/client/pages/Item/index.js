@@ -112,7 +112,7 @@ const ItemDetails = withRouter(
       updateItem({ variables: { id, data } }).then(onUpdate);
     };
     render() {
-      const { adminPath, list } = this.props;
+      const { adminPath, list, getListByKey } = this.props;
       const { item } = this.state;
       return (
         <Fragment>
@@ -129,6 +129,8 @@ const ItemDetails = withRouter(
                   autoFocus={!i}
                   field={field}
                   item={item}
+                  list={list}
+                  getListByKey={getListByKey}
                   key={field.path}
                   onChange={this.onChange}
                 />
@@ -157,7 +159,7 @@ const ItemNotFound = ({ itemId, list, adminPath }) => (
   </Fragment>
 );
 
-const ItemPage = ({ list, itemId, adminPath }) => {
+const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   const itemQuery = getItemQuery({ list, itemId });
   return (
     <Fragment>
@@ -185,6 +187,7 @@ const ItemPage = ({ list, itemId, adminPath }) => {
                     item={item}
                     key={itemId}
                     list={list}
+                    getListByKey={getListByKey}
                     onUpdate={refetch}
                     updateInProgress={updateInProgress}
                     updateItem={updateItem}

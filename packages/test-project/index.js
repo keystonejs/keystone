@@ -1,6 +1,6 @@
 const { AdminUI } = require('@keystonejs/admin-ui');
 const { Keystone } = require('@keystonejs/core');
-const { Text, Select, Password } = require('@keystonejs/fields');
+const { Text, Relationship, Select, Password } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
 
 // TODO: Make this work again
@@ -40,6 +40,10 @@ keystone.createList('Post', {
         { label: 'Draft', value: 'draft' },
         { label: 'Published', value: 'published' },
       ],
+    },
+    author: {
+      type: Relationship,
+      ref: 'User',
     },
   },
 });

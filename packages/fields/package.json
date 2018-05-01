@@ -8,7 +8,10 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
+    "@keystonejs/ui": "^5.0.0",
     "@keystonejs/utils": "^1.0.0",
-    "@keystonejs/ui": "^5.0.0"
+    "graphql-tag": "^2.8.0",
+    "mongoose": "^5.0.14",
+    "react-apollo": "^2.1.3"
   }
 }
