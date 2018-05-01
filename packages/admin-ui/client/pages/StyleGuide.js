@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'react-emotion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { Link, Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import * as icons from '@keystonejs/icons';
 
 import Nav from '../components/Nav';
@@ -37,75 +38,95 @@ const SubNav = styled.div({
   backgroundColor: colors.N05,
   borderBottom: `1px solid ${colors.N10}`,
 });
-const SubnavItem = styled.div(({ isSelected }) => ({
-  boxShadow: isSelected ? '0 2px' : null,
-  color: isSelected ? colors.text : colors.N60,
-  cursor: 'pointer',
-  fontWeight: isSelected ? 500 : 'normal',
-  marginRight: 10,
-  paddingBottom: 10,
-  paddingTop: 10,
+const SubnavItem = ({ isSelected, ...props }) => (
+  <Link
+    css={{
+      display: 'inline-block',
+      boxShadow: isSelected ? '0 2px' : null,
+      color: isSelected ? colors.text : colors.N60,
+      cursor: 'pointer',
+      fontWeight: isSelected ? 500 : 'normal',
+      marginRight: 10,
+      paddingBottom: 10,
+      paddingTop: 10,
 
-  ':hover': {
-    color: colors.text,
-  },
-}));
+      ':hover': {
+        color: colors.text,
+        textDecoration: 'none',
+      },
+    }}
+    {...props}
+  />
+);
 
-const sections = ['components', 'palette', 'icons'];
-const upCase = s => s.charAt(0).toUpperCase() + s.slice(1);
-type State = { currentSection: 'components' | 'palette' | 'icons' };
-export default class StyleGuide extends Component<*, State> {
-  state = { currentSection: sections[0] };
-  renderCurrentSection() {
-    const { currentSection } = this.state;
-    switch (currentSection) {
-      case 'palette':
-        return <PaletteGuide />;
-      case 'icons':
-        return <IconsGuide />;
-      default:
-        return (
-          <Fragment>
-            <BadgeGuide />
-            <ButtonGuide />
-            <ModalGuide />
-            <FieldGuide />
-            <LayoutGuide />
-            <ProgressGuide />
-            <AlertGuide />
-            <GridGuide />
-          </Fragment>
-        );
+const pages = ['components', 'palette', 'icons'];
+const upCase = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
+
+export default withRouter(
+  class StyleGuide extends Component<*> {
+    render() {
+      const {
+        adminPath,
+        match: { params: { page: currentPage } },
+      } = this.props;
+      return (
+        <Fragment>
+          <Nav />
+          <SubNav>
+            <Container>
+              <FlexGroup>
+                {pages.map(page => (
+                  <SubnavItem
+                    key={page}
+                    isSelected={currentPage === page}
+                    to={`${adminPath}/style-guide/${page}`}
+                  >
+                    {upCase(page)}
+                  </SubnavItem>
+                ))}
+              </FlexGroup>
+            </Container>
+          </SubNav>
+          <Container css={{ paddingBottom: 200 }}>
+            <Title>Style Guide: {upCase(currentPage)}</Title>
+            <Switch>
+              <Route
+                exact
+                path={`${adminPath}/style-guide/palette`}
+                component={PaletteGuide}
+              />
+              <Route
+                exact
+                path={`${adminPath}/style-guide/icons`}
+                component={IconsGuide}
+              />
+              <Route
+                path={`${adminPath}/style-guide/components`}
+                component={ComponentsGuide}
+              />
+              <Route>
+                <Redirect to={`${adminPath}/style-guide/components`} />
+              </Route>
+            </Switch>
+          </Container>
+        </Fragment>
+      );
     }
   }
-  render() {
-    const { currentSection } = this.state;
-    return (
-      <Fragment>
-        <Nav />
-        <SubNav>
-          <Container>
-            <FlexGroup>
-              {sections.map(s => (
-                <SubnavItem
-                  key={s}
-                  isSelected={currentSection === s}
-                  onClick={() => this.setState({ currentSection: s })}
-                >
-                  {upCase(s)}
-                </SubnavItem>
-              ))}
-            </FlexGroup>
-          </Container>
-        </SubNav>
-        <Container>
-          <Title>Style Guide: {upCase(currentSection)}</Title>
-          <div style={{ marginBottom: 200 }}>{this.renderCurrentSection()}</div>
-        </Container>
-      </Fragment>
-    );
-  }
-}
+);
+
+const ComponentsGuide = () => (
+  <Fragment>
+    <BadgeGuide />
+    <ButtonGuide />
+    <ModalGuide />
+    <FieldGuide />
+    <LayoutGuide />
+    <ProgressGuide />
+    <AlertGuide />
+    <GridGuide />
+  </Fragment>
+);
 
 const IconContainer = styled('div')`
   background-color: white;

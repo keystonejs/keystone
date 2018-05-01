@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { HomeIcon, SignOutIcon } from '@keystonejs/icons';
+import { TelescopeIcon, HomeIcon, SignOutIcon } from '@keystonejs/icons';
 
 import {
   Navbar,
@@ -26,6 +26,10 @@ const Nav = ({ adminMeta: { lists, listKeys, adminPath } }) => (
       })}
     </NavGroup>
     <NavGroup>
+      <NavItem to={`${adminPath}/style-guide`}>
+        <TelescopeIcon />
+      </NavItem>
+      <NavSeparator />
       <NavItem to={`${adminPath}/signin`}>
         <SignOutIcon />
       </NavItem>

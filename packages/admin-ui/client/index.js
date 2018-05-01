@@ -24,63 +24,67 @@ const Keystone = () => (
     <AdminMetaProvider>
       {adminMeta => {
         const { adminPath } = adminMeta;
-        return (<BrowserRouter>
-          <ScrollToTop>
-            <Switch>
-              <Route
-                exact
-                path={`${adminPath}/style-guide`}
-                component={StyleGuidePage}
-              />
-              <Route
-                exact
-                path={`${adminPath}/signin`}
-                render={() => <SessionPage {...adminMeta} />}
-              />
-              <Route
-                exact
-                path={`${adminPath}`}
-                render={() => <HomePage {...adminMeta} />}
-              />
-              <Route
-                path={`${adminPath}/:listKey`}
-                render={({ match: { params: { listKey } } }) => {
-                  const list = adminMeta.getListByPath(listKey);
-                  return list ? (
-                    <Switch>
-                      <Route
-                        exact
-                        path={`${adminPath}/:list`}
-                        render={() => (
-                          <ListPage key={listKey} list={list} {...adminMeta} />
-                        )}
-                      />
-                      <Route
-                        exact
-                        path={`${adminPath}/:list/:itemId`}
-                        render={({ match: { params: { itemId } } }) => (
-                          <ItemPage
-                            key={`${listKey}-${itemId}`}
-                            list={list}
-                            itemId={itemId}
-                            {...adminMeta}
-                          />
-                        )}
-                      />
-                      <Route
-                        render={() => <InvalidRoutePage {...adminMeta} />}
-                      />
-                    </Switch>
-                  ) : (
-                    <ListNotFoundPage listKey={listKey} {...adminMeta} />
-                  );
-                }}
-              />
-            </Switch>
-          </ScrollToTop>
-        </BrowserRouter>);
-      }
-    }
+        return (
+          <BrowserRouter>
+            <ScrollToTop>
+              <Switch>
+                <Route
+                  path={`${adminPath}/style-guide/:page?`}
+                  render={() => <StyleGuidePage {...adminMeta} />}
+                />
+                <Route
+                  exact
+                  path={`${adminPath}/signin`}
+                  render={() => <SessionPage {...adminMeta} />}
+                />
+                <Route
+                  exact
+                  path={`${adminPath}`}
+                  render={() => <HomePage {...adminMeta} />}
+                />
+                <Route
+                  path={`${adminPath}/:listKey`}
+                  render={({ match: { params: { listKey } } }) => {
+                    const list = adminMeta.getListByPath(listKey);
+                    return list ? (
+                      <Switch>
+                        <Route
+                          exact
+                          path={`${adminPath}/:list`}
+                          render={() => (
+                            <ListPage
+                              key={listKey}
+                              list={list}
+                              {...adminMeta}
+                            />
+                          )}
+                        />
+                        <Route
+                          exact
+                          path={`${adminPath}/:list/:itemId`}
+                          render={({ match: { params: { itemId } } }) => (
+                            <ItemPage
+                              key={`${listKey}-${itemId}`}
+                              list={list}
+                              itemId={itemId}
+                              {...adminMeta}
+                            />
+                          )}
+                        />
+                        <Route
+                          render={() => <InvalidRoutePage {...adminMeta} />}
+                        />
+                      </Switch>
+                    ) : (
+                      <ListNotFoundPage listKey={listKey} {...adminMeta} />
+                    );
+                  }}
+                />
+              </Switch>
+            </ScrollToTop>
+          </BrowserRouter>
+        );
+      }}
     </AdminMetaProvider>
   </ApolloProvider>
 );
