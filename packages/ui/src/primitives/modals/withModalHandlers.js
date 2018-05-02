@@ -22,11 +22,15 @@ function focus(el) {
   }
 }
 
+function getDisplayName(C) {
+  return `withModalHandlers(${C.displayName || C.name})`;
+}
+
 export default function withModalHandlers(
   WrappedComponent: ComponentType<*>,
   { Transition }: { Transition: (*) => * }
 ) {
-  return class Dropdown extends Component<Props, State> {
+  class IntermediateComponent extends Component<Props, State> {
     lastHover: HTMLElement;
     contentNode: HTMLElement;
     targetNode: HTMLElement;
@@ -111,5 +115,7 @@ export default function withModalHandlers(
         </Fragment>
       );
     }
-  };
+  }
+  IntermediateComponent.displayName = getDisplayName(WrappedComponent);
+  return IntermediateComponent;
 }

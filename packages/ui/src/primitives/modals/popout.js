@@ -4,7 +4,7 @@ import React, { Component, type Element, type Node } from 'react';
 import styled from 'react-emotion';
 import { createPortal } from 'react-dom';
 
-import { borderRadius, colors, gridSize } from '../../theme';
+import { borderRadius, gridSize } from '../../theme';
 import { SlideDown } from './transitions';
 import withModalHandlers, { type CloseType } from './withModalHandlers';
 

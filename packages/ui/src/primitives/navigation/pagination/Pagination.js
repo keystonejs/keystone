@@ -29,7 +29,7 @@ type PaginationProps = {
   total: number,
   value: number,
 };
-const PaginationElement = styled.div({
+const PaginationElement = styled.nav({
   alignItems: 'center',
   display: 'flex',
 });
@@ -137,7 +137,7 @@ class Pagination extends Component<PaginationProps> {
   }
   render() {
     return (
-      <PaginationElement>
+      <PaginationElement aria-label="Pagination">
         {this.renderCount()}
         {this.renderPages()}
       </PaginationElement>
