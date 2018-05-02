@@ -29,9 +29,17 @@ const PagePrimitive = ({
   isSelected,
   ...props
 }: PagePrimitiveProps) => {
-  if (props.to) return <Link {...props} />;
-  if (props.href) return <a {...props} />;
-  return <button type="button" disabled={isDisabled} {...props} />;
+  const current = isSelected ? 'page' : null;
+  if (props.to) return <Link aria-current={current} {...props} />;
+  if (props.href) return <a aria-current={current} {...props} />;
+  return (
+    <button
+      type="button"
+      disabled={isDisabled}
+      aria-current={current}
+      {...props}
+    />
+  );
 };
 PagePrimitive.defaultProps = {
   isDisabled: false,
