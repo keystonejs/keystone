@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import styled from 'react-emotion';
-import { Link, Redirect, Route, Switch, withRouter } from 'react-router-dom';
+import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 
 import Nav from '../../components/Nav';
 
@@ -9,33 +8,11 @@ import IconsGuide from './Icons';
 import PaletteGuide from './Palette';
 
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { colors } from '@keystonejs/ui/src/theme';
+import {
+  SecondaryNav,
+  SecondaryNavItem,
+} from '@keystonejs/ui/src/primitives/navigation';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
-
-const SubNav = styled.div({
-  backgroundColor: colors.N05,
-  borderBottom: `1px solid ${colors.N10}`,
-});
-const SubnavItem = ({ isSelected, ...props }) => (
-  <Link
-    css={{
-      display: 'inline-block',
-      boxShadow: isSelected ? '0 2px' : null,
-      color: isSelected ? colors.text : colors.N60,
-      cursor: 'pointer',
-      fontWeight: isSelected ? 500 : 'normal',
-      marginRight: 10,
-      paddingBottom: 10,
-      paddingTop: 10,
-
-      ':hover': {
-        color: colors.text,
-        textDecoration: 'none',
-      },
-    }}
-    {...props}
-  />
-);
 
 const pages = ['components', 'palette', 'icons'];
 const upCase = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
@@ -50,21 +27,19 @@ export default withRouter(
       return (
         <Fragment>
           <Nav />
-          <SubNav>
-            <Container>
-              <FlexGroup>
-                {pages.map(page => (
-                  <SubnavItem
-                    key={page}
-                    isSelected={currentPage === page}
-                    to={`${adminPath}/style-guide/${page}`}
-                  >
-                    {upCase(page)}
-                  </SubnavItem>
-                ))}
-              </FlexGroup>
-            </Container>
-          </SubNav>
+          <SecondaryNav>
+            <FlexGroup>
+              {pages.map(page => (
+                <SecondaryNavItem
+                  key={page}
+                  isSelected={currentPage === page}
+                  to={`${adminPath}/style-guide/${page}`}
+                >
+                  {upCase(page)}
+                </SecondaryNavItem>
+              ))}
+            </FlexGroup>
+          </SecondaryNav>
           <Container css={{ paddingBottom: 200 }}>
             <Title>Style Guide: {upCase(currentPage)}</Title>
             <Switch>
