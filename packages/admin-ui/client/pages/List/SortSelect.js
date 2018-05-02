@@ -5,39 +5,29 @@ import { colors } from '@keystonejs/ui/src/theme';
 import FieldAwareSelect, { type SelectProps } from './FieldAwareSelect';
 import { OptionPrimitive } from './components';
 
-export class SortOption extends Component {
-  handleChange = value => {
-    const { altIsDown, isSelected } = this.props;
-    const inverted = altIsDown || isSelected;
-    console.log('SortOption', value, inverted);
-    this.props.onChange(value, inverted);
-  };
-  render() {
-    const {
-      altIsDown,
-      children,
-      isFocused,
-      isSelected,
-      innerProps,
-    } = this.props;
-    const Icon = isSelected
-      ? ChevronUpIcon
-      : altIsDown ? ChevronUpIcon : ChevronDownIcon;
-    const iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
+export const SortOption = ({
+  altIsDown,
+  children,
+  isFocused,
+  isSelected,
+  innerProps,
+}) => {
+  const Icon = isSelected
+    ? ChevronUpIcon
+    : altIsDown ? ChevronUpIcon : ChevronDownIcon;
+  const iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
 
-    return (
-      <OptionPrimitive
-        isFocused={isFocused}
-        isSelected={isSelected}
-        {...innerProps}
-        onChange={this.handleChange}
-      >
-        <span>{children}</span>
-        <Icon css={{ color: iconColor }} />
-      </OptionPrimitive>
-    );
-  }
-}
+  return (
+    <OptionPrimitive
+      isFocused={isFocused}
+      isSelected={isSelected}
+      {...innerProps}
+    >
+      <span>{children}</span>
+      <Icon css={{ color: iconColor }} />
+    </OptionPrimitive>
+  );
+};
 
 type State = { altIsDown: boolean };
 

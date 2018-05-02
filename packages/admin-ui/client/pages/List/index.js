@@ -15,9 +15,8 @@ import { colors, gridSize } from '@keystonejs/ui/src/theme';
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
 import Nav from '../../components/Nav';
-import { Popout, ColumnOption, DisclosureArrow } from '../../components/Popout';
+import { Popout, DisclosureArrow } from '../../components/Popout';
 
-import FieldAwareSelect from './FieldAwareSelect';
 import ColumnSelect from './ColumnSelect';
 import SortSelect from './SortSelect';
 
@@ -121,8 +120,6 @@ class ListPage extends Component {
     const sortDirection = ListPage.orderOptions[0].value;
     const sortBy = displayedFields[0];
 
-    console.log('constructor', sortDirection);
-
     this.state = {
       displayedFields,
       sortDirection,
@@ -170,7 +167,6 @@ class ListPage extends Component {
     const sortDirection = inverted
       ? getInvertedSort(originalDirection)
       : originalDirection;
-    console.log('handleSortChange', inverted);
     this.setState({ sortBy, sortDirection });
   };
 
@@ -199,11 +195,8 @@ class ListPage extends Component {
   render() {
     const { list, adminPath } = this.props;
     const { displayedFields, sortDirection, sortBy, search } = this.state;
-    // console.log('sortDirection', sortDirection, sortBy);
 
     const sort = `${sortDirection === 'DESC' ? '-' : ''}${sortBy.path}`;
-
-    console.log('sortDirection', sortDirection);
 
     const query = getQuery({
       fields: displayedFields,
