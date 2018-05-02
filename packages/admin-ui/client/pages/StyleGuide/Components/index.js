@@ -8,9 +8,11 @@ import Layout from './Layout';
 import Loading from './Loading';
 import Alerts from './Alerts';
 import Grid from './Grid';
+import Pagination from './Pagination';
 
 const ComponentsGuide = () => (
   <Fragment>
+    <Pagination />
     <Badges />
     <Buttons />
     <Modals />
