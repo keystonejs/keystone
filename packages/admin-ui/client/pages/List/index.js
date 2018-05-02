@@ -256,7 +256,7 @@ class ListPage extends Component {
                       }
                     >
                       <SortSelect
-                        fields={displayedFields}
+                        fields={list.fields}
                         onChange={this.handleSortChange}
                         value={sortBy}
                       />
