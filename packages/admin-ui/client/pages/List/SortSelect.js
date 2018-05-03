@@ -1,9 +1,32 @@
 import React, { Component } from 'react';
+import styled from 'react-emotion';
 import { ChevronDownIcon, ChevronUpIcon } from '@keystonejs/icons';
 import { colors } from '@keystonejs/ui/src/theme';
 
 import FieldAwareSelect, { type SelectProps } from './FieldAwareSelect';
 import { OptionPrimitive } from './components';
+
+export const SortButton = styled.button(({ isActive }) => {
+  const overStyles = {
+    color: colors.primary,
+    textDecoration: 'underline',
+  };
+  const activeStyles = isActive ? overStyles : null;
+  return {
+    background: 0,
+    border: 0,
+    outline: 0,
+    color: 'inherit',
+    cursor: 'pointer',
+    display: 'inline-block',
+    fontSize: 'inherit',
+    fontWeight: 'inherit',
+    verticalAlign: 'baseline',
+
+    ':hover, :focus': overStyles,
+    ...activeStyles,
+  };
+});
 
 export const SortOption = ({
   altIsDown,

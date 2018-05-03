@@ -28,7 +28,14 @@ export default class FieldAwareSelect extends Component<SelectProps> {
   };
 
   render() {
-    const { components, fields, onChange, value, ...props } = this.props;
+    const {
+      components,
+      fields,
+      innerRef,
+      onChange,
+      value,
+      ...props
+    } = this.props;
 
     // Convert the fields data into the format react-select expects.
     const options = fields.map(({ label, path }) => ({ label, value: path }));
@@ -57,6 +64,7 @@ export default class FieldAwareSelect extends Component<SelectProps> {
         isClearable={false}
         menuIsOpen
         menuShouldScrollIntoView={false}
+        ref={innerRef}
         styles={selectStyles}
         tabSelectsValue={false}
         components={{

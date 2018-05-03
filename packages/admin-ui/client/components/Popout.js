@@ -34,17 +34,17 @@ const Footer = styled(Bar)({
 });
 
 // Other
-export const DisclosureArrow = styled.span`
-  border-left: 0.3em solid transparent;
-  border-right: 0.3em solid transparent;
-  border-top: 0.3em solid;
-  display: inline-block;
-  height: 0px;
-  margin-left: 0.33em;
-  margin-top: -0.125em;
-  vertical-align: middle;
-  width: 0px;
-`;
+export const DisclosureArrow = styled.span(({ size = '0.3em' }) => ({
+  borderLeft: `${size} solid transparent`,
+  borderRight: `${size} solid transparent`,
+  borderTop: `${size} solid`,
+  display: 'inline-block',
+  height: 0,
+  marginLeft: '0.33em',
+  marginTop: '-0.125em',
+  verticalAlign: 'middle',
+  width: 0,
+}));
 
 type Props = { buttonLabel: string };
 
@@ -56,9 +56,16 @@ export const Popout = ({
   headerBefore,
   headerTitle,
   target,
-}: Props) => (
-  <PopoutModal
-    content={
+}: Props) => {
+  const defaultTarget = (
+    <Button>
+      {buttonLabel}
+      <DisclosureArrow />
+    </Button>
+  );
+
+  return (
+    <PopoutModal target={target || defaultTarget}>
       <Fragment>
         <Header>
           {headerBefore}
@@ -68,13 +75,6 @@ export const Popout = ({
         <Body>{children}</Body>
         {footerContent ? <Footer>{footerContent}</Footer> : null}
       </Fragment>
-    }
-  >
-    {target || (
-      <Button>
-        {buttonLabel}
-        <DisclosureArrow />
-      </Button>
-    )}
-  </PopoutModal>
-);
+    </PopoutModal>
+  );
+};

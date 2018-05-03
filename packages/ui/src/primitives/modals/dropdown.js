@@ -5,6 +5,7 @@ import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
 import { borderRadius, colors, gridSize } from '../../theme';
+import FocusTrap from './FocusTrap';
 import { SlideDown } from './transitions';
 import withModalHandlers, { type CloseType } from './withModalHandlers';
 
@@ -56,7 +57,7 @@ type ItemType = {
   href?: string,
   onClick?: (*) => void,
 };
-type ClickArgs = { onClick?: MouseEvent => void };
+type ClickArgs = { onClick?: ({ event: MouseEvent, data: Object }) => void };
 type Props = {
   children: Element<*>,
   close: CloseType,
@@ -87,10 +88,12 @@ class Dropdown extends Component<Props> {
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
-  handleItemClick = ({ onClick }: ClickArgs) => (event: MouseEvent) => {
+  handleItemClick = ({ onClick, ...data }: ClickArgs) => (
+    event: MouseEvent
+  ) => {
     const { close, selectClosesMenu } = this.props;
     if (selectClosesMenu) close({ returnFocus: true });
-    if (onClick) onClick(event);
+    if (onClick) onClick({ event, data });
   };
   handleKeyDown = (event: KeyboardEvent) => {
     const { key, target } = event;
@@ -147,22 +150,27 @@ class Dropdown extends Component<Props> {
     const { items, style } = this.props;
 
     return (
-      <Menu
-        innerRef={this.getMenu}
-        onMouseLeave={this.handleMenuLeave}
-        style={style}
-      >
-        {items.map(({ content, ...rest }, idx) => (
-          <Item
-            {...rest}
-            onClick={this.handleItemClick(rest)}
-            onMouseOver={this.handleMouseOver}
-            key={idx}
-          >
-            {content}
-          </Item>
-        ))}
-      </Menu>
+      <FocusTrap options={{ clickOutsideDeactivates: true }}>
+        <Menu
+          innerRef={this.getMenu}
+          onMouseLeave={this.handleMenuLeave}
+          style={style}
+        >
+          {items.map((item, idx) => {
+            const { content, ...rest } = item;
+            return (
+              <Item
+                {...rest}
+                onClick={this.handleItemClick(item)}
+                onMouseOver={this.handleMouseOver}
+                key={idx}
+              >
+                {content}
+              </Item>
+            );
+          })}
+        </Menu>
+      </FocusTrap>
     );
   }
 }

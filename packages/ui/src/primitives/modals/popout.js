@@ -1,10 +1,11 @@
 // @flow
 
-import React, { Component, type Element, type Node } from 'react';
+import React, { Component, type Element } from 'react';
 import styled from 'react-emotion';
 import { createPortal } from 'react-dom';
 
 import { borderRadius, gridSize } from '../../theme';
+import FocusTrap from './FocusTrap';
 import { SlideDown } from './transitions';
 import withModalHandlers, { type CloseType } from './withModalHandlers';
 
@@ -62,10 +63,10 @@ const Arrow = styled.div`
 type Props = {
   children: Element<*>,
   close: CloseType,
-  content: Node,
   defaultIsOpen: boolean,
   getModalRef: HTMLElement => void,
   style: Object,
+  target: Element<*>,
   targetNode: HTMLElement,
   width: number,
 };
@@ -130,7 +131,7 @@ class Popout extends Component<Props, State> {
   };
 
   render() {
-    const { content, getModalRef, style, width } = this.props;
+    const { children, getModalRef, style, width } = this.props;
     let { leftOffset, topOffset, arrowLeftOffset } = this.state;
 
     return document.body
@@ -142,10 +143,12 @@ class Popout extends Component<Props, State> {
             width={width}
             style={style} // style comes from Transition
           >
-            <WrapperInner>
-              <Arrow left={arrowLeftOffset} />
-              {content}
-            </WrapperInner>
+            <FocusTrap options={{ clickOutsideDeactivates: true }}>
+              <WrapperInner>
+                <Arrow left={arrowLeftOffset} />
+                {children}
+              </WrapperInner>
+            </FocusTrap>
           </Wrapper>,
           document.body
         )
