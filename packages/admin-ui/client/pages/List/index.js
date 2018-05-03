@@ -53,13 +53,6 @@ const FilterPopout = () => {
     </Popout>
   );
 };
-const DownloadPopout = () => {
-  return (
-    <Popout buttonLabel="Download" headerTitle="Download">
-      <code>// TODO</code>
-    </Popout>
-  );
-};
 const FilterSeparator = styled.div({
   backgroundColor: 'rgba(0,0,0,0.1)',
   height: '100%',
@@ -302,7 +295,6 @@ class ListPage extends Component {
                         removeIsAllowed={displayedFields.length > 1}
                       />
                     </Popout>
-                    <DownloadPopout />
                     {this.renderExpandButton()}
                     <FilterSeparator />
                     <Button appearance="create" onClick={this.openCreateModal}>
