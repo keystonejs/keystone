@@ -18,7 +18,7 @@ import Nav from '../../components/Nav';
 import { Popout, DisclosureArrow } from '../../components/Popout';
 
 import ColumnSelect from './ColumnSelect';
-import SortSelect from './SortSelect';
+import SortSelect, { SortButton } from './SortSelect';
 
 const getQueryArgs = args => {
   const queryArgs = Object.keys(args).map(
@@ -239,13 +239,11 @@ class ListPage extends Component {
                         </Note>
                       }
                       target={
-                        <span
-                          css={{ color: colors.primary, cursor: 'pointer' }}
-                        >
+                        <SortButton>
                           {' '}
                           {sortBy.label.toLowerCase()}
-                          <DisclosureArrow />
-                        </span>
+                          <DisclosureArrow size="0.25em" />
+                        </SortButton>
                       }
                     >
                       <SortSelect
