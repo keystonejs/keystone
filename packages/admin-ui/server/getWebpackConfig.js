@@ -4,7 +4,7 @@ const path = require('path');
 
 const { mode } = require('./env');
 
-module.exports = function({ adminMeta, adminPath, apiPath }) {
+module.exports = function({ adminMeta, adminPath, apiPath, graphiqlPath }) {
   return {
     mode,
     context: path.resolve(__dirname, '../client/'),
@@ -19,6 +19,7 @@ module.exports = function({ adminMeta, adminPath, apiPath }) {
         KEYSTONE_ADMIN_META: JSON.stringify({
           adminPath,
           apiPath,
+          graphiqlPath,
           ...adminMeta,
         }),
       }),
@@ -48,11 +49,11 @@ module.exports = function({ adminMeta, adminPath, apiPath }) {
             {
               loader: '@keystone/field-views-loader',
               options: {
-                adminMeta
-              }
-            }
-          ]
-        }
+                adminMeta,
+              },
+            },
+          ],
+        },
       ],
     },
   };

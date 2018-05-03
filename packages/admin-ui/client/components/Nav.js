@@ -1,6 +1,12 @@
 import React, { Fragment } from 'react';
 import { withRouter } from 'react-router';
-import { TelescopeIcon, HomeIcon, SignOutIcon } from '@keystonejs/icons';
+import {
+  HomeIcon,
+  TerminalIcon,
+  TelescopeIcon,
+  MarkGithubIcon,
+  SignOutIcon,
+} from '@keystonejs/icons';
 
 import {
   PrimaryNav,
@@ -11,7 +17,10 @@ import {
 import { withAdminMeta } from '../providers/AdminMeta';
 
 const Nav = props => {
-  const { adminMeta: { lists, listKeys, adminPath }, location } = props;
+  const {
+    adminMeta: { lists, listKeys, adminPath, graphiqlPath },
+    location,
+  } = props;
   return (
     <PrimaryNav>
       <NavGroup>
@@ -34,6 +43,17 @@ const Nav = props => {
         })}
       </NavGroup>
       <NavGroup>
+        <PrimaryNavItem
+          target="_blank"
+          href="https://github.com/keystonejs/keystone-5"
+        >
+          <MarkGithubIcon />
+        </PrimaryNavItem>
+        <NavSeparator />
+        <PrimaryNavItem to={graphiqlPath}>
+          <TerminalIcon />
+        </PrimaryNavItem>
+        <NavSeparator />
         <PrimaryNavItem to={`${adminPath}/style-guide`}>
           <TelescopeIcon />
         </PrimaryNavItem>
