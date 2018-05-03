@@ -12,6 +12,7 @@ import { CheckIcon, ClippyIcon } from '@keystonejs/icons';
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
+import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { colors } from '@keystonejs/ui/src/theme';
 
 // This import is loaded by the @keystone/field-views-loader loader.
@@ -50,6 +51,32 @@ const Form = styled.div({
   margin: '24px 0',
 });
 
+class ConfirmResetModal extends Component {
+  onKeyDown = e => {
+    if (e.key === 'Escape') {
+      this.props.onCancel();
+    }
+  };
+  render() {
+    const { onCancel, onConfirm } = this.props;
+    return (
+      <Dialog isOpen onClose={onCancel} onKeyDown={this.onKeyDown} width={400}>
+        <p style={{ marginTop: 0 }}>
+          Are you sure you want reset your changes?
+        </p>
+        <footer>
+          <Button appearance="danger" onClick={onConfirm}>
+            Reset
+          </Button>
+          <Button variant="subtle" onClick={onCancel}>
+            Cancel
+          </Button>
+        </footer>
+      </Dialog>
+    );
+  }
+}
+
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
 const ItemDetails = withRouter(
@@ -57,7 +84,9 @@ const ItemDetails = withRouter(
     state = {
       copyText: '',
       item: this.props.item,
+      itemHasChanged: false,
       showDeleteModal: false,
+      showResetChangesModal: false,
     };
     componentDidMount() {
       this.mounted = true;
@@ -78,10 +107,19 @@ const ItemDetails = withRouter(
       }
       history.push(`${adminPath}/${list.path}`);
     };
+    showConfirmResetModal = () => {
+      const { itemHasChanged } = this.state;
+      if (!itemHasChanged) return;
+      this.setState({ showConfirmResetModal: true });
+    };
+    closeConfirmResetModal = () => {
+      this.setState({ showConfirmResetModal: false });
+    };
     onReset = () => {
       this.setState({
         item: this.props.item,
       });
+      this.closeConfirmResetModal();
     };
     onChange = (field, value) => {
       const { item } = this.state;
@@ -90,8 +128,21 @@ const ItemDetails = withRouter(
           ...item,
           [field.path]: value,
         },
+        itemHasChanged: true,
       });
     };
+    renderConfirmResetModal() {
+      const { showConfirmResetModal } = this.state;
+      console.log(showConfirmResetModal);
+      if (!showConfirmResetModal) return;
+
+      return (
+        <ConfirmResetModal
+          onCancel={this.closeConfirmResetModal}
+          onConfirm={this.onReset}
+        />
+      );
+    }
     renderDeleteModal() {
       const { showDeleteModal } = this.state;
       if (!showDeleteModal) return;
@@ -122,7 +173,7 @@ const ItemDetails = withRouter(
     };
     render() {
       const { adminPath, list, getListByKey } = this.props;
-      const { copyText, item } = this.state;
+      const { copyText, item, itemHasChanged } = this.state;
       const isCopied = copyText === item.id;
       const CopyIcon = isCopied ? CheckIcon : ClippyIcon;
 
@@ -158,12 +209,14 @@ const ItemDetails = withRouter(
               );
             })}
           </Form>
+
           <Footer
             onSave={this.onSave}
             onDelete={this.showDeleteModal}
-            onReset={this.onReset}
+            onReset={itemHasChanged ? this.showConfirmResetModal : undefined}
           />
           {this.renderDeleteModal()}
+          {this.renderConfirmResetModal()}
         </Fragment>
       );
     }

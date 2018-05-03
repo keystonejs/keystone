@@ -113,7 +113,12 @@ export default class Footer extends Component {
             <Button appearance="primary" onClick={onSave}>
               Save Changes
             </Button>
-            <Button appearance="warning" variant="subtle" onClick={onReset}>
+            <Button
+              appearance="warning"
+              variant="subtle"
+              onClick={onReset}
+              isDisabled={!onReset}
+            >
               Reset Changes
             </Button>
           </div>
