@@ -133,7 +133,6 @@ const ItemDetails = withRouter(
     };
     renderConfirmResetModal() {
       const { showConfirmResetModal } = this.state;
-      console.log(showConfirmResetModal);
       if (!showConfirmResetModal) return;
 
       return (
