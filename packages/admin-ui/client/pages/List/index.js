@@ -4,9 +4,13 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { PlusIcon, SearchIcon } from '@keystonejs/icons';
+import { FoldIcon, UnfoldIcon, PlusIcon, SearchIcon } from '@keystonejs/icons';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
-import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
+import {
+  Container,
+  FlexGroup,
+  CONTAINER_WIDTH,
+} from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
@@ -122,6 +126,7 @@ class ListPage extends Component {
 
     this.state = {
       displayedFields,
+      listIsFullWidth: false,
       sortDirection,
       sortBy,
       search: '',
@@ -137,6 +142,10 @@ class ListPage extends Component {
   // We record the number of items returned by the latest query so that the
   // previous count can be displayed during a loading state.
   itemsCount: 0;
+
+  toggleFullWidth = () => {
+    this.setState(state => ({ listIsFullWidth: !state.listIsFullWidth }));
+  };
 
   handleSearch = e => {
     const { value: search } = e.target;
@@ -191,10 +200,30 @@ class ListPage extends Component {
       />
     );
   }
+  renderExpandButton() {
+    if (window && window.innerWidth < CONTAINER_WIDTH) return null;
+
+    const { listIsFullWidth } = this.state;
+    const Icon = listIsFullWidth ? FoldIcon : UnfoldIcon;
+    const title = listIsFullWidth ? 'Collapse' : 'Expand';
+
+    return [
+      <FilterSeparator />,
+      <Button onClick={this.toggleFullWidth} title={title}>
+        <Icon css={{ transform: 'rotate(90deg)' }} />
+      </Button>,
+    ];
+  }
 
   render() {
     const { list, adminPath } = this.props;
-    const { displayedFields, sortDirection, sortBy, search } = this.state;
+    const {
+      displayedFields,
+      listIsFullWidth,
+      sortDirection,
+      sortBy,
+      search,
+    } = this.state;
 
     const sort = `${sortDirection === 'DESC' ? '-' : ''}${sortBy.path}`;
 
@@ -208,26 +237,26 @@ class ListPage extends Component {
     return (
       <Fragment>
         <Nav />
-        <Container>
-          <Query query={query} fetchPolicy="cache-and-network">
-            {({ data, error, refetch }) => {
-              if (error) {
-                return (
-                  <Fragment>
-                    <Title>Error</Title>
-                    <p>{error.message}</p>
-                  </Fragment>
-                );
-              }
-
-              const items = data && data[list.listQueryName];
-              this.count =
-                items && typeof items.length === 'number'
-                  ? items.length
-                  : this.count;
-
+        <Query query={query} fetchPolicy="cache-and-network">
+          {({ data, error, refetch }) => {
+            if (error) {
               return (
                 <Fragment>
+                  <Title>Error</Title>
+                  <p>{error.message}</p>
+                </Fragment>
+              );
+            }
+
+            const items = data && data[list.listQueryName];
+            this.count =
+              items && typeof items.length === 'number'
+                ? items.length
+                : this.count;
+
+            return (
+              <Fragment>
+                <Container>
                   <Title>
                     {this.count} {this.count === 1 ? list.label : list.plural}{' '}
                     sorted by
@@ -274,6 +303,7 @@ class ListPage extends Component {
                       />
                     </Popout>
                     <DownloadPopout />
+                    {this.renderExpandButton()}
                     <FilterSeparator />
                     <Button appearance="create" onClick={this.openCreateModal}>
                       <span css={{ display: 'flex', alignItems: 'center' }}>
@@ -283,7 +313,13 @@ class ListPage extends Component {
                     </Button>
                   </FlexGroup>
 
-                  <div css={{ marginBottom: '1em', marginTop: '1em' }}>
+                  <div
+                    css={{
+                      marginBottom: '1em',
+                      marginTop: '1em',
+                      visibility: this.count ? 'visible' : 'hidden',
+                    }}
+                  >
                     <Pagination
                       total={this.count}
                       displayCount
@@ -291,8 +327,9 @@ class ListPage extends Component {
                       plural={list.plural}
                     />
                   </div>
+                </Container>
 
-                  {/*
+                {/*
                     // Old sort switch asc/desc
                     <Select
                       options={ListPage.orderOptions}
@@ -302,8 +339,9 @@ class ListPage extends Component {
                     />
                   */}
 
-                  {this.renderCreateModal()}
+                {this.renderCreateModal()}
 
+                <Container isDisabled={listIsFullWidth}>
                   {items ? (
                     <ListTable
                       items={items}
@@ -311,16 +349,22 @@ class ListPage extends Component {
                       fields={displayedFields}
                       adminPath={adminPath}
                       onChange={refetch}
-                      noResultsMessage={`No ${list.plural.toLowerCase()} found matching ${search}.`}
+                      noResultsMessage={
+                        <span>
+                          No {list.plural.toLowerCase()} found matching &ldquo;{
+                            search
+                          }&rdquo;
+                        </span>
+                      }
                     />
                   ) : (
                     <Title>Loading...</Title>
                   )}
-                </Fragment>
-              );
-            }}
-          </Query>
-        </Container>
+                </Container>
+              </Fragment>
+            );
+          }}
+        </Query>
       </Fragment>
     );
   }
