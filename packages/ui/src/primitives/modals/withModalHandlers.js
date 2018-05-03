@@ -11,7 +11,7 @@ import NodeResolver from 'react-node-resolver';
 
 export type CloseType = ({ returnFocus: boolean }) => void;
 type Props = {
-  children: Element<*>,
+  target: Element<*>,
   defaultIsOpen: boolean,
 };
 type State = { isOpen: boolean };
@@ -92,14 +92,14 @@ export default function withModalHandlers(
     };
 
     render() {
-      const { children } = this.props;
+      const { target } = this.props;
       const { isOpen } = this.state;
       const cloneProps = isOpen ? { isActive: true } : {};
 
       return (
         <Fragment>
           <NodeResolver innerRef={this.getTarget}>
-            {cloneElement(children, cloneProps)}
+            {cloneElement(target, cloneProps)}
           </NodeResolver>
           <Transition in={isOpen}>
             <WrappedComponent

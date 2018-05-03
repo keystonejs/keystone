@@ -8,8 +8,8 @@ export type FocusTarget = HTMLElement | string | Fn;
 type Fn = (*) => void;
 type Props = {
   children: Element<*>,
-  active?: boolean,
-  paused?: boolean,
+  isActive?: boolean,
+  isPaused?: boolean,
   options: {
     /* A function that will be called when the focus trap activates. */
     onActivate?: Fn,
@@ -60,8 +60,8 @@ export default class FocusTrap extends Component<Props> {
   focusTrap: Object;
   previouslyFocusedElement: HTMLElement;
   static defaultProps = {
-    active: true,
-    paused: false,
+    isActive: true,
+    isPaused: false,
     options: {},
   };
   componentWillMount() {
@@ -71,8 +71,9 @@ export default class FocusTrap extends Component<Props> {
   }
 
   componentDidMount() {
-    const { active, options, paused } = this.props;
+    const { isActive, options, isPaused } = this.props;
 
+    // Objects as defaultProps don't merge, set and spread here instead
     const defaultOptions = {
       escapeDeactivates: false,
       fallbackFocus: this.boundary,
@@ -82,20 +83,20 @@ export default class FocusTrap extends Component<Props> {
 
     this.focusTrap = this.createFocusTrap(this.boundary, createOptions);
 
-    if (active) this.focusTrap.activate();
-    if (paused) this.focusTrap.pause();
+    if (isActive) this.focusTrap.activate();
+    if (isPaused) this.focusTrap.pause();
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (prevProps.active && !this.props.active) {
+    if (prevProps.isActive && !this.props.isActive) {
       this.focusTrap.deactivate();
-    } else if (!prevProps.active && this.props.active) {
+    } else if (!prevProps.isActive && this.props.isActive) {
       this.focusTrap.activate();
     }
 
-    if (prevProps.paused && !this.props.paused) {
+    if (prevProps.isPaused && !this.props.isPaused) {
       this.focusTrap.unpause();
-    } else if (!prevProps.paused && this.props.paused) {
+    } else if (!prevProps.isPaused && this.props.isPaused) {
       this.focusTrap.pause();
     }
   }

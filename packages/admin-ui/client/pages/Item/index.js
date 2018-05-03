@@ -3,12 +3,15 @@ import styled from 'react-emotion';
 import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import { Link, withRouter } from 'react-router-dom';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import Nav from '../../components/Nav';
 import DeleteItemModal from '../../components/DeleteItemModal';
 import Footer from './Footer';
-import { Container } from '@keystonejs/ui/src/primitives/layout';
+import { CheckIcon, ClippyIcon } from '@keystonejs/icons';
+import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
+import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { colors } from '@keystonejs/ui/src/theme';
 
 // This import is loaded by the @keystone/field-views-loader loader.
@@ -39,7 +42,8 @@ const getUpdateMutation = ({ list }) => {
 
 const ItemId = styled.div({
   color: colors.N30,
-  fontFamily: 'Menlo, Monaco, Consolas, "Courier New", monospace',
+  fontFamily: 'Monaco, Consolas, monospace',
+  fontSize: '0.85em',
 });
 
 const Form = styled.div({
@@ -50,13 +54,11 @@ const Form = styled.div({
 
 const ItemDetails = withRouter(
   class ItemDetails extends Component {
-    constructor(props) {
-      super();
-      this.state = {
-        item: props.item,
-        showDeleteModal: false,
-      };
-    }
+    state = {
+      copyText: '',
+      item: this.props.item,
+      showDeleteModal: false,
+    };
     componentDidMount() {
       this.mounted = true;
     }
@@ -111,16 +113,35 @@ const ItemDetails = withRouter(
       const { id, __typename, ...data } = this.state.item;
       updateItem({ variables: { id, data } }).then(onUpdate);
     };
+    onCopy = text => () => {
+      this.setState({ copyText: text }, () => {
+        setTimeout(() => {
+          this.setState({ copyText: '' });
+        }, 500);
+      });
+    };
     render() {
       const { adminPath, list, getListByKey } = this.props;
-      const { item } = this.state;
+      const { copyText, item } = this.state;
+      const isCopied = copyText === item.id;
+      const CopyIcon = isCopied ? CheckIcon : ClippyIcon;
+
       return (
         <Fragment>
           <Title>
             <Link to={`${adminPath}/${list.path}`}>{list.label}</Link>:{' '}
             {item.name}
           </Title>
-          <ItemId>ID: {item.id}</ItemId>
+          <FlexGroup align="center" isContiguous>
+            <ItemId>ID: {item.id}</ItemId>
+            <CopyToClipboard text={item.id} onCopy={this.onCopy(item.id)}>
+              <Button variant="subtle">
+                <CopyIcon
+                  css={{ color: isCopied ? colors.create : 'inherit' }}
+                />
+              </Button>
+            </CopyToClipboard>
+          </FlexGroup>
           <Form>
             {list.fields.map((field, i) => {
               const { Field } = FieldTypes[list.key][field.path];

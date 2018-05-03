@@ -1,15 +1,53 @@
 import React, { Component } from 'react';
+import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
-import { TrashcanIcon } from '@keystonejs/icons';
+import { InfoIcon, TrashcanIcon } from '@keystonejs/icons';
 import { colors } from '@keystonejs/ui/src/theme';
 import DeleteItemModal from './DeleteItemModal';
 
-import {
-  BodyCell,
-  HeaderCell,
-  Table,
-} from '@keystonejs/ui/src/primitives/tables';
+// Styled Components
+
+const Table = styled('table')({
+  borderCollapse: 'collapse',
+  borderSpacing: 0,
+  tableLayout: 'fixed',
+  width: '100%',
+});
+const HeaderCell = styled('td')({
+  borderBottom: `2px solid ${colors.N10}`,
+  color: '#999',
+  display: 'table-cell',
+  fontWeight: 'normal',
+  paddingBottom: '8px',
+  textAlign: 'left',
+  verticalAlign: 'bottom',
+});
+const BodyCell = styled('td')({
+  borderTop: `1px solid ${colors.N10}`,
+  padding: '8px 0',
+  fontSize: 15,
+});
+
+const NoResults = ({ children, ...props }) => (
+  <div
+    css={{
+      alignItems: 'center',
+      color: colors.N30,
+      display: 'flex',
+      flexDirection: 'column',
+      fontSize: 32,
+      justifyContent: 'center',
+      padding: '1em',
+    }}
+    {...props}
+  >
+    <InfoIcon css={{ height: 48, width: 48, marginBottom: '0.5em' }} />
+    {children}
+  </div>
+);
+
+// Functional Components
 
 class DeleteButton extends Component {
   state = {
@@ -134,7 +172,7 @@ export default class ListTable extends Component {
         </tbody>
       </Table>
     ) : (
-      noResultsMessage
+      <NoResults>{noResultsMessage}</NoResults>
     );
   }
 }

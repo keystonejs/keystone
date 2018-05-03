@@ -10,10 +10,12 @@ import { gridSize } from '../theme';
 // Container
 // ==============================
 
-export const Container = styled.div({
+export const CONTAINER_WIDTH = 1160;
+
+export const Container = styled.div(({ isDisabled }) => ({
   marginLeft: 'auto',
   marginRight: 'auto',
-  maxWidth: 1160,
+  maxWidth: isDisabled ? null : CONTAINER_WIDTH,
   paddingLeft: 30,
   paddingRight: 30,
 
@@ -21,7 +23,7 @@ export const Container = styled.div({
     paddingLeft: 15,
     paddingRight: 15,
   },
-});
+}));
 
 // ==============================
 // Fluid Group
@@ -73,6 +75,7 @@ export const FlexGroup = ({
 }: FlexGroupProps) => {
   const gutter = spacing / 2;
   const length = Children.count(children);
+  const childArray = Children.toArray(children).filter(Boolean); // filter out null and undefined children
 
   return (
     <div
@@ -89,13 +92,14 @@ export const FlexGroup = ({
       }}
       {...props}
     >
-      {Children.map(children, (child, idx) => {
+      {childArray.map((child, idx) => {
         const style = isContiguous ? collapseBorderRadii(idx, length) : null;
         const leftOffset = isContiguous && idx ? -1 : gutter;
         const rightOffset = isContiguous ? null : gutter;
 
         return (
           <div
+            key={child.key}
             css={{
               flex: stretch || growIndexes.includes(idx) ? 1 : null,
               marginLeft: isVertical ? null : leftOffset,

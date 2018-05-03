@@ -10,6 +10,13 @@ export default class ModalGuide extends Component {
   toggleDialog = () => {
     this.setState(state => ({ dialogIsOpen: !state.dialogIsOpen }));
   };
+  handleDropdownClick = ({ data }) => {
+    console.log(`You selected "${data.content}", yum!`);
+  };
+  handleDialogKeyDown = ({ key }) => {
+    if (key !== 'Escape') return;
+    this.setState({ dialogIsOpen: false });
+  };
   render() {
     const { dialogIsOpen } = this.state;
     return (
@@ -18,35 +25,34 @@ export default class ModalGuide extends Component {
 
         <h4>Dropdowns</h4>
         <Dropdown
+          target={<Button>Show menu</Button>}
           // selectClosesMenu={false}
           items={[
             { to: '/admin', content: 'Home' },
-            { content: 'Macaroon', onClick: console.log },
-            { content: 'Cupcake', onClick: console.log },
-            { content: 'Liquorice', onClick: console.log },
-            { content: 'Cookie', onClick: console.log },
-            { content: 'Cake', onClick: console.log },
+            { content: 'Macaroon', onClick: this.handleDropdownClick },
+            { content: 'Cupcake', onClick: this.handleDropdownClick },
+            { content: 'Liquorice', onClick: this.handleDropdownClick },
+            { content: 'Cookie', onClick: this.handleDropdownClick },
+            { content: 'Cake', onClick: this.handleDropdownClick },
           ]}
-        >
-          <Button>Show menu</Button>
-        </Dropdown>
+        />
 
         <h4>Popouts</h4>
         <FlexGroup justify="space-between">
-          <Popout content={<PopoutContent>Left</PopoutContent>}>
-            <Button>Left</Button>
+          <Popout target={<Button>Left</Button>}>
+            <PopoutContent>Left</PopoutContent>
           </Popout>
-          <Popout content={<PopoutContent>Intermediate Left</PopoutContent>}>
-            <Button>Intermediate Left</Button>
+          <Popout target={<Button>Intermediate Left</Button>}>
+            <PopoutContent>Intermediate Left</PopoutContent>
           </Popout>
-          <Popout content={<PopoutContent>Middle</PopoutContent>}>
-            <Button>Middle</Button>
+          <Popout target={<Button>Middle</Button>}>
+            <PopoutContent>Middle</PopoutContent>
           </Popout>
-          <Popout content={<PopoutContent>Intermediate Right</PopoutContent>}>
-            <Button>Intermediate Right</Button>
+          <Popout target={<Button>Intermediate Right</Button>}>
+            <PopoutContent>Intermediate Right</PopoutContent>
           </Popout>
-          <Popout content={<PopoutContent>Right</PopoutContent>}>
-            <Button>Right</Button>
+          <Popout target={<Button>Right</Button>}>
+            <PopoutContent>Right</PopoutContent>
           </Popout>
         </FlexGroup>
 
@@ -54,6 +60,7 @@ export default class ModalGuide extends Component {
         <Button onClick={this.toggleDialog}>Open Dialog</Button>
         <Dialog
           isOpen={dialogIsOpen}
+          onKeyDown={this.handleDialogKeyDown}
           onClose={this.toggleDialog}
           heading="Dialog"
           footer={
