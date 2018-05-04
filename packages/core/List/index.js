@@ -64,13 +64,13 @@ module.exports = class List {
       .map(i => i.getGraphqlUpdateArgs())
       .filter(i => i)
       .map(i => i.split(/\n\s+/g).join('\n        '))
-      .join('')
+      .join('\n        ')
       .trim();
     const createArgs = this.fields
       .map(i => i.getGraphqlCreateArgs())
       .filter(i => i)
       .map(i => i.split(/\n\s+/g).join('\n        '))
-      .join('')
+      .join('\n        ')
       .trim();
     return `
       type ${this.key} {
