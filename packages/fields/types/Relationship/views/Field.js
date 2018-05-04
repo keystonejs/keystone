@@ -22,10 +22,17 @@ const getGraphqlQuery = refList => {
 export default class RelationshipField extends Component {
   onChange = option => {
     const { field, onChange } = this.props;
-    onChange(field, option ? option.value : null);
+    const { many } = field.config;
+    if (many) {
+      console.log(option.map(i => i.value));
+      onChange(field, option.map(i => i.value));
+    } else {
+      onChange(field, option ? option.value : null);
+    }
   };
   render() {
     const { autoFocus, field, item, getListByKey } = this.props;
+    const { many } = field.config;
     const refList = getListByKey(field.config.ref);
     const query = getGraphqlQuery(refList);
     return (
@@ -35,19 +42,27 @@ export default class RelationshipField extends Component {
           <Query query={query}>
             {({ data, error, loading }) => {
               if (loading) {
-                return <Select autoFocus={autoFocus} isLoading={loading} />;
+                return <Select key="loading" isDisabled isLoading={loading} />;
               }
               // TOOD: better error UI
               if (error) return 'Error';
               const options = data[refList.listQueryName].map(
                 ({ id, name }) => ({ value: id, label: name })
               );
-              const value = item[field.path]
-                ? options.filter(i => i.value === item[field.path])[0] || null
-                : null;
+              let value = item[field.path];
+              if (many) {
+                if (!Array.isArray(value)) value = [];
+                value = value
+                  .map(i => options.filter(option => option.value === i)[0])
+                  .filter(i => i);
+              } else {
+                value =
+                  options.filter(i => i.value === item[field.path])[0] || null;
+              }
               return (
                 <Select
                   autoFocus={autoFocus}
+                  isMulti={many}
                   value={value}
                   options={options}
                   onChange={this.onChange}

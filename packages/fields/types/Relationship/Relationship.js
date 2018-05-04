@@ -7,16 +7,20 @@ module.exports = class Select extends Field {
     super(path, config);
   }
   getGraphqlSchema() {
-    return `${this.path}: String`;
+    const { many } = this.config;
+    const type = many ? '[String]' : 'String';
+    return `${this.path}: ${type}`;
   }
   addToMongooseSchema(schema) {
-    const { mongooseOptions, ref } = this.config;
+    const { many, mongooseOptions, ref } = this.config;
+    const type = many ? [ObjectId] : ObjectId;
     schema.add({
-      [this.path]: { type: ObjectId, ref, ...mongooseOptions },
+      [this.path]: { type, ref, ...mongooseOptions },
     });
   }
   extendAdminMeta(meta) {
-    return { ...meta, ref: this.config.ref };
+    const { many, ref } = this.config;
+    return { ...meta, ref, many };
   }
   getGraphqlQueryArgs() {
     return `
@@ -27,10 +31,12 @@ module.exports = class Select extends Field {
     `;
   }
   getGraphqlUpdateArgs() {
-    return this.getGraphqlSchema();
+    const { many } = this.config;
+    const type = many ? '[String]' : 'String';
+    return `${this.path}: ${type}`;
   }
   getGraphqlCreateArgs() {
-    return this.getGraphqlSchema();
+    return this.getGraphqlUpdateArgs();
   }
   getQueryConditions(args) {
     const conditions = [];
