@@ -26,8 +26,8 @@ const HeaderCell = styled('td')({
   verticalAlign: 'bottom',
 });
 const BodyCell = styled('td')(({ isSelected }) => ({
-  backgroundColor: isSelected ? colors.Y.L90 : null,
-  borderTop: `1px solid ${colors.N10}`,
+  backgroundColor: isSelected ? colors.B.L90 : null,
+  borderTop: `1px solid ${isSelected ? colors.B.L75 : colors.N10}`,
   padding: '8px 0',
   fontSize: 15,
 }));
@@ -144,6 +144,7 @@ class ListManageRow extends Component {
             checked={isSelected}
             innerRef={this.getCheckbox}
             value={item.id}
+            css={{ marginLeft: 1 }}
           />
         </BodyCell>
         {fields.map(({ path }) => (
@@ -189,7 +190,7 @@ export default class ListTable extends Component {
               <div
                 css={{
                   position: 'relative',
-                  top: 2,
+                  top: 3,
                   visibility: isManaging ? 'visible' : 'hidden',
                 }}
               >
