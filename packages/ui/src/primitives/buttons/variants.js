@@ -3,15 +3,15 @@ import { alpha, darken, lighten } from '../../theme/color-utils';
 
 const subtleAppearance = {
   default: {
-    text: colors.N40,
+    text: colors.N80,
     textHover: colors.text,
   },
   primary: {
-    text: colors.N40,
+    text: colors.N80,
     textHover: colors.primary,
   },
   warning: {
-    text: colors.N40,
+    text: colors.N80,
     textHover: colors.danger,
   },
   danger: {

@@ -269,6 +269,7 @@ class ListPage extends Component {
             onClick={this.toggleManaging}
             title="Manage"
             isActive={isManaging}
+            css={{ marginRight: 8 }}
           >
             Manage
           </Button>
