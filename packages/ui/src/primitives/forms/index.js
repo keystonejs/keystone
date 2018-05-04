@@ -80,13 +80,21 @@ export const selectStyles = {
   singleValue: (base: any) => ({
     ...base,
     color: 'inherit',
+    fontSize: 14,
   }),
-  multiValue: (base: any) => ({
+  multiValueLabel: (base: any) => ({
     ...base,
     color: 'inherit',
+    fontSize: 14,
+  }),
+  multiValueRemove: (base: any) => ({
+    ...base,
+    svg: {
+      height: '100%',
+    },
   }),
 };
 
 export const Select = (props: any) => (
-  <ReactSelect styles={selectStyles} {...props} />
+  <ReactSelect styles={selectStyles} isClearable {...props} />
 );
