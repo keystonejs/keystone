@@ -16,6 +16,8 @@ import {
 } from '@keystonejs/ui/src/primitives/navigation';
 import { withAdminMeta } from '../providers/AdminMeta';
 
+const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
+
 const Nav = props => {
   const {
     adminMeta: { lists, listKeys, adminPath, graphiqlPath },
@@ -43,14 +45,11 @@ const Nav = props => {
         })}
       </NavGroup>
       <NavGroup>
-        <PrimaryNavItem
-          target="_blank"
-          href="https://github.com/keystonejs/keystone-5"
-        >
+        <PrimaryNavItem target="_blank" href={GITHUB_PROJECT}>
           <MarkGithubIcon />
         </PrimaryNavItem>
         <NavSeparator />
-        <PrimaryNavItem to={graphiqlPath}>
+        <PrimaryNavItem target="_blank" href={graphiqlPath}>
           <TerminalIcon />
         </PrimaryNavItem>
         <NavSeparator />
