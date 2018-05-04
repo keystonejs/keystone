@@ -36,7 +36,23 @@ const IconName = styled('div')`
 `;
 
 export default class IconsGuide extends Component {
-  state = { copyText: '' };
+  state = { altIsDown: false, copyText: '' };
+  componentDidMount() {
+    document.body.addEventListener('keydown', this.handleKeyDown, false);
+    document.body.addEventListener('keyup', this.handleKeyUp, false);
+  }
+  componentWillUnmount() {
+    document.body.removeEventListener('keydown', this.handleKeyDown);
+    document.body.removeEventListener('keyup', this.handleKeyUp);
+  }
+  handleKeyDown = e => {
+    if (e.key !== 'Alt') return;
+    this.setState({ altIsDown: true });
+  };
+  handleKeyUp = e => {
+    if (e.key !== 'Alt') return;
+    this.setState({ altIsDown: false });
+  };
   handleCopy = text => () => {
     this.setState({ copyText: text }, () => {
       setTimeout(() => {
@@ -45,13 +61,15 @@ export default class IconsGuide extends Component {
     });
   };
   render() {
-    const { copyText } = this.state;
+    const { altIsDown, copyText } = this.state;
     return (
       <Grid gap={16}>
         {Object.keys(icons).map(name => {
           const isCopied = copyText === name;
           const Icon = isCopied ? icons.CheckIcon : icons[name];
-          const importText = `import { ${name} } from '@keystonejs/icons';`;
+          const importText = altIsDown
+            ? name
+            : `import { ${name} } from '@keystonejs/icons';`;
           return (
             <Cell width={2} key={name}>
               <CopyToClipboard text={importText} onCopy={this.handleCopy(name)}>
