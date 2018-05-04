@@ -6,7 +6,14 @@ import ReactSelect from 'react-select';
 
 import { colors, gridSize } from '../../theme';
 import { alpha } from '../../theme/color-utils';
-export { Checkbox, CheckboxGroup, Radio, RadioGroup } from './Controls';
+export {
+  Checkbox,
+  CheckboxPrimitive,
+  CheckboxGroup,
+  Radio,
+  RadioPrimitive,
+  RadioGroup,
+} from './Controls';
 
 const borderRadius = '0.3em';
 

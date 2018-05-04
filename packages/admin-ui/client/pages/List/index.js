@@ -4,7 +4,14 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { FoldIcon, UnfoldIcon, PlusIcon, SearchIcon } from '@keystonejs/icons';
+import {
+  FoldIcon,
+  PlusIcon,
+  SearchIcon,
+  SettingsIcon,
+  TrashcanIcon,
+  UnfoldIcon,
+} from '@keystonejs/icons';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
 import {
   Container,
@@ -12,7 +19,7 @@ import {
   CONTAINER_WIDTH,
 } from '@keystonejs/ui/src/primitives/layout';
 import { Title } from '@keystonejs/ui/src/primitives/typography';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
+import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
@@ -119,7 +126,9 @@ class ListPage extends Component {
 
     this.state = {
       displayedFields,
-      listIsFullWidth: false,
+      isFullWidth: false,
+      isManaging: false,
+      selectedItems: [],
       sortDirection,
       sortBy,
       search: '',
@@ -137,7 +146,7 @@ class ListPage extends Component {
   itemsCount: 0;
 
   toggleFullWidth = () => {
-    this.setState(state => ({ listIsFullWidth: !state.listIsFullWidth }));
+    this.setState(state => ({ isFullWidth: !state.isFullWidth }));
   };
 
   handleSearch = e => {
@@ -174,6 +183,40 @@ class ListPage extends Component {
 
   closeCreateModal = () => this.setState({ showCreateModal: false });
   openCreateModal = () => this.setState({ showCreateModal: true });
+
+  // ==============================
+  // Management
+  // ==============================
+
+  handleItemSelect = (itemIds: Array<string>) => {
+    let selectedItems = this.state.selectedItems.slice(0);
+
+    itemIds.forEach(id => {
+      if (selectedItems.includes(id)) {
+        selectedItems = selectedItems.filter(existingId => existingId !== id);
+      } else {
+        selectedItems.push(id);
+      }
+    });
+
+    this.setState({ selectedItems });
+  };
+  handleSelectAll = (selectedItems: Array<string>) => {
+    this.setState({ selectedItems });
+  };
+  startManaging = () => this.setState({ isManaging: true });
+  stopManaging = () => {
+    this.setState({ isManaging: false, selectedItems: [] });
+  };
+  toggleManaging = () => {
+    const fn = this.state.isManaging ? this.stopManaging : this.startManaging;
+    fn();
+  };
+  toggleSelectAll = () => {
+    const fn = this.state.isManaging ? this.stopManaging : this.startManaging;
+    fn();
+  };
+
   onCreate = ({ data }) => {
     let { list, adminPath, history } = this.props;
     let id = data[list.createMutationName].id;
@@ -196,9 +239,9 @@ class ListPage extends Component {
   renderExpandButton() {
     if (window && window.innerWidth < CONTAINER_WIDTH) return null;
 
-    const { listIsFullWidth } = this.state;
-    const Icon = listIsFullWidth ? FoldIcon : UnfoldIcon;
-    const title = listIsFullWidth ? 'Collapse' : 'Expand';
+    const { isFullWidth } = this.state;
+    const Icon = isFullWidth ? FoldIcon : UnfoldIcon;
+    const title = isFullWidth ? 'Collapse' : 'Expand';
 
     return [
       <FilterSeparator />,
@@ -207,15 +250,85 @@ class ListPage extends Component {
       </Button>,
     ];
   }
+  renderPaginationOrManage() {
+    const { list } = this.props;
+    const { isManaging, selectedItems } = this.state;
+    const selectedCount = selectedItems.length;
+    const hasSelected = Boolean(selectedCount);
+
+    return (
+      <div
+        css={{
+          marginBottom: '1em',
+          marginTop: '1em',
+          visibility: this.count ? 'visible' : 'hidden',
+        }}
+      >
+        <FlexGroup align="center">
+          <Button
+            onClick={this.toggleManaging}
+            title="Manage"
+            isActive={isManaging}
+          >
+            Manage
+          </Button>
+          {isManaging ? (
+            <FlexGroup align="center">
+              <div>
+                <span
+                  css={{
+                    display: 'inline-block',
+                    minWidth: '0.6em',
+                  }}
+                >
+                  {selectedCount}
+                </span>{' '}
+                Selected
+              </div>
+              <FlexGroup isContiguous>
+                <IconButton
+                  appearance="primary"
+                  icon={SettingsIcon}
+                  isDisabled={!hasSelected}
+                  onClick={console.log}
+                  variant="subtle"
+                >
+                  Update
+                </IconButton>
+                <IconButton
+                  appearance="warning"
+                  icon={TrashcanIcon}
+                  isDisabled={!hasSelected}
+                  onClick={console.log}
+                  variant="subtle"
+                >
+                  Delete
+                </IconButton>
+              </FlexGroup>
+            </FlexGroup>
+          ) : (
+            <Pagination
+              total={this.count}
+              displayCount
+              single={list.label}
+              plural={list.plural}
+            />
+          )}
+        </FlexGroup>
+      </div>
+    );
+  }
 
   render() {
     const { list, adminPath } = this.props;
     const {
       displayedFields,
-      listIsFullWidth,
+      isFullWidth,
+      isManaging,
       sortDirection,
       sortBy,
       search,
+      selectedItems,
     } = this.state;
 
     const sort = `${sortDirection === 'DESC' ? '-' : ''}${sortBy.path}`;
@@ -297,28 +410,16 @@ class ListPage extends Component {
                     </Popout>
                     {this.renderExpandButton()}
                     <FilterSeparator />
-                    <Button appearance="create" onClick={this.openCreateModal}>
-                      <span css={{ display: 'flex', alignItems: 'center' }}>
-                        <PlusIcon css={{ marginRight: '0.5em' }} />
-                        Create
-                      </span>
-                    </Button>
+                    <IconButton
+                      appearance="create"
+                      icon={PlusIcon}
+                      onClick={this.openCreateModal}
+                    >
+                      Create
+                    </IconButton>
                   </FlexGroup>
 
-                  <div
-                    css={{
-                      marginBottom: '1em',
-                      marginTop: '1em',
-                      visibility: this.count ? 'visible' : 'hidden',
-                    }}
-                  >
-                    <Pagination
-                      total={this.count}
-                      displayCount
-                      single={list.label}
-                      plural={list.plural}
-                    />
-                  </div>
+                  {this.renderPaginationOrManage()}
                 </Container>
 
                 {/*
@@ -333,14 +434,18 @@ class ListPage extends Component {
 
                 {this.renderCreateModal()}
 
-                <Container isDisabled={listIsFullWidth}>
+                <Container isDisabled={isFullWidth}>
                   {items ? (
                     <ListTable
+                      adminPath={adminPath}
+                      fields={displayedFields}
+                      isManaging={isManaging}
                       items={items}
                       list={list}
-                      fields={displayedFields}
-                      adminPath={adminPath}
                       onChange={refetch}
+                      onSelect={this.handleItemSelect}
+                      onSelectAll={this.handleSelectAll}
+                      selectedItems={selectedItems}
                       noResultsMessage={
                         <span>
                           No {list.plural.toLowerCase()} found matching &ldquo;{
