@@ -233,8 +233,9 @@ const Svg = ({ html, ...props }) => (
   />
 );
 
-export const CheckboxControl = (props: Props) => (
+export const CheckboxPrimitive = (props: Props) => (
   <Control
+    ref={props.innerRef}
     svg={`<g fillRule="evenodd">
       <rect class="outer-stroke" fill="transparent" x="6" y="6" width="12" height="12" rx="2" />
       <rect class="inner-stroke" fill="currentColor" x="6" y="6" width="12" height="12" rx="2" />
@@ -248,12 +249,12 @@ export const CheckboxControl = (props: Props) => (
   />
 );
 export const Checkbox = (props: Props) => (
-  <ReactCheckbox component={CheckboxControl} {...props} />
+  <ReactCheckbox component={CheckboxPrimitive} {...props} />
 );
 export const CheckboxGroup = (props: Props) => (
   <ReactCheckboxGroup {...props} />
 );
-const RadioControl = (props: Props) => (
+export const RadioPrimitive = (props: Props) => (
   <Control
     svg={`<g fillRule="evenodd">
     <circle class="outer-stroke" fill="transparent" cx="12" cy="12" r="7" />
@@ -265,6 +266,6 @@ const RadioControl = (props: Props) => (
   />
 );
 export const Radio = (props: Props) => (
-  <ReactRadio component={RadioControl} {...props} />
+  <ReactRadio component={RadioPrimitive} {...props} />
 );
 export const RadioGroup = (props: Props) => <ReactRadioGroup {...props} />;

@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 
 import { InfoIcon, TrashcanIcon } from '@keystonejs/icons';
 import { colors } from '@keystonejs/ui/src/theme';
+import { Button } from '@keystonejs/ui/src/primitives/buttons';
+import { CheckboxPrimitive } from '@keystonejs/ui/src/primitives/forms';
 import DeleteItemModal from './DeleteItemModal';
 
 // Styled Components
@@ -23,11 +25,12 @@ const HeaderCell = styled('td')({
   textAlign: 'left',
   verticalAlign: 'bottom',
 });
-const BodyCell = styled('td')({
+const BodyCell = styled('td')(({ isSelected }) => ({
+  backgroundColor: isSelected ? colors.Y.L90 : null,
   borderTop: `1px solid ${colors.N10}`,
   padding: '8px 0',
   fontSize: 15,
-});
+}));
 
 const NoResults = ({ children, ...props }) => (
   <div
@@ -49,34 +52,7 @@ const NoResults = ({ children, ...props }) => (
 
 // Functional Components
 
-class DeleteButton extends Component {
-  state = {
-    isHovered: false,
-  };
-  onMouseEnter = () => this.setState({ isHovered: true });
-  onMouseLeave = () => this.setState({ isHovered: false });
-  render() {
-    const { onClick } = this.props;
-    const { isHovered } = this.state;
-    return (
-      <div
-        css={{
-          color: isHovered ? colors.R.base : colors.N30,
-          cursor: 'pointer',
-          padding: '2px 4px',
-          display: 'inline-block',
-        }}
-        onClick={onClick}
-        onMouseEnter={this.onMouseEnter}
-        onMouseLeave={this.onMouseLeave}
-      >
-        <TrashcanIcon width={16} height={16} />
-      </div>
-    );
-  }
-}
-
-class ListTableRow extends Component {
+class ListDisplayRow extends Component {
   state = {
     showDeleteModal: false,
   };
@@ -118,7 +94,15 @@ class ListTableRow extends Component {
     return (
       <tr>
         <BodyCell>
-          <DeleteButton onClick={this.showDeleteModal} />
+          <Button
+            appearance="warning"
+            onClick={this.showDeleteModal}
+            spacing="cozy"
+            variant="subtle"
+            style={{ height: 24 }}
+          >
+            <TrashcanIcon />
+          </Button>
           {this.renderDeleteModal()}
         </BodyCell>
         {fields.map(({ path }, index) => (
@@ -131,15 +115,65 @@ class ListTableRow extends Component {
   }
 }
 
+class ListManageRow extends Component {
+  handleRowClick = e => {
+    // persist the event to expose `nativeEvent`
+    e.persist();
+
+    // bail when MouseClick on the actual input, which calls onClick twice
+    const isKeyboardEvent = !e.nativeEvent.layerX && !e.nativeEvent.layerY;
+    if (e.target.nodeName === 'INPUT' && !isKeyboardEvent) return;
+
+    // trigger onClick with the current ID
+    const { item, onClick } = this.props;
+    onClick([item.id]);
+
+    // make keyboard selection easier following a mouse select
+    this.checkbox.focus();
+  };
+  getCheckbox = ref => {
+    this.checkbox = ref;
+  };
+  render() {
+    const { fields, isSelected, item } = this.props;
+
+    return (
+      <tr onClick={this.handleRowClick} css={{ cursor: 'default' }}>
+        <BodyCell isSelected={isSelected} key="checkbox">
+          <CheckboxPrimitive
+            checked={isSelected}
+            innerRef={this.getCheckbox}
+            value={item.id}
+          />
+        </BodyCell>
+        {fields.map(({ path }) => (
+          <BodyCell isSelected={isSelected} key={path}>
+            {item[path]}
+          </BodyCell>
+        ))}
+      </tr>
+    );
+  }
+}
+
 export default class ListTable extends Component {
+  handleSelectAll = () => {
+    const { items, onSelectAll, selectedItems } = this.props;
+    const allSelected = items.length === selectedItems.length;
+    const value = allSelected ? [] : items.map(i => i.id);
+    onSelectAll(value);
+  };
   render() {
     const {
       adminPath,
       fields,
+      isManaging,
       items,
       list,
       noResultsMessage,
       onChange,
+      onSelect,
+      selectedItems,
     } = this.props;
 
     return items.length ? (
@@ -151,24 +185,48 @@ export default class ListTable extends Component {
         </colgroup>
         <thead>
           <tr>
-            {fields.map(({ label }, i) => (
-              <HeaderCell colSpan={i ? 1 : 2} key={label}>
-                {label}
-              </HeaderCell>
+            <HeaderCell>
+              <div
+                css={{
+                  position: 'relative',
+                  top: 2,
+                  visibility: isManaging ? 'visible' : 'hidden',
+                }}
+              >
+                <CheckboxPrimitive
+                  checked={items.length === selectedItems.length}
+                  onChange={this.handleSelectAll}
+                />
+              </div>
+            </HeaderCell>
+            {fields.map(({ label }) => (
+              <HeaderCell key={label}>{label}</HeaderCell>
             ))}
           </tr>
         </thead>
         <tbody>
-          {items.map(item => (
-            <ListTableRow
-              key={item.id}
-              link={`${adminPath}/${list.path}/${item.id}`}
-              list={list}
-              fields={fields}
-              item={item}
-              onDelete={onChange}
-            />
-          ))}
+          {items.map(
+            item =>
+              isManaging ? (
+                <ListManageRow
+                  fields={fields}
+                  item={item}
+                  key={item.id}
+                  list={list}
+                  isSelected={selectedItems.includes(item.id)}
+                  onClick={onSelect}
+                />
+              ) : (
+                <ListDisplayRow
+                  fields={fields}
+                  item={item}
+                  key={item.id}
+                  link={`${adminPath}/${list.path}/${item.id}`}
+                  list={list}
+                  onDelete={onChange}
+                />
+              )
+          )}
         </tbody>
       </Table>
     ) : (
