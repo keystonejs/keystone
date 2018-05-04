@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, type Node } from 'react';
+import React, { Component, type Node, type Ref } from 'react';
 import styled from 'react-emotion';
 import {
   CheckboxGroup as ReactCheckboxGroup,
@@ -52,6 +52,8 @@ type Props = {
   onChange: any => mixed,
   /** Field value */
   value: string,
+  /** Ref to apply to the inner Element */
+  innerRef?: Ref<*>,
 };
 type ControlProps = Props & {
   svg: string, // html string
@@ -185,11 +187,12 @@ class Control extends Component<ControlProps, State> {
       svg,
       type,
       value,
+      ...wrapperProps
     } = this.props;
     const iconProps = { ...this.state, checked, isDisabled };
 
     return (
-      <Wrapper>
+      <Wrapper {...wrapperProps}>
         <Label
           isDisabled={isDisabled}
           onKeyDown={this.onKeyDown}
@@ -233,9 +236,9 @@ const Svg = ({ html, ...props }) => (
   />
 );
 
-export const CheckboxPrimitive = (props: Props) => (
+export const CheckboxPrimitive = ({ innerRef, ...props }: Props) => (
   <Control
-    ref={props.innerRef}
+    ref={innerRef}
     svg={`<g fillRule="evenodd">
       <rect class="outer-stroke" fill="transparent" x="6" y="6" width="12" height="12" rx="2" />
       <rect class="inner-stroke" fill="currentColor" x="6" y="6" width="12" height="12" rx="2" />
@@ -254,8 +257,9 @@ export const Checkbox = (props: Props) => (
 export const CheckboxGroup = (props: Props) => (
   <ReactCheckboxGroup {...props} />
 );
-export const RadioPrimitive = (props: Props) => (
+export const RadioPrimitive = ({ innerRef, ...props }: Props) => (
   <Control
+    ref={innerRef}
     svg={`<g fillRule="evenodd">
     <circle class="outer-stroke" fill="transparent" cx="12" cy="12" r="7" />
     <circle class="inner-stroke" fill="currentColor" cx="12" cy="12" r="7" />
