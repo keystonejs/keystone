@@ -1,4 +1,3 @@
-const inflection = require('inflection');
 const pluralize = require('pluralize');
 const { escapeRegExp } = require('@keystonejs/utils');
 
@@ -6,19 +5,39 @@ const initConfig = (key, config) => ({
   ...config,
 });
 
+const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
+
+const keyToLabel = str =>
+  str
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .split(/\s|_|\-/)
+    .filter(i => i)
+    .map(upcase)
+    .join(' ');
+
+const labelToPath = str =>
+  str
+    .split(' ')
+    .join('-')
+    .toLowerCase();
+
+const labelToClass = str => str.replace(/\s+/g, '');
+
 module.exports = class List {
   constructor(key, config, { mongoose, lists }) {
     this.key = key;
     this.config = initConfig(key, config);
 
-    this.label = config.label || pluralize.plural(inflection.titleize(key));
-    this.singular = config.singular || pluralize.singular(this.label);
-    this.plural = config.plural || pluralize.plural(this.label);
-    this.path = config.path || inflection.dasherize(this.plural).toLowerCase();
-    this.itemQueryName =
-      config.itemQueryName || inflection.camelize(this.singular);
-    this.listQueryName =
-      config.listQueryName || `all${inflection.camelize(this.plural)}`;
+    const label = keyToLabel(key);
+    const singular = pluralize.singular(label);
+    const plural = pluralize.plural(label);
+
+    this.label = config.label || plural;
+    this.singular = config.singular || singular;
+    this.plural = config.plural || plural;
+    this.path = config.path || labelToPath(plural);
+    this.itemQueryName = config.itemQueryName || labelToClass(singular);
+    this.listQueryName = config.listQueryName || `all${labelToClass(plural)}`;
     this.deleteMutationName = `delete${this.itemQueryName}`;
     this.updateMutationName = `update${this.itemQueryName}`;
     this.createMutationName = `create${this.itemQueryName}`;
