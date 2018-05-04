@@ -158,9 +158,12 @@ const ItemDetails = withRouter(
       );
     }
     onSave = () => {
-      const { onUpdate, updateItem } = this.props;
-      // TODO: smarter selection of data to send, should come from field types ?
-      const { id, __typename, ...data } = this.state.item;
+      const { item, item: { id } } = this.state;
+      const { list: { fields }, onUpdate, updateItem } = this.props;
+      const data = fields.reduce((values, field) => {
+        values[field.path] = field.getValue(item);
+        return values;
+      }, {});
       updateItem({ variables: { id, data } }).then(onUpdate);
     };
     onCopy = text => () => {

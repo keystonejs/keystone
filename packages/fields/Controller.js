@@ -5,5 +5,6 @@ export default class FieldController {
     // TODO: Undo this
     Object.assign(this, config);
   }
+  getValue = data => data[this.config.path] || '';
   getInitialData = () => this.config.defaultValue || '';
 }
