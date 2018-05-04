@@ -11,7 +11,7 @@ import { Select } from '@keystonejs/ui/src/primitives/forms';
 export default class SelectField extends Component {
   onChange = option => {
     const { field, onChange } = this.props;
-    onChange(field, option.value);
+    onChange(field, option ? option.value : null);
   };
   render() {
     const { autoFocus, field, item } = this.props;
