@@ -20,7 +20,7 @@ import {
   FlexGroup,
   CONTAINER_WIDTH,
 } from '@keystonejs/ui/src/primitives/layout';
-import { Title } from '@keystonejs/ui/src/primitives/typography';
+import { A11yText, Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
@@ -292,7 +292,7 @@ class ListPage extends Component {
 
     const { isFullWidth } = this.state;
     const Icon = isFullWidth ? FoldIcon : UnfoldIcon;
-    const title = isFullWidth ? 'Collapse' : 'Expand';
+    const text = isFullWidth ? 'Collapse' : 'Expand';
 
     // Note: we return an array here instead of a <Fragment> because the
     // <FlexGroup> component it is rendered into passes props to its children
@@ -300,11 +300,12 @@ class ListPage extends Component {
       <FilterSeparator key="expand-separator" />,
       <Button
         onClick={this.toggleFullWidth}
-        title={title}
+        title={text}
         isActive={isFullWidth}
         key="expand-button"
       >
         <Icon css={{ transform: 'rotate(90deg)' }} />
+        <A11yText>{text}</A11yText>
       </Button>,
     ];
   }
