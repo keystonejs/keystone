@@ -33,7 +33,11 @@ export const buttonAndInputBase = {
 
 type InputProps = { isMultiline: boolean };
 export const InputField = ({ isMultiline, ...props }: InputProps) =>
-  isMultiline ? <textarea {...props} /> : <input {...props} />;
+  isMultiline ? (
+    <textarea css={{ lineHeight: 'inherit', height: 'auto' }} {...props} />
+  ) : (
+    <input {...props} />
+  );
 
 export const Input = styled(InputField)({
   ...buttonAndInputBase,

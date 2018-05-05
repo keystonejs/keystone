@@ -14,7 +14,8 @@ const Wrapper = styled.nav({
   paddingTop: gridSize,
 });
 export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => ({
-  backgroundColor: isSelected ? colors.B.D10 : null,
+  background: isSelected ? colors.B.D10 : 'none',
+  border: 0,
   borderRadius: '0.25em',
   color: 'white',
   marginRight: -1,

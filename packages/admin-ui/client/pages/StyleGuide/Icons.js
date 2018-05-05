@@ -53,12 +53,14 @@ export default class IconsGuide extends Component {
     if (e.key !== 'Alt') return;
     this.setState({ altIsDown: false });
   };
-  handleCopy = text => () => {
-    this.setState({ copyText: text }, () => {
-      setTimeout(() => {
-        this.setState({ copyText: '' });
-      }, 500);
-    });
+  handleCopy = (text, success) => {
+    if (success) {
+      this.setState({ copyText: text }, () => {
+        setTimeout(() => {
+          this.setState({ copyText: '' });
+        }, 500);
+      });
+    }
   };
   render() {
     const { altIsDown, copyText } = this.state;
@@ -72,7 +74,7 @@ export default class IconsGuide extends Component {
             : `import { ${name} } from '@keystonejs/icons';`;
           return (
             <Cell width={2} key={name}>
-              <CopyToClipboard text={importText} onCopy={this.handleCopy(name)}>
+              <CopyToClipboard text={importText} onCopy={this.handleCopy}>
                 <IconContainer>
                   <Icon
                     css={{

@@ -27,8 +27,11 @@ const HeaderCell = styled('td')({
 });
 const BodyCell = styled('td')(({ isSelected }) => ({
   backgroundColor: isSelected ? colors.B.L90 : null,
-  borderTop: `1px solid ${isSelected ? colors.B.L75 : colors.N10}`,
+  boxShadow: isSelected
+    ? `0 1px 0 ${colors.B.L75}, 0 -1px 0 ${colors.B.L75}`
+    : `0 -1px 0 ${colors.N10}`,
   padding: '8px 0',
+  position: isSelected ? 'relative' : null,
   fontSize: 15,
 }));
 
@@ -115,14 +118,14 @@ class ListDisplayRow extends Component {
   }
 }
 
+function isKeyboardEvent(e) {
+  return e.clientX === 0 && e.clientY === 0;
+}
+
 class ListManageRow extends Component {
   handleRowClick = e => {
-    // persist the event to expose `nativeEvent`
-    e.persist();
-
     // bail when MouseClick on the actual input, which calls onClick twice
-    const isKeyboardEvent = !e.nativeEvent.layerX && !e.nativeEvent.layerY;
-    if (e.target.nodeName === 'INPUT' && !isKeyboardEvent) return;
+    if (e.target.nodeName === 'INPUT' && !isKeyboardEvent(e)) return;
 
     // trigger onClick with the current ID
     const { item, onClick } = this.props;

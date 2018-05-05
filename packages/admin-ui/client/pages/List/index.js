@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 
 import {
   FoldIcon,
+  GearIcon,
   PlusIcon,
   SearchIcon,
   SettingsIcon,
@@ -204,9 +205,15 @@ class ListPage extends Component {
   handleSelectAll = (selectedItems: Array<string>) => {
     this.setState({ selectedItems });
   };
-  startManaging = () => this.setState({ isManaging: true });
+  startManaging = () => {
+    this.setState({ isManaging: true }, () => {
+      this.manageCancel.focus();
+    });
+  };
   stopManaging = () => {
-    this.setState({ isManaging: false, selectedItems: [] });
+    this.setState({ isManaging: false, selectedItems: [] }, () => {
+      this.manageButton.focus();
+    });
   };
   toggleManaging = () => {
     const fn = this.state.isManaging ? this.stopManaging : this.startManaging;
@@ -216,6 +223,14 @@ class ListPage extends Component {
     const fn = this.state.isManaging ? this.stopManaging : this.startManaging;
     fn();
   };
+  getManageCancel = ref => {
+    this.manageCancel = ref;
+  };
+  getManageButton = ref => {
+    this.manageButton = ref;
+  };
+
+  // Create
 
   onCreate = ({ data }) => {
     let { list, adminPath, history } = this.props;
@@ -244,7 +259,7 @@ class ListPage extends Component {
     const title = isFullWidth ? 'Collapse' : 'Expand';
 
     return [
-      <FilterSeparator />,
+      <FilterSeparator key="expand-separator" />,
       <Button onClick={this.toggleFullWidth} title={title}>
         <Icon css={{ transform: 'rotate(90deg)' }} />
       </Button>,
@@ -256,6 +271,55 @@ class ListPage extends Component {
     const selectedCount = selectedItems.length;
     const hasSelected = Boolean(selectedCount);
 
+    const managementUI = (
+      <FlexGroup align="center">
+        <IconButton
+          appearance="primary"
+          icon={SettingsIcon}
+          isDisabled={!hasSelected}
+          onClick={console.log}
+          variant="ghost"
+        >
+          Update
+        </IconButton>
+        <IconButton
+          appearance="danger"
+          icon={TrashcanIcon}
+          isDisabled={!hasSelected}
+          onClick={console.log}
+          variant="ghost"
+        >
+          Delete
+        </IconButton>
+        <Button
+          innerRef={this.getManageCancel}
+          onClick={this.toggleManaging}
+          variant="subtle"
+        >
+          Cancel
+        </Button>
+      </FlexGroup>
+    );
+    const paginationUI = (
+      <FlexGroup align="center">
+        <IconButton
+          icon={GearIcon}
+          innerRef={this.getManageButton}
+          onClick={this.toggleManaging}
+          variant="ghost"
+          style={{ marginRight: '0.5em' }}
+        >
+          Manage
+        </IconButton>
+        <Pagination
+          total={this.count}
+          displayCount
+          single={list.label}
+          plural={list.plural}
+        />
+      </FlexGroup>
+    );
+
     return (
       <div
         css={{
@@ -264,58 +328,7 @@ class ListPage extends Component {
           visibility: this.count ? 'visible' : 'hidden',
         }}
       >
-        <FlexGroup align="center">
-          <Button
-            onClick={this.toggleManaging}
-            title="Manage"
-            isActive={isManaging}
-            css={{ marginRight: 8 }}
-          >
-            Manage
-          </Button>
-          {isManaging ? (
-            <FlexGroup align="center">
-              <div>
-                <span
-                  css={{
-                    display: 'inline-block',
-                    minWidth: '0.6em',
-                  }}
-                >
-                  {selectedCount}
-                </span>{' '}
-                Selected
-              </div>
-              <FlexGroup isContiguous>
-                <IconButton
-                  appearance="primary"
-                  icon={SettingsIcon}
-                  isDisabled={!hasSelected}
-                  onClick={console.log}
-                  variant="subtle"
-                >
-                  Update
-                </IconButton>
-                <IconButton
-                  appearance="warning"
-                  icon={TrashcanIcon}
-                  isDisabled={!hasSelected}
-                  onClick={console.log}
-                  variant="subtle"
-                >
-                  Delete
-                </IconButton>
-              </FlexGroup>
-            </FlexGroup>
-          ) : (
-            <Pagination
-              total={this.count}
-              displayCount
-              single={list.label}
-              plural={list.plural}
-            />
-          )}
-        </FlexGroup>
+        {isManaging ? managementUI : paginationUI}
       </div>
     );
   }
