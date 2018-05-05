@@ -294,12 +294,15 @@ class ListPage extends Component {
     const Icon = isFullWidth ? FoldIcon : UnfoldIcon;
     const text = isFullWidth ? 'Collapse' : 'Expand';
 
+    // Note: we return an array here instead of a <Fragment> because the
+    // <FlexGroup> component it is rendered into passes props to its children
     return [
       <FilterSeparator key="expand-separator" />,
       <Button
         onClick={this.toggleFullWidth}
         title={text}
         isActive={isFullWidth}
+        key="expand-button"
       >
         <Icon css={{ transform: 'rotate(90deg)' }} />
         <A11yText>{text}</A11yText>
