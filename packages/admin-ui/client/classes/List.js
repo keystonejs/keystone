@@ -18,4 +18,9 @@ export default class List {
       return data;
     }, {});
   }
+  formatCount(items) {
+    return items.length === 1
+      ? `1 ${this.singular}`
+      : `${items.length} ${this.plural}`;
+  }
 }

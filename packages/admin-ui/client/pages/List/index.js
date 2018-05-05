@@ -26,6 +26,7 @@ import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
+import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 import Nav from '../../components/Nav';
 import { Popout, DisclosureArrow } from '../../components/Popout';
 
@@ -128,12 +129,13 @@ class ListPage extends Component {
     this.state = {
       displayedFields,
       isFullWidth: false,
-      isManaging: true,
+      isManaging: false,
       selectedItems: [],
       sortDirection,
       sortBy,
       search: '',
       showCreateModal: false,
+      showDeleteSelectedItemsModal: false,
     };
   }
 
@@ -219,25 +221,36 @@ class ListPage extends Component {
     const fn = this.state.isManaging ? this.stopManaging : this.startManaging;
     fn();
   };
-  toggleSelectAll = () => {
-    const fn = this.state.isManaging ? this.stopManaging : this.startManaging;
-    fn();
-  };
   getManageCancel = ref => {
     this.manageCancel = ref;
   };
   getManageButton = ref => {
     this.manageButton = ref;
   };
-
-  // Create
-
+  openDeleteSelectedItemsModal = () => {
+    const { selectedItems } = this.state;
+    if (!selectedItems.length) return;
+    this.setState({
+      showDeleteSelectedItemsModal: true,
+    });
+  };
+  closeDeleteSelectedItemsModal = () => {
+    this.setState({
+      showDeleteSelectedItemsModal: false,
+    });
+  };
+  onDeleteSelectedItems = () => {
+    this.closeDeleteSelectedItemsModal();
+    if (this.refetch) this.refetch();
+    this.setState({
+      selectedItems: [],
+    });
+  };
   onCreate = ({ data }) => {
     let { list, adminPath, history } = this.props;
     let id = data[list.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
   };
-
   renderCreateModal() {
     const { showCreateModal } = this.state;
     if (!showCreateModal) return;
@@ -251,6 +264,20 @@ class ListPage extends Component {
       />
     );
   }
+  renderDeleteSelectedItemsModal() {
+    const { selectedItems, showDeleteSelectedItemsModal } = this.state;
+    if (!showDeleteSelectedItemsModal) return;
+    const { list } = this.props;
+
+    return (
+      <DeleteManyItemsModal
+        list={list}
+        itemIds={selectedItems}
+        onClose={this.closeDeleteSelectedItemsModal}
+        onDelete={this.onDeleteSelectedItems}
+      />
+    );
+  }
   renderExpandButton() {
     if (window && window.innerWidth < CONTAINER_WIDTH) return null;
 
@@ -260,7 +287,11 @@ class ListPage extends Component {
 
     return [
       <FilterSeparator key="expand-separator" />,
-      <Button onClick={this.toggleFullWidth} title={title}>
+      <Button
+        onClick={this.toggleFullWidth}
+        title={title}
+        isActive={isFullWidth}
+      >
         <Icon css={{ transform: 'rotate(90deg)' }} />
       </Button>,
     ];
@@ -286,7 +317,7 @@ class ListPage extends Component {
           appearance="danger"
           icon={TrashcanIcon}
           isDisabled={!hasSelected}
-          onClick={console.log}
+          onClick={this.openDeleteSelectedItemsModal}
           variant="ghost"
         >
           Delete
@@ -368,6 +399,9 @@ class ListPage extends Component {
               );
             }
 
+            // TODO: This doesn't seem like the best way to capture the refetch,
+            // but it's not easy to hoist the <Query> further up the hierarchy.
+            this.refetch = refetch;
             const items = data && data[list.listQueryName];
             this.count =
               items && typeof items.length === 'number'
@@ -447,6 +481,7 @@ class ListPage extends Component {
                   */}
 
                 {this.renderCreateModal()}
+                {this.renderDeleteSelectedItemsModal()}
 
                 <Container isDisabled={isFullWidth}>
                   {items ? (
