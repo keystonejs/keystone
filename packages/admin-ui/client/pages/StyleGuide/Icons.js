@@ -67,11 +67,11 @@ export default class IconsGuide extends Component {
     return (
       <Grid gap={16}>
         {Object.keys(icons).map(name => {
-          const isCopied = copyText === name;
-          const Icon = isCopied ? icons.CheckIcon : icons[name];
           const importText = altIsDown
             ? name
             : `import { ${name} } from '@keystonejs/icons';`;
+          const isCopied = copyText === importText;
+          const Icon = isCopied ? icons.CheckIcon : icons[name];
           return (
             <Cell width={2} key={name}>
               <CopyToClipboard text={importText} onCopy={this.handleCopy}>
