@@ -19,7 +19,7 @@ import {
   FlexGroup,
   CONTAINER_WIDTH,
 } from '@keystonejs/ui/src/primitives/layout';
-import { Title } from '@keystonejs/ui/src/primitives/typography';
+import { SubtleText, Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
@@ -50,10 +50,6 @@ const getQuery = ({ fields, list, search, sort }) => {
     }
   }`;
 };
-
-// ==============================
-// Columns
-// ==============================
 
 const FilterPopout = () => {
   return (
@@ -343,7 +339,7 @@ class ListPage extends Component {
           Manage
         </IconButton>
         <Pagination
-          total={this.count}
+          total={this.itemsCount}
           displayCount
           single={list.label}
           plural={list.plural}
@@ -356,7 +352,7 @@ class ListPage extends Component {
         css={{
           marginBottom: '1em',
           marginTop: '1em',
-          visibility: this.count ? 'visible' : 'hidden',
+          visibility: this.itemsCount ? 'visible' : 'hidden',
         }}
       >
         {isManaging ? managementUI : paginationUI}
@@ -403,17 +399,17 @@ class ListPage extends Component {
             // but it's not easy to hoist the <Query> further up the hierarchy.
             this.refetch = refetch;
             const items = data && data[list.listQueryName];
-            this.count =
+            this.itemsCount =
               items && typeof items.length === 'number'
                 ? items.length
-                : this.count;
+                : this.itemsCount;
 
             return (
               <Fragment>
                 <Container>
                   <Title>
-                    {this.count} {this.count === 1 ? list.label : list.plural}{' '}
-                    sorted by
+                    {list.formatCount(this.itemsCount)}
+                    <SubtleText> sorted by</SubtleText>
                     <Popout
                       headerTitle="Sort"
                       footerContent={
@@ -423,7 +419,6 @@ class ListPage extends Component {
                       }
                       target={
                         <SortButton>
-                          {' '}
                           {sortBy.label.toLowerCase()}
                           <DisclosureArrow size="0.25em" />
                         </SortButton>
