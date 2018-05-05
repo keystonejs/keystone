@@ -36,11 +36,16 @@ module.exports = class List {
     this.singular = config.singular || singular;
     this.plural = config.plural || plural;
     this.path = config.path || labelToPath(plural);
-    this.itemQueryName = config.itemQueryName || labelToClass(singular);
-    this.listQueryName = config.listQueryName || `all${labelToClass(plural)}`;
-    this.deleteMutationName = `delete${this.itemQueryName}`;
-    this.updateMutationName = `update${this.itemQueryName}`;
-    this.createMutationName = `create${this.itemQueryName}`;
+
+    const itemQueryName = config.itemQueryName || labelToClass(singular);
+    const listQueryName = config.listQueryName || labelToClass(plural);
+
+    this.itemQueryName = itemQueryName;
+    this.listQueryName = `all${listQueryName}`;
+    this.deleteMutationName = `delete${itemQueryName}`;
+    this.deleteManyMutationName = `delete${listQueryName}`;
+    this.updateMutationName = `update${itemQueryName}`;
+    this.createMutationName = `create${itemQueryName}`;
 
     this.fields = config.fields
       ? Object.keys(config.fields).map(path => {
@@ -70,6 +75,23 @@ module.exports = class List {
     }
 
     this.model = mongoose.model(this.key, schema);
+  }
+  getAdminMeta() {
+    return {
+      key: this.key,
+      label: this.label,
+      singular: this.singular,
+      plural: this.plural,
+      path: this.path,
+      listQueryName: this.listQueryName,
+      itemQueryName: this.itemQueryName,
+      createMutationName: this.createMutationName,
+      updateMutationName: this.updateMutationName,
+      deleteMutationName: this.deleteMutationName,
+      deleteManyMutationName: this.deleteManyMutationName,
+      fields: this.fields.map(i => i.getAdminMeta()),
+      views: this.views,
+    };
   }
   getAdminGraphqlTypes() {
     const fieldSchemas = this.fields
@@ -128,30 +150,36 @@ module.exports = class List {
   }
   getAdminGraphqlMutations() {
     return `
-        ${this.deleteMutationName}(
-          id: String!
+        ${this.createMutationName}(
+          data: ${this.key}UpdateInput
         ): ${this.key}
         ${this.updateMutationName}(
           id: String!
           data: ${this.key}UpdateInput
         ): ${this.key}
-        ${this.createMutationName}(
-          data: ${this.key}UpdateInput
+        ${this.deleteMutationName}(
+          id: String!
+        ): ${this.key}
+        ${this.deleteManyMutationName}(
+          ids: [String!]
         ): ${this.key}
     `;
   }
   getAdminMutationResolvers() {
     return {
-      [this.deleteMutationName]: (_, { id }) =>
-        this.model.findByIdAndRemove(id),
+      [this.createMutationName]: async (_, { data }) => {
+        return this.model.create(data);
+      },
       [this.updateMutationName]: async (_, { id, data }) => {
         const item = await this.model.findById(id);
         // TODO: Loop through each field and have it apply the update
         item.set(data);
         return item.save();
       },
-      [this.createMutationName]: async (_, { data }) => {
-        return this.model.create(data);
+      [this.deleteMutationName]: (_, { id }) =>
+        this.model.findByIdAndRemove(id),
+      [this.deleteManyMutationName]: async (_, { ids }) => {
+        ids.map(async id => await this.model.findByIdAndRemove(id));
       },
     };
   }
@@ -176,21 +204,5 @@ module.exports = class List {
       query.sort(args.sort);
     }
     return query;
-  }
-  getAdminMeta() {
-    return {
-      key: this.key,
-      label: this.label,
-      singular: this.singular,
-      plural: this.plural,
-      path: this.path,
-      listQueryName: this.listQueryName,
-      itemQueryName: this.itemQueryName,
-      deleteMutationName: this.deleteMutationName,
-      updateMutationName: this.updateMutationName,
-      createMutationName: this.createMutationName,
-      fields: this.fields.map(i => i.getAdminMeta()),
-      views: this.views,
-    };
   }
 };
