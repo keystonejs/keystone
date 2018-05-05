@@ -146,7 +146,8 @@ class ListManageRow extends Component {
     const { isSelected, item, onSelect, onSelectStart } = this.props;
     onSelectStart(!isSelected);
     onSelect([item.id]);
-
+  };
+  onMouseUp = () => {
     // make keyboard selection easier following a mouse select
     this.checkbox.focus();
   };
@@ -159,6 +160,13 @@ class ListManageRow extends Component {
       onSelect([item.id]);
     }
   };
+  onCheckboxChange = () => {
+    const { item, onSelect } = this.props;
+    onSelect([item.id]);
+  };
+  onCheckboxMouseDown = e => {
+    e.stopPropagation();
+  };
   getCheckbox = ref => {
     this.checkbox = ref;
   };
@@ -169,6 +177,7 @@ class ListManageRow extends Component {
       <tr
         onMouseDown={this.onMouseDown}
         onMouseEnter={this.onMouseEnter}
+        onMouseUp={this.onMouseUp}
         css={{ cursor: 'default', userSelect: 'none' }}
       >
         <BodyCell isSelected={isSelected} key="checkbox">
@@ -176,6 +185,8 @@ class ListManageRow extends Component {
             checked={isSelected}
             innerRef={this.getCheckbox}
             value={item.id}
+            onChange={this.onCheckboxChange}
+            onMouseDown={this.onCheckboxMouseDown}
             css={{ marginLeft: 1 }}
           />
         </BodyCell>
