@@ -12,6 +12,7 @@ import {
   SettingsIcon,
   TrashcanIcon,
   UnfoldIcon,
+  XIcon,
 } from '@keystonejs/icons';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
 import {
@@ -84,20 +85,30 @@ const Kbd = styled.kbd({
   whiteSpace: 'nowrap',
 });
 
-const Search = ({ children }) => (
-  <div css={{ position: 'relative' }}>
-    {children}
-    <SearchIcon
-      css={{
-        color: colors.N30,
-        position: 'absolute',
-        right: gridSize * 1.5,
-        top: '50%',
-        transform: 'translateY(-50%)',
-      }}
-    />
-  </div>
-);
+const Search = ({ children, hasValue, onClear }) => {
+  const Icon = hasValue ? XIcon : SearchIcon;
+  return (
+    <div css={{ position: 'relative' }}>
+      {children}
+      <Icon
+        onClick={hasValue ? onClear : null}
+        css={{
+          color: colors.N30,
+          cursor: 'pointer',
+          pointerEvents: hasValue ? 'all' : 'none',
+          position: 'absolute',
+          right: gridSize * 1.5,
+          top: '50%',
+          transform: 'translateY(-50%)',
+
+          ':hover': {
+            color: hasValue ? colors.text : colors.N30,
+          },
+        }}
+      />
+    </div>
+  );
+};
 
 function getInvertedSort(direction) {
   const inverted = { ASC: 'DESC', DESC: 'ASC' };
@@ -149,6 +160,10 @@ class ListPage extends Component {
   handleSearch = e => {
     const { value: search } = e.target;
     this.setState({ search });
+  };
+  handleSearchClear = () => {
+    this.setState({ search: '' });
+    this.input.focus();
   };
 
   handleSelectedFieldsChange = selectedFields => {
@@ -357,6 +372,9 @@ class ListPage extends Component {
       </div>
     );
   }
+  getSearchRef = ref => {
+    this.input = ref;
+  };
 
   render() {
     const { list, adminPath } = this.props;
@@ -431,8 +449,12 @@ class ListPage extends Component {
                   </Title>
 
                   <FlexGroup growIndexes={[0]}>
-                    <Search>
+                    <Search
+                      onClear={this.handleSearchClear}
+                      hasValue={search && search.length}
+                    >
                       <Input
+                        innerRef={this.getSearchRef}
                         onChange={this.handleSearch}
                         placeholder="Search"
                         value={search}

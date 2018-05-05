@@ -1,7 +1,6 @@
 // @flow
 
-import React from 'react';
-import styled from 'react-emotion';
+import React, { type Ref } from 'react';
 import ReactSelect from 'react-select';
 
 import { colors, gridSize } from '../../theme';
@@ -31,33 +30,37 @@ export const buttonAndInputBase = {
   whiteSpace: 'nowrap',
 };
 
-type InputProps = { isMultiline: boolean };
-export const InputField = ({ isMultiline, ...props }: InputProps) =>
-  isMultiline ? (
-    <textarea css={{ lineHeight: 'inherit', height: 'auto' }} {...props} />
+type InputProps = { innerRef: Ref<*>, isMultiline: boolean };
+export const Input = ({ innerRef, isMultiline, ...props }: InputProps) => {
+  const css = {
+    ...buttonAndInputBase,
+    backgroundColor: 'white',
+    borderColor: colors.N20,
+    boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
+    color: 'inherit',
+    width: '100%',
+
+    ':hover': {
+      borderColor: colors.N30,
+      outline: 0,
+    },
+    ':focus': {
+      borderColor: colors.primary,
+      boxShadow: `inset 0 1px 1px rgba(0, 0, 0, 0.075),
+        0 0 0 3px ${alpha(colors.primary, 0.2)}`,
+      outline: 0,
+    },
+  };
+  return isMultiline ? (
+    <textarea
+      ref={innerRef}
+      css={{ ...css, lineHeight: 'inherit', height: 'auto' }}
+      {...props}
+    />
   ) : (
-    <input {...props} />
+    <input ref={innerRef} css={css} {...props} />
   );
-
-export const Input = styled(InputField)({
-  ...buttonAndInputBase,
-  backgroundColor: 'white',
-  borderColor: colors.N20,
-  boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
-  color: 'inherit',
-  width: '100%',
-
-  ':hover': {
-    borderColor: colors.N30,
-    outline: 0,
-  },
-  ':focus': {
-    borderColor: colors.primary,
-    boxShadow: `inset 0 1px 1px rgba(0, 0, 0, 0.075),
-      0 0 0 3px ${alpha(colors.primary, 0.2)}`,
-    outline: 0,
-  },
-});
+};
 
 export const selectStyles = {
   control: (base: any, { isFocused }: { isFocused: Boolean }) => ({

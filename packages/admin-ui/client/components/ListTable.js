@@ -59,6 +59,7 @@ const NoResults = ({ children, ...props }) => (
       fontSize: 32,
       justifyContent: 'center',
       padding: '1em',
+      textAlign: 'center',
     }}
     {...props}
   >
