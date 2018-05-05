@@ -73,7 +73,7 @@ class CreateItemModal extends Component {
               {isLoading ? 'Loading...' : `Create ${list.singular}`}
             </Button>
             <Button
-              appearance="primary"
+              appearance="warning"
               variant="subtle"
               onClick={this.onClose}
             >
