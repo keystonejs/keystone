@@ -229,8 +229,6 @@ export default class ListTable extends Component {
       <Table>
         <colgroup>
           <col width="32" />
-          <col />
-          <col />
         </colgroup>
         <thead>
           <tr>
