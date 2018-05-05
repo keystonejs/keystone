@@ -48,7 +48,7 @@ function collapseBorderRadii(index, length) {
 
 type FlexGroupProps = {
   align: 'stretch' | 'center' | 'flex-start' | 'flex-start',
-  children: Node,
+  children: Array<Node>,
   growIndexes: Array<number>,
   isContiguous: boolean,
   isInline: boolean,
