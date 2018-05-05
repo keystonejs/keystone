@@ -19,7 +19,7 @@ import {
   FlexGroup,
   CONTAINER_WIDTH,
 } from '@keystonejs/ui/src/primitives/layout';
-import { SubtleText, Title } from '@keystonejs/ui/src/primitives/typography';
+import { Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
@@ -407,7 +407,7 @@ class ListPage extends Component {
                 <Container>
                   <Title>
                     {list.formatCount(this.itemsCount)}
-                    <SubtleText> sorted by</SubtleText>
+                    <span>, by</span>
                     <Popout
                       headerTitle="Sort"
                       footerContent={

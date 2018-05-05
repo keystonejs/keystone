@@ -34,9 +34,20 @@ const BodyCell = styled('td')(({ isSelected }) => ({
   position: isSelected ? 'relative' : null,
   fontSize: 15,
 }));
-const ItemLink = styled(Link)({
-  color: colors.text,
-});
+const ItemLink = styled(Link)`
+  color: ${colors.text};
+  position: relative;
+
+  /* Increase hittable area on item link */
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: -10px;
+    right: -10px;
+    top: -10px;
+  }
+`;
 
 const NoResults = ({ children, ...props }) => (
   <div
