@@ -34,6 +34,20 @@ const BodyCell = styled('td')(({ isSelected }) => ({
   position: isSelected ? 'relative' : null,
   fontSize: 15,
 }));
+const ItemLink = styled(Link)`
+  color: ${colors.text};
+  position: relative;
+
+  /* Increase hittable area on item link */
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: -10px;
+    right: -10px;
+    top: -10px;
+  }
+`;
 
 const NoResults = ({ children, ...props }) => (
   <div
@@ -45,6 +59,7 @@ const NoResults = ({ children, ...props }) => (
       fontSize: 32,
       justifyContent: 'center',
       padding: '1em',
+      textAlign: 'center',
     }}
     {...props}
   >
@@ -110,7 +125,7 @@ class ListDisplayRow extends Component {
         </BodyCell>
         {fields.map(({ path }, index) => (
           <BodyCell key={path}>
-            {!index ? <Link to={link}>{item[path]}</Link> : item[path]}
+            {!index ? <ItemLink to={link}>{item[path]}</ItemLink> : item[path]}
           </BodyCell>
         ))}
       </tr>
@@ -226,8 +241,6 @@ export default class ListTable extends Component {
       <Table>
         <colgroup>
           <col width="32" />
-          <col />
-          <col />
         </colgroup>
         <thead>
           <tr>
