@@ -128,7 +128,7 @@ class ListPage extends Component {
     this.state = {
       displayedFields,
       isFullWidth: false,
-      isManaging: false,
+      isManaging: true,
       selectedItems: [],
       sortDirection,
       sortBy,
@@ -296,7 +296,7 @@ class ListPage extends Component {
           onClick={this.toggleManaging}
           variant="subtle"
         >
-          Cancel
+          Done
         </Button>
       </FlexGroup>
     );

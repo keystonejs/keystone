@@ -123,16 +123,26 @@ function isKeyboardEvent(e) {
 }
 
 class ListManageRow extends Component {
-  handleRowClick = e => {
+  onMouseDown = e => {
     // bail when MouseClick on the actual input, which calls onClick twice
     if (e.target.nodeName === 'INPUT' && !isKeyboardEvent(e)) return;
 
     // trigger onClick with the current ID
-    const { item, onClick } = this.props;
-    onClick([item.id]);
+    const { isSelected, item, onSelect, onSelectStart } = this.props;
+    onSelectStart(!isSelected);
+    onSelect([item.id]);
 
     // make keyboard selection easier following a mouse select
     this.checkbox.focus();
+  };
+  onMouseEnter = () => {
+    const { isSelected, item, selectOnEnter, onSelect } = this.props;
+    if (
+      (selectOnEnter === 'select' && !isSelected) ||
+      (selectOnEnter === 'deselect' && isSelected)
+    ) {
+      onSelect([item.id]);
+    }
   };
   getCheckbox = ref => {
     this.checkbox = ref;
@@ -141,7 +151,11 @@ class ListManageRow extends Component {
     const { fields, isSelected, item } = this.props;
 
     return (
-      <tr onClick={this.handleRowClick} css={{ cursor: 'default' }}>
+      <tr
+        onMouseDown={this.onMouseDown}
+        onMouseEnter={this.onMouseEnter}
+        css={{ cursor: 'default', userSelect: 'none' }}
+      >
         <BodyCell isSelected={isSelected} key="checkbox">
           <CheckboxPrimitive
             checked={isSelected}
@@ -161,11 +175,27 @@ class ListManageRow extends Component {
 }
 
 export default class ListTable extends Component {
+  state = {
+    mouseOverSelectsRow: false,
+  };
   handleSelectAll = () => {
     const { items, onSelectAll, selectedItems } = this.props;
     const allSelected = items.length === selectedItems.length;
     const value = allSelected ? [] : items.map(i => i.id);
     onSelectAll(value);
+  };
+  onSelectStart = select => {
+    const { isManaging } = this.props;
+    if (!isManaging) return;
+    this.setState({
+      mouseOverSelectsRow: select ? 'select' : 'deselect',
+    });
+  };
+  stopRowSelectOnEnter = () => {
+    const { mouseOverSelectsRow } = this.state;
+    if (mouseOverSelectsRow) {
+      this.setState({ mouseOverSelectsRow: false });
+    }
   };
   render() {
     const {
@@ -179,6 +209,7 @@ export default class ListTable extends Component {
       onSelect,
       selectedItems,
     } = this.props;
+    const { mouseOverSelectsRow } = this.state;
 
     return items.length ? (
       <Table>
@@ -208,7 +239,10 @@ export default class ListTable extends Component {
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody
+          onMouseUp={this.stopRowSelectOnEnter}
+          onMouseLeave={this.stopRowSelectOnEnter}
+        >
           {items.map(
             item =>
               isManaging ? (
@@ -218,7 +252,9 @@ export default class ListTable extends Component {
                   key={item.id}
                   list={list}
                   isSelected={selectedItems.includes(item.id)}
-                  onClick={onSelect}
+                  selectOnEnter={mouseOverSelectsRow}
+                  onSelect={onSelect}
+                  onSelectStart={this.onSelectStart}
                 />
               ) : (
                 <ListDisplayRow
