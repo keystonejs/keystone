@@ -7,6 +7,7 @@ import { colors } from '@keystonejs/ui/src/theme';
 
 const Wrapper = styled.div({
   marginTop: 60,
+  minHeight: 120,
   position: 'relative',
 });
 const Toolbar = styled.div({
@@ -110,7 +111,11 @@ export default class Footer extends Component {
       <Wrapper innerRef={this.getWrapper} style={wrapperStyle} key="wrapper">
         <Toolbar innerRef={this.getToolbar} style={footerStyle} key="footer">
           <div>
-            <Button appearance="primary" onClick={onSave}>
+            <Button
+              appearance="primary"
+              onClick={onSave}
+              style={{ marginRight: 8 }}
+            >
               Save Changes
             </Button>
             <Button

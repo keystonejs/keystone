@@ -8,10 +8,10 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Nav from '../../components/Nav';
 import DeleteItemModal from '../../components/DeleteItemModal';
 import Footer from './Footer';
-import { CheckIcon, ClippyIcon } from '@keystonejs/icons';
+import { ArrowLeftIcon, CheckIcon, ClippyIcon } from '@keystonejs/icons';
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { A11yText, Title } from '@keystonejs/ui/src/primitives/typography';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
+import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { colors } from '@keystonejs/ui/src/theme';
 
@@ -50,6 +50,10 @@ const ItemId = styled.div({
 const Form = styled.div({
   margin: '24px 0',
 });
+
+const FooterNavigation = styled.div(`
+  margin-bottom: 24px;
+`);
 
 class ConfirmResetModal extends Component {
   onKeyDown = e => {
@@ -180,12 +184,12 @@ const ItemDetails = withRouter(
       const { copyText, item, itemHasChanged } = this.state;
       const isCopied = copyText === item.id;
       const CopyIcon = isCopied ? CheckIcon : ClippyIcon;
+      const listHref = `${adminPath}/${list.path}`;
 
       return (
         <Fragment>
           <Title>
-            <Link to={`${adminPath}/${list.path}`}>{list.label}</Link>:{' '}
-            {item.name}
+            <Link to={listHref}>{list.label}</Link>: {item.name}
           </Title>
           <FlexGroup align="center" isContiguous>
             <ItemId>ID: {item.id}</ItemId>
@@ -220,6 +224,17 @@ const ItemDetails = withRouter(
             onDelete={this.showDeleteModal}
             onReset={itemHasChanged ? this.showConfirmResetModal : undefined}
           />
+          <FooterNavigation>
+            <IconButton
+              appearance="primary"
+              icon={ArrowLeftIcon}
+              to={listHref}
+              variant="subtle"
+              style={{ paddingLeft: 0 }}
+            >
+              Back to {list.label}
+            </IconButton>
+          </FooterNavigation>
           {this.renderDeleteModal()}
           {this.renderConfirmResetModal()}
         </Fragment>
