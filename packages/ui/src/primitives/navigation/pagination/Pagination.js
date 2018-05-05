@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import styled from 'react-emotion';
 
+import { colors } from '../../../theme';
 import Page from './Page';
 import manageState from './stateManager';
 import type { CountFormat, LabelType, OnChangeType } from './types';
@@ -34,6 +35,7 @@ const PaginationElement = styled.nav({
   display: 'flex',
 });
 const PageCount = styled.div({
+  color: colors.N60,
   marginRight: '1em',
 });
 

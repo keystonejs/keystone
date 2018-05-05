@@ -166,12 +166,14 @@ const ItemDetails = withRouter(
       }, {});
       updateItem({ variables: { id, data } }).then(onUpdate);
     };
-    onCopy = text => () => {
-      this.setState({ copyText: text }, () => {
-        setTimeout(() => {
-          this.setState({ copyText: '' });
-        }, 500);
-      });
+    onCopy = (text, success) => {
+      if (success) {
+        this.setState({ copyText: text }, () => {
+          setTimeout(() => {
+            this.setState({ copyText: '' });
+          }, 500);
+        });
+      }
     };
     render() {
       const { adminPath, list, getListByKey } = this.props;
@@ -187,7 +189,7 @@ const ItemDetails = withRouter(
           </Title>
           <FlexGroup align="center" isContiguous>
             <ItemId>ID: {item.id}</ItemId>
-            <CopyToClipboard text={item.id} onCopy={this.onCopy(item.id)}>
+            <CopyToClipboard text={item.id} onCopy={this.onCopy}>
               <Button variant="subtle">
                 <CopyIcon
                   css={{ color: isCopied ? colors.create : 'inherit' }}

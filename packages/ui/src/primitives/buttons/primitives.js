@@ -1,36 +1,16 @@
 // @flow
 
-import React, { type Node } from 'react';
-import styled from 'react-emotion';
+import React, { type Node, type Ref } from 'react';
 import { Link } from 'react-router-dom';
 import withPseudoState from 'react-pseudo-state';
 
 import { gridSize } from '../../theme';
 import { buttonAndInputBase } from '../forms';
-import { makeSubtleVariant, makeBoldVariant } from './variants';
-
-export type ButtonProps = {
-  appearance: 'default' | 'primary' | 'warning' | 'danger',
-  children: Node,
-  href?: string,
-  isDisabled: boolean,
-  spacing: 'comfortable' | 'cozy' | 'cramped',
-  to?: string,
-  variant: 'bold' | 'subtle',
-};
-
-// remove props that will create react DOM warnings
-const ButtonElement = ({
-  isDisabled,
-  isActive,
-  isFocus,
-  isHover,
-  ...props
-}: ButtonProps) => {
-  if (props.to) return <Link {...props} />;
-  if (props.href) return <a {...props} />;
-  return <button type="button" disabled={isDisabled} {...props} />;
-};
+import {
+  makeSubtleVariant,
+  makeGhostVariant,
+  makeBoldVariant,
+} from './variants';
 
 const SPACING_OPTION = {
   comfortable: `${gridSize}px ${gridSize * 1.5}px`,
@@ -38,54 +18,95 @@ const SPACING_OPTION = {
   cramped: '1px 2px',
 };
 
-const ButtonComponent = styled(ButtonElement)(
-  ({
-    appearance,
-    isActive,
-    isHover,
-    isFocus,
-    isDisabled,
-    variant,
-    spacing,
-  }) => {
-    const variantStyles =
-      variant === 'subtle'
-        ? makeSubtleVariant({
-            appearance,
-            isDisabled,
-            isActive,
-            isHover,
-            isFocus,
-          })
-        : makeBoldVariant({
-            appearance,
-            isDisabled,
-            isActive,
-            isHover,
-            isFocus,
-          });
+export type ButtonProps = {
+  appearance: 'default' | 'primary' | 'warning' | 'danger',
+  children: Node,
+  innerRef?: Ref<*>,
+  href?: string,
+  isDisabled: boolean,
+  isActive: boolean,
+  isHover: boolean,
+  isFocus: boolean,
+  spacing: 'comfortable' | 'cozy' | 'cramped',
+  to?: string,
+  variant: 'bold' | 'ghost' | 'subtle',
+};
 
-    return {
-      ...buttonAndInputBase,
-      cursor: isDisabled ? 'default' : 'pointer',
-      display: 'inline-block',
-      opacity: isDisabled ? 0.66 : null,
-      outline: 0,
-      padding: SPACING_OPTION[spacing],
-      pointerEvents: isDisabled ? 'none' : null,
-      textAlign: 'center',
-      touchAction: 'manipulation', // Disables "double-tap to zoom" for mobile; removes delay on click events
-      userSelect: 'none',
-
-      // apply appearance styles
-      ...variantStyles,
-    };
+function makeVariant ({
+  appearance,
+  isActive,
+  isHover,
+  isFocus,
+  isDisabled,
+  variant,
+  spacing
+}) {
+  let variantStyles;
+  if (variant === 'subtle') {
+    variantStyles = makeSubtleVariant({
+      appearance,
+      isDisabled,
+      isActive,
+      isHover,
+      isFocus,
+    });
+  } else if (variant === 'bold') {
+    variantStyles = makeBoldVariant({
+      appearance,
+      isDisabled,
+      isActive,
+      isHover,
+      isFocus,
+    });
+  } else if (variant === 'ghost') {
+    variantStyles = makeGhostVariant({
+      appearance,
+      isDisabled,
+      isActive,
+      isHover,
+      isFocus,
+    });
   }
-);
-ButtonComponent.defaultProps = {
+
+  return {
+    ...buttonAndInputBase,
+    cursor: isDisabled ? 'default' : 'pointer',
+    display: 'inline-block',
+    opacity: isDisabled ? 0.66 : null,
+    outline: 0,
+    padding: SPACING_OPTION[spacing],
+    pointerEvents: isDisabled ? 'none' : null,
+    textAlign: 'center',
+    touchAction: 'manipulation', // Disables "double-tap to zoom" for mobile; removes delay on click events
+    userSelect: 'none',
+
+    // apply appearance styles
+    ...variantStyles,
+  };
+}
+
+// remove props that will create react DOM warnings
+const ButtonElement = (props: ButtonProps) => {
+  const {
+    innerRef,
+    isDisabled,
+    isActive,
+    isFocus,
+    isHover,
+    ...rest
+  } = props;
+  const variant = makeVariant(props);
+  if (rest.to) return <Link innerRef={innerRef} css={variant} {...rest} />;
+  if (rest.href) return <a ref={innerRef} css={variant} {...rest} />;
+  return (
+    <button type="button" disabled={isDisabled} ref={innerRef} css={variant} {...rest} />
+  );
+};
+
+ButtonElement.defaultProps = {
   appearance: 'default',
   spacing: 'comfortable',
   variant: 'bold',
 };
 
-export const Button = withPseudoState(ButtonComponent);
+export const Button = withPseudoState(ButtonElement);

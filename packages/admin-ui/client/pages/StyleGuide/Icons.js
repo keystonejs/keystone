@@ -53,26 +53,28 @@ export default class IconsGuide extends Component {
     if (e.key !== 'Alt') return;
     this.setState({ altIsDown: false });
   };
-  handleCopy = text => () => {
-    this.setState({ copyText: text }, () => {
-      setTimeout(() => {
-        this.setState({ copyText: '' });
-      }, 500);
-    });
+  handleCopy = (text, success) => {
+    if (success) {
+      this.setState({ copyText: text }, () => {
+        setTimeout(() => {
+          this.setState({ copyText: '' });
+        }, 500);
+      });
+    }
   };
   render() {
     const { altIsDown, copyText } = this.state;
     return (
       <Grid gap={16}>
         {Object.keys(icons).map(name => {
-          const isCopied = copyText === name;
-          const Icon = isCopied ? icons.CheckIcon : icons[name];
           const importText = altIsDown
             ? name
             : `import { ${name} } from '@keystonejs/icons';`;
+          const isCopied = copyText === importText;
+          const Icon = isCopied ? icons.CheckIcon : icons[name];
           return (
             <Cell width={2} key={name}>
-              <CopyToClipboard text={importText} onCopy={this.handleCopy(name)}>
+              <CopyToClipboard text={importText} onCopy={this.handleCopy}>
                 <IconContainer>
                   <Icon
                     css={{
