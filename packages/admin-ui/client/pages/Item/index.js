@@ -10,7 +10,7 @@ import DeleteItemModal from '../../components/DeleteItemModal';
 import Footer from './Footer';
 import { CheckIcon, ClippyIcon } from '@keystonejs/icons';
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { Title } from '@keystonejs/ui/src/primitives/typography';
+import { A11yText, Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { colors } from '@keystonejs/ui/src/theme';
@@ -190,10 +190,11 @@ const ItemDetails = withRouter(
           <FlexGroup align="center" isContiguous>
             <ItemId>ID: {item.id}</ItemId>
             <CopyToClipboard text={item.id} onCopy={this.onCopy}>
-              <Button variant="subtle">
+              <Button variant="subtle" title="Copy ID">
                 <CopyIcon
                   css={{ color: isCopied ? colors.create : 'inherit' }}
                 />
+                <A11yText>Copy ID</A11yText>
               </Button>
             </CopyToClipboard>
           </FlexGroup>
