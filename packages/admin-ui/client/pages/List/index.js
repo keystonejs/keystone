@@ -20,7 +20,7 @@ import {
   FlexGroup,
   CONTAINER_WIDTH,
 } from '@keystonejs/ui/src/primitives/layout';
-import { A11yText, Title } from '@keystonejs/ui/src/primitives/typography';
+import { A11yText, Kbd, Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
@@ -66,23 +66,6 @@ const FilterSeparator = styled.div({
 const Note = styled.div({
   color: colors.N60,
   fontSize: '0.85em',
-});
-const Kbd = styled.kbd({
-  backgroundColor: colors.N05,
-  border: `1px solid ${colors.N20}`,
-  borderRadius: 3,
-  boxShadow:
-    '0 1px 1px rgba(0, 0, 0, 0.12), 0 2px 0 0 rgba(255, 255, 255, 0.7) inset',
-  display: 'inline-block',
-  fontFamily: 'Monaco, monospace',
-  fontSize: '0.85em',
-  fontWeight: 'bold',
-  lineHeight: 'inherit',
-  padding: '1px 5px',
-  position: 'relative',
-  top: '-1px',
-  verticalAlign: 'middle',
-  whiteSpace: 'nowrap',
 });
 
 const Search = ({ children, hasValue, onClear }) => {

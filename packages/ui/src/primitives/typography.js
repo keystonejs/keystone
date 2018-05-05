@@ -13,6 +13,24 @@ export const Title = styled.div({
   margin: '24px 0',
 });
 
+export const Kbd = styled.kbd({
+  backgroundColor: colors.N05,
+  border: `1px solid ${colors.N20}`,
+  borderRadius: 3,
+  boxShadow:
+    '0 1px 1px rgba(0, 0, 0, 0.12), 0 2px 0 0 rgba(255, 255, 255, 0.7) inset',
+  display: 'inline-block',
+  fontFamily: 'Monaco, monospace',
+  fontSize: '0.85em',
+  fontWeight: 'bold',
+  lineHeight: 'inherit',
+  padding: '1px 5px',
+  position: 'relative',
+  top: '-1px',
+  verticalAlign: 'middle',
+  whiteSpace: 'nowrap',
+});
+
 export const A11yText = ({ tag: Tag, ...props }) => (
   <Tag
     css={{

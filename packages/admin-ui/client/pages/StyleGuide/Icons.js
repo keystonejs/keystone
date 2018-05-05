@@ -1,10 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import styled from 'react-emotion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import * as icons from '@keystonejs/icons';
 
 import { Grid, Cell } from '@keystonejs/ui/src/primitives/layout';
 import { colors } from '@keystonejs/ui/src/theme';
+import { Kbd } from '@keystonejs/ui/src/primitives/typography';
+
+const Instructions = styled('div')`
+  color: ${colors.N60};
+  font-size: 14px;
+  margin: 16px 0 24px;
+  min-height: 24px;
+`;
 
 const IconContainer = styled('div')`
   background-color: white;
@@ -65,35 +73,47 @@ export default class IconsGuide extends Component {
   render() {
     const { altIsDown, copyText } = this.state;
     return (
-      <Grid gap={16}>
-        {Object.keys(icons).map(name => {
-          const importText = altIsDown
-            ? name
-            : `import { ${name} } from '@keystonejs/icons';`;
-          const isCopied = copyText === importText;
-          const Icon = isCopied ? icons.CheckIcon : icons[name];
-          return (
-            <Cell width={2} key={name}>
-              <CopyToClipboard text={importText} onCopy={this.handleCopy}>
-                <IconContainer>
-                  <Icon
-                    css={{
-                      fill: isCopied
-                        ? `${colors.create} !important`
-                        : 'inherit',
-                      width: 24,
-                      height: 24,
-                    }}
-                  />
-                  <IconName className="icon-text">
-                    {isCopied ? 'Copied!' : name}
-                  </IconName>
-                </IconContainer>
-              </CopyToClipboard>
-            </Cell>
-          );
-        })}
-      </Grid>
+      <Fragment>
+        {altIsDown ? (
+          <Instructions>
+            Click an icon to copy its import code to your clipboard.
+          </Instructions>
+        ) : (
+          <Instructions>
+            Click an icon to copy its name to your clipboard. Hold{' '}
+            <Kbd>⌥ option</Kbd> to copy the import code.
+          </Instructions>
+        )}
+        <Grid gap={16}>
+          {Object.keys(icons).map(name => {
+            const importText = altIsDown
+              ? `import { ${name} } from '@keystonejs/icons';`
+              : name;
+            const isCopied = copyText === importText;
+            const Icon = isCopied ? icons.CheckIcon : icons[name];
+            return (
+              <Cell width={2} key={name}>
+                <CopyToClipboard text={importText} onCopy={this.handleCopy}>
+                  <IconContainer>
+                    <Icon
+                      css={{
+                        fill: isCopied
+                          ? `${colors.create} !important`
+                          : 'inherit',
+                        width: 24,
+                        height: 24,
+                      }}
+                    />
+                    <IconName className="icon-text">
+                      {isCopied ? 'Copied!' : name}
+                    </IconName>
+                  </IconContainer>
+                </CopyToClipboard>
+              </Cell>
+            );
+          })}
+        </Grid>
+      </Fragment>
     );
   }
 }
