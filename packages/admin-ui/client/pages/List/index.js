@@ -31,6 +31,7 @@ import Nav from '../../components/Nav';
 import { Popout, DisclosureArrow } from '../../components/Popout';
 
 import ColumnSelect from './ColumnSelect';
+import FilterSelect from './FilterSelect';
 import SortSelect, { SortButton } from './SortSelect';
 
 const getQueryArgs = args => {
@@ -51,13 +52,10 @@ const getQuery = ({ fields, list, search, sort }) => {
   }`;
 };
 
-const FilterPopout = () => {
-  return (
-    <Popout buttonLabel="Filter" headerTitle="Filter">
-      <code>// TODO</code>
-    </Popout>
-  );
-};
+// ==============================
+// Styled Components
+// ==============================
+
 const FilterSeparator = styled.div({
   backgroundColor: 'rgba(0,0,0,0.1)',
   height: '100%',
@@ -440,7 +438,16 @@ class ListPage extends Component {
                         value={search}
                       />
                     </Search>
-                    <FilterPopout />
+                    <Popout buttonLabel="Filters" headerTitle="Filters">
+                      <FilterSelect
+                        isMulti
+                        fields={list.fields}
+                        onChange={console.log}
+                        value={displayedFields}
+                        placeholder="Find a field..."
+                        removeIsAllowed={displayedFields.length > 1}
+                      />
+                    </Popout>
                     <Popout buttonLabel="Columns" headerTitle="Columns">
                       <ColumnSelect
                         isMulti

@@ -34,6 +34,9 @@ const BodyCell = styled('td')(({ isSelected }) => ({
   position: isSelected ? 'relative' : null,
   fontSize: 15,
 }));
+const ItemLink = styled(Link)({
+  color: colors.text,
+});
 
 const NoResults = ({ children, ...props }) => (
   <div
@@ -110,7 +113,7 @@ class ListDisplayRow extends Component {
         </BodyCell>
         {fields.map(({ path }, index) => (
           <BodyCell key={path}>
-            {!index ? <Link to={link}>{item[path]}</Link> : item[path]}
+            {!index ? <ItemLink to={link}>{item[path]}</ItemLink> : item[path]}
           </BodyCell>
         ))}
       </tr>
