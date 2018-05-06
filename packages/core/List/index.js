@@ -42,7 +42,8 @@ module.exports = class List {
 
     this.itemQueryName = itemQueryName;
     this.listQueryName = `all${listQueryName}`;
-    this.listQueryMetaName = config.listQueryMetaName || `_${this.listQueryName}Meta`;
+    this.listQueryMetaName =
+      config.listQueryMetaName || `_${this.listQueryName}Meta`;
     this.deleteMutationName = `delete${itemQueryName}`;
     this.deleteManyMutationName = `delete${listQueryName}`;
     this.updateMutationName = `update${itemQueryName}`;
@@ -145,7 +146,7 @@ module.exports = class List {
           # last: Int  # TODO: decide whether we want last/after/before
           # after: ID
           # before: ID
-    `
+    `;
     return `
         ${this.listQueryName}(
           # Common args
@@ -244,12 +245,12 @@ module.exports = class List {
     // }
     return query;
   }
-buildItemsQueryMeta(args) {
-  return new Promise((resolve, reject) => {
-    this.buildItemsQuery(args).count((err, count) => {
-      if (err) reject(err);
-      resolve({ count });
+  buildItemsQueryMeta(args) {
+    return new Promise((resolve, reject) => {
+      this.buildItemsQuery(args).count((err, count) => {
+        if (err) reject(err);
+        resolve({ count });
+      });
     });
-  });
-}
+  }
 };
