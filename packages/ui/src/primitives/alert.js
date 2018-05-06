@@ -30,8 +30,6 @@ const subtleTextColor = {
   danger: colors.R.D20,
 };
 
-const x = y;
-
 type Props = {
   /* Affects the visual style of the alert */
   appearance: 'info' | 'success' | 'danger' | 'warning',
