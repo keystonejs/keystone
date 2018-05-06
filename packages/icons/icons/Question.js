@@ -1,6 +1,5 @@
 
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 class QuestionIcon extends Component {
   render() {
