@@ -47,7 +47,7 @@ const getDeleteManyMutation = (list) => {
 };
 
 export default class List {
-  constructor(config) {
+  constructor(config, adminMeta) {
     this.config = config;
 
     // TODO: undo this
@@ -55,7 +55,7 @@ export default class List {
 
     this.fields = config.fields.map(fieldConfig => {
       const { Controller } = FieldTypes[config.key][fieldConfig.path];
-      return new Controller(fieldConfig);
+      return new Controller(fieldConfig, this, adminMeta);
     });
 
     this.createMutation = getCreateMutation(this);

@@ -39,14 +39,14 @@ const ListName = styled('span')`
   font-weight: 500;
 `;
 
-const HomePage = ({ lists, listKeys, adminPath }) => (
+const HomePage = ({ getListByKey, listKeys, adminPath }) => (
   <Fragment>
     <Nav />
     <Container>
       <Title>Home</Title>
       <FlexGroup>
         {listKeys.map(key => {
-          const list = lists[key];
+          const list = getListByKey(key);
           return (
             <ListLink key={key} to={`${adminPath}/${list.path}`}>
               <ListName>{list.label}</ListName>

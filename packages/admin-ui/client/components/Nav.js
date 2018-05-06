@@ -21,7 +21,7 @@ const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
 
 const Nav = props => {
   const {
-    adminMeta: { lists, listKeys, adminPath, graphiqlPath },
+    adminMeta: { getListByKey, listKeys, adminPath, graphiqlPath },
     location,
   } = props;
   return (
@@ -32,7 +32,7 @@ const Nav = props => {
           <A11yText>Dashboard</A11yText>
         </PrimaryNavItem>
         {listKeys.map(key => {
-          const list = lists[key];
+          const list = getListByKey(key);
           const href = `${adminPath}/${list.path}`;
           const isSelected = href === location.pathname;
 
