@@ -42,6 +42,7 @@ module.exports = class List {
 
     this.itemQueryName = itemQueryName;
     this.listQueryName = `all${listQueryName}`;
+    this.listQueryMetaName = config.listQueryMetaName || `_${this.listQueryName}Meta`;
     this.deleteMutationName = `delete${itemQueryName}`;
     this.deleteManyMutationName = `delete${listQueryName}`;
     this.updateMutationName = `update${itemQueryName}`;
@@ -132,19 +133,40 @@ module.exports = class List {
       .map(i => i.getGraphqlQueryArgs())
       .filter(i => i)
       .map(i => i.split(/\n\s+/g).join('\n          '))
-      .join('');
-    return `
-        ${this.listQueryName}(
+      .join('\n          # New field');
+    const commonArgs = `
+          # Common args
           search: String
           sort: String
+
+          # Pagination
+          first: Int
+          skip: Int
+          # last: Int  # TODO: decide whether we want last/after/before
+          # after: ID
+          # before: ID
+    `
+    return `
+        ${this.listQueryName}(
+          # Common args
+          ${commonArgs}
+          # Per field args  // Group these under filter: ()
           ${queryArgs}
         ): [${this.key}]
         ${this.itemQueryName}(id: String!): ${this.key}
+
+        ${this.listQueryMetaName}(
+          # Common args
+          ${commonArgs}
+          # Per field args
+          ${queryArgs}
+        ): _QueryMeta
     `;
   }
   getAdminQueryResolvers() {
     return {
       [this.listQueryName]: (_, args) => this.buildItemsQuery(args),
+      [this.listQueryMetaName]: (_, args) => this.buildItemsQueryMeta(args),
       [this.itemQueryName]: (_, { id }) => this.model.findById(id),
     };
   }
@@ -190,6 +212,7 @@ module.exports = class List {
       return [...conds, ...fieldConditions.map(i => ({ [field.path]: i }))];
     }, []);
     if (args.search) {
+      // Maybe make this <field>_search?
       conditions.push({
         name: new RegExp(`^${escapeRegExp(args.search)}`, 'i'),
       });
@@ -203,6 +226,30 @@ module.exports = class List {
     if (args.sort) {
       query.sort(args.sort);
     }
+
+    if (args.first) {
+      query.limit(args.first);
+    }
+    if (args.skip) {
+      query.skip(args.skip);
+    }
+    // if (args.last) {
+    //   console.log('LAST', args.last);
+    // }
+    // if (args.after) {
+    //   console.log('AFTER', args.after);
+    // }
+    // if (args.before) {
+    //   console.log('BEFORE', args.before);
+    // }
     return query;
   }
+buildItemsQueryMeta(args) {
+  return new Promise((resolve, reject) => {
+    this.buildItemsQuery(args).count((err, count) => {
+      if (err) reject(err);
+      resolve({ count });
+    });
+  });
+}
 };

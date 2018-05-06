@@ -36,7 +36,10 @@ module.exports = class Keystone {
       config: { name, dbName, mongodbConnectionOptions },
     } = this;
     const uri = to || getMongoURI({ name, dbName });
-    return mongoose.connect(uri, { ...mongodbConnectionOptions, ...options });
+    mongoose.connect(uri, { ...mongodbConnectionOptions, ...options });
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'Mongoose connection error'));
+    db.once('open', () => console.log('Connection success'));
   }
   getAdminMeta() {
     const lists = this.listsArray.reduce((acc, list) => {
@@ -47,6 +50,11 @@ module.exports = class Keystone {
   }
   getAdminSchema() {
     const listTypes = this.listsArray.map(i => trim(i.getAdminGraphqlTypes()));
+    listTypes.push(`
+      type _QueryMeta {
+        count: Int
+      }
+      `);
     const typeDefs = `
       type Query {
         ${this.listsArray.map(i => i.getAdminGraphqlQueries()).join('')}
