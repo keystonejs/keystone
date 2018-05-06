@@ -167,7 +167,7 @@ const ItemDetails = withRouter(
       }
     };
     render() {
-      const { adminPath, list, getListByKey } = this.props;
+      const { adminPath, list } = this.props;
       const { copyText, item, itemHasChanged } = this.state;
       const isCopied = copyText === item.id;
       const CopyIcon = isCopied ? CheckIcon : ClippyIcon;
@@ -197,8 +197,6 @@ const ItemDetails = withRouter(
                   autoFocus={!i}
                   field={field}
                   item={item}
-                  list={list}
-                  getListByKey={getListByKey}
                   key={field.path}
                   onChange={this.onChange}
                 />

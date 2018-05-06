@@ -24,16 +24,15 @@ export default class RelationshipField extends Component {
     const { field, onChange } = this.props;
     const { many } = field.config;
     if (many) {
-      console.log(option.map(i => i.value));
       onChange(field, option.map(i => i.value));
     } else {
       onChange(field, option ? option.value : null);
     }
   };
   render() {
-    const { autoFocus, field, item, getListByKey } = this.props;
+    const { autoFocus, field, item } = this.props;
     const { many } = field.config;
-    const refList = getListByKey(field.config.ref);
+    const refList = field.getRefList();
     const query = getGraphqlQuery(refList);
     return (
       <FieldContainer>
