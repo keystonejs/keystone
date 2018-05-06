@@ -18,10 +18,8 @@ module.exports = {
       'error',
       {
         args: 'after-used',
-        // argsIgnorePattern: '^event$',
         ignoreRestSiblings: true,
         vars: 'all',
-        // varsIgnorePattern: '^...$',
       },
     ],
     'object-curly-spacing': ['error', 'always'],
