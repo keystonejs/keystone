@@ -42,8 +42,7 @@ module.exports = class List {
 
     this.itemQueryName = itemQueryName;
     this.listQueryName = `all${listQueryName}`;
-    this.listQueryMetaName =
-      config.listQueryMetaName || `_${this.listQueryName}Meta`;
+    this.listQueryMetaName = `_${this.listQueryName}Meta`;
     this.deleteMutationName = `delete${itemQueryName}`;
     this.deleteManyMutationName = `delete${listQueryName}`;
     this.updateMutationName = `update${itemQueryName}`;
@@ -136,30 +135,25 @@ module.exports = class List {
       .map(i => i.split(/\n\s+/g).join('\n          '))
       .join('\n          # New field');
     const commonArgs = `
-          # Common args
           search: String
           sort: String
 
           # Pagination
           first: Int
           skip: Int
-          # last: Int  # TODO: decide whether we want last/after/before
-          # after: ID
-          # before: ID
     `;
+    // TODO: Group field filters under filter: FilterInput
     return `
         ${this.listQueryName}(
-          # Common args
           ${commonArgs}
-          # Per field args  // Group these under filter: ()
+          # Field Filters
           ${queryArgs}
         ): [${this.key}]
         ${this.itemQueryName}(id: String!): ${this.key}
 
         ${this.listQueryMetaName}(
-          # Common args
           ${commonArgs}
-          # Per field args
+          # Field Filters
           ${queryArgs}
         ): _QueryMeta
     `;
@@ -213,7 +207,7 @@ module.exports = class List {
       return [...conds, ...fieldConditions.map(i => ({ [field.path]: i }))];
     }, []);
     if (args.search) {
-      // Maybe make this <field>_search?
+      // TODO: Implement configurable search fields for lists
       conditions.push({
         name: new RegExp(`^${escapeRegExp(args.search)}`, 'i'),
       });
@@ -234,15 +228,6 @@ module.exports = class List {
     if (args.skip) {
       query.skip(args.skip);
     }
-    // if (args.last) {
-    //   console.log('LAST', args.last);
-    // }
-    // if (args.after) {
-    //   console.log('AFTER', args.after);
-    // }
-    // if (args.before) {
-    //   console.log('BEFORE', args.before);
-    // }
     return query;
   }
   buildItemsQueryMeta(args) {
