@@ -6,6 +6,7 @@
   "scripts": {
     "fresh": "rm -rf node_modules && bolt",
     "lint": "eslint .",
+    "lint_ci": "eslint . --format junit -o reports/junit/js-lint-results.xml",
     "start": "cd packages/test-project && npm start",
     "test": "yarn lint"
   },
@@ -26,6 +27,7 @@
     "body-parser": "^1.18.2",
     "emotion": "^9.1.1",
     "eslint": "^4.19.1",
+    "eslint-junit": "^1.0.1",
     "eslint-plugin-react": "^7.7.0",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
@@ -61,6 +63,8 @@
     "webpack-dev-middleware": "^3.1.2"
   },
   "bolt": {
-    "workspaces": ["packages/*"]
+    "workspaces": [
+      "packages/*"
+    ]
   }
 }
