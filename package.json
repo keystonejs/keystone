@@ -8,6 +8,7 @@
     "lint": "eslint .",
     "lint_ci": "eslint . --format junit -o reports/junit/js-lint-results.xml",
     "start": "cd packages/test-project && npm start",
+    "dev": "cd packages/test-project && npm run dev",
     "test": "yarn lint"
   },
   "dependencies": {
@@ -66,5 +67,8 @@
     "workspaces": [
       "packages/*"
     ]
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.4"
   }
 }
