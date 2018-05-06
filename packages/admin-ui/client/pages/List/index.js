@@ -98,15 +98,6 @@ function getInvertedSort(direction) {
   return inverted[direction] || direction;
 }
 
-// TODO define state
-// type State = {
-//   displayedFields,
-//   sortDirection,
-//   sortBy,
-//   search: '',
-//   showCreateModal: false,
-// }
-
 class ListPage extends Component {
   constructor(props) {
     super(props);

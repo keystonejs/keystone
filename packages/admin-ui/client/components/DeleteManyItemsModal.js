@@ -1,18 +1,7 @@
 import React, { Component } from 'react';
-import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
-
-const getDeleteMutation = ({ list }) => {
-  return gql`
-    mutation delete($ids: [String!]) {
-      ${list.deleteManyMutationName}(ids: $ids) {
-        id
-      }
-    }
-  `;
-};
 
 export default class DeleteItemModal extends Component {
   onClose = () => {
@@ -26,9 +15,8 @@ export default class DeleteItemModal extends Component {
   };
   render() {
     const { itemIds, list, onDelete } = this.props;
-    const deleteMutation = getDeleteMutation({ list });
     return (
-      <Mutation mutation={deleteMutation}>
+      <Mutation mutation={list.deleteManyMutation}>
         {(deleteItems, { loading }) => {
           this.isLoading = loading;
           return (

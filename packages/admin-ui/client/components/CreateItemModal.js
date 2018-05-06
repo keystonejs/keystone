@@ -1,20 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import styled from 'react-emotion';
 import FieldTypes from '../FIELD_TYPES';
-
-const getCreateMutation = ({ list }) => {
-  return gql`
-    mutation create($data: ${list.key}UpdateInput!) {
-      ${list.createMutationName}(data: $data) {
-        id
-      }
-    }
-  `;
-};
 
 const Form = styled('div')`
   margin: 24px 0;
@@ -103,9 +92,8 @@ class CreateItemModal extends Component {
 export default class CreateItemModalWithMutation extends Component {
   render() {
     const { list } = this.props;
-    const createMutation = getCreateMutation({ list });
     return (
-      <Mutation mutation={createMutation}>
+      <Mutation mutation={list.createMutation}>
         {(createItem, { loading }) => (
           <CreateItemModal
             createItem={createItem}
