@@ -1,4 +1,50 @@
+import gql from 'graphql-tag';
+
 import FieldTypes from '../FIELD_TYPES';
+
+const getCreateMutation = (list) => {
+  const { key } = list;
+  return gql`
+    mutation create($data: ${key}UpdateInput!) {
+      ${list.createMutationName}(data: $data) {
+        id
+      }
+    }
+  `;
+};
+
+const getUpdateMutation = (list) => {
+  return gql`
+    mutation delete(
+      $id: String!,
+      $data: ${list.key}UpdateInput)
+    {
+      ${list.updateMutationName}(id: $id, data: $data) {
+        id
+      }
+    }
+  `;
+};
+
+const getDeleteMutation = (list) => {
+  return gql`
+    mutation delete($id: String!) {
+      ${list.deleteMutationName}(id: $id) {
+        id
+      }
+    }
+  `;
+};
+
+const getDeleteManyMutation = (list) => {
+  return gql`
+    mutation delete($ids: [String!]) {
+      ${list.deleteManyMutationName}(ids: $ids) {
+        id
+      }
+    }
+  `;
+};
 
 export default class List {
   constructor(config) {
@@ -11,6 +57,11 @@ export default class List {
       const { Controller } = FieldTypes[config.key][fieldConfig.path];
       return new Controller(fieldConfig);
     });
+
+    this.createMutation = getCreateMutation(this);
+    this.updateMutation = getUpdateMutation(this);
+    this.deleteMutation = getDeleteMutation(this);
+    this.deleteManyMutation = getDeleteManyMutation(this);
   }
   getInitialItemData() {
     return this.fields.reduce((data, field) => {

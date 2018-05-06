@@ -28,19 +28,6 @@ const getItemQuery = ({ list, itemId }) => gql`
   }
 `;
 
-const getUpdateMutation = ({ list }) => {
-  return gql`
-    mutation delete(
-      $id: String!,
-      $data: ${list.key}UpdateInput)
-    {
-      ${list.updateMutationName}(id: $id, data: $data) {
-        id
-      }
-    }
-  `;
-};
-
 const ItemId = styled.div({
   color: colors.N30,
   fontFamily: 'Monaco, Consolas, monospace',
@@ -272,9 +259,8 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
             }
 
             const item = data[list.itemQueryName];
-            const updateMutation = getUpdateMutation({ list });
             return item ? (
-              <Mutation mutation={updateMutation}>
+              <Mutation mutation={list.updateMutation}>
                 {(updateItem, { loading: updateInProgress }) => (
                   <ItemDetails
                     adminPath={adminPath}
