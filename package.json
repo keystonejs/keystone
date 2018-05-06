@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "cd packages/test-project && npm start",
-    "fresh": "rm -rf node_modules && bolt"
+    "fresh": "rm -rf node_modules && bolt",
+    "test": "echo test && exit 0"
   },
   "dependencies": {
     "apollo-boost": "^0.1.4",
@@ -59,8 +60,6 @@
     "webpack-dev-middleware": "^3.1.2"
   },
   "bolt": {
-    "workspaces": [
-      "packages/*"
-    ]
+    "workspaces": ["packages/*"]
   }
 }
