@@ -94,7 +94,7 @@ export const SlideUp = (props: TransitionProps) => {
         opacity: 0,
       }}
       transitionStyles={{
-        entered: { opacity: 1, transform: 'translate3d(0,0,0)' },
+        entered: { opacity: 1 },
         exiting: out,
         entering: out,
       }}

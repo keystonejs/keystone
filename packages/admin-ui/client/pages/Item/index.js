@@ -8,7 +8,12 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Nav from '../../components/Nav';
 import DeleteItemModal from '../../components/DeleteItemModal';
 import Footer from './Footer';
-import { ArrowLeftIcon, CheckIcon, ClippyIcon } from '@keystonejs/icons';
+import {
+  ArrowLeftIcon,
+  CheckIcon,
+  InfoIcon,
+  ClippyIcon,
+} from '@keystonejs/icons';
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { A11yText, Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
@@ -228,14 +233,43 @@ const ItemDetails = withRouter(
   }
 );
 
+const NotFoundContainer = ({ children, ...props }) => (
+  <div
+    css={{
+      alignItems: 'center',
+      color: colors.N30,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      padding: '2em 1em',
+      textAlign: 'center',
+    }}
+    {...props}
+  >
+    <InfoIcon css={{ height: 48, width: 48 }} />
+    {children}
+  </div>
+);
 const ItemNotFound = ({ itemId, list, adminPath }) => (
-  <Fragment>
-    <Title>Item Not Found.</Title>
-    <p>The item {itemId} does not exist.</p>
-    <Link to={`${adminPath}/${list.path}`}>Back to {list.label}</Link>
-    {' • '}
-    <Link to={adminPath}>Go Home</Link>
-  </Fragment>
+  <NotFoundContainer>
+    <Title>{list.singular} Not Found</Title>
+    <p>
+      The item <code>{itemId}</code> does not exist.
+    </p>
+    <p>
+      <Button
+        variant="subtle"
+        appearance="primary"
+        to={`${adminPath}/${list.path}`}
+      >
+        Back to {list.label}
+      </Button>
+      {' • '}
+      <Button variant="subtle" appearance="primary" to={adminPath}>
+        Go Home
+      </Button>
+    </p>
+  </NotFoundContainer>
 );
 
 const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {

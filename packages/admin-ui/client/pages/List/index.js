@@ -27,6 +27,7 @@ import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
+import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 import Nav from '../../components/Nav';
 import { Popout, DisclosureArrow } from '../../components/Popout';
@@ -114,6 +115,7 @@ class ListPage extends Component {
       sortBy,
       search: '',
       showCreateModal: false,
+      showUpdateModal: false,
       showDeleteSelectedItemsModal: false,
     };
   }
@@ -173,6 +175,9 @@ class ListPage extends Component {
   // ==============================
   // Management
   // ==============================
+
+  closeUpdateModal = () => this.setState({ showUpdateModal: false });
+  openUpdateModal = () => this.setState({ showUpdateModal: true });
 
   handleItemSelect = (itemIds: Array<string>) => {
     let selectedItems = this.state.selectedItems.slice(0);
@@ -247,6 +252,21 @@ class ListPage extends Component {
       />
     );
   }
+  renderUpdateModal() {
+    const { list } = this.props;
+    const { selectedItems, showUpdateModal } = this.state;
+
+    if (!showUpdateModal) return;
+
+    return (
+      <UpdateManyItemsModal
+        list={list}
+        items={selectedItems}
+        onClose={this.closeUpdateModal}
+        onUpdate={this.onUpdate}
+      />
+    );
+  }
   renderDeleteSelectedItemsModal() {
     const { selectedItems, showDeleteSelectedItemsModal } = this.state;
     if (!showDeleteSelectedItemsModal) return;
@@ -295,7 +315,7 @@ class ListPage extends Component {
           appearance="primary"
           icon={SettingsIcon}
           isDisabled={!hasSelected}
-          onClick={console.log}
+          onClick={this.openUpdateModal}
           variant="ghost"
         >
           Update
@@ -347,6 +367,7 @@ class ListPage extends Component {
         }}
       >
         {isManaging ? managementUI : paginationUI}
+        {this.renderUpdateModal()}
       </div>
     );
   }
