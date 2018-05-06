@@ -33,6 +33,7 @@ keystone.createList('User', {
 keystone.createList('Post', {
   fields: {
     name: { type: Text },
+    slug: { type: Text },
     status: {
       type: Select,
       defaultValue: 'draft',
@@ -45,6 +46,18 @@ keystone.createList('Post', {
       type: Relationship,
       ref: 'User',
     },
+    categories: {
+      type: Relationship,
+      ref: 'PostCategory',
+      many: true,
+    },
+  },
+});
+
+keystone.createList('PostCategory', {
+  fields: {
+    name: { type: Text },
+    slug: { type: Text },
   },
 });
 

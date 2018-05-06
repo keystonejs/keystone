@@ -15,9 +15,10 @@ export const CONTAINER_WIDTH = 1160;
 export const Container = styled.div(({ isDisabled }) => ({
   marginLeft: 'auto',
   marginRight: 'auto',
-  maxWidth: isDisabled ? null : CONTAINER_WIDTH,
+  maxWidth: isDisabled ? '100%' : CONTAINER_WIDTH,
   paddingLeft: 30,
   paddingRight: 30,
+  transition: 'max-width 200ms cubic-bezier(0.2, 0, 0, 1)',
 
   [smOnly]: {
     paddingLeft: 15,
@@ -47,7 +48,7 @@ function collapseBorderRadii(index, length) {
 
 type FlexGroupProps = {
   align: 'stretch' | 'center' | 'flex-start' | 'flex-start',
-  children: Node,
+  children: Array<Node>,
   growIndexes: Array<number>,
   isContiguous: boolean,
   isInline: boolean,

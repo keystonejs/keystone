@@ -14,6 +14,7 @@ import {
   NavGroup,
   NavSeparator,
 } from '@keystonejs/ui/src/primitives/navigation';
+import { A11yText } from '@keystonejs/ui/src/primitives/typography';
 import { withAdminMeta } from '../providers/AdminMeta';
 
 const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
@@ -26,8 +27,9 @@ const Nav = props => {
   return (
     <PrimaryNav>
       <NavGroup>
-        <PrimaryNavItem to={adminPath}>
+        <PrimaryNavItem to={adminPath} title="Dashboard">
           <HomeIcon />
+          <A11yText>Dashboard</A11yText>
         </PrimaryNavItem>
         {listKeys.map(key => {
           const list = lists[key];
@@ -57,8 +59,9 @@ const Nav = props => {
           <TelescopeIcon />
         </PrimaryNavItem>
         <NavSeparator />
-        <PrimaryNavItem to={`${adminPath}/signin`}>
+        <PrimaryNavItem to={`${adminPath}/signin`} title="Sign Out">
           <SignOutIcon />
+          <A11yText>Sign Out</A11yText>
         </PrimaryNavItem>
       </NavGroup>
     </PrimaryNav>

@@ -8,10 +8,10 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Nav from '../../components/Nav';
 import DeleteItemModal from '../../components/DeleteItemModal';
 import Footer from './Footer';
-import { CheckIcon, ClippyIcon } from '@keystonejs/icons';
+import { ArrowLeftIcon, CheckIcon, ClippyIcon } from '@keystonejs/icons';
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { Title } from '@keystonejs/ui/src/primitives/typography';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
+import { A11yText, Title } from '@keystonejs/ui/src/primitives/typography';
+import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { colors } from '@keystonejs/ui/src/theme';
 
@@ -50,6 +50,10 @@ const ItemId = styled.div({
 const Form = styled.div({
   margin: '24px 0',
 });
+
+const FooterNavigation = styled.div(`
+  margin-bottom: 24px;
+`);
 
 class ConfirmResetModal extends Component {
   onKeyDown = e => {
@@ -158,37 +162,43 @@ const ItemDetails = withRouter(
       );
     }
     onSave = () => {
-      const { onUpdate, updateItem } = this.props;
-      // TODO: smarter selection of data to send, should come from field types ?
-      const { id, __typename, ...data } = this.state.item;
+      const { item, item: { id } } = this.state;
+      const { list: { fields }, onUpdate, updateItem } = this.props;
+      const data = fields.reduce((values, field) => {
+        values[field.path] = field.getValue(item);
+        return values;
+      }, {});
       updateItem({ variables: { id, data } }).then(onUpdate);
     };
-    onCopy = text => () => {
-      this.setState({ copyText: text }, () => {
-        setTimeout(() => {
-          this.setState({ copyText: '' });
-        }, 500);
-      });
+    onCopy = (text, success) => {
+      if (success) {
+        this.setState({ copyText: text }, () => {
+          setTimeout(() => {
+            this.setState({ copyText: '' });
+          }, 500);
+        });
+      }
     };
     render() {
       const { adminPath, list, getListByKey } = this.props;
       const { copyText, item, itemHasChanged } = this.state;
       const isCopied = copyText === item.id;
       const CopyIcon = isCopied ? CheckIcon : ClippyIcon;
+      const listHref = `${adminPath}/${list.path}`;
 
       return (
         <Fragment>
           <Title>
-            <Link to={`${adminPath}/${list.path}`}>{list.label}</Link>:{' '}
-            {item.name}
+            <Link to={listHref}>{list.label}</Link>: {item.name}
           </Title>
           <FlexGroup align="center" isContiguous>
             <ItemId>ID: {item.id}</ItemId>
-            <CopyToClipboard text={item.id} onCopy={this.onCopy(item.id)}>
-              <Button variant="subtle">
+            <CopyToClipboard text={item.id} onCopy={this.onCopy}>
+              <Button variant="subtle" title="Copy ID">
                 <CopyIcon
                   css={{ color: isCopied ? colors.create : 'inherit' }}
                 />
+                <A11yText>Copy ID</A11yText>
               </Button>
             </CopyToClipboard>
           </FlexGroup>
@@ -214,6 +224,17 @@ const ItemDetails = withRouter(
             onDelete={this.showDeleteModal}
             onReset={itemHasChanged ? this.showConfirmResetModal : undefined}
           />
+          <FooterNavigation>
+            <IconButton
+              appearance="primary"
+              icon={ArrowLeftIcon}
+              to={listHref}
+              variant="subtle"
+              style={{ paddingLeft: 0 }}
+            >
+              Back to {list.label}
+            </IconButton>
+          </FooterNavigation>
           {this.renderDeleteModal()}
           {this.renderConfirmResetModal()}
         </Fragment>

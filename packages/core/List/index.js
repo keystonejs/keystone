@@ -1,4 +1,3 @@
-const inflection = require('inflection');
 const pluralize = require('pluralize');
 const { escapeRegExp } = require('@keystonejs/utils');
 
@@ -6,21 +5,48 @@ const initConfig = (key, config) => ({
   ...config,
 });
 
+const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
+
+const keyToLabel = str =>
+  str
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .split(/\s|_|\-/)
+    .filter(i => i)
+    .map(upcase)
+    .join(' ');
+
+const labelToPath = str =>
+  str
+    .split(' ')
+    .join('-')
+    .toLowerCase();
+
+const labelToClass = str => str.replace(/\s+/g, '');
+
 module.exports = class List {
   constructor(key, config, { mongoose, lists }) {
     this.key = key;
     this.config = initConfig(key, config);
 
-    this.label = config.label || pluralize.plural(inflection.titleize(key));
-    this.singular = config.singular || pluralize.singular(this.label);
-    this.plural = config.plural || pluralize.plural(this.label);
-    this.path = config.path || inflection.dasherize(this.plural).toLowerCase();
-    this.itemQueryName = config.itemQueryName || inflection.camelize(this.singular);
-    this.listQueryName = config.listQueryName || `all${inflection.camelize(this.plural)}`;
+    const label = keyToLabel(key);
+    const singular = pluralize.singular(label);
+    const plural = pluralize.plural(label);
+
+    this.label = config.label || plural;
+    this.singular = config.singular || singular;
+    this.plural = config.plural || plural;
+    this.path = config.path || labelToPath(plural);
+
+    const itemQueryName = config.itemQueryName || labelToClass(singular);
+    const listQueryName = config.listQueryName || labelToClass(plural);
+
+    this.itemQueryName = itemQueryName;
+    this.listQueryName = `all${listQueryName}`;
     this.listQueryMetaName = config.listQueryMetaName || `_${this.listQueryName}Meta`;
-    this.deleteMutationName = `delete${this.itemQueryName}`;
-    this.updateMutationName = `update${this.itemQueryName}`;
-    this.createMutationName = `create${this.itemQueryName}`;
+    this.deleteMutationName = `delete${itemQueryName}`;
+    this.deleteManyMutationName = `delete${listQueryName}`;
+    this.updateMutationName = `update${itemQueryName}`;
+    this.createMutationName = `create${itemQueryName}`;
 
     this.fields = config.fields
       ? Object.keys(config.fields).map(path => {
@@ -51,6 +77,23 @@ module.exports = class List {
 
     this.model = mongoose.model(this.key, schema);
   }
+  getAdminMeta() {
+    return {
+      key: this.key,
+      label: this.label,
+      singular: this.singular,
+      plural: this.plural,
+      path: this.path,
+      listQueryName: this.listQueryName,
+      itemQueryName: this.itemQueryName,
+      createMutationName: this.createMutationName,
+      updateMutationName: this.updateMutationName,
+      deleteMutationName: this.deleteMutationName,
+      deleteManyMutationName: this.deleteManyMutationName,
+      fields: this.fields.map(i => i.getAdminMeta()),
+      views: this.views,
+    };
+  }
   getAdminGraphqlTypes() {
     const fieldSchemas = this.fields
       .map(i => i.getGraphqlSchema())
@@ -63,13 +106,13 @@ module.exports = class List {
       .map(i => i.getGraphqlUpdateArgs())
       .filter(i => i)
       .map(i => i.split(/\n\s+/g).join('\n        '))
-      .join('')
+      .join('\n        ')
       .trim();
     const createArgs = this.fields
       .map(i => i.getGraphqlCreateArgs())
       .filter(i => i)
       .map(i => i.split(/\n\s+/g).join('\n        '))
-      .join('')
+      .join('\n        ')
       .trim();
     return `
       type ${this.key} {
@@ -129,30 +172,36 @@ module.exports = class List {
   }
   getAdminGraphqlMutations() {
     return `
-        ${this.deleteMutationName}(
-          id: String!
+        ${this.createMutationName}(
+          data: ${this.key}UpdateInput
         ): ${this.key}
         ${this.updateMutationName}(
           id: String!
           data: ${this.key}UpdateInput
         ): ${this.key}
-        ${this.createMutationName}(
-          data: ${this.key}UpdateInput
+        ${this.deleteMutationName}(
+          id: String!
+        ): ${this.key}
+        ${this.deleteManyMutationName}(
+          ids: [String!]
         ): ${this.key}
     `;
   }
   getAdminMutationResolvers() {
     return {
-      [this.deleteMutationName]: (_, { id }) =>
-        this.model.findByIdAndRemove(id),
+      [this.createMutationName]: async (_, { data }) => {
+        return this.model.create(data);
+      },
       [this.updateMutationName]: async (_, { id, data }) => {
         const item = await this.model.findById(id);
         // TODO: Loop through each field and have it apply the update
         item.set(data);
         return item.save();
       },
-      [this.createMutationName]: async (_, { data }) => {
-        return this.model.create(data);
+      [this.deleteMutationName]: (_, { id }) =>
+        this.model.findByIdAndRemove(id),
+      [this.deleteManyMutationName]: async (_, { ids }) => {
+        ids.map(async id => await this.model.findByIdAndRemove(id));
       },
     };
   }
@@ -195,28 +244,12 @@ module.exports = class List {
     // }
     return query;
   }
-  buildItemsQueryMeta(args) {
-    return new Promise((resolve, reject) => {
-      this.buildItemsQuery(args).count((err, count) => {
-        if (err) reject(err);
-        resolve({ count });
-      });
+buildItemsQueryMeta(args) {
+  return new Promise((resolve, reject) => {
+    this.buildItemsQuery(args).count((err, count) => {
+      if (err) reject(err);
+      resolve({ count });
     });
-  }
-  getAdminMeta() {
-    return {
-      key: this.key,
-      label: this.label,
-      singular: this.singular,
-      plural: this.plural,
-      path: this.path,
-      listQueryName: this.listQueryName,
-      itemQueryName: this.itemQueryName,
-      deleteMutationName: this.deleteMutationName,
-      updateMutationName: this.updateMutationName,
-      createMutationName: this.createMutationName,
-      fields: this.fields.map(i => i.getAdminMeta()),
-      views: this.views,
-    };
-  }
+  });
+}
 };

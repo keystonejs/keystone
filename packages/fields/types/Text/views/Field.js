@@ -14,6 +14,7 @@ export default class TextField extends Component {
   };
   render() {
     const { autoFocus, field, item } = this.props;
+    const value = item[field.path] || '';
     return (
       <FieldContainer>
         <FieldLabel>{field.label}</FieldLabel>
@@ -21,7 +22,7 @@ export default class TextField extends Component {
           <Input
             autoFocus={autoFocus}
             type="text"
-            value={item[field.path]}
+            value={value}
             onChange={this.onChange}
           />
         </FieldInput>

@@ -4,24 +4,35 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import { FoldIcon, UnfoldIcon, PlusIcon, SearchIcon } from '@keystonejs/icons';
+import {
+  FoldIcon,
+  GearIcon,
+  PlusIcon,
+  SearchIcon,
+  SettingsIcon,
+  TrashcanIcon,
+  UnfoldIcon,
+  XIcon,
+} from '@keystonejs/icons';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
 import {
   Container,
   FlexGroup,
   CONTAINER_WIDTH,
 } from '@keystonejs/ui/src/primitives/layout';
-import { Title } from '@keystonejs/ui/src/primitives/typography';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
+import { A11yText, Kbd, Title } from '@keystonejs/ui/src/primitives/typography';
+import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
+import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 import Nav from '../../components/Nav';
 import { Popout, DisclosureArrow } from '../../components/Popout';
 
 import ColumnSelect from './ColumnSelect';
+import FilterSelect from './FilterSelect';
 import SortSelect, { SortButton } from './SortSelect';
 
 const getQueryArgs = args => {
@@ -43,16 +54,9 @@ const getQuery = ({ fields, list, search, sort }) => {
 };
 
 // ==============================
-// Columns
+// Styled Components
 // ==============================
 
-const FilterPopout = () => {
-  return (
-    <Popout buttonLabel="Filter" headerTitle="Filter">
-      <code>// TODO</code>
-    </Popout>
-  );
-};
 const FilterSeparator = styled.div({
   backgroundColor: 'rgba(0,0,0,0.1)',
   height: '100%',
@@ -63,38 +67,31 @@ const Note = styled.div({
   color: colors.N60,
   fontSize: '0.85em',
 });
-const Kbd = styled.kbd({
-  backgroundColor: colors.N05,
-  border: `1px solid ${colors.N20}`,
-  borderRadius: 3,
-  boxShadow:
-    '0 1px 1px rgba(0, 0, 0, 0.12), 0 2px 0 0 rgba(255, 255, 255, 0.7) inset',
-  display: 'inline-block',
-  fontFamily: 'Monaco, monospace',
-  fontSize: '0.85em',
-  fontWeight: 'bold',
-  lineHeight: 'inherit',
-  padding: '1px 5px',
-  position: 'relative',
-  top: '-1px',
-  verticalAlign: 'middle',
-  whiteSpace: 'nowrap',
-});
 
-const Search = ({ children }) => (
-  <div css={{ position: 'relative' }}>
-    {children}
-    <SearchIcon
-      css={{
-        color: colors.N30,
-        position: 'absolute',
-        right: gridSize * 1.5,
-        top: '50%',
-        transform: 'translateY(-50%)',
-      }}
-    />
-  </div>
-);
+const Search = ({ children, hasValue, onClear }) => {
+  const Icon = hasValue ? XIcon : SearchIcon;
+  return (
+    <div css={{ position: 'relative' }}>
+      {children}
+      <Icon
+        onClick={hasValue ? onClear : null}
+        css={{
+          color: colors.N30,
+          cursor: 'pointer',
+          pointerEvents: hasValue ? 'all' : 'none',
+          position: 'absolute',
+          right: gridSize * 1.5,
+          top: '50%',
+          transform: 'translateY(-50%)',
+
+          ':hover': {
+            color: hasValue ? colors.text : colors.N30,
+          },
+        }}
+      />
+    </div>
+  );
+};
 
 function getInvertedSort(direction) {
   const inverted = { ASC: 'DESC', DESC: 'ASC' };
@@ -119,11 +116,14 @@ class ListPage extends Component {
 
     this.state = {
       displayedFields,
-      listIsFullWidth: false,
+      isFullWidth: false,
+      isManaging: false,
+      selectedItems: [],
       sortDirection,
       sortBy,
       search: '',
       showCreateModal: false,
+      showDeleteSelectedItemsModal: false,
     };
   }
 
@@ -137,12 +137,16 @@ class ListPage extends Component {
   itemsCount: 0;
 
   toggleFullWidth = () => {
-    this.setState(state => ({ listIsFullWidth: !state.listIsFullWidth }));
+    this.setState(state => ({ isFullWidth: !state.isFullWidth }));
   };
 
   handleSearch = e => {
     const { value: search } = e.target;
     this.setState({ search });
+  };
+  handleSearchClear = () => {
+    this.setState({ search: '' });
+    this.input.focus();
   };
 
   handleSelectedFieldsChange = selectedFields => {
@@ -174,12 +178,71 @@ class ListPage extends Component {
 
   closeCreateModal = () => this.setState({ showCreateModal: false });
   openCreateModal = () => this.setState({ showCreateModal: true });
+
+  // ==============================
+  // Management
+  // ==============================
+
+  handleItemSelect = (itemIds: Array<string>) => {
+    let selectedItems = this.state.selectedItems.slice(0);
+
+    itemIds.forEach(id => {
+      if (selectedItems.includes(id)) {
+        selectedItems = selectedItems.filter(existingId => existingId !== id);
+      } else {
+        selectedItems.push(id);
+      }
+    });
+
+    this.setState({ selectedItems });
+  };
+  handleSelectAll = (selectedItems: Array<string>) => {
+    this.setState({ selectedItems });
+  };
+  startManaging = () => {
+    this.setState({ isManaging: true }, () => {
+      this.manageCancel.focus();
+    });
+  };
+  stopManaging = () => {
+    this.setState({ isManaging: false, selectedItems: [] }, () => {
+      this.manageButton.focus();
+    });
+  };
+  toggleManaging = () => {
+    const fn = this.state.isManaging ? this.stopManaging : this.startManaging;
+    fn();
+  };
+  getManageCancel = ref => {
+    this.manageCancel = ref;
+  };
+  getManageButton = ref => {
+    this.manageButton = ref;
+  };
+  openDeleteSelectedItemsModal = () => {
+    const { selectedItems } = this.state;
+    if (!selectedItems.length) return;
+    this.setState({
+      showDeleteSelectedItemsModal: true,
+    });
+  };
+  closeDeleteSelectedItemsModal = () => {
+    this.setState({
+      showDeleteSelectedItemsModal: false,
+    });
+  };
+  onDeleteSelectedItems = () => {
+    this.closeDeleteSelectedItemsModal();
+    if (this.refetch) this.refetch();
+    this.setState({
+      selectedItems: [],
+    });
+  };
   onCreate = ({ data }) => {
     let { list, adminPath, history } = this.props;
     let id = data[list.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
   };
-
   renderCreateModal() {
     const { showCreateModal } = this.state;
     if (!showCreateModal) return;
@@ -193,29 +256,123 @@ class ListPage extends Component {
       />
     );
   }
+  renderDeleteSelectedItemsModal() {
+    const { selectedItems, showDeleteSelectedItemsModal } = this.state;
+    if (!showDeleteSelectedItemsModal) return;
+    const { list } = this.props;
+
+    return (
+      <DeleteManyItemsModal
+        list={list}
+        itemIds={selectedItems}
+        onClose={this.closeDeleteSelectedItemsModal}
+        onDelete={this.onDeleteSelectedItems}
+      />
+    );
+  }
   renderExpandButton() {
     if (window && window.innerWidth < CONTAINER_WIDTH) return null;
 
-    const { listIsFullWidth } = this.state;
-    const Icon = listIsFullWidth ? FoldIcon : UnfoldIcon;
-    const title = listIsFullWidth ? 'Collapse' : 'Expand';
+    const { isFullWidth } = this.state;
+    const Icon = isFullWidth ? FoldIcon : UnfoldIcon;
+    const text = isFullWidth ? 'Collapse' : 'Expand';
 
+    // Note: we return an array here instead of a <Fragment> because the
+    // <FlexGroup> component it is rendered into passes props to its children
     return [
-      <FilterSeparator />,
-      <Button onClick={this.toggleFullWidth} title={title}>
+      <FilterSeparator key="expand-separator" />,
+      <Button
+        onClick={this.toggleFullWidth}
+        title={text}
+        isActive={isFullWidth}
+        key="expand-button"
+      >
         <Icon css={{ transform: 'rotate(90deg)' }} />
+        <A11yText>{text}</A11yText>
       </Button>,
     ];
   }
+  renderPaginationOrManage() {
+    const { list } = this.props;
+    const { isManaging, selectedItems } = this.state;
+    const selectedCount = selectedItems.length;
+    const hasSelected = Boolean(selectedCount);
+
+    const managementUI = (
+      <FlexGroup align="center">
+        <IconButton
+          appearance="primary"
+          icon={SettingsIcon}
+          isDisabled={!hasSelected}
+          onClick={console.log}
+          variant="ghost"
+        >
+          Update
+        </IconButton>
+        <IconButton
+          appearance="danger"
+          icon={TrashcanIcon}
+          isDisabled={!hasSelected}
+          onClick={this.openDeleteSelectedItemsModal}
+          variant="ghost"
+        >
+          Delete
+        </IconButton>
+        <Button
+          innerRef={this.getManageCancel}
+          onClick={this.toggleManaging}
+          variant="subtle"
+        >
+          Done
+        </Button>
+      </FlexGroup>
+    );
+    const paginationUI = (
+      <FlexGroup align="center">
+        <IconButton
+          icon={GearIcon}
+          innerRef={this.getManageButton}
+          onClick={this.toggleManaging}
+          variant="ghost"
+          style={{ marginRight: '0.5em' }}
+        >
+          Manage
+        </IconButton>
+        <Pagination
+          total={this.itemsCount}
+          displayCount
+          single={list.label}
+          plural={list.plural}
+        />
+      </FlexGroup>
+    );
+
+    return (
+      <div
+        css={{
+          marginBottom: '1em',
+          marginTop: '1em',
+          visibility: this.itemsCount ? 'visible' : 'hidden',
+        }}
+      >
+        {isManaging ? managementUI : paginationUI}
+      </div>
+    );
+  }
+  getSearchRef = ref => {
+    this.input = ref;
+  };
 
   render() {
     const { list, adminPath } = this.props;
     const {
       displayedFields,
-      listIsFullWidth,
+      isFullWidth,
+      isManaging,
       sortDirection,
       sortBy,
       search,
+      selectedItems,
     } = this.state;
 
     const sort = `${sortDirection === 'DESC' ? '-' : ''}${sortBy.path}`;
@@ -241,18 +398,21 @@ class ListPage extends Component {
               );
             }
 
+            // TODO: This doesn't seem like the best way to capture the refetch,
+            // but it's not easy to hoist the <Query> further up the hierarchy.
+            this.refetch = refetch;
             const items = data && data[list.listQueryName];
-            this.count =
+            this.itemsCount =
               items && typeof items.length === 'number'
                 ? items.length
-                : this.count;
+                : this.itemsCount;
 
             return (
               <Fragment>
                 <Container>
                   <Title>
-                    {this.count} {this.count === 1 ? list.label : list.plural}{' '}
-                    sorted by
+                    {list.formatCount(this.itemsCount)}
+                    <span>, by</span>
                     <Popout
                       headerTitle="Sort"
                       footerContent={
@@ -262,7 +422,6 @@ class ListPage extends Component {
                       }
                       target={
                         <SortButton>
-                          {' '}
                           {sortBy.label.toLowerCase()}
                           <DisclosureArrow size="0.25em" />
                         </SortButton>
@@ -277,14 +436,27 @@ class ListPage extends Component {
                   </Title>
 
                   <FlexGroup growIndexes={[0]}>
-                    <Search>
+                    <Search
+                      onClear={this.handleSearchClear}
+                      hasValue={search && search.length}
+                    >
                       <Input
+                        innerRef={this.getSearchRef}
                         onChange={this.handleSearch}
                         placeholder="Search"
                         value={search}
                       />
                     </Search>
-                    <FilterPopout />
+                    <Popout buttonLabel="Filters" headerTitle="Filters">
+                      <FilterSelect
+                        isMulti
+                        fields={list.fields}
+                        onChange={console.log}
+                        value={displayedFields}
+                        placeholder="Find a field..."
+                        removeIsAllowed={displayedFields.length > 1}
+                      />
+                    </Popout>
                     <Popout buttonLabel="Columns" headerTitle="Columns">
                       <ColumnSelect
                         isMulti
@@ -297,28 +469,16 @@ class ListPage extends Component {
                     </Popout>
                     {this.renderExpandButton()}
                     <FilterSeparator />
-                    <Button appearance="create" onClick={this.openCreateModal}>
-                      <span css={{ display: 'flex', alignItems: 'center' }}>
-                        <PlusIcon css={{ marginRight: '0.5em' }} />
-                        Create
-                      </span>
-                    </Button>
+                    <IconButton
+                      appearance="create"
+                      icon={PlusIcon}
+                      onClick={this.openCreateModal}
+                    >
+                      Create
+                    </IconButton>
                   </FlexGroup>
 
-                  <div
-                    css={{
-                      marginBottom: '1em',
-                      marginTop: '1em',
-                      visibility: this.count ? 'visible' : 'hidden',
-                    }}
-                  >
-                    <Pagination
-                      total={this.count}
-                      displayCount
-                      single={list.label}
-                      plural={list.plural}
-                    />
-                  </div>
+                  {this.renderPaginationOrManage()}
                 </Container>
 
                 {/*
@@ -332,15 +492,20 @@ class ListPage extends Component {
                   */}
 
                 {this.renderCreateModal()}
+                {this.renderDeleteSelectedItemsModal()}
 
-                <Container isDisabled={listIsFullWidth}>
+                <Container isDisabled={isFullWidth}>
                   {items ? (
                     <ListTable
+                      adminPath={adminPath}
+                      fields={displayedFields}
+                      isManaging={isManaging}
                       items={items}
                       list={list}
-                      fields={displayedFields}
-                      adminPath={adminPath}
                       onChange={refetch}
+                      onSelect={this.handleItemSelect}
+                      onSelectAll={this.handleSelectAll}
+                      selectedItems={selectedItems}
                       noResultsMessage={
                         <span>
                           No {list.plural.toLowerCase()} found matching &ldquo;{

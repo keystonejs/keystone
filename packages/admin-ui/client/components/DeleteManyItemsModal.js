@@ -6,8 +6,8 @@ import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 
 const getDeleteMutation = ({ list }) => {
   return gql`
-    mutation delete($id: String!) {
-      ${list.deleteMutationName}(id: $id) {
+    mutation delete($ids: [String!]) {
+      ${list.deleteManyMutationName}(ids: $ids) {
         id
       }
     }
@@ -25,11 +25,11 @@ export default class DeleteItemModal extends Component {
     }
   };
   render() {
-    const { item, list, onDelete } = this.props;
+    const { itemIds, list, onDelete } = this.props;
     const deleteMutation = getDeleteMutation({ list });
     return (
       <Mutation mutation={deleteMutation}>
-        {(deleteItem, { loading }) => {
+        {(deleteItems, { loading }) => {
           this.isLoading = loading;
           return (
             <Dialog
@@ -40,14 +40,16 @@ export default class DeleteItemModal extends Component {
             >
               <p style={{ marginTop: 0 }}>
                 Are you sure you want to delete{' '}
-                <strong>{item.name || item.id}</strong>?
+                <strong>{list.formatCount(itemIds)}</strong>?
               </p>
               <footer>
                 <Button
                   appearance="danger"
                   onClick={() => {
                     if (loading) return;
-                    deleteItem({ variables: { id: item.id } }).then(onDelete);
+                    deleteItems({
+                      variables: { ids: itemIds },
+                    }).then(onDelete);
                   }}
                 >
                   Delete

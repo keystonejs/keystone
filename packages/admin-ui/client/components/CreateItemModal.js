@@ -70,10 +70,10 @@ class CreateItemModal extends Component {
         footer={
           <Fragment>
             <Button appearance="create" onClick={this.onCreate}>
-              {isLoading ? 'Loading...' : `Create ${list.singular}`}
+              {isLoading ? 'Loading...' : 'Create'}
             </Button>
             <Button
-              appearance="primary"
+              appearance="warning"
               variant="subtle"
               onClick={this.onClose}
             >

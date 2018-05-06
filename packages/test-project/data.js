@@ -4,6 +4,20 @@ module.exports = {
       name: 'Hello World',
     },
   ],
+  PostCategory: [
+    {
+      name: 'GraphQL',
+    },
+    {
+      name: 'Keystone',
+    },
+    {
+      name: 'Node',
+    },
+    {
+      name: 'React',
+    },
+  ],
   User: [
     {
       name: 'Boris Bozic',

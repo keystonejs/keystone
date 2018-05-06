@@ -1,6 +1,17 @@
 import React, { Component, Fragment } from 'react';
 
-import { Button, LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
+import {
+  AlertIcon,
+  DashboardIcon,
+  PencilIcon,
+  PlusIcon,
+  MegaphoneIcon,
+} from '@keystonejs/icons';
+import {
+  Button,
+  IconButton,
+  LoadingButton,
+} from '@keystonejs/ui/src/primitives/buttons';
 import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 
 export default class ButtonGuide extends Component {
@@ -16,6 +27,13 @@ export default class ButtonGuide extends Component {
       { appearance: 'primary', variant: 'dots' },
       { appearance: 'default', variant: 'spinner' },
       { appearance: 'primary', variant: 'spinner' },
+    ];
+    const iconTypes = [
+      { appearance: 'default', icon: DashboardIcon },
+      { appearance: 'primary', icon: PencilIcon },
+      { appearance: 'create', icon: PlusIcon },
+      { appearance: 'warning', icon: MegaphoneIcon },
+      { appearance: 'danger', icon: AlertIcon },
     ];
     return (
       <Fragment>
@@ -59,6 +77,14 @@ export default class ButtonGuide extends Component {
             </Button>
           ))}
         </FlexGroup>
+        <h4>Variant: Ghost</h4>
+        <FlexGroup isInline>
+          {['Default', 'Primary', 'Create', 'Warning', 'Danger'].map(s => (
+            <Button key={s} variant="ghost" appearance={s.toLowerCase()}>
+              {s}
+            </Button>
+          ))}
+        </FlexGroup>
         <h4>Loading Buttons</h4>
         <FlexGroup isInline>
           {loadingTypes.map(b => {
@@ -75,6 +101,14 @@ export default class ButtonGuide extends Component {
               </LoadingButton>
             );
           })}
+        </FlexGroup>
+        <h4>Icon Buttons</h4>
+        <FlexGroup isInline>
+          {iconTypes.map(b => (
+            <IconButton {...b} key={b.appearance}>
+              {b.appearance}
+            </IconButton>
+          ))}
         </FlexGroup>
       </Fragment>
     );

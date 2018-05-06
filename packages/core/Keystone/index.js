@@ -14,6 +14,9 @@ function getMongoURI({ dbName, name }) {
   );
 }
 
+const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
+const trim = str => str.replace(/\n\s*\n/g, '\n');
+
 module.exports = class Keystone {
   constructor(config) {
     this.config = config;
@@ -46,7 +49,7 @@ module.exports = class Keystone {
     return { lists };
   }
   getAdminSchema() {
-    const listTypes = this.listsArray.map(i => i.getAdminGraphqlTypes());
+    const listTypes = this.listsArray.map(i => trim(i.getAdminGraphqlTypes()));
     listTypes.push(`
       type _QueryMeta {
         count: Int
@@ -60,6 +63,10 @@ module.exports = class Keystone {
         ${this.listsArray.map(i => i.getAdminGraphqlMutations()).join('')}
       }
     `;
+    if (debugGraphQLSchemas()) {
+      console.log(typeDefs);
+      listTypes.forEach(i => console.log(i));
+    }
     const resolvers = {
       Query: this.listsArray.reduce(
         (acc, i) => ({ ...acc, ...i.getAdminQueryResolvers() }),

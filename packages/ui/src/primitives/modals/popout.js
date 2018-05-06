@@ -23,6 +23,7 @@ const Wrapper = styled.div(({ left, top, width }) => {
     maxHeight: '100%',
     width: width,
     position: 'absolute',
+    zIndex: 2,
     ...placementStyles,
   };
 });

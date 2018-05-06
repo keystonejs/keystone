@@ -48,6 +48,28 @@ const boldAppearance = {
     text: 'white',
   },
 };
+const ghostAppearance = {
+  default: {
+    border: colors.N20,
+    text: colors.N60,
+  },
+  primary: {
+    border: colors.B.L50,
+    text: colors.primary,
+  },
+  create: {
+    border: colors.G.L50,
+    text: colors.create,
+  },
+  danger: {
+    border: colors.R.L50,
+    text: colors.danger,
+  },
+  warning: {
+    border: colors.Y.L30,
+    text: colors.warning,
+  },
+};
 
 export function makeSubtleVariant({ appearance, isDisabled }) {
   const { text, textHover, isSolidOnHover } = subtleAppearance[appearance];
@@ -63,6 +85,33 @@ export function makeSubtleVariant({ appearance, isDisabled }) {
         },
   };
 }
+
+// Ghost
+// ------------------------------
+
+export function makeGhostVariant({ appearance, isDisabled }) {
+  const { border, text } = ghostAppearance[appearance];
+
+  return {
+    border: '1px solid',
+    borderColor: isDisabled ? colors.N20 : border,
+    color: isDisabled ? colors.N40 : text,
+    fontWeight: 500,
+
+    ':hover, :focus': {
+      backgroundColor: alpha(border, 0.1),
+    },
+    ':active': {
+      color: darken(text, 10),
+      borderColor: darken(border, 10),
+      backgroundColor: alpha(border, 0.2),
+    },
+  };
+}
+
+// Bold
+// ------------------------------
+
 export function makeBoldVariant({
   appearance,
   isDisabled,

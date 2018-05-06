@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 
 import { InfoIcon, TrashcanIcon } from '@keystonejs/icons';
 import { colors } from '@keystonejs/ui/src/theme';
+import { Button } from '@keystonejs/ui/src/primitives/buttons';
+import { CheckboxPrimitive } from '@keystonejs/ui/src/primitives/forms';
 import DeleteItemModal from './DeleteItemModal';
 
 // Styled Components
@@ -23,11 +25,29 @@ const HeaderCell = styled('td')({
   textAlign: 'left',
   verticalAlign: 'bottom',
 });
-const BodyCell = styled('td')({
-  borderTop: `1px solid ${colors.N10}`,
+const BodyCell = styled('td')(({ isSelected }) => ({
+  backgroundColor: isSelected ? colors.B.L90 : null,
+  boxShadow: isSelected
+    ? `0 1px 0 ${colors.B.L75}, 0 -1px 0 ${colors.B.L75}`
+    : `0 -1px 0 ${colors.N10}`,
   padding: '8px 0',
+  position: isSelected ? 'relative' : null,
   fontSize: 15,
-});
+}));
+const ItemLink = styled(Link)`
+  color: ${colors.text};
+  position: relative;
+
+  /* Increase hittable area on item link */
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: -10px;
+    right: -10px;
+    top: -10px;
+  }
+`;
 
 const NoResults = ({ children, ...props }) => (
   <div
@@ -39,6 +59,7 @@ const NoResults = ({ children, ...props }) => (
       fontSize: 32,
       justifyContent: 'center',
       padding: '1em',
+      textAlign: 'center',
     }}
     {...props}
   >
@@ -49,34 +70,7 @@ const NoResults = ({ children, ...props }) => (
 
 // Functional Components
 
-class DeleteButton extends Component {
-  state = {
-    isHovered: false,
-  };
-  onMouseEnter = () => this.setState({ isHovered: true });
-  onMouseLeave = () => this.setState({ isHovered: false });
-  render() {
-    const { onClick } = this.props;
-    const { isHovered } = this.state;
-    return (
-      <div
-        css={{
-          color: isHovered ? colors.R.base : colors.N30,
-          cursor: 'pointer',
-          padding: '2px 4px',
-          display: 'inline-block',
-        }}
-        onClick={onClick}
-        onMouseEnter={this.onMouseEnter}
-        onMouseLeave={this.onMouseLeave}
-      >
-        <TrashcanIcon width={16} height={16} />
-      </div>
-    );
-  }
-}
-
-class ListTableRow extends Component {
+class ListDisplayRow extends Component {
   state = {
     showDeleteModal: false,
   };
@@ -118,12 +112,87 @@ class ListTableRow extends Component {
     return (
       <tr>
         <BodyCell>
-          <DeleteButton onClick={this.showDeleteModal} />
+          <Button
+            appearance="warning"
+            onClick={this.showDeleteModal}
+            spacing="cozy"
+            variant="subtle"
+            style={{ height: 24 }}
+          >
+            <TrashcanIcon />
+          </Button>
           {this.renderDeleteModal()}
         </BodyCell>
         {fields.map(({ path }, index) => (
           <BodyCell key={path}>
-            {!index ? <Link to={link}>{item[path]}</Link> : item[path]}
+            {!index ? <ItemLink to={link}>{item[path]}</ItemLink> : item[path]}
+          </BodyCell>
+        ))}
+      </tr>
+    );
+  }
+}
+
+function isKeyboardEvent(e) {
+  return e.clientX === 0 && e.clientY === 0;
+}
+
+class ListManageRow extends Component {
+  onMouseDown = e => {
+    // bail when MouseClick on the actual input, which calls onClick twice
+    if (e.target.nodeName === 'INPUT' && !isKeyboardEvent(e)) return;
+
+    // trigger onClick with the current ID
+    const { isSelected, item, onSelect, onSelectStart } = this.props;
+    onSelectStart(!isSelected);
+    onSelect([item.id]);
+  };
+  onMouseUp = () => {
+    // make keyboard selection easier following a mouse select
+    this.checkbox.focus();
+  };
+  onMouseEnter = () => {
+    const { isSelected, item, selectOnEnter, onSelect } = this.props;
+    if (
+      (selectOnEnter === 'select' && !isSelected) ||
+      (selectOnEnter === 'deselect' && isSelected)
+    ) {
+      onSelect([item.id]);
+    }
+  };
+  onCheckboxChange = () => {
+    const { item, onSelect } = this.props;
+    onSelect([item.id]);
+  };
+  onCheckboxMouseDown = e => {
+    e.stopPropagation();
+  };
+  getCheckbox = ref => {
+    this.checkbox = ref;
+  };
+  render() {
+    const { fields, isSelected, item } = this.props;
+
+    return (
+      <tr
+        onMouseDown={this.onMouseDown}
+        onMouseEnter={this.onMouseEnter}
+        onMouseUp={this.onMouseUp}
+        css={{ cursor: 'default', userSelect: 'none' }}
+      >
+        <BodyCell isSelected={isSelected} key="checkbox">
+          <CheckboxPrimitive
+            checked={isSelected}
+            innerRef={this.getCheckbox}
+            value={item.id}
+            onChange={this.onCheckboxChange}
+            onMouseDown={this.onCheckboxMouseDown}
+            css={{ marginLeft: 1 }}
+          />
+        </BodyCell>
+        {fields.map(({ path }) => (
+          <BodyCell isSelected={isSelected} key={path}>
+            {item[path]}
           </BodyCell>
         ))}
       </tr>
@@ -132,43 +201,96 @@ class ListTableRow extends Component {
 }
 
 export default class ListTable extends Component {
+  state = {
+    mouseOverSelectsRow: false,
+  };
+  handleSelectAll = () => {
+    const { items, onSelectAll, selectedItems } = this.props;
+    const allSelected = items.length === selectedItems.length;
+    const value = allSelected ? [] : items.map(i => i.id);
+    onSelectAll(value);
+  };
+  onSelectStart = select => {
+    const { isManaging } = this.props;
+    if (!isManaging) return;
+    this.setState({
+      mouseOverSelectsRow: select ? 'select' : 'deselect',
+    });
+  };
+  stopRowSelectOnEnter = () => {
+    const { mouseOverSelectsRow } = this.state;
+    if (mouseOverSelectsRow) {
+      this.setState({ mouseOverSelectsRow: false });
+    }
+  };
   render() {
     const {
       adminPath,
       fields,
+      isManaging,
       items,
       list,
       noResultsMessage,
       onChange,
+      onSelect,
+      selectedItems,
     } = this.props;
+    const { mouseOverSelectsRow } = this.state;
 
     return items.length ? (
       <Table>
         <colgroup>
           <col width="32" />
-          <col />
-          <col />
         </colgroup>
         <thead>
           <tr>
-            {fields.map(({ label }, i) => (
-              <HeaderCell colSpan={i ? 1 : 2} key={label}>
-                {label}
-              </HeaderCell>
+            <HeaderCell>
+              <div
+                css={{
+                  position: 'relative',
+                  top: 3,
+                  visibility: isManaging ? 'visible' : 'hidden',
+                }}
+              >
+                <CheckboxPrimitive
+                  checked={items.length === selectedItems.length}
+                  onChange={this.handleSelectAll}
+                />
+              </div>
+            </HeaderCell>
+            {fields.map(({ label }) => (
+              <HeaderCell key={label}>{label}</HeaderCell>
             ))}
           </tr>
         </thead>
-        <tbody>
-          {items.map(item => (
-            <ListTableRow
-              key={item.id}
-              link={`${adminPath}/${list.path}/${item.id}`}
-              list={list}
-              fields={fields}
-              item={item}
-              onDelete={onChange}
-            />
-          ))}
+        <tbody
+          onMouseUp={this.stopRowSelectOnEnter}
+          onMouseLeave={this.stopRowSelectOnEnter}
+        >
+          {items.map(
+            item =>
+              isManaging ? (
+                <ListManageRow
+                  fields={fields}
+                  item={item}
+                  key={item.id}
+                  list={list}
+                  isSelected={selectedItems.includes(item.id)}
+                  selectOnEnter={mouseOverSelectsRow}
+                  onSelect={onSelect}
+                  onSelectStart={this.onSelectStart}
+                />
+              ) : (
+                <ListDisplayRow
+                  fields={fields}
+                  item={item}
+                  key={item.id}
+                  link={`${adminPath}/${list.path}/${item.id}`}
+                  list={list}
+                  onDelete={onChange}
+                />
+              )
+          )}
         </tbody>
       </Table>
     ) : (
