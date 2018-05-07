@@ -20,6 +20,7 @@ export default class TextField extends Component {
         <FieldLabel>{field.label}</FieldLabel>
         <FieldInput>
           <Input
+            autocomplete="off"
             autoFocus={autoFocus}
             type="text"
             value={value}
