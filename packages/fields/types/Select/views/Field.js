@@ -23,6 +23,7 @@ export default class SelectField extends Component {
           <Select
             autoFocus={autoFocus}
             value={value}
+            menuPosition="fixed"
             options={field.options}
             onChange={this.onChange}
           />

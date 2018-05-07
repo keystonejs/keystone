@@ -62,6 +62,7 @@ export default class RelationshipField extends Component {
                 <Select
                   autoFocus={autoFocus}
                   isMulti={many}
+                  menuPosition="fixed"
                   value={value}
                   options={options}
                   onChange={this.onChange}
