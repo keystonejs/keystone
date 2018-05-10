@@ -4,8 +4,9 @@ module.exports = {
     browser: true,
     es6: true,
     node: true,
+    jest: true
   },
-  plugins: ['react'],
+  plugins: ['react', 'jest'],
   rules: {
     curly: ['error', 'multi-line'],
     'jsx-quotes': 'error',
@@ -38,4 +39,5 @@ module.exports = {
     semi: 'error',
     strict: 'off',
   },
+  "extends": ["plugin:jest/recommended"]
 };

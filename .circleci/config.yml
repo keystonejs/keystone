@@ -3,6 +3,7 @@
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
 version: 2
+
 jobs:
   build:
     docker:
@@ -26,7 +27,9 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: yarn install
+      - run: sudo yarn global add bolt
+
+      - run: bolt
 
       - save_cache:
           paths:
@@ -35,6 +38,12 @@ jobs:
 
       # run tests!
       - run: yarn lint_ci
+
+      - run:
+          name: Unit tests
+          command: yarn jest_ci
+          environment:
+            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
 
       - store_test_results:
           path: reports/junit

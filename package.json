@@ -8,7 +8,9 @@
     "lint": "eslint .",
     "lint_ci": "eslint . --format junit -o reports/junit/js-lint-results.xml",
     "start": "cd packages/test-project && npm start",
-    "test": "yarn lint"
+    "jest": "jest",
+    "jest_ci": "jest --ci --testResultsProcessor=\"jest-junit\"",
+    "test": "yarn lint && yarn jest"
   },
   "dependencies": {
     "apollo-boost": "^0.1.4",
@@ -66,5 +68,10 @@
     "workspaces": [
       "packages/*"
     ]
+  },
+  "devDependencies": {
+    "eslint-plugin-jest": "^21.15.1",
+    "jest": "^22.4.3",
+    "jest-junit": "^3.7.0"
   }
 }
