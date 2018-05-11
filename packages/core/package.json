@@ -8,9 +8,11 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
+    "@keystonejs/fields": "^5.0.0",
     "@keystonejs/utils": "^1.0.0",
     "graphql-tools": "^3.0.0",
     "mongoose": "^5.0.14",
+    "oauth-libre": "^0.9.17",
     "pluralize": "^7.0.0"
   }
 }
