@@ -5,6 +5,7 @@ import { Input } from '@keystonejs/ui/src/primitives/forms';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { colors } from '@keystonejs/ui/src/theme';
 
+import SessionProvider from '../providers/Session';
 import logo from '../assets/logo.png';
 
 const Container = styled.div({
@@ -45,25 +46,60 @@ const Fields = styled.div({
 });
 
 class Session extends Component {
+  state = {
+    username: '',
+    password: '',
+  };
+  onUsernameChange = event => {
+    this.setState({ username: event.target.value });
+  };
+  onPasswordChange = event => {
+    this.setState({ password: event.target.value });
+  };
   render() {
-    const { adminPath } = this.props;
+    const { apiPath } = this.props;
+    const { username, password } = this.state;
     return (
       <Container>
-        <Box>
-          <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
-          <Divider />
-          <div>
-            <Fields>
-              <FieldLabel>Email</FieldLabel>
-              <Input />
-              <FieldLabel>Password</FieldLabel>
-              <Input />
-            </Fields>
-            <Button appearance="primary" to={adminPath}>
-              Sign In
-            </Button>
-          </div>
-        </Box>
+        <SessionProvider apiPath={apiPath}>
+          {({ user, signIn, signOut, isLoading }) => (
+            <Box>
+              <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
+              <Divider />
+              <div>
+                <Fields>
+                  <FieldLabel>Email</FieldLabel>
+                  <Input onChange={this.onUsernameChange} value={username} />
+                  <FieldLabel>Password</FieldLabel>
+                  <Input
+                    type="password"
+                    onChange={this.onPasswordChange}
+                    value={password}
+                  />
+                </Fields>
+                <Button
+                  appearance="primary"
+                  onClick={() => signIn({ username, password })}
+                  style={{ marginRight: 16 }}
+                >
+                  Sign In
+                </Button>
+                <Button variant="subtle" appearance="danger" onClick={signOut}>
+                  Sign Out
+                </Button>
+                <div
+                  style={{
+                    marginTop: 16,
+                  }}
+                >
+                  {isLoading
+                    ? 'loading...'
+                    : user ? `Signed in as ${user.name}` : 'Signed Out'}
+                </div>
+              </div>
+            </Box>
+          )}
+        </SessionProvider>
       </Container>
     );
   }
