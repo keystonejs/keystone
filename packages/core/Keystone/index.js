@@ -3,6 +3,7 @@ const { makeExecutableSchema } = require('graphql-tools');
 const { Mongoose } = require('mongoose');
 
 const List = require('../List');
+const bindSession = require('./session');
 
 function getMongoURI({ dbName, name }) {
   return (
@@ -20,10 +21,20 @@ const trim = str => str.replace(/\n\s*\n/g, '\n');
 module.exports = class Keystone {
   constructor(config) {
     this.config = config;
+    this.auth = {};
     this.lists = {};
     this.listsArray = [];
     this.mongoose = new Mongoose();
     this.getListByKey = key => this.lists[key];
+    this.session = bindSession(this);
+  }
+  createAuthStrategy(options) {
+    const { type: StrategyType, list: listKey, config } = options;
+    const { authType } = StrategyType;
+    if (!this.auth[listKey]) {
+      this.auth[listKey] = {};
+    }
+    this.auth[listKey][authType] = new StrategyType(this, listKey, config);
   }
   createList(key, config) {
     const { getListByKey, mongoose } = this;
