@@ -28,7 +28,7 @@ function postJSON(url, data = {}) {
 
 class Session extends Component {
   state = {
-    user: null,
+    session: {},
     isLoading: true,
   };
   componentDidMount() {
@@ -38,7 +38,7 @@ class Session extends Component {
     const { apiPath } = this.props;
     this.setState({ isLoading: true });
     getJSON(`${apiPath}/session`).then(data => {
-      this.setState({ user: data, isLoading: false });
+      this.setState({ session: data, isLoading: false });
     });
   };
   signIn = ({ username, password }) => {
@@ -56,12 +56,13 @@ class Session extends Component {
   render() {
     const { signIn, signOut } = this;
     const { children } = this.props;
-    const { user, isLoading } = this.state;
+    const { session: { user, signedIn: isSignedIn }, isLoading } = this.state;
     return children({
-      user,
+      isLoading,
+      isSignedIn,
       signIn,
       signOut,
-      isLoading,
+      user,
     });
   }
 }

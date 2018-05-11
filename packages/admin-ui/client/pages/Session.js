@@ -92,7 +92,9 @@ class Session extends Component {
                     marginTop: 16,
                   }}
                 >
-                  {isLoading ? 'loading...' : JSON.stringify(user)}
+                  {isLoading
+                    ? 'loading...'
+                    : user ? `Signed in as ${user.name}` : 'Signed Out'}
                 </div>
               </div>
             </Box>
