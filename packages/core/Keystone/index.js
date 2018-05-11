@@ -20,9 +20,36 @@ const trim = str => str.replace(/\n\s*\n/g, '\n');
 module.exports = class Keystone {
   constructor(config) {
     this.config = config;
+    this.auth = {};
     this.lists = {};
     this.listsArray = [];
     this.mongoose = new Mongoose();
+  }
+  createSession(req, { item, list }) {
+    return new Promise((resolve, reject) =>
+      req.session.regenerate(err => {
+        if (err) return reject(err);
+        req.session.keystoneListKey = list.key;
+        req.session.keystoneItemId = item.id;
+        resolve();
+      })
+    );
+  }
+  async destroySession(req) {
+    return new Promise((resolve, reject) =>
+      req.session.regenerate(err => {
+        if (err) return reject(err);
+        resolve({ success: true });
+      })
+    );
+  }
+  createAuthStrategy(options) {
+    const { type: StrategyType, list: listKey, config } = options;
+    const { authType } = StrategyType;
+    if (!this.auth[listKey]) {
+      this.auth[listKey] = {};
+    }
+    this.auth[listKey][authType] = new StrategyType(this, listKey, config);
   }
   createList(key, config) {
     const { mongoose, lists } = this;
