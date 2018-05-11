@@ -26,12 +26,6 @@ module.exports = class AdminUI {
       })
     );
 
-    app.get(`${apiPath}/session`, (req, res) => {
-      res.json({
-        signedIn: !!req.session.keystoneItemId,
-      });
-    });
-
     app.post(`${apiPath}/signin`, bodyParser.json(), async (req, res, next) => {
       try {
         const result = await this.keystone.auth.User.password.validate({
@@ -61,6 +55,19 @@ module.exports = class AdminUI {
       } catch (e) {
         next(e);
       }
+    });
+
+    app.use(
+      this.keystone.session.validate({
+        valid: ({ req, item }) => (req.user = item),
+      })
+    );
+
+    app.get(`${apiPath}/session`, (req, res) => {
+      res.json({
+        signedIn: !!req.user,
+        user: req.user ? { id: req.user.id, name: req.user.name } : undefined,
+      });
     });
 
     // add the Admin GraphQL API

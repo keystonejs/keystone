@@ -5,33 +5,8 @@ import { Input } from '@keystonejs/ui/src/primitives/forms';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { colors } from '@keystonejs/ui/src/theme';
 
+import SessionProvider from '../providers/Session';
 import logo from '../assets/logo.png';
-
-function getJSON(url) {
-  return fetch(url, {
-    cache: 'no-cache',
-    credentials: 'same-origin',
-    headers: {
-      'content-type': 'application/json',
-    },
-    mode: 'cors',
-    redirect: 'follow',
-  }).then(response => response.json());
-}
-
-function postJSON(url, data) {
-  return fetch(url, {
-    body: JSON.stringify(data),
-    cache: 'no-cache',
-    credentials: 'same-origin',
-    headers: {
-      'content-type': 'application/json',
-    },
-    method: 'POST',
-    mode: 'cors',
-    redirect: 'follow',
-  }).then(response => response.json());
-}
 
 const Container = styled.div({
   alignItems: 'center',
@@ -74,23 +49,6 @@ class Session extends Component {
   state = {
     username: '',
     password: '',
-    session: {},
-  };
-  componentDidMount() {
-    this.getSession();
-  }
-  getSession = () => {
-    const { apiPath } = this.props;
-    getJSON(`${apiPath}/session`).then(data => {
-      this.setState({ session: data });
-    });
-  };
-  doSignIn = () => {
-    const { apiPath } = this.props;
-    const { username, password } = this.state;
-    postJSON(`${apiPath}/signin`, { username, password })
-      .then(() => this.getSession())
-      .catch(error => console.error(error));
   };
   onUsernameChange = event => {
     this.setState({ username: event.target.value });
@@ -99,29 +57,49 @@ class Session extends Component {
     this.setState({ password: event.target.value });
   };
   render() {
-    const { username, password, session } = this.state;
+    const { apiPath } = this.props;
+    const { username, password } = this.state;
     return (
       <Container>
-        <Box>
-          <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
-          <Divider />
-          <div>
-            <Fields>
-              <FieldLabel>Email</FieldLabel>
-              <Input onChange={this.onUsernameChange} value={username} />
-              <FieldLabel>Password</FieldLabel>
-              <Input
-                type="password"
-                onChange={this.onPasswordChange}
-                value={password}
-              />
-            </Fields>
-            <Button appearance="primary" onClick={this.doSignIn}>
-              Sign In
-            </Button>
-            <div>{JSON.stringify(session)}</div>
-          </div>
-        </Box>
+        <SessionProvider apiPath={apiPath}>
+          {({ user, signIn, signOut, isLoading }) => (
+            <Box>
+              <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
+              <Divider />
+              <div>
+                <Fields>
+                  <FieldLabel>Email</FieldLabel>
+                  <Input onChange={this.onUsernameChange} value={username} />
+                  <FieldLabel>Password</FieldLabel>
+                  <Input
+                    type="password"
+                    onChange={this.onPasswordChange}
+                    value={password}
+                  />
+                </Fields>
+                <Button
+                  appearance="primary"
+                  onClick={() => signIn({ username, password })}
+                  style={{ marginRight: 16 }}
+                >
+                  Sign In
+                </Button>
+                <Button variant="subtle" appearance="danger" onClick={signOut}>
+                  Sign Out
+                </Button>
+                <div
+                  style={{
+                    marginTop: 16,
+                  }}
+                >
+                  {isLoading
+                    ? 'loading...'
+                    : user ? `Signed in as ${user.name}` : 'Signed Out'}
+                </div>
+              </div>
+            </Box>
+          )}
+        </SessionProvider>
       </Container>
     );
   }
