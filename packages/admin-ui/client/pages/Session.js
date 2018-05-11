@@ -7,6 +7,32 @@ import { colors } from '@keystonejs/ui/src/theme';
 
 import logo from '../assets/logo.png';
 
+function getJSON(url) {
+  return fetch(url, {
+    cache: 'no-cache',
+    credentials: 'same-origin',
+    headers: {
+      'content-type': 'application/json',
+    },
+    mode: 'cors',
+    redirect: 'follow',
+  }).then(response => response.json());
+}
+
+function postJSON(url, data) {
+  return fetch(url, {
+    body: JSON.stringify(data),
+    cache: 'no-cache',
+    credentials: 'same-origin',
+    headers: {
+      'content-type': 'application/json',
+    },
+    method: 'POST',
+    mode: 'cors',
+    redirect: 'follow',
+  }).then(response => response.json());
+}
+
 const Container = styled.div({
   alignItems: 'center',
   display: 'flex',
@@ -45,8 +71,35 @@ const Fields = styled.div({
 });
 
 class Session extends Component {
+  state = {
+    username: '',
+    password: '',
+    session: {},
+  };
+  componentDidMount() {
+    this.getSession();
+  }
+  getSession = () => {
+    const { apiPath } = this.props;
+    getJSON(`${apiPath}/session`).then(data => {
+      this.setState({ session: data });
+    });
+  };
+  doSignIn = () => {
+    const { apiPath } = this.props;
+    const { username, password } = this.state;
+    postJSON(`${apiPath}/signin`, { username, password })
+      .then(() => this.getSession())
+      .catch(error => console.error(error));
+  };
+  onUsernameChange = event => {
+    this.setState({ username: event.target.value });
+  };
+  onPasswordChange = event => {
+    this.setState({ password: event.target.value });
+  };
   render() {
-    const { adminPath } = this.props;
+    const { username, password, session } = this.state;
     return (
       <Container>
         <Box>
@@ -55,13 +108,18 @@ class Session extends Component {
           <div>
             <Fields>
               <FieldLabel>Email</FieldLabel>
-              <Input />
+              <Input onChange={this.onUsernameChange} value={username} />
               <FieldLabel>Password</FieldLabel>
-              <Input />
+              <Input
+                type="password"
+                onChange={this.onPasswordChange}
+                value={password}
+              />
             </Fields>
-            <Button appearance="primary" to={adminPath}>
+            <Button appearance="primary" onClick={this.doSignIn}>
               Sign In
             </Button>
+            <div>{JSON.stringify(session)}</div>
           </div>
         </Box>
       </Container>
