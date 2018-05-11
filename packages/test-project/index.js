@@ -2,8 +2,48 @@ const { AdminUI } = require('@keystonejs/admin-ui');
 const { Keystone } = require('@keystonejs/core');
 const { Text, Relationship, Select, Password } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
-
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
+const passport = require('passport');
+const PassportTwitter = require('passport-twitter');
+
+const PORT = process.env.PORT || 3000;
+const TWITTER_ENABLED = process.env.TWITTER_APP_KEY && process.env.TWITTER_APP_SECRET;
+
+if (TWITTER_ENABLED) {
+  passport.use(
+    new PassportTwitter(
+      {
+        consumerKey: process.env.TWITTER_APP_KEY,
+        consumerSecret: process.env.TWITTER_APP_SECRET,
+        callbackURL: `http://localhost:${PORT}/auth/twitter/callback`,
+        passReqToCallback: true,
+      },
+      /**
+       * from: https://github.com/jaredhanson/passport-oauth1/blob/master/lib/strategy.js#L24-L37
+       * ---
+       * Applications must supply a `verify` callback, for which the function
+       * signature is:
+       *
+       *     function(token, tokenSecret, profile, cb) { ... }
+       *
+       * The verify callback is responsible for finding or creating the user, and
+       * invoking `cb` with the following arguments:
+       *
+       *     done(err, user, info);
+       *
+       * `user` should be set to `false` to indicate an authentication failure.
+       * Additional `info` can optionally be passed as a third argument, typically
+       * used to display informational messages.  If an exception occured, `err`
+       * should be set.
+       */
+      (req, token, tokenSecret, oauthParams, profile, cb) => {
+        console.log({ token, tokenSecret, oauthParams, profile });
+        cb(null, {}, {});
+      },
+    ),
+  );
+}
+
 
 // const {
 //   TwitterAuthStrategy,
@@ -110,7 +150,29 @@ const server = new WebServer(keystone, {
   'admin ui': admin,
   adminPath: '/admin',
   session: true,
+  port: PORT,
 });
+
+if (TWITTER_ENABLED) {
+  server.app.use(passport.initialize());
+  // Hit this route to start the twitter auth process
+  server.app.get('/auth/twitter', passport.authenticate('twitter', { session: false }));
+
+  // Twitter will redirect the user to this URL after approval.  Finish the
+  // authentication process by attempting to obtain an access token.  If
+  // access was granted, the user will be logged in.  Otherwise,
+  // authentication has failed.
+  server.app.get(
+    '/auth/twitter/callback',
+    passport.authenticate('twitter', { failureRedirect: '/', session: false }),
+    (req, res) => {
+      console.log('successfully logged in:', req.user);
+      // TODO: Set graphQL token on cookie
+      // TODO: Use graphQL token as Bearer token on client requests
+      res.redirect('/');
+    },
+  );
+}
 
 server.app.use(
   keystone.session.validate({
