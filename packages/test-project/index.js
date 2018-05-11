@@ -109,21 +109,24 @@ const server = new WebServer(keystone, {
   'cookie secret': 'qwerty',
   'admin ui': admin,
   adminPath: '/admin',
+  session: true,
 });
 
-// TODO - keystone.session.middleware
-const sessionMiddleware = (req, res, next) => next();
-
-server.app.use(sessionMiddleware);
+server.app.use(
+  keystone.session.validate({
+    valid: ({ req, item }) => (req.user = item),
+  })
+);
 
 server.app.get('/api/session', (req, res) => {
   res.json({
-    signedIn: !!req.session.signedIn,
-    user: req.session.user,
+    signedIn: !!req.session.keystoneItemId,
+    userId: req.session.keystoneItemId,
+    name: req.user ? req.user.name : undefined,
   });
 });
 
-server.app.get('/api/signin-with-password', async (req, res, next) => {
+server.app.get('/api/signin', async (req, res, next) => {
   try {
     const result = await keystone.auth.User.password.validate({
       username: req.query.username,
@@ -134,10 +137,21 @@ server.app.get('/api/signin-with-password', async (req, res, next) => {
         success: false,
       });
     }
-    await keystone.createSession(req, result);
+    await keystone.session.create(req, result);
     res.json({
       success: true,
       itemId: result.item.id,
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
+server.app.get('/api/signout', async (req, res, next) => {
+  try {
+    await keystone.session.destroy(req);
+    res.json({
+      success: true,
     });
   } catch (e) {
     next(e);
@@ -165,22 +179,20 @@ server.app.get('/api/reset-password', async (req, res) => {
   const result = await keystone.signIn(user);
   res.json(result);
 });
-*/
 
 server.app.get('/api/signin-with-twitter', async (req, res) => {
   const result = await keystone.auth.User.twitter.validate({
     token: req.query.token,
     tokenSecret: req.query.tokenSecret,
   });
-  /*
-  => {
-    item: item || null,
-    twitterSessionId: ID,
-    twitterUser: 'jedwatson',
-    name: 'Jed Watson',
-    ...
-  }
-  */
+
+  // => {
+  //   item: item || null,
+  //   twitterSessionId: ID,
+  //   twitterUser: 'jedwatson',
+  //   name: 'Jed Watson',
+  //   ...
+  // }
   if (!result.success) {
     res.json({ error: result });
   } else if (result.item) {
@@ -200,11 +212,7 @@ server.app.get('/api/signin-with-twitter', async (req, res) => {
   }
 });
 
-server.app.get('/api/signout', async (req, res) => {
-  const result = await keystone.signOut();
-  res.json(result);
-});
-
+*/
 // TODO - keystone.session.authMiddleware
 const authMiddleware = (req, res, next) => next();
 

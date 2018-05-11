@@ -3,6 +3,7 @@ const { makeExecutableSchema } = require('graphql-tools');
 const { Mongoose } = require('mongoose');
 
 const List = require('../List');
+const bindSession = require('./session');
 
 function getMongoURI({ dbName, name }) {
   return (
@@ -24,24 +25,7 @@ module.exports = class Keystone {
     this.lists = {};
     this.listsArray = [];
     this.mongoose = new Mongoose();
-  }
-  createSession(req, { item, list }) {
-    return new Promise((resolve, reject) =>
-      req.session.regenerate(err => {
-        if (err) return reject(err);
-        req.session.keystoneListKey = list.key;
-        req.session.keystoneItemId = item.id;
-        resolve();
-      })
-    );
-  }
-  async destroySession(req) {
-    return new Promise((resolve, reject) =>
-      req.session.regenerate(err => {
-        if (err) return reject(err);
-        resolve({ success: true });
-      })
-    );
+    this.session = bindSession(this);
   }
   createAuthStrategy(options) {
     const { type: StrategyType, list: listKey, config } = options;

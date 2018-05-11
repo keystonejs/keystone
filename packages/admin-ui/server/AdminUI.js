@@ -17,6 +17,7 @@ module.exports = class AdminUI {
 
     // implement session management
     app.use(
+      adminPath,
       session({
         secret: cookieSecret,
         resave: false,
