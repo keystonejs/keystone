@@ -98,13 +98,41 @@ module.exports = class Keystone {
       resolvers,
     });
   }
+  createItem(listKey, itemData) {
+    const item = new this.lists[listKey].model(itemData);
+    return item.save();
+  }
   createItems(lists) {
-    Object.keys(lists).forEach(key => {
+    // Return a promise that resolves to an array of the created items
+    const asyncCreateItems = (lists, key) => {
       const list = this.lists[key];
-      lists[key].forEach(itemData => {
+      return Promise.all(lists[key].map(itemData => {
         const item = new list.model(itemData);
-        item.save();
+        return item.save();
+      }));
+    };
+
+    // We're going to have to wait for a set of unrelated promises to fullfil
+    // before we can return from this method
+    const promisesToWaitFor = [];
+
+    // We'll reduce the async values to this object over time
+    const createdItems = {};
+
+    Object.keys(lists).forEach((key) => {
+      const listItems = asyncCreateItems(lists, key);
+
+      // Add the promise to the global set to wait for
+      promisesToWaitFor.push(listItems);
+
+      // When it resolves, we want to set the values on the result object
+      listItems.then(newItems => {
+        createdItems[key] = newItems;
       });
     });
+
+    // Wait for all promises to complete.
+    // Then resolve to the object containing the resolved arrays of values
+    return Promise.all(promisesToWaitFor).then(() => createdItems);
   }
 };
