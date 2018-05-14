@@ -48,11 +48,13 @@ module.exports = class List {
     this.updateMutationName = `update${itemQueryName}`;
     this.createMutationName = `create${itemQueryName}`;
 
+    const getListByKey = key => lists[key];
+
     this.fields = config.fields
       ? Object.keys(config.fields).map(path => {
           const { type, ...fieldSpec } = config.fields[path];
           const implementation = type.implementation;
-          return new implementation(path, { ...fieldSpec, listKey: key });
+          return new implementation(path, { ...fieldSpec, listKey: key, getListByKey });
         })
       : [];
 
@@ -197,6 +199,15 @@ module.exports = class List {
         ids.map(async id => await this.model.findByIdAndRemove(id));
       },
     };
+  }
+  getAdminUIResolvers() {
+    const fieldResolvers = this.fields.reduce((resolvers, field) => {
+      return { ...resolvers, ...field.getResolvers() };
+    }, {});
+    if (!Object.keys(fieldResolvers).length) return {};
+    return {
+      [this.key]: fieldResolvers,
+    }
   }
   buildItemsQuery(args) {
     let conditions = this.fields.reduce((conds, field) => {
