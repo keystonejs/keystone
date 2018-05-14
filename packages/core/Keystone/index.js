@@ -23,8 +23,8 @@ module.exports = class Keystone {
     this.lists = {};
     this.listsArray = [];
     this.mongoose = new Mongoose();
+    this.getListByKey = key => this.lists[key];
   }
-  getListByKey = key => this.lists[key];
   createList(key, config) {
     const { getListByKey, mongoose } = this;
     const list = new List(key, config, { getListByKey, mongoose });
