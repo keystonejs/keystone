@@ -3,7 +3,7 @@ const { Schema: { Types: { ObjectId } } } = require('mongoose');
 const Implementation = require('../../Implementation');
 
 module.exports = class Select extends Implementation {
-  constructor(path, config) {
+  constructor() {
     super(...arguments);
   }
   getGraphqlSchema() {
