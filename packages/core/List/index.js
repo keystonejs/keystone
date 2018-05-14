@@ -89,6 +89,7 @@ module.exports = class List {
       plural: this.plural,
       path: this.path,
       listQueryName: this.listQueryName,
+      listQueryMetaName: this.listQueryMetaName,
       itemQueryName: this.itemQueryName,
       createMutationName: this.createMutationName,
       updateMutationName: this.updateMutationName,
@@ -105,7 +106,7 @@ module.exports = class List {
     const fieldTypes = this.fields
       .map(i => i.getGraphqlTypes())
       .filter(i => i)
-      .join('\n     ');
+      .join('\n      ');
     const updateArgs = this.fields
       .map(i => i.getGraphqlUpdateArgs())
       .filter(i => i)
@@ -129,38 +130,36 @@ module.exports = class List {
       input ${this.key}CreateInput {
         ${createArgs}
       }
-      ${fieldTypes}
-    `;
+      ${fieldTypes}`;
   }
   getAdminGraphqlQueries() {
     const queryArgs = this.fields
       .map(i => i.getGraphqlQueryArgs())
       .filter(i => i)
       .map(i => i.split(/\n\s+/g).join('\n          '))
-      .join('\n          # New field');
+      .join('\n          # New field\n          ');
     const commonArgs = `
           search: String
           sort: String
 
           # Pagination
           first: Int
-          skip: Int
-    `;
+          skip: Int`;
     // TODO: Group field filters under filter: FilterInput
     return `
-        ${this.listQueryName}(
-          ${commonArgs}
+        ${this.listQueryName}(${commonArgs}
+
           # Field Filters
           ${queryArgs}
         ): [${this.key}]
+
         ${this.itemQueryName}(id: String!): ${this.key}
 
-        ${this.listQueryMetaName}(
-          ${commonArgs}
+        ${this.listQueryMetaName}(${commonArgs}
+
           # Field Filters
           ${queryArgs}
-        ): _QueryMeta
-    `;
+        ): _QueryMeta`;
   }
   getAdminQueryResolvers() {
     return {
@@ -183,8 +182,7 @@ module.exports = class List {
         ): ${this.key}
         ${this.deleteManyMutationName}(
           ids: [String!]
-        ): ${this.key}
-    `;
+        ): ${this.key}`;
   }
   getAdminMutationResolvers() {
     return {
