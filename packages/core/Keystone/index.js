@@ -27,6 +27,10 @@ module.exports = class Keystone {
     this.mongoose = new Mongoose();
     this.getListByKey = key => this.lists[key];
     this.session = bindSession(this);
+
+    if (this.config.debug) {
+      this.mongoose.set('debug', true);
+    }
   }
   createAuthStrategy(options) {
     const { type: StrategyType, list: listKey, config } = options;
