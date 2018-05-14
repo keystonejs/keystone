@@ -39,6 +39,16 @@ module.exports = class Select extends Field {
   getGraphqlCreateArgs() {
     return this.getGraphqlUpdateArgs();
   }
+  getGraphqlResolvers() {
+    return {
+      [this.path]: async (item) => {
+        const items = await this.getListByKey(this.config.ref).model.find({
+          id: { $in: item[this.path] }
+        });
+        return this.config.many ? items : items[0];
+      }
+    };
+  }
   getQueryConditions(args) {
     const conditions = [];
     const eq = this.path;
