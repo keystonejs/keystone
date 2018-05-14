@@ -1,9 +1,9 @@
 const path = require('path');
-const Text = require('./Text');
+const Implementation = require('./Implementation');
 
 module.exports = {
   type: 'Text',
-  implementation: Text,
+  implementation: Implementation,
   views: {
     Controller: path.resolve(__dirname, './Controller'),
     Field: path.resolve(__dirname, './views/Field'),

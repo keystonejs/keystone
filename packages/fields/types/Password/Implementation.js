@@ -1,8 +1,8 @@
-const Field = require('../../Field');
+const Implementation = require('../../Implementation');
 
-module.exports = class Password extends Field {
-  constructor(path, config) {
-    super(path, config);
+module.exports = class Password extends Implementation {
+  constructor() {
+    super(...arguments);
     this.graphQLType = 'String';
   }
   addToMongooseSchema(schema) {

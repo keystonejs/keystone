@@ -1,9 +1,9 @@
 const path = require('path');
-const Password = require('./Password');
+const Implementation = require('./Implementation');
 
 module.exports = {
   type: 'Password',
-  implementation: Password,
+  implementation: Implementation,
   views: {
     Controller: path.resolve(__dirname, './Controller'),
     Field: path.resolve(__dirname, './views/Field'),

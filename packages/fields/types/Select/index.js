@@ -1,9 +1,9 @@
 const path = require('path');
-const Select = require('./Select');
+const Implementation = require('./Implementation');
 
 module.exports = {
   type: 'Select',
-  implementation: Select,
+  implementation: Implementation,
   views: {
     Controller: path.resolve(__dirname, './Controller'),
     Field: path.resolve(__dirname, './views/Field'),

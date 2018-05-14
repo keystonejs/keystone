@@ -1,9 +1,9 @@
 const path = require('path');
-const Relationship = require('./Relationship');
+const Implementation = require('./Implementation');
 
 module.exports = {
   type: 'Relationship',
-  implementation: Relationship,
+  implementation: Implementation,
   views: {
     Controller: path.resolve(__dirname, './Controller'),
     Field: path.resolve(__dirname, './views/Field'),
