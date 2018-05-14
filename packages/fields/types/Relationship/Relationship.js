@@ -7,8 +7,9 @@ module.exports = class Select extends Field {
     super(path, config);
   }
   getGraphqlSchema() {
-    const { many } = this.config;
-    const type = many ? '[String]' : 'String';
+    const { getListByKey, many, ref } = this.config;
+    const refList = getListByKey(ref);
+    const type = many ? `[${ref}]` : ref;
     return `${this.path}: ${type}`;
   }
   addToMongooseSchema(schema) {
