@@ -24,9 +24,10 @@ const labelToPath = str =>
 const labelToClass = str => str.replace(/\s+/g, '');
 
 module.exports = class List {
-  constructor(key, config, { mongoose, lists }) {
+  constructor(key, config, { getListByKey, mongoose }) {
     this.key = key;
     this.config = initConfig(key, config);
+    this.getListByKey = getListByKey;
 
     const label = keyToLabel(key);
     const singular = pluralize.singular(label);
@@ -52,7 +53,10 @@ module.exports = class List {
       ? Object.keys(config.fields).map(path => {
           const { type, ...fieldSpec } = config.fields[path];
           const implementation = type.implementation;
-          return new implementation(path, { ...fieldSpec, listKey: key });
+          return new implementation(path, fieldSpec, {
+            getListByKey,
+            listKey: key,
+          });
         })
       : [];
 
@@ -72,7 +76,7 @@ module.exports = class List {
     this.fields.forEach(i => i.addToMongooseSchema(schema));
 
     if (this.config.configureMongooseSchema) {
-      this.config.configureMongooseSchema(schema, { mongoose, lists });
+      this.config.configureMongooseSchema(schema, { mongoose });
     }
 
     this.model = mongoose.model(this.key, schema);
