@@ -19,7 +19,7 @@ const getGraphqlQuery = refList => {
   return gql`{
     ${refList.listQueryName} {
       id
-      ${refList.searchFields.filter(field => field !== 'id').join(' ')}
+      ${refList.displayFields.filter(field => field !== 'id').join(' ')}
     }
   }`;
 };

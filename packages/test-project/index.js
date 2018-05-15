@@ -41,9 +41,9 @@ keystone.createList('User', {
   },
   admin: {
     // Where `name`, `email` are available because they're defined in
-    // `searchFields`
+    // `displayFields`
     displayTemplate: '{{name}} <{{email}}>',
-    searchFields: ['name', 'email'],
+    displayFields: ['name', 'email'],
   }
 });
 
@@ -71,7 +71,7 @@ keystone.createList('Post', {
   },
   admin: {
     displayTemplate: '{{name}}',
-    searchFields: ['name', 'slug'],
+    displayFields: ['name', 'slug'],
   }
 });
 
