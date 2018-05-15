@@ -82,25 +82,25 @@ module.exports = class List {
     this.model = mongoose.model(this.key, schema);
   }
   getAdminMeta() {
-    let { displayTemplate, searchFields } = this.config.admin || {};
+    let { displayTemplate, displayFields } = this.config.admin || {};
 
     if (
-      (!displayTemplate && searchFields)
-      || (displayTemplate && !searchFields)
+      (!displayTemplate && displayFields)
+      || (displayTemplate && !displayFields)
     ) {
-      throw new Error(`Must set either both 'admin.displayTemplate' & 'admin.searchFields' on List ${this.key}, or neither (for default behaviour).`);
+      throw new Error(`Must set either both 'admin.displayTemplate' & 'admin.displayFields' on List ${this.key}, or neither (for default behaviour).`);
     }
 
-    if (!displayTemplate && !searchFields) {
+    if (!displayTemplate && !displayFields) {
       // TODO: Be better.
       console.warn(`displayTemplate not set on List ${this.key}. Defaulting to 'name'.`);
       displayTemplate = '{{name}}';
-      searchFields = ['name'];
+      displayFields = ['name'];
     }
 
     return {
       displayTemplate,
-      searchFields,
+      displayFields,
       key: this.key,
       label: this.label,
       singular: this.singular,
