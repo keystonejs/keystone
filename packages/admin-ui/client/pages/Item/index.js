@@ -28,7 +28,7 @@ const getItemQuery = ({ list, itemId }) => gql`
   {
     ${list.itemQueryName}(id: "${itemId}") {
       id
-      ${list.fields.map(field => field.path).join(' ')}
+      ${list.fields.map(field => field.getQueryFragment()).join(' ')}
     }
   }
 `;
