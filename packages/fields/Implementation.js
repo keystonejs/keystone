@@ -26,6 +26,7 @@ module.exports = class Field {
   getGraphqlTypes() {}
   getGraphqlQueryArgs() {}
   getGraphqlUpdateArgs() {}
+  getGraphqlResolvers() {}
   getQueryConditions() {
     return [];
   }

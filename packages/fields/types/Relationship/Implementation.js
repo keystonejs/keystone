@@ -30,6 +30,20 @@ module.exports = class Select extends Implementation {
       ${this.path}_not_in: [String!]
     `;
   }
+  getGraphqlResolvers() {
+    const { many, ref } = this.config;
+    return {
+      [this.path]: item => {
+        if (many) {
+          return this.getListByKey(ref).model.find({
+            _id: { $in: item[this.path] },
+          });
+        } else {
+          return this.getListByKey(ref).model.findById(item[this.path]);
+        }
+      },
+    };
+  }
   getGraphqlUpdateArgs() {
     const { many } = this.config;
     const type = many ? '[String]' : 'String';
