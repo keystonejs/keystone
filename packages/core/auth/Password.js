@@ -1,5 +1,3 @@
-const initConfig = require('./initConfig');
-
 /*
   TODO:
     - work out how (and when) to vaidate the username and password fields
@@ -10,7 +8,11 @@ class PasswordAuthStrategy {
   constructor(keystone, listKey, config) {
     this.keystone = keystone;
     this.listKey = listKey;
-    this.config = initConfig(config);
+    this.config = {
+      usernameField: 'email',
+      passwordField: 'password',
+      ...config,
+    };
   }
   getList() {
     return this.keystone.lists[this.listKey];
