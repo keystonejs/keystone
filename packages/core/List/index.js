@@ -98,6 +98,8 @@ module.exports = class List {
       displayFields = ['name'];
     }
 
+    // TODO: Map displayFields to graphQL paths
+
     return {
       displayTemplate,
       displayFields,
