@@ -103,14 +103,12 @@ module.exports = class Keystone {
     return item.save();
   }
   createItems(lists) {
+    // TODO: Needs to handle creating related items; see Keystone 4 for a
+    // reference implementation
+
     // Return a promise that resolves to an array of the created items
-    const asyncCreateItems = (lists, key) => {
-      const list = this.lists[key];
-      return Promise.all(lists[key].map(itemData => {
-        const item = new list.model(itemData);
-        return item.save();
-      }));
-    };
+    const asyncCreateItems = (sourceData, listKey) =>
+      Promise.all(lists[listKey].map(i => this.createItem(listKey, i)));
 
     // We're going to have to wait for a set of unrelated promises to fullfil
     // before we can return from this method
@@ -119,7 +117,7 @@ module.exports = class Keystone {
     // We'll reduce the async values to this object over time
     const createdItems = {};
 
-    Object.keys(lists).forEach((key) => {
+    Object.keys(lists).forEach(key => {
       const listItems = asyncCreateItems(lists, key);
 
       // Add the promise to the global set to wait for
