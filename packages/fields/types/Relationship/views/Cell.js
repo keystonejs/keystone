@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
+import renderTemplate from '@keystonejs/ui/src/template';
 
-export default class RelationshipCell extends Component {
-  render() {
-    return <div>Hello World</div>;
-  }
-}
+export default ({ data, field }) => {
+  const refList = field.adminMeta.getListByKey(field.config.ref);
+  return (
+    <span>{renderTemplate({ template: refList.displayTemplate, data })}</span>
+  );
+};

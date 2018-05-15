@@ -9,13 +9,12 @@ import {
   FieldInput,
 } from '@keystonejs/ui/src/primitives/fields';
 
+import renderTemplate from '@keystonejs/ui/src/template';
+
 import { Select } from '@keystonejs/ui/src/primitives/forms';
 
-const renderTemplate = (template, values) => {
-  return template.replace(/{{(.*?)}}/g, (match, key) => values[key] || '');
-};
-
 const getGraphqlQuery = refList => {
+  // TODO: How can we replace this with field.Controller.getQueryFragment()?
   return gql`{
     ${refList.listQueryName} {
       id
@@ -53,7 +52,7 @@ export default class RelationshipField extends Component {
               const options = data[refList.listQueryName].map(
                 (listData) => ({
                   value: listData,
-                  label: renderTemplate(refList.displayTemplate, listData),
+                  label: renderTemplate({ template: refList.displayTemplate, data: listData }),
                 })
               );
               let value = item[field.path];

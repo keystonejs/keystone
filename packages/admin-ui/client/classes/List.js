@@ -55,7 +55,6 @@ export default class List {
 
     this.fields = config.fields.map(fieldConfig => {
       const { Controller, Cell } = FieldTypes[config.key][fieldConfig.path];
-      console.log(Cell);
       return new Controller(fieldConfig, this, adminMeta);
     });
 
