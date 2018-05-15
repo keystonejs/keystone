@@ -29,7 +29,7 @@ module.exports = class Keystone {
     this.session = bindSession(this);
 
     this.mongoose = new Mongoose();
-    if (debugMongoose) {
+    if (debugMongoose()) {
       this.mongoose.set('debug', true);
     }
   }
@@ -122,7 +122,7 @@ module.exports = class Keystone {
     const createdItems = {};
 
     Object.keys(lists).forEach(key => {
-      const listItems = asyncCreateItems(lists, key);
+      const listItems = asyncCreateItems(key);
 
       // Add the promise to the global set to wait for
       promisesToWaitFor.push(listItems);

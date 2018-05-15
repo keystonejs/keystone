@@ -145,7 +145,7 @@ server.app.get('/reset-db', (req, res) => {
   const reset = async () => {
     await keystone.mongoose.connection.dropDatabase();
     await keystone.createItems(initialData);
-    res.end('Done.');
+    res.redirect('/admin');
   };
   reset();
 });
