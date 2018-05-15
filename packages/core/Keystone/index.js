@@ -16,6 +16,7 @@ function getMongoURI({ dbName, name }) {
 }
 
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
+const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 const trim = str => str.replace(/\n\s*\n/g, '\n');
 
 module.exports = class Keystone {
@@ -24,10 +25,10 @@ module.exports = class Keystone {
     this.auth = {};
     this.lists = {};
     this.listsArray = [];
-    this.mongoose = new Mongoose();
     this.session = bindSession(this);
 
-    if (this.config.debug) {
+    this.mongoose = new Mongoose();
+    if (debugMongoose) {
       this.mongoose.set('debug', true);
     }
   }
