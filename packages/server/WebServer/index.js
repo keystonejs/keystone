@@ -8,6 +8,7 @@ module.exports = class WebServer {
   constructor(keystone, config) {
     this.keystone = keystone;
     this.config = initConfig(config);
+    this.express = express;
     this.app = express();
 
     const { adminUI, adminPath, cookieSecret, session } = this.config;

@@ -39,6 +39,7 @@ module.exports = class Keystone {
       this.auth[listKey] = {};
     }
     this.auth[listKey][authType] = new StrategyType(this, listKey, config);
+    return this.auth[listKey][authType];
   }
   createList(key, config) {
     const { getListByKey, mongoose } = this;

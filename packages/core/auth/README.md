@@ -7,27 +7,62 @@
 #### 0-step new user creation
 
 ```javascript
-const result = await keystone.auth.User.twitter.validate({ token, tokenSecret });
-let userItem = result.item;
+server.app.use(
+  keystone.session.validate({
+    // When logged in, we'll get a req.user object
+    valid: ({ req, item }) => (req.user = item),
+  })
+);
 
-if (!result.success) {
-  // An error occured validating the twitter tokens, so we can't continue
-  // Important to stop here to avoid bad actors sending fake tokens
-  throw new Error('Unable to validate Twitter tokens');
-} else if (result.newUser) {
-  // Successfully validated twitter tokens
-  // But were unable to find an associated user in Keystone
-  // So we create a new one immediately:
-  const newUser = await keystone.createItem('Users', { role: 'user' });
-  userItem = newUser;
-}
+const twitterAuth = keystone.createAuthStrategy({
+  type: TwitterAuthStrategy,
+  list: 'User',
+  config: {
+    consumerKey: process.env.TWITTER_APP_KEY,
+    consumerSecret: process.env.TWITTER_APP_SECRET,
+    callbackURL: `http://localhost:${PORT}/auth/twitter/callback`,
+    idField: 'twitterId',
+    usernameField: 'twitterUsername',
+    server,
+  }
+});
 
-// Connect up the Twitter login session and the user item in Keystone
-await keystone.auth.User.twitter.connectItem({ ...result, item: userItem });
+// Hit this route to start the twitter auth process
+server.app.get(
+  '/auth/twitter',
+  twitterAuth.loginMiddleware({
+    // If not set, will just call `next()`
+    sessionExists: (itemId, req, res) => {
+      console.log(`Already logged in as ${itemId} 🎉`);
+      // logged in already? Send 'em home!
+      return res.redirect('/api/session');
+    }
+  }),
+);
 
-// finally, we create the logged in session now that we have all the info we
-// need
-await keystone.session.create(req, { item: userItem, list: keystone.lists.Users } );
+// Twitter will redirect the user to this URL after approval.
+server.app.get('/auth/twitter/callback', twitterAuth.authenticateMiddleware({
+  async verified(item, info, req, res) {
+    const authedItem = item || await keystone.createItem(info.list.key, {});
+
+    try {
+      await keystone.auth.User.twitter.connectItem(req, { item: authedItem });
+      await keystone.session.create(req, { item: authedItem, list: info.list });
+    } catch (createError) {
+      return res.json({
+        success: false,
+        // TODO: Better error
+        error: createError.message || createError.toString(),
+      });
+    }
+
+    res.redirect('/api/session');
+  },
+  failedVerification(error, req, res) {
+    console.log('🤔 Failed to verify Twitter login creds');
+    res.redirect('/');
+  },
+}));
 ```
 
 #### Multi-step new user creation
@@ -37,35 +72,96 @@ address, their social security info, their mother's maiden name, and their
 bank's password over multiple server requests / page refreshes:
 
 ```javascript
-const result = await keystone.auth.User.twitter.validate({ token, tokenSecret });
+server.app.use(
+  keystone.session.validate({
+    // When logged in, we'll get a req.user object
+    valid: ({ req, item }) => (req.user = item),
+  })
+);
 
-if (!result.success) {
-  // An error occured validating the twitter tokens, so we can't continue
-  // Important to stop here to avoid bad actors sending fake tokens
-  throw new Error('Unable to validate Twitter tokens');
-} else if (!result.newUser) {
-  // All validated and an existing user is associated with that twitter
-  // account, Log the user in
-  await keystone.session.create(req, result);
-} else {
-  // Successfully validated twitter tokens
-  // But were unable to find an associated user in Keystone
-  // So we pause the validation step, to be picked up later (possibly at a
-  // future request)
-  await keystone.auth.User.twitter.pauseValidation(req, result);
-}
+const twitterAuth = keystone.createAuthStrategy({
+  type: TwitterAuthStrategy,
+  list: 'User',
+  config: {
+    consumerKey: process.env.TWITTER_APP_KEY,
+    consumerSecret: process.env.TWITTER_APP_SECRET,
+    callbackURL: `http://localhost:${PORT}/auth/twitter/callback`,
+    idField: 'twitterId',
+    usernameField: 'twitterUsername',
+    server,
+  }
+});
 
-// ...
-// ... Do some other things, maybe make a sandwich if you want
-// ...
+// Hit this route to start the twitter auth process
+server.app.get(
+  '/auth/twitter',
+  twitterAuth.loginMiddleware({
+    // If not set, will just call `next()`
+    sessionExists: (itemId, req, res) => {
+      console.log(`Already logged in as ${itemId} 🎉`);
+      // logged in already? Send 'em home!
+      return res.redirect('/api/session');
+    }
+  }),
+);
 
-// Finally, we have enough to create a new user
-const newUser = await keystone.createItem('Users', { role: 'user' });
+// Twitter will redirect the user to this URL after approval.
+server.app.get('/auth/twitter/callback', twitterAuth.authenticateMiddleware({
+  async verified(item, info, req, res) {
+    // Twitter is verified, but we need some more details from the user
+    if (!item) {
+      return res.redirect('/auth/twitter/details');
+    }
 
-// Now that we have the necessary info, resume validation
-await keystone.auth.User.twitter.connectItem({ req, item: result.item });
+    res.redirect('/api/session');
+  },
+  failedVerification(error, req, res) {
+    console.log('🤔 Failed to verify Twitter login creds');
+    res.redirect('/');
+  },
+}));
 
-// finally, we create the logged in session now that we have all the info we
-// need
-await keystone.session.create(req, { item: newUser, list: keystone.lists.Users } );
+server.app.get(
+  '/auth/twitter/details',
+  (req, res) => {
+    if (req.user) {
+      return res.redirect('/api/session');
+    }
+
+    // Capture details somehow
+    res.send(`
+      <form action="/auth/twitter/complete" method="post">
+        <input type="text" placeholder="name" name="name" />
+        <button type="submit">Submit</button>
+      </form>
+    `);
+  }
+);
+
+server.app.use(server.express.urlencoded());
+
+server.app.post(
+  '/auth/twitter/complete',
+  async (req, res, next) => {
+    if (req.user) {
+      return res.redirect('/api/session');
+    }
+
+    // Finally, we have all the info we need to create a new user and log that
+    // user in
+    try {
+      const list = keystone.getListByKey('User');
+
+      const item = await keystone.createItem(list.key, {
+        name: req.body.name,
+      });
+
+      await keystone.auth.User.twitter.connectItem(req, { item });
+      await keystone.session.create(req, { item, list });
+      res.redirect('/api/session');
+    } catch (createError) {
+      next(createError);
+    }
+  }
+);
 ```

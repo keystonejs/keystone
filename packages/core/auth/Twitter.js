@@ -1,4 +1,6 @@
+const passport = require('passport');
 const { OAuth } = require('oauth-libre');
+const PassportTwitter = require('passport-twitter');
 const { Text, Relationship } = require('@keystonejs/fields');
 
 const FIELD_TWITTER_ID = 'twitterId';
@@ -99,8 +101,8 @@ class TwitterAuthStrategy {
     this.twitterClient = new OAuth(
       'https://api.twitter.com/oauth/request_token',
       'https://api.twitter.com/oauth/access_token',
-      this.config.key,
-      this.config.secret,
+      this.config.consumerKey,
+      this.config.consumerSecret,
       '1.0A',
       null,
       'HMAC-SHA1'
@@ -131,6 +133,50 @@ class TwitterAuthStrategy {
         },
       });
     }
+
+    passport.use(
+      new PassportTwitter(
+        {
+          consumerKey: this.config.consumerKey,
+          consumerSecret: this.config.consumerSecret,
+          callbackURL: this.config.callbackURL,
+          passReqToCallback: true,
+        },
+        /**
+         * from: https://github.com/jaredhanson/passport-oauth1/blob/master/lib/strategy.js#L24-L37
+         * ---
+         * Applications must supply a `verify` callback, for which the function
+         * signature is:
+         *
+         *     function(token, tokenSecret, oauthParams, profile, done) { ... }
+         *
+         * The verify callback is responsible for finding or creating the user, and
+         * invoking `done` with the following arguments:
+         *
+         *     done(err, user, info);
+         *
+         * `user` should be set to `false` to indicate an authentication failure.
+         * Additional `info` can optionally be passed as a third argument, typically
+         * used to display informational messages.  If an exception occured, `err`
+         * should be set.
+         */
+        async (req, token, tokenSecret, oauthParams, profile, done) => {
+          try {
+            let result = await this.keystone.auth.User.twitter.validate({ token, tokenSecret });
+            if (!result.success) {
+              // false indicates an authentication failure
+              return done(null, false, { ...result, profile });
+
+            }
+            return done(null, result.item, { ...result, profile });
+          } catch (error) {
+            return done(error);
+          }
+        },
+      ),
+    );
+
+    this.config.server.app.use(passport.initialize());
   }
   getList() {
     return this.keystone.lists[this.listKey];
@@ -172,61 +218,127 @@ class TwitterAuthStrategy {
 
     const sessionItem = await this.keystone.createItem(this.config.sessionListKey, newSessionData);
 
+    const result = {
+      success: true,
+      list: this.getList(),
+      twitterSession: sessionItem.id,
+    };
+
     if (!pastSessionItem) {
       // If no previous twitterSession found...
       // Create a new Twitter session that doesn't like to an item yet
-      return { success: true, newUser: true, twitterSession: sessionItem.id, list: this.getList() };
+      return {
+        ...result,
+        newUser: true,
+      };
     }
 
     const previouslyVerifiedItem = pastSessionItem[FIELD_ITEM];
-    return { success: true, list: this.getList(), item: previouslyVerifiedItem };
+    return {
+      ...result,
+      item: previouslyVerifiedItem,
+    };
   }
 
-  async pauseValidation(req, { /* item, */ twitterSession }) {
+  pauseValidation(req, { twitterSession }) {
     if (!twitterSession) {
       throw new Error('Expected a twitterSession (ID) when pausing authentication validation');
     }
-    // TODO:
-    // 1. Store twitterSession.id in the req.session so it persists across
-    //    requests (while they potentially fill out a mutli-step form)
-
-    throw new Error('Twitter::pauseValidation not yet implemented');
+    // Store id in the req.session so it persists across requests (while they
+    // potentially fill out a mutli-step form)
+    req.session.keystoneTwitterSessionId = twitterSession;
   }
 
-  async connectItem({ req, twitterSession, item }) {
+  async connectItem(req, { item }) {
     if (!item) {
       throw new Error('Must provide an `item` to connect to a twitter session');
     }
 
-    if (!twitterSession && !req) {
-      throw new Error('Must provide either `req` or `twitterSession` when connecting a Twitter Session to an item');
+    if (!req) {
+      throw new Error('Must provide `req` when connecting a Twitter Session to an item');
+    }
+
+    const twitterSessionId = req.session.keystoneTwitterSessionId;
+
+    if (!twitterSessionId) {
+      throw new Error("Unable to extract Twitter Id from session. Maybe `pauseValidation()` wasn't called?");
     }
 
     try {
-      if (twitterSession) {
-        const twitterItem = await this.getSessionList().model.findByIdAndUpdate(
-          twitterSession,
-          { item: item.id },
-          { new: true },
-        ).exec();
+      const twitterItem = await this.getSessionList().model.findByIdAndUpdate(
+        twitterSessionId,
+        { item: item.id },
+        { new: true },
+      ).exec();
 
-        await this.getList().model.findByIdAndUpdate(item.id, {
-          [this.config.idField]: twitterItem[FIELD_TWITTER_ID],
-          [this.config.usernameField]: twitterItem[FIELD_TWITTER_USERNAME],
-        }).exec();
-      } else if (req) {
-        // TODO:
-        // 0. Check `newItem.type === this.getList().type`
-        // 1. Extract the twitterSession.id from req.session
-        // 2. Associate the twitterSession item with the newItem it's authing
-        // 3. Return { item: newItem }
-        throw new Error('Twitter::connectItem({ req }) not yet implemented');
-      }
+      await this.getList().model.findByIdAndUpdate(item.id, {
+        [this.config.idField]: twitterItem[FIELD_TWITTER_ID],
+        [this.config.usernameField]: twitterItem[FIELD_TWITTER_USERNAME],
+      }).exec();
     } catch(error) {
-      return { success: false };
+      return { success: false, error };
     }
     return { success: true, item, list: this.getList() };
   }
+
+  /**
+   * Express Middleware to trigger the Twitter login flow (OAuth 1.0a)
+   *
+   * @param sessionExists {Function(itemId, req, res, next)}
+   * Called when an existing session is detected (twitter or otherwise).
+   * If not provided, will call `next()` directly, skipping Twitter login flow.
+   */
+  loginMiddleware({ sessionExists }) {
+    return (req, res, next) => {
+      if (req.session.keystoneItemId) {
+        if (sessionExists) {
+          return sessionExists(req.session.keystoneItemId, req, res, next);
+        } else {
+          next();
+        }
+      }
+
+      // If the user isn't already logged in
+      // kick off the twitter auth process
+      passport.authenticate('twitter', { session: false })(req, res, next);
+    };
+  }
+
+  /**
+   * Express Middleware to handle Twitter's response to the OAuth flow.
+   *
+   * @param failedVerification {Function(error<String>, req, res, next)}
+   * Called when we can't verifiy the user details with Twitter. Shouldn't happen
+   * in normal operation, however can be an attack vector upon the authentication
+   * process. Default: calls `next()`, skipping the rest of the auth flow.
+   */
+  authenticateMiddleware({ failedVerification, verified }) {
+    if (!verified) {
+      throw new Error('Must supply a `verified` function to `authenticateTwitterUser()`');
+    }
+
+    return (req, res, next) => {
+      // This middleware will call the `verify` callback we passed up the top to
+      // the `new PassportTwitter` constructor
+      passport.authenticate('twitter', async (verifyError, authedItem, info) => {
+        if (verifyError) {
+          if (failedVerification) {
+            failedVerification(verifyError.message || verifyError.toString(), req, res, next);
+          } else {
+            return next();
+          }
+        }
+
+        try {
+          await this.keystone.auth.User.twitter.pauseValidation(req, info);
+
+          await verified(authedItem, info, req, res, next);
+        } catch (validationVerificationError) {
+          next(validationVerificationError);
+        }
+      })(req, res, next);
+    };
+  };
 }
 
 TwitterAuthStrategy.authType = 'twitter';
