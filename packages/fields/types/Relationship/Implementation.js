@@ -7,8 +7,8 @@ module.exports = class Select extends Implementation {
     super(...arguments);
   }
   getGraphqlSchema() {
-    const { many } = this.config;
-    const type = many ? '[String]' : 'String';
+    const { many, ref } = this.config;
+    const type = many ? `[${ref}]` : ref;
     return `${this.path}: ${type}`;
   }
   addToMongooseSchema(schema) {
