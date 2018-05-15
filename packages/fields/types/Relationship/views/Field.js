@@ -52,7 +52,7 @@ export default class RelationshipField extends Component {
               if (error) return 'Error';
               const options = data[refList.listQueryName].map(
                 (listData) => ({
-                  value: listData.id,
+                  value: listData,
                   label: renderTemplate(refList.displayTemplate, listData),
                 })
               );
@@ -60,11 +60,13 @@ export default class RelationshipField extends Component {
               if (many) {
                 if (!Array.isArray(value)) value = [];
                 value = value
-                  .map(i => options.filter(option => option.value === i.id)[0])
+                  .map(i => options.filter(option => option.value.id === i.id)[0])
                   .filter(i => i);
-              } else {
+              } else if (value) {
                 value =
-                  options.filter(i => i.value === item[field.path].id)[0] || null;
+                  options.filter(i => i.value.id === item[field.path].id)[0] || null;
+              } else {
+                value = null;
               }
               return (
                 <Select

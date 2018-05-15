@@ -9,7 +9,7 @@ export default class RelationshipController extends FieldController {
   getQueryFragment = () => `${this.path} { id name }`;
   getValue = data => {
     const { many, path } = this.config;
-    return data[path] ? data[path] : many ? [] : null;
+    return data[path] ? data[path].id : many ? [] : null;
   };
   getInitialData = () => {
     const { defaultValue, many } = this.config;
