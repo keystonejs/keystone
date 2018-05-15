@@ -45,7 +45,7 @@ const getQueryArgs = args => {
 
 const getQuery = ({ fields, list, search, sort }) => {
   const queryArgs = getQueryArgs({ search, sort });
-  const queryFields = ['id', ...fields.map(({ path }) => path)];
+  const queryFields = ['id', ...fields.map(field => field.getQueryFragment())];
 
   return gql`{
     ${list.listQueryName}${queryArgs} {

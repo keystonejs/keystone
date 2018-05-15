@@ -6,6 +6,7 @@ export default class RelationshipController extends FieldController {
     const { ref } = this.config;
     return getListByKey(ref);
   }
+  getQueryFragment = () => `${this.path} { id name }`;
   getValue = data => {
     const { many, path } = this.config;
     return data[path] ? data[path] : many ? [] : null;
