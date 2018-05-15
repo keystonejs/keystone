@@ -62,3 +62,11 @@ reports/
 
 # jest_ci output
 junit.xml
+
+# OS
+.DS_Store
+.idea
+
+# Editor
+*.sublime-project
+*.sublime-workspace
