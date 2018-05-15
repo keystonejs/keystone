@@ -11,12 +11,17 @@ import {
 
 import { Select } from '@keystonejs/ui/src/primitives/forms';
 
+const renderTemplate = (template, values) => {
+  return template.replace(/{{(.*?)}}/g, (match, key) => values[key] || '');
+};
+
 const getGraphqlQuery = refList => {
   return gql`{
-      ${refList.listQueryName} {
-        name id
-      }
-    }`;
+    ${refList.listQueryName} {
+      id
+      ${refList.searchFields.filter(field => field !== 'id').join(' ')}
+    }
+  }`;
 };
 
 export default class RelationshipField extends Component {
@@ -46,17 +51,20 @@ export default class RelationshipField extends Component {
               // TODO: better error UI
               if (error) return 'Error';
               const options = data[refList.listQueryName].map(
-                ({ id, name }) => ({ value: id, label: name })
+                (listData) => ({
+                  value: listData.id,
+                  label: renderTemplate(refList.displayTemplate, listData),
+                })
               );
               let value = item[field.path];
               if (many) {
                 if (!Array.isArray(value)) value = [];
                 value = value
-                  .map(i => options.filter(option => option.value === i)[0])
+                  .map(i => options.filter(option => option.value === i.id)[0])
                   .filter(i => i);
               } else {
                 value =
-                  options.filter(i => i.value === item[field.path])[0] || null;
+                  options.filter(i => i.value === item[field.path].id)[0] || null;
               }
               return (
                 <Select

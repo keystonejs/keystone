@@ -36,7 +36,7 @@ import ColumnSelect from './ColumnSelect';
 import FilterSelect from './FilterSelect';
 import SortSelect, { SortButton } from './SortSelect';
 
-const getQueryArgs = args => {
+const getQueryArgs = (args) => {
   const queryArgs = Object.keys(args).map(
     argName => `${argName}: "${args[argName]}"`
   );
