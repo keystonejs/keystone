@@ -1,10 +1,10 @@
 const { Schema: { Types: { ObjectId } } } = require('mongoose');
 
-const Field = require('../../Field');
+const Implementation = require('../../Implementation');
 
-module.exports = class Select extends Field {
-  constructor(path, config) {
-    super(path, config);
+module.exports = class Select extends Implementation {
+  constructor() {
+    super(...arguments);
   }
   getGraphqlSchema() {
     const { many } = this.config;

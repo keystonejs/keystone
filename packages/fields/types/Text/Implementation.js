@@ -1,10 +1,10 @@
-const Field = require('../../Field');
+const Implementation = require('../../Implementation');
 
 const { escapeRegExp: esc } = require('@keystonejs/utils');
 
-module.exports = class Text extends Field {
-  constructor(path, config) {
-    super(path, config);
+module.exports = class Text extends Implementation {
+  constructor() {
+    super(...arguments);
     this.graphQLType = 'String';
   }
   addToMongooseSchema(schema) {

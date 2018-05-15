@@ -1,5 +1,5 @@
 const inflection = require('inflection');
-const Field = require('../../Field');
+const Implementation = require('../../Implementation');
 
 function initOptions(options) {
   let optionsArray = options;
@@ -12,9 +12,9 @@ function initOptions(options) {
   });
 }
 
-module.exports = class Select extends Field {
+module.exports = class Select extends Implementation {
   constructor(path, config) {
-    super(path, config);
+    super(...arguments);
     this.options = initOptions(config.options);
   }
   getGraphqlSchema() {

@@ -25,6 +25,7 @@ module.exports = class Keystone {
     this.auth = {};
     this.lists = {};
     this.listsArray = [];
+    this.getListByKey = key => this.lists[key];
     this.session = bindSession(this);
 
     this.mongoose = new Mongoose();
@@ -43,8 +44,8 @@ module.exports = class Keystone {
     return strategy;
   }
   createList(key, config) {
-    const { mongoose, lists } = this;
-    const list = new List(key, config, { mongoose, lists });
+    const { getListByKey, mongoose } = this;
+    const list = new List(key, config, { getListByKey, mongoose });
     this.lists[key] = list;
     this.listsArray.push(list);
   }

@@ -1,9 +1,10 @@
 const inflection = require('inflection');
 
 module.exports = class Field {
-  constructor(path, { listKey, ...config }) {
+  constructor(path, config, { getListByKey, listKey }) {
     this.path = path;
     this.config = config;
+    this.getListByKey = getListByKey;
     this.listKey = listKey;
     this.label = config.label || inflection.humanize(path);
   }

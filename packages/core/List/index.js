@@ -24,9 +24,10 @@ const labelToPath = str =>
 const labelToClass = str => str.replace(/\s+/g, '');
 
 module.exports = class List {
-  constructor(key, config, { mongoose, lists }) {
+  constructor(key, config, { getListByKey, mongoose }) {
     this.key = key;
     this.config = initConfig(key, config);
+    this.getListByKey = getListByKey;
 
     const label = keyToLabel(key);
     const singular = pluralize.singular(label);
@@ -52,7 +53,10 @@ module.exports = class List {
       ? Object.keys(config.fields).map(path => {
           const { type, ...fieldSpec } = config.fields[path];
           const implementation = type.implementation;
-          return new implementation(path, { ...fieldSpec, listKey: key });
+          return new implementation(path, fieldSpec, {
+            getListByKey,
+            listKey: key,
+          });
         })
       : [];
 
@@ -72,7 +76,7 @@ module.exports = class List {
     this.fields.forEach(i => i.addToMongooseSchema(schema));
 
     if (this.config.configureMongooseSchema) {
-      this.config.configureMongooseSchema(schema, { mongoose, lists });
+      this.config.configureMongooseSchema(schema, { mongoose });
     }
 
     this.model = mongoose.model(this.key, schema);
@@ -85,6 +89,7 @@ module.exports = class List {
       plural: this.plural,
       path: this.path,
       listQueryName: this.listQueryName,
+      listQueryMetaName: this.listQueryMetaName,
       itemQueryName: this.itemQueryName,
       createMutationName: this.createMutationName,
       updateMutationName: this.updateMutationName,
@@ -101,7 +106,7 @@ module.exports = class List {
     const fieldTypes = this.fields
       .map(i => i.getGraphqlTypes())
       .filter(i => i)
-      .join('\n     ');
+      .join('\n      ');
     const updateArgs = this.fields
       .map(i => i.getGraphqlUpdateArgs())
       .filter(i => i)
@@ -125,38 +130,36 @@ module.exports = class List {
       input ${this.key}CreateInput {
         ${createArgs}
       }
-      ${fieldTypes}
-    `;
+      ${fieldTypes}`;
   }
   getAdminGraphqlQueries() {
     const queryArgs = this.fields
       .map(i => i.getGraphqlQueryArgs())
       .filter(i => i)
       .map(i => i.split(/\n\s+/g).join('\n          '))
-      .join('\n          # New field');
+      .join('\n          # New field\n          ');
     const commonArgs = `
           search: String
           sort: String
 
           # Pagination
           first: Int
-          skip: Int
-    `;
+          skip: Int`;
     // TODO: Group field filters under filter: FilterInput
     return `
-        ${this.listQueryName}(
-          ${commonArgs}
+        ${this.listQueryName}(${commonArgs}
+
           # Field Filters
           ${queryArgs}
         ): [${this.key}]
+
         ${this.itemQueryName}(id: String!): ${this.key}
 
-        ${this.listQueryMetaName}(
-          ${commonArgs}
+        ${this.listQueryMetaName}(${commonArgs}
+
           # Field Filters
           ${queryArgs}
-        ): _QueryMeta
-    `;
+        ): _QueryMeta`;
   }
   getAdminQueryResolvers() {
     return {
@@ -179,8 +182,7 @@ module.exports = class List {
         ): ${this.key}
         ${this.deleteManyMutationName}(
           ids: [String!]
-        ): ${this.key}
-    `;
+        ): ${this.key}`;
   }
   getAdminMutationResolvers() {
     return {
