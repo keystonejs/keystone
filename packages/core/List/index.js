@@ -168,6 +168,15 @@ module.exports = class List {
       [this.itemQueryName]: (_, { id }) => this.model.findById(id),
     };
   }
+  getAdminFieldResolvers() {
+    const fieldResolvers = this.fields.reduce(
+      (resolvers, field) => ({ ...resolvers, ...field.getGraphqlResolvers() }),
+      {}
+    );
+    return Object.keys(fieldResolvers).length
+      ? { [this.key]: fieldResolvers }
+      : {};
+  }
   getAdminGraphqlMutations() {
     return `
         ${this.createMutationName}(
