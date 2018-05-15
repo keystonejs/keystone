@@ -43,7 +43,7 @@ export default class RelationshipField extends Component {
               if (loading) {
                 return <Select key="loading" isDisabled isLoading={loading} />;
               }
-              // TOOD: better error UI
+              // TODO: better error UI
               if (error) return 'Error';
               const options = data[refList.listQueryName].map(
                 ({ id, name }) => ({ value: id, label: name })
