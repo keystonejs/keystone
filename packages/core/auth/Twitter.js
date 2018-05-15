@@ -13,10 +13,18 @@ function validateWithTwitter(client, token, tokenSecret) {
       token,
       tokenSecret,
       async (error, data) => {
+        let jsonData;
+
         if (error) {
-          const { statusCode /* , data */ } = error;
+          const { statusCode, data: errorData } = error;
 
           let message;
+
+          try {
+            jsonData = JSON.parse(errorData);
+          } catch (jsonParseError) {
+            jsonData = {};
+          }
 
           // For more detailed error messages, see:
           // https://developer.twitter.com/en/docs/basics/response-codes
@@ -35,8 +43,6 @@ function validateWithTwitter(client, token, tokenSecret) {
 
           return reject(new Error(message));
         }
-
-        let jsonData;
 
         if (data) {
           try {
@@ -224,7 +230,6 @@ class TwitterAuthStrategy {
 
     try {
       if (twitterSession) {
-        console.log({ twitterSession });
         const twitterItem = await this.getSessionList()
           .model.findByIdAndUpdate(
             twitterSession,
