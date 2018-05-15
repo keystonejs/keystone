@@ -14,7 +14,7 @@ function validateWithTwitter(client, token, tokenSecret) {
       tokenSecret,
       async (error, data) => {
         if (error) {
-          const { statusCode, data } = error;
+          const { statusCode /* , data */ } = error;
 
           let message;
 
@@ -41,10 +41,10 @@ function validateWithTwitter(client, token, tokenSecret) {
         if (data) {
           try {
             jsonData = JSON.parse(data);
-          } catch {
+          } catch (e) {
             return reject(
               'Unable to parse server response from Twitter. Expected JSON, got:',
-              require('utils').inspect(data),
+              require('utils').inspect(data)
             );
           }
         } else {
@@ -53,7 +53,7 @@ function validateWithTwitter(client, token, tokenSecret) {
 
         resolve(jsonData);
       }
-    )
+    );
   });
 }
 
@@ -63,14 +63,18 @@ function reduceTwitterErrorsToString(jsonData) {
     return '';
   }
 
-  const errors = Array.isArray(jsonData.errors) ? jsonData.errors : [jsonData.errors];
+  const errors = Array.isArray(jsonData.errors)
+    ? jsonData.errors
+    : [jsonData.errors];
 
   // reduce the error messages into a coherent string
   return errors
-    .map((errorBody) => {
+    .map(errorBody => {
       if (errorBody.message && errorBody.code) {
         return `(${errorBody.code}) ${errorBody.message}.`;
-      } else if (Object.prototype.toString.call(errorBody) === '[object Object]') {
+      } else if (
+        Object.prototype.toString.call(errorBody) === '[object Object]'
+      ) {
         return JSON.stringify(errorBody);
       }
       return errorBody.toString();
@@ -133,15 +137,19 @@ class TwitterAuthStrategy {
     return this.keystone.lists[this.config.sessionListKey];
   }
   async validate({ token, tokenSecret }) {
-    const jsonData = await validateWithTwitter(this.twitterClient, token, tokenSecret);
+    const jsonData = await validateWithTwitter(
+      this.twitterClient,
+      token,
+      tokenSecret
+    );
 
     // Lookup a past, verified session, that links to a user
     let pastSessionItem;
     try {
       // NOTE: We don't need to filter on verifiedAt as these rows can only
       // possibly exist after we've validated with Twitter (see above)
-      pastSessionItem = await this.getSessionList().model
-        .findOne({
+      pastSessionItem = await this.getSessionList()
+        .model.findOne({
           [FIELD_TWITTER_ID]: jsonData.id_str,
         })
         // do a JOIN on the item
@@ -150,7 +158,9 @@ class TwitterAuthStrategy {
     } catch (sessionFindError) {
       // TODO: Better error message. Why would this fail? DB connection lost? A
       // "not found" shouldn't throw (it'll just return null).
-      throw new Error(`Unable to lookup existing Twitter sessions: ${sessionFindError}`);
+      throw new Error(
+        `Unable to lookup existing Twitter sessions: ${sessionFindError}`
+      );
     }
 
     const newSessionData = {
@@ -164,21 +174,35 @@ class TwitterAuthStrategy {
       newSessionData.item = pastSessionItem.item.id;
     }
 
-    const sessionItem = await this.keystone.createItem(this.config.sessionListKey, newSessionData);
+    const sessionItem = await this.keystone.createItem(
+      this.config.sessionListKey,
+      newSessionData
+    );
 
     if (!pastSessionItem) {
       // If no previous twitterSession found...
       // Create a new Twitter session that doesn't like to an item yet
-      return { success: true, newUser: true, twitterSession: sessionItem.id, list: this.getList() };
+      return {
+        success: true,
+        newUser: true,
+        twitterSession: sessionItem.id,
+        list: this.getList(),
+      };
     }
 
     const previouslyVerifiedItem = pastSessionItem[FIELD_ITEM];
-    return { success: true, list: this.getList(), item: previouslyVerifiedItem };
+    return {
+      success: true,
+      list: this.getList(),
+      item: previouslyVerifiedItem,
+    };
   }
 
-  async pauseValidation(req, { item, twitterSession }) {
+  async pauseValidation(req, { /* item, */ twitterSession }) {
     if (!twitterSession) {
-      throw new Error('Expected a twitterSession (ID) when pausing authentication validation');
+      throw new Error(
+        'Expected a twitterSession (ID) when pausing authentication validation'
+      );
     }
     // TODO:
     // 1. Store twitterSession.id in the req.session so it persists across
@@ -193,22 +217,28 @@ class TwitterAuthStrategy {
     }
 
     if (!twitterSession && !req) {
-      throw new Error('Must provide either `req` or `twitterSession` when connecting a Twitter Session to an item');
+      throw new Error(
+        'Must provide either `req` or `twitterSession` when connecting a Twitter Session to an item'
+      );
     }
 
     try {
       if (twitterSession) {
         console.log({ twitterSession });
-        const twitterItem = await this.getSessionList().model.findByIdAndUpdate(
-          twitterSession,
-          { item: item.id },
-          { new: true },
-        ).exec();
+        const twitterItem = await this.getSessionList()
+          .model.findByIdAndUpdate(
+            twitterSession,
+            { item: item.id },
+            { new: true }
+          )
+          .exec();
 
-        await this.getList().model.findByIdAndUpdate(item.id, {
-          [this.config.idField]: twitterItem[FIELD_TWITTER_ID],
-          [this.config.usernameField]: twitterItem[FIELD_TWITTER_USERNAME],
-        }).exec();
+        await this.getList()
+          .model.findByIdAndUpdate(item.id, {
+            [this.config.idField]: twitterItem[FIELD_TWITTER_ID],
+            [this.config.usernameField]: twitterItem[FIELD_TWITTER_USERNAME],
+          })
+          .exec();
       } else if (req) {
         // TODO:
         // 0. Check `newItem.type === this.getList().type`
@@ -217,7 +247,7 @@ class TwitterAuthStrategy {
         // 3. Return { item: newItem }
         throw new Error('Twitter::connectItem({ req }) not yet implemented');
       }
-    } catch(error) {
+    } catch (error) {
       return { success: false };
     }
     return { success: true, item, list: this.getList() };
