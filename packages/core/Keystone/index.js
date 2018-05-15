@@ -3,6 +3,7 @@ const { makeExecutableSchema } = require('graphql-tools');
 const { Mongoose } = require('mongoose');
 
 const List = require('../List');
+const bindSession = require('./session');
 
 function getMongoURI({ dbName, name }) {
   return (
@@ -20,10 +21,25 @@ const trim = str => str.replace(/\n\s*\n/g, '\n');
 module.exports = class Keystone {
   constructor(config) {
     this.config = config;
+    this.auth = {};
     this.lists = {};
     this.listsArray = [];
     this.mongoose = new Mongoose();
     this.getListByKey = key => this.lists[key];
+    this.session = bindSession(this);
+
+    if (this.config.debug) {
+      this.mongoose.set('debug', true);
+    }
+  }
+  createAuthStrategy(options) {
+    const { type: StrategyType, list: listKey, config } = options;
+    const { authType } = StrategyType;
+    if (!this.auth[listKey]) {
+      this.auth[listKey] = {};
+    }
+    this.auth[listKey][authType] = new StrategyType(this, listKey, config);
+    return this.auth[listKey][authType];
   }
   createList(key, config) {
     const { getListByKey, mongoose } = this;
@@ -84,13 +100,41 @@ module.exports = class Keystone {
       resolvers,
     });
   }
+  createItem(listKey, itemData) {
+    const item = new this.lists[listKey].model(itemData);
+    return item.save();
+  }
   createItems(lists) {
-    Object.keys(lists).forEach(key => {
+    // Return a promise that resolves to an array of the created items
+    const asyncCreateItems = (key) => {
       const list = this.lists[key];
-      lists[key].forEach(itemData => {
+      return Promise.all(lists[key].map(itemData => {
         const item = new list.model(itemData);
-        item.save();
+        return item.save();
+      }));
+    };
+
+    // We're going to have to wait for a set of unrelated promises to fullfil
+    // before we can return from this method
+    const promisesToWaitFor = [];
+
+    // We'll reduce the async values to this object over time
+    const createdItems = {};
+
+    Object.keys(lists).forEach((key) => {
+      const listItems = asyncCreateItems(key);
+
+      // Add the promise to the global set to wait for
+      promisesToWaitFor.push(listItems);
+
+      // When it resolves, we want to set the values on the result object
+      listItems.then(newItems => {
+        createdItems[key] = newItems;
       });
     });
+
+    // Wait for all promises to complete.
+    // Then resolve to the object containing the resolved arrays of values
+    return Promise.all(promisesToWaitFor).then(() => createdItems);
   }
 };
