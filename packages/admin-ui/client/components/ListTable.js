@@ -141,14 +141,17 @@ class ListDisplayRow extends Component {
           const Cell = FieldTypes[list.key][path].Cell;
 
           if (Cell) {
-            content = <Cell list={list} data={item[path]} field={field} />;
+            const LinkComponent = ({ children, ...data }) => (
+              <ItemLink to={link(data)}>{children}</ItemLink>
+            );
+            content = <Cell list={list} data={item[path]} field={field} Link={LinkComponent} />;
           } else {
             content = item[path];
           }
 
           return (
             <BodyCell key={path}>
-              {!index ? <ItemLink to={link}>{content}</ItemLink> : content}
+              {!index ? <ItemLink to={link({ path: list.path, id: item.id })}>{content}</ItemLink> : content}
             </BodyCell>
           );
         })}
@@ -309,7 +312,7 @@ export default class ListTable extends Component {
                   fields={fields}
                   item={item}
                   key={item.id}
-                  link={`${adminPath}/${list.path}/${item.id}`}
+                  link={({ path, id }) => `${adminPath}/${path}/${id}`}
                   list={list}
                   onDelete={onChange}
                 />
