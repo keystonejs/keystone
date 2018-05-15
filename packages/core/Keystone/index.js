@@ -111,7 +111,7 @@ module.exports = class Keystone {
     // reference implementation
 
     // Return a promise that resolves to an array of the created items
-    const asyncCreateItems = (sourceData, listKey) =>
+    const asyncCreateItems = listKey =>
       Promise.all(lists[listKey].map(i => this.createItem(listKey, i)));
 
     // We're going to have to wait for a set of unrelated promises to fullfil

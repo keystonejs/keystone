@@ -4,8 +4,8 @@ const { Text, Relationship, Select, Password } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
 
-const { enableTwitterAuth, port } = require('./config');
-const { createTwitterAuthStrategy, bindTwitterRoutes } = require('./twitter');
+const { twitterAuthEnabled, port } = require('./config');
+const { configureTwitterAuth } = require('./config');
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
@@ -20,10 +20,6 @@ keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
 });
-
-if (enableTwitterAuth) {
-  createTwitterAuthStrategy(keystone);
-}
 
 keystone.createList('User', {
   fields: {
@@ -57,8 +53,15 @@ keystone.createList('Post', {
         { label: 'Published', value: 'published' },
       ],
     },
-    author: { type: Relationship, ref: 'User' },
-    categories: { type: Relationship, ref: 'PostCategory', many: true },
+    author: {
+      type: Relationship,
+      ref: 'User',
+    },
+    categories: {
+      type: Relationship,
+      ref: 'PostCategory',
+      many: true,
+    },
   },
 });
 
@@ -81,8 +84,8 @@ const server = new WebServer(keystone, {
   port,
 });
 
-if (enableTwitterAuth) {
-  bindTwitterRoutes(keystone, server);
+if (twitterAuthEnabled) {
+  configureTwitterAuth(keystone, server);
 }
 
 server.app.use(
