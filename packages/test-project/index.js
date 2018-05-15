@@ -39,6 +39,12 @@ keystone.createList('User', {
       ],
     },
   },
+  admin: {
+    // Where `name`, `email` are available because they're defined in
+    // `searchFields`
+    displayTemplate: '{{name}} <{{email}}>',
+    searchFields: ['name', 'email'],
+  }
 });
 
 keystone.createList('Post', {
@@ -63,6 +69,10 @@ keystone.createList('Post', {
       many: true,
     },
   },
+  admin: {
+    displayTemplate: '{{name}}',
+    searchFields: ['name', 'slug'],
+  }
 });
 
 keystone.createList('PostCategory', {
