@@ -71,8 +71,11 @@ const Note = styled.div({
 
 const Search = ({ children, hasValue, onClear }) => {
   const Icon = hasValue ? XIcon : SearchIcon;
+
+  // NOTE: `autoComplete="off"` doesn't behave as expected on `<input />` in
+  // webkit, so we apply the attribute to a form tag here.
   return (
-    <div css={{ position: 'relative' }}>
+    <form css={{ position: 'relative' }} autoComplete="off">
       {children}
       <Icon
         onClick={hasValue ? onClear : null}
@@ -90,7 +93,7 @@ const Search = ({ children, hasValue, onClear }) => {
           },
         }}
       />
-    </div>
+    </form>
   );
 };
 
@@ -453,10 +456,15 @@ class ListPage extends Component {
                       hasValue={search && search.length}
                     >
                       <Input
+                        autoCapitalize="off"
+                        autoComplete="off"
+                        autoCorrect="off"
                         innerRef={this.getSearchRef}
                         onChange={this.handleSearch}
                         placeholder="Search"
+                        name="item-search"
                         value={search}
+                        type="text"
                       />
                     </Search>
                     <Popout buttonLabel="Filters" headerTitle="Filters">

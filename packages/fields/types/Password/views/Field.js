@@ -20,7 +20,7 @@ export default class PasswordField extends Component {
         <FieldLabel>{field.label}</FieldLabel>
         <FieldInput>
           <Input
-            autocomplete="off"
+            autoComplete="off"
             autoFocus={autoFocus}
             type="password"
             value={value}

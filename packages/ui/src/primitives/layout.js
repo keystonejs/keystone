@@ -61,6 +61,7 @@ type FlexGroupProps = {
     | 'flex-start',
   spacing: number,
   stretch: boolean,
+  tag: string,
 };
 export const FlexGroup = ({
   align = 'stretch',
@@ -72,6 +73,7 @@ export const FlexGroup = ({
   justify = 'flex-start',
   spacing = gridSize,
   stretch,
+  tag: Tag = 'div',
   ...props
 }: FlexGroupProps) => {
   const gutter = spacing / 2;
@@ -79,7 +81,7 @@ export const FlexGroup = ({
   const childArray = Children.toArray(children).filter(Boolean); // filter out null and undefined children
 
   return (
-    <div
+    <Tag
       css={{
         alignItems: align,
         display: isInline ? 'inline-flex' : 'flex',
@@ -118,7 +120,7 @@ export const FlexGroup = ({
           </div>
         );
       })}
-    </div>
+    </Tag>
   );
 };
 
