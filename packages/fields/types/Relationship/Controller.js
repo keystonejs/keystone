@@ -13,7 +13,10 @@ export default class RelationshipController extends FieldController {
   }
   getValue = data => {
     const { many, path } = this.config;
-    return data[path] ? data[path].id : many ? [] : null;
+    if (!data[path]) {
+      return many ? [] : null;
+    }
+    return many ? data[path].map(i => i.id) : data[path].id;
   };
   getInitialData = () => {
     const { defaultValue, many } = this.config;
