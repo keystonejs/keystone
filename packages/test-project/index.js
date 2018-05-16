@@ -5,7 +5,7 @@ const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
 
 const { twitterAuthEnabled, port } = require('./config');
-const { configureTwitterAuth } = require('./config');
+const { configureTwitterAuth } = require('./twitter');
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');

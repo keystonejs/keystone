@@ -64,7 +64,7 @@ exports.configureTwitterAuth = function(keystone, server) {
   // Gets the name and creates a new User
   server.app.post(
     '/auth/twitter/complete',
-    server.express.urlencoded(),
+    server.express.urlencoded({ extended: true }),
     async (req, res, next) => {
       if (req.user) {
         return res.redirect('/api/session');

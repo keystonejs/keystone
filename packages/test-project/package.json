@@ -17,8 +17,6 @@
     "@keystonejs/server": "^5.0.0",
     "@keystonejs/ui": "^5.0.0",
     "dotenv-safe": "^5.0.1",
-    "passport": "^0.4.0",
-    "passport-twitter": "^1.0.4",
     "react": "^16.3.1"
   }
 }
