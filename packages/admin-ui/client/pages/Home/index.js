@@ -1,82 +1,18 @@
 import React, { Component, Fragment } from 'react';
-import styled from 'react-emotion';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Media from 'react-media';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
-import CreateItemModal from '../components/CreateItemModal';
-import Nav from '../components/Nav';
 import { PlusIcon } from '@keystonejs/icons';
 import { Container, Grid, Cell } from '@keystonejs/ui/src/primitives/layout';
 import { A11yText, Title } from '@keystonejs/ui/src/primitives/typography';
-import { LoadingIndicator } from '@keystonejs/ui/src/primitives/loading';
-import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
-const getQuery = list => gql`{ ${list.listQueryName} { id } }`;
-const BOX_GUTTER = `${gridSize * 2}px`;
+import CreateItemModal from '../../components/CreateItemModal';
+import Nav from '../../components/Nav';
+import { Box, Count, CreateButton, Name } from './components';
 
-const Box = styled(Link)`
-  background-color: white;
-  border-radius: 3px;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.075), 0 0 0 1px rgba(0, 0, 0, 0.1);
-  color: ${colors.N40};
-  display: block;
-  line-height: 1.1;
-  padding: ${BOX_GUTTER};
-  position: relative;
-  transition: box-shadow 80ms linear;
-
-  &:hover {
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.075), 0 0 0 1px ${colors.B.A50};
-    text-decoration: none;
-  }
-  &:focus {
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.075), 0 0 0 1px ${colors.B.A50};
-    outline: 0;
-  }
-`;
-
-const Name = styled.span(
-  ({ isHover }) => `
-  border-bottom: 1px solid ${isHover ? colors.B.A50 : 'transparent'};
-  color: ${colors.primary};
-  display: inline-block;
-  font-size: 1.1em;
-  font-weight: 500;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: border-color 80ms linear;
-  white-space: nowrap;
-`
-);
-const Count = styled.div`
-  font-size: 0.85em;
-`;
-const CreateButton = styled.button(
-  ({ isHover }) => `
-  align-items: center;
-  background-color: ${isHover ? colors.N20 : colors.N10};
-  border-radius: 2px;
-  border: 0;
-  color: white;
-  cursor: pointer;
-  display: flex;
-  height: 24px;
-  justify-content: center;
-  outline: 0;
-  position: absolute;
-  right: ${BOX_GUTTER};
-  top: ${BOX_GUTTER};
-  transition: background-color 80ms linear;
-  width: 24px;
-
-  &:hover, &:focus {
-    background-color: ${colors.create};
-  }
-`
-);
+const getQuery = list => gql`{ ${list.listQueryMetaName} { count } }`;
 
 class HomePage extends Component {
   state = { activeList: null, createFromList: null };
@@ -128,16 +64,10 @@ class HomePage extends Component {
                       }
 
                       const isActive = activeList === key;
-                      const items = data && data[list.listQueryName];
-                      const count = items && items.length;
-                      const countElement = count ? (
-                        `${count} Item${count !== 1 ? 's' : ''}`
-                      ) : (
-                        <LoadingIndicator />
-                      );
+                      const listMeta = data && data[list.listQueryMetaName];
 
                       return (
-                        <Media query={{ maxWidth: 599 }}>
+                        <Media query={{ maxWidth: 768 }}>
                           {isSmall => (
                             <Cell width={isSmall ? 6 : 3}>
                               <Box
@@ -148,7 +78,7 @@ class HomePage extends Component {
                                 onBlur={this.deselectActive}
                               >
                                 <Name isHover={isActive}>{list.label}</Name>
-                                <Count isHover={isActive}>{countElement}</Count>
+                                <Count meta={listMeta} />
                                 <CreateButton
                                   isHover={isActive}
                                   onClick={this.openCreateModal(key)}
