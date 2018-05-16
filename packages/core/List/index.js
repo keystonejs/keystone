@@ -1,10 +1,6 @@
 const pluralize = require('pluralize');
 const { escapeRegExp } = require('@keystonejs/utils');
 
-const initConfig = (key, config) => ({
-  ...config,
-});
-
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
 const keyToLabel = str =>
@@ -26,7 +22,11 @@ const labelToClass = str => str.replace(/\s+/g, '');
 module.exports = class List {
   constructor(key, config, { getListByKey, mongoose }) {
     this.key = key;
-    this.config = initConfig(key, config);
+
+    this.config = {
+      labelResolver: item => item[config.labelField || 'name'] || item.id,
+      ...config,
+    };
     this.getListByKey = getListByKey;
 
     const label = keyToLabel(key);
@@ -142,6 +142,7 @@ module.exports = class List {
     return `
       type ${this.key} {
         id: String
+        _label_: String
         ${fieldSchemas}
       }
       input ${this.key}UpdateInput {
@@ -191,11 +192,11 @@ module.exports = class List {
   getAdminFieldResolvers() {
     const fieldResolvers = this.fields.reduce(
       (resolvers, field) => ({ ...resolvers, ...field.getGraphqlResolvers() }),
-      {}
+      {
+        _label_: this.config.labelResolver,
+      }
     );
-    return Object.keys(fieldResolvers).length
-      ? { [this.key]: fieldResolvers }
-      : {};
+    return { [this.key]: fieldResolvers };
   }
   getAdminGraphqlMutations() {
     return `
