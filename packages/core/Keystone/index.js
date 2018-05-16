@@ -79,38 +79,66 @@ module.exports = class Keystone {
       `);
 
     // Fields can be represented multiple times within and between lists.
-    // If a field defines a `getGraphqlTypes()` method, it will be duplicated.
+    // If a field defines a `getGraphqlAuxiliaryTypes()` method, it will be
+    // duplicated.
     // graphql-tools will blow up (rightly so) on duplicated types.
     // Deduping here avoids that problem.
     listTypes = unique(listTypes);
+
+    let queries = flatten(this.listsArray.map(list => list.getAdminGraphqlQueries())).map(trim);
+    let mutations = flatten(this.listsArray.map(list => list.getAdminGraphqlMutations())).map(trim);
     const typeDefs = `
       type Query {
-        ${this.listsArray.map(i => i.getAdminGraphqlQueries()).join('')}
+        ${queries.join('')}
       }
       type Mutation {
-        ${this.listsArray.map(i => i.getAdminGraphqlMutations()).join('')}
+        ${mutations.join('')}
       }
     `;
     if (debugGraphQLSchemas()) {
       console.log(typeDefs);
       listTypes.forEach(i => console.log(i));
     }
-    const resolvers = this.listsArray.reduce(
-      // Like the `listTypes`, we want to dedupe the resolvers. We rely on the
-      // semantics of the JS spread operator here (duplicate keys are overridden
-      // - last one wins)
-      (acc, list) => ({ ...acc, ...list.getAdminFieldResolvers() }),
-      {
-        Query: this.listsArray.reduce(
-          (acc, i) => ({ ...acc, ...i.getAdminQueryResolvers() }),
+    // Like the `listTypes`, we want to dedupe the resolvers. We rely on the
+    // semantics of the JS spread operator here (duplicate keys are overridden
+    // - first one wins)
+    // TODO: Document this order of precendence, becaut it's not obvious, and
+    // there's no errors thrown
+    // TODO: console.warn when duplicate keys are detected?
+    const resolvers = {
+      // Order of spreading is important here - we don't want user-defined types
+      // to accidentally override important things like `Query`.
+      ...this.listsArray.reduce(
+        (acc, list) => ({
+          ...list.getAuxiliaryTypeResolvers(),
+          ...list.getAdminFieldResolvers(),
+          ...acc
+        }),
+        {},
+      ),
+      Query: {
+        // Order is also important here, any TypeQuery's defined by types
+        // shouldn't be able to override list-level queries
+        ...this.listsArray.reduce(
+          (acc, i) => ({ ...i.getAuxiliaryQueryResolvers(), ...acc }),
           {}
         ),
-        Mutation: this.listsArray.reduce(
-          (acc, i) => ({ ...acc, ...i.getAdminMutationResolvers() }),
+        ...this.listsArray.reduce(
+          (acc, i) => ({ ...i.getAdminQueryResolvers(), ...acc }),
           {}
         ),
-      }
-    );
+      },
+      Mutation: {
+        ...this.listsArray.reduce(
+          (acc, i) => ({ ...i.getAuxiliaryMutationResolvers(), ...acc }),
+          {}
+        ),
+        ...this.listsArray.reduce(
+          (acc, i) => ({ ...i.getAdminMutationResolvers(), ...acc }),
+          {}
+        ),
+      },
+    };
 
     if (debugGraphQLSchemas()) {
       console.log(resolvers);

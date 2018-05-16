@@ -10,7 +10,7 @@ class MockType {
   addToMongooseSchema = jest.fn();
   getAdminMeta = () => new MockAdminMeta();
   getGraphqlSchema = () => `${this.name}_schema`;
-  getGraphqlTypes = () => `${this.name}_types`;
+  getGraphqlAuxiliaryTypes = () => `${this.name}_types`;
   getGraphqlUpdateArgs = () => `${this.name}_update_args`;
   getGraphqlCreateArgs = () => `${this.name}_create_args`;
   getGraphqlQueryArgs = () => `${this.name}_query_args`;

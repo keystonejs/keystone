@@ -23,10 +23,27 @@ module.exports = class Field {
     }
     return `${this.path}: ${this.graphQLType}`;
   }
-  getGraphqlTypes() {}
+
+  /**
+   * Auxiliary Types are top-level types which a type may need or provide.
+   * Example: the `File` type, adds a graphql auxiliary type of `FileUpload`, as
+   * well as an `uploadFile()` graphql auxiliary type query resolver
+   *
+   * These are special cases, and should be used sparingly
+   *
+   * NOTE: When a naming conflic occurs, a list's types/queries/mutations will
+   * overwrite any auxiliary types defined by an individual type.
+   */
+  getGraphqlAuxiliaryTypes() {}
+  getGraphqlAuxiliaryTypeResolvers() {}
+  getGraphqlAuxiliaryQueries() {}
+  getGraphqlAuxiliaryQueryResolvers() {}
+  getGraphqlAuxiliaryMutations() {}
+  getGraphqlAuxiliaryMutationResolvers() {}
+
   getGraphqlQueryArgs() {}
   getGraphqlUpdateArgs() {}
-  getGraphqlResolvers() {}
+  getGraphqlFieldResolvers() {}
   getQueryConditions() {
     return [];
   }
