@@ -32,14 +32,14 @@ export type ButtonProps = {
   variant: 'bold' | 'ghost' | 'subtle',
 };
 
-function makeVariant ({
+function makeVariant({
   appearance,
   isActive,
   isHover,
   isFocus,
   isDisabled,
   variant,
-  spacing
+  spacing,
 }) {
   let variantStyles;
   if (variant === 'subtle') {
@@ -87,19 +87,18 @@ function makeVariant ({
 
 // remove props that will create react DOM warnings
 const ButtonElement = (props: ButtonProps) => {
-  const {
-    innerRef,
-    isDisabled,
-    isActive,
-    isFocus,
-    isHover,
-    ...rest
-  } = props;
+  const { innerRef, isDisabled, isActive, isFocus, isHover, ...rest } = props;
   const variant = makeVariant(props);
   if (rest.to) return <Link innerRef={innerRef} css={variant} {...rest} />;
   if (rest.href) return <a ref={innerRef} css={variant} {...rest} />;
   return (
-    <button type="button" disabled={isDisabled} ref={innerRef} css={variant} {...rest} />
+    <button
+      type="button"
+      disabled={isDisabled}
+      ref={innerRef}
+      css={variant}
+      {...rest}
+    />
   );
 };
 

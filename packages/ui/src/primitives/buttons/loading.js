@@ -8,7 +8,7 @@ import { Button, type ButtonProps } from './primitives';
 
 // Styled
 
-const LoadingButtonWrapper = styled(Button)({ position: 'relative' });
+const LoadingButtonInner = styled.div({ position: 'relative' });
 const LoadingIndicatorWrapper = styled.div({
   left: '50%',
   position: 'absolute',
@@ -38,18 +38,20 @@ export const LoadingButton = ({
   const isSpinner = indicatorVariant === 'spinner';
 
   return (
-    <LoadingButtonWrapper {...props}>
-      {isLoading ? (
-        <LoadingIndicatorWrapper>
-          {isSpinner ? (
-            <LoadingSpinner appearance={appearance} size={16} />
-          ) : (
-            <LoadingIndicator appearance={appearance} size={4} />
-          )}
-        </LoadingIndicatorWrapper>
-      ) : null}
-      <span css={textCSS}>{children}</span>
-    </LoadingButtonWrapper>
+    <Button {...props}>
+      <LoadingButtonInner>
+        {isLoading ? (
+          <LoadingIndicatorWrapper>
+            {isSpinner ? (
+              <LoadingSpinner appearance={appearance} size={16} />
+            ) : (
+              <LoadingIndicator appearance={appearance} size={4} />
+            )}
+          </LoadingIndicatorWrapper>
+        ) : null}
+        <span css={textCSS}>{children}</span>
+      </LoadingButtonInner>
+    </Button>
   );
 };
 LoadingButton.defaultProps = {
