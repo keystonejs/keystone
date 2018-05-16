@@ -5,6 +5,9 @@ const { Mongoose } = require('mongoose');
 const List = require('../List');
 const bindSession = require('./session');
 
+const flatten = (arr) => Array.prototype.concat(...arr);
+const unique = (arr) => [...new Set(arr)];
+
 function getMongoURI({ dbName, name }) {
   return (
     process.env.MONGO_URI ||
@@ -68,12 +71,18 @@ module.exports = class Keystone {
     return { lists };
   }
   getAdminSchema() {
-    const listTypes = this.listsArray.map(i => trim(i.getAdminGraphqlTypes()));
+    let listTypes = flatten(this.listsArray.map(list => list.getAdminGraphqlTypes())).map(trim);
     listTypes.push(`
       type _QueryMeta {
         count: Int
       }
       `);
+
+    // Fields can be represented multiple times within and between lists.
+    // If a field defines a `getGraphqlTypes()` method, it will be duplicated.
+    // graphql-tools will blow up (rightly so) on duplicated types.
+    // Deduping here avoids that problem.
+    listTypes = unique(listTypes);
     const typeDefs = `
       type Query {
         ${this.listsArray.map(i => i.getAdminGraphqlQueries()).join('')}
@@ -87,6 +96,9 @@ module.exports = class Keystone {
       listTypes.forEach(i => console.log(i));
     }
     const resolvers = this.listsArray.reduce(
+      // Like the `listTypes`, we want to dedupe the resolvers. We rely on the
+      // semantics of the JS spread operator here (duplicate keys are overridden
+      // - last one wins)
       (acc, list) => ({ ...acc, ...list.getAdminFieldResolvers() }),
       {
         Query: this.listsArray.reduce(

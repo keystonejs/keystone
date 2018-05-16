@@ -112,7 +112,6 @@ module.exports = class List {
     const fieldTypes = this.fields
       .map(i => i.getGraphqlTypes())
       .filter(i => i)
-      .join('\n      ');
     const updateArgs = this.fields
       .map(i => i.getGraphqlUpdateArgs())
       .filter(i => i)
@@ -125,7 +124,8 @@ module.exports = class List {
       .map(i => i.split(/\n\s+/g).join('\n        '))
       .join('\n        ')
       .trim();
-    return `
+    return [
+      `
       type ${this.key} {
         id: String
         # This virtual field will be resolved in one of the following ways (in this order):
@@ -140,13 +140,19 @@ module.exports = class List {
         _label_: String
         ${fieldSchemas}
       }
+      `,
+      `
       input ${this.key}UpdateInput {
         ${updateArgs}
       }
+      `,
+      `
       input ${this.key}CreateInput {
         ${createArgs}
       }
-      ${fieldTypes}`;
+      `,
+      ...fieldTypes
+    ];
   }
   getAdminGraphqlQueries() {
     const queryArgs = this.fields
