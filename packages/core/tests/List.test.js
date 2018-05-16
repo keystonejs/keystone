@@ -139,6 +139,7 @@ test('getAdminGraphqlTypes()', () => {
   expect(types).toEqual(`
       type Test {
         id: String
+        _label_: String
         name_schema
         email_schema
       }
