@@ -4,7 +4,7 @@ module.exports = {
     browser: true,
     es6: true,
     node: true,
-    jest: true
+    jest: true,
   },
   plugins: ['react', 'jest'],
   rules: {
@@ -39,5 +39,5 @@ module.exports = {
     semi: 'error',
     strict: 'off',
   },
-  "extends": ["plugin:jest/recommended"]
+  extends: ['plugin:jest/recommended'],
 };
