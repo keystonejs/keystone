@@ -148,6 +148,11 @@ module.exports = class List {
     return `
       type ${this.key} {
         id: String
+        # This virtual field will be resolved in one of the following ways (in this order):
+        # 1. Execution of 'labelResolver' set on the ${this.key} List config, or
+        # 2. As an alias to the field set on 'labelField' in the ${this.key} List config, or
+        # 3. As an alias to a 'name' field on the ${this.key} List (if one exists), or
+        # 4. As an alias to the 'id' field on the ${this.key} List.
         _label_: String
         ${fieldSchemas}
       }
