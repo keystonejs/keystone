@@ -57,6 +57,7 @@
     "jest": "^22.4.3",
     "jest-junit": "^4.0.0",
     "loader-utils": "^1.1.0",
+    "mkdirp": "^0.5.1",
     "mongoose": "^5.0.14",
     "oauth-libre": "^0.9.17",
     "octicons": "^7.2.0",

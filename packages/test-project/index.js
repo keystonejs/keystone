@@ -1,3 +1,4 @@
+const mkdirp = require('mkdirp');
 const { AdminUI } = require('@keystonejs/admin-ui');
 const { Keystone } = require('@keystonejs/core');
 const {
@@ -10,8 +11,10 @@ const {
 const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
 
-const { twitterAuthEnabled, port } = require('./config');
+const { twitterAuthEnabled, port, staticPath } = require('./config');
 const { configureTwitterAuth } = require('./twitter');
+
+mkdirp.sync(staticPath);
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
@@ -44,7 +47,7 @@ keystone.createList('User', {
         { label: 'Cete, or Seat, or Attend ¯\\_(ツ)_/¯', value: 'cete' },
       ],
     },
-    avatar: { type: File },
+    avatar: { type: File, directory: `${staticPath}/avatars` },
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });

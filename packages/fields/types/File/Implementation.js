@@ -1,10 +1,28 @@
 const Implementation = require('../../Implementation');
 
+const fs = require('fs');
+const path = require('path');
 const { escapeRegExp: esc } = require('@keystonejs/utils');
 const { GraphQLUpload } = require('apollo-upload-server');
 const {
   Types: { ObjectId },
 } = require('mongoose');
+
+const storeFS = ({ stream, filePath }) => {
+  return new Promise((resolve, reject) =>
+    stream
+      .on('error', error => {
+        if (stream.truncated) {
+          // Delete the truncated file
+          fs.unlinkSync(filePath);
+        }
+        reject(error);
+      })
+      .pipe(fs.createWriteStream(filePath))
+      .on('error', error => reject(error))
+      .on('finish', () => resolve())
+  );
+};
 
 module.exports = class File extends Implementation {
   constructor() {
@@ -78,9 +96,15 @@ module.exports = class File extends Implementation {
   }
   async updateFieldPreHook(uploadData, item) {
     console.log('updateFieldPreHook', { uploadData, item });
-    const { filename, mimetype, encoding } = await uploadData;
-    console.log('processUpload complete', { filename, mimetype, encoding });
-    return { id: new ObjectId(), filename, mimetype, encoding };
+
+    const { stream, filename, mimetype, encoding } = await uploadData;
+    const id = new ObjectId();
+    const generatedFilename = `${id}-${filename}`;
+
+    await storeFS({ stream, filePath: path.join(this.config.directory, generatedFilename) });
+
+    console.log('upload complete', { id, generatedFilename, mimetype, encoding });
+    return { id, filename: generatedFilename, mimetype, encoding };
   }
   getGraphqlUpdateArgs() {
     return `
