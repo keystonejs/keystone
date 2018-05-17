@@ -1,5 +1,5 @@
 const pluralize = require('pluralize');
-const { escapeRegExp } = require('@keystonejs/utils');
+const { resolveAllKeys, escapeRegExp } = require('@keystonejs/utils');
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
@@ -264,9 +264,23 @@ module.exports = class List {
       },
       [this.updateMutationName]: async (_, { id, data }) => {
         const item = await this.model.findById(id);
-        // TODO: Loop through each field and have it apply the update
-        item.set(data);
-        return item.save();
+
+        const resolvedData = await resolveAllKeys(this.fields.reduce(
+          (resolvers, field) => ({
+            ...resolvers,
+            [field.path]: field.updateFieldPreHook(data[field.path], item),
+          }),
+          {}
+        ));
+
+        item.set(resolvedData);
+        const newItem = await item.save();
+
+        await Promise.all(this.fields.map(
+          field => field.updateFieldPostHook(item[field.path], newItem)
+        ));
+
+        return newItem;
       },
       [this.deleteMutationName]: (_, { id }) =>
         this.model.findByIdAndRemove(id),

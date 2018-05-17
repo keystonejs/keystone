@@ -41,6 +41,17 @@ module.exports = class Field {
   getGraphqlAuxiliaryMutations() {}
   getGraphqlAuxiliaryMutationResolvers() {}
 
+  /**
+   * Hooks for performing actions before / after fields are mutated.
+   * For example: with a field { avatar: { type: File }}, it wants to put the
+   * file on S3 in the `createFieldPreHook()`, then return asn S3 object ID as
+   * the result to store in `avatar`
+   */
+  createFieldPreHook(data) { return data; }
+  createFieldPostHook() {}
+  updateFieldPreHook(data) { return data; }
+  updateFieldPostHook() {}
+
   getGraphqlQueryArgs() {}
   getGraphqlUpdateArgs() {}
   getGraphqlFieldResolvers() {}
