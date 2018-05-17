@@ -23,6 +23,7 @@ import {
 import { A11yText, Kbd, Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
+import { LoadingIndicator } from '@keystonejs/ui/src/primitives/loading';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import ListTable from '../../components/ListTable';
@@ -426,7 +427,9 @@ class ListPage extends Component {
               <Fragment>
                 <Container>
                   <Title>
-                    {list.formatCount(this.itemsCount)}
+                    {this.itemsCount
+                      ? list.formatCount(this.itemsCount)
+                      : `-- ${list.plural}`}
                     <span>, by</span>
                     <Popout
                       headerTitle="Sort"
@@ -535,7 +538,16 @@ class ListPage extends Component {
                       }
                     />
                   ) : (
-                    <Title>Loading...</Title>
+                    <div
+                      css={{
+                        height: 200,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <LoadingIndicator size={12} />
+                    </div>
                   )}
                 </Container>
               </Fragment>
