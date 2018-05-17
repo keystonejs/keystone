@@ -23,10 +23,7 @@ import {
 import { A11yText, Kbd, Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
-import {
-  LoadingIndicator,
-  LoadingSpinner,
-} from '@keystonejs/ui/src/primitives/loading';
+import { LoadingSpinner } from '@keystonejs/ui/src/primitives/loading';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import ListTable from '../../components/ListTable';
@@ -34,6 +31,7 @@ import CreateItemModal from '../../components/CreateItemModal';
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 import Nav from '../../components/Nav';
+import PageLoading from '../../components/PageLoading';
 import { Popout, DisclosureArrow } from '../../components/Popout';
 
 import ColumnSelect from './ColumnSelect';
@@ -544,16 +542,7 @@ class ListPage extends Component {
                       }
                     />
                   ) : (
-                    <div
-                      css={{
-                        height: 200,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <LoadingIndicator size={12} />
-                    </div>
+                    <PageLoading />
                   )}
                 </Container>
               </Fragment>
