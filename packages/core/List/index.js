@@ -85,15 +85,21 @@ module.exports = class List {
     let { displayTemplate, displayFields } = this.config.admin || {};
 
     if (
-      (!displayTemplate && displayFields)
-      || (displayTemplate && !displayFields)
+      (!displayTemplate && displayFields) ||
+      (displayTemplate && !displayFields)
     ) {
-      throw new Error(`Must set either both 'admin.displayTemplate' & 'admin.displayFields' on List ${this.key}, or neither (for default behaviour).`);
+      throw new Error(
+        `Must set either both 'admin.displayTemplate' & 'admin.displayFields' on List ${
+          this.key
+        }, or neither (for default behaviour).`
+      );
     }
 
     if (!displayTemplate && !displayFields) {
       // TODO: Be better.
-      console.warn(`displayTemplate not set on List ${this.key}. Defaulting to 'name'.`);
+      console.warn(
+        `displayTemplate not set on List ${this.key}. Defaulting to 'name'.`
+      );
       displayTemplate = '{{name}}';
       displayFields = ['name'];
     }

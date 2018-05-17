@@ -49,21 +49,25 @@ export default class RelationshipField extends Component {
               }
               // TODO: better error UI
               if (error) return 'Error';
-              const options = data[refList.listQueryName].map(
-                (listData) => ({
-                  value: listData,
-                  label: renderTemplate({ template: refList.displayTemplate, data: listData }),
-                })
-              );
+              const options = data[refList.listQueryName].map(listData => ({
+                value: listData,
+                label: renderTemplate({
+                  template: refList.displayTemplate,
+                  data: listData,
+                }),
+              }));
               let value = item[field.path];
               if (many) {
                 if (!Array.isArray(value)) value = [];
                 value = value
-                  .map(i => options.filter(option => option.value.id === i.id)[0])
+                  .map(
+                    i => options.filter(option => option.value.id === i.id)[0]
+                  )
                   .filter(i => i);
               } else if (value) {
                 value =
-                  options.filter(i => i.value.id === item[field.path].id)[0] || null;
+                  options.filter(i => i.value.id === item[field.path].id)[0] ||
+                  null;
               } else {
                 value = null;
               }
