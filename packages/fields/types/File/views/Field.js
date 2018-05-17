@@ -9,14 +9,16 @@ import {
 import { Input } from '@keystonejs/ui/src/primitives/forms';
 
 export default class FileField extends Component {
-  onChange = event => {
+  onChange = ({ target: { validity, files: [file] } }) => {
     const { field, onChange } = this.props;
-    // TODO: File upload
-    onChange(field, event.target.value);
+    if (!validity.valid) {
+      // TODO - show error state
+      return;
+    }
+    onChange(field, file);
   };
   render() {
-    const { autoFocus, field, item } = this.props;
-    const value = item[field.path] || '';
+    const { autoFocus, field } = this.props;
     return (
       <FieldContainer>
         <FieldLabel>{field.label}</FieldLabel>

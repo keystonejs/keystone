@@ -2,28 +2,24 @@ const Implementation = require('../../Implementation');
 
 const { escapeRegExp: esc } = require('@keystonejs/utils');
 const { GraphQLUpload } = require('apollo-upload-server');
-
-const memoize = require('lodash/memoize');
-
-const getFileSchema = memoize(mongoose => {
-  return new mongoose.Schema({
-    id: String,
-    path: String,
-    filename: String,
-    mimetype: String,
-    encoding: String,
-  });
-});
+const {
+  Types: { ObjectId },
+} = require('mongoose');
 
 module.exports = class File extends Implementation {
   constructor() {
     super(...arguments);
     this.graphQLType = 'File_File';
   }
-  addToMongooseSchema(schema, mongoose) {
+  addToMongooseSchema(schema) {
     const { mongooseOptions } = this.config;
+    // TODO: Ugh, this feels dumb. How else can we avoid recreating the schema
+    // over and over again?
     schema.add({
-      [this.path]: { type: getFileSchema(mongoose), ...mongooseOptions },
+      [this.path]: {
+        ...mongooseOptions,
+        type: { id: ObjectId, path: String, filename: String, mimetype: String },
+      }
     });
   }
   getGraphqlQueryArgs() {
@@ -37,47 +33,63 @@ module.exports = class File extends Implementation {
       scalar ${this.getFileUploadType()}
 
       type ${this.graphQLType} {
-        id: ID!
-        path: String!
-        filename: String!
-        mimetype: String!
-        encoding: String!
+        id: ID
+        path: String
+        filename: String
+        mimetype: String
+        encoding: String
       }
     `;
   }
   // Called on `User.avatar` for example
+  getGraphqlFieldResolvers() {
+    return {
+      [this.path]: (item) => {
+        if (!item[this.path]) {
+          console.log('no avatar, bailing from resolver', item, this.path);
+          return null;
+        }
+        console.log('found avatar', item[this.path]);
+        return item[this.path];
+      },
+    };
+  }
   getGraphqlAuxiliaryTypeResolvers() {
     return {
       [this.getFileUploadType()]: GraphQLUpload,
-      [this.graphQLType]: (...args) => {
-        // TODO
-        console.log(this.graphQLType, 'type resolver:', ...args);
-        return null;
-      },
     };
   }
   getGraphqlAuxiliaryMutations() {
     return `
-      uploadFile(file: ${this.getFileUploadType()}!): ${this.graphQLType}!
+      uploadFile(file: ${this.getFileUploadType()}!): ${this.graphQLType}
     `;
-  }
-  async processUpload(upload) {
-    const { stream, filename, mimetype, encoding } = await upload;
-    console.log({ filename, mimetype, encoding });
   }
   getGraphqlAuxiliaryMutationResolvers() {
     return {
-      uploadFile: (obj, { file }) => this.processUpload(file),
+      uploadFile: (obj, { file }) => {
+        console.log('uploadFile mutation', file);
+        return {};
+        //return this.processUpload(file);
+      }
     };
+  }
+  createFieldPreHook() {
+    // TODO
+  }
+  async updateFieldPreHook(uploadData, item) {
+    console.log('updateFieldPreHook', { uploadData, item });
+    const { filename, mimetype, encoding } = await uploadData;
+    console.log('processUpload complete', { filename, mimetype, encoding });
+    return { id: new ObjectId(), filename, mimetype, encoding };
   }
   getGraphqlUpdateArgs() {
     return `
-      ${this.path}: String
+      ${this.path}: ${this.getFileUploadType()}
     `;
   }
   getGraphqlCreateArgs() {
     return `
-      ${this.path}: String
+      ${this.path}: ${this.getFileUploadType()}
     `;
   }
   getQueryConditions(args) {

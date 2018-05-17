@@ -265,6 +265,7 @@ module.exports = class List {
       [this.updateMutationName]: async (_, { id, data }) => {
         const item = await this.model.findById(id);
 
+        console.log(this.updateMutationName, 'input data:', data);
         const resolvedData = await resolveAllKeys(this.fields.reduce(
           (resolvers, field) => ({
             ...resolvers,
@@ -272,9 +273,12 @@ module.exports = class List {
           }),
           {}
         ));
+        console.log(this.updateMutationName, 'post-hook data', resolvedData);
 
         item.set(resolvedData);
         const newItem = await item.save();
+
+        console.log(this.updateMutationName, 'new item', newItem);
 
         await Promise.all(this.fields.map(
           field => field.updateFieldPostHook(item[field.path], newItem)

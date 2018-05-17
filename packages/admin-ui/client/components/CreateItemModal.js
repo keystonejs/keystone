@@ -3,6 +3,7 @@ import { Mutation } from 'react-apollo';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import styled from 'react-emotion';
+import pReduce from 'p-reduce';
 import FieldTypes from '../FIELD_TYPES';
 
 const Form = styled('div')`
@@ -25,14 +26,14 @@ class CreateItemModal extends Component {
     if (isLoading) return;
     const { item } = this.state;
 
-    const data = fields.reduce((values, field) => {
-      values[field.path] = field.getValue(item);
-      return values;
-    }, {});
-
-    createItem({
-      variables: { data },
-    }).then(this.props.onCreate);
+    pReduce(fields, (values, field) => (
+      Promise.resolve(field.getValue(item)).then(value => {
+        values[field.path] = value;
+        return values;
+      })
+    ), {}).then(data => (
+      createItem({ variables: { data } })
+    )).then(this.props.onCreate);
   };
   onClose = () => {
     const { isLoading } = this.props;

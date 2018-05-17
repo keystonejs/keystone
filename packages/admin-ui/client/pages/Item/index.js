@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import { Link, withRouter } from 'react-router-dom';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import pReduce from 'p-reduce';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
@@ -22,6 +23,8 @@ import { A11yText, Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { colors } from '@keystonejs/ui/src/theme';
+
+import { resolveAllKeys } from '@keystonejs/utils';
 
 // This import is loaded by the @keystone/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
@@ -123,6 +126,7 @@ const ItemDetails = withRouter(
       this.closeConfirmResetModal();
     };
     onChange = (field, value) => {
+      console.log(value);
       const { item } = this.state;
       this.setState({
         item: {
@@ -168,11 +172,14 @@ const ItemDetails = withRouter(
         onUpdate,
         updateItem,
       } = this.props;
-      const data = fields.reduce((values, field) => {
+      resolveAllKeys(fields.reduce((values, field) => {
         values[field.path] = field.getValue(item);
         return values;
-      }, {});
-      updateItem({ variables: { id, data } }).then(onUpdate);
+      }, {}))
+      .then(data => {
+        console.log('Updating with', data);
+        return updateItem({ variables: { id, data } });
+      }).then(onUpdate);
     };
     onCopy = (text, success) => {
       if (success) {
