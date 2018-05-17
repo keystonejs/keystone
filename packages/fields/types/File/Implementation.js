@@ -40,6 +40,13 @@ module.exports = class File extends Implementation {
       }
     });
   }
+  extendAdminMeta(meta) {
+    return {
+      ...meta,
+      directory: this.config.directory,
+      route: this.config.route,
+    };
+  }
   getGraphqlQueryArgs() {
     return '';
   }

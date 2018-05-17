@@ -11,7 +11,7 @@ const {
 const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
 
-const { twitterAuthEnabled, port, staticPath } = require('./config');
+const { twitterAuthEnabled, port, staticRoute, staticPath } = require('./config');
 const { configureTwitterAuth } = require('./twitter');
 
 mkdirp.sync(staticPath);
@@ -47,7 +47,7 @@ keystone.createList('User', {
         { label: 'Cete, or Seat, or Attend ¯\\_(ツ)_/¯', value: 'cete' },
       ],
     },
-    avatar: { type: File, directory: `${staticPath}/avatars` },
+    avatar: { type: File, directory: `${staticPath}/avatars`, route: `${staticRoute}/avatars` },
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });
@@ -158,6 +158,8 @@ server.app.get('/reset-db', (req, res) => {
   };
   reset();
 });
+
+server.app.use(staticRoute, server.express.static(staticPath));
 
 async function start() {
   keystone.connect();
