@@ -71,7 +71,6 @@ class UpdateItemModal extends Component {
     const selectedFields = selected.map(({ path, value }) => {
       return list.fields.find(f => f.path === path || f.path === value);
     });
-    console.log('handleSelect', selected, selectedFields);
     this.setState({ selectedFields });
   };
   getOptionValue = option => {
@@ -93,7 +92,6 @@ class UpdateItemModal extends Component {
     const { isLoading, items, list } = this.props;
     const { item, selectedFields } = this.state;
     const options = this.getOptions();
-    console.log('options', options);
 
     return (
       <Dialog

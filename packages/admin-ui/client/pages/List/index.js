@@ -418,16 +418,14 @@ class ListPage extends Component {
             // but it's not easy to hoist the <Query> further up the hierarchy.
             this.refetch = refetch;
             const items = data && data[list.listQueryName];
-            this.itemsCount =
-              items && typeof items.length === 'number'
-                ? items.length
-                : this.itemsCount;
+            const hasCount = items && typeof items.length === 'number';
+            this.itemsCount = hasCount ? items.length : this.itemsCount;
 
             return (
               <Fragment>
                 <Container>
                   <Title>
-                    {this.itemsCount
+                    {hasCount
                       ? list.formatCount(this.itemsCount)
                       : `-- ${list.plural}`}
                     <span>, by</span>
