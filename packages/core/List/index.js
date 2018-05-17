@@ -79,7 +79,7 @@ module.exports = class List {
     });
 
     const schema = new mongoose.Schema({}, this.config.mongooseSchemaOptions);
-    this.fields.forEach(i => i.addToMongooseSchema(schema));
+    this.fields.forEach(i => i.addToMongooseSchema(schema, mongoose));
 
     if (this.config.configureMongooseSchema) {
       this.config.configureMongooseSchema(schema, { mongoose });
@@ -151,7 +151,7 @@ module.exports = class List {
         ${createArgs}
       }
       `,
-      ...fieldTypes
+      ...fieldTypes,
     ];
   }
   getAdminGraphqlQueries() {
@@ -198,7 +198,10 @@ module.exports = class List {
   }
   getAdminFieldResolvers() {
     const fieldResolvers = this.fields.reduce(
-      (resolvers, field) => ({ ...resolvers, ...field.getGraphqlFieldResolvers() }),
+      (resolvers, field) => ({
+        ...resolvers,
+        ...field.getGraphqlFieldResolvers(),
+      }),
       {
         _label_: this.config.labelResolver,
       }
@@ -207,19 +210,28 @@ module.exports = class List {
   }
   getAuxiliaryTypeResolvers() {
     return this.fields.reduce(
-      (resolvers, field) => ({ ...resolvers, ...field.getGraphqlAuxiliaryTypeResolvers() }),
+      (resolvers, field) => ({
+        ...resolvers,
+        ...field.getGraphqlAuxiliaryTypeResolvers(),
+      }),
       {}
     );
   }
   getAuxiliaryQueryResolvers() {
     return this.fields.reduce(
-      (resolvers, field) => ({ ...resolvers, ...field.getGraphqlAuxiliaryQueryResolvers() }),
+      (resolvers, field) => ({
+        ...resolvers,
+        ...field.getGraphqlAuxiliaryQueryResolvers(),
+      }),
       {}
     );
   }
   getAuxiliaryMutationResolvers() {
     return this.fields.reduce(
-      (resolvers, field) => ({ ...resolvers, ...field.getGraphqlAuxiliaryMutationResolvers() }),
+      (resolvers, field) => ({
+        ...resolvers,
+        ...field.getGraphqlAuxiliaryMutationResolvers(),
+      }),
       {}
     );
   }

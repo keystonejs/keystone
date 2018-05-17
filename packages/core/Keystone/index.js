@@ -1,12 +1,13 @@
 const inflection = require('inflection');
 const { makeExecutableSchema } = require('graphql-tools');
+const { GraphQLUpload } = require('apollo-upload-server');
 const { Mongoose } = require('mongoose');
 
 const List = require('../List');
 const bindSession = require('./session');
 
-const flatten = (arr) => Array.prototype.concat(...arr);
-const unique = (arr) => [...new Set(arr)];
+const flatten = arr => Array.prototype.concat(...arr);
+const unique = arr => [...new Set(arr)];
 
 function getMongoURI({ dbName, name }) {
   return (
@@ -71,7 +72,9 @@ module.exports = class Keystone {
     return { lists };
   }
   getAdminSchema() {
-    let listTypes = flatten(this.listsArray.map(list => list.getAdminGraphqlTypes())).map(trim);
+    let listTypes = flatten(
+      this.listsArray.map(list => list.getAdminGraphqlTypes())
+    ).map(trim);
     listTypes.push(`
       type _QueryMeta {
         count: Int
@@ -85,8 +88,12 @@ module.exports = class Keystone {
     // Deduping here avoids that problem.
     listTypes = unique(listTypes);
 
-    let queries = flatten(this.listsArray.map(list => list.getAdminGraphqlQueries())).map(trim);
-    let mutations = flatten(this.listsArray.map(list => list.getAdminGraphqlMutations())).map(trim);
+    let queries = flatten(
+      this.listsArray.map(list => list.getAdminGraphqlQueries())
+    ).map(trim);
+    let mutations = flatten(
+      this.listsArray.map(list => list.getAdminGraphqlMutations())
+    ).map(trim);
     const typeDefs = `
       type Query {
         ${queries.join('')}
@@ -112,9 +119,9 @@ module.exports = class Keystone {
         (acc, list) => ({
           ...list.getAuxiliaryTypeResolvers(),
           ...list.getAdminFieldResolvers(),
-          ...acc
+          ...acc,
         }),
-        {},
+        {}
       ),
       Query: {
         // Order is also important here, any TypeQuery's defined by types

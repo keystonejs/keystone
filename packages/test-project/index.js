@@ -1,6 +1,12 @@
 const { AdminUI } = require('@keystonejs/admin-ui');
 const { Keystone } = require('@keystonejs/core');
-const { Text, Relationship, Select, Password } = require('@keystonejs/fields');
+const {
+  File,
+  Text,
+  Relationship,
+  Select,
+  Password,
+} = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
 
@@ -38,6 +44,7 @@ keystone.createList('User', {
         { label: 'Cete, or Seat, or Attend ¯\\_(ツ)_/¯', value: 'cete' },
       ],
     },
+    avatar: { type: File },
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });

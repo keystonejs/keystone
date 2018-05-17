@@ -4,4 +4,5 @@ module.exports = {
   Text: require('./types/Text'),
   Select: require('./types/Select'),
   Relationship: require('./types/Relationship'),
+  File: require('./types/File'),
 };
