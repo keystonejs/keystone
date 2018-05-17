@@ -114,12 +114,15 @@ export default class ModalDialog extends Component<Props> {
       width,
     } = this.props;
 
+    // $FlowFixMe -- Support use inside of `<TransitionGroup />`
+    const transitionIn = isOpen || this.props.in;
+
     return createPortal(
       <Fragment>
-        <Fade in={isOpen}>
+        <Fade in={transitionIn}>
           <Blanket onClick={onClose} />
         </Fade>
-        <SlideUp in={isOpen}>
+        <SlideUp in={transitionIn}>
           <Positioner width={width}>
             <FocusTrap options={{ initialFocus }}>
               <Dialog>
@@ -134,7 +137,7 @@ export default class ModalDialog extends Component<Props> {
             </FocusTrap>
           </Positioner>
         </SlideUp>
-        {isOpen ? <ScrollLock /> : null}
+        {transitionIn ? <ScrollLock /> : null}
       </Fragment>,
       attachTo
     );

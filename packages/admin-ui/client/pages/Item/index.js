@@ -7,6 +7,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import Nav from '../../components/Nav';
 import DeleteItemModal from '../../components/DeleteItemModal';
+import PageLoading from '../../components/PageLoading';
 import Footer from './Footer';
 import {
   ArrowLeftIcon,
@@ -154,8 +155,15 @@ const ItemDetails = withRouter(
       );
     }
     onSave = () => {
-      const { item, item: { id } } = this.state;
-      const { list: { fields }, onUpdate, updateItem } = this.props;
+      const {
+        item,
+        item: { id },
+      } = this.state;
+      const {
+        list: { fields },
+        onUpdate,
+        updateItem,
+      } = this.props;
       const data = fields.reduce((values, field) => {
         values[field.path] = field.getValue(item);
         return values;
@@ -280,7 +288,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
       <Container>
         <Query query={itemQuery}>
           {({ loading, error, data, refetch }) => {
-            if (loading) return <Title>Loading...</Title>;
+            if (loading) return <PageLoading />;
             if (error) {
               return (
                 <Fragment>

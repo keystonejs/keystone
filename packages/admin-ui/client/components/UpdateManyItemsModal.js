@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Dialog } from '@keystonejs/ui/src/primitives/modals';
+import { ModalDialog } from './ModalDialog';
 import {
   FieldContainer,
   FieldLabel,
@@ -71,7 +71,6 @@ class UpdateItemModal extends Component {
     const selectedFields = selected.map(({ path, value }) => {
       return list.fields.find(f => f.path === path || f.path === value);
     });
-    console.log('handleSelect', selected, selectedFields);
     this.setState({ selectedFields });
   };
   getOptionValue = option => {
@@ -93,11 +92,9 @@ class UpdateItemModal extends Component {
     const { isLoading, items, list } = this.props;
     const { item, selectedFields } = this.state;
     const options = this.getOptions();
-    console.log('options', options);
 
     return (
-      <Dialog
-        isOpen
+      <ModalDialog
         onClose={this.onClose}
         heading={`Update ${list.formatCount(items)}`}
         onKeyDown={this.onKeyDown}
@@ -145,7 +142,7 @@ class UpdateItemModal extends Component {
             );
           })}
         </Fragment>
-      </Dialog>
+      </ModalDialog>
     );
   }
 }

@@ -23,6 +23,7 @@ import {
 import { A11yText, Kbd, Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
+import { LoadingSpinner } from '@keystonejs/ui/src/primitives/loading';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import ListTable from '../../components/ListTable';
@@ -30,6 +31,7 @@ import CreateItemModal from '../../components/CreateItemModal';
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 import Nav from '../../components/Nav';
+import PageLoading from '../../components/PageLoading';
 import { Popout, DisclosureArrow } from '../../components/Popout';
 
 import ColumnSelect from './ColumnSelect';
@@ -69,16 +71,16 @@ const Note = styled.div({
   fontSize: '0.85em',
 });
 
-const Search = ({ children, hasValue, onClear }) => {
+const Search = ({ children, hasValue, isFetching, onClear }) => {
   const Icon = hasValue ? XIcon : SearchIcon;
+  const isLoading = hasValue && isFetching;
 
   // NOTE: `autoComplete="off"` doesn't behave as expected on `<input />` in
   // webkit, so we apply the attribute to a form tag here.
   return (
     <form css={{ position: 'relative' }} autoComplete="off">
       {children}
-      <Icon
-        onClick={hasValue ? onClear : null}
+      <div
         css={{
           color: colors.N30,
           cursor: 'pointer',
@@ -92,7 +94,13 @@ const Search = ({ children, hasValue, onClear }) => {
             color: hasValue ? colors.text : colors.N30,
           },
         }}
-      />
+      >
+        {isLoading ? (
+          <LoadingSpinner size={16} />
+        ) : (
+          <Icon onClick={hasValue ? onClear : null} />
+        )}
+      </div>
     </form>
   );
 };
@@ -403,7 +411,7 @@ class ListPage extends Component {
       <Fragment>
         <Nav />
         <Query query={query} fetchPolicy="cache-and-network">
-          {({ data, error, refetch }) => {
+          {({ data, error, loading, refetch }) => {
             if (error) {
               return (
                 <Fragment>
@@ -417,16 +425,14 @@ class ListPage extends Component {
             // but it's not easy to hoist the <Query> further up the hierarchy.
             this.refetch = refetch;
             const items = data && data[list.listQueryName];
-            this.itemsCount =
-              items && typeof items.length === 'number'
-                ? items.length
-                : this.itemsCount;
+            const hasCount = items && typeof items.length === 'number';
+            this.itemsCount = hasCount ? items.length : this.itemsCount;
 
             return (
               <Fragment>
                 <Container>
                   <Title>
-                    {list.formatCount(this.itemsCount)}
+                    {hasCount ? list.formatCount(this.itemsCount) : list.plural}
                     <span>, by</span>
                     <Popout
                       headerTitle="Sort"
@@ -452,6 +458,7 @@ class ListPage extends Component {
 
                   <FlexGroup growIndexes={[0]}>
                     <Search
+                      isFetching={loading}
                       onClear={this.handleSearchClear}
                       hasValue={search && search.length}
                     >
@@ -535,7 +542,7 @@ class ListPage extends Component {
                       }
                     />
                   ) : (
-                    <Title>Loading...</Title>
+                    <PageLoading />
                   )}
                 </Container>
               </Fragment>
