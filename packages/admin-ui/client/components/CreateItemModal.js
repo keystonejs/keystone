@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import styled from 'react-emotion';
 import FieldTypes from '../FIELD_TYPES';
+import { ModalDialog } from './ModalDialog';
 
 const Form = styled('div')`
   margin: 24px 0;
@@ -51,8 +51,7 @@ class CreateItemModal extends Component {
     const { isLoading, list } = this.props;
     const { item } = this.state;
     return (
-      <Dialog
-        isOpen
+      <ModalDialog
         onClose={this.onClose}
         heading={`Create ${list.singular}`}
         onKeyDown={this.onKeyDown}
@@ -84,7 +83,7 @@ class CreateItemModal extends Component {
             );
           })}
         </Form>
-      </Dialog>
+      </ModalDialog>
     );
   }
 }

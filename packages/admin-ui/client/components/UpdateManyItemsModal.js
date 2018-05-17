@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Dialog } from '@keystonejs/ui/src/primitives/modals';
+import { ModalDialog } from './ModalDialog';
 import {
   FieldContainer,
   FieldLabel,
@@ -94,8 +94,7 @@ class UpdateItemModal extends Component {
     const options = this.getOptions();
 
     return (
-      <Dialog
-        isOpen
+      <ModalDialog
         onClose={this.onClose}
         heading={`Update ${list.formatCount(items)}`}
         onKeyDown={this.onKeyDown}
@@ -143,7 +142,7 @@ class UpdateItemModal extends Component {
             );
           })}
         </Fragment>
-      </Dialog>
+      </ModalDialog>
     );
   }
 }
