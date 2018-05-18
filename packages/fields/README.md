@@ -8,6 +8,7 @@ Type/Controller.js      -- Client-side controller for the field type
 Type/Implementation.js  -- Back-end implementation of the field type
 Type/views/
   Field.js              -- Main React component rendered by the Item Details view
+  Cell.js               -- Main React component rendered by the List view
 ```
 
 ## Controller

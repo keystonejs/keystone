@@ -39,6 +39,7 @@ keystone.createList('User', {
       ],
     },
   },
+  labelResolver: item => `${item.name} <${item.email}>`,
 });
 
 keystone.createList('Post', {
@@ -63,6 +64,7 @@ keystone.createList('Post', {
       many: true,
     },
   },
+  labelResolver: item => item.name,
 });
 
 keystone.createList('PostCategory', {
