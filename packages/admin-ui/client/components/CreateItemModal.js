@@ -17,7 +17,11 @@ class CreateItemModal extends Component {
     this.state = { item };
   }
   onCreate = () => {
-    const { list: { fields }, createItem, isLoading } = this.props;
+    const {
+      list: { fields },
+      createItem,
+      isLoading,
+    } = this.props;
     if (isLoading) return;
     const { item } = this.state;
 
