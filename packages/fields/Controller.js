@@ -7,6 +7,7 @@ export default class FieldController {
     this.list = list;
     this.adminMeta = adminMeta;
   }
+  getQueryFragment = () => this.path;
   getValue = data => data[this.config.path] || '';
   getInitialData = () => this.config.defaultValue || '';
 }

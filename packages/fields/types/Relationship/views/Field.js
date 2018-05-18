@@ -12,11 +12,13 @@ import {
 import { Select } from '@keystonejs/ui/src/primitives/forms';
 
 const getGraphqlQuery = refList => {
+  // TODO: How can we replace this with field.Controller.getQueryFragment()?
   return gql`{
-      ${refList.listQueryName} {
-        name id
-      }
-    }`;
+    ${refList.listQueryName} {
+      id
+      _label_
+    }
+  }`;
 };
 
 export default class RelationshipField extends Component {
@@ -45,18 +47,24 @@ export default class RelationshipField extends Component {
               }
               // TODO: better error UI
               if (error) return 'Error';
-              const options = data[refList.listQueryName].map(
-                ({ id, name }) => ({ value: id, label: name })
-              );
+              const options = data[refList.listQueryName].map(listData => ({
+                value: listData,
+                label: listData._label_, // eslint-disable-line no-underscore-dangle
+              }));
               let value = item[field.path];
               if (many) {
                 if (!Array.isArray(value)) value = [];
                 value = value
-                  .map(i => options.filter(option => option.value === i)[0])
+                  .map(
+                    i => options.filter(option => option.value.id === i.id)[0]
+                  )
                   .filter(i => i);
-              } else {
+              } else if (value) {
                 value =
-                  options.filter(i => i.value === item[field.path])[0] || null;
+                  options.filter(i => i.value.id === item[field.path].id)[0] ||
+                  null;
+              } else {
+                value = null;
               }
               return (
                 <Select
@@ -64,6 +72,7 @@ export default class RelationshipField extends Component {
                   isMulti={many}
                   menuPosition="fixed"
                   value={value}
+                  getOptionValue={option => option.value.id}
                   options={options}
                   onChange={this.onChange}
                   isClearable

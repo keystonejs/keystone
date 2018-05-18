@@ -38,7 +38,7 @@ import ColumnSelect from './ColumnSelect';
 import FilterSelect from './FilterSelect';
 import SortSelect, { SortButton } from './SortSelect';
 
-const getQueryArgs = args => {
+const getQueryArgs = (args) => {
   const queryArgs = Object.keys(args).map(
     argName => `${argName}: "${args[argName]}"`
   );
@@ -47,11 +47,12 @@ const getQueryArgs = args => {
 
 const getQuery = ({ fields, list, search, sort }) => {
   const queryArgs = getQueryArgs({ search, sort });
-  const queryFields = ['id', ...fields.map(({ path }) => path)];
 
   return gql`{
     ${list.listQueryName}${queryArgs} {
-      ${queryFields.join('\n')}
+      id
+      _label_
+      ${fields.map(field => field.getQueryFragment()).join('\n')}
     }
   }`;
 };

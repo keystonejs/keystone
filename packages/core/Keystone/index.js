@@ -86,16 +86,23 @@ module.exports = class Keystone {
       console.log(typeDefs);
       listTypes.forEach(i => console.log(i));
     }
-    const resolvers = {
-      Query: this.listsArray.reduce(
-        (acc, i) => ({ ...acc, ...i.getAdminQueryResolvers() }),
-        {}
-      ),
-      Mutation: this.listsArray.reduce(
-        (acc, i) => ({ ...acc, ...i.getAdminMutationResolvers() }),
-        {}
-      ),
-    };
+    const resolvers = this.listsArray.reduce(
+      (acc, list) => ({ ...acc, ...list.getAdminFieldResolvers() }),
+      {
+        Query: this.listsArray.reduce(
+          (acc, i) => ({ ...acc, ...i.getAdminQueryResolvers() }),
+          {}
+        ),
+        Mutation: this.listsArray.reduce(
+          (acc, i) => ({ ...acc, ...i.getAdminMutationResolvers() }),
+          {}
+        ),
+      }
+    );
+
+    if (debugGraphQLSchemas()) {
+      console.log(resolvers);
+    }
 
     return makeExecutableSchema({
       typeDefs: [...listTypes, typeDefs],

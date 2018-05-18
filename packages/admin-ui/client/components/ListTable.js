@@ -8,6 +8,10 @@ import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { CheckboxPrimitive } from '@keystonejs/ui/src/primitives/forms';
 import DeleteItemModal from './DeleteItemModal';
 
+// This import is loaded by the @keystone/field-views-loader loader.
+// It imports all the views required for a keystone app by looking at the adminMetaData
+import FieldTypes from '../FIELD_TYPES';
+
 // Styled Components
 
 const Table = styled('table')({
@@ -107,7 +111,7 @@ class ListDisplayRow extends Component {
     );
   }
   render() {
-    const { link, item, fields } = this.props;
+    const { list, link, item, fields } = this.props;
 
     return (
       <tr>
@@ -123,11 +127,34 @@ class ListDisplayRow extends Component {
           </Button>
           {this.renderDeleteModal()}
         </BodyCell>
-        {fields.map(({ path }, index) => (
-          <BodyCell key={path}>
-            {!index ? <ItemLink to={link}>{item[path]}</ItemLink> : item[path]}
-          </BodyCell>
-        ))}
+        {fields.map((field, index) => {
+          const { path } = field;
+
+          const isLoading = !item.hasOwnProperty(path);
+          if (isLoading) {
+            // TODO: Better loading state?
+            return <BodyCell key={path} />;
+          }
+
+          let content;
+
+          const Cell = FieldTypes[list.key][path].Cell;
+
+          if (Cell) {
+            const LinkComponent = ({ children, ...data }) => (
+              <ItemLink to={link(data)}>{children}</ItemLink>
+            );
+            content = <Cell list={list} data={item[path]} field={field} Link={LinkComponent} />;
+          } else {
+            content = item[path];
+          }
+
+          return (
+            <BodyCell key={path}>
+              {!index ? <ItemLink to={link({ path: list.path, id: item.id })}>{content}</ItemLink> : content}
+            </BodyCell>
+          );
+        })}
       </tr>
     );
   }
@@ -285,7 +312,7 @@ export default class ListTable extends Component {
                   fields={fields}
                   item={item}
                   key={item.id}
-                  link={`${adminPath}/${list.path}/${item.id}`}
+                  link={({ path, id }) => `${adminPath}/${path}/${id}`}
                   list={list}
                   onDelete={onChange}
                 />

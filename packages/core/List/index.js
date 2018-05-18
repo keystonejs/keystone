@@ -1,10 +1,6 @@
 const pluralize = require('pluralize');
 const { escapeRegExp } = require('@keystonejs/utils');
 
-const initConfig = (key, config) => ({
-  ...config,
-});
-
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
 const keyToLabel = str =>
@@ -26,7 +22,11 @@ const labelToClass = str => str.replace(/\s+/g, '');
 module.exports = class List {
   constructor(key, config, { getListByKey, mongoose }) {
     this.key = key;
-    this.config = initConfig(key, config);
+
+    this.config = {
+      labelResolver: item => item[config.labelField || 'name'] || item.id,
+      ...config,
+    };
     this.getListByKey = getListByKey;
 
     const label = keyToLabel(key);
@@ -122,6 +122,12 @@ module.exports = class List {
     return `
       type ${this.key} {
         id: String
+        # This virtual field will be resolved in one of the following ways (in this order):
+        # 1. Execution of 'labelResolver' set on the ${this.key} List config, or
+        # 2. As an alias to the field set on 'labelField' in the ${this.key} List config, or
+        # 3. As an alias to a 'name' field on the ${this.key} List (if one exists), or
+        # 4. As an alias to the 'id' field on the ${this.key} List.
+        _label_: String
         ${fieldSchemas}
       }
       input ${this.key}UpdateInput {
@@ -167,6 +173,15 @@ module.exports = class List {
       [this.listQueryMetaName]: (_, args) => this.buildItemsQueryMeta(args),
       [this.itemQueryName]: (_, { id }) => this.model.findById(id),
     };
+  }
+  getAdminFieldResolvers() {
+    const fieldResolvers = this.fields.reduce(
+      (resolvers, field) => ({ ...resolvers, ...field.getGraphqlResolvers() }),
+      {
+        _label_: this.config.labelResolver,
+      }
+    );
+    return { [this.key]: fieldResolvers };
   }
   getAdminGraphqlMutations() {
     return `

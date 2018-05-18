@@ -167,6 +167,12 @@ test('getAdminGraphqlTypes()', () => {
   expect(types).toEqual(`
       type Test {
         id: String
+        # This virtual field will be resolved in one of the following ways (in this order):
+        # 1. Execution of 'labelResolver' set on the Test List config, or
+        # 2. As an alias to the field set on 'labelField' in the Test List config, or
+        # 3. As an alias to a 'name' field on the Test List (if one exists), or
+        # 4. As an alias to the 'id' field on the Test List.
+        _label_: String
         name_schema
         email_schema
       }
