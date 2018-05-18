@@ -28,6 +28,7 @@ const getItemQuery = ({ list, itemId }) => gql`
   {
     ${list.itemQueryName}(id: "${itemId}") {
       id
+      _label_
       ${list.fields.map(field => field.getQueryFragment()).join(' ')}
     }
   }

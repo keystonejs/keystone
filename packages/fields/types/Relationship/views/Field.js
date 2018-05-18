@@ -9,8 +9,6 @@ import {
   FieldInput,
 } from '@keystonejs/ui/src/primitives/fields';
 
-import renderTemplate from '@keystonejs/ui/src/template';
-
 import { Select } from '@keystonejs/ui/src/primitives/forms';
 
 const getGraphqlQuery = refList => {
@@ -18,7 +16,7 @@ const getGraphqlQuery = refList => {
   return gql`{
     ${refList.listQueryName} {
       id
-      ${refList.displayFields.filter(field => field !== 'id').join(' ')}
+      _label_
     }
   }`;
 };
@@ -51,10 +49,7 @@ export default class RelationshipField extends Component {
               if (error) return 'Error';
               const options = data[refList.listQueryName].map(listData => ({
                 value: listData,
-                label: renderTemplate({
-                  template: refList.displayTemplate,
-                  data: listData,
-                }),
+                label: listData._label_, // eslint-disable-line no-underscore-dangle
               }));
               let value = item[field.path];
               if (many) {
@@ -77,6 +72,7 @@ export default class RelationshipField extends Component {
                   isMulti={many}
                   menuPosition="fixed"
                   value={value}
+                  getOptionValue={option => option.value.id}
                   options={options}
                   onChange={this.onChange}
                   isClearable

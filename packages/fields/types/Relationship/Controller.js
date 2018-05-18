@@ -7,11 +7,12 @@ export default class RelationshipController extends FieldController {
     return getListByKey(ref);
   }
   getQueryFragment = (path = this.path) => {
-    const refList = this.getRefList();
-    const queryFields = refList.displayFields.filter(
-      displayField => displayField !== 'id'
-    );
-    return `${path} { id ${queryFields.join(' ')} }`;
+    return `
+      ${path} {
+        id
+        _label_
+      }
+    `;
   };
   getValue = data => {
     const { many, path } = this.config;

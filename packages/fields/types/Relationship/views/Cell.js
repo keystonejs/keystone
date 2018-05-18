@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import renderTemplate from '@keystonejs/ui/src/template';
 
 export default ({ data, field, Link }) => {
   if (!data) {
@@ -14,10 +13,7 @@ export default ({ data, field, Link }) => {
           <Fragment key={item.id}>
             {!!index ? ', ' : ''}
             <Link path={refList.path} id={item.id}>
-              {renderTemplate({
-                template: refList.displayTemplate,
-                data: item,
-              })}
+              {item._label_ /* eslint-disable-line no-underscore-dangle */}
             </Link>
           </Fragment>
         ))}

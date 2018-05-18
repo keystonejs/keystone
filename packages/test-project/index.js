@@ -39,12 +39,7 @@ keystone.createList('User', {
       ],
     },
   },
-  admin: {
-    // Where `name`, `email` are available because they're defined in
-    // `displayFields`
-    displayTemplate: '{{name}} <{{email}}>',
-    displayFields: ['name', 'email'],
-  }
+  labelResolver: item => `${item.name} <${item.email}>`,
 });
 
 keystone.createList('Post', {
@@ -69,10 +64,7 @@ keystone.createList('Post', {
       many: true,
     },
   },
-  admin: {
-    displayTemplate: '{{name}}',
-    displayFields: ['name', 'slug'],
-  }
+  labelResolver: item => item.name,
 });
 
 keystone.createList('PostCategory', {

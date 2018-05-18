@@ -45,11 +45,12 @@ const getQueryArgs = (args) => {
 
 const getQuery = ({ fields, list, search, sort }) => {
   const queryArgs = getQueryArgs({ search, sort });
-  const queryFields = ['id', ...fields.map(field => field.getQueryFragment())];
 
   return gql`{
     ${list.listQueryName}${queryArgs} {
-      ${queryFields.join('\n')}
+      id
+      _label_
+      ${fields.map(field => field.getQueryFragment()).join('\n')}
     }
   }`;
 };
