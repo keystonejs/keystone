@@ -33,6 +33,12 @@ module.exports = class List {
     const singular = pluralize.singular(label);
     const plural = pluralize.plural(label);
 
+    if (plural === label) {
+      throw new Error(
+        `Unable to use ${label} as a List name - it has an ambiguous plural (${plural}). Please choose another name for your list.`
+      );
+    }
+
     this.label = config.label || plural;
     this.singular = config.singular || singular;
     this.plural = config.plural || plural;
