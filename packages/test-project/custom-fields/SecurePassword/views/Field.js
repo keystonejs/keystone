@@ -16,7 +16,7 @@ export default class PasswordField extends Component {
     const { field, item } = this.props;
     return (
       <FieldContainer>
-        <FieldLabel>{'🔐'+field.label}</FieldLabel>
+        <FieldLabel>{'🔐' + field.label}</FieldLabel>
         <FieldInput>
           <Input
             type="password"

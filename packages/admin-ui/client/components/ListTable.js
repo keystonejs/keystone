@@ -144,14 +144,27 @@ class ListDisplayRow extends Component {
             const LinkComponent = ({ children, ...data }) => (
               <ItemLink to={link(data)}>{children}</ItemLink>
             );
-            content = <Cell list={list} data={item[path]} field={field} Link={LinkComponent} />;
+            content = (
+              <Cell
+                list={list}
+                data={item[path]}
+                field={field}
+                Link={LinkComponent}
+              />
+            );
           } else {
             content = item[path];
           }
 
           return (
             <BodyCell key={path}>
-              {!index ? <ItemLink to={link({ path: list.path, id: item.id })}>{content}</ItemLink> : content}
+              {!index ? (
+                <ItemLink to={link({ path: list.path, id: item.id })}>
+                  {content}
+                </ItemLink>
+              ) : (
+                content
+              )}
             </BodyCell>
           );
         })}

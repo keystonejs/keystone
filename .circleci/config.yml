@@ -37,11 +37,13 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: yarn lint_ci
+      - run: yarn eslint --format junit -o reports/junit/js-lint-results.xml
+
+      - run: yarn prettier_lint
 
       - run:
           name: Unit tests
-          command: yarn jest_ci
+          command: yarn jest --ci --testResultsProcessor="jest-junit"
           environment:
             JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
 

@@ -1,8 +1,7 @@
 const { Mongoose } = require('mongoose');
 const List = require('../List');
 
-class MockAdminMeta {
-}
+class MockAdminMeta {}
 
 class MockType {
   constructor(name) {
@@ -15,36 +14,45 @@ class MockType {
   getGraphqlUpdateArgs = () => `${this.name}_update_args`;
   getGraphqlCreateArgs = () => `${this.name}_create_args`;
   getGraphqlQueryArgs = () => `${this.name}_query_args`;
-};
+}
 
 const config = {
   fields: {
-    name: { type: {
-      implementation: MockType,
-      views: {
-        viewType1: 'viewPath1',
-        viewType2: 'viewPath2',
+    name: {
+      type: {
+        implementation: MockType,
+        views: {
+          viewType1: 'viewPath1',
+          viewType2: 'viewPath2',
+        },
       },
-    } },
-    email: { type: {
-      implementation: MockType,
-      views: {
-        viewType3: 'viewPath3',
-        viewType4: 'viewPath4',
+    },
+    email: {
+      type: {
+        implementation: MockType,
+        views: {
+          viewType3: 'viewPath3',
+          viewType4: 'viewPath4',
+        },
       },
-    }, },
-  }
+    },
+  },
 };
 
 describe('new List()', () => {
-
   test('new List() - Smoke test', () => {
-    const list = new List('Test', config, { mongoose: new Mongoose(), lists: [] });
+    const list = new List('Test', config, {
+      mongoose: new Mongoose(),
+      lists: [],
+    });
     expect(list).not.toBeNull();
   });
 
   test('new List() - labels', () => {
-    const list = new List('Test', config, { mongoose: new Mongoose(), lists: [] });
+    const list = new List('Test', config, {
+      mongoose: new Mongoose(),
+      lists: [],
+    });
     expect(list.label).toEqual('Tests');
     expect(list.singular).toEqual('Test');
     expect(list.plural).toEqual('Tests');
@@ -59,14 +67,20 @@ describe('new List()', () => {
   });
 
   test('new List() - fields', () => {
-    const list = new List('Test', config, { mongoose: new Mongoose(), lists: [] });
+    const list = new List('Test', config, {
+      mongoose: new Mongoose(),
+      lists: [],
+    });
     expect(list.fields).toHaveLength(2);
     expect(list.fields[0]).toBeInstanceOf(MockType);
     expect(list.fields[1]).toBeInstanceOf(MockType);
   });
 
   test('new List() - views', () => {
-    const list = new List('Test', config, { mongoose: new Mongoose(), lists: [] });
+    const list = new List('Test', config, {
+      mongoose: new Mongoose(),
+      lists: [],
+    });
     expect(list.views).toEqual({
       name: {
         viewType1: 'viewPath1',
@@ -75,20 +89,26 @@ describe('new List()', () => {
       email: {
         viewType3: 'viewPath3',
         viewType4: 'viewPath4',
-      }
+      },
     });
   });
 });
 
 describe('getAdminMeta()', () => {
   test('adminMeta() - Smoke test', () => {
-    const list = new List('Test', config, { mongoose: new Mongoose(), lists: [] });
+    const list = new List('Test', config, {
+      mongoose: new Mongoose(),
+      lists: [],
+    });
     const adminMeta = list.getAdminMeta();
     expect(adminMeta).not.toBeNull();
   });
 
   test('getAdminMeta() - labels', () => {
-    const list = new List('Test', config, { mongoose: new Mongoose(), lists: [] });
+    const list = new List('Test', config, {
+      mongoose: new Mongoose(),
+      lists: [],
+    });
     const adminMeta = list.getAdminMeta();
 
     expect(adminMeta.key).toEqual('Test');
@@ -106,7 +126,10 @@ describe('getAdminMeta()', () => {
   });
 
   test('getAdminMeta() - fields', () => {
-    const list = new List('Test', config, { mongoose: new Mongoose(), lists: [] });
+    const list = new List('Test', config, {
+      mongoose: new Mongoose(),
+      lists: [],
+    });
     const adminMeta = list.getAdminMeta();
 
     expect(adminMeta.fields).toHaveLength(2);
@@ -115,7 +138,10 @@ describe('getAdminMeta()', () => {
   });
 
   test('getAdminMeta() - views', () => {
-    const list = new List('Test', config, { mongoose: new Mongoose(), lists: [] });
+    const list = new List('Test', config, {
+      mongoose: new Mongoose(),
+      lists: [],
+    });
     const adminMeta = list.getAdminMeta();
 
     expect(adminMeta.views).toEqual({
@@ -126,14 +152,16 @@ describe('getAdminMeta()', () => {
       email: {
         viewType3: 'viewPath3',
         viewType4: 'viewPath4',
-      }
+      },
     });
   });
 });
 
-
 test('getAdminGraphqlTypes()', () => {
-  const list = new List('Test', config, { mongoose: new Mongoose(), lists: [] });
+  const list = new List('Test', config, {
+    mongoose: new Mongoose(),
+    lists: [],
+  });
   const types = list.getAdminGraphqlTypes();
 
   expect(types).toEqual(`
@@ -161,7 +189,10 @@ test('getAdminGraphqlTypes()', () => {
 });
 
 test('getAdminGraphqlQueries()', () => {
-  const list = new List('Test', config, { mongoose: new Mongoose(), lists: [] });
+  const list = new List('Test', config, {
+    mongoose: new Mongoose(),
+    lists: [],
+  });
   const queries = list.getAdminGraphqlQueries();
 
   expect(queries).toEqual(`
@@ -197,7 +228,10 @@ test('getAdminGraphqlQueries()', () => {
 });
 
 test('getAdminGraphqlMutations()', () => {
-  const list = new List('Test', config, { mongoose: new Mongoose(), lists: [] });
+  const list = new List('Test', config, {
+    mongoose: new Mongoose(),
+    lists: [],
+  });
   const mutations = list.getAdminGraphqlMutations();
 
   expect(mutations).toEqual(`
@@ -217,7 +251,10 @@ test('getAdminGraphqlMutations()', () => {
 });
 
 test('getAdminQueryResolvers()', () => {
-  const list = new List('Test', config, { mongoose: new Mongoose(), lists: [] });
+  const list = new List('Test', config, {
+    mongoose: new Mongoose(),
+    lists: [],
+  });
   const resolvers = list.getAdminQueryResolvers();
 
   expect(resolvers['Test']).toBeInstanceOf(Function);
@@ -226,7 +263,10 @@ test('getAdminQueryResolvers()', () => {
 });
 
 test('getAdminMutationResolvers()', () => {
-  const list = new List('Test', config, { mongoose: new Mongoose(), lists: [] });
+  const list = new List('Test', config, {
+    mongoose: new Mongoose(),
+    lists: [],
+  });
   const resolvers = list.getAdminMutationResolvers();
 
   expect(resolvers['createTest']).toBeInstanceOf(Function);

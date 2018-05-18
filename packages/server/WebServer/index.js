@@ -31,7 +31,10 @@ module.exports = class WebServer {
     }
   }
   start() {
-    const { app, config: { port } } = this;
+    const {
+      app,
+      config: { port },
+    } = this;
     app.get('/', (req, res) =>
       res.sendFile(path.resolve(__dirname, './default.html'))
     );

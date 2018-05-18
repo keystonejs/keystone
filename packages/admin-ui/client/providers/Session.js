@@ -56,7 +56,10 @@ class Session extends Component {
   render() {
     const { signIn, signOut } = this;
     const { children } = this.props;
-    const { session: { user, signedIn: isSignedIn }, isLoading } = this.state;
+    const {
+      session: { user, signedIn: isSignedIn },
+      isLoading,
+    } = this.state;
     return children({
       isLoading,
       isSignedIn,
