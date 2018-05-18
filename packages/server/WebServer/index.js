@@ -11,10 +11,12 @@ module.exports = class WebServer {
     this.express = express;
     this.app = express();
 
-    const { adminUI, adminPath, cookieSecret, session } = this.config;
+    const { adminUI, cookieSecret, session } = this.config;
 
     if (adminUI) {
-      this.app.use(adminUI.createDevMiddleware({ adminPath, cookieSecret }));
+      this.app.use(adminUI.createSessionMiddleware({ cookieSecret }));
+      this.app.use(adminUI.createGraphQLMiddleware());
+      this.app.use(adminUI.createDevMiddleware());
     }
 
     // TODO: think more about how this should be configured and defaulted
