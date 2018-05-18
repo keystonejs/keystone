@@ -22,7 +22,9 @@ export default withRouter(
     render() {
       const {
         adminPath,
-        match: { params: { page: currentPage } },
+        match: {
+          params: { page: currentPage },
+        },
       } = this.props;
       return (
         <Fragment>

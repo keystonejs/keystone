@@ -1,5 +1,7 @@
 # keystone-5
 
+[![CircleCI](https://circleci.com/gh/keystonejs/keystone-5.svg?style=shield&circle-token=6b4c9e250b2b61403b64c9b66ab7f4de6b0b4dde)](https://circleci.com/gh/keystonejs/keystone-5)
+
 This is a prototype architecture for Keystone 5.
 
 Everything is WIP.

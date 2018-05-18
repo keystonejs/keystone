@@ -55,7 +55,9 @@ export { default as FileDirectoryIcon } from './icons/FileDirectory';
 export { default as FileMediaIcon } from './icons/FileMedia';
 export { default as FilePdfIcon } from './icons/FilePdf';
 export { default as FileSubmoduleIcon } from './icons/FileSubmodule';
-export { default as FileSymlinkDirectoryIcon } from './icons/FileSymlinkDirectory';
+export {
+  default as FileSymlinkDirectoryIcon,
+} from './icons/FileSymlinkDirectory';
 export { default as FileSymlinkFileIcon } from './icons/FileSymlinkFile';
 export { default as FileIcon } from './icons/File';
 export { default as FileZipIcon } from './icons/FileZip';

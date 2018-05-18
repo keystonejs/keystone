@@ -37,7 +37,9 @@ export const SortOption = ({
 }) => {
   const Icon = isSelected
     ? ChevronUpIcon
-    : altIsDown ? ChevronUpIcon : ChevronDownIcon;
+    : altIsDown
+      ? ChevronUpIcon
+      : ChevronDownIcon;
   const iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
 
   return (

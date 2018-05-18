@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 
 import FieldTypes from '../FIELD_TYPES';
 
-const getCreateMutation = (list) => {
+const getCreateMutation = list => {
   const { key } = list;
   return gql`
     mutation create($data: ${key}UpdateInput!) {
@@ -13,7 +13,7 @@ const getCreateMutation = (list) => {
   `;
 };
 
-const getUpdateMutation = (list) => {
+const getUpdateMutation = list => {
   return gql`
     mutation delete(
       $id: String!,
@@ -26,7 +26,7 @@ const getUpdateMutation = (list) => {
   `;
 };
 
-const getDeleteMutation = (list) => {
+const getDeleteMutation = list => {
   return gql`
     mutation delete($id: String!) {
       ${list.deleteMutationName}(id: $id) {
@@ -36,7 +36,7 @@ const getDeleteMutation = (list) => {
   `;
 };
 
-const getDeleteManyMutation = (list) => {
+const getDeleteManyMutation = list => {
   return gql`
     mutation delete($ids: [String!]) {
       ${list.deleteManyMutationName}(ids: $ids) {

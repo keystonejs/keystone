@@ -94,7 +94,9 @@ class Session extends Component {
                 >
                   {isLoading
                     ? 'loading...'
-                    : user ? `Signed in as ${user.name}` : 'Signed Out'}
+                    : user
+                      ? `Signed in as ${user.name}`
+                      : 'Signed Out'}
                 </div>
               </div>
             </Box>

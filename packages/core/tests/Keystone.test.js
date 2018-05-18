@@ -3,7 +3,7 @@ const List = require('../List');
 
 class MockType {
   addToMongooseSchema = jest.fn();
-};
+}
 
 test('Check require', () => {
   expect(Keystone).not.toBeNull();
@@ -11,16 +11,15 @@ test('Check require', () => {
 
 test('new Keystone()', () => {
   const config = {
-    name: 'Jest Test'
+    name: 'Jest Test',
   };
   const keystone = new Keystone(config);
   expect(keystone.config).toBe(config);
 });
 
-
 test('Keystone.createList()', () => {
   const config = {
-    name: 'Jest Test'
+    name: 'Jest Test',
   };
   const keystone = new Keystone(config);
 
@@ -29,15 +28,19 @@ test('Keystone.createList()', () => {
 
   keystone.createList('User', {
     fields: {
-      name: { type: {
-        implementation: MockType,
-        views: {},
-      } },
-      email: { type: {
-        implementation: MockType,
-        views: {},
-      }, },
-    }
+      name: {
+        type: {
+          implementation: MockType,
+          views: {},
+        },
+      },
+      email: {
+        type: {
+          implementation: MockType,
+          views: {},
+        },
+      },
+    },
   });
 
   expect(keystone.lists).toHaveProperty('User');
