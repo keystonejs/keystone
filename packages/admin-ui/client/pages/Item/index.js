@@ -5,15 +5,17 @@ import { Mutation, Query } from 'react-apollo';
 import { Link, withRouter } from 'react-router-dom';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import Nav from '../../components/Nav';
+import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
+import Nav from '../../components/Nav';
 import PageLoading from '../../components/PageLoading';
 import Footer from './Footer';
 import {
   ArrowLeftIcon,
   CheckIcon,
-  InfoIcon,
   ClippyIcon,
+  InfoIcon,
+  PlusIcon,
 } from '@keystonejs/icons';
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { A11yText, Title } from '@keystonejs/ui/src/primitives/typography';
@@ -83,6 +85,7 @@ const ItemDetails = withRouter(
       copyText: '',
       item: this.props.item,
       itemHasChanged: false,
+      showCreateModal: false,
       showDeleteModal: false,
       showResetChangesModal: false,
     };
@@ -180,6 +183,26 @@ const ItemDetails = withRouter(
         });
       }
     };
+
+    /**
+     * Create item
+     */
+    openCreateModal = () => this.setState({ showCreateModal: true });
+    closeCreateModal = () => this.setState({ showCreateModal: false });
+    renderCreateModal = () =>
+      this.state.showCreateModal ? (
+        <CreateItemModal
+          list={this.props.list}
+          onClose={this.closeCreateModal}
+          onCreate={this.onCreate}
+        />
+      ) : null;
+    onCreate = ({ data }) => {
+      const { list, adminPath, history } = this.props;
+      const { id } = data[list.createMutationName];
+      history.push(`${adminPath}/${list.path}/${id}`);
+    };
+
     render() {
       const { adminPath, list } = this.props;
       const { copyText, item, itemHasChanged } = this.state;
@@ -189,9 +212,18 @@ const ItemDetails = withRouter(
 
       return (
         <Fragment>
-          <Title>
-            <Link to={listHref}>{list.label}</Link>: {item.name}
-          </Title>
+          <FlexGroup align="center" justify="space-between">
+            <Title>
+              <Link to={listHref}>{list.label}</Link>: {item.name}
+            </Title>
+            <IconButton
+              appearance="create"
+              icon={PlusIcon}
+              onClick={this.openCreateModal}
+            >
+              Create
+            </IconButton>
+          </FlexGroup>
           <FlexGroup align="center" isContiguous>
             <ItemId>ID: {item.id}</ItemId>
             <CopyToClipboard text={item.id} onCopy={this.onCopy}>
@@ -234,6 +266,7 @@ const ItemDetails = withRouter(
               Back to {list.label}
             </IconButton>
           </FooterNavigation>
+          {this.renderCreateModal()}
           {this.renderDeleteModal()}
           {this.renderConfirmResetModal()}
         </Fragment>
