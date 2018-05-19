@@ -34,26 +34,26 @@ export default function withModalHandlers(WrappedComponent: ComponentType<*>) {
     state = { isOpen: this.props.defaultIsOpen };
 
     componentDidMount() {
-      console.log('withModalHandlers -- DidMount');
-      document.addEventListener('click', this.handleClick);
-      document.addEventListener('keydown', this.handleKeyDown, false);
+      document.addEventListener('click', this.handleTargetClick);
     }
     componentWillUnmount() {
-      console.log('withModalHandlers -- WillUnmount');
-      document.removeEventListener('click', this.handleClick);
-      document.removeEventListener('keydown', this.handleKeyDown, false);
+      document.removeEventListener('click', this.handleTargetClick);
     }
 
     open = () => {
       this.setState({ isOpen: true });
       focus(this.contentNode.firstChild);
+
+      document.addEventListener('keydown', this.handleKeyDown, false);
     };
     close = ({ returnFocus }: { returnFocus: boolean }) => {
       this.setState({ isOpen: false });
       if (returnFocus) this.targetNode.focus();
+
+      document.removeEventListener('keydown', this.handleKeyDown, false);
     };
 
-    handleClick = ({ target }: MouseEvent) => {
+    handleTargetClick = ({ target }: MouseEvent) => {
       const { isOpen } = this.state;
 
       // appease flow
@@ -70,13 +70,8 @@ export default function withModalHandlers(WrappedComponent: ComponentType<*>) {
       }
     };
     handleKeyDown = (event: KeyboardEvent) => {
-      const { key, target } = event;
-      const { isOpen } = this.state;
+      const { key } = event;
 
-      // bail when closed
-      if (!isOpen || !(target instanceof HTMLElement)) return;
-
-      // bail when escape
       if (key === 'Escape') {
         this.close({ returnFocus: true });
         return;

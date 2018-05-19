@@ -3,12 +3,14 @@ import { Mutation } from 'react-apollo';
 import styled from 'react-emotion';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
+import { gridSize } from '@keystonejs/ui/src/theme';
 
 import FieldTypes from '../FIELD_TYPES';
 
-const Form = styled('div')`
-  margin: 24px 0;
-`;
+const Form = styled.div({
+  marginBottom: gridSize,
+  marginTop: gridSize,
+});
 
 class CreateItemModal extends Component {
   constructor(props) {
@@ -46,7 +48,9 @@ class CreateItemModal extends Component {
       case 'Escape':
         return this.onClose();
       case 'Enter':
-        return this.onCreate();
+        if (document.activeElement.nodeName === 'INPUT') {
+          return this.onCreate();
+        }
     }
   };
   onChange = (field, value) => {

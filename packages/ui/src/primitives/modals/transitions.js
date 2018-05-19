@@ -60,8 +60,6 @@ class TransitionHandler extends PureComponent<HandlerProps & TransitionProps> {
             ...transitionStates[state],
           };
 
-          // console.log('state', state);
-
           return cloneElement(Tag, { style });
         }}
       </Transition>
@@ -95,7 +93,6 @@ export const SlideUp = (props: TransitionProps) => {
         transitionProperty: 'opacity, transform',
         transitionDuration,
         transitionTimingFunction,
-        opacity: 0,
       }}
       transitionStates={{
         entering: { opacity: 1 },
@@ -119,7 +116,6 @@ export const SlideDown = (props: TransitionProps) => {
         transitionProperty: 'opacity, transform',
         transitionDuration,
         transitionTimingFunction,
-        opacity: 0,
       }}
       transitionStates={{
         entering: { opacity: 1, transform: 'translate3d(0,0,0)' },

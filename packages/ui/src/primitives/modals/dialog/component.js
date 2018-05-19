@@ -52,17 +52,17 @@ class ModalDialog extends Component<Props> {
       footer,
       heading,
       initialFocus,
-      in: transitionIn,
+      in: show,
       onClose,
       width,
     } = this.props;
 
     return (
       <Fragment>
-        <Fade in={transitionIn}>
+        <Fade in={show}>
           <Blanket onClick={onClose} />
         </Fade>
-        <SlideUp in={transitionIn}>
+        <SlideUp in={show}>
           <Positioner width={width}>
             <FocusTrap options={{ initialFocus }}>
               <Dialog>
@@ -77,7 +77,7 @@ class ModalDialog extends Component<Props> {
             </FocusTrap>
           </Positioner>
         </SlideUp>
-        {transitionIn ? <ScrollLock /> : null}
+        {show ? <ScrollLock /> : null}
       </Fragment>
     );
   }
