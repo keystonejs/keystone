@@ -22,7 +22,7 @@ type HandlerProps = {
     mountOnEnter: boolean,
     unmountOnExit: boolean,
   },
-  transitionStyles: {
+  transitionStates: {
     entering?: Styles,
     entered?: Styles,
     exiting?: Styles,
@@ -44,20 +44,23 @@ class TransitionHandler extends PureComponent<HandlerProps & TransitionProps> {
       children: Tag,
       in: inProp,
       defaultStyles,
-      transitionStyles,
+      transitionStates,
       transitionProps,
     } = this.props;
-    const timeout = { enter: 0, exit: transitionDurationMs };
 
     return (
-      <Transition in={inProp} timeout={timeout} {...transitionProps}>
+      <Transition
+        in={inProp}
+        timeout={transitionDurationMs}
+        {...transitionProps}
+      >
         {state => {
           const style = {
             ...defaultStyles,
-            ...transitionStyles[state],
+            ...transitionStates[state],
           };
 
-          if (state === 'exited') return null;
+          // console.log('state', state);
 
           return cloneElement(Tag, { style });
         }}
@@ -71,10 +74,11 @@ export const Fade = (props: TransitionProps) => (
     defaultStyles={{
       transition: `opacity ${transitionDuration} ${transitionTimingFunction}`,
     }}
-    transitionStyles={{
-      exiting: { opacity: 0 },
-      entering: { opacity: 0 },
+    transitionStates={{
+      entering: { opacity: 1 },
       entered: { opacity: 1 },
+      exited: { opacity: 0 },
+      exiting: { opacity: 0 },
     }}
     {...props}
   />
@@ -93,10 +97,11 @@ export const SlideUp = (props: TransitionProps) => {
         transitionTimingFunction,
         opacity: 0,
       }}
-      transitionStyles={{
+      transitionStates={{
+        entering: { opacity: 1 },
         entered: { opacity: 1 },
         exiting: out,
-        entering: out,
+        exited: out,
       }}
       {...props}
     />
@@ -116,10 +121,11 @@ export const SlideDown = (props: TransitionProps) => {
         transitionTimingFunction,
         opacity: 0,
       }}
-      transitionStyles={{
+      transitionStates={{
+        entering: { opacity: 1, transform: 'translate3d(0,0,0)' },
         entered: { opacity: 1, transform: 'translate3d(0,0,0)' },
         exiting: out,
-        entering: out,
+        exited: out,
       }}
       {...props}
     />

@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { Mutation } from 'react-apollo';
+import styled from 'react-emotion';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
-import styled from 'react-emotion';
+
 import FieldTypes from '../FIELD_TYPES';
 
 const Form = styled('div')`
@@ -62,7 +63,6 @@ class CreateItemModal extends Component {
     const { item } = this.state;
     return (
       <Dialog
-        isOpen
         onClose={this.onClose}
         heading={`Create ${list.singular}`}
         onKeyDown={this.onKeyDown}

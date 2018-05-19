@@ -26,10 +26,7 @@ function getDisplayName(C) {
   return `withModalHandlers(${C.displayName || C.name})`;
 }
 
-export default function withModalHandlers(
-  WrappedComponent: ComponentType<*>,
-  { Transition }: { Transition: (*) => * }
-) {
+export default function withModalHandlers(WrappedComponent: ComponentType<*>) {
   class IntermediateComponent extends Component<Props, State> {
     lastHover: HTMLElement;
     contentNode: HTMLElement;
@@ -37,10 +34,12 @@ export default function withModalHandlers(
     state = { isOpen: this.props.defaultIsOpen };
 
     componentDidMount() {
+      console.log('withModalHandlers -- DidMount');
       document.addEventListener('click', this.handleClick);
       document.addEventListener('keydown', this.handleKeyDown, false);
     }
     componentWillUnmount() {
+      console.log('withModalHandlers -- WillUnmount');
       document.removeEventListener('click', this.handleClick);
       document.removeEventListener('keydown', this.handleKeyDown, false);
     }
@@ -101,7 +100,7 @@ export default function withModalHandlers(
           <NodeResolver innerRef={this.getTarget}>
             {cloneElement(target, cloneProps)}
           </NodeResolver>
-          <Transition in={isOpen}>
+          {isOpen ? (
             <WrappedComponent
               close={this.close}
               open={this.open}
@@ -109,9 +108,8 @@ export default function withModalHandlers(
               targetNode={this.targetNode}
               contentNode={this.contentNode}
               {...this.props}
-              {...this.state}
             />
-          </Transition>
+          ) : null}
         </Fragment>
       );
     }

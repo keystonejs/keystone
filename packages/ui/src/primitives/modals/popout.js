@@ -2,10 +2,10 @@
 
 import React, { Component, type Element } from 'react';
 import styled from 'react-emotion';
-import { createPortal } from 'react-dom';
 
 import { borderRadius, gridSize } from '../../theme';
 import FocusTrap from './FocusTrap';
+import { withModalGateway } from './provider';
 import { SlideDown } from './transitions';
 import withModalHandlers, { type CloseType } from './withModalHandlers';
 
@@ -82,10 +82,12 @@ class Popout extends Component<Props, State> {
   };
 
   componentDidMount() {
+    console.log('popout -- DidMount');
     window.addEventListener('resize', this.calculatePosition);
     this.calculatePosition();
   }
   componentWillUnmount() {
+    console.log('popout -- WillUnmount');
     window.removeEventListener('resize', this.calculatePosition);
   }
 
@@ -132,29 +134,29 @@ class Popout extends Component<Props, State> {
   };
 
   render() {
-    const { children, getModalRef, style, width } = this.props;
+    const { children, getModalRef, style, width, in: show } = this.props;
     let { leftOffset, topOffset, arrowLeftOffset } = this.state;
 
-    return document.body
-      ? createPortal(
-          <Wrapper
-            innerRef={getModalRef}
-            left={leftOffset}
-            top={topOffset}
-            width={width}
-            style={style} // style comes from Transition
-          >
-            <FocusTrap options={{ clickOutsideDeactivates: true }}>
-              <WrapperInner>
-                <Arrow left={arrowLeftOffset} />
-                {children}
-              </WrapperInner>
-            </FocusTrap>
-          </Wrapper>,
-          document.body
-        )
-      : null;
+    return (
+      <SlideDown in={show}>
+        <Wrapper
+          innerRef={getModalRef}
+          left={leftOffset}
+          top={topOffset}
+          width={width}
+          style={style} // style comes from Transition
+        >
+          <FocusTrap options={{ clickOutsideDeactivates: true }}>
+            <WrapperInner>
+              <Arrow left={arrowLeftOffset} />
+              {children}
+            </WrapperInner>
+          </FocusTrap>
+        </Wrapper>
+      </SlideDown>
+    );
   }
 }
 
-export default withModalHandlers(Popout, { Transition: SlideDown });
+const PopoutWithGateway = withModalGateway(Popout, 'popout');
+export default withModalHandlers(PopoutWithGateway);

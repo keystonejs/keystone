@@ -14,6 +14,7 @@
     "raf-schd": "^2.1.1",
     "react": "^16.3.1",
     "react-emotion": "^9.1.1",
+    "react-gateway": "^3.0.0",
     "react-node-resolver": "^1.0.1",
     "react-pseudo-state": "^1.0.1",
     "react-radios": "^1.1.0",
