@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { ModalDialog } from './ModalDialog';
+import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 
 export default class DeleteItemModal extends Component {
   onClose = () => {
@@ -20,7 +20,8 @@ export default class DeleteItemModal extends Component {
         {(deleteItems, { loading }) => {
           this.isLoading = loading;
           return (
-            <ModalDialog
+            <Dialog
+              isOpen
               onClose={this.onClose}
               onKeyDown={this.onKeyDown}
               width={400}
@@ -45,7 +46,7 @@ export default class DeleteItemModal extends Component {
                   Cancel
                 </Button>
               </footer>
-            </ModalDialog>
+            </Dialog>
           );
         }}
       </Mutation>
