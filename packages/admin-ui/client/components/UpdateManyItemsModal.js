@@ -95,6 +95,7 @@ class UpdateItemModal extends Component {
 
     return (
       <Dialog
+        isOpen
         onClose={this.onClose}
         heading={`Update ${list.formatCount(items)}`}
         onKeyDown={this.onKeyDown}
