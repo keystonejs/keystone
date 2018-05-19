@@ -5,31 +5,29 @@ import { TransitionGroup } from 'react-transition-group';
 import styled from 'react-emotion';
 import { Gateway, GatewayDest, GatewayProvider } from 'react-gateway';
 
-const LayerEnforcer = styled.div({
+// NOTE: App Wrapper
+// Lock the app in a 0 z-index container. Allows all gateways to render
+// hierarchically, on top of the app, without needing incremental z-indexes.
+const AppWrapper = styled.div({
   position: 'relative',
   zIndex: 0,
 });
 
-type Props = { children: Node };
-
 const TransitionProvider = props => (
-  <TransitionGroup
-    appear
-    component={null}
-    mountOnEnter
-    unmountOnExit
-    {...props}
-  />
+  <TransitionGroup appear component={null} {...props} />
 );
 
-export default function ModalProvider({ children }: Props) {
+type ProviderProps = { children: Node };
+
+export default function ModalProvider({ children }: ProviderProps) {
   return (
     <GatewayProvider>
       <Fragment>
-        <LayerEnforcer>{children}</LayerEnforcer>
+        <AppWrapper>{children}</AppWrapper>
 
         <GatewayDest name="dialog" component={TransitionProvider} />
         <GatewayDest name="popout" component={TransitionProvider} />
+        <GatewayDest name="dropdown" component={TransitionProvider} />
       </Fragment>
     </GatewayProvider>
   );

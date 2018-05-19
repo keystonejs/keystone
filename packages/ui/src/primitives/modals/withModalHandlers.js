@@ -42,7 +42,6 @@ export default function withModalHandlers(WrappedComponent: ComponentType<*>) {
 
     open = () => {
       this.setState({ isOpen: true });
-      focus(this.contentNode.firstChild);
 
       document.addEventListener('keydown', this.handleKeyDown, false);
     };

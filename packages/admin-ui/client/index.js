@@ -22,12 +22,12 @@ import StyleGuidePage from './pages/StyleGuide';
 
 const Keystone = () => (
   <ApolloProvider client={apolloClient}>
-    <ModalProvider>
-      <AdminMetaProvider>
-        {adminMeta => {
-          const { adminPath } = adminMeta;
-          return (
-            <BrowserRouter>
+    <AdminMetaProvider>
+      {adminMeta => {
+        const { adminPath } = adminMeta;
+        return (
+          <BrowserRouter>
+            <ModalProvider>
               <ScrollToTop>
                 <Switch>
                   <Route
@@ -92,11 +92,11 @@ const Keystone = () => (
                   />
                 </Switch>
               </ScrollToTop>
-            </BrowserRouter>
-          );
-        }}
-      </AdminMetaProvider>
-    </ModalProvider>
+            </ModalProvider>
+          </BrowserRouter>
+        );
+      }}
+    </AdminMetaProvider>
   </ApolloProvider>
 );
 

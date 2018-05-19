@@ -18,7 +18,6 @@ type TransitionProps = {
 type HandlerProps = {
   defaultStyles: Styles,
   transitionProps: {
-    appear: boolean,
     mountOnEnter: boolean,
     unmountOnExit: boolean,
   },
@@ -34,14 +33,13 @@ class TransitionHandler extends PureComponent<HandlerProps & TransitionProps> {
   static defaultProps = {
     children: 'div',
     transitionProps: {
-      appear: true,
       mountOnEnter: true,
       unmountOnExit: true,
     },
   };
   render() {
     const {
-      children: Tag,
+      children,
       in: inProp,
       defaultStyles,
       transitionStates,
@@ -60,7 +58,7 @@ class TransitionHandler extends PureComponent<HandlerProps & TransitionProps> {
             ...transitionStates[state],
           };
 
-          return cloneElement(Tag, { style });
+          return cloneElement(children, { style });
         }}
       </Transition>
     );
