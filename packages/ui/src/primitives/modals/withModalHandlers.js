@@ -38,19 +38,19 @@ export default function withModalHandlers(
 
     componentDidMount() {
       document.addEventListener('click', this.handleClick);
-      document.addEventListener('keydown', this.handleKeyDown, false);
     }
     componentWillUnmount() {
       document.removeEventListener('click', this.handleClick);
-      document.removeEventListener('keydown', this.handleKeyDown, false);
     }
 
     open = () => {
       this.setState({ isOpen: true });
       focus(this.contentNode.firstChild);
+      document.addEventListener('keydown', this.handleKeyDown, false);
     };
     close = ({ returnFocus }: { returnFocus: boolean }) => {
       this.setState({ isOpen: false });
+      document.removeEventListener('keydown', this.handleKeyDown, false);
       if (returnFocus) this.targetNode.focus();
     };
 
@@ -71,16 +71,11 @@ export default function withModalHandlers(
       }
     };
     handleKeyDown = (event: KeyboardEvent) => {
-      const { key, target } = event;
-      const { isOpen } = this.state;
-
-      // bail when closed
-      if (!isOpen || !(target instanceof HTMLElement)) return;
+      const { key } = event;
 
       // bail when escape
       if (key === 'Escape') {
         this.close({ returnFocus: true });
-        return;
       }
     };
 
