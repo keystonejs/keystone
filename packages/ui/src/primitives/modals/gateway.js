@@ -1,15 +1,32 @@
 // @flow
 
-import React, { Component, Fragment } from 'react';
+import React, { Children, Component, Fragment, PureComponent } from 'react';
 import { Container, Subscribe, Provider } from 'unstated';
 
-type State = { children: Array<Node> };
+function uniqueId() {
+  return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+}
+
+type Props = {
+  children: ChildrenType,
+  setChildren: (string, ChildrenType) => void,
+  id: string,
+};
+
+type ChildrenType = Node | Array<Node> | null;
+type State = { containers: { [key: string]: ChildrenType } };
+
+// GatewayState
+// ----------------
+// simple store, holds various containers and their respective children
 
 class GatewayState extends Container<State> {
   state = { containers: {} };
   addContainer = id => {
     const containers = { ...this.state.containers };
-    containers[id] = null;
+    containers[id] = [];
 
     this.setState({ containers });
   };
@@ -29,11 +46,7 @@ class GatewayState extends Container<State> {
   };
 }
 
-type Props = {
-  children: Node,
-  setChildren: (string, Node) => void,
-  id: string,
-};
+// Helper HoC for hoisting Container state outside of the Subscribe render
 
 const withGateway = Comp => (props: Props) => (
   <Subscribe to={[GatewayState]}>
@@ -41,28 +54,42 @@ const withGateway = Comp => (props: Props) => (
   </Subscribe>
 );
 
+// Gateway
+// -------
+// take the children from from `props` and store them in `state`
+
 class StoreChildren extends Component<Props> {
+  childId = uniqueId();
   shouldComponentUpdate(nextProps: Props) {
     return nextProps.children !== this.props.children;
   }
+  setChildren = ({ children, id }) => {
+    const kids = Children.map(children, k => ({ ...k, key: this.childId }));
+    this.props.setChildren(id, kids);
+  };
   componentDidMount() {
-    const { children, id } = this.props;
-    this.props.setChildren(id, children);
+    this.setChildren(this.props);
   }
-  componentWillUpdate(nextProps: Props) {
-    const { children, id } = nextProps;
-    this.props.setChildren(id, children);
+  componentDidUpdate(prevProps: Props) {
+    this.setChildren(prevProps);
   }
   componentWillUnmount() {
     const { id } = this.props;
-    this.props.setChildren(id, null);
+    this.props.setChildren(id, []);
   }
   render() {
     return null;
   }
 }
 
-export class RenderChildren extends Component<*> {
+// GatewayContainer
+// ----------------
+// take the children from `state` and render to the desired location
+
+export class RenderChildren extends PureComponent<*> {
+  static defaultProps = {
+    component: Fragment,
+  };
   componentDidMount() {
     this.props.addContainer(this.props.id);
   }
@@ -70,14 +97,12 @@ export class RenderChildren extends Component<*> {
     this.props.removeContainer(this.props.id);
   }
   render() {
-    const { component: Comp = Fragment, id, ...props } = this.props;
+    const { component: Comp, id, ...props } = this.props;
     return (
       <Subscribe to={[GatewayState]}>
         {({ state }) => {
-          if (state.containers[id] !== undefined) {
-            console.log(`${id} children`, state.containers[id]);
-          }
-          return <Comp {...props}>{state.containers[id]}</Comp>;
+          const children = state.containers[id];
+          return <Comp {...props}>{children}</Comp>;
         }}
       </Subscribe>
     );
