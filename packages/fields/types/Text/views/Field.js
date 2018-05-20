@@ -15,9 +15,11 @@ export default class TextField extends Component {
   render() {
     const { autoFocus, field, item } = this.props;
     const value = item[field.path] || '';
+    const htmlID = `ks-input-${field.path}`;
+
     return (
       <FieldContainer>
-        <FieldLabel>{field.label}</FieldLabel>
+        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
         <FieldInput>
           <Input
             autoComplete="off"
@@ -25,6 +27,7 @@ export default class TextField extends Component {
             type="text"
             value={value}
             onChange={this.onChange}
+            id={htmlID}
           />
         </FieldInput>
       </FieldContainer>
