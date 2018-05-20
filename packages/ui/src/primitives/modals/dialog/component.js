@@ -36,7 +36,7 @@ class ModalDialog extends Component<Props> {
     width: 640,
   };
   componentDidMount() {
-    console.log('dialog -- DidMount');
+    console.log('dialog -- DidMount', this.props);
     document.addEventListener('keydown', this.onKeyDown, false);
   }
   componentWillUnmount() {
@@ -52,17 +52,17 @@ class ModalDialog extends Component<Props> {
       footer,
       heading,
       initialFocus,
-      in: show,
       onClose,
       width,
+      ...transitionProps
     } = this.props;
 
     return (
       <Fragment>
-        <Fade in={show}>
+        <Fade {...transitionProps}>
           <Blanket onClick={onClose} />
         </Fade>
-        <SlideUp in={show}>
+        <SlideUp {...transitionProps}>
           <Positioner width={width}>
             <FocusTrap options={{ initialFocus }}>
               <Dialog>
@@ -77,7 +77,7 @@ class ModalDialog extends Component<Props> {
             </FocusTrap>
           </Positioner>
         </SlideUp>
-        {show ? <ScrollLock /> : null}
+        {transitionProps.in ? <ScrollLock /> : null}
       </Fragment>
     );
   }

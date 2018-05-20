@@ -1,6 +1,11 @@
 // @flow
 
-import React, { Fragment, type ComponentType } from 'react';
+import React, {
+  cloneElement,
+  Component,
+  Fragment,
+  type ComponentType,
+} from 'react';
 import { TransitionGroup } from 'react-transition-group';
 import styled from 'react-emotion';
 
@@ -14,9 +19,35 @@ const AppWrapper = styled.div({
   zIndex: 0,
 });
 
-const TransitionProvider = props => (
-  <TransitionGroup appear component={null} {...props} />
-);
+type State = { hasExited: boolean };
+class TransitionProvider extends Component<*, State> {
+  state = { hasExited: false };
+  onExited = () => {
+    this.setState({ hasExited: true });
+  };
+  // HACK: force transition group children unmount
+  componentDidUpdate(prevProps, prevState) {
+    if (!prevState.hasExited && this.state.hasExited) {
+      this.setState({ hasExited: false }); // eslint-disable-line
+    }
+  }
+  render() {
+    const { hasExited } = this.state;
+
+    return (
+      <TransitionGroup
+        appear
+        component={null}
+        childFactory={c => {
+          const child = cloneElement(c, { onExited: this.onExited });
+
+          return hasExited ? null : child;
+        }}
+        {...this.props}
+      />
+    );
+  }
+}
 
 type ProviderProps = { children: Node };
 

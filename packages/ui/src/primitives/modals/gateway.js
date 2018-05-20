@@ -3,7 +3,8 @@
 import React, { Children, Component, Fragment, PureComponent } from 'react';
 import { Container, Subscribe, Provider } from 'unstated';
 
-function uniqueId() {
+// Unique enough ID
+function ueID() {
   return Math.floor((1 + Math.random()) * 0x10000)
     .toString(16)
     .substring(1);
@@ -57,7 +58,7 @@ const withGateway = Comp => (props: Props) => (
 // take the children from from `props` and store them in `state`
 
 class StoreChildren extends Component<Props> {
-  itemId = uniqueId();
+  itemId = ueID();
   shouldComponentUpdate(nextProps: Props) {
     return nextProps.children !== this.props.children;
   }
