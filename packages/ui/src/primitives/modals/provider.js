@@ -3,7 +3,8 @@
 import React, { Fragment, type ComponentType } from 'react';
 import { TransitionGroup } from 'react-transition-group';
 import styled from 'react-emotion';
-import { Gateway, GatewayDest, GatewayProvider } from 'react-gateway';
+
+import { GatewayContainer, Gateway, GatewayProvider } from './gateway';
 
 // NOTE: App Wrapper
 // Lock the app in a 0 z-index container. Allows all gateways to render
@@ -25,9 +26,9 @@ export default function ModalProvider({ children }: ProviderProps) {
       <Fragment>
         <AppWrapper>{children}</AppWrapper>
 
-        <GatewayDest name="dialog" component={TransitionProvider} />
-        <GatewayDest name="popout" component={TransitionProvider} />
-        <GatewayDest name="dropdown" component={TransitionProvider} />
+        <GatewayContainer id="dialog" component={TransitionProvider} />
+        <GatewayContainer id="popout" component={TransitionProvider} />
+        <GatewayContainer id="dropdown" component={TransitionProvider} />
       </Fragment>
     </GatewayProvider>
   );
@@ -36,7 +37,7 @@ export const withModalGateway = (
   Component: ComponentType<*>,
   target: string
 ) => (props: *) => (
-  <Gateway into={target}>
+  <Gateway id={target}>
     <Component {...props} />
   </Gateway>
 );

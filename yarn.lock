@@ -4944,7 +4944,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1:
+prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.1.tgz#36644453564255ddda391191fb3a125cbdf654ca"
   dependencies:
@@ -5109,13 +5109,6 @@ react-emotion@^9.1.1:
     babel-plugin-emotion "^9.1.2"
     create-emotion-styled "^9.1.2"
 
-react-gateway@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/react-gateway/-/react-gateway-3.0.0.tgz#95872a3cbadca8e6dc631d8276389c7ef39777e5"
-  dependencies:
-    prop-types "^15.5.0"
-    react-prop-types "^0.4.0"
-
 react-input-autosize@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.2.1.tgz#ec428fa15b1592994fb5f9aa15bb1eb6baf420f8"
@@ -5133,12 +5126,6 @@ react-media@^1.8.0:
 react-node-resolver@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-node-resolver/-/react-node-resolver-1.0.1.tgz#1798a729c0e218bf2f0e8ddf79c550d4af61d83a"
-
-react-prop-types@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/react-prop-types/-/react-prop-types-0.4.0.tgz#f99b0bfb4006929c9af2051e7c1414a5c75b93d0"
-  dependencies:
-    warning "^3.0.0"
 
 react-pseudo-state@^1.0.1:
   version "1.0.1"
@@ -6228,6 +6215,12 @@ unstated@^2.0.2:
   dependencies:
     create-react-context "^0.1.5"
     tickedoff "^1.0.1"
+
+unstated@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/unstated/-/unstated-2.1.0.tgz#b018968912603f20591765755c14581d455fe363"
+  dependencies:
+    create-react-context "^0.1.5"
 
 upath@^1.0.0:
   version "1.0.4"
