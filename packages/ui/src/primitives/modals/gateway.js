@@ -26,7 +26,7 @@ class GatewayState extends Container<State> {
   state = { containers: {} };
   addContainer = id => {
     const containers = { ...this.state.containers };
-    containers[id] = [];
+    containers[id] = null;
 
     this.setState({ containers });
   };
@@ -41,8 +41,6 @@ class GatewayState extends Container<State> {
     containers[id] = children;
 
     this.setState({ containers });
-    if (containers[id] !== this.state.containers[id]) {
-    }
   };
 }
 
@@ -59,12 +57,14 @@ const withGateway = Comp => (props: Props) => (
 // take the children from from `props` and store them in `state`
 
 class StoreChildren extends Component<Props> {
-  childId = uniqueId();
+  itemId = uniqueId();
   shouldComponentUpdate(nextProps: Props) {
     return nextProps.children !== this.props.children;
   }
   setChildren = ({ children, id }) => {
-    const kids = Children.map(children, k => ({ ...k, key: this.childId }));
+    const key = this.itemId;
+    const kids = Children.map(children, child => ({ ...child, key }));
+
     this.props.setChildren(id, kids);
   };
   componentDidMount() {
@@ -75,7 +75,7 @@ class StoreChildren extends Component<Props> {
   }
   componentWillUnmount() {
     const { id } = this.props;
-    this.props.setChildren(id, []);
+    this.setChildren({ children: null, id });
   }
   render() {
     return null;

@@ -93,10 +93,12 @@ class Dropdown extends PureComponent<Props, State> {
   };
 
   componentDidMount() {
+    console.log('dropdown -- DidMount');
     document.addEventListener('keydown', this.handleKeyDown, false);
     this.calculatePosition();
   }
   componentWillUnmount() {
+    console.log('dropdown -- WillUnmount');
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
@@ -180,17 +182,18 @@ class Dropdown extends PureComponent<Props, State> {
   };
 
   render() {
-    const { in: show, items, style } = this.props;
+    const { in: show, items, getModalRef, width, style } = this.props;
     let { leftOffset, topOffset } = this.state;
 
     return (
       <SlideDown in={show}>
         <Menu
-          innerRef={this.props.getModalRef}
+          innerRef={getModalRef}
           left={leftOffset}
           top={topOffset}
           onMouseLeave={this.handleMenuLeave}
-          style={style}
+          style={style} // style comes from Transition
+          width={width}
         >
           <FocusTrap options={{ clickOutsideDeactivates: true }}>
             <MenuList innerRef={this.getList}>
