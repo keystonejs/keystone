@@ -57,8 +57,6 @@ class TransitionHandler extends PureComponent<HandlerProps & TransitionProps> {
             ...transitionStyles[state],
           };
 
-          if (state === 'exited') return null;
-
           return cloneElement(Tag, { style });
         }}
       </Transition>
@@ -72,9 +70,10 @@ export const Fade = (props: TransitionProps) => (
       transition: `opacity ${transitionDuration} ${transitionTimingFunction}`,
     }}
     transitionStyles={{
-      exiting: { opacity: 0 },
-      entering: { opacity: 0 },
+      entering: { opacity: 1 },
       entered: { opacity: 1 },
+      exiting: { opacity: 0 },
+      exited: { opacity: 0 },
     }}
     {...props}
   />
@@ -91,12 +90,12 @@ export const SlideUp = (props: TransitionProps) => {
         transitionProperty: 'opacity, transform',
         transitionDuration,
         transitionTimingFunction,
-        opacity: 0,
       }}
       transitionStyles={{
+        entering: { opacity: 1 },
         entered: { opacity: 1 },
         exiting: out,
-        entering: out,
+        exited: out,
       }}
       {...props}
     />
@@ -114,12 +113,12 @@ export const SlideDown = (props: TransitionProps) => {
         transitionProperty: 'opacity, transform',
         transitionDuration,
         transitionTimingFunction,
-        opacity: 0,
       }}
       transitionStyles={{
+        entering: { opacity: 1, transform: 'translate3d(0,0,0)' },
         entered: { opacity: 1, transform: 'translate3d(0,0,0)' },
         exiting: out,
-        entering: out,
+        exited: out,
       }}
       {...props}
     />
