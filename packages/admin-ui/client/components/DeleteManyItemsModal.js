@@ -21,7 +21,6 @@ export default class DeleteItemModal extends Component {
           this.isLoading = loading;
           return (
             <Dialog
-              isOpen
               onClose={this.onClose}
               onKeyDown={this.onKeyDown}
               width={400}

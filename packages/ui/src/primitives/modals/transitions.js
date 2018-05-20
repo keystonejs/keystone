@@ -17,12 +17,9 @@ type TransitionProps = {
 };
 type HandlerProps = {
   defaultStyles: Styles,
-  transitionProps: {
-    appear: boolean,
-    mountOnEnter: boolean,
-    unmountOnExit: boolean,
-  },
-  transitionStyles: {
+  mountOnEnter: boolean,
+  unmountOnExit: boolean,
+  transitionStates: {
     entering?: Styles,
     entered?: Styles,
     exiting?: Styles,
@@ -33,33 +30,32 @@ type HandlerProps = {
 class TransitionHandler extends PureComponent<HandlerProps & TransitionProps> {
   static defaultProps = {
     children: 'div',
-    transitionProps: {
-      appear: true,
-      mountOnEnter: true,
-      unmountOnExit: true,
-    },
+    appear: true,
+    mountOnEnter: true,
+    unmountOnExit: true,
   };
   render() {
     const {
-      children: Tag,
+      children,
       in: inProp,
       defaultStyles,
-      transitionStyles,
-      transitionProps,
+      transitionStates,
+      ...transitionProps
     } = this.props;
-    const timeout = { enter: 0, exit: transitionDurationMs };
 
     return (
-      <Transition in={inProp} timeout={timeout} {...transitionProps}>
+      <Transition
+        in={inProp}
+        timeout={transitionDurationMs}
+        {...transitionProps}
+      >
         {state => {
           const style = {
             ...defaultStyles,
-            ...transitionStyles[state],
+            ...transitionStates[state],
           };
 
-          if (state === 'exited') return null;
-
-          return cloneElement(Tag, { style });
+          return cloneElement(children, { style });
         }}
       </Transition>
     );
@@ -71,10 +67,11 @@ export const Fade = (props: TransitionProps) => (
     defaultStyles={{
       transition: `opacity ${transitionDuration} ${transitionTimingFunction}`,
     }}
-    transitionStyles={{
-      exiting: { opacity: 0 },
-      entering: { opacity: 0 },
+    transitionStates={{
+      entering: { opacity: 1 },
       entered: { opacity: 1 },
+      exited: { opacity: 0 },
+      exiting: { opacity: 0 },
     }}
     {...props}
   />
@@ -91,12 +88,12 @@ export const SlideUp = (props: TransitionProps) => {
         transitionProperty: 'opacity, transform',
         transitionDuration,
         transitionTimingFunction,
-        opacity: 0,
       }}
-      transitionStyles={{
+      transitionStates={{
+        entering: { opacity: 1 },
         entered: { opacity: 1 },
         exiting: out,
-        entering: out,
+        exited: out,
       }}
       {...props}
     />
@@ -114,12 +111,12 @@ export const SlideDown = (props: TransitionProps) => {
         transitionProperty: 'opacity, transform',
         transitionDuration,
         transitionTimingFunction,
-        opacity: 0,
       }}
-      transitionStyles={{
+      transitionStates={{
+        entering: { opacity: 1, transform: 'translate3d(0,0,0)' },
         entered: { opacity: 1, transform: 'translate3d(0,0,0)' },
         exiting: out,
-        entering: out,
+        exited: out,
       }}
       {...props}
     />

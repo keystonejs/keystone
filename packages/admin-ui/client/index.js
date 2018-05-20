@@ -4,11 +4,11 @@ import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { injectGlobal } from 'emotion';
 
+import { ModalProvider } from '@keystonejs/ui/src/primitives/modals';
 import globalStyles from '@keystonejs/ui/src/globalStyles';
 injectGlobal(globalStyles);
 
 import ScrollToTop from './components/ScrollToTop';
-import { ModalProvider } from './components/ModalDialog';
 import AdminMetaProvider from './providers/AdminMeta';
 import apolloClient from './providers/apolloClient';
 
@@ -22,12 +22,12 @@ import StyleGuidePage from './pages/StyleGuide';
 
 const Keystone = () => (
   <ApolloProvider client={apolloClient}>
-    <ModalProvider>
-      <AdminMetaProvider>
-        {adminMeta => {
-          const { adminPath } = adminMeta;
-          return (
-            <BrowserRouter>
+    <AdminMetaProvider>
+      {adminMeta => {
+        const { adminPath } = adminMeta;
+        return (
+          <BrowserRouter>
+            <ModalProvider>
               <ScrollToTop>
                 <Switch>
                   <Route
@@ -92,11 +92,11 @@ const Keystone = () => (
                   />
                 </Switch>
               </ScrollToTop>
-            </BrowserRouter>
-          );
-        }}
-      </AdminMetaProvider>
-    </ModalProvider>
+            </ModalProvider>
+          </BrowserRouter>
+        );
+      }}
+    </AdminMetaProvider>
   </ApolloProvider>
 );
 

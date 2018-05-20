@@ -60,7 +60,7 @@ class ConfirmResetModal extends Component {
   render() {
     const { onCancel, onConfirm } = this.props;
     return (
-      <Dialog isOpen onClose={onCancel} onKeyDown={this.onKeyDown} width={400}>
+      <Dialog onClose={onCancel} onKeyDown={this.onKeyDown} width={400}>
         <p style={{ marginTop: 0 }}>
           Are you sure you want reset your changes?
         </p>

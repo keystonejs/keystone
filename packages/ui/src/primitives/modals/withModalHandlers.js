@@ -26,10 +26,7 @@ function getDisplayName(C) {
   return `withModalHandlers(${C.displayName || C.name})`;
 }
 
-export default function withModalHandlers(
-  WrappedComponent: ComponentType<*>,
-  { Transition }: { Transition: (*) => * }
-) {
+export default function withModalHandlers(WrappedComponent: ComponentType<*>) {
   class IntermediateComponent extends Component<Props, State> {
     lastHover: HTMLElement;
     contentNode: HTMLElement;
@@ -37,24 +34,25 @@ export default function withModalHandlers(
     state = { isOpen: this.props.defaultIsOpen };
 
     componentDidMount() {
-      document.addEventListener('click', this.handleClick);
-      document.addEventListener('keydown', this.handleKeyDown, false);
+      document.addEventListener('click', this.handleTargetClick);
     }
     componentWillUnmount() {
-      document.removeEventListener('click', this.handleClick);
-      document.removeEventListener('keydown', this.handleKeyDown, false);
+      document.removeEventListener('click', this.handleTargetClick);
     }
 
     open = () => {
       this.setState({ isOpen: true });
-      focus(this.contentNode.firstChild);
+
+      document.addEventListener('keydown', this.handleKeyDown, false);
     };
     close = ({ returnFocus }: { returnFocus: boolean }) => {
       this.setState({ isOpen: false });
       if (returnFocus) this.targetNode.focus();
+
+      document.removeEventListener('keydown', this.handleKeyDown, false);
     };
 
-    handleClick = ({ target }: MouseEvent) => {
+    handleTargetClick = ({ target }: MouseEvent) => {
       const { isOpen } = this.state;
 
       // appease flow
@@ -71,13 +69,8 @@ export default function withModalHandlers(
       }
     };
     handleKeyDown = (event: KeyboardEvent) => {
-      const { key, target } = event;
-      const { isOpen } = this.state;
+      const { key } = event;
 
-      // bail when closed
-      if (!isOpen || !(target instanceof HTMLElement)) return;
-
-      // bail when escape
       if (key === 'Escape') {
         this.close({ returnFocus: true });
         return;
@@ -101,7 +94,7 @@ export default function withModalHandlers(
           <NodeResolver innerRef={this.getTarget}>
             {cloneElement(target, cloneProps)}
           </NodeResolver>
-          <Transition in={isOpen}>
+          {isOpen ? (
             <WrappedComponent
               close={this.close}
               open={this.open}
@@ -109,9 +102,8 @@ export default function withModalHandlers(
               targetNode={this.targetNode}
               contentNode={this.contentNode}
               {...this.props}
-              {...this.state}
             />
-          </Transition>
+          ) : null}
         </Fragment>
       );
     }

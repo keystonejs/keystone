@@ -1,11 +1,12 @@
 // @flow
 
-import React, { Component, type Element, type Node } from 'react';
+import React, { PureComponent, type Element, type Node } from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
 import { borderRadius, colors, gridSize } from '../../theme';
 import FocusTrap from './FocusTrap';
+import { withModalGateway } from './provider';
 import { SlideDown } from './transitions';
 import withModalHandlers, { type CloseType } from './withModalHandlers';
 
@@ -39,16 +40,20 @@ const Item = styled(ItemElement)({
     textDecoration: 'none',
   },
 });
-const Menu = styled.div({
+const Menu = styled.div(({ left, top }) => ({
   backgroundColor: 'white',
   borderRadius: borderRadius,
   boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.175), 0 3px 8px rgba(0, 0, 0, 0.175)',
   marginTop: gridSize,
   maxHeight: '100%',
   minWidth: 160,
+  position: 'absolute',
+  left,
+  top,
+}));
+const MenuList = styled.div({
   paddingBottom: gridSize / 2,
   paddingTop: gridSize / 2,
-  position: 'absolute',
 });
 
 type ItemType = {
@@ -66,6 +71,9 @@ type Props = {
   items: Array<ItemType>,
   selectClosesMenu: boolean,
   style: Object,
+  target: Element<*>,
+  targetNode: HTMLElement,
+  width: number,
 };
 
 function focus(el) {
@@ -74,17 +82,23 @@ function focus(el) {
   }
 }
 
-class Dropdown extends Component<Props> {
-  menu: HTMLElement;
+type State = { leftOffset: number, topOffset: number };
+
+class Dropdown extends PureComponent<Props, State> {
+  list: HTMLElement;
   lastHover: HTMLElement;
+  state = { leftOffset: 0, topOffset: 0 };
   static defaultProps = {
     selectClosesMenu: true,
   };
 
   componentDidMount() {
+    console.log('dropdown -- DidMount');
     document.addEventListener('keydown', this.handleKeyDown, false);
+    this.calculatePosition();
   }
   componentWillUnmount() {
+    console.log('dropdown -- WillUnmount');
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
@@ -112,8 +126,8 @@ class Dropdown extends Component<Props> {
     const isPageUp = key === 'PageUp';
     const isPageDown = key === 'PageDown';
 
-    const firstItem = this.menu.firstChild;
-    const lastItem = this.menu.lastChild;
+    const firstItem = this.list.firstChild;
+    const lastItem = this.list.lastChild;
     const preventScroll = isArrowUp || isArrowDown || isPageUp || isPageDown;
 
     // kill scroll that occurs on arrow/page key press
@@ -141,38 +155,68 @@ class Dropdown extends Component<Props> {
   handleMenuLeave = () => {
     this.lastHover.focus();
   };
-  getMenu = (ref: HTMLElement) => {
-    this.menu = ref;
-    this.props.getModalRef(ref);
+  getList = (ref: HTMLElement) => {
+    this.list = ref;
+  };
+
+  calculatePosition = () => {
+    const { targetNode } = this.props;
+
+    if (!targetNode || !document.body) return;
+
+    // prepare common values
+    const bodyRect = document.body.getBoundingClientRect();
+    const targetRect = targetNode.getBoundingClientRect();
+
+    let leftOffset = targetRect.left;
+    let topOffset = targetRect.bottom - bodyRect.top;
+
+    // avoid state thrashing
+    const newStateAvaliable =
+      this.state.leftOffset !== leftOffset ||
+      this.state.topOffset !== topOffset;
+
+    if (newStateAvaliable) {
+      this.setState({ leftOffset, topOffset });
+    }
   };
 
   render() {
-    const { items, style } = this.props;
+    const { in: show, items, getModalRef, width, style } = this.props;
+    let { leftOffset, topOffset } = this.state;
 
     return (
-      <FocusTrap options={{ clickOutsideDeactivates: true }}>
+      <SlideDown in={show}>
         <Menu
-          innerRef={this.getMenu}
+          innerRef={getModalRef}
+          left={leftOffset}
+          top={topOffset}
           onMouseLeave={this.handleMenuLeave}
-          style={style}
+          style={style} // style comes from Transition
+          width={width}
         >
-          {items.map((item, idx) => {
-            const { content, ...rest } = item;
-            return (
-              <Item
-                {...rest}
-                onClick={this.handleItemClick(item)}
-                onMouseOver={this.handleMouseOver}
-                key={idx}
-              >
-                {content}
-              </Item>
-            );
-          })}
+          <FocusTrap options={{ clickOutsideDeactivates: true }}>
+            <MenuList innerRef={this.getList}>
+              {items.map((item, idx) => {
+                const { content, ...rest } = item;
+                return (
+                  <Item
+                    {...rest}
+                    onClick={this.handleItemClick(item)}
+                    onMouseOver={this.handleMouseOver}
+                    key={idx}
+                  >
+                    {content}
+                  </Item>
+                );
+              })}
+            </MenuList>
+          </FocusTrap>
         </Menu>
-      </FocusTrap>
+      </SlideDown>
     );
   }
 }
 
-export default withModalHandlers(Dropdown, { Transition: SlideDown });
+const DropdownWithGateway = withModalGateway(Dropdown, 'dropdown');
+export default withModalHandlers(DropdownWithGateway);
