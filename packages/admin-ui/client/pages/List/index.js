@@ -72,14 +72,14 @@ const Note = styled.div({
   fontSize: '0.85em',
 });
 
-const Search = ({ children, hasValue, isFetching, onClear }) => {
+const Search = ({ children, hasValue, isFetching, onClear, onSubmit }) => {
   const Icon = hasValue ? XIcon : SearchIcon;
   const isLoading = hasValue && isFetching;
 
   // NOTE: `autoComplete="off"` doesn't behave as expected on `<input />` in
   // webkit, so we apply the attribute to a form tag here.
   return (
-    <form css={{ position: 'relative' }} autoComplete="off">
+    <form css={{ position: 'relative' }} autoComplete="off" onSubmit={onSubmit}>
       {children}
       <div
         css={{
@@ -152,6 +152,15 @@ class ListPage extends Component {
   handleSearchClear = () => {
     this.setState({ search: '' });
     this.input.focus();
+  };
+  handleSearchSubmit = event => {
+    let { list, adminPath, history } = this.props;
+
+    event.preventDefault();
+
+    if (this.items.length === 1) {
+      history.push(`${adminPath}/${list.path}/${this.items[0].id}`);
+    }
   };
 
   handleSelectedFieldsChange = selectedFields => {
@@ -425,9 +434,10 @@ class ListPage extends Component {
             // TODO: This doesn't seem like the best way to capture the refetch,
             // but it's not easy to hoist the <Query> further up the hierarchy.
             this.refetch = refetch;
-            const items = data && data[list.listQueryName];
-            const hasCount = items && typeof items.length === 'number';
-            this.itemsCount = hasCount ? items.length : this.itemsCount;
+            this.items = data && data[list.listQueryName];
+            const hasCount =
+              this.items && typeof this.items.length === 'number';
+            this.itemsCount = hasCount ? this.items.length : this.itemsCount;
 
             return (
               <Fragment>
@@ -461,6 +471,7 @@ class ListPage extends Component {
                     <Search
                       isFetching={loading}
                       onClear={this.handleSearchClear}
+                      onSubmit={this.handleSearchSubmit}
                       hasValue={search && search.length}
                     >
                       <Input
@@ -523,12 +534,12 @@ class ListPage extends Component {
                 {this.renderDeleteSelectedItemsModal()}
 
                 <Container isDisabled={isFullWidth}>
-                  {items ? (
+                  {this.items ? (
                     <ListTable
                       adminPath={adminPath}
                       fields={displayedFields}
                       isManaging={isManaging}
-                      items={items}
+                      items={this.items}
                       list={list}
                       onChange={refetch}
                       onSelect={this.handleItemSelect}
