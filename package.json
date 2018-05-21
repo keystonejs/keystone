@@ -14,7 +14,7 @@
     "cypress:run": "cypress run",
     "cypress:open": "cypress open",
     "lint": "yarn prettier_lint && yarn eslint",
-    "test": "yarn lint && yarn jest && yarn cypress:run",
+    "test": "yarn lint && yarn jest",
     "test:all": "yarn test && yarn cypress:run"
   },
   "dependencies": {
