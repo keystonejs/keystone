@@ -62,7 +62,6 @@
     "mongoose": "^5.0.14",
     "oauth-libre": "^0.9.17",
     "octicons": "^7.2.0",
-    "p-reduce": "^1.0.0",
     "passport": "^0.4.0",
     "passport-twitter": "^1.0.4",
     "pluralize": "^7.0.0",
