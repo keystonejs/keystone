@@ -10,6 +10,7 @@ import { Fade, SlideUp, withTransitionState } from './transitions';
 import { Blanket } from './common';
 import { colors } from '../../theme';
 import { alpha } from '../../theme/color-utils';
+import { A11yText } from '../misc';
 
 const outerGutter = 40;
 const innerGutter = 20;
@@ -114,6 +115,7 @@ class ModalDialog extends PureComponent<Props> {
           <Positioner width={width}>
             <FocusTrap options={{ initialFocus }}>
               <Dialog>
+                <A11yText>{heading} Dialog</A11yText>
                 {heading ? (
                   <Header>
                     <Title>{heading}</Title>
