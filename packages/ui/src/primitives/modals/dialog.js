@@ -1,12 +1,13 @@
 // @flow
 
-import React, { Component, Fragment, type Element, type Node } from 'react';
+import React, { PureComponent, Fragment, type Element, type Node } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'react-emotion';
 import ScrollLock from 'react-scrolllock';
 
 import FocusTrap, { type FocusTarget } from './FocusTrap';
-import { Fade, SlideUp } from './transitions';
+import { Fade, SlideUp, withTransitionState } from './transitions';
+import { Blanket } from './common';
 import { colors } from '../../theme';
 import { alpha } from '../../theme/color-utils';
 
@@ -16,15 +17,6 @@ const innerGutter = 20;
 // Styled Components
 // ------------------------------
 
-const Blanket = styled.div({
-  backgroundColor: alpha(colors.N90, 0.66),
-  bottom: 0,
-  left: 0,
-  position: 'fixed',
-  right: 0,
-  top: 0,
-  zIndex: 2,
-});
 const Positioner = styled.div(({ width }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -82,13 +74,12 @@ type Props = {
   footer?: Element<*>,
   heading?: string,
   initialFocus?: FocusTarget,
-  isOpen: boolean,
   onClose: (*) => void,
   onKeyDown: (*) => void,
   width?: number,
 };
 
-export default class ModalDialog extends Component<Props> {
+class ModalDialog extends PureComponent<Props> {
   static defaultProps = {
     attachTo: document.body,
     width: 640,
@@ -109,20 +100,17 @@ export default class ModalDialog extends Component<Props> {
       footer,
       heading,
       initialFocus,
-      isOpen,
       onClose,
       width,
+      ...transitionProps
     } = this.props;
-
-    // $FlowFixMe -- Support use inside of `<TransitionGroup />`
-    const transitionIn = isOpen || this.props.in;
 
     return createPortal(
       <Fragment>
-        <Fade in={transitionIn}>
-          <Blanket onClick={onClose} />
+        <Fade {...transitionProps}>
+          <Blanket onClick={onClose} isTinted />
         </Fade>
-        <SlideUp in={transitionIn}>
+        <SlideUp {...transitionProps}>
           <Positioner width={width}>
             <FocusTrap options={{ initialFocus }}>
               <Dialog>
@@ -137,9 +125,11 @@ export default class ModalDialog extends Component<Props> {
             </FocusTrap>
           </Positioner>
         </SlideUp>
-        {transitionIn ? <ScrollLock /> : null}
+        <ScrollLock />
       </Fragment>,
       attachTo
     );
   }
 }
+
+export default withTransitionState(ModalDialog);

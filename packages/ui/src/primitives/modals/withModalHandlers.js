@@ -8,6 +8,7 @@ import React, {
   type Element,
 } from 'react';
 import NodeResolver from 'react-node-resolver';
+import { TransitionProvider } from './transitions';
 
 export type CloseType = ({ returnFocus: boolean }) => void;
 type Props = {
@@ -45,13 +46,11 @@ export default function withModalHandlers(
 
     open = () => {
       this.setState({ isOpen: true });
-      focus(this.contentNode.firstChild);
       document.addEventListener('keydown', this.handleKeyDown, false);
     };
-    close = ({ returnFocus }: { returnFocus: boolean }) => {
+    close = () => {
       this.setState({ isOpen: false });
       document.removeEventListener('keydown', this.handleKeyDown, false);
-      if (returnFocus) this.targetNode.focus();
     };
 
     handleClick = ({ target }: MouseEvent) => {
@@ -60,9 +59,11 @@ export default function withModalHandlers(
       // appease flow
       if (!(target instanceof HTMLElement)) return;
 
-      // close on outside click
+      // NOTE: Why not use the <Blanket /> component to close?
+      // We don't want to interupt the user's flow. Taking this approach allows
+      // user to click "through" to other elements and close the popout.
       if (isOpen && !this.contentNode.contains(target)) {
-        this.close({ returnFocus: false });
+        this.close();
       }
 
       // open on target click
@@ -73,9 +74,8 @@ export default function withModalHandlers(
     handleKeyDown = (event: KeyboardEvent) => {
       const { key } = event;
 
-      // bail when escape
       if (key === 'Escape') {
-        this.close({ returnFocus: true });
+        this.close();
       }
     };
 
@@ -96,17 +96,22 @@ export default function withModalHandlers(
           <NodeResolver innerRef={this.getTarget}>
             {cloneElement(target, cloneProps)}
           </NodeResolver>
-          <Transition in={isOpen}>
-            <WrappedComponent
-              close={this.close}
-              open={this.open}
-              getModalRef={this.getContent}
-              targetNode={this.targetNode}
-              contentNode={this.contentNode}
-              {...this.props}
-              {...this.state}
-            />
-          </Transition>
+
+          <TransitionProvider isOpen={isOpen}>
+            {transitionState => (
+              <Transition transitionState={transitionState}>
+                <WrappedComponent
+                  close={this.close}
+                  open={this.open}
+                  getModalRef={this.getContent}
+                  targetNode={this.targetNode}
+                  contentNode={this.contentNode}
+                  {...this.props}
+                  {...this.state}
+                />
+              </Transition>
+            )}
+          </TransitionProvider>
         </Fragment>
       );
     }

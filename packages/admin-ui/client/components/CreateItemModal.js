@@ -64,11 +64,11 @@ class CreateItemModal extends Component {
     });
   };
   render() {
-    const { isLoading, list } = this.props;
+    const { isLoading, isOpen, list } = this.props;
     const { item } = this.state;
     return (
       <Dialog
-        isOpen
+        isOpen={isOpen}
         onClose={this.onClose}
         heading={`Create ${list.singular}`}
         onKeyDown={this.onKeyDown}

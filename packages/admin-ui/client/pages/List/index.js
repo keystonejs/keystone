@@ -262,11 +262,11 @@ class ListPage extends Component {
   };
   renderCreateModal() {
     const { showCreateModal } = this.state;
-    if (!showCreateModal) return;
     const { list } = this.props;
 
     return (
       <CreateItemModal
+        isOpen={showCreateModal}
         list={list}
         onClose={this.closeCreateModal}
         onCreate={this.onCreate}
@@ -277,10 +277,9 @@ class ListPage extends Component {
     const { list } = this.props;
     const { selectedItems, showUpdateModal } = this.state;
 
-    if (!showUpdateModal) return;
-
     return (
       <UpdateManyItemsModal
+        isOpen={showUpdateModal}
         list={list}
         items={selectedItems}
         onClose={this.closeUpdateModal}
@@ -290,11 +289,11 @@ class ListPage extends Component {
   }
   renderDeleteSelectedItemsModal() {
     const { selectedItems, showDeleteSelectedItemsModal } = this.state;
-    if (!showDeleteSelectedItemsModal) return;
     const { list } = this.props;
 
     return (
       <DeleteManyItemsModal
+        isOpen={showDeleteSelectedItemsModal}
         list={list}
         itemIds={selectedItems}
         onClose={this.closeDeleteSelectedItemsModal}

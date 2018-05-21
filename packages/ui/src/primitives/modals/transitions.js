@@ -1,27 +1,58 @@
 // @flow
 
-import React, { cloneElement, PureComponent, type Element } from 'react';
-import { Transition } from 'react-transition-group';
+import React, { cloneElement, type ComponentType, type Element } from 'react';
+import { Transition, TransitionGroup } from 'react-transition-group';
 
-const transitionDurationMs = 220;
-const transitionDuration = `${transitionDurationMs}ms`;
-const transitionTimingFunction = 'cubic-bezier(0.2, 0, 0, 1)';
+export const transitionDurationMs = 220;
+export const transitionDuration = `${transitionDurationMs}ms`;
+export const transitionTimingFunction = 'cubic-bezier(0.2, 0, 0, 1)';
 
-// Transitions
-// ------------------------------
+// ==============================
+// Lifecycle Provider
+// ==============================
+
+type TransitionState = 'entering' | 'entered' | 'exiting' | 'exited';
+type ProviderProps = {
+  children: TransitionState => Node | Element<*>,
+  isOpen: boolean,
+};
+
+export const TransitionProvider = ({ children, isOpen }: ProviderProps) => (
+  <TransitionGroup>
+    {isOpen ? (
+      <Transition
+        appear
+        mountOnEnter
+        unmountOnExit
+        timeout={transitionDurationMs}
+      >
+        {state => children(state)}
+      </Transition>
+    ) : null}
+  </TransitionGroup>
+);
+export const withTransitionState = (Comp: ComponentType<*>) => ({
+  isOpen,
+  ...props
+}: ProviderProps) => {
+  return (
+    <TransitionProvider isOpen={isOpen}>
+      {state => <Comp transitionState={state} {...props} />}
+    </TransitionProvider>
+  );
+};
+
+// ==============================
+// Transition Handler
+// ==============================
 
 type Styles = { [string]: string | number };
 type TransitionProps = {
   children: Element<*>,
-  in: boolean,
+  transitionState: TransitionState,
 };
 type HandlerProps = {
   defaultStyles: Styles,
-  transitionProps: {
-    appear: boolean,
-    mountOnEnter: boolean,
-    unmountOnExit: boolean,
-  },
   transitionStyles: {
     entering?: Styles,
     entered?: Styles,
@@ -30,39 +61,26 @@ type HandlerProps = {
   },
 };
 
-class TransitionHandler extends PureComponent<HandlerProps & TransitionProps> {
-  static defaultProps = {
-    children: 'div',
-    transitionProps: {
-      appear: true,
-      mountOnEnter: true,
-      unmountOnExit: true,
-    },
+const TransitionHandler = ({
+  children,
+  defaultStyles,
+  transitionStyles,
+  transitionState,
+}: HandlerProps & TransitionProps) => {
+  const style = {
+    ...defaultStyles,
+    ...transitionStyles[transitionState],
   };
-  render() {
-    const {
-      children: Tag,
-      in: inProp,
-      defaultStyles,
-      transitionStyles,
-      transitionProps,
-    } = this.props;
-    const timeout = { enter: 0, exit: transitionDurationMs };
 
-    return (
-      <Transition in={inProp} timeout={timeout} {...transitionProps}>
-        {state => {
-          const style = {
-            ...defaultStyles,
-            ...transitionStyles[state],
-          };
+  return cloneElement(children, { style });
+};
 
-          return cloneElement(Tag, { style });
-        }}
-      </Transition>
-    );
-  }
-}
+// ==============================
+// Transitions
+// ==============================
+
+// Fade
+// ------------------------------
 
 export const Fade = (props: TransitionProps) => (
   <TransitionHandler
@@ -78,6 +96,9 @@ export const Fade = (props: TransitionProps) => (
     {...props}
   />
 );
+
+// Slide Up
+// ------------------------------
 
 export const SlideUp = (props: TransitionProps) => {
   const out = {
@@ -101,6 +122,9 @@ export const SlideUp = (props: TransitionProps) => {
     />
   );
 };
+
+// Slide Down
+// ------------------------------
 
 export const SlideDown = (props: TransitionProps) => {
   const out = {

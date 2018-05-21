@@ -3,7 +3,7 @@ import { Mutation } from 'react-apollo';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 
-export default class DeleteItemModal extends Component {
+export default class DeleteManyModal extends Component {
   onClose = () => {
     if (this.isLoading) return;
     this.props.onClose();
@@ -14,14 +14,15 @@ export default class DeleteItemModal extends Component {
     }
   };
   render() {
-    const { itemIds, list, onDelete } = this.props;
+    const { isOpen, itemIds, list, onDelete } = this.props;
+
     return (
       <Mutation mutation={list.deleteManyMutation}>
         {(deleteItems, { loading }) => {
           this.isLoading = loading;
           return (
             <Dialog
-              isOpen
+              isOpen={isOpen}
               onClose={this.onClose}
               onKeyDown={this.onKeyDown}
               width={400}
