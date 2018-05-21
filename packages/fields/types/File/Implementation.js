@@ -87,10 +87,7 @@ module.exports = class File extends Implementation {
       },
     };
   }
-  createFieldPreHook() {
-    // TODO
-  }
-  async updateFieldPreHook(uploadData) {
+  async saveStream(uploadData) {
     // TODO: FIXME: Handle when uploadData is null. Can happen when:
     // 1. Deleting the file
     // 2. Updating some other part of the item, but not the file (gets null
@@ -117,6 +114,12 @@ module.exports = class File extends Implementation {
     });
 
     return { id, filename, mimetype, encoding, _meta };
+  }
+  createFieldPreHook(uploadData) {
+    return this.saveStream(uploadData);
+  }
+  updateFieldPreHook(uploadData) {
+    return this.saveStream(uploadData);
   }
   getGraphqlUpdateArgs() {
     return `

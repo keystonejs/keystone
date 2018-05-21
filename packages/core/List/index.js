@@ -260,7 +260,21 @@ module.exports = class List {
   getAdminMutationResolvers() {
     return {
       [this.createMutationName]: async (_, { data }) => {
-        return this.model.create(data);
+        const resolvedData = await resolveAllKeys(this.fields.reduce(
+          (resolvers, field) => ({
+            ...resolvers,
+            [field.path]: field.createFieldPreHook(data[field.path]),
+          }),
+          {}
+        ));
+
+        const newItem = await this.model.create(resolvedData);
+
+        await Promise.all(this.fields.map(
+          field => field.createFieldPostHook(newItem[field.path], newItem)
+        ));
+
+        return newItem;
       },
       [this.updateMutationName]: async (_, { id, data }) => {
         const item = await this.model.findById(id);
@@ -281,7 +295,7 @@ module.exports = class List {
         console.log(this.updateMutationName, 'new item', newItem);
 
         await Promise.all(this.fields.map(
-          field => field.updateFieldPostHook(item[field.path], newItem)
+          field => field.updateFieldPostHook(newItem[field.path], newItem)
         ));
 
         return newItem;
