@@ -5,7 +5,7 @@
 version: 2
 
 jobs:
-  build:
+  simple_tests:
     docker:
       # specify the version you desire here
       - image: circleci/node:carbon
@@ -51,3 +51,41 @@ jobs:
           path: reports/junit
       - store_artifacts:
           path: reports/junit
+
+  integration_tests:
+    docker:
+      - image: circleci/node:carbon
+      - image: mongo:3.4.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-
+      - run: sudo apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
+      - run: sudo yarn global add bolt
+      - run: bolt
+      - run: yarn pm2 start packages/test-project/index.js
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      - run:
+          name: Running E2E tests
+          command: yarn cypress:run --reporter junit --reporter-options "mochaFile=reports/junit/cypress-results.xml"
+
+      - store_artifacts:
+          path: cypress/videos
+      - store_artifacts:
+          path: cypress/screenshots
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - simple_tests
+      - integration_tests

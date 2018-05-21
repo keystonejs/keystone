@@ -52,6 +52,36 @@ You can also run `bolt format` to prettier all the things.
 
 The `lint` script will validate source code with both eslint and prettier.
 
+## Testing
+
+Keystone uses [Jest](https://facebook.github.io/jest/) for unit tests and [Cypress](https://www.cypress.io/) for end to end tests. All tests can be run locally and on [CircleCI]((https://circleci.com/gh/keystonejs/keystone-5).)
+
+### Unit tests
+
+To run the unit tests, run the script
+
+`bolt jest`
+
+Unit tests for each package can be found in `packages/<package>/tests` and following the naming pattern `<module>.test.js`.
+
+### End to end tests
+
+Keystone tests end to end functionality with the help of [Cypress](https://www.cypress.io/). To run these tests, you first need to start the `test-project` application by running
+
+`bolt start`
+
+The tests can then be run with
+
+`bolt cypress:run`
+
+Cypress can be run in interactive mode with its built in GUI, which is useful when developing and debugging tests.
+
+`bolt cypress:open`
+
+End to end tests live in `cypress/integration/*spec.js`.
+
+###
+
 ## License
 
 Copyright (c) 2018 Jed Watson. Licensed under the MIT License.

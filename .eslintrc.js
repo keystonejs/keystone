@@ -5,8 +5,9 @@ module.exports = {
     es6: true,
     node: true,
     jest: true,
+    'cypress/globals': true,
   },
-  plugins: ['react', 'jest'],
+  plugins: ['react', 'jest', 'cypress'],
   rules: {
     curly: ['error', 'multi-line'],
     'jsx-quotes': 'error',

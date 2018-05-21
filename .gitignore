@@ -70,3 +70,7 @@ junit.xml
 # Editor
 *.sublime-project
 *.sublime-workspace
+
+# Cypress
+cypress/screenshots
+cypress/videos
