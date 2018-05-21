@@ -17,12 +17,6 @@ type Props = {
 };
 type State = { isOpen: boolean };
 
-function focus(el) {
-  if (el && typeof el.focus === 'function') {
-    el.focus();
-  }
-}
-
 function getDisplayName(C) {
   return `withModalHandlers(${C.displayName || C.name})`;
 }
