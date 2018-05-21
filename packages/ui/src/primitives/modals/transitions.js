@@ -18,7 +18,7 @@ type ProviderProps = {
 };
 
 export const TransitionProvider = ({ children, isOpen }: ProviderProps) => (
-  <TransitionGroup>
+  <TransitionGroup component={null}>
     {isOpen ? (
       <Transition
         appear
