@@ -5,7 +5,6 @@ const requiredConfig = {
 };
 
 const defaultConfig = {
-  adminPath: '/admin',
   port: process.env.PORT || 3000,
 };
 

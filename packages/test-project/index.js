@@ -74,14 +74,11 @@ keystone.createList('PostCategory', {
   },
 });
 
-const admin = new AdminUI(keystone, {
-  'user model': 'User',
-});
+const admin = new AdminUI(keystone, '/admin');
 
 const server = new WebServer(keystone, {
   'cookie secret': 'qwerty',
   'admin ui': admin,
-  adminPath: '/admin',
   session: true,
   port,
 });
@@ -147,7 +144,7 @@ server.app.get('/reset-db', (req, res) => {
   const reset = async () => {
     await keystone.mongoose.connection.dropDatabase();
     await keystone.createItems(initialData);
-    res.redirect('/admin');
+    res.redirect(admin.adminPath);
   };
   reset();
 });
