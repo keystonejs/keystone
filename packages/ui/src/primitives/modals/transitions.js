@@ -43,7 +43,7 @@ export const withTransitionState = (Comp: ComponentType<*>) => ({
 };
 
 // ==============================
-// Transition Handler
+// Transition Reducer
 // ==============================
 
 type Styles = { [string]: string | number };
@@ -51,9 +51,9 @@ type TransitionProps = {
   children: Element<*>,
   transitionState: TransitionState,
 };
-type HandlerProps = {
-  defaultStyles: Styles,
-  transitionStyles: {
+type ReducerProps = {
+  constant: Styles,
+  dynamic: {
     entering?: Styles,
     entered?: Styles,
     exiting?: Styles,
@@ -61,15 +61,15 @@ type HandlerProps = {
   },
 };
 
-const TransitionHandler = ({
+const TransitionReducer = ({
   children,
-  defaultStyles,
-  transitionStyles,
+  constant,
+  dynamic,
   transitionState,
-}: HandlerProps & TransitionProps) => {
+}: ReducerProps & TransitionProps) => {
   const style = {
-    ...defaultStyles,
-    ...transitionStyles[transitionState],
+    ...constant,
+    ...dynamic[transitionState],
   };
 
   return cloneElement(children, { style });
@@ -83,11 +83,11 @@ const TransitionHandler = ({
 // ------------------------------
 
 export const Fade = (props: TransitionProps) => (
-  <TransitionHandler
-    defaultStyles={{
+  <TransitionReducer
+    constant={{
       transition: `opacity ${transitionDuration} ${transitionTimingFunction}`,
     }}
-    transitionStyles={{
+    dynamic={{
       entering: { opacity: 1 },
       entered: { opacity: 1 },
       exiting: { opacity: 0 },
@@ -106,13 +106,13 @@ export const SlideUp = (props: TransitionProps) => {
     transform: 'scale(0.95) translate3d(0,20px,0)',
   };
   return (
-    <TransitionHandler
-      defaultStyles={{
+    <TransitionReducer
+      constant={{
         transitionProperty: 'opacity, transform',
         transitionDuration,
         transitionTimingFunction,
       }}
-      transitionStyles={{
+      dynamic={{
         entering: { opacity: 1 },
         entered: { opacity: 1 },
         exiting: out,
@@ -132,13 +132,13 @@ export const SlideDown = (props: TransitionProps) => {
     transform: 'translate3d(0,-8px,0)',
   };
   return (
-    <TransitionHandler
-      defaultStyles={{
+    <TransitionReducer
+      constant={{
         transitionProperty: 'opacity, transform',
         transitionDuration,
         transitionTimingFunction,
       }}
-      transitionStyles={{
+      dynamic={{
         entering: { opacity: 1, transform: 'translate3d(0,0,0)' },
         entered: { opacity: 1, transform: 'translate3d(0,0,0)' },
         exiting: out,
