@@ -4,7 +4,6 @@ import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import { Link, withRouter } from 'react-router-dom';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import pReduce from 'p-reduce';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
@@ -126,7 +125,6 @@ const ItemDetails = withRouter(
       this.closeConfirmResetModal();
     };
     onChange = (field, value) => {
-      console.log(value);
       const { item } = this.state;
       this.setState({
         item: {
@@ -176,10 +174,8 @@ const ItemDetails = withRouter(
         values[field.path] = field.getValue(item);
         return values;
       }, {}))
-      .then(data => {
-        console.log('Updating with', data);
-        return updateItem({ variables: { id, data } });
-      }).then(onUpdate);
+      .then(data => updateItem({ variables: { id, data } }))
+      .then(onUpdate);
     };
     onCopy = (text, success) => {
       if (success) {

@@ -81,8 +81,7 @@ module.exports = class File extends Implementation {
   getGraphqlAuxiliaryMutationResolvers() {
     return {
       uploadFile: (obj, { file }) => {
-        console.log('uploadFile mutation', file);
-        return {};
+        throw new Error('uploadFile mutation not implemented');
         //return this.processUpload(file);
       },
     };
