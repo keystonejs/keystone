@@ -79,14 +79,16 @@ const TransitionReducer = ({
 // Transitions
 // ==============================
 
+function makeTransitionBase(transitionProperty: string) {
+  return { transitionProperty, transitionDuration, transitionTimingFunction };
+}
+
 // Fade
 // ------------------------------
 
 export const Fade = (props: TransitionProps) => (
   <TransitionReducer
-    constant={{
-      transition: `opacity ${transitionDuration} ${transitionTimingFunction}`,
-    }}
+    constant={makeTransitionBase('opacity')}
     dynamic={{
       entering: { opacity: 1 },
       entered: { opacity: 1 },
@@ -107,11 +109,7 @@ export const SlideUp = (props: TransitionProps) => {
   };
   return (
     <TransitionReducer
-      constant={{
-        transitionProperty: 'opacity, transform',
-        transitionDuration,
-        transitionTimingFunction,
-      }}
+      constant={makeTransitionBase('opacity, transform')}
       dynamic={{
         entering: { opacity: 1 },
         entered: { opacity: 1 },
@@ -133,11 +131,7 @@ export const SlideDown = (props: TransitionProps) => {
   };
   return (
     <TransitionReducer
-      constant={{
-        transitionProperty: 'opacity, transform',
-        transitionDuration,
-        transitionTimingFunction,
-      }}
+      constant={makeTransitionBase('opacity, transform')}
       dynamic={{
         entering: { opacity: 1, transform: 'translate3d(0,0,0)' },
         entered: { opacity: 1, transform: 'translate3d(0,0,0)' },
