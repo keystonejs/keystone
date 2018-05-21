@@ -8,12 +8,11 @@ const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 const getWebpackConfig = require('./getWebpackConfig');
 
 module.exports = class AdminUI {
-  constructor(keystone, adminPath = '/admin') {
+  constructor(keystone, { adminPath = '/admin' }) {
     this.keystone = keystone;
     this.adminPath = adminPath;
     this.graphiqlPath = `${adminPath}/graphiql`;
     this.apiPath = `${this.adminPath}/api`;
-    this.adminMeta = {};
 
     this.signin = this.signin.bind(this);
     this.signout = this.signout.bind(this);
@@ -79,9 +78,6 @@ module.exports = class AdminUI {
       })
     );
     app.get(`${this.apiPath}/session`, this.session);
-
-    this.adminMeta.apiPath = this.apiPath;
-
     return app;
   }
 
@@ -92,10 +88,6 @@ module.exports = class AdminUI {
     const schema = this.keystone.getAdminSchema();
     app.use(this.apiPath, bodyParser.json(), graphqlExpress({ schema }));
     app.use(this.graphiqlPath, graphiqlExpress({ endpointURL: this.apiPath }));
-
-    this.adminMeta.apiPath = this.apiPath;
-    this.adminMeta.graphiqlPath = this.apiPath;
-
     return app;
   }
 
@@ -110,8 +102,10 @@ module.exports = class AdminUI {
 
     // add the webpack dev middleware
     const webpackConfig = getWebpackConfig({
-      adminMeta: { ...this.adminMeta, ...this.keystone.getAdminMeta() },
+      adminMeta: this.keystone.getAdminMeta(),
       adminPath: this.adminPath,
+      apiPath: this.apiPath,
+      graphiqlPath: this.graphiqlPath,
     });
     const compiler = webpack(webpackConfig);
     app.use(

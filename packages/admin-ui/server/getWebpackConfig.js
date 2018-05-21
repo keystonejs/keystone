@@ -4,7 +4,7 @@ const path = require('path');
 
 const { mode } = require('./env');
 
-module.exports = function({ adminMeta, adminPath }) {
+module.exports = function({ adminMeta, adminPath, apiPath, graphiqlPath }) {
   return {
     mode,
     context: path.resolve(__dirname, '../client/'),
@@ -18,6 +18,8 @@ module.exports = function({ adminMeta, adminPath }) {
       new webpack.DefinePlugin({
         KEYSTONE_ADMIN_META: JSON.stringify({
           adminPath,
+          apiPath,
+          graphiqlPath,
           ...adminMeta,
         }),
       }),
