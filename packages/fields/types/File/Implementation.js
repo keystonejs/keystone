@@ -1,28 +1,10 @@
 const Implementation = require('../../Implementation');
 
-const fs = require('fs');
-const path = require('path');
 const { escapeRegExp: esc } = require('@keystonejs/utils');
 const { GraphQLUpload } = require('apollo-upload-server');
 const {
   Types: { ObjectId },
 } = require('mongoose');
-
-const storeFS = ({ stream, filePath }) => {
-  return new Promise((resolve, reject) =>
-    stream
-      .on('error', error => {
-        if (stream.truncated) {
-          // Delete the truncated file
-          fs.unlinkSync(filePath);
-        }
-        reject(error);
-      })
-      .pipe(fs.createWriteStream(filePath))
-      .on('error', error => reject(error))
-      .on('finish', () => resolve())
-  );
-};
 
 module.exports = class File extends Implementation {
   constructor() {
@@ -31,13 +13,16 @@ module.exports = class File extends Implementation {
   }
   addToMongooseSchema(schema) {
     const { mongooseOptions } = this.config;
-    // TODO: Ugh, this feels dumb. How else can we avoid recreating the schema
-    // over and over again?
     schema.add({
       [this.path]: {
         ...mongooseOptions,
-        type: { id: ObjectId, path: String, filename: String, mimetype: String },
-      }
+        type: {
+          id: ObjectId,
+          path: String,
+          filename: String,
+          mimetype: String,
+        },
+      },
     });
   }
   extendAdminMeta(meta) {
@@ -63,19 +48,21 @@ module.exports = class File extends Implementation {
         filename: String
         mimetype: String
         encoding: String
+        publicUrl: String
       }
     `;
   }
   // Called on `User.avatar` for example
   getGraphqlFieldResolvers() {
     return {
-      [this.path]: (item) => {
+      [this.path]: item => {
         if (!item[this.path]) {
-          console.log('no avatar, bailing from resolver', item, this.path);
           return null;
         }
-        console.log('found avatar', item[this.path]);
-        return item[this.path];
+        return {
+          publicUrl: this.config.adapter.publicUrl(item[this.path]),
+          ...item[this.path],
+        };
       },
     };
   }
@@ -95,23 +82,28 @@ module.exports = class File extends Implementation {
         console.log('uploadFile mutation', file);
         return {};
         //return this.processUpload(file);
-      }
+      },
     };
   }
   createFieldPreHook() {
     // TODO
   }
   async updateFieldPreHook(uploadData, item) {
-    console.log('updateFieldPreHook', { uploadData, item });
+    const {
+      stream,
+      filename: originalFilename,
+      mimetype,
+      encoding,
+    } = await uploadData;
+    const newId = new ObjectId();
 
-    const { stream, filename, mimetype, encoding } = await uploadData;
-    const id = new ObjectId();
-    const generatedFilename = `${id}-${filename}`;
+    const { id, filename } = await this.config.adapter.save({
+      stream,
+      filename: originalFilename,
+      id: newId,
+    });
 
-    await storeFS({ stream, filePath: path.join(this.config.directory, generatedFilename) });
-
-    console.log('upload complete', { id, generatedFilename, mimetype, encoding });
-    return { id, filename: generatedFilename, mimetype, encoding };
+    return { id, filename, mimetype, encoding };
   }
   getGraphqlUpdateArgs() {
     return `

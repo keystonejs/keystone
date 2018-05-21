@@ -19,6 +19,7 @@ export default class FileController extends FieldController {
        filename
        mimetype
        encoding
+       publicUrl
     }
   `
 }

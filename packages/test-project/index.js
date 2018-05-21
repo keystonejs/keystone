@@ -10,11 +10,20 @@ const {
 } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
+const { LocalFileAdapter } = require('@keystonejs/file-adapters');
 
-const { twitterAuthEnabled, port, staticRoute, staticPath } = require('./config');
+const {
+  twitterAuthEnabled,
+  port,
+  staticRoute,
+  staticPath,
+} = require('./config');
 const { configureTwitterAuth } = require('./twitter');
 
-mkdirp.sync(staticPath);
+const AVATAR_PATH = `${staticPath}/avatars`;
+const AVATAR_ROUTE = `${staticRoute}/avatars`;
+
+mkdirp.sync(AVATAR_PATH);
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
@@ -28,6 +37,11 @@ const keystone = new Keystone({
 keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
+});
+
+const fileAdapter = new LocalFileAdapter({
+  directory: AVATAR_PATH,
+  route: AVATAR_ROUTE,
 });
 
 keystone.createList('User', {
@@ -47,7 +61,7 @@ keystone.createList('User', {
         { label: 'Cete, or Seat, or Attend ¯\\_(ツ)_/¯', value: 'cete' },
       ],
     },
-    avatar: { type: File, directory: `${staticPath}/avatars`, route: `${staticRoute}/avatars` },
+    avatar: { type: File, adapter: fileAdapter },
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });

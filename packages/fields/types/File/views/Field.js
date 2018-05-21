@@ -18,7 +18,7 @@ export default class FileField extends Component {
     onChange(field, file);
   };
   render() {
-    const { autoFocus, field, field: { config }, item: { avatar } } = this.props;
+    const { autoFocus, field, item: { avatar } } = this.props;
     return (
       <FieldContainer>
         <FieldLabel>{field.label}</FieldLabel>
@@ -30,7 +30,7 @@ export default class FileField extends Component {
             onChange={this.onChange}
           />
         </FieldInput>
-        {avatar ? <img src={`${config.route}/${avatar.filename}`} /> : null}
+        {avatar ? <img src={avatar.publicUrl} /> : null}
       </FieldContainer>
     );
   }
