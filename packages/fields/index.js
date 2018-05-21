@@ -5,4 +5,5 @@ module.exports = {
   Select: require('./types/Select'),
   Relationship: require('./types/Relationship'),
   File: require('./types/File'),
+  CloudinaryImage: require('./types/CloudinaryImage'),
 };

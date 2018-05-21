@@ -37,6 +37,7 @@
     "babel-preset-flow": "^6.23.0",
     "babel-preset-react": "^6.24.1",
     "body-parser": "^1.18.2",
+    "cloudinary": "^1.11.0",
     "dotenv-safe": "^5.0.1",
     "emotion": "^9.1.1",
     "eslint": "^4.19.1",

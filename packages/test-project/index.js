@@ -7,16 +7,19 @@ const {
   Relationship,
   Select,
   Password,
+  CloudinaryImage,
 } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
 const { LocalFileAdapter } = require('@keystonejs/file-adapters');
+const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
 
 const {
   twitterAuthEnabled,
   port,
   staticRoute,
   staticPath,
+  cloudinary,
 } = require('./config');
 const { configureTwitterAuth } = require('./twitter');
 
@@ -44,6 +47,11 @@ const fileAdapter = new LocalFileAdapter({
   route: AVATAR_ROUTE,
 });
 
+const cloudinaryAdapter = new CloudinaryAdapter({
+  ...cloudinary,
+  folder: 'avatars',
+});
+
 keystone.createList('User', {
   fields: {
     name: { type: Text },
@@ -61,7 +69,8 @@ keystone.createList('User', {
         { label: 'Cete, or Seat, or Attend ¯\\_(ツ)_/¯', value: 'cete' },
       ],
     },
-    avatar: { type: File, adapter: fileAdapter },
+    attachment: { type: File, adapter: fileAdapter },
+    avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });

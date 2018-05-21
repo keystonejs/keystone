@@ -6,5 +6,8 @@
   "repository": "https://github.com/keystonejs/keystone-5.git",
   "author": "Jess Telford <hi+npm@jes.st>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "cloudinary": "^1.11.0"
+  }
 }

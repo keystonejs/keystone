@@ -21,6 +21,7 @@ module.exports = class File extends Implementation {
           path: String,
           filename: String,
           mimetype: String,
+          _meta: Object,
         },
       },
     });
@@ -56,12 +57,13 @@ module.exports = class File extends Implementation {
   getGraphqlFieldResolvers() {
     return {
       [this.path]: item => {
-        if (!item[this.path]) {
+        const itemValues = item[this.path];
+        if (!itemValues) {
           return null;
         }
         return {
-          publicUrl: this.config.adapter.publicUrl(item[this.path]),
-          ...item[this.path],
+          publicUrl: this.config.adapter.publicUrl(itemValues),
+          ...itemValues,
         };
       },
     };
@@ -88,22 +90,33 @@ module.exports = class File extends Implementation {
   createFieldPreHook() {
     // TODO
   }
-  async updateFieldPreHook(uploadData, item) {
+  async updateFieldPreHook(uploadData) {
+    // TODO: FIXME: Handle when uploadData is null. Can happen when:
+    // 1. Deleting the file
+    // 2. Updating some other part of the item, but not the file (gets null
+    //    because no File DOM element is uploaded)
+    if (!uploadData) {
+      return null;
+    }
+
     const {
       stream,
       filename: originalFilename,
       mimetype,
       encoding,
     } = await uploadData;
+
     const newId = new ObjectId();
 
-    const { id, filename } = await this.config.adapter.save({
+    const { id, filename, _meta } = await this.config.adapter.save({
       stream,
       filename: originalFilename,
+      mimetype,
+      encoding,
       id: newId,
     });
 
-    return { id, filename, mimetype, encoding };
+    return { id, filename, mimetype, encoding, _meta };
   }
   getGraphqlUpdateArgs() {
     return `
