@@ -91,14 +91,4 @@ module.exports = class CloudinaryImage extends FileImplementation {
       },
     };
   }
-  getGraphqlUpdateArgs() {
-    return `
-      ${this.path}: ${this.getFileUploadType()}
-    `;
-  }
-  getGraphqlCreateArgs() {
-    return `
-      ${this.path}: ${this.getFileUploadType()}
-    `;
-  }
 };
