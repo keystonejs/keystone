@@ -31,7 +31,7 @@ export default class FileField extends Component {
             onChange={this.onChange}
           />
         </FieldInput>
-        {file ? <a href={file.publicUrl} target="_blank">{(new URL(file.publicUrl)).pathname}</a> : null}
+        {file && file.publicUrl ? <a href={file.publicUrl} target="_blank">{file.publicUrl}</a> : null}
       </FieldContainer>
     );
   }
