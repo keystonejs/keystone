@@ -353,9 +353,8 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
               <Mutation mutation={list.updateMutation}>
                 {(
                   updateItem,
-                  { loading: updateInProgress, error: updateError, ...rest }
+                  { loading: updateInProgress, error: updateError }
                 ) => {
-                  console.log('update mutation', rest);
                   return (
                     <ItemDetails
                       adminPath={adminPath}
