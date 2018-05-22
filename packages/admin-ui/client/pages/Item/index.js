@@ -21,7 +21,8 @@ import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { A11yText, Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
-import { colors } from '@keystonejs/ui/src/theme';
+import { Alert } from '@keystonejs/ui/src/primitives/alert';
+import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import { resolveAllKeys } from '@keystonejs/utils';
 
@@ -208,7 +209,12 @@ const ItemDetails = withRouter(
     };
 
     render() {
-      const { adminPath, list } = this.props;
+      const {
+        adminPath,
+        list,
+        updateInProgress,
+        updateErrorMessage,
+      } = this.props;
       const { copyText, item, itemHasChanged } = this.state;
       const isCopied = copyText === item.id;
       const CopyIcon = isCopied ? CheckIcon : ClippyIcon;
@@ -216,6 +222,11 @@ const ItemDetails = withRouter(
 
       return (
         <Fragment>
+          {updateErrorMessage ? (
+            <Alert appearance="danger" css={{ marginTop: gridSize * 3 }}>
+              {updateErrorMessage}
+            </Alert>
+          ) : null}
           <FlexGroup align="center" justify="space-between">
             <Title>
               <Link to={listHref}>{list.label}</Link>: {item.name}
@@ -258,6 +269,7 @@ const ItemDetails = withRouter(
             onSave={this.onSave}
             onDelete={this.showDeleteModal}
             onReset={itemHasChanged ? this.showConfirmResetModal : undefined}
+            updateInProgress={updateInProgress}
           />
           <FooterNavigation>
             <IconButton
@@ -339,18 +351,24 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
             const item = data[list.itemQueryName];
             return item ? (
               <Mutation mutation={list.updateMutation}>
-                {(updateItem, { loading: updateInProgress }) => (
-                  <ItemDetails
-                    adminPath={adminPath}
-                    item={item}
-                    key={itemId}
-                    list={list}
-                    getListByKey={getListByKey}
-                    onUpdate={refetch}
-                    updateInProgress={updateInProgress}
-                    updateItem={updateItem}
-                  />
-                )}
+                {(
+                  updateItem,
+                  { loading: updateInProgress, error: updateError }
+                ) => {
+                  return (
+                    <ItemDetails
+                      adminPath={adminPath}
+                      item={item}
+                      key={itemId}
+                      list={list}
+                      getListByKey={getListByKey}
+                      onUpdate={refetch}
+                      updateInProgress={updateInProgress}
+                      updateErrorMessage={updateError && updateError.message}
+                      updateItem={updateItem}
+                    />
+                  );
+                }}
               </Mutation>
             ) : (
               <ItemNotFound adminPath={adminPath} itemId={itemId} list={list} />
