@@ -1,10 +1,13 @@
 const fs = require('fs');
 const path = require('path');
+const mkdirp = require('mkdirp');
 
 module.exports = class LocalFileAdapter {
   constructor({ directory, route }) {
     this.directory = directory;
     this.route = route;
+
+    mkdirp.sync(this.directory);
   }
 
   /**

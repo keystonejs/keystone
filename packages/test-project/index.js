@@ -1,4 +1,3 @@
-const mkdirp = require('mkdirp');
 const { AdminUI } = require('@keystonejs/admin-ui');
 const { Keystone } = require('@keystonejs/core');
 const {
@@ -25,12 +24,8 @@ const {
 } = require('./config');
 const { configureTwitterAuth } = require('./twitter');
 
-const AVATAR_PATH = `${staticPath}/avatars`;
-const AVATAR_ROUTE = `${staticRoute}/avatars`;
 const LOCAL_FILE_PATH = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
-
-mkdirp.sync(LOCAL_FILE_PATH);
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');

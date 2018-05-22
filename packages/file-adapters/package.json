@@ -8,6 +8,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "cloudinary": "^1.11.0"
+    "cloudinary": "^1.11.0",
+    "mkdirp": "^0.5.1"
   }
 }
