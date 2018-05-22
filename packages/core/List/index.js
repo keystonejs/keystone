@@ -264,7 +264,10 @@ module.exports = class List {
           this.fields.reduce(
             (resolvers, field) => ({
               ...resolvers,
-              [field.path]: field.createFieldPreHook(data[field.path]),
+              [field.path]: field.createFieldPreHook(
+                data[field.path],
+                field.path
+              ),
             }),
             {}
           )
@@ -274,7 +277,7 @@ module.exports = class List {
 
         await Promise.all(
           this.fields.map(field =>
-            field.createFieldPostHook(newItem[field.path], newItem)
+            field.createFieldPostHook(newItem[field.path], field.path, newItem)
           )
         );
 
@@ -287,7 +290,11 @@ module.exports = class List {
           this.fields.reduce(
             (resolvers, field) => ({
               ...resolvers,
-              [field.path]: field.updateFieldPreHook(data[field.path], item),
+              [field.path]: field.updateFieldPreHook(
+                data[field.path],
+                field.path,
+                item
+              ),
             }),
             {}
           )
@@ -298,7 +305,7 @@ module.exports = class List {
 
         await Promise.all(
           this.fields.map(field =>
-            field.updateFieldPostHook(newItem[field.path], newItem)
+            field.updateFieldPostHook(newItem[field.path], field.path, newItem)
           )
         );
 

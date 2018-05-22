@@ -90,11 +90,9 @@ module.exports = class File extends Implementation {
       },
     };
   }
-  async saveStream(uploadData) {
+  async saveStream(uploadData, previousData) {
     // TODO: FIXME: Handle when uploadData is null. Can happen when:
-    // 1. Deleting the file
-    // 2. Updating some other part of the item, but not the file (gets null
-    //    because no File DOM element is uploaded)
+    // Deleting the file
     if (!uploadData) {
       return null;
     }
@@ -104,7 +102,15 @@ module.exports = class File extends Implementation {
       filename: originalFilename,
       mimetype,
       encoding,
+      ...resolvedUploadData
     } = await uploadData;
+
+    if (!stream && previousData) {
+      // TODO: FIXME: Handle when stream is null. Can happen when:
+      // Updating some other part of the item, but not the file (gets null
+      // because no File DOM element is uploaded)
+      return previousData;
+    }
 
     const newId = new ObjectId();
 
@@ -121,8 +127,8 @@ module.exports = class File extends Implementation {
   createFieldPreHook(uploadData) {
     return this.saveStream(uploadData);
   }
-  updateFieldPreHook(uploadData) {
-    return this.saveStream(uploadData);
+  updateFieldPreHook(uploadData, path, item) {
+    return this.saveStream(uploadData, item[path]);
   }
   getGraphqlUpdateArgs() {
     return `
