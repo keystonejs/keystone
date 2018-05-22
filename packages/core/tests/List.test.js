@@ -204,7 +204,8 @@ test('getAdminGraphqlQueries()', () => {
   });
   const queries = list.getAdminGraphqlQueries();
 
-  expect(queries).toEqual([`
+  expect(queries).toEqual([
+    `
         allTests(
           search: String
           sort: String
@@ -234,7 +235,8 @@ test('getAdminGraphqlQueries()', () => {
           # New field
           email_query_args
         ): _QueryMeta
-      `]);
+      `,
+  ]);
 });
 
 test('getAdminGraphqlMutations()', () => {
@@ -244,7 +246,8 @@ test('getAdminGraphqlMutations()', () => {
   });
   const mutations = list.getAdminGraphqlMutations().map(mute => mute.trim());
 
-  expect(mutations).toEqual([`
+  expect(mutations).toEqual([
+    `
         createTest(
           data: TestUpdateInput
         ): Test
@@ -258,7 +261,8 @@ test('getAdminGraphqlMutations()', () => {
         deleteTests(
           ids: [String!]
         ): Test
-     `.trim()]);
+     `.trim(),
+  ]);
 });
 
 test('getAdminQueryResolvers()', () => {
