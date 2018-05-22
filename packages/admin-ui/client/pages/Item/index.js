@@ -170,12 +170,14 @@ const ItemDetails = withRouter(
         onUpdate,
         updateItem,
       } = this.props;
-      resolveAllKeys(fields.reduce((values, field) => {
-        values[field.path] = field.getValue(item);
-        return values;
-      }, {}))
-      .then(data => updateItem({ variables: { id, data } }))
-      .then(onUpdate);
+      resolveAllKeys(
+        fields.reduce((values, field) => {
+          values[field.path] = field.getValue(item);
+          return values;
+        }, {})
+      )
+        .then(data => updateItem({ variables: { id, data } }))
+        .then(onUpdate);
     };
     onCopy = (text, success) => {
       if (success) {

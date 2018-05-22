@@ -9,7 +9,12 @@ import {
 import { Input } from '@keystonejs/ui/src/primitives/forms';
 
 export default class FileField extends Component {
-  onChange = ({ target: { validity, files: [file] } }) => {
+  onChange = ({
+    target: {
+      validity,
+      files: [file],
+    },
+  }) => {
     const { field, onChange } = this.props;
     if (!validity.valid) {
       // TODO - show error state
@@ -31,7 +36,9 @@ export default class FileField extends Component {
             onChange={this.onChange}
           />
         </FieldInput>
-        {file && file.publicUrlTransformed && file.publicUrlTransformed.url ? <img src={file.publicUrlTransformed.url} alt={field.path} /> : null}
+        {file && file.publicUrlTransformed && file.publicUrlTransformed.url ? (
+          <img src={file.publicUrlTransformed.url} alt={field.path} />
+        ) : null}
       </FieldContainer>
     );
   }

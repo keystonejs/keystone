@@ -71,7 +71,10 @@ module.exports = class CloudinaryImage extends FileImplementation {
         return {
           publicUrl: this.config.adapter.publicUrl(itemValues),
           publicUrlTransformed: ({ transformation }) => ({
-            url: this.config.adapter.publicUrlTransformed(itemValues, transformation),
+            url: this.config.adapter.publicUrlTransformed(
+              itemValues,
+              transformation
+            ),
           }),
           ...itemValues,
         };
@@ -80,7 +83,9 @@ module.exports = class CloudinaryImage extends FileImplementation {
   }
   getGraphqlAuxiliaryMutations() {
     return `
-      uploadCloudinaryImage(file: ${this.getFileUploadType()}!): ${this.graphQLType}
+      uploadCloudinaryImage(file: ${this.getFileUploadType()}!): ${
+      this.graphQLType
+    }
     `;
   }
   getGraphqlAuxiliaryMutationResolvers() {

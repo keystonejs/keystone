@@ -47,9 +47,13 @@ module.exports = class Field {
    * file on S3 in the `createFieldPreHook()`, then return asn S3 object ID as
    * the result to store in `avatar`
    */
-  createFieldPreHook(data) { return data; }
+  createFieldPreHook(data) {
+    return data;
+  }
   createFieldPostHook() {}
-  updateFieldPreHook(data) { return data; }
+  updateFieldPreHook(data) {
+    return data;
+  }
   updateFieldPostHook() {}
 
   getGraphqlQueryArgs() {}

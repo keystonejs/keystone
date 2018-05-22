@@ -12,5 +12,5 @@ export default class FileController extends FieldController {
          url
        }
     }
-  `
+  `;
 }

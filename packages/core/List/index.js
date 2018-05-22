@@ -260,39 +260,47 @@ module.exports = class List {
   getAdminMutationResolvers() {
     return {
       [this.createMutationName]: async (_, { data }) => {
-        const resolvedData = await resolveAllKeys(this.fields.reduce(
-          (resolvers, field) => ({
-            ...resolvers,
-            [field.path]: field.createFieldPreHook(data[field.path]),
-          }),
-          {}
-        ));
+        const resolvedData = await resolveAllKeys(
+          this.fields.reduce(
+            (resolvers, field) => ({
+              ...resolvers,
+              [field.path]: field.createFieldPreHook(data[field.path]),
+            }),
+            {}
+          )
+        );
 
         const newItem = await this.model.create(resolvedData);
 
-        await Promise.all(this.fields.map(
-          field => field.createFieldPostHook(newItem[field.path], newItem)
-        ));
+        await Promise.all(
+          this.fields.map(field =>
+            field.createFieldPostHook(newItem[field.path], newItem)
+          )
+        );
 
         return newItem;
       },
       [this.updateMutationName]: async (_, { id, data }) => {
         const item = await this.model.findById(id);
 
-        const resolvedData = await resolveAllKeys(this.fields.reduce(
-          (resolvers, field) => ({
-            ...resolvers,
-            [field.path]: field.updateFieldPreHook(data[field.path], item),
-          }),
-          {}
-        ));
+        const resolvedData = await resolveAllKeys(
+          this.fields.reduce(
+            (resolvers, field) => ({
+              ...resolvers,
+              [field.path]: field.updateFieldPreHook(data[field.path], item),
+            }),
+            {}
+          )
+        );
 
         item.set(resolvedData);
         const newItem = await item.save();
 
-        await Promise.all(this.fields.map(
-          field => field.updateFieldPostHook(newItem[field.path], newItem)
-        ));
+        await Promise.all(
+          this.fields.map(field =>
+            field.updateFieldPostHook(newItem[field.path], newItem)
+          )
+        );
 
         return newItem;
       },

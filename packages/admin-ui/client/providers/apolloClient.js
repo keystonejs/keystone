@@ -30,40 +30,41 @@ class BoostClientWithUplaod extends ApolloClient {
       config && config.onError
         ? onError(config.onError)
         : onError(({ graphQLErrors, networkError }) => {
-          if (graphQLErrors) {
-            graphQLErrors.map(({ message, locations, path }) =>
-              console.log(
-                `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-              ),
-            );
-          }
-          if (networkError) {
-            console.log(`[Network error]: ${networkError}`);
-          }
-        });
+            if (graphQLErrors) {
+              graphQLErrors.map(({ message, locations, path }) =>
+                console.log(
+                  `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+                )
+              );
+            }
+            if (networkError) {
+              console.log(`[Network error]: ${networkError}`);
+            }
+          });
 
     const requestHandler =
       config && config.request
-        ? new ApolloLink((operation, forward) =>
-            new Observable(observer => {
-              let handle: any;
-              Promise.resolve(operation)
-                .then(oper => config.request(oper))
-                .then(() => {
-                  handle = forward(operation).subscribe({
-                    next: observer.next.bind(observer),
-                    error: observer.error.bind(observer),
-                    complete: observer.complete.bind(observer),
-                  });
-                })
-                .catch(observer.error.bind(observer));
+        ? new ApolloLink(
+            (operation, forward) =>
+              new Observable(observer => {
+                let handle: any;
+                Promise.resolve(operation)
+                  .then(oper => config.request(oper))
+                  .then(() => {
+                    handle = forward(operation).subscribe({
+                      next: observer.next.bind(observer),
+                      error: observer.error.bind(observer),
+                      complete: observer.complete.bind(observer),
+                    });
+                  })
+                  .catch(observer.error.bind(observer));
 
-              return () => {
-                if (handle) {
-                  return handle.unsubscribe;
-                }
-              };
-            })
+                return () => {
+                  if (handle) {
+                    return handle.unsubscribe;
+                  }
+                };
+              })
           )
         : false;
 
@@ -73,12 +74,9 @@ class BoostClientWithUplaod extends ApolloClient {
       credentials: 'same-origin',
     });
 
-    const link = ApolloLink.from([
-      errorLink,
-      requestHandler,
-      stateLink,
-      httpLink,
-    ].filter(x => !!x));
+    const link = ApolloLink.from(
+      [errorLink, requestHandler, stateLink, httpLink].filter(x => !!x)
+    );
 
     // super hacky, we will fix the types eventually
     super({ cache, link });

@@ -26,12 +26,13 @@ class CreateItemModal extends Component {
     if (isLoading) return;
     const { item } = this.state;
 
-    resolveAllKeys(fields.reduce((values, field) => {
-      values[field.path] = field.getValue(item);
-    }, {}))
-    .then(data => (
-      createItem({ variables: { data } })
-    )).then(this.props.onCreate);
+    resolveAllKeys(
+      fields.reduce((values, field) => {
+        values[field.path] = field.getValue(item);
+      }, {})
+    )
+      .then(data => createItem({ variables: { data } }))
+      .then(this.props.onCreate);
   };
   onClose = () => {
     const { isLoading } = this.props;

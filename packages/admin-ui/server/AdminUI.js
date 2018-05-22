@@ -91,7 +91,7 @@ module.exports = class AdminUI {
       this.apiPath,
       bodyParser.json(),
       // TODO: Make configurable
-      apolloUploadExpress({ maxFileSize: 200*1024*1024, maxFiles: 5 }),
+      apolloUploadExpress({ maxFileSize: 200 * 1024 * 1024, maxFiles: 5 }),
       graphqlExpress({ schema })
     );
     app.use(this.graphiqlPath, graphiqlExpress({ endpointURL: this.apiPath }));

@@ -2,12 +2,15 @@ const cloudinary = require('cloudinary');
 
 function uploadStream(stream, options) {
   return new Promise((resolve, reject) => {
-    const cloudinaryStream = cloudinary.v2.uploader.upload_stream(options, (error, result) => {
-      if (error) {
-        return reject(error);
+    const cloudinaryStream = cloudinary.v2.uploader.upload_stream(
+      options,
+      (error, result) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(result);
       }
-      resolve(result);
-    });
+    );
 
     stream.pipe(cloudinaryStream);
   });
@@ -16,7 +19,9 @@ function uploadStream(stream, options) {
 module.exports = class CloudinaryAdapter {
   constructor(options) {
     if (!options.cloudName || !options.apiKey || !options.apiSecret) {
-      throw new Error('CloudinaryAdapter requires cloudName, apiKey, and apiSecret');
+      throw new Error(
+        'CloudinaryAdapter requires cloudName, apiKey, and apiSecret'
+      );
     }
     this.cloudName = options.cloudName;
     this.apiKey = options.apiKey;
@@ -36,7 +41,7 @@ module.exports = class CloudinaryAdapter {
       api_key: this.apiKey,
       api_secret: this.apiSecret,
       cloud_name: this.cloudName,
-    }).then((result) => ({
+    }).then(result => ({
       // Return the relevant data for the File api
       id,
       filename,
