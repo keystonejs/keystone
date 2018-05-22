@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import raf from 'raf-schd';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
+import { Button, LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
 import { colors } from '@keystonejs/ui/src/theme';
 
 const Wrapper = styled.div({
@@ -101,7 +101,7 @@ export default class Footer extends Component {
   };
 
   render() {
-    const { onSave, onReset, onDelete } = this.props;
+    const { onSave, onReset, onDelete, updateInProgress } = this.props;
     const { height, position, top, width } = this.state;
 
     const wrapperStyle = { height };
@@ -111,25 +111,32 @@ export default class Footer extends Component {
       <Wrapper innerRef={this.getWrapper} style={wrapperStyle} key="wrapper">
         <Toolbar innerRef={this.getToolbar} style={footerStyle} key="footer">
           <div>
-            <Button
+            <LoadingButton
               appearance="primary"
+              isDisabled={updateInProgress}
+              isLoading={updateInProgress}
               onClick={onSave}
               style={{ marginRight: 8 }}
               type="submit"
             >
               Save Changes
-            </Button>
+            </LoadingButton>
             <Button
               appearance="warning"
+              isDisabled={!onReset || updateInProgress}
               variant="subtle"
               onClick={onReset}
-              isDisabled={!onReset}
             >
               Reset Changes
             </Button>
           </div>
           <div>
-            <Button appearance="danger" variant="subtle" onClick={onDelete}>
+            <Button
+              appearance="danger"
+              isDisabled={updateInProgress}
+              variant="subtle"
+              onClick={onDelete}
+            >
               Delete
             </Button>
           </div>
