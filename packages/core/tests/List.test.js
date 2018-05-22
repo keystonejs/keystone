@@ -11,6 +11,8 @@ class MockType {
   getAdminMeta = () => new MockAdminMeta();
   getGraphqlSchema = () => `${this.name}_schema`;
   getGraphqlAuxiliaryTypes = () => `${this.name}_types`;
+  getGraphqlAuxiliaryQueries = () => {};
+  getGraphqlAuxiliaryMutations = () => {};
   getGraphqlUpdateArgs = () => `${this.name}_update_args`;
   getGraphqlCreateArgs = () => `${this.name}_create_args`;
   getGraphqlQueryArgs = () => `${this.name}_query_args`;
@@ -164,7 +166,8 @@ test('getAdminGraphqlTypes()', () => {
   });
   const types = list.getAdminGraphqlTypes();
 
-  expect(types).toEqual(`
+  expect(types).toEqual([
+    `
       type Test {
         id: String
         # This virtual field will be resolved in one of the following ways (in this order):
@@ -176,16 +179,22 @@ test('getAdminGraphqlTypes()', () => {
         name_schema
         email_schema
       }
+      `,
+    `
       input TestUpdateInput {
         name_update_args
         email_update_args
       }
+      `,
+    `
       input TestCreateInput {
         name_create_args
         email_create_args
       }
-      name_types
-      email_types`);
+      `,
+    'name_types',
+    'email_types',
+  ]);
 });
 
 test('getAdminGraphqlQueries()', () => {
@@ -195,7 +204,7 @@ test('getAdminGraphqlQueries()', () => {
   });
   const queries = list.getAdminGraphqlQueries();
 
-  expect(queries).toEqual(`
+  expect(queries).toEqual([`
         allTests(
           search: String
           sort: String
@@ -224,7 +233,8 @@ test('getAdminGraphqlQueries()', () => {
           name_query_args
           # New field
           email_query_args
-        ): _QueryMeta`);
+        ): _QueryMeta
+      `]);
 });
 
 test('getAdminGraphqlMutations()', () => {
@@ -232,9 +242,9 @@ test('getAdminGraphqlMutations()', () => {
     mongoose: new Mongoose(),
     lists: [],
   });
-  const mutations = list.getAdminGraphqlMutations();
+  const mutations = list.getAdminGraphqlMutations().map(mute => mute.trim());
 
-  expect(mutations).toEqual(`
+  expect(mutations).toEqual([`
         createTest(
           data: TestUpdateInput
         ): Test
@@ -247,7 +257,8 @@ test('getAdminGraphqlMutations()', () => {
         ): Test
         deleteTests(
           ids: [String!]
-        ): Test`);
+        ): Test
+     `.trim()]);
 });
 
 test('getAdminQueryResolvers()', () => {
