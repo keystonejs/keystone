@@ -98,7 +98,7 @@ class TwitterAuthStrategy {
     this.config = {
       idField: 'twitterId',
       usernameField: 'twitterUsername',
-      sessionListKey: 'TwitterSessions',
+      sessionListKey: 'TwitterSession',
       ...config,
     };
 
