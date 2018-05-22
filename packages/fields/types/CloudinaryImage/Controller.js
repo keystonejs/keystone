@@ -8,7 +8,7 @@ export default class FileController extends FieldController {
        filename
        mimetype
        encoding
-       publicUrlTransformed(transformation: { width: "60", height: "60" }) {
+       publicUrlTransformed(transformation: { width: "120" crop: "limit" }) {
          url
        }
     }

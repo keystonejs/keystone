@@ -104,7 +104,11 @@ export default class FileField extends Component {
     const file = item[field.path];
     const imagePath = this.getImagePath();
     const button = (
-      <LoadingButton onClick={this.openFileBrowser} isLoading={isLoading}>
+      <LoadingButton
+        onClick={this.openFileBrowser}
+        isLoading={isLoading}
+        variant="ghost"
+      >
         {buttonLabel({ hasValue: imagePath })}
       </LoadingButton>
     );
@@ -157,7 +161,8 @@ const Image = props => (
       flexShrink: 0,
       lineHeight: 0,
       marginRight: gridSize,
-      maxWidth: 100,
+      width: 130,
+      textAlign: 'center',
       padding: 4,
     }}
   >

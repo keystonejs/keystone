@@ -99,7 +99,11 @@ export default class FileField extends Component {
     const file = item[field.path];
     const imagePath = this.getImagePath();
     const button = (
-      <LoadingButton onClick={this.openFileBrowser} isLoading={isLoading}>
+      <LoadingButton
+        onClick={this.openFileBrowser}
+        isLoading={isLoading}
+        variant="ghost"
+      >
         {buttonLabel({ hasValue: file })}
       </LoadingButton>
     );

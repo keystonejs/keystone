@@ -11,8 +11,10 @@ const {
 } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
-const { LocalFileAdapter } = require('@keystonejs/file-adapters');
-const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
+const {
+  CloudinaryAdapter,
+  LocalFileAdapter,
+} = require('@keystonejs/file-adapters');
 
 const {
   twitterAuthEnabled,
@@ -25,8 +27,10 @@ const { configureTwitterAuth } = require('./twitter');
 
 const AVATAR_PATH = `${staticPath}/avatars`;
 const AVATAR_ROUTE = `${staticRoute}/avatars`;
+const LOCAL_FILE_PATH = `${staticPath}/avatars`;
+const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
-mkdirp.sync(AVATAR_PATH);
+mkdirp.sync(LOCAL_FILE_PATH);
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
@@ -43,8 +47,8 @@ keystone.createAuthStrategy({
 });
 
 const fileAdapter = new LocalFileAdapter({
-  directory: AVATAR_PATH,
-  route: AVATAR_ROUTE,
+  directory: LOCAL_FILE_PATH,
+  route: LOCAL_FILE_ROUTE,
 });
 
 const cloudinaryAdapter = new CloudinaryAdapter({
