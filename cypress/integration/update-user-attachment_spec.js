@@ -32,7 +32,7 @@ describe('Adding a file', function() {
           )
           .then(({ User: { attachment } }) => {
             // Assert the URL is visible in the admin UI
-            cy.get('body').should('contain', attachment.publicUrl);
+            cy.get(`a[href$="${attachment.publicUrl}"]`).should('be.visible');
 
             // Assert the file contents are what we uploaded
             cy
