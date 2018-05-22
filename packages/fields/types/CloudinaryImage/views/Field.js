@@ -88,10 +88,7 @@ export default class FileField extends Component {
     const { dataURI } = this.state;
     const file = item[field.path];
 
-    return (
-      (file && file.publicUrlTransformed) ||
-      dataURI
-    );
+    return (file && file.publicUrlTransformed) || dataURI;
   };
   getInputRef = ref => {
     this.inputRef = ref;
