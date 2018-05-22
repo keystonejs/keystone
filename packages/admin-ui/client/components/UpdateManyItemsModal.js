@@ -25,7 +25,7 @@ const getUpdateMutation = ({ list }) => {
   `;
 };
 
-class UpdateItemModal extends Component {
+class UpdateManyModal extends Component {
   constructor(props) {
     super(props);
     const { list } = props;
@@ -89,13 +89,13 @@ class UpdateItemModal extends Component {
     });
   };
   render() {
-    const { isLoading, items, list } = this.props;
+    const { isLoading, isOpen, items, list } = this.props;
     const { item, selectedFields } = this.state;
     const options = this.getOptions();
 
     return (
       <Dialog
-        isOpen
+        isOpen={isOpen}
         onClose={this.onClose}
         heading={`Update ${list.formatCount(items)}`}
         onKeyDown={this.onKeyDown}
@@ -148,14 +148,14 @@ class UpdateItemModal extends Component {
   }
 }
 
-export default class UpdateItemModalWithMutation extends Component {
+export default class UpdateManyModalWithMutation extends Component {
   render() {
     const { list } = this.props;
     const updateMutation = getUpdateMutation({ list });
     return (
       <Mutation mutation={updateMutation}>
         {(updateItem, { loading }) => (
-          <UpdateItemModal
+          <UpdateManyModal
             updateItem={updateItem}
             isLoading={loading}
             {...this.props}

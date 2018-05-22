@@ -97,12 +97,11 @@ class ListDisplayRow extends Component {
   };
   renderDeleteModal() {
     const { showDeleteModal } = this.state;
-    if (!showDeleteModal) return;
-
     const { item, list } = this.props;
 
     return (
       <DeleteItemModal
+        isOpen={showDeleteModal}
         item={item}
         list={list}
         onClose={this.closeDeleteModal}

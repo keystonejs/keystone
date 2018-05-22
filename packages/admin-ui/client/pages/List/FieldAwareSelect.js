@@ -56,7 +56,6 @@ export default class FieldAwareSelect extends Component<SelectProps> {
 
     return (
       <Select
-        autoFocus
         backspaceRemovesValue={false}
         captureMenuScroll={false}
         closeMenuOnSelect={false}
