@@ -38,6 +38,7 @@
     "babel-preset-react": "^6.24.1",
     "body-parser": "^1.18.2",
     "cloudinary": "^1.11.0",
+    "cors": "^2.8.4",
     "dotenv-safe": "^5.0.1",
     "emotion": "^9.1.1",
     "eslint": "^4.19.1",
@@ -96,6 +97,7 @@
     ]
   },
   "devDependencies": {
+    "apollo-fetch": "^0.7.0",
     "cypress": "^2.1.0",
     "eslint-plugin-cypress": "^2.0.1",
     "mocha": "^5.2.0",

@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const path = require('path');
 const sessionMiddleware = require('express-session');
 
@@ -14,6 +15,7 @@ module.exports = class WebServer {
     const { adminUI, cookieSecret, session } = this.config;
 
     if (adminUI) {
+      this.app.use(cors())
       this.app.use(adminUI.createSessionMiddleware({ cookieSecret }));
       this.app.use(adminUI.createGraphQLMiddleware());
       this.app.use(adminUI.createDevMiddleware());

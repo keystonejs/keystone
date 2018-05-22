@@ -115,6 +115,7 @@ export default class Footer extends Component {
               appearance="primary"
               onClick={onSave}
               style={{ marginRight: 8 }}
+              type="submit"
             >
               Save Changes
             </Button>

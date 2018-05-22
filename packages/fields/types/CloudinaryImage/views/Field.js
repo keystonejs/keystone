@@ -33,6 +33,7 @@ export default class FileField extends Component {
             autocomplete="off"
             autoFocus={autoFocus}
             type="file"
+            name={field.path}
             onChange={this.onChange}
           />
         </FieldInput>

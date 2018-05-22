@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@keystonejs/utils": "^1.0.0",
+    "cors": "^2.8.4",
     "express": "^4.16.3"
   }
 }
