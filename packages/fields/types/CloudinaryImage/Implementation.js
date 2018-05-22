@@ -16,10 +16,6 @@ module.exports = class CloudinaryImage extends FileImplementation {
     return `
       ${super.getGraphqlAuxiliaryTypes()}
 
-      type CloudinaryImageUrl {
-        url: String!
-      }
-
       # Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
       # All options are strings as they ultimately end up in a URL.
       input CloudinaryImageFormat {
@@ -56,7 +52,7 @@ module.exports = class CloudinaryImage extends FileImplementation {
       }
 
       extend type ${this.graphQLType} {
-        publicUrlTransformed(transformation: CloudinaryImageFormat): CloudinaryImageUrl
+        publicUrlTransformed(transformation: CloudinaryImageFormat): String
       }
     `;
   }
@@ -70,12 +66,10 @@ module.exports = class CloudinaryImage extends FileImplementation {
         }
         return {
           publicUrl: this.config.adapter.publicUrl(itemValues),
-          publicUrlTransformed: ({ transformation }) => ({
-            url: this.config.adapter.publicUrlTransformed(
-              itemValues,
-              transformation
-            ),
-          }),
+          publicUrlTransformed: ({ transformation }) => this.config.adapter.publicUrlTransformed(
+            itemValues,
+            transformation
+          ),
           ...itemValues,
         };
       },

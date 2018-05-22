@@ -8,9 +8,7 @@ export default class FileController extends FieldController {
        filename
        mimetype
        encoding
-       publicUrlTransformed(transformation: { width: "60", height: "60" }) {
-         url
-       }
+       publicUrlTransformed(transformation: { width: "60", height: "60" })
     }
   `;
 }
