@@ -119,9 +119,15 @@ export default class FileField extends Component {
                 <div>{button}</div>
                 {errorMessage ? (
                   <ErrorInfo>{errorMessage}</ErrorInfo>
-                ) : file ? (
-                  <MetaInfo>{file.filename || file.name}</MetaInfo>
-                ) : null}
+                ) : (
+                  <MetaInfo>
+                    {file.publicUrl ? (
+                      <a href={file.publicUrl}>{file.filename || file.name}</a>
+                    ) : (
+                      file.filename || file.name
+                    )}
+                  </MetaInfo>
+                )}
                 {}
               </Content>
             </Wrapper>

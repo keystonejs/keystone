@@ -89,7 +89,7 @@ export default class FileField extends Component {
     const file = item[field.path];
 
     return (
-      (file && file.publicUrlTransformed && file.publicUrlTransformed.url) ||
+      (file && file.publicUrlTransformed) ||
       dataURI
     );
   };
