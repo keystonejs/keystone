@@ -93,13 +93,12 @@ class HomePage extends Component {
                       );
                     }}
                   </Query>
-                  {createFromList === key ? (
-                    <CreateItemModal
-                      list={list}
-                      onClose={this.closeCreateModal}
-                      onCreate={this.onCreate(list)}
-                    />
-                  ) : null}
+                  <CreateItemModal
+                    isOpen={createFromList === key}
+                    list={list}
+                    onClose={this.closeCreateModal}
+                    onCreate={this.onCreate(list)}
+                  />
                 </Fragment>
               );
             })}

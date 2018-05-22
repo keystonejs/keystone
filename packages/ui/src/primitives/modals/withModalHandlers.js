@@ -8,6 +8,7 @@ import React, {
   type Element,
 } from 'react';
 import NodeResolver from 'react-node-resolver';
+import { TransitionProvider } from './transitions';
 
 export type CloseType = ({ returnFocus: boolean }) => void;
 type Props = {
@@ -15,12 +16,6 @@ type Props = {
   defaultIsOpen: boolean,
 };
 type State = { isOpen: boolean };
-
-function focus(el) {
-  if (el && typeof el.focus === 'function') {
-    el.focus();
-  }
-}
 
 function getDisplayName(C) {
   return `withModalHandlers(${C.displayName || C.name})`;
@@ -38,20 +33,18 @@ export default function withModalHandlers(
 
     componentDidMount() {
       document.addEventListener('click', this.handleClick);
-      document.addEventListener('keydown', this.handleKeyDown, false);
     }
     componentWillUnmount() {
       document.removeEventListener('click', this.handleClick);
-      document.removeEventListener('keydown', this.handleKeyDown, false);
     }
 
     open = () => {
       this.setState({ isOpen: true });
-      focus(this.contentNode.firstChild);
+      document.addEventListener('keydown', this.handleKeyDown, false);
     };
-    close = ({ returnFocus }: { returnFocus: boolean }) => {
+    close = () => {
       this.setState({ isOpen: false });
-      if (returnFocus) this.targetNode.focus();
+      document.removeEventListener('keydown', this.handleKeyDown, false);
     };
 
     handleClick = ({ target }: MouseEvent) => {
@@ -60,9 +53,11 @@ export default function withModalHandlers(
       // appease flow
       if (!(target instanceof HTMLElement)) return;
 
-      // close on outside click
+      // NOTE: Why not use the <Blanket /> component to close?
+      // We don't want to interupt the user's flow. Taking this approach allows
+      // user to click "through" to other elements and close the popout.
       if (isOpen && !this.contentNode.contains(target)) {
-        this.close({ returnFocus: false });
+        this.close();
       }
 
       // open on target click
@@ -71,16 +66,10 @@ export default function withModalHandlers(
       }
     };
     handleKeyDown = (event: KeyboardEvent) => {
-      const { key, target } = event;
-      const { isOpen } = this.state;
+      const { key } = event;
 
-      // bail when closed
-      if (!isOpen || !(target instanceof HTMLElement)) return;
-
-      // bail when escape
       if (key === 'Escape') {
-        this.close({ returnFocus: true });
-        return;
+        this.close();
       }
     };
 
@@ -101,17 +90,22 @@ export default function withModalHandlers(
           <NodeResolver innerRef={this.getTarget}>
             {cloneElement(target, cloneProps)}
           </NodeResolver>
-          <Transition in={isOpen}>
-            <WrappedComponent
-              close={this.close}
-              open={this.open}
-              getModalRef={this.getContent}
-              targetNode={this.targetNode}
-              contentNode={this.contentNode}
-              {...this.props}
-              {...this.state}
-            />
-          </Transition>
+
+          <TransitionProvider isOpen={isOpen}>
+            {transitionState => (
+              <Transition transitionState={transitionState}>
+                <WrappedComponent
+                  close={this.close}
+                  open={this.open}
+                  getModalRef={this.getContent}
+                  targetNode={this.targetNode}
+                  contentNode={this.contentNode}
+                  {...this.props}
+                  {...this.state}
+                />
+              </Transition>
+            )}
+          </TransitionProvider>
         </Fragment>
       );
     }

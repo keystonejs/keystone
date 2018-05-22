@@ -14,14 +14,15 @@ export default class DeleteItemModal extends Component {
     }
   };
   render() {
-    const { item, list, onDelete } = this.props;
+    const { isOpen, item, list, onDelete } = this.props;
+
     return (
       <Mutation mutation={list.deleteMutation}>
         {(deleteItem, { loading }) => {
           this.isLoading = loading;
           return (
             <Dialog
-              isOpen
+              isOpen={isOpen}
               onClose={this.onClose}
               onKeyDown={this.onKeyDown}
               width={400}
