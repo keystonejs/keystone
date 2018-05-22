@@ -1,11 +1,31 @@
 const { AdminUI } = require('@keystonejs/admin-ui');
 const { Keystone } = require('@keystonejs/core');
-const { Text, Relationship, Select, Password } = require('@keystonejs/fields');
+const {
+  File,
+  Text,
+  Relationship,
+  Select,
+  Password,
+  CloudinaryImage,
+} = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
+const {
+  CloudinaryAdapter,
+  LocalFileAdapter,
+} = require('@keystonejs/file-adapters');
 
-const { twitterAuthEnabled, port } = require('./config');
+const {
+  twitterAuthEnabled,
+  port,
+  staticRoute,
+  staticPath,
+  cloudinary,
+} = require('./config');
 const { configureTwitterAuth } = require('./twitter');
+
+const LOCAL_FILE_PATH = `${staticPath}/avatars`;
+const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
@@ -19,6 +39,16 @@ const keystone = new Keystone({
 keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
+});
+
+const fileAdapter = new LocalFileAdapter({
+  directory: LOCAL_FILE_PATH,
+  route: LOCAL_FILE_ROUTE,
+});
+
+const cloudinaryAdapter = new CloudinaryAdapter({
+  ...cloudinary,
+  folder: 'avatars',
 });
 
 keystone.createList('User', {
@@ -38,6 +68,8 @@ keystone.createList('User', {
         { label: 'Cete, or Seat, or Attend ¯\\_(ツ)_/¯', value: 'cete' },
       ],
     },
+    attachment: { type: File, adapter: fileAdapter },
+    avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });
@@ -148,6 +180,8 @@ server.app.get('/reset-db', (req, res) => {
   };
   reset();
 });
+
+server.app.use(staticRoute, server.express.static(staticPath));
 
 async function start() {
   keystone.connect();

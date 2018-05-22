@@ -1,5 +1,5 @@
 const pluralize = require('pluralize');
-const { escapeRegExp } = require('@keystonejs/utils');
+const { resolveAllKeys, escapeRegExp } = require('@keystonejs/utils');
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
@@ -79,7 +79,7 @@ module.exports = class List {
     });
 
     const schema = new mongoose.Schema({}, this.config.mongooseSchemaOptions);
-    this.fields.forEach(i => i.addToMongooseSchema(schema));
+    this.fields.forEach(i => i.addToMongooseSchema(schema, mongoose));
 
     if (this.config.configureMongooseSchema) {
       this.config.configureMongooseSchema(schema, { mongoose });
@@ -110,9 +110,8 @@ module.exports = class List {
       .map(i => i.getGraphqlSchema())
       .join('\n        ');
     const fieldTypes = this.fields
-      .map(i => i.getGraphqlTypes())
-      .filter(i => i)
-      .join('\n      ');
+      .map(i => i.getGraphqlAuxiliaryTypes())
+      .filter(i => i);
     const updateArgs = this.fields
       .map(i => i.getGraphqlUpdateArgs())
       .filter(i => i)
@@ -125,7 +124,8 @@ module.exports = class List {
       .map(i => i.split(/\n\s+/g).join('\n        '))
       .join('\n        ')
       .trim();
-    return `
+    return [
+      `
       type ${this.key} {
         id: String
         # This virtual field will be resolved in one of the following ways (in this order):
@@ -140,13 +140,19 @@ module.exports = class List {
         _label_: String
         ${fieldSchemas}
       }
+      `,
+      `
       input ${this.key}UpdateInput {
         ${updateArgs}
       }
+      `,
+      `
       input ${this.key}CreateInput {
         ${createArgs}
       }
-      ${fieldTypes}`;
+      `,
+      ...fieldTypes,
+    ];
   }
   getAdminGraphqlQueries() {
     const queryArgs = this.fields
@@ -162,7 +168,8 @@ module.exports = class List {
           first: Int
           skip: Int`;
     // TODO: Group field filters under filter: FilterInput
-    return `
+    return [
+      `
         ${this.listQueryName}(${commonArgs}
 
           # Field Filters
@@ -175,7 +182,12 @@ module.exports = class List {
 
           # Field Filters
           ${queryArgs}
-        ): _QueryMeta`;
+        ): _QueryMeta
+      `,
+      ...this.fields
+        .map(field => field.getGraphqlAuxiliaryQueries())
+        .filter(Boolean),
+    ];
   }
   getAdminQueryResolvers() {
     return {
@@ -186,15 +198,46 @@ module.exports = class List {
   }
   getAdminFieldResolvers() {
     const fieldResolvers = this.fields.reduce(
-      (resolvers, field) => ({ ...resolvers, ...field.getGraphqlResolvers() }),
+      (resolvers, field) => ({
+        ...resolvers,
+        ...field.getGraphqlFieldResolvers(),
+      }),
       {
         _label_: this.config.labelResolver,
       }
     );
     return { [this.key]: fieldResolvers };
   }
+  getAuxiliaryTypeResolvers() {
+    return this.fields.reduce(
+      (resolvers, field) => ({
+        ...resolvers,
+        ...field.getGraphqlAuxiliaryTypeResolvers(),
+      }),
+      {}
+    );
+  }
+  getAuxiliaryQueryResolvers() {
+    return this.fields.reduce(
+      (resolvers, field) => ({
+        ...resolvers,
+        ...field.getGraphqlAuxiliaryQueryResolvers(),
+      }),
+      {}
+    );
+  }
+  getAuxiliaryMutationResolvers() {
+    return this.fields.reduce(
+      (resolvers, field) => ({
+        ...resolvers,
+        ...field.getGraphqlAuxiliaryMutationResolvers(),
+      }),
+      {}
+    );
+  }
   getAdminGraphqlMutations() {
-    return `
+    return [
+      `
         ${this.createMutationName}(
           data: ${this.key}UpdateInput
         ): ${this.key}
@@ -207,18 +250,66 @@ module.exports = class List {
         ): ${this.key}
         ${this.deleteManyMutationName}(
           ids: [String!]
-        ): ${this.key}`;
+        ): ${this.key}
+      `,
+      ...this.fields
+        .map(field => field.getGraphqlAuxiliaryMutations())
+        .filter(Boolean),
+    ];
   }
   getAdminMutationResolvers() {
     return {
       [this.createMutationName]: async (_, { data }) => {
-        return this.model.create(data);
+        const resolvedData = await resolveAllKeys(
+          this.fields.reduce(
+            (resolvers, field) => ({
+              ...resolvers,
+              [field.path]: field.createFieldPreHook(
+                data[field.path],
+                field.path
+              ),
+            }),
+            {}
+          )
+        );
+
+        const newItem = await this.model.create(resolvedData);
+
+        await Promise.all(
+          this.fields.map(field =>
+            field.createFieldPostHook(newItem[field.path], field.path, newItem)
+          )
+        );
+
+        return newItem;
       },
       [this.updateMutationName]: async (_, { id, data }) => {
         const item = await this.model.findById(id);
-        // TODO: Loop through each field and have it apply the update
-        item.set(data);
-        return item.save();
+
+        const resolvedData = await resolveAllKeys(
+          this.fields.reduce(
+            (resolvers, field) => ({
+              ...resolvers,
+              [field.path]: field.updateFieldPreHook(
+                data[field.path],
+                field.path,
+                item
+              ),
+            }),
+            {}
+          )
+        );
+
+        item.set(resolvedData);
+        const newItem = await item.save();
+
+        await Promise.all(
+          this.fields.map(field =>
+            field.updateFieldPostHook(newItem[field.path], field.path, newItem)
+          )
+        );
+
+        return newItem;
       },
       [this.deleteMutationName]: (_, { id }) =>
         this.model.findByIdAndRemove(id),

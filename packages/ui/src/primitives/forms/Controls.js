@@ -9,6 +9,7 @@ import {
 } from 'react-radios';
 
 import { colors } from '../../theme';
+import { HiddenInput } from './index';
 
 const Wrapper = styled.div({
   display: 'flex',
@@ -18,18 +19,6 @@ const Label = styled.label({
   alignItems: 'center',
   display: 'flex',
   lineHeight: 1,
-});
-const HiddenInput = styled.input({
-  border: 0,
-  clip: 'rect(1px, 1px, 1px, 1px)',
-  height: 1,
-  overflow: 'hidden',
-  margin: 0,
-  padding: 0,
-  position: 'absolute',
-  whiteSpace: 'nowrap',
-  width: 1,
-  opacity: 0,
 });
 
 type State = {
