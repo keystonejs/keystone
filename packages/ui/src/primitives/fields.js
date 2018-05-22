@@ -6,7 +6,7 @@ export const FieldContainer = styled.div({
   marginBottom: 8,
 });
 
-export const FieldLabel = styled.div({
+export const FieldLabel = styled.label({
   color: colors.N60,
   paddingTop: 8,
   width: 180,
