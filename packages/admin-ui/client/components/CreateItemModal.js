@@ -5,7 +5,6 @@ import styled from 'react-emotion';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { resolveAllKeys } from '@keystonejs/utils';
-import styled from 'react-emotion';
 import { gridSize } from '@keystonejs/ui/src/theme';
 
 import FieldTypes from '../FIELD_TYPES';
