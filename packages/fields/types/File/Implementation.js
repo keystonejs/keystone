@@ -102,7 +102,7 @@ module.exports = class File extends Implementation {
       filename: originalFilename,
       mimetype,
       encoding,
-      ...resolvedUploadData
+      // ...resolvedUploadData
     } = await uploadData;
 
     if (!stream && previousData) {
