@@ -44,10 +44,11 @@ const apolloFetch = createApolloFetch({ uri: GRAPHQL_URI });
  * cy.writeFile('cypress/fixtures/notice.pdf', 'Hi, this content is created by cypress!')
  * cy.upload_file('input[name=file1]', 'notice.pdf')
  */
-Cypress.Commands.add('upload_file', (selector, fileUrl, type = '') => (
-  cy.get(selector).then(subject => (
-    cy.window().then(appWindow => (
-      cy.fixture(fileUrl, 'base64')
+Cypress.Commands.add('upload_file', (selector, fileUrl, type = '') =>
+  cy.get(selector).then(subject =>
+    cy.window().then(appWindow =>
+      cy
+        .fixture(fileUrl, 'base64')
         .then(Cypress.Blob.base64StringToBlob)
         .then(blob => {
           const el = subject[0];
@@ -62,14 +63,18 @@ Cypress.Commands.add('upload_file', (selector, fileUrl, type = '') => (
           subject.trigger('change');
           return subject;
         })
-    ))
-  ))
-));
+    )
+  )
+);
 
-Cypress.Commands.add('graphql_query', (query) => apolloFetch({ query }).then(({ data }) => {
-  console.log('Fetched data:', data);
-  return data;
-}).catch(error => {
-  console.log('Error', error);
-  throw error;
-}));
+Cypress.Commands.add('graphql_query', query =>
+  apolloFetch({ query })
+    .then(({ data }) => {
+      console.log('Fetched data:', data);
+      return data;
+    })
+    .catch(error => {
+      console.log('Error', error);
+      throw error;
+    })
+);
