@@ -85,7 +85,11 @@ module.exports = class CloudinaryImage extends FileImplementation {
   }
   getGraphqlAuxiliaryMutationResolvers() {
     return {
-      uploadCloudinaryImage: (obj, { file }) => {
+      /**
+       * @param obj {Object} ... an object
+       * @param data {Object} With key `file`
+       */
+      uploadCloudinaryImage: () => {
         throw new Error('uploadCloudinaryImage mutation not implemented');
         //return this.processUpload(file);
       },

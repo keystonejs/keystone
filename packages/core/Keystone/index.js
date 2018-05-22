@@ -1,6 +1,5 @@
 const inflection = require('inflection');
 const { makeExecutableSchema } = require('graphql-tools');
-const { GraphQLUpload } = require('apollo-upload-server');
 const { Mongoose } = require('mongoose');
 
 const List = require('../List');
