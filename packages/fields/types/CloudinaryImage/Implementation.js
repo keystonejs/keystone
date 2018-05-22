@@ -66,10 +66,11 @@ module.exports = class CloudinaryImage extends FileImplementation {
         }
         return {
           publicUrl: this.config.adapter.publicUrl(itemValues),
-          publicUrlTransformed: ({ transformation }) => this.config.adapter.publicUrlTransformed(
-            itemValues,
-            transformation
-          ),
+          publicUrlTransformed: ({ transformation }) =>
+            this.config.adapter.publicUrlTransformed(
+              itemValues,
+              transformation
+            ),
           ...itemValues,
         };
       },
