@@ -4,7 +4,7 @@
   "author": "Jed Watson",
   "license": "MIT",
   "scripts": {
-    "fresh": "rm -rf node_modules && bolt",
+    "fresh": "bolt ws exec -- rm -rf node_modules && rm -rf node_modules && bolt",
     "start": "cd packages/test-project && npm start",
     "pm2": "pm2",
     "jest": "jest",
