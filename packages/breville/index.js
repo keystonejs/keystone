@@ -54,12 +54,11 @@ keystone.createList('KitchenWare', {
 });
 
 keystone.createList('Answer', {
+  // defaultColumns: ['comment', 'sensor', 'intensity'],
+  // defaultSort: 'comment',
+  // labelField: 'comment',
+  labelResolver: item => `${ item.ingredient } | ${ item.technique }${ item.doneness && ` | ${ item.doneness }` }`,
   fields: {
-    comment: { type: Text }, // maybe or "name"?
-    sensor: { type: Text },
-    intensity: { type: Text },
-    probeTemp: { type: Text },
-    panTemp: { type: Text },
     ingredient: {
       type: Relationship,
       ref: 'Ingredient',
@@ -72,6 +71,14 @@ keystone.createList('Answer', {
       type: Relationship,
       ref: 'Doneness',
     },
+    comment: { type: Text },
+    sensor: { type: Select, options: [
+      { label: 'Probe', value: 'probe' },
+      { label: 'Pan', value: 'pan' }
+    ]},
+    intensity: { type: Text },
+    probeTemp: { type: Text },
+    panTemp: { type: Text },
     equipment: {
       type: Relationship,
       ref: 'KitchenWare',
