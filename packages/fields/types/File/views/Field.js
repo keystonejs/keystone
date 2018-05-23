@@ -313,23 +313,6 @@ const Image = props => (
     />
   </div>
 );
-const Info = ({ styles, tag: Tag = 'div', ...props }) => (
-  <Tag
-    css={{
-      borderRadius,
-      border: '1px solid transparent',
-      display: 'inline-block',
-      fontSize: '0.85em',
-      marginTop: gridSize,
-      maxWidth: '100%',
-      minWidth: 1,
-      padding: `${gridSize / 2}px ${gridSize}px`,
-      whiteSpace: 'nowrap',
-      ...styles,
-    }}
-    {...props}
-  />
-);
 const MetaInfo = props => <Lozenge crop="right" {...props} />;
 const ErrorInfo = ({ children, ...props }) => (
   <Lozenge
