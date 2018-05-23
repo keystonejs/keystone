@@ -15,7 +15,6 @@ import {
   ArrowLeftIcon,
   CheckIcon,
   ClippyIcon,
-  InfoIcon,
   PlusIcon,
 } from '@keystonejs/icons';
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
@@ -23,7 +22,7 @@ import { A11yText, Title } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
-import { colors, fontSize, gridSize } from '@keystonejs/ui/src/theme';
+import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import { resolveAllKeys } from '@keystonejs/utils';
 
@@ -290,24 +289,6 @@ const ItemDetails = withRouter(
       );
     }
   }
-);
-
-const NotFoundContainer = ({ children, ...props }) => (
-  <div
-    css={{
-      alignItems: 'center',
-      color: colors.N30,
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      padding: '2em 1em',
-      textAlign: 'center',
-    }}
-    {...props}
-  >
-    <InfoIcon css={{ height: 48, width: 48 }} />
-    {children}
-  </div>
 );
 const ItemNotFound = ({ adminPath, errorMessage, list }) => (
   <PageError>
