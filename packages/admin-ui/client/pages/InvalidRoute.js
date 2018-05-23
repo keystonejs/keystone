@@ -1,17 +1,16 @@
 import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
 
 import Nav from '../components/Nav';
-import { Container } from '@keystonejs/ui/src/primitives/layout';
-import { Title } from '@keystonejs/ui/src/primitives/typography';
+import PageError from '../components/PageError';
+import { Button } from '@keystonejs/ui/src/primitives/buttons';
 
 const InvalidRoutePage = ({ adminPath }) => (
   <Fragment>
     <Nav />
-    <Container>
-      <Title>404</Title>
-      <Link to={adminPath}>Go Home</Link>
-    </Container>
+    <PageError>
+      <p>Page Not Found (404)</p>
+      <Button to={adminPath}>Go Home</Button>
+    </PageError>
   </Fragment>
 );
 

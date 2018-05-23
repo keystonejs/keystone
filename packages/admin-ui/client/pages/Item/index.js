@@ -8,13 +8,13 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
 import Nav from '../../components/Nav';
+import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import Footer from './Footer';
 import {
   ArrowLeftIcon,
   CheckIcon,
   ClippyIcon,
-  InfoIcon,
   PlusIcon,
 } from '@keystonejs/icons';
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
@@ -290,44 +290,18 @@ const ItemDetails = withRouter(
     }
   }
 );
-
-const NotFoundContainer = ({ children, ...props }) => (
-  <div
-    css={{
-      alignItems: 'center',
-      color: colors.N30,
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      padding: '2em 1em',
-      textAlign: 'center',
-    }}
-    {...props}
-  >
-    <InfoIcon css={{ height: 48, width: 48 }} />
-    {children}
-  </div>
-);
-const ItemNotFound = ({ itemId, list, adminPath }) => (
-  <NotFoundContainer>
-    <Title>{list.singular} Not Found</Title>
-    <p>
-      The item <code>{itemId}</code> does not exist.
-    </p>
-    <p>
-      <Button
-        variant="subtle"
-        appearance="primary"
-        to={`${adminPath}/${list.path}`}
-      >
-        Back to {list.label}
-      </Button>
-      {' • '}
-      <Button variant="subtle" appearance="primary" to={adminPath}>
-        Go Home
-      </Button>
-    </p>
-  </NotFoundContainer>
+const ItemNotFound = ({ adminPath, errorMessage, list }) => (
+  <PageError>
+    <p>Couldn't find a {list.singular} matching that ID</p>
+    <Button to={`${adminPath}/${list.path}`} variant="ghost">
+      Back to List
+    </Button>
+    {errorMessage ? (
+      <p style={{ fontSize: '0.75rem', marginTop: gridSize * 4 }}>
+        <code>{errorMessage}</code>
+      </p>
+    ) : null}
+  </PageError>
 );
 
 const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
@@ -335,21 +309,23 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   return (
     <Fragment>
       <Nav />
-      <Container>
-        <Query query={itemQuery}>
-          {({ loading, error, data, refetch }) => {
-            if (loading) return <PageLoading />;
-            if (error) {
-              return (
-                <Fragment>
-                  <Title>Error</Title>
-                  <p>{error.message}</p>
-                </Fragment>
-              );
-            }
+      <Query query={itemQuery}>
+        {({ loading, error, data, refetch }) => {
+          if (loading) return <PageLoading />;
 
-            const item = data[list.itemQueryName];
-            return item ? (
+          if (error) {
+            return (
+              <ItemNotFound
+                adminPath={adminPath}
+                errorMessage={error.message}
+                list={list}
+              />
+            );
+          }
+
+          const item = data[list.itemQueryName];
+          return item ? (
+            <Container>
               <Mutation mutation={list.updateMutation}>
                 {(
                   updateItem,
@@ -370,12 +346,12 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
                   );
                 }}
               </Mutation>
-            ) : (
-              <ItemNotFound adminPath={adminPath} itemId={itemId} list={list} />
-            );
-          }}
-        </Query>
-      </Container>
+            </Container>
+          ) : (
+            <ItemNotFound adminPath={adminPath} list={list} />
+          );
+        }}
+      </Query>
     </Fragment>
   );
 };

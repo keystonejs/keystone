@@ -32,6 +32,7 @@ import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 import Nav from '../../components/Nav';
 import PageLoading from '../../components/PageLoading';
+import PageError from '../../components/PageError';
 import { Popout, DisclosureArrow } from '../../components/Popout';
 
 import ColumnSelect from './ColumnSelect';
@@ -423,10 +424,9 @@ class ListPage extends Component {
           {({ data, error, loading, refetch }) => {
             if (error) {
               return (
-                <Fragment>
-                  <Title>Error</Title>
+                <PageError>
                   <p>{error.message}</p>
-                </Fragment>
+                </PageError>
               );
             }
 
