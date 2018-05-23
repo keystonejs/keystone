@@ -9,6 +9,7 @@
     "pm2": "pm2",
     "jest": "jest",
     "format": "prettier --write \"**/*.js\"",
+    "format:file": "prettier --write",
     "prettier_lint": "prettier --list-different \"**/*.js\"",
     "eslint": "eslint .",
     "cypress:run": "cypress run",
