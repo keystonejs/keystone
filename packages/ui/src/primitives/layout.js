@@ -92,6 +92,7 @@ export const FlexGroup = ({
         marginLeft: isContiguous || isVertical ? null : -gutter,
         marginRight: isContiguous || isVertical ? null : -gutter,
         marginTop: isVertical ? -gutter : null,
+        maxWidth: isInline ? `calc(100% + ${gutter * 2}px)` : null,
       }}
       {...props}
     >

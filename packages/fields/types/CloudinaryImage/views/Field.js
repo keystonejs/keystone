@@ -8,6 +8,7 @@ import {
 } from '@keystonejs/ui/src/primitives/fields';
 import { AlertIcon } from '@keystonejs/icons';
 import { HiddenInput } from '@keystonejs/ui/src/primitives/forms';
+import { Lozenge } from '@keystonejs/ui/src/primitives/lozenge';
 import { Button, LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
 import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { borderRadius, colors, gridSize } from '@keystonejs/ui/src/theme';
@@ -255,7 +256,7 @@ export default class FileField extends Component {
                 {errorMessage ? (
                   <ErrorInfo>{errorMessage}</ErrorInfo>
                 ) : file ? (
-                  <FlexGroup>
+                  <FlexGroup isInline growIndexes={[0]}>
                     <MetaInfo>{file.filename || file.name}</MetaInfo>
                     {showStatusMessage ? (
                       <ChangeInfo status={changeStatus}>
@@ -316,43 +317,12 @@ const Image = props => (
     />
   </div>
 );
-const Info = ({ styles, ...props }) => (
-  <div
-    css={{
-      borderRadius,
-      border: '1px solid transparent',
-      display: 'inline-block',
-      fontSize: '0.85em',
-      marginTop: gridSize,
-      maxWidth: '100%',
-      minWidth: 1,
-      padding: `${gridSize / 2}px ${gridSize}px`,
-      whiteSpace: 'nowrap',
-      ...styles,
-    }}
-    {...props}
-  />
-);
-const MetaInfo = props => (
-  <Info
-    styles={{
-      backgroundColor: colors.N05,
-      borderColor: colors.N10,
-      color: colors.N60,
-
-      // clip from beginning of string
-      direction: 'rtl',
-      overflow: 'hidden',
-      textAlign: 'left',
-      textOverflow: 'ellipsis',
-    }}
-    {...props}
-  />
-);
+const MetaInfo = props => <Lozenge crop="right" {...props} />;
 const ErrorInfo = ({ children, ...props }) => (
-  <Info
-    styles={{
+  <Lozenge
+    style={{
       backgroundColor: colors.R.L80,
+      borderColor: 'transparent',
       color: colors.R.D20,
       display: 'inline-flex',
     }}
@@ -360,26 +330,14 @@ const ErrorInfo = ({ children, ...props }) => (
   >
     <AlertIcon css={{ marginRight: gridSize }} />
     {children}
-  </Info>
+  </Lozenge>
 );
-const changeStyles = {
-  default: {
-    backgroundColor: colors.B.L90,
-    borderColor: colors.B.L80,
-    color: colors.B.L30,
-  },
-  removed: {
-    backgroundColor: colors.R.L90,
-    borderColor: colors.R.L80,
-    color: colors.R.L30,
-  },
-  updated: {
-    backgroundColor: colors.G.L90,
-    borderColor: colors.G.L80,
-    color: colors.G.L30,
-  },
+const appearanceMap = {
+  default: 'primary',
+  removed: 'danger',
+  updated: 'create',
 };
 const ChangeInfo = ({ status = 'default', ...props }) => {
-  const styles = changeStyles[status];
-  return <Info styles={styles} {...props} />;
+  const appearance = appearanceMap[status];
+  return <Lozenge appearance={appearance} {...props} />;
 };
