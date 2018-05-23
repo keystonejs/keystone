@@ -109,6 +109,7 @@ export const FlexGroup = ({
               marginRight: isVertical ? null : rightOffset,
               marginTop: isVertical ? gutter : null,
               marginBottom: isVertical ? gutter : null,
+              minWidth: 0, // allows text-overflow on children
 
               // bring the focus styles over the top of siblings
               '&:focus-within': {
