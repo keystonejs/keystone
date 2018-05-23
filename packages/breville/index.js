@@ -73,8 +73,9 @@ keystone.createList('Answer', {
     },
     comment: { type: Text },
     sensor: { type: Select, options: [
-      { label: 'Probe', value: 'probe' },
-      { label: 'Pan', value: 'pan' }
+      { label: 'Probe control (oil)', value: 'probeOil' },
+      { label: 'Probe control (ingredient)', value: 'probeIngredient' },
+      { label: 'Pan', value: 'pan' },
     ]},
     intensity: { type: Text },
     probeTemp: { type: Text },
