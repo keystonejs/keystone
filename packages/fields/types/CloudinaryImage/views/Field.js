@@ -6,58 +6,78 @@ import {
   FieldLabel,
   FieldInput,
 } from '@keystonejs/ui/src/primitives/fields';
-// TODO: Upload component?
+import { AlertIcon } from '@keystonejs/icons';
 import { HiddenInput } from '@keystonejs/ui/src/primitives/forms';
 import { Button, LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
 import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { borderRadius, colors, gridSize } from '@keystonejs/ui/src/theme';
 
-function uploadButtonLabelFn({ state }) {
-  return state === 'empty' ? 'Upload Image' : 'Change Image';
+// NOTE: we need flow 😢
+// Status enum: 'empty' | 'stored' | 'removed' | 'updated'
+
+function uploadButtonLabelFn({ status }) {
+  return status === 'empty' ? 'Upload Image' : 'Change Image';
 }
-function cancelButtonLabelFn({ state }) {
-  switch (state) {
-    case 'value':
+function cancelButtonLabelFn({ status }) {
+  switch (status) {
+    case 'stored':
       return 'Remove Image';
     case 'removed':
       return 'Undo Remove';
-    case 'changed':
+    case 'updated':
     default:
       return 'Cancel';
   }
 }
-
-type ChangeState = 'empty' | 'value' | 'removed' | 'updated';
+function statusMessageFn({ status }) {
+  switch (status) {
+    case 'removed':
+      return 'save to remove';
+    case 'updated':
+      return 'save to upload';
+  }
+}
+function errorMessageFn({ type }) {
+  switch (type) {
+    case 'invalid':
+      return 'Only image files are allowed. Please try again.';
+    case 'save':
+      return 'Something went wrong, please reload and try again.';
+    case 'preview':
+      return 'Something went wrong, please try again.';
+  }
+}
 
 export default class FileField extends Component {
   static propTypes = {
-    cancelButtonLabel: PropTypes.func,
+    cancelButtonLabel: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
+    errorMessage: PropTypes.func.isRequired,
     field: PropTypes.object,
-    onChange: PropTypes.func,
-    uploadButtonLabel: PropTypes.func,
+    onChange: PropTypes.func.isRequired,
+    statusMessage: PropTypes.func.isRequired,
+    uploadButtonLabel: PropTypes.func.isRequired,
   };
   static defaultProps = {
-    uploadButtonLabel: uploadButtonLabelFn,
     cancelButtonLabel: cancelButtonLabelFn,
+    errorMessage: errorMessageFn,
+    statusMessage: statusMessageFn,
+    uploadButtonLabel: uploadButtonLabelFn,
   };
   constructor(props) {
     super(props);
     const { field, item } = props;
 
     this.originalFile = item[field.path];
-    const changeStatus = this.originalFile ? 'value' : 'empty';
+    const changeStatus = this.originalFile ? 'stored' : 'empty';
 
     this.state = {
+      changeStatus,
       dataURI: null,
-      changedMessage: null,
       errorMessage: null,
       isLoading: false,
-      changeStatus,
+      oldImagePath: null,
     };
-  }
-  componentWillUnmount() {
-    console.log('Will Unmount');
   }
 
   // ==============================
@@ -67,23 +87,21 @@ export default class FileField extends Component {
   onCancel = () => {
     const { field, onChange } = this.props;
 
+    // revert to the original file if available
     onChange(field, this.originalFile);
-    const changeStatus = this.getFile() ? 'value' : 'empty';
-
-    console.log('onCancel', changeStatus);
 
     this.setState({
-      changeMessage: null,
-      changeStatus,
+      changeStatus: this.originalFile ? 'stored' : 'empty',
       dataURI: null,
+      errorMessage: null,
     });
   };
   onRemove = () => {
     const { field, onChange } = this.props;
 
     this.setState({
-      changeMessage: 'Save to Remove',
       changeStatus: 'removed',
+      errorMessage: null,
     });
 
     onChange(field, null);
@@ -96,12 +114,12 @@ export default class FileField extends Component {
   }) => {
     if (!file) return; // bail if the user cancels from the file browser
 
-    const { field, onChange } = this.props;
+    const { errorMessage, field, onChange } = this.props;
 
     // basic validity check
     if (!validity.valid) {
       this.setState({
-        errorMessage: 'Something went wrong, please reload and try again.',
+        errorMessage: errorMessage({ type: 'save' }),
       });
       return;
     }
@@ -109,7 +127,7 @@ export default class FileField extends Component {
     // check if the file is actually an image
     if (!file.type.includes('image')) {
       this.setState({
-        errorMessage: 'Only image files are allowed. Please try again.',
+        errorMessage: errorMessage({ type: 'invalid' }),
       });
       return;
     } else if (this.state.errorMessage) {
@@ -117,8 +135,8 @@ export default class FileField extends Component {
     }
 
     this.setState({
-      changeMessage: 'Save to Upload',
       changeStatus: 'updated',
+      oldImagePath: this.getImagePath(), // used during FileReader processing
     });
 
     onChange(field, file);
@@ -136,10 +154,14 @@ export default class FileField extends Component {
     const { field, item } = this.props;
     const { changeStatus } = this.state;
 
-    return changeStatus === 'removed' ? this.originalFile : item[field.path];
-  };
+    const isRemoved = changeStatus === 'removed';
+    const file = isRemoved ? this.originalFile : item[field.path];
+    const type = file && file['__typename'] ? 'server' : 'client';
 
+    return { file, type };
+  };
   getDataURI = file => {
+    const { errorMessage } = this.props;
     const reader = new FileReader();
 
     reader.readAsDataURL(file);
@@ -149,7 +171,7 @@ export default class FileField extends Component {
     reader.onerror = err => {
       console.error('Error with Cloudinary preview', err);
       this.setState({
-        errorMessage: 'Something went wrong, please reload and try again.',
+        errorMessage: errorMessage({ type: 'preview' }),
       });
     };
     reader.onloadend = upload => {
@@ -157,10 +179,11 @@ export default class FileField extends Component {
     };
   };
   getImagePath = () => {
-    const { dataURI } = this.state;
-    const file = this.getFile();
+    const { dataURI, oldImagePath } = this.state;
+    const { file } = this.getFile();
 
-    return (file && file.publicUrlTransformed) || dataURI;
+    // avoid jank during FileReader processing keeping the old image in place
+    return (file && file.publicUrlTransformed) || dataURI || oldImagePath;
   };
   getInputRef = ref => {
     this.inputRef = ref;
@@ -180,7 +203,7 @@ export default class FileField extends Component {
         isLoading={isLoading}
         variant="ghost"
       >
-        {uploadButtonLabel({ state: changeStatus })}
+        {uploadButtonLabel({ status: changeStatus })}
       </LoadingButton>
     );
   };
@@ -203,23 +226,25 @@ export default class FileField extends Component {
 
     return (
       <Button onClick={onClick} variant="subtle" appearance={appearance}>
-        {cancelButtonLabel({ state: changeStatus })}
+        {cancelButtonLabel({ status: changeStatus })}
       </Button>
     );
   };
 
   render() {
-    const { autoFocus, field } = this.props;
-    const { changeMessage, errorMessage } = this.state;
+    const { autoFocus, field, statusMessage } = this.props;
+    const { changeStatus, errorMessage } = this.state;
 
-    const file = this.getFile();
+    const { file } = this.getFile();
     const imagePath = this.getImagePath();
+    const showStatusMessage = ['removed', 'updated'].includes(changeStatus);
+    const isEmpty = changeStatus === 'empty';
 
     return (
       <FieldContainer>
         <FieldLabel>{field.label}</FieldLabel>
         <FieldInput>
-          {imagePath ? (
+          {!isEmpty && imagePath ? (
             <Wrapper>
               <Image src={imagePath} alt={field.path} />
               <Content>
@@ -230,27 +255,28 @@ export default class FileField extends Component {
                 {errorMessage ? (
                   <ErrorInfo>{errorMessage}</ErrorInfo>
                 ) : file ? (
-                  <FlexGroup growIndexes={[0]}>
+                  <FlexGroup>
                     <MetaInfo>{file.filename || file.name}</MetaInfo>
-                    {changeMessage ? (
-                      <ChangeInfo>{changeMessage}</ChangeInfo>
+                    {showStatusMessage ? (
+                      <ChangeInfo status={changeStatus}>
+                        {statusMessage({ status: changeStatus })}
+                      </ChangeInfo>
                     ) : null}
                   </FlexGroup>
                 ) : null}
-                {}
               </Content>
             </Wrapper>
           ) : (
-            <FlexGroup>{this.renderUploadButton()}</FlexGroup>
+            this.renderUploadButton()
           )}
 
           <HiddenInput
             autoComplete="off"
             autoFocus={autoFocus}
             innerRef={this.getInputRef}
-            type="file"
             name={field.path}
             onChange={this.onChange}
+            type="file"
           />
         </FieldInput>
       </FieldContainer>
@@ -275,9 +301,10 @@ const Image = props => (
       flexShrink: 0,
       lineHeight: 0,
       marginRight: gridSize,
-      width: 130,
-      textAlign: 'center',
       padding: 4,
+      position: 'relative',
+      textAlign: 'center',
+      width: 130, // 120px image + chrome
     }}
   >
     <img
@@ -322,23 +349,37 @@ const MetaInfo = props => (
     {...props}
   />
 );
-const ErrorInfo = props => (
+const ErrorInfo = ({ children, ...props }) => (
   <Info
     styles={{
-      backgroundColor: colors.R.L90,
-      borderColor: colors.R.L80,
+      backgroundColor: colors.R.L80,
       color: colors.R.D20,
+      display: 'inline-flex',
     }}
     {...props}
-  />
+  >
+    <AlertIcon css={{ marginRight: gridSize }} />
+    {children}
+  </Info>
 );
-const ChangeInfo = props => (
-  <Info
-    styles={{
-      backgroundColor: colors.B.L90,
-      borderColor: colors.B.L80,
-      color: colors.B.D20,
-    }}
-    {...props}
-  />
-);
+const changeStyles = {
+  default: {
+    backgroundColor: colors.B.L90,
+    borderColor: colors.B.L80,
+    color: colors.B.L30,
+  },
+  removed: {
+    backgroundColor: colors.R.L90,
+    borderColor: colors.R.L80,
+    color: colors.R.L30,
+  },
+  updated: {
+    backgroundColor: colors.G.L90,
+    borderColor: colors.G.L80,
+    color: colors.G.L30,
+  },
+};
+const ChangeInfo = ({ status = 'default', ...props }) => {
+  const styles = changeStyles[status];
+  return <Info styles={styles} {...props} />;
+};
