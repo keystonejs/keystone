@@ -22,7 +22,13 @@ See below the GraphQL queries for each step of the application.
 #### Chose technique
 
 ```graphql
-TODO
+{
+  allAnswers(where: { ingredient: { name: "Beef" } }) { # replace `Beef` with the selection made earlier
+    ingredient {
+      name
+    }
+  }
+}
 ```
 
 
@@ -43,7 +49,13 @@ TODO
 #### Chose ingredient
 
 ```graphql
-TODO
+{
+  allAnswers(where: { technique: { name: "Deep Fry" } }) { # replace `Deep Fry` with the selection made earlier
+    ingredient {
+      name
+    }
+  }
+}
 ```
 
 
@@ -64,11 +76,23 @@ TODO
 #### Chose technique
 
 ```graphql
-TODO
+{
+  allAnswers(where: { ingredient: { name: "Beef" } }) { # replace `Beef` with the selection made earlier
+    ingredient {
+      name
+    }
+  }
+}
 ```
 
 #### Chose doneness
 
 ```graphql
-TODO
+{
+  allAnswers(where: { ingredient: { name: "Beef" }, technique: { name: "Deep Fry" }, ingredient_not: "" }) { # replace `Beef` and `Deep Fry` with the selections made earlier
+    ingredient {
+      name
+    }
+  }
+}
 ```
