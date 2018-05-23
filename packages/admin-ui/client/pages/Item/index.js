@@ -12,7 +12,7 @@ import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import Footer from './Footer';
 import {
-  ArrowLeftIcon,
+  TriangleLeftIcon,
   CheckIcon,
   ClippyIcon,
   PlusIcon,
@@ -45,14 +45,43 @@ const ItemId = styled.div({
   fontFamily: 'Monaco, Consolas, monospace',
   fontSize: '0.85em',
 });
-
 const Form = styled.div({
   margin: '24px 0',
 });
+const TitleLink = ({ children, ...props }) => (
+  <Link
+    css={{
+      position: 'relative',
+      textDecoration: 'none',
 
-const FooterNavigation = styled.div(`
-  margin-bottom: 24px;
-`);
+      ':hover': {
+        textDecoration: 'none',
+      },
+
+      '& > svg': {
+        opacity: 0,
+        height: 16,
+        width: 16,
+        position: 'absolute',
+        transitionProperty: 'opacity, transform, visibility',
+        transitionDuration: '300ms',
+        transform: 'translate(-75%, -50%)',
+        top: '50%',
+        visibility: 'hidden',
+      },
+
+      ':hover > svg': {
+        opacity: 0.66,
+        visibility: 'visible',
+        transform: 'translate(-110%, -50%)',
+      },
+    }}
+    {...props}
+  >
+    <TriangleLeftIcon />
+    {children}
+  </Link>
+);
 
 class ConfirmResetModal extends Component {
   onKeyDown = e => {
@@ -229,7 +258,7 @@ const ItemDetails = withRouter(
           ) : null}
           <FlexGroup align="center" justify="space-between">
             <Title>
-              <Link to={listHref}>{list.label}</Link>: {item.name}
+              <TitleLink to={listHref}>{list.label}</TitleLink>: {item.name}
             </Title>
             <IconButton
               appearance="create"
@@ -271,17 +300,6 @@ const ItemDetails = withRouter(
             onReset={itemHasChanged ? this.showConfirmResetModal : undefined}
             updateInProgress={updateInProgress}
           />
-          <FooterNavigation>
-            <IconButton
-              appearance="primary"
-              icon={ArrowLeftIcon}
-              to={listHref}
-              variant="subtle"
-              style={{ paddingLeft: 0 }}
-            >
-              Back to {list.label}
-            </IconButton>
-          </FooterNavigation>
           {this.renderCreateModal()}
           {this.renderDeleteModal()}
           {this.renderConfirmResetModal()}
