@@ -71,15 +71,18 @@ class HomePage extends Component {
                           {isSmall => (
                             <Cell width={isSmall ? 6 : 3}>
                               <Box
+                                title={`Show ${list.label}`}
                                 to={`${adminPath}/${list.path}`}
                                 onMouseEnter={this.selectActive(key)}
                                 onMouseLeave={this.deselectActive}
                                 onFocus={this.selectActive(key)}
                                 onBlur={this.deselectActive}
                               >
+                                <A11yText>Show {list.label}</A11yText>
                                 <Name isHover={isActive}>{list.label}</Name>
                                 <Count meta={listMeta} />
                                 <CreateButton
+                                  title={`Create ${list.singular}`}
                                   isHover={isActive}
                                   onClick={this.openCreateModal(key)}
                                 >

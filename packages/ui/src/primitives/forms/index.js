@@ -2,6 +2,7 @@
 
 import React, { type Ref } from 'react';
 import ReactSelect from 'react-select';
+import styled from 'react-emotion';
 
 import { colors, gridSize } from '../../theme';
 import { alpha } from '../../theme/color-utils';
@@ -16,6 +17,9 @@ export {
 
 const borderRadius = '0.3em';
 
+// Styles shared between input and buttons
+// ------------------------------
+
 export const buttonAndInputBase = {
   appearance: 'none',
   background: 'none',
@@ -29,6 +33,9 @@ export const buttonAndInputBase = {
   verticalAlign: 'middle',
   whiteSpace: 'nowrap',
 };
+
+// Basic Input
+// ------------------------------
 
 type InputProps = { innerRef: Ref<*>, isMultiline: boolean };
 export const Input = ({ innerRef, isMultiline, ...props }: InputProps) => {
@@ -62,8 +69,11 @@ export const Input = ({ innerRef, isMultiline, ...props }: InputProps) => {
   );
 };
 
+// Re-Style React Select
+// ------------------------------
+
 export const selectStyles = {
-  control: (base: any, { isFocused }: { isFocused: Boolean }) => ({
+  control: (base: *, { isFocused }: { isFocused: Boolean }) => ({
     ...base,
     backgroundColor: 'white',
     color: 'inherit',
@@ -80,21 +90,21 @@ export const selectStyles = {
       borderColor: isFocused ? colors.primary : colors.N30,
     },
   }),
-  option: (base: any) => ({
+  option: (base: *) => ({
     ...base,
     fontSize: 14,
   }),
-  singleValue: (base: any) => ({
-    ...base,
-    color: 'inherit',
-    fontSize: 14,
-  }),
-  multiValueLabel: (base: any) => ({
+  singleValue: (base: *) => ({
     ...base,
     color: 'inherit',
     fontSize: 14,
   }),
-  multiValueRemove: (base: any) => ({
+  multiValueLabel: (base: *) => ({
+    ...base,
+    color: 'inherit',
+    fontSize: 14,
+  }),
+  multiValueRemove: (base: *) => ({
     ...base,
     svg: {
       height: '100%',
@@ -102,6 +112,22 @@ export const selectStyles = {
   }),
 };
 
-export const Select = (props: any) => (
+export const Select = (props: *) => (
   <ReactSelect styles={selectStyles} isClearable {...props} />
 );
+
+// Hidden Input
+// ------------------------------
+
+export const HiddenInput = styled.input({
+  border: 0,
+  clip: 'rect(1px, 1px, 1px, 1px)',
+  height: 1,
+  margin: 0,
+  opacity: 0,
+  overflow: 'hidden',
+  padding: 0,
+  position: 'absolute',
+  whiteSpace: 'nowrap',
+  width: 1,
+});

@@ -64,6 +64,14 @@ To run the unit tests, run the script
 
 Unit tests for each package can be found in `packages/<package>/tests` and following the naming pattern `<module>.test.js`.
 
+To see test coverage of the files touched by the unit tests, run
+
+`bolt jest --coverage`
+
+To see test coverage of the entire mono-repo, including files which have zero test coverage, use the special script
+
+`bolt coverage`
+
 ### End to end tests
 
 Keystone tests end to end functionality with the help of [Cypress](https://www.cypress.io/). To run these tests, you first need to start the `test-project` application by running

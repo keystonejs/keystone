@@ -23,7 +23,7 @@ module.exports = class Select extends Implementation {
   getTypeName() {
     return `${this.listKey}${inflection.classify(this.path)}Type`;
   }
-  getGraphqlTypes() {
+  getGraphqlAuxiliaryTypes() {
     // TODO: I'm really not sure it's safe to generate GraphQL Enums from
     // whatever options people provide, this could easily break with spaces and
     // special characters in values so may not be worth it...
