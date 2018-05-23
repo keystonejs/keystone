@@ -8,29 +8,86 @@ import {
 } from '@keystonejs/ui/src/primitives/fields';
 // TODO: Upload component?
 import { HiddenInput } from '@keystonejs/ui/src/primitives/forms';
-import { LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
+import { Button, LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
+import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { borderRadius, colors, gridSize } from '@keystonejs/ui/src/theme';
 
-function buttonLabelFn({ hasValue }) {
-  return hasValue ? 'Change Image' : 'Upload Image';
+function uploadButtonLabelFn({ state }) {
+  return state === 'empty' ? 'Upload Image' : 'Change Image';
 }
+function cancelButtonLabelFn({ state }) {
+  switch (state) {
+    case 'value':
+      return 'Remove Image';
+    case 'removed':
+      return 'Undo Remove';
+    case 'changed':
+    default:
+      return 'Cancel';
+  }
+}
+
+type ChangeState = 'empty' | 'value' | 'removed' | 'updated';
 
 export default class FileField extends Component {
   static propTypes = {
-    buttonLabel: PropTypes.func,
+    cancelButtonLabel: PropTypes.func,
     disabled: PropTypes.bool,
     field: PropTypes.object,
     onChange: PropTypes.func,
+    uploadButtonLabel: PropTypes.func,
   };
   static defaultProps = {
-    buttonLabel: buttonLabelFn,
+    uploadButtonLabel: uploadButtonLabelFn,
+    cancelButtonLabel: cancelButtonLabelFn,
   };
-  state = {
-    dataURI: null,
-    errorMessage: false,
-    isLoading: false,
-  };
+  constructor(props) {
+    super(props);
+    const { field, item } = props;
 
+    this.originalFile = item[field.path];
+    const changeStatus = this.originalFile ? 'value' : 'empty';
+
+    this.state = {
+      dataURI: null,
+      changedMessage: null,
+      errorMessage: null,
+      isLoading: false,
+      changeStatus,
+    };
+  }
+  componentWillUnmount() {
+    console.log('Will Unmount');
+  }
+
+  // ==============================
+  // Change Handlers
+  // ==============================
+
+  onCancel = () => {
+    const { field, onChange } = this.props;
+
+    onChange(field, this.originalFile);
+    const changeStatus = this.getFile() ? 'value' : 'empty';
+
+    console.log('onCancel', changeStatus);
+
+    this.setState({
+      changeMessage: null,
+      changeStatus,
+      dataURI: null,
+    });
+  };
+  onRemove = () => {
+    const { field, onChange } = this.props;
+
+    this.setState({
+      changeMessage: 'Save to Remove',
+      changeStatus: 'removed',
+    });
+
+    onChange(field, null);
+  };
   onChange = ({
     target: {
       validity,
@@ -59,11 +116,27 @@ export default class FileField extends Component {
       this.setState({ errorMessage: null });
     }
 
+    this.setState({
+      changeMessage: 'Save to Upload',
+      changeStatus: 'updated',
+    });
+
     onChange(field, file);
     this.getDataURI(file);
   };
   openFileBrowser = () => {
     if (this.inputRef) this.inputRef.click();
+  };
+
+  // ==============================
+  // Getters
+  // ==============================
+
+  getFile = () => {
+    const { field, item } = this.props;
+    const { changeStatus } = this.state;
+
+    return changeStatus === 'removed' ? this.originalFile : item[field.path];
   };
 
   getDataURI = file => {
@@ -84,9 +157,8 @@ export default class FileField extends Component {
     };
   };
   getImagePath = () => {
-    const { field, item } = this.props;
     const { dataURI } = this.state;
-    const file = item[field.path];
+    const file = this.getFile();
 
     return (file && file.publicUrlTransformed) || dataURI;
   };
@@ -94,21 +166,54 @@ export default class FileField extends Component {
     this.inputRef = ref;
   };
 
-  render() {
-    const { autoFocus, buttonLabel, field, item } = this.props;
-    const { errorMessage, isLoading } = this.state;
+  // ==============================
+  // Renderers
+  // ==============================
 
-    const file = item[field.path];
-    const imagePath = this.getImagePath();
-    const button = (
+  renderUploadButton = () => {
+    const { uploadButtonLabel } = this.props;
+    const { changeStatus, isLoading } = this.state;
+
+    return (
       <LoadingButton
         onClick={this.openFileBrowser}
         isLoading={isLoading}
         variant="ghost"
       >
-        {buttonLabel({ hasValue: imagePath })}
+        {uploadButtonLabel({ state: changeStatus })}
       </LoadingButton>
     );
+  };
+  renderCancelButton = () => {
+    const { cancelButtonLabel } = this.props;
+    const { changeStatus } = this.state;
+
+    // possible states; no case for 'empty' as cancel is not rendered
+    let appearance = 'warning';
+    let onClick = this.onRemove;
+    switch (changeStatus) {
+      case 'removed':
+        appearance = 'primary';
+        onClick = this.onCancel;
+        break;
+      case 'updated':
+        onClick = this.onCancel;
+        break;
+    }
+
+    return (
+      <Button onClick={onClick} variant="subtle" appearance={appearance}>
+        {cancelButtonLabel({ state: changeStatus })}
+      </Button>
+    );
+  };
+
+  render() {
+    const { autoFocus, field } = this.props;
+    const { changeMessage, errorMessage } = this.state;
+
+    const file = this.getFile();
+    const imagePath = this.getImagePath();
 
     return (
       <FieldContainer>
@@ -118,17 +223,25 @@ export default class FileField extends Component {
             <Wrapper>
               <Image src={imagePath} alt={field.path} />
               <Content>
-                <div>{button}</div>
+                <FlexGroup>
+                  {this.renderUploadButton()}
+                  {this.renderCancelButton()}
+                </FlexGroup>
                 {errorMessage ? (
                   <ErrorInfo>{errorMessage}</ErrorInfo>
                 ) : file ? (
-                  <MetaInfo>{file.filename || file.name}</MetaInfo>
+                  <FlexGroup growIndexes={[0]}>
+                    <MetaInfo>{file.filename || file.name}</MetaInfo>
+                    {changeMessage ? (
+                      <ChangeInfo>{changeMessage}</ChangeInfo>
+                    ) : null}
+                  </FlexGroup>
                 ) : null}
                 {}
               </Content>
             </Wrapper>
           ) : (
-            button
+            <FlexGroup>{this.renderUploadButton()}</FlexGroup>
           )}
 
           <HiddenInput
@@ -145,10 +258,14 @@ export default class FileField extends Component {
   }
 }
 
+// ==============================
+// Styled Components
+// ==============================
+
 const Wrapper = props => (
   <div css={{ alignItems: 'flex-start', display: 'flex' }} {...props} />
 );
-const Content = props => <div css={{ flex: 1 }} {...props} />;
+const Content = props => <div css={{ flex: 1, minWidth: 0 }} {...props} />;
 const Image = props => (
   <div
     css={{
@@ -180,7 +297,10 @@ const Info = ({ styles, ...props }) => (
       display: 'inline-block',
       fontSize: '0.85em',
       marginTop: gridSize,
+      maxWidth: '100%',
+      minWidth: 1,
       padding: `${gridSize / 2}px ${gridSize}px`,
+      whiteSpace: 'nowrap',
       ...styles,
     }}
     {...props}
@@ -192,6 +312,12 @@ const MetaInfo = props => (
       backgroundColor: colors.N05,
       borderColor: colors.N10,
       color: colors.N60,
+
+      // clip from beginning of string
+      direction: 'rtl',
+      overflow: 'hidden',
+      textAlign: 'left',
+      textOverflow: 'ellipsis',
     }}
     {...props}
   />
@@ -202,6 +328,16 @@ const ErrorInfo = props => (
       backgroundColor: colors.R.L90,
       borderColor: colors.R.L80,
       color: colors.R.D20,
+    }}
+    {...props}
+  />
+);
+const ChangeInfo = props => (
+  <Info
+    styles={{
+      backgroundColor: colors.B.L90,
+      borderColor: colors.B.L80,
+      color: colors.B.D20,
     }}
     {...props}
   />
