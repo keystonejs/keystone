@@ -36,9 +36,11 @@ export default class RelationshipField extends Component {
     const { many } = field.config;
     const refList = field.getRefList();
     const query = getGraphqlQuery(refList);
+    const htmlID = `ks-input-${field.path}`;
+
     return (
       <FieldContainer>
-        <FieldLabel>{field.label}</FieldLabel>
+        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
         <FieldInput>
           <Query query={query}>
             {({ data, error, loading }) => {
@@ -77,6 +79,7 @@ export default class RelationshipField extends Component {
                   onChange={this.onChange}
                   isClearable
                   isLoading={loading}
+                  inputId={htmlID}
                 />
               );
             }}
