@@ -46,10 +46,18 @@ const fileAdapter = new LocalFileAdapter({
   route: LOCAL_FILE_ROUTE,
 });
 
-const cloudinaryAdapter = new CloudinaryAdapter({
-  ...cloudinary,
-  folder: 'avatars',
-});
+let cloudinaryAdapter;
+try {
+  cloudinaryAdapter = new CloudinaryAdapter({
+    ...cloudinary,
+    folder: 'avatars',
+  });
+} catch (e) {
+  // Downgrade from an error to a warning if the dev does not have a
+  // Cloudinary API Key set up. This will disable any fields which rely
+  // on this functionality.
+  console.warn(e.message);
+}
 
 keystone.createList('User', {
   fields: {
@@ -69,7 +77,9 @@ keystone.createList('User', {
       ],
     },
     attachment: { type: File, adapter: fileAdapter },
-    avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter },
+    ...(cloudinaryAdapter
+      ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } }
+      : {}),
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });
