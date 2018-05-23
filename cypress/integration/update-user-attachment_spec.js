@@ -17,6 +17,7 @@ describe('Adding a file', function() {
         cy.writeFile('cypress/fixtures/upload.txt', fileContent);
         cy.upload_file('input[name=attachment][type=file]', 'upload.txt');
         cy.get('button[type="submit"]').click();
+        cy.get('a[href$="upload.txt"]');
         return cy
           .graphql_query(
             `
