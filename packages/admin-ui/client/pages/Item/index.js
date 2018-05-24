@@ -200,10 +200,13 @@ const ItemDetails = withRouter(
         updateItem,
       } = this.props;
       resolveAllKeys(
-        fields.reduce((values, field) => {
-          values[field.path] = field.getValue(item);
-          return values;
-        }, {})
+        fields.reduce(
+          (values, field) => ({
+            [field.path]: field.getValue(item),
+            ...values,
+          }),
+          {}
+        )
       )
         .then(data => updateItem({ variables: { id, data } }))
         .then(onUpdate);

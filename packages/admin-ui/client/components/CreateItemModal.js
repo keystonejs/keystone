@@ -31,9 +31,13 @@ class CreateItemModal extends Component {
     const { item } = this.state;
 
     resolveAllKeys(
-      fields.reduce((values, field) => {
-        values[field.path] = field.getValue(item);
-      }, {})
+      fields.reduce(
+        (values, field) => ({
+          ...values,
+          [field.path]: field.getValue(item),
+        }),
+        {}
+      )
     )
       .then(data => createItem({ variables: { data } }))
       .then(this.props.onCreate);
