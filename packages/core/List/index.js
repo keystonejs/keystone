@@ -109,21 +109,41 @@ module.exports = class List {
     const fieldSchemas = this.fields
       .map(i => i.getGraphqlSchema())
       .join('\n        ');
+
     const fieldTypes = this.fields
       .map(i => i.getGraphqlAuxiliaryTypes())
       .filter(i => i);
+
     const updateArgs = this.fields
       .map(i => i.getGraphqlUpdateArgs())
       .filter(i => i)
       .map(i => i.split(/\n\s+/g).join('\n        '))
       .join('\n        ')
       .trim();
+
     const createArgs = this.fields
       .map(i => i.getGraphqlCreateArgs())
       .filter(i => i)
       .map(i => i.split(/\n\s+/g).join('\n        '))
       .join('\n        ')
       .trim();
+
+    const queryArgs = this.fields
+      .map(field => {
+        const fieldQueryArgs = field
+          .getGraphqlQueryArgs()
+          .split(/\n\s+/g)
+          .join('\n        ');
+
+        if (!fieldQueryArgs) {
+          return null;
+        }
+
+        return `# ${field.constructor.name} field\n        ${fieldQueryArgs}`;
+      })
+      .filter(Boolean)
+      .join('\n\n        ');
+
     return [
       `
       type ${this.key} {
@@ -141,6 +161,13 @@ module.exports = class List {
         ${fieldSchemas}
       }
       `,
+      // TODO: AND / OR filters:
+      // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
+      `
+      input ${this.itemQueryName}WhereInput {
+        ${queryArgs}
+      }
+      `,
       `
       input ${this.key}UpdateInput {
         ${updateArgs}
@@ -155,11 +182,8 @@ module.exports = class List {
     ];
   }
   getAdminGraphqlQueries() {
-    const queryArgs = this.fields
-      .map(i => i.getGraphqlQueryArgs())
-      .filter(i => i)
-      .map(i => i.split(/\n\s+/g).join('\n          '))
-      .join('\n          # New field\n          ');
+    // TODO: Follow OpenCRUD naming:
+    // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-1-toplevel.md#example
     const commonArgs = `
           search: String
           sort: String
@@ -167,21 +191,21 @@ module.exports = class List {
           # Pagination
           first: Int
           skip: Int`;
-    // TODO: Group field filters under filter: FilterInput
+
     return [
       `
-        ${this.listQueryName}(${commonArgs}
+        ${this.listQueryName}(
+          where: ${this.itemQueryName}WhereInput
 
-          # Field Filters
-          ${queryArgs}
+          ${commonArgs.trim()}
         ): [${this.key}]
 
         ${this.itemQueryName}(id: String!): ${this.key}
 
-        ${this.listQueryMetaName}(${commonArgs}
+        ${this.listQueryMetaName}(
+          where: ${this.itemQueryName}WhereInput
 
-          # Field Filters
-          ${queryArgs}
+          ${commonArgs.trim()}
         ): _QueryMeta
       `,
       ...this.fields

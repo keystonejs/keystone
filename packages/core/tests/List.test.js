@@ -181,6 +181,15 @@ test('getAdminGraphqlTypes()', () => {
       }
       `,
     `
+      input TestWhereInput {
+        # MockType field
+        name_query_args
+
+        # MockType field
+        email_query_args
+      }
+      `,
+    `
       input TestUpdateInput {
         name_update_args
         email_update_args
@@ -207,33 +216,27 @@ test('getAdminGraphqlQueries()', () => {
   expect(queries).toEqual([
     `
         allTests(
+          where: TestWhereInput
+
           search: String
           sort: String
 
           # Pagination
           first: Int
           skip: Int
-
-          # Field Filters
-          name_query_args
-          # New field
-          email_query_args
         ): [Test]
 
         Test(id: String!): Test
 
         _allTestsMeta(
+          where: TestWhereInput
+
           search: String
           sort: String
 
           # Pagination
           first: Int
           skip: Int
-
-          # Field Filters
-          name_query_args
-          # New field
-          email_query_args
         ): _QueryMeta
       `,
   ]);

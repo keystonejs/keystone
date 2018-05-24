@@ -38,8 +38,11 @@ module.exports = class Text extends Implementation {
       ${this.path}: String
     `;
   }
-  getQueryConditions(args) {
+  getQueryConditions({ where: args } = {}) {
     const conditions = [];
+    if (!args) {
+      return conditions;
+    }
     const caseSensitive = args[`${this.path}_case_sensitive`];
     const rx_cs = caseSensitive ? '' : 'i';
     const eq = this.path;
