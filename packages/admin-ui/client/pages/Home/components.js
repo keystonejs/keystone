@@ -1,14 +1,18 @@
 import React from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
-import { colors, gridSize } from '@keystonejs/ui/src/theme';
+import withPseudoState from 'react-pseudo-state';
+
+import { PlusIcon } from '@keystonejs/icons';
+import { colors, borderRadius, gridSize } from '@keystonejs/ui/src/theme';
 import { LoadingIndicator } from '@keystonejs/ui/src/primitives/loading';
+import { A11yText } from '@keystonejs/ui/src/primitives/typography';
 
 const BOX_GUTTER = `${gridSize * 2}px`;
 
-export const Box = styled(Link)`
+const BoxElement = styled(Link)`
   background-color: white;
-  border-radius: 3px;
+  border-radius: ${borderRadius}px;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.075), 0 0 0 1px rgba(0, 0, 0, 0.1);
   color: ${colors.N40};
   display: block;
@@ -24,6 +28,36 @@ export const Box = styled(Link)`
     text-decoration: none;
   }
 `;
+
+export const BoxComponent = ({
+  isActive,
+  isHover,
+  isFocus,
+  list,
+  meta,
+  onCreateClick,
+  ...props
+}) => {
+  const { label, singular } = list;
+
+  return (
+    <BoxElement title={`Go to ${label}`} {...props}>
+      <A11yText>Go to {label}</A11yText>
+      <Name isHover={isHover || isFocus}>{label}</Name>
+      <Count meta={meta} />
+      <CreateButton
+        title={`Create ${singular}`}
+        isHover={isHover || isFocus}
+        onClick={onCreateClick}
+      >
+        <PlusIcon />
+        <A11yText>Create {singular}</A11yText>
+      </CreateButton>
+    </BoxElement>
+  );
+};
+
+export const Box = withPseudoState(BoxComponent);
 
 export const Name = styled.span(
   ({ isHover }) => `
