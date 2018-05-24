@@ -2,3 +2,4 @@ package.json
 packages/icons/icons/*
 reports
 coverage
+packages/test-project/public
