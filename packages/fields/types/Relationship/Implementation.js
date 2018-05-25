@@ -51,7 +51,7 @@ function postAggregateMutationFactory({ path, many, joinPathName, refList }) {
     let joinedItems;
 
     if (many) {
-      joinedItems = item[path].map((itemId, itemIndex) => {
+      joinedItems = item[path].map(itemId => {
         const joinedItemIndex = item[joinPathName].findIndex(({ _id }) =>
           _id.equals(itemId)
         );
@@ -77,6 +77,7 @@ function postAggregateMutationFactory({ path, many, joinPathName, refList }) {
       }
     } else {
       const joinedItem = item[joinPathName][0];
+      // eslint-disable-next-line no-underscore-dangle
       if (!joinedItem || !joinedItem._id.equals(item[path])) {
         // Shouldn't be possible due to the { $exists: true, $ne: [] }
         // aggregation step above, but in case that fails or doesn't behave

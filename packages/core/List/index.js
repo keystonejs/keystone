@@ -1,5 +1,5 @@
 const pluralize = require('pluralize');
-const { resolveAllKeys, escapeRegExp } = require('@keystonejs/utils');
+const { resolveAllKeys } = require('@keystonejs/utils');
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
