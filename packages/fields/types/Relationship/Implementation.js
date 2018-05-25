@@ -151,6 +151,12 @@ module.exports = class Select extends Implementation {
             _id: { $in: item[this.path] },
           });
         } else {
+          // The field may have already been filled in during an early DB lookup
+          // (ie; joining when doing a filter)
+          // eslint-disable-next-line no-underscore-dangle
+          if (item[this.path] && item[this.path]._id) {
+            return item[this.path];
+          }
           return this.getListByKey(ref).model.findById(item[this.path]);
         }
       },
