@@ -32,7 +32,7 @@ import FieldTypes from '../../FIELD_TYPES';
 
 const getItemQuery = ({ list, itemId }) => gql`
   {
-    ${list.itemQueryName}(id: "${itemId}") {
+    ${list.itemQueryName}(where: { id: "${itemId}" }) {
       id
       _label_
       ${list.fields.map(field => field.getQueryFragment()).join(' ')}

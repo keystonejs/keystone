@@ -190,6 +190,11 @@ test('getAdminGraphqlTypes()', () => {
       }
       `,
     `
+      input TestWhereUniqueInput {
+        id: ID!
+      }
+      `,
+    `
       input TestUpdateInput {
         name_update_args
         email_update_args
@@ -226,7 +231,7 @@ test('getAdminGraphqlQueries()', () => {
           skip: Int
         ): [Test]
 
-        Test(id: String!): Test
+        Test(where: TestWhereUniqueInput!): Test
 
         _allTestsMeta(
           where: TestWhereInput

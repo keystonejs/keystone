@@ -1,5 +1,5 @@
 const pluralize = require('pluralize');
-const { resolveAllKeys } = require('@keystonejs/utils');
+const { resolveAllKeys, escapeRegExp } = require('@keystonejs/utils');
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
@@ -169,6 +169,11 @@ module.exports = class List {
       }
       `,
       `
+      input ${this.itemQueryName}WhereUniqueInput {
+        id: ID!
+      }
+      `,
+      `
       input ${this.key}UpdateInput {
         ${updateArgs}
       }
@@ -215,7 +220,9 @@ createdAt_DESC
           ${commonArgs.trim()}
         ): [${this.key}]
 
-        ${this.itemQueryName}(id: String!): ${this.key}
+        ${this.itemQueryName}(where: ${this.itemQueryName}WhereUniqueInput!): ${
+        this.key
+      }
 
         ${this.listQueryMetaName}(
           where: ${this.itemQueryName}WhereInput
@@ -232,7 +239,7 @@ createdAt_DESC
     return {
       [this.listQueryName]: (_, args) => this.itemsQuery(args),
       [this.listQueryMetaName]: (_, args) => this.itemsQueryMeta(args),
-      [this.itemQueryName]: (_, { id }) => this.model.findById(id),
+      [this.itemQueryName]: (_, { where: { id } }) => this.model.findById(id),
     };
   }
   getAdminFieldResolvers() {
@@ -358,6 +365,10 @@ createdAt_DESC
     };
   }
   itemsQueryConditions(args, depthGuard = 0) {
+    if (!args) {
+      return [];
+    }
+
     // TODO: can depthGuard be an instance variable, to track the recursion
     // depth instead of passing it through to the individual fields and back
     // again?
@@ -400,8 +411,7 @@ createdAt_DESC
     }, []);
   }
   itemsQuery(args) {
-    // TODO: FIXME - should always be args.where
-    const conditions = this.itemsQueryConditions(args.where || args);
+    const conditions = this.itemsQueryConditions(args.where);
 
     const pipeline = [];
     const postAggregateMutation = [];
@@ -435,6 +445,15 @@ createdAt_DESC
         }
         itr = iterator.next();
       }
+    }
+
+    if (args.search) {
+      // TODO: Implement configurable search fields for lists
+      pipeline.push({
+        $match: {
+          name: new RegExp(`${escapeRegExp(args.search)}`, 'i'),
+        },
+      });
     }
 
     if (args.orderBy) {
