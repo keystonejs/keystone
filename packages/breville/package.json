@@ -8,7 +8,9 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "node -r dotenv-safe/config index.js"
+    "start": "node -r dotenv-safe/config index.js",
+    "mongo:backup:local": "mongodump -h localhost -d breville -o ../../../data",
+    "mongo:restore:local": "mongorestore -d breville ../../../data/breville --drop --host=127.0.0.1"
   },
   "dependencies": {
     "@keystonejs/admin-ui": "^5.0.0",
