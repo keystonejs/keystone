@@ -218,7 +218,7 @@ module.exports = class Select extends Implementation {
           many: false,
           joinPathName,
           refList,
-        })
+        }),
       });
     }
 

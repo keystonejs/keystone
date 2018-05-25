@@ -368,10 +368,18 @@ createdAt_DESC
     }
 
     return this.fields.reduce((conds, field) => {
-      const fieldConditions = field.getQueryConditions(args, this, depthGuard + 1);
+      const fieldConditions = field.getQueryConditions(
+        args,
+        this,
+        depthGuard + 1
+      );
 
       if (fieldConditions && !Array.isArray(fieldConditions)) {
-        console.warn(`${field.listKey}.${field.path} (${field.constructor.name}) returned a non-array for .getQueryConditions(). This is probably a mistake. Ignoring.`);
+        console.warn(
+          `${field.listKey}.${field.path} (${
+            field.constructor.name
+          }) returned a non-array for .getQueryConditions(). This is probably a mistake. Ignoring.`
+        );
         return conds;
       }
 

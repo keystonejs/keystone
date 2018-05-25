@@ -76,7 +76,11 @@ export const filterTests = app => {
   });
 
   test('Filter: name (case-sensitive) (miss)', done => {
-    match('where: { name: "thing 4 - end", name_case_sensitive: true }', [], done);
+    match(
+      'where: { name: "thing 4 - end", name_case_sensitive: true }',
+      [],
+      done
+    );
   });
 
   test('Filter: name_not (case-sensitive) (miss)', done => {
@@ -96,7 +100,11 @@ export const filterTests = app => {
   });
 
   test('Filter: not_starts_with', done => {
-    match('where: { name_not_starts_with: "item" }', ['', 'thing 4 - END'], done);
+    match(
+      'where: { name_not_starts_with: "item" }',
+      ['', 'thing 4 - END'],
+      done
+    );
   });
 
   test('Filter: starts_with (case-sensitive)', done => {
