@@ -137,6 +137,7 @@ module.exports = class Select extends Implementation {
     } else {
       return `
         ${this.path}: ${ref}WhereInput
+        ${this.path}_is_null: Boolean
       `;
     }
   }
@@ -178,36 +179,49 @@ module.exports = class Select extends Implementation {
   getQueryConditionsSingle(args, list, depthGuard) {
     const conditions = [];
 
-    if (!args || !args[this.path]) {
+    if (!args) {
       return conditions;
     }
 
-    const refList = this.getListByKey(this.config.ref);
-    const filters = refList.itemsQueryConditions(args[this.path], depthGuard);
+    const isNull = `${this.path}_is_null`;
+    if (isNull in args) {
+      if (args[isNull]) {
+        conditions.push({ $not: { $exists: true, $ne: null } });
+      } else {
+        conditions.push({ $exists: true, $ne: null });
+      }
+    }
 
-    const query = {
-      $and: filters,
-    };
+    if (this.path in args) {
+      const refList = this.getListByKey(this.config.ref);
+      const filters = refList.itemsQueryConditions(args[this.path], depthGuard);
 
-    // 99.999999999...% guaranteed not to conflict with anything else
-    const joinPathName = cuid();
+      const query = {
+        $and: filters,
+      };
 
-    return [{
-      // Must signal that this isn't some plain old '$and' query!
-      $isComplexStage: true,
-      pipeline: relationFilterPipeline({
-        path: this.path,
-        query,
-        many: false,
-        joinPathName,
-        refList,
-      }),
-      mutator: postAggregateMutationFactory({
-        path: this.path,
-        many: false,
-        joinPathName,
-        refList,
-      })
-    }];
+      // 99.999999999...% guaranteed not to conflict with anything else
+      const joinPathName = cuid();
+
+      conditions.push({
+        // Must signal that this isn't some plain old '$and' query!
+        $isComplexStage: true,
+        pipeline: relationFilterPipeline({
+          path: this.path,
+          query,
+          many: false,
+          joinPathName,
+          refList,
+        }),
+        mutator: postAggregateMutationFactory({
+          path: this.path,
+          many: false,
+          joinPathName,
+          refList,
+        })
+      });
+    }
+
+    return conditions;
   }
 };
