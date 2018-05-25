@@ -27,12 +27,23 @@ module.exports = class Select extends Implementation {
     return { ...meta, ref, many };
   }
   getGraphqlQueryArgs() {
-    return `
-      ${this.path}: String
-      ${this.path}_not: String
-      ${this.path}_in: [String!]
-      ${this.path}_not_in: [String!]
-    `;
+    const { many, ref } = this.config;
+    if (many) {
+      return `
+        # condition must be true for all nodes
+        ${this.path}_every: ${ref}WhereInput
+        # condition must be true for at least 1 node
+        ${this.path}_some: ${ref}WhereInput
+        # condition must be false for all nodes
+        ${this.path}_none: ${ref}WhereInput
+        # is the relation field null
+        ${this.path}_is_null: Boolean
+      `;
+    } else {
+      return `
+        ${this.path}: ${ref}WhereInput
+      `;
+    }
   }
   getGraphqlFieldResolvers() {
     const { many, ref } = this.config;
@@ -56,24 +67,38 @@ module.exports = class Select extends Implementation {
   getGraphqlCreateArgs() {
     return this.getGraphqlUpdateArgs();
   }
-  getQueryConditions(args) {
+  getQueryConditions(args, depthGuard) {
+    return [];
+    /*
+    if (this.config.many) {
+      return [];
+      return this.getQueryConditionsMany(args, depthGuard);
+    }
+
+    return this.getQueryConditionsSingle(args, depthGuard);
+    */
+  }
+  getQueryConditionsMany(args/*, depthGuard*/) {
+    Object.keys(args || {})
+      .filter(filter => filter.startsWith(`${this.path}_`))
+      .map(filter => filter);
+  }
+  getQueryConditionsSingle(args, depthGuard) {
+    console.log('single relation args:', args);
+
     const conditions = [];
-    const eq = this.path;
-    if (eq in args) {
-      conditions.push({ $eq: args[eq] });
+
+    if (!args || !args[this.path]) {
+      return conditions;
     }
-    const not = `${this.path}_not`;
-    if (not in args) {
-      conditions.push({ $ne: args[not] });
-    }
-    const is_in = `${this.path}_in`;
-    if (is_in in args) {
-      conditions.push({ $in: args[is_in] });
-    }
-    const not_in = `${this.path}_not_in`;
-    if (not_in in args) {
-      conditions.push({ $nin: args[not_in] });
-    }
-    return conditions;
+
+    const filters = this.getListByKey(this.config.ref).itemsQueryConditions(
+      args[this.path],
+      depthGuard
+    );
+
+    console.log('single relation filters:', filters);
+
+    return filters;
   }
 };

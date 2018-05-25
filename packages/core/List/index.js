@@ -184,6 +184,21 @@ module.exports = class List {
   getAdminGraphqlQueries() {
     // TODO: Follow OpenCRUD naming:
     // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-1-toplevel.md#example
+    // TODO: make sorting like OpenCRUD:
+    /*
+orderBy: UserOrderByInput
+...
+enum UserOrderByInput {
+id_ASC
+id_DESC
+name_ASC
+name_DESC
+updatedAt_ASC
+updatedAt_DESC
+createdAt_ASC
+createdAt_DESC
+}
+*/
     const commonArgs = `
           search: String
           sort: String
@@ -215,8 +230,8 @@ module.exports = class List {
   }
   getAdminQueryResolvers() {
     return {
-      [this.listQueryName]: (_, args) => this.buildItemsQuery(args),
-      [this.listQueryMetaName]: (_, args) => this.buildItemsQueryMeta(args),
+      [this.listQueryName]: (_, args) => this.itemsQuery(args),
+      [this.listQueryMetaName]: (_, args) => this.itemsQueryMeta(args),
       [this.itemQueryName]: (_, { id }) => this.model.findById(id),
     };
   }
@@ -342,39 +357,118 @@ module.exports = class List {
       },
     };
   }
-  buildItemsQuery(args) {
-    let conditions = this.fields.reduce((conds, field) => {
-      const fieldConditions = field.getQueryConditions(args);
-      if (!fieldConditions.length) return conds;
-      return [...conds, ...fieldConditions.map(i => ({ [field.path]: i }))];
+  itemsQueryConditions(args, depthGuard = 0) {
+    // TODO: can depthGuard be an instance variable, to track the recursion
+    // depth instead of passing it through to the individual fields and back
+    // again?
+    if (depthGuard > 1) {
+      throw new Error(
+        'Nesting where args deeper than 1 level is not currently supported'
+      );
+    }
+
+    return this.fields.reduce((conds, field) => {
+      const fieldConditions = field.getQueryConditions(args, depthGuard + 1);
+      if (!fieldConditions.length) {
+        return conds;
+      }
+      return [
+        ...conds,
+        ...fieldConditions.map(condition => ({ [field.path]: condition })),
+      ];
     }, []);
-    if (args.search) {
-      // TODO: Implement configurable search fields for lists
-      conditions.push({
-        name: new RegExp(`^${escapeRegExp(args.search)}`, 'i'),
+  }
+  itemsQuery(args) {
+    // TODO: FIXME - should always be args.where
+    const conditions = this.itemsQueryConditions(args.where || args);
+
+    const pipeline = [];
+    const postAggregateMutation = [];
+
+    let iterator = conditions[Symbol.iterator]();
+    let itr = iterator.next();
+    while (!itr.done) {
+      // Gather up all the simple matches
+      let simpleMatches = [];
+      while (!itr.done && !itr.value.$isComplexStage) {
+        simpleMatches.push(itr.value);
+        itr = iterator.next();
+      }
+
+      if (simpleMatches.length) {
+        pipeline.push({
+          $match: {
+            $and: simpleMatches,
+          },
+        });
+      }
+
+      // Push all the complex stages onto the pipeline as-is
+      while (!itr.done && itr.value.$isComplexStage) {
+        pipeline.push(...itr.value.pipeline);
+        if (itr.value.mutator) {
+          postAggregateMutation.push(itr.value.mutator);
+        }
+        itr = iterator.next();
+      }
+    }
+
+    if (args.orderBy) {
+      const [orderField, orderDirection] = args.orderBy.split('_');
+
+      pipeline.push({
+        $sort: {
+          [orderField]: orderDirection === 'ASC' ? 1 : -1,
+        },
       });
     }
-    if (!conditions.length) conditions = undefined;
-    else if (conditions.length === 1) conditions = conditions[0];
-    else conditions = { $and: conditions };
 
-    const query = this.model.find(conditions);
-
-    if (args.sort) {
-      query.sort(args.sort);
+    if (args.skip < Infinity && args.skip > 0) {
+      pipeline.push({
+        $skip: args.skip,
+      });
     }
 
-    if (args.first) {
-      query.limit(args.first);
+    if (args.limit < Infinity && args.limit > 0) {
+      pipeline.push({
+        $limit: args.limit,
+      });
     }
-    if (args.skip) {
-      query.skip(args.skip);
+
+    if (!pipeline.length) {
+      return this.model.find();
     }
-    return query;
+
+    // Map _id => id
+    // Normally, mongoose would do this for us, but because we're breaking out
+    // and going straight Mongo, gotta do it ourselves.
+    pipeline.push({
+      $addFields: {
+        id: '$_id',
+      },
+    });
+
+    return this.model
+      .aggregate(pipeline)
+      .exec()
+      .then(data =>
+        data
+          .map((item, index, list) =>
+            // Iterate over all the mutations
+            postAggregateMutation.reduce(
+              // And pass through the result to the following mutator
+              (mutatedItem, mutation) => mutation(mutatedItem, index, list),
+              // Starting at the original item
+              item
+            )
+          )
+          // If anything gets removed, we clear it out here
+          .filter(Boolean)
+      );
   }
-  buildItemsQueryMeta(args) {
+  itemsQueryMeta(args) {
     return new Promise((resolve, reject) => {
-      this.buildItemsQuery(args).count((err, count) => {
+      this.itemsQuery(args).count((err, count) => {
         if (err) reject(err);
         resolve({ count });
       });

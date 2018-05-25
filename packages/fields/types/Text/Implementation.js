@@ -38,7 +38,7 @@ module.exports = class Text extends Implementation {
       ${this.path}: String
     `;
   }
-  getQueryConditions({ where: args } = {}) {
+  getQueryConditions(args) {
     const conditions = [];
     if (!args) {
       return conditions;
