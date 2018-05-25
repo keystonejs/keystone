@@ -368,13 +368,26 @@ createdAt_DESC
     }
 
     return this.fields.reduce((conds, field) => {
-      const fieldConditions = field.getQueryConditions(args, depthGuard + 1);
-      if (!fieldConditions.length) {
+      const fieldConditions = field.getQueryConditions(args, this, depthGuard + 1);
+
+      if (fieldConditions && !Array.isArray(fieldConditions)) {
+        console.warn(`${field.listKey}.${field.path} (${field.constructor.name}) returned a non-array for .getQueryConditions(). This is probably a mistake. Ignoring.`);
         return conds;
       }
+
+      // Nothing to do
+      if (!fieldConditions || !fieldConditions.length) {
+        return conds;
+      }
+
       return [
         ...conds,
-        ...fieldConditions.map(condition => ({ [field.path]: condition })),
+        ...fieldConditions.map(condition => {
+          if (condition.$isComplexStage) {
+            return condition;
+          }
+          return { [field.path]: condition };
+        }),
       ];
     }, []);
   }
@@ -385,6 +398,9 @@ createdAt_DESC
     const pipeline = [];
     const postAggregateMutation = [];
 
+    // TODO: Order isn't important. Might as well put all the simple `$match`s
+    // first, and complex ones last.
+    // TODO: Change this to a `for...of` loop
     let iterator = conditions[Symbol.iterator]();
     let itr = iterator.next();
     while (!itr.done) {

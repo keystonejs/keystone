@@ -41,6 +41,7 @@
     "body-parser": "^1.18.2",
     "cloudinary": "^1.11.0",
     "cors": "^2.8.4",
+    "cuid": "^2.1.1",
     "dotenv-safe": "^5.0.1",
     "emotion": "^9.1.1",
     "eslint": "^4.19.1",
