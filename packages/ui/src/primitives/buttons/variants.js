@@ -177,7 +177,6 @@ export function makeBoldVariant({
     borderColor: isDisabled ? null : `${borderTop} ${border} ${borderBottom}`,
     color: text,
     fontWeight: 500,
-    textDecoration: 'none',
     textShadow,
 
     ...hoverStyles,

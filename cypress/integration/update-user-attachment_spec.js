@@ -17,7 +17,7 @@ describe('Adding a file', function() {
         cy.writeFile('cypress/fixtures/upload.txt', fileContent);
         cy.upload_file('input[name=attachment][type=file]', 'upload.txt');
         cy.get('button[type="submit"]').click();
-        cy.get('a[href$="upload.txt"]');
+        cy.contains('-upload.txt');
         return cy
           .graphql_query(
             `
@@ -33,7 +33,9 @@ describe('Adding a file', function() {
           )
           .then(({ User: { attachment } }) => {
             // Assert the URL is visible in the admin UI
-            cy.get(`a[href$="${attachment.publicUrl}"]`).should('be.visible');
+            cy
+              .contains(`${attachment.publicUrl.split('/')[3]}`)
+              .should('be.visible');
 
             // Assert the file contents are what we uploaded
             cy

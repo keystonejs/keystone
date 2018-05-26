@@ -103,6 +103,7 @@
     "eslint-plugin-cypress": "^2.0.1",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.17.0",
-    "pm2": "^2.10.4"
+    "pm2": "^2.10.4",
+    "supertest": "^3.1.0"
   }
 }

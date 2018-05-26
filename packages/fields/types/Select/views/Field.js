@@ -16,9 +16,11 @@ export default class SelectField extends Component {
   render() {
     const { autoFocus, field, item } = this.props;
     const value = field.options.filter(i => i.value === item[field.path])[0];
+    const htmlID = `ks-input-${field.path}`;
+
     return (
       <FieldContainer>
-        <FieldLabel>{field.label}</FieldLabel>
+        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
         <FieldInput>
           <Select
             autoFocus={autoFocus}
@@ -26,6 +28,7 @@ export default class SelectField extends Component {
             menuPosition="fixed"
             options={field.options}
             onChange={this.onChange}
+            inputId={htmlID}
           />
         </FieldInput>
       </FieldContainer>

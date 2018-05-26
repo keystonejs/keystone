@@ -115,12 +115,11 @@ module.exports = class AdminUI {
       graphiqlPath: this.graphiqlPath,
     });
     const compiler = webpack(webpackConfig);
-    app.use(
-      webpackDevMiddleware(compiler, {
-        publicPath: webpackConfig.output.publicPath,
-        stats: 'minimal',
-      })
-    );
+    this.webpackMiddleware = webpackDevMiddleware(compiler, {
+      publicPath: webpackConfig.output.publicPath,
+      stats: 'minimal',
+    });
+    app.use(this.webpackMiddleware);
 
     // handle errors
     // eslint-disable-next-line no-unused-vars
