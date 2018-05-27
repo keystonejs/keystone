@@ -40,6 +40,9 @@ module.exports = class Text extends Implementation {
   }
   getQueryConditions(args) {
     const conditions = [];
+    if (!args) {
+      return conditions;
+    }
     const caseSensitive = args[`${this.path}_case_sensitive`];
     const rx_cs = caseSensitive ? '' : 'i';
     const eq = this.path;

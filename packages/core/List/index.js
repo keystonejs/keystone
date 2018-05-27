@@ -109,21 +109,41 @@ module.exports = class List {
     const fieldSchemas = this.fields
       .map(i => i.getGraphqlSchema())
       .join('\n        ');
+
     const fieldTypes = this.fields
       .map(i => i.getGraphqlAuxiliaryTypes())
       .filter(i => i);
+
     const updateArgs = this.fields
       .map(i => i.getGraphqlUpdateArgs())
       .filter(i => i)
       .map(i => i.split(/\n\s+/g).join('\n        '))
       .join('\n        ')
       .trim();
+
     const createArgs = this.fields
       .map(i => i.getGraphqlCreateArgs())
       .filter(i => i)
       .map(i => i.split(/\n\s+/g).join('\n        '))
       .join('\n        ')
       .trim();
+
+    const queryArgs = this.fields
+      .map(field => {
+        const fieldQueryArgs = field
+          .getGraphqlQueryArgs()
+          .split(/\n\s+/g)
+          .join('\n        ');
+
+        if (!fieldQueryArgs) {
+          return null;
+        }
+
+        return `# ${field.constructor.name} field\n        ${fieldQueryArgs}`;
+      })
+      .filter(Boolean)
+      .join('\n\n        ');
+
     return [
       `
       type ${this.key} {
@@ -141,6 +161,18 @@ module.exports = class List {
         ${fieldSchemas}
       }
       `,
+      // TODO: AND / OR filters:
+      // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
+      `
+      input ${this.itemQueryName}WhereInput {
+        ${queryArgs}
+      }
+      `,
+      `
+      input ${this.itemQueryName}WhereUniqueInput {
+        id: ID!
+      }
+      `,
       `
       input ${this.key}UpdateInput {
         ${updateArgs}
@@ -155,11 +187,23 @@ module.exports = class List {
     ];
   }
   getAdminGraphqlQueries() {
-    const queryArgs = this.fields
-      .map(i => i.getGraphqlQueryArgs())
-      .filter(i => i)
-      .map(i => i.split(/\n\s+/g).join('\n          '))
-      .join('\n          # New field\n          ');
+    // TODO: Follow OpenCRUD naming:
+    // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-1-toplevel.md#example
+    // TODO: make sorting like OpenCRUD:
+    /*
+orderBy: UserOrderByInput
+...
+enum UserOrderByInput {
+id_ASC
+id_DESC
+name_ASC
+name_DESC
+updatedAt_ASC
+updatedAt_DESC
+createdAt_ASC
+createdAt_DESC
+}
+*/
     const commonArgs = `
           search: String
           sort: String
@@ -167,21 +211,23 @@ module.exports = class List {
           # Pagination
           first: Int
           skip: Int`;
-    // TODO: Group field filters under filter: FilterInput
+
     return [
       `
-        ${this.listQueryName}(${commonArgs}
+        ${this.listQueryName}(
+          where: ${this.itemQueryName}WhereInput
 
-          # Field Filters
-          ${queryArgs}
+          ${commonArgs.trim()}
         ): [${this.key}]
 
-        ${this.itemQueryName}(id: String!): ${this.key}
+        ${this.itemQueryName}(where: ${this.itemQueryName}WhereUniqueInput!): ${
+        this.key
+      }
 
-        ${this.listQueryMetaName}(${commonArgs}
+        ${this.listQueryMetaName}(
+          where: ${this.itemQueryName}WhereInput
 
-          # Field Filters
-          ${queryArgs}
+          ${commonArgs.trim()}
         ): _QueryMeta
       `,
       ...this.fields
@@ -191,9 +237,9 @@ module.exports = class List {
   }
   getAdminQueryResolvers() {
     return {
-      [this.listQueryName]: (_, args) => this.buildItemsQuery(args),
-      [this.listQueryMetaName]: (_, args) => this.buildItemsQueryMeta(args),
-      [this.itemQueryName]: (_, { id }) => this.model.findById(id),
+      [this.listQueryName]: (_, args) => this.itemsQuery(args),
+      [this.listQueryMetaName]: (_, args) => this.itemsQueryMeta(args),
+      [this.itemQueryName]: (_, { where: { id } }) => this.model.findById(id),
     };
   }
   getAdminFieldResolvers() {
@@ -318,39 +364,154 @@ module.exports = class List {
       },
     };
   }
-  buildItemsQuery(args) {
-    let conditions = this.fields.reduce((conds, field) => {
-      const fieldConditions = field.getQueryConditions(args);
-      if (!fieldConditions.length) return conds;
-      return [...conds, ...fieldConditions.map(i => ({ [field.path]: i }))];
+  itemsQueryConditions(args, depthGuard = 0) {
+    if (!args) {
+      return [];
+    }
+
+    // TODO: can depthGuard be an instance variable, to track the recursion
+    // depth instead of passing it through to the individual fields and back
+    // again?
+    if (depthGuard > 1) {
+      throw new Error(
+        'Nesting where args deeper than 1 level is not currently supported'
+      );
+    }
+
+    return this.fields.reduce((conds, field) => {
+      const fieldConditions = field.getQueryConditions(
+        args,
+        this,
+        depthGuard + 1
+      );
+
+      if (fieldConditions && !Array.isArray(fieldConditions)) {
+        console.warn(
+          `${field.listKey}.${field.path} (${
+            field.constructor.name
+          }) returned a non-array for .getQueryConditions(). This is probably a mistake. Ignoring.`
+        );
+        return conds;
+      }
+
+      // Nothing to do
+      if (!fieldConditions || !fieldConditions.length) {
+        return conds;
+      }
+
+      return [
+        ...conds,
+        ...fieldConditions.map(condition => {
+          if (condition.$isComplexStage) {
+            return condition;
+          }
+          return { [field.path]: condition };
+        }),
+      ];
     }, []);
+  }
+  itemsQuery(args) {
+    const conditions = this.itemsQueryConditions(args.where);
+
+    const pipeline = [];
+    const postAggregateMutation = [];
+
+    // TODO: Order isn't important. Might as well put all the simple `$match`s
+    // first, and complex ones last.
+    // TODO: Change this to a `for...of` loop
+    let iterator = conditions[Symbol.iterator]();
+    let itr = iterator.next();
+    while (!itr.done) {
+      // Gather up all the simple matches
+      let simpleMatches = [];
+      while (!itr.done && !itr.value.$isComplexStage) {
+        simpleMatches.push(itr.value);
+        itr = iterator.next();
+      }
+
+      if (simpleMatches.length) {
+        pipeline.push({
+          $match: {
+            $and: simpleMatches,
+          },
+        });
+      }
+
+      // Push all the complex stages onto the pipeline as-is
+      while (!itr.done && itr.value.$isComplexStage) {
+        pipeline.push(...itr.value.pipeline);
+        if (itr.value.mutator) {
+          postAggregateMutation.push(itr.value.mutator);
+        }
+        itr = iterator.next();
+      }
+    }
+
     if (args.search) {
       // TODO: Implement configurable search fields for lists
-      conditions.push({
-        name: new RegExp(`^${escapeRegExp(args.search)}`, 'i'),
+      pipeline.push({
+        $match: {
+          name: new RegExp(`${escapeRegExp(args.search)}`, 'i'),
+        },
       });
     }
-    if (!conditions.length) conditions = undefined;
-    else if (conditions.length === 1) conditions = conditions[0];
-    else conditions = { $and: conditions };
 
-    const query = this.model.find(conditions);
+    if (args.orderBy) {
+      const [orderField, orderDirection] = args.orderBy.split('_');
 
-    if (args.sort) {
-      query.sort(args.sort);
+      pipeline.push({
+        $sort: {
+          [orderField]: orderDirection === 'ASC' ? 1 : -1,
+        },
+      });
     }
 
-    if (args.first) {
-      query.limit(args.first);
+    if (args.skip < Infinity && args.skip > 0) {
+      pipeline.push({
+        $skip: args.skip,
+      });
     }
-    if (args.skip) {
-      query.skip(args.skip);
+
+    if (args.first < Infinity && args.first > 0) {
+      pipeline.push({
+        $limit: args.first,
+      });
     }
-    return query;
+
+    if (!pipeline.length) {
+      return this.model.find();
+    }
+
+    // Map _id => id
+    // Normally, mongoose would do this for us, but because we're breaking out
+    // and going straight Mongo, gotta do it ourselves.
+    pipeline.push({
+      $addFields: {
+        id: '$_id',
+      },
+    });
+
+    return this.model
+      .aggregate(pipeline)
+      .exec()
+      .then(data =>
+        data
+          .map((item, index, list) =>
+            // Iterate over all the mutations
+            postAggregateMutation.reduce(
+              // And pass through the result to the following mutator
+              (mutatedItem, mutation) => mutation(mutatedItem, index, list),
+              // Starting at the original item
+              item
+            )
+          )
+          // If anything gets removed, we clear it out here
+          .filter(Boolean)
+      );
   }
-  buildItemsQueryMeta(args) {
+  itemsQueryMeta(args) {
     return new Promise((resolve, reject) => {
-      this.buildItemsQuery(args).count((err, count) => {
+      this.itemsQuery(args).count((err, count) => {
         if (err) reject(err);
         resolve({ count });
       });

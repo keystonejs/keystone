@@ -1,10 +1,106 @@
+const mongoose = require('mongoose');
+const cuid = require('cuid');
+
 const {
   Schema: {
     Types: { ObjectId },
   },
-} = require('mongoose');
+} = mongoose;
 
 const Implementation = require('../../Implementation');
+
+function relationFilterPipeline({ path, query, many, refList, joinPathName }) {
+  return [
+    {
+      // JOIN
+      $lookup: {
+        // the MongoDB name of the collection - this is potentially different
+        // from the Mongoose name due to pluralization, etc. This guarantees the
+        // correct name.
+        from: refList.model.collection.name,
+        as: joinPathName,
+        let: { [path]: `$${path}` },
+        pipeline: [
+          {
+            $match: {
+              ...query,
+              $expr: { [many ? '$in' : '$eq']: ['$_id', `$$${path}`] },
+            },
+          },
+        ],
+      },
+    },
+    // Filter out empty array results (the $lookup will return a document with
+    // an empty array when no matches are found in the related field)
+    // TODO: This implies a `some` filter. For an `every` filter, we would need
+    // to somehow check that the resulting size of `path` equals the original
+    // document's size. In the case of one-to-one, we'd have to check that the
+    // resulting size is exactly 1 (which is the same as `$ne: []`?)
+    { $match: { [joinPathName]: { $exists: true, $ne: [] } } },
+  ];
+}
+
+function postAggregateMutationFactory({ path, many, joinPathName, refList }) {
+  // Recreate Mongoose instances of the sub items every time to allow for
+  // further operations to be performed on those sub items via Mongoose.
+  return item => {
+    if (!item) {
+      return;
+    }
+
+    let joinedItems;
+
+    if (many) {
+      joinedItems = item[path].map(itemId => {
+        const joinedItemIndex = item[joinPathName].findIndex(({ _id }) =>
+          _id.equals(itemId)
+        );
+
+        if (joinedItemIndex === -1) {
+          return itemId;
+        }
+
+        // Extract that element out of the array (so the next iteration is a bit
+        // faster)
+        const joinedItem = item[joinPathName].splice(joinedItemIndex, 1)[0];
+        return refList.model(joinedItem);
+      });
+
+      // At this point, we should have spliced out all of the items
+      if (item[joinPathName].length > 0) {
+        // I don't see why this should ever happen, but just in case...
+        throw new Error(
+          `Expected results from MongoDB aggregation '${joinPathName}' to be a subset of the original items, bet left with:\n${JSON.stringify(
+            item[joinPathName]
+          )}`
+        );
+      }
+    } else {
+      const joinedItem = item[joinPathName][0];
+      // eslint-disable-next-line no-underscore-dangle
+      if (!joinedItem || !joinedItem._id.equals(item[path])) {
+        // Shouldn't be possible due to the { $exists: true, $ne: [] }
+        // aggregation step above, but in case that fails or doesn't behave
+        // as expected, we can catch that now.
+        throw new Error(
+          'Expected MongoDB aggregation to correctly filter to a single related item, but no item found.'
+        );
+      }
+      joinedItems = refList.model(joinedItem);
+    }
+
+    const newItemValues = {
+      ...item,
+      [path]: joinedItems,
+    };
+
+    // Get rid of the temporary data key we used to join on
+    // Should be an empty array now that we spliced all the values out above
+    delete newItemValues[joinPathName];
+
+    return newItemValues;
+  };
+}
 
 module.exports = class Select extends Implementation {
   constructor() {
@@ -27,12 +123,24 @@ module.exports = class Select extends Implementation {
     return { ...meta, ref, many };
   }
   getGraphqlQueryArgs() {
-    return `
-      ${this.path}: String
-      ${this.path}_not: String
-      ${this.path}_in: [String!]
-      ${this.path}_not_in: [String!]
-    `;
+    const { many, ref } = this.config;
+    if (many) {
+      return `
+        # condition must be true for all nodes
+        ${this.path}_every: ${ref}WhereInput
+        # condition must be true for at least 1 node
+        ${this.path}_some: ${ref}WhereInput
+        # condition must be false for all nodes
+        ${this.path}_none: ${ref}WhereInput
+        # is the relation field null
+        ${this.path}_is_null: Boolean
+      `;
+    } else {
+      return `
+        ${this.path}: ${ref}WhereInput
+        ${this.path}_is_null: Boolean
+      `;
+    }
   }
   getGraphqlFieldResolvers() {
     const { many, ref } = this.config;
@@ -43,6 +151,12 @@ module.exports = class Select extends Implementation {
             _id: { $in: item[this.path] },
           });
         } else {
+          // The field may have already been filled in during an early DB lookup
+          // (ie; joining when doing a filter)
+          // eslint-disable-next-line no-underscore-dangle
+          if (item[this.path] && item[this.path]._id) {
+            return item[this.path];
+          }
           return this.getListByKey(ref).model.findById(item[this.path]);
         }
       },
@@ -56,24 +170,65 @@ module.exports = class Select extends Implementation {
   getGraphqlCreateArgs() {
     return this.getGraphqlUpdateArgs();
   }
-  getQueryConditions(args) {
+  getQueryConditions(args, list, depthGuard) {
+    if (this.config.many) {
+      return this.getQueryConditionsMany(args, list, depthGuard);
+    }
+
+    return this.getQueryConditionsSingle(args, list, depthGuard);
+  }
+  getQueryConditionsMany(args /*, last, depthGuard*/) {
+    return [];
+    Object.keys(args || {})
+      .filter(filter => filter.startsWith(`${this.path}_`))
+      .map(filter => filter);
+  }
+  getQueryConditionsSingle(args, list, depthGuard) {
     const conditions = [];
-    const eq = this.path;
-    if (eq in args) {
-      conditions.push({ $eq: args[eq] });
+
+    if (!args) {
+      return conditions;
     }
-    const not = `${this.path}_not`;
-    if (not in args) {
-      conditions.push({ $ne: args[not] });
+
+    const isNull = `${this.path}_is_null`;
+    if (isNull in args) {
+      if (args[isNull]) {
+        conditions.push({ $not: { $exists: true, $ne: null } });
+      } else {
+        conditions.push({ $exists: true, $ne: null });
+      }
     }
-    const is_in = `${this.path}_in`;
-    if (is_in in args) {
-      conditions.push({ $in: args[is_in] });
+
+    if (this.path in args) {
+      const refList = this.getListByKey(this.config.ref);
+      const filters = refList.itemsQueryConditions(args[this.path], depthGuard);
+
+      const query = {
+        $and: filters,
+      };
+
+      // 99.999999999...% guaranteed not to conflict with anything else
+      const joinPathName = cuid();
+
+      conditions.push({
+        // Must signal that this isn't some plain old '$and' query!
+        $isComplexStage: true,
+        pipeline: relationFilterPipeline({
+          path: this.path,
+          query,
+          many: false,
+          joinPathName,
+          refList,
+        }),
+        mutator: postAggregateMutationFactory({
+          path: this.path,
+          many: false,
+          joinPathName,
+          refList,
+        }),
+      });
     }
-    const not_in = `${this.path}_not_in`;
-    if (not_in in args) {
-      conditions.push({ $nin: args[not_in] });
-    }
+
     return conditions;
   }
 };
