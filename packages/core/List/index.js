@@ -472,9 +472,9 @@ createdAt_DESC
       });
     }
 
-    if (args.limit < Infinity && args.limit > 0) {
+    if (args.first < Infinity && args.first > 0) {
       pipeline.push({
-        $limit: args.limit,
+        $limit: args.first,
       });
     }
 
