@@ -1,3 +1,6 @@
+const {
+  Types: { ObjectId },
+} = require('mongoose');
 const pluralize = require('pluralize');
 const { resolveAllKeys, escapeRegExp } = require('@keystonejs/utils');
 
@@ -18,6 +21,24 @@ const labelToPath = str =>
     .toLowerCase();
 
 const labelToClass = str => str.replace(/\s+/g, '');
+
+function getIdQueryConditions(args) {
+  const conditions = [];
+  if (!args) {
+    return conditions;
+  }
+  // id is how it looks in the schema
+  if ('id' in args) {
+    // _id is how it looks in the MongoDB
+    conditions.push({ _id: { $eq: ObjectId(args.id) } });
+  }
+  // id is how it looks in the schema
+  if ('id_not' in args) {
+    // _id is how it looks in the MongoDB
+    conditions.push({ _id: { $ne: ObjectId(args.id_not) } });
+  }
+  return conditions;
+}
 
 module.exports = class List {
   constructor(key, config, { getListByKey, mongoose }) {
@@ -165,6 +186,8 @@ module.exports = class List {
       // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
       `
       input ${this.itemQueryName}WhereInput {
+        id: ID
+        id_not: ID
         ${queryArgs}
       }
       `,
@@ -378,37 +401,42 @@ createdAt_DESC
       );
     }
 
-    return this.fields.reduce((conds, field) => {
-      const fieldConditions = field.getQueryConditions(
-        args,
-        this,
-        depthGuard + 1
-      );
-
-      if (fieldConditions && !Array.isArray(fieldConditions)) {
-        console.warn(
-          `${field.listKey}.${field.path} (${
-            field.constructor.name
-          }) returned a non-array for .getQueryConditions(). This is probably a mistake. Ignoring.`
+    return this.fields.reduce(
+      (conds, field) => {
+        const fieldConditions = field.getQueryConditions(
+          args,
+          this,
+          depthGuard + 1
         );
-        return conds;
-      }
 
-      // Nothing to do
-      if (!fieldConditions || !fieldConditions.length) {
-        return conds;
-      }
+        if (fieldConditions && !Array.isArray(fieldConditions)) {
+          console.warn(
+            `${field.listKey}.${field.path} (${
+              field.constructor.name
+            }) returned a non-array for .getQueryConditions(). This is probably a mistake. Ignoring.`
+          );
+          return conds;
+        }
 
-      return [
-        ...conds,
-        ...fieldConditions.map(condition => {
-          if (condition.$isComplexStage) {
-            return condition;
-          }
-          return { [field.path]: condition };
-        }),
-      ];
-    }, []);
+        // Nothing to do
+        if (!fieldConditions || !fieldConditions.length) {
+          return conds;
+        }
+
+        return [
+          ...conds,
+          ...fieldConditions.map(condition => {
+            if (condition.$isComplexStage) {
+              return condition;
+            }
+            return { [field.path]: condition };
+          }),
+        ];
+      },
+      // Special case for `_id` where it presents as `id` in the graphQL schema,
+      // and isn't a field type
+      getIdQueryConditions(args)
+    );
   }
   itemsQuery(args) {
     const conditions = this.itemsQueryConditions(args.where);
