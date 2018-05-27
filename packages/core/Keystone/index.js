@@ -87,12 +87,16 @@ module.exports = class Keystone {
     // Deduping here avoids that problem.
     listTypes = unique(listTypes);
 
-    let queries = flatten(
-      this.listsArray.map(list => list.getAdminGraphqlQueries())
-    ).map(trim);
-    let mutations = flatten(
-      this.listsArray.map(list => list.getAdminGraphqlMutations())
-    ).map(trim);
+    let queries = unique(
+      flatten(this.listsArray.map(list => list.getAdminGraphqlQueries())).map(
+        trim
+      )
+    );
+    let mutations = unique(
+      flatten(this.listsArray.map(list => list.getAdminGraphqlMutations())).map(
+        trim
+      )
+    );
     const typeDefs = `
       type Query {
         ${queries.join('')}
