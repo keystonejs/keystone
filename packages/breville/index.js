@@ -12,9 +12,6 @@ const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
 
 const { port, cloudinary } = require('./config');
 
-// TODO: Make this work again
-// const SecurePassword = require('./custom-fields/SecurePassword');
-
 const initialData = require('./data');
 
 const cloudinaryAdapter = new CloudinaryAdapter({
@@ -126,8 +123,6 @@ server.app.get('/api/session', (req, res) => {
   if (req.user) {
     Object.assign(data, {
       name: req.user.name,
-      twitterId: req.user.twitterId,
-      twitterUsername: req.user.twitterUsername,
     });
   }
   res.json(data);
