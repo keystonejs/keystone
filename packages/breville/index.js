@@ -1,16 +1,23 @@
 const { AdminUI } = require('@keystonejs/admin-ui');
 const { Keystone } = require('@keystonejs/core');
-const { Text, Relationship, Select, Password } = require('@keystonejs/fields');
+const {
+  Text,
+  Relationship,
+  Select,
+  CloudinaryImage,
+} = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
+const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
 
-const { twitterAuthEnabled, port } = require('./config');
-const { configureTwitterAuth } = require('./twitter');
-
-// TODO: Make this work again
-// const SecurePassword = require('./custom-fields/SecurePassword');
+const { port, cloudinary } = require('./config');
 
 const initialData = require('./data');
+
+const cloudinaryAdapter = new CloudinaryAdapter({
+  ...cloudinary,
+  folder: 'ask-dave',
+});
 
 const keystone = new Keystone({
   name: 'Breville',
@@ -25,7 +32,7 @@ keystone.createList('Ingredient', {
   fields: {
     name: { type: Text },
     description: { type: Text },
-    // image: { type: CloudinaryImage },
+    image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
 });
 
@@ -33,7 +40,7 @@ keystone.createList('Technique', {
   fields: {
     name: { type: Text },
     description: { type: Text },
-    // image: { type: CloudinaryImage },
+    image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
 });
 
@@ -41,7 +48,7 @@ keystone.createList('Doneness', {
   fields: {
     name: { type: Text },
     description: { type: Text },
-    // image: { type: CloudinaryImage },
+    image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
 });
 
@@ -49,7 +56,7 @@ keystone.createList('KitchenWare', {
   fields: {
     name: { type: Text },
     description: { type: Text },
-    // image: { type: CloudinaryImage },
+    image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
 });
 
@@ -57,7 +64,9 @@ keystone.createList('Answer', {
   // defaultColumns: ['comment', 'sensor', 'intensity'],
   // defaultSort: 'comment',
   // labelField: 'comment',
-  labelResolver: item => `${ item.ingredient } | ${ item.technique }${ item.doneness && ` | ${ item.doneness }` }`,
+  labelResolver: item =>
+    `${item.ingredient} | ${item.technique}${item.doneness &&
+      ` | ${item.doneness}`}`,
   fields: {
     ingredient: {
       type: Relationship,
@@ -72,11 +81,14 @@ keystone.createList('Answer', {
       ref: 'Doneness',
     },
     comment: { type: Text },
-    sensor: { type: Select, options: [
-      { label: 'Probe control (oil)', value: 'probeOil' },
-      { label: 'Probe control (ingredient)', value: 'probeIngredient' },
-      { label: 'Pan', value: 'pan' },
-    ]},
+    sensor: {
+      type: Select,
+      options: [
+        { label: 'Probe control (oil)', value: 'probeOil' },
+        { label: 'Probe control (ingredient)', value: 'probeIngredient' },
+        { label: 'Pan', value: 'pan' },
+      ],
+    },
     intensity: { type: Text },
     probeTemp: { type: Text },
     panTemp: { type: Text },
@@ -111,8 +123,6 @@ server.app.get('/api/session', (req, res) => {
   if (req.user) {
     Object.assign(data, {
       name: req.user.name,
-      twitterId: req.user.twitterId,
-      twitterUsername: req.user.twitterUsername,
     });
   }
   res.json(data);
