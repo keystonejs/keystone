@@ -8,15 +8,27 @@ import {
 
 import { Select } from '@keystonejs/ui/src/primitives/forms';
 
+const selectStyles = {
+  menuPortal: provided => ({ ...provided, zIndex: 2 }),
+};
+
 export default class SelectField extends Component {
   onChange = option => {
     const { field, onChange } = this.props;
     onChange(field, option ? option.value : null);
   };
   render() {
-    const { autoFocus, field, item } = this.props;
+    const { autoFocus, field, item, renderContext } = this.props;
     const value = field.options.filter(i => i.value === item[field.path])[0];
     const htmlID = `ks-input-${field.path}`;
+
+    const selectProps =
+      renderContext === 'dialog'
+        ? {
+            menuPosition: 'fixed',
+            menuShouldBlockScroll: true,
+          }
+        : null;
 
     return (
       <FieldContainer>
@@ -25,10 +37,11 @@ export default class SelectField extends Component {
           <Select
             autoFocus={autoFocus}
             value={value}
-            menuPosition="fixed"
             options={field.options}
             onChange={this.onChange}
             inputId={htmlID}
+            styles={selectStyles}
+            {...selectProps}
           />
         </FieldInput>
       </FieldContainer>

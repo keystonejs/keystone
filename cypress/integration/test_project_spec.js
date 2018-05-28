@@ -64,9 +64,9 @@ describe('Home page', () => {
     it(`Click through to list page - ${text}`, () => {
       cy.visit('http://localhost:3000/admin');
       cy
-        .contains(`Show ${text}`)
+        .contains(`Go to ${text}`)
         .should('have.attr', 'href', `/admin/${target}`)
-        .should('have.attr', 'title', `Show ${text}`)
+        .should('have.attr', 'title', `Go to ${text}`)
         .click();
 
       cy.url().should('include', target);

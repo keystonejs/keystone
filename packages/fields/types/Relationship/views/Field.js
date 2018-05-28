@@ -11,6 +11,10 @@ import {
 
 import { Select } from '@keystonejs/ui/src/primitives/forms';
 
+const selectStyles = {
+  menuPortal: provided => ({ ...provided, zIndex: 2 }),
+};
+
 const getGraphqlQuery = refList => {
   // TODO: How can we replace this with field.Controller.getQueryFragment()?
   return gql`{
@@ -32,11 +36,19 @@ export default class RelationshipField extends Component {
     }
   };
   render() {
-    const { autoFocus, field, item } = this.props;
+    const { autoFocus, field, item, renderContext } = this.props;
     const { many } = field.config;
     const refList = field.getRefList();
     const query = getGraphqlQuery(refList);
     const htmlID = `ks-input-${field.path}`;
+
+    const selectProps =
+      renderContext === 'dialog'
+        ? {
+            menuPosition: 'fixed',
+            menuShouldBlockScroll: true,
+          }
+        : null;
 
     return (
       <FieldContainer>
@@ -72,7 +84,6 @@ export default class RelationshipField extends Component {
                 <Select
                   autoFocus={autoFocus}
                   isMulti={many}
-                  menuPosition="fixed"
                   value={value}
                   getOptionValue={option => option.value.id}
                   options={options}
@@ -80,6 +91,8 @@ export default class RelationshipField extends Component {
                   isClearable
                   isLoading={loading}
                   inputId={htmlID}
+                  styles={selectStyles}
+                  {...selectProps}
                 />
               );
             }}

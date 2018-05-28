@@ -100,6 +100,7 @@ class CreateItemModal extends Component {
                 field={field}
                 key={field.path}
                 onChange={this.onChange}
+                renderContext="dialog"
               />
             );
           })}

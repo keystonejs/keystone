@@ -48,6 +48,10 @@ const HeadFoot = styled.div({
   margin: `0 ${innerGutter}px`,
   paddingBottom: innerGutter,
   paddingTop: innerGutter,
+
+  // ensure that box-shadow covers body content
+  position: 'relative',
+  zIndex: 1,
 });
 const Header = styled(HeadFoot)({
   boxShadow: `0 2px 0 ${alpha(colors.text, 0.12)}`,
