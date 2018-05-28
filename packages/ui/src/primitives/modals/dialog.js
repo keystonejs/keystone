@@ -10,7 +10,7 @@ import { Fade, SlideUp, withTransitionState } from './transitions';
 import { Blanket } from './common';
 import { colors } from '../../theme';
 import { alpha } from '../../theme/color-utils';
-import { A11yText } from '../misc';
+import { A11yText } from '../typography';
 
 const outerGutter = 40;
 const innerGutter = 20;

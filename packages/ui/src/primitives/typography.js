@@ -7,7 +7,7 @@ export const SubtleText = styled.span({
   color: colors.N60,
 });
 
-export const Title = styled.div({
+export const H1 = styled.h1({
   fontSize: 28,
   fontWeight: 300,
   margin: '24px 0',

@@ -4,7 +4,7 @@ import React from 'react';
 import styled, { keyframes } from 'react-emotion';
 
 import { colors } from '../theme';
-import { A11yText } from './misc';
+import { A11yText } from './typography';
 
 // ==============================
 // Dots

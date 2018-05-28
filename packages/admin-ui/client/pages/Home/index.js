@@ -5,10 +5,11 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import { Container, Grid, Cell } from '@keystonejs/ui/src/primitives/layout';
-import { Title } from '@keystonejs/ui/src/primitives/typography';
+import { H1 } from '@keystonejs/ui/src/primitives/typography';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import Nav from '../../components/Nav';
+import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { Box } from './components';
 
@@ -36,38 +37,40 @@ class HomePage extends Component {
     const { createFromList } = this.state;
 
     return (
-      <Container>
-        <Title>Home</Title>
-        <Grid gap={16}>
-          {lists.map(list => {
-            const { key, path } = list;
-            const meta = data && data[list.listQueryMetaName];
+      <main>
+        <Container>
+          <H1>Home</H1>
+          <Grid gap={16}>
+            {lists.map(list => {
+              const { key, path } = list;
+              const meta = data && data[list.listQueryMetaName];
 
-            return (
-              <Fragment key={key}>
-                <Media query={{ maxWidth: 768 }}>
-                  {isSmall => (
-                    <Cell width={isSmall ? 6 : 3}>
-                      <Box
-                        list={list}
-                        to={`${adminPath}/${path}`}
-                        meta={meta}
-                        onCreateClick={this.openCreateModal(key)}
-                      />
-                    </Cell>
-                  )}
-                </Media>
-                <CreateItemModal
-                  isOpen={createFromList === key}
-                  list={list}
-                  onClose={this.closeCreateModal}
-                  onCreate={this.onCreate(list)}
-                />
-              </Fragment>
-            );
-          })}
-        </Grid>
-      </Container>
+              return (
+                <Fragment key={key}>
+                  <Media query={{ maxWidth: 768 }}>
+                    {isSmall => (
+                      <Cell width={isSmall ? 6 : 3}>
+                        <Box
+                          list={list}
+                          to={`${adminPath}/${path}`}
+                          meta={meta}
+                          onCreateClick={this.openCreateModal(key)}
+                        />
+                      </Cell>
+                    )}
+                  </Media>
+                  <CreateItemModal
+                    isOpen={createFromList === key}
+                    list={list}
+                    onClose={this.closeCreateModal}
+                    onCreate={this.onCreate(list)}
+                  />
+                </Fragment>
+              );
+            })}
+          </Grid>
+        </Container>
+      </main>
     );
   }
 }
@@ -79,6 +82,7 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
   return (
     <Fragment>
       <Nav />
+      <DocTitle>Home</DocTitle>
       <Query query={query} fetchPolicy="cache-and-network">
         {({ data, error }) => {
           if (error) {

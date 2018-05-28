@@ -20,7 +20,7 @@ import {
   FlexGroup,
   CONTAINER_WIDTH,
 } from '@keystonejs/ui/src/primitives/layout';
-import { A11yText, Kbd, Title } from '@keystonejs/ui/src/primitives/typography';
+import { A11yText, Kbd, H1 } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
 import { LoadingSpinner } from '@keystonejs/ui/src/primitives/loading';
@@ -31,6 +31,7 @@ import CreateItemModal from '../../components/CreateItemModal';
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 import Nav from '../../components/Nav';
+import DocTitle from '../../components/DocTitle';
 import PageLoading from '../../components/PageLoading';
 import PageError from '../../components/PageError';
 import { Popout, DisclosureArrow } from '../../components/Popout';
@@ -419,6 +420,7 @@ class ListPage extends Component {
 
     return (
       <Fragment>
+        <DocTitle>{list.plural}</DocTitle>
         <Nav />
         <Query query={query} fetchPolicy="cache-and-network">
           {({ data, error, loading, refetch }) => {
@@ -438,10 +440,12 @@ class ListPage extends Component {
               this.items && typeof this.items.length === 'number';
             this.itemsCount = hasCount ? this.items.length : this.itemsCount;
 
+            const searchId = 'list-search-input';
+
             return (
               <Fragment>
                 <Container>
-                  <Title>
+                  <H1>
                     {hasCount ? list.formatCount(this.itemsCount) : list.plural}
                     <span>, by</span>
                     <Popout
@@ -464,7 +468,7 @@ class ListPage extends Component {
                         value={sortBy}
                       />
                     </Popout>
-                  </Title>
+                  </H1>
 
                   <FlexGroup growIndexes={[0]}>
                     <Search
@@ -473,10 +477,14 @@ class ListPage extends Component {
                       onSubmit={this.handleSearchSubmit}
                       hasValue={search && search.length}
                     >
+                      <A11yText tag="label" htmlFor={searchId}>
+                        Search {list.plural}
+                      </A11yText>
                       <Input
                         autoCapitalize="off"
                         autoComplete="off"
                         autoCorrect="off"
+                        id={searchId}
                         innerRef={this.getSearchRef}
                         onChange={this.handleSearch}
                         placeholder="Search"
@@ -532,30 +540,31 @@ class ListPage extends Component {
                 {this.renderCreateModal()}
                 {this.renderDeleteSelectedItemsModal()}
 
-                <Container isDisabled={isFullWidth}>
-                  {this.items ? (
-                    <ListTable
-                      adminPath={adminPath}
-                      fields={displayedFields}
-                      isManaging={isManaging}
-                      items={this.items}
-                      list={list}
-                      onChange={refetch}
-                      onSelect={this.handleItemSelect}
-                      onSelectAll={this.handleSelectAll}
-                      selectedItems={selectedItems}
-                      noResultsMessage={
-                        <span>
-                          No {list.plural.toLowerCase()} found matching &ldquo;{
-                            search
-                          }&rdquo;
-                        </span>
-                      }
-                    />
-                  ) : (
-                    <PageLoading />
-                  )}
-                </Container>
+                <main>
+                  <Container isDisabled={isFullWidth}>
+                    {this.items ? (
+                      <ListTable
+                        adminPath={adminPath}
+                        fields={displayedFields}
+                        isManaging={isManaging}
+                        items={this.items}
+                        list={list}
+                        onChange={refetch}
+                        onSelect={this.handleItemSelect}
+                        onSelectAll={this.handleSelectAll}
+                        selectedItems={selectedItems}
+                        noResultsMessage={
+                          <span>
+                            No {list.plural.toLowerCase()} found matching
+                            &ldquo;{search}&rdquo;
+                          </span>
+                        }
+                      />
+                    ) : (
+                      <PageLoading />
+                    )}
+                  </Container>
+                </main>
               </Fragment>
             );
           }}

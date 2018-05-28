@@ -6,6 +6,7 @@ import { InfoIcon, TrashcanIcon } from '@keystonejs/icons';
 import { colors } from '@keystonejs/ui/src/theme';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { CheckboxPrimitive } from '@keystonejs/ui/src/primitives/forms';
+import { A11yText } from '@keystonejs/ui/src/primitives/typography';
 import DeleteItemModal from './DeleteItemModal';
 
 // This import is loaded by the @keystone/field-views-loader loader.
@@ -123,6 +124,7 @@ class ListDisplayRow extends Component {
             style={{ height: 24 }}
           >
             <TrashcanIcon />
+            <A11yText>Remove</A11yText>
           </Button>
           {this.renderDeleteModal()}
         </BodyCell>
