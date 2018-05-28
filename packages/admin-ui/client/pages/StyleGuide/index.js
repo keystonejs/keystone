@@ -12,7 +12,7 @@ import {
   SecondaryNav,
   SecondaryNavItem,
 } from '@keystonejs/ui/src/primitives/navigation';
-import { Title } from '@keystonejs/ui/src/primitives/typography';
+import { H1 } from '@keystonejs/ui/src/primitives/typography';
 
 const pages = ['components', 'palette', 'icons'];
 const upCase = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
@@ -43,7 +43,7 @@ export default withRouter(
             </FlexGroup>
           </SecondaryNav>
           <Container css={{ paddingBottom: 200 }}>
-            <Title>Style Guide: {upCase(currentPage)}</Title>
+            <H1>Style Guide: {upCase(currentPage)}</H1>
             <Switch>
               <Route
                 exact

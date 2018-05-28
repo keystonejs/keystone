@@ -64,11 +64,13 @@ module.exports = class Keystone {
     db.once('open', () => console.log('Connection success'));
   }
   getAdminMeta() {
+    const { name } = this.config;
     const lists = this.listsArray.reduce((acc, list) => {
       acc[list.key] = list.getAdminMeta();
       return acc;
     }, {});
-    return { lists };
+
+    return { lists, name };
   }
   getAdminSchema() {
     let listTypes = flatten(

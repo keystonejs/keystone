@@ -8,6 +8,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
 import Nav from '../../components/Nav';
+import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import Footer from './Footer';
@@ -18,7 +19,7 @@ import {
   PlusIcon,
 } from '@keystonejs/icons';
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { A11yText, Title } from '@keystonejs/ui/src/primitives/typography';
+import { A11yText, H1 } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
@@ -260,9 +261,9 @@ const ItemDetails = withRouter(
             </Alert>
           ) : null}
           <FlexGroup align="center" justify="space-between">
-            <Title>
+            <H1>
               <TitleLink to={listHref}>{list.label}</TitleLink>: {item.name}
-            </Title>
+            </H1>
             <IconButton
               appearance="create"
               icon={PlusIcon}
@@ -336,38 +337,46 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
 
           if (error) {
             return (
-              <ItemNotFound
-                adminPath={adminPath}
-                errorMessage={error.message}
-                list={list}
-              />
+              <Fragment>
+                <DocTitle>{list.singular} not found</DocTitle>
+                <ItemNotFound
+                  adminPath={adminPath}
+                  errorMessage={error.message}
+                  list={list}
+                />
+              </Fragment>
             );
           }
 
           const item = data[list.itemQueryName];
           return item ? (
-            <Container>
-              <Mutation mutation={list.updateMutation}>
-                {(
-                  updateItem,
-                  { loading: updateInProgress, error: updateError }
-                ) => {
-                  return (
-                    <ItemDetails
-                      adminPath={adminPath}
-                      item={item}
-                      key={itemId}
-                      list={list}
-                      getListByKey={getListByKey}
-                      onUpdate={refetch}
-                      updateInProgress={updateInProgress}
-                      updateErrorMessage={updateError && updateError.message}
-                      updateItem={updateItem}
-                    />
-                  );
-                }}
-              </Mutation>
-            </Container>
+            <main>
+              <DocTitle>
+                {item.name} - {list.singular}
+              </DocTitle>
+              <Container>
+                <Mutation mutation={list.updateMutation}>
+                  {(
+                    updateItem,
+                    { loading: updateInProgress, error: updateError }
+                  ) => {
+                    return (
+                      <ItemDetails
+                        adminPath={adminPath}
+                        item={item}
+                        key={itemId}
+                        list={list}
+                        getListByKey={getListByKey}
+                        onUpdate={refetch}
+                        updateInProgress={updateInProgress}
+                        updateErrorMessage={updateError && updateError.message}
+                        updateItem={updateItem}
+                      />
+                    );
+                  }}
+                </Mutation>
+              </Container>
+            </main>
           ) : (
             <ItemNotFound adminPath={adminPath} list={list} />
           );
