@@ -19,7 +19,7 @@
     "test:all": "yarn test && yarn cypress:run",
     "coverage": "jest --coverage --collectCoverageFrom=packages/**/*.{js}",
     "heroku": "git push heroku develop:master",
-    "heroku-postbuild": "bolt && bolt start"
+    "heroku-postbuild": "bolt"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.12",
