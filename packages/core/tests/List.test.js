@@ -182,6 +182,8 @@ test('getAdminGraphqlTypes()', () => {
       `,
     `
       input TestWhereInput {
+        id: ID
+        id_not: ID
         # MockType field
         name_query_args
 
