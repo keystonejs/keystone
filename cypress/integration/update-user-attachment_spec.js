@@ -22,7 +22,7 @@ describe('Adding a file', function() {
           .graphql_query(
             `
         query {
-          User(id: "${user.id}") {
+          User(where: { id: "${user.id}" }) {
             attachment {
               id
               publicUrl
