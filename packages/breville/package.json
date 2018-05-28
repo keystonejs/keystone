@@ -9,9 +9,9 @@
   },
   "scripts": {
     "start": "node -r dotenv-safe/config index.js",
-    "mongo:backup:local": "mongodump -h localhost -d breville -o ../../../data",
-    "mongo:restore:local": "mongorestore -d breville ../../../data/breville --drop --host=127.0.0.1",
-    "mongo:restore:staging": "mongorestore -h syd-general-staging-shard-0/syd-general-staging-shard-00-00-l5pdm.mongodb.net:27017,syd-general-staging-shard-00-01-l5pdm.mongodb.net:27017,syd-general-staging-shard-00-02-l5pdm.mongodb.net:27017 --ssl -u breville-askdave -p e4OAsq6U32dG7Ddj --authenticationDatabase admin --drop -d breville-askdave ../data/breville"
+    "mongo:backup:local": "mongodump -h localhost -d breville -o ./data",
+    "mongo:restore:local": "mongorestore -d breville ./data/breville --drop --host=127.0.0.1",
+    "mongo:restore:staging": "mongorestore -h syd-general-staging-shard-0/syd-general-staging-shard-00-00-l5pdm.mongodb.net:27017,syd-general-staging-shard-00-01-l5pdm.mongodb.net:27017,syd-general-staging-shard-00-02-l5pdm.mongodb.net:27017 --ssl -u breville-askdave -p e4OAsq6U32dG7Ddj --authenticationDatabase admin --drop -d breville-askdave ./data/breville"
   },
   "dependencies": {
     "@keystonejs/admin-ui": "^5.0.0",
