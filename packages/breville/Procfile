@@ -1,0 +1,1 @@
+web: bolt && bolt start
