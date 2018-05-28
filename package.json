@@ -5,8 +5,7 @@
   "license": "MIT",
   "scripts": {
     "fresh": "bolt ws exec -- rm -rf node_modules && rm -rf node_modules && bolt",
-    "start": "bolt && bolt start",
-    "dev": "cd packages/breville && npm start",
+    "start": "cd packages/breville && npm start",
     "pm2": "pm2",
     "jest": "jest",
     "format": "prettier --write \"**/*.js\"",
@@ -18,8 +17,7 @@
     "lint": "yarn prettier_lint && yarn eslint",
     "test": "yarn lint && yarn jest",
     "test:all": "yarn test && yarn cypress:run",
-    "coverage": "jest --coverage --collectCoverageFrom=packages/**/*.{js}",
-    "heroku": "git push heroku breville:master"
+    "coverage": "jest --coverage --collectCoverageFrom=packages/**/*.{js}"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.12",
@@ -41,7 +39,6 @@
     "babel-preset-flow": "^6.23.0",
     "babel-preset-react": "^6.24.1",
     "body-parser": "^1.18.2",
-    "bolt": "^0.20.7",
     "cloudinary": "^1.11.0",
     "cors": "^2.8.4",
     "cuid": "^2.1.1",
