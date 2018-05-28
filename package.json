@@ -17,7 +17,8 @@
     "lint": "yarn prettier_lint && yarn eslint",
     "test": "yarn lint && yarn jest",
     "test:all": "yarn test && yarn cypress:run",
-    "coverage": "jest --coverage --collectCoverageFrom=packages/**/*.{js}"
+    "coverage": "jest --coverage --collectCoverageFrom=packages/**/*.{js}",
+    "heroku": "git push heroku breville:master"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.12",
