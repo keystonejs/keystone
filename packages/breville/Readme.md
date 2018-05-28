@@ -89,7 +89,7 @@ See below the GraphQL queries for each step of the application.
 
 ```graphql
 {
-  allAnswers(where: { ingredient: { name: "Beef" }, technique: { name: "Deep Fry" }, ingredient_not: "" }) { # replace `Beef` and `Deep Fry` with the selections made earlier
+  allAnswers(where: { ingredient: { name: "Beef" }, technique: { name: "Deep Fry" }, doneness: { name_not: "" } }) { # replace `Beef` and `Deep Fry` with the selections made earlier
     ingredient {
       name
     }
