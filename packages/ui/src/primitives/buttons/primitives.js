@@ -80,6 +80,11 @@ function makeVariant({
     touchAction: 'manipulation', // Disables "double-tap to zoom" for mobile; removes delay on click events
     userSelect: 'none',
 
+    // override possible anchor styles
+    ':hover': {
+      textDecoration: 'none',
+    },
+
     // apply appearance styles
     ...variantStyles,
   };

@@ -1,6 +1,12 @@
 Breville
 ========
 
+## Setup
+
+Copy `.env.example` to `.env`.
+
+Fill out your Cloudinary API details in `.env`.
+
 ## The endpoints
 
 See below the GraphQL queries for each step of the application.
