@@ -8,6 +8,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
 import Nav from '../../components/Nav';
+import Animation from '../../components/Animation';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
@@ -250,7 +251,13 @@ const ItemDetails = withRouter(
       } = this.props;
       const { copyText, item, itemHasChanged } = this.state;
       const isCopied = copyText === item.id;
-      const CopyIcon = isCopied ? CheckIcon : ClippyIcon;
+      const copyIcon = isCopied ? (
+        <Animation name="pulse" duration="500ms">
+          <CheckIcon css={{ color: colors.create }} />
+        </Animation>
+      ) : (
+        <ClippyIcon />
+      );
       const listHref = `${adminPath}/${list.path}`;
 
       return (
@@ -276,9 +283,7 @@ const ItemDetails = withRouter(
             <ItemId>ID: {item.id}</ItemId>
             <CopyToClipboard text={item.id} onCopy={this.onCopy}>
               <Button variant="subtle" title="Copy ID">
-                <CopyIcon
-                  css={{ color: isCopied ? colors.create : 'inherit' }}
-                />
+                {copyIcon}
                 <A11yText>Copy ID</A11yText>
               </Button>
             </CopyToClipboard>
