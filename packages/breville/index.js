@@ -84,14 +84,20 @@ keystone.createList('Answer', {
     sensor: {
       type: Select,
       options: [
-        { label: 'Probe control (oil)', value: 'probeOil' },
-        { label: 'Probe control (ingredient)', value: 'probeIngredient' },
+        { label: 'Probe control', value: 'probe' },
         { label: 'Pan', value: 'pan' },
       ],
     },
-    intensity: { type: Text },
-    probeTemp: { type: Text },
-    panTemp: { type: Text },
+    intensity: {
+      type: Select,
+      options: [
+        { label: 'Slow', value: 'slow' },
+        { label: 'Medium', value: 'medium' },
+        { label: 'Fast', value: 'fast' },
+        { label: 'Max', value: 'max' },
+      ],
+    },
+    Temp: { type: Text },
     equipment: {
       type: Relationship,
       ref: 'KitchenWare',
