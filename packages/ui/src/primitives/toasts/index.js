@@ -3,7 +3,7 @@
 import React, { Component, type ComponentType, type Node } from 'react';
 
 import { Toast, ToastContainer } from './styled';
-import type { AddFn, RemoveFn, ToastsType, Options } from './types';
+import type { AddFn, RemoveFn, ToastsType, Options, Id } from './types';
 
 const { Consumer, Provider } = React.createContext();
 
@@ -41,10 +41,11 @@ export class ToastProvider extends Component<Props, State> {
   }
   addToast = (content: Node, options?: Options = {}) => () => {
     const toasts = this.state.toasts.slice(0);
-    const { appearance, autoDismiss } = options;
     const id = generateUEID();
 
-    toasts.push({ content, id, appearance, autoDismiss });
+    // spreading options allows consumers to provide their own ID, so they
+    // can remove the toast programatically if they want to
+    toasts.push({ content, id, ...options });
 
     this.setState({ toasts });
   };
@@ -54,7 +55,8 @@ export class ToastProvider extends Component<Props, State> {
   };
 
   render() {
-    const { toasts, addToast, removeToast } = this.state;
+    const { toasts } = this.state;
+    const { addToast, removeToast } = this;
 
     return (
       <Provider value={{ addToast, removeToast }}>
