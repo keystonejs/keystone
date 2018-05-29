@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "node -r dotenv-safe/config index.js",
+    "nodemon": "nodemon -r dotenv-safe/config index.js",
     "mongo:backup:local": "mongodump -h localhost -d breville-askdave -o ./data",
     "mongo:restore:local": "mongorestore -d breville-askdave ./data/breville-askdave --drop --host=127.0.0.1",
     "mongo:backup:staging": "mongodump -h syd-general-staging-shard-0/syd-general-staging-shard-00-00-l5pdm.mongodb.net:27017,syd-general-staging-shard-00-01-l5pdm.mongodb.net:27017,syd-general-staging-shard-00-02-l5pdm.mongodb.net:27017 --ssl -d breville-askdave -u breville-askdave -p e4OAsq6U32dG7Ddj --authenticationDatabase admin -o ./data",
