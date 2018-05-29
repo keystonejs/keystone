@@ -9,6 +9,7 @@ const request = require('supertest');
 const Keystone = require('../../core/Keystone');
 const AdminUI = require('../../admin-ui/server/AdminUI');
 const WebServer = require('../../server/WebServer');
+const { MongooseAdapter } = require('../../adapters/mongoose');
 
 const sorted = (arr, keyFn) => {
   arr = [...arr];
@@ -67,6 +68,7 @@ describe('Test CRUD for all fields', () => {
       describe(`All the CRUD tests for module: ${module.name}`, () => {
         // Set up a keystone project for each type module to use
         const keystone = new Keystone({
+          adapter: new MongooseAdapter(),
           name: 'Test Project',
         });
 
@@ -89,7 +91,9 @@ describe('Test CRUD for all fields', () => {
         // Clear the database before running any tests
         beforeAll(async done => {
           keystone.connect();
-          await keystone.mongoose.connection.dropDatabase();
+          Object.values(keystone.adapters).forEach(async adapter => {
+            await adapter.reset();
+          });
           await keystone.createItems({ [listName]: mod.initItems() });
           done();
         });
@@ -99,7 +103,9 @@ describe('Test CRUD for all fields', () => {
         });
 
         afterAll(async done => {
-          await keystone.mongoose.connection.close();
+          Object.values(keystone.adapters).forEach(async adapter => {
+            await adapter.close();
+          });
           await admin.webpackMiddleware.close();
           done();
         });

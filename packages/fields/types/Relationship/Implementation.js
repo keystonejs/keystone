@@ -7,9 +7,16 @@ const {
   },
 } = mongoose;
 
-const Implementation = require('../../Implementation');
+const { Implementation } = require('../../Implementation');
+const { MongooseFieldAdapter } = require('@keystonejs/adapters/mongoose');
 
-function relationFilterPipeline({ path, query, many, refList, joinPathName }) {
+function relationFilterPipeline({
+  path,
+  query,
+  many,
+  refListAdapter,
+  joinPathName,
+}) {
   return [
     {
       // JOIN
@@ -17,7 +24,7 @@ function relationFilterPipeline({ path, query, many, refList, joinPathName }) {
         // the MongoDB name of the collection - this is potentially different
         // from the Mongoose name due to pluralization, etc. This guarantees the
         // correct name.
-        from: refList.model.collection.name,
+        from: refListAdapter.model.collection.name,
         as: joinPathName,
         let: { [path]: `$${path}` },
         pipeline: [
@@ -40,7 +47,12 @@ function relationFilterPipeline({ path, query, many, refList, joinPathName }) {
   ];
 }
 
-function postAggregateMutationFactory({ path, many, joinPathName, refList }) {
+function postAggregateMutationFactory({
+  path,
+  many,
+  joinPathName,
+  refListAdapter,
+}) {
   // Recreate Mongoose instances of the sub items every time to allow for
   // further operations to be performed on those sub items via Mongoose.
   return item => {
@@ -63,7 +75,7 @@ function postAggregateMutationFactory({ path, many, joinPathName, refList }) {
         // Extract that element out of the array (so the next iteration is a bit
         // faster)
         const joinedItem = item[joinPathName].splice(joinedItemIndex, 1)[0];
-        return refList.model(joinedItem);
+        return refListAdapter.model(joinedItem);
       });
 
       // At this point, we should have spliced out all of the items
@@ -86,7 +98,7 @@ function postAggregateMutationFactory({ path, many, joinPathName, refList }) {
           'Expected MongoDB aggregation to correctly filter to a single related item, but no item found.'
         );
       }
-      joinedItems = refList.model(joinedItem);
+      joinedItems = refListAdapter.model(joinedItem);
     }
 
     const newItemValues = {
@@ -102,7 +114,7 @@ function postAggregateMutationFactory({ path, many, joinPathName, refList }) {
   };
 }
 
-module.exports = class Select extends Implementation {
+class Select extends Implementation {
   constructor() {
     super(...arguments);
   }
@@ -111,13 +123,7 @@ module.exports = class Select extends Implementation {
     const type = many ? `[${ref}]` : ref;
     return `${this.path}: ${type}`;
   }
-  addToMongooseSchema(schema) {
-    const { many, mongooseOptions, ref } = this.config;
-    const type = many ? [ObjectId] : ObjectId;
-    schema.add({
-      [this.path]: { type, ref, ...mongooseOptions },
-    });
-  }
+
   extendAdminMeta(meta) {
     const { many, ref } = this.config;
     return { ...meta, ref, many };
@@ -147,7 +153,7 @@ module.exports = class Select extends Implementation {
     return {
       [this.path]: item => {
         if (many) {
-          return this.getListByKey(ref).model.find({
+          return this.getListByKey(ref).adapter.find({
             _id: { $in: item[this.path] },
           });
         } else {
@@ -157,7 +163,7 @@ module.exports = class Select extends Implementation {
           if (item[this.path] && item[this.path]._id) {
             return item[this.path];
           }
-          return this.getListByKey(ref).model.findById(item[this.path]);
+          return this.getListByKey(ref).adapter.findById(item[this.path]);
         }
       },
     };
@@ -170,6 +176,17 @@ module.exports = class Select extends Implementation {
   getGraphqlCreateArgs() {
     return this.getGraphqlUpdateArgs();
   }
+}
+
+class MongoSelectInterface extends MongooseFieldAdapter {
+  addToMongooseSchema(schema) {
+    const { many, mongooseOptions, ref } = this.config;
+    const type = many ? [ObjectId] : ObjectId;
+    schema.add({
+      [this.path]: { type, ref, ...mongooseOptions },
+    });
+  }
+
   getQueryConditions(args, list, depthGuard) {
     if (this.config.many) {
       return this.getQueryConditionsMany(args, list, depthGuard);
@@ -200,8 +217,11 @@ module.exports = class Select extends Implementation {
     }
 
     if (this.path in args) {
-      const refList = this.getListByKey(this.config.ref);
-      const filters = refList.itemsQueryConditions(args[this.path], depthGuard);
+      const refListAdapter = this.field.getListByKey(this.config.ref).adapter;
+      const filters = refListAdapter.itemsQueryConditions(
+        args[this.path],
+        depthGuard
+      );
 
       const query = {
         $and: filters,
@@ -218,17 +238,22 @@ module.exports = class Select extends Implementation {
           query,
           many: false,
           joinPathName,
-          refList,
+          refListAdapter,
         }),
         mutator: postAggregateMutationFactory({
           path: this.path,
           many: false,
           joinPathName,
-          refList,
+          refListAdapter,
         }),
       });
     }
 
     return conditions;
   }
+}
+
+module.exports = {
+  Select,
+  MongoSelectInterface,
 };

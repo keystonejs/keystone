@@ -8,6 +8,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
+    "@keystonejs/adapters": "^1.0.0",
     "@keystonejs/fields": "^5.0.0",
     "@keystonejs/utils": "^1.0.0",
     "apollo-upload-server": "^5.0.0",

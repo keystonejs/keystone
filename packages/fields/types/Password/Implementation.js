@@ -1,15 +1,10 @@
-const Implementation = require('../../Implementation');
+const { Implementation } = require('../../Implementation');
+const { MongooseFieldAdapter } = require('@keystonejs/adapters/mongoose');
 
-module.exports = class Password extends Implementation {
+class Password extends Implementation {
   constructor() {
     super(...arguments);
     this.graphQLType = 'String';
-  }
-  addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
-    schema.add({
-      [this.path]: { type: String, ...mongooseOptions },
-    });
   }
   getGraphqlQueryArgs() {
     return `
@@ -26,6 +21,16 @@ module.exports = class Password extends Implementation {
       ${this.path}: String
     `;
   }
+}
+
+class MongoPasswordInterface extends MongooseFieldAdapter {
+  addToMongooseSchema(schema) {
+    const { mongooseOptions } = this.config;
+    schema.add({
+      [this.path]: { type: String, ...mongooseOptions },
+    });
+  }
+
   getQueryConditions(args) {
     const conditions = [];
     const is_set = `${this.path}_is_set`;
@@ -34,4 +39,9 @@ module.exports = class Password extends Implementation {
     }
     return conditions;
   }
+}
+
+module.exports = {
+  Password,
+  MongoPasswordInterface,
 };

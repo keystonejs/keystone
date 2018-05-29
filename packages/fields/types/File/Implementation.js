@@ -1,31 +1,17 @@
-const Implementation = require('../../Implementation');
-
+const { Implementation } = require('../../Implementation');
+const { MongooseFieldAdapter } = require('@keystonejs/adapters/mongoose');
 const { escapeRegExp: esc } = require('@keystonejs/utils');
 const { GraphQLUpload } = require('apollo-upload-server');
 const {
   Types: { ObjectId },
 } = require('mongoose');
 
-module.exports = class File extends Implementation {
+class File extends Implementation {
   constructor() {
     super(...arguments);
     this.graphQLType = 'File_File';
   }
-  addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
-    schema.add({
-      [this.path]: {
-        ...mongooseOptions,
-        type: {
-          id: ObjectId,
-          path: String,
-          filename: String,
-          mimetype: String,
-          _meta: Object,
-        },
-      },
-    });
-  }
+
   extendAdminMeta(meta) {
     return {
       ...meta,
@@ -139,6 +125,25 @@ module.exports = class File extends Implementation {
       ${this.path}: ${this.getFileUploadType()}
     `;
   }
+}
+
+class MongoFileInterface extends MongooseFieldAdapter {
+  addToMongooseSchema(schema) {
+    const { mongooseOptions } = this.config;
+    schema.add({
+      [this.path]: {
+        ...mongooseOptions,
+        type: {
+          id: ObjectId,
+          path: String,
+          filename: String,
+          mimetype: String,
+          _meta: Object,
+        },
+      },
+    });
+  }
+
   getQueryConditions(args) {
     const conditions = [];
     const caseSensitive = args[`${this.path}_case_sensitive`];
@@ -207,4 +212,9 @@ module.exports = class File extends Implementation {
     }
     return conditions;
   }
+}
+
+module.exports = {
+  File,
+  MongoFileInterface,
 };
