@@ -20,7 +20,7 @@ const cloudinaryAdapter = new CloudinaryAdapter({
 });
 
 const keystone = new Keystone({
-  name: 'Breville',
+  name: 'breville-askdave',
 });
 
 keystone.createAuthStrategy({
