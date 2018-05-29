@@ -24,6 +24,7 @@ import { A11yText, H1 } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
+import { withToastUtils } from '@keystonejs/ui/src/primitives/toasts';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import { resolveAllKeys } from '@keystonejs/utils';
@@ -192,15 +193,14 @@ const ItemDetails = withRouter(
       );
     }
     onSave = () => {
-      const {
-        item,
-        item: { id },
-      } = this.state;
+      const { item } = this.state;
       const {
         list: { fields },
         onUpdate,
+        toast,
         updateItem,
       } = this.props;
+
       resolveAllKeys(
         fields.reduce(
           (values, field) => ({
@@ -210,7 +210,21 @@ const ItemDetails = withRouter(
           {}
         )
       )
-        .then(data => updateItem({ variables: { id, data } }))
+        .then(data => {
+          updateItem({ variables: { id: item.id, data } });
+
+          const toastContent = (
+            <div>
+              {item.name ? <strong>{item.name}</strong> : null}
+              <div>Saved successfully</div>
+            </div>
+          );
+
+          toast.addToast(toastContent, {
+            autoDismiss: true,
+            appearance: 'success',
+          })();
+        })
         .then(onUpdate);
     };
     onCopy = (text, success) => {
@@ -331,7 +345,7 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
   </PageError>
 );
 
-const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
+const ItemPage = ({ list, itemId, adminPath, getListByKey, toast }) => {
   const itemQuery = getItemQuery({ list, itemId });
   return (
     <Fragment>
@@ -359,12 +373,28 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
               <DocTitle>
                 {item.name} - {list.singular}
               </DocTitle>
-              <Container>
+              <Container id="toast-boundary">
                 <Mutation mutation={list.updateMutation}>
                   {(
                     updateItem,
                     { loading: updateInProgress, error: updateError }
                   ) => {
+                    if (updateError) {
+                      const [title, ...rest] = updateError.message.split(/\:/);
+                      const toastContent = rest.length ? (
+                        <div>
+                          <strong>{title.trim()}</strong>
+                          <div>{rest.join('').trim()}</div>
+                        </div>
+                      ) : (
+                        updateError.message
+                      );
+
+                      toast.addToast(toastContent, {
+                        appearance: 'error',
+                      })();
+                    }
+
                     return (
                       <ItemDetails
                         adminPath={adminPath}
@@ -373,6 +403,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
                         list={list}
                         getListByKey={getListByKey}
                         onUpdate={refetch}
+                        toast={toast}
                         updateInProgress={updateInProgress}
                         updateErrorMessage={updateError && updateError.message}
                         updateItem={updateItem}
@@ -391,4 +422,4 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   );
 };
 
-export default ItemPage;
+export default withToastUtils(ItemPage);

@@ -8,6 +8,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
+    "@keystonejs/icons": "^1.0.0",
     "emotion": "^9.1.1",
     "focus-trap": "^2.4.3",
     "prop-types": "^15.6.1",
