@@ -4,6 +4,7 @@ const {
   Text,
   Relationship,
   Select,
+  Password,
   CloudinaryImage,
 } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
@@ -26,6 +27,22 @@ const keystone = new Keystone({
 keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
+});
+
+keystone.createList('User', {
+  fields: {
+    name: { type: Text },
+    email: { type: Text },
+    password: { type: Password },
+    company: {
+      type: Select,
+      options: [
+        { label: 'Thinkmill', value: 'thinkmill' },
+        { label: 'Breville', value: 'breville' },
+      ],
+    },
+  },
+  labelResolver: item => `${item.name} <${item.email}>`,
 });
 
 keystone.createList('Ingredient', {
