@@ -78,7 +78,7 @@ keystone.createList('KitchenWare', {
 });
 
 keystone.createList('Answer', {
-  // defaultColumns: ['comment', 'sensor', 'intensity'],
+  // defaultColumns: ['ingredient', 'technique', 'doneness', 'sensor', 'intensity', 'tempCelsius', 'tempFahrenheit'],
   // defaultSort: 'comment',
   // labelField: 'comment',
   labelResolver: item =>
@@ -97,7 +97,6 @@ keystone.createList('Answer', {
       type: Relationship,
       ref: 'Doneness',
     },
-    comment: { type: Text },
     sensor: {
       type: Select,
       options: [
@@ -114,12 +113,14 @@ keystone.createList('Answer', {
         { label: 'Max', value: 'max' },
       ],
     },
-    Temp: { type: Text },
+    tempCelsius: { type: Text, label: 'Celsius Temp' },
+    tempFahrenheit: { type: Text, label: 'Fahrenheit Temp' },
     equipment: {
       type: Relationship,
       ref: 'KitchenWare',
       many: true,
     },
+    comment: { type: Text },
   },
 });
 
