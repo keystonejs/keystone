@@ -1,3 +1,4 @@
+const qs = require('qs');
 const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
@@ -7,6 +8,28 @@ const webpackDevMiddleware = require('webpack-dev-middleware');
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 
 const getWebpackConfig = require('./getWebpackConfig');
+
+function injectQueryParams({ url, params, overwrite = true }) {
+  const parsedUrl = new URL(url);
+  let queryObject = qs.parse(parsedUrl.search.slice(1));
+  if (overwrite) {
+    queryObject = {
+      ...queryObject,
+      ...params,
+    };
+  } else {
+    queryObject = {
+      ...params,
+      ...queryObject,
+    };
+  }
+  parsedUrl.search = qs.stringify(queryObject);
+  return parsedUrl.toString();
+}
+
+function getAbsoluteUrl(req, path) {
+  return `${req.protocol}://${req.get('host')}${path}`;
+}
 
 module.exports = class AdminUI {
   constructor(keystone, config) {
@@ -35,7 +58,6 @@ module.exports = class AdminUI {
   }
 
   async signin(req, res, next) {
-    console.log('signin route', req.body);
     try {
       // TODO: Don't hard code this auth strategy, use the one passed in
       // TODO: How could we support, for example, the twitter auth flow?
@@ -44,9 +66,22 @@ module.exports = class AdminUI {
         password: req.body.password,
       });
 
-      console.log('signin', result);
       if (!result.success) {
-        const htmlResponse = () => res.redirect(this.config.signinUrl);
+        const htmlResponse = () => {
+          const signinUrl = this.config.signinUrl;
+          /*
+           * This works, but then webpack (or react-router?) is unable to match
+           * the URL when there's a query param, which is... odd :/
+          const signinUrl = injectQueryParams({
+            url: getAbsoluteUrl(req, this.config.signinUrl),
+            params: { redirectTo: req.body.redirectTo },
+            overwrite: false,
+          });
+          */
+
+          // TODO - include some sort of error in the page
+          res.redirect(signinUrl);
+        };
         return res.format({
           'default': htmlResponse,
           'text/html': htmlResponse,
@@ -68,26 +103,20 @@ module.exports = class AdminUI {
   }
 
   async signout(req, res, next) {
-    console.log('signout');
     try {
       await this.keystone.session.destroy(req);
-      console.log('signout success');
     } catch (e) {
-      console.log('signout error', e);
       return next(e);
     }
 
     return res.format({
       'default': () => {
-        console.log('signout default response type');
         next();
       },
       'text/html': () => {
-        console.log('signout text/html response type');
         next();
       },
       'application/json': () => {
-        console.log('signout application/json response type');
         res.json({ success: true });
       }
     });
@@ -98,13 +127,13 @@ module.exports = class AdminUI {
       signedIn: !!req.user,
       user: req.user ? { id: req.user.id, name: req.user.name } : undefined,
     };
-    console.log('session: ', result);
     res.json(result);
   }
 
   getAdminMeta() {
     return {
       withAuth: !!this.config.authStrategy,
+      adminAuthPath: this.config.adminAuthPath,
       signinUrl: this.config.signinUrl,
       signoutUrl: this.config.signoutUrl,
       sessionUrl: this.config.sessionUrl,
@@ -146,10 +175,18 @@ module.exports = class AdminUI {
     // split the signin/out pages into their own bundle so we don't leak admin
     // data to the browser.
     const authCheck = (req, res, next) => {
-      console.log('Verifying login:', req.originalUrl);
       if (!req.user) {
-        console.log('Not logged in, redirecting to ', this.config.signinUrl);
-        return res.status(401).redirect(this.config.signinUrl);
+        const signinUrl = this.config.signinUrl;
+        /*
+         * This works, but then webpack (or react-router?) is unable to match
+         * the URL when there's a query param, which is... odd :/
+        const signinUrl = injectQueryParams({
+          url: getAbsoluteUrl(req, this.config.signinUrl),
+          params: { redirectTo: req.originalUrl },
+          overwrite: true,
+        });
+        */
+        return res.status(401).redirect(signinUrl);
       }
       // All logged in, so move on to the next matching route
       next();

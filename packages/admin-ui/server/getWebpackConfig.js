@@ -14,6 +14,9 @@ module.exports = function({ publicPath, adminMeta, adminPath, apiPath, graphiqlP
       filename: 'bundle.js',
       publicPath,
     },
+    devServer: {
+      historyApiFallback: true,
+    },
     plugins: [
       new webpack.DefinePlugin({
         KEYSTONE_ADMIN_META: JSON.stringify({
