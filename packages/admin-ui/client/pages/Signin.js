@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'react-emotion';
+import qs from 'qs';
+import xss from 'xss';
 
 import { Input } from '@keystonejs/ui/src/primitives/forms';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
@@ -14,7 +16,7 @@ const Container = styled.div({
   justifyContent: 'center',
 });
 
-const Box = styled.div({
+const Form = styled.form({
   boxShadow: '0 2px 1px #f1f1f1',
   backgroundColor: 'white',
   border: '1px solid #e9e9e9',
@@ -45,45 +47,51 @@ const Fields = styled.div({
   width: 280,
 });
 
+function extractAndCleanRedirectUrl() {
+  const redirectToParam = qs.parse(window.location.search.slice(1)).redirectTo;
+  if (typeof redirectToParam !== 'string') {
+    return null;
+  }
+
+  const decodedRedirectTo = decodeuricomponent(redirectToParam);
+
+  if (!decodedRedirectTo) {
+    return null;
+  }
+
+  // Reconstruct the URL without the host
+  // We do this to prevent phishing
+  const urlParts = new Url(decodedRedirectTo);
+  return `${urlParts.pathname}${urlParts.search}${urlParts.hash}`;
+}
+
 class Session extends Component {
-  state = {
-    username: '',
-    password: '',
-  };
-  onUsernameChange = event => {
-    this.setState({ username: event.target.value });
-  };
-  onPasswordChange = event => {
-    this.setState({ password: event.target.value });
-  };
   render() {
-    const { apiPath } = this.props;
-    const { username, password } = this.state;
+    const { adminPath, signinUrl, signoutUrl, sessionUrl } = this.props;
+    const redirectTo = extractAndCleanRedirectUrl() || adminPath;
     return (
       <Container>
-        <SessionProvider apiPath={apiPath}>
-          {({ user, signIn, signOut, isLoading }) => (
-            <Box>
+        <SessionProvider {...{ signinUrl, signoutUrl, sessionUrl }}>
+          {({ user, signOut, isLoading }) => (
+            <Form method="post" action={signinUrl}>
               <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
               <Divider />
               <div>
                 <Fields>
                   <FieldLabel>Email</FieldLabel>
-                  <Input onChange={this.onUsernameChange} value={username} />
+                  <Input name="username" />
                   <FieldLabel>Password</FieldLabel>
-                  <Input
-                    type="password"
-                    onChange={this.onPasswordChange}
-                    value={password}
-                  />
+                  <Input type="password" name="password" />
+                  <input type="hidden" name="redirectTo" value={xss(redirectTo)} />
                 </Fields>
                 <Button
                   appearance="primary"
-                  onClick={() => signIn({ username, password })}
                   style={{ marginRight: 16 }}
+                  type="submit"
                 >
                   Sign In
                 </Button>
+                {/* TODO: Change this to a straigh <a> tag */}
                 <Button variant="subtle" appearance="danger" onClick={signOut}>
                   Sign Out
                 </Button>
@@ -99,7 +107,7 @@ class Session extends Component {
                       : 'Signed Out'}
                 </div>
               </div>
-            </Box>
+            </Form>
           )}
         </SessionProvider>
       </Container>
