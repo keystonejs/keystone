@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "fresh": "bolt ws exec -- rm -rf node_modules && rm -rf node_modules && bolt",
-    "start": "cd packages/breville && npm start",
+    "start": "cd packages/breville && yarn start",
     "pm2": "pm2",
     "jest": "jest",
     "format": "prettier --write \"**/*.js\"",
