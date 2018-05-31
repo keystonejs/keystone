@@ -1,7 +1,7 @@
 {
   "apps": {
     "name": "breville-askdave-api",
-    "script": "",
+    "script": "cd packages/breville && yarn start",
     "watch": false,
     "node_args": "--stack-trace-limit=50",
     "combine_logs": true,
