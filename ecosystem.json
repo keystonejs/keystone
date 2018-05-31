@@ -13,7 +13,7 @@
   "deploy": {
     "staging": {
       "user": "nodeuser",
-      "host": "general.ec2.staging.pjt.com",
+      "host": "general.ec2.staging.breville.thinkmill.cloud",
       "path": "/srv/apps/breville-askdave-api",
       "ref": "origin/breville",
       "repo": "git@breville-askdave-api.github.com:Thinkmill/breville-askdave-api.git",
@@ -21,7 +21,7 @@
     },
     "live": {
       "user": "nodeuser",
-      "host": "general.ec2.live.pjt.com",
+      "host": "general.ec2.live.breville.thinkmill.cloud",
       "path": "/srv/apps/breville-askdave-api",
       "ref": "origin/breville",
       "repo": "git@breville-askdave-api.github.com:Thinkmill/breville-askdave-api.git",
