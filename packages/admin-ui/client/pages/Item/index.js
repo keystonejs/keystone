@@ -263,14 +263,13 @@ const ItemDetails = withRouter(
             <Title>
               <TitleLink to={listHref}>{list.label}</TitleLink>: {item.name}
             </Title>
-            {/* NOTE: Removed since it doesn't seem to do anything yet */}
-            {/* <IconButton
+            <IconButton
               appearance="create"
               icon={PlusIcon}
               onClick={this.openCreateModal}
             >
               Create
-            </IconButton> */}
+            </IconButton>
           </FlexGroup>
           <FlexGroup align="center" isContiguous>
             <ItemId>ID: {item.id}</ItemId>
