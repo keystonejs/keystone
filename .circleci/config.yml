@@ -38,9 +38,9 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: yarn eslint --format junit -o reports/junit/js-lint-results.xml
+      - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
 
-      - run: yarn prettier_lint
+      - run: yarn lint:prettier
 
       - run:
           name: Unit tests
