@@ -134,6 +134,7 @@ class ListPage extends Component {
 
     this.state = {
       displayedFields,
+      filterValue: null,
       isFullWidth: false,
       isManaging: false,
       selectedItems: [],
@@ -277,6 +278,14 @@ class ListPage extends Component {
     let id = data[list.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
   };
+  onFilterChange = filterValue => {
+    this.setState({ filterValue });
+  };
+
+  // ==============================
+  // Renderers
+  // ==============================
+
   renderCreateModal() {
     const { showCreateModal } = this.state;
     const { list } = this.props;
@@ -426,6 +435,7 @@ class ListPage extends Component {
     const { list, adminPath } = this.props;
     const {
       displayedFields,
+      filterValue,
       isFullWidth,
       isManaging,
       sortDirection,
@@ -530,7 +540,11 @@ class ListPage extends Component {
                         type="text"
                       />
                     </Search>
-                    <FilterSelect fields={list.fields} value={[]} />
+                    <FilterSelect
+                      onChange={this.onFilterChange}
+                      fields={list.fields}
+                      value={filterValue}
+                    />
                     <Popout buttonLabel="Columns" headerTitle="Columns">
                       <ColumnSelect
                         fields={list.fields}

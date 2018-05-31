@@ -1,11 +1,30 @@
 import React, { Component } from 'react';
 import Select, { components as reactSelectComponents } from 'react-select';
-import { SearchIcon } from '@keystonejs/icons';
+import { GrabberIcon } from '@keystonejs/icons';
+import { colors } from '@keystonejs/ui/src/theme';
+import { alpha } from '@keystonejs/ui/src/theme/color-utils';
 import { OptionPrimitive } from './components';
 
 const selectStyles = {
-  control: provided => ({ ...provided, minWidth: '200px' }),
+  control: (provided, { isFocused }) => {
+    const focusStyles = isFocused
+      ? {
+          borderColor: colors.primary,
+          boxShadow: `inset 0 1px 1px rgba(0, 0, 0, 0.075),
+      0 0 0 3px ${alpha(colors.primary, 0.2)}`,
+          outline: 0,
+        }
+      : null;
+    return {
+      ...provided,
+      ...focusStyles,
+      fontSize: '0.9em',
+      minHeight: 35,
+      minWidth: '200px',
+    };
+  },
   menu: () => ({ marginTop: 8 }),
+  menuList: provided => ({ ...provided, padding: 0 }),
 };
 
 const Control = ({ selectProps, ...props }) => {
@@ -30,8 +49,16 @@ const Control = ({ selectProps, ...props }) => {
 };
 
 const DropdownIndicator = () => (
-  <div css={{ marginRight: 2, marginTop: 2, textAlign: 'center', width: 32 }}>
-    <SearchIcon />
+  <div
+    css={{
+      color: colors.N30,
+      marginRight: 2,
+      marginTop: 2,
+      textAlign: 'center',
+      width: 32,
+    }}
+  >
+    <GrabberIcon />
   </div>
 );
 
@@ -39,7 +66,7 @@ const defaultComponents = {
   Control,
   Option: OptionPrimitive,
   DropdownIndicator,
-  // IndicatorSeparator: null,
+  IndicatorSeparator: null,
 };
 
 export default class OptionRenderer extends Component {

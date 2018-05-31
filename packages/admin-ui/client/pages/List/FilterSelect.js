@@ -10,6 +10,7 @@ import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import FieldAwareSelect, { type SelectProps } from './FieldAwareSelect';
 import OptionRenderer from './OptionRenderer';
 import { OptionPrimitive } from './components';
+import { getInvertedOption, getOption, getOptions, getQuery } from './filters';
 import { Popout, POPOUT_GUTTER } from '../../components/Popout';
 
 export const FilterOption = ({ children, isFocused, isSelected, ...props }) => {
@@ -38,8 +39,10 @@ const Back = props => (
   </div>
 );
 const FooterButton = ({ isPrimary, ...props }) => (
-  <div
+  <button
     css={{
+      background: 0,
+      border: 0,
       cursor: 'pointer',
       color: isPrimary ? colors.primary : colors.N40,
       fontSize: '0.85em',
@@ -52,8 +55,6 @@ const FooterButton = ({ isPrimary, ...props }) => (
         textDecoration: 'underline',
       },
     }}
-    role="button"
-    tabIndex="0"
     {...props}
   />
 );
@@ -84,89 +85,14 @@ const CheckboxLabel = ({ isChecked, isDisabled, ...props }) => {
   );
 };
 
-// const filterOptions = {
-//   default: {
-//     EXACTLY: 'Is exactly',
-//     _contains: 'Contains',
-//     _starts_with: 'Starts with',
-//     _ends_with: 'Ends with',
-//   },
-//   inverted: {
-//     _not: 'not exactly',
-//     _not_contains: 'not contain',
-//     _not_starts_with: 'start with',
-//     _not_ends_with: 'end with',
-//   },
-// };
-
-const filterOptions = {
-  default: {
-    exactly: { label: 'Is exactly', querySuffix: '', value: 'exactly' },
-    contains: {
-      label: 'Contains',
-      querySuffix: '_contains',
-      value: 'contains',
-    },
-    startsWith: {
-      label: 'Starts with',
-      querySuffix: '_starts_with',
-      value: 'startsWith',
-    },
-    endsWith: {
-      label: 'Ends with',
-      querySuffix: '_ends_with',
-      value: 'endsWith',
-    },
-  },
-  inverted: {
-    exactly: { label: 'Is not exactly', querySuffix: '_not', value: 'exactly' },
-    contains: {
-      label: 'Does not contain',
-      querySuffix: '_not_contains',
-      value: 'contains',
-    },
-    startsWith: {
-      label: 'Does not start with',
-      querySuffix: '_not_starts_with',
-      value: 'startsWith',
-    },
-    endsWith: {
-      label: 'Does not end with',
-      querySuffix: '_not_ends_with',
-      value: 'endsWith',
-    },
-  },
-};
-function getOptions({ isInverted }) {
-  const type = isInverted ? 'inverted' : 'default';
-  const optGroup = filterOptions[type];
-  const optKeys = Object.keys(optGroup);
-
-  return optKeys.map(k => {
-    const opt = optGroup[k];
-    return { label: opt.label, value: k };
-  });
-}
-function getOption({ isInverted, key }) {
-  const type = isInverted ? 'inverted' : 'default';
-  const { label } = filterOptions[type][key];
-
-  return { label, value: key };
-}
-function getQuery({ field, key, isInverted }) {
-  const type = isInverted ? 'inverted' : 'default';
-  const suffix = filterOptions[type][key].querySuffix;
-
-  return `${field}${suffix}`;
-}
-
 const initialState = {
   field: null,
-  filter: filterOptions.default.contains,
-  options: getOptions({ isInverted: false }),
+  filter: getOption({ isInverted: false, key: '_contains' }),
   height: 0,
-  isInverted: false,
+  inputValue: '',
   isCaseSensitive: false,
+  isInverted: false,
+  options: getOptions({ isInverted: false }),
 };
 
 export default class FilterSelect extends Component<SelectProps> {
@@ -191,13 +117,39 @@ export default class FilterSelect extends Component<SelectProps> {
   onChangeInverted = ({ target }) => {
     const isInverted = target.checked;
     const options = getOptions({ isInverted });
-    const filter = getOption({ isInverted, key: this.state.filter.value });
+    console.log('filter', this.state.filter);
+    const filter = getInvertedOption({
+      isInverted,
+      key: this.state.filter.value,
+    });
 
     this.setState({ isInverted, options, filter });
   };
   onChangeCaseSensitivity = ({ target }) => {
     const isCaseSensitive = target.checked;
     this.setState({ isCaseSensitive });
+  };
+  onInputChange = ({ target }) => {
+    this.setState({ inputValue: target.value });
+  };
+  onApply = event => {
+    const { onChange } = this.props;
+    const {
+      field,
+      filter,
+      inputValue,
+      isInverted,
+      isCaseSensitive,
+    } = this.state;
+    const queryPath = getQuery({
+      path: field.path,
+      key: filter.value,
+      isInverted,
+    });
+    const query = { [queryPath]: inputValue };
+    console.log('query', query);
+    onChange(query);
+    this.close(event);
   };
 
   // Lifecycle
@@ -209,9 +161,11 @@ export default class FilterSelect extends Component<SelectProps> {
   focusFilterSelect = () => {
     this.filterSelectRef.focus();
   };
-  close = () => {
+  close = event => {
+    if (event) event.preventDefault();
+
     this.popoutRef.close();
-    this.setState(initialState);
+    // this.setState(initialState);
   };
   scrollToTop = () => {
     this.popoutBody.scrollTo(0, 0);
@@ -258,7 +212,7 @@ export default class FilterSelect extends Component<SelectProps> {
         mountOnEnter
         unmountOnExit
         timeout={220}
-        onEntered={this.focusFieldSelect}
+        onEntering={this.focusFieldSelect}
       >
         {state => {
           const base = {
@@ -284,6 +238,7 @@ export default class FilterSelect extends Component<SelectProps> {
                 onChange={this.onSelect}
                 placeholder="What would you like to filter?"
                 components={{ Option: FilterOption }}
+                value={[]}
               />
             </div>
           );
@@ -292,7 +247,14 @@ export default class FilterSelect extends Component<SelectProps> {
     );
   };
   renderFilterUI = () => {
-    const { field, filter, isCaseSensitive, isInverted, options } = this.state;
+    const {
+      field,
+      filter,
+      inputValue,
+      isCaseSensitive,
+      isInverted,
+      options,
+    } = this.state;
     const filterLabel = `${field.label} ${filter.label.toLowerCase()}${
       isCaseSensitive ? ' (case sensitive)' : ''
     }`;
@@ -304,7 +266,7 @@ export default class FilterSelect extends Component<SelectProps> {
         mountOnEnter
         unmountOnExit
         timeout={220}
-        onEntered={this.focusFilterSelect}
+        // onEntering={this.focusFilterSelect}
       >
         {state => {
           const base = {
@@ -323,6 +285,14 @@ export default class FilterSelect extends Component<SelectProps> {
           const style = { ...base, ...states[state] };
           return (
             <div style={style} ref={this.getHeight}>
+              <form css={{ marginBottom: gridSize }} onSubmit={this.onApply}>
+                <Input
+                  onChange={this.onInputChange}
+                  autoFocus
+                  placeholder={filterLabel}
+                  value={inputValue}
+                />
+              </form>
               <FlexGroup stretch>
                 <CheckboxPrimitive
                   components={{ Label: CheckboxLabel }}
@@ -349,9 +319,6 @@ export default class FilterSelect extends Component<SelectProps> {
                 onChange={this.onSelectFilter}
                 value={filter}
               />
-              <div css={{ marginTop: gridSize }}>
-                <Input placeholder={filterLabel} />
-              </div>
             </div>
           );
         }}
@@ -400,7 +367,7 @@ export default class FilterSelect extends Component<SelectProps> {
         footerContent={
           field ? (
             <Fragment>
-              <FooterButton onClick={this.close} isPrimary>
+              <FooterButton onClick={this.onApply} isPrimary>
                 Apply
               </FooterButton>
               <FooterButton onClick={this.close}>Cancel</FooterButton>
