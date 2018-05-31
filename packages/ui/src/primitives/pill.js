@@ -58,9 +58,9 @@ type Props = ButtonProps & {
 
 const PillWrapper = styled.div({ display: 'inline-flex' });
 const PillButton = styled.button(({ appearance, variant }: Props) => {
-  const fontSizeNumeric = 0.85;
+  const fontSizeNumeric = 0.75;
   const fontSize = `${fontSizeNumeric}em`;
-  const borderRadius = `${fontSizeNumeric * 2.125}em`;
+  const borderRadius = `${fontSizeNumeric * 2}em`;
 
   return {
     backgroundColor:
@@ -77,12 +77,11 @@ const PillButton = styled.button(({ appearance, variant }: Props) => {
     display: 'flex',
     fontSize: fontSize,
     fontWeight: 500,
+    lineHeight: '1.8em',
     justifyContent: 'center',
     maxWidth: '100%',
     minWidth: 1,
     outline: 0,
-    paddingBottom: `${fontSizeNumeric * 0.5}em`,
-    paddingTop: `${fontSizeNumeric * 0.5}em`,
     whiteSpace: 'nowrap',
 
     ':hover,:focus': {
@@ -99,15 +98,15 @@ const PillButton = styled.button(({ appearance, variant }: Props) => {
     },
 
     ':first-child': {
-      paddingLeft: `${fontSizeNumeric * 1.25}em`,
-      paddingRight: `${fontSizeNumeric * 1.1}em`,
+      paddingLeft: '0.9em',
+      paddingRight: '0.75em',
       borderTopLeftRadius: borderRadius,
       borderBottomLeftRadius: borderRadius,
       marginRight: 1,
     },
     ':last-child': {
-      paddingLeft: `${fontSizeNumeric * 1.1}em`,
-      paddingRight: `${fontSizeNumeric * 1.25}em`,
+      paddingLeft: '0.75em',
+      paddingRight: '0.9em',
       borderTopRightRadius: borderRadius,
       borderBottomRightRadius: borderRadius,
       marginLeft: 1,
@@ -121,9 +120,10 @@ export const Pill = ({
   onClick,
   onRemove,
   variant,
+  ...props
 }: Props) => {
   return (
-    <PillWrapper>
+    <PillWrapper {...props}>
       <PillButton appearance={appearance} variant={variant} onClick={onClick}>
         {children}
       </PillButton>
@@ -133,7 +133,7 @@ export const Pill = ({
           variant={variant}
           onClick={onRemove}
         >
-          <XIcon css={{ height: 14 }} />
+          <XIcon css={{ height: 12 }} />
         </PillButton>
       ) : null}
     </PillWrapper>

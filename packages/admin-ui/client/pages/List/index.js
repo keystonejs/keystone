@@ -25,6 +25,7 @@ import { A11yText, Kbd, H1 } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
 import { LoadingSpinner } from '@keystonejs/ui/src/primitives/loading';
+import { Pill } from '@keystonejs/ui/src/primitives/pill';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import ListTable from '../../components/ListTable';
@@ -134,7 +135,7 @@ class ListPage extends Component {
 
     this.state = {
       displayedFields,
-      filterValue: null,
+      selectedFilters: [],
       isFullWidth: false,
       isManaging: false,
       selectedItems: [],
@@ -278,8 +279,16 @@ class ListPage extends Component {
     let id = data[list.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
   };
-  onFilterChange = filterValue => {
-    this.setState({ filterValue });
+  onFilterChange = value => {
+    let selectedFilters = this.state.selectedFilters.slice(0);
+
+    if (selectedFilters.includes(value)) {
+      selectedFilters = selectedFilters.filter(f => f !== value);
+    } else {
+      selectedFilters.push(value);
+    }
+
+    this.setState({ selectedFilters });
   };
 
   // ==============================
@@ -348,6 +357,26 @@ class ListPage extends Component {
         <A11yText>{text}</A11yText>
       </Button>,
     ];
+  }
+  renderFilters() {
+    const { selectedFilters } = this.state;
+    console.log('renderFilters', selectedFilters);
+    if (!selectedFilters.length) return null;
+
+    return (
+      <FlexGroup style={{ paddingTop: gridSize }} wrap>
+        {selectedFilters.map(f => (
+          <Pill
+            key={f.label}
+            appearance="primary"
+            onRemove={() => this.onFilterChange(f)}
+            style={{ marginBottom: gridSize / 2, marginTop: gridSize / 2 }}
+          >
+            {f.label}
+          </Pill>
+        ))}
+      </FlexGroup>
+    );
   }
   renderPaginationOrManage() {
     const { list } = this.props;
@@ -435,7 +464,7 @@ class ListPage extends Component {
     const { list, adminPath } = this.props;
     const {
       displayedFields,
-      filterValue,
+      selectedFilters,
       isFullWidth,
       isManaging,
       sortDirection,
@@ -543,7 +572,7 @@ class ListPage extends Component {
                     <FilterSelect
                       onChange={this.onFilterChange}
                       fields={list.fields}
-                      value={filterValue}
+                      value={selectedFilters}
                     />
                     <Popout buttonLabel="Columns" headerTitle="Columns">
                       <ColumnSelect
@@ -564,6 +593,7 @@ class ListPage extends Component {
                     </IconButton>
                   </FlexGroup>
 
+                  {this.renderFilters()}
                   {this.renderPaginationOrManage()}
                 </Container>
 

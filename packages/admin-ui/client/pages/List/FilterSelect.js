@@ -146,9 +146,12 @@ export default class FilterSelect extends Component<SelectProps> {
       key: filter.value,
       isInverted,
     });
+
+    const expression = filter.label.toLowerCase();
+    const label = `${field.label} ${expression}: "${inputValue}"`;
     const query = { [queryPath]: inputValue };
-    console.log('query', query);
-    onChange(query);
+
+    onChange({ query, label, isCaseSensitive });
     this.close(event);
   };
 
