@@ -1,2 +1,2 @@
-#!/usr/bin/bash
+#! bin/sh
 echo "yarn start"
