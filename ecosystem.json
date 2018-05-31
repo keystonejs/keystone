@@ -18,7 +18,7 @@
       "path": "/srv/apps/breville-askdave-api",
       "ref": "origin/breville",
       "repo": "git@breville-askdave-api.github.com:Thinkmill/breville-askdave-api.git",
-      "post-deploy": "yarn && yarn heroku-postbuild && pm2 startOrGracefulReload ecosystem.json && pm2 save"
+      "post-deploy": "npm install && npm run heroku-postbuild && pm2 startOrGracefulReload ecosystem.json && pm2 save"
     },
     "live": {
       "user": "nodeuser",
@@ -26,7 +26,7 @@
       "path": "/srv/apps/breville-askdave-api",
       "ref": "origin/breville",
       "repo": "git@breville-askdave-api.github.com:Thinkmill/breville-askdave-api.git",
-      "post-deploy": "yarn && yarn heroku-postbuild && pm2 startOrGracefulReload ecosystem.json && pm2 save",
+      "post-deploy": "npm install && npm run heroku-postbuild && pm2 startOrGracefulReload ecosystem.json && pm2 save",
     }
   }
 }
