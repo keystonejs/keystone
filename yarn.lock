@@ -6018,9 +6018,9 @@ react-scrolllock@^2.0.2:
   dependencies:
     exenv "^1.2.2"
 
-react-select@^2.0.0-beta.2:
-  version "2.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/react-select/-/react-select-2.0.0-beta.2.tgz#92b724680dbe31ae104ac2cc2088d9416389f532"
+react-select@^2.0.0-beta.6:
+  version "2.0.0-beta.6"
+  resolved "https://registry.yarnpkg.com/react-select/-/react-select-2.0.0-beta.6.tgz#87ac27831f348cb9535dfd825534934adcfb7e97"
   dependencies:
     classnames "^2.2.5"
     emotion "^9.1.2"

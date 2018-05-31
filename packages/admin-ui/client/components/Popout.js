@@ -5,32 +5,47 @@ import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Popout as PopoutModal } from '@keystonejs/ui/src/primitives/modals';
 import { gridSize } from '@keystonejs/ui/src/theme';
 
-const GUTTER = gridSize * 2;
+export const POPOUT_GUTTER = gridSize * 2;
 
 // Layout
 const Bar = styled.div({
   paddingBottom: gridSize * 1.5,
   paddingTop: gridSize * 1.5,
-  marginLeft: GUTTER,
-  marginRight: GUTTER,
+  marginLeft: POPOUT_GUTTER,
+  marginRight: POPOUT_GUTTER,
   position: 'relative',
+  zIndex: 1,
 });
 const Header = styled(Bar)({
+  alignItems: 'center',
   boxShadow: '0 2px 0 rgba(0,0,0,0.1)',
+  display: 'flex',
+  justifyContent: 'center',
   textAlign: 'center',
 });
 const HeaderTitle = styled.div({
   fontWeight: 'bold',
   fontSize: '0.85em',
 });
+const HeaderLeft = styled.div({
+  position: 'absolute',
+  left: 0,
+});
+const HeaderRight = styled.div({
+  position: 'absolute',
+  left: 0,
+});
 const Body = styled.div({
   maxHeight: 300,
-  overflow: 'auto',
-  padding: GUTTER,
+  overflowY: 'auto',
+  overflowX: 'hidden',
   WebkitOverflowScroll: 'touch',
 });
 const Footer = styled(Bar)({
+  alignItems: 'center',
   boxShadow: '0 -2px 0 rgba(0,0,0,0.1)',
+  display: 'flex',
+  justifyContent: 'space-between',
 });
 
 // Other
@@ -51,6 +66,8 @@ type Props = { buttonLabel: string };
 export const Popout = ({
   buttonLabel,
   children,
+  innerRef,
+  bodyRef,
   footerContent,
   headerAfter,
   headerBefore,
@@ -65,14 +82,14 @@ export const Popout = ({
   );
 
   return (
-    <PopoutModal target={target || defaultTarget}>
+    <PopoutModal ref={innerRef} target={target || defaultTarget}>
       <Fragment>
         <Header>
-          {headerBefore}
+          <HeaderLeft>{headerBefore}</HeaderLeft>
           <HeaderTitle>{headerTitle}</HeaderTitle>
-          {headerAfter}
+          <HeaderRight>{headerAfter}</HeaderRight>
         </Header>
-        <Body>{children}</Body>
+        <Body innerRef={bodyRef}>{children}</Body>
         {footerContent ? <Footer>{footerContent}</Footer> : null}
       </Fragment>
     </PopoutModal>

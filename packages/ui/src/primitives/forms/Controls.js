@@ -1,5 +1,10 @@
 // @flow
-import React, { Component, type Node, type Ref } from 'react';
+import React, {
+  Component,
+  type ComponentType,
+  type Node,
+  type Ref,
+} from 'react';
 import styled from 'react-emotion';
 import {
   CheckboxGroup as ReactCheckboxGroup,
@@ -15,11 +20,12 @@ const Wrapper = styled.div({
   display: 'flex',
   alignItems: 'center',
 });
-const Label = styled.label({
+const Label = styled.label(({ isChecked, isDisabled }) => ({
   alignItems: 'center',
   display: 'flex',
   lineHeight: 1,
-});
+}));
+const Text = 'span';
 
 type State = {
   isHovered: boolean,
@@ -47,6 +53,11 @@ type Props = {
 type ControlProps = Props & {
   svg: string, // html string
   type: 'checkbox' | 'radio',
+  components: {
+    Wrapper?: ComponentType<*>,
+    Label?: ComponentType<*>,
+    Text?: ComponentType<*>,
+  },
 };
 
 type IconProps = {
@@ -111,20 +122,39 @@ const Icon = styled.div(
   }
 );
 
-class Control extends Component<ControlProps, State> {
-  static defaultProps = {
-    checked: false,
-    isDisabled: false,
-  };
+const defaultComponents = { Wrapper, Label, Text };
 
+class Control extends Component<ControlProps, State> {
+  components: {};
+  control: HTMLElement;
   state = {
     isActive: false,
     isFocused: false,
     isHovered: false,
     mouseIsDown: false,
   };
+  static defaultProps = {
+    checked: false,
+    components: {},
+    isDisabled: false,
+  };
 
-  control: HTMLElement;
+  constructor(props: Props) {
+    super(props);
+    this.cacheComponents(props.components);
+  }
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.components !== this.props.components) {
+      this.cacheComponents(nextProps.components);
+    }
+  }
+  cacheComponents = (components?: {}) => {
+    this.components = {
+      ...defaultComponents,
+      ...components,
+    };
+  };
+
   focus() {
     this.control.focus();
   }
@@ -178,11 +208,13 @@ class Control extends Component<ControlProps, State> {
       value,
       ...wrapperProps
     } = this.props;
+    const { components } = this;
     const iconProps = { ...this.state, checked, isDisabled };
 
     return (
-      <Wrapper {...wrapperProps}>
-        <Label
+      <components.Wrapper {...wrapperProps}>
+        <components.Label
+          isChecked={checked}
           isDisabled={isDisabled}
           onKeyDown={this.onKeyDown}
           onKeyUp={this.onKeyUp}
@@ -206,9 +238,9 @@ class Control extends Component<ControlProps, State> {
           <Icon {...iconProps}>
             <Svg html={svg} />
           </Icon>
-          {children ? <span>{children}</span> : null}
-        </Label>
-      </Wrapper>
+          {children ? <components.Text>{children}</components.Text> : null}
+        </components.Label>
+      </components.Wrapper>
     );
   }
 }

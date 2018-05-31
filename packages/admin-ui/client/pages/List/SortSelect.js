@@ -33,7 +33,7 @@ export const SortOption = ({
   children,
   isFocused,
   isSelected,
-  innerProps,
+  ...props
 }) => {
   const Icon = isSelected
     ? ChevronUpIcon
@@ -43,11 +43,7 @@ export const SortOption = ({
   const iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
 
   return (
-    <OptionPrimitive
-      isFocused={isFocused}
-      isSelected={isSelected}
-      {...innerProps}
-    >
+    <OptionPrimitive isFocused={isFocused} isSelected={isSelected} {...props}>
       <span>{children}</span>
       <Icon css={{ color: iconColor }} />
     </OptionPrimitive>

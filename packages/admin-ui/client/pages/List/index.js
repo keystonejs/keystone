@@ -41,6 +41,10 @@ import ColumnSelect from './ColumnSelect';
 import FilterSelect from './FilterSelect';
 import SortSelect, { SortButton } from './SortSelect';
 
+// ==============================
+// Queries
+// ==============================
+
 const getQueryArgs = args => {
   const queryArgs = Object.keys(args).map(
     // Using stringify to get the correct quotes depending on type
@@ -176,6 +180,7 @@ class ListPage extends Component {
   };
 
   handleSelectedFieldsChange = selectedFields => {
+    console.log('handleSelectedFieldsChange', selectedFields);
     if (!selectedFields.length) {
       return;
     }
@@ -525,26 +530,13 @@ class ListPage extends Component {
                         type="text"
                       />
                     </Search>
-                    {ENABLE_DEV_FEATURES ? (
-                      <Popout buttonLabel="Filters" headerTitle="Filters">
-                        <FilterSelect
-                          isMulti
-                          fields={list.fields}
-                          onChange={console.log}
-                          value={displayedFields}
-                          placeholder="Find a field..."
-                          removeIsAllowed={displayedFields.length > 1}
-                        />
-                      </Popout>
-                    ) : null}
+                    <FilterSelect fields={list.fields} value={[]} />
                     <Popout buttonLabel="Columns" headerTitle="Columns">
                       <ColumnSelect
-                        isMulti
                         fields={list.fields}
                         onChange={this.handleSelectedFieldsChange}
-                        value={displayedFields}
-                        placeholder="Find a column..."
                         removeIsAllowed={displayedFields.length > 1}
+                        value={displayedFields}
                       />
                     </Popout>
                     {this.renderExpandButton()}
