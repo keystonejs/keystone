@@ -242,14 +242,14 @@ const ItemDetails = withRouter(
      */
     openCreateModal = () => this.setState({ showCreateModal: true });
     closeCreateModal = () => this.setState({ showCreateModal: false });
-    renderCreateModal = () =>
-      this.state.showCreateModal ? (
-        <CreateItemModal
-          list={this.props.list}
-          onClose={this.closeCreateModal}
-          onCreate={this.onCreate}
-        />
-      ) : null;
+    renderCreateModal = () => (
+      <CreateItemModal
+        isOpen={this.state.showCreateModal}
+        list={this.props.list}
+        onClose={this.closeCreateModal}
+        onCreate={this.onCreate}
+      />
+    );
     onCreate = ({ data }) => {
       const { list, adminPath, history } = this.props;
       const { id } = data[list.createMutationName];
