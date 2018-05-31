@@ -1,7 +1,6 @@
 {
   "apps": {
     "name": "breville-askdave-api",
-    "script": "start.sh",
     "watch": false,
     "node_args": "--stack-trace-limit=50",
     "combine_logs": true,
@@ -17,7 +16,7 @@
       "path": "/srv/apps/breville-askdave-api",
       "ref": "origin/breville",
       "repo": "git@breville-askdave-api.github.com:Thinkmill/breville-askdave-api.git",
-      "post-deploy": "yarn && yarn heroku-postbuild && pm2 startOrGracefulReload ecosystem.json && pm2 save"
+      "post-deploy": "yarn && yarn heroku-postbuild && pm2 startOrGracefulReload npm -- start && pm2 save"
     },
     "live": {
       "user": "nodeuser",
@@ -25,7 +24,7 @@
       "path": "/srv/apps/breville-askdave-api",
       "ref": "origin/breville",
       "repo": "git@breville-askdave-api.github.com:Thinkmill/breville-askdave-api.git",
-      "post-deploy": "yarn && yarn heroku-postbuild && pm2 startOrGracefulReload ecosystem.json && pm2 save",
+      "post-deploy": "yarn && yarn heroku-postbuild && pm2 startOrGracefulReload npm -- start && pm2 save",
     }
   }
 }
