@@ -24,7 +24,16 @@ const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
 
 const Nav = props => {
   const {
-    adminMeta: { withAuth, getListByKey, listKeys, adminPath, graphiqlPath, signoutUrl, signinUrl, sessionUrl },
+    adminMeta: {
+      withAuth,
+      getListByKey,
+      listKeys,
+      adminPath,
+      graphiqlPath,
+      signoutUrl,
+      signinUrl,
+      sessionUrl,
+    },
     location,
   } = props;
   return (

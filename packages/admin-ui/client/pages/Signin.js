@@ -82,7 +82,11 @@ class Session extends Component {
                   <Input name="username" />
                   <FieldLabel>Password</FieldLabel>
                   <Input type="password" name="password" />
-                  <input type="hidden" name="redirectTo" value={xss(redirectTo)} />
+                  <input
+                    type="hidden"
+                    name="redirectTo"
+                    value={xss(redirectTo)}
+                  />
                 </Fields>
                 <Button
                   appearance="primary"

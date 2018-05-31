@@ -50,7 +50,7 @@ module.exports = class AdminUI {
       signinUrl: `${this.adminAuthPath}/signin`,
       signoutUrl: `${this.adminAuthPath}/signout`,
       sessionUrl: `${this.adminAuthPath}/session`,
-    },
+    };
 
     this.signin = this.signin.bind(this);
     this.signout = this.signout.bind(this);
@@ -83,7 +83,7 @@ module.exports = class AdminUI {
           res.redirect(signinUrl);
         };
         return res.format({
-          'default': htmlResponse,
+          default: htmlResponse,
           'text/html': htmlResponse,
           'application/json': () => res.json({ success: false }),
         });
@@ -94,9 +94,10 @@ module.exports = class AdminUI {
       return next(e);
     }
 
-    const htmlResponse = () => res.redirect(req.body.redirectTo || admin.adminPath);
+    const htmlResponse = () =>
+      res.redirect(req.body.redirectTo || admin.adminPath);
     return res.format({
-      'default': htmlResponse,
+      default: htmlResponse,
       'text/html': htmlResponse,
       'application/json': () => res.json({ success: true }),
     });
@@ -110,7 +111,7 @@ module.exports = class AdminUI {
     }
 
     return res.format({
-      'default': () => {
+      default: () => {
         next();
       },
       'text/html': () => {
@@ -118,7 +119,7 @@ module.exports = class AdminUI {
       },
       'application/json': () => {
         res.json({ success: true });
-      }
+      },
     });
   }
 
@@ -137,7 +138,7 @@ module.exports = class AdminUI {
       signinUrl: this.config.signinUrl,
       signoutUrl: this.config.signoutUrl,
       sessionUrl: this.config.sessionUrl,
-    }
+    };
   }
 
   createSessionMiddleware({ cookieSecret }) {
@@ -160,7 +161,12 @@ module.exports = class AdminUI {
 
     // NOTE: These are POST only. The GET versions (the UI) are handled by the
     // main server
-    app.post(this.config.signinUrl, bodyParser.json(), bodyParser.urlencoded(), this.signin);
+    app.post(
+      this.config.signinUrl,
+      bodyParser.json(),
+      bodyParser.urlencoded(),
+      this.signin
+    );
     app.post(this.config.signoutUrl, this.signout);
     app.use(
       this.keystone.session.validate({

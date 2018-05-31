@@ -173,10 +173,14 @@ module.exports = class Keystone {
     // Return a promise that resolves to an array of the created items
     const asyncCreateItems = listKey => {
       if (!this.getListByKey(listKey)) {
-        return Promise.reject(`Cannot create items for unknown list '${listKey}'. Configured lists are: ${Object.keys(this.lists).join(', ')}`);
+        return Promise.reject(
+          `Cannot create items for unknown list '${listKey}'. Configured lists are: ${Object.keys(
+            this.lists
+          ).join(', ')}`
+        );
       }
       return Promise.all(lists[listKey].map(i => this.createItem(listKey, i)));
-    }
+    };
 
     return resolveAllKeys(
       Object.keys(lists).reduce(

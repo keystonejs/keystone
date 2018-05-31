@@ -6,7 +6,7 @@ function getJSON(url) {
     credentials: 'same-origin',
     headers: {
       'content-type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
     },
     mode: 'cors',
     redirect: 'follow',
@@ -20,7 +20,7 @@ function postJSON(url, data = {}) {
     credentials: 'same-origin',
     headers: {
       'content-type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
     },
     method: 'POST',
     mode: 'cors',
@@ -47,13 +47,13 @@ class Session extends Component {
       this.signOut();
       return;
     }
-  }
+  };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (
-      prevState.isLoading !== this.state.isLoading
-      || prevState.session !== this.state.session
-      || prevProps.forceSignout !== this.props.forceSignout
+      prevState.isLoading !== this.state.isLoading ||
+      prevState.session !== this.state.session ||
+      prevProps.forceSignout !== this.props.forceSignout
     ) {
       this.triggerSignoutFlow(this.props, this.state);
     }

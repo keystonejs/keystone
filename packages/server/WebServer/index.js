@@ -30,7 +30,6 @@ module.exports = class WebServer {
         })
       );
     }
-
   }
   start() {
     const {

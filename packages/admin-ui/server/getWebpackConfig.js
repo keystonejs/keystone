@@ -4,7 +4,13 @@ const path = require('path');
 
 const { mode } = require('./env');
 
-module.exports = function({ publicPath, adminMeta, adminPath, apiPath, graphiqlPath }) {
+module.exports = function({
+  publicPath,
+  adminMeta,
+  adminPath,
+  apiPath,
+  graphiqlPath,
+}) {
   return {
     mode,
     context: path.resolve(__dirname, '../client/'),

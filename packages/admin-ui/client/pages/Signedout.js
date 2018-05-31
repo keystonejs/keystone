@@ -35,7 +35,10 @@ class SignedOut extends Component {
     const { adminPath, signinUrl, signoutUrl, sessionUrl } = this.props;
     return (
       <Container>
-        <SessionProvider forceSignout {...{ signinUrl, signoutUrl, sessionUrl }}>
+        <SessionProvider
+          forceSignout
+          {...{ signinUrl, signoutUrl, sessionUrl }}
+        >
           {({ isLoading }) => (
             <Box>
               <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
@@ -45,10 +48,14 @@ class SignedOut extends Component {
                   marginTop: 16,
                 }}
               >
-                {isLoading ? 'Loading...' : (
+                {isLoading ? (
+                  'Loading...'
+                ) : (
                   <Fragment>
                     <p>You are signed out.</p>
-                    <p><a href={signinUrl}>Sign In</a></p>
+                    <p>
+                      <a href={signinUrl}>Sign In</a>
+                    </p>
                   </Fragment>
                 )}
               </div>
