@@ -121,4 +121,38 @@ describe('Home page', () => {
       cy.contains('div', `Create ${text} Dialog`).should('not.exist');
     });
   });
+
+  it('Ensure Create Modal opens inside the detail view, has the correct fields, and Cancels', () => {
+    cy.visit('http://localhost:3000/admin/users');
+
+    cy.get('a[href^="/admin/users/"]:first').click();
+    cy.get('button[appearance="create"]').click();
+
+    [
+      {
+        text: 'User',
+        labels: [
+          'Name',
+          'Email',
+          'Password',
+          'Twitterid',
+          'Twitterusername',
+          'Company',
+        ],
+      },
+    ].forEach(({ text, labels }) => {
+      cy
+        .contains('div', `Create ${text} Dialog`)
+        .contains('h3', `Create ${text}`);
+      cy.contains('div', `Create ${text} Dialog`).contains('button', 'Create');
+      labels.forEach(label => {
+        cy.contains('div[data-selector="field-container"]', label);
+      });
+      cy
+        .contains('div', `Create ${text} Dialog`)
+        .contains('button', 'Cancel')
+        .click();
+      cy.contains('div', `Create ${text} Dialog`).should('not.exist');
+    });
+  });
 });
