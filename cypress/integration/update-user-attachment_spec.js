@@ -19,8 +19,17 @@ describe('Adding a file', function() {
           'input[name=attachment][type=file]',
           '../mock/upload.txt'
         );
+
+        // Setup to track XHR requests
+        cy.server();
+        // Alias the graphql request route
+        cy.route('post', '**/admin/api').as('graphqlPost');
+        // Avoid accidentally mocking routes
+        cy.server({ enable: false });
+
         cy.get('button[type="submit"]').click();
         cy.contains('upload.txt');
+        cy.wait('@graphqlPost');
         return cy
           .graphql_query(
             `
