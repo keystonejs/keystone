@@ -37,6 +37,7 @@ import DocTitle from '../../components/DocTitle';
 import PageLoading from '../../components/PageLoading';
 import PageError from '../../components/PageError';
 import { Popout, DisclosureArrow } from '../../components/Popout';
+import AnimateHeight from '../../components/AnimateHeight';
 
 import ColumnSelect from './ColumnSelect';
 import FilterSelect from './FilterSelect';
@@ -361,21 +362,24 @@ class ListPage extends Component {
   renderFilters() {
     const { selectedFilters } = this.state;
     console.log('renderFilters', selectedFilters);
-    if (!selectedFilters.length) return null;
 
     return (
-      <FlexGroup style={{ paddingTop: gridSize }} wrap>
-        {selectedFilters.map(f => (
-          <Pill
-            key={f.label}
-            appearance="primary"
-            onRemove={() => this.onFilterChange(f)}
-            style={{ marginBottom: gridSize / 2, marginTop: gridSize / 2 }}
-          >
-            {f.label}
-          </Pill>
-        ))}
-      </FlexGroup>
+      <AnimateHeight>
+        {selectedFilters.length ? (
+          <FlexGroup style={{ paddingTop: gridSize }} wrap>
+            {selectedFilters.map(f => (
+              <Pill
+                key={f.label}
+                appearance="primary"
+                onRemove={() => this.onFilterChange(f)}
+                style={{ marginBottom: gridSize / 2, marginTop: gridSize / 2 }}
+              >
+                {f.label}
+              </Pill>
+            ))}
+          </FlexGroup>
+        ) : null}
+      </AnimateHeight>
     );
   }
   renderPaginationOrManage() {
@@ -446,8 +450,8 @@ class ListPage extends Component {
     return (
       <div
         css={{
-          marginBottom: '1em',
-          marginTop: '1em',
+          marginBottom: gridSize * 2,
+          marginTop: gridSize,
           visibility: this.itemsCount ? 'visible' : 'hidden',
         }}
       >

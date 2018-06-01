@@ -12,6 +12,7 @@ import OptionRenderer from './OptionRenderer';
 import { OptionPrimitive } from './components';
 import { getInvertedOption, getOption, getOptions, getQuery } from './filters';
 import { Popout, POPOUT_GUTTER } from '../../components/Popout';
+import AnimateHeight from '../../components/AnimateHeight';
 
 export const FilterOption = ({ children, isFocused, isSelected, ...props }) => {
   let iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
@@ -378,17 +379,11 @@ export default class FilterSelect extends Component<SelectProps> {
           ) : null
         }
       >
-        <div
-          css={{
-            height,
-            position: 'relative',
-            transition: 'height 220ms cubic-bezier(0.2, 0, 0, 1)',
-          }}
-        >
-          <TransitionGroup>
+        <AnimateHeight style={{ position: 'relative' }} initial="auto">
+          <TransitionGroup component={null}>
             {field ? this.renderFilterUI() : this.renderSelect()}
           </TransitionGroup>
-        </div>
+        </AnimateHeight>
       </Popout>
     );
   }

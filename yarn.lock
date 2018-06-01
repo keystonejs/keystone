@@ -5975,9 +5975,9 @@ react-media@^1.8.0:
     json2mq "^0.2.0"
     prop-types "^15.5.10"
 
-react-node-resolver@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-node-resolver/-/react-node-resolver-1.0.1.tgz#1798a729c0e218bf2f0e8ddf79c550d4af61d83a"
+react-node-resolver@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-node-resolver/-/react-node-resolver-2.0.0.tgz#f2de4a79499a47f89529402eb4ebc5d8ef4969e4"
 
 react-pseudo-state@^1.0.1:
   version "1.0.1"
