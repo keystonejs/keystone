@@ -36,7 +36,16 @@ describe('Adding data', () => {
         cy.get(`#${item}`).type(data[item]);
       });
 
+      // Setup to track XHR requests
+      cy.server();
+      // Alias the graphql request route
+      cy.route('post', '**/admin/api').as('graphqlPost');
+      // Avoid accidentally mocking routes
+      cy.server({ enable: false });
+
       cy.get('div[class*="Dialog"] button[appearance="create"]').click();
+
+      cy.wait('@graphqlPost');
 
       Object.keys(data).forEach(item => {
         cy.get(`#${item}`).should('have.value', data[item]);
