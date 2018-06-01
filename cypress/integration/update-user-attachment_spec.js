@@ -15,7 +15,10 @@ describe('Adding a file', function() {
         const fileContent = `Some important content ${Math.random()}`;
         cy.visit(`http://localhost:3000/admin/users/${user.id}`);
         cy.writeFile('cypress/mock/upload.txt', fileContent);
-        cy.upload_file('input[name=attachment][type=file]', '../mock/upload.txt');
+        cy.upload_file(
+          'input[name=attachment][type=file]',
+          '../mock/upload.txt'
+        );
         cy.get('button[type="submit"]').click();
         cy.contains('upload.txt');
         return cy
