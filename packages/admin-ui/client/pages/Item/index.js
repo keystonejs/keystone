@@ -210,9 +210,8 @@ const ItemDetails = withRouter(
           {}
         )
       )
-        .then(data => {
-          updateItem({ variables: { id: item.id, data } });
-
+        .then(data => updateItem({ variables: { id: item.id, data } }))
+        .then(() => {
           const toastContent = (
             <div>
               {item.name ? <strong>{item.name}</strong> : null}
@@ -350,7 +349,9 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toast }) => {
   return (
     <Fragment>
       <Nav />
-      <Query query={itemQuery}>
+      {/* network-only because the data we mutate with is important for display
+          in the UI, and may be different than what's in the cache */}
+      <Query query={itemQuery} fetchPolicy="network-only">
         {({ loading, error, data, refetch }) => {
           if (loading) return <PageLoading />;
 

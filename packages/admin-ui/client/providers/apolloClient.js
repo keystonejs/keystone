@@ -7,6 +7,8 @@ import { onError } from 'apollo-link-error';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import ApolloClient from 'apollo-client';
 
+const fetch = require('cross-fetch');
+
 const { apiPath } = KEYSTONE_ADMIN_META;
 
 // Ejected from apollo-boost v0.1.4:
@@ -70,6 +72,7 @@ class BoostClientWithUplaod extends ApolloClient {
 
     const httpLink = createUploadLink({
       uri: (config && config.uri) || '/graphql',
+      fetch, // Why? To support mocking `fetch` in Cypress tests. See https://github.com/cypress-io/cypress/issues/687#issuecomment-384953881
       fetchOptions: (config && config.fetchOptions) || {},
       credentials: 'same-origin',
     });
