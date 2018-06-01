@@ -17,7 +17,7 @@ describe('Adding a file', function() {
         cy.writeFile('cypress/mock/upload.txt', fileContent);
         cy.upload_file('input[name=attachment][type=file]', '../mock/upload.txt');
         cy.get('button[type="submit"]').click();
-        cy.contains('-upload.txt');
+        cy.contains('upload.txt');
         return cy
           .graphql_query(
             `
