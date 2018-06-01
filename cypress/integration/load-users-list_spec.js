@@ -3,13 +3,13 @@ describe('Loading User item', function() {
     return cy
       .graphql_query(
         `
-      query {
-        allUsers(first: 1) {
-          id
-          name
-        }
-      }
-    `
+          query {
+            allUsers(first: 1) {
+              id
+              name
+            }
+          }
+        `
       )
       .then(({ allUsers: [user] }) => {
         cy.visit(`http://localhost:3000/admin/users/${user.id}`);
