@@ -76,7 +76,7 @@ export const Name = styled.span(
 export const Count = ({ meta }) => {
   const count = meta && meta.count;
 
-  return count ? (
+  return meta ? (
     <div css={{ fontSize: '0.85em' }}>
       {count} Item{count !== 1 ? 's' : ''}
     </div>
