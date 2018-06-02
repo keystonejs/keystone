@@ -10,12 +10,13 @@
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.js\"",
     "fresh": "bolt ws exec -- rm -rf node_modules && rm -rf node_modules && bolt",
-    "test:unit": "jest",
-    "test": "yarn lint && yarn jest && yarn cypress:run",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --list-different \"**/*.js\"",
     "lint": "yarn lint:prettier && yarn lint:eslint",
-    "start": "cd packages/test-project && yarn start"
+    "start": "cd packages/test-project && yarn start",
+    "test": "yarn lint && jest && yarn cypress:run",
+    "test:server:start": "pm2 start packages/test-project/index.js",
+    "test:server:stop": "pm2 stop all"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.12",
