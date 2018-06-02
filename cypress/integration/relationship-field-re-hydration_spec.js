@@ -2,8 +2,12 @@ describe('Testing re-hydration', () => {
   before(() => {
     cy.visit('http://localhost:3000/admin/posts');
     cy.get('button[appearance="create"]').click();
-    cy.get('label[for="ks-input-categories"] + div div[role="button"] > svg').click();
-    cy.get('label[for="ks-input-categories"] + div div[role="listbox"]').should('not.contain', 'New Category');
+    cy
+      .get('label[for="ks-input-categories"] + div div[role="button"] > svg')
+      .click();
+    cy
+      .get('label[for="ks-input-categories"] + div div[role="listbox"]')
+      .should('not.contain', 'New Category');
   });
 
   after(() => {
@@ -22,7 +26,11 @@ describe('Testing re-hydration', () => {
 
     cy.get('nav a:contains("Posts")').click();
     cy.get('button[appearance="create"]').click();
-    cy.get('label[for="ks-input-categories"] + div div[role="button"] > svg').click();
-    cy.get('label[for="ks-input-categories"] + div div[role="listbox"]').should('contain', 'New Category');
+    cy
+      .get('label[for="ks-input-categories"] + div div[role="button"] > svg')
+      .click();
+    cy
+      .get('label[for="ks-input-categories"] + div div[role="listbox"]')
+      .should('contain', 'New Category');
   });
 });
