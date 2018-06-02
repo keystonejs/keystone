@@ -102,7 +102,7 @@
   },
   "devDependencies": {
     "apollo-fetch": "^0.7.0",
-    "cypress": "^2.1.0",
+    "cypress": "^3.0.1",
     "eslint-plugin-cypress": "^2.0.1",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.17.0",
