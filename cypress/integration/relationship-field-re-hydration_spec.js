@@ -17,10 +17,10 @@ describe('Testing re-hydration', () => {
     cy.get('body:last footer button:first').click();
   });
 
-  it(`Our new category should appear after we add it`, () => {
+  it('Our new category should appear after we add it', () => {
     cy.visit('http://localhost:3000/admin/post-categories');
     cy.get('button[appearance="create"]').click();
-    cy.get(`#ks-input-name`).type('New Category');
+    cy.get('#ks-input-name').type('New Category');
     cy.get('div[class*="Dialog"] button[appearance="create"]').click();
     cy.get('body').should('contain', 'New Category');
 
