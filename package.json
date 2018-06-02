@@ -15,7 +15,7 @@
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --list-different \"**/*.js\"",
     "lint": "yarn lint:prettier && yarn lint:eslint",
-    "start": "cd packages/test-project && yarn start",
+    "start": "cd packages/test-project && yarn start"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.12",
