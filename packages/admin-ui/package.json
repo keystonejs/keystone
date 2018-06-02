@@ -28,6 +28,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "body-parser": "^1.18.2",
+    "cross-fetch": "^2.2.0",
     "emotion": "^9.1.1",
     "express": "^4.16.3",
     "express-session": "^1.15.6",

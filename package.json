@@ -10,13 +10,12 @@
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.js\"",
     "fresh": "bolt ws exec -- rm -rf node_modules && rm -rf node_modules && bolt",
-    "jest": "jest",
+    "test:unit": "jest",
+    "test": "yarn lint && yarn jest && yarn cypress:run",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --list-different \"**/*.js\"",
     "lint": "yarn lint:prettier && yarn lint:eslint",
     "start": "cd packages/test-project && yarn start",
-    "test:all": "yarn test && yarn cypress:run",
-    "test": "yarn lint && yarn jest"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.12",
@@ -40,6 +39,7 @@
     "body-parser": "^1.18.2",
     "cloudinary": "^1.11.0",
     "cors": "^2.8.4",
+    "cross-fetch": "^2.2.0",
     "cuid": "^2.1.1",
     "dotenv-safe": "^5.0.1",
     "emotion": "^9.1.1",

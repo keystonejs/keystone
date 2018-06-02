@@ -75,3 +75,4 @@ junit.xml
 # Cypress
 cypress/screenshots
 cypress/videos
+cypress/mock
