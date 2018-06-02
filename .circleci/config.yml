@@ -38,9 +38,9 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: yarn eslint --format junit -o reports/junit/js-lint-results.xml
+      - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
 
-      - run: yarn prettier_lint
+      - run: yarn lint:prettier
 
       - run:
           name: Unit tests
@@ -69,7 +69,13 @@ jobs:
       - run: sudo apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
       - run: sudo yarn global add bolt
       - run: bolt
-      - run: CLOUDINARY_CLOUD_NAME=$CLOUDINARY_CLOUD_NAME CLOUDINARY_KEY=$CLOUDINARY_KEY CLOUDINARY_SECRET=$CLOUDINARY_SECRET yarn pm2 start packages/test-project/index.js
+      - run:
+          name: Starting test project
+          command: yarn test:server:start
+          environment:
+            CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME
+            CLOUDINARY_KEY: $CLOUDINARY_KEY
+            CLOUDINARY_SECRET: $CLOUDINARY_SECRET
       - save_cache:
           paths:
             - node_modules
