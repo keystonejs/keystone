@@ -9,20 +9,43 @@ const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 const getWebpackConfig = require('./getWebpackConfig');
 
 module.exports = class AdminUI {
-  constructor(keystone, { adminPath = '/admin' }) {
+  constructor(keystone, config) {
     this.keystone = keystone;
-    this.adminPath = adminPath;
-    this.graphiqlPath = `${adminPath}/graphiql`;
+
+    if (config.adminPath === '/') {
+      throw new Error("Admin path cannot be the root path. Try; '/admin'");
+    }
+
+    this.adminPath = config.adminPath || '/admin';
+    this.graphiqlPath = `${this.adminPath}/graphiql`;
     this.apiPath = `${this.adminPath}/api`;
+
+    this.config = {
+      ...config,
+      signinPath: `${this.adminPath}/signin`,
+      signoutPath: `${this.adminPath}/signout`,
+      sessionPath: `${this.adminPath}/session`,
+    };
 
     this.signin = this.signin.bind(this);
     this.signout = this.signout.bind(this);
     this.session = this.session.bind(this);
   }
 
+  getAdminMeta() {
+    return {
+      withAuth: !!this.config.authStrategy,
+      adminPath: this.config.adminPath,
+      signinPath: this.config.signinPath,
+      signoutPath: this.config.signoutPath,
+      sessionPath: this.config.sessionPath,
+    };
+  }
+
   async signin(req, res, next) {
     try {
-      const result = await this.keystone.auth.User.password.validate({
+      // TODO: How could we support, for example, the twitter auth flow?
+      const result = await this.config.authStrategy.validate({
         username: req.body.username,
         password: req.body.password,
       });
@@ -58,19 +81,22 @@ module.exports = class AdminUI {
     });
   }
 
-  createSessionMiddleware({ cookieSecret }) {
+  createSessionMiddleware({ cookieSecret, sessionMiddleware }) {
+    if (!this.config.authStrategy) {
+      return (req, res, next) => next();
+    }
+
     const app = express();
 
+    const sessionHandler = sessionMiddleware || session({
+      secret: cookieSecret,
+      resave: false,
+      saveUninitialized: false,
+      name: 'keystone-admin.sid',
+    });
+
     // implement session management
-    app.use(
-      this.adminPath,
-      session({
-        secret: cookieSecret,
-        resave: false,
-        saveUninitialized: false,
-        name: 'keystone-admin.sid',
-      })
-    );
+    app.use(this.adminPath, sessionHandler);
     app.post(`${this.apiPath}/signin`, bodyParser.json(), this.signin);
     app.post(`${this.apiPath}/signout`, this.signout);
     app.use(
@@ -100,7 +126,7 @@ module.exports = class AdminUI {
 
   createDevMiddleware() {
     const app = express();
-    const { adminPath, apiPath, graphiqlPath } = this;
+    const { adminPath, apiPath, graphiqlPath, config } = this;
 
     // ensure any non-resource requests are rewritten for history api fallback
     app.use(adminPath, (req, res, next) => {
@@ -113,23 +139,13 @@ module.exports = class AdminUI {
       adminPath,
       apiPath,
       graphiqlPath,
+      ...this.getAdminMeta(),
       ...this.keystone.getAdminMeta(),
     };
     const webpackMiddlewareConfig = {
       publicPath: adminPath,
       stats: 'minimal',
     };
-
-    const publicMiddleware = webpackDevMiddleware(
-      webpack(
-        getWebpackConfig({
-          // override lists so that schema and field views are excluded
-          adminMeta: { ...adminMeta, lists: {} },
-          entry: 'public',
-        })
-      ),
-      webpackMiddlewareConfig
-    );
 
     const secureMiddleware = webpackDevMiddleware(
       webpack(
@@ -141,13 +157,29 @@ module.exports = class AdminUI {
       webpackMiddlewareConfig
     );
 
-    // app.use(adminMiddleware);
-    app.use((req, res, next) => {
-      // TODO: Better security, should check some property of the user
-      return req.user
-        ? secureMiddleware(req, res, next)
-        : publicMiddleware(req, res, next);
-    });
+    if (config.authStrategy) {
+      const publicMiddleware = webpackDevMiddleware(
+        webpack(
+          getWebpackConfig({
+            // override lists so that schema and field views are excluded
+            adminMeta: { ...adminMeta, lists: {} },
+            entry: 'public',
+          })
+        ),
+        webpackMiddlewareConfig
+      );
+
+      // app.use(adminMiddleware);
+      app.use((req, res, next) => {
+        // TODO: Better security, should check some property of the user
+        return req.user
+          ? secureMiddleware(req, res, next)
+          : publicMiddleware(req, res, next);
+      });
+    } else {
+      // No auth required? Everyone can access the "secure" area
+      app.use(secureMiddleware);
+    }
 
     // handle errors
     // eslint-disable-next-line no-unused-vars

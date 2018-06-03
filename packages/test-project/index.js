@@ -36,7 +36,7 @@ const keystone = new Keystone({
   name: 'Test Project',
 });
 
-keystone.createAuthStrategy({
+const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
 });
@@ -116,7 +116,7 @@ keystone.createList('PostCategory', {
   },
 });
 
-const admin = new AdminUI(keystone, '/admin');
+const admin = new AdminUI(keystone, { adminPath: '/admin', authStrategy });
 
 const server = new WebServer(keystone, {
   'cookie secret': 'qwerty',
