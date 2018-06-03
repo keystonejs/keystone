@@ -15,7 +15,7 @@
     "cypress:run": "cypress run",
     "cypress:open": "cypress open",
     "lint": "yarn prettier_lint && yarn eslint",
-    "test": "yarn lint && yarn jest",
+    "test": "yarn lint && yarn jest && yarn cypress:run",
     "test:all": "yarn test && yarn cypress:run",
     "coverage": "jest --coverage --collectCoverageFrom=packages/**/*.{js}"
   },
@@ -41,6 +41,7 @@
     "body-parser": "^1.18.2",
     "cloudinary": "^1.11.0",
     "cors": "^2.8.4",
+    "cross-fetch": "^2.2.0",
     "cuid": "^2.1.1",
     "dotenv-safe": "^5.0.1",
     "emotion": "^9.1.1",
