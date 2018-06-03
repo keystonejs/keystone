@@ -1,4 +1,4 @@
-describe('Filter', () => {
+describe('Columns', () => {
   [
     {
       url: 'http://localhost:3000/admin/users',
@@ -22,7 +22,7 @@ describe('Filter', () => {
       disable: ['Name'], // can't do all filters here as there needs to be at least one filter enabled
     },
   ].forEach(({ url, enable, disable }) => {
-    it(`Testing all filters in ${url}`, () => {
+    it(`Testing all columns in ${url}`, () => {
       cy.visit(url);
       cy.get('button:contains("Columns")').click();
 
