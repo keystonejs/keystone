@@ -72,7 +72,7 @@ describe('Editing data', () => {
       },
     },
   ].forEach(({ section, url, field }) => {
-    it(`Edditing data in ${section}`, () => {
+    it(`Editing data in ${section}`, () => {
       cy.visit(url);
 
       cy.get(`a:contains("${field.value}"):first`).click();
@@ -105,13 +105,12 @@ describe('Deleting data', () => {
       item: 'Our category',
     },
   ].forEach(({ section, url, item }) => {
-    it(`Adding data to ${section}`, () => {
+    it(`Deleting data to ${section}`, () => {
       cy.visit(url);
 
       cy.get(`a:contains("${item}"):first`).click();
       cy.get('button:contains("Delete"):first').click();
       cy.get('body:last footer button:first').click();
-      cy.get(`nav a:contains("${section}")`).click();
       cy.get('body').should('not.contain', item);
     });
   });
