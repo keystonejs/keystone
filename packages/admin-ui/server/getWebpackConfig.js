@@ -4,24 +4,48 @@ const path = require('path');
 
 const { mode } = require('./env');
 
-module.exports = function({ adminMeta, adminPath, apiPath, graphiqlPath }) {
+module.exports = function({ adminMeta, entry }) {
+  const rules = [
+    {
+      test: /\.js$/,
+      exclude: [/node_modules(?!\/@keystone\/)/],
+      use: [
+        {
+          loader: 'babel-loader',
+        },
+      ],
+    },
+    {
+      test: /\.(png|svg|jpg|gif)$/,
+      use: ['file-loader'],
+    },
+  ];
+  if (adminMeta.lists) {
+    rules.push({
+      test: /FIELD_TYPES/,
+      use: [
+        {
+          loader: '@keystone/field-views-loader',
+          options: {
+            adminMeta,
+          },
+        },
+      ],
+    });
+  }
   return {
     mode,
     context: path.resolve(__dirname, '../client/'),
     devtool: mode === 'development' ? 'inline-source-map' : undefined,
-    entry: './index.js',
+    entry: `./${entry}.js`,
     output: {
-      filename: 'bundle.js',
-      publicPath: adminPath,
+      filename: `${entry}.js`,
+      publicPath: adminMeta.adminPath,
     },
     plugins: [
       new webpack.DefinePlugin({
-        KEYSTONE_ADMIN_META: JSON.stringify({
-          adminPath,
-          apiPath,
-          graphiqlPath,
-          ...adminMeta,
-        }),
+        IS_PUBLIC_BUNDLE: entry === 'public',
+        KEYSTONE_ADMIN_META: JSON.stringify(adminMeta),
       }),
       new HtmlWebpackPlugin({
         title: 'KeystoneJS',
@@ -29,32 +53,7 @@ module.exports = function({ adminMeta, adminPath, apiPath, graphiqlPath }) {
       }),
     ],
     module: {
-      rules: [
-        {
-          test: /\.js$/,
-          exclude: [/node_modules(?!\/@keystone\/)/],
-          use: [
-            {
-              loader: 'babel-loader',
-            },
-          ],
-        },
-        {
-          test: /\.(png|svg|jpg|gif)$/,
-          use: ['file-loader'],
-        },
-        {
-          test: /FIELD_TYPES/,
-          use: [
-            {
-              loader: '@keystone/field-views-loader',
-              options: {
-                adminMeta,
-              },
-            },
-          ],
-        },
-      ],
+      rules,
     },
   };
 };

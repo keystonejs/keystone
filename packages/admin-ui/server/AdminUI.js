@@ -100,26 +100,54 @@ module.exports = class AdminUI {
 
   createDevMiddleware() {
     const app = express();
+    const { adminPath, apiPath, graphiqlPath } = this;
 
     // ensure any non-resource requests are rewritten for history api fallback
-    app.use(this.adminPath, (req, res, next) => {
+    app.use(adminPath, (req, res, next) => {
       if (/^[\w\/\-]+$/.test(req.url)) req.url = '/';
       next();
     });
 
     // add the webpack dev middleware
-    const webpackConfig = getWebpackConfig({
-      adminMeta: this.keystone.getAdminMeta(),
-      adminPath: this.adminPath,
-      apiPath: this.apiPath,
-      graphiqlPath: this.graphiqlPath,
-    });
-    const compiler = webpack(webpackConfig);
-    this.webpackMiddleware = webpackDevMiddleware(compiler, {
-      publicPath: webpackConfig.output.publicPath,
+    const adminMeta = {
+      adminPath,
+      apiPath,
+      graphiqlPath,
+      ...this.keystone.getAdminMeta(),
+    };
+    const webpackMiddlewareConfig = {
+      publicPath: adminPath,
       stats: 'minimal',
+    };
+
+    const publicMiddleware = webpackDevMiddleware(
+      webpack(
+        getWebpackConfig({
+          // override lists so that schema and field views are excluded
+          adminMeta: { ...adminMeta, lists: {} },
+          entry: 'public',
+        })
+      ),
+      webpackMiddlewareConfig
+    );
+
+    const secureMiddleware = webpackDevMiddleware(
+      webpack(
+        getWebpackConfig({
+          adminMeta,
+          entry: 'index',
+        })
+      ),
+      webpackMiddlewareConfig
+    );
+
+    // app.use(adminMiddleware);
+    app.use((req, res, next) => {
+      // TODO: Better security, should check some property of the user
+      return req.user
+        ? secureMiddleware(req, res, next)
+        : publicMiddleware(req, res, next);
     });
-    app.use(this.webpackMiddleware);
 
     // handle errors
     // eslint-disable-next-line no-unused-vars
