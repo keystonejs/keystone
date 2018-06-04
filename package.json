@@ -71,6 +71,7 @@
     "pluralize": "^7.0.0",
     "prettier": "^1.12.1",
     "prop-types": "^15.6.1",
+    "qs": "^6.5.2",
     "raf-schd": "^2.1.1",
     "react": "^16.3.1",
     "react-apollo": "^2.1.3",
@@ -88,7 +89,8 @@
     "react-transition-group": "^2.3.1",
     "to-pascal-case": "^1.0.0",
     "webpack": "^4.5.0",
-    "webpack-dev-middleware": "^3.1.2"
+    "webpack-dev-middleware": "^3.1.2",
+    "xss": "^1.0.3"
   },
   "prettier": {
     "proseWrap": "preserve",

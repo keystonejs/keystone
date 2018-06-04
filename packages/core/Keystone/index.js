@@ -1,3 +1,4 @@
+const { resolveAllKeys } = require('@keystonejs/utils');
 const inflection = require('inflection');
 const { makeExecutableSchema } = require('graphql-tools');
 const { Mongoose } = require('mongoose');
@@ -170,30 +171,25 @@ module.exports = class Keystone {
     // reference implementation
 
     // Return a promise that resolves to an array of the created items
-    const asyncCreateItems = listKey =>
-      Promise.all(lists[listKey].map(i => this.createItem(listKey, i)));
+    const asyncCreateItems = listKey => {
+      if (!this.getListByKey(listKey)) {
+        return Promise.reject(
+          `Cannot create items for unknown list '${listKey}'. Configured lists are: ${Object.keys(
+            this.lists
+          ).join(', ')}`
+        );
+      }
+      return Promise.all(lists[listKey].map(i => this.createItem(listKey, i)));
+    };
 
-    // We're going to have to wait for a set of unrelated promises to fullfil
-    // before we can return from this method
-    const promisesToWaitFor = [];
-
-    // We'll reduce the async values to this object over time
-    const createdItems = {};
-
-    Object.keys(lists).forEach(key => {
-      const listItems = asyncCreateItems(key);
-
-      // Add the promise to the global set to wait for
-      promisesToWaitFor.push(listItems);
-
-      // When it resolves, we want to set the values on the result object
-      listItems.then(newItems => {
-        createdItems[key] = newItems;
-      });
-    });
-
-    // Wait for all promises to complete.
-    // Then resolve to the object containing the resolved arrays of values
-    return Promise.all(promisesToWaitFor).then(() => createdItems);
+    return resolveAllKeys(
+      Object.keys(lists).reduce(
+        (result, listKey) => ({
+          [listKey]: asyncCreateItems(listKey),
+          ...result,
+        }),
+        {}
+      )
+    );
   }
 };

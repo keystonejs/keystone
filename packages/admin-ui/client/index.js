@@ -14,7 +14,8 @@ import AdminMetaProvider from './providers/AdminMeta';
 import apolloClient from './providers/apolloClient';
 
 import HomePage from './pages/Home';
-import SessionPage from './pages/Session';
+import SigninPage from './pages/Signin';
+import SignedoutPage from './pages/Signedout';
 import ListPage from './pages/List';
 import ListNotFoundPage from './pages/ListNotFound';
 import ItemPage from './pages/Item';
@@ -38,8 +39,13 @@ const Keystone = () => (
                   />
                   <Route
                     exact
-                    path={`${adminPath}/signin`}
-                    render={() => <SessionPage {...adminMeta} />}
+                    path={adminMeta.signinUrl}
+                    render={() => <SigninPage {...adminMeta} />}
+                  />
+                  <Route
+                    exact
+                    path={adminMeta.signoutUrl}
+                    render={() => <SignedoutPage {...adminMeta} />}
                   />
                   <Route
                     exact

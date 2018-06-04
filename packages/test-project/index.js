@@ -36,11 +36,6 @@ const keystone = new Keystone({
   name: 'Test Project',
 });
 
-keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-});
-
 const fileAdapter = new LocalFileAdapter({
   directory: LOCAL_FILE_PATH,
   route: LOCAL_FILE_ROUTE,
@@ -116,7 +111,15 @@ keystone.createList('PostCategory', {
   },
 });
 
-const admin = new AdminUI(keystone, '/admin');
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuthStrategy,
+  list: 'User',
+});
+
+const admin = new AdminUI(keystone, {
+  adminPath: '/admin',
+  // authStrategy, // uncomment to enable authentication on the Admin UI (NOT the GraphQL API)
+});
 
 const server = new WebServer(keystone, {
   'cookie secret': 'qwerty',
@@ -134,53 +137,6 @@ server.app.use(
     valid: ({ req, item }) => (req.user = item),
   })
 );
-
-server.app.get('/api/session', (req, res) => {
-  const data = {
-    signedIn: !!req.session.keystoneItemId,
-    userId: req.session.keystoneItemId,
-  };
-  if (req.user) {
-    Object.assign(data, {
-      name: req.user.name,
-      twitterId: req.user.twitterId,
-      twitterUsername: req.user.twitterUsername,
-    });
-  }
-  res.json(data);
-});
-
-server.app.get('/api/signin', async (req, res, next) => {
-  try {
-    const result = await keystone.auth.User.password.validate({
-      username: req.query.username,
-      password: req.query.password,
-    });
-    if (!result.success) {
-      return res.json({
-        success: false,
-      });
-    }
-    await keystone.session.create(req, result);
-    res.json({
-      success: true,
-      itemId: result.item.id,
-    });
-  } catch (e) {
-    next(e);
-  }
-});
-
-server.app.get('/api/signout', async (req, res, next) => {
-  try {
-    await keystone.session.destroy(req);
-    res.json({
-      success: true,
-    });
-  } catch (e) {
-    next(e);
-  }
-});
 
 server.app.get('/reset-db', (req, res) => {
   const reset = async () => {

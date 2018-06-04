@@ -4,7 +4,13 @@ const path = require('path');
 
 const { mode } = require('./env');
 
-module.exports = function({ adminMeta, adminPath, apiPath, graphiqlPath }) {
+module.exports = function({
+  publicPath,
+  adminMeta,
+  adminPath,
+  apiPath,
+  graphiqlPath,
+}) {
   return {
     mode,
     context: path.resolve(__dirname, '../client/'),
@@ -12,7 +18,10 @@ module.exports = function({ adminMeta, adminPath, apiPath, graphiqlPath }) {
     entry: './index.js',
     output: {
       filename: 'bundle.js',
-      publicPath: adminPath,
+      publicPath,
+    },
+    devServer: {
+      historyApiFallback: true,
     },
     plugins: [
       new webpack.DefinePlugin({
