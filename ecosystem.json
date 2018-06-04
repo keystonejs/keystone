@@ -16,7 +16,7 @@
       "user": "nodeuser",
       "host": "breville.ec2.staging.thinkmill.cloud",
       "path": "/srv/apps/breville-askdave-api",
-      "ref": "origin/breville",
+      "ref": "origin/fix/routing",
       "repo": "git@breville-askdave-api.github.com:Thinkmill/breville-askdave-api.git",
       "post-deploy": "npm install && npm run heroku-postbuild && pm2 startOrGracefulReload ecosystem.json && pm2 save"
     },
