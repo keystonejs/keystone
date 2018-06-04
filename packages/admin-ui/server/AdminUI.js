@@ -112,19 +112,26 @@ module.exports = class AdminUI {
 
     const app = express();
 
-    const sessionHandler = sessionMiddleware || session({
-      secret: cookieSecret,
-      resave: false,
-      saveUninitialized: false,
-      name: 'keystone-admin.sid',
-    });
+    const sessionHandler =
+      sessionMiddleware ||
+      session({
+        secret: cookieSecret,
+        resave: false,
+        saveUninitialized: false,
+        name: 'keystone-admin.sid',
+      });
 
     // Add session tracking
     app.use(this.adminPath, sessionHandler);
 
     // Listen to POST events for form signin form submission (GET falls through
     // to the webpack server(s))
-    app.post(this.config.signinPath, bodyParser.json(), bodyParser.urlencoded(), this.signin);
+    app.post(
+      this.config.signinPath,
+      bodyParser.json(),
+      bodyParser.urlencoded(),
+      this.signin
+    );
 
     // Listen to both POST and GET events, and always sign the user out.
     app.use(this.config.signoutPath, this.signout);
@@ -142,9 +149,7 @@ module.exports = class AdminUI {
     // Short-circuit GET requests when the user already signed in (avoids
     // downloading UI bundle, doing a client side redirect, etc)
     app.get(this.config.signinPath, (req, res, next) => {
-      return req.user
-        ? this.redirectSuccessfulSignin(req, res)
-        : next();
+      return req.user ? this.redirectSuccessfulSignin(req, res) : next();
     });
 
     return app;

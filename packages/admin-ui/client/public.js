@@ -21,7 +21,7 @@ const Keystone = () => (
     <ToastProvider>
       <OfflineListener />
       <AdminMetaProvider>
-        {adminMeta => (
+        {adminMeta =>
           adminMeta.withAuth ? (
             <BrowserRouter>
               <Switch>
@@ -33,8 +33,10 @@ const Keystone = () => (
                 <Route render={() => <SigninPage {...adminMeta} />} />
               </Switch>
             </BrowserRouter>
-          ) : <InvalidRoutePage {...adminMeta} />
-        )}
+          ) : (
+            <InvalidRoutePage {...adminMeta} />
+          )
+        }
       </AdminMetaProvider>
     </ToastProvider>
   </ApolloProvider>

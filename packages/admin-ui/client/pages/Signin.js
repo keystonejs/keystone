@@ -56,11 +56,7 @@ export default ({ signinPath }) => (
           <FieldLabel>Password</FieldLabel>
           <Input type="password" name="password" />
         </Fields>
-        <Button
-          appearance="primary"
-          style={{ marginRight: 16 }}
-          type="submit"
-        >
+        <Button appearance="primary" style={{ marginRight: 16 }} type="submit">
           Sign In
         </Button>
       </div>
