@@ -116,7 +116,10 @@ keystone.createList('PostCategory', {
   },
 });
 
-const admin = new AdminUI(keystone, { adminPath: '/admin', authStrategy });
+const admin = new AdminUI(keystone, {
+  adminPath: '/admin',
+  // authStrategy, // uncomment to enable authentication (disabled for ease of running tests)
+});
 
 const server = new WebServer(keystone, {
   'cookie secret': 'qwerty',
