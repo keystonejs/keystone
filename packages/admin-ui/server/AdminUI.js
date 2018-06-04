@@ -223,9 +223,23 @@ module.exports = class AdminUI {
           ? secureMiddleware(req, res, next)
           : publicMiddleware(req, res, next);
       });
+
+      this.stopDevServer = () => {
+        return new Promise(resolve => {
+          publicMiddleware.close(() => {
+            secureMiddleware.close(resolve);
+          });
+        });
+      };
     } else {
       // No auth required? Everyone can access the "secure" area
       app.use(secureMiddleware);
+
+      this.stopDevServer = () => {
+        return new Promise(resolve => {
+          secureMiddleware.close(resolve);
+        });
+      };
     }
 
     // handle errors

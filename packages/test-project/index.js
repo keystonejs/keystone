@@ -36,6 +36,7 @@ const keystone = new Keystone({
   name: 'Test Project',
 });
 
+// eslint-disable-next-line no-unused-vars
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
