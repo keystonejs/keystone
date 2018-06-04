@@ -24,7 +24,7 @@ const keystone = new Keystone({
   name: 'breville-askdave',
 });
 
-keystone.createAuthStrategy({
+const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
 });
@@ -124,7 +124,10 @@ keystone.createList('Answer', {
   },
 });
 
-const admin = new AdminUI(keystone, '/admin');
+const admin = new AdminUI(keystone, {
+  adminPath: '/admin',
+  authStrategy,
+});
 
 const server = new WebServer(keystone, {
   'cookie secret': 'qwerty',
@@ -133,72 +136,11 @@ const server = new WebServer(keystone, {
   port,
 });
 
-server.app.use(
-  keystone.session.validate({
-    valid: ({ req, item }) => (req.user = item),
-  })
-);
-
-server.app.get('/api/session', (req, res) => {
-  const data = {
-    signedIn: !!req.session.keystoneItemId,
-    userId: req.session.keystoneItemId,
-  };
-  if (req.user) {
-    Object.assign(data, {
-      name: req.user.name,
-    });
-  }
-  res.json(data);
-});
-
-server.app.get('/api/signin', async (req, res, next) => {
-  try {
-    const result = await keystone.auth.User.password.validate({
-      username: req.query.username,
-      password: req.query.password,
-    });
-    if (!result.success) {
-      return res.json({
-        success: false,
-      });
-    }
-    await keystone.session.create(req, result);
-    res.json({
-      success: true,
-      itemId: result.item.id,
-    });
-  } catch (e) {
-    next(e);
-  }
-});
-
-server.app.get('/api/signout', async (req, res, next) => {
-  try {
-    await keystone.session.destroy(req);
-    res.json({
-      success: true,
-    });
-  } catch (e) {
-    next(e);
-  }
-});
-
-// server.app.get('/reset-db', (req, res) => {
-//   const reset = async () => {
-//     await keystone.mongoose.connection.dropDatabase();
-//     await keystone.createItems(initialData);
-//     res.redirect(admin.adminPath);
-//   };
-//   reset();
-// });
-
 async function start() {
   keystone.connect();
   server.start();
   const users = await keystone.lists.User.model.find();
   if (!users.length) {
-    await keystone.mongoose.connection.dropDatabase();
     await keystone.createItems(initialData);
   }
 }

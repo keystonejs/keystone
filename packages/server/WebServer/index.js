@@ -16,9 +16,6 @@ module.exports = class WebServer {
 
     if (adminUI) {
       this.app.use(cors());
-      this.app.use(adminUI.createSessionMiddleware({ cookieSecret }));
-      this.app.use(adminUI.createGraphQLMiddleware());
-      this.app.use(adminUI.createDevMiddleware());
     }
 
     // TODO: think more about how this should be configured and defaulted
@@ -33,15 +30,24 @@ module.exports = class WebServer {
         })
       );
     }
+
   }
   start() {
     const {
       app,
-      config: { port },
+      config: { port, adminUI, cookieSecret, session },
     } = this;
+
+    if (adminUI) {
+      app.use(adminUI.createSessionMiddleware({ cookieSecret }));
+      app.use(adminUI.createGraphQLMiddleware());
+      app.use(adminUI.createDevMiddleware());
+    }
+
     app.get('/', (req, res) =>
       res.sendFile(path.resolve(__dirname, './default.html'))
     );
+
     app.listen(port, () => {
       console.log(`KeystoneJS 5 ready on port ${port}`);
     });
