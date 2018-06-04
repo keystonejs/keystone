@@ -49,29 +49,53 @@ module.exports = class AdminUI {
         username: req.body.username,
         password: req.body.password,
       });
+
       if (!result.success) {
-        return res.json({
-          success: false,
+        // TODO - include some sort of error in the page
+        const htmlResponse = () => res.redirect(this.config.signinPath);
+        return res.format({
+          default: htmlResponse,
+          'text/html': htmlResponse,
+          'application/json': () => res.json({ success: false }),
         });
       }
+
       await this.keystone.session.create(req, result);
-      res.json({
-        success: true,
-      });
     } catch (e) {
-      next(e);
+      return next(e);
     }
+
+    return this.redirectSuccessfulSignin(req, res);
+  }
+
+  redirectSuccessfulSignin(req, res) {
+    const htmlResponse = () => res.redirect(this.config.adminPath);
+    return res.format({
+      default: htmlResponse,
+      'text/html': htmlResponse,
+      'application/json': () => res.json({ success: true }),
+    });
   }
 
   async signout(req, res, next) {
+    let success;
     try {
       await this.keystone.session.destroy(req);
-      res.json({
-        success: true,
-      });
+      success = true;
     } catch (e) {
-      next(e);
+      success = false;
+      // TODO: Better error logging?
+      console.error(e);
     }
+
+    // NOTE: Because session is destroyed here, before webpack can handle the
+    // request, the "public" bundle will load the "signed out" page
+    const htmlResponse = () => next();
+    return res.format({
+      default: htmlResponse,
+      'text/html': htmlResponse,
+      'application/json': () => res.json({ success }),
+    });
   }
 
   session(req, res) {
@@ -95,16 +119,34 @@ module.exports = class AdminUI {
       name: 'keystone-admin.sid',
     });
 
-    // implement session management
+    // Add session tracking
     app.use(this.adminPath, sessionHandler);
-    app.post(`${this.apiPath}/signin`, bodyParser.json(), this.signin);
-    app.post(`${this.apiPath}/signout`, this.signout);
+
+    // Listen to POST events for form signin form submission (GET falls through
+    // to the webpack server(s))
+    app.post(this.config.signinPath, bodyParser.json(), bodyParser.urlencoded(), this.signin);
+
+    // Listen to both POST and GET events, and always sign the user out.
+    app.use(this.config.signoutPath, this.signout);
+
+    // Attach the user to the request for all following route handlers
     app.use(
       this.keystone.session.validate({
         valid: ({ req, item }) => (req.user = item),
       })
     );
-    app.get(`${this.apiPath}/session`, this.session);
+
+    // Allow clients to AJAX for user info
+    app.get(this.config.sessionPath, this.session);
+
+    // Short-circuit GET requests when the user already signed in (avoids
+    // downloading UI bundle, doing a client side redirect, etc)
+    app.get(this.config.signinPath, (req, res, next) => {
+      return req.user
+        ? this.redirectSuccessfulSignin(req, res)
+        : next();
+    });
+
     return app;
   }
 
