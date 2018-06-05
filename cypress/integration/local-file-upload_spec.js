@@ -1,4 +1,8 @@
 describe('Adding a file', function() {
+  before(() => {
+    cy.visit('http://localhost:3000/reset-db');
+  });
+
   it('should upload a file with success', function() {
     return cy
       .graphql_query(

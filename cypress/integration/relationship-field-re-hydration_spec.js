@@ -1,5 +1,6 @@
 describe('Testing re-hydration', () => {
   before(() => {
+    cy.visit('http://localhost:3000/reset-db');
     cy.visit('http://localhost:3000/admin/posts');
     cy.get('button[appearance="create"]').click();
     cy

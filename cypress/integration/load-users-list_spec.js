@@ -1,4 +1,8 @@
 describe('Loading User item', function() {
+  before(() => {
+    cy.visit('http://localhost:3000/reset-db');
+  });
+
   it('should show users name', function() {
     return cy
       .graphql_query(
