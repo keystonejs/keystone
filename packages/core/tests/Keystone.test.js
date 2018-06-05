@@ -147,6 +147,8 @@ describe('Keystone.createItems()', () => {
     // mock the lists
     keystone.lists = lists;
 
+    setupMocks(keystone);
+
     await keystone.createItems({
       User: [{ name: 'Jess' }, { name: 'Lauren' }],
       Post: [{ title: 'Hello world' }, { title: 'Goodbye' }],

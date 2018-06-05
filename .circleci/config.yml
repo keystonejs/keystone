@@ -64,10 +64,15 @@ jobs:
             CLOUDINARY_KEY: $CLOUDINARY_KEY
             CLOUDINARY_SECRET: $CLOUDINARY_SECRET
             PORT: 3000
+      - run:
+          name: Merge reports
+          command: |
+            [ -d "projects/basic/cypress/reports" ] && `yarn bin`/junit-merge -d projects/basic/cypress/reports -C -o projects/basic/cypress/reports/merged/cypress/report.xml || true
+          when: always
       - store_test_results:
-          path: reports/junit
+          path: projects/basic/cypress/reports/merged
       - store_artifacts:
-          path: reports/junit
+          path: projects/basic/cypress/reports/merged
       - store_artifacts:
           path: projects/basic/cypress/videos
       - store_artifacts:
@@ -88,10 +93,15 @@ jobs:
           command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt ws run cypress:run:ci --only-fs projects/login
           environment:
             PORT: 4000
+      - run:
+          name: Merge reports
+          command: |
+            [ -d "projects/login/cypress/reports" ] && `yarn bin`/junit-merge -d projects/login/cypress/reports -C -o projects/login/cypress/reports/merged/cypress/report.xml || true
+          when: always
       - store_test_results:
-          path: reports/junit
+          path: projects/login/cypress/reports/merged
       - store_artifacts:
-          path: reports/junit
+          path: projects/login/cypress/reports/merged
       - store_artifacts:
           path: projects/login/cypress/videos
       - store_artifacts:
@@ -114,14 +124,48 @@ jobs:
             TWITTER_APP_KEY: $TWITTER_APP_KEY
             TWITTER_APP_SECRET: $TWITTER_APP_SECRET
             PORT: 3010
+      - run:
+          name: Merge reports
+          command: |
+            [ -d "projects/twitter-login/cypress/reports" ] && `yarn bin`/junit-merge -d projects/twitter-login/cypress/reports -C -o projects/twitter-login/cypress/reports/merged/cypress/report.xml || true
+          when: always
       - store_test_results:
-          path: reports/junit
+          path: projects/twitter-login/cypress/reports/merged
       - store_artifacts:
-          path: reports/junit
+          path: projects/twitter-login/cypress/reports/merged
       - store_artifacts:
           path: projects/twitter-login/cypress/videos
       - store_artifacts:
           path: projects/twitter-login/cypress/screenshots
+
+  integration_tests_accesscontrol:
+    <<: *job-setup
+    steps:
+      - checkout
+      - restore_cache: *restore-cache
+      - run: sudo yarn global add bolt
+      - run:
+          name: Bolt - Install packages
+          command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
+      - save_cache: *save-cache
+      - run:
+          name: Access Control E2E tests
+          command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt ws run cypress:run:ci --only-fs projects/access-control
+          environment:
+            PORT: 4000
+      - run:
+          name: Merge reports
+          command: |
+            [ -d "projects/access-control/cypress/reports" ] && `yarn bin`/junit-merge -d projects/access-control/cypress/reports -C -o projects/access-control/cypress/reports/merged/cypress/report.xml || true
+          when: always
+      - store_test_results:
+          path: projects/access-control/cypress/reports/merged
+      - store_artifacts:
+          path: projects/access-control/cypress/reports/merged
+      - store_artifacts:
+          path: projects/access-control/cypress/videos
+      - store_artifacts:
+          path: projects/access-control/cypress/screenshots
 
 workflows:
   version: 2
@@ -131,3 +175,4 @@ workflows:
       - integration_tests_basic
       - integration_tests_login
       - integration_tests_twitterlogin
+      - integration_tests_accesscontrol

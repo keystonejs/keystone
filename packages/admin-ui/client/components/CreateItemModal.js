@@ -106,6 +106,7 @@ class CreateItemModal extends Component {
                 item={item}
                 field={field}
                 key={field.path}
+                itemErrors={[] /* TODO: Permission query results */}
                 onChange={this.onChange}
                 renderContext="dialog"
               />

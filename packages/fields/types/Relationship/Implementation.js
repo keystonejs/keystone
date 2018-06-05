@@ -148,6 +148,20 @@ class Select extends Implementation {
       `;
     }
   }
+  isGraphqlQueryArg(arg) {
+    if (this.config.many) {
+      return (
+        [
+          `${this.path}_every`,
+          `${this.path}_some`,
+          `${this.path}_none`,
+          `${this.path}_is_null`,
+        ].indexOf(arg) !== -1
+      );
+    } else {
+      return arg === this.path || arg === `${this.path}_is_null`;
+    }
+  }
   getGraphqlFieldResolvers() {
     const { many, ref } = this.config;
     return {

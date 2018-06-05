@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
-import { InfoIcon, TrashcanIcon } from '@keystonejs/icons';
+import { ShieldIcon, InfoIcon, TrashcanIcon } from '@keystonejs/icons';
 import { colors } from '@keystonejs/ui/src/theme';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { CheckboxPrimitive } from '@keystonejs/ui/src/primitives/forms';
@@ -76,6 +76,10 @@ const NoResults = ({ children, ...props }) => (
 // Functional Components
 
 class ListDisplayRow extends Component {
+  static defaultProps = {
+    itemErrors: {},
+  };
+
   state = {
     showDeleteModal: false,
   };
@@ -111,7 +115,7 @@ class ListDisplayRow extends Component {
     );
   }
   render() {
-    const { list, link, item, fields } = this.props;
+    const { list, link, item, itemErrors, fields } = this.props;
 
     return (
       <tr>
@@ -135,6 +139,21 @@ class ListDisplayRow extends Component {
           if (isLoading) {
             // TODO: Better loading state?
             return <BodyCell key={path} />;
+          }
+
+          if (
+            itemErrors[path] instanceof Error &&
+            itemErrors[path].name === 'AccessDeniedError'
+          ) {
+            return (
+              <BodyCell key={path}>
+                <ShieldIcon
+                  title={itemErrors[path].message}
+                  css={{ color: colors.N10 }}
+                />
+                <A11yText>{itemErrors[path].message}</A11yText>
+              </BodyCell>
+            );
           }
 
           let content;
@@ -271,6 +290,7 @@ export default class ListTable extends Component {
       fields,
       isManaging,
       items,
+      itemsErrors = [],
       list,
       noResultsMessage,
       onChange,
@@ -311,7 +331,7 @@ export default class ListTable extends Component {
           onMouseLeave={this.stopRowSelectOnEnter}
         >
           {items.map(
-            item =>
+            (item, itemIndex) =>
               isManaging ? (
                 <ListManageRow
                   fields={fields}
@@ -327,6 +347,7 @@ export default class ListTable extends Component {
                 <ListDisplayRow
                   fields={fields}
                   item={item}
+                  itemErrors={itemsErrors[itemIndex] || {}}
                   key={item.id}
                   link={({ path, id }) => `${adminPath}/${path}/${id}`}
                   list={list}

@@ -26,6 +26,9 @@ describe('Testing Login', () => {
   describe('Login failure', () => {
     it('Does not log in with empty credentials', () => {
       cy.visit('/admin');
+      // There's a race condition where the click handler for the button doesn't
+      // appear to be attached, so the form is not getting validated correctly
+      cy.wait(250);
       cy.get('button[type="submit"]').click();
       cy
         .get('body')
@@ -91,6 +94,16 @@ describe('Testing Login', () => {
   });
 
   describe('Login success', () => {
+    afterEach(() => {
+      // Cypress claims to clear cookies before each test, but it appears that
+      // the first test in the next describe block will continue to retain
+      // cookies from the `preserveOnce` call above. So we manually clear them
+      // now to avoid that.
+      // See: https://github.com/cypress-io/cypress/issues/781
+      cy.visit('/admin/signout');
+      cy.clearCookies();
+    });
+
     it('Logs in with valid credentials', () => {
       cy.visit('/admin');
 

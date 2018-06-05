@@ -76,6 +76,7 @@ class HomePage extends Component {
 }
 
 const ListProvider = ({ getListByKey, listKeys, ...props }) => {
+  // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
   const query = getQuery(lists);
 
@@ -83,13 +84,35 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
     <Fragment>
       <Nav />
       <DocTitle>Home</DocTitle>
-      <Query query={query} fetchPolicy="cache-and-network">
+      <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
         {({ data, error }) => {
+          let allowedLists = lists;
+
           if (error) {
-            return (
-              <PageError>
-                <p>{error.message}</p>
-              </PageError>
+            if (!error.graphQLErrors || !error.graphQLErrors.length) {
+              return (
+                <PageError>
+                  <p>{error.message}</p>
+                </PageError>
+              );
+            }
+
+            const deniedQueries = error.graphQLErrors
+              .filter(({ name }) => name === 'AccessDeniedError')
+              .map(({ path }) => path && path[0]);
+
+            if (deniedQueries.length !== error.graphQLErrors.length) {
+              // There were more than Access Denied Errors, so throw a normal
+              // error message
+              return (
+                <PageError>
+                  <p>{error.message}</p>
+                </PageError>
+              );
+            }
+
+            allowedLists = allowedLists.filter(
+              list => deniedQueries.indexOf(list.listQueryMetaName) === -1
             );
           }
 
@@ -98,7 +121,7 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
           // list component so we don't block rendering the lists immediately
           // to the user.
 
-          return <HomePage lists={lists} data={data} {...props} />;
+          return <HomePage lists={allowedLists} data={data} {...props} />;
         }}
       </Query>
     </Fragment>

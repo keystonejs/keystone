@@ -23,6 +23,23 @@ class Text extends Implementation {
       ${this.path}_not_in: [String!]
     `;
   }
+  isGraphqlQueryArg(arg) {
+    return (
+      [
+        this.path,
+        `${this.path}_case_sensitive`,
+        `${this.path}_not`,
+        `${this.path}_contains`,
+        `${this.path}_not_contains`,
+        `${this.path}_starts_with`,
+        `${this.path}_not_starts_with`,
+        `${this.path}_ends_with`,
+        `${this.path}_not_ends_with`,
+        `${this.path}_in`,
+        `${this.path}_not_in`,
+      ].indexOf(arg) !== -1
+    );
+  }
   getGraphqlUpdateArgs() {
     return `
       ${this.path}: String
