@@ -55,7 +55,11 @@ export default class RelationshipField extends Component {
                 return <Select key="loading" isDisabled isLoading={loading} />;
               }
               // TODO: better error UI
+              // TODO: Handle permission errors
+              // (ie; user has permission to read this relationship field, but
+              // not the related list, or some items on the list)
               if (error) return 'Error';
+
               const options = data[refList.listQueryName].map(listData => ({
                 value: listData,
                 label: listData._label_, // eslint-disable-line no-underscore-dangle
@@ -75,6 +79,7 @@ export default class RelationshipField extends Component {
               } else {
                 value = null;
               }
+
               return (
                 <Select
                   autoFocus={autoFocus}

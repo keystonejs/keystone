@@ -1,10 +1,12 @@
 const inflection = require('inflection');
+const { parseFieldAccess } = require('@keystonejs/access-control');
+const { testFieldAccessControl } = require('@keystonejs/access-control');
 
 class Field {
   constructor(
     path,
     config,
-    { getListByKey, listKey, listAdapter, fieldAdapterClass }
+    { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess }
   ) {
     this.path = path;
     this.config = config;
@@ -17,7 +19,15 @@ class Field {
       path,
       config
     );
+
+    this.access = parseFieldAccess({
+      listKey,
+      fieldKey: path,
+      defaultAccess,
+      access: config.access,
+    });
   }
+
   getGraphqlSchema() {
     if (!this.graphQLType) {
       throw new Error(
@@ -79,6 +89,10 @@ class Field {
   updateFieldPostHook() {}
 
   getGraphqlQueryArgs() {}
+  isGraphqlQueryArg(arg) {
+    return arg === this.path;
+  }
+  getGraphqlCreateArgs() {}
   getGraphqlUpdateArgs() {}
   getGraphqlFieldResolvers() {}
   getAdminMeta() {
@@ -86,11 +100,24 @@ class Field {
       label: this.label,
       path: this.path,
       type: this.constructor.name,
-      defaultValue: this.config.defaultValue,
+      defaultValue: this.getDefaultValue(),
     });
   }
   extendAdminMeta(meta) {
     return meta;
+  }
+  getDefaultValue() {
+    return this.config.defaultValue;
+  }
+  testAccessControl({ listKey, item, operation, authentication }) {
+    return testFieldAccessControl({
+      access: this.access,
+      item,
+      operation,
+      authentication,
+      fieldKey: this.path,
+      listKey,
+    });
   }
 }
 

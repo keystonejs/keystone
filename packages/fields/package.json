@@ -8,6 +8,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
+    "@keystonejs/access-control": "^5.0.0",
     "@keystonejs/adapter-mongoose": "^1.0.0",
     "@keystonejs/icons": "^1.0.0",
     "@keystonejs/ui": "^5.0.0",

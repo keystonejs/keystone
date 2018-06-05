@@ -5,7 +5,7 @@ import FieldTypes from '../FIELD_TYPES';
 const getCreateMutation = list => {
   const { key } = list;
   return gql`
-    mutation create($data: ${key}UpdateInput!) {
+    mutation create($data: ${key}CreateInput!) {
       ${list.createMutationName}(data: $data) {
         id
       }

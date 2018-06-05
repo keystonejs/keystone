@@ -22,6 +22,9 @@ class File extends Implementation {
   getGraphqlQueryArgs() {
     return '';
   }
+  isGraphqlQueryArg() {
+    return false;
+  }
   getFileUploadType() {
     return 'File_Upload';
   }

@@ -28,6 +28,7 @@ import { AutocompleteCaptor } from '@keystonejs/ui/src/primitives/forms';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import { resolveAllKeys } from '@keystonejs/utils';
+import isEqual from 'lodash/isEqual';
 
 // This import is loaded by the @keystone/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
@@ -48,7 +49,7 @@ const ItemId = styled.div({
   fontFamily: 'Monaco, Consolas, monospace',
   fontSize: '0.85em',
 });
-const Form = styled.div({
+const Form = styled.form({
   margin: '24px 0',
 });
 const TitleLink = ({ children, ...props }) => (
@@ -217,16 +218,28 @@ const ItemDetails = withRouter(
         onUpdate,
         toastManager,
         updateItem,
+        item: initialData,
       } = this.props;
 
       resolveAllKeys(
-        fields.reduce(
-          (values, field) => ({
+        fields.reduce((values, field) => {
+          const oldValue = field.getValue(initialData);
+          const newValue = field.getValue(item);
+
+          // Don't try to update anything that hasn't changed.
+          // This is particularly important for access control where a field
+          // may be `read: true, update: false`, so will appear in the item
+          // details, but is not editable, and would cause an error if a value
+          // was sent as part of the update query.
+          if (isEqual(oldValue, newValue)) {
+            return values;
+          }
+
+          return {
             [field.path]: field.getValue(item),
             ...values,
-          }),
-          {}
-        )
+          };
+        }, {})
       )
         .then(data => updateItem({ variables: { id: item.id, data } }))
         .then(() => {
@@ -279,6 +292,7 @@ const ItemDetails = withRouter(
         list,
         updateInProgress,
         updateErrorMessage,
+        item: initialData,
       } = this.props;
       const { copyText, item } = this.state;
       const isCopied = copyText === item.id;
@@ -328,6 +342,7 @@ const ItemDetails = withRouter(
                   autoFocus={!i}
                   field={field}
                   item={item}
+                  initialData={initialData}
                   key={field.path}
                   onChange={this.onChange}
                 />

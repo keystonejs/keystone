@@ -26,44 +26,60 @@ test('new Keystone()', () => {
     adapter: new MockAdapter(),
   };
   const keystone = new Keystone(config);
-  expect(keystone.config).toBe(config);
+  expect(keystone.config).toEqual(config);
 });
 
-test('Keystone.createList()', () => {
-  const config = {
-    adapter: new MockAdapter(),
-    name: 'Jest Test',
-  };
-  const keystone = new Keystone(config);
+describe('Keystone.createList()', () => {
+  test('basic', () => {
+    const config = {
+      adapter: new MockAdapter(),
+      name: 'Jest Test',
+    };
+    const keystone = new Keystone(config);
 
-  expect(keystone.lists).toEqual({});
-  expect(keystone.listsArray).toEqual([]);
+    expect(keystone.lists).toEqual({});
+    expect(keystone.listsArray).toEqual([]);
 
-  keystone.createList('User', {
-    fields: {
-      name: {
-        type: {
-          implementation: MockType,
-          views: {},
-          adapters: { mock: MockFieldAdapter },
+    keystone.createList('User', {
+      fields: {
+        name: {
+          type: {
+            implementation: MockType,
+            views: {},
+            adapters: { mock: MockFieldAdapter },
+          },
+        },
+        email: {
+          type: {
+            implementation: MockType,
+            views: {},
+            adapters: { mock: MockFieldAdapter },
+          },
         },
       },
-      email: {
-        type: {
-          implementation: MockType,
-          views: {},
-          adapters: { mock: MockFieldAdapter },
-        },
-      },
-    },
+    });
+
+    expect(keystone.lists).toHaveProperty('User');
+    expect(keystone.lists['User']).toBeInstanceOf(List);
+    expect(keystone.listsArray).toHaveLength(1);
+    expect(keystone.listsArray[0]).toBeInstanceOf(List);
+
+    expect(keystone.listsArray[0]).toBe(keystone.lists['User']);
   });
 
-  expect(keystone.lists).toHaveProperty('User');
-  expect(keystone.lists['User']).toBeInstanceOf(List);
-  expect(keystone.listsArray).toHaveLength(1);
-  expect(keystone.listsArray[0]).toBeInstanceOf(List);
+  describe('access control config', () => {
+    test.skip('expands shorthand acl config', () => {
+      expect(false).toBe(true);
+    });
 
-  expect(keystone.listsArray[0]).toBe(keystone.lists['User']);
+    test.skip('throws error when one of create/read/update/delete not set on object', () => {
+      expect(false).toBe(true);
+    });
+
+    test.skip('throws error when create/read/update/delete are not correct type', () => {
+      expect(false).toBe(true);
+    });
+  });
 });
 
 describe('Keystone.createItems()', () => {
@@ -146,6 +162,8 @@ describe('Keystone.createItems()', () => {
 
     // mock the lists
     keystone.lists = lists;
+
+    setupMocks(keystone);
 
     await keystone.createItems({
       User: [{ name: 'Jess' }, { name: 'Lauren' }],

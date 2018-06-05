@@ -1,0 +1,38 @@
+{
+  "name": "@keystonejs/cypress-project-access-control",
+  "private": true,
+  "version": "1.0.0",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "scripts": {
+    "start": "node -r dotenv-safe/config index.js",
+    "cypress:run:cmd": "node -r dotenv-safe/config `which cypress` run",
+    "cypress:open:cmd": "node -r dotenv-safe/config `which cypress` open",
+    "prepare-test-server": "NODE_ENV=test DISABLE_LOGGING=true node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.code) })'",
+    "cypress:run:ci": "touch .env && yarn prepare-test-server cypress:run:cmd",
+    "cypress:run": "if [ -f .env ]; then yarn prepare-test-server cypress:run:cmd; else echo \"\nError: Must create a projects/access-control/.env file.\nSee projects/access-control/.env.example for values\n\"; exit 1; fi",
+    "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a projects/access-control/.env file.\nSee projects/access-control/.env.example for values\n\"; exit 1; fi"
+  },
+  "dependencies": {
+    "@keystonejs/adapter-mongoose": "^1.0.0",
+    "@keystonejs/admin-ui": "^5.0.0",
+    "@keystonejs/core": "^5.0.0",
+    "@keystonejs/fields": "^5.0.0",
+    "@keystonejs/server": "^5.0.0",
+    "@keystonejs/ui": "^5.0.0",
+    "dotenv-safe": "^6.0.0",
+    "react": "^16.3.1"
+  },
+  "devDependencies": {
+    "cypress": "^3.0.2",
+    "execa": "0.10.0",
+    "mocha": "^3.1.2",
+    "mocha-junit-reporter": "^1.17.0",
+    "mocha-multi-reporters": "^1.1.7",
+    "mongoose": "^5.0.14",
+    "start-server-and-test": "^1.5.0"
+  }
+}

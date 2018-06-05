@@ -276,11 +276,11 @@ GraphQL Schema, and so on.
 In the examples below, the `name_contains: 'k'` syntax matches the
 `UserWhereInput` GraphQL type for the list.
 
-_NOTES:_ 
-1. For `read` operations, when the `GraphQLWhere` clause results in 0 items
-   returned, no error is returned.
-2. For `update`/`delete` operations, when the `GraphQLWhere` clause
-   results in 0 items, an `AccessDeniedError` is returned.
+_NOTES:_
+1. For singular `read`/`update`/`delete` operations, when the `GraphQLWhere`
+   clause results in 0 items, an `AccessDeniedError` is returned.
+2. For batch `read` operations (eg; `query { allUsers }`), when the
+   `GraphQLWhere` clause results in 0 items returned, no error is returned.
 3. For `create` operations, an `AccessDeniedError` is returned if the operation
    is set to / returns `false`
 

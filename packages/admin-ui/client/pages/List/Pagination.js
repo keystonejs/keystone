@@ -32,6 +32,7 @@ export default function ListPagination({
         onClick={onToggleManage}
         variant="ghost"
         style={{ marginRight: '0.5em' }}
+        data-test-name="manage"
       >
         Manage
       </IconButton>
