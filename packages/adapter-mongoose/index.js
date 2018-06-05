@@ -32,9 +32,7 @@ function getIdQueryConditions(args) {
     // _id is how it looks in the MongoDB
     conditions.push({ _id: { $eq: ObjectId(args.id) } });
   }
-  // id is how it looks in the schema
   if ('id_not' in args) {
-    // _id is how it looks in the MongoDB
     conditions.push({ _id: { $ne: ObjectId(args.id_not) } });
   }
   if ('id_in' in args) {
@@ -71,7 +69,12 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     );
     const db = this.mongoose.connection;
     db.on('error', console.error.bind(console, 'Mongoose connection error'));
-    db.once('open', () => console.log('Connection success'));
+    return new Promise(resolve => {
+      db.once('open', () => {
+        console.log('Connection success');
+        resolve();
+      });
+    });
   }
 
   close() {
@@ -287,6 +290,11 @@ class MongooseListAdapter extends BaseListAdapter {
       .exec()
       .then(data => {
         if (meta) {
+          // When there are no items, we get undefined back, so we simulate the
+          // normal result of 0 items.
+          if (!data[0]) {
+            return { count: 0 };
+          }
           return data[0];
         }
 

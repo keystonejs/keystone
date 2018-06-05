@@ -66,6 +66,7 @@ export default class ListManage extends Component<Props, State> {
               isDisabled={!hasSelected}
               onClick={this.openUpdateModal}
               variant="ghost"
+              data-test-name="update"
             >
               Update
             </IconButton>
@@ -76,6 +77,7 @@ export default class ListManage extends Component<Props, State> {
             isDisabled={!hasSelected}
             onClick={this.openDeleteModal}
             variant="ghost"
+            data-test-name="delete"
           >
             Delete
           </IconButton>

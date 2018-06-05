@@ -1,3 +1,4 @@
+const GraphQLJSON = require('graphql-type-json');
 const { makeExecutableSchema } = require('graphql-tools');
 const { resolveAllKeys } = require('@keystonejs/utils');
 
@@ -17,7 +18,10 @@ const trim = str => str.replace(/\n\s*\n/g, '\n');
 
 module.exports = class Keystone {
   constructor(config) {
-    this.config = config;
+    this.config = {
+      ...config,
+    };
+    this.defaultAccess = { list: true, field: true, ...config.defaultAccess };
     this.auth = {};
     this.lists = {};
     this.listsArray = [];
@@ -50,6 +54,8 @@ module.exports = class Keystone {
     const list = new List(key, config, {
       getListByKey,
       adapter: adapters[adapterName],
+      defaultAccess: this.defaultAccess,
+      getAuth: () => this.auth[key],
     });
     this.lists[key] = list;
     this.listsArray.push(list);
@@ -75,7 +81,20 @@ module.exports = class Keystone {
   getAdminMeta() {
     const { name } = this.config;
     const lists = this.listsArray.reduce((acc, list) => {
-      acc[list.key] = list.getAdminMeta();
+      // We've consciously made a design choice that the `read` permission on a
+      // list is a master switch in the Admin UI (not the GraphQL API).
+      // Justification: If you want to Create without the Read permission, you
+      // technically don't have permission to read the result of your creation.
+      // If you want to Update an item, you can't see what the current values
+      // are. If you want to delete an item, you'd need to be given direct
+      // access to it (direct URI), but can't see anything about that item. And
+      // in fact, being able to load a page with a 'delete' button on it
+      // violates the read permission as it leaks the fact that item exists.
+      // In all these cases, the Admin UI becomes unnecessarily complex.
+      // So we only allow all these actions if you also have read access.
+      if (list.access.read) {
+        acc[list.key] = list.getAdminMeta();
+      }
       return acc;
     }, {});
 
@@ -85,11 +104,44 @@ module.exports = class Keystone {
     let listTypes = flatten(
       this.listsArray.map(list => list.getAdminGraphqlTypes())
     ).map(trim);
+
     listTypes.push(`
+      # NOTE: Can be JSON, or a Boolean/Int/String
+      # Why not a union? GraphQL doesn't support a union including a scalar
+      # (https://github.com/facebook/graphql/issues/215)
+      scalar JSON
+    `);
+
+    listTypes.push(`
+      type _ListAccess {
+        # Access Control settings for the currently logged in (or anonymous)
+        # user when performing 'create' operations.
+        # NOTE: 'create' can only return a Boolean.
+        # It is not possible to specify a declarative Where clause for this
+        # operation
+        create: Boolean
+
+        # Access Control settings for the currently logged in (or anonymous)
+        # user when performing 'read' operations.
+        read: JSON
+
+        # Access Control settings for the currently logged in (or anonymous)
+        # user when performing 'update' operations.
+        update: JSON
+
+        # Access Control settings for the currently logged in (or anonymous)
+        # user when performing 'delete' operations.
+        delete: JSON
+      }
+
+      type _ListMeta {
+        access: _ListAccess
+      }
+
       type _QueryMeta {
         count: Int
       }
-      `);
+    `);
 
     // Fields can be represented multiple times within and between lists.
     // If a field defines a `getGraphqlAuxiliaryTypes()` method, it will be
@@ -116,6 +168,25 @@ module.exports = class Keystone {
         ${mutations.join('')}
       }
     `;
+
+    const queryMetaResolver = {
+      // meta is passed in from the list's resolver (eg; '_allUsersMeta')
+      count: meta => meta.getCount(),
+    };
+
+    const listMetaResolver = {
+      // meta is passed in from the list's resolver (eg; '_allUsersMeta')
+      access: meta => meta.getAccess(),
+    };
+
+    const listAccessResolver = {
+      // access is passed in from the listMetaResolver
+      create: access => access.getCreate(),
+      read: access => access.getRead(),
+      update: access => access.getUpdate(),
+      delete: access => access.getDelete(),
+    };
+
     if (debugGraphQLSchemas()) {
       console.log(typeDefs);
       listTypes.forEach(i => console.log(i));
@@ -137,6 +208,13 @@ module.exports = class Keystone {
         }),
         {}
       ),
+
+      JSON: GraphQLJSON,
+
+      _QueryMeta: queryMetaResolver,
+      _ListMeta: listMetaResolver,
+      _ListAccess: listAccessResolver,
+
       Query: {
         // Order is also important here, any TypeQuery's defined by types
         // shouldn't be able to override list-level queries
@@ -149,6 +227,7 @@ module.exports = class Keystone {
           {}
         ),
       },
+
       Mutation: {
         ...this.listsArray.reduce(
           (acc, i) => ({ ...i.getAuxiliaryMutationResolvers(), ...acc }),
@@ -170,6 +249,26 @@ module.exports = class Keystone {
       resolvers,
     });
   }
+
+  getListAccessControl({ listKey, operation, authentication }) {
+    return this.lists[listKey].getAccessControl({ operation, authentication });
+  }
+
+  getFieldAccessControl({
+    item,
+    listKey,
+    fieldKey,
+    operation,
+    authentication,
+  }) {
+    return this.lists[listKey].getFieldAccessControl({
+      item,
+      fieldKey,
+      operation,
+      authentication,
+    });
+  }
+
   createItem(listKey, itemData) {
     return this.lists[listKey].adapter.create(itemData);
   }
