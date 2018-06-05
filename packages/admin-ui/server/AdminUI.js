@@ -139,7 +139,10 @@ module.exports = class AdminUI {
     // Attach the user to the request for all following route handlers
     app.use(
       this.keystone.session.validate({
-        valid: ({ req, item }) => (req.user = item),
+        valid: ({ req, list, item }) => {
+          req.user = item;
+          req.authedListKey = list.key;
+        },
       })
     );
 
@@ -165,7 +168,16 @@ module.exports = class AdminUI {
       bodyParser.json(),
       // TODO: Make configurable
       apolloUploadExpress({ maxFileSize: 200 * 1024 * 1024, maxFiles: 5 }),
-      graphqlExpress({ schema })
+      graphqlExpress(req => {
+        return {
+          schema,
+          // Will come from the session middleware above
+          context: {
+            authedItem: req.user,
+            authedListKey: req.authedListKey,
+          },
+        };
+      })
     );
     app.use(this.graphiqlPath, graphiqlExpress({ endpointURL: this.apiPath }));
     return app;

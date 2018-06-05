@@ -41,7 +41,7 @@ function getIdQueryConditions(args) {
 }
 
 module.exports = class List {
-  constructor(key, config, { getListByKey, mongoose }) {
+  constructor(key, config, { getListByKey, mongoose, keystone }) {
     this.key = key;
 
     this.config = {
@@ -49,6 +49,7 @@ module.exports = class List {
       ...config,
     };
     this.getListByKey = getListByKey;
+    this.keystone = keystone;
 
     const label = keyToLabel(key);
     const singular = pluralize.singular(label);
@@ -71,6 +72,7 @@ module.exports = class List {
     this.itemQueryName = itemQueryName;
     this.listQueryName = `all${listQueryName}`;
     this.listQueryMetaName = `_${this.listQueryName}Meta`;
+    this.authenticatedQueryName = `authenticated${itemQueryName}`;
     this.deleteMutationName = `delete${itemQueryName}`;
     this.deleteManyMutationName = `delete${listQueryName}`;
     this.updateMutationName = `update${itemQueryName}`;
@@ -253,17 +255,30 @@ createdAt_DESC
           ${commonArgs.trim()}
         ): _QueryMeta
       `,
-      ...this.fields
-        .map(field => field.getGraphqlAuxiliaryQueries())
-        .filter(Boolean),
-    ];
+      // If auth is enabled for this list (doesn't matter what strategy)
+      this.keystone.auth[this.key] ? `${this.authenticatedQueryName}: ${this.key}` : undefined,
+      // All the auxiliary queries the fields want to add
+      ...this.fields.map(field => field.getGraphqlAuxiliaryQueries()),
+    // Filter out any empty elements
+    ].filter(Boolean);
   }
   getAdminQueryResolvers() {
-    return {
+    const resolvers = {
       [this.listQueryName]: (_, args) => this.itemsQuery(args),
       [this.listQueryMetaName]: (_, args) => this.itemsQueryMeta(args),
       [this.itemQueryName]: (_, { where: { id } }) => this.model.findById(id),
     };
+
+    if (this.keystone.auth[this.key]) {
+      resolvers[this.authenticatedQueryName] = (_, args, { authedItem, authedListKey }) => {
+        if (!authedItem || authedListKey !== this.key) {
+          return null;
+        }
+        return authedItem;
+      };
+    }
+
+    return resolvers;
   }
   getAdminFieldResolvers() {
     const fieldResolvers = this.fields.reduce(
