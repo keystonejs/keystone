@@ -14,8 +14,12 @@ module.exports = function({ adminMeta, adminPath, apiPath, graphiqlPath }) {
       filename: 'bundle.js',
       publicPath: adminPath,
     },
+    // TODO: We should pay attention to our bundle size at some point, but
+    // right now this is just noise
+    performance: { hints: false },
     plugins: [
       new webpack.DefinePlugin({
+        ENABLE_DEV_FEATURES: mode === 'development',
         KEYSTONE_ADMIN_META: JSON.stringify({
           adminPath,
           apiPath,
