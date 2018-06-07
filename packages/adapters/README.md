@@ -19,12 +19,12 @@ All the `Lists` in your system will be backed by this adapter.
 
 ## Multiple Adapters
 
-If you want to use multiple adapters in your system (e.g. a different database for session management and business data), you can provide an `adapters` object in your config, along with a `defaultAdapter`.
+If you want to use multiple adapters in your system (e.g. a different database for content management and business data), you can provide an `adapters` object in your config, along with a `defaultAdapter`.
 
 ```js
 const keystone = new Keystone({
   adapters: {
-    session: new MongooseAdapter(),
+    content: new MongooseAdapter(),
     data: new PostgresAdapter()
   },
   defaultAdapter: 'data',
@@ -35,8 +35,8 @@ const keystone = new Keystone({
 When you create your lists, the default adapter will be used unless your specify an `adapterName` in the config.
 
 ```js
-keystone.createList('Session', {
-  adapterName: 'session',
+keystone.createList('Pages', {
+  adapterName: 'content',
   fields: {
     ...
   }
@@ -52,8 +52,8 @@ The adapter framework data model mirrors the Keystone data model.
  * Each `List` object has one `ListAdapter`, accessible by the `.adapter` property.
  * Each `Field` object has one `FieldAdapter`, accessible by the `.adapter` property.
 
-The adapters do not contains references back to the Keystone objects. All required information is passed in to the adapter
-as paramters to the constructor/methods.
+The adapters do not contain references back to the Keystone objects. All required information is passed in to the adapter
+as paramaters to the constructor/methods.
 
 Each `KeystoneAdapter` contains references to its associated `ListAdapter`s, via the `.listAdapters` property. The `ListAdapter`s contain a back reference to the `KeystoneAdapter` via the `.parentAdapter` property. Each `ListAttribute` keeps a list of associated `FieldAdapter`s, via .`fieldAdapters`. These in turn have back reference to the `ListAdapter` in the property `.listAdapter`.
 
@@ -74,7 +74,7 @@ Keystone    .adapters  ->    KeystoneAdapter  (.listAdapters)
 
 ## The Field Type <- FieldAdapter Relationship
 
-Each field type definition contains a mapping from `KeystoneAdapter` to `FieldAdapter` class in `.adapters`. The key to this mapping is the `KeystoneAdapter`s `.name` property.
+Each field type definition contains a mapping from `KeystoneAdapter` to `FieldAdapter` class in `.adapters`. The key to this mapping is the `KeystoneAdapter`'s `.name` property.
 
 ```js
 {
@@ -96,7 +96,7 @@ Each field type definition contains a mapping from `KeystoneAdapter` to `FieldAd
 
 To add a new adapter you need to extend the core adapter classes `BaseKeystoneAdapter`, `BaseListAdapter`, and `BaseFieldAdapter`.
 
-The APIs for these classes is not yet fixed. Experiment at your own risk.
+The API for these classes is not yet finalised. Experiment at your own risk.
 
 ## Creating New Field Types
 
