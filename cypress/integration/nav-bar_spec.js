@@ -14,7 +14,6 @@ describe('Nav Bar', () => {
     },
     { text: 'Graphiql', target: '/admin/graphiql', newTab: true },
     { text: 'Style Guide', target: '/admin/style-guide' },
-    { text: 'Sign Out', target: '/admin/signin' },
   ].forEach(({ text, target, newTab = false }) => {
     it(`${newTab ? 'Check' : 'Click'} ${text}`, () => {
       cy.visit('http://localhost:3000/admin');

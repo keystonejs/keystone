@@ -36,7 +36,8 @@ const keystone = new Keystone({
   name: 'Test Project',
 });
 
-keystone.createAuthStrategy({
+// eslint-disable-next-line no-unused-vars
+const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
 });
@@ -116,7 +117,10 @@ keystone.createList('PostCategory', {
   },
 });
 
-const admin = new AdminUI(keystone, '/admin');
+const admin = new AdminUI(keystone, {
+  adminPath: '/admin',
+  // authStrategy, // uncomment to enable authentication (disabled for ease of running tests)
+});
 
 const server = new WebServer(keystone, {
   'cookie secret': 'qwerty',

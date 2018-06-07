@@ -6,6 +6,8 @@ import {
   TelescopeIcon,
   MarkGithubIcon,
   SignOutIcon,
+  SignInIcon,
+  EllipsisIcon,
 } from '@keystonejs/icons';
 
 import {
@@ -16,12 +18,22 @@ import {
 } from '@keystonejs/ui/src/primitives/navigation';
 import { A11yText } from '@keystonejs/ui/src/primitives/typography';
 import { withAdminMeta } from '../providers/AdminMeta';
+import SessionProvider from '../providers/Session';
 
 const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
 
 const Nav = props => {
   const {
-    adminMeta: { getListByKey, listKeys, adminPath, graphiqlPath },
+    adminMeta: {
+      withAuth,
+      getListByKey,
+      listKeys,
+      adminPath,
+      graphiqlPath,
+      signoutPath,
+      signinPath,
+      sessionPath,
+    },
     location,
   } = props;
   return (
@@ -65,11 +77,36 @@ const Nav = props => {
           <TelescopeIcon />
           <A11yText>Style Guide</A11yText>
         </PrimaryNavItem>
-        <NavSeparator />
-        <PrimaryNavItem to={`${adminPath}/signin`} title="Sign Out">
-          <SignOutIcon />
-          <A11yText>Sign Out</A11yText>
-        </PrimaryNavItem>
+        {withAuth ? (
+          <Fragment>
+            <NavSeparator />
+            <SessionProvider {...{ signinPath, signoutPath, sessionPath }}>
+              {({ user, isLoading }) => {
+                if (isLoading) {
+                  return (
+                    <PrimaryNavItem title="Loading user info">
+                      <EllipsisIcon />
+                      <A11yText>Loading user info</A11yText>
+                    </PrimaryNavItem>
+                  );
+                } else if (user) {
+                  return (
+                    <PrimaryNavItem href={signoutPath} title="Sign Out">
+                      <SignOutIcon />
+                      <A11yText>Sign Out</A11yText>
+                    </PrimaryNavItem>
+                  );
+                }
+                return (
+                  <PrimaryNavItem href={signinPath} title="Sign In">
+                    <SignInIcon />
+                    <A11yText>Sign In</A11yText>
+                  </PrimaryNavItem>
+                );
+              }}
+            </SessionProvider>
+          </Fragment>
+        ) : null}
       </NavGroup>
     </PrimaryNav>
   );

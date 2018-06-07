@@ -14,7 +14,6 @@ import AdminMetaProvider from './providers/AdminMeta';
 import apolloClient from './providers/apolloClient';
 
 import HomePage from './pages/Home';
-import SessionPage from './pages/Session';
 import ListPage from './pages/List';
 import ListNotFoundPage from './pages/ListNotFound';
 import ItemPage from './pages/Item';
@@ -35,11 +34,6 @@ const Keystone = () => (
                   <Route
                     path={`${adminPath}/style-guide/:page?`}
                     render={() => <StyleGuidePage {...adminMeta} />}
-                  />
-                  <Route
-                    exact
-                    path={`${adminPath}/signin`}
-                    render={() => <SessionPage {...adminMeta} />}
                   />
                   <Route
                     exact

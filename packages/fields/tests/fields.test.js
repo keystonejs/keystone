@@ -100,7 +100,7 @@ describe('Test CRUD for all fields', () => {
 
         afterAll(async done => {
           await keystone.mongoose.connection.close();
-          await admin.webpackMiddleware.close();
+          await admin.stopDevServer();
           done();
         });
       });
