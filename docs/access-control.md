@@ -473,3 +473,36 @@ app.use('/graphql', (req, res, next) => {
   publicSchema(req, res, next);
 });
 ```
+
+---
+
+## Access Control Queries
+
+It is also possible to determine access control of the current user via queries:
+
+```graphq
+query {
+  _Permissions(where: { list: "User" }) {
+    create
+    read
+    update
+    delete
+  }
+  
+  # Will throw an error if the user does not have access to 'read' the User list
+  _UserPermissions(where: { id: "abc123" }) {
+    name: {
+      read
+      update
+    }
+    email: {
+      read
+      update
+    }
+  }
+}
+```
+
+This can be useful for clients to construct views around the given user's access to fields and lists.
+
+<!-- TODO: Flesh this out more -->
