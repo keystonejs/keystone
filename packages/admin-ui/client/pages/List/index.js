@@ -333,15 +333,17 @@ class ListPage extends Component {
 
     const managementUI = (
       <FlexGroup align="center">
-        <IconButton
-          appearance="primary"
-          icon={SettingsIcon}
-          isDisabled={!hasSelected}
-          onClick={this.openUpdateModal}
-          variant="ghost"
-        >
-          Update
-        </IconButton>
+        {ENABLE_DEV_FEATURES ? (
+          <IconButton
+            appearance="primary"
+            icon={SettingsIcon}
+            isDisabled={!hasSelected}
+            onClick={this.openUpdateModal}
+            variant="ghost"
+          >
+            Update
+          </IconButton>
+        ) : null}
         <IconButton
           appearance="danger"
           icon={TrashcanIcon}
@@ -493,16 +495,18 @@ class ListPage extends Component {
                         type="text"
                       />
                     </Search>
-                    <Popout buttonLabel="Filters" headerTitle="Filters">
-                      <FilterSelect
-                        isMulti
-                        fields={list.fields}
-                        onChange={console.log}
-                        value={displayedFields}
-                        placeholder="Find a field..."
-                        removeIsAllowed={displayedFields.length > 1}
-                      />
-                    </Popout>
+                    {ENABLE_DEV_FEATURES ? (
+                      <Popout buttonLabel="Filters" headerTitle="Filters">
+                        <FilterSelect
+                          isMulti
+                          fields={list.fields}
+                          onChange={console.log}
+                          value={displayedFields}
+                          placeholder="Find a field..."
+                          removeIsAllowed={displayedFields.length > 1}
+                        />
+                      </Popout>
+                    ) : null}
                     <Popout buttonLabel="Columns" headerTitle="Columns">
                       <ColumnSelect
                         isMulti
