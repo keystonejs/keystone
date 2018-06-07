@@ -43,19 +43,24 @@ import SortSelect, { SortButton } from './SortSelect';
 
 const getQueryArgs = args => {
   const queryArgs = Object.keys(args).map(
-    argName => `${argName}: "${args[argName]}"`
+    // Using stringify to get the correct quotes depending on type
+    argName => `${argName}: ${JSON.stringify(args[argName])}`
   );
   return queryArgs.length ? `(${queryArgs.join(' ')})` : '';
 };
 
-const getQuery = ({ fields, list, search, sort }) => {
-  const queryArgs = getQueryArgs({ search, sort });
+const getQuery = ({ fields, list, search, sort, skip, first }) => {
+  const queryArgs = getQueryArgs({ search, sort, skip, first });
+  const metaQueryArgs = getQueryArgs({ search });
 
   return gql`{
     ${list.listQueryName}${queryArgs} {
       id
       _label_
       ${fields.map(field => field.getQueryFragment()).join('\n')}
+    }
+    _${list.listQueryName}Meta${metaQueryArgs} {
+      count
     }
   }`;
 };
@@ -114,6 +119,8 @@ function getInvertedSort(direction) {
   return inverted[direction] || direction;
 }
 
+const DEFAULT_PAGE_SIZE = 50;
+
 class ListPage extends Component {
   constructor(props) {
     super(props);
@@ -132,6 +139,8 @@ class ListPage extends Component {
       showCreateModal: false,
       showUpdateModal: false,
       showDeleteSelectedItemsModal: false,
+      pageSize: DEFAULT_PAGE_SIZE,
+      skip: 0,
     };
   }
 
@@ -379,6 +388,12 @@ class ListPage extends Component {
           displayCount
           single={list.label}
           plural={list.plural}
+          pageSize={this.state.pageSize}
+          onChange={({ page }) => {
+            this.setState(({ pageSize }) => ({
+              skip: (page - 1) * pageSize,
+            }));
+          }}
         />
       </FlexGroup>
     );
@@ -410,6 +425,8 @@ class ListPage extends Component {
       sortBy,
       search,
       selectedItems,
+      skip,
+      pageSize,
     } = this.state;
 
     const sort = `${sortDirection === 'DESC' ? '-' : ''}${sortBy.path}`;
@@ -419,6 +436,8 @@ class ListPage extends Component {
       list,
       search,
       sort,
+      skip,
+      first: pageSize,
     });
 
     return (
@@ -439,9 +458,10 @@ class ListPage extends Component {
             // but it's not easy to hoist the <Query> further up the hierarchy.
             this.refetch = refetch;
             this.items = data && data[list.listQueryName];
-            const hasCount =
-              this.items && typeof this.items.length === 'number';
-            this.itemsCount = hasCount ? this.items.length : this.itemsCount;
+            this.itemsCount =
+              data &&
+              data[`_${list.listQueryName}Meta`] &&
+              data[`_${list.listQueryName}Meta`].count;
 
             const searchId = 'list-search-input';
 
@@ -449,7 +469,9 @@ class ListPage extends Component {
               <Fragment>
                 <Container>
                   <H1>
-                    {hasCount ? list.formatCount(this.itemsCount) : list.plural}
+                    {this.itemsCount > 0
+                      ? list.formatCount(this.itemsCount)
+                      : list.plural}
                     <span>, by</span>
                     <Popout
                       headerTitle="Sort"
