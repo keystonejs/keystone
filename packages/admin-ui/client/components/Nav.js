@@ -47,25 +47,33 @@ const Nav = props => {
         })}
       </NavGroup>
       <NavGroup>
-        <PrimaryNavItem target="_blank" href={GITHUB_PROJECT} title="GitHub">
-          <MarkGithubIcon />
-          <A11yText>GitHub</A11yText>
-        </PrimaryNavItem>
-        <NavSeparator />
-        <PrimaryNavItem
-          target="_blank"
-          href={graphiqlPath}
-          title="Graphiql Console"
-        >
-          <TerminalIcon />
-          <A11yText>Graphiql Console</A11yText>
-        </PrimaryNavItem>
-        <NavSeparator />
-        <PrimaryNavItem to={`${adminPath}/style-guide`} title="Style Guide">
-          <TelescopeIcon />
-          <A11yText>Style Guide</A11yText>
-        </PrimaryNavItem>
-        <NavSeparator />
+        {ENABLE_DEV_FEATURES ? (
+          <Fragment>
+            <PrimaryNavItem
+              target="_blank"
+              href={GITHUB_PROJECT}
+              title="GitHub"
+            >
+              <MarkGithubIcon />
+              <A11yText>GitHub</A11yText>
+            </PrimaryNavItem>
+            <NavSeparator />
+            <PrimaryNavItem
+              target="_blank"
+              href={graphiqlPath}
+              title="Graphiql Console"
+            >
+              <TerminalIcon />
+              <A11yText>Graphiql Console</A11yText>
+            </PrimaryNavItem>
+            <NavSeparator />
+            <PrimaryNavItem to={`${adminPath}/style-guide`} title="Style Guide">
+              <TelescopeIcon />
+              <A11yText>Style Guide</A11yText>
+            </PrimaryNavItem>
+            <NavSeparator />
+          </Fragment>
+        ) : null}
         <PrimaryNavItem to={`${adminPath}/signin`} title="Sign Out">
           <SignOutIcon />
           <A11yText>Sign Out</A11yText>
