@@ -129,7 +129,7 @@ For example, the below access control states:
   user's.
 - Only authenticated users can update their own password, they cannot read their
   own or other user's passwords.
-- Display
+- Display only the fields `name`, `email`, `password` in the Admin UI
 
 ```javascript
 function getAdminUiFields(authenticated) {
