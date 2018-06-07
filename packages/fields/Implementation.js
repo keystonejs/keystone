@@ -1,12 +1,25 @@
 const inflection = require('inflection');
+const { parseACL, pick } = require('@keystonejs/utils');
 
 module.exports = class Field {
-  constructor(path, config, { getListByKey, listKey }) {
+  constructor(path, config, { getListByKey, listKey, defaultAccess }) {
     this.path = path;
     this.config = config;
     this.getListByKey = getListByKey;
     this.listKey = listKey;
     this.label = config.label || inflection.humanize(path);
+
+    const accessTypes = ['read', 'update'];
+
+    // Merge the default and config access together
+    this.acl = {
+      ...pick(defaultAccess, accessTypes),
+      ...parseACL(config.access, {
+        accessTypes,
+        listKey,
+        path,
+      }),
+    };
   }
   addToMongooseSchema() {
     throw new Error(
@@ -76,6 +89,8 @@ module.exports = class Field {
   updateFieldPostHook() {}
 
   getGraphqlQueryArgs() {}
+  isGraphqlQueryArg(arg) { return arg === this.path; }
+  getGraphqlCreateArgs() {}
   getGraphqlUpdateArgs() {}
   getGraphqlFieldResolvers() {}
   getQueryConditions() {

@@ -1,6 +1,7 @@
 const inflection = require('inflection');
 const { makeExecutableSchema } = require('graphql-tools');
 const { Mongoose } = require('mongoose');
+const { parseACL } = require('@keystonejs/utils');
 
 const List = require('../List');
 const bindSession = require('./session');
@@ -30,6 +31,10 @@ module.exports = class Keystone {
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
     this.session = bindSession(this);
+
+    this.defaultAccess = parseACL(config.defaultAccess, {
+      accessTypes: ['create', 'read', 'update', 'delete'],
+    });
 
     this.mongoose = new Mongoose();
     if (debugMongoose()) {

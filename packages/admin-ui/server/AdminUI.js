@@ -5,6 +5,11 @@ const webpack = require('webpack');
 const { apolloUploadExpress } = require('apollo-upload-server');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
+const { formatError, isInstance: isApolloErrorInstance } = require('apollo-errors');
+const cuid = require('cuid');
+const pino = require('pino');
+
+const graphqlLogger = pino('graphql');
 
 const getWebpackConfig = require('./getWebpackConfig');
 
@@ -176,6 +181,20 @@ module.exports = class AdminUI {
             authedItem: req.user,
             authedListKey: req.authedListKey,
           },
+          formatError: (error) => {
+            // For correlating user error reports with logs
+            error.uid = cuid();
+            const { originalError } = error;
+            if (isApolloErrorInstance(originalError)) {
+              // log internalData to stdout but not include it in the formattedError
+              graphqlLogger.error({
+                uid: error.uid,
+                data: originalError.data,
+                internalData: originalError.internalData
+              });
+            }
+            return formatError(error);
+          }
         };
       })
     );

@@ -16,6 +16,9 @@ module.exports = class Password extends Implementation {
       ${this.path}_is_set: Boolean
     `;
   }
+  isGraphqlQueryArg(arg) {
+    return arg === `${this.path}_is_set`;
+  }
   getGraphqlUpdateArgs() {
     return `
       ${this.path}: String

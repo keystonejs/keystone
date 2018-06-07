@@ -2,7 +2,15 @@ const {
   Types: { ObjectId },
 } = require('mongoose');
 const pluralize = require('pluralize');
-const { resolveAllKeys, escapeRegExp } = require('@keystonejs/utils');
+const {
+  parseACL,
+  checkAccess,
+  resolveAllKeys,
+  escapeRegExp,
+  pick,
+} = require('@keystonejs/utils');
+
+const { AccessDeniedError } = require('./graphqlErrors');
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
@@ -38,6 +46,10 @@ function getIdQueryConditions(args) {
     conditions.push({ _id: { $ne: ObjectId(args.id_not) } });
   }
   return conditions;
+}
+
+function isIdQueryArg(arg) {
+  return ['id', 'id_not'].indexOf(arg) !== -1;
 }
 
 module.exports = class List {
@@ -78,6 +90,17 @@ module.exports = class List {
     this.updateMutationName = `update${itemQueryName}`;
     this.createMutationName = `create${itemQueryName}`;
 
+    const accessTypes = ['create', 'read', 'update', 'delete'];
+
+    // Starting with the default, extend it with any config passed in
+    this.acl = {
+      ...pick(keystone.defaultAccess, accessTypes),
+      ...parseACL(config.access, {
+        accessTypes,
+        listKey: key,
+      }),
+    };
+
     this.fields = config.fields
       ? Object.keys(config.fields).map(path => {
           const { type, ...fieldSpec } = config.fields[path];
@@ -85,6 +108,7 @@ module.exports = class List {
           return new implementation(path, fieldSpec, {
             getListByKey,
             listKey: key,
+            defaultAccess: this.acl,
           });
         })
       : [];
@@ -130,7 +154,9 @@ module.exports = class List {
   }
   getAdminGraphqlTypes() {
     const fieldSchemas = this.fields
-      .map(i => i.getGraphqlSchema())
+      // If it's globally set to false, makes sense to never show it
+      .filter(field => !!field.acl.read)
+      .map(field => field.getGraphqlSchema())
       .join('\n        ');
 
     const fieldTypes = this.fields
@@ -138,7 +164,9 @@ module.exports = class List {
       .filter(i => i);
 
     const updateArgs = this.fields
-      .map(i => i.getGraphqlUpdateArgs())
+      // If it's globally set to false, makes sense to never let it be updated
+      .filter(field => !!field.acl.update)
+      .map(field => field.getGraphqlUpdateArgs())
       .filter(i => i)
       .map(i => i.split(/\n\s+/g).join('\n        '))
       .join('\n        ')
@@ -152,6 +180,8 @@ module.exports = class List {
       .trim();
 
     const queryArgs = this.fields
+      // If it's globally set to false, makes sense to never show it
+      .filter(field => !!field.acl.read)
       .map(field => {
         const fieldQueryArgs = field
           .getGraphqlQueryArgs()
@@ -211,6 +241,7 @@ module.exports = class List {
       ...fieldTypes,
     ];
   }
+
   getAdminGraphqlQueries() {
     // TODO: Follow OpenCRUD naming:
     // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-1-toplevel.md#example
@@ -237,8 +268,16 @@ createdAt_DESC
           first: Int
           skip: Int`;
 
-    return [
-      `
+    // All the auxiliary queries the fields want to add
+    const queries = this.fields
+      .map(field => field.getGraphqlAuxiliaryQueries())
+      // Filter out any empty elements
+      .filter(Boolean);
+
+    // If `read` is either `true`, or a function (we don't care what the result
+    // of the function is, that'll get executed at a later time)
+    if (this.acl.read) {
+      queries.push(`
         ${this.listQueryName}(
           where: ${this.itemQueryName}WhereInput
 
@@ -254,34 +293,168 @@ createdAt_DESC
 
           ${commonArgs.trim()}
         ): _QueryMeta
-      `,
-      // If auth is enabled for this list (doesn't matter what strategy)
-      this.keystone.auth[this.key] ? `${this.authenticatedQueryName}: ${this.key}` : undefined,
-      // All the auxiliary queries the fields want to add
-      ...this.fields.map(field => field.getGraphqlAuxiliaryQueries()),
-    // Filter out any empty elements
-    ].filter(Boolean);
-  }
-  getAdminQueryResolvers() {
-    const resolvers = {
-      [this.listQueryName]: (_, args) => this.itemsQuery(args),
-      [this.listQueryMetaName]: (_, args) => this.itemsQueryMeta(args),
-      [this.itemQueryName]: (_, { where: { id } }) => this.model.findById(id),
-    };
+      `);
+    }
 
     if (this.keystone.auth[this.key]) {
-      resolvers[this.authenticatedQueryName] = (_, args, { authedItem, authedListKey }) => {
+      // If auth is enabled for this list (doesn't matter what strategy)
+      queries.push(`${this.authenticatedQueryName}: ${this.key}`);
+    }
+
+    return queries;
+  }
+
+  getAdminQueryResolvers() {
+    let resolvers = {};
+
+    // If set to false, we can confidently remove these resolvers entirely from
+    // the graphql schema
+    if (this.acl.read) {
+      resolvers = {
+        [this.listQueryName]: (_, args, context) => {
+          if (
+            !checkAccess({
+              access: this.acl.read,
+              dynamicCheckData: () => ({
+                where: args,
+                authentication: {
+                  item: context.authedItem,
+                  listKey: context.authedListKey,
+                },
+              }),
+            })
+          ) {
+            // TODO: Return an error of some kind aswell so the client isn't in
+            // the dark about why there's no results?
+            return [];
+          }
+
+          return this.itemsQuery(args, context);
+        },
+
+        [this.listQueryMetaName]: (_, args, { authedItem, authedListKey }) => {
+          if (
+            !checkAccess({
+              access: this.acl.read,
+              dynamicCheckData: () => ({
+                where: args,
+                authentication: {
+                  item: authedItem,
+                  listKey: authedListKey,
+                },
+              }),
+            })
+          ) {
+            // TODO: Return an error of some kind aswell so the client isn't in
+            // the dark about why there's no results?
+            return [];
+          }
+
+          return this.itemsQueryMeta(args);
+        },
+
+        [this.itemQueryName]: (
+          _,
+          { where: { id } },
+          { authedItem, authedListKey }
+        ) => {
+          if (
+            !checkAccess({
+              access: this.acl.read,
+              dynamicCheckData: () => ({
+                where: { id },
+                authentication: {
+                  item: authedItem,
+                  listKey: authedListKey,
+                },
+              }),
+            })
+          ) {
+            // TODO: Return an error of some kind aswell so the client isn't in
+            // the dark about why there's no results?
+            return null;
+          }
+
+          // NOTE: The fields will be filtered by the ACL checking in
+          // getAdminFieldResolvers()
+          return this.model.findById(id);
+        },
+      };
+    }
+
+    // NOTE: This query is not effected by the read permissions; if the user can
+    // authenticate themselves, then they already have access to know that the
+    // list exists
+    if (this.keystone.auth[this.key]) {
+      resolvers[this.authenticatedQueryName] = (
+        _,
+        args,
+        { authedItem, authedListKey }
+      ) => {
         if (!authedItem || authedListKey !== this.key) {
           return null;
         }
-        return authedItem;
+
+        // We filter out any requested fields that they don't have access to
+        return this.fields.reduce(
+          (filteredData, field) => ({
+            ...filteredData,
+            [field.path]: checkAccess({
+              access: field.acl.read,
+              dynamicCheckData: () => ({
+                item: authedItem,
+                listKey: authedListKey,
+              }),
+            })
+              ? authedItem[field.path]
+              : null,
+          }),
+          {}
+        );
       };
     }
 
     return resolvers;
   }
+
+  wrapFieldQueryResolversWithACL(originalResolvers) {
+    return this.fields.reduce(
+      (resolvers, field) => {
+        const originalResolver = originalResolvers[field.path];
+        return {
+          ...resolvers,
+          // Ensure their's a field resolver for every field
+          [field.path]: (item, args, context, ...rest) => {
+            // If not allowed access
+            if (
+              !checkAccess({
+                access: field.acl.read,
+                dynamicCheckData: () => ({
+                  item: context.authedItem,
+                  listKey: context.authedListKey,
+                }),
+              })
+            ) {
+              // TODO: Also include an error in the result? Can be useful for
+              // clients to differentiate between the data actually being
+              // `null`, and the need to login first
+              // return null
+              return null;
+            }
+
+            // Otherwise, execute the original resolver (if there is one)
+            return originalResolver
+              ? originalResolver(item, args, context, ...rest)
+              : item[field.path];
+          },
+        };
+      },
+      { ...originalResolvers }
+    );
+  }
+
   getAdminFieldResolvers() {
-    const fieldResolvers = this.fields.reduce(
+    const fieldResolvers = this.fields.filter(field => !!field.acl.read).reduce(
       (resolvers, field) => ({
         ...resolvers,
         ...field.getGraphqlFieldResolvers(),
@@ -290,18 +463,20 @@ createdAt_DESC
         _label_: this.config.labelResolver,
       }
     );
-    return { [this.key]: fieldResolvers };
+    return { [this.key]: this.wrapFieldQueryResolversWithACL(fieldResolvers) };
   }
   getAuxiliaryTypeResolvers() {
     return this.fields.reduce(
       (resolvers, field) => ({
         ...resolvers,
+        // TODO: Obey the same ACL rules based on parent type
         ...field.getGraphqlAuxiliaryTypeResolvers(),
       }),
       {}
     );
   }
   getAuxiliaryQueryResolvers() {
+    // TODO: Obey the same ACL rules based on parent type
     return this.fields.reduce(
       (resolvers, field) => ({
         ...resolvers,
@@ -311,6 +486,7 @@ createdAt_DESC
     );
   }
   getAuxiliaryMutationResolvers() {
+    // TODO: Obey the same ACL rules based on parent type
     return this.fields.reduce(
       (resolvers, field) => ({
         ...resolvers,
@@ -319,31 +495,133 @@ createdAt_DESC
       {}
     );
   }
+
   getAdminGraphqlMutations() {
-    return [
-      `
+    const mutations = this.fields.map(field =>
+      field.getGraphqlAuxiliaryMutations()
+    );
+
+    // NOTE: We only check for truthy as it could be `true`, or a function (the
+    // function is executed later in the resolver)
+    if (this.acl.create) {
+      mutations.push(`
         ${this.createMutationName}(
           data: ${this.key}UpdateInput
         ): ${this.key}
+      `);
+    }
+
+    if (this.acl.update) {
+      mutations.push(`
         ${this.updateMutationName}(
           id: String!
           data: ${this.key}UpdateInput
         ): ${this.key}
+      `);
+    }
+
+    if (this.acl.delete) {
+      mutations.push(`
         ${this.deleteMutationName}(
           id: String!
         ): ${this.key}
+      `);
+      mutations.push(`
         ${this.deleteManyMutationName}(
           ids: [String!]
         ): ${this.key}
-      `,
-      ...this.fields
-        .map(field => field.getGraphqlAuxiliaryMutations())
-        .filter(Boolean),
-    ];
+      `);
+    }
+
+    return mutations.filter(Boolean);
   }
+
+  throwIfAccessDeniedOnList({
+    accessType,
+    data,
+    context: { authedItem, authedListKey },
+    errorMeta = {},
+    errorMetaForLogging = {},
+  }) {
+    if (
+      !checkAccess({
+        access: this.acl[accessType],
+        dynamicCheckData: () => ({
+          data,
+          authentication: {
+            item: authedItem,
+            listKey: authedListKey,
+          },
+        }),
+      })
+    ) {
+      throw new AccessDeniedError({
+        data: errorMeta,
+        internalData: {
+          authedId: authedItem && authedItem.id,
+          authedListKey: authedListKey,
+          ...errorMetaForLogging,
+        },
+      });
+    }
+  }
+
+  throwIfAccessDeniedOnFields({
+    fields,
+    accessType,
+    data,
+    context: { authedItem, authedListKey },
+    errorMeta = {},
+    errorMetaForLogging = {},
+  }) {
+    const restrictedFields = [];
+
+    fields.forEach(field => {
+      if (!field.path in data) {
+        return;
+      }
+
+      if (
+        !checkAccess({
+          access: field.acl[accessType],
+          dynamicCheckData: () => ({
+            item: authedItem,
+            listKey: authedListKey,
+          }),
+        })
+      ) {
+        restrictedFields.push(field.path);
+      }
+    });
+
+    if (restrictedFields.length) {
+      throw new AccessDeniedError({
+        data: {
+          restrictedFields,
+          ...errorMeta,
+        },
+        internalData: {
+          authedId: authedItem && authedItem.id,
+          authedListKey: authedListKey,
+          ...errorMetaForLogging,
+        },
+      });
+    }
+  }
+
   getAdminMutationResolvers() {
     return {
-      [this.createMutationName]: async (_, { data }) => {
+      [this.createMutationName]: async (_, { data }, context) => {
+        this.throwIfAccessDeniedOnList({
+          accessType: 'create',
+          data,
+          context,
+          errorMeta: {
+            type: 'mutation',
+            name: this.createMutationName,
+          },
+        });
+
         const resolvedData = await resolveAllKeys(
           this.fields.reduce(
             (resolvers, field) => ({
@@ -367,7 +645,35 @@ createdAt_DESC
 
         return newItem;
       },
-      [this.updateMutationName]: async (_, { id, data }) => {
+
+      [this.updateMutationName]: async (_, { id, data }, context) => {
+        this.throwIfAccessDeniedOnList({
+          accessType: 'update',
+          data,
+          context,
+          errorMeta: {
+            type: 'mutation',
+            name: this.updateMutationName,
+          },
+          errorMetaForLogging: {
+            itemId: id,
+          },
+        });
+
+        this.throwIfAccessDeniedOnFields({
+          fields: this.fields,
+          accessType: 'update',
+          data,
+          context,
+          errorMeta: {
+            type: 'mutation',
+            name: this.updateMutationName,
+          },
+          errorMetaForLogging: {
+            itemId: id,
+          },
+        });
+
         const item = await this.model.findById(id);
 
         const resolvedData = await resolveAllKeys(
@@ -395,13 +701,41 @@ createdAt_DESC
 
         return newItem;
       },
-      [this.deleteMutationName]: (_, { id }) =>
-        this.model.findByIdAndRemove(id),
+
+      [this.deleteMutationName]: (_, { id }, context) => {
+        this.throwIfAccessDeniedOnList({
+          accessType: 'delete',
+          context,
+          errorMeta: {
+            type: 'mutation',
+            name: this.deleteMutationName,
+          },
+          errorMetaForLogging: {
+            itemId: id,
+          },
+        });
+
+        return this.model.findByIdAndRemove(id);
+      },
+
       [this.deleteManyMutationName]: async (_, { ids }) => {
-        ids.map(async id => await this.model.findByIdAndRemove(id));
+        this.throwIfAccessDeniedOnList({
+          accessType: 'delete',
+          context,
+          errorMeta: {
+            type: 'mutation',
+            name: this.deleteManyMutationName,
+          },
+          errorMetaForLogging: {
+            itemIds: ids,
+          },
+        });
+
+        return Promise.all(ids.map(id => this.model.findByIdAndRemove(id)));
       },
     };
   }
+
   itemsQueryConditions(args, depthGuard = 0) {
     if (!args) {
       return [];
@@ -453,15 +787,60 @@ createdAt_DESC
       getIdQueryConditions(args)
     );
   }
-  itemsQuery(args) {
-    const conditions = this.itemsQueryConditions(args.where);
+
+  itemsQuery(args, context) {
+    // To avoid accidentially indirectly leaking information, we need to remove
+    // the where clauses that are not allowed by the ACL
+    function allowedToFilterBy(clause) {
+      const filteredField = this.fields.find(field =>
+        field.isGraphqlQueryArg(clause)
+      );
+
+      if (!filteredField) {
+        // try id fields
+        // TODO: FIXME: How dafuq we check the id ACL? There's no ID field... Maybe
+        // there should be!
+        if (!filteredField) {
+          // Something went horribly wrong - no fields reported that this clause
+          // belongs to them, which should be impossible unless the field itself
+          // is poorly configured.
+          console.error(
+            `Unable to locate field responsible for the where clause '${clause}' on list ${
+              this.key
+            }.\n Ensure all field types in use on ${
+              this.key
+            } list correctly implement isGraphqlQueryArg(). Removing from query.`
+          );
+          return false;
+        }
+      }
+
+      return checkAccess({
+        access: filteredField.acl.read,
+        dynamicCheckData: () => ({
+          item: context.authedItem,
+          listKey: context.authedListKey,
+        }),
+      });
+    }
+
+    const where = Object.keys(args.where).reduce((filteredWhere, clause) => {
+      // TODO: Include some kind of error in the response when not alloweed so
+      // the user isn't confused why some filters are working and others not?
+      if (allowedToFilterBy(clause)) {
+        filteredWhere[clause] = args.where[clause];
+      }
+      return filteredWhere;
+    }, {});
+    const conditions = this.itemsQueryConditions(where);
 
     const pipeline = [];
     const postAggregateMutation = [];
 
+    // NOTE: Using a for..of loop here would complicate the code as we move the
+    // iterator forward within two separate sub-loops
     // TODO: Order isn't important. Might as well put all the simple `$match`s
     // first, and complex ones last.
-    // TODO: Change this to a `for...of` loop
     let iterator = conditions[Symbol.iterator]();
     let itr = iterator.next();
     while (!itr.done) {
@@ -552,9 +931,9 @@ createdAt_DESC
           .filter(Boolean)
       );
   }
-  itemsQueryMeta(args) {
+  itemsQueryMeta(args, context) {
     return new Promise((resolve, reject) => {
-      this.itemsQuery(args).count((err, count) => {
+      this.itemsQuery(args, context).count((err, count) => {
         if (err) reject(err);
         resolve({ count });
       });
