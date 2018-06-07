@@ -1,4 +1,8 @@
 describe('Columns', () => {
+  before(() => {
+    cy.visit('http://localhost:3000/reset-db');
+  });
+
   [
     {
       url: 'http://localhost:3000/admin/users',

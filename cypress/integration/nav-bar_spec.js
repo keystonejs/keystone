@@ -1,4 +1,8 @@
 describe('Nav Bar', () => {
+  before(() => {
+    cy.visit('http://localhost:3000/reset-db');
+  });
+
   // Testing links which should open in a new tab is a bit tricky in Cypress.
   // The discussion at this page lists some of the details.
   // https://github.com/cypress-io/cypress-example-recipes/blob/master/examples/testing-dom__tab-handling-links/cypress/integration/tab_handling_anchor_links_spec.js
