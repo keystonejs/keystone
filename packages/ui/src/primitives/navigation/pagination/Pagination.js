@@ -8,11 +8,11 @@ import Page from './Page';
 import manageState from './stateManager';
 import type { CountFormat, LabelType, OnChangeType } from './types';
 
-function getRange({ value, pageSize, total }) {
+function getRange({ currentPage, pageSize, total }) {
   if (!total) {
     return {};
   } else {
-    const start = pageSize * (value - 1) + 1;
+    const start = pageSize * (currentPage - 1) + 1;
     const end = Math.min(start + pageSize - 1, total);
     return { start, end };
   }
@@ -28,7 +28,7 @@ type PaginationProps = {
   plural: string,
   singular: string,
   total: number,
-  value: number,
+  currentPage: number,
 };
 const PaginationElement = styled.nav({
   alignItems: 'center',
@@ -65,7 +65,7 @@ class Pagination extends Component<PaginationProps> {
     return <PageCount>{count}</PageCount>;
   }
   renderPages() {
-    let { ariaPageLabel, value, limit, onChange, pageSize, total } = this.props;
+    let { ariaPageLabel, currentPage, limit, pageSize, total } = this.props;
 
     if (total <= pageSize) return null;
 
@@ -78,8 +78,8 @@ class Pagination extends Component<PaginationProps> {
     if (limit && limit < totalPages) {
       let rightLimit = Math.floor(limit / 2);
       let leftLimit = rightLimit + limit % 2 - 1;
-      minPage = value - leftLimit;
-      maxPage = value + rightLimit;
+      minPage = currentPage - leftLimit;
+      maxPage = currentPage + rightLimit;
 
       if (minPage < 1) {
         maxPage = limit;
@@ -88,6 +88,18 @@ class Pagination extends Component<PaginationProps> {
       if (maxPage > totalPages) {
         minPage = totalPages - limit + 1;
         maxPage = totalPages;
+      }
+    }
+
+    const onChange = (page) => {
+      if (this.props.onChange) {
+        this.props.onChange({
+          page,
+          pageSize,
+          total,
+          minPage,
+          maxPage,
+        });
       }
     }
 
@@ -107,7 +119,7 @@ class Pagination extends Component<PaginationProps> {
 
     // loop over range
     for (let page = minPage; page <= maxPage; page++) {
-      const isSelected = page === value;
+      const isSelected = page === currentPage;
       pages.push(
         <Page
           aria-label={ariaPageLabel(page)}
