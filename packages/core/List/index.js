@@ -438,7 +438,7 @@ createdAt_DESC
       getIdQueryConditions(args)
     );
   }
-  itemsQuery(args) {
+  itemsQuery(args, { meta = false } = {}) {
     const conditions = this.itemsQueryConditions(args.where);
 
     const pipeline = [];
@@ -506,6 +506,12 @@ createdAt_DESC
       });
     }
 
+    if (meta) {
+      pipeline.push({
+        $count: 'count',
+      });
+    }
+
     if (!pipeline.length) {
       return this.model.find();
     }
@@ -522,8 +528,12 @@ createdAt_DESC
     return this.model
       .aggregate(pipeline)
       .exec()
-      .then(data =>
-        data
+      .then(data => {
+        if (meta) {
+          return data[0];
+        }
+
+        return data
           .map((item, index, list) =>
             // Iterate over all the mutations
             postAggregateMutation.reduce(
@@ -535,14 +545,9 @@ createdAt_DESC
           )
           // If anything gets removed, we clear it out here
           .filter(Boolean)
-      );
+      });
   }
   itemsQueryMeta(args) {
-    return new Promise((resolve, reject) => {
-      this.itemsQuery(args).count((err, count) => {
-        if (err) reject(err);
-        resolve({ count });
-      });
-    });
+    return this.itemsQuery(args, { meta: true });
   }
 };
