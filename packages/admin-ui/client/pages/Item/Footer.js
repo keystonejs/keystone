@@ -45,8 +45,6 @@ export default class Footer extends Component {
 
     this.windowSize = getWindowSize();
     const footerStyle = window.getComputedStyle(this.footer);
-    const bar = this.footer.bar;
-    console.log(bar);
     this.footerSize = {
       x: this.footer.offsetWidth,
       y: this.footer.offsetHeight + parseInt(footerStyle.marginTop || '0'),
@@ -60,8 +58,11 @@ export default class Footer extends Component {
     window.removeEventListener('resize', this.recalcPosition, false);
   }
   recalcPosition = raf(() => {
-    const foo = this.wrapper.foo;
-    console.log(foo);
+    if (this.wrapper === null) {
+      // Due to the use of raf, this function may end up being called *after*
+      // the component is unmounted. If this happens, we can safely return early.
+      return;
+    }
     this.footerSize.x = this.wrapper.offsetWidth;
 
     var offsetTop = 0;
