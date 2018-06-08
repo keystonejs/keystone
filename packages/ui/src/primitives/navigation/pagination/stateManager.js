@@ -45,34 +45,26 @@ export default function manageState(PaginationComponent: ComponentType<*>) {
     static defaultProps = {
       ariaPageLabel: ariaPageLabelFn,
       countFormatter: countFormatterFn,
-      defaultValue: 1,
+      currentPage: 1,
       pageSize: 25,
       limit: 5,
       plural: 'Items',
       singular: 'Item',
     };
     state = {
-      value:
-        this.props.value !== undefined
-          ? this.props.value
-          : this.props.defaultValue,
+      currentPage: this.props.currentPage,
     };
-    getValue() {
-      return this.props.value !== undefined
-        ? this.props.value
-        : this.state.value;
-    }
-    onChange = (value: number) => {
+    onChange = (changeData) => {
       const { onChange } = this.props;
-      if (onChange) onChange(value);
-      this.setState({ value });
+      if (onChange) onChange(changeData);
+      this.setState({ currentPage: changeData.page });
     };
     render() {
       return (
         <PaginationComponent
           {...this.props}
           onChange={this.onChange}
-          value={this.getValue()}
+          currentPage={this.state.currentPage}
         />
       );
     }
