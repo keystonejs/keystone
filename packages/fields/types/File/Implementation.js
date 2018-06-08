@@ -1,5 +1,5 @@
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@keystonejs/adapters/mongoose');
+const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 const { escapeRegExp: esc } = require('@keystonejs/utils');
 const { GraphQLUpload } = require('apollo-upload-server');
 const {

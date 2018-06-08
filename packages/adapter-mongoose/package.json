@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/adapters",
+  "name": "@keystonejs/adapter-mongoose",
   "private": true,
   "version": "1.0.0",
   "author": "Jed Watson",
@@ -8,6 +8,8 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystonejs/utils": "^1.0.0"
+    "@keystonejs/utils": "^1.0.0",
+    "@keystonejs/core": "^5.0.0",
+    "mongoose": "^5.0.14"
   }
 }

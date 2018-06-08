@@ -9,7 +9,7 @@ const request = require('supertest');
 const Keystone = require('../../core/Keystone');
 const AdminUI = require('../../admin-ui/server/AdminUI');
 const WebServer = require('../../server/WebServer');
-const { MongooseAdapter } = require('../../adapters/mongoose');
+const { MongooseAdapter } = require('../../adapter-mongoose');
 
 const sorted = (arr, keyFn) => {
   arr = [...arr];
@@ -92,7 +92,7 @@ describe('Test CRUD for all fields', () => {
         beforeAll(async done => {
           keystone.connect();
           Object.values(keystone.adapters).forEach(async adapter => {
-            await adapter.reset();
+            await adapter.dropDatabase();
           });
           await keystone.createItems({ [listName]: mod.initItems() });
           done();

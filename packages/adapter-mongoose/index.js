@@ -8,7 +8,7 @@ const {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
-} = require('./index');
+} = require('@keystonejs/core/adapters');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 
@@ -67,7 +67,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     return this.mongoose.connection.close();
   }
 
-  reset() {
+  dropDatabase() {
     // This will completely drop the backing database. Use wisely.
     return this.mongoose.connection.dropDatabase();
   }

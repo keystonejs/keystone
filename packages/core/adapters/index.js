@@ -1,16 +1,16 @@
 class BaseKeystoneAdapter {
   constructor(config) {
-    this.name = config && config.name;
+    this.config = {
+      listAdapterClass: this.constructor.defaultListAdapterClass,
+      ...config,
+    };
+    this.name = this.config.name;
     this.listAdapters = {};
-    this.listAdapterClass =
-      (config && config.listAdapterClass) ||
-      this.constructor.defaultListAdapterClass;
-    this.config = config;
   }
 
-  newListAdapter(key, config) {
+  newListAdapter(key, config = {}) {
     const listAdapterClass =
-      (config && config.listAdapterClass) || this.listAdapterClass;
+      config.listAdapterClass || this.config.listAdapterClass;
     const adapter = new listAdapterClass(key, this, config);
     this.prepareListAdapter(adapter);
     this.listAdapters[key] = adapter;

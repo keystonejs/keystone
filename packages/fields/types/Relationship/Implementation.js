@@ -8,7 +8,7 @@ const {
 } = mongoose;
 
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@keystonejs/adapters/mongoose');
+const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 
 function relationFilterPipeline({
   path,
