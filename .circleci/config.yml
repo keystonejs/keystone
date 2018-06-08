@@ -86,6 +86,10 @@ jobs:
           name: Running E2E tests
           command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn cypress:run --reporter junit --reporter-options "mochaFile=reports/junit/cypress-results.xml"
 
+      - store_test_results:
+          path: reports/junit
+      - store_artifacts:
+          path: reports/junit
       - store_artifacts:
           path: cypress/videos
       - store_artifacts:
