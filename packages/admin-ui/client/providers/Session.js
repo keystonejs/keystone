@@ -6,6 +6,7 @@ function getJSON(url) {
     credentials: 'same-origin',
     headers: {
       'content-type': 'application/json',
+      'Accept': 'application/json',
     },
     mode: 'cors',
     redirect: 'follow',
@@ -19,6 +20,7 @@ function postJSON(url, data = {}) {
     credentials: 'same-origin',
     headers: {
       'content-type': 'application/json',
+      'Accept': 'application/json',
     },
     method: 'POST',
     mode: 'cors',
@@ -31,30 +33,55 @@ class Session extends Component {
     session: {},
     isLoading: true,
   };
+
+  constructor(props) {
+    super(props);
+    this.triggerSignoutFlow(props, this.state);
+  }
+
+  triggerSignoutFlow = (props, state) => {
+    if (state.isLoading) {
+      return;
+    }
+    if (props.forceSignout && state.session && state.session.signedIn) {
+      this.signOut();
+      return;
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (
+      prevState.isLoading !== this.state.isLoading
+      || prevState.session !== this.state.session
+      || prevProps.forceSignout !== this.props.forceSignout
+    ) {
+      this.triggerSignoutFlow(this.props, this.state);
+    }
+  }
+
   componentDidMount() {
     this.getSession();
   }
+
   getSession = () => {
-    const { apiPath } = this.props;
-    this.setState({ isLoading: true });
-    getJSON(`${apiPath}/session`).then(data => {
+    const { sessionUrl } = this.props;
+    // Avoid an extra re-render
+    if (!this.state.isLoading) {
+      this.setState({ isLoading: true });
+    }
+    getJSON(sessionUrl).then(data => {
       this.setState({ session: data, isLoading: false });
     });
   };
-  signIn = ({ username, password }) => {
-    const { apiPath } = this.props;
-    postJSON(`${apiPath}/signin`, { username, password })
-      .then(() => this.getSession())
-      .catch(error => console.error(error));
-  };
   signOut = () => {
-    const { apiPath } = this.props;
-    postJSON(`${apiPath}/signout`)
+    const { signoutUrl } = this.props;
+    this.setState({ isLoading: true });
+    postJSON(signoutUrl)
       .then(() => this.getSession())
       .catch(error => console.error(error));
   };
   render() {
-    const { signIn, signOut } = this;
+    const { signOut } = this;
     const { children } = this.props;
     const {
       session: { user, signedIn: isSignedIn },
@@ -63,7 +90,6 @@ class Session extends Component {
     return children({
       isLoading,
       isSignedIn,
-      signIn,
       signOut,
       user,
     });
