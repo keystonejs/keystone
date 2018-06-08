@@ -45,6 +45,8 @@ export default class Footer extends Component {
 
     this.windowSize = getWindowSize();
     const footerStyle = window.getComputedStyle(this.footer);
+    const bar = this.footer.bar;
+    console.log(bar);
     this.footerSize = {
       x: this.footer.offsetWidth,
       y: this.footer.offsetHeight + parseInt(footerStyle.marginTop || '0'),
@@ -58,6 +60,8 @@ export default class Footer extends Component {
     window.removeEventListener('resize', this.recalcPosition, false);
   }
   recalcPosition = raf(() => {
+    const foo = this.wrapper.foo;
+    console.log(foo);
     this.footerSize.x = this.wrapper.offsetWidth;
 
     var offsetTop = 0;
