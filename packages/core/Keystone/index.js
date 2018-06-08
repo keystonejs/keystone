@@ -1,6 +1,4 @@
-const inflection = require('inflection');
 const { makeExecutableSchema } = require('graphql-tools');
-const { Mongoose } = require('mongoose');
 
 const List = require('../List');
 const bindSession = require('./session');
@@ -8,18 +6,7 @@ const bindSession = require('./session');
 const flatten = arr => Array.prototype.concat(...arr);
 const unique = arr => [...new Set(arr)];
 
-function getMongoURI({ dbName, name }) {
-  return (
-    process.env.MONGO_URI ||
-    process.env.MONGO_URL ||
-    process.env.MONGODB_URI ||
-    process.env.MONGODB_URL ||
-    `mongodb://localhost/${dbName || inflection.dasherize(name).toLowerCase()}`
-  );
-}
-
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
-const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 const trim = str => str.replace(/\n\s*\n/g, '\n');
 
 module.exports = class Keystone {
@@ -31,9 +18,14 @@ module.exports = class Keystone {
     this.getListByKey = key => this.lists[key];
     this.session = bindSession(this);
 
-    this.mongoose = new Mongoose();
-    if (debugMongoose()) {
-      this.mongoose.set('debug', true);
+    if (config.adapters) {
+      this.adapters = config.adapters;
+      this.defaultAdapter = config.defaultAdapter;
+    } else if (config.adapter) {
+      this.adapters = { [config.adapter.constructor.name]: config.adapter };
+      this.defaultAdapter = config.adapter.constructor.name;
+    } else {
+      throw new Error('Need an adapter, yo');
     }
   }
   createAuthStrategy(options) {
@@ -47,21 +39,29 @@ module.exports = class Keystone {
     return strategy;
   }
   createList(key, config) {
-    const { getListByKey, mongoose } = this;
-    const list = new List(key, config, { getListByKey, mongoose });
+    const { getListByKey, adapters } = this;
+    const adapterName = config.adapterName || this.defaultAdapter;
+    const list = new List(key, config, {
+      getListByKey,
+      adapter: adapters[adapterName],
+    });
     this.lists[key] = list;
     this.listsArray.push(list);
   }
   connect(to, options) {
     const {
-      mongoose,
-      config: { name, dbName, mongodbConnectionOptions },
+      adapters,
+      config: { name, dbName, adapterConnectOptions },
     } = this;
-    const uri = to || getMongoURI({ name, dbName });
-    mongoose.connect(uri, { ...mongodbConnectionOptions, ...options });
-    const db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'Mongoose connection error'));
-    db.once('open', () => console.log('Connection success'));
+
+    Object.values(adapters).forEach(adapter => {
+      adapter.connect(to, {
+        name,
+        dbName,
+        ...adapterConnectOptions,
+        ...options,
+      });
+    });
   }
   getAdminMeta() {
     const { name } = this.config;
@@ -162,8 +162,7 @@ module.exports = class Keystone {
     });
   }
   createItem(listKey, itemData) {
-    const item = new this.lists[listKey].model(itemData);
-    return item.save();
+    return this.lists[listKey].adapter.create(itemData);
   }
   createItems(lists) {
     // TODO: Needs to handle creating related items; see Keystone 4 for a

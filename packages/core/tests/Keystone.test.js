@@ -1,8 +1,18 @@
 const Keystone = require('../Keystone');
 const List = require('../List');
 
-class MockType {
-  addToMongooseSchema = jest.fn();
+class MockType {}
+
+class MockFieldAdapter {}
+
+class MockListAdapter {
+  newFieldAdapter = () => new MockFieldAdapter();
+  prepareModel = () => {};
+}
+
+class MockAdapter {
+  name = 'mock';
+  newListAdapter = () => new MockListAdapter();
 }
 
 test('Check require', () => {
@@ -12,6 +22,7 @@ test('Check require', () => {
 test('new Keystone()', () => {
   const config = {
     name: 'Jest Test',
+    adapter: new MockAdapter(),
   };
   const keystone = new Keystone(config);
   expect(keystone.config).toBe(config);
@@ -19,6 +30,7 @@ test('new Keystone()', () => {
 
 test('Keystone.createList()', () => {
   const config = {
+    adapter: new MockAdapter(),
     name: 'Jest Test',
   };
   const keystone = new Keystone(config);
@@ -32,12 +44,14 @@ test('Keystone.createList()', () => {
         type: {
           implementation: MockType,
           views: {},
+          adapters: { mock: MockFieldAdapter },
         },
       },
       email: {
         type: {
           implementation: MockType,
           views: {},
+          adapters: { mock: MockFieldAdapter },
         },
       },
     },

@@ -1,6 +1,6 @@
-const FileImplementation = require('../File/Implementation');
+const { File, MongoFileInterface } = require('../File/Implementation');
 
-module.exports = class CloudinaryImage extends FileImplementation {
+class CloudinaryImage extends File {
   constructor() {
     super(...arguments);
     this.graphQLType = 'CloudinaryImage_File';
@@ -95,4 +95,9 @@ module.exports = class CloudinaryImage extends FileImplementation {
       },
     };
   }
+}
+
+module.exports = {
+  CloudinaryImage,
+  MongoCloudinaryImageInterface: MongoFileInterface,
 };

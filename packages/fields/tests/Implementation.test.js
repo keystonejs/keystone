@@ -1,4 +1,4 @@
-const Field = require('../Implementation');
+const { Implementation: Field } = require('../Implementation');
 
 const config = {
   label: 'config label',
@@ -8,6 +8,9 @@ const config = {
 const args = {
   getListByKey: {},
   listKey: {},
+  listAdapter: {
+    newFieldAdapter: jest.fn(),
+  },
 };
 
 describe('new Implementation()', () => {
@@ -18,6 +21,9 @@ describe('new Implementation()', () => {
       {
         getListByKey: {},
         listKey: {},
+        listAdapter: {
+          newFieldAdapter: jest.fn(),
+        },
       }
     );
     expect(impl).not.toBeNull();
@@ -38,7 +44,7 @@ test('addToMongooseSchema()', () => {
   const impl = new Field('path', config, args);
 
   expect(() => {
-    impl.addToMongooseSchema();
+    impl.adapter.addToMongooseSchema();
   }).toThrow(Error);
 });
 
@@ -148,13 +154,6 @@ test('getGraphqlFieldResolvers()', () => {
 
   const value = impl.getGraphqlFieldResolvers();
   expect(value).toBe(undefined);
-});
-
-test('getQueryConditions()', () => {
-  const impl = new Field('path', config, args);
-
-  const value = impl.getQueryConditions();
-  expect(value).toEqual([]);
 });
 
 test('getAdminMeta()', () => {

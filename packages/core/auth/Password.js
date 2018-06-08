@@ -20,7 +20,7 @@ class PasswordAuthStrategy {
   async validate({ username, password }) {
     const list = this.getList();
     const { usernameField, passwordField } = this.config;
-    const item = await list.model.findOne({
+    const item = await list.adapter.findOne({
       [usernameField]: username,
       [passwordField]: password,
     });
