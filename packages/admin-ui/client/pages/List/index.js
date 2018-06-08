@@ -1,3 +1,4 @@
+/* global ENABLE_DEV_FEATURES */
 import React, { Component, Fragment } from 'react';
 import styled from 'react-emotion';
 import gql from 'graphql-tag';

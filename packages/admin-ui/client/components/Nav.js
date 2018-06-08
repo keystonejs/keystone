@@ -1,3 +1,4 @@
+/* global ENABLE_DEV_FEATURES */
 import React, { Fragment } from 'react';
 import { withRouter } from 'react-router';
 import {
