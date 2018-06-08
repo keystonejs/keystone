@@ -39,8 +39,8 @@ module.exports = class WebServer {
     } = this;
 
     if (adminUI) {
-      app.use(adminUI.createSessionMiddleware({ cookieSecret }));
       app.use(adminUI.createGraphQLMiddleware());
+      app.use(adminUI.createSessionMiddleware({ cookieSecret }));
       app.use(adminUI.createDevMiddleware());
     }
 
