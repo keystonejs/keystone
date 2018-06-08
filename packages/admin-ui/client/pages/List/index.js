@@ -39,7 +39,7 @@ import ColumnSelect from './ColumnSelect';
 import FilterSelect from './FilterSelect';
 import SortSelect, { SortButton } from './SortSelect';
 
-const getQueryArgs = (args) => {
+const getQueryArgs = args => {
   const queryArgs = Object.keys(args).map(
     // Using stringify to get the correct quotes depending on type
     argName => `${argName}: ${JSON.stringify(args[argName])}`
@@ -343,15 +343,6 @@ class ListPage extends Component {
     const managementUI = (
       <FlexGroup align="center">
         <IconButton
-          appearance="primary"
-          icon={SettingsIcon}
-          isDisabled={!hasSelected}
-          onClick={this.openUpdateModal}
-          variant="ghost"
-        >
-          Update
-        </IconButton>
-        <IconButton
           appearance="danger"
           icon={TrashcanIcon}
           isDisabled={!hasSelected}
@@ -454,13 +445,18 @@ class ListPage extends Component {
             // but it's not easy to hoist the <Query> further up the hierarchy.
             this.refetch = refetch;
             this.items = data && data[list.listQueryName];
-            this.itemsCount = data && data[`_${list.listQueryName}Meta`] && data[`_${list.listQueryName}Meta`].count;
+            this.itemsCount =
+              data &&
+              data[`_${list.listQueryName}Meta`] &&
+              data[`_${list.listQueryName}Meta`].count;
 
             return (
               <Fragment>
                 <Container>
                   <Title>
-                    {this.itemsCount > 0 ? list.formatCount(this.itemsCount) : list.plural}
+                    {this.itemsCount > 0
+                      ? list.formatCount(this.itemsCount)
+                      : list.plural}
                     <span>, by</span>
                     <Popout
                       headerTitle="Sort"
@@ -503,16 +499,6 @@ class ListPage extends Component {
                         type="text"
                       />
                     </Search>
-                    <Popout buttonLabel="Filters" headerTitle="Filters">
-                      <FilterSelect
-                        isMulti
-                        fields={list.fields}
-                        onChange={console.log}
-                        value={displayedFields}
-                        placeholder="Find a field..."
-                        removeIsAllowed={displayedFields.length > 1}
-                      />
-                    </Popout>
                     <Popout buttonLabel="Columns" headerTitle="Columns">
                       <ColumnSelect
                         isMulti
