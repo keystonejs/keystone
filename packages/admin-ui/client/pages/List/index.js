@@ -390,7 +390,7 @@ class ListPage extends Component {
           single={list.label}
           plural={list.plural}
           pageSize={DEFAULT_PAGE_SIZE}
-          onChange={(page) => {
+          onChange={page => {
             this.setState(() => ({
               currentPage: page,
               skip: (page - 1) * DEFAULT_PAGE_SIZE,
