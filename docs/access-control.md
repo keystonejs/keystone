@@ -8,16 +8,15 @@ There are 4 ways of effecting the available actions of a user in Keystone:
 4. Schema isolation
 
 *Note on terminology*:
-- _Authentication_ refers to a user identifying themselves. The specifics of how
-  this is done is outside the scope of this document.
+- _Authentication_ refers to a user identifying themselves.
+  The specifics of how this is done is outside the scope of this document.
+  Within this document, we abbreviate _Authentication_ to _Auth_.
 - _Access Control_ refers to the specific actions an authenticated or anonymous
   user can take. Often referred to as _authorization_ elsewhere.
 
 ## Admin UI authentication
 
 TODO: Docs on how to login to the Admin UI
-
-NOTE: Authentication 
 
 ## Admin UI display & forms
 
@@ -41,8 +40,8 @@ You can add an `admin` config to change what fields are displayed in the Admin
 UI, like so:
 
 ```javascript
-function getAdminUiFields(authenticated) {
-  if (isSuperUser(authenticated)) {
+function getAdminUiFields(auth) {
+  if (isSuperUser(auth)) {
     return true; // All fields are available
   }
 
@@ -52,7 +51,7 @@ function getAdminUiFields(authenticated) {
 keystone.createList('User', {
   fields: { /* ... */ },
   admin: {
-    fields: (authenticated) => getAdminUiFields(authenticated),
+    fields: (auth) => getAdminUiFields(auth),
   },
 });
 ```
@@ -60,7 +59,7 @@ keystone.createList('User', {
 The above is a shorthand for:
 
 ```javascript
-function getAdminUiFields(authenticated) {
+function getAdminUiFields(auth) {
   /* ... */
 }
 
@@ -68,9 +67,9 @@ keystone.createList('User', {
   fields: { /* ... */ },
   admin: {
     fields: {
-      create: (authenticated) => getAdminUiFields(authenticated),
-      read: (authenticated) => getAdminUiFields(authenticated),
-      update: (authenticated) => getAdminUiFields(authenticated),
+      create: (auth) => getAdminUiFields(auth),
+      read: (auth) => getAdminUiFields(auth),
+      update: (auth) => getAdminUiFields(auth),
     }
   },
 });
@@ -85,12 +84,12 @@ keystone.createList('User', {
  <summary>Complete example</summary>
 
 ```javascript
-function isSuperUser(authenticated) {
-  return authenticated.role === 'su';
+function isSuperUser(auth) {
+  return auth.role === 'su';
 }
 
-function getAdminUiFields(authenticated) {
-  if (isSuperUser(authenticated)) {
+function getAdminUiFields(auth) {
+  if (isSuperUser(auth)) {
     return true; // All fields are available
   }
 
@@ -105,9 +104,9 @@ keystone.createList('User', {
   }
   admin: {
     fields: {
-      create: (authenticated) => getAdminUiFields(authenticated),
-      read: (authenticated) => getAdminUiFields(authenticated),
-      update: (authenticated) => getAdminUiFields(authenticated),
+      create: (auth) => getAdminUiFields(auth),
+      read: (auth) => getAdminUiFields(auth),
+      update: (auth) => getAdminUiFields(auth),
     }
   },
 });
@@ -132,8 +131,8 @@ For example, the below access control states:
 - Display only the fields `name`, `email`, `password` in the Admin UI
 
 ```javascript
-function getAdminUiFields(authenticated) {
-  if (isSuperUser(authenticated)) {
+function getAdminUiFields(auth) {
+  if (isSuperUser(auth)) {
     return true; // All fields are available
   }
 
@@ -146,13 +145,13 @@ keystone.createList('User', {
     address: { type: Text },
     email: {
       type: Email,
-      access: ({ item, authentication }) => item.id === authentication.id,
+      access: ({ item, auth }) => item.id === auth.id,
     },
     password: {
       type: Password,
       access: {
         read: false,
-        update: ({ item, authentication }) => item.id === authentication.id,
+        update: ({ item, auth }) => item.id === auth.id,
       }
     },
   }
@@ -269,13 +268,13 @@ access: {
 The function set on the access control types have the following signature:
 
 ```
-({ item<Object>, authorisation<Object>: { item<Object>, listKey<String> }}) => Boolean
+({ item<Object>, auth<Object>: { item<Object>, listKey<String> }}) => Boolean
 ```
 
 - `item` is the list item being checked against
-- `authorisation.item` is the authenticated user. Will be `undefined` for
+- `auth.item` is the authenticated user. Will be `undefined` for
   anonymous users.
-- `authorisation.listKey` can be used to lookup the list by name. Will be
+- `auth.listKey` can be used to lookup the list by name. Will be
   `undefined` for anonymous users.
 
 ##### `create`
@@ -431,13 +430,13 @@ keystone.createList('User', {
     address: { type: Text },
     email: {
       type: Email,
-      access: ({ item, authentication }) => item.id === authentication.id,
+      access: ({ item, auth }) => item.id === auth.id,
     },
     password: {
       type: Password,
       access: {
         read: false,
-        update: ({ item, authentication }) => item.id === authentication.id,
+        update: ({ item, auth }) => item.id === auth.id,
       }
     },
   },
