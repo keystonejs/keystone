@@ -178,7 +178,7 @@ class MongooseListAdapter extends BaseListAdapter {
       getIdQueryConditions(args)
     );
   }
-  itemsQuery(args) {
+  itemsQuery(args, { meta = false } = {}) {
     const conditions = this.itemsQueryConditions(args.where);
 
     const pipeline = [];
@@ -246,6 +246,12 @@ class MongooseListAdapter extends BaseListAdapter {
       });
     }
 
+    if (meta) {
+      pipeline.push({
+        $count: 'count',
+      });
+    }
+
     if (!pipeline.length) {
       return this.findAll();
     }
@@ -261,28 +267,29 @@ class MongooseListAdapter extends BaseListAdapter {
     return this.model
       .aggregate(pipeline)
       .exec()
-      .then(data =>
-        data
-          .map((item, index, list) =>
-            // Iterate over all the mutations
-            postAggregateMutation.reduce(
-              // And pass through the result to the following mutator
-              (mutatedItem, mutation) => mutation(mutatedItem, index, list),
-              // Starting at the original item
-              item
+      .then(data => {
+        if (meta) {
+          return data[0];
+        }
+
+        return (
+          data
+            .map((item, index, list) =>
+              // Iterate over all the mutations
+              postAggregateMutation.reduce(
+                // And pass through the result to the following mutator
+                (mutatedItem, mutation) => mutation(mutatedItem, index, list),
+                // Starting at the original item
+                item
+              )
             )
-          )
-          // If anything gets removed, we clear it out here
-          .filter(Boolean)
-      );
+            // If anything gets removed, we clear it out here
+            .filter(Boolean)
+        );
+      });
   }
   itemsQueryMeta(args) {
-    return new Promise((resolve, reject) => {
-      this.itemsQuery(args).count((err, count) => {
-        if (err) reject(err);
-        resolve({ count });
-      });
-    });
+    return this.itemsQuery(args, { meta: true });
   }
 }
 
