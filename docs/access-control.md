@@ -45,40 +45,67 @@ function getAdminUiFields(auth) {
     return true; // All fields are available
   }
 
-  return ['name', 'email', 'password'];// Only some fields are available
+  return ['name', 'email', 'password']; // Only some fields are available
 }
 
 keystone.createList('User', {
   fields: { /* ... */ },
   admin: {
-    fields: (auth) => getAdminUiFields(auth),
+    createFields: (auth) => getAdminUiFields(auth),
+    readFields: (auth) => getAdminUiFields(auth),
+    updateFields: (auth) => getAdminUiFields(auth),
   },
 });
 ```
 
-The above is a shorthand for:
+There are 3 ways to define the fields, in increasing levels of verbosity:
+
+1. `true` for 'all access allowed' / `false` for 'no access allowed'
+2. An array of field names to allow access to
+3. A function which receives an `auth` object and returns either 1. or 2.
+
+NOTE: When creating a list item, any fields not specified in `createFields` will
+use the field's default value. If no default value is set, an error will be thrown.
+
+### `true`/`false`
 
 ```javascript
-function getAdminUiFields(auth) {
-  /* ... */
-}
-
 keystone.createList('User', {
   fields: { /* ... */ },
   admin: {
-    fields: {
-      create: (auth) => getAdminUiFields(auth),
-      read: (auth) => getAdminUiFields(auth),
-      update: (auth) => getAdminUiFields(auth),
-    }
+    createFields: false, // no access allowed to create list items
+    readFields: true, // full access allowed to read all fields of a list item
+    updateFields: true, // full access allowed to update any field in a list item
   },
 });
 ```
 
-> `true` is shorthand for 'all access allowed',
-> and `false` is shorthand for 'no access allowed'.
-> These shorthands also provide performance benefits over function based access
-> checks.
+### Array of field names to allow access to
+
+```javascript
+keystone.createList('User', {
+  fields: { /* ... */ },
+  admin: {
+    createFields: ['name', 'email', 'password'], // can set only these fields when creating
+    readFields: ['name', 'email'], // Only these fields are visible when reading
+    updateFields: ['email'], // Only `email` can be updated
+  },
+});
+```
+
+### A function which receives an `auth` object and returns either 1. or 2.
+
+```javascript
+keystone.createList('User', {
+  fields: { /* ... */ },
+  admin: {
+    // below, admin gets super access
+    createFields: (auth) => auth.item.isAdmin ? true : ['name', 'email', 'password'],
+    readFields: (auth) => auth.item.isAdmin ? true : ['name', 'email'],
+    updateFields: (auth) => auth.item.isAdmin ? true : ['email'],
+  },
+});
+```
 
 <details>
  <summary>Complete example</summary>
@@ -93,7 +120,7 @@ function getAdminUiFields(auth) {
     return true; // All fields are available
   }
 
-  return ['name', 'email', 'password'];// Only some fields are available
+  return ['name', 'email', 'password']; // Only some fields are available
 }
 
 keystone.createList('User', {
@@ -101,13 +128,12 @@ keystone.createList('User', {
     name: { type: Text },
     email: { type: Email },
     password: { type: Password },
+    address: { type: Text },
   }
   admin: {
-    fields: {
-      create: (auth) => getAdminUiFields(auth),
-      read: (auth) => getAdminUiFields(auth),
-      update: (auth) => getAdminUiFields(auth),
-    }
+    createFields: (auth) => getAdminUiFields(auth),
+    readFields: (auth) => getAdminUiFields(auth),
+    updateFields: (auth) => getAdminUiFields(auth),
   },
 });
 ```
@@ -156,7 +182,9 @@ keystone.createList('User', {
     },
   }
   admin: {
-    fields: ['name', 'email', 'password'],
+    createFields: ['name', 'email', 'password'],
+    readFields: ['name', 'email', 'password'],
+    updateFields: ['name', 'email', 'password'],
   },
 });
 ```
