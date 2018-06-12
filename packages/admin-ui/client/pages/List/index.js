@@ -139,8 +139,8 @@ class ListPage extends Component {
       showCreateModal: false,
       showUpdateModal: false,
       showDeleteSelectedItemsModal: false,
-      pageSize: DEFAULT_PAGE_SIZE,
       skip: 0,
+      currentPage: 1,
     };
   }
 
@@ -385,13 +385,15 @@ class ListPage extends Component {
         </IconButton>
         <Pagination
           total={this.itemsCount}
+          currentPage={this.state.currentPage}
           displayCount
           single={list.label}
           plural={list.plural}
-          pageSize={this.state.pageSize}
-          onChange={({ page }) => {
-            this.setState(({ pageSize }) => ({
-              skip: (page - 1) * pageSize,
+          pageSize={DEFAULT_PAGE_SIZE}
+          onChange={(page) => {
+            this.setState(() => ({
+              currentPage: page,
+              skip: (page - 1) * DEFAULT_PAGE_SIZE,
             }));
           }}
         />
@@ -426,7 +428,6 @@ class ListPage extends Component {
       search,
       selectedItems,
       skip,
-      pageSize,
     } = this.state;
 
     const sort = `${sortDirection === 'DESC' ? '-' : ''}${sortBy.path}`;
@@ -437,7 +438,9 @@ class ListPage extends Component {
       search,
       sort,
       skip,
-      first: pageSize,
+      // Future enhancement; move this to state, and let the user selec the page
+      // size.
+      first: DEFAULT_PAGE_SIZE,
     });
 
     return (
@@ -457,11 +460,15 @@ class ListPage extends Component {
             // TODO: This doesn't seem like the best way to capture the refetch,
             // but it's not easy to hoist the <Query> further up the hierarchy.
             this.refetch = refetch;
-            this.items = data && data[list.listQueryName];
-            this.itemsCount =
-              data &&
-              data[`_${list.listQueryName}Meta`] &&
-              data[`_${list.listQueryName}Meta`].count;
+
+            // Leave the old values intact while new data is loaded
+            if (!loading) {
+              this.items = data && data[list.listQueryName];
+              this.itemsCount =
+                data &&
+                data[`_${list.listQueryName}Meta`] &&
+                data[`_${list.listQueryName}Meta`].count;
+            }
 
             const searchId = 'list-search-input';
 
