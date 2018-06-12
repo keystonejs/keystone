@@ -43,19 +43,24 @@ import SortSelect, { SortButton } from './SortSelect';
 
 const getQueryArgs = args => {
   const queryArgs = Object.keys(args).map(
-    argName => `${argName}: "${args[argName]}"`
+    // Using stringify to get the correct quotes depending on type
+    argName => `${argName}: ${JSON.stringify(args[argName])}`
   );
   return queryArgs.length ? `(${queryArgs.join(' ')})` : '';
 };
 
-const getQuery = ({ fields, list, search, sort }) => {
-  const queryArgs = getQueryArgs({ search, sort });
+const getQuery = ({ fields, list, search, sort, skip, first }) => {
+  const queryArgs = getQueryArgs({ search, sort, skip, first });
+  const metaQueryArgs = getQueryArgs({ search });
 
   return gql`{
     ${list.listQueryName}${queryArgs} {
       id
       _label_
       ${fields.map(field => field.getQueryFragment()).join('\n')}
+    }
+    _${list.listQueryName}Meta${metaQueryArgs} {
+      count
     }
   }`;
 };
@@ -114,6 +119,8 @@ function getInvertedSort(direction) {
   return inverted[direction] || direction;
 }
 
+const DEFAULT_PAGE_SIZE = 50;
+
 class ListPage extends Component {
   constructor(props) {
     super(props);
@@ -132,6 +139,8 @@ class ListPage extends Component {
       showCreateModal: false,
       showUpdateModal: false,
       showDeleteSelectedItemsModal: false,
+      skip: 0,
+      currentPage: 1,
     };
   }
 
@@ -376,9 +385,17 @@ class ListPage extends Component {
         </IconButton>
         <Pagination
           total={this.itemsCount}
+          currentPage={this.state.currentPage}
           displayCount
           single={list.label}
           plural={list.plural}
+          pageSize={DEFAULT_PAGE_SIZE}
+          onChange={page => {
+            this.setState(() => ({
+              currentPage: page,
+              skip: (page - 1) * DEFAULT_PAGE_SIZE,
+            }));
+          }}
         />
       </FlexGroup>
     );
@@ -410,6 +427,7 @@ class ListPage extends Component {
       sortBy,
       search,
       selectedItems,
+      skip,
     } = this.state;
 
     const sort = `${sortDirection === 'DESC' ? '-' : ''}${sortBy.path}`;
@@ -419,6 +437,10 @@ class ListPage extends Component {
       list,
       search,
       sort,
+      skip,
+      // Future enhancement; move this to state, and let the user selec the page
+      // size.
+      first: DEFAULT_PAGE_SIZE,
     });
 
     return (
@@ -438,10 +460,15 @@ class ListPage extends Component {
             // TODO: This doesn't seem like the best way to capture the refetch,
             // but it's not easy to hoist the <Query> further up the hierarchy.
             this.refetch = refetch;
-            this.items = data && data[list.listQueryName];
-            const hasCount =
-              this.items && typeof this.items.length === 'number';
-            this.itemsCount = hasCount ? this.items.length : this.itemsCount;
+
+            // Leave the old values intact while new data is loaded
+            if (!loading) {
+              this.items = data && data[list.listQueryName];
+              this.itemsCount =
+                data &&
+                data[`_${list.listQueryName}Meta`] &&
+                data[`_${list.listQueryName}Meta`].count;
+            }
 
             const searchId = 'list-search-input';
 
@@ -449,7 +476,9 @@ class ListPage extends Component {
               <Fragment>
                 <Container>
                   <H1>
-                    {hasCount ? list.formatCount(this.itemsCount) : list.plural}
+                    {this.itemsCount > 0
+                      ? list.formatCount(this.itemsCount)
+                      : list.plural}
                     <span>, by</span>
                     <Popout
                       headerTitle="Sort"
