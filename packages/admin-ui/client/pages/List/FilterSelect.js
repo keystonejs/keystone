@@ -14,6 +14,10 @@ import { getInvertedOption, getOption, getOptions, getQuery } from './filters';
 import { Popout, POPOUT_GUTTER } from '../../components/Popout';
 import AnimateHeight from '../../components/AnimateHeight';
 
+// This import is loaded by the @keystone/field-views-loader loader.
+// It imports all the views required for a keystone app by looking at the adminMetaData
+import FieldTypes from '../../FIELD_TYPES';
+
 export const FilterOption = ({ children, isFocused, isSelected, ...props }) => {
   let iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
 
@@ -94,6 +98,7 @@ const initialState = {
   isCaseSensitive: false,
   isInverted: false,
   options: getOptions({ isInverted: false }),
+  filterValue: null,
 };
 
 export default class FilterSelect extends Component<SelectProps> {
@@ -109,11 +114,18 @@ export default class FilterSelect extends Component<SelectProps> {
   // ==============================
 
   onSelect = field => {
+    // const { list } = this.props;
+    // const { Filter } = FieldTypes[list.key][field.path];
+    // const filterValue = Filter.getInitialValue();
     this.setState({ field });
     this.fieldSelectRef.blur();
   };
-  onSelectFilter = filter => {
+  onSelectFilter = ({ event, filter }) => {
+    const { onChange } = this.props;
+    onChange(filter);
+    console.log('onSelectFilter', event, filter);
     this.setState({ filter });
+    this.close(event);
   };
   onChangeInverted = ({ target }) => {
     const isInverted = target.checked;
@@ -152,7 +164,6 @@ export default class FilterSelect extends Component<SelectProps> {
     const label = `${field.label} ${expression}: "${inputValue}"`;
     const query = { [queryPath]: inputValue };
 
-    onChange({ query, label, isCaseSensitive });
     this.close(event);
   };
 
@@ -251,17 +262,8 @@ export default class FilterSelect extends Component<SelectProps> {
     );
   };
   renderFilterUI = () => {
-    const {
-      field,
-      filter,
-      inputValue,
-      isCaseSensitive,
-      isInverted,
-      options,
-    } = this.state;
-    const filterLabel = `${field.label} ${filter.label.toLowerCase()}${
-      isCaseSensitive ? ' (case sensitive)' : ''
-    }`;
+    const { list } = this.props;
+    const { field } = this.state;
 
     return (
       <Transition
@@ -287,41 +289,20 @@ export default class FilterSelect extends Component<SelectProps> {
             exited: { transform: 'translateX(100%)' },
           };
           const style = { ...base, ...states[state] };
+          const { Filter } = FieldTypes[list.key][field.path];
           return (
             <div style={style} ref={this.getHeight}>
-              <form css={{ marginBottom: gridSize }} onSubmit={this.onApply}>
-                <Input
-                  onChange={this.onInputChange}
-                  autoFocus
-                  placeholder={filterLabel}
-                  value={inputValue}
-                />
-              </form>
-              <FlexGroup stretch>
-                <CheckboxPrimitive
-                  components={{ Label: CheckboxLabel }}
-                  onChange={this.onChangeInverted}
-                  checked={isInverted}
-                >
-                  Invert Filter
-                </CheckboxPrimitive>
-                <CheckboxPrimitive
-                  components={{ Label: CheckboxLabel }}
-                  onChange={this.onChangeCaseSensitivity}
-                  checked={isCaseSensitive}
-                >
-                  Case Sensitive
-                </CheckboxPrimitive>
-              </FlexGroup>
-              <OptionRenderer
-                innerRef={this.getFilterSelect}
-                isOptionSelected={(opt, selected) => {
-                  return selected.filter(s => opt.label === s.label).length;
-                }}
-                displaySearch={false}
-                options={options}
+              <Filter
+                list={list}
+                field={field}
                 onChange={this.onSelectFilter}
-                value={filter}
+                // onChangeInput={this.onInputChange}
+                // onChangeInverted={this.onChangeInverted}
+                // onChangeCaseSensitivity={this.onChangeCaseSensitivity}
+                // inputValue={inputValue}
+                // invertedValue={isInverted}
+                // caseSensitiveValue={isCaseSensitive}
+                // queryValue={filter}
               />
             </div>
           );
@@ -331,7 +312,7 @@ export default class FilterSelect extends Component<SelectProps> {
   };
 
   render() {
-    const { field, height } = this.state;
+    const { field } = this.state;
 
     const headerBefore = (
       <Transition

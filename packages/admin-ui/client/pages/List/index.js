@@ -28,6 +28,7 @@ import { LoadingSpinner } from '@keystonejs/ui/src/primitives/loading';
 import { Pill } from '@keystonejs/ui/src/primitives/pill';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
+import AnimateHeight from '../../components/AnimateHeight';
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
@@ -37,7 +38,6 @@ import DocTitle from '../../components/DocTitle';
 import PageLoading from '../../components/PageLoading';
 import PageError from '../../components/PageError';
 import { Popout, DisclosureArrow } from '../../components/Popout';
-import AnimateHeight from '../../components/AnimateHeight';
 
 import ColumnSelect from './ColumnSelect';
 import FilterSelect from './FilterSelect';
@@ -361,7 +361,6 @@ class ListPage extends Component {
   }
   renderFilters() {
     const { selectedFilters } = this.state;
-    console.log('renderFilters', selectedFilters);
 
     return (
       <AnimateHeight>
@@ -575,6 +574,7 @@ class ListPage extends Component {
                     </Search>
                     <FilterSelect
                       onChange={this.onFilterChange}
+                      list={list}
                       fields={list.fields}
                       value={selectedFilters}
                     />

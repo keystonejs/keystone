@@ -43,6 +43,7 @@
     "react-document-title": "^2.0.3",
     "react-dom": "^16.3.1",
     "react-emotion": "^9.1.1",
+    "react-height-transition": "^1.0.0",
     "react-media": "^1.8.0",
     "react-router-dom": "^4.2.2",
     "react-select": "^2.0.0-beta.6",
