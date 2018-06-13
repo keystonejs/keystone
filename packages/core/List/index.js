@@ -421,6 +421,12 @@ createdAt_DESC
     return this.fields.reduce(
       (resolvers, field) => {
         const originalResolver = originalResolvers[field.path];
+
+        // The field isn't readable at all, so don't include it
+        if (!field.acl.read) {
+          return resolvers;
+        }
+
         return {
           ...resolvers,
           // Ensure their's a field resolver for every field
