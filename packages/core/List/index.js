@@ -838,15 +838,17 @@ createdAt_DESC
   itemsQuery(args, context) {
     // To avoid accidentially indirectly leaking information, we need to remove
     // the where clauses that are not allowed by the ACL
-    function allowedToFilterBy(clause) {
+    const allowedToFilterBy = (clause) => {
       const filteredField = this.fields.find(field =>
         field.isGraphqlQueryArg(clause)
       );
 
       if (!filteredField) {
-        // try id fields
+        if (isIdQueryArg(clause)) {
         // TODO: FIXME: How dafuq we check the id ACL? There's no ID field... Maybe
         // there should be!
+        }
+
         if (!filteredField) {
           // Something went horribly wrong - no fields reported that this clause
           // belongs to them, which should be impossible unless the field itself
