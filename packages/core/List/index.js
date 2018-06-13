@@ -873,7 +873,7 @@ createdAt_DESC
       });
     }
 
-    const where = Object.keys(args.where).reduce((filteredWhere, clause) => {
+    const where = Object.keys(args.where || {}).reduce((filteredWhere, clause) => {
       // TODO: Include some kind of error in the response when not alloweed so
       // the user isn't confused why some filters are working and others not?
       if (allowedToFilterBy(clause)) {
