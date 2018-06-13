@@ -670,8 +670,8 @@ createdAt_DESC
         const newItem = await this.model.create(resolvedData);
 
         await Promise.all(
-          this.fields.map(field =>
-            field.createFieldPostHook(newItem[field.path], field.path, newItem)
+          Object.keys(data).map(fieldPath =>
+            this.fieldsByPath[fieldPath].createFieldPostHook(newItem[fieldPath], fieldPath, newItem)
           )
         );
 
@@ -712,12 +712,12 @@ createdAt_DESC
         const item = await this.model.findById(id);
 
         const resolvedData = await resolveAllKeys(
-          this.fields.reduce(
-            (resolvers, field) => ({
+          Object.keys(data).reduce(
+            (resolvers, fieldPath) => ({
               ...resolvers,
-              [field.path]: field.updateFieldPreHook(
-                data[field.path],
-                field.path,
+              [fieldPath]: this.fieldsByPath[fieldPath].updateFieldPreHook(
+                data[fieldPath],
+                fieldPath,
                 item
               ),
             }),
@@ -725,12 +725,20 @@ createdAt_DESC
           )
         );
 
-        item.set(resolvedData);
-        const newItem = await item.save();
+        const newItem = await this.model.findByIdAndUpdate(
+          id,
+          // avoid any kind of injection attack by explicitly doing a `$set`
+          // operation
+          { $set: resolvedData },
+          {
+            // Return the modified item, not the original
+            new: true,
+          },
+        );
 
         await Promise.all(
-          this.fields.map(field =>
-            field.updateFieldPostHook(newItem[field.path], field.path, newItem)
+          Object.keys(data).map(fieldPath =>
+            this.fieldsByPath[fieldPath].updateFieldPostHook(newItem[fieldPath], fieldPath, newItem)
           )
         );
 
