@@ -586,12 +586,25 @@ createdAt_DESC
   throwIfAccessDeniedOnFields({
     fields,
     accessType,
+    id,
     data,
     context: { authedItem, authedListKey },
     errorMeta = {},
     errorMetaForLogging = {},
   }) {
+    const idString = id.toString();
     const restrictedFields = [];
+
+    const dynamicData = {
+      itemId: idString,
+      data,
+      authentication: {
+        item: authedItem,
+        listKey: authedListKey,
+      },
+    };
+
+    const dynamicDataGetter = () => dynamicData;
 
     fields.forEach(field => {
       if (!field.path in data) {
@@ -601,10 +614,7 @@ createdAt_DESC
       if (
         !checkAccess({
           access: field.acl[accessType],
-          dynamicCheckData: () => ({
-            item: authedItem,
-            listKey: authedListKey,
-          }),
+          dynamicCheckData: dynamicDataGetter,
         })
       ) {
         restrictedFields.push(field.path);
@@ -680,6 +690,7 @@ createdAt_DESC
         this.throwIfAccessDeniedOnFields({
           fields: this.fields,
           accessType: 'update',
+          id,
           data,
           context,
           errorMeta: {
