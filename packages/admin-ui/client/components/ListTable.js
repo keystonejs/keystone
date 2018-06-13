@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
-import { InfoIcon, TrashcanIcon } from '@keystonejs/icons';
+import { ShieldIcon, InfoIcon, TrashcanIcon } from '@keystonejs/icons';
 import { colors } from '@keystonejs/ui/src/theme';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { CheckboxPrimitive } from '@keystonejs/ui/src/primitives/forms';
@@ -135,6 +135,15 @@ class ListDisplayRow extends Component {
           if (isLoading) {
             // TODO: Better loading state?
             return <BodyCell key={path} />;
+          }
+
+          if (item[path] instanceof Error && item[path].name === 'AccessDeniedError') {
+            return (
+              <BodyCell key={path}>
+                <ShieldIcon title={item[path].message} css={{ color: colors.N10 }} />
+                <A11yText>{item[path].message}</A11yText>
+              </BodyCell>
+            );
           }
 
           let content;

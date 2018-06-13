@@ -430,16 +430,27 @@ createdAt_DESC
               !checkAccess({
                 access: field.acl.read,
                 dynamicCheckData: () => ({
-                  item: context.authedItem,
-                  listKey: context.authedListKey,
+                  itemId: item ? item.id : null,
+                  authentication: {
+                    item: context.authedItem,
+                    listKey: context.authedListKey,
+                  },
                 }),
               })
             ) {
-              // TODO: Also include an error in the result? Can be useful for
-              // clients to differentiate between the data actually being
-              // `null`, and the need to login first
-              // return null
-              return null;
+              // If the client handles errors correctly, it should be able to
+              // receive partial data (for the fields the user has access to),
+              // and then an `errors` array of AccessDeniedError's
+              throw new AccessDeniedError({
+                data: {
+                  type: 'query',
+                },
+                internalData: {
+                  authedId: context.authedItem && context.authedItem.id,
+                  authedListKey: context.authedListKey,
+                  itemId: item ? item.id : null,
+                },
+              });
             }
 
             // Otherwise, execute the original resolver (if there is one)

@@ -3,6 +3,8 @@ import styled from 'react-emotion';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
+import cloneDeep from 'lodash/cloneDeep';
+import set from 'lodash/set';
 
 import {
   FoldIcon,
@@ -422,14 +424,36 @@ class ListPage extends Component {
       <Fragment>
         <DocTitle>{list.plural}</DocTitle>
         <Nav />
-        <Query query={query} fetchPolicy="cache-and-network">
-          {({ data, error, loading, refetch }) => {
-            if (error) {
+        <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
+          {({ data: graphQlData, error, loading, refetch }) => {
+            let data = graphQlData;
+            if ((!data || !data[list.listQueryName] || !Object.keys(data[list.listQueryName]).length) && error) {
               return (
                 <PageError>
                   <p>{error.message}</p>
                 </PageError>
               );
+            }
+
+            // When there are errors, we want to see if they're Access Denied.
+            // If so, we modify the dataset (which otherwise would be `null`) to
+            // have an Error object, which we'll use later in the UI code.
+            if (error && error.graphQLErrors && error.graphQLErrors.length) {
+              // Apollo Object.freeze's the data, so we have to clone before
+              // making modifications to it
+              data = cloneDeep(graphQlData);
+
+              error.graphQLErrors
+                // Comes from the backend. Specific to Keystone, so shouldn't
+                // give false positives with regular GraphQL errors
+                .filter(gqlError => gqlError.name && gqlError.name === 'AccessDeniedError')
+                .forEach(gqlError => {
+                  // Set the gqlError message to the path as reported by the graphql
+                  // gqlError
+                  const gqlErrorObj = new Error(`${gqlError.message} (${gqlError.uid})`);
+                  gqlErrorObj.name = gqlError.name;
+                  set(data, gqlError.path, gqlErrorObj);
+                });
             }
 
             // TODO: This doesn't seem like the best way to capture the refetch,

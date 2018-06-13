@@ -187,13 +187,22 @@ module.exports = class AdminUI {
             const { originalError } = error;
             if (isApolloErrorInstance(originalError)) {
               // log internalData to stdout but not include it in the formattedError
-              graphqlLogger.error({
-                uid: error.uid,
+              // TODO: User pino for logging
+              graphqlLogger.info({
+                type: `error`,
                 data: originalError.data,
                 internalData: originalError.internalData
               });
+            } else {
+              graphqlLogger.error(error);
             }
-            return formatError(error);
+            const formattedError = formatError(error);
+
+            if (error.uid) {
+              formattedError.uid = error.uid;
+            }
+
+            return formattedError;
           }
         };
       })
