@@ -101,15 +101,17 @@ module.exports = class List {
       }),
     };
 
+    this.fieldsByPath = {};
     this.fields = config.fields
       ? Object.keys(config.fields).map(path => {
           const { type, ...fieldSpec } = config.fields[path];
           const implementation = type.implementation;
-          return new implementation(path, fieldSpec, {
+          this.fieldsByPath[path] = new implementation(path, fieldSpec, {
             getListByKey,
             listKey: key,
             defaultAccess: this.acl,
           });
+          return this.fieldsByPath[path];
         })
       : [];
 
@@ -637,8 +639,11 @@ createdAt_DESC
   }
 
   getAdminMutationResolvers() {
-    return {
-      [this.createMutationName]: async (_, { data }, context) => {
+    const mutationResolvers = {};
+
+    if (this.acl.create) {
+      mutationResolvers[this.createMutationName] = async (_, { data }, context) => {
+        console.log(this.createMutationName);
         this.throwIfAccessDeniedOnList({
           accessType: 'create',
           data,
@@ -650,12 +655,12 @@ createdAt_DESC
         });
 
         const resolvedData = await resolveAllKeys(
-          this.fields.reduce(
-            (resolvers, field) => ({
+          Object.keys(data).reduce(
+            (resolvers, fieldPath) => ({
               ...resolvers,
-              [field.path]: field.createFieldPreHook(
-                data[field.path],
-                field.path
+              [fieldPath]: this.fieldsByPath[fieldPath].createFieldPreHook(
+                data[fieldPath],
+                fieldPath,
               ),
             }),
             {}
@@ -671,9 +676,11 @@ createdAt_DESC
         );
 
         return newItem;
-      },
+      };
+    }
 
-      [this.updateMutationName]: async (_, { id, data }, context) => {
+    if (this.acl.update) {
+      mutationResolvers[this.updateMutationName] = async (_, { id, data }, context) => {
         this.throwIfAccessDeniedOnList({
           accessType: 'update',
           data,
@@ -728,9 +735,11 @@ createdAt_DESC
         );
 
         return newItem;
-      },
+      };
+    }
 
-      [this.deleteMutationName]: (_, { id }, context) => {
+    if (this.acl.delete) {
+      mutationResolvers[this.deleteMutationName] = (_, { id }, context) => {
         this.throwIfAccessDeniedOnList({
           accessType: 'delete',
           context,
@@ -744,9 +753,9 @@ createdAt_DESC
         });
 
         return this.model.findByIdAndRemove(id);
-      },
+      };
 
-      [this.deleteManyMutationName]: async (_, { ids }) => {
+      mutationResolvers[this.deleteManyMutationName] = async (_, { ids }) => {
         this.throwIfAccessDeniedOnList({
           accessType: 'delete',
           context,
@@ -760,8 +769,10 @@ createdAt_DESC
         });
 
         return Promise.all(ids.map(id => this.model.findByIdAndRemove(id)));
-      },
-    };
+      };
+    }
+
+    return mutationResolvers;
   }
 
   itemsQueryConditions(args, depthGuard = 0) {
