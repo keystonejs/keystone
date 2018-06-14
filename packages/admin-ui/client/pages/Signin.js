@@ -35,12 +35,13 @@ const Divider = styled.div({
 
 const FieldLabel = styled.div({
   color: colors.N60,
+  marginTop: 16,
   marginBottom: 8,
   fontSize: 16,
 });
 
 const Fields = styled.div({
-  marginBottom: 8,
+  marginBottom: 16,
   width: 280,
 });
 
@@ -49,10 +50,10 @@ export default ({ signinPath }) => (
     <Form method="post" action={signinPath}>
       <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
       <Divider />
-      <div>
+      <div style={{ minWidth: 280 }}>
         <Fields>
           <FieldLabel>Email</FieldLabel>
-          <Input name="username" />
+          <Input name="username" autoFocus />
           <FieldLabel>Password</FieldLabel>
           <Input type="password" name="password" />
         </Fields>

@@ -46,13 +46,14 @@ class SignedOut extends Component {
               <div
                 style={{
                   marginTop: 16,
+                  minWidth: 280,
                 }}
               >
                 {isLoading ? (
                   'Loading...'
                 ) : (
                   <Fragment>
-                    <p>You are signed out.</p>
+                    <p>You have been signed out.</p>
                     <p>
                       <a href={signinPath}>Sign In</a>
                     </p>
