@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
-const { mode } = require('./env');
+const { enableDevFeatures, mode } = require('./env');
 
 module.exports = function({ adminMeta, entry }) {
   const rules = [
@@ -47,7 +47,7 @@ module.exports = function({ adminMeta, entry }) {
     performance: { hints: false },
     plugins: [
       new webpack.DefinePlugin({
-        ENABLE_DEV_FEATURES: mode === 'development',
+        ENABLE_DEV_FEATURES: enableDevFeatures,
         IS_PUBLIC_BUNDLE: entry === 'public',
         KEYSTONE_ADMIN_META: JSON.stringify(adminMeta),
       }),
