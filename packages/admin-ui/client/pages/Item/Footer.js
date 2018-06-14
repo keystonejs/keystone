@@ -58,6 +58,11 @@ export default class Footer extends Component {
     window.removeEventListener('resize', this.recalcPosition, false);
   }
   recalcPosition = raf(() => {
+    if (this.wrapper === null) {
+      // Due to the use of raf, this function may end up being called *after*
+      // the component is unmounted. If this happens, we can safely return early.
+      return;
+    }
     this.footerSize.x = this.wrapper.offsetWidth;
 
     var offsetTop = 0;

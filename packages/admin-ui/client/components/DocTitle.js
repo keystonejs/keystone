@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Children } from 'react';
+import React, { Children, type Node } from 'react';
 import DocumentTitle from 'react-document-title';
 
 import { withAdminMeta } from '../providers/AdminMeta';

@@ -11,6 +11,7 @@
     "start": "node -r dotenv-safe/config index.js"
   },
   "dependencies": {
+    "@keystonejs/adapter-mongoose": "^1.0.0",
     "@keystonejs/admin-ui": "^5.0.0",
     "@keystonejs/core": "^5.0.0",
     "@keystonejs/fields": "^5.0.0",

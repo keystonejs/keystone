@@ -42,8 +42,12 @@ module.exports = function({ adminMeta, entry }) {
       filename: `${entry}.js`,
       publicPath: adminMeta.adminPath,
     },
+    // TODO: We should pay attention to our bundle size at some point, but
+    // right now this is just noise
+    performance: { hints: false },
     plugins: [
       new webpack.DefinePlugin({
+        ENABLE_DEV_FEATURES: mode === 'development',
         IS_PUBLIC_BUNDLE: entry === 'public',
         KEYSTONE_ADMIN_META: JSON.stringify(adminMeta),
       }),

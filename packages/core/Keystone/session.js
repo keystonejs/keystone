@@ -15,7 +15,7 @@ const validate = keystone => ({ valid = noop, invalid = noop }) => async (
     invalid({ req, reason: 'invalid-list' });
     return next();
   }
-  const item = await list.model.findById(req.session.keystoneItemId);
+  const item = await list.adapter.findById(req.session.keystoneItemId);
   if (!item) {
     // TODO: probably destroy the session
     invalid({ req, reason: 'invalid-item' });

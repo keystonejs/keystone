@@ -1,18 +1,21 @@
 const inflection = require('inflection');
 
-module.exports = class Field {
-  constructor(path, config, { getListByKey, listKey }) {
+class Field {
+  constructor(
+    path,
+    config,
+    { getListByKey, listKey, listAdapter, fieldAdapterClass }
+  ) {
     this.path = path;
     this.config = config;
     this.getListByKey = getListByKey;
     this.listKey = listKey;
     this.label = config.label || inflection.humanize(path);
-  }
-  addToMongooseSchema() {
-    throw new Error(
-      `Field type [${
-        this.constructor.name
-      }] does not implement addToMongooseSchema()`
+    this.adapter = listAdapter.newFieldAdapter(
+      fieldAdapterClass,
+      this.constructor.name,
+      path,
+      config
     );
   }
   getGraphqlSchema() {
@@ -78,9 +81,6 @@ module.exports = class Field {
   getGraphqlQueryArgs() {}
   getGraphqlUpdateArgs() {}
   getGraphqlFieldResolvers() {}
-  getQueryConditions() {
-    return [];
-  }
   getAdminMeta() {
     return this.extendAdminMeta({
       label: this.label,
@@ -92,4 +92,8 @@ module.exports = class Field {
   extendAdminMeta(meta) {
     return meta;
   }
+}
+
+module.exports = {
+  Implementation: Field,
 };

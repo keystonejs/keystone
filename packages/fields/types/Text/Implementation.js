@@ -1,18 +1,13 @@
-const Implementation = require('../../Implementation');
-
+const { Implementation } = require('../../Implementation');
+const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 const { escapeRegExp: esc } = require('@keystonejs/utils');
 
-module.exports = class Text extends Implementation {
+class Text extends Implementation {
   constructor() {
     super(...arguments);
     this.graphQLType = 'String';
   }
-  addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
-    schema.add({
-      [this.path]: { type: String, ...mongooseOptions },
-    });
-  }
+
   getGraphqlQueryArgs() {
     return `
       ${this.path}: String
@@ -38,6 +33,16 @@ module.exports = class Text extends Implementation {
       ${this.path}: String
     `;
   }
+}
+
+class MongoTextInterface extends MongooseFieldAdapter {
+  addToMongooseSchema(schema) {
+    const { mongooseOptions } = this.config;
+    schema.add({
+      [this.path]: { type: String, ...mongooseOptions },
+    });
+  }
+
   getQueryConditions(args) {
     const conditions = [];
     if (!args) {
@@ -109,4 +114,9 @@ module.exports = class Text extends Implementation {
     }
     return conditions;
   }
+}
+
+module.exports = {
+  Text,
+  MongoTextInterface,
 };

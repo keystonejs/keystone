@@ -1,3 +1,4 @@
+/* global ENABLE_DEV_FEATURES */
 import React, { Fragment } from 'react';
 import { withRouter } from 'react-router';
 import {
@@ -59,53 +60,38 @@ const Nav = props => {
         })}
       </NavGroup>
       <NavGroup>
-        <PrimaryNavItem target="_blank" href={GITHUB_PROJECT} title="GitHub">
-          <MarkGithubIcon />
-          <A11yText>GitHub</A11yText>
-        </PrimaryNavItem>
-        <NavSeparator />
-        <PrimaryNavItem
-          target="_blank"
-          href={graphiqlPath}
-          title="Graphiql Console"
-        >
-          <TerminalIcon />
-          <A11yText>Graphiql Console</A11yText>
-        </PrimaryNavItem>
-        <NavSeparator />
-        <PrimaryNavItem to={`${adminPath}/style-guide`} title="Style Guide">
-          <TelescopeIcon />
-          <A11yText>Style Guide</A11yText>
-        </PrimaryNavItem>
-        {withAuth ? (
+        {ENABLE_DEV_FEATURES ? (
           <Fragment>
+            <PrimaryNavItem
+              target="_blank"
+              href={GITHUB_PROJECT}
+              title="GitHub"
+            >
+              <MarkGithubIcon />
+              <A11yText>GitHub</A11yText>
+            </PrimaryNavItem>
             <NavSeparator />
-            <SessionProvider {...{ signinPath, signoutPath, sessionPath }}>
-              {({ user, isLoading }) => {
-                if (isLoading) {
-                  return (
-                    <PrimaryNavItem title="Loading user info">
-                      <EllipsisIcon />
-                      <A11yText>Loading user info</A11yText>
-                    </PrimaryNavItem>
-                  );
-                } else if (user) {
-                  return (
-                    <PrimaryNavItem href={signoutPath} title="Sign Out">
-                      <SignOutIcon />
-                      <A11yText>Sign Out</A11yText>
-                    </PrimaryNavItem>
-                  );
-                }
-                return (
-                  <PrimaryNavItem href={signinPath} title="Sign In">
-                    <SignInIcon />
-                    <A11yText>Sign In</A11yText>
-                  </PrimaryNavItem>
-                );
-              }}
-            </SessionProvider>
+            <PrimaryNavItem
+              target="_blank"
+              href={graphiqlPath}
+              title="Graphiql Console"
+            >
+              <TerminalIcon />
+              <A11yText>Graphiql Console</A11yText>
+            </PrimaryNavItem>
+            <NavSeparator />
+            <PrimaryNavItem to={`${adminPath}/style-guide`} title="Style Guide">
+              <TelescopeIcon />
+              <A11yText>Style Guide</A11yText>
+            </PrimaryNavItem>
+            <NavSeparator />
           </Fragment>
+        ) : null}
+        {withAuth ? (
+          <PrimaryNavItem href={signoutPath} title="Sign Out">
+            <SignOutIcon />
+            <A11yText>Sign Out</A11yText>
+          </PrimaryNavItem>
         ) : null}
       </NavGroup>
     </PrimaryNav>
