@@ -24,6 +24,7 @@ const {
 } = require('./config');
 const { configureTwitterAuth } = require('./twitter');
 
+const { DISABLE_AUTH } = process.env;
 const LOCAL_FILE_PATH = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
@@ -119,7 +120,8 @@ keystone.createList('PostCategory', {
 
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
-  // authStrategy, // uncomment to enable authentication (disabled for ease of running tests)
+  // allow disabling of admin auth for test environments
+  authStrategy: DISABLE_AUTH ? undefined : authStrategy,
 });
 
 const server = new WebServer(keystone, {
