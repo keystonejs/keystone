@@ -76,6 +76,10 @@ const NoResults = ({ children, ...props }) => (
 // Functional Components
 
 class ListDisplayRow extends Component {
+  static defaultProps = {
+    itemErrors: {},
+  };
+
   state = {
     showDeleteModal: false,
   };
@@ -111,7 +115,7 @@ class ListDisplayRow extends Component {
     );
   }
   render() {
-    const { list, link, item, fields } = this.props;
+    const { list, link, item, itemErrors, fields } = this.props;
 
     return (
       <tr>
@@ -137,11 +141,11 @@ class ListDisplayRow extends Component {
             return <BodyCell key={path} />;
           }
 
-          if (item[path] instanceof Error && item[path].name === 'AccessDeniedError') {
+          if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
             return (
               <BodyCell key={path}>
-                <ShieldIcon title={item[path].message} css={{ color: colors.N10 }} />
-                <A11yText>{item[path].message}</A11yText>
+                <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N10 }} />
+                <A11yText>{itemErrors[path].message}</A11yText>
               </BodyCell>
             );
           }
@@ -279,6 +283,7 @@ export default class ListTable extends Component {
       fields,
       isManaging,
       items,
+      itemsErrors,
       list,
       noResultsMessage,
       onChange,
@@ -318,7 +323,7 @@ export default class ListTable extends Component {
           onMouseLeave={this.stopRowSelectOnEnter}
         >
           {items.map(
-            item =>
+            (item, itemIndex) =>
               isManaging ? (
                 <ListManageRow
                   fields={fields}
@@ -334,6 +339,7 @@ export default class ListTable extends Component {
                 <ListDisplayRow
                   fields={fields}
                   item={item}
+                  itemErrors={itemsErrors[itemIndex]}
                   key={item.id}
                   link={({ path, id }) => `${adminPath}/${path}/${id}`}
                   list={list}

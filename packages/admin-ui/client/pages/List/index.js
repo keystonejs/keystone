@@ -3,8 +3,6 @@ import styled from 'react-emotion';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
-import cloneDeep from 'lodash/cloneDeep';
-import set from 'lodash/set';
 
 import {
   FoldIcon,
@@ -37,6 +35,7 @@ import DocTitle from '../../components/DocTitle';
 import PageLoading from '../../components/PageLoading';
 import PageError from '../../components/PageError';
 import { Popout, DisclosureArrow } from '../../components/Popout';
+import { deconstructErrorsToDataShape } from '../../util';
 
 import ColumnSelect from './ColumnSelect';
 import FilterSelect from './FilterSelect';
@@ -425,9 +424,15 @@ class ListPage extends Component {
         <DocTitle>{list.plural}</DocTitle>
         <Nav />
         <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
-          {({ data: graphQlData, error, loading, refetch }) => {
-            let data = graphQlData;
-            if ((!data || !data[list.listQueryName] || !Object.keys(data[list.listQueryName]).length) && error) {
+          {({ data, error, loading, refetch }) => {
+            // Only show error page if there is no data
+            // (ie; there could be partial data + partial errors)
+            if (
+              error &&
+              (!data ||
+                !data[list.listQueryName] ||
+                !Object.keys(data[list.listQueryName]).length)
+            ) {
               return (
                 <PageError>
                   <p>{error.message}</p>
@@ -435,26 +440,7 @@ class ListPage extends Component {
               );
             }
 
-            // When there are errors, we want to see if they're Access Denied.
-            // If so, we modify the dataset (which otherwise would be `null`) to
-            // have an Error object, which we'll use later in the UI code.
-            if (error && error.graphQLErrors && error.graphQLErrors.length) {
-              // Apollo Object.freeze's the data, so we have to clone before
-              // making modifications to it
-              data = cloneDeep(graphQlData);
-
-              error.graphQLErrors
-                // Comes from the backend. Specific to Keystone, so shouldn't
-                // give false positives with regular GraphQL errors
-                .filter(gqlError => gqlError.name && gqlError.name === 'AccessDeniedError')
-                .forEach(gqlError => {
-                  // Set the gqlError message to the path as reported by the graphql
-                  // gqlError
-                  const gqlErrorObj = new Error(`${gqlError.message} (${gqlError.uid})`);
-                  gqlErrorObj.name = gqlError.name;
-                  set(data, gqlError.path, gqlErrorObj);
-                });
-            }
+            const itemsErrors = deconstructErrorsToDataShape(error)[list.listQueryName];
 
             // TODO: This doesn't seem like the best way to capture the refetch,
             // but it's not easy to hoist the <Query> further up the hierarchy.
@@ -572,6 +558,7 @@ class ListPage extends Component {
                         fields={displayedFields}
                         isManaging={isManaging}
                         items={this.items}
+                        itemsErrors={itemsErrors}
                         list={list}
                         onChange={refetch}
                         onSelect={this.handleItemSelect}
