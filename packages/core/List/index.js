@@ -609,7 +609,7 @@ createdAt_DESC
     const dynamicDataGetter = () => dynamicData;
 
     fields.forEach(field => {
-      if (!field.path in data) {
+      if (!(field.path in data)) {
         return;
       }
 

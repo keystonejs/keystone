@@ -26,8 +26,10 @@ import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
 import { withToastUtils } from '@keystonejs/ui/src/primitives/toasts';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
+import { deconstructErrorsToDataShape } from '../../util';
 
 import { resolveAllKeys } from '@keystonejs/utils';
+import isEqual from 'lodash/isEqual';
 
 // This import is loaded by the @keystone/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
@@ -199,14 +201,29 @@ const ItemDetails = withRouter(
         onUpdate,
         toast,
         updateItem,
+        item: initialData,
       } = this.props;
 
       resolveAllKeys(
         fields.reduce(
-          (values, field) => ({
-            [field.path]: field.getValue(item),
-            ...values,
-          }),
+          (values, field) => {
+            const oldValue = field.getValue(initialData);
+            const newValue = field.getValue(item);
+
+            // Don't try to update anything that hasn't changed.
+            // This is particularly important for access control where a field
+            // may be `read: true, update: false`, so will appear in the item
+            // details, but is not editable, and would cause an error if a value
+            // was sent as part of the update query.
+            if (isEqual(oldValue, newValue)) {
+              return values;
+            }
+
+            return {
+              [field.path]: field.getValue(item),
+              ...values,
+            };
+          },
           {}
         )
       )
@@ -261,6 +278,8 @@ const ItemDetails = withRouter(
         list,
         updateInProgress,
         updateErrorMessage,
+        itemErrors,
+        item: initialData,
       } = this.props;
       const { copyText, item, itemHasChanged } = this.state;
       const isCopied = copyText === item.id;
@@ -309,6 +328,8 @@ const ItemDetails = withRouter(
                   autoFocus={!i}
                   field={field}
                   item={item}
+                  itemErrors={itemErrors}
+                  initialData={initialData}
                   key={field.path}
                   onChange={this.onChange}
                 />
@@ -351,11 +372,18 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toast }) => {
       <Nav />
       {/* network-only because the data we mutate with is important for display
           in the UI, and may be different than what's in the cache */}
-      <Query query={itemQuery} fetchPolicy="network-only">
+      <Query query={itemQuery} fetchPolicy="network-only" errorPolicy="all">
         {({ loading, error, data, refetch }) => {
           if (loading) return <PageLoading />;
 
-          if (error) {
+          // Only show error page if there is no data
+          // (ie; there could be partial data + partial errors)
+          if (
+            error &&
+            (!data ||
+              !data[list.itemQueryName] ||
+              !Object.keys(data[list.itemQueryName]).length)
+          ) {
             return (
               <Fragment>
                 <DocTitle>{list.singular} not found</DocTitle>
@@ -369,6 +397,8 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toast }) => {
           }
 
           const item = data[list.itemQueryName];
+          const itemErrors = deconstructErrorsToDataShape(error)[list.itemQueryName];
+
           return item ? (
             <main>
               <DocTitle>
@@ -400,6 +430,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toast }) => {
                       <ItemDetails
                         adminPath={adminPath}
                         item={item}
+                        itemErrors={itemErrors}
                         key={itemId}
                         list={list}
                         getListByKey={getListByKey}

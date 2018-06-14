@@ -8,6 +8,8 @@ import {
   FieldLabel,
   FieldInput,
 } from '@keystonejs/ui/src/primitives/fields';
+import { ShieldIcon } from '@keystonejs/icons';
+import { colors } from '@keystonejs/ui/src/theme';
 
 import { Select } from '@keystonejs/ui/src/primitives/forms';
 
@@ -36,11 +38,14 @@ export default class RelationshipField extends Component {
     }
   };
   render() {
-    const { autoFocus, field, item, renderContext } = this.props;
+    const { autoFocus, field, item, itemErrors, renderContext } = this.props;
     const { many } = field.config;
     const refList = field.getRefList();
     const query = getGraphqlQuery(refList);
     const htmlID = `ks-input-${field.path}`;
+    const canRead = !(
+      itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
+    );
 
     const selectProps =
       renderContext === 'dialog'
@@ -52,7 +57,22 @@ export default class RelationshipField extends Component {
 
     return (
       <FieldContainer>
-        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+        <FieldLabel
+          htmlFor={htmlID}
+          css={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+        >
+          {field.label}{' '}
+          {!canRead ? (
+            <ShieldIcon
+              title={itemErrors[field.path].message}
+              css={{ color: colors.N20, marginRight: '1em' }}
+            />
+          ) : null}
+        </FieldLabel>
         <FieldInput>
           <Query query={query}>
             {({ data, error, loading }) => {
@@ -60,31 +80,39 @@ export default class RelationshipField extends Component {
                 return <Select key="loading" isDisabled isLoading={loading} />;
               }
               // TODO: better error UI
+              // TODO: Handle permission errors
+              // (ie; user has permission to read this relationship field, but
+              // not the related list, or some items on the list)
               if (error) return 'Error';
+
               const options = data[refList.listQueryName].map(listData => ({
                 value: listData,
                 label: listData._label_, // eslint-disable-line no-underscore-dangle
               }));
-              let value = item[field.path];
-              if (many) {
-                if (!Array.isArray(value)) value = [];
-                value = value
-                  .map(
-                    i => options.filter(option => option.value.id === i.id)[0]
-                  )
-                  .filter(i => i);
-              } else if (value) {
-                value =
-                  options.filter(i => i.value.id === item[field.path].id)[0] ||
-                  null;
-              } else {
-                value = null;
+
+              let value = null;
+
+              if (canRead) {
+                if (many) {
+                  if (!Array.isArray(item[field.path])) value = [];
+                  value = item[field.path]
+                    .map(
+                      i => options.filter(option => option.value.id === i.id)[0]
+                    )
+                    .filter(i => i);
+                } else if (item[field.path]) {
+                  value =
+                    options.filter(i => i.value.id === item[field.path].id)[0] ||
+                    null;
+                }
               }
+
               return (
                 <Select
                   autoFocus={autoFocus}
                   isMulti={many}
                   value={value}
+                  placeholder={canRead ? undefined : itemErrors[field.path].message}
                   getOptionValue={option => option.value.id}
                   options={options}
                   onChange={this.onChange}

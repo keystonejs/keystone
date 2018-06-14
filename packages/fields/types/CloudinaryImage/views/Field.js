@@ -6,7 +6,7 @@ import {
   FieldLabel,
   FieldInput,
 } from '@keystonejs/ui/src/primitives/fields';
-import { AlertIcon } from '@keystonejs/icons';
+import { AlertIcon, ShieldIcon  } from '@keystonejs/icons';
 import { HiddenInput } from '@keystonejs/ui/src/primitives/forms';
 import { Lozenge } from '@keystonejs/ui/src/primitives/lozenge';
 import { Button, LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
@@ -233,7 +233,7 @@ export default class FileField extends Component {
   };
 
   render() {
-    const { autoFocus, field, statusMessage } = this.props;
+    const { autoFocus, field, statusMessage, itemErrors } = this.props;
     const { changeStatus, errorMessage } = this.state;
 
     const { file } = this.getFile();
@@ -241,10 +241,28 @@ export default class FileField extends Component {
     const showStatusMessage = ['removed', 'updated'].includes(changeStatus);
     const isEmpty = changeStatus === 'empty';
     const htmlID = `ks-input-${field.path}`;
+    const canRead = !(
+      itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
+    );
 
     return (
       <FieldContainer>
-        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+        <FieldLabel
+          htmlFor={htmlID}
+          css={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+        >
+          {field.label}{' '}
+          {!canRead ? (
+            <ShieldIcon
+              title={itemErrors[field.path].message}
+              css={{ color: colors.N20, marginRight: '1em' }}
+            />
+          ) : null}
+        </FieldLabel>
         <FieldInput>
           {!isEmpty && imagePath ? (
             <Wrapper>
