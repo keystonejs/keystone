@@ -183,7 +183,6 @@ class ListPage extends Component {
   };
 
   handleSelectedFieldsChange = selectedFields => {
-    console.log('handleSelectedFieldsChange', selectedFields);
     if (!selectedFields.length) {
       return;
     }
@@ -572,12 +571,14 @@ class ListPage extends Component {
                         type="text"
                       />
                     </Search>
-                    <FilterSelect
-                      onChange={this.onFilterChange}
-                      list={list}
-                      fields={list.fields}
-                      value={selectedFilters}
-                    />
+                    {ENABLE_DEV_FEATURES ? (
+                      <FilterSelect
+                        onChange={this.onFilterChange}
+                        list={list}
+                        fields={list.fields}
+                        value={selectedFilters}
+                      />
+                    ) : null}
                     <Popout buttonLabel="Columns" headerTitle="Columns">
                       <ColumnSelect
                         fields={list.fields}

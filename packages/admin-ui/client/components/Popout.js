@@ -1,4 +1,11 @@
-import React, { Fragment } from 'react';
+// @flow
+
+import React, {
+  Fragment,
+  type ComponentType,
+  type Node,
+  type Ref,
+} from 'react';
 import styled from 'react-emotion';
 
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
@@ -61,10 +68,22 @@ export const DisclosureArrow = styled.span(({ size = '0.3em' }) => ({
   width: 0,
 }));
 
-type Props = { buttonLabel: string };
+type Props = {
+  buttonLabel: string,
+  children: Node,
+  component: ComponentType<*>,
+  innerRef: Ref<HTMLElement>,
+  bodyRef: Ref<HTMLElement>,
+  footerContent: Node,
+  headerAfter: Node,
+  headerBefore: Node,
+  headerTitle: Node,
+  target: string,
+};
 
 export const Popout = ({
   buttonLabel,
+  component: Wrapper = Fragment,
   children,
   innerRef,
   bodyRef,
@@ -83,7 +102,7 @@ export const Popout = ({
 
   return (
     <PopoutModal ref={innerRef} target={target || defaultTarget}>
-      <Fragment>
+      <Wrapper>
         <Header>
           <HeaderLeft>{headerBefore}</HeaderLeft>
           <HeaderTitle>{headerTitle}</HeaderTitle>
@@ -91,7 +110,7 @@ export const Popout = ({
         </Header>
         <Body innerRef={bodyRef}>{children}</Body>
         {footerContent ? <Footer>{footerContent}</Footer> : null}
-      </Fragment>
+      </Wrapper>
     </PopoutModal>
   );
 };

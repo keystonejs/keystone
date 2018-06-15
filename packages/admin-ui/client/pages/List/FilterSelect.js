@@ -1,11 +1,14 @@
 import React, { Component, Fragment } from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
-import { ChevronLeftIcon, ChevronRightIcon } from '@keystonejs/icons';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  AlertIcon,
+} from '@keystonejs/icons';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 import { A11yText } from '@keystonejs/ui/src/primitives/typography';
-import { CheckboxPrimitive, Input } from '@keystonejs/ui/src/primitives/forms';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
+import { Alert } from '@keystonejs/ui/src/primitives/alert';
 
 import FieldAwareSelect, { type SelectProps } from './FieldAwareSelect';
 import OptionRenderer from './OptionRenderer';
@@ -113,58 +116,19 @@ export default class FilterSelect extends Component<SelectProps> {
   // Handlers
   // ==============================
 
-  onSelect = field => {
-    // const { list } = this.props;
-    // const { Filter } = FieldTypes[list.key][field.path];
-    // const filterValue = Filter.getInitialValue();
+  onSelectField = field => {
     this.setState({ field });
     this.fieldSelectRef.blur();
   };
-  onSelectFilter = ({ event, filter }) => {
+  onChangeFilter = filterValue => {
+    this.setState({ filterValue });
+  };
+  onSubmit = event => {
     const { onChange } = this.props;
-    onChange(filter);
-    console.log('onSelectFilter', event, filter);
-    this.setState({ filter });
-    this.close(event);
-  };
-  onChangeInverted = ({ target }) => {
-    const isInverted = target.checked;
-    const options = getOptions({ isInverted });
-    console.log('filter', this.state.filter);
-    const filter = getInvertedOption({
-      isInverted,
-      key: this.state.filter.value,
-    });
-
-    this.setState({ isInverted, options, filter });
-  };
-  onChangeCaseSensitivity = ({ target }) => {
-    const isCaseSensitive = target.checked;
-    this.setState({ isCaseSensitive });
-  };
-  onInputChange = ({ target }) => {
-    this.setState({ inputValue: target.value });
-  };
-  onApply = event => {
-    const { onChange } = this.props;
-    const {
-      field,
-      filter,
-      inputValue,
-      isInverted,
-      isCaseSensitive,
-    } = this.state;
-    const queryPath = getQuery({
-      path: field.path,
-      key: filter.value,
-      isInverted,
-    });
-
-    const expression = filter.label.toLowerCase();
-    const label = `${field.label} ${expression}: "${inputValue}"`;
-    const query = { [queryPath]: inputValue };
+    const { filterValue } = this.state;
 
     this.close(event);
+    onChange(filterValue);
   };
 
   // Lifecycle
@@ -220,7 +184,7 @@ export default class FilterSelect extends Component<SelectProps> {
   // Renderers
   // ==============================
 
-  renderSelect = () => {
+  renderFieldSelect = () => {
     return (
       <Transition
         key="select"
@@ -250,7 +214,7 @@ export default class FilterSelect extends Component<SelectProps> {
                 {...this.props}
                 innerRef={this.getFieldSelect}
                 key="select"
-                onChange={this.onSelect}
+                onChange={this.onSelectField}
                 placeholder="What would you like to filter?"
                 components={{ Option: FilterOption }}
                 value={[]}
@@ -268,7 +232,6 @@ export default class FilterSelect extends Component<SelectProps> {
     return (
       <Transition
         key="filter-ui"
-        appear
         mountOnEnter
         unmountOnExit
         timeout={220}
@@ -290,19 +253,44 @@ export default class FilterSelect extends Component<SelectProps> {
           };
           const style = { ...base, ...states[state] };
           const { Filter } = FieldTypes[list.key][field.path];
+          const Code = p => (
+            <code
+              css={{
+                background: 'rgba(0,0,0,0.1)',
+                padding: '1px 5px',
+                borderRadius: 2,
+              }}
+              {...p}
+            />
+          );
+
+          if (!Filter) {
+            return (
+              <div style={style} ref={this.getHeight}>
+                <Alert appearance="warning" variant="bold">
+                  <AlertIcon
+                    css={{
+                      height: 24,
+                      width: 24,
+                      marginLeft: -8,
+                      marginRight: 12,
+                    }}
+                  />
+                  <div css={{ fontSize: '0.85em', lineHeight: 1.4 }}>
+                    Could not find a <Code>Filter</Code> view for field type{' '}
+                    <Code>{field.type}</Code>.
+                  </div>
+                </Alert>
+              </div>
+            );
+          }
+
           return (
             <div style={style} ref={this.getHeight}>
               <Filter
                 list={list}
                 field={field}
-                onChange={this.onSelectFilter}
-                // onChangeInput={this.onInputChange}
-                // onChangeInverted={this.onChangeInverted}
-                // onChangeCaseSensitivity={this.onChangeCaseSensitivity}
-                // inputValue={inputValue}
-                // invertedValue={isInverted}
-                // caseSensitiveValue={isCaseSensitive}
-                // queryValue={filter}
+                onChange={this.onChangeFilter}
               />
             </div>
           );
@@ -311,17 +299,33 @@ export default class FilterSelect extends Component<SelectProps> {
     );
   };
 
+  renderFooter() {
+    const { list } = this.props;
+    const { field } = this.state;
+
+    // bail early
+    if (!field) return null;
+
+    const { Filter } = FieldTypes[list.key][field.path];
+
+    return Filter ? (
+      <Fragment>
+        <FooterButton onClick={this.onApply} isPrimary>
+          Apply
+        </FooterButton>
+        <FooterButton onClick={this.close}>Cancel</FooterButton>
+      </Fragment>
+    ) : null;
+  }
+  popoutForm = props => {
+    return <form onSubmit={this.onSubmit} {...props} />;
+  };
+
   render() {
     const { field } = this.state;
 
     const headerBefore = (
-      <Transition
-        in={Boolean(field)}
-        appear
-        mountOnEnter
-        unmountOnExit
-        timeout={220}
-      >
+      <Transition in={Boolean(field)} mountOnEnter unmountOnExit timeout={220}>
         {state => {
           const base = {
             transition: 'opacity 220ms linear',
@@ -344,25 +348,17 @@ export default class FilterSelect extends Component<SelectProps> {
 
     return (
       <Popout
+        component={this.popoutForm}
         bodyRef={this.getPopoutBody}
         innerRef={this.getPopoutRef}
         buttonLabel="Filters"
         headerBefore={headerBefore}
         headerTitle={field ? field.label : 'Filter'}
-        footerContent={
-          field ? (
-            <Fragment>
-              <FooterButton onClick={this.onApply} isPrimary>
-                Apply
-              </FooterButton>
-              <FooterButton onClick={this.close}>Cancel</FooterButton>
-            </Fragment>
-          ) : null
-        }
+        footerContent={this.renderFooter()}
       >
         <AnimateHeight style={{ position: 'relative' }} initial="auto">
           <TransitionGroup component={null}>
-            {field ? this.renderFilterUI() : this.renderSelect()}
+            {field ? this.renderFilterUI() : this.renderFieldSelect()}
           </TransitionGroup>
         </AnimateHeight>
       </Popout>

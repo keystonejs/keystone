@@ -131,28 +131,26 @@ export default class FilterSelect extends Component<Props> {
   // ==============================
 
   onSelectFilter = filter => {
-    this.setState({ filter });
+    this.setState({ filter }, this.updateQuery);
   };
   onChangeInverted = ({ target }) => {
     const isInverted = target.checked;
     const options = getOptions({ isInverted });
-    console.log('filter', this.state.filter);
     const filter = getInvertedOption({
       isInverted,
       key: this.state.filter.value,
     });
 
-    this.setState({ isInverted, options, filter });
+    this.setState({ isInverted, options, filter }, this.updateQuery);
   };
   onChangeCaseSensitivity = ({ target }) => {
     const isCaseSensitive = target.checked;
-    this.setState({ isCaseSensitive });
+    this.setState({ isCaseSensitive }, this.updateQuery);
   };
   onInputChange = ({ target }) => {
-    this.setState({ inputValue: target.value });
+    this.setState({ inputValue: target.value }, this.updateQuery);
   };
-  onApply = event => {
-    event.preventDefault();
+  updateQuery = () => {
     const { field, onChange } = this.props;
     const { filter, inputValue, isInverted, isCaseSensitive } = this.state;
     const queryPath = getQuery({
@@ -165,7 +163,7 @@ export default class FilterSelect extends Component<Props> {
     const label = `${field.label} ${expression}: "${inputValue}"`;
     const query = { [queryPath]: inputValue };
 
-    onChange({ event, filter: { query, label, isCaseSensitive } });
+    onChange({ query, label, isCaseSensitive });
   };
 
   // Refs
@@ -192,14 +190,14 @@ export default class FilterSelect extends Component<Props> {
 
     return (
       <div ref={this.getHeight}>
-        <form css={{ marginBottom: gridSize }} onSubmit={this.onApply}>
+        <div css={{ marginBottom: gridSize }}>
           <Input
             onChange={this.onInputChange}
             autoFocus
             placeholder={filterLabel}
             value={inputValue}
           />
-        </form>
+        </div>
         <FlexGroup stretch>
           <CheckboxPrimitive
             components={{ Label: CheckboxLabel }}
