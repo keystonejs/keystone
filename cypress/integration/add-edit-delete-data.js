@@ -33,7 +33,7 @@ describe('Adding data', () => {
         cy.get(`#${item}`).type(data[item]);
       });
 
-      cy.get('div[class*="Dialog"] button[appearance="create"]').click();
+      cy.get('div[role="dialog"] button[appearance="create"]').click();
 
       Object.keys(data).forEach(item => {
         cy.get(`#${item}`).should('have.value', data[item]);
