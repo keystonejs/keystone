@@ -11,9 +11,8 @@ import { A11yText } from '@keystonejs/ui/src/primitives/typography';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
 
 import FieldAwareSelect, { type SelectProps } from './FieldAwareSelect';
-import OptionRenderer from './OptionRenderer';
 import { OptionPrimitive } from './components';
-import { getInvertedOption, getOption, getOptions, getQuery } from './filters';
+import { getOption, getOptions } from './filters';
 import { Popout, POPOUT_GUTTER } from '../../components/Popout';
 import AnimateHeight from '../../components/AnimateHeight';
 
@@ -66,32 +65,6 @@ const FooterButton = ({ isPrimary, ...props }) => (
     {...props}
   />
 );
-const CheckboxLabel = ({ isChecked, isDisabled, ...props }) => {
-  return (
-    <label
-      css={{
-        alignItems: 'center',
-        border: `1px solid ${colors.N10}`,
-        borderRadius: 3,
-        display: 'flex',
-        fontSize: '0.75em',
-        fontWeight: 500,
-        lineHeight: 1,
-        transition: 'border-color 150ms linear',
-        width: '100%',
-        userSelect: 'none',
-
-        ':hover, :focus': {
-          borderColor: colors.N20,
-        },
-        ':active': {
-          backgroundColor: colors.N05,
-        },
-      }}
-      {...props}
-    />
-  );
-};
 
 const initialState = {
   field: null,

@@ -20,11 +20,11 @@ const Wrapper = styled.div({
   display: 'flex',
   alignItems: 'center',
 });
-const Label = styled.label(({ isChecked, isDisabled }) => ({
+const Label = styled.label({
   alignItems: 'center',
   display: 'flex',
   lineHeight: 1,
-}));
+});
 const Text = 'span';
 
 type State = {
