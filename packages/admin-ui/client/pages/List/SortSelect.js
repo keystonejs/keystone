@@ -5,6 +5,7 @@ import { colors } from '@keystonejs/ui/src/theme';
 
 import FieldAwareSelect, { type SelectProps } from './FieldAwareSelect';
 import { OptionPrimitive } from './components';
+import { POPOUT_GUTTER } from '../../components/Popout';
 
 export const SortButton = styled.button(({ isActive }) => {
   const overStyles = {
@@ -82,14 +83,16 @@ export default class SortSelect extends Component<SelectProps, State> {
 
   render() {
     return (
-      <FieldAwareSelect
-        {...this.props}
-        onChange={this.handleChange}
-        placeholder="Find a field..."
-        components={{
-          Option: this.augmentedOption,
-        }}
-      />
+      <div css={{ padding: POPOUT_GUTTER }}>
+        <FieldAwareSelect
+          {...this.props}
+          onChange={this.handleChange}
+          placeholder="Find a field..."
+          components={{
+            Option: this.augmentedOption,
+          }}
+        />
+      </div>
     );
   }
 }
