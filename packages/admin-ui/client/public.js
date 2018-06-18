@@ -17,6 +17,13 @@ import InvalidRoutePage from './pages/InvalidRoute';
 import SignoutPage from './pages/Signout';
 import SigninPage from './pages/Signin';
 
+/*
+  NOTE:
+  Using this page without an authStrategy of type PasswordAuthStrategy defined
+  for the Admin UI would cause serious problems. It should also be impossible to
+  actually do that, so we don't guard against it (yet).
+*/
+
 const Keystone = () => (
   <ApolloProvider client={apolloClient}>
     <ToastProvider>

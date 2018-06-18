@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'react-emotion';
 
 import SessionProvider from '../providers/Session';
@@ -30,36 +31,38 @@ const Divider = styled.div({
   margin: '0 40px',
 });
 
+const Content = styled.div({
+  marginTop: 16,
+  minWidth: 280,
+});
+
 class SignedOut extends Component {
   render() {
     const { signinPath, signoutPath, sessionPath } = this.props;
     return (
       <Container>
         <SessionProvider
-          forceSignout
-          {...{ signinPath, signoutPath, sessionPath }}
+          autoSignout
+          signinPath={signinPath}
+          signoutPath={signoutPath}
+          sessionPath={sessionPath}
         >
           {({ isLoading }) => (
             <Box>
               <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
               <Divider />
-              <div
-                style={{
-                  marginTop: 16,
-                  minWidth: 280,
-                }}
-              >
+              <Content>
                 {isLoading ? (
                   'Loading...'
                 ) : (
                   <Fragment>
                     <p>You have been signed out.</p>
                     <p>
-                      <a href={signinPath}>Sign In</a>
+                      <Link to={signinPath}>Sign In</Link>
                     </p>
                   </Fragment>
                 )}
-              </div>
+              </Content>
             </Box>
           )}
         </SessionProvider>
