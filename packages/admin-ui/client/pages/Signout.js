@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'react-emotion';
 
@@ -49,41 +49,43 @@ const Spacer = styled.div({
   height: 120,
 });
 
-class SignedOut extends Component {
-  render() {
-    const { signinPath, signoutPath, sessionPath } = this.props;
-    return (
-      <SessionProvider
-        autoSignout
-        signinPath={signinPath}
-        signoutPath={signoutPath}
-        sessionPath={sessionPath}
-      >
-        {({ isLoading }) => (
-          <Container>
-            <Alerts />
-            <Box>
-              <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
-              <Divider />
-              <Content>
-                {isLoading ? (
-                  'Loading...'
-                ) : (
-                  <Fragment>
-                    <p>You have been signed out.</p>
-                    <p>
-                      <Link to={signinPath}>Sign In</Link>
-                    </p>
-                  </Fragment>
-                )}
-              </Content>
-            </Box>
-            <Spacer />
-          </Container>
-        )}
-      </SessionProvider>
-    );
+const SignedOutPage = ({ isLoading, isSignedIn, signinPath, signOut }) => {
+  let showLoading = isLoading;
+  // If the user is still signed in, sign them out
+  if (isSignedIn) {
+    showLoading = true; // Pretend we're still loading
+    setTimeout(signOut, 1); // Will cause a re-render, so wait a moment
   }
-}
+  return (
+    <Container>
+      <Alerts />
+      <Box>
+        <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
+        <Divider />
+        <Content>
+          {showLoading ? (
+            'Loading...'
+          ) : (
+            <Fragment>
+              <p>You have been signed out.</p>
+              <p>
+                <Link to={signinPath}>Sign In</Link>
+              </p>
+            </Fragment>
+          )}
+        </Content>
+      </Box>
+      <Spacer />
+    </Container>
+  );
+};
 
-export default SignedOut;
+export default ({ signinPath, signoutPath, sessionPath }) => (
+  <SessionProvider
+    signinPath={signinPath}
+    signoutPath={signoutPath}
+    sessionPath={sessionPath}
+  >
+    {props => <SignedOutPage signinPath={signinPath} {...props} />}
+  </SessionProvider>
+);

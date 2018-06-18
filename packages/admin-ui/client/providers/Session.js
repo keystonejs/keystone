@@ -41,7 +41,7 @@ class Session extends Component {
     if (autoSignout) {
       this.signOut();
     } else {
-      this.getSession();
+      this.getSession(autoSignout);
     }
   }
 
