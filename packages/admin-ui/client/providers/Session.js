@@ -37,7 +37,7 @@ class Session extends Component {
   };
 
   componentDidMount() {
-    const { autoSignout, loadSession } = this.props;
+    const { autoSignout } = this.props;
     if (autoSignout) {
       this.signOut();
     } else {
@@ -61,6 +61,7 @@ class Session extends Component {
   signIn = ({ username, password }) => {
     const { signinPath } = this.props;
     this.setState({ error: null, isLoading: true });
+    // TODO: Handle caught errors
     postJSON(signinPath, { username, password })
       .then(data => {
         if (!data.success) {
@@ -81,7 +82,7 @@ class Session extends Component {
     // TODO: Handle errors
     postJSON(signoutPath)
       .then(() => this.getSession())
-      .catch(error => console.error(error));
+      .catch(e => console.error(e));
   };
 
   render() {

@@ -1,4 +1,3 @@
-/* global KEYSTONE_ADMIN_META */
 import { ApolloLink, Observable } from 'apollo-link';
 import { createUploadLink } from 'apollo-upload-client';
 import { withClientState } from 'apollo-link-state';
