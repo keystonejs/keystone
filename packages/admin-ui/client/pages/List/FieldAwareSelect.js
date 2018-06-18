@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
-
-const selectStyles = {
-  control: provided => ({ ...provided, minWidth: '200px' }),
-  menu: () => ({ marginTop: 8 }),
-};
+import OptionRenderer from './OptionRenderer';
 
 export type SelectProps = {
   fields: any,
@@ -28,14 +23,9 @@ export default class FieldAwareSelect extends Component<SelectProps> {
   };
 
   render() {
-    const {
-      components,
-      fields,
-      innerRef,
-      onChange,
-      value,
-      ...props
-    } = this.props;
+    const { fields, onChange, value, ...props } = this.props;
+
+    // TODO move this out of render
 
     // Convert the fields data into the format react-select expects.
     const options = fields.map(({ label, path }) => ({ label, value: path }));
@@ -55,28 +45,11 @@ export default class FieldAwareSelect extends Component<SelectProps> {
     })();
 
     return (
-      <Select
-        backspaceRemovesValue={false}
-        captureMenuScroll={false}
-        closeMenuOnSelect={false}
-        hideSelectedOptions={false}
-        isClearable={false}
-        menuIsOpen
-        menuShouldScrollIntoView={false}
-        ref={innerRef}
-        styles={selectStyles}
-        tabSelectsValue={false}
-        components={{
-          ...components,
-          DropdownIndicator: null,
-          IndicatorSeparator: null,
-          SingleValue: () => null,
-          MultiValue: () => null,
-        }}
-        {...props}
+      <OptionRenderer
         onChange={this.handleChange}
         options={options}
         value={selected}
+        {...props}
       />
     );
   }

@@ -3,6 +3,8 @@ import { Mutation } from 'react-apollo';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 
+const DialogElement = props => <div role="alertdialog" {...props} />;
+
 export default class DeleteItemModal extends Component {
   onClose = () => {
     if (this.isLoading) return;
@@ -22,6 +24,7 @@ export default class DeleteItemModal extends Component {
           this.isLoading = loading;
           return (
             <Dialog
+              component={DialogElement}
               isOpen={isOpen}
               onClose={this.onClose}
               onKeyDown={this.onKeyDown}

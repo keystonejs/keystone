@@ -25,8 +25,10 @@ import { A11yText, Kbd, H1 } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
 import { LoadingSpinner } from '@keystonejs/ui/src/primitives/loading';
+import { Pill } from '@keystonejs/ui/src/primitives/pill';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
+import AnimateHeight from '../../components/AnimateHeight';
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
@@ -40,6 +42,10 @@ import { Popout, DisclosureArrow } from '../../components/Popout';
 import ColumnSelect from './ColumnSelect';
 import FilterSelect from './FilterSelect';
 import SortSelect, { SortButton } from './SortSelect';
+
+// ==============================
+// Queries
+// ==============================
 
 const getQueryArgs = args => {
   const queryArgs = Object.keys(args).map(
@@ -130,6 +136,7 @@ class ListPage extends Component {
 
     this.state = {
       displayedFields,
+      selectedFilters: [],
       isFullWidth: false,
       isManaging: false,
       selectedItems: [],
@@ -272,6 +279,22 @@ class ListPage extends Component {
     let id = data[list.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
   };
+  onFilterChange = value => {
+    let selectedFilters = this.state.selectedFilters.slice(0);
+
+    if (selectedFilters.includes(value)) {
+      selectedFilters = selectedFilters.filter(f => f !== value);
+    } else {
+      selectedFilters.push(value);
+    }
+
+    this.setState({ selectedFilters });
+  };
+
+  // ==============================
+  // Renderers
+  // ==============================
+
   renderCreateModal() {
     const { showCreateModal } = this.state;
     const { list } = this.props;
@@ -334,6 +357,28 @@ class ListPage extends Component {
         <A11yText>{text}</A11yText>
       </Button>,
     ];
+  }
+  renderFilters() {
+    const { selectedFilters } = this.state;
+
+    return (
+      <AnimateHeight>
+        {selectedFilters.length ? (
+          <FlexGroup style={{ paddingTop: gridSize }} wrap>
+            {selectedFilters.map(f => (
+              <Pill
+                key={f.label}
+                appearance="primary"
+                onRemove={() => this.onFilterChange(f)}
+                style={{ marginBottom: gridSize / 2, marginTop: gridSize / 2 }}
+              >
+                {f.label}
+              </Pill>
+            ))}
+          </FlexGroup>
+        ) : null}
+      </AnimateHeight>
+    );
   }
   renderPaginationOrManage() {
     const { list } = this.props;
@@ -403,8 +448,8 @@ class ListPage extends Component {
     return (
       <div
         css={{
-          marginBottom: '1em',
-          marginTop: '1em',
+          marginBottom: gridSize * 2,
+          marginTop: gridSize,
           visibility: this.itemsCount ? 'visible' : 'hidden',
         }}
       >
@@ -421,6 +466,7 @@ class ListPage extends Component {
     const { list, adminPath } = this.props;
     const {
       displayedFields,
+      selectedFilters,
       isFullWidth,
       isManaging,
       sortDirection,
@@ -526,25 +572,19 @@ class ListPage extends Component {
                       />
                     </Search>
                     {ENABLE_DEV_FEATURES ? (
-                      <Popout buttonLabel="Filters" headerTitle="Filters">
-                        <FilterSelect
-                          isMulti
-                          fields={list.fields}
-                          onChange={console.log}
-                          value={displayedFields}
-                          placeholder="Find a field..."
-                          removeIsAllowed={displayedFields.length > 1}
-                        />
-                      </Popout>
+                      <FilterSelect
+                        onChange={this.onFilterChange}
+                        list={list}
+                        fields={list.fields}
+                        value={selectedFilters}
+                      />
                     ) : null}
                     <Popout buttonLabel="Columns" headerTitle="Columns">
                       <ColumnSelect
-                        isMulti
                         fields={list.fields}
                         onChange={this.handleSelectedFieldsChange}
-                        value={displayedFields}
-                        placeholder="Find a column..."
                         removeIsAllowed={displayedFields.length > 1}
+                        value={displayedFields}
                       />
                     </Popout>
                     {this.renderExpandButton()}
@@ -558,6 +598,7 @@ class ListPage extends Component {
                     </IconButton>
                   </FlexGroup>
 
+                  {this.renderFilters()}
                   {this.renderPaginationOrManage()}
                 </Container>
 

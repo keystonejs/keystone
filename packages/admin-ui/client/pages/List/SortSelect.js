@@ -5,6 +5,7 @@ import { colors } from '@keystonejs/ui/src/theme';
 
 import FieldAwareSelect, { type SelectProps } from './FieldAwareSelect';
 import { OptionPrimitive } from './components';
+import { POPOUT_GUTTER } from '../../components/Popout';
 
 export const SortButton = styled.button(({ isActive }) => {
   const overStyles = {
@@ -33,7 +34,7 @@ export const SortOption = ({
   children,
   isFocused,
   isSelected,
-  innerProps,
+  ...props
 }) => {
   const Icon = isSelected
     ? ChevronUpIcon
@@ -43,11 +44,7 @@ export const SortOption = ({
   const iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
 
   return (
-    <OptionPrimitive
-      isFocused={isFocused}
-      isSelected={isSelected}
-      {...innerProps}
-    >
+    <OptionPrimitive isFocused={isFocused} isSelected={isSelected} {...props}>
       <span>{children}</span>
       <Icon css={{ color: iconColor }} />
     </OptionPrimitive>
@@ -86,14 +83,16 @@ export default class SortSelect extends Component<SelectProps, State> {
 
   render() {
     return (
-      <FieldAwareSelect
-        {...this.props}
-        onChange={this.handleChange}
-        placeholder="Find a field..."
-        components={{
-          Option: this.augmentedOption,
-        }}
-      />
+      <div css={{ padding: POPOUT_GUTTER }}>
+        <FieldAwareSelect
+          {...this.props}
+          onChange={this.handleChange}
+          placeholder="Find a field..."
+          components={{
+            Option: this.augmentedOption,
+          }}
+        />
+      </div>
     );
   }
 }

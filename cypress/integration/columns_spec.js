@@ -34,8 +34,8 @@ describe('Columns', () => {
         cy
           .get('#app ~ div')
           .find('input[id^="react-select-"]')
-          .clear()
-          .type(`${name}{enter}`);
+          .clear({ force: true })
+          .type(`${name}{enter}`, { force: true });
         cy.get('main').should('contain', name);
       });
 
@@ -43,8 +43,8 @@ describe('Columns', () => {
         cy
           .get('#app ~ div')
           .find('input[id^="react-select-"]')
-          .clear()
-          .type(`${name}{enter}`);
+          .clear({ force: true })
+          .type(`${name}{enter}`, { force: true });
         cy.get('main').should('not.contain', name);
       });
     });

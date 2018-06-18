@@ -59,6 +59,7 @@ type FlexGroupProps = {
     | 'center'
     | 'flex-end'
     | 'flex-start',
+  wrap: boolean,
   spacing: number,
   stretch: boolean,
   tag: string,
@@ -71,6 +72,7 @@ export const FlexGroup = ({
   isInline,
   isVertical,
   justify = 'flex-start',
+  wrap = 'false',
   spacing = gridSize,
   stretch,
   tag: Tag = 'div',
@@ -86,7 +88,7 @@ export const FlexGroup = ({
         alignItems: align,
         display: isInline ? 'inline-flex' : 'flex',
         flexDirection: isVertical ? 'column' : 'row',
-        flexWrap: 'nowrap',
+        flexWrap: wrap ? 'wrap' : 'nowrap',
         justifyContent: justify,
         marginBottom: isVertical ? -gutter : null,
         marginLeft: isContiguous || isVertical ? null : -gutter,
