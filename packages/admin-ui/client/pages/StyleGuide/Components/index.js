@@ -9,11 +9,9 @@ import Loading from './Loading';
 import Alerts from './Alerts';
 import Grid from './Grid';
 import Pagination from './Pagination';
-import Toasts from './Toasts';
 
 const ComponentsGuide = () => (
   <Fragment>
-    <Toasts />
     <Pagination />
     <Badges />
     <Buttons />
