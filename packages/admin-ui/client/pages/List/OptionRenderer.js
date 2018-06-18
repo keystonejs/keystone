@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Select, { components as reactSelectComponents } from 'react-select';
-import { GrabberIcon } from '@keystonejs/icons';
 import { colors } from '@keystonejs/ui/src/theme';
 import { alpha } from '@keystonejs/ui/src/theme/color-utils';
 import { OptionPrimitive } from './components';
@@ -48,24 +47,10 @@ const Control = ({ selectProps, ...props }) => {
   );
 };
 
-const DropdownIndicator = () => (
-  <div
-    css={{
-      color: colors.N30,
-      marginRight: 2,
-      marginTop: 2,
-      textAlign: 'center',
-      width: 32,
-    }}
-  >
-    <GrabberIcon />
-  </div>
-);
-
 const defaultComponents = {
   Control,
   Option: OptionPrimitive,
-  DropdownIndicator,
+  DropdownIndicator: null,
   IndicatorSeparator: null,
 };
 

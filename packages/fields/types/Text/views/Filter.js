@@ -1,3 +1,5 @@
+// @flow
+
 import React, { Component } from 'react';
 
 import { ChevronRightIcon } from '@keystonejs/icons';
@@ -7,6 +9,8 @@ import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import {
   OptionRenderer,
   OptionPrimitive,
+  CheckboxGroup,
+  Checkbox,
 } from '@keystonejs/ui/src/primitives/filters';
 
 // ==============================
@@ -82,36 +86,13 @@ export const FilterOption = ({ children, isFocused, isSelected, ...props }) => {
   );
 };
 
-const CheckboxLabel = ({ isChecked, isDisabled, ...props }) => {
-  return (
-    <label
-      css={{
-        alignItems: 'center',
-        border: `1px solid ${colors.N10}`,
-        borderRadius: 3,
-        display: 'flex',
-        fontSize: '0.75em',
-        fontWeight: 500,
-        lineHeight: 1,
-        transition: 'border-color 150ms linear',
-        width: '100%',
-        userSelect: 'none',
-
-        ':hover, :focus': {
-          borderColor: colors.N20,
-        },
-        ':active': {
-          backgroundColor: colors.N05,
-        },
-      }}
-      {...props}
-    />
-  );
-};
-
 // ==============================
 // Actual filter UI
 // ==============================
+
+function isOptionSelected(opt, selected) {
+  return selected.filter(s => opt.label === s.label).length;
+}
 
 type Props = {
   field: Object,
@@ -124,17 +105,41 @@ const initialState = {
   options: getOptions({ isInverted: false }),
 };
 
+type FilterObject = {
+  query: { [queryPath: string]: string },
+  label: string,
+  isCaseSensitive: boolean,
+};
+
 export default class FilterSelect extends Component<Props> {
+  // static getInitialState(): FilterObject {
+  //   return {
+  //     query: 'query',
+  //     label: 'label',
+  //     isCaseSensitive: false,
+  //   }
+  // }
   state = initialState;
 
   // Handlers
   // ==============================
 
-  onSelectFilter = filter => {
+  onTypeChange = filter => {
     this.setState({ filter }, this.updateQuery);
   };
-  onChangeInverted = ({ target }) => {
-    const isInverted = target.checked;
+  onCheckboxChange = value => {
+    const isInverted = value.includes('isInverted');
+    const isCaseSensitive = value.includes('isCaseSensitive');
+
+    // fork method calls and guard against invalid changes
+    if (isInverted !== this.state.isInverted) {
+      this.onChangeInverted(isInverted);
+    }
+    if (isCaseSensitive !== this.state.isCaseSensitive) {
+      this.onChangeCaseSensitivity(isCaseSensitive);
+    }
+  };
+  onChangeInverted = isInverted => {
     const options = getOptions({ isInverted });
     const filter = getInvertedOption({
       isInverted,
@@ -143,8 +148,7 @@ export default class FilterSelect extends Component<Props> {
 
     this.setState({ isInverted, options, filter }, this.updateQuery);
   };
-  onChangeCaseSensitivity = ({ target }) => {
-    const isCaseSensitive = target.checked;
+  onChangeCaseSensitivity = isCaseSensitive => {
     this.setState({ isCaseSensitive }, this.updateQuery);
   };
   onInputChange = ({ target }) => {
@@ -166,23 +170,9 @@ export default class FilterSelect extends Component<Props> {
     onChange({ query, label, isCaseSensitive });
   };
 
-  // Refs
-  // ==============================
-
-  getFilterSelect = ref => {
-    if (!ref) return;
-    this.filterSelectRef = ref;
-  };
-
   render() {
     const { field } = this.props;
-    const {
-      filter,
-      inputValue,
-      isCaseSensitive,
-      isInverted,
-      options,
-    } = this.state;
+    const { filter, inputValue, isCaseSensitive, options } = this.state;
 
     const filterLabel = `${field.label} ${filter.label.toLowerCase()}${
       isCaseSensitive ? ' (case sensitive)' : ''
@@ -198,30 +188,15 @@ export default class FilterSelect extends Component<Props> {
             value={inputValue}
           />
         </div>
-        <FlexGroup stretch>
-          <CheckboxPrimitive
-            components={{ Label: CheckboxLabel }}
-            onChange={this.onChangeInverted}
-            checked={isInverted}
-          >
-            Invert Filter
-          </CheckboxPrimitive>
-          <CheckboxPrimitive
-            components={{ Label: CheckboxLabel }}
-            onChange={this.onChangeCaseSensitivity}
-            checked={isCaseSensitive}
-          >
-            Case Sensitive
-          </CheckboxPrimitive>
-        </FlexGroup>
+        <CheckboxGroup onChange={this.onCheckboxChange}>
+          <Checkbox value="isInverted">Invert Filter</Checkbox>
+          <Checkbox value="isCaseSensitive">Case Sensitive</Checkbox>
+        </CheckboxGroup>
         <OptionRenderer
-          innerRef={this.getFilterSelect}
-          isOptionSelected={(opt, selected) => {
-            return selected.filter(s => opt.label === s.label).length;
-          }}
+          isOptionSelected={isOptionSelected}
           displaySearch={false}
           options={options}
-          onChange={this.onSelectFilter}
+          onChange={this.onTypeChange}
           value={filter}
         />
       </div>

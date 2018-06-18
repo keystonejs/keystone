@@ -290,6 +290,9 @@ class ListPage extends Component {
 
     this.setState({ selectedFilters });
   };
+  onFilterClear = () => {
+    this.setState({ selectedFilters: [] });
+  };
 
   // ==============================
   // Renderers
@@ -359,26 +362,33 @@ class ListPage extends Component {
     ];
   }
   renderFilters() {
+    const { list } = this.props;
     const { selectedFilters } = this.state;
+    const pillStyle = { marginBottom: gridSize / 2, marginTop: gridSize / 2 };
 
-    return (
-      <AnimateHeight>
-        {selectedFilters.length ? (
-          <FlexGroup style={{ paddingTop: gridSize }} wrap>
-            {selectedFilters.map(f => (
+    console.log('selectedFilters', selectedFilters);
+
+    return ENABLE_DEV_FEATURES ? (
+      <FlexGroup style={{ paddingTop: gridSize }} wrap>
+        {selectedFilters.length
+          ? selectedFilters.map(f => (
               <Pill
                 key={f.label}
                 appearance="primary"
                 onRemove={() => this.onFilterChange(f)}
-                style={{ marginBottom: gridSize / 2, marginTop: gridSize / 2 }}
+                style={pillStyle}
               >
                 {f.label}
               </Pill>
-            ))}
-          </FlexGroup>
+            ))
+          : null}
+        {selectedFilters.length > 1 ? (
+          <Pill key="clear" onClick={this.onFilterClear} style={pillStyle}>
+            Clear All
+          </Pill>
         ) : null}
-      </AnimateHeight>
-    );
+      </FlexGroup>
+    ) : null;
   }
   renderPaginationOrManage() {
     const { list } = this.props;

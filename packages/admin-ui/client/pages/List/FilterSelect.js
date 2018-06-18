@@ -199,8 +199,10 @@ export default class FilterSelect extends Component<SelectProps> {
     );
   };
   renderFilterUI = () => {
-    const { list } = this.props;
+    const { list, value } = this.props;
     const { field } = this.state;
+
+    console.log('FilterSelect', value);
 
     return (
       <Transition
