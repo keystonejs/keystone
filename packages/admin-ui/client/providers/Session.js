@@ -35,7 +35,12 @@ class Session extends Component {
   };
 
   componentDidMount() {
-    this.getSession();
+    const { autoSignout, loadSession } = this.props;
+    if (autoSignout) {
+      this.signOut();
+    } else {
+      this.getSession();
+    }
   }
 
   getSession = () => {
