@@ -8,7 +8,15 @@ import logo from '../assets/logo.png';
 const Container = styled.div({
   alignItems: 'center',
   display: 'flex',
+  flexDirection: 'column',
   justifyContent: 'center',
+  minHeight: '100vh',
+});
+
+const Alerts = styled.div({
+  margin: '20px auto',
+  width: 650,
+  height: 48,
 });
 
 const Box = styled.div({
@@ -16,7 +24,8 @@ const Box = styled.div({
   backgroundColor: 'white',
   border: '1px solid #e9e9e9',
   borderRadius: '0.3em',
-  margin: '200px auto',
+  margin: '0 auto',
+  minWidth: 650,
   padding: 40,
   display: 'flex',
   flexWrap: 'nowrap',
@@ -36,18 +45,23 @@ const Content = styled.div({
   minWidth: 280,
 });
 
+const Spacer = styled.div({
+  height: 120,
+});
+
 class SignedOut extends Component {
   render() {
     const { signinPath, signoutPath, sessionPath } = this.props;
     return (
-      <Container>
-        <SessionProvider
-          autoSignout
-          signinPath={signinPath}
-          signoutPath={signoutPath}
-          sessionPath={sessionPath}
-        >
-          {({ isLoading }) => (
+      <SessionProvider
+        autoSignout
+        signinPath={signinPath}
+        signoutPath={signoutPath}
+        sessionPath={sessionPath}
+      >
+        {({ isLoading }) => (
+          <Container>
+            <Alerts />
             <Box>
               <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
               <Divider />
@@ -64,9 +78,10 @@ class SignedOut extends Component {
                 )}
               </Content>
             </Box>
-          )}
-        </SessionProvider>
-      </Container>
+            <Spacer />
+          </Container>
+        )}
+      </SessionProvider>
     );
   }
 }

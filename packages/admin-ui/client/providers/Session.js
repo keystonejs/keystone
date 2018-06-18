@@ -30,8 +30,10 @@ function postJSON(url, data = {}) {
 
 class Session extends Component {
   state = {
+    error: null,
     session: {},
     isLoading: true,
+    isInitialising: true,
   };
 
   componentDidMount() {
@@ -46,24 +48,37 @@ class Session extends Component {
   getSession = () => {
     const { sessionPath } = this.props;
     // Avoid an extra re-render
-    if (!this.state.isLoading) {
+    const { isLoading } = this.state;
+    if (!isLoading) {
       this.setState({ isLoading: true });
     }
+    // TODO: Handle errors
     getJSON(sessionPath).then(data => {
-      this.setState({ session: data, isLoading: false });
+      this.setState({ isInitialising: false, isLoading: false, session: data });
     });
   };
 
   signIn = ({ username, password }) => {
     const { signinPath } = this.props;
+    this.setState({ error: null, isLoading: true });
     postJSON(signinPath, { username, password })
-      .then(() => this.getSession())
+      .then(data => {
+        if (!data.success) {
+          this.setState({ error: data });
+        }
+        this.getSession();
+      })
       .catch(error => console.error(error));
   };
 
   signOut = () => {
     const { signoutPath } = this.props;
-    this.setState({ isLoading: true });
+    // Avoid an extra re-render
+    const { isLoading, error } = this.state;
+    if (error || !isLoading) {
+      this.setState({ error: null, isLoading: true });
+    }
+    // TODO: Handle errors
     postJSON(signoutPath)
       .then(() => this.getSession())
       .catch(error => console.error(error));
@@ -73,11 +88,15 @@ class Session extends Component {
     const { signIn, signOut } = this;
     const { children } = this.props;
     const {
+      error,
       session: { user, signedIn: isSignedIn },
+      isInitialising,
       isLoading,
     } = this.state;
 
     return children({
+      error,
+      isInitialising,
       isLoading,
       isSignedIn,
       signIn,
