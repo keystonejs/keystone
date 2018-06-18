@@ -46,6 +46,7 @@ class CreateItemModal extends Component {
     const { isLoading } = this.props;
     if (isLoading) return;
     this.props.onClose();
+    console.log('CreateItemModal onClose');
   };
   onKeyDown = event => {
     if (event.defaultPrevented) return;
@@ -72,6 +73,7 @@ class CreateItemModal extends Component {
     const { item } = this.state;
     return (
       <Dialog
+        closeOnBlanketClick
         isOpen={isOpen}
         onClose={this.onClose}
         heading={`Create ${list.singular}`}

@@ -4,13 +4,14 @@ import { colors } from '@keystonejs/ui/src/theme';
 
 import FieldAwareSelect, { type SelectProps } from './FieldAwareSelect';
 import { OptionPrimitive } from './components';
+import { POPOUT_GUTTER } from '../../components/Popout';
 
 export const ColumnOption = ({
   children,
   isFocused,
   isSelected,
-  innerProps,
   selectProps,
+  ...props
 }) => {
   const { removeIsAllowed } = selectProps;
 
@@ -23,11 +24,7 @@ export const ColumnOption = ({
   }
 
   return (
-    <OptionPrimitive
-      isFocused={isFocused}
-      isSelected={isSelected}
-      {...innerProps}
-    >
+    <OptionPrimitive isFocused={isFocused} isSelected={isSelected} {...props}>
       <span>{children}</span>
       {isSelected && !removeIsAllowed ? null : (
         <Icon css={{ color: iconColor }} />
@@ -38,13 +35,13 @@ export const ColumnOption = ({
 
 export default function ColumnSelect(props: SelectProps) {
   return (
-    <FieldAwareSelect
-      {...props}
-      // onChange={this.handleChange}
-      placeholder="Find a field..."
-      components={{
-        Option: ColumnOption,
-      }}
-    />
+    <div css={{ padding: POPOUT_GUTTER }}>
+      <FieldAwareSelect
+        {...props}
+        components={{ Option: ColumnOption }}
+        isMulti
+        placeholder="Select columns to display"
+      />
+    </div>
   );
 }

@@ -2,19 +2,12 @@
 
 import React, { Component, type ComponentType, type Node } from 'react';
 
+import { generateUEID } from '../../utils';
 import { Toast, ToastContainer } from './styled';
-import type { AddFn, RemoveFn, ToastsType, Options, Id } from './types';
+import type { Callback, Id, Options, ToastsType } from './types';
 
 const { Consumer, Provider } = React.createContext();
-
-// Generate a unique enough ID
-function generateUEID() {
-  let first = (Math.random() * 46656) | 0;
-  let second = (Math.random() * 46656) | 0;
-  first = ('000' + first.toString(36)).slice(-3);
-  second = ('000' + second.toString(36)).slice(-3);
-  return first + second;
-}
+const NOOP = () => {};
 
 // Provider
 // ==============================
@@ -23,35 +16,34 @@ type Props = {
   children: Node,
   cache?: Cache,
 };
-type State = {
-  toasts: ToastsType,
-  addToast: AddFn,
-  removeToast: RemoveFn,
-};
+type State = { toasts: ToastsType };
 
 export class ToastProvider extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    this.state = {
-      toasts: [],
-      addToast: this.addToast,
-      removeToast: this.removeToast,
-    };
+    this.state = { toasts: [] };
   }
-  addToast = (content: Node, options?: Options = {}) => () => {
-    const toasts = this.state.toasts.slice(0);
+  addToast = (content: Node, options?: Options = {}) => (cb: Callback) => {
     const id = generateUEID();
+    const callback = cb ? () => cb(id) : NOOP;
 
-    // spreading options allows consumers to provide their own ID, so they
-    // can remove the toast programatically if they want to
-    toasts.push({ content, id, ...options });
+    this.setState(state => {
+      const toasts = state.toasts.slice(0);
+      const toast = Object.assign({}, { content, id }, options);
 
-    this.setState({ toasts });
+      toasts.push(toast);
+
+      return { toasts };
+    }, callback);
   };
-  removeToast = (id: Id) => () => {
-    const toasts = this.state.toasts.filter(t => t.id !== id);
-    this.setState({ toasts });
+  removeToast = (id: Id) => (cb: Callback) => {
+    const callback = cb ? () => cb(id) : NOOP;
+
+    this.setState(state => {
+      const toasts = state.toasts.filter(t => t.id !== id);
+      return { toasts };
+    }, callback);
   };
 
   render() {

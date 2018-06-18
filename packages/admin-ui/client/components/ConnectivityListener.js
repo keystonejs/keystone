@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { withToastUtils } from '@keystonejs/ui/src/primitives/toasts';
+import { withToastManager } from 'react-toast-notifications';
 
-class OfflineListener extends Component {
+class ConnectivityListener extends Component {
   state = { isOnline: window ? window.navigator.onLine : false };
-  offlineToastId = null;
   componentDidMount() {
     window.addEventListener('online', this.onLine, false);
     window.addEventListener('offline', this.offLine, false);
@@ -18,12 +17,20 @@ class OfflineListener extends Component {
   offLine = () => {
     this.setState({ isOnline: false });
   };
+
+  onlineCallback = () => {
+    this.props.toastManager.remove(this.offlineToastId);
+    this.offlineToastId = null;
+  };
+  offlineCallback = id => {
+    this.offlineToastId = id;
+  };
+
   getSnapshotBeforeUpdate(prevProps, prevState) {
     const { isOnline } = this.state;
 
     if (prevState.isOnline !== isOnline) {
-      const shouldAddToast = true;
-      return { shouldAddToast, isOnline };
+      return { isOnline };
     }
 
     return null;
@@ -31,36 +38,38 @@ class OfflineListener extends Component {
   componentDidUpdate(props, state, snapshot) {
     if (!snapshot) return;
 
-    const { toast } = props;
+    const { toastManager } = props;
     const { isOnline } = snapshot;
 
     // prepare the content
     const content = (
       <div>
-        <strong>{isOnline ? 'Back Online' : "You're Offline"}</strong>
+        <strong>{isOnline ? 'Online' : 'Offline'}</strong>
         <div>
           {isOnline
-            ? 'Items are available to edit again'
-            : 'The changes you make will not be saved'}
+            ? 'Editing is available again'
+            : 'Changes you make may not be saved'}
         </div>
       </div>
     );
 
     // remove the existing offline notification if it exists, otherwise store
-    // the id for use later
-    const callback = isOnline
-      ? () => toast.removeToast(this.offlineToastId)()
-      : id => (this.offlineToastId = id);
+    // the added toast id for use later
+    const callback = isOnline ? this.onlineCallback : this.offlineCallback;
 
     // add the applicable toast
-    toast.addToast(content, {
-      appearance: 'info',
-      autoDismiss: isOnline,
-    })(callback);
+    toastManager.add(
+      content,
+      {
+        appearance: 'info',
+        autoDismiss: isOnline,
+      },
+      callback
+    );
   }
   render() {
     return null;
   }
 }
 
-export default withToastUtils(OfflineListener);
+export default withToastManager(ConnectivityListener);

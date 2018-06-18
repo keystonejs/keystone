@@ -2,14 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { ToastProvider } from 'react-toast-notifications';
 import { injectGlobal } from 'emotion';
 
 import globalStyles from '@keystonejs/ui/src/globalStyles';
-import { ToastProvider } from '@keystonejs/ui/src/primitives/toasts';
 injectGlobal(globalStyles);
 
 import ScrollToTop from './components/ScrollToTop';
-import OfflineListener from './components/OfflineListener';
+import ConnectivityListener from './components/ConnectivityListener';
 import AdminMetaProvider from './providers/AdminMeta';
 import apolloClient from './providers/apolloClient';
 
@@ -23,7 +23,7 @@ import StyleGuidePage from './pages/StyleGuide';
 const Keystone = () => (
   <ApolloProvider client={apolloClient}>
     <ToastProvider>
-      <OfflineListener />
+      <ConnectivityListener />
       <AdminMetaProvider>
         {adminMeta => {
           const { adminPath } = adminMeta;
