@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import { Link, withRouter } from 'react-router-dom';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { withToastManager } from 'react-toast-notifications';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
@@ -24,7 +25,6 @@ import { A11yText, H1 } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
-import { withToastUtils } from '@keystonejs/ui/src/primitives/toasts';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import { resolveAllKeys } from '@keystonejs/utils';
@@ -197,7 +197,7 @@ const ItemDetails = withRouter(
       const {
         list: { fields },
         onUpdate,
-        toast,
+        toastManager,
         updateItem,
       } = this.props;
 
@@ -219,10 +219,10 @@ const ItemDetails = withRouter(
             </div>
           );
 
-          toast.addToast(toastContent, {
+          toastManager.add(toastContent, {
             autoDismiss: true,
             appearance: 'success',
-          })();
+          });
         })
         .then(onUpdate);
     };
@@ -344,7 +344,7 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
   </PageError>
 );
 
-const ItemPage = ({ list, itemId, adminPath, getListByKey, toast }) => {
+const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
   const itemQuery = getItemQuery({ list, itemId });
   return (
     <Fragment>
@@ -391,9 +391,9 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toast }) => {
                         updateError.message
                       );
 
-                      toast.addToast(toastContent, {
+                      toastManager.add(toastContent, {
                         appearance: 'error',
-                      })();
+                      });
                     }
 
                     return (
@@ -404,7 +404,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toast }) => {
                         list={list}
                         getListByKey={getListByKey}
                         onUpdate={refetch}
-                        toast={toast}
+                        toastManager={toastManager}
                         updateInProgress={updateInProgress}
                         updateErrorMessage={updateError && updateError.message}
                         updateItem={updateItem}
@@ -423,4 +423,4 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toast }) => {
   );
 };
 
-export default withToastUtils(ItemPage);
+export default withToastManager(ItemPage);
