@@ -8,10 +8,11 @@ import { injectGlobal } from 'emotion';
 import globalStyles from '@keystonejs/ui/src/globalStyles';
 injectGlobal(globalStyles);
 
+import apolloClient from './apolloClient';
+
 import ScrollToTop from './components/ScrollToTop';
 import ConnectivityListener from './components/ConnectivityListener';
-import AdminMetaProvider from './providers/AdminMeta';
-import apolloClient from './providers/apolloClient';
+import { AdminMetaProvider } from './providers/AdminMeta';
 
 import HomePage from './pages/Home';
 import ListPage from './pages/List';

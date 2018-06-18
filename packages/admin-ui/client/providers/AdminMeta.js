@@ -10,7 +10,7 @@ const listKeys = Object.keys(lists || {});
 const listsByKey = {};
 const listsByPath = {};
 
-const adminMeta = {
+export const adminMeta = {
   ...srcMeta,
   listKeys,
   getListByKey(key) {
@@ -29,9 +29,7 @@ listKeys.forEach(key => {
 
 // Provider
 
-export default function AdminMetaProvider({ children }) {
-  return children(adminMeta);
-}
+export const AdminMetaProvider = ({ children }) => children(adminMeta);
 
 // HOC Wrapper
 

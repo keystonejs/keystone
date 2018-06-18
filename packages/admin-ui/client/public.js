@@ -8,9 +8,10 @@ import globalStyles from '@keystonejs/ui/src/globalStyles';
 import { ToastProvider } from '@keystonejs/ui/src/primitives/toasts';
 injectGlobal(globalStyles);
 
+import apolloClient from './apolloClient';
+
 import OfflineListener from './components/OfflineListener';
-import AdminMetaProvider from './providers/AdminMeta';
-import apolloClient from './providers/apolloClient';
+import { AdminMetaProvider } from './providers/AdminMeta';
 
 import InvalidRoutePage from './pages/InvalidRoute';
 import SignoutPage from './pages/Signout';
