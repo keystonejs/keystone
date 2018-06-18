@@ -1,4 +1,5 @@
 /* global ENABLE_DEV_FEATURES */
+
 import React, { Fragment } from 'react';
 import { withRouter } from 'react-router';
 import {
@@ -22,7 +23,14 @@ const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
 
 const Nav = props => {
   const {
-    adminMeta: { getListByKey, listKeys, adminPath, graphiqlPath },
+    adminMeta: {
+      withAuth,
+      getListByKey,
+      listKeys,
+      adminPath,
+      graphiqlPath,
+      signoutPath,
+    },
     location,
   } = props;
   return (
@@ -75,10 +83,12 @@ const Nav = props => {
             <NavSeparator />
           </Fragment>
         ) : null}
-        <PrimaryNavItem to={`${adminPath}/signin`} title="Sign Out">
-          <SignOutIcon />
-          <A11yText>Sign Out</A11yText>
-        </PrimaryNavItem>
+        {withAuth ? (
+          <PrimaryNavItem href={signoutPath} title="Sign Out">
+            <SignOutIcon />
+            <A11yText>Sign Out</A11yText>
+          </PrimaryNavItem>
+        ) : null}
       </NavGroup>
     </PrimaryNav>
   );

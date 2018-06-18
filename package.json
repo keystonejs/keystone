@@ -15,7 +15,7 @@
     "lint": "yarn lint:prettier && yarn lint:eslint",
     "start": "cd packages/test-project && yarn start",
     "test": "yarn lint && jest && yarn cypress:run",
-    "test:server:start": "pm2 start packages/test-project/index.js",
+    "test:server:start": "DISABLE_AUTH=true pm2 start packages/test-project/index.js",
     "test:server:stop": "pm2 stop all"
   },
   "dependencies": {

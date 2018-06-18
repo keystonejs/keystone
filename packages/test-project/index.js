@@ -24,6 +24,7 @@ const {
 } = require('./config');
 const { configureTwitterAuth } = require('./twitter');
 
+const { DISABLE_AUTH } = process.env;
 const LOCAL_FILE_PATH = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
@@ -39,7 +40,8 @@ const keystone = new Keystone({
   adapter: new MongooseAdapter(),
 });
 
-keystone.createAuthStrategy({
+// eslint-disable-next-line no-unused-vars
+const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
 });
@@ -119,7 +121,11 @@ keystone.createList('PostCategory', {
   },
 });
 
-const admin = new AdminUI(keystone, '/admin');
+const admin = new AdminUI(keystone, {
+  adminPath: '/admin',
+  // allow disabling of admin auth for test environments
+  authStrategy: DISABLE_AUTH ? undefined : authStrategy,
+});
 
 const server = new WebServer(keystone, {
   'cookie secret': 'qwerty',
