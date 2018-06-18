@@ -190,7 +190,7 @@ export default class FilterSelect extends Component<Props> {
         </div>
         <CheckboxGroup onChange={this.onCheckboxChange}>
           <Checkbox value="isInverted">Invert Filter</Checkbox>
-          <Checkbox value="isCaseSensitive">Case Sensitive</Checkbox>
+          {/* <Checkbox value="isCaseSensitive">Case Sensitive</Checkbox> */}
         </CheckboxGroup>
         <OptionRenderer
           isOptionSelected={isOptionSelected}
