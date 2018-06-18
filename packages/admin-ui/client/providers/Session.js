@@ -49,6 +49,13 @@ class Session extends Component {
     });
   };
 
+  signIn = ({ username, password }) => {
+    const { signinPath } = this.props;
+    postJSON(signinPath, { username, password })
+      .then(() => this.getSession())
+      .catch(error => console.error(error));
+  };
+
   signOut = () => {
     const { signoutPath } = this.props;
     this.setState({ isLoading: true });
@@ -58,7 +65,7 @@ class Session extends Component {
   };
 
   render() {
-    const { signOut } = this;
+    const { signIn, signOut } = this;
     const { children } = this.props;
     const {
       session: { user, signedIn: isSignedIn },
@@ -68,6 +75,7 @@ class Session extends Component {
     return children({
       isLoading,
       isSignedIn,
+      signIn,
       signOut,
       user,
     });
