@@ -37,6 +37,8 @@ export default class AnimateHeight extends Component<Props, State> {
     const { autoScroll, initial, onChange } = this.props;
     const height = this.node ? this.node.scrollHeight : initial;
 
+    this.setState({ isTransitioning: true });
+
     if (height !== this.state.height) {
       this.setState({ height });
     }
@@ -49,10 +51,18 @@ export default class AnimateHeight extends Component<Props, State> {
   };
   render() {
     const { autoScroll, children, render, ...props } = this.props;
-    const { height } = this.state;
+    const { height, isTransitioning } = this.state;
 
     return (
-      <div css={{ height, transition }} {...props}>
+      <div
+        css={{
+          height,
+          transition,
+          overflow: isTransitioning ? 'hidden' : null,
+        }}
+        onTransitionEnd={() => this.setState({ isTransitioning: false })}
+        {...props}
+      >
         {render ? (
           render({ ref: this.getNode, recalcHeight: this.calculateHeight })
         ) : (

@@ -111,6 +111,7 @@ export default class AddFilterPopout extends Component<Props, State> {
   // ==============================
 
   onFieldChange = field => {
+    if (!field) return;
     this.setState({ field });
     this.fieldSelectRef.blur();
   };
@@ -120,12 +121,14 @@ export default class AddFilterPopout extends Component<Props, State> {
   onChangeFilter = event => {
     this.setState({ value: event.target.value });
   };
-  onSubmit = () => {
+  onSubmit = event => {
     const { onChange } = this.props;
     const { field, filter, value } = this.state;
-    console.log('add onSubmit', filter);
 
-    onChange({ field, filter, value });
+    event.preventDefault();
+    if (!filter) return;
+
+    onChange({ field, label: filter.label, type: filter.type, value });
   };
 
   // Lifecycle
@@ -190,7 +193,6 @@ export default class AddFilterPopout extends Component<Props, State> {
               <FieldAwareSelect
                 {...this.props}
                 innerRef={this.getFieldSelect}
-                key="select"
                 onChange={this.onFieldChange}
                 placeholder="What would you like to filter?"
                 components={{ Option: FieldOption }}
@@ -207,8 +209,7 @@ export default class AddFilterPopout extends Component<Props, State> {
     const { field, filter } = this.state;
 
     const options = field.filterTypes.map(f => {
-      const matches = e =>
-        e.field.path === field.path && e.filter.type === f.type;
+      const matches = e => e.field.path === field.path && e.type === f.type;
       const isDisabled = existingFilters.some(matches);
       return { ...f, isDisabled };
     });
@@ -271,23 +272,24 @@ export default class AddFilterPopout extends Component<Props, State> {
 
           return (
             <div ref={ref} style={style}>
-              <EventCatcher>
-                <Select
-                  autoFocus
-                  // innerRef={innerRef}
-                  defaultIsOpen
-                  getOptionValue={opt => opt.type}
-                  // menuPosition="fixed"
-                  // menuIsOpen
-                  menuPortalTarget={document.body}
-                  options={options}
-                  formatOptionLabel={formatFilterTypeLabel}
-                  onChange={this.onTypeChange}
-                  value={filter}
-                />
-              </EventCatcher>
+              {options.length > 1 ? (
+                <EventCatcher>
+                  <Select
+                    // autoFocus
+                    innerRef={this.getFilterRef}
+                    defaultIsOpen
+                    getOptionValue={opt => opt.type}
+                    // menuPosition="fixed"
+                    // menuIsOpen
+                    menuPortalTarget={document.body}
+                    options={options}
+                    formatOptionLabel={formatFilterTypeLabel}
+                    onChange={this.onTypeChange}
+                    value={filter}
+                  />
+                </EventCatcher>
+              ) : null}
               <Filter
-                innerRef={this.getFilterRef}
                 recalcHeight={recalcHeight}
                 field={field}
                 filter={filter}

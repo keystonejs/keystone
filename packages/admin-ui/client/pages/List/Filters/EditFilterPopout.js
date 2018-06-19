@@ -8,7 +8,6 @@ import FilterPopout from './FilterPopout';
 import FieldTypes from '../../../FIELD_TYPES';
 
 type Props = {
-  field: Object,
   filter: Object,
   onChange: Event => void,
 };
@@ -17,7 +16,7 @@ type State = {
 };
 
 export default class EditFilterPopout extends Component<Props, State> {
-  state = { value: this.props.value };
+  state = { value: this.props.filter.value };
   // Handlers
   // ==============================
 
@@ -25,11 +24,16 @@ export default class EditFilterPopout extends Component<Props, State> {
     this.setState({ value: event.target.value });
   };
   onSubmit = () => {
-    const { field, filter, onChange } = this.props;
+    const { filter, onChange } = this.props;
     const { value } = this.state;
     console.log('edit onSubmit', filter);
 
-    onChange({ field, filter, value });
+    onChange({
+      field: filter.field,
+      label: filter.label,
+      type: filter.type,
+      value,
+    });
   };
 
   // Refs
@@ -41,9 +45,10 @@ export default class EditFilterPopout extends Component<Props, State> {
   };
 
   render() {
-    const { filter, field, headerTitle, target } = this.props;
+    const { filter, target } = this.props;
     const { value } = this.state;
-    const { Filter } = FieldTypes[field.list.key][field.path];
+    const { Filter } = FieldTypes[filter.field.list.key][filter.field.path];
+    const headerTitle = filter.field.getFilterLabel(filter);
 
     return (
       <FilterPopout
@@ -57,7 +62,7 @@ export default class EditFilterPopout extends Component<Props, State> {
             <Filter
               innerRef={this.getFilterRef}
               recalcHeight={recalcHeight}
-              field={field}
+              field={filter.field}
               filter={filter}
               onChange={this.onChangeFilter}
               value={value}

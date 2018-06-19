@@ -15,17 +15,7 @@ export default class PasswordFilterView extends Component<Props> {
   onRadioChange = value => {
     const isSet = value === 'isSet';
 
-    this.setState({ isSet }, this.updateQuery);
-  };
-  updateQuery = () => {
-    const { field, onChange } = this.props;
-    const { isSet } = this.state;
-
-    const expression = isSet ? 'is set' : 'is NOT set';
-    const label = `${field.label} ${expression}`;
-    const query = { [field.path]: isSet };
-
-    onChange({ query, label });
+    this.setState({ isSet });
   };
 
   render() {
