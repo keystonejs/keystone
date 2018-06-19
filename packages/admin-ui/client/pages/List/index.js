@@ -40,7 +40,8 @@ import PageError from '../../components/PageError';
 import { Popout, DisclosureArrow } from '../../components/Popout';
 
 import ColumnSelect from './ColumnSelect';
-import FilterSelect from './FilterSelect';
+import AddFilterPopout from './Filters/AddFilterPopout';
+import EditFilterPopout from './Filters/EditFilterPopout';
 import SortSelect, { SortButton } from './SortSelect';
 
 // ==============================
@@ -127,7 +128,33 @@ function getInvertedSort(direction) {
 
 const DEFAULT_PAGE_SIZE = 50;
 
-class ListPage extends Component {
+type Fn = any => any;
+type Filter = {
+  field: { label: string, list: Object, path: string, type: string },
+  filter: { type: string, label: string, getInitialValue: Fn },
+  label: string,
+  value: string,
+};
+type Props = {
+  list: Object,
+};
+type State = {
+  displayedFields: Array<Object>,
+  selectedFilters: Array<Filter>,
+  isFullWidth: boolean,
+  isManaging: boolean,
+  selectedItems: Array<Object>,
+  sortDirection: string,
+  sortBy: string,
+  search: string,
+  showCreateModal: boolean,
+  showUpdateModal: boolean,
+  showDeleteSelectedItemsModal: boolean,
+  skip: number,
+  currentPage: number,
+};
+
+class ListPage extends Component<Props, State> {
   constructor(props) {
     super(props);
     const displayedFields = this.props.list.fields.slice(0, 2);
@@ -279,16 +306,36 @@ class ListPage extends Component {
     let id = data[list.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
   };
-  onFilterChange = value => {
+  removeFilter = value => () => {
     let selectedFilters = this.state.selectedFilters.slice(0);
-
-    if (selectedFilters.includes(value)) {
-      selectedFilters = selectedFilters.filter(f => f !== value);
-    } else {
-      selectedFilters.push(value);
-    }
+    selectedFilters = selectedFilters.filter(f => f !== value);
 
     this.setState({ selectedFilters });
+  };
+  addFilter = value => {
+    let selectedFilters = this.state.selectedFilters.slice(0);
+    selectedFilters.push(value);
+
+    this.setState({ selectedFilters });
+  };
+  updateFilter = value => {
+    let selectedFilters = this.state.selectedFilters.slice(0);
+    const filter = selectedFilters.find(sf => {
+      return (
+        sf.field.path === value.field.path &&
+        sf.filter.type === value.filter.filter.type
+      );
+    });
+    console.log('updateFilter', value, filter);
+
+    // const options = field.filterTypes.map(f => {
+    //   const matches = e =>
+    //     e.field.path === field.path && e.filter.type === f.type;
+    //   const isDisabled = existingFilters.some(matches);
+    //   return { ...f, isDisabled };
+    // });
+
+    // this.setState({ selectedFilters });
   };
   onFilterClear = () => {
     this.setState({ selectedFilters: [] });
@@ -362,32 +409,44 @@ class ListPage extends Component {
     ];
   }
   renderFilters() {
-    const { list } = this.props;
     const { selectedFilters } = this.state;
     const pillStyle = { marginBottom: gridSize / 2, marginTop: gridSize / 2 };
 
-    console.log('selectedFilters', selectedFilters);
-
     return ENABLE_DEV_FEATURES ? (
-      <FlexGroup style={{ paddingTop: gridSize }} wrap>
-        {selectedFilters.length
-          ? selectedFilters.map(f => (
-              <Pill
-                key={f.label}
-                appearance="primary"
-                onRemove={() => this.onFilterChange(f)}
-                style={pillStyle}
-              >
-                {f.label}
-              </Pill>
-            ))
-          : null}
-        {selectedFilters.length > 1 ? (
-          <Pill key="clear" onClick={this.onFilterClear} style={pillStyle}>
-            Clear All
-          </Pill>
-        ) : null}
-      </FlexGroup>
+      <AnimateHeight>
+        <FlexGroup style={{ paddingTop: gridSize }} wrap>
+          {selectedFilters.length
+            ? selectedFilters.map(f => {
+                const headerTitle = f.field.getFilterLabel(f);
+                const label = f.field.getFilterLabel(f, true);
+                return (
+                  <EditFilterPopout
+                    key={label}
+                    headerTitle={headerTitle}
+                    onChange={this.updateFilter}
+                    field={f.field}
+                    filter={f}
+                    value={f.value}
+                    target={
+                      <Pill
+                        appearance="primary"
+                        onRemove={this.removeFilter(f)}
+                        style={pillStyle}
+                      >
+                        {label}
+                      </Pill>
+                    }
+                  />
+                );
+              })
+            : null}
+          {selectedFilters.length > 1 ? (
+            <Pill key="clear" onClick={this.onFilterClear} style={pillStyle}>
+              Clear All
+            </Pill>
+          ) : null}
+        </FlexGroup>
+      </AnimateHeight>
     ) : null;
   }
   renderPaginationOrManage() {
@@ -582,11 +641,11 @@ class ListPage extends Component {
                       />
                     </Search>
                     {ENABLE_DEV_FEATURES ? (
-                      <FilterSelect
-                        onChange={this.onFilterChange}
+                      <AddFilterPopout
+                        onChange={this.addFilter}
                         list={list}
                         fields={list.fields}
-                        value={selectedFilters}
+                        existingFilters={selectedFilters}
                       />
                     ) : null}
                     <Popout buttonLabel="Columns" headerTitle="Columns">

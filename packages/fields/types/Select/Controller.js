@@ -15,7 +15,7 @@ export default class SelectController extends FieldController {
   getFilterGraphQL = (field, filter, value) => {
     // return `${field.path}_${filter.type}: ${value}`;
   };
-  getFilterLabel = (field, filter, value) => {
+  getFilterLabel = ({ field, filter, value }) => {
     if (!value.options.length) {
       return value.inverted
         ? `${field.label} is set`
@@ -36,7 +36,7 @@ export default class SelectController extends FieldController {
     {
       type: 'is',
       label: 'Matches',
-      getInitialValue: () => { inverted: false, options: [] },
+      getInitialValue: () => ({ inverted: false, options: [] }),
     },
   ];
 }

@@ -25,7 +25,7 @@ export const buttonAndInputBase = {
   background: 'none',
   border: '1px solid transparent',
   borderRadius: borderRadius,
-  fontSize: 14,
+  fontSize: '0.9rem',
   lineHeight: '17px',
   margin: 0,
   padding: `${gridSize}px ${gridSize * 1.5}px`,
@@ -56,6 +56,11 @@ export const Input = ({ innerRef, isMultiline, ...props }: InputProps) => {
       boxShadow: `inset 0 1px 1px rgba(0, 0, 0, 0.075),
         0 0 0 3px ${alpha(colors.primary, 0.2)}`,
       outline: 0,
+    },
+    '&[disabled]': {
+      borderColor: colors.N15,
+      boxShadow: 'none',
+      backgroundColor: colors.N05,
     },
   };
   return isMultiline ? (

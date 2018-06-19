@@ -17,7 +17,11 @@ type ProviderProps = {
   isOpen: boolean,
 };
 
-export const TransitionProvider = ({ children, isOpen }: ProviderProps) => (
+export const TransitionProvider = ({
+  children,
+  isOpen,
+  ...props
+}: ProviderProps) => (
   <TransitionGroup component={null}>
     {isOpen ? (
       <Transition
@@ -25,6 +29,7 @@ export const TransitionProvider = ({ children, isOpen }: ProviderProps) => (
         mountOnEnter
         unmountOnExit
         timeout={transitionDurationMs}
+        {...props}
       >
         {state => children(state)}
       </Transition>

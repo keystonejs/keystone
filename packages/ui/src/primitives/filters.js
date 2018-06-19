@@ -1,5 +1,5 @@
 import React, { Children, Component } from 'react';
-import Select, { components as reactSelectComponents } from 'react-select';
+import ReactSelect, { components as reactSelectComponents } from 'react-select';
 import {
   CheckboxGroup as _CheckboxGroup,
   Checkbox as _Checkbox,
@@ -11,6 +11,61 @@ import { GrabberIcon } from '../../../icons';
 import { colors, gridSize } from '../theme';
 import { CheckboxPrimitive, RadioPrimitive } from './forms';
 import { FlexGroup } from './layout';
+
+// ==============================
+// Styled Select
+// ==============================
+
+const selectStyles = {
+  control: (provided, { isFocused }) => {
+    const focusStyles = isFocused
+      ? {
+          borderColor: colors.primary,
+          boxShadow: `inset 0 1px 1px rgba(0, 0, 0, 0.075),
+      0 0 0 3px ${colors.B.A20}`,
+          outline: 0,
+        }
+      : null;
+    return {
+      ...provided,
+      ...focusStyles,
+      fontSize: '0.9em',
+      minHeight: 35,
+      minWidth: '200px',
+    };
+  },
+  menu: p => ({ ...p, fontSize: '0.9em' }),
+  option: (p, { isDisabled, isFocused, isSelected }) => {
+    let bg = 'inherit';
+    if (isFocused) bg = colors.B.L90;
+    if (isSelected) bg = colors.primary;
+
+    let txt = 'inherit';
+    if (isFocused) txt = colors.primary;
+    if (isSelected) txt = 'white';
+    if (isDisabled) txt = colors.N40;
+
+    const cssPseudoActive =
+      !isSelected && !isDisabled
+        ? {
+            backgroundColor: colors.B.L80,
+            color: colors.B.D20,
+          }
+        : {};
+
+    return {
+      ...p,
+      backgroundColor: bg,
+      color: txt,
+
+      ':active': cssPseudoActive,
+    };
+  },
+  menuPortal: p => ({ ...p, zIndex: 3 }),
+};
+export const Select = ({ innerRef, ...props }) => (
+  <ReactSelect ref={innerRef} styles={selectStyles} {...props} />
+);
 
 // ==============================
 // Control Stuff
@@ -121,24 +176,8 @@ export const OptionPrimitive = ({
   );
 };
 
-const selectStyles = {
-  control: (provided, { isFocused }) => {
-    const focusStyles = isFocused
-      ? {
-          borderColor: colors.primary,
-          boxShadow: `inset 0 1px 1px rgba(0, 0, 0, 0.075),
-      0 0 0 3px ${colors.B.A20}`,
-          outline: 0,
-        }
-      : null;
-    return {
-      ...provided,
-      ...focusStyles,
-      fontSize: '0.9em',
-      minHeight: 35,
-      minWidth: '200px',
-    };
-  },
+const optionRendererStyles = {
+  ...selectStyles,
   menu: () => ({ marginTop: 8 }),
   menuList: provided => ({ ...provided, padding: 0 }),
 };
@@ -205,20 +244,20 @@ export class OptionRenderer extends Component {
   render() {
     const { displaySearch, innerRef, ...props } = this.props;
     return (
-      <Select
+      <ReactSelect
         backspaceRemovesValue={false}
         captureMenuScroll={false}
         closeMenuOnSelect={false}
         controlShouldRenderValue={false}
-        filterOption={null}
-        hideSelectedOptions={false}
+        // filterOption={null}
+        // hideSelectedOptions={false}
         isClearable={false}
         maxMenuHeight={1000}
-        menuIsOpen
+        // menuIsOpen
         menuShouldScrollIntoView={false}
         shouldDisplaySearchControl={displaySearch}
         ref={innerRef}
-        styles={selectStyles}
+        styles={optionRendererStyles}
         tabSelectsValue={false}
         {...props}
         components={this.components}

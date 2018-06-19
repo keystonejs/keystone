@@ -58,9 +58,6 @@ export default class List {
       return new Controller(fieldConfig, this, adminMeta);
     });
 
-    console.log(FieldTypes);
-    console.log(this.fields);
-
     this.createMutation = getCreateMutation(this);
     this.updateMutation = getUpdateMutation(this);
     this.deleteMutation = getDeleteMutation(this);

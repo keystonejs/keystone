@@ -7,7 +7,7 @@ type Props = {
   field: Object,
 };
 
-export default class FilterSelect extends Component<Props> {
+export default class PasswordFilterView extends Component<Props> {
   state = {
     isSet: undefined,
   };

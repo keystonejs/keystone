@@ -21,20 +21,18 @@ const Wrapper = styled.div(({ left, top, width }) => {
     boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.175), 0 3px 8px rgba(0, 0, 0, 0.175)',
     marginTop: gridSize * 2,
     maxHeight: '100%',
-    width: width,
     position: 'absolute',
     zIndex: 2,
     ...placementStyles,
   };
 });
 const WrapperInner = styled.div({
-  padding: 1,
   position: 'relative',
 });
 const Arrow = styled.div`
   left: ${p => p.left};
   margin-left: -${ARROW_WIDTH}px;
-  margin-top: -${ARROW_WIDTH + 1}px;
+  margin-top: -${ARROW_WIDTH}px;
   position: absolute;
 
   &::before,
