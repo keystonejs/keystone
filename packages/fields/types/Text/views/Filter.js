@@ -12,23 +12,11 @@ export default class TextFilterView extends Component<Props, State> {
 
     if (prevProps.filter !== filter) {
       this.props.recalcHeight();
-      this.focusInputRef();
     }
   }
-  getInputRef = ref => {
-    this.inputRef = ref;
-
-    // resolve parent ref if provided
-    const { innerRef } = this.props;
-    if (innerRef) innerRef(ref);
-  };
-  focusInputRef = () => {
-    if (!this.inputRef) return;
-    this.inputRef.focus();
-  };
 
   render() {
-    const { onChange, value, filter, field } = this.props;
+    const { filter, field, innerRef, onChange, value } = this.props;
 
     if (!filter) return null;
 
@@ -40,7 +28,7 @@ export default class TextFilterView extends Component<Props, State> {
     return (
       <Input
         onChange={onChange}
-        innerRef={this.getInputRef}
+        innerRef={innerRef}
         placeholder={placeholder}
         value={value}
       />

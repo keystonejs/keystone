@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
 import {
-  CheckIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   AlertIcon,
@@ -31,17 +30,6 @@ const EventCatcher = props => (
     {...props}
   />
 );
-
-function formatFilterTypeLabel({ isDisabled, label }) {
-  return isDisabled ? (
-    <div css={{ display: 'flex', justifyContent: 'space-between' }}>
-      <span>{label}</span>
-      <CheckIcon />
-    </div>
-  ) : (
-    label
-  );
-}
 
 export const FieldOption = ({ children, ...props }) => {
   let iconColor =
@@ -107,16 +95,74 @@ type State = {
 export default class AddFilterPopout extends Component<Props, State> {
   state = getInitialState();
 
+  // Refs
+  // ==============================
+
+  fieldSelectRef = createRef();
+  filterSelectRef = createRef();
+  filterRef = createRef();
+
+  // Utils
+  // ==============================
+
+  resetState = () => {
+    this.setState(getInitialState());
+  };
+  matchesExistingFilterType = opt => {
+    const { existingFilters } = this.props;
+    const { field } = this.state;
+
+    const matches = field
+      ? x => x.field.path === field.path && x.type === opt.type
+      : x => x.type === opt.type;
+
+    return existingFilters.some(matches);
+  };
+  getExistingFieldFilters = field => {
+    const { existingFilters } = this.props;
+    return existingFilters.filter(x => x.field.path === field.path);
+  };
+  availableFieldFilterTypes = field => {
+    // we only care about filters on the selected field
+    const existingFieldFilters = this.getExistingFieldFilters(field);
+
+    // bail quickly if possibly
+    if (field.filterTypes.length === existingFieldFilters.length) {
+      return [];
+    }
+
+    // create a diff of existing filters VS selected field filters
+    return field.filterTypes.filter(x => {
+      return !existingFieldFilters.filter(y => y.type === x.type).length;
+    });
+  };
+  hasAvailableFilterTypes = field => {
+    if (!field.filterTypes) return false;
+    return Boolean(this.availableFieldFilterTypes(field).length);
+  };
+  doesNotHaveAvailableFilterTypes = field => {
+    return !this.hasAvailableFilterTypes(field);
+  };
+  firstAvailableFilterType = field => {
+    const available = this.availableFieldFilterTypes(field);
+    return available[0];
+  };
+
   // Handlers
   // ==============================
 
   onFieldChange = field => {
     if (!field) return;
-    this.setState({ field });
-    this.fieldSelectRef.blur();
+
+    // preset the initial filter if available
+    const filter = this.firstAvailableFilterType(field);
+
+    this.setState({ field, filter });
+    this.fieldSelectRef.current.blur();
   };
   onTypeChange = filter => {
     this.setState({ filter });
+    this.focusFilterRef();
   };
   onChangeFilter = event => {
     this.setState({ value: event.target.value });
@@ -135,30 +181,16 @@ export default class AddFilterPopout extends Component<Props, State> {
   // ==============================
 
   focusFieldSelect = () => {
-    this.fieldSelectRef.focus();
+    if (!this.fieldSelectRef.current) return;
+    this.fieldSelectRef.current.focus();
+  };
+  focusFilterSelect = () => {
+    if (!this.filterSelectRef.current) return;
+    this.filterSelectRef.current.focus();
   };
   focusFilterRef = () => {
-    if (!this.filterRef || !this.filterRef.focus) return;
-    this.filterRef.focus();
-  };
-
-  // Utils
-  // ==============================
-
-  resetState = () => {
-    this.setState(getInitialState());
-  };
-
-  // Refs
-  // ==============================
-
-  getFilterRef = ref => {
-    if (!ref) return;
-    this.filterRef = ref;
-  };
-  getFieldSelect = ref => {
-    if (!ref) return;
-    this.fieldSelectRef = ref;
+    if (!this.filterRef.current) return;
+    this.filterRef.current.focus();
   };
 
   // Renderers
@@ -192,7 +224,8 @@ export default class AddFilterPopout extends Component<Props, State> {
             <div ref={ref} style={style}>
               <FieldAwareSelect
                 {...this.props}
-                innerRef={this.getFieldSelect}
+                isOptionDisabled={this.doesNotHaveAvailableFilterTypes}
+                innerRef={this.fieldSelectRef}
                 onChange={this.onFieldChange}
                 placeholder="What would you like to filter?"
                 components={{ Option: FieldOption }}
@@ -205,14 +238,8 @@ export default class AddFilterPopout extends Component<Props, State> {
     );
   };
   renderFilterUI = ({ ref, recalcHeight }) => {
-    const { existingFilters } = this.props;
     const { field, filter } = this.state;
-
-    const options = field.filterTypes.map(f => {
-      const matches = e => e.field.path === field.path && e.type === f.type;
-      const isDisabled = existingFilters.some(matches);
-      return { ...f, isDisabled };
-    });
+    const options = field.filterTypes;
 
     return (
       <Transition
@@ -220,7 +247,7 @@ export default class AddFilterPopout extends Component<Props, State> {
         mountOnEnter
         unmountOnExit
         timeout={220}
-        onEntered={this.focusFilterRef}
+        onEntered={filter ? this.focusFilterRef : this.focusFilterSelect}
       >
         {state => {
           const base = {
@@ -275,21 +302,19 @@ export default class AddFilterPopout extends Component<Props, State> {
               {options.length > 1 ? (
                 <EventCatcher>
                   <Select
-                    // autoFocus
-                    innerRef={this.getFilterRef}
                     defaultIsOpen
                     getOptionValue={opt => opt.type}
-                    // menuPosition="fixed"
-                    // menuIsOpen
+                    innerRef={this.filterSelectRef}
+                    isOptionDisabled={this.matchesExistingFilterType}
                     menuPortalTarget={document.body}
-                    options={options}
-                    formatOptionLabel={formatFilterTypeLabel}
                     onChange={this.onTypeChange}
+                    options={options}
                     value={filter}
                   />
                 </EventCatcher>
               ) : null}
               <Filter
+                innerRef={this.filterRef}
                 recalcHeight={recalcHeight}
                 field={field}
                 filter={filter}

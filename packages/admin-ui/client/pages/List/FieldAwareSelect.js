@@ -28,26 +28,30 @@ export default class FieldAwareSelect extends Component<SelectProps> {
     // TODO move this out of render
 
     // Convert the fields data into the format react-select expects.
-    const options = fields.map(({ label, path }) => ({ label, value: path }));
+    const fieldsAsOptions = fields.map(({ options, path, ...field }) => ({
+      ...field,
+      path,
+      value: path,
+    }));
 
     // Pick out the selected option(s). This is slightly different if it's a
-    // multi-select. We need to filter it/them out of `options` rather than
+    // multi-select. We need to filter it/them out of `fieldsAsOptions` rather than
     // transforming `value` here because react-select appears to determine which
     // option to focus by doing some kind of reference equality check.
     const selected = (() => {
       if (props.isMulti) {
         const selectedFieldPaths = value.map(({ path }) => path);
-        return options.filter(option =>
+        return fieldsAsOptions.filter(option =>
           selectedFieldPaths.includes(option.value)
         );
       }
-      return options.find(option => option.value === value.path);
+      return fieldsAsOptions.find(option => option.value === value.path);
     })();
 
     return (
       <OptionRenderer
         onChange={this.handleChange}
-        options={options}
+        options={fieldsAsOptions}
         value={selected}
         {...props}
       />
