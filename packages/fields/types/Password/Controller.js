@@ -4,7 +4,7 @@ export default class PasswordController extends FieldController {
   getFilterGraphQL = (field, filter, value) => {
     return `${field.path}_${filter.type}: ${value}`;
   };
-  getFilterLabel = ({ field, filter, value }) => {
+  getFilterLabel = ({ field, value }) => {
     return `${field.label} ${value ? 'is set' : 'is not set'}`;
   };
   filterTypes = [
