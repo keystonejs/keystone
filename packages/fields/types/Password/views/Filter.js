@@ -1,28 +1,23 @@
 // @flow
 
-import React, { Component } from 'react';
+import React, { Component, type Ref } from 'react';
 import { RadioGroup, Radio } from '@keystonejs/ui/src/primitives/filters';
 
-type Props = {
-  field: Object,
-};
+type Props = { field: Object, innerRef: Ref<*>, onChange: Event => void };
 
 export default class PasswordFilterView extends Component<Props> {
-  state = {
-    isSet: undefined,
+  handleChange = value => {
+    const boolValue = value === 'is_set' ? true : false;
+    this.props.onChange(boolValue);
   };
-
-  onRadioChange = value => {
-    const isSet = value === 'isSet';
-
-    this.setState({ isSet });
-  };
-
   render() {
+    const { innerRef, value } = this.props;
+    const textValue = value ? 'is_set' : 'is_not_set';
+
     return (
-      <RadioGroup onChange={this.onRadioChange}>
-        <Radio value="isSet">Is Set</Radio>
-        <Radio value="isNotSet">Is NOT Set</Radio>
+      <RadioGroup onChange={this.handleChange} ref={innerRef} value={textValue}>
+        <Radio value="is_set">Is Set</Radio>
+        <Radio value="is_not_set">Is NOT Set</Radio>
       </RadioGroup>
     );
   }
