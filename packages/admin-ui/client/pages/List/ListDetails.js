@@ -28,7 +28,7 @@ import { Popout, DisclosureArrow } from '../../components/Popout';
 
 import ColumnSelect from './ColumnSelect';
 import AddFilterPopout from './Filters/AddFilterPopout';
-import ActiveFilters, { type FilterType } from './Filters/ActiveFilters';
+import ActiveFilters from './Filters/ActiveFilters';
 import SortSelect, { SortButton } from './SortSelect';
 import Pagination from './Pagination';
 import Management, { ManageToolbar } from './Management';
