@@ -319,17 +319,18 @@ class ListPage extends Component<Props, State> {
     this.setState({ selectedFilters });
   };
   updateFilter = updatedFilter => {
-    const { selectedFilters } = this.state;
+    let selectedFilters = this.state.selectedFilters.slice(0);
+
     const updateIndex = selectedFilters.findIndex(i => {
       return (
         i.field.path === updatedFilter.field.path &&
         i.type === updatedFilter.type
       );
     });
-    const newFilters = selectedFilters.slice(0);
-    newFilters.splice(updateIndex, 1, updatedFilter);
 
-    this.setState({ selectedFilters: newFilters });
+    selectedFilters.splice(updateIndex, 1, updatedFilter);
+
+    this.setState({ selectedFilters });
   };
   onFilterClear = () => {
     this.setState({ selectedFilters: [] });
@@ -595,7 +596,7 @@ class ListPage extends Component<Props, State> {
                       target={
                         <SortButton>
                           {sortBy.label.toLowerCase()}
-                          <DisclosureArrow size="0.25em" />
+                          <DisclosureArrow size="0.2em" />
                         </SortButton>
                       }
                     >

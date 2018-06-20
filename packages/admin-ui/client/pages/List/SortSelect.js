@@ -10,18 +10,21 @@ import { POPOUT_GUTTER } from '../../components/Popout';
 export const SortButton = styled.button(({ isActive }) => {
   const overStyles = {
     color: colors.primary,
-    textDecoration: 'underline',
+    borderBottomColor: colors.primary,
   };
   const activeStyles = isActive ? overStyles : null;
   return {
     background: 0,
     border: 0,
+    borderBottom: `1px solid ${colors.N40}`,
     outline: 0,
     color: 'inherit',
     cursor: 'pointer',
     display: 'inline-block',
     fontSize: 'inherit',
     fontWeight: 'inherit',
+    marginLeft: '0.5ex',
+    padding: 0,
     verticalAlign: 'baseline',
 
     ':hover, :focus': overStyles,
