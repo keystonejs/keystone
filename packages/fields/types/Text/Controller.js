@@ -5,11 +5,11 @@ export default class TextController extends FieldController {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
     return `${key}: "${value}"`;
   };
-  getFilterLabel = ({ label, value }) => {
+  getFilterLabel = ({ label }) => {
     return `${this.label} ${label.toLowerCase()}`;
   };
-  formatFilter = ({ label, value }, withValue) => {
-    return `${this.getFilterLabel()}: "${value}"`;
+  formatFilter = ({ label, value }) => {
+    return `${this.getFilterLabel({ label })}: "${value}"`;
   };
   filterTypes = [
     {
