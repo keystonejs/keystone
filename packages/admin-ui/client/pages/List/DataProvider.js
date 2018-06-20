@@ -41,6 +41,7 @@ type Props = {
 type State = {
   currentPage: number,
   fields: Array<Object>,
+  filters: Array<Object>,
   pageSize: number,
   search: string,
   skip: number,
@@ -65,6 +66,7 @@ class ListPageDataProvider extends Component<Props, State> {
       fields,
       pageSize: 50,
       search: '',
+      filters: [],
       skip: 0,
       sortBy,
     };
@@ -89,6 +91,40 @@ class ListPageDataProvider extends Component<Props, State> {
     if (this.items.length === 1) {
       history.push(`${adminPath}/${list.path}/${this.items[0].id}`);
     }
+  };
+
+  // ==============================
+  // Filters
+  // ==============================
+
+  handleFilterRemove = value => () => {
+    let filters = this.state.filters.slice(0);
+    filters = filters.filter(f => f !== value);
+
+    this.setState({ filters });
+  };
+  handleFilterRemoveAll = () => {
+    this.setState({ filters: [] });
+  };
+  handleFilterAdd = value => {
+    let filters = this.state.filters.slice(0);
+    filters.push(value);
+
+    this.setState({ filters });
+  };
+  handleFilterUpdate = updatedFilter => {
+    let filters = this.state.filters.slice(0);
+
+    const updateIndex = filters.findIndex(i => {
+      return (
+        i.field.path === updatedFilter.field.path &&
+        i.type === updatedFilter.type
+      );
+    });
+
+    filters.splice(updateIndex, 1, updatedFilter);
+
+    this.setState({ filters });
   };
 
   // ==============================
@@ -135,7 +171,15 @@ class ListPageDataProvider extends Component<Props, State> {
 
   render() {
     const { children, list } = this.props;
-    const { currentPage, fields, pageSize, sortBy, search, skip } = this.state;
+    const {
+      currentPage,
+      fields,
+      filters,
+      pageSize,
+      search,
+      skip,
+      sortBy,
+    } = this.state;
 
     const sort = `${sortBy.direction === 'DESC' ? '-' : ''}${
       sortBy.field.path
@@ -171,6 +215,7 @@ class ListPageDataProvider extends Component<Props, State> {
               data: {
                 currentPage,
                 fields,
+                filters,
                 items: this.items,
                 itemsCount: this.itemsCount,
                 pageSize,
@@ -179,12 +224,16 @@ class ListPageDataProvider extends Component<Props, State> {
                 sortBy,
               },
               handlers: {
+                handleFilterRemove: this.handleFilterRemove,
+                handleFilterRemoveAll: this.handleFilterRemoveAll,
+                handleFilterAdd: this.handleFilterAdd,
+                handleFilterUpdate: this.handleFilterUpdate,
+                handleFieldChange: this.handleFieldChange,
+                handlePageChange: this.handlePageChange,
                 handleSearchChange: this.handleSearchChange,
                 handleSearchClear: this.handleSearchClear,
                 handleSearchSubmit: this.handleSearchSubmit,
-                handleFieldChange: this.handleFieldChange,
                 handleSortChange: this.handleSortChange,
-                handlePageChange: this.handlePageChange,
               },
             });
           }}

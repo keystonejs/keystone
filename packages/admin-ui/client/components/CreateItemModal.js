@@ -46,7 +46,6 @@ class CreateItemModal extends Component {
     const { isLoading } = this.props;
     if (isLoading) return;
     this.props.onClose();
-    console.log('CreateItemModal onClose');
   };
   onKeyDown = event => {
     if (event.defaultPrevented) return;

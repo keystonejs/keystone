@@ -111,7 +111,6 @@ type Props = {
 type State = {
   isFullWidth: boolean,
   isManaging: boolean,
-  selectedFilters: Array<FilterType>,
   selectedItems: Array<Object>,
   showCreateModal: boolean,
 };
@@ -120,7 +119,6 @@ class ListDetails extends Component<Props, State> {
   state = {
     isFullWidth: false,
     isManaging: false,
-    selectedFilters: [],
     selectedItems: [],
     showCreateModal: false,
   };
@@ -177,40 +175,6 @@ class ListDetails extends Component<Props, State> {
   };
 
   // ==============================
-  // Filters
-  // ==============================
-
-  removeFilter = value => () => {
-    let selectedFilters = this.state.selectedFilters.slice(0);
-    selectedFilters = selectedFilters.filter(f => f !== value);
-
-    this.setState({ selectedFilters });
-  };
-  removeAllFilters = () => {
-    this.setState({ selectedFilters: [] });
-  };
-  addFilter = value => {
-    let selectedFilters = this.state.selectedFilters.slice(0);
-    selectedFilters.push(value);
-
-    this.setState({ selectedFilters });
-  };
-  updateFilter = updatedFilter => {
-    let selectedFilters = this.state.selectedFilters.slice(0);
-
-    const updateIndex = selectedFilters.findIndex(i => {
-      return (
-        i.field.path === updatedFilter.field.path &&
-        i.type === updatedFilter.type
-      );
-    });
-
-    selectedFilters.splice(updateIndex, 1, updatedFilter);
-
-    this.setState({ selectedFilters });
-  };
-
-  // ==============================
   // Refs
   // ==============================
 
@@ -253,24 +217,28 @@ class ListDetails extends Component<Props, State> {
       adminPath,
       currentPage,
       fields,
+      filters,
+      handleFieldChange,
+      handleFilterAdd,
+      handleFilterRemove,
+      handleFilterRemoveAll,
+      handleFilterUpdate,
+      handlePageChange,
       handleSearchChange,
       handleSearchClear,
       handleSearchSubmit,
-      handleFieldChange,
       handleSortChange,
-      handlePageChange,
       items,
       itemsCount,
       list,
       pageSize,
+      query,
       search,
       sortBy,
-      query,
     } = this.props;
     const {
       isFullWidth,
       isManaging,
-      selectedFilters,
       selectedItems,
       showCreateModal,
     } = this.state;
@@ -330,9 +298,9 @@ class ListDetails extends Component<Props, State> {
             </Search>
             {ENABLE_DEV_FEATURES ? (
               <AddFilterPopout
-                onChange={this.addFilter}
+                onChange={handleFilterAdd}
                 fields={list.fields}
-                existingFilters={selectedFilters}
+                existingFilters={filters}
               />
             ) : null}
             <Popout buttonLabel="Columns" headerTitle="Columns">
@@ -355,10 +323,10 @@ class ListDetails extends Component<Props, State> {
           </FlexGroup>
 
           <ActiveFilters
-            filterList={selectedFilters}
-            onUpdate={this.updateFilter}
-            onRemove={this.removeFilter}
-            onClear={this.removeAllFilters}
+            filterList={filters}
+            onUpdate={handleFilterUpdate}
+            onRemove={handleFilterRemove}
+            onClear={handleFilterRemoveAll}
           />
 
           <ManageToolbar isVisible={!!itemsCount}>
