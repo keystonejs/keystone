@@ -7,11 +7,8 @@ import { withRouter } from 'react-router-dom';
 
 import {
   FoldIcon,
-  GearIcon,
   PlusIcon,
   SearchIcon,
-  SettingsIcon,
-  TrashcanIcon,
   UnfoldIcon,
   XIcon,
 } from '@keystonejs/icons';
@@ -23,7 +20,6 @@ import {
 } from '@keystonejs/ui/src/primitives/layout';
 import { A11yText, Kbd, H1 } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
-import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
 import { LoadingSpinner } from '@keystonejs/ui/src/primitives/loading';
 import { Pill } from '@keystonejs/ui/src/primitives/pill';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
@@ -31,8 +27,6 @@ import { colors, gridSize } from '@keystonejs/ui/src/theme';
 import AnimateHeight from '../../components/AnimateHeight';
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
-import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
-import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageLoading from '../../components/PageLoading';
@@ -43,6 +37,8 @@ import ColumnSelect from './ColumnSelect';
 import AddFilterPopout from './Filters/AddFilterPopout';
 import EditFilterPopout from './Filters/EditFilterPopout';
 import SortSelect, { SortButton } from './SortSelect';
+import Pagination from './Pagination';
+import Management, { ManageToolbar } from './Management';
 
 // ==============================
 // Queries
@@ -263,43 +259,24 @@ class ListPage extends Component<Props, State> {
     this.setState({ selectedItems });
   };
   startManaging = () => {
-    this.setState({ isManaging: true }, () => {
-      this.manageCancel.focus();
-    });
+    this.setState({ isManaging: true });
   };
   stopManaging = () => {
     this.setState({ isManaging: false, selectedItems: [] }, () => {
+      if (!this.manageButton) return;
       this.manageButton.focus();
     });
   };
-  toggleManaging = () => {
+  onToggleManage = () => {
     const fn = this.state.isManaging ? this.stopManaging : this.startManaging;
     fn();
-  };
-  getManageCancel = ref => {
-    this.manageCancel = ref;
   };
   getManageButton = ref => {
     this.manageButton = ref;
   };
-  openDeleteSelectedItemsModal = () => {
-    const { selectedItems } = this.state;
-    if (!selectedItems.length) return;
-    this.setState({
-      showDeleteSelectedItemsModal: true,
-    });
-  };
-  closeDeleteSelectedItemsModal = () => {
-    this.setState({
-      showDeleteSelectedItemsModal: false,
-    });
-  };
   onDeleteSelectedItems = () => {
-    this.closeDeleteSelectedItemsModal();
     if (this.refetch) this.refetch();
-    this.setState({
-      selectedItems: [],
-    });
+    this.setState({ selectedItems: [] });
   };
   onCreate = ({ data }) => {
     let { list, adminPath, history } = this.props;
@@ -335,6 +312,9 @@ class ListPage extends Component<Props, State> {
   onFilterClear = () => {
     this.setState({ selectedFilters: [] });
   };
+  onChangePage = page => {
+    this.setState({ currentPage: page, skip: (page - 1) * DEFAULT_PAGE_SIZE });
+  };
 
   // ==============================
   // Renderers
@@ -350,34 +330,6 @@ class ListPage extends Component<Props, State> {
         list={list}
         onClose={this.closeCreateModal}
         onCreate={this.onCreate}
-      />
-    );
-  }
-  renderUpdateModal() {
-    const { list } = this.props;
-    const { selectedItems, showUpdateModal } = this.state;
-
-    return (
-      <UpdateManyItemsModal
-        isOpen={showUpdateModal}
-        list={list}
-        items={selectedItems}
-        onClose={this.closeUpdateModal}
-        onUpdate={this.onUpdate}
-      />
-    );
-  }
-  renderDeleteSelectedItemsModal() {
-    const { selectedItems, showDeleteSelectedItemsModal } = this.state;
-    const { list } = this.props;
-
-    return (
-      <DeleteManyItemsModal
-        isOpen={showDeleteSelectedItemsModal}
-        list={list}
-        itemIds={selectedItems}
-        onClose={this.closeDeleteSelectedItemsModal}
-        onDelete={this.onDeleteSelectedItems}
       />
     );
   }
@@ -439,84 +391,6 @@ class ListPage extends Component<Props, State> {
         </FlexGroup>
       </AnimateHeight>
     ) : null;
-  }
-  renderPaginationOrManage() {
-    const { list } = this.props;
-    const { isManaging, selectedItems } = this.state;
-    const selectedCount = selectedItems.length;
-    const hasSelected = Boolean(selectedCount);
-
-    const managementUI = (
-      <FlexGroup align="center">
-        {ENABLE_DEV_FEATURES ? (
-          <IconButton
-            appearance="primary"
-            icon={SettingsIcon}
-            isDisabled={!hasSelected}
-            onClick={this.openUpdateModal}
-            variant="ghost"
-          >
-            Update
-          </IconButton>
-        ) : null}
-        <IconButton
-          appearance="danger"
-          icon={TrashcanIcon}
-          isDisabled={!hasSelected}
-          onClick={this.openDeleteSelectedItemsModal}
-          variant="ghost"
-        >
-          Delete
-        </IconButton>
-        <Button
-          innerRef={this.getManageCancel}
-          onClick={this.toggleManaging}
-          variant="subtle"
-        >
-          Done
-        </Button>
-      </FlexGroup>
-    );
-    const paginationUI = (
-      <FlexGroup align="center">
-        <IconButton
-          icon={GearIcon}
-          innerRef={this.getManageButton}
-          onClick={this.toggleManaging}
-          variant="ghost"
-          style={{ marginRight: '0.5em' }}
-        >
-          Manage
-        </IconButton>
-        <Pagination
-          total={this.itemsCount}
-          currentPage={this.state.currentPage}
-          displayCount
-          single={list.label}
-          plural={list.plural}
-          pageSize={DEFAULT_PAGE_SIZE}
-          onChange={page => {
-            this.setState(() => ({
-              currentPage: page,
-              skip: (page - 1) * DEFAULT_PAGE_SIZE,
-            }));
-          }}
-        />
-      </FlexGroup>
-    );
-
-    return (
-      <div
-        css={{
-          marginBottom: gridSize * 2,
-          marginTop: gridSize,
-          visibility: this.itemsCount ? 'visible' : 'hidden',
-        }}
-      >
-        {isManaging ? managementUI : paginationUI}
-        {this.renderUpdateModal()}
-      </div>
-    );
   }
   getSearchRef = ref => {
     this.input = ref;
@@ -658,11 +532,30 @@ class ListPage extends Component<Props, State> {
                   </FlexGroup>
 
                   {this.renderFilters()}
-                  {this.renderPaginationOrManage()}
+
+                  <ManageToolbar isVisible={!!this.itemsCount}>
+                    {isManaging ? (
+                      <Management
+                        list={list}
+                        onDeleteMany={this.onDeleteSelectedItems}
+                        onUpdateMany={this.onUpdate}
+                        onToggleManage={this.onToggleManage}
+                        selectedItems={selectedItems}
+                      />
+                    ) : (
+                      <Pagination
+                        currentPage={this.state.currentPage}
+                        itemsCount={this.itemsCount}
+                        onChangePage={this.onChangePage}
+                        onToggleManage={this.onToggleManage}
+                        getManageButton={this.getManageButton}
+                        list={list}
+                      />
+                    )}
+                  </ManageToolbar>
                 </Container>
 
                 {this.renderCreateModal()}
-                {this.renderDeleteSelectedItemsModal()}
 
                 <main>
                   <Container isDisabled={isFullWidth}>

@@ -137,8 +137,6 @@ class ModalDialog extends PureComponent<Props> {
     } = this.props;
     const dialogTitleId = generateUEID();
 
-    console.log('dialog onClose', onClose);
-
     return createPortal(
       <Fragment>
         <Fade {...transitionProps}>
