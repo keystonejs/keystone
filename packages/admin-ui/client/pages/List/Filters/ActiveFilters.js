@@ -35,7 +35,7 @@ export default function ActiveFilters({
       <FlexGroup style={{ paddingTop: gridSize }} wrap>
         {filterList.length
           ? filterList.map(filter => {
-              const label = filter.field.getFilterLabel(filter, true);
+              const label = filter.field.formatFilter(filter);
               return (
                 <EditFilterPopout
                   key={label}

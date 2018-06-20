@@ -15,7 +15,10 @@ export default class SelectController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
     console.log('getFilterGraphQL', this, type, value);
   };
-  getFilterLabel = ({ value }) => {
+  getFilterLabel = (/*{ value }*/) => {
+    return this.label;
+  };
+  formatFilter = ({ value }) => {
     if (!value.options.length) {
       return value.inverted
         ? `${this.label} is set`
