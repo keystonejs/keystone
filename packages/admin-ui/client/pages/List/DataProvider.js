@@ -25,7 +25,7 @@ const getQueryArgs = ({ filters, ...args }) => {
 
 const getQuery = ({ fields, filters, list, search, sort, skip, first }) => {
   const queryArgs = getQueryArgs({ first, filters, search, skip, sort });
-  const metaQueryArgs = getQueryArgs({ search });
+  const metaQueryArgs = getQueryArgs({ filters, search });
 
   return gql`{
     ${list.listQueryName}${queryArgs} {
