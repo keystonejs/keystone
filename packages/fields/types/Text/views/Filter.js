@@ -1,12 +1,16 @@
 // @flow
 
-import React, { Component } from 'react';
+import React, { Component, type Ref } from 'react';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
 
-type Props = { field: Object, filter: Object, onChange: Event => void };
-type State = { inputValue: string };
+type Props = {
+  field: Object,
+  filter: Object,
+  innerRef: Ref<*>,
+  onChange: Event => void,
+};
 
-export default class TextFilterView extends Component<Props, State> {
+export default class TextFilterView extends Component<Props> {
   componentDidUpdate(prevProps) {
     const { filter } = this.props;
 
@@ -14,9 +18,12 @@ export default class TextFilterView extends Component<Props, State> {
       this.props.recalcHeight();
     }
   }
+  handleChange = ({ target: { value } }) => {
+    this.props.onChange(value);
+  };
 
   render() {
-    const { filter, field, innerRef, onChange, value } = this.props;
+    const { filter, field, innerRef, value } = this.props;
 
     if (!filter) return null;
 
@@ -24,7 +31,7 @@ export default class TextFilterView extends Component<Props, State> {
 
     return (
       <Input
-        onChange={onChange}
+        onChange={this.handleChange}
         innerRef={innerRef}
         placeholder={placeholder}
         value={value}

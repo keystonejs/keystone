@@ -17,11 +17,9 @@ type State = {
 
 export default class EditFilterPopout extends Component<Props, State> {
   state = { value: this.props.filter.value };
-  // Handlers
-  // ==============================
 
-  onChangeFilter = event => {
-    this.setState({ value: event.target.value });
+  onChangeFilter = value => {
+    this.setState({ value });
   };
   onSubmit = () => {
     const { filter, onChange } = this.props;

@@ -154,18 +154,19 @@ export default class AddFilterPopout extends Component<Props, State> {
   onFieldChange = field => {
     if (!field) return;
 
-    // preset the initial filter if available
+    // preset the initial filter/value if available
     const filter = this.firstAvailableFilterType(field);
+    const value = filter ? filter.getInitialValue() : undefined;
 
-    this.setState({ field, filter });
+    this.setState({ field, filter, value });
     this.fieldSelectRef.current.blur();
   };
   onTypeChange = filter => {
     this.setState({ filter });
     this.focusFilterRef();
   };
-  onChangeFilter = event => {
-    this.setState({ value: event.target.value });
+  onChangeFilter = value => {
+    this.setState({ value });
   };
   onSubmit = event => {
     const { onChange } = this.props;
