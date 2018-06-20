@@ -197,6 +197,9 @@ export default class AddFilterPopout extends Component<Props, State> {
   // ==============================
 
   renderFieldSelect = ({ ref }) => {
+    const { fields } = this.props;
+    const options = fields.filter(f => f.filterTypes && f.filterTypes.length);
+
     return (
       <Transition
         key="select"
@@ -223,7 +226,7 @@ export default class AddFilterPopout extends Component<Props, State> {
           return (
             <div ref={ref} style={style}>
               <FieldAwareSelect
-                {...this.props}
+                fields={options}
                 isOptionDisabled={this.doesNotHaveAvailableFilterTypes}
                 innerRef={this.fieldSelectRef}
                 onChange={this.onFieldChange}
