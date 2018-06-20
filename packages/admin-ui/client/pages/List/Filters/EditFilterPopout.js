@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { POPOUT_GUTTER } from '../../../components/Popout';
-import FilterPopout from './FilterPopout';
+import PopoutForm from './PopoutForm';
 
 // This import is loaded by the @keystone/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
@@ -51,7 +51,7 @@ export default class EditFilterPopout extends Component<Props, State> {
     const headerTitle = filter.field.getFilterLabel(filter);
 
     return (
-      <FilterPopout
+      <PopoutForm
         target={target}
         headerTitle={headerTitle}
         onSubmit={this.onSubmit}
@@ -69,7 +69,7 @@ export default class EditFilterPopout extends Component<Props, State> {
             />
           </div>
         )}
-      </FilterPopout>
+      </PopoutForm>
     );
   }
 }

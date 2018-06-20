@@ -7,7 +7,6 @@ export default class TextController extends FieldController {
     return `${key}: "${value}"`;
   };
   getFilterLabel = ({ field, label, value }, withValue) => {
-    console.log('getFilterLabel', { field, label, value });
     const maybeValue = withValue ? `: "${value}"` : '';
     const filterLabel = label.toLowerCase();
 

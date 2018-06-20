@@ -21,10 +21,8 @@ import {
 import { A11yText, Kbd, H1 } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { LoadingSpinner } from '@keystonejs/ui/src/primitives/loading';
-import { Pill } from '@keystonejs/ui/src/primitives/pill';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
-import AnimateHeight from '../../components/AnimateHeight';
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
 import Nav from '../../components/Nav';
@@ -35,7 +33,7 @@ import { Popout, DisclosureArrow } from '../../components/Popout';
 
 import ColumnSelect from './ColumnSelect';
 import AddFilterPopout from './Filters/AddFilterPopout';
-import EditFilterPopout from './Filters/EditFilterPopout';
+import ActiveFilters, { type FilterType } from './Filters/ActiveFilters';
 import SortSelect, { SortButton } from './SortSelect';
 import Pagination from './Pagination';
 import Management, { ManageToolbar } from './Management';
@@ -72,7 +70,7 @@ const getQuery = ({ fields, list, search, sort, skip, first }) => {
 // Styled Components
 // ==============================
 
-const FilterSeparator = styled.div({
+const ToolbarSeparator = styled.div({
   backgroundColor: 'rgba(0,0,0,0.1)',
   height: '100%',
   width: 1,
@@ -124,19 +122,12 @@ function getInvertedSort(direction) {
 
 const DEFAULT_PAGE_SIZE = 50;
 
-type Fn = any => any;
-type Filter = {
-  field: { label: string, list: Object, path: string, type: string },
-  filter: { type: string, label: string, getInitialValue: Fn },
-  label: string,
-  value: string,
-};
 type Props = {
   list: Object,
 };
 type State = {
   displayedFields: Array<Object>,
-  selectedFilters: Array<Filter>,
+  selectedFilters: Array<FilterType>,
   isFullWidth: boolean,
   isManaging: boolean,
   selectedItems: Array<Object>,
@@ -144,8 +135,6 @@ type State = {
   sortBy: string,
   search: string,
   showCreateModal: boolean,
-  showUpdateModal: boolean,
-  showDeleteSelectedItemsModal: boolean,
   skip: number,
   currentPage: number,
 };
@@ -167,8 +156,6 @@ class ListPage extends Component<Props, State> {
       sortBy,
       search: '',
       showCreateModal: false,
-      showUpdateModal: false,
-      showDeleteSelectedItemsModal: false,
       skip: 0,
       currentPage: 1,
     };
@@ -239,9 +226,6 @@ class ListPage extends Component<Props, State> {
   // Management
   // ==============================
 
-  closeUpdateModal = () => this.setState({ showUpdateModal: false });
-  openUpdateModal = () => this.setState({ showUpdateModal: true });
-
   handleItemSelect = (itemIds: Array<string>) => {
     let selectedItems = this.state.selectedItems.slice(0);
 
@@ -271,9 +255,6 @@ class ListPage extends Component<Props, State> {
     const fn = this.state.isManaging ? this.stopManaging : this.startManaging;
     fn();
   };
-  getManageButton = ref => {
-    this.manageButton = ref;
-  };
   onDeleteSelectedItems = () => {
     if (this.refetch) this.refetch();
     this.setState({ selectedItems: [] });
@@ -283,11 +264,19 @@ class ListPage extends Component<Props, State> {
     let id = data[list.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
   };
+
+  // ==============================
+  // Filters
+  // ==============================
+
   removeFilter = value => () => {
     let selectedFilters = this.state.selectedFilters.slice(0);
     selectedFilters = selectedFilters.filter(f => f !== value);
 
     this.setState({ selectedFilters });
+  };
+  removeAllFilters = () => {
+    this.setState({ selectedFilters: [] });
   };
   addFilter = value => {
     let selectedFilters = this.state.selectedFilters.slice(0);
@@ -309,11 +298,19 @@ class ListPage extends Component<Props, State> {
 
     this.setState({ selectedFilters });
   };
-  onFilterClear = () => {
-    this.setState({ selectedFilters: [] });
-  };
   onChangePage = page => {
     this.setState({ currentPage: page, skip: (page - 1) * DEFAULT_PAGE_SIZE });
+  };
+
+  // ==============================
+  // Refs
+  // ==============================
+
+  getManageButton = ref => {
+    this.manageButton = ref;
+  };
+  getSearchRef = ref => {
+    this.input = ref;
   };
 
   // ==============================
@@ -343,7 +340,7 @@ class ListPage extends Component<Props, State> {
     // Note: we return an array here instead of a <Fragment> because the
     // <FlexGroup> component it is rendered into passes props to its children
     return [
-      <FilterSeparator key="expand-separator" />,
+      <ToolbarSeparator key="expand-separator" />,
       <Button
         onClick={this.toggleFullWidth}
         title={text}
@@ -355,46 +352,6 @@ class ListPage extends Component<Props, State> {
       </Button>,
     ];
   }
-  renderFilters() {
-    const { selectedFilters } = this.state;
-    const pillStyle = { marginBottom: gridSize / 2, marginTop: gridSize / 2 };
-
-    return ENABLE_DEV_FEATURES ? (
-      <AnimateHeight>
-        <FlexGroup style={{ paddingTop: gridSize }} wrap>
-          {selectedFilters.length
-            ? selectedFilters.map(filter => {
-                const label = filter.field.getFilterLabel(filter, true);
-                return (
-                  <EditFilterPopout
-                    key={label}
-                    onChange={this.updateFilter}
-                    filter={filter}
-                    target={
-                      <Pill
-                        appearance="primary"
-                        onRemove={this.removeFilter(filter)}
-                        style={pillStyle}
-                      >
-                        {label}
-                      </Pill>
-                    }
-                  />
-                );
-              })
-            : null}
-          {selectedFilters.length > 1 ? (
-            <Pill key="clear" onClick={this.onFilterClear} style={pillStyle}>
-              Clear All
-            </Pill>
-          ) : null}
-        </FlexGroup>
-      </AnimateHeight>
-    ) : null;
-  }
-  getSearchRef = ref => {
-    this.input = ref;
-  };
 
   render() {
     const { list, adminPath } = this.props;
@@ -454,6 +411,8 @@ class ListPage extends Component<Props, State> {
 
             return (
               <Fragment>
+                {/* ========== START HEADER ========== */}
+
                 <Container>
                   <H1>
                     {this.itemsCount > 0
@@ -521,7 +480,7 @@ class ListPage extends Component<Props, State> {
                       />
                     </Popout>
                     {this.renderExpandButton()}
-                    <FilterSeparator />
+                    <ToolbarSeparator />
                     <IconButton
                       appearance="create"
                       icon={PlusIcon}
@@ -531,7 +490,12 @@ class ListPage extends Component<Props, State> {
                     </IconButton>
                   </FlexGroup>
 
-                  {this.renderFilters()}
+                  <ActiveFilters
+                    filterList={selectedFilters}
+                    onUpdate={this.updateFilter}
+                    onRemove={this.removeFilter}
+                    onClear={this.removeAllFilters}
+                  />
 
                   <ManageToolbar isVisible={!!this.itemsCount}>
                     {isManaging ? (
@@ -554,6 +518,8 @@ class ListPage extends Component<Props, State> {
                     )}
                   </ManageToolbar>
                 </Container>
+
+                {/* ========== END HEADER ========== */}
 
                 {this.renderCreateModal()}
 

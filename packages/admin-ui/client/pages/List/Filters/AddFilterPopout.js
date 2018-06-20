@@ -14,7 +14,7 @@ import { Select } from '@keystonejs/ui/src/primitives/filters';
 
 import FieldAwareSelect from '../FieldAwareSelect';
 import { OptionPrimitive } from '../components';
-import FilterPopout from './FilterPopout';
+import PopoutForm from './PopoutForm';
 import { POPOUT_GUTTER } from '../../../components/Popout';
 
 // This import is loaded by the @keystone/field-views-loader loader.
@@ -308,7 +308,7 @@ export default class AddFilterPopout extends Component<Props, State> {
     const back = <BackButton show={!!field} onClick={this.resetState} />;
 
     return (
-      <FilterPopout
+      <PopoutForm
         buttonLabel="Filters"
         headerBefore={back}
         headerTitle={field ? field.label : 'Filter'}
@@ -323,7 +323,7 @@ export default class AddFilterPopout extends Component<Props, State> {
               : this.renderFieldSelect({ ref, recalcHeight })}
           </TransitionGroup>
         )}
-      </FilterPopout>
+      </PopoutForm>
     );
   }
 }
