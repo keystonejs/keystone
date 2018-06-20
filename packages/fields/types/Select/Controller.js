@@ -12,25 +12,25 @@ export default class SelectController extends FieldController {
   getInitialData = () => {
     return this.config.defaultValue || null;
   };
-  getFilterGraphQL = (field, filter, value) => {
-    console.log('getFilterGraphQL', field, filter, value);
+  getFilterGraphQL = ({ type, value }) => {
+    console.log('getFilterGraphQL', this, type, value);
   };
-  getFilterLabel = ({ field, value }) => {
+  getFilterLabel = ({ value }) => {
     if (!value.options.length) {
       return value.inverted
-        ? `${field.label} is set`
-        : `${field.label} has no value`;
+        ? `${this.label} is set`
+        : `${this.label} has no value`;
     }
     if (value.options.length > 1) {
       const values = value.options.map(i => i.label).join(', ');
       return value.inverted
-        ? `${field.label} is not in [${values}]`
-        : `${field.label} is in [${values}]`;
+        ? `${this.label} is not in [${values}]`
+        : `${this.label} is in [${values}]`;
     }
     const optionLabel = value.options[0].label;
     return value.inverted
-      ? `${field.label} is not ${optionLabel}`
-      : `${field.label} is ${optionLabel}`;
+      ? `${this.label} is not ${optionLabel}`
+      : `${this.label} is ${optionLabel}`;
   };
   filterTypes = [
     {

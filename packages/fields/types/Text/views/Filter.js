@@ -20,10 +20,7 @@ export default class TextFilterView extends Component<Props, State> {
 
     if (!filter) return null;
 
-    const placeholder = field.getFilterLabel(
-      { field, label: filter.label },
-      false
-    );
+    const placeholder = field.getFilterLabel(filter, false);
 
     return (
       <Input

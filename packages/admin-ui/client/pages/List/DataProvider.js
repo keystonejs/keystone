@@ -7,16 +7,24 @@ import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 
-const getQueryArgs = args => {
+const getQueryArgs = ({ filters, ...args }) => {
   const queryArgs = Object.keys(args).map(
     // Using stringify to get the correct quotes depending on type
     argName => `${argName}: ${JSON.stringify(args[argName])}`
   );
+  if (filters) {
+    const filterArgs = filters.map(filter =>
+      filter.field.getFilterGraphQL(filter)
+    );
+    if (filterArgs.length) {
+      queryArgs.push(`where: { ${filterArgs.join(', ')} }`);
+    }
+  }
   return queryArgs.length ? `(${queryArgs.join(' ')})` : '';
 };
 
-const getQuery = ({ fields, list, search, sort, skip, first }) => {
-  const queryArgs = getQueryArgs({ search, sort, skip, first });
+const getQuery = ({ fields, filters, list, search, sort, skip, first }) => {
+  const queryArgs = getQueryArgs({ first, filters, search, skip, sort });
   const metaQueryArgs = getQueryArgs({ search });
 
   return gql`{
@@ -185,7 +193,15 @@ class ListPageDataProvider extends Component<Props, State> {
       sortBy.field.path
     }`;
     const first = pageSize;
-    const query = getQuery({ fields, list, search, sort, skip, first });
+    const query = getQuery({
+      fields,
+      filters,
+      list,
+      search,
+      sort,
+      skip,
+      first,
+    });
 
     return (
       <Fragment>

@@ -1,16 +1,15 @@
 import FieldController from '../../Controller';
 
 export default class TextController extends FieldController {
-  getFilterGraphQL = (field, filter, value) => {
-    const key =
-      filter.type === 'is' ? `${field.path}` : `${field.path}_${filter.type}`;
+  getFilterGraphQL = ({ type, value }) => {
+    const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
     return `${key}: "${value}"`;
   };
-  getFilterLabel = ({ field, label, value }, withValue) => {
+  getFilterLabel = ({ label, value }, withValue) => {
     const maybeValue = withValue ? `: "${value}"` : '';
     const filterLabel = label.toLowerCase();
 
-    return `${field.label} ${filterLabel}` + maybeValue;
+    return `${this.label} ${filterLabel}` + maybeValue;
   };
   filterTypes = [
     {
