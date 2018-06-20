@@ -32,6 +32,7 @@ import ActiveFilters, { type FilterType } from './Filters/ActiveFilters';
 import SortSelect, { SortButton } from './SortSelect';
 import Pagination from './Pagination';
 import Management, { ManageToolbar } from './Management';
+import type { SortByType } from './DataProvider';
 
 // ==============================
 // Styled Components
@@ -94,18 +95,18 @@ type Props = {
   },
   currentPage: number,
   fields: Array<Object>,
-  sortDirection: 'ASC' | 'DESC',
-  sortBy: string,
-  search: string,
-  skip: number,
-  items: Array<Object>,
-  itemsCount: number,
+  handleFieldChange: GenericFn,
+  handlePageChange: GenericFn,
   handleSearchChange: GenericFn,
   handleSearchClear: GenericFn,
   handleSearchSubmit: GenericFn,
-  handleFieldChange: GenericFn,
   handleSortChange: GenericFn,
-  handlePageChange: GenericFn,
+  items: Array<Object>,
+  itemsCount: number,
+  pageSize: number,
+  search: string,
+  skip: number,
+  sortBy: SortByType,
 };
 type State = {
   isFullWidth: boolean,
@@ -261,6 +262,7 @@ class ListDetails extends Component<Props, State> {
       items,
       itemsCount,
       list,
+      pageSize,
       search,
       sortBy,
       query,
@@ -290,7 +292,7 @@ class ListDetails extends Component<Props, State> {
               }
               target={
                 <SortButton>
-                  {sortBy.label.toLowerCase()}
+                  {sortBy.field.label.toLowerCase()}
                   <DisclosureArrow size="0.2em" />
                 </SortButton>
               }
@@ -371,11 +373,12 @@ class ListDetails extends Component<Props, State> {
             ) : (
               <Pagination
                 currentPage={currentPage}
+                getManageButton={this.getManageButton}
                 itemsCount={itemsCount}
+                list={list}
                 onChangePage={handlePageChange}
                 onToggleManage={this.onToggleManage}
-                getManageButton={this.getManageButton}
-                list={list}
+                pageSize={pageSize}
               />
             )}
           </ManageToolbar>

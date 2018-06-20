@@ -5,8 +5,6 @@ import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
 
-const DEFAULT_PAGE_SIZE = 50;
-
 type Props = {
   currentPage: number,
   getManageButton: Ref<*>,
@@ -14,15 +12,17 @@ type Props = {
   list: Object,
   onChangePage: (*) => void,
   onToggleManage: (*) => void,
+  pageSize: number,
 };
 
 export default function ListPagination({
   currentPage,
   getManageButton,
   itemsCount,
+  list,
   onChangePage,
   onToggleManage,
-  list,
+  pageSize,
 }: Props) {
   return (
     <FlexGroup align="center">
@@ -39,7 +39,7 @@ export default function ListPagination({
         currentPage={currentPage}
         displayCount
         onChange={onChangePage}
-        pageSize={DEFAULT_PAGE_SIZE}
+        pageSize={pageSize}
         plural={list.plural}
         single={list.label}
         total={itemsCount}

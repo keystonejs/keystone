@@ -54,6 +54,11 @@ export const SortOption = ({
   );
 };
 
+function invertDirection(direction) {
+  const inverted = { ASC: 'DESC', DESC: 'ASC' };
+  return inverted[direction] || direction;
+}
+
 type State = { altIsDown: boolean };
 
 export default class SortSelect extends Component<SelectProps, State> {
@@ -74,11 +79,19 @@ export default class SortSelect extends Component<SelectProps, State> {
     if (e.key !== 'Alt') return;
     this.setState({ altIsDown: false });
   };
-  handleChange = sortBy => {
+  handleChange = field => {
+    const { onChange, value } = this.props;
     const { altIsDown } = this.state;
-    const isSelected = sortBy.path === this.props.value.path;
-    const inverted = altIsDown || isSelected;
-    this.props.onChange({ sortBy, inverted });
+    const isSelected = field.path === value.field.path;
+
+    let direction = 'ASC';
+    if (isSelected) {
+      direction = invertDirection(value.direction);
+    } else if (altIsDown) {
+      direction = 'DESC';
+    }
+
+    onChange({ field, direction });
   };
   augmentedOption = props => (
     <SortOption altIsDown={this.state.altIsDown} {...props} />

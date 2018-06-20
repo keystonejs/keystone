@@ -31,50 +31,48 @@ const getQuery = ({ fields, list, search, sort, skip, first }) => {
   }`;
 };
 
-function getInvertedSort(direction) {
-  const inverted = { ASC: 'DESC', DESC: 'ASC' };
-  return inverted[direction] || direction;
-}
-
-const DEFAULT_PAGE_SIZE = 50;
-
+export type SortByType = {
+  field: { label: string, path: string },
+  direction: 'ASC' | 'DESC',
+};
 type Props = {
   list: Object,
 };
 type State = {
   currentPage: number,
   fields: Array<Object>,
+  pageSize: number,
   search: string,
   skip: number,
-  sortBy: string,
-  sortDirection: string,
+  sortBy: SortByType,
 };
 
-class ListPage extends Component<Props, State> {
+class ListPageDataProvider extends Component<Props, State> {
   constructor(props) {
     super(props);
-    const fields = this.props.list.fields.slice(0, 2);
-    const sortDirection = ListPage.orderOptions[0].value;
-    const sortBy = fields[0];
 
+    // Prepare active fields and sort order
+    const fields = props.list.fields.slice(0, 2);
+    const sortBy = { field: fields[0], direction: 'ASC' };
+
+    // We record the number of items returned by the latest query so that the
+    // previous count can be displayed during a loading state.
+    this.itemsCount = 0;
+
+    // Declare initial state
     this.state = {
+      currentPage: 1,
       fields,
-      sortDirection,
-      sortBy,
+      pageSize: 50,
       search: '',
       skip: 0,
-      currentPage: 1,
+      sortBy,
     };
   }
 
-  static orderOptions = [
-    { label: 'Ascending', value: 'ASC' },
-    { label: 'Descending', value: 'DESC' },
-  ];
-
-  // We record the number of items returned by the latest query so that the
-  // previous count can be displayed during a loading state.
-  itemsCount: 0;
+  // ==============================
+  // Search
+  // ==============================
 
   handleSearchChange = ({ target: { value: search } }) => {
     this.setState({ search });
@@ -93,50 +91,56 @@ class ListPage extends Component<Props, State> {
     }
   };
 
+  // ==============================
+  // Columns
+  // ==============================
+
   handleFieldChange = selectedFields => {
     if (!selectedFields.length) {
       return;
     }
 
-    // Ensure that the displayed fields maintain their original sortDirection when
-    // they're added/removed
+    // Ensure that the displayed fields maintain their original sortDirection
+    // when they're added/removed
     const fields = this.props.list.fields.filter(field =>
       selectedFields.includes(field)
     );
 
-    // Reset sortBy if we were ordering by a field which has been removed.
-    const sortBy = fields.includes(this.state.sortBy)
-      ? this.state.sortBy
-      : fields[0];
+    // Reset `sortBy` if we were ordering by a field which has been removed.
+    const { sortBy } = this.state;
+    const newSort = fields.includes(sortBy.field)
+      ? sortBy
+      : { ...sortBy, field: fields[0] };
 
-    this.setState({ fields, sortBy });
+    this.setState({ fields, sortBy: newSort });
   };
 
-  handleSortChange = ({ sortBy, inverted }) => {
-    const originalDirection = this.state.sortDirection;
-    const sortDirection = inverted
-      ? getInvertedSort(originalDirection)
-      : originalDirection;
-    this.setState({ sortBy, sortDirection });
+  // ==============================
+  // Sorting
+  // ==============================
+
+  handleSortChange = sortBy => {
+    this.setState({ sortBy });
   };
+
+  // ==============================
+  // Pagination
+  // ==============================
+
   handlePageChange = currentPage => {
-    const skip = (currentPage - 1) * DEFAULT_PAGE_SIZE;
+    const { pageSize } = this.state;
+    const skip = (currentPage - 1) * pageSize;
     this.setState({ currentPage, skip });
   };
 
   render() {
     const { children, list } = this.props;
-    const {
-      currentPage,
-      fields,
-      sortDirection,
-      sortBy,
-      search,
-      skip,
-    } = this.state;
+    const { currentPage, fields, pageSize, sortBy, search, skip } = this.state;
 
-    const sort = `${sortDirection === 'DESC' ? '-' : ''}${sortBy.path}`;
-    const first = DEFAULT_PAGE_SIZE; // TODO: move this to state; let the user select pagesize
+    const sort = `${sortBy.direction === 'DESC' ? '-' : ''}${
+      sortBy.field.path
+    }`;
+    const first = pageSize;
     const query = getQuery({ fields, list, search, sort, skip, first });
 
     return (
@@ -167,12 +171,12 @@ class ListPage extends Component<Props, State> {
               data: {
                 currentPage,
                 fields,
-                sortDirection,
-                sortBy,
-                search,
-                skip,
                 items: this.items,
                 itemsCount: this.itemsCount,
+                pageSize,
+                search,
+                skip,
+                sortBy,
               },
               handlers: {
                 handleSearchChange: this.handleSearchChange,
@@ -190,4 +194,4 @@ class ListPage extends Component<Props, State> {
   }
 }
 
-export default withRouter(ListPage);
+export default withRouter(ListPageDataProvider);
