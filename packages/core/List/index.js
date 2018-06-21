@@ -186,26 +186,9 @@ module.exports = class List {
     ];
   }
   getAdminGraphqlQueries() {
-    // TODO: Follow OpenCRUD naming:
-    // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-1-toplevel.md#example
-    // TODO: make sorting like OpenCRUD:
-    /*
-orderBy: UserOrderByInput
-...
-enum UserOrderByInput {
-id_ASC
-id_DESC
-name_ASC
-name_DESC
-updatedAt_ASC
-updatedAt_DESC
-createdAt_ASC
-createdAt_DESC
-}
-*/
     const commonArgs = `
           search: String
-          sort: String
+          orderBy: String
 
           # Pagination
           first: Int

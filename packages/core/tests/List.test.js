@@ -238,7 +238,7 @@ test('getAdminGraphqlQueries()', () => {
           where: TestWhereInput
 
           search: String
-          sort: String
+          orderBy: String
 
           # Pagination
           first: Int
@@ -251,7 +251,7 @@ test('getAdminGraphqlQueries()', () => {
           where: TestWhereInput
 
           search: String
-          sort: String
+          orderBy: String
 
           # Pagination
           first: Int

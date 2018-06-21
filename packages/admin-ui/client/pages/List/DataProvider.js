@@ -23,8 +23,8 @@ const getQueryArgs = ({ filters, ...args }) => {
   return queryArgs.length ? `(${queryArgs.join(' ')})` : '';
 };
 
-const getQuery = ({ fields, filters, list, search, sort, skip, first }) => {
-  const queryArgs = getQueryArgs({ first, filters, search, skip, sort });
+const getQuery = ({ fields, filters, list, search, orderBy, skip, first }) => {
+  const queryArgs = getQueryArgs({ first, filters, search, skip, orderBy });
   const metaQueryArgs = getQueryArgs({ filters, search });
 
   return gql`{
@@ -189,16 +189,14 @@ class ListPageDataProvider extends Component<Props, State> {
       sortBy,
     } = this.state;
 
-    const sort = `${sortBy.direction === 'DESC' ? '-' : ''}${
-      sortBy.field.path
-    }`;
+    const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
     const first = pageSize;
     const query = getQuery({
       fields,
       filters,
       list,
       search,
-      sort,
+      orderBy,
       skip,
       first,
     });
