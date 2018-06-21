@@ -7,7 +7,6 @@ import {
   Radio as _Radio,
 } from 'react-radios';
 
-import { GrabberIcon } from '../../../icons';
 import { colors, gridSize } from '../theme';
 import { CheckboxPrimitive, RadioPrimitive } from './forms';
 import { FlexGroup } from './layout';
