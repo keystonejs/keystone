@@ -157,14 +157,20 @@ class ListDetails extends Component<Props, State> {
   handleItemSelectAll = (selectedItems: Array<string>) => {
     this.setState({ selectedItems });
   };
+  handleManageKeyDown = ({ key }: Event) => {
+    if (key !== 'Escape') return;
+    this.stopManaging();
+  };
   startManaging = () => {
     this.setState({ isManaging: true });
+    document.addEventListener('keydown', this.handleManageKeyDown, false);
   };
   stopManaging = () => {
     this.setState({ isManaging: false, selectedItems: [] }, () => {
       if (!this.manageButton) return;
       this.manageButton.current.focus();
     });
+    document.removeEventListener('keydown', this.handleManageKeyDown, false);
   };
   onToggleManage = () => {
     const fn = this.state.isManaging ? this.stopManaging : this.startManaging;
