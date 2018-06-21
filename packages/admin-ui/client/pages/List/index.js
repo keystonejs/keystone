@@ -440,7 +440,7 @@ class ListPage extends Component {
               );
             }
 
-            const itemsErrors = deconstructErrorsToDataShape(error)[list.listQueryName];
+            const itemsErrors = deconstructErrorsToDataShape(error)[list.listQueryName] || [];
 
             // TODO: This doesn't seem like the best way to capture the refetch,
             // but it's not easy to hoist the <Query> further up the hierarchy.
