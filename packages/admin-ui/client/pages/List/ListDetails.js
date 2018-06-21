@@ -60,13 +60,17 @@ const Search = ({ children, hasValue, isFetching, onClear, onSubmit }) => {
       {children}
       <div
         css={{
+          alignItems: 'center',
           color: colors.N30,
           cursor: 'pointer',
+          display: 'flex',
+          height: 34,
+          justifyContent: 'center',
           pointerEvents: hasValue ? 'all' : 'none',
           position: 'absolute',
-          right: gridSize * 1.5,
-          top: '50%',
-          transform: 'translateY(-50%)',
+          right: 0,
+          top: 0,
+          width: 40,
 
           ':hover': {
             color: hasValue ? colors.text : colors.N30,
@@ -376,7 +380,7 @@ class ListDetails extends Component<Props, State> {
                 onSelectAll={this.handleItemSelectAll}
                 selectedItems={selectedItems}
                 noResultsMessage={
-                  filters ? (
+                  filters && filters.length ? (
                     <span>
                       No {list.plural.toLowerCase()} found matching the{' '}
                       {filters.length > 1 ? 'filters' : 'filter'}
