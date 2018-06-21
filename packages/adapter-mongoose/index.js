@@ -166,7 +166,7 @@ class MongooseListAdapter extends BaseListAdapter {
         return [
           ...conds,
           ...fieldConditions.map(condition => {
-            if (condition.$isComplexStage) {
+            if (condition && condition.$isComplexStage) {
               return condition;
             }
             return { [fieldAdapater.path]: condition };

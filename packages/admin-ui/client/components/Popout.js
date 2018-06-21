@@ -92,6 +92,7 @@ export const Popout = ({
   headerBefore,
   headerTitle,
   target,
+  ...props
 }: Props) => {
   const defaultTarget = (
     <Button>
@@ -101,7 +102,7 @@ export const Popout = ({
   );
 
   return (
-    <PopoutModal ref={innerRef} target={target || defaultTarget}>
+    <PopoutModal ref={innerRef} target={target || defaultTarget} {...props}>
       <Wrapper>
         <Header>
           <HeaderLeft>{headerBefore}</HeaderLeft>

@@ -225,6 +225,7 @@ class Control extends Component<ControlProps, State> {
         >
           <HiddenInput
             checked={checked}
+            tabIndex={checked ? '0' : '-1'}
             disabled={isDisabled}
             innerRef={this.getRef}
             name={name}

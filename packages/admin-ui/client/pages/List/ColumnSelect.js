@@ -1,10 +1,10 @@
 import React from 'react';
 import { CheckIcon, DashIcon, XIcon } from '@keystonejs/icons';
 import { colors } from '@keystonejs/ui/src/theme';
+import { OptionPrimitive } from '@keystonejs/ui/src/primitives/filters';
 
-import FieldAwareSelect, { type SelectProps } from './FieldAwareSelect';
-import { OptionPrimitive } from './components';
 import { POPOUT_GUTTER } from '../../components/Popout';
+import FieldSelect, { type FieldSelectProps } from './FieldSelect';
 
 export const ColumnOption = ({
   children,
@@ -33,10 +33,10 @@ export const ColumnOption = ({
   );
 };
 
-export default function ColumnSelect(props: SelectProps) {
+export default function ColumnSelect(props: FieldSelectProps) {
   return (
     <div css={{ padding: POPOUT_GUTTER }}>
-      <FieldAwareSelect
+      <FieldSelect
         {...props}
         components={{ Option: ColumnOption }}
         isMulti

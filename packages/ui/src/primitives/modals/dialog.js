@@ -13,14 +13,13 @@ import styled from 'react-emotion';
 import ScrollLock from 'react-scrolllock';
 
 import FocusTrap, { type FocusTarget } from './FocusTrap';
-import { Fade, SlideUp, withTransitionState } from './transitions';
+import { Fade, SlideInFromRight, withTransitionState } from './transitions';
 import { Blanket } from './common';
 import { colors } from '../../theme';
 import { generateUEID } from '../../utils';
 import { alpha } from '../../theme/color-utils';
 import { A11yText } from '../typography';
 
-const outerGutter = 40;
 const innerGutter = 20;
 
 // Styled Components
@@ -29,14 +28,12 @@ const innerGutter = 20;
 const Positioner = styled.div(({ width }) => ({
   display: 'flex',
   flexDirection: 'column',
-  left: 0,
-  marginLeft: 'auto',
-  marginRight: 'auto',
-  maxHeight: `calc(100% - ${outerGutter * 2}px)`,
-  maxWidth: width,
+  height: '100%',
+  maxWidth: '90%',
   position: 'fixed',
   right: 0,
-  top: outerGutter,
+  top: 0,
+  width: width,
   zIndex: 2,
 }));
 
@@ -50,8 +47,7 @@ const Dialog = ({ component: Tag, innerRef, ...props }: DialogElementProps) => (
     role="dialog"
     css={{
       backgroundColor: 'white',
-      borderRadius: 5,
-      boxShadow: '0 2px 8px -1px rgba(0,0,0,0.3)',
+      boxShadow: '-2px 0 8px -1px rgba(0,0,0,0.3)',
       display: 'flex',
       flex: 1,
       flexDirection: 'column',
@@ -111,7 +107,7 @@ class ModalDialog extends PureComponent<Props> {
     attachTo: document.body,
     closeOnBlanketClick: false,
     component: 'div',
-    width: 640,
+    width: 560,
   };
   componentDidMount() {
     document.addEventListener('keydown', this.onKeyDown, false);
@@ -137,8 +133,6 @@ class ModalDialog extends PureComponent<Props> {
     } = this.props;
     const dialogTitleId = generateUEID();
 
-    console.log('dialog onClose', onClose);
-
     return createPortal(
       <Fragment>
         <Fade {...transitionProps}>
@@ -147,7 +141,7 @@ class ModalDialog extends PureComponent<Props> {
             isTinted
           />
         </Fade>
-        <SlideUp {...transitionProps}>
+        <SlideInFromRight {...transitionProps}>
           <Positioner width={width}>
             <FocusTrap
               options={{
@@ -167,7 +161,7 @@ class ModalDialog extends PureComponent<Props> {
               </Dialog>
             </FocusTrap>
           </Positioner>
-        </SlideUp>
+        </SlideInFromRight>
         <ScrollLock />
       </Fragment>,
       attachTo

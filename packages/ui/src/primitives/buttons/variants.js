@@ -94,9 +94,10 @@ export function makeGhostVariant({ appearance, isDisabled }) {
 
   return {
     border: '1px solid',
-    borderColor: isDisabled ? colors.N20 : border,
-    color: isDisabled ? colors.N40 : text,
+    borderColor: border,
+    color: text,
     fontWeight: 500,
+    opacity: isDisabled ? 0.5 : null,
 
     ':hover, :focus': {
       backgroundColor: alpha(border, 0.1),

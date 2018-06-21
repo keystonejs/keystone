@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Dialog } from '@keystonejs/ui/src/primitives/modals';
-
-const DialogElement = props => <div role="alertdialog" {...props} />;
+import { Confirm } from '@keystonejs/ui/src/primitives/modals';
 
 export default class DeleteItemModal extends Component {
   onClose = () => {
@@ -23,13 +21,7 @@ export default class DeleteItemModal extends Component {
         {(deleteItem, { loading }) => {
           this.isLoading = loading;
           return (
-            <Dialog
-              component={DialogElement}
-              isOpen={isOpen}
-              onClose={this.onClose}
-              onKeyDown={this.onKeyDown}
-              width={400}
-            >
+            <Confirm isOpen={isOpen} onKeyDown={this.onKeyDown}>
               <p style={{ marginTop: 0 }}>
                 Are you sure you want to delete{' '}
                 <strong>{item.name || item.id}</strong>?
@@ -37,6 +29,7 @@ export default class DeleteItemModal extends Component {
               <footer>
                 <Button
                   appearance="danger"
+                  variant="ghost"
                   onClick={() => {
                     if (loading) return;
                     deleteItem({ variables: { id: item.id } }).then(onDelete);
@@ -48,7 +41,7 @@ export default class DeleteItemModal extends Component {
                   Cancel
                 </Button>
               </footer>
-            </Dialog>
+            </Confirm>
           );
         }}
       </Mutation>

@@ -25,7 +25,7 @@ export default class SelectField extends Component {
     const selectProps =
       renderContext === 'dialog'
         ? {
-            menuPosition: 'fixed',
+            menuPortalTarget: document.body,
             menuShouldBlockScroll: true,
           }
         : null;

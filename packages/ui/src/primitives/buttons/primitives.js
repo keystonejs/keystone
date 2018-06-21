@@ -23,6 +23,7 @@ export type ButtonProps = {
   children: Node,
   innerRef?: Ref<*>,
   href?: string,
+  isBlock?: boolean,
   isDisabled: boolean,
   isActive: boolean,
   isHover: boolean,
@@ -35,6 +36,7 @@ export type ButtonProps = {
 function makeVariant({
   appearance,
   isActive,
+  isBlock,
   isHover,
   isFocus,
   isDisabled,
@@ -71,7 +73,7 @@ function makeVariant({
   return {
     ...buttonAndInputBase,
     cursor: isDisabled ? 'default' : 'pointer',
-    display: 'inline-block',
+    display: isBlock ? 'block' : 'inline-block',
     opacity: isDisabled ? 0.66 : null,
     outline: 0,
     padding: SPACING_OPTION[spacing],
@@ -79,6 +81,7 @@ function makeVariant({
     textAlign: 'center',
     touchAction: 'manipulation', // Disables "double-tap to zoom" for mobile; removes delay on click events
     userSelect: 'none',
+    width: isBlock ? '100%' : null,
 
     // override possible anchor styles
     ':hover': {
