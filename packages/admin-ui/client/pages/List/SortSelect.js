@@ -16,7 +16,7 @@ export const SortButton = styled.button(({ isActive }) => {
   return {
     background: 0,
     border: 0,
-    borderBottom: `1px solid ${colors.N40}`,
+    borderBottom: `1px solid ${colors.N20}`,
     outline: 0,
     color: 'inherit',
     cursor: 'pointer',
