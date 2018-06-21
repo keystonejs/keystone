@@ -248,6 +248,8 @@ export class OptionRenderer extends Component {
         ref={innerRef}
         shouldDisplaySearchControl={displaySearch}
         styles={optionRendererStyles}
+        // TODO: JW: Not a fan of this, but it doesn't seem to make a difference
+        // if we take it out. react-select bug maybe?
         tabSelectsValue={false}
         {...props}
         components={this.components}
