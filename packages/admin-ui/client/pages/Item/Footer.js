@@ -137,7 +137,7 @@ export default class Footer extends Component {
           </div>
           <div>
             <Button
-              appearance="danger"
+              appearance="warning"
               isDisabled={updateInProgress}
               variant="subtle"
               onClick={onDelete}

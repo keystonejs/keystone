@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Dialog } from '@keystonejs/ui/src/primitives/modals';
+import { Confirm } from '@keystonejs/ui/src/primitives/modals';
 
 export default class DeleteManyModal extends Component {
   onClose = () => {
@@ -21,12 +21,7 @@ export default class DeleteManyModal extends Component {
         {(deleteItems, { loading }) => {
           this.isLoading = loading;
           return (
-            <Dialog
-              isOpen={isOpen}
-              onClose={this.onClose}
-              onKeyDown={this.onKeyDown}
-              width={400}
-            >
+            <Confirm isOpen={isOpen} onKeyDown={this.onKeyDown}>
               <p style={{ marginTop: 0 }}>
                 Are you sure you want to delete{' '}
                 <strong>{list.formatCount(itemIds)}</strong>?
@@ -34,6 +29,7 @@ export default class DeleteManyModal extends Component {
               <footer>
                 <Button
                   appearance="danger"
+                  variant="ghost"
                   onClick={() => {
                     if (loading) return;
                     deleteItems({
@@ -47,7 +43,7 @@ export default class DeleteManyModal extends Component {
                   Cancel
                 </Button>
               </footer>
-            </Dialog>
+            </Confirm>
           );
         }}
       </Mutation>

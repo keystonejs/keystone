@@ -18,7 +18,9 @@ const EventCatcher = props => (
     {...props}
   />
 );
-const SelectWrapper = props => <div css={{ marginTop: gridSize }} {...props} />;
+const SelectWrapper = props => (
+  <div css={{ marginTop: gridSize * 2 }} {...props} />
+);
 
 type Props = { field: Object, innerRef: Ref<*>, onChange: Event => void };
 type State = { inverted: boolean };
