@@ -9,10 +9,9 @@ import {
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 import { A11yText } from '@keystonejs/ui/src/primitives/typography';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
-import { Select } from '@keystonejs/ui/src/primitives/filters';
+import { OptionPrimitive, Select } from '@keystonejs/ui/src/primitives/filters';
 
 import FieldAwareSelect from '../FieldAwareSelect';
-import { OptionPrimitive } from '../components';
 import PopoutForm from './PopoutForm';
 import { POPOUT_GUTTER } from '../../../components/Popout';
 
@@ -306,7 +305,6 @@ export default class AddFilterPopout extends Component<Props, State> {
               {options.length > 1 ? (
                 <EventCatcher>
                   <Select
-                    defaultIsOpen
                     getOptionValue={opt => opt.type}
                     innerRef={this.filterSelectRef}
                     isOptionDisabled={this.matchesExistingFilterType}

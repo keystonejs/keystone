@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import OptionRenderer from './OptionRenderer';
+import { OptionRenderer } from '@keystonejs/ui/src/primitives/filters';
 
 export type SelectProps = {
   fields: any,

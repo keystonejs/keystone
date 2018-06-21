@@ -12,8 +12,23 @@ export default class SelectController extends FieldController {
   getInitialData = () => {
     return this.config.defaultValue || null;
   };
-  getFilterGraphQL = ({ type, value }) => {
-    console.log('getFilterGraphQL', this, type, value);
+  getFilterGraphQL = ({ value: { inverted, options } }) => {
+    const isMulti = options.length > 1;
+
+    let key = this.path;
+    if (isMulti && inverted) {
+      key = `${this.path}_not_in`;
+    } else if (isMulti) {
+      key = `${this.path}_in`;
+    } else if (inverted) {
+      key = `${this.path}_not`;
+    }
+
+    const value = isMulti
+      ? options.map(x => x.value).join(',')
+      : options[0].value;
+
+    return `${key}: ${value}`;
   };
   getFilterLabel = (/*{ value }*/) => {
     return this.label;

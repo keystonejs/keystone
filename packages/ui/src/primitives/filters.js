@@ -128,6 +128,7 @@ export const Radio = props => <_Radio component={ButtonRadio} {...props} />;
 
 export const OptionPrimitive = ({
   children,
+  isDisabled,
   isFocused,
   isSelected,
   innerProps: { innerRef, ...innerProps },
@@ -136,15 +137,16 @@ export const OptionPrimitive = ({
     backgroundColor: colors.B.L90,
     color: colors.primary,
   };
-  const focusedStyles = isFocused ? hoverAndFocusStyles : null;
-  const selectedStyles = isSelected
-    ? {
-        '&, &:hover, &:focus, &:active': {
-          backgroundColor: colors.primary,
-          color: 'white',
-        },
-      }
-    : null;
+  const focusedStyles = isFocused && !isDisabled ? hoverAndFocusStyles : null;
+  const selectedStyles =
+    isSelected && !isDisabled
+      ? {
+          '&, &:hover, &:focus, &:active': {
+            backgroundColor: colors.primary,
+            color: 'white',
+          },
+        }
+      : null;
 
   return (
     <div
@@ -153,13 +155,16 @@ export const OptionPrimitive = ({
         alignItems: 'center',
         backgroundColor: colors.N05,
         borderRadius: 3,
+        color: isDisabled ? colors.N60 : null,
         cursor: 'pointer',
         display: 'flex',
         fontSize: '0.9em',
         justifyContent: 'space-between',
         marginBottom: 4,
+        opacity: isDisabled ? 0.6 : null,
         outline: 0,
         padding: `${gridSize}px ${gridSize * 1.5}px`,
+        pointerEvents: isDisabled ? 'none' : null,
 
         ':active': {
           backgroundColor: colors.B.L80,
@@ -203,24 +208,10 @@ const Control = ({ selectProps, ...props }) => {
   );
 };
 
-const DropdownIndicator = () => (
-  <div
-    css={{
-      color: colors.N30,
-      marginRight: 2,
-      marginTop: 2,
-      textAlign: 'center',
-      width: 32,
-    }}
-  >
-    <GrabberIcon />
-  </div>
-);
-
 const defaultComponents = {
   Control,
   Option: OptionPrimitive,
-  DropdownIndicator,
+  DropdownIndicator: null,
   IndicatorSeparator: null,
 };
 
@@ -249,14 +240,14 @@ export class OptionRenderer extends Component {
         captureMenuScroll={false}
         closeMenuOnSelect={false}
         controlShouldRenderValue={false}
-        // filterOption={null}
-        // hideSelectedOptions={false}
+        hideSelectedOptions={false}
         isClearable={false}
+        isSearchable={displaySearch}
         maxMenuHeight={1000}
-        // menuIsOpen
+        menuIsOpen
         menuShouldScrollIntoView={false}
-        shouldDisplaySearchControl={displaySearch}
         ref={innerRef}
+        shouldDisplaySearchControl={displaySearch}
         styles={optionRendererStyles}
         tabSelectsValue={false}
         {...props}

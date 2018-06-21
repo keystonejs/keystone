@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import styled from 'react-emotion';
 import { ChevronDownIcon, ChevronUpIcon } from '@keystonejs/icons';
+import { OptionPrimitive } from '@keystonejs/ui/src/primitives/filters';
 import { colors } from '@keystonejs/ui/src/theme';
 
 import FieldAwareSelect, { type SelectProps } from './FieldAwareSelect';
-import { OptionPrimitive } from './components';
 import { POPOUT_GUTTER } from '../../components/Popout';
 
 export const SortButton = styled.button(({ isActive }) => {
