@@ -298,9 +298,9 @@ class ListDetails extends Component<Props, State> {
             </Search>
             {ENABLE_DEV_FEATURES ? (
               <AddFilterPopout
-                onChange={handleFilterAdd}
-                fields={list.fields}
                 existingFilters={filters}
+                fields={list.fields}
+                onChange={handleFilterAdd}
               />
             ) : null}
             <Popout buttonLabel="Columns" headerTitle="Columns">

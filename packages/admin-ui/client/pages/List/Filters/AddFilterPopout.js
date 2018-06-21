@@ -11,7 +11,7 @@ import { A11yText } from '@keystonejs/ui/src/primitives/typography';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
 import { OptionPrimitive, Select } from '@keystonejs/ui/src/primitives/filters';
 
-import FieldAwareSelect from '../FieldAwareSelect';
+import FieldSelect from '../FieldSelect';
 import PopoutForm from './PopoutForm';
 import { POPOUT_GUTTER } from '../../../components/Popout';
 
@@ -196,10 +196,11 @@ export default class AddFilterPopout extends Component<Props, State> {
   // Renderers
   // ==============================
 
-  renderFieldSelect = ({ ref }) => {
+  getFieldOptions = () => {
     const { fields } = this.props;
-    const options = fields.filter(f => f.filterTypes && f.filterTypes.length);
-
+    return fields.filter(f => f.filterTypes && f.filterTypes.length);
+  };
+  renderFieldSelect = ({ ref }) => {
     return (
       <Transition
         key="select"
@@ -225,8 +226,8 @@ export default class AddFilterPopout extends Component<Props, State> {
           const style = { ...base, ...states[state] };
           return (
             <div ref={ref} style={style}>
-              <FieldAwareSelect
-                fields={options}
+              <FieldSelect
+                fields={this.getFieldOptions()}
                 isOptionDisabled={this.doesNotHaveAvailableFilterTypes}
                 innerRef={this.fieldSelectRef}
                 onChange={this.onFieldChange}

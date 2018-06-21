@@ -3,8 +3,8 @@ import styled from 'react-emotion';
 import { ChevronDownIcon, ChevronUpIcon } from '@keystonejs/icons';
 import { OptionPrimitive } from '@keystonejs/ui/src/primitives/filters';
 import { colors } from '@keystonejs/ui/src/theme';
+import { OptionRenderer } from '@keystonejs/ui/src/primitives/filters';
 
-import FieldAwareSelect, { type SelectProps } from './FieldAwareSelect';
 import { POPOUT_GUTTER } from '../../components/Popout';
 
 export const SortButton = styled.button(({ isActive }) => {
@@ -58,10 +58,19 @@ function invertDirection(direction) {
   const inverted = { ASC: 'DESC', DESC: 'ASC' };
   return inverted[direction] || direction;
 }
+function isOptionSelected(opt, selected) {
+  return opt.path === selected[0].field.path;
+}
 
+type FieldType = Object;
+type Props = {
+  fields: Array<FieldType>,
+  onChange: FieldType => void,
+  value: FieldType,
+};
 type State = { altIsDown: boolean };
 
-export default class SortSelect extends Component<SelectProps, State> {
+export default class SortSelect extends Component<Props, State> {
   state = { altIsDown: false };
   componentDidMount() {
     document.body.addEventListener('keydown', this.handleKeyDown, false);
@@ -93,20 +102,26 @@ export default class SortSelect extends Component<SelectProps, State> {
 
     onChange({ field, direction });
   };
-  augmentedOption = props => (
+  enhancedOption = props => (
     <SortOption altIsDown={this.state.altIsDown} {...props} />
   );
+  getOptions = () => {
+    const { fields } = this.props;
+    return fields.map(({ options, ...field }) => field);
+  };
 
   render() {
+    const { value } = this.props;
+
     return (
       <div css={{ padding: POPOUT_GUTTER }}>
-        <FieldAwareSelect
-          {...this.props}
+        <OptionRenderer
+          components={{ Option: this.enhancedOption }}
+          isOptionSelected={isOptionSelected}
           onChange={this.handleChange}
+          options={this.getOptions()}
           placeholder="Find a field..."
-          components={{
-            Option: this.augmentedOption,
-          }}
+          value={value}
         />
       </div>
     );
