@@ -1,5 +1,5 @@
 /* global ENABLE_DEV_FEATURES */
-import React, { Component, Fragment } from 'react';
+import React, { Component, createRef, Fragment } from 'react';
 import styled from 'react-emotion';
 import { withRouter } from 'react-router-dom';
 
@@ -123,6 +123,14 @@ class ListDetails extends Component<Props, State> {
     showCreateModal: false,
   };
 
+  // ==============================
+  // Refs
+  // ==============================
+
+  searchInput = createRef();
+  manageButton = createRef();
+  sortPopoutRef = createRef();
+
   toggleFullWidth = () => {
     this.setState(state => ({ isFullWidth: !state.isFullWidth }));
   };
@@ -172,17 +180,6 @@ class ListDetails extends Component<Props, State> {
     let { list, adminPath, history } = this.props;
     let id = data[list.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
-  };
-
-  // ==============================
-  // Refs
-  // ==============================
-
-  getManageButton = ref => {
-    this.manageButton = ref;
-  };
-  getSearchRef = ref => {
-    this.input = ref;
   };
 
   // ==============================
@@ -252,6 +249,7 @@ class ListDetails extends Component<Props, State> {
             {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
             <span>, by</span>
             <Popout
+              innerRef={this.sortPopoutRef}
               headerTitle="Sort"
               footerContent={
                 <Note>
@@ -266,6 +264,7 @@ class ListDetails extends Component<Props, State> {
               }
             >
               <SortSelect
+                popoutRef={this.sortPopoutRef}
                 fields={list.fields}
                 onChange={handleSortChange}
                 value={sortBy}
@@ -288,7 +287,7 @@ class ListDetails extends Component<Props, State> {
                 autoComplete="off"
                 autoCorrect="off"
                 id={searchId}
-                innerRef={this.getSearchRef}
+                innerRef={this.searchInput}
                 onChange={handleSearchChange}
                 placeholder="Search"
                 name="item-search"
@@ -341,7 +340,7 @@ class ListDetails extends Component<Props, State> {
             ) : (
               <Pagination
                 currentPage={currentPage}
-                getManageButton={this.getManageButton}
+                getManageButton={this.manageButton}
                 itemsCount={itemsCount}
                 list={list}
                 onChangePage={handlePageChange}

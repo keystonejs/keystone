@@ -89,7 +89,7 @@ export default class SortSelect extends Component<Props, State> {
     this.setState({ altIsDown: false });
   };
   handleChange = field => {
-    const { onChange, value } = this.props;
+    const { onChange, popoutRef, value } = this.props;
     const { altIsDown } = this.state;
     const isSelected = field.path === value.field.path;
 
@@ -101,6 +101,7 @@ export default class SortSelect extends Component<Props, State> {
     }
 
     onChange({ field, direction });
+    popoutRef.current.close();
   };
   enhancedOption = props => (
     <SortOption altIsDown={this.state.altIsDown} {...props} />
