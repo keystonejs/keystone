@@ -19,7 +19,7 @@ import {
 import { A11yText, Kbd, H1 } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { LoadingSpinner } from '@keystonejs/ui/src/primitives/loading';
-import { colors, gridSize } from '@keystonejs/ui/src/theme';
+import { colors } from '@keystonejs/ui/src/theme';
 
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
