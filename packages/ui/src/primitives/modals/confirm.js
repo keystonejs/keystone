@@ -13,7 +13,7 @@ import ScrollLock from 'react-scrolllock';
 
 import { borderRadius } from '../../theme';
 import FocusTrap from './FocusTrap';
-import { Fade, SlideDown, withTransitionState } from './transitions';
+import { Fade, ZoomInDown, withTransitionState } from './transitions';
 import { Blanket } from './common';
 
 const innerGutter = 15;
@@ -22,12 +22,12 @@ const innerGutter = 15;
 // ------------------------------
 
 const Positioner = styled.div({
-  justifyContent: 'center',
   display: 'flex',
+  justifyContent: 'center',
   left: 0,
-  width: '100%',
   position: 'fixed',
   top: 0,
+  width: '100%',
   zIndex: 2,
 });
 
@@ -109,7 +109,7 @@ class ModalConfirm extends PureComponent<Props> {
         <Fade {...transitionProps}>
           <Blanket isTinted isLight />
         </Fade>
-        <SlideDown from="-24px" {...transitionProps}>
+        <ZoomInDown {...transitionProps}>
           <Positioner>
             <FocusTrap>
               <Dialog component={component} width={width}>
@@ -118,7 +118,7 @@ class ModalConfirm extends PureComponent<Props> {
             </FocusTrap>
             <ScrollLock />
           </Positioner>
-        </SlideDown>
+        </ZoomInDown>
       </Fragment>,
       attachTo
     );

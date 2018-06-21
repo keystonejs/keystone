@@ -147,3 +147,66 @@ export const SlideDown = ({ from = '-8px', ...props }: TransitionProps) => {
     />
   );
 };
+
+// Slide In from right
+// ------------------------------
+
+export const SlideInFromRight = ({
+  from = '66%',
+  ...props
+}: TransitionProps) => {
+  return (
+    <TransitionReducer
+      constant={makeTransitionBase('opacity, transform')}
+      dynamic={{
+        entering: { opacity: 1, transform: 'translate3d(0,0,0)' },
+        entered: { opacity: 1, transform: 'translate3d(0,0,0)' },
+        exiting: {
+          opacity: 0,
+          transform: `translate3d(${from}, 0, 0)`,
+        },
+        exited: {
+          opacity: 0,
+          transform: `translate3d(${from}, 0, 0)`,
+        },
+      }}
+      {...props}
+    />
+  );
+};
+
+// Zoom In-Down
+// ------------------------------
+
+export const ZoomInDown = (props: TransitionProps) => {
+  const base = {
+    transformOrigin: 'top',
+    transitionProperty: 'opacity, transform',
+    transitionDuration,
+    transitionTimingFunction,
+  };
+  return (
+    <TransitionReducer
+      constant={base}
+      dynamic={{
+        entering: {
+          opacity: 1,
+          transform: 'translate3d(0, 0, 0)',
+        },
+        entered: {
+          opacity: 1,
+          transform: 'translate3d(0, 0, 0)',
+        },
+        exiting: {
+          opacity: 0,
+          transform: 'scale3d(0.33, 0.33, 0.33) translate3d(0, -100%, 0)',
+        },
+        exited: {
+          opacity: 0,
+          transform: 'scale3d(0.33, 0.33, 0.33) translate3d(0, -100%, 0)',
+        },
+      }}
+      {...props}
+    />
+  );
+};

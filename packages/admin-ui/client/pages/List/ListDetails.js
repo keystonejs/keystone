@@ -127,7 +127,6 @@ class ListDetails extends Component<Props, State> {
   // Refs
   // ==============================
 
-  searchInput = createRef();
   manageButton = createRef();
   sortPopoutRef = createRef();
 
@@ -164,7 +163,7 @@ class ListDetails extends Component<Props, State> {
   stopManaging = () => {
     this.setState({ isManaging: false, selectedItems: [] }, () => {
       if (!this.manageButton) return;
-      this.manageButton.focus();
+      this.manageButton.current.focus();
     });
   };
   onToggleManage = () => {
@@ -287,7 +286,6 @@ class ListDetails extends Component<Props, State> {
                 autoComplete="off"
                 autoCorrect="off"
                 id={searchId}
-                innerRef={this.searchInput}
                 onChange={handleSearchChange}
                 placeholder="Search"
                 name="item-search"
