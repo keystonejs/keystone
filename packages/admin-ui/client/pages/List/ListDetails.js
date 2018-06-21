@@ -370,11 +370,18 @@ class ListDetails extends Component<Props, State> {
                 onSelectAll={this.handleItemSelectAll}
                 selectedItems={selectedItems}
                 noResultsMessage={
-                  <span>
-                    No {list.plural.toLowerCase()} found matching &ldquo;{
-                      search
-                    }&rdquo;
-                  </span>
+                  filters ? (
+                    <span>
+                      No {list.plural.toLowerCase()} found matching the{' '}
+                      {filters.length > 1 ? 'filters' : 'filter'}
+                    </span>
+                  ) : (
+                    <span>
+                      No {list.plural.toLowerCase()} found matching &ldquo;{
+                        search
+                      }&rdquo;
+                    </span>
+                  )
                 }
               />
             ) : (
