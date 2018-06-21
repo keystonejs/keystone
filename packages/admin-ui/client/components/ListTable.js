@@ -229,6 +229,7 @@ class ListManageRow extends Component {
             onChange={this.onCheckboxChange}
             onMouseDown={this.onCheckboxMouseDown}
             css={{ marginLeft: 1 }}
+            tabIndex="0"
           />
         </BodyCell>
         {fields.map(({ path }) => (
@@ -296,6 +297,7 @@ export default class ListTable extends Component {
                 <CheckboxPrimitive
                   checked={items.length === selectedItems.length}
                   onChange={this.handleSelectAll}
+                  tabIndex="0"
                 />
               </div>
             </HeaderCell>

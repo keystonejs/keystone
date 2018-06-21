@@ -204,6 +204,7 @@ class Control extends Component<ControlProps, State> {
       name,
       onChange,
       svg,
+      tabIndex,
       type,
       value,
       ...wrapperProps
@@ -225,7 +226,7 @@ class Control extends Component<ControlProps, State> {
         >
           <HiddenInput
             checked={checked}
-            tabIndex={checked ? '0' : '-1'}
+            tabIndex={tabIndex || checked ? '0' : '-1'}
             disabled={isDisabled}
             innerRef={this.getRef}
             name={name}
