@@ -109,7 +109,7 @@ class ModalConfirm extends PureComponent<Props> {
         <Fade {...transitionProps}>
           <Blanket isTinted isLight />
         </Fade>
-        <SlideDown {...transitionProps}>
+        <SlideDown from="-24px" {...transitionProps}>
           <Positioner>
             <FocusTrap>
               <Dialog component={component} width={width}>

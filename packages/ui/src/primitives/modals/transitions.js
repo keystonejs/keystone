@@ -129,10 +129,10 @@ export const SlideUp = (props: TransitionProps) => {
 // Slide Down
 // ------------------------------
 
-export const SlideDown = (props: TransitionProps) => {
+export const SlideDown = ({ from = '-8px', ...props }: TransitionProps) => {
   const out = {
     opacity: 0,
-    transform: 'translate3d(0,-8px,0)',
+    transform: `translate3d(0,${from},0)`,
   };
   return (
     <TransitionReducer
