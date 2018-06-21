@@ -107,7 +107,7 @@ class ModalDialog extends PureComponent<Props> {
     attachTo: document.body,
     closeOnBlanketClick: false,
     component: 'div',
-    width: 640,
+    width: 560,
   };
   componentDidMount() {
     document.addEventListener('keydown', this.onKeyDown, false);

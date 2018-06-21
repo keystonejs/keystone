@@ -152,23 +152,17 @@ export const SlideDown = ({ from = '-8px', ...props }: TransitionProps) => {
 // ------------------------------
 
 export const SlideInFromRight = ({
-  from = '66%',
+  from = '100%',
   ...props
 }: TransitionProps) => {
   return (
     <TransitionReducer
-      constant={makeTransitionBase('opacity, transform')}
+      constant={makeTransitionBase('transform')}
       dynamic={{
-        entering: { opacity: 1, transform: 'translate3d(0,0,0)' },
-        entered: { opacity: 1, transform: 'translate3d(0,0,0)' },
-        exiting: {
-          opacity: 0,
-          transform: `translate3d(${from}, 0, 0)`,
-        },
-        exited: {
-          opacity: 0,
-          transform: `translate3d(${from}, 0, 0)`,
-        },
+        entering: { transform: 'translate3d(0,0,0)' },
+        entered: { transform: 'translate3d(0,0,0)' },
+        exiting: { transform: `translate3d(${from}, 0, 0)` },
+        exited: { transform: `translate3d(${from}, 0, 0)` },
       }}
       {...props}
     />
