@@ -25,6 +25,7 @@ import { A11yText, H1 } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
+import { AutocompleteCaptor } from '@keystonejs/ui/src/primitives/forms';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import { resolveAllKeys } from '@keystonejs/utils';
@@ -302,6 +303,7 @@ const ItemDetails = withRouter(
             </CopyToClipboard>
           </FlexGroup>
           <Form>
+            <AutocompleteCaptor />
             {list.fields.map((field, i) => {
               const { Field } = FieldTypes[list.key][field.path];
               return (
