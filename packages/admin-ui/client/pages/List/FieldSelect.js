@@ -7,6 +7,10 @@ function isOptionSelected(opt, selected) {
 function getOptionValue(opt) {
   return opt.path;
 }
+function mapToPath(acc, i) {
+  acc[i.path] = true;
+  return acc;
+}
 
 /**
  * Why does this exist?
@@ -35,12 +39,8 @@ export default class FieldSelect extends Component<FieldSelectProps> {
   onChangeReturnFieldClass = selected => {
     const { fields: listFields, isMulti, onChange } = this.props;
 
-    const fields = listFields.filter(lf => {
-      return isMulti
-        ? selected.filter(sf => sf.path === lf.path).length
-        : selected.path === lf.path;
-    });
-
+    const diffMap = selected.reduce(mapToPath, {});
+    const fields = listFields.filter(i => diffMap[i.path]);
     const value = isMulti ? fields : fields[0];
 
     onChange(value);
