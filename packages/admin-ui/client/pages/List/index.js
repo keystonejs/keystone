@@ -442,9 +442,23 @@ class ListPage extends Component {
                 !data[list.listQueryName] ||
                 !Object.keys(data[list.listQueryName]).length)
             ) {
+              let message = error.message;
+
+              // If there was an error returned by GraphQL, use that message
+              // instead
+              if (error.networkError && error.networkError.result && error.networkError.result.errors && error.networkError.result.errors[0]) {
+                message = error.networkError.result.errors[0].message || message;
+              }
+
+              // Special case for when trying to access a non-existent list or a
+              // list that is set to `read: false`.
+              if (message.startsWith('Cannot query field')) {
+                message = `Unable to access list ${list.plural}`;
+              }
+
               return (
                 <PageError>
-                  <p>{error.message}</p>
+                  <p>{message}</p>
                 </PageError>
               );
             }

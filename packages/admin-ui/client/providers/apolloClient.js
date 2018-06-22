@@ -9,6 +9,7 @@ import ApolloClient from 'apollo-client';
 
 const fetch = require('cross-fetch');
 
+// TODO: Pull this off `window.X`
 const { apiPath } = KEYSTONE_ADMIN_META;
 
 // Ejected from apollo-boost v0.1.4:

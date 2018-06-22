@@ -326,15 +326,25 @@ createdAt_DESC
               }),
             })
           ) {
-            // TODO: Return an error of some kind aswell so the client isn't in
-            // the dark about why there's no results?
-            return [];
+            // If the client handles errors correctly, it should be able to
+            // receive partial data (for the fields the user has access to),
+            // and then an `errors` array of AccessDeniedError's
+            throw new AccessDeniedError({
+              data: {
+                type: 'query',
+                name: this.listQueryName,
+              },
+              internalData: {
+                authedId: context.authedItem && context.authedItem.id,
+                authedListKey: context.authedListKey,
+              },
+            });
           }
 
           return this.itemsQuery(args, context);
         },
 
-        [this.listQueryMetaName]: (_, args, { authedItem, authedListKey }) => {
+        [this.listQueryMetaName]: (_, args, { authedItem, authedListKey }, context) => {
           if (
             !checkAccess({
               access: this.acl.read,
@@ -347,9 +357,19 @@ createdAt_DESC
               }),
             })
           ) {
-            // TODO: Return an error of some kind aswell so the client isn't in
-            // the dark about why there's no results?
-            return [];
+            // If the client handles errors correctly, it should be able to
+            // receive partial data (for the fields the user has access to),
+            // and then an `errors` array of AccessDeniedError's
+            throw new AccessDeniedError({
+              data: {
+                type: 'query',
+                name: this.listQueryMetaName,
+              },
+              internalData: {
+                authedId: context.authedItem && context.authedItem.id,
+                authedListKey: context.authedListKey,
+              },
+            });
           }
 
           return this.itemsQueryMeta(args);
@@ -358,7 +378,7 @@ createdAt_DESC
         [this.itemQueryName]: (
           _,
           { where: { id } },
-          { authedItem, authedListKey }
+          context
         ) => {
           if (
             !checkAccess({
@@ -366,15 +386,25 @@ createdAt_DESC
               dynamicCheckData: () => ({
                 where: { id },
                 authentication: {
-                  item: authedItem,
-                  listKey: authedListKey,
+                  item: context.authedItem,
+                  listKey: context.authedListKey,
                 },
               }),
             })
           ) {
-            // TODO: Return an error of some kind aswell so the client isn't in
-            // the dark about why there's no results?
-            return null;
+            // If the client handles errors correctly, it should be able to
+            // receive partial data (for the fields the user has access to),
+            // and then an `errors` array of AccessDeniedError's
+            throw new AccessDeniedError({
+              data: {
+                type: 'query',
+                name: this.itemQueryName,
+              },
+              internalData: {
+                authedId: context.authedItem && context.authedItem.id,
+                authedListKey: context.authedListKey,
+              },
+            });
           }
 
           // NOTE: The fields will be filtered by the ACL checking in

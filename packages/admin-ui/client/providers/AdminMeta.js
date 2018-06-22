@@ -4,6 +4,7 @@ import React from 'react';
 
 import List from '../classes/List';
 
+// TODO: Pull this off `window.X` to support server side permission queries
 const { lists, ...srcMeta } = KEYSTONE_ADMIN_META;
 
 const listKeys = Object.keys(lists || {});
@@ -30,6 +31,7 @@ listKeys.forEach(key => {
 // Provider
 
 export default function AdminMetaProvider({ children }) {
+  // TODO: Permission query to see which lists to provide
   return children(adminMeta);
 }
 
@@ -40,5 +42,6 @@ function setDisplayName(c) {
 }
 export const withAdminMeta = Component => props => {
   setDisplayName(Component);
+  // TODO: Permission query to see which lists to provide
   return <Component {...props} adminMeta={adminMeta} />;
 };
