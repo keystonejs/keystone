@@ -1,4 +1,3 @@
-/* global ENABLE_DEV_FEATURES */
 import React, { Component, createRef, Fragment } from 'react';
 import styled from 'react-emotion';
 import { withRouter } from 'react-router-dom';
