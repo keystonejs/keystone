@@ -397,7 +397,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toast }) => {
           }
 
           const item = data[list.itemQueryName];
-          const itemErrors = deconstructErrorsToDataShape(error)[list.itemQueryName];
+          const itemErrors = deconstructErrorsToDataShape(error)[list.itemQueryName] || {};
 
           return item ? (
             <main>

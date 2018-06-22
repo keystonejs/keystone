@@ -41,11 +41,11 @@ function typeOf(obj) {
   return Object.prototype.toString.call(obj);
 }
 
-function parseObjectToACL(obj, { types, listKey, path = '' }) {
-  return types.reduce((acl, type) => {
+function parseObjectToACL(obj, { accessTypes, listKey, path = '' }) {
+  return accessTypes.reduce((acl, type) => {
     if (!obj.hasOwnProperty(type)) {
-      // Default to closed access
-      acl[type] = false;
+      // Default to open access
+      acl[type] = true;
     } else if (
       ['[object Boolean]', '[object Function]'].indexOf(typeOf(obj[type])) !==
       -1

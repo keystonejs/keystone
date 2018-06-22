@@ -339,7 +339,7 @@ export default class ListTable extends Component {
                 <ListDisplayRow
                   fields={fields}
                   item={item}
-                  itemErrors={itemsErrors[itemIndex]}
+                  itemErrors={itemsErrors[itemIndex] || {}}
                   key={item.id}
                   link={({ path, id }) => `${adminPath}/${path}/${id}`}
                   list={list}
