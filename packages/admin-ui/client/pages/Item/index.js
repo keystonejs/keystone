@@ -100,14 +100,25 @@ const ItemDetails = withRouter(
     };
     componentDidMount() {
       this.mounted = true;
+      document.addEventListener('keydown', this.onKeyDown, false);
     }
     componentWillUnmount() {
       this.mounted = false;
+      document.removeEventListener('keydown', this.onKeyDown, false);
     }
+    onKeyDown = event => {
+      const { resetRequested } = this.state;
+      if (event.defaultPrevented) return;
 
-    onKeyDown = e => {
-      if (e.key === 'Escape') {
-        this.props.onCancel();
+      switch (event.key) {
+        case 'Escape':
+          if (resetRequested) {
+            return this.hideConfirmResetMessage();
+          }
+        case 'Enter':
+          if (event.metaKey) {
+            return this.onSave();
+          }
       }
     };
 
