@@ -558,6 +558,8 @@ createdAt_DESC
   throwIfAccessDeniedOnList({
     accessType,
     data,
+    item,
+    items,
     context: { authedItem, authedListKey },
     errorMeta = {},
     errorMetaForLogging = {},
@@ -567,6 +569,8 @@ createdAt_DESC
         access: this.acl[accessType],
         dynamicCheckData: () => ({
           data,
+          item,
+          items,
           authentication: {
             item: authedItem,
             listKey: authedListKey,
@@ -681,9 +685,14 @@ createdAt_DESC
 
     if (this.acl.update) {
       mutationResolvers[this.updateMutationName] = async (_, { id, data }, context) => {
+
+        // TODO: Only load this if the ACL is dynamic, and requires it
+        const item = await this.model.findById(id);
+
         this.throwIfAccessDeniedOnList({
           accessType: 'update',
           data,
+          item,
           context,
           errorMeta: {
             type: 'mutation',
@@ -708,8 +717,6 @@ createdAt_DESC
             itemId: id,
           },
         });
-
-        const item = await this.model.findById(id);
 
         const resolvedData = await resolveAllKeys(
           Object.keys(data).reduce(
@@ -747,9 +754,14 @@ createdAt_DESC
     }
 
     if (this.acl.delete) {
-      mutationResolvers[this.deleteMutationName] = (_, { id }, context) => {
+
+      mutationResolvers[this.deleteMutationName] = async (_, { id }, context) => {
+        // TODO: Only load this if the ACL is dynamic, and requires it
+        const item = await this.model.findById(id);
+
         this.throwIfAccessDeniedOnList({
           accessType: 'delete',
+          item,
           context,
           errorMeta: {
             type: 'mutation',
@@ -763,9 +775,11 @@ createdAt_DESC
         return this.model.findByIdAndRemove(id);
       };
 
-      mutationResolvers[this.deleteManyMutationName] = async (_, { ids }) => {
+      mutationResolvers[this.deleteManyMutationName] = async (_, { ids }, context) => {
+        const items = await Promise.all(ids.map(id => this.model.findById(id)));
         this.throwIfAccessDeniedOnList({
           accessType: 'delete',
+          items,
           context,
           errorMeta: {
             type: 'mutation',

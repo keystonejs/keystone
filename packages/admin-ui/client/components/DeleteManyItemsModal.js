@@ -36,9 +36,9 @@ export default class DeleteManyModal extends Component {
                   appearance="danger"
                   onClick={() => {
                     if (loading) return;
-                    deleteItems({
+                    onDelete(deleteItems({
                       variables: { ids: itemIds },
-                    }).then(onDelete);
+                    }));
                   }}
                 >
                   Delete

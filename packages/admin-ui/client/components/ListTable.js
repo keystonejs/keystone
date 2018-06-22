@@ -7,6 +7,8 @@ import { colors } from '@keystonejs/ui/src/theme';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { CheckboxPrimitive } from '@keystonejs/ui/src/primitives/forms';
 import { A11yText } from '@keystonejs/ui/src/primitives/typography';
+import { withToastUtils } from '@keystonejs/ui/src/primitives/toasts';
+import { toastItemSuccess, toastError } from '../util';
 import DeleteItemModal from './DeleteItemModal';
 
 // This import is loaded by the @keystone/field-views-loader loader.
@@ -75,7 +77,7 @@ const NoResults = ({ children, ...props }) => (
 
 // Functional Components
 
-class ListDisplayRow extends Component {
+const ListDisplayRow = withToastUtils(class extends Component {
   static defaultProps = {
     itemErrors: {},
   };
@@ -95,10 +97,16 @@ class ListDisplayRow extends Component {
   closeDeleteModal = () => {
     this.setState({ showDeleteModal: false });
   };
-  onDelete = result => {
-    if (this.props.onDelete) this.props.onDelete(result);
-    if (!this.mounted) return;
-    this.setState({ showDeleteModal: false });
+  onDelete = (deletePromise) => {
+    deletePromise.then((result) => {
+      toastItemSuccess(this.props.toast, this.props.item, 'Deleted successfully');
+      if (this.props.onDelete) this.props.onDelete(result);
+      if (!this.mounted) return;
+      this.setState({ showDeleteModal: false });
+    }).catch((error) => {
+      toastError(this.props.toast, error);
+      this.setState({ showDeleteModal: false });
+    });
   };
   renderDeleteModal() {
     const { showDeleteModal } = this.state;
@@ -120,6 +128,7 @@ class ListDisplayRow extends Component {
     return (
       <tr>
         <BodyCell>
+          {/* TODO: Only render if the user has permission to delete */}
           <Button
             appearance="warning"
             onClick={this.showDeleteModal}
@@ -185,7 +194,7 @@ class ListDisplayRow extends Component {
       </tr>
     );
   }
-}
+});
 
 function isKeyboardEvent(e) {
   return e.clientX === 0 && e.clientY === 0;

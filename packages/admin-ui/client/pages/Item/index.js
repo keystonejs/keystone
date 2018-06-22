@@ -26,7 +26,7 @@ import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
 import { withToastUtils } from '@keystonejs/ui/src/primitives/toasts';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
-import { deconstructErrorsToDataShape } from '../../util';
+import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
 
 import { resolveAllKeys } from '@keystonejs/utils';
 import isEqual from 'lodash/isEqual';
@@ -138,12 +138,18 @@ const ItemDetails = withRouter(
     closeDeleteModal = () => {
       this.setState({ showDeleteModal: false });
     };
-    onDelete = () => {
-      const { adminPath, history, list } = this.props;
-      if (this.mounted) {
-        this.setState({ showDeleteModal: false });
-      }
-      history.push(`${adminPath}/${list.path}`);
+    onDelete = (deletePromise) => {
+      const { adminPath, history, list, item } = this.props;
+      deletePromise.then(() => {
+        if (this.mounted) {
+          this.setState({ showDeleteModal: false });
+        }
+        history.push(`${adminPath}/${list.path}`);
+
+        toastItemSuccess(this.props.toast, item, 'Deleted successfully');
+      }).catch(error => {
+        toastError(this.props.toast, error);
+      });
     };
     showConfirmResetModal = () => {
       const { itemHasChanged } = this.state;

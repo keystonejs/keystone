@@ -1,3 +1,4 @@
+import React from 'react';
 import set from 'lodash/set';
 
 // When there are errors, we want to see if they're Access Denied.
@@ -22,3 +23,33 @@ export const deconstructErrorsToDataShape = (error) => {
 
   return data;
 };
+
+export function toastItemSuccess(toast, item, message = 'Success') {
+  const toastContent = (
+    <div>
+      {item && item.name ? <strong>{item.name}</strong> : null}
+      <div>{message}</div>
+    </div>
+  );
+
+  toast.addToast(toastContent, {
+    autoDismiss: true,
+    appearance: 'success',
+  })();
+}
+
+export function toastError(toast, error) {
+  const [title, ...rest] = error.message.split(/\:/);
+  const toastContent = rest.length ? (
+    <div>
+      <strong>{title.trim()}</strong>
+      <div>{rest.join('').trim()}</div>
+    </div>
+  ) : (
+    error.message
+  );
+
+  toast.addToast(toastContent, {
+    appearance: 'error',
+  })();
+}

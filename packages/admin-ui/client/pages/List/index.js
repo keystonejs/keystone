@@ -25,6 +25,7 @@ import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
 import { LoadingSpinner } from '@keystonejs/ui/src/primitives/loading';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
+import { withToastUtils } from '@keystonejs/ui/src/primitives/toasts';
 
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
@@ -35,7 +36,7 @@ import DocTitle from '../../components/DocTitle';
 import PageLoading from '../../components/PageLoading';
 import PageError from '../../components/PageError';
 import { Popout, DisclosureArrow } from '../../components/Popout';
-import { deconstructErrorsToDataShape } from '../../util';
+import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
 
 import ColumnSelect from './ColumnSelect';
 import FilterSelect from './FilterSelect';
@@ -251,11 +252,19 @@ class ListPage extends Component {
       showDeleteSelectedItemsModal: false,
     });
   };
-  onDeleteSelectedItems = () => {
-    this.closeDeleteSelectedItemsModal();
-    if (this.refetch) this.refetch();
-    this.setState({
-      selectedItems: [],
+  onDeleteSelectedItems = (deletePromise) => {
+    deletePromise.then(() => {
+      this.closeDeleteSelectedItemsModal();
+      if (this.refetch) this.refetch();
+
+      toastItemSuccess(this.props.toast, null, `Successfully deleted ${this.state.selectedItems.length} items`);
+
+      this.setState({
+        selectedItems: [],
+      });
+    }).catch(error => {
+      this.closeDeleteSelectedItemsModal();
+      toastError(this.props.toast, error);
     });
   };
   onCreate = ({ data }) => {
@@ -585,4 +594,4 @@ class ListPage extends Component {
   }
 }
 
-export default withRouter(ListPage);
+export default withRouter(withToastUtils(ListPage));
