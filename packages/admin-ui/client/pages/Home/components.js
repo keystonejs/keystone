@@ -74,15 +74,16 @@ export const Name = styled.span(
 `
 );
 export const Count = ({ meta }) => {
-  const count = meta && meta.count;
+  const isLoading = meta === undefined;
+  const count = (meta && meta.count) || 0;
 
-  return meta ? (
-    <div css={{ fontSize: '0.85em' }}>
-      {count} Item{count !== 1 ? 's' : ''}
-    </div>
-  ) : (
+  return isLoading ? (
     <div css={{ height: '0.85em' }}>
       <LoadingIndicator />
+    </div>
+  ) : (
+    <div css={{ fontSize: '0.85em' }}>
+      {count} Item{count !== 1 ? 's' : ''}
     </div>
   );
 };
