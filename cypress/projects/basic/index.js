@@ -15,12 +15,7 @@ const {
   LocalFileAdapter,
 } = require('@keystonejs/file-adapters');
 
-const {
-  port,
-  staticRoute,
-  staticPath,
-  cloudinary,
-} = require('./config');
+const { port, staticRoute, staticPath, cloudinary } = require('./config');
 
 const LOCAL_FILE_PATH = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;

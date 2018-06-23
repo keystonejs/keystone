@@ -34,12 +34,7 @@ describe('Home page', () => {
     [
       {
         text: 'User',
-        labels: [
-          'Name',
-          'Email',
-          'Password',
-          'Company',
-        ],
+        labels: ['Name', 'Email', 'Password', 'Company'],
       },
       {
         text: 'Post',
@@ -72,12 +67,7 @@ describe('Home page', () => {
     [
       {
         text: 'User',
-        labels: [
-          'Name',
-          'Email',
-          'Password',
-          'Company',
-        ],
+        labels: ['Name', 'Email', 'Password', 'Company'],
       },
     ].forEach(({ text, labels }) => {
       cy
