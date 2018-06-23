@@ -64,12 +64,16 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v3-dependencies-{{ checksum "yarn.lock" }}
+          - v4-dependencies-{{ checksum "yarn.lock" }}
       - run: sudo apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
       - run: sudo yarn global add bolt
       - run:
           name: Bolt - Install packages
           command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
+      - save_cache:
+          paths:
+            - node_modules
+          key: v4-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Running E2E tests
           command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt cypress:run:ci
@@ -77,10 +81,6 @@ jobs:
             CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME
             CLOUDINARY_KEY: $CLOUDINARY_KEY
             CLOUDINARY_SECRET: $CLOUDINARY_SECRET
-      - save_cache:
-          paths:
-            - node_modules
-          key: v3-dependencies-{{ checksum "package.json" }}
       - store_artifacts:
           path: cypress/videos
       - store_artifacts:
