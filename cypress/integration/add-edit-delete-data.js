@@ -6,8 +6,6 @@ describe('Adding data', () => {
         'ks-input-name': 'John Doe',
         'ks-input-email': 'john@gmail.com',
         'ks-input-password': 'password1',
-        'ks-input-twitterId': '@johndoe',
-        'ks-input-twitterUsername': 'John Doe',
       },
     },
     {

@@ -71,8 +71,8 @@ jobs:
           name: Bolt - Install packages
           command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
       - run:
-          name: Starting test project
-          command: yarn test:server:start
+          name: Running E2E tests
+          command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt cypress:run:ci
           environment:
             CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME
             CLOUDINARY_KEY: $CLOUDINARY_KEY
@@ -80,16 +80,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: v3-dependencies-{{ checksum "yarn.lock" }}
-
-      - run:
-          name: Running E2E tests
-          command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn cypress:run --reporter junit --reporter-options "mochaFile=reports/junit/cypress-results.xml"
-
-      - store_test_results:
-          path: reports/junit
-      - store_artifacts:
-          path: reports/junit
+          key: v3-dependencies-{{ checksum "package.json" }}
       - store_artifacts:
           path: cypress/videos
       - store_artifacts:
