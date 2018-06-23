@@ -1,0 +1,23 @@
+{
+  "name": "@keystonejs/cypress-project-basic",
+  "private": true,
+  "version": "1.0.0",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "scripts": {
+    "start": "node -r dotenv-safe/config index.js"
+  },
+  "dependencies": {
+    "@keystonejs/admin-ui": "^5.0.0",
+    "@keystonejs/core": "^5.0.0",
+    "@keystonejs/fields": "^5.0.0",
+    "@keystonejs/file-adapters": "^0.0.0",
+    "@keystonejs/server": "^5.0.0",
+    "@keystonejs/ui": "^5.0.0",
+    "dotenv-safe": "^5.0.1",
+    "react": "^16.3.1"
+  }
+}

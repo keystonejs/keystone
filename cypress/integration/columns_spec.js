@@ -4,8 +4,6 @@ describe('Columns', () => {
       url: 'http://localhost:3000/admin/users',
       enable: [
         'Password',
-        'Twitterid',
-        'Twitterusername',
         'Company',
         'Attachment',
       ],

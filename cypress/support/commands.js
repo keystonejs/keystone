@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 const { createApolloFetch } = require('apollo-fetch');
 
-const GRAPHQL_URI = 'http://localhost:3000/admin/api';
+const GRAPHQL_URI = `http://localhost:${Cypress.env("PORT")}/admin/api`;
 const apolloFetch = createApolloFetch({ uri: GRAPHQL_URI });
 
 /**
