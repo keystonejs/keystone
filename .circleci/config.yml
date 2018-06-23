@@ -81,6 +81,10 @@ jobs:
             CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME
             CLOUDINARY_KEY: $CLOUDINARY_KEY
             CLOUDINARY_SECRET: $CLOUDINARY_SECRET
+      - store_test_results:
+          path: reports/junit
+      - store_artifacts:
+          path: reports/junit
       - store_artifacts:
           path: cypress/videos
       - store_artifacts:
