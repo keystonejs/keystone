@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "coverage": "jest --coverage --collectCoverageFrom=packages/**/*.{js}",
-    "cypress:start:server": "cd cypress/projects/basic && PORT=3000 yarn start",
+    "cypress:start:server": "cd cypress/projects/basic && PORT=3000 DISABLE_AUTH=true yarn start",
     "cypress:open:cmd": "cypress open --env PORT=3000",
     "cypress:run:cmd": "cypress run --env PORT=3000",
     "cypress:run:cmd:ci": "cypress run --env PORT=3000 --reporter junit --reporter-options \"mochaFile=reports/junit/cypress-results.xml\"",
