@@ -16,7 +16,7 @@ jobs:
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/mongo:3.4.4
 
-    working_directory: ~/repo
+    working_directory: /home/circleci/repo
 
     steps:
       - checkout
@@ -64,7 +64,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v5-dependencies-{{ checksum "yarn.lock" }}
+          - v6-dependencies-{{ checksum "yarn.lock" }}
       - run: sudo apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
       - run: sudo yarn global add bolt
       - run:
@@ -73,10 +73,10 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: v5-dependencies-{{ checksum "yarn.lock" }}
+          key: v6-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: Running E2E tests
-          command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt cypress:run:ci
+          command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn cypress:run:ci
           environment:
             CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME
             CLOUDINARY_KEY: $CLOUDINARY_KEY
