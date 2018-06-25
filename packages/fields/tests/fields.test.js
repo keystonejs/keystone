@@ -106,8 +106,14 @@ describe('Test CRUD for all fields', () => {
           Object.values(keystone.adapters).forEach(async adapter => {
             await adapter.close();
           });
-          await admin.webpackMiddleware.close();
-          done();
+
+          try {
+            await admin.webpackMiddleware.close();
+          } catch (err) {
+            throw Error('Failed to close webpack middleware', err);
+          } finally {
+            done();
+          }
         });
       });
     });

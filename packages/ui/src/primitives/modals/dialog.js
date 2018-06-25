@@ -46,8 +46,8 @@ const Dialog = ({ component: Tag, innerRef, ...props }: DialogElementProps) => (
     ref={innerRef}
     role="dialog"
     css={{
-      backgroundColor: 'white',
-      boxShadow: '-2px 0 8px -1px rgba(0,0,0,0.3)',
+      backgroundColor: colors.page,
+      boxShadow: '-2px 0 12px -1px rgba(0,0,0,0.3)',
       display: 'flex',
       flex: 1,
       flexDirection: 'column',

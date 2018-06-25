@@ -106,7 +106,7 @@ export default class Footer extends Component {
   };
 
   render() {
-    const { onSave, onReset, onDelete, updateInProgress } = this.props;
+    const { onSave, onDelete, resetInterface, updateInProgress } = this.props;
     const { height, position, top, width } = this.state;
 
     const wrapperStyle = { height };
@@ -115,7 +115,7 @@ export default class Footer extends Component {
     return (
       <Wrapper innerRef={this.getWrapper} style={wrapperStyle} key="wrapper">
         <Toolbar innerRef={this.getToolbar} style={footerStyle} key="footer">
-          <div>
+          <div css={{ display: 'flex', alignItems: 'center' }}>
             <LoadingButton
               appearance="primary"
               isDisabled={updateInProgress}
@@ -126,18 +126,11 @@ export default class Footer extends Component {
             >
               Save Changes
             </LoadingButton>
-            <Button
-              appearance="warning"
-              isDisabled={!onReset || updateInProgress}
-              variant="subtle"
-              onClick={onReset}
-            >
-              Reset Changes
-            </Button>
+            {resetInterface}
           </div>
           <div>
             <Button
-              appearance="warning"
+              appearance="danger"
               isDisabled={updateInProgress}
               variant="subtle"
               onClick={onDelete}

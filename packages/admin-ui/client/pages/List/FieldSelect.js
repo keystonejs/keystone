@@ -38,8 +38,8 @@ export default class FieldSelect extends Component<FieldSelectProps> {
   };
   onChangeReturnFieldClass = selected => {
     const { fields: listFields, isMulti, onChange } = this.props;
-
-    const diffMap = selected.reduce(mapToPath, {});
+    const arr = Array.isArray(selected) ? selected : [selected];
+    const diffMap = arr.reduce(mapToPath, {});
     const fields = listFields.filter(i => diffMap[i.path]);
     const value = isMulti ? fields : fields[0];
 

@@ -23,8 +23,8 @@ import {
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { A11yText, H1 } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
-import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
+import { AutocompleteCaptor } from '@keystonejs/ui/src/primitives/forms';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import { resolveAllKeys } from '@keystonejs/utils';
@@ -86,32 +86,6 @@ const TitleLink = ({ children, ...props }) => (
   </Link>
 );
 
-class ConfirmResetModal extends Component {
-  onKeyDown = e => {
-    if (e.key === 'Escape') {
-      this.props.onCancel();
-    }
-  };
-  render() {
-    const { onCancel, onConfirm } = this.props;
-    return (
-      <Dialog isOpen onClose={onCancel} onKeyDown={this.onKeyDown} width={400}>
-        <p style={{ marginTop: 0 }}>
-          Are you sure you want reset your changes?
-        </p>
-        <footer>
-          <Button appearance="danger" onClick={onConfirm}>
-            Reset
-          </Button>
-          <Button variant="subtle" onClick={onCancel}>
-            Cancel
-          </Button>
-        </footer>
-      </Dialog>
-    );
-  }
-}
-
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
 const ItemDetails = withRouter(
@@ -122,40 +96,53 @@ const ItemDetails = withRouter(
       itemHasChanged: false,
       showCreateModal: false,
       showDeleteModal: false,
-      showResetChangesModal: false,
+      resetRequested: false,
     };
     componentDidMount() {
       this.mounted = true;
+      document.addEventListener('keydown', this.onKeyDown, false);
     }
     componentWillUnmount() {
       this.mounted = false;
+      document.removeEventListener('keydown', this.onKeyDown, false);
     }
-    showDeleteModal = () => {
+    onKeyDown = event => {
+      const { resetRequested } = this.state;
+      if (event.defaultPrevented) return;
+
+      switch (event.key) {
+        case 'Escape':
+          if (resetRequested) {
+            return this.hideConfirmResetMessage();
+          }
+        case 'Enter':
+          if (event.metaKey) {
+            return this.onSave();
+          }
+      }
+    };
+
+    showConfirmResetMessage = () => {
+      const { itemHasChanged } = this.state;
+      if (!itemHasChanged) return;
+      this.setState({ resetRequested: true });
+    };
+    hideConfirmResetMessage = () => {
+      this.setState({ resetRequested: false });
+    };
+    openDeleteModal = () => {
       this.setState({ showDeleteModal: true });
     };
     closeDeleteModal = () => {
       this.setState({ showDeleteModal: false });
     };
-    onDelete = () => {
-      const { adminPath, history, list } = this.props;
-      if (this.mounted) {
-        this.setState({ showDeleteModal: false });
-      }
-      history.push(`${adminPath}/${list.path}`);
-    };
-    showConfirmResetModal = () => {
-      const { itemHasChanged } = this.state;
-      if (!itemHasChanged) return;
-      this.setState({ showConfirmResetModal: true });
-    };
-    closeConfirmResetModal = () => {
-      this.setState({ showConfirmResetModal: false });
-    };
+
     onReset = () => {
       this.setState({
         item: this.props.item,
+        itemHasChanged: false,
       });
-      this.closeConfirmResetModal();
+      this.hideConfirmResetMessage();
     };
     onChange = (field, value) => {
       const { item } = this.state;
@@ -167,17 +154,48 @@ const ItemDetails = withRouter(
         itemHasChanged: true,
       });
     };
-    renderConfirmResetModal() {
-      const { showConfirmResetModal } = this.state;
-      if (!showConfirmResetModal) return;
+    onDelete = () => {
+      const { adminPath, history, list } = this.props;
+      if (this.mounted) {
+        this.setState({ showDeleteModal: false });
+      }
+      history.push(`${adminPath}/${list.path}`);
+    };
 
-      return (
-        <ConfirmResetModal
-          onCancel={this.closeConfirmResetModal}
-          onConfirm={this.onReset}
-        />
+    renderResetInterface = () => {
+      const { updateInProgress } = this.props;
+      const { itemHasChanged, resetRequested } = this.state;
+
+      return resetRequested ? (
+        <div
+          css={{ display: 'flex', alignItems: 'center', marginLeft: gridSize }}
+        >
+          <div css={{ fontSize: '0.9rem', marginRight: gridSize }}>
+            Are you sure?
+          </div>
+          <Button
+            appearance="danger"
+            autoFocus
+            onClick={this.onReset}
+            variant="ghost"
+          >
+            Reset
+          </Button>
+          <Button variant="subtle" onClick={this.hideConfirmResetMessage}>
+            Cancel
+          </Button>
+        </div>
+      ) : (
+        <Button
+          appearance="warning"
+          isDisabled={!itemHasChanged || updateInProgress}
+          variant="subtle"
+          onClick={this.showConfirmResetMessage}
+        >
+          Reset Changes
+        </Button>
       );
-    }
+    };
     renderDeleteModal() {
       const { showDeleteModal } = this.state;
       const { item, list } = this.props;
@@ -262,7 +280,7 @@ const ItemDetails = withRouter(
         updateInProgress,
         updateErrorMessage,
       } = this.props;
-      const { copyText, item, itemHasChanged } = this.state;
+      const { copyText, item } = this.state;
       const isCopied = copyText === item.id;
       const copyIcon = isCopied ? (
         <Animation name="pulse" duration="500ms">
@@ -302,6 +320,7 @@ const ItemDetails = withRouter(
             </CopyToClipboard>
           </FlexGroup>
           <Form>
+            <AutocompleteCaptor />
             {list.fields.map((field, i) => {
               const { Field } = FieldTypes[list.key][field.path];
               return (
@@ -318,13 +337,12 @@ const ItemDetails = withRouter(
 
           <Footer
             onSave={this.onSave}
-            onDelete={this.showDeleteModal}
-            onReset={itemHasChanged ? this.showConfirmResetModal : undefined}
+            onDelete={this.openDeleteModal}
+            resetInterface={this.renderResetInterface()}
             updateInProgress={updateInProgress}
           />
           {this.renderCreateModal()}
           {this.renderDeleteModal()}
-          {this.renderConfirmResetModal()}
         </Fragment>
       );
     }
