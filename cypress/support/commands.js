@@ -24,9 +24,11 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 const { createApolloFetch } = require('apollo-fetch');
+const memoize = require('fast-memoize');
 
-const GRAPHQL_URI = `http://localhost:${Cypress.env('PORT')}/admin/api`;
-const apolloFetch = createApolloFetch({ uri: GRAPHQL_URI });
+const getApollo = memoize(function createApollo(uri) {
+  return createApolloFetch({ uri });
+});
 
 /**
  * Uploads a file to an input
@@ -67,8 +69,8 @@ Cypress.Commands.add('upload_file', (selector, fileUrl, type = '') =>
   )
 );
 
-Cypress.Commands.add('graphql_query', query =>
-  apolloFetch({ query })
+Cypress.Commands.add('graphql_query', (uri, query) =>
+  getApollo(uri)({ query })
     .then(({ data }) => {
       console.log('Fetched data:', data);
       return data;

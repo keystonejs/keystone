@@ -2,6 +2,7 @@ describe('Adding a file', function() {
   it('should upload a file with success', function() {
     return cy
       .graphql_query(
+        'http://localhost:3000/admin/api',
         `
           query {
             allUsers(first: 1) {
@@ -32,6 +33,7 @@ describe('Adding a file', function() {
         cy.wait('@graphqlPost');
         return cy
           .graphql_query(
+            'http://localhost:3000/admin/api',
             `
               query {
                 User(where: { id: "${user.id}" }) {
