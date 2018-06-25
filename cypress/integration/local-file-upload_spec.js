@@ -1,66 +1,70 @@
 describe('Adding a file', function() {
-  before(() => {
-    cy.visit('http://localhost:3000/reset-db');
-  });
+  before(() => (
+    cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
+      cy.visit(`http://localhost:${PORT}/reset-db`)
+    ))
+  ));
 
   it('should upload a file with success', function() {
-    return cy
-      .graphql_query(
-        'http://localhost:3000/admin/api',
-        `
-          query {
-            allUsers(first: 1) {
-              id
-              name
+    cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => {
+      return cy
+        .graphql_query(
+          `http://localhost:${PORT}/admin/api`,
+          `
+            query {
+              allUsers(first: 1) {
+                id
+                name
+              }
             }
-          }
-        `
-      )
-      .then(({ allUsers: [user] }) => {
-        const fileContent = `Some important content ${Math.random()}`;
-        cy.visit(`http://localhost:3000/admin/users/${user.id}`);
-        cy.writeFile('cypress/mock/upload.txt', fileContent);
-        cy.upload_file(
-          'input[name=attachment][type=file]',
-          '../mock/upload.txt'
-        );
+          `
+        )
+        .then(({ allUsers: [user] }) => {
+          const fileContent = `Some important content ${Math.random()}`;
+          cy.visit(`http://localhost:${PORT}/admin/users/${user.id}`);
+          cy.writeFile('cypress/mock/upload.txt', fileContent);
+          cy.upload_file(
+            'input[name=attachment][type=file]',
+            '../mock/upload.txt'
+          );
 
-        // Setup to track XHR requests
-        cy.server();
-        // Alias the graphql request route
-        cy.route('post', '**/admin/api').as('graphqlPost');
-        // Avoid accidentally mocking routes
-        cy.server({ enable: false });
+          // Setup to track XHR requests
+          cy.server();
+          // Alias the graphql request route
+          cy.route('post', '**/admin/api').as('graphqlPost');
+          // Avoid accidentally mocking routes
+          cy.server({ enable: false });
 
-        cy.get('button[type="submit"]').click();
-        cy.contains('upload.txt');
-        cy.wait('@graphqlPost');
-        return cy
-          .graphql_query(
-            'http://localhost:3000/admin/api',
-            `
-              query {
-                User(where: { id: "${user.id}" }) {
-                  attachment {
-                    id
-                    publicUrl
+          cy.get('button[type="submit"]').click();
+          cy.contains('upload.txt');
+          cy.wait('@graphqlPost');
+          return cy
+            .graphql_query(
+              `http://localhost:${PORT}/admin/api`,
+              `
+                query {
+                  User(where: { id: "${user.id}" }) {
+                    attachment {
+                      id
+                      publicUrl
+                    }
                   }
                 }
-              }
-            `
-          )
-          .then(({ User: { attachment } }) => {
-            // Assert the URL is visible in the admin UI
-            cy
-              .contains(`${attachment.publicUrl.split('/')[3]}`)
-              .should('be.visible');
+              `
+            )
+            .then(({ User: { attachment } }) => {
+              // Assert the URL is visible in the admin UI
+              cy
+                .contains(`${attachment.publicUrl.split('/')[3]}`)
+                .should('be.visible');
 
-            // Assert the file contents are what we uploaded
-            cy
-              .request(attachment.publicUrl)
-              .its('body')
-              .should('deep.eq', fileContent);
-          });
-      });
+              // Assert the file contents are what we uploaded
+              cy
+                .request(attachment.publicUrl)
+                .its('body')
+                .should('deep.eq', fileContent);
+            });
+        });
+    });
   });
 });

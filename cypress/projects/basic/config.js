@@ -1,6 +1,6 @@
 const path = require('path');
 
-exports.port = process.env.PORT || 3000;
+exports.port = process.env.PORT;
 exports.appURL = process.env.APP_URL || `http://localhost:${exports.port}`;
 
 exports.staticRoute = '/public'; // The URL portion
