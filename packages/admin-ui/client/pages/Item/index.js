@@ -280,7 +280,7 @@ const ItemDetails = withRouter(
         updateInProgress,
         updateErrorMessage,
       } = this.props;
-      const { copyText, item, itemHasChanged } = this.state;
+      const { copyText, item } = this.state;
       const isCopied = copyText === item.id;
       const copyIcon = isCopied ? (
         <Animation name="pulse" duration="500ms">
