@@ -17,7 +17,7 @@ describe('Testing re-hydration', () => {
     cy.visit('http://localhost:3000/admin/post-categories');
     cy.get('button[appearance="create"]').click();
     cy.get('#ks-input-name').type('New Category');
-    cy.get('div[role="dialog"] button[appearance="create"]').click();
+    cy.get('form[role="dialog"] button[appearance="create"]').click();
     cy.get('body').should('contain', 'New Category');
 
     cy.get('nav a:contains("Posts")').click();
