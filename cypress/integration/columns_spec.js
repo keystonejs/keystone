@@ -1,23 +1,31 @@
 describe('Columns', () => {
+  before(() => (
+    cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
+      cy.visit(`http://localhost:${PORT}/reset-db`)
+    ))
+  ));
+
   [
     {
-      url: 'http://localhost:3000/admin/users',
+      url: '/admin/users',
       enable: ['Password', 'Company', 'Attachment'],
       disable: ['Name', 'Email'],
     },
     {
-      url: 'http://localhost:3000/admin/posts',
+      url: '/admin/posts',
       enable: ['Status', 'Author', 'Categories'],
       disable: ['Name', 'Slug'],
     },
     {
-      url: 'http://localhost:3000/admin/post-categories',
+      url: '/admin/post-categories',
       enable: [],
       disable: ['Name'], // can't do all filters here as there needs to be at least one filter enabled
     },
   ].forEach(({ url, enable, disable }) => {
     it(`Testing all columns in ${url}`, () => {
-      cy.visit(url);
+      cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
+        cy.visit(`http://localhost:${PORT}${url}`)
+      ));
       cy.get('button:contains("Columns")').click();
 
       enable.forEach(name => {

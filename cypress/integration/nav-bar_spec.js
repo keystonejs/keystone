@@ -1,4 +1,10 @@
 describe('Nav Bar', () => {
+  before(() => (
+    cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
+      cy.visit(`http://localhost:${PORT}/reset-db`)
+    ))
+  ));
+
   // Testing links which should open in a new tab is a bit tricky in Cypress.
   // The discussion at this page lists some of the details.
   // https://github.com/cypress-io/cypress-example-recipes/blob/master/examples/testing-dom__tab-handling-links/cypress/integration/tab_handling_anchor_links_spec.js
@@ -16,7 +22,9 @@ describe('Nav Bar', () => {
     { text: 'Style Guide', target: '/admin/style-guide' },
   ].forEach(({ text, target, newTab = false }) => {
     it(`${newTab ? 'Check' : 'Click'} ${text}`, () => {
-      cy.visit('http://localhost:3000/admin');
+      cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
+        cy.visit(`http://localhost:${PORT}/admin`)
+      ));
 
       cy
         .get('nav')
