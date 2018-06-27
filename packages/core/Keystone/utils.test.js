@@ -424,8 +424,7 @@ describe('createRelationships', () => {
         },
       },
       adapter: {
-        find: jest.fn(),
-        findOne: jest.fn(),
+        itemsQuery: jest.fn(),
         update: jest.fn(),
       },
     },
@@ -438,8 +437,7 @@ describe('createRelationships', () => {
         },
       },
       adapter: {
-        find: jest.fn(),
-        findOne: jest.fn(),
+        itemsQuery: jest.fn(),
         update: jest.fn(),
       },
     },
@@ -447,11 +445,9 @@ describe('createRelationships', () => {
 
   beforeEach(() => {
     // Reset call counts, etc, back to normal
-    lists.User.adapter.find.mockReset();
-    lists.User.adapter.findOne.mockReset();
+    lists.User.adapter.itemsQuery.mockReset();
     lists.User.adapter.update.mockReset();
-    lists.Post.adapter.find.mockReset();
-    lists.Post.adapter.findOne.mockReset();
+    lists.Post.adapter.itemsQuery.mockReset();
     lists.Post.adapter.update.mockReset();
   });
 
@@ -487,10 +483,10 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.User.adapter.findOne
-      .mockImplementation(({ name }) => (
+    lists.User.adapter.itemsQuery
+      .mockImplementation(({ where: { name } }) => (
         // Grab the first user with the matching name
-        createdItems.User.filter(user => user.name === name)[0]
+        createdItems.User.filter(user => user.name === name)
       ));
 
     lists.Post.adapter.update
@@ -533,10 +529,10 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.User.adapter.findOne
-      .mockImplementation(({ name }) => (
+    lists.User.adapter.itemsQuery
+      .mockImplementation(({ where: { name } }) => (
         // Grab the first user with the matching name
-        createdItems.User.filter(user => user.name === name)[0]
+        createdItems.User.filter(user => user.name === name)
       ));
 
     lists.Post.adapter.update
@@ -580,10 +576,10 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.User.adapter.findOne
-      .mockImplementation(({ name }) => (
+    lists.User.adapter.itemsQuery
+      .mockImplementation(({ where: { name } }) => (
         // Grab the first user with the matching name
-        createdItems.User.filter(user => user.name === name)[0]
+        createdItems.User.filter(user => user.name === name)
       ));
 
     lists.Post.adapter.update
@@ -637,8 +633,8 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.Post.adapter.find
-      .mockImplementation(({ title_starts_with }) => (
+    lists.Post.adapter.itemsQuery
+      .mockImplementation(({ where: { title_starts_with } }) => (
         // Grab all the matching 'starts_with' items
         createdItems.Post.filter(post => post.title.startsWith(title_starts_with))
       ));
@@ -697,10 +693,10 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.Post.adapter.findOne
-      .mockImplementation(({ title }) => (
+    lists.Post.adapter.itemsQuery
+      .mockImplementation(({ where: { title } }) => (
         // Grab the post with the matching title
-        createdItems.Post.filter(post => post.title === title)[0]
+        createdItems.Post.filter(post => post.title === title)
       ));
 
     lists.User.adapter.update
@@ -756,7 +752,7 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.Post.adapter.find
+    lists.Post.adapter.itemsQuery
       .mockImplementation(() => ([]));
 
     lists.User.adapter.update
@@ -813,8 +809,8 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.Post.adapter.findOne
-      .mockImplementation(() => undefined);
+    lists.Post.adapter.itemsQuery
+      .mockImplementation(() => []);
 
     lists.User.adapter.update
       .mockImplementation((id, data) => ({
@@ -847,10 +843,10 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.User.adapter.findOne
-      .mockImplementation(({ name }) => (
+    lists.User.adapter.itemsQuery
+      .mockImplementation(({ where: { name } }) => (
         // Grab the first user with the matching name
-        createdItems.User.filter(user => user.name === name)[0]
+        createdItems.User.filter(user => user.name === name)
       ));
 
     lists.Post.adapter.update
@@ -884,10 +880,10 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.User.adapter.findOne
-      .mockImplementation(({ name }) => (
+    lists.User.adapter.itemsQuery
+      .mockImplementation(({ where: { name } }) => (
         // Grab the first user with the matching name
-        createdItems.User.filter(user => user.name === name)[0]
+        createdItems.User.filter(user => user.name === name)
       ));
 
     lists.Post.adapter.update
