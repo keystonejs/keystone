@@ -16,7 +16,7 @@ module.exports = {
         { where: { name: 'Keystone' } },
         { where: { name: 'GraphQL' } },
         { where: { name: 'Node' } },
-      ]
+      ],
     },
   ],
   PostCategory: [

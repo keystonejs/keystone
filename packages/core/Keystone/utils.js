@@ -23,15 +23,13 @@ function mapObject(input, mapFn) {
 function splitObject(input, filterFn) {
   const left = {};
   const right = {};
-  Object.keys(input).forEach(
-    key => {
-      if (filterFn(input[key], key, input)) {
-        left[key] = input[key];
-      } else {
-        right[key] = input[key];
-      }
+  Object.keys(input).forEach(key => {
+    if (filterFn(input[key], key, input)) {
+      left[key] = input[key];
+    } else {
+      right[key] = input[key];
     }
-  );
+  });
   return { left, right };
 }
 
@@ -92,7 +90,8 @@ function splitObject(input, filterFn) {
 const unmergeRelationships = (lists, input) => {
   const relationships = {};
 
-  // Each list
+  // I think this is easier to read (ง'-')ง
+  // prettier-ignore
   const data = mapObject(input, (listData, listKey) => listData.map((item, itemIndex) => {
     const { left: relationData, right: scalarData } = splitObject(item, (fieldConditions, fieldKey) => {
       const list = lists[listKey];
@@ -123,7 +122,9 @@ const unmergeRelationships = (lists, input) => {
 };
 
 const relateTo = async ({ relatedTo, relatedFrom }) => {
-  if (isManyRelationship({ list: relatedFrom.list, fieldKey: relatedFrom.field })) {
+  if (
+    isManyRelationship({ list: relatedFrom.list, fieldKey: relatedFrom.field })
+  ) {
     return relateToManyItems({ relatedTo, relatedFrom });
   } else {
     return relateToOneItem({ relatedTo, relatedFrom });
@@ -131,12 +132,16 @@ const relateTo = async ({ relatedTo, relatedFrom }) => {
 };
 
 const throwRelateError = ({ relatedTo, relatedFrom, isMany }) => {
+  // I know it's long, but you're making this weird.
+  // prettier-ignore
   throw new Error(`Attempted to relate ${relatedFrom.list.key}<${relatedFrom.item.id}>.${relatedFrom.field} to${isMany ? '' : ' a'} ${relatedTo.list.key}, but no ${relatedTo.list.key} matched the conditions ${JSON.stringify({ conditions: relatedTo.conditions })}`);
 };
 
 const relateToOneItem = async ({ relatedTo, relatedFrom }) => {
   // Use where clause provided in original data to find related item
-  const relatedToItems = await relatedTo.list.adapter.itemsQuery(relatedTo.conditions);
+  const relatedToItems = await relatedTo.list.adapter.itemsQuery(
+    relatedTo.conditions
+  );
 
   // Sanity checking
   if (!relatedToItems || !relatedToItems.length) {
@@ -162,7 +167,7 @@ const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
       relatedTo.conditions.map(condition =>
         relatedTo.list.adapter.itemsQuery(condition)
       )
-    )
+    );
 
     // Grab the first result of each
     relatedToItems = relatedToItems.map(items => items[0]);
@@ -173,7 +178,9 @@ const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
     }
   } else {
     // Use where clause provided in original data to find related item
-    relatedToItems = await relatedTo.list.adapter.itemsQuery(relatedTo.conditions);
+    relatedToItems = await relatedTo.list.adapter.itemsQuery(
+      relatedTo.conditions
+    );
   }
 
   // Sanity checking
@@ -283,28 +290,25 @@ const createRelationships = (lists, relationships, createdItems) => {
   );
 };
 
-function mergeRelationships (created, relationships) {
-  return Object.keys(created).reduce(
-    (memo, listKey) => {
-      const relationshipItems = relationships[listKey];
+function mergeRelationships(created, relationships) {
+  return Object.keys(created).reduce((memo, listKey) => {
+    const relationshipItems = relationships[listKey];
 
-      let newList = created[listKey];
+    let newList = created[listKey];
 
-      if (relationshipItems) {
-        newList = newList.map((item, itemIndex) => ({
-          ...item,
-          ...relationshipItems[itemIndex],
-        }));
-      }
+    if (relationshipItems) {
+      newList = newList.map((item, itemIndex) => ({
+        ...item,
+        ...relationshipItems[itemIndex],
+      }));
+    }
 
-      return {
-        ...memo,
-        [listKey]: newList,
-      };
-    },
-    {}
-  );
-};
+    return {
+      ...memo,
+      [listKey]: newList,
+    };
+  }, {});
+}
 
 module.exports = {
   unmergeRelationships,

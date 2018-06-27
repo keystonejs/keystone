@@ -187,7 +187,10 @@ module.exports = class Keystone {
     };
 
     // 1. Split it apart
-    const { relationships, data } = unmergeRelationships(this.lists, itemsToCreate);
+    const { relationships, data } = unmergeRelationships(
+      this.lists,
+      itemsToCreate
+    );
     // 2. Create the items
     // NOTE: Only works if all relationships fields are non-"required"
     const createdItems = await createItems(data);

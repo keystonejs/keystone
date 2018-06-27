@@ -1,4 +1,8 @@
-const { mergeRelationships, unmergeRelationships, createRelationships } = require('./utils');
+const {
+  mergeRelationships,
+  unmergeRelationships,
+  createRelationships,
+} = require('./utils');
 const { Text, Relationship } = require('@keystonejs/fields');
 
 describe('mergeRelationships', () => {
@@ -22,7 +26,7 @@ describe('mergeRelationships', () => {
           1: { author: 3 },
           2: { author: 2 },
         },
-      },
+      }
     );
 
     expect(merged).toEqual({
@@ -58,7 +62,7 @@ describe('mergeRelationships', () => {
           0: { author: 1 },
           2: { author: 2 },
         },
-      },
+      }
     );
 
     expect(merged).toEqual({
@@ -95,7 +99,7 @@ describe('mergeRelationships', () => {
           // 4 is not a valid index
           4: { author: 2 },
         },
-      },
+      }
     );
 
     expect(merged).toEqual({
@@ -131,7 +135,7 @@ describe('mergeRelationships', () => {
           0: { posts: ['abc123', 'xyz765'] },
           2: { posts: ['def789'] },
         },
-      },
+      }
     );
 
     expect(merged).toEqual({
@@ -175,28 +179,17 @@ describe('unmergeRelationships', () => {
   };
 
   test('unmerges relationship fields', () => {
-    const { data, relationships } = unmergeRelationships(
-      lists,
-      {
-        User: [
-          { name: 'Jess' },
-          { name: 'Tici' },
-          { name: 'Lauren' },
-        ],
-        Post: [
-          { title: 'Hello world', author: { where: { name: 'Jess' } } },
-          { title: 'Foo Article', author: { where: { name: 'Lauren' } } },
-          { title: 'A Thinking!', author: { where: { name: 'Tici' } } },
-        ],
-      }
-    );
+    const { data, relationships } = unmergeRelationships(lists, {
+      User: [{ name: 'Jess' }, { name: 'Tici' }, { name: 'Lauren' }],
+      Post: [
+        { title: 'Hello world', author: { where: { name: 'Jess' } } },
+        { title: 'Foo Article', author: { where: { name: 'Lauren' } } },
+        { title: 'A Thinking!', author: { where: { name: 'Tici' } } },
+      ],
+    });
 
     expect(data).toEqual({
-      User: [
-        { name: 'Jess' },
-        { name: 'Tici' },
-        { name: 'Lauren' },
-      ],
+      User: [{ name: 'Jess' }, { name: 'Tici' }, { name: 'Lauren' }],
       Post: [
         { title: 'Hello world' },
         { title: 'Foo Article' },
@@ -214,31 +207,17 @@ describe('unmergeRelationships', () => {
   });
 
   test('treats non-relationship fields with a where clause as data', () => {
-    const { data, relationships } = unmergeRelationships(
-      lists,
-      {
-        User: [
-          { name: 'Jess' },
-          { name: 'Tici' },
-          { name: 'Lauren' },
-        ],
-        Post: [
-          { title: 'Hello world', author: { where: { name: 'Jess' } } },
-          { title: { where: { name: 'Tici' } } },
-        ],
-      }
-    );
-
-    expect(data).toEqual({
-      User: [
-        { name: 'Jess' },
-        { name: 'Tici' },
-        { name: 'Lauren' },
-      ],
+    const { data, relationships } = unmergeRelationships(lists, {
+      User: [{ name: 'Jess' }, { name: 'Tici' }, { name: 'Lauren' }],
       Post: [
-        { title: 'Hello world' },
+        { title: 'Hello world', author: { where: { name: 'Jess' } } },
         { title: { where: { name: 'Tici' } } },
       ],
+    });
+
+    expect(data).toEqual({
+      User: [{ name: 'Jess' }, { name: 'Tici' }, { name: 'Lauren' }],
+      Post: [{ title: 'Hello world' }, { title: { where: { name: 'Tici' } } }],
     });
 
     expect(relationships).toEqual({
@@ -249,31 +228,17 @@ describe('unmergeRelationships', () => {
   });
 
   test('returns sparse arrays for relationships', () => {
-    const { data, relationships } = unmergeRelationships(
-      lists,
-      {
-        User: [
-          { name: 'Jess' },
-          { name: 'Tici' },
-          { name: 'Lauren' },
-        ],
-        Post: [
-          { title: 'Hello world' },
-          { title: 'A Thinking!', author: { where: { name: 'Tici' } } },
-        ],
-      }
-    );
-
-    expect(data).toEqual({
-      User: [
-        { name: 'Jess' },
-        { name: 'Tici' },
-        { name: 'Lauren' },
-      ],
+    const { data, relationships } = unmergeRelationships(lists, {
+      User: [{ name: 'Jess' }, { name: 'Tici' }, { name: 'Lauren' }],
       Post: [
         { title: 'Hello world' },
-        { title: 'A Thinking!' },
+        { title: 'A Thinking!', author: { where: { name: 'Tici' } } },
       ],
+    });
+
+    expect(data).toEqual({
+      User: [{ name: 'Jess' }, { name: 'Tici' }, { name: 'Lauren' }],
+      Post: [{ title: 'Hello world' }, { title: 'A Thinking!' }],
     });
 
     expect(relationships).toEqual({
@@ -284,59 +249,35 @@ describe('unmergeRelationships', () => {
   });
 
   test('returns empty object when no relationship fields', () => {
-    const { data, relationships } = unmergeRelationships(
-      lists,
-      {
-        User: [
-          { name: 'Jess' },
-          { name: 'Tici' },
-          { name: 'Lauren' },
-        ],
-        Post: [
-          { title: 'Hello world' },
-          { title: 'A Thinking!' },
-        ],
-      }
-    );
+    const { data, relationships } = unmergeRelationships(lists, {
+      User: [{ name: 'Jess' }, { name: 'Tici' }, { name: 'Lauren' }],
+      Post: [{ title: 'Hello world' }, { title: 'A Thinking!' }],
+    });
 
     expect(data).toEqual({
-      User: [
-        { name: 'Jess' },
-        { name: 'Tici' },
-        { name: 'Lauren' },
-      ],
-      Post: [
-        { title: 'Hello world' },
-        { title: 'A Thinking!' },
-      ],
+      User: [{ name: 'Jess' }, { name: 'Tici' }, { name: 'Lauren' }],
+      Post: [{ title: 'Hello world' }, { title: 'A Thinking!' }],
     });
 
     expect(relationships).toEqual({});
   });
 
   test('supports many-relationships with single where clause', () => {
-    const { data, relationships } = unmergeRelationships(
-      lists,
-      {
-        User: [
-          { name: 'Jess', posts: { where: { title: 'Hello world' } } },
-          { name: 'Tici' },
-          { name: 'Lauren' },
-        ],
-        Post: [
-          { title: 'Hello world' },
-          { title: 'Foo Article' },
-          { title: 'A Thinking!' },
-        ],
-      }
-    );
-
-    expect(data).toEqual({
+    const { data, relationships } = unmergeRelationships(lists, {
       User: [
-        { name: 'Jess' },
+        { name: 'Jess', posts: { where: { title: 'Hello world' } } },
         { name: 'Tici' },
         { name: 'Lauren' },
       ],
+      Post: [
+        { title: 'Hello world' },
+        { title: 'Foo Article' },
+        { title: 'A Thinking!' },
+      ],
+    });
+
+    expect(data).toEqual({
+      User: [{ name: 'Jess' }, { name: 'Tici' }, { name: 'Lauren' }],
       Post: [
         { title: 'Hello world' },
         { title: 'Foo Article' },
@@ -352,27 +293,25 @@ describe('unmergeRelationships', () => {
   });
 
   test('supports many-relationships with array of where clauses', () => {
-    const { data, relationships } = unmergeRelationships(
-      lists,
-      {
-        User: [
-          { name: 'Jess', posts: [
+    const { data, relationships } = unmergeRelationships(lists, {
+      User: [
+        {
+          name: 'Jess',
+          posts: [
             { where: { title: 'Hello world' } },
             { where: { title: 'Foo Article' } },
-          ] },
-        ],
-        Post: [
-          { title: 'Hello world' },
-          { title: 'Foo Article' },
-          { title: 'A Thinking!' },
-        ],
-      }
-    );
+          ],
+        },
+      ],
+      Post: [
+        { title: 'Hello world' },
+        { title: 'Foo Article' },
+        { title: 'A Thinking!' },
+      ],
+    });
 
     expect(data).toEqual({
-      User: [
-        { name: 'Jess' },
-      ],
+      User: [{ name: 'Jess' }],
       Post: [
         { title: 'Hello world' },
         { title: 'Foo Article' },
@@ -382,32 +321,30 @@ describe('unmergeRelationships', () => {
 
     expect(relationships).toEqual({
       User: {
-        0: { posts: [
-          { where: { title: 'Hello world' } },
-          { where: { title: 'Foo Article' } },
-        ] },
+        0: {
+          posts: [
+            { where: { title: 'Hello world' } },
+            { where: { title: 'Foo Article' } },
+          ],
+        },
       },
     });
   });
 
   test('throws error when using many-relationship syntax on one-relationship field', () => {
-    expect(() => unmergeRelationships(
-      lists,
-      {
-        User: [
-          { name: 'Jess' },
-          { name: 'Tici' },
-        ],
+    expect(() =>
+      unmergeRelationships(lists, {
+        User: [{ name: 'Jess' }, { name: 'Tici' }],
         Post: [
-          { title: 'Hello world', author: [
-            { where: { name: 'Jess' } },
-            { where: { name: 'Tici' } },
-          ] },
+          {
+            title: 'Hello world',
+            author: [{ where: { name: 'Jess' } }, { where: { name: 'Tici' } }],
+          },
           { title: 'Foo Article' },
           { title: 'A Thinking!' },
         ],
-      }
-    )).toThrow(
+      })
+    ).toThrow(
       /Attempted to relate many items to .*, but .* is configured as a single Relationship/
     );
   });
@@ -479,24 +416,26 @@ describe('createRelationships', () => {
           id: 'def789',
           title: 'Hello',
         },
-      ]
+      ],
     };
 
     // Mocking the database calls
-    lists.User.adapter.itemsQuery
-      .mockImplementation(({ where: { name } }) => (
-        // Grab the first user with the matching name
-        createdItems.User.filter(user => user.name === name)
-      ));
+    lists.User.adapter.itemsQuery.mockImplementation(({ where: { name } }) =>
+      // Grab the first user with the matching name
+      createdItems.User.filter(user => user.name === name)
+    );
 
-    lists.Post.adapter.update
-      .mockImplementation((id, data) => ({
-        // Create a new object with the data merged in
-        ...createdItems.Post.filter(post => post.id === id)[0],
-        ...data,
-      }));
+    lists.Post.adapter.update.mockImplementation((id, data) => ({
+      // Create a new object with the data merged in
+      ...createdItems.Post.filter(post => post.id === id)[0],
+      ...data,
+    }));
 
-    const updatedRelationships = await createRelationships(lists, relationships, createdItems);
+    const updatedRelationships = await createRelationships(
+      lists,
+      relationships,
+      createdItems
+    );
 
     expect(updatedRelationships).toEqual({
       Post: {
@@ -525,24 +464,24 @@ describe('createRelationships', () => {
           id: 'abc123',
           title: 'Foobar',
         },
-      ]
+      ],
     };
 
     // Mocking the database calls
-    lists.User.adapter.itemsQuery
-      .mockImplementation(({ where: { name } }) => (
-        // Grab the first user with the matching name
-        createdItems.User.filter(user => user.name === name)
-      ));
+    lists.User.adapter.itemsQuery.mockImplementation(({ where: { name } }) =>
+      // Grab the first user with the matching name
+      createdItems.User.filter(user => user.name === name)
+    );
 
-    lists.Post.adapter.update
-      .mockImplementation((id, data) => ({
-        // Create a new object with the data merged in
-        ...createdItems.Post.filter(post => post.id === id)[0],
-        ...data,
-      }));
+    lists.Post.adapter.update.mockImplementation((id, data) => ({
+      // Create a new object with the data merged in
+      ...createdItems.Post.filter(post => post.id === id)[0],
+      ...data,
+    }));
 
-    await expect(createRelationships(lists, relationships, createdItems)).rejects.toThrow(
+    await expect(
+      createRelationships(lists, relationships, createdItems)
+    ).rejects.toThrow(
       /Attempted to relate .* to a .*, but no .* matched the conditions .*/
     );
   });
@@ -572,24 +511,26 @@ describe('createRelationships', () => {
           id: 'abc123',
           title: 'Foobar',
         },
-      ]
+      ],
     };
 
     // Mocking the database calls
-    lists.User.adapter.itemsQuery
-      .mockImplementation(({ where: { name } }) => (
-        // Grab the first user with the matching name
-        createdItems.User.filter(user => user.name === name)
-      ));
+    lists.User.adapter.itemsQuery.mockImplementation(({ where: { name } }) =>
+      // Grab the first user with the matching name
+      createdItems.User.filter(user => user.name === name)
+    );
 
-    lists.Post.adapter.update
-      .mockImplementation((id, data) => ({
-        // Create a new object with the data merged in
-        ...createdItems.Post.filter(post => post.id === id)[0],
-        ...data,
-      }));
+    lists.Post.adapter.update.mockImplementation((id, data) => ({
+      // Create a new object with the data merged in
+      ...createdItems.Post.filter(post => post.id === id)[0],
+      ...data,
+    }));
 
-    const updatedRelationships = await createRelationships(lists, relationships, createdItems);
+    const updatedRelationships = await createRelationships(
+      lists,
+      relationships,
+      createdItems
+    );
 
     expect(updatedRelationships).toEqual({
       Post: {
@@ -629,28 +570,33 @@ describe('createRelationships', () => {
           id: 'def789',
           title: 'Hello World',
         },
-      ]
+      ],
     };
 
     // Mocking the database calls
-    lists.Post.adapter.itemsQuery
-      .mockImplementation(({ where: { title_starts_with } }) => (
+    lists.Post.adapter.itemsQuery.mockImplementation(
+      ({ where: { title_starts_with } }) =>
         // Grab all the matching 'starts_with' items
-        createdItems.Post.filter(post => post.title.startsWith(title_starts_with))
-      ));
+        createdItems.Post.filter(post =>
+          post.title.startsWith(title_starts_with)
+        )
+    );
 
-    lists.User.adapter.update
-      .mockImplementation((id, data) => ({
-        // Create a new object with the data merged in
-        ...createdItems.User.filter(post => post.id === id)[0],
-        ...data,
-      }));
+    lists.User.adapter.update.mockImplementation((id, data) => ({
+      // Create a new object with the data merged in
+      ...createdItems.User.filter(post => post.id === id)[0],
+      ...data,
+    }));
 
-    const updatedRelationships = await createRelationships(lists, relationships, createdItems);
+    const updatedRelationships = await createRelationships(
+      lists,
+      relationships,
+      createdItems
+    );
 
     expect(updatedRelationships).toEqual({
       User: {
-        1: { posts: [ 'abc123', 'def789' ] },
+        1: { posts: ['abc123', 'def789'] },
       },
     });
   });
@@ -658,10 +604,12 @@ describe('createRelationships', () => {
   test('Supports creating many-relationships with array syntax', async () => {
     const relationships = {
       User: {
-        1: { posts: [
-          { where: { title: 'Hello Things' } },
-          { where: { title: 'Kaboom' } },
-        ] },
+        1: {
+          posts: [
+            { where: { title: 'Hello Things' } },
+            { where: { title: 'Kaboom' } },
+          ],
+        },
       },
     };
 
@@ -689,28 +637,30 @@ describe('createRelationships', () => {
           id: 'def789',
           title: 'Hello World',
         },
-      ]
+      ],
     };
 
     // Mocking the database calls
-    lists.Post.adapter.itemsQuery
-      .mockImplementation(({ where: { title } }) => (
-        // Grab the post with the matching title
-        createdItems.Post.filter(post => post.title === title)
-      ));
+    lists.Post.adapter.itemsQuery.mockImplementation(({ where: { title } }) =>
+      // Grab the post with the matching title
+      createdItems.Post.filter(post => post.title === title)
+    );
 
-    lists.User.adapter.update
-      .mockImplementation((id, data) => ({
-        // Create a new object with the data merged in
-        ...createdItems.User.filter(post => post.id === id)[0],
-        ...data,
-      }));
+    lists.User.adapter.update.mockImplementation((id, data) => ({
+      // Create a new object with the data merged in
+      ...createdItems.User.filter(post => post.id === id)[0],
+      ...data,
+    }));
 
-    const updatedRelationships = await createRelationships(lists, relationships, createdItems);
+    const updatedRelationships = await createRelationships(
+      lists,
+      relationships,
+      createdItems
+    );
 
     expect(updatedRelationships).toEqual({
       User: {
-        1: { posts: [ 'abc123', 'xyz456' ] },
+        1: { posts: ['abc123', 'xyz456'] },
       },
     });
   });
@@ -748,21 +698,23 @@ describe('createRelationships', () => {
           id: 'def789',
           title: 'Hello World',
         },
-      ]
+      ],
     };
 
     // Mocking the database calls
-    lists.Post.adapter.itemsQuery
-      .mockImplementation(() => ([]));
+    lists.Post.adapter.itemsQuery.mockImplementation(() => []);
 
-    lists.User.adapter.update
-      .mockImplementation((id, data) => ({
-        // Create a new object with the data merged in
-        ...createdItems.User.filter(post => post.id === id)[0],
-        ...data,
-      }));
+    lists.User.adapter.update.mockImplementation((id, data) => ({
+      // Create a new object with the data merged in
+      ...createdItems.User.filter(post => post.id === id)[0],
+      ...data,
+    }));
 
-    const updatedRelationships = await createRelationships(lists, relationships, createdItems);
+    const updatedRelationships = await createRelationships(
+      lists,
+      relationships,
+      createdItems
+    );
 
     expect(updatedRelationships).toEqual({
       User: {
@@ -774,10 +726,12 @@ describe('createRelationships', () => {
   test('throws error when many-relationship not found (using array syntax)', async () => {
     const relationships = {
       User: {
-        1: { posts: [
-          { where: { title: 'Nope' } },
-          { where: { title: 'Double Nope' } },
-        ] },
+        1: {
+          posts: [
+            { where: { title: 'Nope' } },
+            { where: { title: 'Double Nope' } },
+          ],
+        },
       },
     };
 
@@ -805,21 +759,21 @@ describe('createRelationships', () => {
           id: 'def789',
           title: 'Hello World',
         },
-      ]
+      ],
     };
 
     // Mocking the database calls
-    lists.Post.adapter.itemsQuery
-      .mockImplementation(() => []);
+    lists.Post.adapter.itemsQuery.mockImplementation(() => []);
 
-    lists.User.adapter.update
-      .mockImplementation((id, data) => ({
-        // Create a new object with the data merged in
-        ...createdItems.User.filter(post => post.id === id)[0],
-        ...data,
-      }));
+    lists.User.adapter.update.mockImplementation((id, data) => ({
+      // Create a new object with the data merged in
+      ...createdItems.User.filter(post => post.id === id)[0],
+      ...data,
+    }));
 
-    expect(createRelationships(lists, relationships, createdItems)).rejects.toThrow(
+    expect(
+      createRelationships(lists, relationships, createdItems)
+    ).rejects.toThrow(
       /Attempted to relate .* to .*, but no .* matched the conditions .*/
     );
   });
@@ -839,24 +793,26 @@ describe('createRelationships', () => {
           id: 'abc123',
           title: 'Foobar',
         },
-      ]
+      ],
     };
 
     // Mocking the database calls
-    lists.User.adapter.itemsQuery
-      .mockImplementation(({ where: { name } }) => (
-        // Grab the first user with the matching name
-        createdItems.User.filter(user => user.name === name)
-      ));
+    lists.User.adapter.itemsQuery.mockImplementation(({ where: { name } }) =>
+      // Grab the first user with the matching name
+      createdItems.User.filter(user => user.name === name)
+    );
 
-    lists.Post.adapter.update
-      .mockImplementation((id, data) => ({
-        // Create a new object with the data merged in
-        ...createdItems.Post.filter(post => post.id === id)[0],
-        ...data,
-      }));
+    lists.Post.adapter.update.mockImplementation((id, data) => ({
+      // Create a new object with the data merged in
+      ...createdItems.Post.filter(post => post.id === id)[0],
+      ...data,
+    }));
 
-    const updatedRelationships = await createRelationships(lists, relationships, createdItems);
+    const updatedRelationships = await createRelationships(
+      lists,
+      relationships,
+      createdItems
+    );
 
     expect(updatedRelationships).toEqual({});
   });
@@ -876,24 +832,26 @@ describe('createRelationships', () => {
           id: 'abc123',
           title: 'Foobar',
         },
-      ]
+      ],
     };
 
     // Mocking the database calls
-    lists.User.adapter.itemsQuery
-      .mockImplementation(({ where: { name } }) => (
-        // Grab the first user with the matching name
-        createdItems.User.filter(user => user.name === name)
-      ));
+    lists.User.adapter.itemsQuery.mockImplementation(({ where: { name } }) =>
+      // Grab the first user with the matching name
+      createdItems.User.filter(user => user.name === name)
+    );
 
-    lists.Post.adapter.update
-      .mockImplementation((id, data) => ({
-        // Create a new object with the data merged in
-        ...createdItems.Post.filter(post => post.id === id)[0],
-        ...data,
-      }));
+    lists.Post.adapter.update.mockImplementation((id, data) => ({
+      // Create a new object with the data merged in
+      ...createdItems.Post.filter(post => post.id === id)[0],
+      ...data,
+    }));
 
-    const updatedRelationships = await createRelationships(lists, relationships, createdItems);
+    const updatedRelationships = await createRelationships(
+      lists,
+      relationships,
+      createdItems
+    );
 
     expect(updatedRelationships).toEqual({
       Post: {},
