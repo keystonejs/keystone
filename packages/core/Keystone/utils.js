@@ -1,8 +1,13 @@
 const { resolveAllKeys } = require('@keystonejs/utils');
 const { Relationship } = require('@keystonejs/fields');
 
-function isRelationshipField(field) {
-  return field.type === Relationship;
+function isRelationshipField({ list, fieldKey }) {
+  return list.config.fields[fieldKey].type === Relationship;
+}
+
+function isManyRelationship({ list, fieldKey }) {
+  const field = list.config.fields[fieldKey];
+  return field.type === Relationship && field.many;
 }
 
 function mapObject(input, mapFn) {
@@ -89,9 +94,18 @@ const unmergeRelationships = (lists, input) => {
 
   // Each list
   const data = mapObject(input, (listData, listKey) => listData.map((item, itemIndex) => {
-    const { left: relationData, right: scalarData } = splitObject(item, (_, fieldKey) => (
-      isRelationshipField(lists[listKey].config.fields[fieldKey])
-    ));
+    const { left: relationData, right: scalarData } = splitObject(item, (fieldConditions, fieldKey) => {
+      const list = lists[listKey];
+      if (isRelationshipField({ list, fieldKey })) {
+        // Array syntax can only be used with many-relationship fields
+        if (Array.isArray(fieldConditions) && !isManyRelationship({ list, fieldKey })) {
+          throw new Error(`Attempted to relate many items to ${list.key}[${itemIndex}].${fieldKey}, but ${list.key}.${fieldKey} is configured as a single Relationship.`);
+        }
+        return true;
+      }
+
+      return false;
+    });
 
     if (Object.keys(relationData).length) {
       // Create a sparse array using an object
@@ -108,22 +122,64 @@ const unmergeRelationships = (lists, input) => {
   };
 };
 
-const relateToItem = async ({ relatedTo, relatedFrom }) => {
+const relateTo = async ({ relatedTo, relatedFrom }) => {
+  if (isManyRelationship({ list: relatedFrom.list, fieldKey: relatedFrom.field })) {
+    return relateToManyItems({ relatedTo, relatedFrom });
+  } else {
+    return relateToOneItem({ relatedTo, relatedFrom });
+  }
+};
 
+const throwRelateError = ({ relatedTo, relatedFrom, isMany }) => {
+  throw new Error(`Attempted to relate ${relatedFrom.list.key}<${relatedFrom.item.id}>.${relatedFrom.field} to${isMany ? '' : ' a'} ${relatedTo.list.key}, but no ${relatedTo.list.key} matched the conditions ${JSON.stringify({ conditions: relatedTo.conditions })}`);
+};
+
+const relateToOneItem = async ({ relatedTo, relatedFrom }) => {
   // Use where clause provided in original data to find related item
-  const relatedToItem = await relatedTo.list.adapter.findOne(relatedTo.where);
+  const relatedToItem = await relatedTo.list.adapter.findOne(relatedTo.conditions.where);
 
   // Sanity checking
   if (!relatedToItem) {
-    throw new Error(`Attempted to relate ${relatedFrom.list.key}<${relatedFrom.item.id}>.${relatedFrom.field} to a ${relatedTo.list.key}, but no ${relatedTo.list.key} matched the conditions ${JSON.stringify({ where: relatedTo.where })}`);
+    throwRelateError({ relatedTo, relatedFrom, isMany: false });
   }
 
-  //throw new Error('How do I handle 0, 1, n items?');
   const updateResult = await relatedFrom.list.adapter.update(
     relatedFrom.item.id,
     {
-      // TODO: Don't hardcode first index?
       [relatedFrom.field]: relatedToItem.id,
+    }
+  );
+
+  return updateResult[relatedFrom.field];
+};
+
+const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
+  let relatedToItems;
+
+  if (Array.isArray(relatedTo.conditions)) {
+    // Use where clause provided in original data to find related item
+    relatedToItems = await Promise.all(relatedTo.conditions.map(({ where }) =>
+      relatedTo.list.adapter.findOne(where)
+    ));
+
+    // One of them didn't match
+    if (relatedToItems.some(item => !item)) {
+      throwRelateError({ relatedTo, relatedFrom, isMany: true });
+    }
+  } else {
+    // Use where clause provided in original data to find related item
+    relatedToItems = await relatedTo.list.adapter.find(relatedTo.conditions.where);
+  }
+
+  // Sanity checking
+  if (!relatedToItems) {
+    throwRelateError({ relatedTo, relatedFrom, isMany: true });
+  }
+
+  const updateResult = await relatedFrom.list.adapter.update(
+    relatedFrom.item.id,
+    {
+      [relatedFrom.field]: relatedToItems.map(({ id }) => id),
     }
   );
 
@@ -200,10 +256,10 @@ const createRelationships = (lists, relationships, createdItems) => {
           // Results in something like:
           // Promise<{ author: <id-of-User>, ... }>
           return resolveAllKeys(
-            mapObject(relationItem, ({ where }, relationshipField) => {
+            mapObject(relationItem, (relationConditions, relationshipField) => {
               const relatedListKey = listFieldsConfig[relationshipField].ref;
 
-              return relateToItem({
+              return relateTo({
                 relatedFrom: {
                   list: lists[listKey],
                   item: createdItem,
@@ -211,7 +267,7 @@ const createRelationships = (lists, relationships, createdItems) => {
                 },
                 relatedTo: {
                   list: lists[relatedListKey],
-                  where,
+                  conditions: relationConditions,
                 },
               });
             })
