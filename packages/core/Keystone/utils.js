@@ -136,17 +136,17 @@ const throwRelateError = ({ relatedTo, relatedFrom, isMany }) => {
 
 const relateToOneItem = async ({ relatedTo, relatedFrom }) => {
   // Use where clause provided in original data to find related item
-  const relatedToItem = await relatedTo.list.adapter.findOne(relatedTo.conditions.where);
+  const relatedToItems = await relatedTo.list.adapter.itemsQuery(relatedTo.conditions);
 
   // Sanity checking
-  if (!relatedToItem) {
+  if (!relatedToItems || !relatedToItems.length) {
     throwRelateError({ relatedTo, relatedFrom, isMany: false });
   }
 
   const updateResult = await relatedFrom.list.adapter.update(
     relatedFrom.item.id,
     {
-      [relatedFrom.field]: relatedToItem.id,
+      [relatedFrom.field]: relatedToItems[0].id,
     }
   );
 
@@ -158,9 +158,14 @@ const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
 
   if (Array.isArray(relatedTo.conditions)) {
     // Use where clause provided in original data to find related item
-    relatedToItems = await Promise.all(relatedTo.conditions.map(({ where }) =>
-      relatedTo.list.adapter.findOne(where)
-    ));
+    relatedToItems = await Promise.all(
+      relatedTo.conditions.map(condition =>
+        relatedTo.list.adapter.itemsQuery(condition)
+      )
+    )
+
+    // Grab the first result of each
+    relatedToItems = relatedToItems.map(items => items[0]);
 
     // One of them didn't match
     if (relatedToItems.some(item => !item)) {
@@ -168,7 +173,7 @@ const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
     }
   } else {
     // Use where clause provided in original data to find related item
-    relatedToItems = await relatedTo.list.adapter.find(relatedTo.conditions.where);
+    relatedToItems = await relatedTo.list.adapter.itemsQuery(relatedTo.conditions);
   }
 
   // Sanity checking
