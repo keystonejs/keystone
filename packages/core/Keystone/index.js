@@ -5,7 +5,7 @@ const {
   unmergeRelationships,
   createRelationships,
   mergeRelationships,
-} = require('./utils');
+} = require('./relationship-utils');
 const List = require('../List');
 const bindSession = require('./session');
 
