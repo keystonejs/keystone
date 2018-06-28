@@ -186,6 +186,17 @@ module.exports = class Keystone {
       );
     };
 
+    const cleanupItems = createdItems =>
+      Promise.all(
+        Object.keys(createdItems).map(listKey =>
+          Promise.all(
+            createdItems[listKey].map(({ id }) =>
+              this.lists[listKey].adapter.delete(id)
+            )
+          )
+        )
+      );
+
     // 1. Split it apart
     const { relationships, data } = unmergeRelationships(
       this.lists,
@@ -194,12 +205,22 @@ module.exports = class Keystone {
     // 2. Create the items
     // NOTE: Only works if all relationships fields are non-"required"
     const createdItems = await createItems(data);
-    // 3. Create the relationships
-    const createdRelationships = await createRelationships(
-      this.lists,
-      relationships,
-      createdItems
-    );
+
+    let createdRelationships;
+    try {
+      // 3. Create the relationships
+      createdRelationships = await createRelationships(
+        this.lists,
+        relationships,
+        createdItems
+      );
+    } catch (error) {
+      // 3.5. If creation of relationships didn't work, unwind the createItems
+      cleanupItems(createdItems);
+      // Re-throw the error now that we've cleaned up
+      throw error;
+    }
+
     // 4. Merge the data back together again
     return mergeRelationships(createdItems, createdRelationships);
   }
