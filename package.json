@@ -108,7 +108,7 @@
   "bolt": {
     "workspaces": [
       "packages/*",
-      "cypress/projects/*"
+      "projects/*"
     ]
   },
   "devDependencies": {

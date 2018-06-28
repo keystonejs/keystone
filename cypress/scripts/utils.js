@@ -22,7 +22,7 @@ function objectToEnvString(envVars) {
 }
 
 function getProjects() {
-  const root = `${__dirname}/../projects`;
+  const root = `${__dirname}/../../projects`;
   const files = fs.readdirSync(root);
   return files
     .map(file => `${root}/${file}`)
