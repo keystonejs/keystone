@@ -33,7 +33,8 @@ const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 const initialData = require('./data');
 
 const keystone = new Keystone({
-  name: 'Test Project',
+  name: 'Cypress Test for Twitter Login',
+  adapter: new MongooseAdapter(),
 });
 
 // eslint-disable-next-line no-unused-vars
@@ -192,59 +193,6 @@ const server = new WebServer(keystone, {
 if (twitterAuthEnabled) {
   configureTwitterAuth(keystone, server);
 }
-
-server.app.use(
-  keystone.session.validate({
-    valid: ({ req, item }) => (req.user = item),
-  })
-);
-
-server.app.get('/api/session', (req, res) => {
-  const data = {
-    signedIn: !!req.session.keystoneItemId,
-    userId: req.session.keystoneItemId,
-  };
-  if (req.user) {
-    Object.assign(data, {
-      name: req.user.name,
-      twitterId: req.user.twitterId,
-      twitterUsername: req.user.twitterUsername,
-    });
-  }
-  res.json(data);
-});
-
-server.app.get('/api/signin', async (req, res, next) => {
-  try {
-    const result = await keystone.auth.User.password.validate({
-      username: req.query.username,
-      password: req.query.password,
-    });
-    if (!result.success) {
-      return res.json({
-        success: false,
-      });
-    }
-    await keystone.session.create(req, result);
-    res.json({
-      success: true,
-      itemId: result.item.id,
-    });
-  } catch (e) {
-    next(e);
-  }
-});
-
-server.app.get('/api/signout', async (req, res, next) => {
-  try {
-    await keystone.session.destroy(req);
-    res.json({
-      success: true,
-    });
-  } catch (e) {
-    next(e);
-  }
-});
 
 server.app.get('/reset-db', (req, res) => {
   const reset = async () => {
