@@ -15,9 +15,8 @@ const resources = Object.keys(projects).map(project => {
 });
 
 execa(
-  'node',
+  'start-server-and-test',
   [
-    './packages/start-server-and-test/bin/start.js',
     'cypress:start:servers',
     resources.join('|'),
     testCommand,
