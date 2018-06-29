@@ -18,11 +18,11 @@ function loadEnvVars(directory, name) {
   const existingEnvVars = Object.keys(process.env)
     .filter(key => key.startsWith(ciEnvPrefix))
     .reduce(
-      (memo, key) => Object.assign(
-        memo,
-        { [key.replace(ciEnvPrefix, '')]: process.env[key] },
-      ),
-      {},
+      (memo, key) =>
+        Object.assign(memo, {
+          [key.replace(ciEnvPrefix, '')]: process.env[key],
+        }),
+      {}
     );
 
   // Load the required env vars
@@ -64,18 +64,17 @@ function loadEnvVars(directory, name) {
 
   // Ones already on the environment take precedence over those in the `.env`
   // file
-  return Object.assign(
-    loadedEnvVars,
-    existingEnvVars,
-  );
+  return Object.assign(loadedEnvVars, existingEnvVars);
 }
 
 function objectToEnvString(envVars) {
-  return Object.keys(envVars)
-    // NOTE: JSON.stringify to ensure the right quoting is used for strings vs
-    // numbers, etc
-    .map(varName => `${varName}=${JSON.stringify(envVars[varName])}`)
-    .join(' ');
+  return (
+    Object.keys(envVars)
+      // NOTE: JSON.stringify to ensure the right quoting is used for strings vs
+      // numbers, etc
+      .map(varName => `${varName}=${JSON.stringify(envVars[varName])}`)
+      .join(' ')
+  );
 }
 
 function getProjects() {
