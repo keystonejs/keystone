@@ -152,7 +152,7 @@ export const SlideDown = ({ from = '-8px', ...props }: TransitionProps) => {
 // ------------------------------
 
 const fromMap = { left: '-100%', right: '100%' };
-type SlideInProps = TransitionProps & { slideInFrom: $Keys<typeof fromMap> };
+type SlideInProps = TransitionProps & { slideInFrom: 'left' | 'right' }; // NOTE: should be able to use $Keys<typeof fromMap>
 export const SlideInHorizontal = ({ slideInFrom, ...props }: SlideInProps) => {
   const initial = fromMap[slideInFrom];
   return (

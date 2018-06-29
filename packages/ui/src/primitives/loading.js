@@ -17,7 +17,7 @@ const appearanceColor = {
   primary: colors.primary,
   inverted: 'white',
 };
-// type Appearance = $Keys<typeof appearanceColor>;
+// NOTE should be able to use $Keys<typeof appearanceColor>;
 type Appearance = 'default' | 'dark' | 'primary' | 'inverted';
 type LoadingIndicatorProps = {
   /** What color should the dots be. */
