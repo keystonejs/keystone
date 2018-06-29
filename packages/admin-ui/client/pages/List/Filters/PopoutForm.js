@@ -90,7 +90,7 @@ export default class FilterPopout extends Component<Props> {
         <AnimateHeight
           autoScroll={this.popoutBody}
           style={{ position: 'relative' }}
-          initial={0}
+          initialHeight={0}
           render={children}
         />
       </Popout>
