@@ -15,6 +15,16 @@ function loadEnvVars(directory, name) {
     .replace(/[^a-zA-Z]+/g, '')
     .toUpperCase()}_`;
 
+  const existingEnvVars = Object.keys(process.env)
+    .filter(key => key.startsWith(ciEnvPrefix))
+    .reduce(
+      (memo, key) => Object.assign(
+        memo,
+        { [key.replace(ciEnvPrefix, '')]: process.env[key] },
+      ),
+      {},
+    );
+
   // Load the required env vars
   let required = dotEnv.parse(fs.readFileSync(`${directory}/.env.example`));
 
@@ -41,21 +51,30 @@ function loadEnvVars(directory, name) {
     throw new Error(envVars.error);
   }
 
-  // Return the env vars with the prefix removed
-  return Object.keys(envVars.parsed)
+  // The loaded env vars with the prefix removed
+  const loadedEnvVars = Object.keys(envVars.parsed)
     .filter(key => key.startsWith(ciEnvPrefix))
     .reduce(
       (memo, key) =>
         Object.assign(memo, {
-          [key.replace(ciEnvPrefix, '')]: process.env[key],
+          [key.replace(ciEnvPrefix, '')]: envVars.parsed[key],
         }),
       {}
     );
+
+  // Ones already on the environment take precedence over those in the `.env`
+  // file
+  return Object.assign(
+    loadedEnvVars,
+    existingEnvVars,
+  );
 }
 
 function objectToEnvString(envVars) {
   return Object.keys(envVars)
-    .map(varName => `${varName}="${envVars[varName]}"`)
+    // NOTE: JSON.stringify to ensure the right quoting is used for strings vs
+    // numbers, etc
+    .map(varName => `${varName}=${JSON.stringify(envVars[varName])}`)
     .join(' ');
 }
 
