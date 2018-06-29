@@ -3,7 +3,7 @@ import { Mutation } from 'react-apollo';
 import styled from 'react-emotion';
 
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Dialog } from '@keystonejs/ui/src/primitives/modals';
+import { Drawer } from '@keystonejs/ui/src/primitives/modals';
 import { resolveAllKeys } from '@keystonejs/utils';
 import { gridSize } from '@keystonejs/ui/src/theme';
 import { AutocompleteCaptor } from '@keystonejs/ui/src/primitives/forms';
@@ -74,13 +74,14 @@ class CreateItemModal extends Component {
     const { isLoading, isOpen, list } = this.props;
     const { item } = this.state;
     return (
-      <Dialog
+      <Drawer
         closeOnBlanketClick
         component={this.formComponent}
         isOpen={isOpen}
         onClose={this.onClose}
         heading={`Create ${list.singular}`}
         onKeyDown={this.onKeyDown}
+        slideInFrom="right"
         footer={
           <Fragment>
             <Button appearance="create" type="submit">
@@ -111,7 +112,7 @@ class CreateItemModal extends Component {
             );
           })}
         </Body>
-      </Dialog>
+      </Drawer>
     );
   }
 }

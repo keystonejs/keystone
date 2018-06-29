@@ -148,21 +148,21 @@ export const SlideDown = ({ from = '-8px', ...props }: TransitionProps) => {
   );
 };
 
-// Slide In from right
+// Slide In from left/right
 // ------------------------------
 
-export const SlideInFromRight = ({
-  from = '100%',
-  ...props
-}: TransitionProps) => {
+const fromMap = { left: '-100%', right: '100%' };
+type SlideInProps = TransitionProps & { slideInFrom: $Keys<typeof fromMap> };
+export const SlideInHorizontal = ({ slideInFrom, ...props }: SlideInProps) => {
+  const initial = fromMap[slideInFrom];
   return (
     <TransitionReducer
       constant={makeTransitionBase('transform')}
       dynamic={{
         entering: { transform: 'translate3d(0,0,0)' },
         entered: { transform: 'translate3d(0,0,0)' },
-        exiting: { transform: `translate3d(${from}, 0, 0)` },
-        exited: { transform: `translate3d(${from}, 0, 0)` },
+        exiting: { transform: `translate3d(${initial}, 0, 0)` },
+        exited: { transform: `translate3d(${initial}, 0, 0)` },
       }}
       {...props}
     />

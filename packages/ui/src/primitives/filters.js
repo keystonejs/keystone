@@ -27,10 +27,13 @@ const selectStyles = {
       : null;
     return {
       ...provided,
-      ...focusStyles,
+      backgroundColor: 'white',
+      borderColor: colors.N20,
       fontSize: '0.9em',
       minHeight: 35,
       minWidth: '200px',
+      ':hover': { borderColor: colors.N30 },
+      ...focusStyles,
     };
   },
   menu: p => ({ ...p, fontSize: '0.9em' }),

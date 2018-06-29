@@ -2,13 +2,13 @@ import React, { Component, Fragment } from 'react';
 import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Dialog } from '@keystonejs/ui/src/primitives/modals';
+import { Drawer } from '@keystonejs/ui/src/primitives/modals';
 import {
   FieldContainer,
   FieldLabel,
   FieldInput,
 } from '@keystonejs/ui/src/primitives/fields';
-import Select from 'react-select';
+import { Select } from '@keystonejs/ui/src/primitives/filters';
 
 import FieldTypes from '../FIELD_TYPES';
 
@@ -94,11 +94,12 @@ class UpdateManyModal extends Component {
     const options = this.getOptions();
 
     return (
-      <Dialog
+      <Drawer
         isOpen={isOpen}
         onClose={this.onClose}
         heading={`Update ${list.formatCount(items)}`}
         onKeyDown={this.onKeyDown}
+        slideInFrom="left"
         footer={
           <Fragment>
             <Button appearance="primary" onClick={this.onUpdate}>
@@ -144,7 +145,7 @@ class UpdateManyModal extends Component {
             );
           })}
         </Fragment>
-      </Dialog>
+      </Drawer>
     );
   }
 }
