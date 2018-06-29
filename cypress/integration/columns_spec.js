@@ -1,9 +1,11 @@
 describe('Columns', () => {
-  before(() => (
-    cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
-      cy.visit(`http://localhost:${PORT}/reset-db`)
-    ))
-  ));
+  before(() =>
+    cy
+      .task('getProjectInfo', 'basic')
+      .then(({ env: { PORT } }) =>
+        cy.visit(`http://localhost:${PORT}/reset-db`)
+      )
+  );
 
   [
     {
@@ -23,9 +25,11 @@ describe('Columns', () => {
     },
   ].forEach(({ url, enable, disable }) => {
     it(`Testing all columns in ${url}`, () => {
-      cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
-        cy.visit(`http://localhost:${PORT}${url}`)
-      ));
+      cy
+        .task('getProjectInfo', 'basic')
+        .then(({ env: { PORT } }) =>
+          cy.visit(`http://localhost:${PORT}${url}`)
+        );
       cy.get('button:contains("Columns")').click();
 
       enable.forEach(name => {

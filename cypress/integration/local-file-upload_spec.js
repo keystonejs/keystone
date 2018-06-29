@@ -1,9 +1,11 @@
 describe('Adding a file', function() {
-  before(() => (
-    cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
-      cy.visit(`http://localhost:${PORT}/reset-db`)
-    ))
-  ));
+  before(() =>
+    cy
+      .task('getProjectInfo', 'basic')
+      .then(({ env: { PORT } }) =>
+        cy.visit(`http://localhost:${PORT}/reset-db`)
+      )
+  );
 
   it('should upload a file with success', function() {
     cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => {

@@ -24,9 +24,11 @@ describe('Adding data', () => {
     },
   ].forEach(({ url, data }) => {
     it(`Adding data to ${url}`, () => {
-      cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
-        cy.visit(`http://localhost:${PORT}${url}`)
-      ));
+      cy
+        .task('getProjectInfo', 'basic')
+        .then(({ env: { PORT } }) =>
+          cy.visit(`http://localhost:${PORT}${url}`)
+        );
       cy.get('button[appearance="create"]').click();
 
       Object.keys(data).forEach(item => {
@@ -73,9 +75,11 @@ describe('Editing data', () => {
     },
   ].forEach(({ section, url, field }) => {
     it(`Editing data in ${section}`, () => {
-      cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
-        cy.visit(`http://localhost:${PORT}${url}`)
-      ));
+      cy
+        .task('getProjectInfo', 'basic')
+        .then(({ env: { PORT } }) =>
+          cy.visit(`http://localhost:${PORT}${url}`)
+        );
 
       cy.get(`a:contains("${field.value}"):first`).click();
       cy
@@ -108,9 +112,11 @@ describe('Deleting data', () => {
     },
   ].forEach(({ section, url, item }) => {
     it(`Deleting data to ${section}`, () => {
-      cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
-        cy.visit(`http://localhost:${PORT}${url}`)
-      ));
+      cy
+        .task('getProjectInfo', 'basic')
+        .then(({ env: { PORT } }) =>
+          cy.visit(`http://localhost:${PORT}${url}`)
+        );
 
       cy.get(`a:contains("${item}"):first`).click();
       cy.get('button:contains("Delete"):first').click();

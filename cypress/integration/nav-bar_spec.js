@@ -1,9 +1,11 @@
 describe('Nav Bar', () => {
-  before(() => (
-    cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
-      cy.visit(`http://localhost:${PORT}/reset-db`)
-    ))
-  ));
+  before(() =>
+    cy
+      .task('getProjectInfo', 'basic')
+      .then(({ env: { PORT } }) =>
+        cy.visit(`http://localhost:${PORT}/reset-db`)
+      )
+  );
 
   // Testing links which should open in a new tab is a bit tricky in Cypress.
   // The discussion at this page lists some of the details.
@@ -22,9 +24,11 @@ describe('Nav Bar', () => {
     { text: 'Style Guide', target: '/admin/style-guide' },
   ].forEach(({ text, target, newTab = false }) => {
     it(`${newTab ? 'Check' : 'Click'} ${text}`, () => {
-      cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
-        cy.visit(`http://localhost:${PORT}/admin`)
-      ));
+      cy
+        .task('getProjectInfo', 'basic')
+        .then(({ env: { PORT } }) =>
+          cy.visit(`http://localhost:${PORT}/admin`)
+        );
 
       cy
         .get('nav')

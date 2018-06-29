@@ -1,9 +1,11 @@
 describe('Loading User item', function() {
-  before(() => (
-    cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
-      cy.visit(`http://localhost:${PORT}/reset-db`)
-    ))
-  ));
+  before(() =>
+    cy
+      .task('getProjectInfo', 'basic')
+      .then(({ env: { PORT } }) =>
+        cy.visit(`http://localhost:${PORT}/reset-db`)
+      )
+  );
 
   it('should show users name', function() {
     cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => {

@@ -12,16 +12,17 @@ const names = Object.keys(projects);
 
 execa(
   'concurrently',
-  ['--kill-others', '-n', names.join(',')].concat(commands.map(com => `"${com}"`)),
+  ['--kill-others', '-n', names.join(',')].concat(
+    commands.map(com => `"${com}"`)
+  ),
   {
     stdin: 'inherit',
     stdout: 'inherit',
     stderr: 'inherit',
-  },
+  }
 ).catch(() => {
   process.exit(1);
 });
-
 
 // Successfully exit no matter what
 process.on('SIGINT', () => process.exit(0));
