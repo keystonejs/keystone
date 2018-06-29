@@ -1,9 +1,6 @@
 const { AdminUI } = require('@keystonejs/admin-ui');
 const { Keystone } = require('@keystonejs/core');
-const {
-  Text,
-  Password,
-} = require('@keystonejs/fields');
+const { Text, Password } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
 

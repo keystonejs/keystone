@@ -1,9 +1,11 @@
 describe('Search', () => {
-  before(() => (
-    cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
-      cy.visit(`http://localhost:${PORT}/reset-db`)
-    ))
-  ));
+  before(() =>
+    cy
+      .task('getProjectInfo', 'basic')
+      .then(({ env: { PORT } }) =>
+        cy.visit(`http://localhost:${PORT}/reset-db`)
+      )
+  );
 
   [
     {
@@ -26,9 +28,11 @@ describe('Search', () => {
     },
   ].forEach(({ url, searchTerm, found, notFound }) => {
     it(`Searching for "${searchTerm}" in ${url}`, () => {
-      cy.task('getProjectInfo', 'basic').then(({ env: { PORT } }) => (
-        cy.visit(`http://localhost:${PORT}${url}`)
-      ));
+      cy
+        .task('getProjectInfo', 'basic')
+        .then(({ env: { PORT } }) =>
+          cy.visit(`http://localhost:${PORT}${url}`)
+        );
       cy.get('#list-search-input').type(searchTerm);
 
       found.forEach(name => {

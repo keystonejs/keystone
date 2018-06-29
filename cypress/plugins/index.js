@@ -13,11 +13,11 @@
 const { getProjectsInfo } = require('../scripts/utils');
 const projects = getProjectsInfo();
 
-module.exports = (on) => {
+module.exports = on => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
   on('task', {
-    getProjectInfo: (project) => {
+    getProjectInfo: project => {
       return projects[project];
     },
   });

@@ -11,18 +11,20 @@ tmp.setGracefulCleanup();
 const PROJECTS_ROOT = `${__dirname}/../../projects`;
 
 function loadEnvVars(directory, name) {
-  const ciEnvPrefix = `PROJECT_${name.replace(/[^a-zA-Z]+/g, '').toUpperCase()}_`;
+  const ciEnvPrefix = `PROJECT_${name
+    .replace(/[^a-zA-Z]+/g, '')
+    .toUpperCase()}_`;
 
   // Load the required env vars
   let required = dotEnv.parse(fs.readFileSync(`${directory}/.env.example`));
 
   // Inject the prefix onto the keys
   required = Object.keys(required).reduce(
-    (memo, requiredKey) => Object.assign(
-      memo,
-      { [`${ciEnvPrefix}${requiredKey}`]: required[requiredKey] },
-    ),
-    {},
+    (memo, requiredKey) =>
+      Object.assign(memo, {
+        [`${ciEnvPrefix}${requiredKey}`]: required[requiredKey],
+      }),
+    {}
   );
 
   // write back to a temporary file
@@ -43,10 +45,10 @@ function loadEnvVars(directory, name) {
   return Object.keys(envVars.parsed)
     .filter(key => key.startsWith(ciEnvPrefix))
     .reduce(
-      (memo, key) => Object.assign(
-        memo,
-        { [key.replace(ciEnvPrefix, '')]: process.env[key] },
-      ),
+      (memo, key) =>
+        Object.assign(memo, {
+          [key.replace(ciEnvPrefix, '')]: process.env[key],
+        }),
       {}
     );
 }

@@ -16,16 +16,12 @@ const resources = Object.keys(projects).map(project => {
 
 execa(
   'start-server-and-test',
-  [
-    'cypress:start:servers',
-    resources.join('|'),
-    testCommand,
-  ],
+  ['cypress:start:servers', resources.join('|'), testCommand],
   {
     stdin: 'inherit',
     stdout: 'inherit',
     stderr: 'inherit',
-  },
+  }
 ).catch(() => {
   process.exit(1);
 });
