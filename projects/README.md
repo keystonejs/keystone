@@ -12,3 +12,7 @@ easier/faster/better to add a new List to an existing test projectt if possible.
 
 Make sure that for each project (eg `projects/basic`), you setup the `.env` file
 with the necessary values filled out (see `.env.example` for what's required).
+
+For CI, env vars are injected as part of the run, and come prefixed with
+`PROJECT_<NAME>_` where `<NAME>` is the project folder name (`basic`, `login`,
+etc).
