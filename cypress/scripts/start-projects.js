@@ -10,6 +10,8 @@ const commands = Object.keys(projects).map(project => {
 
 const names = Object.keys(projects);
 
+console.log('Running commands:\n', commands.join('\n'));
+
 execa(
   'concurrently',
   ['--kill-others', '-n', names.join(',')].concat(
