@@ -74,6 +74,7 @@ jobs:
           paths:
             - node_modules
           key: v6-dependencies-{{ checksum "yarn.lock" }}
+      - run: touch $CIRCLE_WORKING_DIRECTORY/.env
       - run:
           name: Running E2E tests
           command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn cypress:run:ci
@@ -90,6 +91,20 @@ jobs:
           name: Running E2E tests
           command: yarn cypress:run --reporter junit --reporter-options "mochaFile=reports/junit/cypress-results.xml"
 
+            PROJECT_BASIC_CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME
+            PROJECT_BASIC_CLOUDINARY_KEY: $CLOUDINARY_KEY
+            PROJECT_BASIC_CLOUDINARY_SECRET: $CLOUDINARY_SECRET
+            PROJECT_BASIC_PORT: 3000
+
+            PROJECT_LOGIN_PORT: 4000
+
+            PROJECT_TWITTERLOGIN_TWITTER_APP_KEY: $TWITTER_APP_KEY
+            PROJECT_TWITTERLOGIN_TWITTER_APP_SECRET: $TWITTER_APP_SECRET
+            PROJECT_TWITTERLOGIN_PORT: 3010
+      - store_test_results:
+          path: reports/junit
+      - store_artifacts:
+          path: reports/junit
       - store_artifacts:
           path: cypress/videos
       - store_artifacts:
