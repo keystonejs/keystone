@@ -194,6 +194,31 @@ class ListDetails extends Component<Props, State> {
   // Renderers
   // ==============================
 
+  getNoResultsMessage = () => {
+    const { filters, itemsCount, list, search } = this.props;
+
+    if (filters && filters.length) {
+      return (
+        <span>
+          No {list.plural.toLowerCase()} found matching the{' '}
+          {filters.length > 1 ? 'filters' : 'filter'}
+        </span>
+      );
+    }
+    if (search && search.length) {
+      return (
+        <span>
+          No {list.plural.toLowerCase()} found matching &ldquo;{search}&rdquo;
+        </span>
+      );
+    }
+    if (itemsCount === 0) {
+      return <span>No {list.plural.toLowerCase()} to display yet...</span>;
+    }
+
+    return null;
+  };
+
   renderExpandButton() {
     if (window && window.innerWidth < CONTAINER_WIDTH) return null;
 
@@ -376,20 +401,7 @@ class ListDetails extends Component<Props, State> {
                 onSelect={this.handleItemSelect}
                 onSelectAll={this.handleItemSelectAll}
                 selectedItems={selectedItems}
-                noResultsMessage={
-                  filters && filters.length ? (
-                    <span>
-                      No {list.plural.toLowerCase()} found matching the{' '}
-                      {filters.length > 1 ? 'filters' : 'filter'}
-                    </span>
-                  ) : (
-                    <span>
-                      No {list.plural.toLowerCase()} found matching &ldquo;{
-                        search
-                      }&rdquo;
-                    </span>
-                  )
-                }
+                noResultsMessage={this.getNoResultsMessage()}
               />
             ) : (
               <PageLoading />
