@@ -5,12 +5,7 @@ import {
   FieldLabel,
   FieldInput,
 } from '@keystonejs/ui/src/primitives/fields';
-
-import { Select } from '@keystonejs/ui/src/primitives/forms';
-
-const selectStyles = {
-  menuPortal: provided => ({ ...provided, zIndex: 2 }),
-};
+import { Select } from '@keystonejs/ui/src/primitives/filters';
 
 export default class SelectField extends Component {
   onChange = option => {
@@ -39,8 +34,9 @@ export default class SelectField extends Component {
             value={value}
             options={field.options}
             onChange={this.onChange}
+            id={`react-select-${htmlID}`}
             inputId={htmlID}
-            styles={selectStyles}
+            instanceId={htmlID}
             {...selectProps}
           />
         </FieldInput>

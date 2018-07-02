@@ -219,9 +219,10 @@ class ListPageDataProvider extends Component<Props, State> {
             if (!loading) {
               this.items = data && data[list.listQueryName];
               this.itemsCount =
-                data &&
-                data[`_${list.listQueryName}Meta`] &&
-                data[`_${list.listQueryName}Meta`].count;
+                (data &&
+                  data[`_${list.listQueryName}Meta`] &&
+                  data[`_${list.listQueryName}Meta`].count) ||
+                0;
             }
 
             return children({

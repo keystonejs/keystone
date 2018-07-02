@@ -15,6 +15,20 @@ import { FlexGroup } from './layout';
 // Styled Select
 // ==============================
 
+const indicatorStyles = (provided, { isDisabled, isFocused }) => {
+  let styles = {
+    color: colors.N20,
+    ':hover': !isDisabled && !isFocused ? { color: colors.N40 } : null,
+  };
+  if (isDisabled) styles = { color: colors.N10 };
+  if (isFocused) {
+    styles = { color: colors.N60, ':hover': { color: colors.N80 } };
+  }
+  return {
+    ...provided,
+    ...styles,
+  };
+};
 const selectStyles = {
   control: (provided, { isFocused }) => {
     const focusStyles = isFocused
@@ -27,12 +41,17 @@ const selectStyles = {
       : null;
     return {
       ...provided,
-      ...focusStyles,
+      backgroundColor: 'white',
+      borderColor: colors.N20,
       fontSize: '0.9em',
       minHeight: 35,
       minWidth: '200px',
+      ':hover': { borderColor: colors.N30 },
+      ...focusStyles,
     };
   },
+  clearIndicator: indicatorStyles,
+  dropdownIndicator: indicatorStyles,
   menu: p => ({ ...p, fontSize: '0.9em' }),
   option: (p, { isDisabled, isFocused, isSelected }) => {
     let bg = 'inherit';

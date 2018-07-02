@@ -9,7 +9,7 @@ type Height = number | string;
 type Props = {
   autoScroll: boolean | HTMLElement,
   children?: Element<*>,
-  initial: Height,
+  initialHeight: Height,
   onChange?: Height => any,
   render?: ({ ref: Ref<*> }) => Node,
 };
@@ -17,10 +17,10 @@ type State = { height: Height };
 
 export default class AnimateHeight extends Component<Props, State> {
   node: HTMLElement;
-  state = { height: this.props.initial };
+  state = { height: this.props.initialHeight };
   static defaultProps = {
     autoScroll: false,
-    initial: 0,
+    initialHeight: 0,
   };
   getNode = ref => {
     if (!ref) return;
@@ -34,8 +34,8 @@ export default class AnimateHeight extends Component<Props, State> {
     element.scrollTo(0, 0);
   };
   calculateHeight = () => {
-    const { autoScroll, initial, onChange } = this.props;
-    const height = this.node ? this.node.scrollHeight : initial;
+    const { autoScroll, initialHeight, onChange } = this.props;
+    const height = this.node ? this.node.scrollHeight : initialHeight;
 
     this.setState({ isTransitioning: true });
 
@@ -50,16 +50,19 @@ export default class AnimateHeight extends Component<Props, State> {
     }
   };
   render() {
-    const { autoScroll, children, render, ...props } = this.props;
+    const {
+      autoScroll,
+      children,
+      initialHeight,
+      render,
+      ...props
+    } = this.props;
     const { height, isTransitioning } = this.state;
+    const overflow = isTransitioning ? 'hidden' : null;
 
     return (
       <div
-        css={{
-          height,
-          transition,
-          overflow: isTransitioning ? 'hidden' : null,
-        }}
+        css={{ height, transition, overflow }}
         onTransitionEnd={() => this.setState({ isTransitioning: false })}
         {...props}
       >

@@ -31,8 +31,8 @@ export default function ActiveFilters({
   if (!ENABLE_DEV_FEATURES) return null;
 
   return (
-    <AnimateHeight>
-      <FlexGroup style={{ paddingTop: gridSize }} wrap>
+    <AnimateHeight style={{ paddingTop: gridSize }}>
+      <FlexGroup wrap>
         {filterList.length
           ? filterList.map(filter => {
               const label = filter.field.formatFilter(filter);

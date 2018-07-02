@@ -8,12 +8,7 @@ import {
   FieldLabel,
   FieldInput,
 } from '@keystonejs/ui/src/primitives/fields';
-
-import { Select } from '@keystonejs/ui/src/primitives/forms';
-
-const selectStyles = {
-  menuPortal: provided => ({ ...provided, zIndex: 2 }),
-};
+import { Select } from '@keystonejs/ui/src/primitives/filters';
 
 const getGraphqlQuery = refList => {
   // TODO: How can we replace this with field.Controller.getQueryFragment()?
@@ -45,7 +40,7 @@ export default class RelationshipField extends Component {
     const selectProps =
       renderContext === 'dialog'
         ? {
-            menuPosition: 'fixed',
+            menuPortalTarget: document.body,
             menuShouldBlockScroll: true,
           }
         : null;
@@ -88,10 +83,11 @@ export default class RelationshipField extends Component {
                   getOptionValue={option => option.value.id}
                   options={options}
                   onChange={this.onChange}
+                  id={`react-select-${htmlID}`}
                   isClearable
                   isLoading={loading}
+                  instanceId={htmlID}
                   inputId={htmlID}
-                  styles={selectStyles}
                   {...selectProps}
                 />
               );
