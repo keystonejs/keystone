@@ -88,7 +88,7 @@ describe('Editing data', () => {
         .type(field.newValue);
       cy.get('button[type="submit"][appearance="primary"]').click();
       cy.get(`nav a:contains("${section}")`).click();
-      cy.get('body').should('contain', field.newValue);
+      cy.get('main').should('contain', field.newValue);
     });
   });
 });
@@ -121,7 +121,7 @@ describe('Deleting data', () => {
       cy.get(`a:contains("${item}"):first`).click();
       cy.get('button:contains("Delete"):first').click();
       cy.get('body:last footer button:first').click();
-      cy.get('body').should('not.contain', item);
+      cy.get('main').should('not.contain', item);
     });
   });
 });

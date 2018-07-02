@@ -39,7 +39,7 @@ describe('Testing Login', () => {
       cy.get('button[type="submit"]').click();
       cy
         .get('body')
-        .should('contain', 'Your username and password were incorrect');
+        .should('not.contain', 'Home');
     });
 
     it('Does not log in with invalid credentials', () => {
@@ -62,7 +62,7 @@ describe('Testing Login', () => {
       cy.get('button[type="submit"]').click();
       cy
         .get('body')
-        .should('contain', 'Your username and password were incorrect');
+        .should('not.contain', 'Home');
     });
 
     it('Does not log in with invalid username', () => {
@@ -85,7 +85,7 @@ describe('Testing Login', () => {
       cy.get('button[type="submit"]').click();
       cy
         .get('body')
-        .should('contain', 'Your username and password were incorrect');
+        .should('not.contain', 'Home');
     });
 
     it('Does not log in with invalid password', () => {
@@ -108,7 +108,7 @@ describe('Testing Login', () => {
       cy.get('button[type="submit"]').click();
       cy
         .get('body')
-        .should('contain', 'Your username and password were incorrect');
+        .should('not.contain', 'Home');
     });
   });
 
@@ -134,30 +134,6 @@ describe('Testing Login', () => {
 
       cy.get('body').should('contain', 'Users');
       cy.get('body').should('contain', 'Home');
-    });
-
-    it('Redirects to requested page after login', () => {
-      cy
-        .task('getProjectInfo', 'login')
-        .then(({ env: { PORT } }) =>
-          cy.visit(`http://localhost:${PORT}/admin/users`)
-        );
-
-      cy
-        .get('input[name="username"]')
-        .clear({ force: true })
-        .type(USERNAME, { force: true });
-
-      cy
-        .get('[name="password"]')
-        .clear({ force: true })
-        .type(PASSWORD, { force: true });
-
-      cy.get('button[type="submit"]').click();
-
-      cy.url().should('match', /admin\/users$/);
-      cy.get('body').should('contain', 'Users');
-      cy.get('body').should('contain', 'Showing 2 Users');
     });
   });
 });

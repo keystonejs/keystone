@@ -1,7 +1,6 @@
 const { AdminUI } = require('@keystonejs/admin-ui');
 const { Keystone } = require('@keystonejs/core');
 const {
-  File,
   Text,
   Relationship,
   Select,
@@ -9,45 +8,17 @@ const {
   CloudinaryImage,
 } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
-const {
-  CloudinaryAdapter,
-  LocalFileAdapter,
-} = require('@keystonejs/file-adapters');
 
 const { port, staticRoute, staticPath, cloudinary } = require('./config');
-
-const LOCAL_FILE_PATH = `${staticPath}/avatars`;
-const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
 
 const initialData = require('./data');
 
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
-
 const keystone = new Keystone({
   name: 'Cypress Test Project Basic',
-  adapter: new MongooseAdapter(),
 });
-
-const fileAdapter = new LocalFileAdapter({
-  directory: LOCAL_FILE_PATH,
-  route: LOCAL_FILE_ROUTE,
-});
-
-let cloudinaryAdapter;
-try {
-  cloudinaryAdapter = new CloudinaryAdapter({
-    ...cloudinary,
-    folder: 'avatars',
-  });
-} catch (e) {
-  // Downgrade from an error to a warning if the dev does not have a
-  // Cloudinary API Key set up. This will disable any fields which rely
-  // on this functionality.
-  console.warn(e.message);
-}
 
 keystone.createList('User', {
   fields: {
@@ -63,10 +34,6 @@ keystone.createList('User', {
         { label: 'Cete, or Seat, or Attend ¯\\_(ツ)_/¯', value: 'cete' },
       ],
     },
-    attachment: { type: File, adapter: fileAdapter },
-    ...(cloudinaryAdapter
-      ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } }
-      : {}),
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });
@@ -122,9 +89,7 @@ server.app.use(
 
 server.app.get('/reset-db', (req, res) => {
   const reset = async () => {
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
+    await keystone.mongoose.connection.dropDatabase();
     await keystone.createItems(initialData);
     res.redirect(admin.adminPath);
   };
@@ -136,11 +101,9 @@ server.app.use(staticRoute, server.express.static(staticPath));
 async function start() {
   keystone.connect();
   server.start();
-  const users = await keystone.lists.User.adapter.findAll();
+  const users = await keystone.lists.User.model.find();
   if (!users.length) {
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
+    await keystone.mongoose.connection.dropDatabase();
     await keystone.createItems(initialData);
   }
 }

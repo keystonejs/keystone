@@ -8,11 +8,8 @@ const { port, staticRoute, staticPath } = require('./config');
 
 const initialData = require('./data');
 
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
-
 const keystone = new Keystone({
   name: 'Cypress Test Project For Login',
-  adapter: new MongooseAdapter(),
 });
 
 // eslint-disable-next-line no-unused-vars
@@ -96,9 +93,7 @@ server.app.get('/api/signout', async (req, res, next) => {
 
 server.app.get('/reset-db', (req, res) => {
   const reset = async () => {
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
+    await keystone.mongoose.connection.dropDatabase();
     await keystone.createItems(initialData);
     res.redirect(admin.adminPath);
   };
@@ -110,11 +105,9 @@ server.app.use(staticRoute, server.express.static(staticPath));
 async function start() {
   keystone.connect();
   server.start();
-  const users = await keystone.lists.User.adapter.findAll();
+  const users = await keystone.lists.User.model.find();
   if (!users.length) {
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
+    await keystone.mongoose.connection.dropDatabase();
     await keystone.createItems(initialData);
   }
 }

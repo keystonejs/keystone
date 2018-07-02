@@ -10,7 +10,7 @@ describe('Columns', () => {
   [
     {
       url: '/admin/users',
-      enable: ['Password', 'Company', 'Attachment'],
+      enable: ['Password', 'Company'],
       disable: ['Name', 'Email'],
     },
     {

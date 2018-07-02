@@ -29,7 +29,7 @@ describe('Testing re-hydration', () => {
       );
     cy.get('button[appearance="create"]').click();
     cy.get('#ks-input-name').type('New Category');
-    cy.get('form[role="dialog"] button[appearance="create"]').click();
+    cy.get('#app ~ div button[appearance="create"]').click();
     cy.get('body').should('contain', 'New Category');
 
     cy.get('nav a:contains("Posts")').click();
