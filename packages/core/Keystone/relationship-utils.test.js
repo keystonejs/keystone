@@ -360,9 +360,9 @@ describe('createRelationships', () => {
           posts: { type: Relationship, ref: 'Post', many: true },
         },
       },
-      adapter: {
-        itemsQuery: jest.fn(),
-        update: jest.fn(),
+      itemsQuery: jest.fn(),
+      model: {
+        findByIdAndUpdate: jest.fn(),
       },
     },
     Post: {
@@ -373,19 +373,19 @@ describe('createRelationships', () => {
           author: { type: Relationship, ref: 'User' },
         },
       },
-      adapter: {
-        itemsQuery: jest.fn(),
-        update: jest.fn(),
+      itemsQuery: jest.fn(),
+      model: {
+        findByIdAndUpdate: jest.fn(),
       },
     },
   };
 
   beforeEach(() => {
     // Reset call counts, etc, back to normal
-    lists.User.adapter.itemsQuery.mockReset();
-    lists.User.adapter.update.mockReset();
-    lists.Post.adapter.itemsQuery.mockReset();
-    lists.Post.adapter.update.mockReset();
+    lists.User.itemsQuery.mockReset();
+    lists.User.model.findByIdAndUpdate.mockReset();
+    lists.Post.itemsQuery.mockReset();
+    lists.Post.model.findByIdAndUpdate.mockReset();
   });
 
   test('creates relationships', async () => {
@@ -420,12 +420,12 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.User.adapter.itemsQuery.mockImplementation(({ where: { name } }) =>
+    lists.User.itemsQuery.mockImplementation(({ where: { name } }) =>
       // Grab the first user with the matching name
       createdItems.User.filter(user => user.name === name)
     );
 
-    lists.Post.adapter.update.mockImplementation((id, data) => ({
+    lists.Post.model.findByIdAndUpdate.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
       ...createdItems.Post.filter(post => post.id === id)[0],
       ...data,
@@ -468,12 +468,12 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.User.adapter.itemsQuery.mockImplementation(({ where: { name } }) =>
+    lists.User.itemsQuery.mockImplementation(({ where: { name } }) =>
       // Grab the first user with the matching name
       createdItems.User.filter(user => user.name === name)
     );
 
-    lists.Post.adapter.update.mockImplementation((id, data) => ({
+    lists.Post.model.findByIdAndUpdate.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
       ...createdItems.Post.filter(post => post.id === id)[0],
       ...data,
@@ -515,12 +515,12 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.User.adapter.itemsQuery.mockImplementation(({ where: { name } }) =>
+    lists.User.itemsQuery.mockImplementation(({ where: { name } }) =>
       // Grab the first user with the matching name
       createdItems.User.filter(user => user.name === name)
     );
 
-    lists.Post.adapter.update.mockImplementation((id, data) => ({
+    lists.Post.model.findByIdAndUpdate.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
       ...createdItems.Post.filter(post => post.id === id)[0],
       ...data,
@@ -574,7 +574,7 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.Post.adapter.itemsQuery.mockImplementation(
+    lists.Post.itemsQuery.mockImplementation(
       ({ where: { title_starts_with } }) =>
         // Grab all the matching 'starts_with' items
         createdItems.Post.filter(post =>
@@ -582,7 +582,7 @@ describe('createRelationships', () => {
         )
     );
 
-    lists.User.adapter.update.mockImplementation((id, data) => ({
+    lists.User.model.findByIdAndUpdate.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
       ...createdItems.User.filter(post => post.id === id)[0],
       ...data,
@@ -641,12 +641,12 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.Post.adapter.itemsQuery.mockImplementation(({ where: { title } }) =>
+    lists.Post.itemsQuery.mockImplementation(({ where: { title } }) =>
       // Grab the post with the matching title
       createdItems.Post.filter(post => post.title === title)
     );
 
-    lists.User.adapter.update.mockImplementation((id, data) => ({
+    lists.User.model.findByIdAndUpdate.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
       ...createdItems.User.filter(post => post.id === id)[0],
       ...data,
@@ -702,9 +702,9 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.Post.adapter.itemsQuery.mockImplementation(() => []);
+    lists.Post.itemsQuery.mockImplementation(() => []);
 
-    lists.User.adapter.update.mockImplementation((id, data) => ({
+    lists.User.model.findByIdAndUpdate.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
       ...createdItems.User.filter(post => post.id === id)[0],
       ...data,
@@ -763,9 +763,9 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.Post.adapter.itemsQuery.mockImplementation(() => []);
+    lists.Post.itemsQuery.mockImplementation(() => []);
 
-    lists.User.adapter.update.mockImplementation((id, data) => ({
+    lists.User.model.findByIdAndUpdate.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
       ...createdItems.User.filter(post => post.id === id)[0],
       ...data,
@@ -797,12 +797,12 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.User.adapter.itemsQuery.mockImplementation(({ where: { name } }) =>
+    lists.User.itemsQuery.mockImplementation(({ where: { name } }) =>
       // Grab the first user with the matching name
       createdItems.User.filter(user => user.name === name)
     );
 
-    lists.Post.adapter.update.mockImplementation((id, data) => ({
+    lists.Post.model.findByIdAndUpdate.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
       ...createdItems.Post.filter(post => post.id === id)[0],
       ...data,
@@ -836,12 +836,12 @@ describe('createRelationships', () => {
     };
 
     // Mocking the database calls
-    lists.User.adapter.itemsQuery.mockImplementation(({ where: { name } }) =>
+    lists.User.itemsQuery.mockImplementation(({ where: { name } }) =>
       // Grab the first user with the matching name
       createdItems.User.filter(user => user.name === name)
     );
 
-    lists.Post.adapter.update.mockImplementation((id, data) => ({
+    lists.Post.model.findByIdAndUpdate.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
       ...createdItems.Post.filter(post => post.id === id)[0],
       ...data,

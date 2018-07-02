@@ -62,11 +62,10 @@ describe('Keystone.createItems()', () => {
           posts: { type: Relationship, many: true, ref: 'Post' },
         },
       },
-      adapter: {
-        create: jest.fn(),
-        update: jest.fn(),
-        delete: jest.fn(),
-        itemsQuery: jest.fn(),
+      itemsQuery: jest.fn(),
+      model: {
+        findByIdAndUpdate: jest.fn(),
+        findByIdAndDelete: jest.fn(),
       },
     },
     Post: {
@@ -77,56 +76,52 @@ describe('Keystone.createItems()', () => {
           author: { type: Relationship, ref: 'User' },
         },
       },
-      adapter: {
-        create: jest.fn(),
-        update: jest.fn(),
-        delete: jest.fn(),
-        itemsQuery: jest.fn(),
+      itemsQuery: jest.fn(),
+      model: {
+        findByIdAndUpdate: jest.fn(),
+        findByIdAndDelete: jest.fn(),
       },
     },
   };
 
-  function setupMocks() {
+  function setupMocks(keystone) {
     const created = {};
 
     // Create mocks
     let id = 1;
-    Object.keys(lists).forEach(listKey => {
-      lists[listKey].adapter.create.mockImplementation(input => {
-        const newItem = { id: id++, ...input };
-        created[listKey] = created[listKey] || [];
-        created[listKey].push(newItem);
-        return newItem;
-      });
+    keystone.createItem = jest.fn().mockImplementation((listKey, input) => {
+      const newItem = { id: id++, ...input };
+      created[listKey] = created[listKey] || [];
+      created[listKey].push(newItem);
+      return newItem;
+    });
 
+    Object.keys(lists).forEach(listKey => {
       // Update mocks
-      lists[listKey].adapter.update.mockImplementation((_, data) => data);
+      lists[listKey].model.findByIdAndUpdate.mockImplementation((_, data) => data);
     });
 
     // Query mocks
-    lists.User.adapter.itemsQuery.mockImplementation(({ where: { name } }) =>
+    lists.User.itemsQuery.mockImplementation(({ where: { name } }) =>
       created.User.filter(item => item.name === name)
     );
-    lists.Post.adapter.itemsQuery.mockImplementation(({ where: { title } }) =>
+    lists.Post.itemsQuery.mockImplementation(({ where: { title } }) =>
       created.Post.filter(item => item.title === title)
     );
   }
 
   beforeEach(() => {
     // Reset call counts, etc, back to normal
-    lists.User.adapter.itemsQuery.mockReset();
-    lists.User.adapter.create.mockReset();
-    lists.User.adapter.update.mockReset();
-    lists.User.adapter.delete.mockReset();
-    lists.Post.adapter.itemsQuery.mockReset();
-    lists.Post.adapter.create.mockReset();
-    lists.Post.adapter.update.mockReset();
-    lists.Post.adapter.delete.mockReset();
+    lists.User.itemsQuery.mockReset();
+    lists.User.model.findByIdAndUpdate.mockReset();
+    lists.User.model.findByIdAndDelete.mockReset();
+    lists.Post.itemsQuery.mockReset();
+    lists.Post.model.findByIdAndUpdate.mockReset();
+    lists.Post.model.findByIdAndDelete.mockReset();
   });
 
   test('creates items', async () => {
     const keystone = new Keystone({
-      adapter: new MockAdapter(),
       name: 'Jest Test',
     });
 
@@ -138,30 +133,29 @@ describe('Keystone.createItems()', () => {
       Post: [{ title: 'Hello world' }, { title: 'Goodbye' }],
     });
 
-    expect(keystone.lists.User.adapter.create).toHaveBeenCalledWith({
+    expect(keystone.createItem).toHaveBeenCalledWith('User', {
       name: 'Jess',
     });
-    expect(keystone.lists.User.adapter.create).toHaveBeenCalledWith({
+    expect(keystone.createItem).toHaveBeenCalledWith('User', {
       name: 'Lauren',
     });
-    expect(keystone.lists.Post.adapter.create).toHaveBeenCalledWith({
+    expect(keystone.createItem).toHaveBeenCalledWith('Post', {
       title: 'Hello world',
     });
-    expect(keystone.lists.Post.adapter.create).toHaveBeenCalledWith({
+    expect(keystone.createItem).toHaveBeenCalledWith('Post', {
       title: 'Goodbye',
     });
   });
 
   test('returns the created items', async () => {
     const keystone = new Keystone({
-      adapter: new MockAdapter(),
       name: 'Jest Test',
     });
 
     // mock the lists
     keystone.lists = lists;
 
-    setupMocks();
+    setupMocks(keystone);
 
     const createdItems = await keystone.createItems({
       User: [{ name: 'Jess' }, { name: 'Lauren' }],
@@ -176,14 +170,13 @@ describe('Keystone.createItems()', () => {
 
   test('creates items and adds in relationships', async () => {
     const keystone = new Keystone({
-      adapter: new MockAdapter(),
       name: 'Jest Test',
     });
 
     // mock the lists
     keystone.lists = lists;
 
-    setupMocks();
+    setupMocks(keystone);
 
     const createdItems = await keystone.createItems({
       User: [{ name: 'Jess' }, { name: 'Lauren' }],
@@ -204,14 +197,13 @@ describe('Keystone.createItems()', () => {
 
   test('deletes created items when relationships fail', async () => {
     const keystone = new Keystone({
-      adapter: new MockAdapter(),
       name: 'Jest Test',
     });
 
     // mock the lists
     keystone.lists = lists;
 
-    setupMocks();
+    setupMocks(keystone);
 
     try {
       await keystone.createItems({
@@ -224,10 +216,10 @@ describe('Keystone.createItems()', () => {
     } catch (error) {
       // ignore
     } finally {
-      expect(keystone.lists.User.adapter.delete).toHaveBeenCalledWith(1);
-      expect(keystone.lists.User.adapter.delete).toHaveBeenCalledWith(2);
-      expect(keystone.lists.Post.adapter.delete).toHaveBeenCalledWith(3);
-      expect(keystone.lists.Post.adapter.delete).toHaveBeenCalledWith(4);
+      expect(keystone.lists.User.model.findByIdAndDelete).toHaveBeenCalledWith(1);
+      expect(keystone.lists.User.model.findByIdAndDelete).toHaveBeenCalledWith(2);
+      expect(keystone.lists.Post.model.findByIdAndDelete).toHaveBeenCalledWith(3);
+      expect(keystone.lists.Post.model.findByIdAndDelete).toHaveBeenCalledWith(4);
     }
   });
 });

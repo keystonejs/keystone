@@ -197,7 +197,7 @@ module.exports = class Keystone {
         Object.keys(createdItems).map(listKey =>
           Promise.all(
             createdItems[listKey].map(({ id }) =>
-              this.lists[listKey].adapter.delete(id)
+              this.lists[listKey].model.findByIdAndDelete(id)
             )
           )
         )
