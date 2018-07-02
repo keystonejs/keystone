@@ -1,5 +1,11 @@
 const { makeExecutableSchema } = require('graphql-tools');
+const { resolveAllKeys } = require('@keystonejs/utils');
 
+const {
+  unmergeRelationships,
+  createRelationships,
+  mergeRelationships,
+} = require('./relationship-utils');
 const List = require('../List');
 const bindSession = require('./session');
 
@@ -164,35 +170,58 @@ module.exports = class Keystone {
   createItem(listKey, itemData) {
     return this.lists[listKey].adapter.create(itemData);
   }
-  createItems(lists) {
-    // TODO: Needs to handle creating related items; see Keystone 4 for a
-    // reference implementation
 
-    // Return a promise that resolves to an array of the created items
-    const asyncCreateItems = listKey =>
-      Promise.all(lists[listKey].map(i => this.createItem(listKey, i)));
+  async createItems(itemsToCreate) {
+    const createItems = data => {
+      return resolveAllKeys(
+        Object.keys(data).reduce(
+          (memo, list) => ({
+            ...memo,
+            [list]: Promise.all(
+              data[list].map(item => this.createItem(list, item))
+            ),
+          }),
+          {}
+        )
+      );
+    };
 
-    // We're going to have to wait for a set of unrelated promises to fullfil
-    // before we can return from this method
-    const promisesToWaitFor = [];
+    const cleanupItems = createdItems =>
+      Promise.all(
+        Object.keys(createdItems).map(listKey =>
+          Promise.all(
+            createdItems[listKey].map(({ id }) =>
+              this.lists[listKey].adapter.delete(id)
+            )
+          )
+        )
+      );
 
-    // We'll reduce the async values to this object over time
-    const createdItems = {};
+    // 1. Split it apart
+    const { relationships, data } = unmergeRelationships(
+      this.lists,
+      itemsToCreate
+    );
+    // 2. Create the items
+    // NOTE: Only works if all relationships fields are non-"required"
+    const createdItems = await createItems(data);
 
-    Object.keys(lists).forEach(key => {
-      const listItems = asyncCreateItems(key);
+    let createdRelationships;
+    try {
+      // 3. Create the relationships
+      createdRelationships = await createRelationships(
+        this.lists,
+        relationships,
+        createdItems
+      );
+    } catch (error) {
+      // 3.5. If creation of relationships didn't work, unwind the createItems
+      cleanupItems(createdItems);
+      // Re-throw the error now that we've cleaned up
+      throw error;
+    }
 
-      // Add the promise to the global set to wait for
-      promisesToWaitFor.push(listItems);
-
-      // When it resolves, we want to set the values on the result object
-      listItems.then(newItems => {
-        createdItems[key] = newItems;
-      });
-    });
-
-    // Wait for all promises to complete.
-    // Then resolve to the object containing the resolved arrays of values
-    return Promise.all(promisesToWaitFor).then(() => createdItems);
+    // 4. Merge the data back together again
+    return mergeRelationships(createdItems, createdRelationships);
   }
 };
