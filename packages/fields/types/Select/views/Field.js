@@ -34,7 +34,9 @@ export default class SelectField extends Component {
             value={value}
             options={field.options}
             onChange={this.onChange}
+            id={`react-select-${htmlID}`}
             inputId={htmlID}
+            instanceId={htmlID}
             {...selectProps}
           />
         </FieldInput>

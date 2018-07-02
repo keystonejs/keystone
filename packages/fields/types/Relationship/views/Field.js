@@ -83,8 +83,10 @@ export default class RelationshipField extends Component {
                   getOptionValue={option => option.value.id}
                   options={options}
                   onChange={this.onChange}
+                  id={`react-select-${htmlID}`}
                   isClearable
                   isLoading={loading}
+                  instanceId={htmlID}
                   inputId={htmlID}
                   {...selectProps}
                 />
