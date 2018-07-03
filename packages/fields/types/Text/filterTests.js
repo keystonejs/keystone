@@ -1,6 +1,8 @@
 import { matchFilter } from '../../tests/fields.test';
 import Text from './';
 
+export const name = 'Text';
+
 export const getTestFields = () => {
   return {
     name: { type: Text },
@@ -23,8 +25,8 @@ export const filterTests = app => {
       app,
       filter,
       '{ name }',
-      targets.map(name => {
-        return { name };
+      targets.map(name_ => {
+        return { name: name_ };
       }),
       done,
       'name'

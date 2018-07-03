@@ -65,7 +65,7 @@ describe('Test CRUD for all fields', () => {
     .filter(filename => fs.existsSync(filename))
     .map(require)
     .forEach(mod => {
-      describe(`All the CRUD tests for module: ${module.name}`, () => {
+      describe(`All the CRUD tests for module: ${mod.name}`, () => {
         // Set up a keystone project for each type module to use
         const keystone = new Keystone({
           adapter: new MongooseAdapter(),
