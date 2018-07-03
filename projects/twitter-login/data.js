@@ -41,26 +41,31 @@ module.exports = {
       name: 'Boris Bozic',
       email: 'boris@keystonejs.com',
       company: 'thinkmill',
+      isAdmin: true,
     },
     {
       name: 'Jed Watson',
       email: 'jed@keystonejs.com',
       company: 'thinkmill',
+      isAdmin: true,
     },
     {
       name: 'John Molomby',
       email: 'john@keystonejs.com',
       company: 'thinkmill',
+      isAdmin: true,
     },
     {
       name: 'Joss Mackison',
       email: 'joss@keystonejs.com',
       company: 'thinkmill',
+      isAdmin: true,
     },
     {
       name: 'Ben Conolly',
       email: 'ben@keystonejs.com',
       company: 'thinkmill',
+      isAdmin: true,
     },
     {
       name: 'Luke Batchelor',
