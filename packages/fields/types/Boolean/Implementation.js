@@ -41,12 +41,12 @@ class MongoBooleanInterface extends MongooseFieldAdapter {
 
     const eq = this.path;
     if (eq in args) {
-        conditions.push({ $eq: args[eq] });
+      conditions.push({ $eq: args[eq] });
     }
 
     const not = `${this.path}_not`;
     if (not in args) {
-        conditions.push({ $ne: args[not] });
+      conditions.push({ $ne: args[not] });
     }
     return conditions;
   }

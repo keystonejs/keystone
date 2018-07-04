@@ -54,29 +54,19 @@ export const filterTests = app => {
   test('Filter: bool true', done => {
     match(
       'where: { bool: true }',
-      [
-        { name: 'person1', bool: true },
-        { name: 'person4', bool: true },
-      ],
+      [{ name: 'person1', bool: true }, { name: 'person4', bool: true }],
       done
     );
   });
 
   test('Filter: bool false', done => {
-    match(
-      'where: { bool: false }',
-      [{ name: 'person2', bool: false }],
-      done
-    );
+    match('where: { bool: false }', [{ name: 'person2', bool: false }], done);
   });
 
   test('Filter: bool_not true', done => {
     match(
       'where: { bool_not: true }',
-      [
-        { name: 'person2', bool: false },
-        { name: 'person3', bool: null },
-      ],
+      [{ name: 'person2', bool: false }, { name: 'person3', bool: null }],
       done
     );
   });
