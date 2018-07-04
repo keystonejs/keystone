@@ -9,7 +9,7 @@ type Props = {
   onChange: Event => void,
 };
 
-export default class BooleanFilterView extends Component<Props> {
+export default class CheckboxFilterView extends Component<Props> {
   componentDidUpdate(prevProps) {
     const { filter } = this.props;
 
@@ -26,9 +26,10 @@ export default class BooleanFilterView extends Component<Props> {
     if (!filter) return null;
 
     return (
-      <select onChange={this.handleChange} innerRef={innerRef} value={value}>
-        <option value="true">true</option>
-        <option value="false">false</option>
+      <select onChange={this.handleChange} ref={innerRef} value={value}>
+        <option value="true">Checked</option>
+        <option value="false">Unchecked</option>
+        <option value="null">Not set</option>
       </select>
     );
   }

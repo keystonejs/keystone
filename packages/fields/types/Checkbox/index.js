@@ -1,9 +1,9 @@
 const path = require('path');
-const { Boolean, MongoBooleanInterface } = require('./Implementation');
+const { Checkbox, MongoCheckboxInterface } = require('./Implementation');
 
 module.exports = {
-  type: 'Bool',
-  implementation: Boolean,
+  type: 'Checkbox',
+  implementation: Checkbox,
   views: {
     Controller: path.resolve(__dirname, './Controller'),
     Field: path.resolve(__dirname, './views/Field'),
@@ -11,6 +11,6 @@ module.exports = {
     Cell: path.resolve(__dirname, './views/Cell'),
   },
   adapters: {
-    mongoose: MongoBooleanInterface,
+    mongoose: MongoCheckboxInterface,
   },
 };

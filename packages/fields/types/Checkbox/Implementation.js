@@ -1,7 +1,7 @@
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 
-class Boolean extends Implementation {
+class Checkbox extends Implementation {
   constructor() {
     super(...arguments);
     this.graphQLType = 'Boolean';
@@ -25,7 +25,7 @@ class Boolean extends Implementation {
   }
 }
 
-class MongoBooleanInterface extends MongooseFieldAdapter {
+class MongoCheckboxInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
     const { mongooseOptions } = this.config;
     schema.add({
@@ -53,6 +53,6 @@ class MongoBooleanInterface extends MongooseFieldAdapter {
 }
 
 module.exports = {
-  Boolean,
-  MongoBooleanInterface,
+  Checkbox,
+  MongoCheckboxInterface,
 };

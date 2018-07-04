@@ -1,6 +1,6 @@
 import FieldController from '../../Controller';
 
-export default class BooleanController extends FieldController {
+export default class CheckboxController extends FieldController {
   getValue = data => data[this.config.path] || false;
   getInitialData = () => this.config.defaultValue || false;
   getFilterGraphQL = ({ type, value }) => {

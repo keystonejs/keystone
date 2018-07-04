@@ -11,7 +11,7 @@ type Props = {
 // field so using it here is not reqired.
 // See: admin-ui/client/components/ListTable.js:145,162.
 
-export default class BooleanCellView extends Component<Props> {
+export default class CheckboxCellView extends Component<Props> {
   render() {
     const { data } = this.props;
     return <input type="checkbox" checked={data} disabled />;

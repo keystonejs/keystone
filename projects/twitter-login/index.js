@@ -3,7 +3,7 @@ const { Keystone } = require('@keystonejs/core');
 const {
   File,
   Text,
-  Boolean,
+  Checkbox,
   Relationship,
   Select,
   Password,
@@ -73,7 +73,7 @@ keystone.createList('User', {
     // TODO: Create a Twitter field type to encapsulate these
     twitterId: { type: Text },
     twitterUsername: { type: Text },
-    isAdmin: { type: Boolean, defaultValue: true },
+    isAdmin: { type: Checkbox },
     company: {
       type: Select,
       options: [
