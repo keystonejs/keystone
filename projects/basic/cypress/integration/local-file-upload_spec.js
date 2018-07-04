@@ -6,13 +6,13 @@ describe('Adding a file', function() {
       .graphql_query(
         `${Cypress.config('baseUrl')}/admin/api`,
         `
-            query {
-              allUsers(first: 1) {
-                id
-                name
-              }
+          query {
+            allUsers(first: 1) {
+              id
+              name
             }
-          `
+          }
+        `
       )
       .then(({ allUsers: [user] }) => {
         const fileContent = `Some important content ${Math.random()}`;
@@ -37,15 +37,15 @@ describe('Adding a file', function() {
           .graphql_query(
             `${Cypress.config('baseUrl')}/admin/api`,
             `
-                query {
-                  User(where: { id: "${user.id}" }) {
-                    attachment {
-                      id
-                      publicUrl
-                    }
+              query {
+                User(where: { id: "${user.id}" }) {
+                  attachment {
+                    id
+                    publicUrl
                   }
                 }
-              `
+              }
+            `
           )
           .then(({ User: { attachment } }) => {
             // Assert the URL is visible in the admin UI
