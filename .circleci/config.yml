@@ -69,9 +69,9 @@ jobs:
       - store_artifacts:
           path: reports/junit
       - store_artifacts:
-          path: cypress/videos
+          path: projects/basic/cypress/videos
       - store_artifacts:
-          path: cypress/screenshots
+          path: projects/basic/cypress/screenshots
 
   integration_tests_login:
     <<: *job-setup
@@ -93,9 +93,9 @@ jobs:
       - store_artifacts:
           path: reports/junit
       - store_artifacts:
-          path: cypress/videos
+          path: projects/login/cypress/videos
       - store_artifacts:
-          path: cypress/screenshots
+          path: projects/login/cypress/screenshots
 
   integration_tests_twitterlogin:
     <<: *job-setup
@@ -119,9 +119,9 @@ jobs:
       - store_artifacts:
           path: reports/junit
       - store_artifacts:
-          path: cypress/videos
+          path: projects/twitter-login/cypress/videos
       - store_artifacts:
-          path: cypress/screenshots
+          path: projects/twitter-login/cypress/screenshots
 
 workflows:
   version: 2
