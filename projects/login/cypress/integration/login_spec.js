@@ -3,9 +3,7 @@ const PASSWORD = 'correctbattery';
 
 describe('Testing Login', () => {
   it('Shows login screen instead of admin page', () => {
-    cy
-      .task('getProjectInfo', 'login')
-      .then(({ env: { PORT } }) => cy.visit(`http://localhost:${PORT}/admin`));
+    cy.visit('/admin');
     cy.get('[name="username"]').should('exist');
     cy.get('[name="password"]').should('exist');
     cy
@@ -15,11 +13,7 @@ describe('Testing Login', () => {
   });
 
   it('Shows login screen instead of users page', () => {
-    cy
-      .task('getProjectInfo', 'login')
-      .then(({ env: { PORT } }) =>
-        cy.visit(`http://localhost:${PORT}/admin/users`)
-      );
+    cy.visit('/admin/users');
     cy.get('body').should('not.contain', 'Users');
     cy.get('[name="username"]').should('exist');
     cy.get('[name="password"]').should('exist');
@@ -31,11 +25,7 @@ describe('Testing Login', () => {
 
   describe('Login failure', () => {
     it('Does not log in with empty credentials', () => {
-      cy
-        .task('getProjectInfo', 'login')
-        .then(({ env: { PORT } }) =>
-          cy.visit(`http://localhost:${PORT}/admin`)
-        );
+      cy.visit('/admin');
       cy.get('button[type="submit"]').click();
       cy
         .get('body')
@@ -43,11 +33,7 @@ describe('Testing Login', () => {
     });
 
     it('Does not log in with invalid credentials', () => {
-      cy
-        .task('getProjectInfo', 'login')
-        .then(({ env: { PORT } }) =>
-          cy.visit(`http://localhost:${PORT}/admin`)
-        );
+      cy.visit('/admin');
 
       cy
         .get('input[name="username"]')
@@ -66,11 +52,7 @@ describe('Testing Login', () => {
     });
 
     it('Does not log in with invalid username', () => {
-      cy
-        .task('getProjectInfo', 'login')
-        .then(({ env: { PORT } }) =>
-          cy.visit(`http://localhost:${PORT}/admin`)
-        );
+      cy.visit('/admin');
 
       cy
         .get('input[name="username"]')
@@ -89,11 +71,7 @@ describe('Testing Login', () => {
     });
 
     it('Does not log in with invalid password', () => {
-      cy
-        .task('getProjectInfo', 'login')
-        .then(({ env: { PORT } }) =>
-          cy.visit(`http://localhost:${PORT}/admin`)
-        );
+      cy.visit('/admin');
 
       cy
         .get('input[name="username"]')
@@ -114,11 +92,7 @@ describe('Testing Login', () => {
 
   describe('Login success', () => {
     it('Logs in with valid credentials', () => {
-      cy
-        .task('getProjectInfo', 'login')
-        .then(({ env: { PORT } }) =>
-          cy.visit(`http://localhost:${PORT}/admin`)
-        );
+      cy.visit('/admin');
 
       cy
         .get('input[name="username"]')
@@ -137,11 +111,7 @@ describe('Testing Login', () => {
     });
 
     it('Redirects to requested page after login', () => {
-      cy
-        .task('getProjectInfo', 'login')
-        .then(({ env: { PORT } }) =>
-          cy.visit(`http://localhost:${PORT}/admin/users`)
-        );
+      cy.visit('/admin/users');
 
       cy
         .get('input[name="username"]')

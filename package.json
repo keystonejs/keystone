@@ -5,12 +5,7 @@
   "license": "MIT",
   "scripts": {
     "coverage": "jest --coverage --collectCoverageFrom=packages/**/*.{js}",
-    "cypress:start:servers": "node cypress/scripts/start-projects.js",
-    "cypress:open:cmd": "cypress open --env PORT=3000",
-    "cypress:run:cmd": "cypress run --env PORT=3000",
-    "cypress:run:cmd:ci": "cypress run --env PORT=3000 --reporter junit --reporter-options \"mochaFile=reports/junit/cypress-results.xml\"",
-    "cypress:open": "node ./cypress/scripts/setup-and-test.js cypress:open:cmd",
-    "cypress:run": "node ./cypress/scripts/setup-and-test.js cypress:run:cmd",
+    "cypress:run": "bolt ws run cypress:run",
     "cypress:run:ci": "node ./cypress/scripts/setup-and-test.js cypress:run:cmd:ci",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.js\"",

@@ -8,7 +8,14 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "node -r dotenv-safe/config index.js"
+    "start": "node -r dotenv-safe/config index.js",
+    "cypress:run:cmd": "node -r dotenv-safe/config `which cypress` run",
+    "cypress:run:cmd:ci": "touch .env && node -r dotenv-safe/config `which cypress` run --reporter junit --reporter-options \"mochaFile=../../reports/junit/cypress-results-basic.xml\"",
+    "cypress:open:cmd": "node -r dotenv-safe/config `which cypress` open",
+    "prepare-test-server": "node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PROJECTS_BASIC_PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error); process.exit(1) })'",
+    "cypress:run": "yarn prepare-test-server cypress:run:cmd",
+    "cypress:run:ci": "yarn prepare-test-server cypress:run:cmd:ci",
+    "cypress:open": "yarn prepare-test-server cypress:open:cmd"
   },
   "dependencies": {
     "@keystonejs/adapter-mongoose": "^1.0.0",
@@ -20,5 +27,9 @@
     "@keystonejs/ui": "^5.0.0",
     "dotenv-safe": "^5.0.1",
     "react": "^16.3.1"
+  },
+  "devDependencies": {
+    "cypress": "^3.0.1",
+    "start-server-and-test": "^1.5.0"
   }
 }
