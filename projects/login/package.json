@@ -14,9 +14,9 @@
     "cypress:run:cmd:ci": "touch .env && node -r dotenv-safe/config `which cypress` run --reporter junit --reporter-options \"mochaFile=../../reports/junit/cypress-results-login.xml\"",
     "cypress:open:cmd": "node -r dotenv-safe/config `which cypress` open",
     "prepare-test-server": "node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.code) })'",
-    "cypress:run": "yarn prepare-test-server cypress:run:cmd",
     "cypress:run:ci": "yarn prepare-test-server cypress:run:cmd:ci",
-    "cypress:open": "yarn prepare-test-server cypress:open:cmd"
+    "cypress:run": "if [ -f .env ]; then yarn prepare-test-server cypress:run:cmd; else echo \"\nError: Must create a projects/login/.env file.\nSee projects/login/.env.example for values\n\"; exit 1; fi",
+    "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a projects/login/.env file.\nSee projects/login/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
     "@keystonejs/adapter-mongoose": "^1.0.0",
