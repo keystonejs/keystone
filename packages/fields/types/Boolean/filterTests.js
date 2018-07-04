@@ -1,39 +1,39 @@
 import { matchFilter } from '../../tests/fields.test';
+import Text from '../Text';
 import Boolean from './';
+
+export const name = 'Boolean';
 
 export const getTestFields = () => {
   return {
-    isTested: { type: Boolean },
+    name: { type: Text },
+    bool: { type: Boolean },
   };
 };
 
 export const initItems = () => {
   return [
-    { isTested: true },
-    { isTested: false },
-    { isTested: null },
-    { isTested: true },
+    { name: 'person1', bool: true },
+    { name: 'person2', bool: false },
+    { name: 'person3', bool: null },
+    { name: 'person4', bool: true },
   ];
 };
 
 export const filterTests = app => {
   const match = (filter, targets, done) => {
-    matchFilter(
-      app,
-      filter,
-      '{ isTested }',
-      targets.map(isTested => {
-        return { isTested };
-      }),
-      done,
-      'isTested'
-    );
+    matchFilter(app, filter, '{ name bool }', targets, done, 'name');
   };
 
   test('No filter', done => {
     match(
       undefined,
-      [true, false, null, true],
+      [
+        { name: 'person1', bool: true },
+        { name: 'person2', bool: false },
+        { name: 'person3', bool: null },
+        { name: 'person4', bool: true },
+      ],
       done
     );
   });
@@ -41,33 +41,55 @@ export const filterTests = app => {
   test('Empty filter', done => {
     match(
       'where: { }',
-      [true, false, null, true],
+      [
+        { name: 'person1', bool: true },
+        { name: 'person2', bool: false },
+        { name: 'person3', bool: null },
+        { name: 'person4', bool: true },
+      ],
       done
     );
   });
 
-  test('Filter: isTested true', done => {
-    match('where: { isTested: true }', [true, true], done);
-  });
-
-  test('Filter: isTested false', done => {
-    match('where: { isTested: false }', [false], done);
-  });
-
-  test('Filter: isTested_not true', done => {
+  test('Filter: bool true', done => {
     match(
-      'where: { isTested_not: true }',
-      [false, null],
+      'where: { bool: true }',
+      [
+        { name: 'person1', bool: true },
+        { name: 'person4', bool: true },
+      ],
       done
     );
   });
 
-  test('Filter: isTested_not false', done => {
+  test('Filter: bool false', done => {
     match(
-      'where: { isTested_not: true }',
-      [true, null, true],
+      'where: { bool: false }',
+      [{ name: 'person2', bool: false }],
       done
     );
   });
 
+  test('Filter: bool_not true', done => {
+    match(
+      'where: { bool_not: true }',
+      [
+        { name: 'person2', bool: false },
+        { name: 'person3', bool: null },
+      ],
+      done
+    );
+  });
+
+  test('Filter: bool_not false', done => {
+    match(
+      'where: { bool_not: false }',
+      [
+        { name: 'person1', bool: true },
+        { name: 'person3', bool: null },
+        { name: 'person4', bool: true },
+      ],
+      done
+    );
+  });
 };
