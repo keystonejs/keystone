@@ -60,7 +60,11 @@ export const filterTests = app => {
   });
 
   test('Filter: enabled false', done => {
-    match('where: { enabled: false }', [{ name: 'person2', enabled: false }], done);
+    match(
+      'where: { enabled: false }',
+      [{ name: 'person2', enabled: false }],
+      done
+    );
   });
 
   test('Filter: enabled_not true', done => {
