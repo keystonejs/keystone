@@ -12,7 +12,7 @@ module.exports = (on, config) => {
   // Make env vars available to cypress tests via `Cypress.env()`
   config.env = process.env;
 
-  config.baseUrl = `http://localhost:${process.env.PROJECTS_BASIC_PORT}`;
+  config.baseUrl = `http://localhost:${process.env.PORT}`;
 
   return config;
 };

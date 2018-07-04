@@ -60,10 +60,10 @@ jobs:
           name: Basic E2E tests
           command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt ws run cypress:run:ci --only-fs projects/basic
           environment:
-            PROJECTS_BASIC_CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME
-            PROJECTS_BASIC_CLOUDINARY_KEY: $CLOUDINARY_KEY
-            PROJECTS_BASIC_CLOUDINARY_SECRET: $CLOUDINARY_SECRET
-            PROJECTS_BASIC_PORT: 3000
+            CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME
+            CLOUDINARY_KEY: $CLOUDINARY_KEY
+            CLOUDINARY_SECRET: $CLOUDINARY_SECRET
+            PORT: 3000
       - store_test_results:
           path: reports/junit
       - store_artifacts:
@@ -87,7 +87,7 @@ jobs:
           name: Login E2E tests
           command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt ws run cypress:run:ci --only-fs projects/login
           environment:
-            PROJECTS_LOGIN_PORT: 4000
+            PORT: 4000
       - store_test_results:
           path: reports/junit
       - store_artifacts:
@@ -111,9 +111,9 @@ jobs:
           name: Twitter Login E2E tests
           command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt ws run cypress:run:ci --only-fs projects/twitter-login
           environment:
-            PROJECTS_TWITTERLOGIN_TWITTER_APP_KEY: $TWITTER_APP_KEY
-            PROJECTS_TWITTERLOGIN_TWITTER_APP_SECRET: $TWITTER_APP_SECRET
-            PROJECTS_TWITTERLOGIN_PORT: 3010
+            TWITTER_APP_KEY: $TWITTER_APP_KEY
+            TWITTER_APP_SECRET: $TWITTER_APP_SECRET
+            PORT: 3010
       - store_test_results:
           path: reports/junit
       - store_artifacts:
