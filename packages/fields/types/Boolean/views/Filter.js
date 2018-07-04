@@ -18,7 +18,6 @@ export default class BooleanFilterView extends Component<Props> {
     }
   }
   handleChange = ({ target: { value } }) => {
-    console.log('onChange Boolean/views/Filter', value);
     this.props.onChange(value);
   };
 
