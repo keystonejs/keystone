@@ -59,6 +59,7 @@ export const matchFilter = (app, filter, fields, target, done, sortkey) => {
 };
 
 describe('Test CRUD for all fields', () => {
+  jest.setTimeout(10000);
   const typesLoc = path.resolve('packages/fields/types');
   fs
     .readdirSync(typesLoc)
