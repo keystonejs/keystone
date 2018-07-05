@@ -14,7 +14,6 @@ export default class TextController extends FieldController {
   getValue = data => {
     const value = data[this.config.path];
     if (typeof value === 'number') {
-      // The value has not been modified. Otherwise it would be a string.
       return value;
     } else if (typeof value === 'string' && value.length > 0) {
       // The field component enforces numeric values
@@ -55,5 +54,7 @@ export default class TextController extends FieldController {
       label: 'Is less than or equal to',
       getInitialValue: () => '',
     },
+    // QUESTION: should we support "in" and "not_in" filters for Integer?
+    // What does the UI look like for that.
   ];
 }
