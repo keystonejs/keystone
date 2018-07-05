@@ -1,27 +1,19 @@
 describe('Columns', () => {
-  before(() => {
-    cy.visit('http://localhost:3000/reset-db');
-  });
+  before(() => cy.visit('/reset-db'));
 
   [
     {
-      url: 'http://localhost:3000/admin/users',
-      enable: [
-        'Password',
-        'Twitterid',
-        'Twitterusername',
-        'Company',
-        'Attachment',
-      ],
+      url: '/admin/users',
+      enable: ['Password', 'Company', 'Attachment'],
       disable: ['Name', 'Email'],
     },
     {
-      url: 'http://localhost:3000/admin/posts',
+      url: '/admin/posts',
       enable: ['Status', 'Author', 'Categories'],
       disable: ['Name', 'Slug'],
     },
     {
-      url: 'http://localhost:3000/admin/post-categories',
+      url: '/admin/post-categories',
       enable: [],
       disable: ['Name'], // can't do all filters here as there needs to be at least one filter enabled
     },

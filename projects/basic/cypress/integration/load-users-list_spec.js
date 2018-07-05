@@ -1,11 +1,10 @@
 describe('Loading User item', function() {
-  before(() => {
-    cy.visit('http://localhost:3000/reset-db');
-  });
+  before(() => cy.visit('/reset-db'));
 
   it('should show users name', function() {
     return cy
       .graphql_query(
+        `${Cypress.config('baseUrl')}/admin/api`,
         `
           query {
             allUsers(first: 1) {
@@ -16,7 +15,7 @@ describe('Loading User item', function() {
         `
       )
       .then(({ allUsers: [user] }) => {
-        cy.visit(`http://localhost:3000/admin/users/${user.id}`);
+        cy.visit(`/admin/users/${user.id}`);
         cy.get('body').should('contain', user.name);
       });
   });

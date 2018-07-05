@@ -1,11 +1,10 @@
 describe('Adding a file', function() {
-  before(() => {
-    cy.visit('http://localhost:3000/reset-db');
-  });
+  before(() => cy.visit('/reset-db'));
 
   it('should upload a file with success', function() {
     return cy
       .graphql_query(
+        `${Cypress.config('baseUrl')}/admin/api`,
         `
           query {
             allUsers(first: 1) {
@@ -17,7 +16,7 @@ describe('Adding a file', function() {
       )
       .then(({ allUsers: [user] }) => {
         const fileContent = `Some important content ${Math.random()}`;
-        cy.visit(`http://localhost:3000/admin/users/${user.id}`);
+        cy.visit(`/admin/users/${user.id}`);
         cy.writeFile('cypress/mock/upload.txt', fileContent);
         cy.upload_file(
           'input[name=attachment][type=file]',
@@ -36,6 +35,7 @@ describe('Adding a file', function() {
         cy.wait('@graphqlPost');
         return cy
           .graphql_query(
+            `${Cypress.config('baseUrl')}/admin/api`,
             `
               query {
                 User(where: { id: "${user.id}" }) {

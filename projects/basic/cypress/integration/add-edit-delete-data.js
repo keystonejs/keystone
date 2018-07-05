@@ -1,24 +1,22 @@
 describe('Adding data', () => {
   [
     {
-      url: 'http://localhost:3000/admin/users',
+      url: '/admin/users',
       data: {
         'ks-input-name': 'John Doe',
         'ks-input-email': 'john@gmail.com',
         'ks-input-password': 'password1',
-        'ks-input-twitterId': '@johndoe',
-        'ks-input-twitterUsername': 'John Doe',
       },
     },
     {
-      url: 'http://localhost:3000/admin/posts',
+      url: '/admin/posts',
       data: {
         'ks-input-name': 'My post',
         'ks-input-slug': 'mypost',
       },
     },
     {
-      url: 'http://localhost:3000/admin/post-categories',
+      url: '/admin/post-categories',
       data: {
         'ks-input-name': 'My category',
         'ks-input-slug': 'mycategory',
@@ -46,7 +44,7 @@ describe('Editing data', () => {
   [
     {
       section: 'Users',
-      url: 'http://localhost:3000/admin/users',
+      url: '/admin/users',
       field: {
         id: '#ks-input-name',
         value: 'John Doe',
@@ -55,7 +53,7 @@ describe('Editing data', () => {
     },
     {
       section: 'Posts',
-      url: 'http://localhost:3000/admin/posts',
+      url: '/admin/posts',
       field: {
         id: '#ks-input-name',
         value: 'My post',
@@ -64,7 +62,7 @@ describe('Editing data', () => {
     },
     {
       section: 'Post Categories',
-      url: 'http://localhost:3000/admin/post-categories',
+      url: '/admin/post-categories',
       field: {
         id: '#ks-input-name',
         value: 'My category',
@@ -91,17 +89,17 @@ describe('Deleting data', () => {
   [
     {
       section: 'Users',
-      url: 'http://localhost:3000/admin/users',
+      url: '/admin/users',
       item: 'Jonny Dox',
     },
     {
       section: 'Posts',
-      url: 'http://localhost:3000/admin/posts',
+      url: '/admin/posts',
       item: 'Our post',
     },
     {
       section: 'Post Categories',
-      url: 'http://localhost:3000/admin/post-categories',
+      url: '/admin/post-categories',
       item: 'Our category',
     },
   ].forEach(({ section, url, item }) => {

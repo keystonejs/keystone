@@ -34,12 +34,14 @@ brew install mongodb
 brew services start mongodb
 ```
 
-Then install the dependencies and start the test project:
+Then install the dependencies and start the test project :
 
 ```
 bolt
 bolt start
 ```
+
+_(This will start the project located in `projects/basic`)_
 
 ## Contributing
 
@@ -74,19 +76,28 @@ To see test coverage of the entire mono-repo, including files which have zero te
 
 ### End to end tests
 
-Keystone tests end to end functionality with the help of [Cypress](https://www.cypress.io/). To run these tests, you first need to start the `test-project` application by running
+Keystone tests end to end functionality with the help of [Cypress](https://www.cypress.io/).
 
-`bolt start`
-
-The tests can then be run with
+Each project (ie; `projects/basic`, `projects/login`, etc) have their own set of
+Cypress tests.
+To run an individual project's tests, `cd` into that directory and run:
 
 `bolt cypress:run`
 
-Cypress can be run in interactive mode with its built in GUI, which is useful when developing and debugging tests.
+Cypress can be run in interactive mode with its built in GUI, which is useful when developing and debugging tests:
 
 `bolt cypress:open`
 
-End to end tests live in `cypress/integration/*spec.js`.
+End to end tests live in `project/**/cypress/integration/*spec.js`.
+
+It is possible to run all cypress tests at once from the monorepo root with the
+command:
+
+`bolt cypress:run`
+
+_NOTE: The output from this command will mix together the output from each
+project being tested in parallel. This is only recommended as sanity check
+before pushing code._
 
 ###
 

@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/test-project",
+  "name": "@keystonejs/cypress-project-twitter-login",
   "private": true,
   "version": "1.0.0",
   "author": "Jed Watson",
@@ -8,7 +8,8 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "node -r dotenv-safe/config index.js"
+    "start": "node -r dotenv-safe/config index.js",
+    "cypress:run:ci": "exit 0"
   },
   "dependencies": {
     "@keystonejs/adapter-mongoose": "^1.0.0",

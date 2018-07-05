@@ -8,10 +8,11 @@
 // https://on.cypress.io/plugins-guide
 // ***********************************************************
 
-// This function is called when a project is opened or re-opened (e.g. due to
-// the project's config changing)
+module.exports = (on, config) => {
+  // Make env vars available to cypress tests via `Cypress.env()`
+  config.env = process.env;
 
-module.exports = () => {
-  // `on` is used to hook into various events Cypress emits
-  // `config` is the resolved Cypress config
+  config.baseUrl = `http://localhost:${process.env.PORT}`;
+
+  return config;
 };

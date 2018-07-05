@@ -1,23 +1,21 @@
 describe('Search', () => {
-  before(() => {
-    cy.visit('http://localhost:3000/reset-db');
-  });
+  before(() => cy.visit('/reset-db'));
 
   [
     {
-      url: 'http://localhost:3000/admin/users',
+      url: '/admin/users',
       searchTerm: 'j',
       found: ['Jed Watson', 'John Molomby', 'Joss Mackison', 'Jared Crowe'],
       notFound: ['Boris Bozic', 'Ben Conolly', 'Luke Batchelor', 'Tom Walker'],
     },
     {
-      url: 'http://localhost:3000/admin/posts',
+      url: '/admin/posts',
       searchTerm: 'hello planet',
       found: [],
       notFound: ['Hello World'],
     },
     {
-      url: 'http://localhost:3000/admin/post-categories',
+      url: '/admin/post-categories',
       searchTerm: 'key',
       found: ['Keystone'],
       notFound: ['GraphQL', 'Node', 'React'],

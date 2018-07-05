@@ -1,7 +1,5 @@
 describe('Nav Bar', () => {
-  before(() => {
-    cy.visit('http://localhost:3000/reset-db');
-  });
+  before(() => cy.visit('/reset-db'));
 
   // Testing links which should open in a new tab is a bit tricky in Cypress.
   // The discussion at this page lists some of the details.
@@ -20,7 +18,7 @@ describe('Nav Bar', () => {
     { text: 'Style Guide', target: '/admin/style-guide' },
   ].forEach(({ text, target, newTab = false }) => {
     it(`${newTab ? 'Check' : 'Click'} ${text}`, () => {
-      cy.visit('http://localhost:3000/admin');
+      cy.visit('/admin');
 
       cy
         .get('nav')

@@ -5,7 +5,7 @@ describe('Home page', () => {
     { text: 'Post Categories', target: 'post-categories' },
   ].forEach(({ text, target }) => {
     it(`Click through to list page - ${text}`, () => {
-      cy.visit('http://localhost:3000/admin');
+      cy.visit('/admin');
       cy
         .contains(`Go to ${text}`)
         .should('have.attr', 'href', `/admin/${target}`)
@@ -17,8 +17,7 @@ describe('Home page', () => {
   });
 
   it('Create list buttons exists', () => {
-    cy.visit('http://localhost:3000/admin');
-
+    cy.visit('/admin');
     [{ text: 'User' }, { text: 'Post' }, { text: 'Post Category' }].forEach(
       ({ text }) => {
         cy
@@ -29,19 +28,11 @@ describe('Home page', () => {
   });
 
   it('Ensure Create Modal opens, has the correct fields, and Cancels', () => {
-    cy.visit('http://localhost:3000/admin');
-
+    cy.visit('/admin');
     [
       {
         text: 'User',
-        labels: [
-          'Name',
-          'Email',
-          'Password',
-          'Twitterid',
-          'Twitterusername',
-          'Company',
-        ],
+        labels: ['Name', 'Email', 'Password', 'Company'],
       },
       {
         text: 'Post',
@@ -66,7 +57,7 @@ describe('Home page', () => {
   });
 
   it('Ensure Create Modal opens inside the detail view, has the correct fields, and Cancels', () => {
-    cy.visit('http://localhost:3000/admin/users');
+    cy.visit('/admin/users');
 
     cy.get('a[href^="/admin/users/"]:first').click();
     cy.get('button[appearance="create"]').click();
@@ -74,14 +65,7 @@ describe('Home page', () => {
     [
       {
         text: 'User',
-        labels: [
-          'Name',
-          'Email',
-          'Password',
-          'Twitterid',
-          'Twitterusername',
-          'Company',
-        ],
+        labels: ['Name', 'Email', 'Password', 'Company'],
       },
     ].forEach(({ text, labels }) => {
       cy
