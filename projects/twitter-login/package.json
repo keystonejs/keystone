@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/test-project",
+  "name": "@keystonejs/cypress-project-twitter-login",
   "private": true,
   "version": "1.0.0",
   "author": "Jed Watson",

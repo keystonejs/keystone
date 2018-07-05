@@ -12,11 +12,9 @@
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --list-different \"**/*.js\"",
     "lint": "yarn lint:prettier && yarn lint:eslint",
-    "start": "cd packages/test-project && yarn start",
+    "start": "cd projects/basic && yarn start",
     "test": "yarn lint && yarn test:unit && yarn cypress:run",
-    "test:unit": "jest",
-    "test:server:start": "DISABLE_AUTH=true pm2 start packages/test-project/index.js",
-    "test:server:stop": "pm2 stop all"
+    "test:unit": "jest"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.12",
