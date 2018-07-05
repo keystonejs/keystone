@@ -1,7 +1,22 @@
 module.exports = {
   Post: [
     {
-      name: 'Hello World',
+      name: 'Lets talk React Router',
+      author: { where: { email: 'ben@keystonejs.com' } },
+      categories: { where: { name_starts_with: 'React' } },
+    },
+    {
+      name: 'Hello Things',
+    },
+    {
+      name: 'How we built Keystone 5',
+      author: { where: { email: 'jared@keystonejs.com' } },
+      categories: [
+        { where: { name: 'React' } },
+        { where: { name: 'Keystone' } },
+        { where: { name: 'GraphQL' } },
+        { where: { name: 'Node' } },
+      ],
     },
   ],
   PostCategory: [
@@ -16,6 +31,9 @@ module.exports = {
     },
     {
       name: 'React',
+    },
+    {
+      name: 'React Router',
     },
   ],
   User: [
