@@ -96,15 +96,14 @@ describe('Test CRUD for all fields', () => {
           });
           await keystone.createItems({ [listName]: mod.initItems() });
 
-          // There's some sort of race condition happening, causing random tests
-          // to fail. Putting a wait here seems to fix it. No idea why :(
-          await new Promise(resolve => {
-            setTimeout(resolve, 1000);
-          });
+          // Throw at least one request at the server to make sure it's warmed up
+          await request(server.app)
+            .get('/admin')
+            .expect(200);
 
           done();
-          // Warmup can sometimes take a while
-        }, 20000);
+          // Compiling can sometimes take a while
+        }, 60000);
 
         describe('All Filter Tests', () => {
           mod.filterTests(server.app);
