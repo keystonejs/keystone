@@ -95,8 +95,16 @@ describe('Test CRUD for all fields', () => {
             await adapter.dropDatabase();
           });
           await keystone.createItems({ [listName]: mod.initItems() });
+
+          // There's some sort of race condition happening, causing random tests
+          // to fail. Putting a wait here seems to fix it. No idea why :(
+          await new Promise(resolve => {
+            setTimeout(resolve, 1000);
+          });
+
           done();
-        });
+          // Warmup can sometimes take a while
+        }, 20000);
 
         describe('All Filter Tests', () => {
           mod.filterTests(server.app);
@@ -108,9 +116,10 @@ describe('Test CRUD for all fields', () => {
           });
 
           try {
-            await admin.webpackMiddleware.close();
+            await admin.stopDevServer();
           } catch (err) {
-            throw Error('Failed to close webpack middleware', err);
+            console.error(err);
+            throw Error('Failed to close webpack middleware');
           } finally {
             done();
           }

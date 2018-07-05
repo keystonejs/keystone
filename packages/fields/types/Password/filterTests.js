@@ -15,7 +15,7 @@ export const initItems = () => {
   return [
     { name: 'person1', password: 'pass1' },
     { name: 'person2', password: '' },
-    { name: 'person2', password: 'pass3' },
+    { name: 'person3', password: 'pass3' },
   ];
 };
 
@@ -39,7 +39,7 @@ export const filterTests = app => {
       [
         { name: 'person1', password: 'pass1' },
         { name: 'person2', password: '' },
-        { name: 'person2', password: 'pass3' },
+        { name: 'person3', password: 'pass3' },
       ],
       done
     );
@@ -51,7 +51,7 @@ export const filterTests = app => {
       [
         { name: 'person1', password: 'pass1' },
         { name: 'person2', password: '' },
-        { name: 'person2', password: 'pass3' },
+        { name: 'person3', password: 'pass3' },
       ],
       done
     );
@@ -62,7 +62,7 @@ export const filterTests = app => {
       'where: { password_is_set: true }',
       [
         { name: 'person1', password: 'pass1' },
-        { name: 'person2', password: 'pass3' },
+        { name: 'person3', password: 'pass3' },
       ],
       done
     );
