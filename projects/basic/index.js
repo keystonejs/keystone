@@ -4,6 +4,7 @@ const {
   File,
   Text,
   Float,
+  Integer,
   Relationship,
   Select,
   Password,
@@ -94,6 +95,7 @@ keystone.createList('Post', {
       many: true,
     },
     stars: { type: Float },
+    views: { type: Integer },
   },
   labelResolver: item => item.name,
 });
