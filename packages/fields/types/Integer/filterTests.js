@@ -23,7 +23,7 @@ export const initItems = () => {
 
 export const filterTests = app => {
   const match = (filter, targets, done) => {
-    matchFilter(app, filter, '{ count }', targets, done, 'name');
+    matchFilter(app, filter, '{ name, count }', targets, done, 'name');
   };
 
   test('No filter', done => {
@@ -55,14 +55,14 @@ export const filterTests = app => {
   });
 
   test('Filter: count', done => {
-    match('where: { count: 1 }', [{ name: 'Person2', count: 1 }], done);
+    match('where: { count: 1 }', [{ name: 'person2', count: 1 }], done);
   });
 
   test('Filter: count_not', done => {
     match(
       'where: { count_not: 1 }',
       [
-        { name: 'person2', count: 1 },
+        { name: 'person1', count: 0 },
         { name: 'person3', count: 2 },
         { name: 'person4', count: 3 },
         { name: 'person5', count: null },
@@ -112,7 +112,6 @@ export const filterTests = app => {
     match(
       'where: { count_gte: 2 }',
       [
-        { name: 'person2', count: 1 },
         { name: 'person3', count: 2 },
         { name: 'person4', count: 3 },
       ],
