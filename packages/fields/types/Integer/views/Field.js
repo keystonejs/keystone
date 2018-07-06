@@ -14,7 +14,7 @@ export default class TextField extends Component {
     onChange(field, value.replace(/\D/g, ''));
   };
 
-  valueToSting = value => {
+  valueToString = value => {
     // Make the value a string to keep react happy.
     if (typeof value === 'string') {
       return value;
@@ -39,7 +39,7 @@ export default class TextField extends Component {
             autoComplete="off"
             autoFocus={autoFocus}
             type="text"
-            value={this.valueToSting(value)}
+            value={this.valueToString(value)}
             onChange={this.onChange}
             id={htmlID}
           />
