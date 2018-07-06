@@ -111,10 +111,7 @@ export const filterTests = app => {
   test('Filter: count_gte', done => {
     match(
       'where: { count_gte: 2 }',
-      [
-        { name: 'person3', count: 2 },
-        { name: 'person4', count: 3 },
-      ],
+      [{ name: 'person3', count: 2 }, { name: 'person4', count: 3 }],
       done
     );
   });
