@@ -95,8 +95,15 @@ describe('Test CRUD for all fields', () => {
             await adapter.dropDatabase();
           });
           await keystone.createItems({ [listName]: mod.initItems() });
+
+          // Throw at least one request at the server to make sure it's warmed up
+          await request(server.app)
+            .get('/admin')
+            .expect(200);
+
           done();
-        });
+          // Compiling can sometimes take a while
+        }, 60000);
 
         describe('All Filter Tests', () => {
           mod.filterTests(server.app);
@@ -108,9 +115,10 @@ describe('Test CRUD for all fields', () => {
           });
 
           try {
-            await admin.webpackMiddleware.close();
+            await admin.stopDevServer();
           } catch (err) {
-            throw Error('Failed to close webpack middleware', err);
+            console.error(err);
+            throw Error('Failed to close webpack middleware');
           } finally {
             done();
           }

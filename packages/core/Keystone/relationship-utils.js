@@ -1,13 +1,12 @@
 const { resolveAllKeys } = require('@keystonejs/utils');
-const { Relationship } = require('@keystonejs/fields');
 
 function isRelationshipField({ list, fieldKey }) {
-  return list.config.fields[fieldKey].type === Relationship;
+  return !!list.config.fields[fieldKey].type.isRelationship;
 }
 
 function isManyRelationship({ list, fieldKey }) {
   const field = list.config.fields[fieldKey];
-  return field.type === Relationship && field.many;
+  return !!field.type.isRelationship && field.many;
 }
 
 function mapObject(input, mapFn) {
