@@ -6,18 +6,37 @@ export const name = 'Float';
 
 export const getTestFields = () => {
   return {
-    name: { type: Text },
-    stars: { type: Float },
+    name: {
+      type: Text,
+    },
+    stars: {
+      type: Float,
+    },
   };
 };
 
 export const initItems = () => {
   return [
-    { name: 'post1', stars: 0 },
-    { name: 'post2', stars: 1.2 },
-    { name: 'post3', stars: 2.3 },
-    { name: 'post4', stars: 3 },
-    { name: 'post5', stars: null },
+    {
+      name: 'post1',
+      stars: 0,
+    },
+    {
+      name: 'post2',
+      stars: 1.2,
+    },
+    {
+      name: 'post3',
+      stars: 2.3,
+    },
+    {
+      name: 'post4',
+      stars: 3,
+    },
+    {
+      name: 'post5',
+      stars: null,
+    },
   ];
 };
 
@@ -30,11 +49,26 @@ export const filterTests = app => {
     match(
       undefined,
       [
-        { name: 'post1', stars: 0 },
-        { name: 'post2', stars: 1.2 },
-        { name: 'post3', stars: 2.3 },
-        { name: 'post4', stars: 3 },
-        { name: 'post5', stars: null },
+        {
+          name: 'post1',
+          stars: 0,
+        },
+        {
+          name: 'post2',
+          stars: 1.2,
+        },
+        {
+          name: 'post3',
+          stars: 2.3,
+        },
+        {
+          name: 'post4',
+          stars: 3,
+        },
+        {
+          name: 'post5',
+          stars: null,
+        },
       ],
       done
     );
@@ -44,28 +78,64 @@ export const filterTests = app => {
     match(
       'where: { }',
       [
-        { name: 'post1', stars: 0 },
-        { name: 'post2', stars: 1.2 },
-        { name: 'post3', stars: 2.3 },
-        { name: 'post4', stars: 3 },
-        { name: 'post5', stars: null },
-    ],
+        {
+          name: 'post1',
+          stars: 0,
+        },
+        {
+          name: 'post2',
+          stars: 1.2,
+        },
+        {
+          name: 'post3',
+          stars: 2.3,
+        },
+        {
+          name: 'post4',
+          stars: 3,
+        },
+        {
+          name: 'post5',
+          stars: null,
+        },
+      ],
       done
     );
   });
 
   test('Filter: stars', done => {
-    match('where: { stars: 1.2 }', [{ name: 'post2', stars: 1.2 }], done);
+    match(
+      'where: { stars: 1.2 }',
+      [
+        {
+          name: 'post2',
+          stars: 1.2,
+        },
+      ],
+      done
+    );
   });
 
   test('Filter: stars_not', done => {
     match(
       'where: { stars_not: 1.2 }',
       [
-        { name: 'post1', stars: 0 },
-        { name: 'post3', stars: 2.3 },
-        { name: 'post4', stars: 3 },
-        { name: 'post5', stars: null },
+        {
+          name: 'post1',
+          stars: 0,
+        },
+        {
+          name: 'post3',
+          stars: 2.3,
+        },
+        {
+          name: 'post4',
+          stars: 3,
+        },
+        {
+          name: 'post5',
+          stars: null,
+        },
       ],
       done
     );
@@ -75,10 +145,22 @@ export const filterTests = app => {
     match(
       'where: { stars_not: null }',
       [
-        { name: 'post1', stars: 0 },
-        { name: 'post2', stars: 1.2 },
-        { name: 'post3', stars: 2.3 },
-        { name: 'post4', stars: 3 },
+        {
+          name: 'post1',
+          stars: 0,
+        },
+        {
+          name: 'post2',
+          stars: 1.2,
+        },
+        {
+          name: 'post3',
+          stars: 2.3,
+        },
+        {
+          name: 'post4',
+          stars: 3,
+        },
       ],
       done
     );
@@ -87,7 +169,16 @@ export const filterTests = app => {
   test('Filter: stars_lt', done => {
     match(
       'where: { stars_lt: 2.30 }',
-      [{ name: 'post1', stars: 0 }, { name: 'post2', stars: 1.2 }],
+      [
+        {
+          name: 'post1',
+          stars: 0,
+        },
+        {
+          name: 'post2',
+          stars: 1.2,
+        },
+      ],
       done
     );
   });
@@ -96,22 +187,49 @@ export const filterTests = app => {
     match(
       'where: { stars_lte: 2.30 }',
       [
-        { name: 'post1', stars: 0 },
-        { name: 'post2', stars: 1.2 },
-        { name: 'post3', stars: 2.3 },
+        {
+          name: 'post1',
+          stars: 0,
+        },
+        {
+          name: 'post2',
+          stars: 1.2,
+        },
+        {
+          name: 'post3',
+          stars: 2.3,
+        },
       ],
       done
     );
   });
 
   test('Filter: stars_gt', done => {
-    match('where: { stars_gt: 2.30 }', [{ name: 'post4', stars: 3 }], done);
+    match(
+      'where: { stars_gt: 2.30 }',
+      [
+        {
+          name: 'post4',
+          stars: 3,
+        },
+      ],
+      done
+    );
   });
 
   test('Filter: stars_gte', done => {
     match(
       'where: { stars_gte: 2.30 }',
-      [{ name: 'post3', stars: 2.3 }, { name: 'post4', stars: 3 }],
+      [
+        {
+          name: 'post3',
+          stars: 2.3,
+        },
+        {
+          name: 'post4',
+          stars: 3,
+        },
+      ],
       done
     );
   });
@@ -124,11 +242,26 @@ export const filterTests = app => {
     match(
       'where: { stars_not_in: [] }',
       [
-        { name: 'post1', stars: 0 },
-        { name: 'post2', stars: 1.2 },
-        { name: 'post3', stars: 2.3 },
-        { name: 'post4', stars: 3 },
-        { name: 'post5', stars: null },
+        {
+          name: 'post1',
+          stars: 0,
+        },
+        {
+          name: 'post2',
+          stars: 1.2,
+        },
+        {
+          name: 'post3',
+          stars: 2.3,
+        },
+        {
+          name: 'post4',
+          stars: 3,
+        },
+        {
+          name: 'post5',
+          stars: null,
+        },
       ],
       done
     );
@@ -138,9 +271,18 @@ export const filterTests = app => {
     match(
       'where: { stars_in: [0, 1.2, 2.30] }',
       [
-        { name: 'post1', stars: 0 },
-        { name: 'post2', stars: 1.2 },
-        { name: 'post3', stars: 2.3 },
+        {
+          name: 'post1',
+          stars: 0,
+        },
+        {
+          name: 'post2',
+          stars: 1.2,
+        },
+        {
+          name: 'post3',
+          stars: 2.3,
+        },
       ],
       done
     );
@@ -149,7 +291,16 @@ export const filterTests = app => {
   test('Filter: stars_not_in', done => {
     match(
       'where: { stars_not_in: [0, 1.2, 2.30] }',
-      [{ name: 'post4', stars: 3 }, { name: 'post5', stars: null }],
+      [
+        {
+          name: 'post4',
+          stars: 3,
+        },
+        {
+          name: 'post5',
+          stars: null,
+        },
+      ],
       done
     );
   });
@@ -157,7 +308,12 @@ export const filterTests = app => {
   test('Filter: stars_in null', done => {
     match(
       'where: { stars_in: [null] }',
-      [{ name: 'post5', stars: null }],
+      [
+        {
+          name: 'post5',
+          stars: null,
+        },
+      ],
       done
     );
   });
@@ -166,10 +322,22 @@ export const filterTests = app => {
     match(
       'where: { stars_not_in: [null] }',
       [
-        { name: 'post1', stars: 0 },
-        { name: 'post2', stars: 1.2 },
-        { name: 'post3', stars: 2.3 },
-        { name: 'post4', stars: 3 },
+        {
+          name: 'post1',
+          stars: 0,
+        },
+        {
+          name: 'post2',
+          stars: 1.2,
+        },
+        {
+          name: 'post3',
+          stars: 2.3,
+        },
+        {
+          name: 'post4',
+          stars: 3,
+        },
       ],
       done
     );
