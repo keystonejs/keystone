@@ -12,10 +12,10 @@ import { gridSize } from '../theme';
 
 export const CONTAINER_WIDTH = 1160;
 
-export const Container = styled.div(({ isDisabled }) => ({
+export const Container = styled.div(({ isFullWidth }) => ({
   marginLeft: 'auto',
   marginRight: 'auto',
-  maxWidth: isDisabled ? '100%' : CONTAINER_WIDTH,
+  maxWidth: isFullWidth ? '100%' : CONTAINER_WIDTH,
   paddingLeft: 30,
   paddingRight: 30,
   transition: 'max-width 200ms cubic-bezier(0.2, 0, 0, 1)',
