@@ -9,6 +9,7 @@ const request = require('supertest');
 const Keystone = require('../../core/Keystone');
 const AdminUI = require('../../admin-ui/server/AdminUI');
 const WebServer = require('../../server/WebServer');
+const createGraphQLMiddleware = require('../../server/WebServer/graphql');
 const { MongooseAdapter } = require('../../adapter-mongoose');
 
 const sorted = (arr, keyFn) => {
@@ -84,9 +85,10 @@ describe('Test CRUD for all fields', () => {
         const admin = new AdminUI(keystone, { adminPath: '/admin' });
         const server = new WebServer(keystone, {
           'cookie secret': 'qwerty',
-          'admin ui': admin,
           session: false,
         });
+
+        server.app.use(createGraphQLMiddleware(keystone, admin));
 
         // Clear the database before running any tests
         beforeAll(async done => {
@@ -98,12 +100,12 @@ describe('Test CRUD for all fields', () => {
 
           // Throw at least one request at the server to make sure it's warmed up
           await request(server.app)
-            .get('/admin')
+            .get('/admin/graphiql')
             .expect(200);
 
           done();
           // Compiling can sometimes take a while
-        }, 60000);
+        }, 10000);
 
         describe('All Filter Tests', () => {
           mod.filterTests(server.app);
@@ -114,14 +116,7 @@ describe('Test CRUD for all fields', () => {
             await adapter.close();
           });
 
-          try {
-            await admin.stopDevServer();
-          } catch (err) {
-            console.error(err);
-            throw Error('Failed to close webpack middleware');
-          } finally {
-            done();
-          }
+          done();
         });
       });
     });
