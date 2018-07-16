@@ -46,7 +46,15 @@ export const runQuery = (app, snippet, fn) => {
     });
 };
 
-export const matchFilter = (name, app, filter, fields, target, done, sortkey) => {
+export const matchFilter = (
+  name,
+  app,
+  filter,
+  fields,
+  target,
+  done,
+  sortkey
+) => {
   filter = filter ? `(${filter})` : '';
   const queryName = `allTest${pluralize.plural(name)}`;
   const snippet = `${queryName} ${filter} ${fields}`;
