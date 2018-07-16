@@ -3,7 +3,10 @@ const bodyParser = require('body-parser');
 const { apolloUploadExpress } = require('apollo-upload-server');
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 
-module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlPath }) {
+module.exports = function createGraphQLMiddleware(
+  keystone,
+  { apiPath, graphiqlPath }
+) {
   const app = express();
 
   // add the Admin GraphQL API
