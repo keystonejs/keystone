@@ -18,7 +18,7 @@ module.exports = function createGraphQLMiddleware(
     apolloUploadExpress({ maxFileSize: 200 * 1024 * 1024, maxFiles: 5 }),
     graphqlExpress({ schema })
   );
-  if (graphiqlExpress) {
+  if (graphiqlPath) {
     app.use(graphiqlPath, graphiqlExpress({ endpointURL: apiPath }));
   }
   return app;
