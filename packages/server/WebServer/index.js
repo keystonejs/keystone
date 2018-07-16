@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const sessionMiddleware = require('express-session');
-const { createGraphQLMiddleware } = require('./graphql');
+const createGraphQLMiddleware = require('./graphql');
 const initConfig = require('./initConfig');
 
 module.exports = class WebServer {

@@ -9,7 +9,7 @@ const request = require('supertest');
 const Keystone = require('../../core/Keystone');
 const AdminUI = require('../../admin-ui/server/AdminUI');
 const WebServer = require('../../server/WebServer');
-const { createGraphQLMiddleware } = require('../../server/Webserver/graphql');
+const createGraphQLMiddleware = require('../../server/Webserver/graphql');
 const { MongooseAdapter } = require('../../adapter-mongoose');
 
 const sorted = (arr, keyFn) => {
