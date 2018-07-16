@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const sessionMiddleware = require('express-session');
-
+const { createGraphQLMiddleware } = require('./graphql');
 const initConfig = require('./initConfig');
 
 module.exports = class WebServer {
@@ -17,7 +17,7 @@ module.exports = class WebServer {
     if (adminUI) {
       this.app.use(cors());
       this.app.use(adminUI.createSessionMiddleware({ cookieSecret }));
-      this.app.use(adminUI.createGraphQLMiddleware());
+      this.app.use(createGraphQLMiddleware(keystone, adminUI));
       this.app.use(adminUI.createDevMiddleware());
     }
 

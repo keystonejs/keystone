@@ -2,9 +2,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
 const webpack = require('webpack');
-const { apolloUploadExpress } = require('apollo-upload-server');
 const webpackDevMiddleware = require('webpack-dev-middleware');
-const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 
 const getWebpackConfig = require('./getWebpackConfig');
 
@@ -152,22 +150,6 @@ module.exports = class AdminUI {
       return req.user ? this.redirectSuccessfulSignin(req, res) : next();
     });
 
-    return app;
-  }
-
-  createGraphQLMiddleware() {
-    const app = express();
-
-    // add the Admin GraphQL API
-    const schema = this.keystone.getAdminSchema();
-    app.use(
-      this.apiPath,
-      bodyParser.json(),
-      // TODO: Make configurable
-      apolloUploadExpress({ maxFileSize: 200 * 1024 * 1024, maxFiles: 5 }),
-      graphqlExpress({ schema })
-    );
-    app.use(this.graphiqlPath, graphiqlExpress({ endpointURL: this.apiPath }));
     return app;
   }
 
