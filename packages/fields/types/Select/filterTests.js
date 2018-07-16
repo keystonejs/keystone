@@ -31,6 +31,7 @@ export const initItems = () => {
 export const filterTests = app => {
   const match = (filter, targets, done) => {
     matchFilter(
+      name,
       app,
       filter,
       '{ company name }',

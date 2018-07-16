@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const request = require('supertest');
+const pluralize = require('pluralize');
 
 const Keystone = require('../../core/Keystone');
 const AdminUI = require('../../admin-ui/server/AdminUI');
@@ -45,13 +46,14 @@ export const runQuery = (app, snippet, fn) => {
     });
 };
 
-export const matchFilter = (app, filter, fields, target, done, sortkey) => {
+export const matchFilter = (name, app, filter, fields, target, done, sortkey) => {
   filter = filter ? `(${filter})` : '';
-  const snippet = `allTests ${filter} ${fields}`;
+  const queryName = `allTest${pluralize.plural(name)}`;
+  const snippet = `${queryName} ${filter} ${fields}`;
   runQuery(app, snippet, data => {
     const value = sortkey
-      ? sorted(data.allTests || [], i => i[sortkey])
-      : data.allTests;
+      ? sorted(data[queryName] || [], i => i[sortkey])
+      : data[queryName];
     expect(value).toEqual(target);
     done();
   });
@@ -59,70 +61,71 @@ export const matchFilter = (app, filter, fields, target, done, sortkey) => {
 
 describe('Test CRUD for all fields', () => {
   const typesLoc = path.resolve('packages/fields/types');
-  fs
+  const testModules = fs
     .readdirSync(typesLoc)
     .map(name => `${typesLoc}/${name}/filterTests.js`)
     .filter(filename => fs.existsSync(filename))
-    .map(require)
-    .forEach(mod => {
-      describe(`All the CRUD tests for module: ${mod.name}`, () => {
-        // Set up a keystone project for each type module to use
-        const keystone = new Keystone({
-          adapter: new MongooseAdapter(),
-          name: 'Test Project',
-        });
+    .map(require);
 
-        // Create a list with all the fields required for testing
-        const fields = mod.getTestFields();
+  const keystone = new Keystone({
+    adapter: new MongooseAdapter(),
+    name: 'Test Project',
+  });
 
-        const listName = 'test';
-        const labelResolver = item => item;
+  testModules.forEach(mod => {
+    // Create a list with all the fields required for testing
+    const listName = `test_${mod.name}`;
+    const fields = mod.getTestFields();
+    const labelResolver = item => item;
 
-        keystone.createList(listName, { fields, labelResolver });
+    keystone.createList(listName, { fields, labelResolver });
+  });
 
-        // Set up a server (but do not .listen(), we will use supertest to access the app)
-        const admin = new AdminUI(keystone, { adminPath: '/admin' });
-        const server = new WebServer(keystone, {
-          'cookie secret': 'qwerty',
-          'admin ui': admin,
-          session: false,
-        });
+  // Set up a server (but do not .listen(), we will use supertest to access the app)
+  const admin = new AdminUI(keystone, { adminPath: '/admin' });
+  const server = new WebServer(keystone, {
+    'cookie secret': 'qwerty',
+    'admin ui': admin,
+    session: false,
+  });
 
-        // Clear the database before running any tests
-        beforeAll(async done => {
-          keystone.connect();
-          Object.values(keystone.adapters).forEach(async adapter => {
-            await adapter.dropDatabase();
-          });
-          await keystone.createItems({ [listName]: mod.initItems() });
+  beforeAll(async done => {
+    keystone.connect();
+    Object.values(keystone.adapters).forEach(async adapter => {
+      await adapter.dropDatabase();
+    });
+    testModules.forEach(async mod => {
+      const listName = `test_${mod.name}`;
+      await keystone.createItems({ [listName]: mod.initItems() });
+    });
 
-          // Throw at least one request at the server to make sure it's warmed up
-          await request(server.app)
-            .get('/admin')
-            .expect(200);
+    // Throw at least one request at the server to make sure it's warmed up
+    await request(server.app)
+      .get('/admin')
+      .expect(200);
+    done();
+  }, 60000);
 
-          done();
-          // Compiling can sometimes take a while
-        }, 60000);
-
-        describe('All Filter Tests', () => {
-          mod.filterTests(server.app);
-        });
-
-        afterAll(async done => {
-          Object.values(keystone.adapters).forEach(async adapter => {
-            await adapter.close();
-          });
-
-          try {
-            await admin.stopDevServer();
-          } catch (err) {
-            console.error(err);
-            throw Error('Failed to close webpack middleware');
-          } finally {
-            done();
-          }
-        });
+  testModules.forEach(mod => {
+    describe(`All the CRUD tests for module: ${mod.name}`, () => {
+      describe('All Filter Tests', () => {
+        mod.filterTests(server.app, mod.name);
       });
     });
+  });
+
+  afterAll(async done => {
+    Object.values(keystone.adapters).forEach(async adapter => {
+      await adapter.close();
+    });
+
+    try {
+      await admin.stopDevServer();
+    } catch (err) {
+      console.error(err);
+      throw Error('Failed to close webpack middleware');
+    } finally {
+      done();
+    }
+  });
 });
