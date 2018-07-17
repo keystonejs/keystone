@@ -36,7 +36,6 @@
     "graphql-tag": "^2.8.0",
     "html-webpack-plugin": "^3.2.0",
     "prop-types": "^15.6.1",
-    "qs": "^6.5.2",
     "react": "^16.3.1",
     "react-apollo": "^2.1.3",
     "react-copy-to-clipboard": "^5.0.1",
@@ -48,7 +47,6 @@
     "react-select": "^2.0.0-beta.6",
     "react-toast-notifications": "^1.2.0",
     "webpack": "^4.5.0",
-    "webpack-dev-middleware": "^3.1.2",
-    "xss": "^1.0.3"
+    "webpack-dev-middleware": "^3.1.2"
   }
 }
