@@ -75,6 +75,4 @@ junit.xml
 # Cypress
 cypress/screenshots
 cypress/videos
-
-# Breville specific
-packages/breville/data/*
+cypress/mock

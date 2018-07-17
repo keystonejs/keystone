@@ -78,7 +78,6 @@ export const Lozenge = styled.div(({ appearance, variant, crop }: Props) => {
     borderRadius,
     display: 'inline-block',
     fontSize: '0.85em',
-    marginTop: gridSize,
     maxWidth: '100%',
     minWidth: 1,
     padding: `${gridSize / 2}px ${gridSize}px`,

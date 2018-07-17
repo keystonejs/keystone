@@ -1,15 +1,15 @@
 const path = require('path');
-const Implementation = require('./Implementation');
+const { Password, MongoPasswordInterface } = require('./Implementation');
 
 module.exports = {
   type: 'Password',
-  implementation: Implementation,
+  implementation: Password,
   views: {
     Controller: path.resolve(__dirname, './Controller'),
     Field: path.resolve(__dirname, './views/Field'),
+    Filter: path.resolve(__dirname, './views/Filter'),
   },
   adapters: {
-    // TODO: Extract mongo specific logic out of implementation
-    // mongoose: require('./adapters/mongoose'),
+    mongoose: MongoPasswordInterface,
   },
 };

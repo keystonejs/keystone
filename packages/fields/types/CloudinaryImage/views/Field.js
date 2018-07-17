@@ -240,10 +240,11 @@ export default class FileField extends Component {
     const imagePath = this.getImagePath();
     const showStatusMessage = ['removed', 'updated'].includes(changeStatus);
     const isEmpty = changeStatus === 'empty';
+    const htmlID = `ks-input-${field.path}`;
 
     return (
       <FieldContainer>
-        <FieldLabel>{field.label}</FieldLabel>
+        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
         <FieldInput>
           {!isEmpty && imagePath ? (
             <Wrapper>
@@ -274,6 +275,7 @@ export default class FileField extends Component {
           <HiddenInput
             autoComplete="off"
             autoFocus={autoFocus}
+            id={htmlID}
             innerRef={this.getInputRef}
             name={field.path}
             onChange={this.onChange}

@@ -2,19 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { ToastProvider } from 'react-toast-notifications';
 import { injectGlobal } from 'emotion';
 
 import globalStyles from '@keystonejs/ui/src/globalStyles';
 injectGlobal(globalStyles);
 
+import apolloClient from './apolloClient';
+
 import ScrollToTop from './components/ScrollToTop';
-import { ModalProvider } from './components/ModalDialog';
-import AdminMetaProvider from './providers/AdminMeta';
-import apolloClient from './providers/apolloClient';
+import ConnectivityListener from './components/ConnectivityListener';
+import { AdminMetaProvider } from './providers/AdminMeta';
 
 import HomePage from './pages/Home';
-import SigninPage from './pages/Signin';
-import SignedoutPage from './pages/Signedout';
 import ListPage from './pages/List';
 import ListNotFoundPage from './pages/ListNotFound';
 import ItemPage from './pages/Item';
@@ -23,7 +23,8 @@ import StyleGuidePage from './pages/StyleGuide';
 
 const Keystone = () => (
   <ApolloProvider client={apolloClient}>
-    <ModalProvider>
+    <ToastProvider>
+      <ConnectivityListener />
       <AdminMetaProvider>
         {adminMeta => {
           const { adminPath } = adminMeta;
@@ -34,16 +35,6 @@ const Keystone = () => (
                   <Route
                     path={`${adminPath}/style-guide/:page?`}
                     render={() => <StyleGuidePage {...adminMeta} />}
-                  />
-                  <Route
-                    exact
-                    path={adminMeta.signinUrl}
-                    render={() => <SigninPage {...adminMeta} />}
-                  />
-                  <Route
-                    exact
-                    path={adminMeta.signoutUrl}
-                    render={() => <SignedoutPage {...adminMeta} />}
                   />
                   <Route
                     exact
@@ -102,7 +93,7 @@ const Keystone = () => (
           );
         }}
       </AdminMetaProvider>
-    </ModalProvider>
+    </ToastProvider>
   </ApolloProvider>
 );
 

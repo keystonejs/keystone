@@ -9,6 +9,8 @@ const request = require('supertest');
 const Keystone = require('../../core/Keystone');
 const AdminUI = require('../../admin-ui/server/AdminUI');
 const WebServer = require('../../server/WebServer');
+const createGraphQLMiddleware = require('../../server/WebServer/graphql');
+const { MongooseAdapter } = require('../../adapter-mongoose');
 
 const sorted = (arr, keyFn) => {
   arr = [...arr];
@@ -64,9 +66,10 @@ describe('Test CRUD for all fields', () => {
     .filter(filename => fs.existsSync(filename))
     .map(require)
     .forEach(mod => {
-      describe(`All the CRUD tests for module: ${module.name}`, () => {
+      describe(`All the CRUD tests for module: ${mod.name}`, () => {
         // Set up a keystone project for each type module to use
         const keystone = new Keystone({
+          adapter: new MongooseAdapter(),
           name: 'Test Project',
         });
 
@@ -82,25 +85,37 @@ describe('Test CRUD for all fields', () => {
         const admin = new AdminUI(keystone, { adminPath: '/admin' });
         const server = new WebServer(keystone, {
           'cookie secret': 'qwerty',
-          'admin ui': admin,
           session: false,
         });
+
+        server.app.use(createGraphQLMiddleware(keystone, admin));
 
         // Clear the database before running any tests
         beforeAll(async done => {
           keystone.connect();
-          await keystone.mongoose.connection.dropDatabase();
+          Object.values(keystone.adapters).forEach(async adapter => {
+            await adapter.dropDatabase();
+          });
           await keystone.createItems({ [listName]: mod.initItems() });
+
+          // Throw at least one request at the server to make sure it's warmed up
+          await request(server.app)
+            .get('/admin/graphiql')
+            .expect(200);
+
           done();
-        });
+          // Compiling can sometimes take a while
+        }, 10000);
 
         describe('All Filter Tests', () => {
           mod.filterTests(server.app);
         });
 
         afterAll(async done => {
-          await keystone.mongoose.connection.close();
-          await admin.webpackMiddleware.close();
+          Object.values(keystone.adapters).forEach(async adapter => {
+            await adapter.close();
+          });
+
           done();
         });
       });

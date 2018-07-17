@@ -4,89 +4,130 @@
 #
 version: 2
 
+x-job-setup: &job-setup
+  docker:
+    # specify the version you desire here
+    - image: circleci/node:carbon-browsers
+    - image: mongo:3.4.4
+
+  working_directory: /home/circleci/repo
+
+# Download and cache dependencies
+x-restore-cache: &restore-cache
+  keys:
+    - v7-dependencies-{{ checksum "yarn.lock" }}
+      # fallback to using the latest cache if no exact match is found
+    - v7-dependencies-
+
+x-save-cache: &save-cache
+  paths:
+    - node_modules
+  key: v7-dependencies-{{ checksum "yarn.lock" }}
+
 jobs:
   simple_tests:
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:carbon
-      - image: mongo:3.4.4
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
-    working_directory: ~/repo
-
+    <<: *job-setup
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
+      - restore_cache: *restore-cache
       - run: sudo yarn global add bolt
-
       - run: bolt
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
+      - save_cache: *save-cache
       # run tests!
-      - run: yarn eslint --format junit -o reports/junit/js-lint-results.xml
-
-      - run: yarn prettier_lint
-
+      - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
+      - run: yarn lint:prettier
       - run:
           name: Unit tests
           command: yarn jest --ci --testResultsProcessor="jest-junit"
           environment:
             JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
-
       - store_test_results:
           path: reports/junit
       - store_artifacts:
           path: reports/junit
 
-  integration_tests:
-    docker:
-      - image: circleci/node:carbon
-      - image: mongo:3.4.4
-
-    working_directory: ~/repo
-
+  integration_tests_basic:
+    <<: *job-setup
     steps:
       - checkout
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          - v1-dependencies-
-      - run: sudo apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
+      - restore_cache: *restore-cache
       - run: sudo yarn global add bolt
-      - run: bolt
-      - run: yarn pm2 start packages/test-project/index.js
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
       - run:
-          name: Running E2E tests
-          command: yarn cypress:run --reporter junit --reporter-options "mochaFile=reports/junit/cypress-results.xml"
+          name: Bolt - Install packages
+          command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
+      - save_cache: *save-cache
+      - run:
+          name: Basic E2E tests
+          command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt ws run cypress:run:ci --only-fs projects/basic
+          environment:
+            CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME
+            CLOUDINARY_KEY: $CLOUDINARY_KEY
+            CLOUDINARY_SECRET: $CLOUDINARY_SECRET
+            PORT: 3000
+      - store_test_results:
+          path: reports/junit
+      - store_artifacts:
+          path: reports/junit
+      - store_artifacts:
+          path: projects/basic/cypress/videos
+      - store_artifacts:
+          path: projects/basic/cypress/screenshots
 
+  integration_tests_login:
+    <<: *job-setup
+    steps:
+      - checkout
+      - restore_cache: *restore-cache
+      - run: sudo yarn global add bolt
+      - run:
+          name: Bolt - Install packages
+          command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
+      - save_cache: *save-cache
+      - run:
+          name: Login E2E tests
+          command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt ws run cypress:run:ci --only-fs projects/login
+          environment:
+            PORT: 4000
+      - store_test_results:
+          path: reports/junit
       - store_artifacts:
-          path: cypress/videos
+          path: reports/junit
       - store_artifacts:
-          path: cypress/screenshots
+          path: projects/login/cypress/videos
+      - store_artifacts:
+          path: projects/login/cypress/screenshots
+
+  integration_tests_twitterlogin:
+    <<: *job-setup
+    steps:
+      - checkout
+      - restore_cache: *restore-cache
+      - run: sudo yarn global add bolt
+      - run:
+          name: Bolt - Install packages
+          command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
+      - save_cache: *save-cache
+      - run:
+          name: Twitter Login E2E tests
+          command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt ws run cypress:run:ci --only-fs projects/twitter-login
+          environment:
+            TWITTER_APP_KEY: $TWITTER_APP_KEY
+            TWITTER_APP_SECRET: $TWITTER_APP_SECRET
+            PORT: 3010
+      - store_test_results:
+          path: reports/junit
+      - store_artifacts:
+          path: reports/junit
+      - store_artifacts:
+          path: projects/twitter-login/cypress/videos
+      - store_artifacts:
+          path: projects/twitter-login/cypress/screenshots
 
 workflows:
   version: 2
-  build:
+  tests:
     jobs:
       - simple_tests
-      - integration_tests
+      - integration_tests_basic
+      - integration_tests_login
+      - integration_tests_twitterlogin

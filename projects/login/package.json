@@ -1,0 +1,36 @@
+{
+  "name": "@keystonejs/cypress-project-login",
+  "private": true,
+  "version": "1.0.0",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "scripts": {
+    "start": "node -r dotenv-safe/config index.js",
+    "oldcypress:run:cmd": "node -r dotenv-safe/config `which cypress` run",
+    "cypress:run:cmd": "exit 4",
+    "cypress:run:cmd:ci": "touch .env && node -r dotenv-safe/config `which cypress` run --reporter junit --reporter-options \"mochaFile=../../reports/junit/cypress-results-login.xml\"",
+    "cypress:open:cmd": "node -r dotenv-safe/config `which cypress` open",
+    "prepare-test-server": "node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.code) })'",
+    "cypress:run:ci": "yarn prepare-test-server cypress:run:cmd:ci",
+    "cypress:run": "if [ -f .env ]; then yarn prepare-test-server cypress:run:cmd; else echo \"\nError: Must create a projects/login/.env file.\nSee projects/login/.env.example for values\n\"; exit 1; fi",
+    "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a projects/login/.env file.\nSee projects/login/.env.example for values\n\"; exit 1; fi"
+  },
+  "dependencies": {
+    "@keystonejs/adapter-mongoose": "^1.0.0",
+    "@keystonejs/admin-ui": "^5.0.0",
+    "@keystonejs/core": "^5.0.0",
+    "@keystonejs/fields": "^5.0.0",
+    "@keystonejs/server": "^5.0.0",
+    "@keystonejs/ui": "^5.0.0",
+    "dotenv-safe": "^5.0.1",
+    "react": "^16.3.1"
+  },
+  "devDependencies": {
+    "cypress": "^3.0.1",
+    "execa": "0.10.0",
+    "start-server-and-test": "^1.5.0"
+  }
+}

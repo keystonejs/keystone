@@ -1,13 +1,23 @@
-const { Mongoose } = require('mongoose');
 const List = require('../List');
 
 class MockAdminMeta {}
+
+class MockFieldAdapter {}
+
+class MockListAdapter {
+  newFieldAdapter = () => new MockFieldAdapter();
+  prepareModel = () => {};
+}
+
+class MockAdapter {
+  name = 'mock';
+  newListAdapter = () => new MockListAdapter();
+}
 
 class MockType {
   constructor(name) {
     this.name = name;
   }
-  addToMongooseSchema = jest.fn();
   getAdminMeta = () => new MockAdminMeta();
   getGraphqlSchema = () => `${this.name}_schema`;
   getGraphqlAuxiliaryTypes = () => `${this.name}_types`;
@@ -27,6 +37,7 @@ const config = {
           viewType1: 'viewPath1',
           viewType2: 'viewPath2',
         },
+        adapters: { mock: MockFieldAdapter },
       },
     },
     email: {
@@ -36,6 +47,7 @@ const config = {
           viewType3: 'viewPath3',
           viewType4: 'viewPath4',
         },
+        adapters: { mock: MockFieldAdapter },
       },
     },
   },
@@ -44,7 +56,7 @@ const config = {
 describe('new List()', () => {
   test('new List() - Smoke test', () => {
     const list = new List('Test', config, {
-      mongoose: new Mongoose(),
+      adapter: new MockAdapter(),
       lists: [],
     });
     expect(list).not.toBeNull();
@@ -52,7 +64,7 @@ describe('new List()', () => {
 
   test('new List() - labels', () => {
     const list = new List('Test', config, {
-      mongoose: new Mongoose(),
+      adapter: new MockAdapter(),
       lists: [],
     });
     expect(list.label).toEqual('Tests');
@@ -70,7 +82,7 @@ describe('new List()', () => {
 
   test('new List() - fields', () => {
     const list = new List('Test', config, {
-      mongoose: new Mongoose(),
+      adapter: new MockAdapter(),
       lists: [],
     });
     expect(list.fields).toHaveLength(2);
@@ -80,7 +92,7 @@ describe('new List()', () => {
 
   test('new List() - views', () => {
     const list = new List('Test', config, {
-      mongoose: new Mongoose(),
+      adapter: new MockAdapter(),
       lists: [],
     });
     expect(list.views).toEqual({
@@ -99,7 +111,7 @@ describe('new List()', () => {
 describe('getAdminMeta()', () => {
   test('adminMeta() - Smoke test', () => {
     const list = new List('Test', config, {
-      mongoose: new Mongoose(),
+      adapter: new MockAdapter(),
       lists: [],
     });
     const adminMeta = list.getAdminMeta();
@@ -108,7 +120,7 @@ describe('getAdminMeta()', () => {
 
   test('getAdminMeta() - labels', () => {
     const list = new List('Test', config, {
-      mongoose: new Mongoose(),
+      adapter: new MockAdapter(),
       lists: [],
     });
     const adminMeta = list.getAdminMeta();
@@ -129,7 +141,7 @@ describe('getAdminMeta()', () => {
 
   test('getAdminMeta() - fields', () => {
     const list = new List('Test', config, {
-      mongoose: new Mongoose(),
+      adapter: new MockAdapter(),
       lists: [],
     });
     const adminMeta = list.getAdminMeta();
@@ -141,7 +153,7 @@ describe('getAdminMeta()', () => {
 
   test('getAdminMeta() - views', () => {
     const list = new List('Test', config, {
-      mongoose: new Mongoose(),
+      adapter: new MockAdapter(),
       lists: [],
     });
     const adminMeta = list.getAdminMeta();
@@ -161,7 +173,7 @@ describe('getAdminMeta()', () => {
 
 test('getAdminGraphqlTypes()', () => {
   const list = new List('Test', config, {
-    mongoose: new Mongoose(),
+    adapter: new MockAdapter(),
     lists: [],
   });
   const types = list.getAdminGraphqlTypes();
@@ -182,6 +194,8 @@ test('getAdminGraphqlTypes()', () => {
       `,
     `
       input TestWhereInput {
+        id: ID
+        id_not: ID
         # MockType field
         name_query_args
 
@@ -213,7 +227,7 @@ test('getAdminGraphqlTypes()', () => {
 
 test('getAdminGraphqlQueries()', () => {
   const list = new List('Test', config, {
-    mongoose: new Mongoose(),
+    adapter: new MockAdapter(),
     lists: [],
   });
   const queries = list.getAdminGraphqlQueries();
@@ -224,7 +238,7 @@ test('getAdminGraphqlQueries()', () => {
           where: TestWhereInput
 
           search: String
-          sort: String
+          orderBy: String
 
           # Pagination
           first: Int
@@ -237,7 +251,7 @@ test('getAdminGraphqlQueries()', () => {
           where: TestWhereInput
 
           search: String
-          sort: String
+          orderBy: String
 
           # Pagination
           first: Int
@@ -249,7 +263,7 @@ test('getAdminGraphqlQueries()', () => {
 
 test('getAdminGraphqlMutations()', () => {
   const list = new List('Test', config, {
-    mongoose: new Mongoose(),
+    adapter: new MockAdapter(),
     lists: [],
   });
   const mutations = list.getAdminGraphqlMutations().map(mute => mute.trim());
@@ -275,7 +289,7 @@ test('getAdminGraphqlMutations()', () => {
 
 test('getAdminQueryResolvers()', () => {
   const list = new List('Test', config, {
-    mongoose: new Mongoose(),
+    adapter: new MockAdapter(),
     lists: [],
   });
   const resolvers = list.getAdminQueryResolvers();
@@ -287,7 +301,7 @@ test('getAdminQueryResolvers()', () => {
 
 test('getAdminMutationResolvers()', () => {
   const list = new List('Test', config, {
-    mongoose: new Mongoose(),
+    adapter: new MockAdapter(),
     lists: [],
   });
   const resolvers = list.getAdminMutationResolvers();

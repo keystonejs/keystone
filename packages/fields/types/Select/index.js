@@ -1,15 +1,15 @@
 const path = require('path');
-const Implementation = require('./Implementation');
+const { Select, MongoSelectInterface } = require('./Implementation');
 
 module.exports = {
   type: 'Select',
-  implementation: Implementation,
+  implementation: Select,
   views: {
     Controller: path.resolve(__dirname, './Controller'),
     Field: path.resolve(__dirname, './views/Field'),
+    Filter: path.resolve(__dirname, './views/Filter'),
   },
   adapters: {
-    // TODO: Extract mongo specific logic out of implementation
-    // mongoose: require('./adapters/mongoose'),
+    mongoose: MongoSelectInterface,
   },
 };

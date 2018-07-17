@@ -13,6 +13,7 @@ const intent = {
 const neutrals = {
   N05: '#F4F5F7',
   N10: '#EBECF0',
+  N15: '#DFE1E5',
   N20: '#C1C7D0',
   N30: '#A5ADBA',
   N40: '#97A0AF',

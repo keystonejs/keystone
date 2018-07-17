@@ -1,15 +1,15 @@
 const path = require('path');
-const Implementation = require('./Implementation');
+const { Text, MongoTextInterface } = require('./Implementation');
 
 module.exports = {
   type: 'Text',
-  implementation: Implementation,
+  implementation: Text,
   views: {
     Controller: path.resolve(__dirname, './Controller'),
     Field: path.resolve(__dirname, './views/Field'),
+    Filter: path.resolve(__dirname, './views/Filter'),
   },
   adapters: {
-    // TODO: Extract mongo specific logic out of implementation
-    // mongoose: require('./adapters/mongoose'),
+    mongoose: MongoTextInterface,
   },
 };

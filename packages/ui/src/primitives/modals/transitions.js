@@ -17,7 +17,11 @@ type ProviderProps = {
   isOpen: boolean,
 };
 
-export const TransitionProvider = ({ children, isOpen }: ProviderProps) => (
+export const TransitionProvider = ({
+  children,
+  isOpen,
+  ...props
+}: ProviderProps) => (
   <TransitionGroup component={null}>
     {isOpen ? (
       <Transition
@@ -25,6 +29,7 @@ export const TransitionProvider = ({ children, isOpen }: ProviderProps) => (
         mountOnEnter
         unmountOnExit
         timeout={transitionDurationMs}
+        {...props}
       >
         {state => children(state)}
       </Transition>
@@ -124,10 +129,10 @@ export const SlideUp = (props: TransitionProps) => {
 // Slide Down
 // ------------------------------
 
-export const SlideDown = (props: TransitionProps) => {
+export const SlideDown = ({ from = '-8px', ...props }: TransitionProps) => {
   const out = {
     opacity: 0,
-    transform: 'translate3d(0,-8px,0)',
+    transform: `translate3d(0,${from},0)`,
   };
   return (
     <TransitionReducer
@@ -137,6 +142,63 @@ export const SlideDown = (props: TransitionProps) => {
         entered: { opacity: 1, transform: 'translate3d(0,0,0)' },
         exiting: out,
         exited: out,
+      }}
+      {...props}
+    />
+  );
+};
+
+// Slide In from left/right
+// ------------------------------
+
+const fromMap = { left: '-100%', right: '100%' };
+type SlideInProps = TransitionProps & { slideInFrom: 'left' | 'right' }; // NOTE: should be able to use $Keys<typeof fromMap>
+export const SlideInHorizontal = ({ slideInFrom, ...props }: SlideInProps) => {
+  const initial = fromMap[slideInFrom];
+  return (
+    <TransitionReducer
+      constant={makeTransitionBase('transform')}
+      dynamic={{
+        entering: { transform: 'translate3d(0,0,0)' },
+        entered: { transform: 'translate3d(0,0,0)' },
+        exiting: { transform: `translate3d(${initial}, 0, 0)` },
+        exited: { transform: `translate3d(${initial}, 0, 0)` },
+      }}
+      {...props}
+    />
+  );
+};
+
+// Zoom In-Down
+// ------------------------------
+
+export const ZoomInDown = (props: TransitionProps) => {
+  const base = {
+    transformOrigin: 'top',
+    transitionProperty: 'opacity, transform',
+    transitionDuration,
+    transitionTimingFunction,
+  };
+  return (
+    <TransitionReducer
+      constant={base}
+      dynamic={{
+        entering: {
+          opacity: 1,
+          transform: 'translate3d(0, 0, 0)',
+        },
+        entered: {
+          opacity: 1,
+          transform: 'translate3d(0, 0, 0)',
+        },
+        exiting: {
+          opacity: 0,
+          transform: 'scale3d(0.33, 0.33, 0.33) translate3d(0, -100%, 0)',
+        },
+        exited: {
+          opacity: 0,
+          transform: 'scale3d(0.33, 0.33, 0.33) translate3d(0, -100%, 0)',
+        },
       }}
       {...props}
     />

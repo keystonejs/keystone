@@ -1,6 +1,13 @@
 // @flow
 
-import React, { PureComponent, Fragment, type Element, type Node } from 'react';
+import React, {
+  PureComponent,
+  Fragment,
+  type ComponentType,
+  type Element,
+  type Ref,
+  type Node,
+} from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'react-emotion';
 import ScrollLock from 'react-scrolllock';
@@ -9,8 +16,9 @@ import FocusTrap, { type FocusTarget } from './FocusTrap';
 import { Fade, SlideUp, withTransitionState } from './transitions';
 import { Blanket } from './common';
 import { colors } from '../../theme';
+import { generateUEID } from '../../utils';
 import { alpha } from '../../theme/color-utils';
-import { A11yText } from '../misc';
+import { A11yText } from '../typography';
 
 const outerGutter = 40;
 const innerGutter = 20;
@@ -31,15 +39,27 @@ const Positioner = styled.div(({ width }) => ({
   top: outerGutter,
   zIndex: 2,
 }));
-const Dialog = styled.div({
-  backgroundColor: 'white',
-  borderRadius: 5,
-  boxShadow: '0 2px 8px -1px rgba(0,0,0,0.3)',
-  display: 'flex',
-  flex: 1,
-  flexDirection: 'column',
-  maxHeight: '100%',
-});
+
+type DialogElementProps = {
+  component: ComponentType<*> | string,
+  innerRef?: Ref<*>,
+};
+const Dialog = ({ component: Tag, innerRef, ...props }: DialogElementProps) => (
+  <Tag
+    ref={innerRef}
+    role="dialog"
+    css={{
+      backgroundColor: 'white',
+      borderRadius: 5,
+      boxShadow: '0 2px 8px -1px rgba(0,0,0,0.3)',
+      display: 'flex',
+      flex: 1,
+      flexDirection: 'column',
+      maxHeight: '100%',
+    }}
+    {...props}
+  />
+);
 
 // Content
 
@@ -48,6 +68,10 @@ const HeadFoot = styled.div({
   margin: `0 ${innerGutter}px`,
   paddingBottom: innerGutter,
   paddingTop: innerGutter,
+
+  // ensure that box-shadow covers body content
+  position: 'relative',
+  zIndex: 1,
 });
 const Header = styled(HeadFoot)({
   boxShadow: `0 2px 0 ${alpha(colors.text, 0.12)}`,
@@ -72,6 +96,8 @@ const Body = styled.div({
 type Props = {
   attachTo: HTMLElement,
   children: Node,
+  closeOnBlanketClick: boolean,
+  component: ComponentType<*> | string,
   footer?: Element<*>,
   heading?: string,
   initialFocus?: FocusTarget,
@@ -83,6 +109,8 @@ type Props = {
 class ModalDialog extends PureComponent<Props> {
   static defaultProps = {
     attachTo: document.body,
+    closeOnBlanketClick: false,
+    component: 'div',
     width: 640,
   };
   componentDidMount() {
@@ -98,6 +126,8 @@ class ModalDialog extends PureComponent<Props> {
     const {
       attachTo,
       children,
+      closeOnBlanketClick,
+      component,
       footer,
       heading,
       initialFocus,
@@ -105,17 +135,26 @@ class ModalDialog extends PureComponent<Props> {
       width,
       ...transitionProps
     } = this.props;
+    const dialogTitleId = generateUEID();
 
     return createPortal(
       <Fragment>
         <Fade {...transitionProps}>
-          <Blanket onClick={onClose} isTinted />
+          <Blanket
+            onClick={closeOnBlanketClick ? onClose : undefined}
+            isTinted
+          />
         </Fade>
         <SlideUp {...transitionProps}>
           <Positioner width={width}>
-            <FocusTrap options={{ initialFocus }}>
-              <Dialog>
-                <A11yText>{heading} Dialog</A11yText>
+            <FocusTrap
+              options={{
+                initialFocus,
+                clickOutsideDeactivates: closeOnBlanketClick,
+              }}
+            >
+              <Dialog component={component} aria-labelledby={dialogTitleId}>
+                <A11yText id={dialogTitleId}>{heading} Dialog</A11yText>
                 {heading ? (
                   <Header>
                     <Title>{heading}</Title>

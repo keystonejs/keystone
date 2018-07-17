@@ -3,9 +3,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
 const webpack = require('webpack');
-const { apolloUploadExpress } = require('apollo-upload-server');
 const webpackDevMiddleware = require('webpack-dev-middleware');
-const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 
 const getWebpackConfig = require('./getWebpackConfig');
 
@@ -39,51 +37,45 @@ module.exports = class AdminUI {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
     }
 
-    this.adminPath = config.adminPath;
-    // TODO: Figure out how to have auth & non-auth URLs share the same path
-    this.adminAuthPath = `${config.adminPath}_auth`;
+    this.adminPath = config.adminPath || '/admin';
     this.graphiqlPath = `${this.adminPath}/graphiql`;
     this.apiPath = `${this.adminPath}/api`;
 
     this.config = {
       ...config,
-      signinUrl: `${this.adminAuthPath}/signin`,
-      signoutUrl: `${this.adminAuthPath}/signout`,
-      sessionUrl: `${this.adminAuthPath}/session`,
-    },
+      signinPath: `${this.adminPath}/signin`,
+      signoutPath: `${this.adminPath}/signout`,
+      sessionPath: `${this.adminPath}/session`,
+    };
 
     this.signin = this.signin.bind(this);
     this.signout = this.signout.bind(this);
     this.session = this.session.bind(this);
   }
 
+  getAdminMeta() {
+    return {
+      withAuth: !!this.config.authStrategy,
+      adminPath: this.config.adminPath,
+      signinPath: this.config.signinPath,
+      signoutPath: this.config.signoutPath,
+      sessionPath: this.config.sessionPath,
+    };
+  }
+
   async signin(req, res, next) {
     try {
-      // TODO: Don't hard code this auth strategy, use the one passed in
       // TODO: How could we support, for example, the twitter auth flow?
-      const result = await this.keystone.auth.User.password.validate({
+      const result = await this.config.authStrategy.validate({
         username: req.body.username,
         password: req.body.password,
       });
 
       if (!result.success) {
-        const htmlResponse = () => {
-          const signinUrl = this.config.signinUrl;
-          /*
-           * This works, but then webpack (or react-router?) is unable to match
-           * the URL when there's a query param, which is... odd :/
-          const signinUrl = injectQueryParams({
-            url: getAbsoluteUrl(req, this.config.signinUrl),
-            params: { redirectTo: req.body.redirectTo },
-            overwrite: false,
-          });
-          */
-
-          // TODO - include some sort of error in the page
-          res.redirect(signinUrl);
-        };
+        // TODO - include some sort of error in the page
+        const htmlResponse = () => res.redirect(this.config.signinPath);
         return res.format({
-          'default': htmlResponse,
+          default: htmlResponse,
           'text/html': htmlResponse,
           'application/json': () => res.json({ success: false }),
         });
@@ -94,31 +86,36 @@ module.exports = class AdminUI {
       return next(e);
     }
 
-    const htmlResponse = () => res.redirect(req.body.redirectTo || admin.adminPath);
+    return this.redirectSuccessfulSignin(req, res);
+  }
+
+  redirectSuccessfulSignin(req, res) {
+    const htmlResponse = () => res.redirect(this.config.adminPath);
     return res.format({
-      'default': htmlResponse,
+      default: htmlResponse,
       'text/html': htmlResponse,
       'application/json': () => res.json({ success: true }),
     });
   }
 
   async signout(req, res, next) {
+    let success;
     try {
       await this.keystone.session.destroy(req);
+      success = true;
     } catch (e) {
-      return next(e);
+      success = false;
+      // TODO: Better error logging?
+      console.error(e);
     }
 
+    // NOTE: Because session is destroyed here, before webpack can handle the
+    // request, the "public" bundle will load the "signed out" page
+    const htmlResponse = () => next();
     return res.format({
-      'default': () => {
-        next();
-      },
-      'text/html': () => {
-        next();
-      },
-      'application/json': () => {
-        res.json({ success: true });
-      }
+      default: htmlResponse,
+      'text/html': htmlResponse,
+      'application/json': () => res.json({ success }),
     });
   }
 
@@ -140,83 +137,62 @@ module.exports = class AdminUI {
     }
   }
 
-  createSessionMiddleware({ cookieSecret }) {
+  createSessionMiddleware({ cookieSecret, sessionMiddleware }) {
     if (!this.config.authStrategy) {
       return (req, res, next) => next();
     }
 
     const app = express();
 
-    const sessionHandler = session({
-      secret: cookieSecret,
-      resave: false,
-      saveUninitialized: false,
-      name: 'keystone-admin.sid',
-    });
+    const sessionHandler =
+      sessionMiddleware ||
+      session({
+        secret: cookieSecret,
+        resave: false,
+        saveUninitialized: false,
+        name: 'keystone-admin.sid',
+      });
 
-    // implement session management
+    // Add session tracking
     app.use(this.adminPath, sessionHandler);
-    app.use(this.adminAuthPath, sessionHandler);
 
-    // NOTE: These are POST only. The GET versions (the UI) are handled by the
-    // main server
-    app.post(this.config.signinUrl, bodyParser.json(), bodyParser.urlencoded(), this.signin);
-    app.post(this.config.signoutUrl, this.signout);
+    // Listen to POST events for form signin form submission (GET falls through
+    // to the webpack server(s))
+    app.post(
+      this.config.signinPath,
+      bodyParser.json(),
+      bodyParser.urlencoded(),
+      this.signin
+    );
+
+    // Listen to both POST and GET events, and always sign the user out.
+    app.use(this.config.signoutPath, this.signout);
+
+    // Attach the user to the request for all following route handlers
     app.use(
       this.keystone.session.validate({
         valid: ({ req, item }) => (req.user = item),
       })
     );
-    app.get(this.config.sessionUrl, this.session);
 
-    // NOTE: No auth check on this.adminAuthPath, that's because we rely on the
-    // UI code to only handle the signin/signout routes.
-    // THIS IS NOT SECURE! We need proper server-side handling of this, and
-    // split the signin/out pages into their own bundle so we don't leak admin
-    // data to the browser.
-    const authCheck = (req, res, next) => {
-      if (!req.user) {
-        const signinUrl = this.config.signinUrl;
-        /*
-         * This works, but then webpack (or react-router?) is unable to match
-         * the URL when there's a query param, which is... odd :/
-        const signinUrl = injectQueryParams({
-          url: getAbsoluteUrl(req, this.config.signinUrl),
-          params: { redirectTo: req.originalUrl },
-          overwrite: true,
-        });
-        */
-        return res.status(401).redirect(signinUrl);
-      }
-      // All logged in, so move on to the next matching route
-      next();
-    };
-    app.use(`${this.adminPath}`, authCheck);
-    app.use(`${this.adminPath}/*`, authCheck);
-    return app;
-  }
+    // Allow clients to AJAX for user info
+    app.get(this.config.sessionPath, this.session);
 
-  createGraphQLMiddleware() {
-    const app = express();
+    // Short-circuit GET requests when the user already signed in (avoids
+    // downloading UI bundle, doing a client side redirect, etc)
+    app.get(this.config.signinPath, (req, res, next) => {
+      return req.user ? this.redirectSuccessfulSignin(req, res) : next();
+    });
 
-    // add the Admin GraphQL API
-    const schema = this.keystone.getAdminSchema();
-    app.use(
-      this.apiPath,
-      bodyParser.json(),
-      // TODO: Make configurable
-      apolloUploadExpress({ maxFileSize: 200 * 1024 * 1024, maxFiles: 5 }),
-      graphqlExpress({ schema })
-    );
-    app.use(this.graphiqlPath, graphiqlExpress({ endpointURL: this.apiPath }));
     return app;
   }
 
   createDevMiddleware() {
     const app = express();
+    const { adminPath, apiPath, graphiqlPath, config } = this;
 
     // ensure any non-resource requests are rewritten for history api fallback
-    const nonResourceRewrite = (req, res, next) => {
+    app.use(adminPath, (req, res, next) => {
       if (/^[\w\/\-]+$/.test(req.url)) req.url = '/';
       next();
     };
@@ -224,25 +200,65 @@ module.exports = class AdminUI {
     app.use(this.adminAuthPath, nonResourceRewrite);
 
     // add the webpack dev middleware
-    // TODO: Replace with local server so we can add ACL / stop leaking admin
-    // data when not logged in
-    const webpackConfig = getWebpackConfig({
-      adminMeta: {
-        ...this.getAdminMeta(),
-        ...this.keystone.getAdminMeta(),
-      },
-      publicPath: this.adminPath,
-      adminPath: this.adminPath,
-      apiPath: this.apiPath,
-      graphiqlPath: this.graphiqlPath,
-    });
-
-    const compiler = webpack(webpackConfig);
-    this.webpackMiddleware = webpackDevMiddleware(compiler, {
-      publicPath: webpackConfig.output.publicPath,
+    const adminMeta = {
+      adminPath,
+      apiPath,
+      graphiqlPath,
+      ...this.getAdminMeta(),
+      ...this.keystone.getAdminMeta(),
+    };
+    const webpackMiddlewareConfig = {
+      publicPath: adminPath,
       stats: 'minimal',
-    });
-    app.use(this.webpackMiddleware);
+    };
+
+    const secureMiddleware = webpackDevMiddleware(
+      webpack(
+        getWebpackConfig({
+          adminMeta,
+          entry: 'index',
+        })
+      ),
+      webpackMiddlewareConfig
+    );
+
+    if (config.authStrategy) {
+      const publicMiddleware = webpackDevMiddleware(
+        webpack(
+          getWebpackConfig({
+            // override lists so that schema and field views are excluded
+            adminMeta: { ...adminMeta, lists: {} },
+            entry: 'public',
+          })
+        ),
+        webpackMiddlewareConfig
+      );
+
+      // app.use(adminMiddleware);
+      app.use((req, res, next) => {
+        // TODO: Better security, should check some property of the user
+        return req.user
+          ? secureMiddleware(req, res, next)
+          : publicMiddleware(req, res, next);
+      });
+
+      this.stopDevServer = () => {
+        return new Promise(resolve => {
+          publicMiddleware.close(() => {
+            secureMiddleware.close(resolve);
+          });
+        });
+      };
+    } else {
+      // No auth required? Everyone can access the "secure" area
+      app.use(secureMiddleware);
+
+      this.stopDevServer = () => {
+        return new Promise(resolve => {
+          secureMiddleware.close(resolve);
+        });
+      };
+    }
 
     if (this.config.authStrategy) {
       const authWebpackConfig = getWebpackConfig({
