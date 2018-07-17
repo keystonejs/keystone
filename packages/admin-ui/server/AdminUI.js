@@ -1,4 +1,3 @@
-const qs = require('qs');
 const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
@@ -6,28 +5,6 @@ const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 
 const getWebpackConfig = require('./getWebpackConfig');
-
-function injectQueryParams({ url, params, overwrite = true }) {
-  const parsedUrl = new URL(url);
-  let queryObject = qs.parse(parsedUrl.search.slice(1));
-  if (overwrite) {
-    queryObject = {
-      ...queryObject,
-      ...params,
-    };
-  } else {
-    queryObject = {
-      ...params,
-      ...queryObject,
-    };
-  }
-  parsedUrl.search = qs.stringify(queryObject);
-  return parsedUrl.toString();
-}
-
-function getAbsoluteUrl(req, path) {
-  return `${req.protocol}://${req.get('host')}${path}`;
-}
 
 module.exports = class AdminUI {
   constructor(keystone, config) {
@@ -120,21 +97,10 @@ module.exports = class AdminUI {
   }
 
   session(req, res) {
-    const result = {
+    res.json({
       signedIn: !!req.user,
       user: req.user ? { id: req.user.id, name: req.user.name } : undefined,
-    };
-    res.json(result);
-  }
-
-  getAdminMeta() {
-    return {
-      withAuth: !!this.config.authStrategy,
-      adminAuthPath: this.config.adminAuthPath,
-      signinUrl: this.config.signinUrl,
-      signoutUrl: this.config.signoutUrl,
-      sessionUrl: this.config.sessionUrl,
-    }
+    });
   }
 
   createSessionMiddleware({ cookieSecret, sessionMiddleware }) {
@@ -256,25 +222,6 @@ module.exports = class AdminUI {
           secureMiddleware.close(resolve);
         });
       };
-    }
-
-    if (this.config.authStrategy) {
-      const authWebpackConfig = getWebpackConfig({
-        adminMeta: {
-          ...this.getAdminMeta(),
-          ...this.keystone.getAdminMeta(),
-        },
-        publicPath: this.adminAuthPath,
-        adminPath: this.adminPath,
-        apiPath: this.apiPath,
-        graphiqlPath: this.graphiqlPath,
-      });
-      const authCompiler = webpack(authWebpackConfig);
-      const authWebpackMiddleware = webpackDevMiddleware(authCompiler, {
-        publicPath: this.adminAuthPath,
-        stats: 'minimal',
-      });
-      app.use(authWebpackMiddleware);
     }
 
     // handle errors
