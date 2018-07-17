@@ -8,8 +8,6 @@ import {
   TelescopeIcon,
   MarkGithubIcon,
   SignOutIcon,
-  SignInIcon,
-  EllipsisIcon,
 } from '@keystonejs/icons';
 
 import {
@@ -20,7 +18,6 @@ import {
 } from '@keystonejs/ui/src/primitives/navigation';
 import { A11yText } from '@keystonejs/ui/src/primitives/typography';
 import { withAdminMeta } from '../providers/AdminMeta';
-import SessionProvider from '../providers/Session';
 
 const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
 
