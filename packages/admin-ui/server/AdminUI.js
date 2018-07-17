@@ -195,9 +195,7 @@ module.exports = class AdminUI {
     app.use(adminPath, (req, res, next) => {
       if (/^[\w\/\-]+$/.test(req.url)) req.url = '/';
       next();
-    };
-    app.use(this.adminPath, nonResourceRewrite);
-    app.use(this.adminAuthPath, nonResourceRewrite);
+    });
 
     // add the webpack dev middleware
     const adminMeta = {

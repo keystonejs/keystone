@@ -33,24 +33,16 @@ module.exports = class WebServer {
         })
       );
     }
-
   }
   start() {
     const {
       app,
-      config: { port, adminUI, cookieSecret, session },
+      config: { port },
     } = this;
-
-    if (adminUI) {
-      app.use(adminUI.createGraphQLMiddleware());
-      app.use(adminUI.createSessionMiddleware({ cookieSecret }));
-      app.use(adminUI.createDevMiddleware());
-    }
 
     app.get('/', (req, res) =>
       res.sendFile(path.resolve(__dirname, './default.html'))
     );
-
     app.listen(port, () => {
       console.log(`KeystoneJS 5 ready on port ${port}`);
     });
