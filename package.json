@@ -36,7 +36,6 @@
     "babel-preset-flow": "^6.23.0",
     "babel-preset-react": "^6.24.1",
     "body-parser": "^1.18.2",
-    "bolt": "^0.20.7",
     "cloudinary": "^1.11.0",
     "cors": "^2.8.4",
     "cross-fetch": "^2.2.0",

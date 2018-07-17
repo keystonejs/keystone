@@ -1,19 +1,27 @@
 import React, { Component } from 'react';
 import styled from 'react-emotion';
-import qs from 'qs';
-import xss from 'xss';
 
+import { Alert } from '@keystonejs/ui/src/primitives/alert';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
+import { LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
 import { colors } from '@keystonejs/ui/src/theme';
 
 import SessionProvider from '../providers/Session';
+
 import logo from '../assets/logo.png';
 
 const Container = styled.div({
   alignItems: 'center',
   display: 'flex',
+  flexDirection: 'column',
   justifyContent: 'center',
+  minHeight: '100vh',
+});
+
+const Alerts = styled.div({
+  margin: '20px auto',
+  width: 650,
+  height: 48,
 });
 
 const Form = styled.form({
@@ -21,7 +29,8 @@ const Form = styled.form({
   backgroundColor: 'white',
   border: '1px solid #e9e9e9',
   borderRadius: '0.3em',
-  margin: '200px auto',
+  margin: '0 auto',
+  minWidth: 650,
   padding: 40,
   display: 'flex',
   flexWrap: 'nowrap',
@@ -38,81 +47,92 @@ const Divider = styled.div({
 
 const FieldLabel = styled.div({
   color: colors.N60,
+  marginTop: 16,
   marginBottom: 8,
   fontSize: 16,
 });
 
 const Fields = styled.div({
-  marginBottom: 8,
+  marginBottom: 16,
   width: 280,
 });
 
-function extractAndCleanRedirectUrl() {
-  const redirectToParam = qs.parse(window.location.search.slice(1)).redirectTo;
-  if (typeof redirectToParam !== 'string') {
-    return null;
-  }
+const Spacer = styled.div({
+  height: 120,
+});
 
-  const decodedRedirectTo = decodeuricomponent(redirectToParam);
-
-  if (!decodedRedirectTo) {
-    return null;
-  }
-
-  // Reconstruct the URL without the host
-  // We do this to prevent phishing
-  const urlParts = new Url(decodedRedirectTo);
-  return `${urlParts.pathname}${urlParts.search}${urlParts.hash}`;
-}
-
-class Session extends Component {
+class SigninPage extends Component {
+  reloading = false;
+  state = {
+    username: '',
+    password: '',
+  };
+  onSubmit = e => {
+    e.preventDefault();
+    const { isLoading, signIn } = this.props;
+    const { username, password } = this.state;
+    if (isLoading) return;
+    signIn({ username, password });
+  };
   render() {
-    const { adminPath, signinUrl, signoutUrl, sessionUrl } = this.props;
-    const redirectTo = extractAndCleanRedirectUrl() || adminPath;
+    const { error, isLoading, isSignedIn } = this.props;
+    if (isSignedIn && !this.reloading) {
+      // Avoid reloading on subsequent renders
+      this.reloading = true;
+      window.location.reload(true);
+    }
+    const { username, password } = this.state;
     return (
       <Container>
-        <SessionProvider {...{ signinUrl, signoutUrl, sessionUrl }}>
-          {({ user, signOut, isLoading }) => (
-            <Form method="post" action={signinUrl}>
-              <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
-              <Divider />
-              <div>
-                <Fields>
-                  <FieldLabel>Email</FieldLabel>
-                  <Input name="username" />
-                  <FieldLabel>Password</FieldLabel>
-                  <Input type="password" name="password" />
-                  <input type="hidden" name="redirectTo" value={xss(redirectTo)} />
-                </Fields>
-                <Button
-                  appearance="primary"
-                  style={{ marginRight: 16 }}
-                  type="submit"
-                >
-                  Sign In
-                </Button>
-                {/* TODO: Change this to a straigh <a> tag */}
-                <Button variant="subtle" appearance="danger" onClick={signOut}>
-                  Sign Out
-                </Button>
-                <div
-                  style={{
-                    marginTop: 16,
-                  }}
-                >
-                  {isLoading
-                    ? 'loading...'
-                    : user
-                      ? `Signed in as ${user.name}`
-                      : 'Signed Out'}
-                </div>
-              </div>
-            </Form>
-          )}
-        </SessionProvider>
+        <Alerts>
+          {error ? (
+            <Alert appearance="danger">
+              Your username and password were incorrect
+            </Alert>
+          ) : null}
+        </Alerts>
+        <Form method="post" onSubmit={this.onSubmit}>
+          <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
+          <Divider />
+          <div>
+            <Fields>
+              <FieldLabel>Email</FieldLabel>
+              <Input
+                name="username"
+                autoFocus
+                value={username}
+                onChange={e => this.setState({ username: e.target.value })}
+              />
+              <FieldLabel>Password</FieldLabel>
+              <Input
+                type="password"
+                name="password"
+                value={password}
+                onChange={e => this.setState({ password: e.target.value })}
+              />
+            </Fields>
+            <LoadingButton
+              appearance="primary"
+              type="submit"
+              isLoading={isLoading}
+              indicatorVariant="dots"
+            >
+              Sign In
+            </LoadingButton>
+          </div>
+        </Form>
+        <Spacer />
       </Container>
     );
   }
 }
 
-export default Session;
+export default ({ sessionPath, signinPath, signoutPath }) => (
+  <SessionProvider
+    signinPath={signinPath}
+    signoutPath={signoutPath}
+    sessionPath={sessionPath}
+  >
+    {props => <SigninPage {...props} />}
+  </SessionProvider>
+);
