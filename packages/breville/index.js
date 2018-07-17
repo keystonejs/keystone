@@ -20,8 +20,11 @@ const cloudinaryAdapter = new CloudinaryAdapter({
   folder: 'ask-dave',
 });
 
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+
 const keystone = new Keystone({
   name: 'breville-askdave',
+  adapter: new MongooseAdapter(),
 });
 
 const authStrategy = keystone.createAuthStrategy({
