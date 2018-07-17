@@ -86,7 +86,7 @@ class Session extends Component {
   };
 
   render() {
-    const { signOut } = this;
+    const { signIn, signOut } = this;
     const { children } = this.props;
     const {
       error,
@@ -100,6 +100,7 @@ class Session extends Component {
       isInitialising,
       isLoading,
       isSignedIn,
+      signIn,
       signOut,
       user,
     });
