@@ -11,6 +11,18 @@ export default class TextController extends FieldController {
   formatFilter = ({ label, value }) => {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
+  getValue = data => {
+    const value = data[this.config.path];
+    if (typeof value === 'number') {
+      return value;
+    } else if (typeof value === 'string' && value.length > 0) {
+      // The field component enforces numeric values
+      return parseFloat(value);
+    } else {
+      // if it is not a String or a Number then the field must be empty
+      return null;
+    }
+  };
   filterTypes = [
     {
       type: 'is',
