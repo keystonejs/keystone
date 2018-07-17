@@ -1,5 +1,10 @@
 // @flow
-import React, { Component, type Node, type Ref } from 'react';
+import React, {
+  Component,
+  type ComponentType,
+  type Node,
+  type Ref,
+} from 'react';
 import styled from 'react-emotion';
 import {
   CheckboxGroup as ReactCheckboxGroup,
@@ -20,6 +25,7 @@ const Label = styled.label({
   display: 'flex',
   lineHeight: 1,
 });
+const Text = 'span';
 
 type State = {
   isHovered: boolean,
@@ -47,6 +53,11 @@ type Props = {
 type ControlProps = Props & {
   svg: string, // html string
   type: 'checkbox' | 'radio',
+  components: {
+    Wrapper?: ComponentType<*>,
+    Label?: ComponentType<*>,
+    Text?: ComponentType<*>,
+  },
 };
 
 type IconProps = {
@@ -111,20 +122,39 @@ const Icon = styled.div(
   }
 );
 
-class Control extends Component<ControlProps, State> {
-  static defaultProps = {
-    checked: false,
-    isDisabled: false,
-  };
+const defaultComponents = { Wrapper, Label, Text };
 
+class Control extends Component<ControlProps, State> {
+  components: {};
+  control: HTMLElement;
   state = {
     isActive: false,
     isFocused: false,
     isHovered: false,
     mouseIsDown: false,
   };
+  static defaultProps = {
+    checked: false,
+    components: {},
+    isDisabled: false,
+  };
 
-  control: HTMLElement;
+  constructor(props: Props) {
+    super(props);
+    this.cacheComponents(props.components);
+  }
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.components !== this.props.components) {
+      this.cacheComponents(nextProps.components);
+    }
+  }
+  cacheComponents = (components?: {}) => {
+    this.components = {
+      ...defaultComponents,
+      ...components,
+    };
+  };
+
   focus() {
     this.control.focus();
   }
@@ -174,15 +204,18 @@ class Control extends Component<ControlProps, State> {
       name,
       onChange,
       svg,
+      tabIndex,
       type,
       value,
       ...wrapperProps
     } = this.props;
+    const { components } = this;
     const iconProps = { ...this.state, checked, isDisabled };
 
     return (
-      <Wrapper {...wrapperProps}>
-        <Label
+      <components.Wrapper {...wrapperProps}>
+        <components.Label
+          isChecked={checked}
           isDisabled={isDisabled}
           onKeyDown={this.onKeyDown}
           onKeyUp={this.onKeyUp}
@@ -193,6 +226,7 @@ class Control extends Component<ControlProps, State> {
         >
           <HiddenInput
             checked={checked}
+            tabIndex={tabIndex || checked ? '0' : '-1'}
             disabled={isDisabled}
             innerRef={this.getRef}
             name={name}
@@ -206,9 +240,9 @@ class Control extends Component<ControlProps, State> {
           <Icon {...iconProps}>
             <Svg html={svg} />
           </Icon>
-          {children ? <span>{children}</span> : null}
-        </Label>
-      </Wrapper>
+          {children ? <components.Text>{children}</components.Text> : null}
+        </components.Label>
+      </components.Wrapper>
     );
   }
 }

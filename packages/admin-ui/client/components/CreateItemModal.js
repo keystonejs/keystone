@@ -3,13 +3,14 @@ import { Mutation } from 'react-apollo';
 import styled from 'react-emotion';
 
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Dialog } from '@keystonejs/ui/src/primitives/modals';
+import { Drawer } from '@keystonejs/ui/src/primitives/modals';
 import { resolveAllKeys } from '@keystonejs/utils';
 import { gridSize } from '@keystonejs/ui/src/theme';
+import { AutocompleteCaptor } from '@keystonejs/ui/src/primitives/forms';
 
 import FieldTypes from '../FIELD_TYPES';
 
-const Form = styled.div({
+const Body = styled.div({
   marginBottom: gridSize,
   marginTop: gridSize,
 });
@@ -21,7 +22,10 @@ class CreateItemModal extends Component {
     const item = list.getInitialItemData();
     this.state = { item };
   }
-  onCreate = () => {
+  onCreate = event => {
+    // prevent form submission
+    event.preventDefault();
+
     const {
       list: { fields },
       createItem,
@@ -52,10 +56,6 @@ class CreateItemModal extends Component {
     switch (event.key) {
       case 'Escape':
         return this.onClose();
-      case 'Enter':
-        if (document.activeElement.nodeName === 'INPUT') {
-          return this.onCreate();
-        }
     }
   };
   onChange = (field, value) => {
@@ -67,18 +67,24 @@ class CreateItemModal extends Component {
       },
     });
   };
+  formComponent = props => (
+    <form autoComplete="off" onSubmit={this.onCreate} {...props} />
+  );
   render() {
     const { isLoading, isOpen, list } = this.props;
     const { item } = this.state;
     return (
-      <Dialog
+      <Drawer
+        closeOnBlanketClick
+        component={this.formComponent}
         isOpen={isOpen}
         onClose={this.onClose}
         heading={`Create ${list.singular}`}
         onKeyDown={this.onKeyDown}
+        slideInFrom="right"
         footer={
           <Fragment>
-            <Button appearance="create" onClick={this.onCreate}>
+            <Button appearance="create" type="submit">
               {isLoading ? 'Loading...' : 'Create'}
             </Button>
             <Button
@@ -91,7 +97,8 @@ class CreateItemModal extends Component {
           </Fragment>
         }
       >
-        <Form>
+        <Body>
+          <AutocompleteCaptor />
           {list.fields.map(field => {
             const { Field } = FieldTypes[list.key][field.path];
             return (
@@ -100,11 +107,12 @@ class CreateItemModal extends Component {
                 field={field}
                 key={field.path}
                 onChange={this.onChange}
+                renderContext="dialog"
               />
             );
           })}
-        </Form>
-      </Dialog>
+        </Body>
+      </Drawer>
     );
   }
 }

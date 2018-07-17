@@ -1,8 +1,5 @@
-const {
-  Types: { ObjectId },
-} = require('mongoose');
 const pluralize = require('pluralize');
-const { resolveAllKeys, escapeRegExp } = require('@keystonejs/utils');
+const { resolveAllKeys } = require('@keystonejs/utils');
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
@@ -22,26 +19,8 @@ const labelToPath = str =>
 
 const labelToClass = str => str.replace(/\s+/g, '');
 
-function getIdQueryConditions(args) {
-  const conditions = [];
-  if (!args) {
-    return conditions;
-  }
-  // id is how it looks in the schema
-  if ('id' in args) {
-    // _id is how it looks in the MongoDB
-    conditions.push({ _id: { $eq: ObjectId(args.id) } });
-  }
-  // id is how it looks in the schema
-  if ('id_not' in args) {
-    // _id is how it looks in the MongoDB
-    conditions.push({ _id: { $ne: ObjectId(args.id_not) } });
-  }
-  return conditions;
-}
-
 module.exports = class List {
-  constructor(key, config, { getListByKey, mongoose }) {
+  constructor(key, config, { getListByKey, adapter }) {
     this.key = key;
 
     this.config = {
@@ -76,6 +55,8 @@ module.exports = class List {
     this.updateMutationName = `update${itemQueryName}`;
     this.createMutationName = `create${itemQueryName}`;
 
+    this.adapter = adapter.newListAdapter(this.key, this.config);
+
     this.fields = config.fields
       ? Object.keys(config.fields).map(path => {
           const { type, ...fieldSpec } = config.fields[path];
@@ -83,9 +64,13 @@ module.exports = class List {
           return new implementation(path, fieldSpec, {
             getListByKey,
             listKey: key,
+            listAdapter: this.adapter,
+            fieldAdapterClass: type.adapters[adapter.name],
           });
         })
       : [];
+
+    this.adapter.prepareModel();
 
     this.views = {};
     Object.entries(config.fields).forEach(([path, fieldConfig]) => {
@@ -98,15 +83,6 @@ module.exports = class List {
         }
       );
     });
-
-    const schema = new mongoose.Schema({}, this.config.mongooseSchemaOptions);
-    this.fields.forEach(i => i.addToMongooseSchema(schema, mongoose));
-
-    if (this.config.configureMongooseSchema) {
-      this.config.configureMongooseSchema(schema, { mongoose });
-    }
-
-    this.model = mongoose.model(this.key, schema);
   }
   getAdminMeta() {
     return {
@@ -210,26 +186,9 @@ module.exports = class List {
     ];
   }
   getAdminGraphqlQueries() {
-    // TODO: Follow OpenCRUD naming:
-    // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-1-toplevel.md#example
-    // TODO: make sorting like OpenCRUD:
-    /*
-orderBy: UserOrderByInput
-...
-enum UserOrderByInput {
-id_ASC
-id_DESC
-name_ASC
-name_DESC
-updatedAt_ASC
-updatedAt_DESC
-createdAt_ASC
-createdAt_DESC
-}
-*/
     const commonArgs = `
           search: String
-          sort: String
+          orderBy: String
 
           # Pagination
           first: Int
@@ -260,9 +219,9 @@ createdAt_DESC
   }
   getAdminQueryResolvers() {
     return {
-      [this.listQueryName]: (_, args) => this.itemsQuery(args),
-      [this.listQueryMetaName]: (_, args) => this.itemsQueryMeta(args),
-      [this.itemQueryName]: (_, { where: { id } }) => this.model.findById(id),
+      [this.listQueryName]: (_, args) => this.adapter.itemsQuery(args),
+      [this.listQueryMetaName]: (_, args) => this.adapter.itemsQueryMeta(args),
+      [this.itemQueryName]: (_, { where: { id } }) => this.adapter.findById(id),
     };
   }
   getAdminFieldResolvers() {
@@ -342,7 +301,7 @@ createdAt_DESC
           )
         );
 
-        const newItem = await this.model.create(resolvedData);
+        const newItem = await this.adapter.create(resolvedData);
 
         await Promise.all(
           this.fields.map(field =>
@@ -353,7 +312,7 @@ createdAt_DESC
         return newItem;
       },
       [this.updateMutationName]: async (_, { id, data }) => {
-        const item = await this.model.findById(id);
+        const item = await this.adapter.findById(id);
 
         const resolvedData = await resolveAllKeys(
           this.fields.reduce(
@@ -380,174 +339,10 @@ createdAt_DESC
 
         return newItem;
       },
-      [this.deleteMutationName]: (_, { id }) =>
-        this.model.findByIdAndRemove(id),
+      [this.deleteMutationName]: (_, { id }) => this.adapter.delete(id),
       [this.deleteManyMutationName]: async (_, { ids }) => {
-        ids.map(async id => await this.model.findByIdAndRemove(id));
+        ids.map(async id => await this.adapter.delete(id));
       },
     };
-  }
-  itemsQueryConditions(args, depthGuard = 0) {
-    if (!args) {
-      return [];
-    }
-
-    // TODO: can depthGuard be an instance variable, to track the recursion
-    // depth instead of passing it through to the individual fields and back
-    // again?
-    if (depthGuard > 1) {
-      throw new Error(
-        'Nesting where args deeper than 1 level is not currently supported'
-      );
-    }
-
-    return this.fields.reduce(
-      (conds, field) => {
-        const fieldConditions = field.getQueryConditions(
-          args,
-          this,
-          depthGuard + 1
-        );
-
-        if (fieldConditions && !Array.isArray(fieldConditions)) {
-          console.warn(
-            `${field.listKey}.${field.path} (${
-              field.constructor.name
-            }) returned a non-array for .getQueryConditions(). This is probably a mistake. Ignoring.`
-          );
-          return conds;
-        }
-
-        // Nothing to do
-        if (!fieldConditions || !fieldConditions.length) {
-          return conds;
-        }
-
-        return [
-          ...conds,
-          ...fieldConditions.map(condition => {
-            if (condition.$isComplexStage) {
-              return condition;
-            }
-            return { [field.path]: condition };
-          }),
-        ];
-      },
-      // Special case for `_id` where it presents as `id` in the graphQL schema,
-      // and isn't a field type
-      getIdQueryConditions(args)
-    );
-  }
-  itemsQuery(args, { meta = false } = {}) {
-    const conditions = this.itemsQueryConditions(args.where);
-
-    const pipeline = [];
-    const postAggregateMutation = [];
-
-    // TODO: Order isn't important. Might as well put all the simple `$match`s
-    // first, and complex ones last.
-    // TODO: Change this to a `for...of` loop
-    let iterator = conditions[Symbol.iterator]();
-    let itr = iterator.next();
-    while (!itr.done) {
-      // Gather up all the simple matches
-      let simpleMatches = [];
-      while (!itr.done && !itr.value.$isComplexStage) {
-        simpleMatches.push(itr.value);
-        itr = iterator.next();
-      }
-
-      if (simpleMatches.length) {
-        pipeline.push({
-          $match: {
-            $and: simpleMatches,
-          },
-        });
-      }
-
-      // Push all the complex stages onto the pipeline as-is
-      while (!itr.done && itr.value.$isComplexStage) {
-        pipeline.push(...itr.value.pipeline);
-        if (itr.value.mutator) {
-          postAggregateMutation.push(itr.value.mutator);
-        }
-        itr = iterator.next();
-      }
-    }
-
-    if (args.search) {
-      // TODO: Implement configurable search fields for lists
-      pipeline.push({
-        $match: {
-          name: new RegExp(`${escapeRegExp(args.search)}`, 'i'),
-        },
-      });
-    }
-
-    if (args.orderBy) {
-      const [orderField, orderDirection] = args.orderBy.split('_');
-
-      pipeline.push({
-        $sort: {
-          [orderField]: orderDirection === 'ASC' ? 1 : -1,
-        },
-      });
-    }
-
-    if (args.skip < Infinity && args.skip > 0) {
-      pipeline.push({
-        $skip: args.skip,
-      });
-    }
-
-    if (args.first < Infinity && args.first > 0) {
-      pipeline.push({
-        $limit: args.first,
-      });
-    }
-
-    if (meta) {
-      pipeline.push({
-        $count: 'count',
-      });
-    }
-
-    if (!pipeline.length) {
-      return this.model.find();
-    }
-
-    // Map _id => id
-    // Normally, mongoose would do this for us, but because we're breaking out
-    // and going straight Mongo, gotta do it ourselves.
-    pipeline.push({
-      $addFields: {
-        id: '$_id',
-      },
-    });
-
-    return this.model
-      .aggregate(pipeline)
-      .exec()
-      .then(data => {
-        if (meta) {
-          return data[0];
-        }
-
-        return data
-          .map((item, index, list) =>
-            // Iterate over all the mutations
-            postAggregateMutation.reduce(
-              // And pass through the result to the following mutator
-              (mutatedItem, mutation) => mutation(mutatedItem, index, list),
-              // Starting at the original item
-              item
-            )
-          )
-          // If anything gets removed, we clear it out here
-          .filter(Boolean)
-      });
-  }
-  itemsQueryMeta(args) {
-    return this.itemsQuery(args, { meta: true });
   }
 };

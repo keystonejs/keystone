@@ -1,25 +1,6 @@
 import { colors } from '../../theme';
 import { alpha, darken, lighten } from '../../theme/color-utils';
 
-const subtleAppearance = {
-  default: {
-    text: colors.N40,
-    textHover: colors.text,
-  },
-  primary: {
-    text: colors.N40,
-    textHover: colors.primary,
-  },
-  warning: {
-    text: colors.N40,
-    textHover: colors.danger,
-  },
-  danger: {
-    text: colors.danger,
-    textHover: colors.danger,
-    isSolidOnHover: true,
-  },
-};
 const boldAppearance = {
   default: {
     bg: colors.N05,
@@ -70,15 +51,35 @@ const ghostAppearance = {
     text: colors.warning,
   },
 };
+const subtleAppearance = {
+  default: {
+    text: colors.N40,
+    textHover: colors.text,
+  },
+  primary: {
+    text: colors.N40,
+    textHover: colors.primary,
+  },
+  warning: {
+    text: colors.N40,
+    textHover: colors.danger,
+  },
+  danger: {
+    text: colors.danger,
+    textHover: colors.danger,
+    swapOnHover: makeGhostVariant,
+  },
+};
 
 export function makeSubtleVariant({ appearance, isDisabled }) {
-  const { text, textHover, isSolidOnHover } = subtleAppearance[appearance];
+  const { text, textHover, swapOnHover } = subtleAppearance[appearance];
 
   return {
     color: text,
+    fontWeight: swapOnHover ? 500 : null,
 
-    ':hover, :focus': isSolidOnHover
-      ? makeBoldVariant({ appearance, isDisabled })
+    ':hover, :focus': swapOnHover
+      ? swapOnHover({ appearance, isDisabled })
       : {
           color: textHover,
           textDecoration: 'underline',
@@ -94,9 +95,10 @@ export function makeGhostVariant({ appearance, isDisabled }) {
 
   return {
     border: '1px solid',
-    borderColor: isDisabled ? colors.N20 : border,
-    color: isDisabled ? colors.N40 : text,
+    borderColor: border,
+    color: text,
     fontWeight: 500,
+    opacity: isDisabled ? 0.5 : null,
 
     ':hover, :focus': {
       backgroundColor: alpha(border, 0.1),

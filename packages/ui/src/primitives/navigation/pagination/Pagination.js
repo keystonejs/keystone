@@ -5,8 +5,36 @@ import styled from 'react-emotion';
 
 import { colors } from '../../../theme';
 import Page from './Page';
-import manageState from './stateManager';
-import type { CountFormat, LabelType, OnChangeType } from './types';
+import type { CountArgs, CountFormat, LabelType, OnChangeType } from './types';
+
+function ariaPageLabelFn(page: number) {
+  return `Go to page ${page}`;
+}
+function countFormatterFn({
+  end,
+  pageSize,
+  plural,
+  singular,
+  start,
+  total,
+}: CountArgs) {
+  let count = '';
+
+  if (!total) {
+    count = 'No ' + (plural || 'records');
+  } else if (total > pageSize) {
+    count = `Showing ${start} to ${end} of ${total}`;
+  } else {
+    count = 'Showing ' + total;
+    if (total > 1 && plural) {
+      count += ' ' + plural;
+    } else if (total === 1 && singular) {
+      count += ' ' + singular;
+    }
+  }
+
+  return count;
+}
 
 function getRange({ currentPage, pageSize, total }) {
   if (!total) {
@@ -18,7 +46,7 @@ function getRange({ currentPage, pageSize, total }) {
   }
 }
 
-type PaginationProps = {
+export type PaginationProps = {
   ariaPageLabel: LabelType,
   countFormatter: CountFormat,
   displayCount: boolean,
@@ -40,6 +68,15 @@ const PageCount = styled.div({
 });
 
 class Pagination extends Component<PaginationProps> {
+  static defaultProps = {
+    ariaPageLabel: ariaPageLabelFn,
+    countFormatter: countFormatterFn,
+    currentPage: 1,
+    limit: 5,
+    plural: 'Items',
+    singular: 'Item',
+  };
+
   renderCount() {
     let {
       countFormatter,
@@ -64,6 +101,7 @@ class Pagination extends Component<PaginationProps> {
 
     return <PageCount>{count}</PageCount>;
   }
+
   renderPages() {
     let { ariaPageLabel, currentPage, limit, pageSize, total } = this.props;
 
@@ -91,17 +129,16 @@ class Pagination extends Component<PaginationProps> {
       }
     }
 
-    const onChange = (page) => {
+    const onChange = page => {
       if (this.props.onChange) {
-        this.props.onChange({
-          page,
+        this.props.onChange(page, {
           pageSize,
           total,
           minPage,
           maxPage,
         });
       }
-    }
+    };
 
     // go to first
     if (minPage > 1) {
@@ -149,6 +186,7 @@ class Pagination extends Component<PaginationProps> {
 
     return pages;
   }
+
   render() {
     return (
       <PaginationElement aria-label="Pagination">
@@ -159,4 +197,4 @@ class Pagination extends Component<PaginationProps> {
   }
 }
 
-export default manageState(Pagination);
+export default Pagination;

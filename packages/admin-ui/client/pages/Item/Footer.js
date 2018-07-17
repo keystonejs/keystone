@@ -58,6 +58,11 @@ export default class Footer extends Component {
     window.removeEventListener('resize', this.recalcPosition, false);
   }
   recalcPosition = raf(() => {
+    if (this.wrapper === null) {
+      // Due to the use of raf, this function may end up being called *after*
+      // the component is unmounted. If this happens, we can safely return early.
+      return;
+    }
     this.footerSize.x = this.wrapper.offsetWidth;
 
     var offsetTop = 0;
@@ -101,7 +106,7 @@ export default class Footer extends Component {
   };
 
   render() {
-    const { onSave, onReset, onDelete, updateInProgress } = this.props;
+    const { onSave, onDelete, resetInterface, updateInProgress } = this.props;
     const { height, position, top, width } = this.state;
 
     const wrapperStyle = { height };
@@ -110,7 +115,7 @@ export default class Footer extends Component {
     return (
       <Wrapper innerRef={this.getWrapper} style={wrapperStyle} key="wrapper">
         <Toolbar innerRef={this.getToolbar} style={footerStyle} key="footer">
-          <div>
+          <div css={{ display: 'flex', alignItems: 'center' }}>
             <LoadingButton
               appearance="primary"
               isDisabled={updateInProgress}
@@ -121,14 +126,7 @@ export default class Footer extends Component {
             >
               Save Changes
             </LoadingButton>
-            <Button
-              appearance="warning"
-              isDisabled={!onReset || updateInProgress}
-              variant="subtle"
-              onClick={onReset}
-            >
-              Reset Changes
-            </Button>
+            {resetInterface}
           </div>
           <div>
             <Button

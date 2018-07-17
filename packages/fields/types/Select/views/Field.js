@@ -5,8 +5,7 @@ import {
   FieldLabel,
   FieldInput,
 } from '@keystonejs/ui/src/primitives/fields';
-
-import { Select } from '@keystonejs/ui/src/primitives/forms';
+import { Select } from '@keystonejs/ui/src/primitives/filters';
 
 export default class SelectField extends Component {
   onChange = option => {
@@ -14,9 +13,17 @@ export default class SelectField extends Component {
     onChange(field, option ? option.value : null);
   };
   render() {
-    const { autoFocus, field, item } = this.props;
+    const { autoFocus, field, item, renderContext } = this.props;
     const value = field.options.filter(i => i.value === item[field.path])[0];
     const htmlID = `ks-input-${field.path}`;
+
+    const selectProps =
+      renderContext === 'dialog'
+        ? {
+            menuPortalTarget: document.body,
+            menuShouldBlockScroll: true,
+          }
+        : null;
 
     return (
       <FieldContainer>
@@ -25,10 +32,12 @@ export default class SelectField extends Component {
           <Select
             autoFocus={autoFocus}
             value={value}
-            menuPosition="fixed"
             options={field.options}
             onChange={this.onChange}
+            id={`react-select-${htmlID}`}
             inputId={htmlID}
+            instanceId={htmlID}
+            {...selectProps}
           />
         </FieldInput>
       </FieldContainer>

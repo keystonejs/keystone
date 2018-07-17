@@ -203,7 +203,7 @@ class TwitterAuthStrategy {
       // NOTE: We don't need to filter on verifiedAt as these rows can only
       // possibly exist after we've validated with Twitter (see above)
       pastSessionItem = await this.getSessionList()
-        .model.findOne({
+        .adapter.findOne({
           [FIELD_TWITTER_ID]: jsonData.id_str,
         })
         // do a JOIN on the item
@@ -287,15 +287,11 @@ class TwitterAuthStrategy {
 
     try {
       const twitterItem = await this.getSessionList()
-        .model.findByIdAndUpdate(
-          twitterSessionId,
-          { item: item.id },
-          { new: true }
-        )
+        .adapter.update(twitterSessionId, { item: item.id }, { new: true })
         .exec();
 
       await this.getList()
-        .model.findByIdAndUpdate(item.id, {
+        .adapter.update(item.id, {
           [this.config.idField]: twitterItem[FIELD_TWITTER_ID],
           [this.config.usernameField]: twitterItem[FIELD_TWITTER_USERNAME],
         })

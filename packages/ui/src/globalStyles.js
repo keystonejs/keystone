@@ -2,9 +2,6 @@
 import { fontFamily, fontSize, colors } from './theme';
 
 export default `
-  * {
-    box-sizing: border-box;
-  }
   body {
     background-color: ${colors.page};
     color: ${colors.text};

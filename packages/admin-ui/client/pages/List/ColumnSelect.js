@@ -1,16 +1,17 @@
 import React from 'react';
 import { CheckIcon, DashIcon, XIcon } from '@keystonejs/icons';
 import { colors } from '@keystonejs/ui/src/theme';
+import { OptionPrimitive } from '@keystonejs/ui/src/primitives/filters';
 
-import FieldAwareSelect, { type SelectProps } from './FieldAwareSelect';
-import { OptionPrimitive } from './components';
+import { POPOUT_GUTTER } from '../../components/Popout';
+import FieldSelect, { type FieldSelectProps } from './FieldSelect';
 
 export const ColumnOption = ({
   children,
   isFocused,
   isSelected,
-  innerProps,
   selectProps,
+  ...props
 }) => {
   const { removeIsAllowed } = selectProps;
 
@@ -23,11 +24,7 @@ export const ColumnOption = ({
   }
 
   return (
-    <OptionPrimitive
-      isFocused={isFocused}
-      isSelected={isSelected}
-      {...innerProps}
-    >
+    <OptionPrimitive isFocused={isFocused} isSelected={isSelected} {...props}>
       <span>{children}</span>
       {isSelected && !removeIsAllowed ? null : (
         <Icon css={{ color: iconColor }} />
@@ -36,15 +33,15 @@ export const ColumnOption = ({
   );
 };
 
-export default function ColumnSelect(props: SelectProps) {
+export default function ColumnSelect(props: FieldSelectProps) {
   return (
-    <FieldAwareSelect
-      {...props}
-      // onChange={this.handleChange}
-      placeholder="Find a field..."
-      components={{
-        Option: ColumnOption,
-      }}
-    />
+    <div css={{ padding: POPOUT_GUTTER }}>
+      <FieldSelect
+        {...props}
+        components={{ Option: ColumnOption }}
+        isMulti
+        placeholder="Select columns to display"
+      />
+    </div>
   );
 }

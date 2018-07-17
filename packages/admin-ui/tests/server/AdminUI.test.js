@@ -25,7 +25,6 @@ describe('Add Middleware', () => {
     const adminUI = new AdminUI(keystone, { adminPath });
 
     expect(adminUI.createSessionMiddleware({ cookieSecret })).not.toBe(null);
-    expect(adminUI.createGraphQLMiddleware()).not.toBe(null);
     expect(adminUI.createDevMiddleware()).not.toBe(null);
   });
 });

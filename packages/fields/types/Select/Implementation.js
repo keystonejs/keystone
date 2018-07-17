@@ -1,5 +1,6 @@
 const inflection = require('inflection');
-const Implementation = require('../../Implementation');
+const { Implementation } = require('../../Implementation');
+const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 
 function initOptions(options) {
   let optionsArray = options;
@@ -12,7 +13,7 @@ function initOptions(options) {
   });
 }
 
-module.exports = class Select extends Implementation {
+class Select extends Implementation {
   constructor(path, config) {
     super(...arguments);
     this.options = initOptions(config.options);
@@ -33,12 +34,7 @@ module.exports = class Select extends Implementation {
       }
     `;
   }
-  addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
-    schema.add({
-      [this.path]: { type: String, ...mongooseOptions },
-    });
-  }
+
   extendAdminMeta(meta) {
     return { ...meta, options: this.options };
   }
@@ -60,6 +56,16 @@ module.exports = class Select extends Implementation {
       ${this.path}: ${this.getTypeName()}
     `;
   }
+}
+
+class MongoSelectInterface extends MongooseFieldAdapter {
+  addToMongooseSchema(schema) {
+    const { mongooseOptions } = this.config;
+    schema.add({
+      [this.path]: { type: String, ...mongooseOptions },
+    });
+  }
+
   getQueryConditions(args) {
     const conditions = [];
     const eq = this.path;
@@ -80,4 +86,9 @@ module.exports = class Select extends Implementation {
     }
     return conditions;
   }
+}
+
+module.exports = {
+  Select,
+  MongoSelectInterface,
 };

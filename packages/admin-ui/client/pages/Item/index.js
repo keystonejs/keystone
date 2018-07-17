@@ -4,10 +4,13 @@ import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import { Link, withRouter } from 'react-router-dom';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { withToastManager } from 'react-toast-notifications';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
 import Nav from '../../components/Nav';
+import Animation from '../../components/Animation';
+import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import Footer from './Footer';
@@ -18,10 +21,10 @@ import {
   PlusIcon,
 } from '@keystonejs/icons';
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { A11yText, Title } from '@keystonejs/ui/src/primitives/typography';
+import { A11yText, H1 } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
-import { Dialog } from '@keystonejs/ui/src/primitives/modals';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
+import { AutocompleteCaptor } from '@keystonejs/ui/src/primitives/forms';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 
 import { resolveAllKeys } from '@keystonejs/utils';
@@ -83,32 +86,6 @@ const TitleLink = ({ children, ...props }) => (
   </Link>
 );
 
-class ConfirmResetModal extends Component {
-  onKeyDown = e => {
-    if (e.key === 'Escape') {
-      this.props.onCancel();
-    }
-  };
-  render() {
-    const { onCancel, onConfirm } = this.props;
-    return (
-      <Dialog isOpen onClose={onCancel} onKeyDown={this.onKeyDown} width={400}>
-        <p style={{ marginTop: 0 }}>
-          Are you sure you want reset your changes?
-        </p>
-        <footer>
-          <Button appearance="danger" onClick={onConfirm}>
-            Reset
-          </Button>
-          <Button variant="subtle" onClick={onCancel}>
-            Cancel
-          </Button>
-        </footer>
-      </Dialog>
-    );
-  }
-}
-
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
 const ItemDetails = withRouter(
@@ -119,40 +96,53 @@ const ItemDetails = withRouter(
       itemHasChanged: false,
       showCreateModal: false,
       showDeleteModal: false,
-      showResetChangesModal: false,
+      resetRequested: false,
     };
     componentDidMount() {
       this.mounted = true;
+      document.addEventListener('keydown', this.onKeyDown, false);
     }
     componentWillUnmount() {
       this.mounted = false;
+      document.removeEventListener('keydown', this.onKeyDown, false);
     }
-    showDeleteModal = () => {
+    onKeyDown = event => {
+      const { resetRequested } = this.state;
+      if (event.defaultPrevented) return;
+
+      switch (event.key) {
+        case 'Escape':
+          if (resetRequested) {
+            return this.hideConfirmResetMessage();
+          }
+        case 'Enter':
+          if (event.metaKey) {
+            return this.onSave();
+          }
+      }
+    };
+
+    showConfirmResetMessage = () => {
+      const { itemHasChanged } = this.state;
+      if (!itemHasChanged) return;
+      this.setState({ resetRequested: true });
+    };
+    hideConfirmResetMessage = () => {
+      this.setState({ resetRequested: false });
+    };
+    openDeleteModal = () => {
       this.setState({ showDeleteModal: true });
     };
     closeDeleteModal = () => {
       this.setState({ showDeleteModal: false });
     };
-    onDelete = () => {
-      const { adminPath, history, list } = this.props;
-      if (this.mounted) {
-        this.setState({ showDeleteModal: false });
-      }
-      history.push(`${adminPath}/${list.path}`);
-    };
-    showConfirmResetModal = () => {
-      const { itemHasChanged } = this.state;
-      if (!itemHasChanged) return;
-      this.setState({ showConfirmResetModal: true });
-    };
-    closeConfirmResetModal = () => {
-      this.setState({ showConfirmResetModal: false });
-    };
+
     onReset = () => {
       this.setState({
         item: this.props.item,
+        itemHasChanged: false,
       });
-      this.closeConfirmResetModal();
+      this.hideConfirmResetMessage();
     };
     onChange = (field, value) => {
       const { item } = this.state;
@@ -164,17 +154,48 @@ const ItemDetails = withRouter(
         itemHasChanged: true,
       });
     };
-    renderConfirmResetModal() {
-      const { showConfirmResetModal } = this.state;
-      if (!showConfirmResetModal) return;
+    onDelete = () => {
+      const { adminPath, history, list } = this.props;
+      if (this.mounted) {
+        this.setState({ showDeleteModal: false });
+      }
+      history.push(`${adminPath}/${list.path}`);
+    };
 
-      return (
-        <ConfirmResetModal
-          onCancel={this.closeConfirmResetModal}
-          onConfirm={this.onReset}
-        />
+    renderResetInterface = () => {
+      const { updateInProgress } = this.props;
+      const { itemHasChanged, resetRequested } = this.state;
+
+      return resetRequested ? (
+        <div
+          css={{ display: 'flex', alignItems: 'center', marginLeft: gridSize }}
+        >
+          <div css={{ fontSize: '0.9rem', marginRight: gridSize }}>
+            Are you sure?
+          </div>
+          <Button
+            appearance="danger"
+            autoFocus
+            onClick={this.onReset}
+            variant="ghost"
+          >
+            Reset
+          </Button>
+          <Button variant="subtle" onClick={this.hideConfirmResetMessage}>
+            Cancel
+          </Button>
+        </div>
+      ) : (
+        <Button
+          appearance="warning"
+          isDisabled={!itemHasChanged || updateInProgress}
+          variant="subtle"
+          onClick={this.showConfirmResetMessage}
+        >
+          Reset Changes
+        </Button>
       );
-    }
+    };
     renderDeleteModal() {
       const { showDeleteModal } = this.state;
       const { item, list } = this.props;
@@ -190,15 +211,14 @@ const ItemDetails = withRouter(
       );
     }
     onSave = () => {
-      const {
-        item,
-        item: { id },
-      } = this.state;
+      const { item } = this.state;
       const {
         list: { fields },
         onUpdate,
+        toastManager,
         updateItem,
       } = this.props;
+
       resolveAllKeys(
         fields.reduce(
           (values, field) => ({
@@ -208,7 +228,20 @@ const ItemDetails = withRouter(
           {}
         )
       )
-        .then(data => updateItem({ variables: { id, data } }))
+        .then(data => updateItem({ variables: { id: item.id, data } }))
+        .then(() => {
+          const toastContent = (
+            <div>
+              {item.name ? <strong>{item.name}</strong> : null}
+              <div>Saved successfully</div>
+            </div>
+          );
+
+          toastManager.add(toastContent, {
+            autoDismiss: true,
+            appearance: 'success',
+          });
+        })
         .then(onUpdate);
     };
     onCopy = (text, success) => {
@@ -247,9 +280,15 @@ const ItemDetails = withRouter(
         updateInProgress,
         updateErrorMessage,
       } = this.props;
-      const { copyText, item, itemHasChanged } = this.state;
+      const { copyText, item } = this.state;
       const isCopied = copyText === item.id;
-      const CopyIcon = isCopied ? CheckIcon : ClippyIcon;
+      const copyIcon = isCopied ? (
+        <Animation name="pulse" duration="500ms">
+          <CheckIcon css={{ color: colors.create }} />
+        </Animation>
+      ) : (
+        <ClippyIcon />
+      );
       const listHref = `${adminPath}/${list.path}`;
 
       return (
@@ -260,9 +299,9 @@ const ItemDetails = withRouter(
             </Alert>
           ) : null}
           <FlexGroup align="center" justify="space-between">
-            <Title>
+            <H1>
               <TitleLink to={listHref}>{list.label}</TitleLink>: {item.name}
-            </Title>
+            </H1>
             <IconButton
               appearance="create"
               icon={PlusIcon}
@@ -275,14 +314,13 @@ const ItemDetails = withRouter(
             <ItemId>ID: {item.id}</ItemId>
             <CopyToClipboard text={item.id} onCopy={this.onCopy}>
               <Button variant="subtle" title="Copy ID">
-                <CopyIcon
-                  css={{ color: isCopied ? colors.create : 'inherit' }}
-                />
+                {copyIcon}
                 <A11yText>Copy ID</A11yText>
               </Button>
             </CopyToClipboard>
           </FlexGroup>
           <Form>
+            <AutocompleteCaptor />
             {list.fields.map((field, i) => {
               const { Field } = FieldTypes[list.key][field.path];
               return (
@@ -299,13 +337,12 @@ const ItemDetails = withRouter(
 
           <Footer
             onSave={this.onSave}
-            onDelete={this.showDeleteModal}
-            onReset={itemHasChanged ? this.showConfirmResetModal : undefined}
+            onDelete={this.openDeleteModal}
+            resetInterface={this.renderResetInterface()}
             updateInProgress={updateInProgress}
           />
           {this.renderCreateModal()}
           {this.renderDeleteModal()}
-          {this.renderConfirmResetModal()}
         </Fragment>
       );
     }
@@ -325,49 +362,76 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
   </PageError>
 );
 
-const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
+const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
   const itemQuery = getItemQuery({ list, itemId });
   return (
     <Fragment>
       <Nav />
-      <Query query={itemQuery}>
+      {/* network-only because the data we mutate with is important for display
+          in the UI, and may be different than what's in the cache */}
+      <Query query={itemQuery} fetchPolicy="network-only">
         {({ loading, error, data, refetch }) => {
           if (loading) return <PageLoading />;
 
           if (error) {
             return (
-              <ItemNotFound
-                adminPath={adminPath}
-                errorMessage={error.message}
-                list={list}
-              />
+              <Fragment>
+                <DocTitle>{list.singular} not found</DocTitle>
+                <ItemNotFound
+                  adminPath={adminPath}
+                  errorMessage={error.message}
+                  list={list}
+                />
+              </Fragment>
             );
           }
 
           const item = data[list.itemQueryName];
           return item ? (
-            <Container>
-              <Mutation mutation={list.updateMutation}>
-                {(
-                  updateItem,
-                  { loading: updateInProgress, error: updateError }
-                ) => {
-                  return (
-                    <ItemDetails
-                      adminPath={adminPath}
-                      item={item}
-                      key={itemId}
-                      list={list}
-                      getListByKey={getListByKey}
-                      onUpdate={refetch}
-                      updateInProgress={updateInProgress}
-                      updateErrorMessage={updateError && updateError.message}
-                      updateItem={updateItem}
-                    />
-                  );
-                }}
-              </Mutation>
-            </Container>
+            <main>
+              <DocTitle>
+                {item.name} - {list.singular}
+              </DocTitle>
+              <Container id="toast-boundary">
+                <Mutation mutation={list.updateMutation}>
+                  {(
+                    updateItem,
+                    { loading: updateInProgress, error: updateError }
+                  ) => {
+                    if (updateError) {
+                      const [title, ...rest] = updateError.message.split(/\:/);
+                      const toastContent = rest.length ? (
+                        <div>
+                          <strong>{title.trim()}</strong>
+                          <div>{rest.join('').trim()}</div>
+                        </div>
+                      ) : (
+                        updateError.message
+                      );
+
+                      toastManager.add(toastContent, {
+                        appearance: 'error',
+                      });
+                    }
+
+                    return (
+                      <ItemDetails
+                        adminPath={adminPath}
+                        item={item}
+                        key={itemId}
+                        list={list}
+                        getListByKey={getListByKey}
+                        onUpdate={refetch}
+                        toastManager={toastManager}
+                        updateInProgress={updateInProgress}
+                        updateErrorMessage={updateError && updateError.message}
+                        updateItem={updateItem}
+                      />
+                    );
+                  }}
+                </Mutation>
+              </Container>
+            </main>
           ) : (
             <ItemNotFound adminPath={adminPath} list={list} />
           );
@@ -377,4 +441,4 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey }) => {
   );
 };
 
-export default ItemPage;
+export default withToastManager(ItemPage);
