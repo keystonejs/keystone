@@ -3,6 +3,7 @@ const { Keystone } = require('@keystonejs/core');
 const {
   File,
   Text,
+  Float,
   Relationship,
   Select,
   Password,
@@ -92,6 +93,7 @@ keystone.createList('Post', {
       ref: 'PostCategory',
       many: true,
     },
+    stars: { type: Float },
   },
   labelResolver: item => item.name,
 });
