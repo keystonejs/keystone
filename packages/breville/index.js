@@ -8,6 +8,7 @@ const {
   CloudinaryImage,
 } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
+
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
 const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
 
@@ -81,9 +82,6 @@ keystone.createList('KitchenWare', {
 });
 
 keystone.createList('Answer', {
-  // defaultColumns: ['ingredient', 'technique', 'doneness', 'sensor', 'intensity', 'tempCelsius', 'tempFahrenheit'],
-  // defaultSort: 'comment',
-  // labelField: 'comment',
   labelResolver: item =>
     `${item.ingredient} | ${item.technique}${item.doneness &&
       ` | ${item.doneness}`}`,
