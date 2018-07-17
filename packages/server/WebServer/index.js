@@ -39,7 +39,6 @@ module.exports = class WebServer {
       app,
       config: { port },
     } = this;
-
     app.get('/', (req, res) =>
       res.sendFile(path.resolve(__dirname, './default.html'))
     );
