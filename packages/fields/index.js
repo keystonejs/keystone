@@ -1,5 +1,6 @@
 module.exports = {
   Implementation: require('./Implementation'),
+  Integer: require('./types/Integer'),
   Password: require('./types/Password'),
   Text: require('./types/Text'),
   Float: require('./types/Float'),
