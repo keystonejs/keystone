@@ -342,13 +342,15 @@ class ListDetails extends Component<Props, State> {
             </Popout>
             {this.renderExpandButton()}
             <ToolbarSeparator />
-            <IconButton
-              appearance="create"
-              icon={PlusIcon}
-              onClick={this.openCreateModal}
-            >
-              Create
-            </IconButton>
+            {list.acl.create ? (
+              <IconButton
+                appearance="create"
+                icon={PlusIcon}
+                onClick={this.openCreateModal}
+              >
+                Create
+              </IconButton>
+            ) : null}
           </FlexGroup>
 
           <ActiveFilters

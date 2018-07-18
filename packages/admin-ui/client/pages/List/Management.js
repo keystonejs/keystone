@@ -60,25 +60,31 @@ export default class ListManage extends Component<Props, State> {
       <Fragment>
         <FlexGroup align="center">
           {ENABLE_DEV_FEATURES ? (
+            list.acl.update ? (
+              <IconButton
+                appearance="primary"
+                icon={SettingsIcon}
+                isDisabled={!hasSelected}
+                onClick={this.openUpdateModal}
+                variant="ghost"
+                data-test-name="update"
+              >
+                Update
+              </IconButton>
+            ) : null
+          ) : null}
+          {list.acl.update ? (
             <IconButton
-              appearance="primary"
-              icon={SettingsIcon}
+              appearance="danger"
+              icon={TrashcanIcon}
               isDisabled={!hasSelected}
-              onClick={this.openUpdateModal}
+              onClick={this.openDeleteModal}
               variant="ghost"
+              data-test-name="delete"
             >
-              Update
+              Delete
             </IconButton>
           ) : null}
-          <IconButton
-            appearance="danger"
-            icon={TrashcanIcon}
-            isDisabled={!hasSelected}
-            onClick={this.openDeleteModal}
-            variant="ghost"
-          >
-            Delete
-          </IconButton>
           <Button autoFocus onClick={onToggleManage} variant="subtle">
             Done
           </Button>

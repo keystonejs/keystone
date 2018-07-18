@@ -9,12 +9,10 @@
   },
   "scripts": {
     "start": "node -r dotenv-safe/config index.js",
-    "oldcypress:run:cmd": "node -r dotenv-safe/config `which cypress` run",
-    "cypress:run:cmd": "exit 4",
-    "cypress:run:cmd:ci": "touch .env && node -r dotenv-safe/config `which cypress` run --reporter junit --reporter-options \"mochaFile=../../reports/junit/cypress-results-login.xml\"",
+    "cypress:run:cmd": "node -r dotenv-safe/config `which cypress` run",
     "cypress:open:cmd": "node -r dotenv-safe/config `which cypress` open",
-    "prepare-test-server": "node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.code) })'",
-    "cypress:run:ci": "yarn prepare-test-server cypress:run:cmd:ci",
+    "prepare-test-server": "NODE_ENV=test DISABLE_LOGGING=true node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.code) })'",
+    "cypress:run:ci": "touch .env && yarn prepare-test-server cypress:run:cmd",
     "cypress:run": "if [ -f .env ]; then yarn prepare-test-server cypress:run:cmd; else echo \"\nError: Must create a projects/login/.env file.\nSee projects/login/.env.example for values\n\"; exit 1; fi",
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a projects/login/.env file.\nSee projects/login/.env.example for values\n\"; exit 1; fi"
   },
@@ -29,8 +27,11 @@
     "react": "^16.3.1"
   },
   "devDependencies": {
-    "cypress": "^3.0.1",
+    "cypress": "^3.0.2",
     "execa": "0.10.0",
+    "mocha": "^3.1.2",
+    "mocha-junit-reporter": "^1.17.0",
+    "mocha-multi-reporters": "^1.1.7",
     "start-server-and-test": "^1.5.0"
   }
 }

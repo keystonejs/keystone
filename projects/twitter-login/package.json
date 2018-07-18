@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "node -r dotenv-safe/config index.js",
-    "cypress:run:ci": "exit 0"
+    "cypress:run:ci": "exit 0",
+    "cypress:run": "exit 0"
   },
   "dependencies": {
     "@keystonejs/adapter-mongoose": "^1.0.0",

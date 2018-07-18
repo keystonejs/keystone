@@ -1,10 +1,17 @@
 const inflection = require('inflection');
+const { parseACL, pick } = require('@keystonejs/utils');
 
 class Field {
   constructor(
     path,
     config,
-    { getListByKey, listKey, listAdapter, fieldAdapterClass }
+    {
+      getListByKey,
+      listKey,
+      listAdapter,
+      fieldAdapterClass,
+      defaultAccess = [],
+    }
   ) {
     this.path = path;
     this.config = config;
@@ -17,6 +24,18 @@ class Field {
       path,
       config
     );
+
+    const accessTypes = ['read', 'update'];
+
+    // Merge the default and config access together
+    this.acl = {
+      ...pick(defaultAccess, accessTypes),
+      ...parseACL(config.access, {
+        accessTypes,
+        listKey,
+        path,
+      }),
+    };
   }
   getGraphqlSchema() {
     if (!this.graphQLType) {
@@ -79,6 +98,10 @@ class Field {
   updateFieldPostHook() {}
 
   getGraphqlQueryArgs() {}
+  isGraphqlQueryArg(arg) {
+    return arg === this.path;
+  }
+  getGraphqlCreateArgs() {}
   getGraphqlUpdateArgs() {}
   getGraphqlFieldResolvers() {}
   getAdminMeta() {

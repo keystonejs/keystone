@@ -15,8 +15,9 @@ class MockAdapter {
 }
 
 class MockType {
-  constructor(name) {
+  constructor(name, { access }) {
     this.name = name;
+    this.acl = access;
   }
   getAdminMeta = () => new MockAdminMeta();
   getGraphqlSchema = () => `${this.name}_schema`;
@@ -39,6 +40,12 @@ const config = {
         },
         adapters: { mock: MockFieldAdapter },
       },
+      access: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+      },
     },
     email: {
       type: {
@@ -49,23 +56,40 @@ const config = {
         },
         adapters: { mock: MockFieldAdapter },
       },
+      access: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+      },
     },
   },
 };
 
+function mockKeystone() {
+  return {
+    defaultAccess: [],
+    auth: {},
+  };
+}
+
 describe('new List()', () => {
   test('new List() - Smoke test', () => {
+    const keystone = mockKeystone();
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      keystone,
     });
     expect(list).not.toBeNull();
   });
 
   test('new List() - labels', () => {
+    const keystone = mockKeystone();
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      keystone,
     });
     expect(list.label).toEqual('Tests');
     expect(list.singular).toEqual('Test');
@@ -81,9 +105,11 @@ describe('new List()', () => {
   });
 
   test('new List() - fields', () => {
+    const keystone = mockKeystone();
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      keystone,
     });
     expect(list.fields).toHaveLength(2);
     expect(list.fields[0]).toBeInstanceOf(MockType);
@@ -91,9 +117,11 @@ describe('new List()', () => {
   });
 
   test('new List() - views', () => {
+    const keystone = mockKeystone();
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      keystone,
     });
     expect(list.views).toEqual({
       name: {
@@ -110,18 +138,22 @@ describe('new List()', () => {
 
 describe('getAdminMeta()', () => {
   test('adminMeta() - Smoke test', () => {
+    const keystone = mockKeystone();
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      keystone,
     });
     const adminMeta = list.getAdminMeta();
     expect(adminMeta).not.toBeNull();
   });
 
   test('getAdminMeta() - labels', () => {
+    const keystone = mockKeystone();
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      keystone,
     });
     const adminMeta = list.getAdminMeta();
 
@@ -140,9 +172,11 @@ describe('getAdminMeta()', () => {
   });
 
   test('getAdminMeta() - fields', () => {
+    const keystone = mockKeystone();
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      keystone,
     });
     const adminMeta = list.getAdminMeta();
 
@@ -152,9 +186,11 @@ describe('getAdminMeta()', () => {
   });
 
   test('getAdminMeta() - views', () => {
+    const keystone = mockKeystone();
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      keystone,
     });
     const adminMeta = list.getAdminMeta();
 
@@ -172,63 +208,67 @@ describe('getAdminMeta()', () => {
 });
 
 test('getAdminGraphqlTypes()', () => {
+  const keystone = mockKeystone();
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
+    keystone,
   });
   const types = list.getAdminGraphqlTypes();
 
   expect(types).toEqual([
-    `
-      type Test {
-        id: String
-        # This virtual field will be resolved in one of the following ways (in this order):
-        # 1. Execution of 'labelResolver' set on the Test List config, or
-        # 2. As an alias to the field set on 'labelField' in the Test List config, or
-        # 3. As an alias to a 'name' field on the Test List (if one exists), or
-        # 4. As an alias to the 'id' field on the Test List.
-        _label_: String
-        name_schema
-        email_schema
-      }
-      `,
-    `
-      input TestWhereInput {
-        id: ID
-        id_not: ID
-        # MockType field
-        name_query_args
-
-        # MockType field
-        email_query_args
-      }
-      `,
-    `
-      input TestWhereUniqueInput {
-        id: ID!
-      }
-      `,
-    `
-      input TestUpdateInput {
-        name_update_args
-        email_update_args
-      }
-      `,
-    `
-      input TestCreateInput {
-        name_create_args
-        email_create_args
-      }
-      `,
     'name_types',
     'email_types',
+    `
+        type Test {
+          id: String
+          # This virtual field will be resolved in one of the following ways (in this order):
+          # 1. Execution of 'labelResolver' set on the Test List config, or
+          # 2. As an alias to the field set on 'labelField' in the Test List config, or
+          # 3. As an alias to a 'name' field on the Test List (if one exists), or
+          # 4. As an alias to the 'id' field on the Test List.
+          _label_: String
+          name_schema
+          email_schema
+        }
+      `,
+    `
+        input TestWhereInput {
+          id: ID
+          id_not: ID
+          # MockType field
+          name_query_args
+
+          # MockType field
+          email_query_args
+        }
+      `,
+    `
+        input TestWhereUniqueInput {
+          id: ID!
+        }
+      `,
+    `
+        input TestUpdateInput {
+          name_update_args
+          email_update_args
+        }
+      `,
+    `
+        input TestCreateInput {
+          name_create_args
+          email_create_args
+        }
+      `,
   ]);
 });
 
 test('getAdminGraphqlQueries()', () => {
+  const keystone = mockKeystone();
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
+    keystone,
   });
   const queries = list.getAdminGraphqlQueries();
 
@@ -257,29 +297,39 @@ test('getAdminGraphqlQueries()', () => {
           first: Int
           skip: Int
         ): _QueryMeta
+
+        _TestsMeta: _ListMeta
       `,
   ]);
 });
 
 test('getAdminGraphqlMutations()', () => {
+  const keystone = mockKeystone();
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
+    keystone,
   });
   const mutations = list.getAdminGraphqlMutations().map(mute => mute.trim());
 
   expect(mutations).toEqual([
     `
         createTest(
-          data: TestUpdateInput
+          data: TestCreateInput
         ): Test
+    `.trim(),
+    `
         updateTest(
           id: String!
           data: TestUpdateInput
         ): Test
+    `.trim(),
+    `
         deleteTest(
           id: String!
         ): Test
+    `.trim(),
+    `
         deleteTests(
           ids: [String!]
         ): Test
@@ -288,9 +338,11 @@ test('getAdminGraphqlMutations()', () => {
 });
 
 test('getAdminQueryResolvers()', () => {
+  const keystone = mockKeystone();
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
+    keystone,
   });
   const resolvers = list.getAdminQueryResolvers();
 
@@ -300,9 +352,11 @@ test('getAdminQueryResolvers()', () => {
 });
 
 test('getAdminMutationResolvers()', () => {
+  const keystone = mockKeystone();
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
+    keystone,
   });
   const resolvers = list.getAdminMutationResolvers();
 

@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
+import { deconstructErrorsToDataShape } from '../../util';
 
 const getQueryArgs = ({ filters, ...args }) => {
   const queryArgs = Object.keys(args).map(
@@ -205,15 +206,45 @@ class ListPageDataProvider extends Component<Props, State> {
       <Fragment>
         <DocTitle>{list.plural}</DocTitle>
         <Nav />
-        <Query query={query} fetchPolicy="cache-and-network">
+        <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
           {({ data, error, loading, refetch }) => {
-            if (error) {
+            // Only show error page if there is no data
+            // (ie; there could be partial data + partial errors)
+            if (
+              error &&
+              (!data ||
+                !data[list.listQueryName] ||
+                !Object.keys(data[list.listQueryName]).length)
+            ) {
+              let message = error.message;
+
+              // If there was an error returned by GraphQL, use that message
+              // instead
+              if (
+                error.networkError &&
+                error.networkError.result &&
+                error.networkError.result.errors &&
+                error.networkError.result.errors[0]
+              ) {
+                message =
+                  error.networkError.result.errors[0].message || message;
+              }
+
+              // Special case for when trying to access a non-existent list or a
+              // list that is set to `read: false`.
+              if (message.startsWith('Cannot query field')) {
+                message = `Unable to access list ${list.plural}`;
+              }
+
               return (
                 <PageError>
-                  <p>{error.message}</p>
+                  <p>{message}</p>
                 </PageError>
               );
             }
+
+            const itemsErrors =
+              deconstructErrorsToDataShape(error)[list.listQueryName] || [];
 
             // Leave the old values intact while new data is loaded
             if (!loading) {
@@ -227,6 +258,7 @@ class ListPageDataProvider extends Component<Props, State> {
 
             return children({
               query: { data, error, loading, refetch },
+              itemsErrors,
               data: {
                 currentPage,
                 fields,

@@ -1,5 +1,6 @@
 const { makeExecutableSchema } = require('graphql-tools');
 const { resolveAllKeys } = require('@keystonejs/utils');
+const { parseACL } = require('@keystonejs/utils');
 
 const {
   unmergeRelationships,
@@ -23,6 +24,10 @@ module.exports = class Keystone {
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
     this.session = bindSession(this);
+
+    this.defaultAccess = parseACL(config.defaultAccess, {
+      accessTypes: ['create', 'read', 'update', 'delete'],
+    });
 
     if (config.adapters) {
       this.adapters = config.adapters;
@@ -50,6 +55,7 @@ module.exports = class Keystone {
     const list = new List(key, config, {
       getListByKey,
       adapter: adapters[adapterName],
+      keystone: this,
     });
     this.lists[key] = list;
     this.listsArray.push(list);
@@ -72,7 +78,20 @@ module.exports = class Keystone {
   getAdminMeta() {
     const { name } = this.config;
     const lists = this.listsArray.reduce((acc, list) => {
-      acc[list.key] = list.getAdminMeta();
+      // We've consciously made a design choice that the `read` permission on a
+      // list is a master switch in the Admin UI (not the GraphQL API).
+      // Justification: If you want to Create without the Read permission, you
+      // technically don't have permission to read the result of your creation.
+      // If you want to Update an item, you can't see what the current values
+      // are. If you want to delete an item, you'd need to be given direct
+      // access to it (direct URI), but can't see anything about that item. And
+      // in fact, being able to load a page with a 'delete' button on it
+      // violates the read permission as it leaks the fact that item exists.
+      // In all these cases, the Admin UI becomes unnecessarily complex.
+      // So we only allow all these actions if you also have read access.
+      if (list.acl.read) {
+        acc[list.key] = list.getAdminMeta();
+      }
       return acc;
     }, {});
 
@@ -82,11 +101,23 @@ module.exports = class Keystone {
     let listTypes = flatten(
       this.listsArray.map(list => list.getAdminGraphqlTypes())
     ).map(trim);
+
     listTypes.push(`
+      type _ListAccess {
+        create: Boolean
+        read: Boolean
+        update: Boolean
+        delete: Boolean
+      }
+
+      type _ListMeta {
+        access: _ListAccess
+      }
+
       type _QueryMeta {
         count: Int
       }
-      `);
+    `);
 
     // Fields can be represented multiple times within and between lists.
     // If a field defines a `getGraphqlAuxiliaryTypes()` method, it will be
@@ -113,6 +144,17 @@ module.exports = class Keystone {
         ${mutations.join('')}
       }
     `;
+
+    const queryMetaResolver = {
+      // meta is passed in from the list's resolver (eg; '_allUsersMeta')
+      count: meta => meta.getCount(),
+    };
+
+    const listMetaResolver = {
+      // meta is passed in from the list's resolver (eg; '_allUsersMeta')
+      access: meta => meta.getAccess(),
+    };
+
     if (debugGraphQLSchemas()) {
       console.log(typeDefs);
       listTypes.forEach(i => console.log(i));
@@ -134,6 +176,8 @@ module.exports = class Keystone {
         }),
         {}
       ),
+      _QueryMeta: queryMetaResolver,
+      _ListMeta: listMetaResolver,
       Query: {
         // Order is also important here, any TypeQuery's defined by types
         // shouldn't be able to override list-level queries
