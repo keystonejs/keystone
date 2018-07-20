@@ -1,11 +1,9 @@
 # Access Control
 
-There are 4 ways of effecting the available actions of a user in Keystone:
+There are 2 ways of effecting the available actions of a user in Keystone:
 
 1. Admin UI authentication
-2. Admin UI display & forms
-3. GraphQL access control
-4. Schema isolation
+2. GraphQL access control
 
 *Note on terminology*:
 - _Authentication_ refers to a user identifying themselves.
@@ -17,6 +15,474 @@ There are 4 ways of effecting the available actions of a user in Keystone:
 ## Admin UI authentication
 
 TODO: Docs on how to login to the Admin UI
+
+## GraphQL access control
+
+Access control is about limiting CRUD actions that can be performed based on the
+access level of the currently authenticated (or anonymous) user.
+
+For example, the below access control states:
+1. Only authenticated users can read/update their own email, not any other
+   user's.
+2. Only authenticated users can update their own password, they cannot read their
+   own or other user's passwords.
+3. Only admins can read deactivated user accounts
+
+```javascript
+keystone.createList('User', {
+  access: {
+    // 3.
+    read: ({ authentication: { item } }) => {
+      if (item.isAdmin) {
+        return {}; // Don't filter any items for admins
+      }
+      return {
+        state_not: 'deactivated',
+      },
+    },
+  },
+
+  fields: {
+    name: { type: Text },
+    address: { type: Text },
+    state: { type: Select, options: ['active', 'deactivated'], default: 'active' },
+    isAdmin: { type: Bool, default: false },
+    email: {
+      type: Email,
+      // 1.
+      access: ({ item, authentication }) => item.id === authentication.item.id,
+    },
+    password: {
+      type: Password,
+      access: {
+        // 2.
+        read: false,
+        update: ({ item, authentication }) => item.id === authentication.item.id,
+      }
+    },
+  },
+});
+```
+
+When logged in to the Admin UI as "Jess", will result in a list view like:
+
+| name    | email                 | password | state  |
+|---------|-----------------------|----------|--------|
+| Ticiana |                       |          | active |
+| Jess    | jess@thinkmill.com.au |          | active |
+| Lauren  |                       |          | active |
+
+Notice Jess can only read his own email, and cannot read any passwords.
+
+---
+
+There are two ways of specifying Access Control:
+
+1. List level
+1. Field level
+
+### List level access control
+
+List level access control can have varying degrees of specificity depending on
+how much control you need.
+
+#### `access` API
+
+A key on the list config, `access` can be specified either as a single control,
+covering all CRUD operations, or as an object keyed by CRUD operation names.
+
+There are 3 ways to defind the values of `access`, in order of flexibility:
+1. Static
+2. Imperative
+3. Declarative
+
+Described as a Flow type, it looks like this:
+
+```javascript
+type GraphQLWhere = // ...
+
+type AccessInput = {
+  authentication?: {
+    item: {},
+    listKey: string
+  }
+};
+
+type StaticAccess = boolean;
+type ImperativeAccess = (AccessInput) => boolean;
+type DeclarativeAccess = GraphQLWhere | (AccessInput) => GraphQLWhere;
+
+type ListConfig = {
+  access: StaticAccess | ImperativeAccess | {
+    create?: StaticAccess | ImperativeAccess,
+    read?: StaticAccess | ImperativeAccess | DeclarativeAccess,
+    update?: StaticAccess | ImperativeAccess | DeclarativeAccess,
+    delete?: StaticAccess | ImperativeAccess | DeclarativeAccess,
+  },
+  // ...
+};
+```
+
+`GraphQLWhere` matches the `where` clause on the GraphQl type.
+ie; for a list `User`, it would match the input type `UserWhereInput`.
+
+`AccessInput` function parameter
+- `authentication` describes the currently authenticated user.
+  Will be `undefined` for anonymous users.
+  - `.item` is the details of the current user.
+  - `.listKey` is the list key of the currently authenticated user.
+
+When resolving `StaticAccess`;
+- `true`: Allow access
+- `false`: Do not allow access
+
+The default value of `access` is `(StaticAccess)true`.
+
+Definition of `access` operations:
+- `create`: Ability to create new items in the list
+- `read`: Ability to view / fetch data on any items in the list
+- `update`: Ability to alter data on any items in the list
+- `delete`: Ability to remove an item from the list
+
+When access is denied, the GraphQL response will contain an error with
+`type: 'AccessDeniedError'`, and `null` for the data.
+
+_NOTE_: The `create` operation cannot be given `DeclarativeAccess` - it does not
+make sense to do so and will throw an error if attempted.
+
+Let's break it down into concrete examples:
+
+##### Booleans
+
+###### Shorthand static Boolean
+
+```javascript
+keystone.createList('User', {
+
+  access: true,
+
+  fields: {
+    // ...
+  },
+});
+```
+
+> Great for blanket access control for lists you want everyone/no one to see.
+
+_NOTE:_ When set to `false`, the list queries/mutations/types will not be
+included in the GraphQL schema.
+
+###### Granular static Booleans
+
+```javascript
+keystone.createList('User', {
+
+  access: {
+    create: true,
+    read: true,
+    update: true,
+    delete: true,
+  },
+
+  fields: {
+    // ...
+  },
+});
+```
+
+> Use when you need some more fine grained control over what actions users can
+> perform.
+
+_NOTE:_ When set to `false`, the list queries/mutations/types exclusive to that
+operation will not be included in the GraphQL schema. For example, setting
+`create: false` will cause the `createXXXX` mutation to be excluded from the
+schema, `update: false` will cause the `updateXXXX` mutation to be excluded, and
+so on.
+
+###### Shorthand Imperative Boolean
+
+```javascript
+keystone.createList('User', {
+
+  access: ({ authentication: { item, listKey } }) => {
+    return true;
+  },
+
+  fields: {
+    // ...
+  },
+});
+```
+
+> Enables turning access on/off based on the currently authenticated user.
+
+_NOTE:_ Even when returning `false`, the queries/mutations/types _will_ be
+included in the GraphQL Schema.
+
+###### Granular functions returning Boolean
+
+```javascript
+keystone.createList('User', {
+
+  access: {
+    create: ({ authentication: { item, listKey } }) => true,
+    read: ({ authentication: { item, listKey } }) => true,
+    update: ({ authentication: { item, listKey } }) => true,
+    delete: ({ authentication: { item, listKey } }) => true,
+  },
+
+  fields: {
+    // ...
+  },
+});
+```
+
+> Use when you need some more fine grained control over what actions some or all
+> anonymous/authenticated users can perform.
+
+_NOTE:_ Even when returning `false`, the queries/mutations/types for that
+operation _will_ be included in the GraphQL Schema. For example,
+`create: () => false` will still include the `createXXXX` mutation in the
+GraphQL Schema, and so on.
+
+##### `GraphQLWhere`s
+
+In the examples below, the `name_contains: 'k'` syntax matches the
+`UserWhereInput` GraphQL type for the list.
+
+_NOTES:_ 
+1. For `read` operations, when the `GraphQLWhere` clause results in 0 items
+   returned, no error is returned.
+2. For `update`/`delete` operations, when the `GraphQLWhere` clause
+   results in 0 items, an `AccessDeniedError` is returned.
+3. For `create` operations, an `AccessDeniedError` is returned if the operation
+   is set to / returns `false`
+
+###### Granular static `GraphQLWhere`s
+
+```javascript
+keystone.createList('User', {
+
+  access: {
+    create: true,
+    read: { name_contains: 'k' },
+    update: { name_contains: 'k' },
+    delete: { name_contains: 'k' },
+  },
+
+  fields: {
+    name: { type: Text }
+    // ...
+  },
+});
+```
+
+> Use when you need some more fine grained control over what items a user can
+> perform actions on.
+
+###### Granular functions returning `GraphQLWhere`
+
+```javascript
+keystone.createList('User', {
+
+  access: {
+    create: ({ authentication: { item, listKey } }) => true,
+    read: ({ authentication: { item, listKey } }) => { state_not: 'deactivated' },
+    update: ({ authentication: { item, listKey } }) => { state_not: 'deactivated' },
+    delete: ({ authentication: { item, listKey } }) => { state_not: 'deactivated' },
+  },
+
+  fields: {
+    state: { type: Select, options: ['active', 'deactivated'], default: 'active' },
+    // ...
+  },
+});
+```
+
+> Use when you need some more fine grained control over which items _and_
+> actions anonymous/authenticated users can perform.
+
+
+### Field level access control
+
+#### `access` API
+
+A key on the field config, `access` can be specified either as a single control,
+covering all CRU operations, or as an object keyed by CRU operation names.
+
+There are 2 ways to defind the values of `access`, in order of flexibility:
+1. Static
+2. Imperative
+
+Described as a Flow type, it looks like this:
+
+```javascript
+type AccessInput = {
+  authentication?: {
+    item: {},
+    listKey: string,
+  },
+  item: {},
+};
+
+type StaticAccess = boolean;
+type ImperativeAccess = (AccessInput) => boolean;
+
+type FieldConfig = {
+  access: StaticAccess | ImperativeAccess | {
+    create?: StaticAccess | ImperativeAccess,
+    read?: StaticAccess | ImperativeAccess,
+    update?: StaticAccess | ImperativeAccess,
+  },
+  // ...
+};
+```
+
+_NOTE:_ Unlike List level access, it is not possible to specify a Declarative
+_where_ clause for Field level access.
+
+_NOTE:_ Fields do not have a `delete` access controls - this control exists on
+the list level only (it's not possible to _'delete'_ an existing field value -
+only to modify it).
+
+`AccessInput` function parameter
+- `authentication` describes the currently authenticated user.
+  Will be `undefined` for anonymous users.
+  - `.item` is the details of the current user.
+  - `.listKey` is the list key of the currently authenticated user.
+- `item` is the item this field belongs to.
+
+When defining `StaticAccess`;
+- `true`: Allow access
+- `false`: Do not allow access
+
+The default value of `access` is `(StaticAccess)true`.
+
+Definition of `access` operations:
+- `create`: Ability to set the value of the field when creating a new item
+- `read`: Ability to view / fetch the value of this field on an item
+- `update`: Ability to alter the value of this field on an item
+
+When access is denied, the GraphQL response will contain an error with
+`type: 'AccessDeniedError'`, and `null` for the field.
+
+Let's break it down into concrete examples:
+
+##### Shorthand static Boolean
+
+```javascript
+keystone.createList('User', {
+  fields: {
+    name: {
+      type: Text,
+
+      access: true,
+
+    },
+  },
+});
+```
+
+> Great for blanket access control for fields you want everyone/no one to see.
+
+_NOTE:_ When set to `false`, the list queries/mutations/types will not include
+this field in the GraphQL schema.
+
+##### Granular static Booleans
+
+```javascript
+keystone.createList('User', {
+  fields: {
+    name: {
+      type: Text,
+
+      access: {
+        create: true,
+        read: true,
+        update: true,
+      },
+
+    },
+  },
+});
+```
+
+> Use when you need some more fine grained control over what actions users can
+> perform with this field.
+
+_NOTE:_ When set to `false`, this field will not be included in GraphQL
+queries/mutations/types exclusively used by that operation. Eg, setting
+`update: false` in the example above will remove the `name` field from the
+`UserUpdateInput` type but may still include the field in `UserCreateInput` for
+example.
+
+##### Shorthand Imperative Boolean
+
+```javascript
+keystone.createList('User', {
+  fields: {
+    name: {
+      type: Text,
+
+      access: ({ authentication: { item, listKey }, item }) => {
+        return true;
+      },
+
+    },
+  },
+});
+```
+
+> Enables turning access on/off based on the currently authenticated user.
+
+_NOTE:_ Even when returning `false`, the queries/mutations/types _will_
+include the field in the GraphQL Schema.
+
+##### Granular functions returning Boolean
+
+```javascript
+keystone.createList('User', {
+
+  access: {
+    create: ({ authentication: { item, listKey }, item }) => true,
+    read: ({ authentication: { item, listKey }, item }) => true,
+    update: ({ authentication: { item, listKey }, item }) => true,
+  },
+
+  fields: {
+    // ...
+  },
+});
+```
+
+> Use when you need some more fine grained control over what actions some or all
+> anonymous/authenticated users can perform.
+
+_NOTE:_ Even when returning `false`, this field _will_ be included in GraphQL
+queries/mutations/types exclusively used by that operation.
+Eg, setting `update: () => false` in the example above will still include the
+`name` field in the `UserUpdateInput` type.
+
+---
+
+# Roadmap
+
+> The above documents the current state of Access Control in Keystone.
+> Below, we outline one possible roadmap for enhancing Access Control in the
+future.
+>
+> _**NOTE**: This is a draft, and should not be considered final._
+
+2 additional ways of effecting the available actions of a user in Keystone:
+
+1. Admin UI authentication
+2. _New:_ Admin UI display & forms
+3. GraphQL access control
+4. _New:_ Schema isolation
+
+## Admin UI authentication
+
+As above
 
 ## Admin UI display & forms
 
@@ -143,9 +609,6 @@ keystone.createList('User', {
 
 ## GraphQL access control
 
-Access control is about limiting CRUD actions that can be performed based on the
-access level of the currently authenticated (or anonymous) user.
-
 When combined with [Admin UI display & forms](#admin-ui-display-forms), it is
 possible to display fields, while limiting the data.
 
@@ -201,196 +664,42 @@ Notice Jess can only read his own email, and cannot read any passwords. Also
 notice the address column is not shown (as it wasn't included in the `admin`
 config).
 
-### `access` API
+---
 
-When specifying access values, the following are equivalent:
+## Access Control Queries
 
-**Shorthand Boolean Format**
+It is also possible to determine access control of the current user via queries:
 
-```javascript
-access: true
-```
+```graphql
+query {
+  _allUsersMeta(where: { id: "abc123" }) {
+    access: {
+      create
+      read
+      update
+      delete
 
-Great for blanket access control for lists or fields.
-
-**Regular Boolean Format**
-
-```javascript
-access: {
-  create: true,
-  read: true,
-  update: true,
-  delete: true
-}
-```
-
-Statically set access control for specific actions.
-
-**Dynamic Format**
-
-```javascript
-access: {
-  create: (args) => true,
-  read: (args) => true,
-  update: (args) => true,
-  delete: (args) => true,
-}
-```
-_(The definition of `args` changed depending on list / field usage, see below
-for more)_
-
-
-#### Lists
-
-The following are equivalent:
-
-```javascript
-keystone.createList('User', {
-  fields: {
-    name: { type: Text },
-    email: { type: Email },
-  },
-  access: {
-    read: false,
-    update: false,
+      fields: {
+        name: {
+          create
+          read
+          update
+        }
+        email: {
+          create
+          read
+          update
+        }
+        // ..etc
+      }
+    }
   }
-});
-```
-
-```javascript
-keystone.createList('User', {
-  fields: {
-    name: {
-      type: Text
-      access: {
-        read: false,
-        update: false,
-      }
-    },
-    email: {
-      type: Email,
-      access: {
-        read: false,
-        update: false,
-      }
-    },
-  },
-});
-```
-
-##### Default value
-
-The default value for lists is:
-
-```javascript
-access: {
-  create: true,
-  read: true,
-  update: true,
-  delete: true
 }
 ```
 
-##### Dynamic format
+This can be useful for clients to construct views around the given user's access to fields and lists.
 
-The function set on the access control types have the following signature:
-
-```
-({ item<Object>, auth<Object>: { item<Object>, listKey<String> }}) => Boolean
-```
-
-- `item` is the list item being checked against
-- `auth.item` is the authenticated user. Will be `undefined` for
-  anonymous users.
-- `auth.listKey` can be used to lookup the list by name. Will be
-  `undefined` for anonymous users.
-
-##### `create`
-
-The ability for a user to create new items in the list.
-
-When set explicitly to `false`, the `createXXXX` mutation will not be included
-in the GraphQL schema.
-
-When set to a function, and that function returns `false`, the `createXXXX`
-mutation will continue to appear in the GraphQL schema, and any usage of that
-mutation will return an Access Denied error.
-
-##### `read`
-
-Ability to query for values via GraphQL.
-
-When set explicitly to `false`, queries for this list (and meta data) will not
-appear in the GraphQL schema.
-
-When set to a function, and that function returns `false`, this list will
-continue to appear in the GraphQL schema, and any queries for items from this
-list will return `null`.
-
-##### `update`
-
-The ability for a user to update existing items in the list.
-
-When set explicitly to `false`, the `updateXXXX` mutation will not be included
-in the GraphQL schema.
-
-When set to a function, and that function returns `false`, the `updateXXXX`
-mutation will continue to appear in the GraphQL schema, and any usage of that
-mutation will return an Access Denied error.
-
-##### `delete`
-
-The ability for a user to delete existing items in the list.
-
-When set explicitly to `false`, the `deleteXXXX` mutation will not be included
-in the GraphQL schema.
-
-When set to a function, and that function returns `false`, the `deleteXXXX`
-mutation will continue to appear in the GraphQL schema, and any usage of that
-mutation will return an Access Denied error.
-
-#### Fields
-
-Fields do not have `create` or `delete` access controls - these controls exist
-on the list level only.
-
-##### Default value
-
-Default values for `read`/`update` are taken from the field's list.
-
-##### Dynamic format
-
-The function set on the access control types have the following signature:
-
-```
-({ item<Object>, listKey<String> }) => Boolean
-```
-
-- `item` is the authenticated user. Will be `undefined` for anonymous users.
-- `listKey` can be used to lookup the list by name. Will be `undefined` for
-  anonymous users.
-
-##### `read`
-
-Ability to include the value of this field in queries.
-
-When set explicitly to `false`, this field will not be included in the GraphQL
-schema.
-
-When set to a function, and that function returns `false`, this field will
-continue to appear in the GraphQL schema, and any queries which use it will have
-a value of `null`.
-
-##### `update`
-
-The ability for a user to update the valueof this field.
-
-When set explicitly to `false`, the `updateXXXX` mutation will not contain this
-field as an input.
-
-When set to a function, and that function returns `false`, the `updateXXXX`
-mutation will continue to contain the field in the GraphQL schema, and any
-attempt to write to that field will return an Access Denied error.
+<!-- TODO: Flesh this out more -->
 
 ## Schema isolation
 
@@ -424,8 +733,7 @@ express middleware you can then add to a route to serve your graphql api.
   lists: {
     // Lists are identified by the name passed to `.createList()`
     <listKey>: {
-      // Set access config for this list. Note: This also changes the 'default'
-      // for any fields which don't have explicit values set
+      // Set access config for this list.
       // Takes the same form as the `access` option on lists
       access: {
         create: true,
@@ -436,7 +744,7 @@ express middleware you can then add to a route to serve your graphql api.
         // Overwite access config for specific fields
         fields: {
 
-          // Overwrite the `.createList()` config to give full CRUD access for
+          // Overwrite the `.createList()` config to give full CRU access for
           // admin
           email: true,
           password: true,
@@ -500,36 +808,3 @@ app.use('/graphql', (req, res, next) => {
   publicSchema(req, res, next);
 });
 ```
-
----
-
-## Access Control Queries
-
-It is also possible to determine access control of the current user via queries:
-
-```graphq
-query {
-  _Permissions(where: { list: "User" }) {
-    create
-    read
-    update
-    delete
-  }
-  
-  # Will throw an error if the user does not have access to 'read' the User list
-  _UserPermissions(where: { id: "abc123" }) {
-    name: {
-      read
-      update
-    }
-    email: {
-      read
-      update
-    }
-  }
-}
-```
-
-This can be useful for clients to construct views around the given user's access to fields and lists.
-
-<!-- TODO: Flesh this out more -->
