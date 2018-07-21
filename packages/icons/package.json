@@ -16,7 +16,7 @@
     "react": "^16.3.1"
   },
   "devDependencies": {
-    "fs-extra": "^5.0.0",
+    "fs-extra": "^7.0.0",
     "octicons": "^7.2.0",
     "to-pascal-case": "^1.0.0"
   }
