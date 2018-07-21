@@ -72,7 +72,7 @@ export const FlexGroup = ({
   isInline,
   isVertical,
   justify = 'flex-start',
-  wrap = 'false',
+  wrap = false,
   spacing = gridSize,
   stretch,
   tag: Tag = 'div',
