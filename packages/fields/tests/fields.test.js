@@ -60,8 +60,7 @@ export const matchFilter = (app, filter, fields, target, done, sortkey) => {
 
 describe('Test CRUD for all fields', () => {
   const typesLoc = path.resolve('packages/fields/types');
-  fs
-    .readdirSync(typesLoc)
+  fs.readdirSync(typesLoc)
     .map(name => `${typesLoc}/${name}/filterTests.js`)
     .filter(filename => fs.existsSync(filename))
     .map(require)
