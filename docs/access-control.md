@@ -102,9 +102,9 @@ Described as a Flow type, it looks like this:
 type GraphQLWhere = // ...
 
 type AccessInput = {
-  authentication?: {
-    item: {},
-    listKey: string
+  authentication: {
+    item?: {},
+    listKey?: string
   }
 };
 
@@ -128,9 +128,8 @@ ie; for a list `User`, it would match the input type `UserWhereInput`.
 
 `AccessInput` function parameter
 - `authentication` describes the currently authenticated user.
-  Will be `undefined` for anonymous users.
-  - `.item` is the details of the current user.
-  - `.listKey` is the list key of the currently authenticated user.
+  - `.item` is the details of the current user. Will be `undefined` for anonymous users.
+  - `.listKey` is the list key of the currently authenticated user. Will be `undefined` for anonymous users.
 
 When resolving `StaticAccess`;
 - `true`: Allow access
@@ -318,9 +317,9 @@ Described as a Flow type, it looks like this:
 
 ```javascript
 type AccessInput = {
-  authentication?: {
-    item: {},
-    listKey: string,
+  authentication: {
+    item?: {},
+    listKey?: string,
   },
   item: {},
 };
@@ -347,9 +346,8 @@ only to modify it).
 
 `AccessInput` function parameter
 - `authentication` describes the currently authenticated user.
-  Will be `undefined` for anonymous users.
-  - `.item` is the details of the current user.
-  - `.listKey` is the list key of the currently authenticated user.
+  - `.item` is the details of the current user. Will be `undefined` for anonymous users.
+  - `.listKey` is the list key of the currently authenticated user. Will be `undefined` for anonymous users.
 - `item` is the item this field belongs to.
 
 When defining `StaticAccess`;
