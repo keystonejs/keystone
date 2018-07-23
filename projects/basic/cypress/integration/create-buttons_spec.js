@@ -6,8 +6,7 @@ describe('Home page', () => {
   ].forEach(({ text, target }) => {
     it(`Click through to list page - ${text}`, () => {
       cy.visit('/admin');
-      cy
-        .contains(`Go to ${text}`)
+      cy.contains(`Go to ${text}`)
         .should('have.attr', 'href', `/admin/${target}`)
         .should('have.attr', 'title', `Go to ${text}`)
         .click();
@@ -20,9 +19,11 @@ describe('Home page', () => {
     cy.visit('/admin');
     [{ text: 'User' }, { text: 'Post' }, { text: 'Post Category' }].forEach(
       ({ text }) => {
-        cy
-          .contains('button', `Create ${text}`)
-          .should('have.attr', 'title', `Create ${text}`);
+        cy.contains('button', `Create ${text}`).should(
+          'have.attr',
+          'title',
+          `Create ${text}`
+        );
       }
     );
   });
@@ -41,15 +42,15 @@ describe('Home page', () => {
       { text: 'Post Category', labels: ['Name', 'Slug'] },
     ].forEach(({ text, labels }) => {
       cy.contains('button', `Create ${text}`).click();
-      cy
-        .contains('div', `Create ${text} Dialog`)
-        .contains('h3', `Create ${text}`);
+      cy.contains('div', `Create ${text} Dialog`).contains(
+        'h3',
+        `Create ${text}`
+      );
       cy.contains('div', `Create ${text} Dialog`).contains('button', 'Create');
       labels.forEach(label => {
         cy.contains('div[data-selector="field-container"]', label);
       });
-      cy
-        .contains('div', `Create ${text} Dialog`)
+      cy.contains('div', `Create ${text} Dialog`)
         .contains('button', 'Cancel')
         .click();
       cy.contains('div', `Create ${text} Dialog`).should('not.exist');
@@ -68,15 +69,15 @@ describe('Home page', () => {
         labels: ['Name', 'Email', 'Password', 'Company'],
       },
     ].forEach(({ text, labels }) => {
-      cy
-        .contains('div', `Create ${text} Dialog`)
-        .contains('h3', `Create ${text}`);
+      cy.contains('div', `Create ${text} Dialog`).contains(
+        'h3',
+        `Create ${text}`
+      );
       cy.contains('div', `Create ${text} Dialog`).contains('button', 'Create');
       labels.forEach(label => {
         cy.contains('div[data-selector="field-container"]', label);
       });
-      cy
-        .contains('div', `Create ${text} Dialog`)
+      cy.contains('div', `Create ${text} Dialog`)
         .contains('button', 'Cancel')
         .click();
       cy.contains('div', `Create ${text} Dialog`).should('not.exist');

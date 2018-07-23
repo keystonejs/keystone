@@ -23,8 +23,7 @@ describe('Columns', () => {
       cy.get('button:contains("Columns")').click();
 
       enable.forEach(name => {
-        cy
-          .get('#app ~ div')
+        cy.get('#app ~ div')
           .find('input[id^="react-select-"]')
           .clear({ force: true })
           .type(`${name}{enter}`, { force: true });
@@ -32,8 +31,7 @@ describe('Columns', () => {
       });
 
       disable.forEach(name => {
-        cy
-          .get('#app ~ div')
+        cy.get('#app ~ div')
           .find('input[id^="react-select-"]')
           .clear({ force: true })
           .type(`${name}{enter}`, { force: true });

@@ -6,8 +6,7 @@ describe('Testing Login', () => {
     cy.visit('/admin');
     cy.get('[name="username"]').should('exist');
     cy.get('[name="password"]').should('exist');
-    cy
-      .get('button[type="submit"]')
+    cy.get('button[type="submit"]')
       .should('exist')
       .should('contain', 'Sign In');
   });
@@ -17,8 +16,7 @@ describe('Testing Login', () => {
     cy.get('body').should('not.contain', 'Users');
     cy.get('[name="username"]').should('exist');
     cy.get('[name="password"]').should('exist');
-    cy
-      .get('button[type="submit"]')
+    cy.get('button[type="submit"]')
       .should('exist')
       .should('contain', 'Sign In');
   });
@@ -27,66 +25,64 @@ describe('Testing Login', () => {
     it('Does not log in with empty credentials', () => {
       cy.visit('/admin');
       cy.get('button[type="submit"]').click();
-      cy
-        .get('body')
-        .should('contain', 'Your username and password were incorrect');
+      cy.get('body').should(
+        'contain',
+        'Your username and password were incorrect'
+      );
     });
 
     it('Does not log in with invalid credentials', () => {
       cy.visit('/admin');
 
-      cy
-        .get('input[name="username"]')
+      cy.get('input[name="username"]')
         .clear({ force: true })
         .type('fake@example.com', { force: true });
 
-      cy
-        .get('[name="password"]')
+      cy.get('[name="password"]')
         .clear({ force: true })
         .type('gibberish', { force: true });
 
       cy.get('button[type="submit"]').click();
-      cy
-        .get('body')
-        .should('contain', 'Your username and password were incorrect');
+      cy.get('body').should(
+        'contain',
+        'Your username and password were incorrect'
+      );
     });
 
     it('Does not log in with invalid username', () => {
       cy.visit('/admin');
 
-      cy
-        .get('input[name="username"]')
+      cy.get('input[name="username"]')
         .clear({ force: true })
         .type('fake@example.com', { force: true });
 
-      cy
-        .get('[name="password"]')
+      cy.get('[name="password"]')
         .clear({ force: true })
         .type(PASSWORD, { force: true });
 
       cy.get('button[type="submit"]').click();
-      cy
-        .get('body')
-        .should('contain', 'Your username and password were incorrect');
+      cy.get('body').should(
+        'contain',
+        'Your username and password were incorrect'
+      );
     });
 
     it('Does not log in with invalid password', () => {
       cy.visit('/admin');
 
-      cy
-        .get('input[name="username"]')
+      cy.get('input[name="username"]')
         .clear({ force: true })
         .type(USERNAME, { force: true });
 
-      cy
-        .get('[name="password"]')
+      cy.get('[name="password"]')
         .clear({ force: true })
         .type('gibberish', { force: true });
 
       cy.get('button[type="submit"]').click();
-      cy
-        .get('body')
-        .should('contain', 'Your username and password were incorrect');
+      cy.get('body').should(
+        'contain',
+        'Your username and password were incorrect'
+      );
     });
   });
 
@@ -94,13 +90,11 @@ describe('Testing Login', () => {
     it('Logs in with valid credentials', () => {
       cy.visit('/admin');
 
-      cy
-        .get('input[name="username"]')
+      cy.get('input[name="username"]')
         .clear({ force: true })
         .type(USERNAME, { force: true });
 
-      cy
-        .get('[name="password"]')
+      cy.get('[name="password"]')
         .clear({ force: true })
         .type(PASSWORD, { force: true });
 
@@ -113,13 +107,11 @@ describe('Testing Login', () => {
     it('Redirects to requested page after login', () => {
       cy.visit('/admin/users');
 
-      cy
-        .get('input[name="username"]')
+      cy.get('input[name="username"]')
         .clear({ force: true })
         .type(USERNAME, { force: true });
 
-      cy
-        .get('[name="password"]')
+      cy.get('[name="password"]')
         .clear({ force: true })
         .type(PASSWORD, { force: true });
 

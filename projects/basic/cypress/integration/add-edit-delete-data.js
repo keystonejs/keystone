@@ -74,8 +74,7 @@ describe('Editing data', () => {
       cy.visit(url);
 
       cy.get(`a:contains("${field.value}"):first`).click();
-      cy
-        .get(field.id)
+      cy.get(field.id)
         .clear()
         .type(field.newValue);
       cy.get('button[type="submit"][appearance="primary"]').click();

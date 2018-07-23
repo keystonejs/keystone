@@ -49,13 +49,12 @@ describe('Adding a file', function() {
           )
           .then(({ User: { attachment } }) => {
             // Assert the URL is visible in the admin UI
-            cy
-              .contains(`${attachment.publicUrl.split('/')[3]}`)
-              .should('be.visible');
+            cy.contains(`${attachment.publicUrl.split('/')[3]}`).should(
+              'be.visible'
+            );
 
             // Assert the file contents are what we uploaded
-            cy
-              .request(attachment.publicUrl)
+            cy.request(attachment.publicUrl)
               .its('body')
               .should('deep.eq', fileContent);
           });

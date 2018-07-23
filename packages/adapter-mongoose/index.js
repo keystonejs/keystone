@@ -57,7 +57,10 @@ class MongooseAdapter extends BaseKeystoneAdapter {
   connect(to, config) {
     const { name, dbName, ...adapterConnectOptions } = config;
     const uri = to || getMongoURI({ name, dbName });
-    this.mongoose.connect(uri, { ...adapterConnectOptions });
+    this.mongoose.connect(
+      uri,
+      { ...adapterConnectOptions }
+    );
     const db = this.mongoose.connection;
     db.on('error', console.error.bind(console, 'Mongoose connection error'));
     db.once('open', () => console.log('Connection success'));
