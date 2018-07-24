@@ -61,12 +61,15 @@ module.exports = class Keystone {
     } = this;
 
     Object.values(adapters).forEach(adapter => {
-      adapter.connect(to, {
-        name,
-        dbName,
-        ...adapterConnectOptions,
-        ...options,
-      });
+      adapter.connect(
+        to,
+        {
+          name,
+          dbName,
+          ...adapterConnectOptions,
+          ...options,
+        }
+      );
     });
   }
   getAdminMeta() {

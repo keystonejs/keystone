@@ -389,7 +389,7 @@ class ListDetails extends Component<Props, State> {
         />
 
         <main>
-          <Container isDisabled={isFullWidth}>
+          <Container isFullWidth={isFullWidth}>
             {items ? (
               <ListTable
                 adminPath={adminPath}

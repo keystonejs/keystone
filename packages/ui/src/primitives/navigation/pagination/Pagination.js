@@ -115,7 +115,7 @@ class Pagination extends Component<PaginationProps> {
 
     if (limit && limit < totalPages) {
       let rightLimit = Math.floor(limit / 2);
-      let leftLimit = rightLimit + limit % 2 - 1;
+      let leftLimit = rightLimit + (limit % 2) - 1;
       minPage = currentPage - leftLimit;
       maxPage = currentPage + rightLimit;
 
