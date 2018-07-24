@@ -12,7 +12,7 @@
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --list-different \"**/*.js\"",
     "lint": "yarn lint:prettier && yarn lint:eslint",
-    "start": "cd projects/basic && yarn start",
+    "start": "cd projects/breville && yarn start",
     "test": "yarn lint && yarn test:unit && yarn cypress:run",
     "test:unit": "jest"
   },
