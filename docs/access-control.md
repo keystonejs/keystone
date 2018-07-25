@@ -91,7 +91,7 @@ how much control you need.
 A key on the list config, `access` can be specified either as a single control,
 covering all CRUD operations, or as an object keyed by CRUD operation names.
 
-There are 3 ways to defind the values of `access`, in order of flexibility:
+There are 3 ways to define the values of `access`, in order of flexibility:
 1. Static
 2. Imperative
 3. Declarative
@@ -102,9 +102,9 @@ Described as a Flow type, it looks like this:
 type GraphQLWhere = // ...
 
 type AccessInput = {
-  authentication?: {
-    item: {},
-    listKey: string
+  authentication: {
+    item?: {},
+    listKey?: string
   }
 };
 
@@ -128,9 +128,8 @@ ie; for a list `User`, it would match the input type `UserWhereInput`.
 
 `AccessInput` function parameter
 - `authentication` describes the currently authenticated user.
-  Will be `undefined` for anonymous users.
-  - `.item` is the details of the current user.
-  - `.listKey` is the list key of the currently authenticated user.
+  - `.item` is the details of the current user. Will be `undefined` for anonymous users.
+  - `.listKey` is the list key of the currently authenticated user. Will be `undefined` for anonymous users.
 
 When resolving `StaticAccess`;
 - `true`: Allow access
@@ -310,7 +309,7 @@ keystone.createList('User', {
 A key on the field config, `access` can be specified either as a single control,
 covering all CRU operations, or as an object keyed by CRU operation names.
 
-There are 2 ways to defind the values of `access`, in order of flexibility:
+There are 2 ways to define the values of `access`, in order of flexibility:
 1. Static
 2. Imperative
 
@@ -318,9 +317,9 @@ Described as a Flow type, it looks like this:
 
 ```javascript
 type AccessInput = {
-  authentication?: {
-    item: {},
-    listKey: string,
+  authentication: {
+    item?: {},
+    listKey?: string,
   },
   item: {},
 };
@@ -347,9 +346,8 @@ only to modify it).
 
 `AccessInput` function parameter
 - `authentication` describes the currently authenticated user.
-  Will be `undefined` for anonymous users.
-  - `.item` is the details of the current user.
-  - `.listKey` is the list key of the currently authenticated user.
+  - `.item` is the details of the current user. Will be `undefined` for anonymous users.
+  - `.listKey` is the list key of the currently authenticated user. Will be `undefined` for anonymous users.
 - `item` is the item this field belongs to.
 
 When defining `StaticAccess`;
