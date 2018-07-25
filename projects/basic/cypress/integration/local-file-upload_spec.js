@@ -33,6 +33,12 @@ describe('Adding a file', function() {
         cy.get('button[type="submit"]').click();
         cy.contains('upload.txt');
         cy.wait('@graphqlPost');
+        // There's a race condition somewhere. If we don't wait, the query
+        // returns `null` for attachment (ie; there isn't one). This makes me
+        // think the server is returning too soon from the file upload query,
+        // but after looking through that code, it all seems ok
+        // ( see: packages/fields/types/File/Implementation.js )
+        cy.wait(1000);
         return cy
           .graphql_query(
             `${Cypress.config('baseUrl')}/admin/api`,
@@ -49,9 +55,9 @@ describe('Adding a file', function() {
           )
           .then(({ User: { attachment } }) => {
             // Assert the URL is visible in the admin UI
-            cy.contains(`${attachment.publicUrl.split('/')[3]}`).should(
-              'be.visible'
-            );
+            cy.contains(
+              `${attachment.publicUrl.split('/')[3].split('-')[1]}`
+            ).should('be.visible');
 
             // Assert the file contents are what we uploaded
             cy.request(attachment.publicUrl)

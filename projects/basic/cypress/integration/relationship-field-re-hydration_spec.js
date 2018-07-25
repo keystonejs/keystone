@@ -5,11 +5,8 @@ describe('Testing re-hydration', () => {
     cy.visit('/admin/posts');
     cy.get('button[appearance="create"]').click();
     cy.wait(150);
-    cy.get('#react-select-ks-input-categories div[role="button"]').click();
-    cy.get('#react-select-ks-input-categories-listbox').should(
-      'not.contain',
-      'New Category'
-    );
+    cy.get('#react-select-ks-input-categories div[aria-hidden="true"]').click();
+    cy.get('div[role="option"]').should('not.contain', 'New Category');
 
     cy.visit('/admin/post-categories');
     cy.get('button[appearance="create"]').click();
@@ -20,11 +17,8 @@ describe('Testing re-hydration', () => {
     cy.get('nav a:contains("Posts")').click();
     cy.get('button[appearance="create"]').click();
     cy.wait(150);
-    cy.get('#react-select-ks-input-categories div[role="button"]').click();
-    cy.get('#react-select-ks-input-categories-listbox').should(
-      'contain',
-      'New Category'
-    );
+    cy.get('#react-select-ks-input-categories div[aria-hidden="true"]').click();
+    cy.get('div[role="option"]').should('contain', 'New Category');
 
     cy.visit('/admin/post-categories');
     cy.get('a:contains("New Category"):first').click();

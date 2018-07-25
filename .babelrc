@@ -7,6 +7,9 @@
     },
     "development": {
       "plugins": [["emotion", { "sourceMap": true, "autoLabel": true }]]
+    },
+    "test": {
+      "plugins": [["emotion", { "sourceMap": true, "autoLabel": true }]]
     }
   }
 }
