@@ -91,7 +91,7 @@ how much control you need.
 A key on the list config, `access` can be specified either as a single control,
 covering all CRUD operations, or as an object keyed by CRUD operation names.
 
-There are 3 ways to defind the values of `access`, in order of flexibility:
+There are 3 ways to define the values of `access`, in order of flexibility:
 1. Static
 2. Imperative
 3. Declarative
@@ -309,7 +309,7 @@ keystone.createList('User', {
 A key on the field config, `access` can be specified either as a single control,
 covering all CRU operations, or as an object keyed by CRU operation names.
 
-There are 2 ways to defind the values of `access`, in order of flexibility:
+There are 2 ways to define the values of `access`, in order of flexibility:
 1. Static
 2. Imperative
 
