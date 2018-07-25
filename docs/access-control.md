@@ -1,5 +1,32 @@
 # Access Control
 
+> Control who can do what with your GraphQL API
+
+## Table of Contents
+
+<!-- Generated with `npx markdown-toc docs/access-control.md --no-firsth1` -->
+- [Intro](#intro)
+- [Admin UI authentication](#admin-ui-authentication)
+- [GraphQL access control](#graphql-access-control)
+  * [List level access control](#list-level-access-control)
+    + [`access` API](#access-api)
+      - [Booleans](#booleans)
+        * [Shorthand static Boolean](#shorthand-static-boolean)
+        * [Granular static Booleans](#granular-static-booleans)
+        * [Shorthand Imperative Boolean](#shorthand-imperative-boolean)
+        * [Granular functions returning Boolean](#granular-functions-returning-boolean)
+      - [`GraphQLWhere`s](#graphqlwheres)
+        * [Granular static `GraphQLWhere`s](#granular-static-graphqlwheres)
+        * [Granular functions returning `GraphQLWhere`](#granular-functions-returning-graphqlwhere)
+  * [Field level access control](#field-level-access-control)
+    + [`access` API](#access-api-1)
+      - [Shorthand static Boolean](#shorthand-static-boolean-1)
+      - [Granular static Booleans](#granular-static-booleans-1)
+      - [Shorthand Imperative Boolean](#shorthand-imperative-boolean-1)
+      - [Granular functions returning Boolean](#granular-functions-returning-boolean-1)
+
+## Intro
+
 There are 2 ways of effecting the available actions of a user in Keystone:
 
 1. Admin UI authentication
