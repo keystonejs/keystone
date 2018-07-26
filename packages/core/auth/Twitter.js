@@ -224,7 +224,7 @@ class TwitterAuthStrategy {
     };
 
     // Only add a reference to the parent list when we know the link exists
-    if (pastSessionItem) {
+    if (pastSessionItem && pastSessionItem.item) {
       newSessionData.item = pastSessionItem.item.id;
     }
 
@@ -334,6 +334,11 @@ class TwitterAuthStrategy {
    * process. Default: calls `next()`, skipping the rest of the auth flow.
    */
   authenticateMiddleware({ failedVerification, verified }) {
+    if (!failedVerification) {
+      throw new Error(
+        'Must supply a `failedVerification` function to `authenticateTwitterUser()`'
+      );
+    }
     if (!verified) {
       throw new Error(
         'Must supply a `verified` function to `authenticateTwitterUser()`'
@@ -346,19 +351,27 @@ class TwitterAuthStrategy {
       passport.authenticate(
         'twitter',
         async (verifyError, authedItem, info) => {
+          // If we get a error, bail and display the message we get
           if (verifyError) {
-            if (failedVerification) {
-              failedVerification(
-                verifyError.message || verifyError.toString(),
-                req,
-                res,
-                next
-              );
-            } else {
-              return next();
-            }
+            return failedVerification(
+              verifyError.message || verifyError.toString(),
+              req,
+              res,
+              next
+            );
           }
-
+          // If we don't authorise Twitter we won't have any info about the
+          // user so we need to bail
+          if (!info) {
+            return failedVerification(
+              null,
+              req,
+              res,
+              next
+            );
+          }
+          // Otherwise, store the Twitter data in session so we can refer
+          // back to it
           try {
             await this.keystone.auth.User.twitter.pauseValidation(req, info);
 
