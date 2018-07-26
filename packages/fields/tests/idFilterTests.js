@@ -19,16 +19,22 @@ export const initItems = () => {
   ];
 };
 
-const getIDs = async (keystone) => {
+const getIDs = async keystone => {
   const IDs = {};
-  await keystone.lists['test'].adapter.findAll().exec().then(data => {
-    data.forEach(entry => { IDs[entry.name] = entry._id.toString(); } /* eslint-disable-line no-underscore-dangle */
-  );});
+  await keystone.lists['test'].adapter
+    .findAll()
+    .exec()
+    .then(data => {
+      data.forEach(
+        entry => {
+          IDs[entry.name] = entry._id.toString();
+        } /* eslint-disable-line no-underscore-dangle */
+      );
+    });
   return IDs;
 };
 
 export const filterTests = (app, keystone) => {
-
   const match = (filter, targets, done) => {
     matchFilter(app, filter, '{ id name }', targets, done, 'name');
   };
@@ -66,9 +72,7 @@ export const filterTests = (app, keystone) => {
     const id = IDs['person2'];
     match(
       `where: { id: "${id}" }`,
-      [
-        { id: IDs['person2'], name: 'person2' },
-      ],
+      [{ id: IDs['person2'], name: 'person2' }],
       done
     );
   });
@@ -102,21 +106,11 @@ export const filterTests = (app, keystone) => {
   });
 
   test('Filter: id_in - empty list', async done => {
-    match(
-      'where: { id_in: [] }',
-      [
-      ],
-      done
-    );
+    match('where: { id_in: [] }', [], done);
   });
 
   test('Filter: id_in - missing id', async done => {
-    match(
-      'where: { id_in: ["0123456789abcdef01234567"] }',
-      [
-      ],
-      done
-    );
+    match('where: { id_in: ["0123456789abcdef01234567"] }', [], done);
   });
 
   test('Filter: id_not_in', async done => {

@@ -41,7 +41,9 @@ function getIdQueryConditions(args) {
     conditions.push({ _id: { $in: args.id_in.map(id => ObjectId(id)) } });
   }
   if ('id_not_in' in args) {
-    conditions.push({ _id: { $not: { $in: args.id_not_in.map(id => ObjectId(id)) } } });
+    conditions.push({
+      _id: { $not: { $in: args.id_not_in.map(id => ObjectId(id)) } },
+    });
   }
   return conditions;
 }
