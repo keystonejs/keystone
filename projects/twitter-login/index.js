@@ -140,6 +140,30 @@ if (twitterAuthEnabled) {
   configureTwitterAuth(keystone, server);
 }
 
+server.app.get('/api/session', (req, res) => {
+  const data = {
+    signedIn: !!req.session.keystoneItemId,
+    userId: req.session.keystoneItemId,
+  };
+  if (req.user) {
+    Object.assign(data, {
+      name: req.user.name,
+    });
+  }
+  res.json(data);
+});
+
+server.app.get('/api/signout', async (req, res, next) => {
+  try {
+    await keystone.session.destroy(req);
+    res.json({
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
 server.app.get('/reset-db', (req, res) => {
   const reset = async () => {
     Object.values(keystone.adapters).forEach(async adapter => {
