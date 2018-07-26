@@ -25,11 +25,10 @@ const getIDs = async keystone => {
     .findAll()
     .exec()
     .then(data => {
-      data.forEach(
-        entry => {
-          IDs[entry.name] = entry._id.toString();
-        } /* eslint-disable-line no-underscore-dangle */
-      );
+      data.forEach(entry => {
+        // eslint-disable-next-line no-underscore-dangle
+        IDs[entry.name] = entry._id.toString();
+      });
     });
   return IDs;
 };
