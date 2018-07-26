@@ -60,10 +60,11 @@ export const matchFilter = (app, filter, fields, target, done, sortkey) => {
 
 describe('Test CRUD for all fields', () => {
   const typesLoc = path.resolve('packages/fields/types');
-  fs.readdirSync(typesLoc)
+  const testModules = fs.readdirSync(typesLoc)
     .map(name => `${typesLoc}/${name}/filterTests.js`)
-    .filter(filename => fs.existsSync(filename))
-    .map(require)
+    .filter(filename => fs.existsSync(filename));
+  testModules.push(path.resolve('packages/fields/tests/idFilterTests.js'));
+  testModules.map(require)
     .forEach(mod => {
       describe(`All the CRUD tests for module: ${mod.name}`, () => {
         // Set up a keystone project for each type module to use
@@ -107,7 +108,7 @@ describe('Test CRUD for all fields', () => {
         }, 10000);
 
         describe('All Filter Tests', () => {
-          mod.filterTests(server.app);
+          mod.filterTests(server.app, keystone);
         });
 
         afterAll(async done => {
