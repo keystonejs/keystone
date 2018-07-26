@@ -205,6 +205,7 @@ class TwitterAuthStrategy {
       pastSessionItem = await this.getSessionList()
         .adapter.findOne({
           [FIELD_TWITTER_ID]: jsonData.id_str,
+          [FIELD_ITEM]: { $exists: true },
         })
         // do a JOIN on the item
         .populate(FIELD_ITEM)

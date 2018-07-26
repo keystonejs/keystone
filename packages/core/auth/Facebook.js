@@ -103,6 +103,7 @@ class FacebookAuthStrategy {
       pastSessionItem = await this.getSessionList()
         .adapter.findOne({
           [FIELD_FACEBOOK_ID]: jsonData.data.user_id,
+          [FIELD_ITEM]: { $exists: true },
         })
         // do a JOIN on the item
         .populate(FIELD_ITEM)
