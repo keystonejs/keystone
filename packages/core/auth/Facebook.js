@@ -1,6 +1,6 @@
 const passport = require('passport');
-const { OAuth } = require('oauth-libre');
 const PassportFacebook = require('passport-facebook');
+const fetch = require('cross-fetch');
 const { Text, Relationship } = require('@keystonejs/fields');
 
 const FIELD_FACEBOOK_ID = 'facebookId';
@@ -8,87 +8,16 @@ const FIELD_FACEBOOK_USERNAME = 'facebookUsername';
 const FIELD_TOKEN_SECRET = 'tokenSecret';
 const FIELD_ITEM = 'item';
 
-function validateWithFacebook(client, token, tokenSecret) {
-  return new Promise((resolve, reject) => {
-    client.get(
-      'https://graph.facebook.com/v3.0/oauth/access_token',
-      token,
-      tokenSecret,
-      async (error, data) => {
-        let jsonData;
-
-        if (error) {
-          const { statusCode, data: errorData } = error;
-
-          let message;
-
-          try {
-            jsonData = JSON.parse(errorData);
-          } catch (jsonParseError) {
-            jsonData = {};
-          }
-
-          // For more detailed error messages, see:
-          // https://developer.facebook.com/en/docs/basics/response-codes
-          if (statusCode >= 400 && statusCode < 500) {
-            message = 'An error occured while contacting Facebook.';
-          } else if (statusCode >= 500) {
-            message = 'Facebook is temporarily having issues.';
-          }
-
-          // reduce the error messages into a coherent string
-          const errorsString = reduceFacebookErrorsToString(jsonData);
-
-          if (errorsString) {
-            message = `${message} ${errorsString}`;
-          }
-
-          return reject(new Error(message));
-        }
-
-        if (data) {
-          try {
-            jsonData = JSON.parse(data);
-          } catch (e) {
-            return reject(
-              'Unable to parse server response from Facebook. Expected JSON, got:',
-              require('utils').inspect(data)
-            );
-          }
-        } else {
-          jsonData = {};
-        }
-
-        resolve(jsonData);
-      }
-    );
-  });
-}
-
-// reduce the error messages into a coherent string
-function reduceFacebookErrorsToString(jsonData) {
-  if (!jsonData.errors) {
-    return '';
-  }
-
-  const errors = Array.isArray(jsonData.errors)
-    ? jsonData.errors
-    : [jsonData.errors];
-
-  // reduce the error messages into a coherent string
-  return errors
-    .map(errorBody => {
-      if (errorBody.message && errorBody.code) {
-        return `(${errorBody.code}) ${errorBody.message}.`;
-      } else if (
-        Object.prototype.toString.call(errorBody) === '[object Object]'
-      ) {
-        return JSON.stringify(errorBody);
-      }
-      return errorBody.toString();
-    })
-    .join(' ')
-    .trim();
+function validateWithFacebook(consumerKey, consumerSecret, accessToken) {
+  return fetch('https://graph.facebook.com/v3.0/debug_token'
+    + '?input_token=' + accessToken
+    + '&access_token=' + consumerKey + '|' + consumerSecret, {
+      cache: 'no-cache',
+      headers: {
+        'content-type': 'application/json',
+        Accept: 'application/json',
+      },
+  }).then(response => response.json());
 }
 
 class FacebookAuthStrategy {
@@ -101,18 +30,6 @@ class FacebookAuthStrategy {
       sessionListKey: 'FacebookSession',
       ...config,
     };
-
-    this.facebookClient = new OAuth(
-      'https://api.facebook.com/oauth/request_token',
-      'https://api.facebook.com/oauth/access_token',
-      this.config.consumerKey,
-      this.config.consumerSecret,
-      '1.0A',
-      null,
-      'HMAC-SHA1'
-    );
-
-    this.facebookClient.setDefaultContentType('application/json');
 
     if (!this.getSessionList()) {
       // TODO: Set read permissions to be 'internal' (within keystone) only so
@@ -146,29 +63,10 @@ class FacebookAuthStrategy {
           callbackURL: this.config.callbackURL,
           passReqToCallback: true,
         },
-        /**
-         * from: https://github.com/jaredhanson/passport-oauth1/blob/master/lib/strategy.js#L24-L37
-         * ---
-         * Applications must supply a `verify` callback, for which the function
-         * signature is:
-         *
-         *     function(token, tokenSecret, oauthParams, profile, done) { ... }
-         *
-         * The verify callback is responsible for finding or creating the user, and
-         * invoking `done` with the following arguments:
-         *
-         *     done(err, user, info);
-         *
-         * `user` should be set to `false` to indicate an authentication failure.
-         * Additional `info` can optionally be passed as a third argument, typically
-         * used to display informational messages.  If an exception occured, `err`
-         * should be set.
-         */
-        async (req, token, tokenSecret, oauthParams, profile, done) => {
+        async (req, accessToken, refreshToken, profile, done) => {
           try {
             let result = await this.keystone.auth.User.facebook.validate({
-              token,
-              tokenSecret,
+              accessToken,
             });
             if (!result.success) {
               // false indicates an authentication failure
@@ -190,11 +88,11 @@ class FacebookAuthStrategy {
   getSessionList() {
     return this.keystone.lists[this.config.sessionListKey];
   }
-  async validate({ token, tokenSecret }) {
+  async validate({ accessToken }) {
     const jsonData = await validateWithFacebook(
-      this.facebookClient,
-      token,
-      tokenSecret
+      this.config.consumerKey,
+      this.config.consumerSecret,
+      accessToken,
     );
 
     // Lookup a past, verified session, that links to a user
@@ -204,7 +102,7 @@ class FacebookAuthStrategy {
       // possibly exist after we've validated with Facebook (see above)
       pastSessionItem = await this.getSessionList()
         .adapter.findOne({
-          [FIELD_FACEBOOK_ID]: jsonData.id_str,
+          [FIELD_FACEBOOK_ID]: jsonData.data.user_id,
         })
         // do a JOIN on the item
         .populate(FIELD_ITEM)
@@ -218,9 +116,9 @@ class FacebookAuthStrategy {
     }
 
     const newSessionData = {
-      [FIELD_TOKEN_SECRET]: tokenSecret,
-      [FIELD_FACEBOOK_ID]: jsonData.id_str,
-      [FIELD_FACEBOOK_USERNAME]: jsonData.screen_name,
+      [FIELD_TOKEN_SECRET]: accessToken,
+      [FIELD_FACEBOOK_ID]: jsonData.data.user_id,
+      [FIELD_FACEBOOK_USERNAME]: null,
     };
 
     // Only add a reference to the parent list when we know the link exists
