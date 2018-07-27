@@ -260,6 +260,7 @@ class ListDetails extends Component<Props, State> {
       handleSortChange,
       items,
       itemsCount,
+      itemsErrors,
       list,
       pageSize,
       query,
@@ -342,13 +343,15 @@ class ListDetails extends Component<Props, State> {
             </Popout>
             {this.renderExpandButton()}
             <ToolbarSeparator />
-            <IconButton
-              appearance="create"
-              icon={PlusIcon}
-              onClick={this.openCreateModal}
-            >
-              Create
-            </IconButton>
+            {list.access.create ? (
+              <IconButton
+                appearance="create"
+                icon={PlusIcon}
+                onClick={this.openCreateModal}
+              >
+                Create
+              </IconButton>
+            ) : null}
           </FlexGroup>
 
           <ActiveFilters
@@ -396,6 +399,7 @@ class ListDetails extends Component<Props, State> {
                 fields={fields}
                 isManaging={isManaging}
                 items={items}
+                itemsErrors={itemsErrors}
                 list={list}
                 onChange={query.refetch}
                 onSelect={this.handleItemSelect}

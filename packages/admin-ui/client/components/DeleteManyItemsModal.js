@@ -32,9 +32,11 @@ export default class DeleteManyModal extends Component {
                   variant="ghost"
                   onClick={() => {
                     if (loading) return;
-                    deleteItems({
-                      variables: { ids: itemIds },
-                    }).then(onDelete);
+                    onDelete(
+                      deleteItems({
+                        variables: { ids: itemIds },
+                      })
+                    );
                   }}
                 >
                   Delete

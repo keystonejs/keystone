@@ -66,6 +66,7 @@
     "jest-junit": "^4.0.0",
     "loader-utils": "^1.1.0",
     "lodash.isequal": "^4.5.0",
+    "lodash.set": "^4.3.2",
     "mkdirp": "^0.5.1",
     "mongoose": "^5.0.14",
     "oauth-libre": "^0.9.17",

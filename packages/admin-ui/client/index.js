@@ -48,6 +48,8 @@ const Keystone = () => (
                         params: { listKey },
                       },
                     }) => {
+                      // TODO: Permission query to show/hide a list from the
+                      // menu
                       const list = adminMeta.getListByPath(listKey);
                       return list ? (
                         <Switch>
