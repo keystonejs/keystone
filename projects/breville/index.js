@@ -12,9 +12,15 @@ const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
 const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
 
-const { port, cloudinary } = require('./config');
+const {
+  port,
+  cloudinary,
+  facebookAuthEnabled,
+} = require('./config');
 
 const initialData = require('./data');
+
+const { configureFacebookAuth } = require('./facebook');
 
 const cloudinaryAdapter = new CloudinaryAdapter({
   ...cloudinary,
@@ -45,6 +51,8 @@ keystone.createList('User', {
         { label: 'Breville', value: 'breville' },
       ],
     },
+    facebookId: { type: Text },
+    facebookUsername: { type: Text },
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });
@@ -135,6 +143,34 @@ const server = new WebServer(keystone, {
   'admin ui': admin,
   session: true,
   port,
+});
+
+if (facebookAuthEnabled) {
+  configureFacebookAuth(keystone, server);
+}
+
+server.app.get('/api/session', (req, res) => {
+  const data = {
+    signedIn: !!req.session.keystoneItemId,
+    userId: req.session.keystoneItemId,
+  };
+  if (req.user) {
+    Object.assign(data, {
+      name: req.user.name,
+    });
+  }
+  res.json(data);
+});
+
+server.app.get('/api/signout', async (req, res, next) => {
+  try {
+    await keystone.session.destroy(req);
+    res.json({
+      success: true,
+    });
+  } catch (e) {
+    next(e);
+  }
 });
 
 async function start() {
