@@ -189,12 +189,13 @@ module.exports = class List {
   }
   getAdminGraphqlQueries() {
     const commonArgs = `
-          search: String
-          orderBy: String
-
-          # Pagination
-          first: Int
-          skip: Int`;
+    search: String
+    orderBy: String
+    sort: String
+    
+    # Pagination
+    first: Int
+    skip: Int`;
 
     return [
       `
