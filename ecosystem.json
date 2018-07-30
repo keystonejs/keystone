@@ -1,0 +1,32 @@
+{
+  "apps": {
+    "name": "breville-askdave-api",
+    "script": "npm",
+    "args" : "start",
+    "watch": false,
+    "node_args": "--stack-trace-limit=50",
+    "combine_logs": true,
+    "log_date_format": "YYYY-MM-DD HH:mm:ss.SSS Z",
+    "autorestart": true,
+    "instances": 1
+  },
+
+  "deploy": {
+    "staging": {
+      "user": "nodeuser",
+      "host": "breville.ec2.staging.thinkmill.cloud",
+      "path": "/srv/apps/breville-askdave-api",
+      "ref": "origin/breville",
+      "repo": "git@breville-askdave-api.github.com:Thinkmill/breville-askdave-api.git",
+      "post-deploy": "npm install && npm run heroku-postbuild && pm2 startOrGracefulReload ecosystem.json && pm2 save"
+    },
+    "live": {
+      "user": "nodeuser",
+      "host": "breville.ec2.live.thinkmill.cloud",
+      "path": "/srv/apps/breville-askdave-api",
+      "ref": "origin/breville",
+      "repo": "git@breville-askdave-api.github.com:Thinkmill/breville-askdave-api.git",
+      "post-deploy": "npm install && npm run heroku-postbuild && pm2 startOrGracefulReload ecosystem.json && pm2 save",
+    }
+  }
+}

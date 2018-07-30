@@ -14,7 +14,7 @@ describe('Adding a file', function() {
           }
         `
       )
-      .then(({ allUsers: [user] }) => {
+      .then(({ data: { allUsers: [user] } }) => {
         const fileContent = `Some important content ${Math.random()}`;
         cy.visit(`/admin/users/${user.id}`);
         cy.writeFile('cypress/mock/upload.txt', fileContent);
@@ -53,7 +53,7 @@ describe('Adding a file', function() {
               }
             `
           )
-          .then(({ User: { attachment } }) => {
+          .then(({ data: { User: { attachment } } }) => {
             // Assert the URL is visible in the admin UI
             cy.contains(
               `${attachment.publicUrl.split('/')[3].split('-')[1]}`

@@ -137,7 +137,10 @@ module.exports = class AdminUI {
     // Attach the user to the request for all following route handlers
     app.use(
       this.keystone.session.validate({
-        valid: ({ req, item }) => (req.user = item),
+        valid: ({ req, list, item }) => {
+          req.user = item;
+          req.authedListKey = list.key;
+        },
       })
     );
 

@@ -3,4 +3,4 @@ coverage
 dist
 flow-typed
 reports
-packages/test-project/public
+projects/**/cypress

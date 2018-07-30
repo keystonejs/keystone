@@ -11,6 +11,7 @@ const args = {
   listAdapter: {
     newFieldAdapter: jest.fn(),
   },
+  defaultAccess: true,
 };
 
 describe('new Implementation()', () => {
@@ -24,6 +25,7 @@ describe('new Implementation()', () => {
         listAdapter: {
           newFieldAdapter: jest.fn(),
         },
+        defaultAccess: true,
       }
     );
     expect(impl).not.toBeNull();

@@ -114,7 +114,7 @@ function postAggregateMutationFactory({
   };
 }
 
-class Select extends Implementation {
+class Relationship extends Implementation {
   constructor() {
     super(...arguments);
   }
@@ -148,6 +148,20 @@ class Select extends Implementation {
       `;
     }
   }
+  isGraphqlQueryArg(arg) {
+    if (this.config.many) {
+      return (
+        [
+          `${this.path}_every`,
+          `${this.path}_some`,
+          `${this.path}_none`,
+          `${this.path}_is_null`,
+        ].indexOf(arg) !== -1
+      );
+    } else {
+      return arg === this.path || arg === `${this.path}_is_null`;
+    }
+  }
   getGraphqlFieldResolvers() {
     const { many, ref } = this.config;
     return {
@@ -175,6 +189,9 @@ class Select extends Implementation {
   }
   getGraphqlCreateArgs() {
     return this.getGraphqlUpdateArgs();
+  }
+  getDefaultValue() {
+    return null;
   }
 }
 
@@ -254,6 +271,6 @@ class MongoSelectInterface extends MongooseFieldAdapter {
 }
 
 module.exports = {
-  Select,
+  Relationship,
   MongoSelectInterface,
 };

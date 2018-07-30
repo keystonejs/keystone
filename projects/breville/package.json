@@ -1,0 +1,30 @@
+{
+  "name": "breville-askdave-api",
+  "private": true,
+  "version": "1.0.0",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "scripts": {
+    "start": "node -r dotenv-safe/config index.js",
+    "nodemon": "nodemon -r dotenv-safe/config index.js",
+    "mongo:backup:local": "mongodump -h localhost -d breville-askdave -o ./data",
+    "mongo:restore:local": "mongorestore -d breville-askdave ./data/breville-askdave --drop --host=127.0.0.1",
+    "mongo:backup:staging": "mongodump -h syd-general-staging-shard-0/syd-general-staging-shard-00-00-l5pdm.mongodb.net:27017,syd-general-staging-shard-00-01-l5pdm.mongodb.net:27017,syd-general-staging-shard-00-02-l5pdm.mongodb.net:27017 --ssl -d breville-askdave -u breville-askdave -p e4OAsq6U32dG7Ddj --authenticationDatabase admin -o ./data",
+    "mongo:restore:staging": "mongorestore -h syd-general-staging-shard-0/syd-general-staging-shard-00-00-l5pdm.mongodb.net:27017,syd-general-staging-shard-00-01-l5pdm.mongodb.net:27017,syd-general-staging-shard-00-02-l5pdm.mongodb.net:27017 --ssl -u breville-askdave -p e4OAsq6U32dG7Ddj --authenticationDatabase admin --drop -d breville-askdave ./data/breville-askdave",
+    "sync:staging:local": "yarn mongo:backup:staging && yarn mongo:restore:local"
+  },
+  "dependencies": {
+    "@keystonejs/adapter-mongoose": "^1.0.0",
+    "@keystonejs/admin-ui": "^5.0.0",
+    "@keystonejs/core": "^5.0.0",
+    "@keystonejs/fields": "^5.0.0",
+    "@keystonejs/file-adapters": "^0.0.0",
+    "@keystonejs/server": "^5.0.0",
+    "@keystonejs/ui": "^5.0.0",
+    "dotenv-safe": "^6.0.0",
+    "react": "^16.3.1"
+  }
+}

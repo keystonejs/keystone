@@ -67,9 +67,29 @@ try {
 
 keystone.createList('User', {
   fields: {
+    // When no access defined, defaults to all public
     name: { type: Text },
-    email: { type: Text },
-    password: { type: Password },
+    email: {
+      type: Text,
+      access: {
+        // defaults to 'false' for any unspecified keys, so this is technically
+        // unnecessary
+        read: false,
+        update: ({ item, authentication }) =>
+          // Authenticated against the correct list
+          authentication.listKey === this.listKey &&
+          // The authed item matches the item being updated
+          item.id === authentication.item.id,
+      },
+    },
+    password: {
+      type: Password,
+      access: {
+        update: ({ item, authentication }) =>
+          authentication.listKey === this.listKey &&
+          item.id === authentication.item.id,
+      },
+    },
     // TODO: Create a Twitter field type to encapsulate these
     twitterId: { type: Text },
     twitterUsername: { type: Text },
@@ -82,6 +102,13 @@ keystone.createList('User', {
         { label: 'Thomas Walker Gelato', value: 'gelato' },
         { label: 'Cete, or Seat, or Attend ¯\\_(ツ)_/¯', value: 'cete' },
       ],
+    },
+    notes: {
+      type: Relationship,
+      ref: 'Note',
+      many: true,
+      // NOTE: No access listed for this field as the related list already has
+      // its own access control setup
     },
     attachment: { type: File, adapter: fileAdapter },
     ...(cloudinaryAdapter
@@ -114,6 +141,18 @@ keystone.createList('Post', {
     },
   },
   labelResolver: item => item.name,
+  access: {
+    read: true,
+    create: ({ item, authentication }) =>
+      authentication.listKey === authStrategy.listKey &&
+      item.user.id === authentication.item.id,
+    update: ({ item, authentication }) =>
+      authentication.listKey === authStrategy.listKey &&
+      item.user.id === authentication.item.id,
+    delete: ({ item, authentication }) =>
+      authentication.listKey === authStrategy.listKey &&
+      item.user.id === authentication.item.id,
+  },
 });
 
 keystone.createList('PostCategory', {
@@ -121,6 +160,26 @@ keystone.createList('PostCategory', {
     name: { type: Text },
     slug: { type: Text },
   },
+  access: {
+    create: true,
+    read: true,
+    update: false,
+    delete: false,
+  },
+});
+
+keystone.createList('Note', {
+  fields: {
+    note: { type: Text },
+    user: {
+      type: Relationship,
+      ref: 'User',
+    },
+  },
+  // All access to notes limited to authenticated person
+  access: ({ item, authentication }) =>
+    authentication.listKey === authStrategy.listKey &&
+    item.user.id === authentication.item.id,
 });
 
 const admin = new AdminUI(keystone, {

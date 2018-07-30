@@ -37,11 +37,11 @@ export const buttonAndInputBase = {
 // Basic Input
 // ------------------------------
 
-type InputProps = { innerRef: Ref<*>, isMultiline: boolean };
+type InputProps = { innerRef: Ref<*>, isMultiline: boolean, disabled: boolean };
 export const Input = ({ innerRef, isMultiline, ...props }: InputProps) => {
   const css = {
     ...buttonAndInputBase,
-    backgroundColor: 'white',
+    backgroundColor: props.disabled ? colors.N10 : 'white',
     borderColor: colors.N20,
     boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
     color: 'inherit',
