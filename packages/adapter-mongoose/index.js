@@ -37,6 +37,14 @@ function getIdQueryConditions(args) {
     // _id is how it looks in the MongoDB
     conditions.push({ _id: { $ne: ObjectId(args.id_not) } });
   }
+  if ('id_in' in args) {
+    conditions.push({ _id: { $in: args.id_in.map(id => ObjectId(id)) } });
+  }
+  if ('id_not_in' in args) {
+    conditions.push({
+      _id: { $not: { $in: args.id_not_in.map(id => ObjectId(id)) } },
+    });
+  }
   return conditions;
 }
 

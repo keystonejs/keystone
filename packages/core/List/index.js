@@ -164,6 +164,8 @@ module.exports = class List {
       input ${this.itemQueryName}WhereInput {
         id: ID
         id_not: ID
+        id_in: [ID!]
+        id_not_in: [ID!]
         ${queryArgs}
       }
       `,

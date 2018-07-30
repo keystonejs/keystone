@@ -1,5 +1,32 @@
 # Access Control
 
+> Control who can do what with your GraphQL API
+
+## Table of Contents
+
+<!-- Generated with `npx markdown-toc docs/access-control.md --no-firsth1` -->
+- [Intro](#intro)
+- [Admin UI authentication](#admin-ui-authentication)
+- [GraphQL access control](#graphql-access-control)
+  * [List level access control](#list-level-access-control)
+    + [`access` API](#access-api)
+      - [Booleans](#booleans)
+        * [Shorthand static Boolean](#shorthand-static-boolean)
+        * [Granular static Booleans](#granular-static-booleans)
+        * [Shorthand Imperative Boolean](#shorthand-imperative-boolean)
+        * [Granular functions returning Boolean](#granular-functions-returning-boolean)
+      - [`GraphQLWhere`s](#graphqlwheres)
+        * [Granular static `GraphQLWhere`s](#granular-static-graphqlwheres)
+        * [Granular functions returning `GraphQLWhere`](#granular-functions-returning-graphqlwhere)
+  * [Field level access control](#field-level-access-control)
+    + [`access` API](#access-api-1)
+      - [Shorthand static Boolean](#shorthand-static-boolean-1)
+      - [Granular static Booleans](#granular-static-booleans-1)
+      - [Shorthand Imperative Boolean](#shorthand-imperative-boolean-1)
+      - [Granular functions returning Boolean](#granular-functions-returning-boolean-1)
+
+## Intro
+
 There are 2 ways of effecting the available actions of a user in Keystone:
 
 1. Admin UI authentication
@@ -91,7 +118,7 @@ how much control you need.
 A key on the list config, `access` can be specified either as a single control,
 covering all CRUD operations, or as an object keyed by CRUD operation names.
 
-There are 3 ways to defind the values of `access`, in order of flexibility:
+There are 3 ways to define the values of `access`, in order of flexibility:
 1. Static
 2. Imperative
 3. Declarative
@@ -102,9 +129,9 @@ Described as a Flow type, it looks like this:
 type GraphQLWhere = // ...
 
 type AccessInput = {
-  authentication?: {
-    item: {},
-    listKey: string
+  authentication: {
+    item?: {},
+    listKey?: string
   }
 };
 
@@ -128,9 +155,8 @@ ie; for a list `User`, it would match the input type `UserWhereInput`.
 
 `AccessInput` function parameter
 - `authentication` describes the currently authenticated user.
-  Will be `undefined` for anonymous users.
-  - `.item` is the details of the current user.
-  - `.listKey` is the list key of the currently authenticated user.
+  - `.item` is the details of the current user. Will be `undefined` for anonymous users.
+  - `.listKey` is the list key of the currently authenticated user. Will be `undefined` for anonymous users.
 
 When resolving `StaticAccess`;
 - `true`: Allow access
@@ -310,7 +336,7 @@ keystone.createList('User', {
 A key on the field config, `access` can be specified either as a single control,
 covering all CRU operations, or as an object keyed by CRU operation names.
 
-There are 2 ways to defind the values of `access`, in order of flexibility:
+There are 2 ways to define the values of `access`, in order of flexibility:
 1. Static
 2. Imperative
 
@@ -318,9 +344,9 @@ Described as a Flow type, it looks like this:
 
 ```javascript
 type AccessInput = {
-  authentication?: {
-    item: {},
-    listKey: string,
+  authentication: {
+    item?: {},
+    listKey?: string,
   },
   item: {},
 };
@@ -347,9 +373,8 @@ only to modify it).
 
 `AccessInput` function parameter
 - `authentication` describes the currently authenticated user.
-  Will be `undefined` for anonymous users.
-  - `.item` is the details of the current user.
-  - `.listKey` is the list key of the currently authenticated user.
+  - `.item` is the details of the current user. Will be `undefined` for anonymous users.
+  - `.listKey` is the list key of the currently authenticated user. Will be `undefined` for anonymous users.
 - `item` is the item this field belongs to.
 
 When defining `StaticAccess`;
