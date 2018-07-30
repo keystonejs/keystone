@@ -46,6 +46,16 @@ class Select extends Implementation {
       ${this.path}_not_in: [${this.getTypeName()}!]
     `;
   }
+  isGraphqlQueryArg(arg) {
+    return (
+      [
+        this.path,
+        `${this.path}_not`,
+        `${this.path}_in`,
+        `${this.path}_not_in`,
+      ].indexOf(arg) !== -1
+    );
+  }
   getGraphqlUpdateArgs() {
     return `
       ${this.path}: ${this.getTypeName()}
