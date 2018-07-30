@@ -23,7 +23,7 @@ exports.configureFacebookAuth = function(keystone, server) {
       // If not set, will just call `next()`
       sessionExists: (itemId, req, res) => {
         console.log(`Already logged in as ${itemId} 🎉`);
-        return res.redirect('/api/session');
+        return res.redirect('/auth/redirect');
       },
     })
   );
@@ -51,7 +51,7 @@ exports.configureFacebookAuth = function(keystone, server) {
         await keystone.session.create(req, { item, list });
 
         // Redirect on sign in
-        res.redirect('/api/session');
+        res.redirect('/auth/redirect');
       },
       failedVerification(error, req, res) {
         console.log('Failed to verify Facebook login creds');
@@ -65,7 +65,7 @@ exports.configureFacebookAuth = function(keystone, server) {
   server.app.get('/auth/facebook/create', (req, res) => {
     // Redirect if we're already signed in
     if (req.user) {
-      return res.redirect('/api/session');
+      return res.redirect('/auth/redirect');
     }
     // If we don't have a keystoneFacebookSessionId at this point, the form
     // submission will fail, so fail out to the first step
@@ -89,7 +89,7 @@ exports.configureFacebookAuth = function(keystone, server) {
 
       // Redirect if we're already signed in
       if (req.user) {
-        return res.redirect('/api/session');
+        return res.redirect('/auth/redirect');
       }
 
       // Create a new User
@@ -102,10 +102,24 @@ exports.configureFacebookAuth = function(keystone, server) {
         await keystone.auth.User.facebook.connectItem(req, { item });
         await keystone.session.create(req, { item, list });
 
-        res.redirect('/api/session');
+        res.redirect('/auth/redirect');
       } catch (createError) {
         next(createError);
       }
     }
   );
+
+  server.app.get('/auth/redirect', (req, res) => {
+    const data = {
+      signedIn: !!req.session.keystoneItemId,
+      userId: req.session.keystoneItemId,
+    };
+    if (req.user) {
+      Object.assign(data, {
+        name: req.user.name,
+      });
+    }
+    res.redirect('http://localhost:4000/settings');
+  });
+
 };

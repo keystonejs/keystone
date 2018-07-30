@@ -55,6 +55,7 @@ keystone.createList('User', {
     facebookUsername: { type: Text },
   },
   labelResolver: item => `${item.name} <${item.email}>`,
+  // access: ({ authentication: { item } }) => !!item,
 });
 
 keystone.createList('Ingredient', {
@@ -63,6 +64,7 @@ keystone.createList('Ingredient', {
     description: { type: Text },
     image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
+  // access: ({ authentication: { item } }) => !!item,
 });
 
 keystone.createList('Technique', {
@@ -71,6 +73,7 @@ keystone.createList('Technique', {
     description: { type: Text },
     image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
+  // access: ({ authentication: { item } }) => !!item,
 });
 
 keystone.createList('Doneness', {
@@ -79,6 +82,7 @@ keystone.createList('Doneness', {
     description: { type: Text },
     image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
+  // access: ({ authentication: { item } }) => !!item,
 });
 
 keystone.createList('KitchenWare', {
@@ -87,6 +91,7 @@ keystone.createList('KitchenWare', {
     description: { type: Text },
     image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
+  // access: ({ authentication: { item } }) => !!item,
 });
 
 keystone.createList('Answer', {
@@ -131,6 +136,7 @@ keystone.createList('Answer', {
     },
     comment: { type: Text },
   },
+  // access: ({ authentication: { item } }) => !!item,
 });
 
 const admin = new AdminUI(keystone, {
