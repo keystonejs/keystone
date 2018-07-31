@@ -32,14 +32,14 @@ keystone.createList('User', {
 
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
-  // allow disabling of admin auth for test environments
-  authStrategy: authStrategy,
 });
 
 const server = new WebServer(keystone, {
   'cookie secret': 'qwerty',
   'admin ui': admin,
-  session: true,
+  authStrategy: authStrategy,
+  apiPath: '/admin/api',
+  graphiqlPath: '/admin/graphiql',
   port,
 });
 

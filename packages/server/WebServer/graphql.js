@@ -52,8 +52,8 @@ module.exports = function createGraphQLMiddleware(
 
       return {
         schema,
-        // Will come from the session middleware above
         context: {
+          // req.user & req.authedListKey come from ../index.js
           authedItem: req.user,
           authedListKey: req.authedListKey,
           getListAccessControlForUser,
@@ -85,8 +85,10 @@ module.exports = function createGraphQLMiddleware(
       };
     })
   );
+
   if (graphiqlPath) {
     app.use(graphiqlPath, graphiqlExpress({ endpointURL: apiPath }));
   }
+
   return app;
 };
