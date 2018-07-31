@@ -1,6 +1,5 @@
 const bodyParser = require('body-parser');
 const express = require('express');
-const session = require('express-session');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 
@@ -103,7 +102,9 @@ module.exports = class AdminUI {
 
   setAuthStrategy(authStrategy) {
     if (authStrategy.authType !== 'password') {
-      throw new Error('Keystone 5 Admin currently only supports the `PasswordAuthStrategy`');
+      throw new Error(
+        'Keystone 5 Admin currently only supports the `PasswordAuthStrategy`'
+      );
     }
 
     this.authStrategy = authStrategy;
@@ -138,7 +139,7 @@ module.exports = class AdminUI {
 
   createDevMiddleware({ apiPath, graphiqlPath }) {
     const app = express();
-    const { adminPath, config } = this;
+    const { adminPath } = this;
 
     // ensure any non-resource requests are rewritten for history api fallback
     app.use(adminPath, (req, res, next) => {

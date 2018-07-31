@@ -87,7 +87,20 @@ module.exports = function createGraphQLMiddleware(
   );
 
   if (graphiqlPath) {
-    app.use(graphiqlPath, graphiqlExpress({ endpointURL: apiPath }));
+    app.use(graphiqlPath, (req, res, next) => {
+      let header = '';
+
+      if (req.user && req.sessionID) {
+        // This is a literal string which is injected into the HTML string and
+        // used as part of a JSON object...
+        header = `'Authorization': 'Bearer ${req.sessionID}',`;
+      }
+
+      graphiqlExpress({
+        endpointURL: apiPath,
+        passHeader: header,
+      })(req, res, next);
+    });
   }
 
   return app;

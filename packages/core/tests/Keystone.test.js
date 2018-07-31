@@ -67,6 +67,7 @@ describe('Keystone.createList()', () => {
     expect(keystone.listsArray[0]).toBe(keystone.lists['User']);
   });
 
+  /* eslint-disable jest/no-disabled-tests */
   describe('access control config', () => {
     test.skip('expands shorthand acl config', () => {
       expect(false).toBe(true);
@@ -80,6 +81,7 @@ describe('Keystone.createList()', () => {
       expect(false).toBe(true);
     });
   });
+  /* eslint-enable jest/no-disabled-tests */
 });
 
 describe('Keystone.createItems()', () => {
