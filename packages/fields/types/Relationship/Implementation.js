@@ -217,7 +217,7 @@ class MongoSelectInterface extends MongooseFieldAdapter {
     }
 
     if (this.path in args) {
-      const refListAdapter = this.field.getListByKey(this.config.ref).adapter;
+      const refListAdapter = this.getListByKey(this.config.ref).adapter;
       const filters = refListAdapter.itemsQueryConditions(
         args[this.path],
         depthGuard

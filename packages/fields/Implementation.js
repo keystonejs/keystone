@@ -15,6 +15,7 @@ class Field {
       fieldAdapterClass,
       this.constructor.name,
       path,
+      getListByKey,
       config
     );
   }
