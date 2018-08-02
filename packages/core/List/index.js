@@ -19,6 +19,25 @@ const labelToPath = str =>
 
 const labelToClass = str => str.replace(/\s+/g, '');
 
+const isNativeType = type => [Boolean, String, Number].includes(type);
+
+const throwNativeTypeError = (type, listKey, fieldPath) => {
+  switch (type) {
+    case Boolean:
+      throw new Error(
+        `Field '${fieldPath}' on list '${listKey}' is set to type Boolean, a native JavaScript type. Instead, try 'Checkbox' from the @keystonejs/fields package.`
+      );
+    case String:
+      throw new Error(
+        `Field '${fieldPath}' on list '${listKey}' is set to type String, a native JavaScript type. Instead, try 'Text' from the @keystonejs/fields package.`
+      );
+    case Number:
+      throw new Error(
+        `Field '${fieldPath}' on list '${listKey}' is set to type Number, a native JavaScript type. Instead, try 'Integer', or 'Float' from the @keystonejs/fields package.`
+      );
+  }
+};
+
 module.exports = class List {
   constructor(key, config, { getListByKey, adapter }) {
     this.key = key;
@@ -60,6 +79,11 @@ module.exports = class List {
     this.fields = config.fields
       ? Object.keys(config.fields).map(path => {
           const { type, ...fieldSpec } = config.fields[path];
+
+          if (isNativeType(type)) {
+            throwNativeTypeError(type, key, path);
+          }
+
           const implementation = type.implementation;
           return new implementation(path, fieldSpec, {
             getListByKey,
