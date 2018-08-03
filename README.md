@@ -22,7 +22,7 @@ Some quick house rules:
 
 * The new version is not being published to npm at the moment; the goal here is to develop keystone itself, not build projects with it (at this stage).
 
-* And it probably goes without saying, but **please do not publish any of this code publicly or share preview urls** until @JedWatson does.
+* And it probably goes without saying, but **please do not publish any of this code publicly or share preview urls** until @JedWatson does. The project is MIT licensed in anticipation of a future release, so this is not a legal restriction, but a friendly request.
 
 ## Demo
 
