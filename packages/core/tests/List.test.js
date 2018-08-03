@@ -313,3 +313,29 @@ test('getAdminMutationResolvers()', () => {
   expect(resolvers['deleteTest']).toBeInstanceOf(Function);
   expect(resolvers['deleteTests']).toBeInstanceOf(Function);
 });
+
+describe('Throws error when using native type', () => {
+  const adapter = new MockAdapter();
+  test('Boolean', () => {
+    expect(
+      () =>
+        new List('Test', { fields: { foo: { type: Boolean } } }, { adapter })
+    ).toThrow(
+      "Field 'foo' on list 'Test' is set to type Boolean, a native JavaScript type. Instead, try 'Checkbox' from the @keystonejs/fields package."
+    );
+  });
+  test('String', () => {
+    expect(
+      () => new List('Test', { fields: { foo: { type: String } } }, { adapter })
+    ).toThrow(
+      "Field 'foo' on list 'Test' is set to type String, a native JavaScript type. Instead, try 'Text' from the @keystonejs/fields package."
+    );
+  });
+  test('Number', () => {
+    expect(
+      () => new List('Test', { fields: { foo: { type: Number } } }, { adapter })
+    ).toThrow(
+      "Field 'foo' on list 'Test' is set to type Number, a native JavaScript type. Instead, try 'Integer', or 'Float' from the @keystonejs/fields package."
+    );
+  });
+});
