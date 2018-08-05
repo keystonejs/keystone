@@ -75,7 +75,14 @@ class MongooseAdapter extends BaseKeystoneAdapter {
   }
 
   close() {
-    return this.mongoose.connection.close();
+    return new Promise((resolve, reject) => {
+      this.mongoose.connection.close(true, error => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(this.mongoose.disconnect());
+      });
+    });
   }
 
   dropDatabase() {
