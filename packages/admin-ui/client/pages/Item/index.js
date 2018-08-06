@@ -26,6 +26,11 @@ import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
 import { AutocompleteCaptor } from '@keystonejs/ui/src/primitives/forms';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
+import {
+  deconstructErrorsToDataShape,
+  toastItemSuccess,
+  toastError,
+} from '../../util';
 
 import { resolveAllKeys } from '@keystonejs/utils';
 import isEqual from 'lodash.isequal';
@@ -122,6 +127,21 @@ const ItemDetails = withRouter(
           }
       }
     };
+    onDelete = deletePromise => {
+      const { adminPath, history, list, item } = this.props;
+      deletePromise
+        .then(() => {
+          if (this.mounted) {
+            this.setState({ showDeleteModal: false });
+          }
+          history.push(`${adminPath}/${list.path}`);
+
+          toastItemSuccess(this.props.toast, item, 'Deleted successfully');
+        })
+        .catch(error => {
+          toastError(this.props.toast, error);
+        });
+    };
 
     showConfirmResetMessage = () => {
       const { itemHasChanged } = this.state;
@@ -154,13 +174,6 @@ const ItemDetails = withRouter(
         },
         itemHasChanged: true,
       });
-    };
-    onDelete = () => {
-      const { adminPath, history, list } = this.props;
-      if (this.mounted) {
-        this.setState({ showDeleteModal: false });
-      }
-      history.push(`${adminPath}/${list.path}`);
     };
 
     renderResetInterface = () => {
@@ -292,6 +305,7 @@ const ItemDetails = withRouter(
         list,
         updateInProgress,
         updateErrorMessage,
+        itemErrors,
         item: initialData,
       } = this.props;
       const { copyText, item } = this.state;
@@ -342,6 +356,7 @@ const ItemDetails = withRouter(
                   autoFocus={!i}
                   field={field}
                   item={item}
+                  itemErrors={itemErrors}
                   initialData={initialData}
                   key={field.path}
                   onChange={this.onChange}
@@ -384,11 +399,18 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
       <Nav />
       {/* network-only because the data we mutate with is important for display
           in the UI, and may be different than what's in the cache */}
-      <Query query={itemQuery} fetchPolicy="network-only">
+      <Query query={itemQuery} fetchPolicy="network-only" errorPolicy="all">
         {({ loading, error, data, refetch }) => {
           if (loading) return <PageLoading />;
 
-          if (error) {
+          // Only show error page if there is no data
+          // (ie; there could be partial data + partial errors)
+          if (
+            error &&
+            (!data ||
+              !data[list.itemQueryName] ||
+              !Object.keys(data[list.itemQueryName]).length)
+          ) {
             return (
               <Fragment>
                 <DocTitle>{list.singular} not found</DocTitle>
@@ -402,6 +424,9 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
           }
 
           const item = data[list.itemQueryName];
+          const itemErrors =
+            deconstructErrorsToDataShape(error)[list.itemQueryName] || {};
+
           return item ? (
             <main>
               <DocTitle>
@@ -433,6 +458,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
                       <ItemDetails
                         adminPath={adminPath}
                         item={item}
+                        itemErrors={itemErrors}
                         key={itemId}
                         list={list}
                         getListByKey={getListByKey}

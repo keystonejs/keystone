@@ -14,8 +14,10 @@ class ArrowDownIcon extends Component {
         fill: 'currentColor',
       },
     };
+    const { title, ...props } = this.props;
     return (
-      <svg {...defaults} {...this.props}>
+      <svg {...defaults} {...props}>
+        {title ? <title>{title}</title> : null}
         <path fillRule="evenodd" d="M7 7V3H3v4H0l5 6 5-6H7z"/>
       </svg>
     );
