@@ -1,4 +1,11 @@
+// We don't want to actually log, so we mock it before we require the class
+jest.doMock('@keystonejs/logger', () => {
+  return jest.fn(() => ({ warn: () => {}, log: () => {} }));
+});
+
 const List = require('../List');
+const { Text, Checkbox, Float } = require('@keystonejs/fields');
+const { getType } = require('@keystonejs/utils');
 
 class MockAdminMeta {}
 
@@ -357,4 +364,36 @@ test('getAdminMutationResolvers()', () => {
   expect(resolvers['updateTest']).toBeInstanceOf(Function);
   expect(resolvers['deleteTest']).toBeInstanceOf(Function);
   expect(resolvers['deleteTests']).toBeInstanceOf(Function);
+});
+
+describe('Maps from Native JS types to Keystone types', () => {
+  const adapter = new MockAdapter();
+
+  [
+    {
+      nativeType: Boolean,
+      keystoneType: Checkbox,
+    },
+    {
+      nativeType: String,
+      keystoneType: Text,
+    },
+    {
+      nativeType: Number,
+      keystoneType: Float,
+    },
+  ].forEach(({ nativeType, keystoneType }) => {
+    test(`${getType(nativeType.prototype)} -> ${keystoneType.type}`, () => {
+      const list = new List(
+        'Test',
+        { fields: { foo: { type: nativeType } } },
+        {
+          adapter,
+          getAuth: () => {},
+          defaultAccess: { list: true, field: true },
+        }
+      );
+      expect(list.fieldsByPath.foo).toBeInstanceOf(keystoneType.implementation);
+    });
+  });
 });

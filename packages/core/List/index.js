@@ -14,7 +14,10 @@ const {
 
 const logger = require('@keystonejs/logger');
 
+const { Text, Checkbox, Float } = require('@keystonejs/fields');
+
 const graphqlLogger = logger('graphql');
+const keystoneLogger = logger('keystone');
 
 const { AccessDeniedError } = require('./graphqlErrors');
 
@@ -41,6 +44,47 @@ const mapKeys = (obj, func) =>
     (memo, [key, value]) => ({ ...memo, [key]: func(value, key, obj) }),
     {}
   );
+
+const nativeTypeMap = new Map([
+  [
+    Boolean,
+    {
+      name: 'Boolean',
+      keystoneType: Checkbox,
+    },
+  ],
+  [
+    String,
+    {
+      name: 'String',
+      keystoneType: Text,
+    },
+  ],
+  [
+    Number,
+    {
+      name: 'Number',
+      keystoneType: Float,
+    },
+  ],
+]);
+
+const mapNativeTypeToKeystonType = (type, listKey, fieldPath) => {
+  if (!nativeTypeMap.has(type)) {
+    return type;
+  }
+
+  const { name, keystoneType } = nativeTypeMap.get(type);
+
+  keystoneLogger.warn(
+    { nativeType: type, keystoneType, listKey, fieldPath },
+    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${
+      keystoneType.type.type
+    }' from the @keystonejs/fields package.`
+  );
+
+  return keystoneType;
+};
 
 module.exports = class List {
   constructor(key, config, { getListByKey, adapter, defaultAccess, getAuth }) {
@@ -90,10 +134,20 @@ module.exports = class List {
       defaultAccess: this.defaultAccess.list,
     });
 
+    const sanitisedFieldsConfig = mapKeys(
+      config.fields,
+      (fieldConfig, path) => {
+        return {
+          ...fieldConfig,
+          type: mapNativeTypeToKeystonType(fieldConfig.type, key, path),
+        };
+      }
+    );
+
     this.fieldsByPath = {};
     this.fields = config.fields
-      ? Object.keys(config.fields).map(path => {
-          const { type, ...fieldSpec } = config.fields[path];
+      ? Object.keys(sanitisedFieldsConfig).map(path => {
+          const { type, ...fieldSpec } = sanitisedFieldsConfig[path];
           const implementation = type.implementation;
           this.fieldsByPath[path] = new implementation(path, fieldSpec, {
             getListByKey,
@@ -109,7 +163,7 @@ module.exports = class List {
     this.adapter.prepareModel();
 
     this.views = {};
-    Object.entries(config.fields).forEach(([path, fieldConfig]) => {
+    Object.entries(sanitisedFieldsConfig).forEach(([path, fieldConfig]) => {
       const fieldType = fieldConfig.type;
       this.views[path] = {};
 
