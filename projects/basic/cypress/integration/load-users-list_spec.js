@@ -14,7 +14,7 @@ describe('Loading User item', function() {
           }
         `
       )
-      .then(({ allUsers: [user] }) => {
+      .then(({ data: { allUsers: [user] } }) => {
         cy.visit(`/admin/users/${user.id}`);
         cy.get('body').should('contain', user.name);
       });

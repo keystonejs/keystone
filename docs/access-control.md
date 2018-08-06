@@ -8,6 +8,7 @@
 - [Intro](#intro)
 - [Admin UI authentication](#admin-ui-authentication)
 - [GraphQL access control](#graphql-access-control)
+  * [Defaults](#defaults)
   * [List level access control](#list-level-access-control)
     + [`access` API](#access-api)
       - [Booleans](#booleans)
@@ -108,6 +109,30 @@ There are two ways of specifying Access Control:
 1. List level
 1. Field level
 
+### Defaults
+
+To set defaults for all lists & fields, use the `defaultAccess` config when
+creating a `Keystone` instance:
+
+```javascript
+const keystone = new Keystone('My App', {
+  defaultAccess: {
+    list: // as below
+    field: // as below
+  },
+  // ...
+});
+```
+
+The initial value of `defaultAccess` is:
+
+```javascript
+{
+  list: true,
+  field: true,
+}
+```
+
 ### List level access control
 
 List level access control can have varying degrees of specificity depending on
@@ -161,8 +186,6 @@ ie; for a list `User`, it would match the input type `UserWhereInput`.
 When resolving `StaticAccess`;
 - `true`: Allow access
 - `false`: Do not allow access
-
-The default value of `access` is `(StaticAccess)true`.
 
 Definition of `access` operations:
 - `create`: Ability to create new items in the list
@@ -276,11 +299,11 @@ GraphQL Schema, and so on.
 In the examples below, the `name_contains: 'k'` syntax matches the
 `UserWhereInput` GraphQL type for the list.
 
-_NOTES:_ 
-1. For `read` operations, when the `GraphQLWhere` clause results in 0 items
-   returned, no error is returned.
-2. For `update`/`delete` operations, when the `GraphQLWhere` clause
-   results in 0 items, an `AccessDeniedError` is returned.
+_NOTES:_
+1. For singular `read`/`update`/`delete` operations, when the `GraphQLWhere`
+   clause results in 0 items, an `AccessDeniedError` is returned.
+2. For batch `read` operations (eg; `query { allUsers }`), when the
+   `GraphQLWhere` clause results in 0 items returned, no error is returned.
 3. For `create` operations, an `AccessDeniedError` is returned if the operation
    is set to / returns `false`
 
@@ -380,8 +403,6 @@ only to modify it).
 When defining `StaticAccess`;
 - `true`: Allow access
 - `false`: Do not allow access
-
-The default value of `access` is `(StaticAccess)true`.
 
 Definition of `access` operations:
 - `create`: Ability to set the value of the field when creating a new item

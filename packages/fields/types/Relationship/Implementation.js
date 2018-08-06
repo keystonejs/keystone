@@ -114,7 +114,7 @@ function postAggregateMutationFactory({
   };
 }
 
-class Select extends Implementation {
+class Relationship extends Implementation {
   constructor() {
     super(...arguments);
   }
@@ -175,6 +175,9 @@ class Select extends Implementation {
   }
   getGraphqlCreateArgs() {
     return this.getGraphqlUpdateArgs();
+  }
+  getDefaultValue() {
+    return null;
   }
 }
 
@@ -254,6 +257,6 @@ class MongoSelectInterface extends MongooseFieldAdapter {
 }
 
 module.exports = {
-  Select,
+  Relationship,
   MongoSelectInterface,
 };

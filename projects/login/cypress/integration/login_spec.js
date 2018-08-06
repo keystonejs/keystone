@@ -136,3 +136,48 @@ describe('Testing Login', () => {
     });
   });
 });
+
+describe('authenticated item', () => {
+  before(() => {
+    cy.visit('/admin');
+  });
+
+  describe('logged out', () => {
+    it('current user query returns null', () => {
+      cy.graphql_query('/admin/api', '{ authenticatedUser { id } }').then(
+        ({ data, errors }) => {
+          expect(data).to.have.property('authenticatedUser', null);
+          expect(errors).to.equal(undefined);
+        }
+      );
+    });
+  });
+
+  describe('logged in', () => {
+    before(() => {
+      cy.visit('/admin');
+
+      cy.get('input[name="username"]')
+        .clear({ force: true })
+        .type(USERNAME, { force: true });
+
+      cy.get('[name="password"]')
+        .clear({ force: true })
+        .type(PASSWORD, { force: true });
+
+      cy.get('button[type="submit"]').click();
+
+      // Wait for page to load (completing the signin round trip)
+      cy.get('main h1').should('contain', 'Home');
+    });
+
+    it('current user query returns user info', () => {
+      cy.graphql_query('/admin/api', '{ authenticatedUser { id } }').then(
+        ({ data, errors }) => {
+          expect(data).to.have.deep.property('authenticatedUser.id');
+          expect(errors).to.equal(undefined);
+        }
+      );
+    });
+  });
+});
