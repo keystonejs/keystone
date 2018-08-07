@@ -1,6 +1,7 @@
 const pluralize = require('pluralize');
 const {
   resolveAllKeys,
+  mapKeys,
   omit,
   unique,
   intersection,
@@ -38,12 +39,6 @@ const labelToPath = str =>
     .toLowerCase();
 
 const labelToClass = str => str.replace(/\s+/g, '');
-
-const mapKeys = (obj, func) =>
-  Object.entries(obj).reduce(
-    (memo, [key, value]) => ({ ...memo, [key]: func(value, key, obj) }),
-    {}
-  );
 
 const nativeTypeMap = new Map([
   [

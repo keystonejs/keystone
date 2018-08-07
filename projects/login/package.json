@@ -27,6 +27,7 @@
     "react": "^16.3.1"
   },
   "devDependencies": {
+    "@keystonejs/utils": "^1.0.0",
     "cypress": "^3.0.2",
     "execa": "0.10.0",
     "mocha": "^3.1.2",

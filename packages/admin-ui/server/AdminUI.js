@@ -1,6 +1,5 @@
 const bodyParser = require('body-parser');
 const express = require('express');
-const session = require('express-session');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 
@@ -15,8 +14,6 @@ module.exports = class AdminUI {
     }
 
     this.adminPath = config.adminPath || '/admin';
-    this.graphiqlPath = `${this.adminPath}/graphiql`;
-    this.apiPath = `${this.adminPath}/api`;
 
     this.config = {
       ...config,
@@ -32,7 +29,7 @@ module.exports = class AdminUI {
 
   getAdminMeta() {
     return {
-      withAuth: !!this.config.authStrategy,
+      withAuth: !!this.authStrategy,
       adminPath: this.config.adminPath,
       signinPath: this.config.signinPath,
       signoutPath: this.config.signoutPath,
@@ -43,7 +40,7 @@ module.exports = class AdminUI {
   async signin(req, res, next) {
     try {
       // TODO: How could we support, for example, the twitter auth flow?
-      const result = await this.config.authStrategy.validate({
+      const result = await this.authStrategy.validate({
         username: req.body.username,
         password: req.body.password,
       });
@@ -103,24 +100,18 @@ module.exports = class AdminUI {
     });
   }
 
-  createSessionMiddleware({ cookieSecret, sessionMiddleware }) {
-    if (!this.config.authStrategy) {
-      return (req, res, next) => next();
+  setAuthStrategy(authStrategy) {
+    if (authStrategy.authType !== 'password') {
+      throw new Error(
+        'Keystone 5 Admin currently only supports the `PasswordAuthStrategy`'
+      );
     }
 
+    this.authStrategy = authStrategy;
+  }
+
+  createSessionMiddleware() {
     const app = express();
-
-    const sessionHandler =
-      sessionMiddleware ||
-      session({
-        secret: cookieSecret,
-        resave: false,
-        saveUninitialized: false,
-        name: 'keystone-admin.sid',
-      });
-
-    // Add session tracking
-    app.use(this.adminPath, sessionHandler);
 
     // Listen to POST events for form signin form submission (GET falls through
     // to the webpack server(s))
@@ -134,16 +125,6 @@ module.exports = class AdminUI {
     // Listen to both POST and GET events, and always sign the user out.
     app.use(this.config.signoutPath, this.signout);
 
-    // Attach the user to the request for all following route handlers
-    app.use(
-      this.keystone.session.validate({
-        valid: ({ req, list, item }) => {
-          req.user = item;
-          req.authedListKey = list.key;
-        },
-      })
-    );
-
     // Allow clients to AJAX for user info
     app.get(this.config.sessionPath, this.session);
 
@@ -156,9 +137,9 @@ module.exports = class AdminUI {
     return app;
   }
 
-  createDevMiddleware() {
+  createDevMiddleware({ apiPath, graphiqlPath }) {
     const app = express();
-    const { adminPath, apiPath, graphiqlPath, config } = this;
+    const { adminPath } = this;
 
     // ensure any non-resource requests are rewritten for history api fallback
     app.use(adminPath, (req, res, next) => {
@@ -189,7 +170,7 @@ module.exports = class AdminUI {
       webpackMiddlewareConfig
     );
 
-    if (config.authStrategy) {
+    if (this.authStrategy) {
       const publicMiddleware = webpackDevMiddleware(
         webpack(
           getWebpackConfig({

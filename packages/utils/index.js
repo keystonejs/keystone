@@ -25,6 +25,12 @@ exports.checkRequiredConfig = (config, requiredKeys = {}) => {
 exports.escapeRegExp = str =>
   str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
+exports.mapKeys = (obj, func) =>
+  Object.entries(obj).reduce(
+    (memo, [key, value]) => ({ ...memo, [key]: func(value, key, obj) }),
+    {}
+  );
+
 exports.resolveAllKeys = obj => {
   const result = {};
   const allPromises = Object.keys(obj).map(key =>

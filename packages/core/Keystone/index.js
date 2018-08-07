@@ -45,6 +45,7 @@ module.exports = class Keystone {
       this.auth[listKey] = {};
     }
     const strategy = new StrategyType(this, listKey, config);
+    strategy.authType = authType;
     this.auth[listKey][authType] = strategy;
     return strategy;
   }

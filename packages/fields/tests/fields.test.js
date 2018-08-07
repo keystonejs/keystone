@@ -7,7 +7,6 @@ const path = require('path');
 const request = require('supertest');
 
 const Keystone = require('../../core/Keystone');
-const AdminUI = require('../../admin-ui/server/AdminUI');
 const WebServer = require('../../server/WebServer');
 const createGraphQLMiddleware = require('../../server/WebServer/graphql');
 const { MongooseAdapter } = require('../../adapter-mongoose');
@@ -82,13 +81,17 @@ describe('Test CRUD for all fields', () => {
       keystone.createList(listName, { fields, labelResolver });
 
       // Set up a server (but do not .listen(), we will use supertest to access the app)
-      const admin = new AdminUI(keystone, { adminPath: '/admin' });
       const server = new WebServer(keystone, {
         'cookie secret': 'qwerty',
         session: false,
       });
 
-      server.app.use(createGraphQLMiddleware(keystone, admin));
+      server.app.use(
+        createGraphQLMiddleware(keystone, {
+          apiPath: '/admin/api',
+          graphiqlPath: '/admin/graphiql',
+        })
+      );
 
       // Clear the database before running any tests
       beforeAll(async done => {

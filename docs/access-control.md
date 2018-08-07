@@ -37,12 +37,13 @@ There are 2 ways of effecting the available actions of a user in Keystone:
 - _Authentication_ refers to a user identifying themselves.
   The specifics of how this is done is outside the scope of this document.
   Within this document, we abbreviate _Authentication_ to _Auth_.
+  See [Authentication](./authentication.md) for more.
 - _Access Control_ refers to the specific actions an authenticated or anonymous
   user can take. Often referred to as _authorization_ elsewhere.
 
 ## Admin UI authentication
 
-TODO: Docs on how to login to the Admin UI
+See [Authentication](./authentication.md).
 
 ## GraphQL access control
 

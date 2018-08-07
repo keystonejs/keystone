@@ -4,7 +4,7 @@
   "author": "Jed Watson",
   "license": "MIT",
   "scripts": {
-    "coverage": "jest --coverage --collectCoverageFrom=packages/**/*.{js}",
+    "coverage": "NODE_ENV=test jest --coverage --collectCoverageFrom=packages/**/*.{js}",
     "cypress:run": "status=0; bolt w @keystonejs/cypress-project-basic run cypress:run || status=$?; bolt w @keystonejs/cypress-project-login run cypress:run || status=$?; bolt w @keystonejs/cypress-project-twitter-login run cypress:run || status=$?; bolt w @keystonejs/cypress-project-access-control run cypress:run || status=$?; exit $status",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.js\"",
@@ -14,8 +14,8 @@
     "lint": "yarn lint:prettier && yarn lint:eslint",
     "start": "cd projects/basic && yarn start",
     "test": "yarn lint && yarn test:unit && yarn cypress:run",
-    "test:unit": "jest",
-    "test:unit:debug": "node --inspect-brk `which jest` --runInBand"
+    "test:unit": "NODE_ENV=test jest",
+    "test:unit:debug": "NODE_ENV=test node --inspect-brk `which jest` --runInBand"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.12",
@@ -39,6 +39,8 @@
     "babel-preset-react": "^6.24.1",
     "body-parser": "^1.18.2",
     "cloudinary": "^1.11.0",
+    "cookie": "^0.3.1",
+    "cookie-signature": "^1.1.0",
     "cors": "^2.8.4",
     "cross-fetch": "^2.2.0",
     "cuid": "^2.1.1",

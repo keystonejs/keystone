@@ -99,7 +99,7 @@ module.exports = {
 
     beforeEach(() =>
       // For each of the tests, ensure we stay logged in
-      Cypress.Cookies.preserveOnce('keystone-admin.sid'));
+      Cypress.Cookies.preserveOnce('keystone.sid'));
 
     after(() => {
       // Cypress claims to clear cookies before each test, but it appears that
