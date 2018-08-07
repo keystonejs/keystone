@@ -3,8 +3,9 @@
 import React, { Fragment, type Ref } from 'react';
 import ReactSelect from 'react-select';
 
-import { colors, gridSize } from '../../theme';
+import { borderRadius, colors, gridSize } from '../../theme';
 import { alpha } from '../../theme/color-utils';
+
 export {
   Checkbox,
   CheckboxPrimitive,
@@ -13,8 +14,7 @@ export {
   RadioPrimitive,
   RadioGroup,
 } from './Controls';
-
-const borderRadius = '0.3em';
+export { DayPicker } from './DayPicker';
 
 // Styles shared between input and buttons
 // ------------------------------
@@ -78,7 +78,7 @@ export const selectStyles = {
     ...base,
     backgroundColor: 'white',
     color: 'inherit',
-    borderRadius: '0.3rem',
+    borderRadius: borderRadius,
     borderColor: isFocused ? colors.primary : colors.N20,
     boxShadow: isFocused
       ? `inset 0 1px 1px rgba(0, 0, 0, 0.075),

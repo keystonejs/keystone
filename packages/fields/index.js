@@ -9,4 +9,5 @@ module.exports = {
   Relationship: require('./types/Relationship'),
   File: require('./types/File'),
   CloudinaryImage: require('./types/CloudinaryImage'),
+  CalendarDay: require('./types/CalendarDay'),
 };

@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "@keystonejs/icons": "^1.0.0",
+    "date-fns": "^1.29.0",
     "emotion": "^9.1.1",
     "focus-trap": "^2.4.3",
+    "kalendaryo": "^1.10.0",
     "prop-types": "^15.6.1",
     "raf-schd": "^4.0.0",
     "react": "^16.3.1",
