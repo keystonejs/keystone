@@ -170,7 +170,7 @@ class Relationship extends Implementation {
   }
   getGraphqlUpdateArgs() {
     const { many } = this.config;
-    const type = many ? '[String]' : 'String';
+    const type = many ? '[ID]' : 'ID';
     return `${this.path}: ${type}`;
   }
   getGraphqlCreateArgs() {
