@@ -1,110 +1,108 @@
-Documentation Style Guide
-================================================================================
+# Documentation Style Guide
 
 This document describes the conventions for formatting and style used throughout Keystone 5 docs.
 
-Our practises align closely with those suggested in Ciro Santilli's
-[Markdown Style Guide](http://www.cirosantilli.com/markdown-style-guide),
-the de facto standard.
-The specific points included below are a high-level overview and cover a few areas we diverge from this standard.
+Many of these rules are enforced by the Prettier Markdown parser,
+[Remark](https://github.com/remarkjs/remark/tree/master/packages/remark-parse),
+which runs on `yarn format`.
+Generally they also align with those suggested in Ciro Santilli's
+[Markdown Style Guide](http://www.cirosantilli.com/markdown-style-guide), the de facto standard.
+If Prettier doesn't have an opinion on something, and it's not covered here, go with Ciro suggestion.
 
 The aim of these conventions is to ensure:
 
-* Consistency across project docs
-* Readability when rendered as HTML
-* Readability as plain text
-* Readability when being updated (ie. in diffs)
+- Consistency across project docs
+- Readability when rendered as HTML
+- Readability as plain text
+- Readability when being updated (ie. in diffs)
 
+## General
 
-General
---------------------------------------------------------------------------------
+- All docs should include an intro that describes their purpose and context within the project
+- Write clearly and keep it factual
+- If you must assume knowledge on the part of the reader, link to related docs on the topic
+- Emoji can be used, sparingly please ✨
 
-* All docs should include an intro that describes their purpose
-* Ensure correct spelling; spell-check documents before committing
-* Ensure correct capitalisation, inc. product names and acronyms (eg: URL, Node.js, MongoDB)
-* Ensure correct English grammar
-* Write clearly and keep it factual
-* If you must assume knowledge on the part of the reader, link to related docs on the topic
-* Emoji should only be used sparingly ✨
+Also, it should go without saying:
 
-_Do we favour US or UK spellings?_
+- Ensure correct spelling; spell-check documents before committing.
+  (We _favour_ UK/Australian spelling.)
+- Ensure correct capitalisation, inc. product names and acronyms (eg: JavaScript, URL, Node.js, MongoDB).
+  Note, _abbreviations_ like "etc.", "ie." and "eg." are not acronyms;
+  they should only be capitalised if at the start of a sentence.
+- Ensure correct English grammar (or Miss Willings will come for you 👩🏼‍🏫).
+  This includes periods after abbreviations such as "etc."
 
+If in doubt, Google it.
 
-Tools
---------------------------------------------------------------------------------
+## Tools
+
+We run our Markdown through Prettier which applies many of these rule for us.
+The `yarn format` command will check and update all Markdown files (and all JS).
+You can use `yarn format:file MyNewDoc.md` to "pretty" a specific document.
 
 If you're using Sublime Text, the following plugins may be of use:
 
-* [Markdown Extended](https://packagecontrol.io/packages/Markdown%20Extended) --
-	Better syntax highlighting of Markdown documents
-* [MarkdownPreview](https://packagecontrol.io/packages/MarkdownPreview) --
-	Allows Markdown documents to be previewed by running them through the GitHub renderer
+- [Markdown Extended](https://packagecontrol.io/packages/Markdown%20Extended) --
+  Better syntax highlighting of Markdown documents
+- [MarkdownPreview](https://packagecontrol.io/packages/MarkdownPreview) --
+  Allows Markdown documents to be previewed by running them through the GitHub renderer
 
-_Any tips for other editors?_
+_JM: Any tips for other editors? VS Code anyone?_
 
+## Headings
 
-Headings
---------------------------------------------------------------------------------
+- We prefer the ["atx" style of headings](http://www.cirosantilli.com/markdown-style-guide/#option-header-atx).
+  Ie. `#`, `##`, `###`, etc.
+- Each document should contain a single level 1 heading
+- Headings at all levels use [Title Case](https://en.wikipedia.org/wiki/Letter_case#Stylistic_or_specialised_usage)
+- Try to keep all headings unique so they can be [linked to](#headings) reliably
+- Emphasis (eg. **bold**) should not be used in place of headings
 
-* We prefer the ["Setex" style of headings](http://www.cirosantilli.com/markdown-style-guide/#option-header-setex)
-	with the `=` and `-` characters repeated for 80 chars
-* Each document should contain a single level 1 heading
-* Headings at all levels use [Title Case](https://en.wikipedia.org/wiki/Letter_case#Stylistic_or_specialised_usage)
-* Try to keep all headings unique so they can be [linked to](#headings) reliably
-* Emphasis (eg. **bold**) should not be used in place of headings
-
-
-Text Blocks
---------------------------------------------------------------------------------
+## Text Blocks
 
 The sentences that form a paragraph should generally be separated with newlines.
-Longer sentences, constructed with multiple clauses,
-can contain newline characters at punctuation boundaries.
-Likewise, sentences that contain
-[Markdown formatted links](https://www.markdownguide.org/basic-syntax#links)
-can include newlines at the link boundaries if needed.
+Longer sentences, such as this one, constructed with multiple clauses,
+will often require newline characters at punctuation boundaries.
+Likewise, sentences will often require newlines characters when they include
+[Markdown formatted links](https://www.markdownguide.org/basic-syntax#links).
 
+There's no hard limit on line lenght; Prettier does not enforce one by default.
+As a rule of thumb, over 120 characters is probably too long.
 
-Lists
---------------------------------------------------------------------------------
+## Lists
 
-For unordered lists:
+We'd _like_ to use different bullets styles for items at different levels but Prettier forces hyphens by default.
+Let's just go with that.
 
-* Top level lists use and asterisk (`*`)
-	- Second level lists use a hyphen (`-`)
-		+ Third level lists use the plus sign (`+`)
-			* Then the cycle repeats (`*`)
-* Lists levels are indented with tabs
-* Items should end in punctuation only if they contains multiple sentences.
-	In other cases they should not.
+- Lists levels are indented with spaces
+  - Like this
+    - And this
+- Items should end in punctuation only if they contains multiple sentences.
+  In other cases they should not.
 
-_JM: This ^^ differs slightly from Ciro's guide but is my preference.. thoughts?_
+Ordered lists have their own set of concerns.
+It's worth noting that GitHub Markdown only cares which numbers you use for the _first item_;
+it takes that as the initial value and counts up from there.
+As such, there are two methods that work:
 
-For ordered lists:
+1.  Usually it's preferable to number all items with `1`.
+    This is best for diffs since inserted items don't re-number all subsequent items.
+1.  However, if the doc refers to the items _by number_ it makes sense to number them ordinarily within the Markdown.
+    The Prettier will _correct the order of items_ numbered in this way which is nice (but does cause noisier diffs).
 
-1. Ordered lists should generally be avoided
-1. If necessary, all items should start with the same number.
-	This allows reordering of items without onerous diffs.
+## Links
 
-
-Links
---------------------------------------------------------------------------------
-
-Links should be used generously to reference related material inside and outside the current doc.
+Links should be used generously to reference related material both inside and outside the current document.
 You can link to any section in a markdown document by lower-casing it's heading,
-replacing spaces with hyphens and prefixing with a hash, eg:
-the [Text Blocks section](#text-blocks).
+replacing spaces with hyphens and prefixing with a hash, eg: the [Text Blocks section](#text-blocks).
 
+## Code and Code Blocks
 
-Code and Code Blocks
---------------------------------------------------------------------------------
-
-Inline code using `single backticks` should only be used within sentences,
-to refer to specific tools or single commands.
+If referring to specific tools or a single commands within a sentence, use `single backticks`.
 
 Where possible, code blocks (using the triple backtick) should be used.
-All code blocks should specify the language they contain;
-this produces syntax highlighting when published on GitHub.
+All code blocks should specify the language they contain; this produces syntax highlighting when published on GitHub.
 
 For example, even a small series of shell commands should be given a `sh` block:
 
@@ -115,14 +113,39 @@ node --version
 A complete list of languages recognised by GitHut can be found in the
 [`linguist` languages file](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
 
-
-Emphasis
---------------------------------------------------------------------------------
-
-* **Bold sections** are delineated with 2 asterisk
-* _Italics_ can be added with a pair of underscores
+## Emphasis
 
 Emphasis should be used inline, to highlight specific points,
 or to indicate notes and comments that aren't part of the document flow.
 
-_JM: This ^^ differs from Ciro's guide but is my preference.. thoughts?_
+- **Bold sections** are delineated with 2 asterisk (`**text**`)
+- _Italics_ can be added with a pair of underscores (`_text_`)
+
+This differs slightly from Ciro's guide but we think it's clearer to read in plain text.
+It also aligns more closely with tools like Slack.
+
+Remember you can also ~~cross~~ strike out text using tildes (`~~text~~`).
+
+## Tables
+
+Use tables if it helps with clarity.
+Prettier will respace the values for you so the information will remain readable as text.
+Avoid using codeblocks as a reformatted pseudo-table.
+
+Eg. this is silly:
+
+```
+Name      Age
+--------- -------
+Jimmy     41
+Jannet    42
+```
+
+Just use a table:
+
+| Name   | Age |
+| ------ | --: |
+| Jimmy  |  41 |
+| Jannet |  42 |
+
+Remember you can control a column's horizontal alignment with `:` char, as above.

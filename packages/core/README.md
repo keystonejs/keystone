@@ -16,13 +16,8 @@ For example;
 
 ```javascript
 keystone.createItems({
-  User: [
-    { name: 'Ticiana' },
-    { name: 'Lauren' },
-  ],
-  Post: [
-    { title: 'Hello World' },
-  ],
+  User: [{ name: 'Ticiana' }, { name: 'Lauren' }],
+  Post: [{ title: 'Hello World' }],
 });
 ```
 
@@ -40,10 +35,7 @@ For example;
 
 ```javascript
 keystone.createItems({
-  User: [
-    { name: 'Ticiana' },
-    { name: 'Lauren' },
-  ],
+  User: [{ name: 'Ticiana' }, { name: 'Lauren' }],
   Post: [
     {
       title: 'Hello World',
@@ -83,11 +75,11 @@ keystone.createList('User', {
 
 There is 2 ways to write the relationship query:
 
-1. _Single Relation syntax_, using the same query as a Single Relationship, but
-   instead of picking only the first item found, it will pick _all_ the items
-   found to match the query. ie; 0, 1, or _n_ items.
-2. _Array Relation syntax_, allowing to explicitly set the exact items related
-   to. ie; The exact length and items in the collection.
+1.  _Single Relation syntax_, using the same query as a Single Relationship, but
+    instead of picking only the first item found, it will pick _all_ the items
+    found to match the query. ie; 0, 1, or _n_ items.
+2.  _Array Relation syntax_, allowing to explicitly set the exact items related
+    to. ie; The exact length and items in the collection.
 
 **Single Relation syntax** example
 
@@ -113,7 +105,8 @@ keystone.createItems({
   User: [
     {
       name: 'Ticiana',
-      posts: [ // Notice the Array of queries
+      posts: [
+        // Notice the Array of queries
         { where: { title: 'Hello Everyone' } },
         { where: { title: 'Keystone Rocks' } },
       ],
@@ -155,7 +148,7 @@ keystone.createItems({
           name_starts_with: 'J',
           skip: 2,
         },
-      }
+      },
     },
   ],
 });
@@ -183,7 +176,10 @@ Limitations include:
 
 - You cannot update existing items in the database
 - You cannot delete existing items in the database
-<!-- - You cannot insert items which have a required field of type `Relationship`-->
+
+<!--
+- You cannot insert items which have a required field of type `Relationship`
+-->
 
 When these limitations apply to your task at hand, we recommend using the
 GraphQL API instead. It is more verbose, but much more powerful.

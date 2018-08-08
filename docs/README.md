@@ -1,5 +1,4 @@
-Keystone Documentation
-================================================================================
+# Keystone Documentation
 
 You're awesome ❤️
 

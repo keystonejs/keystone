@@ -12,6 +12,7 @@ If not set, or set to `undefined`, it must be provided when creating new items.
 For a 'nullable' field, set `defaultValue: null`.
 
 NOTE: Some types have a pre-configured defaultValue;
+
 - **Relationship**: `null`
 
 NOTE: This can have impacts when combined with [access control](./access-control.md)
