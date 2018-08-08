@@ -8,19 +8,26 @@ contains much of the same information and is more up-to-date.
 
 ## General
 
-- [ ] Create adapters - [ ] MongoDB - [ ] Postgres
-
+- [ ] Create adapters
+  - [ ] MongoDB
+  - [ ] Postgres
 - [ ] Form renderer (takes an array of fields, used for create | update)
 - [ ] Custom nav
 - [ ] Custom routes / views
-- [ ] Plugins -> components (where?) - [ ] Nav (left | right) - [ ] Home - [ ] List view - [ ] Item view
+- [ ] Plugins -> components (where?)
+  - [ ] Nav (left | right)
+  - [ ] Home
+  - [ ] List view
+  - [ ] Item view
 - [ ] Solidify loading / error experience across the Admin UI
 - [ ] Consistent focus management
 - [ ] Integrate filters, sorting and columns into the URL
 
 ## List
 
-- [x] Client-side class - [ ] Queries and mutations - [ ] Update apollo cache
+- [x] Client-side class
+  - [ ] Queries and mutations
+  - [ ] Update apollo cache
 - [ ] Search implementation
 - [ ] Name field
 - [ ] Slug field
@@ -38,10 +45,14 @@ contains much of the same information and is more up-to-date.
 ## Fields
 
 - [x] Client-side class
-- [ ] Default value - [x] Client-side - [ ] Server-side
+- [ ] Default value
+  - [x] Client-side
+  - [ ] Server-side
 - [ ] Show on create
 - [ ] Show on edit
-- [ ] Required / validation - [ ] Client-side validation - [ ] Server-side validation
+- [ ] Required / validation
+  - [ ] Client-side validation
+  - [ ] Server-side validation
 - [ ] Read-only
 - [ ] Inline-edit in list view
 - [ ] Notes
