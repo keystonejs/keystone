@@ -7,7 +7,7 @@ Many of these rules are enforced by the Prettier Markdown parser,
 which runs on `yarn format`.
 Generally they also align with those suggested in Ciro Santilli's
 [Markdown Style Guide](http://www.cirosantilli.com/markdown-style-guide), the de facto standard.
-If Prettier doesn't have an opinion on something, and it's not covered here, go with Ciro suggestion.
+If Prettier doesn't have an opinion on something, and it's not covered here, go with Ciro's suggestion.
 
 The aim of these conventions is to ensure:
 
@@ -31,7 +31,7 @@ Also, it should go without saying:
   Note, _abbreviations_ like "etc.", "ie." and "eg." are not acronyms;
   they should only be capitalised if at the start of a sentence.
 - Ensure correct English grammar (or Miss Willings will come for you 👩🏼‍🏫).
-  This includes periods after abbreviations such as "etc."
+  This includes periods after abbreviations such as "etc.".
 
 If in doubt, Google it.
 
@@ -67,8 +67,8 @@ will often require newline characters at punctuation boundaries.
 Likewise, sentences will often require newlines characters when they include
 [Markdown formatted links](https://www.markdownguide.org/basic-syntax#links).
 
-There's no hard limit on line lenght; Prettier does not enforce one by default.
-As a rule of thumb, over 120 characters is probably too long.
+There's no hard limit on line length; Prettier does not enforce one by default.
+As a rule of thumb, over 120 characters is too long.
 
 ## Lists
 
@@ -87,7 +87,7 @@ it takes that as the initial value and counts up from there.
 As such, there are two methods that work:
 
 1.  Usually it's preferable to number all items with `1`.
-    This is best for diffs since inserted items don't re-number all subsequent items.
+    This keeps diffs clean since inserting or removing an item doesn't re-number all subsequent items.
 1.  However, if the doc refers to the items _by number_ it makes sense to number them ordinarily within the Markdown.
     The Prettier will _correct the order of items_ numbered in this way which is nice (but does cause noisier diffs).
 
@@ -99,17 +99,16 @@ replacing spaces with hyphens and prefixing with a hash, eg: the [Text Blocks se
 
 ## Code and Code Blocks
 
-If referring to specific tools or a single commands within a sentence, use `single backticks`.
-
-Where possible, code blocks (using the triple backtick) should be used.
-All code blocks should specify the language they contain; this produces syntax highlighting when published on GitHub.
-
-For example, even a small series of shell commands should be given a `sh` block:
+Use `single backticks` only when referring to a specific tool or a single commands within a sentence.
+Where possible, code blocks (using the triple backtick) should be used instead.
+For example, even a small single shell commands should be given a block:
 
 ```sh
 node --version
 ```
 
+All code blocks should specify the language they contain;
+this produces syntax highlighting when published on GitHub.
 A complete list of languages recognised by GitHut can be found in the
 [`linguist` languages file](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
 
@@ -121,16 +120,17 @@ or to indicate notes and comments that aren't part of the document flow.
 - **Bold sections** are delineated with 2 asterisk (`**text**`)
 - _Italics_ can be added with a pair of underscores (`_text_`)
 
-This differs slightly from Ciro's guide but we think it's clearer to read in plain text.
-It also aligns more closely with tools like Slack.
+This differs slightly from Ciro's guide (which suggests `**` and `*`).
+We believe our version is clearer to read in plain text.
+It also aligns more closely with tools like Slack, which is handy.
 
-Remember you can also ~~cross~~ strike out text using tildes (`~~text~~`).
+Remember, you can also ~~strikeout~~ text using tildes (`~~text~~`).
 
 ## Tables
 
 Use tables if it helps with clarity.
 Prettier will respace the values for you so the information will remain readable as text.
-Avoid using codeblocks as a reformatted pseudo-table.
+Avoid using codeblocks as a preformatted pseudo-table.
 
 Eg. this is silly:
 
@@ -148,4 +148,4 @@ Just use a table:
 | Jimmy  |  41 |
 | Jannet |  42 |
 
-Remember you can control a column's horizontal alignment with `:` char, as above.
+Remember you can control the horizontal alignment of text within a column using the `:` char, as above.
