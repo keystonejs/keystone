@@ -13,10 +13,12 @@
     "@keystonejs/icons": "^1.0.0",
     "@keystonejs/ui": "^5.0.0",
     "@keystonejs/utils": "^1.0.0",
+    "apollo-errors": "^1.9.0",
     "apollo-upload-server": "^5.0.0",
     "cuid": "^2.1.1",
     "graphql-tag": "^2.8.0",
     "mongoose": "<5.1.0",
+    "p-settle": "^2.1.0",
     "react-apollo": "^2.1.3"
   }
 }

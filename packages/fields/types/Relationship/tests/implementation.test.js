@@ -1,3 +1,4 @@
+const gql = require('graphql-tag');
 const Relationship = require('../').implementation;
 
 class MockFieldAdapter {}
@@ -18,25 +19,82 @@ function createRelationship({ path, config = {} }) {
 }
 
 describe('Type Generation', () => {
-  test('IDs for relationship fields in create args', () => {
-    const relMany = createRelationship({ path: 'foo', config: { many: true } });
-    expect(relMany.getGraphqlCreateArgs()).toEqual('foo: [ID]');
+  test('inputs for relationship fields in create args', () => {
+    const relMany = createRelationship({
+      path: 'foo',
+      config: { many: true, ref: 'Zip' },
+    });
+    expect(relMany.getGraphqlCreateArgs()).toEqual(
+      'foo: [ZipRelationshipInput]'
+    );
 
     const relSingle = createRelationship({
       path: 'foo',
-      config: { many: false },
+      config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.getGraphqlCreateArgs()).toEqual('foo: ID');
+    expect(relSingle.getGraphqlCreateArgs()).toEqual(
+      'foo: ZipRelationshipInput'
+    );
   });
 
-  test('IDs for relationship fields in update args', () => {
-    const relMany = createRelationship({ path: 'foo', config: { many: true } });
-    expect(relMany.getGraphqlUpdateArgs()).toEqual('foo: [ID]');
+  test('inputs for relationship fields in update args', () => {
+    const relMany = createRelationship({
+      path: 'foo',
+      config: { many: true, ref: 'Zip' },
+    });
+    expect(relMany.getGraphqlUpdateArgs()).toEqual(
+      'foo: [ZipRelationshipInput]'
+    );
 
     const relSingle = createRelationship({
       path: 'foo',
-      config: { many: false },
+      config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.getGraphqlUpdateArgs()).toEqual('foo: ID');
+    expect(relSingle.getGraphqlUpdateArgs()).toEqual(
+      'foo: ZipRelationshipInput'
+    );
+  });
+
+  test('relationship LinkOrCreate input', () => {
+    const relationship = createRelationship({
+      path: 'foo',
+      config: { many: false, ref: 'Zip' },
+    });
+
+    // We're testing the AST is as we expect it to be
+    expect(gql(relationship.getGraphqlAuxiliaryTypes())).toMatchObject({
+      definitions: [
+        {
+          kind: 'InputObjectTypeDefinition',
+          name: {
+            value: 'ZipRelationshipInput',
+          },
+          fields: [
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'id',
+              },
+              type: {
+                name: {
+                  value: 'ID',
+                },
+              },
+            },
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'create',
+              },
+              type: {
+                name: {
+                  value: 'ZipCreateInput',
+                },
+              },
+            },
+          ],
+        },
+      ],
+    });
   });
 });
