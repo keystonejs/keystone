@@ -41,4 +41,15 @@ module.exports = {
     strict: 'off',
   },
   extends: ['plugin:jest/recommended'],
+
+  // Disable some rules for (code blocks within) Markdown docs
+  overrides: [
+    {
+      files: ['**/*.md'],
+      rules: {
+        'no-unused-vars': 'off',
+        'no-undef': 'off',
+      },
+    },
+  ],
 };

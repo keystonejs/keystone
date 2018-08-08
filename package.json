@@ -7,7 +7,7 @@
     "coverage": "NODE_ENV=test jest --coverage --collectCoverageFrom=packages/**/*.{js}",
     "cypress:run": "status=0; bolt w @keystonejs/cypress-project-basic run cypress:run || status=$?; bolt w @keystonejs/cypress-project-login run cypress:run || status=$?; bolt w @keystonejs/cypress-project-twitter-login run cypress:run || status=$?; bolt w @keystonejs/cypress-project-access-control run cypress:run || status=$?; exit $status",
     "format:file": "prettier --write",
-    "format": "prettier --write \"**/*.js\"",
+    "format": "prettier --write \"**/*.js\" \"**/*.md\"",
     "fresh": "bolt ws exec -- rm -rf node_modules && rm -rf node_modules && bolt",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --list-different \"**/*.js\"",

@@ -1,82 +1,86 @@
-> These should be moved into GitHub Issues at some stage, and removed from this
-> document when they are.
+# High-level TODOs
 
-# General
+These should be moved into GitHub Issues at some stage, and removed from this document when they are.
 
-* [ ] create adapters
-  * [ ] MongoDB
-  * [ ] Postgres
+If you have access, the
+[Keystone 5 Launch Airtable](https://airtable.com/tbl2Fhi3m8DAUqyCl/viwmIvoN3X6aniMrg)
+contains much of the same information and is more up-to-date.
 
-* [ ] form renderer (takes an array of fields, used for create | update)
-* [ ] custom nav
-* [ ] custom routes / views
-* [ ] plugins -> components (where?)
-  * [ ] nav (left | right)
-  * [ ] home
-  * [ ] list view
-  * [ ] item view
-* [ ] Solidify loading / error experience across the Admin UI
-* [ ] Consistent focus management
-* [ ] Integrate filters, sorting and columns into the URL
+## General
 
-# List
+- [ ] Create adapters
+  - [ ] MongoDB
+  - [ ] Postgres
+- [ ] Form renderer (takes an array of fields, used for create | update)
+- [ ] Custom nav
+- [ ] Custom routes / views
+- [ ] Plugins -> components (where?)
+  - [ ] Nav (left | right)
+  - [ ] Home
+  - [ ] List view
+  - [ ] Item view
+- [ ] Solidify loading / error experience across the Admin UI
+- [ ] Consistent focus management
+- [ ] Integrate filters, sorting and columns into the URL
 
-* [x] client-side class
-  * [ ] queries and mutations
-  * [ ] update apollo cache
-* [ ] search implementation
-* [ ] name field
-* [ ] slug field
-* [ ] sortable
-* [ ] default sort
-* [ ] default columns
-* [ ] created | modified meta
-* [ ] can create items
-* [ ] can delete items
-* [ ] read-only
+## List
 
-* [ ] validate columns, filters
-* [ ] card (for home)
+- [x] Client-side class
+  - [ ] Queries and mutations
+  - [ ] Update apollo cache
+- [ ] Search implementation
+- [ ] Name field
+- [ ] Slug field
+- [ ] Sortable
+- [ ] Default sort
+- [ ] Default columns
+- [ ] Created | modified meta
+- [ ] Can create items
+- [ ] Can delete items
+- [ ] Read-only
 
-# Fields
+- [ ] Validate columns, filters
+- [ ] Card (for home)
 
-* [x] client-side class
-* [ ] default value
-  * [x] client-side
-  * [ ] server-side
-* [ ] show on create
-* [ ] show on edit
-* [ ] required / validation
-  * [ ] client-side validation
-  * [ ] server-side validation
-* [ ] read-only
-* [ ] inline-edit in list view
-* [ ] notes
-* [ ] size (for text fields)
-* [ ] field-based updater
-* [ ] unique value
-* [ ] value generation
-* [ ] no edit once set
-* [ ] pre-save hooks
-* [ ] watcher? (for deriving value from other fields)
-* [ ] graphql formatting arguments
-* [ ] base render component
-* [ ] display logic (dependsOn, hidden)
-* [ ] collapse
+## Fields
 
-# API
+- [x] Client-side class
+- [ ] Default value
+  - [x] Client-side
+  - [ ] Server-side
+- [ ] Show on create
+- [ ] Show on edit
+- [ ] Required / validation
+  - [ ] Client-side validation
+  - [ ] Server-side validation
+- [ ] Read-only
+- [ ] Inline-edit in list view
+- [ ] Notes
+- [ ] Size (for text fields)
+- [ ] Field-based updater
+- [ ] Unique value
+- [ ] Value generation
+- [ ] No edit once set
+- [ ] Pre-save hooks
+- [ ] Watcher? (for deriving value from other fields)
+- [ ] Graphql formatting arguments
+- [ ] Base render component
+- [ ] Display logic (dependsOn, hidden)
+- [ ] Collapse
 
-* [ ] pagination
-* [ ] advanced OR | AND filtering
-* [ ] nested where
-* [ ] other options?
+## API
 
-# Field Types
+- [ ] Pagination
+- [ ] Advanced OR | AND filtering
+- [ ] Nested where
+- [ ] Other options?
 
-* [ ] Timestamp
-* [ ] Date
-* [ ] Integer
-* [ ] Relationship
-* [ ] WYSIWYG
-* [ ] File(s)
-* [ ] Cloudinary Image(s)
+## Field Types
+
+- [ ] Timestamp
+- [ ] Date
+- [ ] Integer
+- [ ] Relationship
+- [ ] WYSIWYG
+- [ ] File(s)
+- [ ] Cloudinary Image(s)
