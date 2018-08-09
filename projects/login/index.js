@@ -53,9 +53,7 @@ server.app.get('/api/session', (req, res) => {
     userId: req.session.keystoneItemId,
   };
   if (req.user) {
-    Object.assign(data, {
-      name: req.user.name,
-    });
+    data.name = req.user.name;
   }
   res.json(data);
 });

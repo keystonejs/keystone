@@ -5,6 +5,7 @@ import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Drawer } from '@keystonejs/ui/src/primitives/modals';
 import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
 import { Select } from '@keystonejs/ui/src/primitives/filters';
+import { omit } from '@keystonejs/utils';
 
 import FieldTypes from '../FIELD_TYPES';
 
@@ -78,11 +79,7 @@ class UpdateManyModal extends Component {
   getOptions = () => {
     const { list } = this.props;
     // remove the `options` key from select type fields
-    return list.fields.map(f => {
-      let field = Object.assign({}, f);
-      delete field.options;
-      return field;
-    });
+    return list.fields.map(f => omit(f, ['options']));
   };
   render() {
     const { isLoading, isOpen, items, list } = this.props;

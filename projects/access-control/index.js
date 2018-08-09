@@ -64,7 +64,7 @@ function createListWithStaticAccess(access) {
       foo: { type: Text },
       zip: { type: Text },
       ...fieldAccessVariations.reduce(
-        (memo, variation) => Object.assign(memo, createField(variation)),
+        (memo, variation) => ({ ...memo, ...createField(variation) }),
         {}
       ),
     },
@@ -89,7 +89,7 @@ function createListWithImperativeAccess(access) {
       foo: { type: Text },
       zip: { type: Text },
       ...fieldAccessVariations.reduce(
-        (memo, variation) => Object.assign(memo, createField(variation)),
+        (memo, variation) => ({ ...memo, ...createField(variation) }),
         {}
       ),
     },
