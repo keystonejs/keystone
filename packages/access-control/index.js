@@ -7,7 +7,7 @@ const validateGranularConfigTypes = (longHandAccess, validationError) => {
 
       return validationError(type, accessType);
     })
-    .filter(error => !!error);
+    .filter(error => error);
 
   if (errors.length) {
     throw new Error(errors.join('\n'));

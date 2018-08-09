@@ -8,7 +8,7 @@ export default ({ data, field, Link }) => {
   return (
     <Fragment>
       {(Array.isArray(data) ? data : [data])
-        .filter(Boolean)
+        .filter(item => item)
         .map((item, index) => (
           <Fragment key={item.id}>
             {!!index ? ', ' : ''}

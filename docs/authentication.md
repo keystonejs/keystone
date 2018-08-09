@@ -1,6 +1,7 @@
 # Authentication
 
-*Note on terminology*:
+_Note on terminology_:
+
 - _Authentication_ refers to a user identifying themselves.
   Within this document, we abbreviate _Authentication_ to _Auth_.
 - _Access Control_ refers to the specific actions an authenticated or anonymous

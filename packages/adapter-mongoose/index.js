@@ -310,7 +310,7 @@ class MongooseListAdapter extends BaseListAdapter {
               )
             )
             // If anything gets removed, we clear it out here
-            .filter(Boolean)
+            .filter(item => item)
         );
       });
   }
