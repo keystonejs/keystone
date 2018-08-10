@@ -196,7 +196,7 @@ module.exports = class List {
   getAdminGraphqlTypes() {
     const fieldSchemas = this.fields
       // If it's globally set to false, makes sense to never show it
-      .filter(field => !!field.access.read)
+      .filter(field => field.access.read)
       .map(field => field.getGraphqlSchema())
       .join('\n          ');
 
@@ -206,7 +206,7 @@ module.exports = class List {
 
     const updateArgs = this.fields
       // If it's globally set to false, makes sense to never let it be updated
-      .filter(field => !!field.access.update)
+      .filter(field => field.access.update)
       .map(field => field.getGraphqlUpdateArgs())
       .filter(i => i)
       .map(i => i.split(/\n\s+/g).join('\n          '))
@@ -215,7 +215,7 @@ module.exports = class List {
 
     const createArgs = this.fields
       // If it's globally set to false, makes sense to never let it be created
-      .filter(field => !!field.access.create)
+      .filter(field => field.access.create)
       .map(i => i.getGraphqlCreateArgs())
       .filter(i => i)
       .map(i => i.split(/\n\s+/g).join('\n          '))
@@ -224,7 +224,7 @@ module.exports = class List {
 
     const queryArgs = this.fields
       // If it's globally set to false, makes sense to never show it
-      .filter(field => !!field.access.read)
+      .filter(field => field.access.read)
       .map(field => {
         const fieldQueryArgs = field
           .getGraphqlQueryArgs()
@@ -237,7 +237,7 @@ module.exports = class List {
 
         return `# ${field.constructor.name} field\n          ${fieldQueryArgs}`;
       })
-      .filter(Boolean)
+      .filter(i => i)
       .join('\n\n          ');
 
     const types = [
@@ -316,7 +316,7 @@ module.exports = class List {
     const queries = this.fields
       .map(field => field.getGraphqlAuxiliaryQueries())
       // Filter out any empty elements
-      .filter(Boolean);
+      .filter(query => query);
 
     // If `read` is either `true`, or a function (we don't care what the result
     // of the function is, that'll get executed at a later time)
@@ -544,7 +544,7 @@ module.exports = class List {
     }
 
     const fieldResolvers = this.fields
-      .filter(field => !!field.access.read)
+      .filter(field => field.access.read)
       .reduce(
         (resolvers, field) => ({
           ...resolvers,
@@ -625,7 +625,7 @@ module.exports = class List {
       `);
     }
 
-    return mutations.filter(Boolean);
+    return mutations.filter(mutation => mutation);
   }
 
   throwIfAccessDeniedOnFields({
@@ -815,7 +815,7 @@ module.exports = class List {
 
     if (access.id || access.id_in) {
       const accessControlIdsAllowed = unique(
-        [].concat(access.id, access.id_in).filter(Boolean)
+        [].concat(access.id, access.id_in).filter(id => id)
       );
 
       idFilters.id_in = intersection(accessControlIdsAllowed, uniqueIds);
@@ -825,7 +825,7 @@ module.exports = class List {
 
     if (access.id_not || access.id_not_in) {
       const accessControlIdsDisallowed = unique(
-        [].concat(access.id_not, access.id_not_in).filter(Boolean)
+        [].concat(access.id_not, access.id_not_in).filter(id => id)
       );
 
       idFilters.id_not_in = intersection(accessControlIdsDisallowed, uniqueIds);

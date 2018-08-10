@@ -80,7 +80,7 @@ export const FlexGroup = ({
 }: FlexGroupProps) => {
   const gutter = spacing / 2;
   const length = Children.count(children);
-  const childArray = Children.toArray(children).filter(Boolean); // filter out null and undefined children
+  const childArray = Children.toArray(children).filter(child => child); // filter out null and undefined children
 
   return (
     <Tag

@@ -79,7 +79,7 @@ class BoostClientWithUplaod extends ApolloClient {
     });
 
     const link = ApolloLink.from(
-      [errorLink, requestHandler, stateLink, httpLink].filter(x => !!x)
+      [errorLink, requestHandler, stateLink, httpLink].filter(x => x)
     );
 
     // super hacky, we will fix the types eventually
