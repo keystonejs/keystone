@@ -36,11 +36,9 @@ exports.checkRequiredConfig = (config, requiredKeys = []) => {
 
 exports.escapeRegExp = str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
+// { key: value, ... } => { key: mapFn(value, key), ... }
 exports.mapKeys = (obj, func) =>
-  Object.entries(obj).reduce(
-    (memo, [key, value]) => ({ ...memo, [key]: func(value, key, obj) }),
-    {}
-  );
+  Object.entries(obj).reduce((acc, [key, value]) => ({ ...acc, [key]: func(value, key, obj) }), {});
 
 exports.resolveAllKeys = obj => {
   const result = {};
@@ -58,7 +56,44 @@ exports.intersection = (array1, array2) =>
   exports.unique(array1.filter(value => array2.includes(value)));
 
 exports.pick = (obj, keys) =>
-  keys.reduce((result, key) => (key in obj ? { ...result, [key]: obj[key] } : result), {});
+  keys.reduce((acc, key) => (key in obj ? { ...acc, [key]: obj[key] } : acc), {});
 
 exports.omit = (obj, keys) =>
   exports.pick(obj, Object.keys(obj).filter(value => !keys.includes(value)));
+
+// [{ k1: v1, k2: v2, ...}, { k3: v3, k4: v4, ...}, ...] => { k1: v1, k2: v2, k3: v3, k4, v4, ... }
+// Gives priority to the objects which appear later in the list
+exports.objMerge = objs => objs.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+
+// [x, y, z] => { x: val, y: val, z: val}
+exports.defaultObj = (keys, val) => keys.reduce((acc, key) => ({ ...acc, [key]: val }), {});
+
+// [x, y, z] => { x[keyedBy]: mapFn(x), ... }
+// [{ name: 'a', animal: 'cat' },
+//  { name: 'b', animal: 'dog' },
+//  { name: 'c', animal: 'cat' },
+//  { name: 'd', animal: 'dog' }]
+// arraytoObject(obj, 'name', o => o.animal) =>
+// { a: 'cat',
+//   b: 'dog',
+//   c: 'cat',
+//   d: 'dog'}
+exports.arrayToObject = (objs, keyedBy, mapFn = i => i) =>
+  objs.reduce((acc, obj) => ({ ...acc, [obj[keyedBy]]: mapFn(obj) }), {});
+
+// [{ name: 'a', animal: 'cat' },
+//  { name: 'b', animal: 'dog' },
+//  { name: 'c', animal: 'cat' },
+//  { name: 'd', animal: 'dog' }]
+// groupBy(obj, 'animal') =>
+// {cat: [{ name: 'a', animal: 'cat'}, { name: 'c', animal: 'cat'}],
+//  dog: [{ name: 'b', animal: 'dog' }, { name: 'd', animal: 'dog' }]}
+exports.groupBy = (objs, key) =>
+  objs.reduce((acc, obj) => {
+    acc[obj[key]] = acc[obj[key]] || [];
+    acc[obj[key]].push(obj);
+    return acc;
+  }, {});
+
+// [[1, 2, 3], [4, 5], 6, [[7, 8], [9, 10]]] => [1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]
+exports.flatten = arr => Array.prototype.concat(...arr);

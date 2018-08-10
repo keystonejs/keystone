@@ -10,6 +10,11 @@ const {
   intersection,
   pick,
   omit,
+  objMerge,
+  defaultObj,
+  arrayToObject,
+  groupBy,
+  flatten,
 } = require('./index');
 
 describe('utils', () => {
@@ -146,5 +151,77 @@ describe('utils', () => {
     expect(omit(o, ['b', 'c', 'e'])).toEqual({ a: 1, d: 4 });
     // o remains unchanged
     expect(o).toEqual({ a: 1, b: 2, c: 3, d: 4 });
+  });
+
+  test('objMerge', () => {
+    const obj1 = {
+      a: 1,
+      b: 2,
+      c: 3,
+    };
+
+    const obj2 = {
+      b: 10,
+      c: 11,
+      d: 12,
+    };
+    const obj3 = {
+      c: 20,
+      e: 30,
+    };
+    expect(objMerge([obj1, obj2, obj3])).toEqual({
+      a: 1,
+      b: 10,
+      c: 20,
+      d: 12,
+      e: 30,
+    });
+  });
+
+  test('defaultObj', () => {
+    expect(defaultObj(['a', 'b', 'c'], 1)).toEqual({ a: 1, b: 1, c: 1 });
+  });
+
+  test('arrayToObject', () => {
+    const pets = [
+      { name: 'a', animal: 'cat' },
+      { name: 'b', animal: 'dog' },
+      { name: 'c', animal: 'cat' },
+      { name: 'd', animal: 'dog' },
+    ];
+    expect(arrayToObject(pets, 'name')).toEqual({
+      a: { name: 'a', animal: 'cat' },
+      b: { name: 'b', animal: 'dog' },
+      c: { name: 'c', animal: 'cat' },
+      d: { name: 'd', animal: 'dog' },
+    });
+    expect(arrayToObject(pets, 'name', pet => pet.animal)).toEqual({
+      a: 'cat',
+      b: 'dog',
+      c: 'cat',
+      d: 'dog',
+    });
+  });
+
+  test('groupBy', () => {
+    const pets = [
+      { name: 'a', animal: 'cat' },
+      { name: 'b', animal: 'dog' },
+      { name: 'c', animal: 'cat' },
+      { name: 'd', animal: 'dog' },
+    ];
+
+    expect(groupBy(pets, 'animal')).toEqual({
+      cat: [{ name: 'a', animal: 'cat' }, { name: 'c', animal: 'cat' }],
+      dog: [{ name: 'b', animal: 'dog' }, { name: 'd', animal: 'dog' }],
+    });
+  });
+
+  test('flatten', () => {
+    const a = [[1, 2, 3], [4, 5], 6, [[7, 8], [9, 10]]];
+    expect(flatten([])).toEqual([]);
+    expect(flatten([1, 2, 3])).toEqual([1, 2, 3]);
+    expect(flatten([[1, 2, 3]])).toEqual([1, 2, 3]);
+    expect(flatten(a)).toEqual([1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]);
   });
 });

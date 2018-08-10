@@ -4,7 +4,7 @@ import styled from 'react-emotion';
 
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Drawer } from '@keystonejs/ui/src/primitives/modals';
-import { resolveAllKeys } from '@keystonejs/utils';
+import { resolveAllKeys, arrayToObject } from '@keystonejs/utils';
 import { gridSize } from '@keystonejs/ui/src/theme';
 import { AutocompleteCaptor } from '@keystonejs/ui/src/primitives/forms';
 
@@ -34,15 +34,7 @@ class CreateItemModal extends Component {
     if (isLoading) return;
     const { item } = this.state;
 
-    resolveAllKeys(
-      fields.reduce(
-        (values, field) => ({
-          ...values,
-          [field.path]: field.getValue(item),
-        }),
-        {}
-      )
-    )
+    resolveAllKeys(arrayToObject(fields, 'path', field => field.getValue(item)))
       .then(data => createItem({ variables: { data } }))
       .then(this.props.onCreate);
   };
