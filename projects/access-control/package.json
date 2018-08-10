@@ -32,7 +32,7 @@
     "mocha": "^3.1.2",
     "mocha-junit-reporter": "^1.17.0",
     "mocha-multi-reporters": "^1.1.7",
-    "mongoose": "^5.0.14",
+    "mongoose": "<5.1.0",
     "start-server-and-test": "^1.5.0"
   }
 }

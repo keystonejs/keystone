@@ -10,6 +10,6 @@
   "dependencies": {
     "@keystonejs/utils": "^1.0.0",
     "@keystonejs/core": "^5.0.0",
-    "mongoose": "^5.0.14"
+    "mongoose": "<5.1.0"
   }
 }
