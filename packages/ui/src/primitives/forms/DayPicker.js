@@ -68,7 +68,7 @@ const Day = styled.div(({ disabled, isInteractive, isSelected, isToday }) => {
     flexDirection: 'column',
     fontWeight: isSelected || isToday ? 'bold' : null,
     flexBasis: 'calc(100% / 7)',
-    padding: '0.66rem 0.5rem',
+    padding: '0.5rem',
     textAlign: 'center',
     width: 'calc(100% / 7)',
 
