@@ -247,7 +247,8 @@ class MongooseListAdapter extends BaseListAdapter {
     console.log(args);
 
     if (args.sort) {
-      const orderField = args.sort.slice(1);
+
+      const orderField = args.sort.charAt(0) === '-' ? args.sort.slice(1) : args.sort;
 
       pipeline.push({
         $sort: {

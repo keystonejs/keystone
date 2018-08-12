@@ -191,9 +191,9 @@ class ListPageDataProvider extends Component<Props, State> {
     return '-name';
   };
 
-  getGQLQuery = ({ sort = 'name', list, fields }) => {
+  getGQLQuery = ({ sort = 'name', search = '', list, fields }) => {
     return gql`{
-      ${list.listQueryName}(sort: "${sort}") {
+      ${list.listQueryName}(sort: "${sort}", search: "${search}" ) {
         id
         _label_
         ${fields.map(field => field.getQueryFragment()).join('\n')}
@@ -218,17 +218,17 @@ class ListPageDataProvider extends Component<Props, State> {
     const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
     console.log({ orderBy });
     const first = pageSize;
-    const query = getQuery({
-      fields,
-      filters,
-      list,
-      search,
-      orderBy,
-      skip,
-      first,
-    });
+    // const query = getQuery({
+    //   fields,
+    //   filters,
+    //   list,
+    //   search,
+    //   orderBy,
+    //   skip,
+    //   first,
+    // });
 
-    const query1 = this.getGQLQuery({ ...queryFilters, list, fields });
+    const query = this.getGQLQuery({ list, fields, ...queryFilters });
 
     //query.sort = this.getQueryFromQueryFilters(queryFilters);
 
