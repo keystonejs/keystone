@@ -16,7 +16,6 @@ const Header = styled.div({
   alignItems: 'center',
   display: 'flex',
   justifyContent: 'space-between',
-  padding: '0.5rem',
 });
 const HeaderText = styled.div({
   fontWeight: 500,
@@ -26,9 +25,18 @@ const HeaderButton = props => (
     type="button"
     css={{
       background: 'none',
+      borderRadius: borderRadius,
       border: 'none',
       cursor: 'pointer',
+      padding: '0.5rem 0.75rem',
       outline: 'none',
+
+      ':hover': {
+        backgroundColor: colors.N05,
+      },
+      ':active': {
+        backgroundColor: colors.N10,
+      },
     }}
     {...props}
   />
@@ -44,22 +52,42 @@ const WeekLabels = styled(WeekRow)({
   fontWeight: 500,
   textTransform: 'uppercase',
 });
-const Day = styled.div(({ disabled, isInteractive, isSelected, isToday }) => ({
-  backgroundColor: isSelected ? colors.primary : null,
-  borderRadius: borderRadius,
-  color: isSelected
-    ? 'white'
-    : disabled
-      ? colors.N40
-      : isToday
-        ? colors.danger
-        : null,
-  cursor: isInteractive ? 'pointer' : 'default',
-  fontWeight: isSelected || isToday ? 'bold' : null,
-  flexBasis: 'calc(100% / 7)',
-  padding: '0.66rem 0.5rem',
-  textAlign: 'center',
-  width: 'calc(100% / 7)',
+const Day = styled.div(({ disabled, isInteractive, isSelected, isToday }) => {
+  let textColor;
+  if (isToday) textColor = colors.danger;
+  if (disabled) textColor = colors.N40;
+  if (isSelected) textColor = 'white';
+
+  return {
+    alignItems: 'center',
+    backgroundColor: isSelected ? colors.primary : null,
+    borderRadius: borderRadius,
+    color: textColor,
+    cursor: isInteractive ? 'pointer' : 'default',
+    display: 'flex',
+    flexDirection: 'column',
+    fontWeight: isSelected || isToday ? 'bold' : null,
+    flexBasis: 'calc(100% / 7)',
+    padding: '0.66rem 0.5rem',
+    textAlign: 'center',
+    width: 'calc(100% / 7)',
+
+    ':hover': {
+      backgroundColor: isInteractive && !isSelected ? colors.B.L90 : null,
+      color: isInteractive && !isSelected && !isToday ? colors.B.D40 : null,
+    },
+    ':active': {
+      backgroundColor: isInteractive && !isSelected ? colors.B.L80 : null,
+    },
+  };
+});
+const TodayMarker = styled.div(({ isSelected }) => ({
+  backgroundColor: isSelected ? 'white' : colors.danger,
+  borderRadius: 4,
+  height: 2,
+  marginBottom: -4,
+  marginTop: 2,
+  width: '1em',
 }));
 
 type Props = {
@@ -122,20 +150,24 @@ export const DayPicker = (props: Props) => {
 
           {weeksInCurrentMonth.map((week, i) => (
             <WeekRow key={i}>
-              {week.map(day => (
-                <Day
-                  key={day.label}
-                  disabled={isDisabled(day.dateValue)}
-                  onClick={
-                    isDisabled(day.dateValue) ? null : selectDay(day.dateValue)
-                  }
-                  isInteractive={!isDisabled(day.dateValue)}
-                  isSelected={isSelectedDay(day.dateValue)}
-                  isToday={isDayToday(day.dateValue)}
-                >
-                  {day.label}
-                </Day>
-              ))}
+              {week.map(day => {
+                const disabled = isDisabled(day.dateValue);
+                const isSelected = isSelectedDay(day.dateValue);
+                const isToday = isDayToday(day.dateValue);
+                return (
+                  <Day
+                    key={day.label}
+                    disabled={disabled}
+                    onClick={disabled ? null : selectDay(day.dateValue)}
+                    isInteractive={!disabled}
+                    isSelected={isSelected}
+                    isToday={isToday}
+                  >
+                    {day.label}
+                    {isToday ? <TodayMarker isSelected={isSelected} /> : null}
+                  </Day>
+                );
+              })}
             </WeekRow>
           ))}
         </Body>
