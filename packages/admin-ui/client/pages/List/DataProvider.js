@@ -232,6 +232,10 @@ class ListPageDataProvider extends Component<Props, State> {
 
     //query.sort = this.getQueryFromQueryFilters(queryFilters);
 
+    const query1 = this.getGQLQuery({ ...queryFilters, list, fields });
+
+    //query.sort = this.getQueryFromQueryFilters(queryFilters);
+
     return (
       <Fragment>
         <DocTitle>{list.plural}</DocTitle>
