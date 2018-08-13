@@ -27,10 +27,7 @@ const imperativeCollection = listNameToCollectionName(imperativeList);
 const identity = val => val;
 
 const arrayToObject = (items, keyedBy, mapFn = identity) =>
-  items.reduce(
-    (memo, item) => Object.assign(memo, { [item[keyedBy]]: mapFn(item) }),
-    {}
-  );
+  items.reduce((memo, item) => Object.assign(memo, { [item[keyedBy]]: mapFn(item) }), {});
 
 describe('Access Control, Field, GraphQL', () => {
   describe('Schema', () => {
@@ -118,10 +115,7 @@ describe('Access Control, Field, GraphQL', () => {
               `${staticList}WhereInput.inputFields.${name}`
             );
           } else {
-            expect(
-              types,
-              `WhereInput.${name} doesn't exist`
-            ).to.not.have.deep.property(
+            expect(types, `WhereInput.${name} doesn't exist`).to.not.have.deep.property(
               `${staticList}WhereInput.inputFields.${name}`
             );
           }
@@ -135,10 +129,7 @@ describe('Access Control, Field, GraphQL', () => {
               `${staticList}CreateInput.inputFields.${name}`
             );
           } else {
-            expect(
-              types,
-              `CreateInput.${name} doesn't exist`
-            ).to.not.have.deep.property(
+            expect(types, `CreateInput.${name} doesn't exist`).to.not.have.deep.property(
               `${staticList}CreateInput.inputFields.${name}`
             );
           }
@@ -152,10 +143,7 @@ describe('Access Control, Field, GraphQL', () => {
               `${staticList}CreateInput.inputFields.${name}`
             );
           } else {
-            expect(
-              types,
-              `CreateInput.${name} doesn't exist`
-            ).to.not.have.deep.property(
+            expect(types, `CreateInput.${name} doesn't exist`).to.not.have.deep.property(
               `${staticList}CreateInput.inputFields.${name}`
             );
           }
@@ -176,9 +164,7 @@ describe('Access Control, Field, GraphQL', () => {
         it(`${JSON.stringify(access)} on ${imperativeList}`, () => {
           const name = getFieldName(access);
 
-          expect(types, 'types').to.have.deep.property(
-            `${imperativeList}.fields`
-          );
+          expect(types, 'types').to.have.deep.property(`${imperativeList}.fields`);
 
           const fields = types[imperativeList].fields;
 
@@ -251,16 +237,12 @@ describe('Access Control, Field, GraphQL', () => {
           const fieldName = getFieldName(access);
 
           it(`all allowed: ${JSON.stringify(access)}`, () => {
-            cy.graphql_query(
-              '/admin/api',
-              `query { ${allQueryName} { id ${fieldName} } }`
-            ).then(({ data, errors }) => {
-              expect(errors, 'no errors querying all').to.equal(undefined);
-              expect(
-                data[allQueryName],
-                'data when querying all'
-              ).to.have.length.greaterThan(0);
-            });
+            cy.graphql_query('/admin/api', `query { ${allQueryName} { id ${fieldName} } }`).then(
+              ({ data, errors }) => {
+                expect(errors, 'no errors querying all').to.equal(undefined);
+                expect(data[allQueryName], 'data when querying all').to.have.length.greaterThan(0);
+              }
+            );
           });
 
           it(`singular allowed: ${JSON.stringify(access)}`, () => {
@@ -271,16 +253,13 @@ describe('Access Control, Field, GraphQL', () => {
               cy
                 .graphql_query(
                   '/admin/api',
-                  `query { ${singleQueryName}(where: { id: "${
-                    item.id
-                  }" }) { id ${fieldName} } }`
+                  `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`
                 )
                 .then(({ data, errors }) => {
                   expect(errors, 'no errors querying all').to.equal(undefined);
-                  expect(
-                    data[singleQueryName],
-                    'data when querying all'
-                  ).to.have.property(fieldName);
+                  expect(data[singleQueryName], 'data when querying all').to.have.property(
+                    fieldName
+                  );
                 })
             );
           });
@@ -348,10 +327,7 @@ describe('Access Control, Field, GraphQL', () => {
                 '/admin/api',
                 `mutation { ${createMutationName}(data: { ${fieldName}: "bar" }) { id } }`
               ).then(({ data, errors }) => {
-                expect(data, 'create mutation denied').to.have.property(
-                  createMutationName,
-                  null
-                );
+                expect(data, 'create mutation denied').to.have.property(createMutationName, null);
 
                 expect(errors, 'create mutation denied').to.have.deep.property(
                   '[0].name',
@@ -378,16 +354,14 @@ describe('Access Control, Field, GraphQL', () => {
             const fieldName = getFieldName(access);
 
             it(`all allowed: ${JSON.stringify(access)}`, () => {
-              cy.graphql_query(
-                '/admin/api',
-                `query { ${allQueryName} { id ${fieldName} } }`
-              ).then(({ data, errors }) => {
-                expect(errors, 'no errors querying all').to.equal(undefined);
-                expect(
-                  data[allQueryName],
-                  'data when querying all'
-                ).to.have.length.greaterThan(0);
-              });
+              cy.graphql_query('/admin/api', `query { ${allQueryName} { id ${fieldName} } }`).then(
+                ({ data, errors }) => {
+                  expect(errors, 'no errors querying all').to.equal(undefined);
+                  expect(data[allQueryName], 'data when querying all').to.have.length.greaterThan(
+                    0
+                  );
+                }
+              );
             });
 
             it(`singular allowed: ${JSON.stringify(access)}`, () => {
@@ -398,18 +372,13 @@ describe('Access Control, Field, GraphQL', () => {
                 cy
                   .graphql_query(
                     '/admin/api',
-                    `query { ${singleQueryName}(where: { id: "${
-                      item.id
-                    }" }) { id ${fieldName} } }`
+                    `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`
                   )
                   .then(({ data, errors }) => {
-                    expect(errors, 'no errors querying all').to.equal(
-                      undefined
+                    expect(errors, 'no errors querying all').to.equal(undefined);
+                    expect(data[singleQueryName], 'data when querying all').to.have.property(
+                      fieldName
                     );
-                    expect(
-                      data[singleQueryName],
-                      'data when querying all'
-                    ).to.have.property(fieldName);
                   })
               );
             });
@@ -419,28 +388,22 @@ describe('Access Control, Field, GraphQL', () => {
             const fieldName = getFieldName(access);
 
             it(`all denied: ${JSON.stringify(access)}`, () => {
-              cy.graphql_query(
-                '/admin/api',
-                `query { ${allQueryName} { id ${fieldName} } }`
-              ).then(({ data, errors }) => {
-                // All the items are returned
-                expect(
-                  data[allQueryName],
-                  'denied query all'
-                ).to.have.length.greaterThan(0);
+              cy.graphql_query('/admin/api', `query { ${allQueryName} { id ${fieldName} } }`).then(
+                ({ data, errors }) => {
+                  // All the items are returned
+                  expect(data[allQueryName], 'denied query all').to.have.length.greaterThan(0);
 
-                // But there should be an error per item (because we don't
-                // have access to the field)
-                expect(errors, 'denied query all').to.have.length.greaterThan(
-                  0
-                );
+                  // But there should be an error per item (because we don't
+                  // have access to the field)
+                  expect(errors, 'denied query all').to.have.length.greaterThan(0);
 
-                // And the values of the fields we don't have access to are
-                // null
-                data[allQueryName].forEach(item =>
-                  expect(item[fieldName], 'denied query all').to.equal(null)
-                );
-              });
+                  // And the values of the fields we don't have access to are
+                  // null
+                  data[allQueryName].forEach(item =>
+                    expect(item[fieldName], 'denied query all').to.equal(null)
+                  );
+                }
+              );
             });
 
             it(`singular denied: ${JSON.stringify(access)}`, () => {
@@ -451,9 +414,7 @@ describe('Access Control, Field, GraphQL', () => {
                 cy
                   .graphql_query(
                     '/admin/api',
-                    `query { ${singleQueryName}(where: { id: "${
-                      item.id
-                    }" }) { id ${fieldName} } }`
+                    `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`
                   )
                   .then(({ data, errors }) => {
                     expect(data, 'read singular denied').to.have.deep.property(
@@ -461,21 +422,18 @@ describe('Access Control, Field, GraphQL', () => {
                       null
                     );
 
-                    expect(
-                      errors,
-                      'read singular denied'
-                    ).to.have.deep.property('[0].name', 'AccessDeniedError');
-                    expect(
-                      errors,
-                      'read singular denied'
-                    ).to.have.deep.property(
+                    expect(errors, 'read singular denied').to.have.deep.property(
+                      '[0].name',
+                      'AccessDeniedError'
+                    );
+                    expect(errors, 'read singular denied').to.have.deep.property(
                       '[0].message',
                       'You do not have access to this resource'
                     );
-                    expect(
-                      errors,
-                      'read singular denied'
-                    ).to.have.deep.property('[0].path[0]', singleQueryName);
+                    expect(errors, 'read singular denied').to.have.deep.property(
+                      '[0].path[0]',
+                      singleQueryName
+                    );
                   })
               );
             });
@@ -501,9 +459,7 @@ describe('Access Control, Field, GraphQL', () => {
                     }", data: { ${fieldName}: "bar" }) { id } }`
                   )
                   .then(({ data, errors }) => {
-                    expect(errors, 'update mutation Errors').to.equal(
-                      undefined
-                    );
+                    expect(errors, 'update mutation Errors').to.equal(undefined);
                     expect(
                       data[updateMutationName],
                       `updateMutation data.${updateMutationName}`
@@ -534,21 +490,18 @@ describe('Access Control, Field, GraphQL', () => {
                       null
                     );
 
-                    expect(
-                      errors,
-                      'update mutation denied'
-                    ).to.have.deep.property('[0].name', 'AccessDeniedError');
-                    expect(
-                      errors,
-                      'update mutation denied'
-                    ).to.have.deep.property(
+                    expect(errors, 'update mutation denied').to.have.deep.property(
+                      '[0].name',
+                      'AccessDeniedError'
+                    );
+                    expect(errors, 'update mutation denied').to.have.deep.property(
                       '[0].message',
                       'You do not have access to this resource'
                     );
-                    expect(
-                      errors,
-                      'update mutation denied'
-                    ).to.have.deep.property('[0].path[0]', updateMutationName);
+                    expect(errors, 'update mutation denied').to.have.deep.property(
+                      '[0].path[0]',
+                      updateMutationName
+                    );
                   })
               );
             });
@@ -577,30 +530,27 @@ describe('Access Control, Field, GraphQL', () => {
     stayLoggedIn('su');
 
     it('current user query returns user info', () => {
-      cy.graphql_query(
-        '/admin/api',
-        '{ authenticatedUser { id yesRead noRead } }'
-      ).then(({ data, errors }) => {
-        expect(data).to.have.deep.property('authenticatedUser.id');
-        expect(data).to.have.deep.property('authenticatedUser.yesRead', 'yes');
-        expect(data).to.have.deep.property('authenticatedUser.noRead', null);
-        expect(errors).to.have.length(1);
-        expect(errors, 'authenticatedUser read denied').to.have.deep.property(
-          '[0].name',
-          'AccessDeniedError'
-        );
-        expect(errors, 'authenticatedUser read denied').to.have.deep.property(
-          '[0].message',
-          'You do not have access to this resource'
-        );
-        expect(errors, 'authenticatedUser read denied').to.have.deep.property(
-          '[0].path'
-        );
-        expect(errors[0].path, 'authenticatedUser read denied').to.deep.equal([
-          'authenticatedUser',
-          'noRead',
-        ]);
-      });
+      cy.graphql_query('/admin/api', '{ authenticatedUser { id yesRead noRead } }').then(
+        ({ data, errors }) => {
+          expect(data).to.have.deep.property('authenticatedUser.id');
+          expect(data).to.have.deep.property('authenticatedUser.yesRead', 'yes');
+          expect(data).to.have.deep.property('authenticatedUser.noRead', null);
+          expect(errors).to.have.length(1);
+          expect(errors, 'authenticatedUser read denied').to.have.deep.property(
+            '[0].name',
+            'AccessDeniedError'
+          );
+          expect(errors, 'authenticatedUser read denied').to.have.deep.property(
+            '[0].message',
+            'You do not have access to this resource'
+          );
+          expect(errors, 'authenticatedUser read denied').to.have.deep.property('[0].path');
+          expect(errors[0].path, 'authenticatedUser read denied').to.deep.equal([
+            'authenticatedUser',
+            'noRead',
+          ]);
+        }
+      );
     });
   });
 

@@ -138,10 +138,7 @@ describe('Editing data', () => {
       cy.get('#ks-input-author').click({ force: true });
       cy.get('#ks-input-author').type('{downarrow}{enter}', { force: true });
       cy.get('#react-select-ks-input-author').then(([authorInput]) => {
-        const userText = authorInput.textContent.replace(
-          /.*option (.*), selected.*/,
-          '$1'
-        );
+        const userText = authorInput.textContent.replace(/.*option (.*), selected.*/, '$1');
 
         // save
         cy.get('button[type="submit"][appearance="primary"]').click();

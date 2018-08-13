@@ -12,10 +12,7 @@ const {
   CloudinaryImage,
 } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
-const {
-  CloudinaryAdapter,
-  LocalFileAdapter,
-} = require('@keystonejs/file-adapters');
+const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
 
 const { port, staticRoute, staticPath, cloudinary } = require('./config');
 
@@ -68,9 +65,7 @@ keystone.createList('User', {
       ],
     },
     attachment: { type: File, adapter: fileAdapter },
-    ...(cloudinaryAdapter
-      ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } }
-      : {}),
+    ...(cloudinaryAdapter ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } } : {}),
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });
@@ -82,10 +77,7 @@ keystone.createList('Post', {
     status: {
       type: Select,
       defaultValue: 'draft',
-      options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Published', value: 'published' },
-      ],
+      options: [{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }],
     },
     author: {
       type: Relationship,

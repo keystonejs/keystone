@@ -8,10 +8,7 @@ import IconsGuide from './Icons';
 import PaletteGuide from './Palette';
 
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import {
-  SecondaryNav,
-  SecondaryNavItem,
-} from '@keystonejs/ui/src/primitives/navigation';
+import { SecondaryNav, SecondaryNavItem } from '@keystonejs/ui/src/primitives/navigation';
 import { H1 } from '@keystonejs/ui/src/primitives/typography';
 
 const pages = ['components', 'palette', 'icons'];
@@ -45,20 +42,9 @@ export default withRouter(
           <Container css={{ paddingBottom: 200 }}>
             <H1>Style Guide: {upCase(currentPage)}</H1>
             <Switch>
-              <Route
-                exact
-                path={`${adminPath}/style-guide/palette`}
-                component={PaletteGuide}
-              />
-              <Route
-                exact
-                path={`${adminPath}/style-guide/icons`}
-                component={IconsGuide}
-              />
-              <Route
-                path={`${adminPath}/style-guide/components`}
-                component={ComponentsGuide}
-              />
+              <Route exact path={`${adminPath}/style-guide/palette`} component={PaletteGuide} />
+              <Route exact path={`${adminPath}/style-guide/icons`} component={IconsGuide} />
+              <Route path={`${adminPath}/style-guide/components`} component={ComponentsGuide} />
               <Route>
                 <Redirect to={`${adminPath}/style-guide/components`} />
               </Route>

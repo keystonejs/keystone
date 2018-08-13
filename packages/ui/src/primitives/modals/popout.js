@@ -102,8 +102,7 @@ class Popout extends Component<Props, State> {
     let isAlignedRight = false;
 
     // handle right aligned
-    const spaceOnRight =
-      window.innerWidth - (leftOffset + width + CHROME_GUTTER);
+    const spaceOnRight = window.innerWidth - (leftOffset + width + CHROME_GUTTER);
     if (spaceOnRight < 0) {
       leftOffset = leftOffset + spaceOnRight;
       isAlignedRight = true;

@@ -7,9 +7,7 @@ function initOptions(options) {
   if (typeof options === 'string') optionsArray = options.split(/\,\s*/);
   if (!Array.isArray(optionsArray)) return null;
   return optionsArray.map(i => {
-    return typeof i === 'string'
-      ? { value: i, label: inflection.humanize(i) }
-      : i;
+    return typeof i === 'string' ? { value: i, label: inflection.humanize(i) } : i;
   });
 }
 

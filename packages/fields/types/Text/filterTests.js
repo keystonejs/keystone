@@ -34,19 +34,11 @@ export const filterTests = app => {
   };
 
   test('No filter', done => {
-    match(
-      undefined,
-      ['', 'ITEM 5 - end', 'item 1', 'item 2 - end', 'thing 4 - END'],
-      done
-    );
+    match(undefined, ['', 'ITEM 5 - end', 'item 1', 'item 2 - end', 'thing 4 - END'], done);
   });
 
   test('Empty filter', done => {
-    match(
-      'where: { }',
-      ['', 'ITEM 5 - end', 'item 1', 'item 2 - end', 'thing 4 - END'],
-      done
-    );
+    match('where: { }', ['', 'ITEM 5 - end', 'item 1', 'item 2 - end', 'thing 4 - END'], done);
   });
 
   test('Filter: name', done => {
@@ -62,11 +54,7 @@ export const filterTests = app => {
   });
 
   test('Filter: name (case-sensitive) (hit)', done => {
-    match(
-      'where: { name: "thing 4 - END", name_case_sensitive: true }',
-      ['thing 4 - END'],
-      done
-    );
+    match('where: { name: "thing 4 - END", name_case_sensitive: true }', ['thing 4 - END'], done);
   });
 
   test('Filter: name_not (case-sensitive) (hit)', done => {
@@ -78,11 +66,7 @@ export const filterTests = app => {
   });
 
   test('Filter: name (case-sensitive) (miss)', done => {
-    match(
-      'where: { name: "thing 4 - end", name_case_sensitive: true }',
-      [],
-      done
-    );
+    match('where: { name: "thing 4 - end", name_case_sensitive: true }', [], done);
   });
 
   test('Filter: name_not (case-sensitive) (miss)', done => {
@@ -94,19 +78,11 @@ export const filterTests = app => {
   });
 
   test('Filter: starts_with', done => {
-    match(
-      'where: { name_starts_with: "item" }',
-      ['ITEM 5 - end', 'item 1', 'item 2 - end'],
-      done
-    );
+    match('where: { name_starts_with: "item" }', ['ITEM 5 - end', 'item 1', 'item 2 - end'], done);
   });
 
   test('Filter: not_starts_with', done => {
-    match(
-      'where: { name_not_starts_with: "item" }',
-      ['', 'thing 4 - END'],
-      done
-    );
+    match('where: { name_not_starts_with: "item" }', ['', 'thing 4 - END'], done);
   });
 
   test('Filter: starts_with (case-sensitive)', done => {
@@ -154,11 +130,7 @@ export const filterTests = app => {
   });
 
   test('Filter: contains', done => {
-    match(
-      'where: { name_contains: "item" }',
-      ['ITEM 5 - end', 'item 1', 'item 2 - end'],
-      done
-    );
+    match('where: { name_contains: "item" }', ['ITEM 5 - end', 'item 1', 'item 2 - end'], done);
   });
 
   test('Filter: not_contains', done => {

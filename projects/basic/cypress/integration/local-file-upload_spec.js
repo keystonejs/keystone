@@ -18,10 +18,7 @@ describe('Adding a file', function() {
         const fileContent = `Some important content ${Math.random()}`;
         cy.visit(`/admin/users/${user.id}`);
         cy.writeFile('cypress/mock/upload.txt', fileContent);
-        cy.upload_file(
-          'input[name=attachment][type=file]',
-          '../mock/upload.txt'
-        );
+        cy.upload_file('input[name=attachment][type=file]', '../mock/upload.txt');
 
         // Setup to track XHR requests
         cy.server();
@@ -55,9 +52,7 @@ describe('Adding a file', function() {
           )
           .then(({ data: { User: { attachment } } }) => {
             // Assert the URL is visible in the admin UI
-            cy.contains(
-              `${attachment.publicUrl.split('/')[3].split('-')[1]}`
-            ).should('be.visible');
+            cy.contains(`${attachment.publicUrl.split('/')[3].split('-')[1]}`).should('be.visible');
 
             // Assert the file contents are what we uploaded
             cy.request(attachment.publicUrl)

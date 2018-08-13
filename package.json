@@ -104,7 +104,8 @@
   "prettier": {
     "proseWrap": "preserve",
     "singleQuote": true,
-    "trailingComma": "es5"
+    "trailingComma": "es5",
+    "printWidth": 100
   },
   "bolt": {
     "workspaces": [

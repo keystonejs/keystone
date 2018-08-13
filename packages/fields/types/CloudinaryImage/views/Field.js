@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  FieldContainer,
-  FieldLabel,
-  FieldInput,
-} from '@keystonejs/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
 import { AlertIcon, ShieldIcon } from '@keystonejs/icons';
 import { HiddenInput } from '@keystonejs/ui/src/primitives/forms';
 import { Lozenge } from '@keystonejs/ui/src/primitives/lozenge';
@@ -199,11 +195,7 @@ export default class FileField extends Component {
     const { changeStatus, isLoading } = this.state;
 
     return (
-      <LoadingButton
-        onClick={this.openFileBrowser}
-        isLoading={isLoading}
-        variant="ghost"
-      >
+      <LoadingButton onClick={this.openFileBrowser} isLoading={isLoading} variant="ghost">
         {uploadButtonLabel({ status: changeStatus })}
       </LoadingButton>
     );
@@ -242,8 +234,7 @@ export default class FileField extends Component {
     const isEmpty = changeStatus === 'empty';
     const htmlID = `ks-input-${field.path}`;
     const canRead = !(
-      itemErrors[field.path] instanceof Error &&
-      itemErrors[field.path].name === 'AccessDeniedError'
+      itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
     );
 
     return (
@@ -310,9 +301,7 @@ export default class FileField extends Component {
 // Styled Components
 // ==============================
 
-const Wrapper = props => (
-  <div css={{ alignItems: 'flex-start', display: 'flex' }} {...props} />
-);
+const Wrapper = props => <div css={{ alignItems: 'flex-start', display: 'flex' }} {...props} />;
 const Content = props => <div css={{ flex: 1, minWidth: 0 }} {...props} />;
 const Image = props => (
   <div

@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 
-import {
-  FieldContainer,
-  FieldLabel,
-  FieldInput,
-} from '@keystonejs/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
 
 // TODO: use pretty checkboxes - these only work in a CheckGroup situation.
 // import { Checkbox } from '@keystonejs/ui/src/primitives/forms';

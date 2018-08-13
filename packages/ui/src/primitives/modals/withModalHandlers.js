@@ -1,12 +1,6 @@
 // @flow
 
-import React, {
-  cloneElement,
-  Component,
-  Fragment,
-  type ComponentType,
-  type Element,
-} from 'react';
+import React, { cloneElement, Component, Fragment, type ComponentType, type Element } from 'react';
 import NodeResolver from 'react-node-resolver';
 import { TransitionProvider } from './transitions';
 
@@ -98,15 +92,9 @@ export default function withModalHandlers(
 
       return (
         <Fragment>
-          <NodeResolver innerRef={this.getTarget}>
-            {cloneElement(target, cloneProps)}
-          </NodeResolver>
+          <NodeResolver innerRef={this.getTarget}>{cloneElement(target, cloneProps)}</NodeResolver>
 
-          <TransitionProvider
-            isOpen={isOpen}
-            onEntered={onOpen}
-            onExited={onClose}
-          >
+          <TransitionProvider isOpen={isOpen} onEntered={onOpen} onExited={onClose}>
             {transitionState => (
               <Transition transitionState={transitionState}>
                 <WrappedComponent

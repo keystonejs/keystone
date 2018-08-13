@@ -1,11 +1,7 @@
 import React, { Component, createRef } from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  AlertIcon,
-} from '@keystonejs/icons';
+import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@keystonejs/icons';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 import { A11yText } from '@keystonejs/ui/src/primitives/typography';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
@@ -31,8 +27,7 @@ const EventCatcher = props => (
 );
 
 export const FieldOption = ({ children, ...props }) => {
-  let iconColor =
-    !props.isFocused && !props.isSelected ? colors.N40 : 'currentColor';
+  let iconColor = !props.isFocused && !props.isSelected ? colors.N40 : 'currentColor';
 
   return (
     <OptionPrimitive {...props}>

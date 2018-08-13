@@ -11,18 +11,9 @@ const {
 } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
-const {
-  CloudinaryAdapter,
-  LocalFileAdapter,
-} = require('@keystonejs/file-adapters');
+const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
 
-const {
-  twitterAuthEnabled,
-  port,
-  staticRoute,
-  staticPath,
-  cloudinary,
-} = require('./config');
+const { twitterAuthEnabled, port, staticRoute, staticPath, cloudinary } = require('./config');
 const { configureTwitterAuth } = require('./twitter');
 
 const { DISABLE_AUTH } = process.env;
@@ -86,8 +77,7 @@ keystone.createList('User', {
       type: Password,
       access: {
         update: ({ item, authentication }) =>
-          authentication.listKey === this.listKey &&
-          item.id === authentication.item.id,
+          authentication.listKey === this.listKey && item.id === authentication.item.id,
       },
     },
     // TODO: Create a Twitter field type to encapsulate these
@@ -111,9 +101,7 @@ keystone.createList('User', {
       // its own access control setup
     },
     attachment: { type: File, adapter: fileAdapter },
-    ...(cloudinaryAdapter
-      ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } }
-      : {}),
+    ...(cloudinaryAdapter ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } } : {}),
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });
@@ -125,10 +113,7 @@ keystone.createList('Post', {
     status: {
       type: Select,
       defaultValue: 'draft',
-      options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Published', value: 'published' },
-      ],
+      options: [{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }],
     },
     author: {
       type: Relationship,
@@ -144,14 +129,11 @@ keystone.createList('Post', {
   access: {
     read: true,
     create: ({ item, authentication }) =>
-      authentication.listKey === authStrategy.listKey &&
-      item.user.id === authentication.item.id,
+      authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
     update: ({ item, authentication }) =>
-      authentication.listKey === authStrategy.listKey &&
-      item.user.id === authentication.item.id,
+      authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
     delete: ({ item, authentication }) =>
-      authentication.listKey === authStrategy.listKey &&
-      item.user.id === authentication.item.id,
+      authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
   },
 });
 
@@ -178,8 +160,7 @@ keystone.createList('Note', {
   },
   // All access to notes limited to authenticated person
   access: ({ item, authentication }) =>
-    authentication.listKey === authStrategy.listKey &&
-    item.user.id === authentication.item.id,
+    authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
 });
 
 const admin = new AdminUI(keystone, {

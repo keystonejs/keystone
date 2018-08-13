@@ -40,15 +40,10 @@ const subtleTextColor = {
 
 const BadgeElement = styled.div(({ appearance, variant }) => ({
   backgroundColor:
-    variant === 'bold'
-      ? boldBackgroundColor[appearance]
-      : subtleBackgroundColor[appearance],
+    variant === 'bold' ? boldBackgroundColor[appearance] : subtleBackgroundColor[appearance],
   borderRadius: '2em',
   boxSizing: 'border-box',
-  color:
-    variant === 'bold'
-      ? boldTextColor[appearance]
-      : subtleTextColor[appearance],
+  color: variant === 'bold' ? boldTextColor[appearance] : subtleTextColor[appearance],
   display: 'inline-block',
   fontSize: 12,
   fontWeight: 500,

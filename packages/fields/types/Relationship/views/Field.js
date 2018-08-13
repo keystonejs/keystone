@@ -3,11 +3,7 @@ import React, { Component } from 'react';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
-import {
-  FieldContainer,
-  FieldLabel,
-  FieldInput,
-} from '@keystonejs/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
 import { Select } from '@keystonejs/ui/src/primitives/filters';
 import { ShieldIcon } from '@keystonejs/icons';
 import { colors } from '@keystonejs/ui/src/theme';
@@ -40,8 +36,7 @@ export default class RelationshipField extends Component {
     const query = getGraphqlQuery(refList);
     const htmlID = `ks-input-${field.path}`;
     const canRead = !(
-      itemErrors[field.path] instanceof Error &&
-      itemErrors[field.path].name === 'AccessDeniedError'
+      itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
     );
 
     const selectProps =
@@ -93,15 +88,10 @@ export default class RelationshipField extends Component {
                 if (many) {
                   if (!Array.isArray(item[field.path])) value = [];
                   value = item[field.path]
-                    .map(
-                      i => options.filter(option => option.value.id === i.id)[0]
-                    )
+                    .map(i => options.filter(option => option.value.id === i.id)[0])
                     .filter(i => i);
                 } else if (item[field.path]) {
-                  value =
-                    options.filter(
-                      i => i.value.id === item[field.path].id
-                    )[0] || null;
+                  value = options.filter(i => i.value.id === item[field.path].id)[0] || null;
                 }
               }
 
@@ -110,9 +100,7 @@ export default class RelationshipField extends Component {
                   autoFocus={autoFocus}
                   isMulti={many}
                   value={value}
-                  placeholder={
-                    canRead ? undefined : itemErrors[field.path].message
-                  }
+                  placeholder={canRead ? undefined : itemErrors[field.path].message}
                   getOptionValue={option => option.value.id}
                   options={options}
                   onChange={this.onChange}

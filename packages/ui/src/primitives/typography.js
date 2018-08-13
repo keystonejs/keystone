@@ -17,8 +17,7 @@ export const Kbd = styled.kbd({
   backgroundColor: colors.N05,
   border: `1px solid ${colors.N20}`,
   borderRadius: 3,
-  boxShadow:
-    '0 1px 1px rgba(0, 0, 0, 0.12), 0 2px 0 0 rgba(255, 255, 255, 0.7) inset',
+  boxShadow: '0 1px 1px rgba(0, 0, 0, 0.12), 0 2px 0 0 rgba(255, 255, 255, 0.7) inset',
   display: 'inline-block',
   fontFamily: 'Monaco, monospace',
   fontSize: '0.85em',

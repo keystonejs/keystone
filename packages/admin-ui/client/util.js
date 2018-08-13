@@ -11,9 +11,7 @@ export const deconstructErrorsToDataShape = error => {
     error.graphQLErrors
       // Comes from the backend. Specific to Keystone, so shouldn't
       // give false positives with regular GraphQL errors
-      .filter(
-        gqlError => gqlError.name && gqlError.name === 'AccessDeniedError'
-      )
+      .filter(gqlError => gqlError.name && gqlError.name === 'AccessDeniedError')
       .forEach(gqlError => {
         // Set the gqlError message to the path as reported by the graphql
         // gqlError

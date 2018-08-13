@@ -102,9 +102,7 @@ module.exports = class Keystone {
     return { lists, name };
   }
   getAdminSchema() {
-    let listTypes = flatten(
-      this.listsArray.map(list => list.getAdminGraphqlTypes())
-    ).map(trim);
+    let listTypes = flatten(this.listsArray.map(list => list.getAdminGraphqlTypes())).map(trim);
 
     listTypes.push(`
       # NOTE: Can be JSON, or a Boolean/Int/String
@@ -152,14 +150,10 @@ module.exports = class Keystone {
     listTypes = unique(listTypes);
 
     let queries = unique(
-      flatten(this.listsArray.map(list => list.getAdminGraphqlQueries())).map(
-        trim
-      )
+      flatten(this.listsArray.map(list => list.getAdminGraphqlQueries())).map(trim)
     );
     let mutations = unique(
-      flatten(this.listsArray.map(list => list.getAdminGraphqlMutations())).map(
-        trim
-      )
+      flatten(this.listsArray.map(list => list.getAdminGraphqlMutations())).map(trim)
     );
     const typeDefs = `
       type Query {
@@ -219,14 +213,8 @@ module.exports = class Keystone {
       Query: {
         // Order is also important here, any TypeQuery's defined by types
         // shouldn't be able to override list-level queries
-        ...this.listsArray.reduce(
-          (acc, i) => ({ ...i.getAuxiliaryQueryResolvers(), ...acc }),
-          {}
-        ),
-        ...this.listsArray.reduce(
-          (acc, i) => ({ ...i.getAdminQueryResolvers(), ...acc }),
-          {}
-        ),
+        ...this.listsArray.reduce((acc, i) => ({ ...i.getAuxiliaryQueryResolvers(), ...acc }), {}),
+        ...this.listsArray.reduce((acc, i) => ({ ...i.getAdminQueryResolvers(), ...acc }), {}),
       },
 
       Mutation: {
@@ -234,10 +222,7 @@ module.exports = class Keystone {
           (acc, i) => ({ ...i.getAuxiliaryMutationResolvers(), ...acc }),
           {}
         ),
-        ...this.listsArray.reduce(
-          (acc, i) => ({ ...i.getAdminMutationResolvers(), ...acc }),
-          {}
-        ),
+        ...this.listsArray.reduce((acc, i) => ({ ...i.getAdminMutationResolvers(), ...acc }), {}),
       },
     };
 
@@ -255,13 +240,7 @@ module.exports = class Keystone {
     return this.lists[listKey].getAccessControl({ operation, authentication });
   }
 
-  getFieldAccessControl({
-    item,
-    listKey,
-    fieldKey,
-    operation,
-    authentication,
-  }) {
+  getFieldAccessControl({ item, listKey, fieldKey, operation, authentication }) {
     return this.lists[listKey].getFieldAccessControl({
       item,
       fieldKey,
@@ -280,9 +259,7 @@ module.exports = class Keystone {
         Object.keys(data).reduce(
           (memo, list) => ({
             ...memo,
-            [list]: Promise.all(
-              data[list].map(item => this.createItem(list, item))
-            ),
+            [list]: Promise.all(data[list].map(item => this.createItem(list, item))),
           }),
           {}
         )
@@ -292,19 +269,12 @@ module.exports = class Keystone {
     const cleanupItems = createdItems =>
       Promise.all(
         Object.keys(createdItems).map(listKey =>
-          Promise.all(
-            createdItems[listKey].map(({ id }) =>
-              this.lists[listKey].adapter.delete(id)
-            )
-          )
+          Promise.all(createdItems[listKey].map(({ id }) => this.lists[listKey].adapter.delete(id)))
         )
       );
 
     // 1. Split it apart
-    const { relationships, data } = unmergeRelationships(
-      this.lists,
-      itemsToCreate
-    );
+    const { relationships, data } = unmergeRelationships(this.lists, itemsToCreate);
     // 2. Create the items
     // NOTE: Only works if all relationships fields are non-"required"
     const createdItems = await createItems(data);
@@ -312,11 +282,7 @@ module.exports = class Keystone {
     let createdRelationships;
     try {
       // 3. Create the relationships
-      createdRelationships = await createRelationships(
-        this.lists,
-        relationships,
-        createdItems
-      );
+      createdRelationships = await createRelationships(this.lists, relationships, createdItems);
     } catch (error) {
       // 3.5. If creation of relationships didn't work, unwind the createItems
       cleanupItems(createdItems);

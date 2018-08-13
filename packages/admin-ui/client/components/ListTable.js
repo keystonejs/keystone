@@ -141,16 +141,10 @@ class ListDisplayRow extends Component {
             return <BodyCell key={path} />;
           }
 
-          if (
-            itemErrors[path] instanceof Error &&
-            itemErrors[path].name === 'AccessDeniedError'
-          ) {
+          if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
             return (
               <BodyCell key={path}>
-                <ShieldIcon
-                  title={itemErrors[path].message}
-                  css={{ color: colors.N10 }}
-                />
+                <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N10 }} />
                 <A11yText>{itemErrors[path].message}</A11yText>
               </BodyCell>
             );
@@ -164,14 +158,7 @@ class ListDisplayRow extends Component {
             const LinkComponent = ({ children, ...data }) => (
               <ItemLink to={link(data)}>{children}</ItemLink>
             );
-            content = (
-              <Cell
-                list={list}
-                data={item[path]}
-                field={field}
-                Link={LinkComponent}
-              />
-            );
+            content = <Cell list={list} data={item[path]} field={field} Link={LinkComponent} />;
           } else {
             content = item[path];
           }
@@ -179,9 +166,7 @@ class ListDisplayRow extends Component {
           return (
             <BodyCell key={path}>
               {!index ? (
-                <ItemLink to={link({ path: list.path, id: item.id })}>
-                  {content}
-                </ItemLink>
+                <ItemLink to={link({ path: list.path, id: item.id })}>{content}</ItemLink>
               ) : (
                 content
               )}
@@ -328,10 +313,7 @@ export default class ListTable extends Component {
             ))}
           </tr>
         </thead>
-        <tbody
-          onMouseUp={this.stopRowSelectOnEnter}
-          onMouseLeave={this.stopRowSelectOnEnter}
-        >
+        <tbody onMouseUp={this.stopRowSelectOnEnter} onMouseLeave={this.stopRowSelectOnEnter}>
           {items.map(
             (item, itemIndex) =>
               isManaging ? (

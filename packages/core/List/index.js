@@ -1,11 +1,5 @@
 const pluralize = require('pluralize');
-const {
-  resolveAllKeys,
-  mapKeys,
-  omit,
-  unique,
-  intersection,
-} = require('@keystonejs/utils');
+const { resolveAllKeys, mapKeys, omit, unique, intersection } = require('@keystonejs/utils');
 
 const {
   parseListAccess,
@@ -129,15 +123,12 @@ module.exports = class List {
       defaultAccess: this.defaultAccess.list,
     });
 
-    const sanitisedFieldsConfig = mapKeys(
-      config.fields,
-      (fieldConfig, path) => {
-        return {
-          ...fieldConfig,
-          type: mapNativeTypeToKeystonType(fieldConfig.type, key, path),
-        };
-      }
-    );
+    const sanitisedFieldsConfig = mapKeys(config.fields, (fieldConfig, path) => {
+      return {
+        ...fieldConfig,
+        type: mapNativeTypeToKeystonType(fieldConfig.type, key, path),
+      };
+    });
 
     this.fieldsByPath = {};
     this.fields = config.fields
@@ -162,11 +153,9 @@ module.exports = class List {
       const fieldType = fieldConfig.type;
       this.views[path] = {};
 
-      Object.entries(fieldType.views).forEach(
-        ([fieldViewType, fieldViewPath]) => {
-          this.views[path][fieldViewType] = fieldViewPath;
-        }
-      );
+      Object.entries(fieldType.views).forEach(([fieldViewType, fieldViewPath]) => {
+        this.views[path][fieldViewType] = fieldViewPath;
+      });
     });
   }
   getAdminMeta() {
@@ -187,9 +176,7 @@ module.exports = class List {
       updateMutationName: this.updateMutationName,
       deleteMutationName: this.deleteMutationName,
       deleteManyMutationName: this.deleteManyMutationName,
-      fields: this.fields
-        .filter(field => field.access.read)
-        .map(field => field.getAdminMeta()),
+      fields: this.fields.filter(field => field.access.read).map(field => field.getAdminMeta()),
       views: this.views,
     };
   }
@@ -200,9 +187,7 @@ module.exports = class List {
       .map(field => field.getGraphqlSchema())
       .join('\n          ');
 
-    const fieldTypes = this.fields
-      .map(i => i.getGraphqlAuxiliaryTypes())
-      .filter(i => i);
+    const fieldTypes = this.fields.map(i => i.getGraphqlAuxiliaryTypes()).filter(i => i);
 
     const updateArgs = this.fields
       // If it's globally set to false, makes sense to never let it be updated
@@ -246,12 +231,7 @@ module.exports = class List {
       ...fieldTypes,
     ];
 
-    if (
-      this.access.read ||
-      this.access.create ||
-      this.access.update ||
-      this.access.delete
-    ) {
+    if (this.access.read || this.access.create || this.access.update || this.access.delete) {
       // prettier-ignore
       types.push(`
         type ${this.key} {
@@ -418,10 +398,7 @@ module.exports = class List {
             // on what the user requested
             // Evalutation takes place in ../Keystone/index.js
             getCount: () => {
-              const access = context.getListAccessControlForUser(
-                this.key,
-                'read'
-              );
+              const access = context.getListAccessControlForUser(this.key, 'read');
               if (!access) {
                 // If the client handles errors correctly, it should be able to
                 // receive partial data (for the fields the user has access to),
@@ -438,9 +415,7 @@ module.exports = class List {
                 });
               }
               let queryArgs = mergeWhereClause(args, access);
-              return this.adapter
-                .itemsQueryMeta(queryArgs)
-                .then(({ count }) => count);
+              return this.adapter.itemsQueryMeta(queryArgs).then(({ count }) => count);
             },
           };
         },
@@ -453,14 +428,10 @@ module.exports = class List {
             // NOTE: These could return a Boolean or a JSON object (if using the
             // declarative syntax)
             getAccess: () => ({
-              getCreate: () =>
-                context.getListAccessControlForUser(this.key, 'create'),
-              getRead: () =>
-                context.getListAccessControlForUser(this.key, 'read'),
-              getUpdate: () =>
-                context.getListAccessControlForUser(this.key, 'update'),
-              getDelete: () =>
-                context.getListAccessControlForUser(this.key, 'delete'),
+              getCreate: () => context.getListAccessControlForUser(this.key, 'create'),
+              getRead: () => context.getListAccessControlForUser(this.key, 'read'),
+              getUpdate: () => context.getListAccessControlForUser(this.key, 'update'),
+              getDelete: () => context.getListAccessControlForUser(this.key, 'delete'),
             }),
           };
         },
@@ -505,12 +476,7 @@ module.exports = class List {
           // Ensure there's a field resolver for every field
           [field.path]: (item, args, context, ...rest) => {
             // If not allowed access
-            const access = context.getFieldAccessControlForUser(
-              this.key,
-              field.path,
-              item,
-              'read'
-            );
+            const access = context.getFieldAccessControlForUser(this.key, field.path, item, 'read');
             if (!access) {
               // If the client handles errors correctly, it should be able to
               // receive partial data (for the fields the user has access to),
@@ -543,17 +509,15 @@ module.exports = class List {
       return {};
     }
 
-    const fieldResolvers = this.fields
-      .filter(field => field.access.read)
-      .reduce(
-        (resolvers, field) => ({
-          ...resolvers,
-          ...field.getGraphqlFieldResolvers(),
-        }),
-        {
-          _label_: this.config.labelResolver,
-        }
-      );
+    const fieldResolvers = this.fields.filter(field => field.access.read).reduce(
+      (resolvers, field) => ({
+        ...resolvers,
+        ...field.getGraphqlFieldResolvers(),
+      }),
+      {
+        _label_: this.config.labelResolver,
+      }
+    );
     return { [this.key]: this.wrapFieldQueryResolversWithACL(fieldResolvers) };
   }
   getAuxiliaryTypeResolvers() {
@@ -588,9 +552,7 @@ module.exports = class List {
   }
 
   getAdminGraphqlMutations() {
-    const mutations = this.fields.map(field =>
-      field.getGraphqlAuxiliaryMutations()
-    );
+    const mutations = this.fields.map(field => field.getGraphqlAuxiliaryMutations());
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
@@ -639,12 +601,7 @@ module.exports = class List {
     const restrictedFields = [];
 
     this.fields.filter(field => field.path in inputData).forEach(field => {
-      const access = context.getFieldAccessControlForUser(
-        this.key,
-        field.path,
-        item,
-        accessType
-      );
+      const access = context.getFieldAccessControlForUser(this.key, field.path, item, accessType);
       if (!access) {
         restrictedFields.push(field.path);
       }
@@ -665,10 +622,7 @@ module.exports = class List {
     }
   }
 
-  async performActionOnItemWithAccessControl(
-    { operation, id, context, errorData },
-    action
-  ) {
+  async performActionOnItemWithAccessControl({ operation, id, context, errorData }, action) {
     const throwAccessDenied = () => {
       graphqlLogger.info(
         {
@@ -778,10 +732,7 @@ module.exports = class List {
     return action(items[0]);
   }
 
-  async performMultiActionOnItemsWithAccessControl(
-    { operation, ids, context, errorData },
-    action
-  ) {
+  async performMultiActionOnItemsWithAccessControl({ operation, ids, context, errorData }, action) {
     if (ids.length === 0) {
       return [];
     }
@@ -814,9 +765,7 @@ module.exports = class List {
     let idFilters = {};
 
     if (access.id || access.id_in) {
-      const accessControlIdsAllowed = unique(
-        [].concat(access.id, access.id_in).filter(id => id)
-      );
+      const accessControlIdsAllowed = unique([].concat(access.id, access.id_in).filter(id => id));
 
       idFilters.id_in = intersection(accessControlIdsAllowed, uniqueIds);
     } else {
@@ -949,11 +898,7 @@ module.exports = class List {
     }
 
     if (this.access.update) {
-      mutationResolvers[this.updateMutationName] = async (
-        _,
-        { id, data },
-        context
-      ) => {
+      mutationResolvers[this.updateMutationName] = async (_, { id, data }, context) => {
         return this.performActionOnItemWithAccessControl(
           {
             id,
@@ -1021,11 +966,7 @@ module.exports = class List {
     }
 
     if (this.access.delete) {
-      mutationResolvers[this.deleteMutationName] = async (
-        _,
-        { id },
-        context
-      ) => {
+      mutationResolvers[this.deleteMutationName] = async (_, { id }, context) => {
         return this.performActionOnItemWithAccessControl(
           {
             id,
@@ -1043,11 +984,7 @@ module.exports = class List {
         );
       };
 
-      mutationResolvers[this.deleteManyMutationName] = async (
-        _,
-        { ids },
-        context
-      ) => {
+      mutationResolvers[this.deleteManyMutationName] = async (_, { ids }, context) => {
         return this.performMultiActionOnItemsWithAccessControl(
           {
             ids,
@@ -1058,10 +995,7 @@ module.exports = class List {
               name: this.deleteManyMutationName,
             },
           },
-          items =>
-            Promise.all(
-              items.map(item => this.adapter.delete(item.id).then(() => item))
-            )
+          items => Promise.all(items.map(item => this.adapter.delete(item.id).then(() => item)))
         );
       };
     }
@@ -1078,13 +1012,7 @@ module.exports = class List {
     });
   }
 
-  getFieldAccessControl({
-    fieldKey,
-    item,
-    inputData,
-    operation,
-    authentication,
-  }) {
+  getFieldAccessControl({ fieldKey, item, inputData, operation, authentication }) {
     return this.fieldsByPath[fieldKey].testAccessControl({
       listKey: this.key,
       item,

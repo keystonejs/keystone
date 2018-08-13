@@ -3,10 +3,7 @@ import styled from 'react-emotion';
 
 import { colors } from '@keystonejs/ui/src/theme';
 import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import {
-  LoadingIndicator,
-  LoadingSpinner,
-} from '@keystonejs/ui/src/primitives/loading';
+import { LoadingIndicator, LoadingSpinner } from '@keystonejs/ui/src/primitives/loading';
 
 const LoadingBox = styled.div(({ on, size }) => ({
   alignItems: 'center',
@@ -39,13 +36,7 @@ export default class ProgressGuide extends Component<*, State> {
         <h2>Loading</h2>
         <FlexGroup style={{ marginBottom: '1em' }}>
           <div css={{ alignItems: 'center', display: 'flex' }}>
-            <input
-              type="range"
-              min="4"
-              max="16"
-              value={size}
-              onChange={this.handleSize}
-            />
+            <input type="range" min="4" max="16" value={size} onChange={this.handleSize} />
           </div>
           <div>
             {appearances.map(a => (

@@ -50,13 +50,7 @@ export default class AnimateHeight extends Component<Props, State> {
     }
   };
   render() {
-    const {
-      autoScroll,
-      children,
-      initialHeight,
-      render,
-      ...props
-    } = this.props;
+    const { autoScroll, children, initialHeight, render, ...props } = this.props;
     const { height, isTransitioning } = this.state;
     const overflow = isTransitioning ? 'hidden' : null;
 

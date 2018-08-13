@@ -3,11 +3,7 @@ import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { Drawer } from '@keystonejs/ui/src/primitives/modals';
-import {
-  FieldContainer,
-  FieldLabel,
-  FieldInput,
-} from '@keystonejs/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
 import { Select } from '@keystonejs/ui/src/primitives/filters';
 
 import FieldTypes from '../FIELD_TYPES';
@@ -105,11 +101,7 @@ class UpdateManyModal extends Component {
             <Button appearance="primary" onClick={this.onUpdate}>
               {isLoading ? 'Loading...' : 'Update'}
             </Button>
-            <Button
-              appearance="warning"
-              variant="subtle"
-              onClick={this.onClose}
-            >
+            <Button appearance="warning" variant="subtle" onClick={this.onClose}>
               Cancel
             </Button>
           </Fragment>
@@ -157,11 +149,7 @@ export default class UpdateManyModalWithMutation extends Component {
     return (
       <Mutation mutation={updateMutation}>
         {(updateItem, { loading }) => (
-          <UpdateManyModal
-            updateItem={updateItem}
-            isLoading={loading}
-            {...this.props}
-          />
+          <UpdateManyModal updateItem={updateItem} isLoading={loading} {...this.props} />
         )}
       </Mutation>
     );

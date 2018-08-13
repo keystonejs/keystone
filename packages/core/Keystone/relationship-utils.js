@@ -121,9 +121,7 @@ const unmergeRelationships = (lists, input) => {
 };
 
 const relateTo = async ({ relatedTo, relatedFrom }) => {
-  if (
-    isManyRelationship({ list: relatedFrom.list, fieldKey: relatedFrom.field })
-  ) {
+  if (isManyRelationship({ list: relatedFrom.list, fieldKey: relatedFrom.field })) {
     return relateToManyItems({ relatedTo, relatedFrom });
   } else {
     return relateToOneItem({ relatedTo, relatedFrom });
@@ -138,21 +136,16 @@ const throwRelateError = ({ relatedTo, relatedFrom, isMany }) => {
 
 const relateToOneItem = async ({ relatedTo, relatedFrom }) => {
   // Use where clause provided in original data to find related item
-  const relatedToItems = await relatedTo.list.adapter.itemsQuery(
-    relatedTo.conditions
-  );
+  const relatedToItems = await relatedTo.list.adapter.itemsQuery(relatedTo.conditions);
 
   // Sanity checking
   if (!relatedToItems || !relatedToItems.length) {
     throwRelateError({ relatedTo, relatedFrom, isMany: false });
   }
 
-  const updateResult = await relatedFrom.list.adapter.update(
-    relatedFrom.item.id,
-    {
-      [relatedFrom.field]: relatedToItems[0].id,
-    }
-  );
+  const updateResult = await relatedFrom.list.adapter.update(relatedFrom.item.id, {
+    [relatedFrom.field]: relatedToItems[0].id,
+  });
 
   return updateResult[relatedFrom.field];
 };
@@ -163,9 +156,7 @@ const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
   if (Array.isArray(relatedTo.conditions)) {
     // Use where clause provided in original data to find related item
     relatedToItems = await Promise.all(
-      relatedTo.conditions.map(condition =>
-        relatedTo.list.adapter.itemsQuery(condition)
-      )
+      relatedTo.conditions.map(condition => relatedTo.list.adapter.itemsQuery(condition))
     );
 
     // Grab the first result of each
@@ -177,9 +168,7 @@ const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
     }
   } else {
     // Use where clause provided in original data to find related item
-    relatedToItems = await relatedTo.list.adapter.itemsQuery(
-      relatedTo.conditions
-    );
+    relatedToItems = await relatedTo.list.adapter.itemsQuery(relatedTo.conditions);
   }
 
   // Sanity checking
@@ -187,12 +176,9 @@ const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
     throwRelateError({ relatedTo, relatedFrom, isMany: true });
   }
 
-  const updateResult = await relatedFrom.list.adapter.update(
-    relatedFrom.item.id,
-    {
-      [relatedFrom.field]: relatedToItems.map(({ id }) => id),
-    }
-  );
+  const updateResult = await relatedFrom.list.adapter.update(relatedFrom.item.id, {
+    [relatedFrom.field]: relatedToItems.map(({ id }) => id),
+  });
 
   return updateResult[relatedFrom.field];
 };

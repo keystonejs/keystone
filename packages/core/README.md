@@ -85,10 +85,7 @@ There is 2 ways to write the relationship query:
 
 ```javascript
 keystone.createItems({
-  User: [
-    { name: 'Ticiana' },
-    { name: 'Lauren', posts: { where: { title_contains: 'React' } } },
-  ],
+  User: [{ name: 'Ticiana' }, { name: 'Lauren', posts: { where: { title_contains: 'React' } } }],
   Post: [
     { title: 'Hello Everyone' },
     { title: 'Talking about React' },

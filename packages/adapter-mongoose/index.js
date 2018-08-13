@@ -56,8 +56,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     if (debugMongoose()) {
       this.mongoose.set('debug', true);
     }
-    this.listAdapterClass =
-      this.listAdapterClass || this.defaultListAdapterClass;
+    this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
   connect(to, config) {
@@ -157,18 +156,12 @@ class MongooseListAdapter extends BaseListAdapter {
     // depth instead of passing it through to the individual fields and back
     // again?
     if (depthGuard > 1) {
-      throw new Error(
-        'Nesting where args deeper than 1 level is not currently supported'
-      );
+      throw new Error('Nesting where args deeper than 1 level is not currently supported');
     }
 
     return this.fieldAdapters.reduce(
       (conds, fieldAdapater) => {
-        const fieldConditions = fieldAdapater.getQueryConditions(
-          args,
-          this,
-          depthGuard + 1
-        );
+        const fieldConditions = fieldAdapater.getQueryConditions(args, this, depthGuard + 1);
 
         if (fieldConditions && !Array.isArray(fieldConditions)) {
           console.warn(
@@ -321,9 +314,7 @@ class MongooseListAdapter extends BaseListAdapter {
 
 class MongooseFieldAdapter extends BaseFieldAdapter {
   addToMongooseSchema() {
-    throw new Error(
-      `Field type [${this.fieldName}] does not implement addToMongooseSchema()`
-    );
+    throw new Error(`Field type [${this.fieldName}] does not implement addToMongooseSchema()`);
   }
 
   getQueryConditions() {

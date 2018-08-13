@@ -95,11 +95,7 @@ export const filterTests = app => {
   test('Filter: count_lte', done => {
     match(
       'where: { count_lte: 2 }',
-      [
-        { name: 'person1', count: 0 },
-        { name: 'person2', count: 1 },
-        { name: 'person3', count: 2 },
-      ],
+      [{ name: 'person1', count: 0 }, { name: 'person2', count: 1 }, { name: 'person3', count: 2 }],
       done
     );
   });
@@ -137,11 +133,7 @@ export const filterTests = app => {
   test('Filter: count_in', done => {
     match(
       'where: { count_in: [0, 1, 2] }',
-      [
-        { name: 'person1', count: 0 },
-        { name: 'person2', count: 1 },
-        { name: 'person3', count: 2 },
-      ],
+      [{ name: 'person1', count: 0 }, { name: 'person2', count: 1 }, { name: 'person3', count: 2 }],
       done
     );
   });
@@ -155,11 +147,7 @@ export const filterTests = app => {
   });
 
   test('Filter: count_in null', done => {
-    match(
-      'where: { count_in: [null] }',
-      [{ name: 'person5', count: null }],
-      done
-    );
+    match('where: { count_in: [null] }', [{ name: 'person5', count: null }], done);
   });
 
   test('Filter: count_not_in null', done => {

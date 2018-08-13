@@ -14,9 +14,7 @@ const getQueryArgs = ({ filters, ...args }) => {
     argName => `${argName}: ${JSON.stringify(args[argName])}`
   );
   if (filters) {
-    const filterArgs = filters.map(filter =>
-      filter.field.getFilterGraphQL(filter)
-    );
+    const filterArgs = filters.map(filter => filter.field.getFilterGraphQL(filter));
     if (filterArgs.length) {
       queryArgs.push(`where: { ${filterArgs.join(', ')} }`);
     }
@@ -125,10 +123,7 @@ class ListPageDataProvider extends Component<Props, State> {
     let filters = this.state.filters.slice(0);
 
     const updateIndex = filters.findIndex(i => {
-      return (
-        i.field.path === updatedFilter.field.path &&
-        i.type === updatedFilter.type
-      );
+      return i.field.path === updatedFilter.field.path && i.type === updatedFilter.type;
     });
 
     filters.splice(updateIndex, 1, updatedFilter);
@@ -147,15 +142,11 @@ class ListPageDataProvider extends Component<Props, State> {
 
     // Ensure that the displayed fields maintain their original sortDirection
     // when they're added/removed
-    const fields = this.props.list.fields.filter(field =>
-      selectedFields.includes(field)
-    );
+    const fields = this.props.list.fields.filter(field => selectedFields.includes(field));
 
     // Reset `sortBy` if we were ordering by a field which has been removed.
     const { sortBy } = this.state;
-    const newSort = fields.includes(sortBy.field)
-      ? sortBy
-      : { ...sortBy, field: fields[0] };
+    const newSort = fields.includes(sortBy.field) ? sortBy : { ...sortBy, field: fields[0] };
 
     this.setState({ fields, sortBy: newSort });
   };
@@ -180,15 +171,7 @@ class ListPageDataProvider extends Component<Props, State> {
 
   render() {
     const { children, list } = this.props;
-    const {
-      currentPage,
-      fields,
-      filters,
-      pageSize,
-      search,
-      skip,
-      sortBy,
-    } = this.state;
+    const { currentPage, fields, filters, pageSize, search, skip, sortBy } = this.state;
 
     const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
     const first = pageSize;
@@ -212,9 +195,7 @@ class ListPageDataProvider extends Component<Props, State> {
             // (ie; there could be partial data + partial errors)
             if (
               error &&
-              (!data ||
-                !data[list.listQueryName] ||
-                !Object.keys(data[list.listQueryName]).length)
+              (!data || !data[list.listQueryName] || !Object.keys(data[list.listQueryName]).length)
             ) {
               let message = error.message;
 
@@ -226,8 +207,7 @@ class ListPageDataProvider extends Component<Props, State> {
                 error.networkError.result.errors &&
                 error.networkError.result.errors[0]
               ) {
-                message =
-                  error.networkError.result.errors[0].message || message;
+                message = error.networkError.result.errors[0].message || message;
               }
 
               // Special case for when trying to access a non-existent list or a
@@ -243,8 +223,7 @@ class ListPageDataProvider extends Component<Props, State> {
               );
             }
 
-            const itemsErrors =
-              deconstructErrorsToDataShape(error)[list.listQueryName] || [];
+            const itemsErrors = deconstructErrorsToDataShape(error)[list.listQueryName] || [];
 
             // Leave the old values intact while new data is loaded
             if (!loading) {

@@ -18,12 +18,7 @@ const PillGuide = () => (
     <h4>Variant: Bold</h4>
     <FlexGroup>
       {appearances.map(a => (
-        <Pill
-          variant="bold"
-          appearance={a.toLowerCase()}
-          key={a}
-          onRemove={console.log}
-        >
+        <Pill variant="bold" appearance={a.toLowerCase()} key={a} onRemove={console.log}>
           {a}
         </Pill>
       ))}

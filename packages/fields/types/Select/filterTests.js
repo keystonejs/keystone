@@ -56,11 +56,7 @@ export const filterTests = app => {
   });
 
   test('Filter: company', done => {
-    match(
-      'where: { company: thinkmill }',
-      [{ company: 'thinkmill', name: 'a' }],
-      done
-    );
+    match('where: { company: thinkmill }', [{ company: 'thinkmill', name: 'a' }], done);
   });
 
   test('Filter: company_not', done => {

@@ -85,10 +85,7 @@ class MongoTextInterface extends MongooseFieldAdapter {
     }
     const not_starts_with = `${this.path}_not_starts_with`;
     if (not_starts_with in args) {
-      const not_starts_with_rx = new RegExp(
-        `^${esc(args[not_starts_with])}`,
-        rx_cs
-      );
+      const not_starts_with_rx = new RegExp(`^${esc(args[not_starts_with])}`, rx_cs);
       conditions.push({ $not: not_starts_with_rx });
     }
     const ends_with = `${this.path}_ends_with`;
@@ -98,10 +95,7 @@ class MongoTextInterface extends MongooseFieldAdapter {
     }
     const not_ends_with = `${this.path}_not_ends_with`;
     if (not_ends_with in args) {
-      const not_ends_with_rx = new RegExp(
-        `${esc(args[not_ends_with])}$`,
-        rx_cs
-      );
+      const not_ends_with_rx = new RegExp(`${esc(args[not_ends_with])}$`, rx_cs);
       conditions.push({ $not: not_ends_with_rx });
     }
     const is_in = `${this.path}_in`;

@@ -35,9 +35,7 @@ class MongoPasswordInterface extends MongooseFieldAdapter {
     const conditions = [];
     const is_set = `${this.path}_is_set`;
     if (is_set in args) {
-      conditions.push(
-        args[is_set] ? { $nin: [null, ''] } : { $in: [null, ''] }
-      );
+      conditions.push(args[is_set] ? { $nin: [null, ''] } : { $in: [null, ''] });
     }
     return conditions;
   }

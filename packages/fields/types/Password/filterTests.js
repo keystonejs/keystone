@@ -60,19 +60,12 @@ export const filterTests = app => {
   test('Filter: is_set - true', done => {
     match(
       'where: { password_is_set: true }',
-      [
-        { name: 'person1', password: 'pass1' },
-        { name: 'person3', password: 'pass3' },
-      ],
+      [{ name: 'person1', password: 'pass1' }, { name: 'person3', password: 'pass3' }],
       done
     );
   });
 
   test('Filter: is_set - false', done => {
-    match(
-      'where: { password_is_set: false }',
-      [{ name: 'person2', password: '' }],
-      done
-    );
+    match('where: { password_is_set: false }', [{ name: 'person2', password: '' }], done);
   });
 };

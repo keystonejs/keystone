@@ -120,10 +120,6 @@ export default class FocusTrap extends Component<Props> {
   };
 
   render() {
-    return (
-      <NodeResolver innerRef={this.getBoundary}>
-        {this.props.children}
-      </NodeResolver>
-    );
+    return <NodeResolver innerRef={this.getBoundary}>{this.props.children}</NodeResolver>;
   }
 }

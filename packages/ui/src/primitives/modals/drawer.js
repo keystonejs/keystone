@@ -138,10 +138,7 @@ class ModalDialog extends PureComponent<Props> {
     return createPortal(
       <Fragment>
         <Fade {...transitionProps}>
-          <Blanket
-            onClick={closeOnBlanketClick ? onClose : undefined}
-            isTinted
-          />
+          <Blanket onClick={closeOnBlanketClick ? onClose : undefined} isTinted />
         </Fade>
         <SlideInHorizontal slideInFrom={slideInFrom} {...transitionProps}>
           <Positioner slideInFrom={slideInFrom} width={width}>

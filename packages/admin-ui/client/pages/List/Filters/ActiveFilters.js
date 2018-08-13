@@ -22,12 +22,7 @@ type Props = {
   onUpdate: FilterType => void,
 };
 
-export default function ActiveFilters({
-  filterList,
-  onClear,
-  onRemove,
-  onUpdate,
-}: Props) {
+export default function ActiveFilters({ filterList, onClear, onRemove, onUpdate }: Props) {
   if (!ENABLE_DEV_FEATURES) return null;
 
   return (
@@ -42,11 +37,7 @@ export default function ActiveFilters({
                   onChange={onUpdate}
                   filter={filter}
                   target={
-                    <Pill
-                      appearance="primary"
-                      onRemove={onRemove(filter)}
-                      style={pillStyle}
-                    >
+                    <Pill appearance="primary" onRemove={onRemove(filter)} style={pillStyle}>
                       {label}
                     </Pill>
                   }

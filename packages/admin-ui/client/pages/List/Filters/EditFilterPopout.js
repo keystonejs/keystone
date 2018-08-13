@@ -48,12 +48,7 @@ export default class EditFilterPopout extends Component<Props, State> {
     const headerTitle = filter.field.getFilterLabel(filter);
 
     return (
-      <PopoutForm
-        target={target}
-        headerTitle={headerTitle}
-        onSubmit={this.onSubmit}
-        showFooter
-      >
+      <PopoutForm target={target} headerTitle={headerTitle} onSubmit={this.onSubmit} showFooter>
         {({ ref, recalcHeight }) => (
           <div ref={ref} style={{ padding: POPOUT_GUTTER }}>
             <Filter

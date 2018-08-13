@@ -110,15 +110,9 @@ function createListWithDeclarativeAccess(access) {
     },
     access: {
       create: ({ authentication: { item, listKey } }) =>
-        access.create &&
-        listKey === 'User' &&
-        ['su', 'admin'].includes(item.level),
+        access.create && listKey === 'User' && ['su', 'admin'].includes(item.level),
       read: ({ authentication: { item, listKey } }) => {
-        if (
-          access.read &&
-          listKey === 'User' &&
-          ['su', 'admin'].includes(item.level)
-        ) {
+        if (access.read && listKey === 'User' && ['su', 'admin'].includes(item.level)) {
           return {
             // arbitrarily restrict the data to a single item (see data.js)
             foo_starts_with: 'Hello',
@@ -127,11 +121,7 @@ function createListWithDeclarativeAccess(access) {
         return false;
       },
       update: ({ authentication: { item, listKey } }) => {
-        if (
-          access.update &&
-          listKey === 'User' &&
-          ['su', 'admin'].includes(item.level)
-        ) {
+        if (access.update && listKey === 'User' && ['su', 'admin'].includes(item.level)) {
           return {
             // arbitrarily restrict the data to a single item (see data.js)
             foo_starts_with: 'Hello',
@@ -140,11 +130,7 @@ function createListWithDeclarativeAccess(access) {
         return false;
       },
       delete: ({ authentication: { item, listKey } }) => {
-        if (
-          access.delete &&
-          listKey === 'User' &&
-          ['su', 'admin'].includes(item.level)
-        ) {
+        if (access.delete && listKey === 'User' && ['su', 'admin'].includes(item.level)) {
           return {
             // arbitrarily restrict the data to a single item (see data.js)
             foo_starts_with: 'Hello',
