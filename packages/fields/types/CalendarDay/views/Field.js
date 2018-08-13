@@ -19,7 +19,7 @@ export default class CalendarDayField extends Component {
   constructor(props) {
     super(props);
     const { item, field } = props;
-    this.state = { value: item[field.path] || format(TODAY, FORMAT) };
+    this.state = { value: item[field.path] };
   }
 
   handleDayClick = day => {
@@ -35,7 +35,7 @@ export default class CalendarDayField extends Component {
     const htmlID = `ks-input-${field.path}`;
     const target = (
       <Button autoFocus={autoFocus} id={htmlID} variant="ghost">
-        {format(value, 'Do MMM YYYY')}
+        {value ? format(value, 'Do MMM YYYY') : FORMAT}
       </Button>
     );
 
@@ -47,8 +47,8 @@ export default class CalendarDayField extends Component {
             <div css={{ padding: gridSize }} id={`ks-daypicker-${field.path}`}>
               <DayPicker
                 autoFocus={autoFocus}
-                startCurrentDateAt={parse(value)}
-                startSelectedDateAt={parse(value)}
+                startCurrentDateAt={value ? parse(value) : TODAY}
+                startSelectedDateAt={value ? parse(value) : TODAY}
                 onSelectedChange={this.handleDayClick}
               />
             </div>
