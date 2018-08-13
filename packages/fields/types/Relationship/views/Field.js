@@ -11,6 +11,7 @@ import {
 import { Select } from '@keystonejs/ui/src/primitives/filters';
 import { ShieldIcon } from '@keystonejs/icons';
 import { colors } from '@keystonejs/ui/src/theme';
+import { pick } from '@keystonejs/utils';
 
 const getGraphqlQuery = refList => {
   // TODO: How can we replace this with field.Controller.getQueryFragment()?
@@ -82,7 +83,7 @@ export default class RelationshipField extends Component {
               if (error) return 'Error';
 
               const options = data[refList.listQueryName].map(listData => ({
-                value: listData,
+                value: pick(listData, ['id']),
                 label: listData._label_, // eslint-disable-line no-underscore-dangle
               }));
 
