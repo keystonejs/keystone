@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
+import queryString from 'query-string';
 
 import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
@@ -21,12 +22,13 @@ const getQueryArgs = ({ filters, ...args }) => {
       queryArgs.push(`where: { ${filterArgs.join(', ')} }`);
     }
   }
-  return queryArgs.length ? `(${queryArgs.join(' ')})` : '';
+  return queryArgs.length ? `(${queryArgs.join(' ')} sort: "name")` : '';
 };
 
 const getQuery = ({ fields, filters, list, search, orderBy, skip, first }) => {
   const queryArgs = getQueryArgs({ first, filters, search, skip, orderBy });
   const metaQueryArgs = getQueryArgs({ filters, search });
+  console.log(queryArgs);
 
   return gql`{
     ${list.listQueryName}${queryArgs} {
@@ -178,8 +180,31 @@ class ListPageDataProvider extends Component<Props, State> {
     this.setState({ currentPage, skip });
   };
 
+  getQueryFromQueryFilters = ({ sort = '' }) => {
+    // if (sort.length > 1) {
+    //   return {
+    //     field: sort.slice(1),
+    //     direction: sort.charAt(0) === '-' ? 'DESC' : 'ASC',
+    //   };
+    // }
+
+    return '-name';
+  };
+
+  getGQLQuery = ({ sort = 'name', search = '', list, fields }) => {
+    return gql`{
+      ${list.listQueryName}(sort: "${sort}", search: "${search}" ) {
+        id
+        _label_
+        ${fields.map(field => field.getQueryFragment()).join('\n')}
+      }
+    }`;
+  };
+
   render() {
-    const { children, list } = this.props;
+    const { children, list, location } = this.props;
+    const { hash } = location;
+    const queryFilters = queryString.parse(hash.slice(1));
     const {
       currentPage,
       fields,
@@ -191,16 +216,25 @@ class ListPageDataProvider extends Component<Props, State> {
     } = this.state;
 
     const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
+    console.log({ orderBy });
     const first = pageSize;
-    const query = getQuery({
-      fields,
-      filters,
-      list,
-      search,
-      orderBy,
-      skip,
-      first,
-    });
+    // const query = getQuery({
+    //   fields,
+    //   filters,
+    //   list,
+    //   search,
+    //   orderBy,
+    //   skip,
+    //   first,
+    // });
+
+    const query = this.getGQLQuery({ list, fields, ...queryFilters });
+
+    //query.sort = this.getQueryFromQueryFilters(queryFilters);
+
+    const query1 = this.getGQLQuery({ ...queryFilters, list, fields });
+
+    //query.sort = this.getQueryFromQueryFilters(queryFilters);
 
     return (
       <Fragment>

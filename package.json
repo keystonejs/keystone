@@ -80,6 +80,7 @@
     "pluralize": "^7.0.0",
     "prettier": "^1.12.1",
     "prop-types": "^15.6.1",
+    "query-string": "^6.1.0",
     "raf-schd": "^4.0.0",
     "react": "^16.3.1",
     "react-apollo": "^2.1.3",

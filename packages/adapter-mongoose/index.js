@@ -244,16 +244,27 @@ class MongooseListAdapter extends BaseListAdapter {
         },
       });
     }
+    console.log(args);
 
-    if (args.orderBy) {
-      const [orderField, orderDirection] = args.orderBy.split('_');
+    if (args.sort) {
+
+      const orderField = args.sort.charAt(0) === '-' ? args.sort.slice(1) : args.sort;
 
       pipeline.push({
         $sort: {
-          [orderField]: orderDirection === 'ASC' ? 1 : -1,
+          [orderField]: args.sort.charAt(0) === '-' ? -1 : 1,
         },
       });
     }
+    // if (args.orderBy) {
+    //   const [orderField, orderDirection] = args.orderBy.split('_');
+
+    //   pipeline.push({
+    //     $sort: {
+    //       [orderField]: orderDirection === 'ASC' ? 1 : -1,
+    //     },
+    //   });
+    // }
 
     if (args.skip < Infinity && args.skip > 0) {
       pipeline.push({
