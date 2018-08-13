@@ -38,20 +38,18 @@ export default class CalendarDayField extends Component {
         {format(value, 'Do MMM YYYY')}
       </Button>
     );
-    console.log(parse(value), parse(value) instanceof Date);
 
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
         <FieldInput>
           <Popout target={target} width={280}>
-            <div css={{ padding: gridSize }}>
+            <div css={{ padding: gridSize }} id={`ks-daypicker-${field.path}`}>
               <DayPicker
                 autoFocus={autoFocus}
                 startCurrentDateAt={parse(value)}
                 startSelectedDateAt={parse(value)}
                 onSelectedChange={this.handleDayClick}
-                id={htmlID}
               />
             </div>
           </Popout>

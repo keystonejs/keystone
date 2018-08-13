@@ -1,3 +1,5 @@
+import format from 'date-fns/format';
+
 describe('Adding data', () => {
   [
     {
@@ -31,6 +33,14 @@ describe('Adding data', () => {
         cy.get(`#${item}`).type(data[item]);
       });
 
+      if (url === '/admin/users') {
+        cy.get('#ks-input-dob').click();
+        cy.get('#ks-daypicker-dob')
+          .contains('10')
+          .click({ force: true });
+        cy.get('#ks-input-dob').click();
+      }
+
       cy.get('form[role="dialog"] button[appearance="create"]').click();
 
       cy.location('pathname').should('match', new RegExp(`${url}/.+`));
@@ -38,6 +48,11 @@ describe('Adding data', () => {
       Object.keys(data).forEach(item => {
         cy.get(`#${item}`).should('have.value', data[item]);
       });
+      if (url === '/admin/users') {
+        const d = new Date();
+        d.setDate(10);
+        cy.get('#ks-input-dob').should('contain', format(d, 'Do MMM YYYY'));
+      }
     });
   });
 
