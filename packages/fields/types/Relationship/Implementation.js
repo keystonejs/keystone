@@ -18,8 +18,14 @@ class Relationship extends Implementation {
   }
   getGraphqlOutputFields() {
     const { many, ref } = this.config;
-    const type = many ? `[${ref}]` : ref;
-    return `${this.path}: ${type}`;
+
+    if (many) {
+      return `${this.path}(
+        ${this.getListByKey(ref).getGraphqlFilterFragment()}
+      ): [${ref}]`;
+    }
+
+    return `${this.path}: ${ref}`;
   }
 
   extendAdminMeta(meta) {
@@ -47,15 +53,14 @@ class Relationship extends Implementation {
       `;
     }
   }
+
   getGraphqlOutputFieldResolvers() {
     const { many, ref } = this.config;
-    return {
-      [this.path]: item => {
-        if (many) {
-          return this.getListByKey(ref).adapter.find({
-            _id: { $in: item[this.path] },
-          });
-        } else {
+
+    // to-one relationships are much easier to deal with.
+    if (!many) {
+      return {
+        [this.path]: item => {
           // The field may have already been filled in during an early DB lookup
           // (ie; joining when doing a filter)
           // eslint-disable-next-line no-underscore-dangle
@@ -63,7 +68,29 @@ class Relationship extends Implementation {
             return item[this.path];
           }
           return this.getListByKey(ref).adapter.findById(item[this.path]);
+        },
+      };
+    }
+
+    return {
+      [this.path]: item => {
+        let ids = [];
+        if (item[this.path]) {
+          ids = item[this.path].map(value => {
+            // The field may have already been filled in during an early DB lookup
+            // (ie; joining when doing a filter)
+            // eslint-disable-next-line no-underscore-dangle
+            if (value && value._id) {
+              // eslint-disable-next-line no-underscore-dangle
+              return value._id;
+            }
+
+            return value;
+          }).filter(value => value);
         }
+        return this.getListByKey(ref).adapter.find({
+          _id: { $in: ids },
+        });
       },
     };
   }
