@@ -20,11 +20,15 @@ class PasswordAuthStrategy {
   async validate({ username, password }) {
     const list = this.getList();
     const { usernameField, passwordField } = this.config;
-    const item = await list.adapter.findOne({
-      [usernameField]: username,
-      [passwordField]: password,
-    });
-    return item ? { success: true, list, item } : { success: false };
+    try {
+      const item = await list.adapter.findOne({
+        [usernameField]: username,
+        [passwordField]: password,
+      });
+      return item ? { success: true, list, item } : { success: false };
+    } catch (error) {
+      return { success: false, error };
+    }
   }
 }
 

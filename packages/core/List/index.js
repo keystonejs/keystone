@@ -869,82 +869,83 @@ module.exports = class List {
     return action(items);
   }
 
+  async createMutation(data, context) {
+    const access = context.getListAccessControlForUser(this.key, 'create');
+    if (!access) {
+      throw new AccessDeniedError({
+        data: {
+          type: 'mutation',
+          name: this.createMutationName,
+        },
+        internalData: {
+          authedId: context.authedItem && context.authedItem.id,
+          authedListKey: context.authedListKey,
+        },
+      });
+    }
+
+    // Merge in default Values here
+    const item = this.fields.reduce((memo, field) => {
+      const defaultValue = field.getDefaultValue();
+
+      // explicit `undefined` check as `null` is a valid value
+      if (defaultValue === undefined) {
+        return memo;
+      }
+
+      return {
+        [field.path]: defaultValue,
+        ...memo,
+      };
+    }, data);
+
+    this.throwIfAccessDeniedOnFields({
+      accessType: 'create',
+      item,
+      inputData: data,
+      context,
+      errorMeta: {
+        type: 'mutation',
+        name: this.updateMutationName,
+      },
+    });
+
+    const resolvedData = await resolveAllKeys(
+      Object.keys(data).reduce(
+        (resolvers, fieldPath) => ({
+          ...resolvers,
+          [fieldPath]: this.fieldsByPath[fieldPath].createFieldPreHook(
+            data[fieldPath],
+            fieldPath,
+            context
+          ),
+        }),
+        {}
+      )
+    );
+
+    const newItem = await this.adapter.create(resolvedData);
+
+    await Promise.all(
+      Object.keys(data).map(fieldPath =>
+        this.fieldsByPath[fieldPath].createFieldPostHook(
+          newItem[fieldPath],
+          fieldPath,
+          newItem,
+          context
+        )
+      )
+    );
+
+    return newItem;
+  }
+
   getAdminMutationResolvers() {
     const mutationResolvers = {};
 
     if (this.access.create) {
-      mutationResolvers[this.createMutationName] = async (
-        _,
-        { data },
-        context
-      ) => {
-        const access = context.getListAccessControlForUser(this.key, 'create');
-        if (!access) {
-          throw new AccessDeniedError({
-            data: {
-              type: 'mutation',
-              name: this.createMutationName,
-            },
-            internalData: {
-              authedId: context.authedItem && context.authedItem.id,
-              authedListKey: context.authedListKey,
-            },
-          });
-        }
-
-        // Merge in default Values here
-        const item = this.fields.reduce((memo, field) => {
-          const defaultValue = field.getDefaultValue();
-
-          // explicit `undefined` check as `null` is a valid value
-          if (defaultValue === undefined) {
-            return memo;
-          }
-
-          return {
-            [field.path]: defaultValue,
-            ...memo,
-          };
-        }, data);
-
-        this.throwIfAccessDeniedOnFields({
-          accessType: 'create',
-          item,
-          inputData: data,
-          context,
-          errorMeta: {
-            type: 'mutation',
-            name: this.updateMutationName,
-          },
-        });
-
-        const resolvedData = await resolveAllKeys(
-          Object.keys(data).reduce(
-            (resolvers, fieldPath) => ({
-              ...resolvers,
-              [fieldPath]: this.fieldsByPath[fieldPath].createFieldPreHook(
-                data[fieldPath],
-                fieldPath
-              ),
-            }),
-            {}
-          )
-        );
-
-        const newItem = await this.adapter.create(resolvedData);
-
-        await Promise.all(
-          Object.keys(data).map(fieldPath =>
-            this.fieldsByPath[fieldPath].createFieldPostHook(
-              newItem[fieldPath],
-              fieldPath,
-              newItem
-            )
-          )
-        );
-
-        return newItem;
-      };
+      mutationResolvers[this.createMutationName] = (_, { data }, context) =>
+        this.createMutation(data, context);
     }
 
     if (this.access.update) {
@@ -985,7 +986,8 @@ module.exports = class List {
                   [fieldPath]: this.fieldsByPath[fieldPath].updateFieldPreHook(
                     data[fieldPath],
                     fieldPath,
-                    item
+                    item,
+                    context
                   ),
                 }),
                 {}
@@ -1006,7 +1008,8 @@ module.exports = class List {
                 this.fieldsByPath[fieldPath].updateFieldPostHook(
                   newItem[fieldPath],
                   fieldPath,
-                  newItem
+                  newItem,
+                  context
                 )
               )
             );

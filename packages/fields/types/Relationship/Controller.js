@@ -14,12 +14,31 @@ export default class RelationshipController extends FieldController {
       }
     `;
   };
+
+  dataToRelationshipInput = (data, pathKey) => {
+    if (data.id && data.create) {
+      throw new Error(
+        `Cannot provide both an id and create data when linking ${
+          this.list.key
+        }.${pathKey} to a ${this.config.ref}`
+      );
+    }
+
+    if (data.id) {
+      return { id: data.id };
+    }
+
+    return { create: data };
+  };
+
   getValue = data => {
     const { many, path } = this.config;
     if (!data[path]) {
       return many ? [] : null;
     }
-    return many ? data[path].map(i => i.id) : data[path].id;
+    return many
+      ? data[path].map(value => this.dataToRelationshipInput(value, path))
+      : this.dataToRelationshipInput(data[path], path);
   };
   getInitialData = () => {
     const { defaultValue, many } = this.config;

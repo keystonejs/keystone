@@ -10,6 +10,8 @@ const {
 const cuid = require('cuid');
 const logger = require('@keystonejs/logger');
 
+const { NestedError } = require('./graphqlErrors');
+
 const graphqlLogger = logger('graphql');
 
 module.exports = function createGraphQLMiddleware(
@@ -63,6 +65,7 @@ module.exports = function createGraphQLMiddleware(
           // For correlating user error reports with logs
           error.uid = cuid();
           const { originalError } = error;
+
           if (isApolloErrorInstance(originalError)) {
             // log internalData to stdout but not include it in the formattedError
             // TODO: User pino for logging
@@ -74,7 +77,29 @@ module.exports = function createGraphQLMiddleware(
           } else {
             graphqlLogger.error(error);
           }
-          const formattedError = formatError(error);
+
+          let formattedError;
+
+          // Support throwing multiple errors
+          if (originalError && originalError.errors) {
+            const multipleErrorContainer = new NestedError({
+              data: {
+                errors: originalError.errors.map(innerError => {
+                  // Ensure the path is complete
+                  if (error.path && innerError.path) {
+                    innerError.path = [...error.path, ...innerError.path];
+                  }
+
+                  // Format (aka; serialize) the error
+                  return formatError(innerError);
+                }),
+              },
+            });
+
+            formattedError = formatError(multipleErrorContainer);
+          } else {
+            formattedError = formatError(error);
+          }
 
           if (error.uid) {
             formattedError.uid = error.uid;

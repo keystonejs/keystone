@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const pSettle = require('p-settle');
 const cuid = require('cuid');
 
 const {
@@ -9,6 +10,7 @@ const {
 
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
+const { ParameterError } = require('./graphqlErrors');
 
 function relationFilterPipeline({
   path,
@@ -168,9 +170,163 @@ class Relationship extends Implementation {
       },
     };
   }
+
+  async preHook(data, fieldKey, context) {
+    const { many, ref, required } = this.config;
+
+    // Early out for null'd field
+    if (!required && !data) {
+      return data;
+    }
+
+    const validateInput = input => {
+      if (input.id && input.create) {
+        throw new ParameterError({
+          message: `Cannot provide both an id and create data when linking ${
+            this.listKey
+          }.${fieldKey} to a ${ref}`,
+        });
+      }
+
+      if (
+        !input.id &&
+        (!input.create || Object.keys(input.create).length === 0)
+      ) {
+        throw new ParameterError({
+          message: `Must provide one of 'id' or 'create' data when linking ${
+            this.listKey
+          }.${fieldKey} to a ${ref}`,
+        });
+      }
+    };
+
+    const resolveToId = async input => {
+      if (input.id) {
+        // TODO: Should related lists without 'read' perm be able to set the ID here?
+        // It is a way of leaking data by testing if certain ids exist.
+        return input.id;
+      }
+
+      // Create related item. Will check for access control itself, no need to
+      // do anything extra here.
+      const { id } = await this.getListByKey(ref).createMutation(
+        input.create,
+        context
+      );
+      return id;
+    };
+
+    if (!many) {
+      try {
+        // Only a single item, much simpler logic
+        validateInput(data);
+        return await resolveToId(data);
+      } catch (error) {
+        const wrappingError = new Error(
+          `Unable to create a new ${ref} as set on ${this.listKey}.${fieldKey}`
+        );
+
+        error.path = [fieldKey];
+
+        if (error.name !== 'ParameterError') {
+          error.path.push('create');
+        }
+
+        // Setup the correct path on the nested error objects
+        wrappingError.errors = [error];
+
+        throw wrappingError;
+      }
+    }
+
+    // Multiple items received
+    // TODO: Start Database transaction
+
+    const resolvedData = (await pSettle(
+      data.map(async input => {
+        // awaited because `p-settle` expects promises only
+        await validateInput(input);
+        return resolveToId(input);
+      })
+    ))
+      // Inject the index as a key into the settled data for later use
+      .map((item, index) => ({ ...item, index }));
+
+    const errored = resolvedData.filter(({ isRejected }) => isRejected);
+
+    if (errored.length) {
+      const error = new Error(
+        `Unable to create ${errored.length} new ${ref} as set on ${
+          this.listKey
+        }.${fieldKey}`
+      );
+
+      // Setup the correct path on the nested error objects
+      error.errors = errored.map(({ reason, index }) => {
+        reason.path = [fieldKey, index];
+
+        if (reason.name !== 'ParameterError') {
+          reason.path.push('create');
+        }
+        return reason;
+      });
+
+      // TODO: Rollback Database transaction
+
+      throw error;
+    }
+
+    // TODO: Commit Database transaction
+
+    // At this point, we know everything resolved successfully
+    // Map back from `p-settle`'s data structure to the raw value
+    return resolvedData.map(({ value }) => value);
+  }
+
+  createFieldPreHook(data, fieldKey, context) {
+    return this.preHook(data, fieldKey, context);
+  }
+
+  updateFieldPreHook(data, fieldKey, originalItem, context) {
+    return this.preHook(data, fieldKey, context);
+  }
+
+  getGraphqlAuxiliaryTypes() {
+    // We need an input type that is specific to creating nested items when
+    // creating a relationship, ie;
+    //
+    // eg: Creating a new post at the same time as a new user
+    // mutation createUser() {
+    //   posts: [{ create: { title: 'Foobar' } }]
+    // }
+    //
+    // Or, the inverse: Creating a new user at the same time as a new post
+    // mutation createPost() {
+    //   author: { create: { email: 'eg@example.com' } }
+    // }
+    //
+    // Then there's the linking to existing records usecase:
+    // mutation createPost() {
+    //   author: { id: 'abc123' }
+    // }
+    return `
+      input ${this.config.ref}RelationshipInput {
+        # Provide an id to link to an existing ${
+          this.config.ref
+        }. Cannot be set if 'create' set.
+        id: ID
+
+        # Provide data to create a new ${
+          this.config.ref
+        }. Cannot be set if 'id' set.
+        create: ${this.config.ref}CreateInput
+      }
+    `;
+  }
   getGraphqlUpdateArgs() {
     const { many } = this.config;
-    const type = many ? '[ID]' : 'ID';
+    const inputType = `${this.config.ref}RelationshipInput`;
+    const type = many ? `[${inputType}]` : inputType;
     return `${this.path}: ${type}`;
   }
   getGraphqlCreateArgs() {

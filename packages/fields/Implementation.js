@@ -64,32 +64,37 @@ class Field {
    * the result to store in `avatar`
    *
    * @param data {Mixed} The data received from the query
-   * @param item {Object} The existing version of the item
    * @param path {String} The path of the field in the item
+   * @param context {Mixed} The GraphQL Context object for the current request
    */
-  createFieldPreHook(data) {
+  // eslint-disable-next-line no-unused-vars
+  createFieldPreHook(data, path, context) {
     return data;
   }
   /*
    * @param data {Mixed} The data as saved & read from the DB
-   * @param item {Object} The existing version of the item
    * @param path {String} The path of the field in the item
+   * @param item {Object} The existing version of the item
+   * @param context {Mixed} The GraphQL Context object for the current request
    */
-  createFieldPostHook() {}
+  createFieldPostHook(data, path, item, context) {} // eslint-disable-line no-unused-vars
   /*
    * @param data {Mixed} The data received from the query
-   * @param item {Object} The existing version of the item
    * @param path {String} The path of the field in the item
+   * @param item {Object} The existing version of the item
+   * @param context {Mixed} The GraphQL Context object for the current request
    */
-  updateFieldPreHook(data) {
+  // eslint-disable-next-line no-unused-vars
+  updateFieldPreHook(data, path, item, context) {
     return data;
   }
   /*
    * @param data {Mixed} The data as saved & read from the DB
-   * @param item {Object} The existing version of the item
    * @param path {String} The path of the field in the item
+   * @param item {Object} The existing version of the item
+   * @param context {Mixed} The GraphQL Context object for the current request
    */
-  updateFieldPostHook() {}
+  updateFieldPostHook(data, path, item, context) {} // eslint-disable-line no-unused-vars
 
   getGraphqlQueryArgs() {}
   getGraphqlCreateArgs() {}

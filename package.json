@@ -14,7 +14,7 @@
     "lint": "yarn lint:prettier && yarn lint:eslint",
     "start": "cd projects/basic && yarn start",
     "test": "yarn lint && yarn test:unit && yarn cypress:run",
-    "test:unit": "NODE_ENV=test jest",
+    "test:unit": "DISABLE_LOGGING=true NODE_ENV=test jest",
     "test:unit:debug": "NODE_ENV=test node --inspect-brk `which jest` --runInBand"
   },
   "dependencies": {
@@ -73,6 +73,7 @@
     "mongoose": "<5.1.0",
     "oauth-libre": "^0.9.17",
     "octicons": "^7.2.0",
+    "p-settle": "^2.1.0",
     "passport": "^0.4.0",
     "passport-twitter": "^1.0.4",
     "pino": "5.0.0-rc.4",
@@ -95,6 +96,7 @@
     "react-select": "^2.0.0-beta.6",
     "react-toast-notifications": "^1.2.0",
     "react-transition-group": "^2.3.1",
+    "testcheck": "^1.0.0-rc.2",
     "to-pascal-case": "^1.0.0",
     "webpack": "^4.5.0",
     "webpack-dev-middleware": "^3.1.2"

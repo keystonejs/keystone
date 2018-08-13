@@ -1,8 +1,6 @@
 const { fixConfigKeys, checkRequiredConfig } = require('@keystonejs/utils');
 
-const requiredConfig = {
-  'cookie secret': 'You must provide a unique cookie secret to enable sessions',
-};
+const requiredConfig = {};
 
 const defaultConfig = {
   port: process.env.PORT || 3000,
