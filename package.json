@@ -70,7 +70,7 @@
     "lodash.isequal": "^4.5.0",
     "lodash.set": "^4.3.2",
     "mkdirp": "^0.5.1",
-    "mongoose": "<5.1.0",
+    "mongoose": "^5.2.7",
     "oauth-libre": "^0.9.17",
     "octicons": "^7.2.0",
     "p-settle": "^2.1.0",

@@ -2,9 +2,15 @@ const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 const { escapeRegExp: esc } = require('@keystonejs/utils');
 const { GraphQLUpload } = require('apollo-upload-server');
+const mongoose = require('mongoose');
+
+// Disabling the getter of mongoose >= 5.1.0
+// https://github.com/Automattic/mongoose/blob/master/migrating_to_5.md#checking-if-a-path-is-populated
+mongoose.set('objectIdGetter', false);
+
 const {
   Types: { ObjectId },
-} = require('mongoose');
+} = mongoose;
 
 class File extends Implementation {
   constructor() {
