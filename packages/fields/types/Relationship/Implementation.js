@@ -73,7 +73,8 @@ class Relationship extends Implementation {
     }
 
     return {
-      [this.path]: item => {
+      [this.path]: (item, args, context) => {
+        // TODO - use args.where / args.first, etc.
         let ids = [];
         if (item[this.path]) {
           ids = item[this.path].map(value => {
@@ -88,9 +89,7 @@ class Relationship extends Implementation {
             return value;
           }).filter(value => value);
         }
-        return this.getListByKey(ref).adapter.find({
-          _id: { $in: ids },
-        });
+        return this.getListByKey(ref).manyQuery(args, context, this.listQueryName);
       },
     };
   }

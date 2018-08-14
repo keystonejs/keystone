@@ -387,27 +387,7 @@ module.exports = class List {
     // the graphql schema
     if (this.access.read) {
       resolvers = {
-        [this.gqlNames.listQueryName]: (_, args, context) => {
-          const access = context.getListAccessControlForUser(this.key, 'read');
-          if (!access) {
-            // If the client handles errors correctly, it should be able to
-            // receive partial data (for the fields the user has access to),
-            // and then an `errors` array of AccessDeniedError's
-            throw new AccessDeniedError({
-              data: {
-                type: 'query',
-                name: this.gqlNames.listQueryName,
-              },
-              internalData: {
-                authedId: context.authedItem && context.authedItem.id,
-                authedListKey: context.authedListKey,
-              },
-            });
-          }
-
-          let queryArgs = mergeWhereClause(args, access);
-          return this.adapter.itemsQuery(queryArgs);
-        },
+        [this.listQueryName]: (_, args, context) => this.manyQuery(args, context, this.gqlNames.listQueryName),
 
         [this.gqlNames.listQueryMetaName]: (_, args, context) => {
           return {
@@ -902,6 +882,28 @@ module.exports = class List {
     );
 
     return newItem;
+  }
+
+  async manyQuery(args, context, queryName) {
+    const access = context.getListAccessControlForUser(this.key, 'read');
+    if (!access) {
+      // If the client handles errors correctly, it should be able to
+      // receive partial data (for the fields the user has access to),
+      // and then an `errors` array of AccessDeniedError's
+      throw new AccessDeniedError({
+        data: {
+          type: 'query',
+          name: queryName,
+        },
+        internalData: {
+          authedId: context.authedItem && context.authedItem.id,
+          authedListKey: context.authedListKey,
+        },
+      });
+    }
+
+    let queryArgs = mergeWhereClause(args, access);
+    return this.adapter.itemsQuery(queryArgs);
   }
 
   getAdminMutationResolvers() {
