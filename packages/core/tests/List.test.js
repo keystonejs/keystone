@@ -27,7 +27,7 @@ class MockType {
     this.access = access;
   }
   getAdminMeta = () => new MockAdminMeta();
-  getGraphqlSchema = () => `${this.name}_schema`;
+  getGraphqlOutputFields = () => `${this.name}_schema`;
   getGraphqlAuxiliaryTypes = () => `${this.name}_types`;
   getGraphqlAuxiliaryQueries = () => {};
   getGraphqlAuxiliaryMutations = () => {};

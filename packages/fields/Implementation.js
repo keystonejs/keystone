@@ -28,12 +28,9 @@ class Field {
     });
   }
 
-  getGraphqlSchema() {
-    if (!this.graphQLType) {
-      throw new Error(`Field type [${this.constructor.name}] does not implement graphQLType`);
-    }
-    return `${this.path}: ${this.graphQLType}`;
-  }
+  // Field types should replace this if they want to any fields to the output type
+  getGraphqlOutputFields() {}
+  getGraphqlOutputFieldResolvers() {}
 
   /**
    * Auxiliary Types are top-level types which a type may need or provide.
@@ -94,7 +91,7 @@ class Field {
   getGraphqlQueryArgs() {}
   getGraphqlCreateArgs() {}
   getGraphqlUpdateArgs() {}
-  getGraphqlFieldResolvers() {}
+
   getAdminMeta() {
     return this.extendAdminMeta({
       label: this.label,

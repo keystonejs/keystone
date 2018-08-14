@@ -79,10 +79,12 @@ module.exports = class List {
   constructor(key, config, { getListByKey, adapter, defaultAccess, getAuth }) {
     this.key = key;
 
+    // 180814 JM TODO: Since there's no access control specified, this implicitly makes name, id or {labelField} readable by all (probably bad?)
     this.config = {
       labelResolver: item => item[config.labelField || 'name'] || item.id,
       ...config,
     };
+
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
     this.getAuth = getAuth;
@@ -184,7 +186,7 @@ module.exports = class List {
     const fieldSchemas = this.fields
       // If it's globally set to false, makes sense to never show it
       .filter(field => field.access.read)
-      .map(field => field.getGraphqlSchema())
+      .map(field => field.getGraphqlOutputFields())
       .join('\n          ');
 
     const fieldTypes = this.fields.map(i => i.getGraphqlAuxiliaryTypes()).filter(i => i);
@@ -461,47 +463,43 @@ module.exports = class List {
     return resolvers;
   }
 
-  wrapFieldQueryResolversWithACL(originalResolvers) {
-    return this.fields.reduce(
-      (resolvers, field) => {
-        const originalResolver = originalResolvers[field.path];
-
-        // The field isn't readable at all, so don't include it
-        if (!field.access.read) {
-          return resolvers;
-        }
-
-        return {
-          ...resolvers,
-          // Ensure there's a field resolver for every field
-          [field.path]: (item, args, context, ...rest) => {
-            // If not allowed access
-            const access = context.getFieldAccessControlForUser(this.key, field.path, item, 'read');
-            if (!access) {
-              // If the client handles errors correctly, it should be able to
-              // receive partial data (for the fields the user has access to),
-              // and then an `errors` array of AccessDeniedError's
-              throw new AccessDeniedError({
-                data: {
-                  type: 'query',
-                },
-                internalData: {
-                  authedId: context.authedItem && context.authedItem.id,
-                  authedListKey: context.authedListKey,
-                  itemId: item ? item.id : null,
-                },
-              });
-            }
-
-            // Otherwise, execute the original resolver (if there is one)
-            return originalResolver
-              ? originalResolver(item, args, context, ...rest)
-              : item[field.path];
+  // Wrap the "inner" resolver for a single output field with an access control check
+  wrapFieldResolverWithAC(field, innerResolver) {
+    return (item, args, context, ...rest) => {
+      // If not allowed access
+      const access = context.getFieldAccessControlForUser(this.key, field.path, item, 'read');
+      if (!access) {
+        // If the client handles errors correctly, it should be able to
+        // receive partial data (for the fields the user has access to),
+        // and then an `errors` array of AccessDeniedError's
+        throw new AccessDeniedError({
+          data: {
+            type: 'query',
           },
-        };
-      },
-      { ...originalResolvers }
+          internalData: {
+            authedId: context.authedItem && context.authedItem.id,
+            authedListKey: context.authedListKey,
+            itemId: item ? item.id : null,
+          },
+        });
+      }
+
+      // Otherwise, execute the original/inner resolver
+      return innerResolver(item, args, context, ...rest);
+    };
+  }
+
+  // Get the resolvers for the (possibly multiple) output fields and wrap each with access control
+  getWrappedFieldResolvers(field) {
+    const innerResolvers = field.getGraphqlOutputFieldResolvers();
+    const wrappedResolvers = Object.entries(innerResolvers || {}).reduce(
+      (acc, [resolverKey, innerResolver]) => ({
+        ...acc,
+        [resolverKey]: this.wrapFieldResolverWithAC(field, innerResolver),
+      }),
+      {}
     );
+    return wrappedResolvers;
   }
 
   getAdminFieldResolvers() {
@@ -510,16 +508,19 @@ module.exports = class List {
     }
 
     const fieldResolvers = this.fields.filter(field => field.access.read).reduce(
-      (resolvers, field) => ({
-        ...resolvers,
-        ...field.getGraphqlFieldResolvers(),
+      (acc, field) => ({
+        ...acc,
+        ...this.getWrappedFieldResolvers(field),
       }),
+      // TODO: The `_label_` output field currently circumvents access control
       {
         _label_: this.config.labelResolver,
       }
     );
-    return { [this.key]: this.wrapFieldQueryResolversWithACL(fieldResolvers) };
+
+    return { [this.key]: fieldResolvers };
   }
+
   getAuxiliaryTypeResolvers() {
     return this.fields.reduce(
       (resolvers, field) => ({

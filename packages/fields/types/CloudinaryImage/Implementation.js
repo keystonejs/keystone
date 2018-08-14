@@ -3,7 +3,13 @@ const { File, MongoFileInterface } = require('../File/Implementation');
 class CloudinaryImage extends File {
   constructor() {
     super(...arguments);
-    this.graphQLType = 'CloudinaryImage_File';
+    this.graphQLOutputType = 'CloudinaryImage_File';
+  }
+
+  getGraphqlOutputFields() {
+    return `
+      ${this.path}: ${this.graphQLOutputType}
+    `;
   }
   extendAdminMeta(meta) {
     // Overwrite so we have only the original meta
@@ -51,13 +57,13 @@ class CloudinaryImage extends File {
         transformation: String
       }
 
-      extend type ${this.graphQLType} {
+      extend type ${this.graphQLOutputType} {
         publicUrlTransformed(transformation: CloudinaryImageFormat): String
       }
     `;
   }
   // Called on `User.avatar` for example
-  getGraphqlFieldResolvers() {
+  getGraphqlOutputFieldResolvers() {
     return {
       [this.path]: item => {
         const itemValues = item[this.path];
@@ -75,7 +81,7 @@ class CloudinaryImage extends File {
   }
   getGraphqlAuxiliaryMutations() {
     return `
-      uploadCloudinaryImage(file: ${this.getFileUploadType()}!): ${this.graphQLType}
+      uploadCloudinaryImage(file: ${this.getFileUploadType()}!): ${this.graphQLOutputType}
     `;
   }
   getGraphqlAuxiliaryMutationResolvers() {

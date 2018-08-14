@@ -15,9 +15,14 @@ const {
 class File extends Implementation {
   constructor() {
     super(...arguments);
-    this.graphQLType = 'File_File';
+    this.graphQLOutputType = 'File_File';
   }
 
+  getGraphqlOutputFields() {
+    return `
+      ${this.path}: ${this.graphQLOutputType}
+    `;
+  }
   extendAdminMeta(meta) {
     return {
       ...meta,
@@ -35,7 +40,7 @@ class File extends Implementation {
     return `
       scalar ${this.getFileUploadType()}
 
-      type ${this.graphQLType} {
+      type ${this.graphQLOutputType} {
         id: ID
         path: String
         filename: String
@@ -46,7 +51,7 @@ class File extends Implementation {
     `;
   }
   // Called on `User.avatar` for example
-  getGraphqlFieldResolvers() {
+  getGraphqlOutputFieldResolvers() {
     return {
       [this.path]: item => {
         const itemValues = item[this.path];
@@ -67,7 +72,7 @@ class File extends Implementation {
   }
   getGraphqlAuxiliaryMutations() {
     return `
-      uploadFile(file: ${this.getFileUploadType()}!): ${this.graphQLType}
+      uploadFile(file: ${this.getFileUploadType()}!): ${this.graphQLOutputType}
     `;
   }
   getGraphqlAuxiliaryMutationResolvers() {

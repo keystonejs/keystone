@@ -5,7 +5,15 @@ const { escapeRegExp: esc } = require('@keystonejs/utils');
 class Text extends Implementation {
   constructor() {
     super(...arguments);
-    this.graphQLType = 'String';
+  }
+
+  getGraphqlOutputFields() {
+    return `
+      ${this.path}: String
+    `;
+  }
+  getGraphqlOutputFieldResolvers() {
+    return { [`${this.path}`]: item => item[this.path] };
   }
 
   getGraphqlQueryArgs() {

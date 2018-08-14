@@ -16,9 +16,13 @@ class Select extends Implementation {
     super(...arguments);
     this.options = initOptions(config.options);
   }
-  getGraphqlSchema() {
+  getGraphqlOutputFields() {
     return `${this.path}: ${this.getTypeName()}`;
   }
+  getGraphqlOutputFieldResolvers() {
+    return { [`${this.path}`]: item => item[this.path] };
+  }
+
   getTypeName() {
     return `${this.listKey}${inflection.classify(this.path)}Type`;
   }

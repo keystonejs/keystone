@@ -6,9 +6,13 @@ const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 class CalendarDay extends Implementation {
   constructor() {
     super(...arguments);
-    this.graphQLType = 'String';
   }
 
+  getGraphqlOutputFields() {
+    return `
+      ${this.path}: String
+    `;
+  }
   getGraphqlQueryArgs() {
     return `
         ${this.path}: String
