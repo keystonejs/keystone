@@ -2,11 +2,7 @@ import parse from 'date-fns/parse';
 import format from 'date-fns/format';
 import React, { Component } from 'react';
 
-import {
-  FieldContainer,
-  FieldLabel,
-  FieldInput,
-} from '@keystonejs/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
 import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { DayPicker } from '@keystonejs/ui/src/primitives/forms';
 import { Popout } from '@keystonejs/ui/src/primitives/modals';

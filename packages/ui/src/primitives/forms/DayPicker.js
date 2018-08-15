@@ -129,8 +129,7 @@ export const DayPicker = (props: Props) => {
     const setDatePrevMonth = () => setDate(getDatePrevMonth());
     const selectDay = _date => () => setSelectedDate(_date);
 
-    const isSelectedDay = _date =>
-      getFormattedDate(selectedDate) === getFormattedDate(_date);
+    const isSelectedDay = _date => getFormattedDate(selectedDate) === getFormattedDate(_date);
     const isDisabled = dateValue => !isSameMonth(date, dateValue);
 
     return (

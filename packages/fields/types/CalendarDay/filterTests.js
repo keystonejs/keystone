@@ -55,11 +55,7 @@ export const filterTests = app => {
   });
 
   test('Filter: birthday', done => {
-    match(
-      'where: { birthday: "2000-01-20" }',
-      [{ name: 'person2', birthday: '2000-01-20' }],
-      done
-    );
+    match('where: { birthday: "2000-01-20" }', [{ name: 'person2', birthday: '2000-01-20' }], done);
   });
 
   test('Filter: birthday_not', done => {
@@ -99,10 +95,7 @@ export const filterTests = app => {
   test('Filter: birthday_lte', done => {
     match(
       'where: { birthday_lte: "1950-10-01" }',
-      [
-        { name: 'person3', birthday: '1950-10-01' },
-        { name: 'person4', birthday: '1666-04-12' },
-      ],
+      [{ name: 'person3', birthday: '1950-10-01' }, { name: 'person4', birthday: '1666-04-12' }],
       done
     );
   });
@@ -110,10 +103,7 @@ export const filterTests = app => {
   test('Filter: birthday_gt', done => {
     match(
       'where: { birthday_gt: "1950-10-01" }',
-      [
-        { name: 'person1', birthday: '1990-12-31' },
-        { name: 'person2', birthday: '2000-01-20' },
-      ],
+      [{ name: 'person1', birthday: '1990-12-31' }, { name: 'person2', birthday: '2000-01-20' }],
       done
     );
   });
@@ -163,20 +153,13 @@ export const filterTests = app => {
   test('Filter: birthday_not_in', done => {
     match(
       'where: { birthday_not_in: ["1990-12-31", "2000-01-20", "1950-10-01"] }',
-      [
-        { name: 'person4', birthday: '1666-04-12' },
-        { name: 'person5', birthday: null },
-      ],
+      [{ name: 'person4', birthday: '1666-04-12' }, { name: 'person5', birthday: null }],
       done
     );
   });
 
   test('Filter: birthday_in null', done => {
-    match(
-      'where: { birthday_in: [null] }',
-      [{ name: 'person5', birthday: null }],
-      done
-    );
+    match('where: { birthday_in: [null] }', [{ name: 'person5', birthday: null }], done);
   });
 
   test('Filter: birthday_not_in null', done => {
