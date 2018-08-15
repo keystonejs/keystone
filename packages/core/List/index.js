@@ -298,15 +298,18 @@ module.exports = class List {
     return types;
   }
 
-  getAdminGraphqlQueries() {
-    const commonArgs = `
+  getGraphqlFilterFragment() {
+    return `
+          where: ${this.gqlNames.whereInputName}
           search: String
           orderBy: String
 
           # Pagination
           first: Int
           skip: Int`.trim();
+  }
 
+  getAdminGraphqlQueries() {
     // All the auxiliary queries the fields want to add
     const queries = this.fields
       .map(field => field.getGraphqlAuxiliaryQueries())
@@ -319,9 +322,7 @@ module.exports = class List {
       // prettier-ignore
       queries.push(`
         ${this.gqlNames.listQueryName}(
-          where: ${this.gqlNames.whereInputName}
-
-          ${commonArgs}
+          ${this.getGraphqlFilterFragment()}
         ): [${this.gqlNames.outputTypeName}]
 
         ${this.gqlNames.itemQueryName}(
@@ -329,9 +330,7 @@ module.exports = class List {
         ): ${this.gqlNames.outputTypeName}
 
         ${this.gqlNames.listQueryMetaName}(
-          where: ${this.gqlNames.whereInputName}
-
-          ${commonArgs}
+          ${this.getGraphqlFilterFragment()}
         ): _QueryMeta
 
         ${this.gqlNames.listMetaName}: _ListMeta
