@@ -67,9 +67,7 @@ class CreateItemModal extends Component {
       },
     });
   };
-  formComponent = props => (
-    <form autoComplete="off" onSubmit={this.onCreate} {...props} />
-  );
+  formComponent = props => <form autoComplete="off" onSubmit={this.onCreate} {...props} />;
   render() {
     const { isLoading, isOpen, list } = this.props;
     const { item } = this.state;
@@ -87,11 +85,7 @@ class CreateItemModal extends Component {
             <Button appearance="create" type="submit">
               {isLoading ? 'Loading...' : 'Create'}
             </Button>
-            <Button
-              appearance="warning"
-              variant="subtle"
-              onClick={this.onClose}
-            >
+            <Button appearance="warning" variant="subtle" onClick={this.onClose}>
               Cancel
             </Button>
           </Fragment>
@@ -124,11 +118,7 @@ export default class CreateItemModalWithMutation extends Component {
     return (
       <Mutation mutation={list.createMutation}>
         {(createItem, { loading }) => (
-          <CreateItemModal
-            createItem={createItem}
-            isLoading={loading}
-            {...this.props}
-          />
+          <CreateItemModal createItem={createItem} isLoading={loading} {...this.props} />
         )}
       </Mutation>
     );

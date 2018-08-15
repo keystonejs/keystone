@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 
-import {
-  FieldContainer,
-  FieldLabel,
-  FieldInput,
-} from '@keystonejs/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
 import { ShieldIcon } from '@keystonejs/icons';
 import { colors } from '@keystonejs/ui/src/theme';
@@ -19,8 +15,7 @@ export default class TextField extends Component {
     const value = item[field.path] || '';
     const htmlID = `ks-input-${field.path}`;
     const canRead = !(
-      itemErrors[field.path] instanceof Error &&
-      itemErrors[field.path].name === 'AccessDeniedError'
+      itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
     );
 
     return (

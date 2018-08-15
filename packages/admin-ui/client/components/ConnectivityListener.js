@@ -45,11 +45,7 @@ class ConnectivityListener extends Component {
     const content = (
       <div>
         <strong>{isOnline ? 'Online' : 'Offline'}</strong>
-        <div>
-          {isOnline
-            ? 'Editing is available again'
-            : 'Changes you make may not be saved'}
-        </div>
+        <div>{isOnline ? 'Editing is available again' : 'Changes you make may not be saved'}</div>
       </div>
     );
 

@@ -12,13 +12,7 @@ const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 const { ParameterError } = require('./graphqlErrors');
 
-function relationFilterPipeline({
-  path,
-  query,
-  many,
-  refListAdapter,
-  joinPathName,
-}) {
+function relationFilterPipeline({ path, query, many, refListAdapter, joinPathName }) {
   return [
     {
       // JOIN
@@ -49,12 +43,7 @@ function relationFilterPipeline({
   ];
 }
 
-function postAggregateMutationFactory({
-  path,
-  many,
-  joinPathName,
-  refListAdapter,
-}) {
+function postAggregateMutationFactory({ path, many, joinPathName, refListAdapter }) {
   // Recreate Mongoose instances of the sub items every time to allow for
   // further operations to be performed on those sub items via Mongoose.
   return item => {
@@ -66,9 +55,7 @@ function postAggregateMutationFactory({
 
     if (many) {
       joinedItems = item[path].map(itemId => {
-        const joinedItemIndex = item[joinPathName].findIndex(({ _id }) =>
-          _id.equals(itemId)
-        );
+        const joinedItemIndex = item[joinPathName].findIndex(({ _id }) => _id.equals(itemId));
 
         if (joinedItemIndex === -1) {
           return itemId;
@@ -188,10 +175,7 @@ class Relationship extends Implementation {
         });
       }
 
-      if (
-        !input.id &&
-        (!input.create || Object.keys(input.create).length === 0)
-      ) {
+      if (!input.id && (!input.create || Object.keys(input.create).length === 0)) {
         throw new ParameterError({
           message: `Must provide one of 'id' or 'create' data when linking ${
             this.listKey
@@ -209,10 +193,7 @@ class Relationship extends Implementation {
 
       // Create related item. Will check for access control itself, no need to
       // do anything extra here.
-      const { id } = await this.getListByKey(ref).createMutation(
-        input.create,
-        context
-      );
+      const { id } = await this.getListByKey(ref).createMutation(input.create, context);
       return id;
     };
 
@@ -256,9 +237,7 @@ class Relationship extends Implementation {
 
     if (errored.length) {
       const error = new Error(
-        `Unable to create ${errored.length} new ${ref} as set on ${
-          this.listKey
-        }.${fieldKey}`
+        `Unable to create ${errored.length} new ${ref} as set on ${this.listKey}.${fieldKey}`
       );
 
       // Setup the correct path on the nested error objects
@@ -311,14 +290,10 @@ class Relationship extends Implementation {
     // }
     return `
       input ${this.config.ref}RelationshipInput {
-        # Provide an id to link to an existing ${
-          this.config.ref
-        }. Cannot be set if 'create' set.
+        # Provide an id to link to an existing ${this.config.ref}. Cannot be set if 'create' set.
         id: ID
 
-        # Provide data to create a new ${
-          this.config.ref
-        }. Cannot be set if 'id' set.
+        # Provide data to create a new ${this.config.ref}. Cannot be set if 'id' set.
         create: ${this.config.ref}CreateInput
       }
     `;
@@ -377,10 +352,7 @@ class MongoSelectInterface extends MongooseFieldAdapter {
 
     if (this.path in args) {
       const refListAdapter = this.getListByKey(this.config.ref).adapter;
-      const filters = refListAdapter.itemsQueryConditions(
-        args[this.path],
-        depthGuard
-      );
+      const filters = refListAdapter.itemsQueryConditions(args[this.path], depthGuard);
 
       const query = {
         $and: filters,

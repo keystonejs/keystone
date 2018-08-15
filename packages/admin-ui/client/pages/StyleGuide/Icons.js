@@ -75,20 +75,16 @@ export default class IconsGuide extends Component {
     return (
       <Fragment>
         {altIsDown ? (
-          <Instructions>
-            Click an icon to copy its import code to your clipboard.
-          </Instructions>
+          <Instructions>Click an icon to copy its import code to your clipboard.</Instructions>
         ) : (
           <Instructions>
-            Click an icon to copy its name to your clipboard. Hold{' '}
-            <Kbd>⌥ option</Kbd> to copy the import code.
+            Click an icon to copy its name to your clipboard. Hold <Kbd>⌥ option</Kbd> to copy the
+            import code.
           </Instructions>
         )}
         <Grid gap={16}>
           {Object.keys(icons).map(name => {
-            const importText = altIsDown
-              ? `import { ${name} } from '@keystonejs/icons';`
-              : name;
+            const importText = altIsDown ? `import { ${name} } from '@keystonejs/icons';` : name;
             const isCopied = copyText === importText;
             const Icon = isCopied ? icons.CheckIcon : icons[name];
             return (
@@ -97,16 +93,12 @@ export default class IconsGuide extends Component {
                   <IconContainer>
                     <Icon
                       css={{
-                        fill: isCopied
-                          ? `${colors.create} !important`
-                          : 'inherit',
+                        fill: isCopied ? `${colors.create} !important` : 'inherit',
                         width: 24,
                         height: 24,
                       }}
                     />
-                    <IconName className="icon-text">
-                      {isCopied ? 'Copied!' : name}
-                    </IconName>
+                    <IconName className="icon-text">{isCopied ? 'Copied!' : name}</IconName>
                   </IconContainer>
                 </CopyToClipboard>
               </Cell>

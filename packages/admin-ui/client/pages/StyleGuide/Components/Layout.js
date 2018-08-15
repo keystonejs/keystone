@@ -19,18 +19,9 @@ const LayoutGuide = () => (
   <Fragment>
     <h2>Flex Group</h2>
     <FlexGroupExample heading="Default" groupProps={{ growIndexes: [1] }} />
-    <FlexGroupExample
-      heading="Contiguous"
-      groupProps={{ isContiguous: true, growIndexes: [1] }}
-    />
-    <FlexGroupExample
-      heading="Inline"
-      groupProps={{ isInline: true, growIndexes: [1] }}
-    />
-    <FlexGroupExample
-      heading="Justify"
-      groupProps={{ justify: 'space-between' }}
-    />
+    <FlexGroupExample heading="Contiguous" groupProps={{ isContiguous: true, growIndexes: [1] }} />
+    <FlexGroupExample heading="Inline" groupProps={{ isInline: true, growIndexes: [1] }} />
+    <FlexGroupExample heading="Justify" groupProps={{ justify: 'space-between' }} />
   </Fragment>
 );
 

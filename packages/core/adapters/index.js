@@ -9,8 +9,7 @@ class BaseKeystoneAdapter {
   }
 
   newListAdapter(key, config = {}) {
-    const listAdapterClass =
-      config.listAdapterClass || this.config.listAdapterClass;
+    const listAdapterClass = config.listAdapterClass || this.config.listAdapterClass;
     const adapter = new listAdapterClass(key, this, config);
     this.prepareListAdapter(adapter);
     this.listAdapters[key] = adapter;
@@ -29,13 +28,7 @@ class BaseListAdapter {
   }
 
   newFieldAdapter(fieldAdapterClass, name, path, getListByKey, config) {
-    const adapter = new fieldAdapterClass(
-      name,
-      path,
-      this,
-      getListByKey,
-      config
-    );
+    const adapter = new fieldAdapterClass(name, path, this, getListByKey, config);
     this.prepareFieldAdapter(adapter);
     this.fieldAdapters.push(adapter);
     return adapter;

@@ -49,9 +49,7 @@ export const matchFilter = (app, filter, fields, target, done, sortkey) => {
   filter = filter ? `(${filter})` : '';
   const snippet = `allTests ${filter} ${fields}`;
   runQuery(app, snippet, data => {
-    const value = sortkey
-      ? sorted(data.allTests || [], i => i[sortkey])
-      : data.allTests;
+    const value = sortkey ? sorted(data.allTests || [], i => i[sortkey]) : data.allTests;
     expect(value).toEqual(target);
     done();
   });

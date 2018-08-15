@@ -4,8 +4,7 @@ const camelize = (exports.camelize = str =>
     return index == 0 ? match.toLowerCase() : match.toUpperCase();
   }));
 
-exports.getType = thing =>
-  Object.prototype.toString.call(thing).replace(/\[object (.*)\]/, '$1');
+exports.getType = thing => Object.prototype.toString.call(thing).replace(/\[object (.*)\]/, '$1');
 
 exports.fixConfigKeys = (config, remapKeys = {}) => {
   const rtn = {};
@@ -22,8 +21,7 @@ exports.checkRequiredConfig = (config, requiredKeys = {}) => {
   });
 };
 
-exports.escapeRegExp = str =>
-  str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+exports.escapeRegExp = str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
 exports.mapKeys = (obj, func) =>
   Object.entries(obj).reduce(
@@ -47,10 +45,7 @@ exports.intersection = (array1, array2) =>
   exports.unique(array1.filter(value => array2.includes(value)));
 
 exports.pick = (obj, keys) =>
-  keys.reduce(
-    (result, key) => (key in obj ? { ...result, [key]: obj[key] } : result),
-    {}
-  );
+  keys.reduce((result, key) => (key in obj ? { ...result, [key]: obj[key] } : result), {});
 
 exports.omit = (obj, keys) =>
   exports.pick(obj, Object.keys(obj).filter(value => !keys.includes(value)));

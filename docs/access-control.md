@@ -93,8 +93,7 @@ keystone.createList('User', {
       access: {
         // 2.
         read: false,
-        update: ({ item, authentication }) =>
-          item.id === authentication.item.id,
+        update: ({ item, authentication }) => item.id === authentication.item.id,
       },
     },
   },
@@ -634,8 +633,7 @@ keystone.createList('User', {
   },
   admin: {
     // below, admin gets super access
-    createFields: auth =>
-      auth.item.isAdmin ? true : ['name', 'email', 'password'],
+    createFields: auth => (auth.item.isAdmin ? true : ['name', 'email', 'password']),
     readFields: auth => (auth.item.isAdmin ? true : ['name', 'email']),
     updateFields: auth => (auth.item.isAdmin ? true : ['email']),
   },

@@ -18,9 +18,9 @@ export default class RelationshipController extends FieldController {
   dataToRelationshipInput = (data, pathKey) => {
     if (data.id && data.create) {
       throw new Error(
-        `Cannot provide both an id and create data when linking ${
-          this.list.key
-        }.${pathKey} to a ${this.config.ref}`
+        `Cannot provide both an id and create data when linking ${this.list.key}.${pathKey} to a ${
+          this.config.ref
+        }`
       );
     }
 

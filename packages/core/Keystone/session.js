@@ -1,10 +1,6 @@
 const noop = () => undefined;
 
-const validate = keystone => ({ valid = noop, invalid = noop }) => async (
-  req,
-  res,
-  next
-) => {
+const validate = keystone => ({ valid = noop, invalid = noop }) => async (req, res, next) => {
   if (!req.session || !req.session.keystoneItemId) {
     invalid({ req, reason: 'empty' });
     return next();

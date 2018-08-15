@@ -27,12 +27,7 @@ type Loading = ButtonProps & {
   isLoading: boolean,
   indicatorVariant: 'spinner' | 'dots',
 };
-export const LoadingButton = ({
-  children,
-  indicatorVariant,
-  isLoading,
-  ...props
-}: Loading) => {
+export const LoadingButton = ({ children, indicatorVariant, isLoading, ...props }: Loading) => {
   const appearance = getAppearance(props.appearance);
   const textCSS = isLoading ? { visibility: 'hidden' } : null;
   const isSpinner = indicatorVariant === 'spinner';

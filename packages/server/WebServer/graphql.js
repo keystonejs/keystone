@@ -3,10 +3,7 @@ const bodyParser = require('body-parser');
 const fastMemoize = require('fast-memoize');
 const { apolloUploadExpress } = require('apollo-upload-server');
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
-const {
-  formatError,
-  isInstance: isApolloErrorInstance,
-} = require('apollo-errors');
+const { formatError, isInstance: isApolloErrorInstance } = require('apollo-errors');
 const cuid = require('cuid');
 const logger = require('@keystonejs/logger');
 
@@ -14,10 +11,7 @@ const { NestedError } = require('./graphqlErrors');
 
 const graphqlLogger = logger('graphql');
 
-module.exports = function createGraphQLMiddleware(
-  keystone,
-  { apiPath, graphiqlPath }
-) {
+module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlPath }) {
   const app = express();
 
   // add the Admin GraphQL API
@@ -40,17 +34,15 @@ module.exports = function createGraphQLMiddleware(
         });
       });
 
-      const getFieldAccessControlForUser = fastMemoize(
-        (listKey, fieldKey, item, operation) => {
-          return keystone.getFieldAccessControl({
-            item,
-            listKey,
-            fieldKey,
-            operation,
-            authentication: { item: req.user, listKey: req.authedListKey },
-          });
-        }
-      );
+      const getFieldAccessControlForUser = fastMemoize((listKey, fieldKey, item, operation) => {
+        return keystone.getFieldAccessControl({
+          item,
+          listKey,
+          fieldKey,
+          operation,
+          authentication: { item: req.user, listKey: req.authedListKey },
+        });
+      });
 
       return {
         schema,

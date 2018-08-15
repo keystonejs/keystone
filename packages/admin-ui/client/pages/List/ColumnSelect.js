@@ -6,13 +6,7 @@ import { OptionPrimitive } from '@keystonejs/ui/src/primitives/filters';
 import { POPOUT_GUTTER } from '../../components/Popout';
 import FieldSelect, { type FieldSelectProps } from './FieldSelect';
 
-export const ColumnOption = ({
-  children,
-  isFocused,
-  isSelected,
-  selectProps,
-  ...props
-}) => {
+export const ColumnOption = ({ children, isFocused, isSelected, selectProps, ...props }) => {
   const { removeIsAllowed } = selectProps;
 
   let Icon;
@@ -26,9 +20,7 @@ export const ColumnOption = ({
   return (
     <OptionPrimitive isFocused={isFocused} isSelected={isSelected} {...props}>
       <span>{children}</span>
-      {isSelected && !removeIsAllowed ? null : (
-        <Icon css={{ color: iconColor }} />
-      )}
+      {isSelected && !removeIsAllowed ? null : <Icon css={{ color: iconColor }} />}
     </OptionPrimitive>
   );
 };

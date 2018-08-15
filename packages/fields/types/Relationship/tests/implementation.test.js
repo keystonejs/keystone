@@ -24,17 +24,13 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.getGraphqlCreateArgs()).toEqual(
-      'foo: [ZipRelationshipInput]'
-    );
+    expect(relMany.getGraphqlCreateArgs()).toEqual('foo: [ZipRelationshipInput]');
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.getGraphqlCreateArgs()).toEqual(
-      'foo: ZipRelationshipInput'
-    );
+    expect(relSingle.getGraphqlCreateArgs()).toEqual('foo: ZipRelationshipInput');
   });
 
   test('inputs for relationship fields in update args', () => {
@@ -42,17 +38,13 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.getGraphqlUpdateArgs()).toEqual(
-      'foo: [ZipRelationshipInput]'
-    );
+    expect(relMany.getGraphqlUpdateArgs()).toEqual('foo: [ZipRelationshipInput]');
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.getGraphqlUpdateArgs()).toEqual(
-      'foo: ZipRelationshipInput'
-    );
+    expect(relSingle.getGraphqlUpdateArgs()).toEqual('foo: ZipRelationshipInput');
   });
 
   test('relationship LinkOrCreate input', () => {

@@ -53,12 +53,7 @@ type FlexGroupProps = {
   isContiguous: boolean,
   isInline: boolean,
   isVertical: boolean,
-  justify:
-    | 'space-between'
-    | 'space-around'
-    | 'center'
-    | 'flex-end'
-    | 'flex-start',
+  justify: 'space-between' | 'space-around' | 'center' | 'flex-end' | 'flex-start',
   wrap: boolean,
   spacing: number,
   stretch: boolean,
@@ -163,9 +158,7 @@ export const Grid = ({
 }: GridProps) => {
   const templateRows = rows ? { gridTemplateRows: rows } : {};
   const templateAreas = areas ? { gridTemplateAreas: formatAreas(areas) } : {};
-  const gridTemplateColumns = Number.isInteger(columns)
-    ? `repeat(${columns}, 1fr)`
-    : columns;
+  const gridTemplateColumns = Number.isInteger(columns) ? `repeat(${columns}, 1fr)` : columns;
 
   return (
     <div
@@ -198,14 +191,7 @@ type CellProps = {
   width: number,
 };
 
-export const Cell = ({
-  area,
-  height = 1,
-  left,
-  top,
-  width = 1,
-  ...props
-}: CellProps) => (
+export const Cell = ({ area, height = 1, left, top, width = 1, ...props }: CellProps) => (
   <div
     css={{
       alignContent: 'space-around',

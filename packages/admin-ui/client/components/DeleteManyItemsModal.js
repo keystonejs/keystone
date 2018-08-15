@@ -23,8 +23,7 @@ export default class DeleteManyModal extends Component {
           return (
             <Confirm isOpen={isOpen} onKeyDown={this.onKeyDown}>
               <p style={{ marginTop: 0 }}>
-                Are you sure you want to delete{' '}
-                <strong>{list.formatCount(itemIds)}</strong>?
+                Are you sure you want to delete <strong>{list.formatCount(itemIds)}</strong>?
               </p>
               <footer>
                 <Button

@@ -2,19 +2,9 @@ import React, { Component, createRef, Fragment } from 'react';
 import styled from 'react-emotion';
 import { withRouter } from 'react-router-dom';
 
-import {
-  FoldIcon,
-  PlusIcon,
-  SearchIcon,
-  UnfoldIcon,
-  XIcon,
-} from '@keystonejs/icons';
+import { FoldIcon, PlusIcon, SearchIcon, UnfoldIcon, XIcon } from '@keystonejs/icons';
 import { Input } from '@keystonejs/ui/src/primitives/forms';
-import {
-  Container,
-  FlexGroup,
-  CONTAINER_WIDTH,
-} from '@keystonejs/ui/src/primitives/layout';
+import { Container, FlexGroup, CONTAINER_WIDTH } from '@keystonejs/ui/src/primitives/layout';
 import { A11yText, Kbd, H1 } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { LoadingSpinner } from '@keystonejs/ui/src/primitives/loading';
@@ -76,11 +66,7 @@ const Search = ({ children, hasValue, isFetching, onClear, onSubmit }) => {
           },
         }}
       >
-        {isLoading ? (
-          <LoadingSpinner size={16} />
-        ) : (
-          <Icon onClick={hasValue ? onClear : null} />
-        )}
+        {isLoading ? <LoadingSpinner size={16} /> : <Icon onClick={hasValue ? onClear : null} />}
       </div>
     </form>
   );
@@ -208,7 +194,9 @@ class ListDetails extends Component<Props, State> {
     if (search && search.length) {
       return (
         <span>
-          No {list.plural.toLowerCase()} found matching &ldquo;{search}&rdquo;
+          No {list.plural.toLowerCase()} found matching &ldquo;
+          {search}
+          &rdquo;
         </span>
       );
     }
@@ -267,12 +255,7 @@ class ListDetails extends Component<Props, State> {
       search,
       sortBy,
     } = this.props;
-    const {
-      isFullWidth,
-      isManaging,
-      selectedItems,
-      showCreateModal,
-    } = this.state;
+    const { isFullWidth, isManaging, selectedItems, showCreateModal } = this.state;
 
     const searchId = 'list-search-input';
 
@@ -344,11 +327,7 @@ class ListDetails extends Component<Props, State> {
             {this.renderExpandButton()}
             <ToolbarSeparator />
             {list.access.create ? (
-              <IconButton
-                appearance="create"
-                icon={PlusIcon}
-                onClick={this.openCreateModal}
-              >
+              <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
                 Create
               </IconButton>
             ) : null}

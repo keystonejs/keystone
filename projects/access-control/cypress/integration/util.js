@@ -91,10 +91,7 @@ module.exports = {
 
   stayLoggedIn(level) {
     before(() =>
-      cy.loginToKeystone(
-        usersByLevel()[level][0].email,
-        usersByLevel()[level][0].password
-      )
+      cy.loginToKeystone(usersByLevel()[level][0].email, usersByLevel()[level][0].password)
     );
 
     beforeEach(() =>

@@ -88,9 +88,7 @@ class Dropdown extends Component<Props> {
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
-  handleItemClick = ({ onClick, ...data }: ClickArgs) => (
-    event: MouseEvent
-  ) => {
+  handleItemClick = ({ onClick, ...data }: ClickArgs) => (event: MouseEvent) => {
     const { close, selectClosesMenu } = this.props;
     if (selectClosesMenu) close({ returnFocus: true });
     if (onClick) onClick({ event, data });
@@ -151,11 +149,7 @@ class Dropdown extends Component<Props> {
 
     return (
       <FocusTrap options={{ clickOutsideDeactivates: true }}>
-        <Menu
-          innerRef={this.getMenu}
-          onMouseLeave={this.handleMenuLeave}
-          style={style}
-        >
+        <Menu innerRef={this.getMenu} onMouseLeave={this.handleMenuLeave} style={style}>
           {items.map((item, idx) => {
             const { content, ...rest } = item;
             return (

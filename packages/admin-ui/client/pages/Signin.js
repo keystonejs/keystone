@@ -86,9 +86,7 @@ class SigninPage extends Component {
       <Container>
         <Alerts>
           {error ? (
-            <Alert appearance="danger">
-              Your username and password were incorrect
-            </Alert>
+            <Alert appearance="danger">Your username and password were incorrect</Alert>
           ) : null}
         </Alerts>
         <Form method="post" onSubmit={this.onSubmit}>
@@ -128,11 +126,7 @@ class SigninPage extends Component {
 }
 
 export default ({ sessionPath, signinPath, signoutPath }) => (
-  <SessionProvider
-    signinPath={signinPath}
-    signoutPath={signoutPath}
-    sessionPath={sessionPath}
-  >
+  <SessionProvider signinPath={signinPath} signoutPath={signoutPath} sessionPath={sessionPath}>
     {props => <SigninPage {...props} />}
   </SessionProvider>
 );

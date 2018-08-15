@@ -6,11 +6,7 @@ import withPseudoState from 'react-pseudo-state';
 
 import { gridSize } from '../../theme';
 import { buttonAndInputBase } from '../forms';
-import {
-  makeSubtleVariant,
-  makeGhostVariant,
-  makeBoldVariant,
-} from './variants';
+import { makeSubtleVariant, makeGhostVariant, makeBoldVariant } from './variants';
 
 const SPACING_OPTION = {
   comfortable: `${gridSize}px ${gridSize * 1.5}px`,
@@ -99,15 +95,7 @@ const ButtonElement = (props: ButtonProps) => {
   const variant = makeVariant(props);
   if (rest.to) return <Link innerRef={innerRef} css={variant} {...rest} />;
   if (rest.href) return <a ref={innerRef} css={variant} {...rest} />;
-  return (
-    <button
-      type="button"
-      disabled={isDisabled}
-      ref={innerRef}
-      css={variant}
-      {...rest}
-    />
-  );
+  return <button type="button" disabled={isDisabled} ref={innerRef} css={variant} {...rest} />;
 };
 
 ButtonElement.defaultProps = {

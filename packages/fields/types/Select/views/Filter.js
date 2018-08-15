@@ -1,12 +1,7 @@
 // @flow
 
 import React, { Component, Fragment, type Ref } from 'react';
-import {
-  OptionRenderer,
-  Radio,
-  RadioGroup,
-  Select,
-} from '@keystonejs/ui/src/primitives/filters';
+import { OptionRenderer, Radio, RadioGroup, Select } from '@keystonejs/ui/src/primitives/filters';
 import { gridSize } from '@keystonejs/ui/src/theme';
 
 const EventCatcher = props => (
@@ -18,9 +13,7 @@ const EventCatcher = props => (
     {...props}
   />
 );
-const SelectWrapper = props => (
-  <div css={{ marginTop: gridSize * 2 }} {...props} />
-);
+const SelectWrapper = props => <div css={{ marginTop: gridSize * 2 }} {...props} />;
 
 type Props = { field: Object, innerRef: Ref<*>, onChange: Event => void };
 type State = { inverted: boolean };

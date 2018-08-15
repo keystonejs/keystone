@@ -36,8 +36,7 @@ module.exports = class WebServer {
           return next();
         }
 
-        const authHeader =
-          req.headers.authorization || req.headers.Authorization;
+        const authHeader = req.headers.authorization || req.headers.Authorization;
 
         if (!authHeader) {
           return next();
@@ -47,9 +46,7 @@ module.exports = class WebServer {
 
         if (type !== 'Bearer') {
           // TODO: Use logger
-          console.warn(
-            `Got Authorization header of type ${type}, but expected Bearer`
-          );
+          console.warn(`Got Authorization header of type ${type}, but expected Bearer`);
           return next();
         }
 
@@ -113,9 +110,7 @@ module.exports = class WebServer {
       config: { port },
     } = this;
 
-    app.get('/', (req, res) =>
-      res.sendFile(path.resolve(__dirname, './default.html'))
-    );
+    app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './default.html')));
 
     app.listen(port, () => {
       console.log(`KeystoneJS 5 ready on port ${port}`);

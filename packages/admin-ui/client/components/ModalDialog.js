@@ -51,9 +51,7 @@ export const ModalProvider = ({ children }: Props) => (
     {children}
 
     <Subscribe to={[ModalState]}>
-      {({ state }) => (
-        <TransitionGroup component={null}>{state.activeDialog}</TransitionGroup>
-      )}
+      {({ state }) => <TransitionGroup component={null}>{state.activeDialog}</TransitionGroup>}
     </Subscribe>
   </Provider>
 );

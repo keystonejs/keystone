@@ -83,7 +83,8 @@ export const Count = ({ meta }) => {
     </div>
   ) : (
     <div css={{ fontSize: '0.85em' }}>
-      {count} Item{count !== 1 ? 's' : ''}
+      {count} Item
+      {count !== 1 ? 's' : ''}
     </div>
   );
 };

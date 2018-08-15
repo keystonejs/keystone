@@ -1,11 +1,6 @@
 // @flow
 
-import React, {
-  Fragment,
-  type ComponentType,
-  type Node,
-  type Ref,
-} from 'react';
+import React, { Fragment, type ComponentType, type Node, type Ref } from 'react';
 import styled from 'react-emotion';
 
 import { Button } from '@keystonejs/ui/src/primitives/buttons';

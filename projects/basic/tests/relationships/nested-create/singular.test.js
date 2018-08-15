@@ -66,16 +66,12 @@ function create(list, item) {
 
 afterAll(() =>
   resolveAllKeys(
-    mapKeys(server.keystone.adapters, adapter =>
-      adapter.dropDatabase().then(() => adapter.close())
-    )
+    mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase().then(() => adapter.close()))
   ));
 
 beforeEach(() =>
   // clean the db
-  resolveAllKeys(
-    mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase())
-  ));
+  resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase())));
 
 describe('no access control', () => {
   test('link nested from within create mutation', async () => {
@@ -146,9 +142,7 @@ describe('no access control', () => {
       server,
       query: `
         query {
-          Group(where: { id: "${
-            createEvent.body.data.createEvent.group.id
-          }" }) {
+          Group(where: { id: "${createEvent.body.data.createEvent.group.id}" }) {
             id
             name
           }
@@ -259,9 +253,7 @@ describe('no access control', () => {
       server,
       query: `
         query {
-          Group(where: { id: "${
-            updateEvent.body.data.updateEvent.group.id
-          }" }) {
+          Group(where: { id: "${updateEvent.body.data.updateEvent.group.id}" }) {
             id
             name
           }
@@ -406,8 +398,7 @@ describe('with access control', () => {
         },
       } = await graphqlRequest({
         server,
-        query:
-          'mutation { createEventToGroupNoRead(data: { title: "A thing", }) { id } }',
+        query: 'mutation { createEventToGroupNoRead(data: { title: "A thing", }) { id } }',
       });
 
       // Update the item and link the relationship field

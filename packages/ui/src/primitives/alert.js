@@ -41,13 +41,8 @@ type Props = {
 
 export const Alert = styled.div(({ appearance, variant }: Props) => ({
   backgroundColor:
-    variant === 'bold'
-      ? boldBackgroundColor[appearance]
-      : subtleBackgroundColor[appearance],
-  color:
-    variant === 'bold'
-      ? boldTextColor[appearance]
-      : subtleTextColor[appearance],
+    variant === 'bold' ? boldBackgroundColor[appearance] : subtleBackgroundColor[appearance],
+  color: variant === 'bold' ? boldTextColor[appearance] : subtleTextColor[appearance],
   borderRadius,
   display: 'flex',
   fontWeight: variant === 'bold' ? 500 : null,
@@ -55,10 +50,7 @@ export const Alert = styled.div(({ appearance, variant }: Props) => ({
   padding: '0.9em 1.2em',
 
   '& a': {
-    color:
-      variant === 'bold'
-        ? boldTextColor[appearance]
-        : subtleTextColor[appearance],
+    color: variant === 'bold' ? boldTextColor[appearance] : subtleTextColor[appearance],
     textDecoration: 'underline',
   },
 }));

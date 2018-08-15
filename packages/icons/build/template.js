@@ -1,11 +1,4 @@
-const template = ({
-  componentName,
-  height,
-  width,
-  viewBox,
-  ariaHidden,
-  svgContents,
-}) => `
+const template = ({ componentName, height, width, viewBox, ariaHidden, svgContents }) => `
 import React, { Component } from 'react';
 
 class ${componentName} extends Component {

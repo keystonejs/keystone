@@ -23,14 +23,7 @@ const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
 
 const Nav = props => {
   const {
-    adminMeta: {
-      withAuth,
-      getListByKey,
-      listKeys,
-      adminPath,
-      graphiqlPath,
-      signoutPath,
-    },
+    adminMeta: { withAuth, getListByKey, listKeys, adminPath, graphiqlPath, signoutPath },
     location,
   } = props;
   return (
@@ -58,20 +51,12 @@ const Nav = props => {
       <NavGroup>
         {ENABLE_DEV_FEATURES ? (
           <Fragment>
-            <PrimaryNavItem
-              target="_blank"
-              href={GITHUB_PROJECT}
-              title="GitHub"
-            >
+            <PrimaryNavItem target="_blank" href={GITHUB_PROJECT} title="GitHub">
               <MarkGithubIcon />
               <A11yText>GitHub</A11yText>
             </PrimaryNavItem>
             <NavSeparator />
-            <PrimaryNavItem
-              target="_blank"
-              href={graphiqlPath}
-              title="Graphiql Console"
-            >
+            <PrimaryNavItem target="_blank" href={graphiqlPath} title="Graphiql Console">
               <TerminalIcon />
               <A11yText>Graphiql Console</A11yText>
             </PrimaryNavItem>

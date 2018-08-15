@@ -69,16 +69,12 @@ function create(list, item) {
 
 afterAll(() =>
   resolveAllKeys(
-    mapKeys(server.keystone.adapters, adapter =>
-      adapter.dropDatabase().then(() => adapter.close())
-    )
+    mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase().then(() => adapter.close()))
   ));
 
 beforeEach(() =>
   // clean the db
-  resolveAllKeys(
-    mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase())
-  ));
+  resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase())));
 
 describe('no access control', () => {
   test('link nested from within create mutation', async () => {
@@ -220,9 +216,7 @@ describe('no access control', () => {
     `,
     });
 
-    expect(allNotes).toHaveLength(
-      createUserManyNotes.body.data.createUser.notes.length
-    );
+    expect(allNotes).toHaveLength(createUserManyNotes.body.data.createUser.notes.length);
   });
 
   test('link AND create nested from within create mutation', async () => {
@@ -239,9 +233,7 @@ describe('no access control', () => {
         mutation {
           createUser(data: {
             username: "A thing",
-            notes: [{ id: "${
-              createNote.id
-            }" }, { create: { content: "${noteContent2}" } }]
+            notes: [{ id: "${createNote.id}" }, { create: { content: "${noteContent2}" } }]
           }) {
             id
             notes {
@@ -471,9 +463,7 @@ describe('no access control', () => {
     `,
     });
 
-    expect(allNotes).toHaveLength(
-      updateUserManyNotes.body.data.updateUser.notes.length
-    );
+    expect(allNotes).toHaveLength(updateUserManyNotes.body.data.updateUser.notes.length);
   });
 
   test('link & create nested from within update mutation', async () => {
@@ -495,9 +485,7 @@ describe('no access control', () => {
             id: "${createUser.id}"
             data: {
               username: "A thing",
-              notes: [{ id: "${
-                createNote.id
-              }" }, { create: { content: "${noteContent2}" } }]
+              notes: [{ id: "${createNote.id}" }, { create: { content: "${noteContent2}" } }]
             }
           ) {
             id
@@ -743,9 +731,7 @@ describe('with access control', () => {
           mutation {
             createUserToNotesNoRead(data: {
               username: "A thing",
-              notes: [{ id: "${
-                createNoteNoRead.id
-              }" }, { create: { content: "${noteContent2}" } }]
+              notes: [{ id: "${createNoteNoRead.id}" }, { create: { content: "${noteContent2}" } }]
             }) {
               id
               notes {
@@ -845,9 +831,7 @@ describe('with access control', () => {
               id: "${createUser.id}"
               data: {
                 username: "A thing",
-                notes: [{ id: "${
-                  createNote.id
-                }" }, { create: { content: "${noteContent2}" } }]
+                notes: [{ id: "${createNote.id}" }, { create: { content: "${noteContent2}" } }]
               }
             ) {
               id
@@ -911,10 +895,7 @@ describe('with access control', () => {
       });
 
       // Assert it throws an access denied error
-      expect(createUserToNotesNoCreate.body).toHaveProperty(
-        'data.createUserToNotesNoCreate',
-        null
-      );
+      expect(createUserToNotesNoCreate.body).toHaveProperty('data.createUserToNotesNoCreate', null);
       expect(createUserToNotesNoCreate.body.errors).toMatchObject([
         {
           name: 'NestedError',
@@ -1017,10 +998,7 @@ describe('with access control', () => {
       });
 
       // Assert it throws an access denied error
-      expect(updateUserToNotesNoCreate.body).toHaveProperty(
-        'data.updateUserToNotesNoCreate',
-        null
-      );
+      expect(updateUserToNotesNoCreate.body).toHaveProperty('data.updateUserToNotesNoCreate', null);
       expect(updateUserToNotesNoCreate.body.errors).toMatchObject([
         {
           name: 'NestedError',

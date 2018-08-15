@@ -1,12 +1,6 @@
 // @flow
 
-import React, {
-  Fragment,
-  PureComponent,
-  type ComponentType,
-  type Ref,
-  type Node,
-} from 'react';
+import React, { Fragment, PureComponent, type ComponentType, type Ref, type Node } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'react-emotion';
 import ScrollLock from 'react-scrolllock';
@@ -36,12 +30,7 @@ type DialogElementProps = {
   innerRef?: Ref<*>,
   width: number,
 };
-const Dialog = ({
-  component: Tag,
-  innerRef,
-  width,
-  ...props
-}: DialogElementProps) => (
+const Dialog = ({ component: Tag, innerRef, width, ...props }: DialogElementProps) => (
   <Tag
     ref={innerRef}
     role="alertdialog"
@@ -49,8 +38,7 @@ const Dialog = ({
       backgroundColor: 'white',
       borderBottomRightRadius: borderRadius,
       borderBottomLeftRadius: borderRadius,
-      boxShadow:
-        '0 0 0 1px rgba(0, 0, 0, 0.175), 0 3px 8px rgba(0, 0, 0, 0.175)',
+      boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.175), 0 3px 8px rgba(0, 0, 0, 0.175)',
       display: 'flex',
       flexDirection: 'column',
       maxHeight: '100%',
@@ -95,14 +83,7 @@ class ModalConfirm extends PureComponent<Props> {
     if (this.props.onKeyDown) this.props.onKeyDown(e);
   };
   render() {
-    const {
-      attachTo,
-      children,
-      component,
-      onClose,
-      width,
-      ...transitionProps
-    } = this.props;
+    const { attachTo, children, component, onClose, width, ...transitionProps } = this.props;
 
     return createPortal(
       <Fragment>

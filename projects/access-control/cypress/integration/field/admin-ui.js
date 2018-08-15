@@ -42,26 +42,22 @@ describe('Access Control Fields > Admin UI', () => {
       });
 
       it('shows creatable inputs', () => {
-        fieldAccessVariations
-          .filter(({ create, read }) => create && read)
-          .forEach(access => {
-            const field = getFieldName(access);
-            cy.get(`label[for="ks-input-${field}"]`)
-              .should('exist')
-              .then(() => cy.get(`#ks-input-${field}`).should('exist'));
-          });
+        fieldAccessVariations.filter(({ create, read }) => create && read).forEach(access => {
+          const field = getFieldName(access);
+          cy.get(`label[for="ks-input-${field}"]`)
+            .should('exist')
+            .then(() => cy.get(`#ks-input-${field}`).should('exist'));
+        });
       });
 
       // Skipped until Admin UI is created to exclude these fields
       it.skip('does not show non-creatable inputs', () => {
-        fieldAccessVariations
-          .filter(({ create, read }) => !create && read)
-          .forEach(access => {
-            const field = getFieldName(access);
-            cy.get(`label[for="ks-input-${field}"]`)
-              .should('exist')
-              .then(() => cy.get(`#ks-input-${field}`).should('not.exist'));
-          });
+        fieldAccessVariations.filter(({ create, read }) => !create && read).forEach(access => {
+          const field = getFieldName(access);
+          cy.get(`label[for="ks-input-${field}"]`)
+            .should('exist')
+            .then(() => cy.get(`#ks-input-${field}`).should('not.exist'));
+        });
       });
     }
 
@@ -127,36 +123,31 @@ describe('Access Control Fields > Admin UI', () => {
       const queryName = `all${listName}s`;
 
       before(() => {
-        cy.graphql_query(
-          '/admin/api',
-          `query { ${queryName}(first: 1) { id } }`
-        ).then(({ data }) => {
-          cy.visit(`/admin/${slug}/${data[queryName][0].id}`);
-          cy.get('form').should('exist');
-        });
+        cy.graphql_query('/admin/api', `query { ${queryName}(first: 1) { id } }`).then(
+          ({ data }) => {
+            cy.visit(`/admin/${slug}/${data[queryName][0].id}`);
+            cy.get('form').should('exist');
+          }
+        );
       });
 
       it('shows updatable inputs', () => {
-        fieldAccessVariations
-          .filter(({ update, read }) => update && read)
-          .forEach(access => {
-            const field = getFieldName(access);
-            cy.get(`label[for="ks-input-${field}"]`)
-              .should('exist')
-              .then(() => cy.get(`#ks-input-${field}`).should('exist'));
-          });
+        fieldAccessVariations.filter(({ update, read }) => update && read).forEach(access => {
+          const field = getFieldName(access);
+          cy.get(`label[for="ks-input-${field}"]`)
+            .should('exist')
+            .then(() => cy.get(`#ks-input-${field}`).should('exist'));
+        });
       });
 
       // Skipped until Admin UI hides these fields
       it.skip('does not show non-updatable inputs', () => {
-        fieldAccessVariations
-          .filter(({ update, read }) => !update && read)
-          .forEach(access => {
-            const field = getFieldName(access);
-            cy.get(`label[for="ks-input-${field}"]`)
-              .should('exist')
-              .then(() => cy.get(`#ks-input-${field}`).should('not.exist'));
-          });
+        fieldAccessVariations.filter(({ update, read }) => !update && read).forEach(access => {
+          const field = getFieldName(access);
+          cy.get(`label[for="ks-input-${field}"]`)
+            .should('exist')
+            .then(() => cy.get(`#ks-input-${field}`).should('not.exist'));
+        });
       });
     }
 

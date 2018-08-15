@@ -36,11 +36,7 @@ const Keystone = () => (
                     path={`${adminPath}/style-guide/:page?`}
                     render={() => <StyleGuidePage {...adminMeta} />}
                   />
-                  <Route
-                    exact
-                    path={`${adminPath}`}
-                    render={() => <HomePage {...adminMeta} />}
-                  />
+                  <Route exact path={`${adminPath}`} render={() => <HomePage {...adminMeta} />} />
                   <Route
                     path={`${adminPath}/:listKey`}
                     render={({
@@ -56,13 +52,7 @@ const Keystone = () => (
                           <Route
                             exact
                             path={`${adminPath}/:list`}
-                            render={() => (
-                              <ListPage
-                                key={listKey}
-                                list={list}
-                                {...adminMeta}
-                              />
-                            )}
+                            render={() => <ListPage key={listKey} list={list} {...adminMeta} />}
                           />
                           <Route
                             exact
@@ -80,9 +70,7 @@ const Keystone = () => (
                               />
                             )}
                           />
-                          <Route
-                            render={() => <InvalidRoutePage {...adminMeta} />}
-                          />
+                          <Route render={() => <InvalidRoutePage {...adminMeta} />} />
                         </Switch>
                       ) : (
                         <ListNotFoundPage listKey={listKey} {...adminMeta} />

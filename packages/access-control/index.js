@@ -109,12 +109,7 @@ module.exports = {
     });
   },
 
-  parseFieldAccess({
-    listKey,
-    fieldKey,
-    defaultAccess,
-    access = defaultAccess,
-  }) {
+  parseFieldAccess({ listKey, fieldKey, defaultAccess, access = defaultAccess }) {
     const accessTypes = ['create', 'read', 'update'];
 
     return parseAccess({
@@ -181,14 +176,7 @@ module.exports = {
     return result;
   },
 
-  testFieldAccessControl({
-    access,
-    listKey,
-    fieldKey,
-    item,
-    operation,
-    authentication,
-  }) {
+  testFieldAccessControl({ access, listKey, fieldKey, item, operation, authentication }) {
     if (typeof access[operation] !== 'function') {
       return access[operation];
     }

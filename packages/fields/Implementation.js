@@ -1,8 +1,5 @@
 const inflection = require('inflection');
-const {
-  parseFieldAccess,
-  testFieldAccessControl,
-} = require('@keystonejs/access-control');
+const { parseFieldAccess, testFieldAccessControl } = require('@keystonejs/access-control');
 
 class Field {
   constructor(
@@ -33,9 +30,7 @@ class Field {
 
   getGraphqlSchema() {
     if (!this.graphQLType) {
-      throw new Error(
-        `Field type [${this.constructor.name}] does not implement graphQLType`
-      );
+      throw new Error(`Field type [${this.constructor.name}] does not implement graphQLType`);
     }
     return `${this.path}: ${this.graphQLType}`;
   }

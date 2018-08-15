@@ -18,9 +18,7 @@ module.exports = async (on, config) => {
 
   const mongoose = new Mongoose();
   await mongoose.connect(
-    `mongodb://localhost/${inflection
-      .dasherize(process.env.PROJECT_NAME)
-      .toLowerCase()}`
+    `mongodb://localhost/${inflection.dasherize(process.env.PROJECT_NAME).toLowerCase()}`
   );
 
   const dbConnection = mongoose.connection.db;

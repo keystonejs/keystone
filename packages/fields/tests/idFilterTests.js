@@ -11,12 +11,7 @@ export const getTestFields = () => {
 };
 
 export const initItems = () => {
-  return [
-    { name: 'person1' },
-    { name: 'person2' },
-    { name: 'person3' },
-    { name: 'person4' },
-  ];
+  return [{ name: 'person1' }, { name: 'person2' }, { name: 'person3' }, { name: 'person4' }];
 };
 
 const getIDs = async keystone => {
@@ -69,11 +64,7 @@ export const filterTests = (app, keystone) => {
   test('Filter: id', async done => {
     const IDs = await getIDs(keystone);
     const id = IDs['person2'];
-    match(
-      `where: { id: "${id}" }`,
-      [{ id: IDs['person2'], name: 'person2' }],
-      done
-    );
+    match(`where: { id: "${id}" }`, [{ id: IDs['person2'], name: 'person2' }], done);
   });
 
   test('Filter: id_not', async done => {
@@ -96,10 +87,7 @@ export const filterTests = (app, keystone) => {
     const id3 = IDs['person3'];
     match(
       `where: { id_in: ["${id2}", "${id3}"] }`,
-      [
-        { id: IDs['person2'], name: 'person2' },
-        { id: IDs['person3'], name: 'person3' },
-      ],
+      [{ id: IDs['person2'], name: 'person2' }, { id: IDs['person3'], name: 'person3' }],
       done
     );
   });
@@ -118,10 +106,7 @@ export const filterTests = (app, keystone) => {
     const id3 = IDs['person3'];
     match(
       `where: { id_not_in: ["${id2}", "${id3}"] }`,
-      [
-        { id: IDs['person1'], name: 'person1' },
-        { id: IDs['person4'], name: 'person4' },
-      ],
+      [{ id: IDs['person1'], name: 'person1' }, { id: IDs['person4'], name: 'person4' }],
       done
     );
   });

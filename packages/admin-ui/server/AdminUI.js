@@ -102,9 +102,7 @@ module.exports = class AdminUI {
 
   setAuthStrategy(authStrategy) {
     if (authStrategy.authType !== 'password') {
-      throw new Error(
-        'Keystone 5 Admin currently only supports the `PasswordAuthStrategy`'
-      );
+      throw new Error('Keystone 5 Admin currently only supports the `PasswordAuthStrategy`');
     }
 
     this.authStrategy = authStrategy;
@@ -115,12 +113,7 @@ module.exports = class AdminUI {
 
     // Listen to POST events for form signin form submission (GET falls through
     // to the webpack server(s))
-    app.post(
-      this.config.signinPath,
-      bodyParser.json(),
-      bodyParser.urlencoded(),
-      this.signin
-    );
+    app.post(this.config.signinPath, bodyParser.json(), bodyParser.urlencoded(), this.signin);
 
     // Listen to both POST and GET events, and always sign the user out.
     app.use(this.config.signoutPath, this.signout);
@@ -185,9 +178,7 @@ module.exports = class AdminUI {
       // app.use(adminMiddleware);
       app.use((req, res, next) => {
         // TODO: Better security, should check some property of the user
-        return req.user
-          ? secureMiddleware(req, res, next)
-          : publicMiddleware(req, res, next);
+        return req.user ? secureMiddleware(req, res, next) : publicMiddleware(req, res, next);
       });
 
       this.stopDevServer = () => {

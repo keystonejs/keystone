@@ -28,10 +28,7 @@ describe('Testing Login', () => {
       // appear to be attached, so the form is not getting validated correctly
       cy.wait(250);
       cy.get('button[type="submit"]').click();
-      cy.get('body').should(
-        'contain',
-        'Your username and password were incorrect'
-      );
+      cy.get('body').should('contain', 'Your username and password were incorrect');
     });
 
     it('Does not log in with invalid credentials', () => {
@@ -46,10 +43,7 @@ describe('Testing Login', () => {
         .type('gibberish', { force: true });
 
       cy.get('button[type="submit"]').click();
-      cy.get('body').should(
-        'contain',
-        'Your username and password were incorrect'
-      );
+      cy.get('body').should('contain', 'Your username and password were incorrect');
     });
 
     it('Does not log in with invalid username', () => {
@@ -64,10 +58,7 @@ describe('Testing Login', () => {
         .type(PASSWORD, { force: true });
 
       cy.get('button[type="submit"]').click();
-      cy.get('body').should(
-        'contain',
-        'Your username and password were incorrect'
-      );
+      cy.get('body').should('contain', 'Your username and password were incorrect');
     });
 
     it('Does not log in with invalid password', () => {
@@ -82,10 +73,7 @@ describe('Testing Login', () => {
         .type('gibberish', { force: true });
 
       cy.get('button[type="submit"]').click();
-      cy.get('body').should(
-        'contain',
-        'Your username and password were incorrect'
-      );
+      cy.get('body').should('contain', 'Your username and password were incorrect');
     });
   });
 
@@ -144,12 +132,10 @@ describe('authenticated item', () => {
 
   describe('logged out', () => {
     it('current user query returns null', () => {
-      cy.graphql_query('/admin/api', '{ authenticatedUser { id } }').then(
-        ({ data, errors }) => {
-          expect(data).to.have.property('authenticatedUser', null);
-          expect(errors).to.equal(undefined);
-        }
-      );
+      cy.graphql_query('/admin/api', '{ authenticatedUser { id } }').then(({ data, errors }) => {
+        expect(data).to.have.property('authenticatedUser', null);
+        expect(errors).to.equal(undefined);
+      });
     });
   });
 
@@ -172,12 +158,10 @@ describe('authenticated item', () => {
     });
 
     it('current user query returns user info', () => {
-      cy.graphql_query('/admin/api', '{ authenticatedUser { id } }').then(
-        ({ data, errors }) => {
-          expect(data).to.have.deep.property('authenticatedUser.id');
-          expect(errors).to.equal(undefined);
-        }
-      );
+      cy.graphql_query('/admin/api', '{ authenticatedUser { id } }').then(({ data, errors }) => {
+        expect(data).to.have.deep.property('authenticatedUser.id');
+        expect(errors).to.equal(undefined);
+      });
     });
   });
 });

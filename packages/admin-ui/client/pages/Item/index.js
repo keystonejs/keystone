@@ -14,23 +14,14 @@ import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import Footer from './Footer';
-import {
-  TriangleLeftIcon,
-  CheckIcon,
-  ClippyIcon,
-  PlusIcon,
-} from '@keystonejs/icons';
+import { TriangleLeftIcon, CheckIcon, ClippyIcon, PlusIcon } from '@keystonejs/icons';
 import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
 import { A11yText, H1 } from '@keystonejs/ui/src/primitives/typography';
 import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
 import { Alert } from '@keystonejs/ui/src/primitives/alert';
 import { AutocompleteCaptor } from '@keystonejs/ui/src/primitives/forms';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
-import {
-  deconstructErrorsToDataShape,
-  toastItemSuccess,
-  toastError,
-} from '../../util';
+import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
 
 import { resolveAllKeys } from '@keystonejs/utils';
 import isEqual from 'lodash.isequal';
@@ -181,18 +172,9 @@ const ItemDetails = withRouter(
       const { itemHasChanged, resetRequested } = this.state;
 
       return resetRequested ? (
-        <div
-          css={{ display: 'flex', alignItems: 'center', marginLeft: gridSize }}
-        >
-          <div css={{ fontSize: '0.9rem', marginRight: gridSize }}>
-            Are you sure?
-          </div>
-          <Button
-            appearance="danger"
-            autoFocus
-            onClick={this.onReset}
-            variant="ghost"
-          >
+        <div css={{ display: 'flex', alignItems: 'center', marginLeft: gridSize }}>
+          <div css={{ fontSize: '0.9rem', marginRight: gridSize }}>Are you sure?</div>
+          <Button appearance="danger" autoFocus onClick={this.onReset} variant="ghost">
             Reset
           </Button>
           <Button variant="subtle" onClick={this.hideConfirmResetMessage}>
@@ -330,11 +312,7 @@ const ItemDetails = withRouter(
             <H1>
               <TitleLink to={listHref}>{list.label}</TitleLink>: {item.name}
             </H1>
-            <IconButton
-              appearance="create"
-              icon={PlusIcon}
-              onClick={this.openCreateModal}
-            >
+            <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
               Create
             </IconButton>
           </FlexGroup>
@@ -407,25 +385,18 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
           // (ie; there could be partial data + partial errors)
           if (
             error &&
-            (!data ||
-              !data[list.itemQueryName] ||
-              !Object.keys(data[list.itemQueryName]).length)
+            (!data || !data[list.itemQueryName] || !Object.keys(data[list.itemQueryName]).length)
           ) {
             return (
               <Fragment>
                 <DocTitle>{list.singular} not found</DocTitle>
-                <ItemNotFound
-                  adminPath={adminPath}
-                  errorMessage={error.message}
-                  list={list}
-                />
+                <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
               </Fragment>
             );
           }
 
           const item = data[list.itemQueryName];
-          const itemErrors =
-            deconstructErrorsToDataShape(error)[list.itemQueryName] || {};
+          const itemErrors = deconstructErrorsToDataShape(error)[list.itemQueryName] || {};
 
           return item ? (
             <main>
@@ -434,10 +405,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
               </DocTitle>
               <Container id="toast-boundary">
                 <Mutation mutation={list.updateMutation}>
-                  {(
-                    updateItem,
-                    { loading: updateInProgress, error: updateError }
-                  ) => {
+                  {(updateItem, { loading: updateInProgress, error: updateError }) => {
                     if (updateError) {
                       const [title, ...rest] = updateError.message.split(/\:/);
                       const toastContent = rest.length ? (

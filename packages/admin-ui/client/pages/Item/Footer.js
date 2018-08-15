@@ -77,8 +77,7 @@ export default class Footer extends Component {
     const viewY = window.scrollY + window.innerHeight;
 
     const newSize = getWindowSize();
-    const sizeChanged =
-      newSize.x !== this.windowSize.x || newSize.y !== this.windowSize.y;
+    const sizeChanged = newSize.x !== this.windowSize.x || newSize.y !== this.windowSize.y;
     this.windowSize = newSize;
 
     const newState = {
