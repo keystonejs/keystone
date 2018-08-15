@@ -42,6 +42,7 @@ module.exports = {
       email: 'boris@keystonejs.com',
       company: 'thinkmill',
       isAdmin: true,
+      dob: '1990-01-01',
     },
     {
       name: 'Jed Watson',

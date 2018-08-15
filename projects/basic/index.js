@@ -9,6 +9,7 @@ const {
   Select,
   Password,
   Checkbox,
+  CalendarDay,
   CloudinaryImage,
 } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
@@ -53,6 +54,7 @@ keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
+    dob: { type: CalendarDay },
     password: { type: Password },
     isAdmin: { type: Checkbox },
     company: {
