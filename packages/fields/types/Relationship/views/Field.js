@@ -88,10 +88,10 @@ export default class RelationshipField extends Component {
                 if (many) {
                   if (!Array.isArray(item[field.path])) value = [];
                   value = item[field.path]
-                    .map(i => options.filter(option => option.value.id === i.id)[0])
+                    .map(i => options.find(option => option.value.id === i.id))
                     .filter(i => i);
                 } else if (item[field.path]) {
-                  value = options.filter(i => i.value.id === item[field.path].id)[0] || null;
+                  value = options.find(i => i.value.id === item[field.path].id) || null;
                 }
               }
 

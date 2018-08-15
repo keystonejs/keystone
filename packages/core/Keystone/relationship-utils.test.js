@@ -373,7 +373,7 @@ describe('createRelationships', () => {
 
     lists.Post.adapter.update.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
-      ...createdItems.Post.filter(post => post.id === id)[0],
+      ...createdItems.Post.find(post => post.id === id),
       ...data,
     }));
 
@@ -417,7 +417,7 @@ describe('createRelationships', () => {
 
     lists.Post.adapter.update.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
-      ...createdItems.Post.filter(post => post.id === id)[0],
+      ...createdItems.Post.find(post => post.id === id),
       ...data,
     }));
 
@@ -462,7 +462,7 @@ describe('createRelationships', () => {
 
     lists.Post.adapter.update.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
-      ...createdItems.Post.filter(post => post.id === id)[0],
+      ...createdItems.Post.find(post => post.id === id),
       ...data,
     }));
 
@@ -517,7 +517,7 @@ describe('createRelationships', () => {
 
     lists.User.adapter.update.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
-      ...createdItems.User.filter(post => post.id === id)[0],
+      ...createdItems.User.find(post => post.id === id),
       ...data,
     }));
 
@@ -574,7 +574,7 @@ describe('createRelationships', () => {
 
     lists.User.adapter.update.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
-      ...createdItems.User.filter(post => post.id === id)[0],
+      ...createdItems.User.find(post => post.id === id),
       ...data,
     }));
 
@@ -628,7 +628,7 @@ describe('createRelationships', () => {
 
     lists.User.adapter.update.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
-      ...createdItems.User.filter(post => post.id === id)[0],
+      ...createdItems.User.find(post => post.id === id),
       ...data,
     }));
 
@@ -682,7 +682,7 @@ describe('createRelationships', () => {
 
     lists.User.adapter.update.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
-      ...createdItems.User.filter(post => post.id === id)[0],
+      ...createdItems.User.find(post => post.id === id),
       ...data,
     }));
 
@@ -717,7 +717,7 @@ describe('createRelationships', () => {
 
     lists.Post.adapter.update.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
-      ...createdItems.Post.filter(post => post.id === id)[0],
+      ...createdItems.Post.find(post => post.id === id),
       ...data,
     }));
 
@@ -752,7 +752,7 @@ describe('createRelationships', () => {
 
     lists.Post.adapter.update.mockImplementation((id, data) => ({
       // Create a new object with the data merged in
-      ...createdItems.Post.filter(post => post.id === id)[0],
+      ...createdItems.Post.find(post => post.id === id),
       ...data,
     }));
 
