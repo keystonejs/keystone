@@ -10,4 +10,5 @@ module.exports = {
   File: require('./types/File'),
   CloudinaryImage: require('./types/CloudinaryImage'),
   CalendarDay: require('./types/CalendarDay'),
+  DateTime: require('./types/DateTime'),
 };
