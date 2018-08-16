@@ -1,4 +1,6 @@
 const camelize = (exports.camelize = str =>
+  // split the string into words (by whitespace), lowercase the leading character of the first word,
+  // uppercase the leading character of all other words, then join together.
   str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) => {
     if (+match === 0) return '';
     return index == 0 ? match.toLowerCase() : match.toUpperCase();
@@ -15,9 +17,11 @@ exports.fixConfigKeys = (config, remapKeys = {}) => {
   return rtn;
 };
 
-exports.checkRequiredConfig = (config, requiredKeys = {}) => {
-  Object.keys(requiredKeys).forEach(key => {
-    if (config[key] === undefined) throw requiredKeys[key];
+exports.checkRequiredConfig = (config, requiredKeys = []) => {
+  requiredKeys.forEach(key => {
+    if (config[key] === undefined) {
+      throw new Error(`Required key ${key} is not defined in the config`);
+    }
   });
 };
 

@@ -1,6 +1,6 @@
 const { fixConfigKeys, checkRequiredConfig } = require('@keystonejs/utils');
 
-const requiredConfig = {};
+const requiredConfig = [];
 
 const defaultConfig = {
   port: process.env.PORT || 3000,
