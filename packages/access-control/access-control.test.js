@@ -42,13 +42,18 @@ describe('Access control package tests', () => {
 
     // StaticAccess | ImperativeAccess | DeclarativeAccess are valid per-operation access modes
     [...statics, ...imperatives].forEach(defaultAccess => {
-      [...statics, ...imperatives, ...declaratives].forEach(opAccess => {
-        const access = { read: opAccess };
-        expect(parseListAccess({ defaultAccess, access })).toEqual({
-          create: defaultAccess,
-          read: opAccess,
-          update: defaultAccess,
-          delete: defaultAccess,
+      // NOTE: create is handled differently below
+      ['read', 'update', 'delete'].forEach(operation => {
+        [...statics, ...imperatives, ...declaratives].forEach(opAccess => {
+          const access = { [operation]: opAccess };
+          expect(parseListAccess({ defaultAccess, access })).toEqual({
+            create: defaultAccess,
+            read: defaultAccess,
+            update: defaultAccess,
+            delete: defaultAccess,
+            // Override the specific operation we are trying
+            ...{ [operation]: opAccess },
+          });
         });
       });
 
@@ -112,17 +117,23 @@ describe('Access control package tests', () => {
 
     // StaticAccess | ImperativeAccess are valid per-operation access modes
     [...statics, ...imperatives].forEach(defaultAccess => {
-      [...statics, ...imperatives].forEach(opAccess => {
-        const access = { read: opAccess };
-        expect(parseFieldAccess({ defaultAccess, access })).toEqual({
-          create: defaultAccess,
-          read: opAccess,
-          update: defaultAccess,
+      ['create', 'read', 'update'].forEach(operation => {
+        [...statics, ...imperatives].forEach(opAccess => {
+          const access = { [operation]: opAccess };
+          expect(parseFieldAccess({ defaultAccess, access })).toEqual({
+            create: defaultAccess,
+            read: defaultAccess,
+            update: defaultAccess,
+            // Override the specific operation we are trying
+            ...{ [operation]: opAccess },
+          });
         });
-      });
 
-      // Misc values are not valid per-operation access modes
-      expect(() => parseFieldAccess({ defaultAccess, access: { read: 10 } })).toThrow(Error);
+        // Misc values are not valid per-operation access modes
+        expect(() => parseFieldAccess({ defaultAccess, access: { [operation]: 10 } })).toThrow(
+          Error
+        );
+      });
     });
 
     expect(() => parseFieldAccess({ access: { a: 1 } })).toThrow(Error);
@@ -151,145 +162,85 @@ describe('Access control package tests', () => {
   test('testListAccessControl', () => {
     let operation = 'read';
     const access = { [operation]: true };
-    const authentication = {};
 
     // Test the static case: returning a boolean
     expect(testListAccessControl({ access: { [operation]: true }, operation })).toBe(true);
     expect(testListAccessControl({ access: { [operation]: false }, operation })).toBe(false);
     expect(() => testListAccessControl({ access: { [operation]: 10 }, operation })).toThrow(Error);
 
-    // Boolean function
-    access[operation] = () => true;
-    expect(
-      testListAccessControl({
-        access: { [operation]: () => true },
-        operation,
-        authentication,
-      })
-    ).toBe(true);
-    expect(
-      testListAccessControl({
-        access: { [operation]: () => false },
-        operation,
-        authentication,
-      })
-    ).toBe(false);
-    // Object function
-    expect(
-      testListAccessControl({
-        access: { [operation]: () => ({ a: 1 }) },
-        operation,
-        authentication,
-      })
-    ).toEqual({ a: 1 });
+    [{}, { item: {} }].forEach(authentication => {
+      operation = 'read';
 
-    // Object function with create operation
-    operation = 'create';
-    expect(() =>
-      testListAccessControl({
-        access: { [operation]: () => ({ a: 1 }) },
-        operation,
-        authentication,
-      })
-    ).toThrow(Error);
+      // Boolean function
+      access[operation] = () => true;
+      expect(
+        testListAccessControl({
+          access: { [operation]: () => true },
+          operation,
+          authentication,
+        })
+      ).toBe(true);
+      expect(
+        testListAccessControl({
+          access: { [operation]: () => false },
+          operation,
+          authentication,
+        })
+      ).toBe(false);
+      // Object function
+      expect(
+        testListAccessControl({
+          access: { [operation]: () => ({ a: 1 }) },
+          operation,
+          authentication,
+        })
+      ).toEqual({ a: 1 });
 
-    // Number function
-    expect(() =>
-      testListAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
-    ).toThrow(Error);
+      // Object function with create operation
+      operation = 'create';
+      expect(() =>
+        testListAccessControl({
+          access: { [operation]: () => ({ a: 1 }) },
+          operation,
+          authentication,
+        })
+      ).toThrow(Error);
 
-    operation = 'read';
-    authentication.item = {};
-
-    // Boolean function
-    access[operation] = () => true;
-    expect(
-      testListAccessControl({
-        access: { [operation]: () => true },
-        operation,
-        authentication,
-      })
-    ).toBe(true);
-    expect(
-      testListAccessControl({
-        access: { [operation]: () => false },
-        operation,
-        authentication,
-      })
-    ).toBe(false);
-    // Object function
-    expect(
-      testListAccessControl({
-        access: { [operation]: () => ({ a: 1 }) },
-        operation,
-        authentication,
-      })
-    ).toEqual({ a: 1 });
-
-    // Object function with create operation
-    operation = 'create';
-    expect(() =>
-      testListAccessControl({
-        access: { [operation]: () => ({ a: 1 }) },
-        operation,
-        authentication,
-      })
-    ).toThrow(Error);
-
-    // Number function
-    expect(() =>
-      testListAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
-    ).toThrow(Error);
+      // Number function
+      expect(() =>
+        testListAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
+      ).toThrow(Error);
+    });
   });
 
   test('testFieldAccessControl', () => {
     const operation = 'read';
-    const authentication = {};
     // Test the StaticAccess case: returning a boolean
     expect(testFieldAccessControl({ access: { [operation]: true }, operation })).toBe(true);
     expect(testFieldAccessControl({ access: { [operation]: false }, operation })).toBe(false);
     expect(() => testFieldAccessControl({ access: { [operation]: 10 }, operation })).toThrow(Error);
 
-    // Test the ImperativeAccess case: a function which should return boolean
-    expect(
-      testFieldAccessControl({
-        access: { [operation]: () => true },
-        operation,
-        authentication,
-      })
-    ).toBe(true);
+    [{}, { item: {} }].forEach(authentication => {
+      // Test the ImperativeAccess case: a function which should return boolean
+      expect(
+        testFieldAccessControl({
+          access: { [operation]: () => true },
+          operation,
+          authentication,
+        })
+      ).toBe(true);
 
-    expect(
-      testFieldAccessControl({
-        access: { [operation]: () => false },
-        operation,
-        authentication,
-      })
-    ).toBe(false);
+      expect(
+        testFieldAccessControl({
+          access: { [operation]: () => false },
+          operation,
+          authentication,
+        })
+      ).toBe(false);
 
-    expect(() =>
-      testFieldAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
-    ).toThrow(Error);
-
-    authentication.item = {};
-    expect(
-      testFieldAccessControl({
-        access: { [operation]: () => true },
-        operation,
-        authentication,
-      })
-    ).toBe(true);
-
-    expect(
-      testFieldAccessControl({
-        access: { [operation]: () => false },
-        operation,
-        authentication,
-      })
-    ).toBe(false);
-
-    expect(() =>
-      testFieldAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
-    ).toThrow(Error);
+      expect(() =>
+        testFieldAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
+      ).toThrow(Error);
+    });
   });
 });
