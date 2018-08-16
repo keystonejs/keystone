@@ -320,18 +320,18 @@ test('getAdminGraphqlMutations()', () => {
     `.trim(),
     `
         updateTest(
-          id: String!
+          id: ID!
           data: TestUpdateInput
         ): Test
     `.trim(),
     `
         deleteTest(
-          id: String!
+          id: ID!
         ): Test
     `.trim(),
     `
         deleteTests(
-          ids: [String!]
+          ids: [ID!]
         ): [Test]
      `.trim(),
   ]);

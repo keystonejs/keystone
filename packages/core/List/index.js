@@ -567,7 +567,7 @@ module.exports = class List {
     if (this.access.update) {
       mutations.push(`
         ${this.updateMutationName}(
-          id: String!
+          id: ID!
           data: ${this.key}UpdateInput
         ): ${this.key}
       `);
@@ -576,13 +576,13 @@ module.exports = class List {
     if (this.access.delete) {
       mutations.push(`
         ${this.deleteMutationName}(
-          id: String!
+          id: ID!
         ): ${this.key}
       `);
 
       mutations.push(`
         ${this.deleteManyMutationName}(
-          ids: [String!]
+          ids: [ID!]
         ): [${this.key}]
       `);
     }
