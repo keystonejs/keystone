@@ -219,7 +219,7 @@ test('getAdminGraphqlTypes()', () => {
     'email_types',
     `
         type Test {
-          id: String
+          id: ID
           # This virtual field will be resolved in one of the following ways (in this order):
           # 1. Execution of 'labelResolver' set on the Test List config, or
           # 2. As an alias to the field set on 'labelField' in the Test List config, or

@@ -235,7 +235,7 @@ module.exports = class List {
       // prettier-ignore
       types.push(`
         type ${this.key} {
-          id: String
+          id: ID
           # This virtual field will be resolved in one of the following ways (in this order):
           # 1. Execution of 'labelResolver' set on the ${this.key} List config, or
           # 2. As an alias to the field set on 'labelField' in the ${this.key} List config, or
