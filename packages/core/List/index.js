@@ -235,7 +235,7 @@ module.exports = class List {
       // prettier-ignore
       types.push(`
         type ${this.key} {
-          id: String
+          id: ID
           # This virtual field will be resolved in one of the following ways (in this order):
           # 1. Execution of 'labelResolver' set on the ${this.key} List config, or
           # 2. As an alias to the field set on 'labelField' in the ${this.key} List config, or
@@ -567,7 +567,7 @@ module.exports = class List {
     if (this.access.update) {
       mutations.push(`
         ${this.updateMutationName}(
-          id: String!
+          id: ID!
           data: ${this.key}UpdateInput
         ): ${this.key}
       `);
@@ -576,13 +576,13 @@ module.exports = class List {
     if (this.access.delete) {
       mutations.push(`
         ${this.deleteMutationName}(
-          id: String!
+          id: ID!
         ): ${this.key}
       `);
 
       mutations.push(`
         ${this.deleteManyMutationName}(
-          ids: [String!]
+          ids: [ID!]
         ): [${this.key}]
       `);
     }

@@ -12,7 +12,7 @@ import FieldTypes from '../FIELD_TYPES';
 const getUpdateMutation = ({ list }) => {
   return gql`
     mutation delete(
-      $id: String!,
+      $id: ID!,
       $data: ${list.key}UpdateInput)
     {
       ${list.updateMutationName}(id: $id, data: $data) {

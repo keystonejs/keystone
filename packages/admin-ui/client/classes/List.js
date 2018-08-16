@@ -16,7 +16,7 @@ const getCreateMutation = list => {
 const getUpdateMutation = list => {
   return gql`
     mutation update(
-      $id: String!,
+      $id: ID!,
       $data: ${list.key}UpdateInput)
     {
       ${list.updateMutationName}(id: $id, data: $data) {
@@ -28,7 +28,7 @@ const getUpdateMutation = list => {
 
 const getDeleteMutation = list => {
   return gql`
-    mutation delete($id: String!) {
+    mutation delete($id: ID!) {
       ${list.deleteMutationName}(id: $id) {
         id
       }
@@ -38,7 +38,7 @@ const getDeleteMutation = list => {
 
 const getDeleteManyMutation = list => {
   return gql`
-    mutation deleteMany($ids: [String!]) {
+    mutation deleteMany($ids: [ID!]) {
       ${list.deleteManyMutationName}(ids: $ids) {
         id
       }
