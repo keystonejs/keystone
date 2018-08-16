@@ -152,7 +152,7 @@ There are 3 ways to define the values of `access`, in order of flexibility:
 Described as a Flow type, it looks like this:
 
 ```js
-type GraphQLWhere = () => {}; // fake/placeholder
+type GraphQLWhere = {}; // fake/placeholder
 
 type AccessInput = {
   authentication: {

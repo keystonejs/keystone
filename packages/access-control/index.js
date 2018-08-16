@@ -2,11 +2,7 @@ const { getType, pick } = require('@keystonejs/utils');
 
 const validateGranularConfigTypes = (longHandAccess, validationError) => {
   const errors = Object.entries(longHandAccess)
-    .map(([accessType, accessConfig]) => {
-      const type = getType(accessConfig);
-
-      return validationError(type, accessType);
-    })
+    .map(([accessType, accessConfig]) => validationError(getType(accessConfig), accessType))
     .filter(error => error);
 
   if (errors.length) {
@@ -39,14 +35,14 @@ const parseGranularAccessConfig = ({
   if (Object.keys(longHandAccess).length === 0) {
     onGranularParseError();
   }
-
-  validateGranularConfigTypes(longHandAccess, validateGranularType);
-
   // Construct an object with all keys
-  return {
+  const finalAccess = {
     ...shorthandToObject(accessTypes, defaultAccess),
     ...longHandAccess,
   };
+  validateGranularConfigTypes(finalAccess, validateGranularType);
+
+  return finalAccess;
 };
 
 const parseAccess = ({
@@ -150,13 +146,12 @@ module.exports = {
 
   testListAccessControl({ access, listKey, operation, authentication }) {
     // Either a boolean or an object describing a where clause
+    let result;
     if (typeof access[operation] !== 'function') {
-      return access[operation];
+      result = access[operation];
+    } else {
+      result = access[operation]({ authentication: authentication.item ? authentication : {} });
     }
-
-    const result = access[operation]({
-      authentication: authentication.item ? authentication : {},
-    });
 
     const type = getType(result);
 
@@ -177,14 +172,15 @@ module.exports = {
   },
 
   testFieldAccessControl({ access, listKey, fieldKey, item, operation, authentication }) {
+    let result;
     if (typeof access[operation] !== 'function') {
-      return access[operation];
+      result = access[operation];
+    } else {
+      result = access[operation]({
+        authentication: authentication.item ? authentication : {},
+        item,
+      });
     }
-
-    const result = access[operation]({
-      authentication: authentication.item ? authentication : {},
-      item,
-    });
 
     const type = getType(result);
 
