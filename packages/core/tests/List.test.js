@@ -89,10 +89,10 @@ describe('new List()', () => {
       getAuth: () => {},
       defaultAccess: { list: true, field: true },
     });
-    expect(list.label).toEqual('Tests');
-    expect(list.singular).toEqual('Test');
-    expect(list.plural).toEqual('Tests');
-    expect(list.path).toEqual('tests');
+    expect(list.adminUILabels.label).toEqual('Tests');
+    expect(list.adminUILabels.singular).toEqual('Test');
+    expect(list.adminUILabels.plural).toEqual('Tests');
+    expect(list.adminUILabels.path).toEqual('tests');
     expect(list.itemQueryName).toEqual('Test');
     expect(list.listQueryName).toEqual('allTests');
     expect(list.listQueryMetaName).toEqual('_allTestsMeta');

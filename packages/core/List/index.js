@@ -99,10 +99,12 @@ module.exports = class List {
       );
     }
 
-    this.label = config.label || plural;
-    this.singular = config.singular || singular;
-    this.plural = config.plural || plural;
-    this.path = config.path || labelToPath(plural);
+    this.adminUILabels = {
+      label: config.label || plural,
+      singular: config.singular || singular,
+      plural: config.plural || plural,
+      path: config.path || labelToPath(plural),
+    };
 
     const itemQueryName = config.itemQueryName || labelToClass(singular);
     const listQueryName = config.listQueryName || labelToClass(plural);
@@ -166,10 +168,10 @@ module.exports = class List {
       // Reduce to truthy values (functions can't be passed over the webpack
       // boundary)
       access: mapKeys(this.access, val => !!val),
-      label: this.label,
-      singular: this.singular,
-      plural: this.plural,
-      path: this.path,
+      label: this.adminUILabels.label,
+      singular: this.adminUILabels.singular,
+      plural: this.adminUILabels.plural,
+      path: this.adminUILabels.path,
       listQueryName: this.listQueryName,
       listQueryMetaName: this.listQueryMetaName,
       listMetaName: this.listMetaName,
