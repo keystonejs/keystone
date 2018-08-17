@@ -1,10 +1,18 @@
 const camelize = (exports.camelize = str =>
   // split the string into words, lowercase the leading character of the first word,
   // uppercase the leading character of all other words, then join together.
+  // If the first word is all uppercase, lowercase the whole thing.
   str
     .split(' ')
     .filter(w => w)
-    .map((w, i) => w.replace(/\S/, c => (i === 0 ? c.toLowerCase() : c.toUpperCase())))
+    .map(
+      (w, i) =>
+        i === 0
+          ? w === w.toUpperCase()
+            ? w.toLowerCase()
+            : w.replace(/\S/, c => c.toLowerCase())
+          : w.replace(/\S/, c => c.toUpperCase())
+    )
     .join(''));
 
 exports.getType = thing => Object.prototype.toString.call(thing).replace(/\[object (.*)\]/, '$1');

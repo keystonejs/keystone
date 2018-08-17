@@ -23,7 +23,9 @@ describe('utils', () => {
     expect(camelize('A b')).toEqual('aB');
     expect(camelize('foo bar baz')).toEqual('fooBarBaz');
     expect(camelize('Foo Bar Baz')).toEqual('fooBarBaz');
-    expect(camelize('FOO BAR BAZ')).toEqual('fOOBARBAZ');
+    expect(camelize('FOO BAR BAZ')).toEqual('fooBARBAZ');
+    expect(camelize('HTTP request handler')).toEqual('httpRequestHandler');
+    expect(camelize('URL parser')).toEqual('urlParser');
   });
 
   test('getType', () => {
