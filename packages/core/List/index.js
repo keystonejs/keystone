@@ -109,15 +109,21 @@ module.exports = class List {
     const itemQueryName = config.itemQueryName || labelToClass(singular);
     const listQueryName = config.listQueryName || labelToClass(plural);
 
-    this.itemQueryName = itemQueryName;
-    this.listQueryName = `all${listQueryName}`;
-    this.listQueryMetaName = `_${this.listQueryName}Meta`;
-    this.listMetaName = `_${listQueryName}Meta`;
-    this.authenticatedQueryName = `authenticated${itemQueryName}`;
-    this.deleteMutationName = `delete${itemQueryName}`;
-    this.deleteManyMutationName = `delete${listQueryName}`;
-    this.updateMutationName = `update${itemQueryName}`;
-    this.createMutationName = `create${itemQueryName}`;
+    this.gqlNames = {
+      itemQueryName: itemQueryName,
+      listQueryName: `all${listQueryName}`,
+      listQueryMetaName: `_all${listQueryName}Meta`,
+      listMetaName: `_${listQueryName}Meta`,
+      authenticatedQueryName: `authenticated${itemQueryName}`,
+      deleteMutationName: `delete${itemQueryName}`,
+      deleteManyMutationName: `delete${listQueryName}`,
+      updateMutationName: `update${itemQueryName}`,
+      createMutationName: `create${itemQueryName}`,
+      whereInputName: `${itemQueryName}WhereInput`,
+      whereUniqueInputName: `${itemQueryName}WhereUniqueInput`,
+      updateInputName: `${itemQueryName}UpdateInput`,
+      createInputName: `${itemQueryName}CreateInput`,
+    };
 
     this.adapter = adapter.newListAdapter(this.key, this.config);
 
@@ -172,14 +178,18 @@ module.exports = class List {
       singular: this.adminUILabels.singular,
       plural: this.adminUILabels.plural,
       path: this.adminUILabels.path,
-      listQueryName: this.listQueryName,
-      listQueryMetaName: this.listQueryMetaName,
-      listMetaName: this.listMetaName,
-      itemQueryName: this.itemQueryName,
-      createMutationName: this.createMutationName,
-      updateMutationName: this.updateMutationName,
-      deleteMutationName: this.deleteMutationName,
-      deleteManyMutationName: this.deleteManyMutationName,
+      listQueryName: this.gqlNames.listQueryName,
+      listQueryMetaName: this.gqlNames.listQueryMetaName,
+      listMetaName: this.gqlNames.listMetaName,
+      itemQueryName: this.gqlNames.itemQueryName,
+      createMutationName: this.gqlNames.createMutationName,
+      updateMutationName: this.gqlNames.updateMutationName,
+      deleteMutationName: this.gqlNames.deleteMutationName,
+      deleteManyMutationName: this.gqlNames.deleteManyMutationName,
+      whereInputName: this.gqlNames.whereInputName,
+      whereUniqueInputName: this.gqlNames.whereUniqueInputName,
+      updateInputName: this.gqlNames.updateInputName,
+      createInputName: this.gqlNames.createInputName,
       fields: this.fields.filter(field => field.access.read).map(field => field.getAdminMeta()),
       views: this.views,
     };
@@ -253,7 +263,7 @@ module.exports = class List {
 
     if (this.access.read) {
       types.push(`
-        input ${this.itemQueryName}WhereInput {
+        input ${this.gqlNames.whereInputName} {
           id: ID
           id_not: ID
           id_in: [ID!]
@@ -262,7 +272,7 @@ module.exports = class List {
         }
       `);
       types.push(`
-        input ${this.itemQueryName}WhereUniqueInput {
+        input ${this.gqlNames.whereUniqueInputName} {
           id: ID!
         }
       `);
@@ -270,7 +280,7 @@ module.exports = class List {
 
     if (this.access.update) {
       types.push(`
-        input ${this.key}UpdateInput {
+        input ${this.gqlNames.updateInputName} {
           ${updateArgs}
         }
       `);
@@ -278,7 +288,7 @@ module.exports = class List {
 
     if (this.access.create) {
       types.push(`
-        input ${this.key}CreateInput {
+        input ${this.gqlNames.createInputName} {
           ${createArgs}
         }
       `);
@@ -294,7 +304,7 @@ module.exports = class List {
 
           # Pagination
           first: Int
-          skip: Int`;
+          skip: Int`.trim();
 
     // All the auxiliary queries the fields want to add
     const queries = this.fields
@@ -307,27 +317,29 @@ module.exports = class List {
     if (this.access.read) {
       // prettier-ignore
       queries.push(`
-        ${this.listQueryName}(
-          where: ${this.itemQueryName}WhereInput
+        ${this.gqlNames.listQueryName}(
+          where: ${this.gqlNames.whereInputName}
 
-          ${commonArgs.trim()}
+          ${commonArgs}
         ): [${this.key}]
 
-        ${this.itemQueryName}(where: ${this.itemQueryName}WhereUniqueInput!): ${this.key}
+        ${this.gqlNames.itemQueryName}(
+          where: ${this.gqlNames.whereUniqueInputName}!
+        ): ${this.key}
 
-        ${this.listQueryMetaName}(
-          where: ${this.itemQueryName}WhereInput
+        ${this.gqlNames.listQueryMetaName}(
+          where: ${this.gqlNames.whereInputName}
 
-          ${commonArgs.trim()}
+          ${commonArgs}
         ): _QueryMeta
 
-        ${this.listMetaName}: _ListMeta
+        ${this.gqlNames.listMetaName}: _ListMeta
       `);
     }
 
     if (this.getAuth()) {
       // If auth is enabled for this list (doesn't matter what strategy)
-      queries.push(`${this.authenticatedQueryName}: ${this.key}`);
+      queries.push(`${this.gqlNames.authenticatedQueryName}: ${this.key}`);
     }
 
     return queries;
@@ -374,7 +386,7 @@ module.exports = class List {
     // the graphql schema
     if (this.access.read) {
       resolvers = {
-        [this.listQueryName]: (_, args, context) => {
+        [this.gqlNames.listQueryName]: (_, args, context) => {
           const access = context.getListAccessControlForUser(this.key, 'read');
           if (!access) {
             // If the client handles errors correctly, it should be able to
@@ -383,7 +395,7 @@ module.exports = class List {
             throw new AccessDeniedError({
               data: {
                 type: 'query',
-                name: this.listQueryName,
+                name: this.gqlNames.listQueryName,
               },
               internalData: {
                 authedId: context.authedItem && context.authedItem.id,
@@ -396,7 +408,7 @@ module.exports = class List {
           return this.adapter.itemsQuery(queryArgs);
         },
 
-        [this.listQueryMetaName]: (_, args, context) => {
+        [this.gqlNames.listQueryMetaName]: (_, args, context) => {
           return {
             // Return these as functions so they're lazily evaluated depending
             // on what the user requested
@@ -410,7 +422,7 @@ module.exports = class List {
                 throw new AccessDeniedError({
                   data: {
                     type: 'query',
-                    name: this.listQueryMetaName,
+                    name: this.gqlNames.listQueryMetaName,
                   },
                   internalData: {
                     authedId: context.authedItem && context.authedItem.id,
@@ -424,7 +436,7 @@ module.exports = class List {
           };
         },
 
-        [this.listMetaName]: () => {
+        [this.gqlNames.listMetaName]: () => {
           return {
             // Return these as functions so they're lazily evaluated depending
             // on what the user requested
@@ -440,8 +452,8 @@ module.exports = class List {
           };
         },
 
-        [this.itemQueryName]: (_, { where: { id } }, context) =>
-          this.singleItemResolver({ id, context, name: this.itemQueryName }),
+        [this.gqlNames.itemQueryName]: (_, { where: { id } }, context) =>
+          this.singleItemResolver({ id, context, name: this.gqlNames.itemQueryName }),
       };
     }
 
@@ -449,7 +461,7 @@ module.exports = class List {
     // authenticate themselves, then they already have access to know that the
     // list exists
     if (this.getAuth()) {
-      resolvers[this.authenticatedQueryName] = (_, __, context) => {
+      resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context) => {
         if (!context.authedItem || context.authedListKey !== this.key) {
           return null;
         }
@@ -457,7 +469,7 @@ module.exports = class List {
         return this.singleItemResolver({
           id: context.authedItem.id,
           context,
-          name: this.authenticatedQueryName,
+          name: this.gqlNames.authenticatedQueryName,
         });
       };
     }
@@ -561,30 +573,30 @@ module.exports = class List {
     // function is executed later in the resolver)
     if (this.access.create) {
       mutations.push(`
-        ${this.createMutationName}(
-          data: ${this.key}CreateInput
+        ${this.gqlNames.createMutationName}(
+          data: ${this.gqlNames.createInputName}
         ): ${this.key}
       `);
     }
 
     if (this.access.update) {
       mutations.push(`
-        ${this.updateMutationName}(
+        ${this.gqlNames.updateMutationName}(
           id: ID!
-          data: ${this.key}UpdateInput
+          data: ${this.gqlNames.updateInputName}
         ): ${this.key}
       `);
     }
 
     if (this.access.delete) {
       mutations.push(`
-        ${this.deleteMutationName}(
+        ${this.gqlNames.deleteMutationName}(
           id: ID!
         ): ${this.key}
       `);
 
       mutations.push(`
-        ${this.deleteManyMutationName}(
+        ${this.gqlNames.deleteManyMutationName}(
           ids: [ID!]
         ): [${this.key}]
       `);
@@ -827,7 +839,7 @@ module.exports = class List {
       throw new AccessDeniedError({
         data: {
           type: 'mutation',
-          name: this.createMutationName,
+          name: this.gqlNames.createMutationName,
         },
         internalData: {
           authedId: context.authedItem && context.authedItem.id,
@@ -858,7 +870,7 @@ module.exports = class List {
       context,
       errorMeta: {
         type: 'mutation',
-        name: this.updateMutationName,
+        name: this.gqlNames.updateMutationName,
       },
     });
 
@@ -896,12 +908,12 @@ module.exports = class List {
     const mutationResolvers = {};
 
     if (this.access.create) {
-      mutationResolvers[this.createMutationName] = (_, { data }, context) =>
+      mutationResolvers[this.gqlNames.createMutationName] = (_, { data }, context) =>
         this.createMutation(data, context);
     }
 
     if (this.access.update) {
-      mutationResolvers[this.updateMutationName] = async (_, { id, data }, context) => {
+      mutationResolvers[this.gqlNames.updateMutationName] = async (_, { id, data }, context) => {
         return this.performActionOnItemWithAccessControl(
           {
             id,
@@ -909,7 +921,7 @@ module.exports = class List {
             operation: 'update',
             errorData: {
               type: 'mutation',
-              name: this.updateMutationName,
+              name: this.gqlNames.updateMutationName,
             },
           },
           async item => {
@@ -920,7 +932,7 @@ module.exports = class List {
               context,
               errorMeta: {
                 type: 'mutation',
-                name: this.updateMutationName,
+                name: this.gqlNames.updateMutationName,
               },
               errorMetaForLogging: {
                 itemId: id,
@@ -969,7 +981,7 @@ module.exports = class List {
     }
 
     if (this.access.delete) {
-      mutationResolvers[this.deleteMutationName] = async (_, { id }, context) => {
+      mutationResolvers[this.gqlNames.deleteMutationName] = async (_, { id }, context) => {
         return this.performActionOnItemWithAccessControl(
           {
             id,
@@ -977,7 +989,7 @@ module.exports = class List {
             operation: 'delete',
             errorData: {
               type: 'mutation',
-              name: this.deleteMutationName,
+              name: this.gqlNames.deleteMutationName,
             },
           },
           (/* item */) => {
@@ -987,7 +999,7 @@ module.exports = class List {
         );
       };
 
-      mutationResolvers[this.deleteManyMutationName] = async (_, { ids }, context) => {
+      mutationResolvers[this.gqlNames.deleteManyMutationName] = async (_, { ids }, context) => {
         return this.performMultiActionOnItemsWithAccessControl(
           {
             ids,
@@ -995,7 +1007,7 @@ module.exports = class List {
             operation: 'delete',
             errorData: {
               type: 'mutation',
-              name: this.deleteManyMutationName,
+              name: this.gqlNames.deleteManyMutationName,
             },
           },
           items => Promise.all(items.map(item => this.adapter.delete(item.id).then(() => item)))

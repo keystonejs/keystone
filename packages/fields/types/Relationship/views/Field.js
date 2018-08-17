@@ -12,7 +12,7 @@ import { pick } from '@keystonejs/utils';
 const getGraphqlQuery = refList => {
   // TODO: How can we replace this with field.Controller.getQueryFragment()?
   return gql`{
-    ${refList.listQueryName} {
+    ${refList.gqlNames.listQueryName} {
       id
       _label_
     }
@@ -77,7 +77,7 @@ export default class RelationshipField extends Component {
               // not the related list, or some items on the list)
               if (error) return 'Error';
 
-              const options = data[refList.listQueryName].map(listData => ({
+              const options = data[refList.gqlNames.listQueryName].map(listData => ({
                 value: pick(listData, ['id']),
                 label: listData._label_, // eslint-disable-line no-underscore-dangle
               }));
