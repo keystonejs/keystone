@@ -110,6 +110,7 @@ module.exports = class List {
     const listQueryName = config.listQueryName || labelToClass(plural);
 
     this.gqlNames = {
+      outputTypeName: this.key,
       itemQueryName: itemQueryName,
       listQueryName: `all${listQueryName}`,
       listQueryMetaName: `_all${listQueryName}Meta`,
@@ -248,7 +249,7 @@ module.exports = class List {
     if (this.access.read || this.access.create || this.access.update || this.access.delete) {
       // prettier-ignore
       types.push(`
-        type ${this.key} {
+        type ${this.gqlNames.outputTypeName} {
           id: ID
           # This virtual field will be resolved in one of the following ways (in this order):
           # 1. Execution of 'labelResolver' set on the ${this.key} List config, or
@@ -321,11 +322,11 @@ module.exports = class List {
           where: ${this.gqlNames.whereInputName}
 
           ${commonArgs}
-        ): [${this.key}]
+        ): [${this.gqlNames.outputTypeName}]
 
         ${this.gqlNames.itemQueryName}(
           where: ${this.gqlNames.whereUniqueInputName}!
-        ): ${this.key}
+        ): ${this.gqlNames.outputTypeName}
 
         ${this.gqlNames.listQueryMetaName}(
           where: ${this.gqlNames.whereInputName}
@@ -339,7 +340,7 @@ module.exports = class List {
 
     if (this.getAuth()) {
       // If auth is enabled for this list (doesn't matter what strategy)
-      queries.push(`${this.gqlNames.authenticatedQueryName}: ${this.key}`);
+      queries.push(`${this.gqlNames.authenticatedQueryName}: ${this.gqlNames.outputTypeName}`);
     }
 
     return queries;
@@ -531,8 +532,7 @@ module.exports = class List {
         _label_: this.config.labelResolver,
       }
     );
-
-    return { [this.key]: fieldResolvers };
+    return { [this.gqlNames.outputTypeName]: fieldResolvers };
   }
 
   getAuxiliaryTypeResolvers() {
@@ -575,7 +575,7 @@ module.exports = class List {
       mutations.push(`
         ${this.gqlNames.createMutationName}(
           data: ${this.gqlNames.createInputName}
-        ): ${this.key}
+        ): ${this.gqlNames.outputTypeName}
       `);
     }
 
@@ -584,7 +584,7 @@ module.exports = class List {
         ${this.gqlNames.updateMutationName}(
           id: ID!
           data: ${this.gqlNames.updateInputName}
-        ): ${this.key}
+        ): ${this.gqlNames.outputTypeName}
       `);
     }
 
@@ -592,13 +592,13 @@ module.exports = class List {
       mutations.push(`
         ${this.gqlNames.deleteMutationName}(
           id: ID!
-        ): ${this.key}
+        ): ${this.gqlNames.outputTypeName}
       `);
 
       mutations.push(`
         ${this.gqlNames.deleteManyMutationName}(
           ids: [ID!]
-        ): [${this.key}]
+        ): [${this.gqlNames.outputTypeName}]
       `);
     }
 
