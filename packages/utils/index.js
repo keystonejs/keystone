@@ -1,8 +1,19 @@
 const camelize = (exports.camelize = str =>
-  str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) => {
-    if (+match === 0) return '';
-    return index == 0 ? match.toLowerCase() : match.toUpperCase();
-  }));
+  // split the string into words, lowercase the leading character of the first word,
+  // uppercase the leading character of all other words, then join together.
+  // If the first word is all uppercase, lowercase the whole thing.
+  str
+    .split(' ')
+    .filter(w => w)
+    .map(
+      (w, i) =>
+        i === 0
+          ? w === w.toUpperCase()
+            ? w.toLowerCase()
+            : w.replace(/\S/, c => c.toLowerCase())
+          : w.replace(/\S/, c => c.toUpperCase())
+    )
+    .join(''));
 
 exports.getType = thing => Object.prototype.toString.call(thing).replace(/\[object (.*)\]/, '$1');
 
@@ -15,9 +26,11 @@ exports.fixConfigKeys = (config, remapKeys = {}) => {
   return rtn;
 };
 
-exports.checkRequiredConfig = (config, requiredKeys = {}) => {
-  Object.keys(requiredKeys).forEach(key => {
-    if (config[key] === undefined) throw requiredKeys[key];
+exports.checkRequiredConfig = (config, requiredKeys = []) => {
+  requiredKeys.forEach(key => {
+    if (config[key] === undefined) {
+      throw new Error(`Required key ${key} is not defined in the config`);
+    }
   });
 };
 
