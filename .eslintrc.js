@@ -25,7 +25,7 @@ module.exports = {
       },
     ],
     'object-curly-spacing': ['error', 'always'],
-    quotes: ['error', 'single', 'avoid-escape'],
+    quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
     'react/jsx-boolean-value': 'warn',
     'react/jsx-no-undef': 'error',
     'react/jsx-uses-react': 'error',
