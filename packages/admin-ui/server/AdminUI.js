@@ -41,8 +41,8 @@ module.exports = class AdminUI {
     try {
       // TODO: How could we support, for example, the twitter auth flow?
       const result = await this.authStrategy.validate({
-        username: req.body.username,
-        password: req.body.password,
+        identity: req.body.username,
+        secret: req.body.password,
       });
 
       if (!result.success) {

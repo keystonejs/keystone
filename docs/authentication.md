@@ -47,11 +47,10 @@ authentication against the UI.
 
 This strategy requires two fields to exist on a given list:
 
-- `username: Text`
-- `password: Password`
+- An `identity` field that identifies the item being authenticatd (default: `email`)
+- A `secret` field that confirms the identity of the agent making the auth request (default: `password`)
 
-The values of these fields will then be checked against when verifying a user
-login:
+The values of these fields will then be checked against when verifying a user login:
 
 ```javascript
 const { Text, Password } = require('@keystonejs/fields');
@@ -69,6 +68,10 @@ keystone.createList('User', {
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
+  config: {
+    identityField: 'username',
+    secretField: 'password',
+  }
 });
 
 // ... Later on, in some route handler
@@ -77,8 +80,8 @@ const username = // ...
 const password = // ...
 
 const result = await this.authStrategy.validate({
-  username,
-  password,
+  identity: username,
+  secret: password,
 });
 
 if (result.success) {
