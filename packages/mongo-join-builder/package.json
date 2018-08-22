@@ -10,7 +10,7 @@
   "dependencies": {
     "@keystonejs/utils": "^1.0.0",
     "cuid": "^2.1.1",
-    "mongoose": "<5.1.0"
+    "mongoose": "^5.2.7"
   },
   "devDependencies": {
     "lodash.omitby": "^4.6.0",

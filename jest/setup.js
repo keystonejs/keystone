@@ -13,6 +13,8 @@ test.failing = (title, testFn) => {
       // Test is expected to fail
       return;
     }
-    throw new Error(`Expected test '${title}' to fail. If this previously failing case now passes, consider removing '.failing' from the test definition`);
+    throw new Error(
+      `Expected test '${title}' to fail. If this previously failing case now passes, consider removing '.failing' from the test definition`
+    );
   });
 };

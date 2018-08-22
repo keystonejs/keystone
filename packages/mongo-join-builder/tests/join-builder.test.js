@@ -42,7 +42,7 @@ describe('join builder', () => {
       }
 
     */
-    const { joinQuery, mutator } = joinBuilder({
+    const { joinQuery } = joinBuilder({
       relationships: {
         abc123: {
           from: 'user-collection',
@@ -117,7 +117,7 @@ describe('join builder', () => {
       }
 
     */
-    const { joinQuery, mutator } = joinBuilder({
+    const { joinQuery } = joinBuilder({
       relationships: {
         abc123: {
           from: 'posts-collection',
@@ -147,9 +147,7 @@ describe('join builder', () => {
           pipeline: [
             {
               $match: {
-                $and: [
-                  { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } },
-                ],
+                $and: [{ $expr: { $in: ['$_id', '$$abc123_posts_ids'] } }],
               },
             },
             {
@@ -185,7 +183,6 @@ describe('join builder', () => {
     ]);
   });
 
-
   test('correctly generates joins for relationships with postJoinPipeline', () => {
     /*
      * From this query:
@@ -197,20 +194,20 @@ describe('join builder', () => {
       }
 
     */
-    const { joinQuery, mutator } = joinBuilder({
+    const { joinQuery } = joinBuilder({
       relationships: {
         abc123: {
           from: 'posts-collection',
           field: 'posts',
           pipeline: [],
           match: [{ abc123_posts_some: { $eq: true } }],
-          postJoinPipeline: [ { $orderBy: 'title' } ],
+          postJoinPipeline: [{ $orderBy: 'title' }],
           postQueryMutation: jest.fn(),
           many: true,
         },
       },
       pipeline: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
-      postJoinPipeline: [ { $limit: 10 } ],
+      postJoinPipeline: [{ $limit: 10 }],
     });
 
     expect(joinQuery).toMatchObject([
@@ -229,9 +226,7 @@ describe('join builder', () => {
           pipeline: [
             {
               $match: {
-                $and: [
-                  { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } },
-                ],
+                $and: [{ $expr: { $in: ['$_id', '$$abc123_posts_ids'] } }],
               },
             },
             {
@@ -292,7 +287,7 @@ describe('join builder', () => {
       }
 
     */
-    const { joinQuery, mutator } = joinBuilder({
+    const { joinQuery } = joinBuilder({
       relationships: {
         abc123: {
           from: 'posts-collection',
@@ -482,7 +477,7 @@ describe('join builder', () => {
       }
     */
 
-    const { joinQuery, mutator } = joinBuilder({
+    const { joinQuery } = joinBuilder({
       relationships: {
         zip567: {
           from: 'posts-collection',
@@ -630,7 +625,7 @@ describe('join builder', () => {
     const mutationResult = {};
     const postQueryMutation = jest.fn(() => mutationResult);
 
-    const { joinQuery, mutator } = joinBuilder({
+    const { mutator } = joinBuilder({
       relationships: {
         zip567: {
           from: 'posts-collection',
@@ -739,7 +734,7 @@ describe('join builder', () => {
       }
 
     */
-    const { joinQuery, mutator } = joinBuilder({
+    const { mutator } = joinBuilder({
       relationships: {
         abc123: {
           from: 'posts-collection',
@@ -790,9 +785,7 @@ describe('join builder', () => {
           {
             def456_tags: [
               {
-                xyz890_posts: [
-                  { published: true, title: 'zap' },
-                ],
+                xyz890_posts: [{ published: true, title: 'zap' }],
               },
             ],
           },
@@ -803,9 +796,7 @@ describe('join builder', () => {
           {
             def456_tags: [
               {
-                xyz890_posts: [
-                  { published: true, title: 'bang' },
-                ],
+                xyz890_posts: [{ published: true, title: 'bang' }],
               },
               {
                 xyz890_posts: [
@@ -839,9 +830,7 @@ describe('join builder', () => {
         def456_tags: [
           {
             xyz890_mutated: true,
-            xyz890_posts: [
-              { published: true, title: 'bang' },
-            ],
+            xyz890_posts: [{ published: true, title: 'bang' }],
           },
           {
             xyz890_mutated: true,
@@ -860,9 +849,7 @@ describe('join builder', () => {
               def456_tags: [
                 {
                   xyz890_mutated: true,
-                  xyz890_posts: [
-                    { published: true, title: 'zap' },
-                  ],
+                  xyz890_posts: [{ published: true, title: 'zap' }],
                 },
               ],
             },
@@ -874,9 +861,7 @@ describe('join builder', () => {
               def456_tags: [
                 {
                   xyz890_mutated: true,
-                  xyz890_posts: [
-                    { published: true, title: 'bang' },
-                  ],
+                  xyz890_posts: [{ published: true, title: 'bang' }],
                 },
                 {
                   xyz890_mutated: true,
@@ -905,9 +890,7 @@ describe('join builder', () => {
             def456_tags: [
               {
                 xyz890_mutated: true,
-                xyz890_posts: [
-                  { published: true, title: 'zap' },
-                ],
+                xyz890_posts: [{ published: true, title: 'zap' }],
               },
             ],
           },
@@ -922,9 +905,7 @@ describe('join builder', () => {
               def456_tags: [
                 {
                   xyz890_mutated: true,
-                  xyz890_posts: [
-                    { published: true, title: 'zap' },
-                  ],
+                  xyz890_posts: [{ published: true, title: 'zap' }],
                 },
               ],
             },
@@ -937,9 +918,7 @@ describe('join builder', () => {
               def456_tags: [
                 {
                   xyz890_mutated: true,
-                  xyz890_posts: [
-                    { published: true, title: 'bang' },
-                  ],
+                  xyz890_posts: [{ published: true, title: 'bang' }],
                 },
                 {
                   xyz890_mutated: true,
@@ -965,9 +944,7 @@ describe('join builder', () => {
             def456_tags: [
               {
                 xyz890_mutated: true,
-                xyz890_posts: [
-                  { published: true, title: 'zap' },
-                ],
+                xyz890_posts: [{ published: true, title: 'zap' }],
               },
             ],
           },
@@ -981,9 +958,7 @@ describe('join builder', () => {
             def456_tags: [
               {
                 xyz890_mutated: true,
-                xyz890_posts: [
-                  { published: true, title: 'bang' },
-                ],
+                xyz890_posts: [{ published: true, title: 'bang' }],
               },
               {
                 xyz890_mutated: true,

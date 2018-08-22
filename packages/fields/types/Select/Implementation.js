@@ -68,25 +68,13 @@ class MongoSelectInterface extends MongooseFieldAdapter {
     });
   }
 
-  getQueryConditions(args) {
-    const conditions = [];
-    const eq = this.path;
-    if (eq in args) {
-      conditions.push({ $eq: args[eq] });
-    }
-    const not = `${this.path}_not`;
-    if (not in args) {
-      conditions.push({ $ne: args[not] });
-    }
-    const is_in = `${this.path}_in`;
-    if (is_in in args) {
-      conditions.push({ $in: args[is_in] });
-    }
-    const not_in = `${this.path}_not_in`;
-    if (not_in in args) {
-      conditions.push({ $nin: args[not_in] });
-    }
-    return conditions;
+  getQueryConditions() {
+    return {
+      [this.path]: value => ({ [this.path]: { $eq: value } }),
+      [`${this.path}_not`]: value => ({ [this.path]: { $ne: value } }),
+      [`${this.path}_in`]: value => ({ [this.path]: { $in: value } }),
+      [`${this.path}_not_in`]: value => ({ [this.path]: { $nin: value } }),
+    };
   }
 }
 

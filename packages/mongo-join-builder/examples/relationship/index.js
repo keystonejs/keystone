@@ -8,15 +8,19 @@ const builder = joinBuilder({
     // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
     simple: (query, key, path) => {
       if (path[0] === 'fulfilled') {
-        return [{
-          // for the fulfilled clause, we want a direct equality check
-          [key]: { $eq: query[key] },
-        }];
+        return [
+          {
+            // for the fulfilled clause, we want a direct equality check
+            [key]: { $eq: query[key] },
+          },
+        ];
       } else {
-        return [{
-          // in this example, we want an 'in' check, so we use a regex
-          [key]: { $regex: new RegExp(query[key]) },
-        }];
+        return [
+          {
+            // in this example, we want an 'in' check, so we use a regex
+            [key]: { $regex: new RegExp(query[key]) },
+          },
+        ];
       }
     },
 
@@ -33,6 +37,7 @@ const builder = joinBuilder({
         // A mutation to run on the data post-join. Useful for merging joined
         // data back into the original object.
         // Executed on a depth-first basis for nested relationships.
+        // eslint-disable-next-line no-unused-vars
         postQueryMutation: (parentObj, keyOfRelationship, rootObj, pathToParent) => {
           // For this example, we want the joined items to overwrite the array
           //of IDs
@@ -59,7 +64,7 @@ const builder = joinBuilder({
         many: true,
       };
     },
-  }
+  },
 });
 
 const query = {
@@ -67,17 +72,15 @@ const query = {
   items: {
     name: 'a',
     stock: {},
-  }
+  },
 };
 
 (async () => {
   const database = await getDatabase();
 
   try {
-
     const result = await builder(query, getAggregate(database, 'orders'));
     console.log('orders:', prettyPrintResults(result));
-
   } catch (error) {
     console.error(error);
     process.exit(1);
@@ -93,13 +96,13 @@ function prettyPrintResults(result) {
 
 function getAggregate(database, collection) {
   return joinQuery => {
-    return (new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       database.collection(collection).aggregate(joinQuery, (error, cursor) => {
         if (error) {
           return reject(error);
         }
         return resolve(cursor.toArray());
       });
-    }));
+    });
   };
 }

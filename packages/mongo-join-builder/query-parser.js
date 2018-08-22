@@ -14,15 +14,17 @@ function cleanPipeline(pipeline) {
 
   // If it's 0 or 1 items, we can use it as-is. Any more needs an $and
   if (cleaned.length > 1) {
-    cleaned = [{
-      $and: cleaned,
-    }];
+    cleaned = [
+      {
+        $and: cleaned,
+      },
+    ];
   }
 
   return cleaned;
 }
 
-module.exports = (options) => {
+module.exports = options => {
   if (!options || !options.tokenizer || getType(options.tokenizer) !== 'Object') {
     throw new Error('Must supply a `tokenizer` object');
   }
@@ -38,7 +40,9 @@ module.exports = (options) => {
       const type = getType(ANDValue);
       const path = [...pathSoFar, 'AND', index];
       if (type !== 'Object') {
-        throw new Error(`Expected an Object for an AND condition, got ${type} at path ${path.join('.')}`);
+        throw new Error(
+          `Expected an Object for an AND condition, got ${type} at path ${path.join('.')}`
+        );
       }
       const parsedAND = parser(ANDValue, path);
 
@@ -88,14 +92,21 @@ module.exports = (options) => {
         args.push(uid);
       }
 
-      const queryAst = options.tokenizer[isRelationship ? 'relationship' : 'simple'].apply(null, args);
+      const queryAst = options.tokenizer[isRelationship ? 'relationship' : 'simple'].apply(
+        null,
+        args
+      );
 
       const astType = getType(queryAst);
       if (
-        (isRelationship && astType !== 'Object')
-        || (!isRelationship && !['Object', 'Array'].includes(astType))
+        (isRelationship && astType !== 'Object') ||
+        (!isRelationship && !['Object', 'Array'].includes(astType))
       ) {
-        throw new Error(`Must return an Object from 'tokenizer.${isRelationship ? 'relationship' : 'simple'}' function, given ${path.join('.')}`);
+        throw new Error(
+          `Must return an Object from 'tokenizer.${
+            isRelationship ? 'relationship' : 'simple'
+          }' function, given ${path.join('.')}`
+        );
       }
 
       if (isRelationship) {
@@ -117,7 +128,6 @@ module.exports = (options) => {
           }
         }
       }
-
     });
 
     return {

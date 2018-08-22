@@ -8,8 +8,9 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystonejs/utils": "^1.0.0",
     "@keystonejs/core": "^5.0.0",
+    "@keystonejs/mongo-join-builder": "^1.0.0",
+    "@keystonejs/utils": "^1.0.0",
     "mongoose": "^5.2.7"
   }
 }

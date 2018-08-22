@@ -147,13 +147,12 @@ class MongoPasswordInterface extends MongooseFieldAdapter {
     });
   }
 
-  getQueryConditions(args) {
-    const conditions = [];
-    const is_set = `${this.path}_is_set`;
-    if (is_set in args) {
-      conditions.push(args[is_set] ? { $regex: bcryptHashRegex } : { $not: bcryptHashRegex });
-    }
-    return conditions;
+  getQueryConditions() {
+    return {
+      [`${this.path}_is_set`]: value => ({
+        [this.path]: value ? { $regex: bcryptHashRegex } : { $not: bcryptHashRegex },
+      }),
+    };
   }
 }
 

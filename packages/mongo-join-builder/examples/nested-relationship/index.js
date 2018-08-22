@@ -6,13 +6,15 @@ const getDatabase = require('../database');
 const builder = joinBuilder({
   tokenizer: {
     // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
-    simple: (query, key, path) => ([{
-      [key]: { $eq: query[key] },
-    }]),
+    // eslint-disable-next-line no-unused-vars
+    simple: (query, key, path) => [
+      {
+        [key]: { $eq: query[key] },
+      },
+    ],
 
     // executed for complex query components (eg; items: { ... })
     relationship: (query, key, path, uid) => {
-
       const [field, filter] = key.split('_');
 
       const fieldToTableMap = {
@@ -26,6 +28,7 @@ const builder = joinBuilder({
         // A mutation to run on the data post-join. Useful for merging joined
         // data back into the original object.
         // Executed on a depth-first basis for nested relationships.
+        // eslint-disable-next-line no-unused-vars
         postQueryMutation: (parentObj, keyOfRelationship, rootObj, pathToParent) => {
           // For this example, we want the joined items to overwrite the array
           //of IDs
@@ -52,7 +55,7 @@ const builder = joinBuilder({
         many: true,
       };
     },
-  }
+  },
 });
 
 // Get all unfulfilled orders that have some out of stock items
@@ -64,19 +67,17 @@ const query = {
     // result we get back because we've filtered for only items that have 0
     // stock.
     stock_every: {
-      instock: 0
-    }
-  }
+      instock: 0,
+    },
+  },
 };
 
 (async () => {
   const database = await getDatabase();
 
   try {
-
     const result = await builder(query, getAggregate(database, 'orders'));
     console.log('orders:', prettyPrintResults(result));
-
   } catch (error) {
     console.error(error);
     process.exit(1);
@@ -92,13 +93,13 @@ function prettyPrintResults(result) {
 
 function getAggregate(database, collection) {
   return joinQuery => {
-    return (new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       database.collection(collection).aggregate(joinQuery, (error, cursor) => {
         if (error) {
           return reject(error);
         }
         return resolve(cursor.toArray());
       });
-    }));
+    });
   };
 }

@@ -57,13 +57,10 @@ function idsVariableName(uid, field, many) {
 function joinBuilder(query) {
   const { joinQuery, mutators } = constructJoin(query);
 
-  const mutator = (objToMutate) => {
-    return mutators.reduce(
-      (mutationTarget, relationshipMutator) => {
-        return relationshipMutator(mutationTarget);
-      },
-      objToMutate,
-    );
+  const mutator = objToMutate => {
+    return mutators.reduce((mutationTarget, relationshipMutator) => {
+      return relationshipMutator(mutationTarget);
+    }, objToMutate);
   };
 
   return { joinQuery, mutator };
@@ -78,7 +75,6 @@ function mutation(mutator, lookupPath) {
     function mutate(arrayToMutate, lookupPathFragment, pathSoFar = []) {
       const [keyToMutate, ...restOfLookupPath] = lookupPathFragment;
 
-
       return arrayToMutate.map((value, index) => {
         if (!(keyToMutate in value)) {
           return value;
@@ -92,11 +88,13 @@ function mutation(mutator, lookupPath) {
         // Recurse
         return {
           ...value,
-          [keyToMutate]: mutate(value[keyToMutate], restOfLookupPath, [...pathSoFar, index, keyToMutate]),
+          [keyToMutate]: mutate(value[keyToMutate], restOfLookupPath, [
+            ...pathSoFar,
+            index,
+            keyToMutate,
+          ]),
         };
       });
-
-      return arrayToMutate;
     }
 
     return mutate(rootArray, lookupPath);
@@ -119,24 +117,28 @@ function constructJoin(query, relationshipMeta, path = []) {
         combinedPipeline.unshift(
           // The ID / list of IDs we're joining by. Do this very first so it
           // limits any work required in subsequent steps / $and's.
-          { $expr: {
-            [many ? '$in' : '$eq']: ['$_id', `$$${idsVariableName(uid, field, many)}`] }
-          },
+          {
+            $expr: {
+              [many ? '$in' : '$eq']: ['$_id', `$$${idsVariableName(uid, field, many)}`],
+            },
+          }
         );
       }
     }
 
-    joinQuery.push({
-      $match: {
-        $and: combinedPipeline,
-      },
-    });
+    if (combinedPipeline.length) {
+      joinQuery.push({
+        $match: {
+          $and: combinedPipeline,
+        },
+      });
+    }
   }
 
   const mutators = [];
 
   if (relationships) {
-    Object.entries(relationships).forEach(([ uid, relationship ]) => {
+    Object.entries(relationships).forEach(([uid, relationship]) => {
       // eslint-disable-next-line no-shadow
       const { pipeline, postJoinPipeline, relationships, ...meta } = relationship;
 
@@ -147,7 +149,7 @@ function constructJoin(query, relationshipMeta, path = []) {
       const relationJoin = constructJoin(
         { pipeline, postJoinPipeline, relationships },
         { ...meta, uid },
-        relationPath,
+        relationPath
       );
 
       joinQuery.push({
@@ -161,16 +163,20 @@ function constructJoin(query, relationshipMeta, path = []) {
         },
       });
 
-      const everyCondition = { $eq: [ { $size: `$${uniqueField}` }, meta.many ? { $size: `$${meta.field}` } : 1 ] };
+      const everyCondition = {
+        $eq: [{ $size: `$${uniqueField}` }, meta.many ? { $size: `$${meta.field}` } : 1],
+      };
 
-      const noneCondition = { $eq: [ { $size: `$${uniqueField}` }, 0 ] };
+      const noneCondition = { $eq: [{ $size: `$${uniqueField}` }, 0] };
 
-      const someCondition = meta.many ? {
-        $and: [
-          { $gt: [ { $size: `$${uniqueField}` }, 0 ] },
-          { $lte: [ { $size: `$${uniqueField}` }, { $size: `$${meta.field}` } ] },
-        ]
-      } : everyCondition;
+      const someCondition = meta.many
+        ? {
+            $and: [
+              { $gt: [{ $size: `$${uniqueField}` }, 0] },
+              { $lte: [{ $size: `$${uniqueField}` }, { $size: `$${meta.field}` }] },
+            ],
+          }
+        : everyCondition;
 
       joinQuery.push({
         $addFields: {
@@ -180,13 +186,15 @@ function constructJoin(query, relationshipMeta, path = []) {
         },
       });
 
-      // This part is our client filtering expression. This determins if the
-      // parent item is included in the final list
-      joinQuery.push({
-        $match: {
-          $and: meta.match,
-        },
-      });
+      if (meta.match && meta.match.length) {
+        // This part is our client filtering expression. This determins if the
+        // parent item is included in the final list
+        joinQuery.push({
+          $match: {
+            $and: meta.match,
+          },
+        });
+      }
 
       // NOTE: Order is important. We want depth first, so we push the related
       // mutators first.
@@ -205,6 +213,6 @@ function constructJoin(query, relationshipMeta, path = []) {
   }
 
   return { joinQuery, mutators };
-};
+}
 
 module.exports = joinBuilder;

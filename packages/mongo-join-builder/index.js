@@ -2,7 +2,7 @@ const queryParser = require('./query-parser');
 const joinBuilder = require('./join-builder');
 const executor = require('./executor');
 
-module.exports = (parserOptions) => {
+module.exports = parserOptions => {
   const parser = queryParser(parserOptions);
   return async (query, aggregate) => {
     const queryTree = parser(query);

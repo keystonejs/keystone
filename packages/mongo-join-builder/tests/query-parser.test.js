@@ -265,6 +265,33 @@ describe('query parser', () => {
       ]);
     });
 
+    test('AND query with extra key', () => {
+      const simpleTokenizer = {
+        simple: jest.fn(() => []),
+      };
+      const parser = queryParser({ tokenizer: simpleTokenizer });
+
+      expect(() =>
+        parser({
+          AND: [{ name: 'foobar' }, { age_lte: 23 }],
+          age_gte: 20,
+        })
+      ).toThrow(Error);
+    });
+
+    test('AND query with invalid query type', () => {
+      const simpleTokenizer = {
+        simple: jest.fn(() => []),
+      };
+      const parser = queryParser({ tokenizer: simpleTokenizer });
+
+      expect(() =>
+        parser({
+          AND: [{ name: 'foobar' }, 23],
+        })
+      ).toThrow(Error);
+    });
+
     test('complex query with nested AND', () => {
       const complexTokenizer = {
         simple: jest.fn(() => []),

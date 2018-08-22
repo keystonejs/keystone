@@ -2,7 +2,7 @@ const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
 const { resolveAllKeys, mapKeys } = require('@keystonejs/utils');
 
-const { setupServer, graphqlRequest } = require('./util');
+const { setupServer, graphqlRequest } = require('../../util');
 
 let server;
 

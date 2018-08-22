@@ -5,20 +5,24 @@ const MongoDBMemoryServer = require('mongodb-memory-server').default;
 
 function getAggregate(database, collection) {
   return joinQuery => {
-    return (new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       database.collection(collection).aggregate(joinQuery, (error, cursor) => {
         if (error) {
           return reject(error);
         }
         return resolve(cursor.toArray());
       });
-    }));
+    });
   };
 }
 
 let mongoConnection;
 let mongoDb;
 let mongoServer;
+
+// `mongodb-memory-server` downloads a binary on first run in CI, which can take
+// a while, so we bump up the timeout here.
+jest.setTimeout(60000);
 
 beforeAll(async () => {
   mongoServer = new MongoDBMemoryServer();
@@ -55,7 +59,7 @@ describe('Testing against real data', () => {
       simple: jest.fn((query, key) => [
         {
           [key]: { $eq: query[key] },
-        }
+        },
       ]),
       relationship: jest.fn((query, key) => {
         const [table] = key.split('_');
@@ -127,7 +131,7 @@ describe('Testing against real data', () => {
       simple: jest.fn((query, key) => [
         {
           [key]: { $eq: query[key] },
-        }
+        },
       ]),
       relationship: jest.fn((query, key) => {
         const [table] = key.split('_');
@@ -198,7 +202,7 @@ describe('Testing against real data', () => {
       simple: jest.fn((query, key) => [
         {
           [key]: { $eq: query[key] },
-        }
+        },
       ]),
       relationship: jest.fn((query, key, path, uid) => {
         const tableMap = {
@@ -212,7 +216,7 @@ describe('Testing against real data', () => {
           postQueryMutation: (parentData, keyOfRelationship) => ({
             ...parentData,
             // Merge the found item back into the original key
-            [key]: parentData[keyOfRelationship][0]
+            [key]: parentData[keyOfRelationship][0],
           }),
           match: [{ [`${uid}_${key}_every`]: true }],
           many: false,
@@ -275,7 +279,7 @@ describe('Testing against real data', () => {
         author: {
           name: 'Jess',
           type: 'author',
-        }
+        },
       },
     ]);
   });
@@ -285,7 +289,7 @@ describe('Testing against real data', () => {
       simple: jest.fn((query, key) => [
         {
           [key]: { $eq: query[key] },
-        }
+        },
       ]),
       relationship: jest.fn((query, key, path, uid) => {
         const [table, criteria] = key.split('_');
@@ -372,7 +376,7 @@ describe('Testing against real data', () => {
           {
             title: 'An awesome post',
             status: 'draft',
-          }
+          },
         ],
       },
       {
@@ -388,7 +392,7 @@ describe('Testing against real data', () => {
             status: 'published',
           },
         ],
-      }
+      },
     ]);
   });
 
@@ -398,22 +402,18 @@ describe('Testing against real data', () => {
         const value = query[key];
         if (key === '$limit') {
           return {
-            postJoinPipeline: [
-              { $limit: value }
-            ],
+            postJoinPipeline: [{ $limit: value }],
           };
         } else if (key === '$sort') {
           const [sortBy, sortDirection] = value.split('_');
           return {
-            postJoinPipeline: [
-              { $sort: { [sortBy]: sortDirection === 'ASC' ? 1 : -1 } }
-            ],
+            postJoinPipeline: [{ $sort: { [sortBy]: sortDirection === 'ASC' ? 1 : -1 } }],
           };
         }
         return [
           {
             [key]: { $eq: value },
-          }
+          },
         ];
       }),
       relationship: jest.fn((query, key, path, uid) => {
@@ -514,7 +514,7 @@ describe('Testing against real data', () => {
       simple: jest.fn((query, key) => [
         {
           [key]: { $eq: query[key] },
-        }
+        },
       ]),
       relationship: jest.fn((query, key, path, uid) => {
         const [table, criteria] = key.split('_');
@@ -614,7 +614,7 @@ describe('Testing against real data', () => {
       simple: jest.fn((query, key) => [
         {
           [key]: { $eq: query[key] },
-        }
+        },
       ]),
       relationship: jest.fn((query, key, path, uid) => {
         const [table, criteria] = key.split('_');
@@ -689,10 +689,7 @@ describe('Testing against real data', () => {
     const joinQuery = {
       type: 'author',
       posts_every: {
-        AND: [
-          { approved: true },
-          { status: 'published' },
-        ],
+        AND: [{ approved: true }, { status: 'published' }],
       },
     };
 
@@ -723,7 +720,7 @@ describe('Testing against real data', () => {
       simple: jest.fn((query, key) => [
         {
           [key]: { $eq: query[key] },
-        }
+        },
       ]),
       relationship: jest.fn((query, key, path, uid) => {
         const [table, criteria] = key.split('_');
@@ -820,6 +817,5 @@ describe('Testing against real data', () => {
         ],
       },
     ]);
-
   });
 });

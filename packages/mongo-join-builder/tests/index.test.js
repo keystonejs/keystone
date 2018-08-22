@@ -75,7 +75,7 @@ describe('Test main export', () => {
       simple: jest.fn((query, key) => [
         {
           [key]: { $eq: query[key] },
-        }
+        },
       ]),
       relationship: jest.fn((query, key) => {
         const [table] = key.split('_');
@@ -83,7 +83,7 @@ describe('Test main export', () => {
           from: `${table}-collection`,
           field: table,
           postQueryMutation,
-          match: { $exists: true, $ne: [] },
+          match: [{ $exists: true, $ne: [] }],
           many: true,
         };
       }),
@@ -272,10 +272,12 @@ describe('Test main export', () => {
             },
             {
               $match: {
-                $and: {
-                  $exists: true,
-                  $ne: [],
-                },
+                $and: [
+                  {
+                    $exists: true,
+                    $ne: [],
+                  },
+                ],
               },
             },
             {
@@ -332,10 +334,12 @@ describe('Test main export', () => {
       },
       {
         $match: {
-          $and: {
-            $exists: true,
-            $ne: [],
-          },
+          $and: [
+            {
+              $exists: true,
+              $ne: [],
+            },
+          ],
         },
       },
       {
@@ -383,5 +387,55 @@ describe('Test main export', () => {
         ],
       },
     ]);
+  });
+
+  test('correctly rejects when error in simple tokeniser', async () => {
+    const tokenizer = {
+      simple: () => {
+        throw new Error('Whoops');
+      },
+      relationship: () => {},
+    };
+
+    const joinQuery = {
+      name: 'foobar',
+    };
+
+    const builder = mongoJoinBuilder({
+      tokenizer,
+    });
+
+    const aggregateResponse = [];
+
+    const aggregate = jest.fn(() => Promise.resolve(aggregateResponse));
+
+    await expect(builder(joinQuery, aggregate)).rejects.toThrow('Whoops');
+
+    expect(aggregate).not.toHaveBeenCalled();
+  });
+
+  test('correctly rejects when error in relationship tokeniser', async () => {
+    const tokenizer = {
+      simple: () => {},
+      relationship: () => {
+        throw new Error('Uh-oh');
+      },
+    };
+
+    const joinQuery = {
+      user: { name: 'foobar' },
+    };
+
+    const builder = mongoJoinBuilder({
+      tokenizer,
+    });
+
+    const aggregateResponse = [];
+
+    const aggregate = jest.fn(() => Promise.resolve(aggregateResponse));
+
+    await expect(builder(joinQuery, aggregate)).rejects.toThrow('Uh-oh');
+
+    expect(aggregate).not.toHaveBeenCalled();
   });
 });
