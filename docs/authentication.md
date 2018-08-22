@@ -43,48 +43,5 @@ authentication against the UI.
 
 ## Strategies
 
-### `PasswordAuthStrategy`
-
-This strategy requires two fields to exist on a given list:
-
-- An `identity` field that identifies the item being authenticatd (default: `email`)
-- A `secret` field that confirms the identity of the agent making the auth request (default: `password`)
-
-The values of these fields will then be checked against when verifying a user login:
-
-```javascript
-const { Text, Password } = require('@keystonejs/fields');
-const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
-
-// NOTE: Order of list/auth creation here is not important
-keystone.createList('User', {
-  fields: {
-    email: { type: Text },
-    password: { type: Password },
-    // ... other fields
-  },
-});
-
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-  config: {
-    identityField: 'username',
-    secretField: 'password',
-  }
-});
-
-// ... Later on, in some route handler
-
-const username = // ...
-const password = // ...
-
-const result = await this.authStrategy.validate({
-  identity: username,
-  secret: password,
-});
-
-if (result.success) {
-  // Valid credentials
-}
-```
+Auth strategies are
+[documented in the core package](../packages/core/auth/README.md).

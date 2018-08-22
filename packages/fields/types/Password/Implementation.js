@@ -6,7 +6,6 @@ const dumbPasswords = require('dumb-passwords');
 
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 
-
 class Password extends Implementation {
   constructor(path, config) {
     super(...arguments);
