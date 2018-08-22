@@ -107,7 +107,7 @@ class Relationship extends Implementation {
   constructor() {
     super(...arguments);
   }
-  getGraphqlSchema() {
+  getGraphqlOutputFields() {
     const { many, ref } = this.config;
     const type = many ? `[${ref}]` : ref;
     return `${this.path}: ${type}`;
@@ -137,7 +137,7 @@ class Relationship extends Implementation {
       `;
     }
   }
-  getGraphqlFieldResolvers() {
+  getGraphqlOutputFieldResolvers() {
     const { many, ref } = this.config;
     return {
       [this.path]: item => {

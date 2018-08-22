@@ -4,7 +4,12 @@ const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 class Password extends Implementation {
   constructor() {
     super(...arguments);
-    this.graphQLType = 'String';
+  }
+
+  getGraphqlOutputFields() {
+    return `
+      ${this.path}: String
+    `;
   }
   getGraphqlQueryArgs() {
     return `

@@ -4,7 +4,15 @@ const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 class Float extends Implementation {
   constructor() {
     super(...arguments);
-    this.graphQLType = 'Float';
+  }
+
+  getGraphqlOutputFields() {
+    return `
+      ${this.path}: Float
+    `;
+  }
+  getGraphqlOutputFieldResolvers() {
+    return { [`${this.path}`]: item => item[this.path] };
   }
 
   getGraphqlQueryArgs() {

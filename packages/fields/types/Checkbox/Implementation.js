@@ -4,7 +4,15 @@ const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 class Checkbox extends Implementation {
   constructor() {
     super(...arguments);
-    this.graphQLType = 'Boolean';
+  }
+
+  getGraphqlOutputFields() {
+    return `
+      ${this.path}: Boolean
+    `;
+  }
+  getGraphqlOutputFieldResolvers() {
+    return { [`${this.path}`]: item => item[this.path] };
   }
 
   getGraphqlQueryArgs() {

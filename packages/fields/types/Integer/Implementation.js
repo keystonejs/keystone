@@ -4,7 +4,15 @@ const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 class Integer extends Implementation {
   constructor() {
     super(...arguments);
-    this.graphQLType = 'Int';
+  }
+
+  getGraphqlOutputFields() {
+    return `
+      ${this.path}: Int
+    `;
+  }
+  getGraphqlOutputFieldResolvers() {
+    return { [`${this.path}`]: item => item[this.path] };
   }
 
   getGraphqlQueryArgs() {

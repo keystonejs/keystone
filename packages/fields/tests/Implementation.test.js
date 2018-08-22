@@ -50,21 +50,6 @@ test('addToMongooseSchema()', () => {
   }).toThrow(Error);
 });
 
-test('getGraphqlSchema()', () => {
-  const impl = new Field('path', config, args);
-
-  // By default graphQLType is undefined and getGraphqlSchema should throw an Error.
-  expect(impl.graphQLType).toBe(undefined);
-  expect(() => {
-    impl.getGraphqlSchema();
-  }).toThrowError(Error);
-
-  // Setting graphQLType should cause the method to return a valid value.
-  impl.graphQLType = 'graphQL type';
-  const value = impl.getGraphqlSchema();
-  expect(value).toEqual('path: graphQL type');
-});
-
 test('getGraphqlAuxiliaryTypes()', () => {
   const impl = new Field('path', config, args);
 
@@ -151,10 +136,10 @@ test('getGraphqlUpdateArgs()', () => {
   expect(value).toBe(undefined);
 });
 
-test('getGraphqlFieldResolvers()', () => {
+test('getGraphqlOutputFieldResolvers()', () => {
   const impl = new Field('path', config, args);
 
-  const value = impl.getGraphqlFieldResolvers();
+  const value = impl.getGraphqlOutputFieldResolvers();
   expect(value).toBe(undefined);
 });
 
