@@ -13,14 +13,14 @@ const {
   fieldAccessVariations,
 } = require('./cypress/integration/util');
 
-const { port, staticRoute, staticPath } = require('./config');
+const { port, staticRoute, staticPath, projectName } = require('./config');
 
 const initialData = require('./data');
 
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
-  name: process.env.PROJECT_NAME,
+  name: projectName,
   adapter: new MongooseAdapter(),
 });
 
