@@ -4,6 +4,9 @@ const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 const bcrypt = require('bcrypt');
 const dumbPasswords = require('dumb-passwords');
 
+const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
+
+
 class Password extends Implementation {
   constructor(path, config) {
     super(...arguments);
@@ -31,7 +34,7 @@ class Password extends Implementation {
     return {
       [`${this.path}_is_set`]: item => {
         const val = item[this.path];
-        return !(typeof val === 'undefined' || val === null || val === '');
+        return bcryptHashRegex.test(val);
       },
     };
   }
@@ -142,11 +145,7 @@ class MongoPasswordInterface extends MongooseFieldAdapter {
     const conditions = [];
     const is_set = `${this.path}_is_set`;
     if (is_set in args) {
-      conditions.push(
-        args[is_set]
-          ? { $exists: true, $nin: [null, ''] }
-          : { $not: { $exists: true, $nin: [null, ''] } }
-      );
+      conditions.push(args[is_set] ? { $regex: bcryptHashRegex } : { $not: bcryptHashRegex });
     }
     return conditions;
   }
