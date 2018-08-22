@@ -10,15 +10,17 @@
 const { Mongoose } = require('mongoose');
 const inflection = require('inflection');
 
+const appConfig = require('../../config');
+
 module.exports = async (on, config) => {
   // Make env vars available to cypress tests via `Cypress.env()`
   config.env = process.env;
 
-  config.baseUrl = `http://localhost:${process.env.PORT}`;
+  config.baseUrl = `http://localhost:${appConfig.port}`;
 
   const mongoose = new Mongoose();
   await mongoose.connect(
-    `mongodb://localhost/${inflection.dasherize(process.env.PROJECT_NAME).toLowerCase()}`
+    `mongodb://localhost/${inflection.dasherize(appConfig.projectName).toLowerCase()}`
   );
 
   const dbConnection = mongoose.connection.db;
