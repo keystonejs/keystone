@@ -51,7 +51,7 @@ module.exports = class AdminUI {
         return res.format({
           default: htmlResponse,
           'text/html': htmlResponse,
-          'application/json': () => res.json({ success: false }),
+          'application/json': () => res.json({ success: false, message: result.message }),
         });
       }
 

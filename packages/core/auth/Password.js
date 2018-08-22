@@ -11,6 +11,7 @@ class PasswordAuthStrategy {
     this.config = {
       identityField: 'email',
       secretField: 'password',
+      protectIdentities: false,
       ...config,
     };
   }
@@ -23,6 +24,9 @@ class PasswordAuthStrategy {
     // Validate the config
     const { identityField, secretField } = this.config;
     const secretFieldInstance = list.fieldsByPath[secretField];
+
+    const protectIds = this.config.protectIdentities;
+    const genericError = '[passwordAuth:failure] Authentication failed';
 
     // Ducktype the password field; it needs a comparison function
     if (
@@ -40,14 +44,26 @@ class PasswordAuthStrategy {
 
     // Match by identity
     const results = await list.adapter.find({ [identityField]: identity });
+
+    // If we failed to match an identity and we're protecting existing identities then combat timing
+    // attacks by creating an arbitrary hash (should take about as long has comparing an existing one)
+    if (results.length !== 1 && protectIds) {
+      // This may still leak if the workfactor for the password field has changed
+      await secretFieldInstance.generateHash('password1234');
+      return { success: false, message: genericError };
+    }
+
+    // Identity failures with helpful errors
     if (results.length === 0) {
-      const key = '[passwordAuth:noItemsIdentified]';
+      const key = '[passwordAuth:identity:notFound]';
       const message = `${key} The ${identityField} provided didn't identify any ${list.plural}`;
       return { success: false, message };
     }
     if (results.length > 1) {
-      const key = '[passwordAuth:multipleItemsIdentified]';
-      const message = `${key} The ${identityField} provided identified ${results.length} ${list.plural}`;
+      const key = '[passwordAuth:identity:multipleFound]';
+      const message = `${key} The ${identityField} provided identified ${results.length} ${
+        list.plural
+      }`;
       return { success: false, message };
     }
 
@@ -56,8 +72,12 @@ class PasswordAuthStrategy {
     const hash = item[secretField];
     const match = await secretFieldInstance.compare(secret, hash);
 
+    if (!match && protectIds) {
+      return { success: false, message: genericError };
+    }
+
     if (!match) {
-      const key = '[passwordAuth:secretMismatch]';
+      const key = '[passwordAuth:secret:mismatch]';
       const message = `${key} The ${secretField} provided is incorrect`;
       return { success: false, message };
     }

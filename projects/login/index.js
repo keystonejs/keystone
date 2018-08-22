@@ -23,6 +23,7 @@ const keystone = new Keystone({
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
+  // config: { protectIdentities: true },
 });
 
 keystone.createList('User', {
