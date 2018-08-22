@@ -130,17 +130,20 @@ module.exports = {
   },
 
   mergeWhereClause(args, where) {
-    if (getType(where) !== 'Object') {
+    if (getType(where) !== 'Object' || Object.keys(where).length === 0) {
       return args;
     }
 
-    // Access control is a where clause type
+    const mergedWhere =
+      args.where && Object.keys(args.where).length > 0
+        ? {
+            AND: [args.where, where],
+          }
+        : where;
+
     return {
       ...args,
-      where: {
-        ...args.where,
-        ...where,
-      },
+      where: mergedWhere,
     };
   },
 

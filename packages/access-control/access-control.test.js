@@ -149,14 +149,34 @@ describe('Access control package tests', () => {
     expect(mergeWhereClause(args, 10)).toEqual(args);
 
     let where = {};
-    expect(mergeWhereClause(args, where)).toEqual({ a: 1, where: {} });
+    expect(mergeWhereClause(args, where)).toEqual({ a: 1 });
 
     where = { b: 20 };
     expect(mergeWhereClause(args, where)).toEqual({ a: 1, where: { b: 20 } });
 
     args = { a: 1, where: { b: 2, c: 3, d: 4 } };
     where = { b: 20, c: 30 };
-    expect(mergeWhereClause(args, where)).toEqual({ a: 1, where: { b: 20, c: 30, d: 4 } });
+    expect(mergeWhereClause(args, where)).toEqual({
+      a: 1,
+      where: { AND: [{ b: 2, c: 3, d: 4 }, { b: 20, c: 30 }] },
+    });
+
+    args = { a: 1, where: {} };
+    where = { b: 20, c: 30 };
+    expect(mergeWhereClause(args, where)).toEqual({ a: 1, where: { b: 20, c: 30 } });
+
+    args = { a: 1, where: { b: 20, c: 30 } };
+    where = {};
+    expect(mergeWhereClause(args, where)).toEqual({ a: 1, where: { b: 20, c: 30 } });
+  });
+
+  test('mergeWhereClause doesnt clobber arrays', () => {
+    const args = { a: 1, where: { b: 2, c: ['1', '2'] } };
+    const where = { d: 20, c: ['3', '4'] };
+    expect(mergeWhereClause(args, where)).toEqual({
+      a: 1,
+      where: { AND: [{ b: 2, c: ['1', '2'] }, { d: 20, c: ['3', '4'] }] },
+    });
   });
 
   test('testListAccessControl', () => {
