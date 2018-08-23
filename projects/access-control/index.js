@@ -37,6 +37,7 @@ keystone.createList('User', {
     },
     password: {
       type: Password,
+      minLength: 2,
     },
     // Normally users might be multiple of each of these, but for demo purposes
     // we assume they can only be one at a time.

@@ -33,7 +33,13 @@ keystone.createList('User', {
 
 #### `minLength`
 
-This uses a naive `String().length` check to measure the length of supplied values.
+The minimum number of characters this field will accept.
+
+`minLength` must be greater than or equal to 1.
+Zero-length values can be suppled for a Password field but they will not be hashed;
+instead the stored value will be set to `null`.
+
+The length of supplied values is evaluated using `String().length`.
 Due to [JavaScript's Unicode problem](https://mathiasbynens.be/notes/javascript-unicode),
 this does not account well for multibyte characters (such as some emoji),
 multi-code-point glyphs and other Unicode magic.

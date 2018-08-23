@@ -12,7 +12,7 @@ class Password extends Implementation {
 
     // Sanitise field specific config
     this.rejectCommon = !!config.rejectCommon;
-    this.minLength = Math.max(Number.parseInt(config.minLength) || 8, 0);
+    this.minLength = Math.max(Number.parseInt(config.minLength) || 8, 1);
     // Min 4, max: 31, default: 10
     this.workFactor = Math.min(Math.max(Number.parseInt(config.workFactor) || 10, 4), 31);
 
