@@ -109,9 +109,15 @@ Responses to failed authentication attempts contain only a generic message and k
 
 - `[passwordAuth:failure]`
 
-Efforts are also taken to protect against timing attacks;
-the time spend verifying an actors credentials should be constant-time
-regardless of the reason for failure.
+This aligns with the Open Web Application Security Project (OWASP)
+[authentication guidelines](https://www.owasp.org/index.php/Authentication_Cheat_Sheet#Authentication_Responses)
+which state:
+
+> An application should respond with a generic error message regardless of whether the user ID or password was incorrect.
+> It should also give no indication to the status of an existing account.
+
+Efforts are also taken to protect against timing attacks.
+The time spend verifying an actors credentials should be constant-time regardless of the reason for failure.
 
 ## Twitter
 
