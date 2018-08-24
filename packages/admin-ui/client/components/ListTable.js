@@ -285,7 +285,7 @@ export default class ListTable extends Component {
     const { mouseOverSelectsRow } = this.state;
 
     return items.length ? (
-      <Table>
+      <Table id="ks-list-table">
         <colgroup>
           <col width="32" />
         </colgroup>

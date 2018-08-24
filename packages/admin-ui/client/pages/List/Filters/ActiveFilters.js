@@ -27,7 +27,7 @@ export default function ActiveFilters({ filterList, onClear, onRemove, onUpdate 
 
   return (
     <AnimateHeight style={{ paddingTop: gridSize }}>
-      <FlexGroup wrap>
+      <FlexGroup wrap id="ks-list-active-filters">
         {filterList.length
           ? filterList.map(filter => {
               const label = filter.field.formatFilter(filter);

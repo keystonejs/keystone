@@ -36,15 +36,17 @@ export default function ListPagination({
       >
         Manage
       </IconButton>
-      <Pagination
-        currentPage={currentPage}
-        displayCount
-        onChange={onChangePage}
-        pageSize={pageSize}
-        plural={list.plural}
-        single={list.label}
-        total={itemsCount}
-      />
+      <div id="ks-pagination">
+        <Pagination
+          currentPage={currentPage}
+          displayCount
+          onChange={onChangePage}
+          pageSize={pageSize}
+          plural={list.plural}
+          single={list.label}
+          total={itemsCount}
+        />
+      </div>
     </FlexGroup>
   );
 }

@@ -23,7 +23,7 @@ describe('Search', () => {
   ].forEach(({ url, searchTerm, found, notFound }) => {
     it(`Searching for "${searchTerm}" in ${url}`, () => {
       cy.visit(url);
-      cy.get('#list-search-input').type(searchTerm);
+      cy.get('#ks-list-search-input').type(searchTerm);
 
       found.forEach(name => {
         cy.get('main').should('contain', name);

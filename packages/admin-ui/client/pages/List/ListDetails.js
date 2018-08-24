@@ -110,6 +110,7 @@ class ListDetails extends Component<Props, State> {
     isManaging: false,
     selectedItems: [],
     showCreateModal: false,
+    searchValue: this.props.search,
   };
 
   // ==============================
@@ -125,6 +126,24 @@ class ListDetails extends Component<Props, State> {
 
   closeCreateModal = () => this.setState({ showCreateModal: false });
   openCreateModal = () => this.setState({ showCreateModal: true });
+
+  // ==============================
+  // Search
+  // ==============================
+  handleSearchChange = ({ target: { value } }) => {
+    this.setState({ searchValue: value }, () => {
+      this.props.handleSearchChange(value);
+    });
+  };
+  handleSearchClear = () => {
+    this.setState({ searchValue: '' });
+    this.props.handleSearchClear();
+    this.searchInput.focus();
+  };
+  handleSearchSubmit = event => {
+    event.preventDefault();
+    this.props.handleSearchSubmit();
+  };
 
   // ==============================
   // Management
@@ -181,7 +200,7 @@ class ListDetails extends Component<Props, State> {
   // ==============================
 
   getNoResultsMessage = () => {
-    const { filters, itemsCount, list, search } = this.props;
+    const { filters, itemsCount, list, search, currentPage, handlePageReset } = this.props;
 
     if (filters && filters.length) {
       return (
@@ -200,6 +219,20 @@ class ListDetails extends Component<Props, State> {
         </span>
       );
     }
+
+    if (currentPage !== 1) {
+      return (
+        <div>
+          <p>
+            Not enough {list.plural.toLowerCase()} found to show page {currentPage}.
+          </p>
+          <Button variant="ghost" onClick={handlePageReset}>
+            Show first page
+          </Button>
+        </div>
+      );
+    }
+
     if (itemsCount === 0) {
       return <span>No {list.plural.toLowerCase()} to display yet...</span>;
     }
@@ -242,9 +275,6 @@ class ListDetails extends Component<Props, State> {
       handleFilterRemoveAll,
       handleFilterUpdate,
       handlePageChange,
-      handleSearchChange,
-      handleSearchClear,
-      handleSearchSubmit,
       handleSortChange,
       items,
       itemsCount,
@@ -252,12 +282,11 @@ class ListDetails extends Component<Props, State> {
       list,
       pageSize,
       query,
-      search,
       sortBy,
     } = this.props;
-    const { isFullWidth, isManaging, selectedItems, showCreateModal } = this.state;
+    const { isFullWidth, isManaging, selectedItems, showCreateModal, searchValue } = this.state;
 
-    const searchId = 'list-search-input';
+    const searchId = 'ks-list-search-input';
 
     return (
       <Fragment>
@@ -292,9 +321,9 @@ class ListDetails extends Component<Props, State> {
           <FlexGroup growIndexes={[0]}>
             <Search
               isFetching={query.loading}
-              onClear={handleSearchClear}
-              onSubmit={handleSearchSubmit}
-              hasValue={search && search.length}
+              onClear={this.handleSearchClear}
+              onSubmit={this.handleSearchSubmit}
+              hasValue={searchValue && searchValue.length}
             >
               <A11yText tag="label" htmlFor={searchId}>
                 Search {list.plural}
@@ -304,11 +333,12 @@ class ListDetails extends Component<Props, State> {
                 autoComplete="off"
                 autoCorrect="off"
                 id={searchId}
-                onChange={handleSearchChange}
+                onChange={this.handleSearchChange}
                 placeholder="Search"
                 name="item-search"
-                value={search}
+                value={searchValue}
                 type="text"
+                innerRef={el => (this.searchInput = el)}
               />
             </Search>
             <AddFilterPopout
