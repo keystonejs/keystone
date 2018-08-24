@@ -17,6 +17,7 @@
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "fast-memoize": "^2.4.0",
-    "graphql": "^0.13.2"
+    "graphql": "^0.13.2",
+    "graphql-playground-html": "^1.6.0"
   }
 }
