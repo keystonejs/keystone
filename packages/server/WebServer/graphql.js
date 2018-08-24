@@ -98,7 +98,6 @@ module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlP
   server.applyMiddleware({ app, path: apiPath });
   if (graphiqlPath) {
     app.use(graphiqlPath, (req, res) => {
-      console.log('GRAPHIQL');
       if (req.user && req.sessionID) {
         // This is a literal string which is injected into the HTML string and
         // used as part of a JSON object...

@@ -1,7 +1,6 @@
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 const { escapeRegExp: esc } = require('@keystonejs/utils');
-const { GraphQLUpload } = require('apollo-upload-server');
 const mongoose = require('mongoose');
 
 // Disabling the getter of mongoose >= 5.1.0
@@ -67,7 +66,7 @@ class File extends Implementation {
   }
   getGraphqlAuxiliaryTypeResolvers() {
     return {
-      [this.getFileUploadType()]: GraphQLUpload,
+      [this.getFileUploadType()]: 'Upload',
     };
   }
   getGraphqlAuxiliaryMutations() {

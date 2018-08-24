@@ -26,7 +26,6 @@
     "apollo-link-state": "^0.4.0",
     "apollo-server-express": "^2.0.4",
     "apollo-upload-client": "^8.0.0",
-    "apollo-upload-server": "^5.0.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.2",
