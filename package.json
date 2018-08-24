@@ -60,6 +60,7 @@
     "focus-trap": "^2.4.3",
     "fs-extra": "^7.0.0",
     "graphql": "^0.13.2",
+    "graphql-playground-html": "^1.6.0",
     "graphql-tag": "^2.8.0",
     "graphql-tools": "^3.0.0",
     "graphql-type-json": "^0.2.1",

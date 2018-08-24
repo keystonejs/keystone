@@ -1,5 +1,4 @@
 const GraphQLJSON = require('graphql-type-json');
-const { makeExecutableSchema } = require('graphql-tools');
 const { resolveAllKeys } = require('@keystonejs/utils');
 
 const {
@@ -230,10 +229,7 @@ module.exports = class Keystone {
       console.log(resolvers);
     }
 
-    return makeExecutableSchema({
-      typeDefs: [...listTypes, typeDefs],
-      resolvers,
-    });
+    return { typeDefs: [...listTypes, typeDefs], resolvers };
   }
 
   getListAccessControl({ listKey, operation, authentication }) {
