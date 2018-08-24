@@ -16,7 +16,7 @@ class CloudinaryImage extends File {
     return meta;
   }
   getFileUploadType() {
-    return 'CloudinaryImage_Upload';
+    return 'Upload';
   }
   getGraphqlAuxiliaryTypes() {
     return `
