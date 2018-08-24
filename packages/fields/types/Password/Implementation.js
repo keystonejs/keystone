@@ -102,41 +102,49 @@ class MongoPasswordInterface extends MongooseFieldAdapter {
     });
 
     // Updates the relevant value in the item provided (by referrence)
-    const hashFieldValue = item => {
+    const hashFieldValue = async item => {
       const list = this.getListByKey(this.listAdapter.key);
       const field = list.fieldsByPath[this.path];
       const plaintext = item[field.path];
 
-      delete item[field.path];
-      if (typeof plaintext !== 'undefined' && String(plaintext) === plaintext && plaintext !== '') {
-        item[field.path] = field.generateHashSync(plaintext);
+      if (typeof plaintext === 'undefined') {
+        return;
+      }
+
+      if (String(plaintext) === plaintext && plaintext !== '') {
+        item[field.path] = await field.generateHash(plaintext);
+      }
+      else {
+        item[field.path] = null;
       }
     };
 
     // Attach various pre save/update hooks to hash the password value
     schema.pre('save', async function() {
-      hashFieldValue(this);
+      await hashFieldValue(this);
     });
 
     // These are "Query middleware"; they differ from "document" middleware..
     // ".. `this` refers to the query object rather than the document being updated."
     schema.pre('update', async function() {
-      hashFieldValue(this['_update'].$set);
+      await hashFieldValue(this['_update'].$set || this['_update']);
     });
     schema.pre('updateOne', async function() {
-      hashFieldValue(this['_update'].$set);
+      await hashFieldValue(this['_update'].$set || this['_update']);
     });
     schema.pre('updateMany', async function() {
-      hashFieldValue(this['_update'].$set);
+      await hashFieldValue(this['_update'].$set || this['_update']);
     });
     schema.pre('findOneAndUpdate', async function() {
-      hashFieldValue(this['_update'].$set);
+      await hashFieldValue(this['_update'].$set || this['_update']);
     });
 
     // Model middleware
     // Docs as second arg? (https://github.com/Automattic/mongoose/commit/3d62d3558c15ec852bdeaab1a5138b1853b4f7cb)
     schema.pre('insertMany', async function(next, docs) {
-      docs.forEach(item => hashFieldValue(item));
+      for (let doc of docs) {
+        await hashFieldValue(doc);
+      }
     });
   }
 
