@@ -8,7 +8,7 @@ x-job-setup: &job-setup
   docker:
     # specify the version you desire here
     - image: circleci/node:carbon-browsers
-    - image: mongo:3.4.4
+    - image: mongo:3.6.7
 
   working_directory: /home/circleci/repo
 
