@@ -2,9 +2,13 @@
 import React, { type Node, type Ref } from 'react';
 import styled from 'react-emotion';
 import Kalendaryo from 'kalendaryo';
-import { isToday as isDayToday, isSameMonth } from 'date-fns';
+import { isToday as isDayToday, isSameMonth, setMonth } from 'date-fns';
+import Select from 'react-select'
+import { format, formatDistance, formatRelative, subDays} from 'date-fns'
+import addMonths from 'date-fns/add_months'
 
-import { ChevronLeftIcon, ChevronRightIcon } from '@keystonejs/icons';
+
+import { ChevronLeftIcon, ChevronRightIcon, ZapIcon } from '@keystonejs/icons';
 import { borderRadius, colors } from '../../theme';
 
 const WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -46,12 +50,14 @@ const Body = 'div';
 const WeekRow = styled.div({
   display: 'flex',
 });
+
 const WeekLabels = styled(WeekRow)({
   color: colors.N40,
   fontSize: '0.65rem',
   fontWeight: 500,
   textTransform: 'uppercase',
 });
+
 const Day = styled.div(({ disabled, isInteractive, isSelected, isToday }) => {
   let textColor;
   if (isToday) textColor = colors.danger;
@@ -81,6 +87,7 @@ const Day = styled.div(({ disabled, isInteractive, isSelected, isToday }) => {
     },
   };
 });
+
 const TodayMarker = styled.div(({ isSelected }) => ({
   backgroundColor: isSelected ? 'white' : colors.danger,
   borderRadius: 4,
@@ -89,6 +96,45 @@ const TodayMarker = styled.div(({ isSelected }) => ({
   marginTop: 2,
   width: '1em',
 }));
+
+
+
+
+const SelectMonths = () => {
+
+  const options = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' }
+  ]
+
+  return(
+    <Select
+      options={options}
+      components={{DropdownIndicator: null, IndicatorSeparator: null}}
+    />
+  )
+};
+
+const SelectYears = (date) => {
+  //const selected = this.props.value;
+  const thisYear = parseInt( new Date().getFullYear() );
+  const years = [...new Array(101)].map( (_,i) => thisYear - i );
+  
+  console.log(`Selected = ${date}`);
+
+  return (
+    <select>
+      {years.map( (year,i) => (
+          <option key={i}
+          //selected={year==selected ? true : false}
+          >{year}</option>
+        ))
+      }
+    </select>
+  );
+};
+
 
 type Props = {
   children?: Node,
@@ -126,6 +172,7 @@ export const DayPicker = (props: Props) => {
       console.log({ x });
       setDate(getDateNextMonth());
     };
+
     const setDatePrevMonth = () => setDate(getDatePrevMonth());
     const selectDay = _date => () => setSelectedDate(_date);
 
@@ -138,7 +185,11 @@ export const DayPicker = (props: Props) => {
           <HeaderButton onClick={setDatePrevMonth}>
             <ChevronLeftIcon />
           </HeaderButton>
-          <HeaderText>{currentDate}</HeaderText>
+          <HeaderButton onClick={setDatePrevMonth}>
+            {getFormattedDate('MMMM')}
+          </HeaderButton>
+          <HeaderButton onClick={addMonths(date, 5)}>Add</HeaderButton>
+          <SelectYears/>
           <HeaderButton onClick={setDateNextMonth}>
             <ChevronRightIcon />
           </HeaderButton>
