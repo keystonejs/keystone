@@ -270,6 +270,7 @@ module.exports = class List {
           id_in: [ID!]
           id_not_in: [ID!]
           ${queryArgs}
+          AND: [${this.gqlNames.whereInputName}]
         }
       `);
       types.push(`
