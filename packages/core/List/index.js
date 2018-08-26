@@ -6,6 +6,7 @@ const {
   intersection,
   objMerge,
   mapKeys,
+  arrayToObject,
 } = require('@keystonejs/utils');
 
 const {
@@ -824,19 +825,14 @@ module.exports = class List {
     }
 
     // Merge in default Values here
-    const item = this.fields.reduce((memo, field) => {
-      const defaultValue = field.getDefaultValue();
-
-      // explicit `undefined` check as `null` is a valid value
-      if (defaultValue === undefined) {
-        return memo;
-      }
-
-      return {
-        [field.path]: defaultValue,
-        ...memo,
-      };
-    }, data);
+    const item = {
+      ...arrayToObject(
+        this.fields.filter(field => field.getDefaultValue() !== undefined),
+        'path',
+        field => field.getDefaultValue()
+      ),
+      ...data,
+    };
 
     this.throwIfAccessDeniedOnFields({
       accessType: 'create',

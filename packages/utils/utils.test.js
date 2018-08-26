@@ -5,6 +5,7 @@ const {
   checkRequiredConfig,
   escapeRegExp,
   mapKeys,
+  mapKeyNames,
   resolveAllKeys,
   unique,
   intersection,
@@ -13,7 +14,6 @@ const {
   objMerge,
   defaultObj,
   arrayToObject,
-  groupBy,
   flatten,
 } = require('./index');
 
@@ -82,6 +82,17 @@ describe('utils', () => {
     // Complex value/key/object base function.
     const g = (value, key, object) => value * key.charCodeAt(0) + Object.keys(object).length;
     expect(mapKeys(o, g)).toEqual({ a: 100, b: 199, c: 300 });
+  });
+
+  test('mapKeyNames', () => {
+    // Simple value based function
+    const o = { 1: 'a', 2: 'b', 3: 'c' };
+    const f = x => 2 * x;
+    expect(mapKeyNames(o, f)).toEqual({ 2: 'a', 4: 'b', 6: 'c' });
+
+    // Complex value/key/object base function.
+    const g = (key, value, object) => key * value.charCodeAt(0) + Object.keys(object).length;
+    expect(mapKeyNames(o, g)).toEqual({ 100: 'a', 199: 'b', 300: 'c' });
   });
 
   test('resolveAllKeys', async () => {
@@ -200,20 +211,6 @@ describe('utils', () => {
       b: 'dog',
       c: 'cat',
       d: 'dog',
-    });
-  });
-
-  test('groupBy', () => {
-    const pets = [
-      { name: 'a', animal: 'cat' },
-      { name: 'b', animal: 'dog' },
-      { name: 'c', animal: 'cat' },
-      { name: 'd', animal: 'dog' },
-    ];
-
-    expect(groupBy(pets, 'animal')).toEqual({
-      cat: [{ name: 'a', animal: 'cat' }, { name: 'c', animal: 'cat' }],
-      dog: [{ name: 'b', animal: 'dog' }, { name: 'd', animal: 'dog' }],
     });
   });
 

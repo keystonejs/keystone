@@ -40,6 +40,13 @@ exports.escapeRegExp = str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,
 exports.mapKeys = (obj, func) =>
   Object.entries(obj).reduce((acc, [key, value]) => ({ ...acc, [key]: func(value, key, obj) }), {});
 
+// { key: value, ... } => { mapFn(key, value): value, ... }
+exports.mapKeyNames = (obj, func) =>
+  Object.entries(obj).reduce(
+    (acc, [key, value]) => ({ ...acc, [func(key, value, obj)]: value }),
+    {}
+  );
+
 exports.resolveAllKeys = obj => {
   const result = {};
   const allPromises = Object.keys(obj).map(key =>
@@ -80,20 +87,6 @@ exports.defaultObj = (keys, val) => keys.reduce((acc, key) => ({ ...acc, [key]: 
 //   d: 'dog'}
 exports.arrayToObject = (objs, keyedBy, mapFn = i => i) =>
   objs.reduce((acc, obj) => ({ ...acc, [obj[keyedBy]]: mapFn(obj) }), {});
-
-// [{ name: 'a', animal: 'cat' },
-//  { name: 'b', animal: 'dog' },
-//  { name: 'c', animal: 'cat' },
-//  { name: 'd', animal: 'dog' }]
-// groupBy(obj, 'animal') =>
-// {cat: [{ name: 'a', animal: 'cat'}, { name: 'c', animal: 'cat'}],
-//  dog: [{ name: 'b', animal: 'dog' }, { name: 'd', animal: 'dog' }]}
-exports.groupBy = (objs, key) =>
-  objs.reduce((acc, obj) => {
-    acc[obj[key]] = acc[obj[key]] || [];
-    acc[obj[key]].push(obj);
-    return acc;
-  }, {});
 
 // [[1, 2, 3], [4, 5], 6, [[7, 8], [9, 10]]] => [1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]
 exports.flatten = arr => Array.prototype.concat(...arr);

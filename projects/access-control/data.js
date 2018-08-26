@@ -8,8 +8,8 @@ const {
 } = require('./cypress/integration/util');
 
 const generatedFieldData = fieldAccessVariations.reduce(
-  (memo, variation) =>
-    Object.assign(memo, {
+  (acc, variation) =>
+    Object.assign(acc, {
       [getFieldName(variation)]: JSON.stringify(variation),
     }),
   {}
@@ -47,8 +47,8 @@ module.exports = Object.assign(
   },
   // ensure every list has at least some data
   listAccessVariations.reduce(
-    (memo, access) =>
-      Object.assign(memo, {
+    (acc, access) =>
+      Object.assign(acc, {
         [getStaticListName(access)]: [
           Object.assign({ foo: 'Hello', zip: 'yo' }, generatedFieldData),
           Object.assign({ foo: 'Hi', zip: 'yo' }, generatedFieldData),
