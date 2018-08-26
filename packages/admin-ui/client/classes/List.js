@@ -3,9 +3,9 @@ import gql from 'graphql-tag';
 import FieldTypes from '../FIELD_TYPES';
 
 const getCreateMutation = list => {
-  const { key } = list;
+  const { createInputName } = list;
   return gql`
-    mutation create($data: ${key}CreateInput!) {
+    mutation create($data: ${createInputName}!) {
       ${list.createMutationName}(data: $data) {
         id
       }
@@ -17,7 +17,7 @@ const getUpdateMutation = list => {
   return gql`
     mutation update(
       $id: ID!,
-      $data: ${list.key}UpdateInput)
+      $data: ${list.updateInputName})
     {
       ${list.updateMutationName}(id: $id, data: $data) {
         id
