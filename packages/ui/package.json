@@ -15,14 +15,14 @@
     "kalendaryo": "^1.10.0",
     "prop-types": "^15.6.1",
     "raf-schd": "^4.0.0",
-    "react": "^16.3.1",
+    "react": "^16.4.2",
     "react-emotion": "^9.1.1",
     "react-node-resolver": "^2.0.0",
     "react-pseudo-state": "^1.0.1",
     "react-radios": "^1.1.0",
     "react-router-dom": "^4.2.2",
-    "react-scrolllock": "^2.0.2",
-    "react-select": "^2.0.0-beta.6",
+    "react-scrolllock": "^3.0.1",
+    "react-select": "^2.0.0",
     "react-transition-group": "^2.3.1"
   },
   "devDependencies": {
