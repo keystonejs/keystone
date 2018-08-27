@@ -23,6 +23,7 @@ const keystone = new Keystone({
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
+  // config: { protectIdentities: true },
 });
 
 keystone.createList('User', {
@@ -64,8 +65,8 @@ server.app.post('/signin', bodyParser.json(), bodyParser.urlencoded(), async (re
 
   try {
     const result = await keystone.auth.User.password.validate({
-      username: req.body.username,
-      password: req.body.password,
+      identity: req.body.username,
+      secret: req.body.password,
     });
     if (!result.success) {
       return res.json({

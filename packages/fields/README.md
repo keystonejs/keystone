@@ -6,6 +6,7 @@ What makes up a Field Type:
 Type/index.js           -- The field definition, points to other files and defines the type
 Type/Controller.js      -- Client-side controller for the field type
 Type/Implementation.js  -- Back-end implementation of the field type
+Type/README.md          -- Type specific documentation and usage examples
 Type/views/
   Field.js              -- Main React component rendered by the Item Details view
   Cell.js               -- Main React component rendered by the List view
