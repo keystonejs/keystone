@@ -1,7 +1,6 @@
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 const { escapeRegExp: esc } = require('@keystonejs/utils');
-const { GraphQLUpload } = require('apollo-upload-server');
 const mongoose = require('mongoose');
 
 // Disabling the getter of mongoose >= 5.1.0
@@ -15,7 +14,7 @@ const {
 class File extends Implementation {
   constructor() {
     super(...arguments);
-    this.graphQLOutputType = 'File_File';
+    this.graphQLOutputType = 'File';
   }
 
   getGraphqlOutputFields() {
@@ -34,12 +33,10 @@ class File extends Implementation {
     return '';
   }
   getFileUploadType() {
-    return 'File_Upload';
+    return 'Upload';
   }
   getGraphqlAuxiliaryTypes() {
     return `
-      scalar ${this.getFileUploadType()}
-
       type ${this.graphQLOutputType} {
         id: ID
         path: String
@@ -63,11 +60,6 @@ class File extends Implementation {
           ...itemValues,
         };
       },
-    };
-  }
-  getGraphqlAuxiliaryTypeResolvers() {
-    return {
-      [this.getFileUploadType()]: GraphQLUpload,
     };
   }
   getGraphqlAuxiliaryMutations() {
