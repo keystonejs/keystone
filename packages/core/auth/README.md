@@ -263,7 +263,7 @@ server.app.get('/auth/twitter/details', (req, res) => {
     `);
 });
 
-server.app.use(server.express.urlencoded());
+server.app.use(server.express.urlencoded({ extended: true }));
 
 server.app.post('/auth/twitter/complete', async (req, res, next) => {
   if (req.user) {
