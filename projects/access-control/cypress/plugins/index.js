@@ -20,7 +20,8 @@ module.exports = async (on, config) => {
 
   const mongoose = new Mongoose();
   await mongoose.connect(
-    `mongodb://localhost/${inflection.dasherize(appConfig.projectName).toLowerCase()}`
+    `mongodb://localhost:27017/${inflection.dasherize(appConfig.projectName).toLowerCase()}`,
+    { useNewUrlParser: true }
   );
 
   const dbConnection = mongoose.connection.db;
