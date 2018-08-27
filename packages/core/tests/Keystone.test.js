@@ -69,15 +69,15 @@ describe('Keystone.createList()', () => {
 
   /* eslint-disable jest/no-disabled-tests */
   describe('access control config', () => {
-    test.skip('expands shorthand acl config', () => {
+    test.failing('expands shorthand acl config', () => {
       expect(false).toBe(true);
     });
 
-    test.skip('throws error when one of create/read/update/delete not set on object', () => {
+    test.failing('throws error when one of create/read/update/delete not set on object', () => {
       expect(false).toBe(true);
     });
 
-    test.skip('throws error when create/read/update/delete are not correct type', () => {
+    test.failing('throws error when create/read/update/delete are not correct type', () => {
       expect(false).toBe(true);
     });
   });

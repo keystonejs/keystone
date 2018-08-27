@@ -19,6 +19,9 @@
     "date-fns": "^1.29.0",
     "dumb-passwords": "^0.2.1",
     "graphql-tag": "^2.8.0",
+    "lodash.get": "^4.4.2",
+    "lodash.omitby": "^4.6.0",
+    "lodash.set": "^4.3.2",
     "mongoose": "^5.2.7",
     "p-settle": "^2.1.0",
     "react-apollo": "^2.1.11"

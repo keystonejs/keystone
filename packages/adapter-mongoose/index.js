@@ -3,12 +3,17 @@ const {
   Types: { ObjectId },
 } = require('mongoose');
 const inflection = require('inflection');
-const { escapeRegExp } = require('@keystonejs/utils');
+const { escapeRegExp, pick, getType, mapKeys } = require('@keystonejs/utils');
 const {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
 } = require('@keystonejs/core/adapters');
+const joinBuilder = require('@keystonejs/mongo-join-builder');
+
+const simpleTokenizer = require('./tokenizers/simple');
+const relationshipTokenizer = require('./tokenizers/relationship');
+const getRelatedListAdapterFromQueryPathFactory = require('./tokenizers/relationship-path');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 
@@ -22,29 +27,65 @@ function getMongoURI({ dbName, name }) {
   );
 }
 
-function getIdQueryConditions(args) {
-  const conditions = [];
-  if (!args) {
-    return conditions;
-  }
-  // id is how it looks in the schema
-  if ('id' in args) {
-    // _id is how it looks in the MongoDB
-    conditions.push({ _id: { $eq: ObjectId(args.id) } });
-  }
-  if ('id_not' in args) {
-    conditions.push({ _id: { $ne: ObjectId(args.id_not) } });
-  }
-  if ('id_in' in args) {
-    conditions.push({ _id: { $in: args.id_in.map(id => ObjectId(id)) } });
-  }
-  if ('id_not_in' in args) {
-    conditions.push({
-      _id: { $not: { $in: args.id_not_in.map(id => ObjectId(id)) } },
-    });
-  }
-  return conditions;
+function mapKeyNames(obj, func) {
+  return Object.entries(obj).reduce(
+    (memo, [key, value]) => ({ ...memo, [func(key, value, obj)]: value }),
+    {}
+  );
 }
+
+const idQueryConditions = {
+  // id is how it looks in the schema
+  // _id is how it looks in the MongoDB
+  id: value => ({ _id: { $eq: ObjectId(value) } }),
+  id_not: value => ({ _id: { $ne: ObjectId(value) } }),
+  id_in: value => ({ _id: { $in: value.map(id => ObjectId(id)) } }),
+  id_not_in: value => ({ _id: { $not: { $in: value.map(id => ObjectId(id)) } } }),
+};
+
+const modifierConditions = {
+  // TODO: Implement configurable search fields for lists
+  $search: value => {
+    if (!value || (getType(value) === 'String' && !value.trim())) {
+      return undefined;
+    }
+    return {
+      $match: {
+        name: new RegExp(`${escapeRegExp(value)}`, 'i'),
+      },
+    };
+  },
+
+  $orderBy: value => {
+    const [orderField, orderDirection] = value.split('_');
+
+    return {
+      $sort: {
+        [orderField]: orderDirection === 'ASC' ? 1 : -1,
+      },
+    };
+  },
+
+  $skip: value => {
+    if (value < Infinity && value > 0) {
+      return {
+        $skip: value,
+      };
+    }
+  },
+
+  $first: value => {
+    if (value < Infinity && value > 0) {
+      return {
+        $limit: value,
+      };
+    }
+  },
+
+  $count: value => ({
+    $count: value,
+  }),
+};
 
 class MongooseAdapter extends BaseKeystoneAdapter {
   constructor() {
@@ -97,15 +138,53 @@ class MongooseListAdapter extends BaseListAdapter {
   constructor(key, parentAdapter, config) {
     super(...arguments);
 
-    const { mongoose } = parentAdapter;
     const { configureMongooseSchema, mongooseSchemaOptions } = config;
 
-    this.mongoose = mongoose;
+    this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
+    this.mongoose = parentAdapter.mongoose;
     this.configureMongooseSchema = configureMongooseSchema;
-    this.schema = new mongoose.Schema({}, mongooseSchemaOptions);
+    this.schema = new parentAdapter.mongoose.Schema({}, mongooseSchemaOptions);
 
     // Need to call prepareModel() once all fields have registered.
     this.model = null;
+
+    this.queryBuilder = joinBuilder({
+      tokenizer: {
+        // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
+        simple: simpleTokenizer({
+          getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
+          modifierConditions,
+        }),
+        // executed for complex query components (eg; items: { ... })
+        relationship: relationshipTokenizer({
+          getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
+        }),
+      },
+    });
+  }
+
+  getFieldAdapterByQueryConditionKey(queryCondition) {
+    return this.fieldAdapters.find(adapter => adapter.hasQueryCondition(queryCondition));
+  }
+
+  getSimpleQueryConditions() {
+    return this.fieldAdapters.reduce(
+      (conds, fieldAdapater) => ({
+        ...conds,
+        ...fieldAdapater.getQueryConditions(),
+      }),
+      idQueryConditions
+    );
+  }
+
+  getRelationshipQueryConditions() {
+    return this.fieldAdapters.reduce(
+      (conds, fieldAdapater) => ({
+        ...conds,
+        ...fieldAdapater.getRelationshipQueryConditions(),
+      }),
+      {}
+    );
   }
 
   prepareFieldAdapter(fieldAdapter) {
@@ -147,141 +226,44 @@ class MongooseListAdapter extends BaseListAdapter {
     return this.model.findOne(condition);
   }
 
-  itemsQueryConditions(args, depthGuard = 0) {
-    if (!args) {
-      return [];
-    }
-
-    // TODO: can depthGuard be an instance variable, to track the recursion
-    // depth instead of passing it through to the individual fields and back
-    // again?
-    if (depthGuard > 1) {
-      throw new Error('Nesting where args deeper than 1 level is not currently supported');
-    }
-
-    return this.fieldAdapters.reduce(
-      (conds, fieldAdapater) => {
-        const fieldConditions = fieldAdapater.getQueryConditions(args, this, depthGuard + 1);
-
-        if (fieldConditions && !Array.isArray(fieldConditions)) {
-          console.warn(
-            `${this.key}.${fieldAdapater.path} (${
-              fieldAdapater.fieldName
-            }) returned a non-array for .getQueryConditions(). This is probably a mistake. Ignoring.`
-          );
-          return conds;
-        }
-
-        // Nothing to do
-        if (!fieldConditions || !fieldConditions.length) {
-          return conds;
-        }
-
-        return [
-          ...conds,
-          ...fieldConditions.map(condition => {
-            if (condition && condition.$isComplexStage) {
-              return condition;
-            }
-            return { [fieldAdapater.path]: condition };
-          }),
-        ];
-      },
-      // Special case for `_id` where it presents as `id` in the graphQL schema,
-      // and isn't a field type
-      getIdQueryConditions(args)
-    );
-  }
   itemsQuery(args, { meta = false } = {}) {
-    const conditions = this.itemsQueryConditions(args.where);
+    function graphQlQueryToMongoJoinQuery(query) {
+      const joinQuery = {
+        ...query.where,
+        ...mapKeyNames(
+          // Grab all the modifiers
+          pick(query || {}, ['search', 'orderBy', 'skip', 'first']),
+          // and prefix with a dollar symbol so they can be picked out by the
+          // query builder tokeniser
+          key => `$${key}`
+        ),
+      };
 
-    const pipeline = [];
-    const postAggregateMutation = [];
-
-    // TODO: Order isn't important. Might as well put all the simple `$match`s
-    // first, and complex ones last.
-    // TODO: Change this to a `for...of` loop
-    let iterator = conditions[Symbol.iterator]();
-    let itr = iterator.next();
-    while (!itr.done) {
-      // Gather up all the simple matches
-      let simpleMatches = [];
-      while (!itr.done && !itr.value.$isComplexStage) {
-        simpleMatches.push(itr.value);
-        itr = iterator.next();
-      }
-
-      if (simpleMatches.length) {
-        pipeline.push({
-          $match: {
-            $and: simpleMatches,
-          },
-        });
-      }
-
-      // Push all the complex stages onto the pipeline as-is
-      while (!itr.done && itr.value.$isComplexStage) {
-        pipeline.push(...itr.value.pipeline);
-        if (itr.value.mutator) {
-          postAggregateMutation.push(itr.value.mutator);
+      return mapKeys(joinQuery, field => {
+        if (getType(field) !== 'Object' || !field.where) {
+          return field;
         }
-        itr = iterator.next();
-      }
-    }
 
-    if (args.search) {
-      // TODO: Implement configurable search fields for lists
-      pipeline.push({
-        $match: {
-          name: new RegExp(`${escapeRegExp(args.search)}`, 'i'),
-        },
+        // recurse on object (ie; relationship) types
+        return graphQlQueryToMongoJoinQuery(field);
       });
     }
 
-    if (args.orderBy) {
-      const [orderField, orderDirection] = args.orderBy.split('_');
-
-      pipeline.push({
-        $sort: {
-          [orderField]: orderDirection === 'ASC' ? 1 : -1,
-        },
-      });
-    }
-
-    if (args.skip < Infinity && args.skip > 0) {
-      pipeline.push({
-        $skip: args.skip,
-      });
-    }
-
-    if (args.first < Infinity && args.first > 0) {
-      pipeline.push({
-        $limit: args.first,
-      });
+    let query;
+    try {
+      query = graphQlQueryToMongoJoinQuery(args);
+    } catch (error) {
+      return Promise.reject(error);
     }
 
     if (meta) {
-      pipeline.push({
-        $count: 'count',
-      });
+      // Order is important here, which is why we do it last (v8 will append the
+      // key, and keep them stable)
+      query.$count = 'count';
     }
 
-    if (!pipeline.length) {
-      return this.findAll();
-    }
-
-    // Map _id => id
-    // Normally, mongoose would do this for us, but because we're breaking out
-    // and going straight Mongo, gotta do it ourselves.
-    pipeline.push({
-      $addFields: {
-        id: '$_id',
-      },
-    });
-    return this.model
-      .aggregate(pipeline)
-      .exec()
-      .then(data => {
+    return this.queryBuilder(query, pipeline => this.model.aggregate(pipeline).exec()).then(
+      data => {
         if (meta) {
           // When there are no items, we get undefined back, so we simulate the
           // normal result of 0 items.
@@ -291,22 +273,11 @@ class MongooseListAdapter extends BaseListAdapter {
           return data[0];
         }
 
-        return (
-          data
-            .map((item, index, list) =>
-              // Iterate over all the mutations
-              postAggregateMutation.reduce(
-                // And pass through the result to the following mutator
-                (mutatedItem, mutation) => mutation(mutatedItem, index, list),
-                // Starting at the original item
-                item
-              )
-            )
-            // If anything gets removed, we clear it out here
-            .filter(item => item)
-        );
-      });
+        return data;
+      }
+    );
   }
+
   itemsQueryMeta(args) {
     return this.itemsQuery(args, { meta: true });
   }
@@ -318,7 +289,19 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   }
 
   getQueryConditions() {
-    return [];
+    return {};
+  }
+
+  getRelationshipQueryConditions() {
+    return {};
+  }
+
+  getRefListAdapter() {
+    return undefined;
+  }
+
+  hasQueryCondition() {
+    return false;
   }
 }
 
