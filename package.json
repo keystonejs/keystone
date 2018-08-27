@@ -80,7 +80,7 @@
     "passport-twitter": "^1.0.4",
     "pino": "5.0.0-rc.4",
     "pluralize": "^7.0.0",
-    "prettier": "^1.12.1",
+    "prettier": "^1.14.2",
     "prop-types": "^15.6.1",
     "raf-schd": "^4.0.0",
     "react": "^16.4.2",
