@@ -3,7 +3,14 @@ const {
   Types: { ObjectId },
 } = require('mongoose');
 const inflection = require('inflection');
-const { escapeRegExp, pick, getType, mapKeys } = require('@keystonejs/utils');
+const {
+  escapeRegExp,
+  pick,
+  getType,
+  mapKeys,
+  mapKeyNames,
+  objMerge,
+} = require('@keystonejs/utils');
 const {
   BaseKeystoneAdapter,
   BaseListAdapter,
@@ -24,13 +31,6 @@ function getMongoURI({ dbName, name }) {
     process.env.MONGODB_URI ||
     process.env.MONGODB_URL ||
     `mongodb://localhost/${dbName || inflection.dasherize(name).toLowerCase()}`
-  );
-}
-
-function mapKeyNames(obj, func) {
-  return Object.entries(obj).reduce(
-    (memo, [key, value]) => ({ ...memo, [func(key, value, obj)]: value }),
-    {}
   );
 }
 
@@ -168,22 +168,15 @@ class MongooseListAdapter extends BaseListAdapter {
   }
 
   getSimpleQueryConditions() {
-    return this.fieldAdapters.reduce(
-      (conds, fieldAdapater) => ({
-        ...conds,
-        ...fieldAdapater.getQueryConditions(),
-      }),
-      idQueryConditions
-    );
+    return {
+      ...idQueryConditions,
+      ...objMerge(this.fieldAdapters.map(fieldAdapter => fieldAdapter.getQueryConditions())),
+    };
   }
 
   getRelationshipQueryConditions() {
-    return this.fieldAdapters.reduce(
-      (conds, fieldAdapater) => ({
-        ...conds,
-        ...fieldAdapater.getRelationshipQueryConditions(),
-      }),
-      {}
+    return objMerge(
+      this.fieldAdapters.map(fieldAdapter => fieldAdapter.getRelationshipQueryConditions())
     );
   }
 

@@ -55,6 +55,7 @@ If you don't have it installed, on MacOS use Homebrew (run these once):
 brew install mongodb
 brew services start mongodb
 ```
+
 Create an environment variable in the test project `.env`. This will run project locally on port 3000
 
 ```sh
@@ -119,7 +120,7 @@ bolt cypress:run
 ```
 
 Cypress can be run in interactive mode from project directories with its built in GUI,
-which is useful when developing and debugging tests: 
+which is useful when developing and debugging tests:
 
 ```sh
 cd projects/basic && bolt cypress:open

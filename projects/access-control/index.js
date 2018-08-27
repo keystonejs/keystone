@@ -3,7 +3,7 @@ const { Keystone } = require('@keystonejs/core');
 const { Text, Password, Select } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
-
+const { objMerge } = require('@keystonejs/utils');
 const {
   getStaticListName,
   getImperativeListName,
@@ -65,10 +65,7 @@ function createListWithStaticAccess(access) {
     fields: {
       foo: { type: Text },
       zip: { type: Text },
-      ...fieldAccessVariations.reduce(
-        (memo, variation) => ({ ...memo, ...createField(variation) }),
-        {}
-      ),
+      ...objMerge(fieldAccessVariations.map(variation => createField(variation))),
     },
     access,
   });
@@ -90,10 +87,7 @@ function createListWithImperativeAccess(access) {
     fields: {
       foo: { type: Text },
       zip: { type: Text },
-      ...fieldAccessVariations.reduce(
-        (memo, variation) => ({ ...memo, ...createField(variation) }),
-        {}
-      ),
+      ...objMerge(fieldAccessVariations.map(variation => createField(variation))),
     },
     access: {
       create: () => access.create,

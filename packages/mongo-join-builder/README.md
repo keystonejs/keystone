@@ -175,7 +175,7 @@ const builder = mongoJoinBuilder({
           return {
             ...parentObj,
             items: parentObj[keyOfRelationship],
-          }
+          };
         },
         // The conditions under which an item from the 'orders' collection is
         // considered a match and included in the end result
@@ -191,14 +191,14 @@ const builder = mongoJoinBuilder({
         many: true,
       };
     },
-  }
+  },
 });
 
 const query = {
   fulfilled: false,
   items: {
-    name: 'a'
-  }
+    name: 'a',
+  },
 };
 
 const result = await builder(query, database, 'orders');
