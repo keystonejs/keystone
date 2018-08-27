@@ -48,12 +48,20 @@ yarn global add bolt
 ```
 
 Also make sure you have a local MongoDB server running
-([instructions](https://docs.mongodb.com/getting-started/shell/installation)).
+([instructions](https://docs.mongodb.com/manual/installation/)).
 If you don't have it installed, on MacOS use Homebrew (run these once):
 
 ```sh
 brew install mongodb
 brew services start mongodb
+```
+Create an environment variable in the test project `.env`. This will run project locally on port 3000
+
+```sh
+# CLOUDINARY_CLOUD_NAME=abc123
+# CLOUDINARY_KEY=abc123
+# CLOUDINARY_SECRET=abc123
+PORT=3000
 ```
 
 Then install the dependencies and start the test project:
@@ -76,7 +84,7 @@ The `lint` script will validate source code with both eslint and prettier.
 ## Testing
 
 Keystone uses [Jest](https://facebook.github.io/jest) for unit tests and [Cypress](https://www.cypress.io) for end-to-end tests.
-All tests can be run locally and on [CircleCI]((https://circleci.com/gh/keystonejs/keystone-5).
+All tests can be run locally and on [CircleCI](https://circleci.com/gh/keystonejs/keystone-5).
 
 ### Unit Tests
 
@@ -110,11 +118,11 @@ To run an individual project's tests, `cd` into that directory and run:
 bolt cypress:run
 ```
 
-Cypress can be run in interactive mode with its built in GUI,
-which is useful when developing and debugging tests:
+Cypress can be run in interactive mode from project directories with its built in GUI,
+which is useful when developing and debugging tests: 
 
 ```sh
-bolt cypress:open
+cd projects/basic && bolt cypress:open
 ```
 
 End-to-end tests live in `project/**/cypress/integration/*spec.js`.
