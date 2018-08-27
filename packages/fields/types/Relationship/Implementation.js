@@ -119,20 +119,21 @@ class Relationship extends Implementation {
   }
   getGraphqlQueryArgs() {
     const { many, ref } = this.config;
+    const list = this.getListByKey(ref);
     if (many) {
       return `
         # condition must be true for all nodes
-        ${this.path}_every: ${ref}WhereInput
+        ${this.path}_every: ${list.gqlNames.whereInputName}
         # condition must be true for at least 1 node
-        ${this.path}_some: ${ref}WhereInput
+        ${this.path}_some: ${list.gqlNames.whereInputName}
         # condition must be false for all nodes
-        ${this.path}_none: ${ref}WhereInput
+        ${this.path}_none: ${list.gqlNames.whereInputName}
         # is the relation field null
         ${this.path}_is_null: Boolean
       `;
     } else {
       return `
-        ${this.path}: ${ref}WhereInput
+        ${this.path}: ${list.gqlNames.whereInputName}
         ${this.path}_is_null: Boolean
       `;
     }

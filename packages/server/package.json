@@ -10,13 +10,14 @@
   "dependencies": {
     "@keystonejs/logger": "^1.0.0",
     "@keystonejs/utils": "^1.0.0",
-    "apollo-server-express": "^1.3.4",
+    "apollo-server-express": "^2.0.4",
     "body-parser": "^1.18.2",
     "cookie": "^0.3.1",
     "cookie-signature": "^1.1.0",
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "fast-memoize": "^2.4.0",
-    "graphql": "^0.13.2"
+    "graphql": "^0.13.2",
+    "graphql-playground-html": "^1.6.0"
   }
 }
