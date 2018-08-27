@@ -30,7 +30,7 @@ function getMongoURI({ dbName, name }) {
     process.env.MONGO_URL ||
     process.env.MONGODB_URI ||
     process.env.MONGODB_URL ||
-    `mongodb://localhost/${dbName || inflection.dasherize(name).toLowerCase()}`
+    `mongodb://localhost:27017/${dbName || inflection.dasherize(name).toLowerCase()}`
   );
 }
 
@@ -105,7 +105,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     const uri = to || getMongoURI({ name, dbName });
     this.mongoose.connect(
       uri,
-      { ...adapterConnectOptions }
+      { useNewUrlParser: true, ...adapterConnectOptions }
     );
     const db = this.mongoose.connection;
     db.on('error', console.error.bind(console, 'Mongoose connection error'));
