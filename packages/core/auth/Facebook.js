@@ -9,15 +9,22 @@ const FIELD_TOKEN_SECRET = 'tokenSecret';
 const FIELD_ITEM = 'item';
 
 function validateWithFacebook(consumerKey, consumerSecret, accessToken) {
-  return fetch('https://graph.facebook.com/v3.0/debug_token'
-    + '?input_token=' + accessToken
-    + '&access_token=' + consumerKey + '|' + consumerSecret, {
+  return fetch(
+    'https://graph.facebook.com/v3.0/debug_token' +
+      '?input_token=' +
+      accessToken +
+      '&access_token=' +
+      consumerKey +
+      '|' +
+      consumerSecret,
+    {
       cache: 'no-cache',
       headers: {
         'content-type': 'application/json',
         Accept: 'application/json',
       },
-  }).then(response => response.json());
+    }
+  ).then(response => response.json());
 }
 
 class FacebookAuthStrategy {
@@ -92,7 +99,7 @@ class FacebookAuthStrategy {
     const jsonData = await validateWithFacebook(
       this.config.consumerKey,
       this.config.consumerSecret,
-      accessToken,
+      accessToken
     );
 
     // Lookup a past, verified session, that links to a user
@@ -167,7 +174,9 @@ class FacebookAuthStrategy {
 
   async connectItem(req, { item }) {
     if (!item) {
-      throw new Error('Must provide an `item` to connect to a facebook session');
+      throw new Error(
+        'Must provide an `item` to connect to a facebook session'
+      );
     }
 
     if (!req) {
@@ -262,12 +271,7 @@ class FacebookAuthStrategy {
           // If we don't authorise Facebook we won't have any info about the
           // user so we need to bail
           if (!info) {
-            return failedVerification(
-              null,
-              req,
-              res,
-              next
-            );
+            return failedVerification(null, req, res, next);
           }
           // Otherwise, store the Facebook data in session so we can refer
           // back to it

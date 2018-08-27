@@ -364,12 +364,7 @@ class TwitterAuthStrategy {
           // If we don't authorise Twitter we won't have any info about the
           // user so we need to bail
           if (!info) {
-            return failedVerification(
-              null,
-              req,
-              res,
-              next
-            );
+            return failedVerification(null, req, res, next);
           }
           // Otherwise, store the Twitter data in session so we can refer
           // back to it

@@ -33,7 +33,6 @@ exports.configureFacebookAuth = function(keystone, server) {
     '/auth/facebook/callback',
     facebookAuth.authenticateMiddleware({
       async verified(item, info, req, res) {
-
         // You could try and find user by email address here to match users
         // if you get the email data back from Facebook, then refer to
         // connectItem, for example:
@@ -86,7 +85,6 @@ exports.configureFacebookAuth = function(keystone, server) {
     '/auth/facebook/complete',
     server.express.urlencoded({ extended: true }),
     async (req, res, next) => {
-
       // Redirect if we're already signed in
       if (req.user) {
         return res.redirect('/api/session');
