@@ -113,8 +113,7 @@ class MongoPasswordInterface extends MongooseFieldAdapter {
 
       if (String(plaintext) === plaintext && plaintext !== '') {
         item[field.path] = await field.generateHash(plaintext);
-      }
-      else {
+      } else {
         item[field.path] = null;
       }
     };
