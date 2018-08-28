@@ -113,7 +113,12 @@ module.exports = class AdminUI {
 
     // Listen to POST events for form signin form submission (GET falls through
     // to the webpack server(s))
-    app.post(this.config.signinPath, bodyParser.json(), bodyParser.urlencoded(), this.signin);
+    app.post(
+      this.config.signinPath,
+      bodyParser.json(),
+      bodyParser.urlencoded({ extended: true }),
+      this.signin
+    );
 
     // Listen to both POST and GET events, and always sign the user out.
     app.use(this.config.signoutPath, this.signout);

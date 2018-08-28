@@ -59,30 +59,35 @@ server.app.get('/api/session', (req, res) => {
   res.json(data);
 });
 
-server.app.post('/signin', bodyParser.json(), bodyParser.urlencoded(), async (req, res, next) => {
-  // Cleanup any previous session
-  await keystone.session.destroy(req);
+server.app.post(
+  '/signin',
+  bodyParser.json(),
+  bodyParser.urlencoded({ extended: true }),
+  async (req, res, next) => {
+    // Cleanup any previous session
+    await keystone.session.destroy(req);
 
-  try {
-    const result = await keystone.auth.User.password.validate({
-      identity: req.body.username,
-      secret: req.body.password,
-    });
-    if (!result.success) {
-      return res.json({
-        success: false,
+    try {
+      const result = await keystone.auth.User.password.validate({
+        identity: req.body.username,
+        secret: req.body.password,
       });
+      if (!result.success) {
+        return res.json({
+          success: false,
+        });
+      }
+      await keystone.session.create(req, result);
+      res.json({
+        success: true,
+        itemId: result.item.id,
+        token: req.sessionID,
+      });
+    } catch (e) {
+      next(e);
     }
-    await keystone.session.create(req, result);
-    res.json({
-      success: true,
-      itemId: result.item.id,
-      token: req.sessionID,
-    });
-  } catch (e) {
-    next(e);
   }
-});
+);
 
 server.app.get('/signout', async (req, res, next) => {
   try {

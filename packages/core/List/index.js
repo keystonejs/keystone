@@ -1,4 +1,5 @@
 const pluralize = require('pluralize');
+
 const {
   resolveAllKeys,
   mapKeys,
@@ -6,6 +7,8 @@ const {
   unique,
   intersection,
   mergeWhereClause,
+  objMerge,
+  arrayToObject,
 } = require('@keystonejs/utils');
 
 const { parseListAccess, testListAccessControl } = require('@keystonejs/access-control');
@@ -162,15 +165,9 @@ module.exports = class List {
 
     this.adapter.prepareModel();
 
-    this.views = {};
-    Object.entries(sanitisedFieldsConfig).forEach(([path, fieldConfig]) => {
-      const fieldType = fieldConfig.type;
-      this.views[path] = {};
-
-      Object.entries(fieldType.views).forEach(([fieldViewType, fieldViewPath]) => {
-        this.views[path][fieldViewType] = fieldViewPath;
-      });
-    });
+    this.views = mapKeys(sanitisedFieldsConfig, fieldConfig => ({
+      ...fieldConfig.type.views,
+    }));
   }
   getAdminMeta() {
     return {
@@ -490,64 +487,38 @@ module.exports = class List {
 
   // Get the resolvers for the (possibly multiple) output fields and wrap each with access control
   getWrappedFieldResolvers(field) {
-    const innerResolvers = field.getGraphqlOutputFieldResolvers();
-    const wrappedResolvers = Object.entries(innerResolvers || {}).reduce(
-      (acc, [resolverKey, innerResolver]) => ({
-        ...acc,
-        [resolverKey]: this.wrapFieldResolverWithAC(field, innerResolver),
-      }),
-      {}
+    return mapKeys(field.getGraphqlOutputFieldResolvers() || {}, innerResolver =>
+      this.wrapFieldResolverWithAC(field, innerResolver)
     );
-    return wrappedResolvers;
   }
 
   getAdminFieldResolvers() {
     if (!this.access.read) {
       return {};
     }
-
-    const fieldResolvers = this.fields.filter(field => field.access.read).reduce(
-      (acc, field) => ({
-        ...acc,
-        ...this.getWrappedFieldResolvers(field),
-      }),
+    const fieldResolvers = {
       // TODO: The `_label_` output field currently circumvents access control
-      {
-        _label_: this.config.labelResolver,
-      }
-    );
+      _label_: this.config.labelResolver,
+      ...objMerge(
+        this.fields
+          .filter(field => field.access.read)
+          .map(field => this.getWrappedFieldResolvers(field))
+      ),
+    };
     return { [this.gqlNames.outputTypeName]: fieldResolvers };
   }
 
   getAuxiliaryTypeResolvers() {
-    return this.fields.reduce(
-      (resolvers, field) => ({
-        ...resolvers,
-        // TODO: Obey the same ACL rules based on parent type
-        ...field.getGraphqlAuxiliaryTypeResolvers(),
-      }),
-      {}
-    );
+    // TODO: Obey the same ACL rules based on parent type
+    return objMerge(this.fields.map(field => field.getGraphqlAuxiliaryTypeResolvers()));
   }
   getAuxiliaryQueryResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return this.fields.reduce(
-      (resolvers, field) => ({
-        ...resolvers,
-        ...field.getGraphqlAuxiliaryQueryResolvers(),
-      }),
-      {}
-    );
+    return objMerge(this.fields.map(field => field.getGraphqlAuxiliaryQueryResolvers()));
   }
   getAuxiliaryMutationResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return this.fields.reduce(
-      (resolvers, field) => ({
-        ...resolvers,
-        ...field.getGraphqlAuxiliaryMutationResolvers(),
-      }),
-      {}
-    );
+    return objMerge(this.fields.map(field => field.getGraphqlAuxiliaryMutationResolvers()));
   }
 
   getAdminGraphqlMutations() {
@@ -833,19 +804,14 @@ module.exports = class List {
     }
 
     // Merge in default Values here
-    const item = this.fields.reduce((memo, field) => {
-      const defaultValue = field.getDefaultValue();
-
-      // explicit `undefined` check as `null` is a valid value
-      if (defaultValue === undefined) {
-        return memo;
-      }
-
-      return {
-        [field.path]: defaultValue,
-        ...memo,
-      };
-    }, data);
+    const item = {
+      ...arrayToObject(
+        this.fields.filter(field => field.getDefaultValue() !== undefined),
+        'path',
+        field => field.getDefaultValue()
+      ),
+      ...data,
+    };
 
     this.throwIfAccessDeniedOnFields({
       accessType: 'create',
@@ -859,16 +825,8 @@ module.exports = class List {
     });
 
     const resolvedData = await resolveAllKeys(
-      Object.keys(data).reduce(
-        (resolvers, fieldPath) => ({
-          ...resolvers,
-          [fieldPath]: this.fieldsByPath[fieldPath].createFieldPreHook(
-            data[fieldPath],
-            fieldPath,
-            context
-          ),
-        }),
-        {}
+      mapKeys(data, (value, fieldPath) =>
+        this.fieldsByPath[fieldPath].createFieldPreHook(value, fieldPath, context)
       )
     );
 
@@ -946,17 +904,8 @@ module.exports = class List {
             });
 
             const resolvedData = await resolveAllKeys(
-              Object.keys(data).reduce(
-                (resolvers, fieldPath) => ({
-                  ...resolvers,
-                  [fieldPath]: this.fieldsByPath[fieldPath].updateFieldPreHook(
-                    data[fieldPath],
-                    fieldPath,
-                    item,
-                    context
-                  ),
-                }),
-                {}
+              mapKeys(data, (value, fieldPath) =>
+                this.fieldsByPath[fieldPath].updateFieldPreHook(value, fieldPath, item, context)
               )
             );
 

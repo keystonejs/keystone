@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import { OptionRenderer } from '@keystonejs/ui/src/primitives/filters';
+import { arrayToObject } from '@keystonejs/utils';
 
 function isOptionSelected(opt, selected) {
   return Boolean(selected.filter(x => x.path === opt.path).length);
 }
 function getOptionValue(opt) {
   return opt.path;
-}
-function mapToPath(acc, i) {
-  acc[i.path] = true;
-  return acc;
 }
 
 /**
@@ -39,7 +36,7 @@ export default class FieldSelect extends Component<FieldSelectProps> {
   onChangeReturnFieldClass = selected => {
     const { fields: listFields, isMulti, onChange } = this.props;
     const arr = Array.isArray(selected) ? selected : [selected];
-    const diffMap = arr.reduce(mapToPath, {});
+    const diffMap = arrayToObject(arr, 'path', () => true);
     const fields = listFields.filter(i => diffMap[i.path]);
     const value = isMulti ? fields : fields[0];
 
