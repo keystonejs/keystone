@@ -129,24 +129,6 @@ module.exports = {
     });
   },
 
-  mergeWhereClause(args, where) {
-    if (getType(where) !== 'Object' || Object.keys(where).length === 0) {
-      return args;
-    }
-
-    const mergedWhere =
-      args.where && Object.keys(args.where).length > 0
-        ? {
-            AND: [args.where, where],
-          }
-        : where;
-
-    return {
-      ...args,
-      where: mergedWhere,
-    };
-  },
-
   testListAccessControl({ access, listKey, operation, authentication }) {
     // Either a boolean or an object describing a where clause
     let result;

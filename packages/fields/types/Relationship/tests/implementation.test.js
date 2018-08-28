@@ -32,7 +32,7 @@ function createRelationship({ path, config = {} }) {
   }
 
   return new Relationship(path, config, {
-    getListByKey: () => new MockList,
+    getListByKey: () => new MockList(),
     listKey: 'FakeList',
     listAdapter: new MockListAdapter(),
     fieldAdapterClass: MockFieldAdapter,
@@ -141,12 +141,12 @@ describe('Type Generation', () => {
               arguments: [],
               type: {
                 name: {
-                  value: 'Zip'
-                }
+                  value: 'Zip',
+                },
               },
-            }
-          ]
-        }
+            },
+          ],
+        },
       ],
     });
 
@@ -177,21 +177,21 @@ describe('Type Generation', () => {
             {
               kind: 'FieldDefinition',
               name: {
-                value: 'foo'
+                value: 'foo',
               },
               arguments: mockFilterAST,
               type: {
                 kind: 'ListType',
                 type: {
                   name: {
-                    value: 'Zip'
-                  }
-                }
+                    value: 'Zip',
+                  },
+                },
               },
-            }
-          ]
-        }
-      ]
+            },
+          ],
+        },
+      ],
     });
 
     expect(fieldAST.definitions[0].fields[0].arguments).toHaveLength(1);

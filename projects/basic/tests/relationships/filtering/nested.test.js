@@ -53,32 +53,30 @@ beforeEach(() =>
 
 // TODO: Test the case outlined in https://github.com/keystonejs/keystone-5/issues/224
 describe('relationship filtering', () => {
-  test('implicitly filters to only the IDs in the database by default', () => {});
+  test('nested to-many relationships can be filtered', async () => {
+    const ids = [];
 
-  test('explicitly filters when given a `where` clause', () => {});
+    ids.push((await create('Post', { content: 'Hello world' })).id);
+    ids.push((await create('Post', { content: 'hi world' })).id);
+    ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
 
-  test('nested to-single relationships can be filtered within AND clause', async () => {
-    const company = await create('Company', { name: 'Thinkmill' });
-    const otherCompany = await create('Company', { name: 'Cete' });
+    const user = await create('User', { posts: ids });
 
-    const user = await create('User', { company: company.id });
-    await create('User', { company: otherCompany.id });
+    // Create a dummy user to make sure we're actually filtering it out
+    const user2 = await create('User', { posts: [ids[0]] });
 
     // NOTE: This will fail with current AND implementation
     const queryUser = await graphqlRequest({
       server,
       query: `
         query {
-          allUsers(where: {
-            AND: [
-              { company: { name_contains: "in" } },
-              { company: { name_contains: "ll" } }
-            ]
-          }) {
+          allUsers {
             id
-            company {
+            posts (where: {
+              content_contains: "hi",
+            }){
               id
-              name
+              content
             }
           }
         }
@@ -86,15 +84,62 @@ describe('relationship filtering', () => {
     });
 
     expect(queryUser.body).not.toHaveProperty('errors');
-    expect(queryUser.body.data.allUsers).toHaveLength(1);
+    expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
+    expect(queryUser.body.data.allUsers[0].posts).toHaveLength(2);
     expect(queryUser.body.data).toMatchObject({
       allUsers: [
         {
           id: user.id,
-          company: {
-            id: company.id,
-            name: 'Thinkmill',
-          },
+          posts: [{ id: ids[1] }, { id: ids[2] }],
+        },
+        {
+          id: user2.id,
+          posts: [],
+        },
+      ],
+    });
+  });
+
+  test('nested to-many relationships can be limited', async () => {
+    const ids = [];
+
+    ids.push((await create('Post', { content: 'Hello world' })).id);
+    ids.push((await create('Post', { content: 'hi world' })).id);
+    ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+
+    const user = await create('User', { posts: ids });
+
+    // Create a dummy user to make sure we're actually filtering it out
+    const user2 = await create('User', { posts: [ids[0]] });
+
+    // NOTE: This will fail with current AND implementation
+    const queryUser = await graphqlRequest({
+      server,
+      query: `
+        query {
+          allUsers {
+            id
+            posts (first: 1) {
+              id
+              content
+            }
+          }
+        }
+      `,
+    });
+
+    expect(queryUser.body).not.toHaveProperty('errors');
+    expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
+    expect(queryUser.body.data.allUsers[0].posts).toHaveLength(1);
+    expect(queryUser.body.data).toMatchObject({
+      allUsers: [
+        {
+          id: user.id,
+          posts: [{ id: ids[0] }],
+        },
+        {
+          id: user2.id,
+          posts: [{ id: ids[0] }],
         },
       ],
     });
@@ -110,21 +155,21 @@ describe('relationship filtering', () => {
     const user = await create('User', { posts: ids });
 
     // Create a dummy user to make sure we're actually filtering it out
-    await create('User', { posts: [] });
+    const user2 = await create('User', { posts: [ids[0]] });
 
     // NOTE: This will fail with current AND implementation
     const queryUser = await graphqlRequest({
       server,
       query: `
         query {
-          allUsers(where: {
-            AND: [
-              { posts_some: { content_contains: "hi" } },
-              { posts_some: { content_contains: "lo" } }
-            ]
-          }) {
+          allUsers {
             id
-            posts {
+            posts (where: {
+              AND: [
+                { content_contains: "hi" },
+                { content_contains: "lo" },
+              ]
+            }){
               id
               content
             }
@@ -135,12 +180,16 @@ describe('relationship filtering', () => {
 
     expect(queryUser.body).not.toHaveProperty('errors');
     expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
-    expect(queryUser.body.data.allUsers[0].posts).toHaveLength(3);
+    expect(queryUser.body.data.allUsers[0].posts).toHaveLength(1);
     expect(queryUser.body.data).toMatchObject({
       allUsers: [
         {
           id: user.id,
-          posts: [{ id: ids[0] }, { id: ids[1] }, { id: ids[2] }],
+          posts: [{ id: ids[2] }],
+        },
+        {
+          id: user2.id,
+          posts: [],
         },
       ],
     });

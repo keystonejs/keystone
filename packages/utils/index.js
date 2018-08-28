@@ -62,3 +62,24 @@ exports.pick = (obj, keys) =>
 
 exports.omit = (obj, keys) =>
   exports.pick(obj, Object.keys(obj).filter(value => !keys.includes(value)));
+
+exports.mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
+  if (
+    exports.getType(whereClauseToMergeIn) !== 'Object' ||
+    Object.keys(whereClauseToMergeIn).length === 0
+  ) {
+    return queryArgs;
+  }
+
+  const mergedQueryArgs =
+    queryArgs.where && Object.keys(queryArgs.where).length > 0
+      ? {
+          AND: [queryArgs.where, whereClauseToMergeIn],
+        }
+      : whereClauseToMergeIn;
+
+  return {
+    ...queryArgs,
+    where: mergedQueryArgs,
+  };
+};

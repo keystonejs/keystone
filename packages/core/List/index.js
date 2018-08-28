@@ -1,11 +1,14 @@
 const pluralize = require('pluralize');
-const { resolveAllKeys, mapKeys, omit, unique, intersection } = require('@keystonejs/utils');
-
 const {
-  parseListAccess,
-  testListAccessControl,
+  resolveAllKeys,
+  mapKeys,
+  omit,
+  unique,
+  intersection,
   mergeWhereClause,
-} = require('@keystonejs/access-control');
+} = require('@keystonejs/utils');
+
+const { parseListAccess, testListAccessControl } = require('@keystonejs/access-control');
 
 const logger = require('@keystonejs/logger');
 
@@ -387,7 +390,8 @@ module.exports = class List {
     // the graphql schema
     if (this.access.read) {
       resolvers = {
-        [this.listQueryName]: (_, args, context) => this.manyQuery(args, context, this.gqlNames.listQueryName),
+        [this.gqlNames.listQueryName]: (_, args, context) =>
+          this.manyQuery(args, context, this.gqlNames.listQueryName),
 
         [this.gqlNames.listQueryMetaName]: (_, args, context) => {
           return {
@@ -901,8 +905,8 @@ module.exports = class List {
         },
       });
     }
-
     let queryArgs = mergeWhereClause(args, access);
+
     return this.adapter.itemsQuery(queryArgs);
   }
 
