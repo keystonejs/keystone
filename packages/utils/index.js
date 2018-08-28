@@ -90,3 +90,24 @@ exports.arrayToObject = (objs, keyedBy, mapFn = i => i) =>
 
 // [[1, 2, 3], [4, 5], 6, [[7, 8], [9, 10]]] => [1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]
 exports.flatten = arr => Array.prototype.concat(...arr);
+
+exports.mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
+  if (
+    exports.getType(whereClauseToMergeIn) !== 'Object' ||
+    Object.keys(whereClauseToMergeIn).length === 0
+  ) {
+    return queryArgs;
+  }
+
+  const mergedQueryArgs =
+    queryArgs.where && Object.keys(queryArgs.where).length > 0
+      ? {
+          AND: [queryArgs.where, whereClauseToMergeIn],
+        }
+      : whereClauseToMergeIn;
+
+  return {
+    ...queryArgs,
+    where: mergedQueryArgs,
+  };
+};

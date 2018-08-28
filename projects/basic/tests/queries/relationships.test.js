@@ -6,12 +6,13 @@ const { resolveAllKeys, mapKeys } = require('@keystonejs/utils');
 const { setupServer, graphqlRequest } = require('../util');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
+const cuid = require('cuid');
 
 let server;
 
 beforeAll(() => {
   server = setupServer({
-    name: 'Tests queries and relationships',
+    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('Post', {
         fields: {
@@ -36,10 +37,14 @@ function create(list, item) {
   return server.keystone.getListByKey(list).adapter.create(item);
 }
 
-afterAll(() =>
-  resolveAllKeys(
+afterAll(async () => {
+  // clean the db
+  await resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase()));
+  // then shut down
+  await resolveAllKeys(
     mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase().then(() => adapter.close()))
-  ));
+  );
+});
 
 beforeEach(() =>
   // clean the db
@@ -91,10 +96,10 @@ describe('Querying with relationship filters', () => {
 
     test('without data', async () => {
       // Create an item to link against
-      const users = await Promise.all([create('User', { name: 'Jess' })]);
+      const user = await create('User', { name: 'Jess' });
 
       const posts = await Promise.all([
-        create('Post', { author: users[0].id, title: sampleOne(alphanumGenerator) }),
+        create('Post', { author: user.id, title: sampleOne(alphanumGenerator) }),
         create('Post', { title: sampleOne(alphanumGenerator) }),
       ]);
 

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const pSettle = require('p-settle');
 const omitBy = require('lodash.omitby');
+const { mergeWhereClause } = require('@keystonejs/utils');
 
 const {
   Schema: {
@@ -18,8 +19,14 @@ class Relationship extends Implementation {
   }
   getGraphqlOutputFields() {
     const { many, ref } = this.config;
-    const type = many ? `[${ref}]` : ref;
-    return `${this.path}: ${type}`;
+
+    if (many) {
+      return `${this.path}(
+        ${this.getListByKey(ref).getGraphqlFilterFragment()}
+      ): [${ref}]`;
+    }
+
+    return `${this.path}: ${ref}`;
   }
 
   extendAdminMeta(meta) {
@@ -47,23 +54,53 @@ class Relationship extends Implementation {
       `;
     }
   }
+
   getGraphqlOutputFieldResolvers() {
     const { many, ref } = this.config;
-    return {
-      [this.path]: item => {
-        if (many) {
-          return this.getListByKey(ref).adapter.find({
-            _id: { $in: item[this.path] },
-          });
-        } else {
+
+    // to-one relationships are much easier to deal with.
+    if (!many) {
+      return {
+        [this.path]: (item, _, context) => {
           // The field may have already been filled in during an early DB lookup
           // (ie; joining when doing a filter)
           // eslint-disable-next-line no-underscore-dangle
-          if (item[this.path] && item[this.path]._id) {
-            return item[this.path];
+          const id = item[this.path] && item[this.path]._id ? item[this.path]._id : item[this.path];
+
+          if (!id) {
+            return null;
           }
-          return this.getListByKey(ref).adapter.findById(item[this.path]);
+
+          const filteredQueryArgs = { where: { id: id.toString() } };
+
+          // We do a full query to ensure things like access control are applied
+          return this.getListByKey(ref)
+            .manyQuery(filteredQueryArgs, context, this.listQueryName)
+            .then(items => (items && items.length ? items[0] : null));
+        },
+      };
+    }
+
+    return {
+      [this.path]: (item, args, context) => {
+        let ids = [];
+        if (item[this.path]) {
+          ids = item[this.path]
+            .map(value => {
+              // The field may have already been filled in during an early DB lookup
+              // (ie; joining when doing a filter)
+              // eslint-disable-next-line no-underscore-dangle
+              if (value && value._id) {
+                // eslint-disable-next-line no-underscore-dangle
+                return value._id;
+              }
+
+              return value;
+            })
+            .filter(value => value);
         }
+        const filteredQueryArgs = mergeWhereClause(args, { id_in: ids });
+        return this.getListByKey(ref).manyQuery(filteredQueryArgs, context, this.listQueryName);
       },
     };
   }

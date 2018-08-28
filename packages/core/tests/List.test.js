@@ -249,6 +249,7 @@ test('getAdminGraphqlTypes()', () => {
 
           # MockType field
           email_query_args
+          AND: [TestWhereInput]
         }
       `,
     `
@@ -284,7 +285,6 @@ test('getAdminGraphqlQueries()', () => {
     `
         allTests(
           where: TestWhereInput
-
           search: String
           orderBy: String
 
@@ -299,7 +299,6 @@ test('getAdminGraphqlQueries()', () => {
 
         _allTestsMeta(
           where: TestWhereInput
-
           search: String
           orderBy: String
 

@@ -11,6 +11,7 @@ const {
   intersection,
   pick,
   omit,
+  mergeWhereClause,
   objMerge,
   defaultObj,
   arrayToObject,
@@ -220,5 +221,44 @@ describe('utils', () => {
     expect(flatten([1, 2, 3])).toEqual([1, 2, 3]);
     expect(flatten([[1, 2, 3]])).toEqual([1, 2, 3]);
     expect(flatten(a)).toEqual([1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]);
+  });
+
+  test('mergeWhereClause', () => {
+    let args = { a: 1 };
+
+    // Non-objects for where clause, simply return
+    expect(mergeWhereClause(args, undefined)).toEqual(args);
+    expect(mergeWhereClause(args, true)).toEqual(args);
+    expect(mergeWhereClause(args, 10)).toEqual(args);
+
+    let where = {};
+    expect(mergeWhereClause(args, where)).toEqual({ a: 1 });
+
+    where = { b: 20 };
+    expect(mergeWhereClause(args, where)).toEqual({ a: 1, where: { b: 20 } });
+
+    args = { a: 1, where: { b: 2, c: 3, d: 4 } };
+    where = { b: 20, c: 30 };
+    expect(mergeWhereClause(args, where)).toEqual({
+      a: 1,
+      where: { AND: [{ b: 2, c: 3, d: 4 }, { b: 20, c: 30 }] },
+    });
+
+    args = { a: 1, where: {} };
+    where = { b: 20, c: 30 };
+    expect(mergeWhereClause(args, where)).toEqual({ a: 1, where: { b: 20, c: 30 } });
+
+    args = { a: 1, where: { b: 20, c: 30 } };
+    where = {};
+    expect(mergeWhereClause(args, where)).toEqual({ a: 1, where: { b: 20, c: 30 } });
+  });
+
+  test('mergeWhereClause doesnt clobber arrays', () => {
+    const args = { a: 1, where: { b: 2, c: ['1', '2'] } };
+    const where = { d: 20, c: ['3', '4'] };
+    expect(mergeWhereClause(args, where)).toEqual({
+      a: 1,
+      where: { AND: [{ b: 2, c: ['1', '2'] }, { d: 20, c: ['3', '4'] }] },
+    });
   });
 });

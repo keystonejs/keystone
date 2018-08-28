@@ -1,19 +1,17 @@
 const pluralize = require('pluralize');
+
 const {
   resolveAllKeys,
+  mapKeys,
   omit,
   unique,
   intersection,
+  mergeWhereClause,
   objMerge,
-  mapKeys,
   arrayToObject,
 } = require('@keystonejs/utils');
 
-const {
-  parseListAccess,
-  testListAccessControl,
-  mergeWhereClause,
-} = require('@keystonejs/access-control');
+const { parseListAccess, testListAccessControl } = require('@keystonejs/access-control');
 
 const logger = require('@keystonejs/logger');
 
@@ -272,6 +270,7 @@ module.exports = class List {
           id_in: [ID!]
           id_not_in: [ID!]
           ${queryArgs}
+          AND: [${this.gqlNames.whereInputName}]
         }
       `);
       types.push(`
@@ -300,15 +299,18 @@ module.exports = class List {
     return types;
   }
 
-  getAdminGraphqlQueries() {
-    const commonArgs = `
+  getGraphqlFilterFragment() {
+    return `
+          where: ${this.gqlNames.whereInputName}
           search: String
           orderBy: String
 
           # Pagination
           first: Int
           skip: Int`.trim();
+  }
 
+  getAdminGraphqlQueries() {
     // All the auxiliary queries the fields want to add
     const queries = this.fields
       .map(field => field.getGraphqlAuxiliaryQueries())
@@ -321,9 +323,7 @@ module.exports = class List {
       // prettier-ignore
       queries.push(`
         ${this.gqlNames.listQueryName}(
-          where: ${this.gqlNames.whereInputName}
-
-          ${commonArgs}
+          ${this.getGraphqlFilterFragment()}
         ): [${this.gqlNames.outputTypeName}]
 
         ${this.gqlNames.itemQueryName}(
@@ -331,9 +331,7 @@ module.exports = class List {
         ): ${this.gqlNames.outputTypeName}
 
         ${this.gqlNames.listQueryMetaName}(
-          where: ${this.gqlNames.whereInputName}
-
-          ${commonArgs}
+          ${this.getGraphqlFilterFragment()}
         ): _QueryMeta
 
         ${this.gqlNames.listMetaName}: _ListMeta
@@ -389,27 +387,8 @@ module.exports = class List {
     // the graphql schema
     if (this.access.read) {
       resolvers = {
-        [this.gqlNames.listQueryName]: (_, args, context) => {
-          const access = context.getListAccessControlForUser(this.key, 'read');
-          if (!access) {
-            // If the client handles errors correctly, it should be able to
-            // receive partial data (for the fields the user has access to),
-            // and then an `errors` array of AccessDeniedError's
-            throw new AccessDeniedError({
-              data: {
-                type: 'query',
-                name: this.gqlNames.listQueryName,
-              },
-              internalData: {
-                authedId: context.authedItem && context.authedItem.id,
-                authedListKey: context.authedListKey,
-              },
-            });
-          }
-
-          let queryArgs = mergeWhereClause(args, access);
-          return this.adapter.itemsQuery(queryArgs);
-        },
+        [this.gqlNames.listQueryName]: (_, args, context) =>
+          this.manyQuery(args, context, this.gqlNames.listQueryName),
 
         [this.gqlNames.listQueryMetaName]: (_, args, context) => {
           return {
@@ -865,6 +844,28 @@ module.exports = class List {
     );
 
     return newItem;
+  }
+
+  async manyQuery(args, context, queryName) {
+    const access = context.getListAccessControlForUser(this.key, 'read');
+    if (!access) {
+      // If the client handles errors correctly, it should be able to
+      // receive partial data (for the fields the user has access to),
+      // and then an `errors` array of AccessDeniedError's
+      throw new AccessDeniedError({
+        data: {
+          type: 'query',
+          name: queryName,
+        },
+        internalData: {
+          authedId: context.authedItem && context.authedItem.id,
+          authedListKey: context.authedListKey,
+        },
+      });
+    }
+    let queryArgs = mergeWhereClause(args, access);
+
+    return this.adapter.itemsQuery(queryArgs);
   }
 
   getAdminMutationResolvers() {
