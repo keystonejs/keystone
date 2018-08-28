@@ -65,11 +65,8 @@ beforeEach(() =>
   // clean the db
   resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase())));
 
-// TODO: Test the case outlined in https://github.com/keystonejs/keystone-5/issues/224
 describe('relationship filtering with access control', () => {
   test('implicitly filters to only the IDs in the database by default', async () => {
-    // FIXME: This test currently fails
-
     // Create all of the posts with the given IDs & random content
     await Promise.all(
       postIds.map(id => {

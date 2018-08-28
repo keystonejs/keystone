@@ -51,12 +51,7 @@ beforeEach(() =>
   // clean the db
   resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase())));
 
-// TODO: Test the case outlined in https://github.com/keystonejs/keystone-5/issues/224
 describe('relationship filtering', () => {
-  test('implicitly filters to only the IDs in the database by default', () => {});
-
-  test('explicitly filters when given a `where` clause', () => {});
-
   test('nested to-single relationships can be filtered within AND clause', async () => {
     const company = await create('Company', { name: 'Thinkmill' });
     const otherCompany = await create('Company', { name: 'Cete' });
@@ -64,7 +59,6 @@ describe('relationship filtering', () => {
     const user = await create('User', { company: company.id });
     await create('User', { company: otherCompany.id });
 
-    // NOTE: This will fail with current AND implementation
     const queryUser = await graphqlRequest({
       server,
       query: `
@@ -112,7 +106,6 @@ describe('relationship filtering', () => {
     // Create a dummy user to make sure we're actually filtering it out
     await create('User', { posts: [] });
 
-    // NOTE: This will fail with current AND implementation
     const queryUser = await graphqlRequest({
       server,
       query: `

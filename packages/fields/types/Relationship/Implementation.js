@@ -83,7 +83,6 @@ class Relationship extends Implementation {
 
     return {
       [this.path]: (item, args, context) => {
-        // TODO - use args.where / args.first, etc.
         let ids = [];
         if (item[this.path]) {
           ids = item[this.path]
