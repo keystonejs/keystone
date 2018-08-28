@@ -292,7 +292,7 @@ const ItemDetails = withRouter(
         <ClippyIcon />
       );
       const listHref = `${adminPath}/${list.path}`;
-
+      const titleText = item._label_; // eslint-disable-line no-underscore-dangle
       return (
         <Fragment>
           {updateErrorMessage ? (
@@ -302,7 +302,7 @@ const ItemDetails = withRouter(
           ) : null}
           <FlexGroup align="center" justify="space-between">
             <H1>
-              <TitleLink to={listHref}>{list.label}</TitleLink>: {item.name}
+              <TitleLink to={listHref}>{list.label}</TitleLink>: {titleText}
             </H1>
             <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
               Create
