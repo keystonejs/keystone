@@ -5,6 +5,7 @@ const { formatError, isInstance: isApolloErrorInstance } = require('apollo-error
 const { renderPlaygroundPage } = require('graphql-playground-html');
 const cuid = require('cuid');
 const logger = require('@keystonejs/logger');
+const { omit } = require('@keystonejs/utils');
 
 const { NestedError } = require('./graphqlErrors');
 
@@ -62,7 +63,16 @@ module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlP
           internalData: originalError.internalData,
         });
       } else {
-        graphqlLogger.error(error);
+        if (error.extensions && error.extensions.exception) {
+          const pinoError = {
+            ...omit(error.extensions.exception, ['name', 'model']),
+            path: [...error.path, error.extensions.exception.path],
+            stack: error.extensions.exception.stacktrace.join('\n'),
+          };
+          graphqlLogger.error(pinoError);
+        } else {
+          graphqlLogger.error(error);
+        }
       }
 
       let formattedError;
