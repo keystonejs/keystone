@@ -18,9 +18,7 @@ class File extends Implementation {
   }
 
   getGraphqlOutputFields() {
-    return `
-      ${this.path}: ${this.graphQLOutputType}
-    `;
+    return [{ name: this.path, type: this.graphQLOutputType }];
   }
   extendAdminMeta(meta) {
     return {
@@ -30,22 +28,26 @@ class File extends Implementation {
     };
   }
   getGraphqlQueryArgs() {
-    return '';
+    return [];
   }
   getFileUploadType() {
     return 'Upload';
   }
   getGraphqlAuxiliaryTypes() {
-    return `
-      type ${this.graphQLOutputType} {
-        id: ID
-        path: String
-        filename: String
-        mimetype: String
-        encoding: String
-        publicUrl: String
-      }
-    `;
+    return [
+      {
+        prefix: 'type',
+        name: this.graphQLOutputType,
+        args: [
+          { name: 'id', type: 'ID' },
+          { name: 'path', type: 'String' },
+          { name: 'filename', type: 'String' },
+          { name: 'mimetype', type: 'String' },
+          { name: 'encoding', type: 'String' },
+          { name: 'publicUrl', type: 'String' },
+        ],
+      },
+    ];
   }
   // Called on `User.avatar` for example
   getGraphqlOutputFieldResolvers() {
@@ -63,9 +65,13 @@ class File extends Implementation {
     };
   }
   getGraphqlAuxiliaryMutations() {
-    return `
-      uploadFile(file: ${this.getFileUploadType()}!): ${this.graphQLOutputType}
-    `;
+    return [
+      {
+        name: 'uploadFile',
+        args: [{ name: `file`, type: `${this.getFileUploadType()}!` }],
+        type: this.graphQLOutputType,
+      },
+    ];
   }
   getGraphqlAuxiliaryMutationResolvers() {
     return {
@@ -114,14 +120,10 @@ class File extends Implementation {
     return this.saveStream(uploadData, item[path]);
   }
   getGraphqlUpdateArgs() {
-    return `
-      ${this.path}: ${this.getFileUploadType()}
-    `;
+    return [{ name: this.path, type: this.getFileUploadType() }];
   }
   getGraphqlCreateArgs() {
-    return `
-      ${this.path}: ${this.getFileUploadType()}
-    `;
+    return [{ name: this.path, type: this.getFileUploadType() }];
   }
 }
 

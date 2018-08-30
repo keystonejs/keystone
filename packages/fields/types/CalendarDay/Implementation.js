@@ -9,31 +9,25 @@ class CalendarDay extends Implementation {
   }
 
   getGraphqlOutputFields() {
-    return `
-      ${this.path}: String
-    `;
+    return [{ name: this.path, type: 'String' }];
   }
   getGraphqlQueryArgs() {
-    return `
-        ${this.path}: String
-        ${this.path}_not: String
-        ${this.path}_lt: String
-        ${this.path}_lte: String
-        ${this.path}_gt: String
-        ${this.path}_gte: String
-        ${this.path}_in: [String]
-        ${this.path}_not_in: [String]
-    `;
+    return [
+      { name: this.path, type: 'String' },
+      { name: `${this.path}_not`, type: 'String' },
+      { name: `${this.path}_lt`, type: 'String' },
+      { name: `${this.path}_lte`, type: 'String' },
+      { name: `${this.path}_gt`, type: 'String' },
+      { name: `${this.path}_gte`, type: 'String' },
+      { name: `${this.path}_in`, type: '[String]' },
+      { name: `${this.path}_not_in`, type: '[String]' },
+    ];
   }
   getGraphqlUpdateArgs() {
-    return `
-      ${this.path}: String
-    `;
+    return [{ name: this.path, type: 'String' }];
   }
   getGraphqlCreateArgs() {
-    return `
-      ${this.path}: String
-    `;
+    return [{ name: this.path, type: 'String' }];
   }
 }
 

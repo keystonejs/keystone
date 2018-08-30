@@ -21,12 +21,16 @@ class Relationship extends Implementation {
     const { many, ref } = this.config;
 
     if (many) {
-      return `${this.path}(
-        ${this.getListByKey(ref).getGraphqlFilterFragment()}
-      ): [${ref}]`;
+      return [
+        {
+          name: this.path,
+          args: this.getListByKey(ref).getGraphqlFilterFragment(),
+          type: `[${ref}]`,
+        },
+      ];
     }
 
-    return `${this.path}: ${ref}`;
+    return [{ name: this.path, type: `${ref}` }];
   }
 
   extendAdminMeta(meta) {
@@ -37,21 +41,21 @@ class Relationship extends Implementation {
     const { many, ref } = this.config;
     const list = this.getListByKey(ref);
     if (many) {
-      return `
-        # condition must be true for all nodes
-        ${this.path}_every: ${list.gqlNames.whereInputName}
-        # condition must be true for at least 1 node
-        ${this.path}_some: ${list.gqlNames.whereInputName}
-        # condition must be false for all nodes
-        ${this.path}_none: ${list.gqlNames.whereInputName}
-        # is the relation field null
-        ${this.path}_is_null: Boolean
-      `;
+      return [
+        { comment: `condition must be true for all nodes` },
+        { name: `${this.path}_every`, type: list.gqlNames.whereInputName },
+        { comment: `condition must be true for at least 1 node` },
+        { name: `${this.path}_some`, type: list.gqlNames.whereInputName },
+        { comment: `condition must be false for all nodes` },
+        { name: `${this.path}_none`, type: list.gqlNames.whereInputName },
+        { comment: `is the relation field null` },
+        { name: `${this.path}_is_null`, type: 'Boolean' },
+      ];
     } else {
-      return `
-        ${this.path}: ${list.gqlNames.whereInputName}
-        ${this.path}_is_null: Boolean
-      `;
+      return [
+        { name: `${this.path}`, type: list.gqlNames.whereInputName },
+        { name: `${this.path}_is_null`, type: 'Boolean' },
+      ];
     }
   }
 
@@ -235,21 +239,30 @@ class Relationship extends Implementation {
     // mutation createPost() {
     //   author: { id: 'abc123' }
     // }
-    return `
-      input ${this.config.ref}RelationshipInput {
-        # Provide an id to link to an existing ${this.config.ref}. Cannot be set if 'create' set.
-        id: ID
-
-        # Provide data to create a new ${this.config.ref}. Cannot be set if 'id' set.
-        create: ${this.config.ref}CreateInput
-      }
-    `;
+    const args = [
+      {
+        comment: `Provide an id to link to an existing ${
+          this.config.ref
+        }. Cannot be set if 'create' set.`,
+      },
+      { name: `id`, type: `ID` },
+      { blank: true },
+      { comment: `Provide data to create a new ${this.config.ref}. Cannot be set if 'id' set.` },
+      { name: `create`, type: `${this.config.ref}CreateInput` },
+    ];
+    return [
+      {
+        prefix: 'input',
+        name: `${this.config.ref}RelationshipInput`,
+        args,
+      },
+    ];
   }
   getGraphqlUpdateArgs() {
     const { many } = this.config;
     const inputType = `${this.config.ref}RelationshipInput`;
     const type = many ? `[${inputType}]` : inputType;
-    return `${this.path}: ${type}`;
+    return [{ name: this.path, type }];
   }
   getGraphqlCreateArgs() {
     return this.getGraphqlUpdateArgs();

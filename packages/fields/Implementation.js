@@ -29,7 +29,9 @@ class Field {
   }
 
   // Field types should replace this if they want to any fields to the output type
-  getGraphqlOutputFields() {}
+  getGraphqlOutputFields() {
+    return [];
+  }
   getGraphqlOutputFieldResolvers() {}
 
   /**
@@ -42,11 +44,17 @@ class Field {
    * NOTE: When a naming conflic occurs, a list's types/queries/mutations will
    * overwrite any auxiliary types defined by an individual type.
    */
-  getGraphqlAuxiliaryTypes() {}
+  getGraphqlAuxiliaryTypes() {
+    return [];
+  }
   getGraphqlAuxiliaryTypeResolvers() {}
-  getGraphqlAuxiliaryQueries() {}
+  getGraphqlAuxiliaryQueries() {
+    return [];
+  }
   getGraphqlAuxiliaryQueryResolvers() {}
-  getGraphqlAuxiliaryMutations() {}
+  getGraphqlAuxiliaryMutations() {
+    return [];
+  }
   getGraphqlAuxiliaryMutationResolvers() {}
 
   /**
@@ -88,9 +96,15 @@ class Field {
    */
   updateFieldPostHook(data, path, item, context) {} // eslint-disable-line no-unused-vars
 
-  getGraphqlQueryArgs() {}
-  getGraphqlCreateArgs() {}
-  getGraphqlUpdateArgs() {}
+  getGraphqlQueryArgs() {
+    return [];
+  }
+  getGraphqlCreateArgs() {
+    return [];
+  }
+  getGraphqlUpdateArgs() {
+    return [];
+  }
 
   getAdminMeta() {
     return this.extendAdminMeta({

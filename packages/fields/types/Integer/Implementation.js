@@ -7,35 +7,29 @@ class Integer extends Implementation {
   }
 
   getGraphqlOutputFields() {
-    return `
-      ${this.path}: Int
-    `;
+    return [{ name: this.path, type: `Int` }];
   }
   getGraphqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
   getGraphqlQueryArgs() {
-    return `
-        ${this.path}: Int
-        ${this.path}_not: Int
-        ${this.path}_lt: Int
-        ${this.path}_lte: Int
-        ${this.path}_gt: Int
-        ${this.path}_gte: Int
-        ${this.path}_in: [Int]
-        ${this.path}_not_in: [Int]
-    `;
+    return [
+      { name: this.path, type: `Int` },
+      { name: `${this.path}_not`, type: `Int` },
+      { name: `${this.path}_lt`, type: `Int` },
+      { name: `${this.path}_lte`, type: `Int` },
+      { name: `${this.path}_gt`, type: `Int` },
+      { name: `${this.path}_gte`, type: `Int` },
+      { name: `${this.path}_in`, type: `[Int]` },
+      { name: `${this.path}_not_in`, type: `[Int]` },
+    ];
   }
   getGraphqlUpdateArgs() {
-    return `
-      ${this.path}: Int
-    `;
+    return [{ name: this.path, type: `Int` }];
   }
   getGraphqlCreateArgs() {
-    return `
-      ${this.path}: Int
-    `;
+    return [{ name: this.path, type: `Int` }];
   }
 }
 

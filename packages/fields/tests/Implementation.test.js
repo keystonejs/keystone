@@ -54,7 +54,7 @@ test('getGraphqlAuxiliaryTypes()', () => {
   const impl = new Field('path', config, args);
 
   const value = impl.getGraphqlAuxiliaryTypes();
-  expect(value).toBe(undefined);
+  expect(value).toEqual([]);
 });
 
 test('getGraphqlAuxiliaryTypeResolvers()', () => {
@@ -68,7 +68,7 @@ test('getGraphqlAuxiliaryQueries()', () => {
   const impl = new Field('path', config, args);
 
   const value = impl.getGraphqlAuxiliaryQueries();
-  expect(value).toBe(undefined);
+  expect(value).toEqual([]);
 });
 
 test('getGraphqlAuxiliaryQueryResolvers()', () => {
@@ -82,7 +82,7 @@ test('getGraphqlAuxiliaryMutations()', () => {
   const impl = new Field('path', config, args);
 
   const value = impl.getGraphqlAuxiliaryMutations();
-  expect(value).toBe(undefined);
+  expect(value).toEqual([]);
 });
 
 test('getGraphqlAuxiliaryMutationResolvers()', () => {
@@ -126,14 +126,14 @@ test('getGraphqlQueryArgs()', () => {
   const impl = new Field('path', config, args);
 
   const value = impl.getGraphqlQueryArgs();
-  expect(value).toBe(undefined);
+  expect(value).toEqual([]);
 });
 
 test('getGraphqlUpdateArgs()', () => {
   const impl = new Field('path', config, args);
 
   const value = impl.getGraphqlUpdateArgs();
-  expect(value).toBe(undefined);
+  expect(value).toEqual([]);
 });
 
 test('getGraphqlOutputFieldResolvers()', () => {

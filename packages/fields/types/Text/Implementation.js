@@ -8,38 +8,32 @@ class Text extends Implementation {
   }
 
   getGraphqlOutputFields() {
-    return `
-      ${this.path}: String
-    `;
+    return [{ name: this.path, type: `String` }];
   }
   getGraphqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
   getGraphqlQueryArgs() {
-    return `
-      ${this.path}: String
-      ${this.path}_case_sensitive: Boolean
-      ${this.path}_not: String
-      ${this.path}_contains: String
-      ${this.path}_not_contains: String
-      ${this.path}_starts_with: String
-      ${this.path}_not_starts_with: String
-      ${this.path}_ends_with: String
-      ${this.path}_not_ends_with: String
-      ${this.path}_in: [String!]
-      ${this.path}_not_in: [String!]
-    `;
+    return [
+      { name: this.path, type: 'String' },
+      { name: `${this.path}_case_sensitive`, type: 'Boolean' },
+      { name: `${this.path}_not`, type: 'String' },
+      { name: `${this.path}_contains`, type: 'String' },
+      { name: `${this.path}_not_contains`, type: 'String' },
+      { name: `${this.path}_starts_with`, type: 'String' },
+      { name: `${this.path}_not_starts_with`, type: 'String' },
+      { name: `${this.path}_ends_with`, type: 'String' },
+      { name: `${this.path}_not_ends_with`, type: 'String' },
+      { name: `${this.path}_in`, type: '[String!]' },
+      { name: `${this.path}_not_in`, type: '[String!]' },
+    ];
   }
   getGraphqlUpdateArgs() {
-    return `
-      ${this.path}: String
-    `;
+    return [{ name: this.path, type: 'String' }];
   }
   getGraphqlCreateArgs() {
-    return `
-      ${this.path}: String
-    `;
+    return [{ name: this.path, type: 'String' }];
   }
 }
 

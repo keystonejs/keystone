@@ -1,5 +1,6 @@
 const gql = require('graphql-tag');
 const Relationship = require('../').implementation;
+const { gqlTypeToString } = require('@keystonejs/utils');
 
 class MockFieldAdapter {}
 
@@ -8,7 +9,7 @@ class MockListAdapter {
   prepareModel = () => {};
 }
 
-const mockFilterFragment = 'first: Int';
+const mockFilterFragment = [{ name: 'first', type: 'Int' }];
 
 const mockFilterAST = [
   {
@@ -46,13 +47,17 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.getGraphqlCreateArgs()).toEqual('foo: [ZipRelationshipInput]');
+    expect(relMany.getGraphqlCreateArgs()).toEqual([
+      { name: 'foo', type: '[ZipRelationshipInput]' },
+    ]);
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.getGraphqlCreateArgs()).toEqual('foo: ZipRelationshipInput');
+    expect(relSingle.getGraphqlCreateArgs()).toEqual([
+      { name: 'foo', type: 'ZipRelationshipInput' },
+    ]);
   });
 
   test('inputs for relationship fields in update args', () => {
@@ -60,13 +65,17 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.getGraphqlUpdateArgs()).toEqual('foo: [ZipRelationshipInput]');
+    expect(relMany.getGraphqlUpdateArgs()).toEqual([
+      { name: 'foo', type: '[ZipRelationshipInput]' },
+    ]);
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.getGraphqlUpdateArgs()).toEqual('foo: ZipRelationshipInput');
+    expect(relSingle.getGraphqlUpdateArgs()).toEqual([
+      { name: 'foo', type: 'ZipRelationshipInput' },
+    ]);
   });
 
   test('relationship LinkOrCreate input', () => {
@@ -76,7 +85,7 @@ describe('Type Generation', () => {
     });
 
     // We're testing the AST is as we expect it to be
-    expect(gql(relationship.getGraphqlAuxiliaryTypes())).toMatchObject({
+    expect(gql(gqlTypeToString(relationship.getGraphqlAuxiliaryTypes()[0]))).toMatchObject({
       definitions: [
         {
           kind: 'InputObjectTypeDefinition',
@@ -121,11 +130,11 @@ describe('Type Generation', () => {
     });
 
     // Wrap it in a mock type because all we get back is the fields
-    const fieldSchema = `
-      type MockType {
-        ${relationship.getGraphqlOutputFields()}
-      }
-    `;
+    const fieldSchema = gqlTypeToString({
+      prefix: 'type',
+      name: 'MockType',
+      args: relationship.getGraphqlOutputFields(),
+    });
 
     const fieldAST = gql(fieldSchema);
 
@@ -162,11 +171,11 @@ describe('Type Generation', () => {
     });
 
     // Wrap it in a mock type because all we get back is the fields
-    const fieldSchema = `
-      type MockType {
-        ${relationship.getGraphqlOutputFields()}
-      }
-    `;
+    const fieldSchema = gqlTypeToString({
+      prefix: 'type',
+      name: 'MockType',
+      args: relationship.getGraphqlOutputFields(),
+    });
 
     const fieldAST = gql(fieldSchema);
 
