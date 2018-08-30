@@ -192,7 +192,11 @@ export const DayPicker = (props: Props) => {
         </Header>
 
         <Body>
-          <WeekLabels>{WEEK_DAYS.map(d => <Day key={d}>{d}</Day>)}</WeekLabels>
+          <WeekLabels>
+            {WEEK_DAYS.map(d => (
+              <Day key={d}>{d}</Day>
+            ))}
+          </WeekLabels>
           {weeksInCurrentMonth.map((week, i) => (
             <WeekRow key={i}>
               {week.map(day => {
