@@ -1,14 +1,15 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
 const { resolveAllKeys, mapKeys } = require('@keystonejs/utils');
+const cuid = require('cuid');
 
-const { setupServer, graphqlRequest } = require('./util');
+const { setupServer, graphqlRequest } = require('../../util');
 
 let server;
 
 beforeAll(() => {
   server = setupServer({
-    name: 'Tests relationship field nested create singular',
+    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('Group', {
         fields: {
@@ -64,10 +65,22 @@ function create(list, item) {
   return server.keystone.getListByKey(list).adapter.create(item);
 }
 
-afterAll(() =>
-  resolveAllKeys(
+function findOne(list, item) {
+  return server.keystone.getListByKey(list).adapter.findOne(item);
+}
+
+function findById(list, item) {
+  return server.keystone.getListByKey(list).adapter.findById(item);
+}
+
+afterAll(async () => {
+  // clean the db
+  await resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase()));
+  // then shut down
+  await resolveAllKeys(
     mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase().then(() => adapter.close()))
-  ));
+  );
+});
 
 beforeEach(() =>
   // clean the db
@@ -357,6 +370,11 @@ describe('with access control', () => {
         createEventToGroupNoRead: { id: expect.any(String) },
       });
       expect(body).not.toHaveProperty('errors');
+
+      // See that it actually stored the group ID on the Event record
+      const event = await findOne('EventToGroupNoRead', { title: 'A thing' });
+      expect(event).toBeTruthy();
+      expect(event.group.toString()).toEqual(createGroupNoRead.id);
     });
 
     test('does not throw error when creating nested within create mutation', async () => {
@@ -381,6 +399,15 @@ describe('with access control', () => {
       expect(createEventToGroupNoRead.body.data).toMatchObject({
         createEventToGroupNoRead: { id: expect.any(String) },
       });
+
+      // See that it actually stored the group ID on the Event record
+      const event = await findOne('EventToGroupNoRead', { title: 'A thing' });
+      expect(event).toBeTruthy();
+      expect(event.group).toBeTruthy();
+
+      const group = await findById('GroupNoRead', event.group);
+      expect(group).toBeTruthy();
+      expect(group.name).toBe(groupName);
     });
 
     test('does not throw error when linking nested within update mutation', async () => {
@@ -391,6 +418,8 @@ describe('with access control', () => {
         name: groupName,
       });
 
+      expect(createGroupNoRead.id).toBeTruthy();
+
       // Create an item to update
       const {
         body: {
@@ -400,6 +429,8 @@ describe('with access control', () => {
         server,
         query: 'mutation { createEventToGroupNoRead(data: { title: "A thing", }) { id } }',
       });
+
+      expect(createEventToGroupNoRead.id).toBeTruthy();
 
       // Update the item and link the relationship field
       const { body } = await graphqlRequest({
@@ -414,10 +445,6 @@ describe('with access control', () => {
               }
             ) {
               id
-              group {
-                id
-                name
-              }
             }
           }
       `,
@@ -426,13 +453,14 @@ describe('with access control', () => {
       expect(body.data).toMatchObject({
         updateEventToGroupNoRead: {
           id: expect.any(String),
-          group: {
-            id: expect.any(String),
-            name: groupName,
-          },
         },
       });
       expect(body).not.toHaveProperty('errors');
+
+      // See that it actually stored the group ID on the Event record
+      const event = await findOne('EventToGroupNoRead', { title: 'A thing' });
+      expect(event).toBeTruthy();
+      expect(event.group.toString()).toEqual(createGroupNoRead.id);
     });
 
     test('does not throw error when creating nested within update mutation', async () => {
@@ -465,6 +493,15 @@ describe('with access control', () => {
       expect(updateEventToGroupNoRead.body.data).toMatchObject({
         updateEventToGroupNoRead: { id: expect.any(String) },
       });
+
+      // See that it actually stored the group ID on the Event record
+      const event = await findOne('EventToGroupNoRead', { title: 'A thing' });
+      expect(event).toBeTruthy();
+      expect(event.group).toBeTruthy();
+
+      const group = await findById('GroupNoRead', event.group);
+      expect(group).toBeTruthy();
+      expect(group.name).toBe(groupName);
     });
   });
 
@@ -486,13 +523,16 @@ describe('with access control', () => {
               group: { id: "${id}" }
             }) {
               id
+              group {
+                id
+              }
             }
           }
       `,
       });
 
       expect(body.data).toMatchObject({
-        createEventToGroupNoCreate: { id: expect.any(String) },
+        createEventToGroupNoCreate: { id: expect.any(String), group: { id } },
       });
       expect(body).not.toHaveProperty('errors');
     });
@@ -620,6 +660,15 @@ describe('with access control', () => {
         },
       });
       expect(body).not.toHaveProperty('errors');
+
+      // See that it actually stored the group ID on the Event record
+      const event = await findOne('EventToGroupNoCreate', { title: 'A thing' });
+      expect(event).toBeTruthy();
+      expect(event.group).toBeTruthy();
+
+      const group = await findById('GroupNoCreate', event.group);
+      expect(group).toBeTruthy();
+      expect(group.name).toBe(groupName);
     });
 
     test('throws error when creating nested within update mutation', async () => {

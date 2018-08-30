@@ -89,17 +89,21 @@ describe('new List()', () => {
       getAuth: () => {},
       defaultAccess: { list: true, field: true },
     });
-    expect(list.label).toEqual('Tests');
-    expect(list.singular).toEqual('Test');
-    expect(list.plural).toEqual('Tests');
-    expect(list.path).toEqual('tests');
-    expect(list.itemQueryName).toEqual('Test');
-    expect(list.listQueryName).toEqual('allTests');
-    expect(list.listQueryMetaName).toEqual('_allTestsMeta');
-    expect(list.deleteMutationName).toEqual('deleteTest');
-    expect(list.deleteManyMutationName).toEqual('deleteTests');
-    expect(list.updateMutationName).toEqual('updateTest');
-    expect(list.createMutationName).toEqual('createTest');
+    expect(list.adminUILabels.label).toEqual('Tests');
+    expect(list.adminUILabels.singular).toEqual('Test');
+    expect(list.adminUILabels.plural).toEqual('Tests');
+    expect(list.adminUILabels.path).toEqual('tests');
+    expect(list.gqlNames.itemQueryName).toEqual('Test');
+    expect(list.gqlNames.listQueryName).toEqual('allTests');
+    expect(list.gqlNames.listQueryMetaName).toEqual('_allTestsMeta');
+    expect(list.gqlNames.deleteMutationName).toEqual('deleteTest');
+    expect(list.gqlNames.deleteManyMutationName).toEqual('deleteTests');
+    expect(list.gqlNames.updateMutationName).toEqual('updateTest');
+    expect(list.gqlNames.createMutationName).toEqual('createTest');
+    expect(list.gqlNames.whereInputName).toEqual('TestWhereInput');
+    expect(list.gqlNames.whereUniqueInputName).toEqual('TestWhereUniqueInput');
+    expect(list.gqlNames.updateInputName).toEqual('TestUpdateInput');
+    expect(list.gqlNames.createInputName).toEqual('TestCreateInput');
   });
 
   test('new List() - fields', () => {
@@ -167,6 +171,10 @@ describe('getAdminMeta()', () => {
     expect(adminMeta.deleteManyMutationName).toEqual('deleteTests');
     expect(adminMeta.updateMutationName).toEqual('updateTest');
     expect(adminMeta.createMutationName).toEqual('createTest');
+    expect(adminMeta.whereInputName).toEqual('TestWhereInput');
+    expect(adminMeta.whereUniqueInputName).toEqual('TestWhereUniqueInput');
+    expect(adminMeta.updateInputName).toEqual('TestUpdateInput');
+    expect(adminMeta.createInputName).toEqual('TestCreateInput');
   });
 
   test('getAdminMeta() - fields', () => {
@@ -241,6 +249,7 @@ test('getAdminGraphqlTypes()', () => {
 
           # MockType field
           email_query_args
+          AND: [TestWhereInput]
         }
       `,
     `
@@ -276,7 +285,6 @@ test('getAdminGraphqlQueries()', () => {
     `
         allTests(
           where: TestWhereInput
-
           search: String
           orderBy: String
 
@@ -285,11 +293,12 @@ test('getAdminGraphqlQueries()', () => {
           skip: Int
         ): [Test]
 
-        Test(where: TestWhereUniqueInput!): Test
+        Test(
+          where: TestWhereUniqueInput!
+        ): Test
 
         _allTestsMeta(
           where: TestWhereInput
-
           search: String
           orderBy: String
 

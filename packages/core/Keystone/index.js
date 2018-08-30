@@ -1,6 +1,5 @@
 const GraphQLJSON = require('graphql-type-json');
-const { makeExecutableSchema } = require('graphql-tools');
-const { resolveAllKeys } = require('@keystonejs/utils');
+const { resolveAllKeys, arrayToObject, mapKeys, objMerge, flatten } = require('@keystonejs/utils');
 
 const {
   unmergeRelationships,
@@ -10,7 +9,6 @@ const {
 const List = require('../List');
 const bindSession = require('./session');
 
-const flatten = arr => Array.prototype.concat(...arr);
 const unique = arr => [...new Set(arr)];
 
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
@@ -81,23 +79,20 @@ module.exports = class Keystone {
   }
   getAdminMeta() {
     const { name } = this.config;
-    const lists = this.listsArray.reduce((acc, list) => {
-      // We've consciously made a design choice that the `read` permission on a
-      // list is a master switch in the Admin UI (not the GraphQL API).
-      // Justification: If you want to Create without the Read permission, you
-      // technically don't have permission to read the result of your creation.
-      // If you want to Update an item, you can't see what the current values
-      // are. If you want to delete an item, you'd need to be given direct
-      // access to it (direct URI), but can't see anything about that item. And
-      // in fact, being able to load a page with a 'delete' button on it
-      // violates the read permission as it leaks the fact that item exists.
-      // In all these cases, the Admin UI becomes unnecessarily complex.
-      // So we only allow all these actions if you also have read access.
-      if (list.access.read) {
-        acc[list.key] = list.getAdminMeta();
-      }
-      return acc;
-    }, {});
+    // We've consciously made a design choice that the `read` permission on a
+    // list is a master switch in the Admin UI (not the GraphQL API).
+    // Justification: If you want to Create without the Read permission, you
+    // technically don't have permission to read the result of your creation.
+    // If you want to Update an item, you can't see what the current values
+    // are. If you want to delete an item, you'd need to be given direct
+    // access to it (direct URI), but can't see anything about that item. And
+    // in fact, being able to load a page with a 'delete' button on it
+    // violates the read permission as it leaks the fact that item exists.
+    // In all these cases, the Admin UI becomes unnecessarily complex.
+    // So we only allow all these actions if you also have read access.
+    const lists = arrayToObject(this.listsArray.filter(list => list.access.read), 'key', list =>
+      list.getAdminMeta()
+    );
 
     return { lists, name };
   }
@@ -195,14 +190,8 @@ module.exports = class Keystone {
     const resolvers = {
       // Order of spreading is important here - we don't want user-defined types
       // to accidentally override important things like `Query`.
-      ...this.listsArray.reduce(
-        (acc, list) => ({
-          ...list.getAuxiliaryTypeResolvers(),
-          ...list.getAdminFieldResolvers(),
-          ...acc,
-        }),
-        {}
-      ),
+      ...objMerge(this.listsArray.map(list => list.getAuxiliaryTypeResolvers())),
+      ...objMerge(this.listsArray.map(list => list.getAdminFieldResolvers())),
 
       JSON: GraphQLJSON,
 
@@ -213,16 +202,13 @@ module.exports = class Keystone {
       Query: {
         // Order is also important here, any TypeQuery's defined by types
         // shouldn't be able to override list-level queries
-        ...this.listsArray.reduce((acc, i) => ({ ...i.getAuxiliaryQueryResolvers(), ...acc }), {}),
-        ...this.listsArray.reduce((acc, i) => ({ ...i.getAdminQueryResolvers(), ...acc }), {}),
+        ...objMerge(this.listsArray.map(i => i.getAuxiliaryQueryResolvers())),
+        ...objMerge(this.listsArray.map(i => i.getAdminQueryResolvers())),
       },
 
       Mutation: {
-        ...this.listsArray.reduce(
-          (acc, i) => ({ ...i.getAuxiliaryMutationResolvers(), ...acc }),
-          {}
-        ),
-        ...this.listsArray.reduce((acc, i) => ({ ...i.getAdminMutationResolvers(), ...acc }), {}),
+        ...objMerge(this.listsArray.map(i => i.getAuxiliaryMutationResolvers())),
+        ...objMerge(this.listsArray.map(i => i.getAdminMutationResolvers())),
       },
     };
 
@@ -230,10 +216,7 @@ module.exports = class Keystone {
       console.log(resolvers);
     }
 
-    return makeExecutableSchema({
-      typeDefs: [...listTypes, typeDefs],
-      resolvers,
-    });
+    return { typeDefs: [...listTypes, typeDefs], resolvers };
   }
 
   getListAccessControl({ listKey, operation, authentication }) {
@@ -256,13 +239,7 @@ module.exports = class Keystone {
   async createItems(itemsToCreate) {
     const createItems = data => {
       return resolveAllKeys(
-        Object.keys(data).reduce(
-          (memo, list) => ({
-            ...memo,
-            [list]: Promise.all(data[list].map(item => this.createItem(list, item))),
-          }),
-          {}
-        )
+        mapKeys(data, (value, list) => Promise.all(value.map(item => this.createItem(list, item))))
       );
     };
 

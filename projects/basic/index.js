@@ -11,6 +11,7 @@ const {
   Checkbox,
   CalendarDay,
   CloudinaryImage,
+  DateTime,
 } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
@@ -55,6 +56,7 @@ keystone.createList('User', {
     name: { type: Text },
     email: { type: Text },
     dob: { type: CalendarDay },
+    lastOnline: { type: DateTime },
     password: { type: Password },
     isAdmin: { type: Checkbox },
     company: {

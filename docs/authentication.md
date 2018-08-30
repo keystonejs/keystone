@@ -43,45 +43,5 @@ authentication against the UI.
 
 ## Strategies
 
-### `PasswordAuthStrategy`
-
-This strategy requires two fields to exist on a given list:
-
-- `username: Text`
-- `password: Password`
-
-The values of these fields will then be checked against when verifying a user
-login:
-
-```javascript
-const { Text, Password } = require('@keystonejs/fields');
-const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
-
-// NOTE: Order of list/auth creation here is not important
-keystone.createList('User', {
-  fields: {
-    email: { type: Text },
-    password: { type: Password },
-    // ... other fields
-  },
-});
-
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
-});
-
-// ... Later on, in some route handler
-
-const username = // ...
-const password = // ...
-
-const result = await this.authStrategy.validate({
-  username,
-  password,
-});
-
-if (result.success) {
-  // Valid credentials
-}
-```
+Auth strategies are
+[documented in the core package](../packages/core/auth/README.md).

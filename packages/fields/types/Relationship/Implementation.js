@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const pSettle = require('p-settle');
-const cuid = require('cuid');
+const omitBy = require('lodash.omitby');
+const { mergeWhereClause } = require('@keystonejs/utils');
 
 const {
   Schema: {
@@ -12,105 +13,20 @@ const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 const { ParameterError } = require('./graphqlErrors');
 
-function relationFilterPipeline({ path, query, many, refListAdapter, joinPathName }) {
-  return [
-    {
-      // JOIN
-      $lookup: {
-        // the MongoDB name of the collection - this is potentially different
-        // from the Mongoose name due to pluralization, etc. This guarantees the
-        // correct name.
-        from: refListAdapter.model.collection.name,
-        as: joinPathName,
-        let: { [path]: `$${path}` },
-        pipeline: [
-          {
-            $match: {
-              ...query,
-              $expr: { [many ? '$in' : '$eq']: ['$_id', `$$${path}`] },
-            },
-          },
-        ],
-      },
-    },
-    // Filter out empty array results (the $lookup will return a document with
-    // an empty array when no matches are found in the related field)
-    // TODO: This implies a `some` filter. For an `every` filter, we would need
-    // to somehow check that the resulting size of `path` equals the original
-    // document's size. In the case of one-to-one, we'd have to check that the
-    // resulting size is exactly 1 (which is the same as `$ne: []`?)
-    { $match: { [joinPathName]: { $exists: true, $ne: [] } } },
-  ];
-}
-
-function postAggregateMutationFactory({ path, many, joinPathName, refListAdapter }) {
-  // Recreate Mongoose instances of the sub items every time to allow for
-  // further operations to be performed on those sub items via Mongoose.
-  return item => {
-    if (!item) {
-      return;
-    }
-
-    let joinedItems;
-
-    if (many) {
-      joinedItems = item[path].map(itemId => {
-        const joinedItemIndex = item[joinPathName].findIndex(({ _id }) => _id.equals(itemId));
-
-        if (joinedItemIndex === -1) {
-          return itemId;
-        }
-
-        // Extract that element out of the array (so the next iteration is a bit
-        // faster)
-        const joinedItem = item[joinPathName].splice(joinedItemIndex, 1)[0];
-        return refListAdapter.model(joinedItem);
-      });
-
-      // At this point, we should have spliced out all of the items
-      if (item[joinPathName].length > 0) {
-        // I don't see why this should ever happen, but just in case...
-        throw new Error(
-          `Expected results from MongoDB aggregation '${joinPathName}' to be a subset of the original items, bet left with:\n${JSON.stringify(
-            item[joinPathName]
-          )}`
-        );
-      }
-    } else {
-      const joinedItem = item[joinPathName][0];
-      // eslint-disable-next-line no-underscore-dangle
-      if (!joinedItem || !joinedItem._id.equals(item[path])) {
-        // Shouldn't be possible due to the { $exists: true, $ne: [] }
-        // aggregation step above, but in case that fails or doesn't behave
-        // as expected, we can catch that now.
-        throw new Error(
-          'Expected MongoDB aggregation to correctly filter to a single related item, but no item found.'
-        );
-      }
-      joinedItems = refListAdapter.model(joinedItem);
-    }
-
-    const newItemValues = {
-      ...item,
-      [path]: joinedItems,
-    };
-
-    // Get rid of the temporary data key we used to join on
-    // Should be an empty array now that we spliced all the values out above
-    delete newItemValues[joinPathName];
-
-    return newItemValues;
-  };
-}
-
 class Relationship extends Implementation {
   constructor() {
     super(...arguments);
   }
   getGraphqlOutputFields() {
     const { many, ref } = this.config;
-    const type = many ? `[${ref}]` : ref;
-    return `${this.path}: ${type}`;
+
+    if (many) {
+      return `${this.path}(
+        ${this.getListByKey(ref).getGraphqlFilterFragment()}
+      ): [${ref}]`;
+    }
+
+    return `${this.path}: ${ref}`;
   }
 
   extendAdminMeta(meta) {
@@ -119,41 +35,72 @@ class Relationship extends Implementation {
   }
   getGraphqlQueryArgs() {
     const { many, ref } = this.config;
+    const list = this.getListByKey(ref);
     if (many) {
       return `
         # condition must be true for all nodes
-        ${this.path}_every: ${ref}WhereInput
+        ${this.path}_every: ${list.gqlNames.whereInputName}
         # condition must be true for at least 1 node
-        ${this.path}_some: ${ref}WhereInput
+        ${this.path}_some: ${list.gqlNames.whereInputName}
         # condition must be false for all nodes
-        ${this.path}_none: ${ref}WhereInput
+        ${this.path}_none: ${list.gqlNames.whereInputName}
         # is the relation field null
         ${this.path}_is_null: Boolean
       `;
     } else {
       return `
-        ${this.path}: ${ref}WhereInput
+        ${this.path}: ${list.gqlNames.whereInputName}
         ${this.path}_is_null: Boolean
       `;
     }
   }
+
   getGraphqlOutputFieldResolvers() {
     const { many, ref } = this.config;
-    return {
-      [this.path]: item => {
-        if (many) {
-          return this.getListByKey(ref).adapter.find({
-            _id: { $in: item[this.path] },
-          });
-        } else {
+
+    // to-one relationships are much easier to deal with.
+    if (!many) {
+      return {
+        [this.path]: (item, _, context) => {
           // The field may have already been filled in during an early DB lookup
           // (ie; joining when doing a filter)
           // eslint-disable-next-line no-underscore-dangle
-          if (item[this.path] && item[this.path]._id) {
-            return item[this.path];
+          const id = item[this.path] && item[this.path]._id ? item[this.path]._id : item[this.path];
+
+          if (!id) {
+            return null;
           }
-          return this.getListByKey(ref).adapter.findById(item[this.path]);
+
+          const filteredQueryArgs = { where: { id: id.toString() } };
+
+          // We do a full query to ensure things like access control are applied
+          return this.getListByKey(ref)
+            .manyQuery(filteredQueryArgs, context, this.listQueryName)
+            .then(items => (items && items.length ? items[0] : null));
+        },
+      };
+    }
+
+    return {
+      [this.path]: (item, args, context) => {
+        let ids = [];
+        if (item[this.path]) {
+          ids = item[this.path]
+            .map(value => {
+              // The field may have already been filled in during an early DB lookup
+              // (ie; joining when doing a filter)
+              // eslint-disable-next-line no-underscore-dangle
+              if (value && value._id) {
+                // eslint-disable-next-line no-underscore-dangle
+                return value._id;
+              }
+
+              return value;
+            })
+            .filter(value => value);
         }
+        const filteredQueryArgs = mergeWhereClause(args, { id_in: ids });
+        return this.getListByKey(ref).manyQuery(filteredQueryArgs, context, this.listQueryName);
       },
     };
   }
@@ -321,66 +268,73 @@ class MongoSelectInterface extends MongooseFieldAdapter {
     });
   }
 
-  getQueryConditions(args, list, depthGuard) {
-    if (this.config.many) {
-      return this.getQueryConditionsMany(args, list, depthGuard);
-    }
-
-    return this.getQueryConditionsSingle(args, list, depthGuard);
+  getRefListAdapter() {
+    return this.getListByKey(this.config.ref).adapter;
   }
-  getQueryConditionsMany(args /*, last, depthGuard*/) {
-    return [];
-    Object.keys(args || {})
-      .filter(filter => filter.startsWith(`${this.path}_`))
-      .map(filter => filter);
+
+  getQueryConditions() {
+    return {
+      [`${this.path}_is_null`]: value => {
+        if (value) {
+          return { [this.path]: { $not: { $exists: true, $ne: null } } };
+        }
+        return { [this.path]: { $exists: true, $ne: null } };
+      },
+    };
   }
-  getQueryConditionsSingle(args, list, depthGuard) {
-    const conditions = [];
 
-    if (!args) {
-      return conditions;
-    }
+  hasQueryCondition(condition) {
+    return Object.keys(this.getRelationshipQueryConditions()).includes(condition);
+  }
 
-    const isNull = `${this.path}_is_null`;
-    if (isNull in args) {
-      if (args[isNull]) {
-        conditions.push({ $not: { $exists: true, $ne: null } });
-      } else {
-        conditions.push({ $exists: true, $ne: null });
-      }
-    }
+  getRelationshipQueryConditions() {
+    const refListAdapter = this.getRefListAdapter();
+    const from = refListAdapter.model.collection.name;
 
-    if (this.path in args) {
-      const refListAdapter = this.getListByKey(this.config.ref).adapter;
-      const filters = refListAdapter.itemsQueryConditions(args[this.path], depthGuard);
-
-      const query = {
-        $and: filters,
+    const buildRelationship = (filterType, uid) => {
+      return {
+        from, // the collection name to join with
+        field: this.path, // The field on this collection
+        // A mutation to run on the data post-join. Useful for merging joined
+        // data back into the original object.
+        // Executed on a depth-first basis for nested relationships.
+        postQueryMutation: (parentObj /*, keyOfRelationship, rootObj, pathToParent*/) => {
+          return omitBy(
+            parentObj,
+            /*
+            {
+              ...parentObj,
+              // Given there could be sorting and limiting that's taken place, we
+              // want to overwrite the entire object rather than merging found items
+              // in.
+              [field]: parentObj[keyOfRelationship],
+            },
+            */
+            // Clean up the result to remove the intermediate results
+            (_, keyToOmit) => keyToOmit.startsWith(uid)
+          );
+        },
+        // The conditions under which an item from the 'orders' collection is
+        // considered a match and included in the end result
+        // All the keys on an 'order' are available, plus 3 special keys:
+        // 1) <uid>_<field>_every - is `true` when every joined item matches the
+        //    query
+        // 2) <uid>_<field>_some - is `true` when some joined item matches the
+        //    query
+        // 3) <uid>_<field>_none - is `true` when none of the joined items match
+        //    the query
+        match: [{ [`${uid}_${this.path}_${filterType}`]: true }],
+        // Flag this is a to-many relationship
+        many: this.config.many,
       };
+    };
 
-      // 99.999999999...% guaranteed not to conflict with anything else
-      const joinPathName = cuid();
-
-      conditions.push({
-        // Must signal that this isn't some plain old '$and' query!
-        $isComplexStage: true,
-        pipeline: relationFilterPipeline({
-          path: this.path,
-          query,
-          many: false,
-          joinPathName,
-          refListAdapter,
-        }),
-        mutator: postAggregateMutationFactory({
-          path: this.path,
-          many: false,
-          joinPathName,
-          refListAdapter,
-        }),
-      });
-    }
-
-    return conditions;
+    return {
+      [this.path]: (value, query, uid) => buildRelationship('every', uid),
+      [`${this.path}_every`]: (value, query, uid) => buildRelationship('every', uid),
+      [`${this.path}_some`]: (value, query, uid) => buildRelationship('some', uid),
+      [`${this.path}_none`]: (value, query, uid) => buildRelationship('none', uid),
+    };
   }
 }
 

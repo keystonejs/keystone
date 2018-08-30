@@ -41,8 +41,8 @@ module.exports = class AdminUI {
     try {
       // TODO: How could we support, for example, the twitter auth flow?
       const result = await this.authStrategy.validate({
-        username: req.body.username,
-        password: req.body.password,
+        identity: req.body.username,
+        secret: req.body.password,
       });
 
       if (!result.success) {
@@ -51,7 +51,7 @@ module.exports = class AdminUI {
         return res.format({
           default: htmlResponse,
           'text/html': htmlResponse,
-          'application/json': () => res.json({ success: false }),
+          'application/json': () => res.json({ success: false, message: result.message }),
         });
       }
 
@@ -113,7 +113,12 @@ module.exports = class AdminUI {
 
     // Listen to POST events for form signin form submission (GET falls through
     // to the webpack server(s))
-    app.post(this.config.signinPath, bodyParser.json(), bodyParser.urlencoded(), this.signin);
+    app.post(
+      this.config.signinPath,
+      bodyParser.json(),
+      bodyParser.urlencoded({ extended: true }),
+      this.signin
+    );
 
     // Listen to both POST and GET events, and always sign the user out.
     app.use(this.config.signoutPath, this.signout);

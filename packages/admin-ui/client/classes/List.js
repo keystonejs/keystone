@@ -1,11 +1,12 @@
 import gql from 'graphql-tag';
 
 import FieldTypes from '../FIELD_TYPES';
+import { arrayToObject } from '@keystonejs/utils';
 
 const getCreateMutation = list => {
-  const { key } = list;
+  const { createInputName } = list;
   return gql`
-    mutation create($data: ${key}CreateInput!) {
+    mutation create($data: ${createInputName}!) {
       ${list.createMutationName}(data: $data) {
         id
       }
@@ -17,7 +18,7 @@ const getUpdateMutation = list => {
   return gql`
     mutation update(
       $id: ID!,
-      $data: ${list.key}UpdateInput)
+      $data: ${list.updateInputName})
     {
       ${list.updateMutationName}(id: $id, data: $data) {
         id
@@ -64,10 +65,7 @@ export default class List {
     this.deleteManyMutation = getDeleteManyMutation(this);
   }
   getInitialItemData() {
-    return this.fields.reduce((data, field) => {
-      data[field.path] = field.getInitialData();
-      return data;
-    }, {});
+    return arrayToObject(this.fields, 'path', field => field.getInitialData());
   }
   formatCount(items) {
     const count = Array.isArray(items) ? items.length : items;

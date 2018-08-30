@@ -1,4 +1,4 @@
-const { resolveAllKeys } = require('@keystonejs/utils');
+const { resolveAllKeys, mapKeys } = require('@keystonejs/utils');
 
 function isRelationshipField({ list, fieldKey }) {
   return !!list.config.fields[fieldKey].type.isRelationship;
@@ -7,16 +7,6 @@ function isRelationshipField({ list, fieldKey }) {
 function isManyRelationship({ list, fieldKey }) {
   const field = list.config.fields[fieldKey];
   return !!field.type.isRelationship && field.many;
-}
-
-function mapObject(input, mapFn) {
-  return Object.keys(input).reduce(
-    (memo, key) => ({
-      ...memo,
-      [key]: mapFn(input[key], key, input),
-    }),
-    {}
-  );
 }
 
 function splitObject(input, filterFn) {
@@ -91,7 +81,7 @@ const unmergeRelationships = (lists, input) => {
 
   // I think this is easier to read (ง'-')ง
   // prettier-ignore
-  const data = mapObject(input, (listData, listKey) => listData.map((item, itemIndex) => {
+  const data = mapKeys(input, (listData, listKey) => listData.map((item, itemIndex) => {
     const { left: relationData, right: scalarData } = splitObject(item, (fieldConditions, fieldKey) => {
       const list = lists[listKey];
       if (isRelationshipField({ list, fieldKey })) {
@@ -242,18 +232,18 @@ const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
  */
 const createRelationships = (lists, relationships, createdItems) => {
   return resolveAllKeys(
-    mapObject(relationships, (relationList, listKey) => {
+    mapKeys(relationships, (relationList, listKey) => {
       const listFieldsConfig = lists[listKey].config.fields;
 
       return resolveAllKeys(
         // NOTE: Sparse array / indexes match the indexes from the `createdItems`
-        mapObject(relationList, (relationItem, relationItemIndex) => {
+        mapKeys(relationList, (relationItem, relationItemIndex) => {
           const createdItem = createdItems[listKey][relationItemIndex];
 
           // Results in something like:
           // Promise<{ author: <id-of-User>, ... }>
           return resolveAllKeys(
-            mapObject(relationItem, (relationConditions, relationshipField) => {
+            mapKeys(relationItem, (relationConditions, relationshipField) => {
               const relatedListKey = listFieldsConfig[relationshipField].ref;
 
               return relateTo({
@@ -276,10 +266,8 @@ const createRelationships = (lists, relationships, createdItems) => {
 };
 
 function mergeRelationships(created, relationships) {
-  return Object.keys(created).reduce((memo, listKey) => {
+  return mapKeys(created, (newList, listKey) => {
     const relationshipItems = relationships[listKey];
-
-    let newList = created[listKey];
 
     if (relationshipItems) {
       newList = newList.map((item, itemIndex) => ({
@@ -287,12 +275,8 @@ function mergeRelationships(created, relationships) {
         ...relationshipItems[itemIndex],
       }));
     }
-
-    return {
-      ...memo,
-      [listKey]: newList,
-    };
-  }, {});
+    return newList;
+  });
 }
 
 module.exports = {

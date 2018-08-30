@@ -23,11 +23,12 @@
     "@keystonejs/fields": "^5.0.0",
     "@keystonejs/server": "^5.0.0",
     "@keystonejs/ui": "^5.0.0",
+    "@keystonejs/utils": "^1.0.0",
     "dotenv-safe": "^6.0.0",
-    "react": "^16.3.1"
+    "react": "^16.4.2"
   },
   "devDependencies": {
-    "cypress": "^3.0.2",
+    "cypress": "^3.1.0",
     "execa": "0.10.0",
     "mocha": "^3.1.2",
     "mocha-junit-reporter": "^1.17.0",

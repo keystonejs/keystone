@@ -3,9 +3,11 @@ import React, { type Node, type Ref } from 'react';
 import styled from 'react-emotion';
 import Kalendaryo from 'kalendaryo';
 import { isToday as isDayToday, isSameMonth, setMonth } from 'date-fns';
-import Select from 'react-select'
 import { format, formatDistance, formatRelative, subDays} from 'date-fns'
 import { setDate, addMonths, setYear } from 'date-fns'
+import parse from 'date-fns/parse';
+import { Input } from './index';
+import { Select } from '../filters';
 
 import { ChevronLeftIcon, ChevronRightIcon, ZapIcon } from '@keystonejs/icons';
 import { borderRadius, colors } from '../../theme';
@@ -96,6 +98,7 @@ const TodayMarker = styled.div(({ isSelected }) => ({
   width: '1em',
 }));
 
+/*
 const SelectMonths = () => {
 
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Oct', 'Nov', 'Dec']
@@ -107,6 +110,7 @@ const SelectMonths = () => {
     />
   )
 }; 
+*/
 
 class SelectYear extends React.Component {
 
@@ -221,4 +225,58 @@ export const DayPicker = (props: Props) => {
     );
   }
   return <Kalendaryo {...props} render={BasicCalendar} />;
+};
+
+export const DateTimePicker = (props: Props) => {
+  const { date, time, offset, htmlID, autoFocus } = props;
+  const { handleDayChange, handleTimeChange, handleOffsetChange } = props;
+  const TODAY = new Date();
+
+  const options = [
+    '-12',
+    '-11',
+    '-11',
+    '-10',
+    '-09',
+    '-08',
+    '-07',
+    '-06',
+    '-05',
+    '-04',
+    '-03',
+    '-02',
+    '-01',
+    '+00',
+    '+01',
+    '+02',
+    '+03',
+    '+04',
+    '+05',
+    '+06',
+    '+07',
+    '+08',
+    '+09',
+    '+10',
+    '+11',
+    '+12',
+    '+13',
+    '+14',
+  ].map(o => ({ value: `${o}:00`, label: `${o}:00` }));
+  return (
+    <div>
+      <DayPicker
+        autoFocus={autoFocus}
+        onSelectedChange={handleDayChange}
+        startCurrentDateAt={date ? parse(date) : TODAY}
+        startSelectedDateAt={date ? parse(date) : TODAY}
+      />
+      <Input type="time" name="time-picker" value={time} onChange={handleTimeChange} />
+      <Select
+        value={offset}
+        options={options}
+        onChange={handleOffsetChange}
+        id={`react-select-${htmlID}`}
+      />
+    </div>
+  );
 };

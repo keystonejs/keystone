@@ -23,7 +23,7 @@ import { AutocompleteCaptor } from '@keystonejs/ui/src/primitives/forms';
 import { colors, gridSize } from '@keystonejs/ui/src/theme';
 import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
 
-import { resolveAllKeys } from '@keystonejs/utils';
+import { resolveAllKeys, arrayToObject } from '@keystonejs/utils';
 import isEqual from 'lodash.isequal';
 
 // This import is loaded by the @keystone/field-views-loader loader.
@@ -217,24 +217,16 @@ const ItemDetails = withRouter(
       } = this.props;
 
       resolveAllKeys(
-        fields.reduce((values, field) => {
-          const oldValue = field.getValue(initialData);
-          const newValue = field.getValue(item);
-
-          // Don't try to update anything that hasn't changed.
-          // This is particularly important for access control where a field
-          // may be `read: true, update: false`, so will appear in the item
-          // details, but is not editable, and would cause an error if a value
-          // was sent as part of the update query.
-          if (isEqual(oldValue, newValue)) {
-            return values;
-          }
-
-          return {
-            [field.path]: field.getValue(item),
-            ...values,
-          };
-        }, {})
+        // Don't try to update anything that hasn't changed.
+        // This is particularly important for access control where a field
+        // may be `read: true, update: false`, so will appear in the item
+        // details, but is not editable, and would cause an error if a value
+        // was sent as part of the update query.
+        arrayToObject(
+          fields.filter(field => !isEqual(field.getValue(initialData), field.getValue(item))),
+          'path',
+          field => field.getValue(item)
+        )
       )
         .then(data => updateItem({ variables: { id: item.id, data } }))
         .then(() => {
@@ -300,7 +292,7 @@ const ItemDetails = withRouter(
         <ClippyIcon />
       );
       const listHref = `${adminPath}/${list.path}`;
-
+      const titleText = item._label_; // eslint-disable-line no-underscore-dangle
       return (
         <Fragment>
           {updateErrorMessage ? (
@@ -310,7 +302,7 @@ const ItemDetails = withRouter(
           ) : null}
           <FlexGroup align="center" justify="space-between">
             <H1>
-              <TitleLink to={listHref}>{list.label}</TitleLink>: {item.name}
+              <TitleLink to={listHref}>{list.label}</TitleLink>: {titleText}
             </H1>
             <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
               Create

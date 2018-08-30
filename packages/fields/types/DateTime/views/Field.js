@@ -1,0 +1,71 @@
+import format from 'date-fns/format';
+import { DateTime } from 'luxon';
+import React, { Component } from 'react';
+
+import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
+import { Button } from '@keystonejs/ui/src/primitives/buttons';
+import { DateTimePicker } from '@keystonejs/ui/src/primitives/forms';
+import { Popout } from '@keystonejs/ui/src/primitives/modals';
+
+const FORMAT = 'YYYY-MM-DDThh:mm:ss.SSSZ';
+
+export default class CalendarDayField extends Component {
+  constructor(props) {
+    super(props);
+    const { item, field } = props;
+    const value = item[field.path];
+    const dt = DateTime.fromISO(value, { setZone: true });
+    this.state = {
+      date: value && dt.toFormat('yyyy-LL-dd'),
+      time: value && dt.toFormat('HH:mm:ss.SSS'),
+      offset: value && dt.toFormat('ZZ'),
+    };
+  }
+
+  handleDayChange = day => {
+    const { field, onChange } = this.props;
+    const newState = { ...this.state, date: format(day, 'YYYY-MM-DD') };
+    onChange(field, `${newState.date}T${newState.time}${newState.offset}`);
+    this.setState(newState);
+  };
+
+  handleTimeChange = event => {
+    const { field, onChange } = this.props;
+    const newState = { ...this.state, time: event.target.value };
+    onChange(field, `${newState.date}T${newState.time}${newState.offset}`);
+    this.setState(newState);
+  };
+
+  handleOffsetChange = event => {
+    const { field, onChange } = this.props;
+    const newState = { ...this.state, offset: event.value };
+    onChange(field, `${newState.date}T${newState.time}${newState.offset}`);
+    this.setState(newState);
+  };
+
+  render() {
+    const { autoFocus, field } = this.props;
+    const { date, time, offset } = this.state;
+    const htmlID = `ks-input-${field.path}`;
+    const target = (
+      <Button autoFocus={autoFocus} id={htmlID} variant="ghost">
+        {date ? format(date, 'Do MMM YYYY') + ' ' + time + offset : FORMAT}
+      </Button>
+    );
+
+    const { handleDayChange, handleTimeChange, handleOffsetChange } = this;
+    return (
+      <FieldContainer>
+        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+        <FieldInput>
+          <Popout target={target} width={280}>
+            <DateTimePicker
+              {...this.props}
+              {...{ date, time, offset, handleDayChange, handleTimeChange, handleOffsetChange }}
+            />
+          </Popout>
+        </FieldInput>
+      </FieldContainer>
+    );
+  }
+}

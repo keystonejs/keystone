@@ -2,8 +2,9 @@ const { gen, sampleOne } = require('testcheck');
 
 const { Text, Relationship } = require('@keystonejs/fields');
 const { resolveAllKeys, mapKeys } = require('@keystonejs/utils');
+const cuid = require('cuid');
 
-const { setupServer, graphqlRequest } = require('./util');
+const { setupServer, graphqlRequest } = require('../../util');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -11,7 +12,7 @@ let server;
 
 beforeAll(() => {
   server = setupServer({
-    name: 'Tests relationship field nested create many',
+    name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('Note', {
         fields: {
@@ -67,10 +68,14 @@ function create(list, item) {
   return server.keystone.getListByKey(list).adapter.create(item);
 }
 
-afterAll(() =>
-  resolveAllKeys(
+afterAll(async () => {
+  // clean the db
+  await resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase()));
+  // then shut down
+  await resolveAllKeys(
     mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase().then(() => adapter.close()))
-  ));
+  );
+});
 
 beforeEach(() =>
   // clean the db
@@ -690,7 +695,7 @@ describe('with access control', () => {
       expect(createUserOneNote.body).not.toHaveProperty('errors');
     });
 
-    test('does not throw when create nested from within create mutation', async () => {
+    test('throws when trying to read after nested create', async () => {
       const noteContent = sampleOne(alphanumGenerator);
 
       // Create an item that does the nested create
@@ -705,8 +710,38 @@ describe('with access control', () => {
               id
               notes {
                 id
-                content
               }
+            }
+          }
+      `,
+      });
+
+      expect(createUserToNotesNoRead.body).toHaveProperty('errors');
+      expect(createUserToNotesNoRead.body.errors).toMatchObject([
+        {
+          name: 'AccessDeniedError',
+          path: ['createUserToNotesNoRead', 'notes'],
+        },
+      ]);
+      expect(createUserToNotesNoRead.body).toHaveProperty(
+        'data.createUserToNotesNoRead.notes',
+        null
+      );
+    });
+
+    test('does not throw when create nested from within create mutation', async () => {
+      const noteContent = sampleOne(alphanumGenerator);
+
+      // Create an item that does the nested create
+      const createUserToNotesNoRead = await graphqlRequest({
+        server,
+        query: `
+          mutation {
+            createUserToNotesNoRead(data: {
+              username: "A thing",
+              notes: [{ create: { content: "${noteContent}" } }]
+            }) {
+              id
             }
           }
       `,
@@ -734,9 +769,6 @@ describe('with access control', () => {
               notes: [{ id: "${createNoteNoRead.id}" }, { create: { content: "${noteContent2}" } }]
             }) {
               id
-              notes {
-                id
-              }
             }
           }
       `,
@@ -769,10 +801,6 @@ describe('with access control', () => {
               }
             ) {
               id
-              notes {
-                id
-                content
-              }
             }
           }
       `,
@@ -835,10 +863,6 @@ describe('with access control', () => {
               }
             ) {
               id
-              notes {
-                id
-                content
-              }
             }
           }
       `,
@@ -959,10 +983,6 @@ describe('with access control', () => {
               }
             ) {
               id
-              notes {
-                id
-                content
-              }
             }
           }
       `,

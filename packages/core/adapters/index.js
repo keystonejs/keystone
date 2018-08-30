@@ -16,6 +16,10 @@ class BaseKeystoneAdapter {
     return adapter;
   }
 
+  getListAdapterByKey(key) {
+    return this.listAdapters[key];
+  }
+
   prepareListAdapter() {}
 }
 

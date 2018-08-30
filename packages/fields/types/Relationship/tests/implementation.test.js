@@ -8,9 +8,31 @@ class MockListAdapter {
   prepareModel = () => {};
 }
 
+const mockFilterFragment = 'first: Int';
+
+const mockFilterAST = [
+  {
+    kind: 'InputValueDefinition',
+    name: {
+      value: 'first',
+    },
+    type: {
+      name: {
+        value: 'Int',
+      },
+    },
+  },
+];
+
 function createRelationship({ path, config = {} }) {
+  class MockList {
+    // The actual implementation in `@keystonejs/core/List/index.js` returns
+    // more, but we only want to test that this codepath is called
+    getGraphqlFilterFragment = () => mockFilterFragment;
+  }
+
   return new Relationship(path, config, {
-    getListByKey: () => {},
+    getListByKey: () => new MockList(),
     listKey: 'FakeList',
     listAdapter: new MockListAdapter(),
     fieldAdapterClass: MockFieldAdapter,
@@ -88,5 +110,90 @@ describe('Type Generation', () => {
         },
       ],
     });
+  });
+
+  test('to-single relationships cannot be filtered at the field level', () => {
+    const path = 'foo';
+
+    const relationship = createRelationship({
+      path,
+      config: { many: false, ref: 'Zip' },
+    });
+
+    // Wrap it in a mock type because all we get back is the fields
+    const fieldSchema = `
+      type MockType {
+        ${relationship.getGraphqlOutputFields()}
+      }
+    `;
+
+    const fieldAST = gql(fieldSchema);
+
+    expect(fieldAST).toMatchObject({
+      definitions: [
+        {
+          fields: [
+            {
+              kind: 'FieldDefinition',
+              name: {
+                value: path,
+              },
+              arguments: [],
+              type: {
+                name: {
+                  value: 'Zip',
+                },
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(fieldAST.definitions[0].fields[0].arguments).toHaveLength(0);
+  });
+
+  test('to-many relationships can be filtered at the field level', () => {
+    const path = 'foo';
+
+    const relationship = createRelationship({
+      path,
+      config: { many: true, ref: 'Zip' },
+    });
+
+    // Wrap it in a mock type because all we get back is the fields
+    const fieldSchema = `
+      type MockType {
+        ${relationship.getGraphqlOutputFields()}
+      }
+    `;
+
+    const fieldAST = gql(fieldSchema);
+
+    expect(fieldAST).toMatchObject({
+      definitions: [
+        {
+          fields: [
+            {
+              kind: 'FieldDefinition',
+              name: {
+                value: 'foo',
+              },
+              arguments: mockFilterAST,
+              type: {
+                kind: 'ListType',
+                type: {
+                  name: {
+                    value: 'Zip',
+                  },
+                },
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(fieldAST.definitions[0].fields[0].arguments).toHaveLength(1);
   });
 });

@@ -27,25 +27,25 @@ export default class CalendarDayController extends FieldController {
     },
     {
       type: 'gt',
-      label: 'Is greater than',
+      label: 'Is after',
       getInitialValue: () => '',
     },
     {
       type: 'lt',
-      label: 'Is less than',
+      label: 'Is before',
       getInitialValue: () => '',
     },
     {
       type: 'gte',
-      label: 'Is greater than or equal to',
+      label: 'Is after or equal to',
       getInitialValue: () => '',
     },
     {
       type: 'lte',
-      label: 'Is less than or equal to',
+      label: 'Is before or equal to',
       getInitialValue: () => '',
     },
-    // QUESTION: should we support "in" and "not_in" filters for birthday?
+    // QUESTION: should we support "in" and "not_in" filters for DateTime?
     // What does the UI look like for that.
   ];
 }
