@@ -562,10 +562,6 @@ agent-base@^4.1.0:
   dependencies:
     es6-promisify "^5.0.0"
 
-ajv-keywords@^2.1.0:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-2.1.1.tgz#617997fc5f60576894c435f940d819e135b80762"
-
 ajv-keywords@^3.0.0, ajv-keywords@^3.1.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.2.0.tgz#e86b819c602cf8821ad637413698f1dec021847a"
@@ -981,12 +977,6 @@ async-retry@^1.2.1:
 async@1.5, async@^1.4.0:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
-
-async@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/async/-/async-2.4.0.tgz#4990200f18ea5b837c2cc4f8c031a6985c385611"
-  dependencies:
-    lodash "^4.14.0"
 
 async@2.4.0:
   version "2.4.0"
@@ -3812,13 +3802,7 @@ get-value@^2.0.3, get-value@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/get-value/-/get-value-2.0.6.tgz#dc15ca1c672387ca76bd37ac0a395ba2042a2c28"
 
-getos@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/getos/-/getos-3.1.0.tgz#db3aa4df15a3295557ce5e81aa9e3e5cdfaa6567"
-  dependencies:
-    async "2.4.0"
-
-getos@^3.1.0:
+getos@3.1.0, getos@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/getos/-/getos-3.1.0.tgz#db3aa4df15a3295557ce5e81aa9e3e5cdfaa6567"
   dependencies:
@@ -5420,6 +5404,10 @@ lru-cache@^4.0.1, lru-cache@^4.1.1, lru-cache@^4.1.3:
   dependencies:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
+
+luxon@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.3.3.tgz#e66e8537a62c9b351ba69b766d7fb70b07ab5e57"
 
 make-dir@^1.0.0:
   version "1.3.0"
