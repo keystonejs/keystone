@@ -32,7 +32,7 @@ export default class CalendarDayFilterView extends Component<Props> {
     const value = format(year, FORMAT);
     onChange(value);
     this.setState({ value });
-  }
+  };
 
   componentDidUpdate(prevProps) {
     const { filter } = this.props;

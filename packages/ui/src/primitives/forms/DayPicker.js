@@ -3,8 +3,8 @@ import React, { type Node, type Ref } from 'react';
 import styled from 'react-emotion';
 import Kalendaryo from 'kalendaryo';
 import { isToday as isDayToday, isSameMonth, setMonth } from 'date-fns';
-import { format, formatDistance, formatRelative, subDays} from 'date-fns'
-import { setDate, addMonths, setYear } from 'date-fns'
+import { format, formatDistance, formatRelative, subDays } from 'date-fns';
+import { setDate, addMonths, setYear } from 'date-fns';
 import parse from 'date-fns/parse';
 import { Input } from './index';
 import { Select } from '../filters';
@@ -113,28 +113,25 @@ const SelectMonths = () => {
 */
 
 class SelectYear extends React.Component {
-
-  render(){
+  render() {
     const { handleYearSelect, currentYear } = this.props;
-    const thisYear = parseInt( new Date().getFullYear() );
-    const years = [...new Array(101)].map( (_,i) => thisYear - i );
+    const thisYear = parseInt(new Date().getFullYear());
+    const years = [...new Array(101)].map((_, i) => thisYear - i);
 
     return (
-      <select
-        onChange={handleYearSelect(this.value)}
-      >
-        {
-          years.map( (year,i) => (
-            <option key={i}
+      <select onChange={handleYearSelect(this.value)}>
+        {years.map((year, i) => (
+          <option
+            key={i}
             //selected={year==currentYear ? true : false}
-            >{year}</option>
-          ))
-        }
+          >
+            {year}
+          </option>
+        ))}
       </select>
     );
-  };
-};
-
+  }
+}
 
 type Props = {
   children?: Node,
@@ -187,9 +184,7 @@ export const DayPicker = (props: Props) => {
           <HeaderButton onClick={setDatePrevMonth}>
             <ChevronLeftIcon />
           </HeaderButton>
-          <HeaderButton onClick={setDatePrevMonth}>
-            {getFormattedDate('MMMM')}
-          </HeaderButton>
+          <HeaderButton onClick={setDatePrevMonth}>{getFormattedDate('MMMM')}</HeaderButton>
           <SelectYear date={date} handleYearSelect={handleYearSelect} />
           <HeaderButton onClick={setDateNextMonth}>
             <ChevronRightIcon />
