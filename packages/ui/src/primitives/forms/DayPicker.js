@@ -5,8 +5,7 @@ import Kalendaryo from 'kalendaryo';
 import { isToday as isDayToday, isSameMonth, setMonth } from 'date-fns';
 import Select from 'react-select'
 import { format, formatDistance, formatRelative, subDays} from 'date-fns'
-import addMonths from 'date-fns/add_months'
-
+import { setDate, addMonths, setYear } from 'date-fns'
 
 import { ChevronLeftIcon, ChevronRightIcon, ZapIcon } from '@keystonejs/icons';
 import { borderRadius, colors } from '../../theme';
@@ -97,42 +96,39 @@ const TodayMarker = styled.div(({ isSelected }) => ({
   width: '1em',
 }));
 
-
-
-
 const SelectMonths = () => {
 
-  const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
-  ]
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Oct', 'Nov', 'Dec']
 
   return(
     <Select
-      options={options}
+      options={months}
       components={{DropdownIndicator: null, IndicatorSeparator: null}}
     />
   )
-};
+}; 
 
-const SelectYears = (date) => {
-  //const selected = this.props.value;
-  const thisYear = parseInt( new Date().getFullYear() );
-  const years = [...new Array(101)].map( (_,i) => thisYear - i );
-  
-  console.log(`Selected = ${date}`);
+class SelectYear extends React.Component {
 
-  return (
-    <select>
-      {years.map( (year,i) => (
-          <option key={i}
-          //selected={year==selected ? true : false}
-          >{year}</option>
-        ))
-      }
-    </select>
-  );
+  render(){
+    const { handleYearSelect, currentYear } = this.props;
+    const thisYear = parseInt( new Date().getFullYear() );
+    const years = [...new Array(101)].map( (_,i) => thisYear - i );
+
+    return (
+      <select
+        onChange={handleYearSelect(this.value)}
+      >
+        {
+          years.map( (year,i) => (
+            <option key={i}
+            //selected={year==currentYear ? true : false}
+            >{year}</option>
+          ))
+        }
+      </select>
+    );
+  };
 };
 
 
@@ -179,6 +175,8 @@ export const DayPicker = (props: Props) => {
     const isSelectedDay = _date => getFormattedDate(selectedDate) === getFormattedDate(_date);
     const isDisabled = dateValue => !isSameMonth(date, dateValue);
 
+    console.log(date);
+
     return (
       <Wrapper>
         <Header>
@@ -188,8 +186,7 @@ export const DayPicker = (props: Props) => {
           <HeaderButton onClick={setDatePrevMonth}>
             {getFormattedDate('MMMM')}
           </HeaderButton>
-          <HeaderButton onClick={addMonths(date, 5)}>Add</HeaderButton>
-          <SelectYears/>
+          <SelectYear date={date} handleYearSelect={handleYearSelect} />
           <HeaderButton onClick={setDateNextMonth}>
             <ChevronRightIcon />
           </HeaderButton>
@@ -197,7 +194,6 @@ export const DayPicker = (props: Props) => {
 
         <Body>
           <WeekLabels>{WEEK_DAYS.map(d => <Day key={d}>{d}</Day>)}</WeekLabels>
-
           {weeksInCurrentMonth.map((week, i) => (
             <WeekRow key={i}>
               {week.map(day => {

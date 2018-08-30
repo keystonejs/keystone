@@ -27,6 +27,13 @@ export default class CalendarDayFilterView extends Component<Props> {
     this.setState({ value });
   };
 
+  handleYearSelect = year => {
+    const { onChange } = this.props;
+    const value = format(year, FORMAT);
+    onChange(value);
+    this.setState({ value });
+  }
+
   componentDidUpdate(prevProps) {
     const { filter } = this.props;
 
@@ -45,6 +52,7 @@ export default class CalendarDayFilterView extends Component<Props> {
         startCurrentDateAt={parse(this.state.value)}
         startSelectedDateAt={parse(this.state.value)}
         onSelectedChange={this.handleDayClick}
+        handleYearSelect={this.handleYearSelect}
       />
     );
   }
