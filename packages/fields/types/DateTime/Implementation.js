@@ -1,3 +1,5 @@
+const { GraphQLScalarType } = require('graphql');
+const { Kind } = require('graphql/language');
 const { DateTime, FixedOffsetZone } = require('luxon');
 const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 const { Implementation } = require('../../Implementation');
@@ -9,30 +11,55 @@ class _DateTime extends Implementation {
 
   getGraphqlOutputFields() {
     return `
-      ${this.path}: String
+      ${this.path}: DateTime
     `;
   }
   getGraphqlQueryArgs() {
     return `
-        ${this.path}: String
-        ${this.path}_not: String
-        ${this.path}_lt: String
-        ${this.path}_lte: String
-        ${this.path}_gt: String
-        ${this.path}_gte: String
-        ${this.path}_in: [String]
-        ${this.path}_not_in: [String]
+        ${this.path}: DateTime
+        ${this.path}_not: DateTime
+        ${this.path}_lt: DateTime
+        ${this.path}_lte: DateTime
+        ${this.path}_gt: DateTime
+        ${this.path}_gte: DateTime
+        ${this.path}_in: [DateTime]
+        ${this.path}_not_in: [DateTime]
     `;
   }
   getGraphqlUpdateArgs() {
     return `
-      ${this.path}: String
+      ${this.path}: DateTime
     `;
   }
   getGraphqlCreateArgs() {
     return `
-      ${this.path}: String
+      ${this.path}: DateTime
     `;
+  }
+  getGraphqlAuxiliaryTypes() {
+    return `
+      scalar DateTime
+    `;
+  }
+  getGraphqlAuxiliaryTypeResolvers() {
+    return {
+      DateTime: new GraphQLScalarType({
+        name: 'DateTime',
+        description: 'DateTime custom scalar represents an ISO 8601 datetime string',
+        parseValue(value) {
+          return value; // value from the client
+        },
+        serialize(value) {
+          return value; // value sent to the client
+        },
+        parseLiteral(ast) {
+          if (ast.kind === Kind.STRING) {
+            return ast.value; // ast value is always in string format
+          }
+          return null;
+        },
+      }),
+    };
   }
 }
 

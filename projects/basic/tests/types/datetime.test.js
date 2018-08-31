@@ -41,6 +41,59 @@ beforeEach(() =>
   resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase())));
 
 describe('DateTime type', () => {
+  test('is present in the schema', async () => {
+    // Introspection query
+    const {
+      body: {
+        data: { __schema },
+      },
+    } = await graphqlRequest({
+      server,
+      query: `
+        query {
+          __schema {
+            types {
+              name
+              kind
+              fields {
+                name
+                type {
+                  name
+                }
+              }
+            }
+          }
+        }
+      `,
+    });
+
+    expect(__schema).toHaveProperty('types');
+    expect(__schema.types).toMatchObject(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: 'DateTime',
+          kind: 'SCALAR',
+        }),
+      ])
+    );
+
+    expect(__schema.types).toMatchObject(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: 'Post',
+          fields: expect.arrayContaining([
+            expect.objectContaining({
+              name: 'postedAt',
+              type: {
+                name: 'DateTime',
+              },
+            }),
+          ]),
+        }),
+      ])
+    );
+  });
+
   test('response is serialized as a String', async () => {
     const title = sampleOne(gen.alphaNumString.notEmpty());
     const postedAt = '2018-08-31T06:49:07.000Z';
