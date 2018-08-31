@@ -2,14 +2,11 @@
 import React, { type Node, type Ref } from 'react';
 import styled from 'react-emotion';
 import Kalendaryo from 'kalendaryo';
-import { isToday as isDayToday, isSameMonth, setMonth } from 'date-fns';
-import { format, formatDistance, formatRelative, subDays } from 'date-fns';
-import { setDate, addMonths, setYear } from 'date-fns';
-import parse from 'date-fns/parse';
+import { isToday as isDayToday, isSameMonth, parse, setYear, getYear } from 'date-fns';
 import { Input } from './index';
 import { Select } from '../filters';
 
-import { ChevronLeftIcon, ChevronRightIcon, ZapIcon } from '@keystonejs/icons';
+import { ChevronLeftIcon, ChevronRightIcon } from '@keystonejs/icons';
 import { borderRadius, colors } from '../../theme';
 
 const WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -22,9 +19,7 @@ const Header = styled.div({
   display: 'flex',
   justifyContent: 'space-between',
 });
-const HeaderText = styled.div({
-  fontWeight: 500,
-});
+
 const HeaderButton = props => (
   <button
     type="button"
@@ -100,29 +95,33 @@ const TodayMarker = styled.div(({ isSelected }) => ({
 
 /*
 const SelectMonths = () => {
-
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Oct', 'Nov', 'Dec']
-
   return(
     <Select
       options={months}
       components={{DropdownIndicator: null, IndicatorSeparator: null}}
     />
   )
-}; 
+};
 */
 
 class SelectYear extends React.Component {
   render() {
-    const { handleYearSelect, currentYear } = this.props;
+    const { handleYearSelect, setDate, setSelectedDate } = this.props;
     const thisYear = parseInt(new Date().getFullYear());
     const years = [...new Array(101)].map((_, i) => thisYear - i);
+    const { date } = this.props;
+
+    const onChange = event => {
+      handleYearSelect(event, setDate, setSelectedDate);
+    };
 
     return (
-      <select onChange={handleYearSelect(this.value)}>
+      <select onChange={onChange} value={getYear(date)}>
         {years.map((year, i) => (
           <option
             key={i}
+            value={year}
             //selected={year==currentYear ? true : false}
           >
             {year}
@@ -133,23 +132,23 @@ class SelectYear extends React.Component {
   }
 }
 
-type Props = {
-  children?: Node,
-  /** Field disabled */
-  isDisabled?: boolean,
-  /** Marks this as a required field */
-  isRequired?: boolean,
-  /** Field name */
-  name?: string,
-  /** onChange event handler */
-  onChange: any => mixed,
-  /** Field value */
-  value: string,
-  /** Ref to apply to the inner Element */
-  innerRef?: Ref<*>,
-};
+// type Props = {
+//   children?: Node,
+//   /** Field disabled */
+//   isDisabled?: boolean,
+//   /** Marks this as a required field */
+//   isRequired?: boolean,
+//   /** Field name */
+//   name?: string,
+//   /** onChange event handler */
+//   onChange: any => mixed,
+//   /** Field value */
+//   value: string,
+//   /** Ref to apply to the inner Element */
+//   innerRef?: Ref<*>,
+// };
 
-export const DayPicker = (props: Props) => {
+export const DayPicker = props => {
   function BasicCalendar(kalendaryo) {
     const {
       getFormattedDate,
@@ -161,12 +160,10 @@ export const DayPicker = (props: Props) => {
       selectedDate,
       date,
     } = kalendaryo;
-
-    const currentDate = getFormattedDate('MMMM YYYY');
+    const { handleDayChange, handleYearSelect } = props;
     const weeksInCurrentMonth = getWeeksInMonth();
 
     const setDateNextMonth = x => {
-      console.log({ x });
       setDate(getDateNextMonth());
     };
 
@@ -176,8 +173,6 @@ export const DayPicker = (props: Props) => {
     const isSelectedDay = _date => getFormattedDate(selectedDate) === getFormattedDate(_date);
     const isDisabled = dateValue => !isSameMonth(date, dateValue);
 
-    console.log(date);
-
     return (
       <Wrapper>
         <Header>
@@ -185,7 +180,12 @@ export const DayPicker = (props: Props) => {
             <ChevronLeftIcon />
           </HeaderButton>
           <HeaderButton onClick={setDatePrevMonth}>{getFormattedDate('MMMM')}</HeaderButton>
-          <SelectYear date={date} handleYearSelect={handleYearSelect} />
+          <SelectYear
+            date={selectedDate}
+            handleYearSelect={handleYearSelect}
+            setDate={setDate}
+            setSelectedDate={setSelectedDate}
+          />
           <HeaderButton onClick={setDateNextMonth}>
             <ChevronRightIcon />
           </HeaderButton>
@@ -226,9 +226,9 @@ export const DayPicker = (props: Props) => {
   return <Kalendaryo {...props} render={BasicCalendar} />;
 };
 
-export const DateTimePicker = (props: Props) => {
+export const DateTimePicker = props => {
   const { date, time, offset, htmlID, autoFocus } = props;
-  const { handleDayChange, handleTimeChange, handleOffsetChange } = props;
+  const { handleDayChange, handleTimeChange, handleOffsetChange, handleYearSelect } = props;
   const TODAY = new Date();
 
   const options = [
@@ -266,6 +266,7 @@ export const DateTimePicker = (props: Props) => {
       <DayPicker
         autoFocus={autoFocus}
         onSelectedChange={handleDayChange}
+        handleYearSelect={handleYearSelect}
         startCurrentDateAt={date ? parse(date) : TODAY}
         startSelectedDateAt={date ? parse(date) : TODAY}
       />

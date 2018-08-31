@@ -1,5 +1,4 @@
-import parse from 'date-fns/parse';
-import format from 'date-fns/format';
+import { parse, format, setYear } from 'date-fns';
 import React, { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
@@ -25,6 +24,18 @@ export default class CalendarDayField extends Component {
     this.setState({ value });
   };
 
+  handleYearSelect = (event, setDate, setSelectedDate) => {
+    const { field, onChange } = this.props;
+    const year = event.target.value;
+    // let value = this.state.value;
+    const newDate = setYear(this.state.value, year);
+    const value = format(newDate, FORMAT);
+    setDate(newDate);
+    setSelectedDate(newDate);
+    this.setState({ value });
+    onChange(field, value);
+  };
+
   render() {
     const { autoFocus, field } = this.props;
     const { value } = this.state;
@@ -46,6 +57,7 @@ export default class CalendarDayField extends Component {
                 startCurrentDateAt={value ? parse(value) : TODAY}
                 startSelectedDateAt={value ? parse(value) : TODAY}
                 onSelectedChange={this.handleDayClick}
+                handleYearSelect={this.handleYearSelect}
               />
             </div>
           </Popout>
