@@ -66,6 +66,7 @@ module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlP
         } else {
           if (error.extensions && error.extensions.exception) {
             const pinoError = {
+              message: error.message || error.msg,
               ...omit(error.extensions.exception, ['name', 'model']),
               path: error.path,
               stack: Array.isArray(error.extensions.exception.stacktrace)
