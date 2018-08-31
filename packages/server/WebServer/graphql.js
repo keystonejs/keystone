@@ -72,7 +72,9 @@ module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlP
             };
 
             if (error.extensions.exception.path) {
-              error.path = Array.isArray(error.path) ? [...error.path, error.extensions.exception.path] : [error.extensions.exception.path];
+              error.path = Array.isArray(error.path)
+                ? [...error.path, error.extensions.exception.path]
+                : [error.extensions.exception.path];
             }
             graphqlLogger.error(pinoError);
           } else {
