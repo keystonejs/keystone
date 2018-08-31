@@ -65,6 +65,24 @@ const nativeTypeMap = new Map([
   ],
 ]);
 
+const sanitiseDefaults = str => (str || '').split(',').map(w => w.trim());
+
+const getSortObj = str => {
+  const fieldOrder = str.trim().split('-');
+  let direction = 'ASC';
+  let field = fieldOrder[0];
+
+  if (field === '-') {
+    direction = 'DESC';
+    field = fieldOrder[1];
+  }
+
+  return {
+    field,
+    direction,
+  };
+};
+
 const mapNativeTypeToKeystonType = (type, listKey, fieldPath) => {
   if (!nativeTypeMap.has(type)) {
     return type;
@@ -169,7 +187,13 @@ module.exports = class List {
     this.views = mapKeys(sanitisedFieldsConfig, fieldConfig => ({
       ...fieldConfig.type.views,
     }));
+
+    this.adminUIConfig = {
+      defaultColumns: config.defaultColumns && sanitiseDefaults(config.defaultColumns),
+      defaultSort: config.defaultSort && getSortObj(config.defaultSort),
+    };
   }
+
   getAdminMeta() {
     return {
       key: this.key,
@@ -194,8 +218,10 @@ module.exports = class List {
       createInputName: this.gqlNames.createInputName,
       fields: this.fields.filter(field => field.access.read).map(field => field.getAdminMeta()),
       views: this.views,
+      adminUIConfig: this.adminUIConfig
     };
   }
+
   getAdminGraphqlTypes() {
     // TODO: AND / OR filters:
     // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
