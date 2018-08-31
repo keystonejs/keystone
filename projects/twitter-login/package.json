@@ -8,7 +8,7 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "node -r dotenv-safe/config index.js",
+    "start": "node -r dotenv-safe/config index.js | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
     "cypress:run:ci": "exit 0",
     "cypress:run": "exit 0"
   },
@@ -22,5 +22,8 @@
     "@keystonejs/ui": "^5.0.0",
     "dotenv-safe": "^6.0.0",
     "react": "^16.4.2"
+  },
+  "devDependencies": {
+    "pino-colada": "^1.4.4"
   }
 }
