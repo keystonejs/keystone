@@ -68,12 +68,14 @@ module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlP
             const pinoError = {
               ...omit(error.extensions.exception, ['name', 'model']),
               path: error.path,
-              stack: error.extensions.exception.stacktrace.join('\n'),
+              stack: Array.isArray(error.extensions.exception.stacktrace)
+                ? error.extensions.exception.stacktrace.join('\n')
+                : error.extensions.exception.stacktrace,
             };
 
             if (error.extensions.exception.path) {
-              error.path = Array.isArray(error.path)
-                ? [...error.path, error.extensions.exception.path]
+              pinoError.path = Array.isArray(pinoError.path)
+                ? [...pinoError.path, error.extensions.exception.path]
                 : [error.extensions.exception.path];
             }
             graphqlLogger.error(pinoError);
