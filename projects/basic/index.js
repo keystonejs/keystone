@@ -95,6 +95,7 @@ keystone.createList('Post', {
     stars: { type: Float },
     views: { type: Integer },
   },
+  defaultColumns: 'author, name, slug, status',
   labelResolver: item => item.name,
 });
 

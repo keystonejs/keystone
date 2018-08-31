@@ -60,7 +60,9 @@ class ListPageDataProvider extends Component<Props, State> {
     super(props);
 
     // Prepare active fields and sort order
-    const fields = props.list.fields.slice(0, 2);
+    const fields = props.list.defaultColumns
+      ? props.list.fields.filter(({ path }) => props.list.defaultColumns.includes(path))
+      : props.list.fields.slice(0, 2);
     const sortBy = { field: fields[0], direction: 'ASC' };
 
     // We record the number of items returned by the latest query so that the

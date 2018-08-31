@@ -64,6 +64,8 @@ const nativeTypeMap = new Map([
   ],
 ]);
 
+const sanitiseDefaults = str => (str || '').split(',').map(w => w.trim());
+
 const mapNativeTypeToKeystonType = (type, listKey, fieldPath) => {
   if (!nativeTypeMap.has(type)) {
     return type;
@@ -169,6 +171,7 @@ module.exports = class List {
       ...fieldConfig.type.views,
     }));
   }
+
   getAdminMeta() {
     return {
       key: this.key,
@@ -193,8 +196,10 @@ module.exports = class List {
       createInputName: this.gqlNames.createInputName,
       fields: this.fields.filter(field => field.access.read).map(field => field.getAdminMeta()),
       views: this.views,
+      defaultColumns: this.defaultColumns,
     };
   }
+
   getAdminGraphqlTypes() {
     const fieldSchemas = this.fields
       // If it's globally set to false, makes sense to never show it
