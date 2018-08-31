@@ -1,6 +1,6 @@
 import FieldController from '../../Controller';
 
-export default class CalendarDayController extends FieldController {
+export default class DateTimeController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
     return `${key}: "${value}"`;

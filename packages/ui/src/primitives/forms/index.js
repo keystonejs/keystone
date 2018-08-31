@@ -14,7 +14,7 @@ export {
   RadioPrimitive,
   RadioGroup,
 } from './Controls';
-export { DayPicker } from './DayPicker';
+export { DayPicker, DateTimePicker } from './DayPicker';
 
 // Styles shared between input and buttons
 // ------------------------------
