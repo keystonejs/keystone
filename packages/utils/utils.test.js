@@ -72,6 +72,10 @@ describe('utils', () => {
     const t = 'a\\-b\\/c\\[d\\]e\\{f\\}g\\(h\\)i\\*j\\+k\\?l\\.m\\\\n\\^o\\$p\\|';
     expect(escapeRegExp(s)).toEqual(t);
     expect(escapeRegExp('abc')).toEqual('abc');
+    expect(escapeRegExp('')).toEqual('');
+    expect(escapeRegExp(null)).toEqual('');
+    expect(escapeRegExp(undefined)).toEqual('');
+    expect(escapeRegExp()).toEqual('');
   });
 
   test('mapKeys', () => {
