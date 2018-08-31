@@ -34,7 +34,7 @@ exports.checkRequiredConfig = (config, requiredKeys = []) => {
   });
 };
 
-exports.escapeRegExp = str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+exports.escapeRegExp = str => (str || '').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
 // { key: value, ... } => { key: mapFn(value, key), ... }
 exports.mapKeys = (obj, func) =>
