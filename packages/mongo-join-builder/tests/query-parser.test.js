@@ -271,12 +271,26 @@ describe('query parser', () => {
       };
       const parser = queryParser({ tokenizer: simpleTokenizer });
 
-      expect(() =>
-        parser({
+      parser({
+        AND: [{ name: 'foobar' }, { age_lte: 23 }],
+        age_gte: 20,
+      });
+
+      expect(simpleTokenizer.simple).toBeCalledTimes(3);
+      expect(simpleTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', ['AND', 0, 'name']);
+      expect(simpleTokenizer.simple).toBeCalledWith({ age_lte: 23 }, 'age_lte', [
+        'AND',
+        1,
+        'age_lte',
+      ]);
+      expect(simpleTokenizer.simple).toBeCalledWith(
+        {
           AND: [{ name: 'foobar' }, { age_lte: 23 }],
           age_gte: 20,
-        })
-      ).toThrow(Error);
+        },
+        'age_gte',
+        ['age_gte']
+      );
     });
 
     test('AND query with invalid query type', () => {
