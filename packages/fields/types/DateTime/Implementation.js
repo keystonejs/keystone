@@ -1,6 +1,8 @@
+const { GraphQLScalarType } = require('graphql');
+const { Kind } = require('graphql/language');
 const { DateTime, FixedOffsetZone } = require('luxon');
-const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
+const { Implementation } = require('../../Implementation');
 
 class _DateTime extends Implementation {
   constructor() {
@@ -9,30 +11,55 @@ class _DateTime extends Implementation {
 
   getGraphqlOutputFields() {
     return `
-      ${this.path}: String
+      ${this.path}: DateTime
     `;
   }
   getGraphqlQueryArgs() {
     return `
-        ${this.path}: String
-        ${this.path}_not: String
-        ${this.path}_lt: String
-        ${this.path}_lte: String
-        ${this.path}_gt: String
-        ${this.path}_gte: String
-        ${this.path}_in: [String]
-        ${this.path}_not_in: [String]
+        ${this.path}: DateTime
+        ${this.path}_not: DateTime
+        ${this.path}_lt: DateTime
+        ${this.path}_lte: DateTime
+        ${this.path}_gt: DateTime
+        ${this.path}_gte: DateTime
+        ${this.path}_in: [DateTime]
+        ${this.path}_not_in: [DateTime]
     `;
   }
   getGraphqlUpdateArgs() {
     return `
-      ${this.path}: String
+      ${this.path}: DateTime
     `;
   }
   getGraphqlCreateArgs() {
     return `
-      ${this.path}: String
+      ${this.path}: DateTime
     `;
+  }
+  getGraphqlAuxiliaryTypes() {
+    return `
+      scalar DateTime
+    `;
+  }
+  getGraphqlAuxiliaryTypeResolvers() {
+    return {
+      DateTime: new GraphQLScalarType({
+        name: 'DateTime',
+        description: 'DateTime custom scalar represents an ISO 8601 datetime string',
+        parseValue(value) {
+          return value; // value from the client
+        },
+        serialize(value) {
+          return value; // value sent to the client
+        },
+        parseLiteral(ast) {
+          if (ast.kind === Kind.STRING) {
+            return ast.value; // ast value is always in string format
+          }
+          return null;
+        },
+      }),
+    };
   }
 }
 
@@ -129,6 +156,35 @@ class MongoDateTimeInterface extends MongooseFieldAdapter {
     schema.pre('insertMany', function(next, docs) {
       for (let doc of docs) {
         toServerSide(doc);
+      }
+    });
+
+    // After saving, we return the result to the client, so we have to parse it
+    // back again
+    schema.post('save', function() {
+      toClientSide(this);
+    });
+
+    // These are "Query middleware"; they differ from "document" middleware..
+    // ".. `this` refers to the query object rather than the document being updated."
+    schema.post('update', function() {
+      toClientSide(this['_update'].$set || this['_update']);
+    });
+    schema.post('updateOne', function() {
+      toClientSide(this['_update'].$set || this['_update']);
+    });
+    schema.post('updateMany', function() {
+      toClientSide(this['_update'].$set || this['_update']);
+    });
+    schema.post('findOneAndUpdate', function() {
+      toClientSide(this['_update'].$set || this['_update']);
+    });
+
+    // Model middleware
+    // Docs as second arg? (https://github.com/Automattic/mongoose/commit/3d62d3558c15ec852bdeaab1a5138b1853b4f7cb)
+    schema.post('insertMany', function(next, docs) {
+      for (let doc of docs) {
+        toClientSide(doc);
       }
     });
   }
