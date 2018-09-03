@@ -256,18 +256,16 @@ module.exports = class List {
       const logicArgs = [{ name: 'AND', type: `[${this.gqlNames.whereInputName}]` }];
 
       types.push(
-        ...[
-          {
-            prefix: 'input',
-            name: this.gqlNames.whereInputName,
-            args: flatten([idArgs, ...queryArgs, logicArgs]),
-          },
-          {
-            prefix: 'input',
-            name: this.gqlNames.whereUniqueInputName,
-            args: [{ name: 'id', type: 'ID!' }],
-          },
-        ]
+        {
+          prefix: 'input',
+          name: this.gqlNames.whereInputName,
+          args: flatten([idArgs, ...queryArgs, logicArgs]),
+        },
+        {
+          prefix: 'input',
+          name: this.gqlNames.whereUniqueInputName,
+          args: [{ name: 'id', type: 'ID!' }],
+        }
       );
     }
 
@@ -318,28 +316,26 @@ module.exports = class List {
     // of the function is, that'll get executed at a later time)
     if (this.access.read) {
       queries.push(
-        ...[
-          {
-            name: this.gqlNames.listQueryName,
-            args: this.getGraphqlFilterFragment(),
-            type: `[${this.gqlNames.outputTypeName}]`,
-          },
-          {
-            name: this.gqlNames.itemQueryName,
-            args: [{ name: `where`, type: `${this.gqlNames.whereUniqueInputName}!` }],
-            type: this.gqlNames.outputTypeName,
-          },
-          {
-            name: this.gqlNames.listQueryMetaName,
-            args: this.getGraphqlFilterFragment(),
-            type: '_QueryMeta',
-          },
-          {
-            name: this.gqlNames.listMetaName,
-            args: [],
-            type: '_ListMeta',
-          },
-        ]
+        {
+          name: this.gqlNames.listQueryName,
+          args: this.getGraphqlFilterFragment(),
+          type: `[${this.gqlNames.outputTypeName}]`,
+        },
+        {
+          name: this.gqlNames.itemQueryName,
+          args: [{ name: `where`, type: `${this.gqlNames.whereUniqueInputName}!` }],
+          type: this.gqlNames.outputTypeName,
+        },
+        {
+          name: this.gqlNames.listQueryMetaName,
+          args: this.getGraphqlFilterFragment(),
+          type: '_QueryMeta',
+        },
+        {
+          name: this.gqlNames.listMetaName,
+          args: [],
+          type: '_ListMeta',
+        }
       );
     }
 

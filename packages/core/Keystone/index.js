@@ -106,61 +106,59 @@ module.exports = class Keystone {
   getTypeDefs() {
     return [
       ...flatten(this.listsArray.map(list => list.getAdminGraphqlTypes())),
-      ...[
-        {
-          comments: [
-            'NOTE: Can be JSON, or a Boolean/Int/String',
-            "Why not a union? GraphQL doesn't support a union including a scalar",
-            '(https://github.com/facebook/graphql/issues/215)',
-          ],
-          prefix: 'scalar',
-          name: 'JSON',
-        },
-        {
-          prefix: 'type',
-          name: '_ListAccess',
-          args: [
-            { comment: `Access Control settings for the currently logged in (or anonymous)` },
-            { comment: `user when performing 'create' operations.` },
-            { comment: `NOTE: 'create' can only return a Boolean.` },
-            { comment: `It is not possible to specify a declarative Where clause for this` },
-            { comment: `operation` },
-            { name: 'create', type: 'Boolean' },
-            { blank: true },
-            { comment: `Access Control settings for the currently logged in (or anonymous)` },
-            { comment: `user when performing 'read' operations.` },
-            { name: 'read', type: 'JSON' },
-            { blank: true },
-            { comment: `Access Control settings for the currently logged in (or anonymous)` },
-            { comment: `user when performing 'update' operations.` },
-            { name: 'update', type: 'JSON' },
-            { blank: true },
-            { comment: `Access Control settings for the currently logged in (or anonymous)` },
-            { comment: `user when performing 'delete' operations.` },
-            { name: 'delete', type: 'JSON' },
-          ],
-        },
-        {
-          prefix: 'type',
-          name: '_ListMeta',
-          args: [{ name: 'access', type: '_ListAccess' }],
-        },
-        {
-          prefix: 'type',
-          name: '_QueryMeta',
-          args: [{ name: 'count', type: 'Int' }],
-        },
-        {
-          prefix: 'type',
-          name: 'Query',
-          args: unique(flatten(this.listsArray.map(list => list.getAdminGraphqlQueries()))),
-        },
-        {
-          prefix: 'type',
-          name: 'Mutation',
-          args: unique(flatten(this.listsArray.map(list => list.getAdminGraphqlMutations()))),
-        },
-      ],
+      {
+        comments: [
+          'NOTE: Can be JSON, or a Boolean/Int/String',
+          "Why not a union? GraphQL doesn't support a union including a scalar",
+          '(https://github.com/facebook/graphql/issues/215)',
+        ],
+        prefix: 'scalar',
+        name: 'JSON',
+      },
+      {
+        prefix: 'type',
+        name: '_ListAccess',
+        args: [
+          { comment: `Access Control settings for the currently logged in (or anonymous)` },
+          { comment: `user when performing 'create' operations.` },
+          { comment: `NOTE: 'create' can only return a Boolean.` },
+          { comment: `It is not possible to specify a declarative Where clause for this` },
+          { comment: `operation` },
+          { name: 'create', type: 'Boolean' },
+          { blank: true },
+          { comment: `Access Control settings for the currently logged in (or anonymous)` },
+          { comment: `user when performing 'read' operations.` },
+          { name: 'read', type: 'JSON' },
+          { blank: true },
+          { comment: `Access Control settings for the currently logged in (or anonymous)` },
+          { comment: `user when performing 'update' operations.` },
+          { name: 'update', type: 'JSON' },
+          { blank: true },
+          { comment: `Access Control settings for the currently logged in (or anonymous)` },
+          { comment: `user when performing 'delete' operations.` },
+          { name: 'delete', type: 'JSON' },
+        ],
+      },
+      {
+        prefix: 'type',
+        name: '_ListMeta',
+        args: [{ name: 'access', type: '_ListAccess' }],
+      },
+      {
+        prefix: 'type',
+        name: '_QueryMeta',
+        args: [{ name: 'count', type: 'Int' }],
+      },
+      {
+        prefix: 'type',
+        name: 'Query',
+        args: unique(flatten(this.listsArray.map(list => list.getAdminGraphqlQueries()))),
+      },
+      {
+        prefix: 'type',
+        name: 'Mutation',
+        args: unique(flatten(this.listsArray.map(list => list.getAdminGraphqlMutations()))),
+      },
     ];
   }
 
@@ -171,6 +169,10 @@ module.exports = class Keystone {
     // graphql-tools will blow up (rightly so) on duplicated types.
     // Deduping here avoids that problem.
     const typeDefs = unique(this.getTypeDefs().map(gqlTypeToString));
+
+    if (debugGraphQLSchemas()) {
+      typeDefs.forEach(i => console.log(i));
+    }
 
     const queryMetaResolver = {
       // meta is passed in from the list's resolver (eg; '_allUsersMeta')
@@ -190,9 +192,6 @@ module.exports = class Keystone {
       delete: access => access.getDelete(),
     };
 
-    if (debugGraphQLSchemas()) {
-      typeDefs.forEach(i => console.log(i));
-    }
     // Like the `typeDefs`, we want to dedupe the resolvers. We rely on the
     // semantics of the JS spread operator here (duplicate keys are overridden
     // - first one wins)
