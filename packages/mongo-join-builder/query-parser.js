@@ -66,17 +66,19 @@ module.exports = options => {
     const isAND = isANDQuery(query);
     const queryKeys = Object.keys(query);
 
-    if (isAND && queryKeys.length > 1) {
-      throw new Error(`Cannot combine AND query with other keys. Got ${queryKeys.join(', ')}.`);
-    }
+    let pipeline = [];
+    let postJoinPipeline = [];
+    let relationships = {};
 
     if (isAND) {
-      return parseAND(query, pathSoFar);
-    }
+      const parsedAnd = parseAND(query, pathSoFar);
+      pipeline = parsedAnd.pipeline;
+      postJoinPipeline = parsedAnd.postJoinPipeline;
+      relationships = parsedAnd.relationships;
 
-    const pipeline = [];
-    const postJoinPipeline = [];
-    const relationships = {};
+      // remove the `AND` query from further processing
+      queryKeys.splice(queryKeys.indexOf('AND'), 1);
+    }
 
     queryKeys.forEach(key => {
       const value = query[key];
