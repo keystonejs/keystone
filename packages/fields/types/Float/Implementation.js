@@ -7,7 +7,7 @@ class Float extends Implementation {
   }
 
   getGraphqlOutputFields() {
-    return [{ name: this.path, type: `Float` }];
+    return [`${this.path}: Float`];
   }
   getGraphqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
@@ -15,21 +15,21 @@ class Float extends Implementation {
 
   getGraphqlQueryArgs() {
     return [
-      { name: this.path, type: `Float` },
-      { name: `${this.path}_not`, type: `Float` },
-      { name: `${this.path}_lt`, type: `Float` },
-      { name: `${this.path}_lte`, type: `Float` },
-      { name: `${this.path}_gt`, type: `Float` },
-      { name: `${this.path}_gte`, type: `Float` },
-      { name: `${this.path}_in`, type: `[Float]` },
-      { name: `${this.path}_not_in`, type: `[Float]` },
+      `${this.path}: Float`,
+      `${this.path}_not: Float`,
+      `${this.path}_lt: Float`,
+      `${this.path}_lte: Float`,
+      `${this.path}_gt: Float`,
+      `${this.path}_gte: Float`,
+      `${this.path}_in: [Float]`,
+      `${this.path}_not_in: [Float]`,
     ];
   }
   getGraphqlUpdateArgs() {
-    return [{ name: this.path, type: `Float` }];
+    return [`${this.path}: Float`];
   }
   getGraphqlCreateArgs() {
-    return [{ name: this.path, type: `Float` }];
+    return [`${this.path}: Float`];
   }
 }
 

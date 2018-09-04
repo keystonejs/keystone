@@ -111,36 +111,3 @@ exports.mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
     where: mergedQueryArgs,
   };
 };
-
-const trimIndent = (s, n) => (s.trim() ? ' '.repeat(n) + s.trim() : '');
-
-const gqlFieldToString = (exports.gqlFieldToString = (
-  { name, args = [], type, blank = false, comment },
-  indent
-) => {
-  if (blank) {
-    return '';
-  } else if (comment !== undefined) {
-    return trimIndent(`# ${comment}`, indent);
-  } else if (args.length) {
-    return [
-      trimIndent(`${name}(`, indent),
-      ...args.map(arg => gqlFieldToString(arg, indent + 4)),
-      trimIndent(`): ${type}`, indent),
-    ].join('\n');
-  } else if (type) {
-    return trimIndent(`${name}: ${type}`, indent);
-  } else {
-    return trimIndent(name, indent);
-  }
-});
-
-exports.gqlTypeToString = ({ prefix, name, args, comments = [] }) => {
-  const lines = comments.map(comment => `# ${comment}`);
-  if (prefix === 'scalar') {
-    lines.push(`scalar ${name}`);
-  } else {
-    lines.push(...[`${prefix} ${name} {`, ...args.map(arg => gqlFieldToString(arg, 4)), `}`]);
-  }
-  return lines.join('\n');
-};

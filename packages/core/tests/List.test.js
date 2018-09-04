@@ -1,3 +1,6 @@
+const gql = require('graphql-tag');
+const { print } = require('graphql/language/printer');
+
 // We don't want to actually log, so we mock it before we require the class
 jest.doMock('@keystonejs/logger', () => {
   return jest.fn(() => ({ warn: () => {}, log: () => {} }));
@@ -27,14 +30,18 @@ class MockType {
     this.access = access;
   }
   getAdminMeta = () => new MockAdminMeta();
-  getGraphqlOutputFields = () => [{ name: `${this.name}_schema`, type: 'String' }];
-  getGraphqlAuxiliaryTypes = () => [{ prefix: 'input', name: `${this.name}_types`, args: [] }];
+  getGraphqlOutputFields = () => [`${this.name}_field: String`];
+  getGraphqlAuxiliaryTypes = () => [`type ${this.name}_type { x: Int }`];
   getGraphqlAuxiliaryQueries = () => [];
   getGraphqlAuxiliaryMutations = () => [];
-  getGraphqlUpdateArgs = () => [{ name: `${this.name}_update_args`, type: 'String' }];
-  getGraphqlCreateArgs = () => [{ name: `${this.name}_create_args`, type: 'String' }];
-  getGraphqlQueryArgs = () => [{ name: `${this.name}_query_args`, type: 'String' }];
+  getGraphqlUpdateArgs = () => [`${this.name}_update_arg: String`];
+  getGraphqlCreateArgs = () => [`${this.name}_create_arg: String`];
+  getGraphqlQueryArgs = () => [`${this.name}_query_arg: String`];
 }
+
+// Convert a gql field into a normalised format for comparison.
+// Needs to be wrapped in a mock type for gql to correctly parse it.
+const normalise = s => print(gql(`type t { ${s} }`));
 
 const config = {
   fields: {
@@ -220,68 +227,47 @@ test('getAdminGraphqlTypes()', () => {
     getAuth: () => {},
     defaultAccess: { list: true, field: true },
   });
-  const types = list.getAdminGraphqlTypes();
+  const types = list.getAdminGraphqlTypes().map(s => print(gql(s)));
 
-  expect(types).toEqual([
-    { prefix: 'input', name: 'name_types', args: [] },
-    { prefix: 'input', name: 'email_types', args: [] },
-    {
-      prefix: 'type',
-      name: `Test`,
-      args: [
-        { name: 'id', type: 'ID' },
-        {
-          comment: `This virtual field will be resolved in one of the following ways (in this order):`,
-        },
-        { comment: `1. Execution of 'labelResolver' set on the Test List config, or` },
-        { comment: `2. As an alias to the field set on 'labelField' in the Test List config, or` },
-        { comment: `3. As an alias to a 'name' field on the Test List (if one exists), or` },
-        { comment: `4. As an alias to the 'id' field on the Test List.` },
-        { name: '_label_', type: 'String' },
-        { name: 'name_schema', type: 'String' },
-        { name: 'email_schema', type: 'String' },
-      ],
-    },
-    {
-      prefix: 'input',
-      name: `TestWhereInput`,
-      args: [
-        { name: 'id', type: 'ID' },
-        { name: 'id_not', type: 'ID' },
-        { name: 'id_in', type: '[ID!]' },
-        { name: 'id_not_in', type: '[ID!]' },
-        { blank: true },
-        { comment: 'MockType field' },
-        { name: 'name_query_args', type: 'String' },
-        { blank: true },
-        { comment: 'MockType field' },
-        { name: 'email_query_args', type: 'String' },
-        { blank: true },
-        { name: 'AND', type: '[TestWhereInput]' },
-      ],
-    },
-    {
-      prefix: 'input',
-      name: `TestWhereUniqueInput`,
-      args: [{ name: 'id', type: 'ID!' }],
-    },
-    {
-      prefix: 'input',
-      name: `TestUpdateInput`,
-      args: [
-        { name: 'name_update_args', type: 'String' },
-        { name: 'email_update_args', type: 'String' },
-      ],
-    },
-    {
-      prefix: 'input',
-      name: `TestCreateInput`,
-      args: [
-        { name: 'name_create_args', type: 'String' },
-        { name: 'email_create_args', type: 'String' },
-      ],
-    },
-  ]);
+  expect(types).toEqual(
+    [
+      'type name_type { x: Int }',
+      'type email_type { x: Int }',
+      `type Test {
+      id: ID
+      """
+      This virtual field will be resolved in one of the following ways (in this order):
+      1. Execution of 'labelResolver' set on the Test List config, or
+      2. As an alias to the field set on 'labelField' in the Test List config, or
+      3. As an alias to a 'name' field on the Test List (if one exists), or
+      4. As an alias to the 'id' field on the Test List.
+      """
+      _label_: String
+      name_field: String
+      email_field: String
+    }`,
+      `input TestWhereInput {
+      id: ID
+      id_not: ID
+      id_in: [ID!]
+      id_not_in: [ID!]
+      AND: [TestWhereInput]
+      name_query_arg: String
+      email_query_arg: String
+    }`,
+      `input TestWhereUniqueInput {
+      id: ID!
+    }`,
+      `input TestUpdateInput {
+      name_update_arg: String
+      email_update_arg: String
+    }`,
+      `input TestCreateInput {
+      name_create_arg: String
+      email_create_arg: String
+    }`,
+    ].map(s => print(gql(s)))
+  );
 });
 
 test('getAdminGraphqlQueries()', () => {
@@ -291,38 +277,30 @@ test('getAdminGraphqlQueries()', () => {
     getAuth: () => {},
     defaultAccess: { list: true, field: true },
   });
-  const queries = list.getAdminGraphqlQueries();
+  const queries = list.getAdminGraphqlQueries().map(normalise);
 
-  expect(queries).toEqual([
-    {
-      name: 'allTests',
-      args: [
-        { name: 'where', type: 'TestWhereInput' },
-        { name: 'search', type: 'String' },
-        { name: 'orderBy', type: 'String' },
-        { blank: true },
-        { comment: 'Pagination' },
-        { name: 'first', type: 'Int' },
-        { name: 'skip', type: 'Int' },
-      ],
-      type: '[Test]',
-    },
-    { name: 'Test', args: [{ name: 'where', type: 'TestWhereUniqueInput!' }], type: 'Test' },
-    {
-      name: '_allTestsMeta',
-      args: [
-        { name: 'where', type: 'TestWhereInput' },
-        { name: 'search', type: 'String' },
-        { name: 'orderBy', type: 'String' },
-        { blank: true },
-        { comment: 'Pagination' },
-        { name: 'first', type: 'Int' },
-        { name: 'skip', type: 'Int' },
-      ],
-      type: '_QueryMeta',
-    },
-    { name: '_TestsMeta', args: [], type: '_ListMeta' },
-  ]);
+  expect(queries).toEqual(
+    [
+      `allTests(
+      where: TestWhereInput
+      search: String
+      orderBy: String
+      first: Int
+      skip: Int
+    ): [Test]`,
+      `Test(
+      where: TestWhereUniqueInput!
+    ): Test`,
+      `_allTestsMeta(
+      where: TestWhereInput
+      search: String
+      orderBy: String
+      first: Int
+      skip: Int
+    ): _QueryMeta`,
+      `_TestsMeta: _ListMeta`,
+    ].map(normalise)
+  );
 });
 
 test('getAdminGraphqlMutations()', () => {
@@ -332,22 +310,25 @@ test('getAdminGraphqlMutations()', () => {
     getAuth: () => {},
     defaultAccess: { list: true, field: true },
   });
-  const mutations = list.getAdminGraphqlMutations();
+  const mutations = list.getAdminGraphqlMutations().map(normalise);
 
-  expect(mutations).toEqual([
-    { name: 'createTest', args: [{ name: 'data', type: 'TestCreateInput' }], type: 'Test' },
-    {
-      name: 'updateTest',
-      args: [{ name: 'id', type: 'ID!' }, { name: 'data', type: 'TestUpdateInput' }],
-      type: 'Test',
-    },
-    { name: 'deleteTest', args: [{ name: 'id', type: 'ID!' }], type: 'Test' },
-    {
-      name: 'deleteTests',
-      args: [{ name: 'ids', type: '[ID!]' }],
-      type: '[Test]',
-    },
-  ]);
+  expect(mutations).toEqual(
+    [
+      `createTest(
+      data: TestCreateInput
+    ): Test`,
+      `updateTest(
+      id: ID!
+      data: TestUpdateInput
+    ): Test`,
+      `deleteTest(
+      id: ID!
+    ): Test`,
+      `deleteTests(
+      ids: [ID!]
+    ): [Test]`,
+    ].map(normalise)
+  );
 });
 
 test('getAdminQueryResolvers()', () => {

@@ -7,7 +7,7 @@ class CloudinaryImage extends File {
   }
 
   getGraphqlOutputFields() {
-    return [{ name: this.path, type: this.graphQLOutputType }];
+    return [`${this.path}: ${this.graphQLOutputType}`];
   }
   extendAdminMeta(meta) {
     // Overwrite so we have only the original meta
@@ -17,56 +17,47 @@ class CloudinaryImage extends File {
     return 'Upload';
   }
   getGraphqlAuxiliaryTypes() {
-    const args = [
-      {
-        comment: `Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).`,
-      },
-      { comment: `All options are strings as they ultimately end up in a URL.` },
-      { comment: `Rewrites the filename to be this pretty string. Do not include '/' or '.'` },
-      { name: `prettyName`, type: `String` },
-      { name: `width`, type: `String` },
-      { name: `height`, type: `String` },
-      { name: `crop`, type: `String` },
-      { name: `aspect_ratio`, type: `String` },
-      { name: `gravity`, type: `String` },
-      { name: `zoom`, type: `String` },
-      { name: `x`, type: `String` },
-      { name: `y`, type: `String` },
-      { name: `format`, type: `String` },
-      { name: `fetch_format`, type: `String` },
-      { name: `quality`, type: `String` },
-      { name: `radius`, type: `String` },
-      { name: `angle`, type: `String` },
-      { name: `effect`, type: `String` },
-      { name: `opacity`, type: `String` },
-      { name: `border`, type: `String` },
-      { name: `background`, type: `String` },
-      { name: `overlay`, type: `String` },
-      { name: `underlay`, type: `String` },
-      { name: `default_image`, type: `String` },
-      { name: `delay`, type: `String` },
-      { name: `color`, type: `String` },
-      { name: `color_space`, type: `String` },
-      { name: `dpr`, type: `String` },
-      { name: `page`, type: `String` },
-      { name: `density`, type: `String` },
-      { name: `flags`, type: `String` },
-      { name: `transformation`, type: `String` },
-    ];
     return [
       ...super.getGraphqlAuxiliaryTypes(),
-      { prefix: 'input', name: 'CloudinaryImageFormat', args },
-      {
-        prefix: 'extend type',
-        name: this.graphQLOutputType,
-        args: [
-          {
-            name: 'publicUrlTransformed',
-            args: [{ name: 'transformation', type: 'CloudinaryImageFormat' }],
-            type: 'String',
-          },
-        ],
-      },
+      `
+      """Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
+      All options are strings as they ultimately end up in a URL."""
+      input CloudinaryImageFormat {
+        # Rewrites the filename to be this pretty string. Do not include '/' or '.'
+        prettyName: String
+        width: String
+        height: String
+        crop: String
+        aspect_ratio: String
+        gravity: String
+        zoom: String
+        x: String
+        y: String
+        format: String
+        fetch_format: String
+        quality: String
+        radius: String
+        angle: String
+        effect: String
+        opacity: String
+        border: String
+        background: String
+        overlay: String
+        underlay: String
+        default_image: String
+        delay: String
+        color: String
+        color_space: String
+        dpr: String
+        page: String
+        density: String
+        flags: String
+        transformation: String
+      }`,
+
+      `extend type ${this.graphQLOutputType} {
+        publicUrlTransformed(transformation: CloudinaryImageFormat): String
+      }`,
     ];
   }
   // Called on `User.avatar` for example
@@ -87,13 +78,7 @@ class CloudinaryImage extends File {
     };
   }
   getGraphqlAuxiliaryMutations() {
-    return [
-      {
-        name: 'uploadCloudinaryImage',
-        args: [{ name: `file`, type: `${this.getFileUploadType()}!` }],
-        type: this.graphQLOutputType,
-      },
-    ];
+    return [`uploadCloudinaryImage(file: ${this.getFileUploadType()}!): ${this.graphQLOutputType}`];
   }
   getGraphqlAuxiliaryMutationResolvers() {
     return {

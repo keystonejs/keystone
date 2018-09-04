@@ -21,16 +21,13 @@ class Relationship extends Implementation {
     const { many, ref } = this.config;
 
     if (many) {
-      return [
-        {
-          name: this.path,
-          args: this.getListByKey(ref).getGraphqlFilterFragment(),
-          type: `[${ref}]`,
-        },
-      ];
+      const filterArgs = this.getListByKey(ref)
+        .getGraphqlFilterFragment()
+        .join('\n');
+      return [`${this.path}(${filterArgs}): [${ref}]`];
     }
 
-    return [{ name: this.path, type: `${ref}` }];
+    return [`${this.path}: ${ref}`];
   }
 
   extendAdminMeta(meta) {
@@ -42,20 +39,17 @@ class Relationship extends Implementation {
     const list = this.getListByKey(ref);
     if (many) {
       return [
-        { comment: `condition must be true for all nodes` },
-        { name: `${this.path}_every`, type: list.gqlNames.whereInputName },
-        { comment: `condition must be true for at least 1 node` },
-        { name: `${this.path}_some`, type: list.gqlNames.whereInputName },
-        { comment: `condition must be false for all nodes` },
-        { name: `${this.path}_none`, type: list.gqlNames.whereInputName },
-        { comment: `is the relation field null` },
-        { name: `${this.path}_is_null`, type: 'Boolean' },
+        `""" condition must be true for all nodes """
+        ${this.path}_every: ${list.gqlNames.whereInputName}`,
+        `""" condition must be true for at least 1 node """
+        ${this.path}_some: ${list.gqlNames.whereInputName}`,
+        `""" condition must be false for all nodes """
+        ${this.path}_none: ${list.gqlNames.whereInputName}`,
+        `""" is the relation field null """
+        ${this.path}_is_null: Boolean`,
       ];
     } else {
-      return [
-        { name: `${this.path}`, type: list.gqlNames.whereInputName },
-        { name: `${this.path}_is_null`, type: 'Boolean' },
-      ];
+      return [`${this.path}: ${list.gqlNames.whereInputName}`, `${this.path}_is_null: Boolean`];
     }
   }
 
@@ -239,30 +233,24 @@ class Relationship extends Implementation {
     // mutation createPost() {
     //   author: { id: 'abc123' }
     // }
+    const { ref } = this.config;
     const args = [
-      {
-        comment: `Provide an id to link to an existing ${
-          this.config.ref
-        }. Cannot be set if 'create' set.`,
-      },
-      { name: `id`, type: `ID` },
-      { blank: true },
-      { comment: `Provide data to create a new ${this.config.ref}. Cannot be set if 'id' set.` },
-      { name: `create`, type: `${this.config.ref}CreateInput` },
+      `""" Provide an id to link to an existing ${ref}. Cannot be set if 'create' set. """
+      id: ID`,
+      `""" Provide data to create a new ${ref}. Cannot be set if 'id' set. """
+      create: ${ref}CreateInput`,
     ];
     return [
-      {
-        prefix: 'input',
-        name: `${this.config.ref}RelationshipInput`,
-        args,
-      },
+      `input ${ref}RelationshipInput {
+               ${args.join('\n')}
+             }`,
     ];
   }
   getGraphqlUpdateArgs() {
     const { many } = this.config;
     const inputType = `${this.config.ref}RelationshipInput`;
     const type = many ? `[${inputType}]` : inputType;
-    return [{ name: this.path, type }];
+    return [`${this.path}: ${type}`];
   }
   getGraphqlCreateArgs() {
     return this.getGraphqlUpdateArgs();

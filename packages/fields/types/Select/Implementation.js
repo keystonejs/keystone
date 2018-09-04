@@ -17,7 +17,7 @@ class Select extends Implementation {
     this.options = initOptions(config.options);
   }
   getGraphqlOutputFields() {
-    return [{ name: this.path, type: this.getTypeName() }];
+    return [`${this.path}: ${this.getTypeName()}`];
   }
   getGraphqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
@@ -31,11 +31,11 @@ class Select extends Implementation {
     // whatever options people provide, this could easily break with spaces and
     // special characters in values so may not be worth it...
     return [
-      {
-        prefix: 'enum',
-        name: this.getTypeName(),
-        args: this.options.map(i => ({ name: i.value })),
-      },
+      `
+      enum ${this.getTypeName()} {
+        ${this.options.map(i => i.value).join('\n        ')}
+      }
+    `,
     ];
   }
 
@@ -44,17 +44,17 @@ class Select extends Implementation {
   }
   getGraphqlQueryArgs() {
     return [
-      { name: this.path, type: this.getTypeName() },
-      { name: `${this.path}_not`, type: this.getTypeName() },
-      { name: `${this.path}_in`, type: `[${this.getTypeName()}!]` },
-      { name: `${this.path}_not_in`, type: `[${this.getTypeName()}!]` },
+      `${this.path}: ${this.getTypeName()}`,
+      `${this.path}_not: ${this.getTypeName()}`,
+      `${this.path}_in: [${this.getTypeName()}!]`,
+      `${this.path}_not_in: [${this.getTypeName()}!]`,
     ];
   }
   getGraphqlUpdateArgs() {
-    return [{ name: this.path, type: this.getTypeName() }];
+    return [`${this.path}: ${this.getTypeName()}`];
   }
   getGraphqlCreateArgs() {
-    return [{ name: this.path, type: this.getTypeName() }];
+    return [`${this.path}: ${this.getTypeName()}`];
   }
 }
 
