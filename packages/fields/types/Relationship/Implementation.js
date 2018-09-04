@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const pSettle = require('p-settle');
 const omitBy = require('lodash.omitby');
 const { mergeWhereClause } = require('@keystonejs/utils');
+const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
 
 const {
   Schema: {
@@ -10,8 +10,7 @@ const {
 } = mongoose;
 
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
-const { ParameterError } = require('./graphqlErrors');
+const nestedMutations = require('./nested-mutations');
 
 class Relationship extends Implementation {
   constructor() {
@@ -103,116 +102,37 @@ class Relationship extends Implementation {
     };
   }
 
-  async preHook(data, fieldKey, context) {
-    const { many, ref, required } = this.config;
+  async createUpdatePreHook(input, currentValue, fieldKey, context) {
+    const {
+      listKey,
+      config: { many, ref, required },
+    } = this;
 
     // Early out for null'd field
-    if (!required && !data) {
-      return data;
+    if (!required && !input) {
+      return input;
     }
 
-    const validateInput = input => {
-      if (input.id && input.create) {
-        throw new ParameterError({
-          message: `Cannot provide both an id and create data when linking ${
-            this.listKey
-          }.${fieldKey} to a ${ref}`,
-        });
-      }
+    const refList = this.getListByKey(ref);
 
-      if (!input.id && (!input.create || Object.keys(input.create).length === 0)) {
-        throw new ParameterError({
-          message: `Must provide one of 'id' or 'create' data when linking ${
-            this.listKey
-          }.${fieldKey} to a ${ref}`,
-        });
-      }
-    };
-
-    const resolveToId = async input => {
-      if (input.id) {
-        // TODO: Should related lists without 'read' perm be able to set the ID here?
-        // It is a way of leaking data by testing if certain ids exist.
-        return input.id;
-      }
-
-      // Create related item. Will check for access control itself, no need to
-      // do anything extra here.
-      const { id } = await this.getListByKey(ref).createMutation(input.create, context);
-      return id;
-    };
-
-    if (!many) {
-      try {
-        // Only a single item, much simpler logic
-        validateInput(data);
-        return await resolveToId(data);
-      } catch (error) {
-        const wrappingError = new Error(
-          `Unable to create a new ${ref} as set on ${this.listKey}.${fieldKey}`
-        );
-
-        error.path = [fieldKey];
-
-        if (error.name !== 'ParameterError') {
-          error.path.push('create');
-        }
-
-        // Setup the correct path on the nested error objects
-        wrappingError.errors = [error];
-
-        throw wrappingError;
-      }
-    }
-
-    // Multiple items received
-    // TODO: Start Database transaction
-
-    const resolvedData = (await pSettle(
-      data.map(async input => {
-        // awaited because `p-settle` expects promises only
-        await validateInput(input);
-        return resolveToId(input);
-      })
-    ))
-      // Inject the index as a key into the settled data for later use
-      .map((item, index) => ({ ...item, index }));
-
-    const errored = resolvedData.filter(({ isRejected }) => isRejected);
-
-    if (errored.length) {
-      const error = new Error(
-        `Unable to create ${errored.length} new ${ref} as set on ${this.listKey}.${fieldKey}`
-      );
-
-      // Setup the correct path on the nested error objects
-      error.errors = errored.map(({ reason, index }) => {
-        reason.path = [fieldKey, index];
-
-        if (reason.name !== 'ParameterError') {
-          reason.path.push('create');
-        }
-        return reason;
-      });
-
-      // TODO: Rollback Database transaction
-
-      throw error;
-    }
-
-    // TODO: Commit Database transaction
-
-    // At this point, we know everything resolved successfully
-    // Map back from `p-settle`'s data structure to the raw value
-    return resolvedData.map(({ value }) => value);
+    return await nestedMutations({
+      input,
+      currentValue,
+      fieldKey,
+      listKey,
+      many,
+      ref,
+      refList,
+      context,
+    });
   }
 
   createFieldPreHook(data, fieldKey, context) {
-    return this.preHook(data, fieldKey, context);
+    return this.createUpdatePreHook(data, undefined, fieldKey, context);
   }
 
   updateFieldPreHook(data, fieldKey, originalItem, context) {
-    return this.preHook(data, fieldKey, context);
+    return this.createUpdatePreHook(data, originalItem[fieldKey], fieldKey, context);
   }
 
   getGraphqlAuxiliaryTypes() {
@@ -233,24 +153,50 @@ class Relationship extends Implementation {
     // mutation createPost() {
     //   author: { id: 'abc123' }
     // }
-    const { ref } = this.config;
-    const args = [
-      `""" Provide an id to link to an existing ${ref}. Cannot be set if 'create' set. """
-      id: ID`,
-      `""" Provide data to create a new ${ref}. Cannot be set if 'id' set. """
-      create: ${ref}CreateInput`,
-    ];
+    if (this.config.many) {
+      return [
+        `
+        input ${this.config.ref}RelateToManyInput {
+          # Provide data to create a set of new ${this.config.ref}. Will also connect.
+          create: [${this.config.ref}CreateInput]
+
+          # Provide a filter to link to a set of existing ${this.config.ref}.
+          connect: [${this.config.ref}WhereUniqueInput]
+
+          # Provide a filter to remove to a set of existing ${this.config.ref}.
+          disconnect: [${this.config.ref}WhereUniqueInput]
+
+          # Remove all ${this.config.ref} in this list.
+          disconnectAll: Boolean
+        }
+      `,
+      ];
+    }
+
     return [
-      `input ${ref}RelationshipInput {
-               ${args.join('\n')}
-             }`,
+      `
+      input ${this.config.ref}RelateToOneInput {
+        # Provide data to create a new ${this.config.ref}.
+        create: ${this.config.ref}CreateInput
+
+        # Provide a filter to link to an existing ${this.config.ref}.
+        connect: ${this.config.ref}WhereUniqueInput
+
+        # Provide a filter to remove to an existing ${this.config.ref}.
+        disconnect: ${this.config.ref}WhereUniqueInput
+
+        # Remove the existing ${this.config.ref} (if any).
+        disconnectAll: Boolean
+      }
+    `,
     ];
   }
   getGraphqlUpdateArgs() {
-    const { many } = this.config;
-    const inputType = `${this.config.ref}RelationshipInput`;
-    const type = many ? `[${inputType}]` : inputType;
-    return [`${this.path}: ${type}`];
+    if (this.config.many) {
+      return [`${this.path}: ${this.config.ref}RelateToManyInput`];
+    }
+
+    return [`${this.path}: ${this.config.ref}RelateToOneInput`];
   }
   getGraphqlCreateArgs() {
     return this.getGraphqlUpdateArgs();
