@@ -4,7 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const request = require('supertest');
+const supertest = require('supertest-light');
 
 const Keystone = require('../../core/Keystone');
 const WebServer = require('../../server/WebServer');
@@ -28,20 +28,13 @@ const sorted = (arr, keyFn) => {
 };
 
 export const runQuery = (app, snippet, fn) => {
-  request(app)
-    .post('/admin/api')
-    .type('form')
-    .send({ query: `query { ${snippet} }` })
+  supertest(app)
     .set('Accept', 'application/json')
     .set('Content-Type', 'application/json')
-    .expect(200)
-    .end((err, res) => {
-      if (err !== null) {
-        // Extract the error message to give more useful feedback during testing
-        expect(JSON.parse(res.text).errors[0].message).toEqual('');
-      }
-      // expect(err).toBe(null);
-      fn(res.body.data);
+    .post('/admin/api', { query: `query { ${snippet} }` })
+    .then(res => {
+      expect(res.statusCode).toBe(200);
+      fn(JSON.parse(res.text).data);
     });
 };
 
@@ -92,7 +85,7 @@ describe('Test CRUD for all fields', () => {
       );
 
       // Clear the database before running any tests
-      beforeAll(async done => {
+      beforeAll(async () => {
         keystone.connect();
         Object.values(keystone.adapters).forEach(async adapter => {
           await adapter.dropDatabase();
@@ -100,11 +93,11 @@ describe('Test CRUD for all fields', () => {
         await keystone.createItems({ [listName]: mod.initItems() });
 
         // Throw at least one request at the server to make sure it's warmed up
-        await request(server.app)
+        await supertest(server.app)
           .get('/admin/graphiql')
-          .expect(200);
-
-        done();
+          .then(res => {
+            expect(res.statusCode).toBe(200);
+          });
         // Compiling can sometimes take a while
       }, 10000);
 
