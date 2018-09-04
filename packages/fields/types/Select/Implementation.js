@@ -17,7 +17,7 @@ class Select extends Implementation {
     this.options = initOptions(config.options);
   }
   getGraphqlOutputFields() {
-    return `${this.path}: ${this.getTypeName()}`;
+    return [`${this.path}: ${this.getTypeName()}`];
   }
   getGraphqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
@@ -30,33 +30,31 @@ class Select extends Implementation {
     // TODO: I'm really not sure it's safe to generate GraphQL Enums from
     // whatever options people provide, this could easily break with spaces and
     // special characters in values so may not be worth it...
-    return `
+    return [
+      `
       enum ${this.getTypeName()} {
         ${this.options.map(i => i.value).join('\n        ')}
       }
-    `;
+    `,
+    ];
   }
 
   extendAdminMeta(meta) {
     return { ...meta, options: this.options };
   }
   getGraphqlQueryArgs() {
-    return `
-      ${this.path}: ${this.getTypeName()}
-      ${this.path}_not: ${this.getTypeName()}
-      ${this.path}_in: [${this.getTypeName()}!]
-      ${this.path}_not_in: [${this.getTypeName()}!]
-    `;
+    return [
+      `${this.path}: ${this.getTypeName()}`,
+      `${this.path}_not: ${this.getTypeName()}`,
+      `${this.path}_in: [${this.getTypeName()}!]`,
+      `${this.path}_not_in: [${this.getTypeName()}!]`,
+    ];
   }
   getGraphqlUpdateArgs() {
-    return `
-      ${this.path}: ${this.getTypeName()}
-    `;
+    return [`${this.path}: ${this.getTypeName()}`];
   }
   getGraphqlCreateArgs() {
-    return `
-      ${this.path}: ${this.getTypeName()}
-    `;
+    return [`${this.path}: ${this.getTypeName()}`];
   }
 }
 

@@ -7,9 +7,7 @@ class CloudinaryImage extends File {
   }
 
   getGraphqlOutputFields() {
-    return `
-      ${this.path}: ${this.graphQLOutputType}
-    `;
+    return [`${this.path}: ${this.graphQLOutputType}`];
   }
   extendAdminMeta(meta) {
     // Overwrite so we have only the original meta
@@ -19,11 +17,11 @@ class CloudinaryImage extends File {
     return 'Upload';
   }
   getGraphqlAuxiliaryTypes() {
-    return `
-      ${super.getGraphqlAuxiliaryTypes()}
-
-      # Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
-      # All options are strings as they ultimately end up in a URL.
+    return [
+      ...super.getGraphqlAuxiliaryTypes(),
+      `
+      """Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
+      All options are strings as they ultimately end up in a URL."""
       input CloudinaryImageFormat {
         # Rewrites the filename to be this pretty string. Do not include '/' or '.'
         prettyName: String
@@ -55,12 +53,12 @@ class CloudinaryImage extends File {
         density: String
         flags: String
         transformation: String
-      }
+      }`,
 
-      extend type ${this.graphQLOutputType} {
+      `extend type ${this.graphQLOutputType} {
         publicUrlTransformed(transformation: CloudinaryImageFormat): String
-      }
-    `;
+      }`,
+    ];
   }
   // Called on `User.avatar` for example
   getGraphqlOutputFieldResolvers() {
@@ -80,9 +78,7 @@ class CloudinaryImage extends File {
     };
   }
   getGraphqlAuxiliaryMutations() {
-    return `
-      uploadCloudinaryImage(file: ${this.getFileUploadType()}!): ${this.graphQLOutputType}
-    `;
+    return [`uploadCloudinaryImage(file: ${this.getFileUploadType()}!): ${this.graphQLOutputType}`];
   }
   getGraphqlAuxiliaryMutationResolvers() {
     return {

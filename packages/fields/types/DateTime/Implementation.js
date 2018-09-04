@@ -10,36 +10,28 @@ class _DateTime extends Implementation {
   }
 
   getGraphqlOutputFields() {
-    return `
-      ${this.path}: DateTime
-    `;
+    return [`${this.path}: DateTime`];
   }
   getGraphqlQueryArgs() {
-    return `
-        ${this.path}: DateTime
-        ${this.path}_not: DateTime
-        ${this.path}_lt: DateTime
-        ${this.path}_lte: DateTime
-        ${this.path}_gt: DateTime
-        ${this.path}_gte: DateTime
-        ${this.path}_in: [DateTime]
-        ${this.path}_not_in: [DateTime]
-    `;
+    return [
+      `${this.path}: DateTime`,
+      `${this.path}_not: DateTime`,
+      `${this.path}_lt: DateTime`,
+      `${this.path}_lte: DateTime`,
+      `${this.path}_gt: DateTime`,
+      `${this.path}_gte: DateTime`,
+      `${this.path}_in: [DateTime]`,
+      `${this.path}_not_in: [DateTime]`,
+    ];
   }
   getGraphqlUpdateArgs() {
-    return `
-      ${this.path}: DateTime
-    `;
+    return [`${this.path}: DateTime`];
   }
   getGraphqlCreateArgs() {
-    return `
-      ${this.path}: DateTime
-    `;
+    return [`${this.path}: DateTime`];
   }
   getGraphqlAuxiliaryTypes() {
-    return `
-      scalar DateTime
-    `;
+    return [`scalar DateTime`];
   }
   getGraphqlAuxiliaryTypeResolvers() {
     return {

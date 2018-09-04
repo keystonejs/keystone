@@ -7,35 +7,29 @@ class Float extends Implementation {
   }
 
   getGraphqlOutputFields() {
-    return `
-      ${this.path}: Float
-    `;
+    return [`${this.path}: Float`];
   }
   getGraphqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
   getGraphqlQueryArgs() {
-    return `
-      ${this.path}: Float
-      ${this.path}_not: Float
-      ${this.path}_lt: Float
-      ${this.path}_lte: Float
-      ${this.path}_gt: Float
-      ${this.path}_gte: Float
-      ${this.path}_in: [Float]
-      ${this.path}_not_in: [Float]
-    `;
+    return [
+      `${this.path}: Float`,
+      `${this.path}_not: Float`,
+      `${this.path}_lt: Float`,
+      `${this.path}_lte: Float`,
+      `${this.path}_gt: Float`,
+      `${this.path}_gte: Float`,
+      `${this.path}_in: [Float]`,
+      `${this.path}_not_in: [Float]`,
+    ];
   }
   getGraphqlUpdateArgs() {
-    return `
-      ${this.path}: Float
-    `;
+    return [`${this.path}: Float`];
   }
   getGraphqlCreateArgs() {
-    return `
-      ${this.path}: Float
-    `;
+    return [`${this.path}: Float`];
   }
 }
 

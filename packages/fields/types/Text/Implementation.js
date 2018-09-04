@@ -8,38 +8,32 @@ class Text extends Implementation {
   }
 
   getGraphqlOutputFields() {
-    return `
-      ${this.path}: String
-    `;
+    return [`${this.path}: String`];
   }
   getGraphqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
   getGraphqlQueryArgs() {
-    return `
-      ${this.path}: String
-      ${this.path}_case_sensitive: Boolean
-      ${this.path}_not: String
-      ${this.path}_contains: String
-      ${this.path}_not_contains: String
-      ${this.path}_starts_with: String
-      ${this.path}_not_starts_with: String
-      ${this.path}_ends_with: String
-      ${this.path}_not_ends_with: String
-      ${this.path}_in: [String!]
-      ${this.path}_not_in: [String!]
-    `;
+    return [
+      `${this.path}: String`,
+      `${this.path}_case_sensitive: Boolean`,
+      `${this.path}_not: String`,
+      `${this.path}_contains: String`,
+      `${this.path}_not_contains: String`,
+      `${this.path}_starts_with: String`,
+      `${this.path}_not_starts_with: String`,
+      `${this.path}_ends_with: String`,
+      `${this.path}_not_ends_with: String`,
+      `${this.path}_in: [String!]`,
+      `${this.path}_not_in: [String!]`,
+    ];
   }
   getGraphqlUpdateArgs() {
-    return `
-      ${this.path}: String
-    `;
+    return [`${this.path}: String`];
   }
   getGraphqlCreateArgs() {
-    return `
-      ${this.path}: String
-    `;
+    return [`${this.path}: String`];
   }
 }
 
