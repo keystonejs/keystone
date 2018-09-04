@@ -28,5 +28,8 @@
     "mongoose": "^5.2.7",
     "p-settle": "^2.1.0",
     "react-apollo": "^2.1.11"
+  },
+  "devDependencies": {
+    "supertest-light": "^1.0.2"
   }
 }
