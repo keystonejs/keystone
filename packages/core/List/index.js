@@ -196,10 +196,10 @@ module.exports = class List {
       views: this.views,
     };
   }
-  getAdminGraphqlTypes() {
+  get gqlTypes() {
     // TODO: AND / OR filters:
     // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
-    const types = flatten(this.fields.map(i => i.getGraphqlAuxiliaryTypes()));
+    const types = flatten(this.fields.map(field => field.gqlAuxTypes));
 
     if (this.access.read || this.access.create || this.access.update || this.access.delete) {
       types.push(`
@@ -216,7 +216,7 @@ module.exports = class List {
           ${flatten(
             this.fields
               .filter(field => field.access.read) // If it's globally set to false, makes sense to never show it
-              .map(field => field.getGraphqlOutputFields())
+              .map(field => field.gqlOutputFields)
           ).join('\n')}
         }
       `);
@@ -236,7 +236,7 @@ module.exports = class List {
           ${flatten(
             this.fields
               .filter(field => field.access.read) // If it's globally set to false, makes sense to never show it
-              .map(field => field.getGraphqlQueryArgs())
+              .map(field => field.gqlQueryInputFields)
           ).join('\n')}
         }`,
         // TODO: Include other `unique` fields and allow filtering by them
@@ -253,7 +253,7 @@ module.exports = class List {
           ${flatten(
             this.fields
               .filter(field => field.access.update) // If it's globally set to false, makes sense to never let it be updated
-              .map(field => field.getGraphqlUpdateArgs())
+              .map(field => field.gqlUpdateInputFields)
           ).join('\n')}
         }
       `);
@@ -265,7 +265,7 @@ module.exports = class List {
           ${flatten(
             this.fields
               .filter(field => field.access.create) // If it's globally set to false, makes sense to never let it be created
-              .map(i => i.getGraphqlCreateArgs())
+              .map(field => field.gqlCreateInputFields)
           ).join('\n')}
         }
       `);
@@ -284,9 +284,9 @@ module.exports = class List {
     ];
   }
 
-  getAdminGraphqlQueries() {
+  get gqlQueries() {
     // All the auxiliary queries the fields want to add
-    const queries = flatten(this.fields.map(field => field.getGraphqlAuxiliaryQueries()));
+    const queries = flatten(this.fields.map(field => field.gqlAuxQueries));
 
     // If `read` is either `true`, or a function (we don't care what the result
     // of the function is, that'll get executed at a later time)
@@ -351,7 +351,7 @@ module.exports = class List {
     return result;
   }
 
-  getAdminQueryResolvers() {
+  get gqlQueryResolvers() {
     let resolvers = {};
 
     // If set to false, we can confidently remove these resolvers entirely from
@@ -433,12 +433,12 @@ module.exports = class List {
 
   // Get the resolvers for the (possibly multiple) output fields and wrap each with access control
   getWrappedFieldResolvers(field) {
-    return mapKeys(field.getGraphqlOutputFieldResolvers() || {}, innerResolver =>
+    return mapKeys(field.gqlOutputFieldResolvers || {}, innerResolver =>
       this.wrapFieldResolverWithAC(field, innerResolver)
     );
   }
 
-  getAdminFieldResolvers() {
+  get gqlFieldResolvers() {
     if (!this.access.read) {
       return {};
     }
@@ -454,21 +454,21 @@ module.exports = class List {
     return { [this.gqlNames.outputTypeName]: fieldResolvers };
   }
 
-  getAuxiliaryTypeResolvers() {
+  get gqlAuxFieldResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.getGraphqlAuxiliaryTypeResolvers()));
+    return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers));
   }
-  getAuxiliaryQueryResolvers() {
+  get gqlAuxQueryResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.getGraphqlAuxiliaryQueryResolvers()));
+    return objMerge(this.fields.map(field => field.gqlAuxQueryResolvers));
   }
-  getAuxiliaryMutationResolvers() {
+  get gqlAuxMutationResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.getGraphqlAuxiliaryMutationResolvers()));
+    return objMerge(this.fields.map(field => field.gqlAuxMutationResolvers));
   }
 
-  getAdminGraphqlMutations() {
-    const mutations = flatten(this.fields.map(field => field.getGraphqlAuxiliaryMutations()));
+  get gqlMutations() {
+    const mutations = flatten(this.fields.map(field => field.gqlAuxMutations));
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
@@ -632,7 +632,7 @@ module.exports = class List {
     }
 
     // NOTE: The fields will be filtered by the ACL checking in
-    // getAdminFieldResolvers()
+    // gqlFieldResolvers()
     let queryArgs = {
       // We only want 1 item, don't make the DB do extra work
       first: 1,
@@ -724,7 +724,7 @@ module.exports = class List {
     }
 
     // NOTE: The fields will be filtered by the ACL checking in
-    // getAdminFieldResolvers()
+    // gqlFieldResolvers()
     let queryArgs = {
       where: {
         ...omit(access, ['id', 'id_not', 'id_in', 'id_not_in']),
@@ -842,7 +842,7 @@ module.exports = class List {
     };
   }
 
-  getAdminMutationResolvers() {
+  get gqlMutationResolvers() {
     const mutationResolvers = {};
 
     if (this.access.create) {

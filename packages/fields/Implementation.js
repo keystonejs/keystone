@@ -29,10 +29,12 @@ class Field {
   }
 
   // Field types should replace this if they want to any fields to the output type
-  getGraphqlOutputFields() {
+  get gqlOutputFields() {
     return [];
   }
-  getGraphqlOutputFieldResolvers() {}
+  get gqlOutputFieldResolvers() {
+    return {};
+  }
 
   /**
    * Auxiliary Types are top-level types which a type may need or provide.
@@ -44,18 +46,26 @@ class Field {
    * NOTE: When a naming conflic occurs, a list's types/queries/mutations will
    * overwrite any auxiliary types defined by an individual type.
    */
-  getGraphqlAuxiliaryTypes() {
+  get gqlAuxTypes() {
     return [];
   }
-  getGraphqlAuxiliaryTypeResolvers() {}
-  getGraphqlAuxiliaryQueries() {
+  get gqlAuxFieldResolvers() {
+    return {};
+  }
+
+  get gqlAuxQueries() {
     return [];
   }
-  getGraphqlAuxiliaryQueryResolvers() {}
-  getGraphqlAuxiliaryMutations() {
+  get gqlAuxQueryResolvers() {
+    return {};
+  }
+
+  get gqlAuxMutations() {
     return [];
   }
-  getGraphqlAuxiliaryMutationResolvers() {}
+  get gqlAuxMutationResolvers() {
+    return {};
+  }
 
   /**
    * Hooks for performing actions before / after fields are mutated.
@@ -96,13 +106,13 @@ class Field {
    */
   updateFieldPostHook(data, path, item, context) {} // eslint-disable-line no-unused-vars
 
-  getGraphqlQueryArgs() {
+  get gqlQueryInputFields() {
     return [];
   }
-  getGraphqlCreateArgs() {
+  get gqlCreateInputFields() {
     return [];
   }
-  getGraphqlUpdateArgs() {
+  get gqlUpdateInputFields() {
     return [];
   }
 

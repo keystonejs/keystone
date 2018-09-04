@@ -6,14 +6,14 @@ class Float extends Implementation {
     super(...arguments);
   }
 
-  getGraphqlOutputFields() {
+  get gqlOutputFields() {
     return [`${this.path}: Float`];
   }
-  getGraphqlOutputFieldResolvers() {
+  get gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
-  getGraphqlQueryArgs() {
+  get gqlQueryInputFields() {
     return [
       `${this.path}: Float`,
       `${this.path}_not: Float`,
@@ -25,10 +25,10 @@ class Float extends Implementation {
       `${this.path}_not_in: [Float]`,
     ];
   }
-  getGraphqlUpdateArgs() {
+  get gqlUpdateInputFields() {
     return [`${this.path}: Float`];
   }
-  getGraphqlCreateArgs() {
+  get gqlCreateInputFields() {
     return [`${this.path}: Float`];
   }
 }

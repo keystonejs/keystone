@@ -17,7 +17,7 @@ class File extends Implementation {
     this.graphQLOutputType = 'File';
   }
 
-  getGraphqlOutputFields() {
+  get gqlOutputFields() {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
   extendAdminMeta(meta) {
@@ -27,13 +27,13 @@ class File extends Implementation {
       route: this.config.route,
     };
   }
-  getGraphqlQueryArgs() {
+  get gqlQueryInputFields() {
     return [];
   }
   getFileUploadType() {
     return 'Upload';
   }
-  getGraphqlAuxiliaryTypes() {
+  get gqlAuxTypes() {
     return [
       `
       type ${this.graphQLOutputType} {
@@ -48,7 +48,7 @@ class File extends Implementation {
     ];
   }
   // Called on `User.avatar` for example
-  getGraphqlOutputFieldResolvers() {
+  get gqlOutputFieldResolvers() {
     return {
       [this.path]: item => {
         const itemValues = item[this.path];
@@ -96,10 +96,10 @@ class File extends Implementation {
   updateFieldPreHook(uploadData, path, item) {
     return this.saveStream(uploadData, item[path]);
   }
-  getGraphqlUpdateArgs() {
+  get gqlUpdateInputFields() {
     return [`${this.path}: ${this.getFileUploadType()}`];
   }
-  getGraphqlCreateArgs() {
+  get gqlCreateInputFields() {
     return [`${this.path}: ${this.getFileUploadType()}`];
   }
 }

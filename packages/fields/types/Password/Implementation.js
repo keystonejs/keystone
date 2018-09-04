@@ -24,10 +24,10 @@ class Password extends Implementation {
     }
   }
 
-  getGraphqlOutputFields() {
+  get gqlOutputFields() {
     return [`${this.path}_is_set: Boolean`];
   }
-  getGraphqlOutputFieldResolvers() {
+  get gqlOutputFieldResolvers() {
     return {
       [`${this.path}_is_set`]: item => {
         const val = item[this.path];
@@ -36,13 +36,13 @@ class Password extends Implementation {
     };
   }
 
-  getGraphqlQueryArgs() {
+  get gqlQueryInputFields() {
     return [`${this.path}_is_set: Boolean`];
   }
-  getGraphqlUpdateArgs() {
+  get gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
-  getGraphqlCreateArgs() {
+  get gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
 
