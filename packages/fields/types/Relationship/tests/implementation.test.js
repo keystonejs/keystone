@@ -26,14 +26,22 @@ const mockFilterAST = [
 
 function createRelationship({ path, config = {} }) {
   class MockList {
+    constructor(ref) {
+      this.gqlNames = {
+        outputTypeName: ref,
+        createInputName: `${ref}CreateInput`,
+        whereUniqueInputName: `${ref}WhereUniqueInput`,
+        relateToManyInputName: `${ref}RelateToManyInput`,
+        relateToOneInputName: `${ref}RelateToOneInput`,
+      };
+    }
     // The actual implementation in `@keystonejs/core/List/index.js` returns
     // more, but we only want to test that this codepath is called
     getGraphqlFilterFragment = () => mockFilterFragment;
   }
 
   return new Relationship(path, config, {
-    getListByKey: () => new MockList(),
-    listKey: 'FakeList',
+    getListByKey: () => new MockList(config.ref),
     listAdapter: new MockListAdapter(),
     fieldAdapterClass: MockFieldAdapter,
     defaultAccess: true,

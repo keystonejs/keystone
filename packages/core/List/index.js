@@ -131,6 +131,8 @@ module.exports = class List {
       whereUniqueInputName: `${itemQueryName}WhereUniqueInput`,
       updateInputName: `${itemQueryName}UpdateInput`,
       createInputName: `${itemQueryName}CreateInput`,
+      relateToManyInputName: `${itemQueryName}RelateToManyInput`,
+      relateToOneInputName: `${itemQueryName}RelateToOneInput`,
     };
 
     this.adapter = adapter.newListAdapter(this.key, this.config);
