@@ -2,7 +2,7 @@
 import React, { type Node, type Ref } from 'react';
 import styled from 'react-emotion';
 import Kalendaryo from 'kalendaryo';
-import { isToday as isDayToday, isSameMonth, parse, setYear, getYear } from 'date-fns';
+import { isToday as isDayToday, isSameMonth, parse, getYear } from 'date-fns';
 import { Input } from './index';
 import { Select } from '../filters';
 
@@ -160,10 +160,10 @@ export const DayPicker = props => {
       selectedDate,
       date,
     } = kalendaryo;
-    const { handleDayChange, handleYearSelect } = props;
+    const { handleYearSelect } = props;
     const weeksInCurrentMonth = getWeeksInMonth();
 
-    const setDateNextMonth = x => {
+    const setDateNextMonth = () => {
       setDate(getDateNextMonth());
     };
 
