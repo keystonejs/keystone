@@ -11,7 +11,7 @@
     "fresh": "bolt ws exec -- rm -rf node_modules && rm -rf node_modules && bolt",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --list-different \"**/*.js\"",
-    "lint:flow": "cd packages/ui && yarn run flow",
+    "lint:flow": "cd packages/ui && flow check",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:flow",
     "start": "cd projects/basic && yarn start",
     "test": "yarn lint && yarn test:unit && yarn cypress:run",
