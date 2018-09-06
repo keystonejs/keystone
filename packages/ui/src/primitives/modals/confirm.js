@@ -8,6 +8,7 @@ import ScrollLock from 'react-scrolllock';
 import { borderRadius } from '../../theme';
 import FocusTrap from './FocusTrap';
 import { Fade, ZoomInDown, withTransitionState } from './transitions';
+import type { TransitionState } from './transitions';
 import { Blanket } from './common';
 
 const innerGutter = 15;
@@ -64,6 +65,7 @@ type Props = {
   component: ComponentType<*> | string,
   onClose: (*) => void,
   onKeyDown: (*) => void,
+  transitionState: TransitionState,
   width: number,
 };
 

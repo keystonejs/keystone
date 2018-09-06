@@ -1,6 +1,6 @@
 // @flow
 
-import React, { cloneElement, Component, Fragment, type ComponentType, type Element } from 'react';
+import React, { cloneElement, Component, Fragment, type Element } from 'react';
 import NodeResolver from 'react-node-resolver';
 import { TransitionProvider } from './transitions';
 
@@ -20,7 +20,7 @@ function getDisplayName(C) {
 const NOOP = () => {};
 
 export default function withModalHandlers(
-  WrappedComponent: ComponentType<*>,
+  WrappedComponent: any,
   { Transition }: { Transition: (*) => * }
 ) {
   class IntermediateComponent extends Component<Props, State> {

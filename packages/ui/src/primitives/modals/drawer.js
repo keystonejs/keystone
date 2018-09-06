@@ -14,6 +14,7 @@ import ScrollLock from 'react-scrolllock';
 
 import FocusTrap, { type FocusTarget } from './FocusTrap';
 import { Fade, SlideInHorizontal, withTransitionState } from './transitions';
+import type { TransitionState } from './transitions';
 import { Blanket } from './common';
 import { colors } from '../../theme';
 import { generateUEID } from '../../utils';
@@ -100,6 +101,7 @@ type Props = {
   onClose: (*) => void,
   onKeyDown: (*) => void,
   slideInFrom: 'left' | 'right',
+  transitionState: TransitionState,
   width?: number,
 };
 

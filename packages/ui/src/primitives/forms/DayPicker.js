@@ -106,10 +106,20 @@ type Props = {
   /** Field value */
   value: string,
   /** Ref to apply to the inner Element */
-  innerRef?: Ref<*>,
+  innerRef: Ref<*>,
+  date: string,
+  time: string,
+  offset: string,
+  htmlID: string,
+  autoFocus: boolean,
+  handleDayChange: any => mixed,
+  handleTimeChange: any => mixed,
+  handleOffsetChange: any => mixed,
 };
 
-export const DayPicker = (props: Props) => {
+type DayPickerProps = {};
+
+export const DayPicker = (props: DayPickerProps) => {
   function BasicCalendar(kalendaryo) {
     const {
       getFormattedDate,
@@ -184,7 +194,7 @@ export const DayPicker = (props: Props) => {
 };
 
 export const DateTimePicker = (props: Props) => {
-  const { date, time, offset, htmlID, autoFocus } = props;
+  const { date, time, offset, htmlID, autoFocus, isDisabled, innerRef } = props;
   const { handleDayChange, handleTimeChange, handleOffsetChange } = props;
   const TODAY = new Date();
 
@@ -226,7 +236,15 @@ export const DateTimePicker = (props: Props) => {
         startCurrentDateAt={date ? parse(date) : TODAY}
         startSelectedDateAt={date ? parse(date) : TODAY}
       />
-      <Input type="time" name="time-picker" value={time} onChange={handleTimeChange} />
+      <Input
+        type="time"
+        name="time-picker"
+        value={time}
+        onChange={handleTimeChange}
+        disabled={isDisabled || false}
+        isMultiline={false}
+        innerRef={innerRef}
+      />
       <Select
         value={offset}
         options={options}

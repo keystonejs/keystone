@@ -11,7 +11,7 @@ export const transitionTimingFunction = 'cubic-bezier(0.2, 0, 0, 1)';
 // Lifecycle Provider
 // ==============================
 
-type TransitionState = 'entering' | 'entered' | 'exiting' | 'exited';
+export type TransitionState = 'entering' | 'entered' | 'exiting' | 'exited';
 type ProviderProps = {
   children: TransitionState => Node | Element<*>,
   isOpen: boolean,
@@ -45,6 +45,7 @@ type Styles = { [string]: string | number };
 type TransitionProps = {
   children: Element<*>,
   transitionState: TransitionState,
+  from?: string,
 };
 type ReducerProps = {
   constant: Styles,

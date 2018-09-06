@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component, type Element, type Node } from 'react';
+import React, { Component, type Element, type Node as ReactNode } from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
@@ -53,7 +53,7 @@ const Menu = styled.div({
 
 type ItemType = {
   to?: string,
-  content: Node,
+  content: ReactNode,
   href?: string,
   onClick?: (*) => void,
 };
@@ -68,10 +68,8 @@ type Props = {
   style: Object,
 };
 
-function focus(el) {
-  if (el && typeof el.focus === 'function') {
-    el.focus();
-  }
+function focus(el: ?Node) {
+  if (el instanceof HTMLElement) el.focus();
 }
 
 class Dropdown extends Component<Props> {
