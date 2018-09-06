@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { type Node, type Ref } from 'react';
 import styled from 'react-emotion';
 import Kalendaryo from 'kalendaryo';
 import { isToday as isDayToday, isSameMonth, parse, getYear } from 'date-fns';
@@ -103,31 +103,15 @@ const SelectMonths = () => {
   )
 */
 
-type Props = {
-  children?: Node,
-  /** Field disabled */
-  isDisabled?: boolean,
-  /** Marks this as a required field */
-  isRequired?: boolean,
-  /** Field name */
-  name?: string,
-  /** onChange event handler */
-  onChange: any => mixed,
-  /** Field value */
-  value: string,
-  /** Ref to apply to the inner Element */
-  innerRef: Ref<*>,
-  date: string,
-  time: string,
-  offset: string,
-  htmlID: string,
-  autoFocus: boolean,
-  handleDayChange: any => mixed,
-  handleTimeChange: any => mixed,
-  handleOffsetChange: any => mixed,
+
+type SelectYearProps = {
+  handleYearSelect: (any, any, any) => mixed,
+  setDate: any => mixed,
+  setSelectedDate: any => mixed,
+  date: string
 };
 
-class SelectYear extends React.Component {
+class SelectYear extends React.Component<SelectYearProps> {
   render() {
     const { handleYearSelect, setDate, setSelectedDate } = this.props;
     const thisYear = parseInt(new Date().getFullYear());
@@ -154,7 +138,9 @@ class SelectYear extends React.Component {
   }
 }
 
-type DayPickerProps = {};
+type DayPickerProps = {
+  handleYearSelect: (any, any, any) => mixed,
+};
 
 export const DayPicker = (props: DayPickerProps) => {
   function BasicCalendar(kalendaryo) {
@@ -232,6 +218,31 @@ export const DayPicker = (props: DayPickerProps) => {
     );
   }
   return <Kalendaryo {...props} render={BasicCalendar} />;
+};
+
+type Props = {
+  children?: Node,
+  /** Field disabled */
+  isDisabled?: boolean,
+  /** Marks this as a required field */
+  isRequired?: boolean,
+  /** Field name */
+  name?: string,
+  /** onChange event handler */
+  onChange: any => mixed,
+  /** Field value */
+  value: string,
+  /** Ref to apply to the inner Element */
+  innerRef: Ref<*>,
+  date: string,
+  time: string,
+  offset: string,
+  htmlID: string,
+  autoFocus: boolean,
+  handleDayChange: any => mixed,
+  handleTimeChange: any => mixed,
+  handleOffsetChange: any => mixed,
+  handleYearSelect: (any, any, any) => mixed,
 };
 
 export const DateTimePicker = (props: Props) => {
