@@ -4,13 +4,14 @@ import React, { cloneElement, Component, Fragment, type ComponentType, type Elem
 import NodeResolver from 'react-node-resolver';
 import { TransitionProvider } from './transitions';
 
-export type CloseType = ({ returnFocus: boolean }) => void;
-type Fn = () => void;
-type Props = {
-  target: Element<*>,
+type GenericFn = any => mixed;
+export type CloseType = (event: Event) => void;
+export type ModalHandlerProps = {
+  close: CloseType,
   defaultIsOpen: boolean,
-  onClose: Fn,
-  onOpen: Fn,
+  onClose: GenericFn,
+  onOpen: GenericFn,
+  target: Element<*>,
 };
 type State = { isOpen: boolean };
 
@@ -23,7 +24,7 @@ export default function withModalHandlers(
   WrappedComponent: ComponentType<*>,
   { Transition }: { Transition: (*) => * }
 ) {
-  class IntermediateComponent extends Component<Props, State> {
+  class IntermediateComponent extends Component<*, State> {
     lastHover: HTMLElement;
     contentNode: HTMLElement;
     targetNode: HTMLElement;

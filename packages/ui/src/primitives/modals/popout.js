@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom';
 import { borderRadius, gridSize } from '../../theme';
 import FocusTrap from './FocusTrap';
 import { SlideDown } from './transitions';
-import withModalHandlers, { type CloseType } from './withModalHandlers';
+import withModalHandlers, { type ModalHandlerProps } from './withModalHandlers';
 
 const ARROW_WIDTH = 8;
 const CHROME_GUTTER = 30;
@@ -59,13 +59,10 @@ const Arrow = styled.div`
   }
 `;
 
-type Props = {
+type Props = ModalHandlerProps & {
   children: Element<*>,
-  close: CloseType,
-  defaultIsOpen: boolean,
   getModalRef: HTMLElement => void,
   style: Object,
-  target: Element<*>,
   targetNode: HTMLElement,
   width: number,
 };

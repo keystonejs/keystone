@@ -48,6 +48,7 @@ type Props = {
 type ControlProps = Props & {
   svg: string, // html string
   type: 'checkbox' | 'radio',
+  tabIndex?: string,
   components: {
     Wrapper?: ComponentType<*>,
     Label?: ComponentType<*>,
@@ -118,8 +119,12 @@ const Icon = styled.div(({ isDisabled, isFocused, checked, isActive }: IconProps
 const defaultComponents = { Wrapper, Label, Text };
 
 class Control extends Component<ControlProps, State> {
-  components: {};
-  control: HTMLElement;
+  components: {
+    Wrapper: ComponentType<*> | string,
+    Label: ComponentType<*> | string,
+    Text: ComponentType<*> | string,
+  };
+  control: HTMLElement | null;
   state = {
     isActive: false,
     isFocused: false,
@@ -132,11 +137,11 @@ class Control extends Component<ControlProps, State> {
     isDisabled: false,
   };
 
-  constructor(props: Props) {
+  constructor(props: ControlProps) {
     super(props);
     this.cacheComponents(props.components);
   }
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: ControlProps) {
     if (nextProps.components !== this.props.components) {
       this.cacheComponents(nextProps.components);
     }
@@ -149,12 +154,12 @@ class Control extends Component<ControlProps, State> {
   };
 
   focus() {
-    this.control.focus();
+    if (this.control) this.control.focus();
   }
   blur() {
-    this.control.blur();
+    if (this.control) this.control.blur();
   }
-  getRef = (ref: HTMLElement) => {
+  getRef = ref => {
     this.control = ref;
   };
 
