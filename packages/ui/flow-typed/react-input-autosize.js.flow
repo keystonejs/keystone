@@ -1,0 +1,3 @@
+declare module 'react-input-autosize' {
+  declare module.exports: any;
+}

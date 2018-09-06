@@ -92,7 +92,6 @@ const TodayMarker = styled.div(({ isSelected }) => ({
   marginTop: 2,
   width: '1em',
 }));
-
 /*
 const SelectMonths = () => {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Oct', 'Nov', 'Dec']
@@ -102,8 +101,31 @@ const SelectMonths = () => {
       components={{DropdownIndicator: null, IndicatorSeparator: null}}
     />
   )
-};
 */
+
+type Props = {
+  children?: Node,
+  /** Field disabled */
+  isDisabled?: boolean,
+  /** Marks this as a required field */
+  isRequired?: boolean,
+  /** Field name */
+  name?: string,
+  /** onChange event handler */
+  onChange: any => mixed,
+  /** Field value */
+  value: string,
+  /** Ref to apply to the inner Element */
+  innerRef: Ref<*>,
+  date: string,
+  time: string,
+  offset: string,
+  htmlID: string,
+  autoFocus: boolean,
+  handleDayChange: any => mixed,
+  handleTimeChange: any => mixed,
+  handleOffsetChange: any => mixed,
+};
 
 class SelectYear extends React.Component {
   render() {
@@ -132,23 +154,9 @@ class SelectYear extends React.Component {
   }
 }
 
-// type Props = {
-//   children?: Node,
-//   /** Field disabled */
-//   isDisabled?: boolean,
-//   /** Marks this as a required field */
-//   isRequired?: boolean,
-//   /** Field name */
-//   name?: string,
-//   /** onChange event handler */
-//   onChange: any => mixed,
-//   /** Field value */
-//   value: string,
-//   /** Ref to apply to the inner Element */
-//   innerRef?: Ref<*>,
-// };
+type DayPickerProps = {};
 
-export const DayPicker = props => {
+export const DayPicker = (props: DayPickerProps) => {
   function BasicCalendar(kalendaryo) {
     const {
       getFormattedDate,
@@ -226,8 +234,8 @@ export const DayPicker = props => {
   return <Kalendaryo {...props} render={BasicCalendar} />;
 };
 
-export const DateTimePicker = props => {
-  const { date, time, offset, htmlID, autoFocus } = props;
+export const DateTimePicker = (props: Props) => {
+  const { date, time, offset, htmlID, autoFocus, isDisabled, innerRef } = props;
   const { handleDayChange, handleTimeChange, handleOffsetChange, handleYearSelect } = props;
   const TODAY = new Date();
 
@@ -270,7 +278,15 @@ export const DateTimePicker = props => {
         startCurrentDateAt={date ? parse(date) : TODAY}
         startSelectedDateAt={date ? parse(date) : TODAY}
       />
-      <Input type="time" name="time-picker" value={time} onChange={handleTimeChange} />
+      <Input
+        type="time"
+        name="time-picker"
+        value={time}
+        onChange={handleTimeChange}
+        disabled={isDisabled || false}
+        isMultiline={false}
+        innerRef={innerRef}
+      />
       <Select
         value={offset}
         options={options}

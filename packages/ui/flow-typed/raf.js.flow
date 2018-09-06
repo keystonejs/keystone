@@ -1,0 +1,3 @@
+declare module 'raf' {
+  declare module.exports: any;
+}
