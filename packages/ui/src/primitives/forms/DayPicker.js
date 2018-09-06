@@ -1,5 +1,5 @@
 // @flow
-import React, { type Node, type Ref } from 'react';
+import React from 'react';
 import styled from 'react-emotion';
 import Kalendaryo from 'kalendaryo';
 import { isToday as isDayToday, isSameMonth, parse, getYear } from 'date-fns';
