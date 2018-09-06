@@ -19,6 +19,7 @@
     "cuid": "^2.1.1",
     "date-fns": "^1.29.0",
     "dumb-passwords": "^0.2.1",
+    "graphql": "^0.13.2",
     "graphql-tag": "^2.8.0",
     "lodash.get": "^4.4.2",
     "lodash.omitby": "^4.6.0",
@@ -27,5 +28,8 @@
     "mongoose": "^5.2.7",
     "p-settle": "^2.1.0",
     "react-apollo": "^2.1.11"
+  },
+  "devDependencies": {
+    "supertest-light": "^1.0.2"
   }
 }

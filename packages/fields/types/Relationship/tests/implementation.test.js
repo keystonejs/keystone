@@ -8,7 +8,7 @@ class MockListAdapter {
   prepareModel = () => {};
 }
 
-const mockFilterFragment = 'first: Int';
+const mockFilterFragment = ['first: Int'];
 
 const mockFilterAST = [
   {
@@ -46,13 +46,13 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.getGraphqlCreateArgs()).toEqual('foo: [ZipRelationshipInput]');
+    expect(relMany.getGraphqlCreateArgs()).toEqual(['foo: [ZipRelationshipInput]']);
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.getGraphqlCreateArgs()).toEqual('foo: ZipRelationshipInput');
+    expect(relSingle.getGraphqlCreateArgs()).toEqual(['foo: ZipRelationshipInput']);
   });
 
   test('inputs for relationship fields in update args', () => {
@@ -60,13 +60,13 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.getGraphqlUpdateArgs()).toEqual('foo: [ZipRelationshipInput]');
+    expect(relMany.getGraphqlUpdateArgs()).toEqual(['foo: [ZipRelationshipInput]']);
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.getGraphqlUpdateArgs()).toEqual('foo: ZipRelationshipInput');
+    expect(relSingle.getGraphqlUpdateArgs()).toEqual(['foo: ZipRelationshipInput']);
   });
 
   test('relationship LinkOrCreate input', () => {
@@ -76,7 +76,7 @@ describe('Type Generation', () => {
     });
 
     // We're testing the AST is as we expect it to be
-    expect(gql(relationship.getGraphqlAuxiliaryTypes())).toMatchObject({
+    expect(gql(relationship.getGraphqlAuxiliaryTypes().join('\n'))).toMatchObject({
       definitions: [
         {
           kind: 'InputObjectTypeDefinition',
@@ -123,7 +123,7 @@ describe('Type Generation', () => {
     // Wrap it in a mock type because all we get back is the fields
     const fieldSchema = `
       type MockType {
-        ${relationship.getGraphqlOutputFields()}
+        ${relationship.getGraphqlOutputFields().join('\n')}
       }
     `;
 
@@ -164,7 +164,7 @@ describe('Type Generation', () => {
     // Wrap it in a mock type because all we get back is the fields
     const fieldSchema = `
       type MockType {
-        ${relationship.getGraphqlOutputFields()}
+        ${relationship.getGraphqlOutputFields().join('\n')}
       }
     `;
 

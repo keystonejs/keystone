@@ -18,9 +18,7 @@ class File extends Implementation {
   }
 
   getGraphqlOutputFields() {
-    return `
-      ${this.path}: ${this.graphQLOutputType}
-    `;
+    return [`${this.path}: ${this.graphQLOutputType}`];
   }
   extendAdminMeta(meta) {
     return {
@@ -30,13 +28,14 @@ class File extends Implementation {
     };
   }
   getGraphqlQueryArgs() {
-    return '';
+    return [];
   }
   getFileUploadType() {
     return 'Upload';
   }
   getGraphqlAuxiliaryTypes() {
-    return `
+    return [
+      `
       type ${this.graphQLOutputType} {
         id: ID
         path: String
@@ -45,7 +44,8 @@ class File extends Implementation {
         encoding: String
         publicUrl: String
       }
-    `;
+    `,
+    ];
   }
   // Called on `User.avatar` for example
   getGraphqlOutputFieldResolvers() {
@@ -63,9 +63,7 @@ class File extends Implementation {
     };
   }
   getGraphqlAuxiliaryMutations() {
-    return `
-      uploadFile(file: ${this.getFileUploadType()}!): ${this.graphQLOutputType}
-    `;
+    return [`uploadFile(file: ${this.getFileUploadType()}!): ${this.graphQLOutputType}`];
   }
   getGraphqlAuxiliaryMutationResolvers() {
     return {
@@ -114,14 +112,10 @@ class File extends Implementation {
     return this.saveStream(uploadData, item[path]);
   }
   getGraphqlUpdateArgs() {
-    return `
-      ${this.path}: ${this.getFileUploadType()}
-    `;
+    return [`${this.path}: ${this.getFileUploadType()}`];
   }
   getGraphqlCreateArgs() {
-    return `
-      ${this.path}: ${this.getFileUploadType()}
-    `;
+    return [`${this.path}: ${this.getFileUploadType()}`];
   }
 }
 

@@ -9,6 +9,7 @@ const {
   mergeWhereClause,
   objMerge,
   arrayToObject,
+  flatten,
 } = require('@keystonejs/utils');
 
 const { parseListAccess, testListAccessControl } = require('@keystonejs/access-control');
@@ -196,94 +197,63 @@ module.exports = class List {
     };
   }
   getAdminGraphqlTypes() {
-    const fieldSchemas = this.fields
-      // If it's globally set to false, makes sense to never show it
-      .filter(field => field.access.read)
-      .map(field => field.getGraphqlOutputFields())
-      .join('\n          ');
-
-    const fieldTypes = this.fields.map(i => i.getGraphqlAuxiliaryTypes()).filter(i => i);
-
-    const updateArgs = this.fields
-      // If it's globally set to false, makes sense to never let it be updated
-      .filter(field => field.access.update)
-      .map(field => field.getGraphqlUpdateArgs())
-      .filter(i => i)
-      .map(i => i.split(/\n\s+/g).join('\n          '))
-      .join('\n          ')
-      .trim();
-
-    const createArgs = this.fields
-      // If it's globally set to false, makes sense to never let it be created
-      .filter(field => field.access.create)
-      .map(i => i.getGraphqlCreateArgs())
-      .filter(i => i)
-      .map(i => i.split(/\n\s+/g).join('\n          '))
-      .join('\n          ')
-      .trim();
-
-    const queryArgs = this.fields
-      // If it's globally set to false, makes sense to never show it
-      .filter(field => field.access.read)
-      .map(field => {
-        const fieldQueryArgs = field
-          .getGraphqlQueryArgs()
-          .split(/\n\s+/g)
-          .join('\n          ');
-
-        if (!fieldQueryArgs) {
-          return null;
-        }
-
-        return `# ${field.constructor.name} field\n          ${fieldQueryArgs}`;
-      })
-      .filter(i => i)
-      .join('\n\n          ');
-
-    const types = [
-      // TODO: AND / OR filters:
-      // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
-      ...fieldTypes,
-    ];
+    // TODO: AND / OR filters:
+    // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
+    const types = flatten(this.fields.map(i => i.getGraphqlAuxiliaryTypes()));
 
     if (this.access.read || this.access.create || this.access.update || this.access.delete) {
-      // prettier-ignore
       types.push(`
         type ${this.gqlNames.outputTypeName} {
           id: ID
-          # This virtual field will be resolved in one of the following ways (in this order):
-          # 1. Execution of 'labelResolver' set on the ${this.key} List config, or
-          # 2. As an alias to the field set on 'labelField' in the ${this.key} List config, or
-          # 3. As an alias to a 'name' field on the ${this.key} List (if one exists), or
-          # 4. As an alias to the 'id' field on the ${this.key} List.
+          """
+          This virtual field will be resolved in one of the following ways (in this order):
+           1. Execution of 'labelResolver' set on the ${this.key} List config, or
+           2. As an alias to the field set on 'labelField' in the ${this.key} List config, or
+           3. As an alias to a 'name' field on the ${this.key} List (if one exists), or
+           4. As an alias to the 'id' field on the ${this.key} List.
+           """
           _label_: String
-          ${fieldSchemas}
+          ${flatten(
+            this.fields
+              .filter(field => field.access.read) // If it's globally set to false, makes sense to never show it
+              .map(field => field.getGraphqlOutputFields())
+          ).join('\n')}
         }
       `);
     }
 
     if (this.access.read) {
-      types.push(`
+      types.push(
+        `
         input ${this.gqlNames.whereInputName} {
           id: ID
           id_not: ID
           id_in: [ID!]
           id_not_in: [ID!]
-          ${queryArgs}
+
           AND: [${this.gqlNames.whereInputName}]
-        }
-      `);
-      types.push(`
+
+          ${flatten(
+            this.fields
+              .filter(field => field.access.read) // If it's globally set to false, makes sense to never show it
+              .map(field => field.getGraphqlQueryArgs())
+          ).join('\n')}
+        }`,
+        `
         input ${this.gqlNames.whereUniqueInputName} {
           id: ID!
-        }
-      `);
+        }`
+      );
     }
 
     if (this.access.update) {
       types.push(`
         input ${this.gqlNames.updateInputName} {
-          ${updateArgs}
+          ${flatten(
+            this.fields
+              .filter(field => field.access.update) // If it's globally set to false, makes sense to never let it be updated
+              .map(field => field.getGraphqlUpdateArgs())
+          ).join('\n')}
         }
       `);
     }
@@ -291,7 +261,11 @@ module.exports = class List {
     if (this.access.create) {
       types.push(`
         input ${this.gqlNames.createInputName} {
-          ${createArgs}
+          ${flatten(
+            this.fields
+              .filter(field => field.access.create) // If it's globally set to false, makes sense to never let it be created
+              .map(i => i.getGraphqlCreateArgs())
+          ).join('\n')}
         }
       `);
     }
@@ -300,42 +274,38 @@ module.exports = class List {
   }
 
   getGraphqlFilterFragment() {
-    return `
-          where: ${this.gqlNames.whereInputName}
-          search: String
-          orderBy: String
-
-          # Pagination
-          first: Int
-          skip: Int`.trim();
+    return [
+      `where: ${this.gqlNames.whereInputName}`,
+      `search: String`,
+      `orderBy: String`,
+      `first: Int`,
+      `skip: Int`,
+    ];
   }
 
   getAdminGraphqlQueries() {
     // All the auxiliary queries the fields want to add
-    const queries = this.fields
-      .map(field => field.getGraphqlAuxiliaryQueries())
-      // Filter out any empty elements
-      .filter(query => query);
+    const queries = flatten(this.fields.map(field => field.getGraphqlAuxiliaryQueries()));
 
     // If `read` is either `true`, or a function (we don't care what the result
     // of the function is, that'll get executed at a later time)
     if (this.access.read) {
-      // prettier-ignore
-      queries.push(`
+      queries.push(
+        `
         ${this.gqlNames.listQueryName}(
-          ${this.getGraphqlFilterFragment()}
-        ): [${this.gqlNames.outputTypeName}]
+          ${this.getGraphqlFilterFragment().join('\n')}
+        ): [${this.gqlNames.outputTypeName}]`,
 
-        ${this.gqlNames.itemQueryName}(
+        `${this.gqlNames.itemQueryName}(
           where: ${this.gqlNames.whereUniqueInputName}!
-        ): ${this.gqlNames.outputTypeName}
+        ): ${this.gqlNames.outputTypeName}`,
 
-        ${this.gqlNames.listQueryMetaName}(
-          ${this.getGraphqlFilterFragment()}
-        ): _QueryMeta
+        `${this.gqlNames.listQueryMetaName}(
+          ${this.getGraphqlFilterFragment().join('\n')}
+        ): _QueryMeta`,
 
-        ${this.gqlNames.listMetaName}: _ListMeta
-      `);
+        `${this.gqlNames.listMetaName}: _ListMeta`
+      );
     }
 
     if (this.getAuth()) {
@@ -522,7 +492,7 @@ module.exports = class List {
   }
 
   getAdminGraphqlMutations() {
-    const mutations = this.fields.map(field => field.getGraphqlAuxiliaryMutations());
+    const mutations = flatten(this.fields.map(field => field.getGraphqlAuxiliaryMutations()));
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
@@ -557,7 +527,7 @@ module.exports = class List {
       `);
     }
 
-    return mutations.filter(mutation => mutation);
+    return mutations;
   }
 
   throwIfAccessDeniedOnFields({

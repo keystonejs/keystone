@@ -21,12 +21,13 @@ class Relationship extends Implementation {
     const { many, ref } = this.config;
 
     if (many) {
-      return `${this.path}(
-        ${this.getListByKey(ref).getGraphqlFilterFragment()}
-      ): [${ref}]`;
+      const filterArgs = this.getListByKey(ref)
+        .getGraphqlFilterFragment()
+        .join('\n');
+      return [`${this.path}(${filterArgs}): [${ref}]`];
     }
 
-    return `${this.path}: ${ref}`;
+    return [`${this.path}: ${ref}`];
   }
 
   extendAdminMeta(meta) {
@@ -37,21 +38,18 @@ class Relationship extends Implementation {
     const { many, ref } = this.config;
     const list = this.getListByKey(ref);
     if (many) {
-      return `
-        # condition must be true for all nodes
-        ${this.path}_every: ${list.gqlNames.whereInputName}
-        # condition must be true for at least 1 node
-        ${this.path}_some: ${list.gqlNames.whereInputName}
-        # condition must be false for all nodes
-        ${this.path}_none: ${list.gqlNames.whereInputName}
-        # is the relation field null
-        ${this.path}_is_null: Boolean
-      `;
+      return [
+        `""" condition must be true for all nodes """
+        ${this.path}_every: ${list.gqlNames.whereInputName}`,
+        `""" condition must be true for at least 1 node """
+        ${this.path}_some: ${list.gqlNames.whereInputName}`,
+        `""" condition must be false for all nodes """
+        ${this.path}_none: ${list.gqlNames.whereInputName}`,
+        `""" is the relation field null """
+        ${this.path}_is_null: Boolean`,
+      ];
     } else {
-      return `
-        ${this.path}: ${list.gqlNames.whereInputName}
-        ${this.path}_is_null: Boolean
-      `;
+      return [`${this.path}: ${list.gqlNames.whereInputName}`, `${this.path}_is_null: Boolean`];
     }
   }
 
@@ -235,21 +233,24 @@ class Relationship extends Implementation {
     // mutation createPost() {
     //   author: { id: 'abc123' }
     // }
-    return `
-      input ${this.config.ref}RelationshipInput {
-        # Provide an id to link to an existing ${this.config.ref}. Cannot be set if 'create' set.
-        id: ID
-
-        # Provide data to create a new ${this.config.ref}. Cannot be set if 'id' set.
-        create: ${this.config.ref}CreateInput
-      }
-    `;
+    const { ref } = this.config;
+    const args = [
+      `""" Provide an id to link to an existing ${ref}. Cannot be set if 'create' set. """
+      id: ID`,
+      `""" Provide data to create a new ${ref}. Cannot be set if 'id' set. """
+      create: ${ref}CreateInput`,
+    ];
+    return [
+      `input ${ref}RelationshipInput {
+               ${args.join('\n')}
+             }`,
+    ];
   }
   getGraphqlUpdateArgs() {
     const { many } = this.config;
     const inputType = `${this.config.ref}RelationshipInput`;
     const type = many ? `[${inputType}]` : inputType;
-    return `${this.path}: ${type}`;
+    return [`${this.path}: ${type}`];
   }
   getGraphqlCreateArgs() {
     return this.getGraphqlUpdateArgs();

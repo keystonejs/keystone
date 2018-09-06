@@ -1,4 +1,4 @@
-const supertest = require('supertest');
+const supertest = require('supertest-light');
 const { Keystone } = require('@keystonejs/core');
 const { Text, Password } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
@@ -74,11 +74,12 @@ describe('Auth testing', () => {
 
   function login(username, password) {
     return supertest(server.app)
-      .post('/signin')
       .set('Accept', 'application/json')
-      .send({ username, password })
-      .expect(200)
-      .then(({ body }) => body);
+      .post('/signin', { username, password })
+      .then(res => {
+        expect(res.statusCode).toBe(200);
+        return JSON.parse(res.text);
+      });
   }
 
   function signCookie(token) {
@@ -100,11 +101,11 @@ describe('Auth testing', () => {
 
   test('Gives access denied when not logged in', () => {
     return supertest(server.app)
-      .post('/admin/api')
-      .send({ query: '{ allUsers { id } }' })
       .set('Accept', 'application/json')
-      .expect(200)
-      .expect(function(res) {
+      .post('/admin/api', { query: '{ allUsers { id } }' })
+      .then(function(res) {
+        expect(res.statusCode).toBe(200);
+        res.body = JSON.parse(res.text);
         expect(res.body.data).toEqual({ allUsers: null });
         expect(res.body.errors).toMatchObject([{ name: 'AccessDeniedError' }]);
       });
@@ -121,12 +122,12 @@ describe('Auth testing', () => {
       expect(token).toBeTruthy();
 
       return supertest(server.app)
-        .post('/admin/api')
         .set('Authorization', `Bearer ${token}`)
         .set('Accept', 'application/json')
-        .send({ query: '{ allUsers { id } }' })
-        .expect(200)
-        .expect(function(res) {
+        .post('/admin/api', { query: '{ allUsers { id } }' })
+        .then(function(res) {
+          expect(res.statusCode).toBe(200);
+          res.body = JSON.parse(res.text);
           expect(res.body.data).toHaveProperty('allUsers');
           expect(res.body.data.allUsers).toHaveLength(initialData.User.length);
           expect(res.body).not.toHaveProperty('errors');
@@ -143,12 +144,12 @@ describe('Auth testing', () => {
       expect(token).toBeTruthy();
 
       return supertest(server.app)
-        .post('/admin/api')
         .set('Cookie', `keystone.sid=${signCookie(token)}`)
         .set('Accept', 'application/json')
-        .send({ query: '{ allUsers { id } }' })
-        .expect(200)
-        .expect(function(res) {
+        .post('/admin/api', { query: '{ allUsers { id } }' })
+        .then(function(res) {
+          expect(res.statusCode).toBe(200);
+          res.body = JSON.parse(res.text);
           expect(res.body.data).toHaveProperty('allUsers');
           expect(res.body.data.allUsers).toHaveLength(initialData.User.length);
           expect(res.body).not.toHaveProperty('errors');

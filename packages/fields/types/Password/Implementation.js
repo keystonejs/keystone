@@ -25,9 +25,7 @@ class Password extends Implementation {
   }
 
   getGraphqlOutputFields() {
-    return `
-      ${this.path}_is_set: Boolean
-    `;
+    return [`${this.path}_is_set: Boolean`];
   }
   getGraphqlOutputFieldResolvers() {
     return {
@@ -39,19 +37,13 @@ class Password extends Implementation {
   }
 
   getGraphqlQueryArgs() {
-    return `
-      ${this.path}_is_set: Boolean
-    `;
+    return [`${this.path}_is_set: Boolean`];
   }
   getGraphqlUpdateArgs() {
-    return `
-      ${this.path}: String
-    `;
+    return [`${this.path}: String`];
   }
   getGraphqlCreateArgs() {
-    return `
-      ${this.path}: String
-    `;
+    return [`${this.path}: String`];
   }
 
   // Wrap bcrypt functionality
