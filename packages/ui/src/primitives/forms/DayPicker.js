@@ -97,13 +97,26 @@ type SelectMonthProps = {
   handleMonthSelect: (any, any, any) => mixed,
   setDate: any => mixed,
   setSelectedDate: any => mixed,
-  date: string
+  date: string,
 };
 
 class SelectMonth extends React.Component<SelectMonthProps> {
   render() {
     const { handleMonthSelect, setDate, setSelectedDate } = this.props;
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     const { date } = this.props;
 
     const onChange = event => {
@@ -130,7 +143,7 @@ type SelectYearProps = {
   handleYearSelect: (any, any, any) => mixed,
   setDate: any => mixed,
   setSelectedDate: any => mixed,
-  date: string
+  date: string,
 };
 
 class SelectYear extends React.Component<SelectYearProps> {
@@ -276,7 +289,13 @@ type Props = {
 
 export const DateTimePicker = (props: Props) => {
   const { date, time, offset, htmlID, autoFocus, isDisabled, innerRef } = props;
-  const { handleDayChange, handleTimeChange, handleOffsetChange, handleYearSelect, handleMonthSelect } = props;
+  const {
+    handleDayChange,
+    handleTimeChange,
+    handleOffsetChange,
+    handleYearSelect,
+    handleMonthSelect,
+  } = props;
   const TODAY = new Date();
 
   const options = [
