@@ -2,7 +2,7 @@
 import React, { type Node, type Ref } from 'react';
 import styled from 'react-emotion';
 import Kalendaryo from 'kalendaryo';
-import { isToday as isDayToday, isSameMonth, parse, getYear } from 'date-fns';
+import { isToday as isDayToday, isSameMonth, parse, getYear, getMonth } from 'date-fns';
 import { Input } from './index';
 import { Select } from '../filters';
 
@@ -92,17 +92,39 @@ const TodayMarker = styled.div(({ isSelected }) => ({
   marginTop: 2,
   width: '1em',
 }));
-/*
-const SelectMonths = () => {
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Oct', 'Nov', 'Dec']
-  return(
-    <Select
-      options={months}
-      components={{DropdownIndicator: null, IndicatorSeparator: null}}
-    />
-  )
-*/
 
+type SelectMonthProps = {
+  handleMonthSelect: (any, any, any) => mixed,
+  setDate: any => mixed,
+  setSelectedDate: any => mixed,
+  date: string
+};
+
+class SelectMonth extends React.Component<SelectMonthProps> {
+  render() {
+    const { handleMonthSelect, setDate, setSelectedDate } = this.props;
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const { date } = this.props;
+
+    const onChange = event => {
+      handleMonthSelect(event, setDate, setSelectedDate);
+    };
+
+    return (
+      <select onChange={onChange} value={getMonth(date)}>
+        {months.map((month, i) => (
+          <option
+            key={i}
+            value={i}
+            //selected={year==currentYear ? true : false}
+          >
+            {month}
+          </option>
+        ))}
+      </select>
+    );
+  }
+}
 
 type SelectYearProps = {
   handleYearSelect: (any, any, any) => mixed,
@@ -140,6 +162,7 @@ class SelectYear extends React.Component<SelectYearProps> {
 
 type DayPickerProps = {
   handleYearSelect: (any, any, any) => mixed,
+  handleMonthSelect: (any, any, any) => mixed,
 };
 
 export const DayPicker = (props: DayPickerProps) => {
@@ -154,7 +177,7 @@ export const DayPicker = (props: DayPickerProps) => {
       selectedDate,
       date,
     } = kalendaryo;
-    const { handleYearSelect } = props;
+    const { handleYearSelect, handleMonthSelect } = props;
     const weeksInCurrentMonth = getWeeksInMonth();
 
     const setDateNextMonth = () => {
@@ -173,7 +196,12 @@ export const DayPicker = (props: DayPickerProps) => {
           <HeaderButton onClick={setDatePrevMonth}>
             <ChevronLeftIcon />
           </HeaderButton>
-          <HeaderButton onClick={setDatePrevMonth}>{getFormattedDate('MMMM')}</HeaderButton>
+          <SelectMonth
+            date={selectedDate}
+            handleMonthSelect={handleMonthSelect}
+            setDate={setDate}
+            setSelectedDate={setSelectedDate}
+          />
           <SelectYear
             date={selectedDate}
             handleYearSelect={handleYearSelect}
@@ -243,11 +271,12 @@ type Props = {
   handleTimeChange: any => mixed,
   handleOffsetChange: any => mixed,
   handleYearSelect: (any, any, any) => mixed,
+  handleMonthSelect: (any, any, any) => mixed,
 };
 
 export const DateTimePicker = (props: Props) => {
   const { date, time, offset, htmlID, autoFocus, isDisabled, innerRef } = props;
-  const { handleDayChange, handleTimeChange, handleOffsetChange, handleYearSelect } = props;
+  const { handleDayChange, handleTimeChange, handleOffsetChange, handleYearSelect, handleMonthSelect } = props;
   const TODAY = new Date();
 
   const options = [
@@ -285,6 +314,7 @@ export const DateTimePicker = (props: Props) => {
       <DayPicker
         autoFocus={autoFocus}
         onSelectedChange={handleDayChange}
+        handleMonthSelect={handleMonthSelect}
         handleYearSelect={handleYearSelect}
         startCurrentDateAt={date ? parse(date) : TODAY}
         startSelectedDateAt={date ? parse(date) : TODAY}
