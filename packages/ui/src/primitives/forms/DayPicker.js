@@ -2,18 +2,34 @@
 import React, { type Node, type Ref } from 'react';
 import styled from 'react-emotion';
 import Kalendaryo from 'kalendaryo';
-import { isToday as isDayToday, isSameMonth, parse, getYear, getMonth } from 'date-fns';
+import {
+  isToday as isDayToday,
+  isSameMonth,
+  parse,
+  getYear,
+  getMonth,
+  setMonth,
+  format,
+  setDay,
+} from 'date-fns';
 import { Input } from './index';
 import { Select } from '../filters';
-
 import { ChevronLeftIcon, ChevronRightIcon } from '@keystonejs/icons';
 import { borderRadius, colors } from '../../theme';
 
-const WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const yearRange = (from, to) => {
+  const years = [];
+  let year = from;
+  while(year <= to) {
+    years.push(year++);
+  }
+  return years;
+};
 
 const Wrapper = styled.div({
   fontSize: '0.85rem',
 });
+
 const Header = styled.div({
   alignItems: 'center',
   display: 'flex',
@@ -103,20 +119,7 @@ type SelectMonthProps = {
 class SelectMonth extends React.Component<SelectMonthProps> {
   render() {
     const { handleMonthSelect, setDate, setSelectedDate } = this.props;
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
+    const months = [...new Array(12)].map((_, month) => format(setMonth(new Date(), month), 'MMM'));
     const { date } = this.props;
 
     const onChange = event => {
@@ -126,11 +129,7 @@ class SelectMonth extends React.Component<SelectMonthProps> {
     return (
       <select onChange={onChange} value={getMonth(date)}>
         {months.map((month, i) => (
-          <option
-            key={i}
-            value={i}
-            //selected={year==currentYear ? true : false}
-          >
+          <option key={i} value={i}>
             {month}
           </option>
         ))}
@@ -149,8 +148,7 @@ type SelectYearProps = {
 class SelectYear extends React.Component<SelectYearProps> {
   render() {
     const { handleYearSelect, setDate, setSelectedDate } = this.props;
-    const thisYear = parseInt(new Date().getFullYear());
-    const years = [...new Array(101)].map((_, i) => thisYear - i);
+    const years = yearRange(1900,2050);
     const { date } = this.props;
 
     const onChange = event => {
@@ -160,11 +158,7 @@ class SelectYear extends React.Component<SelectYearProps> {
     return (
       <select onChange={onChange} value={getYear(date)}>
         {years.map((year, i) => (
-          <option
-            key={i}
-            value={year}
-            //selected={year==currentYear ? true : false}
-          >
+          <option key={i} value={year}>
             {year}
           </option>
         ))}
@@ -225,10 +219,9 @@ export const DayPicker = (props: DayPickerProps) => {
             <ChevronRightIcon />
           </HeaderButton>
         </Header>
-
         <Body>
           <WeekLabels>
-            {WEEK_DAYS.map(d => (
+            {[...new Array(7)].map((_, day) => format(setDay(new Date(), day), 'ddd')).map(d => (
               <Day key={d}>{d}</Day>
             ))}
           </WeekLabels>
