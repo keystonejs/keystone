@@ -24,7 +24,7 @@ const mockFilterAST = [
   },
 ];
 
-function createRelationship({ path, config = {} }) {
+function createRelationship({ path, config = {}, getListByKey = () => new MockList(config.ref) }) {
   class MockList {
     constructor(ref) {
       this.gqlNames = {
@@ -41,7 +41,8 @@ function createRelationship({ path, config = {} }) {
   }
 
   return new Relationship(path, config, {
-    getListByKey: () => new MockList(config.ref),
+    getListByKey,
+    listKey: 'FakeList',
     listAdapter: new MockListAdapter(),
     fieldAdapterClass: MockFieldAdapter,
     defaultAccess: true,
@@ -313,5 +314,58 @@ describe('Type Generation', () => {
     });
 
     expect(fieldAST.definitions[0].fields[0].arguments).toHaveLength(1);
+  });
+});
+
+describe('Referenced list errors', () => {
+  const mockList = {
+    // ie; "not found"
+    getFieldByPath: () => {},
+    getGraphqlFilterFragment: () => [],
+    gqlNames: {
+      whereInputName: '',
+    },
+  };
+
+  // Some methods are sync, others async, so we force all to be async so we can
+  // have a consistent testing API
+  async function asyncify(func) {
+    return await func();
+  }
+
+  ['gqlOutputFields', 'gqlQueryInputFields', 'gqlOutputFieldResolvers'].forEach(method => {
+    describe(`${method}()`, () => {
+      test('throws when list not found', async () => {
+        const relMany = createRelationship({
+          path: 'foo',
+          config: { many: true, ref: 'Zip' },
+          // ie; "not found"
+          getListByKey: () => {},
+        });
+        expect(asyncify(() => relMany[method])).rejects.toThrow(
+          /Unable to resolve related list 'Zip'/
+        );
+      });
+
+      test('does not throw when no two way relationship specified', async () => {
+        const relMany = createRelationship({
+          path: 'foo',
+          config: { many: true, ref: 'Zip' },
+          getListByKey: () => mockList,
+        });
+        return asyncify(() => relMany[method]);
+      });
+
+      test('throws when field on list not found', async () => {
+        const relMany = createRelationship({
+          path: 'foo',
+          config: { many: true, ref: 'Zip.bar' },
+          getListByKey: () => mockList,
+        });
+        expect(asyncify(() => relMany[method])).rejects.toThrow(
+          /Unable to resolve two way relationship field 'Zip.bar'/
+        );
+      });
+    });
   });
 });

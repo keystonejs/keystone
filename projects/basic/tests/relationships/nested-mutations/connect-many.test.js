@@ -82,7 +82,7 @@ beforeEach(() =>
   resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase())));
 
 describe('no access control', () => {
-  test('link nested from within create mutation', async () => {
+  test('connect nested from within create mutation', async () => {
     const noteContent = sampleOne(alphanumGenerator);
 
     // Create an item to link against
@@ -129,7 +129,7 @@ describe('no access control', () => {
     expect(createUserManyNotes.body).not.toHaveProperty('errors');
   });
 
-  test('link nested from within update mutation adds to an empty list', async () => {
+  test('connect nested from within update mutation adds to an empty list', async () => {
     const noteContent = sampleOne(alphanumGenerator);
     const noteContent2 = sampleOne(alphanumGenerator);
 
@@ -217,7 +217,7 @@ describe('no access control', () => {
     expect(body).not.toHaveProperty('errors');
   });
 
-  test('link nested from within update mutation adds to an existing list', async () => {
+  test('connect nested from within update mutation adds to an existing list', async () => {
     const noteContent = sampleOne(alphanumGenerator);
     const noteContent2 = sampleOne(alphanumGenerator);
 

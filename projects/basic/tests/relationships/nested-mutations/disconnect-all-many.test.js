@@ -163,7 +163,7 @@ describe('no access control', () => {
 
 describe('with access control', () => {
   describe('read: false on related list', () => {
-    test('silently keeps items that otherwise would be removed', async () => {
+    test('has no effect when specifying disconnectAll', async () => {
       const noteContent = sampleOne(alphanumGenerator);
 
       // Create an item to link against
@@ -197,8 +197,13 @@ describe('with access control', () => {
 
       const userData = await findById('UserToNotesNoRead', createUser.id);
 
-      expect(userData).toHaveProperty('notes.0');
-      expect(userData.notes[0].toString()).toBe(createNote.id);
+      expect(userData.notes).toHaveLength(0);
+    });
+
+    test.failing('silently keeps items that otherwise would be removed', () => {
+      // TODO: Fill this in when we support more filtering on Unique items than
+      // just ID.
+      expect(false).toBe(true);
     });
   });
 });

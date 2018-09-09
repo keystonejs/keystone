@@ -1,10 +1,143 @@
+const groupBy = require('lodash.groupby');
 const pSettle = require('p-settle');
 const { intersection, pick } = require('@keystonejs/utils');
 const { ParameterError } = require('./graphqlErrors');
 
 const NESTED_MUTATIONS = ['create', 'connect', 'disconnect', 'disconnectAll'];
 
-function validateToManyInput({ input, foundMutations, listKey, fieldKey, ref }) {
+function generateQueueId({ foreign, local }) {
+  // The queue id is more than just the id of the item - it's the id + field
+  // combo. And since fields could be named the same across lists, we need to
+  // include the list name also.
+  // TODO: Needs local and foreign info baked into the key.
+  const foreignKey = `foreign:${foreign.list.key}.${foreign.field.path}.${foreign.id}`;
+  const localKey = `local:${local.list.key}.${local.field.path}.${local.id}`;
+
+  return `${foreignKey}|${localKey}`;
+}
+
+function queueIdForDisconnection({ context, foreign, local, done = false }) {
+  // We use `context` as it's passed around by graphqljs, so is available
+  // everywhere
+  context.disconnectQueue = context.disconnectQueue || new Map();
+  // NOTE: We don't return these promises, we expect them to be fulfilled at a
+  // future date and don't want to wait for them now.
+  Promise.all([foreign, local]).then(([foreignInfo, localInfo]) => {
+    const queueId = generateQueueId({ foreign: foreignInfo, local: localInfo });
+    // It may have already been added elsewhere, so we don't want to add it again
+    if (!context.disconnectQueue.has(queueId)) {
+      context.disconnectQueue.set(queueId, { foreign: foreignInfo, local: localInfo, done });
+    }
+  });
+}
+
+function flagIdAsDisconnected({ context, foreign, local }) {
+  queueIdForDisconnection({ context, foreign, local, done: true });
+}
+
+function tellForeignItemToDisconnect({ context, getItem, local, foreign }) {
+  // queue up the disconnection
+  queueIdForDisconnection({
+    context,
+    foreign: getItem.then(item => ({
+      ...local,
+      id: item.id,
+    })),
+    local: foreign,
+  });
+
+  // To avoid any circular updates with the above disconnect, we flag this
+  // item as having already been disconnected
+  flagIdAsDisconnected({
+    context,
+    foreign: foreign,
+    local: getItem.then(item => ({
+      ...local,
+      id: item.id,
+    })),
+  });
+}
+
+function queueIdForConnection({ context, foreign, local, done = false }) {
+  // We use `context` as it's passed around by graphqljs, so is available
+  // everywhere
+  context.connectQueue = context.connectQueue || new Map();
+
+  Promise.all([foreign, local]).then(([foreignInfo, localInfo]) => {
+    const queueId = generateQueueId({ foreign: foreignInfo, local: localInfo });
+    // It may have already been added elsewhere, so we don't want to add it again
+    if (!context.connectQueue.has(queueId)) {
+      context.connectQueue.set(queueId, { foreign: foreignInfo, local: localInfo, done });
+    }
+  });
+}
+
+function flagIdAsConnected({ context, foreign, local }) {
+  queueIdForConnection({ context, foreign, local, done: true });
+}
+
+async function processQueue(queue, processor) {
+  if (!queue) {
+    return Promise.resolve();
+  }
+
+  for (let [queueKey, queuedWork] of queue.entries()) {
+    if (queuedWork.done) {
+      continue;
+    }
+
+    // Flag it as handled so we don't try again in a nested update
+    // NOTE: We do this first before any other work below to avoid async issues
+    // To avoid issues with looping and Map()s, we directly set the value on the
+    // object as stored in the Map, and don't try to update the Map() itself.
+    queuedWork.done = true;
+
+    await processor({ ...queuedWork, queueKey });
+  }
+}
+
+function buildNestedMutation({ foreign, local, operation }) {
+  return {
+    [local.field.path]: {
+      [operation]: local.field.config.many ? [{ id: foreign.id }] : { id: foreign.id },
+    },
+  };
+}
+
+// Returns a promise
+function processQueuedDisconnections({ context }) {
+  return processQueue(
+    context.disconnectQueue,
+    // foreign / local from the point of view of the item to be updated.
+    ({ foreign, local }) => {
+      // Setup the correct mutation query params to perform the disconnection
+      const disconnectClause = buildNestedMutation({ foreign, local, operation: 'disconnect' });
+
+      // Trigger the disconnection.
+      // NOTE: This relies on the user having `update` permissions on the other
+      // list.
+      return local.list.updateMutation(local.id, disconnectClause, context);
+    }
+  );
+}
+
+function processQueuedConnections({ context }) {
+  return processQueue(
+    context.connectQueue,
+    // foreign / local from the point of view of the item to be updated.
+    ({ foreign, local }) => {
+      // Setup the correct mutation query params to perform the disconnection
+      const connectClause = buildNestedMutation({ foreign, local, operation: 'connect' });
+
+      // Trigger the disconnection.
+      // NOTE: This relies on the user having `update` permissions on the other
+      // list.
+      return local.list.updateMutation(local.id, connectClause, context);
+    }
+  );
+}
+
+function validateToManyInput({ input, foundMutations, localList, localField, refList }) {
   // to-many must have an array of at least one item with at least one key
   const validInputMutations = foundMutations.filter(
     mutation =>
@@ -17,16 +150,16 @@ function validateToManyInput({ input, foundMutations, listKey, fieldKey, ref }) 
   // additive
   if (!validInputMutations.length) {
     throw new ParameterError({
-      message: `Must provide a nested mutation (${NESTED_MUTATIONS.join(
-        ', '
-      )}) when mutating ${listKey}.${fieldKey}<${ref}>`,
+      message: `Must provide a nested mutation (${NESTED_MUTATIONS.join(', ')}) when mutating ${
+        localList.key
+      }.${localField.path}<${refList.key}>`,
     });
   }
 
   return pick(input, validInputMutations);
 }
 
-function validateToSingleInput({ input, foundMutations, listKey, fieldKey, ref }) {
+function validateToSingleInput({ input, foundMutations, localList, localField, refList }) {
   // to-single must have an item with at least one key
   const validInputMutations = foundMutations.filter(
     mutation => mutation === 'disconnectAll' || Object.keys(input[mutation]).length
@@ -34,40 +167,44 @@ function validateToSingleInput({ input, foundMutations, listKey, fieldKey, ref }
 
   if (!validInputMutations.length) {
     throw new ParameterError({
-      message: `Must provide a nested mutation (${NESTED_MUTATIONS.join(
-        ', '
-      )}) when mutating ${listKey}.${fieldKey}<${ref}>`,
+      message: `Must provide a nested mutation (${NESTED_MUTATIONS.join(', ')}) when mutating ${
+        localList.key
+      }.${localField.path}<${refList.key}>`,
     });
   }
 
   // Can't create AND connect - only one can be set at a time
   if (validInputMutations.includes('create') && validInputMutations.includes('connect')) {
     throw new ParameterError({
-      message: `Can only provide one of 'connect' or 'create' when mutating ${listKey}.${fieldKey}<${ref}>`,
+      message: `Can only provide one of 'connect' or 'create' when mutating ${localList.key}.${
+        localField.path
+      }<${refList.key}>`,
     });
   }
 
   return pick(input, validInputMutations);
 }
 
-const cleanAndValidateInput = ({ input, many, listKey, fieldKey, ref }) => {
+const cleanAndValidateInput = ({ input, many, localList, localField, refList }) => {
   try {
     const foundMutations = intersection(Object.keys(input), NESTED_MUTATIONS);
 
     return many
-      ? validateToManyInput({ input, foundMutations, listKey, fieldKey, ref })
-      : validateToSingleInput({ input, foundMutations, listKey, fieldKey, ref });
+      ? validateToManyInput({ input, foundMutations, localList, localField, refList })
+      : validateToSingleInput({ input, foundMutations, localList, localField, refList });
   } catch (error) {
     wrapAndThrowSingleError({
       error,
-      message: `Nested mutation operation invalid for  ${listKey}.${fieldKey}<${ref}>`,
-      fieldKey,
+      message: `Nested mutation operation invalid for  ${localList.key}.${localField.path}<${
+        refList.key
+      }>`,
+      localField,
     });
   }
 };
 
-const enhanceSingleError = ({ error, path, fieldKey }) => {
-  error.path = [fieldKey];
+const enhanceSingleError = ({ error, path, localField }) => {
+  error.path = [localField.path];
 
   if (path && error.name !== 'ParameterError') {
     error.path.push(...(Array.isArray(path) ? path : [path]));
@@ -76,10 +213,10 @@ const enhanceSingleError = ({ error, path, fieldKey }) => {
   return error;
 };
 
-const wrapAndThrowSingleError = ({ error, message, path, fieldKey }) => {
+const wrapAndThrowSingleError = ({ error, message, path, localField }) => {
   const wrappingError = new Error(message);
 
-  enhanceSingleError({ error, path, fieldKey });
+  enhanceSingleError({ error, path, localField });
 
   wrappingError.errors = [error];
 
@@ -100,27 +237,25 @@ const cleanOrThrowSettled = settled => {
   return settled.map(({ value }) => value);
 };
 
-const settleToId = (collection, action) => {
+const settleToItem = (collection, action) => {
   return pSettle(
     collection.map(item => action(item))
     // Inject the index as a key into the settled data for later use
-  ).then(items => items.map((item, index) => ({ ...item, index })));
+  ).then(settled => settled.map((settleInfo, index) => ({ ...settleInfo, index })));
 };
 
 function settleUniqueItems({ refList, context, wheres }) {
-  return settleToId(
+  return settleToItem(
     wheres,
     // This will resolve access control, etc for us.
     // In the future, when WhereUniqueInput accepts more than just an id,
     // this will also resolve those queries for us too.
     where =>
-      refList
-        .singleItemResolver({
-          id: where.id,
-          context,
-          name: refList.gqlNames.itemQueryName,
-        })
-        .then(({ id }) => id)
+      refList.singleItemResolver({
+        id: where.id,
+        context,
+        name: refList.gqlNames.itemQueryName,
+      })
   );
 }
 
@@ -139,11 +274,11 @@ const resolveManyUniqueItems = async ({ refList, context, wheres = [] }) => {
 };
 
 const resolveManyCreates = async ({ refList, context, datasets = [] }) => {
-  const settled = await settleToId(
+  const settled = await settleToItem(
     datasets,
     // Create related item. Will check for access control itself, no need to
     // do anything extra here.
-    data => refList.createMutation(data, context).then(({ id }) => id)
+    data => refList.createMutation(data, context)
   );
 
   // NOTE: We don't check for read access control on the returned ids as the
@@ -151,35 +286,37 @@ const resolveManyCreates = async ({ refList, context, datasets = [] }) => {
   return cleanOrThrowSettled(settled);
 };
 
-const trySingleGet = async ({ refList, wheres, ref, listKey, fieldKey, context }) => {
+const trySingleGet = async ({ refList, wheres, localList, localField, context }) => {
   // input is of type *RelateToOneInput
   try {
-    const [id] = await resolveManyUniqueItems({
+    const [item] = await resolveManyUniqueItems({
       refList,
       context,
       wheres,
     });
-    return id;
+    return item;
   } catch (error) {
     wrapAndThrowSingleError({
       error: error.errors[0].reason,
-      message: `Unable to connect a ${ref} as set on ${listKey}.${fieldKey}`,
+      message: `Unable to connect a ${refList.key} as set on ${localList.key}.${localField.path}`,
       path: 'connect',
-      fieldKey,
+      localField,
     });
   }
 };
 
-const trySingleCreateAndGet = async ({ refList, input, ref, listKey, fieldKey, context }) => {
+const trySingleCreateAndGet = async ({ refList, input, localList, localField, context }) => {
   try {
-    const [id] = await resolveManyCreates({ refList, context, datasets: [input.create] });
-    return id;
+    const [item] = await resolveManyCreates({ refList, context, datasets: [input.create] });
+    return item;
   } catch (error) {
     wrapAndThrowSingleError({
       error: error.errors[0].reason,
-      message: `Unable to create a new ${ref} as set on ${listKey}.${fieldKey}`,
+      message: `Unable to create a new ${refList.key} as set on ${localList.key}.${
+        localField.path
+      }`,
       path: 'create',
-      fieldKey,
+      localField,
     });
   }
 };
@@ -195,36 +332,73 @@ const openDatabaseTransaction = () => {
 async function toManyNestedMutation({
   currentValue,
   refList,
-  ref,
+  refField,
   input,
+  getItem,
   context,
-  listKey,
-  fieldKey,
+  localList,
+  localField,
 }) {
   // Multiple items received
-  let connectedItems;
+  let connectedItems = [];
   let connectErrors = [];
 
-  let disconnectedItems = [];
+  let disconnectIds = [];
 
-  let createdItems;
+  let createdItems = [];
   let createErrors = [];
 
   // Convert the ObjectIds to strings
   let valuesToKeep = (currentValue || []).map(value => value.toString());
 
   if (input.disconnectAll) {
-    // We need to feed this through the access control system
-    disconnectedItems = await resolveDisconnectItems({
-      refList,
-      wheres: valuesToKeep.map(id => ({ id })),
-      context,
-    });
+    disconnectIds = [...valuesToKeep];
   } else if (input.disconnect) {
-    disconnectedItems = await resolveDisconnectItems({
-      refList,
-      wheres: input.disconnect || [],
-      context,
+    // We want to avoid DB lookups where possible, so we split the input into
+    // two halves; one with ids, and the other without ids
+    const { withId, withoutId } = groupBy(
+      input.disconnect,
+      ({ id }) => (id ? 'withId' : 'withoutId')
+    );
+
+    if (withId && withId.length) {
+      // We set the Ids we do find immediately
+      disconnectIds = withId.map(({ id }) => id);
+    }
+
+    // And any without ids (ie; other unique criteria), have to be looked up
+    if (withoutId && withoutId.length) {
+      const disconnectItems = await resolveDisconnectItems({
+        refList,
+        wheres: input.disconnect,
+        context,
+      });
+
+      disconnectIds.push(
+        ...disconnectItems
+          // Possible to get null results when the id doesn't exist, or read access is
+          // denied
+          .filter(Boolean)
+          .map(({ id }) => id.toString())
+      );
+    }
+  }
+
+  if (refField) {
+    disconnectIds.forEach(idToDisconnect => {
+      tellForeignItemToDisconnect({
+        context,
+        getItem,
+        local: {
+          list: localList,
+          field: localField,
+        },
+        foreign: {
+          list: refList,
+          field: refField,
+          id: idToDisconnect,
+        },
+      });
     });
   }
 
@@ -232,7 +406,7 @@ async function toManyNestedMutation({
     connectedItems = await resolveManyUniqueItems({ refList, wheres: input.connect, context });
   } catch (error) {
     connectErrors = error.errors.map(({ reason, index }) =>
-      enhanceSingleError({ error: reason, path: ['connect', index], fieldKey })
+      enhanceSingleError({ error: reason, path: ['connect', index], localField })
     );
   }
 
@@ -240,14 +414,57 @@ async function toManyNestedMutation({
     createdItems = await resolveManyCreates({ refList, datasets: input.create, context });
   } catch (error) {
     createErrors = error.errors.map(({ reason, index }) =>
-      enhanceSingleError({ error: reason, path: ['create', index], fieldKey })
+      enhanceSingleError({ error: reason, path: ['create', index], localField })
     );
+  }
+
+  // Possible to get null results when the id doesn't exist, or read access is
+  // denied
+  connectedItems = connectedItems.filter(Boolean);
+  createdItems = createdItems.filter(Boolean);
+
+  if (refField) {
+    [...connectedItems, ...createdItems].forEach(itemToConnect => {
+      // At this point, we've not actually added the ID `itemToConnect.id` to the
+      // field `localField` on list `localList`, just flagged it needing to be added.
+      // This is so any recursive checks don't attempt to do it again.
+      queueIdForConnection({
+        context,
+        foreign: getItem.then(item => ({
+          list: localList,
+          field: localField,
+          id: item.id,
+        })),
+        local: {
+          list: refList,
+          field: refField,
+          id: itemToConnect.id,
+        },
+      });
+
+      // To avoid any circular updates with the above connection, we flag this
+      // item as having already been disconnected
+      flagIdAsConnected({
+        context,
+        foreign: {
+          list: refList,
+          field: refField,
+          id: itemToConnect.id,
+        },
+        local: getItem.then(item => ({
+          list: localList,
+          field: localField,
+          id: item.id,
+        })),
+      });
+    });
   }
 
   if (connectErrors.length || createErrors.length) {
     const error = new Error(
-      `Unable to create and/or connect ${createErrors.length +
-        connectErrors.length} ${ref} as set on ${listKey}.${fieldKey}`
+      `Unable to create and/or connect ${createErrors.length + connectErrors.length} ${
+        refList.key
+      } as set on ${localList.key}.${localField.path}`
     );
 
     error.errors = [...connectErrors, ...createErrors];
@@ -255,75 +472,216 @@ async function toManyNestedMutation({
     throw error;
   }
 
-  if (disconnectedItems.length) {
-    valuesToKeep = valuesToKeep.filter(existingId => !disconnectedItems.includes(existingId));
+  // When there are items to disconnect, we want to remove them from the
+  // 'to-keep array'
+  if (disconnectIds.length) {
+    valuesToKeep = valuesToKeep.filter(keepCandidate => !disconnectIds.includes(keepCandidate));
   }
 
-  return [...valuesToKeep, ...connectedItems, ...createdItems];
+  return [
+    ...valuesToKeep,
+    ...connectedItems.map(item => item.id),
+    ...createdItems.map(item => item.id),
+  ];
 }
 
 async function toSingleNestedMutation({
   currentValue,
+  localList,
+  localField,
   refList,
+  refField,
   input,
-  ref,
-  listKey,
-  fieldKey,
+  getItem,
   context,
 }) {
   let result = currentValue;
 
   if (currentValue && (input.disconnect || input.disconnectAll)) {
-    const where = input.disconnectAll ? { id: currentValue.toString() } : input.disconnect;
-    try {
-      const itemToDisconnect = await trySingleGet({
-        refList,
-        wheres: [where],
-        ref,
-        listKey,
-        fieldKey,
-        context,
-      });
-      if (currentValue && currentValue.toString() === itemToDisconnect) {
-        // Found the item, so unset it
-        result = null;
+    let idToDisconnect;
+    if (input.disconnectAll) {
+      idToDisconnect = currentValue.toString();
+    } else if (input.disconnect.id) {
+      idToDisconnect = input.disconnect.id;
+    } else {
+      try {
+        // Support other unique fields for disconnection
+        const itemToDisconnect = await trySingleGet({
+          refList,
+          wheres: [input.disconnect],
+          localList,
+          localField,
+          context,
+        });
+        idToDisconnect = itemToDisconnect.id.toString();
+      } catch (error) {
+        // Maybe we don't have read access, or maybe the item doesn't exist
+        // (recently deleted, or it's an erroneous value in the relationship
+        // field)
+        // So we silently ignore it
       }
-    } catch (error) {
-      // Silently ignore the disconnection (so we don't leak existence of an item)
+    }
+
+    if (currentValue.toString() === idToDisconnect) {
+      // Found the item, so unset it
+      result = null;
+
+      if (refField) {
+        // At this point, we've not actually removed the ID `idToDisconnect`
+        // from the field `localField` on list `localList`, but instead flagged
+        // it for removal (by setting `result = null`).
+        // Note the local/foreign are flipped because we're queueing the
+        // disconnection up from the perspective of the other item.
+        queueIdForDisconnection({
+          context,
+          foreign: getItem.then(item => ({
+            list: localList,
+            field: localField,
+            id: item.id,
+          })),
+          local: {
+            list: refList,
+            field: refField,
+            id: idToDisconnect,
+          },
+        });
+
+        // To avoid any circular updates with the above disconnect, we flag this
+        // item as having already been disconnected
+        flagIdAsDisconnected({
+          context,
+          foreign: {
+            list: refList,
+            field: refField,
+            id: idToDisconnect,
+          },
+          local: getItem.then(item => ({
+            list: localList,
+            field: localField,
+            id: item.id,
+          })),
+        });
+      }
     }
   }
 
   if (input.connect) {
     // override result with the connected value
-    return await trySingleGet({
+    const itemToConnect = await trySingleGet({
       refList,
       wheres: [{ id: input.connect.id }],
-      ref,
-      listKey,
-      fieldKey,
+      localList,
+      localField,
       context,
     });
+
+    // Can happen when the input id doesn't exist / the user doesn't have read
+    // access
+    if (!itemToConnect) {
+      return undefined;
+    }
+
+    if (refField) {
+      // At this point, we've not actually added the ID `itemToConnect.id` to the
+      // field `localField` on list `localList`, just flagged it needing to be added.
+      // This is so any recursive checks don't attempt to do it again.
+      queueIdForConnection({
+        context,
+        foreign: getItem.then(item => ({
+          list: localList,
+          field: localField,
+          id: item.id,
+        })),
+        local: {
+          list: refList,
+          field: refField,
+          id: itemToConnect.id,
+        },
+      });
+
+      // To avoid any circular updates with the above connection, we flag this
+      // item as having already been disconnected
+      flagIdAsConnected({
+        context,
+        foreign: {
+          list: refList,
+          field: refField,
+          id: itemToConnect.id,
+        },
+        local: getItem.then(item => ({
+          list: localList,
+          field: localField,
+          id: item.id,
+        })),
+      });
+    }
+
+    return itemToConnect.id;
   }
 
   if (input.create) {
     // override result with the created value
-    return await trySingleCreateAndGet({ refList, input, ref, listKey, fieldKey, context });
+    const itemCreated = await trySingleCreateAndGet({
+      refList,
+      input,
+      localList,
+      localField,
+      context,
+    });
+
+    if (refField) {
+      // At this point, we've not actually added the ID `itemToConnect.id` to the
+      // field `localField` on list `localList`, just flagged it needing to be added.
+      // This is so any recursive checks don't attempt to do it again.
+      queueIdForConnection({
+        context,
+        foreign: getItem.then(item => ({
+          list: localList,
+          field: localField,
+          id: item.id,
+        })),
+        local: {
+          list: refList,
+          field: refField,
+          id: itemCreated.id,
+        },
+      });
+
+      // To avoid any circular updates with the above connection, we flag this
+      // item as having already been disconnected
+      flagIdAsConnected({
+        context,
+        foreign: {
+          list: refList,
+          field: refField,
+          id: itemCreated.id,
+        },
+        local: getItem.then(item => ({
+          list: localList,
+          field: localField,
+          id: item.id,
+        })),
+      });
+    }
+
+    return itemCreated.id;
   }
 
   return result;
 }
 
-module.exports = async function nestedMutation({
+async function nestedMutation({
   input,
   currentValue,
-  fieldKey,
-  listKey,
   many,
-  ref,
+  getItem,
+  localList,
+  localField,
   refList,
+  refField,
   context,
 }) {
-  const cleanInput = cleanAndValidateInput({ input, many, listKey, fieldKey, ref });
+  const cleanInput = cleanAndValidateInput({ input, many, localList, localField, refList });
 
   const transaction = await openDatabaseTransaction();
 
@@ -332,19 +690,21 @@ module.exports = async function nestedMutation({
       ? await toManyNestedMutation({
           currentValue,
           refList,
-          ref,
+          refField,
           input: cleanInput,
+          getItem,
           context,
-          listKey,
-          fieldKey,
+          localList,
+          localField,
         })
       : await toSingleNestedMutation({
           currentValue,
           refList,
+          refField,
           input: cleanInput,
-          ref,
-          listKey,
-          fieldKey,
+          getItem,
+          localList,
+          localField,
           context,
         });
     await transaction.commit();
@@ -353,4 +713,11 @@ module.exports = async function nestedMutation({
     await transaction.rollback();
     throw error;
   }
+}
+
+module.exports = {
+  nestedMutation,
+  processQueuedDisconnections,
+  processQueuedConnections,
+  tellForeignItemToDisconnect,
 };

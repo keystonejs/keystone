@@ -229,7 +229,7 @@ describe('no access control', () => {
 
 describe('with access control', () => {
   describe('read: false on related list', () => {
-    test('silently ignores an item that otherwise would match the filter', async () => {
+    test('has no effect when disconnecting a specific id', async () => {
       const groupContent = sampleOne(alphanumGenerator);
 
       // Create an item to link against
@@ -267,7 +267,13 @@ describe('with access control', () => {
       const eventData = await findById('EventToGroupNoRead', createEvent.id);
 
       expect(eventData).toHaveProperty('group');
-      expect(eventData.group.toString()).toBe(createGroup.id);
+      expect(eventData.group).toBe(null);
+    });
+
+    test.failing('silently ignores an item that otherwise would match the filter', () => {
+      // TODO: Fill this in when we support more filtering on Unique items than
+      // just ID.
+      expect(false).toBe(true);
     });
   });
 });
