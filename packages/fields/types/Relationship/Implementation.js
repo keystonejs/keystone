@@ -18,18 +18,16 @@ class Relationship extends Implementation {
   }
   get gqlOutputFields() {
     const { many, ref } = this.config;
-
+    const list = this.getListByKey(ref);
     if (many) {
-      const filterArgs = this.getListByKey(ref)
-        .getGraphqlFilterFragment()
-        .join('\n');
+      const filterArgs = list.getGraphqlFilterFragment().join('\n');
       return [
-        `${this.path}(${filterArgs}): [${ref}]`,
+        `${this.path}(${filterArgs}): [${list.gqlNames.outputTypeName}]`,
         `_${this.path}Meta(${filterArgs}): _QueryMeta`,
       ];
     }
 
-    return [`${this.path}: ${ref}`];
+    return [`${this.path}: ${list.gqlNames.outputTypeName}`];
   }
 
   extendAdminMeta(meta) {
@@ -166,18 +164,19 @@ class Relationship extends Implementation {
     // mutation createPost() {
     //   author: { id: 'abc123' }
     // }
+    const list = this.getListByKey(this.config.ref);
     if (this.config.many) {
       return [
         `
-        input ${this.config.ref}RelateToManyInput {
+        input ${list.gqlNames.relateToManyInputName} {
           # Provide data to create a set of new ${this.config.ref}. Will also connect.
-          create: [${this.config.ref}CreateInput]
+          create: [${list.gqlNames.createInputName}]
 
           # Provide a filter to link to a set of existing ${this.config.ref}.
-          connect: [${this.config.ref}WhereUniqueInput]
+          connect: [${list.gqlNames.whereUniqueInputName}]
 
           # Provide a filter to remove to a set of existing ${this.config.ref}.
-          disconnect: [${this.config.ref}WhereUniqueInput]
+          disconnect: [${list.gqlNames.whereUniqueInputName}]
 
           # Remove all ${this.config.ref} in this list.
           disconnectAll: Boolean
@@ -188,15 +187,15 @@ class Relationship extends Implementation {
 
     return [
       `
-      input ${this.config.ref}RelateToOneInput {
+      input ${list.gqlNames.relateToOneInputName} {
         # Provide data to create a new ${this.config.ref}.
-        create: ${this.config.ref}CreateInput
+        create: ${list.gqlNames.createInputName}
 
         # Provide a filter to link to an existing ${this.config.ref}.
-        connect: ${this.config.ref}WhereUniqueInput
+        connect: ${list.gqlNames.whereUniqueInputName}
 
         # Provide a filter to remove to an existing ${this.config.ref}.
-        disconnect: ${this.config.ref}WhereUniqueInput
+        disconnect: ${list.gqlNames.whereUniqueInputName}
 
         # Remove the existing ${this.config.ref} (if any).
         disconnectAll: Boolean
@@ -205,11 +204,12 @@ class Relationship extends Implementation {
     ];
   }
   get gqlUpdateInputFields() {
+    const list = this.getListByKey(this.config.ref);
     if (this.config.many) {
-      return [`${this.path}: ${this.config.ref}RelateToManyInput`];
+      return [`${this.path}: ${list.gqlNames.relateToManyInputName}`];
     }
 
-    return [`${this.path}: ${this.config.ref}RelateToOneInput`];
+    return [`${this.path}: ${list.gqlNames.relateToOneInputName}`];
   }
   get gqlCreateInputFields() {
     return this.gqlUpdateInputFields;
