@@ -104,47 +104,47 @@ module.exports = class Keystone {
     // duplicated.
     // graphql-tools will blow up (rightly so) on duplicated types.
     // Deduping here avoids that problem.
-    return unique(
-      [
-        ...flatten(this.listsArray.map(list => list.getAdminGraphqlTypes())),
-        `"""NOTE: Can be JSON, or a Boolean/Int/String
-            Why not a union? GraphQL doesn't support a union including a scalar
-            (https://github.com/facebook/graphql/issues/215)"""
-         scalar JSON`,
-        `type _ListAccess {
-            """Access Control settings for the currently logged in (or anonymous)
-               user when performing 'create' operations.
-               NOTE: 'create' can only return a Boolean.
-               It is not possible to specify a declarative Where clause for this
-               operation"""
-            create: Boolean
+    return [
+      ...unique(flatten(this.listsArray.map(list => list.getAdminGraphqlTypes()))),
+      `"""NOTE: Can be JSON, or a Boolean/Int/String
+          Why not a union? GraphQL doesn't support a union including a scalar
+          (https://github.com/facebook/graphql/issues/215)"""
+       scalar JSON`,
+      `type _ListAccess {
+          """Access Control settings for the currently logged in (or anonymous)
+             user when performing 'create' operations.
+             NOTE: 'create' can only return a Boolean.
+             It is not possible to specify a declarative Where clause for this
+             operation"""
+          create: Boolean
 
-            """Access Control settings for the currently logged in (or anonymous)
-               user when performing 'read' operations."""
-            read: JSON
+          """Access Control settings for the currently logged in (or anonymous)
+             user when performing 'read' operations."""
+          read: JSON
 
-            """Access Control settings for the currently logged in (or anonymous)
-               user when performing 'update' operations."""
-            update: JSON
+          """Access Control settings for the currently logged in (or anonymous)
+             user when performing 'update' operations."""
+          update: JSON
 
-            """Access Control settings for the currently logged in (or anonymous)
-               user when performing 'delete' operations."""
-            delete: JSON
-         }`,
-        `type _ListMeta {
-            access: _ListAccess
-         }`,
-        `type _QueryMeta {
-            count: Int
-         }`,
-        `type Query {
-            ${flatten(this.listsArray.map(list => list.getAdminGraphqlQueries())).join('\n')}
-         }`,
-        `type Mutation {
-            ${flatten(this.listsArray.map(list => list.getAdminGraphqlMutations())).join('\n')}
-         }`,
-      ].map(s => print(gql(s)))
-    );
+          """Access Control settings for the currently logged in (or anonymous)
+             user when performing 'delete' operations."""
+          delete: JSON
+       }`,
+      `type _ListMeta {
+          access: _ListAccess
+       }`,
+      `type _QueryMeta {
+          count: Int
+       }`,
+      `type Query {
+          ${unique(flatten(this.listsArray.map(list => list.getAdminGraphqlQueries()))).join('\n')}
+       }`,
+      `type Mutation {
+          ${unique(flatten(this.listsArray.map(list => list.getAdminGraphqlMutations()))).join(
+            '\n'
+          )}
+       }`,
+    ].map(s => print(gql(s)));
   }
 
   getAdminSchema() {
