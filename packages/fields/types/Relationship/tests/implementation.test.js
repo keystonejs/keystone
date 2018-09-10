@@ -46,13 +46,13 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.getGraphqlCreateArgs()).toEqual(['foo: [ZipRelationshipInput]']);
+    expect(relMany.getGraphqlCreateArgs()).toEqual(['foo: ZipRelateToManyInput']);
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.getGraphqlCreateArgs()).toEqual(['foo: ZipRelationshipInput']);
+    expect(relSingle.getGraphqlCreateArgs()).toEqual(['foo: ZipRelateToOneInput']);
   });
 
   test('inputs for relationship fields in update args', () => {
@@ -60,16 +60,16 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.getGraphqlUpdateArgs()).toEqual(['foo: [ZipRelationshipInput]']);
+    expect(relMany.getGraphqlUpdateArgs()).toEqual(['foo: ZipRelateToManyInput']);
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.getGraphqlUpdateArgs()).toEqual(['foo: ZipRelationshipInput']);
+    expect(relSingle.getGraphqlUpdateArgs()).toEqual(['foo: ZipRelateToOneInput']);
   });
 
-  test('relationship LinkOrCreate input', () => {
+  test('to-single relationship nested mutation input', () => {
     const relationship = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
@@ -81,20 +81,9 @@ describe('Type Generation', () => {
         {
           kind: 'InputObjectTypeDefinition',
           name: {
-            value: 'ZipRelationshipInput',
+            value: 'ZipRelateToOneInput',
           },
           fields: [
-            {
-              kind: 'InputValueDefinition',
-              name: {
-                value: 'id',
-              },
-              type: {
-                name: {
-                  value: 'ID',
-                },
-              },
-            },
             {
               kind: 'InputValueDefinition',
               name: {
@@ -103,6 +92,113 @@ describe('Type Generation', () => {
               type: {
                 name: {
                   value: 'ZipCreateInput',
+                },
+              },
+            },
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'connect',
+              },
+              type: {
+                name: {
+                  value: 'ZipWhereUniqueInput',
+                },
+              },
+            },
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'disconnect',
+              },
+              type: {
+                name: {
+                  value: 'ZipWhereUniqueInput',
+                },
+              },
+            },
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'disconnectAll',
+              },
+              type: {
+                name: {
+                  value: 'Boolean',
+                },
+              },
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  test('to-many relationship nested mutation input', () => {
+    const relationship = createRelationship({
+      path: 'foo',
+      config: { many: true, ref: 'Zip' },
+    });
+
+    // We're testing the AST is as we expect it to be
+    expect(gql(relationship.getGraphqlAuxiliaryTypes().join('\n'))).toMatchObject({
+      definitions: [
+        {
+          kind: 'InputObjectTypeDefinition',
+          name: {
+            value: 'ZipRelateToManyInput',
+          },
+          fields: [
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'create',
+              },
+              type: {
+                kind: 'ListType',
+                type: {
+                  name: {
+                    value: 'ZipCreateInput',
+                  },
+                },
+              },
+            },
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'connect',
+              },
+              type: {
+                kind: 'ListType',
+                type: {
+                  name: {
+                    value: 'ZipWhereUniqueInput',
+                  },
+                },
+              },
+            },
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'disconnect',
+              },
+              type: {
+                kind: 'ListType',
+                type: {
+                  name: {
+                    value: 'ZipWhereUniqueInput',
+                  },
+                },
+              },
+            },
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'disconnectAll',
+              },
+              type: {
+                name: {
+                  value: 'Boolean',
                 },
               },
             },
