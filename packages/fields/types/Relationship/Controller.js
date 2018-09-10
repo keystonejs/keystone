@@ -15,30 +15,25 @@ export default class RelationshipController extends FieldController {
     `;
   };
 
-  dataToRelationshipInput = (data, pathKey) => {
-    if (data.id && data.create) {
-      throw new Error(
-        `Cannot provide both an id and create data when linking ${this.list.key}.${pathKey} to a ${
-          this.config.ref
-        }`
-      );
-    }
-
-    if (data.id) {
-      return { id: data.id };
-    }
-
-    return { create: data };
-  };
+  // TODO: FIXME: This should be `set`, not `connect`
+  buildRelateToOneInput = ({ id }) => ({ connect: { id } });
+  buildRelateToManyInput = data => ({ connect: data.map(({ id }) => ({ id })) });
 
   getValue = data => {
     const { many, path } = this.config;
+
     if (!data[path]) {
-      return many ? [] : null;
+      return null;
     }
-    return many
-      ? data[path].map(value => this.dataToRelationshipInput(value, path))
-      : this.dataToRelationshipInput(data[path], path);
+
+    if (many) {
+      if (!Array.isArray(data[path]) || !data[path].length) {
+        return null;
+      }
+      return this.buildRelateToManyInput(data[path], path);
+    }
+
+    return this.buildRelateToOneInput(data[path], path);
   };
   getInitialData = () => {
     const { defaultValue, many } = this.config;
