@@ -77,21 +77,6 @@ class CloudinaryImage extends File {
       },
     };
   }
-  getGraphqlAuxiliaryMutations() {
-    return [`uploadCloudinaryImage(file: ${this.getFileUploadType()}!): ${this.graphQLOutputType}`];
-  }
-  getGraphqlAuxiliaryMutationResolvers() {
-    return {
-      /**
-       * @param obj {Object} ... an object
-       * @param data {Object} With key `file`
-       */
-      uploadCloudinaryImage: () => {
-        throw new Error('uploadCloudinaryImage mutation not implemented');
-        //return this.processUpload(file);
-      },
-    };
-  }
 }
 
 module.exports = {

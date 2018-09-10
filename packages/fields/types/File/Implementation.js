@@ -62,21 +62,6 @@ class File extends Implementation {
       },
     };
   }
-  getGraphqlAuxiliaryMutations() {
-    return [`uploadFile(file: ${this.getFileUploadType()}!): ${this.graphQLOutputType}`];
-  }
-  getGraphqlAuxiliaryMutationResolvers() {
-    return {
-      /**
-       * @param obj {Object} ... an object
-       * @param data {Object} With key `file`
-       */
-      uploadFile: () => {
-        throw new Error('uploadFile mutation not implemented');
-        //return this.processUpload(file);
-      },
-    };
-  }
   async saveStream(uploadData, previousData) {
     // TODO: FIXME: Handle when uploadData is null. Can happen when:
     // Deleting the file
