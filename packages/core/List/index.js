@@ -211,7 +211,7 @@ module.exports = class List {
            2. As an alias to the field set on 'labelField' in the ${this.key} List config, or
            3. As an alias to a 'name' field on the ${this.key} List (if one exists), or
            4. As an alias to the 'id' field on the ${this.key} List.
-           """
+          """
           _label_: String
           ${flatten(
             this.fields
@@ -239,6 +239,7 @@ module.exports = class List {
               .map(field => field.getGraphqlQueryArgs())
           ).join('\n')}
         }`,
+        // TODO: Include other `unique` fields and allow filtering by them
         `
         input ${this.gqlNames.whereUniqueInputName} {
           id: ID!
@@ -360,33 +361,8 @@ module.exports = class List {
         [this.gqlNames.listQueryName]: (_, args, context) =>
           this.manyQuery(args, context, this.gqlNames.listQueryName),
 
-        [this.gqlNames.listQueryMetaName]: (_, args, context) => {
-          return {
-            // Return these as functions so they're lazily evaluated depending
-            // on what the user requested
-            // Evalutation takes place in ../Keystone/index.js
-            getCount: () => {
-              const access = context.getListAccessControlForUser(this.key, 'read');
-              if (!access) {
-                // If the client handles errors correctly, it should be able to
-                // receive partial data (for the fields the user has access to),
-                // and then an `errors` array of AccessDeniedError's
-                throw new AccessDeniedError({
-                  data: {
-                    type: 'query',
-                    name: this.gqlNames.listQueryMetaName,
-                  },
-                  internalData: {
-                    authedId: context.authedItem && context.authedItem.id,
-                    authedListKey: context.authedListKey,
-                  },
-                });
-              }
-              let queryArgs = mergeWhereClause(args, access);
-              return this.adapter.itemsQueryMeta(queryArgs).then(({ count }) => count);
-            },
-          };
-        },
+        [this.gqlNames.listQueryMetaName]: (_, args, context) =>
+          this.manyQueryMeta(args, context, this.gqlNames.listQueryMetaName),
 
         [this.gqlNames.listMetaName]: () => {
           return {
@@ -599,9 +575,33 @@ module.exports = class List {
       throwAccessDenied();
     }
 
+    const throwNotFound = () => {
+      // NOTE: There is a potential security risk here if we were to
+      // further check the existence of an item with the given ID: It'd be
+      // possible to figure out if records with particular IDs exist in
+      // the DB even if the user doesn't have access (eg; check a bunch of
+      // IDs, and the ones that return AccessDenied exist, and the ones
+      // that return null do not exist). Similar to how S3 returns 403's
+      // always instead of ever returning 404's.
+      // Our version is to always throw if not found.
+      graphqlLogger.debug(
+        {
+          id,
+          operation,
+          access,
+          ...errorData,
+        },
+        'Zero items found'
+      );
+      throwAccessDenied();
+    };
+
     // Early out - the user has full access to update this list
     if (access === true) {
       const item = await this.adapter.findById(id);
+      // TODO: Should we be throwing an AccessDenied here if the item isn't
+      // found? How strict are we about accidentally leaking information (that
+      // the item doesn't exist)?
       return action(item);
     }
 
@@ -648,24 +648,7 @@ module.exports = class List {
     const items = await this.adapter.itemsQuery(queryArgs);
 
     if (items.length === 0) {
-      // NOTE: There is a potential security risk here if we were to
-      // further check the existence of an item with the given ID: It'd be
-      // possible to figure out if records with particular IDs exist in
-      // the DB even if the user doesn't have access (eg; check a bunch of
-      // IDs, and the ones that return AccessDenied exist, and the ones
-      // that return null do not exist). Similar to how S3 returns 403's
-      // always instead of ever returning 404's.
-      // Our version is to always throw if not found.
-      graphqlLogger.debug(
-        {
-          id,
-          operation,
-          access,
-          ...errorData,
-        },
-        'Zero items found'
-      );
-      throwAccessDenied();
+      throwNotFound();
     }
 
     // Found the item, and it passed the filter test
@@ -816,7 +799,7 @@ module.exports = class List {
     return newItem;
   }
 
-  async manyQuery(args, context, queryName) {
+  async _tryManyQuery(args, context, queryName, manyQuery) {
     const access = context.getListAccessControlForUser(this.key, 'read');
     if (!access) {
       // If the client handles errors correctly, it should be able to
@@ -835,7 +818,28 @@ module.exports = class List {
     }
     let queryArgs = mergeWhereClause(args, access);
 
-    return this.adapter.itemsQuery(queryArgs);
+    return manyQuery(queryArgs);
+  }
+
+  async manyQuery(args, context, queryName) {
+    // eslint-disable-next-line no-underscore-dangle
+    return this._tryManyQuery(args, context, queryName, queryArgs =>
+      this.adapter.itemsQuery(queryArgs)
+    );
+  }
+
+  async manyQueryMeta(args, context, queryName) {
+    return {
+      // Return these as functions so they're lazily evaluated depending
+      // on what the user requested
+      // Evalutation takes place in ../Keystone/index.js
+      getCount: () => {
+        // eslint-disable-next-line no-underscore-dangle
+        return this._tryManyQuery(args, context, queryName, queryArgs =>
+          this.adapter.itemsQueryMeta(queryArgs).then(({ count }) => count)
+        );
+      },
+    };
   }
 
   getAdminMutationResolvers() {
