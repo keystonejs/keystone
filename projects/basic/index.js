@@ -96,6 +96,8 @@ keystone.createList('Post', {
     views: { type: Integer },
     hero: { type: File, adapter: fileAdapter },
   },
+  defaultColumns: 'author, name, slug, status',
+  defaultSort: 'author',
   labelResolver: item => item.name,
 });
 
