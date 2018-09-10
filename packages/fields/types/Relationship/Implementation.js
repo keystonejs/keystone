@@ -23,7 +23,10 @@ class Relationship extends Implementation {
       const filterArgs = this.getListByKey(ref)
         .getGraphqlFilterFragment()
         .join('\n');
-      return [`${this.path}(${filterArgs}): [${ref}]`];
+      return [
+        `${this.path}(${filterArgs}): [${ref}]`,
+        `_${this.path}Meta(${filterArgs}): _QueryMeta`,
+      ];
     }
 
     return [`${this.path}: ${ref}`];
@@ -54,6 +57,7 @@ class Relationship extends Implementation {
 
   getGraphqlOutputFieldResolvers() {
     const { many, ref } = this.config;
+    const refList = this.getListByKey(ref);
 
     // to-one relationships are much easier to deal with.
     if (!many) {
@@ -71,33 +75,42 @@ class Relationship extends Implementation {
           const filteredQueryArgs = { where: { id: id.toString() } };
 
           // We do a full query to ensure things like access control are applied
-          return this.getListByKey(ref)
+          return refList
             .manyQuery(filteredQueryArgs, context, this.listQueryName)
             .then(items => (items && items.length ? items[0] : null));
         },
       };
     }
 
-    return {
-      [this.path]: (item, args, context) => {
-        let ids = [];
-        if (item[this.path]) {
-          ids = item[this.path]
-            .map(value => {
-              // The field may have already been filled in during an early DB lookup
-              // (ie; joining when doing a filter)
+    const buildManyQueryArgs = (item, args) => {
+      let ids = [];
+      if (item[this.path]) {
+        ids = item[this.path]
+          .map(value => {
+            // The field may have already been filled in during an early DB lookup
+            // (ie; joining when doing a filter)
+            // eslint-disable-next-line no-underscore-dangle
+            if (value && value._id) {
               // eslint-disable-next-line no-underscore-dangle
-              if (value && value._id) {
-                // eslint-disable-next-line no-underscore-dangle
-                return value._id;
-              }
+              return value._id;
+            }
 
-              return value;
-            })
-            .filter(value => value);
-        }
-        const filteredQueryArgs = mergeWhereClause(args, { id_in: ids });
-        return this.getListByKey(ref).manyQuery(filteredQueryArgs, context, this.listQueryName);
+            return value;
+          })
+          .filter(value => value);
+      }
+      return mergeWhereClause(args, { id_in: ids });
+    };
+
+    return {
+      [this.path]: (item, args, context, { fieldName }) => {
+        const filteredQueryArgs = buildManyQueryArgs(item, args);
+        return refList.manyQuery(filteredQueryArgs, context, fieldName);
+      },
+
+      [`_${this.path}Meta`]: (item, args, context, { fieldName }) => {
+        const filteredQueryArgs = buildManyQueryArgs(item, args);
+        return refList.manyQueryMeta(filteredQueryArgs, context, fieldName);
       },
     };
   }

@@ -285,6 +285,20 @@ describe('Type Generation', () => {
                 },
               },
             },
+            {
+              kind: 'FieldDefinition',
+              name: {
+                value: `_${path}Meta`,
+              },
+              // We don't have control over this type, so we just check for
+              // existence
+              arguments: expect.any(Array),
+              type: {
+                name: {
+                  value: '_QueryMeta',
+                },
+              },
+            },
           ],
         },
       ],
