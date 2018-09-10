@@ -8,10 +8,10 @@ class CalendarDay extends Implementation {
     super(...arguments);
   }
 
-  getGraphqlOutputFields() {
+  get gqlOutputFields() {
     return [`${this.path}: String`];
   }
-  getGraphqlQueryArgs() {
+  get gqlQueryInputFields() {
     return [
       `${this.path}: String`,
       `${this.path}_not: String`,
@@ -23,10 +23,10 @@ class CalendarDay extends Implementation {
       `${this.path}_not_in: [String]`,
     ];
   }
-  getGraphqlUpdateArgs() {
+  get gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
-  getGraphqlCreateArgs() {
+  get gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
 }

@@ -100,12 +100,12 @@ module.exports = class Keystone {
 
   getTypeDefs() {
     // Fields can be represented multiple times within and between lists.
-    // If a field defines a `getGraphqlAuxiliaryTypes()` method, it will be
+    // If a field defines a `gqlAuxTypes()` method, it will be
     // duplicated.
     // graphql-tools will blow up (rightly so) on duplicated types.
     // Deduping here avoids that problem.
     return [
-      ...unique(flatten(this.listsArray.map(list => list.getAdminGraphqlTypes()))),
+      ...unique(flatten(this.listsArray.map(list => list.gqlTypes))),
       `"""NOTE: Can be JSON, or a Boolean/Int/String
           Why not a union? GraphQL doesn't support a union including a scalar
           (https://github.com/facebook/graphql/issues/215)"""
@@ -137,12 +137,10 @@ module.exports = class Keystone {
           count: Int
        }`,
       `type Query {
-          ${unique(flatten(this.listsArray.map(list => list.getAdminGraphqlQueries()))).join('\n')}
+          ${unique(flatten(this.listsArray.map(list => list.gqlQueries))).join('\n')}
        }`,
       `type Mutation {
-          ${unique(flatten(this.listsArray.map(list => list.getAdminGraphqlMutations()))).join(
-            '\n'
-          )}
+          ${unique(flatten(this.listsArray.map(list => list.gqlMutations))).join('\n')}
        }`,
     ].map(s => print(gql(s)));
   }
@@ -180,8 +178,8 @@ module.exports = class Keystone {
     const resolvers = {
       // Order of spreading is important here - we don't want user-defined types
       // to accidentally override important things like `Query`.
-      ...objMerge(this.listsArray.map(list => list.getAuxiliaryTypeResolvers())),
-      ...objMerge(this.listsArray.map(list => list.getAdminFieldResolvers())),
+      ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers)),
+      ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers)),
 
       JSON: GraphQLJSON,
 
@@ -192,13 +190,13 @@ module.exports = class Keystone {
       Query: {
         // Order is also important here, any TypeQuery's defined by types
         // shouldn't be able to override list-level queries
-        ...objMerge(this.listsArray.map(i => i.getAuxiliaryQueryResolvers())),
-        ...objMerge(this.listsArray.map(i => i.getAdminQueryResolvers())),
+        ...objMerge(this.listsArray.map(list => list.gqlAuxQueryResolvers)),
+        ...objMerge(this.listsArray.map(list => list.gqlQueryResolvers)),
       },
 
       Mutation: {
-        ...objMerge(this.listsArray.map(i => i.getAuxiliaryMutationResolvers())),
-        ...objMerge(this.listsArray.map(i => i.getAdminMutationResolvers())),
+        ...objMerge(this.listsArray.map(list => list.gqlAuxMutationResolvers)),
+        ...objMerge(this.listsArray.map(list => list.gqlMutationResolvers)),
       },
     };
 

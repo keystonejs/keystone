@@ -7,14 +7,14 @@ class Text extends Implementation {
     super(...arguments);
   }
 
-  getGraphqlOutputFields() {
+  get gqlOutputFields() {
     return [`${this.path}: String`];
   }
-  getGraphqlOutputFieldResolvers() {
+  get gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
-  getGraphqlQueryArgs() {
+  get gqlQueryInputFields() {
     return [
       `${this.path}: String`,
       `${this.path}_case_sensitive: Boolean`,
@@ -29,10 +29,10 @@ class Text extends Implementation {
       `${this.path}_not_in: [String!]`,
     ];
   }
-  getGraphqlUpdateArgs() {
+  get gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
-  getGraphqlCreateArgs() {
+  get gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
 }

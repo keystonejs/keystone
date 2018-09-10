@@ -16,7 +16,7 @@ class Relationship extends Implementation {
   constructor() {
     super(...arguments);
   }
-  getGraphqlOutputFields() {
+  get gqlOutputFields() {
     const { many, ref } = this.config;
 
     if (many) {
@@ -36,7 +36,7 @@ class Relationship extends Implementation {
     const { many, ref } = this.config;
     return { ...meta, ref, many };
   }
-  getGraphqlQueryArgs() {
+  get gqlQueryInputFields() {
     const { many, ref } = this.config;
     const list = this.getListByKey(ref);
     if (many) {
@@ -55,7 +55,7 @@ class Relationship extends Implementation {
     }
   }
 
-  getGraphqlOutputFieldResolvers() {
+  get gqlOutputFieldResolvers() {
     const { many, ref } = this.config;
     const refList = this.getListByKey(ref);
 
@@ -148,7 +148,7 @@ class Relationship extends Implementation {
     return this.createUpdatePreHook(data, originalItem[fieldKey], fieldKey, context);
   }
 
-  getGraphqlAuxiliaryTypes() {
+  get gqlAuxTypes() {
     // We need an input type that is specific to creating nested items when
     // creating a relationship, ie;
     //
@@ -204,15 +204,15 @@ class Relationship extends Implementation {
     `,
     ];
   }
-  getGraphqlUpdateArgs() {
+  get gqlUpdateInputFields() {
     if (this.config.many) {
       return [`${this.path}: ${this.config.ref}RelateToManyInput`];
     }
 
     return [`${this.path}: ${this.config.ref}RelateToOneInput`];
   }
-  getGraphqlCreateArgs() {
-    return this.getGraphqlUpdateArgs();
+  get gqlCreateInputFields() {
+    return this.gqlUpdateInputFields;
   }
   getDefaultValue() {
     return null;

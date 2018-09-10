@@ -6,7 +6,7 @@ class CloudinaryImage extends File {
     this.graphQLOutputType = 'CloudinaryImage_File';
   }
 
-  getGraphqlOutputFields() {
+  get gqlOutputFields() {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
   extendAdminMeta(meta) {
@@ -16,9 +16,9 @@ class CloudinaryImage extends File {
   getFileUploadType() {
     return 'Upload';
   }
-  getGraphqlAuxiliaryTypes() {
+  get gqlAuxTypes() {
     return [
-      ...super.getGraphqlAuxiliaryTypes(),
+      ...super.gqlAuxTypes,
       `
       """Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
       All options are strings as they ultimately end up in a URL."""
@@ -61,7 +61,7 @@ class CloudinaryImage extends File {
     ];
   }
   // Called on `User.avatar` for example
-  getGraphqlOutputFieldResolvers() {
+  get gqlOutputFieldResolvers() {
     return {
       [this.path]: item => {
         const itemValues = item[this.path];

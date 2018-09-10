@@ -39,25 +39,25 @@ test('unique typeDefs', () => {
         delete: true,
       };
     }
-    getGraphqlAuxiliaryTypes() {
+    get gqlAuxTypes() {
       return ['scalar Foo'];
     }
-    getGraphqlOutputFields() {
+    get gqlOutputFields() {
       return ['foo: Boolean'];
     }
-    getGraphqlQueryArgs() {
+    get gqlQueryInputFields() {
       return ['zip: Boolean'];
     }
-    getGraphqlUpdateArgs() {
+    get gqlUpdateInputFields() {
       return ['zap: Boolean'];
     }
-    getGraphqlCreateArgs() {
+    get gqlCreateInputFields() {
       return ['quux: Boolean'];
     }
-    getGraphqlAuxiliaryQueries() {
+    get gqlAuxQueries() {
       return ['getFoo: Boolean'];
     }
-    getGraphqlAuxiliaryMutations() {
+    get gqlAuxMutations() {
       return ['mutateFoo: Boolean'];
     }
   }
