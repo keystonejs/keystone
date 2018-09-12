@@ -152,7 +152,7 @@ class Relationship extends Implementation {
     };
   }
 
-  async createUpdatePreHook(input, currentValue, fieldPath, context, getItem) {
+  async createUpdatePreHook(input, currentValue, context, getItem) {
     const { many, required } = this.config;
 
     const { refList, refField } = this.tryResolveRefList();
@@ -175,29 +175,29 @@ class Relationship extends Implementation {
     });
   }
 
-  createFieldPreHook(data, fieldPath, context, createdPromise) {
-    return this.createUpdatePreHook(data, undefined, fieldPath, context, createdPromise);
+  createFieldPreHook(data, context, createdPromise) {
+    return this.createUpdatePreHook(data, undefined, context, createdPromise);
   }
 
-  updateFieldPreHook(data, fieldPath, item, context) {
+  updateFieldPreHook(data, item, context) {
     const getItem = Promise.resolve(item);
-    return this.createUpdatePreHook(data, item[fieldPath], fieldPath, context, getItem);
+    return this.createUpdatePreHook(data, item[this.path], context, getItem);
   }
 
-  async updateFieldPostHook(fieldData, fieldPath, item, context) {
+  async updateFieldPostHook(fieldData, item, context) {
     // We have to wait to the post hook so we have the item's id to connect to!
     await processQueuedDisconnections({ context });
     await processQueuedConnections({ context });
   }
 
-  async createFieldPostHook(data, fieldKey, item, context) {
+  async createFieldPostHook(data, item, context) {
     // We have to wait to the post hook so we have the item's id to connect to!
     // NOTE: We don't do any disconnects here (it's not possible to disconnect
     // something for a newly created item thanks to the order of operations)
     await processQueuedConnections({ context });
   }
 
-  deleteFieldPreHook(data, path, item, context) {
+  deleteFieldPreHook(data, item, context) {
     // Early out for null'd field
     if (!data) {
       return;
@@ -238,7 +238,7 @@ class Relationship extends Implementation {
     // Beware of circular delete hooks!
   }
 
-  async deleteFieldPostHook(fieldData, fieldPath, item, context) {
+  async deleteFieldPostHook(fieldData, item, context) {
     // We have to wait to the post hook so we have the item's id to discconect.
     await processQueuedDisconnections({ context });
   }

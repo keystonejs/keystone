@@ -804,12 +804,7 @@ module.exports = class List {
 
     const resolvedData = await resolveAllKeys(
       mapKeys(data, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].createFieldPreHook(
-          value,
-          fieldPath,
-          context,
-          createdPromise.promise
-        )
+        this.fieldsByPath[fieldPath].createFieldPreHook(value, context, createdPromise.promise)
       )
     );
 
@@ -829,12 +824,7 @@ module.exports = class List {
 
     await Promise.all(
       Object.keys(data).map(fieldPath =>
-        this.fieldsByPath[fieldPath].createFieldPostHook(
-          newItem[fieldPath],
-          fieldPath,
-          newItem,
-          context
-        )
+        this.fieldsByPath[fieldPath].createFieldPostHook(newItem[fieldPath], newItem, context)
       )
     );
 
@@ -869,7 +859,7 @@ module.exports = class List {
 
         const resolvedData = await resolveAllKeys(
           mapKeys(data, (value, fieldPath) =>
-            this.fieldsByPath[fieldPath].updateFieldPreHook(value, fieldPath, item, context)
+            this.fieldsByPath[fieldPath].updateFieldPreHook(value, item, context)
           )
         );
 
@@ -884,12 +874,7 @@ module.exports = class List {
 
         await Promise.all(
           Object.keys(data).map(fieldPath =>
-            this.fieldsByPath[fieldPath].updateFieldPostHook(
-              newItem[fieldPath],
-              fieldPath,
-              newItem,
-              context
-            )
+            this.fieldsByPath[fieldPath].updateFieldPostHook(newItem[fieldPath], newItem, context)
           )
         );
 
@@ -968,17 +953,13 @@ module.exports = class List {
           },
           async item => {
             await Promise.all(
-              this.fields.map(field =>
-                field.deleteFieldPreHook(item[field.path], field.path, item, context)
-              )
+              this.fields.map(field => field.deleteFieldPreHook(item[field.path], item, context))
             );
 
             const result = await this.adapter.delete(id);
 
             await Promise.all(
-              this.fields.map(field =>
-                field.deleteFieldPostHook(item[field.path], field.path, item, context)
-              )
+              this.fields.map(field => field.deleteFieldPostHook(item[field.path], item, context))
             );
 
             return result;

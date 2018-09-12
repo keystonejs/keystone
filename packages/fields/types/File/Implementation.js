@@ -93,8 +93,8 @@ class File extends Implementation {
   createFieldPreHook(uploadData) {
     return this.saveStream(uploadData);
   }
-  updateFieldPreHook(uploadData, path, item) {
-    return this.saveStream(uploadData, item[path]);
+  updateFieldPreHook(uploadData, item) {
+    return this.saveStream(uploadData, item[this.path]);
   }
   get gqlUpdateInputFields() {
     return [`${this.path}: ${this.getFileUploadType()}`];
