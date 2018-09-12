@@ -35,9 +35,13 @@ function flagIdAsDisconnected({ context, foreign, local }) {
   queueIdForDisconnection({ context, foreign, local, done: true });
 }
 
-function tellForeignItemToDisconnect({ context, getItem, local, foreign }) {
+function tellForeignItemToGetQueued(
+  queueIdForProcessing,
+  flagIdAsDone,
+  { context, getItem, local, foreign }
+) {
   // queue up the disconnection
-  queueIdForDisconnection({
+  queueIdForProcessing({
     context,
     foreign: getItem.then(item => ({
       ...local,
@@ -48,13 +52,31 @@ function tellForeignItemToDisconnect({ context, getItem, local, foreign }) {
 
   // To avoid any circular updates with the above disconnect, we flag this
   // item as having already been disconnected
-  flagIdAsDisconnected({
+  flagIdAsDone({
     context,
     foreign: foreign,
     local: getItem.then(item => ({
       ...local,
       id: item.id,
     })),
+  });
+}
+
+function tellForeignItemToDisconnect({ context, getItem, local, foreign }) {
+  tellForeignItemToGetQueued(queueIdForDisconnection, flagIdAsDisconnected, {
+    context,
+    getItem,
+    local,
+    foreign,
+  });
+}
+
+function tellForeignItemToConnect({ context, getItem, local, foreign }) {
+  tellForeignItemToGetQueued(queueIdForConnection, flagIdAsConnected, {
+    context,
+    getItem,
+    local,
+    foreign,
   });
 }
 
@@ -378,7 +400,7 @@ async function toManyNestedMutation({
         ...disconnectItems
           // Possible to get null results when the id doesn't exist, or read access is
           // denied
-          .filter(Boolean)
+          .filter(itemToDisconnect => itemToDisconnect)
           .map(({ id }) => id.toString())
       );
     }
@@ -418,44 +440,31 @@ async function toManyNestedMutation({
     );
   }
 
-  // Possible to get null results when the id doesn't exist, or read access is
-  // denied
-  connectedItems = connectedItems.filter(Boolean);
-  createdItems = createdItems.filter(Boolean);
+  // Combine and map the data in the format we actually need
+  // Created items now get connected too, so they're coming along for the ride!
+  connectedItems = [...connectedItems, ...createdItems]
+    // Possible to get null results when the id doesn't exist, or read access is
+    // denied
+    .filter(itemConnected => itemConnected)
+    .map(({ id }) => id);
 
   if (refField) {
-    [...connectedItems, ...createdItems].forEach(itemToConnect => {
-      // At this point, we've not actually added the ID `itemToConnect.id` to the
+    connectedItems.forEach(idToConnect => {
+      // At this point, we've not actually added the ID `idToConnect` to the
       // field `localField` on list `localList`, just flagged it needing to be added.
       // This is so any recursive checks don't attempt to do it again.
-      queueIdForConnection({
+      tellForeignItemToConnect({
         context,
-        foreign: getItem.then(item => ({
+        getItem,
+        local: {
           list: localList,
           field: localField,
-          id: item.id,
-        })),
-        local: {
-          list: refList,
-          field: refField,
-          id: itemToConnect.id,
         },
-      });
-
-      // To avoid any circular updates with the above connection, we flag this
-      // item as having already been disconnected
-      flagIdAsConnected({
-        context,
         foreign: {
           list: refList,
           field: refField,
-          id: itemToConnect.id,
+          id: idToConnect,
         },
-        local: getItem.then(item => ({
-          list: localList,
-          field: localField,
-          id: item.id,
-        })),
       });
     });
   }
@@ -478,11 +487,7 @@ async function toManyNestedMutation({
     valuesToKeep = valuesToKeep.filter(keepCandidate => !disconnectIds.includes(keepCandidate));
   }
 
-  return [
-    ...valuesToKeep,
-    ...connectedItems.map(item => item.id),
-    ...createdItems.map(item => item.id),
-  ];
+  return [...valuesToKeep, ...connectedItems];
 }
 
 async function toSingleNestedMutation({
@@ -585,34 +590,18 @@ async function toSingleNestedMutation({
       // At this point, we've not actually added the ID `itemToConnect.id` to the
       // field `localField` on list `localList`, just flagged it needing to be added.
       // This is so any recursive checks don't attempt to do it again.
-      queueIdForConnection({
+      tellForeignItemToConnect({
         context,
-        foreign: getItem.then(item => ({
+        getItem,
+        local: {
           list: localList,
           field: localField,
-          id: item.id,
-        })),
-        local: {
-          list: refList,
-          field: refField,
-          id: itemToConnect.id,
         },
-      });
-
-      // To avoid any circular updates with the above connection, we flag this
-      // item as having already been disconnected
-      flagIdAsConnected({
-        context,
         foreign: {
           list: refList,
           field: refField,
           id: itemToConnect.id,
         },
-        local: getItem.then(item => ({
-          list: localList,
-          field: localField,
-          id: item.id,
-        })),
       });
     }
 
@@ -633,34 +622,18 @@ async function toSingleNestedMutation({
       // At this point, we've not actually added the ID `itemToConnect.id` to the
       // field `localField` on list `localList`, just flagged it needing to be added.
       // This is so any recursive checks don't attempt to do it again.
-      queueIdForConnection({
+      tellForeignItemToConnect({
         context,
-        foreign: getItem.then(item => ({
+        getItem,
+        local: {
           list: localList,
           field: localField,
-          id: item.id,
-        })),
-        local: {
-          list: refList,
-          field: refField,
-          id: itemCreated.id,
         },
-      });
-
-      // To avoid any circular updates with the above connection, we flag this
-      // item as having already been disconnected
-      flagIdAsConnected({
-        context,
         foreign: {
           list: refList,
           field: refField,
           id: itemCreated.id,
         },
-        local: getItem.then(item => ({
-          list: localList,
-          field: localField,
-          id: item.id,
-        })),
       });
     }
 

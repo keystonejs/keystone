@@ -976,8 +976,8 @@ module.exports = class List {
             const result = await this.adapter.delete(id);
 
             await Promise.all(
-              this.fields.map((field, path) =>
-                field.deleteFieldPostHook(item[path], path, item, context)
+              this.fields.map(field =>
+                field.deleteFieldPostHook(item[field.path], field.path, item, context)
               )
             );
 
