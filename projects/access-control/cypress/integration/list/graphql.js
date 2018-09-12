@@ -388,8 +388,19 @@ describe('Access Control, List, GraphQL', () => {
                 '/admin/api',
                 `query { ${singleQueryName}(where: { id: "${FAKE_ID}" }) { id } }`
               ).then(({ data, errors }) => {
-                expect(errors, 'single query Errors').to.equal(undefined);
                 expect(data[singleQueryName], `meta data.${singleQueryName}`).to.equal(null);
+                expect(errors, 'single query Errors').to.have.deep.property(
+                  '[0].name',
+                  'AccessDeniedError'
+                );
+                expect(errors, 'single query Errors').to.have.deep.property(
+                  '[0].message',
+                  'You do not have access to this resource'
+                );
+                expect(errors, 'single query Errors').to.have.deep.property(
+                  '[0].path[0]',
+                  singleQueryName
+                );
               });
             });
           });
@@ -404,12 +415,19 @@ describe('Access Control, List, GraphQL', () => {
                 `mutation { ${updateMutationName}(id: "${FAKE_ID}", data: { foo: "bar" }) { id } }`
               ).then(({ errors }) => {
                 // It errors because it's a fake ID.
-                // That's ok, as long as it's not an AccessDeniedError.
-                // We test that updates actually work elsewhere.
-                expect(errors[0], 'update mutation Errors').to.not.have.ownProperty('name');
-                expect(errors[0], 'update mutation Errors').to.not.have.property(
-                  'message',
+                // Which presents itself as an AccessDeniedError (to avoid
+                // leaking info)
+                expect(errors, 'update mutation Errors').to.have.deep.property(
+                  '[0].name',
+                  'AccessDeniedError'
+                );
+                expect(errors, 'update mutation Errors').to.have.deep.property(
+                  '[0].message',
                   'You do not have access to this resource'
+                );
+                expect(errors, 'update mutation Errors').to.have.deep.property(
+                  '[0].path[0]',
+                  updateMutationName
                 );
               });
             });
@@ -424,8 +442,22 @@ describe('Access Control, List, GraphQL', () => {
                 '/admin/api',
                 `mutation { ${deleteMutationName}(id: "${FAKE_ID}") { id } }`
               ).then(({ data, errors }) => {
-                expect(errors, 'delete mutation Errors').to.equal(undefined);
                 expect(data, 'deleteMutation data').to.have.ownProperty(deleteMutationName);
+                // It errors because it's a fake ID.
+                // Which presents itself as an AccessDeniedError (to avoid
+                // leaking info)
+                expect(errors, 'delete mutation Errors').to.have.deep.property(
+                  '[0].name',
+                  'AccessDeniedError'
+                );
+                expect(errors, 'delete mutation Errors').to.have.deep.property(
+                  '[0].message',
+                  'You do not have access to this resource'
+                );
+                expect(errors, 'delete mutation Errors').to.have.deep.property(
+                  '[0].path[0]',
+                  deleteMutationName
+                );
               });
             });
 

@@ -12,6 +12,21 @@ const {
   flatten,
 } = require('@keystonejs/utils');
 
+function createDeferred() {
+  let resolveCallback;
+  let rejectCallback;
+  const promise = new Promise((resolve, reject) => {
+    resolveCallback = resolve;
+    rejectCallback = reject;
+  });
+
+  return {
+    promise,
+    resolve: resolveCallback,
+    reject: rejectCallback,
+  };
+}
+
 const { parseListAccess, testListAccessControl } = require('@keystonejs/access-control');
 
 const logger = require('@keystonejs/logger');
@@ -601,10 +616,13 @@ module.exports = class List {
     // Early out - the user has full access to update this list
     if (access === true) {
       const item = await this.adapter.findById(id);
-      // TODO: Should we be throwing an AccessDenied here if the item isn't
-      // found? How strict are we about accidentally leaking information (that
-      // the item doesn't exist)?
-      return action(item);
+      if (!item) {
+        // Throwing an AccessDenied here if the item isn't found because we're
+        // strict about accidentally leaking information (that the item doesn't
+        // exist)
+        throwNotFound();
+      }
+      return await action(item);
     }
 
     // It's odd, but conceivable the access control specifies a single id
@@ -654,7 +672,7 @@ module.exports = class List {
     }
 
     // Found the item, and it passed the filter test
-    return action(items[0]);
+    return await action(items[0]);
   }
 
   async performMultiActionOnItemsWithAccessControl({ operation, ids, context, errorData }, action) {
@@ -779,13 +797,35 @@ module.exports = class List {
       },
     });
 
+    // Enable pre-hooks to perform some action after the item is created by
+    // giving them a promise which will eventually resolve with the value of the
+    // newly created item.
+    const createdPromise = createDeferred();
+
     const resolvedData = await resolveAllKeys(
       mapKeys(data, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].createFieldPreHook(value, fieldPath, context)
+        this.fieldsByPath[fieldPath].createFieldPreHook(
+          value,
+          fieldPath,
+          context,
+          createdPromise.promise
+        )
       )
     );
 
-    const newItem = await this.adapter.create(resolvedData);
+    let newItem;
+    try {
+      newItem = await this.adapter.create(resolvedData);
+      createdPromise.resolve(newItem);
+      // Wait until next tick so the promise/micro-task queue can be flushed
+      // fully, ensuring the deferred handlers get executed before we move on
+      await new Promise(res => process.nextTick(res));
+    } catch (error) {
+      createdPromise.reject(error);
+      // Wait until next tick so the promise/micro-task queue can be flushed
+      // fully, ensuring the deferred handlers get executed before we move on
+      await new Promise(res => process.nextTick(res));
+    }
 
     await Promise.all(
       Object.keys(data).map(fieldPath =>
@@ -799,6 +839,63 @@ module.exports = class List {
     );
 
     return newItem;
+  }
+
+  async updateMutation(id, data, context) {
+    return this.performActionOnItemWithAccessControl(
+      {
+        id,
+        context,
+        operation: 'update',
+        errorData: {
+          type: 'mutation',
+          name: this.gqlNames.updateMutationName,
+        },
+      },
+      async item => {
+        this.throwIfAccessDeniedOnFields({
+          accessType: 'update',
+          item,
+          inputData: data,
+          context,
+          errorMeta: {
+            type: 'mutation',
+            name: this.gqlNames.updateMutationName,
+          },
+          errorMetaForLogging: {
+            itemId: id,
+          },
+        });
+
+        const resolvedData = await resolveAllKeys(
+          mapKeys(data, (value, fieldPath) =>
+            this.fieldsByPath[fieldPath].updateFieldPreHook(value, fieldPath, item, context)
+          )
+        );
+
+        const newItem = await this.adapter.update(
+          id,
+          // avoid any kind of injection attack by explicitly doing a `$set`
+          // operation
+          { $set: resolvedData },
+          // Return the modified item, not the original
+          { new: true }
+        );
+
+        await Promise.all(
+          Object.keys(data).map(fieldPath =>
+            this.fieldsByPath[fieldPath].updateFieldPostHook(
+              newItem[fieldPath],
+              fieldPath,
+              newItem,
+              context
+            )
+          )
+        );
+
+        return newItem;
+      }
+    );
   }
 
   async _tryManyQuery(args, context, queryName, manyQuery) {
@@ -853,62 +950,8 @@ module.exports = class List {
     }
 
     if (this.access.update) {
-      mutationResolvers[this.gqlNames.updateMutationName] = async (_, { id, data }, context) => {
-        return this.performActionOnItemWithAccessControl(
-          {
-            id,
-            context,
-            operation: 'update',
-            errorData: {
-              type: 'mutation',
-              name: this.gqlNames.updateMutationName,
-            },
-          },
-          async item => {
-            this.throwIfAccessDeniedOnFields({
-              accessType: 'update',
-              item,
-              inputData: data,
-              context,
-              errorMeta: {
-                type: 'mutation',
-                name: this.gqlNames.updateMutationName,
-              },
-              errorMetaForLogging: {
-                itemId: id,
-              },
-            });
-
-            const resolvedData = await resolveAllKeys(
-              mapKeys(data, (value, fieldPath) =>
-                this.fieldsByPath[fieldPath].updateFieldPreHook(value, fieldPath, item, context)
-              )
-            );
-
-            const newItem = await this.adapter.update(
-              id,
-              // avoid any kind of injection attack by explicitly doing a `$set`
-              // operation
-              { $set: resolvedData },
-              // Return the modified item, not the original
-              { new: true }
-            );
-
-            await Promise.all(
-              Object.keys(data).map(fieldPath =>
-                this.fieldsByPath[fieldPath].updateFieldPostHook(
-                  newItem[fieldPath],
-                  fieldPath,
-                  newItem,
-                  context
-                )
-              )
-            );
-
-            return newItem;
-          }
-        );
-      };
+      mutationResolvers[this.gqlNames.updateMutationName] = async (_, { id, data }, context) =>
+        this.updateMutation(id, data, context);
     }
 
     if (this.access.delete) {
@@ -923,9 +966,22 @@ module.exports = class List {
               name: this.gqlNames.deleteMutationName,
             },
           },
-          (/* item */) => {
-            // TODO: pre/post delete hooks
-            return this.adapter.delete(id);
+          async item => {
+            await Promise.all(
+              this.fields.map(field =>
+                field.deleteFieldPreHook(item[field.path], field.path, item, context)
+              )
+            );
+
+            const result = await this.adapter.delete(id);
+
+            await Promise.all(
+              this.fields.map(field =>
+                field.deleteFieldPostHook(item[field.path], field.path, item, context)
+              )
+            );
+
+            return result;
           }
         );
       };
@@ -966,5 +1022,9 @@ module.exports = class List {
       operation,
       authentication,
     });
+  }
+
+  getFieldByPath(path) {
+    return this.fieldsByPath[path];
   }
 };

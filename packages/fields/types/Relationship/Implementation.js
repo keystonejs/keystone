@@ -10,52 +10,91 @@ const {
 } = mongoose;
 
 const { Implementation } = require('../../Implementation');
-const nestedMutations = require('./nested-mutations');
+const {
+  nestedMutation,
+  processQueuedDisconnections,
+  processQueuedConnections,
+  tellForeignItemToDisconnect,
+} = require('./nested-mutations');
 
 class Relationship extends Implementation {
   constructor() {
     super(...arguments);
+    const [refListKey, refFieldPath] = this.config.ref.split('.');
+    this.refListKey = refListKey;
+    this.refFieldPath = refFieldPath;
   }
+
+  tryResolveRefList() {
+    const { listKey, path, refListKey, refFieldPath } = this;
+    const refList = this.getListByKey(refListKey);
+
+    if (!refList) {
+      throw new Error(`Unable to resolve related list '${refListKey}' from ${listKey}.${path}`);
+    }
+
+    let refField;
+
+    if (refFieldPath) {
+      refField = refList.getFieldByPath(refFieldPath);
+
+      if (!refField) {
+        throw new Error(
+          `Unable to resolve two way relationship field '${refListKey}.${refFieldPath}' from ${listKey}.${path}`
+        );
+      }
+    }
+
+    return { refList, refField };
+  }
+
   get gqlOutputFields() {
-    const { many, ref } = this.config;
-    const list = this.getListByKey(ref);
+    const { many } = this.config;
+
+    const { refList } = this.tryResolveRefList();
+
     if (many) {
-      const filterArgs = list.getGraphqlFilterFragment().join('\n');
+      const filterArgs = refList.getGraphqlFilterFragment().join('\n');
       return [
-        `${this.path}(${filterArgs}): [${list.gqlNames.outputTypeName}]`,
+        `${this.path}(${filterArgs}): [${refList.gqlNames.outputTypeName}]`,
         `_${this.path}Meta(${filterArgs}): _QueryMeta`,
       ];
     }
 
-    return [`${this.path}: ${list.gqlNames.outputTypeName}`];
+    return [`${this.path}: ${refList.gqlNames.outputTypeName}`];
   }
 
   extendAdminMeta(meta) {
-    const { many, ref } = this.config;
-    return { ...meta, ref, many };
+    const {
+      refListKey: ref,
+      refFieldPath,
+      config: { many },
+    } = this;
+    return { ...meta, ref, refFieldPath, many };
   }
+
   get gqlQueryInputFields() {
-    const { many, ref } = this.config;
-    const list = this.getListByKey(ref);
+    const { many } = this.config;
+    const { refList } = this.tryResolveRefList();
     if (many) {
       return [
         `""" condition must be true for all nodes """
-        ${this.path}_every: ${list.gqlNames.whereInputName}`,
+        ${this.path}_every: ${refList.gqlNames.whereInputName}`,
         `""" condition must be true for at least 1 node """
-        ${this.path}_some: ${list.gqlNames.whereInputName}`,
+        ${this.path}_some: ${refList.gqlNames.whereInputName}`,
         `""" condition must be false for all nodes """
-        ${this.path}_none: ${list.gqlNames.whereInputName}`,
+        ${this.path}_none: ${refList.gqlNames.whereInputName}`,
         `""" is the relation field null """
         ${this.path}_is_null: Boolean`,
       ];
     } else {
-      return [`${this.path}: ${list.gqlNames.whereInputName}`, `${this.path}_is_null: Boolean`];
+      return [`${this.path}: ${refList.gqlNames.whereInputName}`, `${this.path}_is_null: Boolean`];
     }
   }
 
   get gqlOutputFieldResolvers() {
-    const { many, ref } = this.config;
-    const refList = this.getListByKey(ref);
+    const { many } = this.config;
+    const { refList } = this.tryResolveRefList();
 
     // to-one relationships are much easier to deal with.
     if (!many) {
@@ -113,40 +152,99 @@ class Relationship extends Implementation {
     };
   }
 
-  async createUpdatePreHook(input, currentValue, fieldKey, context) {
-    const {
-      listKey,
-      config: { many, ref, required },
-    } = this;
+  async createUpdatePreHook(input, currentValue, fieldPath, context, getItem) {
+    const { many, required } = this.config;
+
+    const { refList, refField } = this.tryResolveRefList();
 
     // Early out for null'd field
     if (!required && !input) {
       return input;
     }
 
-    const refList = this.getListByKey(ref);
-
-    return await nestedMutations({
+    return await nestedMutation({
       input,
       currentValue,
-      fieldKey,
-      listKey,
-      many,
-      ref,
+      localField: this,
+      localList: this.getListByKey(this.listKey),
       refList,
+      refField,
+      getItem,
+      many,
       context,
     });
   }
 
-  createFieldPreHook(data, fieldKey, context) {
-    return this.createUpdatePreHook(data, undefined, fieldKey, context);
+  createFieldPreHook(data, fieldPath, context, createdPromise) {
+    return this.createUpdatePreHook(data, undefined, fieldPath, context, createdPromise);
   }
 
-  updateFieldPreHook(data, fieldKey, originalItem, context) {
-    return this.createUpdatePreHook(data, originalItem[fieldKey], fieldKey, context);
+  updateFieldPreHook(data, fieldPath, item, context) {
+    const getItem = Promise.resolve(item);
+    return this.createUpdatePreHook(data, item[fieldPath], fieldPath, context, getItem);
+  }
+
+  async updateFieldPostHook(fieldData, fieldPath, item, context) {
+    // We have to wait to the post hook so we have the item's id to connect to!
+    await processQueuedDisconnections({ context });
+    await processQueuedConnections({ context });
+  }
+
+  async createFieldPostHook(data, fieldKey, item, context) {
+    // We have to wait to the post hook so we have the item's id to connect to!
+    // NOTE: We don't do any disconnects here (it's not possible to disconnect
+    // something for a newly created item thanks to the order of operations)
+    await processQueuedConnections({ context });
+  }
+
+  deleteFieldPreHook(data, path, item, context) {
+    // Early out for null'd field
+    if (!data) {
+      return;
+    }
+
+    const { many } = this.config;
+    const { refList, refField } = this.tryResolveRefList();
+
+    // No related field to unlink
+    if (!refField) {
+      return;
+    }
+
+    const itemsToDisconnect = many ? data : [data];
+
+    itemsToDisconnect
+      // The data comes in as an ObjectId, so we have to convert it
+      .map(itemToDisconnect => itemToDisconnect.toString())
+      .forEach(itemToDisconnect => {
+        tellForeignItemToDisconnect({
+          context,
+          getItem: Promise.resolve(item),
+          local: {
+            list: this.getListByKey(this.listKey),
+            field: this,
+          },
+          foreign: {
+            list: refList,
+            field: refField,
+            id: itemToDisconnect,
+          },
+        });
+      });
+
+    // TODO: Cascade _deletion_ of any related items (not just setting the
+    // reference to null)
+    // Accept a config option for cascading: https://www.prisma.io/docs/1.4/reference/service-configuration/data-modelling-(sdl)-eiroozae8u/#the-@relation-directive
+    // Beware of circular delete hooks!
+  }
+
+  async deleteFieldPostHook(fieldData, fieldPath, item, context) {
+    // We have to wait to the post hook so we have the item's id to discconect.
+    await processQueuedDisconnections({ context });
   }
 
   get gqlAuxTypes() {
+    const { refList } = this.tryResolveRefList();
     // We need an input type that is specific to creating nested items when
     // creating a relationship, ie;
     //
@@ -164,21 +262,20 @@ class Relationship extends Implementation {
     // mutation createPost() {
     //   author: { id: 'abc123' }
     // }
-    const list = this.getListByKey(this.config.ref);
     if (this.config.many) {
       return [
         `
-        input ${list.gqlNames.relateToManyInputName} {
-          # Provide data to create a set of new ${this.config.ref}. Will also connect.
-          create: [${list.gqlNames.createInputName}]
+        input ${refList.gqlNames.relateToManyInputName} {
+          # Provide data to create a set of new ${refList.key}. Will also connect.
+          create: [${refList.gqlNames.createInputName}]
 
-          # Provide a filter to link to a set of existing ${this.config.ref}.
-          connect: [${list.gqlNames.whereUniqueInputName}]
+          # Provide a filter to link to a set of existing ${refList.key}.
+          connect: [${refList.gqlNames.whereUniqueInputName}]
 
-          # Provide a filter to remove to a set of existing ${this.config.ref}.
-          disconnect: [${list.gqlNames.whereUniqueInputName}]
+          # Provide a filter to remove to a set of existing ${refList.key}.
+          disconnect: [${refList.gqlNames.whereUniqueInputName}]
 
-          # Remove all ${this.config.ref} in this list.
+          # Remove all ${refList.key} in this list.
           disconnectAll: Boolean
         }
       `,
@@ -187,29 +284,29 @@ class Relationship extends Implementation {
 
     return [
       `
-      input ${list.gqlNames.relateToOneInputName} {
-        # Provide data to create a new ${this.config.ref}.
-        create: ${list.gqlNames.createInputName}
+      input ${refList.gqlNames.relateToOneInputName} {
+        # Provide data to create a new ${refList.key}.
+        create: ${refList.gqlNames.createInputName}
 
-        # Provide a filter to link to an existing ${this.config.ref}.
-        connect: ${list.gqlNames.whereUniqueInputName}
+        # Provide a filter to link to an existing ${refList.key}.
+        connect: ${refList.gqlNames.whereUniqueInputName}
 
-        # Provide a filter to remove to an existing ${this.config.ref}.
-        disconnect: ${list.gqlNames.whereUniqueInputName}
+        # Provide a filter to remove to an existing ${refList.key}.
+        disconnect: ${refList.gqlNames.whereUniqueInputName}
 
-        # Remove the existing ${this.config.ref} (if any).
+        # Remove the existing ${refList.key} (if any).
         disconnectAll: Boolean
       }
     `,
     ];
   }
   get gqlUpdateInputFields() {
-    const list = this.getListByKey(this.config.ref);
+    const { refList } = this.tryResolveRefList();
     if (this.config.many) {
-      return [`${this.path}: ${list.gqlNames.relateToManyInputName}`];
+      return [`${this.path}: ${refList.gqlNames.relateToManyInputName}`];
     }
 
-    return [`${this.path}: ${list.gqlNames.relateToOneInputName}`];
+    return [`${this.path}: ${refList.gqlNames.relateToOneInputName}`];
   }
   get gqlCreateInputFields() {
     return this.gqlUpdateInputFields;
@@ -220,8 +317,18 @@ class Relationship extends Implementation {
 }
 
 class MongoSelectInterface extends MongooseFieldAdapter {
+  constructor(...args) {
+    super(...args);
+    const [refListKey, refFieldPath] = this.config.ref.split('.');
+    this.refListKey = refListKey;
+    this.refFieldPath = refFieldPath;
+  }
+
   addToMongooseSchema(schema) {
-    const { many, mongooseOptions, ref } = this.config;
+    const {
+      refListKey: ref,
+      config: { many, mongooseOptions },
+    } = this;
     const type = many ? [ObjectId] : ObjectId;
     schema.add({
       [this.path]: { type, ref, ...mongooseOptions },
@@ -229,7 +336,7 @@ class MongoSelectInterface extends MongooseFieldAdapter {
   }
 
   getRefListAdapter() {
-    return this.getListByKey(this.config.ref).adapter;
+    return this.getListByKey(this.refListKey).adapter;
   }
 
   getQueryConditions() {

@@ -69,8 +69,8 @@ class Field {
 
   /**
    * Hooks for performing actions before / after fields are mutated.
-   * For example: with a field { avatar: { type: File }}, it wants to put the
-   * file on S3 in the `createFieldPreHook()`, then return asn S3 object ID as
+   * For example: with a field { avatar: { type: S3File }}, it wants to put the
+   * file on S3 in the `createFieldPreHook()`, then return an S3 object ID as
    * the result to store in `avatar`
    *
    * @param data {Mixed} The data received from the query
@@ -82,14 +82,14 @@ class Field {
     return data;
   }
   /*
-   * @param data {Mixed} The data as saved & read from the DB
+   * @param data {Mixed} The value of this field as saved & read from the DB
    * @param path {String} The path of the field in the item
    * @param item {Object} The existing version of the item
    * @param context {Mixed} The GraphQL Context object for the current request
    */
   createFieldPostHook(data, path, item, context) {} // eslint-disable-line no-unused-vars
   /*
-   * @param data {Mixed} The data received from the query
+   * @param data {Mixed} The value of this field received from the query
    * @param path {String} The path of the field in the item
    * @param item {Object} The existing version of the item
    * @param context {Mixed} The GraphQL Context object for the current request
@@ -99,12 +99,26 @@ class Field {
     return data;
   }
   /*
-   * @param data {Mixed} The data as saved & read from the DB
+   * @param data {Mixed} The value of this field as saved & read from the DB
    * @param path {String} The path of the field in the item
    * @param item {Object} The existing version of the item
    * @param context {Mixed} The GraphQL Context object for the current request
    */
   updateFieldPostHook(data, path, item, context) {} // eslint-disable-line no-unused-vars
+  /*
+   * @param data {Mixed} The value of this field as read from the DB
+   * @param path {String} The path of the field in the item
+   * @param item {Object} The existing version of the item
+   * @param context {Mixed} The GraphQL Context object for the current request
+   */
+  deleteFieldPreHook(data, path, item, context) {} // eslint-disable-line no-unused-vars
+  /*
+   * @param data {Mixed} The value of this field as read from the DB
+   * @param path {String} The path of the field in the item
+   * @param item {Object} The existing version of the item
+   * @param context {Mixed} The GraphQL Context object for the current request
+   */
+  deleteFieldPostHook(data, path, item, context) {} // eslint-disable-line no-unused-vars
 
   get gqlQueryInputFields() {
     return [];

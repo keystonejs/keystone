@@ -259,7 +259,7 @@ describe('non-matching filter', () => {
 
 describe('with access control', () => {
   describe('read: false on related list', () => {
-    test('silently ignores items that otherwise would match the filter', async () => {
+    test('has no impact when disconnecting directly with an id', async () => {
       const noteContent = sampleOne(alphanumGenerator);
 
       // Create an item to link against
@@ -293,8 +293,13 @@ describe('with access control', () => {
 
       const userData = await findById('UserToNotesNoRead', createUser.id);
 
-      expect(userData).toHaveProperty('notes.0');
-      expect(userData.notes[0].toString()).toBe(createNote.id);
+      expect(userData.notes).toHaveLength(0);
+    });
+
+    test.failing('silently ignores items that otherwise would match the filter', () => {
+      // TODO: Fill this in once we support more than just id filtering for
+      // disconnection
+      expect(false).toBe(true);
     });
   });
 });
