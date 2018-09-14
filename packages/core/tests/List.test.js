@@ -30,13 +30,27 @@ class MockType {
     this.access = access;
   }
   getAdminMeta = () => new MockAdminMeta();
-  getGraphqlOutputFields = () => [`${this.name}_field: String`];
-  getGraphqlAuxiliaryTypes = () => [`type ${this.name}_type { x: Int }`];
-  getGraphqlAuxiliaryQueries = () => [];
-  getGraphqlAuxiliaryMutations = () => [];
-  getGraphqlUpdateArgs = () => [`${this.name}_update_arg: String`];
-  getGraphqlCreateArgs = () => [`${this.name}_create_arg: String`];
-  getGraphqlQueryArgs = () => [`${this.name}_query_arg: String`];
+  get gqlOutputFields() {
+    return [`${this.name}_field: String`];
+  }
+  get gqlAuxTypes() {
+    return [`type ${this.name}_type { x: Int }`];
+  }
+  get gqlAuxQueries() {
+    return [];
+  }
+  get gqlAuxMutations() {
+    return [];
+  }
+  get gqlUpdateInputFields() {
+    return [`${this.name}_update_arg: String`];
+  }
+  get gqlCreateInputFields() {
+    return [`${this.name}_create_arg: String`];
+  }
+  get gqlQueryInputFields() {
+    return [`${this.name}_query_arg: String`];
+  }
 }
 
 // Convert a gql field into a normalised format for comparison.
@@ -220,14 +234,14 @@ describe('getAdminMeta()', () => {
   });
 });
 
-test('getAdminGraphqlTypes()', () => {
+test('gqlTypes', () => {
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
     getAuth: () => {},
     defaultAccess: { list: true, field: true },
   });
-  const types = list.getAdminGraphqlTypes().map(s => print(gql(s)));
+  const types = list.gqlTypes.map(s => print(gql(s)));
 
   expect(types).toEqual(
     [
@@ -270,14 +284,14 @@ test('getAdminGraphqlTypes()', () => {
   );
 });
 
-test('getAdminGraphqlQueries()', () => {
+test('gqlQueries', () => {
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
     getAuth: () => {},
     defaultAccess: { list: true, field: true },
   });
-  const queries = list.getAdminGraphqlQueries().map(normalise);
+  const queries = list.gqlQueries.map(normalise);
 
   expect(queries).toEqual(
     [
@@ -303,14 +317,14 @@ test('getAdminGraphqlQueries()', () => {
   );
 });
 
-test('getAdminGraphqlMutations()', () => {
+test('gqlMutations', () => {
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
     getAuth: () => {},
     defaultAccess: { list: true, field: true },
   });
-  const mutations = list.getAdminGraphqlMutations().map(normalise);
+  const mutations = list.gqlMutations.map(normalise);
 
   expect(mutations).toEqual(
     [
@@ -331,28 +345,28 @@ test('getAdminGraphqlMutations()', () => {
   );
 });
 
-test('getAdminQueryResolvers()', () => {
+test('gqlQueryResolvers', () => {
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
     getAuth: () => {},
     defaultAccess: { list: true, field: true },
   });
-  const resolvers = list.getAdminQueryResolvers();
+  const resolvers = list.gqlQueryResolvers;
 
   expect(resolvers['Test']).toBeInstanceOf(Function);
   expect(resolvers['allTests']).toBeInstanceOf(Function);
   expect(resolvers['_allTestsMeta']).toBeInstanceOf(Function);
 });
 
-test('getAdminMutationResolvers()', () => {
+test('gqlMutationResolvers', () => {
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
     getAuth: () => {},
     defaultAccess: { list: true, field: true },
   });
-  const resolvers = list.getAdminMutationResolvers();
+  const resolvers = list.gqlMutationResolvers;
 
   expect(resolvers['createTest']).toBeInstanceOf(Function);
   expect(resolvers['updateTest']).toBeInstanceOf(Function);

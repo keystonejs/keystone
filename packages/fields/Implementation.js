@@ -29,10 +29,12 @@ class Field {
   }
 
   // Field types should replace this if they want to any fields to the output type
-  getGraphqlOutputFields() {
+  get gqlOutputFields() {
     return [];
   }
-  getGraphqlOutputFieldResolvers() {}
+  get gqlOutputFieldResolvers() {
+    return {};
+  }
 
   /**
    * Auxiliary Types are top-level types which a type may need or provide.
@@ -44,65 +46,81 @@ class Field {
    * NOTE: When a naming conflic occurs, a list's types/queries/mutations will
    * overwrite any auxiliary types defined by an individual type.
    */
-  getGraphqlAuxiliaryTypes() {
+  get gqlAuxTypes() {
     return [];
   }
-  getGraphqlAuxiliaryTypeResolvers() {}
-  getGraphqlAuxiliaryQueries() {
+  get gqlAuxFieldResolvers() {
+    return {};
+  }
+
+  get gqlAuxQueries() {
     return [];
   }
-  getGraphqlAuxiliaryQueryResolvers() {}
-  getGraphqlAuxiliaryMutations() {
+  get gqlAuxQueryResolvers() {
+    return {};
+  }
+
+  get gqlAuxMutations() {
     return [];
   }
-  getGraphqlAuxiliaryMutationResolvers() {}
+  get gqlAuxMutationResolvers() {
+    return {};
+  }
 
   /**
    * Hooks for performing actions before / after fields are mutated.
-   * For example: with a field { avatar: { type: File }}, it wants to put the
-   * file on S3 in the `createFieldPreHook()`, then return asn S3 object ID as
+   * For example: with a field { avatar: { type: S3File }}, it wants to put the
+   * file on S3 in the `createFieldPreHook()`, then return an S3 object ID as
    * the result to store in `avatar`
    *
    * @param data {Mixed} The data received from the query
-   * @param path {String} The path of the field in the item
    * @param context {Mixed} The GraphQL Context object for the current request
    */
   // eslint-disable-next-line no-unused-vars
-  createFieldPreHook(data, path, context) {
+  createFieldPreHook(data, context) {
     return data;
   }
   /*
-   * @param data {Mixed} The data as saved & read from the DB
-   * @param path {String} The path of the field in the item
+   * @param data {Mixed} The value of this field as saved & read from the DB
    * @param item {Object} The existing version of the item
    * @param context {Mixed} The GraphQL Context object for the current request
    */
-  createFieldPostHook(data, path, item, context) {} // eslint-disable-line no-unused-vars
+  createFieldPostHook(data, item, context) {} // eslint-disable-line no-unused-vars
   /*
-   * @param data {Mixed} The data received from the query
-   * @param path {String} The path of the field in the item
+   * @param data {Mixed} The value of this field received from the query
    * @param item {Object} The existing version of the item
    * @param context {Mixed} The GraphQL Context object for the current request
    */
   // eslint-disable-next-line no-unused-vars
-  updateFieldPreHook(data, path, item, context) {
+  updateFieldPreHook(data, item, context) {
     return data;
   }
   /*
-   * @param data {Mixed} The data as saved & read from the DB
-   * @param path {String} The path of the field in the item
+   * @param data {Mixed} The value of this field as saved & read from the DB
    * @param item {Object} The existing version of the item
    * @param context {Mixed} The GraphQL Context object for the current request
    */
-  updateFieldPostHook(data, path, item, context) {} // eslint-disable-line no-unused-vars
+  updateFieldPostHook(data, item, context) {} // eslint-disable-line no-unused-vars
+  /*
+   * @param data {Mixed} The value of this field as read from the DB
+   * @param item {Object} The existing version of the item
+   * @param context {Mixed} The GraphQL Context object for the current request
+   */
+  deleteFieldPreHook(data, item, context) {} // eslint-disable-line no-unused-vars
+  /*
+   * @param data {Mixed} The value of this field as read from the DB
+   * @param item {Object} The existing version of the item
+   * @param context {Mixed} The GraphQL Context object for the current request
+   */
+  deleteFieldPostHook(data, item, context) {} // eslint-disable-line no-unused-vars
 
-  getGraphqlQueryArgs() {
+  get gqlQueryInputFields() {
     return [];
   }
-  getGraphqlCreateArgs() {
+  get gqlCreateInputFields() {
     return [];
   }
-  getGraphqlUpdateArgs() {
+  get gqlUpdateInputFields() {
     return [];
   }
 

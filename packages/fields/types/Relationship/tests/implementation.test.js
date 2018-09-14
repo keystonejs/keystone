@@ -24,15 +24,24 @@ const mockFilterAST = [
   },
 ];
 
-function createRelationship({ path, config = {} }) {
+function createRelationship({ path, config = {}, getListByKey = () => new MockList(config.ref) }) {
   class MockList {
+    constructor(ref) {
+      this.gqlNames = {
+        outputTypeName: ref,
+        createInputName: `${ref}CreateInput`,
+        whereUniqueInputName: `${ref}WhereUniqueInput`,
+        relateToManyInputName: `${ref}RelateToManyInput`,
+        relateToOneInputName: `${ref}RelateToOneInput`,
+      };
+    }
     // The actual implementation in `@keystonejs/core/List/index.js` returns
     // more, but we only want to test that this codepath is called
     getGraphqlFilterFragment = () => mockFilterFragment;
   }
 
   return new Relationship(path, config, {
-    getListByKey: () => new MockList(),
+    getListByKey,
     listKey: 'FakeList',
     listAdapter: new MockListAdapter(),
     fieldAdapterClass: MockFieldAdapter,
@@ -46,13 +55,13 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.getGraphqlCreateArgs()).toEqual(['foo: [ZipRelationshipInput]']);
+    expect(relMany.gqlCreateInputFields).toEqual(['foo: ZipRelateToManyInput']);
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.getGraphqlCreateArgs()).toEqual(['foo: ZipRelationshipInput']);
+    expect(relSingle.gqlCreateInputFields).toEqual(['foo: ZipRelateToOneInput']);
   });
 
   test('inputs for relationship fields in update args', () => {
@@ -60,41 +69,30 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.getGraphqlUpdateArgs()).toEqual(['foo: [ZipRelationshipInput]']);
+    expect(relMany.gqlUpdateInputFields).toEqual(['foo: ZipRelateToManyInput']);
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.getGraphqlUpdateArgs()).toEqual(['foo: ZipRelationshipInput']);
+    expect(relSingle.gqlUpdateInputFields).toEqual(['foo: ZipRelateToOneInput']);
   });
 
-  test('relationship LinkOrCreate input', () => {
+  test('to-single relationship nested mutation input', () => {
     const relationship = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
 
     // We're testing the AST is as we expect it to be
-    expect(gql(relationship.getGraphqlAuxiliaryTypes().join('\n'))).toMatchObject({
+    expect(gql(relationship.gqlAuxTypes.join('\n'))).toMatchObject({
       definitions: [
         {
           kind: 'InputObjectTypeDefinition',
           name: {
-            value: 'ZipRelationshipInput',
+            value: 'ZipRelateToOneInput',
           },
           fields: [
-            {
-              kind: 'InputValueDefinition',
-              name: {
-                value: 'id',
-              },
-              type: {
-                name: {
-                  value: 'ID',
-                },
-              },
-            },
             {
               kind: 'InputValueDefinition',
               name: {
@@ -103,6 +101,113 @@ describe('Type Generation', () => {
               type: {
                 name: {
                   value: 'ZipCreateInput',
+                },
+              },
+            },
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'connect',
+              },
+              type: {
+                name: {
+                  value: 'ZipWhereUniqueInput',
+                },
+              },
+            },
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'disconnect',
+              },
+              type: {
+                name: {
+                  value: 'ZipWhereUniqueInput',
+                },
+              },
+            },
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'disconnectAll',
+              },
+              type: {
+                name: {
+                  value: 'Boolean',
+                },
+              },
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  test('to-many relationship nested mutation input', () => {
+    const relationship = createRelationship({
+      path: 'foo',
+      config: { many: true, ref: 'Zip' },
+    });
+
+    // We're testing the AST is as we expect it to be
+    expect(gql(relationship.gqlAuxTypes.join('\n'))).toMatchObject({
+      definitions: [
+        {
+          kind: 'InputObjectTypeDefinition',
+          name: {
+            value: 'ZipRelateToManyInput',
+          },
+          fields: [
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'create',
+              },
+              type: {
+                kind: 'ListType',
+                type: {
+                  name: {
+                    value: 'ZipCreateInput',
+                  },
+                },
+              },
+            },
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'connect',
+              },
+              type: {
+                kind: 'ListType',
+                type: {
+                  name: {
+                    value: 'ZipWhereUniqueInput',
+                  },
+                },
+              },
+            },
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'disconnect',
+              },
+              type: {
+                kind: 'ListType',
+                type: {
+                  name: {
+                    value: 'ZipWhereUniqueInput',
+                  },
+                },
+              },
+            },
+            {
+              kind: 'InputValueDefinition',
+              name: {
+                value: 'disconnectAll',
+              },
+              type: {
+                name: {
+                  value: 'Boolean',
                 },
               },
             },
@@ -123,7 +228,7 @@ describe('Type Generation', () => {
     // Wrap it in a mock type because all we get back is the fields
     const fieldSchema = `
       type MockType {
-        ${relationship.getGraphqlOutputFields().join('\n')}
+        ${relationship.gqlOutputFields.join('\n')}
       }
     `;
 
@@ -164,7 +269,7 @@ describe('Type Generation', () => {
     // Wrap it in a mock type because all we get back is the fields
     const fieldSchema = `
       type MockType {
-        ${relationship.getGraphqlOutputFields().join('\n')}
+        ${relationship.gqlOutputFields.join('\n')}
       }
     `;
 
@@ -189,11 +294,78 @@ describe('Type Generation', () => {
                 },
               },
             },
+            {
+              kind: 'FieldDefinition',
+              name: {
+                value: `_${path}Meta`,
+              },
+              // We don't have control over this type, so we just check for
+              // existence
+              arguments: expect.any(Array),
+              type: {
+                name: {
+                  value: '_QueryMeta',
+                },
+              },
+            },
           ],
         },
       ],
     });
 
     expect(fieldAST.definitions[0].fields[0].arguments).toHaveLength(1);
+  });
+});
+
+describe('Referenced list errors', () => {
+  const mockList = {
+    // ie; "not found"
+    getFieldByPath: () => {},
+    getGraphqlFilterFragment: () => [],
+    gqlNames: {
+      whereInputName: '',
+    },
+  };
+
+  // Some methods are sync, others async, so we force all to be async so we can
+  // have a consistent testing API
+  async function asyncify(func) {
+    return await func();
+  }
+
+  ['gqlOutputFields', 'gqlQueryInputFields', 'gqlOutputFieldResolvers'].forEach(method => {
+    describe(`${method}()`, () => {
+      test('throws when list not found', async () => {
+        const relMany = createRelationship({
+          path: 'foo',
+          config: { many: true, ref: 'Zip' },
+          // ie; "not found"
+          getListByKey: () => {},
+        });
+        expect(asyncify(() => relMany[method])).rejects.toThrow(
+          /Unable to resolve related list 'Zip'/
+        );
+      });
+
+      test('does not throw when no two way relationship specified', async () => {
+        const relMany = createRelationship({
+          path: 'foo',
+          config: { many: true, ref: 'Zip' },
+          getListByKey: () => mockList,
+        });
+        return asyncify(() => relMany[method]);
+      });
+
+      test('throws when field on list not found', async () => {
+        const relMany = createRelationship({
+          path: 'foo',
+          config: { many: true, ref: 'Zip.bar' },
+          getListByKey: () => mockList,
+        });
+        expect(asyncify(() => relMany[method])).rejects.toThrow(
+          /Unable to resolve two way relationship field 'Zip.bar'/
+        );
+      });
+    });
   });
 });

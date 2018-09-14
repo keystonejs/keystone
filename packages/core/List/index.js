@@ -12,6 +12,21 @@ const {
   flatten,
 } = require('@keystonejs/utils');
 
+function createDeferred() {
+  let resolveCallback;
+  let rejectCallback;
+  const promise = new Promise((resolve, reject) => {
+    resolveCallback = resolve;
+    rejectCallback = reject;
+  });
+
+  return {
+    promise,
+    resolve: resolveCallback,
+    reject: rejectCallback,
+  };
+}
+
 const { parseListAccess, testListAccessControl } = require('@keystonejs/access-control');
 
 const logger = require('@keystonejs/logger');
@@ -131,6 +146,8 @@ module.exports = class List {
       whereUniqueInputName: `${itemQueryName}WhereUniqueInput`,
       updateInputName: `${itemQueryName}UpdateInput`,
       createInputName: `${itemQueryName}CreateInput`,
+      relateToManyInputName: `${itemQueryName}RelateToManyInput`,
+      relateToOneInputName: `${itemQueryName}RelateToOneInput`,
     };
 
     this.adapter = adapter.newListAdapter(this.key, this.config);
@@ -196,10 +213,10 @@ module.exports = class List {
       views: this.views,
     };
   }
-  getAdminGraphqlTypes() {
+  get gqlTypes() {
     // TODO: AND / OR filters:
     // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
-    const types = flatten(this.fields.map(i => i.getGraphqlAuxiliaryTypes()));
+    const types = flatten(this.fields.map(field => field.gqlAuxTypes));
 
     if (this.access.read || this.access.create || this.access.update || this.access.delete) {
       types.push(`
@@ -211,12 +228,12 @@ module.exports = class List {
            2. As an alias to the field set on 'labelField' in the ${this.key} List config, or
            3. As an alias to a 'name' field on the ${this.key} List (if one exists), or
            4. As an alias to the 'id' field on the ${this.key} List.
-           """
+          """
           _label_: String
           ${flatten(
             this.fields
               .filter(field => field.access.read) // If it's globally set to false, makes sense to never show it
-              .map(field => field.getGraphqlOutputFields())
+              .map(field => field.gqlOutputFields)
           ).join('\n')}
         }
       `);
@@ -236,9 +253,10 @@ module.exports = class List {
           ${flatten(
             this.fields
               .filter(field => field.access.read) // If it's globally set to false, makes sense to never show it
-              .map(field => field.getGraphqlQueryArgs())
+              .map(field => field.gqlQueryInputFields)
           ).join('\n')}
         }`,
+        // TODO: Include other `unique` fields and allow filtering by them
         `
         input ${this.gqlNames.whereUniqueInputName} {
           id: ID!
@@ -252,7 +270,7 @@ module.exports = class List {
           ${flatten(
             this.fields
               .filter(field => field.access.update) // If it's globally set to false, makes sense to never let it be updated
-              .map(field => field.getGraphqlUpdateArgs())
+              .map(field => field.gqlUpdateInputFields)
           ).join('\n')}
         }
       `);
@@ -264,7 +282,7 @@ module.exports = class List {
           ${flatten(
             this.fields
               .filter(field => field.access.create) // If it's globally set to false, makes sense to never let it be created
-              .map(i => i.getGraphqlCreateArgs())
+              .map(field => field.gqlCreateInputFields)
           ).join('\n')}
         }
       `);
@@ -283,9 +301,9 @@ module.exports = class List {
     ];
   }
 
-  getAdminGraphqlQueries() {
+  get gqlQueries() {
     // All the auxiliary queries the fields want to add
-    const queries = flatten(this.fields.map(field => field.getGraphqlAuxiliaryQueries()));
+    const queries = flatten(this.fields.map(field => field.gqlAuxQueries));
 
     // If `read` is either `true`, or a function (we don't care what the result
     // of the function is, that'll get executed at a later time)
@@ -350,7 +368,7 @@ module.exports = class List {
     return result;
   }
 
-  getAdminQueryResolvers() {
+  get gqlQueryResolvers() {
     let resolvers = {};
 
     // If set to false, we can confidently remove these resolvers entirely from
@@ -360,33 +378,8 @@ module.exports = class List {
         [this.gqlNames.listQueryName]: (_, args, context) =>
           this.manyQuery(args, context, this.gqlNames.listQueryName),
 
-        [this.gqlNames.listQueryMetaName]: (_, args, context) => {
-          return {
-            // Return these as functions so they're lazily evaluated depending
-            // on what the user requested
-            // Evalutation takes place in ../Keystone/index.js
-            getCount: () => {
-              const access = context.getListAccessControlForUser(this.key, 'read');
-              if (!access) {
-                // If the client handles errors correctly, it should be able to
-                // receive partial data (for the fields the user has access to),
-                // and then an `errors` array of AccessDeniedError's
-                throw new AccessDeniedError({
-                  data: {
-                    type: 'query',
-                    name: this.gqlNames.listQueryMetaName,
-                  },
-                  internalData: {
-                    authedId: context.authedItem && context.authedItem.id,
-                    authedListKey: context.authedListKey,
-                  },
-                });
-              }
-              let queryArgs = mergeWhereClause(args, access);
-              return this.adapter.itemsQueryMeta(queryArgs).then(({ count }) => count);
-            },
-          };
-        },
+        [this.gqlNames.listQueryMetaName]: (_, args, context) =>
+          this.manyQueryMeta(args, context, this.gqlNames.listQueryMetaName),
 
         [this.gqlNames.listMetaName]: () => {
           return {
@@ -457,12 +450,12 @@ module.exports = class List {
 
   // Get the resolvers for the (possibly multiple) output fields and wrap each with access control
   getWrappedFieldResolvers(field) {
-    return mapKeys(field.getGraphqlOutputFieldResolvers() || {}, innerResolver =>
+    return mapKeys(field.gqlOutputFieldResolvers || {}, innerResolver =>
       this.wrapFieldResolverWithAC(field, innerResolver)
     );
   }
 
-  getAdminFieldResolvers() {
+  get gqlFieldResolvers() {
     if (!this.access.read) {
       return {};
     }
@@ -478,21 +471,21 @@ module.exports = class List {
     return { [this.gqlNames.outputTypeName]: fieldResolvers };
   }
 
-  getAuxiliaryTypeResolvers() {
+  get gqlAuxFieldResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.getGraphqlAuxiliaryTypeResolvers()));
+    return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers));
   }
-  getAuxiliaryQueryResolvers() {
+  get gqlAuxQueryResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.getGraphqlAuxiliaryQueryResolvers()));
+    return objMerge(this.fields.map(field => field.gqlAuxQueryResolvers));
   }
-  getAuxiliaryMutationResolvers() {
+  get gqlAuxMutationResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.getGraphqlAuxiliaryMutationResolvers()));
+    return objMerge(this.fields.map(field => field.gqlAuxMutationResolvers));
   }
 
-  getAdminGraphqlMutations() {
-    const mutations = flatten(this.fields.map(field => field.getGraphqlAuxiliaryMutations()));
+  get gqlMutations() {
+    const mutations = flatten(this.fields.map(field => field.gqlAuxMutations));
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
@@ -599,10 +592,37 @@ module.exports = class List {
       throwAccessDenied();
     }
 
+    const throwNotFound = () => {
+      // NOTE: There is a potential security risk here if we were to
+      // further check the existence of an item with the given ID: It'd be
+      // possible to figure out if records with particular IDs exist in
+      // the DB even if the user doesn't have access (eg; check a bunch of
+      // IDs, and the ones that return AccessDenied exist, and the ones
+      // that return null do not exist). Similar to how S3 returns 403's
+      // always instead of ever returning 404's.
+      // Our version is to always throw if not found.
+      graphqlLogger.debug(
+        {
+          id,
+          operation,
+          access,
+          ...errorData,
+        },
+        'Zero items found'
+      );
+      throwAccessDenied();
+    };
+
     // Early out - the user has full access to update this list
     if (access === true) {
       const item = await this.adapter.findById(id);
-      return action(item);
+      if (!item) {
+        // Throwing an AccessDenied here if the item isn't found because we're
+        // strict about accidentally leaking information (that the item doesn't
+        // exist)
+        throwNotFound();
+      }
+      return await action(item);
     }
 
     // It's odd, but conceivable the access control specifies a single id
@@ -632,7 +652,7 @@ module.exports = class List {
     }
 
     // NOTE: The fields will be filtered by the ACL checking in
-    // getAdminFieldResolvers()
+    // gqlFieldResolvers()
     let queryArgs = {
       // We only want 1 item, don't make the DB do extra work
       first: 1,
@@ -648,28 +668,11 @@ module.exports = class List {
     const items = await this.adapter.itemsQuery(queryArgs);
 
     if (items.length === 0) {
-      // NOTE: There is a potential security risk here if we were to
-      // further check the existence of an item with the given ID: It'd be
-      // possible to figure out if records with particular IDs exist in
-      // the DB even if the user doesn't have access (eg; check a bunch of
-      // IDs, and the ones that return AccessDenied exist, and the ones
-      // that return null do not exist). Similar to how S3 returns 403's
-      // always instead of ever returning 404's.
-      // Our version is to always throw if not found.
-      graphqlLogger.debug(
-        {
-          id,
-          operation,
-          access,
-          ...errorData,
-        },
-        'Zero items found'
-      );
-      throwAccessDenied();
+      throwNotFound();
     }
 
     // Found the item, and it passed the filter test
-    return action(items[0]);
+    return await action(items[0]);
   }
 
   async performMultiActionOnItemsWithAccessControl({ operation, ids, context, errorData }, action) {
@@ -741,7 +744,7 @@ module.exports = class List {
     }
 
     // NOTE: The fields will be filtered by the ACL checking in
-    // getAdminFieldResolvers()
+    // gqlFieldResolvers()
     let queryArgs = {
       where: {
         ...omit(access, ['id', 'id_not', 'id_in', 'id_not_in']),
@@ -794,29 +797,93 @@ module.exports = class List {
       },
     });
 
+    // Enable pre-hooks to perform some action after the item is created by
+    // giving them a promise which will eventually resolve with the value of the
+    // newly created item.
+    const createdPromise = createDeferred();
+
     const resolvedData = await resolveAllKeys(
       mapKeys(data, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].createFieldPreHook(value, fieldPath, context)
+        this.fieldsByPath[fieldPath].createFieldPreHook(value, context, createdPromise.promise)
       )
     );
 
-    const newItem = await this.adapter.create(resolvedData);
+    let newItem;
+    try {
+      newItem = await this.adapter.create(resolvedData);
+      createdPromise.resolve(newItem);
+      // Wait until next tick so the promise/micro-task queue can be flushed
+      // fully, ensuring the deferred handlers get executed before we move on
+      await new Promise(res => process.nextTick(res));
+    } catch (error) {
+      createdPromise.reject(error);
+      // Wait until next tick so the promise/micro-task queue can be flushed
+      // fully, ensuring the deferred handlers get executed before we move on
+      await new Promise(res => process.nextTick(res));
+    }
 
     await Promise.all(
       Object.keys(data).map(fieldPath =>
-        this.fieldsByPath[fieldPath].createFieldPostHook(
-          newItem[fieldPath],
-          fieldPath,
-          newItem,
-          context
-        )
+        this.fieldsByPath[fieldPath].createFieldPostHook(newItem[fieldPath], newItem, context)
       )
     );
 
     return newItem;
   }
 
-  async manyQuery(args, context, queryName) {
+  async updateMutation(id, data, context) {
+    return this.performActionOnItemWithAccessControl(
+      {
+        id,
+        context,
+        operation: 'update',
+        errorData: {
+          type: 'mutation',
+          name: this.gqlNames.updateMutationName,
+        },
+      },
+      async item => {
+        this.throwIfAccessDeniedOnFields({
+          accessType: 'update',
+          item,
+          inputData: data,
+          context,
+          errorMeta: {
+            type: 'mutation',
+            name: this.gqlNames.updateMutationName,
+          },
+          errorMetaForLogging: {
+            itemId: id,
+          },
+        });
+
+        const resolvedData = await resolveAllKeys(
+          mapKeys(data, (value, fieldPath) =>
+            this.fieldsByPath[fieldPath].updateFieldPreHook(value, item, context)
+          )
+        );
+
+        const newItem = await this.adapter.update(
+          id,
+          // avoid any kind of injection attack by explicitly doing a `$set`
+          // operation
+          { $set: resolvedData },
+          // Return the modified item, not the original
+          { new: true }
+        );
+
+        await Promise.all(
+          Object.keys(data).map(fieldPath =>
+            this.fieldsByPath[fieldPath].updateFieldPostHook(newItem[fieldPath], newItem, context)
+          )
+        );
+
+        return newItem;
+      }
+    );
+  }
+
+  async _tryManyQuery(args, context, queryName, manyQuery) {
     const access = context.getListAccessControlForUser(this.key, 'read');
     if (!access) {
       // If the client handles errors correctly, it should be able to
@@ -835,10 +902,31 @@ module.exports = class List {
     }
     let queryArgs = mergeWhereClause(args, access);
 
-    return this.adapter.itemsQuery(queryArgs);
+    return manyQuery(queryArgs);
   }
 
-  getAdminMutationResolvers() {
+  async manyQuery(args, context, queryName) {
+    // eslint-disable-next-line no-underscore-dangle
+    return this._tryManyQuery(args, context, queryName, queryArgs =>
+      this.adapter.itemsQuery(queryArgs)
+    );
+  }
+
+  async manyQueryMeta(args, context, queryName) {
+    return {
+      // Return these as functions so they're lazily evaluated depending
+      // on what the user requested
+      // Evalutation takes place in ../Keystone/index.js
+      getCount: () => {
+        // eslint-disable-next-line no-underscore-dangle
+        return this._tryManyQuery(args, context, queryName, queryArgs =>
+          this.adapter.itemsQueryMeta(queryArgs).then(({ count }) => count)
+        );
+      },
+    };
+  }
+
+  get gqlMutationResolvers() {
     const mutationResolvers = {};
 
     if (this.access.create) {
@@ -847,62 +935,8 @@ module.exports = class List {
     }
 
     if (this.access.update) {
-      mutationResolvers[this.gqlNames.updateMutationName] = async (_, { id, data }, context) => {
-        return this.performActionOnItemWithAccessControl(
-          {
-            id,
-            context,
-            operation: 'update',
-            errorData: {
-              type: 'mutation',
-              name: this.gqlNames.updateMutationName,
-            },
-          },
-          async item => {
-            this.throwIfAccessDeniedOnFields({
-              accessType: 'update',
-              item,
-              inputData: data,
-              context,
-              errorMeta: {
-                type: 'mutation',
-                name: this.gqlNames.updateMutationName,
-              },
-              errorMetaForLogging: {
-                itemId: id,
-              },
-            });
-
-            const resolvedData = await resolveAllKeys(
-              mapKeys(data, (value, fieldPath) =>
-                this.fieldsByPath[fieldPath].updateFieldPreHook(value, fieldPath, item, context)
-              )
-            );
-
-            const newItem = await this.adapter.update(
-              id,
-              // avoid any kind of injection attack by explicitly doing a `$set`
-              // operation
-              { $set: resolvedData },
-              // Return the modified item, not the original
-              { new: true }
-            );
-
-            await Promise.all(
-              Object.keys(data).map(fieldPath =>
-                this.fieldsByPath[fieldPath].updateFieldPostHook(
-                  newItem[fieldPath],
-                  fieldPath,
-                  newItem,
-                  context
-                )
-              )
-            );
-
-            return newItem;
-          }
-        );
-      };
+      mutationResolvers[this.gqlNames.updateMutationName] = async (_, { id, data }, context) =>
+        this.updateMutation(id, data, context);
     }
 
     if (this.access.delete) {
@@ -917,9 +951,18 @@ module.exports = class List {
               name: this.gqlNames.deleteMutationName,
             },
           },
-          (/* item */) => {
-            // TODO: pre/post delete hooks
-            return this.adapter.delete(id);
+          async item => {
+            await Promise.all(
+              this.fields.map(field => field.deleteFieldPreHook(item[field.path], item, context))
+            );
+
+            const result = await this.adapter.delete(id);
+
+            await Promise.all(
+              this.fields.map(field => field.deleteFieldPostHook(item[field.path], item, context))
+            );
+
+            return result;
           }
         );
       };
@@ -960,5 +1003,9 @@ module.exports = class List {
       operation,
       authentication,
     });
+  }
+
+  getFieldByPath(path) {
+    return this.fieldsByPath[path];
   }
 };

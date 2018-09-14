@@ -6,20 +6,20 @@ class Checkbox extends Implementation {
     super(...arguments);
   }
 
-  getGraphqlOutputFields() {
+  get gqlOutputFields() {
     return [`${this.path}: Boolean`];
   }
-  getGraphqlOutputFieldResolvers() {
+  get gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
-  getGraphqlQueryArgs() {
+  get gqlQueryInputFields() {
     return [`${this.path}: Boolean`, `${this.path}_not: Boolean`];
   }
-  getGraphqlUpdateArgs() {
+  get gqlUpdateInputFields() {
     return [`${this.path}: Boolean`];
   }
-  getGraphqlCreateArgs() {
+  get gqlCreateInputFields() {
     return [`${this.path}: Boolean`];
   }
 }
