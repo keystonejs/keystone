@@ -20,7 +20,7 @@ import { borderRadius, colors } from '../../theme';
 const yearRange = (from, to) => {
   const years = [];
   let year = from;
-  while(year <= to) {
+  while (year <= to) {
     years.push(year++);
   }
   return years;
@@ -148,7 +148,7 @@ type SelectYearProps = {
 class SelectYear extends React.Component<SelectYearProps> {
   render() {
     const { handleYearSelect, setDate, setSelectedDate } = this.props;
-    const years = yearRange(1900,2050);
+    const years = yearRange(1900, 2050);
     const { date } = this.props;
 
     const onChange = event => {
