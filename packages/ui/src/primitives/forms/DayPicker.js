@@ -2,27 +2,40 @@
 import React, { type Node, type Ref } from 'react';
 import styled from 'react-emotion';
 import Kalendaryo from 'kalendaryo';
-import { isToday as isDayToday, isSameMonth } from 'date-fns';
-import parse from 'date-fns/parse';
+import {
+  isToday as isDayToday,
+  isSameMonth,
+  parse,
+  getYear,
+  getMonth,
+  setMonth,
+  format,
+  setDay,
+} from 'date-fns';
 import { Input } from './index';
 import { Select } from '../filters';
-
 import { ChevronLeftIcon, ChevronRightIcon } from '@keystonejs/icons';
 import { borderRadius, colors } from '../../theme';
 
-const WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const yearRange = (from, to) => {
+  const years = [];
+  let year = from;
+  while (year <= to) {
+    years.push(year++);
+  }
+  return years;
+};
 
 const Wrapper = styled.div({
   fontSize: '0.85rem',
 });
+
 const Header = styled.div({
   alignItems: 'center',
   display: 'flex',
   justifyContent: 'space-between',
 });
-const HeaderText = styled.div({
-  fontWeight: 500,
-});
+
 const HeaderButton = props => (
   <button
     type="button"
@@ -49,12 +62,14 @@ const Body = 'div';
 const WeekRow = styled.div({
   display: 'flex',
 });
+
 const WeekLabels = styled(WeekRow)({
   color: colors.N40,
   fontSize: '0.65rem',
   fontWeight: 500,
   textTransform: 'uppercase',
 });
+
 const Day = styled.div(({ disabled, isInteractive, isSelected, isToday }) => {
   let textColor;
   if (isToday) textColor = colors.danger;
@@ -84,6 +99,7 @@ const Day = styled.div(({ disabled, isInteractive, isSelected, isToday }) => {
     },
   };
 });
+
 const TodayMarker = styled.div(({ isSelected }) => ({
   backgroundColor: isSelected ? 'white' : colors.danger,
   borderRadius: 4,
@@ -93,31 +109,68 @@ const TodayMarker = styled.div(({ isSelected }) => ({
   width: '1em',
 }));
 
-type Props = {
-  children?: Node,
-  /** Field disabled */
-  isDisabled?: boolean,
-  /** Marks this as a required field */
-  isRequired?: boolean,
-  /** Field name */
-  name?: string,
-  /** onChange event handler */
-  onChange: any => mixed,
-  /** Field value */
-  value: string,
-  /** Ref to apply to the inner Element */
-  innerRef: Ref<*>,
+type SelectMonthProps = {
+  handleMonthSelect: (Event, Function, Function) => void,
+  setDate: Function => mixed,
+  setSelectedDate: Function => mixed,
   date: string,
-  time: string,
-  offset: string,
-  htmlID: string,
-  autoFocus: boolean,
-  handleDayChange: any => mixed,
-  handleTimeChange: any => mixed,
-  handleOffsetChange: any => mixed,
 };
 
-type DayPickerProps = {};
+class SelectMonth extends React.Component<SelectMonthProps> {
+  render() {
+    const { handleMonthSelect, setDate, setSelectedDate } = this.props;
+    const months = [...new Array(12)].map((_, month) => format(setMonth(new Date(), month), 'MMM'));
+    const { date } = this.props;
+
+    const onChange = event => {
+      handleMonthSelect(event, setDate, setSelectedDate);
+    };
+
+    return (
+      <select onChange={onChange} value={getMonth(date)}>
+        {months.map((month, i) => (
+          <option key={i} value={i}>
+            {month}
+          </option>
+        ))}
+      </select>
+    );
+  }
+}
+
+type SelectYearProps = {
+  handleYearSelect: (Event, Function, Function) => void,
+  setDate: Function => void,
+  setSelectedDate: Function => void,
+  date: string,
+};
+
+class SelectYear extends React.Component<SelectYearProps> {
+  render() {
+    const { handleYearSelect, setDate, setSelectedDate } = this.props;
+    const years = yearRange(1900, 2050);
+    const { date } = this.props;
+
+    const onChange = event => {
+      handleYearSelect(event, setDate, setSelectedDate);
+    };
+
+    return (
+      <select onChange={onChange} value={getYear(date)}>
+        {years.map((year, i) => (
+          <option key={i} value={year}>
+            {year}
+          </option>
+        ))}
+      </select>
+    );
+  }
+}
+
+type DayPickerProps = {
+  handleYearSelect: (Event, Function, Function) => void,
+  handleMonthSelect: (Event, Function, Function) => void,
+};
 
 export const DayPicker = (props: DayPickerProps) => {
   function BasicCalendar(kalendaryo) {
@@ -131,14 +184,13 @@ export const DayPicker = (props: DayPickerProps) => {
       selectedDate,
       date,
     } = kalendaryo;
-
-    const currentDate = getFormattedDate('MMMM YYYY');
+    const { handleYearSelect, handleMonthSelect } = props;
     const weeksInCurrentMonth = getWeeksInMonth();
 
-    const setDateNextMonth = x => {
-      console.log({ x });
+    const setDateNextMonth = () => {
       setDate(getDateNextMonth());
     };
+
     const setDatePrevMonth = () => setDate(getDatePrevMonth());
     const selectDay = _date => () => setSelectedDate(_date);
 
@@ -151,19 +203,28 @@ export const DayPicker = (props: DayPickerProps) => {
           <HeaderButton onClick={setDatePrevMonth}>
             <ChevronLeftIcon />
           </HeaderButton>
-          <HeaderText>{currentDate}</HeaderText>
+          <SelectMonth
+            date={selectedDate}
+            handleMonthSelect={handleMonthSelect}
+            setDate={setDate}
+            setSelectedDate={setSelectedDate}
+          />
+          <SelectYear
+            date={selectedDate}
+            handleYearSelect={handleYearSelect}
+            setDate={setDate}
+            setSelectedDate={setSelectedDate}
+          />
           <HeaderButton onClick={setDateNextMonth}>
             <ChevronRightIcon />
           </HeaderButton>
         </Header>
-
         <Body>
           <WeekLabels>
-            {WEEK_DAYS.map(d => (
+            {[...new Array(7)].map((_, day) => format(setDay(new Date(), day), 'ddd')).map(d => (
               <Day key={d}>{d}</Day>
             ))}
           </WeekLabels>
-
           {weeksInCurrentMonth.map((week, i) => (
             <WeekRow key={i}>
               {week.map(day => {
@@ -193,9 +254,41 @@ export const DayPicker = (props: DayPickerProps) => {
   return <Kalendaryo {...props} render={BasicCalendar} />;
 };
 
+type Props = {
+  children?: Node,
+  /** Field disabled */
+  isDisabled?: boolean,
+  /** Marks this as a required field */
+  isRequired?: boolean,
+  /** Field name */
+  name?: string,
+  /** onChange event handler */
+  onChange: any => mixed,
+  /** Field value */
+  value: string,
+  /** Ref to apply to the inner Element */
+  innerRef: Ref<*>,
+  date: string,
+  time: string,
+  offset: string,
+  htmlID: string,
+  autoFocus: boolean,
+  handleDayChange: Function => void,
+  handleTimeChange: Function => void,
+  handleOffsetChange: Function => void,
+  handleYearSelect: (Event, Function, Function) => void,
+  handleMonthSelect: (Event, Function, Function) => void,
+};
+
 export const DateTimePicker = (props: Props) => {
   const { date, time, offset, htmlID, autoFocus, isDisabled, innerRef } = props;
-  const { handleDayChange, handleTimeChange, handleOffsetChange } = props;
+  const {
+    handleDayChange,
+    handleTimeChange,
+    handleOffsetChange,
+    handleYearSelect,
+    handleMonthSelect,
+  } = props;
   const TODAY = new Date();
 
   const options = [
@@ -233,6 +326,8 @@ export const DateTimePicker = (props: Props) => {
       <DayPicker
         autoFocus={autoFocus}
         onSelectedChange={handleDayChange}
+        handleMonthSelect={handleMonthSelect}
+        handleYearSelect={handleYearSelect}
         startCurrentDateAt={date ? parse(date) : TODAY}
         startSelectedDateAt={date ? parse(date) : TODAY}
       />

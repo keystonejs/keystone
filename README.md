@@ -41,7 +41,13 @@ You can reset the database by hitting the [/reset-db](http://keystone-next.herok
 ## Getting Started
 
 Keystone 5 is set up as a monorepo, using [Bolt](http://boltpkg.com)
-First make sure you've got Bolt installed:
+First, clone the Keystone 5 repository
+
+```
+git clone https://github.com/keystonejs/keystone-5.git
+```
+
+Then make sure you've got Bolt installed:
 
 ```sh
 yarn global add bolt

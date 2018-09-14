@@ -34,8 +34,8 @@ describe('Adding data', () => {
 
       if (url === '/admin/users') {
         cy.get('#ks-input-dob').click();
-        cy.get('#ks-daypicker-dob')
-          .contains('10')
+        cy.get('#ks-daypicker-dob div:contains("10")')
+          .last()
           .click({ force: true });
         cy.get('#ks-input-dob').click();
       }
