@@ -2,7 +2,7 @@
 
 import React, { Component, type Ref } from 'react';
 import { DateTime } from 'luxon';
-import format from 'date-fns/format';
+import { format, setMonth, setYear } from 'date-fns';
 import { DateTimePicker } from '@keystonejs/ui/src/primitives/forms';
 
 type Props = {
@@ -45,6 +45,28 @@ export default class CalendarDayFilterView extends Component<Props> {
     this.setState(newState);
   };
 
+  handleMonthSelect = (event, setDate, setSelectedDate) => {
+    const { field, onChange } = this.props;
+    const month = event.target.value;
+    const newDate = setMonth(this.state.value, month);
+    const value = format(newDate, 'YYYY-MM-DD');
+    setDate(newDate);
+    setSelectedDate(newDate);
+    this.setState({ value });
+    onChange(field, value);
+  };
+
+  handleYearSelect = (event, setDate, setSelectedDate) => {
+    const { field, onChange } = this.props;
+    const year = event.target.value;
+    const newDate = setYear(this.state.value, year);
+    const value = format(newDate, 'YYYY-MM-DD');
+    setDate(newDate);
+    setSelectedDate(newDate);
+    this.setState({ value });
+    onChange(field, value);
+  };
+
   componentDidUpdate(prevProps) {
     const { filter } = this.props;
 
@@ -59,11 +81,11 @@ export default class CalendarDayFilterView extends Component<Props> {
     if (!filter) return null;
 
     const { date, time, offset } = this.state;
-    const { handleDayChange, handleTimeChange, handleOffsetChange } = this;
+    const { handleDayChange, handleTimeChange, handleOffsetChange, handleMonthSelect, handleYearSelect } = this;
     return (
       <DateTimePicker
         {...this.props}
-        {...{ date, time, offset, handleDayChange, handleTimeChange, handleOffsetChange }}
+        {...{ date, time, offset, handleDayChange, handleTimeChange, handleOffsetChange, handleMonthSelect, handleYearSelect }}
       />
     );
   }
