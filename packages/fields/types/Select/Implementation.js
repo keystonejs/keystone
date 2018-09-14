@@ -16,17 +16,17 @@ class Select extends Implementation {
     super(...arguments);
     this.options = initOptions(config.options);
   }
-  getGraphqlOutputFields() {
+  get gqlOutputFields() {
     return [`${this.path}: ${this.getTypeName()}`];
   }
-  getGraphqlOutputFieldResolvers() {
+  get gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
   getTypeName() {
     return `${this.listKey}${inflection.classify(this.path)}Type`;
   }
-  getGraphqlAuxiliaryTypes() {
+  get gqlAuxTypes() {
     // TODO: I'm really not sure it's safe to generate GraphQL Enums from
     // whatever options people provide, this could easily break with spaces and
     // special characters in values so may not be worth it...
@@ -42,7 +42,7 @@ class Select extends Implementation {
   extendAdminMeta(meta) {
     return { ...meta, options: this.options };
   }
-  getGraphqlQueryArgs() {
+  get gqlQueryInputFields() {
     return [
       `${this.path}: ${this.getTypeName()}`,
       `${this.path}_not: ${this.getTypeName()}`,
@@ -50,10 +50,10 @@ class Select extends Implementation {
       `${this.path}_not_in: [${this.getTypeName()}!]`,
     ];
   }
-  getGraphqlUpdateArgs() {
+  get gqlUpdateInputFields() {
     return [`${this.path}: ${this.getTypeName()}`];
   }
-  getGraphqlCreateArgs() {
+  get gqlCreateInputFields() {
     return [`${this.path}: ${this.getTypeName()}`];
   }
 }

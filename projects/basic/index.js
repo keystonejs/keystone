@@ -94,6 +94,7 @@ keystone.createList('Post', {
     },
     stars: { type: Float },
     views: { type: Integer },
+    hero: { type: File, adapter: fileAdapter },
   },
   labelResolver: item => item.name,
 });

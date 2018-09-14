@@ -74,7 +74,7 @@ jobs:
       - run: yarn lint:flow
       - run:
           name: Unit tests
-          command: yarn jest --ci --testResultsProcessor="jest-junit"
+          command: yarn jest --ci --testResultsProcessor="jest-junit" --maxWorkers=2
           environment:
             JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
       - store_test_results:

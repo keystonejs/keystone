@@ -9,10 +9,10 @@ class _DateTime extends Implementation {
     super(...arguments);
   }
 
-  getGraphqlOutputFields() {
+  get gqlOutputFields() {
     return [`${this.path}: DateTime`];
   }
-  getGraphqlQueryArgs() {
+  get gqlQueryInputFields() {
     return [
       `${this.path}: DateTime`,
       `${this.path}_not: DateTime`,
@@ -24,16 +24,16 @@ class _DateTime extends Implementation {
       `${this.path}_not_in: [DateTime]`,
     ];
   }
-  getGraphqlUpdateArgs() {
+  get gqlUpdateInputFields() {
     return [`${this.path}: DateTime`];
   }
-  getGraphqlCreateArgs() {
+  get gqlCreateInputFields() {
     return [`${this.path}: DateTime`];
   }
-  getGraphqlAuxiliaryTypes() {
+  get gqlAuxTypes() {
     return [`scalar DateTime`];
   }
-  getGraphqlAuxiliaryTypeResolvers() {
+  get gqlAuxFieldResolvers() {
     return {
       DateTime: new GraphQLScalarType({
         name: 'DateTime',

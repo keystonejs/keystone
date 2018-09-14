@@ -191,3 +191,184 @@ describe('relationship filtering', () => {
     });
   });
 });
+
+describe('relationship meta filtering', () => {
+  test('nested to-many relationships return meta info', async () => {
+    const ids = [];
+
+    ids.push((await create('Post', { content: 'Hello world' })).id);
+    ids.push((await create('Post', { content: 'hi world' })).id);
+    ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+
+    const user = await create('User', { posts: ids });
+
+    // Create a dummy user to make sure we're actually filtering it out
+    const user2 = await create('User', { posts: [ids[0]] });
+
+    const queryUser = await graphqlRequest({
+      server,
+      query: `
+        query {
+          allUsers {
+            id
+            _postsMeta {
+              count
+            }
+          }
+        }
+      `,
+    });
+
+    expect(queryUser.body).not.toHaveProperty('errors');
+    expect(queryUser.body.data.allUsers).toHaveLength(2);
+    expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
+    expect(queryUser.body.data).toMatchObject({
+      allUsers: [
+        {
+          id: user.id,
+          _postsMeta: { count: 3 },
+        },
+        {
+          id: user2.id,
+          _postsMeta: { count: 1 },
+        },
+      ],
+    });
+  });
+
+  test('nested to-many relationship meta can be filtered', async () => {
+    const ids = [];
+
+    ids.push((await create('Post', { content: 'Hello world' })).id);
+    ids.push((await create('Post', { content: 'hi world' })).id);
+    ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+
+    const user = await create('User', { posts: ids });
+
+    // Create a dummy user to make sure we're actually filtering it out
+    const user2 = await create('User', { posts: [ids[0]] });
+
+    const queryUser = await graphqlRequest({
+      server,
+      query: `
+        query {
+          allUsers {
+            id
+            _postsMeta (where: {
+              content_contains: "hi",
+            }){
+              count
+            }
+          }
+        }
+      `,
+    });
+
+    expect(queryUser.body).not.toHaveProperty('errors');
+    expect(queryUser.body.data.allUsers).toHaveLength(2);
+    expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
+    expect(queryUser.body.data).toMatchObject({
+      allUsers: [
+        {
+          id: user.id,
+          _postsMeta: { count: 2 },
+        },
+        {
+          id: user2.id,
+          _postsMeta: { count: 0 },
+        },
+      ],
+    });
+  });
+
+  test('nested to-many relationship meta can be limited', async () => {
+    const ids = [];
+
+    ids.push((await create('Post', { content: 'Hello world' })).id);
+    ids.push((await create('Post', { content: 'hi world' })).id);
+    ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+
+    const user = await create('User', { posts: ids });
+
+    // Create a dummy user to make sure we're actually filtering it out
+    const user2 = await create('User', { posts: [ids[0]] });
+
+    const queryUser = await graphqlRequest({
+      server,
+      query: `
+        query {
+          allUsers {
+            id
+            _postsMeta (first: 1) {
+              count
+            }
+          }
+        }
+      `,
+    });
+
+    expect(queryUser.body).not.toHaveProperty('errors');
+    expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
+    expect(queryUser.body.data.allUsers).toHaveLength(2);
+    expect(queryUser.body.data).toMatchObject({
+      allUsers: [
+        {
+          id: user.id,
+          _postsMeta: { count: 1 },
+        },
+        {
+          id: user2.id,
+          _postsMeta: { count: 1 },
+        },
+      ],
+    });
+  });
+
+  test('nested to-many relationship meta can be filtered within AND clause', async () => {
+    const ids = [];
+
+    ids.push((await create('Post', { content: 'Hello world' })).id);
+    ids.push((await create('Post', { content: 'hi world' })).id);
+    ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+
+    const user = await create('User', { posts: ids });
+
+    // Create a dummy user to make sure we're actually filtering it out
+    const user2 = await create('User', { posts: [ids[0]] });
+
+    const queryUser = await graphqlRequest({
+      server,
+      query: `
+        query {
+          allUsers {
+            id
+            _postsMeta (where: {
+              AND: [
+                { content_contains: "hi" },
+                { content_contains: "lo" },
+              ]
+            }){
+              count
+            }
+          }
+        }
+      `,
+    });
+
+    expect(queryUser.body).not.toHaveProperty('errors');
+    expect(queryUser.body.data.allUsers).toHaveLength(2);
+    expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
+    expect(queryUser.body.data).toMatchObject({
+      allUsers: [
+        {
+          id: user.id,
+          _postsMeta: { count: 1 },
+        },
+        {
+          id: user2.id,
+          _postsMeta: { count: 0 },
+        },
+      ],
+    });
+  });
+});

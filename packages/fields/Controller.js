@@ -9,7 +9,7 @@ export default class FieldController {
   }
 
   // TODO: This is a bad default; we should (somehow?) inspect the fields provided
-  // by the implementations getGraphqlOutputFields()
+  // by the implementations gqlOutputFields
   getQueryFragment = () => this.path;
 
   getValue = data => data[this.config.path] || '';

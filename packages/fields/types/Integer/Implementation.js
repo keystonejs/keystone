@@ -6,14 +6,14 @@ class Integer extends Implementation {
     super(...arguments);
   }
 
-  getGraphqlOutputFields() {
+  get gqlOutputFields() {
     return [`${this.path}: Int`];
   }
-  getGraphqlOutputFieldResolvers() {
+  get gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
 
-  getGraphqlQueryArgs() {
+  get gqlQueryInputFields() {
     return [
       `${this.path}: Int`,
       `${this.path}_not: Int`,
@@ -25,10 +25,10 @@ class Integer extends Implementation {
       `${this.path}_not_in: [Int]`,
     ];
   }
-  getGraphqlUpdateArgs() {
+  get gqlUpdateInputFields() {
     return [`${this.path}: Int`];
   }
-  getGraphqlCreateArgs() {
+  get gqlCreateInputFields() {
     return [`${this.path}: Int`];
   }
 }

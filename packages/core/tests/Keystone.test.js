@@ -29,6 +29,75 @@ test('new Keystone()', () => {
   expect(keystone.config).toEqual(config);
 });
 
+test('unique typeDefs', () => {
+  class MockFileType {
+    constructor() {
+      this.access = {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+      };
+    }
+    get gqlAuxTypes() {
+      return ['scalar Foo'];
+    }
+    get gqlOutputFields() {
+      return ['foo: Boolean'];
+    }
+    get gqlQueryInputFields() {
+      return ['zip: Boolean'];
+    }
+    get gqlUpdateInputFields() {
+      return ['zap: Boolean'];
+    }
+    get gqlCreateInputFields() {
+      return ['quux: Boolean'];
+    }
+    get gqlAuxQueries() {
+      return ['getFoo: Boolean'];
+    }
+    get gqlAuxMutations() {
+      return ['mutateFoo: Boolean'];
+    }
+  }
+
+  const config = {
+    adapter: new MockAdapter(),
+    name: 'Jest Test for typeDefs',
+  };
+  const keystone = new Keystone(config);
+
+  keystone.createList('User', {
+    fields: {
+      images: {
+        type: {
+          implementation: MockFileType,
+          views: {},
+          adapters: { mock: MockFieldAdapter },
+        },
+      },
+    },
+  });
+
+  keystone.createList('Post', {
+    fields: {
+      hero: {
+        type: {
+          implementation: MockFileType,
+          views: {},
+          adapters: { mock: MockFieldAdapter },
+        },
+      },
+    },
+  });
+
+  const schema = keystone.getTypeDefs().join('\n');
+  expect(schema.match(/scalar Foo/g) || []).toHaveLength(1);
+  expect(schema.match(/getFoo: Boolean/g) || []).toHaveLength(1);
+  expect(schema.match(/mutateFoo: Boolean/g) || []).toHaveLength(1);
+});
+
 describe('Keystone.createList()', () => {
   test('basic', () => {
     const config = {
