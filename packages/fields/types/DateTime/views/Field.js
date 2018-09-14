@@ -46,22 +46,22 @@ export default class CalendarDayField extends Component {
   handleMonthSelect = (event, setDate, setSelectedDate) => {
     const { field, onChange } = this.props;
     const month = event.target.value;
-    const newDate = setMonth(this.state.value, month);
+    const newDate = setMonth(this.state.date, month);
     const value = format(newDate, 'YYYY-MM-DD');
     setDate(newDate);
     setSelectedDate(newDate);
-    this.setState({ value });
+    this.setState({ date: value });
     onChange(field, value);
   };
 
   handleYearSelect = (event, setDate, setSelectedDate) => {
     const { field, onChange } = this.props;
     const year = event.target.value;
-    const newDate = setYear(this.state.value, year);
+    const newDate = setYear(this.state.date, year);
     const value = format(newDate, 'YYYY-MM-DD');
     setDate(newDate);
     setSelectedDate(newDate);
-    this.setState({ value });
+    this.setState({ date: value });
     onChange(field, value);
   };
 
