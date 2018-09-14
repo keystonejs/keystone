@@ -1,7 +1,7 @@
 const GraphQLJSON = require('graphql-type-json');
 const gql = require('graphql-tag');
 const { print } = require('graphql/language/printer');
-const { resolveAllKeys, arrayToObject, mapKeys, objMerge, flatten } = require('@keystonejs/utils');
+const { resolveAllKeys, arrayToObject, mapKeys, objMerge, flatten } = require('@voussoir/utils');
 
 const {
   unmergeRelationships,

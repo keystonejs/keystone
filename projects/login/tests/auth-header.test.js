@@ -1,15 +1,15 @@
 const supertest = require('supertest-light');
-const { Keystone } = require('@keystonejs/core');
-const { Text, Password } = require('@keystonejs/fields');
-const { WebServer } = require('@keystonejs/server');
-const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
+const { Keystone } = require('@voussoir/core');
+const { Text, Password } = require('@voussoir/fields');
+const { WebServer } = require('@voussoir/server');
+const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
 const bodyParser = require('body-parser');
-const { resolveAllKeys, mapKeys } = require('@keystonejs/utils');
+const { resolveAllKeys, mapKeys } = require('@voussoir/utils');
 const cookieSignature = require('cookie-signature');
 
 const initialData = require('../data');
 
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 
 describe('Auth testing', () => {
   const keystone = new Keystone({

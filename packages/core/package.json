@@ -1,17 +1,16 @@
 {
-  "name": "@keystonejs/core",
-  "private": true,
-  "version": "5.0.0",
+  "name": "@voussoir/core",
+  "version": "0.1.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystonejs/access-control": "^5.0.0",
-    "@keystonejs/fields": "^5.0.0",
-    "@keystonejs/logger": "^1.0.0",
-    "@keystonejs/utils": "^1.0.0",
+    "@voussoir/access-control": "^0.1.0",
+    "@voussoir/fields": "^0.1.0",
+    "@voussoir/logger": "^0.1.0",
+    "@voussoir/utils": "^0.1.0",
     "apollo-errors": "^1.9.0",
     "graphql-tools": "^3.0.0",
     "graphql-type-json": "^0.2.1",

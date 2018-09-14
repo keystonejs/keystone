@@ -1,19 +1,18 @@
 {
-  "name": "@keystonejs/fields",
-  "private": true,
-  "version": "5.0.0",
+  "name": "@voussoir/fields",
+  "version": "0.1.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystonejs/access-control": "^5.0.0",
-    "@keystonejs/adapter-mongoose": "^1.0.0",
-    "@keystonejs/icons": "^1.0.0",
-    "@keystonejs/logger": "^1.0.0",
-    "@keystonejs/ui": "^5.0.0",
-    "@keystonejs/utils": "^1.0.0",
+    "@voussoir/access-control": "^0.1.0",
+    "@voussoir/adapter-mongoose": "^0.1.0",
+    "@voussoir/icons": "^0.1.0",
+    "@voussoir/logger": "^0.1.0",
+    "@voussoir/ui": "^0.1.0",
+    "@voussoir/utils": "^0.1.0",
     "apollo-errors": "^1.9.0",
     "bcrypt": "^3.0.0",
     "cuid": "^2.1.1",

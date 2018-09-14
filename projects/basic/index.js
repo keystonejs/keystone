@@ -1,5 +1,5 @@
-const { AdminUI } = require('@keystonejs/admin-ui');
-const { Keystone } = require('@keystonejs/core');
+const { AdminUI } = require('@voussoir/admin-ui');
+const { Keystone } = require('@voussoir/core');
 const {
   File,
   Text,
@@ -12,9 +12,9 @@ const {
   CalendarDay,
   CloudinaryImage,
   DateTime,
-} = require('@keystonejs/fields');
-const { WebServer } = require('@keystonejs/server');
-const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
+} = require('@voussoir/fields');
+const { WebServer } = require('@voussoir/server');
+const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
 
 const { port, staticRoute, staticPath, cloudinary } = require('./config');
 
@@ -26,7 +26,7 @@ const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 const initialData = require('./data');
 
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'Cypress Test Project Basic',

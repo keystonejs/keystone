@@ -2,13 +2,13 @@ const gql = require('graphql-tag');
 const { print } = require('graphql/language/printer');
 
 // We don't want to actually log, so we mock it before we require the class
-jest.doMock('@keystonejs/logger', () => {
+jest.doMock('@voussoir/logger', () => {
   return jest.fn(() => ({ warn: () => {}, log: () => {} }));
 });
 
 const List = require('../List');
-const { Text, Checkbox, Float } = require('@keystonejs/fields');
-const { getType } = require('@keystonejs/utils');
+const { Text, Checkbox, Float } = require('@voussoir/fields');
+const { getType } = require('@voussoir/utils');
 
 class MockAdminMeta {}
 

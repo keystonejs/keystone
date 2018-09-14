@@ -1,6 +1,6 @@
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
-const { escapeRegExp: esc } = require('@keystonejs/utils');
+const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { escapeRegExp: esc } = require('@voussoir/utils');
 const mongoose = require('mongoose');
 
 // Disabling the getter of mongoose >= 5.1.0

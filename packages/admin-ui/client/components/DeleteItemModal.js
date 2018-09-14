@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Confirm } from '@keystonejs/ui/src/primitives/modals';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { Confirm } from '@voussoir/ui/src/primitives/modals';
 
 export default class DeleteItemModal extends Component {
   onClose = () => {

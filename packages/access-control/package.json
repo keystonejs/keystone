@@ -1,13 +1,12 @@
 {
-  "name": "@keystonejs/access-control",
-  "private": true,
-  "version": "5.0.0",
+  "name": "@voussoir/access-control",
+  "version": "0.1.0",
   "author": "Jess Telford",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystonejs/utils": "^1.0.0"
+    "@voussoir/utils": "^0.1.0"
   }
 }

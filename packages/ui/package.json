@@ -1,14 +1,13 @@
 {
-  "name": "@keystonejs/ui",
-  "private": true,
-  "version": "5.0.0",
+  "name": "@voussoir/ui",
+  "version": "0.1.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystonejs/icons": "^1.0.0",
+    "@voussoir/icons": "^0.1.0",
     "date-fns": "^1.29.0",
     "emotion": "^9.1.1",
     "focus-trap": "^2.4.3",

@@ -2,11 +2,11 @@ import React, { Component, Fragment } from 'react';
 import { Mutation } from 'react-apollo';
 import styled from 'react-emotion';
 
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Drawer } from '@keystonejs/ui/src/primitives/modals';
-import { resolveAllKeys, arrayToObject } from '@keystonejs/utils';
-import { gridSize } from '@keystonejs/ui/src/theme';
-import { AutocompleteCaptor } from '@keystonejs/ui/src/primitives/forms';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { Drawer } from '@voussoir/ui/src/primitives/modals';
+import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
+import { gridSize } from '@voussoir/ui/src/theme';
+import { AutocompleteCaptor } from '@voussoir/ui/src/primitives/forms';
 
 import FieldTypes from '../FIELD_TYPES';
 

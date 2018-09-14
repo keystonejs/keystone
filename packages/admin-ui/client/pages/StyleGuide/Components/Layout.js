@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react';
 
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { Input } from '@keystonejs/ui/src/primitives/forms';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { Input } from '@voussoir/ui/src/primitives/forms';
 
 const FlexGroupExample = ({ heading, groupProps }) => (
   <Fragment>

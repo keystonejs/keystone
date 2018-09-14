@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
-import { Select } from '@keystonejs/ui/src/primitives/filters';
-import { ShieldIcon } from '@keystonejs/icons';
-import { colors } from '@keystonejs/ui/src/theme';
-import { pick } from '@keystonejs/utils';
+import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { Select } from '@voussoir/ui/src/primitives/filters';
+import { ShieldIcon } from '@voussoir/icons';
+import { colors } from '@voussoir/ui/src/theme';
+import { pick } from '@voussoir/utils';
 
 const getGraphqlQuery = refList => {
   // TODO: How can we replace this with field.Controller.getQueryFragment()?

@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ToastProvider } from 'react-toast-notifications';
 import { injectGlobal } from 'emotion';
 
-import globalStyles from '@keystonejs/ui/src/globalStyles';
+import globalStyles from '@voussoir/ui/src/globalStyles';
 injectGlobal(globalStyles);
 
 import apolloClient from './apolloClient';

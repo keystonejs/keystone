@@ -14,19 +14,19 @@ import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import Footer from './Footer';
-import { TriangleLeftIcon, CheckIcon, ClippyIcon, PlusIcon } from '@keystonejs/icons';
-import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { A11yText, H1 } from '@keystonejs/ui/src/primitives/typography';
-import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
-import { Alert } from '@keystonejs/ui/src/primitives/alert';
-import { AutocompleteCaptor } from '@keystonejs/ui/src/primitives/forms';
-import { colors, gridSize } from '@keystonejs/ui/src/theme';
+import { TriangleLeftIcon, CheckIcon, ClippyIcon, PlusIcon } from '@voussoir/icons';
+import { Container, FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { A11yText, H1 } from '@voussoir/ui/src/primitives/typography';
+import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
+import { Alert } from '@voussoir/ui/src/primitives/alert';
+import { AutocompleteCaptor } from '@voussoir/ui/src/primitives/forms';
+import { colors, gridSize } from '@voussoir/ui/src/theme';
 import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
 
-import { resolveAllKeys, arrayToObject } from '@keystonejs/utils';
+import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
 import isEqual from 'lodash.isequal';
 
-// This import is loaded by the @keystone/field-views-loader loader.
+// This import is loaded by the @voussoir/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
 import FieldTypes from '../../FIELD_TYPES';
 

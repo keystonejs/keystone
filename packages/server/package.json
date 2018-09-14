@@ -1,15 +1,14 @@
 {
-  "name": "@keystonejs/server",
-  "private": true,
-  "version": "5.0.0",
+  "name": "@voussoir/server",
+  "version": "0.1.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystonejs/logger": "^1.0.0",
-    "@keystonejs/utils": "^1.0.0",
+    "@voussoir/logger": "^0.1.0",
+    "@voussoir/utils": "^0.1.0",
     "apollo-server-express": "^2.0.4",
     "body-parser": "^1.18.2",
     "cookie": "^0.3.1",

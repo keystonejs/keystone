@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { OptionRenderer } from '@keystonejs/ui/src/primitives/filters';
-import { arrayToObject } from '@keystonejs/utils';
+import { OptionRenderer } from '@voussoir/ui/src/primitives/filters';
+import { arrayToObject } from '@voussoir/utils';
 
 function isOptionSelected(opt, selected) {
   return Boolean(selected.filter(x => x.path === opt.path).length);

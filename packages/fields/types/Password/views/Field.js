@@ -1,11 +1,11 @@
 import React, { Component, createRef } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
-import { Input } from '@keystonejs/ui/src/primitives/forms';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { EyeIcon, LockIcon } from '@keystonejs/icons';
-import { A11yText } from '@keystonejs/ui/src/primitives/typography';
+import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { Input } from '@voussoir/ui/src/primitives/forms';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { EyeIcon, LockIcon } from '@voussoir/icons';
+import { A11yText } from '@voussoir/ui/src/primitives/typography';
 
 export default class PasswordField extends Component {
   focusTarget = createRef();
