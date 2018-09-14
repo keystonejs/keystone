@@ -81,11 +81,26 @@ export default class CalendarDayFilterView extends Component<Props> {
     if (!filter) return null;
 
     const { date, time, offset } = this.state;
-    const { handleDayChange, handleTimeChange, handleOffsetChange, handleMonthSelect, handleYearSelect } = this;
+    const {
+      handleDayChange,
+      handleTimeChange,
+      handleOffsetChange,
+      handleMonthSelect,
+      handleYearSelect,
+    } = this;
     return (
       <DateTimePicker
         {...this.props}
-        {...{ date, time, offset, handleDayChange, handleTimeChange, handleOffsetChange, handleMonthSelect, handleYearSelect }}
+        {...{
+          date,
+          time,
+          offset,
+          handleDayChange,
+          handleTimeChange,
+          handleOffsetChange,
+          handleMonthSelect,
+          handleYearSelect,
+        }}
       />
     );
   }

@@ -75,7 +75,13 @@ export default class CalendarDayField extends Component {
       </Button>
     );
 
-    const { handleDayChange, handleTimeChange, handleOffsetChange, handleMonthSelect, handleYearSelect } = this;
+    const {
+      handleDayChange,
+      handleTimeChange,
+      handleOffsetChange,
+      handleMonthSelect,
+      handleYearSelect,
+    } = this;
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
@@ -83,7 +89,16 @@ export default class CalendarDayField extends Component {
           <Popout target={target} width={280}>
             <DateTimePicker
               {...this.props}
-              {...{ date, time, offset, handleDayChange, handleTimeChange, handleOffsetChange, handleMonthSelect, handleYearSelect }}
+              {...{
+                date,
+                time,
+                offset,
+                handleDayChange,
+                handleTimeChange,
+                handleOffsetChange,
+                handleMonthSelect,
+                handleYearSelect,
+              }}
             />
           </Popout>
         </FieldInput>
