@@ -110,9 +110,9 @@ const TodayMarker = styled.div(({ isSelected }) => ({
 }));
 
 type SelectMonthProps = {
-  handleMonthSelect: (any, any, any) => mixed,
-  setDate: any => mixed,
-  setSelectedDate: any => mixed,
+  handleMonthSelect: (Event, Function, Function) => void,
+  setDate: Function => mixed,
+  setSelectedDate: Function => mixed,
   date: string,
 };
 
@@ -139,9 +139,9 @@ class SelectMonth extends React.Component<SelectMonthProps> {
 }
 
 type SelectYearProps = {
-  handleYearSelect: (any, any, any) => mixed,
-  setDate: any => mixed,
-  setSelectedDate: any => mixed,
+  handleYearSelect: (Event, Function, Function) => void,
+  setDate: Function => void,
+  setSelectedDate: Function => void,
   date: string,
 };
 
@@ -168,8 +168,8 @@ class SelectYear extends React.Component<SelectYearProps> {
 }
 
 type DayPickerProps = {
-  handleYearSelect: (any, any, any) => mixed,
-  handleMonthSelect: (any, any, any) => mixed,
+  handleYearSelect: (Event, Function, Function) => void,
+  handleMonthSelect: (Event, Function, Function) => void,
 };
 
 export const DayPicker = (props: DayPickerProps) => {
@@ -273,11 +273,11 @@ type Props = {
   offset: string,
   htmlID: string,
   autoFocus: boolean,
-  handleDayChange: any => mixed,
-  handleTimeChange: any => mixed,
-  handleOffsetChange: any => mixed,
-  handleYearSelect: (any, any, any) => mixed,
-  handleMonthSelect: (any, any, any) => mixed,
+  handleDayChange: Function => void,
+  handleTimeChange: Function => void,
+  handleOffsetChange: Function => void,
+  handleYearSelect: (Event, Function, Function) => void,
+  handleMonthSelect: (Event, Function, Function) => void,
 };
 
 export const DateTimePicker = (props: Props) => {

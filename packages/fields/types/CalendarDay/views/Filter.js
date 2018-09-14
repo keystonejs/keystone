@@ -29,7 +29,6 @@ export default class CalendarDayFilterView extends Component<Props> {
   handleMonthSelect = (event, setDate, setSelectedDate) => {
     const { field, onChange } = this.props;
     const month = event.target.value;
-    console.log(month, ' selected');
     const newDate = setMonth(this.state.value, month);
     const value = format(newDate, 'YYYY-MM-DD');
     setDate(newDate);
