@@ -3323,6 +3323,12 @@ expect@^23.4.0:
     jest-message-util "^23.4.0"
     jest-regex-util "^23.3.0"
 
+express-pino-logger@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/express-pino-logger/-/express-pino-logger-4.0.0.tgz#775cf253a4e0e7ee2c24804f8a32900d6d0168ca"
+  dependencies:
+    pino-http "^4.0.0"
+
 express-session@^1.13.0, express-session@^1.15.6:
   version "1.15.6"
   resolved "https://registry.yarnpkg.com/express-session/-/express-session-1.15.6.tgz#47b4160c88f42ab70fe8a508e31cbff76757ab0a"
@@ -3479,9 +3485,17 @@ fast-redact@^1.1.13:
   version "1.1.13"
   resolved "https://registry.yarnpkg.com/fast-redact/-/fast-redact-1.1.13.tgz#b74ed0dbe3c9f5e1f82350dc467db92389548a06"
 
+fast-redact@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/fast-redact/-/fast-redact-1.2.0.tgz#356bdb968c23473cd4e460689c10785842f41529"
+
 fast-safe-stringify@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.0.4.tgz#4fe828718aa61dbcf9119c3c24e79cc4dea973b2"
+
+fast-safe-stringify@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.0.6.tgz#04b26106cc56681f51a044cfc0d76cf0008ac2c2"
 
 fb-watchman@^2.0.0:
   version "2.0.0"
@@ -6436,9 +6450,20 @@ pino-colada@^1.4.4:
     pretty-ms "^2.1.0"
     split2 "^2.1.1"
 
+pino-http@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/pino-http/-/pino-http-4.0.0.tgz#cc2eb3437b3454ecd2239697a45d6e9ae5e1b10d"
+  dependencies:
+    pino "^5.0.0"
+    pino-std-serializers "^2.1.0"
+
 pino-std-serializers@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-2.1.0.tgz#01953dcaecd5f43b331ecf2e312a49c9fd64851c"
+
+pino-std-serializers@^2.1.0, pino-std-serializers@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-2.2.1.tgz#ceb583374358c75949e9c4ddbdd690428c15958e"
 
 pino@5.0.0-rc.4:
   version "5.0.0-rc.4"
@@ -6452,6 +6477,19 @@ pino@5.0.0-rc.4:
     pump "^3.0.0"
     quick-format-unescaped "^3.0.0"
     sonic-boom "^0.5.0"
+
+pino@^5.0.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-5.6.0.tgz#2b3f238fd8de57c7da4177488c9f2b0b2ecf2b5f"
+  dependencies:
+    fast-json-parse "^1.0.3"
+    fast-redact "^1.2.0"
+    fast-safe-stringify "^2.0.6"
+    flatstr "^1.0.5"
+    pino-std-serializers "^2.2.1"
+    pump "^3.0.0"
+    quick-format-unescaped "^3.0.0"
+    sonic-boom "^0.6.1"
 
 pkg-dir@^2.0.0:
   version "2.0.0"
@@ -7524,6 +7562,12 @@ snapdragon@^0.8.1:
 sonic-boom@^0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-0.5.0.tgz#06b28c5bde0703c2ae5009ab2ef3f4749052ff73"
+  dependencies:
+    flatstr "^1.0.5"
+
+sonic-boom@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-0.6.1.tgz#da832af4ed7c477eb5317fe4c5132c75f7556245"
   dependencies:
     flatstr "^1.0.5"
 
