@@ -24,16 +24,6 @@ const getRelatedListAdapterFromQueryPathFactory = require('./tokenizers/relation
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 
-function getMongoURI({ dbName, name }) {
-  return (
-    process.env.MONGO_URI ||
-    process.env.MONGO_URL ||
-    process.env.MONGODB_URI ||
-    process.env.MONGODB_URL ||
-    `mongodb://localhost:27017/${dbName || inflection.dasherize(name).toLowerCase()}`
-  );
-}
-
 const idQueryConditions = {
   // id is how it looks in the schema
   // _id is how it looks in the MongoDB
@@ -101,13 +91,33 @@ class MongooseAdapter extends BaseKeystoneAdapter {
   }
 
   connect(to, config) {
-    const { name, dbName, ...adapterConnectOptions } = config;
-    const uri = to || getMongoURI({ name, dbName });
+    const dbName = config.dbName || inflection.dasherize(config.name).toLowerCase();
+    // NOTE: We pull out `name` here, but don't use it, so it
+    // doesn't conflict with the options the user wants passed to mongodb.
+    const { name: _, ...adapterConnectOptions } = config;
+
+    let uri = to;
+    if (!uri) {
+      console.warn('No MongoDB connection specified. Falling back to local instance on port 27017');
+      // Default to the localhost instance
+      uri = 'mongodb://localhost:27017/';
+    }
+
     this.mongoose.connect(
       uri,
-      { useNewUrlParser: true, ...adapterConnectOptions }
+      // NOTE: We still pass in the dbName for the case where `to` is set, but
+      // doesn't have a name in the uri.
+      // For the case where `to` does not have a name, and `dbName` is set, the
+      // expected behaviour is for the name to be set to `dbName`.
+      // For the case where `to` has a name, and `dbName` is not set, we are
+      // forcing the name to be the dasherized of the Keystone name.
+      // For the case where both are set, the expected behaviour is for it to be
+      // overwritten.
+      { useNewUrlParser: true, ...adapterConnectOptions, dbName }
     );
+
     const db = this.mongoose.connection;
+
     db.on('error', console.error.bind(console, 'Mongoose connection error'));
     return new Promise(resolve => {
       db.once('open', () => {
