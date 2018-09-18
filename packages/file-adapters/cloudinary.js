@@ -44,11 +44,15 @@ module.exports = class CloudinaryAdapter {
     }));
   }
 
-  publicUrl({ _meta: { secure_url } }) {
-    return secure_url;
+  publicUrl({ _meta: { secure_url } = {} } = {}) {
+    return secure_url || null;
   }
 
-  publicUrlTransformed({ _meta }, options = {}) {
+  publicUrlTransformed({ _meta } = {}, options = {}) {
+    if (!_meta) {
+      return null;
+    }
+
     const { prettyName, ...transformation } = options;
     // No formatting options provided, return the publicUrl field
     if (!transformation || !Object.keys(transformation).length) {

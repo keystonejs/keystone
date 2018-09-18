@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const falsey = require('falsey');
 const cookie = require('cookie');
 const expressSession = require('express-session');
 const cookieSignature = require('cookie-signature');
@@ -17,6 +18,10 @@ module.exports = class WebServer {
     this.app = express();
 
     const { adminUI, cookieSecret } = this.config;
+
+    if (falsey(process.env.DISABLE_LOGGING)) {
+      this.app.use(require('express-pino-logger')(this.config.pinoOptions));
+    }
 
     this.app.use(
       cors({
