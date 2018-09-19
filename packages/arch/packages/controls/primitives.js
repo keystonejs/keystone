@@ -1,10 +1,5 @@
 // @flow
-import React, {
-  Component,
-  type ComponentType,
-  type Node,
-  type Ref,
-} from 'react';
+import React from 'react';
 import styled from 'react-emotion';
 
 export const Wrapper = styled.div({
@@ -38,6 +33,7 @@ type IconProps = {
 };
 export const Icon = styled.div(
   ({ isDisabled, isFocused, checked, isActive }: IconProps) => {
+    const colors = '#2684FF';
     // background
     let bg = colors.N05;
     if (isDisabled && checked) {

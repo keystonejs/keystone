@@ -6,7 +6,6 @@ import React, {
   type Ref,
 } from 'react';
 
-import { colors } from '../theme';
 import { HiddenInput } from '../input';
 import { Wrapper, Label, Text, Svg, Icon } from '../primitives';
 
@@ -45,7 +44,7 @@ type ControlProps = Props & {
 
 const defaultComponents = { Wrapper, Label, Text };
 
-class Control extends Component<ControlProps, State> {
+export default class Control extends Component<ControlProps, State> {
   components: {};
   control: HTMLElement;
   state = {

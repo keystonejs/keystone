@@ -1,5 +1,5 @@
-import React from 'react'
-import Link from 'gatsby-link'
+import React from 'react';
+import Link from 'gatsby-link';
 
 const Sidebar = ({ data }) => {
   return (
@@ -28,7 +28,7 @@ const Sidebar = ({ data }) => {
         ))}
       </ul>
     </nav>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;

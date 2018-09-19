@@ -5,6 +5,8 @@ import ReactSelect from 'react-select';
 
 // Re-Style React Select
 // ------------------------------
+const colors = '#2684FF';
+const borderRadius = 15;
 
 const selectStyles = {
   control: (base: *, { isFocused }: { isFocused: Boolean }) => ({
@@ -15,7 +17,7 @@ const selectStyles = {
     borderColor: isFocused ? colors.primary : colors.N20,
     boxShadow: isFocused
       ? `inset 0 1px 1px rgba(0, 0, 0, 0.075),
-        0 0 0 3px ${alpha(colors.primary, 0.2)}`
+        0 0 0 3px ${colors.primary}`
       : 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
     fontFamily: 'inherit',
     fontSize: 14,

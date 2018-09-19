@@ -1,10 +1,5 @@
 // @flow
-import React, {
-  Component,
-  type ComponentType,
-  type Node,
-  type Ref,
-} from 'react';
+import React from 'react';
 import {
   CheckboxGroup as ReactCheckboxGroup,
   Checkbox as ReactCheckbox,
@@ -14,7 +9,7 @@ import {
 
 import Control from './Control';
 
-const CheckboxPrimitive = ({ innerRef, ...props }: Props) => (
+const CheckboxPrimitive = ({ innerRef, ...props }) => (
   <Control
     ref={innerRef}
     svg={`<g fillRule="evenodd">
@@ -29,7 +24,7 @@ const CheckboxPrimitive = ({ innerRef, ...props }: Props) => (
     {...props}
   />
 );
-const RadioPrimitive = ({ innerRef, ...props }: Props) => (
+const RadioPrimitive = ({ innerRef, ...props }) => (
   <Control
     ref={innerRef}
     svg={`<g fillRule="evenodd">
@@ -42,11 +37,11 @@ const RadioPrimitive = ({ innerRef, ...props }: Props) => (
   />
 );
 
-export const Checkbox = (props: Props) => (
+export const Checkbox = (props) => (
   <ReactCheckbox component={CheckboxPrimitive} {...props} />
 );
 
-export const Radio = (props: Props) => (
+export const Radio = (props) => (
   <ReactRadio component={RadioPrimitive} {...props} />
 );
 export const CheckboxGroup = ReactCheckboxGroup;

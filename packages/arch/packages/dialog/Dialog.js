@@ -5,11 +5,9 @@ import React, {
   Fragment,
   type ComponentType,
   type Element,
-  type Ref,
   type Node,
 } from 'react';
 import { createPortal } from 'react-dom';
-import styled from 'react-emotion';
 import ScrollLock from 'react-scrolllock';
 import FocusTrap, { type FocusTarget } from 'react-focus-marshal';
 
@@ -22,7 +20,6 @@ import {
   Dialog,
   Footer,
   Header,
-  HeadFoot,
   Positioner,
   Title,
 } from './primitives';

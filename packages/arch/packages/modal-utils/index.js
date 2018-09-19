@@ -10,4 +10,4 @@ export {
 
 export { default as Blanket } from './Blanket';
 
-export { default as withModalHandlers, type CloseType } from './withModalHandlers';
+export { default as withModalHandlers } from './withModalHandlers';

@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, type Ref } from 'react';
+import React, { type Ref } from 'react';
 
 import { buttonAndInputBase } from '../common';
 import { colors } from '../theme';

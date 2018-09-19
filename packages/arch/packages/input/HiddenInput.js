@@ -1,4 +1,6 @@
-export const HiddenInput = ({ innerRef, ...props }: { innerRef?: Ref<*> }) => (
+import React from 'react';
+
+export const HiddenInput = ({ innerRef, ...props }) => (
   <input
     ref={innerRef}
     tabIndex="-1"

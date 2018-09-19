@@ -1,17 +1,16 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Helmet from 'react-helmet'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { graphql } from 'gatsby';
+import TitleAndMetaTags from '../components/titleandmetatags';
+import Header from '../components/header';
+import Sidebar from '../components/sidebar';
+import './index.css';
 
-import TitleAndMetaTags from '../components/titleandmetatags'
-import Header from '../components/header'
-import Sidebar from '../components/sidebar'
-import './index.css'
-
-require("prismjs/themes/prism-solarizedlight.css");
+require('prismjs/themes/prism-solarizedlight.css');
 
 const Layout = ({ children, data }) => (
   <div>
-    <TitleAndMetaTags title='KeystoneJS - 5'/>
+    <TitleAndMetaTags title="KeystoneJS - 5"/>
     <Header />
     <div style={{ margin: '0 auto', padding: 0, display: 'flex' }}>
       <div style={{ padding: '2rem', flex: '1 1 auto', order: 1, maxWidth: 'calc(100vw - 300px)' }}>
@@ -20,13 +19,13 @@ const Layout = ({ children, data }) => (
       <Sidebar data={data} />
     </div>
   </div>
-)
+);
 
 Layout.propTypes = {
   children: PropTypes.func,
-}
+};
 
-export default Layout
+export default Layout;
 
 export const query = graphql`
   query NavigationQuery {
@@ -45,4 +44,4 @@ export const query = graphql`
       }
     }
   }
-`
+`;
