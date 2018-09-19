@@ -5,9 +5,9 @@ permalink: docs/animation.html
 layout: docs
 category: Add-Ons
 redirect_from:
-  - "docs/animation-ja-JP.html"
-  - "docs/animation-ko-KR.html"
-  - "docs/animation-zh-CN.html"
+  - 'docs/animation-ja-JP.html'
+  - 'docs/animation-ko-KR.html'
+  - 'docs/animation-zh-CN.html'
 ---
 
 Animation Add-Ons
@@ -33,21 +33,19 @@ var ReactCSSTransitionGroup = require('react-addons-css-transition-group'); // E
 class TodoList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {items: ['hello', 'world', 'click', 'me']};
+    this.state = { items: ['hello', 'world', 'click', 'me'] };
     this.handleAdd = this.handleAdd.bind(this);
   }
 
   handleAdd() {
-    const newItems = this.state.items.concat([
-      prompt('Enter some text')
-    ]);
-    this.setState({items: newItems});
+    const newItems = this.state.items.concat([prompt('Enter some text')]);
+    this.setState({ items: newItems });
   }
 
   handleRemove(i) {
     let newItems = this.state.items.slice();
     newItems.splice(i, 1);
-    this.setState({items: newItems});
+    this.setState({ items: newItems });
   }
 
   render() {
@@ -63,7 +61,8 @@ class TodoList extends React.Component {
         <ReactCSSTransitionGroup
           transitionName="example"
           transitionEnterTimeout={500}
-          transitionLeaveTimeout={300}>
+          transitionLeaveTimeout={300}
+        >
           {items}
         </ReactCSSTransitionGroup>
       </div>
@@ -130,7 +129,7 @@ During the initial mount `ReactCSSTransitionGroup` will get the `example-appear`
 
 .example-appear.example-appear-active {
   opacity: 1;
-  transition: opacity .5s ease-in;
+  transition: opacity 0.5s ease-in;
 }
 ```
 
@@ -209,7 +208,8 @@ function ImageCarousel(props) {
       <ReactCSSTransitionGroup
         transitionName="carousel"
         transitionEnterTimeout={300}
-        transitionLeaveTimeout={300}>
+        transitionLeaveTimeout={300}
+      >
         <img src={props.imageSrc} key={props.imageSrc} />
       </ReactCSSTransitionGroup>
     </div>
@@ -225,34 +225,32 @@ You can disable animating `enter` or `leave` animations if you want. For example
 >
 > When using `ReactCSSTransitionGroup`, there's no way for your components to be notified when a transition has ended or to perform any more complex logic around animation. If you want more fine-grained control, you can use the lower-level `ReactTransitionGroup` API which provides the hooks you need to do custom transitions.
 
-* * *
+---
 
 ## Low-level API: ReactTransitionGroup
 
 **Importing**
 
 ```javascript
-import ReactTransitionGroup from 'react-addons-transition-group' // ES6
-var ReactTransitionGroup = require('react-addons-transition-group') // ES5 with npm
+import ReactTransitionGroup from 'react-addons-transition-group'; // ES6
+var ReactTransitionGroup = require('react-addons-transition-group'); // ES5 with npm
 ```
 
 `ReactTransitionGroup` is the basis for animations. When children are declaratively added or removed from it (as in the [example above](#getting-started)), special lifecycle hooks are called on them.
 
- - [`componentWillAppear()`](#componentwillappear)
- - [`componentDidAppear()`](#componentdidappear)
- - [`componentWillEnter()`](#componentwillenter)
- - [`componentDidEnter()`](#componentdidenter)
- - [`componentWillLeave()`](#componentwillleave)
- - [`componentDidLeave()`](#componentdidleave)
+- [`componentWillAppear()`](#componentwillappear)
+- [`componentDidAppear()`](#componentdidappear)
+- [`componentWillEnter()`](#componentwillenter)
+- [`componentDidEnter()`](#componentdidenter)
+- [`componentWillLeave()`](#componentwillleave)
+- [`componentDidLeave()`](#componentdidleave)
 
 #### Rendering a Different Component
 
 `ReactTransitionGroup` renders as a `span` by default. You can change this behavior by providing a `component` prop. For example, here's how you would render a `<ul>`:
 
 ```javascript{1}
-<ReactTransitionGroup component="ul">
-  {/* ... */}
-</ReactTransitionGroup>
+<ReactTransitionGroup component="ul">{/* ... */}</ReactTransitionGroup>
 ```
 
 Any additional, user-defined, properties will become properties of the rendered component. For example, here's how you would render a `<ul>` with CSS class:
@@ -288,64 +286,64 @@ Now you can specify `FirstChild` as the `component` prop in `<ReactTransitionGro
 
 This only works when you are animating a single child in and out, such as a collapsible panel. This approach wouldn't work when animating multiple children or replacing the single child with another child, such as an image carousel. For an image carousel, while the current image is animating out, another image will animate in, so `<ReactTransitionGroup>` needs to give them a common DOM parent. You can't avoid the wrapper for multiple children, but you can customize the wrapper with the `component` prop as described above.
 
-* * *
+---
 
 ## Reference
 
 ### `componentWillAppear()`
 
 ```javascript
-componentWillAppear(callback)
+componentWillAppear(callback);
 ```
 
 This is called at the same time as `componentDidMount()` for components that are initially mounted in a `TransitionGroup`. It will block other animations from occurring until `callback` is called. It is only called on the initial render of a `TransitionGroup`.
 
-* * *
+---
 
 ### `componentDidAppear()`
 
 ```javascript
-componentDidAppear()
+componentDidAppear();
 ```
 
 This is called after the `callback` function that was passed to `componentWillAppear` is called.
 
-* * *
+---
 
 ### `componentWillEnter()`
 
 ```javascript
-componentWillEnter(callback)
+componentWillEnter(callback);
 ```
 
 This is called at the same time as `componentDidMount()` for components added to an existing `TransitionGroup`. It will block other animations from occurring until `callback` is called. It will not be called on the initial render of a `TransitionGroup`.
 
-* * *
+---
 
 ### `componentDidEnter()`
 
 ```javascript
-componentDidEnter()
+componentDidEnter();
 ```
 
 This is called after the `callback` function that was passed to [`componentWillEnter()`](#componentwillenter) is called.
 
-* * *
+---
 
 ### `componentWillLeave()`
 
 ```javascript
-componentWillLeave(callback)
+componentWillLeave(callback);
 ```
 
 This is called when the child has been removed from the `ReactTransitionGroup`. Though the child has been removed, `ReactTransitionGroup` will keep it in the DOM until `callback` is called.
 
-* * *
+---
 
 ### `componentDidLeave()`
 
 ```javascript
-componentDidLeave()
+componentDidLeave();
 ```
 
 This is called when the `willLeave` `callback` is called (at the same time as `componentWillUnmount()`).

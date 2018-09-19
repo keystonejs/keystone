@@ -1,12 +1,6 @@
 // @flow
 
-import React, {
-  PureComponent,
-  Fragment,
-  type ComponentType,
-  type Element,
-  type Node,
-} from 'react';
+import React, { PureComponent, Fragment, type ComponentType, type Element, type Node } from 'react';
 import { createPortal } from 'react-dom';
 import ScrollLock from 'react-scrolllock';
 import FocusTrap, { type FocusTarget } from 'react-focus-marshal';
@@ -15,14 +9,7 @@ import { Fade, SlideUp, withTransitionState, Blanket } from '../modal-utils';
 import { generateUEID } from '../utils';
 import { A11yText } from '../typography';
 
-import {
-  Body,
-  Dialog,
-  Footer,
-  Header,
-  Positioner,
-  Title,
-} from './primitives';
+import { Body, Dialog, Footer, Header, Positioner, Title } from './primitives';
 
 // Dialog
 // ------------------------------
@@ -74,10 +61,7 @@ class ModalDialog extends PureComponent<Props> {
     return createPortal(
       <Fragment>
         <Fade {...transitionProps}>
-          <Blanket
-            onClick={closeOnBlanketClick ? onClose : undefined}
-            isTinted
-          />
+          <Blanket onClick={closeOnBlanketClick ? onClose : undefined} isTinted />
         </Fade>
         <SlideUp {...transitionProps}>
           <Positioner width={width}>

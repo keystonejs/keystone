@@ -36,11 +36,7 @@ export const Input = ({ innerRef, isMultiline, ...props }: InputProps) => {
     },
   };
   return isMultiline ? (
-    <textarea
-      ref={innerRef}
-      css={{ ...css, lineHeight: 'inherit', height: 'auto' }}
-      {...props}
-    />
+    <textarea ref={innerRef} css={{ ...css, lineHeight: 'inherit', height: 'auto' }} {...props} />
   ) : (
     <input ref={innerRef} css={css} {...props} />
   );

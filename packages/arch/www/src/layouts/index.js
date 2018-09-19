@@ -10,10 +10,17 @@ require('prismjs/themes/prism-solarizedlight.css');
 
 const Layout = ({ children, data }) => (
   <div>
-    <TitleAndMetaTags title="KeystoneJS - 5"/>
+    <TitleAndMetaTags title="KeystoneJS - 5" />
     <Header />
     <div style={{ margin: '0 auto', padding: 0, display: 'flex' }}>
-      <div style={{ padding: '2rem', flex: '1 1 auto', order: 1, maxWidth: 'calc(100vw - 300px)' }}>
+      <div
+        style={{
+          padding: '2rem',
+          flex: '1 1 auto',
+          order: 1,
+          maxWidth: 'calc(100vw - 300px)',
+        }}
+      >
         {children()}
       </div>
       <Sidebar data={data} />

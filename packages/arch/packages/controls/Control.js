@@ -1,10 +1,5 @@
 // @flow
-import React, {
-  Component,
-  type ComponentType,
-  type Node,
-  type Ref,
-} from 'react';
+import React, { Component, type ComponentType, type Node, type Ref } from 'react';
 
 import { HiddenInput } from '../input';
 import { Wrapper, Label, Text, Svg, Icon } from '../primitives';

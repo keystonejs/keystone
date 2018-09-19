@@ -27,11 +27,7 @@ type DialogElementProps = {
   component: ComponentType<*> | string,
   innerRef?: Ref<*>,
 };
-export const Dialog = ({
-  component: Tag,
-  innerRef,
-  ...props
-}: DialogElementProps) => (
+export const Dialog = ({ component: Tag, innerRef, ...props }: DialogElementProps) => (
   <Tag
     ref={innerRef}
     role="dialog"

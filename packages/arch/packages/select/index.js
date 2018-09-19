@@ -48,8 +48,6 @@ const selectStyles = {
   }),
 };
 
-const Select = (props: *) => (
-  <ReactSelect styles={selectStyles} isClearable {...props} />
-);
+const Select = (props: *) => <ReactSelect styles={selectStyles} isClearable {...props} />;
 
 export default Select;

@@ -5,7 +5,7 @@ export {
   SlideInHorizontal,
   ZoomInDown,
   TransitionProvider,
-  withTransitionState
+  withTransitionState,
 } from './transitions';
 
 export { default as Blanket } from './Blanket';

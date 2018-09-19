@@ -47,16 +47,17 @@ Alert messages, or alerts, inform users of successful or pending actions. Use th
 Alert messages start off looking decently neutral—they're just light blue rounded rectangles.
 
 ```jsx
-<Alert>
-  Alert message goes here.
-</Alert>
+<Alert>Alert message goes here.</Alert>
 ```
 
 You can put multiple paragraphs of text in an alert—the last paragraph's bottom `margin` will be automatically override.
 
 ```jsx
 <Alert>
-  <p>This is a longer alert in it's own paragraph. It ends up looking something like this. If we keep adding more text, it'll eventually wrap to a new line.</p>
+  <p>
+    This is a longer alert in it's own paragraph. It ends up looking something like this. If we keep
+    adding more text, it'll eventually wrap to a new line.
+  </p>
   <p>And this is another paragraph.</p>
 </Alert>
 ```
@@ -69,10 +70,11 @@ import { Alert, AlertGroup } from '@arch-ui/alert';
 <AlertGroup>
   <Alert>Alert message goes here.</Alert>
   <Alert>Alert message goes here.</Alert>
-</AlertGroup>
+</AlertGroup>;
 ```
 
 ## Appearances
+
 info
 success
 warning
@@ -81,21 +83,15 @@ danger
 Add the appearance property `warning`, `danger`, or `success` to the alert to make it yellow, red, or green, respectively.
 
 ```jsx
-<Alert appearance="warning">
-  Alert message goes here.
-</Alert>
+<Alert appearance="warning">Alert message goes here.</Alert>
 ```
 
 ```jsx
-<Alert appearance="danger">
-  Alert message goes here.
-</Alert>
+<Alert appearance="danger">Alert message goes here.</Alert>
 ```
 
 ```jsx
-<Alert appearance="success">
-  Alert message goes here.
-</Alert>
+<Alert appearance="success">Alert message goes here.</Alert>
 ```
 
 ## Variations
@@ -117,7 +113,7 @@ import { CheckIcon } from '@atlaskit/icons';
 
 <Alert appearance="success" variant="bold" icon={CheckIcon}>
   <span>Alert message with an icon goes here.</span>
-</Alert>
+</Alert>;
 ```
 
 ## Full width alert

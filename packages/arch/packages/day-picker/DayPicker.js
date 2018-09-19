@@ -130,8 +130,7 @@ const DayPicker = (props: Props) => {
     const setDatePrevMonth = () => setDate(getDatePrevMonth());
     const selectDay = _date => () => setSelectedDate(_date);
 
-    const isSelectedDay = _date =>
-      getFormattedDate(selectedDate) === getFormattedDate(_date);
+    const isSelectedDay = _date => getFormattedDate(selectedDate) === getFormattedDate(_date);
     const isDisabled = dateValue => !isSameMonth(date, dateValue);
 
     return (
@@ -147,7 +146,11 @@ const DayPicker = (props: Props) => {
         </Header>
 
         <Body>
-          <WeekLabels>{WEEK_DAYS.map(d => <Day key={d}>{d}</Day>)}</WeekLabels>
+          <WeekLabels>
+            {WEEK_DAYS.map(d => (
+              <Day key={d}>{d}</Day>
+            ))}
+          </WeekLabels>
 
           {weeksInCurrentMonth.map((week, i) => (
             <WeekRow key={i}>

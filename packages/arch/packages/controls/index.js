@@ -37,12 +37,8 @@ const RadioPrimitive = ({ innerRef, ...props }) => (
   />
 );
 
-export const Checkbox = (props) => (
-  <ReactCheckbox component={CheckboxPrimitive} {...props} />
-);
+export const Checkbox = props => <ReactCheckbox component={CheckboxPrimitive} {...props} />;
 
-export const Radio = (props) => (
-  <ReactRadio component={RadioPrimitive} {...props} />
-);
+export const Radio = props => <ReactRadio component={RadioPrimitive} {...props} />;
 export const CheckboxGroup = ReactCheckboxGroup;
 export const RadioGroup = ReactRadioGroup;
