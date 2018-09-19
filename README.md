@@ -142,6 +142,16 @@ bolt cypress:run
 _NOTE: The output from this command will mix together the output from each project being tested in parallel._
 _This is only recommended as sanity check before pushing code._
 
+## Arch - Keystone UI Kit
+
+Resources, tooling, and design guidelines by KeystoneJS using [GastbyJS](https://www.gatsbyjs.org/)
+
+To start, run
+
+```sh
+bolt arch
+```
+
 ## Developing Projects with Keystone 5
 
 As noted in the house rules, this preview isn't intended to be used for projects.
