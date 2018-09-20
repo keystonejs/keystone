@@ -65,10 +65,10 @@ export default class FilterPopout extends Component<Props> {
 
     return (
       <Fragment>
+        <FooterButton onClick={this.close}>Cancel</FooterButton>
         <FooterButton type="submit" isPrimary>
           Apply
         </FooterButton>
-        <FooterButton onClick={this.close}>Cancel</FooterButton>
       </Fragment>
     );
   }
