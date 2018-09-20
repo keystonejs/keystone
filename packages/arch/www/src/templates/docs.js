@@ -1,5 +1,5 @@
 import React from 'react';
-import { graphql } from 'gatsby';
+import graphql from 'graphql-anywhere';
 
 export default ({ data }) => {
   const post = data.markdownRemark;

@@ -1,10 +1,10 @@
 import React from 'react';
-import { graphql } from 'gatsby';
+import graphql from 'graphql-anywhere';
 
 export default ({ data }) => {
   return (
     <div>
-      <h1>Introduction = {data}</h1>
+      <h1>Introduction = {data.site.siteMetadata.title}</h1>
       <p>
         Our goal is to create a system that enables us to build consistent user experiences with
         ease, yet with enough flexibility to support the broad spectrum of Keystone websites. This

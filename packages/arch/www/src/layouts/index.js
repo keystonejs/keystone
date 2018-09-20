@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { graphql } from 'gatsby';
+import graphql from 'graphql-anywhere';
 import TitleAndMetaTags from '../components/titleandmetatags';
 import Header from '../components/header';
 import Sidebar from '../components/sidebar';
