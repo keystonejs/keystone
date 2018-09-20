@@ -18,10 +18,7 @@ const Sidebar = ({ data }) => {
       <ul style={{ listStyle: 'none' }}>
         {data.allMarkdownRemark.edges.map(({ node }) => (
           <li key={node.id}>
-            <Link
-              to={node.fields.slug}
-              style={{ textDecoration: 'none', color: '#348dd9' }}
-            >
+            <Link to={node.fields.slug} style={{ textDecoration: 'none', color: '#348dd9' }}>
               {node.frontmatter.title}
             </Link>
           </li>

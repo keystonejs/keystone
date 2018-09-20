@@ -12,10 +12,7 @@ const TitleAndMetaTags = ({ title, ogDescription, ogUrl }) => {
       {ogUrl && <meta property="og:url" content={ogUrl} />}
       {/*TODO: add image to share on social media*/}
       <meta property="og:image" content="" />
-      <meta
-        property="og:description"
-        content={ogDescription || defaultDescription}
-      />
+      <meta property="og:description" content={ogDescription || defaultDescription} />
     </Helmet>
   );
 };

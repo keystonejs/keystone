@@ -71,6 +71,7 @@ junit.xml
 # Editor
 *.sublime-project
 *.sublime-workspace
+*.vscode
 
 # Cypress
 cypress/screenshots
