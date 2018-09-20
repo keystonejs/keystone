@@ -1,3 +1,65 @@
+const users = [
+  {
+    name: 'Boris Bozic',
+    email: 'boris@keystonejs.com',
+    company: 'thinkmill',
+    isAdmin: true,
+    dob: '1990-01-01',
+    lastOnline: '2018-08-16T11:08:18.886+10:00',
+  },
+  {
+    name: 'Jed Watson',
+    email: 'jed@keystonejs.com',
+    company: 'thinkmill',
+    isAdmin: true,
+  },
+  {
+    name: 'John Molomby',
+    email: 'john@keystonejs.com',
+    company: 'thinkmill',
+    isAdmin: true,
+  },
+  {
+    name: 'Joss Mackison',
+    email: 'joss@keystonejs.com',
+    company: 'thinkmill',
+    isAdmin: true,
+  },
+  {
+    name: 'Ben Conolly',
+    email: 'ben@keystonejs.com',
+    company: 'thinkmill',
+    isAdmin: true,
+  },
+  {
+    name: 'Luke Batchelor',
+    email: 'luke@keystonejs.com',
+    company: 'atlassian',
+    isAdmin: false,
+  },
+  {
+    name: 'Jared Crowe',
+    email: 'jared@keystonejs.com',
+    company: 'atlassian',
+    isAdmin: false,
+  },
+  {
+    name: 'Tom Walker',
+    email: 'gelato@thinkmill.com.au',
+    company: 'gelato',
+  },
+];
+
+const createPost = (v, i) => {
+  const user = users[i % users.length];
+  return {
+    name: `Why ${i} is better than ${i - 1}`,
+    author: { where: { email: user.email } },
+    categories: { where: { name: 'Number comparison' } },
+    views: i,
+  };
+};
+
 module.exports = {
   Post: [
     {
@@ -18,7 +80,11 @@ module.exports = {
         { where: { name: 'Node' } },
       ],
     },
-  ],
+  ].concat(
+    Array(120)
+      .fill(true)
+      .map(createPost)
+  ),
   PostCategory: [
     {
       name: 'GraphQL',
@@ -35,56 +101,9 @@ module.exports = {
     {
       name: 'React Router',
     },
+    {
+      name: 'Number comparison',
+    },
   ],
-  User: [
-    {
-      name: 'Boris Bozic',
-      email: 'boris@keystonejs.com',
-      company: 'thinkmill',
-      isAdmin: true,
-      dob: '1990-01-01',
-      lastOnline: '2018-08-16T11:08:18.886+10:00',
-    },
-    {
-      name: 'Jed Watson',
-      email: 'jed@keystonejs.com',
-      company: 'thinkmill',
-      isAdmin: true,
-    },
-    {
-      name: 'John Molomby',
-      email: 'john@keystonejs.com',
-      company: 'thinkmill',
-      isAdmin: true,
-    },
-    {
-      name: 'Joss Mackison',
-      email: 'joss@keystonejs.com',
-      company: 'thinkmill',
-      isAdmin: true,
-    },
-    {
-      name: 'Ben Conolly',
-      email: 'ben@keystonejs.com',
-      company: 'thinkmill',
-      isAdmin: true,
-    },
-    {
-      name: 'Luke Batchelor',
-      email: 'luke@keystonejs.com',
-      company: 'atlassian',
-      isAdmin: false,
-    },
-    {
-      name: 'Jared Crowe',
-      email: 'jared@keystonejs.com',
-      company: 'atlassian',
-      isAdmin: false,
-    },
-    {
-      name: 'Tom Walker',
-      email: 'gelato@thinkmill.com.au',
-      company: 'gelato',
-    },
-  ].map(user => ({ ...user, password: 'password' })),
+  User: users.map(user => ({ ...user, password: 'password' })),
 };

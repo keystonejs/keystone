@@ -141,7 +141,10 @@ module.exports = class AdminUI {
 
     // ensure any non-resource requests are rewritten for history api fallback
     app.use(adminPath, (req, res, next) => {
-      if (/^[\w\/\-]+$/.test(req.url)) req.url = '/';
+      // TODO: make sure that this change is OK. (regex was testing on url, not path)
+      // Changed because this was preventing adminui pages loading when a querystrings
+      // was appended.
+      if (/^[\w\/\-]+$/.test(req.path)) req.url = '/';
       next();
     });
 

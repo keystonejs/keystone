@@ -1,5 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import gql from 'graphql-tag';
+import querystring from 'querystring';
+import debounce from 'lodash.debounce';
 import { Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
@@ -7,6 +9,36 @@ import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { deconstructErrorsToDataShape } from '../../util';
+
+export type SortByType = {
+  field: { label: string, path: string },
+  direction: 'ASC' | 'DESC',
+};
+
+type Filter = {
+  field: Object,
+  label: string,
+  type: string,
+  value: string,
+};
+
+type Props = {
+  list: Object,
+  match: Object,
+  location: Object,
+  history: Object,
+};
+
+type State = {};
+
+type Search = {
+  currentPage: number,
+  pageSize: number,
+  search: string,
+  fields: Array<String>,
+  sortBy: SortByType,
+  filters: Array<Object>,
+};
 
 const getQueryArgs = ({ filters, ...args }) => {
   const queryArgs = Object.keys(args).map(
@@ -38,65 +70,224 @@ const getQuery = ({ fields, filters, list, search, orderBy, skip, first }) => {
   }`;
 };
 
-export type SortByType = {
-  field: { label: string, path: string },
-  direction: 'ASC' | 'DESC',
+// ==============================
+// Query string encode/decode
+// ==============================
+
+const allowedSearchParams = ['currentPage', 'pageSize', 'search', 'fields', 'sortBy', 'filters'];
+
+const getSearchDefaults = (props: Props): Search => {
+  // Dynamic defaults
+  const fields = props.list.fields.slice(0, 2);
+  const sortBy = { field: fields[0], direction: 'ASC' };
+
+  return {
+    currentPage: 1,
+    pageSize: 50,
+    search: '',
+    fields,
+    sortBy,
+  };
 };
-type Props = {
-  list: Object,
+
+const parseFields = (fields, list) => {
+  const fieldPaths = fields.split(',');
+  return fieldPaths.map(path => list.fields.find(f => f.path === path)).filter(f => !!f); // remove anything that was not found.
 };
-type State = {
-  currentPage: number,
-  fields: Array<Object>,
-  filters: Array<Object>,
-  pageSize: number,
-  search: string,
-  skip: number,
-  sortBy: SortByType,
+
+const encodeFields = fields => {
+  return fields.map(f => f.path).join(',');
+};
+
+const parseSortBy = (sortBy: string, list): SortByType => {
+  let key = sortBy;
+  let direction = 'ASC';
+
+  if (sortBy.charAt(0) === '-') {
+    key = sortBy.substr(1);
+    direction = 'DESC';
+  }
+
+  const field = list.fields.find(f => f.path === key);
+  if (!field) return null;
+
+  return {
+    field: { label: field.label, path: field.path },
+    direction,
+  };
+};
+
+const encodeSortBy = (sortBy: SortByType): string => {
+  const {
+    direction,
+    field: { path },
+  } = sortBy;
+  return direction === 'ASC' ? path : `-${path}`;
+};
+
+const parseFilter = (filter: [string, string], list): Filter => {
+  const [key, value] = filter;
+  let type;
+  let label;
+  const field = list.fields.find(f => {
+    if (key.indexOf(f.path) !== 0) return false;
+    const filterType = f.filterTypes.find(t => {
+      return key === `${f.path}_${t.type}`;
+    });
+    if (filterType) {
+      type = filterType.type;
+      label = filterType.label;
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  if (!field) return null;
+
+  // Try to parse the value
+  let parsedValue;
+  try {
+    parsedValue = JSON.parse(value);
+  } catch (error) {
+    // If filter value is not valid JSON we ignore this filter.
+    return null;
+  }
+
+  return {
+    field,
+    label,
+    path: field.path,
+    type,
+    value: parsedValue,
+  };
+};
+
+const encodeFilter = (filter: Filter): [string, string] => {
+  const { field, type, value } = filter;
+  return [`${field.path}_${type}`, JSON.stringify(value)];
+};
+
+const decodeSearch = (search: string, props: Props): Search => {
+  const query = querystring.parse(search.replace('?', ''));
+  const searchDefaults = getSearchDefaults(props);
+  const params = Object.keys(query).reduce((acc, key) => {
+    // Remove anything that is not "allowed"
+    if (!allowedSearchParams.includes(key)) return acc;
+
+    // Each type has a different parse function.
+    switch (key) {
+      case 'currentPage':
+        acc[key] = parseInt(query[key], 10);
+        break;
+      case 'pageSize':
+        // TODO: Max pageSize needs to be configurable
+        const maxPageSize = 1000;
+        acc[key] = Math.min(parseInt(query[key], 10), maxPageSize);
+        break;
+      case 'fields':
+        acc[key] = parseFields(query[key], props.list);
+        break;
+      case 'sortBy':
+        acc[key] = parseSortBy(query[key], props.list);
+        break;
+      default:
+        acc[key] = query[key];
+    }
+    return acc;
+  }, {});
+
+  // decode filters
+  params.filters = Object.keys(query).reduce((acc, key) => {
+    if (key.charAt(0) !== '!') return acc;
+    const filter = parseFilter([key.substr(1), query[key]], props.list);
+    if (filter) acc.push(filter);
+    return acc;
+  }, []);
+
+  // Dynamic defaults
+  if (!(params.fields && params.fields.length)) {
+    params.fields = props.list.fields.slice(0, 2);
+  }
+
+  if (!params.sortBy) {
+    params.sortBy = { field: params.fields[0], direction: 'ASC' };
+  }
+
+  return {
+    ...searchDefaults,
+    ...params,
+  };
+};
+
+const encodeSearch = (data: Search, props: Props): string => {
+  const searchDefaults = getSearchDefaults(props);
+  const params = Object.keys(data).reduce((acc, key) => {
+    // strip anthing which matches the default (matching primitive types)
+    if (data[key] === searchDefaults[key]) return acc;
+
+    if (!allowedSearchParams.includes(key)) {
+      throw new Error(`Key "${key}" is not allowed as a query param.`);
+    }
+
+    switch (key) {
+      case 'fields':
+        const fields = encodeFields(data[key]);
+        const defaultFields = encodeFields(searchDefaults[key]);
+        if (fields !== defaultFields) acc[key] = fields;
+        break;
+      case 'sortBy':
+        const sortBy = encodeSortBy(data[key]);
+        const defaultSortBy = encodeSortBy(searchDefaults[key]);
+        if (sortBy !== defaultSortBy) acc[key] = sortBy;
+        break;
+      case 'filters':
+        data[key].forEach(filter => {
+          const [name, value] = encodeFilter(filter);
+          acc[`!${name}`] = value;
+        });
+        break;
+      default:
+        acc[key] = data[key];
+    }
+
+    return acc;
+  }, {});
+
+  if (Object.keys(params).length === 0) return '';
+  return '?' + querystring.stringify(params);
 };
 
 class ListPageDataProvider extends Component<Props, State> {
   constructor(props) {
     super(props);
 
-    // Prepare active fields and sort order
-    const fields = props.list.fields.slice(0, 2);
-    const sortBy = { field: fields[0], direction: 'ASC' };
-
     // We record the number of items returned by the latest query so that the
     // previous count can be displayed during a loading state.
     this.itemsCount = 0;
-
-    // Declare initial state
-    this.state = {
-      currentPage: 1,
-      fields,
-      pageSize: 50,
-      search: '',
-      filters: [],
-      skip: 0,
-      sortBy,
-    };
   }
 
   // ==============================
   // Search
   // ==============================
 
-  handleSearchChange = ({ target: { value: search } }) => {
-    this.setState({ search });
-  };
+  handleSearchChange = debounce(newSearch => {
+    const { location } = this.props;
+    const { search } = decodeSearch(location.search, this.props);
+    const addHistoryRecord = !search;
+    this.setSearch({ search: newSearch }, addHistoryRecord);
+  }, 300);
   handleSearchClear = () => {
-    this.setState({ search: '' });
-    this.input.focus();
+    const { location } = this.props;
+    const { search } = decodeSearch(location.search, this.props);
+    const addHistoryRecord = !!search;
+    this.setSearch({ search: '' }, addHistoryRecord);
   };
-  handleSearchSubmit = event => {
-    let { list, adminPath, history } = this.props;
-
-    event.preventDefault();
-
+  handleSearchSubmit = () => {
+    const { history, match } = this.props;
+    // FIXME: This seems likely to do the wrong thing if data is not yet loaded.
     if (this.items.length === 1) {
-      history.push(`${adminPath}/${list.path}/${this.items[0].id}`);
+      history.push(`${match.url}/${this.items[0].id}`);
     }
   };
 
@@ -105,30 +296,31 @@ class ListPageDataProvider extends Component<Props, State> {
   // ==============================
 
   handleFilterRemove = value => () => {
-    let filters = this.state.filters.slice(0);
-    filters = filters.filter(f => f !== value);
-
-    this.setState({ filters });
+    const { filters } = decodeSearch(location.search, this.props);
+    const newFilters = filters.filter(f => {
+      return !(f.field.path === value.field.path && f.type === value.type);
+    });
+    this.setSearch({ filters: newFilters });
   };
   handleFilterRemoveAll = () => {
-    this.setState({ filters: [] });
+    this.setSearch({ filters: [] });
   };
   handleFilterAdd = value => {
-    let filters = this.state.filters.slice(0);
+    const { location } = this.props;
+    const { filters } = decodeSearch(location.search, this.props);
     filters.push(value);
-
-    this.setState({ filters });
+    this.setSearch({ filters });
   };
   handleFilterUpdate = updatedFilter => {
-    let filters = this.state.filters.slice(0);
+    const { location } = this.props;
+    const { filters } = decodeSearch(location.search, this.props);
 
     const updateIndex = filters.findIndex(i => {
       return i.field.path === updatedFilter.field.path && i.type === updatedFilter.type;
     });
 
     filters.splice(updateIndex, 1, updatedFilter);
-
-    this.setState({ filters });
+    this.setSearch({ filters });
   };
 
   // ==============================
@@ -136,19 +328,20 @@ class ListPageDataProvider extends Component<Props, State> {
   // ==============================
 
   handleFieldChange = selectedFields => {
+    const { list, location } = this.props;
     if (!selectedFields.length) {
       return;
     }
 
     // Ensure that the displayed fields maintain their original sortDirection
     // when they're added/removed
-    const fields = this.props.list.fields.filter(field => selectedFields.includes(field));
+    const fields = list.fields.filter(field => selectedFields.includes(field));
 
     // Reset `sortBy` if we were ordering by a field which has been removed.
-    const { sortBy } = this.state;
+    const { sortBy } = decodeSearch(location.search, this.props);
     const newSort = fields.includes(sortBy.field) ? sortBy : { ...sortBy, field: fields[0] };
 
-    this.setState({ fields, sortBy: newSort });
+    this.setSearch({ fields, sortBy: newSort });
   };
 
   // ==============================
@@ -156,7 +349,7 @@ class ListPageDataProvider extends Component<Props, State> {
   // ==============================
 
   handleSortChange = sortBy => {
-    this.setState({ sortBy });
+    this.setSearch({ sortBy });
   };
 
   // ==============================
@@ -164,17 +357,60 @@ class ListPageDataProvider extends Component<Props, State> {
   // ==============================
 
   handlePageChange = currentPage => {
-    const { pageSize } = this.state;
-    const skip = (currentPage - 1) * pageSize;
-    this.setState({ currentPage, skip });
+    this.setSearch({ currentPage });
+  };
+  handlePageReset = () => {
+    this.setSearch({ currentPage: 1 });
+  };
+  handlePageSizeChange = pageSize => {
+    this.setSearch({ pageSize });
+  };
+
+  setSearch = (changes, addHistoryRecord = true) => {
+    const { location, history } = this.props;
+    const currentState = decodeSearch(location.search, this.props);
+    let overrides = {};
+
+    // NOTE: some changes should reset the currentPage number to 1.
+    // eg: typing in the search box or changing filters
+    const resetsCurrentPage = ['search', 'pageSize', 'filters'];
+    if (Object.keys(changes).some(k => resetsCurrentPage.includes(k))) {
+      overrides.currentPage = 1;
+    }
+
+    // encode the new search string
+    const search = encodeSearch(
+      {
+        ...currentState,
+        ...changes,
+        ...overrides,
+      },
+      this.props
+    );
+
+    const newLocation = {
+      ...location,
+      search,
+    };
+
+    // Do we want to add an item to history or not
+    if (addHistoryRecord) {
+      history.push(newLocation);
+    } else {
+      history.replace(newLocation);
+    }
   };
 
   render() {
-    const { children, list } = this.props;
-    const { currentPage, fields, filters, pageSize, search, skip, sortBy } = this.state;
+    const { children, list, location } = this.props;
+    const { currentPage, pageSize, search, fields, sortBy, filters } = decodeSearch(
+      location.search,
+      this.props
+    );
 
     const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
     const first = pageSize;
+    const skip = (currentPage - 1) * pageSize;
     const query = getQuery({
       fields,
       filters,
@@ -256,6 +492,8 @@ class ListPageDataProvider extends Component<Props, State> {
                 handleFilterUpdate: this.handleFilterUpdate,
                 handleFieldChange: this.handleFieldChange,
                 handlePageChange: this.handlePageChange,
+                handlePageReset: this.handlePageReset,
+                handlePageSizeChange: this.handlePageSizeChange,
                 handleSearchChange: this.handleSearchChange,
                 handleSearchClear: this.handleSearchClear,
                 handleSearchSubmit: this.handleSearchSubmit,
