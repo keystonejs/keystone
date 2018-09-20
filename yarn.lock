@@ -3661,7 +3661,7 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.1"
     readable-stream "^2.0.4"
 
-focus-trap@^2.4.3:
+focus-trap@^2.4.3, focus-trap@^2.4.5:
   version "2.4.6"
   resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-2.4.6.tgz#332b475b317cec6a4a129f5307ce7ebc0da90b40"
   dependencies:
@@ -6894,6 +6894,19 @@ react-emotion@^9.1.1, react-emotion@^9.1.3:
   dependencies:
     babel-plugin-emotion "^9.2.6"
     create-emotion-styled "^9.2.6"
+
+react-focus-marshal@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-focus-marshal/-/react-focus-marshal-1.0.1.tgz#8e92aaa95e3781e702b237f370afd5641eb9a3d7"
+  dependencies:
+    focus-trap "^2.4.5"
+    react-node-resolver "^2.0.0"
+
+react-focus-trap@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/react-focus-trap/-/react-focus-trap-2.6.0.tgz#2b4f787b16a247c202beea5848ab9b3bfeda7fab"
+  dependencies:
+    babel-preset-react "^6.24.1"
 
 react-input-autosize@^2.2.1:
   version "2.2.1"
