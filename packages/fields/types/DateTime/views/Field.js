@@ -7,8 +7,6 @@ import { Button } from '@keystonejs/ui/src/primitives/buttons';
 import { DateTimePicker } from '@keystonejs/ui/src/primitives/forms';
 import { Popout } from '@keystonejs/ui/src/primitives/modals';
 
-const FORMAT = 'YYYY-MM-DDThh:mm:ss.SSSZ';
-
 export default class CalendarDayField extends Component {
   constructor(props) {
     super(props);
@@ -71,7 +69,7 @@ export default class CalendarDayField extends Component {
     const htmlID = `ks-input-${field.path}`;
     const target = (
       <Button autoFocus={autoFocus} id={htmlID} variant="ghost">
-        {date ? format(date, 'Do MMM YYYY') + ' ' + time + offset : FORMAT}
+        {date ? format(date, 'Do MMM YYYY') + ' ' + time + offset : 'Set Date & Time'}
       </Button>
     );
 
