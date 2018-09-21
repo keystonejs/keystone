@@ -17,6 +17,8 @@
     "mongoose": "^5.2.7",
     "oauth-libre": "^0.9.17",
     "passport": "^0.4.0",
+    "graphql-tag": "^2.8.0",
+    "graphql": "^0.13.2",
     "passport-twitter": "^1.0.4",
     "pluralize": "^7.0.0"
   }

@@ -7,7 +7,7 @@ module.exports = {
     jest: true,
     'cypress/globals': true,
   },
-  plugins: ['react', 'jest', 'cypress'],
+  plugins: ['react', 'jest', 'cypress', 'import'],
   rules: {
     curly: ['error', 'multi-line'],
     'jsx-quotes': 'error',
@@ -22,6 +22,17 @@ module.exports = {
         args: 'after-used',
         ignoreRestSiblings: true,
         vars: 'all',
+      },
+    ],
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: [
+          '**/*test.js',
+          '**/tests/**/*.js',
+          '**/examples/**/*.js',
+          '**/build/**/*.js',
+        ],
       },
     ],
     'object-curly-spacing': ['error', 'always'],
