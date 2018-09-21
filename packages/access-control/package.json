@@ -1,12 +1,12 @@
 {
   "name": "@voussoir/access-control",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Jess Telford",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/utils": "^0.1.1"
+    "@voussoir/utils": "^0.1.2"
   }
 }
