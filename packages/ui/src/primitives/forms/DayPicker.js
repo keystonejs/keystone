@@ -143,12 +143,14 @@ type SelectYearProps = {
   setDate: Function => void,
   setSelectedDate: Function => void,
   date: string,
+  yearRangeFrom: any,
+  yearRangeTo: any,
 };
 
 class SelectYear extends React.Component<SelectYearProps> {
   render() {
-    const { handleYearSelect, setDate, setSelectedDate } = this.props;
-    const years = yearRange(1900, 2050);
+    const { handleYearSelect, setDate, setSelectedDate, yearRangeFrom, yearRangeTo } = this.props;
+    const years = yearRange(yearRangeFrom, yearRangeTo);
     const { date } = this.props;
 
     const onChange = event => {
@@ -170,10 +172,13 @@ class SelectYear extends React.Component<SelectYearProps> {
 type DayPickerProps = {
   handleYearSelect: (Event, Function, Function) => void,
   handleMonthSelect: (Event, Function, Function) => void,
+  yearRangeFrom: number,
 };
 
 export const DayPicker = (props: DayPickerProps) => {
+
   function BasicCalendar(kalendaryo) {
+
     const {
       getFormattedDate,
       getWeeksInMonth,
@@ -184,7 +189,7 @@ export const DayPicker = (props: DayPickerProps) => {
       selectedDate,
       date,
     } = kalendaryo;
-    const { handleYearSelect, handleMonthSelect } = props;
+    const { handleYearSelect, handleMonthSelect, yearRangeFrom, yearRangeTo } = props;
     const weeksInCurrentMonth = getWeeksInMonth();
 
     const setDateNextMonth = () => {
@@ -214,6 +219,8 @@ export const DayPicker = (props: DayPickerProps) => {
             handleYearSelect={handleYearSelect}
             setDate={setDate}
             setSelectedDate={setSelectedDate}
+            yearRangeFrom={yearRangeFrom}
+            yearRangeTo={yearRangeTo}
           />
           <HeaderButton onClick={setDateNextMonth}>
             <ChevronRightIcon />
@@ -252,6 +259,11 @@ export const DayPicker = (props: DayPickerProps) => {
     );
   }
   return <Kalendaryo {...props} render={BasicCalendar} />;
+};
+
+DayPicker.defaultProps = {
+  yearRangeFrom: 1991,
+  yearRangeTo: format(new Date(), 'yyyy'),
 };
 
 type Props = {
