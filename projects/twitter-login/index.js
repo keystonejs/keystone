@@ -172,7 +172,6 @@ const admin = new AdminUI(keystone, {
 const server = new WebServer(keystone, {
   'cookie secret': 'qwerty',
   'admin ui': admin,
-  session: true,
   port,
 });
 
