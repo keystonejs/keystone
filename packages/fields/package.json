@@ -1,18 +1,18 @@
 {
   "name": "@voussoir/fields",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/access-control": "^0.1.0",
-    "@voussoir/adapter-mongoose": "^0.1.0",
-    "@voussoir/icons": "^0.1.0",
-    "@voussoir/logger": "^0.1.0",
-    "@voussoir/ui": "^0.1.0",
-    "@voussoir/utils": "^0.1.0",
+    "@voussoir/access-control": "^0.1.1",
+    "@voussoir/adapter-mongoose": "^0.1.1",
+    "@voussoir/icons": "^0.1.1",
+    "@voussoir/logger": "^0.1.1",
+    "@voussoir/ui": "^0.1.1",
+    "@voussoir/utils": "^0.1.1",
     "apollo-errors": "^1.9.0",
     "bcrypt": "^3.0.0",
     "cuid": "^2.1.1",
