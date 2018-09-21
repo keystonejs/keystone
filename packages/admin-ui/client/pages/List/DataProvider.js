@@ -83,7 +83,7 @@ const getSearchDefaults = (props: Props): Search => {
 
   return {
     currentPage: 1,
-    pageSize: 50,
+    pageSize: props.list.defaultPageSize,
     search: '',
     fields,
     sortBy,
@@ -181,9 +181,8 @@ const decodeSearch = (search: string, props: Props): Search => {
         acc[key] = parseInt(query[key], 10);
         break;
       case 'pageSize':
-        // TODO: Max pageSize needs to be configurable
-        const maxPageSize = 1000;
-        acc[key] = Math.min(parseInt(query[key], 10), maxPageSize);
+        const { maximumPageSize } = props.list;
+        acc[key] = Math.min(parseInt(query[key], 10), maximumPageSize);
         break;
       case 'fields':
         acc[key] = parseFields(query[key], props.list);

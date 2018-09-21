@@ -96,6 +96,7 @@ keystone.createList('Post', {
     views: { type: Integer },
     hero: { type: File, adapter: fileAdapter },
   },
+  defaultPageSize: 20,
   labelResolver: item => item.name,
 });
 
