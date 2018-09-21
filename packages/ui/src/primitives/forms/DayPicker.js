@@ -173,6 +173,7 @@ type DayPickerProps = {
   handleYearSelect: (Event, Function, Function) => void,
   handleMonthSelect: (Event, Function, Function) => void,
   yearRangeFrom: number,
+  yearRangeTo: number,
 };
 
 export const DayPicker = (props: DayPickerProps) => {
