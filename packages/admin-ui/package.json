@@ -1,17 +1,17 @@
 {
   "name": "@voussoir/admin-ui",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/field-views-loader": "^0.1.0",
-    "@voussoir/fields": "^0.1.0",
-    "@voussoir/icons": "^0.1.0",
-    "@voussoir/ui": "^0.1.0",
-    "@voussoir/utils": "^0.1.0",
+    "@voussoir/field-views-loader": "^0.1.2",
+    "@voussoir/fields": "^0.1.2",
+    "@voussoir/icons": "^0.1.2",
+    "@voussoir/ui": "^0.1.2",
+    "@voussoir/utils": "^0.1.2",
     "apollo-cache-inmemory": "^1.1.12",
     "apollo-client": "^2.2.8",
     "apollo-link": "^1.0.6",
