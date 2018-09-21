@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component, type Ref } from 'react';
-import { RadioGroup, Radio } from '@keystonejs/ui/src/primitives/filters';
+import { RadioGroup, Radio } from '@voussoir/ui/src/primitives/filters';
 
 type Props = { field: Object, innerRef: Ref<*>, onChange: Event => void };
 

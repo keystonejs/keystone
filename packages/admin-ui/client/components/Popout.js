@@ -3,9 +3,9 @@
 import React, { Fragment, type ComponentType, type Node, type Ref } from 'react';
 import styled from 'react-emotion';
 
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Popout as PopoutModal } from '@keystonejs/ui/src/primitives/modals';
-import { gridSize } from '@keystonejs/ui/src/theme';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { Popout as PopoutModal } from '@voussoir/ui/src/primitives/modals';
+import { gridSize } from '@voussoir/ui/src/theme';
 
 export const POPOUT_GUTTER = gridSize * 2;
 

@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'react-emotion';
 
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { Dialog, Dropdown, Popout } from '@keystonejs/ui/src/primitives/modals';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { Dialog, Dropdown, Popout } from '@voussoir/ui/src/primitives/modals';
 
 export default class ModalGuide extends Component {
   state = { dialogIsOpen: false };

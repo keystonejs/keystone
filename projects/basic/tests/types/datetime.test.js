@@ -1,6 +1,6 @@
 const { gen, sampleOne } = require('testcheck');
-const { Text, DateTime } = require('@keystonejs/fields');
-const { resolveAllKeys, mapKeys } = require('@keystonejs/utils');
+const { Text, DateTime } = require('@voussoir/fields');
+const { resolveAllKeys, mapKeys } = require('@voussoir/utils');
 const cuid = require('cuid');
 
 const { setupServer, graphqlRequest } = require('../util');

@@ -3,7 +3,7 @@
 import React, { Component, type Ref } from 'react';
 import { DateTime } from 'luxon';
 import { format, setMonth, setYear } from 'date-fns';
-import { DateTimePicker } from '@keystonejs/ui/src/primitives/forms';
+import { DateTimePicker } from '@voussoir/ui/src/primitives/forms';
 
 type Props = {
   field: Object,

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
-import { Badge } from '@keystonejs/ui/src/primitives/badge';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
+import { Badge } from '@voussoir/ui/src/primitives/badge';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
 
 const appearances = ['default', 'primary', 'created', 'warning', 'danger', 'inverted'];
 const BadgeGuide = () => (

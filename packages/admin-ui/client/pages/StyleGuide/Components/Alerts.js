@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
-import { Alert } from '@keystonejs/ui/src/primitives/alert';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
+import { Alert } from '@voussoir/ui/src/primitives/alert';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
 
 const AlertGuide = () => (
   <Fragment>

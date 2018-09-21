@@ -3,10 +3,10 @@ import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 import withPseudoState from 'react-pseudo-state';
 
-import { PlusIcon } from '@keystonejs/icons';
-import { colors, borderRadius, gridSize } from '@keystonejs/ui/src/theme';
-import { LoadingIndicator } from '@keystonejs/ui/src/primitives/loading';
-import { A11yText } from '@keystonejs/ui/src/primitives/typography';
+import { PlusIcon } from '@voussoir/icons';
+import { colors, borderRadius, gridSize } from '@voussoir/ui/src/theme';
+import { LoadingIndicator } from '@voussoir/ui/src/primitives/loading';
+import { A11yText } from '@voussoir/ui/src/primitives/typography';
 
 const BOX_GUTTER = `${gridSize * 2}px`;
 

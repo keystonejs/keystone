@@ -1,9 +1,9 @@
 import React, { type Ref } from 'react';
 
-import { GearIcon } from '@keystonejs/icons';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { IconButton } from '@keystonejs/ui/src/primitives/buttons';
-import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
+import { GearIcon } from '@voussoir/icons';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { IconButton } from '@voussoir/ui/src/primitives/buttons';
+import { Pagination } from '@voussoir/ui/src/primitives/navigation';
 
 type Props = {
   currentPage: number,

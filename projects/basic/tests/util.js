@@ -1,8 +1,8 @@
 const supertest = require('supertest-light');
 const extractStack = require('extract-stack');
-const { Keystone } = require('@keystonejs/core');
-const { WebServer } = require('@keystonejs/server');
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { Keystone } = require('@voussoir/core');
+const { WebServer } = require('@voussoir/server');
+const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 
 function setupServer({ name, createLists = () => {} }) {
   const keystone = new Keystone({

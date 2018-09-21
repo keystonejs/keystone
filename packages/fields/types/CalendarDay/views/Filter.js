@@ -2,7 +2,7 @@
 
 import React, { Component, type Ref } from 'react';
 import { parse, format, setMonth, setYear } from 'date-fns';
-import { DayPicker } from '@keystonejs/ui/src/primitives/forms';
+import { DayPicker } from '@voussoir/ui/src/primitives/forms';
 
 const FORMAT = 'YYYY-MM-DD';
 

@@ -1,5 +1,5 @@
 const inflection = require('inflection');
-const { parseFieldAccess, testFieldAccessControl } = require('@keystonejs/access-control');
+const { parseFieldAccess, testFieldAccessControl } = require('@voussoir/access-control');
 
 class Field {
   constructor(

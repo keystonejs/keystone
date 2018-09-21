@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/cypress-project-basic",
+  "name": "@voussoir/cypress-project-basic",
   "private": true,
   "version": "1.0.0",
   "author": "Jed Watson",
@@ -17,19 +17,19 @@
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a projects/basic/.env file.\nSee projects/basic/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@keystonejs/adapter-mongoose": "^1.0.0",
-    "@keystonejs/admin-ui": "^5.0.0",
-    "@keystonejs/core": "^5.0.0",
-    "@keystonejs/fields": "^5.0.0",
-    "@keystonejs/file-adapters": "^0.0.0",
-    "@keystonejs/server": "^5.0.0",
-    "@keystonejs/ui": "^5.0.0",
+    "@voussoir/adapter-mongoose": "^0.1.0",
+    "@voussoir/admin-ui": "^0.1.0",
+    "@voussoir/core": "^0.1.0",
+    "@voussoir/fields": "^0.1.0",
+    "@voussoir/file-adapters": "^0.1.0",
+    "@voussoir/server": "^0.1.0",
+    "@voussoir/ui": "^0.1.0",
     "date-fns": "^1.29.0",
     "dotenv-safe": "^6.0.0",
     "react": "^16.4.2"
   },
   "devDependencies": {
-    "@keystonejs/utils": "^1.0.0",
+    "@voussoir/utils": "^0.1.0",
     "cuid": "^2.1.1",
     "cypress": "^3.1.0",
     "execa": "0.10.0",

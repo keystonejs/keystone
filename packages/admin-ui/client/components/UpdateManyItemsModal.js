@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Drawer } from '@keystonejs/ui/src/primitives/modals';
-import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
-import { Select } from '@keystonejs/ui/src/primitives/filters';
-import { omit } from '@keystonejs/utils';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { Drawer } from '@voussoir/ui/src/primitives/modals';
+import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { Select } from '@voussoir/ui/src/primitives/filters';
+import { omit } from '@voussoir/utils';
 
 import FieldTypes from '../FIELD_TYPES';
 

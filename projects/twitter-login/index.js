@@ -1,5 +1,5 @@
-const { AdminUI } = require('@keystonejs/admin-ui');
-const { Keystone } = require('@keystonejs/core');
+const { AdminUI } = require('@voussoir/admin-ui');
+const { Keystone } = require('@voussoir/core');
 const {
   File,
   Text,
@@ -8,10 +8,10 @@ const {
   Select,
   Password,
   CloudinaryImage,
-} = require('@keystonejs/fields');
-const { WebServer } = require('@keystonejs/server');
-const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
-const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
+} = require('@voussoir/fields');
+const { WebServer } = require('@voussoir/server');
+const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
+const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
 
 const { twitterAuthEnabled, port, staticRoute, staticPath, cloudinary } = require('./config');
 const { configureTwitterAuth } = require('./twitter');
@@ -25,7 +25,7 @@ const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 const initialData = require('./data');
 
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'Cypress Test for Twitter Login',

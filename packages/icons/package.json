@@ -1,7 +1,6 @@
 {
-  "name": "@keystonejs/icons",
-  "private": true,
-  "version": "1.0.0",
+  "name": "@voussoir/icons",
+  "version": "0.1.0",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "index.js",

@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'react-emotion';
 
-import { colors } from '@keystonejs/ui/src/theme';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { LoadingIndicator, LoadingSpinner } from '@keystonejs/ui/src/primitives/loading';
+import { colors } from '@voussoir/ui/src/theme';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { LoadingIndicator, LoadingSpinner } from '@voussoir/ui/src/primitives/loading';
 
 const LoadingBox = styled.div(({ on, size }) => ({
   alignItems: 'center',

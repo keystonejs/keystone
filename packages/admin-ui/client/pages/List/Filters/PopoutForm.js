@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
-import { colors, gridSize } from '@keystonejs/ui/src/theme';
+import { colors, gridSize } from '@voussoir/ui/src/theme';
 import { Popout } from '../../../components/Popout';
 import AnimateHeight from '../../../components/AnimateHeight';
 

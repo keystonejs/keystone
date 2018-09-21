@@ -1,14 +1,13 @@
 {
-  "name": "@keystonejs/mongo-join-builder",
-  "private": true,
-  "version": "1.0.0",
+  "name": "@voussoir/mongo-join-builder",
+  "version": "0.1.0",
   "author": "Jess Telford",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystonejs/utils": "^1.0.0",
+    "@voussoir/utils": "^0.1.0",
     "cuid": "^2.1.1",
     "mongoose": "^5.2.7"
   },

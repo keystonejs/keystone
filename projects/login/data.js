@@ -2,12 +2,12 @@ module.exports = {
   User: [
     {
       name: 'Boris Bozic',
-      email: 'boris@keystonejs.com',
+      email: 'boris@voussoir.com',
       password: 'correctbattery',
     },
     {
       name: 'Jed Watson',
-      email: 'jed@keystonejs.com',
+      email: 'jed@voussoir.com',
       password: 'horsestaple',
     },
   ],

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
-import { Lozenge } from '@keystonejs/ui/src/primitives/lozenge';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
+import { Lozenge } from '@voussoir/ui/src/primitives/lozenge';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
 
 const appearances = ['Default', 'Primary', 'Danger', 'Create', 'Warning'];
 const LozengeGuide = () => (

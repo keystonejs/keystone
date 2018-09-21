@@ -1,4 +1,4 @@
-const USERNAME = 'boris@keystonejs.com';
+const USERNAME = 'boris@voussoir.com';
 const PASSWORD = 'correctbattery';
 
 describe('Testing Login', () => {

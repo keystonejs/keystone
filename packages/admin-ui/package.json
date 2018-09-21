@@ -1,18 +1,17 @@
 {
-  "name": "@keystonejs/admin-ui",
-  "private": true,
-  "version": "5.0.0",
+  "name": "@voussoir/admin-ui",
+  "version": "0.1.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone/field-views-loader": "^1.0.0",
-    "@keystonejs/fields": "^5.0.0",
-    "@keystonejs/icons": "^1.0.0",
-    "@keystonejs/ui": "^5.0.0",
-    "@keystonejs/utils": "^1.0.0",
+    "@voussoir/field-views-loader": "^0.1.0",
+    "@voussoir/fields": "^0.1.0",
+    "@voussoir/icons": "^0.1.0",
+    "@voussoir/ui": "^0.1.0",
+    "@voussoir/utils": "^0.1.0",
     "apollo-cache-inmemory": "^1.1.12",
     "apollo-client": "^2.2.8",
     "apollo-link": "^1.0.6",

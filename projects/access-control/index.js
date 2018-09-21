@@ -1,9 +1,9 @@
-const { AdminUI } = require('@keystonejs/admin-ui');
-const { Keystone } = require('@keystonejs/core');
-const { Text, Password, Select } = require('@keystonejs/fields');
-const { WebServer } = require('@keystonejs/server');
-const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
-const { objMerge } = require('@keystonejs/utils');
+const { AdminUI } = require('@voussoir/admin-ui');
+const { Keystone } = require('@voussoir/core');
+const { Text, Password, Select } = require('@voussoir/fields');
+const { WebServer } = require('@voussoir/server');
+const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
+const { objMerge } = require('@voussoir/utils');
 const {
   getStaticListName,
   getImperativeListName,
@@ -17,7 +17,7 @@ const { port, staticRoute, staticPath, projectName } = require('./config');
 
 const initialData = require('./data');
 
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 
 const keystone = new Keystone({
   name: projectName,
