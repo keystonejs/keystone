@@ -26,6 +26,7 @@
     "@voussoir/ui": "^0.1.0",
     "date-fns": "^1.29.0",
     "dotenv-safe": "^6.0.0",
+    "mongoose": "^5.2.7",
     "react": "^16.4.2"
   },
   "devDependencies": {

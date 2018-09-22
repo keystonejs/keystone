@@ -6,11 +6,13 @@
   "dependencies": {
     "gatsby": "^1.9.277",
     "gatsby-link": "^1.6.46",
+    "prop-types": "^15.6.1",
     "gatsby-plugin-react-helmet": "^2.0.11",
     "gatsby-remark-prismjs": "^2.0.5",
     "gatsby-source-filesystem": "^1.5.39",
     "gatsby-transformer-remark": "^1.7.44",
     "prismjs": "^1.15.0",
+    "graphql-anywhere": "^4.1.19",
     "react-helmet": "^5.2.0"
   },
   "keywords": [
@@ -26,6 +28,9 @@
   "devDependencies": {
     "loader-utils": "^1.1.0",
     "prettier": "^1.13.7"
+  },
+  "peerDependencies": {
+    "react": "^16.4.2"
   },
   "repository": {
     "type": "git",
