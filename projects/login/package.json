@@ -24,7 +24,9 @@
     "@voussoir/server": "^0.1.0",
     "@voussoir/ui": "^0.1.0",
     "dotenv-safe": "^6.0.0",
-    "react": "^16.4.2"
+    "react": "^16.4.2",
+    "body-parser": "^1.18.2",
+    "cookie-signature": "^1.1.0"
   },
   "devDependencies": {
     "@voussoir/utils": "^0.1.0",

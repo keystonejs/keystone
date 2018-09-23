@@ -10,6 +10,7 @@
     "@voussoir/core": "^0.1.2",
     "@voussoir/mongo-join-builder": "^0.1.2",
     "@voussoir/utils": "^0.1.2",
-    "mongoose": "^5.2.7"
+    "mongoose": "^5.2.7",
+    "inflection": "^1.12.0"
   }
 }
