@@ -17,7 +17,7 @@ module.exports = class WebServer {
     this.express = express;
     this.app = express();
 
-    const { adminUI, cookieSecret } = this.config;
+    const { adminUI, cookieSecret, sessionStore } = this.config;
 
     if (falsey(process.env.DISABLE_LOGGING)) {
       this.app.use(require('express-pino-logger')(this.config.pinoOptions));
@@ -75,6 +75,7 @@ module.exports = class WebServer {
         resave: false,
         saveUninitialized: false,
         name: COOKIE_NAME,
+        store: sessionStore,
       });
 
       this.app.use(injectAuthCookieMiddleware, sessionMiddleware);
