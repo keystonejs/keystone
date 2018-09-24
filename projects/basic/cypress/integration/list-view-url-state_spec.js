@@ -52,11 +52,12 @@ describe('List view URL state', () => {
   });
   it('Stores field settings in the url', () => {
     // Without `fields` we should see the default
+    // defaultColumns: 'name, status',
     cy.visit('/admin/posts');
     cy.get('#ks-list-table thead td')
       .should('have.lengthOf', 3)
       .should('contain', 'Name')
-      .should('contain', 'Slug');
+      .should('contain', 'Status');
 
     // UI should update the URL
     cy.get('button:contains("Columns")').click();
@@ -67,9 +68,9 @@ describe('List view URL state', () => {
     cy.get('#ks-list-table thead td')
       .should('have.lengthOf', 4)
       .should('contain', 'Name')
-      .should('contain', 'Slug')
+      .should('contain', 'Status')
       .should('contain', 'Author');
-    cy.location('search').should('eq', '?fields=name%2Cslug%2Cauthor');
+    cy.location('search').should('eq', '?fields=name%2Cstatus%2Cauthor');
 
     // URL should define the columns
     cy.visit('/admin/posts?fields=name,author,categories');

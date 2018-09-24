@@ -104,6 +104,10 @@ module.exports = class List {
     // 180814 JM TODO: Since there's no access control specified, this implicitly makes name, id or {labelField} readable by all (probably bad?)
     this.config = {
       labelResolver: item => item[config.labelField || 'name'] || item.id,
+      // Show the first 2 columns by default
+      defaultColumns: Object.keys(config.fields)
+        .slice(0, 2)
+        .join(','),
       defaultPageSize: 50,
       maximumPageSize: 1000,
       ...config,
@@ -214,6 +218,7 @@ module.exports = class List {
       fields: this.fields.filter(field => field.access.read).map(field => field.getAdminMeta()),
       views: this.views,
       defaultPageSize: this.config.defaultPageSize,
+      defaultColumns: this.config.defaultColumns.replace(/\s/g, ''), // remove all whitespace
       maximumPageSize: Math.max(this.config.defaultPageSize, this.config.maximumPageSize),
     };
   }
