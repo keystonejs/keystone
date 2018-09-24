@@ -1,4 +1,3 @@
-/* global ENABLE_DEV_FEATURES */
 import React from 'react';
 import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
 import { Pill } from '@voussoir/ui/src/primitives/pill';
@@ -23,8 +22,6 @@ type Props = {
 };
 
 export default function ActiveFilters({ filterList, onClear, onRemove, onUpdate }: Props) {
-  if (!ENABLE_DEV_FEATURES) return null;
-
   return (
     <AnimateHeight style={{ paddingTop: gridSize }}>
       <FlexGroup wrap id="ks-list-active-filters">
