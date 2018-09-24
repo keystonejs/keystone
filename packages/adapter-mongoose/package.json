@@ -1,16 +1,16 @@
 {
-  "name": "@keystonejs/adapter-mongoose",
-  "private": true,
-  "version": "1.0.0",
+  "name": "@voussoir/adapter-mongoose",
+  "version": "0.1.2",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystonejs/core": "^5.0.0",
-    "@keystonejs/mongo-join-builder": "^1.0.0",
-    "@keystonejs/utils": "^1.0.0",
-    "mongoose": "^5.2.7"
+    "@voussoir/core": "^0.1.2",
+    "@voussoir/mongo-join-builder": "^0.1.2",
+    "@voussoir/utils": "^0.1.2",
+    "mongoose": "^5.2.7",
+    "inflection": "^1.12.0"
   }
 }

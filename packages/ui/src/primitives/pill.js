@@ -3,7 +3,7 @@
 import React from 'react';
 import styled from 'react-emotion';
 
-import { XIcon } from '@keystonejs/icons';
+import { XIcon } from '@voussoir/icons';
 import { colors } from '../theme';
 
 const boldBackgroundColor = {

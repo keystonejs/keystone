@@ -1,8 +1,7 @@
-/* global ENABLE_DEV_FEATURES */
 import React from 'react';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { Pill } from '@keystonejs/ui/src/primitives/pill';
-import { gridSize } from '@keystonejs/ui/src/theme';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { Pill } from '@voussoir/ui/src/primitives/pill';
+import { gridSize } from '@voussoir/ui/src/theme';
 
 import AnimateHeight from '../../../components/AnimateHeight';
 import EditFilterPopout from './EditFilterPopout';
@@ -23,8 +22,6 @@ type Props = {
 };
 
 export default function ActiveFilters({ filterList, onClear, onRemove, onUpdate }: Props) {
-  if (!ENABLE_DEV_FEATURES) return null;
-
   return (
     <AnimateHeight style={{ paddingTop: gridSize }}>
       <FlexGroup wrap id="ks-list-active-filters">

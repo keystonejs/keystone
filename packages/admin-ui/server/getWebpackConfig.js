@@ -8,7 +8,7 @@ module.exports = function({ adminMeta, entry }) {
   const rules = [
     {
       test: /\.js$/,
-      exclude: [/node_modules(?!\/@keystone\/)/],
+      exclude: [/node_modules(?!\/@voussoir\/)/],
       use: [
         {
           loader: 'babel-loader',
@@ -25,7 +25,7 @@ module.exports = function({ adminMeta, entry }) {
       test: /FIELD_TYPES/,
       use: [
         {
-          loader: '@keystone/field-views-loader',
+          loader: '@voussoir/field-views-loader',
           options: {
             adminMeta,
           },

@@ -1,6 +1,6 @@
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
-const { escapeRegExp: esc } = require('@keystonejs/utils');
+const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { escapeRegExp: esc } = require('@voussoir/utils');
 
 class Text extends Implementation {
   constructor() {

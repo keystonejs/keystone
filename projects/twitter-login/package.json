@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/cypress-project-twitter-login",
+  "name": "@voussoir/cypress-project-twitter-login",
   "private": true,
   "version": "1.0.0",
   "author": "Jed Watson",
@@ -13,13 +13,13 @@
     "cypress:run": "exit 0"
   },
   "dependencies": {
-    "@keystonejs/adapter-mongoose": "^1.0.0",
-    "@keystonejs/admin-ui": "^5.0.0",
-    "@keystonejs/core": "^5.0.0",
-    "@keystonejs/fields": "^5.0.0",
-    "@keystonejs/file-adapters": "^0.0.0",
-    "@keystonejs/server": "^5.0.0",
-    "@keystonejs/ui": "^5.0.0",
+    "@voussoir/adapter-mongoose": "^0.1.0",
+    "@voussoir/admin-ui": "^0.1.0",
+    "@voussoir/core": "^0.1.0",
+    "@voussoir/fields": "^0.1.0",
+    "@voussoir/file-adapters": "^0.1.0",
+    "@voussoir/server": "^0.1.0",
+    "@voussoir/ui": "^0.1.0",
     "dotenv-safe": "^6.0.0",
     "react": "^16.4.2"
   },

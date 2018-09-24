@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import raf from 'raf-schd';
-import { Button, LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
-import { colors } from '@keystonejs/ui/src/theme';
+import { Button, LoadingButton } from '@voussoir/ui/src/primitives/buttons';
+import { colors } from '@voussoir/ui/src/theme';
 
 const Wrapper = styled.div({
   marginTop: 60,

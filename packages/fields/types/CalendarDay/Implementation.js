@@ -1,7 +1,7 @@
 const parse = require('date-fns/parse');
 const format = require('date-fns/format');
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
+const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
 
 class CalendarDay extends Implementation {
   constructor() {

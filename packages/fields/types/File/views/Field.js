@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
-import { AlertIcon, ShieldIcon } from '@keystonejs/icons';
-import { HiddenInput } from '@keystonejs/ui/src/primitives/forms';
-import { Lozenge } from '@keystonejs/ui/src/primitives/lozenge';
-import { Button, LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { borderRadius, colors, gridSize } from '@keystonejs/ui/src/theme';
+import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { AlertIcon, ShieldIcon } from '@voussoir/icons';
+import { HiddenInput } from '@voussoir/ui/src/primitives/forms';
+import { Lozenge } from '@voussoir/ui/src/primitives/lozenge';
+import { Button, LoadingButton } from '@voussoir/ui/src/primitives/buttons';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { borderRadius, colors, gridSize } from '@voussoir/ui/src/theme';
 
 // NOTE: we need flow 😢
 // Status enum: 'empty' | 'stored' | 'removed' | 'updated'

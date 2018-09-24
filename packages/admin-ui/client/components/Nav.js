@@ -8,15 +8,15 @@ import {
   TelescopeIcon,
   MarkGithubIcon,
   SignOutIcon,
-} from '@keystonejs/icons';
+} from '@voussoir/icons';
 
 import {
   PrimaryNav,
   PrimaryNavItem,
   NavGroup,
   NavSeparator,
-} from '@keystonejs/ui/src/primitives/navigation';
-import { A11yText } from '@keystonejs/ui/src/primitives/typography';
+} from '@voussoir/ui/src/primitives/navigation';
+import { A11yText } from '@voussoir/ui/src/primitives/typography';
 import { withAdminMeta } from '../providers/AdminMeta';
 
 const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';

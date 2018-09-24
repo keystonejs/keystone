@@ -1,5 +1,5 @@
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
+const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
 
 class Checkbox extends Implementation {
   constructor() {

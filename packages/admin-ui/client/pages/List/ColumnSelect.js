@@ -1,7 +1,7 @@
 import React from 'react';
-import { CheckIcon, DashIcon, XIcon } from '@keystonejs/icons';
-import { colors } from '@keystonejs/ui/src/theme';
-import { OptionPrimitive } from '@keystonejs/ui/src/primitives/filters';
+import { CheckIcon, DashIcon, XIcon } from '@voussoir/icons';
+import { colors } from '@voussoir/ui/src/theme';
+import { OptionPrimitive } from '@voussoir/ui/src/primitives/filters';
 
 import { POPOUT_GUTTER } from '../../components/Popout';
 import FieldSelect, { type FieldSelectProps } from './FieldSelect';

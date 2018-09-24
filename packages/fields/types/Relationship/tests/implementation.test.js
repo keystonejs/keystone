@@ -35,7 +35,7 @@ function createRelationship({ path, config = {}, getListByKey = () => new MockLi
         relateToOneInputName: `${ref}RelateToOneInput`,
       };
     }
-    // The actual implementation in `@keystonejs/core/List/index.js` returns
+    // The actual implementation in `@voussoir/core/List/index.js` returns
     // more, but we only want to test that this codepath is called
     getGraphqlFilterFragment = () => mockFilterFragment;
   }

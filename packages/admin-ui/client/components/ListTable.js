@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
-import { ShieldIcon, InfoIcon, TrashcanIcon } from '@keystonejs/icons';
-import { colors } from '@keystonejs/ui/src/theme';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { CheckboxPrimitive } from '@keystonejs/ui/src/primitives/forms';
-import { A11yText } from '@keystonejs/ui/src/primitives/typography';
+import { ShieldIcon, InfoIcon, TrashcanIcon } from '@voussoir/icons';
+import { colors } from '@voussoir/ui/src/theme';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { CheckboxPrimitive } from '@voussoir/ui/src/primitives/forms';
+import { A11yText } from '@voussoir/ui/src/primitives/typography';
 import DeleteItemModal from './DeleteItemModal';
 
-// This import is loaded by the @keystone/field-views-loader loader.
+// This import is loaded by the @voussoir/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
 import FieldTypes from '../FIELD_TYPES';
 

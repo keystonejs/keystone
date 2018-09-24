@@ -1,8 +1,8 @@
 // @flow
 
 import React, { Component, Fragment, type Ref } from 'react';
-import { OptionRenderer, Radio, RadioGroup, Select } from '@keystonejs/ui/src/primitives/filters';
-import { gridSize } from '@keystonejs/ui/src/theme';
+import { OptionRenderer, Radio, RadioGroup, Select } from '@voussoir/ui/src/primitives/filters';
+import { gridSize } from '@voussoir/ui/src/theme';
 
 const EventCatcher = props => (
   <div

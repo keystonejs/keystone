@@ -3,20 +3,13 @@ const {
   Types: { ObjectId },
 } = require('mongoose');
 const inflection = require('inflection');
-const {
-  escapeRegExp,
-  pick,
-  getType,
-  mapKeys,
-  mapKeyNames,
-  objMerge,
-} = require('@keystonejs/utils');
+const { escapeRegExp, pick, getType, mapKeys, mapKeyNames, objMerge } = require('@voussoir/utils');
 const {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
-} = require('@keystonejs/core/adapters');
-const joinBuilder = require('@keystonejs/mongo-join-builder');
+} = require('@voussoir/core/adapters');
+const joinBuilder = require('@voussoir/mongo-join-builder');
 
 const simpleTokenizer = require('./tokenizers/simple');
 const relationshipTokenizer = require('./tokenizers/relationship');

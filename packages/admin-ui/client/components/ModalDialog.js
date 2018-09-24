@@ -4,7 +4,7 @@ import React, { PureComponent, type Element } from 'react';
 import { Container, Provider, Subscribe } from 'unstated';
 import { TransitionGroup } from 'react-transition-group';
 
-import { Dialog } from '@keystonejs/ui/src/primitives/modals';
+import { Dialog } from '@voussoir/ui/src/primitives/modals';
 
 // ==============================
 // Dialog Proxy
