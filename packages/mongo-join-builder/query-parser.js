@@ -1,5 +1,5 @@
 const cuid = require('cuid');
-const { getType } = require('@keystonejs/utils');
+const { getType } = require('@voussoir/utils');
 
 function isRelationshipType(value) {
   return getType(value) === 'Object';

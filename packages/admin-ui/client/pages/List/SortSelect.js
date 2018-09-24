@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'react-emotion';
-import { ChevronDownIcon, ChevronUpIcon } from '@keystonejs/icons';
-import { OptionPrimitive } from '@keystonejs/ui/src/primitives/filters';
-import { colors } from '@keystonejs/ui/src/theme';
-import { OptionRenderer } from '@keystonejs/ui/src/primitives/filters';
+import { ChevronDownIcon, ChevronUpIcon } from '@voussoir/icons';
+import { OptionPrimitive } from '@voussoir/ui/src/primitives/filters';
+import { colors } from '@voussoir/ui/src/theme';
+import { OptionRenderer } from '@voussoir/ui/src/primitives/filters';
 
 import { POPOUT_GUTTER } from '../../components/Popout';
 

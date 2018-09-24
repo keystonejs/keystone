@@ -1,17 +1,17 @@
 import React, { Component, createRef } from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
-import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@keystonejs/icons';
-import { colors, gridSize } from '@keystonejs/ui/src/theme';
-import { A11yText } from '@keystonejs/ui/src/primitives/typography';
-import { Alert } from '@keystonejs/ui/src/primitives/alert';
-import { OptionPrimitive, Select } from '@keystonejs/ui/src/primitives/filters';
+import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@voussoir/icons';
+import { colors, gridSize } from '@voussoir/ui/src/theme';
+import { A11yText } from '@voussoir/ui/src/primitives/typography';
+import { Alert } from '@voussoir/ui/src/primitives/alert';
+import { OptionPrimitive, Select } from '@voussoir/ui/src/primitives/filters';
 
 import FieldSelect from '../FieldSelect';
 import PopoutForm from './PopoutForm';
 import { POPOUT_GUTTER } from '../../../components/Popout';
 
-// This import is loaded by the @keystone/field-views-loader loader.
+// This import is loaded by the @voussoir/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
 import FieldTypes from '../../../FIELD_TYPES';
 

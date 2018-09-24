@@ -1,5 +1,5 @@
 import React from 'react';
-import { LoadingIndicator } from '@keystonejs/ui/src/primitives/loading';
+import { LoadingIndicator } from '@voussoir/ui/src/primitives/loading';
 
 export default function PageLoading() {
   return (

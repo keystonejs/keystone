@@ -10,7 +10,7 @@ const {
   objMerge,
   arrayToObject,
   flatten,
-} = require('@keystonejs/utils');
+} = require('@voussoir/utils');
 
 function createDeferred() {
   let resolveCallback;
@@ -27,11 +27,11 @@ function createDeferred() {
   };
 }
 
-const { parseListAccess, testListAccessControl } = require('@keystonejs/access-control');
+const { parseListAccess, testListAccessControl } = require('@voussoir/access-control');
 
-const logger = require('@keystonejs/logger');
+const logger = require('@voussoir/logger');
 
-const { Text, Checkbox, Float } = require('@keystonejs/fields');
+const { Text, Checkbox, Float } = require('@voussoir/fields');
 
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
@@ -91,7 +91,7 @@ const mapNativeTypeToKeystonType = (type, listKey, fieldPath) => {
     { nativeType: type, keystoneType, listKey, fieldPath },
     `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${
       keystoneType.type.type
-    }' from the @keystonejs/fields package.`
+    }' from the @voussoir/fields package.`
   );
 
   return keystoneType;

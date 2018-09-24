@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 
 import Nav from '../components/Nav';
 import PageError from '../components/PageError';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
 
 const InvalidRoutePage = ({ adminPath }) => (
   <Fragment>

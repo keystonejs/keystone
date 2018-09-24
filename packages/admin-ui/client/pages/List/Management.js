@@ -2,10 +2,10 @@
 
 import React, { Component, Fragment } from 'react';
 
-import { SettingsIcon, TrashcanIcon } from '@keystonejs/icons';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
-import { gridSize } from '@keystonejs/ui/src/theme';
+import { SettingsIcon, TrashcanIcon } from '@voussoir/icons';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
+import { gridSize } from '@voussoir/ui/src/theme';
 
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';

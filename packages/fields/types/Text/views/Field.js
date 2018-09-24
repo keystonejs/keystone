@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
-import { Input } from '@keystonejs/ui/src/primitives/forms';
-import { ShieldIcon } from '@keystonejs/icons';
-import { colors } from '@keystonejs/ui/src/theme';
+import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { Input } from '@voussoir/ui/src/primitives/forms';
+import { ShieldIcon } from '@voussoir/icons';
+import { colors } from '@voussoir/ui/src/theme';
 
 export default class TextField extends Component {
   onChange = event => {

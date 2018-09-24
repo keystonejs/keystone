@@ -14,7 +14,7 @@ import {
 } from 'date-fns';
 import { Input } from './index';
 import { Select } from '../filters';
-import { ChevronLeftIcon, ChevronRightIcon } from '@keystonejs/icons';
+import { ChevronLeftIcon, ChevronRightIcon } from '@voussoir/icons';
 import { borderRadius, colors } from '../../theme';
 
 const yearRange = (from, to) => {

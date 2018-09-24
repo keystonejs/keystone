@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 import FieldTypes from '../FIELD_TYPES';
-import { arrayToObject } from '@keystonejs/utils';
+import { arrayToObject } from '@voussoir/utils';
 
 const getCreateMutation = list => {
   const { createInputName } = list;

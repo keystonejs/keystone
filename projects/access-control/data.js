@@ -19,27 +19,27 @@ module.exports = Object.assign(
   {
     User: [
       {
-        email: 'ticiana@keystonejs.com',
+        email: 'ticiana@voussoir.com',
         password: 'correct',
         level: 'su',
       },
       {
-        email: 'boris@keystonejs.com',
+        email: 'boris@voussoir.com',
         password: 'battery',
         level: 'admin',
       },
       {
-        email: 'jed@keystonejs.com',
+        email: 'jed@voussoir.com',
         password: 'horse',
         level: 'editor',
       },
       {
-        email: 'john@keystonejs.com',
+        email: 'john@voussoir.com',
         password: 'staple',
         level: 'writer',
       },
       {
-        email: 'jess@keystonejs.com',
+        email: 'jess@voussoir.com',
         password: 'xkcd',
         level: 'reader',
       },

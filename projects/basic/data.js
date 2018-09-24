@@ -1,7 +1,7 @@
 const users = [
   {
     name: 'Boris Bozic',
-    email: 'boris@keystonejs.com',
+    email: 'boris@voussoir.com',
     company: 'thinkmill',
     isAdmin: true,
     dob: '1990-01-01',
@@ -9,37 +9,37 @@ const users = [
   },
   {
     name: 'Jed Watson',
-    email: 'jed@keystonejs.com',
+    email: 'jed@voussoir.com',
     company: 'thinkmill',
     isAdmin: true,
   },
   {
     name: 'John Molomby',
-    email: 'john@keystonejs.com',
+    email: 'john@voussoir.com',
     company: 'thinkmill',
     isAdmin: true,
   },
   {
     name: 'Joss Mackison',
-    email: 'joss@keystonejs.com',
+    email: 'joss@voussoir.com',
     company: 'thinkmill',
     isAdmin: true,
   },
   {
     name: 'Ben Conolly',
-    email: 'ben@keystonejs.com',
+    email: 'ben@voussoir.com',
     company: 'thinkmill',
     isAdmin: true,
   },
   {
     name: 'Luke Batchelor',
-    email: 'luke@keystonejs.com',
+    email: 'luke@voussoir.com',
     company: 'atlassian',
     isAdmin: false,
   },
   {
     name: 'Jared Crowe',
-    email: 'jared@keystonejs.com',
+    email: 'jared@voussoir.com',
     company: 'atlassian',
     isAdmin: false,
   },
@@ -64,7 +64,7 @@ module.exports = {
   Post: [
     {
       name: 'Lets talk React Router',
-      author: { where: { email: 'ben@keystonejs.com' } },
+      author: { where: { email: 'ben@voussoir.com' } },
       categories: { where: { name_starts_with: 'React' } },
     },
     {
@@ -72,7 +72,7 @@ module.exports = {
     },
     {
       name: 'How we built Keystone 5',
-      author: { where: { email: 'jared@keystonejs.com' } },
+      author: { where: { email: 'jared@voussoir.com' } },
       categories: [
         { where: { name: 'React' } },
         { where: { name: 'Keystone' } },

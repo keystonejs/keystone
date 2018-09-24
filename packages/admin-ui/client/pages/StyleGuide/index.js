@@ -7,9 +7,9 @@ import ComponentsGuide from './Components';
 import IconsGuide from './Icons';
 import PaletteGuide from './Palette';
 
-import { Container, FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { SecondaryNav, SecondaryNavItem } from '@keystonejs/ui/src/primitives/navigation';
-import { H1 } from '@keystonejs/ui/src/primitives/typography';
+import { Container, FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { SecondaryNav, SecondaryNavItem } from '@voussoir/ui/src/primitives/navigation';
+import { H1 } from '@voussoir/ui/src/primitives/typography';
 
 const pages = ['components', 'palette', 'icons'];
 const upCase = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);

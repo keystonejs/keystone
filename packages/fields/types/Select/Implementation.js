@@ -1,6 +1,6 @@
 const inflection = require('inflection');
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
+const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
 
 function initOptions(options) {
   let optionsArray = options;

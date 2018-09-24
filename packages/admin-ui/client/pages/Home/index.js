@@ -4,8 +4,8 @@ import Media from 'react-media';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
-import { Container, Grid, Cell } from '@keystonejs/ui/src/primitives/layout';
-import { H1 } from '@keystonejs/ui/src/primitives/typography';
+import { Container, Grid, Cell } from '@voussoir/ui/src/primitives/layout';
+import { H1 } from '@voussoir/ui/src/primitives/typography';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import Nav from '../../components/Nav';

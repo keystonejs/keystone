@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component, type Ref } from 'react';
-import { Input } from '@keystonejs/ui/src/primitives/forms';
+import { Input } from '@voussoir/ui/src/primitives/forms';
 
 type Props = {
   field: Object,

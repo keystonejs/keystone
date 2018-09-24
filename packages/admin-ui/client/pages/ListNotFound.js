@@ -2,8 +2,8 @@ import React, { Fragment } from 'react';
 
 import Nav from '../components/Nav';
 import PageError from '../components/PageError';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { IssueOpenedIcon } from '@keystonejs/icons';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { IssueOpenedIcon } from '@voussoir/icons';
 
 const ListNotFoundPage = ({ listKey, adminPath }) => (
   <Fragment>

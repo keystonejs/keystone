@@ -190,4 +190,5 @@ query replaceAllPosts {
     }
   }
 }
+
 ```

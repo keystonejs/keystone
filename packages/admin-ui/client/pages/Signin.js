@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import styled from 'react-emotion';
 
-import { Alert } from '@keystonejs/ui/src/primitives/alert';
-import { Input } from '@keystonejs/ui/src/primitives/forms';
-import { LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
-import { colors } from '@keystonejs/ui/src/theme';
+import { Alert } from '@voussoir/ui/src/primitives/alert';
+import { Input } from '@voussoir/ui/src/primitives/forms';
+import { LoadingButton } from '@voussoir/ui/src/primitives/buttons';
+import { colors } from '@voussoir/ui/src/theme';
 
 import SessionProvider from '../providers/Session';
 

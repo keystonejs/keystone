@@ -4,8 +4,8 @@ const { ApolloServer } = require('apollo-server-express');
 const { formatError, isInstance: isApolloErrorInstance } = require('apollo-errors');
 const { renderPlaygroundPage } = require('graphql-playground-html');
 const cuid = require('cuid');
-const logger = require('@keystonejs/logger');
-const { omit } = require('@keystonejs/utils');
+const logger = require('@voussoir/logger');
+const { omit } = require('@voussoir/utils');
 
 const { NestedError } = require('./graphqlErrors');
 

@@ -1,4 +1,4 @@
-const { resolveAllKeys, mapKeys } = require('@keystonejs/utils');
+const { resolveAllKeys, mapKeys } = require('@voussoir/utils');
 
 function isRelationshipField({ list, fieldKey }) {
   return !!list.config.fields[fieldKey].type.isRelationship;

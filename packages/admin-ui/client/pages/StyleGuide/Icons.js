@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'react-emotion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import * as icons from '@keystonejs/icons';
+import * as icons from '@voussoir/icons';
 
-import { Grid, Cell } from '@keystonejs/ui/src/primitives/layout';
-import { colors } from '@keystonejs/ui/src/theme';
-import { Kbd } from '@keystonejs/ui/src/primitives/typography';
+import { Grid, Cell } from '@voussoir/ui/src/primitives/layout';
+import { colors } from '@voussoir/ui/src/theme';
+import { Kbd } from '@voussoir/ui/src/primitives/typography';
 
 const Instructions = styled('div')`
   color: ${colors.N60};
@@ -84,7 +84,7 @@ export default class IconsGuide extends Component {
         )}
         <Grid gap={16}>
           {Object.keys(icons).map(name => {
-            const importText = altIsDown ? `import { ${name} } from '@keystonejs/icons';` : name;
+            const importText = altIsDown ? `import { ${name} } from '@voussoir/icons';` : name;
             const isCopied = copyText === importText;
             const Icon = isCopied ? icons.CheckIcon : icons[name];
             return (
