@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import gql from 'graphql-tag';
 import querystring from 'querystring';
 import debounce from 'lodash.debounce';
 import { Query } from 'react-apollo';
@@ -39,36 +38,6 @@ type Search = {
   fields: Array<String>,
   sortBy: SortByType,
   filters: Array<Object>,
-};
-
-const getQueryArgs = ({ filters, ...args }) => {
-  const queryArgs = Object.keys(args).map(
-    // Using stringify to get the correct quotes depending on type
-    argName => `${argName}: ${JSON.stringify(args[argName])}`
-  );
-  if (filters) {
-    const filterArgs = filters.map(filter => filter.field.getFilterGraphQL(filter));
-    if (filterArgs.length) {
-      queryArgs.push(`where: { ${filterArgs.join(', ')} }`);
-    }
-  }
-  return queryArgs.length ? `(${queryArgs.join(' ')})` : '';
-};
-
-const getQuery = ({ fields, filters, list, search, orderBy, skip, first }) => {
-  const queryArgs = getQueryArgs({ first, filters, search, skip, orderBy });
-  const metaQueryArgs = getQueryArgs({ filters, search });
-  const safeFields = fields.filter(field => field.path !== '_label_');
-  return gql`{
-    ${list.gqlNames.listQueryName}${queryArgs} {
-      id
-      _label_
-      ${safeFields.map(field => field.getQueryFragment()).join('\n')}
-    }
-    _${list.gqlNames.listQueryName}Meta${metaQueryArgs} {
-      count
-    }
-  }`;
 };
 
 // ==============================
@@ -432,10 +401,9 @@ class ListPageDataProvider extends Component<Props, State> {
     const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
     const first = pageSize;
     const skip = (currentPage - 1) * pageSize;
-    const query = getQuery({
+    const query = list.getQuery({
       fields,
       filters,
-      list,
       search,
       orderBy,
       skip,
