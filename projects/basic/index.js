@@ -99,6 +99,7 @@ keystone.createList('Post', {
   adminConfig: {
     defaultPageSize: 20,
     defaultColumns: 'name, status',
+    defaultSort: 'name',
   },
   labelResolver: item => item.name,
 });
