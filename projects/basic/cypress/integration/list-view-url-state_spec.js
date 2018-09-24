@@ -24,8 +24,9 @@ describe('List view URL state', () => {
   it('Stores pageSize state in the url', () => {
     cy.visit('/admin/posts');
 
-    cy.get('#ks-pagination nav>div:first').should('contain', 'Showing 1 to 50 of');
-    cy.get('#ks-list-table tbody tr').should('have.lengthOf', 50);
+    // NOTE: Posts in the basic project has defaultPageSize set to 20.
+    cy.get('#ks-pagination nav>div:first').should('contain', 'Showing 1 to 20 of');
+    cy.get('#ks-list-table tbody tr').should('have.lengthOf', 20);
 
     cy.visit('/admin/posts?pageSize=75');
     cy.get('#ks-pagination nav>div:first').should('contain', 'Showing 1 to 75 of');
