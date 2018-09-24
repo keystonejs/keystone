@@ -36,21 +36,20 @@ const BodyCell = styled('td')(({ isSelected }) => ({
     ? `0 1px 0 ${colors.B.L75}, 0 -1px 0 ${colors.B.L75}`
     : `0 -1px 0 ${colors.N10}`,
   padding: '8px 0',
-  position: isSelected ? 'relative' : null,
+  position: 'relative',
   fontSize: 15,
 }));
 const ItemLink = styled(Link)`
   color: ${colors.text};
-  position: relative;
 
   /* Increase hittable area on item link */
-  &::after {
+  &::before {
     content: '';
     position: absolute;
-    bottom: -10px;
-    left: -10px;
-    right: -10px;
-    top: -10px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
   }
 `;
 
