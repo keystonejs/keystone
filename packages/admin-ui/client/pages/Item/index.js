@@ -32,7 +32,7 @@ import FieldTypes from '../../FIELD_TYPES';
 
 const getItemQuery = ({ list, itemId }) => gql`
   {
-    ${list.itemQueryName}(where: { id: "${itemId}" }) {
+    ${list.gqlNames.itemQueryName}(where: { id: "${itemId}" }) {
       id
       _label_
       ${list.fields.map(field => field.getQueryFragment()).join(' ')}
@@ -269,7 +269,7 @@ const ItemDetails = withRouter(
     );
     onCreate = ({ data }) => {
       const { list, adminPath, history } = this.props;
-      const { id } = data[list.createMutationName];
+      const { id } = data[list.gqlNames.createMutationName];
       history.push(`${adminPath}/${list.path}/${id}`);
     };
 
@@ -377,7 +377,9 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
           // (ie; there could be partial data + partial errors)
           if (
             error &&
-            (!data || !data[list.itemQueryName] || !Object.keys(data[list.itemQueryName]).length)
+            (!data ||
+              !data[list.gqlNames.itemQueryName] ||
+              !Object.keys(data[list.gqlNames.itemQueryName]).length)
           ) {
             return (
               <Fragment>
@@ -387,8 +389,8 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
             );
           }
 
-          const item = data[list.itemQueryName];
-          const itemErrors = deconstructErrorsToDataShape(error)[list.itemQueryName] || {};
+          const item = data[list.gqlNames.itemQueryName];
+          const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
 
           return item ? (
             <main>

@@ -59,12 +59,12 @@ const getQuery = ({ fields, filters, list, search, orderBy, skip, first }) => {
   const metaQueryArgs = getQueryArgs({ filters, search });
 
   return gql`{
-    ${list.listQueryName}${queryArgs} {
+    ${list.gqlNames.listQueryName}${queryArgs} {
       id
       _label_
       ${fields.map(field => field.getQueryFragment()).join('\n')}
     }
-    _${list.listQueryName}Meta${metaQueryArgs} {
+    _${list.gqlNames.listQueryName}Meta${metaQueryArgs} {
       count
     }
   }`;
@@ -78,12 +78,12 @@ const allowedSearchParams = ['currentPage', 'pageSize', 'search', 'fields', 'sor
 
 const getSearchDefaults = (props: Props): Search => {
   // Dynamic defaults
-  const fields = parseFields(props.list.defaultColumns, props.list);
+  const fields = parseFields(props.list.adminConfig.defaultColumns, props.list);
   const sortBy = { field: fields[0], direction: 'ASC' };
 
   return {
     currentPage: 1,
-    pageSize: props.list.defaultPageSize,
+    pageSize: props.list.adminConfig.defaultPageSize,
     search: '',
     fields,
     sortBy,
@@ -181,7 +181,7 @@ const decodeSearch = (search: string, props: Props): Search => {
         acc[key] = parseInt(query[key], 10);
         break;
       case 'pageSize':
-        const { maximumPageSize } = props.list;
+        const { maximumPageSize } = props.list.adminConfig;
         acc[key] = Math.min(parseInt(query[key], 10), maximumPageSize);
         break;
       case 'fields':
@@ -430,7 +430,9 @@ class ListPageDataProvider extends Component<Props, State> {
             // (ie; there could be partial data + partial errors)
             if (
               error &&
-              (!data || !data[list.listQueryName] || !Object.keys(data[list.listQueryName]).length)
+              (!data ||
+                !data[list.gqlNames.listQueryName] ||
+                !Object.keys(data[list.gqlNames.listQueryName]).length)
             ) {
               let message = error.message;
 
@@ -458,15 +460,16 @@ class ListPageDataProvider extends Component<Props, State> {
               );
             }
 
-            const itemsErrors = deconstructErrorsToDataShape(error)[list.listQueryName] || [];
+            const itemsErrors =
+              deconstructErrorsToDataShape(error)[list.gqlNames.listQueryName] || [];
 
             // Leave the old values intact while new data is loaded
             if (!loading) {
-              this.items = data && data[list.listQueryName];
+              this.items = data && data[list.gqlNames.listQueryName];
               this.itemsCount =
                 (data &&
-                  data[`_${list.listQueryName}Meta`] &&
-                  data[`_${list.listQueryName}Meta`].count) ||
+                  data[list.gqlNames.listQueryMetaName] &&
+                  data[list.gqlNames.listQueryMetaName].count) ||
                 0;
             }
 

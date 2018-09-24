@@ -102,14 +102,16 @@ module.exports = class List {
     this.key = key;
 
     // 180814 JM TODO: Since there's no access control specified, this implicitly makes name, id or {labelField} readable by all (probably bad?)
-    this.config = {
-      labelResolver: item => item[config.labelField || 'name'] || item.id,
-      // Show the first 2 columns by default
+    config.adminConfig = {
+      defaultPageSize: 50,
       defaultColumns: Object.keys(config.fields)
         .slice(0, 2)
         .join(','),
-      defaultPageSize: 50,
       maximumPageSize: 1000,
+      ...(config.adminConfig || {}),
+    };
+    this.config = {
+      labelResolver: item => item[config.labelField || 'name'] || item.id,
       ...config,
     };
 
@@ -203,23 +205,17 @@ module.exports = class List {
       singular: this.adminUILabels.singular,
       plural: this.adminUILabels.plural,
       path: this.adminUILabels.path,
-      listQueryName: this.gqlNames.listQueryName,
-      listQueryMetaName: this.gqlNames.listQueryMetaName,
-      listMetaName: this.gqlNames.listMetaName,
-      itemQueryName: this.gqlNames.itemQueryName,
-      createMutationName: this.gqlNames.createMutationName,
-      updateMutationName: this.gqlNames.updateMutationName,
-      deleteMutationName: this.gqlNames.deleteMutationName,
-      deleteManyMutationName: this.gqlNames.deleteManyMutationName,
-      whereInputName: this.gqlNames.whereInputName,
-      whereUniqueInputName: this.gqlNames.whereUniqueInputName,
-      updateInputName: this.gqlNames.updateInputName,
-      createInputName: this.gqlNames.createInputName,
+      gqlNames: this.gqlNames,
       fields: this.fields.filter(field => field.access.read).map(field => field.getAdminMeta()),
       views: this.views,
-      defaultPageSize: this.config.defaultPageSize,
-      defaultColumns: this.config.defaultColumns.replace(/\s/g, ''), // remove all whitespace
-      maximumPageSize: Math.max(this.config.defaultPageSize, this.config.maximumPageSize),
+      adminConfig: {
+        defaultPageSize: this.config.adminConfig.defaultPageSize,
+        defaultColumns: this.config.adminConfig.defaultColumns.replace(/\s/g, ''), // remove all whitespace
+        maximumPageSize: Math.max(
+          this.config.adminConfig.defaultPageSize,
+          this.config.adminConfig.maximumPageSize
+        ),
+      },
     };
   }
   get gqlTypes() {

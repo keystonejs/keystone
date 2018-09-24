@@ -4,10 +4,10 @@ import FieldTypes from '../FIELD_TYPES';
 import { arrayToObject } from '@voussoir/utils';
 
 const getCreateMutation = list => {
-  const { createInputName } = list;
+  const { createInputName } = list.gqlNames;
   return gql`
     mutation create($data: ${createInputName}!) {
-      ${list.createMutationName}(data: $data) {
+      ${list.gqlNames.createMutationName}(data: $data) {
         id
       }
     }
@@ -18,9 +18,9 @@ const getUpdateMutation = list => {
   return gql`
     mutation update(
       $id: ID!,
-      $data: ${list.updateInputName})
+      $data: ${list.gqlNames.updateInputName})
     {
-      ${list.updateMutationName}(id: $id, data: $data) {
+      ${list.gqlNames.updateMutationName}(id: $id, data: $data) {
         id
       }
     }
@@ -30,7 +30,7 @@ const getUpdateMutation = list => {
 const getDeleteMutation = list => {
   return gql`
     mutation delete($id: ID!) {
-      ${list.deleteMutationName}(id: $id) {
+      ${list.gqlNames.deleteMutationName}(id: $id) {
         id
       }
     }
@@ -40,7 +40,7 @@ const getDeleteMutation = list => {
 const getDeleteManyMutation = list => {
   return gql`
     mutation deleteMany($ids: [ID!]) {
-      ${list.deleteManyMutationName}(ids: $ids) {
+      ${list.gqlNames.deleteManyMutationName}(ids: $ids) {
         id
       }
     }

@@ -185,17 +185,17 @@ describe('getAdminMeta()', () => {
     expect(adminMeta.singular).toEqual('Test');
     expect(adminMeta.plural).toEqual('Tests');
     expect(adminMeta.path).toEqual('tests');
-    expect(adminMeta.itemQueryName).toEqual('Test');
-    expect(adminMeta.listQueryName).toEqual('allTests');
-    expect(adminMeta.listQueryMetaName).toEqual('_allTestsMeta');
-    expect(adminMeta.deleteMutationName).toEqual('deleteTest');
-    expect(adminMeta.deleteManyMutationName).toEqual('deleteTests');
-    expect(adminMeta.updateMutationName).toEqual('updateTest');
-    expect(adminMeta.createMutationName).toEqual('createTest');
-    expect(adminMeta.whereInputName).toEqual('TestWhereInput');
-    expect(adminMeta.whereUniqueInputName).toEqual('TestWhereUniqueInput');
-    expect(adminMeta.updateInputName).toEqual('TestUpdateInput');
-    expect(adminMeta.createInputName).toEqual('TestCreateInput');
+    expect(adminMeta.gqlNames.itemQueryName).toEqual('Test');
+    expect(adminMeta.gqlNames.listQueryName).toEqual('allTests');
+    expect(adminMeta.gqlNames.listQueryMetaName).toEqual('_allTestsMeta');
+    expect(adminMeta.gqlNames.deleteMutationName).toEqual('deleteTest');
+    expect(adminMeta.gqlNames.deleteManyMutationName).toEqual('deleteTests');
+    expect(adminMeta.gqlNames.updateMutationName).toEqual('updateTest');
+    expect(adminMeta.gqlNames.createMutationName).toEqual('createTest');
+    expect(adminMeta.gqlNames.whereInputName).toEqual('TestWhereInput');
+    expect(adminMeta.gqlNames.whereUniqueInputName).toEqual('TestWhereUniqueInput');
+    expect(adminMeta.gqlNames.updateInputName).toEqual('TestUpdateInput');
+    expect(adminMeta.gqlNames.createInputName).toEqual('TestCreateInput');
   });
 
   test('getAdminMeta() - fields', () => {

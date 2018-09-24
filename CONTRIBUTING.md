@@ -49,7 +49,6 @@ Releasing is a two-step process. The first step updates the packages, and the se
 
 #### Steps to version packages
 
-
 The first step is `bolt version-packages`. This will find all changesets that have been created since the last release, and update the version in package.json as specified in those changesets, flattening out multiple bumps to a single package into a single version update.
 
 The `bolt version-packages` command will generate a release commit, which will bump all versions, necessary dependency version changes, and update changelog.mds.
@@ -122,6 +121,7 @@ git push --tags
 The `bolt publish-changed` command finds packages where the version listed in the `package.json` is ahead of the version published on npm, and attempts to publish just those packages.
 
 Because of this, we should keep the following in mind:
+
 - Once the `publish-changed` command has been run, the PR from the `temp-release-branch` should be merged before any other PRs are merged into master, to ensure that no changesets are skipped from being included in a release.
 - There is no reason you should ever manually edit the version in the `package.json`
 

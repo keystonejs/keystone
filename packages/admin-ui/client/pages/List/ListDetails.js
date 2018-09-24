@@ -191,7 +191,7 @@ class ListDetails extends Component<Props, State> {
   };
   onCreate = ({ data }) => {
     let { list, adminPath, history } = this.props;
-    let id = data[list.createMutationName].id;
+    let id = data[list.gqlNames.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
   };
 
