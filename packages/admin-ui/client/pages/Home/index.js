@@ -14,7 +14,7 @@ import PageError from '../../components/PageError';
 import { Box } from './components';
 
 const getQuery = lists => gql`{
-  ${lists.map(list => `${list.listQueryMetaName} { count }`)}
+  ${lists.map(list => `${list.gqlNames.listQueryMetaName} { count }`)}
 }`;
 
 class HomePage extends Component {
@@ -28,7 +28,7 @@ class HomePage extends Component {
 
   onCreate = list => ({ data }) => {
     let { adminPath, history } = this.props;
-    let id = data[list.createMutationName].id;
+    let id = data[list.gqlNames.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
   };
 
@@ -43,7 +43,7 @@ class HomePage extends Component {
           <Grid gap={16}>
             {lists.map(list => {
               const { key, path } = list;
-              const meta = data && data[list.listQueryMetaName];
+              const meta = data && data[list.gqlNames.listQueryMetaName];
 
               return (
                 <Fragment key={key}>
@@ -112,7 +112,7 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
             }
 
             allowedLists = allowedLists.filter(
-              list => deniedQueries.indexOf(list.listQueryMetaName) === -1
+              list => deniedQueries.indexOf(list.gqlNames.listQueryMetaName) === -1
             );
           }
 

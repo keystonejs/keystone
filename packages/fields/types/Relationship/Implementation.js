@@ -113,7 +113,7 @@ class Relationship extends Implementation {
 
           // We do a full query to ensure things like access control are applied
           return refList
-            .manyQuery(filteredQueryArgs, context, this.listQueryName)
+            .manyQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName)
             .then(items => (items && items.length ? items[0] : null));
         },
       };

@@ -96,8 +96,10 @@ keystone.createList('Post', {
     views: { type: Integer },
     hero: { type: File, adapter: fileAdapter },
   },
-  defaultPageSize: 20,
-  defaultColumns: 'name, status',
+  adminConfig: {
+    defaultPageSize: 20,
+    defaultColumns: 'name, status',
+  },
   labelResolver: item => item.name,
 });
 
