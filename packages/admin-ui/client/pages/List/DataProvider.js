@@ -77,13 +77,15 @@ const getQuery = ({ fields, filters, list, search, orderBy, skip, first }) => {
 const allowedSearchParams = ['currentPage', 'pageSize', 'search', 'fields', 'sortBy', 'filters'];
 
 const getSearchDefaults = (props: Props): Search => {
+  const { defaultColumns, defaultSort, defaultPageSize } = props.list.adminConfig;
+
   // Dynamic defaults
-  const fields = parseFields(props.list.adminConfig.defaultColumns, props.list);
-  const sortBy = { field: fields[0], direction: 'ASC' };
+  const fields = parseFields(defaultColumns, props.list);
+  const sortBy = parseSortBy(defaultSort, props.list) || { field: fields[0], direction: 'ASC' };
 
   return {
     currentPage: 1,
-    pageSize: props.list.adminConfig.defaultPageSize,
+    pageSize: defaultPageSize,
     search: '',
     fields,
     sortBy,
@@ -210,7 +212,7 @@ const decodeSearch = (search: string, props: Props): Search => {
   }
 
   if (!params.sortBy) {
-    params.sortBy = { field: params.fields[0], direction: 'ASC' };
+    params.sortBy = searchDefaults.sortBy;
   }
 
   return {

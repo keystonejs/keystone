@@ -107,6 +107,7 @@ module.exports = class List {
       defaultColumns: Object.keys(config.fields)
         .slice(0, 2)
         .join(','),
+      defaultSort: Object.keys(config.fields)[0],
       maximumPageSize: 1000,
       ...(config.adminConfig || {}),
     };
@@ -211,6 +212,7 @@ module.exports = class List {
       adminConfig: {
         defaultPageSize: this.config.adminConfig.defaultPageSize,
         defaultColumns: this.config.adminConfig.defaultColumns.replace(/\s/g, ''), // remove all whitespace
+        defaultSort: this.config.adminConfig.defaultSort,
         maximumPageSize: Math.max(
           this.config.adminConfig.defaultPageSize,
           this.config.adminConfig.maximumPageSize
