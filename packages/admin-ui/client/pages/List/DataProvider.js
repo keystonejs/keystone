@@ -78,7 +78,7 @@ const allowedSearchParams = ['currentPage', 'pageSize', 'search', 'fields', 'sor
 
 const getSearchDefaults = (props: Props): Search => {
   // Dynamic defaults
-  const fields = props.list.fields.slice(0, 2);
+  const fields = parseFields(props.list.defaultColumns, props.list);
   const sortBy = { field: fields[0], direction: 'ASC' };
 
   return {
@@ -206,7 +206,7 @@ const decodeSearch = (search: string, props: Props): Search => {
 
   // Dynamic defaults
   if (!(params.fields && params.fields.length)) {
-    params.fields = props.list.fields.slice(0, 2);
+    params.fields = searchDefaults.fields;
   }
 
   if (!params.sortBy) {

@@ -97,6 +97,7 @@ keystone.createList('Post', {
     hero: { type: File, adapter: fileAdapter },
   },
   defaultPageSize: 20,
+  defaultColumns: 'name, status',
   labelResolver: item => item.name,
 });
 
