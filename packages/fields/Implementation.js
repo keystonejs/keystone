@@ -11,7 +11,7 @@ class Field {
     this.config = config;
     this.getListByKey = getListByKey;
     this.listKey = listKey;
-    this.label = config.label || inflection.humanize(path);
+    this.label = config.label || inflection.humanize(inflection.underscore(path));
     this.adapter = listAdapter.newFieldAdapter(
       fieldAdapterClass,
       this.constructor.name,
