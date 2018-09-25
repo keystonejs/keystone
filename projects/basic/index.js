@@ -21,6 +21,8 @@ const { port, staticRoute, staticPath, cloudinary } = require('./config');
 const LOCAL_FILE_PATH = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
+const Stars = require('./custom-fields/Stars');
+
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
 
@@ -92,7 +94,7 @@ keystone.createList('Post', {
       ref: 'PostCategory',
       many: true,
     },
-    stars: { type: Float },
+    stars: { type: Stars },
     views: { type: Integer },
     hero: { type: File, adapter: fileAdapter },
   },
