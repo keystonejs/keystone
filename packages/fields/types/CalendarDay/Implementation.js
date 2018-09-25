@@ -29,6 +29,9 @@ class CalendarDay extends Implementation {
   get gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
+  extendAdminMeta(meta) {
+    return { ...meta, format: this.config.format };
+  }
 }
 
 class MongoCalendarDayInterface extends MongooseFieldAdapter {
