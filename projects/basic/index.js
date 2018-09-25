@@ -56,7 +56,7 @@ keystone.createList('User', {
     name: { type: Text },
     email: { type: Text },
     dob: { type: CalendarDay },
-    lastOnline: { type: DateTime },
+    lastOnline: { type: DateTime, format: 'MM/DD/YYYY h:mm A' },
     password: { type: Password },
     isAdmin: { type: Checkbox },
     company: {
