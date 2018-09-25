@@ -1,10 +1,10 @@
 import { format } from 'date-fns';
 
-let CalendarDayCell = props => {
+const CalendarDayCell = props => {
   if (!props.data) {
     return null;
   }
-  let formatConfig = props.field.config.format;
+  const formatConfig = props.field.config.format;
   if (!formatConfig) {
     return props.data;
   }

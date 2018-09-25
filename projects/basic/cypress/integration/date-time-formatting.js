@@ -1,7 +1,7 @@
 import format from 'date-fns/format';
 
-let dob = '1st January 1990';
-let lastOnline = '08/16/2018 11:08 AM';
+const dob = '1st January 1990';
+const lastOnline = '08/16/2018 11:08 AM';
 
 it('should format date times and calendar days according to the format option on the list page', () => {
   cy.visit('/admin/users?fields=name%2Cemail%2Cdob%2ClastOnline');
