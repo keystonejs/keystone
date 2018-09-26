@@ -265,12 +265,17 @@ class ListPageDataProvider extends Component<Props, State> {
     const maybeSearchFromLocalStorage = localStorage.getItem(
       `search:${this.props.match.params.list}`
     );
-    if (!this.props.location.search && maybeSearchFromLocalStorage) {
+    if (this.props.location.search) {
+      if (this.props.location.search !== maybeSearchFromLocalStorage) {
+        localStorage.setItem(`search:${this.props.match.params.list}`, this.props.location.search);
+      }
+    } else if (maybeSearchFromLocalStorage) {
       this.props.history.replace({
         ...this.props.location,
         search: maybeSearchFromLocalStorage,
       });
     }
+
     // We record the number of items returned by the latest query so that the
     // previous count can be displayed during a loading state.
     this.itemsCount = 0;

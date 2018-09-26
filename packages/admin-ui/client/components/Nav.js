@@ -45,7 +45,7 @@ const Nav = props => {
           return (
             <Fragment key={key}>
               <NavSeparator isSelected={isSelected} />
-              <PrimaryNavItem isSelected={isSelected} to={href}>
+              <PrimaryNavItem id={`ks-nav-${list.path}`} isSelected={isSelected} to={href}>
                 {list.label}
               </PrimaryNavItem>
             </Fragment>
