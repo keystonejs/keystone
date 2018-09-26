@@ -35,7 +35,11 @@ const Nav = props => {
         </PrimaryNavItem>
         {listKeys.map(key => {
           const list = getListByKey(key);
-          const href = `${adminPath}/${list.path}`;
+          let href = `${adminPath}/${list.path}`;
+          const maybeSearchParam = localStorage.getItem(`search:${list.path}`);
+          if (maybeSearchParam) {
+            href += maybeSearchParam;
+          }
           const isSelected = href === location.pathname;
 
           return (

@@ -262,7 +262,15 @@ const encodeSearch = (data: Search, props: Props): string => {
 class ListPageDataProvider extends Component<Props, State> {
   constructor(props) {
     super(props);
-
+    const maybeSearchFromLocalStorage = localStorage.getItem(
+      `search:${this.props.match.params.list}`
+    );
+    if (!this.props.location.search && maybeSearchFromLocalStorage) {
+      this.props.history.replace({
+        ...this.props.location,
+        search: maybeSearchFromLocalStorage,
+      });
+    }
     // We record the number of items returned by the latest query so that the
     // previous count can be displayed during a loading state.
     this.itemsCount = 0;
@@ -394,12 +402,18 @@ class ListPageDataProvider extends Component<Props, State> {
       search,
     };
 
+    localStorage.setItem(`search:${this.props.match.params.list}`, search);
+
     // Do we want to add an item to history or not
     if (addHistoryRecord) {
       history.push(newLocation);
     } else {
       history.replace(newLocation);
     }
+  };
+
+  handleReset = () => {
+    this.setSearch(decodeSearch('', this.props));
   };
 
   render() {
@@ -502,6 +516,7 @@ class ListPageDataProvider extends Component<Props, State> {
                 handleSearchClear: this.handleSearchClear,
                 handleSearchSubmit: this.handleSearchSubmit,
                 handleSortChange: this.handleSortChange,
+                handleReset: this.handleReset,
               },
             });
           }}
