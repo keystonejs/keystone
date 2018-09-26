@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
-import { ShieldIcon, InfoIcon, TrashcanIcon } from '@voussoir/icons';
+import { ShieldIcon, InfoIcon, TrashcanIcon, ArrowRightIcon } from '@voussoir/icons';
 import { colors } from '@voussoir/ui/src/theme';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import { CheckboxPrimitive } from '@voussoir/ui/src/primitives/forms';
@@ -132,13 +132,16 @@ class ListDisplayRow extends Component {
           {this.renderDeleteModal()}
         </BodyCell>
         <BodyCell>
-          <ItemLink to={link({ path: list.path, id: item.id })}>
-            {
-              // should this rule just be disabled in the eslint config?
-              // eslint-disable-next-line no-underscore-dangle
-              item._label_
-            }
-          </ItemLink>
+          <Button
+            appearance="primary"
+            to={link({ path: list.path, id: item.id })}
+            spacing="cozy"
+            variant="subtle"
+            style={{ height: 24 }}
+          >
+            <ArrowRightIcon />
+            <A11yText>Open</A11yText>
+          </Button>
         </BodyCell>
         {fields.map(field => {
           const { path } = field;
@@ -154,6 +157,20 @@ class ListDisplayRow extends Component {
               <BodyCell key={path}>
                 <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N10 }} />
                 <A11yText>{itemErrors[path].message}</A11yText>
+              </BodyCell>
+            );
+          }
+
+          if (path === '_label_') {
+            return (
+              <BodyCell key={path}>
+                <ItemLink to={link({ path: list.path, id: item.id })}>
+                  {
+                    // should this rule just be disabled in the eslint config?
+                    // eslint-disable-next-line no-underscore-dangle
+                    item._label_
+                  }
+                </ItemLink>
               </BodyCell>
             );
           }
@@ -239,7 +256,6 @@ class ListManageRow extends Component {
             tabIndex="0"
           />
         </BodyCell>
-        <BodyCell isSelected={isSelected}>something</BodyCell>
         {fields.map(({ path }) => (
           <BodyCell isSelected={isSelected} key={path}>
             {item[path]}
@@ -292,6 +308,7 @@ export default class ListTable extends Component {
       <Table id="ks-list-table">
         <colgroup>
           <col width="32" />
+          <col width="32" />
         </colgroup>
         <thead>
           <tr>
@@ -310,7 +327,7 @@ export default class ListTable extends Component {
                 />
               </div>
             </HeaderCell>
-            <HeaderCell data-field="label">Label</HeaderCell>
+            <HeaderCell />
             {fields.map(field => (
               <HeaderCell data-field={field.path} key={field.path}>
                 {field.label}
