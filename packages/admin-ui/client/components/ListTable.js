@@ -131,7 +131,16 @@ class ListDisplayRow extends Component {
           </Button>
           {this.renderDeleteModal()}
         </BodyCell>
-        {fields.map((field, index) => {
+        <BodyCell>
+          <ItemLink to={link({ path: list.path, id: item.id })}>
+            {
+              // should this rule just be disabled in the eslint config?
+              // eslint-disable-next-line no-underscore-dangle
+              item._label_
+            }
+          </ItemLink>
+        </BodyCell>
+        {fields.map(field => {
           const { path } = field;
 
           const isLoading = !item.hasOwnProperty(path);
@@ -154,6 +163,9 @@ class ListDisplayRow extends Component {
           const Cell = FieldTypes[list.key][path].Cell;
 
           if (Cell) {
+            // fix this later, creating a react component on every render is really bad
+            // react will rerender into the DOM on every react render
+            // probably not a huge deal on a leaf component like this but still bad
             const LinkComponent = ({ children, ...data }) => (
               <ItemLink to={link(data)}>{children}</ItemLink>
             );
@@ -162,15 +174,7 @@ class ListDisplayRow extends Component {
             content = item[path];
           }
 
-          return (
-            <BodyCell key={path}>
-              {!index ? (
-                <ItemLink to={link({ path: list.path, id: item.id })}>{content}</ItemLink>
-              ) : (
-                content
-              )}
-            </BodyCell>
-          );
+          return <BodyCell key={path}>{content}</BodyCell>;
         })}
       </tr>
     );
@@ -235,6 +239,7 @@ class ListManageRow extends Component {
             tabIndex="0"
           />
         </BodyCell>
+        <BodyCell isSelected={isSelected}>something</BodyCell>
         {fields.map(({ path }) => (
           <BodyCell isSelected={isSelected} key={path}>
             {item[path]}
@@ -305,6 +310,7 @@ export default class ListTable extends Component {
                 />
               </div>
             </HeaderCell>
+            <HeaderCell data-field="label">Label</HeaderCell>
             {fields.map(field => (
               <HeaderCell data-field={field.path} key={field.path}>
                 {field.label}
