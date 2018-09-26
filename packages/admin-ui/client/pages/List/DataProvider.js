@@ -262,6 +262,17 @@ const encodeSearch = (data: Search, props: Props): string => {
 class ListPageDataProvider extends Component<Props, State> {
   constructor(props) {
     super(props);
+    const maybePersistedSearch = this.props.list.getPersistedSearch();
+    if (this.props.location.search) {
+      if (this.props.location.search !== maybePersistedSearch) {
+        this.props.list.setPersistedSearch(this.props.location.search);
+      }
+    } else if (maybePersistedSearch) {
+      this.props.history.replace({
+        ...this.props.location,
+        search: maybePersistedSearch,
+      });
+    }
 
     // We record the number of items returned by the latest query so that the
     // previous count can be displayed during a loading state.
@@ -394,12 +405,18 @@ class ListPageDataProvider extends Component<Props, State> {
       search,
     };
 
+    this.props.list.setPersistedSearch(search);
+
     // Do we want to add an item to history or not
     if (addHistoryRecord) {
       history.push(newLocation);
     } else {
       history.replace(newLocation);
     }
+  };
+
+  handleReset = () => {
+    this.setSearch(decodeSearch('', this.props));
   };
 
   render() {
@@ -502,6 +519,7 @@ class ListPageDataProvider extends Component<Props, State> {
                 handleSearchClear: this.handleSearchClear,
                 handleSearchSubmit: this.handleSearchSubmit,
                 handleSortChange: this.handleSortChange,
+                handleReset: this.handleReset,
               },
             });
           }}

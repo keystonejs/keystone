@@ -35,13 +35,17 @@ const Nav = props => {
         </PrimaryNavItem>
         {listKeys.map(key => {
           const list = getListByKey(key);
-          const href = `${adminPath}/${list.path}`;
+          let href = `${adminPath}/${list.path}`;
+          const maybeSearchParam = list.getPersistedSearch();
+          if (maybeSearchParam) {
+            href += maybeSearchParam;
+          }
           const isSelected = href === location.pathname;
 
           return (
             <Fragment key={key}>
               <NavSeparator isSelected={isSelected} />
-              <PrimaryNavItem isSelected={isSelected} to={href}>
+              <PrimaryNavItem id={`ks-nav-${list.path}`} isSelected={isSelected} to={href}>
                 {list.label}
               </PrimaryNavItem>
             </Fragment>
