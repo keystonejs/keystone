@@ -36,7 +36,7 @@ const Nav = props => {
         {listKeys.map(key => {
           const list = getListByKey(key);
           let href = `${adminPath}/${list.path}`;
-          const maybeSearchParam = localStorage.getItem(`search:${list.path}`);
+          const maybeSearchParam = list.getPersistedSearch();
           if (maybeSearchParam) {
             href += maybeSearchParam;
           }

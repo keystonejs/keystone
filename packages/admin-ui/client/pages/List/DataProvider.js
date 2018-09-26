@@ -262,17 +262,15 @@ const encodeSearch = (data: Search, props: Props): string => {
 class ListPageDataProvider extends Component<Props, State> {
   constructor(props) {
     super(props);
-    const maybeSearchFromLocalStorage = localStorage.getItem(
-      `search:${this.props.match.params.list}`
-    );
+    const maybePersistedSearch = this.props.list.getPersistedSearch();
     if (this.props.location.search) {
-      if (this.props.location.search !== maybeSearchFromLocalStorage) {
-        localStorage.setItem(`search:${this.props.match.params.list}`, this.props.location.search);
+      if (this.props.location.search !== maybePersistedSearch) {
+        this.props.list.setPersistedSearch(this.props.location.search);
       }
-    } else if (maybeSearchFromLocalStorage) {
+    } else if (maybePersistedSearch) {
       this.props.history.replace({
         ...this.props.location,
-        search: maybeSearchFromLocalStorage,
+        search: maybePersistedSearch,
       });
     }
 
@@ -407,7 +405,7 @@ class ListPageDataProvider extends Component<Props, State> {
       search,
     };
 
-    localStorage.setItem(`search:${this.props.match.params.list}`, search);
+    this.props.list.setPersistedSearch(search);
 
     // Do we want to add an item to history or not
     if (addHistoryRecord) {
