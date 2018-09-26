@@ -28,20 +28,20 @@ export type FieldSelectProps = {
   value: FieldType | Array<FieldType>,
 };
 
-export const fakeLabelField = { label: 'Label', path: '_label_' };
+export const pseudoLabelField = { label: 'Label', path: '_label_' };
 
 export default class FieldSelect extends Component<FieldSelectProps> {
   getSanitizedOptions = () => {
     const { fields } = this.props;
     const sanitizedOptions = fields.map(({ options, ...field }) => field);
-    sanitizedOptions.unshift(fakeLabelField);
+    sanitizedOptions.unshift(pseudoLabelField);
     return sanitizedOptions;
   };
   onChange = selected => {
     const { fields: listFields, isMulti, onChange } = this.props;
     const arr = Array.isArray(selected) ? selected : [selected];
     const diffMap = arrayToObject(arr, 'path', () => true);
-    const fields = [fakeLabelField].concat(listFields).filter(i => diffMap[i.path]);
+    const fields = [pseudoLabelField].concat(listFields).filter(i => diffMap[i.path]);
     const value = isMulti ? fields : fields[0];
 
     onChange(value);

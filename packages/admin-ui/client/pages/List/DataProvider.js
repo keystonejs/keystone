@@ -9,7 +9,7 @@ import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { deconstructErrorsToDataShape } from '../../util';
-import { fakeLabelField } from './FieldSelect';
+import { pseudoLabelField } from './FieldSelect';
 
 export type SortByType = {
   field: { label: string, path: string },
@@ -83,7 +83,7 @@ const getSearchDefaults = (props: Props): Search => {
   // Dynamic defaults
   const fields = parseFields(defaultColumns, props.list);
   const sortBy = parseSortBy(defaultSort, props.list) || { field: fields[0], direction: 'ASC' };
-  fields.unshift(fakeLabelField);
+  fields.unshift(pseudoLabelField);
   return {
     currentPage: 1,
     pageSize: defaultPageSize,
@@ -98,7 +98,7 @@ const parseFields = (fields, list) => {
   return fieldPaths
     .map(path => {
       if (path === '_label_') {
-        return fakeLabelField;
+        return pseudoLabelField;
       }
       return list.fields.find(f => f.path === path);
     })
@@ -341,7 +341,7 @@ class ListPageDataProvider extends Component<Props, State> {
 
     // Ensure that the displayed fields maintain their original sortDirection
     // when they're added/removed
-    const fields = [fakeLabelField]
+    const fields = [pseudoLabelField]
       .concat(list.fields)
       .filter(field => selectedFields.some(selectedField => selectedField.path === field.path));
 
@@ -349,7 +349,7 @@ class ListPageDataProvider extends Component<Props, State> {
     const { sortBy } = decodeSearch(location.search, this.props);
     const newSort = fields.includes(sortBy.field)
       ? sortBy
-      : { ...sortBy, field: fields.filter(field => field !== fakeLabelField)[0] };
+      : { ...sortBy, field: fields.filter(field => field !== pseudoLabelField)[0] };
     this.setSearch({ fields, sortBy: newSort });
   };
 
