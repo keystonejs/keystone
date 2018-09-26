@@ -827,6 +827,8 @@ module.exports = class List {
       // Wait until next tick so the promise/micro-task queue can be flushed
       // fully, ensuring the deferred handlers get executed before we move on
       await new Promise(res => process.nextTick(res));
+      // Rethrow the error to ensure it's surfaced to Apollo
+      throw error;
     }
 
     await Promise.all(
