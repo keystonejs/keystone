@@ -93,7 +93,7 @@ keystone.createList('Post', {
       ref: 'PostCategory',
       many: true,
     },
-    stars: { type: Stars },
+    stars: { type: Stars, starCount: 5 },
     views: { type: Integer },
     hero: { type: File, adapter: fileAdapter },
   },

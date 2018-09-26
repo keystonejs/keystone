@@ -1,29 +1,17 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
 import StarEmpty from './star-empty.svg';
 import StarFull from './star-full.svg';
+import StarWrapper from './StarWrapper';
 
 const StarInput = ({ num, value, onClick }) => {
   const Star = value >= num ? StarFull : StarEmpty;
   return <img src={Star} onClick={() => onClick(num)} />;
 };
 
-const StarWrapper = props => (
-  <div
-    style={{
-      display: 'inline-flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      width: 5 * 22 + 5 * 4,
-    }}
-    {...props}
-  />
-);
-
-export default class TextField extends Component {
-  handleChange = num => {
+export default class TextField extends PureComponent {
+  handleChange = (num) => {
     const { field, item, onChange } = this.props;
     const value = item[field.path];
     const newValue = value === num ? 0 : num;
@@ -32,6 +20,7 @@ export default class TextField extends Component {
 
   render() {
     const { field, item } = this.props;
+    const { starCount } = field.config;
     const value = item[field.path];
     const htmlID = `ks-input-${field.path}`;
 
@@ -39,12 +28,15 @@ export default class TextField extends Component {
       <FieldContainer>
         <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
         <FieldInput>
-          <StarWrapper>
-            <StarInput num={1} value={value} onClick={this.handleChange} />
-            <StarInput num={2} value={value} onClick={this.handleChange} />
-            <StarInput num={3} value={value} onClick={this.handleChange} />
-            <StarInput num={4} value={value} onClick={this.handleChange} />
-            <StarInput num={5} value={value} onClick={this.handleChange} />
+          <StarWrapper starCount={starCount}>
+            {Array(starCount).fill(true).map((v, index) => (
+              <StarInput
+                key={index}
+                num={index + 1}
+                value={value}
+                onClick={this.handleChange}
+              />
+            ))}
           </StarWrapper>
         </FieldInput>
       </FieldContainer>

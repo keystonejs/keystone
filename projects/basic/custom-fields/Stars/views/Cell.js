@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import StarEmpty from './star-empty.svg';
 import StarFull from './star-full.svg';
+import StarWrapper from './StarWrapper';
 
 type Props = {
   field: Object,
@@ -14,29 +15,15 @@ const Star = ({ num, value }) => {
   return <img src={icon} />;
 };
 
-const StarWrapper = props => (
-  <div
-    style={{
-      display: 'inline-flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      width: 5 * 22 + 5 * 4,
-    }}
-    {...props}
-  />
-);
-
-export default class StarsCellView extends Component<Props> {
+export default class StarsCellView extends PureComponent<Props> {
   render() {
-    const { data } = this.props;
+    const { field, data } = this.props;
+    const { starCount } = field.config;
     return (
-      <StarWrapper>
-        <Star num={1} value={data} />
-        <Star num={2} value={data} />
-        <Star num={3} value={data} />
-        <Star num={4} value={data} />
-        <Star num={5} value={data} />
+      <StarWrapper starCount={starCount}>
+        {Array(starCount).fill(true).map((m, index) => (
+          <Star key={index} num={index + 1} value={data} />
+        ))}
       </StarWrapper>
     );
   }
