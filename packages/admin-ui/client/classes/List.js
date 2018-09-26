@@ -72,9 +72,9 @@ export default class List {
     return count === 1 ? `1 ${this.singular}` : `${count} ${this.plural}`;
   }
   getPersistedSearch() {
-    localStorage.getItem(`search:${this.config.key}`);
+    return localStorage.getItem(`search:${this.config.path}`);
   }
   setPersistedSearch(value) {
-    localStorage.setItem(`search:${this.config.key}`, value);
+    localStorage.setItem(`search:${this.config.path}`, value);
   }
 }
