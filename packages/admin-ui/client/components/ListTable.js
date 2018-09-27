@@ -209,13 +209,7 @@ class ListDisplayRow extends Component {
           if (path === '_label_') {
             return (
               <BodyCell key={path}>
-                <ItemLink to={link({ path: list.path, id: item.id })}>
-                  {
-                    // should this rule just be disabled in the eslint config?
-                    // eslint-disable-next-line no-underscore-dangle
-                    item._label_
-                  }
-                </ItemLink>
+                <ItemLink to={link({ path: list.path, id: item.id })}>{item._label_}</ItemLink>
               </BodyCell>
             );
           }
