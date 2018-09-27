@@ -3,6 +3,7 @@
 import React, { Component, Fragment, type Ref } from 'react';
 import { OptionRenderer, Radio, RadioGroup, Select } from '@voussoir/ui/src/primitives/filters';
 import { gridSize } from '@voussoir/ui/src/theme';
+import type { FilterProps } from '../../../types';
 
 const EventCatcher = props => (
   <div
@@ -15,10 +16,9 @@ const EventCatcher = props => (
 );
 const SelectWrapper = props => <div css={{ marginTop: gridSize * 2 }} {...props} />;
 
-type Props = { field: Object, innerRef: Ref<*>, onChange: Event => void };
 type State = { inverted: boolean };
 
-export default class SelectFilterView extends Component<Props, State> {
+export default class SelectFilterView extends Component<FilterProps, State> {
   state = { inverted: this.props.value.inverted };
   handleRadioChange = value => {
     const { onChange, value: oldValue } = this.props;

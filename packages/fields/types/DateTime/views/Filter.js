@@ -1,19 +1,19 @@
 // @flow
 
-import React, { Component, type Ref } from 'react';
+import React, { Component } from 'react';
 import { DateTime } from 'luxon';
 import { format, setMonth, setYear } from 'date-fns';
 import { DateTimePicker } from '@voussoir/ui/src/primitives/forms';
+import type { FilterProps } from '../../../types';
 
-type Props = {
-  field: Object,
-  filter: Object,
-  innerRef: Ref<*>,
-  onChange: Event => void,
+type State = {
+  date: string,
+  time: string,
+  offset: string,
 };
 
-export default class CalendarDayFilterView extends Component<Props> {
-  constructor(props) {
+export default class CalendarDayFilterView extends Component<FilterProps, State> {
+  constructor(props: FilterProps) {
     super(props);
     const value = DateTime.fromJSDate(new Date());
     const dt = DateTime.fromISO(value, { setZone: true });
@@ -67,7 +67,7 @@ export default class CalendarDayFilterView extends Component<Props> {
     onChange(field, value);
   };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: FilterProps) {
     const { filter } = this.props;
 
     if (prevProps.filter !== filter) {

@@ -1,13 +1,15 @@
+// @flow
 type Field = any;
 
 import * as React from 'react';
 
 export type FilterProps = {
-  innerRef: React.Ref<HTMLElement>,
+  innerRef: React.Ref<*>,
   recalcHeight: () => mixed,
-  value: string,
-  onChange: string => mixed,
+  value: mixed,
+  onChange: mixed => mixed,
   field: Field,
+  filter: *,
 };
 
 export type CellProps = {};
