@@ -87,20 +87,14 @@ const SortDirectionArrow = styled.span(({ size = '0.2em', rotate = '0deg' }) => 
 // Functional Components
 
 type SortLinkProps = {
-  handleSortChange: (Event, String) => void,
+  handleSortChange: (Event, string) => void,
   active: boolean,
   sortAscending: boolean,
 };
 
 class SortLink extends React.Component<SortLinkProps> {
-  constructor(props) {
-    super(props);
-    const { handleSortChange } = this.props;
-    this.handleSortChange = handleSortChange;
-  }
-
   onClick = event => {
-    this.handleSortChange(event, this.props.label);
+    this.props.handleSortChange(event, this.props.label);
   };
 
   render() {
@@ -115,7 +109,7 @@ class SortLink extends React.Component<SortLinkProps> {
     };
 
     return (
-      <td style={styles} onClick={this.onClick} onMouseEnter={this.onMouseEnter}>
+      <td style={styles} onClick={this.onClick}>
         {this.props.label}
         <SortDirectionArrow
           rotate={this.props.active && !this.props.sortAscending ? '180deg' : '0deg'}
