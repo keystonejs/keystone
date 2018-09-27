@@ -3,11 +3,11 @@ type Field = any;
 
 import * as React from 'react';
 
-export type FilterProps = {
+export type FilterProps<Value> = {
   innerRef: React.Ref<*>,
   recalcHeight: () => mixed,
-  value: mixed,
-  onChange: mixed => mixed,
+  value: Value,
+  onChange: Value => mixed,
   field: Field,
   filter: *,
 };

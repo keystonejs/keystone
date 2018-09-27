@@ -4,8 +4,10 @@ import React, { Component } from 'react';
 import { Input } from '@voussoir/ui/src/primitives/forms';
 import type { FilterProps } from '../../../types';
 
-export default class TextFilterView extends Component<FilterProps> {
-  componentDidUpdate(prevProps: FilterProps) {
+type TextFilterViewProps = FilterProps<string>;
+
+export default class TextFilterView extends Component<TextFilterViewProps> {
+  componentDidUpdate(prevProps: TextFilterViewProps) {
     const { filter } = this.props;
 
     if (prevProps.filter !== filter) {

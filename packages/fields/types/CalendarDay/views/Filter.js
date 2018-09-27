@@ -1,18 +1,13 @@
 // @flow
 
-import React, { Component, type Ref } from 'react';
+import React, { Component } from 'react';
 import { parse, format, setMonth, setYear } from 'date-fns';
 import { DayPicker } from '@voussoir/ui/src/primitives/forms';
+import type { FilterProps } from '../../../types';
 
 const FORMAT = 'YYYY-MM-DD';
 
-type Props = {
-  field: Object,
-  filter: Object,
-  innerRef: Ref<*>,
-  onChange: Event => void,
-  recalcHeight: () => void,
-};
+type Props = FilterProps<string>;
 
 type State = { value: string };
 

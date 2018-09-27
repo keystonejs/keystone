@@ -12,8 +12,10 @@ type State = {
   offset: string,
 };
 
-export default class CalendarDayFilterView extends Component<FilterProps, State> {
-  constructor(props: FilterProps) {
+type Props = FilterProps<string>;
+
+export default class CalendarDayFilterView extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     const value = DateTime.fromJSDate(new Date());
     const dt = DateTime.fromISO(value, { setZone: true });
@@ -67,7 +69,7 @@ export default class CalendarDayFilterView extends Component<FilterProps, State>
     onChange(field, value);
   };
 
-  componentDidUpdate(prevProps: FilterProps) {
+  componentDidUpdate(prevProps: Props) {
     const { filter } = this.props;
 
     if (prevProps.filter !== filter) {

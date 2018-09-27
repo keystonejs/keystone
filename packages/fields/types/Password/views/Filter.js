@@ -4,8 +4,8 @@ import React, { Component } from 'react';
 import { RadioGroup, Radio } from '@voussoir/ui/src/primitives/filters';
 import type { FilterProps } from '../../../types';
 
-export default class PasswordFilterView extends Component<FilterProps> {
-  handleChange = (value: string) => {
+export default class PasswordFilterView extends Component<FilterProps<boolean>> {
+  handleChange = (value: 'is_set' | 'is_not_set') => {
     const boolValue = value === 'is_set' ? true : false;
     this.props.onChange(boolValue);
   };
