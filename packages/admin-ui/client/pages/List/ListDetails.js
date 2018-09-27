@@ -355,6 +355,10 @@ class ListDetails extends Component<Props, State> {
               />
             </Popout>
             {this.renderExpandButton()}
+            <Button onClick={this.props.handleReset} id="ks-reset">
+              Reset
+            </Button>
+
             <ToolbarSeparator />
             {list.access.create ? (
               <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
