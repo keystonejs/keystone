@@ -79,7 +79,7 @@ export default class RelationshipField extends Component {
 
               const options = data[refList.gqlNames.listQueryName].map(listData => ({
                 value: pick(listData, ['id']),
-                label: listData._label_, // eslint-disable-line no-underscore-dangle
+                label: listData._label_,
               }));
 
               let value = null;

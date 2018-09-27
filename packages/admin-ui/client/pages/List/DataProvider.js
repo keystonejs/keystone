@@ -9,6 +9,7 @@ import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { deconstructErrorsToDataShape } from '../../util';
+import { pseudoLabelField } from './FieldSelect';
 
 export type SortByType = {
   field: { label: string, path: string },
@@ -57,12 +58,12 @@ const getQueryArgs = ({ filters, ...args }) => {
 const getQuery = ({ fields, filters, list, search, orderBy, skip, first }) => {
   const queryArgs = getQueryArgs({ first, filters, search, skip, orderBy });
   const metaQueryArgs = getQueryArgs({ filters, search });
-
+  const safeFields = fields.filter(field => field.path !== '_label_');
   return gql`{
     ${list.gqlNames.listQueryName}${queryArgs} {
       id
       _label_
-      ${fields.map(field => field.getQueryFragment()).join('\n')}
+      ${safeFields.map(field => field.getQueryFragment()).join('\n')}
     }
     _${list.gqlNames.listQueryName}Meta${metaQueryArgs} {
       count
@@ -82,7 +83,7 @@ const getSearchDefaults = (props: Props): Search => {
   // Dynamic defaults
   const fields = parseFields(defaultColumns, props.list);
   const sortBy = parseSortBy(defaultSort, props.list) || { field: fields[0], direction: 'ASC' };
-
+  fields.unshift(pseudoLabelField);
   return {
     currentPage: 1,
     pageSize: defaultPageSize,
@@ -94,7 +95,9 @@ const getSearchDefaults = (props: Props): Search => {
 
 const parseFields = (fields, list) => {
   const fieldPaths = fields.split(',');
-  return fieldPaths.map(path => list.fields.find(f => f.path === path)).filter(f => !!f); // remove anything that was not found.
+  return fieldPaths
+    .map(path => (path === '_label_' ? pseudoLabelField : list.fields.find(f => f.path === path)))
+    .filter(f => !!f); // remove anything that was not found.
 };
 
 const encodeFields = fields => {
@@ -341,18 +344,18 @@ class ListPageDataProvider extends Component<Props, State> {
 
   handleFieldChange = selectedFields => {
     const { list, location } = this.props;
-    if (!selectedFields.length) {
-      return;
-    }
 
     // Ensure that the displayed fields maintain their original sortDirection
     // when they're added/removed
-    const fields = list.fields.filter(field => selectedFields.includes(field));
+    const fields = [pseudoLabelField]
+      .concat(list.fields)
+      .filter(field => selectedFields.some(selectedField => selectedField.path === field.path));
 
     // Reset `sortBy` if we were ordering by a field which has been removed.
     const { sortBy } = decodeSearch(location.search, this.props);
-    const newSort = fields.includes(sortBy.field) ? sortBy : { ...sortBy, field: fields[0] };
-
+    const newSort = fields.includes(sortBy.field)
+      ? sortBy
+      : { ...sortBy, field: fields.filter(field => field !== pseudoLabelField)[0] };
     this.setSearch({ fields, sortBy: newSort });
   };
 
