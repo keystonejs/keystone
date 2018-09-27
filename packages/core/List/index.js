@@ -915,7 +915,6 @@ module.exports = class List {
   }
 
   async manyQuery(args, context, queryName) {
-    // eslint-disable-next-line no-underscore-dangle
     return this._tryManyQuery(args, context, queryName, queryArgs =>
       this.adapter.itemsQuery(queryArgs)
     );
@@ -927,7 +926,6 @@ module.exports = class List {
       // on what the user requested
       // Evalutation takes place in ../Keystone/index.js
       getCount: () => {
-        // eslint-disable-next-line no-underscore-dangle
         return this._tryManyQuery(args, context, queryName, queryArgs =>
           this.adapter.itemsQueryMeta(queryArgs).then(({ count }) => count)
         );
