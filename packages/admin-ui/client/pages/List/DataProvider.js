@@ -1,4 +1,6 @@
-import React, { Component, Fragment } from 'react';
+// @flow
+import * as React from 'react';
+import { Component, Fragment } from 'react';
 import gql from 'graphql-tag';
 import querystring from 'querystring';
 import debounce from 'lodash.debounce';
@@ -10,6 +12,9 @@ import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { deconstructErrorsToDataShape } from '../../util';
 import { pseudoLabelField } from './FieldSelect';
+import type { AdminMeta } from '../../Providers/AdminMeta';
+import List from '../../classes/List';
+import type { FieldControllerInterface } from '@voussoir/fields/Controller';
 
 export type SortByType = {
   field: { label: string, path: string },
@@ -23,20 +28,11 @@ type Filter = {
   value: string,
 };
 
-type Props = {
-  list: Object,
-  match: Object,
-  location: Object,
-  history: Object,
-};
-
-type State = {};
-
 type Search = {
   currentPage: number,
   pageSize: number,
   search: string,
-  fields: Array<String>,
+  fields: Array<FieldControllerInterface>,
   sortBy: SortByType,
   filters: Array<Object>,
 };
@@ -104,7 +100,7 @@ const encodeFields = fields => {
   return fields.map(f => f.path).join(',');
 };
 
-const parseSortBy = (sortBy: string, list): SortByType => {
+const parseSortBy = (sortBy: string, list: List): SortByType | null => {
   let key = sortBy;
   let direction = 'ASC';
 
@@ -130,7 +126,7 @@ const encodeSortBy = (sortBy: SortByType): string => {
   return direction === 'ASC' ? path : `-${path}`;
 };
 
-const parseFilter = (filter: [string, string], list): Filter => {
+const parseFilter = (filter: [string, string], list): Filter | null => {
   const [key, value] = filter;
   let type;
   let label;
@@ -261,6 +257,17 @@ const encodeSearch = (data: Search, props: Props): string => {
   if (Object.keys(params).length === 0) return '';
   return '?' + querystring.stringify(params);
 };
+
+type Props = {
+  list: Object,
+  match: Object,
+  location: Object,
+  history: Object,
+  adminMeta: AdminMeta,
+  children: (*) => React.Node,
+};
+
+type State = {};
 
 class ListPageDataProvider extends Component<Props, State> {
   constructor(props) {
@@ -422,13 +429,15 @@ class ListPageDataProvider extends Component<Props, State> {
     this.setSearch(decodeSearch('', this.props));
   };
 
+  itemsCount: number;
+  items: Object;
   render() {
     const { children, list, location } = this.props;
     const { currentPage, pageSize, search, fields, sortBy, filters } = decodeSearch(
       location.search,
       this.props
     );
-
+    console.log(fields);
     const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
     const first = pageSize;
     const skip = (currentPage - 1) * pageSize;
@@ -444,7 +453,7 @@ class ListPageDataProvider extends Component<Props, State> {
 
     return (
       <Fragment>
-        <DocTitle>{list.plural}</DocTitle>
+        <DocTitle adminMeta={this.props.adminMeta}>{list.plural}</DocTitle>
         <Nav />
         <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
           {({ data, error, loading, refetch }) => {
@@ -487,6 +496,7 @@ class ListPageDataProvider extends Component<Props, State> {
 
             // Leave the old values intact while new data is loaded
             if (!loading) {
+              // TODO: doing this will break/cause unexpected behaviour with suspense so it should use state or something
               this.items = data && data[list.gqlNames.listQueryName];
               this.itemsCount =
                 (data &&

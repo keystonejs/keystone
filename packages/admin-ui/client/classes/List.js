@@ -101,12 +101,11 @@ export default class List {
     defaultSort: string,
     maximumPageSize: number,
   };
-  fields: Array<{
+  fields: Array<{|
     label: string,
     path: string,
     type: string,
-    [key: string]: mixed,
-  }>;
+  |}>;
   views: {
     [fieldName: string]: {
       Controller: string,
