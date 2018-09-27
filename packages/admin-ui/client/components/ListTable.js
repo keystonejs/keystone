@@ -109,7 +109,7 @@ class SortLink extends React.Component<SortLinkProps> {
     };
 
     return (
-      <td style={styles} onClick={this.onClick}>
+      <td style={styles} onClick={this.onClick} data-field={this.props['data-field']}>
         {this.props.label}
         <SortDirectionArrow
           rotate={this.props.active && !this.props.sortAscending ? '180deg' : '0deg'}
