@@ -96,12 +96,7 @@ const getSearchDefaults = (props: Props): Search => {
 const parseFields = (fields, list) => {
   const fieldPaths = fields.split(',');
   return fieldPaths
-    .map(path => {
-      if (path === '_label_') {
-        return pseudoLabelField;
-      }
-      return list.fields.find(f => f.path === path);
-    })
+    .map(path => (path === '_label_' ? pseudoLabelField : list.fields.find(f => f.path === path)))
     .filter(f => !!f); // remove anything that was not found.
 };
 
