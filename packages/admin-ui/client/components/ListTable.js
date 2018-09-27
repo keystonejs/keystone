@@ -376,6 +376,7 @@ export default class ListTable extends Component {
             </HeaderCell>
             {fields.map(field => (
               <SortLink
+                data-field={field.path}
                 key={field.path}
                 label={field.label}
                 handleSortChange={this.handleSortChange}
