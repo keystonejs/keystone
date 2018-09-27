@@ -1,0 +1,15 @@
+[declarations]
+
+[ignore]
+.*/packages/arch/.*
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+module.name_mapper='^@voussoir\/\([a-zA-Z0-9_\-]+\)$' -> '<PROJECT_ROOT>/packages/\1'
+module.name_mapper='.*FIELD_TYPES' -> '<PROJECT_ROOT>/packages/field-views-loader/field-types'
+
+[version]

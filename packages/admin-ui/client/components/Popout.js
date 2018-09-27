@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, type ComponentType, type Node, type Ref } from 'react';
+import React, { Fragment, type ElementType, type Node, type Ref } from 'react';
 import styled from 'react-emotion';
 
 import { Button } from '@voussoir/ui/src/primitives/buttons';
@@ -66,7 +66,7 @@ export const DisclosureArrow = styled.span(({ size = '0.3em' }) => ({
 type Props = {
   buttonLabel: string,
   children: Node,
-  component: ComponentType<*>,
+  component: ElementType,
   innerRef: Ref<HTMLElement>,
   bodyRef: Ref<HTMLElement>,
   footerContent: Node,
@@ -78,6 +78,7 @@ type Props = {
 
 export const Popout = ({
   buttonLabel,
+  // $FlowFixMe
   component: Wrapper = Fragment,
   children,
   innerRef,
@@ -97,7 +98,7 @@ export const Popout = ({
   );
 
   return (
-    <PopoutModal ref={innerRef} target={target || defaultTarget} {...props}>
+    <PopoutModal innerRef={innerRef} target={target || defaultTarget} {...props}>
       <Wrapper>
         <Header>
           <HeaderLeft>{headerBefore}</HeaderLeft>

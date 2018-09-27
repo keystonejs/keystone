@@ -26,7 +26,7 @@ type LoadingIndicatorProps = {
   size: number,
 };
 
-const DotsContainer = styled.div(({ size }: LoadingIndicatorProps) => ({
+const DotsContainer = styled.div(({ size }: { size: number }) => ({
   alignSelf: 'center',
   fontSize: size,
   lineHeight: 1,
@@ -46,7 +46,7 @@ const Dot = styled.span(({ appearance, delay = 0, isOffset }: DotProps) => ({
   verticalAlign: 'top',
   width: '1em',
 }));
-export const LoadingIndicator = ({ appearance = 'default', size = 4 }: LoadingIndicatorProps) => (
+export const LoadingIndicator = ({ appearance, size }: LoadingIndicatorProps) => (
   <DotsContainer size={size}>
     <Dot appearance={appearance} />
     <Dot appearance={appearance} delay={160} isOffset />
@@ -54,6 +54,11 @@ export const LoadingIndicator = ({ appearance = 'default', size = 4 }: LoadingIn
     <A11yText>Loading</A11yText>
   </DotsContainer>
 );
+
+LoadingIndicator.defaultProps = {
+  appearance: 'default',
+  size: 4,
+};
 
 // ==============================
 // Spinner

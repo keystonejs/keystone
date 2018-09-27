@@ -1,5 +1,5 @@
 /* global ENABLE_DEV_FEATURES */
-
+// @flow
 import React, { Fragment } from 'react';
 import { withRouter } from 'react-router';
 import {

@@ -7,7 +7,7 @@ module.exports = {
     jest: true,
     'cypress/globals': true,
   },
-  plugins: ['react', 'jest', 'cypress', 'import'],
+  plugins: ['react', 'jest', 'cypress', 'import', 'flowtype'],
   rules: {
     curly: ['error', 'multi-line'],
     'jsx-quotes': 'error',
@@ -50,6 +50,7 @@ module.exports = {
     'react/sort-prop-types': 'warn',
     semi: 'error',
     strict: 'off',
+    'flowtype/use-flow-type': 'error',
   },
   extends: ['plugin:jest/recommended'],
 

@@ -2,6 +2,7 @@
 
 import React, { Component, type Ref } from 'react';
 import { Input } from '@voussoir/ui/src/primitives/forms';
+import type { FilterProps } from '@voussoir/fields/types';
 
 type Props = {
   field: Object,
@@ -18,13 +19,13 @@ export default class TextFilterView extends Component<Props> {
       this.props.recalcHeight();
     }
   }
-  handleChange = ({ target: { value } }) => {
+  handleChange = ({ target: { value } }: SyntheticEvent<HTMLInputElement>) => {
     this.props.onChange(value);
   };
 
   render() {
     const { filter, field, innerRef, value } = this.props;
-
+    console.log(filter);
     if (!filter) return null;
 
     const placeholder = field.getFilterLabel(filter);
