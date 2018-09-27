@@ -292,7 +292,7 @@ const ItemDetails = withRouter(
         <ClippyIcon />
       );
       const listHref = `${adminPath}/${list.path}`;
-      const titleText = item._label_; // eslint-disable-line no-underscore-dangle
+      const titleText = item._label_;
       return (
         <Fragment>
           {updateErrorMessage ? (
