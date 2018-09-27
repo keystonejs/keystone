@@ -21,6 +21,8 @@ class BaseKeystoneAdapter {
   }
 
   prepareListAdapter() {}
+
+  pushSetupTask(model) {}
 }
 
 class BaseListAdapter {

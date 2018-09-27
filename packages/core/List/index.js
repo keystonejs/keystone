@@ -196,6 +196,7 @@ module.exports = class List {
       ...fieldConfig.type.views,
     }));
   }
+
   getAdminMeta() {
     return {
       key: this.key,
