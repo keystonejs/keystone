@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
-import { ShieldIcon, InfoIcon, TrashcanIcon } from '@voussoir/icons';
+import { ShieldIcon, InfoIcon, TrashcanIcon, ArrowRightIcon } from '@voussoir/icons';
 import { colors } from '@voussoir/ui/src/theme';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import { CheckboxPrimitive } from '@voussoir/ui/src/primitives/forms';
@@ -176,7 +176,19 @@ class ListDisplayRow extends Component {
           </Button>
           {this.renderDeleteModal()}
         </BodyCell>
-        {fields.map((field, index) => {
+        <BodyCell>
+          <Button
+            appearance="primary"
+            to={link({ path: list.path, id: item.id })}
+            spacing="cozy"
+            variant="subtle"
+            style={{ height: 24 }}
+          >
+            <ArrowRightIcon />
+            <A11yText>Open</A11yText>
+          </Button>
+        </BodyCell>
+        {fields.map(field => {
           const { path } = field;
 
           const isLoading = !item.hasOwnProperty(path);
@@ -194,11 +206,22 @@ class ListDisplayRow extends Component {
             );
           }
 
+          if (path === '_label_') {
+            return (
+              <BodyCell key={path}>
+                <ItemLink to={link({ path: list.path, id: item.id })}>{item._label_}</ItemLink>
+              </BodyCell>
+            );
+          }
+
           let content;
 
           const Cell = FieldTypes[list.key][path].Cell;
 
           if (Cell) {
+            // fix this later, creating a react component on every render is really bad
+            // react will rerender into the DOM on every react render
+            // probably not a huge deal on a leaf component like this but still bad
             const LinkComponent = ({ children, ...data }) => (
               <ItemLink to={link(data)}>{children}</ItemLink>
             );
@@ -207,15 +230,7 @@ class ListDisplayRow extends Component {
             content = item[path];
           }
 
-          return (
-            <BodyCell key={path}>
-              {!index ? (
-                <ItemLink to={link({ path: list.path, id: item.id })}>{content}</ItemLink>
-              ) : (
-                content
-              )}
-            </BodyCell>
-          );
+          return <BodyCell key={path}>{content}</BodyCell>;
         })}
       </tr>
     );
@@ -350,6 +365,7 @@ export default class ListTable extends Component {
       <Table id="ks-list-table">
         <colgroup>
           <col width="32" />
+          <col width="32" />
         </colgroup>
         <thead>
           <tr>
@@ -368,6 +384,7 @@ export default class ListTable extends Component {
                 />
               </div>
             </HeaderCell>
+            <HeaderCell />
             {fields.map(field => (
               <SortLink
                 data-field={field.path}
