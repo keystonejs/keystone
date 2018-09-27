@@ -303,7 +303,6 @@ describe('Testing against real data', () => {
             [table]: parentData[table].map(id => {
               return (
                 parentData[keyOfRelationship].find(
-                  // eslint-disable-next-line no-underscore-dangle
                   relatedItem => relatedItem._id.toString() === id.toString()
                 ) || id
               );
@@ -528,7 +527,6 @@ describe('Testing against real data', () => {
             [table]: parentData[table].map(id => {
               return (
                 parentData[keyOfRelationship].find(
-                  // eslint-disable-next-line no-underscore-dangle
                   relatedItem => relatedItem._id.toString() === id.toString()
                 ) || id
               );
@@ -628,7 +626,6 @@ describe('Testing against real data', () => {
             [table]: parentData[table].map(id => {
               return (
                 parentData[keyOfRelationship].find(
-                  // eslint-disable-next-line no-underscore-dangle
                   relatedItem => relatedItem._id.toString() === id.toString()
                 ) || id
               );
@@ -734,7 +731,6 @@ describe('Testing against real data', () => {
             [table]: parentData[table].map(id => {
               return (
                 parentData[keyOfRelationship].find(
-                  // eslint-disable-next-line no-underscore-dangle
                   relatedItem => relatedItem._id.toString() === id.toString()
                 ) || id
               );

@@ -81,7 +81,6 @@ function graphqlOperation(type) {
       // (process.env.NODE_ENV !== 'production'), so this may error at some
       // point. If so, we need another way of attaching a global graphql query
       // lib to the window from within the app for testing.
-      // eslint-disable-next-line no-underscore-dangle
       win.__APOLLO_CLIENT__[type]({
         [type === 'mutate' ? 'mutation' : type]: operation,
         // Avoid anything which may be cached when loading the admin UI - we

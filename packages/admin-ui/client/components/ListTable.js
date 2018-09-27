@@ -14,7 +14,6 @@ import DeleteItemModal from './DeleteItemModal';
 import FieldTypes from '../FIELD_TYPES';
 
 // Styled Components
-
 const Table = styled('table')({
   borderCollapse: 'collapse',
   borderSpacing: 0,
@@ -72,7 +71,53 @@ const NoResults = ({ children, ...props }) => (
   </div>
 );
 
+const SortDirectionArrow = styled.span(({ size = '0.2em', rotate = '0deg' }) => ({
+  borderLeft: `${size} solid transparent`,
+  borderRight: `${size} solid transparent`,
+  borderTop: `${size} solid`,
+  display: 'inline-block',
+  height: 0,
+  marginLeft: '0.33em',
+  marginTop: '-0.125em',
+  verticalAlign: 'middle',
+  width: 0,
+  transform: `rotate(${rotate})`,
+}));
+
 // Functional Components
+
+type SortLinkProps = {
+  handleSortChange: (Event, string) => void,
+  active: boolean,
+  sortAscending: boolean,
+};
+
+class SortLink extends React.Component<SortLinkProps> {
+  onClick = event => {
+    this.props.handleSortChange(event, this.props.label);
+  };
+
+  render() {
+    const styles = {
+      borderBottom: `2px solid ${colors.N10}`,
+      display: 'table-cell',
+      fontWeight: 'normal',
+      paddingBottom: '8px',
+      textAlign: 'left',
+      verticalAlign: 'bottom',
+      color: this.props.active ? '#000' : '#999',
+    };
+
+    return (
+      <td style={styles} onClick={this.onClick} data-field={this.props['data-field']}>
+        {this.props.label}
+        <SortDirectionArrow
+          rotate={this.props.active && !this.props.sortAscending ? '180deg' : '0deg'}
+        />
+      </td>
+    );
+  }
+}
 
 class ListDisplayRow extends Component {
   static defaultProps = {
@@ -269,13 +314,31 @@ class ListManageRow extends Component {
 export default class ListTable extends Component {
   state = {
     mouseOverSelectsRow: false,
+    sortBy: null,
+    sortAscending: true,
   };
+
   handleSelectAll = () => {
     const { items, onSelectAll, selectedItems } = this.props;
     const allSelected = items.length === selectedItems.length;
     const value = allSelected ? [] : items.map(i => i.id);
     onSelectAll(value);
   };
+
+  handleSortChange = (event, field) => {
+    // only change sort direction if sortBy is not being modified
+    if (this.state.sortBy === field) {
+      this.setState({
+        sortAscending: !this.state.sortAscending,
+      });
+    } else {
+      this.setState({
+        sortAscending: true,
+        sortBy: field,
+      });
+    }
+  };
+
   onSelectStart = select => {
     const { isManaging } = this.props;
     if (!isManaging) return;
@@ -329,9 +392,14 @@ export default class ListTable extends Component {
             </HeaderCell>
             <HeaderCell />
             {fields.map(field => (
-              <HeaderCell data-field={field.path} key={field.path}>
-                {field.label}
-              </HeaderCell>
+              <SortLink
+                data-field={field.path}
+                key={field.path}
+                label={field.label}
+                handleSortChange={this.handleSortChange}
+                active={this.state.sortBy == field.label}
+                sortAscending={this.state.sortAscending}
+              />
             ))}
           </tr>
         </thead>
