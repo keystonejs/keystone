@@ -24,7 +24,7 @@ export default class CalendarDayFilterView extends Component<Props, State> {
     this.setState({ value });
   };
 
-  handleMonthSelect = (event: *, setDate: *, setSelectedDate: *) => {
+  handleMonthSelect = (event: any, setDate: *, setSelectedDate: *) => {
     const { field, onChange } = this.props;
     const month = event.target.value;
     const newDate = setMonth(this.state.value, month);
@@ -32,10 +32,10 @@ export default class CalendarDayFilterView extends Component<Props, State> {
     setDate(newDate);
     setSelectedDate(newDate);
     this.setState({ value });
-    onChange(field, value);
+    onChange(field);
   };
 
-  handleYearSelect = (event: *, setDate: *, setSelectedDate: *) => {
+  handleYearSelect = (event: any, setDate: *, setSelectedDate: *) => {
     const { field, onChange } = this.props;
     const year = event.target.value;
     const newDate = setYear(this.state.value, year);
@@ -43,7 +43,7 @@ export default class CalendarDayFilterView extends Component<Props, State> {
     setDate(newDate);
     setSelectedDate(newDate);
     this.setState({ value });
-    onChange(field, value);
+    onChange(field);
   };
 
   componentDidUpdate(prevProps: Props) {
