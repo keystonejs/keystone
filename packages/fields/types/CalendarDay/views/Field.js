@@ -17,6 +17,10 @@ export default class CalendarDayField extends Component {
     this.state = { value: item[field.path] };
   }
 
+  yearRangeFrom = this.props.field.config.yearRangeFrom;
+  yearRangeTo = this.props.field.config.yearRangeTo;
+  yearPickerType = this.props.field.config.yearPickerType;
+
   handleDayClick = day => {
     const { field, onChange } = this.props;
     const value = format(day, FORMAT);
@@ -69,7 +73,9 @@ export default class CalendarDayField extends Component {
                 onSelectedChange={this.handleDayClick}
                 handleYearSelect={this.handleYearSelect}
                 handleMonthSelect={this.handleMonthSelect}
-              />
+                yearRangeFrom={this.yearRangeFrom}
+                yearRangeTo={this.yearRangeTo}
+                />
             </div>
           </Popout>
         </FieldInput>

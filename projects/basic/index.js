@@ -55,7 +55,13 @@ keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-    dob: { type: CalendarDay, format: 'Do MMMM YYYY' },
+    dob: {
+      type: CalendarDay,
+      format: 'Do MMMM YYYY',
+      yearRangeFrom: 1995,
+      yearRangeTo: 2016,
+      yearPickerType: 'auto',
+    },
     lastOnline: { type: DateTime, format: 'MM/DD/YYYY h:mm A' },
     password: { type: Password },
     isAdmin: { type: Checkbox },

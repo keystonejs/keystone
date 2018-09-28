@@ -149,7 +149,9 @@ type SelectYearProps = {
 
 class SelectYear extends React.Component<SelectYearProps> {
   render() {
-    const { handleYearSelect, setDate, setSelectedDate, yearRangeFrom, yearRangeTo } = this.props;
+    const { handleYearSelect, setDate, setSelectedDate } = this.props;
+    const yearRangeFrom = this.props.yearRangeFrom ? this.props.yearRangeFrom : 2008 ;
+    const yearRangeTo = this.props.yearRangeTo ? this.props.yearRangeTo : 2018 ;
     const years = yearRange(yearRangeFrom, yearRangeTo);
     const { date } = this.props;
 
@@ -262,11 +264,6 @@ export const DayPicker = (props: DayPickerProps) => {
   return <Kalendaryo {...props} render={BasicCalendar} />;
 };
 
-DayPicker.defaultProps = {
-  yearRangeFrom: 1991,
-  yearRangeTo: format(new Date(), 'yyyy'),
-};
-
 type Props = {
   children?: Node,
   /** Field disabled */
@@ -291,6 +288,8 @@ type Props = {
   handleOffsetChange: Function => void,
   handleYearSelect: (Event, Function, Function) => void,
   handleMonthSelect: (Event, Function, Function) => void,
+  yearRangeFrom: number,
+  yearRangeTo: number,
 };
 
 export const DateTimePicker = (props: Props) => {
@@ -301,6 +300,8 @@ export const DateTimePicker = (props: Props) => {
     handleOffsetChange,
     handleYearSelect,
     handleMonthSelect,
+    yearRangeFrom,
+    yearRangeTo,
   } = props;
   const TODAY = new Date();
 
@@ -341,8 +342,12 @@ export const DateTimePicker = (props: Props) => {
         onSelectedChange={handleDayChange}
         handleMonthSelect={handleMonthSelect}
         handleYearSelect={handleYearSelect}
+        yearRangeFrom={yearRangeFrom}
+        yearRangeTo={yearRangeTo}
         startCurrentDateAt={date ? parse(date) : TODAY}
         startSelectedDateAt={date ? parse(date) : TODAY}
+        yearRangeFrom={yearRangeFrom}
+        yearRangeTo={yearRangeTo}
       />
       <Input
         type="time"
