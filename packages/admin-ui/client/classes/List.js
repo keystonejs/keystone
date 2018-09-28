@@ -6,10 +6,7 @@ import type { DocumentNode } from 'graphql';
 import FieldTypes from '../FIELD_TYPES';
 import { arrayToObject } from '@voussoir/utils';
 import type { AdminMeta } from '../providers/AdminMeta';
-
-/*::
-import FieldController from '@voussoir/fields/Controller';
-*/
+import type { FieldControllerType } from '@voussoir/fields/Controller';
 
 type GQLNames = {
   [key: string]: string,
@@ -70,7 +67,7 @@ type Config = {
     defaultSort: string,
     maximumPageSize: number,
   },
-  fields: Array<FieldController>,
+  fields: Array<FieldControllerType>,
   views: {
     [fieldName: string]: {
       Controller: string,
@@ -100,7 +97,7 @@ export default class List {
     defaultSort: string,
     maximumPageSize: number,
   };
-  fields: Array<FieldController>;
+  fields: Array<FieldControllerType>;
   views: {
     [fieldName: string]: {
       Controller: string,

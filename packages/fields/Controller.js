@@ -32,6 +32,8 @@ type FilterType = {
   getInitialValue: () => mixed,
 };
 
+export type FieldControllerType = FieldController;
+
 export default class FieldController {
   config: FieldConfig;
   label: string;
