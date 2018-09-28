@@ -7,6 +7,10 @@ import FieldTypes from '../FIELD_TYPES';
 import { arrayToObject } from '@voussoir/utils';
 import type { AdminMeta } from '../providers/AdminMeta';
 
+/*::
+import FieldController from '@voussoir/fields/Controller';
+*/
+
 type GQLNames = {
   [key: string]: string,
 };
@@ -66,12 +70,7 @@ type Config = {
     defaultSort: string,
     maximumPageSize: number,
   },
-  fields: Array<{
-    label: string,
-    path: string,
-    type: string,
-    [key: string]: mixed,
-  }>,
+  fields: Array<FieldController>,
   views: {
     [fieldName: string]: {
       Controller: string,
@@ -101,11 +100,7 @@ export default class List {
     defaultSort: string,
     maximumPageSize: number,
   };
-  fields: Array<{|
-    label: string,
-    path: string,
-    type: string,
-  |}>;
+  fields: Array<FieldController>;
   views: {
     [fieldName: string]: {
       Controller: string,

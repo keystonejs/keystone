@@ -14,8 +14,9 @@ import { deconstructErrorsToDataShape } from '../../util';
 import { pseudoLabelField } from './FieldSelect';
 import type { AdminMeta } from '../../Providers/AdminMeta';
 import List from '../../classes/List';
-import type { FieldControllerInterface } from '@voussoir/fields/Controller';
-
+/*::
+import FieldController from '@voussoir/fields/Controller';
+*/
 export type SortByType = {
   field: { label: string, path: string },
   direction: 'ASC' | 'DESC',
@@ -32,7 +33,7 @@ type Search = {
   currentPage: number,
   pageSize: number,
   search: string,
-  fields: Array<FieldControllerInterface>,
+  fields: Array<FieldController>,
   sortBy: SortByType,
   filters: Array<Object>,
 };
