@@ -22,7 +22,7 @@ export type SortByType = {
 };
 
 type Filter = {
-  field: Object,
+  field: FieldControllerType,
   label: string,
   type: string,
   value: string,
@@ -34,7 +34,7 @@ type Search = {
   search: string,
   fields: Array<FieldControllerType>,
   sortBy: SortByType,
-  filters: Array<Object>,
+  filters: Array<Filter>,
 };
 
 const getQueryArgs = ({ filters, ...args }) => {
@@ -86,6 +86,7 @@ const getSearchDefaults = (props: Props): Search => {
     search: '',
     fields,
     sortBy,
+    filters: [],
   };
 };
 
@@ -437,7 +438,6 @@ class ListPageDataProvider extends Component<Props, State> {
       location.search,
       this.props
     );
-    console.log(fields);
     const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
     const first = pageSize;
     const skip = (currentPage - 1) * pageSize;
