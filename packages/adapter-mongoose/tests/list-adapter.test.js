@@ -21,13 +21,13 @@ describe('MongooseListAdapter', () => {
     let listAdapter;
 
     // Mock things before we require other things
-    jest.doMock('./tokenizers/relationship-path', () => {
+    jest.doMock('../tokenizers/relationship-path', () => {
       return jest.fn(() => {
         return jest.fn(() => listAdapter);
       });
     });
 
-    const { MongooseListAdapter } = require('./');
+    const { MongooseListAdapter } = require('../');
 
     listAdapter = createListAdapter(MongooseListAdapter, 'user');
 
@@ -50,7 +50,7 @@ describe('MongooseListAdapter', () => {
     let postListAdapter;
 
     // Mock things before we require other things
-    jest.doMock('./tokenizers/relationship-path', () =>
+    jest.doMock('../tokenizers/relationship-path', () =>
       jest.fn(() =>
         jest.fn(query => {
           if (query[query.length - 1] === 'posts_some') {
@@ -62,7 +62,7 @@ describe('MongooseListAdapter', () => {
       )
     );
 
-    const { MongooseListAdapter } = require('./');
+    const { MongooseListAdapter } = require('../');
 
     userListAdapter = createListAdapter(MongooseListAdapter, 'user');
 
@@ -120,11 +120,11 @@ describe('MongooseListAdapter', () => {
     let postListAdapter;
 
     // Mock things before we require other things
-    jest.doMock('./tokenizers/relationship-path', () =>
+    jest.doMock('../tokenizers/relationship-path', () =>
       jest.fn(() => jest.fn(() => postListAdapter))
     );
 
-    const { MongooseListAdapter } = require('./');
+    const { MongooseListAdapter } = require('../');
 
     userListAdapter = createListAdapter(MongooseListAdapter, 'user');
 

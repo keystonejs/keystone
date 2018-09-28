@@ -327,8 +327,9 @@ class MongoSelectInterface extends MongooseFieldAdapter {
       config: { many, mongooseOptions },
     } = this;
     const type = many ? [ObjectId] : ObjectId;
+    const unique = this.config.unique;
     schema.add({
-      [this.path]: { type, ref, ...mongooseOptions },
+      [this.path]: { type, ref, unique, ...mongooseOptions },
     });
   }
 

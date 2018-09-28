@@ -35,9 +35,9 @@ class Float extends Implementation {
 
 class MongoFloatInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
+    const { mongooseOptions, unique } = this.config;
     schema.add({
-      [this.path]: { type: Number, ...mongooseOptions },
+      [this.path]: { type: Number, unique, ...mongooseOptions },
     });
   }
 
