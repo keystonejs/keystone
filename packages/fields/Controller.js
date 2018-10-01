@@ -13,22 +13,9 @@ type FieldConfig = {
   [key: mixed]: mixed,
 };
 
-export interface FieldControllerInterface {
-  config: FieldConfig;
-  label: string;
-  path: string;
-  list: List;
-  type: string;
-  adminMeta: AdminMeta;
-  filterTypes?: Array<FilterType>;
-  getValue: (data: Object) => mixed;
-  getQueryFragment: () => string;
-}
-
 type FilterType = {
   type: string,
   label: string,
-
   getInitialValue: () => mixed,
 };
 
@@ -41,8 +28,12 @@ export default class FieldController {
   list: List;
   type: string;
   adminMeta: AdminMeta;
+  filterTypes: Array<FilterType>;
+  getValue: (data: Object) => mixed;
+  getQueryFragment: () => string;
+  getFilterGraphQL: FilterType => string;
+
   constructor(config: FieldConfig, list: List, adminMeta: AdminMeta) {
-    console.log(this);
     this.config = config;
     this.label = config.label;
     this.path = config.path;
