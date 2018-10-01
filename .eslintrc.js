@@ -49,7 +49,9 @@ module.exports = {
     'react/sort-prop-types': 'warn',
     semi: 'error',
     strict: 'off',
-    'flowtype/use-flow-type': 'error',
+    // there are some special flow types that ESLint doesn't know about,
+    // this stops ESLint from throwing errors
+    'flowtype/define-flow-type': 'error',
   },
   extends: ['plugin:jest/recommended'],
 
