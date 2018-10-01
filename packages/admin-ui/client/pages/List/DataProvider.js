@@ -23,9 +23,8 @@ const getQueryArgs = ({ filters, ...args }) => {
   if (filters) {
     const filterArgs = filters.map(
       // $FlowFixMe
-      filter => (console.log(filter), filter.field.getFilterGraphQL(filter))
+      filter => filter.field.getFilterGraphQL(filter)
     );
-    console.log(filterArgs);
     if (filterArgs.length) {
       queryArgs.push(`where: { ${filterArgs.join(', ')} }`);
     }

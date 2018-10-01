@@ -33,7 +33,6 @@ export default class SelectFilterView extends Component<SelectFilterViewProps, S
   handleSelectChange = (
     value: Array<{ value: string, label: string }> | { value: string, label: string }
   ) => {
-    console.log(value);
     const { onChange, value: oldValue } = this.props;
     const options = [].concat(value); // ensure consistent data shape
     onChange({ ...oldValue, options });
