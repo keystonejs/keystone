@@ -1,14 +1,25 @@
+// @flow
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import { Confirm } from '@voussoir/ui/src/primitives/modals';
+import List from '../classes/List';
 
-export default class DeleteItemModal extends Component {
+type Props = {
+  isOpen: boolean,
+  onClose: () => mixed,
+  onDelete: (arg: Promise<*>) => mixed,
+  list: List,
+  item: *,
+};
+
+export default class DeleteItemModal extends Component<Props> {
+  isLoading: boolean;
   onClose = () => {
     if (this.isLoading) return;
     this.props.onClose();
   };
-  onKeyDown = e => {
+  onKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       this.props.onClose();
     }
