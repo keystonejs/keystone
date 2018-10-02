@@ -12,48 +12,9 @@ type GQLNames = {
   [key: string]: string,
 };
 
-const getCreateMutation = (gqlNames: GQLNames) => {
-  return gql`
-    mutation create($data: ${gqlNames.createInputName}!) {
-      ${gqlNames.createMutationName}(data: $data) {
-        id
-      }
-    }
-  `;
-};
-
-const getUpdateMutation = (gqlNames: GQLNames) => {
-  return gql`
-    mutation update(
-      $id: ID!,
-      $data: ${gqlNames.updateInputName})
-    {
-      ${gqlNames.updateMutationName}(id: $id, data: $data) {
-        id
-      }
-    }
-  `;
-};
-
-const getDeleteMutation = (gqlNames: GQLNames) => {
-  return gql`
-    mutation delete($id: ID!) {
-      ${gqlNames.deleteMutationName}(id: $id) {
-        id
-      }
-    }
-  `;
-};
-
-const getDeleteManyMutation = (gqlNames: GQLNames) => {
-  return gql`
-    mutation deleteMany($ids: [ID!]) {
-      ${gqlNames.deleteManyMutationName}(ids: $ids) {
-        id
-      }
-    }
-  `;
-};
+export const gqlCountQueries = (lists: Array<List>) => gql`{
+  ${lists.map(list => list.countQuery()).join('\n')}
+}`;
 
 type Access = {
   create: boolean,
@@ -128,11 +89,89 @@ export default class List {
       return new Controller(fieldConfig, this, adminMeta);
     });
 
-    this.createMutation = getCreateMutation(config.gqlNames);
-    this.updateMutation = getUpdateMutation(config.gqlNames);
-    this.deleteMutation = getDeleteMutation(config.gqlNames);
-    this.deleteManyMutation = getDeleteManyMutation(config.gqlNames);
+    this.createMutation = gql`
+      mutation create($data: ${this.gqlNames.createInputName}!) {
+        ${this.gqlNames.createMutationName}(data: $data) {
+          id
+        }
+      }
+    `;
+    this.updateMutation = gql`
+      mutation update(
+        $id: ID!,
+        $data: ${this.gqlNames.updateInputName})
+      {
+        ${this.gqlNames.updateMutationName}(id: $id, data: $data) {
+          id
+        }
+      }
+    `;
+    this.deleteMutation = gql`
+      mutation delete($id: ID!) {
+        ${this.gqlNames.deleteMutationName}(id: $id) {
+          id
+        }
+      }
+    `;
+    this.deleteManyMutation = gql`
+      mutation deleteMany($ids: [ID!]) {
+        ${this.gqlNames.deleteManyMutationName}(ids: $ids) {
+          id
+        }
+      }
+    `;
   }
+
+  buildQuery(queryName: string, queryArgs: string = '', fields: Array<FieldControllerType> = []) {
+    return `
+      ${queryName}${queryArgs} {
+        id
+        _label_
+        ${fields.map(field => field.getQueryFragment()).join(' ')}
+      }`;
+  }
+
+  static getQueryArgs = ({ filters, ...args }: any) => {
+    const queryArgs = Object.keys(args).map(
+      // Using stringify to get the correct quotes depending on type
+      argName => `${argName}: ${JSON.stringify(args[argName])}`
+    );
+    if (filters) {
+      const filterArgs = filters.map(filter => filter.field.getFilterGraphQL(filter));
+      if (filterArgs.length) {
+        queryArgs.push(`where: { ${filterArgs.join(', ')} }`);
+      }
+    }
+    return queryArgs.length ? `(${queryArgs.join(' ')})` : '';
+  };
+
+  getItemQuery(itemId: string) {
+    return gql`{
+      ${this.buildQuery(this.gqlNames.itemQueryName, `(where: { id: "${itemId}" })`, this.fields)}
+    }`;
+  }
+
+  getQuery({ fields, filters, search, orderBy, skip, first }: *) {
+    const queryArgs = List.getQueryArgs({ first, filters, search, skip, orderBy });
+    const metaQueryArgs = List.getQueryArgs({ filters, search });
+    const safeFields = fields.filter(field => field.path !== '_label_');
+    return gql`{
+      ${this.buildQuery(this.gqlNames.listQueryName, queryArgs, safeFields)}
+      ${this.countQuery(metaQueryArgs)}
+    }`;
+  }
+
+  getBasicQuery() {
+    // TODO: How can we replace this with field.Controller.getQueryFragment()?
+    return gql`{
+      ${this.buildQuery(this.gqlNames.listQueryName)}
+    }`;
+  }
+
+  countQuery(metaQueryArgs: string = '') {
+    return `${this.gqlNames.listQueryMetaName}${metaQueryArgs} { count }`;
+  }
+
   getInitialItemData() {
     return arrayToObject(this.fields, 'path', field => field.getInitialData());
   }
