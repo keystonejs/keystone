@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import { Drawer } from '@voussoir/ui/src/primitives/modals';
@@ -8,19 +7,6 @@ import { Select } from '@voussoir/ui/src/primitives/filters';
 import { omit } from '@voussoir/utils';
 
 import FieldTypes from '../FIELD_TYPES';
-
-const getUpdateMutation = ({ list }) => {
-  return gql`
-    mutation delete(
-      $id: ID!,
-      $data: ${list.gqlNames.updateInputName})
-    {
-      ${list.gqlNames.updateMutationName}(id: $id, data: $data) {
-        id
-      }
-    }
-  `;
-};
 
 class UpdateManyModal extends Component {
   constructor(props) {
@@ -142,9 +128,11 @@ class UpdateManyModal extends Component {
 export default class UpdateManyModalWithMutation extends Component {
   render() {
     const { list } = this.props;
-    const updateMutation = getUpdateMutation({ list });
+    // FIXME: updateMutation is the wrong thing to do here! We need to work out how
+    // to update many things all at once. This doesn't appear to be common pattern
+    // across the board.
     return (
-      <Mutation mutation={updateMutation}>
+      <Mutation mutation={list.updateMutation}>
         {(updateItem, { loading }) => (
           <UpdateManyModal updateItem={updateItem} isLoading={loading} {...this.props} />
         )}
