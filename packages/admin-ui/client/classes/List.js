@@ -82,8 +82,8 @@ export default class List {
   }
 
   getQuery({ fields, filters, search, orderBy, skip, first }) {
-    const queryArgs = this.constructor.getQueryArgs({ first, filters, search, skip, orderBy });
-    const metaQueryArgs = this.constructor.getQueryArgs({ filters, search });
+    const queryArgs = List.getQueryArgs({ first, filters, search, skip, orderBy });
+    const metaQueryArgs = List.getQueryArgs({ filters, search });
     const safeFields = fields.filter(field => field.path !== '_label_');
     return gql`{
       ${this.buildQuery(this.gqlNames.listQueryName, queryArgs, safeFields)}
