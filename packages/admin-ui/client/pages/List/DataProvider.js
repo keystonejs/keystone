@@ -14,6 +14,8 @@ import { pseudoLabelField } from './FieldSelect';
 import { type AdminMeta, withAdminMeta } from '../../Providers/AdminMeta';
 import { encodeSearch, decodeSearch } from './url-state';
 import List from '../../classes/List';
+import type { FilterType } from './Filters/ActiveFilters';
+import type { FieldControllerType } from '@voussoir/fields/Controller';
 
 const getQueryArgs = ({ filters, ...args }) => {
   const queryArgs = Object.keys(args).map(
@@ -49,13 +51,34 @@ const getQuery = ({ fields, filters, list, search, orderBy, skip, first }) => {
     }`;
 };
 
+export type Handlers = {
+  handleFilterRemove: (filter: FilterType) => () => void,
+  handleFilterRemoveAll: () => void,
+  handleFilterAdd: (filter: FilterType) => void,
+  handleFilterUpdate: (filter: FilterType) => void,
+  handleFieldChange: (fields: Array<FieldControllerType>) => void,
+  handlePageChange: () => void,
+  handlePageReset: () => void,
+  handlePageSizeChange: () => void,
+  handleSearchChange: () => void,
+  handleSearchClear: () => void,
+  handleSearchSubmit: () => void,
+  handleSortChange: () => void,
+  handleReset: () => void,
+};
+
 type Props = {
   list: List,
   match: Match,
   location: Location,
   history: RouterHistory,
   adminMeta: AdminMeta,
-  children: (*) => React.Node,
+  children: ({
+    handlers: Handlers,
+    itemsErrors: Array<*>,
+    data: *,
+    query: *,
+  }) => React.Node,
 };
 
 type State = {};

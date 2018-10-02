@@ -22,6 +22,7 @@ import SortSelect, { SortButton } from './SortSelect';
 import Pagination from './Pagination';
 import Management, { ManageToolbar } from './Management';
 import type { SortByType } from './DataProvider';
+import List from '../../classes/List';
 
 // ==============================
 // Styled Components
@@ -75,7 +76,7 @@ const Search = ({ children, hasValue, isFetching, onClear, onSubmit }) => {
 type GenericFn = (*) => void;
 
 type Props = {
-  list: Object,
+  list: List,
   query: {
     data: Object,
     error: Object,

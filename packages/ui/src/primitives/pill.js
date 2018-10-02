@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import styled from 'react-emotion';
 
 import { XIcon } from '@voussoir/icons';
@@ -51,9 +51,9 @@ type ButtonProps = {
   variant: 'bold' | 'subtle',
 };
 type Props = ButtonProps & {
-  children: Node,
-  onClick: MouseEvent => void,
-  onRemove: MouseEvent => void,
+  children: React.Node,
+  onClick?: MouseEvent => void,
+  onRemove?: MouseEvent => void,
 };
 
 const PillWrapper = styled.div({ display: 'inline-flex' });

@@ -1,7 +1,9 @@
+// @flow
 import React from 'react';
 import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
 import { Pill } from '@voussoir/ui/src/primitives/pill';
 import { gridSize } from '@voussoir/ui/src/theme';
+import type { FieldControllerType } from '@voussoir/fields/Controller';
 
 import AnimateHeight from '../../../components/AnimateHeight';
 import EditFilterPopout from './EditFilterPopout';
@@ -9,15 +11,16 @@ import EditFilterPopout from './EditFilterPopout';
 const pillStyle = { marginBottom: gridSize / 2, marginTop: gridSize / 2 };
 
 export type FilterType = {
-  field: { label: string, list: Object, path: string, type: string },
+  field: FieldControllerType,
   filter: { type: string, label: string, getInitialValue: () => string },
   label: string,
   value: string,
+  type: string,
 };
 type Props = {
   filterList: Array<FilterType>,
-  onClear: FilterType => void,
-  onRemove: FilterType => void,
+  onClear: () => void,
+  onRemove: FilterType => () => void,
   onUpdate: FilterType => void,
 };
 

@@ -31,7 +31,7 @@ export default class FieldController {
   getValue: (data: Object) => mixed;
   getQueryFragment: () => string;
   getFilterGraphQL: FilterType => string;
-
+  formatFilter: (...args: any) => string;
   constructor(config: FieldConfig, list: List, adminMeta: AdminMeta) {
     this.config = config;
     this.label = config.label;

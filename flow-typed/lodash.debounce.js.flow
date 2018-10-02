@@ -1,0 +1,11 @@
+declare module 'lodash.debounce' {
+  declare module.exports: <V: Function>(
+    func: V,
+    wait?: number,
+    options?: {
+      leading?: boolean,
+      trailing?: boolean,
+      maxWait?: number,
+    }
+  ) => V;
+}

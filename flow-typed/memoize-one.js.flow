@@ -1,3 +1,6 @@
 declare module 'memoize-one' {
-  declare module.exports: any;
+  declare module.exports: <ResultFn: (...Array<any>) => mixed>(
+    resultFn: ResultFn,
+    isEqual?: (a: mixed, b: mixed) => boolean
+  ) => ResultFn;
 }
