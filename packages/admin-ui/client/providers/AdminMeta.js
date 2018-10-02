@@ -15,8 +15,8 @@ const listsByPath = {};
 export type AdminMeta = {
   adminPath: string,
   apiPath: string,
-  getListByKey: Function,
-  getListByPath: Function,
+  getListByKey: string => List,
+  getListByPath: string => List,
   graphiqlPath: string,
   listKeys: Array<string>,
   name: string,
@@ -57,12 +57,13 @@ function setDisplayName(c: React.ComponentType<any>) {
   // $FlowFixMe
   c.displayName = `withAdminMeta(${c.name || c.displayName})`;
 }
-export const withAdminMeta = <
-  Props: { adminMeta: AdminMeta },
-  ComponentAdminMetaType: React.ComponentType<Props>
->(
-  Component: ComponentAdminMetaType
-) => (props: Props) => {
+type AdminMetaProps = {
+  adminMeta: AdminMeta,
+};
+
+export const withAdminMeta = <Props: AdminMetaProps>(
+  Component: React.ComponentType<Props>
+): React.ComponentType<$Diff<Props, AdminMetaProps>> => (props: $Diff<Props, AdminMetaProps>) => {
   setDisplayName(Component);
   // TODO: Permission query to see which lists to provide
   return <Component {...props} adminMeta={adminMeta} />;

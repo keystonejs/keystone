@@ -12,7 +12,7 @@ type FieldProps = {};
 type FieldTypes = {
   [list: string]: {
     [field: string]: {
-      Controller: *,
+      Controller: FieldControllerType,
       Filter?: ComponentType<FilterProps>,
       Cell?: ComponentType<CellProps>,
       Field?: ComponentType<FieldProps>,
@@ -20,6 +20,6 @@ type FieldTypes = {
   },
 };
 
-let fieldTypes: FieldTypes = window.flowWillThinkThisIsCorrect;
+declare var fieldTypes: FieldTypes;
 
 export default fieldTypes;

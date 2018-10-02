@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Component, Fragment } from 'react';
 import debounce from 'lodash.debounce';
 import { Query } from 'react-apollo';
-import { withRouter } from 'react-router-dom';
+import { withRouter, type Location, type RouterHistory, type Match } from 'react-router-dom';
 import gql from 'graphql-tag';
 
 import Nav from '../../components/Nav';
@@ -11,8 +11,9 @@ import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { deconstructErrorsToDataShape } from '../../util';
 import { pseudoLabelField } from './FieldSelect';
-import type { AdminMeta } from '../../Providers/AdminMeta';
+import { type AdminMeta, withAdminMeta } from '../../Providers/AdminMeta';
 import { encodeSearch, decodeSearch } from './url-state';
+import List from '../../classes/List';
 
 const getQueryArgs = ({ filters, ...args }) => {
   const queryArgs = Object.keys(args).map(
@@ -49,10 +50,10 @@ const getQuery = ({ fields, filters, list, search, orderBy, skip, first }) => {
 };
 
 type Props = {
-  list: Object,
-  match: Object,
-  location: Object,
-  history: Object,
+  list: List,
+  match: Match,
+  location: Location,
+  history: RouterHistory,
   adminMeta: AdminMeta,
   children: (*) => React.Node,
 };
@@ -331,4 +332,4 @@ class ListPageDataProvider extends Component<Props, State> {
   }
 }
 
-export default withRouter(ListPageDataProvider);
+export default withAdminMeta(withRouter(ListPageDataProvider));

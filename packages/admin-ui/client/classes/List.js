@@ -55,6 +55,13 @@ const getDeleteManyMutation = (gqlNames: GQLNames) => {
   `;
 };
 
+type Access = {
+  create: boolean,
+  delete: boolean,
+  read: boolean,
+  update: boolean,
+};
+
 type Config = {
   key: string,
   label: string,
@@ -76,6 +83,8 @@ type Config = {
       Field?: string,
     },
   },
+  gqlNames: GQLNames,
+  access: Access,
 };
 
 export default class List {
@@ -97,6 +106,8 @@ export default class List {
     defaultSort: string,
     maximumPageSize: number,
   };
+  gqlNames: GQLNames;
+  access: Access;
   fields: Array<FieldControllerType>;
   views: {
     [fieldName: string]: {
@@ -117,10 +128,10 @@ export default class List {
       return new Controller(fieldConfig, this, adminMeta);
     });
 
-    this.createMutation = getCreateMutation(this);
-    this.updateMutation = getUpdateMutation(this);
-    this.deleteMutation = getDeleteMutation(this);
-    this.deleteManyMutation = getDeleteManyMutation(this);
+    this.createMutation = getCreateMutation(config.gqlNames);
+    this.updateMutation = getUpdateMutation(config.gqlNames);
+    this.deleteMutation = getDeleteMutation(config.gqlNames);
+    this.deleteManyMutation = getDeleteManyMutation(config.gqlNames);
   }
   getInitialItemData() {
     return arrayToObject(this.fields, 'path', field => field.getInitialData());

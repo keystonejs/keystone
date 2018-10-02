@@ -4,7 +4,6 @@
 import List from '@voussoir/admin-ui/client/classes/List';
 */
 import type { AdminMeta } from '@voussoir/admin-ui/client/providers/AdminMeta';
-/* global List */
 
 type FieldConfig = {
   label: string,
