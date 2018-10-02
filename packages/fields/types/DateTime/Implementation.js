@@ -33,6 +33,9 @@ class _DateTime extends Implementation {
   get gqlAuxTypes() {
     return [`scalar DateTime`];
   }
+  extendAdminMeta(meta) {
+    return { ...meta, format: this.config.format };
+  }
   get gqlAuxFieldResolvers() {
     return {
       DateTime: new GraphQLScalarType({

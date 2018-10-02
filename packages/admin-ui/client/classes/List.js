@@ -71,4 +71,10 @@ export default class List {
     const count = Array.isArray(items) ? items.length : items;
     return count === 1 ? `1 ${this.singular}` : `${count} ${this.plural}`;
   }
+  getPersistedSearch() {
+    return localStorage.getItem(`search:${this.config.path}`);
+  }
+  setPersistedSearch(value) {
+    localStorage.setItem(`search:${this.config.path}`, value);
+  }
 }

@@ -14,7 +14,6 @@ module.exports = {
     'no-shadow': 'warn',
     'no-trailing-spaces': 'error',
     'no-undef': 'error',
-    'no-underscore-dangle': 'error',
     'no-unused-expressions': 'error',
     'no-unused-vars': [
       'error',

@@ -50,7 +50,7 @@ describe('Adding data', () => {
       if (url === '/admin/users') {
         const d = new Date();
         d.setDate(10);
-        cy.get('#ks-input-dob').should('contain', format(d, 'Do MMM YYYY'));
+        cy.get('#ks-input-dob').should('contain', format(d, 'Do MMMM YYYY'));
       }
     });
   });
