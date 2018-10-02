@@ -1,4 +1,5 @@
-import React from 'react';
+// @flow
+import * as React from 'react';
 import { CheckIcon, DashIcon, XIcon } from '@voussoir/icons';
 import { colors } from '@voussoir/ui/src/theme';
 import { OptionPrimitive } from '@voussoir/ui/src/primitives/filters';
@@ -6,7 +7,20 @@ import { OptionPrimitive } from '@voussoir/ui/src/primitives/filters';
 import { POPOUT_GUTTER } from '../../components/Popout';
 import FieldSelect, { type FieldSelectProps } from './FieldSelect';
 
-export const ColumnOption = ({ children, isFocused, isSelected, selectProps, ...props }) => {
+type ColumnOptionProps = {
+  children: React.Node,
+  isFocused: boolean,
+  isSelected: boolean,
+  selectProps: *,
+};
+
+export const ColumnOption = ({
+  children,
+  isFocused,
+  isSelected,
+  selectProps,
+  ...props
+}: ColumnOptionProps) => {
   const { removeIsAllowed } = selectProps;
 
   let Icon;
