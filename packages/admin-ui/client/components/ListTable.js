@@ -87,14 +87,18 @@ const SortDirectionArrow = styled.span(({ size = '0.2em', rotate = '0deg' }) => 
 // Functional Components
 
 type SortLinkProps = {
-  handleSortChange: (Event, string) => void,
+  handleSortChange: Function,
   active: boolean,
   sortAscending: boolean,
 };
 
 class SortLink extends React.Component<SortLinkProps> {
-  onClick = event => {
-    this.props.handleSortChange(event, this.props.label);
+  onClick = () => {
+    const { field, sortAscending, sortable } = this.props;
+    if (sortable) {
+      // Set direction to the opposite of the current sortAscending value
+      this.props.handleSortChange({ field, direction: sortAscending ? 'DESC' : 'ASC' });
+    }
   };
 
   render() {
@@ -108,12 +112,15 @@ class SortLink extends React.Component<SortLinkProps> {
       color: this.props.active ? '#000' : '#999',
     };
 
+    // TODO: Do we want to make `sortable` a field config option?
     return (
       <td style={styles} onClick={this.onClick} data-field={this.props['data-field']}>
-        {this.props.label}
-        <SortDirectionArrow
-          rotate={this.props.active && !this.props.sortAscending ? '180deg' : '0deg'}
-        />
+        {this.props.field.label}
+        {this.props.sortable && (
+          <SortDirectionArrow
+            rotate={this.props.active && !this.props.sortAscending ? '180deg' : '0deg'}
+          />
+        )}
       </td>
     );
   }
@@ -308,8 +315,6 @@ class ListManageRow extends Component {
 export default class ListTable extends Component {
   state = {
     mouseOverSelectsRow: false,
-    sortBy: null,
-    sortAscending: true,
   };
 
   handleSelectAll = () => {
@@ -317,20 +322,6 @@ export default class ListTable extends Component {
     const allSelected = items.length === selectedItems.length;
     const value = allSelected ? [] : items.map(i => i.id);
     onSelectAll(value);
-  };
-
-  handleSortChange = (event, field) => {
-    // only change sort direction if sortBy is not being modified
-    if (this.state.sortBy === field) {
-      this.setState({
-        sortAscending: !this.state.sortAscending,
-      });
-    } else {
-      this.setState({
-        sortAscending: true,
-        sortBy: field,
-      });
-    }
   };
 
   onSelectStart = select => {
@@ -357,6 +348,8 @@ export default class ListTable extends Component {
       noResultsMessage,
       onChange,
       onSelect,
+      handleSortChange,
+      sortBy,
       selectedItems,
     } = this.props;
     const { mouseOverSelectsRow } = this.state;
@@ -389,10 +382,11 @@ export default class ListTable extends Component {
               <SortLink
                 data-field={field.path}
                 key={field.path}
-                label={field.label}
-                handleSortChange={this.handleSortChange}
-                active={this.state.sortBy == field.label}
-                sortAscending={this.state.sortAscending}
+                sortable={field.path !== '_label_'}
+                field={field}
+                handleSortChange={handleSortChange}
+                active={sortBy.field.path === field.path}
+                sortAscending={sortBy.direction === 'ASC'}
               />
             ))}
           </tr>
