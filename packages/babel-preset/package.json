@@ -1,0 +1,17 @@
+{
+  "name": "@voussoir/babel-preset",
+  "version": "0.1.0",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "dependencies": {
+    "babel-plugin-emotion": "^9.1.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-react": "^6.24.1"
+  }
+}

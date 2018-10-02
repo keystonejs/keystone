@@ -12,6 +12,7 @@
     "@voussoir/icons": "^0.1.2",
     "@voussoir/ui": "^0.2.0",
     "@voussoir/utils": "^0.1.2",
+    "@voussoir/babel-preset": "^0.1.0",
     "apollo-cache-inmemory": "^1.1.12",
     "apollo-client": "^2.2.8",
     "apollo-link": "^1.0.6",
