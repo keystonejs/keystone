@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-
-import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
@@ -8,16 +6,6 @@ import { Select } from '@voussoir/ui/src/primitives/filters';
 import { ShieldIcon } from '@voussoir/icons';
 import { colors } from '@voussoir/ui/src/theme';
 import { pick } from '@voussoir/utils';
-
-const getGraphqlQuery = refList => {
-  // TODO: How can we replace this with field.Controller.getQueryFragment()?
-  return gql`{
-    ${refList.gqlNames.listQueryName} {
-      id
-      _label_
-    }
-  }`;
-};
 
 export default class RelationshipField extends Component {
   onChange = option => {
@@ -33,7 +21,7 @@ export default class RelationshipField extends Component {
     const { autoFocus, field, item, itemErrors, renderContext } = this.props;
     const { many } = field.config;
     const refList = field.getRefList();
-    const query = getGraphqlQuery(refList);
+    const query = refList.getBasicQuery();
     const htmlID = `ks-input-${field.path}`;
     const canRead = !(
       itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
