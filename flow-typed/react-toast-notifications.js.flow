@@ -1,0 +1,32 @@
+declare module 'react-toast-notifications' {
+  declare type Id = string;
+  declare type Options = {
+    appearance?: 'error' | 'info' | 'success',
+    autoDismiss?: boolean,
+  };
+  declare type Callback = (Id) => void;
+  declare type AddFn = (content: React$Node, options?: Options, cb?: Callback) => void;
+  declare type RemoveFn = (id: Id, cb?: Callback) => void;
+  declare type Context = { add: AddFn, remove: RemoveFn };
+  declare type Placement =
+    | 'bottom-left'
+    | 'bottom-center'
+    | 'bottom-right'
+    | 'top-left'
+    | 'top-center'
+    | 'top-right';
+  declare type ToastContainerProps = { children: React$Node, placement: Placement };
+  declare module.exports: {
+    withToastManager: <Props>(
+      Comp: React$ComponentType<Props>
+    ) => React$ComponentType<$Diff<Props, { toastManager: Context }>>,
+    ToastConsumer: React$ComponentType<{ children: Context => React$Node }>,
+    ToastProvider: React$ComponentType<{
+      autoDismissTimeout: number,
+      children: Node,
+      components: *,
+      placement: Placement,
+      transitionDuration: number,
+    }>,
+  };
+}

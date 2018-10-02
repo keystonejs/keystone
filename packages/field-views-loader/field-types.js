@@ -1,6 +1,6 @@
 // @flow
 // this is what flow will see as the FIELD_TYPES file
-
+import type { FieldControllerType } from '@voussoir/fields/Controller';
 import type { ComponentType } from 'react';
 
 type FilterProps = {};
@@ -12,7 +12,7 @@ type FieldProps = {};
 type FieldTypes = {
   [list: string]: {
     [field: string]: {
-      Controller: FieldControllerType,
+      Controller: Class<FieldControllerType>,
       Filter?: ComponentType<FilterProps>,
       Cell?: ComponentType<CellProps>,
       Field?: ComponentType<FieldProps>,

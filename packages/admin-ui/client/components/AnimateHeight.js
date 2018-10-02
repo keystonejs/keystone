@@ -11,7 +11,7 @@ type Props = {
   children?: Element<*>,
   initialHeight: Height,
   onChange?: Height => any,
-  render?: ({ ref: Ref<*> }) => Node,
+  render?: ({ ref: Ref<*>, recalcHeight: () => void }) => Node,
 };
 type State = { height: Height, isTransitioning: boolean };
 
