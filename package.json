@@ -57,7 +57,7 @@
     "emotion": "^9.1.1",
     "eslint": "^5.4.0",
     "eslint-junit": "^1.0.1",
-    "eslint-plugin-flowtype": "^2.50.1",
+    "eslint-plugin-flowtype": "^2.50.3",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jest": "^21.21.0",
     "eslint-plugin-react": "^7.11.1",
