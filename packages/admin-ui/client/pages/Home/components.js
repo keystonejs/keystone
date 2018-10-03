@@ -35,8 +35,6 @@ type BoxComponentProps = {
   isActive: boolean,
   isHover: boolean,
   isFocus: boolean,
-  // eslint thinks SyntheticEvent doesn't exist but it's a flow thing and eslint-plugin-flowtype is not working for some reason
-  // eslint-disable-next-line no-undef
   onCreateClick: (event: SyntheticEvent<HTMLButtonElement>) => mixed,
   list: List,
   meta: Meta,
@@ -52,6 +50,7 @@ export const BoxComponent = ({
   ...props
 }: BoxComponentProps) => {
   const { label, singular } = list;
+
   return (
     <BoxElement title={`Go to ${label}`} {...props}>
       <A11yText>Go to {label}</A11yText>
@@ -86,9 +85,9 @@ export const Name = styled.span(
 `
 );
 
-type Meta = void | { count: number };
+type Meta = { count: number };
 
-export const Count = ({ meta }: { meta: Meta }) => {
+export const Count = ({ meta }: { meta?: Meta }) => {
   const isLoading = meta === undefined;
   const count = (meta && meta.count) || 0;
 

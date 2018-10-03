@@ -216,6 +216,7 @@ class ListPageDataProvider extends Component<Props, State> {
       location.search,
       this.props
     );
+
     const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
     const first = pageSize;
     const skip = (currentPage - 1) * pageSize;
