@@ -10,7 +10,7 @@ import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { deconstructErrorsToDataShape } from '../../util';
 import { pseudoLabelField } from './FieldSelect';
-import { type AdminMeta, withAdminMeta } from '../../Providers/AdminMeta';
+import { type AdminMeta, withAdminMeta } from '../../providers/AdminMeta';
 import { encodeSearch, decodeSearch } from './url-state';
 import List from '../../classes/List';
 import type { FilterType } from './Filters/ActiveFilters';

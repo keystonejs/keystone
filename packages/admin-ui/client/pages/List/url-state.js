@@ -5,7 +5,7 @@ import * as React from 'react';
 import List from '../../classes/List';
 import type { FieldControllerType } from '@voussoir/fields/Controller';
 import { pseudoLabelField } from './FieldSelect';
-import type { AdminMeta } from '../../Providers/AdminMeta';
+import type { AdminMeta } from '../../providers/AdminMeta';
 
 export type SortByType = {
   field: { label: string, path: string },
