@@ -106,7 +106,7 @@ exports.arrayToObject = /*:: <
 >*/ (
   objs /*: Array<Input>*/,
   keyedBy /*: Key*/,
-  mapFn /*: Input => OutputVal*/ = (i: Input) => i
+  mapFn /*: Input => OutputVal*/ = (i /*: Input*/) => i
 ) /*: Output*/ =>
   // $FlowFixMe
   objs.reduce((acc /*: Output*/, obj /*: Input*/) => {
