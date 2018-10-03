@@ -7,6 +7,7 @@ import FieldTypes from '../FIELD_TYPES';
 import { arrayToObject } from '@voussoir/utils';
 import type { AdminMeta } from '../providers/AdminMeta';
 import type { FieldControllerType } from '@voussoir/fields/Controller';
+import type { Filter } from '../pages/List/url-state';
 
 type GQLNames = {
   [key: string]: string,
@@ -151,7 +152,21 @@ export default class List {
     }`;
   }
 
-  getQuery({ fields, filters, search, orderBy, skip, first }: *) {
+  getQuery({
+    fields,
+    filters,
+    search,
+    orderBy,
+    skip,
+    first,
+  }: {
+    search: string,
+    fields: Array<FieldControllerType>,
+    filters: Array<Filter>,
+    orderBy: string,
+    skip: number,
+    first: number,
+  }) {
     const queryArgs = List.getQueryArgs({ first, filters, search, skip, orderBy });
     const metaQueryArgs = List.getQueryArgs({ filters, search });
     const safeFields = fields.filter(field => field.path !== '_label_');
@@ -175,7 +190,7 @@ export default class List {
   getInitialItemData() {
     return arrayToObject(this.fields, 'path', field => field.getInitialData());
   }
-  formatCount(items: *) {
+  formatCount(items: Array<*> | number) {
     const count = Array.isArray(items) ? items.length : items;
     return count === 1 ? `1 ${this.singular}` : `${count} ${this.plural}`;
   }

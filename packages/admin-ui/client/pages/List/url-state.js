@@ -12,14 +12,14 @@ export type SortByType = {
   direction: 'ASC' | 'DESC',
 };
 
-type Filter = {
+export type Filter = {
   field: FieldControllerType,
   label: string,
   type: string,
   value: string,
 };
 
-type Search = {
+export type Search = {
   currentPage: number,
   pageSize: number,
   search: string,
