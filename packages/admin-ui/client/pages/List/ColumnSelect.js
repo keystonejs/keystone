@@ -33,6 +33,7 @@ export default function ColumnSelect(props: FieldSelectProps) {
         components={{ Option: ColumnOption }}
         isMulti
         placeholder="Select columns to display"
+        includeLabelField
       />
     </div>
   );
