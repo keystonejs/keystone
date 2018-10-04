@@ -417,6 +417,8 @@ class ListDetails extends Component<Props, State> {
                 onChange={query.refetch}
                 onSelect={this.handleItemSelect}
                 onSelectAll={this.handleItemSelectAll}
+                handleSortChange={handleSortChange}
+                sortBy={sortBy}
                 selectedItems={selectedItems}
                 noResultsMessage={this.getNoResultsMessage()}
               />
