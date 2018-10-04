@@ -26,15 +26,18 @@ export type FieldSelectProps = {
   fields: Array<FieldType>,
   onChange: FieldType => void,
   value: FieldType | Array<FieldType>,
+  includeLabelField: boolean,
 };
 
 export const pseudoLabelField = { label: 'Label', path: '_label_' };
 
 export default class FieldSelect extends Component<FieldSelectProps> {
   getSanitizedOptions = () => {
-    const { fields } = this.props;
+    const { fields, includeLabelField } = this.props;
     const sanitizedOptions = fields.map(({ options, ...field }) => field);
-    sanitizedOptions.unshift(pseudoLabelField);
+    if (includeLabelField) {
+      sanitizedOptions.unshift(pseudoLabelField);
+    }
     return sanitizedOptions;
   };
   onChange = selected => {
