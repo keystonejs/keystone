@@ -44,7 +44,9 @@ export default class CalendarDayField extends Component {
     const year = event.target.value;
     const newDate = setYear(this.state.value, year);
     const value = format(newDate, FORMAT);
-    setDate(newDate);
+    if (year.length == 4) {
+      setDate(newDate);
+    }
     setSelectedDate(newDate);
     this.setState({ value });
     onChange(field, value);
@@ -75,7 +77,8 @@ export default class CalendarDayField extends Component {
                 handleMonthSelect={this.handleMonthSelect}
                 yearRangeFrom={this.yearRangeFrom}
                 yearRangeTo={this.yearRangeTo}
-                />
+                yearPickerType={this.yearPickerType}
+              />
             </div>
           </Popout>
         </FieldInput>
