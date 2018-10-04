@@ -21,35 +21,27 @@ export default class CalendarDayField extends Component {
   yearRangeTo = this.props.field.config.yearRangeTo;
   yearPickerType = this.props.field.config.yearPickerType;
 
-  handleDayClick = day => {
+  onSelectedChange = day => {
     const { field, onChange } = this.props;
     const value = format(day, FORMAT);
-    onChange(field, value);
-    this.setState({ value });
+    if (/*FIXME*/) {
+      onChange(field, value);
+      this.setState({ value });
+    }
   };
 
   handleMonthSelect = (event, setDate, setSelectedDate) => {
-    const { field, onChange } = this.props;
     const month = event.target.value;
     const newDate = setMonth(this.state.value, month);
-    const value = format(newDate, FORMAT);
     setDate(newDate);
     setSelectedDate(newDate);
-    this.setState({ value });
-    onChange(field, value);
   };
 
   handleYearSelect = (event, setDate, setSelectedDate) => {
-    const { field, onChange } = this.props;
     const year = event.target.value;
     const newDate = setYear(this.state.value, year);
-    const value = format(newDate, FORMAT);
-    if (year.length == 4) {
-      setDate(newDate);
-    }
     setSelectedDate(newDate);
-    this.setState({ value });
-    onChange(field, value);
+    setDate(newDate);
   };
 
   render() {
@@ -72,7 +64,7 @@ export default class CalendarDayField extends Component {
                 autoFocus={autoFocus}
                 startCurrentDateAt={value ? parse(value) : TODAY}
                 startSelectedDateAt={value ? parse(value) : TODAY}
-                onSelectedChange={this.handleDayClick}
+                onSelectedChange={this.onSelectedChange}
                 handleYearSelect={this.handleYearSelect}
                 handleMonthSelect={this.handleMonthSelect}
                 yearRangeFrom={this.yearRangeFrom}

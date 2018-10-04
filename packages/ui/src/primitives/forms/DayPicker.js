@@ -306,7 +306,7 @@ type Props = {
 export const DateTimePicker = (props: Props) => {
   const { date, time, offset, htmlID, autoFocus, isDisabled, innerRef } = props;
   const {
-    handleDayChange,
+    onSelectedChange,
     handleTimeChange,
     handleOffsetChange,
     handleYearSelect,
@@ -351,7 +351,7 @@ export const DateTimePicker = (props: Props) => {
     <div>
       <DayPicker
         autoFocus={autoFocus}
-        onSelectedChange={handleDayChange}
+        onSelectedChange={onSelectedChange}
         handleMonthSelect={handleMonthSelect}
         handleYearSelect={handleYearSelect}
         yearRangeFrom={yearRangeFrom}
