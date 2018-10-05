@@ -44,7 +44,7 @@ const modifierConditions = {
 
     return {
       $sort: {
-        [orderField]: orderDirection === 'ASC' ? 1 : -1,
+        [orderField]: orderDirection === 'DESC' ? -1 : 1,
       },
     };
   },
