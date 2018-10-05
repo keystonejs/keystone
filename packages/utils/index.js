@@ -1,3 +1,5 @@
+const pLazy = require('p-lazy');
+
 const camelize = (exports.camelize = str =>
   // split the string into words, lowercase the leading character of the first word,
   // uppercase the leading character of all other words, then join together.
@@ -109,5 +111,44 @@ exports.mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
   return {
     ...queryArgs,
     where: mergedQueryArgs,
+  };
+};
+
+exports.createLazyDeferred = () => {
+  let state;
+  let resolvedWith;
+  let rejectedWith;
+  let resolveCallback;
+  let rejectCallback;
+
+  const promise = new pLazy((resolve, reject) => {
+    if (state === 'resolved') {
+      resolve(resolvedWith);
+    } else if (state === 'rejected') {
+      reject(rejectedWith);
+    } else {
+      resolveCallback = resolve;
+      rejectCallback = reject;
+    }
+  });
+
+  return {
+    promise,
+    resolve: val => {
+      if (resolveCallback) {
+        resolveCallback(val);
+      } else {
+        resolvedWith = val;
+        state = 'resolved';
+      }
+    },
+    reject: error => {
+      if (rejectCallback) {
+        rejectCallback(error);
+      } else {
+        rejectedWith = error;
+        state = 'rejected';
+      }
+    },
   };
 };

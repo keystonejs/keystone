@@ -1,21 +1,7 @@
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
+const { createLazyDeferred } = require('@voussoir/utils');
 
 const { MongooseAdapter } = require('../');
-
-function createDeferred() {
-  let resolveCallback;
-  let rejectCallback;
-  const promise = new Promise((resolve, reject) => {
-    resolveCallback = resolve;
-    rejectCallback = reject;
-  });
-
-  return {
-    promise,
-    resolve: resolveCallback,
-    reject: rejectCallback,
-  };
-}
 
 async function withMongoMemoryServer(adapter, callback) {
   const mongoServer = new MongoDBMemoryServer();
@@ -46,7 +32,7 @@ describe('MongooseAdapter', () => {
     await withMongoMemoryServer(adapter, async ({ mongoUri, dbName }) => {
       // We'll manually resolve this promise later in the test after some
       // assertions and turns of the event loop (and the micro-task queue)
-      const setupTask = createDeferred();
+      const setupTask = createLazyDeferred();
 
       // Push a promise to be waited upon
       adapter.pushSetupTask(setupTask.promise);
@@ -55,7 +41,7 @@ describe('MongooseAdapter', () => {
       // (This is hacky, but we need a way to wait until the main work of
       // `connect` is complete before it moves onto the second phase of waiting
       // for the setup tasks)
-      const mongooseConnected = createDeferred();
+      const mongooseConnected = createLazyDeferred();
       const connectToMongoose = adapter.mongoose.connect.bind(adapter.mongoose);
       adapter.mongoose.connect = (...args) =>
         connectToMongoose(...args).then(result => {
