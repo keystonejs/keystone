@@ -535,36 +535,18 @@ async function toSingleNestedMutation({
         // At this point, we've not actually removed the ID `idToDisconnect`
         // from the field `localField` on list `localList`, but instead flagged
         // it for removal (by setting `result = null`).
-        // Note the local/foreign are flipped because we're queueing the
-        // disconnection up from the perspective of the other item.
-        queueIdForDisconnection({
+        tellForeignItemToDisconnect({
           context,
-          foreign: getItem.then(item => ({
+          getItem,
+          local: {
             list: localList,
             field: localField,
-            id: item.id,
-          })),
-          local: {
-            list: refList,
-            field: refField,
-            id: idToDisconnect,
           },
-        });
-
-        // To avoid any circular updates with the above disconnect, we flag this
-        // item as having already been disconnected
-        flagIdAsDisconnected({
-          context,
           foreign: {
             list: refList,
             field: refField,
             id: idToDisconnect,
           },
-          local: getItem.then(item => ({
-            list: localList,
-            field: localField,
-            id: item.id,
-          })),
         });
       }
     }
