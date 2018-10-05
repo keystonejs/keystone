@@ -22,7 +22,10 @@ class BaseKeystoneAdapter {
 
   prepareListAdapter() {}
 
-  pushSetupTask(model) {}
+  /**
+   * @param Promise
+   */
+  pushSetupTask() {}
 }
 
 class BaseListAdapter {

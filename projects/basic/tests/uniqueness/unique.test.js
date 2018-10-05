@@ -1,20 +1,9 @@
-const {
-  Types: { ObjectId },
-} = require('mongoose');
-const { gen, sampleOne } = require('testcheck');
 const { Text } = require('@voussoir/fields');
 const { resolveAllKeys, mapKeys } = require('@voussoir/utils');
 const { setupServer, graphqlRequest } = require('../util');
 const cuid = require('cuid');
 
-const alphanumGenerator = gen.alphaNumString.notEmpty();
-
 let server;
-
-function create(list, item) {
-  // bypass the access control settings
-  return server.keystone.getListByKey(list).adapter.create(item);
-}
 
 beforeAll(async () => {
   server = setupServer({
@@ -55,6 +44,8 @@ describe('uniqueness', () => {
         }
       `,
     });
+
+    expect(queryUser.body).not.toHaveProperty('errors');
 
     const queryUser2 = await graphqlRequest({
       server,

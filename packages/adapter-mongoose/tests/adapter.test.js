@@ -72,7 +72,7 @@ describe('MongooseAdapter', () => {
       await new Promise(resolve => process.nextTick(resolve));
 
       // Assert we're still waiting for the setup tasks
-      expect(connectionResolved.mock.calls.length).toBe(0);
+      expect(connectionResolved.mock.calls).toHaveLength(0);
 
       // Manually trigger resolution of the setup task
       setupTask.resolve('hurray');
@@ -81,7 +81,7 @@ describe('MongooseAdapter', () => {
       await new Promise(resolve => process.nextTick(resolve));
 
       // Assert the connection _was_ resolved
-      expect(connectionResolved.mock.calls.length).toBe(1);
+      expect(connectionResolved.mock.calls).toHaveLength(1);
     });
   });
 
