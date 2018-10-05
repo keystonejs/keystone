@@ -11,7 +11,7 @@ export default class TextController extends FieldController {
   formatFilter = ({ label, value }) => {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
-  filterTypes = [
+  getFilterTypes = () => [
     {
       type: 'contains',
       label: 'Contains',

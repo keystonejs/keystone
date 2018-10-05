@@ -39,4 +39,5 @@ export default class RelationshipController extends FieldController {
     const { defaultValue, many } = this.config;
     return many ? defaultValue || [] : defaultValue || null;
   };
+  getFilterTypes = () => [];
 }
