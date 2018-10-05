@@ -1,7 +1,11 @@
 function createListAdapter(MongooseListAdapter, key, { aggregateResult = [] } = {}) {
   const listAdapter = new MongooseListAdapter(
     key,
-    { mongoose: { Schema: function schema() {} }, getListAdapterByKey: () => {}, pushSetupTask: () => {} },
+    {
+      mongoose: { Schema: function schema() {} },
+      getListAdapterByKey: () => {},
+      pushSetupTask: () => {},
+    },
     {}
   );
 

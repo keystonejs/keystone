@@ -157,7 +157,9 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     await this.mongoose.connection.dropDatabase();
     // Mongoose doesn't know we called dropDatabase on Mongo directly, so we
     // have to recreate the indexes
-    await Promise.all(this.mongoose.modelNames().map(modelName => this.mongoose.model(modelName).ensureIndexes()));
+    await Promise.all(
+      this.mongoose.modelNames().map(modelName => this.mongoose.model(modelName).ensureIndexes())
+    );
   }
 }
 

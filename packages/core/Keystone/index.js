@@ -71,9 +71,8 @@ module.exports = class Keystone {
     } = this;
 
     return resolveAllKeys(
-      mapKeys(
-        adapters,
-        adapter => adapter.connect(
+      mapKeys(adapters, adapter =>
+        adapter.connect(
           to,
           {
             name,
@@ -83,7 +82,7 @@ module.exports = class Keystone {
           }
         )
       )
-    // Don't unnecessarily leak any connection info
+      // Don't unnecessarily leak any connection info
     ).then(() => {});
   }
   getAdminMeta() {

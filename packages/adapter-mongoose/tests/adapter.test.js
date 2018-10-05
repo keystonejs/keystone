@@ -44,15 +44,20 @@ describe('MongooseAdapter', () => {
       const mongooseConnected = createLazyDeferred();
       const connectToMongoose = adapter.mongoose.connect.bind(adapter.mongoose);
       adapter.mongoose.connect = (...args) =>
-        connectToMongoose(...args).then(result => {
-          mongooseConnected.resolve();
-          return result;
-        }).catch(error => {
-          mongooseConnected.reject(error);
-        });
+        connectToMongoose(...args)
+          .then(result => {
+            mongooseConnected.resolve();
+            return result;
+          })
+          .catch(error => {
+            mongooseConnected.reject(error);
+          });
 
       // Call connect, which should wait on the above promise
-      const connectionPromise = adapter.connect(mongoUri, { dbName });
+      const connectionPromise = adapter.connect(
+        mongoUri,
+        { dbName }
+      );
 
       // Add a hook for asserting the .connect call has completed
       const connectionResolved = jest.fn();
@@ -92,12 +97,14 @@ describe('MongooseAdapter', () => {
 
       // Call connect, which should wait on the above promises and then reject
       // because some of the tasks failed
-      await expect(adapter.connect(mongoUri, { dbName })).rejects.toMatchObject({
-        errors: [
-          'Oh no',
-          'Boom',
-        ],
-      })
+      await expect(
+        adapter.connect(
+          mongoUri,
+          { dbName }
+        )
+      ).rejects.toMatchObject({
+        errors: ['Oh no', 'Boom'],
+      });
     });
   });
 });
