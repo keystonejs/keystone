@@ -38,9 +38,9 @@ export const runQuery = (app, snippet, fn) => {
     });
 };
 
-export const matchFilter = (app, filter, fields, target, done, sortkey) => {
-  filter = filter ? `(${filter})` : '';
-  const snippet = `allTests ${filter} ${fields}`;
+export const matchFilter = (app, gqlArgs, fields, target, done, sortkey) => {
+  gqlArgs = gqlArgs ? `(${gqlArgs})` : '';
+  const snippet = `allTests ${gqlArgs} ${fields}`;
   runQuery(app, snippet, data => {
     const value = sortkey ? sorted(data.allTests || [], i => i[sortkey]) : data.allTests;
     expect(value).toEqual(target);
