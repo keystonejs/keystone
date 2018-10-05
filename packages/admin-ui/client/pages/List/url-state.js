@@ -94,7 +94,7 @@ const parseFilter = (filter: [string, string], list): Filter | null => {
   let label;
   const field = list.fields.find(f => {
     if (key.indexOf(f.path) !== 0) return false;
-    const filterType = f.filterTypes.find(t => {
+    const filterType = f.getFilterTypes().find(t => {
       return key === `${f.path}_${t.type}`;
     });
     if (filterType) {
