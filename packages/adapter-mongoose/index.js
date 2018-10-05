@@ -152,9 +152,12 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     });
   }
 
-  dropDatabase() {
+  async dropDatabase() {
     // This will completely drop the backing database. Use wisely.
-    return this.mongoose.connection.dropDatabase();
+    await this.mongoose.connection.dropDatabase();
+    // Mongoose doesn't know we called dropDatabase on Mongo directly, so we
+    // have to recreate the indexes
+    await Promise.all(this.mongoose.modelNames().map(modelName => this.mongoose.model(modelName).ensureIndexes()));
   }
 }
 
