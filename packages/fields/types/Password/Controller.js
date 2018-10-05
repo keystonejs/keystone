@@ -14,7 +14,7 @@ export default class PasswordController extends FieldController {
   // Passwords don't expose their own value like most fields
   getQueryFragment = () => `${this.path}_is_set`;
 
-  filterTypes = [
+  getFilterTypes = () => [
     {
       type: 'is_set',
       label: 'Is Set',

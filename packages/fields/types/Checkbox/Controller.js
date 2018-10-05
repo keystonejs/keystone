@@ -13,7 +13,7 @@ export default class CheckboxController extends FieldController {
   formatFilter = ({ label, value }) => {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
-  filterTypes = [
+  getFilterTypes = () => [
     {
       type: 'is',
       label: 'Is',

@@ -14,7 +14,7 @@ export default class DateTimeController extends FieldController {
   getValue = data => {
     return data[this.config.path];
   };
-  filterTypes = [
+  getFilterTypes = () => [
     {
       type: 'is',
       label: 'Is exactly',
