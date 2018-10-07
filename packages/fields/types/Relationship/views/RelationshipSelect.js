@@ -57,7 +57,13 @@ export default class RelationshipSelect extends Component {
 
           let currentValue;
           if (foo) {
-            currentValue = options.find(option => option.value.id === foo) || null;
+            if (isMulti) {
+              currentValue = foo
+                .map(i => options.find(option => option.value.id === i) || null)
+                .filter(i => i);
+            } else {
+              currentValue = options.find(option => option.value.id === foo) || null;
+            }
           }
           return (
             <Select
