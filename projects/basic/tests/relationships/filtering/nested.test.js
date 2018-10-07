@@ -88,7 +88,7 @@ describe('relationship filtering', () => {
       allUsers: [
         {
           id: user.id,
-          posts: [{ id: ids[2] }, { id: ids[1] }],
+          posts: [{ id: ids[1] }, { id: ids[2] }],
         },
         {
           id: user2.id,
