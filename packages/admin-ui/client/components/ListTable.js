@@ -42,7 +42,7 @@ const ItemLink = styled(Link)`
   color: ${colors.text};
 
   /* Increase hittable area on item link */
-  &::before {
+  &:only-of-type::before {
     content: '';
     position: absolute;
     bottom: 0;

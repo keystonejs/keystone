@@ -36,12 +36,12 @@ export default class RelationshipController extends FieldController {
     const { many, path } = this.config;
 
     if (!data[path]) {
-      return null;
+      return many ? { disconnectAll: true } : null;
     }
 
     if (many) {
       if (!Array.isArray(data[path]) || !data[path].length) {
-        return null;
+        return many ? { disconnectAll: true } : null;
       }
       return this.buildRelateToManyInput(data[path], path);
     }
