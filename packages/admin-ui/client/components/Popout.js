@@ -64,22 +64,21 @@ export const DisclosureArrow = styled.span(({ size = '0.3em' }) => ({
 }));
 
 type Props = {
-  buttonLabel: string,
+  buttonLabel?: string,
   children: Node,
   component: ElementType,
-  innerRef: Ref<HTMLElement>,
-  bodyRef: Ref<HTMLElement>,
+  innerRef?: Ref<*>,
+  bodyRef?: Ref<HTMLElement>,
   footerContent?: Node,
-  headerAfter: Node,
-  headerBefore: Node,
-  headerTitle: Node,
-  target: string,
+  headerAfter?: Node,
+  headerBefore?: Node,
+  headerTitle?: Node,
+  target?: Node,
 };
 
 export const Popout = ({
   buttonLabel,
-  // $FlowFixMe
-  component: Wrapper = Fragment,
+  component: Wrapper,
   children,
   innerRef,
   bodyRef,
@@ -110,4 +109,8 @@ export const Popout = ({
       </Wrapper>
     </PopoutModal>
   );
+};
+
+Popout.defaultProps = {
+  component: Fragment,
 };
