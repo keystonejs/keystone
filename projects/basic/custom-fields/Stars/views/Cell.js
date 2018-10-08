@@ -10,7 +10,7 @@ type Props = {
 };
 
 const Star = ({ num, value }) => {
-  const icon = (value >= num) ? StarFull : StarEmpty;
+  const icon = value >= num ? StarFull : StarEmpty;
   return <img src={icon} />;
 };
 
@@ -26,7 +26,6 @@ const StarWrapper = props => (
     {...props}
   />
 );
-
 
 export default class StarsCellView extends Component<Props> {
   render() {

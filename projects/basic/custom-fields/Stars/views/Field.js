@@ -5,7 +5,7 @@ import StarEmpty from './star-empty.svg';
 import StarFull from './star-full.svg';
 
 const StarInput = ({ num, value, onClick }) => {
-  const Star = (value >= num) ? StarFull : StarEmpty;
+  const Star = value >= num ? StarFull : StarEmpty;
   return <img src={Star} onClick={() => onClick(num)} />;
 };
 
@@ -23,7 +23,7 @@ const StarWrapper = props => (
 );
 
 export default class TextField extends Component {
-  handleChange = (num) => {
+  handleChange = num => {
     const { field, item, onChange } = this.props;
     const value = item[field.path];
     const newValue = value === num ? 0 : num;
