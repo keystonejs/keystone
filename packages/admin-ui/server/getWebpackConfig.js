@@ -19,6 +19,11 @@ module.exports = function({ adminMeta, entry }) {
       test: /\.(png|svg|jpg|gif)$/,
       use: ['file-loader'],
     },
+    {
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: 'javascript/auto',
+    },
   ];
   if (adminMeta.lists) {
     rules.push({
