@@ -1,6 +1,6 @@
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
-const { escapeRegExp: esc } = require('@voussoir/utils');
+const { escapeRegExp } = require('@voussoir/utils');
 const mongoose = require('mongoose');
 
 // Disabling the getter of mongoose >= 5.1.0
@@ -28,7 +28,18 @@ class File extends Implementation {
     };
   }
   get gqlQueryInputFields() {
-    return [];
+    return [
+      `${this.path}: String`,
+      `${this.path}_not: String`,
+      `${this.path}_contains: String`,
+      `${this.path}_not_contains: String`,
+      `${this.path}_starts_with: String`,
+      `${this.path}_not_starts_with: String`,
+      `${this.path}_ends_with: String`,
+      `${this.path}_not_ends_with: String`,
+      `${this.path}_in: [String!]`,
+      `${this.path}_not_in: [String!]`,
+    ];
   }
   getFileUploadType() {
     return 'Upload';
@@ -123,56 +134,40 @@ class MongoFileInterface extends MongooseFieldAdapter {
   }
 
   getQueryConditions() {
-    const caseSensitive = `${this.path}_case_sensitive`;
-
     return {
-      [this.path]: (value, query) => {
-        if (query[caseSensitive]) {
-          return { [this.path]: { $eq: value } };
-        }
-        const eq_rx = new RegExp(`^${esc(value)}$`, '');
-        return { [this.path]: { $regex: eq_rx } };
-      },
+      [this.path]: value => ({
+        [this.path]: { $eq: value },
+      }),
+      [`${this.path}_not`]: value => ({
+        [this.path]: { $ne: value },
+      }),
 
-      [`${this.path}_not`]: (value, query) => {
-        if (query[caseSensitive]) {
-          return { $ne: value };
-        }
-        return { [this.path]: { $not: new RegExp(`^${esc(value)}$`, '') } };
-      },
+      [`${this.path}_contains`]: value => ({
+        [this.path]: { $regex: new RegExp(escapeRegExp(value)) },
+      }),
+      [`${this.path}_not_contains`]: value => ({
+        [this.path]: { $not: new RegExp(escapeRegExp(value)) },
+      }),
 
-      [`${this.path}_contains`]: (value, query) => ({
-        [this.path]: {
-          $regex: new RegExp(esc(value), query[caseSensitive] ? '' : 'i'),
-        },
+      [`${this.path}_starts_with`]: value => ({
+        [this.path]: { $regex: new RegExp(`^${escapeRegExp(value)}`) },
       }),
-      [`${this.path}_not_contains`]: (value, query) => ({
-        [this.path]: {
-          $not: new RegExp(esc(value), query[caseSensitive] ? '' : 'i'),
-        },
+      [`${this.path}_not_starts_with`]: value => ({
+        [this.path]: { $not: new RegExp(`^${escapeRegExp(value)}`) },
       }),
-      [`${this.path}_starts_with`]: (value, query) => ({
-        [this.path]: {
-          $regex: new RegExp(`^${esc(value)}`, query[caseSensitive] ? '' : 'i'),
-        },
+      [`${this.path}_ends_with`]: value => ({
+        [this.path]: { $regex: new RegExp(`${escapeRegExp(value)}$`) },
       }),
-      [`${this.path}_not_starts_with`]: (value, query) => ({
-        [this.path]: {
-          $not: new RegExp(`^${esc(value)}`, query[caseSensitive] ? '' : 'i'),
-        },
+      [`${this.path}_not_ends_with`]: value => ({
+        [this.path]: { $not: new RegExp(`${escapeRegExp(value)}$`) },
       }),
-      [`${this.path}_ends_with`]: (value, query) => ({
-        [this.path]: {
-          $regex: new RegExp(`${esc(value)}$`, query[caseSensitive] ? '' : 'i'),
-        },
+
+      [`${this.path}_in`]: value => ({
+        [this.path]: { $in: value },
       }),
-      [`${this.path}_not_ends_with`]: (value, query) => ({
-        [this.path]: {
-          $not: new RegExp(`${esc(value)}$`, query[caseSensitive] ? '' : 'i'),
-        },
+      [`${this.path}_not_in`]: value => ({
+        [this.path]: { $not: { $in: value } },
       }),
-      [`${this.path}_in`]: value => ({ [this.path]: { $in: value } }),
-      [`${this.path}_not_in`]: value => ({ [this.path]: { $not: { $in: value } } }),
     };
   }
 }
