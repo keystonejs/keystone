@@ -83,8 +83,8 @@ const Nav = props => {
               <A11yText>Style Guide</A11yText>
             </PrimaryNavItem>
           </Fragment>
-          </NavGroupIcons>
-        ) : null}
+        </NavGroupIcons>
+      ) : null}
     </PrimaryNav>
   );
 };
