@@ -1,3 +1,4 @@
+// @flow
 import React, { Component, createRef, Fragment } from 'react';
 import styled from 'react-emotion';
 import { withRouter } from 'react-router-dom';
@@ -21,8 +22,9 @@ import ActiveFilters from './Filters/ActiveFilters';
 import SortSelect, { SortButton } from './SortSelect';
 import Pagination from './Pagination';
 import Management, { ManageToolbar } from './Management';
-import type { SortByType } from './DataProvider';
+import type { Handlers } from './DataProvider';
 import List from '../../classes/List';
+import type { SortByType } from './url-state';
 
 // ==============================
 // Styled Components
@@ -85,24 +87,19 @@ type Props = {
   },
   currentPage: number,
   fields: Array<Object>,
-  handleFieldChange: GenericFn,
-  handlePageChange: GenericFn,
-  handleSearchChange: GenericFn,
-  handleSearchClear: GenericFn,
-  handleSearchSubmit: GenericFn,
-  handleSortChange: GenericFn,
   items: Array<Object>,
   itemsCount: number,
   pageSize: number,
   search: string,
   skip: number,
   sortBy: SortByType,
-};
+} & Handlers;
 type State = {
   isFullWidth: boolean,
   isManaging: boolean,
   selectedItems: Array<Object>,
   showCreateModal: boolean,
+  searchValue: string,
 };
 
 class ListDetails extends Component<Props, State> {

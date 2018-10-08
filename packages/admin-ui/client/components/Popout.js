@@ -69,7 +69,7 @@ type Props = {
   component: ElementType,
   innerRef: Ref<HTMLElement>,
   bodyRef: Ref<HTMLElement>,
-  footerContent: Node,
+  footerContent?: Node,
   headerAfter: Node,
   headerBefore: Node,
   headerTitle: Node,

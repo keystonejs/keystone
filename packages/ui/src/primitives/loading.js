@@ -94,7 +94,7 @@ const SpinnerSatellite = styled.div(({ color, size }) => ({
   top: 0,
 }));
 
-export const LoadingSpinner = ({ appearance = 'default', size = 16 }: LoadingIndicatorProps) => {
+export const LoadingSpinner = ({ appearance, size }: LoadingIndicatorProps) => {
   const color = appearanceColor[appearance];
 
   return (
@@ -104,4 +104,9 @@ export const LoadingSpinner = ({ appearance = 'default', size = 16 }: LoadingInd
       <A11yText>Loading</A11yText>
     </SpinnerWrapper>
   );
+};
+
+LoadingSpinner.defaultProps = {
+  appearance: 'default',
+  size: 16,
 };
