@@ -9,7 +9,7 @@
   "dependencies": {
     "@voussoir/logger": "^0.1.2",
     "@voussoir/utils": "^0.1.2",
-    "apollo-server-express": "^2.0.4",
+    "apollo-server-express": "^2.1.0",
     "apollo-errors": "^1.9.0",
     "body-parser": "^1.18.2",
     "cuid": "^2.1.1",
