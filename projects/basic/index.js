@@ -3,7 +3,6 @@ const { Keystone } = require('@voussoir/core');
 const {
   File,
   Text,
-  Float,
   Integer,
   Relationship,
   Select,
