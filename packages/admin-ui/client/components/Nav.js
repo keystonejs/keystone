@@ -14,6 +14,7 @@ import {
   PrimaryNav,
   PrimaryNavItem,
   NavGroup,
+  NavGroupIcons,
   NavSeparator,
 } from '@voussoir/ui/src/primitives/navigation';
 import { A11yText } from '@voussoir/ui/src/primitives/typography';
@@ -28,11 +29,23 @@ const Nav = props => {
   } = props;
   return (
     <PrimaryNav>
-      <NavGroup>
+      <NavGroupIcons>
         <PrimaryNavItem to={adminPath} title="Dashboard">
           <HomeIcon />
           <A11yText>Dashboard</A11yText>
         </PrimaryNavItem>
+        {withAuth ? (
+          <Fragment>
+            <NavSeparator />
+            <PrimaryNavItem href={signoutPath} title="Sign Out">
+              <SignOutIcon />
+              <A11yText>Sign Out</A11yText>
+            </PrimaryNavItem>
+          </Fragment>
+        ) : null}
+      </NavGroupIcons>
+
+      <NavGroup>
         {listKeys.map(key => {
           const list = getListByKey(key);
           let href = `${adminPath}/${list.path}`;
@@ -44,7 +57,6 @@ const Nav = props => {
 
           return (
             <Fragment key={key}>
-              <NavSeparator isSelected={isSelected} />
               <PrimaryNavItem id={`ks-nav-${list.path}`} isSelected={isSelected} to={href}>
                 {list.label}
               </PrimaryNavItem>
@@ -52,8 +64,9 @@ const Nav = props => {
           );
         })}
       </NavGroup>
-      <NavGroup>
-        {ENABLE_DEV_FEATURES ? (
+
+      {ENABLE_DEV_FEATURES ? (
+        <NavGroupIcons>
           <Fragment>
             <PrimaryNavItem target="_blank" href={GITHUB_PROJECT} title="GitHub">
               <MarkGithubIcon />
@@ -69,16 +82,9 @@ const Nav = props => {
               <TelescopeIcon />
               <A11yText>Style Guide</A11yText>
             </PrimaryNavItem>
-            <NavSeparator />
           </Fragment>
+          </NavGroupIcons>
         ) : null}
-        {withAuth ? (
-          <PrimaryNavItem href={signoutPath} title="Sign Out">
-            <SignOutIcon />
-            <A11yText>Sign Out</A11yText>
-          </PrimaryNavItem>
-        ) : null}
-      </NavGroup>
     </PrimaryNav>
   );
 };

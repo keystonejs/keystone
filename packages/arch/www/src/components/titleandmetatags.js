@@ -7,6 +7,7 @@ const defaultDescription =
 const TitleAndMetaTags = ({ title, ogDescription, ogUrl }) => {
   return (
     <Helmet title={title}>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta property="og:title" content={title} />
       <meta property="og:type" content="website" />
       {ogUrl && <meta property="og:url" content={ogUrl} />}

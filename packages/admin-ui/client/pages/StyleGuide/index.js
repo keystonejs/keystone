@@ -26,20 +26,20 @@ export default withRouter(
       return (
         <Fragment>
           <Nav />
-          <SecondaryNav>
-            <FlexGroup>
-              {pages.map(page => (
-                <SecondaryNavItem
-                  key={page}
-                  isSelected={currentPage === page}
-                  to={`${adminPath}/style-guide/${page}`}
-                >
-                  {upCase(page)}
-                </SecondaryNavItem>
-              ))}
-            </FlexGroup>
-          </SecondaryNav>
-          <Container css={{ paddingBottom: 200 }}>
+          <Container css={{ paddingBottom: 200, width: '100%' }}>
+            <SecondaryNav>
+              <FlexGroup>
+                {pages.map(page => (
+                  <SecondaryNavItem
+                    key={page}
+                    isSelected={currentPage === page}
+                    to={`${adminPath}/style-guide/${page}`}
+                  >
+                    {upCase(page)}
+                  </SecondaryNavItem>
+                ))}
+              </FlexGroup>
+            </SecondaryNav>
             <H1>Style Guide: {upCase(currentPage)}</H1>
             <Switch>
               <Route exact path={`${adminPath}/style-guide/palette`} component={PaletteGuide} />
