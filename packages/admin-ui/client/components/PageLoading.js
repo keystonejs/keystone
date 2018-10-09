@@ -9,6 +9,7 @@ export default function PageLoading() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        width: '100%',
       }}
     >
       <LoadingIndicator size={12} />
