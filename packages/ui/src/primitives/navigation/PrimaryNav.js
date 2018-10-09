@@ -10,9 +10,11 @@ import { FlexProvider, ItemElement, NAV_GUTTER } from './common';
 const Wrapper = styled.nav({
   backgroundColor: colors.primary,
   color: 'white',
-  paddingBottom: gridSize,
-  paddingTop: gridSize,
+  minHeight: '100vh',
+  width: '25vh',
+  minWidth: '220px',
 });
+
 export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => ({
   background: isSelected ? colors.B.D10 : 'none',
   border: 0,
