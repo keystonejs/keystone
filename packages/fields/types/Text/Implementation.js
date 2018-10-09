@@ -46,9 +46,9 @@ class Text extends Implementation {
 
 class MongoTextInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
+    const { mongooseOptions, unique } = this.config;
     schema.add({
-      [this.path]: { type: String, ...mongooseOptions },
+      [this.path]: { type: String, unique, ...mongooseOptions },
     });
   }
 

@@ -117,10 +117,10 @@ class File extends Implementation {
 
 class MongoFileInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
+    const { mongooseOptions, unique } = this.config;
     schema.add({
       [this.path]: {
-        ...mongooseOptions,
+        unique,
         type: {
           id: ObjectId,
           path: String,
@@ -128,6 +128,7 @@ class MongoFileInterface extends MongooseFieldAdapter {
           mimetype: String,
           _meta: Object,
         },
+        ...mongooseOptions,
       },
     });
   }

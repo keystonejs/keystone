@@ -21,6 +21,11 @@ class BaseKeystoneAdapter {
   }
 
   prepareListAdapter() {}
+
+  /**
+   * @param Promise
+   */
+  pushSetupTask() {}
 }
 
 class BaseListAdapter {

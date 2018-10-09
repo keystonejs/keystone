@@ -10,6 +10,7 @@ const {
   BaseFieldAdapter,
 } = require('@voussoir/core/adapters');
 const joinBuilder = require('@voussoir/mongo-join-builder');
+const pReflect = require('p-reflect');
 
 const simpleTokenizer = require('./tokenizers/simple');
 const relationshipTokenizer = require('./tokenizers/relationship');
@@ -75,6 +76,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     super(...arguments);
 
     this.name = this.name || 'mongoose';
+    this.setupTasks = [];
 
     this.mongoose = new Mongoose();
     if (debugMongoose()) {
@@ -83,7 +85,14 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
-  connect(to, config) {
+  pushSetupTask(task) {
+    // We wrap the promise with pReflect so we're handling rejections immediate
+    // to avoid node throwing "Unhandled rejected promise" warnings (and
+    // potentially killing the process in the future)
+    this.setupTasks.push(pReflect(task));
+  }
+
+  async connect(to, config = {}) {
     const dbName = config.dbName || inflection.dasherize(config.name).toLowerCase();
     // NOTE: We pull out `name` here, but don't use it, so it
     // doesn't conflict with the options the user wants passed to mongodb.
@@ -96,28 +105,40 @@ class MongooseAdapter extends BaseKeystoneAdapter {
       uri = 'mongodb://localhost:27017/';
     }
 
-    this.mongoose.connect(
-      uri,
-      // NOTE: We still pass in the dbName for the case where `to` is set, but
-      // doesn't have a name in the uri.
-      // For the case where `to` does not have a name, and `dbName` is set, the
-      // expected behaviour is for the name to be set to `dbName`.
-      // For the case where `to` has a name, and `dbName` is not set, we are
-      // forcing the name to be the dasherized of the Keystone name.
-      // For the case where both are set, the expected behaviour is for it to be
-      // overwritten.
-      { useNewUrlParser: true, ...adapterConnectOptions, dbName }
-    );
+    try {
+      await this.mongoose.connect(
+        uri,
+        // NOTE: We still pass in the dbName for the case where `to` is set, but
+        // doesn't have a name in the uri.
+        // For the case where `to` does not have a name, and `dbName` is set, the
+        // expected behaviour is for the name to be set to `dbName`.
+        // For the case where `to` has a name, and `dbName` is not set, we are
+        // forcing the name to be the dasherized of the Keystone name.
+        // For the case where both are set, the expected behaviour is for it to be
+        // overwritten.
+        { useNewUrlParser: true, ...adapterConnectOptions, dbName }
+      );
+      const taskResults = await Promise.all(this.setupTasks);
+      const errors = taskResults.filter(({ isRejected }) => isRejected);
 
-    const db = this.mongoose.connection;
-
-    db.on('error', console.error.bind(console, 'Mongoose connection error'));
-    return new Promise(resolve => {
-      db.once('open', () => {
-        console.log('Connection success');
-        resolve();
-      });
-    });
+      if (errors.length) {
+        const error = new Error('Mongoose connection error');
+        error.errors = errors.map(({ reason }) => reason);
+        throw error;
+      }
+    } catch (error) {
+      // close the database connection if it was opened
+      try {
+        await this.close();
+      } catch (closeError) {
+        // Add the inability to close the database connection as an additional
+        // error
+        error.errors = error.errors || [];
+        error.errors.push(closeError);
+      }
+      // re-throw the error
+      throw error;
+    }
   }
 
   close() {
@@ -131,9 +152,14 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     });
   }
 
-  dropDatabase() {
+  async dropDatabase() {
     // This will completely drop the backing database. Use wisely.
-    return this.mongoose.connection.dropDatabase();
+    await this.mongoose.connection.dropDatabase();
+    // Mongoose doesn't know we called dropDatabase on Mongo directly, so we
+    // have to recreate the indexes
+    await Promise.all(
+      this.mongoose.modelNames().map(modelName => this.mongoose.model(modelName).ensureIndexes())
+    );
   }
 }
 
@@ -144,6 +170,7 @@ class MongooseListAdapter extends BaseListAdapter {
     const { configureMongooseSchema, mongooseSchemaOptions } = config;
 
     this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
+    this.pushSetupTask = parentAdapter.pushSetupTask.bind(parentAdapter);
     this.mongoose = parentAdapter.mongoose;
     this.configureMongooseSchema = configureMongooseSchema;
     this.schema = new parentAdapter.mongoose.Schema({}, mongooseSchemaOptions);
@@ -187,11 +214,23 @@ class MongooseListAdapter extends BaseListAdapter {
     fieldAdapter.addToMongooseSchema(this.schema, this.mongoose);
   }
 
+  /**
+   * Note: It's not necessary to await the result of this function - it is only
+   * if you want access to the underlying model should you await it. Otherwise,
+   * the `.connect()` method of the parent adapter will handle the awaiting.
+   *
+   * @return Promise<>
+   */
   prepareModel() {
     if (this.configureMongooseSchema) {
       this.configureMongooseSchema(this.schema, { mongoose: this.mongoose });
     }
     this.model = this.mongoose.model(this.key, this.schema);
+
+    // Ensure we wait for any indexes to be built
+    const setupIndexes = this.model.init();
+    this.pushSetupTask(setupIndexes);
+    return setupIndexes.then(() => this.model);
   }
 
   create(data) {

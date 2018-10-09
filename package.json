@@ -93,6 +93,8 @@
     "mongoose": "^5.2.7",
     "oauth-libre": "^0.9.17",
     "octicons": "^7.2.0",
+    "p-lazy": "^1.0.0",
+    "p-reflect": "^1.0.0",
     "p-settle": "^2.1.0",
     "passport": "^0.4.0",
     "passport-twitter": "^1.0.4",
