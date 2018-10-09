@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "loader-utils": "^1.1.0",
-    "prettier": "^1.13.7"
+    "prettier": "^1.14.3"
   },
   "peerDependencies": {
     "react": "^16.4.2"
