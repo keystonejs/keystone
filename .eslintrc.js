@@ -7,7 +7,7 @@ module.exports = {
     jest: true,
     'cypress/globals': true,
   },
-  plugins: ['react', 'jest', 'cypress', 'import', 'flowtype'],
+  plugins: ['react', 'jest', 'cypress', 'import', 'flowtype', "security"],
   rules: {
     curly: ['error', 'multi-line'],
     'jsx-quotes': 'error',
@@ -54,7 +54,10 @@ module.exports = {
     'flowtype/define-flow-type': 'error',
     'flowtype/use-flow-type': 'error',
   },
-  extends: ['plugin:jest/recommended'],
+  extends: [
+    'plugin:jest/recommended',
+    	"plugin:security/recommended"
+  ],
 
   // Disable some rules for (code blocks within) Markdown docs
   overrides: [
