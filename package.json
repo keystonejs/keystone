@@ -62,6 +62,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jest": "^21.21.0",
     "eslint-plugin-react": "^7.11.1",
+    "eslint-plugin-security": "^1.4.0",
     "execa": "0.10.0",
     "express": "^4.16.3",
     "express-pino-logger": "^4.0.0",
