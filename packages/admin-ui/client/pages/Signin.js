@@ -16,6 +16,7 @@ const Container = styled.div({
   flexDirection: 'column',
   justifyContent: 'center',
   minHeight: '100vh',
+  width: '100%',
 });
 
 const Alerts = styled.div({
