@@ -53,7 +53,7 @@ const Nav = props => {
           if (maybeSearchParam) {
             href += maybeSearchParam;
           }
-          const isSelected = href === location.pathname;
+          const isSelected = href === location.pathname + location.search;
 
           return (
             <Fragment key={key}>
