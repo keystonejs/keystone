@@ -1,6 +1,7 @@
+// @flow
 import React, { Component, createRef, Fragment } from 'react';
 import styled from 'react-emotion';
-import { withRouter } from 'react-router-dom';
+import { withRouter, type RouterHistory } from 'react-router-dom';
 
 import { FoldIcon, PlusIcon, SearchIcon, UnfoldIcon, XIcon } from '@voussoir/icons';
 import { Input } from '@voussoir/ui/src/primitives/forms';
@@ -21,7 +22,10 @@ import ActiveFilters from './Filters/ActiveFilters';
 import SortSelect, { SortButton } from './SortSelect';
 import Pagination from './Pagination';
 import Management, { ManageToolbar } from './Management';
-import type { SortByType } from './DataProvider';
+import type { Handlers } from './DataProvider';
+import List from '../../classes/List';
+import type { SortByType } from './url-state';
+import type { FilterType } from './Filters/ActiveFilters';
 
 // ==============================
 // Styled Components
@@ -75,7 +79,7 @@ const Search = ({ children, hasValue, isFetching, onClear, onSubmit }) => {
 type GenericFn = (*) => void;
 
 type Props = {
-  list: Object,
+  list: List,
   query: {
     data: Object,
     error: Object,
@@ -84,24 +88,23 @@ type Props = {
   },
   currentPage: number,
   fields: Array<Object>,
-  handleFieldChange: GenericFn,
-  handlePageChange: GenericFn,
-  handleSearchChange: GenericFn,
-  handleSearchClear: GenericFn,
-  handleSearchSubmit: GenericFn,
-  handleSortChange: GenericFn,
-  items: Array<Object>,
+  items: Object,
   itemsCount: number,
   pageSize: number,
   search: string,
   skip: number,
   sortBy: SortByType,
-};
+  adminPath: string,
+  history: RouterHistory,
+  filters: Array<FilterType>,
+  itemsErrors: Array<*>,
+} & Handlers;
 type State = {
   isFullWidth: boolean,
   isManaging: boolean,
-  selectedItems: Array<Object>,
+  selectedItems: Array<string>,
   showCreateModal: boolean,
+  searchValue: string,
 };
 
 class ListDetails extends Component<Props, State> {
@@ -135,10 +138,13 @@ class ListDetails extends Component<Props, State> {
       this.props.handleSearchChange(value);
     });
   };
+  searchInput: ?HTMLElement;
   handleSearchClear = () => {
     this.setState({ searchValue: '' });
     this.props.handleSearchClear();
-    this.searchInput.focus();
+    if (this.searchInput) {
+      this.searchInput.focus();
+    }
   };
   handleSearchSubmit = event => {
     event.preventDefault();
@@ -165,7 +171,7 @@ class ListDetails extends Component<Props, State> {
   handleItemSelectAll = (selectedItems: Array<string>) => {
     this.setState({ selectedItems });
   };
-  handleManageKeyDown = ({ key }: Event) => {
+  handleManageKeyDown = ({ key }: KeyboardEvent) => {
     if (key !== 'Escape') return;
     this.stopManaging();
   };
@@ -175,8 +181,9 @@ class ListDetails extends Component<Props, State> {
   };
   stopManaging = () => {
     this.setState({ isManaging: false, selectedItems: [] }, () => {
-      if (!this.manageButton) return;
-      this.manageButton.current.focus();
+      if (this.manageButton.current) {
+        this.manageButton.current.focus();
+      }
     });
     document.removeEventListener('keydown', this.handleManageKeyDown, false);
   };
@@ -379,6 +386,7 @@ class ListDetails extends Component<Props, State> {
               <Management
                 list={list}
                 onDeleteMany={this.onDeleteSelectedItems}
+                // $FlowFixMe
                 onUpdateMany={this.onUpdate}
                 onToggleManage={this.onToggleManage}
                 selectedItems={selectedItems}

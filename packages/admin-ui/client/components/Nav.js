@@ -1,5 +1,4 @@
-/* global ENABLE_DEV_FEATURES */
-
+// @flow
 import React, { Fragment } from 'react';
 import { withRouter } from 'react-router';
 import {
@@ -18,6 +17,8 @@ import {
 } from '@voussoir/ui/src/primitives/navigation';
 import { A11yText } from '@voussoir/ui/src/primitives/typography';
 import { withAdminMeta } from '../providers/AdminMeta';
+
+declare var ENABLE_DEV_FEATURES: boolean;
 
 const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
 

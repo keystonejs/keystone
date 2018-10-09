@@ -5,7 +5,11 @@ import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
 export const NAV_GUTTER = 20;
-type ItemProps = { isSelected?: Boolean, to?: String, href?: String };
+type ItemProps = {
+  isSelected?: Boolean,
+  to?: string,
+  href?: string,
+};
 
 export const ItemElement = ({ isSelected, ...props }: ItemProps) => {
   if (props.to) return <Link {...props} />;

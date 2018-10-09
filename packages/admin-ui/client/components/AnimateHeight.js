@@ -11,18 +11,21 @@ type Props = {
   children?: Element<*>,
   initialHeight: Height,
   onChange?: Height => any,
-  render?: ({ ref: Ref<*> }) => Node,
+  render?: ({ ref: Ref<*>, recalcHeight: () => void }) => Node,
 };
-type State = { height: Height };
+type State = { height: Height, isTransitioning: boolean };
 
 export default class AnimateHeight extends Component<Props, State> {
   node: HTMLElement;
-  state = { height: this.props.initialHeight };
+  state = {
+    height: this.props.initialHeight,
+    isTransitioning: false,
+  };
   static defaultProps = {
     autoScroll: false,
     initialHeight: 0,
   };
-  getNode = ref => {
+  getNode = (ref: HTMLElement | null) => {
     if (!ref) return;
     this.node = ref;
     this.calculateHeight();
@@ -30,8 +33,13 @@ export default class AnimateHeight extends Component<Props, State> {
   scrollToTop = () => {
     const { autoScroll } = this.props;
     const element = autoScroll instanceof HTMLElement ? autoScroll : this.node;
-    if (!element || typeof element.scrollTo !== 'function') return;
-    element.scrollTo(0, 0);
+    if (
+      element &&
+      // $FlowFixMe
+      typeof element.scrollTo === 'function'
+    ) {
+      element.scrollTo(0, 0);
+    }
   };
   calculateHeight = () => {
     const { autoScroll, initialHeight, onChange } = this.props;

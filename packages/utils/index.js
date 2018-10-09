@@ -1,4 +1,6 @@
-const camelize = (exports.camelize = str =>
+// @flow weak
+
+const camelize = (exports.camelize = (str /*:string*/) =>
   // split the string into words, lowercase the leading character of the first word,
   // uppercase the leading character of all other words, then join together.
   // If the first word is all uppercase, lowercase the whole thing.
@@ -15,9 +17,10 @@ const camelize = (exports.camelize = str =>
     )
     .join(''));
 
-exports.getType = thing => Object.prototype.toString.call(thing).replace(/\[object (.*)\]/, '$1');
+exports.getType = (thing /*:mixed*/) =>
+  Object.prototype.toString.call(thing).replace(/\[object (.*)\]/, '$1');
 
-exports.fixConfigKeys = (config, remapKeys = {}) => {
+exports.fixConfigKeys = (config /*:Object*/, remapKeys /*:Object*/ = {}) => {
   const rtn = {};
   Object.keys(config).forEach(key => {
     if (remapKeys[key]) rtn[remapKeys[key]] = config[key];
@@ -26,7 +29,7 @@ exports.fixConfigKeys = (config, remapKeys = {}) => {
   return rtn;
 };
 
-exports.checkRequiredConfig = (config, requiredKeys = []) => {
+exports.checkRequiredConfig = (config /*:Object*/, requiredKeys /*:Array<string>*/ = []) => {
   requiredKeys.forEach(key => {
     if (config[key] === undefined) {
       throw new Error(`Required key ${key} is not defined in the config`);
@@ -34,11 +37,20 @@ exports.checkRequiredConfig = (config, requiredKeys = []) => {
   });
 };
 
-exports.escapeRegExp = str => (str || '').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+exports.escapeRegExp = (str /*:string*/) =>
+  (str || '').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
 // { key: value, ... } => { key: mapFn(value, key), ... }
-exports.mapKeys = (obj, func) =>
-  Object.entries(obj).reduce((acc, [key, value]) => ({ ...acc, [key]: func(value, key, obj) }), {});
+exports.mapKeys = /*::<
+  TInputValue,
+  TOutputValue,
+  TInputKey: string,
+  TObject: { [key: TInputKey]: TInputValue }
+>*/ (
+  obj /*: TObject*/,
+  func /*: (value: TInputValue, key: TInputKey, object: TObject) => TOutputValue*/
+) /*: { [key: TInputKey]: TOutputValue }*/ =>
+  Object.keys(obj).reduce((acc, key) => ({ ...acc, [key]: func(obj[key], key, obj) }), {});
 
 // { key: value, ... } => { mapFn(key, value): value, ... }
 exports.mapKeyNames = (obj, func) =>
@@ -57,7 +69,7 @@ exports.resolveAllKeys = obj => {
   return Promise.all(allPromises).then(() => result);
 };
 
-exports.unique = arr => [...new Set(arr)];
+exports.unique = /*::<Val>*/ (arr /*:Array<Val>*/) /*:Array<Val>*/ => [...new Set(arr)];
 
 exports.intersection = (array1, array2) =>
   exports.unique(array1.filter(value => array2.includes(value)));
@@ -85,8 +97,22 @@ exports.defaultObj = (keys, val) => keys.reduce((acc, key) => ({ ...acc, [key]: 
 //   b: 'dog',
 //   c: 'cat',
 //   d: 'dog'}
-exports.arrayToObject = (objs, keyedBy, mapFn = i => i) =>
-  objs.reduce((acc, obj) => ({ ...acc, [obj[keyedBy]]: mapFn(obj) }), {});
+exports.arrayToObject = /*:: <
+  Key: string,
+  KeyValue,
+  Input: { [key: Key]: KeyValue },
+  OutputVal,
+  Output: { [key: KeyValue]: OutputVal }
+>*/ (
+  objs /*: Array<Input>*/,
+  keyedBy /*: Key*/,
+  mapFn /*: Input => OutputVal*/ = (i /*: Input*/) => i
+) /*: Output*/ =>
+  // $FlowFixMe
+  objs.reduce((acc /*: Output*/, obj /*: Input*/) => {
+    acc[obj[keyedBy]] = mapFn(obj);
+    return acc;
+  }, {});
 
 // [[1, 2, 3], [4, 5], 6, [[7, 8], [9, 10]]] => [1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]
 exports.flatten = arr => Array.prototype.concat(...arr);

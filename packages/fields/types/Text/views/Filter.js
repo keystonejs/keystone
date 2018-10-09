@@ -1,24 +1,20 @@
 // @flow
 
-import React, { Component, type Ref } from 'react';
+import React, { Component } from 'react';
 import { Input } from '@voussoir/ui/src/primitives/forms';
+import type { FilterProps } from '../../../types';
 
-type Props = {
-  field: Object,
-  filter: Object,
-  innerRef: Ref<*>,
-  onChange: Event => void,
-};
+type TextFilterViewProps = FilterProps<string>;
 
-export default class TextFilterView extends Component<Props> {
-  componentDidUpdate(prevProps) {
+export default class TextFilterView extends Component<TextFilterViewProps> {
+  componentDidUpdate(prevProps: TextFilterViewProps) {
     const { filter } = this.props;
 
     if (prevProps.filter !== filter) {
       this.props.recalcHeight();
     }
   }
-  handleChange = ({ target: { value } }) => {
+  handleChange = ({ target: { value } }: *) => {
     this.props.onChange(value);
   };
 

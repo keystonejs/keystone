@@ -1,9 +1,7 @@
 [declarations]
 
 [ignore]
-
-.*/packages/.*
-
+.*/packages/arch/.*
 [include]
 
 [libs]

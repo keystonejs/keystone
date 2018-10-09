@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, type ComponentType, type Node, type Ref } from 'react';
+import React, { Fragment, type ElementType, type Node, type Ref } from 'react';
 import styled from 'react-emotion';
 
 import { Button } from '@voussoir/ui/src/primitives/buttons';
@@ -64,21 +64,21 @@ export const DisclosureArrow = styled.span(({ size = '0.3em' }) => ({
 }));
 
 type Props = {
-  buttonLabel: string,
+  buttonLabel?: string,
   children: Node,
-  component: ComponentType<*>,
-  innerRef: Ref<HTMLElement>,
-  bodyRef: Ref<HTMLElement>,
-  footerContent: Node,
-  headerAfter: Node,
-  headerBefore: Node,
-  headerTitle: Node,
-  target: string,
+  component: ElementType,
+  innerRef?: Ref<*>,
+  bodyRef?: Ref<HTMLElement>,
+  footerContent?: Node,
+  headerAfter?: Node,
+  headerBefore?: Node,
+  headerTitle?: Node,
+  target?: Node,
 };
 
 export const Popout = ({
   buttonLabel,
-  component: Wrapper = Fragment,
+  component: Wrapper,
   children,
   innerRef,
   bodyRef,
@@ -97,7 +97,7 @@ export const Popout = ({
   );
 
   return (
-    <PopoutModal ref={innerRef} target={target || defaultTarget} {...props}>
+    <PopoutModal innerRef={innerRef} target={target || defaultTarget} {...props}>
       <Wrapper>
         <Header>
           <HeaderLeft>{headerBefore}</HeaderLeft>
@@ -109,4 +109,8 @@ export const Popout = ({
       </Wrapper>
     </PopoutModal>
   );
+};
+
+Popout.defaultProps = {
+  component: Fragment,
 };

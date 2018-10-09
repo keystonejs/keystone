@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
@@ -7,6 +8,7 @@ import { PlusIcon } from '@voussoir/icons';
 import { colors, borderRadius, gridSize } from '@voussoir/ui/src/theme';
 import { LoadingIndicator } from '@voussoir/ui/src/primitives/loading';
 import { A11yText } from '@voussoir/ui/src/primitives/typography';
+import List from '../../classes/List';
 
 const BOX_GUTTER = `${gridSize * 2}px`;
 
@@ -29,6 +31,15 @@ const BoxElement = styled(Link)`
   }
 `;
 
+type BoxComponentProps = {
+  isActive: boolean,
+  isHover: boolean,
+  isFocus: boolean,
+  onCreateClick: (event: SyntheticEvent<HTMLButtonElement>) => mixed,
+  list: List,
+  meta: Meta,
+};
+
 export const BoxComponent = ({
   isActive,
   isHover,
@@ -37,7 +48,7 @@ export const BoxComponent = ({
   meta,
   onCreateClick,
   ...props
-}) => {
+}: BoxComponentProps) => {
   const { label, singular } = list;
 
   return (
@@ -73,7 +84,10 @@ export const Name = styled.span(
   white-space: nowrap;
 `
 );
-export const Count = ({ meta }) => {
+
+type Meta = { count: number };
+
+export const Count = ({ meta }: { meta?: Meta }) => {
   const isLoading = meta === undefined;
   const count = (meta && meta.count) || 0;
 

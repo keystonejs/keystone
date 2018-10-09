@@ -1,12 +1,11 @@
 // @flow
 
-import React, { Component, type Ref } from 'react';
+import React, { Component } from 'react';
 import { RadioGroup, Radio } from '@voussoir/ui/src/primitives/filters';
+import type { FilterProps } from '../../../types';
 
-type Props = { field: Object, innerRef: Ref<*>, onChange: Event => void };
-
-export default class PasswordFilterView extends Component<Props> {
-  handleChange = value => {
+export default class PasswordFilterView extends Component<FilterProps<boolean>> {
+  handleChange = (value: 'is_set' | 'is_not_set') => {
     const boolValue = value === 'is_set' ? true : false;
     this.props.onChange(boolValue);
   };

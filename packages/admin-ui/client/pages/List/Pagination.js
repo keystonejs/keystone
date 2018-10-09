@@ -1,15 +1,17 @@
+// @flow
 import React, { type Ref } from 'react';
 
 import { GearIcon } from '@voussoir/icons';
 import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
 import { IconButton } from '@voussoir/ui/src/primitives/buttons';
 import { Pagination } from '@voussoir/ui/src/primitives/navigation';
+import List from '../../classes/List';
 
 type Props = {
   currentPage: number,
   getManageButton: Ref<*>,
   itemsCount: number,
-  list: Object,
+  list: List,
   onChangePage: (*) => void,
   onToggleManage: (*) => void,
   pageSize: number,

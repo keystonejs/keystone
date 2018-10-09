@@ -109,10 +109,12 @@ const TodayMarker = styled.div(({ isSelected }) => ({
   width: '1em',
 }));
 
+type SetDate = Date => void;
+
 type SelectMonthProps = {
-  handleMonthSelect: (Event, Function, Function) => void,
-  setDate: Function => mixed,
-  setSelectedDate: Function => mixed,
+  handleMonthSelect: (string, SetDate, SetDate) => void,
+  setDate: SetDate,
+  setSelectedDate: SetDate,
   date: string,
 };
 
@@ -123,7 +125,7 @@ class SelectMonth extends React.Component<SelectMonthProps> {
     const { date } = this.props;
 
     const onChange = event => {
-      handleMonthSelect(event, setDate, setSelectedDate);
+      handleMonthSelect(event.target.value, setDate, setSelectedDate);
     };
 
     return (
@@ -139,7 +141,7 @@ class SelectMonth extends React.Component<SelectMonthProps> {
 }
 
 type SelectYearProps = {
-  handleYearSelect: (Event, Function, Function) => void,
+  handleYearSelect: (string, Function, Function) => void,
   setDate: Function => void,
   setSelectedDate: Function => void,
   date: string,
@@ -152,7 +154,7 @@ class SelectYear extends React.Component<SelectYearProps> {
     const { date } = this.props;
 
     const onChange = event => {
-      handleYearSelect(event, setDate, setSelectedDate);
+      handleYearSelect(event.target.value, setDate, setSelectedDate);
     };
 
     return (
@@ -168,8 +170,8 @@ class SelectYear extends React.Component<SelectYearProps> {
 }
 
 type DayPickerProps = {
-  handleYearSelect: (Event, Function, Function) => void,
-  handleMonthSelect: (Event, Function, Function) => void,
+  handleYearSelect: (string, SetDate, SetDate) => void,
+  handleMonthSelect: (string, SetDate, SetDate) => void,
 };
 
 export const DayPicker = (props: DayPickerProps) => {
@@ -258,26 +260,18 @@ type Props = {
   children?: Node,
   /** Field disabled */
   isDisabled?: boolean,
-  /** Marks this as a required field */
-  isRequired?: boolean,
-  /** Field name */
-  name?: string,
-  /** onChange event handler */
-  onChange: any => mixed,
-  /** Field value */
-  value: string,
   /** Ref to apply to the inner Element */
   innerRef: Ref<*>,
   date: string,
   time: string,
   offset: string,
   htmlID: string,
-  autoFocus: boolean,
-  handleDayChange: Function => void,
-  handleTimeChange: Function => void,
-  handleOffsetChange: Function => void,
-  handleYearSelect: (Event, Function, Function) => void,
-  handleMonthSelect: (Event, Function, Function) => void,
+  autoFocus?: boolean,
+  handleDayChange: Date => void,
+  handleTimeChange: string => void,
+  handleOffsetChange: string => void,
+  handleYearSelect: (string, SetDate, SetDate) => void,
+  handleMonthSelect: (string, SetDate, SetDate) => void,
 };
 
 export const DateTimePicker = (props: Props) => {
@@ -335,7 +329,9 @@ export const DateTimePicker = (props: Props) => {
         type="time"
         name="time-picker"
         value={time}
-        onChange={handleTimeChange}
+        onChange={event => {
+          handleTimeChange(event.target.value);
+        }}
         disabled={isDisabled || false}
         isMultiline={false}
         innerRef={innerRef}
@@ -343,7 +339,9 @@ export const DateTimePicker = (props: Props) => {
       <Select
         value={offset}
         options={options}
-        onChange={handleOffsetChange}
+        onChange={option => {
+          handleOffsetChange(option.value);
+        }}
         id={`react-select-${htmlID}`}
       />
     </div>

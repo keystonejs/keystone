@@ -1,20 +1,49 @@
-import React, { Component, Fragment } from 'react';
+// @flow
+import * as React from 'react';
+import { Component, Fragment } from 'react';
 import debounce from 'lodash.debounce';
 import { Query } from 'react-apollo';
-import { withRouter } from 'react-router-dom';
+import { withRouter, type Location, type RouterHistory, type Match } from 'react-router-dom';
 
 import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { deconstructErrorsToDataShape } from '../../util';
 import { pseudoLabelField } from './FieldSelect';
-import { decodeSearch, encodeSearch } from './url-state';
+import { type AdminMeta, withAdminMeta } from '../../providers/AdminMeta';
+import { encodeSearch, decodeSearch } from './url-state';
+import List from '../../classes/List';
+import type { FilterType } from './Filters/ActiveFilters';
+import type { FieldControllerType } from '@voussoir/fields/Controller';
+
+export type Handlers = {
+  handleFilterRemove: (filter: FilterType) => () => void,
+  handleFilterRemoveAll: () => void,
+  handleFilterAdd: (filter: FilterType) => void,
+  handleFilterUpdate: (filter: FilterType) => void,
+  handleFieldChange: (fields: Array<FieldControllerType>) => void,
+  handlePageChange: () => void,
+  handlePageReset: () => void,
+  handlePageSizeChange: () => void,
+  handleSearchChange: string => void,
+  handleSearchClear: () => void,
+  handleSearchSubmit: () => void,
+  handleSortChange: () => void,
+  handleReset: () => void,
+};
 
 type Props = {
-  list: Object,
-  match: Object,
-  location: Object,
-  history: Object,
+  list: List,
+  match: Match,
+  location: Location,
+  history: RouterHistory,
+  adminMeta: AdminMeta,
+  children: ({
+    handlers: Handlers,
+    itemsErrors: Array<*>,
+    data: *,
+    query: *,
+  }) => React.Node,
 };
 
 type State = {};
@@ -179,6 +208,8 @@ class ListPageDataProvider extends Component<Props, State> {
     this.setSearch(decodeSearch('', this.props));
   };
 
+  itemsCount: number;
+  items: Object;
   render() {
     const { children, list, location } = this.props;
     const { currentPage, pageSize, search, fields, sortBy, filters } = decodeSearch(
@@ -200,7 +231,7 @@ class ListPageDataProvider extends Component<Props, State> {
 
     return (
       <Fragment>
-        <DocTitle>{list.plural}</DocTitle>
+        <DocTitle adminMeta={this.props.adminMeta}>{list.plural}</DocTitle>
         <Nav />
         <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
           {({ data, error, loading, refetch }) => {
@@ -243,6 +274,7 @@ class ListPageDataProvider extends Component<Props, State> {
 
             // Leave the old values intact while new data is loaded
             if (!loading) {
+              // TODO: doing this will break/cause unexpected behaviour with suspense so it should use state or something
               this.items = data && data[list.gqlNames.listQueryName];
               this.itemsCount =
                 (data &&
@@ -288,4 +320,4 @@ class ListPageDataProvider extends Component<Props, State> {
   }
 }
 
-export default withRouter(ListPageDataProvider);
+export default withAdminMeta(withRouter(ListPageDataProvider));

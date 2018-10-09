@@ -1,5 +1,4 @@
-/* global ENABLE_DEV_FEATURES */
-
+// @flow
 import React, { Component, Fragment } from 'react';
 
 import { SettingsIcon, TrashcanIcon } from '@voussoir/icons';
@@ -9,8 +8,11 @@ import { gridSize } from '@voussoir/ui/src/theme';
 
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
+import List from '../../classes/List';
 
-export const ManageToolbar = ({ isVisible, ...props }) => (
+declare var ENABLE_DEV_FEATURES: boolean;
+
+export const ManageToolbar = ({ isVisible, ...props }: { isVisible: boolean }) => (
   <div
     css={{
       marginBottom: gridSize * 2,
@@ -22,7 +24,7 @@ export const ManageToolbar = ({ isVisible, ...props }) => (
 );
 
 type Props = {
-  list: Object,
+  list: List,
   onDeleteMany: (*) => void,
   onUpdateMany: (*) => void,
   onToggleManage: (*) => void,

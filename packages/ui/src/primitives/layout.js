@@ -60,17 +60,17 @@ type FlexGroupProps = {
   tag: string,
 };
 export const FlexGroup = ({
-  align = 'stretch',
+  align,
   children,
-  growIndexes = [],
+  growIndexes,
   isContiguous,
   isInline,
   isVertical,
-  justify = 'flex-start',
-  wrap = false,
-  spacing = gridSize,
+  justify,
+  wrap,
+  spacing,
   stretch,
-  tag: Tag = 'div',
+  tag: Tag,
   ...props
 }: FlexGroupProps) => {
   const gutter = spacing / 2;
@@ -121,6 +121,19 @@ export const FlexGroup = ({
       })}
     </Tag>
   );
+};
+
+FlexGroup.defaultProps = {
+  tag: 'div',
+  spacing: gridSize,
+  wrap: false,
+  justify: 'flex-start',
+  growIndexes: [],
+  align: 'stretch',
+  isContiguous: false,
+  isInline: false,
+  isVertical: false,
+  stretch: false,
 };
 
 // ==============================
