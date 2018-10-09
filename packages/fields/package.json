@@ -29,7 +29,7 @@
     "mongoose": "^5.2.7",
     "p-settle": "^2.1.0",
     "prop-types": "^15.6.1",
-    "react-apollo": "^2.1.11"
+    "react-apollo": "^2.2.4"
   },
   "peerDependencies": {
     "react": "^16.4.2"
