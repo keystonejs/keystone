@@ -10,7 +10,9 @@
   "scripts": {
     "build": "node build/octicons"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@voussoir/babel-preset": "^0.1.0"
+  },
   "peerDependencies": {
     "react": "^16.4.2"
   },

@@ -6,5 +6,7 @@
   "engines": {
     "node": ">=8.4.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@voussoir/babel-preset": "^0.1.0"
+  }
 }
