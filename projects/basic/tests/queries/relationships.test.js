@@ -1,17 +1,14 @@
 const { gen, sampleOne } = require('testcheck');
 
 const { Text, Relationship } = require('@voussoir/fields');
-const { resolveAllKeys, mapKeys } = require('@voussoir/utils');
 
-const { setupServer, graphqlRequest } = require('../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('../util');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 const cuid = require('cuid');
 
-let server;
-
-beforeAll(() => {
-  server = setupServer({
+function setupKeystone() {
+  return setupServer({
     name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('Post', {
@@ -29,48 +26,31 @@ beforeAll(() => {
       });
     },
   });
-
-  server.keystone.connect();
-});
-
-function create(list, item) {
-  return server.keystone.getListByKey(list).adapter.create(item);
 }
-
-afterAll(async () => {
-  // clean the db
-  await resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase()));
-  // then shut down
-  await resolveAllKeys(
-    mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase().then(() => adapter.close()))
-  );
-});
-
-beforeEach(() =>
-  // clean the db
-  resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase())));
 
 describe('Querying with relationship filters', () => {
   describe('to-single', () => {
-    test('with data', async () => {
-      // Create an item to link against
-      const users = await Promise.all([
-        create('User', { name: 'Jess' }),
-        create('User', { name: 'Johanna' }),
-        create('User', { name: 'Sam' }),
-      ]);
+    test(
+      'with data',
+      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+        // Create an item to link against
+        const users = await Promise.all([
+          create('User', { name: 'Jess' }),
+          create('User', { name: 'Johanna' }),
+          create('User', { name: 'Sam' }),
+        ]);
 
-      const posts = await Promise.all([
-        create('Post', { author: users[0].id, title: sampleOne(alphanumGenerator) }),
-        create('Post', { author: users[1].id, title: sampleOne(alphanumGenerator) }),
-        create('Post', { author: users[2].id, title: sampleOne(alphanumGenerator) }),
-        create('Post', { author: users[0].id, title: sampleOne(alphanumGenerator) }),
-      ]);
+        const posts = await Promise.all([
+          create('Post', { author: users[0].id, title: sampleOne(alphanumGenerator) }),
+          create('Post', { author: users[1].id, title: sampleOne(alphanumGenerator) }),
+          create('Post', { author: users[2].id, title: sampleOne(alphanumGenerator) }),
+          create('Post', { author: users[0].id, title: sampleOne(alphanumGenerator) }),
+        ]);
 
-      // Create an item that does the linking
-      const queryAllPosts = await graphqlRequest({
-        server,
-        query: `
+        // Create an item that does the linking
+        const queryAllPosts = await graphqlRequest({
+          server,
+          query: `
           query {
             allPosts(where: {
               author: { name_contains: "J" }
@@ -80,33 +60,36 @@ describe('Querying with relationship filters', () => {
             }
           }
       `,
-      });
+        });
 
-      expect(queryAllPosts.body).not.toHaveProperty('errors');
-      expect(queryAllPosts.body.data).toHaveProperty('allPosts');
-      expect(queryAllPosts.body.data.allPosts).toHaveLength(3);
+        expect(queryAllPosts.body).not.toHaveProperty('errors');
+        expect(queryAllPosts.body.data).toHaveProperty('allPosts');
+        expect(queryAllPosts.body.data.allPosts).toHaveLength(3);
 
-      const allPosts = queryAllPosts.body.data.allPosts;
+        const allPosts = queryAllPosts.body.data.allPosts;
 
-      // We don't know the order, so we have to check individually
-      expect(allPosts).toContainEqual({ id: posts[0].id, title: posts[0].title });
-      expect(allPosts).toContainEqual({ id: posts[1].id, title: posts[1].title });
-      expect(allPosts).toContainEqual({ id: posts[3].id, title: posts[3].title });
-    });
+        // We don't know the order, so we have to check individually
+        expect(allPosts).toContainEqual({ id: posts[0].id, title: posts[0].title });
+        expect(allPosts).toContainEqual({ id: posts[1].id, title: posts[1].title });
+        expect(allPosts).toContainEqual({ id: posts[3].id, title: posts[3].title });
+      })
+    );
 
-    test('without data', async () => {
-      // Create an item to link against
-      const user = await create('User', { name: 'Jess' });
+    test(
+      'without data',
+      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+        // Create an item to link against
+        const user = await create('User', { name: 'Jess' });
 
-      const posts = await Promise.all([
-        create('Post', { author: user.id, title: sampleOne(alphanumGenerator) }),
-        create('Post', { title: sampleOne(alphanumGenerator) }),
-      ]);
+        const posts = await Promise.all([
+          create('Post', { author: user.id, title: sampleOne(alphanumGenerator) }),
+          create('Post', { title: sampleOne(alphanumGenerator) }),
+        ]);
 
-      // Create an item that does the linking
-      const queryAllPosts = await graphqlRequest({
-        server,
-        query: `
+        // Create an item that does the linking
+        const queryAllPosts = await graphqlRequest({
+          server,
+          query: `
           query {
             allPosts(where: {
               author: { name_contains: "J" }
@@ -120,17 +103,18 @@ describe('Querying with relationship filters', () => {
             }
           }
       `,
-      });
+        });
 
-      expect(queryAllPosts.body.data).toMatchObject({
-        allPosts: [{ id: posts[0].id, title: posts[0].title }],
-      });
-      expect(queryAllPosts.body).not.toHaveProperty('errors');
-    });
+        expect(queryAllPosts.body.data).toMatchObject({
+          allPosts: [{ id: posts[0].id, title: posts[0].title }],
+        });
+        expect(queryAllPosts.body).not.toHaveProperty('errors');
+      })
+    );
   });
 
   describe('to-many', async () => {
-    const setup = async () => {
+    const setup = async create => {
       const posts = await Promise.all([
         create('Post', { title: 'Hello' }),
         create('Post', { title: 'Just in time' }),
@@ -147,13 +131,15 @@ describe('Querying with relationship filters', () => {
       return { posts, users };
     };
 
-    test('_every condition', async () => {
-      const { users } = await setup();
+    test(
+      '_every condition',
+      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+        const { users } = await setup(create);
 
-      // EVERY
-      const queryFeedEvery = await graphqlRequest({
-        server,
-        query: `
+        // EVERY
+        const queryFeedEvery = await graphqlRequest({
+          server,
+          query: `
           query {
             allUsers(where: {
               feed_every: { title_contains: "J" }
@@ -167,21 +153,24 @@ describe('Querying with relationship filters', () => {
             }
           }
       `,
-      });
+        });
 
-      expect(queryFeedEvery.body.data).toMatchObject({
-        allUsers: [{ id: users[2].id, feed: [{ title: 'I like Jelly' }] }],
-      });
-      expect(queryFeedEvery.body).not.toHaveProperty('errors');
-    });
+        expect(queryFeedEvery.body.data).toMatchObject({
+          allUsers: [{ id: users[2].id, feed: [{ title: 'I like Jelly' }] }],
+        });
+        expect(queryFeedEvery.body).not.toHaveProperty('errors');
+      })
+    );
 
-    test('_some condition', async () => {
-      const { users } = await setup();
+    test(
+      '_some condition',
+      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+        const { users } = await setup(create);
 
-      // SOME
-      const queryFeedSome = await graphqlRequest({
-        server,
-        query: `
+        // SOME
+        const queryFeedSome = await graphqlRequest({
+          server,
+          query: `
           query {
             allUsers(where: {
               feed_some: { title_contains: "J" }
@@ -193,29 +182,32 @@ describe('Querying with relationship filters', () => {
             }
           }
       `,
-      });
+        });
 
-      expect(queryFeedSome.body).not.toHaveProperty('errors');
-      expect(queryFeedSome.body.data).toHaveProperty('allUsers');
-      expect(queryFeedSome.body.data.allUsers).toHaveLength(2);
+        expect(queryFeedSome.body).not.toHaveProperty('errors');
+        expect(queryFeedSome.body.data).toHaveProperty('allUsers');
+        expect(queryFeedSome.body.data.allUsers).toHaveLength(2);
 
-      const allUsers = queryFeedSome.body.data.allUsers;
+        const allUsers = queryFeedSome.body.data.allUsers;
 
-      // We don't know the order, so we have to check individually
-      expect(allUsers).toContainEqual({
-        id: users[0].id,
-        feed: [{ title: 'Hello' }, { title: 'Just in time' }],
-      });
-      expect(allUsers).toContainEqual({ id: users[2].id, feed: [{ title: 'I like Jelly' }] });
-    });
+        // We don't know the order, so we have to check individually
+        expect(allUsers).toContainEqual({
+          id: users[0].id,
+          feed: [{ title: 'Hello' }, { title: 'Just in time' }],
+        });
+        expect(allUsers).toContainEqual({ id: users[2].id, feed: [{ title: 'I like Jelly' }] });
+      })
+    );
 
-    test('_none condition', async () => {
-      const { users } = await setup();
+    test(
+      '_none condition',
+      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+        const { users } = await setup(create);
 
-      // NONE
-      const queryFeedNone = await graphqlRequest({
-        server,
-        query: `
+        // NONE
+        const queryFeedNone = await graphqlRequest({
+          server,
+          query: `
           query {
             allUsers(where: {
               feed_none: { title_contains: "J" }
@@ -229,17 +221,18 @@ describe('Querying with relationship filters', () => {
             }
           }
       `,
-      });
+        });
 
-      expect(queryFeedNone.body.data).toMatchObject({
-        allUsers: [{ id: users[1].id, feed: [{ title: 'Bye' }] }],
-      });
-      expect(queryFeedNone.body).not.toHaveProperty('errors');
-    });
+        expect(queryFeedNone.body.data).toMatchObject({
+          allUsers: [{ id: users[1].id, feed: [{ title: 'Bye' }] }],
+        });
+        expect(queryFeedNone.body).not.toHaveProperty('errors');
+      })
+    );
   });
 
   describe('to-many with empty list', async () => {
-    const setup = async () => {
+    const setup = async create => {
       const posts = await Promise.all([
         create('Post', { title: 'Hello' }),
         create('Post', { title: 'I like Jelly' }),
@@ -254,13 +247,15 @@ describe('Querying with relationship filters', () => {
       return { posts, users };
     };
 
-    test('_every condition', async () => {
-      const { users } = await setup();
+    test(
+      '_every condition',
+      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+        const { users } = await setup(create);
 
-      // EVERY
-      const queryFeedEvery = await graphqlRequest({
-        server,
-        query: `
+        // EVERY
+        const queryFeedEvery = await graphqlRequest({
+          server,
+          query: `
           query {
             allUsers(where: {
               feed_every: { title_contains: "J" }
@@ -274,21 +269,24 @@ describe('Querying with relationship filters', () => {
             }
           }
       `,
-      });
+        });
 
-      expect(queryFeedEvery.body.data).toMatchObject({
-        allUsers: [{ id: users[2].id, feed: [] }],
-      });
-      expect(queryFeedEvery.body).not.toHaveProperty('errors');
-    });
+        expect(queryFeedEvery.body.data).toMatchObject({
+          allUsers: [{ id: users[2].id, feed: [] }],
+        });
+        expect(queryFeedEvery.body).not.toHaveProperty('errors');
+      })
+    );
 
-    test('_some condition', async () => {
-      const { users } = await setup();
+    test(
+      '_some condition',
+      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+        const { users } = await setup(create);
 
-      // SOME
-      const queryFeedSome = await graphqlRequest({
-        server,
-        query: `
+        // SOME
+        const queryFeedSome = await graphqlRequest({
+          server,
+          query: `
           query {
             allUsers(where: {
               feed_some: { title_contains: "J" }
@@ -302,22 +300,25 @@ describe('Querying with relationship filters', () => {
             }
           }
       `,
-      });
+        });
 
-      expect(queryFeedSome.body.data).toMatchObject({
-        allUsers: [{ id: users[0].id, feed: [{ title: 'Hello' }, { title: 'I like Jelly' }] }],
-      });
-      expect(queryFeedSome.body.data.allUsers).toHaveLength(1);
-      expect(queryFeedSome.body).not.toHaveProperty('errors');
-    });
+        expect(queryFeedSome.body.data).toMatchObject({
+          allUsers: [{ id: users[0].id, feed: [{ title: 'Hello' }, { title: 'I like Jelly' }] }],
+        });
+        expect(queryFeedSome.body.data.allUsers).toHaveLength(1);
+        expect(queryFeedSome.body).not.toHaveProperty('errors');
+      })
+    );
 
-    test('_none condition', async () => {
-      const { users } = await setup();
+    test(
+      '_none condition',
+      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+        const { users } = await setup(create);
 
-      // NONE
-      const queryFeedNone = await graphqlRequest({
-        server,
-        query: `
+        // NONE
+        const queryFeedNone = await graphqlRequest({
+          server,
+          query: `
           query {
             allUsers(where: {
               feed_none: { title_contains: "J" }
@@ -329,17 +330,18 @@ describe('Querying with relationship filters', () => {
             }
           }
       `,
-      });
+        });
 
-      expect(queryFeedNone.body).not.toHaveProperty('errors');
-      expect(queryFeedNone.body.data).toHaveProperty('allUsers');
-      expect(queryFeedNone.body.data.allUsers).toHaveLength(2);
+        expect(queryFeedNone.body).not.toHaveProperty('errors');
+        expect(queryFeedNone.body.data).toHaveProperty('allUsers');
+        expect(queryFeedNone.body.data.allUsers).toHaveLength(2);
 
-      const allUsers = queryFeedNone.body.data.allUsers;
+        const allUsers = queryFeedNone.body.data.allUsers;
 
-      // We don't know the order, so we have to check individually
-      expect(allUsers).toContainEqual({ id: users[1].id, feed: [{ title: 'Hello' }] });
-      expect(allUsers).toContainEqual({ id: users[2].id, feed: [] });
-    });
+        // We don't know the order, so we have to check individually
+        expect(allUsers).toContainEqual({ id: users[1].id, feed: [{ title: 'Hello' }] });
+        expect(allUsers).toContainEqual({ id: users[2].id, feed: [] });
+      })
+    );
   });
 });

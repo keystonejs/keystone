@@ -1,16 +1,22 @@
-const {
-  Mongoose,
-  Types: { ObjectId },
-} = require('mongoose');
+const mongoose = require('mongoose');
 const inflection = require('inflection');
-const { escapeRegExp, pick, getType, mapKeys, mapKeyNames, objMerge } = require('@voussoir/utils');
+const {
+  escapeRegExp,
+  pick,
+  getType,
+  mapKeys,
+  mapKeyNames,
+  objMerge,
+  createLazyDeferred,
+} = require('@voussoir/utils');
 const {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
 } = require('@voussoir/core/adapters');
 const joinBuilder = require('@voussoir/mongo-join-builder');
-const pReflect = require('p-reflect');
+const pSettle = require('p-settle');
+const logger = require('@voussoir/logger')('mongoose');
 
 const simpleTokenizer = require('./tokenizers/simple');
 const relationshipTokenizer = require('./tokenizers/relationship');
@@ -21,10 +27,10 @@ const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 const idQueryConditions = {
   // id is how it looks in the schema
   // _id is how it looks in the MongoDB
-  id: value => ({ _id: { $eq: ObjectId(value) } }),
-  id_not: value => ({ _id: { $ne: ObjectId(value) } }),
-  id_in: value => ({ _id: { $in: value.map(id => ObjectId(id)) } }),
-  id_not_in: value => ({ _id: { $not: { $in: value.map(id => ObjectId(id)) } } }),
+  id: value => ({ _id: { $eq: mongoose.Types.ObjectId(value) } }),
+  id_not: value => ({ _id: { $ne: mongoose.Types.ObjectId(value) } }),
+  id_in: value => ({ _id: { $in: value.map(id => mongoose.Types.ObjectId(id)) } }),
+  id_not_in: value => ({ _id: { $not: { $in: value.map(id => mongoose.Types.ObjectId(id)) } } }),
 };
 
 const modifierConditions = {
@@ -78,18 +84,16 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     this.name = this.name || 'mongoose';
     this.setupTasks = [];
 
-    this.mongoose = new Mongoose();
+    this.mongoose = new mongoose.Mongoose();
     if (debugMongoose()) {
       this.mongoose.set('debug', true);
     }
+    this.mongoose.set('autoCreate', true);
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
   pushSetupTask(task) {
-    // We wrap the promise with pReflect so we're handling rejections immediate
-    // to avoid node throwing "Unhandled rejected promise" warnings (and
-    // potentially killing the process in the future)
-    this.setupTasks.push(pReflect(task));
+    this.setupTasks.push(task);
   }
 
   async connect(to, config = {}) {
@@ -100,7 +104,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
 
     let uri = to;
     if (!uri) {
-      console.warn('No MongoDB connection specified. Falling back to local instance on port 27017');
+      logger.warn('No MongoDB connection specified. Falling back to local instance on port 27017');
       // Default to the localhost instance
       uri = 'mongodb://localhost:27017/';
     }
@@ -118,7 +122,9 @@ class MongooseAdapter extends BaseKeystoneAdapter {
         // overwritten.
         { useNewUrlParser: true, ...adapterConnectOptions, dbName }
       );
-      const taskResults = await Promise.all(this.setupTasks);
+      const taskResults = await pSettle(
+        this.setupTasks.map(func => func(this.mongoose.connection))
+      );
       const errors = taskResults.filter(({ isRejected }) => isRejected);
 
       if (errors.length) {
@@ -152,16 +158,27 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     });
   }
 
-  async dropDatabase() {
-    // This will completely drop the backing database. Use wisely.
-    await this.mongoose.connection.dropDatabase();
-    // Mongoose doesn't know we called dropDatabase on Mongo directly, so we
-    // have to recreate the indexes
-    await Promise.all(
-      this.mongoose.modelNames().map(modelName => this.mongoose.model(modelName).ensureIndexes())
-    );
+  // This will completely drop the backing database. Use wisely.
+  dropDatabase() {
+    return this.mongoose.connection.dropDatabase();
   }
 }
+
+const DEFAULT_MODEL_SCHEMA_OPTIONS = {
+  // Later, we run `model.syncIndexes()` to ensure the indexes specified in the
+  // mongoose config match what's in the database.
+  // `model.syncIndexes()` will fail when the collection is new (ie; hasn't had
+  // a write yet / doesn't exist in mongo).
+  // By setting `autoCreate` here, mongoose will ensure the collection exists,
+  // thus enabling `model.syncIndexes()` to succeed.
+  autoCreate: true,
+
+  // Because we're calling `model.syncIndexes()`, we don't want Mongoose to try
+  // calling `model.ensureIndexes()` under the hood too soon (it can cause race
+  // conditions with trying to access the database before it's properly setup),
+  // so we turn that off now.
+  autoIndex: false,
+};
 
 class MongooseListAdapter extends BaseListAdapter {
   constructor(key, parentAdapter, config) {
@@ -173,7 +190,10 @@ class MongooseListAdapter extends BaseListAdapter {
     this.pushSetupTask = parentAdapter.pushSetupTask.bind(parentAdapter);
     this.mongoose = parentAdapter.mongoose;
     this.configureMongooseSchema = configureMongooseSchema;
-    this.schema = new parentAdapter.mongoose.Schema({}, mongooseSchemaOptions);
+    this.schema = new parentAdapter.mongoose.Schema(
+      {},
+      { ...DEFAULT_MODEL_SCHEMA_OPTIONS, ...mongooseSchemaOptions }
+    );
 
     // Need to call prepareModel() once all fields have registered.
     this.model = null;
@@ -225,12 +245,50 @@ class MongooseListAdapter extends BaseListAdapter {
     if (this.configureMongooseSchema) {
       this.configureMongooseSchema(this.schema, { mongoose: this.mongoose });
     }
-    this.model = this.mongoose.model(this.key, this.schema);
 
-    // Ensure we wait for any indexes to be built
-    const setupIndexes = this.model.init();
+    // 4th param is 'skipInit' which avoids calling `model.init()`.
+    // We call model.init() later, after we have a connection up and running to
+    // avoid issues with Mongoose's lazy queue and setting up the indexes.
+    this.model = this.mongoose.model(this.key, this.schema, null, true);
+
+    const deferredIndex = createLazyDeferred();
+
+    // Ensure we wait for any new indexes to be built
+    const setupIndexes = () => {
+      return this.model
+        .init()
+        .then(() => {
+          // Then ensure the indexes are all correct
+          // The indexes can become out of sync if the database was modified
+          // manually, or if the code has been updated. In both cases, the
+          // _existence_ of an index (not the configuration) will cause Mongoose
+          // to think everything is fine.
+          // So, here we must manually force mongoose to check the _configuration_
+          // of the existing indexes before moving on.
+          // NOTE: Why bother with `model.init()` first? Because Mongoose will
+          // always try to create new indexes on model creation in the background,
+          // so we have to wait for that async process to finish before trying to
+          // sync up indexes.
+          // NOTE: There's a potential race condition here when two application
+          // instances both try to recreate the indexes by first dropping then
+          // creating. See
+          // http://thecodebarbarian.com/whats-new-in-mongoose-5-2-syncindexes
+          // NOTE: If an index has changed and needs recreating, this can have a
+          // performance impact when dealing with large datasets!
+          return this.model.syncIndexes();
+        })
+        .then(() => {
+          deferredIndex.resolve();
+        })
+        .catch(error => {
+          // Ensure we capture any issues with creating indexes
+          logger.error(error);
+          deferredIndex.reject(error);
+          throw error;
+        });
+    };
     this.pushSetupTask(setupIndexes);
-    return setupIndexes.then(() => this.model);
+    return deferredIndex.promise.then(() => this.model);
   }
 
   create(data) {

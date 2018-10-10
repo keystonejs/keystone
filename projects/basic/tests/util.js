@@ -3,6 +3,8 @@ const extractStack = require('extract-stack');
 const { Keystone } = require('@voussoir/core');
 const { WebServer } = require('@voussoir/server');
 const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
+const MongoDBMemoryServer = require('mongodb-memory-server').default;
+const { resolveAllKeys, mapKeys } = require('@voussoir/utils');
 
 function setupServer({ name, createLists = () => {} }) {
   const keystone = new Keystone({
@@ -53,7 +55,61 @@ function graphqlRequest({ server, query }) {
     });
 }
 
+async function withMongoMemoryServer(adapters, callback) {
+  const mongoServer = new MongoDBMemoryServer();
+  const mongoUri = await mongoServer.getConnectionString();
+  const dbName = await mongoServer.getDbName();
+
+  const cleanup = () =>
+    resolveAllKeys(mapKeys(adapters, adapter => adapter.close())).then(() => mongoServer.stop());
+
+  return Promise.resolve(callback({ mongoUri, dbName }))
+    .then(result => cleanup().then(() => result))
+    .catch(error =>
+      cleanup().then(() => {
+        throw error;
+      })
+    );
+}
+
+function getCreate(server) {
+  return (list, item) => server.keystone.getListByKey(list).adapter.create(item);
+}
+
+function getFindById(server) {
+  return (list, item) => server.keystone.getListByKey(list).adapter.findById(item);
+}
+
+function getFindOne(server) {
+  return (list, item) => server.keystone.getListByKey(list).adapter.findOne(item);
+}
+
+function getUpdate(server) {
+  return (list, id, data) =>
+    server.keystone.getListByKey(list).adapter.update(id, data, { new: true });
+}
+
+function keystoneMongoTest(setupKeystoneFn, testFn) {
+  return () => {
+    const server = setupKeystoneFn();
+    return withMongoMemoryServer(server.keystone.adapters, async ({ mongoUri, dbName }) => {
+      await server.keystone.connect(
+        mongoUri,
+        { dbName }
+      );
+      return testFn({
+        server,
+        create: getCreate(server),
+        findById: getFindById(server),
+        findOne: getFindOne(server),
+        update: getUpdate(server),
+      });
+    });
+  };
+}
+
 module.exports = {
   setupServer,
   graphqlRequest,
+  keystoneMongoTest,
 };

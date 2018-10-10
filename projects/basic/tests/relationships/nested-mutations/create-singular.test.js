@@ -1,14 +1,11 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@voussoir/fields');
-const { resolveAllKeys, mapKeys } = require('@voussoir/utils');
 const cuid = require('cuid');
 
-const { setupServer, graphqlRequest } = require('../../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('../../util');
 
-let server;
-
-beforeAll(() => {
-  server = setupServer({
+function setupKeystone() {
+  return setupServer({
     name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('Group', {
@@ -57,43 +54,18 @@ beforeAll(() => {
       });
     },
   });
-
-  server.keystone.connect();
-});
-
-function create(list, item) {
-  return server.keystone.getListByKey(list).adapter.create(item);
 }
-
-function findOne(list, item) {
-  return server.keystone.getListByKey(list).adapter.findOne(item);
-}
-
-function findById(list, item) {
-  return server.keystone.getListByKey(list).adapter.findById(item);
-}
-
-afterAll(async () => {
-  // clean the db
-  await resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase()));
-  // then shut down
-  await resolveAllKeys(
-    mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase().then(() => adapter.close()))
-  );
-});
-
-beforeEach(() =>
-  // clean the db
-  resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase())));
 
 describe('no access control', () => {
-  test('create nested from within create mutation', async () => {
-    const groupName = sampleOne(gen.alphaNumString.notEmpty());
+  test(
+    'create nested from within create mutation',
+    keystoneMongoTest(setupKeystone, async ({ server }) => {
+      const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
-    // Create an item that does the nested create
-    const createEvent = await graphqlRequest({
-      server,
-      query: `
+      // Create an item that does the nested create
+      const createEvent = await graphqlRequest({
+        server,
+        query: `
         mutation {
           createEvent(data: {
             title: "A thing",
@@ -107,26 +79,26 @@ describe('no access control', () => {
           }
         }
     `,
-    });
+      });
 
-    expect(createEvent.body).not.toHaveProperty('errors');
-    expect(createEvent.body.data).toMatchObject({
-      createEvent: {
-        id: expect.any(String),
-        group: {
+      expect(createEvent.body).not.toHaveProperty('errors');
+      expect(createEvent.body.data).toMatchObject({
+        createEvent: {
           id: expect.any(String),
-          name: groupName,
+          group: {
+            id: expect.any(String),
+            name: groupName,
+          },
         },
-      },
-    });
+      });
 
-    const {
-      body: {
-        data: { Group },
-      },
-    } = await graphqlRequest({
-      server,
-      query: `
+      const {
+        body: {
+          data: { Group },
+        },
+      } = await graphqlRequest({
+        server,
+        query: `
         query {
           Group(where: { id: "${createEvent.body.data.createEvent.group.id}" }) {
             id
@@ -134,24 +106,27 @@ describe('no access control', () => {
           }
         }
     `,
-    });
+      });
 
-    expect(Group).toMatchObject({
-      id: createEvent.body.data.createEvent.group.id,
-      name: groupName,
-    });
-  });
+      expect(Group).toMatchObject({
+        id: createEvent.body.data.createEvent.group.id,
+        name: groupName,
+      });
+    })
+  );
 
-  test('create nested from within update mutation', async () => {
-    const groupName = sampleOne(gen.alphaNumString.notEmpty());
+  test(
+    'create nested from within update mutation',
+    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
-    // Create an item to update
-    const createEvent = await create('Event', { title: 'A thing' });
+      // Create an item to update
+      const createEvent = await create('Event', { title: 'A thing' });
 
-    // Update an item that does the nested create
-    const updateEvent = await graphqlRequest({
-      server,
-      query: `
+      // Update an item that does the nested create
+      const updateEvent = await graphqlRequest({
+        server,
+        query: `
         mutation {
           updateEvent(
             id: "${createEvent.id}"
@@ -168,26 +143,26 @@ describe('no access control', () => {
           }
         }
     `,
-    });
+      });
 
-    expect(updateEvent.body).not.toHaveProperty('errors');
-    expect(updateEvent.body.data).toMatchObject({
-      updateEvent: {
-        id: expect.any(String),
-        group: {
+      expect(updateEvent.body).not.toHaveProperty('errors');
+      expect(updateEvent.body.data).toMatchObject({
+        updateEvent: {
           id: expect.any(String),
-          name: groupName,
+          group: {
+            id: expect.any(String),
+            name: groupName,
+          },
         },
-      },
-    });
+      });
 
-    const {
-      body: {
-        data: { Group },
-      },
-    } = await graphqlRequest({
-      server,
-      query: `
+      const {
+        body: {
+          data: { Group },
+        },
+      } = await graphqlRequest({
+        server,
+        query: `
         query {
           Group(where: { id: "${updateEvent.body.data.updateEvent.group.id}" }) {
             id
@@ -195,24 +170,27 @@ describe('no access control', () => {
           }
         }
     `,
-    });
+      });
 
-    expect(Group).toMatchObject({
-      id: updateEvent.body.data.updateEvent.group.id,
-      name: groupName,
-    });
-  });
+      expect(Group).toMatchObject({
+        id: updateEvent.body.data.updateEvent.group.id,
+        name: groupName,
+      });
+    })
+  );
 });
 
 describe('with access control', () => {
   describe('read: false on related list', () => {
-    test('does not throw error when creating nested within create mutation', async () => {
-      const groupName = sampleOne(gen.alphaNumString.notEmpty());
+    test(
+      'does not throw error when creating nested within create mutation',
+      keystoneMongoTest(setupKeystone, async ({ server, findOne, findById }) => {
+        const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
-      // Create an item that does the nested create
-      const createEventToGroupNoRead = await graphqlRequest({
-        server,
-        query: `
+        // Create an item that does the nested create
+        const createEventToGroupNoRead = await graphqlRequest({
+          server,
+          query: `
           mutation {
             createEventToGroupNoRead(data: {
               title: "A thing",
@@ -222,35 +200,38 @@ describe('with access control', () => {
             }
           }
       `,
-      });
+        });
 
-      expect(createEventToGroupNoRead.body).not.toHaveProperty('errors');
-      expect(createEventToGroupNoRead.body.data).toMatchObject({
-        createEventToGroupNoRead: { id: expect.any(String) },
-      });
+        expect(createEventToGroupNoRead.body).not.toHaveProperty('errors');
+        expect(createEventToGroupNoRead.body.data).toMatchObject({
+          createEventToGroupNoRead: { id: expect.any(String) },
+        });
 
-      // See that it actually stored the group ID on the Event record
-      const event = await findOne('EventToGroupNoRead', { title: 'A thing' });
-      expect(event).toBeTruthy();
-      expect(event.group).toBeTruthy();
+        // See that it actually stored the group ID on the Event record
+        const event = await findOne('EventToGroupNoRead', { title: 'A thing' });
+        expect(event).toBeTruthy();
+        expect(event.group).toBeTruthy();
 
-      const group = await findById('GroupNoRead', event.group);
-      expect(group).toBeTruthy();
-      expect(group.name).toBe(groupName);
-    });
+        const group = await findById('GroupNoRead', event.group);
+        expect(group).toBeTruthy();
+        expect(group.name).toBe(groupName);
+      })
+    );
 
-    test('does not throw error when creating nested within update mutation', async () => {
-      const groupName = sampleOne(gen.alphaNumString.notEmpty());
+    test(
+      'does not throw error when creating nested within update mutation',
+      keystoneMongoTest(setupKeystone, async ({ server, create, findOne, findById }) => {
+        const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
-      // Create an item to update
-      const createEventToGroupNoRead = await create('EventToGroupNoRead', {
-        title: 'A thing',
-      });
+        // Create an item to update
+        const createEventToGroupNoRead = await create('EventToGroupNoRead', {
+          title: 'A thing',
+        });
 
-      // Update an item that does the nested create
-      const updateEventToGroupNoRead = await graphqlRequest({
-        server,
-        query: `
+        // Update an item that does the nested create
+        const updateEventToGroupNoRead = await graphqlRequest({
+          server,
+          query: `
           mutation {
             updateEventToGroupNoRead(
               id: "${createEventToGroupNoRead.id}"
@@ -263,34 +244,37 @@ describe('with access control', () => {
             }
           }
       `,
-      });
+        });
 
-      expect(updateEventToGroupNoRead.body).not.toHaveProperty('errors');
-      expect(updateEventToGroupNoRead.body.data).toMatchObject({
-        updateEventToGroupNoRead: { id: expect.any(String) },
-      });
+        expect(updateEventToGroupNoRead.body).not.toHaveProperty('errors');
+        expect(updateEventToGroupNoRead.body.data).toMatchObject({
+          updateEventToGroupNoRead: { id: expect.any(String) },
+        });
 
-      // See that it actually stored the group ID on the Event record
-      const event = await findOne('EventToGroupNoRead', { title: 'A thing' });
-      expect(event).toBeTruthy();
-      expect(event.group).toBeTruthy();
+        // See that it actually stored the group ID on the Event record
+        const event = await findOne('EventToGroupNoRead', { title: 'A thing' });
+        expect(event).toBeTruthy();
+        expect(event.group).toBeTruthy();
 
-      const group = await findById('GroupNoRead', event.group);
-      expect(group).toBeTruthy();
-      expect(group.name).toBe(groupName);
-    });
+        const group = await findById('GroupNoRead', event.group);
+        expect(group).toBeTruthy();
+        expect(group.name).toBe(groupName);
+      })
+    );
   });
 
   describe('create: false on related list', () => {
-    test('throws error when creating nested within create mutation', async () => {
-      const alphaNumGenerator = gen.alphaNumString.notEmpty();
-      const eventName = sampleOne(alphaNumGenerator);
-      const groupName = sampleOne(alphaNumGenerator);
+    test(
+      'throws error when creating nested within create mutation',
+      keystoneMongoTest(setupKeystone, async ({ server }) => {
+        const alphaNumGenerator = gen.alphaNumString.notEmpty();
+        const eventName = sampleOne(alphaNumGenerator);
+        const groupName = sampleOne(alphaNumGenerator);
 
-      // Create an item that does the nested create
-      const createEventToGroupNoCreate = await graphqlRequest({
-        server,
-        query: `
+        // Create an item that does the nested create
+        const createEventToGroupNoCreate = await graphqlRequest({
+          server,
+          query: `
           mutation {
             createEventToGroupNoCreate(data: {
               title: "${eventName}",
@@ -300,34 +284,34 @@ describe('with access control', () => {
             }
           }
       `,
-      });
+        });
 
-      // Assert it throws an access denied error
-      expect(createEventToGroupNoCreate.body).toHaveProperty(
-        'data.createEventToGroupNoCreate',
-        null
-      );
-      expect(createEventToGroupNoCreate.body.errors).toMatchObject([
-        {
-          name: 'NestedError',
-          data: {
-            errors: [
-              {
-                path: ['createEventToGroupNoCreate', 'group', 'create'],
-              },
-            ],
+        // Assert it throws an access denied error
+        expect(createEventToGroupNoCreate.body).toHaveProperty(
+          'data.createEventToGroupNoCreate',
+          null
+        );
+        expect(createEventToGroupNoCreate.body.errors).toMatchObject([
+          {
+            name: 'NestedError',
+            data: {
+              errors: [
+                {
+                  path: ['createEventToGroupNoCreate', 'group', 'create'],
+                },
+              ],
+            },
           },
-        },
-      ]);
+        ]);
 
-      // Confirm it didn't insert either of the records anyway
-      const {
-        body: {
-          data: { allGroupNoCreates },
-        },
-      } = await graphqlRequest({
-        server,
-        query: `
+        // Confirm it didn't insert either of the records anyway
+        const {
+          body: {
+            data: { allGroupNoCreates },
+          },
+        } = await graphqlRequest({
+          server,
+          query: `
           query {
             allGroupNoCreates(where: { name: "${groupName}" }) {
               id
@@ -335,18 +319,18 @@ describe('with access control', () => {
             }
           }
       `,
-      });
+        });
 
-      expect(allGroupNoCreates).toMatchObject([]);
+        expect(allGroupNoCreates).toMatchObject([]);
 
-      // Confirm it didn't insert either of the records anyway
-      const {
-        body: {
-          data: { allEventToGroupNoCreates },
-        },
-      } = await graphqlRequest({
-        server,
-        query: `
+        // Confirm it didn't insert either of the records anyway
+        const {
+          body: {
+            data: { allEventToGroupNoCreates },
+          },
+        } = await graphqlRequest({
+          server,
+          query: `
           query {
             allEventToGroupNoCreates(where: { title: "${eventName}" }) {
               id
@@ -354,23 +338,26 @@ describe('with access control', () => {
             }
           }
       `,
-      });
+        });
 
-      expect(allEventToGroupNoCreates).toMatchObject([]);
-    });
+        expect(allEventToGroupNoCreates).toMatchObject([]);
+      })
+    );
 
-    test('throws error when creating nested within update mutation', async () => {
-      const groupName = sampleOne(gen.alphaNumString.notEmpty());
+    test(
+      'throws error when creating nested within update mutation',
+      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+        const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
-      // Create an item to update
-      const createEventToGroupNoCreate = await create('EventToGroupNoCreate', {
-        title: 'A thing',
-      });
+        // Create an item to update
+        const createEventToGroupNoCreate = await create('EventToGroupNoCreate', {
+          title: 'A thing',
+        });
 
-      // Update an item that does the nested create
-      const updateEventToGroupNoCreate = await graphqlRequest({
-        server,
-        query: `
+        // Update an item that does the nested create
+        const updateEventToGroupNoCreate = await graphqlRequest({
+          server,
+          query: `
           mutation {
             updateEventToGroupNoCreate(
               id: "${createEventToGroupNoCreate.id}"
@@ -383,34 +370,34 @@ describe('with access control', () => {
             }
           }
       `,
-      });
+        });
 
-      // Assert it throws an access denied error
-      expect(updateEventToGroupNoCreate.body).toHaveProperty(
-        'data.updateEventToGroupNoCreate',
-        null
-      );
-      expect(updateEventToGroupNoCreate.body.errors).toMatchObject([
-        {
-          name: 'NestedError',
-          data: {
-            errors: [
-              {
-                path: ['updateEventToGroupNoCreate', 'group', 'create'],
-              },
-            ],
+        // Assert it throws an access denied error
+        expect(updateEventToGroupNoCreate.body).toHaveProperty(
+          'data.updateEventToGroupNoCreate',
+          null
+        );
+        expect(updateEventToGroupNoCreate.body.errors).toMatchObject([
+          {
+            name: 'NestedError',
+            data: {
+              errors: [
+                {
+                  path: ['updateEventToGroupNoCreate', 'group', 'create'],
+                },
+              ],
+            },
           },
-        },
-      ]);
+        ]);
 
-      // Confirm it didn't insert the record anyway
-      const {
-        body: {
-          data: { allGroupNoCreates },
-        },
-      } = await graphqlRequest({
-        server,
-        query: `
+        // Confirm it didn't insert the record anyway
+        const {
+          body: {
+            data: { allGroupNoCreates },
+          },
+        } = await graphqlRequest({
+          server,
+          query: `
           query {
             allGroupNoCreates(where: { name: "${groupName}" }) {
               id
@@ -418,9 +405,10 @@ describe('with access control', () => {
             }
           }
       `,
-      });
+        });
 
-      expect(allGroupNoCreates).toMatchObject([]);
-    });
+        expect(allGroupNoCreates).toMatchObject([]);
+      })
+    );
   });
 });
