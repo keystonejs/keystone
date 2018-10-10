@@ -13,6 +13,7 @@ const Wrapper = styled.nav({
   minHeight: '100vh',
   width: '25vh',
   minWidth: '220px',
+  maxWidth: '260px',
 });
 
 export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => ({
