@@ -3,14 +3,15 @@
 import React, { type Node } from 'react';
 import styled from 'react-emotion';
 
-import { Container } from '../layout';
 import { colors, gridSize } from '../../theme';
 import { FlexProvider, ItemElement, NAV_GUTTER } from './common';
 
 const Wrapper = styled.nav({
+  display: 'flex',
+  flexFlow: 'colunm nowrap',
+  minHeight: '100vh',
   backgroundColor: colors.primary,
   color: 'white',
-  minHeight: '100vh',
   width: '25vh',
   minWidth: '220px',
   maxWidth: '260px',
@@ -21,7 +22,6 @@ export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => ({
   border: 0,
   borderRadius: '0.25em',
   color: 'white',
-  marginRight: -1,
   paddingLeft: NAV_GUTTER,
   paddingRight: NAV_GUTTER,
   paddingBottom: gridSize * 1.5,
@@ -38,8 +38,6 @@ type Props = { children: Node };
 
 export const PrimaryNav = ({ children }: Props) => (
   <Wrapper>
-    <Container>
-      <FlexProvider>{children}</FlexProvider>
-    </Container>
+    <FlexProvider>{children}</FlexProvider>
   </Wrapper>
 );

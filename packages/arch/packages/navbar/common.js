@@ -14,6 +14,7 @@ export const ItemElement = ({ isSelected, ...props }: ItemProps) => {
 };
 
 export const FlexProvider = styled.div({
+  width: '100%',
   alignItems: 'center',
   display: 'flex',
   flexWrap: 'nowrap',

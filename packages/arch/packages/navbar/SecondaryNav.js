@@ -37,7 +37,7 @@ type Props = { children: Node };
 export const SecondaryNav = ({ children }: Props) => (
   <Wrapper>
     <Container>
-      <SecondaryFlexProvider>{children}</SecondaryFlexProvider>
+      <SecondaryFlexProvider isSecondary>{children}</SecondaryFlexProvider>
     </Container>
   </Wrapper>
 );

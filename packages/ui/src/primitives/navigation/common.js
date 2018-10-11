@@ -13,15 +13,15 @@ export const ItemElement = ({ isSelected, ...props }: ItemProps) => {
   return <button type="button" {...props} />;
 };
 
-export const FlexProvider = styled.div({
+export const FlexProvider = styled.div(({ isSecondary }) => ({
+  width: '100%',
   display: 'flex',
   flexFlow: 'column nowrap',
   justifyContent: 'flex-start',
   alignItems: 'flex-start',
-  marginLeft: -NAV_GUTTER,
-  marginRight: -NAV_GUTTER,
-  minHeight: '100vh',
-});
+  minHeight: isSecondary ? 'auto' : '100vh',
+  height:' 100%',
+}));
 export const NavGroupIcons = styled.div({
   display: 'flex',
   flexFlow: 'row nowrap',
