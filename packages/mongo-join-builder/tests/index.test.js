@@ -154,18 +154,14 @@ describe('Test main export', () => {
         $match: {
           $and: [
             {
-              $and: [
-                {
-                  name: {
-                    $eq: 'foobar',
-                  },
-                },
-                {
-                  age: {
-                    $eq: 23,
-                  },
-                },
-              ],
+              name: {
+                $eq: 'foobar',
+              },
+            },
+            {
+              age: {
+                $eq: 23,
+              },
             },
           ],
         },
@@ -249,16 +245,7 @@ describe('Test main export', () => {
                 labels_some_labels_some: { $gt: [{ $size: '$labels_some_labels' }, 0] },
               },
             },
-            {
-              $match: {
-                $and: [
-                  {
-                    $exists: true,
-                    $ne: [],
-                  },
-                ],
-              },
-            },
+            { $match: { $exists: true, $ne: [] } },
             {
               $addFields: {
                 id: '$_id',
@@ -290,16 +277,7 @@ describe('Test main export', () => {
           posts_every_posts_some: { $gt: [{ $size: '$posts_every_posts' }, 0] },
         },
       },
-      {
-        $match: {
-          $and: [
-            {
-              $exists: true,
-              $ne: [],
-            },
-          ],
-        },
-      },
+      { $match: { $exists: true, $ne: [] } },
       {
         $addFields: {
           id: '$_id',

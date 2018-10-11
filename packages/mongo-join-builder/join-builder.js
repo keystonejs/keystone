@@ -126,13 +126,7 @@ function constructJoin(query, relationshipMeta, path = []) {
       }
     }
 
-    if (combinedPipeline.length) {
-      joinQuery.push({
-        $match: {
-          $and: combinedPipeline,
-        },
-      });
-    }
+    joinQuery.push(matchList(combinedPipeline));
   }
 
   const mutators = [];
@@ -179,15 +173,9 @@ function constructJoin(query, relationshipMeta, path = []) {
         },
       });
 
-      if (meta.match && meta.match.length) {
-        // This part is our client filtering expression. This determins if the
-        // parent item is included in the final list
-        joinQuery.push({
-          $match: {
-            $and: meta.match,
-          },
-        });
-      }
+      // This part is our client filtering expression. This determins if the
+      // parent item is included in the final list
+      joinQuery.push(matchList(meta.match));
 
       // NOTE: Order is important. We want depth first, so we push the related
       // mutators first.
@@ -205,7 +193,14 @@ function constructJoin(query, relationshipMeta, path = []) {
     joinQuery.push(...postJoinPipeline);
   }
 
-  return { joinQuery, mutators };
+  return { joinQuery: joinQuery.filter(i => i), mutators };
 }
+
+const matchList = terms =>
+  terms && terms.length
+    ? terms.length === 1
+      ? { $match: terms[0] }
+      : { $match: { $and: terms } }
+    : undefined;
 
 module.exports = joinBuilder;
