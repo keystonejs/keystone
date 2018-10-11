@@ -182,7 +182,6 @@ circleci local execute --job simple_tests
 Where `simple_tests` can be replaced with any job listed in
 [`.circleci/config.yml`](./.circleci/config.yml) under the `jobs:` section.
 
-
 ## Arch - Keystone UI Kit
 
 Resources, tooling, and design guidelines by KeystoneJS using [GastbyJS](https://www.gatsbyjs.org/)

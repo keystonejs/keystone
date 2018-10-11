@@ -20,7 +20,7 @@ export const FlexProvider = styled.div(({ isSecondary }) => ({
   justifyContent: 'flex-start',
   alignItems: 'flex-start',
   minHeight: isSecondary ? 'auto' : '100vh',
-  height:' 100%',
+  height: ' 100%',
 }));
 export const NavGroupIcons = styled.div({
   display: 'flex',
