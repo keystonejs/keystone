@@ -169,14 +169,7 @@ function constructJoin(query, relationshipMeta, path = []) {
 
       const noneCondition = { $eq: [{ $size: `$${uniqueField}` }, 0] };
 
-      const someCondition = meta.many
-        ? {
-            $and: [
-              { $gt: [{ $size: `$${uniqueField}` }, 0] },
-              { $lte: [{ $size: `$${uniqueField}` }, { $size: `$${meta.field}` }] },
-            ],
-          }
-        : everyCondition;
+      const someCondition = { $gt: [{ $size: `$${uniqueField}` }, 0] };
 
       joinQuery.push({
         $addFields: {

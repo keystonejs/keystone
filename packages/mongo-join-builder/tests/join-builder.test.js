@@ -89,7 +89,7 @@ describe('join builder', () => {
       {
         $addFields: {
           abc123_author_every: { $eq: [{ $size: '$abc123_author' }, 1] },
-          abc123_author_some: { $eq: [{ $size: '$abc123_author' }, 1] },
+          abc123_author_some: { $gt: [{ $size: '$abc123_author' }, 0] },
           abc123_author_none: { $eq: [{ $size: '$abc123_author' }, 0] },
         },
       },
@@ -162,12 +162,7 @@ describe('join builder', () => {
         $addFields: {
           abc123_posts_every: { $eq: [{ $size: '$abc123_posts' }, { $size: '$posts' }] },
           abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
-          abc123_posts_some: {
-            $and: [
-              { $gt: [{ $size: '$abc123_posts' }, 0] },
-              { $lte: [{ $size: '$abc123_posts' }, { $size: '$posts' }] },
-            ],
-          },
+          abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
       },
       {
@@ -244,12 +239,7 @@ describe('join builder', () => {
         $addFields: {
           abc123_posts_every: { $eq: [{ $size: '$abc123_posts' }, { $size: '$posts' }] },
           abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
-          abc123_posts_some: {
-            $and: [
-              { $gt: [{ $size: '$abc123_posts' }, 0] },
-              { $lte: [{ $size: '$abc123_posts' }, { $size: '$posts' }] },
-            ],
-          },
+          abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
       },
       {
@@ -389,12 +379,7 @@ describe('join builder', () => {
                         $eq: [{ $size: '$xyz890_posts' }, { $size: '$posts' }],
                       },
                       xyz890_posts_none: { $eq: [{ $size: '$xyz890_posts' }, 0] },
-                      xyz890_posts_some: {
-                        $and: [
-                          { $gt: [{ $size: '$xyz890_posts' }, 0] },
-                          { $lte: [{ $size: '$xyz890_posts' }, { $size: '$posts' }] },
-                        ],
-                      },
+                      xyz890_posts_some: { $gt: [{ $size: '$xyz890_posts' }, 0] },
                     },
                   },
                   {
@@ -414,12 +399,7 @@ describe('join builder', () => {
               $addFields: {
                 def456_tags_every: { $eq: [{ $size: '$def456_tags' }, { $size: '$tags' }] },
                 def456_tags_none: { $eq: [{ $size: '$def456_tags' }, 0] },
-                def456_tags_some: {
-                  $and: [
-                    { $gt: [{ $size: '$def456_tags' }, 0] },
-                    { $lte: [{ $size: '$def456_tags' }, { $size: '$tags' }] },
-                  ],
-                },
+                def456_tags_some: { $gt: [{ $size: '$def456_tags' }, 0] },
               },
             },
             {
@@ -439,12 +419,7 @@ describe('join builder', () => {
         $addFields: {
           abc123_posts_every: { $eq: [{ $size: '$abc123_posts' }, { $size: '$posts' }] },
           abc123_posts_none: { $eq: [{ $size: '$abc123_posts' }, 0] },
-          abc123_posts_some: {
-            $and: [
-              { $gt: [{ $size: '$abc123_posts' }, 0] },
-              { $lte: [{ $size: '$abc123_posts' }, { $size: '$posts' }] },
-            ],
-          },
+          abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
       },
       {
@@ -565,12 +540,7 @@ describe('join builder', () => {
               $addFields: {
                 quux987_labels_every: { $eq: [{ $size: '$quux987_labels' }, { $size: '$labels' }] },
                 quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
-                quux987_labels_some: {
-                  $and: [
-                    { $gt: [{ $size: '$quux987_labels' }, 0] },
-                    { $lte: [{ $size: '$quux987_labels' }, { $size: '$labels' }] },
-                  ],
-                },
+                quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
               },
             },
             {
@@ -590,12 +560,7 @@ describe('join builder', () => {
         $addFields: {
           zip567_posts_every: { $eq: [{ $size: '$zip567_posts' }, { $size: '$posts' }] },
           zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
-          zip567_posts_some: {
-            $and: [
-              { $gt: [{ $size: '$zip567_posts' }, 0] },
-              { $lte: [{ $size: '$zip567_posts' }, { $size: '$posts' }] },
-            ],
-          },
+          zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
         },
       },
       {
