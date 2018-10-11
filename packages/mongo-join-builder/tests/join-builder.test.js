@@ -425,11 +425,7 @@ describe('join builder', () => {
         zip567: {
           from: 'posts-collection',
           field: 'posts',
-          pipeline: [
-            {
-              $and: [{ title: { $eq: 'hello' } }],
-            },
-          ],
+          pipeline: [{ title: { $eq: 'hello' } }],
           match: [{ zip567_posts_every: { $eq: true } }],
           postQueryMutation: jest.fn(),
           many: true,
@@ -466,9 +462,7 @@ describe('join builder', () => {
               $match: {
                 $and: [
                   { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } },
-                  {
-                    $and: [{ title: { $eq: 'hello' } }],
-                  },
+                  { title: { $eq: 'hello' } },
                 ],
               },
             },
