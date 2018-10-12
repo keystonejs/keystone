@@ -56,11 +56,13 @@ describe('mongo memory servier is alive', () => {
 describe('Testing against real data', () => {
   test('performs simple queries', async () => {
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
-          [key]: { $eq: query[key] },
-        },
-      ]),
+      simple: jest.fn((query, key) => ({
+        pipeline: [
+          {
+            [key]: { $eq: query[key] },
+          },
+        ],
+      })),
       relationship: jest.fn((query, key) => {
         const [table] = key.split('_');
         return {
@@ -128,11 +130,13 @@ describe('Testing against real data', () => {
 
   test('performs AND queries', async () => {
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
-          [key]: { $eq: query[key] },
-        },
-      ]),
+      simple: jest.fn((query, key) => ({
+        pipeline: [
+          {
+            [key]: { $eq: query[key] },
+          },
+        ],
+      })),
       relationship: jest.fn((query, key) => {
         const [table] = key.split('_');
         return {
@@ -199,11 +203,13 @@ describe('Testing against real data', () => {
 
   test('performs to-one relationship queries', async () => {
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
-          [key]: { $eq: query[key] },
-        },
-      ]),
+      simple: jest.fn((query, key) => ({
+        pipeline: [
+          {
+            [key]: { $eq: query[key] },
+          },
+        ],
+      })),
       relationship: jest.fn((query, key, path, uid) => {
         const tableMap = {
           author: 'users',
@@ -286,11 +292,13 @@ describe('Testing against real data', () => {
 
   test('performs to-many relationship queries with no filter', async () => {
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
-          [key]: { $eq: query[key] },
-        },
-      ]),
+      simple: jest.fn((query, key) => ({
+        pipeline: [
+          {
+            [key]: { $eq: query[key] },
+          },
+        ],
+      })),
       relationship: jest.fn((query, key, path, uid) => {
         const [table, criteria] = key.split('_');
         return {
@@ -409,11 +417,13 @@ describe('Testing against real data', () => {
             postJoinPipeline: [{ $sort: { [sortBy]: sortDirection === 'ASC' ? 1 : -1 } }],
           };
         }
-        return [
-          {
-            [key]: { $eq: value },
-          },
-        ];
+        return {
+          pipeline: [
+            {
+              [key]: { $eq: value },
+            },
+          ],
+        };
       }),
       relationship: jest.fn((query, key, path, uid) => {
         const [table, criteria] = key.split('_');
@@ -510,11 +520,13 @@ describe('Testing against real data', () => {
 
   test('performs to-many relationship queries', async () => {
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
-          [key]: { $eq: query[key] },
-        },
-      ]),
+      simple: jest.fn((query, key) => ({
+        pipeline: [
+          {
+            [key]: { $eq: query[key] },
+          },
+        ],
+      })),
       relationship: jest.fn((query, key, path, uid) => {
         const [table, criteria] = key.split('_');
         return {
@@ -609,11 +621,13 @@ describe('Testing against real data', () => {
 
   test('performs to-many relationship queries with nested AND', async () => {
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
-          [key]: { $eq: query[key] },
-        },
-      ]),
+      simple: jest.fn((query, key) => ({
+        pipeline: [
+          {
+            [key]: { $eq: query[key] },
+          },
+        ],
+      })),
       relationship: jest.fn((query, key, path, uid) => {
         const [table, criteria] = key.split('_');
         return {
@@ -714,11 +728,13 @@ describe('Testing against real data', () => {
 
   test('performs AND query with nested to-many relationship', async () => {
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
-          [key]: { $eq: query[key] },
-        },
-      ]),
+      simple: jest.fn((query, key) => ({
+        pipeline: [
+          {
+            [key]: { $eq: query[key] },
+          },
+        ],
+      })),
       relationship: jest.fn((query, key, path, uid) => {
         const [table, criteria] = key.split('_');
         return {

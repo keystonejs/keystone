@@ -1,16 +1,6 @@
 const mongoJoinBuilder = require('../');
 
 describe('Test main export', () => {
-  test('requires a tokenizer option', () => {
-    expect(() => mongoJoinBuilder()).toThrow(Error);
-    expect(() => mongoJoinBuilder({})).toThrow(Error);
-    expect(() => mongoJoinBuilder({ tokenizer: 'hello' })).toThrow(Error);
-    expect(() => mongoJoinBuilder({ tokenizer: 10 })).toThrow(Error);
-
-    // shouldn't throw
-    mongoJoinBuilder({ tokenizer: {} });
-  });
-
   describe('throws if tokenising function returns non-Object', () => {
     test('simple', async () => {
       const aggregate = jest.fn(() => Promise.resolve([]));
@@ -72,11 +62,11 @@ describe('Test main export', () => {
     }));
 
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
+      simple: jest.fn((query, key) => ({
+        pipeline: {
           [key]: { $eq: query[key] },
         },
-      ]),
+      })),
       relationship: jest.fn((query, key) => {
         const [table] = key.split('_');
         return {
