@@ -44,7 +44,7 @@ describe('MongooseListAdapter', () => {
     });
 
     expect(listAdapter.model.aggregate).toHaveBeenCalledWith([
-      { $match: { $and: [{ title: { $eq: 'foo' } }] } },
+      { $match: { title: { $eq: 'foo' } } },
       { $addFields: { id: '$_id' } },
     ]);
   });
@@ -95,7 +95,7 @@ describe('MongooseListAdapter', () => {
     });
 
     expect(userListAdapter.model.aggregate).toHaveBeenCalledWith([
-      { $match: { $and: [{ title: { $eq: 'bar' } }] } },
+      { $match: { title: { $eq: 'bar' } } },
       {
         $lookup: {
           as: expect.any(String),
@@ -114,7 +114,7 @@ describe('MongooseListAdapter', () => {
       {
         $addFields: expect.any(Object),
       },
-      { $match: { $and: [{ posts_some: true }] } },
+      { $match: { posts_some: true } },
       { $addFields: { id: '$_id' } },
     ]);
   });
@@ -179,7 +179,7 @@ describe('MongooseListAdapter', () => {
       {
         $addFields: expect.any(Object),
       },
-      { $match: { $and: [{ posts_some: true }] } },
+      { $match: { posts_some: true } },
       { $addFields: { id: '$_id' } },
     ]);
   });
