@@ -27,7 +27,7 @@
     "date-fns": "^1.29.0",
     "dotenv-safe": "^6.0.0",
     "mongoose": "^5.3.2",
-    "react": "^16.4.2"
+    "react": "^16.5.2"
   },
   "devDependencies": {
     "@voussoir/utils": "^0.1.0",
