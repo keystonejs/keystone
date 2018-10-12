@@ -24,9 +24,6 @@ describe('query parser', () => {
 
       // Shouldn't throw
       queryParser({ tokenizer: { simple: () => ({}) } }, { name: 'foobar' });
-
-      // Shouldn't throw
-      queryParser({ tokenizer: { simple: () => [] } }, { name: 'foobar' });
     });
 
     test('relationship', () => {
@@ -50,7 +47,7 @@ describe('query parser', () => {
   describe('calling tokenizing functions', () => {
     test('simple query', () => {
       const simpleTokenizer = {
-        simple: jest.fn(() => []),
+        simple: jest.fn(() => ({})),
       };
       queryParser(
         { tokenizer: simpleTokenizer },
@@ -82,7 +79,7 @@ describe('query parser', () => {
 
     test('single relationship query', () => {
       const complexTokenizer = {
-        simple: jest.fn(() => []),
+        simple: jest.fn(() => ({})),
         relationship: jest.fn(() => ({})),
       };
       queryParser(
@@ -144,7 +141,7 @@ describe('query parser', () => {
 
     test('nested relationship query', () => {
       const complexTokenizer = {
-        simple: jest.fn(() => []),
+        simple: jest.fn(() => ({})),
         relationship: jest.fn(() => ({})),
       };
       queryParser(
@@ -239,7 +236,7 @@ describe('query parser', () => {
 
     test('AND query', () => {
       const simpleTokenizer = {
-        simple: jest.fn(() => []),
+        simple: jest.fn(() => ({})),
       };
       queryParser(
         { tokenizer: simpleTokenizer },
@@ -259,7 +256,7 @@ describe('query parser', () => {
 
     test('AND query with extra key', () => {
       const simpleTokenizer = {
-        simple: jest.fn(() => []),
+        simple: jest.fn(() => ({})),
       };
       queryParser(
         { tokenizer: simpleTokenizer },
@@ -302,7 +299,7 @@ describe('query parser', () => {
 
     test('complex query with nested AND', () => {
       const complexTokenizer = {
-        simple: jest.fn(() => []),
+        simple: jest.fn(() => ({})),
         relationship: jest.fn(() => ({})),
       };
       queryParser(

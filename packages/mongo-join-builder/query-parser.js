@@ -41,9 +41,9 @@ function parser({ tokenizer, getUID = cuid }, query, pathSoFar = []) {
     } else {
       // A simple field query component
       const queryAst = tokenizer.simple(query, key, path);
-      if (!['Object', 'Array'].includes(getType(queryAst))) {
+      if (getType(queryAst) !== 'Object') {
         throw new Error(
-          `Must return an Object or Array from 'tokenizer.simple' function, given ${path.join('.')}`
+          `Must return an Object from 'tokenizer.simple' function, given ${path.join('.')}`
         );
       }
       return {
