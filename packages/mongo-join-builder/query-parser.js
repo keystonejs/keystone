@@ -1,11 +1,12 @@
 const cuid = require('cuid');
 const { getType, flatten, objMerge } = require('@voussoir/utils');
 
-// If it's 0 or 1 items, we can use it as-is. Any more needs an $and
-const cleanPipeline = pipeline => (pipeline.length > 1 ? [{ $and: pipeline }] : pipeline);
+// If it's 0 or 1 items, we can use it as-is. Any more needs an $and/$or
+const joinPipeline = (pipeline, joinOp) =>
+  pipeline.length > 1 ? [{ [joinOp]: pipeline }] : pipeline;
 
-const flattenQueries = parsedQueries => ({
-  pipeline: cleanPipeline(flatten(parsedQueries.map(q => q.pipeline)).filter(pipe => pipe)),
+const flattenQueries = (parsedQueries, joinOp) => ({
+  pipeline: joinPipeline(flatten(parsedQueries.map(q => q.pipeline)).filter(pipe => pipe), joinOp),
   postJoinPipeline: flatten(parsedQueries.map(q => q.postJoinPipeline)).filter(pipe => pipe),
   relationships: objMerge(parsedQueries.map(q => q.relationships)),
 });
@@ -19,10 +20,11 @@ function parser({ tokenizer, getUID = cuid }, query, pathSoFar = []) {
 
   const parsedQueries = Object.entries(query).map(([key, value]) => {
     const path = [...pathSoFar, key];
-    if (key === 'AND') {
-      // An AND query component
+    if (['AND', 'OR'].includes(key)) {
+      // An AND/OR query component
       return flattenQueries(
-        value.map((_query, index) => parser({ tokenizer, getUID }, _query, [...path, index]))
+        value.map((_query, index) => parser({ tokenizer, getUID }, _query, [...path, index])),
+        { AND: '$and', OR: '$or' }[key]
       );
     } else if (getType(value) === 'Object') {
       // A relationship query component
@@ -55,7 +57,7 @@ function parser({ tokenizer, getUID = cuid }, query, pathSoFar = []) {
       };
     }
   });
-  return flattenQueries(parsedQueries);
+  return flattenQueries(parsedQueries, '$and');
 }
 
 module.exports = { queryParser: parser };

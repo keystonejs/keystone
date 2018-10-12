@@ -247,10 +247,57 @@ describe('query parser', () => {
       );
     });
 
+    test('OR query', () => {
+      const simpleTokenizer = { simple: jest.fn(() => ({})) };
+      queryParser({ tokenizer: simpleTokenizer }, { OR: [{ name: 'foobar' }, { age_lte: 23 }] });
+
+      expect(simpleTokenizer.simple).toBeCalledTimes(2);
+      expect(simpleTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', ['OR', 0, 'name']);
+      expect(simpleTokenizer.simple).toBeCalledWith({ age_lte: 23 }, 'age_lte', [
+        'OR',
+        1,
+        'age_lte',
+      ]);
+    });
+
+    test('OR query with extra key', () => {
+      const simpleTokenizer = { simple: jest.fn(() => ({})) };
+      queryParser(
+        { tokenizer: simpleTokenizer },
+        {
+          OR: [{ name: 'foobar' }, { age_lte: 23 }],
+          age_gte: 20,
+        }
+      );
+
+      expect(simpleTokenizer.simple).toBeCalledTimes(3);
+      expect(simpleTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', ['OR', 0, 'name']);
+      expect(simpleTokenizer.simple).toBeCalledWith({ age_lte: 23 }, 'age_lte', [
+        'OR',
+        1,
+        'age_lte',
+      ]);
+      expect(simpleTokenizer.simple).toBeCalledWith(
+        {
+          OR: [{ name: 'foobar' }, { age_lte: 23 }],
+          age_gte: 20,
+        },
+        'age_gte',
+        ['age_gte']
+      );
+    });
+
     test('AND query with invalid query type', () => {
       const simpleTokenizer = { simple: jest.fn(() => []) };
       expect(() =>
         queryParser({ tokenizer: simpleTokenizer }, { AND: [{ name: 'foobar' }, 23] })
+      ).toThrow(Error);
+    });
+
+    test('OR query with invalid query type', () => {
+      const simpleTokenizer = { simple: jest.fn(() => []) };
+      expect(() =>
+        queryParser({ tokenizer: simpleTokenizer }, { OR: [{ name: 'foobar' }, 23] })
       ).toThrow(Error);
     });
 
@@ -379,6 +426,62 @@ describe('query parser', () => {
         expect.any(String)
       );
     });
+
+    test('OR with nested complex query with nested OR', () => {
+      const complexTokenizer = {
+        simple: jest.fn(() => ({})),
+        relationship: jest.fn(() => ({})),
+      };
+      queryParser(
+        { tokenizer: complexTokenizer },
+        {
+          OR: [
+            { name: 'foobar' },
+            { age: 23 },
+            { posts_every: { OR: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] } },
+          ],
+        }
+      );
+
+      expect(complexTokenizer.simple).toBeCalledTimes(4);
+      expect(complexTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', ['OR', 0, 'name']);
+      expect(complexTokenizer.simple).toBeCalledWith({ age: 23 }, 'age', ['OR', 1, 'age']);
+      expect(complexTokenizer.simple).toBeCalledWith({ title: 'hello' }, 'title', [
+        'OR',
+        2,
+        'posts_every',
+        'OR',
+        0,
+        'title',
+      ]);
+      expect(complexTokenizer.simple).toBeCalledWith({ name: 'foo' }, 'name', [
+        'OR',
+        2,
+        'posts_every',
+        'OR',
+        1,
+        'labels_some',
+        'name',
+      ]);
+
+      expect(complexTokenizer.relationship).toBeCalledTimes(2);
+      expect(complexTokenizer.relationship).toBeCalledWith(
+        {
+          posts_every: {
+            OR: [{ title: 'hello' }, { labels_some: { name: 'foo' } }],
+          },
+        },
+        'posts_every',
+        ['OR', 2, 'posts_every'],
+        expect.any(String)
+      );
+      expect(complexTokenizer.relationship).toBeCalledWith(
+        { labels_some: { name: 'foo' } },
+        'labels_some',
+        ['OR', 2, 'posts_every', 'OR', 1, 'labels_some'],
+        expect.any(String)
+      );
+    });
   });
 
   describe('simple queries', () => {
@@ -413,6 +516,20 @@ describe('query parser', () => {
         // No relationships in this test
         relationships: {},
         pipeline: [{ $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
+      });
+    });
+
+    test('builds a query tree with ORs', () => {
+      const tokenizer = {
+        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+      };
+
+      const queryTree = queryParser({ tokenizer }, { OR: [{ name: 'foobar' }, { age: 23 }] });
+
+      expect(queryTree).toMatchObject({
+        // No relationships in this test
+        relationships: {},
+        pipeline: [{ $or: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
       });
     });
   });
@@ -744,6 +861,55 @@ describe('query parser', () => {
         },
         pipeline: [
           { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }] },
+        ],
+      });
+    });
+
+    test('builds a query tree with nested relationship with nested OR', () => {
+      const tokenizer = {
+        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        relationship: jest.fn((query, key) => {
+          const [table] = key.split('_');
+          return {
+            from: `${table}-collection`,
+            field: table,
+            postQueryMutation: () => {},
+            match: { $exists: true, $ne: [] },
+            many: true,
+          };
+        }),
+      };
+
+      const queryTree = queryParser(
+        { tokenizer, getUID: jest.fn(key => key) },
+        {
+          OR: [
+            { name: 'foobar' },
+            { age: 23 },
+            { posts_every: { OR: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] } },
+          ],
+        }
+      );
+
+      expect(queryTree).toMatchObject({
+        relationships: {
+          posts_every: {
+            from: 'posts-collection',
+            pipeline: [{ $or: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] }],
+            postQueryMutation: expect.any(Function),
+            many: true,
+            relationships: {
+              labels_some: {
+                from: 'labels-collection',
+                pipeline: [{ name: { $eq: 'foo' } }],
+                postQueryMutation: expect.any(Function),
+                many: true,
+              },
+            },
+          },
+        },
+        pipeline: [
+          { $or: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }] },
         ],
       });
     });

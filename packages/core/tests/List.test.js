@@ -266,6 +266,7 @@ test('gqlTypes', () => {
       id_in: [ID!]
       id_not_in: [ID!]
       AND: [TestWhereInput]
+      OR: [TestWhereInput]
       name_query_arg: String
       email_query_arg: String
     }`,
