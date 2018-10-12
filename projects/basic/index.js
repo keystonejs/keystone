@@ -58,9 +58,9 @@ keystone.createList('User', {
     dob: {
       type: CalendarDay,
       format: 'Do MMMM YYYY',
-      // yearRangeFrom: 1918, (defaults to 100 years before the current year)
-      // yearRangeTo: 2018, (defaults to current year)
-      // yearPickerType: 'auto', (defaults to auto, could also be 'input' or 'string')
+      yearRangeFrom: 1901, //defaults to 100 years before the current year
+      yearRangeTo: 2022, //defaults to current year
+      yearPickerType: 'auto', //defaults to auto, could also be 'input' or 'string'
     },
     lastOnline: { type: DateTime, format: 'MM/DD/YYYY h:mm A' },
     password: { type: Password },
