@@ -1,9 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
-
 const { Text, Relationship } = require('@voussoir/fields');
 const cuid = require('cuid');
-
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../../../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -34,7 +32,7 @@ describe('update one to one relationship back reference', () => {
   describe('nested connect', () => {
     test(
       'during create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create, findById }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create, findById }) => {
         let location = await create('Location', {});
         const queryResult = await graphqlRequest({
           server,
@@ -67,7 +65,7 @@ describe('update one to one relationship back reference', () => {
 
     test(
       'during update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create, findById }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create, findById }) => {
         // Manually setup a connected Company <-> Location
         let location = await create('Location', {});
         let company = await create('Company', {});
@@ -110,7 +108,7 @@ describe('update one to one relationship back reference', () => {
   describe('nested create', () => {
     test(
       'during create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, findById }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, findById }) => {
         const locationName = sampleOne(alphanumGenerator);
         const queryResult = await graphqlRequest({
           server,
@@ -144,7 +142,7 @@ describe('update one to one relationship back reference', () => {
 
     test(
       'during update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create, findById }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create, findById }) => {
         const locationName = sampleOne(alphanumGenerator);
         let company = await create('Company', {});
         const queryResult = await graphqlRequest({
@@ -183,7 +181,7 @@ describe('update one to one relationship back reference', () => {
 
   test(
     'nested disconnect during update mutation',
-    keystoneMongoTest(setupKeystone, async ({ server, create, update, findById }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create, update, findById }) => {
       // Manually setup a connected Company <-> Location
       let location = await create('Location', {});
       let company = await create('Company', { location: location.id });
@@ -230,7 +228,7 @@ describe('update one to one relationship back reference', () => {
 
   test(
     'nested disconnectAll during update mutation',
-    keystoneMongoTest(setupKeystone, async ({ server, create, update, findById }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create, update, findById }) => {
       // Manually setup a connected Company <-> Location
       let location = await create('Location', {});
       let company = await create('Company', { location: location.id });
@@ -278,7 +276,7 @@ describe('update one to one relationship back reference', () => {
 
 test(
   'one to one relationship back reference on deletes',
-  keystoneMongoTest(setupKeystone, async ({ server, create, update, findById }) => {
+  keystoneMongoTest(setupKeystone, async ({ server: { server }, create, update, findById }) => {
     // Manually setup a connected Company <-> Location
     let location = await create('Location', {});
     let company = await create('Company', { location: location.id });

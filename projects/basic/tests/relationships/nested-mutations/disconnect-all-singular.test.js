@@ -1,9 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
-
 const { Text, Relationship } = require('@voussoir/fields');
 const cuid = require('cuid');
-
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -46,7 +44,7 @@ function setupKeystone() {
 describe('no access control', () => {
   test(
     'removes item from list',
-    keystoneMongoTest(setupKeystone, async ({ server, create, findById }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create, findById }) => {
       const groupName = `foo${sampleOne(alphanumGenerator)}`;
 
       const createGroup = await create('Group', { name: groupName });
@@ -98,7 +96,7 @@ describe('no access control', () => {
 
   test(
     'silently succeeds if used during create',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       // Create an item that does the linking
       const {
         body: { data },
@@ -130,7 +128,7 @@ describe('no access control', () => {
 
   test(
     'silently succeeds if no item to disconnect during update',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       // Create an item to link against
       const createEvent = await create('Event', {});
 
@@ -171,7 +169,7 @@ describe('with access control', () => {
   describe('read: false on related list', () => {
     test(
       'has no effect when using disconnectAll',
-      keystoneMongoTest(setupKeystone, async ({ server, create, findById }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create, findById }) => {
         const groupContent = sampleOne(alphanumGenerator);
 
         // Create an item to link against

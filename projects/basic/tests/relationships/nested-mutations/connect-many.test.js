@@ -1,9 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
-
 const { Text, Relationship } = require('@voussoir/fields');
 const cuid = require('cuid');
-
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -62,7 +60,7 @@ function setupKeystone() {
 describe('no access control', () => {
   test(
     'connect nested from within create mutation',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const noteContent = sampleOne(alphanumGenerator);
 
       // Create an item to link against
@@ -112,7 +110,7 @@ describe('no access control', () => {
 
   test(
     'connect nested from within update mutation adds to an empty list',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const noteContent = sampleOne(alphanumGenerator);
       const noteContent2 = sampleOne(alphanumGenerator);
 
@@ -203,7 +201,7 @@ describe('no access control', () => {
 
   test(
     'connect nested from within update mutation adds to an existing list',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const noteContent = sampleOne(alphanumGenerator);
       const noteContent2 = sampleOne(alphanumGenerator);
 
@@ -259,7 +257,7 @@ describe('no access control', () => {
 describe('non-matching filter', () => {
   test(
     'errors if connecting items which cannot be found during creating',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
       // Create an item that does the linking
@@ -296,7 +294,7 @@ describe('non-matching filter', () => {
 
   test(
     'errors if connecting items which cannot be found during update',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
       // Create an item to link against
@@ -342,7 +340,7 @@ describe('with access control', () => {
   describe('read: false on related list', () => {
     test(
       'throws when link nested from within create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to link against
@@ -384,7 +382,7 @@ describe('with access control', () => {
 
     test(
       'throws when link nested from within update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to link against
@@ -434,7 +432,7 @@ describe('with access control', () => {
   describe('create: false on related list', () => {
     test(
       'does not throw when link nested from within create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to link against
@@ -463,7 +461,7 @@ describe('with access control', () => {
 
     test(
       'does not throw when link nested from within update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to link against

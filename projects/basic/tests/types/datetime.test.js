@@ -1,8 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, DateTime } = require('@voussoir/fields');
 const cuid = require('cuid');
-
-const { setupServer, graphqlRequest, keystoneMongoTest } = require('../util');
+const { setupServer, graphqlRequest, keystoneMongoTest } = require('@voussoir/test-utils');
 
 function setupKeystone() {
   return setupServer({
@@ -21,7 +20,7 @@ function setupKeystone() {
 describe('DateTime type', () => {
   test(
     'is present in the schema',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       // Introspection query
       const {
         body: {
@@ -77,7 +76,7 @@ describe('DateTime type', () => {
 
   test(
     'response is serialized as a String',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const title = sampleOne(gen.alphaNumString.notEmpty());
       const postedAt = '2018-08-31T06:49:07.000Z';
 
@@ -101,7 +100,7 @@ describe('DateTime type', () => {
 
   test(
     'input type is accepted as a String',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       const postedAt = '2018-08-31T06:49:07.000Z';
 
       // Create an item that does the linking

@@ -1,8 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 
 const { Text, Relationship } = require('@voussoir/fields');
-
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 const cuid = require('cuid');
@@ -32,7 +31,7 @@ describe('Querying with relationship filters', () => {
   describe('to-single', () => {
     test(
       'with data',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         // Create an item to link against
         const users = await Promise.all([
           create('User', { name: 'Jess' }),
@@ -77,7 +76,7 @@ describe('Querying with relationship filters', () => {
 
     test(
       'without data',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         // Create an item to link against
         const user = await create('User', { name: 'Jess' });
 
@@ -133,7 +132,7 @@ describe('Querying with relationship filters', () => {
 
     test(
       '_every condition',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const { users } = await setup(create);
 
         // EVERY
@@ -164,7 +163,7 @@ describe('Querying with relationship filters', () => {
 
     test(
       '_some condition',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const { users } = await setup(create);
 
         // SOME
@@ -201,7 +200,7 @@ describe('Querying with relationship filters', () => {
 
     test(
       '_none condition',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const { users } = await setup(create);
 
         // NONE
@@ -249,7 +248,7 @@ describe('Querying with relationship filters', () => {
 
     test(
       '_every condition',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const { users } = await setup(create);
 
         // EVERY
@@ -280,7 +279,7 @@ describe('Querying with relationship filters', () => {
 
     test(
       '_some condition',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const { users } = await setup(create);
 
         // SOME
@@ -312,7 +311,7 @@ describe('Querying with relationship filters', () => {
 
     test(
       '_none condition',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const { users } = await setup(create);
 
         // NONE

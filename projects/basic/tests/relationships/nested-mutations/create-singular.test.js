@@ -1,8 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@voussoir/fields');
 const cuid = require('cuid');
-
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 
 function setupKeystone() {
   return setupServer({
@@ -59,7 +58,7 @@ function setupKeystone() {
 describe('no access control', () => {
   test(
     'create nested from within create mutation',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
       // Create an item that does the nested create
@@ -117,7 +116,7 @@ describe('no access control', () => {
 
   test(
     'create nested from within update mutation',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
       // Create an item to update
@@ -184,7 +183,7 @@ describe('with access control', () => {
   describe('read: false on related list', () => {
     test(
       'does not throw error when creating nested within create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, findOne, findById }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, findOne, findById }) => {
         const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
         // Create an item that does the nested create
@@ -220,18 +219,20 @@ describe('with access control', () => {
 
     test(
       'does not throw error when creating nested within update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create, findOne, findById }) => {
-        const groupName = sampleOne(gen.alphaNumString.notEmpty());
+      keystoneMongoTest(
+        setupKeystone,
+        async ({ server: { server }, create, findOne, findById }) => {
+          const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
-        // Create an item to update
-        const createEventToGroupNoRead = await create('EventToGroupNoRead', {
-          title: 'A thing',
-        });
+          // Create an item to update
+          const createEventToGroupNoRead = await create('EventToGroupNoRead', {
+            title: 'A thing',
+          });
 
-        // Update an item that does the nested create
-        const updateEventToGroupNoRead = await graphqlRequest({
-          server,
-          query: `
+          // Update an item that does the nested create
+          const updateEventToGroupNoRead = await graphqlRequest({
+            server,
+            query: `
           mutation {
             updateEventToGroupNoRead(
               id: "${createEventToGroupNoRead.id}"
@@ -244,29 +245,30 @@ describe('with access control', () => {
             }
           }
       `,
-        });
+          });
 
-        expect(updateEventToGroupNoRead.body).not.toHaveProperty('errors');
-        expect(updateEventToGroupNoRead.body.data).toMatchObject({
-          updateEventToGroupNoRead: { id: expect.any(String) },
-        });
+          expect(updateEventToGroupNoRead.body).not.toHaveProperty('errors');
+          expect(updateEventToGroupNoRead.body.data).toMatchObject({
+            updateEventToGroupNoRead: { id: expect.any(String) },
+          });
 
-        // See that it actually stored the group ID on the Event record
-        const event = await findOne('EventToGroupNoRead', { title: 'A thing' });
-        expect(event).toBeTruthy();
-        expect(event.group).toBeTruthy();
+          // See that it actually stored the group ID on the Event record
+          const event = await findOne('EventToGroupNoRead', { title: 'A thing' });
+          expect(event).toBeTruthy();
+          expect(event.group).toBeTruthy();
 
-        const group = await findById('GroupNoRead', event.group);
-        expect(group).toBeTruthy();
-        expect(group.name).toBe(groupName);
-      })
+          const group = await findById('GroupNoRead', event.group);
+          expect(group).toBeTruthy();
+          expect(group.name).toBe(groupName);
+        }
+      )
     );
   });
 
   describe('create: false on related list', () => {
     test(
       'throws error when creating nested within create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
         const alphaNumGenerator = gen.alphaNumString.notEmpty();
         const eventName = sampleOne(alphaNumGenerator);
         const groupName = sampleOne(alphaNumGenerator);
@@ -346,7 +348,7 @@ describe('with access control', () => {
 
     test(
       'throws error when creating nested within update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
         // Create an item to update

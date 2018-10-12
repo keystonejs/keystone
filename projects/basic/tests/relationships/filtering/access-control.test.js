@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@voussoir/fields');
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 const cuid = require('cuid');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -43,7 +43,7 @@ function setupKeystone() {
 describe('relationship filtering with access control', () => {
   test(
     'implicitly filters to only the IDs in the database by default',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       // Create all of the posts with the given IDs & random content
       await Promise.all(
         postIds.map(id => {
@@ -89,7 +89,7 @@ describe('relationship filtering with access control', () => {
 
   test(
     'explicitly filters when given a `where` clause',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       // Create all of the posts with the given IDs & random content
       await Promise.all(
         postIds.map(id => {

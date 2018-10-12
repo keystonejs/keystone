@@ -1,9 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
-
 const { Text, Relationship } = require('@voussoir/fields');
 const cuid = require('cuid');
-
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -62,7 +60,7 @@ function setupKeystone() {
 describe('no access control', () => {
   test(
     'removes all items from list',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const noteContent = `foo${sampleOne(alphanumGenerator)}`;
       const noteContent2 = `foo${sampleOne(alphanumGenerator)}`;
 
@@ -110,7 +108,7 @@ describe('no access control', () => {
 
   test(
     'silently succeeds if used during create',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       // Create an item that does the linking
       const {
         body: { data },
@@ -145,7 +143,7 @@ describe('with access control', () => {
   describe('read: false on related list', () => {
     test(
       'has no effect when specifying disconnectAll',
-      keystoneMongoTest(setupKeystone, async ({ server, create, findById }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create, findById }) => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to link against

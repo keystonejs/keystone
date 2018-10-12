@@ -1,9 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
-
 const { Text, Relationship } = require('@voussoir/fields');
 const cuid = require('cuid');
-
-const { setupServer, graphqlRequest, keystoneMongoTest } = require('../../../util');
+const { setupServer, graphqlRequest, keystoneMongoTest } = require('@voussoir/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -38,7 +36,7 @@ describe('update many to many relationship back reference', () => {
   describe('nested connect', () => {
     test(
       'during create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create, findById }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create, findById }) => {
         console.log('connected');
 
         // Manually setup a connected Student <-> Teacher
@@ -101,7 +99,7 @@ describe('update many to many relationship back reference', () => {
 
     test(
       'during update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create, findById }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create, findById }) => {
         // Manually setup a connected Student <-> Teacher
         let teacher1 = await create('Teacher', {});
         let teacher2 = await create('Teacher', {});
@@ -164,7 +162,7 @@ describe('update many to many relationship back reference', () => {
   describe('nested create', () => {
     test(
       'during create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, findById }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, findById }) => {
         const teacherName1 = sampleOne(alphanumGenerator);
         const teacherName2 = sampleOne(alphanumGenerator);
 
@@ -208,7 +206,7 @@ describe('update many to many relationship back reference', () => {
 
     test(
       'during update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create, findById }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create, findById }) => {
         let student = await create('Student', {});
         const teacherName1 = sampleOne(alphanumGenerator);
         const teacherName2 = sampleOne(alphanumGenerator);
@@ -254,7 +252,7 @@ describe('update many to many relationship back reference', () => {
 
   test(
     'nested disconnect during update mutation',
-    keystoneMongoTest(setupKeystone, async ({ server, create, update, findById }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create, update, findById }) => {
       // Manually setup a connected Student <-> Teacher
       let teacher1 = await create('Teacher', {});
       let teacher2 = await create('Teacher', {});
@@ -331,7 +329,7 @@ describe('update many to many relationship back reference', () => {
 
   test(
     'nested disconnectAll during update mutation',
-    keystoneMongoTest(setupKeystone, async ({ server, create, update, findById }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create, update, findById }) => {
       // Manually setup a connected Student <-> Teacher
       let teacher1 = await create('Teacher', {});
       let teacher2 = await create('Teacher', {});
@@ -406,7 +404,7 @@ describe('update many to many relationship back reference', () => {
 
 test(
   'delete mutation updates back references in to-many relationship',
-  keystoneMongoTest(setupKeystone, async ({ server, create, update, findById }) => {
+  keystoneMongoTest(setupKeystone, async ({ server: { server }, create, update, findById }) => {
     // Manually setup a connected Student <-> Teacher
     let teacher1 = await create('Teacher', {});
     let teacher2 = await create('Teacher', {});

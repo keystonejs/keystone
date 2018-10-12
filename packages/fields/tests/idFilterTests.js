@@ -27,114 +27,122 @@ const getIDs = async keystone => {
   return IDs;
 };
 
-export const filterTests = (app, keystone) => {
-  const match = (filter, targets, done) => {
-    matchFilter(app, filter, '{ id name }', targets, done, 'name');
+export const filterTests = withKeystone => {
+  const match = (server, filter, targets) => {
+    return matchFilter(server, filter, '{ id name }', targets, 'name');
   };
 
-  test('No filter', async done => {
-    const IDs = await getIDs(keystone);
-    match(
-      undefined,
-      [
+  test(
+    'No filter',
+    withKeystone(async ({ server: { server, keystone } }) => {
+      const IDs = await getIDs(keystone);
+      return match(server, undefined, [
         { id: IDs['person1'], name: 'person1' },
         { id: IDs['person2'], name: 'person2' },
         { id: IDs['person3'], name: 'person3' },
         { id: IDs['person4'], name: 'person4' },
-      ],
-      done
-    );
-  });
+      ]);
+    })
+  );
 
-  test('Empty filter', async done => {
-    const IDs = await getIDs(keystone);
-    match(
-      'where: { }',
-      [
+  test(
+    'Empty filter',
+    withKeystone(async ({ server: { server, keystone } }) => {
+      const IDs = await getIDs(keystone);
+      return match(server, 'where: { }', [
         { id: IDs['person1'], name: 'person1' },
         { id: IDs['person2'], name: 'person2' },
         { id: IDs['person3'], name: 'person3' },
         { id: IDs['person4'], name: 'person4' },
-      ],
-      done
-    );
-  });
+      ]);
+    })
+  );
 
-  test('Filter: id', async done => {
-    const IDs = await getIDs(keystone);
-    const id = IDs['person2'];
-    match(`where: { id: "${id}" }`, [{ id: IDs['person2'], name: 'person2' }], done);
-  });
+  test(
+    'Filter: id',
+    withKeystone(async ({ server: { server, keystone } }) => {
+      const IDs = await getIDs(keystone);
+      const id = IDs['person2'];
+      return match(server, `where: { id: "${id}" }`, [{ id: IDs['person2'], name: 'person2' }]);
+    })
+  );
 
-  test('Filter: id_not', async done => {
-    const IDs = await getIDs(keystone);
-    const id = IDs['person2'];
-    match(
-      `where: { id_not: "${id}" }`,
-      [
+  test(
+    'Filter: id_not',
+    withKeystone(async ({ server: { server, keystone } }) => {
+      const IDs = await getIDs(keystone);
+      const id = IDs['person2'];
+      return match(server, `where: { id_not: "${id}" }`, [
         { id: IDs['person1'], name: 'person1' },
         { id: IDs['person3'], name: 'person3' },
         { id: IDs['person4'], name: 'person4' },
-      ],
-      done
-    );
-  });
+      ]);
+    })
+  );
 
-  test('Filter: id_in', async done => {
-    const IDs = await getIDs(keystone);
-    const id2 = IDs['person2'];
-    const id3 = IDs['person3'];
-    match(
-      `where: { id_in: ["${id2}", "${id3}"] }`,
-      [{ id: IDs['person2'], name: 'person2' }, { id: IDs['person3'], name: 'person3' }],
-      done
-    );
-  });
+  test(
+    'Filter: id_in',
+    withKeystone(async ({ server: { server, keystone } }) => {
+      const IDs = await getIDs(keystone);
+      const id2 = IDs['person2'];
+      const id3 = IDs['person3'];
+      return match(server, `where: { id_in: ["${id2}", "${id3}"] }`, [
+        { id: IDs['person2'], name: 'person2' },
+        { id: IDs['person3'], name: 'person3' },
+      ]);
+    })
+  );
 
-  test('Filter: id_in - empty list', async done => {
-    match('where: { id_in: [] }', [], done);
-  });
+  test(
+    'Filter: id_in - empty list',
+    withKeystone(({ server: { server } }) => {
+      return match(server, 'where: { id_in: [] }', []);
+    })
+  );
 
-  test('Filter: id_in - missing id', async done => {
-    match('where: { id_in: ["0123456789abcdef01234567"] }', [], done);
-  });
+  test(
+    'Filter: id_in - missing id',
+    withKeystone(({ server: { server } }) => {
+      return match(server, 'where: { id_in: ["0123456789abcdef01234567"] }', []);
+    })
+  );
 
-  test('Filter: id_not_in', async done => {
-    const IDs = await getIDs(keystone);
-    const id2 = IDs['person2'];
-    const id3 = IDs['person3'];
-    match(
-      `where: { id_not_in: ["${id2}", "${id3}"] }`,
-      [{ id: IDs['person1'], name: 'person1' }, { id: IDs['person4'], name: 'person4' }],
-      done
-    );
-  });
+  test(
+    'Filter: id_not_in',
+    withKeystone(async ({ server: { server, keystone } }) => {
+      const IDs = await getIDs(keystone);
+      const id2 = IDs['person2'];
+      const id3 = IDs['person3'];
+      return match(server, `where: { id_not_in: ["${id2}", "${id3}"] }`, [
+        { id: IDs['person1'], name: 'person1' },
+        { id: IDs['person4'], name: 'person4' },
+      ]);
+    })
+  );
 
-  test('Filter: id_not_in - empty list', async done => {
-    const IDs = await getIDs(keystone);
-    match(
-      'where: { id_not_in: [] }',
-      [
+  test(
+    'Filter: id_not_in - empty list',
+    withKeystone(async ({ server: { server, keystone } }) => {
+      const IDs = await getIDs(keystone);
+      return match(server, 'where: { id_not_in: [] }', [
         { id: IDs['person1'], name: 'person1' },
         { id: IDs['person2'], name: 'person2' },
         { id: IDs['person3'], name: 'person3' },
         { id: IDs['person4'], name: 'person4' },
-      ],
-      done
-    );
-  });
+      ]);
+    })
+  );
 
-  test('Filter: id_not_in - missing id', async done => {
-    const IDs = await getIDs(keystone);
-    match(
-      'where: { id_not_in: ["0123456789abcdef01234567"] }',
-      [
+  test(
+    'Filter: id_not_in - missing id',
+    withKeystone(async ({ server: { server, keystone } }) => {
+      const IDs = await getIDs(keystone);
+      return match(server, 'where: { id_not_in: ["0123456789abcdef01234567"] }', [
         { id: IDs['person1'], name: 'person1' },
         { id: IDs['person2'], name: 'person2' },
         { id: IDs['person3'], name: 'person3' },
         { id: IDs['person4'], name: 'person4' },
-      ],
-      done
-    );
-  });
+      ]);
+    })
+  );
 };

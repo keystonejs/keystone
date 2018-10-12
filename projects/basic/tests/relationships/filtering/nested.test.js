@@ -1,5 +1,5 @@
 const { Text, Relationship } = require('@voussoir/fields');
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 const cuid = require('cuid');
 
 function setupKeystone() {
@@ -31,7 +31,7 @@ function setupKeystone() {
 describe('relationship filtering', () => {
   test(
     'nested to-many relationships can be filtered',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const ids = [];
 
       ids.push((await create('Post', { content: 'Hello world' })).id);
@@ -80,7 +80,7 @@ describe('relationship filtering', () => {
 
   test(
     'nested to-many relationships can be limited',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const ids = [];
 
       ids.push((await create('Post', { content: 'Hello world' })).id);
@@ -127,7 +127,7 @@ describe('relationship filtering', () => {
 
   test(
     'nested to-many relationships can be filtered within AND clause',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const ids = [];
 
       ids.push((await create('Post', { content: 'Hello world' })).id);
@@ -181,7 +181,7 @@ describe('relationship filtering', () => {
 describe('relationship meta filtering', () => {
   test(
     'nested to-many relationships return meta info',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const ids = [];
 
       ids.push((await create('Post', { content: 'Hello world' })).id);
@@ -227,7 +227,7 @@ describe('relationship meta filtering', () => {
 
   test(
     'nested to-many relationship meta can be filtered',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const ids = [];
 
       ids.push((await create('Post', { content: 'Hello world' })).id);
@@ -275,7 +275,7 @@ describe('relationship meta filtering', () => {
 
   test(
     'nested to-many relationship meta can be limited',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const ids = [];
 
       ids.push((await create('Post', { content: 'Hello world' })).id);
@@ -321,7 +321,7 @@ describe('relationship meta filtering', () => {
 
   test(
     'nested to-many relationship meta can be filtered within AND clause',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const ids = [];
 
       ids.push((await create('Post', { content: 'Hello world' })).id);

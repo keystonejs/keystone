@@ -1,9 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
-
 const { Text, Relationship } = require('@voussoir/fields');
 const cuid = require('cuid');
-
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -62,7 +60,7 @@ function setupKeystone() {
 describe('no access control', () => {
   test(
     'create nested from within create mutation',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       const noteContent = sampleOne(alphanumGenerator);
       const noteContent2 = sampleOne(alphanumGenerator);
       const noteContent3 = sampleOne(alphanumGenerator);
@@ -162,7 +160,7 @@ describe('no access control', () => {
 
   test(
     'create nested from within update mutation',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const noteContent = sampleOne(alphanumGenerator);
       const noteContent2 = sampleOne(alphanumGenerator);
       const noteContent3 = sampleOne(alphanumGenerator);
@@ -281,7 +279,7 @@ describe('with access control', () => {
   describe('read: false on related list', () => {
     test(
       'throws when trying to read after nested create',
-      keystoneMongoTest(setupKeystone, async ({ server }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item that does the nested create
@@ -318,7 +316,7 @@ describe('with access control', () => {
 
     test(
       'does not throw when create nested from within create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item that does the nested create
@@ -342,7 +340,7 @@ describe('with access control', () => {
 
     test(
       'does not throw when create nested from within update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to update
@@ -376,7 +374,7 @@ describe('with access control', () => {
   describe('create: false on related list', () => {
     test(
       'throws error when creating nested within create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
         const userName = sampleOne(alphanumGenerator);
         const noteContent = sampleOne(alphanumGenerator);
 
@@ -442,7 +440,7 @@ describe('with access control', () => {
 
     test(
       'throws error when creating nested within update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to update

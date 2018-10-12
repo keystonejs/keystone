@@ -1,5 +1,5 @@
 const { Text } = require('@voussoir/fields');
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 const cuid = require('cuid');
 
 function setupKeystone() {
@@ -19,7 +19,7 @@ function setupKeystone() {
 describe('uniqueness', () => {
   test(
     'uniqueness is enforced over multiple mutations',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       const queryUser = await graphqlRequest({
         server,
         query: `
@@ -49,7 +49,7 @@ describe('uniqueness', () => {
 
   test(
     'uniqueness is enforced over single mutation',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       const queryUser = await graphqlRequest({
         server,
         query: `
@@ -69,7 +69,7 @@ describe('uniqueness', () => {
 
   test(
     'Configuring uniqueness on one field does not affect others',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       const queryUser = await graphqlRequest({
         server,
         query: `

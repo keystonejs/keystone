@@ -1,7 +1,6 @@
 const { Text, Relationship } = require('@voussoir/fields');
 const cuid = require('cuid');
-
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 
 function setupKeystone() {
   return setupServer({
@@ -58,7 +57,7 @@ function setupKeystone() {
 describe('errors on incomplete data', () => {
   test(
     'when neither id or create data passed',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       // Create an item that does the linking
       const createEvent = await graphqlRequest({
         server,
@@ -90,7 +89,7 @@ describe('errors on incomplete data', () => {
 
   test(
     'when both id and create data passed',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       // Create an item that does the linking
       const createEvent = await graphqlRequest({
         server,

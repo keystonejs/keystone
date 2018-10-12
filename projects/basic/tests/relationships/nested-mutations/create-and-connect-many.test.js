@@ -1,9 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
-
 const { Text, Relationship } = require('@voussoir/fields');
 const cuid = require('cuid');
-
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -62,7 +60,7 @@ function setupKeystone() {
 describe('no access control', () => {
   test(
     'link AND create nested from within create mutation',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const noteContent = sampleOne(alphanumGenerator);
       const noteContent2 = sampleOne(alphanumGenerator);
 
@@ -127,7 +125,7 @@ describe('no access control', () => {
 
   test(
     'link & create nested from within update mutation',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const noteContent = sampleOne(alphanumGenerator);
       const noteContent2 = sampleOne(alphanumGenerator);
 
@@ -206,7 +204,7 @@ describe('no access control', () => {
 describe('errors on incomplete data', () => {
   test(
     'when neither id or create data passed',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       // Create an item that does the linking
       const createUser = await graphqlRequest({
         server,
@@ -241,7 +239,7 @@ describe('with access control', () => {
   describe('read: false on related list', () => {
     test(
       'throws when link AND create nested from within create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const noteContent = sampleOne(alphanumGenerator);
         const noteContent2 = sampleOne(alphanumGenerator);
 
@@ -287,7 +285,7 @@ describe('with access control', () => {
 
     test(
       'throws when link & create nested from within update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const noteContent = sampleOne(alphanumGenerator);
         const noteContent2 = sampleOne(alphanumGenerator);
 

@@ -1,9 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
-
 const { Text, Relationship } = require('@voussoir/fields');
 const cuid = require('cuid');
-
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -62,7 +60,7 @@ function setupKeystone() {
 describe('no access control', () => {
   test(
     'removes matched items from list',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const noteContent = `foo${sampleOne(alphanumGenerator)}`;
       const noteContent2 = `foo${sampleOne(alphanumGenerator)}`;
 
@@ -115,7 +113,7 @@ describe('no access control', () => {
 
   test(
     'silently succeeds if used during create',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
       // Create an item that does the linking
@@ -151,7 +149,7 @@ describe('no access control', () => {
 describe('non-matching filter', () => {
   test(
     'silently succeeds if items to disconnect cannot be found during update',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
       // Create an item to link against
@@ -191,7 +189,7 @@ describe('non-matching filter', () => {
 
   test(
     'removes items that match, silently ignores those that do not',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
       const noteContent = sampleOne(alphanumGenerator);
       const noteContent2 = sampleOne(alphanumGenerator);
@@ -247,7 +245,7 @@ describe('with access control', () => {
   describe('read: false on related list', () => {
     test(
       'has no impact when disconnecting directly with an id',
-      keystoneMongoTest(setupKeystone, async ({ server, create, findById }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create, findById }) => {
         const noteContent = sampleOne(alphanumGenerator);
 
         // Create an item to link against

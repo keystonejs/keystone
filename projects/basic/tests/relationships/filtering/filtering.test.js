@@ -1,5 +1,5 @@
 const { Text, Relationship } = require('@voussoir/fields');
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 const cuid = require('cuid');
 
 function setupKeystone() {
@@ -31,7 +31,7 @@ function setupKeystone() {
 describe('relationship filtering', () => {
   test(
     'nested to-single relationships can be filtered within AND clause',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const company = await create('Company', { name: 'Thinkmill' });
       const otherCompany = await create('Company', { name: 'Cete' });
 
@@ -76,7 +76,7 @@ describe('relationship filtering', () => {
 
   test(
     'nested to-many relationships can be filtered within AND clause',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const ids = [];
 
       ids.push((await create('Post', { content: 'Hello world' })).id);

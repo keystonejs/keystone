@@ -1,8 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@voussoir/fields');
 const cuid = require('cuid');
-
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('../../util');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 
 function setupKeystone() {
   return setupServer({
@@ -59,7 +58,7 @@ function setupKeystone() {
 describe('no access control', () => {
   test(
     'link nested from within create mutation',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
       // Create an item to link against
@@ -69,15 +68,15 @@ describe('no access control', () => {
       const { body } = await graphqlRequest({
         server,
         query: `
-        mutation {
-          createEvent(data: {
-            title: "A thing",
-            group: { connect: { id: "${createGroup.id}" } }
-          }) {
-            id
+          mutation {
+            createEvent(data: {
+              title: "A thing",
+              group: { connect: { id: "${createGroup.id}" } }
+            }) {
+              id
+            }
           }
-        }
-    `,
+      `,
       });
 
       expect(body.data).toMatchObject({
@@ -89,7 +88,7 @@ describe('no access control', () => {
 
   test(
     'link nested from within update mutation',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
       // Create an item to link against
@@ -144,7 +143,7 @@ describe('no access control', () => {
 describe('non-matching filter', () => {
   test(
     'errors if connecting an item which cannot be found during creating',
-    keystoneMongoTest(setupKeystone, async ({ server }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
       // Create an item that does the linking
@@ -181,7 +180,7 @@ describe('non-matching filter', () => {
 
   test(
     'errors if connecting an item which cannot be found during update',
-    keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
       // Create an item to link against
@@ -227,7 +226,7 @@ describe('with access control', () => {
   describe('read: false on related list', () => {
     test(
       'throws error when linking nested within create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
         // Create an item to link against
@@ -269,7 +268,7 @@ describe('with access control', () => {
 
     test(
       'does not throw error when linking nested within update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
         // Create an item to link against
@@ -330,7 +329,7 @@ describe('with access control', () => {
   describe('create: false on related list', () => {
     test(
       'does not throw error when linking nested within create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create }) => {
+      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
         const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
         // Create an item to link against
@@ -364,24 +363,26 @@ describe('with access control', () => {
 
     test(
       'does not throw error when linking nested within update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server, create, findOne, findById }) => {
-        const groupName = sampleOne(gen.alphaNumString.notEmpty());
+      keystoneMongoTest(
+        setupKeystone,
+        async ({ server: { server }, create, findOne, findById }) => {
+          const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
-        // Create an item to link against
-        // We can't use the graphQL query here (it's `create: () => false`)
-        const createGroupNoCreate = await create('GroupNoCreate', {
-          name: groupName,
-        });
+          // Create an item to link against
+          // We can't use the graphQL query here (it's `create: () => false`)
+          const createGroupNoCreate = await create('GroupNoCreate', {
+            name: groupName,
+          });
 
-        // Create an item to update
-        const createEventToGroupNoCreate = await create('EventToGroupNoCreate', {
-          title: 'A Thing',
-        });
+          // Create an item to update
+          const createEventToGroupNoCreate = await create('EventToGroupNoCreate', {
+            title: 'A Thing',
+          });
 
-        // Update the item and link the relationship field
-        const { body } = await graphqlRequest({
-          server,
-          query: `
+          // Update the item and link the relationship field
+          const { body } = await graphqlRequest({
+            server,
+            query: `
           mutation {
             updateEventToGroupNoCreate(
               id: "${createEventToGroupNoCreate.id}"
@@ -398,28 +399,29 @@ describe('with access control', () => {
             }
           }
       `,
-        });
+          });
 
-        expect(body.data).toMatchObject({
-          updateEventToGroupNoCreate: {
-            id: expect.any(String),
-            group: {
+          expect(body.data).toMatchObject({
+            updateEventToGroupNoCreate: {
               id: expect.any(String),
-              name: groupName,
+              group: {
+                id: expect.any(String),
+                name: groupName,
+              },
             },
-          },
-        });
-        expect(body).not.toHaveProperty('errors');
+          });
+          expect(body).not.toHaveProperty('errors');
 
-        // See that it actually stored the group ID on the Event record
-        const event = await findOne('EventToGroupNoCreate', { title: 'A thing' });
-        expect(event).toBeTruthy();
-        expect(event.group).toBeTruthy();
+          // See that it actually stored the group ID on the Event record
+          const event = await findOne('EventToGroupNoCreate', { title: 'A thing' });
+          expect(event).toBeTruthy();
+          expect(event.group).toBeTruthy();
 
-        const group = await findById('GroupNoCreate', event.group);
-        expect(group).toBeTruthy();
-        expect(group.name).toBe(groupName);
-      })
+          const group = await findById('GroupNoCreate', event.group);
+          expect(group).toBeTruthy();
+          expect(group.name).toBe(groupName);
+        }
+      )
     );
   });
 });

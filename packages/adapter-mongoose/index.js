@@ -135,7 +135,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     } catch (error) {
       // close the database connection if it was opened
       try {
-        await this.close();
+        await this.disconnect();
       } catch (closeError) {
         // Add the inability to close the database connection as an additional
         // error
@@ -147,15 +147,8 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     }
   }
 
-  close() {
-    return new Promise((resolve, reject) => {
-      this.mongoose.connection.close(true, error => {
-        if (error) {
-          return reject(error);
-        }
-        resolve(this.mongoose.disconnect());
-      });
-    });
+  disconnect() {
+    return this.mongoose.disconnect();
   }
 
   // This will completely drop the backing database. Use wisely.
