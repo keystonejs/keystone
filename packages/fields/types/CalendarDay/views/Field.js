@@ -1,4 +1,4 @@
-import { parse, format, setYear, setMonth } from 'date-fns';
+import { parse, format, setYear, setMonth, getYear } from 'date-fns';
 import React, { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
@@ -24,7 +24,12 @@ export default class CalendarDayField extends Component {
   onSelectedChange = day => {
     const { field, onChange } = this.props;
     const value = format(day, FORMAT);
-    if (/*FIXME*/) {
+    console.log(value);
+    if (
+      getYear(value).toString().length < 4
+      && getYear(value) < this.yearRangeTo
+      && getYear(value) > this.yearRangeFrom
+      ) {
       onChange(field, value);
       this.setState({ value });
     }
