@@ -147,7 +147,7 @@ server.app.get('/reset-db', (req, res) => {
 server.app.use(staticRoute, server.express.static(staticPath));
 
 async function start() {
-  keystone.connect();
+  await keystone.connect();
   server.start();
   const users = await keystone.lists.User.adapter.findAll();
   if (!users.length) {

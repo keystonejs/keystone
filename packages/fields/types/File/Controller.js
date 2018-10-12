@@ -19,4 +19,5 @@ export default class FileController extends FieldController {
        publicUrl
     }
   `;
+  getFilterTypes = () => [];
 }

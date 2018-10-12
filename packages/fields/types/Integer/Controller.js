@@ -23,7 +23,7 @@ export default class TextController extends FieldController {
       return null;
     }
   };
-  filterTypes = [
+  getFilterTypes = () => [
     {
       type: 'is',
       label: 'Is exactly',

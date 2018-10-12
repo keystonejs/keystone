@@ -102,7 +102,6 @@ class Relationship extends Implementation {
         [this.path]: (item, _, context) => {
           // The field may have already been filled in during an early DB lookup
           // (ie; joining when doing a filter)
-          // eslint-disable-next-line no-underscore-dangle
           const id = item[this.path] && item[this.path]._id ? item[this.path]._id : item[this.path];
 
           if (!id) {
@@ -126,9 +125,7 @@ class Relationship extends Implementation {
           .map(value => {
             // The field may have already been filled in during an early DB lookup
             // (ie; joining when doing a filter)
-            // eslint-disable-next-line no-underscore-dangle
             if (value && value._id) {
-              // eslint-disable-next-line no-underscore-dangle
               return value._id;
             }
 
@@ -330,8 +327,9 @@ class MongoSelectInterface extends MongooseFieldAdapter {
       config: { many, mongooseOptions },
     } = this;
     const type = many ? [ObjectId] : ObjectId;
+    const unique = this.config.unique;
     schema.add({
-      [this.path]: { type, ref, ...mongooseOptions },
+      [this.path]: { type, ref, unique, ...mongooseOptions },
     });
   }
 

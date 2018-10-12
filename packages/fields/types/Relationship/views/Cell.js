@@ -11,7 +11,7 @@ export default ({ data, field, Link }) => {
         <Fragment key={item.id}>
           {!!index ? ', ' : ''}
           <Link path={refList.path} id={item.id}>
-            {item._label_ /* eslint-disable-line no-underscore-dangle */}
+            {item._label_}
           </Link>
         </Fragment>
       ))}

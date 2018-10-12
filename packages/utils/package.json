@@ -6,5 +6,7 @@
   "engines": {
     "node": ">=8.4.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "p-lazy": "^1.0.0"
+  }
 }

@@ -14,6 +14,19 @@ export default class RelationshipController extends FieldController {
       }
     `;
   };
+  getFilterGraphQL = ({ type, value }) => {
+    if (type === 'contains') {
+      return `${this.path}_some: {id: "${value}"}`;
+    } else if (type === 'is') {
+      return `${this.path}: {id: "${value}"}`;
+    }
+  };
+  getFilterLabel = ({ label }) => {
+    return `${this.label} ${label.toLowerCase()}`;
+  };
+  formatFilter = ({ label, value }) => {
+    return `${this.getFilterLabel({ label })}: "${value}"`;
+  };
 
   // TODO: FIXME: This should be `set`, not `connect`
   buildRelateToOneInput = ({ id }) => ({ connect: { id } });
@@ -23,12 +36,12 @@ export default class RelationshipController extends FieldController {
     const { many, path } = this.config;
 
     if (!data[path]) {
-      return null;
+      return many ? { disconnectAll: true } : null;
     }
 
     if (many) {
       if (!Array.isArray(data[path]) || !data[path].length) {
-        return null;
+        return many ? { disconnectAll: true } : null;
       }
       return this.buildRelateToManyInput(data[path], path);
     }
@@ -38,5 +51,26 @@ export default class RelationshipController extends FieldController {
   getInitialData = () => {
     const { defaultValue, many } = this.config;
     return many ? defaultValue || [] : defaultValue || null;
+  };
+
+  getFilterTypes = () => {
+    const { many } = this.config;
+    if (many) {
+      return [
+        {
+          type: 'contains',
+          label: 'Contains',
+          getInitialValue: () => null,
+        },
+      ];
+    } else {
+      return [
+        {
+          type: 'is',
+          label: 'Is',
+          getInitialValue: () => null,
+        },
+      ];
+    }
   };
 }

@@ -26,18 +26,25 @@ export type FieldSelectProps = {
   fields: Array<FieldType>,
   onChange: FieldType => void,
   value: FieldType | Array<FieldType>,
+  includeLabelField: boolean,
 };
+
+export const pseudoLabelField = { label: 'Label', path: '_label_' };
 
 export default class FieldSelect extends Component<FieldSelectProps> {
   getSanitizedOptions = () => {
-    const { fields } = this.props;
-    return fields.map(({ options, ...field }) => field);
+    const { fields, includeLabelField } = this.props;
+    const sanitizedOptions = fields.map(({ options, ...field }) => field);
+    if (includeLabelField) {
+      sanitizedOptions.unshift(pseudoLabelField);
+    }
+    return sanitizedOptions;
   };
-  onChangeReturnFieldClass = selected => {
+  onChange = selected => {
     const { fields: listFields, isMulti, onChange } = this.props;
     const arr = Array.isArray(selected) ? selected : [selected];
     const diffMap = arrayToObject(arr, 'path', () => true);
-    const fields = listFields.filter(i => diffMap[i.path]);
+    const fields = [pseudoLabelField].concat(listFields).filter(i => diffMap[i.path]);
     const value = isMulti ? fields : fields[0];
 
     onChange(value);
@@ -50,7 +57,7 @@ export default class FieldSelect extends Component<FieldSelectProps> {
         getOptionValue={getOptionValue}
         {...this.props}
         options={this.getSanitizedOptions()}
-        onChange={this.onChangeReturnFieldClass}
+        onChange={this.onChange}
       />
     );
   }

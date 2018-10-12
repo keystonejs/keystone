@@ -1,16 +1,6 @@
 const mongoJoinBuilder = require('../');
 
 describe('Test main export', () => {
-  test('requires a tokenizer option', () => {
-    expect(() => mongoJoinBuilder()).toThrow(Error);
-    expect(() => mongoJoinBuilder({})).toThrow(Error);
-    expect(() => mongoJoinBuilder({ tokenizer: 'hello' })).toThrow(Error);
-    expect(() => mongoJoinBuilder({ tokenizer: 10 })).toThrow(Error);
-
-    // shouldn't throw
-    mongoJoinBuilder({ tokenizer: {} });
-  });
-
   describe('throws if tokenising function returns non-Object', () => {
     test('simple', async () => {
       const aggregate = jest.fn(() => Promise.resolve([]));
@@ -72,11 +62,11 @@ describe('Test main export', () => {
     }));
 
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
+      simple: jest.fn((query, key) => ({
+        pipeline: {
           [key]: { $eq: query[key] },
         },
-      ]),
+      })),
       relationship: jest.fn((query, key) => {
         const [table] = key.split('_');
         return {
@@ -154,18 +144,14 @@ describe('Test main export', () => {
         $match: {
           $and: [
             {
-              $and: [
-                {
-                  name: {
-                    $eq: 'foobar',
-                  },
-                },
-                {
-                  age: {
-                    $eq: 23,
-                  },
-                },
-              ],
+              name: {
+                $eq: 'foobar',
+              },
+            },
+            {
+              age: {
+                $eq: 23,
+              },
             },
           ],
         },
@@ -246,40 +232,10 @@ describe('Test main export', () => {
                     0,
                   ],
                 },
-                labels_some_labels_some: {
-                  $and: [
-                    {
-                      $gt: [
-                        {
-                          $size: '$labels_some_labels',
-                        },
-                        0,
-                      ],
-                    },
-                    {
-                      $lte: [
-                        {
-                          $size: '$labels_some_labels',
-                        },
-                        {
-                          $size: '$labels',
-                        },
-                      ],
-                    },
-                  ],
-                },
+                labels_some_labels_some: { $gt: [{ $size: '$labels_some_labels' }, 0] },
               },
             },
-            {
-              $match: {
-                $and: [
-                  {
-                    $exists: true,
-                    $ne: [],
-                  },
-                ],
-              },
-            },
+            { $match: { $exists: true, $ne: [] } },
             {
               $addFields: {
                 id: '$_id',
@@ -308,40 +264,10 @@ describe('Test main export', () => {
               0,
             ],
           },
-          posts_every_posts_some: {
-            $and: [
-              {
-                $gt: [
-                  {
-                    $size: '$posts_every_posts',
-                  },
-                  0,
-                ],
-              },
-              {
-                $lte: [
-                  {
-                    $size: '$posts_every_posts',
-                  },
-                  {
-                    $size: '$posts',
-                  },
-                ],
-              },
-            ],
-          },
+          posts_every_posts_some: { $gt: [{ $size: '$posts_every_posts' }, 0] },
         },
       },
-      {
-        $match: {
-          $and: [
-            {
-              $exists: true,
-              $ne: [],
-            },
-          ],
-        },
-      },
+      { $match: { $exists: true, $ne: [] } },
       {
         $addFields: {
           id: '$_id',

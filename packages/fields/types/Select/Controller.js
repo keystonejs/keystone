@@ -46,7 +46,7 @@ export default class SelectController extends FieldController {
       ? `${this.label} is not ${optionLabel}`
       : `${this.label} is ${optionLabel}`;
   };
-  filterTypes = [
+  getFilterTypes = () => [
     {
       type: 'is',
       label: 'Matches',

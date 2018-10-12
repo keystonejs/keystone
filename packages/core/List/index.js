@@ -10,22 +10,8 @@ const {
   objMerge,
   arrayToObject,
   flatten,
+  createLazyDeferred,
 } = require('@voussoir/utils');
-
-function createDeferred() {
-  let resolveCallback;
-  let rejectCallback;
-  const promise = new Promise((resolve, reject) => {
-    resolveCallback = resolve;
-    rejectCallback = reject;
-  });
-
-  return {
-    promise,
-    resolve: resolveCallback,
-    reject: rejectCallback,
-  };
-}
 
 const { parseListAccess, testListAccessControl } = require('@voussoir/access-control');
 
@@ -196,6 +182,7 @@ module.exports = class List {
       ...fieldConfig.type.views,
     }));
   }
+
   getAdminMeta() {
     return {
       key: this.key,
@@ -807,7 +794,7 @@ module.exports = class List {
     // Enable pre-hooks to perform some action after the item is created by
     // giving them a promise which will eventually resolve with the value of the
     // newly created item.
-    const createdPromise = createDeferred();
+    const createdPromise = createLazyDeferred();
 
     const resolvedData = await resolveAllKeys(
       mapKeys(data, (value, fieldPath) =>
@@ -915,7 +902,6 @@ module.exports = class List {
   }
 
   async manyQuery(args, context, queryName) {
-    // eslint-disable-next-line no-underscore-dangle
     return this._tryManyQuery(args, context, queryName, queryArgs =>
       this.adapter.itemsQuery(queryArgs)
     );
@@ -927,7 +913,6 @@ module.exports = class List {
       // on what the user requested
       // Evalutation takes place in ../Keystone/index.js
       getCount: () => {
-        // eslint-disable-next-line no-underscore-dangle
         return this._tryManyQuery(args, context, queryName, queryArgs =>
           this.adapter.itemsQueryMeta(queryArgs).then(({ count }) => count)
         );

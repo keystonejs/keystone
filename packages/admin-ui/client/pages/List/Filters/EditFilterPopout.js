@@ -24,7 +24,7 @@ export default class EditFilterPopout extends Component<Props, State> {
   onSubmit = () => {
     const { filter, onChange } = this.props;
     const { value } = this.state;
-
+    if (value === null) return;
     onChange({
       field: filter.field,
       label: filter.label,

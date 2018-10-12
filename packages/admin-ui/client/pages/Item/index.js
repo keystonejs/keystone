@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import styled from 'react-emotion';
-import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import { Link, withRouter } from 'react-router-dom';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -29,16 +28,6 @@ import isEqual from 'lodash.isequal';
 // This import is loaded by the @voussoir/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
 import FieldTypes from '../../FIELD_TYPES';
-
-const getItemQuery = ({ list, itemId }) => gql`
-  {
-    ${list.gqlNames.itemQueryName}(where: { id: "${itemId}" }) {
-      id
-      _label_
-      ${list.fields.map(field => field.getQueryFragment()).join(' ')}
-    }
-  }
-`;
 
 const ItemId = styled.div({
   color: colors.N30,
@@ -292,7 +281,7 @@ const ItemDetails = withRouter(
         <ClippyIcon />
       );
       const listHref = `${adminPath}/${list.path}`;
-      const titleText = item._label_; // eslint-disable-line no-underscore-dangle
+      const titleText = item._label_;
       return (
         <Fragment>
           {updateErrorMessage ? (
@@ -363,7 +352,7 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
 );
 
 const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
-  const itemQuery = getItemQuery({ list, itemId });
+  const itemQuery = list.getItemQuery(itemId);
   return (
     <Fragment>
       <Nav />

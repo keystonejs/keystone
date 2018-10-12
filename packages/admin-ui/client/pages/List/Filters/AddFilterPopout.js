@@ -121,17 +121,17 @@ export default class AddFilterPopout extends Component<Props, State> {
     const existingFieldFilters = this.getExistingFieldFilters(field);
 
     // bail quickly if possibly
-    if (field.filterTypes.length === existingFieldFilters.length) {
+    if (field.getFilterTypes().length === existingFieldFilters.length) {
       return [];
     }
 
     // create a diff of existing filters VS selected field filters
-    return field.filterTypes.filter(x => {
+    return field.getFilterTypes().filter(x => {
       return !existingFieldFilters.filter(y => y.type === x.type).length;
     });
   };
   hasAvailableFilterTypes = field => {
-    if (!field.filterTypes) return false;
+    if (!field.getFilterTypes()) return false;
     return Boolean(this.availableFieldFilterTypes(field).length);
   };
   doesNotHaveAvailableFilterTypes = field => {
@@ -167,7 +167,7 @@ export default class AddFilterPopout extends Component<Props, State> {
     const { field, filter, value } = this.state;
 
     event.preventDefault();
-    if (!filter) return;
+    if (!filter || value === null) return;
 
     onChange({ field, label: filter.label, type: filter.type, value });
   };
@@ -193,7 +193,7 @@ export default class AddFilterPopout extends Component<Props, State> {
 
   getFieldOptions = () => {
     const { fields } = this.props;
-    return fields.filter(f => f.filterTypes && f.filterTypes.length);
+    return fields.filter(f => f.getFilterTypes() && f.getFilterTypes().length);
   };
   renderFieldSelect = ({ ref }) => {
     return (
@@ -238,7 +238,7 @@ export default class AddFilterPopout extends Component<Props, State> {
   };
   renderFilterUI = ({ ref, recalcHeight }) => {
     const { field, filter } = this.state;
-    const options = field.filterTypes;
+    const options = field.getFilterTypes();
 
     return (
       <Transition

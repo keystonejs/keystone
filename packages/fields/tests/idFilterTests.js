@@ -21,7 +21,6 @@ const getIDs = async keystone => {
     .exec()
     .then(data => {
       data.forEach(entry => {
-        // eslint-disable-next-line no-underscore-dangle
         IDs[entry.name] = entry._id.toString();
       });
     });

@@ -10,7 +10,7 @@ describe('Simple tokenizer', () => {
       getRelatedListAdapterFromQueryPath,
     });
 
-    expect(simple({ name: 'hi' }, 'name', ['name'])).toMatchObject([{ foo: 'bar' }]);
+    expect(simple({ name: 'hi' }, 'name', ['name'])).toMatchObject({ pipeline: [{ foo: 'bar' }] });
     expect(getSimpleQueryConditions).toHaveBeenCalledTimes(1);
   });
 
@@ -43,8 +43,7 @@ describe('Simple tokenizer', () => {
     });
 
     const result = simple({ name: 'hi' }, 'name', ['name']);
-    expect(result).toMatchObject([]);
-    expect(result).toHaveLength(0);
+    expect(result).toMatchObject({});
     expect(getSimpleQueryConditions).toHaveBeenCalledTimes(1);
   });
 
@@ -58,7 +57,7 @@ describe('Simple tokenizer', () => {
       getRelatedListAdapterFromQueryPath,
     });
 
-    expect(simple({ name: 'hi' }, 'name', ['name'])).toMatchObject([{ foo: 'bar' }]);
+    expect(simple({ name: 'hi' }, 'name', ['name'])).toMatchObject({ pipeline: [{ foo: 'bar' }] });
     expect(getSimpleQueryConditions).toHaveBeenCalledTimes(1);
     expect(nameConditions).toHaveBeenCalledTimes(1);
     expect(nameConditions).toHaveBeenCalledWith('hi', { name: 'hi' });

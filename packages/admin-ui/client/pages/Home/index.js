@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import Media from 'react-media';
 import { Query } from 'react-apollo';
-import gql from 'graphql-tag';
 
 import { Container, Grid, Cell } from '@voussoir/ui/src/primitives/layout';
 import { H1 } from '@voussoir/ui/src/primitives/typography';
@@ -12,10 +11,7 @@ import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { Box } from './components';
-
-const getQuery = lists => gql`{
-  ${lists.map(list => `${list.gqlNames.listQueryMetaName} { count }`)}
-}`;
+import { gqlCountQueries } from '../../classes/List';
 
 class HomePage extends Component {
   state = { createFromList: null };
@@ -78,7 +74,7 @@ class HomePage extends Component {
 const ListProvider = ({ getListByKey, listKeys, ...props }) => {
   // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
-  const query = getQuery(lists);
+  const query = gqlCountQueries(lists);
 
   return (
     <Fragment>

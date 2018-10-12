@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
-import { ShieldIcon, InfoIcon, TrashcanIcon } from '@voussoir/icons';
+import { ShieldIcon, InfoIcon, TrashcanIcon, ArrowRightIcon } from '@voussoir/icons';
 import { colors } from '@voussoir/ui/src/theme';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import { CheckboxPrimitive } from '@voussoir/ui/src/primitives/forms';
@@ -42,7 +42,7 @@ const ItemLink = styled(Link)`
   color: ${colors.text};
 
   /* Increase hittable area on item link */
-  &::before {
+  &:only-of-type::before {
     content: '';
     position: absolute;
     bottom: 0;
@@ -87,14 +87,18 @@ const SortDirectionArrow = styled.span(({ size = '0.2em', rotate = '0deg' }) => 
 // Functional Components
 
 type SortLinkProps = {
-  handleSortChange: (Event, string) => void,
+  handleSortChange: Function,
   active: boolean,
   sortAscending: boolean,
 };
 
 class SortLink extends React.Component<SortLinkProps> {
-  onClick = event => {
-    this.props.handleSortChange(event, this.props.label);
+  onClick = () => {
+    const { field, sortAscending, sortable } = this.props;
+    if (sortable) {
+      // Set direction to the opposite of the current sortAscending value
+      this.props.handleSortChange({ field, direction: sortAscending ? 'DESC' : 'ASC' });
+    }
   };
 
   render() {
@@ -108,12 +112,15 @@ class SortLink extends React.Component<SortLinkProps> {
       color: this.props.active ? '#000' : '#999',
     };
 
+    // TODO: Do we want to make `sortable` a field config option?
     return (
       <td style={styles} onClick={this.onClick} data-field={this.props['data-field']}>
-        {this.props.label}
-        <SortDirectionArrow
-          rotate={this.props.active && !this.props.sortAscending ? '180deg' : '0deg'}
-        />
+        {this.props.field.label}
+        {this.props.sortable && (
+          <SortDirectionArrow
+            rotate={this.props.active && !this.props.sortAscending ? '180deg' : '0deg'}
+          />
+        )}
       </td>
     );
   }
@@ -176,7 +183,19 @@ class ListDisplayRow extends Component {
           </Button>
           {this.renderDeleteModal()}
         </BodyCell>
-        {fields.map((field, index) => {
+        <BodyCell>
+          <Button
+            appearance="primary"
+            to={link({ path: list.path, id: item.id })}
+            spacing="cozy"
+            variant="subtle"
+            style={{ height: 24 }}
+          >
+            <ArrowRightIcon />
+            <A11yText>Open</A11yText>
+          </Button>
+        </BodyCell>
+        {fields.map(field => {
           const { path } = field;
 
           const isLoading = !item.hasOwnProperty(path);
@@ -194,11 +213,22 @@ class ListDisplayRow extends Component {
             );
           }
 
+          if (path === '_label_') {
+            return (
+              <BodyCell key={path}>
+                <ItemLink to={link({ path: list.path, id: item.id })}>{item._label_}</ItemLink>
+              </BodyCell>
+            );
+          }
+
           let content;
 
           const Cell = FieldTypes[list.key][path].Cell;
 
           if (Cell) {
+            // fix this later, creating a react component on every render is really bad
+            // react will rerender into the DOM on every react render
+            // probably not a huge deal on a leaf component like this but still bad
             const LinkComponent = ({ children, ...data }) => (
               <ItemLink to={link(data)}>{children}</ItemLink>
             );
@@ -207,15 +237,7 @@ class ListDisplayRow extends Component {
             content = item[path];
           }
 
-          return (
-            <BodyCell key={path}>
-              {!index ? (
-                <ItemLink to={link({ path: list.path, id: item.id })}>{content}</ItemLink>
-              ) : (
-                content
-              )}
-            </BodyCell>
-          );
+          return <BodyCell key={path}>{content}</BodyCell>;
         })}
       </tr>
     );
@@ -293,8 +315,6 @@ class ListManageRow extends Component {
 export default class ListTable extends Component {
   state = {
     mouseOverSelectsRow: false,
-    sortBy: null,
-    sortAscending: true,
   };
 
   handleSelectAll = () => {
@@ -302,20 +322,6 @@ export default class ListTable extends Component {
     const allSelected = items.length === selectedItems.length;
     const value = allSelected ? [] : items.map(i => i.id);
     onSelectAll(value);
-  };
-
-  handleSortChange = (event, field) => {
-    // only change sort direction if sortBy is not being modified
-    if (this.state.sortBy === field) {
-      this.setState({
-        sortAscending: !this.state.sortAscending,
-      });
-    } else {
-      this.setState({
-        sortAscending: true,
-        sortBy: field,
-      });
-    }
   };
 
   onSelectStart = select => {
@@ -342,6 +348,8 @@ export default class ListTable extends Component {
       noResultsMessage,
       onChange,
       onSelect,
+      handleSortChange,
+      sortBy,
       selectedItems,
     } = this.props;
     const { mouseOverSelectsRow } = this.state;
@@ -349,6 +357,7 @@ export default class ListTable extends Component {
     return items.length ? (
       <Table id="ks-list-table">
         <colgroup>
+          <col width="32" />
           <col width="32" />
         </colgroup>
         <thead>
@@ -368,14 +377,16 @@ export default class ListTable extends Component {
                 />
               </div>
             </HeaderCell>
+            <HeaderCell />
             {fields.map(field => (
               <SortLink
                 data-field={field.path}
                 key={field.path}
-                label={field.label}
-                handleSortChange={this.handleSortChange}
-                active={this.state.sortBy == field.label}
-                sortAscending={this.state.sortAscending}
+                sortable={field.path !== '_label_'}
+                field={field}
+                handleSortChange={handleSortChange}
+                active={sortBy.field.path === field.path}
+                sortAscending={sortBy.direction === 'ASC'}
               />
             ))}
           </tr>

@@ -142,6 +142,46 @@ bolt cypress:run
 _NOTE: The output from this command will mix together the output from each project being tested in parallel._
 _This is only recommended as sanity check before pushing code._
 
+### Running a CI environment locally
+
+#### Setting up CircleCI CLI tool
+
+Install the `circleci` cli tool:
+
+**If you've already got [Docker For Mac](https://docs.docker.com/docker-for-mac/install) installed (recommended)**
+
+```bash
+brew install --ignore-dependencies circleci
+```
+
+**If you do not have Docker installed**
+
+```bash
+brew install circleci
+```
+
+Then make sure docker is [able to share](https://docs.docker.com/docker-for-mac/osxfs/#namespaces) the following directories (in Docker for Mac, go `Preferences` > `File Sharing`):
+
+- The keystone 5 repo
+- `/Users/<your username>/.circleci`
+
+#### Run CI tests locally
+
+Make sure Docker is running.
+
+Execute the tests:
+
+```bash
+# Clean up the node_modules folders so everything is installed fresh
+yarn clean
+
+# Run the circle CI job
+circleci local execute --job simple_tests
+```
+
+Where `simple_tests` can be replaced with any job listed in
+[`.circleci/config.yml`](./.circleci/config.yml) under the `jobs:` section.
+
 ## Arch - Keystone UI Kit
 
 Resources, tooling, and design guidelines by KeystoneJS using [GastbyJS](https://www.gatsbyjs.org/)

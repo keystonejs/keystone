@@ -55,7 +55,7 @@ describe('List view URL state', () => {
     // defaultColumns: 'name, status',
     cy.visit('/admin/posts');
     cy.get('#ks-list-table thead td')
-      .should('have.lengthOf', 3)
+      .should('have.lengthOf', 5)
       .should('contain', 'Name')
       .should('contain', 'Status');
 
@@ -66,16 +66,16 @@ describe('List view URL state', () => {
       .clear({ force: true })
       .type(`author{enter}`, { force: true });
     cy.get('#ks-list-table thead td')
-      .should('have.lengthOf', 4)
+      .should('have.lengthOf', 6)
       .should('contain', 'Name')
       .should('contain', 'Status')
       .should('contain', 'Author');
-    cy.location('search').should('eq', '?fields=name%2Cstatus%2Cauthor');
+    cy.location('search').should('eq', '?fields=_label_%2Cname%2Cstatus%2Cauthor');
 
     // URL should define the columns
     cy.visit('/admin/posts?fields=name,author,categories');
     cy.get('#ks-list-table thead td')
-      .should('have.lengthOf', 4)
+      .should('have.lengthOf', 5)
       .should('contain', 'Name')
       .should('contain', 'Author')
       .should('contain', 'Categories');
@@ -151,7 +151,7 @@ describe('List view URL state', () => {
     cy.get('#ks-list-search-input').should('have.attr', 'value', 'Why');
     // Has the correct columns (fields)
     cy.get('#ks-list-table thead td')
-      .should('have.lengthOf', 3)
+      .should('have.lengthOf', 4)
       .should('contain', 'Name')
       .should('contain', 'Views');
     // Is sorted by sortby

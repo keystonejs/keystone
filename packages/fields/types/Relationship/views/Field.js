@@ -1,23 +1,10 @@
 import React, { Component } from 'react';
 
-import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
-
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
-import { Select } from '@voussoir/ui/src/primitives/filters';
 import { ShieldIcon } from '@voussoir/icons';
 import { colors } from '@voussoir/ui/src/theme';
-import { pick } from '@voussoir/utils';
 
-const getGraphqlQuery = refList => {
-  // TODO: How can we replace this with field.Controller.getQueryFragment()?
-  return gql`{
-    ${refList.gqlNames.listQueryName} {
-      id
-      _label_
-    }
-  }`;
-};
+import RelationshipSelect from './RelationshipSelect';
 
 export default class RelationshipField extends Component {
   onChange = option => {
@@ -32,20 +19,10 @@ export default class RelationshipField extends Component {
   render() {
     const { autoFocus, field, item, itemErrors, renderContext } = this.props;
     const { many } = field.config;
-    const refList = field.getRefList();
-    const query = getGraphqlQuery(refList);
     const htmlID = `ks-input-${field.path}`;
     const canRead = !(
       itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
     );
-
-    const selectProps =
-      renderContext === 'dialog'
-        ? {
-            menuPortalTarget: document.body,
-            menuShouldBlockScroll: true,
-          }
-        : null;
 
     return (
       <FieldContainer>
@@ -66,54 +43,16 @@ export default class RelationshipField extends Component {
           ) : null}
         </FieldLabel>
         <FieldInput>
-          <Query query={query}>
-            {({ data, error, loading }) => {
-              if (loading) {
-                return <Select key="loading" isDisabled isLoading={loading} />;
-              }
-              // TODO: better error UI
-              // TODO: Handle permission errors
-              // (ie; user has permission to read this relationship field, but
-              // not the related list, or some items on the list)
-              if (error) return 'Error';
-
-              const options = data[refList.gqlNames.listQueryName].map(listData => ({
-                value: pick(listData, ['id']),
-                label: listData._label_, // eslint-disable-line no-underscore-dangle
-              }));
-
-              let value = null;
-
-              if (canRead) {
-                if (many) {
-                  if (!Array.isArray(item[field.path])) value = [];
-                  value = item[field.path]
-                    .map(i => options.find(option => option.value.id === i.id))
-                    .filter(i => i);
-                } else if (item[field.path]) {
-                  value = options.find(i => i.value.id === item[field.path].id) || null;
-                }
-              }
-
-              return (
-                <Select
-                  autoFocus={autoFocus}
-                  isMulti={many}
-                  value={value}
-                  placeholder={canRead ? undefined : itemErrors[field.path].message}
-                  getOptionValue={option => option.value.id}
-                  options={options}
-                  onChange={this.onChange}
-                  id={`react-select-${htmlID}`}
-                  isClearable
-                  isLoading={loading}
-                  instanceId={htmlID}
-                  inputId={htmlID}
-                  {...selectProps}
-                />
-              );
-            }}
-          </Query>
+          <RelationshipSelect
+            autoFocus={autoFocus}
+            isMulti={many}
+            field={field}
+            item={item}
+            itemErrors={itemErrors}
+            renderContext={renderContext}
+            htmlID={htmlID}
+            onChange={this.onChange}
+          />
         </FieldInput>
       </FieldContainer>
     );

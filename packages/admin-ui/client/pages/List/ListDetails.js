@@ -290,121 +290,121 @@ class ListDetails extends Component<Props, State> {
 
     return (
       <Fragment>
-        <Container>
-          <H1>
-            {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
-            <span>, by</span>
-            <Popout
-              innerRef={this.sortPopoutRef}
-              headerTitle="Sort"
-              footerContent={
-                <Note>
-                  Hold <Kbd>alt</Kbd> to toggle ascending/descending
-                </Note>
-              }
-              target={
-                <SortButton>
-                  {sortBy.field.label.toLowerCase()}
-                  <DisclosureArrow size="0.2em" />
-                </SortButton>
-              }
-            >
-              <SortSelect
-                popoutRef={this.sortPopoutRef}
-                fields={list.fields}
-                onChange={handleSortChange}
-                value={sortBy}
-              />
-            </Popout>
-          </H1>
+        <main>
+          <Container>
+            <H1>
+              {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
+              <span>, by</span>
+              <Popout
+                innerRef={this.sortPopoutRef}
+                headerTitle="Sort"
+                footerContent={
+                  <Note>
+                    Hold <Kbd>alt</Kbd> to toggle ascending/descending
+                  </Note>
+                }
+                target={
+                  <SortButton>
+                    {sortBy.field.label.toLowerCase()}
+                    <DisclosureArrow size="0.2em" />
+                  </SortButton>
+                }
+              >
+                <SortSelect
+                  popoutRef={this.sortPopoutRef}
+                  fields={list.fields}
+                  onChange={handleSortChange}
+                  value={sortBy}
+                />
+              </Popout>
+            </H1>
 
-          <FlexGroup growIndexes={[0]}>
-            <Search
-              isFetching={query.loading}
-              onClear={this.handleSearchClear}
-              onSubmit={this.handleSearchSubmit}
-              hasValue={searchValue && searchValue.length}
-            >
-              <A11yText tag="label" htmlFor={searchId}>
-                Search {list.plural}
-              </A11yText>
-              <Input
-                autoCapitalize="off"
-                autoComplete="off"
-                autoCorrect="off"
-                id={searchId}
-                onChange={this.handleSearchChange}
-                placeholder="Search"
-                name="item-search"
-                value={searchValue}
-                type="text"
-                innerRef={el => (this.searchInput = el)}
+            <FlexGroup growIndexes={[0]}>
+              <Search
+                isFetching={query.loading}
+                onClear={this.handleSearchClear}
+                onSubmit={this.handleSearchSubmit}
+                hasValue={searchValue && searchValue.length}
+              >
+                <A11yText tag="label" htmlFor={searchId}>
+                  Search {list.plural}
+                </A11yText>
+                <Input
+                  autoCapitalize="off"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  id={searchId}
+                  onChange={this.handleSearchChange}
+                  placeholder="Search"
+                  name="item-search"
+                  value={searchValue}
+                  type="text"
+                  innerRef={el => (this.searchInput = el)}
+                />
+              </Search>
+              <AddFilterPopout
+                existingFilters={filters}
+                fields={list.fields}
+                onChange={handleFilterAdd}
               />
-            </Search>
-            <AddFilterPopout
-              existingFilters={filters}
-              fields={list.fields}
-              onChange={handleFilterAdd}
+              <Popout buttonLabel="Columns" headerTitle="Columns">
+                <ColumnSelect
+                  fields={list.fields}
+                  onChange={handleFieldChange}
+                  removeIsAllowed={fields.length > 1}
+                  value={fields}
+                />
+              </Popout>
+              {this.renderExpandButton()}
+              <Button onClick={this.props.handleReset} id="ks-reset">
+                Reset
+              </Button>
+
+              <ToolbarSeparator />
+              {list.access.create ? (
+                <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
+                  Create
+                </IconButton>
+              ) : null}
+            </FlexGroup>
+
+            <ActiveFilters
+              filterList={filters}
+              onUpdate={handleFilterUpdate}
+              onRemove={handleFilterRemove}
+              onClear={handleFilterRemoveAll}
             />
-            <Popout buttonLabel="Columns" headerTitle="Columns">
-              <ColumnSelect
-                fields={list.fields}
-                onChange={handleFieldChange}
-                removeIsAllowed={fields.length > 1}
-                value={fields}
-              />
-            </Popout>
-            {this.renderExpandButton()}
-            <Button onClick={this.props.handleReset} id="ks-reset">
-              Reset
-            </Button>
 
-            <ToolbarSeparator />
-            {list.access.create ? (
-              <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
-                Create
-              </IconButton>
-            ) : null}
-          </FlexGroup>
+            <ManageToolbar isVisible={!!itemsCount}>
+              {isManaging ? (
+                <Management
+                  list={list}
+                  onDeleteMany={this.onDeleteSelectedItems}
+                  onUpdateMany={this.onUpdate}
+                  onToggleManage={this.onToggleManage}
+                  selectedItems={selectedItems}
+                />
+              ) : (
+                <Pagination
+                  currentPage={currentPage}
+                  getManageButton={this.manageButton}
+                  itemsCount={itemsCount}
+                  list={list}
+                  onChangePage={handlePageChange}
+                  onToggleManage={this.onToggleManage}
+                  pageSize={pageSize}
+                />
+              )}
+            </ManageToolbar>
+          </Container>
 
-          <ActiveFilters
-            filterList={filters}
-            onUpdate={handleFilterUpdate}
-            onRemove={handleFilterRemove}
-            onClear={handleFilterRemoveAll}
+          <CreateItemModal
+            isOpen={showCreateModal}
+            list={list}
+            onClose={this.closeCreateModal}
+            onCreate={this.onCreate}
           />
 
-          <ManageToolbar isVisible={!!itemsCount}>
-            {isManaging ? (
-              <Management
-                list={list}
-                onDeleteMany={this.onDeleteSelectedItems}
-                onUpdateMany={this.onUpdate}
-                onToggleManage={this.onToggleManage}
-                selectedItems={selectedItems}
-              />
-            ) : (
-              <Pagination
-                currentPage={currentPage}
-                getManageButton={this.manageButton}
-                itemsCount={itemsCount}
-                list={list}
-                onChangePage={handlePageChange}
-                onToggleManage={this.onToggleManage}
-                pageSize={pageSize}
-              />
-            )}
-          </ManageToolbar>
-        </Container>
-
-        <CreateItemModal
-          isOpen={showCreateModal}
-          list={list}
-          onClose={this.closeCreateModal}
-          onCreate={this.onCreate}
-        />
-
-        <main>
           <Container isFullWidth={isFullWidth}>
             {items ? (
               <ListTable
@@ -417,6 +417,8 @@ class ListDetails extends Component<Props, State> {
                 onChange={query.refetch}
                 onSelect={this.handleItemSelect}
                 onSelectAll={this.handleItemSelectAll}
+                handleSortChange={handleSortChange}
+                sortBy={sortBy}
                 selectedItems={selectedItems}
                 noResultsMessage={this.getNoResultsMessage()}
               />

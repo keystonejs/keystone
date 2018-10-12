@@ -35,12 +35,13 @@ class Integer extends Implementation {
 
 class MongoIntegerInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
+    const { mongooseOptions, unique } = this.config;
     const required = mongooseOptions && mongooseOptions.required;
 
     schema.add({
       [this.path]: {
         type: Number,
+        unique,
         validate: {
           validator: required
             ? Number.isInteger

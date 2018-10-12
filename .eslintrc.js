@@ -7,14 +7,13 @@ module.exports = {
     jest: true,
     'cypress/globals': true,
   },
-  plugins: ['react', 'jest', 'cypress', 'import'],
+  plugins: ['react', 'jest', 'cypress', 'import', 'flowtype'],
   rules: {
     curly: ['error', 'multi-line'],
     'jsx-quotes': 'error',
     'no-shadow': 'warn',
     'no-trailing-spaces': 'error',
     'no-undef': 'error',
-    'no-underscore-dangle': 'error',
     'no-unused-expressions': 'error',
     'no-unused-vars': [
       'error',
@@ -50,6 +49,10 @@ module.exports = {
     'react/sort-prop-types': 'warn',
     semi: 'error',
     strict: 'off',
+    // there are some special flow types that ESLint doesn't know about,
+    // this stops ESLint from throwing errors
+    'flowtype/define-flow-type': 'error',
+    'flowtype/use-flow-type': 'error',
   },
   extends: ['plugin:jest/recommended'],
 

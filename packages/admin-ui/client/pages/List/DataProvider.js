@@ -1,6 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import gql from 'graphql-tag';
-import querystring from 'querystring';
 import debounce from 'lodash.debounce';
 import { Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
@@ -9,18 +7,8 @@ import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { deconstructErrorsToDataShape } from '../../util';
-
-export type SortByType = {
-  field: { label: string, path: string },
-  direction: 'ASC' | 'DESC',
-};
-
-type Filter = {
-  field: Object,
-  label: string,
-  type: string,
-  value: string,
-};
+import { pseudoLabelField } from './FieldSelect';
+import { decodeSearch, encodeSearch } from './url-state';
 
 type Props = {
   list: Object,
@@ -30,234 +18,6 @@ type Props = {
 };
 
 type State = {};
-
-type Search = {
-  currentPage: number,
-  pageSize: number,
-  search: string,
-  fields: Array<String>,
-  sortBy: SortByType,
-  filters: Array<Object>,
-};
-
-const getQueryArgs = ({ filters, ...args }) => {
-  const queryArgs = Object.keys(args).map(
-    // Using stringify to get the correct quotes depending on type
-    argName => `${argName}: ${JSON.stringify(args[argName])}`
-  );
-  if (filters) {
-    const filterArgs = filters.map(filter => filter.field.getFilterGraphQL(filter));
-    if (filterArgs.length) {
-      queryArgs.push(`where: { ${filterArgs.join(', ')} }`);
-    }
-  }
-  return queryArgs.length ? `(${queryArgs.join(' ')})` : '';
-};
-
-const getQuery = ({ fields, filters, list, search, orderBy, skip, first }) => {
-  const queryArgs = getQueryArgs({ first, filters, search, skip, orderBy });
-  const metaQueryArgs = getQueryArgs({ filters, search });
-
-  return gql`{
-    ${list.gqlNames.listQueryName}${queryArgs} {
-      id
-      _label_
-      ${fields.map(field => field.getQueryFragment()).join('\n')}
-    }
-    _${list.gqlNames.listQueryName}Meta${metaQueryArgs} {
-      count
-    }
-  }`;
-};
-
-// ==============================
-// Query string encode/decode
-// ==============================
-
-const allowedSearchParams = ['currentPage', 'pageSize', 'search', 'fields', 'sortBy', 'filters'];
-
-const getSearchDefaults = (props: Props): Search => {
-  const { defaultColumns, defaultSort, defaultPageSize } = props.list.adminConfig;
-
-  // Dynamic defaults
-  const fields = parseFields(defaultColumns, props.list);
-  const sortBy = parseSortBy(defaultSort, props.list) || { field: fields[0], direction: 'ASC' };
-
-  return {
-    currentPage: 1,
-    pageSize: defaultPageSize,
-    search: '',
-    fields,
-    sortBy,
-  };
-};
-
-const parseFields = (fields, list) => {
-  const fieldPaths = fields.split(',');
-  return fieldPaths.map(path => list.fields.find(f => f.path === path)).filter(f => !!f); // remove anything that was not found.
-};
-
-const encodeFields = fields => {
-  return fields.map(f => f.path).join(',');
-};
-
-const parseSortBy = (sortBy: string, list): SortByType => {
-  let key = sortBy;
-  let direction = 'ASC';
-
-  if (sortBy.charAt(0) === '-') {
-    key = sortBy.substr(1);
-    direction = 'DESC';
-  }
-
-  const field = list.fields.find(f => f.path === key);
-  if (!field) return null;
-
-  return {
-    field: { label: field.label, path: field.path },
-    direction,
-  };
-};
-
-const encodeSortBy = (sortBy: SortByType): string => {
-  const {
-    direction,
-    field: { path },
-  } = sortBy;
-  return direction === 'ASC' ? path : `-${path}`;
-};
-
-const parseFilter = (filter: [string, string], list): Filter => {
-  const [key, value] = filter;
-  let type;
-  let label;
-  const field = list.fields.find(f => {
-    if (key.indexOf(f.path) !== 0) return false;
-    const filterType = f.filterTypes.find(t => {
-      return key === `${f.path}_${t.type}`;
-    });
-    if (filterType) {
-      type = filterType.type;
-      label = filterType.label;
-      return true;
-    } else {
-      return false;
-    }
-  });
-
-  if (!field) return null;
-
-  // Try to parse the value
-  let parsedValue;
-  try {
-    parsedValue = JSON.parse(value);
-  } catch (error) {
-    // If filter value is not valid JSON we ignore this filter.
-    return null;
-  }
-
-  return {
-    field,
-    label,
-    path: field.path,
-    type,
-    value: parsedValue,
-  };
-};
-
-const encodeFilter = (filter: Filter): [string, string] => {
-  const { field, type, value } = filter;
-  return [`${field.path}_${type}`, JSON.stringify(value)];
-};
-
-const decodeSearch = (search: string, props: Props): Search => {
-  const query = querystring.parse(search.replace('?', ''));
-  const searchDefaults = getSearchDefaults(props);
-  const params = Object.keys(query).reduce((acc, key) => {
-    // Remove anything that is not "allowed"
-    if (!allowedSearchParams.includes(key)) return acc;
-
-    // Each type has a different parse function.
-    switch (key) {
-      case 'currentPage':
-        acc[key] = parseInt(query[key], 10);
-        break;
-      case 'pageSize':
-        const { maximumPageSize } = props.list.adminConfig;
-        acc[key] = Math.min(parseInt(query[key], 10), maximumPageSize);
-        break;
-      case 'fields':
-        acc[key] = parseFields(query[key], props.list);
-        break;
-      case 'sortBy':
-        acc[key] = parseSortBy(query[key], props.list);
-        break;
-      default:
-        acc[key] = query[key];
-    }
-    return acc;
-  }, {});
-
-  // decode filters
-  params.filters = Object.keys(query).reduce((acc, key) => {
-    if (key.charAt(0) !== '!') return acc;
-    const filter = parseFilter([key.substr(1), query[key]], props.list);
-    if (filter) acc.push(filter);
-    return acc;
-  }, []);
-
-  // Dynamic defaults
-  if (!(params.fields && params.fields.length)) {
-    params.fields = searchDefaults.fields;
-  }
-
-  if (!params.sortBy) {
-    params.sortBy = searchDefaults.sortBy;
-  }
-
-  return {
-    ...searchDefaults,
-    ...params,
-  };
-};
-
-const encodeSearch = (data: Search, props: Props): string => {
-  const searchDefaults = getSearchDefaults(props);
-  const params = Object.keys(data).reduce((acc, key) => {
-    // strip anthing which matches the default (matching primitive types)
-    if (data[key] === searchDefaults[key]) return acc;
-
-    if (!allowedSearchParams.includes(key)) {
-      throw new Error(`Key "${key}" is not allowed as a query param.`);
-    }
-
-    switch (key) {
-      case 'fields':
-        const fields = encodeFields(data[key]);
-        const defaultFields = encodeFields(searchDefaults[key]);
-        if (fields !== defaultFields) acc[key] = fields;
-        break;
-      case 'sortBy':
-        const sortBy = encodeSortBy(data[key]);
-        const defaultSortBy = encodeSortBy(searchDefaults[key]);
-        if (sortBy !== defaultSortBy) acc[key] = sortBy;
-        break;
-      case 'filters':
-        data[key].forEach(filter => {
-          const [name, value] = encodeFilter(filter);
-          acc[`!${name}`] = value;
-        });
-        break;
-      default:
-        acc[key] = data[key];
-    }
-
-    return acc;
-  }, {});
-
-  if (Object.keys(params).length === 0) return '';
-  return '?' + querystring.stringify(params);
-};
 
 class ListPageDataProvider extends Component<Props, State> {
   constructor(props) {
@@ -341,18 +101,18 @@ class ListPageDataProvider extends Component<Props, State> {
 
   handleFieldChange = selectedFields => {
     const { list, location } = this.props;
-    if (!selectedFields.length) {
-      return;
-    }
 
     // Ensure that the displayed fields maintain their original sortDirection
     // when they're added/removed
-    const fields = list.fields.filter(field => selectedFields.includes(field));
+    const fields = [pseudoLabelField]
+      .concat(list.fields)
+      .filter(field => selectedFields.some(selectedField => selectedField.path === field.path));
 
     // Reset `sortBy` if we were ordering by a field which has been removed.
     const { sortBy } = decodeSearch(location.search, this.props);
-    const newSort = fields.includes(sortBy.field) ? sortBy : { ...sortBy, field: fields[0] };
-
+    const newSort = fields.includes(sortBy.field)
+      ? sortBy
+      : { ...sortBy, field: fields.filter(field => field !== pseudoLabelField)[0] };
     this.setSearch({ fields, sortBy: newSort });
   };
 
@@ -429,10 +189,9 @@ class ListPageDataProvider extends Component<Props, State> {
     const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
     const first = pageSize;
     const skip = (currentPage - 1) * pageSize;
-    const query = getQuery({
+    const query = list.getQuery({
       fields,
       filters,
-      list,
       search,
       orderBy,
       skip,

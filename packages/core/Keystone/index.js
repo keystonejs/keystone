@@ -60,23 +60,30 @@ module.exports = class Keystone {
     this.lists[key] = list;
     this.listsArray.push(list);
   }
+
+  /**
+   * @return Promise<null>
+   */
   connect(to, options) {
     const {
       adapters,
       config: { name, dbName, adapterConnectOptions },
     } = this;
 
-    Object.values(adapters).forEach(adapter => {
-      adapter.connect(
-        to,
-        {
-          name,
-          dbName,
-          ...adapterConnectOptions,
-          ...options,
-        }
-      );
-    });
+    return resolveAllKeys(
+      mapKeys(adapters, adapter =>
+        adapter.connect(
+          to,
+          {
+            name,
+            dbName,
+            ...adapterConnectOptions,
+            ...options,
+          }
+        )
+      )
+      // Don't unnecessarily leak any connection info
+    ).then(() => {});
   }
   getAdminMeta() {
     const { name } = this.config;

@@ -14,16 +14,26 @@ export const ItemElement = ({ isSelected, ...props }: ItemProps) => {
 };
 
 export const FlexProvider = styled.div({
-  alignItems: 'center',
   display: 'flex',
-  flexWrap: 'nowrap',
-  justifyContent: 'space-between',
+  flexFlow: 'column nowrap',
+  justifyContent: 'flex-start',
+  alignItems: 'flex-start',
   marginLeft: -NAV_GUTTER,
   marginRight: -NAV_GUTTER,
+  minHeight: '100vh',
 });
-export const NavGroup = styled.div({
-  alignItems: 'center',
+export const NavGroupIcons = styled.div({
   display: 'flex',
+  flexFlow: 'row nowrap',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+});
+
+export const NavGroup = styled.div({
+  display: 'flex',
+  flexFlow: 'column nowrap',
+  width: '100%',
+  flex: 1,
 });
 export const NavSeparator = styled.div(({ isSelected }) => ({
   borderLeft: '1px solid rgba(255, 255, 255, 0.2)',
