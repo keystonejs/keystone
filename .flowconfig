@@ -2,7 +2,7 @@
 
 [ignore]
 
-.*/packages/.*
+.*/packages/arch.*
 
 [include]
 
