@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Fragment, type ComponentType, type Node, type Ref } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import { Popout as PopoutModal } from '@voussoir/ui/src/primitives/modals';

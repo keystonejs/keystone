@@ -1,4 +1,6 @@
-import React, { Component, createRef } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, createRef } from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
 import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@voussoir/icons';

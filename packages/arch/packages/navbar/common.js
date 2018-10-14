@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
 export const NAV_GUTTER = 20;

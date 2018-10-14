@@ -1,4 +1,6 @@
-import React, { Children, Component } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Children, Component } from 'react';
 import ReactSelect, { components as reactSelectComponents } from 'react-select';
 import {
   CheckboxGroup as _CheckboxGroup,

@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import { keyframes } from 'react-emotion';
+/** @jsx jsx */
+import { jsx, keyframes } from '@emotion/core';
+import { Component } from 'react';
 
 const pulse = keyframes`
   from { transform: scale3d(1, 1, 1); }

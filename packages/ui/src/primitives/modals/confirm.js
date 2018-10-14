@@ -1,8 +1,10 @@
 // @flow
 
-import React, { Fragment, PureComponent, type ComponentType, type Ref, type Node } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Fragment, PureComponent, type ComponentType, type Ref, type Node } from 'react';
 import { createPortal } from 'react-dom';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import ScrollLock from 'react-scrolllock';
 
 import { borderRadius } from '../../theme';

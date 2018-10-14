@@ -1,7 +1,9 @@
 // @flow
 
-import React, { type Node, type Ref } from 'react';
-import styled from 'react-emotion';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { type Node, type Ref } from 'react';
+import styled from '@emotion/styled';
 import Kalendaryo from 'kalendaryo';
 import { isToday as isDayToday, isSameMonth } from 'date-fns';
 
