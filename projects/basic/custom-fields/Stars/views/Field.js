@@ -10,7 +10,7 @@ const StarInput = ({ num, value, onClick }) => {
   return <img src={Star} onClick={() => onClick(num)} />;
 };
 
-export default class TextField extends PureComponent {
+export default class StarField extends PureComponent {
   handleChange = (num) => {
     const { field, item, onChange } = this.props;
     const value = item[field.path];
