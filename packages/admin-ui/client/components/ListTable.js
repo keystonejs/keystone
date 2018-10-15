@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styled, { css } from 'react-emotion';
+import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
 
 import { ShieldIcon, InfoIcon, TrashcanIcon, ArrowRightIcon } from '@voussoir/icons';
@@ -52,7 +52,7 @@ const ItemLink = styled(Link)`
   }
 `;
 
-const Truncate = css`
+const BodyCellTruncated = styled(BodyCell)`
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -223,9 +223,9 @@ class ListDisplayRow extends Component {
 
           if (path === '_label_') {
             return (
-              <BodyCell key={path} className={Truncate}>
+              <BodyCellTruncated key={path}>
                 <ItemLink to={link({ path: list.path, id: item.id })}>{item._label_}</ItemLink>
-              </BodyCell>
+              </BodyCellTruncated>
             );
           }
 
@@ -245,11 +245,7 @@ class ListDisplayRow extends Component {
             content = item[path];
           }
 
-          return (
-            <BodyCell key={path} className={Truncate}>
-              {content}
-            </BodyCell>
-          );
+          return <BodyCellTruncated key={path}>{content}</BodyCellTruncated>;
         })}
       </tr>
     );
@@ -316,9 +312,9 @@ class ListManageRow extends Component {
         </BodyCell>
         <BodyCell />
         {fields.map(({ path }) => (
-          <BodyCell isSelected={isSelected} key={path} className={Truncate}>
+          <BodyCellTruncated isSelected={isSelected} key={path}>
             {item[path]}
-          </BodyCell>
+          </BodyCellTruncated>
         ))}
       </tr>
     );
