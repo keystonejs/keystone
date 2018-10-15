@@ -35,13 +35,9 @@ describe('MongooseListAdapter', () => {
 
     listAdapter = createListAdapter(MongooseListAdapter, 'user');
 
-    listAdapter.getSimpleQueryConditions = () => ({
-      title: value => ({ title: { $eq: value } }),
-    });
+    listAdapter.getSimpleQueryConditions = () => ({ title: value => ({ title: { $eq: value } }) });
 
-    await listAdapter.itemsQuery({
-      where: { title: 'foo' },
-    });
+    await listAdapter.itemsQuery({ where: { title: 'foo' } });
 
     expect(listAdapter.model.aggregate).toHaveBeenCalledWith([
       { $match: { title: { $eq: 'foo' } } },
@@ -110,9 +106,7 @@ describe('MongooseListAdapter', () => {
           ],
         },
       },
-      {
-        $addFields: expect.any(Object),
-      },
+      { $addFields: expect.any(Object) },
       { $match: { $and: [{ posts_some: true }, { title: { $eq: 'bar' } }] } },
       { $addFields: { id: '$_id' } },
     ]);
@@ -165,9 +159,7 @@ describe('MongooseListAdapter', () => {
               $match: {
                 $and: [
                   { $expr: { $in: ['$_id', expect.any(String)] } },
-                  {
-                    $and: [{ name: { $eq: 'foo' } }, { title: { $eq: 'bar' } }],
-                  },
+                  { $and: [{ name: { $eq: 'foo' } }, { title: { $eq: 'bar' } }] },
                 ],
               },
             },
@@ -175,9 +167,7 @@ describe('MongooseListAdapter', () => {
           ],
         },
       },
-      {
-        $addFields: expect.any(Object),
-      },
+      { $addFields: expect.any(Object) },
       { $match: { posts_some: true } },
       { $addFields: { id: '$_id' } },
     ]);

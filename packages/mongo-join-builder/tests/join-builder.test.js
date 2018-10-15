@@ -16,16 +16,8 @@ describe('join builder', () => {
     });
 
     expect(joinQuery).toMatchObject([
-      {
-        $match: {
-          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
-        },
-      },
-      {
-        $addFields: {
-          id: '$_id',
-        },
-      },
+      { $match: { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] } },
+      { $addFields: { id: '$_id' } },
     ]);
   });
 
@@ -64,9 +56,7 @@ describe('join builder', () => {
         $lookup: {
           from: 'user-collection',
           as: 'abc123_author',
-          let: {
-            abc123_author_id: '$author',
-          },
+          let: { abc123_author_id: '$author' },
           pipeline: [
             {
               $match: {
@@ -76,11 +66,7 @@ describe('join builder', () => {
                 ],
               },
             },
-            {
-              $addFields: {
-                id: '$_id',
-              },
-            },
+            { $addFields: { id: '$_id' } },
           ],
         },
       },
@@ -100,11 +86,7 @@ describe('join builder', () => {
           ],
         },
       },
-      {
-        $addFields: {
-          id: '$_id',
-        },
-      },
+      { $addFields: { id: '$_id' } },
     ]);
   });
 
@@ -141,16 +123,10 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
-          let: {
-            abc123_posts_ids: '$posts',
-          },
+          let: { abc123_posts_ids: '$posts' },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } } },
-            {
-              $addFields: {
-                id: '$_id',
-              },
-            },
+            { $addFields: { id: '$_id' } },
           ],
         },
       },
@@ -170,11 +146,7 @@ describe('join builder', () => {
           ],
         },
       },
-      {
-        $addFields: {
-          id: '$_id',
-        },
-      },
+      { $addFields: { id: '$_id' } },
     ]);
   });
 
@@ -213,19 +185,11 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
-          let: {
-            abc123_posts_ids: '$posts',
-          },
+          let: { abc123_posts_ids: '$posts' },
           pipeline: [
             { $match: { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } } },
-            {
-              $addFields: {
-                id: '$_id',
-              },
-            },
-            {
-              $orderBy: 'title',
-            },
+            { $addFields: { id: '$_id' } },
+            { $orderBy: 'title' },
           ],
         },
       },
@@ -245,14 +209,8 @@ describe('join builder', () => {
           ],
         },
       },
-      {
-        $addFields: {
-          id: '$_id',
-        },
-      },
-      {
-        $limit: 10,
-      },
+      { $addFields: { id: '$_id' } },
+      { $limit: 10 },
     ]);
   });
 
@@ -315,25 +273,19 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
-          let: {
-            abc123_posts_ids: '$posts',
-          },
+          let: { abc123_posts_ids: '$posts' },
           pipeline: [
             {
               $lookup: {
                 from: 'tags-collection',
                 as: 'def456_tags',
-                let: {
-                  def456_tags_ids: '$tags',
-                },
+                let: { def456_tags_ids: '$tags' },
                 pipeline: [
                   {
                     $lookup: {
                       from: 'posts-collection',
                       as: 'xyz890_posts',
-                      let: {
-                        xyz890_posts_ids: '$posts',
-                      },
+                      let: { xyz890_posts_ids: '$posts' },
                       pipeline: [
                         {
                           $match: {
@@ -343,11 +295,7 @@ describe('join builder', () => {
                             ],
                           },
                         },
-                        {
-                          $addFields: {
-                            id: '$_id',
-                          },
-                        },
+                        { $addFields: { id: '$_id' } },
                       ],
                     },
                   },
@@ -369,11 +317,7 @@ describe('join builder', () => {
                       ],
                     },
                   },
-                  {
-                    $addFields: {
-                      id: '$_id',
-                    },
-                  },
+                  { $addFields: { id: '$_id' } },
                 ],
               },
             },
@@ -393,11 +337,7 @@ describe('join builder', () => {
                 ],
               },
             },
-            {
-              $addFields: {
-                id: '$_id',
-              },
-            },
+            { $addFields: { id: '$_id' } },
           ],
         },
       },
@@ -417,11 +357,7 @@ describe('join builder', () => {
           ],
         },
       },
-      {
-        $addFields: {
-          id: '$_id',
-        },
-      },
+      { $addFields: { id: '$_id' } },
     ]);
   });
 
@@ -477,17 +413,13 @@ describe('join builder', () => {
         $lookup: {
           from: 'posts-collection',
           as: 'zip567_posts',
-          let: {
-            zip567_posts_ids: '$posts',
-          },
+          let: { zip567_posts_ids: '$posts' },
           pipeline: [
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'quux987_labels',
-                let: {
-                  quux987_labels_ids: '$labels',
-                },
+                let: { quux987_labels_ids: '$labels' },
                 pipeline: [
                   {
                     $match: {
@@ -497,11 +429,7 @@ describe('join builder', () => {
                       ],
                     },
                   },
-                  {
-                    $addFields: {
-                      id: '$_id',
-                    },
-                  },
+                  { $addFields: { id: '$_id' } },
                 ],
               },
             },
@@ -521,11 +449,7 @@ describe('join builder', () => {
                 ],
               },
             },
-            {
-              $addFields: {
-                id: '$_id',
-              },
-            },
+            { $addFields: { id: '$_id' } },
           ],
         },
       },
@@ -545,11 +469,7 @@ describe('join builder', () => {
           ],
         },
       },
-      {
-        $addFields: {
-          id: '$_id',
-        },
-      },
+      { $addFields: { id: '$_id' } },
     ]);
   });
 
