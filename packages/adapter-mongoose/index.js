@@ -88,7 +88,6 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     if (debugMongoose()) {
       this.mongoose.set('debug', true);
     }
-    this.mongoose.set('autoCreate', true);
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
