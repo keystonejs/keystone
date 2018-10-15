@@ -176,6 +176,58 @@ describe('relationship filtering', () => {
       });
     })
   );
+
+  test(
+    'nested to-many relationships can be filtered within OR clause',
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
+      const ids = [];
+
+      ids.push((await create('Post', { content: 'Hello world' })).id);
+      ids.push((await create('Post', { content: 'hi world' })).id);
+      ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+
+      const user = await create('User', { posts: ids });
+
+      // Create a dummy user to make sure we're actually filtering it out
+      const user2 = await create('User', { posts: [ids[0]] });
+
+      const queryUser = await graphqlRequest({
+        server,
+        query: `
+        query {
+          allUsers {
+            id
+            posts (where: {
+              OR: [
+                { content_contains: "i w" },
+                { content_contains: "? O" },
+              ]
+            }){
+              id
+              content
+            }
+          }
+        }
+      `,
+      });
+
+      expect(queryUser.body).not.toHaveProperty('errors');
+      expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
+      expect(queryUser.body.data.allUsers[0].posts).toHaveLength(2);
+      expect(queryUser.body.data).toMatchObject({
+        allUsers: [
+          {
+            id: user.id,
+            posts: [{ id: ids[2] }, { id: ids[1] }],
+          },
+          {
+            id: user2.id,
+            posts: [],
+          },
+        ],
+      });
+    })
+  );
 });
 
 describe('relationship meta filtering', () => {
@@ -360,6 +412,57 @@ describe('relationship meta filtering', () => {
           {
             id: user.id,
             _postsMeta: { count: 1 },
+          },
+          {
+            id: user2.id,
+            _postsMeta: { count: 0 },
+          },
+        ],
+      });
+    })
+  );
+
+  test(
+    'nested to-many relationship meta can be filtered within OR clause',
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
+      const ids = [];
+
+      ids.push((await create('Post', { content: 'Hello world' })).id);
+      ids.push((await create('Post', { content: 'hi world' })).id);
+      ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+
+      const user = await create('User', { posts: ids });
+
+      // Create a dummy user to make sure we're actually filtering it out
+      const user2 = await create('User', { posts: [ids[0]] });
+
+      const queryUser = await graphqlRequest({
+        server,
+        query: `
+        query {
+          allUsers {
+            id
+            _postsMeta (where: {
+              OR: [
+                { content_contains: "i w" },
+                { content_contains: "? O" },
+              ]
+            }){
+              count
+            }
+          }
+        }
+      `,
+      });
+
+      expect(queryUser.body).not.toHaveProperty('errors');
+      expect(queryUser.body.data.allUsers).toHaveLength(2);
+      expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
+      expect(queryUser.body.data).toMatchObject({
+        allUsers: [
+          {
+            id: user.id,
+            _postsMeta: { count: 2 },
           },
           {
             id: user2.id,

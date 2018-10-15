@@ -45,7 +45,7 @@ describe('MongooseListAdapter', () => {
     ]);
   });
 
-  test('Correctly applies conditions of relationships in nested AND fields', async () => {
+  test('Correctly applies conditions of relationships in nested AND/OR fields', async () => {
     let userListAdapter;
     let postListAdapter;
 
@@ -110,9 +110,34 @@ describe('MongooseListAdapter', () => {
       { $match: { $and: [{ posts_some: true }, { title: { $eq: 'bar' } }] } },
       { $addFields: { id: '$_id' } },
     ]);
+
+    await userListAdapter.itemsQuery({
+      where: { OR: [{ posts_some: { name: 'foo' } }, { title: 'bar' }] },
+    });
+
+    expect(userListAdapter.model.aggregate).toHaveBeenCalledWith([
+      {
+        $lookup: {
+          as: expect.any(String),
+          from: 'posts',
+          let: expect.any(Object),
+          pipeline: [
+            {
+              $match: {
+                $and: [{ $expr: { $in: ['$_id', expect.any(String)] } }, { name: { $eq: 'foo' } }],
+              },
+            },
+            { $addFields: { id: '$_id' } },
+          ],
+        },
+      },
+      { $addFields: expect.any(Object) },
+      { $match: { $or: [{ posts_some: true }, { title: { $eq: 'bar' } }] } },
+      { $addFields: { id: '$_id' } },
+    ]);
   });
 
-  test('Correctly applies conditions of AND fields nested in relationships', async () => {
+  test('Correctly applies conditions of AND/OR fields nested in relationships', async () => {
     let userListAdapter;
     let postListAdapter;
 
@@ -160,6 +185,34 @@ describe('MongooseListAdapter', () => {
                 $and: [
                   { $expr: { $in: ['$_id', expect.any(String)] } },
                   { $and: [{ name: { $eq: 'foo' } }, { title: { $eq: 'bar' } }] },
+                ],
+              },
+            },
+            { $addFields: { id: '$_id' } },
+          ],
+        },
+      },
+      { $addFields: expect.any(Object) },
+      { $match: { posts_some: true } },
+      { $addFields: { id: '$_id' } },
+    ]);
+
+    await userListAdapter.itemsQuery({
+      where: { posts_some: { OR: [{ name: 'foo' }, { title: 'bar' }] } },
+    });
+
+    expect(userListAdapter.model.aggregate).toHaveBeenCalledWith([
+      {
+        $lookup: {
+          as: expect.any(String),
+          from: 'posts',
+          let: expect.any(Object),
+          pipeline: [
+            {
+              $match: {
+                $and: [
+                  { $expr: { $in: ['$_id', expect.any(String)] } },
+                  { $or: [{ name: { $eq: 'foo' } }, { title: { $eq: 'bar' } }] },
                 ],
               },
             },
