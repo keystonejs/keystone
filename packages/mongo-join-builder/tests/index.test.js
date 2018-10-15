@@ -203,7 +203,6 @@ describe('Test main export', () => {
                 labels_some_labels_some: { $gt: [{ $size: '$labels_some_labels' }, 0] },
               },
             },
-            { $match: { $exists: true, $ne: [] } },
             {
               $match: {
                 $and: [
@@ -213,9 +212,14 @@ describe('Test main export', () => {
                     },
                   },
                   {
-                    title: {
-                      $eq: 'hello',
-                    },
+                    $and: [
+                      {
+                        title: {
+                          $eq: 'hello',
+                        },
+                      },
+                      { $exists: true, $ne: [] },
+                    ],
                   },
                 ],
               },
@@ -251,7 +255,6 @@ describe('Test main export', () => {
           posts_every_posts_some: { $gt: [{ $size: '$posts_every_posts' }, 0] },
         },
       },
-      { $match: { $exists: true, $ne: [] } },
       {
         $match: {
           $and: [
@@ -265,6 +268,7 @@ describe('Test main export', () => {
                 $eq: 23,
               },
             },
+            { $exists: true, $ne: [] },
           ],
         },
       },

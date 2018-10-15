@@ -48,12 +48,15 @@ describe('join builder', () => {
           from: 'user-collection',
           field: 'author',
           pipeline: [{ name: { $eq: 'Alice' } }],
-          match: [{ abc123_author_every: { $eq: true } }],
           postQueryMutation: jest.fn(),
           many: false,
         },
       },
-      pipeline: [{ title: { $eq: 'foobar' } }, { views: { $eq: 23 } }],
+      pipeline: [
+        { title: { $eq: 'foobar' } },
+        { views: { $eq: 23 } },
+        { abc123_author_every: { $eq: true } },
+      ],
     });
 
     expect(joinQuery).toMatchObject([
@@ -88,10 +91,13 @@ describe('join builder', () => {
           abc123_author_none: { $eq: [{ $size: '$abc123_author' }, 0] },
         },
       },
-      { $match: { abc123_author_every: { $eq: true } } },
       {
         $match: {
-          $and: [{ title: { $eq: 'foobar' } }, { views: { $eq: 23 } }],
+          $and: [
+            { title: { $eq: 'foobar' } },
+            { views: { $eq: 23 } },
+            { abc123_author_every: { $eq: true } },
+          ],
         },
       },
       {
@@ -119,12 +125,15 @@ describe('join builder', () => {
           from: 'posts-collection',
           field: 'posts',
           pipeline: [],
-          match: [{ abc123_posts_some: { $eq: true } }],
           postQueryMutation: jest.fn(),
           many: true,
         },
       },
-      pipeline: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
+      pipeline: [
+        { name: { $eq: 'foobar' } },
+        { age: { $eq: 23 } },
+        { abc123_posts_some: { $eq: true } },
+      ],
     });
 
     expect(joinQuery).toMatchObject([
@@ -152,10 +161,13 @@ describe('join builder', () => {
           abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
       },
-      { $match: { abc123_posts_some: { $eq: true } } },
       {
         $match: {
-          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { abc123_posts_some: { $eq: true } },
+          ],
         },
       },
       {
@@ -183,13 +195,16 @@ describe('join builder', () => {
           from: 'posts-collection',
           field: 'posts',
           pipeline: [],
-          match: [{ abc123_posts_some: { $eq: true } }],
           postJoinPipeline: [{ $orderBy: 'title' }],
           postQueryMutation: jest.fn(),
           many: true,
         },
       },
-      pipeline: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
+      pipeline: [
+        { name: { $eq: 'foobar' } },
+        { age: { $eq: 23 } },
+        { abc123_posts_some: { $eq: true } },
+      ],
       postJoinPipeline: [{ $limit: 10 }],
     });
 
@@ -221,10 +236,13 @@ describe('join builder', () => {
           abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
       },
-      { $match: { abc123_posts_some: { $eq: true } } },
       {
         $match: {
-          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { abc123_posts_some: { $eq: true } },
+          ],
         },
       },
       {
@@ -262,16 +280,14 @@ describe('join builder', () => {
         abc123: {
           from: 'posts-collection',
           field: 'posts',
-          pipeline: [{ title: { $eq: 'hello' } }],
-          match: [{ abc123_posts_some: { $eq: true } }],
+          pipeline: [{ title: { $eq: 'hello' } }, { def456_tags_some: { $eq: true } }],
           postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             def456: {
               from: 'tags-collection',
               field: 'tags',
-              pipeline: [{ name: { $eq: 'React' } }],
-              match: [{ def456_tags_some: { $eq: true } }],
+              pipeline: [{ name: { $eq: 'React' } }, { xyz890_posts_every: { $eq: true } }],
               postQueryMutation: jest.fn(),
               many: true,
               relationships: {
@@ -279,7 +295,6 @@ describe('join builder', () => {
                   from: 'posts-collection',
                   field: 'posts',
                   pipeline: [{ published: { $eq: true } }],
-                  match: [{ xyz890_posts_every: { $eq: true } }],
                   postQueryMutation: jest.fn(),
                   many: true,
                 },
@@ -288,7 +303,11 @@ describe('join builder', () => {
           },
         },
       },
-      pipeline: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
+      pipeline: [
+        { name: { $eq: 'foobar' } },
+        { age: { $eq: 23 } },
+        { abc123_posts_some: { $eq: true } },
+      ],
     });
 
     expect(joinQuery).toMatchObject([
@@ -341,12 +360,12 @@ describe('join builder', () => {
                       xyz890_posts_some: { $gt: [{ $size: '$xyz890_posts' }, 0] },
                     },
                   },
-                  { $match: { xyz890_posts_every: { $eq: true } } },
                   {
                     $match: {
                       $and: [
                         { $expr: { $in: ['$_id', '$$def456_tags_ids'] } },
                         { name: { $eq: 'React' } },
+                        { xyz890_posts_every: { $eq: true } },
                       ],
                     },
                   },
@@ -365,12 +384,12 @@ describe('join builder', () => {
                 def456_tags_some: { $gt: [{ $size: '$def456_tags' }, 0] },
               },
             },
-            { $match: { def456_tags_some: { $eq: true } } },
             {
               $match: {
                 $and: [
                   { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } },
                   { title: { $eq: 'hello' } },
+                  { def456_tags_some: { $eq: true } },
                 ],
               },
             },
@@ -389,10 +408,13 @@ describe('join builder', () => {
           abc123_posts_some: { $gt: [{ $size: '$abc123_posts' }, 0] },
         },
       },
-      { $match: { abc123_posts_some: { $eq: true } } },
       {
         $match: {
-          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { abc123_posts_some: { $eq: true } },
+          ],
         },
       },
       {
@@ -425,8 +447,7 @@ describe('join builder', () => {
         zip567: {
           from: 'posts-collection',
           field: 'posts',
-          pipeline: [{ title: { $eq: 'hello' } }],
-          match: [{ zip567_posts_every: { $eq: true } }],
+          pipeline: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
           postQueryMutation: jest.fn(),
           many: true,
           relationships: {
@@ -434,7 +455,6 @@ describe('join builder', () => {
               from: 'labels-collection',
               field: 'labels',
               pipeline: [{ name: { $eq: 'foo' } }],
-              match: [{ quux987_labels_some: { $eq: true } }],
               postQueryMutation: jest.fn(),
               many: true,
             },
@@ -443,7 +463,11 @@ describe('join builder', () => {
       },
       pipeline: [
         {
-          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { zip567_posts_every: { $eq: true } },
+          ],
         },
       ],
     });
@@ -488,12 +512,12 @@ describe('join builder', () => {
                 quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
               },
             },
-            { $match: { quux987_labels_some: { $eq: true } } },
             {
               $match: {
                 $and: [
                   { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } },
                   { title: { $eq: 'hello' } },
+                  { quux987_labels_some: { $eq: true } },
                 ],
               },
             },
@@ -512,8 +536,15 @@ describe('join builder', () => {
           zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
         },
       },
-      { $match: { zip567_posts_every: { $eq: true } } },
-      { $match: { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] } },
+      {
+        $match: {
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { zip567_posts_every: { $eq: true } },
+          ],
+        },
+      },
       {
         $addFields: {
           id: '$_id',

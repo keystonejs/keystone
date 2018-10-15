@@ -113,8 +113,7 @@ describe('MongooseListAdapter', () => {
       {
         $addFields: expect.any(Object),
       },
-      { $match: { posts_some: true } },
-      { $match: { title: { $eq: 'bar' } } },
+      { $match: { $and: [{ posts_some: true }, { title: { $eq: 'bar' } }] } },
       { $addFields: { id: '$_id' } },
     ]);
   });

@@ -151,10 +151,6 @@ function constructJoin(query, relationshipMeta, path = []) {
         },
       });
 
-      // This part is our client filtering expression. This determins if the
-      // parent item is included in the final list
-      joinQuery.push(matchList(meta.match));
-
       // NOTE: Order is important. We want depth first, so we push the related
       // mutators first.
       mutators.push(...relationJoin.mutators, mutation(meta.postQueryMutation, relationPath));

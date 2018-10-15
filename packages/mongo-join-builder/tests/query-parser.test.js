@@ -543,14 +543,21 @@ describe('query parser', () => {
             from: 'posts-collection',
             field: 'posts',
             pipeline: [{ title: { $eq: 'hello' } }],
-            match: { [`${relationPrefix}posts_every`]: { $eq: true } },
             postJoinPipeline: [{ $orderBy: 'title_ASC' }],
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: expect.any(Object),
           },
         },
-        pipeline: [{ $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
+        pipeline: [
+          {
+            $and: [
+              { name: { $eq: 'foobar' } },
+              { age: { $eq: 23 } },
+              { [`${relationPrefix}posts_every`]: { $eq: true } },
+            ],
+          },
+        ],
         postJoinPipeline: [{ $limit: 1 }],
       });
     });
@@ -598,13 +605,20 @@ describe('query parser', () => {
             from: 'posts-collection',
             field: 'posts',
             pipeline: [{ title: { $eq: 'hello' } }],
-            match: { [`${relationPrefix}posts_every`]: { $eq: true } },
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: expect.any(Object),
           },
         },
-        pipeline: [{ $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
+        pipeline: [
+          {
+            $and: [
+              { name: { $eq: 'foobar' } },
+              { age: { $eq: 23 } },
+              { [`${relationPrefix}posts_every`]: { $eq: true } },
+            ],
+          },
+        ],
       });
     });
 
@@ -649,13 +663,20 @@ describe('query parser', () => {
             from: 'posts-collection',
             field: 'posts',
             pipeline: [],
-            match: { [`${relationPrefix}posts_every`]: { $eq: true } },
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: expect.any(Object),
           },
         },
-        pipeline: [{ $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
+        pipeline: [
+          {
+            $and: [
+              { name: { $eq: 'foobar' } },
+              { age: { $eq: 23 } },
+              { [`${relationPrefix}posts_every`]: { $eq: true } },
+            ],
+          },
+        ],
       });
     });
 
@@ -702,12 +723,19 @@ describe('query parser', () => {
             from: 'company-collection',
             field: 'company',
             pipeline: [{ name: { $eq: 'hello' } }],
-            match: { [`${relationPrefix}company_every`]: { $eq: true } },
             postQueryMutation: expect.any(Function),
             many: false,
           },
         },
-        pipeline: [{ $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
+        pipeline: [
+          {
+            $and: [
+              { name: { $eq: 'foobar' } },
+              { age: { $eq: 23 } },
+              { [`${relationPrefix}company_every`]: { $eq: true } },
+            ],
+          },
+        ],
       });
     });
 
@@ -756,16 +784,14 @@ describe('query parser', () => {
           posts_every: {
             from: 'posts-collection',
             field: 'posts',
-            pipeline: [{ title: { $eq: 'hello' } }],
-            match: { posts_every: { $eq: true } },
+            pipeline: [{ $and: [{ title: { $eq: 'hello' } }, { tags_some: { $eq: true } }] }],
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: {
               tags_some: {
                 from: 'tags-collection',
                 field: 'tags',
-                pipeline: [{ name: { $eq: 'React' } }],
-                match: { tags_some: { $eq: true } },
+                pipeline: [{ $and: [{ name: { $eq: 'React' } }, { posts_every: { $eq: true } }] }],
                 postQueryMutation: expect.any(Function),
                 many: true,
                 relationships: {
@@ -773,7 +799,6 @@ describe('query parser', () => {
                     from: 'posts-collection',
                     field: 'posts',
                     pipeline: [{ title: { $eq: 'foo' } }],
-                    match: { posts_every: { $eq: true } },
                     postQueryMutation: expect.any(Function),
                     many: true,
                   },
@@ -782,7 +807,15 @@ describe('query parser', () => {
             },
           },
         },
-        pipeline: [{ $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
+        pipeline: [
+          {
+            $and: [
+              { name: { $eq: 'foobar' } },
+              { age: { $eq: 23 } },
+              { posts_every: { $eq: true } },
+            ],
+          },
+        ],
       });
     });
 
@@ -827,15 +860,13 @@ describe('query parser', () => {
         relationships: {
           posts_every: {
             from: 'posts-collection',
-            pipeline: [{ title: { $eq: 'hello' } }],
-            match: { $exists: true, $ne: [] },
+            pipeline: [{ $and: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] }],
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: {
               labels_some: {
                 from: 'labels-collection',
                 pipeline: [{ name: { $eq: 'foo' } }],
-                match: { $exists: true, $ne: [] },
                 postQueryMutation: expect.any(Function),
                 many: true,
               },
@@ -844,7 +875,7 @@ describe('query parser', () => {
         },
         pipeline: [
           {
-            $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
+            $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }],
           },
         ],
       });
