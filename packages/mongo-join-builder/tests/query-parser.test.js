@@ -46,9 +46,7 @@ describe('query parser', () => {
 
   describe('calling tokenizing functions', () => {
     test('simple query', () => {
-      const simpleTokenizer = {
-        simple: jest.fn(() => ({})),
-      };
+      const simpleTokenizer = { simple: jest.fn(() => ({})) };
       queryParser(
         { tokenizer: simpleTokenizer },
         {
@@ -87,9 +85,7 @@ describe('query parser', () => {
         {
           name: 'foobar',
           age: 23,
-          posts_every: {
-            title: 'hello',
-          },
+          posts_every: { title: 'hello' },
         }
       );
 
@@ -98,9 +94,7 @@ describe('query parser', () => {
         {
           name: 'foobar',
           age: 23,
-          posts_every: {
-            title: 'hello',
-          },
+          posts_every: { title: 'hello' },
         },
         'name',
         ['name']
@@ -109,29 +103,22 @@ describe('query parser', () => {
         {
           name: 'foobar',
           age: 23,
-          posts_every: {
-            title: 'hello',
-          },
+          posts_every: { title: 'hello' },
         },
         'age',
         ['age']
       );
-      expect(complexTokenizer.simple).toBeCalledWith(
-        {
-          title: 'hello',
-        },
+      expect(complexTokenizer.simple).toBeCalledWith({ title: 'hello' }, 'title', [
+        'posts_every',
         'title',
-        ['posts_every', 'title']
-      );
+      ]);
 
       expect(complexTokenizer.relationship).toBeCalledTimes(1);
       expect(complexTokenizer.relationship).toBeCalledWith(
         {
           name: 'foobar',
           age: 23,
-          posts_every: {
-            title: 'hello',
-          },
+          posts_every: { title: 'hello' },
         },
         'posts_every',
         ['posts_every'],
@@ -151,9 +138,7 @@ describe('query parser', () => {
           age: 23,
           posts_every: {
             title: 'hello',
-            labels_some: {
-              name: 'foo',
-            },
+            labels_some: { name: 'foo' },
           },
         }
       );
@@ -165,9 +150,7 @@ describe('query parser', () => {
           age: 23,
           posts_every: {
             title: 'hello',
-            labels_some: {
-              name: 'foo',
-            },
+            labels_some: { name: 'foo' },
           },
         },
         'name',
@@ -179,9 +162,7 @@ describe('query parser', () => {
           age: 23,
           posts_every: {
             title: 'hello',
-            labels_some: {
-              name: 'foo',
-            },
+            labels_some: { name: 'foo' },
           },
         },
         'age',
@@ -190,20 +171,16 @@ describe('query parser', () => {
       expect(complexTokenizer.simple).toBeCalledWith(
         {
           title: 'hello',
-          labels_some: {
-            name: 'foo',
-          },
+          labels_some: { name: 'foo' },
         },
         'title',
         ['posts_every', 'title']
       );
-      expect(complexTokenizer.simple).toBeCalledWith(
-        {
-          name: 'foo',
-        },
+      expect(complexTokenizer.simple).toBeCalledWith({ name: 'foo' }, 'name', [
+        'posts_every',
+        'labels_some',
         'name',
-        ['posts_every', 'labels_some', 'name']
-      );
+      ]);
 
       expect(complexTokenizer.relationship).toBeCalledTimes(2);
       expect(complexTokenizer.relationship).toBeCalledWith(
@@ -212,9 +189,7 @@ describe('query parser', () => {
           age: 23,
           posts_every: {
             title: 'hello',
-            labels_some: {
-              name: 'foo',
-            },
+            labels_some: { name: 'foo' },
           },
         },
         'posts_every',
@@ -224,9 +199,7 @@ describe('query parser', () => {
       expect(complexTokenizer.relationship).toBeCalledWith(
         {
           title: 'hello',
-          labels_some: {
-            name: 'foo',
-          },
+          labels_some: { name: 'foo' },
         },
         'labels_some',
         ['posts_every', 'labels_some'],
@@ -235,15 +208,8 @@ describe('query parser', () => {
     });
 
     test('AND query', () => {
-      const simpleTokenizer = {
-        simple: jest.fn(() => ({})),
-      };
-      queryParser(
-        { tokenizer: simpleTokenizer },
-        {
-          AND: [{ name: 'foobar' }, { age_lte: 23 }],
-        }
-      );
+      const simpleTokenizer = { simple: jest.fn(() => ({})) };
+      queryParser({ tokenizer: simpleTokenizer }, { AND: [{ name: 'foobar' }, { age_lte: 23 }] });
 
       expect(simpleTokenizer.simple).toBeCalledTimes(2);
       expect(simpleTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', ['AND', 0, 'name']);
@@ -255,9 +221,7 @@ describe('query parser', () => {
     });
 
     test('AND query with extra key', () => {
-      const simpleTokenizer = {
-        simple: jest.fn(() => ({})),
-      };
+      const simpleTokenizer = { simple: jest.fn(() => ({})) };
       queryParser(
         { tokenizer: simpleTokenizer },
         {
@@ -284,16 +248,9 @@ describe('query parser', () => {
     });
 
     test('AND query with invalid query type', () => {
-      const simpleTokenizer = {
-        simple: jest.fn(() => []),
-      };
+      const simpleTokenizer = { simple: jest.fn(() => []) };
       expect(() =>
-        queryParser(
-          { tokenizer: simpleTokenizer },
-          {
-            AND: [{ name: 'foobar' }, 23],
-          }
-        )
+        queryParser({ tokenizer: simpleTokenizer }, { AND: [{ name: 'foobar' }, 23] })
       ).toThrow(Error);
     });
 
@@ -307,9 +264,7 @@ describe('query parser', () => {
         {
           name: 'foobar',
           age: 23,
-          posts_every: {
-            AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }],
-          },
+          posts_every: { AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] },
         }
       );
 
@@ -318,9 +273,7 @@ describe('query parser', () => {
         {
           name: 'foobar',
           age: 23,
-          posts_every: {
-            AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }],
-          },
+          posts_every: { AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] },
         },
         'name',
         ['name']
@@ -329,9 +282,7 @@ describe('query parser', () => {
         {
           name: 'foobar',
           age: 23,
-          posts_every: {
-            AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }],
-          },
+          posts_every: { AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] },
         },
         'age',
         ['age']
@@ -355,9 +306,7 @@ describe('query parser', () => {
         {
           name: 'foobar',
           age: 23,
-          posts_every: {
-            AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }],
-          },
+          posts_every: { AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] },
         },
         'posts_every',
         ['posts_every'],
@@ -382,11 +331,7 @@ describe('query parser', () => {
           AND: [
             { name: 'foobar' },
             { age: 23 },
-            {
-              posts_every: {
-                AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }],
-              },
-            },
+            { posts_every: { AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] } },
           ],
         }
       );
@@ -439,13 +384,7 @@ describe('query parser', () => {
   describe('simple queries', () => {
     test('builds a simple query tree', () => {
       const tokenizer = {
-        simple: jest.fn((query, key) => ({
-          pipeline: [
-            {
-              [key]: { $eq: query[key] },
-            },
-          ],
-        })),
+        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
       };
 
       const queryTree = queryParser(
@@ -465,30 +404,15 @@ describe('query parser', () => {
 
     test('builds a query tree with ANDs', () => {
       const tokenizer = {
-        simple: jest.fn((query, key) => ({
-          pipeline: [
-            {
-              [key]: { $eq: query[key] },
-            },
-          ],
-        })),
+        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
       };
 
-      const queryTree = queryParser(
-        { tokenizer },
-        {
-          AND: [{ name: 'foobar' }, { age: 23 }],
-        }
-      );
+      const queryTree = queryParser({ tokenizer }, { AND: [{ name: 'foobar' }, { age: 23 }] });
 
       expect(queryTree).toMatchObject({
         // No relationships in this test
         relationships: {},
-        pipeline: [
-          {
-            $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
-          },
-        ],
+        pipeline: [{ $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
       });
     });
   });
@@ -501,13 +425,9 @@ describe('query parser', () => {
         simple: jest.fn((query, key) => {
           const value = query[key];
           if (key.startsWith('$')) {
-            return {
-              postJoinPipeline: [{ [key]: value }],
-            };
+            return { postJoinPipeline: [{ [key]: value }] };
           }
-          return {
-            pipeline: [{ [key]: { $eq: value } }],
-          };
+          return { pipeline: [{ [key]: { $eq: value } }] };
         }),
         relationship: jest.fn((query, key, path, prefix) => {
           relationPrefix = prefix;
@@ -522,10 +442,8 @@ describe('query parser', () => {
         }),
       };
 
-      const getUID = jest.fn(key => key);
-
       const queryTree = queryParser(
-        { tokenizer, getUID },
+        { tokenizer, getUID: jest.fn(key => key) },
         {
           name: 'foobar',
           age: 23,
@@ -543,14 +461,21 @@ describe('query parser', () => {
             from: 'posts-collection',
             field: 'posts',
             pipeline: [{ title: { $eq: 'hello' } }],
-            match: { [`${relationPrefix}posts_every`]: { $eq: true } },
             postJoinPipeline: [{ $orderBy: 'title_ASC' }],
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: expect.any(Object),
           },
         },
-        pipeline: [{ $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
+        pipeline: [
+          {
+            $and: [
+              { name: { $eq: 'foobar' } },
+              { age: { $eq: 23 } },
+              { [`${relationPrefix}posts_every`]: { $eq: true } },
+            ],
+          },
+        ],
         postJoinPipeline: [{ $limit: 1 }],
       });
     });
@@ -559,13 +484,7 @@ describe('query parser', () => {
       let relationPrefix;
 
       const tokenizer = {
-        simple: jest.fn((query, key) => ({
-          pipeline: [
-            {
-              [key]: { $eq: query[key] },
-            },
-          ],
-        })),
+        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
         relationship: jest.fn((query, key, path, prefix) => {
           relationPrefix = prefix;
           const field = key;
@@ -579,16 +498,12 @@ describe('query parser', () => {
         }),
       };
 
-      const getUID = jest.fn(key => key);
-
       const queryTree = queryParser(
-        { tokenizer, getUID },
+        { tokenizer, getUID: jest.fn(key => key) },
         {
           name: 'foobar',
           age: 23,
-          posts: {
-            title: 'hello',
-          },
+          posts: { title: 'hello' },
         }
       );
 
@@ -598,13 +513,20 @@ describe('query parser', () => {
             from: 'posts-collection',
             field: 'posts',
             pipeline: [{ title: { $eq: 'hello' } }],
-            match: { [`${relationPrefix}posts_every`]: { $eq: true } },
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: expect.any(Object),
           },
         },
-        pipeline: [{ $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
+        pipeline: [
+          {
+            $and: [
+              { name: { $eq: 'foobar' } },
+              { age: { $eq: 23 } },
+              { [`${relationPrefix}posts_every`]: { $eq: true } },
+            ],
+          },
+        ],
       });
     });
 
@@ -612,13 +534,7 @@ describe('query parser', () => {
       let relationPrefix;
 
       const tokenizer = {
-        simple: jest.fn((query, key) => ({
-          pipeline: [
-            {
-              [key]: { $eq: query[key] },
-            },
-          ],
-        })),
+        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
         relationship: jest.fn((query, key, path, prefix) => {
           relationPrefix = prefix;
           const field = key;
@@ -632,10 +548,8 @@ describe('query parser', () => {
         }),
       };
 
-      const getUID = jest.fn(key => key);
-
       const queryTree = queryParser(
-        { tokenizer, getUID },
+        { tokenizer, getUID: jest.fn(key => key) },
         {
           name: 'foobar',
           age: 23,
@@ -649,13 +563,20 @@ describe('query parser', () => {
             from: 'posts-collection',
             field: 'posts',
             pipeline: [],
-            match: { [`${relationPrefix}posts_every`]: { $eq: true } },
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: expect.any(Object),
           },
         },
-        pipeline: [{ $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
+        pipeline: [
+          {
+            $and: [
+              { name: { $eq: 'foobar' } },
+              { age: { $eq: 23 } },
+              { [`${relationPrefix}posts_every`]: { $eq: true } },
+            ],
+          },
+        ],
       });
     });
 
@@ -663,13 +584,7 @@ describe('query parser', () => {
       let relationPrefix;
 
       const tokenizer = {
-        simple: jest.fn((query, key) => ({
-          pipeline: [
-            {
-              [key]: { $eq: query[key] },
-            },
-          ],
-        })),
+        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
         relationship: jest.fn((query, key, path, prefix) => {
           relationPrefix = prefix;
           const field = key;
@@ -683,16 +598,12 @@ describe('query parser', () => {
         }),
       };
 
-      const getUID = jest.fn(key => key);
-
       const queryTree = queryParser(
-        { tokenizer, getUID },
+        { tokenizer, getUID: jest.fn(key => key) },
         {
           name: 'foobar',
           age: 23,
-          company: {
-            name: 'hello',
-          },
+          company: { name: 'hello' },
         }
       );
 
@@ -702,24 +613,25 @@ describe('query parser', () => {
             from: 'company-collection',
             field: 'company',
             pipeline: [{ name: { $eq: 'hello' } }],
-            match: { [`${relationPrefix}company_every`]: { $eq: true } },
             postQueryMutation: expect.any(Function),
             many: false,
           },
         },
-        pipeline: [{ $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
+        pipeline: [
+          {
+            $and: [
+              { name: { $eq: 'foobar' } },
+              { age: { $eq: 23 } },
+              { [`${relationPrefix}company_every`]: { $eq: true } },
+            ],
+          },
+        ],
       });
     });
 
     test('builds a query tree with nested relationship', () => {
       const tokenizer = {
-        simple: jest.fn((query, key) => ({
-          pipeline: [
-            {
-              [key]: { $eq: query[key] },
-            },
-          ],
-        })),
+        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
         relationship: jest.fn((query, key) => {
           const [table] = key.split('_');
           return {
@@ -732,10 +644,8 @@ describe('query parser', () => {
         }),
       };
 
-      const getUID = jest.fn(key => key);
-
       const queryTree = queryParser(
-        { tokenizer, getUID },
+        { tokenizer, getUID: jest.fn(key => key) },
         {
           name: 'foobar',
           age: 23,
@@ -743,9 +653,7 @@ describe('query parser', () => {
             title: 'hello',
             tags_some: {
               name: 'React',
-              posts_every: {
-                title: 'foo',
-              },
+              posts_every: { title: 'foo' },
             },
           },
         }
@@ -756,16 +664,14 @@ describe('query parser', () => {
           posts_every: {
             from: 'posts-collection',
             field: 'posts',
-            pipeline: [{ title: { $eq: 'hello' } }],
-            match: { posts_every: { $eq: true } },
+            pipeline: [{ $and: [{ title: { $eq: 'hello' } }, { tags_some: { $eq: true } }] }],
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: {
               tags_some: {
                 from: 'tags-collection',
                 field: 'tags',
-                pipeline: [{ name: { $eq: 'React' } }],
-                match: { tags_some: { $eq: true } },
+                pipeline: [{ $and: [{ name: { $eq: 'React' } }, { posts_every: { $eq: true } }] }],
                 postQueryMutation: expect.any(Function),
                 many: true,
                 relationships: {
@@ -773,7 +679,6 @@ describe('query parser', () => {
                     from: 'posts-collection',
                     field: 'posts',
                     pipeline: [{ title: { $eq: 'foo' } }],
-                    match: { posts_every: { $eq: true } },
                     postQueryMutation: expect.any(Function),
                     many: true,
                   },
@@ -782,19 +687,21 @@ describe('query parser', () => {
             },
           },
         },
-        pipeline: [{ $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
+        pipeline: [
+          {
+            $and: [
+              { name: { $eq: 'foobar' } },
+              { age: { $eq: 23 } },
+              { posts_every: { $eq: true } },
+            ],
+          },
+        ],
       });
     });
 
     test('builds a query tree with nested relationship with nested AND', () => {
       const tokenizer = {
-        simple: jest.fn((query, key) => ({
-          pipeline: [
-            {
-              [key]: { $eq: query[key] },
-            },
-          ],
-        })),
+        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
         relationship: jest.fn((query, key) => {
           const [table] = key.split('_');
           return {
@@ -807,18 +714,13 @@ describe('query parser', () => {
         }),
       };
 
-      const getUID = jest.fn(key => key);
       const queryTree = queryParser(
-        { tokenizer, getUID },
+        { tokenizer, getUID: jest.fn(key => key) },
         {
           AND: [
             { name: 'foobar' },
             { age: 23 },
-            {
-              posts_every: {
-                AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }],
-              },
-            },
+            { posts_every: { AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] } },
           ],
         }
       );
@@ -827,15 +729,13 @@ describe('query parser', () => {
         relationships: {
           posts_every: {
             from: 'posts-collection',
-            pipeline: [{ title: { $eq: 'hello' } }],
-            match: { $exists: true, $ne: [] },
+            pipeline: [{ $and: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] }],
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: {
               labels_some: {
                 from: 'labels-collection',
                 pipeline: [{ name: { $eq: 'foo' } }],
-                match: { $exists: true, $ne: [] },
                 postQueryMutation: expect.any(Function),
                 many: true,
               },
@@ -843,9 +743,7 @@ describe('query parser', () => {
           },
         },
         pipeline: [
-          {
-            $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
-          },
+          { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }] },
         ],
       });
     });

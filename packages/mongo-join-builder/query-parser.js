@@ -34,7 +34,9 @@ function parser({ tokenizer, getUID = cuid }, query, pathSoFar = []) {
         );
       }
       return {
-        pipeline: [],
+        // queryAst.match is our filtering expression. This determines if the
+        // parent item is included in the final list
+        pipeline: queryAst.match,
         postJoinPipeline: [],
         relationships: { [uid]: { ...queryAst, ...parser({ tokenizer, getUID }, value, path) } },
       };

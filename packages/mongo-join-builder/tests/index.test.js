@@ -62,11 +62,7 @@ describe('Test main export', () => {
     }));
 
     const tokenizer = {
-      simple: jest.fn((query, key) => ({
-        pipeline: {
-          [key]: { $eq: query[key] },
-        },
-      })),
+      simple: jest.fn((query, key) => ({ pipeline: { [key]: { $eq: query[key] } } })),
       relationship: jest.fn((query, key) => {
         const [table] = key.split('_');
         return {
@@ -79,23 +75,17 @@ describe('Test main export', () => {
       }),
     };
 
-    const getUID = jest.fn(key => key);
-
     const joinQuery = {
       AND: [
         { name: 'foobar' },
         { age: 23 },
-        {
-          posts_every: {
-            AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }],
-          },
-        },
+        { posts_every: { AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] } },
       ],
     };
 
     const builder = mongoJoinBuilder({
       tokenizer,
-      getUID,
+      getUID: jest.fn(key => key),
     });
 
     const aggregateResponse = [
@@ -141,138 +131,67 @@ describe('Test main export', () => {
 
     expect(aggregate).toHaveBeenCalledWith([
       {
-        $match: {
-          $and: [
-            {
-              name: {
-                $eq: 'foobar',
-              },
-            },
-            {
-              age: {
-                $eq: 23,
-              },
-            },
-          ],
-        },
-      },
-      {
         $lookup: {
           from: 'posts-collection',
           as: 'posts_every_posts',
-          let: {
-            posts_every_posts_ids: '$posts',
-          },
+          let: { posts_every_posts_ids: '$posts' },
           pipeline: [
-            {
-              $match: {
-                $and: [
-                  {
-                    $expr: {
-                      $in: ['$_id', '$$posts_every_posts_ids'],
-                    },
-                  },
-                  {
-                    title: {
-                      $eq: 'hello',
-                    },
-                  },
-                ],
-              },
-            },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'labels_some_labels',
-                let: {
-                  labels_some_labels_ids: '$labels',
-                },
+                let: { labels_some_labels_ids: '$labels' },
                 pipeline: [
                   {
                     $match: {
                       $and: [
-                        {
-                          $expr: {
-                            $in: ['$_id', '$$labels_some_labels_ids'],
-                          },
-                        },
-                        {
-                          name: {
-                            $eq: 'foo',
-                          },
-                        },
+                        { $expr: { $in: ['$_id', '$$labels_some_labels_ids'] } },
+                        { name: { $eq: 'foo' } },
                       ],
                     },
                   },
-                  {
-                    $addFields: {
-                      id: '$_id',
-                    },
-                  },
+                  { $addFields: { id: '$_id' } },
                 ],
               },
             },
             {
               $addFields: {
                 labels_some_labels_every: {
-                  $eq: [
-                    {
-                      $size: '$labels_some_labels',
-                    },
-                    {
-                      $size: '$labels',
-                    },
-                  ],
+                  $eq: [{ $size: '$labels_some_labels' }, { $size: '$labels' }],
                 },
-                labels_some_labels_none: {
-                  $eq: [
-                    {
-                      $size: '$labels_some_labels',
-                    },
-                    0,
-                  ],
-                },
+                labels_some_labels_none: { $eq: [{ $size: '$labels_some_labels' }, 0] },
                 labels_some_labels_some: { $gt: [{ $size: '$labels_some_labels' }, 0] },
               },
             },
-            { $match: { $exists: true, $ne: [] } },
             {
-              $addFields: {
-                id: '$_id',
+              $match: {
+                $and: [
+                  { $expr: { $in: ['$_id', '$$posts_every_posts_ids'] } },
+                  {
+                    $and: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }],
+                  },
+                ],
               },
+            },
+            {
+              $addFields: { id: '$_id' },
             },
           ],
         },
       },
       {
         $addFields: {
-          posts_every_posts_every: {
-            $eq: [
-              {
-                $size: '$posts_every_posts',
-              },
-              {
-                $size: '$posts',
-              },
-            ],
-          },
-          posts_every_posts_none: {
-            $eq: [
-              {
-                $size: '$posts_every_posts',
-              },
-              0,
-            ],
-          },
+          posts_every_posts_every: { $eq: [{ $size: '$posts_every_posts' }, { $size: '$posts' }] },
+          posts_every_posts_none: { $eq: [{ $size: '$posts_every_posts' }, 0] },
           posts_every_posts_some: { $gt: [{ $size: '$posts_every_posts' }, 0] },
         },
       },
-      { $match: { $exists: true, $ne: [] } },
       {
-        $addFields: {
-          id: '$_id',
+        $match: {
+          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }],
         },
       },
+      { $addFields: { id: '$_id' } },
     ]);
 
     expect(result).toMatchObject([
@@ -323,13 +242,9 @@ describe('Test main export', () => {
       relationship: () => {},
     };
 
-    const joinQuery = {
-      name: 'foobar',
-    };
+    const joinQuery = { name: 'foobar' };
 
-    const builder = mongoJoinBuilder({
-      tokenizer,
-    });
+    const builder = mongoJoinBuilder({ tokenizer });
 
     const aggregateResponse = [];
 
@@ -348,13 +263,9 @@ describe('Test main export', () => {
       },
     };
 
-    const joinQuery = {
-      user: { name: 'foobar' },
-    };
+    const joinQuery = { user: { name: 'foobar' } };
 
-    const builder = mongoJoinBuilder({
-      tokenizer,
-    });
+    const builder = mongoJoinBuilder({ tokenizer });
 
     const aggregateResponse = [];
 
