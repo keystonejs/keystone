@@ -1,2 +1,2 @@
-module.exports = ({ joinQuery, mutator, aggregate }) =>
-  aggregate(joinQuery).then(queryResult => mutator(queryResult));
+module.exports = ({ pipeline, mutator, aggregate }) =>
+  aggregate(pipeline).then(queryResult => mutator(queryResult));

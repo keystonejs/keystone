@@ -12,9 +12,7 @@ module.exports = ({ getRelatedListAdapterFromQueryPath, modifierConditions = {} 
   const simpleQueryConditions = refListAdapter.getSimpleQueryConditions();
 
   if (queryKey in simpleQueryConditions) {
-    return {
-      pipeline: [simpleQueryConditions[queryKey](query[queryKey], query)],
-    };
+    return { matchTerm: simpleQueryConditions[queryKey](query[queryKey], query) };
   }
 
   if (queryKey in modifierConditions) {

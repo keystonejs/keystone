@@ -583,7 +583,7 @@ describe('query parser', () => {
   describe('simple queries', () => {
     test('builds a simple query tree', () => {
       const tokenizer = {
-        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
       };
 
       const queryTree = queryParser(
@@ -597,13 +597,13 @@ describe('query parser', () => {
       expect(queryTree).toMatchObject({
         // No relationships in this test
         relationships: {},
-        pipeline: [{ $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
+        matchTerm: { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] },
       });
     });
 
     test('builds a query tree with ANDs', () => {
       const tokenizer = {
-        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
       };
 
       const queryTree = queryParser({ tokenizer }, { AND: [{ name: 'foobar' }, { age: 23 }] });
@@ -611,13 +611,13 @@ describe('query parser', () => {
       expect(queryTree).toMatchObject({
         // No relationships in this test
         relationships: {},
-        pipeline: [{ $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
+        matchTerm: { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] },
       });
     });
 
     test('builds a query tree with ORs', () => {
       const tokenizer = {
-        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
       };
 
       const queryTree = queryParser({ tokenizer }, { OR: [{ name: 'foobar' }, { age: 23 }] });
@@ -625,7 +625,7 @@ describe('query parser', () => {
       expect(queryTree).toMatchObject({
         // No relationships in this test
         relationships: {},
-        pipeline: [{ $or: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] }],
+        matchTerm: { $or: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] },
       });
     });
   });
@@ -640,7 +640,7 @@ describe('query parser', () => {
           if (key.startsWith('$')) {
             return { postJoinPipeline: [{ [key]: value }] };
           }
-          return { pipeline: [{ [key]: { $eq: value } }] };
+          return { matchTerm: { [key]: { $eq: value } } };
         }),
         relationship: jest.fn((query, key, path, prefix) => {
           relationPrefix = prefix;
@@ -649,7 +649,7 @@ describe('query parser', () => {
             from: `${field}-collection`,
             field,
             postQueryMutation: () => {},
-            match: { [`${prefix}${field}_every`]: { $eq: true } },
+            matchTerm: { [`${prefix}${field}_every`]: { $eq: true } },
             many: true,
           };
         }),
@@ -673,22 +673,20 @@ describe('query parser', () => {
           posts: {
             from: 'posts-collection',
             field: 'posts',
-            pipeline: [{ title: { $eq: 'hello' } }],
+            matchTerm: { title: { $eq: 'hello' } },
             postJoinPipeline: [{ $orderBy: 'title_ASC' }],
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: expect.any(Object),
           },
         },
-        pipeline: [
-          {
-            $and: [
-              { name: { $eq: 'foobar' } },
-              { age: { $eq: 23 } },
-              { [`${relationPrefix}posts_every`]: { $eq: true } },
-            ],
-          },
-        ],
+        matchTerm: {
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { [`${relationPrefix}posts_every`]: { $eq: true } },
+          ],
+        },
         postJoinPipeline: [{ $limit: 1 }],
       });
     });
@@ -697,7 +695,7 @@ describe('query parser', () => {
       let relationPrefix;
 
       const tokenizer = {
-        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
         relationship: jest.fn((query, key, path, prefix) => {
           relationPrefix = prefix;
           const field = key;
@@ -705,7 +703,7 @@ describe('query parser', () => {
             from: `${field}-collection`,
             field,
             postQueryMutation: () => {},
-            match: { [`${prefix}${field}_every`]: { $eq: true } },
+            matchTerm: { [`${prefix}${field}_every`]: { $eq: true } },
             many: true,
           };
         }),
@@ -725,21 +723,19 @@ describe('query parser', () => {
           posts: {
             from: 'posts-collection',
             field: 'posts',
-            pipeline: [{ title: { $eq: 'hello' } }],
+            matchTerm: { title: { $eq: 'hello' } },
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: expect.any(Object),
           },
         },
-        pipeline: [
-          {
-            $and: [
-              { name: { $eq: 'foobar' } },
-              { age: { $eq: 23 } },
-              { [`${relationPrefix}posts_every`]: { $eq: true } },
-            ],
-          },
-        ],
+        matchTerm: {
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { [`${relationPrefix}posts_every`]: { $eq: true } },
+          ],
+        },
       });
     });
 
@@ -747,7 +743,7 @@ describe('query parser', () => {
       let relationPrefix;
 
       const tokenizer = {
-        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
         relationship: jest.fn((query, key, path, prefix) => {
           relationPrefix = prefix;
           const field = key;
@@ -755,7 +751,7 @@ describe('query parser', () => {
             from: `${field}-collection`,
             field,
             postQueryMutation: () => {},
-            match: { [`${prefix}${field}_every`]: { $eq: true } },
+            matchTerm: { [`${prefix}${field}_every`]: { $eq: true } },
             many: true,
           };
         }),
@@ -775,21 +771,18 @@ describe('query parser', () => {
           posts: {
             from: 'posts-collection',
             field: 'posts',
-            pipeline: [],
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: expect.any(Object),
           },
         },
-        pipeline: [
-          {
-            $and: [
-              { name: { $eq: 'foobar' } },
-              { age: { $eq: 23 } },
-              { [`${relationPrefix}posts_every`]: { $eq: true } },
-            ],
-          },
-        ],
+        matchTerm: {
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { [`${relationPrefix}posts_every`]: { $eq: true } },
+          ],
+        },
       });
     });
 
@@ -797,7 +790,7 @@ describe('query parser', () => {
       let relationPrefix;
 
       const tokenizer = {
-        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
         relationship: jest.fn((query, key, path, prefix) => {
           relationPrefix = prefix;
           const field = key;
@@ -805,7 +798,7 @@ describe('query parser', () => {
             from: `${field}-collection`,
             field,
             postQueryMutation: () => {},
-            match: { [`${prefix}${field}_every`]: { $eq: true } },
+            matchTerm: { [`${prefix}${field}_every`]: { $eq: true } },
             many: false,
           };
         }),
@@ -825,33 +818,31 @@ describe('query parser', () => {
           company: {
             from: 'company-collection',
             field: 'company',
-            pipeline: [{ name: { $eq: 'hello' } }],
+            matchTerm: { name: { $eq: 'hello' } },
             postQueryMutation: expect.any(Function),
             many: false,
           },
         },
-        pipeline: [
-          {
-            $and: [
-              { name: { $eq: 'foobar' } },
-              { age: { $eq: 23 } },
-              { [`${relationPrefix}company_every`]: { $eq: true } },
-            ],
-          },
-        ],
+        matchTerm: {
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { [`${relationPrefix}company_every`]: { $eq: true } },
+          ],
+        },
       });
     });
 
     test('builds a query tree with nested relationship', () => {
       const tokenizer = {
-        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
         relationship: jest.fn((query, key) => {
           const [table] = key.split('_');
           return {
             from: `${table}-collection`,
             field: table,
             postQueryMutation: () => {},
-            match: { [key]: { $eq: true } },
+            matchTerm: { [key]: { $eq: true } },
             many: true,
           };
         }),
@@ -877,21 +868,21 @@ describe('query parser', () => {
           posts_every: {
             from: 'posts-collection',
             field: 'posts',
-            pipeline: [{ $and: [{ title: { $eq: 'hello' } }, { tags_some: { $eq: true } }] }],
+            matchTerm: { $and: [{ title: { $eq: 'hello' } }, { tags_some: { $eq: true } }] },
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: {
               tags_some: {
                 from: 'tags-collection',
                 field: 'tags',
-                pipeline: [{ $and: [{ name: { $eq: 'React' } }, { posts_every: { $eq: true } }] }],
+                matchTerm: { $and: [{ name: { $eq: 'React' } }, { posts_every: { $eq: true } }] },
                 postQueryMutation: expect.any(Function),
                 many: true,
                 relationships: {
                   posts_every: {
                     from: 'posts-collection',
                     field: 'posts',
-                    pipeline: [{ title: { $eq: 'foo' } }],
+                    matchTerm: { title: { $eq: 'foo' } },
                     postQueryMutation: expect.any(Function),
                     many: true,
                   },
@@ -900,28 +891,22 @@ describe('query parser', () => {
             },
           },
         },
-        pipeline: [
-          {
-            $and: [
-              { name: { $eq: 'foobar' } },
-              { age: { $eq: 23 } },
-              { posts_every: { $eq: true } },
-            ],
-          },
-        ],
+        matchTerm: {
+          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { posts_every: { $eq: true } }],
+        },
       });
     });
 
     test('builds a query tree with nested relationship with nested AND', () => {
       const tokenizer = {
-        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
         relationship: jest.fn((query, key) => {
           const [table] = key.split('_');
           return {
             from: `${table}-collection`,
             field: table,
             postQueryMutation: () => {},
-            match: { $exists: true, $ne: [] },
+            matchTerm: { $exists: true, $ne: [] },
             many: true,
           };
         }),
@@ -942,35 +927,35 @@ describe('query parser', () => {
         relationships: {
           posts_every: {
             from: 'posts-collection',
-            pipeline: [{ $and: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] }],
+            matchTerm: { $and: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] },
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: {
               labels_some: {
                 from: 'labels-collection',
-                pipeline: [{ name: { $eq: 'foo' } }],
+                matchTerm: { name: { $eq: 'foo' } },
                 postQueryMutation: expect.any(Function),
                 many: true,
               },
             },
           },
         },
-        pipeline: [
-          { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }] },
-        ],
+        matchTerm: {
+          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }],
+        },
       });
     });
 
     test('builds a query tree with nested relationship with nested OR', () => {
       const tokenizer = {
-        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
         relationship: jest.fn((query, key) => {
           const [table] = key.split('_');
           return {
             from: `${table}-collection`,
             field: table,
             postQueryMutation: () => {},
-            match: { $exists: true, $ne: [] },
+            matchTerm: { $exists: true, $ne: [] },
             many: true,
           };
         }),
@@ -991,35 +976,35 @@ describe('query parser', () => {
         relationships: {
           posts_every: {
             from: 'posts-collection',
-            pipeline: [{ $or: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] }],
+            matchTerm: { $or: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] },
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: {
               labels_some: {
                 from: 'labels-collection',
-                pipeline: [{ name: { $eq: 'foo' } }],
+                matchTerm: { name: { $eq: 'foo' } },
                 postQueryMutation: expect.any(Function),
                 many: true,
               },
             },
           },
         },
-        pipeline: [
-          { $or: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }] },
-        ],
+        matchTerm: {
+          $or: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }],
+        },
       });
     });
 
     test('builds a query tree with nested relationship with nested AND/OR', () => {
       const tokenizer = {
-        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
         relationship: jest.fn((query, key) => {
           const [table] = key.split('_');
           return {
             from: `${table}-collection`,
             field: table,
             postQueryMutation: () => {},
-            match: { $exists: true, $ne: [] },
+            matchTerm: { $exists: true, $ne: [] },
             many: true,
           };
         }),
@@ -1040,35 +1025,35 @@ describe('query parser', () => {
         relationships: {
           posts_every: {
             from: 'posts-collection',
-            pipeline: [{ $or: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] }],
+            matchTerm: { $or: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] },
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: {
               labels_some: {
                 from: 'labels-collection',
-                pipeline: [{ name: { $eq: 'foo' } }],
+                matchTerm: { name: { $eq: 'foo' } },
                 postQueryMutation: expect.any(Function),
                 many: true,
               },
             },
           },
         },
-        pipeline: [
-          { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }] },
-        ],
+        matchTerm: {
+          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }],
+        },
       });
     });
 
     test('builds a query tree with nested relationship with nested OR/AND', () => {
       const tokenizer = {
-        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
         relationship: jest.fn((query, key) => {
           const [table] = key.split('_');
           return {
             from: `${table}-collection`,
             field: table,
             postQueryMutation: () => {},
-            match: { $exists: true, $ne: [] },
+            matchTerm: { $exists: true, $ne: [] },
             many: true,
           };
         }),
@@ -1089,35 +1074,35 @@ describe('query parser', () => {
         relationships: {
           posts_every: {
             from: 'posts-collection',
-            pipeline: [{ $and: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] }],
+            matchTerm: { $and: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] },
             postQueryMutation: expect.any(Function),
             many: true,
             relationships: {
               labels_some: {
                 from: 'labels-collection',
-                pipeline: [{ name: { $eq: 'foo' } }],
+                matchTerm: { name: { $eq: 'foo' } },
                 postQueryMutation: expect.any(Function),
                 many: true,
               },
             },
           },
         },
-        pipeline: [
-          { $or: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }] },
-        ],
+        matchTerm: {
+          $or: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }],
+        },
       });
     });
 
     test('builds a query tree with nested relationship with parallel OR/AND', () => {
       const tokenizer = {
-        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
         relationship: jest.fn((query, key) => {
           const [table] = key.split('_');
           return {
             from: `${table}-collection`,
             field: table,
             postQueryMutation: () => {},
-            match: { $exists: true, $ne: [] },
+            matchTerm: { $exists: true, $ne: [] },
             many: true,
           };
         }),
@@ -1133,18 +1118,12 @@ describe('query parser', () => {
 
       expect(queryTree).toMatchObject({
         relationships: {},
-        pipeline: [
-          {
-            $and: [
-              {
-                $or: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
-              },
-              {
-                $and: [{ age: { $eq: 30 } }, { email: { $eq: 'foo@bar.com' } }],
-              },
-            ],
-          },
-        ],
+        matchTerm: {
+          $and: [
+            { $or: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] },
+            { $and: [{ age: { $eq: 30 } }, { email: { $eq: 'foo@bar.com' } }] },
+          ],
+        },
       });
     });
   });
