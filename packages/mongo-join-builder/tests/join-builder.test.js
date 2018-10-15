@@ -588,6 +588,236 @@ describe('join builder', () => {
     ]);
   });
 
+  test('correctly generates joins with nested AND/OR', () => {
+    /*
+     * From this query:
+
+      {
+        AND: [
+          { name: 'foobar' },
+          { age: 23 },
+          {
+            posts_every: {
+              OR: [{ title: 'hello' }, { labels_some: { name: 'foo' } }],
+            },
+          },
+        ],
+      }
+    */
+
+    const { joinQuery } = joinBuilder({
+      relationships: {
+        zip567: {
+          from: 'posts-collection',
+          field: 'posts',
+          pipeline: [
+            { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
+          ],
+          postQueryMutation: jest.fn(),
+          many: true,
+          relationships: {
+            quux987: {
+              from: 'labels-collection',
+              field: 'labels',
+              pipeline: [{ name: { $eq: 'foo' } }],
+              postQueryMutation: jest.fn(),
+              many: true,
+            },
+          },
+        },
+      },
+      pipeline: [
+        {
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { zip567_posts_every: { $eq: true } },
+          ],
+        },
+      ],
+    });
+
+    expect(joinQuery).toMatchObject([
+      {
+        $lookup: {
+          from: 'posts-collection',
+          as: 'zip567_posts',
+          let: { zip567_posts_ids: '$posts' },
+          pipeline: [
+            {
+              $lookup: {
+                from: 'labels-collection',
+                as: 'quux987_labels',
+                let: { quux987_labels_ids: '$labels' },
+                pipeline: [
+                  {
+                    $match: {
+                      $and: [
+                        { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } },
+                        { name: { $eq: 'foo' } },
+                      ],
+                    },
+                  },
+                  { $addFields: { id: '$_id' } },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                quux987_labels_every: { $eq: [{ $size: '$quux987_labels' }, { $size: '$labels' }] },
+                quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
+                quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
+              },
+            },
+            {
+              $match: {
+                $and: [
+                  { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } },
+                  {
+                    $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+                  },
+                ],
+              },
+            },
+            { $addFields: { id: '$_id' } },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          zip567_posts_every: { $eq: [{ $size: '$zip567_posts' }, { $size: '$posts' }] },
+          zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
+          zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
+        },
+      },
+      {
+        $match: {
+          $and: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { zip567_posts_every: { $eq: true } },
+          ],
+        },
+      },
+      { $addFields: { id: '$_id' } },
+    ]);
+  });
+
+  test('correctly generates joins with nested OR/AND', () => {
+    /*
+     * From this query:
+
+      {
+        OR: [
+          { name: 'foobar' },
+          { age: 23 },
+          {
+            posts_every: {
+              AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }],
+            },
+          },
+        ],
+      }
+    */
+
+    const { joinQuery } = joinBuilder({
+      relationships: {
+        zip567: {
+          from: 'posts-collection',
+          field: 'posts',
+          pipeline: [
+            { $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
+          ],
+          postQueryMutation: jest.fn(),
+          many: true,
+          relationships: {
+            quux987: {
+              from: 'labels-collection',
+              field: 'labels',
+              pipeline: [{ name: { $eq: 'foo' } }],
+              postQueryMutation: jest.fn(),
+              many: true,
+            },
+          },
+        },
+      },
+      pipeline: [
+        {
+          $or: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { zip567_posts_every: { $eq: true } },
+          ],
+        },
+      ],
+    });
+
+    expect(joinQuery).toMatchObject([
+      {
+        $lookup: {
+          from: 'posts-collection',
+          as: 'zip567_posts',
+          let: { zip567_posts_ids: '$posts' },
+          pipeline: [
+            {
+              $lookup: {
+                from: 'labels-collection',
+                as: 'quux987_labels',
+                let: { quux987_labels_ids: '$labels' },
+                pipeline: [
+                  {
+                    $match: {
+                      $and: [
+                        { $expr: { $in: ['$_id', '$$quux987_labels_ids'] } },
+                        { name: { $eq: 'foo' } },
+                      ],
+                    },
+                  },
+                  { $addFields: { id: '$_id' } },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                quux987_labels_every: { $eq: [{ $size: '$quux987_labels' }, { $size: '$labels' }] },
+                quux987_labels_none: { $eq: [{ $size: '$quux987_labels' }, 0] },
+                quux987_labels_some: { $gt: [{ $size: '$quux987_labels' }, 0] },
+              },
+            },
+            {
+              $match: {
+                $and: [
+                  { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } },
+                  {
+                    $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+                  },
+                ],
+              },
+            },
+            { $addFields: { id: '$_id' } },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          zip567_posts_every: { $eq: [{ $size: '$zip567_posts' }, { $size: '$posts' }] },
+          zip567_posts_none: { $eq: [{ $size: '$zip567_posts' }, 0] },
+          zip567_posts_some: { $gt: [{ $size: '$zip567_posts' }, 0] },
+        },
+      },
+      {
+        $match: {
+          $or: [
+            { name: { $eq: 'foobar' } },
+            { age: { $eq: 23 } },
+            { zip567_posts_every: { $eq: true } },
+          ],
+        },
+      },
+      { $addFields: { id: '$_id' } },
+    ]);
+  });
+
   test('executes relationship mutators with correct parameters', () => {
     // TODO - check it's called with these params:
     /*

@@ -90,7 +90,7 @@ describe('relationship filtering', () => {
             allUsers(where: {
               OR: [
                 { company: { name_contains: "in" } },
-                { company: { name_contains: "ll" } }
+                { company: { name_contains: "xx" } }
               ]
             }) {
               id

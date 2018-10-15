@@ -287,6 +287,36 @@ describe('query parser', () => {
       );
     });
 
+    test('OR query with extra AND query', () => {
+      const simpleTokenizer = { simple: jest.fn(() => ({})) };
+      queryParser(
+        { tokenizer: simpleTokenizer },
+        {
+          OR: [{ name: 'foobar' }, { age_lte: 23 }],
+          AND: [{ age_gte: 20 }, { email: 'foo@bar.com' }],
+        }
+      );
+
+      expect(simpleTokenizer.simple).toBeCalledTimes(4);
+      expect(simpleTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', ['OR', 0, 'name']);
+      expect(simpleTokenizer.simple).toBeCalledWith({ age_lte: 23 }, 'age_lte', [
+        'OR',
+        1,
+        'age_lte',
+      ]);
+      expect(simpleTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', ['OR', 0, 'name']);
+      expect(simpleTokenizer.simple).toBeCalledWith({ age_gte: 20 }, 'age_gte', [
+        'AND',
+        0,
+        'age_gte',
+      ]);
+      expect(simpleTokenizer.simple).toBeCalledWith({ email: 'foo@bar.com' }, 'email', [
+        'AND',
+        1,
+        'email',
+      ]);
+    });
+
     test('AND query with invalid query type', () => {
       const simpleTokenizer = { simple: jest.fn(() => []) };
       expect(() =>
@@ -363,6 +393,72 @@ describe('query parser', () => {
         { labels_some: { name: 'foo' } },
         'labels_some',
         ['posts_every', 'AND', 1, 'labels_some'],
+        expect.any(String)
+      );
+    });
+
+    test('complex query with nested OR', () => {
+      const complexTokenizer = {
+        simple: jest.fn(() => ({})),
+        relationship: jest.fn(() => ({})),
+      };
+      queryParser(
+        { tokenizer: complexTokenizer },
+        {
+          name: 'foobar',
+          age: 23,
+          posts_every: { OR: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] },
+        }
+      );
+
+      expect(complexTokenizer.simple).toBeCalledTimes(4);
+      expect(complexTokenizer.simple).toBeCalledWith(
+        {
+          name: 'foobar',
+          age: 23,
+          posts_every: { OR: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] },
+        },
+        'name',
+        ['name']
+      );
+      expect(complexTokenizer.simple).toBeCalledWith(
+        {
+          name: 'foobar',
+          age: 23,
+          posts_every: { OR: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] },
+        },
+        'age',
+        ['age']
+      );
+      expect(complexTokenizer.simple).toBeCalledWith({ title: 'hello' }, 'title', [
+        'posts_every',
+        'OR',
+        0,
+        'title',
+      ]);
+      expect(complexTokenizer.simple).toBeCalledWith({ name: 'foo' }, 'name', [
+        'posts_every',
+        'OR',
+        1,
+        'labels_some',
+        'name',
+      ]);
+
+      expect(complexTokenizer.relationship).toBeCalledTimes(2);
+      expect(complexTokenizer.relationship).toBeCalledWith(
+        {
+          name: 'foobar',
+          age: 23,
+          posts_every: { OR: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] },
+        },
+        'posts_every',
+        ['posts_every'],
+        expect.any(String)
+      );
+      expect(complexTokenizer.relationship).toBeCalledWith(
+        { labels_some: { name: 'foo' } },
+        'labels_some',
+        ['posts_every', 'OR', 1, 'labels_some'],
         expect.any(String)
       );
     });
@@ -910,6 +1006,144 @@ describe('query parser', () => {
         },
         pipeline: [
           { $or: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }] },
+        ],
+      });
+    });
+
+    test('builds a query tree with nested relationship with nested AND/OR', () => {
+      const tokenizer = {
+        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        relationship: jest.fn((query, key) => {
+          const [table] = key.split('_');
+          return {
+            from: `${table}-collection`,
+            field: table,
+            postQueryMutation: () => {},
+            match: { $exists: true, $ne: [] },
+            many: true,
+          };
+        }),
+      };
+
+      const queryTree = queryParser(
+        { tokenizer, getUID: jest.fn(key => key) },
+        {
+          AND: [
+            { name: 'foobar' },
+            { age: 23 },
+            { posts_every: { OR: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] } },
+          ],
+        }
+      );
+
+      expect(queryTree).toMatchObject({
+        relationships: {
+          posts_every: {
+            from: 'posts-collection',
+            pipeline: [{ $or: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] }],
+            postQueryMutation: expect.any(Function),
+            many: true,
+            relationships: {
+              labels_some: {
+                from: 'labels-collection',
+                pipeline: [{ name: { $eq: 'foo' } }],
+                postQueryMutation: expect.any(Function),
+                many: true,
+              },
+            },
+          },
+        },
+        pipeline: [
+          { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }] },
+        ],
+      });
+    });
+
+    test('builds a query tree with nested relationship with nested OR/AND', () => {
+      const tokenizer = {
+        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        relationship: jest.fn((query, key) => {
+          const [table] = key.split('_');
+          return {
+            from: `${table}-collection`,
+            field: table,
+            postQueryMutation: () => {},
+            match: { $exists: true, $ne: [] },
+            many: true,
+          };
+        }),
+      };
+
+      const queryTree = queryParser(
+        { tokenizer, getUID: jest.fn(key => key) },
+        {
+          OR: [
+            { name: 'foobar' },
+            { age: 23 },
+            { posts_every: { AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] } },
+          ],
+        }
+      );
+
+      expect(queryTree).toMatchObject({
+        relationships: {
+          posts_every: {
+            from: 'posts-collection',
+            pipeline: [{ $and: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }] }],
+            postQueryMutation: expect.any(Function),
+            many: true,
+            relationships: {
+              labels_some: {
+                from: 'labels-collection',
+                pipeline: [{ name: { $eq: 'foo' } }],
+                postQueryMutation: expect.any(Function),
+                many: true,
+              },
+            },
+          },
+        },
+        pipeline: [
+          { $or: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }] },
+        ],
+      });
+    });
+
+    test('builds a query tree with nested relationship with parallel OR/AND', () => {
+      const tokenizer = {
+        simple: jest.fn((query, key) => ({ pipeline: [{ [key]: { $eq: query[key] } }] })),
+        relationship: jest.fn((query, key) => {
+          const [table] = key.split('_');
+          return {
+            from: `${table}-collection`,
+            field: table,
+            postQueryMutation: () => {},
+            match: { $exists: true, $ne: [] },
+            many: true,
+          };
+        }),
+      };
+
+      const queryTree = queryParser(
+        { tokenizer, getUID: jest.fn(key => key) },
+        {
+          OR: [{ name: 'foobar' }, { age: 23 }],
+          AND: [{ age: 30 }, { email: 'foo@bar.com' }],
+        }
+      );
+
+      expect(queryTree).toMatchObject({
+        relationships: {},
+        pipeline: [
+          {
+            $and: [
+              {
+                $or: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
+              },
+              {
+                $and: [{ age: { $eq: 30 } }, { email: { $eq: 'foo@bar.com' } }],
+              },
+            ],
+          },
         ],
       });
     });
