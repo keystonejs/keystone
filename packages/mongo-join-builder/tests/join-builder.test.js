@@ -58,11 +58,6 @@ describe('join builder', () => {
 
     expect(joinQuery).toMatchObject([
       {
-        $match: {
-          $and: [{ title: { $eq: 'foobar' } }, { views: { $eq: 23 } }],
-        },
-      },
-      {
         $lookup: {
           from: 'user-collection',
           as: 'abc123_author',
@@ -94,6 +89,11 @@ describe('join builder', () => {
         },
       },
       { $match: { abc123_author_every: { $eq: true } } },
+      {
+        $match: {
+          $and: [{ title: { $eq: 'foobar' } }, { views: { $eq: 23 } }],
+        },
+      },
       {
         $addFields: {
           id: '$_id',
@@ -129,11 +129,6 @@ describe('join builder', () => {
 
     expect(joinQuery).toMatchObject([
       {
-        $match: {
-          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
-        },
-      },
-      {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
@@ -158,6 +153,11 @@ describe('join builder', () => {
         },
       },
       { $match: { abc123_posts_some: { $eq: true } } },
+      {
+        $match: {
+          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
+        },
+      },
       {
         $addFields: {
           id: '$_id',
@@ -195,11 +195,6 @@ describe('join builder', () => {
 
     expect(joinQuery).toMatchObject([
       {
-        $match: {
-          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
-        },
-      },
-      {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
@@ -227,6 +222,11 @@ describe('join builder', () => {
         },
       },
       { $match: { abc123_posts_some: { $eq: true } } },
+      {
+        $match: {
+          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
+        },
+      },
       {
         $addFields: {
           id: '$_id',
@@ -293,11 +293,6 @@ describe('join builder', () => {
 
     expect(joinQuery).toMatchObject([
       {
-        $match: {
-          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
-        },
-      },
-      {
         $lookup: {
           from: 'posts-collection',
           as: 'abc123_posts',
@@ -306,14 +301,6 @@ describe('join builder', () => {
           },
           pipeline: [
             {
-              $match: {
-                $and: [
-                  { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } },
-                  { title: { $eq: 'hello' } },
-                ],
-              },
-            },
-            {
               $lookup: {
                 from: 'tags-collection',
                 as: 'def456_tags',
@@ -321,14 +308,6 @@ describe('join builder', () => {
                   def456_tags_ids: '$tags',
                 },
                 pipeline: [
-                  {
-                    $match: {
-                      $and: [
-                        { $expr: { $in: ['$_id', '$$def456_tags_ids'] } },
-                        { name: { $eq: 'React' } },
-                      ],
-                    },
-                  },
                   {
                     $lookup: {
                       from: 'posts-collection',
@@ -364,6 +343,14 @@ describe('join builder', () => {
                   },
                   { $match: { xyz890_posts_every: { $eq: true } } },
                   {
+                    $match: {
+                      $and: [
+                        { $expr: { $in: ['$_id', '$$def456_tags_ids'] } },
+                        { name: { $eq: 'React' } },
+                      ],
+                    },
+                  },
+                  {
                     $addFields: {
                       id: '$_id',
                     },
@@ -380,6 +367,14 @@ describe('join builder', () => {
             },
             { $match: { def456_tags_some: { $eq: true } } },
             {
+              $match: {
+                $and: [
+                  { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } },
+                  { title: { $eq: 'hello' } },
+                ],
+              },
+            },
+            {
               $addFields: {
                 id: '$_id',
               },
@@ -395,6 +390,11 @@ describe('join builder', () => {
         },
       },
       { $match: { abc123_posts_some: { $eq: true } } },
+      {
+        $match: {
+          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
+        },
+      },
       {
         $addFields: {
           id: '$_id',
@@ -449,7 +449,6 @@ describe('join builder', () => {
     });
 
     expect(joinQuery).toMatchObject([
-      { $match: { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] } },
       {
         $lookup: {
           from: 'posts-collection',
@@ -458,14 +457,6 @@ describe('join builder', () => {
             zip567_posts_ids: '$posts',
           },
           pipeline: [
-            {
-              $match: {
-                $and: [
-                  { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } },
-                  { title: { $eq: 'hello' } },
-                ],
-              },
-            },
             {
               $lookup: {
                 from: 'labels-collection',
@@ -499,6 +490,14 @@ describe('join builder', () => {
             },
             { $match: { quux987_labels_some: { $eq: true } } },
             {
+              $match: {
+                $and: [
+                  { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } },
+                  { title: { $eq: 'hello' } },
+                ],
+              },
+            },
+            {
               $addFields: {
                 id: '$_id',
               },
@@ -514,6 +513,7 @@ describe('join builder', () => {
         },
       },
       { $match: { zip567_posts_every: { $eq: true } } },
+      { $match: { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] } },
       {
         $addFields: {
           id: '$_id',

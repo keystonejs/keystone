@@ -95,7 +95,6 @@ describe('MongooseListAdapter', () => {
     });
 
     expect(userListAdapter.model.aggregate).toHaveBeenCalledWith([
-      { $match: { title: { $eq: 'bar' } } },
       {
         $lookup: {
           as: expect.any(String),
@@ -115,6 +114,7 @@ describe('MongooseListAdapter', () => {
         $addFields: expect.any(Object),
       },
       { $match: { posts_some: true } },
+      { $match: { title: { $eq: 'bar' } } },
       { $addFields: { id: '$_id' } },
     ]);
   });

@@ -141,22 +141,6 @@ describe('Test main export', () => {
 
     expect(aggregate).toHaveBeenCalledWith([
       {
-        $match: {
-          $and: [
-            {
-              name: {
-                $eq: 'foobar',
-              },
-            },
-            {
-              age: {
-                $eq: 23,
-              },
-            },
-          ],
-        },
-      },
-      {
         $lookup: {
           from: 'posts-collection',
           as: 'posts_every_posts',
@@ -164,22 +148,6 @@ describe('Test main export', () => {
             posts_every_posts_ids: '$posts',
           },
           pipeline: [
-            {
-              $match: {
-                $and: [
-                  {
-                    $expr: {
-                      $in: ['$_id', '$$posts_every_posts_ids'],
-                    },
-                  },
-                  {
-                    title: {
-                      $eq: 'hello',
-                    },
-                  },
-                ],
-              },
-            },
             {
               $lookup: {
                 from: 'labels-collection',
@@ -237,6 +205,22 @@ describe('Test main export', () => {
             },
             { $match: { $exists: true, $ne: [] } },
             {
+              $match: {
+                $and: [
+                  {
+                    $expr: {
+                      $in: ['$_id', '$$posts_every_posts_ids'],
+                    },
+                  },
+                  {
+                    title: {
+                      $eq: 'hello',
+                    },
+                  },
+                ],
+              },
+            },
+            {
               $addFields: {
                 id: '$_id',
               },
@@ -268,6 +252,22 @@ describe('Test main export', () => {
         },
       },
       { $match: { $exists: true, $ne: [] } },
+      {
+        $match: {
+          $and: [
+            {
+              name: {
+                $eq: 'foobar',
+              },
+            },
+            {
+              age: {
+                $eq: 23,
+              },
+            },
+          ],
+        },
+      },
       {
         $addFields: {
           id: '$_id',
