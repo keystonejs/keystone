@@ -269,7 +269,7 @@ const ItemDetails = withRouter(
         updateInProgress,
         updateErrorMessage,
         itemErrors,
-        item: initialData,
+        item: savedData,
       } = this.props;
       const { copyText, item } = this.state;
       const isCopied = copyText === item.id;
@@ -281,7 +281,7 @@ const ItemDetails = withRouter(
         <ClippyIcon />
       );
       const listHref = `${adminPath}/${list.path}`;
-      const titleText = item._label_;
+      const titleText = savedData._label_;
       return (
         <Fragment>
           {updateErrorMessage ? (
@@ -316,7 +316,7 @@ const ItemDetails = withRouter(
                   field={field}
                   item={item}
                   itemErrors={itemErrors}
-                  initialData={initialData}
+                  initialData={savedData}
                   key={field.path}
                   onChange={this.onChange}
                 />
