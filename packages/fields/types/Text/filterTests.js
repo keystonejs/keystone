@@ -25,94 +25,162 @@ export const initItems = () => {
 // JM: These tests are Mongo/Mongoose specific due to null handling (filtering and ordering)
 // See https://github.com/keystonejs/keystone-5/issues/391
 
-export const filterTests = app => {
-  const match = (gqlArgs, targets, done) => {
+export const filterTests = withKeystone => {
+  const match = (server, gqlArgs, targets) => {
     gqlArgs = (gqlArgs || '') + ' orderBy: "name"';
-    matchFilter(app, gqlArgs, '{ name }', targets.map(name => ({ name })), done);
+    return matchFilter(server, gqlArgs, '{ name }', targets.map(name => ({ name })));
   };
 
-  test(`No 'where' argument`, done => {
-    match('', [null, null, '', 'FOOBAR', 'fooBAR', 'foobar', 'other'], done);
-  });
-  test(`Empty 'where' argument'`, done => {
-    match('where: { }', [null, null, '', 'FOOBAR', 'fooBAR', 'foobar', 'other'], done);
-  });
+  test(
+    `No 'where' argument`,
+    withKeystone(({ server: { server } }) =>
+      match(server, '', [null, null, '', 'FOOBAR', 'fooBAR', 'foobar', 'other'])
+    )
+  );
+  test(
+    `Empty 'where' argument'`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { }', [null, null, '', 'FOOBAR', 'fooBAR', 'foobar', 'other'])
+    )
+  );
 
-  test(`Filter: {key} (case-sensitive)`, done => {
-    match('where: { name: "fooBAR" }', ['fooBAR'], done);
-  });
-  test(`Filter: {key}_i (case-insensitive)`, done => {
-    match('where: { name_i: "fooBAR" }', ['FOOBAR', 'fooBAR', 'foobar'], done);
-  });
+  test(
+    `Filter: {key} (case-sensitive)`,
+    withKeystone(({ server: { server } }) => match(server, 'where: { name: "fooBAR" }', ['fooBAR']))
+  );
+  test(
+    `Filter: {key}_i (case-insensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_i: "fooBAR" }', ['FOOBAR', 'fooBAR', 'foobar'])
+    )
+  );
 
-  test(`Filter: {key}_not (case-sensitive)`, done => {
-    match('where: { name_not: "fooBAR" }', [null, null, '', 'FOOBAR', 'foobar', 'other'], done);
-  });
-  test(`Filter: {key}_not_i (case-insensitive)`, done => {
-    match('where: { name_not_i: "fooBAR" }', [null, null, '', 'other'], done);
-  });
+  test(
+    `Filter: {key}_not (case-sensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_not: "fooBAR" }', [null, null, '', 'FOOBAR', 'foobar', 'other'])
+    )
+  );
+  test(
+    `Filter: {key}_not_i (case-insensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_not_i: "fooBAR" }', [null, null, '', 'other'])
+    )
+  );
 
-  test(`Filter: {key}_contains (case-sensitive)`, done => {
-    match('where: { name_contains: "oo" }', ['fooBAR', 'foobar'], done);
-  });
-  test(`Filter: {key}_contains_i (case-insensitive)`, done => {
-    match('where: { name_contains_i: "oo" }', ['FOOBAR', 'fooBAR', 'foobar'], done);
-  });
+  test(
+    `Filter: {key}_contains (case-sensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_contains: "oo" }', ['fooBAR', 'foobar'])
+    )
+  );
+  test(
+    `Filter: {key}_contains_i (case-insensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_contains_i: "oo" }', ['FOOBAR', 'fooBAR', 'foobar'])
+    )
+  );
 
-  test(`Filter: {key}_not_contains (case-sensitive)`, done => {
-    match('where: { name_not_contains: "oo" }', [null, null, '', 'FOOBAR', 'other'], done);
-  });
-  test(`Filter: {key}_not_contains_i (case-insensitive)`, done => {
-    match('where: { name_not_contains_i: "oo" }', [null, null, '', 'other'], done);
-  });
+  test(
+    `Filter: {key}_not_contains (case-sensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_not_contains: "oo" }', [null, null, '', 'FOOBAR', 'other'])
+    )
+  );
+  test(
+    `Filter: {key}_not_contains_i (case-insensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_not_contains_i: "oo" }', [null, null, '', 'other'])
+    )
+  );
 
-  test(`Filter: {key}_starts_with (case-sensitive)`, done => {
-    match('where: { name_starts_with: "foo" }', ['fooBAR', 'foobar'], done);
-  });
-  test(`Filter: {key}_starts_with_i (case-insensitive)`, done => {
-    match('where: { name_starts_with_i: "foo" }', ['FOOBAR', 'fooBAR', 'foobar'], done);
-  });
+  test(
+    `Filter: {key}_starts_with (case-sensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_starts_with: "foo" }', ['fooBAR', 'foobar'])
+    )
+  );
+  test(
+    `Filter: {key}_starts_with_i (case-insensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_starts_with_i: "foo" }', ['FOOBAR', 'fooBAR', 'foobar'])
+    )
+  );
 
-  test(`Filter: {key}_not_starts_with (case-sensitive)`, done => {
-    match('where: { name_not_starts_with: "foo" }', [null, null, '', 'FOOBAR', 'other'], done);
-  });
-  test(`Filter: {key}_not_starts_with_i (case-insensitive)`, done => {
-    match('where: { name_not_starts_with_i: "foo" }', [null, null, '', 'other'], done);
-  });
+  test(
+    `Filter: {key}_not_starts_with (case-sensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_not_starts_with: "foo" }', [null, null, '', 'FOOBAR', 'other'])
+    )
+  );
+  test(
+    `Filter: {key}_not_starts_with_i (case-insensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_not_starts_with_i: "foo" }', [null, null, '', 'other'])
+    )
+  );
 
-  test(`Filter: {key}_ends_with (case-sensitive)`, done => {
-    match('where: { name_ends_with: "BAR" }', ['FOOBAR', 'fooBAR'], done);
-  });
-  test(`Filter: {key}_ends_with_i (case-insensitive)`, done => {
-    match('where: { name_ends_with_i: "BAR" }', ['FOOBAR', 'fooBAR', 'foobar'], done);
-  });
+  test(
+    `Filter: {key}_ends_with (case-sensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_ends_with: "BAR" }', ['FOOBAR', 'fooBAR'])
+    )
+  );
+  test(
+    `Filter: {key}_ends_with_i (case-insensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_ends_with_i: "BAR" }', ['FOOBAR', 'fooBAR', 'foobar'])
+    )
+  );
 
-  test(`Filter: {key}_not_ends_with (case-sensitive)`, done => {
-    match('where: { name_not_ends_with: "BAR" }', [null, null, '', 'foobar', 'other'], done);
-  });
-  test(`Filter: {key}_not_ends_with_i (case-insensitive)`, done => {
-    match('where: { name_not_ends_with_i: "BAR" }', [null, null, '', 'other'], done);
-  });
+  test(
+    `Filter: {key}_not_ends_with (case-sensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_not_ends_with: "BAR" }', [null, null, '', 'foobar', 'other'])
+    )
+  );
+  test(
+    `Filter: {key}_not_ends_with_i (case-insensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_not_ends_with_i: "BAR" }', [null, null, '', 'other'])
+    )
+  );
 
-  test(`Filter: {key}_in (case-sensitive, empty list)`, done => {
-    match('where: { name_in: [] }', [], done);
-  });
-  test(`Filter: {key}_in (case-sensitive)`, done => {
-    match('where: { name_in: ["", "FOOBAR"] }', ['', 'FOOBAR'], done);
-  });
+  test(
+    `Filter: {key}_in (case-sensitive, empty list)`,
+    withKeystone(({ server: { server } }) => match(server, 'where: { name_in: [] }', []))
+  );
+  test(
+    `Filter: {key}_in (case-sensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_in: ["", "FOOBAR"] }', ['', 'FOOBAR'])
+    )
+  );
 
-  test(`Filter: {key}_not_in (case-sensitive, empty list)`, done => {
-    match(
-      'where: { name_not_in: [] }',
-      [null, null, '', 'FOOBAR', 'fooBAR', 'foobar', 'other'],
-      done
-    );
-  });
-  test(`Filter: {key}_not_in (case-sensitive)`, done => {
-    match(
-      'where: { name_not_in: ["", "FOOBAR"] }',
-      [null, null, 'fooBAR', 'foobar', 'other'],
-      done
-    );
-  });
+  test(
+    `Filter: {key}_not_in (case-sensitive, empty list)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_not_in: [] }', [
+        null,
+        null,
+        '',
+        'FOOBAR',
+        'fooBAR',
+        'foobar',
+        'other',
+      ])
+    )
+  );
+  test(
+    `Filter: {key}_not_in (case-sensitive)`,
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { name_not_in: ["", "FOOBAR"] }', [
+        null,
+        null,
+        'fooBAR',
+        'foobar',
+        'other',
+      ])
+    )
+  );
 };
