@@ -11,14 +11,13 @@ function idsVariableName(uid, field, many) {
 
   type Query {
     relationships?: { <String>: Relationship },
-    pipeline?: [ Object ],
+    matchTerm?: Object,
     postJoinPipeline?: [ Object ],
   }
 
   type Relationship: {
     from: String,
     field: String,
-    match: [Object],
     postQueryMutation: Function,
     many?: Boolean, (default: true)
     ...Query,
@@ -30,13 +29,9 @@ function idsVariableName(uid, field, many) {
       abc123: {
         from: 'posts-collection',
         field: 'posts',
-        match: [{ abc123_posts_some: { $eq: true } }],
         postQueryMutation: jest.fn(),
         many: true,
-
-        pipeline: [
-          { title: { $eq: 'hello' } },
-        ],
+        matchTerm: { title: { $eq: 'hello' } },
         postJoinPipeline: [
           { $limit: 10 },
         ],
@@ -45,17 +40,18 @@ function idsVariableName(uid, field, many) {
         },
       },
     },
-    pipeline: [
+    matchTerm: { $and: {
       { name: { $eq: 'foobar' } },
       { age: { $eq: 23 } },
-    ],
+      { abc123_posts_some: { $eq: true } }
+    },
     postJoinPipeline: [
       { $orderBy: 'name' },
     ],
   }
  */
 function joinBuilder(query) {
-  const { joinQuery, mutators } = constructJoin(query);
+  const { pipeline, mutators } = constructJoin(query);
 
   const mutator = objToMutate => {
     return mutators.reduce((mutationTarget, relationshipMutator) => {
@@ -63,7 +59,7 @@ function joinBuilder(query) {
     }, objToMutate);
   };
 
-  return { joinQuery, mutator };
+  return { pipeline, mutator };
 }
 
 function mutation(mutator, lookupPath) {
@@ -104,56 +100,34 @@ function mutation(mutator, lookupPath) {
 }
 
 function constructJoin(query, relationshipMeta, path = []) {
-  const joinQuery = [];
-  const { pipeline, postJoinPipeline, relationships } = query;
-
-  if (pipeline) {
-    const combinedPipeline = [...pipeline];
-
-    if (relationshipMeta) {
-      const { uid, field, many } = relationshipMeta;
-
-      if (uid && field) {
-        combinedPipeline.unshift(
-          // The ID / list of IDs we're joining by. Do this very first so it
-          // limits any work required in subsequent steps / $and's.
-          {
-            $expr: {
-              [many ? '$in' : '$eq']: ['$_id', `$$${idsVariableName(uid, field, many)}`],
-            },
-          }
-        );
-      }
-    }
-
-    joinQuery.push(matchList(combinedPipeline));
-  }
+  const pipeline = [];
+  const { matchTerm, postJoinPipeline, relationships } = query;
 
   const mutators = [];
 
   if (relationships) {
     Object.entries(relationships).forEach(([uid, relationship]) => {
       // eslint-disable-next-line no-shadow
-      const { pipeline, postJoinPipeline, relationships, ...meta } = relationship;
+      const { matchTerm, postJoinPipeline, relationships, ...meta } = relationship;
 
       const uniqueField = uniqueFieldName(uid, meta.field);
 
       const relationPath = path.concat([uniqueField]);
 
       const relationJoin = constructJoin(
-        { pipeline, postJoinPipeline, relationships },
+        { matchTerm, postJoinPipeline, relationships },
         { ...meta, uid },
         relationPath
       );
 
-      joinQuery.push({
+      pipeline.push({
         $lookup: {
           from: meta.from,
           as: uniqueField,
           let: {
             [idsVariableName(uid, meta.field, meta.many)]: `$${meta.field}`,
           },
-          pipeline: relationJoin.joinQuery,
+          pipeline: relationJoin.pipeline,
         },
       });
 
@@ -165,7 +139,7 @@ function constructJoin(query, relationshipMeta, path = []) {
 
       const someCondition = { $gt: [{ $size: `$${uniqueField}` }, 0] };
 
-      joinQuery.push({
+      pipeline.push({
         $addFields: {
           [`${uniqueField}_every`]: everyCondition,
           [`${uniqueField}_none`]: noneCondition,
@@ -173,30 +147,41 @@ function constructJoin(query, relationshipMeta, path = []) {
         },
       });
 
-      // This part is our client filtering expression. This determins if the
-      // parent item is included in the final list
-      joinQuery.push(matchList(meta.match));
-
       // NOTE: Order is important. We want depth first, so we push the related
       // mutators first.
       mutators.push(...relationJoin.mutators, mutation(meta.postQueryMutation, relationPath));
     });
   }
+  const matchTerms = [matchTerm];
 
-  joinQuery.push({
+  if (relationshipMeta) {
+    const { uid, field, many } = relationshipMeta;
+
+    if (uid && field) {
+      matchTerms.unshift(
+        // The ID / list of IDs we're joining by. Do this very first so it
+        // limits any work required in subsequent steps / $and's.
+        { $expr: { [many ? '$in' : '$eq']: ['$_id', `$$${idsVariableName(uid, field, many)}`] } }
+      );
+    }
+  }
+
+  pipeline.push(combineMatchTerms(matchTerms.filter(i => i)));
+
+  pipeline.push({
     $addFields: {
       id: '$_id',
     },
   });
 
   if (postJoinPipeline && postJoinPipeline.length) {
-    joinQuery.push(...postJoinPipeline);
+    pipeline.push(...postJoinPipeline);
   }
 
-  return { joinQuery: joinQuery.filter(i => i), mutators };
+  return { pipeline: pipeline.filter(i => i), mutators };
 }
 
-const matchList = terms =>
+const combineMatchTerms = terms =>
   terms && terms.length
     ? terms.length === 1
       ? { $match: terms[0] }

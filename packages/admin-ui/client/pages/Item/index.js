@@ -223,7 +223,7 @@ const ItemDetails = withRouter(
         .then(() => {
           const toastContent = (
             <div>
-              {item.name ? <strong>{item.name}</strong> : null}
+              {item._label_ ? <strong>{item._label_}</strong> : null}
               <div>Saved successfully</div>
             </div>
           );
@@ -271,7 +271,7 @@ const ItemDetails = withRouter(
         updateInProgress,
         updateErrorMessage,
         itemErrors,
-        item: initialData,
+        item: savedData,
       } = this.props;
       const { copyText, item } = this.state;
       const isCopied = copyText === item.id;
@@ -283,7 +283,7 @@ const ItemDetails = withRouter(
         <ClippyIcon />
       );
       const listHref = `${adminPath}/${list.path}`;
-      const titleText = item._label_;
+      const titleText = savedData._label_;
       return (
         <Fragment>
           {updateErrorMessage ? (
@@ -318,7 +318,7 @@ const ItemDetails = withRouter(
                   field={field}
                   item={item}
                   itemErrors={itemErrors}
-                  initialData={initialData}
+                  initialData={savedData}
                   key={field.path}
                   onChange={this.onChange}
                 />
@@ -386,27 +386,28 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
           return item ? (
             <main>
               <DocTitle>
-                {item.name} - {list.singular}
+                {item._label_} - {list.singular}
               </DocTitle>
               <Container id="toast-boundary">
-                <Mutation mutation={list.updateMutation}>
+                <Mutation
+                  mutation={list.updateMutation}
+                  onError={updateError => {
+                    const [title, ...rest] = updateError.message.split(/\:/);
+                    const toastContent = rest.length ? (
+                      <div>
+                        <strong>{title.trim()}</strong>
+                        <div>{rest.join('').trim()}</div>
+                      </div>
+                    ) : (
+                      updateError.message
+                    );
+
+                    toastManager.add(toastContent, {
+                      appearance: 'error',
+                    });
+                  }}
+                >
                   {(updateItem, { loading: updateInProgress, error: updateError }) => {
-                    if (updateError) {
-                      const [title, ...rest] = updateError.message.split(/\:/);
-                      const toastContent = rest.length ? (
-                        <div>
-                          <strong>{title.trim()}</strong>
-                          <div>{rest.join('').trim()}</div>
-                        </div>
-                      ) : (
-                        updateError.message
-                      );
-
-                      toastManager.add(toastContent, {
-                        appearance: 'error',
-                      });
-                    }
-
                     return (
                       <ItemDetails
                         adminPath={adminPath}

@@ -8,7 +8,7 @@ async function withMongoMemoryServer(adapter, callback) {
   const mongoUri = await mongoServer.getConnectionString();
   const dbName = await mongoServer.getDbName();
 
-  const cleanup = () => adapter.close().then(() => mongoServer.stop());
+  const cleanup = () => adapter.disconnect().then(() => mongoServer.stop());
 
   return Promise.resolve(callback({ mongoUri, dbName }))
     .then(result => {
@@ -35,7 +35,7 @@ describe('MongooseAdapter', () => {
       const setupTask = createLazyDeferred();
 
       // Push a promise to be waited upon
-      adapter.pushSetupTask(setupTask.promise);
+      adapter.pushSetupTask(() => setupTask.promise);
 
       // Setup a hook to so we can wait for the connection to occur
       // (This is hacky, but we need a way to wait until the main work of
@@ -91,9 +91,9 @@ describe('MongooseAdapter', () => {
 
     await withMongoMemoryServer(adapter, async ({ mongoUri, dbName }) => {
       // Push promises to be waited upon
-      adapter.pushSetupTask(Promise.reject('Oh no'));
-      adapter.pushSetupTask(Promise.resolve('ok'));
-      adapter.pushSetupTask(Promise.reject('Boom'));
+      adapter.pushSetupTask(() => Promise.reject('Oh no'));
+      adapter.pushSetupTask(() => Promise.resolve('ok'));
+      adapter.pushSetupTask(() => Promise.reject('Boom'));
 
       // Call connect, which should wait on the above promises and then reject
       // because some of the tasks failed

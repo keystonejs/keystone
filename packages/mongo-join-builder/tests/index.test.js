@@ -62,40 +62,30 @@ describe('Test main export', () => {
     }));
 
     const tokenizer = {
-      simple: jest.fn((query, key) => ({
-        pipeline: {
-          [key]: { $eq: query[key] },
-        },
-      })),
+      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
       relationship: jest.fn((query, key) => {
         const [table] = key.split('_');
         return {
           from: `${table}-collection`,
           field: table,
           postQueryMutation,
-          match: [{ $exists: true, $ne: [] }],
+          matchTerm: { $exists: true, $ne: [] },
           many: true,
         };
       }),
     };
 
-    const getUID = jest.fn(key => key);
-
-    const joinQuery = {
+    const query = {
       AND: [
         { name: 'foobar' },
         { age: 23 },
-        {
-          posts_every: {
-            AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }],
-          },
-        },
+        { posts_every: { AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }] } },
       ],
     };
 
     const builder = mongoJoinBuilder({
       tokenizer,
-      getUID,
+      getUID: jest.fn(key => key),
     });
 
     const aggregateResponse = [
@@ -137,142 +127,71 @@ describe('Test main export', () => {
 
     const aggregate = jest.fn(() => Promise.resolve(aggregateResponse));
 
-    const result = await builder(joinQuery, aggregate);
+    const result = await builder(query, aggregate);
 
     expect(aggregate).toHaveBeenCalledWith([
-      {
-        $match: {
-          $and: [
-            {
-              name: {
-                $eq: 'foobar',
-              },
-            },
-            {
-              age: {
-                $eq: 23,
-              },
-            },
-          ],
-        },
-      },
       {
         $lookup: {
           from: 'posts-collection',
           as: 'posts_every_posts',
-          let: {
-            posts_every_posts_ids: '$posts',
-          },
+          let: { posts_every_posts_ids: '$posts' },
           pipeline: [
-            {
-              $match: {
-                $and: [
-                  {
-                    $expr: {
-                      $in: ['$_id', '$$posts_every_posts_ids'],
-                    },
-                  },
-                  {
-                    title: {
-                      $eq: 'hello',
-                    },
-                  },
-                ],
-              },
-            },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'labels_some_labels',
-                let: {
-                  labels_some_labels_ids: '$labels',
-                },
+                let: { labels_some_labels_ids: '$labels' },
                 pipeline: [
                   {
                     $match: {
                       $and: [
-                        {
-                          $expr: {
-                            $in: ['$_id', '$$labels_some_labels_ids'],
-                          },
-                        },
-                        {
-                          name: {
-                            $eq: 'foo',
-                          },
-                        },
+                        { $expr: { $in: ['$_id', '$$labels_some_labels_ids'] } },
+                        { name: { $eq: 'foo' } },
                       ],
                     },
                   },
-                  {
-                    $addFields: {
-                      id: '$_id',
-                    },
-                  },
+                  { $addFields: { id: '$_id' } },
                 ],
               },
             },
             {
               $addFields: {
                 labels_some_labels_every: {
-                  $eq: [
-                    {
-                      $size: '$labels_some_labels',
-                    },
-                    {
-                      $size: '$labels',
-                    },
-                  ],
+                  $eq: [{ $size: '$labels_some_labels' }, { $size: '$labels' }],
                 },
-                labels_some_labels_none: {
-                  $eq: [
-                    {
-                      $size: '$labels_some_labels',
-                    },
-                    0,
-                  ],
-                },
+                labels_some_labels_none: { $eq: [{ $size: '$labels_some_labels' }, 0] },
                 labels_some_labels_some: { $gt: [{ $size: '$labels_some_labels' }, 0] },
               },
             },
-            { $match: { $exists: true, $ne: [] } },
             {
-              $addFields: {
-                id: '$_id',
+              $match: {
+                $and: [
+                  { $expr: { $in: ['$_id', '$$posts_every_posts_ids'] } },
+                  {
+                    $and: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }],
+                  },
+                ],
               },
+            },
+            {
+              $addFields: { id: '$_id' },
             },
           ],
         },
       },
       {
         $addFields: {
-          posts_every_posts_every: {
-            $eq: [
-              {
-                $size: '$posts_every_posts',
-              },
-              {
-                $size: '$posts',
-              },
-            ],
-          },
-          posts_every_posts_none: {
-            $eq: [
-              {
-                $size: '$posts_every_posts',
-              },
-              0,
-            ],
-          },
+          posts_every_posts_every: { $eq: [{ $size: '$posts_every_posts' }, { $size: '$posts' }] },
+          posts_every_posts_none: { $eq: [{ $size: '$posts_every_posts' }, 0] },
           posts_every_posts_some: { $gt: [{ $size: '$posts_every_posts' }, 0] },
         },
       },
-      { $match: { $exists: true, $ne: [] } },
       {
-        $addFields: {
-          id: '$_id',
+        $match: {
+          $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }, { $exists: true, $ne: [] }],
         },
       },
+      { $addFields: { id: '$_id' } },
     ]);
 
     expect(result).toMatchObject([
@@ -323,19 +242,15 @@ describe('Test main export', () => {
       relationship: () => {},
     };
 
-    const joinQuery = {
-      name: 'foobar',
-    };
+    const query = { name: 'foobar' };
 
-    const builder = mongoJoinBuilder({
-      tokenizer,
-    });
+    const builder = mongoJoinBuilder({ tokenizer });
 
     const aggregateResponse = [];
 
     const aggregate = jest.fn(() => Promise.resolve(aggregateResponse));
 
-    await expect(builder(joinQuery, aggregate)).rejects.toThrow('Whoops');
+    await expect(builder(query, aggregate)).rejects.toThrow('Whoops');
 
     expect(aggregate).not.toHaveBeenCalled();
   });
@@ -348,19 +263,15 @@ describe('Test main export', () => {
       },
     };
 
-    const joinQuery = {
-      user: { name: 'foobar' },
-    };
+    const query = { user: { name: 'foobar' } };
 
-    const builder = mongoJoinBuilder({
-      tokenizer,
-    });
+    const builder = mongoJoinBuilder({ tokenizer });
 
     const aggregateResponse = [];
 
     const aggregate = jest.fn(() => Promise.resolve(aggregateResponse));
 
-    await expect(builder(joinQuery, aggregate)).rejects.toThrow('Uh-oh');
+    await expect(builder(query, aggregate)).rejects.toThrow('Uh-oh');
 
     expect(aggregate).not.toHaveBeenCalled();
   });

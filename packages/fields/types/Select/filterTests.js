@@ -28,62 +28,63 @@ export const initItems = () => {
   ];
 };
 
-export const filterTests = app => {
-  const match = (filter, targets, done) => {
+export const filterTests = withKeystone => {
+  const match = (server, filter, targets) =>
     matchFilter(
-      app,
+      server,
       filter,
       '{ company name }',
-      targets.map(x => {
-        return x;
-      }),
-      done,
+      targets,
       'name' // Sort by name
     );
-  };
 
-  test('No filter', done => {
-    match(
-      undefined,
-      [
+  test(
+    'No filter',
+    withKeystone(({ server: { server } }) =>
+      match(server, undefined, [
         { company: 'thinkmill', name: 'a' },
         { company: 'atlassian', name: 'b' },
         { company: 'gelato', name: 'c' },
         { company: 'cete', name: 'd' },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: company', done => {
-    match('where: { company: thinkmill }', [{ company: 'thinkmill', name: 'a' }], done);
-  });
+  test(
+    'Filter: company',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { company: thinkmill }', [{ company: 'thinkmill', name: 'a' }])
+    )
+  );
 
-  test('Filter: company_not', done => {
-    match(
-      'where: { company_not: thinkmill }',
-      [
+  test(
+    'Filter: company_not',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { company_not: thinkmill }', [
         { company: 'atlassian', name: 'b' },
         { company: 'gelato', name: 'c' },
         { company: 'cete', name: 'd' },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: company_in', done => {
-    match(
-      'where: { company_in: [ atlassian, gelato ] }',
-      [{ company: 'atlassian', name: 'b' }, { company: 'gelato', name: 'c' }],
-      done
-    );
-  });
+  test(
+    'Filter: company_in',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { company_in: [ atlassian, gelato ] }', [
+        { company: 'atlassian', name: 'b' },
+        { company: 'gelato', name: 'c' },
+      ])
+    )
+  );
 
-  test('Filter: company_not_in', done => {
-    match(
-      'where: { company_not_in: [ atlassian, gelato ] }',
-      [{ company: 'thinkmill', name: 'a' }, { company: 'cete', name: 'd' }],
-      done
-    );
-  });
+  test(
+    'Filter: company_not_in',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { company_not_in: [ atlassian, gelato ] }', [
+        { company: 'thinkmill', name: 'a' },
+        { company: 'cete', name: 'd' },
+      ])
+    )
+  );
 };

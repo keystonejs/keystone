@@ -4,26 +4,22 @@ const { Text, Password } = require('@voussoir/fields');
 const { WebServer } = require('@voussoir/server');
 const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
 const bodyParser = require('body-parser');
-const { resolveAllKeys, mapKeys } = require('@voussoir/utils');
 const cookieSignature = require('cookie-signature');
+const { keystoneMongoTest } = require('@voussoir/test-utils');
+const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
+const cuid = require('cuid');
 
 const initialData = require('../data');
 
-const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
+const COOKIE_SECRET = 'qwerty';
 
-describe('Auth testing', () => {
+function setupKeystone() {
   const keystone = new Keystone({
-    name: 'Jest Test Project For Login Auth',
+    name: `Jest Test Project For Login Auth ${cuid()}`,
     adapter: new MongooseAdapter(),
     defaultAccess: {
       list: ({ authentication: { item } }) => !!item,
     },
-  });
-
-  // eslint-disable-next-line no-unused-vars
-  const authStrategy = keystone.createAuthStrategy({
-    type: PasswordAuthStrategy,
-    list: 'User',
   });
 
   keystone.createList('User', {
@@ -34,7 +30,10 @@ describe('Auth testing', () => {
     },
   });
 
-  const COOKIE_SECRET = 'qwerty';
+  const authStrategy = keystone.createAuthStrategy({
+    type: PasswordAuthStrategy,
+    list: 'User',
+  });
 
   const server = new WebServer(keystone, {
     'cookie secret': COOKIE_SECRET,
@@ -72,88 +71,94 @@ describe('Auth testing', () => {
     }
   );
 
-  function login(username, password) {
-    return supertest(server.app)
-      .set('Accept', 'application/json')
-      .post('/signin', { username, password })
-      .then(res => {
-        expect(res.statusCode).toBe(200);
-        return JSON.parse(res.text);
-      });
-  }
+  return { keystone, server };
+}
 
-  function signCookie(token) {
-    return `s:${cookieSignature.sign(token, COOKIE_SECRET)}`;
-  }
+function login(server, username, password) {
+  return supertest(server.app)
+    .set('Accept', 'application/json')
+    .post('/signin', { username, password })
+    .then(res => {
+      expect(res.statusCode).toBe(200);
+      return JSON.parse(res.text);
+    });
+}
 
-  beforeAll(() => {
-    keystone.connect();
-  });
+function signCookie(token) {
+  return `s:${cookieSignature.sign(token, COOKIE_SECRET)}`;
+}
 
-  afterAll(() => resolveAllKeys(mapKeys(keystone.adapters, adapter => adapter.close())));
-
-  beforeEach(async () => {
-    // clean the db
-    await resolveAllKeys(mapKeys(keystone.adapters, adapter => adapter.dropDatabase()));
-    // seed the db
-    await keystone.createItems(initialData);
-  });
-
-  test('Gives access denied when not logged in', () => {
-    return supertest(server.app)
-      .set('Accept', 'application/json')
-      .post('/admin/api', { query: '{ allUsers { id } }' })
-      .then(function(res) {
-        expect(res.statusCode).toBe(200);
-        res.body = JSON.parse(res.text);
-        expect(res.body.data).toEqual({ allUsers: null });
-        expect(res.body.errors).toMatchObject([{ name: 'AccessDeniedError' }]);
-      });
-  });
+describe('Auth testing', () => {
+  test(
+    'Gives access denied when not logged in',
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
+      // seed the db
+      await server.keystone.createItems(initialData);
+      return supertest(server.app)
+        .set('Accept', 'application/json')
+        .post('/admin/api', { query: '{ allUsers { id } }' })
+        .then(function(res) {
+          expect(res.statusCode).toBe(200);
+          res.body = JSON.parse(res.text);
+          expect(res.body.data).toEqual({ allUsers: null });
+          expect(res.body.errors).toMatchObject([{ name: 'AccessDeniedError' }]);
+        });
+    })
+  );
 
   describe('logged in', () => {
-    test('Allows access with bearer token', async () => {
-      const { success, token } = await login(
-        initialData.User[0].email,
-        initialData.User[0].password
-      );
+    test(
+      'Allows access with bearer token',
+      keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
+        await server.keystone.createItems(initialData);
+        const { success, token } = await login(
+          server,
+          initialData.User[0].email,
+          initialData.User[0].password
+        );
 
-      expect(success).toBe(true);
-      expect(token).toBeTruthy();
+        expect(success).toBe(true);
+        expect(token).toBeTruthy();
 
-      return supertest(server.app)
-        .set('Authorization', `Bearer ${token}`)
-        .set('Accept', 'application/json')
-        .post('/admin/api', { query: '{ allUsers { id } }' })
-        .then(function(res) {
-          expect(res.statusCode).toBe(200);
-          res.body = JSON.parse(res.text);
-          expect(res.body.data).toHaveProperty('allUsers');
-          expect(res.body.data.allUsers).toHaveLength(initialData.User.length);
-          expect(res.body).not.toHaveProperty('errors');
-        });
-    });
+        return supertest(server.app)
+          .set('Authorization', `Bearer ${token}`)
+          .set('Accept', 'application/json')
+          .post('/admin/api', { query: '{ allUsers { id } }' })
+          .then(function(res) {
+            expect(res.statusCode).toBe(200);
+            res.body = JSON.parse(res.text);
+            expect(res.body.data).toHaveProperty('allUsers');
+            expect(res.body.data.allUsers).toHaveLength(initialData.User.length);
+            expect(res.body).not.toHaveProperty('errors');
+          });
+      })
+    );
 
-    test('Allows access with cookie', async () => {
-      const { success, token } = await login(
-        initialData.User[0].email,
-        initialData.User[0].password
-      );
+    test(
+      'Allows access with cookie',
+      keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
+        await server.keystone.createItems(initialData);
+        const { success, token } = await login(
+          server,
+          initialData.User[0].email,
+          initialData.User[0].password
+        );
 
-      expect(success).toBe(true);
-      expect(token).toBeTruthy();
+        expect(success).toBe(true);
+        expect(token).toBeTruthy();
 
-      return supertest(server.app)
-        .set('Cookie', `keystone.sid=${signCookie(token)}`)
-        .set('Accept', 'application/json')
-        .post('/admin/api', { query: '{ allUsers { id } }' })
-        .then(function(res) {
-          expect(res.statusCode).toBe(200);
-          res.body = JSON.parse(res.text);
-          expect(res.body.data).toHaveProperty('allUsers');
-          expect(res.body.data.allUsers).toHaveLength(initialData.User.length);
-          expect(res.body).not.toHaveProperty('errors');
-        });
-    });
+        return supertest(server.app)
+          .set('Cookie', `keystone.sid=${signCookie(token)}`)
+          .set('Accept', 'application/json')
+          .post('/admin/api', { query: '{ allUsers { id } }' })
+          .then(function(res) {
+            expect(res.statusCode).toBe(200);
+            res.body = JSON.parse(res.text);
+            expect(res.body.data).toHaveProperty('allUsers');
+            expect(res.body.data.allUsers).toHaveLength(initialData.User.length);
+            expect(res.body).not.toHaveProperty('errors');
+          });
+      })
+    );
   });
 });

@@ -35,13 +35,9 @@ describe('MongooseListAdapter', () => {
 
     listAdapter = createListAdapter(MongooseListAdapter, 'user');
 
-    listAdapter.getSimpleQueryConditions = () => ({
-      title: value => ({ title: { $eq: value } }),
-    });
+    listAdapter.getSimpleQueryConditions = () => ({ title: value => ({ title: { $eq: value } }) });
 
-    await listAdapter.itemsQuery({
-      where: { title: 'foo' },
-    });
+    await listAdapter.itemsQuery({ where: { title: 'foo' } });
 
     expect(listAdapter.model.aggregate).toHaveBeenCalledWith([
       { $match: { title: { $eq: 'foo' } } },
@@ -49,7 +45,7 @@ describe('MongooseListAdapter', () => {
     ]);
   });
 
-  test('Correctly applies conditions of relationships in nested AND fields', async () => {
+  test('Correctly applies conditions of relationships in nested AND/OR fields', async () => {
     let userListAdapter;
     let postListAdapter;
 
@@ -78,7 +74,7 @@ describe('MongooseListAdapter', () => {
       posts_some: () => ({
         from: 'posts',
         field: 'posts',
-        match: [{ posts_some: true }],
+        matchTerm: { posts_some: true },
         // Flag this is a to-many relationship
         many: true,
       }),
@@ -95,7 +91,6 @@ describe('MongooseListAdapter', () => {
     });
 
     expect(userListAdapter.model.aggregate).toHaveBeenCalledWith([
-      { $match: { title: { $eq: 'bar' } } },
       {
         $lookup: {
           as: expect.any(String),
@@ -111,15 +106,38 @@ describe('MongooseListAdapter', () => {
           ],
         },
       },
+      { $addFields: expect.any(Object) },
+      { $match: { $and: [{ posts_some: true }, { title: { $eq: 'bar' } }] } },
+      { $addFields: { id: '$_id' } },
+    ]);
+
+    await userListAdapter.itemsQuery({
+      where: { OR: [{ posts_some: { name: 'foo' } }, { title: 'bar' }] },
+    });
+
+    expect(userListAdapter.model.aggregate).toHaveBeenCalledWith([
       {
-        $addFields: expect.any(Object),
+        $lookup: {
+          as: expect.any(String),
+          from: 'posts',
+          let: expect.any(Object),
+          pipeline: [
+            {
+              $match: {
+                $and: [{ $expr: { $in: ['$_id', expect.any(String)] } }, { name: { $eq: 'foo' } }],
+              },
+            },
+            { $addFields: { id: '$_id' } },
+          ],
+        },
       },
-      { $match: { posts_some: true } },
+      { $addFields: expect.any(Object) },
+      { $match: { $or: [{ posts_some: true }, { title: { $eq: 'bar' } }] } },
       { $addFields: { id: '$_id' } },
     ]);
   });
 
-  test('Correctly applies conditions of AND fields nested in relationships', async () => {
+  test('Correctly applies conditions of AND/OR fields nested in relationships', async () => {
     let userListAdapter;
     let postListAdapter;
 
@@ -145,7 +163,7 @@ describe('MongooseListAdapter', () => {
       posts_some: () => ({
         from: 'posts',
         field: 'posts',
-        match: [{ posts_some: true }],
+        matchTerm: { posts_some: true },
         // Flag this is a to-many relationship
         many: true,
       }),
@@ -166,9 +184,7 @@ describe('MongooseListAdapter', () => {
               $match: {
                 $and: [
                   { $expr: { $in: ['$_id', expect.any(String)] } },
-                  {
-                    $and: [{ name: { $eq: 'foo' } }, { title: { $eq: 'bar' } }],
-                  },
+                  { $and: [{ name: { $eq: 'foo' } }, { title: { $eq: 'bar' } }] },
                 ],
               },
             },
@@ -176,9 +192,35 @@ describe('MongooseListAdapter', () => {
           ],
         },
       },
+      { $addFields: expect.any(Object) },
+      { $match: { posts_some: true } },
+      { $addFields: { id: '$_id' } },
+    ]);
+
+    await userListAdapter.itemsQuery({
+      where: { posts_some: { OR: [{ name: 'foo' }, { title: 'bar' }] } },
+    });
+
+    expect(userListAdapter.model.aggregate).toHaveBeenCalledWith([
       {
-        $addFields: expect.any(Object),
+        $lookup: {
+          as: expect.any(String),
+          from: 'posts',
+          let: expect.any(Object),
+          pipeline: [
+            {
+              $match: {
+                $and: [
+                  { $expr: { $in: ['$_id', expect.any(String)] } },
+                  { $or: [{ name: { $eq: 'foo' } }, { title: { $eq: 'bar' } }] },
+                ],
+              },
+            },
+            { $addFields: { id: '$_id' } },
+          ],
+        },
       },
+      { $addFields: expect.any(Object) },
       { $match: { posts_some: true } },
       { $addFields: { id: '$_id' } },
     ]);

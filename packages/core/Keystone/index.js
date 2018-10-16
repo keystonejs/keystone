@@ -85,6 +85,17 @@ module.exports = class Keystone {
       // Don't unnecessarily leak any connection info
     ).then(() => {});
   }
+
+  /**
+   * @return Promise<null>
+   */
+  disconnect() {
+    return resolveAllKeys(
+      mapKeys(this.adapters, adapter => adapter.disconnect())
+      // Don't unnecessarily leak any connection info
+    ).then(() => {});
+  }
+
   getAdminMeta() {
     const { name } = this.config;
     // We've consciously made a design choice that the `read` permission on a
