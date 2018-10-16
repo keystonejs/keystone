@@ -11,11 +11,11 @@ describe('join builder', () => {
       }
 
     */
-    const { joinQuery } = joinBuilder({
-      pipeline: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }],
+    const { pipeline } = joinBuilder({
+      matchTerm: { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] },
     });
 
-    expect(joinQuery).toMatchObject([
+    expect(pipeline).toMatchObject([
       { $match: { $and: [{ name: { $eq: 'foobar' } }, { age: { $eq: 23 } }] } },
       { $addFields: { id: '$_id' } },
     ]);
@@ -34,24 +34,26 @@ describe('join builder', () => {
       }
 
     */
-    const { joinQuery } = joinBuilder({
+    const { pipeline } = joinBuilder({
       relationships: {
         abc123: {
           from: 'user-collection',
           field: 'author',
-          pipeline: [{ name: { $eq: 'Alice' } }],
+          matchTerm: { name: { $eq: 'Alice' } },
           postQueryMutation: jest.fn(),
           many: false,
         },
       },
-      pipeline: [
-        { title: { $eq: 'foobar' } },
-        { views: { $eq: 23 } },
-        { abc123_author_every: { $eq: true } },
-      ],
+      matchTerm: {
+        $and: [
+          { title: { $eq: 'foobar' } },
+          { views: { $eq: 23 } },
+          { abc123_author_every: { $eq: true } },
+        ],
+      },
     });
 
-    expect(joinQuery).toMatchObject([
+    expect(pipeline).toMatchObject([
       {
         $lookup: {
           from: 'user-collection',
@@ -101,24 +103,25 @@ describe('join builder', () => {
       }
 
     */
-    const { joinQuery } = joinBuilder({
+    const { pipeline } = joinBuilder({
       relationships: {
         abc123: {
           from: 'posts-collection',
           field: 'posts',
-          pipeline: [],
           postQueryMutation: jest.fn(),
           many: true,
         },
       },
-      pipeline: [
-        { name: { $eq: 'foobar' } },
-        { age: { $eq: 23 } },
-        { abc123_posts_some: { $eq: true } },
-      ],
+      matchTerm: {
+        $and: [
+          { name: { $eq: 'foobar' } },
+          { age: { $eq: 23 } },
+          { abc123_posts_some: { $eq: true } },
+        ],
+      },
     });
 
-    expect(joinQuery).toMatchObject([
+    expect(pipeline).toMatchObject([
       {
         $lookup: {
           from: 'posts-collection',
@@ -161,26 +164,27 @@ describe('join builder', () => {
       }
 
     */
-    const { joinQuery } = joinBuilder({
+    const { pipeline } = joinBuilder({
       relationships: {
         abc123: {
           from: 'posts-collection',
           field: 'posts',
-          pipeline: [],
           postJoinPipeline: [{ $orderBy: 'title' }],
           postQueryMutation: jest.fn(),
           many: true,
         },
       },
-      pipeline: [
-        { name: { $eq: 'foobar' } },
-        { age: { $eq: 23 } },
-        { abc123_posts_some: { $eq: true } },
-      ],
+      matchTerm: {
+        $and: [
+          { name: { $eq: 'foobar' } },
+          { age: { $eq: 23 } },
+          { abc123_posts_some: { $eq: true } },
+        ],
+      },
       postJoinPipeline: [{ $limit: 10 }],
     });
 
-    expect(joinQuery).toMatchObject([
+    expect(pipeline).toMatchObject([
       {
         $lookup: {
           from: 'posts-collection',
@@ -233,26 +237,28 @@ describe('join builder', () => {
       }
 
     */
-    const { joinQuery } = joinBuilder({
+    const { pipeline } = joinBuilder({
       relationships: {
         abc123: {
           from: 'posts-collection',
           field: 'posts',
-          pipeline: [{ title: { $eq: 'hello' } }, { def456_tags_some: { $eq: true } }],
+          matchTerm: { $and: [{ title: { $eq: 'hello' } }, { def456_tags_some: { $eq: true } }] },
           postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             def456: {
               from: 'tags-collection',
               field: 'tags',
-              pipeline: [{ name: { $eq: 'React' } }, { xyz890_posts_every: { $eq: true } }],
+              matchTerm: {
+                $and: [{ name: { $eq: 'React' } }, { xyz890_posts_every: { $eq: true } }],
+              },
               postQueryMutation: jest.fn(),
               many: true,
               relationships: {
                 xyz890: {
                   from: 'posts-collection',
                   field: 'posts',
-                  pipeline: [{ published: { $eq: true } }],
+                  matchTerm: { published: { $eq: true } },
                   postQueryMutation: jest.fn(),
                   many: true,
                 },
@@ -261,14 +267,16 @@ describe('join builder', () => {
           },
         },
       },
-      pipeline: [
-        { name: { $eq: 'foobar' } },
-        { age: { $eq: 23 } },
-        { abc123_posts_some: { $eq: true } },
-      ],
+      matchTerm: {
+        $and: [
+          { name: { $eq: 'foobar' } },
+          { age: { $eq: 23 } },
+          { abc123_posts_some: { $eq: true } },
+        ],
+      },
     });
 
-    expect(joinQuery).toMatchObject([
+    expect(pipeline).toMatchObject([
       {
         $lookup: {
           from: 'posts-collection',
@@ -312,8 +320,9 @@ describe('join builder', () => {
                     $match: {
                       $and: [
                         { $expr: { $in: ['$_id', '$$def456_tags_ids'] } },
-                        { name: { $eq: 'React' } },
-                        { xyz890_posts_every: { $eq: true } },
+                        {
+                          $and: [{ name: { $eq: 'React' } }, { xyz890_posts_every: { $eq: true } }],
+                        },
                       ],
                     },
                   },
@@ -332,8 +341,9 @@ describe('join builder', () => {
               $match: {
                 $and: [
                   { $expr: { $in: ['$_id', '$$abc123_posts_ids'] } },
-                  { title: { $eq: 'hello' } },
-                  { def456_tags_some: { $eq: true } },
+                  {
+                    $and: [{ title: { $eq: 'hello' } }, { def456_tags_some: { $eq: true } }],
+                  },
                 ],
               },
             },
@@ -378,37 +388,37 @@ describe('join builder', () => {
       }
     */
 
-    const { joinQuery } = joinBuilder({
+    const { pipeline } = joinBuilder({
       relationships: {
         zip567: {
           from: 'posts-collection',
           field: 'posts',
-          pipeline: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+          matchTerm: {
+            $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+          },
           postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             quux987: {
               from: 'labels-collection',
               field: 'labels',
-              pipeline: [{ name: { $eq: 'foo' } }],
+              matchTerm: { name: { $eq: 'foo' } },
               postQueryMutation: jest.fn(),
               many: true,
             },
           },
         },
       },
-      pipeline: [
-        {
-          $and: [
-            { name: { $eq: 'foobar' } },
-            { age: { $eq: 23 } },
-            { zip567_posts_every: { $eq: true } },
-          ],
-        },
-      ],
+      matchTerm: {
+        $and: [
+          { name: { $eq: 'foobar' } },
+          { age: { $eq: 23 } },
+          { zip567_posts_every: { $eq: true } },
+        ],
+      },
     });
 
-    expect(joinQuery).toMatchObject([
+    expect(pipeline).toMatchObject([
       {
         $lookup: {
           from: 'posts-collection',
@@ -444,8 +454,9 @@ describe('join builder', () => {
               $match: {
                 $and: [
                   { $expr: { $in: ['$_id', '$$zip567_posts_ids'] } },
-                  { title: { $eq: 'hello' } },
-                  { quux987_labels_some: { $eq: true } },
+                  {
+                    $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+                  },
                 ],
               },
             },
@@ -490,39 +501,35 @@ describe('join builder', () => {
       }
     */
 
-    const { joinQuery } = joinBuilder({
+    const { pipeline } = joinBuilder({
       relationships: {
         zip567: {
           from: 'posts-collection',
           field: 'posts',
-          pipeline: [
-            { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
-          ],
+          matchTerm: { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
           postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             quux987: {
               from: 'labels-collection',
               field: 'labels',
-              pipeline: [{ name: { $eq: 'foo' } }],
+              matchTerm: { name: { $eq: 'foo' } },
               postQueryMutation: jest.fn(),
               many: true,
             },
           },
         },
       },
-      pipeline: [
-        {
-          $or: [
-            { name: { $eq: 'foobar' } },
-            { age: { $eq: 23 } },
-            { zip567_posts_every: { $eq: true } },
-          ],
-        },
-      ],
+      matchTerm: {
+        $or: [
+          { name: { $eq: 'foobar' } },
+          { age: { $eq: 23 } },
+          { zip567_posts_every: { $eq: true } },
+        ],
+      },
     });
 
-    expect(joinQuery).toMatchObject([
+    expect(pipeline).toMatchObject([
       {
         $lookup: {
           from: 'posts-collection',
@@ -605,39 +612,35 @@ describe('join builder', () => {
       }
     */
 
-    const { joinQuery } = joinBuilder({
+    const { pipeline } = joinBuilder({
       relationships: {
         zip567: {
           from: 'posts-collection',
           field: 'posts',
-          pipeline: [
-            { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
-          ],
+          matchTerm: { $or: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
           postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             quux987: {
               from: 'labels-collection',
               field: 'labels',
-              pipeline: [{ name: { $eq: 'foo' } }],
+              matchTerm: { name: { $eq: 'foo' } },
               postQueryMutation: jest.fn(),
               many: true,
             },
           },
         },
       },
-      pipeline: [
-        {
-          $and: [
-            { name: { $eq: 'foobar' } },
-            { age: { $eq: 23 } },
-            { zip567_posts_every: { $eq: true } },
-          ],
-        },
-      ],
+      matchTerm: {
+        $and: [
+          { name: { $eq: 'foobar' } },
+          { age: { $eq: 23 } },
+          { zip567_posts_every: { $eq: true } },
+        ],
+      },
     });
 
-    expect(joinQuery).toMatchObject([
+    expect(pipeline).toMatchObject([
       {
         $lookup: {
           from: 'posts-collection',
@@ -720,39 +723,37 @@ describe('join builder', () => {
       }
     */
 
-    const { joinQuery } = joinBuilder({
+    const { pipeline } = joinBuilder({
       relationships: {
         zip567: {
           from: 'posts-collection',
           field: 'posts',
-          pipeline: [
-            { $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }] },
-          ],
+          matchTerm: {
+            $and: [{ title: { $eq: 'hello' } }, { quux987_labels_some: { $eq: true } }],
+          },
           postQueryMutation: jest.fn(),
           many: true,
           relationships: {
             quux987: {
               from: 'labels-collection',
               field: 'labels',
-              pipeline: [{ name: { $eq: 'foo' } }],
+              matchTerm: { name: { $eq: 'foo' } },
               postQueryMutation: jest.fn(),
               many: true,
             },
           },
         },
       },
-      pipeline: [
-        {
-          $or: [
-            { name: { $eq: 'foobar' } },
-            { age: { $eq: 23 } },
-            { zip567_posts_every: { $eq: true } },
-          ],
-        },
-      ],
+      matchTerm: {
+        $or: [
+          { name: { $eq: 'foobar' } },
+          { age: { $eq: 23 } },
+          { zip567_posts_every: { $eq: true } },
+        ],
+      },
     });
 
-    expect(joinQuery).toMatchObject([
+    expect(pipeline).toMatchObject([
       {
         $lookup: {
           from: 'posts-collection',
@@ -837,13 +838,12 @@ describe('join builder', () => {
         zip567: {
           from: 'posts-collection',
           field: 'posts',
-          pipeline: [{ title: { $eq: 'hello' } }],
-          match: [{ zip567_posts_every: { $eq: true } }],
+          matchTerm: { title: { $eq: 'hello' } },
           postQueryMutation,
           many: true,
         },
       },
-      pipeline: [{ age: { $eq: 23 } }],
+      matchTerm: { $and: [{ age: { $eq: 23 } }, { zip567_posts_every: { $eq: true } }] },
     });
 
     /*
@@ -946,24 +946,21 @@ describe('join builder', () => {
         abc123: {
           from: 'posts-collection',
           field: 'posts',
-          pipeline: [],
-          match: [{ abc123_posts_some: { $eq: true } }],
+          matchTerm: { def456_tags_some: { $eq: true } },
           postQueryMutation: abc123_postQueryMutation,
           many: true,
           relationships: {
             def456: {
               from: 'tags-collection',
               field: 'tags',
-              pipeline: [],
-              match: [{ def456_tags_some: { $eq: true } }],
+              matchTerm: { xyz890_posts_every: { $eq: true } },
               postQueryMutation: def456_postQueryMutation,
               many: true,
               relationships: {
                 xyz890: {
                   from: 'posts-collection',
                   field: 'posts',
-                  pipeline: [{ published: { $eq: true } }],
-                  match: [{ xyz890_posts_every: { $eq: true } }],
+                  matchTerm: { published: { $eq: true } },
                   postQueryMutation: xyz890_postQueryMutation,
                   many: true,
                 },
@@ -972,7 +969,7 @@ describe('join builder', () => {
           },
         },
       },
-      pipeline: [],
+      matchTerm: { abc123_posts_some: { $eq: true } },
     });
 
     /*
