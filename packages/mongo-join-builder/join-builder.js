@@ -1,18 +1,12 @@
-function uniqueFieldName(uid, field) {
-  return `${uid}_${field}`;
-}
-
-function idsVariableName(uid, field, many) {
-  return `${uniqueFieldName(uid, field)}_id${many ? 's' : ''}`;
-}
+const { flatten } = require('@voussoir/utils');
 
 /**
  * Format of input object:
 
   type Query {
-    relationships?: { <String>: Relationship },
-    matchTerm?: Object,
-    postJoinPipeline?: [ Object ],
+    relationships: { <String>: Relationship },
+    matchTerm: Object,
+    postJoinPipeline: [ Object ],
   }
 
   type Relationship: {
@@ -51,23 +45,14 @@ function idsVariableName(uid, field, many) {
   }
  */
 function joinBuilder(query) {
-  const { pipeline, mutators } = constructJoin(query);
-
-  const mutator = objToMutate => {
-    return mutators.reduce((mutationTarget, relationshipMutator) => {
-      return relationshipMutator(mutationTarget);
-    }, objToMutate);
+  return {
+    pipeline: pipelineBuilder(query),
+    postQueryMutations: mutationBuilder(query.relationships),
   };
-
-  return { pipeline, mutator };
 }
 
-function mutation(mutator, lookupPath) {
-  if (lookupPath.length === 0 || !mutator) {
-    return obj => obj;
-  }
-
-  function mutateWrapper(rootArray) {
+function mutation(postQueryMutation, lookupPath) {
+  return queryResult => {
     function mutate(arrayToMutate, lookupPathFragment, pathSoFar = []) {
       const [keyToMutate, ...restOfLookupPath] = lookupPathFragment;
 
@@ -78,7 +63,7 @@ function mutation(mutator, lookupPath) {
 
         if (restOfLookupPath.length === 0) {
           // Now we can execute the mutation
-          return mutator(value, keyToMutate, rootArray, [...pathSoFar, index]);
+          return postQueryMutation(value, keyToMutate, queryResult, [...pathSoFar, index]);
         }
 
         // Recurse
@@ -93,99 +78,67 @@ function mutation(mutator, lookupPath) {
       });
     }
 
-    return mutate(rootArray, lookupPath);
-  }
-
-  return mutateWrapper;
+    return mutate(queryResult, lookupPath);
+  };
 }
 
-function constructJoin(query, relationshipMeta, path = []) {
-  const pipeline = [];
-  const { matchTerm, postJoinPipeline, relationships } = query;
+const compose = fns => o => fns.reduce((acc, fn) => fn(acc), o);
 
-  const mutators = [];
-
-  if (relationships) {
-    Object.entries(relationships).forEach(([uid, relationship]) => {
+function mutationBuilder(relationships, path = []) {
+  return compose(
+    Object.entries(relationships).map(
       // eslint-disable-next-line no-shadow
-      const { matchTerm, postJoinPipeline, relationships, ...meta } = relationship;
+      ([uid, { postQueryMutation, field, relationships }]) => {
+        const uniqueField = `${uid}_${field}`;
+        const postQueryMutations = mutationBuilder(relationships, [...path, uniqueField]);
+        // NOTE: Order is important. We want depth first, so we perform the related mutators first.
+        return postQueryMutation
+          ? compose([postQueryMutations, mutation(postQueryMutation, [...path, uniqueField])])
+          : postQueryMutations;
+      }
+    )
+  );
+}
 
-      const uniqueField = uniqueFieldName(uid, meta.field);
+function pipelineBuilder(query) {
+  const { matchTerm, postJoinPipeline, relationshipIdTerm, relationships } = query;
 
-      const relationPath = path.concat([uniqueField]);
-
-      const relationJoin = constructJoin(
-        { matchTerm, postJoinPipeline, relationships },
-        { ...meta, uid },
-        relationPath
-      );
-
-      pipeline.push({
+  const relationshipPipelines = Object.entries(relationships).map(([uid, relationship]) => {
+    const { field, many, from } = relationship;
+    const uniqueField = `${uid}_${field}`;
+    const idsName = `${uniqueField}_id${many ? 's' : ''}`;
+    const fieldSize = { $size: `$${uniqueField}` };
+    return [
+      {
         $lookup: {
-          from: meta.from,
+          from,
           as: uniqueField,
-          let: {
-            [idsVariableName(uid, meta.field, meta.many)]: `$${meta.field}`,
-          },
-          pipeline: relationJoin.pipeline,
+          let: { [idsName]: `$${field}` },
+          pipeline: pipelineBuilder({
+            ...relationship,
+            // The ID / list of IDs we're joining by. Do this very first so it limits any work
+            // required in subsequent steps / $and's.
+            relationshipIdTerm: { $expr: { [many ? '$in' : '$eq']: ['$_id', `$$${idsName}`] } },
+          }),
         },
-      });
-
-      const everyCondition = {
-        $eq: [{ $size: `$${uniqueField}` }, meta.many ? { $size: `$${meta.field}` } : 1],
-      };
-
-      const noneCondition = { $eq: [{ $size: `$${uniqueField}` }, 0] };
-
-      const someCondition = { $gt: [{ $size: `$${uniqueField}` }, 0] };
-
-      pipeline.push({
+      },
+      {
         $addFields: {
-          [`${uniqueField}_every`]: everyCondition,
-          [`${uniqueField}_none`]: noneCondition,
-          [`${uniqueField}_some`]: someCondition,
+          [`${uniqueField}_every`]: { $eq: [fieldSize, many ? { $size: `$${field}` } : 1] },
+          [`${uniqueField}_none`]: { $eq: [fieldSize, 0] },
+          [`${uniqueField}_some`]: { $gt: [fieldSize, 0] },
         },
-      });
-
-      // NOTE: Order is important. We want depth first, so we push the related
-      // mutators first.
-      mutators.push(...relationJoin.mutators, mutation(meta.postQueryMutation, relationPath));
-    });
-  }
-  const matchTerms = [matchTerm];
-
-  if (relationshipMeta) {
-    const { uid, field, many } = relationshipMeta;
-
-    if (uid && field) {
-      matchTerms.unshift(
-        // The ID / list of IDs we're joining by. Do this very first so it
-        // limits any work required in subsequent steps / $and's.
-        { $expr: { [many ? '$in' : '$eq']: ['$_id', `$$${idsVariableName(uid, field, many)}`] } }
-      );
-    }
-  }
-
-  pipeline.push(combineMatchTerms(matchTerms.filter(i => i)));
-
-  pipeline.push({
-    $addFields: {
-      id: '$_id',
-    },
+      },
+    ];
   });
 
-  if (postJoinPipeline && postJoinPipeline.length) {
-    pipeline.push(...postJoinPipeline);
-  }
-
-  return { pipeline: pipeline.filter(i => i), mutators };
+  return [
+    relationshipIdTerm && { $match: relationshipIdTerm },
+    ...flatten(relationshipPipelines),
+    matchTerm && { $match: matchTerm },
+    { $addFields: { id: '$_id' } },
+    ...postJoinPipeline,
+  ].filter(i => i);
 }
-
-const combineMatchTerms = terms =>
-  terms && terms.length
-    ? terms.length === 1
-      ? { $match: terms[0] }
-      : { $match: { $and: terms } }
-    : undefined;
 
 module.exports = joinBuilder;

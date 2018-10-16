@@ -1,6 +1,7 @@
 # @voussoir/ui
 
 ## 0.2.1
+
 - [patch] Bump all packages for Babel config fixes [d51c833](d51c833)
 
 ## 0.2.0
