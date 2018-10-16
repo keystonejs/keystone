@@ -387,24 +387,25 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
                 {item._label_} - {list.singular}
               </DocTitle>
               <Container id="toast-boundary">
-                <Mutation mutation={list.updateMutation}>
+                <Mutation
+                  mutation={list.updateMutation}
+                  onError={updateError => {
+                    const [title, ...rest] = updateError.message.split(/\:/);
+                    const toastContent = rest.length ? (
+                      <div>
+                        <strong>{title.trim()}</strong>
+                        <div>{rest.join('').trim()}</div>
+                      </div>
+                    ) : (
+                      updateError.message
+                    );
+
+                    toastManager.add(toastContent, {
+                      appearance: 'error',
+                    });
+                  }}
+                >
                   {(updateItem, { loading: updateInProgress, error: updateError }) => {
-                    if (updateError) {
-                      const [title, ...rest] = updateError.message.split(/\:/);
-                      const toastContent = rest.length ? (
-                        <div>
-                          <strong>{title.trim()}</strong>
-                          <div>{rest.join('').trim()}</div>
-                        </div>
-                      ) : (
-                        updateError.message
-                      );
-
-                      toastManager.add(toastContent, {
-                        appearance: 'error',
-                      });
-                    }
-
                     return (
                       <ItemDetails
                         adminPath={adminPath}
