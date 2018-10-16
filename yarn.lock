@@ -194,9 +194,9 @@
     find-root "^1.1.0"
     source-map "^0.7.2"
 
-"@emotion/cache@^10.0.0-beta.0":
-  version "10.0.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@emotion/cache/-/cache-10.0.0-beta.0.tgz#eab227cb65533ce594882f0798339784668dcfbb"
+"@emotion/cache@^10.0.0-beta.2":
+  version "10.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@emotion/cache/-/cache-10.0.0-beta.2.tgz#96041020d1035884b36eca6b91ac124687d0ae1b"
   dependencies:
     "@emotion/sheet" "^0.9.0"
     "@emotion/stylis" "^0.8.0"
@@ -210,23 +210,23 @@
     "@emotion/stylis" "^10.0.0-really-unsafe-please-do-not-use.2"
     "@emotion/utils" "^10.0.0-really-unsafe-please-do-not-use.2"
 
-"@emotion/core@^10.0.0-beta.0":
-  version "10.0.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@emotion/core/-/core-10.0.0-beta.0.tgz#57a995373f4afd348263718d4d4f6fbea55dbded"
+"@emotion/core@^10.0.0-beta.2":
+  version "10.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@emotion/core/-/core-10.0.0-beta.2.tgz#2b09770f733adfe84baaf89cad846be8d3172bf4"
   dependencies:
-    "@emotion/cache" "^10.0.0-beta.0"
-    "@emotion/css" "^10.0.0-beta.0"
+    "@emotion/cache" "^10.0.0-beta.2"
+    "@emotion/css" "^10.0.0-beta.2"
     "@emotion/serialize" "^0.10.0"
     "@emotion/sheet" "^0.9.0"
     "@emotion/utils" "^0.9.0"
 
-"@emotion/css@^10.0.0-beta.0":
-  version "10.0.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@emotion/css/-/css-10.0.0-beta.0.tgz#5d7e641016ea30f320674ec4b0abf54827cd402a"
+"@emotion/css@^10.0.0-beta.2":
+  version "10.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@emotion/css/-/css-10.0.0-beta.2.tgz#7dc71be436ac241f67a8944059ac6d6480c132c1"
   dependencies:
     "@emotion/serialize" "^0.10.0"
     "@emotion/utils" "^0.9.0"
-    babel-plugin-emotion "^10.0.0-beta.0"
+    babel-plugin-emotion "^10.0.0-beta.2"
 
 "@emotion/css@^10.0.0-really-unsafe-please-do-not-use.2":
   version "10.0.0-really-unsafe-please-do-not-use.2"
@@ -307,20 +307,20 @@
   version "10.0.0-really-unsafe-please-do-not-use.2"
   resolved "https://registry.yarnpkg.com/@emotion/sheet/-/sheet-10.0.0-really-unsafe-please-do-not-use.2.tgz#b02e3f5f936afde281a52e703e7564c8e764b6a9"
 
-"@emotion/styled-base@^10.0.0-beta.0":
-  version "10.0.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@emotion/styled-base/-/styled-base-10.0.0-beta.0.tgz#ab516c358e42a1dc767ecc9579264debcafcbffc"
+"@emotion/styled-base@^10.0.0-beta.2":
+  version "10.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@emotion/styled-base/-/styled-base-10.0.0-beta.2.tgz#44e413b3806035af8fd444f0a17954e129d98bd9"
   dependencies:
     "@emotion/is-prop-valid" "^0.7.0"
     "@emotion/serialize" "^0.10.0"
     "@emotion/utils" "^0.9.0"
 
-"@emotion/styled@^10.0.0-beta.0":
-  version "10.0.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@emotion/styled/-/styled-10.0.0-beta.0.tgz#8d9b6fa9322e40461d349f4402d02b092ef0c460"
+"@emotion/styled@^10.0.0-beta.2":
+  version "10.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@emotion/styled/-/styled-10.0.0-beta.2.tgz#ab972592fd8ee6e2e5d35ac10d4e4206c25f2d85"
   dependencies:
-    "@emotion/styled-base" "^10.0.0-beta.0"
-    babel-plugin-emotion "^10.0.0-beta.0"
+    "@emotion/styled-base" "^10.0.0-beta.2"
+    babel-plugin-emotion "^10.0.0-beta.2"
 
 "@emotion/stylis@^0.6.10":
   version "0.6.12"
@@ -1406,7 +1406,7 @@ babel-plugin-check-es2015-constants@^6.22.0:
   dependencies:
     babel-runtime "^6.22.0"
 
-babel-plugin-emotion@^10.0.0-beta.0, babel-plugin-emotion@^10.0.0-really-unsafe-please-do-not-use.2:
+babel-plugin-emotion@^10.0.0-beta.2, babel-plugin-emotion@^10.0.0-really-unsafe-please-do-not-use.2:
   version "10.0.0-really-unsafe-please-do-not-use.2"
   resolved "https://registry.yarnpkg.com/babel-plugin-emotion/-/babel-plugin-emotion-10.0.0-really-unsafe-please-do-not-use.2.tgz#7479dcc73b33ceb6b49857360ae7891298b0a157"
   dependencies:
@@ -3269,7 +3269,7 @@ emojis-list@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
 
-emotion@^10.0.0-beta.0:
+emotion@^10.0.0-beta.2:
   version "10.0.0-really-unsafe-please-do-not-use.2"
   resolved "https://registry.yarnpkg.com/emotion/-/emotion-10.0.0-really-unsafe-please-do-not-use.2.tgz#8b6b38f2857aba2d135d7fc0b1e7fa3391544f32"
   dependencies:
@@ -3421,9 +3421,9 @@ eslint-plugin-cypress@^2.0.1:
   dependencies:
     globals "^11.0.1"
 
-eslint-plugin-emotion@10.0.0-beta.0:
-  version "10.0.0-beta.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-emotion/-/eslint-plugin-emotion-10.0.0-beta.0.tgz#9a93c66d18421303a4d4140ab344ee1f8f0287d3"
+eslint-plugin-emotion@10.0.0-beta.2:
+  version "10.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-emotion/-/eslint-plugin-emotion-10.0.0-beta.2.tgz#9d5255c6e710ba88e7fc6ba485d8bbe935fa2757"
 
 eslint-plugin-flowtype@^2.50.3:
   version "2.50.3"

@@ -7,11 +7,11 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@emotion/core": "^10.0.0-beta.0",
-    "@emotion/styled": "^10.0.0-beta.0",
+    "@emotion/core": "^10.0.0-beta.2",
+    "@emotion/styled": "^10.0.0-beta.2",
     "@voussoir/icons": "^0.1.3",
     "date-fns": "^1.29.0",
-    "emotion": "^10.0.0-beta.0",
+    "emotion": "^10.0.0-beta.2",
     "focus-trap": "^2.4.3",
     "kalendaryo": "^1.10.0",
     "prop-types": "^15.6.1",
