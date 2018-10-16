@@ -1,6 +1,7 @@
 # @voussoir/core
 
 ## 0.3.0
+
 - [patch] Bump all packages for Babel config fixes [d51c833](d51c833)
 - [minor] Support unique field constraint for mongoose adapter [750a83e](750a83e)
 - [patch] Surface errors that occur at the adapter level during a create mutation. [81641b2](81641b2)

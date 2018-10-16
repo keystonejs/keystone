@@ -136,20 +136,15 @@ describe('Test main export', () => {
           as: 'posts_every_posts',
           let: { posts_every_posts_ids: '$posts' },
           pipeline: [
+            { $match: { $expr: { $in: ['$_id', '$$posts_every_posts_ids'] } } },
             {
               $lookup: {
                 from: 'labels-collection',
                 as: 'labels_some_labels',
                 let: { labels_some_labels_ids: '$labels' },
                 pipeline: [
-                  {
-                    $match: {
-                      $and: [
-                        { $expr: { $in: ['$_id', '$$labels_some_labels_ids'] } },
-                        { name: { $eq: 'foo' } },
-                      ],
-                    },
-                  },
+                  { $match: { $expr: { $in: ['$_id', '$$labels_some_labels_ids'] } } },
+                  { $match: { name: { $eq: 'foo' } } },
                   { $addFields: { id: '$_id' } },
                 ],
               },
@@ -165,12 +160,7 @@ describe('Test main export', () => {
             },
             {
               $match: {
-                $and: [
-                  { $expr: { $in: ['$_id', '$$posts_every_posts_ids'] } },
-                  {
-                    $and: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }],
-                  },
-                ],
+                $and: [{ title: { $eq: 'hello' } }, { $exists: true, $ne: [] }],
               },
             },
             {
