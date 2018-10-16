@@ -1,6 +1,7 @@
 # @voussoir/cypress-project-twitter-login
 
 ## 1.0.2
+
 - [patch] Bump all packages for Babel config fixes [d51c833](d51c833)
 - [patch] Updated dependencies [445b699](445b699)
 - [patch] Updated dependencies [750a83e](750a83e)
