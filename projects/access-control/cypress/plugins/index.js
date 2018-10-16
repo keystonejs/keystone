@@ -7,7 +7,7 @@
 // You can read more here:
 // https://on.cypress.io/plugins-guide
 // ***********************************************************
-const { Mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 const inflection = require('inflection');
 
 const appConfig = require('../../config');
@@ -18,13 +18,13 @@ module.exports = async (on, config) => {
 
   config.baseUrl = `http://localhost:${appConfig.port}`;
 
-  const mongoose = new Mongoose();
-  await mongoose.connect(
+  const mongooseInstance = new mongoose.Mongoose();
+  await mongooseInstance.connect(
     `mongodb://localhost:27017/${inflection.dasherize(appConfig.projectName).toLowerCase()}`,
     { useNewUrlParser: true }
   );
 
-  const dbConnection = mongoose.connection.db;
+  const dbConnection = mongooseInstance.connection.db;
 
   on('task', {
     mongoFind: ({ collection, query }) => {

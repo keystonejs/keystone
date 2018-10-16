@@ -59,7 +59,7 @@ const builder = joinBuilder({
         //    query
         // 3) <uid>_<field>_none - is `true` when none of the joined items match
         //    the query
-        match: [{ [`${uid}_${key}_every`]: true }],
+        matchTerm: { [`${uid}_${key}_every`]: true },
         // Flag this is a to-many relationship
         many: true,
       };
@@ -95,9 +95,9 @@ function prettyPrintResults(result) {
 }
 
 function getAggregate(database, collection) {
-  return joinQuery => {
+  return pipeline => {
     return new Promise((resolve, reject) => {
-      database.collection(collection).aggregate(joinQuery, (error, cursor) => {
+      database.collection(collection).aggregate(pipeline, (error, cursor) => {
         if (error) {
           return reject(error);
         }

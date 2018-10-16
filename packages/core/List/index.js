@@ -208,7 +208,6 @@ module.exports = class List {
     };
   }
   get gqlTypes() {
-    // TODO: AND / OR filters:
     // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
     const types = flatten(this.fields.map(field => field.gqlAuxTypes));
 
@@ -243,6 +242,7 @@ module.exports = class List {
           id_not_in: [ID!]
 
           AND: [${this.gqlNames.whereInputName}]
+          OR: [${this.gqlNames.whereInputName}]
 
           ${flatten(
             this.fields

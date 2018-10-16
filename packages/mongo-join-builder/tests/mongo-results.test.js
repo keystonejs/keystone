@@ -4,9 +4,9 @@ const { MongoClient } = require('mongodb');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
 
 function getAggregate(database, collection) {
-  return joinQuery => {
+  return pipeline => {
     return new Promise((resolve, reject) => {
-      database.collection(collection).aggregate(joinQuery, (error, cursor) => {
+      database.collection(collection).aggregate(pipeline, (error, cursor) => {
         if (error) {
           return reject(error);
         }
@@ -56,11 +56,7 @@ describe('mongo memory servier is alive', () => {
 describe('Testing against real data', () => {
   test('performs simple queries', async () => {
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
-          [key]: { $eq: query[key] },
-        },
-      ]),
+      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
       relationship: jest.fn((query, key) => {
         const [table] = key.split('_');
         return {
@@ -68,7 +64,7 @@ describe('Testing against real data', () => {
           field: table,
           // called with (parentValue, keyOfRelationship, rootObject, path)
           postQueryMutation: () => {},
-          match: { $exists: true, $ne: [] },
+          matchTerm: { $exists: true, $ne: [] },
           many: true,
         };
       }),
@@ -105,12 +101,12 @@ describe('Testing against real data', () => {
       },
     ]);
 
-    const joinQuery = {
+    const query = {
       name: 'foobar',
       age: 23,
     };
 
-    const result = await builder(joinQuery, getAggregate(mongoDb, 'users'));
+    const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
       {
@@ -128,11 +124,7 @@ describe('Testing against real data', () => {
 
   test('performs AND queries', async () => {
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
-          [key]: { $eq: query[key] },
-        },
-      ]),
+      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
       relationship: jest.fn((query, key) => {
         const [table] = key.split('_');
         return {
@@ -140,7 +132,7 @@ describe('Testing against real data', () => {
           field: table,
           // called with (parentValue, keyOfRelationship, rootObject, path)
           postQueryMutation: () => {},
-          match: { $exists: true, $ne: [] },
+          matchTerm: { $exists: true, $ne: [] },
           many: true,
         };
       }),
@@ -177,11 +169,11 @@ describe('Testing against real data', () => {
       },
     ]);
 
-    const joinQuery = {
+    const query = {
       AND: [{ name: 'foobar' }, { age: 23 }],
     };
 
-    const result = await builder(joinQuery, getAggregate(mongoDb, 'users'));
+    const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
       {
@@ -199,11 +191,7 @@ describe('Testing against real data', () => {
 
   test('performs to-one relationship queries', async () => {
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
-          [key]: { $eq: query[key] },
-        },
-      ]),
+      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
       relationship: jest.fn((query, key, path, uid) => {
         const tableMap = {
           author: 'users',
@@ -218,7 +206,7 @@ describe('Testing against real data', () => {
             // Merge the found item back into the original key
             [key]: parentData[keyOfRelationship][0],
           }),
-          match: [{ [`${uid}_${key}_every`]: true }],
+          matchTerm: { [`${uid}_${key}_every`]: true },
           many: false,
         };
       }),
@@ -263,14 +251,14 @@ describe('Testing against real data', () => {
       },
     ]);
 
-    const joinQuery = {
+    const query = {
       status: 'published',
       author: {
         name: 'Jess',
       },
     };
 
-    const result = await builder(joinQuery, getAggregate(mongoDb, 'posts'));
+    const result = await builder(query, getAggregate(mongoDb, 'posts'));
 
     expect(result).toMatchObject([
       {
@@ -286,11 +274,7 @@ describe('Testing against real data', () => {
 
   test('performs to-many relationship queries with no filter', async () => {
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
-          [key]: { $eq: query[key] },
-        },
-      ]),
+      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
       relationship: jest.fn((query, key, path, uid) => {
         const [table, criteria] = key.split('_');
         return {
@@ -308,7 +292,7 @@ describe('Testing against real data', () => {
               );
             }),
           }),
-          match: [{ [`${uid}_${table}_${criteria}`]: true }],
+          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
           many: true,
         };
       }),
@@ -356,12 +340,12 @@ describe('Testing against real data', () => {
       },
     ]);
 
-    const joinQuery = {
+    const query = {
       type: 'author',
       posts_every: {},
     };
 
-    const result = await builder(joinQuery, getAggregate(mongoDb, 'users'));
+    const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
       {
@@ -400,20 +384,12 @@ describe('Testing against real data', () => {
       simple: jest.fn((query, key) => {
         const value = query[key];
         if (key === '$limit') {
-          return {
-            postJoinPipeline: [{ $limit: value }],
-          };
+          return { postJoinPipeline: [{ $limit: value }] };
         } else if (key === '$sort') {
           const [sortBy, sortDirection] = value.split('_');
-          return {
-            postJoinPipeline: [{ $sort: { [sortBy]: sortDirection === 'ASC' ? 1 : -1 } }],
-          };
+          return { postJoinPipeline: [{ $sort: { [sortBy]: sortDirection === 'ASC' ? 1 : -1 } }] };
         }
-        return [
-          {
-            [key]: { $eq: value },
-          },
-        ];
+        return { matchTerm: { [key]: { $eq: value } } };
       }),
       relationship: jest.fn((query, key, path, uid) => {
         const [table, criteria] = key.split('_');
@@ -426,7 +402,7 @@ describe('Testing against real data', () => {
             // Merge the found items back into the original key
             [table]: parentData[keyOfRelationship],
           }),
-          match: [{ [`${uid}_${table}_${criteria}`]: true }],
+          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
           many: true,
         };
       }),
@@ -479,7 +455,7 @@ describe('Testing against real data', () => {
       },
     ]);
 
-    const joinQuery = {
+    const query = {
       type: 'author',
       posts_every: {
         status: 'published',
@@ -488,7 +464,7 @@ describe('Testing against real data', () => {
       $limit: 1,
     };
 
-    const result = await builder(joinQuery, getAggregate(mongoDb, 'users'));
+    const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
       {
@@ -510,11 +486,7 @@ describe('Testing against real data', () => {
 
   test('performs to-many relationship queries', async () => {
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
-          [key]: { $eq: query[key] },
-        },
-      ]),
+      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
       relationship: jest.fn((query, key, path, uid) => {
         const [table, criteria] = key.split('_');
         return {
@@ -532,7 +504,7 @@ describe('Testing against real data', () => {
               );
             }),
           }),
-          match: [{ [`${uid}_${table}_${criteria}`]: true }],
+          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
           many: true,
         };
       }),
@@ -580,14 +552,14 @@ describe('Testing against real data', () => {
       },
     ]);
 
-    const joinQuery = {
+    const query = {
       type: 'author',
       posts_every: {
         status: 'published',
       },
     };
 
-    const result = await builder(joinQuery, getAggregate(mongoDb, 'users'));
+    const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
       {
@@ -609,11 +581,7 @@ describe('Testing against real data', () => {
 
   test('performs to-many relationship queries with nested AND', async () => {
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
-          [key]: { $eq: query[key] },
-        },
-      ]),
+      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
       relationship: jest.fn((query, key, path, uid) => {
         const [table, criteria] = key.split('_');
         return {
@@ -631,7 +599,7 @@ describe('Testing against real data', () => {
               );
             }),
           }),
-          match: [{ [`${uid}_${table}_${criteria}`]: true }],
+          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
           many: true,
         };
       }),
@@ -683,14 +651,14 @@ describe('Testing against real data', () => {
       },
     ]);
 
-    const joinQuery = {
+    const query = {
       type: 'author',
       posts_every: {
         AND: [{ approved: true }, { status: 'published' }],
       },
     };
 
-    const result = await builder(joinQuery, getAggregate(mongoDb, 'users'));
+    const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
       {
@@ -714,11 +682,7 @@ describe('Testing against real data', () => {
 
   test('performs AND query with nested to-many relationship', async () => {
     const tokenizer = {
-      simple: jest.fn((query, key) => [
-        {
-          [key]: { $eq: query[key] },
-        },
-      ]),
+      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
       relationship: jest.fn((query, key, path, uid) => {
         const [table, criteria] = key.split('_');
         return {
@@ -736,7 +700,7 @@ describe('Testing against real data', () => {
               );
             }),
           }),
-          match: [{ [`${uid}_${table}_${criteria}`]: true }],
+          matchTerm: { [`${uid}_${table}_${criteria}`]: true },
           many: true,
         };
       }),
@@ -784,7 +748,7 @@ describe('Testing against real data', () => {
       },
     ]);
 
-    const joinQuery = {
+    const query = {
       AND: [
         { type: 'author' },
         {
@@ -795,7 +759,7 @@ describe('Testing against real data', () => {
       ],
     };
 
-    const result = await builder(joinQuery, getAggregate(mongoDb, 'users'));
+    const result = await builder(query, getAggregate(mongoDb, 'users'));
 
     expect(result).toMatchObject([
       {
