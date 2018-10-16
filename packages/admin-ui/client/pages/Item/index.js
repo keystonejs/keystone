@@ -221,7 +221,7 @@ const ItemDetails = withRouter(
         .then(() => {
           const toastContent = (
             <div>
-              {item.name ? <strong>{item.name}</strong> : null}
+              {item._label_ ? <strong>{item._label_}</strong> : null}
               <div>Saved successfully</div>
             </div>
           );
@@ -384,7 +384,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
           return item ? (
             <main>
               <DocTitle>
-                {item.name} - {list.singular}
+                {item._label_} - {list.singular}
               </DocTitle>
               <Container id="toast-boundary">
                 <Mutation mutation={list.updateMutation}>
