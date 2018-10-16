@@ -313,7 +313,7 @@ class MongooseListAdapter extends BaseListAdapter {
 
   itemsQuery(args, { meta = false } = {}) {
     function graphQlQueryToMongoJoinQuery(query) {
-      const joinQuery = {
+      const _query = {
         ...query.where,
         ...mapKeyNames(
           // Grab all the modifiers
@@ -324,7 +324,7 @@ class MongooseListAdapter extends BaseListAdapter {
         ),
       };
 
-      return mapKeys(joinQuery, field => {
+      return mapKeys(_query, field => {
         if (getType(field) !== 'Object' || !field.where) {
           return field;
         }

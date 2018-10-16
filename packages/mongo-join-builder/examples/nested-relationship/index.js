@@ -7,11 +7,7 @@ const builder = joinBuilder({
   tokenizer: {
     // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
     // eslint-disable-next-line no-unused-vars
-    simple: (query, key, path) => [
-      {
-        [key]: { $eq: query[key] },
-      },
-    ],
+    simple: (query, key, path) => [{ [key]: { $eq: query[key] } }],
 
     // executed for complex query components (eg; items: { ... })
     relationship: (query, key, path, uid) => {
@@ -50,7 +46,7 @@ const builder = joinBuilder({
         //    query
         // 3) <uid>_<field>_none - is `true` when none of the joined items match
         //    the query
-        match: [{ [`${uid}_${field}_${filter}`]: true }],
+        matchTerm: { [`${uid}_${field}_${filter}`]: true },
         // Flag this is a to-many relationship
         many: true,
       };
@@ -92,9 +88,9 @@ function prettyPrintResults(result) {
 }
 
 function getAggregate(database, collection) {
-  return joinQuery => {
+  return pipeline => {
     return new Promise((resolve, reject) => {
-      database.collection(collection).aggregate(joinQuery, (error, cursor) => {
+      database.collection(collection).aggregate(pipeline, (error, cursor) => {
         if (error) {
           return reject(error);
         }
