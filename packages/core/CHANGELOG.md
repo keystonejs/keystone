@@ -1,5 +1,15 @@
 # @voussoir/core
 
+## 0.3.0
+- [patch] Bump all packages for Babel config fixes [d51c833](d51c833)
+- [minor] Support unique field constraint for mongoose adapter [750a83e](750a83e)
+- [patch] Surface errors that occur at the adapter level during a create mutation. [81641b2](81641b2)
+- [patch] Updated dependencies [445b699](445b699)
+- [patch] Updated dependencies [9c75136](9c75136)
+  - @voussoir/fields@1.0.0
+  - @voussoir/access-control@0.1.3
+  - @voussoir/utils@0.2.0
+
 ## 0.2.0
 
 - [minor] Add missing dependencies for which the mono-repo was hiding that they were missing [fed0cdc](fed0cdc)

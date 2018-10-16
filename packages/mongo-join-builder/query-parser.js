@@ -2,11 +2,11 @@ const cuid = require('cuid');
 const { getType, flatten, objMerge } = require('@voussoir/utils');
 
 // If it's 0 or 1 items, we can use it as-is. Any more needs an $and/$or
-const joinPipeline = (pipeline, joinOp) =>
-  pipeline.length > 1 ? [{ [joinOp]: pipeline }] : pipeline;
+const joinTerms = (matchTerms, joinOp) =>
+  matchTerms.length > 1 ? { [joinOp]: matchTerms } : matchTerms[0];
 
 const flattenQueries = (parsedQueries, joinOp) => ({
-  pipeline: joinPipeline(flatten(parsedQueries.map(q => q.pipeline)).filter(pipe => pipe), joinOp),
+  matchTerm: joinTerms(parsedQueries.map(q => q.matchTerm).filter(matchTerm => matchTerm), joinOp),
   postJoinPipeline: flatten(parsedQueries.map(q => q.postJoinPipeline)).filter(pipe => pipe),
   relationships: objMerge(parsedQueries.map(q => q.relationships)),
 });
@@ -36,9 +36,9 @@ function parser({ tokenizer, getUID = cuid }, query, pathSoFar = []) {
         );
       }
       return {
-        // queryAst.match is our filtering expression. This determines if the
+        // queryAst.matchTerm is our filtering expression. This determines if the
         // parent item is included in the final list
-        pipeline: queryAst.match,
+        matchTerm: queryAst.matchTerm,
         postJoinPipeline: [],
         relationships: { [uid]: { ...queryAst, ...parser({ tokenizer, getUID }, value, path) } },
       };
@@ -51,7 +51,7 @@ function parser({ tokenizer, getUID = cuid }, query, pathSoFar = []) {
         );
       }
       return {
-        pipeline: queryAst.pipeline || [],
+        matchTerm: queryAst.matchTerm,
         postJoinPipeline: queryAst.postJoinPipeline || [],
         relationships: {},
       };

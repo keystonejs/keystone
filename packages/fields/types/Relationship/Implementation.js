@@ -388,7 +388,7 @@ class MongoSelectInterface extends MongooseFieldAdapter {
         //    query
         // 3) <uid>_<field>_none - is `true` when none of the joined items match
         //    the query
-        match: [{ [`${uid}_${this.path}_${filterType}`]: true }],
+        matchTerm: { [`${uid}_${this.path}_${filterType}`]: true },
         // Flag this is a to-many relationship
         many: this.config.many,
       };
