@@ -25,7 +25,7 @@ const HeaderCell = styled('td')({
   color: '#999',
   display: 'table-cell',
   fontWeight: 'normal',
-  paddingBottom: '8px',
+  padding: '8px',
   textAlign: 'left',
   verticalAlign: 'bottom',
 });
@@ -34,7 +34,7 @@ const BodyCell = styled('td')(({ isSelected }) => ({
   boxShadow: isSelected
     ? `0 1px 0 ${colors.B.L75}, 0 -1px 0 ${colors.B.L75}`
     : `0 -1px 0 ${colors.N10}`,
-  padding: '8px 0',
+  padding: '8px',
   position: 'relative',
   fontSize: 15,
 }));
@@ -50,6 +50,14 @@ const ItemLink = styled(Link)`
     right: 0;
     top: 0;
   }
+`;
+
+const BodyCellTruncated = styled(BodyCell)`
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
 `;
 
 const NoResults = ({ children, ...props }) => (
@@ -106,7 +114,7 @@ class SortLink extends React.Component<SortLinkProps> {
       borderBottom: `2px solid ${colors.N10}`,
       display: 'table-cell',
       fontWeight: 'normal',
-      paddingBottom: '8px',
+      padding: '8px',
       textAlign: 'left',
       verticalAlign: 'bottom',
       color: this.props.active ? '#000' : '#999',
@@ -215,9 +223,9 @@ class ListDisplayRow extends Component {
 
           if (path === '_label_') {
             return (
-              <BodyCell key={path}>
+              <BodyCellTruncated key={path}>
                 <ItemLink to={link({ path: list.path, id: item.id })}>{item._label_}</ItemLink>
-              </BodyCell>
+              </BodyCellTruncated>
             );
           }
 
@@ -237,7 +245,7 @@ class ListDisplayRow extends Component {
             content = item[path];
           }
 
-          return <BodyCell key={path}>{content}</BodyCell>;
+          return <BodyCellTruncated key={path}>{content}</BodyCellTruncated>;
         })}
       </tr>
     );
@@ -302,10 +310,11 @@ class ListManageRow extends Component {
             tabIndex="0"
           />
         </BodyCell>
+        <BodyCell />
         {fields.map(({ path }) => (
-          <BodyCell isSelected={isSelected} key={path}>
+          <BodyCellTruncated isSelected={isSelected} key={path}>
             {item[path]}
-          </BodyCell>
+          </BodyCellTruncated>
         ))}
       </tr>
     );

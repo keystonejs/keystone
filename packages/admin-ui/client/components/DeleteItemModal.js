@@ -23,7 +23,7 @@ export default class DeleteItemModal extends Component {
           return (
             <Confirm isOpen={isOpen} onKeyDown={this.onKeyDown}>
               <p style={{ marginTop: 0 }}>
-                Are you sure you want to delete <strong>{item.name || item.id}</strong>?
+                Are you sure you want to delete <strong>{item._label_}</strong>?
               </p>
               <footer>
                 <Button
