@@ -62,20 +62,20 @@ describe('Test main export', () => {
     }));
 
     const tokenizer = {
-      simple: jest.fn((query, key) => ({ pipeline: { [key]: { $eq: query[key] } } })),
+      simple: jest.fn((query, key) => ({ matchTerm: { [key]: { $eq: query[key] } } })),
       relationship: jest.fn((query, key) => {
         const [table] = key.split('_');
         return {
           from: `${table}-collection`,
           field: table,
           postQueryMutation,
-          match: [{ $exists: true, $ne: [] }],
+          matchTerm: { $exists: true, $ne: [] },
           many: true,
         };
       }),
     };
 
-    const joinQuery = {
+    const query = {
       AND: [
         { name: 'foobar' },
         { age: 23 },
@@ -127,7 +127,7 @@ describe('Test main export', () => {
 
     const aggregate = jest.fn(() => Promise.resolve(aggregateResponse));
 
-    const result = await builder(joinQuery, aggregate);
+    const result = await builder(query, aggregate);
 
     expect(aggregate).toHaveBeenCalledWith([
       {
@@ -242,7 +242,7 @@ describe('Test main export', () => {
       relationship: () => {},
     };
 
-    const joinQuery = { name: 'foobar' };
+    const query = { name: 'foobar' };
 
     const builder = mongoJoinBuilder({ tokenizer });
 
@@ -250,7 +250,7 @@ describe('Test main export', () => {
 
     const aggregate = jest.fn(() => Promise.resolve(aggregateResponse));
 
-    await expect(builder(joinQuery, aggregate)).rejects.toThrow('Whoops');
+    await expect(builder(query, aggregate)).rejects.toThrow('Whoops');
 
     expect(aggregate).not.toHaveBeenCalled();
   });
@@ -263,7 +263,7 @@ describe('Test main export', () => {
       },
     };
 
-    const joinQuery = { user: { name: 'foobar' } };
+    const query = { user: { name: 'foobar' } };
 
     const builder = mongoJoinBuilder({ tokenizer });
 
@@ -271,7 +271,7 @@ describe('Test main export', () => {
 
     const aggregate = jest.fn(() => Promise.resolve(aggregateResponse));
 
-    await expect(builder(joinQuery, aggregate)).rejects.toThrow('Uh-oh');
+    await expect(builder(query, aggregate)).rejects.toThrow('Uh-oh');
 
     expect(aggregate).not.toHaveBeenCalled();
   });

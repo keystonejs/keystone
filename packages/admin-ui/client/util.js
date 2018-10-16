@@ -27,7 +27,7 @@ export const deconstructErrorsToDataShape = error => {
 export function toastItemSuccess(toast, item, message = 'Success') {
   const toastContent = (
     <div>
-      {item && item.name ? <strong>{item.name}</strong> : null}
+      {item && item._label_ ? <strong>{item._label_}</strong> : null}
       <div>{message}</div>
     </div>
   );

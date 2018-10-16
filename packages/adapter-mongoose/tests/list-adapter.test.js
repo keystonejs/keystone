@@ -74,7 +74,7 @@ describe('MongooseListAdapter', () => {
       posts_some: () => ({
         from: 'posts',
         field: 'posts',
-        match: [{ posts_some: true }],
+        matchTerm: { posts_some: true },
         // Flag this is a to-many relationship
         many: true,
       }),
@@ -163,7 +163,7 @@ describe('MongooseListAdapter', () => {
       posts_some: () => ({
         from: 'posts',
         field: 'posts',
-        match: [{ posts_some: true }],
+        matchTerm: { posts_some: true },
         // Flag this is a to-many relationship
         many: true,
       }),
