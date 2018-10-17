@@ -7,7 +7,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@emotion/core": "^10.0.0-beta.2",
+    "@emotion/core": "^10.0.0-beta.3",
     "@voussoir/access-control": "^0.1.3",
     "@voussoir/adapter-mongoose": "^0.3.0",
     "@voussoir/icons": "^0.1.3",
