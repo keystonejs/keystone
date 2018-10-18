@@ -1,14 +1,11 @@
 // @flow
 
-import React, { Component, type Ref } from 'react';
+import React, { Component } from 'react';
 import RelationshipSelect from './RelationshipSelect';
+import type { FilterProps } from '../../../types';
 
-type Props = {
-  field: Object,
-  filter: Object,
-  innerRef: Ref<*>,
-  onChange: Event => void,
-};
+type Props = FilterProps<null | string>;
+
 const EventCatcher = props => (
   <div
     onClick={e => {
@@ -20,13 +17,13 @@ const EventCatcher = props => (
 );
 
 export default class RelationshipFilterView extends Component<Props> {
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     const { filter } = this.props;
     if (prevProps.filter !== filter) {
       this.props.recalcHeight();
     }
   }
-  handleChange = option => {
+  handleChange = (option: null | { value: { id: string } }) => {
     const { onChange } = this.props;
     if (option === null) {
       onChange(null);

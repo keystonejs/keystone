@@ -37,7 +37,7 @@ export const buttonAndInputBase = {
 // Basic Input
 // ------------------------------
 
-type InputProps = { innerRef: Ref<*>, isMultiline: boolean, disabled: boolean };
+type InputProps = { innerRef: Ref<*>, isMultiline?: boolean, disabled?: boolean };
 export const Input = ({ innerRef, isMultiline, ...props }: InputProps) => {
   const css = {
     ...buttonAndInputBase,
