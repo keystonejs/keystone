@@ -20,6 +20,10 @@ export default class CalendarDayField extends Component {
     };
   }
 
+  yearRangeFrom = this.props.field.config.yearRangeFrom;
+  yearRangeTo = this.props.field.config.yearRangeTo;
+  yearPickerType = this.props.field.config.yearPickerType;
+
   handleDayChange = day => {
     const { field, onChange } = this.props;
     const newState = { ...this.state, date: format(day, 'YYYY-MM-DD') };
@@ -81,6 +85,9 @@ export default class CalendarDayField extends Component {
       handleOffsetChange,
       handleMonthSelect,
       handleYearSelect,
+      yearRangeFrom,
+      yearRangeTo,
+      yearPickerType,
     } = this;
     return (
       <FieldContainer>
@@ -98,6 +105,9 @@ export default class CalendarDayField extends Component {
                 handleOffsetChange,
                 handleMonthSelect,
                 handleYearSelect,
+                yearRangeFrom,
+                yearRangeTo,
+                yearPickerType,
               }}
             />
           </Popout>

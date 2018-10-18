@@ -173,7 +173,7 @@ class SelectYear extends React.Component<SelectYearProps> {
           value={getYear(date)}
         />
       );
-    } else if ((years.length < 50 && yearPickerType == 'auto') || yearPickerType == 'select') {
+    } else if ((years.length <= 50 && yearPickerType == 'auto') || yearPickerType == 'select') {
       return (
         <select onChange={onChange} value={getYear(date)}>
           {years.map((year, i) => (
