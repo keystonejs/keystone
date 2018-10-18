@@ -1,11 +1,12 @@
 const cuid = require('cuid');
 const { getType, flatten, objMerge } = require('@voussoir/utils');
 
-// If it's 0 or 1 items, we can use it as-is. Any more needs an $and
-const cleanPipeline = pipeline => (pipeline.length > 1 ? [{ $and: pipeline }] : pipeline);
+// If it's 0 or 1 items, we can use it as-is. Any more needs an $and/$or
+const joinTerms = (matchTerms, joinOp) =>
+  matchTerms.length > 1 ? { [joinOp]: matchTerms } : matchTerms[0];
 
-const flattenQueries = parsedQueries => ({
-  pipeline: cleanPipeline(flatten(parsedQueries.map(q => q.pipeline)).filter(pipe => pipe)),
+const flattenQueries = (parsedQueries, joinOp) => ({
+  matchTerm: joinTerms(parsedQueries.map(q => q.matchTerm).filter(matchTerm => matchTerm), joinOp),
   postJoinPipeline: flatten(parsedQueries.map(q => q.postJoinPipeline)).filter(pipe => pipe),
   relationships: objMerge(parsedQueries.map(q => q.relationships)),
 });
@@ -19,10 +20,11 @@ function parser({ tokenizer, getUID = cuid }, query, pathSoFar = []) {
 
   const parsedQueries = Object.entries(query).map(([key, value]) => {
     const path = [...pathSoFar, key];
-    if (key === 'AND') {
-      // An AND query component
+    if (['AND', 'OR'].includes(key)) {
+      // An AND/OR query component
       return flattenQueries(
-        value.map((_query, index) => parser({ tokenizer, getUID }, _query, [...path, index]))
+        value.map((_query, index) => parser({ tokenizer, getUID }, _query, [...path, index])),
+        { AND: '$and', OR: '$or' }[key]
       );
     } else if (getType(value) === 'Object') {
       // A relationship query component
@@ -34,7 +36,9 @@ function parser({ tokenizer, getUID = cuid }, query, pathSoFar = []) {
         );
       }
       return {
-        pipeline: [],
+        // queryAst.matchTerm is our filtering expression. This determines if the
+        // parent item is included in the final list
+        matchTerm: queryAst.matchTerm,
         postJoinPipeline: [],
         relationships: { [uid]: { ...queryAst, ...parser({ tokenizer, getUID }, value, path) } },
       };
@@ -47,13 +51,13 @@ function parser({ tokenizer, getUID = cuid }, query, pathSoFar = []) {
         );
       }
       return {
-        pipeline: queryAst.pipeline || [],
+        matchTerm: queryAst.matchTerm,
         postJoinPipeline: queryAst.postJoinPipeline || [],
         relationships: {},
       };
     }
   });
-  return flattenQueries(parsedQueries);
+  return flattenQueries(parsedQueries, '$and');
 }
 
 module.exports = { queryParser: parser };
