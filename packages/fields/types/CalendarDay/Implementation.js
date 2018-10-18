@@ -30,11 +30,12 @@ class CalendarDay extends Implementation {
     return [`${this.path}: String`];
   }
   extendAdminMeta(meta) {
-    return { ...meta,
+    return {
+      ...meta,
       format: this.config.format,
       yearRangeFrom: this.config.yearRangeFrom,
       yearRangeTo: this.config.yearRangeTo,
-      yearPickerType: this.config.yearPickerType
+      yearPickerType: this.config.yearPickerType,
     };
   }
 }
