@@ -34,8 +34,9 @@ export default class AnimateHeight extends Component<Props, State> {
       !element ||
       // $FlowFixMe
       typeof element.scrollTo !== 'function'
-    )
-      {return;}
+    ) {
+      return;
+    }
     element.scrollTo(0, 0);
   };
   calculateHeight = () => {
