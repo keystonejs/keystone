@@ -40,15 +40,14 @@ export const initItems = () => {
   ];
 };
 
-export const filterTests = app => {
-  const match = (filter, targets, done) => {
-    matchFilter(app, filter, '{ name, stars }', targets, done, 'name');
-  };
+export const filterTests = withKeystone => {
+  const match = (server, filter, targets) =>
+    matchFilter(server, filter, '{ name, stars }', targets, 'name');
 
-  test('No filter', done => {
-    match(
-      undefined,
-      [
+  test(
+    'No filter',
+    withKeystone(({ server: { server } }) =>
+      match(server, undefined, [
         {
           name: 'post1',
           stars: 0,
@@ -69,15 +68,14 @@ export const filterTests = app => {
           name: 'post5',
           stars: null,
         },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Empty filter', done => {
-    match(
-      'where: { }',
-      [
+  test(
+    'Empty filter',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { }', [
         {
           name: 'post1',
           stars: 0,
@@ -98,28 +96,26 @@ export const filterTests = app => {
           name: 'post5',
           stars: null,
         },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: stars', done => {
-    match(
-      'where: { stars: 1.2 }',
-      [
+  test(
+    'Filter: stars',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { stars: 1.2 }', [
         {
           name: 'post2',
           stars: 1.2,
         },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: stars_not', done => {
-    match(
-      'where: { stars_not: 1.2 }',
-      [
+  test(
+    'Filter: stars_not',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { stars_not: 1.2 }', [
         {
           name: 'post1',
           stars: 0,
@@ -136,15 +132,14 @@ export const filterTests = app => {
           name: 'post5',
           stars: null,
         },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: stars_not null', done => {
-    match(
-      'where: { stars_not: null }',
-      [
+  test(
+    'Filter: stars_not null',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { stars_not: null }', [
         {
           name: 'post1',
           stars: 0,
@@ -161,15 +156,14 @@ export const filterTests = app => {
           name: 'post4',
           stars: 3,
         },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: stars_lt', done => {
-    match(
-      'where: { stars_lt: 2.30 }',
-      [
+  test(
+    'Filter: stars_lt',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { stars_lt: 2.30 }', [
         {
           name: 'post1',
           stars: 0,
@@ -178,15 +172,14 @@ export const filterTests = app => {
           name: 'post2',
           stars: 1.2,
         },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: stars_lte', done => {
-    match(
-      'where: { stars_lte: 2.30 }',
-      [
+  test(
+    'Filter: stars_lte',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { stars_lte: 2.30 }', [
         {
           name: 'post1',
           stars: 0,
@@ -199,28 +192,26 @@ export const filterTests = app => {
           name: 'post3',
           stars: 2.3,
         },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: stars_gt', done => {
-    match(
-      'where: { stars_gt: 2.30 }',
-      [
+  test(
+    'Filter: stars_gt',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { stars_gt: 2.30 }', [
         {
           name: 'post4',
           stars: 3,
         },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: stars_gte', done => {
-    match(
-      'where: { stars_gte: 2.30 }',
-      [
+  test(
+    'Filter: stars_gte',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { stars_gte: 2.30 }', [
         {
           name: 'post3',
           stars: 2.3,
@@ -229,19 +220,19 @@ export const filterTests = app => {
           name: 'post4',
           stars: 3,
         },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: stars_in (empty list)', done => {
-    match('where: { stars_in: [] }', [], done);
-  });
+  test(
+    'Filter: stars_in (empty list)',
+    withKeystone(({ server: { server } }) => match(server, 'where: { stars_in: [] }', []))
+  );
 
-  test('Filter: stars_not_in (empty list)', done => {
-    match(
-      'where: { stars_not_in: [] }',
-      [
+  test(
+    'Filter: stars_not_in (empty list)',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { stars_not_in: [] }', [
         {
           name: 'post1',
           stars: 0,
@@ -262,15 +253,14 @@ export const filterTests = app => {
           name: 'post5',
           stars: null,
         },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: stars_in', done => {
-    match(
-      'where: { stars_in: [0, 1.2, 2.30] }',
-      [
+  test(
+    'Filter: stars_in',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { stars_in: [0, 1.2, 2.30] }', [
         {
           name: 'post1',
           stars: 0,
@@ -283,15 +273,14 @@ export const filterTests = app => {
           name: 'post3',
           stars: 2.3,
         },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: stars_not_in', done => {
-    match(
-      'where: { stars_not_in: [0, 1.2, 2.30] }',
-      [
+  test(
+    'Filter: stars_not_in',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { stars_not_in: [0, 1.2, 2.30] }', [
         {
           name: 'post4',
           stars: 3,
@@ -300,28 +289,26 @@ export const filterTests = app => {
           name: 'post5',
           stars: null,
         },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: stars_in null', done => {
-    match(
-      'where: { stars_in: [null] }',
-      [
+  test(
+    'Filter: stars_in null',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { stars_in: [null] }', [
         {
           name: 'post5',
           stars: null,
         },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: stars_not_in null', done => {
-    match(
-      'where: { stars_not_in: [null] }',
-      [
+  test(
+    'Filter: stars_not_in null',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { stars_not_in: [null] }', [
         {
           name: 'post1',
           stars: 0,
@@ -338,8 +325,7 @@ export const filterTests = app => {
           name: 'post4',
           stars: 3,
         },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 };

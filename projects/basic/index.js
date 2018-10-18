@@ -54,7 +54,7 @@ try {
 keystone.createList('User', {
   fields: {
     name: { type: Text },
-    email: { type: Text },
+    email: { type: Text, unique: true },
     dob: {
       type: CalendarDay,
       format: 'Do MMMM YYYY',
