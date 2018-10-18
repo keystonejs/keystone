@@ -13,7 +13,6 @@ import { gridSize } from '../theme';
 export const CONTAINER_WIDTH = 1160;
 
 export const Container = styled.div(({ isFullWidth }) => ({
-  display: 'flex',
   marginLeft: 'auto',
   marginRight: 'auto',
   maxWidth: isFullWidth ? '100%' : CONTAINER_WIDTH,

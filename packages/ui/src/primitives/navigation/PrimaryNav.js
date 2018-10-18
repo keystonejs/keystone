@@ -7,11 +7,11 @@ import { colors, gridSize } from '../../theme';
 import { FlexProvider, ItemElement, NAV_GUTTER } from './common';
 
 const Wrapper = styled.nav({
-  display: 'flex',
-  flexFlow: 'colunm nowrap',
-  minHeight: '100vh',
   backgroundColor: colors.primary,
   color: 'white',
+  display: 'flex',
+  flexFlow: 'column nowrap',
+  minHeight: '100vh',
   minWidth: 220,
 });
 

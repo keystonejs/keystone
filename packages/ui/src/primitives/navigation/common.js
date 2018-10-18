@@ -13,27 +13,28 @@ export const ItemElement = ({ isSelected, ...props }: ItemProps) => {
   return <button type="button" {...props} />;
 };
 
-export const FlexProvider = styled.div(({ isSecondary }) => ({
-  width: '100%',
+export const FlexProvider = styled.div({
+  alignItems: 'flex-start',
   display: 'flex',
   flexFlow: 'column nowrap',
-  justifyContent: 'flex-start',
-  alignItems: 'flex-start',
-  minHeight: isSecondary ? 'auto' : '100vh',
   height: ' 100%',
-}));
+  justifyContent: 'flex-start',
+  minHeight: '100vh',
+  width: '100%',
+});
+
 export const NavGroupIcons = styled.div({
+  alignItems: 'center',
   display: 'flex',
   flexFlow: 'row nowrap',
   justifyContent: 'space-between',
-  alignItems: 'center',
 });
 
 export const NavGroup = styled.div({
   display: 'flex',
+  flex: 1,
   flexFlow: 'column nowrap',
   width: '100%',
-  flex: 1,
 });
 export const NavSeparator = styled.div(({ isSelected }) => ({
   borderLeft: '1px solid rgba(255, 255, 255, 0.2)',

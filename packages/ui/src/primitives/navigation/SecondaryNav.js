@@ -30,6 +30,7 @@ export const SecondaryNavItem = styled(ItemElement)(({ isSelected }) => ({
 }));
 const SecondaryFlexProvider = styled(FlexProvider)({
   margin: 0,
+  minHeight: 'auto',
 });
 
 type Props = { children: Node };
@@ -37,7 +38,7 @@ type Props = { children: Node };
 export const SecondaryNav = ({ children }: Props) => (
   <Wrapper>
     <Container>
-      <SecondaryFlexProvider isSecondary>{children}</SecondaryFlexProvider>
+      <SecondaryFlexProvider>{children}</SecondaryFlexProvider>
     </Container>
   </Wrapper>
 );
