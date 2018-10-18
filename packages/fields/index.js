@@ -11,4 +11,5 @@ module.exports = {
   CloudinaryImage: require('./types/CloudinaryImage'),
   CalendarDay: require('./types/CalendarDay'),
   DateTime: require('./types/DateTime'),
+  Decimal: require('./types/Decimal'),
 };
