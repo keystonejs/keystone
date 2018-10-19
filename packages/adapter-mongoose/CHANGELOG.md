@@ -1,5 +1,9 @@
 # @voussoir/adapter-mongoose
 
+## 0.3.1
+- [patch] Updated dependencies [74af97e](74af97e)
+  - @voussoir/mongo-join-builder@0.2.0
+
 ## 0.3.0
 
 - [patch] Bump all packages for Babel config fixes [d51c833](d51c833)
