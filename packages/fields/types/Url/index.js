@@ -6,7 +6,7 @@ module.exports = {
   implementation: Text,
   views: {
     Controller: path.resolve(__dirname, '../Text/Controller'),
-    Field: path.resolve(__dirname, './Field'),
+    Field: path.resolve(__dirname, './views/Field'),
     Filter: path.resolve(__dirname, '../Text/views/Filter'),
     Cell: path.resolve(__dirname, './views/Cell'),
   },
