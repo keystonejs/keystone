@@ -21,6 +21,7 @@
     "graphql": "^0.13.2",
     "graphql-tag": "^2.8.0",
     "inflection": "^1.12.0",
+    "is-color": "^1.0.2",
     "lodash.get": "^4.4.2",
     "lodash.groupby": "^4.6.0",
     "lodash.omitby": "^4.6.0",
@@ -29,7 +30,8 @@
     "mongoose": "^5.3.3",
     "p-settle": "^2.1.0",
     "prop-types": "^15.6.1",
-    "react-apollo": "^2.2.4"
+    "react-apollo": "^2.2.4",
+    "react-color": "^2.14.1"
   },
   "peerDependencies": {
     "react": "^16.5.2"
