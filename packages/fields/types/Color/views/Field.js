@@ -6,6 +6,7 @@ import { colors } from '@voussoir/ui/src/theme';
 import { Popout } from '@voussoir/ui/src/primitives/modals';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import SketchPicker from 'react-color/lib/Sketch';
+import isColor from 'is-color';
 
 const ColorField = ({ field, item, itemErrors, onChange }) => {
   const value = item[field.path] || '';
@@ -17,26 +18,30 @@ const ColorField = ({ field, item, itemErrors, onChange }) => {
   const target = (
     <Button variant="ghost">
       {value ? (
-        <React.Fragment>
-          <div
-            css={{
-              backgroundColor: value,
-              borderRadius: 3,
-              display: 'inline-block',
-              height: 18,
-              width: 18,
-              marginRight: 10,
-              verticalAlign: 'middle',
-            }}
-          />
-          <span
-            css={{
-              verticalAlign: 'middle',
-            }}
-          >
-            {value}
-          </span>
-        </React.Fragment>
+        isColor(value) ? (
+          <React.Fragment>
+            <div
+              css={{
+                backgroundColor: value,
+                borderRadius: 3,
+                display: 'inline-block',
+                height: 18,
+                width: 18,
+                marginRight: 10,
+                verticalAlign: 'middle',
+              }}
+            />
+            <span
+              css={{
+                verticalAlign: 'middle',
+              }}
+            >
+              {value}
+            </span>
+          </React.Fragment>
+        ) : (
+          value
+        )
       ) : (
         'Set Color'
       )}
