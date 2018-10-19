@@ -6,6 +6,7 @@ const users = [
     isAdmin: true,
     dob: '1990-01-01',
     lastOnline: '2018-08-16T11:08:18.886+10:00',
+    website: 'https://example.com',
   },
   {
     name: 'Jed Watson',
