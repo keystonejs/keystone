@@ -24,11 +24,10 @@ export default class CalendarDayField extends Component {
   onSelectedChange = day => {
     const { field, onChange } = this.props;
     const value = format(day, FORMAT);
-    console.log(value);
     if (
-      getYear(value).toString().length < 4 &&
-      getYear(value) < this.yearRangeTo &&
-      getYear(value) > this.yearRangeFrom
+      getYear(value).toString().length <= 4 &&
+      getYear(value) <= this.yearRangeTo &&
+      getYear(value) >= this.yearRangeFrom
     ) {
       onChange(field, value);
       this.setState({ value });
