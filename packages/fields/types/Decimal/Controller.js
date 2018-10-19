@@ -56,7 +56,5 @@ export default class TextController extends FieldController {
       label: 'Is less than or equal to',
       getInitialValue: () => '',
     },
-    // QUESTION: should we support "in" and "not_in" filters for Integer?
-    // What does the UI look like for that.
   ];
 }
