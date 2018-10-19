@@ -18,12 +18,25 @@ export default class TextFilterView extends Component<Props> {
       this.props.recalcHeight();
     }
   }
+
+  valueToString = value => {
+    // Make the value a string to prevent loss of accuracy and precision.
+    if (typeof value === 'string') {
+      return value;
+    } else if (typeof value === 'number') {
+      return String(value);
+    } else {
+      // If it is neither string nor number then it must be empty.
+      return '';
+    }
+  };
+
   handleChange = event => {
     const value = event.target.value;
-    this.props.onChange(value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
-    // if (/^\$?[0-9][0-9,]*[0-9]\.?[0-9]{0,2}$/.test(value)) {
-    //   this.props.onChange(value);
-    // }
+    if (/^-?\d*\.?\d*$/.test(value)) {
+      this.props.onChange(value);
+    }
+    console.log(typeof value, value, 'Filter');
   };
 
   render() {
@@ -38,7 +51,7 @@ export default class TextFilterView extends Component<Props> {
         onChange={this.handleChange}
         innerRef={innerRef}
         placeholder={placeholder}
-        value={value}
+        value={this.valueToString(value)}
       />
     );
   }

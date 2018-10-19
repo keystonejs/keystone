@@ -7,14 +7,13 @@ export default class TextField extends Component {
   onChange = event => {
     const { field, onChange } = this.props;
     const value = event.target.value;
-    onChange(field, value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'));
-    // if(/^\$?[0-9][0-9,]*[0-9]\.?[0-9]{0,2}$/.test(value)){
-    //   onChange(field, value);
-    // }
+    if (/^-?\d*\.?\d*$/.test(value)) {
+      onChange(field, value);
+    }
   };
 
   valueToString = value => {
-    // Make the value a string to keep react happy.
+    // Make the value a string to prevent loss of accuracy and precision.
     if (typeof value === 'string') {
       return value;
     } else if (typeof value === 'number') {
@@ -43,7 +42,7 @@ export default class TextField extends Component {
           <Input
             autoComplete="off"
             autoFocus={autoFocus}
-            type="number"
+            type="text"
             value={this.valueToString(value)}
             onChange={this.onChange}
             id={htmlID}

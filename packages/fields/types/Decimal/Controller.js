@@ -13,15 +13,17 @@ export default class TextController extends FieldController {
   };
   getValue = data => {
     const value = data[this.config.path];
-    if (typeof value === 'number') {
+    console.log(typeof value, value);
+    // Make the value a string to prevent loss of accuracy and precision.
+    if (typeof value === 'string') {
       return value;
-    } else if (typeof value === 'string' && value.length > 0) {
-      // The field component enforces numeric values
-      return parseInt(value);
+    } else if (typeof value === 'number') {
+      return String(value);
     } else {
-      // if it is not a String or a Number then the field must be empty
-      return null;
+      // If it is neither string nor number then it must be empty.
+      return '';
     }
+
   };
   getFilterTypes = () => [
     {

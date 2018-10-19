@@ -7,7 +7,7 @@ class Decimal extends Implementation {
   }
 
   get gqlOutputFields() {
-    return [`${this.path}: Int`];
+    return [`${this.path}: String`];
   }
   get gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
@@ -15,21 +15,21 @@ class Decimal extends Implementation {
 
   get gqlQueryInputFields() {
     return [
-      `${this.path}: Int`,
-      `${this.path}_not: Int`,
-      `${this.path}_lt: Int`,
-      `${this.path}_lte: Int`,
-      `${this.path}_gt: Int`,
-      `${this.path}_gte: Int`,
-      `${this.path}_in: [Int]`,
-      `${this.path}_not_in: [Int]`,
+      `${this.path}: String`,
+      `${this.path}_not: String`,
+      `${this.path}_lt: String`,
+      `${this.path}_lte: String`,
+      `${this.path}_gt: String`,
+      `${this.path}_gte: String`,
+      `${this.path}_in: [String]`,
+      `${this.path}_not_in: [String]`,
     ];
   }
   get gqlUpdateInputFields() {
-    return [`${this.path}: Int`];
+    return [`${this.path}: String`];
   }
   get gqlCreateInputFields() {
-    return [`${this.path}: Int`];
+    return [`${this.path}: String`];
   }
   extendAdminMeta(meta) {
     return ({
@@ -46,19 +46,21 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
     const { mongooseOptions, unique } = this.config;
     const required = mongooseOptions && mongooseOptions.required;
 
+    const isValidDecimal = s => /^-?\d*\.?\d*$/.test(s) === s;
+
     schema.add({
       [this.path]: {
-        type: Number,
+        type: String,
         unique,
         validate: {
           validator: required
-            ? Number.isInteger
+            ? isValidDecimal
             : a => {
-                if (typeof a === 'number' && Number.isInteger(a)) return true;
-                if (typeof a === 'undefined' || a === null) return true;
-                return false;
-              },
-          message: '{VALUE} is not a integer value',
+              if (typeof a === 'string' && isValidDecimal(a)) return true;
+              if (typeof a === 'undefined' || a === null) return true;
+              return false;
+            },
+          message: '{VALUE} is not a Decimal value',
         },
         ...mongooseOptions,
       },
