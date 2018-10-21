@@ -18,36 +18,32 @@ const ColorField = ({ field, item, itemErrors, onChange }) => {
   const target = (
     <Button variant="ghost">
       {value ? (
-        isColor(value) ? (
-          <React.Fragment>
-            <div
-              style={{
-                // using inline styles instead of emotion for setting the color
-                // since emotion doesn't escape styles so it could be used for CSS injection
-                // this is also better in terms of memory since the value can change a lot
-                // and emotion caches everything
-                backgroundColor: value,
-              }}
-              css={{
-                borderRadius: 3,
-                display: 'inline-block',
-                height: 18,
-                width: 18,
-                marginRight: 10,
-                verticalAlign: 'middle',
-              }}
-            />
-            <span
-              css={{
-                verticalAlign: 'middle',
-              }}
-            >
-              {value}
-            </span>
-          </React.Fragment>
-        ) : (
-          value
-        )
+        <React.Fragment>
+          <div
+            style={{
+              // using inline styles instead of emotion for setting the color
+              // since emotion doesn't escape styles so it could be used for CSS injection
+              // this is also better in terms of memory since the value can change a lot
+              // and emotion caches everything
+              backgroundColor: value,
+            }}
+            css={{
+              borderRadius: 3,
+              display: 'inline-block',
+              height: 18,
+              width: 18,
+              marginRight: 10,
+              verticalAlign: 'middle',
+            }}
+          />
+          <span
+            css={{
+              verticalAlign: 'middle',
+            }}
+          >
+            {value}
+          </span>
+        </React.Fragment>
       ) : (
         'Set Color'
       )}
