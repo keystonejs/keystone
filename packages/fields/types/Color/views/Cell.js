@@ -1,21 +1,19 @@
 import * as React from 'react';
-import isColor from 'is-color';
 
 const Cell = props => {
   if (!props.data) {
     return null;
   }
 
-  // checking if it's a valid CSS color since otherwise it could insert arbitrary CSS
-  if (!isColor(props.data)) {
-    return props.data;
-  }
-
   return (
     <React.Fragment>
       <div
-        css={{
+        style={{
+          // using inline styles instead of emotion for setting the color
+          // since emotion doesn't escape styles so it could be used for CSS injection
           backgroundColor: props.data,
+        }}
+        css={{
           borderRadius: 3,
           display: 'inline-block',
           height: 18,

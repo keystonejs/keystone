@@ -80,7 +80,6 @@
     "graphql-type-json": "^0.2.1",
     "html-webpack-plugin": "^3.2.0",
     "inflection": "^1.12.0",
-    "is-color": "^1.0.2",
     "jest": "^23.6.0",
     "jest-junit": "^5.2.0",
     "kalendaryo": "^1.10.0",

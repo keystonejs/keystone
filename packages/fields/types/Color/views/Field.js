@@ -21,8 +21,14 @@ const ColorField = ({ field, item, itemErrors, onChange }) => {
         isColor(value) ? (
           <React.Fragment>
             <div
-              css={{
+              style={{
+                // using inline styles instead of emotion for setting the color
+                // since emotion doesn't escape styles so it could be used for CSS injection
+                // this is also better in terms of memory since the value can change a lot
+                // and emotion caches everything
                 backgroundColor: value,
+              }}
+              css={{
                 borderRadius: 3,
                 display: 'inline-block',
                 height: 18,
