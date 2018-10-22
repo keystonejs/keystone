@@ -2,9 +2,10 @@
 
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, type Ref } from 'react';
+import { Component, Fragment } from 'react';
 import { OptionRenderer, Radio, RadioGroup, Select } from '@voussoir/ui/src/primitives/filters';
 import { gridSize } from '@voussoir/ui/src/theme';
+import type { FilterProps } from '../../../types';
 
 const EventCatcher = props => (
   <div
@@ -17,17 +18,19 @@ const EventCatcher = props => (
 );
 const SelectWrapper = props => <div css={{ marginTop: gridSize * 2 }} {...props} />;
 
-type Props = { field: Object, innerRef: Ref<*>, onChange: Event => void };
+type Props = FilterProps<{ inverted: boolean, options: Array<{ value: string, label: string }> }>;
 type State = { inverted: boolean };
 
 export default class SelectFilterView extends Component<Props, State> {
   state = { inverted: this.props.value.inverted };
-  handleRadioChange = value => {
+  handleRadioChange = (value: 'does_match' | 'does_not_match') => {
     const { onChange, value: oldValue } = this.props;
     const inverted = value === 'does_match' ? false : true;
     onChange({ ...oldValue, inverted });
   };
-  handleSelectChange = value => {
+  handleSelectChange = (
+    value: { value: string, label: string } | Array<{ value: string, label: string }>
+  ) => {
     const { onChange, value: oldValue } = this.props;
     const options = [].concat(value); // ensure consistent data shape
     onChange({ ...oldValue, options });

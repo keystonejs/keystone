@@ -213,12 +213,14 @@ describe('relationship filtering', () => {
 
       expect(queryUser.body).not.toHaveProperty('errors');
       expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
-      expect(queryUser.body.data.allUsers[0].posts).toHaveLength(2);
       expect(queryUser.body.data).toMatchObject({
         allUsers: [
           {
             id: user.id,
-            posts: [{ id: ids[2] }, { id: ids[1] }],
+            posts: expect.arrayContaining([
+              expect.objectContaining({ id: ids[1] }),
+              expect.objectContaining({ id: ids[2] }),
+            ]),
           },
           {
             id: user2.id,
@@ -226,6 +228,9 @@ describe('relationship filtering', () => {
           },
         ],
       });
+      // `expect.arrayContaining()` doesn't fail if there are _more_ results
+      // than expected
+      expect(queryUser.body.data.allUsers[0].posts).toHaveLength(2);
     })
   );
 });
