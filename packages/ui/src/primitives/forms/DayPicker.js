@@ -272,7 +272,7 @@ type Props = {
   time: string,
   offset: string,
   htmlID: string,
-  autoFocus: boolean,
+  autoFocus?: boolean,
   handleDayChange: Function => void,
   handleTimeChange: Function => void,
   handleOffsetChange: Function => void,
