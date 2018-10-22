@@ -6,7 +6,6 @@ import { colors } from '@voussoir/ui/src/theme';
 import { Popout } from '@voussoir/ui/src/primitives/modals';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import SketchPicker from 'react-color/lib/Sketch';
-import isColor from 'is-color';
 
 const ColorField = ({ field, item, itemErrors, onChange }) => {
   const value = item[field.path] || '';
