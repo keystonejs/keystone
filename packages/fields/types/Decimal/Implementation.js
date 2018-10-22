@@ -75,11 +75,10 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
       [`${this.path}_lte`]: value => ({ [this.path]: { $lte: value } }),
       [`${this.path}_gt`]: value => ({ [this.path]: { $gt: value } }),
       [`${this.path}_gte`]: value => ({ [this.path]: { $gte: value } }),
-      [`${this.path}_in`]: value => ({ [this.path]: { $in: value } }),
-      [`${this.path}_not_in`]: value => ({ [this.path]: { $not: { $in: value } } }),
     };
   }
 }
+
 
 module.exports = {
   Decimal,
