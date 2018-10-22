@@ -1,6 +1,6 @@
 {
   "name": "@voussoir/adapter-mongoose",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
@@ -9,7 +9,7 @@
   "dependencies": {
     "@voussoir/core": "^0.3.0",
     "@voussoir/logger": "^0.1.3",
-    "@voussoir/mongo-join-builder": "^0.1.3",
+    "@voussoir/mongo-join-builder": "^0.2.0",
     "@voussoir/utils": "^0.2.0",
     "inflection": "^1.12.0",
     "mongodb-memory-server": "^2.4.3",
