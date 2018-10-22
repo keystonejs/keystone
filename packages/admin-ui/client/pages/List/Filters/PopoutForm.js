@@ -1,4 +1,6 @@
-import React, { Component, Fragment } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, Fragment } from 'react';
 
 import { colors, gridSize } from '@voussoir/ui/src/theme';
 import { Popout } from '../../../components/Popout';

@@ -1,6 +1,8 @@
 // @flow
 
-import React, { Component, type Element, type Ref, type Node } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, type Element, type Ref, type Node } from 'react';
 import NodeResolver from 'react-node-resolver';
 
 const transition = 'height 220ms cubic-bezier(0.2, 0, 0, 1)';

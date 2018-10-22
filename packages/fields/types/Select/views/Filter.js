@@ -1,6 +1,8 @@
 // @flow
 
-import React, { Component, Fragment } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, Fragment } from 'react';
 import { OptionRenderer, Radio, RadioGroup, Select } from '@voussoir/ui/src/primitives/filters';
 import { gridSize } from '@voussoir/ui/src/theme';
 import type { FilterProps } from '../../../types';

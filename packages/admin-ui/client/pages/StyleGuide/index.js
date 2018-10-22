@@ -1,4 +1,6 @@
-import React, { Component, Fragment } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, Fragment } from 'react';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 
 import Nav from '../../components/Nav';

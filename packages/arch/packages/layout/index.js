@@ -1,7 +1,9 @@
 // @flow
 
-import React, { Children, cloneElement, type Node } from 'react';
-import styled from 'react-emotion';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Children, cloneElement, type Node } from 'react';
+import styled from '@emotion/styled';
 
 import { smOnly } from '../common/media-queries';
 import { gridSize } from '../theme';

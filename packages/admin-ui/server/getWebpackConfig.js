@@ -22,10 +22,7 @@ module.exports = function({ adminMeta, entry }) {
             plugins: [
               'transform-class-properties',
               'transform-object-rest-spread',
-              [
-                'emotion',
-                enableDevFeatures ? { hoist: true } : { sourceMap: true, autoLabel: true },
-              ],
+              ['emotion', enableDevFeatures ? { sourceMap: true } : {}],
               ...(enableDevFeatures ? ['transform-react-jsx-source'] : []),
             ],
           },

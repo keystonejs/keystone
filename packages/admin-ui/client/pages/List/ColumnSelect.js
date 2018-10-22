@@ -1,4 +1,5 @@
-import React from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import { CheckIcon, DashIcon, XIcon } from '@voussoir/icons';
 import { colors } from '@voussoir/ui/src/theme';
 import { OptionPrimitive } from '@voussoir/ui/src/primitives/filters';

@@ -1,6 +1,8 @@
 // @flow
 
-import React, { Fragment, type Ref } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Fragment, type Ref } from 'react';
 import ReactSelect from 'react-select';
 
 import { borderRadius, colors, gridSize } from '../../theme';
