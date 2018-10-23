@@ -9,8 +9,7 @@ function setupKeystone() {
       keystone.createList('User', {
         fields: {
           company: { type: Relationship, ref: 'Company' },
-          workHistory: { type: Relationship, ref: 'Company', many: true, access: { read: false } },
-          posts: { type: Relationship, ref: 'Post', many: true },
+          workHistory: { type: Relationship, ref: 'Company', many: true },
         },
       });
 
@@ -26,45 +25,12 @@ function setupKeystone() {
           content: { type: Text },
           author: { type: Relationship, ref: 'User' },
         },
-        access: {
-          read: false,
-        },
       });
     },
   });
 }
 
 describe('_FooMeta query for individual list meta data', () => {
-  test(
-    `'access' field returns results`,
-    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
-      const query = await graphqlRequest({
-        server,
-        query: `
-          query {
-            _CompaniesMeta {
-              access {
-                create
-                read
-                update
-                delete
-              }
-            }
-          }
-      `,
-      });
-
-      expect(query.body).not.toHaveProperty('errors');
-      expect(query.body).toHaveProperty('data._CompaniesMeta.access');
-      expect(query.body.data._CompaniesMeta.access).toMatchObject({
-        create: true,
-        read: true,
-        update: true,
-        delete: true,
-      });
-    })
-  );
-
   test(
     `'schema' field returns results`,
     keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
@@ -94,30 +60,28 @@ describe('_FooMeta query for individual list meta data', () => {
         relatedFields: [
           {
             type: 'User',
-            // NOTE: Doesn't include workHistory because it is read: false
-            fields: ['company'],
+            fields: ['company', 'workHistory', '_workHistoryMeta'],
           },
         ],
       });
     })
   );
-});
 
-describe('_ksListsMeta query for all lists meta data', () => {
   test(
-    `'access' field returns results`,
+    `'schema.relatedFields' returns empty array when none exist`,
     keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       const query = await graphqlRequest({
         server,
         query: `
           query {
-            _ksListsMeta {
-              name
-              access {
-                create
-                read
-                update
-                delete
+            _PostsMeta {
+              schema {
+                type
+                queries
+                relatedFields {
+                  type
+                  fields
+                }
               }
             }
           }
@@ -125,32 +89,19 @@ describe('_ksListsMeta query for all lists meta data', () => {
       });
 
       expect(query.body).not.toHaveProperty('errors');
-      expect(query.body).toHaveProperty('data._ksListsMeta');
-      expect(query.body.data._ksListsMeta).toMatchObject([
-        {
-          name: 'User',
-          access: {
-            create: true,
-            read: true,
-            update: true,
-            delete: true,
-          },
-        },
-        {
-          name: 'Company',
-          access: {
-            create: true,
-            read: true,
-            update: true,
-            delete: true,
-          },
-        },
-      ]);
+      expect(query.body).toHaveProperty('data._PostsMeta.schema');
+      expect(query.body.data._PostsMeta.schema).toMatchObject({
+        type: 'Post',
+        queries: ['Post', 'allPosts', '_allPostsMeta'],
+        relatedFields: [],
+      });
     })
   );
+});
 
+describe('_ksListsMeta query for all lists meta data', () => {
   test(
-    'returns results for all visible lists',
+    'returns results for all lists',
     keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
       const query = await graphqlRequest({
         server,
@@ -199,9 +150,17 @@ describe('_ksListsMeta query for all lists meta data', () => {
             relatedFields: [
               {
                 type: 'User',
-                fields: ['company'],
+                fields: ['company', 'workHistory', '_workHistoryMeta'],
               },
             ],
+          },
+        },
+        {
+          name: 'Post',
+          schema: {
+            queries: ['Post', 'allPosts', '_allPostsMeta'],
+            relatedFields: [],
+            type: 'Post',
           },
         },
       ]);

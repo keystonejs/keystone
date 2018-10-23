@@ -23,6 +23,7 @@ class Relationship extends Implementation {
     const [refListKey, refFieldPath] = this.config.ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
+    this.isRelationship = true;
   }
 
   tryResolveRefList() {
