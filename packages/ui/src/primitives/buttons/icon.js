@@ -1,6 +1,8 @@
 // @flow
 
-import React, { type ComponentType } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { type ComponentType } from 'react';
 import { Button, type ButtonProps } from './primitives';
 
 type IconProps = ButtonProps & {

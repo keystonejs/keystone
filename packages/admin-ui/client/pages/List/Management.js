@@ -1,6 +1,8 @@
 /* global ENABLE_DEV_FEATURES */
 
-import React, { Component, Fragment } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, Fragment } from 'react';
 
 import { SettingsIcon, TrashcanIcon } from '@voussoir/icons';
 import { FlexGroup } from '@voussoir/ui/src/primitives/layout';

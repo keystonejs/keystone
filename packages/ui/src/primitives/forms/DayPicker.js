@@ -1,6 +1,8 @@
 // @flow
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import React, { type Node, type Ref } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import Kalendaryo from 'kalendaryo';
 import {
   isToday as isDayToday,
@@ -272,7 +274,7 @@ type Props = {
   time: string,
   offset: string,
   htmlID: string,
-  autoFocus: boolean,
+  autoFocus?: boolean,
   handleDayChange: Function => void,
   handleTimeChange: Function => void,
   handleOffsetChange: Function => void,

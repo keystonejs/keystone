@@ -2,7 +2,8 @@
 
 [ignore]
 
-.*/packages/.*
+.*/packages/arch.*
+.*/node_modules/cypress/.*
 
 [include]
 

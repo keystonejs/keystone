@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import raf from 'raf-schd';
 import { Button, LoadingButton } from '@voussoir/ui/src/primitives/buttons';
 import { colors } from '@voussoir/ui/src/theme';

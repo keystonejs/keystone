@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import { FlexGroup } from '@voussoir/ui/src/primitives/layout';

@@ -1,6 +1,8 @@
 // @flow
 
-import React, { Fragment, type Ref } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Fragment, type Ref } from 'react';
 import ReactSelect from 'react-select';
 
 import { borderRadius, colors, gridSize } from '../../theme';
@@ -37,7 +39,7 @@ export const buttonAndInputBase = {
 // Basic Input
 // ------------------------------
 
-type InputProps = { innerRef: Ref<*>, isMultiline: boolean, disabled: boolean };
+type InputProps = { innerRef: Ref<*>, isMultiline?: boolean, disabled?: boolean };
 export const Input = ({ innerRef, isMultiline, ...props }: InputProps) => {
   const css = {
     ...buttonAndInputBase,

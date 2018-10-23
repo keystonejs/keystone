@@ -1,4 +1,5 @@
-import React from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 
 import { StopIcon } from '@voussoir/icons';
 import { colors } from '@voussoir/ui/src/theme';
