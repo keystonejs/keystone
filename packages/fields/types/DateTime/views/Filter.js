@@ -1,19 +1,23 @@
 // @flow
 
-import React, { Component, type Ref } from 'react';
+import React, { Component } from 'react';
 import { DateTime } from 'luxon';
 import { format, setMonth, setYear } from 'date-fns';
 import { DateTimePicker } from '@voussoir/ui/src/primitives/forms';
+import type { FilterProps } from '../../../types';
 
-type Props = {
-  field: Object,
-  filter: Object,
-  innerRef: Ref<*>,
-  onChange: Event => void,
+type Props = FilterProps<string>;
+
+type State = {
+  date: string,
+  time: string,
+  offset: string,
 };
 
-export default class CalendarDayFilterView extends Component<Props> {
-  constructor(props) {
+type SetDate = Date => void;
+
+export default class CalendarDayFilterView extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     const value = DateTime.fromJSDate(new Date());
     const dt = DateTime.fromISO(value, { setZone: true });
@@ -24,28 +28,28 @@ export default class CalendarDayFilterView extends Component<Props> {
     };
   }
 
-  handleDayChange = day => {
+  handleDayChange = (day: Date) => {
     const { onChange } = this.props;
     const newState = { ...this.state, date: format(day, 'YYYY-MM-DD') };
     onChange(`${newState.date}T${newState.time}${newState.offset}`);
     this.setState(newState);
   };
 
-  handleTimeChange = event => {
+  handleTimeChange = (event: Object) => {
     const { onChange } = this.props;
     const newState = { ...this.state, time: event.target.value };
     onChange(`${newState.date}T${newState.time}${newState.offset}`);
     this.setState(newState);
   };
 
-  handleOffsetChange = event => {
+  handleOffsetChange = (event: Object) => {
     const { onChange } = this.props;
     const newState = { ...this.state, offset: event.value };
     onChange(`${newState.date}T${newState.time}${newState.offset}`);
     this.setState(newState);
   };
 
-  handleMonthSelect = (event, setDate, setSelectedDate) => {
+  handleMonthSelect = (event: Object, setDate: SetDate, setSelectedDate: SetDate) => {
     const { field, onChange } = this.props;
     const month = event.target.value;
     const newDate = setMonth(this.state.date, month);
@@ -53,10 +57,10 @@ export default class CalendarDayFilterView extends Component<Props> {
     setDate(newDate);
     setSelectedDate(newDate);
     this.setState({ date: value });
-    onChange(field, value);
+    onChange(field);
   };
 
-  handleYearSelect = (event, setDate, setSelectedDate) => {
+  handleYearSelect = (event: Object, setDate: SetDate, setSelectedDate: SetDate) => {
     const { field, onChange } = this.props;
     const year = event.target.value;
     const newDate = setYear(this.state.date, year);
@@ -64,10 +68,10 @@ export default class CalendarDayFilterView extends Component<Props> {
     setDate(newDate);
     setSelectedDate(newDate);
     this.setState({ date: value });
-    onChange(field, value);
+    onChange(field);
   };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     const { filter } = this.props;
 
     if (prevProps.filter !== filter) {
@@ -90,6 +94,7 @@ export default class CalendarDayFilterView extends Component<Props> {
     } = this;
     return (
       <DateTimePicker
+        htmlID="calendar-day-filter"
         {...this.props}
         {...{
           date,

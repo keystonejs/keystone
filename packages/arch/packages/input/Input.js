@@ -1,6 +1,8 @@
 // @flow
 
-import React, { type Ref } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { type Ref } from 'react';
 
 import { buttonAndInputBase } from '../common';
 import { colors } from '../theme';

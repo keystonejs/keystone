@@ -1,6 +1,8 @@
 // @flow
 
-import React, {
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import {
   PureComponent,
   Fragment,
   type ComponentType,
@@ -9,7 +11,7 @@ import React, {
   type Node,
 } from 'react';
 import { createPortal } from 'react-dom';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import ScrollLock from 'react-scrolllock';
 
 import FocusTrap, { type FocusTarget } from 'react-focus-marshal';

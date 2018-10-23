@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Mutation } from 'react-apollo';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import { Drawer } from '@voussoir/ui/src/primitives/modals';

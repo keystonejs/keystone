@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-expressions */
+import { css } from '@emotion/core';
 import { fontFamily, fontSize, colors } from './theme';
 
-export default `
+export default css`
   body {
     background-color: ${colors.page};
     color: ${colors.text};
@@ -12,7 +13,7 @@ export default `
     text-decoration-skip: ink;
     text-rendering: optimizeLegibility;
     -ms-overflow-style: -ms-autohiding-scrollbar;
-    -moz-font-feature-settings: "liga" on;
+    -moz-font-feature-settings: 'liga' on;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
   }
@@ -27,7 +28,7 @@ export default `
     display: flex;
     flex-flow: row nowrap;
   }
-  main{
+  main {
     flex: 1;
   }
 `;
