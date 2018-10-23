@@ -212,7 +212,8 @@ module.exports = class List {
     const types = flatten(this.fields.map(field => field.gqlAuxTypes));
 
     if (this.access.read || this.access.create || this.access.update || this.access.delete) {
-      types.push(`
+      types.push(
+        `
         type ${this.gqlNames.outputTypeName} {
           id: ID
           """
@@ -229,11 +230,7 @@ module.exports = class List {
               .map(field => field.gqlOutputFields)
           ).join('\n')}
         }
-      `);
-    }
-
-    if (this.access.read) {
-      types.push(
+      `,
         `
         input ${this.gqlNames.whereInputName} {
           id: ID
@@ -375,7 +372,7 @@ module.exports = class List {
         [this.gqlNames.listQueryMetaName]: (_, args, context) =>
           this.manyQueryMeta(args, context, this.gqlNames.listQueryMetaName),
 
-        [this.gqlNames.listMetaName]: () => {
+        [this.gqlNames.listMetaName]: (_, args, context) => {
           return {
             // Return these as functions so they're lazily evaluated depending
             // on what the user requested

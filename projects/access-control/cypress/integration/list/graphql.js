@@ -70,15 +70,12 @@ describe('Access Control, List, GraphQL', () => {
           // The type is used in all the queries and mutations as a return type
           if (access.create || access.read || access.update || access.delete) {
             expect(types, 'types').include(`${name}`);
-          } else {
-            expect(types, 'types').not.include(`${name}`);
-          }
-
-          // Filter types are only used when reading
-          if (access.read) {
+            // Filter types are also available for update/delete/create (thanks
+            // to nested mutations)
             expect(types, 'types').include(`${name}WhereInput`);
             expect(types, 'types').include(`${name}WhereUniqueInput`);
           } else {
+            expect(types, 'types').not.include(`${name}`);
             expect(types, 'types').not.include(`${name}WhereInput`);
             expect(types, 'types').not.include(`${name}WhereUniqueInput`);
           }
