@@ -148,14 +148,42 @@ module.exports = class Keystone {
              user when performing 'delete' operations."""
           delete: JSON
        }`,
+      `type _ListSchemaRelatedFields {
+        """The typename as used in GraphQL queries"""
+        type: String
+
+        """A list of GraphQL field names"""
+        fields: [String]
+      }`,
+      `type _ListSchema {
+        """The typename as used in GraphQL queries"""
+        type: String
+
+        """Top level GraphQL query names which either return this type, or
+           provide aggregate information about this type"""
+        queries: [String]
+
+        """Information about fields on other types which return this type, or
+           provide aggregate information about this type"""
+        relatedFields: [_ListSchemaRelatedFields]
+      }`,
       `type _ListMeta {
-          access: _ListAccess
+        """The Keystone List name"""
+        name: String
+
+        """Access control configuration for the currently authenticated
+           request"""
+        access: _ListAccess
+
+        """Information on the generated GraphQL schema"""
+        schema: _ListSchema
        }`,
       `type _QueryMeta {
           count: Int
        }`,
       `type Query {
           ${unique(flatten(this.listsArray.map(list => list.gqlQueries))).join('\n')}
+          _ksListsMeta: [_ListMeta]
        }`,
       `type Mutation {
           ${unique(flatten(this.listsArray.map(list => list.gqlMutations))).join('\n')}
@@ -177,6 +205,8 @@ module.exports = class Keystone {
     const listMetaResolver = {
       // meta is passed in from the list's resolver (eg; '_allUsersMeta')
       access: meta => meta.getAccess(),
+      // schema is
+      schema: meta => meta.getSchema(),
     };
 
     const listAccessResolver = {
@@ -185,6 +215,28 @@ module.exports = class Keystone {
       read: access => access.getRead(),
       update: access => access.getUpdate(),
       delete: access => access.getDelete(),
+    };
+
+    // NOTE: some fields are passed through unchanged from the list, and so are
+    // not specified here.
+    const listSchemaResolver = {
+      // A function so we can lazily evaluate this potentially expensive
+      // operation
+      // (Could we memoize this in the future?)
+      // NOTE: We purposely include the list we're looking for as it may have a
+      // self-referential field (eg: User { friends: [User] })
+      relatedFields: ({ key }) =>
+        this.listsArray
+          .map(list => ({
+            type: list.gqlNames.outputTypeName,
+            fields: flatten(
+              list
+                .getFieldsRelatedTo(key)
+                .filter(field => !!field.access.read)
+                .map(field => Object.keys(field.gqlOutputFieldResolvers))
+            ),
+          }))
+          .filter(({ fields }) => !!fields.length),
     };
 
     // Like the `typeDefs`, we want to dedupe the resolvers. We rely on the
@@ -204,12 +256,15 @@ module.exports = class Keystone {
       _QueryMeta: queryMetaResolver,
       _ListMeta: listMetaResolver,
       _ListAccess: listAccessResolver,
+      _ListSchema: listSchemaResolver,
 
       Query: {
         // Order is also important here, any TypeQuery's defined by types
         // shouldn't be able to override list-level queries
         ...objMerge(this.listsArray.map(list => list.gqlAuxQueryResolvers)),
         ...objMerge(this.listsArray.map(list => list.gqlQueryResolvers)),
+        // And the Keystone meta queries must always be available
+        ...this.getAuxQueryResolvers(),
       },
 
       Mutation: {
@@ -223,6 +278,15 @@ module.exports = class Keystone {
     }
 
     return { typeDefs, resolvers };
+  }
+
+  getAuxQueryResolvers() {
+    return {
+      _ksListsMeta: (_, args, context) =>
+        this.listsArray
+          .filter(list => !!list.access.read)
+          .map(list => list.gqlMetaResolver(context)),
+    };
   }
 
   getListAccessControl({ listKey, operation, authentication }) {
