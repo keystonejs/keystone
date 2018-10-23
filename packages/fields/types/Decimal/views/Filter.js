@@ -33,10 +33,7 @@ export default class TextFilterView extends Component<Props> {
 
   handleChange = event => {
     const value = event.target.value;
-    if (/^-?\d*\.?\d*$/.test(value)) {
-      this.props.onChange(value);
-    }
-    console.log(typeof value, value, 'Filter');
+    this.props.onChange(value.replace(/[^0-9.,]+/g, ''));
   };
 
   render() {

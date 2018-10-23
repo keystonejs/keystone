@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
 
@@ -50,13 +51,13 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
 
     schema.add({
       [this.path]: {
-        type: String,
+        type: mongoose.Decimal128,
         unique,
         validate: {
           validator: required
             ? isValidDecimal
             : a => {
-              if (typeof a === 'string' && isValidDecimal(a)) return true;
+              if (typeof a === 'decimal' && isValidDecimal(a)) return true;
               if (typeof a === 'undefined' || a === null) return true;
               return false;
             },

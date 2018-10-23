@@ -7,9 +7,7 @@ export default class TextField extends Component {
   onChange = event => {
     const { field, onChange } = this.props;
     const value = event.target.value;
-    if (/^-?\d*\.?\d*$/.test(value)) {
-      onChange(field, value);
-    }
+    onChange(field, value.replace(/[^0-9.,]+/g, ''));
   };
 
   valueToString = value => {
