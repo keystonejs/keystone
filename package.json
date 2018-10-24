@@ -24,7 +24,7 @@
     "publish-changed": "build-releases publish --public"
   },
   "dependencies": {
-    "@atlaskit/build-releases": "^2.1.3",
+    "@atlaskit/build-releases": "^3.0.0",
     "@emotion/core": "^10.0.0-beta.5",
     "@emotion/styled": "^10.0.0-beta.5",
     "apollo-cache-inmemory": "^1.2.10",
