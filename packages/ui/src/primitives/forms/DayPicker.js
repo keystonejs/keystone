@@ -307,7 +307,7 @@ type Props = {
   offset: string,
   htmlID: string,
   autoFocus?: boolean,
-  handleDayChange: Function => void,
+  onSelectedChange: Function => void,
   handleTimeChange: Function => void,
   handleOffsetChange: Function => void,
   handleYearSelect: (Event, Function, Function) => void,

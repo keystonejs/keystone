@@ -24,7 +24,7 @@ export default class CalendarDayField extends Component {
   yearRangeTo = this.props.field.config.yearRangeTo;
   yearPickerType = this.props.field.config.yearPickerType;
 
-  handleDayChange = day => {
+  onSelectedChange = day => {
     const { field, onChange } = this.props;
     const newState = { ...this.state, date: format(day, 'YYYY-MM-DD') };
     onChange(field, `${newState.date}T${newState.time}${newState.offset}`);
@@ -80,7 +80,7 @@ export default class CalendarDayField extends Component {
     );
 
     const {
-      handleDayChange,
+      onSelectedChange,
       handleTimeChange,
       handleOffsetChange,
       handleMonthSelect,
@@ -100,7 +100,7 @@ export default class CalendarDayField extends Component {
                 date,
                 time,
                 offset,
-                handleDayChange,
+                onSelectedChange,
                 handleTimeChange,
                 handleOffsetChange,
                 handleMonthSelect,
