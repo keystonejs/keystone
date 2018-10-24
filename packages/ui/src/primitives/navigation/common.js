@@ -1,11 +1,11 @@
 // @flow
 
 import React from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
 export const NAV_GUTTER = 20;
-type ItemProps = { isSelected?: Boolean, to?: String, href?: String };
+type ItemProps = { isSelected?: boolean, to?: string, href?: string };
 
 export const ItemElement = ({ isSelected, ...props }: ItemProps) => {
   if (props.to) return <Link {...props} />;

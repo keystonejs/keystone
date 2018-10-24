@@ -3,10 +3,9 @@ import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ToastProvider } from 'react-toast-notifications';
-import { injectGlobal } from 'emotion';
+import { Global } from '@emotion/core';
 
 import globalStyles from '@voussoir/ui/src/globalStyles';
-injectGlobal(globalStyles);
 
 import apolloClient from './apolloClient';
 
@@ -25,6 +24,7 @@ const Keystone = () => (
   <ApolloProvider client={apolloClient}>
     <ToastProvider>
       <ConnectivityListener />
+      <Global styles={globalStyles} />
       <AdminMetaProvider>
         {adminMeta => {
           const { adminPath } = adminMeta;

@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Fragment, type ComponentType, type Node, type Ref } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import { Popout as PopoutModal } from '@voussoir/ui/src/primitives/modals';
@@ -67,7 +67,7 @@ type Props = {
   buttonLabel: string,
   children: Node,
   component: ComponentType<*>,
-  innerRef: Ref<HTMLElement>,
+  innerRef: Ref<*>,
   bodyRef: Ref<HTMLElement>,
   footerContent: Node,
   headerAfter: Node,
@@ -78,7 +78,7 @@ type Props = {
 
 export const Popout = ({
   buttonLabel,
-  component: Wrapper = Fragment,
+  component: Wrapper,
   children,
   innerRef,
   bodyRef,
@@ -109,4 +109,8 @@ export const Popout = ({
       </Wrapper>
     </PopoutModal>
   );
+};
+
+Popout.defaultProps = {
+  component: Fragment,
 };

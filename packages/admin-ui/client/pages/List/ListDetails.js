@@ -1,5 +1,7 @@
-import React, { Component, createRef, Fragment } from 'react';
-import styled from 'react-emotion';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, createRef, Fragment } from 'react';
+import styled from '@emotion/styled';
 import { withRouter } from 'react-router-dom';
 
 import { FoldIcon, PlusIcon, SearchIcon, UnfoldIcon, XIcon } from '@voussoir/icons';

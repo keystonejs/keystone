@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component, type Element } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { createPortal } from 'react-dom';
 
 import { borderRadius, gridSize } from '../../theme';

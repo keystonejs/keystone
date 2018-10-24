@@ -1,5 +1,7 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import { parse, format, setYear, setMonth, getYear } from 'date-fns';
-import React, { Component } from 'react';
+import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
 import { Button } from '@voussoir/ui/src/primitives/buttons';

@@ -76,7 +76,7 @@ jobs:
           name: Unit tests
           command: yarn jest --ci --testResultsProcessor="jest-junit" --maxWorkers=2
           environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+            JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
       - store_test_results:
           path: reports/junit
       - store_artifacts:
@@ -102,17 +102,17 @@ jobs:
   integration_tests_accesscontrol:
     environment:
       PROJECT_DIRECTORY: projects/access-control
-      PROJECT_NAME: "Cypress Test Project For Access Control"
+      PROJECT_NAME: 'Cypress Test Project For Access Control'
       PORT: 3000
     <<: *job-setup
     <<: *integration-steps
 
-  integration_tests_twitterlogin:
-    environment:
-      PROJECT_DIRECTORY: projects/twitter-login
-      PORT: 3000
-    <<: *job-setup
-    <<: *integration-steps
+  # integration_tests_twitterlogin:
+  #   environment:
+  #     PROJECT_DIRECTORY: projects/twitter-login
+  #     PORT: 3000
+  #   <<: *job-setup
+  #   <<: *integration-steps
 
 workflows:
   version: 2
@@ -121,5 +121,5 @@ workflows:
       - simple_tests
       - integration_tests_basic
       - integration_tests_login
-      - integration_tests_twitterlogin
+      # - integration_tests_twitterlogin
       - integration_tests_accesscontrol
