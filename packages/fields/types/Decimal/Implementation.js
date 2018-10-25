@@ -70,12 +70,12 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
 
   getQueryConditions() {
     return {
-      [this.path]: value => ({ [this.path]: { $eq: value } }),
-      [`${this.path}_not`]: value => ({ [this.path]: { $ne: value } }),
-      [`${this.path}_lt`]: value => ({ [this.path]: { $lt: value } }),
-      [`${this.path}_lte`]: value => ({ [this.path]: { $lte: value } }),
-      [`${this.path}_gt`]: value => ({ [this.path]: { $gt: value } }),
-      [`${this.path}_gte`]: value => ({ [this.path]: { $gte: value } }),
+      [this.path]: value => ({ [this.path]: { $eq: mongoose.Types.Decimal128(value) } }),
+      [`${this.path}_not`]: value => ({ [this.path]: { $ne: mongoose.Types.Decimal128(value) } }),
+      [`${this.path}_lt`]: value => ({ [this.path]: { $lt: mongoose.Types.Decimal128(value) } }),
+      [`${this.path}_lte`]: value => ({ [this.path]: { $lte: mongoose.Types.Decimal128(value) } }),
+      [`${this.path}_gt`]: value => ({ [this.path]: { $gt: mongoose.Types.Decimal128(value) } }),
+      [`${this.path}_gte`]: value => ({ [this.path]: { $gte: mongoose.Types.Decimal128(value) } }),
     };
   }
 }
