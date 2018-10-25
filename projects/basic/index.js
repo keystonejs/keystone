@@ -12,6 +12,7 @@ const {
   CalendarDay,
   CloudinaryImage,
   DateTime,
+  Url,
 } = require('@voussoir/fields');
 const { WebServer } = require('@voussoir/server');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
@@ -69,6 +70,7 @@ keystone.createList('User', {
       ],
     },
     attachment: { type: File, adapter: fileAdapter },
+    website: { type: Url },
     ...(cloudinaryAdapter ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } } : {}),
   },
   labelResolver: item => `${item.name} <${item.email}>`,
