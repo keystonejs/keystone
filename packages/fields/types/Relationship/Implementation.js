@@ -23,6 +23,7 @@ class Relationship extends Implementation {
     const [refListKey, refFieldPath] = this.config.ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
+    this.isRelationship = true;
   }
 
   tryResolveRefList() {
@@ -53,6 +54,11 @@ class Relationship extends Implementation {
 
     const { refList } = this.tryResolveRefList();
 
+    if (!refList.access.read) {
+      // It's not accessible in any way, so we can't expose the related field
+      return [];
+    }
+
     if (many) {
       const filterArgs = refList.getGraphqlFilterFragment().join('\n');
       return [
@@ -76,6 +82,12 @@ class Relationship extends Implementation {
   get gqlQueryInputFields() {
     const { many } = this.config;
     const { refList } = this.tryResolveRefList();
+
+    if (!refList.access.read) {
+      // It's not accessible in any way, so we can't expose the related field
+      return [];
+    }
+
     if (many) {
       return [
         `""" condition must be true for all nodes """
@@ -95,6 +107,11 @@ class Relationship extends Implementation {
   get gqlOutputFieldResolvers() {
     const { many } = this.config;
     const { refList } = this.tryResolveRefList();
+
+    if (!refList.access.read) {
+      // It's not accessible in any way, so we can't expose the related field
+      return [];
+    }
 
     // to-one relationships are much easier to deal with.
     if (!many) {
