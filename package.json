@@ -109,6 +109,7 @@
     "raf-schd": "^4.0.0",
     "react": "^16.5.2",
     "react-apollo": "^2.2.4",
+    "react-color": "^2.14.1",
     "react-copy-to-clipboard": "^5.0.1",
     "react-document-title": "^2.0.3",
     "react-dom": "^16.5.2",
