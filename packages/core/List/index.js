@@ -397,7 +397,7 @@ module.exports = class List {
 
   getFieldsRelatedTo(listKey) {
     return this.fields.filter(
-      ({ isRelationship, refListKey }) => !!isRelationship && refListKey === listKey
+      ({ isRelationship, refListKey }) => isRelationship && refListKey === listKey
     );
   }
 

@@ -232,7 +232,7 @@ module.exports = class Keystone {
             fields: flatten(
               list
                 .getFieldsRelatedTo(key)
-                .filter(field => !!field.access.read)
+                .filter(field => field.access.read)
                 .map(field => Object.keys(field.gqlOutputFieldResolvers))
             ),
           }))
@@ -283,9 +283,7 @@ module.exports = class Keystone {
   getAuxQueryResolvers() {
     return {
       _ksListsMeta: (_, args, context) =>
-        this.listsArray
-          .filter(list => !!list.access.read)
-          .map(list => list.gqlMetaResolver(context)),
+        this.listsArray.filter(list => list.access.read).map(list => list.gqlMetaResolver(context)),
     };
   }
 
