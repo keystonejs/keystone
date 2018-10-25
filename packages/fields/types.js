@@ -18,7 +18,7 @@ export type CellProps<Value> = {
   list: List,
   field: Field,
   data: Value,
-  link: React.ComponentType<{ children: React.Node, id: string, path: string }>,
+  Link: React.ComponentType<{ children: React.Node, id: string, path: string }>,
 };
 
 export type FieldProps = any;
