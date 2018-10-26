@@ -22,8 +22,8 @@ export const initItems = () => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (server, filter, targets) =>
-    matchFilter(server, filter, '{ name, lastOnline }', targets, 'name');
+  const match = (server, filter, targets, forceSortBy = 'name') =>
+    matchFilter(server, filter, '{ name, lastOnline }', targets, forceSortBy);
 
   test(
     'No filter',
@@ -187,6 +187,42 @@ export const filterTests = withKeystone => {
         { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
         { name: 'person4', lastOnline: '1666-04-12T00:08:00.000+10:00' },
       ])
+    )
+  );
+
+  test(
+    'Sorting: orderBy: lastOnline_ASC',
+    withKeystone(({ server: { server } }) =>
+      match(
+        server,
+        'orderBy: "lastOnline_ASC"',
+        [
+          { name: 'person5', lastOnline: null },
+          { name: 'person4', lastOnline: '1666-04-12T00:08:00.000+10:00' },
+          { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
+          { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
+          { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
+        ],
+        null
+      )
+    )
+  );
+
+  test(
+    'Sorting: orderBy: lastOnline_DESC',
+    withKeystone(({ server: { server } }) =>
+      match(
+        server,
+        'orderBy: "lastOnline_DESC"',
+        [
+          { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
+          { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
+          { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
+          { name: 'person4', lastOnline: '1666-04-12T00:08:00.000+10:00' },
+          { name: 'person5', lastOnline: null },
+        ],
+        null
+      )
     )
   );
 };
