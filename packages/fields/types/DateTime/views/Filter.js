@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { DateTime } from 'luxon';
-import { format, setMonth, setYear } from 'date-fns';
+import { format } from 'date-fns';
 import { DateTimePicker } from '@voussoir/ui/src/primitives/forms';
 import type { FilterProps } from '../../../types';
 
@@ -13,8 +13,6 @@ type State = {
   time: string,
   offset: string,
 };
-
-type SetDate = Date => void;
 
 export default class CalendarDayFilterView extends Component<Props, State> {
   constructor(props: Props) {
@@ -49,28 +47,6 @@ export default class CalendarDayFilterView extends Component<Props, State> {
     this.setState(newState);
   };
 
-  handleMonthSelect = (event: Object, setDate: SetDate, setSelectedDate: SetDate) => {
-    const { field, onChange } = this.props;
-    const month = event.target.value;
-    const newDate = setMonth(this.state.date, month);
-    const value = format(newDate, 'YYYY-MM-DD');
-    setDate(newDate);
-    setSelectedDate(newDate);
-    this.setState({ date: value });
-    onChange(field);
-  };
-
-  handleYearSelect = (event: Object, setDate: SetDate, setSelectedDate: SetDate) => {
-    const { field, onChange } = this.props;
-    const year = event.target.value;
-    const newDate = setYear(this.state.date, year);
-    const value = format(newDate, 'YYYY-MM-DD');
-    setDate(newDate);
-    setSelectedDate(newDate);
-    this.setState({ date: value });
-    onChange(field);
-  };
-
   componentDidUpdate(prevProps: Props) {
     const { filter } = this.props;
 
@@ -85,13 +61,7 @@ export default class CalendarDayFilterView extends Component<Props, State> {
     if (!filter) return null;
 
     const { date, time, offset } = this.state;
-    const {
-      handleDayChange,
-      handleTimeChange,
-      handleOffsetChange,
-      handleMonthSelect,
-      handleYearSelect,
-    } = this;
+    const { handleDayChange, handleTimeChange, handleOffsetChange } = this;
     return (
       <DateTimePicker
         htmlID="calendar-day-filter"
@@ -103,8 +73,6 @@ export default class CalendarDayFilterView extends Component<Props, State> {
           handleDayChange,
           handleTimeChange,
           handleOffsetChange,
-          handleMonthSelect,
-          handleYearSelect,
         }}
       />
     );

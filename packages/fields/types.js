@@ -5,13 +5,15 @@ type List = any;
 
 import * as React from 'react';
 
+type Filter = { type: string, label: string };
+
 export type FilterProps<Value> = {
   innerRef: React.Ref<*>,
   recalcHeight: () => mixed,
   value: Value,
   onChange: Value => mixed,
   field: Field,
-  filter: *,
+  filter: Filter,
 };
 
 export type CellProps<Value> = {
