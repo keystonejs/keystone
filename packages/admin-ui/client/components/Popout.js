@@ -68,7 +68,7 @@ type Props = {
   children: Node,
   component: ComponentType<*>,
   innerRef: Ref<*>,
-  bodyRef: Ref<HTMLElement>,
+  bodyRef: Ref<*>,
   footerContent: Node,
   headerAfter: Node,
   headerBefore: Node,
@@ -104,7 +104,7 @@ export const Popout = ({
           <HeaderTitle>{headerTitle}</HeaderTitle>
           <HeaderRight>{headerAfter}</HeaderRight>
         </Header>
-        <Body innerRef={bodyRef}>{children}</Body>
+        <Body ref={bodyRef}>{children}</Body>
         {footerContent ? <Footer>{footerContent}</Footer> : null}
       </Wrapper>
     </PopoutModal>

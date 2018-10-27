@@ -134,9 +134,11 @@ class Dropdown extends Component<Props> {
   handleMenuLeave = () => {
     this.lastHover.focus();
   };
-  getMenu = (ref: HTMLElement) => {
-    this.menu = ref;
-    this.props.getModalRef(ref);
+  getMenu = ref => {
+    if (ref !== null) {
+      this.menu = ref;
+      this.props.getModalRef(ref);
+    }
   };
 
   render() {
@@ -144,7 +146,7 @@ class Dropdown extends Component<Props> {
 
     return (
       <FocusTrap options={{ clickOutsideDeactivates: true }}>
-        <Menu innerRef={this.getMenu} onMouseLeave={this.handleMenuLeave} style={style}>
+        <Menu ref={this.getMenu} onMouseLeave={this.handleMenuLeave} style={style}>
           {items.map((item, idx) => {
             const { content, ...rest } = item;
             return (
