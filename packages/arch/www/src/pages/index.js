@@ -1,8 +1,9 @@
 import React from 'react';
-import graphql from 'graphql-anywhere';
+import { graphql } from 'gatsby';
+import Layout from '../layouts';
 
-export default ({ data }) => {
-  return (
+export default ({ data }) => {return (
+  <Layout>
     <div>
       <h1>Introduction = {data.site.siteMetadata.title}</h1>
       <p>
@@ -28,8 +29,8 @@ export default ({ data }) => {
       />
       <h2>Highly reusable, flexible styles</h2>
     </div>
-  );
-};
+  </Layout>
+);};
 
 export const query = graphql`
   query IndexQuery {

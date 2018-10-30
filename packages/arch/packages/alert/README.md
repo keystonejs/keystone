@@ -50,6 +50,9 @@ Alert messages start off looking decently neutral—they're just light blue roun
 <Alert>Alert message goes here.</Alert>
 ```
 
+<Alert>Alert message goes here.</Alert>
+
+
 You can put multiple paragraphs of text in an alert—the last paragraph's bottom `margin` will be automatically override.
 
 ```jsx
@@ -61,6 +64,14 @@ You can put multiple paragraphs of text in an alert—the last paragraph's botto
   <p>And this is another paragraph.</p>
 </Alert>
 ```
+
+<Alert>
+  <p>
+    This is a longer alert in it's own paragraph. It ends up looking something like this. If we keep
+    adding more text, it'll eventually wrap to a new line.
+  </p>
+  <p>And this is another paragraph.</p>
+</Alert>
 
 Should the need arise, you can quickly space out your alert from surrounding content with an `AlertGroup` wrapper. _Note the extra top and bottom margin in the example below._
 
@@ -86,13 +97,22 @@ Add the appearance property `warning`, `danger`, or `success` to the alert to ma
 <Alert appearance="warning">Alert message goes here.</Alert>
 ```
 
+<Alert appearance="warning">Alert message goes here.</Alert>    
+
+
 ```jsx
 <Alert appearance="danger">Alert message goes here.</Alert>
 ```
 
+<Alert appearance="danger">Alert message goes here.</Alert>  
+
+
 ```jsx
 <Alert appearance="success">Alert message goes here.</Alert>
 ```
+
+<Alert appearance="success">Alert message goes here.</Alert>   
+
 
 ## Variations
 
@@ -104,6 +124,10 @@ Alerts default to a `subtle` variant, but if you need to pack more punch, add th
 </Alert>
 ```
 
+<Alert appearance="danger" variant="bold">
+  Alert message goes here.
+</Alert>
+
 ## With icon
 
 Include an icon to the left of the alert for some added attention.
@@ -113,8 +137,14 @@ import { CheckIcon } from '@atlaskit/icons';
 
 <Alert appearance="success" variant="bold" icon={CheckIcon}>
   <span>Alert message with an icon goes here.</span>
-</Alert>;
+</Alert>
 ```
+
+<Alert appearance="success" variant="bold" icon={CheckIcon}>
+  <span>Alert message with an icon goes here.</span>
+</Alert>
+
+<!-- <checkicon></checkicon> -->
 
 ## Full width alert
 
@@ -125,6 +155,10 @@ An alert that is full width; removes border and border radius.
   <Container>Full width alert.</Container>
 </Alert>
 ```
+
+<Alert isFullWidth>
+  <Container>Full width alert.</Container>
+</Alert>
 
 <!-- %proptypes -->
 
