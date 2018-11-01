@@ -152,14 +152,16 @@ type SelectYearProps = {
 
 class SelectYear extends React.Component<SelectYearProps> {
   render() {
-    const { handleYearSelect, setDate, setSelectedDate } = this.props;
-    const yearRangeFrom = this.props.yearRangeFrom
-      ? this.props.yearRangeFrom
-      : getYear(new Date()) - 100;
-    const yearRangeTo = this.props.yearRangeTo ? this.props.yearRangeTo : getYear(new Date());
-    const yearPickerType = this.props.yearPickerType ? this.props.yearPickerType : 'auto';
+    const {
+      handleYearSelect,
+      setDate,
+      setSelectedDate,
+      yearRangeFrom = getYear(new Date()) - 100,
+      yearRangeTo = getYear(new Date()),
+      yearPickerType = 'auto',
+      date,
+    } = this.props;
     const years = yearRange(yearRangeFrom, yearRangeTo);
-    const { date } = this.props;
 
     const onChange = event => {
       handleYearSelect(event, setDate, setSelectedDate);
@@ -192,9 +194,9 @@ class SelectYear extends React.Component<SelectYearProps> {
 type DayPickerProps = {
   handleYearSelect: (Event, Function, Function) => void,
   handleMonthSelect: (Event, Function, Function) => void,
-  yearRangeFrom: number,
-  yearRangeTo: number,
-  yearPickerType: string,
+  yearRangeFrom?: number,
+  yearRangeTo?: number,
+  yearPickerType?: string,
 };
 
 export const DayPicker = (props: DayPickerProps) => {
@@ -209,13 +211,12 @@ export const DayPicker = (props: DayPickerProps) => {
       selectedDate,
       date,
     } = kalendaryo;
-    const {
-      handleYearSelect,
-      handleMonthSelect,
-      yearRangeFrom,
-      yearRangeTo,
-      yearPickerType,
-    } = props;
+    const { handleYearSelect, handleMonthSelect } = props;
+
+    const yearRangeFrom = props.yearRangeFrom ? props.yearRangeFrom : getYear(new Date()) - 100;
+    const yearRangeTo = props.yearRangeTo ? props.yearRangeTo : getYear(new Date());
+    const yearPickerType = props.yearPickerType ? props.yearPickerType : 'auto';
+
     const weeksInCurrentMonth = getWeeksInMonth();
 
     const setDateNextMonth = () => {

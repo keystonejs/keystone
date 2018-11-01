@@ -28,7 +28,7 @@ export default class CalendarDayFilterView extends Component<Props, State> {
     };
   }
 
-  handleDayChange = (day: Date) => {
+  onSelectedChange = (day: Date) => {
     const { onChange } = this.props;
     const newState = { ...this.state, date: format(day, 'YYYY-MM-DD') };
     onChange(`${newState.date}T${newState.time}${newState.offset}`);
@@ -86,7 +86,7 @@ export default class CalendarDayFilterView extends Component<Props, State> {
 
     const { date, time, offset } = this.state;
     const {
-      handleDayChange,
+      onSelectedChange,
       handleTimeChange,
       handleOffsetChange,
       handleMonthSelect,
@@ -100,7 +100,7 @@ export default class CalendarDayFilterView extends Component<Props, State> {
           date,
           time,
           offset,
-          handleDayChange,
+          onSelectedChange,
           handleTimeChange,
           handleOffsetChange,
           handleMonthSelect,
