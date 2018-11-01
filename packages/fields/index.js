@@ -11,4 +11,6 @@ module.exports = {
   CloudinaryImage: require('./types/CloudinaryImage'),
   CalendarDay: require('./types/CalendarDay'),
   DateTime: require('./types/DateTime'),
+  Color: require('./types/Color'),
+  Url: require('./types/Url'),
 };

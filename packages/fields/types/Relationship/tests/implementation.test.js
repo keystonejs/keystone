@@ -34,6 +34,12 @@ function createRelationship({ path, config = {}, getListByKey = () => new MockLi
         relateToManyInputName: `${ref}RelateToManyInput`,
         relateToOneInputName: `${ref}RelateToOneInput`,
       };
+      this.access = {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+      };
     }
     // The actual implementation in `@voussoir/core/List/index.js` returns
     // more, but we only want to test that this codepath is called
@@ -324,6 +330,12 @@ describe('Referenced list errors', () => {
     getGraphqlFilterFragment: () => [],
     gqlNames: {
       whereInputName: '',
+    },
+    access: {
+      create: true,
+      read: true,
+      update: true,
+      delete: true,
     },
   };
 
