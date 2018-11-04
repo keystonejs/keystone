@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component, type Element, type Node } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 import FocusTrap from 'react-focus-marshal';
 

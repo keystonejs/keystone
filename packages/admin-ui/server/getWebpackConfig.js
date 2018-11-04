@@ -12,6 +12,20 @@ module.exports = function({ adminMeta, entry }) {
       use: [
         {
           loader: 'babel-loader',
+          options: {
+            babelrc: false,
+            presets: [
+              ['env', { exclude: ['transform-regenerator', 'transform-async-to-generator'] }],
+              'react',
+              'flow',
+            ],
+            plugins: [
+              'transform-class-properties',
+              'transform-object-rest-spread',
+              ['emotion', enableDevFeatures ? { sourceMap: true } : {}],
+              ...(enableDevFeatures ? ['transform-react-jsx-source'] : []),
+            ],
+          },
         },
       ],
     },

@@ -4,11 +4,11 @@
 
 const fs = require('fs');
 const path = require('path');
-const supertest = require('supertest-light');
+const cuid = require('cuid');
+const { graphqlRequest, keystoneMongoTest } = require('@voussoir/test-utils');
 
 const Keystone = require('../../core/Keystone');
 const WebServer = require('../../server/WebServer');
-const createGraphQLMiddleware = require('../../server/WebServer/graphql');
 const { MongooseAdapter } = require('../../adapter-mongoose');
 
 const sorted = (arr, keyFn) => {
@@ -27,26 +27,25 @@ const sorted = (arr, keyFn) => {
   return arr;
 };
 
-export const runQuery = (app, snippet, fn) => {
-  supertest(app)
-    .set('Accept', 'application/json')
-    .set('Content-Type', 'application/json')
-    .post('/admin/api', { query: `query { ${snippet} }` })
-    .then(res => {
-      expect(res.statusCode).toBe(200);
-      fn(JSON.parse(res.text).data);
-    });
+export const runQuery = (server, snippet) => {
+  return graphqlRequest({
+    server,
+    query: `query { ${snippet} }`,
+  }).then(res => res.body.data);
 };
 
-export const matchFilter = (app, gqlArgs, fields, target, done, sortkey) => {
+export const matchFilter = (server, gqlArgs, fields, target, sortkey) => {
   gqlArgs = gqlArgs ? `(${gqlArgs})` : '';
   const snippet = `allTests ${gqlArgs} ${fields}`;
-  runQuery(app, snippet, data => {
+  return runQuery(server, snippet).then(data => {
     const value = sortkey ? sorted(data.allTests || [], i => i[sortkey]) : data.allTests;
     expect(value).toEqual(target);
-    done();
   });
 };
+
+// `mongodb-memory-server` downloads a binary on first run in CI, which can take
+// a while, so we bump up the timeout here.
+jest.setTimeout(60000);
 
 describe('Test CRUD for all fields', () => {
   const typesLoc = path.resolve('packages/fields/types');
@@ -54,64 +53,44 @@ describe('Test CRUD for all fields', () => {
     .readdirSync(typesLoc)
     .map(name => `${typesLoc}/${name}/filterTests.js`)
     .filter(filename => fs.existsSync(filename));
+
   testModules.push(path.resolve('packages/fields/tests/idFilterTests.js'));
   testModules.map(require).forEach(mod => {
     describe(`All the CRUD tests for module: ${mod.name}`, () => {
-      // Set up a keystone project for each type module to use
-      const keystone = new Keystone({
-        adapter: new MongooseAdapter(),
-        name: 'Test Project',
-      });
-
-      // Create a list with all the fields required for testing
-      const fields = mod.getTestFields();
-
       const listName = 'test';
-      const labelResolver = item => item;
+      const keystoneTestWrapper = (testFn = () => {}) =>
+        keystoneMongoTest(
+          () => {
+            // Set up a keystone project for each type test to use
+            const keystone = new Keystone({
+              adapter: new MongooseAdapter(),
+              name: `Field tests for ${mod.name} ${cuid}`,
+            });
 
-      keystone.createList(listName, { fields, labelResolver });
+            // Create a list with all the fields required for testing
+            const fields = mod.getTestFields();
 
-      // Set up a server (but do not .listen(), we will use supertest to access the app)
-      const server = new WebServer(keystone, {
-        'cookie secret': 'qwerty',
-        session: false,
-      });
+            const labelResolver = item => item;
 
-      server.app.use(
-        createGraphQLMiddleware(keystone, {
-          apiPath: '/admin/api',
-          graphiqlPath: '/admin/graphiql',
-        })
-      );
+            keystone.createList(listName, { fields, labelResolver });
 
-      // Clear the database before running any tests
-      beforeAll(async () => {
-        keystone.connect();
-        Object.values(keystone.adapters).forEach(async adapter => {
-          await adapter.dropDatabase();
-        });
-        await keystone.createItems({ [listName]: mod.initItems() });
+            // Set up a server (but do not .listen(), we will use supertest to access the app)
+            const server = new WebServer(keystone, {
+              'cookie secret': 'qwerty',
+              session: false,
+            });
 
-        // Throw at least one request at the server to make sure it's warmed up
-        await supertest(server.app)
-          .get('/admin/graphiql')
-          .then(res => {
-            expect(res.statusCode).toBe(200);
-          });
-        // Compiling can sometimes take a while
-      }, 10000);
+            return { server, keystone };
+          },
+          async ({ server, ...rest }) => {
+            // Populate the database before running the tests
+            await server.keystone.createItems({ [listName]: mod.initItems() });
 
-      describe('All Filter Tests', () => {
-        mod.filterTests(server.app, keystone);
-      });
+            return testFn({ server, ...rest });
+          }
+        );
 
-      afterAll(async done => {
-        Object.values(keystone.adapters).forEach(async adapter => {
-          await adapter.close();
-        });
-
-        done();
-      });
+      mod.filterTests(keystoneTestWrapper);
     });
   });
 });

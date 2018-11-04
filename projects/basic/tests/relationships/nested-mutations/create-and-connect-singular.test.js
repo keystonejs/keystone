@@ -1,13 +1,9 @@
 const { Text, Relationship } = require('@voussoir/fields');
-const { resolveAllKeys, mapKeys } = require('@voussoir/utils');
 const cuid = require('cuid');
+const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 
-const { setupServer, graphqlRequest } = require('../../util');
-
-let server;
-
-beforeAll(() => {
-  server = setupServer({
+function setupKeystone() {
+  return setupServer({
     name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('Group', {
@@ -56,58 +52,48 @@ beforeAll(() => {
       });
     },
   });
-
-  server.keystone.connect();
-});
-
-afterAll(async () => {
-  // clean the db
-  await resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase()));
-  // then shut down
-  await resolveAllKeys(
-    mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase().then(() => adapter.close()))
-  );
-});
-
-beforeEach(() =>
-  // clean the db
-  resolveAllKeys(mapKeys(server.keystone.adapters, adapter => adapter.dropDatabase())));
+}
 
 describe('errors on incomplete data', () => {
-  test('when neither id or create data passed', async () => {
-    // Create an item that does the linking
-    const createEvent = await graphqlRequest({
-      server,
-      query: `
+  test(
+    'when neither id or create data passed',
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
+      // Create an item that does the linking
+      const createEvent = await graphqlRequest({
+        server,
+        query: `
         mutation {
           createEvent(data: { group: {} }) {
             id
           }
         }
     `,
-    });
+      });
 
-    expect(createEvent.body).toHaveProperty('data.createEvent', null);
-    expect(createEvent.body.errors).toMatchObject([
-      {
-        name: 'NestedError',
-        data: {
-          errors: [
-            {
-              path: ['createEvent', 'group'],
-              name: 'ParameterError',
-            },
-          ],
+      expect(createEvent.body).toHaveProperty('data.createEvent', null);
+      expect(createEvent.body.errors).toMatchObject([
+        {
+          name: 'NestedError',
+          data: {
+            errors: [
+              {
+                path: ['createEvent', 'group'],
+                name: 'ParameterError',
+              },
+            ],
+          },
         },
-      },
-    ]);
-  });
+      ]);
+    })
+  );
 
-  test('when both id and create data passed', async () => {
-    // Create an item that does the linking
-    const createEvent = await graphqlRequest({
-      server,
-      query: `
+  test(
+    'when both id and create data passed',
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
+      // Create an item that does the linking
+      const createEvent = await graphqlRequest({
+        server,
+        query: `
         mutation {
           createEvent(data: { group: {
             connect: { id: "abc123"},
@@ -117,21 +103,22 @@ describe('errors on incomplete data', () => {
           }
         }
     `,
-    });
+      });
 
-    expect(createEvent.body).toHaveProperty('data.createEvent', null);
-    expect(createEvent.body.errors).toMatchObject([
-      {
-        name: 'NestedError',
-        data: {
-          errors: [
-            {
-              path: ['createEvent', 'group'],
-              name: 'ParameterError',
-            },
-          ],
+      expect(createEvent.body).toHaveProperty('data.createEvent', null);
+      expect(createEvent.body.errors).toMatchObject([
+        {
+          name: 'NestedError',
+          data: {
+            errors: [
+              {
+                path: ['createEvent', 'group'],
+                name: 'ParameterError',
+              },
+            ],
+          },
         },
-      },
-    ]);
-  });
+      ]);
+    })
+  );
 });

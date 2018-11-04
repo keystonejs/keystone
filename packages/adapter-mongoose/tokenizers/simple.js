@@ -12,7 +12,7 @@ module.exports = ({ getRelatedListAdapterFromQueryPath, modifierConditions = {} 
   const simpleQueryConditions = refListAdapter.getSimpleQueryConditions();
 
   if (queryKey in simpleQueryConditions) {
-    return [simpleQueryConditions[queryKey](query[queryKey], query)];
+    return { matchTerm: simpleQueryConditions[queryKey](query[queryKey], query) };
   }
 
   if (queryKey in modifierConditions) {
@@ -23,5 +23,5 @@ module.exports = ({ getRelatedListAdapterFromQueryPath, modifierConditions = {} 
 
   // Nothing found, return an empty operation
   // TODO: warn?
-  return [];
+  return {};
 };

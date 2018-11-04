@@ -1,19 +1,18 @@
 {
   "name": "@voussoir/mongo-join-builder",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "author": "Jess Telford",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/utils": "^0.1.2",
-    "cuid": "^2.1.1",
-    "mongoose": "^5.2.7"
+    "@voussoir/utils": "^0.2.0",
+    "cuid": "^2.1.1"
   },
   "devDependencies": {
     "lodash.omitby": "^4.6.0",
-    "mongodb": "^3.1.3",
-    "mongodb-memory-server": "^2.0.0"
+    "mongodb": "^3.1.7",
+    "mongodb-memory-server": "^2.4.3"
   }
 }

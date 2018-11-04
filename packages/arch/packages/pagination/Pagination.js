@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 import { colors } from '@arch-ui/theme';
 import Page from './Page';

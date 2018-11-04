@@ -7,17 +7,19 @@ type Props = {
   filter: Object,
   innerRef: Ref<*>,
   onChange: Event => void,
+  recalcHeight: () => void,
+  value: string,
 };
 
 export default class CheckboxFilterView extends Component<Props> {
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     const { filter } = this.props;
 
     if (prevProps.filter !== filter) {
       this.props.recalcHeight();
     }
   }
-  handleChange = ({ target: { value } }) => {
+  handleChange = ({ target: { value } }: Object) => {
     this.props.onChange(value);
   };
 

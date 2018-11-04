@@ -21,145 +21,160 @@ export const initItems = () => {
   ];
 };
 
-export const filterTests = app => {
-  const match = (filter, targets, done) => {
-    matchFilter(app, filter, '{ name, count }', targets, done, 'name');
-  };
+export const filterTests = withKeystone => {
+  const match = (server, filter, targets) =>
+    matchFilter(server, filter, '{ name, count }', targets, 'name');
 
-  test('No filter', done => {
-    match(
-      undefined,
-      [
+  test(
+    'No filter',
+    withKeystone(({ server: { server } }) =>
+      match(server, undefined, [
         { name: 'person1', count: 0 },
         { name: 'person2', count: 1 },
         { name: 'person3', count: 2 },
         { name: 'person4', count: 3 },
         { name: 'person5', count: null },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Empty filter', done => {
-    match(
-      'where: { }',
-      [
+  test(
+    'Empty filter',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { }', [
         { name: 'person1', count: 0 },
         { name: 'person2', count: 1 },
         { name: 'person3', count: 2 },
         { name: 'person4', count: 3 },
         { name: 'person5', count: null },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: count', done => {
-    match('where: { count: 1 }', [{ name: 'person2', count: 1 }], done);
-  });
+  test(
+    'Filter: count',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { count: 1 }', [{ name: 'person2', count: 1 }])
+    )
+  );
 
-  test('Filter: count_not', done => {
-    match(
-      'where: { count_not: 1 }',
-      [
+  test(
+    'Filter: count_not',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { count_not: 1 }', [
         { name: 'person1', count: 0 },
         { name: 'person3', count: 2 },
         { name: 'person4', count: 3 },
         { name: 'person5', count: null },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: count_not null', done => {
-    match(
-      'where: { count_not: null }',
-      [
+  test(
+    'Filter: count_not null',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { count_not: null }', [
         { name: 'person1', count: 0 },
         { name: 'person2', count: 1 },
         { name: 'person3', count: 2 },
         { name: 'person4', count: 3 },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: count_lt', done => {
-    match(
-      'where: { count_lt: 2 }',
-      [{ name: 'person1', count: 0 }, { name: 'person2', count: 1 }],
-      done
-    );
-  });
+  test(
+    'Filter: count_lt',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { count_lt: 2 }', [
+        { name: 'person1', count: 0 },
+        { name: 'person2', count: 1 },
+      ])
+    )
+  );
 
-  test('Filter: count_lte', done => {
-    match(
-      'where: { count_lte: 2 }',
-      [{ name: 'person1', count: 0 }, { name: 'person2', count: 1 }, { name: 'person3', count: 2 }],
-      done
-    );
-  });
+  test(
+    'Filter: count_lte',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { count_lte: 2 }', [
+        { name: 'person1', count: 0 },
+        { name: 'person2', count: 1 },
+        { name: 'person3', count: 2 },
+      ])
+    )
+  );
 
-  test('Filter: count_gt', done => {
-    match('where: { count_gt: 2 }', [{ name: 'person4', count: 3 }], done);
-  });
+  test(
+    'Filter: count_gt',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { count_gt: 2 }', [{ name: 'person4', count: 3 }])
+    )
+  );
 
-  test('Filter: count_gte', done => {
-    match(
-      'where: { count_gte: 2 }',
-      [{ name: 'person3', count: 2 }, { name: 'person4', count: 3 }],
-      done
-    );
-  });
+  test(
+    'Filter: count_gte',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { count_gte: 2 }', [
+        { name: 'person3', count: 2 },
+        { name: 'person4', count: 3 },
+      ])
+    )
+  );
 
-  test('Filter: count_in (empty list)', done => {
-    match('where: { count_in: [] }', [], done);
-  });
+  test(
+    'Filter: count_in (empty list)',
+    withKeystone(({ server: { server } }) => match(server, 'where: { count_in: [] }', []))
+  );
 
-  test('Filter: count_not_in (empty list)', done => {
-    match(
-      'where: { count_not_in: [] }',
-      [
+  test(
+    'Filter: count_not_in (empty list)',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { count_not_in: [] }', [
         { name: 'person1', count: 0 },
         { name: 'person2', count: 1 },
         { name: 'person3', count: 2 },
         { name: 'person4', count: 3 },
         { name: 'person5', count: null },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 
-  test('Filter: count_in', done => {
-    match(
-      'where: { count_in: [0, 1, 2] }',
-      [{ name: 'person1', count: 0 }, { name: 'person2', count: 1 }, { name: 'person3', count: 2 }],
-      done
-    );
-  });
+  test(
+    'Filter: count_in',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { count_in: [0, 1, 2] }', [
+        { name: 'person1', count: 0 },
+        { name: 'person2', count: 1 },
+        { name: 'person3', count: 2 },
+      ])
+    )
+  );
 
-  test('Filter: count_not_in', done => {
-    match(
-      'where: { count_not_in: [0, 1, 2] }',
-      [{ name: 'person4', count: 3 }, { name: 'person5', count: null }],
-      done
-    );
-  });
+  test(
+    'Filter: count_not_in',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { count_not_in: [0, 1, 2] }', [
+        { name: 'person4', count: 3 },
+        { name: 'person5', count: null },
+      ])
+    )
+  );
 
-  test('Filter: count_in null', done => {
-    match('where: { count_in: [null] }', [{ name: 'person5', count: null }], done);
-  });
+  test(
+    'Filter: count_in null',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { count_in: [null] }', [{ name: 'person5', count: null }])
+    )
+  );
 
-  test('Filter: count_not_in null', done => {
-    match(
-      'where: { count_not_in: [null] }',
-      [
+  test(
+    'Filter: count_not_in null',
+    withKeystone(({ server: { server } }) =>
+      match(server, 'where: { count_not_in: [null] }', [
         { name: 'person1', count: 0 },
         { name: 'person2', count: 1 },
         { name: 'person3', count: 2 },
         { name: 'person4', count: 3 },
-      ],
-      done
-    );
-  });
+      ])
+    )
+  );
 };

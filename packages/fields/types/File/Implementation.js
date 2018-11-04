@@ -118,19 +118,24 @@ class File extends Implementation {
 class MongoFileInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
     const { mongooseOptions, unique } = this.config;
-    schema.add({
-      [this.path]: {
-        unique,
-        type: {
-          id: ObjectId,
-          path: String,
-          filename: String,
-          mimetype: String,
-          _meta: Object,
-        },
-        ...mongooseOptions,
+    const schemaOptions = {
+      type: {
+        id: ObjectId,
+        path: String,
+        filename: String,
+        mimetype: String,
+        _meta: Object,
       },
-    });
+      ...mongooseOptions,
+    };
+    if (unique) {
+      // A value of anything other than `true` causes errors with Mongoose
+      // constantly recreating indexes. Ie; if we just splat `unique` onto the
+      // options object, it would be `undefined`, which would cause Mongoose to
+      // drop and recreate all indexes.
+      schemaOptions.unique = true;
+    }
+    schema.add({ [this.path]: schemaOptions });
   }
 
   getQueryConditions() {

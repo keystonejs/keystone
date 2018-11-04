@@ -1,7 +1,8 @@
 // @flow
 
-import React from 'react';
-import styled from 'react-emotion';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import styled from '@emotion/styled';
 
 import { LoadingIndicator, LoadingSpinner } from '../loading';
 import { Button, type ButtonProps } from './primitives';

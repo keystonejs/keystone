@@ -7,7 +7,7 @@ module.exports = {
     jest: true,
     'cypress/globals': true,
   },
-  plugins: ['react', 'jest', 'cypress', 'import', 'flowtype'],
+  plugins: ['react', 'jest', 'cypress', 'import', 'flowtype', 'emotion'],
   rules: {
     curly: ['error', 'multi-line'],
     'jsx-quotes': 'error',
@@ -53,6 +53,10 @@ module.exports = {
     // this stops ESLint from throwing errors
     'flowtype/define-flow-type': 'error',
     'flowtype/use-flow-type': 'error',
+    'emotion/jsx-import': 'error',
+    'emotion/no-vanilla': 'error',
+    'emotion/import-from-emotion': 'error',
+    'emotion/styled-import': 'error',
   },
   extends: ['plugin:jest/recommended'],
 
