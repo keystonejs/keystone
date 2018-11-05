@@ -1,3 +1,5 @@
+import format from 'date-fns/format';
+
 describe('Adding data', () => {
   [
     {
@@ -5,7 +7,6 @@ describe('Adding data', () => {
       data: {
         'ks-input-name': 'John Doe',
         'ks-input-email': 'john@gmail.com',
-        'ks-input-password': 'password1',
       },
     },
     {
@@ -31,12 +32,52 @@ describe('Adding data', () => {
         cy.get(`#${item}`).type(data[item]);
       });
 
+      if (url === '/admin/users') {
+        cy.get('#ks-input-dob').click();
+        cy.get('#ks-daypicker-dob div:contains("10")')
+          .last()
+          .click({ force: true });
+        cy.get('#ks-input-dob').click();
+      }
+
       cy.get('form[role="dialog"] button[appearance="create"]').click();
+
+      cy.location('pathname').should('match', new RegExp(`${url}/.+`));
 
       Object.keys(data).forEach(item => {
         cy.get(`#${item}`).should('have.value', data[item]);
       });
+      if (url === '/admin/users') {
+        const d = new Date();
+        d.setDate(10);
+        cy.get('#ks-input-dob').should('contain', format(d, 'Do MMMM YYYY'));
+      }
     });
+  });
+
+  it(`Adds relationship items`, () => {
+    const url = '/admin/posts';
+    cy.visit(url);
+
+    cy.server();
+    cy.route('/admin/posts/*').as('newPost');
+
+    cy.get('button[appearance="create"]').click();
+
+    cy.get('#ks-input-name').type('My post');
+    cy.get('#ks-input-slug').type('mypost');
+    cy.get('#ks-input-author').click({ force: true });
+    cy.get('#ks-input-author').type('John Doe{downarrow}{enter}', {
+      force: true,
+    });
+
+    cy.get('form[role="dialog"] button[appearance="create"]').click();
+
+    cy.location('pathname').should('match', new RegExp(`${url}/.+`));
+
+    cy.get('#ks-input-name').should('have.value', 'My post');
+    cy.get('#ks-input-slug').should('have.value', 'mypost');
+    cy.get('#react-select-ks-input-author').should('contain', 'John Doe');
   });
 });
 
@@ -80,6 +121,47 @@ describe('Editing data', () => {
       cy.get('button[type="submit"][appearance="primary"]').click();
       cy.get(`nav a:contains("${section}")`).click();
       cy.get('body').should('contain', field.newValue);
+    });
+  });
+
+  it(`Updates relationship items`, () => {
+    const url = '/admin/posts';
+    cy.visit(url);
+
+    cy.server();
+    cy.route('/admin/posts/*').as('newPost');
+
+    cy.get(`a:contains("My post"):first`).click();
+
+    cy.location('pathname').then(path => {
+      cy.get('#ks-input-author').click({ force: true });
+
+      // Clear any value that might be there
+      cy.get('#ks-input-author').type('{backspace}{esc}', { force: true });
+
+      // save
+      cy.get('button[type="submit"][appearance="primary"]').click();
+
+      // Then reload the page
+      cy.visit(path);
+
+      // Assert that the field is empty
+      cy.get('#react-select-ks-input-author').should('contain', 'Select...');
+
+      // Select the first item
+      cy.get('#ks-input-author').click({ force: true });
+      cy.get('#ks-input-author').type('{downarrow}{enter}', { force: true });
+      cy.get('#react-select-ks-input-author').then(([authorInput]) => {
+        const userText = authorInput.textContent.replace(/.*option (.*), selected.*/, '$1');
+
+        // save
+        cy.get('button[type="submit"][appearance="primary"]').click();
+
+        // Then reload the page
+        cy.visit(path);
+
+        cy.get('#react-select-ks-input-author').should('contain', userText);
+      });
     });
   });
 });

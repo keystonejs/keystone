@@ -71,8 +71,13 @@ junit.xml
 # Editor
 *.sublime-project
 *.sublime-workspace
+*.vscode
 
 # Cypress
 cypress/screenshots
 cypress/videos
 cypress/mock
+
+# Ignore lower level yarn locks
+**/yarn.lock
+package-lock.json

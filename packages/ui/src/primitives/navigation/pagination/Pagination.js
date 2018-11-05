@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 import { colors } from '../../../theme';
 import Page from './Page';
@@ -10,14 +10,7 @@ import type { CountArgs, CountFormat, LabelType, OnChangeType } from './types';
 function ariaPageLabelFn(page: number) {
   return `Go to page ${page}`;
 }
-function countFormatterFn({
-  end,
-  pageSize,
-  plural,
-  singular,
-  start,
-  total,
-}: CountArgs) {
+function countFormatterFn({ end, pageSize, plural, singular, start, total }: CountArgs) {
   let count = '';
 
   if (!total) {
@@ -78,14 +71,7 @@ class Pagination extends Component<PaginationProps> {
   };
 
   renderCount() {
-    let {
-      countFormatter,
-      displayCount,
-      pageSize,
-      plural,
-      singular,
-      total,
-    } = this.props;
+    let { countFormatter, displayCount, pageSize, plural, singular, total } = this.props;
 
     if (!displayCount) return null;
 
@@ -143,12 +129,7 @@ class Pagination extends Component<PaginationProps> {
     // go to first
     if (minPage > 1) {
       pages.push(
-        <Page
-          aria-label={ariaPageLabel(1)}
-          key="page_start"
-          onClick={onChange}
-          value={1}
-        >
+        <Page aria-label={ariaPageLabel(1)} key="page_start" onClick={onChange} value={1}>
           {moreCharacter}
         </Page>
       );

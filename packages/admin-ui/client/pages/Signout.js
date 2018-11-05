@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 import SessionProvider from '../providers/Session';
 import logo from '../assets/logo.png';
@@ -81,11 +81,7 @@ const SignedOutPage = ({ isLoading, isSignedIn, signinPath, signOut }) => {
 };
 
 export default ({ signinPath, signoutPath, sessionPath }) => (
-  <SessionProvider
-    signinPath={signinPath}
-    signoutPath={signoutPath}
-    sessionPath={sessionPath}
-  >
+  <SessionProvider signinPath={signinPath} signoutPath={signoutPath} sessionPath={sessionPath}>
     {props => <SignedOutPage signinPath={signinPath} {...props} />}
   </SessionProvider>
 );

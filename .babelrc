@@ -1,5 +1,8 @@
 {
-  "presets": ["env", "react"],
+  "presets": [
+    [ "env", { "exclude": ["transform-regenerator", "transform-async-to-generator"] } ],
+    "react"
+  ],
   "plugins": ["transform-class-properties", "transform-object-rest-spread"],
   "env": {
     "production": {

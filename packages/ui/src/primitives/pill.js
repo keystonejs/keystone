@@ -1,9 +1,10 @@
 // @flow
 
-import React from 'react';
-import styled from 'react-emotion';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import styled from '@emotion/styled';
 
-import { XIcon } from '@keystonejs/icons';
+import { XIcon } from '@voussoir/icons';
 import { colors } from '../theme';
 
 const boldBackgroundColor = {
@@ -67,10 +68,7 @@ const PillButton = styled.button(({ appearance, variant }: Props) => {
       variant === 'bold'
         ? boldBackgroundColor[appearance].default
         : subtleBackgroundColor[appearance].default,
-    color:
-      variant === 'bold'
-        ? boldTextColor[appearance]
-        : subtleTextColor[appearance],
+    color: variant === 'bold' ? boldTextColor[appearance] : subtleTextColor[appearance],
     alignItems: 'center',
     border: 0,
     cursor: 'pointer',
@@ -114,25 +112,14 @@ const PillButton = styled.button(({ appearance, variant }: Props) => {
   };
 });
 
-export const Pill = ({
-  appearance,
-  children,
-  onClick,
-  onRemove,
-  variant,
-  ...props
-}: Props) => {
+export const Pill = ({ appearance, children, onClick, onRemove, variant, ...props }: Props) => {
   return (
     <PillWrapper {...props}>
       <PillButton appearance={appearance} variant={variant} onClick={onClick}>
         {children}
       </PillButton>
       {onRemove ? (
-        <PillButton
-          appearance={appearance}
-          variant={variant}
-          onClick={onRemove}
-        >
+        <PillButton appearance={appearance} variant={variant} onClick={onRemove}>
           <XIcon css={{ height: 12 }} />
         </PillButton>
       ) : null}

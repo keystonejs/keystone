@@ -8,70 +8,72 @@ import {
   TelescopeIcon,
   MarkGithubIcon,
   SignOutIcon,
-} from '@keystonejs/icons';
+} from '@voussoir/icons';
 
 import {
   PrimaryNav,
   PrimaryNavItem,
   NavGroup,
+  NavGroupIcons,
   NavSeparator,
-} from '@keystonejs/ui/src/primitives/navigation';
-import { A11yText } from '@keystonejs/ui/src/primitives/typography';
+} from '@voussoir/ui/src/primitives/navigation';
+import { A11yText } from '@voussoir/ui/src/primitives/typography';
 import { withAdminMeta } from '../providers/AdminMeta';
 
 const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
 
 const Nav = props => {
   const {
-    adminMeta: {
-      withAuth,
-      getListByKey,
-      listKeys,
-      adminPath,
-      graphiqlPath,
-      signoutPath,
-    },
+    adminMeta: { withAuth, getListByKey, listKeys, adminPath, graphiqlPath, signoutPath },
     location,
   } = props;
   return (
     <PrimaryNav>
-      <NavGroup>
+      <NavGroupIcons>
         <PrimaryNavItem to={adminPath} title="Dashboard">
           <HomeIcon />
           <A11yText>Dashboard</A11yText>
         </PrimaryNavItem>
+        {withAuth ? (
+          <Fragment>
+            <NavSeparator />
+            <PrimaryNavItem href={signoutPath} title="Sign Out">
+              <SignOutIcon />
+              <A11yText>Sign Out</A11yText>
+            </PrimaryNavItem>
+          </Fragment>
+        ) : null}
+      </NavGroupIcons>
+
+      <NavGroup>
         {listKeys.map(key => {
           const list = getListByKey(key);
-          const href = `${adminPath}/${list.path}`;
-          const isSelected = href === location.pathname;
+          let href = `${adminPath}/${list.path}`;
+          const maybeSearchParam = list.getPersistedSearch();
+          if (maybeSearchParam) {
+            href += maybeSearchParam;
+          }
+          const isSelected = href === location.pathname + location.search;
 
           return (
             <Fragment key={key}>
-              <NavSeparator isSelected={isSelected} />
-              <PrimaryNavItem isSelected={isSelected} to={href}>
+              <PrimaryNavItem id={`ks-nav-${list.path}`} isSelected={isSelected} to={href}>
                 {list.label}
               </PrimaryNavItem>
             </Fragment>
           );
         })}
       </NavGroup>
-      <NavGroup>
-        {ENABLE_DEV_FEATURES ? (
+
+      {ENABLE_DEV_FEATURES ? (
+        <NavGroupIcons>
           <Fragment>
-            <PrimaryNavItem
-              target="_blank"
-              href={GITHUB_PROJECT}
-              title="GitHub"
-            >
+            <PrimaryNavItem target="_blank" href={GITHUB_PROJECT} title="GitHub">
               <MarkGithubIcon />
               <A11yText>GitHub</A11yText>
             </PrimaryNavItem>
             <NavSeparator />
-            <PrimaryNavItem
-              target="_blank"
-              href={graphiqlPath}
-              title="Graphiql Console"
-            >
+            <PrimaryNavItem target="_blank" href={graphiqlPath} title="Graphiql Console">
               <TerminalIcon />
               <A11yText>Graphiql Console</A11yText>
             </PrimaryNavItem>
@@ -80,16 +82,9 @@ const Nav = props => {
               <TelescopeIcon />
               <A11yText>Style Guide</A11yText>
             </PrimaryNavItem>
-            <NavSeparator />
           </Fragment>
-        ) : null}
-        {withAuth ? (
-          <PrimaryNavItem href={signoutPath} title="Sign Out">
-            <SignOutIcon />
-            <A11yText>Sign Out</A11yText>
-          </PrimaryNavItem>
-        ) : null}
-      </NavGroup>
+        </NavGroupIcons>
+      ) : null}
     </PrimaryNav>
   );
 };

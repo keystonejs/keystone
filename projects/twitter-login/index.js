@@ -1,5 +1,5 @@
-const { AdminUI } = require('@keystonejs/admin-ui');
-const { Keystone } = require('@keystonejs/core');
+const { AdminUI } = require('@voussoir/admin-ui');
+const { Keystone } = require('@voussoir/core');
 const {
   File,
   Text,
@@ -8,21 +8,12 @@ const {
   Select,
   Password,
   CloudinaryImage,
-} = require('@keystonejs/fields');
-const { WebServer } = require('@keystonejs/server');
-const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
-const {
-  CloudinaryAdapter,
-  LocalFileAdapter,
-} = require('@keystonejs/file-adapters');
+} = require('@voussoir/fields');
+const { WebServer } = require('@voussoir/server');
+const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
+const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
 
-const {
-  twitterAuthEnabled,
-  port,
-  staticRoute,
-  staticPath,
-  cloudinary,
-} = require('./config');
+const { twitterAuthEnabled, port, staticRoute, staticPath, cloudinary } = require('./config');
 const { configureTwitterAuth } = require('./twitter');
 
 const { DISABLE_AUTH } = process.env;
@@ -34,7 +25,7 @@ const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 const initialData = require('./data');
 
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'Cypress Test for Twitter Login',
@@ -67,9 +58,28 @@ try {
 
 keystone.createList('User', {
   fields: {
+    // When no access defined, defaults to all public
     name: { type: Text },
-    email: { type: Text },
-    password: { type: Password },
+    email: {
+      type: Text,
+      access: {
+        // defaults to 'false' for any unspecified keys, so this is technically
+        // unnecessary
+        read: false,
+        update: ({ item, authentication }) =>
+          // Authenticated against the correct list
+          authentication.listKey === this.listKey &&
+          // The authed item matches the item being updated
+          item.id === authentication.item.id,
+      },
+    },
+    password: {
+      type: Password,
+      access: {
+        update: ({ item, authentication }) =>
+          authentication.listKey === this.listKey && item.id === authentication.item.id,
+      },
+    },
     // TODO: Create a Twitter field type to encapsulate these
     twitterId: { type: Text },
     twitterUsername: { type: Text },
@@ -83,10 +93,15 @@ keystone.createList('User', {
         { label: 'Cete, or Seat, or Attend ¯\\_(ツ)_/¯', value: 'cete' },
       ],
     },
+    notes: {
+      type: Relationship,
+      ref: 'Note',
+      many: true,
+      // NOTE: No access listed for this field as the related list already has
+      // its own access control setup
+    },
     attachment: { type: File, adapter: fileAdapter },
-    ...(cloudinaryAdapter
-      ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } }
-      : {}),
+    ...(cloudinaryAdapter ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } } : {}),
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });
@@ -98,10 +113,7 @@ keystone.createList('Post', {
     status: {
       type: Select,
       defaultValue: 'draft',
-      options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Published', value: 'published' },
-      ],
+      options: [{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }],
     },
     author: {
       type: Relationship,
@@ -114,6 +126,15 @@ keystone.createList('Post', {
     },
   },
   labelResolver: item => item.name,
+  access: {
+    read: true,
+    create: ({ item, authentication }) =>
+      authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
+    update: ({ item, authentication }) =>
+      authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
+    delete: ({ item, authentication }) =>
+      authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
+  },
 });
 
 keystone.createList('PostCategory', {
@@ -121,6 +142,25 @@ keystone.createList('PostCategory', {
     name: { type: Text },
     slug: { type: Text },
   },
+  access: {
+    create: true,
+    read: true,
+    update: false,
+    delete: false,
+  },
+});
+
+keystone.createList('Note', {
+  fields: {
+    note: { type: Text },
+    user: {
+      type: Relationship,
+      ref: 'User',
+    },
+  },
+  // All access to notes limited to authenticated person
+  access: ({ item, authentication }) =>
+    authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
 });
 
 const admin = new AdminUI(keystone, {
@@ -132,7 +172,6 @@ const admin = new AdminUI(keystone, {
 const server = new WebServer(keystone, {
   'cookie secret': 'qwerty',
   'admin ui': admin,
-  session: true,
   port,
 });
 
@@ -178,7 +217,7 @@ server.app.get('/reset-db', (req, res) => {
 server.app.use(staticRoute, server.express.static(staticPath));
 
 async function start() {
-  keystone.connect();
+  await keystone.connect();
   server.start();
   const users = await keystone.lists.User.adapter.findAll();
   if (!users.length) {

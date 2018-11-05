@@ -23,12 +23,7 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-const { createApolloFetch } = require('apollo-fetch');
-const memoize = require('fast-memoize');
-
-const getApollo = memoize(function createApollo(uri) {
-  return createApolloFetch({ uri });
-});
+const gql = require('graphql-tag');
 
 /**
  * Uploads a file to an input
@@ -69,14 +64,39 @@ Cypress.Commands.add('upload_file', (selector, fileUrl, type = '') =>
   )
 );
 
-Cypress.Commands.add('graphql_query', (uri, query) =>
-  getApollo(uri)({ query })
-    .then(({ data }) => {
-      console.log('Fetched data:', data);
-      return data;
-    })
-    .catch(error => {
-      console.log('Error', error);
-      throw error;
-    })
-);
+function graphqlOperation(type) {
+  return function(uri, operationString) {
+    // Convert the string to an ast
+    const operation = gql(operationString);
+
+    // Then pass it through to the window context for execution.
+    // Why execute it from the window context? Because that's where the cookies,
+    // etc, are.
+    // Why not read the cookies, and execute it from within the test? Because
+    // the cookies are HTTP-only, so they're not accessible via JavaScript.
+    return cy.window().then(win =>
+      // NOTE: __APOLLO_CLIENT__ is only available in dev mode
+      // (process.env.NODE_ENV !== 'production'), so this may error at some
+      // point. If so, we need another way of attaching a global graphql query
+      // lib to the window from within the app for testing.
+      win.__APOLLO_CLIENT__[type]({
+        [type === 'mutate' ? 'mutation' : type]: operation,
+      })
+        .then(result => {
+          console.log('Fetched data:', result);
+          return result;
+        })
+        .catch(error => {
+          console.error(`${type} error:`, error);
+          if (error.graphQLErrors) {
+            return { errors: error.graphQLErrors };
+          } else {
+            return { errors: [error] };
+          }
+        })
+    );
+  };
+}
+
+Cypress.Commands.add('graphql_query', graphqlOperation('query'));
+Cypress.Commands.add('graphql_mutate', graphqlOperation('mutate'));

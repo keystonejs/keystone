@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
-import styled from 'react-emotion';
-import { ChevronDownIcon, ChevronUpIcon } from '@keystonejs/icons';
-import { OptionPrimitive } from '@keystonejs/ui/src/primitives/filters';
-import { colors } from '@keystonejs/ui/src/theme';
-import { OptionRenderer } from '@keystonejs/ui/src/primitives/filters';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component } from 'react';
+import styled from '@emotion/styled';
+import { ChevronDownIcon, ChevronUpIcon } from '@voussoir/icons';
+import { OptionPrimitive } from '@voussoir/ui/src/primitives/filters';
+import { colors } from '@voussoir/ui/src/theme';
+import { OptionRenderer } from '@voussoir/ui/src/primitives/filters';
 
 import { POPOUT_GUTTER } from '../../components/Popout';
 
@@ -32,18 +34,8 @@ export const SortButton = styled.button(({ isActive }) => {
   };
 });
 
-export const SortOption = ({
-  altIsDown,
-  children,
-  isFocused,
-  isSelected,
-  ...props
-}) => {
-  const Icon = isSelected
-    ? ChevronUpIcon
-    : altIsDown
-      ? ChevronUpIcon
-      : ChevronDownIcon;
+export const SortOption = ({ altIsDown, children, isFocused, isSelected, ...props }) => {
+  const Icon = isSelected ? ChevronUpIcon : altIsDown ? ChevronUpIcon : ChevronDownIcon;
   const iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
 
   return (
@@ -103,9 +95,7 @@ export default class SortSelect extends Component<Props, State> {
     onChange({ field, direction });
     popoutRef.current.close();
   };
-  enhancedOption = props => (
-    <SortOption altIsDown={this.state.altIsDown} {...props} />
-  );
+  enhancedOption = props => <SortOption altIsDown={this.state.altIsDown} {...props} />;
   getOptions = () => {
     const { fields } = this.props;
     return fields.map(({ options, ...field }) => field);

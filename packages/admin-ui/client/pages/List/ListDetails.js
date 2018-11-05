@@ -1,24 +1,16 @@
-import React, { Component, createRef, Fragment } from 'react';
-import styled from 'react-emotion';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, createRef, Fragment } from 'react';
+import styled from '@emotion/styled';
 import { withRouter } from 'react-router-dom';
 
-import {
-  FoldIcon,
-  PlusIcon,
-  SearchIcon,
-  UnfoldIcon,
-  XIcon,
-} from '@keystonejs/icons';
-import { Input } from '@keystonejs/ui/src/primitives/forms';
-import {
-  Container,
-  FlexGroup,
-  CONTAINER_WIDTH,
-} from '@keystonejs/ui/src/primitives/layout';
-import { A11yText, Kbd, H1 } from '@keystonejs/ui/src/primitives/typography';
-import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
-import { LoadingSpinner } from '@keystonejs/ui/src/primitives/loading';
-import { colors } from '@keystonejs/ui/src/theme';
+import { FoldIcon, PlusIcon, SearchIcon, UnfoldIcon, XIcon } from '@voussoir/icons';
+import { Input } from '@voussoir/ui/src/primitives/forms';
+import { Container, FlexGroup, CONTAINER_WIDTH } from '@voussoir/ui/src/primitives/layout';
+import { A11yText, Kbd, H1 } from '@voussoir/ui/src/primitives/typography';
+import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
+import { LoadingSpinner } from '@voussoir/ui/src/primitives/loading';
+import { colors } from '@voussoir/ui/src/theme';
 
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
@@ -76,11 +68,7 @@ const Search = ({ children, hasValue, isFetching, onClear, onSubmit }) => {
           },
         }}
       >
-        {isLoading ? (
-          <LoadingSpinner size={16} />
-        ) : (
-          <Icon onClick={hasValue ? onClear : null} />
-        )}
+        {isLoading ? <LoadingSpinner size={16} /> : <Icon onClick={hasValue ? onClear : null} />}
       </div>
     </form>
   );
@@ -124,6 +112,7 @@ class ListDetails extends Component<Props, State> {
     isManaging: false,
     selectedItems: [],
     showCreateModal: false,
+    searchValue: this.props.search,
   };
 
   // ==============================
@@ -139,6 +128,24 @@ class ListDetails extends Component<Props, State> {
 
   closeCreateModal = () => this.setState({ showCreateModal: false });
   openCreateModal = () => this.setState({ showCreateModal: true });
+
+  // ==============================
+  // Search
+  // ==============================
+  handleSearchChange = ({ target: { value } }) => {
+    this.setState({ searchValue: value }, () => {
+      this.props.handleSearchChange(value);
+    });
+  };
+  handleSearchClear = () => {
+    this.setState({ searchValue: '' });
+    this.props.handleSearchClear();
+    this.searchInput.focus();
+  };
+  handleSearchSubmit = event => {
+    event.preventDefault();
+    this.props.handleSearchSubmit();
+  };
 
   // ==============================
   // Management
@@ -186,7 +193,7 @@ class ListDetails extends Component<Props, State> {
   };
   onCreate = ({ data }) => {
     let { list, adminPath, history } = this.props;
-    let id = data[list.createMutationName].id;
+    let id = data[list.gqlNames.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
   };
 
@@ -195,7 +202,7 @@ class ListDetails extends Component<Props, State> {
   // ==============================
 
   getNoResultsMessage = () => {
-    const { filters, itemsCount, list, search } = this.props;
+    const { filters, itemsCount, list, search, currentPage, handlePageReset } = this.props;
 
     if (filters && filters.length) {
       return (
@@ -208,10 +215,26 @@ class ListDetails extends Component<Props, State> {
     if (search && search.length) {
       return (
         <span>
-          No {list.plural.toLowerCase()} found matching &ldquo;{search}&rdquo;
+          No {list.plural.toLowerCase()} found matching &ldquo;
+          {search}
+          &rdquo;
         </span>
       );
     }
+
+    if (currentPage !== 1) {
+      return (
+        <div>
+          <p>
+            Not enough {list.plural.toLowerCase()} found to show page {currentPage}.
+          </p>
+          <Button variant="ghost" onClick={handlePageReset}>
+            Show first page
+          </Button>
+        </div>
+      );
+    }
+
     if (itemsCount === 0) {
       return <span>No {list.plural.toLowerCase()} to display yet...</span>;
     }
@@ -254,141 +277,136 @@ class ListDetails extends Component<Props, State> {
       handleFilterRemoveAll,
       handleFilterUpdate,
       handlePageChange,
-      handleSearchChange,
-      handleSearchClear,
-      handleSearchSubmit,
       handleSortChange,
       items,
       itemsCount,
+      itemsErrors,
       list,
       pageSize,
       query,
-      search,
       sortBy,
     } = this.props;
-    const {
-      isFullWidth,
-      isManaging,
-      selectedItems,
-      showCreateModal,
-    } = this.state;
+    const { isFullWidth, isManaging, selectedItems, showCreateModal, searchValue } = this.state;
 
-    const searchId = 'list-search-input';
+    const searchId = 'ks-list-search-input';
 
     return (
       <Fragment>
-        <Container>
-          <H1>
-            {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
-            <span>, by</span>
-            <Popout
-              innerRef={this.sortPopoutRef}
-              headerTitle="Sort"
-              footerContent={
-                <Note>
-                  Hold <Kbd>alt</Kbd> to toggle ascending/descending
-                </Note>
-              }
-              target={
-                <SortButton>
-                  {sortBy.field.label.toLowerCase()}
-                  <DisclosureArrow size="0.2em" />
-                </SortButton>
-              }
-            >
-              <SortSelect
-                popoutRef={this.sortPopoutRef}
-                fields={list.fields}
-                onChange={handleSortChange}
-                value={sortBy}
-              />
-            </Popout>
-          </H1>
+        <main>
+          <Container>
+            <H1>
+              {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
+              <span>, by</span>
+              <Popout
+                innerRef={this.sortPopoutRef}
+                headerTitle="Sort"
+                footerContent={
+                  <Note>
+                    Hold <Kbd>alt</Kbd> to toggle ascending/descending
+                  </Note>
+                }
+                target={
+                  <SortButton>
+                    {sortBy.field.label.toLowerCase()}
+                    <DisclosureArrow size="0.2em" />
+                  </SortButton>
+                }
+              >
+                <SortSelect
+                  popoutRef={this.sortPopoutRef}
+                  fields={list.fields}
+                  onChange={handleSortChange}
+                  value={sortBy}
+                />
+              </Popout>
+            </H1>
 
-          <FlexGroup growIndexes={[0]}>
-            <Search
-              isFetching={query.loading}
-              onClear={handleSearchClear}
-              onSubmit={handleSearchSubmit}
-              hasValue={search && search.length}
-            >
-              <A11yText tag="label" htmlFor={searchId}>
-                Search {list.plural}
-              </A11yText>
-              <Input
-                autoCapitalize="off"
-                autoComplete="off"
-                autoCorrect="off"
-                id={searchId}
-                onChange={handleSearchChange}
-                placeholder="Search"
-                name="item-search"
-                value={search}
-                type="text"
+            <FlexGroup growIndexes={[0]}>
+              <Search
+                isFetching={query.loading}
+                onClear={this.handleSearchClear}
+                onSubmit={this.handleSearchSubmit}
+                hasValue={searchValue && searchValue.length}
+              >
+                <A11yText tag="label" htmlFor={searchId}>
+                  Search {list.plural}
+                </A11yText>
+                <Input
+                  autoCapitalize="off"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  id={searchId}
+                  onChange={this.handleSearchChange}
+                  placeholder="Search"
+                  name="item-search"
+                  value={searchValue}
+                  type="text"
+                  innerRef={el => (this.searchInput = el)}
+                />
+              </Search>
+              <AddFilterPopout
+                existingFilters={filters}
+                fields={list.fields}
+                onChange={handleFilterAdd}
               />
-            </Search>
-            <AddFilterPopout
-              existingFilters={filters}
-              fields={list.fields}
-              onChange={handleFilterAdd}
+              <Popout buttonLabel="Columns" headerTitle="Columns">
+                <ColumnSelect
+                  fields={list.fields}
+                  onChange={handleFieldChange}
+                  removeIsAllowed={fields.length > 1}
+                  value={fields}
+                />
+              </Popout>
+              {this.renderExpandButton()}
+              <Button onClick={this.props.handleReset} id="ks-reset">
+                Reset
+              </Button>
+
+              <ToolbarSeparator />
+              {list.access.create ? (
+                <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
+                  Create
+                </IconButton>
+              ) : null}
+            </FlexGroup>
+
+            <ActiveFilters
+              filterList={filters}
+              onUpdate={handleFilterUpdate}
+              onRemove={handleFilterRemove}
+              onClear={handleFilterRemoveAll}
             />
-            <Popout buttonLabel="Columns" headerTitle="Columns">
-              <ColumnSelect
-                fields={list.fields}
-                onChange={handleFieldChange}
-                removeIsAllowed={fields.length > 1}
-                value={fields}
-              />
-            </Popout>
-            {this.renderExpandButton()}
-            <ToolbarSeparator />
-            <IconButton
-              appearance="create"
-              icon={PlusIcon}
-              onClick={this.openCreateModal}
-            >
-              Create
-            </IconButton>
-          </FlexGroup>
 
-          <ActiveFilters
-            filterList={filters}
-            onUpdate={handleFilterUpdate}
-            onRemove={handleFilterRemove}
-            onClear={handleFilterRemoveAll}
+            <ManageToolbar isVisible={!!itemsCount}>
+              {isManaging ? (
+                <Management
+                  list={list}
+                  onDeleteMany={this.onDeleteSelectedItems}
+                  onUpdateMany={this.onUpdate}
+                  onToggleManage={this.onToggleManage}
+                  selectedItems={selectedItems}
+                />
+              ) : (
+                <Pagination
+                  currentPage={currentPage}
+                  getManageButton={this.manageButton}
+                  itemsCount={itemsCount}
+                  list={list}
+                  onChangePage={handlePageChange}
+                  onToggleManage={this.onToggleManage}
+                  pageSize={pageSize}
+                />
+              )}
+            </ManageToolbar>
+          </Container>
+
+          <CreateItemModal
+            isOpen={showCreateModal}
+            list={list}
+            onClose={this.closeCreateModal}
+            onCreate={this.onCreate}
           />
 
-          <ManageToolbar isVisible={!!itemsCount}>
-            {isManaging ? (
-              <Management
-                list={list}
-                onDeleteMany={this.onDeleteSelectedItems}
-                onUpdateMany={this.onUpdate}
-                onToggleManage={this.onToggleManage}
-                selectedItems={selectedItems}
-              />
-            ) : (
-              <Pagination
-                currentPage={currentPage}
-                getManageButton={this.manageButton}
-                itemsCount={itemsCount}
-                list={list}
-                onChangePage={handlePageChange}
-                onToggleManage={this.onToggleManage}
-                pageSize={pageSize}
-              />
-            )}
-          </ManageToolbar>
-        </Container>
-
-        <CreateItemModal
-          isOpen={showCreateModal}
-          list={list}
-          onClose={this.closeCreateModal}
-          onCreate={this.onCreate}
-        />
-
-        <main>
           <Container isFullWidth={isFullWidth}>
             {items ? (
               <ListTable
@@ -396,10 +414,13 @@ class ListDetails extends Component<Props, State> {
                 fields={fields}
                 isManaging={isManaging}
                 items={items}
+                itemsErrors={itemsErrors}
                 list={list}
                 onChange={query.refetch}
                 onSelect={this.handleItemSelect}
                 onSelectAll={this.handleItemSelectAll}
+                handleSortChange={handleSortChange}
+                sortBy={sortBy}
                 selectedItems={selectedItems}
                 noResultsMessage={this.getNoResultsMessage()}
               />

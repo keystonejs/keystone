@@ -1,10 +1,6 @@
 import React, { Fragment } from 'react';
 
-import {
-  FieldContainer,
-  FieldLabel,
-  FieldInput,
-} from '@keystonejs/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
 import {
   Checkbox,
   CheckboxGroup,
@@ -12,8 +8,8 @@ import {
   RadioGroup,
   Radio,
   Select,
-} from '@keystonejs/ui/src/primitives/forms';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
+} from '@voussoir/ui/src/primitives/forms';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
 
 const FieldGuide = () => (
   <Fragment>

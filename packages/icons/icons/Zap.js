@@ -14,8 +14,10 @@ class ZapIcon extends Component {
         fill: 'currentColor',
       },
     };
+    const { title, ...props } = this.props;
     return (
-      <svg {...defaults} {...this.props}>
+      <svg {...defaults} {...props}>
+        {title ? <title>{title}</title> : null}
         <path fillRule="evenodd" d="M10 7H6l3-7-9 9h4l-3 7 9-9z"/>
       </svg>
     );

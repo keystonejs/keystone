@@ -1,8 +1,5 @@
 const path = require('path');
-const {
-  CloudinaryImage,
-  MongoCloudinaryImageInterface,
-} = require('./Implementation');
+const { CloudinaryImage, MongoCloudinaryImageInterface } = require('./Implementation');
 
 module.exports = {
   type: 'CloudinaryImage',

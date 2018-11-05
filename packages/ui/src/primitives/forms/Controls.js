@@ -1,11 +1,6 @@
 // @flow
-import React, {
-  Component,
-  type ComponentType,
-  type Node,
-  type Ref,
-} from 'react';
-import styled from 'react-emotion';
+import React, { Component, type ComponentType, type Node, type Ref } from 'react';
+import styled from '@emotion/styled';
 import {
   CheckboxGroup as ReactCheckboxGroup,
   Checkbox as ReactCheckbox,
@@ -53,6 +48,7 @@ type Props = {
 type ControlProps = Props & {
   svg: string, // html string
   type: 'checkbox' | 'radio',
+  tabIndex?: string,
   components: {
     Wrapper?: ComponentType<*>,
     Label?: ComponentType<*>,
@@ -66,67 +62,69 @@ type IconProps = {
   isDisabled: boolean,
   isFocused: boolean,
 };
-const Icon = styled.div(
-  ({ isDisabled, isFocused, checked, isActive }: IconProps) => {
-    // background
-    let bg = colors.N05;
-    if (isDisabled && checked) {
-      bg = colors.B.D20;
-    } else if (isDisabled) {
-      bg = colors.N10;
-    } else if (isActive) {
-      bg = checked ? colors.B.D10 : colors.N10;
-    } else if (isFocused && !checked) {
-      bg = 'white';
-    } else if (checked) {
-      bg = colors.B.base;
-    }
-
-    // fill
-    let fill = 'white';
-    if (isDisabled && checked) {
-      fill = colors.N70;
-    } else if (!checked) {
-      fill = 'transparent';
-    }
-
-    // stroke
-    let innerStroke = isFocused ? colors.B.L20 : colors.N30;
-    let innerStrokeWidth = 1;
-    if (checked) {
-      innerStroke = isActive ? colors.B.D20 : colors.B.base;
-    }
-    let outerStroke = 'transparent';
-    let outerStrokeWidth = 1;
-    if (isFocused && !isActive) {
-      outerStroke = colors.B.A20;
-      outerStrokeWidth = 5;
-    }
-
-    return {
-      color: bg,
-      fill,
-      lineHeight: 0,
-
-      // awkwardly apply the focus ring
-      '& .outer-stroke': {
-        transition: 'stroke 0.2s ease-in-out',
-        stroke: outerStroke,
-        strokeWidth: outerStrokeWidth,
-      },
-      '& .inner-stroke': {
-        stroke: innerStroke,
-        strokeWidth: innerStrokeWidth,
-      },
-    };
+const Icon = styled.div(({ isDisabled, isFocused, checked, isActive }: IconProps) => {
+  // background
+  let bg = colors.N05;
+  if (isDisabled && checked) {
+    bg = colors.B.D20;
+  } else if (isDisabled) {
+    bg = colors.N10;
+  } else if (isActive) {
+    bg = checked ? colors.B.D10 : colors.N10;
+  } else if (isFocused && !checked) {
+    bg = 'white';
+  } else if (checked) {
+    bg = colors.B.base;
   }
-);
+
+  // fill
+  let fill = 'white';
+  if (isDisabled && checked) {
+    fill = colors.N70;
+  } else if (!checked) {
+    fill = 'transparent';
+  }
+
+  // stroke
+  let innerStroke = isFocused ? colors.B.L20 : colors.N30;
+  let innerStrokeWidth = 1;
+  if (checked) {
+    innerStroke = isActive ? colors.B.D20 : colors.B.base;
+  }
+  let outerStroke = 'transparent';
+  let outerStrokeWidth = 1;
+  if (isFocused && !isActive) {
+    outerStroke = colors.B.A20;
+    outerStrokeWidth = 5;
+  }
+
+  return {
+    color: bg,
+    fill,
+    lineHeight: 0,
+
+    // awkwardly apply the focus ring
+    '& .outer-stroke': {
+      transition: 'stroke 0.2s ease-in-out',
+      stroke: outerStroke,
+      strokeWidth: outerStrokeWidth,
+    },
+    '& .inner-stroke': {
+      stroke: innerStroke,
+      strokeWidth: innerStrokeWidth,
+    },
+  };
+});
 
 const defaultComponents = { Wrapper, Label, Text };
 
 class Control extends Component<ControlProps, State> {
-  components: {};
-  control: HTMLElement;
+  components: {
+    Wrapper: ComponentType<*> | string,
+    Label: ComponentType<*> | string,
+    Text: ComponentType<*> | string,
+  };
+  control: HTMLElement | null;
   state = {
     isActive: false,
     isFocused: false,
@@ -139,11 +137,11 @@ class Control extends Component<ControlProps, State> {
     isDisabled: false,
   };
 
-  constructor(props: Props) {
+  constructor(props: ControlProps) {
     super(props);
     this.cacheComponents(props.components);
   }
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: ControlProps) {
     if (nextProps.components !== this.props.components) {
       this.cacheComponents(nextProps.components);
     }
@@ -156,12 +154,12 @@ class Control extends Component<ControlProps, State> {
   };
 
   focus() {
-    this.control.focus();
+    if (this.control) this.control.focus();
   }
   blur() {
-    this.control.blur();
+    if (this.control) this.control.blur();
   }
-  getRef = (ref: HTMLElement) => {
+  getRef = ref => {
     this.control = ref;
   };
 
@@ -277,9 +275,7 @@ export const CheckboxPrimitive = ({ innerRef, ...props }: Props) => (
 export const Checkbox = (props: Props) => (
   <ReactCheckbox component={CheckboxPrimitive} {...props} />
 );
-export const CheckboxGroup = (props: Props) => (
-  <ReactCheckboxGroup {...props} />
-);
+export const CheckboxGroup = (props: Props) => <ReactCheckboxGroup {...props} />;
 export const RadioPrimitive = ({ innerRef, ...props }: Props) => (
   <Control
     ref={innerRef}
@@ -292,7 +288,5 @@ export const RadioPrimitive = ({ innerRef, ...props }: Props) => (
     {...props}
   />
 );
-export const Radio = (props: Props) => (
-  <ReactRadio component={RadioPrimitive} {...props} />
-);
+export const Radio = (props: Props) => <ReactRadio component={RadioPrimitive} {...props} />;
 export const RadioGroup = (props: Props) => <ReactRadioGroup {...props} />;

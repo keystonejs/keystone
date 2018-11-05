@@ -1,16 +1,11 @@
 // @flow
 
-import React, {
-  Fragment,
-  type ComponentType,
-  type Node,
-  type Ref,
-} from 'react';
-import styled from 'react-emotion';
+import React, { Fragment, type ComponentType, type Node, type Ref } from 'react';
+import styled from '@emotion/styled';
 
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Popout as PopoutModal } from '@keystonejs/ui/src/primitives/modals';
-import { gridSize } from '@keystonejs/ui/src/theme';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { Popout as PopoutModal } from '@voussoir/ui/src/primitives/modals';
+import { gridSize } from '@voussoir/ui/src/theme';
 
 export const POPOUT_GUTTER = gridSize * 2;
 
@@ -72,8 +67,8 @@ type Props = {
   buttonLabel: string,
   children: Node,
   component: ComponentType<*>,
-  innerRef: Ref<HTMLElement>,
-  bodyRef: Ref<HTMLElement>,
+  innerRef: Ref<*>,
+  bodyRef: Ref<*>,
   footerContent: Node,
   headerAfter: Node,
   headerBefore: Node,
@@ -83,7 +78,7 @@ type Props = {
 
 export const Popout = ({
   buttonLabel,
-  component: Wrapper = Fragment,
+  component: Wrapper,
   children,
   innerRef,
   bodyRef,
@@ -109,9 +104,13 @@ export const Popout = ({
           <HeaderTitle>{headerTitle}</HeaderTitle>
           <HeaderRight>{headerAfter}</HeaderRight>
         </Header>
-        <Body innerRef={bodyRef}>{children}</Body>
+        <Body ref={bodyRef}>{children}</Body>
         {footerContent ? <Footer>{footerContent}</Footer> : null}
       </Wrapper>
     </PopoutModal>
   );
+};
+
+Popout.defaultProps = {
+  component: Fragment,
 };

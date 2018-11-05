@@ -2,20 +2,16 @@ import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import Media from 'react-media';
 import { Query } from 'react-apollo';
-import gql from 'graphql-tag';
 
-import { Container, Grid, Cell } from '@keystonejs/ui/src/primitives/layout';
-import { H1 } from '@keystonejs/ui/src/primitives/typography';
+import { Container, Grid, Cell } from '@voussoir/ui/src/primitives/layout';
+import { H1 } from '@voussoir/ui/src/primitives/typography';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { Box } from './components';
-
-const getQuery = lists => gql`{
-  ${lists.map(list => `${list.listQueryMetaName} { count }`)}
-}`;
+import { gqlCountQueries } from '../../classes/List';
 
 class HomePage extends Component {
   state = { createFromList: null };
@@ -28,7 +24,7 @@ class HomePage extends Component {
 
   onCreate = list => ({ data }) => {
     let { adminPath, history } = this.props;
-    let id = data[list.createMutationName].id;
+    let id = data[list.gqlNames.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
   };
 
@@ -43,7 +39,7 @@ class HomePage extends Component {
           <Grid gap={16}>
             {lists.map(list => {
               const { key, path } = list;
-              const meta = data && data[list.listQueryMetaName];
+              const meta = data && data[list.gqlNames.listQueryMetaName];
 
               return (
                 <Fragment key={key}>
@@ -76,20 +72,43 @@ class HomePage extends Component {
 }
 
 const ListProvider = ({ getListByKey, listKeys, ...props }) => {
+  // TODO: A permission query to limit which lists are visible
   const lists = listKeys.map(key => getListByKey(key));
-  const query = getQuery(lists);
+  const query = gqlCountQueries(lists);
 
   return (
     <Fragment>
       <Nav />
       <DocTitle>Home</DocTitle>
-      <Query query={query} fetchPolicy="cache-and-network">
+      <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
         {({ data, error }) => {
+          let allowedLists = lists;
+
           if (error) {
-            return (
-              <PageError>
-                <p>{error.message}</p>
-              </PageError>
+            if (!error.graphQLErrors || !error.graphQLErrors.length) {
+              return (
+                <PageError>
+                  <p>{error.message}</p>
+                </PageError>
+              );
+            }
+
+            const deniedQueries = error.graphQLErrors
+              .filter(({ name }) => name === 'AccessDeniedError')
+              .map(({ path }) => path && path[0]);
+
+            if (deniedQueries.length !== error.graphQLErrors.length) {
+              // There were more than Access Denied Errors, so throw a normal
+              // error message
+              return (
+                <PageError>
+                  <p>{error.message}</p>
+                </PageError>
+              );
+            }
+
+            allowedLists = allowedLists.filter(
+              list => deniedQueries.indexOf(list.gqlNames.listQueryMetaName) === -1
             );
           }
 
@@ -98,7 +117,7 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
           // list component so we don't block rendering the lists immediately
           // to the user.
 
-          return <HomePage lists={lists} data={data} {...props} />;
+          return <HomePage lists={allowedLists} data={data} {...props} />;
         }}
       </Query>
     </Fragment>

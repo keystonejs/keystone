@@ -1,5 +1,7 @@
-const { makeExecutableSchema } = require('graphql-tools');
-const { resolveAllKeys } = require('@keystonejs/utils');
+const GraphQLJSON = require('graphql-type-json');
+const gql = require('graphql-tag');
+const { print } = require('graphql/language/printer');
+const { resolveAllKeys, arrayToObject, mapKeys, objMerge, flatten } = require('@voussoir/utils');
 
 const {
   unmergeRelationships,
@@ -9,15 +11,16 @@ const {
 const List = require('../List');
 const bindSession = require('./session');
 
-const flatten = arr => Array.prototype.concat(...arr);
 const unique = arr => [...new Set(arr)];
 
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
-const trim = str => str.replace(/\n\s*\n/g, '\n');
 
 module.exports = class Keystone {
   constructor(config) {
-    this.config = config;
+    this.config = {
+      ...config,
+    };
+    this.defaultAccess = { list: true, field: true, ...config.defaultAccess };
     this.auth = {};
     this.lists = {};
     this.listsArray = [];
@@ -41,6 +44,7 @@ module.exports = class Keystone {
       this.auth[listKey] = {};
     }
     const strategy = new StrategyType(this, listKey, config);
+    strategy.authType = authType;
     this.auth[listKey][authType] = strategy;
     return strategy;
   }
@@ -50,77 +54,192 @@ module.exports = class Keystone {
     const list = new List(key, config, {
       getListByKey,
       adapter: adapters[adapterName],
+      defaultAccess: this.defaultAccess,
+      getAuth: () => this.auth[key],
     });
     this.lists[key] = list;
     this.listsArray.push(list);
   }
+
+  /**
+   * @return Promise<null>
+   */
   connect(to, options) {
     const {
       adapters,
       config: { name, dbName, adapterConnectOptions },
     } = this;
 
-    Object.values(adapters).forEach(adapter => {
-      adapter.connect(
-        to,
-        {
-          name,
-          dbName,
-          ...adapterConnectOptions,
-          ...options,
-        }
-      );
-    });
+    return resolveAllKeys(
+      mapKeys(adapters, adapter =>
+        adapter.connect(
+          to,
+          {
+            name,
+            dbName,
+            ...adapterConnectOptions,
+            ...options,
+          }
+        )
+      )
+      // Don't unnecessarily leak any connection info
+    ).then(() => {});
   }
+
+  /**
+   * @return Promise<null>
+   */
+  disconnect() {
+    return resolveAllKeys(
+      mapKeys(this.adapters, adapter => adapter.disconnect())
+      // Don't unnecessarily leak any connection info
+    ).then(() => {});
+  }
+
   getAdminMeta() {
     const { name } = this.config;
-    const lists = this.listsArray.reduce((acc, list) => {
-      acc[list.key] = list.getAdminMeta();
-      return acc;
-    }, {});
+    // We've consciously made a design choice that the `read` permission on a
+    // list is a master switch in the Admin UI (not the GraphQL API).
+    // Justification: If you want to Create without the Read permission, you
+    // technically don't have permission to read the result of your creation.
+    // If you want to Update an item, you can't see what the current values
+    // are. If you want to delete an item, you'd need to be given direct
+    // access to it (direct URI), but can't see anything about that item. And
+    // in fact, being able to load a page with a 'delete' button on it
+    // violates the read permission as it leaks the fact that item exists.
+    // In all these cases, the Admin UI becomes unnecessarily complex.
+    // So we only allow all these actions if you also have read access.
+    const lists = arrayToObject(this.listsArray.filter(list => list.access.read), 'key', list =>
+      list.getAdminMeta()
+    );
 
     return { lists, name };
   }
-  getAdminSchema() {
-    let listTypes = flatten(
-      this.listsArray.map(list => list.getAdminGraphqlTypes())
-    ).map(trim);
-    listTypes.push(`
-      type _QueryMeta {
-        count: Int
-      }
-      `);
 
+  getTypeDefs() {
     // Fields can be represented multiple times within and between lists.
-    // If a field defines a `getGraphqlAuxiliaryTypes()` method, it will be
+    // If a field defines a `gqlAuxTypes()` method, it will be
     // duplicated.
     // graphql-tools will blow up (rightly so) on duplicated types.
     // Deduping here avoids that problem.
-    listTypes = unique(listTypes);
+    return [
+      ...unique(flatten(this.listsArray.map(list => list.gqlTypes))),
+      `"""NOTE: Can be JSON, or a Boolean/Int/String
+          Why not a union? GraphQL doesn't support a union including a scalar
+          (https://github.com/facebook/graphql/issues/215)"""
+       scalar JSON`,
+      `type _ListAccess {
+          """Access Control settings for the currently logged in (or anonymous)
+             user when performing 'create' operations.
+             NOTE: 'create' can only return a Boolean.
+             It is not possible to specify a declarative Where clause for this
+             operation"""
+          create: Boolean
 
-    let queries = unique(
-      flatten(this.listsArray.map(list => list.getAdminGraphqlQueries())).map(
-        trim
-      )
-    );
-    let mutations = unique(
-      flatten(this.listsArray.map(list => list.getAdminGraphqlMutations())).map(
-        trim
-      )
-    );
-    const typeDefs = `
-      type Query {
-        ${queries.join('')}
-      }
-      type Mutation {
-        ${mutations.join('')}
-      }
-    `;
+          """Access Control settings for the currently logged in (or anonymous)
+             user when performing 'read' operations."""
+          read: JSON
+
+          """Access Control settings for the currently logged in (or anonymous)
+             user when performing 'update' operations."""
+          update: JSON
+
+          """Access Control settings for the currently logged in (or anonymous)
+             user when performing 'delete' operations."""
+          delete: JSON
+       }`,
+      `type _ListSchemaRelatedFields {
+        """The typename as used in GraphQL queries"""
+        type: String
+
+        """A list of GraphQL field names"""
+        fields: [String]
+      }`,
+      `type _ListSchema {
+        """The typename as used in GraphQL queries"""
+        type: String
+
+        """Top level GraphQL query names which either return this type, or
+           provide aggregate information about this type"""
+        queries: [String]
+
+        """Information about fields on other types which return this type, or
+           provide aggregate information about this type"""
+        relatedFields: [_ListSchemaRelatedFields]
+      }`,
+      `type _ListMeta {
+        """The Keystone List name"""
+        name: String
+
+        """Access control configuration for the currently authenticated
+           request"""
+        access: _ListAccess
+
+        """Information on the generated GraphQL schema"""
+        schema: _ListSchema
+       }`,
+      `type _QueryMeta {
+          count: Int
+       }`,
+      `type Query {
+          ${unique(flatten(this.listsArray.map(list => list.gqlQueries))).join('\n')}
+          _ksListsMeta: [_ListMeta]
+       }`,
+      `type Mutation {
+          ${unique(flatten(this.listsArray.map(list => list.gqlMutations))).join('\n')}
+       }`,
+    ].map(s => print(gql(s)));
+  }
+
+  getAdminSchema() {
+    const typeDefs = this.getTypeDefs();
     if (debugGraphQLSchemas()) {
-      console.log(typeDefs);
-      listTypes.forEach(i => console.log(i));
+      typeDefs.forEach(i => console.log(i));
     }
-    // Like the `listTypes`, we want to dedupe the resolvers. We rely on the
+
+    const queryMetaResolver = {
+      // meta is passed in from the list's resolver (eg; '_allUsersMeta')
+      count: meta => meta.getCount(),
+    };
+
+    const listMetaResolver = {
+      // meta is passed in from the list's resolver (eg; '_allUsersMeta')
+      access: meta => meta.getAccess(),
+      // schema is
+      schema: meta => meta.getSchema(),
+    };
+
+    const listAccessResolver = {
+      // access is passed in from the listMetaResolver
+      create: access => access.getCreate(),
+      read: access => access.getRead(),
+      update: access => access.getUpdate(),
+      delete: access => access.getDelete(),
+    };
+
+    // NOTE: some fields are passed through unchanged from the list, and so are
+    // not specified here.
+    const listSchemaResolver = {
+      // A function so we can lazily evaluate this potentially expensive
+      // operation
+      // (Could we memoize this in the future?)
+      // NOTE: We purposely include the list we're looking for as it may have a
+      // self-referential field (eg: User { friends: [User] })
+      relatedFields: ({ key }) =>
+        this.listsArray
+          .map(list => ({
+            type: list.gqlNames.outputTypeName,
+            fields: flatten(
+              list
+                .getFieldsRelatedTo(key)
+                .filter(field => field.access.read)
+                .map(field => Object.keys(field.gqlOutputFieldResolvers))
+            ),
+          }))
+          .filter(({ fields }) => fields.length),
+    };
+
+    // Like the `typeDefs`, we want to dedupe the resolvers. We rely on the
     // semantics of the JS spread operator here (duplicate keys are overridden
     // - first one wins)
     // TODO: Document this order of precendence, becaut it's not obvious, and
@@ -129,35 +248,28 @@ module.exports = class Keystone {
     const resolvers = {
       // Order of spreading is important here - we don't want user-defined types
       // to accidentally override important things like `Query`.
-      ...this.listsArray.reduce(
-        (acc, list) => ({
-          ...list.getAuxiliaryTypeResolvers(),
-          ...list.getAdminFieldResolvers(),
-          ...acc,
-        }),
-        {}
-      ),
+      ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers)),
+      ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers)),
+
+      JSON: GraphQLJSON,
+
+      _QueryMeta: queryMetaResolver,
+      _ListMeta: listMetaResolver,
+      _ListAccess: listAccessResolver,
+      _ListSchema: listSchemaResolver,
+
       Query: {
         // Order is also important here, any TypeQuery's defined by types
         // shouldn't be able to override list-level queries
-        ...this.listsArray.reduce(
-          (acc, i) => ({ ...i.getAuxiliaryQueryResolvers(), ...acc }),
-          {}
-        ),
-        ...this.listsArray.reduce(
-          (acc, i) => ({ ...i.getAdminQueryResolvers(), ...acc }),
-          {}
-        ),
+        ...objMerge(this.listsArray.map(list => list.gqlAuxQueryResolvers)),
+        ...objMerge(this.listsArray.map(list => list.gqlQueryResolvers)),
+        // And the Keystone meta queries must always be available
+        ...this.getAuxQueryResolvers(),
       },
+
       Mutation: {
-        ...this.listsArray.reduce(
-          (acc, i) => ({ ...i.getAuxiliaryMutationResolvers(), ...acc }),
-          {}
-        ),
-        ...this.listsArray.reduce(
-          (acc, i) => ({ ...i.getAdminMutationResolvers(), ...acc }),
-          {}
-        ),
+        ...objMerge(this.listsArray.map(list => list.gqlAuxMutationResolvers)),
+        ...objMerge(this.listsArray.map(list => list.gqlMutationResolvers)),
       },
     };
 
@@ -165,11 +277,29 @@ module.exports = class Keystone {
       console.log(resolvers);
     }
 
-    return makeExecutableSchema({
-      typeDefs: [...listTypes, typeDefs],
-      resolvers,
+    return { typeDefs, resolvers };
+  }
+
+  getAuxQueryResolvers() {
+    return {
+      _ksListsMeta: (_, args, context) =>
+        this.listsArray.filter(list => list.access.read).map(list => list.gqlMetaResolver(context)),
+    };
+  }
+
+  getListAccessControl({ listKey, operation, authentication }) {
+    return this.lists[listKey].getAccessControl({ operation, authentication });
+  }
+
+  getFieldAccessControl({ item, listKey, fieldKey, operation, authentication }) {
+    return this.lists[listKey].getFieldAccessControl({
+      item,
+      fieldKey,
+      operation,
+      authentication,
     });
   }
+
   createItem(listKey, itemData) {
     return this.lists[listKey].adapter.create(itemData);
   }
@@ -177,34 +307,19 @@ module.exports = class Keystone {
   async createItems(itemsToCreate) {
     const createItems = data => {
       return resolveAllKeys(
-        Object.keys(data).reduce(
-          (memo, list) => ({
-            ...memo,
-            [list]: Promise.all(
-              data[list].map(item => this.createItem(list, item))
-            ),
-          }),
-          {}
-        )
+        mapKeys(data, (value, list) => Promise.all(value.map(item => this.createItem(list, item))))
       );
     };
 
     const cleanupItems = createdItems =>
       Promise.all(
         Object.keys(createdItems).map(listKey =>
-          Promise.all(
-            createdItems[listKey].map(({ id }) =>
-              this.lists[listKey].adapter.delete(id)
-            )
-          )
+          Promise.all(createdItems[listKey].map(({ id }) => this.lists[listKey].adapter.delete(id)))
         )
       );
 
     // 1. Split it apart
-    const { relationships, data } = unmergeRelationships(
-      this.lists,
-      itemsToCreate
-    );
+    const { relationships, data } = unmergeRelationships(this.lists, itemsToCreate);
     // 2. Create the items
     // NOTE: Only works if all relationships fields are non-"required"
     const createdItems = await createItems(data);
@@ -212,11 +327,7 @@ module.exports = class Keystone {
     let createdRelationships;
     try {
       // 3. Create the relationships
-      createdRelationships = await createRelationships(
-        this.lists,
-        relationships,
-        createdItems
-      );
+      createdRelationships = await createRelationships(this.lists, relationships, createdItems);
     } catch (error) {
       // 3.5. If creation of relationships didn't work, unwind the createItems
       cleanupItems(createdItems);

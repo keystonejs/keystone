@@ -1,6 +1,5 @@
 const bodyParser = require('body-parser');
 const express = require('express');
-const session = require('express-session');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 
@@ -15,8 +14,6 @@ module.exports = class AdminUI {
     }
 
     this.adminPath = config.adminPath || '/admin';
-    this.graphiqlPath = `${this.adminPath}/graphiql`;
-    this.apiPath = `${this.adminPath}/api`;
 
     this.config = {
       ...config,
@@ -32,7 +29,7 @@ module.exports = class AdminUI {
 
   getAdminMeta() {
     return {
-      withAuth: !!this.config.authStrategy,
+      withAuth: !!this.authStrategy,
       adminPath: this.config.adminPath,
       signinPath: this.config.signinPath,
       signoutPath: this.config.signoutPath,
@@ -43,9 +40,9 @@ module.exports = class AdminUI {
   async signin(req, res, next) {
     try {
       // TODO: How could we support, for example, the twitter auth flow?
-      const result = await this.config.authStrategy.validate({
-        username: req.body.username,
-        password: req.body.password,
+      const result = await this.authStrategy.validate({
+        identity: req.body.username,
+        secret: req.body.password,
       });
 
       if (!result.success) {
@@ -54,7 +51,7 @@ module.exports = class AdminUI {
         return res.format({
           default: htmlResponse,
           'text/html': htmlResponse,
-          'application/json': () => res.json({ success: false }),
+          'application/json': () => res.json({ success: false, message: result.message }),
         });
       }
 
@@ -103,43 +100,28 @@ module.exports = class AdminUI {
     });
   }
 
-  createSessionMiddleware({ cookieSecret, sessionMiddleware }) {
-    if (!this.config.authStrategy) {
-      return (req, res, next) => next();
+  setAuthStrategy(authStrategy) {
+    if (authStrategy.authType !== 'password') {
+      throw new Error('Keystone 5 Admin currently only supports the `PasswordAuthStrategy`');
     }
 
+    this.authStrategy = authStrategy;
+  }
+
+  createSessionMiddleware() {
     const app = express();
-
-    const sessionHandler =
-      sessionMiddleware ||
-      session({
-        secret: cookieSecret,
-        resave: false,
-        saveUninitialized: false,
-        name: 'keystone-admin.sid',
-      });
-
-    // Add session tracking
-    app.use(this.adminPath, sessionHandler);
 
     // Listen to POST events for form signin form submission (GET falls through
     // to the webpack server(s))
     app.post(
       this.config.signinPath,
       bodyParser.json(),
-      bodyParser.urlencoded(),
+      bodyParser.urlencoded({ extended: true }),
       this.signin
     );
 
     // Listen to both POST and GET events, and always sign the user out.
     app.use(this.config.signoutPath, this.signout);
-
-    // Attach the user to the request for all following route handlers
-    app.use(
-      this.keystone.session.validate({
-        valid: ({ req, item }) => (req.user = item),
-      })
-    );
 
     // Allow clients to AJAX for user info
     app.get(this.config.sessionPath, this.session);
@@ -153,13 +135,16 @@ module.exports = class AdminUI {
     return app;
   }
 
-  createDevMiddleware() {
+  createDevMiddleware({ apiPath, graphiqlPath }) {
     const app = express();
-    const { adminPath, apiPath, graphiqlPath, config } = this;
+    const { adminPath } = this;
 
     // ensure any non-resource requests are rewritten for history api fallback
     app.use(adminPath, (req, res, next) => {
-      if (/^[\w\/\-]+$/.test(req.url)) req.url = '/';
+      // TODO: make sure that this change is OK. (regex was testing on url, not path)
+      // Changed because this was preventing adminui pages loading when a querystrings
+      // was appended.
+      if (/^[\w\/\-]+$/.test(req.path)) req.url = '/';
       next();
     });
 
@@ -186,7 +171,7 @@ module.exports = class AdminUI {
       webpackMiddlewareConfig
     );
 
-    if (config.authStrategy) {
+    if (this.authStrategy) {
       const publicMiddleware = webpackDevMiddleware(
         webpack(
           getWebpackConfig({
@@ -201,9 +186,7 @@ module.exports = class AdminUI {
       // app.use(adminMiddleware);
       app.use((req, res, next) => {
         // TODO: Better security, should check some property of the user
-        return req.user
-          ? secureMiddleware(req, res, next)
-          : publicMiddleware(req, res, next);
+        return req.user ? secureMiddleware(req, res, next) : publicMiddleware(req, res, next);
       });
 
       this.stopDevServer = () => {

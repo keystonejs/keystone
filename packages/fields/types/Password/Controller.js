@@ -10,7 +10,11 @@ export default class PasswordController extends FieldController {
   formatFilter = ({ value }) => {
     return `${this.label} ${value ? 'is set' : 'is not set'}`;
   };
-  filterTypes = [
+
+  // Passwords don't expose their own value like most fields
+  getQueryFragment = () => `${this.path}_is_set`;
+
+  getFilterTypes = () => [
     {
       type: 'is_set',
       label: 'Is Set',

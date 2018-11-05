@@ -1,105 +1,286 @@
-const {
-  Mongoose,
-  Types: { ObjectId },
-} = require('mongoose');
+const mongoose = require('mongoose');
 const inflection = require('inflection');
-const { escapeRegExp } = require('@keystonejs/utils');
+const {
+  escapeRegExp,
+  pick,
+  getType,
+  mapKeys,
+  mapKeyNames,
+  objMerge,
+  createLazyDeferred,
+} = require('@voussoir/utils');
 const {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
-} = require('@keystonejs/core/adapters');
+} = require('@voussoir/core/adapters');
+const joinBuilder = require('@voussoir/mongo-join-builder');
+const pSettle = require('p-settle');
+const logger = require('@voussoir/logger')('mongoose');
+
+const simpleTokenizer = require('./tokenizers/simple');
+const relationshipTokenizer = require('./tokenizers/relationship');
+const getRelatedListAdapterFromQueryPathFactory = require('./tokenizers/relationship-path');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 
-function getMongoURI({ dbName, name }) {
-  return (
-    process.env.MONGO_URI ||
-    process.env.MONGO_URL ||
-    process.env.MONGODB_URI ||
-    process.env.MONGODB_URL ||
-    `mongodb://localhost/${dbName || inflection.dasherize(name).toLowerCase()}`
-  );
-}
+const idQueryConditions = {
+  // id is how it looks in the schema
+  // _id is how it looks in the MongoDB
+  id: value => ({ _id: { $eq: mongoose.Types.ObjectId(value) } }),
+  id_not: value => ({ _id: { $ne: mongoose.Types.ObjectId(value) } }),
+  id_in: value => ({ _id: { $in: value.map(id => mongoose.Types.ObjectId(id)) } }),
+  id_not_in: value => ({ _id: { $not: { $in: value.map(id => mongoose.Types.ObjectId(id)) } } }),
+};
 
-function getIdQueryConditions(args) {
-  const conditions = [];
-  if (!args) {
-    return conditions;
-  }
-  // id is how it looks in the schema
-  if ('id' in args) {
-    // _id is how it looks in the MongoDB
-    conditions.push({ _id: { $eq: ObjectId(args.id) } });
-  }
-  // id is how it looks in the schema
-  if ('id_not' in args) {
-    // _id is how it looks in the MongoDB
-    conditions.push({ _id: { $ne: ObjectId(args.id_not) } });
-  }
-  return conditions;
-}
+const modifierConditions = {
+  // TODO: Implement configurable search fields for lists
+  $search: value => {
+    if (!value || (getType(value) === 'String' && !value.trim())) {
+      return undefined;
+    }
+    return {
+      $match: {
+        name: new RegExp(`${escapeRegExp(value)}`, 'i'),
+      },
+    };
+  },
+
+  $orderBy: value => {
+    const [orderField, orderDirection] = value.split('_');
+
+    return {
+      $sort: {
+        [orderField]: orderDirection === 'DESC' ? -1 : 1,
+      },
+    };
+  },
+
+  $skip: value => {
+    if (value < Infinity && value > 0) {
+      return {
+        $skip: value,
+      };
+    }
+  },
+
+  $first: value => {
+    if (value < Infinity && value > 0) {
+      return {
+        $limit: value,
+      };
+    }
+  },
+
+  $count: value => ({
+    $count: value,
+  }),
+};
 
 class MongooseAdapter extends BaseKeystoneAdapter {
   constructor() {
     super(...arguments);
 
     this.name = this.name || 'mongoose';
+    this.setupTasks = [];
 
-    this.mongoose = new Mongoose();
+    this.mongoose = new mongoose.Mongoose();
     if (debugMongoose()) {
       this.mongoose.set('debug', true);
     }
-    this.listAdapterClass =
-      this.listAdapterClass || this.defaultListAdapterClass;
+    this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
-  connect(to, config) {
-    const { name, dbName, ...adapterConnectOptions } = config;
-    const uri = to || getMongoURI({ name, dbName });
-    this.mongoose.connect(
-      uri,
-      { ...adapterConnectOptions }
-    );
-    const db = this.mongoose.connection;
-    db.on('error', console.error.bind(console, 'Mongoose connection error'));
-    db.once('open', () => console.log('Connection success'));
+  pushSetupTask(task) {
+    this.setupTasks.push(task);
   }
 
-  close() {
-    return this.mongoose.connection.close();
+  async connect(to, config = {}) {
+    const dbName = config.dbName || inflection.dasherize(config.name).toLowerCase();
+    // NOTE: We pull out `name` here, but don't use it, so it
+    // doesn't conflict with the options the user wants passed to mongodb.
+    const { name: _, ...adapterConnectOptions } = config;
+
+    let uri = to;
+    if (!uri) {
+      logger.warn('No MongoDB connection specified. Falling back to local instance on port 27017');
+      // Default to the localhost instance
+      uri = 'mongodb://localhost:27017/';
+    }
+
+    try {
+      await this.mongoose.connect(
+        uri,
+        // NOTE: We still pass in the dbName for the case where `to` is set, but
+        // doesn't have a name in the uri.
+        // For the case where `to` does not have a name, and `dbName` is set, the
+        // expected behaviour is for the name to be set to `dbName`.
+        // For the case where `to` has a name, and `dbName` is not set, we are
+        // forcing the name to be the dasherized of the Keystone name.
+        // For the case where both are set, the expected behaviour is for it to be
+        // overwritten.
+        { useNewUrlParser: true, ...adapterConnectOptions, dbName }
+      );
+      const taskResults = await pSettle(
+        this.setupTasks.map(func => func(this.mongoose.connection))
+      );
+      const errors = taskResults.filter(({ isRejected }) => isRejected);
+
+      if (errors.length) {
+        const error = new Error('Mongoose connection error');
+        error.errors = errors.map(({ reason }) => reason);
+        throw error;
+      }
+    } catch (error) {
+      // close the database connection if it was opened
+      try {
+        await this.disconnect();
+      } catch (closeError) {
+        // Add the inability to close the database connection as an additional
+        // error
+        error.errors = error.errors || [];
+        error.errors.push(closeError);
+      }
+      // re-throw the error
+      throw error;
+    }
   }
 
+  disconnect() {
+    return this.mongoose.disconnect();
+  }
+
+  // This will completely drop the backing database. Use wisely.
   dropDatabase() {
-    // This will completely drop the backing database. Use wisely.
     return this.mongoose.connection.dropDatabase();
   }
 }
+
+const DEFAULT_MODEL_SCHEMA_OPTIONS = {
+  // Later, we run `model.syncIndexes()` to ensure the indexes specified in the
+  // mongoose config match what's in the database.
+  // `model.syncIndexes()` will fail when the collection is new (ie; hasn't had
+  // a write yet / doesn't exist in mongo).
+  // By setting `autoCreate` here, mongoose will ensure the collection exists,
+  // thus enabling `model.syncIndexes()` to succeed.
+  autoCreate: true,
+
+  // Because we're calling `model.syncIndexes()`, we don't want Mongoose to try
+  // calling `model.ensureIndexes()` under the hood too soon (it can cause race
+  // conditions with trying to access the database before it's properly setup),
+  // so we turn that off now.
+  autoIndex: false,
+};
 
 class MongooseListAdapter extends BaseListAdapter {
   constructor(key, parentAdapter, config) {
     super(...arguments);
 
-    const { mongoose } = parentAdapter;
     const { configureMongooseSchema, mongooseSchemaOptions } = config;
 
-    this.mongoose = mongoose;
+    this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
+    this.pushSetupTask = parentAdapter.pushSetupTask.bind(parentAdapter);
+    this.mongoose = parentAdapter.mongoose;
     this.configureMongooseSchema = configureMongooseSchema;
-    this.schema = new mongoose.Schema({}, mongooseSchemaOptions);
+    this.schema = new parentAdapter.mongoose.Schema(
+      {},
+      { ...DEFAULT_MODEL_SCHEMA_OPTIONS, ...mongooseSchemaOptions }
+    );
 
     // Need to call prepareModel() once all fields have registered.
     this.model = null;
+
+    this.queryBuilder = joinBuilder({
+      tokenizer: {
+        // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
+        simple: simpleTokenizer({
+          getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
+          modifierConditions,
+        }),
+        // executed for complex query components (eg; items: { ... })
+        relationship: relationshipTokenizer({
+          getRelatedListAdapterFromQueryPath: getRelatedListAdapterFromQueryPathFactory(this),
+        }),
+      },
+    });
+  }
+
+  getFieldAdapterByQueryConditionKey(queryCondition) {
+    return this.fieldAdapters.find(adapter => adapter.hasQueryCondition(queryCondition));
+  }
+
+  getSimpleQueryConditions() {
+    return {
+      ...idQueryConditions,
+      ...objMerge(this.fieldAdapters.map(fieldAdapter => fieldAdapter.getQueryConditions())),
+    };
+  }
+
+  getRelationshipQueryConditions() {
+    return objMerge(
+      this.fieldAdapters.map(fieldAdapter => fieldAdapter.getRelationshipQueryConditions())
+    );
   }
 
   prepareFieldAdapter(fieldAdapter) {
     fieldAdapter.addToMongooseSchema(this.schema, this.mongoose);
   }
 
+  /**
+   * Note: It's not necessary to await the result of this function - it is only
+   * if you want access to the underlying model should you await it. Otherwise,
+   * the `.connect()` method of the parent adapter will handle the awaiting.
+   *
+   * @return Promise<>
+   */
   prepareModel() {
     if (this.configureMongooseSchema) {
       this.configureMongooseSchema(this.schema, { mongoose: this.mongoose });
     }
-    this.model = this.mongoose.model(this.key, this.schema);
+
+    // 4th param is 'skipInit' which avoids calling `model.init()`.
+    // We call model.init() later, after we have a connection up and running to
+    // avoid issues with Mongoose's lazy queue and setting up the indexes.
+    this.model = this.mongoose.model(this.key, this.schema, null, true);
+
+    const deferredIndex = createLazyDeferred();
+
+    // Ensure we wait for any new indexes to be built
+    const setupIndexes = () => {
+      return this.model
+        .init()
+        .then(() => {
+          // Then ensure the indexes are all correct
+          // The indexes can become out of sync if the database was modified
+          // manually, or if the code has been updated. In both cases, the
+          // _existence_ of an index (not the configuration) will cause Mongoose
+          // to think everything is fine.
+          // So, here we must manually force mongoose to check the _configuration_
+          // of the existing indexes before moving on.
+          // NOTE: Why bother with `model.init()` first? Because Mongoose will
+          // always try to create new indexes on model creation in the background,
+          // so we have to wait for that async process to finish before trying to
+          // sync up indexes.
+          // NOTE: There's a potential race condition here when two application
+          // instances both try to recreate the indexes by first dropping then
+          // creating. See
+          // http://thecodebarbarian.com/whats-new-in-mongoose-5-2-syncindexes
+          // NOTE: If an index has changed and needs recreating, this can have a
+          // performance impact when dealing with large datasets!
+          return this.model.syncIndexes();
+        })
+        .then(() => {
+          deferredIndex.resolve();
+        })
+        .catch(error => {
+          // Ensure we capture any issues with creating indexes
+          logger.error(error);
+          deferredIndex.reject(error);
+          throw error;
+        });
+    };
+    this.pushSetupTask(setupIndexes);
+    return deferredIndex.promise.then(() => this.model);
   }
 
   create(data) {
@@ -130,167 +311,58 @@ class MongooseListAdapter extends BaseListAdapter {
     return this.model.findOne(condition);
   }
 
-  itemsQueryConditions(args, depthGuard = 0) {
-    if (!args) {
-      return [];
-    }
-
-    // TODO: can depthGuard be an instance variable, to track the recursion
-    // depth instead of passing it through to the individual fields and back
-    // again?
-    if (depthGuard > 1) {
-      throw new Error(
-        'Nesting where args deeper than 1 level is not currently supported'
-      );
-    }
-
-    return this.fieldAdapters.reduce(
-      (conds, fieldAdapater) => {
-        const fieldConditions = fieldAdapater.getQueryConditions(
-          args,
-          this,
-          depthGuard + 1
-        );
-
-        if (fieldConditions && !Array.isArray(fieldConditions)) {
-          console.warn(
-            `${this.key}.${fieldAdapater.path} (${
-              fieldAdapater.fieldName
-            }) returned a non-array for .getQueryConditions(). This is probably a mistake. Ignoring.`
-          );
-          return conds;
-        }
-
-        // Nothing to do
-        if (!fieldConditions || !fieldConditions.length) {
-          return conds;
-        }
-
-        return [
-          ...conds,
-          ...fieldConditions.map(condition => {
-            if (condition && condition.$isComplexStage) {
-              return condition;
-            }
-            return { [fieldAdapater.path]: condition };
-          }),
-        ];
-      },
-      // Special case for `_id` where it presents as `id` in the graphQL schema,
-      // and isn't a field type
-      getIdQueryConditions(args)
-    );
-  }
   itemsQuery(args, { meta = false } = {}) {
-    const conditions = this.itemsQueryConditions(args.where);
+    function graphQlQueryToMongoJoinQuery(query) {
+      const _query = {
+        ...query.where,
+        ...mapKeyNames(
+          // Grab all the modifiers
+          pick(query || {}, ['search', 'orderBy', 'skip', 'first']),
+          // and prefix with a dollar symbol so they can be picked out by the
+          // query builder tokeniser
+          key => `$${key}`
+        ),
+      };
 
-    const pipeline = [];
-    const postAggregateMutation = [];
-
-    // TODO: Order isn't important. Might as well put all the simple `$match`s
-    // first, and complex ones last.
-    // TODO: Change this to a `for...of` loop
-    let iterator = conditions[Symbol.iterator]();
-    let itr = iterator.next();
-    while (!itr.done) {
-      // Gather up all the simple matches
-      let simpleMatches = [];
-      while (!itr.done && !itr.value.$isComplexStage) {
-        simpleMatches.push(itr.value);
-        itr = iterator.next();
-      }
-
-      if (simpleMatches.length) {
-        pipeline.push({
-          $match: {
-            $and: simpleMatches,
-          },
-        });
-      }
-
-      // Push all the complex stages onto the pipeline as-is
-      while (!itr.done && itr.value.$isComplexStage) {
-        pipeline.push(...itr.value.pipeline);
-        if (itr.value.mutator) {
-          postAggregateMutation.push(itr.value.mutator);
+      return mapKeys(_query, field => {
+        if (getType(field) !== 'Object' || !field.where) {
+          return field;
         }
-        itr = iterator.next();
-      }
-    }
 
-    if (args.search) {
-      // TODO: Implement configurable search fields for lists
-      pipeline.push({
-        $match: {
-          name: new RegExp(`${escapeRegExp(args.search)}`, 'i'),
-        },
+        // recurse on object (ie; relationship) types
+        return graphQlQueryToMongoJoinQuery(field);
       });
     }
 
-    if (args.orderBy) {
-      const [orderField, orderDirection] = args.orderBy.split('_');
-
-      pipeline.push({
-        $sort: {
-          [orderField]: orderDirection === 'ASC' ? 1 : -1,
-        },
-      });
-    }
-
-    if (args.skip < Infinity && args.skip > 0) {
-      pipeline.push({
-        $skip: args.skip,
-      });
-    }
-
-    if (args.first < Infinity && args.first > 0) {
-      pipeline.push({
-        $limit: args.first,
-      });
+    let query;
+    try {
+      query = graphQlQueryToMongoJoinQuery(args);
+    } catch (error) {
+      return Promise.reject(error);
     }
 
     if (meta) {
-      pipeline.push({
-        $count: 'count',
-      });
+      // Order is important here, which is why we do it last (v8 will append the
+      // key, and keep them stable)
+      query.$count = 'count';
     }
 
-    if (!pipeline.length) {
-      return this.findAll();
-    }
-
-    // Map _id => id
-    // Normally, mongoose would do this for us, but because we're breaking out
-    // and going straight Mongo, gotta do it ourselves.
-    pipeline.push({
-      $addFields: {
-        id: '$_id',
-      },
-    });
-    return this.model
-      .aggregate(pipeline)
-      .exec()
-      .then(data => {
+    return this.queryBuilder(query, pipeline => this.model.aggregate(pipeline).exec()).then(
+      data => {
         if (meta) {
+          // When there are no items, we get undefined back, so we simulate the
+          // normal result of 0 items.
+          if (!data[0]) {
+            return { count: 0 };
+          }
           return data[0];
         }
 
-        return (
-          data
-            .map((item, index, list) =>
-              // Iterate over all the mutations
-              postAggregateMutation.reduce(
-                // And pass through the result to the following mutator
-                (mutatedItem, mutation) => mutation(mutatedItem, index, list),
-                // Starting at the original item
-                item
-              )
-            )
-            // If anything gets removed, we clear it out here
-            .filter(Boolean)
-        );
-      });
+        return data;
+      }
+    );
   }
+
   itemsQueryMeta(args) {
     return this.itemsQuery(args, { meta: true });
   }
@@ -298,13 +370,23 @@ class MongooseListAdapter extends BaseListAdapter {
 
 class MongooseFieldAdapter extends BaseFieldAdapter {
   addToMongooseSchema() {
-    throw new Error(
-      `Field type [${this.fieldName}] does not implement addToMongooseSchema()`
-    );
+    throw new Error(`Field type [${this.fieldName}] does not implement addToMongooseSchema()`);
   }
 
   getQueryConditions() {
-    return [];
+    return {};
+  }
+
+  getRelationshipQueryConditions() {
+    return {};
+  }
+
+  getRefListAdapter() {
+    return undefined;
+  }
+
+  hasQueryCondition() {
+    return false;
   }
 }
 

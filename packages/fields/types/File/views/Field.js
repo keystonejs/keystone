@@ -1,17 +1,15 @@
-import React, { Component } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  FieldContainer,
-  FieldLabel,
-  FieldInput,
-} from '@keystonejs/ui/src/primitives/fields';
-import { AlertIcon } from '@keystonejs/icons';
-import { HiddenInput } from '@keystonejs/ui/src/primitives/forms';
-import { Lozenge } from '@keystonejs/ui/src/primitives/lozenge';
-import { Button, LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { borderRadius, colors, gridSize } from '@keystonejs/ui/src/theme';
+import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { AlertIcon, ShieldIcon } from '@voussoir/icons';
+import { HiddenInput } from '@voussoir/ui/src/primitives/forms';
+import { Lozenge } from '@voussoir/ui/src/primitives/lozenge';
+import { Button, LoadingButton } from '@voussoir/ui/src/primitives/buttons';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { borderRadius, colors, gridSize } from '@voussoir/ui/src/theme';
 
 // NOTE: we need flow 😢
 // Status enum: 'empty' | 'stored' | 'removed' | 'updated'
@@ -177,9 +175,7 @@ export default class FileField extends Component {
     const { file } = this.getFile();
 
     // avoid jank during FileReader processing keeping the old image in place
-    return file && file.mimetype && file.mimetype.includes('image')
-      ? file.publicUrl
-      : dataURI;
+    return file && file.mimetype && file.mimetype.includes('image') ? file.publicUrl : dataURI;
   };
   getInputRef = ref => {
     this.inputRef = ref;
@@ -194,11 +190,7 @@ export default class FileField extends Component {
     const { changeStatus, isLoading } = this.state;
 
     return (
-      <LoadingButton
-        onClick={this.openFileBrowser}
-        isLoading={isLoading}
-        variant="ghost"
-      >
+      <LoadingButton onClick={this.openFileBrowser} isLoading={isLoading} variant="ghost">
         {uploadButtonLabel({ status: changeStatus })}
       </LoadingButton>
     );
@@ -228,17 +220,35 @@ export default class FileField extends Component {
   };
 
   render() {
-    const { autoFocus, field, statusMessage } = this.props;
+    const { autoFocus, field, statusMessage, itemErrors } = this.props;
     const { changeStatus, errorMessage } = this.state;
 
     const { file } = this.getFile();
     const imagePath = this.getImagePath();
     const showStatusMessage = ['removed', 'updated'].includes(changeStatus);
     const htmlID = `ks-input-${field.path}`;
+    const canRead = !(
+      itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
+    );
 
     return (
       <FieldContainer>
-        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+        <FieldLabel
+          htmlFor={htmlID}
+          css={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+        >
+          {field.label}{' '}
+          {!canRead ? (
+            <ShieldIcon
+              title={itemErrors[field.path].message}
+              css={{ color: colors.N20, marginRight: '1em' }}
+            />
+          ) : null}
+        </FieldLabel>
         <FieldInput>
           {file ? (
             <Wrapper>
@@ -252,9 +262,7 @@ export default class FileField extends Component {
                   <ErrorInfo>{errorMessage}</ErrorInfo>
                 ) : file ? (
                   <FlexGroup isInline growIndexes={[0]}>
-                    <MetaInfo href={file.publicUrl}>
-                      {file.filename || file.name}
-                    </MetaInfo>
+                    <MetaInfo href={file.publicUrl}>{file.filename || file.name}</MetaInfo>
                     {showStatusMessage ? (
                       <ChangeInfo status={changeStatus}>
                         {statusMessage({ status: changeStatus })}
@@ -287,9 +295,7 @@ export default class FileField extends Component {
 // Styled Components
 // ==============================
 
-const Wrapper = props => (
-  <div css={{ alignItems: 'flex-start', display: 'flex' }} {...props} />
-);
+const Wrapper = props => <div css={{ alignItems: 'flex-start', display: 'flex' }} {...props} />;
 const Content = props => <div css={{ flex: 1, minWidth: 0 }} {...props} />;
 const Image = props => (
   <div

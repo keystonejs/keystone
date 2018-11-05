@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
-import { OptionRenderer } from '@keystonejs/ui/src/primitives/filters';
+import { OptionRenderer } from '@voussoir/ui/src/primitives/filters';
+import { arrayToObject } from '@voussoir/utils';
 
 function isOptionSelected(opt, selected) {
   return Boolean(selected.filter(x => x.path === opt.path).length);
 }
 function getOptionValue(opt) {
   return opt.path;
-}
-function mapToPath(acc, i) {
-  acc[i.path] = true;
-  return acc;
 }
 
 /**
@@ -29,18 +26,25 @@ export type FieldSelectProps = {
   fields: Array<FieldType>,
   onChange: FieldType => void,
   value: FieldType | Array<FieldType>,
+  includeLabelField: boolean,
 };
+
+export const pseudoLabelField = { label: 'Label', path: '_label_' };
 
 export default class FieldSelect extends Component<FieldSelectProps> {
   getSanitizedOptions = () => {
-    const { fields } = this.props;
-    return fields.map(({ options, ...field }) => field);
+    const { fields, includeLabelField } = this.props;
+    const sanitizedOptions = fields.map(({ options, ...field }) => field);
+    if (includeLabelField) {
+      sanitizedOptions.unshift(pseudoLabelField);
+    }
+    return sanitizedOptions;
   };
-  onChangeReturnFieldClass = selected => {
+  onChange = selected => {
     const { fields: listFields, isMulti, onChange } = this.props;
     const arr = Array.isArray(selected) ? selected : [selected];
-    const diffMap = arr.reduce(mapToPath, {});
-    const fields = listFields.filter(i => diffMap[i.path]);
+    const diffMap = arrayToObject(arr, 'path', () => true);
+    const fields = [pseudoLabelField].concat(listFields).filter(i => diffMap[i.path]);
     const value = isMulti ? fields : fields[0];
 
     onChange(value);
@@ -53,7 +57,7 @@ export default class FieldSelect extends Component<FieldSelectProps> {
         getOptionValue={getOptionValue}
         {...this.props}
         options={this.getSanitizedOptions()}
-        onChange={this.onChangeReturnFieldClass}
+        onChange={this.onChange}
       />
     );
   }

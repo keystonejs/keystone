@@ -1,29 +1,12 @@
 import React, { Component, Fragment } from 'react';
-import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Drawer } from '@keystonejs/ui/src/primitives/modals';
-import {
-  FieldContainer,
-  FieldLabel,
-  FieldInput,
-} from '@keystonejs/ui/src/primitives/fields';
-import { Select } from '@keystonejs/ui/src/primitives/filters';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { Drawer } from '@voussoir/ui/src/primitives/modals';
+import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { Select } from '@voussoir/ui/src/primitives/filters';
+import { omit } from '@voussoir/utils';
 
 import FieldTypes from '../FIELD_TYPES';
-
-const getUpdateMutation = ({ list }) => {
-  return gql`
-    mutation delete(
-      $id: String!,
-      $data: ${list.key}UpdateInput)
-    {
-      ${list.updateMutationName}(id: $id, data: $data) {
-        id
-      }
-    }
-  `;
-};
 
 class UpdateManyModal extends Component {
   constructor(props) {
@@ -82,11 +65,7 @@ class UpdateManyModal extends Component {
   getOptions = () => {
     const { list } = this.props;
     // remove the `options` key from select type fields
-    return list.fields.map(f => {
-      let field = Object.assign({}, f);
-      delete field.options;
-      return field;
-    });
+    return list.fields.map(f => omit(f, ['options']));
   };
   render() {
     const { isLoading, isOpen, items, list } = this.props;
@@ -105,11 +84,7 @@ class UpdateManyModal extends Component {
             <Button appearance="primary" onClick={this.onUpdate}>
               {isLoading ? 'Loading...' : 'Update'}
             </Button>
-            <Button
-              appearance="warning"
-              variant="subtle"
-              onClick={this.onClose}
-            >
+            <Button appearance="warning" variant="subtle" onClick={this.onClose}>
               Cancel
             </Button>
           </Fragment>
@@ -153,15 +128,13 @@ class UpdateManyModal extends Component {
 export default class UpdateManyModalWithMutation extends Component {
   render() {
     const { list } = this.props;
-    const updateMutation = getUpdateMutation({ list });
+    // FIXME: updateMutation is the wrong thing to do here! We need to work out how
+    // to update many things all at once. This doesn't appear to be common pattern
+    // across the board.
     return (
-      <Mutation mutation={updateMutation}>
+      <Mutation mutation={list.updateMutation}>
         {(updateItem, { loading }) => (
-          <UpdateManyModal
-            updateItem={updateItem}
-            isLoading={loading}
-            {...this.props}
-          />
+          <UpdateManyModal updateItem={updateItem} isLoading={loading} {...this.props} />
         )}
       </Mutation>
     );

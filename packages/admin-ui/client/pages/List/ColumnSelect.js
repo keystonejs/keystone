@@ -1,18 +1,13 @@
-import React from 'react';
-import { CheckIcon, DashIcon, XIcon } from '@keystonejs/icons';
-import { colors } from '@keystonejs/ui/src/theme';
-import { OptionPrimitive } from '@keystonejs/ui/src/primitives/filters';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { CheckIcon, DashIcon, XIcon } from '@voussoir/icons';
+import { colors } from '@voussoir/ui/src/theme';
+import { OptionPrimitive } from '@voussoir/ui/src/primitives/filters';
 
 import { POPOUT_GUTTER } from '../../components/Popout';
 import FieldSelect, { type FieldSelectProps } from './FieldSelect';
 
-export const ColumnOption = ({
-  children,
-  isFocused,
-  isSelected,
-  selectProps,
-  ...props
-}) => {
+export const ColumnOption = ({ children, isFocused, isSelected, selectProps, ...props }) => {
   const { removeIsAllowed } = selectProps;
 
   let Icon;
@@ -26,9 +21,7 @@ export const ColumnOption = ({
   return (
     <OptionPrimitive isFocused={isFocused} isSelected={isSelected} {...props}>
       <span>{children}</span>
-      {isSelected && !removeIsAllowed ? null : (
-        <Icon css={{ color: iconColor }} />
-      )}
+      {isSelected && !removeIsAllowed ? null : <Icon css={{ color: iconColor }} />}
     </OptionPrimitive>
   );
 };
@@ -41,6 +34,7 @@ export default function ColumnSelect(props: FieldSelectProps) {
         components={{ Option: ColumnOption }}
         isMulti
         placeholder="Select columns to display"
+        includeLabelField
       />
     </div>
   );

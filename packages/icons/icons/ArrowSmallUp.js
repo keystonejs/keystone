@@ -14,8 +14,10 @@ class ArrowSmallUpIcon extends Component {
         fill: 'currentColor',
       },
     };
+    const { title, ...props } = this.props;
     return (
-      <svg {...defaults} {...this.props}>
+      <svg {...defaults} {...props}>
+        {title ? <title>{title}</title> : null}
         <path fillRule="evenodd" d="M3 5L0 9h2v2h2V9h2L3 5z"/>
       </svg>
     );

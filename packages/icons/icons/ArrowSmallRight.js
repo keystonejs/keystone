@@ -14,8 +14,10 @@ class ArrowSmallRightIcon extends Component {
         fill: 'currentColor',
       },
     };
+    const { title, ...props } = this.props;
     return (
-      <svg {...defaults} {...this.props}>
+      <svg {...defaults} {...props}>
+        {title ? <title>{title}</title> : null}
         <path fillRule="evenodd" d="M6 8L2 5v2H0v2h2v2l4-3z"/>
       </svg>
     );

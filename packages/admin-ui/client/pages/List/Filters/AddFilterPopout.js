@@ -1,21 +1,19 @@
-import React, { Component, createRef } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, createRef } from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  AlertIcon,
-} from '@keystonejs/icons';
-import { colors, gridSize } from '@keystonejs/ui/src/theme';
-import { A11yText } from '@keystonejs/ui/src/primitives/typography';
-import { Alert } from '@keystonejs/ui/src/primitives/alert';
-import { OptionPrimitive, Select } from '@keystonejs/ui/src/primitives/filters';
+import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@voussoir/icons';
+import { colors, gridSize } from '@voussoir/ui/src/theme';
+import { A11yText } from '@voussoir/ui/src/primitives/typography';
+import { Alert } from '@voussoir/ui/src/primitives/alert';
+import { OptionPrimitive, Select } from '@voussoir/ui/src/primitives/filters';
 
 import FieldSelect from '../FieldSelect';
 import PopoutForm from './PopoutForm';
 import { POPOUT_GUTTER } from '../../../components/Popout';
 
-// This import is loaded by the @keystone/field-views-loader loader.
+// This import is loaded by the @voussoir/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
 import FieldTypes from '../../../FIELD_TYPES';
 
@@ -31,8 +29,7 @@ const EventCatcher = props => (
 );
 
 export const FieldOption = ({ children, ...props }) => {
-  let iconColor =
-    !props.isFocused && !props.isSelected ? colors.N40 : 'currentColor';
+  let iconColor = !props.isFocused && !props.isSelected ? colors.N40 : 'currentColor';
 
   return (
     <OptionPrimitive {...props}>
@@ -126,17 +123,17 @@ export default class AddFilterPopout extends Component<Props, State> {
     const existingFieldFilters = this.getExistingFieldFilters(field);
 
     // bail quickly if possibly
-    if (field.filterTypes.length === existingFieldFilters.length) {
+    if (field.getFilterTypes().length === existingFieldFilters.length) {
       return [];
     }
 
     // create a diff of existing filters VS selected field filters
-    return field.filterTypes.filter(x => {
+    return field.getFilterTypes().filter(x => {
       return !existingFieldFilters.filter(y => y.type === x.type).length;
     });
   };
   hasAvailableFilterTypes = field => {
-    if (!field.filterTypes) return false;
+    if (!field.getFilterTypes()) return false;
     return Boolean(this.availableFieldFilterTypes(field).length);
   };
   doesNotHaveAvailableFilterTypes = field => {
@@ -172,7 +169,7 @@ export default class AddFilterPopout extends Component<Props, State> {
     const { field, filter, value } = this.state;
 
     event.preventDefault();
-    if (!filter) return;
+    if (!filter || value === null) return;
 
     onChange({ field, label: filter.label, type: filter.type, value });
   };
@@ -198,7 +195,7 @@ export default class AddFilterPopout extends Component<Props, State> {
 
   getFieldOptions = () => {
     const { fields } = this.props;
-    return fields.filter(f => f.filterTypes && f.filterTypes.length);
+    return fields.filter(f => f.getFilterTypes() && f.getFilterTypes().length);
   };
   renderFieldSelect = ({ ref }) => {
     return (
@@ -243,7 +240,7 @@ export default class AddFilterPopout extends Component<Props, State> {
   };
   renderFilterUI = ({ ref, recalcHeight }) => {
     const { field, filter } = this.state;
-    const options = field.filterTypes;
+    const options = field.getFilterTypes();
 
     return (
       <Transition

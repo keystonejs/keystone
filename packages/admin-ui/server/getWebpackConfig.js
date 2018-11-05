@@ -8,10 +8,24 @@ module.exports = function({ adminMeta, entry }) {
   const rules = [
     {
       test: /\.js$/,
-      exclude: [/node_modules(?!\/@keystone\/)/],
+      exclude: [/node_modules(?!\/@voussoir\/)/],
       use: [
         {
           loader: 'babel-loader',
+          options: {
+            babelrc: false,
+            presets: [
+              ['env', { exclude: ['transform-regenerator', 'transform-async-to-generator'] }],
+              'react',
+              'flow',
+            ],
+            plugins: [
+              'transform-class-properties',
+              'transform-object-rest-spread',
+              ['emotion', enableDevFeatures ? { sourceMap: true } : {}],
+              ...(enableDevFeatures ? ['transform-react-jsx-source'] : []),
+            ],
+          },
         },
       ],
     },
@@ -19,13 +33,21 @@ module.exports = function({ adminMeta, entry }) {
       test: /\.(png|svg|jpg|gif)$/,
       use: ['file-loader'],
     },
+    // This is a workaround for a problem with graphql@0.13.x. It can be removed
+    // once we upgrade to graphql@14.0.2.
+    // https://github.com/zeit/next.js/issues/5233#issuecomment-424738510
+    {
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: 'javascript/auto',
+    },
   ];
   if (adminMeta.lists) {
     rules.push({
       test: /FIELD_TYPES/,
       use: [
         {
-          loader: '@keystone/field-views-loader',
+          loader: '@voussoir/field-views-loader',
           options: {
             adminMeta,
           },

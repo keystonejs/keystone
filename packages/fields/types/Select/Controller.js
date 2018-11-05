@@ -24,9 +24,7 @@ export default class SelectController extends FieldController {
       key = `${this.path}_not`;
     }
 
-    const value = isMulti
-      ? options.map(x => x.value).join(',')
-      : options[0].value;
+    const value = isMulti ? options.map(x => x.value).join(',') : options[0].value;
 
     return `${key}: ${value}`;
   };
@@ -35,9 +33,7 @@ export default class SelectController extends FieldController {
   };
   formatFilter = ({ value }) => {
     if (!value.options.length) {
-      return value.inverted
-        ? `${this.label} is set`
-        : `${this.label} has no value`;
+      return value.inverted ? `${this.label} is set` : `${this.label} has no value`;
     }
     if (value.options.length > 1) {
       const values = value.options.map(i => i.label).join(', ');
@@ -50,7 +46,7 @@ export default class SelectController extends FieldController {
       ? `${this.label} is not ${optionLabel}`
       : `${this.label} is ${optionLabel}`;
   };
-  filterTypes = [
+  getFilterTypes = () => [
     {
       type: 'is',
       label: 'Matches',

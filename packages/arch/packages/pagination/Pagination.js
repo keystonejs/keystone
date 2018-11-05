@@ -1,0 +1,181 @@
+// @flow
+
+import React, { Component } from 'react';
+import styled from '@emotion/styled';
+
+import { colors } from '@arch-ui/theme';
+import Page from './Page';
+import type { CountArgs, CountFormat, LabelType, OnChangeType } from './types';
+
+function ariaPageLabelFn(page: number) {
+  return `Go to page ${page}`;
+}
+function countFormatterFn({ end, pageSize, plural, singular, start, total }: CountArgs) {
+  let count = '';
+
+  if (!total) {
+    count = 'No ' + (plural || 'records');
+  } else if (total > pageSize) {
+    count = `Showing ${start} to ${end} of ${total}`;
+  } else {
+    count = 'Showing ' + total;
+    if (total > 1 && plural) {
+      count += ' ' + plural;
+    } else if (total === 1 && singular) {
+      count += ' ' + singular;
+    }
+  }
+
+  return count;
+}
+
+function getRange({ currentPage, pageSize, total }) {
+  if (!total) {
+    return {};
+  } else {
+    const start = pageSize * (currentPage - 1) + 1;
+    const end = Math.min(start + pageSize - 1, total);
+    return { start, end };
+  }
+}
+
+export type PaginationProps = {
+  ariaPageLabel: LabelType,
+  countFormatter: CountFormat,
+  displayCount: boolean,
+  limit?: number,
+  onChange: OnChangeType,
+  pageSize: number,
+  plural: string,
+  singular: string,
+  total: number,
+  currentPage: number,
+};
+const PaginationElement = styled.nav({
+  alignItems: 'center',
+  display: 'flex',
+});
+const PageCount = styled.div({
+  color: colors.N60,
+  marginRight: '1em',
+});
+
+class Pagination extends Component<PaginationProps> {
+  static defaultProps = {
+    ariaPageLabel: ariaPageLabelFn,
+    countFormatter: countFormatterFn,
+    currentPage: 1,
+    limit: 5,
+    plural: 'Items',
+    singular: 'Item',
+  };
+
+  renderCount() {
+    let { countFormatter, displayCount, pageSize, plural, singular, total } = this.props;
+
+    if (!displayCount) return null;
+
+    const { start, end } = getRange(this.props);
+    const count = countFormatter({
+      end,
+      pageSize,
+      plural,
+      singular,
+      start,
+      total,
+    });
+
+    return <PageCount>{count}</PageCount>;
+  }
+
+  renderPages() {
+    let { ariaPageLabel, currentPage, limit, pageSize, total } = this.props;
+
+    if (total <= pageSize) return null;
+
+    let pages = [];
+    let totalPages = Math.ceil(total / pageSize);
+    let minPage = 1;
+    let maxPage = totalPages;
+    const moreCharacter = <span>&hellip;</span>;
+
+    if (limit && limit < totalPages) {
+      let rightLimit = Math.floor(limit / 2);
+      let leftLimit = rightLimit + (limit % 2) - 1;
+      minPage = currentPage - leftLimit;
+      maxPage = currentPage + rightLimit;
+
+      if (minPage < 1) {
+        maxPage = limit;
+        minPage = 1;
+      }
+      if (maxPage > totalPages) {
+        minPage = totalPages - limit + 1;
+        maxPage = totalPages;
+      }
+    }
+
+    const onChange = page => {
+      if (this.props.onChange) {
+        this.props.onChange(page, {
+          pageSize,
+          total,
+          minPage,
+          maxPage,
+        });
+      }
+    };
+
+    // go to first
+    if (minPage > 1) {
+      pages.push(
+        <Page aria-label={ariaPageLabel(1)} key="page_start" onClick={onChange} value={1}>
+          {moreCharacter}
+        </Page>
+      );
+    }
+
+    // loop over range
+    for (let page = minPage; page <= maxPage; page++) {
+      const isSelected = page === currentPage;
+      pages.push(
+        <Page
+          aria-label={ariaPageLabel(page)}
+          key={`page_${page}`}
+          isSelected={isSelected}
+          onClick={onChange}
+          value={page}
+        >
+          {page}
+        </Page>
+      );
+    }
+
+    // go to last
+    if (maxPage < totalPages) {
+      pages.push(
+        <Page
+          aria-label={ariaPageLabel(totalPages)}
+          key="page_end"
+          onClick={onChange}
+          value={totalPages}
+        >
+          {moreCharacter}
+        </Page>
+      );
+    }
+
+    return pages;
+  }
+
+  render() {
+    return (
+      <PaginationElement aria-label="Pagination">
+        {this.renderCount()}
+        {this.renderPages()}
+      </PaginationElement>
+    );
+  }
+}
+
+export default Pagination;

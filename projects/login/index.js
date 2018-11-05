@@ -1,24 +1,29 @@
-const { AdminUI } = require('@keystonejs/admin-ui');
-const { Keystone } = require('@keystonejs/core');
-const { Text, Password } = require('@keystonejs/fields');
-const { WebServer } = require('@keystonejs/server');
-const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
+const { AdminUI } = require('@voussoir/admin-ui');
+const { Keystone } = require('@voussoir/core');
+const { Text, Password } = require('@voussoir/fields');
+const { WebServer } = require('@voussoir/server');
+const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
+const bodyParser = require('body-parser');
 
 const { port, staticRoute, staticPath } = require('./config');
 
 const initialData = require('./data');
 
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'Cypress Test Project For Login',
   adapter: new MongooseAdapter(),
+  defaultAccess: {
+    list: ({ authentication: { item } }) => !!item,
+  },
 });
 
 // eslint-disable-next-line no-unused-vars
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
+  // config: { protectIdentities: true },
 });
 
 keystone.createList('User', {
@@ -32,22 +37,16 @@ keystone.createList('User', {
 
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
-  // allow disabling of admin auth for test environments
-  authStrategy: authStrategy,
 });
 
 const server = new WebServer(keystone, {
   'cookie secret': 'qwerty',
   'admin ui': admin,
-  session: true,
+  authStrategy: authStrategy,
+  apiPath: '/admin/api',
+  graphiqlPath: '/admin/graphiql',
   port,
 });
-
-server.app.use(
-  keystone.session.validate({
-    valid: ({ req, item }) => (req.user = item),
-  })
-);
 
 server.app.get('/api/session', (req, res) => {
   const data = {
@@ -55,35 +54,42 @@ server.app.get('/api/session', (req, res) => {
     userId: req.session.keystoneItemId,
   };
   if (req.user) {
-    Object.assign(data, {
-      name: req.user.name,
-    });
+    data.name = req.user.name;
   }
   res.json(data);
 });
 
-server.app.get('/api/signin', async (req, res, next) => {
-  try {
-    const result = await keystone.auth.User.password.validate({
-      username: req.query.username,
-      password: req.query.password,
-    });
-    if (!result.success) {
-      return res.json({
-        success: false,
-      });
-    }
-    await keystone.session.create(req, result);
-    res.json({
-      success: true,
-      itemId: result.item.id,
-    });
-  } catch (e) {
-    next(e);
-  }
-});
+server.app.post(
+  '/signin',
+  bodyParser.json(),
+  bodyParser.urlencoded({ extended: true }),
+  async (req, res, next) => {
+    // Cleanup any previous session
+    await keystone.session.destroy(req);
 
-server.app.get('/api/signout', async (req, res, next) => {
+    try {
+      const result = await keystone.auth.User.password.validate({
+        identity: req.body.username,
+        secret: req.body.password,
+      });
+      if (!result.success) {
+        return res.json({
+          success: false,
+        });
+      }
+      await keystone.session.create(req, result);
+      res.json({
+        success: true,
+        itemId: result.item.id,
+        token: req.sessionID,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+);
+
+server.app.get('/signout', async (req, res, next) => {
   try {
     await keystone.session.destroy(req);
     res.json({
@@ -108,7 +114,7 @@ server.app.get('/reset-db', (req, res) => {
 server.app.use(staticRoute, server.express.static(staticPath));
 
 async function start() {
-  keystone.connect();
+  await keystone.connect();
   server.start();
   const users = await keystone.lists.User.adapter.findAll();
   if (!users.length) {

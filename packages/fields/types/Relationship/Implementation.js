@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-const cuid = require('cuid');
+const omitBy = require('lodash.omitby');
+const { mergeWhereClause } = require('@voussoir/utils');
+const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
 
 const {
   Schema: {
@@ -8,252 +10,422 @@ const {
 } = mongoose;
 
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@keystonejs/adapter-mongoose');
+const {
+  nestedMutation,
+  processQueuedDisconnections,
+  processQueuedConnections,
+  tellForeignItemToDisconnect,
+} = require('./nested-mutations');
 
-function relationFilterPipeline({
-  path,
-  query,
-  many,
-  refListAdapter,
-  joinPathName,
-}) {
-  return [
-    {
-      // JOIN
-      $lookup: {
-        // the MongoDB name of the collection - this is potentially different
-        // from the Mongoose name due to pluralization, etc. This guarantees the
-        // correct name.
-        from: refListAdapter.model.collection.name,
-        as: joinPathName,
-        let: { [path]: `$${path}` },
-        pipeline: [
-          {
-            $match: {
-              ...query,
-              $expr: { [many ? '$in' : '$eq']: ['$_id', `$$${path}`] },
-            },
-          },
-        ],
-      },
-    },
-    // Filter out empty array results (the $lookup will return a document with
-    // an empty array when no matches are found in the related field)
-    // TODO: This implies a `some` filter. For an `every` filter, we would need
-    // to somehow check that the resulting size of `path` equals the original
-    // document's size. In the case of one-to-one, we'd have to check that the
-    // resulting size is exactly 1 (which is the same as `$ne: []`?)
-    { $match: { [joinPathName]: { $exists: true, $ne: [] } } },
-  ];
-}
-
-function postAggregateMutationFactory({
-  path,
-  many,
-  joinPathName,
-  refListAdapter,
-}) {
-  // Recreate Mongoose instances of the sub items every time to allow for
-  // further operations to be performed on those sub items via Mongoose.
-  return item => {
-    if (!item) {
-      return;
-    }
-
-    let joinedItems;
-
-    if (many) {
-      joinedItems = item[path].map(itemId => {
-        const joinedItemIndex = item[joinPathName].findIndex(({ _id }) =>
-          _id.equals(itemId)
-        );
-
-        if (joinedItemIndex === -1) {
-          return itemId;
-        }
-
-        // Extract that element out of the array (so the next iteration is a bit
-        // faster)
-        const joinedItem = item[joinPathName].splice(joinedItemIndex, 1)[0];
-        return refListAdapter.model(joinedItem);
-      });
-
-      // At this point, we should have spliced out all of the items
-      if (item[joinPathName].length > 0) {
-        // I don't see why this should ever happen, but just in case...
-        throw new Error(
-          `Expected results from MongoDB aggregation '${joinPathName}' to be a subset of the original items, bet left with:\n${JSON.stringify(
-            item[joinPathName]
-          )}`
-        );
-      }
-    } else {
-      const joinedItem = item[joinPathName][0];
-      // eslint-disable-next-line no-underscore-dangle
-      if (!joinedItem || !joinedItem._id.equals(item[path])) {
-        // Shouldn't be possible due to the { $exists: true, $ne: [] }
-        // aggregation step above, but in case that fails or doesn't behave
-        // as expected, we can catch that now.
-        throw new Error(
-          'Expected MongoDB aggregation to correctly filter to a single related item, but no item found.'
-        );
-      }
-      joinedItems = refListAdapter.model(joinedItem);
-    }
-
-    const newItemValues = {
-      ...item,
-      [path]: joinedItems,
-    };
-
-    // Get rid of the temporary data key we used to join on
-    // Should be an empty array now that we spliced all the values out above
-    delete newItemValues[joinPathName];
-
-    return newItemValues;
-  };
-}
-
-class Select extends Implementation {
+class Relationship extends Implementation {
   constructor() {
     super(...arguments);
+    const [refListKey, refFieldPath] = this.config.ref.split('.');
+    this.refListKey = refListKey;
+    this.refFieldPath = refFieldPath;
+    this.isRelationship = true;
   }
-  getGraphqlSchema() {
-    const { many, ref } = this.config;
-    const type = many ? `[${ref}]` : ref;
-    return `${this.path}: ${type}`;
+
+  tryResolveRefList() {
+    const { listKey, path, refListKey, refFieldPath } = this;
+    const refList = this.getListByKey(refListKey);
+
+    if (!refList) {
+      throw new Error(`Unable to resolve related list '${refListKey}' from ${listKey}.${path}`);
+    }
+
+    let refField;
+
+    if (refFieldPath) {
+      refField = refList.getFieldByPath(refFieldPath);
+
+      if (!refField) {
+        throw new Error(
+          `Unable to resolve two way relationship field '${refListKey}.${refFieldPath}' from ${listKey}.${path}`
+        );
+      }
+    }
+
+    return { refList, refField };
+  }
+
+  get gqlOutputFields() {
+    const { many } = this.config;
+
+    const { refList } = this.tryResolveRefList();
+
+    if (!refList.access.read) {
+      // It's not accessible in any way, so we can't expose the related field
+      return [];
+    }
+
+    if (many) {
+      const filterArgs = refList.getGraphqlFilterFragment().join('\n');
+      return [
+        `${this.path}(${filterArgs}): [${refList.gqlNames.outputTypeName}]`,
+        `_${this.path}Meta(${filterArgs}): _QueryMeta`,
+      ];
+    }
+
+    return [`${this.path}: ${refList.gqlNames.outputTypeName}`];
   }
 
   extendAdminMeta(meta) {
-    const { many, ref } = this.config;
-    return { ...meta, ref, many };
+    const {
+      refListKey: ref,
+      refFieldPath,
+      config: { many },
+    } = this;
+    return { ...meta, ref, refFieldPath, many };
   }
-  getGraphqlQueryArgs() {
-    const { many, ref } = this.config;
+
+  get gqlQueryInputFields() {
+    const { many } = this.config;
+    const { refList } = this.tryResolveRefList();
+
+    if (!refList.access.read) {
+      // It's not accessible in any way, so we can't expose the related field
+      return [];
+    }
+
     if (many) {
-      return `
-        # condition must be true for all nodes
-        ${this.path}_every: ${ref}WhereInput
-        # condition must be true for at least 1 node
-        ${this.path}_some: ${ref}WhereInput
-        # condition must be false for all nodes
-        ${this.path}_none: ${ref}WhereInput
-        # is the relation field null
-        ${this.path}_is_null: Boolean
-      `;
+      return [
+        `""" condition must be true for all nodes """
+        ${this.path}_every: ${refList.gqlNames.whereInputName}`,
+        `""" condition must be true for at least 1 node """
+        ${this.path}_some: ${refList.gqlNames.whereInputName}`,
+        `""" condition must be false for all nodes """
+        ${this.path}_none: ${refList.gqlNames.whereInputName}`,
+        `""" is the relation field null """
+        ${this.path}_is_null: Boolean`,
+      ];
     } else {
-      return `
-        ${this.path}: ${ref}WhereInput
-        ${this.path}_is_null: Boolean
-      `;
+      return [`${this.path}: ${refList.gqlNames.whereInputName}`, `${this.path}_is_null: Boolean`];
     }
   }
-  getGraphqlFieldResolvers() {
-    const { many, ref } = this.config;
-    return {
-      [this.path]: item => {
-        if (many) {
-          return this.getListByKey(ref).adapter.find({
-            _id: { $in: item[this.path] },
-          });
-        } else {
+
+  get gqlOutputFieldResolvers() {
+    const { many } = this.config;
+    const { refList } = this.tryResolveRefList();
+
+    if (!refList.access.read) {
+      // It's not accessible in any way, so we can't expose the related field
+      return [];
+    }
+
+    // to-one relationships are much easier to deal with.
+    if (!many) {
+      return {
+        [this.path]: (item, _, context) => {
           // The field may have already been filled in during an early DB lookup
           // (ie; joining when doing a filter)
-          // eslint-disable-next-line no-underscore-dangle
-          if (item[this.path] && item[this.path]._id) {
-            return item[this.path];
+          const id = item[this.path] && item[this.path]._id ? item[this.path]._id : item[this.path];
+
+          if (!id) {
+            return null;
           }
-          return this.getListByKey(ref).adapter.findById(item[this.path]);
-        }
+
+          const filteredQueryArgs = { where: { id: id.toString() } };
+
+          // We do a full query to ensure things like access control are applied
+          return refList
+            .manyQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName)
+            .then(items => (items && items.length ? items[0] : null));
+        },
+      };
+    }
+
+    const buildManyQueryArgs = (item, args) => {
+      let ids = [];
+      if (item[this.path]) {
+        ids = item[this.path]
+          .map(value => {
+            // The field may have already been filled in during an early DB lookup
+            // (ie; joining when doing a filter)
+            if (value && value._id) {
+              return value._id;
+            }
+
+            return value;
+          })
+          .filter(value => value);
+      }
+      return mergeWhereClause(args, { id_in: ids });
+    };
+
+    return {
+      [this.path]: (item, args, context, { fieldName }) => {
+        const filteredQueryArgs = buildManyQueryArgs(item, args);
+        return refList.manyQuery(filteredQueryArgs, context, fieldName);
+      },
+
+      [`_${this.path}Meta`]: (item, args, context, { fieldName }) => {
+        const filteredQueryArgs = buildManyQueryArgs(item, args);
+        return refList.manyQueryMeta(filteredQueryArgs, context, fieldName);
       },
     };
   }
-  getGraphqlUpdateArgs() {
-    const { many } = this.config;
-    const type = many ? '[String]' : 'String';
-    return `${this.path}: ${type}`;
+
+  async createUpdatePreHook(input, currentValue, context, getItem) {
+    const { many, required } = this.config;
+
+    const { refList, refField } = this.tryResolveRefList();
+
+    // Early out for null'd field
+    if (!required && !input) {
+      return input;
+    }
+
+    return await nestedMutation({
+      input,
+      currentValue,
+      localField: this,
+      localList: this.getListByKey(this.listKey),
+      refList,
+      refField,
+      getItem,
+      many,
+      context,
+    });
   }
-  getGraphqlCreateArgs() {
-    return this.getGraphqlUpdateArgs();
+
+  createFieldPreHook(data, context, createdPromise) {
+    return this.createUpdatePreHook(data, undefined, context, createdPromise);
+  }
+
+  updateFieldPreHook(data, item, context) {
+    const getItem = Promise.resolve(item);
+    return this.createUpdatePreHook(data, item[this.path], context, getItem);
+  }
+
+  async updateFieldPostHook(fieldData, item, context) {
+    // We have to wait to the post hook so we have the item's id to connect to!
+    await processQueuedDisconnections({ context });
+    await processQueuedConnections({ context });
+  }
+
+  async createFieldPostHook(data, item, context) {
+    // We have to wait to the post hook so we have the item's id to connect to!
+    // NOTE: We don't do any disconnects here (it's not possible to disconnect
+    // something for a newly created item thanks to the order of operations)
+    await processQueuedConnections({ context });
+  }
+
+  deleteFieldPreHook(data, item, context) {
+    // Early out for null'd field
+    if (!data) {
+      return;
+    }
+
+    const { many } = this.config;
+    const { refList, refField } = this.tryResolveRefList();
+
+    // No related field to unlink
+    if (!refField) {
+      return;
+    }
+
+    const itemsToDisconnect = many ? data : [data];
+
+    itemsToDisconnect
+      // The data comes in as an ObjectId, so we have to convert it
+      .map(itemToDisconnect => itemToDisconnect.toString())
+      .forEach(itemToDisconnect => {
+        tellForeignItemToDisconnect({
+          context,
+          getItem: Promise.resolve(item),
+          local: {
+            list: this.getListByKey(this.listKey),
+            field: this,
+          },
+          foreign: {
+            list: refList,
+            field: refField,
+            id: itemToDisconnect,
+          },
+        });
+      });
+
+    // TODO: Cascade _deletion_ of any related items (not just setting the
+    // reference to null)
+    // Accept a config option for cascading: https://www.prisma.io/docs/1.4/reference/service-configuration/data-modelling-(sdl)-eiroozae8u/#the-@relation-directive
+    // Beware of circular delete hooks!
+  }
+
+  async deleteFieldPostHook(fieldData, item, context) {
+    // We have to wait to the post hook so we have the item's id to discconect.
+    await processQueuedDisconnections({ context });
+  }
+
+  get gqlAuxTypes() {
+    const { refList } = this.tryResolveRefList();
+    // We need an input type that is specific to creating nested items when
+    // creating a relationship, ie;
+    //
+    // eg: Creating a new post at the same time as a new user
+    // mutation createUser() {
+    //   posts: [{ create: { title: 'Foobar' } }]
+    // }
+    //
+    // Or, the inverse: Creating a new user at the same time as a new post
+    // mutation createPost() {
+    //   author: { create: { email: 'eg@example.com' } }
+    // }
+    //
+    // Then there's the linking to existing records usecase:
+    // mutation createPost() {
+    //   author: { id: 'abc123' }
+    // }
+    if (this.config.many) {
+      return [
+        `
+        input ${refList.gqlNames.relateToManyInputName} {
+          # Provide data to create a set of new ${refList.key}. Will also connect.
+          create: [${refList.gqlNames.createInputName}]
+
+          # Provide a filter to link to a set of existing ${refList.key}.
+          connect: [${refList.gqlNames.whereUniqueInputName}]
+
+          # Provide a filter to remove to a set of existing ${refList.key}.
+          disconnect: [${refList.gqlNames.whereUniqueInputName}]
+
+          # Remove all ${refList.key} in this list.
+          disconnectAll: Boolean
+        }
+      `,
+      ];
+    }
+
+    return [
+      `
+      input ${refList.gqlNames.relateToOneInputName} {
+        # Provide data to create a new ${refList.key}.
+        create: ${refList.gqlNames.createInputName}
+
+        # Provide a filter to link to an existing ${refList.key}.
+        connect: ${refList.gqlNames.whereUniqueInputName}
+
+        # Provide a filter to remove to an existing ${refList.key}.
+        disconnect: ${refList.gqlNames.whereUniqueInputName}
+
+        # Remove the existing ${refList.key} (if any).
+        disconnectAll: Boolean
+      }
+    `,
+    ];
+  }
+  get gqlUpdateInputFields() {
+    const { refList } = this.tryResolveRefList();
+    if (this.config.many) {
+      return [`${this.path}: ${refList.gqlNames.relateToManyInputName}`];
+    }
+
+    return [`${this.path}: ${refList.gqlNames.relateToOneInputName}`];
+  }
+  get gqlCreateInputFields() {
+    return this.gqlUpdateInputFields;
+  }
+  getDefaultValue() {
+    return null;
   }
 }
 
 class MongoSelectInterface extends MongooseFieldAdapter {
+  constructor(...args) {
+    super(...args);
+    const [refListKey, refFieldPath] = this.config.ref.split('.');
+    this.refListKey = refListKey;
+    this.refFieldPath = refFieldPath;
+  }
+
   addToMongooseSchema(schema) {
-    const { many, mongooseOptions, ref } = this.config;
+    const {
+      refListKey: ref,
+      config: { many, mongooseOptions },
+    } = this;
     const type = many ? [ObjectId] : ObjectId;
-    schema.add({
-      [this.path]: { type, ref, ...mongooseOptions },
-    });
+    const schemaOptions = { type, ref, ...mongooseOptions };
+    if (this.config.unique) {
+      // A value of anything other than `true` causes errors with Mongoose
+      // constantly recreating indexes. Ie; if we just splat `unique` onto the
+      // options object, it would be `undefined`, which would cause Mongoose to
+      // drop and recreate all indexes.
+      schemaOptions.unique = true;
+    }
+    schema.add({ [this.path]: schemaOptions });
   }
 
-  getQueryConditions(args, list, depthGuard) {
-    if (this.config.many) {
-      return this.getQueryConditionsMany(args, list, depthGuard);
-    }
-
-    return this.getQueryConditionsSingle(args, list, depthGuard);
+  getRefListAdapter() {
+    return this.getListByKey(this.refListKey).adapter;
   }
-  getQueryConditionsMany(args /*, last, depthGuard*/) {
-    return [];
-    Object.keys(args || {})
-      .filter(filter => filter.startsWith(`${this.path}_`))
-      .map(filter => filter);
+
+  getQueryConditions() {
+    return {
+      [`${this.path}_is_null`]: value => {
+        if (value) {
+          return { [this.path]: { $not: { $exists: true, $ne: null } } };
+        }
+        return { [this.path]: { $exists: true, $ne: null } };
+      },
+    };
   }
-  getQueryConditionsSingle(args, list, depthGuard) {
-    const conditions = [];
 
-    if (!args) {
-      return conditions;
-    }
+  hasQueryCondition(condition) {
+    return Object.keys(this.getRelationshipQueryConditions()).includes(condition);
+  }
 
-    const isNull = `${this.path}_is_null`;
-    if (isNull in args) {
-      if (args[isNull]) {
-        conditions.push({ $not: { $exists: true, $ne: null } });
-      } else {
-        conditions.push({ $exists: true, $ne: null });
-      }
-    }
+  getRelationshipQueryConditions() {
+    const refListAdapter = this.getRefListAdapter();
+    const from = refListAdapter.model.collection.name;
 
-    if (this.path in args) {
-      const refListAdapter = this.field.getListByKey(this.config.ref).adapter;
-      const filters = refListAdapter.itemsQueryConditions(
-        args[this.path],
-        depthGuard
-      );
-
-      const query = {
-        $and: filters,
+    const buildRelationship = (filterType, uid) => {
+      return {
+        from, // the collection name to join with
+        field: this.path, // The field on this collection
+        // A mutation to run on the data post-join. Useful for merging joined
+        // data back into the original object.
+        // Executed on a depth-first basis for nested relationships.
+        postQueryMutation: (parentObj /*, keyOfRelationship, rootObj, pathToParent*/) => {
+          return omitBy(
+            parentObj,
+            /*
+            {
+              ...parentObj,
+              // Given there could be sorting and limiting that's taken place, we
+              // want to overwrite the entire object rather than merging found items
+              // in.
+              [field]: parentObj[keyOfRelationship],
+            },
+            */
+            // Clean up the result to remove the intermediate results
+            (_, keyToOmit) => keyToOmit.startsWith(uid)
+          );
+        },
+        // The conditions under which an item from the 'orders' collection is
+        // considered a match and included in the end result
+        // All the keys on an 'order' are available, plus 3 special keys:
+        // 1) <uid>_<field>_every - is `true` when every joined item matches the
+        //    query
+        // 2) <uid>_<field>_some - is `true` when some joined item matches the
+        //    query
+        // 3) <uid>_<field>_none - is `true` when none of the joined items match
+        //    the query
+        matchTerm: { [`${uid}_${this.path}_${filterType}`]: true },
+        // Flag this is a to-many relationship
+        many: this.config.many,
       };
+    };
 
-      // 99.999999999...% guaranteed not to conflict with anything else
-      const joinPathName = cuid();
-
-      conditions.push({
-        // Must signal that this isn't some plain old '$and' query!
-        $isComplexStage: true,
-        pipeline: relationFilterPipeline({
-          path: this.path,
-          query,
-          many: false,
-          joinPathName,
-          refListAdapter,
-        }),
-        mutator: postAggregateMutationFactory({
-          path: this.path,
-          many: false,
-          joinPathName,
-          refListAdapter,
-        }),
-      });
-    }
-
-    return conditions;
+    return {
+      [this.path]: (value, query, uid) => buildRelationship('every', uid),
+      [`${this.path}_every`]: (value, query, uid) => buildRelationship('every', uid),
+      [`${this.path}_some`]: (value, query, uid) => buildRelationship('some', uid),
+      [`${this.path}_none`]: (value, query, uid) => buildRelationship('none', uid),
+    };
   }
 }
 
 module.exports = {
-  Select,
+  Relationship,
   MongoSelectInterface,
 };

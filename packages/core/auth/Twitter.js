@@ -1,7 +1,7 @@
 const passport = require('passport');
 const { OAuth } = require('oauth-libre');
 const PassportTwitter = require('passport-twitter');
-const { Text, Relationship } = require('@keystonejs/fields');
+const { Text, Relationship } = require('@voussoir/fields');
 
 const FIELD_TWITTER_ID = 'twitterId';
 const FIELD_TWITTER_USERNAME = 'twitterUsername';
@@ -71,18 +71,14 @@ function reduceTwitterErrorsToString(jsonData) {
     return '';
   }
 
-  const errors = Array.isArray(jsonData.errors)
-    ? jsonData.errors
-    : [jsonData.errors];
+  const errors = Array.isArray(jsonData.errors) ? jsonData.errors : [jsonData.errors];
 
   // reduce the error messages into a coherent string
   return errors
     .map(errorBody => {
       if (errorBody.message && errorBody.code) {
         return `(${errorBody.code}) ${errorBody.message}.`;
-      } else if (
-        Object.prototype.toString.call(errorBody) === '[object Object]'
-      ) {
+      } else if (Object.prototype.toString.call(errorBody) === '[object Object]') {
         return JSON.stringify(errorBody);
       }
       return errorBody.toString();
@@ -191,11 +187,7 @@ class TwitterAuthStrategy {
     return this.keystone.lists[this.config.sessionListKey];
   }
   async validate({ token, tokenSecret }) {
-    const jsonData = await validateWithTwitter(
-      this.twitterClient,
-      token,
-      tokenSecret
-    );
+    const jsonData = await validateWithTwitter(this.twitterClient, token, tokenSecret);
 
     // Lookup a past, verified session, that links to a user
     let pastSessionItem;
@@ -213,9 +205,7 @@ class TwitterAuthStrategy {
     } catch (sessionFindError) {
       // TODO: Better error message. Why would this fail? DB connection lost? A
       // "not found" shouldn't throw (it'll just return null).
-      throw new Error(
-        `Unable to lookup existing Twitter sessions: ${sessionFindError}`
-      );
+      throw new Error(`Unable to lookup existing Twitter sessions: ${sessionFindError}`);
     }
 
     const newSessionData = {
@@ -229,10 +219,7 @@ class TwitterAuthStrategy {
       newSessionData.item = pastSessionItem.item.id;
     }
 
-    const sessionItem = await this.keystone.createItem(
-      this.config.sessionListKey,
-      newSessionData
-    );
+    const sessionItem = await this.keystone.createItem(this.config.sessionListKey, newSessionData);
 
     const result = {
       success: true,
@@ -258,9 +245,7 @@ class TwitterAuthStrategy {
 
   pauseValidation(req, { twitterSession }) {
     if (!twitterSession) {
-      throw new Error(
-        'Expected a twitterSession (ID) when pausing authentication validation'
-      );
+      throw new Error('Expected a twitterSession (ID) when pausing authentication validation');
     }
     // Store id in the req.session so it persists across requests (while they
     // potentially fill out a mutli-step form)
@@ -273,9 +258,7 @@ class TwitterAuthStrategy {
     }
 
     if (!req) {
-      throw new Error(
-        'Must provide `req` when connecting a Twitter Session to an item'
-      );
+      throw new Error('Must provide `req` when connecting a Twitter Session to an item');
     }
 
     const twitterSessionId = req.session.keystoneTwitterSessionId;
@@ -341,9 +324,7 @@ class TwitterAuthStrategy {
       );
     }
     if (!verified) {
-      throw new Error(
-        'Must supply a `verified` function to `authenticateTwitterUser()`'
-      );
+      throw new Error('Must supply a `verified` function to `authenticateTwitterUser()`');
     }
 
     return (req, res, next) => {
@@ -371,12 +352,11 @@ class TwitterAuthStrategy {
           try {
             await this.keystone.auth.User.twitter.pauseValidation(req, info);
 
-            await verified(authedItem, info, req, res, next);
-          } catch (validationVerificationError) {
-            next(validationVerificationError);
-          }
+          await verified(authedItem, info, req, res, next);
+        } catch (validationVerificationError) {
+          next(validationVerificationError);
         }
-      )(req, res, next);
+      })(req, res, next);
     };
   }
 }

@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import raf from 'raf-schd';
-import { Button, LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
-import { colors } from '@keystonejs/ui/src/theme';
+import { Button, LoadingButton } from '@voussoir/ui/src/primitives/buttons';
+import { colors } from '@voussoir/ui/src/theme';
 
 const Wrapper = styled.div({
   marginTop: 60,
@@ -77,8 +79,7 @@ export default class Footer extends Component {
     const viewY = window.scrollY + window.innerHeight;
 
     const newSize = getWindowSize();
-    const sizeChanged =
-      newSize.x !== this.windowSize.x || newSize.y !== this.windowSize.y;
+    const sizeChanged = newSize.x !== this.windowSize.x || newSize.y !== this.windowSize.y;
     this.windowSize = newSize;
 
     const newState = {
@@ -113,8 +114,8 @@ export default class Footer extends Component {
     const footerStyle = { height, position, top, width };
 
     return (
-      <Wrapper innerRef={this.getWrapper} style={wrapperStyle} key="wrapper">
-        <Toolbar innerRef={this.getToolbar} style={footerStyle} key="footer">
+      <Wrapper ref={this.getWrapper} style={wrapperStyle} key="wrapper">
+        <Toolbar ref={this.getToolbar} style={footerStyle} key="footer">
           <div css={{ display: 'flex', alignItems: 'center' }}>
             <LoadingButton
               appearance="primary"

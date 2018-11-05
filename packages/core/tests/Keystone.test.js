@@ -1,6 +1,6 @@
 const Keystone = require('../Keystone');
 const List = require('../List');
-const { Text, Relationship } = require('@keystonejs/fields');
+const { Text, Relationship } = require('@voussoir/fields');
 
 class MockType {}
 
@@ -26,31 +26,53 @@ test('new Keystone()', () => {
     adapter: new MockAdapter(),
   };
   const keystone = new Keystone(config);
-  expect(keystone.config).toBe(config);
+  expect(keystone.config).toEqual(config);
 });
 
-test('Keystone.createList()', () => {
+test('unique typeDefs', () => {
+  class MockFileType {
+    constructor() {
+      this.access = {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+      };
+    }
+    get gqlAuxTypes() {
+      return ['scalar Foo'];
+    }
+    get gqlOutputFields() {
+      return ['foo: Boolean'];
+    }
+    get gqlQueryInputFields() {
+      return ['zip: Boolean'];
+    }
+    get gqlUpdateInputFields() {
+      return ['zap: Boolean'];
+    }
+    get gqlCreateInputFields() {
+      return ['quux: Boolean'];
+    }
+    get gqlAuxQueries() {
+      return ['getFoo: Boolean'];
+    }
+    get gqlAuxMutations() {
+      return ['mutateFoo: Boolean'];
+    }
+  }
+
   const config = {
     adapter: new MockAdapter(),
-    name: 'Jest Test',
+    name: 'Jest Test for typeDefs',
   };
   const keystone = new Keystone(config);
 
-  expect(keystone.lists).toEqual({});
-  expect(keystone.listsArray).toEqual([]);
-
   keystone.createList('User', {
     fields: {
-      name: {
+      images: {
         type: {
-          implementation: MockType,
-          views: {},
-          adapters: { mock: MockFieldAdapter },
-        },
-      },
-      email: {
-        type: {
-          implementation: MockType,
+          implementation: MockFileType,
           views: {},
           adapters: { mock: MockFieldAdapter },
         },
@@ -58,12 +80,77 @@ test('Keystone.createList()', () => {
     },
   });
 
-  expect(keystone.lists).toHaveProperty('User');
-  expect(keystone.lists['User']).toBeInstanceOf(List);
-  expect(keystone.listsArray).toHaveLength(1);
-  expect(keystone.listsArray[0]).toBeInstanceOf(List);
+  keystone.createList('Post', {
+    fields: {
+      hero: {
+        type: {
+          implementation: MockFileType,
+          views: {},
+          adapters: { mock: MockFieldAdapter },
+        },
+      },
+    },
+  });
 
-  expect(keystone.listsArray[0]).toBe(keystone.lists['User']);
+  const schema = keystone.getTypeDefs().join('\n');
+  expect(schema.match(/scalar Foo/g) || []).toHaveLength(1);
+  expect(schema.match(/getFoo: Boolean/g) || []).toHaveLength(1);
+  expect(schema.match(/mutateFoo: Boolean/g) || []).toHaveLength(1);
+});
+
+describe('Keystone.createList()', () => {
+  test('basic', () => {
+    const config = {
+      adapter: new MockAdapter(),
+      name: 'Jest Test',
+    };
+    const keystone = new Keystone(config);
+
+    expect(keystone.lists).toEqual({});
+    expect(keystone.listsArray).toEqual([]);
+
+    keystone.createList('User', {
+      fields: {
+        name: {
+          type: {
+            implementation: MockType,
+            views: {},
+            adapters: { mock: MockFieldAdapter },
+          },
+        },
+        email: {
+          type: {
+            implementation: MockType,
+            views: {},
+            adapters: { mock: MockFieldAdapter },
+          },
+        },
+      },
+    });
+
+    expect(keystone.lists).toHaveProperty('User');
+    expect(keystone.lists['User']).toBeInstanceOf(List);
+    expect(keystone.listsArray).toHaveLength(1);
+    expect(keystone.listsArray[0]).toBeInstanceOf(List);
+
+    expect(keystone.listsArray[0]).toBe(keystone.lists['User']);
+  });
+
+  /* eslint-disable jest/no-disabled-tests */
+  describe('access control config', () => {
+    test.failing('expands shorthand acl config', () => {
+      expect(false).toBe(true);
+    });
+
+    test.failing('throws error when one of create/read/update/delete not set on object', () => {
+      expect(false).toBe(true);
+    });
+
+    test.failing('throws error when create/read/update/delete are not correct type', () => {
+      expect(false).toBe(true);
+    });
+  });
+  /* eslint-enable jest/no-disabled-tests */
 });
 
 describe('Keystone.createItems()', () => {
@@ -147,6 +234,8 @@ describe('Keystone.createItems()', () => {
     // mock the lists
     keystone.lists = lists;
 
+    setupMocks(keystone);
+
     await keystone.createItems({
       User: [{ name: 'Jess' }, { name: 'Lauren' }],
       Post: [{ title: 'Hello world' }, { title: 'Goodbye' }],
@@ -209,10 +298,7 @@ describe('Keystone.createItems()', () => {
 
     expect(createdItems).toEqual({
       User: [{ id: 1, name: 'Jess' }, { id: 2, name: 'Lauren' }],
-      Post: [
-        { id: 3, title: 'Hello world', author: 2 },
-        { id: 4, title: 'Goodbye', author: 1 },
-      ],
+      Post: [{ id: 3, title: 'Hello world', author: 2 }, { id: 4, title: 'Goodbye', author: 1 }],
     });
   });
 

@@ -11,26 +11,16 @@ export const transitionTimingFunction = 'cubic-bezier(0.2, 0, 0, 1)';
 // Lifecycle Provider
 // ==============================
 
-type TransitionState = 'entering' | 'entered' | 'exiting' | 'exited';
+export type TransitionState = 'entering' | 'entered' | 'exiting' | 'exited';
 type ProviderProps = {
   children: TransitionState => Node | Element<*>,
   isOpen: boolean,
 };
 
-export const TransitionProvider = ({
-  children,
-  isOpen,
-  ...props
-}: ProviderProps) => (
+export const TransitionProvider = ({ children, isOpen, ...props }: ProviderProps) => (
   <TransitionGroup component={null}>
     {isOpen ? (
-      <Transition
-        appear
-        mountOnEnter
-        unmountOnExit
-        timeout={transitionDurationMs}
-        {...props}
-      >
+      <Transition appear mountOnEnter unmountOnExit timeout={transitionDurationMs} {...props}>
         {state => children(state)}
       </Transition>
     ) : null}
@@ -55,6 +45,7 @@ type Styles = { [string]: string | number };
 type TransitionProps = {
   children: Element<*>,
   transitionState: TransitionState,
+  from?: string,
 };
 type ReducerProps = {
   constant: Styles,

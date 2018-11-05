@@ -1,13 +1,13 @@
 // @flow
 
-import React, { Component, type Element, type Node } from 'react';
-import styled from 'react-emotion';
+import React, { Component, type Node as ReactNode } from 'react';
+import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
 import { borderRadius, colors, gridSize } from '../../theme';
 import FocusTrap from './FocusTrap';
 import { SlideDown } from './transitions';
-import withModalHandlers, { type CloseType } from './withModalHandlers';
+import withModalHandlers, { type ModalHandlerProps } from './withModalHandlers';
 
 const ItemElement = props => {
   if (props.to) return <Link {...props} />;
@@ -53,25 +53,20 @@ const Menu = styled.div({
 
 type ItemType = {
   to?: string,
-  content: Node,
+  content: ReactNode,
   href?: string,
   onClick?: (*) => void,
 };
 type ClickArgs = { onClick?: ({ event: MouseEvent, data: Object }) => void };
-type Props = {
-  children: Element<*>,
-  close: CloseType,
-  defaultIsOpen: boolean,
+type Props = ModalHandlerProps & {
   getModalRef: HTMLElement => void,
   items: Array<ItemType>,
   selectClosesMenu: boolean,
   style: Object,
 };
 
-function focus(el) {
-  if (el && typeof el.focus === 'function') {
-    el.focus();
-  }
+function focus(el: ?Node) {
+  if (el instanceof HTMLElement) el.focus();
 }
 
 class Dropdown extends Component<Props> {
@@ -88,11 +83,9 @@ class Dropdown extends Component<Props> {
     document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
-  handleItemClick = ({ onClick, ...data }: ClickArgs) => (
-    event: MouseEvent
-  ) => {
+  handleItemClick = ({ onClick, ...data }: ClickArgs) => (event: MouseEvent) => {
     const { close, selectClosesMenu } = this.props;
-    if (selectClosesMenu) close({ returnFocus: true });
+    if (selectClosesMenu) close(event);
     if (onClick) onClick({ event, data });
   };
   handleKeyDown = (event: KeyboardEvent) => {
@@ -141,9 +134,11 @@ class Dropdown extends Component<Props> {
   handleMenuLeave = () => {
     this.lastHover.focus();
   };
-  getMenu = (ref: HTMLElement) => {
-    this.menu = ref;
-    this.props.getModalRef(ref);
+  getMenu = ref => {
+    if (ref !== null) {
+      this.menu = ref;
+      this.props.getModalRef(ref);
+    }
   };
 
   render() {
@@ -151,11 +146,7 @@ class Dropdown extends Component<Props> {
 
     return (
       <FocusTrap options={{ clickOutsideDeactivates: true }}>
-        <Menu
-          innerRef={this.getMenu}
-          onMouseLeave={this.handleMenuLeave}
-          style={style}
-        >
+        <Menu ref={this.getMenu} onMouseLeave={this.handleMenuLeave} style={style}>
           {items.map((item, idx) => {
             const { content, ...rest } = item;
             return (

@@ -1,18 +1,8 @@
 import React, { Component, Fragment } from 'react';
 
-import {
-  AlertIcon,
-  DashboardIcon,
-  PencilIcon,
-  PlusIcon,
-  MegaphoneIcon,
-} from '@keystonejs/icons';
-import {
-  Button,
-  IconButton,
-  LoadingButton,
-} from '@keystonejs/ui/src/primitives/buttons';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
+import { AlertIcon, DashboardIcon, PencilIcon, PlusIcon, MegaphoneIcon } from '@voussoir/icons';
+import { Button, IconButton, LoadingButton } from '@voussoir/ui/src/primitives/buttons';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
 
 export default class ButtonGuide extends Component {
   state = { loading: '' };

@@ -14,8 +14,10 @@ class TriangleUpIcon extends Component {
         fill: 'currentColor',
       },
     };
+    const { title, ...props } = this.props;
     return (
-      <svg {...defaults} {...this.props}>
+      <svg {...defaults} {...props}>
+        {title ? <title>{title}</title> : null}
         <path fillRule="evenodd" d="M12 11L6 5l-6 6h12z"/>
       </svg>
     );

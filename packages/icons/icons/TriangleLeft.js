@@ -14,8 +14,10 @@ class TriangleLeftIcon extends Component {
         fill: 'currentColor',
       },
     };
+    const { title, ...props } = this.props;
     return (
-      <svg {...defaults} {...this.props}>
+      <svg {...defaults} {...props}>
+        {title ? <title>{title}</title> : null}
         <path fillRule="evenodd" d="M6 2L0 8l6 6V2z"/>
       </svg>
     );

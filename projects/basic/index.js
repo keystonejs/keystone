@@ -1,5 +1,5 @@
-const { AdminUI } = require('@keystonejs/admin-ui');
-const { Keystone } = require('@keystonejs/core');
+const { AdminUI } = require('@voussoir/admin-ui');
+const { Keystone } = require('@voussoir/core');
 const {
   File,
   Text,
@@ -9,13 +9,14 @@ const {
   Select,
   Password,
   Checkbox,
+  CalendarDay,
   CloudinaryImage,
-} = require('@keystonejs/fields');
-const { WebServer } = require('@keystonejs/server');
-const {
-  CloudinaryAdapter,
-  LocalFileAdapter,
-} = require('@keystonejs/file-adapters');
+  DateTime,
+  Color,
+  Url,
+} = require('@voussoir/fields');
+const { WebServer } = require('@voussoir/server');
+const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
 
 const { port, staticRoute, staticPath, cloudinary } = require('./config');
 
@@ -27,7 +28,7 @@ const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 const initialData = require('./data');
 
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'Cypress Test Project Basic',
@@ -55,7 +56,9 @@ try {
 keystone.createList('User', {
   fields: {
     name: { type: Text },
-    email: { type: Text },
+    email: { type: Text, unique: true },
+    dob: { type: CalendarDay, format: 'Do MMMM YYYY' },
+    lastOnline: { type: DateTime, format: 'MM/DD/YYYY h:mm A' },
     password: { type: Password },
     isAdmin: { type: Checkbox },
     company: {
@@ -68,9 +71,9 @@ keystone.createList('User', {
       ],
     },
     attachment: { type: File, adapter: fileAdapter },
-    ...(cloudinaryAdapter
-      ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } }
-      : {}),
+    color: { type: Color },
+    website: { type: Url },
+    ...(cloudinaryAdapter ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } } : {}),
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });
@@ -82,10 +85,7 @@ keystone.createList('Post', {
     status: {
       type: Select,
       defaultValue: 'draft',
-      options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Published', value: 'published' },
-      ],
+      options: [{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }],
     },
     author: {
       type: Relationship,
@@ -98,6 +98,12 @@ keystone.createList('Post', {
     },
     stars: { type: Float },
     views: { type: Integer },
+    hero: { type: File, adapter: fileAdapter },
+  },
+  adminConfig: {
+    defaultPageSize: 20,
+    defaultColumns: 'name, status',
+    defaultSort: 'name',
   },
   labelResolver: item => item.name,
 });
@@ -116,7 +122,6 @@ const admin = new AdminUI(keystone, {
 const server = new WebServer(keystone, {
   'cookie secret': 'qwerty',
   'admin ui': admin,
-  session: true,
   port,
 });
 
@@ -140,7 +145,7 @@ server.app.get('/reset-db', (req, res) => {
 server.app.use(staticRoute, server.express.static(staticPath));
 
 async function start() {
-  keystone.connect();
+  await keystone.connect();
   server.start();
   const users = await keystone.lists.User.adapter.findAll();
   if (!users.length) {

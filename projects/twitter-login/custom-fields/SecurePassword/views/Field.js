@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 
-import {
-  FieldContainer,
-  FieldLabel,
-  FieldInput,
-} from '@keystonejs/ui/src/primitives/fields';
-import { Input } from '@keystonejs/ui/src/primitives/forms';
+import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { Input } from '@voussoir/ui/src/primitives/forms';
 
 export default class PasswordField extends Component {
   onChange = event => {
@@ -18,11 +14,7 @@ export default class PasswordField extends Component {
       <FieldContainer>
         <FieldLabel>{'🔐' + field.label}</FieldLabel>
         <FieldInput>
-          <Input
-            type="password"
-            value={item[field.path]}
-            onChange={this.onChange}
-          />
+          <Input type="password" value={item[field.path]} onChange={this.onChange} />
         </FieldInput>
       </FieldContainer>
     );

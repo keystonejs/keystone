@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Pagination } from '@keystonejs/ui/src/primitives/navigation';
+import { Pagination } from '@voussoir/ui/src/primitives/navigation';
 
 const PaginationGuide = () => (
   <Fragment>

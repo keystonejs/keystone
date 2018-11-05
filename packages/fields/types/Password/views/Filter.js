@@ -1,12 +1,13 @@
 // @flow
 
-import React, { Component, type Ref } from 'react';
-import { RadioGroup, Radio } from '@keystonejs/ui/src/primitives/filters';
+import React, { Component } from 'react';
+import { RadioGroup, Radio } from '@voussoir/ui/src/primitives/filters';
+import type { FilterProps } from '../../../types';
 
-type Props = { field: Object, innerRef: Ref<*>, onChange: Event => void };
+type Props = FilterProps<boolean>;
 
 export default class PasswordFilterView extends Component<Props> {
-  handleChange = value => {
+  handleChange = (value: 'is_set' | 'is_not_set') => {
     const boolValue = value === 'is_set' ? true : false;
     this.props.onChange(boolValue);
   };

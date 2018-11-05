@@ -1,22 +1,17 @@
 // @flow
 
-import React, {
-  cloneElement,
-  Component,
-  Fragment,
-  type ComponentType,
-  type Element,
-} from 'react';
+import React, { cloneElement, Component, Fragment, type ComponentType, type Element } from 'react';
 import NodeResolver from 'react-node-resolver';
 import { TransitionProvider } from './transitions';
 
-export type CloseType = ({ returnFocus: boolean }) => void;
-type Fn = () => void;
-type Props = {
-  target: Element<*>,
+type GenericFn = any => mixed;
+export type CloseType = (event: Event) => void;
+export type ModalHandlerProps = {
+  close: CloseType,
   defaultIsOpen: boolean,
-  onClose: Fn,
-  onOpen: Fn,
+  onClose: GenericFn,
+  onOpen: GenericFn,
+  target: Element<*>,
 };
 type State = { isOpen: boolean };
 
@@ -29,7 +24,7 @@ export default function withModalHandlers(
   WrappedComponent: ComponentType<*>,
   { Transition }: { Transition: (*) => * }
 ) {
-  class IntermediateComponent extends Component<Props, State> {
+  class IntermediateComponent extends Component<*, State> {
     lastHover: HTMLElement;
     contentNode: HTMLElement;
     targetNode: HTMLElement;
@@ -98,15 +93,9 @@ export default function withModalHandlers(
 
       return (
         <Fragment>
-          <NodeResolver innerRef={this.getTarget}>
-            {cloneElement(target, cloneProps)}
-          </NodeResolver>
+          <NodeResolver innerRef={this.getTarget}>{cloneElement(target, cloneProps)}</NodeResolver>
 
-          <TransitionProvider
-            isOpen={isOpen}
-            onEntered={onOpen}
-            onExited={onClose}
-          >
+          <TransitionProvider isOpen={isOpen} onEntered={onOpen} onExited={onClose}>
             {transitionState => (
               <Transition transitionState={transitionState}>
                 <WrappedComponent

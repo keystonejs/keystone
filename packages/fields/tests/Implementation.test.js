@@ -11,6 +11,7 @@ const args = {
   listAdapter: {
     newFieldAdapter: jest.fn(),
   },
+  defaultAccess: true,
 };
 
 describe('new Implementation()', () => {
@@ -24,6 +25,7 @@ describe('new Implementation()', () => {
         listAdapter: {
           newFieldAdapter: jest.fn(),
         },
+        defaultAccess: true,
       }
     );
     expect(impl).not.toBeNull();
@@ -48,61 +50,40 @@ test('addToMongooseSchema()', () => {
   }).toThrow(Error);
 });
 
-test('getGraphqlSchema()', () => {
+test('gqlAuxTypes', () => {
   const impl = new Field('path', config, args);
 
-  // By default graphQLType is undefined and getGraphqlSchema should throw an Error.
-  expect(impl.graphQLType).toBe(undefined);
-  expect(() => {
-    impl.getGraphqlSchema();
-  }).toThrowError(Error);
-
-  // Setting graphQLType should cause the method to return a valid value.
-  impl.graphQLType = 'graphQL type';
-  const value = impl.getGraphqlSchema();
-  expect(value).toEqual('path: graphQL type');
+  expect(impl.gqlAuxTypes).toEqual([]);
 });
 
-test('getGraphqlAuxiliaryTypes()', () => {
+test('gqlAuxFieldResolvers', () => {
   const impl = new Field('path', config, args);
 
-  const value = impl.getGraphqlAuxiliaryTypes();
-  expect(value).toBe(undefined);
+  expect(impl.gqlAuxFieldResolvers).toEqual({});
 });
 
-test('getGraphqlAuxiliaryTypeResolvers()', () => {
+test('gqlAuxQueries', () => {
   const impl = new Field('path', config, args);
 
-  const value = impl.getGraphqlAuxiliaryTypeResolvers();
-  expect(value).toBe(undefined);
+  expect(impl.gqlAuxQueries).toEqual([]);
 });
 
-test('getGraphqlAuxiliaryQueries()', () => {
+test('gqlAuxQueryResolvers', () => {
   const impl = new Field('path', config, args);
 
-  const value = impl.getGraphqlAuxiliaryQueries();
-  expect(value).toBe(undefined);
+  expect(impl.gqlAuxQueryResolvers).toEqual({});
 });
 
-test('getGraphqlAuxiliaryQueryResolvers()', () => {
+test('gqlAuxMutations', () => {
   const impl = new Field('path', config, args);
 
-  const value = impl.getGraphqlAuxiliaryQueryResolvers();
-  expect(value).toBe(undefined);
+  expect(impl.gqlAuxMutations).toEqual([]);
 });
 
-test('getGraphqlAuxiliaryMutations()', () => {
+test('gqlAuxMutationResolvers', () => {
   const impl = new Field('path', config, args);
 
-  const value = impl.getGraphqlAuxiliaryMutations();
-  expect(value).toBe(undefined);
-});
-
-test('getGraphqlAuxiliaryMutationResolvers()', () => {
-  const impl = new Field('path', config, args);
-
-  const value = impl.getGraphqlAuxiliaryMutationResolvers();
-  expect(value).toBe(undefined);
+  expect(impl.gqlAuxMutationResolvers).toEqual({});
 });
 
 test('createFieldPreHook()', () => {
@@ -135,25 +116,22 @@ test('updateFieldPostHook()', () => {
   expect(value).toBe(undefined);
 });
 
-test('getGraphqlQueryArgs()', () => {
+test('gqlQueryInputFields', () => {
   const impl = new Field('path', config, args);
 
-  const value = impl.getGraphqlQueryArgs();
-  expect(value).toBe(undefined);
+  expect(impl.gqlQueryInputFields).toEqual([]);
 });
 
-test('getGraphqlUpdateArgs()', () => {
+test('gqlUpdateInputFields', () => {
   const impl = new Field('path', config, args);
 
-  const value = impl.getGraphqlUpdateArgs();
-  expect(value).toBe(undefined);
+  expect(impl.gqlUpdateInputFields).toEqual([]);
 });
 
-test('getGraphqlFieldResolvers()', () => {
+test('gqlOutputFieldResolvers', () => {
   const impl = new Field('path', config, args);
 
-  const value = impl.getGraphqlFieldResolvers();
-  expect(value).toBe(undefined);
+  expect(impl.gqlOutputFieldResolvers).toEqual({});
 });
 
 test('getAdminMeta()', () => {

@@ -1,10 +1,13 @@
 // @flow
 
-import React, { Fragment, type Ref } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Fragment, type Ref } from 'react';
 import ReactSelect from 'react-select';
 
-import { colors, gridSize } from '../../theme';
+import { borderRadius, colors, gridSize } from '../../theme';
 import { alpha } from '../../theme/color-utils';
+
 export {
   Checkbox,
   CheckboxPrimitive,
@@ -13,8 +16,7 @@ export {
   RadioPrimitive,
   RadioGroup,
 } from './Controls';
-
-const borderRadius = '0.3em';
+export { DayPicker, DateTimePicker } from './DayPicker';
 
 // Styles shared between input and buttons
 // ------------------------------
@@ -37,11 +39,11 @@ export const buttonAndInputBase = {
 // Basic Input
 // ------------------------------
 
-type InputProps = { innerRef: Ref<*>, isMultiline: boolean };
+type InputProps = { innerRef: Ref<*>, isMultiline?: boolean, disabled?: boolean };
 export const Input = ({ innerRef, isMultiline, ...props }: InputProps) => {
   const css = {
     ...buttonAndInputBase,
-    backgroundColor: 'white',
+    backgroundColor: props.disabled ? colors.N10 : 'white',
     borderColor: colors.N20,
     boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
     color: 'inherit',
@@ -64,11 +66,7 @@ export const Input = ({ innerRef, isMultiline, ...props }: InputProps) => {
     },
   };
   return isMultiline ? (
-    <textarea
-      ref={innerRef}
-      css={{ ...css, lineHeight: 'inherit', height: 'auto' }}
-      {...props}
-    />
+    <textarea ref={innerRef} css={{ ...css, lineHeight: 'inherit', height: 'auto' }} {...props} />
   ) : (
     <input ref={innerRef} css={css} {...props} />
   );
@@ -82,7 +80,7 @@ export const selectStyles = {
     ...base,
     backgroundColor: 'white',
     color: 'inherit',
-    borderRadius: '0.3rem',
+    borderRadius: borderRadius,
     borderColor: isFocused ? colors.primary : colors.N20,
     boxShadow: isFocused
       ? `inset 0 1px 1px rgba(0, 0, 0, 0.075),
@@ -117,9 +115,7 @@ export const selectStyles = {
   }),
 };
 
-export const Select = (props: *) => (
-  <ReactSelect styles={selectStyles} isClearable {...props} />
-);
+export const Select = (props: *) => <ReactSelect styles={selectStyles} isClearable {...props} />;
 
 // Hidden Input
 // ------------------------------

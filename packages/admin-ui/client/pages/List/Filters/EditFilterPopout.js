@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { POPOUT_GUTTER } from '../../../components/Popout';
 import PopoutForm from './PopoutForm';
 
-// This import is loaded by the @keystone/field-views-loader loader.
+// This import is loaded by the @voussoir/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
 import FieldTypes from '../../../FIELD_TYPES';
 
@@ -24,7 +24,7 @@ export default class EditFilterPopout extends Component<Props, State> {
   onSubmit = () => {
     const { filter, onChange } = this.props;
     const { value } = this.state;
-
+    if (value === null) return;
     onChange({
       field: filter.field,
       label: filter.label,
@@ -48,12 +48,7 @@ export default class EditFilterPopout extends Component<Props, State> {
     const headerTitle = filter.field.getFilterLabel(filter);
 
     return (
-      <PopoutForm
-        target={target}
-        headerTitle={headerTitle}
-        onSubmit={this.onSubmit}
-        showFooter
-      >
+      <PopoutForm target={target} headerTitle={headerTitle} onSubmit={this.onSubmit} showFooter>
         {({ ref, recalcHeight }) => (
           <div ref={ref} style={{ padding: POPOUT_GUTTER }}>
             <Filter

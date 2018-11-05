@@ -1,10 +1,10 @@
 // @flow
 
-import React, { PureComponent, type Element } from 'react';
+import React, { PureComponent, type Node } from 'react';
 import { Container, Provider, Subscribe } from 'unstated';
 import { TransitionGroup } from 'react-transition-group';
 
-import { Dialog } from '@keystonejs/ui/src/primitives/modals';
+import { Dialog } from '@voussoir/ui/src/primitives/modals';
 
 // ==============================
 // Dialog Proxy
@@ -16,7 +16,7 @@ const withUtils = (WrappedComponent: any) => (props: any) => (
   </Subscribe>
 );
 
-class DialogProxy extends PureComponent {
+class DialogProxy extends PureComponent<*> {
   componentDidMount() {
     const { modalUtils, ...rest } = this.props;
     modalUtils.setActiveDialog(<Dialog {...rest} />);
@@ -37,7 +37,7 @@ export const ModalDialog = withUtils(DialogProxy);
 // ==============================
 
 type Props = { children: Node };
-type State = { activeDialog: Element<*> };
+type State = { activeDialog: Node };
 
 class ModalState extends Container<State> {
   state = { activeDialog: null };
@@ -51,9 +51,7 @@ export const ModalProvider = ({ children }: Props) => (
     {children}
 
     <Subscribe to={[ModalState]}>
-      {({ state }) => (
-        <TransitionGroup component={null}>{state.activeDialog}</TransitionGroup>
-      )}
+      {({ state }) => <TransitionGroup component={null}>{state.activeDialog}</TransitionGroup>}
     </Subscribe>
   </Provider>
 );

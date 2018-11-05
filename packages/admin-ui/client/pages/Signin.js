@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
-import { Alert } from '@keystonejs/ui/src/primitives/alert';
-import { Input } from '@keystonejs/ui/src/primitives/forms';
-import { LoadingButton } from '@keystonejs/ui/src/primitives/buttons';
-import { colors } from '@keystonejs/ui/src/theme';
+import { Alert } from '@voussoir/ui/src/primitives/alert';
+import { Input } from '@voussoir/ui/src/primitives/forms';
+import { LoadingButton } from '@voussoir/ui/src/primitives/buttons';
+import { colors } from '@voussoir/ui/src/theme';
 
 import SessionProvider from '../providers/Session';
 
@@ -16,6 +16,7 @@ const Container = styled.div({
   flexDirection: 'column',
   justifyContent: 'center',
   minHeight: '100vh',
+  width: '100%',
 });
 
 const Alerts = styled.div({
@@ -86,9 +87,7 @@ class SigninPage extends Component {
       <Container>
         <Alerts>
           {error ? (
-            <Alert appearance="danger">
-              Your username and password were incorrect
-            </Alert>
+            <Alert appearance="danger">Your username and password were incorrect</Alert>
           ) : null}
         </Alerts>
         <Form method="post" onSubmit={this.onSubmit}>
@@ -128,11 +127,7 @@ class SigninPage extends Component {
 }
 
 export default ({ sessionPath, signinPath, signoutPath }) => (
-  <SessionProvider
-    signinPath={signinPath}
-    signoutPath={signoutPath}
-    sessionPath={sessionPath}
-  >
+  <SessionProvider signinPath={signinPath} signoutPath={signoutPath} sessionPath={sessionPath}>
     {props => <SigninPage {...props} />}
   </SessionProvider>
 );

@@ -1,5 +1,6 @@
-import React from 'react';
-import { LoadingIndicator } from '@keystonejs/ui/src/primitives/loading';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { LoadingIndicator } from '@voussoir/ui/src/primitives/loading';
 
 export default function PageLoading() {
   return (
@@ -9,6 +10,7 @@ export default function PageLoading() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        width: '100%',
       }}
     >
       <LoadingIndicator size={12} />

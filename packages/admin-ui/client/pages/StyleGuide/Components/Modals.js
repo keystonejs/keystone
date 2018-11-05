@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { Dialog, Dropdown, Popout } from '@keystonejs/ui/src/primitives/modals';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { Dialog, Dropdown, Popout } from '@voussoir/ui/src/primitives/modals';
 
 export default class ModalGuide extends Component {
   state = { dialogIsOpen: false };
@@ -68,39 +68,31 @@ export default class ModalGuide extends Component {
               <Button appearance="primary" onClick={this.toggleDialog}>
                 Do Thing
               </Button>
-              <Button
-                appearance="warning"
-                variant="subtle"
-                onClick={this.toggleDialog}
-              >
+              <Button appearance="warning" variant="subtle" onClick={this.toggleDialog}>
                 Cancel
               </Button>
             </Fragment>
           }
         >
           <p>
-            Cupcake ipsum dolor. Sit amet gummi bears toffee. Dessert danish
-            fruitcake cupcake powder pie soufflé macaroon cake.
+            Cupcake ipsum dolor. Sit amet gummi bears toffee. Dessert danish fruitcake cupcake
+            powder pie soufflé macaroon cake.
           </p>
           <p>
-            Icing cheesecake topping. Jelly jujubes lemon drops tart jujubes.
-            Biscuit jujubes jelly-o chupa chups tiramisu. Fruitcake brownie
-            donut.
+            Icing cheesecake topping. Jelly jujubes lemon drops tart jujubes. Biscuit jujubes
+            jelly-o chupa chups tiramisu. Fruitcake brownie donut.
           </p>
           <p>
-            Soufflé chocolate bar tart sweet. Gummies sweet roll danish sesame
-            snaps danish liquorice apple pie pie. Apple pie donut pudding dragée
-            gummies soufflé powder.
+            Soufflé chocolate bar tart sweet. Gummies sweet roll danish sesame snaps danish
+            liquorice apple pie pie. Apple pie donut pudding dragée gummies soufflé powder.
           </p>
           <p>
-            Chocolate bear claw dragée fruitcake liquorice. Caramels wafer
-            fruitcake brownie caramels jelly. Tiramisu jelly-o jelly pastry bear
-            claw gummies.
+            Chocolate bear claw dragée fruitcake liquorice. Caramels wafer fruitcake brownie
+            caramels jelly. Tiramisu jelly-o jelly pastry bear claw gummies.
           </p>
           <p>
-            Liquorice jelly-o icing oat cake oat cake halvah tootsie roll.
-            Fruitcake caramels danish tart gingerbread candy macaroon
-            gingerbread sweet. Sugar plum fruitcake wafer.
+            Liquorice jelly-o icing oat cake oat cake halvah tootsie roll. Fruitcake caramels danish
+            tart gingerbread candy macaroon gingerbread sweet. Sugar plum fruitcake wafer.
           </p>
         </Dialog>
       </Fragment>

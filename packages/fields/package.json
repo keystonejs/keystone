@@ -1,21 +1,44 @@
 {
-  "name": "@keystonejs/fields",
-  "private": true,
-  "version": "5.0.0",
+  "name": "@voussoir/fields",
+  "version": "1.0.1",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystonejs/adapter-mongoose": "^1.0.0",
-    "@keystonejs/icons": "^1.0.0",
-    "@keystonejs/ui": "^5.0.0",
-    "@keystonejs/utils": "^1.0.0",
-    "apollo-upload-server": "^5.0.0",
+    "@emotion/core": "^10.0.0-beta.5",
+    "@voussoir/access-control": "^0.1.3",
+    "@voussoir/adapter-mongoose": "^0.3.1",
+    "@voussoir/icons": "^0.1.3",
+    "@voussoir/logger": "^0.1.3",
+    "@voussoir/ui": "^0.2.1",
+    "@voussoir/utils": "^0.2.0",
+    "apollo-errors": "^1.9.0",
+    "bcrypt": "^3.0.0",
     "cuid": "^2.1.1",
+    "date-fns": "^1.29.0",
+    "dumb-passwords": "^0.2.1",
+    "graphql": "^0.13.2",
     "graphql-tag": "^2.8.0",
-    "mongoose": "^5.0.14",
-    "react-apollo": "^2.1.3"
+    "inflection": "^1.12.0",
+    "lodash.get": "^4.4.2",
+    "lodash.groupby": "^4.6.0",
+    "lodash.omitby": "^4.6.0",
+    "lodash.set": "^4.3.2",
+    "luxon": "^1.3.3",
+    "mongoose": "^5.3.3",
+    "p-settle": "^2.1.0",
+    "prop-types": "^15.6.1",
+    "react-apollo": "^2.2.4",
+    "react-color": "^2.14.1"
+  },
+  "peerDependencies": {
+    "react": "^16.5.2"
+  },
+  "devDependencies": {
+    "@voussoir/test-utils": "^0.0.1",
+    "cuid": "^2.1.1",
+    "supertest-light": "^1.0.2"
   }
 }

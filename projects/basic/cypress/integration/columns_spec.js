@@ -9,8 +9,8 @@ describe('Columns', () => {
     },
     {
       url: '/admin/posts',
-      enable: ['Status', 'Author', 'Categories'],
-      disable: ['Name', 'Slug'],
+      enable: ['Views', 'Author', 'Categories'],
+      disable: ['Name', 'Status'],
     },
     {
       url: '/admin/post-categories',

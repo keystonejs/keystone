@@ -1,9 +1,10 @@
 const path = require('path');
-const DefaultPasswordField = require('@keystonejs/fields').Password;
+const DefaultPasswordField = require('@voussoir/fields').Password;
 
-module.exports = Object.assign({}, DefaultPasswordField, {
+module.exports = {
+  ...DefaultPasswordField,
   type: 'Password',
   views: {
     Field: path.resolve(__dirname, './views/Field'),
   },
-});
+};

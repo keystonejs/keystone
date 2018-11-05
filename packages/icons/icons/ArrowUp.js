@@ -14,8 +14,10 @@ class ArrowUpIcon extends Component {
         fill: 'currentColor',
       },
     };
+    const { title, ...props } = this.props;
     return (
-      <svg {...defaults} {...this.props}>
+      <svg {...defaults} {...props}>
+        {title ? <title>{title}</title> : null}
         <path fillRule="evenodd" d="M5 3L0 9h3v4h4V9h3L5 3z"/>
       </svg>
     );

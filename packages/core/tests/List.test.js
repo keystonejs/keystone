@@ -1,4 +1,14 @@
+const gql = require('graphql-tag');
+const { print } = require('graphql/language/printer');
+
+// We don't want to actually log, so we mock it before we require the class
+jest.doMock('@voussoir/logger', () => {
+  return jest.fn(() => ({ warn: () => {}, log: () => {} }));
+});
+
 const List = require('../List');
+const { Text, Checkbox, Float } = require('@voussoir/fields');
+const { getType } = require('@voussoir/utils');
 
 class MockAdminMeta {}
 
@@ -15,18 +25,37 @@ class MockAdapter {
 }
 
 class MockType {
-  constructor(name) {
+  constructor(name, { access }) {
     this.name = name;
+    this.access = access;
   }
   getAdminMeta = () => new MockAdminMeta();
-  getGraphqlSchema = () => `${this.name}_schema`;
-  getGraphqlAuxiliaryTypes = () => `${this.name}_types`;
-  getGraphqlAuxiliaryQueries = () => {};
-  getGraphqlAuxiliaryMutations = () => {};
-  getGraphqlUpdateArgs = () => `${this.name}_update_args`;
-  getGraphqlCreateArgs = () => `${this.name}_create_args`;
-  getGraphqlQueryArgs = () => `${this.name}_query_args`;
+  get gqlOutputFields() {
+    return [`${this.name}_field: String`];
+  }
+  get gqlAuxTypes() {
+    return [`type ${this.name}_type { x: Int }`];
+  }
+  get gqlAuxQueries() {
+    return [];
+  }
+  get gqlAuxMutations() {
+    return [];
+  }
+  get gqlUpdateInputFields() {
+    return [`${this.name}_update_arg: String`];
+  }
+  get gqlCreateInputFields() {
+    return [`${this.name}_create_arg: String`];
+  }
+  get gqlQueryInputFields() {
+    return [`${this.name}_query_arg: String`];
+  }
 }
+
+// Convert a gql field into a normalised format for comparison.
+// Needs to be wrapped in a mock type for gql to correctly parse it.
+const normalise = s => print(gql(`type t { ${s} }`));
 
 const config = {
   fields: {
@@ -39,6 +68,11 @@ const config = {
         },
         adapters: { mock: MockFieldAdapter },
       },
+      access: {
+        create: true,
+        read: true,
+        update: true,
+      },
     },
     email: {
       type: {
@@ -49,6 +83,11 @@ const config = {
         },
         adapters: { mock: MockFieldAdapter },
       },
+      access: {
+        create: true,
+        read: true,
+        update: true,
+      },
     },
   },
 };
@@ -58,6 +97,8 @@ describe('new List()', () => {
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      getAuth: () => {},
+      defaultAccess: { list: true, field: true },
     });
     expect(list).not.toBeNull();
   });
@@ -66,24 +107,32 @@ describe('new List()', () => {
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      getAuth: () => {},
+      defaultAccess: { list: true, field: true },
     });
-    expect(list.label).toEqual('Tests');
-    expect(list.singular).toEqual('Test');
-    expect(list.plural).toEqual('Tests');
-    expect(list.path).toEqual('tests');
-    expect(list.itemQueryName).toEqual('Test');
-    expect(list.listQueryName).toEqual('allTests');
-    expect(list.listQueryMetaName).toEqual('_allTestsMeta');
-    expect(list.deleteMutationName).toEqual('deleteTest');
-    expect(list.deleteManyMutationName).toEqual('deleteTests');
-    expect(list.updateMutationName).toEqual('updateTest');
-    expect(list.createMutationName).toEqual('createTest');
+    expect(list.adminUILabels.label).toEqual('Tests');
+    expect(list.adminUILabels.singular).toEqual('Test');
+    expect(list.adminUILabels.plural).toEqual('Tests');
+    expect(list.adminUILabels.path).toEqual('tests');
+    expect(list.gqlNames.itemQueryName).toEqual('Test');
+    expect(list.gqlNames.listQueryName).toEqual('allTests');
+    expect(list.gqlNames.listQueryMetaName).toEqual('_allTestsMeta');
+    expect(list.gqlNames.deleteMutationName).toEqual('deleteTest');
+    expect(list.gqlNames.deleteManyMutationName).toEqual('deleteTests');
+    expect(list.gqlNames.updateMutationName).toEqual('updateTest');
+    expect(list.gqlNames.createMutationName).toEqual('createTest');
+    expect(list.gqlNames.whereInputName).toEqual('TestWhereInput');
+    expect(list.gqlNames.whereUniqueInputName).toEqual('TestWhereUniqueInput');
+    expect(list.gqlNames.updateInputName).toEqual('TestUpdateInput');
+    expect(list.gqlNames.createInputName).toEqual('TestCreateInput');
   });
 
   test('new List() - fields', () => {
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      getAuth: () => {},
+      defaultAccess: { list: true, field: true },
     });
     expect(list.fields).toHaveLength(2);
     expect(list.fields[0]).toBeInstanceOf(MockType);
@@ -94,6 +143,8 @@ describe('new List()', () => {
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      getAuth: () => {},
+      defaultAccess: { list: true, field: true },
     });
     expect(list.views).toEqual({
       name: {
@@ -113,6 +164,8 @@ describe('getAdminMeta()', () => {
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      getAuth: () => {},
+      defaultAccess: { list: true, field: true },
     });
     const adminMeta = list.getAdminMeta();
     expect(adminMeta).not.toBeNull();
@@ -122,6 +175,8 @@ describe('getAdminMeta()', () => {
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      getAuth: () => {},
+      defaultAccess: { list: true, field: true },
     });
     const adminMeta = list.getAdminMeta();
 
@@ -130,19 +185,25 @@ describe('getAdminMeta()', () => {
     expect(adminMeta.singular).toEqual('Test');
     expect(adminMeta.plural).toEqual('Tests');
     expect(adminMeta.path).toEqual('tests');
-    expect(adminMeta.itemQueryName).toEqual('Test');
-    expect(adminMeta.listQueryName).toEqual('allTests');
-    expect(adminMeta.listQueryMetaName).toEqual('_allTestsMeta');
-    expect(adminMeta.deleteMutationName).toEqual('deleteTest');
-    expect(adminMeta.deleteManyMutationName).toEqual('deleteTests');
-    expect(adminMeta.updateMutationName).toEqual('updateTest');
-    expect(adminMeta.createMutationName).toEqual('createTest');
+    expect(adminMeta.gqlNames.itemQueryName).toEqual('Test');
+    expect(adminMeta.gqlNames.listQueryName).toEqual('allTests');
+    expect(adminMeta.gqlNames.listQueryMetaName).toEqual('_allTestsMeta');
+    expect(adminMeta.gqlNames.deleteMutationName).toEqual('deleteTest');
+    expect(adminMeta.gqlNames.deleteManyMutationName).toEqual('deleteTests');
+    expect(adminMeta.gqlNames.updateMutationName).toEqual('updateTest');
+    expect(adminMeta.gqlNames.createMutationName).toEqual('createTest');
+    expect(adminMeta.gqlNames.whereInputName).toEqual('TestWhereInput');
+    expect(adminMeta.gqlNames.whereUniqueInputName).toEqual('TestWhereUniqueInput');
+    expect(adminMeta.gqlNames.updateInputName).toEqual('TestUpdateInput');
+    expect(adminMeta.gqlNames.createInputName).toEqual('TestCreateInput');
   });
 
   test('getAdminMeta() - fields', () => {
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      getAuth: () => {},
+      defaultAccess: { list: true, field: true },
     });
     const adminMeta = list.getAdminMeta();
 
@@ -155,6 +216,8 @@ describe('getAdminMeta()', () => {
     const list = new List('Test', config, {
       adapter: new MockAdapter(),
       lists: [],
+      getAuth: () => {},
+      defaultAccess: { list: true, field: true },
     });
     const adminMeta = list.getAdminMeta();
 
@@ -171,143 +234,175 @@ describe('getAdminMeta()', () => {
   });
 });
 
-test('getAdminGraphqlTypes()', () => {
+test('gqlTypes', () => {
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
+    getAuth: () => {},
+    defaultAccess: { list: true, field: true },
   });
-  const types = list.getAdminGraphqlTypes();
+  const types = list.gqlTypes.map(s => print(gql(s)));
 
-  expect(types).toEqual([
-    `
-      type Test {
-        id: String
-        # This virtual field will be resolved in one of the following ways (in this order):
-        # 1. Execution of 'labelResolver' set on the Test List config, or
-        # 2. As an alias to the field set on 'labelField' in the Test List config, or
-        # 3. As an alias to a 'name' field on the Test List (if one exists), or
-        # 4. As an alias to the 'id' field on the Test List.
-        _label_: String
-        name_schema
-        email_schema
-      }
-      `,
-    `
-      input TestWhereInput {
-        id: ID
-        id_not: ID
-        # MockType field
-        name_query_args
-
-        # MockType field
-        email_query_args
-      }
-      `,
-    `
-      input TestWhereUniqueInput {
-        id: ID!
-      }
-      `,
-    `
-      input TestUpdateInput {
-        name_update_args
-        email_update_args
-      }
-      `,
-    `
-      input TestCreateInput {
-        name_create_args
-        email_create_args
-      }
-      `,
-    'name_types',
-    'email_types',
-  ]);
+  expect(types).toEqual(
+    [
+      'type name_type { x: Int }',
+      'type email_type { x: Int }',
+      `type Test {
+      id: ID
+      """
+      This virtual field will be resolved in one of the following ways (in this order):
+      1. Execution of 'labelResolver' set on the Test List config, or
+      2. As an alias to the field set on 'labelField' in the Test List config, or
+      3. As an alias to a 'name' field on the Test List (if one exists), or
+      4. As an alias to the 'id' field on the Test List.
+      """
+      _label_: String
+      name_field: String
+      email_field: String
+    }`,
+      `input TestWhereInput {
+      id: ID
+      id_not: ID
+      id_in: [ID!]
+      id_not_in: [ID!]
+      AND: [TestWhereInput]
+      OR: [TestWhereInput]
+      name_query_arg: String
+      email_query_arg: String
+    }`,
+      `input TestWhereUniqueInput {
+      id: ID!
+    }`,
+      `input TestUpdateInput {
+      name_update_arg: String
+      email_update_arg: String
+    }`,
+      `input TestCreateInput {
+      name_create_arg: String
+      email_create_arg: String
+    }`,
+    ].map(s => print(gql(s)))
+  );
 });
 
-test('getAdminGraphqlQueries()', () => {
+test('gqlQueries', () => {
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
+    getAuth: () => {},
+    defaultAccess: { list: true, field: true },
   });
-  const queries = list.getAdminGraphqlQueries();
+  const queries = list.gqlQueries.map(normalise);
 
-  expect(queries).toEqual([
-    `
-        allTests(
-          where: TestWhereInput
-
-          search: String
-          orderBy: String
-
-          # Pagination
-          first: Int
-          skip: Int
-        ): [Test]
-
-        Test(where: TestWhereUniqueInput!): Test
-
-        _allTestsMeta(
-          where: TestWhereInput
-
-          search: String
-          orderBy: String
-
-          # Pagination
-          first: Int
-          skip: Int
-        ): _QueryMeta
-      `,
-  ]);
+  expect(queries).toEqual(
+    [
+      `allTests(
+      where: TestWhereInput
+      search: String
+      orderBy: String
+      first: Int
+      skip: Int
+    ): [Test]`,
+      `Test(
+      where: TestWhereUniqueInput!
+    ): Test`,
+      `_allTestsMeta(
+      where: TestWhereInput
+      search: String
+      orderBy: String
+      first: Int
+      skip: Int
+    ): _QueryMeta`,
+      `_TestsMeta: _ListMeta`,
+    ].map(normalise)
+  );
 });
 
-test('getAdminGraphqlMutations()', () => {
+test('gqlMutations', () => {
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
+    getAuth: () => {},
+    defaultAccess: { list: true, field: true },
   });
-  const mutations = list.getAdminGraphqlMutations().map(mute => mute.trim());
+  const mutations = list.gqlMutations.map(normalise);
 
-  expect(mutations).toEqual([
-    `
-        createTest(
-          data: TestUpdateInput
-        ): Test
-        updateTest(
-          id: String!
-          data: TestUpdateInput
-        ): Test
-        deleteTest(
-          id: String!
-        ): Test
-        deleteTests(
-          ids: [String!]
-        ): Test
-     `.trim(),
-  ]);
+  expect(mutations).toEqual(
+    [
+      `createTest(
+      data: TestCreateInput
+    ): Test`,
+      `updateTest(
+      id: ID!
+      data: TestUpdateInput
+    ): Test`,
+      `deleteTest(
+      id: ID!
+    ): Test`,
+      `deleteTests(
+      ids: [ID!]
+    ): [Test]`,
+    ].map(normalise)
+  );
 });
 
-test('getAdminQueryResolvers()', () => {
+test('gqlQueryResolvers', () => {
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
+    getAuth: () => {},
+    defaultAccess: { list: true, field: true },
   });
-  const resolvers = list.getAdminQueryResolvers();
+  const resolvers = list.gqlQueryResolvers;
 
   expect(resolvers['Test']).toBeInstanceOf(Function);
   expect(resolvers['allTests']).toBeInstanceOf(Function);
   expect(resolvers['_allTestsMeta']).toBeInstanceOf(Function);
 });
 
-test('getAdminMutationResolvers()', () => {
+test('gqlMutationResolvers', () => {
   const list = new List('Test', config, {
     adapter: new MockAdapter(),
     lists: [],
+    getAuth: () => {},
+    defaultAccess: { list: true, field: true },
   });
-  const resolvers = list.getAdminMutationResolvers();
+  const resolvers = list.gqlMutationResolvers;
 
   expect(resolvers['createTest']).toBeInstanceOf(Function);
   expect(resolvers['updateTest']).toBeInstanceOf(Function);
   expect(resolvers['deleteTest']).toBeInstanceOf(Function);
   expect(resolvers['deleteTests']).toBeInstanceOf(Function);
+});
+
+describe('Maps from Native JS types to Keystone types', () => {
+  const adapter = new MockAdapter();
+
+  [
+    {
+      nativeType: Boolean,
+      keystoneType: Checkbox,
+    },
+    {
+      nativeType: String,
+      keystoneType: Text,
+    },
+    {
+      nativeType: Number,
+      keystoneType: Float,
+    },
+  ].forEach(({ nativeType, keystoneType }) => {
+    test(`${getType(nativeType.prototype)} -> ${keystoneType.type}`, () => {
+      const list = new List(
+        'Test',
+        { fields: { foo: { type: nativeType } } },
+        {
+          adapter,
+          getAuth: () => {},
+          defaultAccess: { list: true, field: true },
+        }
+      );
+      expect(list.fieldsByPath.foo).toBeInstanceOf(keystoneType.implementation);
+    });
+  });
 });

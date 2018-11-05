@@ -2,15 +2,12 @@ const cloudinary = require('cloudinary');
 
 function uploadStream(stream, options) {
   return new Promise((resolve, reject) => {
-    const cloudinaryStream = cloudinary.v2.uploader.upload_stream(
-      options,
-      (error, result) => {
-        if (error) {
-          return reject(error);
-        }
-        resolve(result);
+    const cloudinaryStream = cloudinary.v2.uploader.upload_stream(options, (error, result) => {
+      if (error) {
+        return reject(error);
       }
-    );
+      resolve(result);
+    });
 
     stream.pipe(cloudinaryStream);
   });
@@ -19,9 +16,7 @@ function uploadStream(stream, options) {
 module.exports = class CloudinaryAdapter {
   constructor(options) {
     if (!options.cloudName || !options.apiKey || !options.apiSecret) {
-      throw new Error(
-        'CloudinaryAdapter requires cloudName, apiKey, and apiSecret'
-      );
+      throw new Error('CloudinaryAdapter requires cloudName, apiKey, and apiSecret');
     }
     this.cloudName = options.cloudName;
     this.apiKey = options.apiKey;
@@ -49,11 +44,15 @@ module.exports = class CloudinaryAdapter {
     }));
   }
 
-  publicUrl({ _meta: { secure_url } }) {
-    return secure_url;
+  publicUrl({ _meta: { secure_url } = {} } = {}) {
+    return secure_url || null;
   }
 
-  publicUrlTransformed({ _meta }, options = {}) {
+  publicUrlTransformed({ _meta } = {}, options = {}) {
+    if (!_meta) {
+      return null;
+    }
+
     const { prettyName, ...transformation } = options;
     // No formatting options provided, return the publicUrl field
     if (!transformation || !Object.keys(transformation).length) {

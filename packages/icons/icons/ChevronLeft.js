@@ -14,8 +14,10 @@ class ChevronLeftIcon extends Component {
         fill: 'currentColor',
       },
     };
+    const { title, ...props } = this.props;
     return (
-      <svg {...defaults} {...this.props}>
+      <svg {...defaults} {...props}>
+        {title ? <title>{title}</title> : null}
         <path fillRule="evenodd" d="M6 3l1.5 1.5L3.75 8l3.75 3.5L6 13 1 8l5-5z"/>
       </svg>
     );

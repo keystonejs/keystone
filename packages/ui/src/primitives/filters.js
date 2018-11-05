@@ -1,4 +1,6 @@
-import React, { Children, Component } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Children, Component } from 'react';
 import ReactSelect, { components as reactSelectComponents } from 'react-select';
 import {
   CheckboxGroup as _CheckboxGroup,
@@ -121,23 +123,15 @@ const ControlLabel = ({ isChecked, isDisabled, ...props }) => {
 const StretchGroup = props => <FlexGroup stretch {...props} />;
 
 // checkbox
-export const CheckboxGroup = props => (
-  <_CheckboxGroup component={StretchGroup} {...props} />
-);
+export const CheckboxGroup = props => <_CheckboxGroup component={StretchGroup} {...props} />;
 const ButtonCheckbox = props => (
   <CheckboxPrimitive components={{ Label: ControlLabel }} {...props} />
 );
-export const Checkbox = props => (
-  <_Checkbox component={ButtonCheckbox} {...props} />
-);
+export const Checkbox = props => <_Checkbox component={ButtonCheckbox} {...props} />;
 
 // radio
-export const RadioGroup = props => (
-  <_RadioGroup component={StretchGroup} {...props} />
-);
-const ButtonRadio = props => (
-  <RadioPrimitive components={{ Label: ControlLabel }} {...props} />
-);
+export const RadioGroup = props => <_RadioGroup component={StretchGroup} {...props} />;
+const ButtonRadio = props => <RadioPrimitive components={{ Label: ControlLabel }} {...props} />;
 export const Radio = props => <_Radio component={ButtonRadio} {...props} />;
 
 // ==============================

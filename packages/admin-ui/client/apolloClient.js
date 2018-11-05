@@ -25,9 +25,7 @@ class BoostClientWithUplaod extends ApolloClient {
         : new InMemoryCache();
 
     const stateLink =
-      config && config.clientState
-        ? withClientState({ ...config.clientState, cache })
-        : false;
+      config && config.clientState ? withClientState({ ...config.clientState, cache }) : false;
 
     const errorLink =
       config && config.onError
@@ -78,9 +76,7 @@ class BoostClientWithUplaod extends ApolloClient {
       credentials: 'same-origin',
     });
 
-    const link = ApolloLink.from(
-      [errorLink, requestHandler, stateLink, httpLink].filter(x => !!x)
-    );
+    const link = ApolloLink.from([errorLink, requestHandler, stateLink, httpLink].filter(x => x));
 
     // super hacky, we will fix the types eventually
     super({ cache, link });

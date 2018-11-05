@@ -1,7 +1,9 @@
 // @flow
 
-import React, { Children, cloneElement, type Node } from 'react';
-import styled from 'react-emotion';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Children, cloneElement, type Node } from 'react';
+import styled from '@emotion/styled';
 
 import { smOnly } from './media-queries';
 import { gridSize } from '../theme';
@@ -53,12 +55,7 @@ type FlexGroupProps = {
   isContiguous: boolean,
   isInline: boolean,
   isVertical: boolean,
-  justify:
-    | 'space-between'
-    | 'space-around'
-    | 'center'
-    | 'flex-end'
-    | 'flex-start',
+  justify: 'space-between' | 'space-around' | 'center' | 'flex-end' | 'flex-start',
   wrap: boolean,
   spacing: number,
   stretch: boolean,
@@ -80,7 +77,7 @@ export const FlexGroup = ({
 }: FlexGroupProps) => {
   const gutter = spacing / 2;
   const length = Children.count(children);
-  const childArray = Children.toArray(children).filter(Boolean); // filter out null and undefined children
+  const childArray = Children.toArray(children).filter(child => child); // filter out null and undefined children
 
   return (
     <Tag
@@ -163,9 +160,7 @@ export const Grid = ({
 }: GridProps) => {
   const templateRows = rows ? { gridTemplateRows: rows } : {};
   const templateAreas = areas ? { gridTemplateAreas: formatAreas(areas) } : {};
-  const gridTemplateColumns = Number.isInteger(columns)
-    ? `repeat(${columns}, 1fr)`
-    : columns;
+  const gridTemplateColumns = Number.isInteger(columns) ? `repeat(${columns}, 1fr)` : columns;
 
   return (
     <div
@@ -198,14 +193,7 @@ type CellProps = {
   width: number,
 };
 
-export const Cell = ({
-  area,
-  height = 1,
-  left,
-  top,
-  width = 1,
-  ...props
-}: CellProps) => (
+export const Cell = ({ area, height = 1, left, top, width = 1, ...props }: CellProps) => (
   <div
     css={{
       alignContent: 'space-around',

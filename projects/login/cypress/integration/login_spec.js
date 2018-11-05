@@ -1,4 +1,4 @@
-const USERNAME = 'boris@keystonejs.com';
+const USERNAME = 'boris@voussoir.com';
 const PASSWORD = 'correctbattery';
 
 describe('Testing Login', () => {
@@ -28,10 +28,7 @@ describe('Testing Login', () => {
       // appear to be attached, so the form is not getting validated correctly
       cy.wait(250);
       cy.get('button[type="submit"]').click();
-      cy.get('body').should(
-        'contain',
-        'Your username and password were incorrect'
-      );
+      cy.get('body').should('contain', 'Your username and password were incorrect');
     });
 
     it('Does not log in with invalid credentials', () => {
@@ -46,10 +43,7 @@ describe('Testing Login', () => {
         .type('gibberish', { force: true });
 
       cy.get('button[type="submit"]').click();
-      cy.get('body').should(
-        'contain',
-        'Your username and password were incorrect'
-      );
+      cy.get('body').should('contain', 'Your username and password were incorrect');
     });
 
     it('Does not log in with invalid username', () => {
@@ -64,10 +58,7 @@ describe('Testing Login', () => {
         .type(PASSWORD, { force: true });
 
       cy.get('button[type="submit"]').click();
-      cy.get('body').should(
-        'contain',
-        'Your username and password were incorrect'
-      );
+      cy.get('body').should('contain', 'Your username and password were incorrect');
     });
 
     it('Does not log in with invalid password', () => {
@@ -82,10 +73,7 @@ describe('Testing Login', () => {
         .type('gibberish', { force: true });
 
       cy.get('button[type="submit"]').click();
-      cy.get('body').should(
-        'contain',
-        'Your username and password were incorrect'
-      );
+      cy.get('body').should('contain', 'Your username and password were incorrect');
     });
   });
 
@@ -133,6 +121,47 @@ describe('Testing Login', () => {
       cy.url().should('match', /admin\/users$/);
       cy.get('body').should('contain', 'Users');
       cy.get('body').should('contain', 'Showing 2 Users');
+    });
+  });
+});
+
+describe('authenticated item', () => {
+  before(() => {
+    cy.visit('/admin');
+  });
+
+  describe('logged out', () => {
+    it('current user query returns null', () => {
+      cy.graphql_query('/admin/api', '{ authenticatedUser { id } }').then(({ data, errors }) => {
+        expect(data).to.have.property('authenticatedUser', null);
+        expect(errors).to.equal(undefined);
+      });
+    });
+  });
+
+  describe('logged in', () => {
+    before(() => {
+      cy.visit('/admin');
+
+      cy.get('input[name="username"]')
+        .clear({ force: true })
+        .type(USERNAME, { force: true });
+
+      cy.get('[name="password"]')
+        .clear({ force: true })
+        .type(PASSWORD, { force: true });
+
+      cy.get('button[type="submit"]').click();
+
+      // Wait for page to load (completing the signin round trip)
+      cy.get('main h1').should('contain', 'Home');
+    });
+
+    it('current user query returns user info', () => {
+      cy.graphql_query('/admin/api', '{ authenticatedUser { id } }').then(({ data, errors }) => {
+        expect(data).to.have.deep.property('authenticatedUser.id');
+        expect(errors).to.equal(undefined);
+      });
     });
   });
 });

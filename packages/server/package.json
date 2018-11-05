@@ -1,18 +1,27 @@
 {
-  "name": "@keystonejs/server",
-  "private": true,
-  "version": "5.0.0",
+  "name": "@voussoir/server",
+  "version": "0.2.1",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystonejs/utils": "^1.0.0",
-    "apollo-server-express": "^1.3.4",
+    "@voussoir/logger": "^0.1.3",
+    "@voussoir/utils": "^0.2.0",
+    "apollo-errors": "^1.9.0",
+    "apollo-server-express": "^2.1.0",
     "body-parser": "^1.18.2",
+    "cookie": "^0.3.1",
+    "cookie-signature": "^1.1.0",
     "cors": "^2.8.4",
+    "cuid": "^2.1.1",
     "express": "^4.16.3",
-    "graphql": "^0.13.2"
+    "express-pino-logger": "^4.0.0",
+    "express-session": "^1.15.6",
+    "falsey": "^1.0.0",
+    "fast-memoize": "^2.4.0",
+    "graphql": "^0.13.2",
+    "graphql-playground-html": "^1.6.0"
   }
 }

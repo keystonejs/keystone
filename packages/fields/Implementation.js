@@ -1,30 +1,42 @@
 const inflection = require('inflection');
+const { parseFieldAccess, testFieldAccessControl } = require('@voussoir/access-control');
 
 class Field {
   constructor(
     path,
     config,
-    { getListByKey, listKey, listAdapter, fieldAdapterClass }
+    { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess }
   ) {
     this.path = path;
     this.config = config;
     this.getListByKey = getListByKey;
     this.listKey = listKey;
-    this.label = config.label || inflection.humanize(path);
+    this.label = config.label || inflection.humanize(inflection.underscore(path));
     this.adapter = listAdapter.newFieldAdapter(
       fieldAdapterClass,
       this.constructor.name,
       path,
+      getListByKey,
       config
     );
+
+    // Should be overwritten by types that implement a Relationship interface
+    this.isRelationship = false;
+
+    this.access = parseFieldAccess({
+      listKey,
+      fieldKey: path,
+      defaultAccess,
+      access: config.access,
+    });
   }
-  getGraphqlSchema() {
-    if (!this.graphQLType) {
-      throw new Error(
-        `Field type [${this.constructor.name}] does not implement graphQLType`
-      );
-    }
-    return `${this.path}: ${this.graphQLType}`;
+
+  // Field types should replace this if they want to any fields to the output type
+  get gqlOutputFields() {
+    return [];
+  }
+  get gqlOutputFieldResolvers() {
+    return {};
   }
 
   /**
@@ -37,60 +49,107 @@ class Field {
    * NOTE: When a naming conflic occurs, a list's types/queries/mutations will
    * overwrite any auxiliary types defined by an individual type.
    */
-  getGraphqlAuxiliaryTypes() {}
-  getGraphqlAuxiliaryTypeResolvers() {}
-  getGraphqlAuxiliaryQueries() {}
-  getGraphqlAuxiliaryQueryResolvers() {}
-  getGraphqlAuxiliaryMutations() {}
-  getGraphqlAuxiliaryMutationResolvers() {}
+  get gqlAuxTypes() {
+    return [];
+  }
+  get gqlAuxFieldResolvers() {
+    return {};
+  }
+
+  get gqlAuxQueries() {
+    return [];
+  }
+  get gqlAuxQueryResolvers() {
+    return {};
+  }
+
+  get gqlAuxMutations() {
+    return [];
+  }
+  get gqlAuxMutationResolvers() {
+    return {};
+  }
 
   /**
    * Hooks for performing actions before / after fields are mutated.
-   * For example: with a field { avatar: { type: File }}, it wants to put the
-   * file on S3 in the `createFieldPreHook()`, then return asn S3 object ID as
+   * For example: with a field { avatar: { type: S3File }}, it wants to put the
+   * file on S3 in the `createFieldPreHook()`, then return an S3 object ID as
    * the result to store in `avatar`
    *
    * @param data {Mixed} The data received from the query
-   * @param item {Object} The existing version of the item
-   * @param path {String} The path of the field in the item
+   * @param context {Mixed} The GraphQL Context object for the current request
    */
-  createFieldPreHook(data) {
+  // eslint-disable-next-line no-unused-vars
+  createFieldPreHook(data, context) {
     return data;
   }
   /*
-   * @param data {Mixed} The data as saved & read from the DB
+   * @param data {Mixed} The value of this field as saved & read from the DB
    * @param item {Object} The existing version of the item
-   * @param path {String} The path of the field in the item
+   * @param context {Mixed} The GraphQL Context object for the current request
    */
-  createFieldPostHook() {}
+  createFieldPostHook(data, item, context) {} // eslint-disable-line no-unused-vars
   /*
-   * @param data {Mixed} The data received from the query
+   * @param data {Mixed} The value of this field received from the query
    * @param item {Object} The existing version of the item
-   * @param path {String} The path of the field in the item
+   * @param context {Mixed} The GraphQL Context object for the current request
    */
-  updateFieldPreHook(data) {
+  // eslint-disable-next-line no-unused-vars
+  updateFieldPreHook(data, item, context) {
     return data;
   }
   /*
-   * @param data {Mixed} The data as saved & read from the DB
+   * @param data {Mixed} The value of this field as saved & read from the DB
    * @param item {Object} The existing version of the item
-   * @param path {String} The path of the field in the item
+   * @param context {Mixed} The GraphQL Context object for the current request
    */
-  updateFieldPostHook() {}
+  updateFieldPostHook(data, item, context) {} // eslint-disable-line no-unused-vars
+  /*
+   * @param data {Mixed} The value of this field as read from the DB
+   * @param item {Object} The existing version of the item
+   * @param context {Mixed} The GraphQL Context object for the current request
+   */
+  deleteFieldPreHook(data, item, context) {} // eslint-disable-line no-unused-vars
+  /*
+   * @param data {Mixed} The value of this field as read from the DB
+   * @param item {Object} The existing version of the item
+   * @param context {Mixed} The GraphQL Context object for the current request
+   */
+  deleteFieldPostHook(data, item, context) {} // eslint-disable-line no-unused-vars
 
-  getGraphqlQueryArgs() {}
-  getGraphqlUpdateArgs() {}
-  getGraphqlFieldResolvers() {}
+  get gqlQueryInputFields() {
+    return [];
+  }
+  get gqlCreateInputFields() {
+    return [];
+  }
+  get gqlUpdateInputFields() {
+    return [];
+  }
+
   getAdminMeta() {
     return this.extendAdminMeta({
       label: this.label,
       path: this.path,
       type: this.constructor.name,
-      defaultValue: this.config.defaultValue,
+      defaultValue: this.getDefaultValue(),
     });
   }
   extendAdminMeta(meta) {
     return meta;
+  }
+  getDefaultValue() {
+    return this.config.defaultValue;
+  }
+  testAccessControl({ listKey, item, operation, authentication }) {
+    return testFieldAccessControl({
+      access: this.access,
+      item,
+      operation,
+      authentication,
+      fieldKey: this.path,
+      listKey,
+    });
   }
 }
 

@@ -1,12 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import { Mutation } from 'react-apollo';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { Drawer } from '@keystonejs/ui/src/primitives/modals';
-import { resolveAllKeys } from '@keystonejs/utils';
-import { gridSize } from '@keystonejs/ui/src/theme';
-import { AutocompleteCaptor } from '@keystonejs/ui/src/primitives/forms';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { Drawer } from '@voussoir/ui/src/primitives/modals';
+import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
+import { gridSize } from '@voussoir/ui/src/theme';
+import { AutocompleteCaptor } from '@voussoir/ui/src/primitives/forms';
 
 import FieldTypes from '../FIELD_TYPES';
 
@@ -34,15 +34,7 @@ class CreateItemModal extends Component {
     if (isLoading) return;
     const { item } = this.state;
 
-    resolveAllKeys(
-      fields.reduce(
-        (values, field) => ({
-          ...values,
-          [field.path]: field.getValue(item),
-        }),
-        {}
-      )
-    )
+    resolveAllKeys(arrayToObject(fields, 'path', field => field.getValue(item)))
       .then(data => createItem({ variables: { data } }))
       .then(this.props.onCreate);
   };
@@ -67,9 +59,7 @@ class CreateItemModal extends Component {
       },
     });
   };
-  formComponent = props => (
-    <form autoComplete="off" onSubmit={this.onCreate} {...props} />
-  );
+  formComponent = props => <form autoComplete="off" onSubmit={this.onCreate} {...props} />;
   render() {
     const { isLoading, isOpen, list } = this.props;
     const { item } = this.state;
@@ -87,11 +77,7 @@ class CreateItemModal extends Component {
             <Button appearance="create" type="submit">
               {isLoading ? 'Loading...' : 'Create'}
             </Button>
-            <Button
-              appearance="warning"
-              variant="subtle"
-              onClick={this.onClose}
-            >
+            <Button appearance="warning" variant="subtle" onClick={this.onClose}>
               Cancel
             </Button>
           </Fragment>
@@ -106,6 +92,7 @@ class CreateItemModal extends Component {
                 item={item}
                 field={field}
                 key={field.path}
+                itemErrors={[] /* TODO: Permission query results */}
                 onChange={this.onChange}
                 renderContext="dialog"
               />
@@ -123,11 +110,7 @@ export default class CreateItemModalWithMutation extends Component {
     return (
       <Mutation mutation={list.createMutation}>
         {(createItem, { loading }) => (
-          <CreateItemModal
-            createItem={createItem}
-            isLoading={loading}
-            {...this.props}
-          />
+          <CreateItemModal createItem={createItem} isLoading={loading} {...this.props} />
         )}
       </Mutation>
     );

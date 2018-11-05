@@ -1,6 +1,8 @@
-import React, { Component, Fragment } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, Fragment } from 'react';
 
-import { colors, gridSize } from '@keystonejs/ui/src/theme';
+import { colors, gridSize } from '@voussoir/ui/src/theme';
 import { Popout } from '../../../components/Popout';
 import AnimateHeight from '../../../components/AnimateHeight';
 
@@ -65,10 +67,10 @@ export default class FilterPopout extends Component<Props> {
 
     return (
       <Fragment>
+        <FooterButton onClick={this.close}>Cancel</FooterButton>
         <FooterButton type="submit" isPrimary>
           Apply
         </FooterButton>
-        <FooterButton onClick={this.close}>Cancel</FooterButton>
       </Fragment>
     );
   }

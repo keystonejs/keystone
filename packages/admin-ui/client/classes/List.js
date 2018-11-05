@@ -1,50 +1,11 @@
 import gql from 'graphql-tag';
 
 import FieldTypes from '../FIELD_TYPES';
+import { arrayToObject } from '@voussoir/utils';
 
-const getCreateMutation = list => {
-  const { key } = list;
-  return gql`
-    mutation create($data: ${key}UpdateInput!) {
-      ${list.createMutationName}(data: $data) {
-        id
-      }
-    }
-  `;
-};
-
-const getUpdateMutation = list => {
-  return gql`
-    mutation update(
-      $id: String!,
-      $data: ${list.key}UpdateInput)
-    {
-      ${list.updateMutationName}(id: $id, data: $data) {
-        id
-      }
-    }
-  `;
-};
-
-const getDeleteMutation = list => {
-  return gql`
-    mutation delete($id: String!) {
-      ${list.deleteMutationName}(id: $id) {
-        id
-      }
-    }
-  `;
-};
-
-const getDeleteManyMutation = list => {
-  return gql`
-    mutation deleteMany($ids: [String!]) {
-      ${list.deleteManyMutationName}(ids: $ids) {
-        id
-      }
-    }
-  `;
-};
+export const gqlCountQueries = lists => gql`{
+  ${lists.map(list => list.countQuery()).join('\n')}
+}`;
 
 export default class List {
   constructor(config, adminMeta) {
@@ -58,19 +19,100 @@ export default class List {
       return new Controller(fieldConfig, this, adminMeta);
     });
 
-    this.createMutation = getCreateMutation(this);
-    this.updateMutation = getUpdateMutation(this);
-    this.deleteMutation = getDeleteMutation(this);
-    this.deleteManyMutation = getDeleteManyMutation(this);
+    this.createMutation = gql`
+      mutation create($data: ${this.gqlNames.createInputName}!) {
+        ${this.gqlNames.createMutationName}(data: $data) {
+          id
+        }
+      }
+    `;
+    this.updateMutation = gql`
+      mutation update(
+        $id: ID!,
+        $data: ${this.gqlNames.updateInputName})
+      {
+        ${this.gqlNames.updateMutationName}(id: $id, data: $data) {
+          id
+        }
+      }
+    `;
+    this.deleteMutation = gql`
+      mutation delete($id: ID!) {
+        ${this.gqlNames.deleteMutationName}(id: $id) {
+          id
+        }
+      }
+    `;
+    this.deleteManyMutation = gql`
+      mutation deleteMany($ids: [ID!]) {
+        ${this.gqlNames.deleteManyMutationName}(ids: $ids) {
+          id
+        }
+      }
+    `;
   }
+
+  buildQuery(queryName, queryArgs = '', fields = []) {
+    return `
+      ${queryName}${queryArgs} {
+        id
+        _label_
+        ${fields.map(field => field.getQueryFragment()).join(' ')}
+      }`;
+  }
+
+  static getQueryArgs = ({ filters, ...args }) => {
+    const queryArgs = Object.keys(args).map(
+      // Using stringify to get the correct quotes depending on type
+      argName => `${argName}: ${JSON.stringify(args[argName])}`
+    );
+    if (filters) {
+      const filterArgs = filters.map(filter => filter.field.getFilterGraphQL(filter));
+      if (filterArgs.length) {
+        queryArgs.push(`where: { ${filterArgs.join(', ')} }`);
+      }
+    }
+    return queryArgs.length ? `(${queryArgs.join(' ')})` : '';
+  };
+
+  getItemQuery(itemId) {
+    return gql`{
+      ${this.buildQuery(this.gqlNames.itemQueryName, `(where: { id: "${itemId}" })`, this.fields)}
+    }`;
+  }
+
+  getQuery({ fields, filters, search, orderBy, skip, first }) {
+    const queryArgs = List.getQueryArgs({ first, filters, search, skip, orderBy });
+    const metaQueryArgs = List.getQueryArgs({ filters, search });
+    const safeFields = fields.filter(field => field.path !== '_label_');
+    return gql`{
+      ${this.buildQuery(this.gqlNames.listQueryName, queryArgs, safeFields)}
+      ${this.countQuery(metaQueryArgs)}
+    }`;
+  }
+
+  getBasicQuery() {
+    // TODO: How can we replace this with field.Controller.getQueryFragment()?
+    return gql`{
+      ${this.buildQuery(this.gqlNames.listQueryName)}
+    }`;
+  }
+
+  countQuery(metaQueryArgs = '') {
+    return `${this.gqlNames.listQueryMetaName}${metaQueryArgs} { count }`;
+  }
+
   getInitialItemData() {
-    return this.fields.reduce((data, field) => {
-      data[field.path] = field.getInitialData();
-      return data;
-    }, {});
+    return arrayToObject(this.fields, 'path', field => field.getInitialData());
   }
   formatCount(items) {
     const count = Array.isArray(items) ? items.length : items;
     return count === 1 ? `1 ${this.singular}` : `${count} ${this.plural}`;
+  }
+  getPersistedSearch() {
+    return localStorage.getItem(`search:${this.config.path}`);
+  }
+  setPersistedSearch(value) {
+    localStorage.setItem(`search:${this.config.path}`, value);
   }
 }

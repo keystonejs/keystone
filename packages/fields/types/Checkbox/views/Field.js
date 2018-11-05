@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 
-import {
-  FieldContainer,
-  FieldLabel,
-  FieldInput,
-} from '@keystonejs/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
 
 // TODO: use pretty checkboxes - these only work in a CheckGroup situation.
-// import { Checkbox } from '@keystonejs/ui/src/primitives/forms';
+// import { Checkbox } from '@voussoir/ui/src/primitives/forms';
 
 export default class TextField extends Component {
   onChange = event => {

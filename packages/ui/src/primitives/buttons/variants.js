@@ -114,13 +114,7 @@ export function makeGhostVariant({ appearance, isDisabled }) {
 // Bold
 // ------------------------------
 
-export function makeBoldVariant({
-  appearance,
-  isDisabled,
-  isActive,
-  isHover,
-  isFocus,
-}) {
+export function makeBoldVariant({ appearance, isDisabled, isActive, isHover, isFocus }) {
   const { bg, border, focusRing, text } = boldAppearance[appearance];
   const bgTop = lighten(bg, 10);
   const bgBottom = darken(bg, 10);
@@ -128,21 +122,16 @@ export function makeBoldVariant({
   const borderBottom = darken(border, 16);
   const activeBg = darken(bg, 12);
   const textShadow =
-    appearance === 'default'
-      ? '0 1px 0 rgba(255, 255, 255, 0.5)'
-      : '0 -1px 0 rgba(0, 0, 0, 0.25)';
+    appearance === 'default' ? '0 1px 0 rgba(255, 255, 255, 0.5)' : '0 -1px 0 rgba(0, 0, 0, 0.25)';
 
   const hoverAndFocus =
     isHover || isFocus
       ? {
-          borderColor: `${darken(borderTop, 8)} ${darken(border, 8)} ${darken(
-            borderBottom,
+          borderColor: `${darken(borderTop, 8)} ${darken(border, 8)} ${darken(borderBottom, 8)}`,
+          background: `linear-gradient(to bottom, ${lighten(bgTop, 10)} 0%, ${lighten(
+            bgBottom,
             8
-          )}`,
-          background: `linear-gradient(to bottom, ${lighten(
-            bgTop,
-            10
-          )} 0%, ${lighten(bgBottom, 8)} 100%)`,
+          )} 100%)`,
         }
       : null;
   const hoverStyles = isHover
@@ -162,10 +151,7 @@ export function makeBoldVariant({
   const activeStyles = isActive
     ? {
         background: activeBg,
-        borderColor: `${darken(border, 24)} ${darken(border, 16)} ${darken(
-          border,
-          12
-        )}`,
+        borderColor: `${darken(border, 24)} ${darken(border, 16)} ${darken(border, 12)}`,
         boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.12)',
       }
     : null;
@@ -173,9 +159,7 @@ export function makeBoldVariant({
   return {
     backgroundColor: bgBottom,
     backgroundRepeat: 'repeat-x',
-    background: isDisabled
-      ? null
-      : `linear-gradient(to bottom, ${bgTop} 0%, ${bgBottom} 100%)`,
+    background: isDisabled ? null : `linear-gradient(to bottom, ${bgTop} 0%, ${bgBottom} 100%)`,
     borderColor: isDisabled ? null : `${borderTop} ${border} ${borderBottom}`,
     color: text,
     fontWeight: 500,

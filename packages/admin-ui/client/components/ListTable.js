@@ -1,20 +1,21 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import React, { Component } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
-import { InfoIcon, TrashcanIcon } from '@keystonejs/icons';
-import { colors } from '@keystonejs/ui/src/theme';
-import { Button } from '@keystonejs/ui/src/primitives/buttons';
-import { CheckboxPrimitive } from '@keystonejs/ui/src/primitives/forms';
-import { A11yText } from '@keystonejs/ui/src/primitives/typography';
+import { ShieldIcon, InfoIcon, TrashcanIcon, ArrowRightIcon } from '@voussoir/icons';
+import { colors } from '@voussoir/ui/src/theme';
+import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { CheckboxPrimitive } from '@voussoir/ui/src/primitives/forms';
+import { A11yText } from '@voussoir/ui/src/primitives/typography';
 import DeleteItemModal from './DeleteItemModal';
 
-// This import is loaded by the @keystone/field-views-loader loader.
+// This import is loaded by the @voussoir/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
 import FieldTypes from '../FIELD_TYPES';
 
 // Styled Components
-
 const Table = styled('table')({
   borderCollapse: 'collapse',
   borderSpacing: 0,
@@ -26,7 +27,7 @@ const HeaderCell = styled('td')({
   color: '#999',
   display: 'table-cell',
   fontWeight: 'normal',
-  paddingBottom: '8px',
+  padding: '8px',
   textAlign: 'left',
   verticalAlign: 'bottom',
 });
@@ -35,23 +36,30 @@ const BodyCell = styled('td')(({ isSelected }) => ({
   boxShadow: isSelected
     ? `0 1px 0 ${colors.B.L75}, 0 -1px 0 ${colors.B.L75}`
     : `0 -1px 0 ${colors.N10}`,
-  padding: '8px 0',
-  position: isSelected ? 'relative' : null,
+  padding: '8px',
+  position: 'relative',
   fontSize: 15,
 }));
 const ItemLink = styled(Link)`
   color: ${colors.text};
-  position: relative;
 
   /* Increase hittable area on item link */
-  &::after {
+  &:only-of-type::before {
     content: '';
     position: absolute;
-    bottom: -10px;
-    left: -10px;
-    right: -10px;
-    top: -10px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
   }
+`;
+
+const BodyCellTruncated = styled(BodyCell)`
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
 `;
 
 const NoResults = ({ children, ...props }) => (
@@ -73,9 +81,66 @@ const NoResults = ({ children, ...props }) => (
   </div>
 );
 
+const SortDirectionArrow = styled.span(({ size = '0.2em', rotate = '0deg' }) => ({
+  borderLeft: `${size} solid transparent`,
+  borderRight: `${size} solid transparent`,
+  borderTop: `${size} solid`,
+  display: 'inline-block',
+  height: 0,
+  marginLeft: '0.33em',
+  marginTop: '-0.125em',
+  verticalAlign: 'middle',
+  width: 0,
+  transform: `rotate(${rotate})`,
+}));
+
 // Functional Components
 
+type SortLinkProps = {
+  handleSortChange: Function,
+  active: boolean,
+  sortAscending: boolean,
+};
+
+class SortLink extends React.Component<SortLinkProps> {
+  onClick = () => {
+    const { field, sortAscending, sortable } = this.props;
+    if (sortable) {
+      // Set direction to the opposite of the current sortAscending value
+      this.props.handleSortChange({ field, direction: sortAscending ? 'DESC' : 'ASC' });
+    }
+  };
+
+  render() {
+    const styles = {
+      borderBottom: `2px solid ${colors.N10}`,
+      display: 'table-cell',
+      fontWeight: 'normal',
+      padding: '8px',
+      textAlign: 'left',
+      verticalAlign: 'bottom',
+      color: this.props.active ? '#000' : '#999',
+    };
+
+    // TODO: Do we want to make `sortable` a field config option?
+    return (
+      <td style={styles} onClick={this.onClick} data-field={this.props['data-field']}>
+        {this.props.field.label}
+        {this.props.sortable && (
+          <SortDirectionArrow
+            rotate={this.props.active && !this.props.sortAscending ? '180deg' : '0deg'}
+          />
+        )}
+      </td>
+    );
+  }
+}
+
 class ListDisplayRow extends Component {
+  static defaultProps = {
+    itemErrors: {},
+  };
+
   state = {
     showDeleteModal: false,
   };
@@ -111,7 +176,7 @@ class ListDisplayRow extends Component {
     );
   }
   render() {
-    const { list, link, item, fields } = this.props;
+    const { list, link, item, itemErrors, fields } = this.props;
 
     return (
       <tr>
@@ -128,7 +193,19 @@ class ListDisplayRow extends Component {
           </Button>
           {this.renderDeleteModal()}
         </BodyCell>
-        {fields.map((field, index) => {
+        <BodyCell>
+          <Button
+            appearance="primary"
+            to={link({ path: list.path, id: item.id })}
+            spacing="cozy"
+            variant="subtle"
+            style={{ height: 24 }}
+          >
+            <ArrowRightIcon />
+            <A11yText>Open</A11yText>
+          </Button>
+        </BodyCell>
+        {fields.map(field => {
           const { path } = field;
 
           const isLoading = !item.hasOwnProperty(path);
@@ -137,37 +214,40 @@ class ListDisplayRow extends Component {
             return <BodyCell key={path} />;
           }
 
+          if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
+            return (
+              <BodyCell key={path}>
+                <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N10 }} />
+                <A11yText>{itemErrors[path].message}</A11yText>
+              </BodyCell>
+            );
+          }
+
+          if (path === '_label_') {
+            return (
+              <BodyCellTruncated key={path}>
+                <ItemLink to={link({ path: list.path, id: item.id })}>{item._label_}</ItemLink>
+              </BodyCellTruncated>
+            );
+          }
+
           let content;
 
           const Cell = FieldTypes[list.key][path].Cell;
 
           if (Cell) {
+            // fix this later, creating a react component on every render is really bad
+            // react will rerender into the DOM on every react render
+            // probably not a huge deal on a leaf component like this but still bad
             const LinkComponent = ({ children, ...data }) => (
               <ItemLink to={link(data)}>{children}</ItemLink>
             );
-            content = (
-              <Cell
-                list={list}
-                data={item[path]}
-                field={field}
-                Link={LinkComponent}
-              />
-            );
+            content = <Cell list={list} data={item[path]} field={field} Link={LinkComponent} />;
           } else {
             content = item[path];
           }
 
-          return (
-            <BodyCell key={path}>
-              {!index ? (
-                <ItemLink to={link({ path: list.path, id: item.id })}>
-                  {content}
-                </ItemLink>
-              ) : (
-                content
-              )}
-            </BodyCell>
-          );
+          return <BodyCellTruncated key={path}>{content}</BodyCellTruncated>;
         })}
       </tr>
     );
@@ -232,10 +312,11 @@ class ListManageRow extends Component {
             tabIndex="0"
           />
         </BodyCell>
+        <BodyCell />
         {fields.map(({ path }) => (
-          <BodyCell isSelected={isSelected} key={path}>
+          <BodyCellTruncated isSelected={isSelected} key={path}>
             {item[path]}
-          </BodyCell>
+          </BodyCellTruncated>
         ))}
       </tr>
     );
@@ -246,12 +327,14 @@ export default class ListTable extends Component {
   state = {
     mouseOverSelectsRow: false,
   };
+
   handleSelectAll = () => {
     const { items, onSelectAll, selectedItems } = this.props;
     const allSelected = items.length === selectedItems.length;
     const value = allSelected ? [] : items.map(i => i.id);
     onSelectAll(value);
   };
+
   onSelectStart = select => {
     const { isManaging } = this.props;
     if (!isManaging) return;
@@ -271,17 +354,21 @@ export default class ListTable extends Component {
       fields,
       isManaging,
       items,
+      itemsErrors = [],
       list,
       noResultsMessage,
       onChange,
       onSelect,
+      handleSortChange,
+      sortBy,
       selectedItems,
     } = this.props;
     const { mouseOverSelectsRow } = this.state;
 
     return items.length ? (
-      <Table>
+      <Table id="ks-list-table">
         <colgroup>
+          <col width="32" />
           <col width="32" />
         </colgroup>
         <thead>
@@ -301,17 +388,23 @@ export default class ListTable extends Component {
                 />
               </div>
             </HeaderCell>
-            {fields.map(({ label }) => (
-              <HeaderCell key={label}>{label}</HeaderCell>
+            <HeaderCell />
+            {fields.map(field => (
+              <SortLink
+                data-field={field.path}
+                key={field.path}
+                sortable={field.path !== '_label_'}
+                field={field}
+                handleSortChange={handleSortChange}
+                active={sortBy.field.path === field.path}
+                sortAscending={sortBy.direction === 'ASC'}
+              />
             ))}
           </tr>
         </thead>
-        <tbody
-          onMouseUp={this.stopRowSelectOnEnter}
-          onMouseLeave={this.stopRowSelectOnEnter}
-        >
+        <tbody onMouseUp={this.stopRowSelectOnEnter} onMouseLeave={this.stopRowSelectOnEnter}>
           {items.map(
-            item =>
+            (item, itemIndex) =>
               isManaging ? (
                 <ListManageRow
                   fields={fields}
@@ -327,6 +420,7 @@ export default class ListTable extends Component {
                 <ListDisplayRow
                   fields={fields}
                   item={item}
+                  itemErrors={itemsErrors[itemIndex] || {}}
                   key={item.id}
                   link={({ path, id }) => `${adminPath}/${path}/${id}`}
                   list={list}

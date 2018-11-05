@@ -1,11 +1,12 @@
 {
-  "name": "@keystonejs/utils",
-  "private": true,
-  "version": "1.0.0",
+  "name": "@voussoir/utils",
+  "version": "0.2.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "p-lazy": "^1.0.0"
+  }
 }

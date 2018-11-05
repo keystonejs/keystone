@@ -1,8 +1,9 @@
-import React from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 
-import { StopIcon } from '@keystonejs/icons';
-import { colors } from '@keystonejs/ui/src/theme';
-import { Container } from '@keystonejs/ui/src/primitives/layout';
+import { StopIcon } from '@voussoir/icons';
+import { colors } from '@voussoir/ui/src/theme';
+import { Container } from '@voussoir/ui/src/primitives/layout';
 
 export default function PageError({ children, Icon, ...props }) {
   return (

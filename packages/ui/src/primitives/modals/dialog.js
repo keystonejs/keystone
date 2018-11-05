@@ -1,6 +1,8 @@
 // @flow
 
-import React, {
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import {
   PureComponent,
   Fragment,
   type ComponentType,
@@ -9,11 +11,12 @@ import React, {
   type Node,
 } from 'react';
 import { createPortal } from 'react-dom';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import ScrollLock from 'react-scrolllock';
 
 import FocusTrap, { type FocusTarget } from './FocusTrap';
 import { Fade, SlideUp, withTransitionState } from './transitions';
+import type { TransitionState } from './transitions';
 import { Blanket } from './common';
 import { colors } from '../../theme';
 import { generateUEID } from '../../utils';
@@ -103,6 +106,7 @@ type Props = {
   initialFocus?: FocusTarget,
   onClose: (*) => void,
   onKeyDown: (*) => void,
+  transitionState: TransitionState,
   width?: number,
 };
 
@@ -140,10 +144,7 @@ class ModalDialog extends PureComponent<Props> {
     return createPortal(
       <Fragment>
         <Fade {...transitionProps}>
-          <Blanket
-            onClick={closeOnBlanketClick ? onClose : undefined}
-            isTinted
-          />
+          <Blanket onClick={closeOnBlanketClick ? onClose : undefined} isTinted />
         </Fade>
         <SlideUp {...transitionProps}>
           <Positioner width={width}>

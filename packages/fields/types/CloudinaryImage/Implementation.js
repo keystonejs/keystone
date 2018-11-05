@@ -3,21 +3,25 @@ const { File, MongoFileInterface } = require('../File/Implementation');
 class CloudinaryImage extends File {
   constructor() {
     super(...arguments);
-    this.graphQLType = 'CloudinaryImage_File';
+    this.graphQLOutputType = 'CloudinaryImage_File';
+  }
+
+  get gqlOutputFields() {
+    return [`${this.path}: ${this.graphQLOutputType}`];
   }
   extendAdminMeta(meta) {
     // Overwrite so we have only the original meta
     return meta;
   }
   getFileUploadType() {
-    return 'CloudinaryImage_Upload';
+    return 'Upload';
   }
-  getGraphqlAuxiliaryTypes() {
-    return `
-      ${super.getGraphqlAuxiliaryTypes()}
-
-      # Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
-      # All options are strings as they ultimately end up in a URL.
+  get gqlAuxTypes() {
+    return [
+      ...super.gqlAuxTypes,
+      `
+      """Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
+      All options are strings as they ultimately end up in a URL."""
       input CloudinaryImageFormat {
         # Rewrites the filename to be this pretty string. Do not include '/' or '.'
         prettyName: String
@@ -49,15 +53,15 @@ class CloudinaryImage extends File {
         density: String
         flags: String
         transformation: String
-      }
+      }`,
 
-      extend type ${this.graphQLType} {
+      `extend type ${this.graphQLOutputType} {
         publicUrlTransformed(transformation: CloudinaryImageFormat): String
-      }
-    `;
+      }`,
+    ];
   }
   // Called on `User.avatar` for example
-  getGraphqlFieldResolvers() {
+  get gqlOutputFieldResolvers() {
     return {
       [this.path]: item => {
         const itemValues = item[this.path];
@@ -67,31 +71,9 @@ class CloudinaryImage extends File {
         return {
           publicUrl: this.config.adapter.publicUrl(itemValues),
           publicUrlTransformed: ({ transformation }) =>
-            this.config.adapter.publicUrlTransformed(
-              itemValues,
-              transformation
-            ),
+            this.config.adapter.publicUrlTransformed(itemValues, transformation),
           ...itemValues,
         };
-      },
-    };
-  }
-  getGraphqlAuxiliaryMutations() {
-    return `
-      uploadCloudinaryImage(file: ${this.getFileUploadType()}!): ${
-      this.graphQLType
-    }
-    `;
-  }
-  getGraphqlAuxiliaryMutationResolvers() {
-    return {
-      /**
-       * @param obj {Object} ... an object
-       * @param data {Object} With key `file`
-       */
-      uploadCloudinaryImage: () => {
-        throw new Error('uploadCloudinaryImage mutation not implemented');
-        //return this.processUpload(file);
       },
     };
   }

@@ -1,11 +1,13 @@
 /* global ENABLE_DEV_FEATURES */
 
-import React, { Component, Fragment } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, Fragment } from 'react';
 
-import { SettingsIcon, TrashcanIcon } from '@keystonejs/icons';
-import { FlexGroup } from '@keystonejs/ui/src/primitives/layout';
-import { Button, IconButton } from '@keystonejs/ui/src/primitives/buttons';
-import { gridSize } from '@keystonejs/ui/src/theme';
+import { SettingsIcon, TrashcanIcon } from '@voussoir/icons';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
+import { gridSize } from '@voussoir/ui/src/theme';
 
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
@@ -60,25 +62,31 @@ export default class ListManage extends Component<Props, State> {
       <Fragment>
         <FlexGroup align="center">
           {ENABLE_DEV_FEATURES ? (
+            list.access.update ? (
+              <IconButton
+                appearance="primary"
+                icon={SettingsIcon}
+                isDisabled={!hasSelected}
+                onClick={this.openUpdateModal}
+                variant="ghost"
+                data-test-name="update"
+              >
+                Update
+              </IconButton>
+            ) : null
+          ) : null}
+          {list.access.update ? (
             <IconButton
-              appearance="primary"
-              icon={SettingsIcon}
+              appearance="danger"
+              icon={TrashcanIcon}
               isDisabled={!hasSelected}
-              onClick={this.openUpdateModal}
+              onClick={this.openDeleteModal}
               variant="ghost"
+              data-test-name="delete"
             >
-              Update
+              Delete
             </IconButton>
           ) : null}
-          <IconButton
-            appearance="danger"
-            icon={TrashcanIcon}
-            isDisabled={!hasSelected}
-            onClick={this.openDeleteModal}
-            variant="ghost"
-          >
-            Delete
-          </IconButton>
           <Button autoFocus onClick={onToggleManage} variant="subtle">
             Done
           </Button>

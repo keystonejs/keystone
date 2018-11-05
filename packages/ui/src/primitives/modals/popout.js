@@ -1,13 +1,13 @@
 // @flow
 
 import React, { Component, type Element } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { createPortal } from 'react-dom';
 
 import { borderRadius, gridSize } from '../../theme';
 import FocusTrap from './FocusTrap';
 import { SlideDown } from './transitions';
-import withModalHandlers, { type CloseType } from './withModalHandlers';
+import withModalHandlers, { type ModalHandlerProps } from './withModalHandlers';
 
 const ARROW_WIDTH = 8;
 const CHROME_GUTTER = 30;
@@ -59,13 +59,10 @@ const Arrow = styled.div`
   }
 `;
 
-type Props = {
+type Props = ModalHandlerProps & {
   children: Element<*>,
-  close: CloseType,
-  defaultIsOpen: boolean,
   getModalRef: HTMLElement => void,
   style: Object,
-  target: Element<*>,
   targetNode: HTMLElement,
   width: number,
 };
@@ -102,8 +99,7 @@ class Popout extends Component<Props, State> {
     let isAlignedRight = false;
 
     // handle right aligned
-    const spaceOnRight =
-      window.innerWidth - (leftOffset + width + CHROME_GUTTER);
+    const spaceOnRight = window.innerWidth - (leftOffset + width + CHROME_GUTTER);
     if (spaceOnRight < 0) {
       leftOffset = leftOffset + spaceOnRight;
       isAlignedRight = true;
