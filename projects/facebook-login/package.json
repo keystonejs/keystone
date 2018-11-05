@@ -13,14 +13,14 @@
     "cypress:run": "exit 0"
   },
   "dependencies": {
-    "@keystonejs/adapter-mongoose": "^1.0.0",
-    "@keystonejs/admin-ui": "^5.0.0",
-    "@keystonejs/core": "^5.0.0",
-    "@keystonejs/fields": "^5.0.0",
-    "@keystonejs/file-adapters": "^0.0.0",
-    "@keystonejs/server": "^5.0.0",
-    "@keystonejs/ui": "^5.0.0",
+    "@voussoir/adapter-mongoose": "^0.3.1",
+    "@voussoir/admin-ui": "^0.2.1",
+    "@voussoir/core": "^0.3.0",
+    "@voussoir/fields": "^1.0.1",
+    "@voussoir/file-adapters": "^0.1.3",
+    "@voussoir/server": "^0.2.1",
+    "@voussoir/ui": "^0.2.1",
     "dotenv-safe": "^6.0.0",
-    "react": "^16.3.1"
+    "react": "^16.5.2"
   }
 }
