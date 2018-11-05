@@ -114,8 +114,8 @@ export default class Footer extends Component {
     const footerStyle = { height, position, top, width };
 
     return (
-      <Wrapper innerRef={this.getWrapper} style={wrapperStyle} key="wrapper">
-        <Toolbar innerRef={this.getToolbar} style={footerStyle} key="footer">
+      <Wrapper ref={this.getWrapper} style={wrapperStyle} key="wrapper">
+        <Toolbar ref={this.getToolbar} style={footerStyle} key="footer">
           <div css={{ display: 'flex', alignItems: 'center' }}>
             <LoadingButton
               appearance="primary"

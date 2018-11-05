@@ -134,7 +134,7 @@ class Popout extends Component<Props, State> {
     return document.body
       ? createPortal(
           <Wrapper
-            innerRef={getModalRef}
+            ref={getModalRef}
             left={leftOffset}
             top={topOffset}
             width={width}

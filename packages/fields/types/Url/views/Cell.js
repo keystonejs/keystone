@@ -1,8 +1,12 @@
+// @flow
+import type { CellProps } from '../../../types';
 import * as React from 'react';
 
 const stripHttpPattern = /^https?\:\/\//i;
 
-const Field = props => {
+type Props = CellProps<string>;
+
+const Cell = (props: Props) => {
   let { data } = props;
 
   if (!data) {
@@ -20,4 +24,4 @@ const Field = props => {
   return <a href={data}>{label}</a>;
 };
 
-export default Field;
+export default Cell;

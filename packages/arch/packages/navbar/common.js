@@ -20,6 +20,7 @@ export const FlexProvider = styled.div({
   justifyContent: 'space-between',
   marginLeft: -NAV_GUTTER,
   marginRight: -NAV_GUTTER,
+  width: '100%',
 });
 export const NavGroup = styled.div({
   alignItems: 'center',
