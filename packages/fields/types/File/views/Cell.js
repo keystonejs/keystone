@@ -1,5 +1,7 @@
+// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import type { CellProps } from '../../../types';
 
 const Image = ({ alt, src }) => (
   <div
@@ -15,7 +17,16 @@ const Image = ({ alt, src }) => (
   </div>
 );
 
-export default ({ data }) => {
+type Props = CellProps<{
+  id: string,
+  path: string,
+  filename: string,
+  mimetype: string,
+  encoding: string,
+  publicUrl: string,
+}>;
+
+export default ({ data }: Props) => {
   if (!data) return null;
 
   const isImage = data.mimetype.includes('image');
