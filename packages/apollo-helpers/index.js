@@ -48,9 +48,8 @@ const generateInvalidateionPaths = memoizeOne(keystoneTypes =>
 // the Apollo cache
 const updater = (keystoneSchemaInfo, types) => {
   const cacheInvalidationFieldPaths = generateInvalidateionPaths(keystoneSchemaInfo);
-  const paths = (Array.isArray(types) ? types : [types]).reduce(
-    (memo, type) => memo.concat(cacheInvalidationFieldPaths[type]),
-    []
+  const paths = flatten(
+    (Array.isArray(types) ? types : [types]).map(type => cacheInvalidationFieldPaths[type])
   );
   return invalidateFields(() => paths);
 };
