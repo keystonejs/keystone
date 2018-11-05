@@ -1,6 +1,7 @@
 # @voussoir/mongo-join-builder
 
 ## 0.2.0
+
 - [minor] Pipeline and mutation builders are decoupled from each other. [74af97e](74af97e)
 
 ## 0.1.3
