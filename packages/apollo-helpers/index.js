@@ -60,6 +60,7 @@ class KeystoneApolloQueryCacheBuster extends React.Component {
     dataSeen: false,
     refetching: false,
     loading: false,
+    // 7? See https://www.apollographql.com/docs/react/api/react-apollo.html#graphql-query-data-networkStatus
     networkStatus: 7,
   };
 
