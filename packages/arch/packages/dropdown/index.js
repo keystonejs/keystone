@@ -148,7 +148,7 @@ class Dropdown extends Component<Props> {
 
     return (
       <FocusTrap options={{ clickOutsideDeactivates: true }}>
-        <Menu innerRef={this.getMenu} onMouseLeave={this.handleMenuLeave} style={style}>
+        <Menu ref={this.getMenu} onMouseLeave={this.handleMenuLeave} style={style}>
           {items.map((item, idx) => {
             const { content, ...rest } = item;
             return (

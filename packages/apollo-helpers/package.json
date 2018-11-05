@@ -1,0 +1,22 @@
+{
+  "name": "@voussoir/apollo-helpers",
+  "version": "0.0.0",
+  "author": "Jess Telford <hi+github@jes.st> (https://jes.st)",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "dependencies": {
+    "@jesstelford/apollo-cache-invalidation": "^0.0.3-gh3-gh5",
+    "graphql-tag": "^2.8.0",
+    "hoist-non-react-statics": "^3.0.1",
+    "lodash.mapvalues": "^4.6.0",
+    "memoize-one": "^4.0.2",
+    "react-adopt": "^0.6.0",
+    "react-apollo": "^2.2.4"
+  },
+  "peerDependencies": {
+    "react": "^16.5.2"
+  },
+  "devDependencies": {}
+}
