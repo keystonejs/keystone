@@ -118,9 +118,7 @@ class FacebookAuthStrategy {
     } catch (sessionFindError) {
       // TODO: Better error message. Why would this fail? DB connection lost? A
       // "not found" shouldn't throw (it'll just return null).
-      throw new Error(
-        `Unable to lookup existing Facebook sessions: ${sessionFindError}`
-      );
+      throw new Error(`Unable to lookup existing Facebook sessions: ${sessionFindError}`);
     }
 
     const newSessionData = {
@@ -134,10 +132,7 @@ class FacebookAuthStrategy {
       newSessionData.item = pastSessionItem.item.id;
     }
 
-    const sessionItem = await this.keystone.createItem(
-      this.config.sessionListKey,
-      newSessionData
-    );
+    const sessionItem = await this.keystone.createItem(this.config.sessionListKey, newSessionData);
 
     const result = {
       success: true,
@@ -163,9 +158,7 @@ class FacebookAuthStrategy {
 
   pauseValidation(req, { facebookSession }) {
     if (!facebookSession) {
-      throw new Error(
-        'Expected a facebookSession (ID) when pausing authentication validation'
-      );
+      throw new Error('Expected a facebookSession (ID) when pausing authentication validation');
     }
     // Store id in the req.session so it persists across requests (while they
     // potentially fill out a mutli-step form)
@@ -174,15 +167,11 @@ class FacebookAuthStrategy {
 
   async connectItem(req, { item }) {
     if (!item) {
-      throw new Error(
-        'Must provide an `item` to connect to a facebook session'
-      );
+      throw new Error('Must provide an `item` to connect to a facebook session');
     }
 
     if (!req) {
-      throw new Error(
-        'Must provide `req` when connecting a Facebook Session to an item'
-      );
+      throw new Error('Must provide `req` when connecting a Facebook Session to an item');
     }
 
     const facebookSessionId = req.session.keystoneFacebookSessionId;
@@ -248,42 +237,32 @@ class FacebookAuthStrategy {
       );
     }
     if (!verified) {
-      throw new Error(
-        'Must supply a `verified` function to `authenticateFacebookUser()`'
-      );
+      throw new Error('Must supply a `verified` function to `authenticateFacebookUser()`');
     }
 
     return (req, res, next) => {
       // This middleware will call the `verify` callback we passed up the top to
       // the `new PassportFacebook` constructor
-      passport.authenticate(
-        'facebook',
-        async (verifyError, authedItem, info) => {
-          // If we get a error, bail and display the message we get
-          if (verifyError) {
-            return failedVerification(
-              verifyError.message || verifyError.toString(),
-              req,
-              res,
-              next
-            );
-          }
-          // If we don't authorise Facebook we won't have any info about the
-          // user so we need to bail
-          if (!info) {
-            return failedVerification(null, req, res, next);
-          }
-          // Otherwise, store the Facebook data in session so we can refer
-          // back to it
-          try {
-            await this.keystone.auth.User.facebook.pauseValidation(req, info);
-
-            await verified(authedItem, info, req, res, next);
-          } catch (validationVerificationError) {
-            next(validationVerificationError);
-          }
+      passport.authenticate('facebook', async (verifyError, authedItem, info) => {
+        // If we get a error, bail and display the message we get
+        if (verifyError) {
+          return failedVerification(verifyError.message || verifyError.toString(), req, res, next);
         }
-      )(req, res, next);
+        // If we don't authorise Facebook we won't have any info about the
+        // user so we need to bail
+        if (!info) {
+          return failedVerification(null, req, res, next);
+        }
+        // Otherwise, store the Facebook data in session so we can refer
+        // back to it
+        try {
+          await this.keystone.auth.User.facebook.pauseValidation(req, info);
+
+          await verified(authedItem, info, req, res, next);
+        } catch (validationVerificationError) {
+          next(validationVerificationError);
+        }
+      })(req, res, next);
     };
   }
 }

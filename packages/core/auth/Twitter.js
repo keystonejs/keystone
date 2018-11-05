@@ -319,9 +319,7 @@ class TwitterAuthStrategy {
    */
   authenticateMiddleware({ failedVerification, verified }) {
     if (!failedVerification) {
-      throw new Error(
-        'Must supply a `failedVerification` function to `authenticateTwitterUser()`'
-      );
+      throw new Error('Must supply a `failedVerification` function to `authenticateTwitterUser()`');
     }
     if (!verified) {
       throw new Error('Must supply a `verified` function to `authenticateTwitterUser()`');
@@ -330,27 +328,20 @@ class TwitterAuthStrategy {
     return (req, res, next) => {
       // This middleware will call the `verify` callback we passed up the top to
       // the `new PassportTwitter` constructor
-      passport.authenticate(
-        'twitter',
-        async (verifyError, authedItem, info) => {
-          // If we get a error, bail and display the message we get
-          if (verifyError) {
-            return failedVerification(
-              verifyError.message || verifyError.toString(),
-              req,
-              res,
-              next
-            );
-          }
-          // If we don't authorise Twitter we won't have any info about the
-          // user so we need to bail
-          if (!info) {
-            return failedVerification(null, req, res, next);
-          }
-          // Otherwise, store the Twitter data in session so we can refer
-          // back to it
-          try {
-            await this.keystone.auth.User.twitter.pauseValidation(req, info);
+      passport.authenticate('twitter', async (verifyError, authedItem, info) => {
+        // If we get a error, bail and display the message we get
+        if (verifyError) {
+          return failedVerification(verifyError.message || verifyError.toString(), req, res, next);
+        }
+        // If we don't authorise Twitter we won't have any info about the
+        // user so we need to bail
+        if (!info) {
+          return failedVerification(null, req, res, next);
+        }
+        // Otherwise, store the Twitter data in session so we can refer
+        // back to it
+        try {
+          await this.keystone.auth.User.twitter.pauseValidation(req, info);
 
           await verified(authedItem, info, req, res, next);
         } catch (validationVerificationError) {

@@ -11,18 +11,9 @@ const {
 } = require('@keystonejs/fields');
 const { WebServer } = require('@keystonejs/server');
 const PasswordAuthStrategy = require('@keystonejs/core/auth/Password');
-const {
-  CloudinaryAdapter,
-  LocalFileAdapter,
-} = require('@keystonejs/file-adapters');
+const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
 
-const {
-  facebookAuthEnabled,
-  port,
-  staticRoute,
-  staticPath,
-  cloudinary,
-} = require('./config');
+const { facebookAuthEnabled, port, staticRoute, staticPath, cloudinary } = require('./config');
 const { configureFacebookAuth } = require('./facebook');
 
 const { DISABLE_AUTH } = process.env;
@@ -84,9 +75,7 @@ keystone.createList('User', {
       ],
     },
     attachment: { type: File, adapter: fileAdapter },
-    ...(cloudinaryAdapter
-      ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } }
-      : {}),
+    ...(cloudinaryAdapter ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } } : {}),
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });
@@ -98,10 +87,7 @@ keystone.createList('Post', {
     status: {
       type: Select,
       defaultValue: 'draft',
-      options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Published', value: 'published' },
-      ],
+      options: [{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }],
     },
     author: {
       type: Relationship,
