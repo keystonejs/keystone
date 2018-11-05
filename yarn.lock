@@ -19,6 +19,7 @@
 "@atlaskit/build-releases@^3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/build-releases/-/build-releases-3.0.0.tgz#97dc4d9aafebcf6f81a240763ee269c92dd1fa18"
+  integrity sha512-JMfqchTWth3gjOgTIvaK/tlxQKuJOu/JiPNJgArGymaLlWcNyqtDWbRFqTjKjRtLs2p6mOCYq+zVYnM6SkSBAw==
   dependencies:
     "@atlaskit/build-utils" "^2.0.2"
     bolt "^0.22.1"
@@ -33,6 +34,7 @@
 "@atlaskit/build-utils@^2.0.2":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@atlaskit/build-utils/-/build-utils-2.0.2.tgz#3fe054ec690154c9f4b1f9183d6d1f31b1706708"
+  integrity sha512-J7c/xGmTgolayUVtVvFbkDd9ZXW8l9TgnntaKWdisgqT+Si0g3diyDtEkvDsJBQGPm6ueUqTFcoQQSyKgfEBgw==
   dependencies:
     "@atlaskit/build-releases" "^3.0.0"
     bitbucket-build-status "^1.0.3"
@@ -4754,6 +4756,7 @@ fs-extra@4.0.1:
 fs-extra@^4.0.2:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-4.0.3.tgz#0d852122e5bc5beb453fb028e9c0c9bf36340c94"
+  integrity sha512-q6rbdDd1o2mAnQreO7YADIxf/Whx4AHBiRf6d+/cVT8h44ss+lHgxf1FemcqDnQt9X3ct4McHr+JMGlYSsK7Cg==
   dependencies:
     graceful-fs "^4.1.2"
     jsonfile "^4.0.0"
