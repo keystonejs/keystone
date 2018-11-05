@@ -16,24 +16,25 @@
   resolved "https://registry.yarnpkg.com/@apollographql/graphql-playground-html/-/graphql-playground-html-1.6.0.tgz#15e1a042b97d6834e6d70b17cc73e1514fde9027"
   integrity sha512-QAZIFrfVRkjvMkUHIQKZXZ3La0V5t12w5PWrhihYEabHwzIZV/txQd/kSYHgYPXC4s5OURxsXZop9f0BzI2QIQ==
 
-"@atlaskit/build-releases@^2.0.1", "@atlaskit/build-releases@^2.1.3":
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/@atlaskit/build-releases/-/build-releases-2.1.3.tgz#ae4c90244eeb442778a22016a0be73d04e936578"
-  integrity sha512-SLKQ3WgvchU2aJPYzPPZDcf8Jb6eF0hoOl9VKRDMnrKnQt51omOZNLp9ILKgqLIm6Vw/zjzNYBr8/HLWmXNXhQ==
+"@atlaskit/build-releases@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/build-releases/-/build-releases-3.0.0.tgz#97dc4d9aafebcf6f81a240763ee269c92dd1fa18"
   dependencies:
-    "@atlaskit/build-utils" "^2.0.1"
+    "@atlaskit/build-utils" "^2.0.2"
     bolt "^0.22.1"
     boxen "^1.3.0"
     chalk "^2.1.0"
+    fs-extra "^4.0.2"
+    inquirer "^3.3.0"
     outdent "^0.5.0"
+    prettier "^1.9.2"
     semver "^5.4.1"
 
-"@atlaskit/build-utils@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@atlaskit/build-utils/-/build-utils-2.0.1.tgz#e347dfac851eb221009d170035440954f2bdcdbb"
-  integrity sha512-omFZzkvEA3wvxHukTncDKcIy2PbdrK06ewPfuULMJWo1Qrxd9uAa588R9LUNIjnXkQJD2TQjW8zPSRUz1j3vJw==
+"@atlaskit/build-utils@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@atlaskit/build-utils/-/build-utils-2.0.2.tgz#3fe054ec690154c9f4b1f9183d6d1f31b1706708"
   dependencies:
-    "@atlaskit/build-releases" "^2.0.1"
+    "@atlaskit/build-releases" "^3.0.0"
     bitbucket-build-status "^1.0.3"
     chalk "^2.1.0"
     editor "^1.0.0"
@@ -4750,6 +4751,14 @@ fs-extra@4.0.1:
     jsonfile "^3.0.0"
     universalify "^0.1.0"
 
+fs-extra@^4.0.2:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-4.0.3.tgz#0d852122e5bc5beb453fb028e9c0c9bf36340c94"
+  dependencies:
+    graceful-fs "^4.1.2"
+    jsonfile "^4.0.0"
+    universalify "^0.1.0"
+
 fs-extra@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-7.0.0.tgz#8cc3f47ce07ef7b3593a11b9fb245f7e34c041d6"
@@ -8175,7 +8184,7 @@ prettier-bytes@^1.0.3:
   resolved "https://registry.yarnpkg.com/prettier-bytes/-/prettier-bytes-1.0.4.tgz#994b02aa46f699c50b6257b5faaa7fe2557e62d6"
   integrity sha1-mUsCqkb2mcULYle1+qp/4lV+YtY=
 
-prettier@^1.14.3:
+prettier@^1.14.3, prettier@^1.9.2:
   version "1.14.3"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.14.3.tgz#90238dd4c0684b7edce5f83b0fb7328e48bd0895"
   integrity sha512-qZDVnCrnpsRJJq5nSsiHCE3BYMED2OtsI+cmzIzF1QIfqm5ALf8tEJcO27zV1gKNKRPdhjO0dNWnrzssDQ1tFg==
