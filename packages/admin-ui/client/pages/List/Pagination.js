@@ -1,3 +1,4 @@
+// @flow
 import React, { type Ref } from 'react';
 
 import { GearIcon } from '@voussoir/icons';
