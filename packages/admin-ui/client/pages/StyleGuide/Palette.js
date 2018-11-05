@@ -1,4 +1,6 @@
-import React, { Fragment } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Fragment } from 'react';
 
 import { Grid, Cell } from '@voussoir/ui/src/primitives/layout';
 import { colors } from '@voussoir/ui/src/theme';

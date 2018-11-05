@@ -1,7 +1,9 @@
 // @flow
 
-import React, { type ComponentType, type Ref } from 'react';
-import styled from 'react-emotion';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { type ComponentType, type Ref } from 'react';
+import styled from '@emotion/styled';
 
 import { colors } from '../theme';
 import { alpha } from '../color-utils';

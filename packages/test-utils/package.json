@@ -1,16 +1,16 @@
 {
   "name": "@voussoir/test-utils",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/adapter-mongoose": "^0.2.0",
-    "@voussoir/core": "^0.2.0",
-    "@voussoir/server": "^0.2.0",
-    "@voussoir/utils": "^0.1.2",
+    "@voussoir/adapter-mongoose": "^0.3.0",
+    "@voussoir/core": "^0.3.0",
+    "@voussoir/server": "^0.2.1",
+    "@voussoir/utils": "^0.2.0",
     "extract-stack": "^1.0.0",
     "mongodb-memory-server": "^2.4.3",
     "p-finally": "^1.0.0",

@@ -74,7 +74,7 @@ describe('MongooseListAdapter', () => {
       posts_some: () => ({
         from: 'posts',
         field: 'posts',
-        match: [{ posts_some: true }],
+        matchTerm: { posts_some: true },
         // Flag this is a to-many relationship
         many: true,
       }),
@@ -97,11 +97,8 @@ describe('MongooseListAdapter', () => {
           from: 'posts',
           let: expect.any(Object),
           pipeline: [
-            {
-              $match: {
-                $and: [{ $expr: { $in: ['$_id', expect.any(String)] } }, { name: { $eq: 'foo' } }],
-              },
-            },
+            { $match: { $expr: { $in: ['$_id', expect.any(String)] } } },
+            { $match: { name: { $eq: 'foo' } } },
             { $addFields: { id: '$_id' } },
           ],
         },
@@ -122,11 +119,8 @@ describe('MongooseListAdapter', () => {
           from: 'posts',
           let: expect.any(Object),
           pipeline: [
-            {
-              $match: {
-                $and: [{ $expr: { $in: ['$_id', expect.any(String)] } }, { name: { $eq: 'foo' } }],
-              },
-            },
+            { $match: { $expr: { $in: ['$_id', expect.any(String)] } } },
+            { $match: { name: { $eq: 'foo' } } },
             { $addFields: { id: '$_id' } },
           ],
         },
@@ -163,7 +157,7 @@ describe('MongooseListAdapter', () => {
       posts_some: () => ({
         from: 'posts',
         field: 'posts',
-        match: [{ posts_some: true }],
+        matchTerm: { posts_some: true },
         // Flag this is a to-many relationship
         many: true,
       }),
@@ -180,14 +174,8 @@ describe('MongooseListAdapter', () => {
           from: 'posts',
           let: expect.any(Object),
           pipeline: [
-            {
-              $match: {
-                $and: [
-                  { $expr: { $in: ['$_id', expect.any(String)] } },
-                  { $and: [{ name: { $eq: 'foo' } }, { title: { $eq: 'bar' } }] },
-                ],
-              },
-            },
+            { $match: { $expr: { $in: ['$_id', expect.any(String)] } } },
+            { $match: { $and: [{ name: { $eq: 'foo' } }, { title: { $eq: 'bar' } }] } },
             { $addFields: { id: '$_id' } },
           ],
         },
@@ -208,14 +196,8 @@ describe('MongooseListAdapter', () => {
           from: 'posts',
           let: expect.any(Object),
           pipeline: [
-            {
-              $match: {
-                $and: [
-                  { $expr: { $in: ['$_id', expect.any(String)] } },
-                  { $or: [{ name: { $eq: 'foo' } }, { title: { $eq: 'bar' } }] },
-                ],
-              },
-            },
+            { $match: { $expr: { $in: ['$_id', expect.any(String)] } } },
+            { $match: { $or: [{ name: { $eq: 'foo' } }, { title: { $eq: 'bar' } }] } },
             { $addFields: { id: '$_id' } },
           ],
         },

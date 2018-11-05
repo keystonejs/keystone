@@ -11,6 +11,8 @@ const {
   CalendarDay,
   CloudinaryImage,
   DateTime,
+  Color,
+  Url,
 } = require('@voussoir/fields');
 const { WebServer } = require('@voussoir/server');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
@@ -55,7 +57,7 @@ try {
 keystone.createList('User', {
   fields: {
     name: { type: Text },
-    email: { type: Text },
+    email: { type: Text, unique: true },
     dob: { type: CalendarDay, format: 'Do MMMM YYYY' },
     lastOnline: { type: DateTime, format: 'MM/DD/YYYY h:mm A' },
     password: { type: Password },
@@ -70,6 +72,8 @@ keystone.createList('User', {
       ],
     },
     attachment: { type: File, adapter: fileAdapter },
+    color: { type: Color },
+    website: { type: Url },
     ...(cloudinaryAdapter ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } } : {}),
   },
   labelResolver: item => `${item.name} <${item.email}>`,

@@ -23,6 +23,7 @@ class Relationship extends Implementation {
     const [refListKey, refFieldPath] = this.config.ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
+    this.isRelationship = true;
   }
 
   tryResolveRefList() {
@@ -53,6 +54,11 @@ class Relationship extends Implementation {
 
     const { refList } = this.tryResolveRefList();
 
+    if (!refList.access.read) {
+      // It's not accessible in any way, so we can't expose the related field
+      return [];
+    }
+
     if (many) {
       const filterArgs = refList.getGraphqlFilterFragment().join('\n');
       return [
@@ -76,6 +82,12 @@ class Relationship extends Implementation {
   get gqlQueryInputFields() {
     const { many } = this.config;
     const { refList } = this.tryResolveRefList();
+
+    if (!refList.access.read) {
+      // It's not accessible in any way, so we can't expose the related field
+      return [];
+    }
+
     if (many) {
       return [
         `""" condition must be true for all nodes """
@@ -95,6 +107,11 @@ class Relationship extends Implementation {
   get gqlOutputFieldResolvers() {
     const { many } = this.config;
     const { refList } = this.tryResolveRefList();
+
+    if (!refList.access.read) {
+      // It's not accessible in any way, so we can't expose the related field
+      return [];
+    }
 
     // to-one relationships are much easier to deal with.
     if (!many) {
@@ -327,10 +344,15 @@ class MongoSelectInterface extends MongooseFieldAdapter {
       config: { many, mongooseOptions },
     } = this;
     const type = many ? [ObjectId] : ObjectId;
-    const unique = this.config.unique;
-    schema.add({
-      [this.path]: { type, ref, unique, ...mongooseOptions },
-    });
+    const schemaOptions = { type, ref, ...mongooseOptions };
+    if (this.config.unique) {
+      // A value of anything other than `true` causes errors with Mongoose
+      // constantly recreating indexes. Ie; if we just splat `unique` onto the
+      // options object, it would be `undefined`, which would cause Mongoose to
+      // drop and recreate all indexes.
+      schemaOptions.unique = true;
+    }
+    schema.add({ [this.path]: schemaOptions });
   }
 
   getRefListAdapter() {
@@ -388,7 +410,7 @@ class MongoSelectInterface extends MongooseFieldAdapter {
         //    query
         // 3) <uid>_<field>_none - is `true` when none of the joined items match
         //    the query
-        match: [{ [`${uid}_${this.path}_${filterType}`]: true }],
+        matchTerm: { [`${uid}_${this.path}_${filterType}`]: true },
         // Flag this is a to-many relationship
         many: this.config.many,
       };

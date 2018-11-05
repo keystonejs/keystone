@@ -1,4 +1,6 @@
-import React, { Component, createRef } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, createRef } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
 import { Input } from '@voussoir/ui/src/primitives/forms';

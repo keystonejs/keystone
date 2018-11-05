@@ -212,7 +212,8 @@ module.exports = class List {
     const types = flatten(this.fields.map(field => field.gqlAuxTypes));
 
     if (this.access.read || this.access.create || this.access.update || this.access.delete) {
-      types.push(`
+      types.push(
+        `
         type ${this.gqlNames.outputTypeName} {
           id: ID
           """
@@ -229,11 +230,7 @@ module.exports = class List {
               .map(field => field.gqlOutputFields)
           ).join('\n')}
         }
-      `);
-    }
-
-    if (this.access.read) {
-      types.push(
+      `,
         `
         input ${this.gqlNames.whereInputName} {
           id: ID
@@ -362,6 +359,48 @@ module.exports = class List {
     return result;
   }
 
+  gqlMetaResolver(context) {
+    return {
+      name: this.key,
+      // Return these as functions so they're lazily evaluated depending
+      // on what the user requested
+      // Evalutation takes place in ../Keystone/index.js
+      // NOTE: These could return a Boolean or a JSON object (if using the
+      // declarative syntax)
+      getAccess: () => ({
+        getCreate: () => context.getListAccessControlForUser(this.key, 'create'),
+        getRead: () => context.getListAccessControlForUser(this.key, 'read'),
+        getUpdate: () => context.getListAccessControlForUser(this.key, 'update'),
+        getDelete: () => context.getListAccessControlForUser(this.key, 'delete'),
+      }),
+      getSchema: () => {
+        const queries = [
+          this.gqlNames.itemQueryName,
+          this.gqlNames.listQueryName,
+          this.gqlNames.listQueryMetaName,
+        ];
+
+        if (this.getAuth()) {
+          queries.push(this.gqlNames.authenticatedQueryName);
+        }
+
+        // NOTE: Other fields on this type are resolved in the main resolver in
+        // ../Keystone/index.js
+        return {
+          type: this.gqlNames.outputTypeName,
+          queries,
+          key: this.key,
+        };
+      },
+    };
+  }
+
+  getFieldsRelatedTo(listKey) {
+    return this.fields.filter(
+      ({ isRelationship, refListKey }) => isRelationship && refListKey === listKey
+    );
+  }
+
   get gqlQueryResolvers() {
     let resolvers = {};
 
@@ -375,21 +414,7 @@ module.exports = class List {
         [this.gqlNames.listQueryMetaName]: (_, args, context) =>
           this.manyQueryMeta(args, context, this.gqlNames.listQueryMetaName),
 
-        [this.gqlNames.listMetaName]: () => {
-          return {
-            // Return these as functions so they're lazily evaluated depending
-            // on what the user requested
-            // Evalutation takes place in ../Keystone/index.js
-            // NOTE: These could return a Boolean or a JSON object (if using the
-            // declarative syntax)
-            getAccess: () => ({
-              getCreate: () => context.getListAccessControlForUser(this.key, 'create'),
-              getRead: () => context.getListAccessControlForUser(this.key, 'read'),
-              getUpdate: () => context.getListAccessControlForUser(this.key, 'update'),
-              getDelete: () => context.getListAccessControlForUser(this.key, 'delete'),
-            }),
-          };
-        },
+        [this.gqlNames.listMetaName]: (_, args, context) => this.gqlMetaResolver(context),
 
         [this.gqlNames.itemQueryName]: (_, { where: { id } }, context) =>
           this.singleItemResolver({ id, context, name: this.gqlNames.itemQueryName }),

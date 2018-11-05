@@ -1,5 +1,6 @@
-import React from 'react';
-import styled from 'react-emotion';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 import withPseudoState from 'react-pseudo-state';
 

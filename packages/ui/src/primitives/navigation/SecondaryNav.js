@@ -1,7 +1,7 @@
 // @flow
 
 import React, { type Node } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 import { Container } from '../layout';
 import { colors, gridSize } from '../../theme';
@@ -30,6 +30,7 @@ export const SecondaryNavItem = styled(ItemElement)(({ isSelected }) => ({
 }));
 const SecondaryFlexProvider = styled(FlexProvider)({
   margin: 0,
+  minHeight: 'auto',
 });
 
 type Props = { children: Node };

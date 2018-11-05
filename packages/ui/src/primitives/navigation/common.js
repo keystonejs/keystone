@@ -1,11 +1,11 @@
 // @flow
 
 import React from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
 export const NAV_GUTTER = 20;
-type ItemProps = { isSelected?: Boolean, to?: String, href?: String };
+type ItemProps = { isSelected?: boolean, to?: string, href?: string };
 
 export const ItemElement = ({ isSelected, ...props }: ItemProps) => {
   if (props.to) return <Link {...props} />;
@@ -14,26 +14,27 @@ export const ItemElement = ({ isSelected, ...props }: ItemProps) => {
 };
 
 export const FlexProvider = styled.div({
+  alignItems: 'flex-start',
   display: 'flex',
   flexFlow: 'column nowrap',
+  height: ' 100%',
   justifyContent: 'flex-start',
-  alignItems: 'flex-start',
-  marginLeft: -NAV_GUTTER,
-  marginRight: -NAV_GUTTER,
   minHeight: '100vh',
+  width: '100%',
 });
+
 export const NavGroupIcons = styled.div({
+  alignItems: 'center',
   display: 'flex',
   flexFlow: 'row nowrap',
   justifyContent: 'space-between',
-  alignItems: 'center',
 });
 
 export const NavGroup = styled.div({
   display: 'flex',
+  flex: 1,
   flexFlow: 'column nowrap',
   width: '100%',
-  flex: 1,
 });
 export const NavSeparator = styled.div(({ isSelected }) => ({
   borderLeft: '1px solid rgba(255, 255, 255, 0.2)',
