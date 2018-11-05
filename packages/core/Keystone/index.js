@@ -236,7 +236,7 @@ module.exports = class Keystone {
                 .map(field => Object.keys(field.gqlOutputFieldResolvers))
             ),
           }))
-          .filter(({ fields }) => !!fields.length),
+          .filter(({ fields }) => fields.length),
     };
 
     // Like the `typeDefs`, we want to dedupe the resolvers. We rely on the
