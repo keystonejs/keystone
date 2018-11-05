@@ -1,2 +1,1 @@
-import Filter from '@voussoir/fields/types/Integer/views/Filter';
-export default Filter;
+export { default } from '@voussoir/fields/types/Integer/views/Filter';

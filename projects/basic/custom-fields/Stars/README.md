@@ -61,6 +61,96 @@ for the Integer field type, we can re-export the default Database Field Adapter(
 The `views` folder holds everything we need to render our custom Star UI elements in Keystone AdminUI.
 This is where we will spend most of our time in this tutorial.
 
+## Defining The Field Type
+
+Field Types should have an `index.js` file which exports the Field Type definition. Explanations on what each thing does can be found [here](/packages/fields/README/index.md).
+
+```jsx
+const path = require('path');
+const { Stars, MongoIntegerInterface } = require('./Implementation');
+
+module.exports = {
+  type: 'Stars',
+  implementation: Stars,
+  views: {
+    Controller: path.resolve(__dirname, './Controller'),
+    Field: path.resolve(__dirname, './views/Field'),
+    Filter: path.resolve(__dirname, './views/Filter'),
+    Cell: path.resolve(__dirname, './views/Cell'),
+  },
+  adapters: {
+    mongoose: MongoIntegerInterface,
+  },
+};
+```
+
+Right now, the Field Type defintion is referencing a bunch of files that don't exist yet so let's create create them!
+
+For now, `Implementation.js` is only going to re-export from the `Integer` implementation
+
+```jsx
+const { Integer, MongoIntegerInterface } = require('@voussoir/fields/types/Integer/Implementation');
+
+class Stars extends Integer {}
+
+module.exports = {
+  Stars,
+  MongoIntegerInterface,
+};
+```
+
+`Controller.js` is also going to re-export from the `Integer` Controller.
+
+```jsx
+export { default } from '@voussoir/fields/types/Integer/Controller';
+```
+
+### Views
+
+We're going to define three views for our Field Type.
+
+#### views/Cell.js
+
+This is the component that will render into the List view. For now, we're going to make it render the number but we'll make it show stars later.
+
+```jsx
+export default function Cell(props) {
+  return props.data;
+}
+```
+
+#### views/Filter.js
+
+We're going to reuse the Integer filter here so we'll re-export it.
+
+```jsx
+export { default } from '@voussoir/fields/types/Integer/views/Filter';
+```
+
+#### views/Field.js
+
+For now, we're going to re-export the Integer Field Type.
+
+```jsx
+export { default } from '@voussoir/fields/types/Integer/views/Field';
+```
+
+## Use the Field Type
+
+We can now use the Stars Field Type in our project.
+
+```jsx
+const Stars = require('./Stars');
+
+const keystone = new Keystone(...options);
+
+keystone.createList('Post', {
+  fields: {
+    stars: { type: Stars },
+  },
+});
+```
+
 ---
 
 ## So lets get started
