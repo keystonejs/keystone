@@ -21,9 +21,11 @@ export default class StarsCellView extends PureComponent<Props> {
     const { starCount } = field.config;
     return (
       <StarWrapper starCount={starCount}>
-        {Array(starCount).fill(true).map((m, index) => (
-          <Star key={index} num={index + 1} value={data} />
-        ))}
+        {Array(starCount)
+          .fill(true)
+          .map((m, index) => (
+            <Star key={index} num={index + 1} value={data} />
+          ))}
       </StarWrapper>
     );
   }

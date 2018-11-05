@@ -11,7 +11,7 @@ const StarInput = ({ num, value, onClick }) => {
 };
 
 export default class StarField extends PureComponent {
-  handleChange = (num) => {
+  handleChange = num => {
     const { field, item, onChange } = this.props;
     const value = item[field.path];
     const newValue = value === num ? 0 : num;
@@ -29,14 +29,11 @@ export default class StarField extends PureComponent {
         <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
         <FieldInput>
           <StarWrapper starCount={starCount}>
-            {Array(starCount).fill(true).map((v, index) => (
-              <StarInput
-                key={index}
-                num={index + 1}
-                value={value}
-                onClick={this.handleChange}
-              />
-            ))}
+            {Array(starCount)
+              .fill(true)
+              .map((v, index) => (
+                <StarInput key={index} num={index + 1} value={value} onClick={this.handleChange} />
+              ))}
           </StarWrapper>
         </FieldInput>
       </FieldContainer>
