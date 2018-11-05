@@ -4,7 +4,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
-export const NAV_GUTTER = 20;
+export const NAV_GUTTER = 16;
 type ItemProps = { isSelected?: boolean, to?: string, href?: string };
 
 export const ItemElement = ({ isSelected, ...props }: ItemProps) => {
@@ -25,9 +25,11 @@ export const FlexProvider = styled.div({
 
 export const NavGroupIcons = styled.div({
   alignItems: 'center',
+  alignSelf: 'stretch',
   display: 'flex',
   flexFlow: 'row nowrap',
   justifyContent: 'space-between',
+  paddingBottom: NAV_GUTTER,
 });
 
 export const NavGroup = styled.div({

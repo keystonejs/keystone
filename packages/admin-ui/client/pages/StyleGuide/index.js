@@ -27,31 +27,32 @@ export default withRouter(
       } = this.props;
       return (
         <Fragment>
-          <Nav />
-          <Container css={{ paddingBottom: 200, width: '100%' }}>
-            <SecondaryNav>
-              <FlexGroup>
-                {pages.map(page => (
-                  <SecondaryNavItem
-                    key={page}
-                    isSelected={currentPage === page}
-                    to={`${adminPath}/style-guide/${page}`}
-                  >
-                    {upCase(page)}
-                  </SecondaryNavItem>
-                ))}
-              </FlexGroup>
-            </SecondaryNav>
-            <H1>Style Guide: {upCase(currentPage)}</H1>
-            <Switch>
-              <Route exact path={`${adminPath}/style-guide/palette`} component={PaletteGuide} />
-              <Route exact path={`${adminPath}/style-guide/icons`} component={IconsGuide} />
-              <Route path={`${adminPath}/style-guide/components`} component={ComponentsGuide} />
-              <Route>
-                <Redirect to={`${adminPath}/style-guide/components`} />
-              </Route>
-            </Switch>
-          </Container>
+          <Nav>
+            <Container css={{ paddingBottom: 200, width: '100%' }}>
+              <SecondaryNav>
+                <FlexGroup>
+                  {pages.map(page => (
+                    <SecondaryNavItem
+                      key={page}
+                      isSelected={currentPage === page}
+                      to={`${adminPath}/style-guide/${page}`}
+                    >
+                      {upCase(page)}
+                    </SecondaryNavItem>
+                  ))}
+                </FlexGroup>
+              </SecondaryNav>
+              <H1>Style Guide: {upCase(currentPage)}</H1>
+              <Switch>
+                <Route exact path={`${adminPath}/style-guide/palette`} component={PaletteGuide} />
+                <Route exact path={`${adminPath}/style-guide/icons`} component={IconsGuide} />
+                <Route path={`${adminPath}/style-guide/components`} component={ComponentsGuide} />
+                <Route>
+                  <Redirect to={`${adminPath}/style-guide/components`} />
+                </Route>
+              </Switch>
+            </Container>
+          </Nav>
         </Fragment>
       );
     }

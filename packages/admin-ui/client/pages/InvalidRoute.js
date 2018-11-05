@@ -6,11 +6,12 @@ import { Button } from '@voussoir/ui/src/primitives/buttons';
 
 const InvalidRoutePage = ({ adminPath }) => (
   <Fragment>
-    <Nav />
-    <PageError>
-      <p>Page Not Found (404)</p>
-      <Button to={adminPath}>Go Home</Button>
-    </PageError>
+    <Nav>
+      <PageError>
+        <p>Page Not Found (404)</p>
+        <Button to={adminPath}>Go Home</Button>
+      </PageError>
+    </Nav>
   </Fragment>
 );
 

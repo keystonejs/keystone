@@ -357,81 +357,83 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
   const itemQuery = list.getItemQuery(itemId);
   return (
     <Fragment>
-      <Nav />
-      {/* network-only because the data we mutate with is important for display
+      <Nav>
+        {/* network-only because the data we mutate with is important for display
           in the UI, and may be different than what's in the cache */}
-      <Query query={itemQuery} fetchPolicy="network-only" errorPolicy="all">
-        {({ loading, error, data, refetch }) => {
-          if (loading) return <PageLoading />;
+        <Query query={itemQuery} fetchPolicy="network-only" errorPolicy="all">
+          {({ loading, error, data, refetch }) => {
+            if (loading) return <PageLoading />;
 
-          // Only show error page if there is no data
-          // (ie; there could be partial data + partial errors)
-          if (
-            error &&
-            (!data ||
-              !data[list.gqlNames.itemQueryName] ||
-              !Object.keys(data[list.gqlNames.itemQueryName]).length)
-          ) {
-            return (
-              <Fragment>
-                <DocTitle>{list.singular} not found</DocTitle>
-                <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
-              </Fragment>
+            // Only show error page if there is no data
+            // (ie; there could be partial data + partial errors)
+            if (
+              error &&
+              (!data ||
+                !data[list.gqlNames.itemQueryName] ||
+                !Object.keys(data[list.gqlNames.itemQueryName]).length)
+            ) {
+              return (
+                <Fragment>
+                  <DocTitle>{list.singular} not found</DocTitle>
+                  <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
+                </Fragment>
+              );
+            }
+
+            const item = data[list.gqlNames.itemQueryName];
+            const itemErrors =
+              deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
+
+            return item ? (
+              <main>
+                <DocTitle>
+                  {item._label_} - {list.singular}
+                </DocTitle>
+                <Container id="toast-boundary">
+                  <Mutation
+                    mutation={list.updateMutation}
+                    onError={updateError => {
+                      const [title, ...rest] = updateError.message.split(/\:/);
+                      const toastContent = rest.length ? (
+                        <div>
+                          <strong>{title.trim()}</strong>
+                          <div>{rest.join('').trim()}</div>
+                        </div>
+                      ) : (
+                        updateError.message
+                      );
+
+                      toastManager.add(toastContent, {
+                        appearance: 'error',
+                      });
+                    }}
+                  >
+                    {(updateItem, { loading: updateInProgress, error: updateError }) => {
+                      return (
+                        <ItemDetails
+                          adminPath={adminPath}
+                          item={item}
+                          itemErrors={itemErrors}
+                          key={itemId}
+                          list={list}
+                          getListByKey={getListByKey}
+                          onUpdate={refetch}
+                          toastManager={toastManager}
+                          updateInProgress={updateInProgress}
+                          updateErrorMessage={updateError && updateError.message}
+                          updateItem={updateItem}
+                        />
+                      );
+                    }}
+                  </Mutation>
+                </Container>
+              </main>
+            ) : (
+              <ItemNotFound adminPath={adminPath} list={list} />
             );
-          }
-
-          const item = data[list.gqlNames.itemQueryName];
-          const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
-
-          return item ? (
-            <main>
-              <DocTitle>
-                {item._label_} - {list.singular}
-              </DocTitle>
-              <Container id="toast-boundary">
-                <Mutation
-                  mutation={list.updateMutation}
-                  onError={updateError => {
-                    const [title, ...rest] = updateError.message.split(/\:/);
-                    const toastContent = rest.length ? (
-                      <div>
-                        <strong>{title.trim()}</strong>
-                        <div>{rest.join('').trim()}</div>
-                      </div>
-                    ) : (
-                      updateError.message
-                    );
-
-                    toastManager.add(toastContent, {
-                      appearance: 'error',
-                    });
-                  }}
-                >
-                  {(updateItem, { loading: updateInProgress, error: updateError }) => {
-                    return (
-                      <ItemDetails
-                        adminPath={adminPath}
-                        item={item}
-                        itemErrors={itemErrors}
-                        key={itemId}
-                        list={list}
-                        getListByKey={getListByKey}
-                        onUpdate={refetch}
-                        toastManager={toastManager}
-                        updateInProgress={updateInProgress}
-                        updateErrorMessage={updateError && updateError.message}
-                        updateItem={updateItem}
-                      />
-                    );
-                  }}
-                </Mutation>
-              </Container>
-            </main>
-          ) : (
-            <ItemNotFound adminPath={adminPath} list={list} />
-          );
-        }}
-      </Query>
+          }}
+        </Query>
+      </Nav>
     </Fragment>
   );
 };

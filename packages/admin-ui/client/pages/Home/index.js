@@ -43,16 +43,26 @@ class HomePage extends Component {
 
               return (
                 <Fragment key={key}>
-                  <Media query={{ maxWidth: 768 }}>
-                    {isSmall => (
-                      <Cell width={isSmall ? 6 : 3}>
-                        <Box
-                          list={list}
-                          to={`${adminPath}/${path}`}
-                          meta={meta}
-                          onCreateClick={this.openCreateModal(key)}
-                        />
-                      </Cell>
+                  <Media query={{ maxWidth: 1024 }}>
+                    {isMedium => (
+                      <Media query={{ maxWidth: 768 }}>
+                        {isSmall => {
+                          let cellWidth = 3;
+                          if (isMedium) cellWidth = 4;
+                          if (isSmall) cellWidth = 6;
+
+                          return (
+                            <Cell width={cellWidth}>
+                              <Box
+                                list={list}
+                                to={`${adminPath}/${path}`}
+                                meta={meta}
+                                onCreateClick={this.openCreateModal(key)}
+                              />
+                            </Cell>
+                          );
+                        }}
+                      </Media>
                     )}
                   </Media>
                   <CreateItemModal
@@ -78,7 +88,6 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
 
   return (
     <Fragment>
-      <Nav />
       <DocTitle>Home</DocTitle>
       <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
         {({ data, error }) => {
@@ -117,7 +126,11 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
           // list component so we don't block rendering the lists immediately
           // to the user.
 
-          return <HomePage lists={allowedLists} data={data} {...props} />;
+          return (
+            <Nav>
+              <HomePage lists={allowedLists} data={data} {...props} />
+            </Nav>
+          );
         }}
       </Query>
     </Fragment>

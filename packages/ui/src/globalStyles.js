@@ -24,6 +24,7 @@ export default css`
   a:hover {
     text-decoration: underline;
   }
+  /*
   #app {
     display: flex;
     flex-flow: row nowrap;
@@ -31,4 +32,5 @@ export default css`
   main {
     flex: 1;
   }
+  */
 `;
