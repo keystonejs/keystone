@@ -1,6 +1,10 @@
+// @flow
 import { format } from 'date-fns';
+import type { CellProps } from '../../../types';
 
-const DateTimeCell = props => {
+type Props = CellProps<string>;
+
+const DateTimeCell = (props: Props) => {
   if (!props.data) {
     return null;
   }
