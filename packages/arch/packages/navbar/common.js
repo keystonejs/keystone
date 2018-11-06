@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
 export const NAV_GUTTER = 20;
@@ -20,6 +20,7 @@ export const FlexProvider = styled.div({
   justifyContent: 'space-between',
   marginLeft: -NAV_GUTTER,
   marginRight: -NAV_GUTTER,
+  width: '100%',
 });
 export const NavGroup = styled.div({
   alignItems: 'center',

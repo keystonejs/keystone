@@ -12,4 +12,6 @@ module.exports = {
   CalendarDay: require('./types/CalendarDay'),
   DateTime: require('./types/DateTime'),
   Decimal: require('./types/Decimal'),
+  Color: require('./types/Color'),
+  Url: require('./types/Url'),
 };

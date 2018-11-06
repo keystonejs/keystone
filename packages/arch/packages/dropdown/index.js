@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component, type Element, type Node } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 import FocusTrap from 'react-focus-marshal';
 
@@ -148,7 +148,7 @@ class Dropdown extends Component<Props> {
 
     return (
       <FocusTrap options={{ clickOutsideDeactivates: true }}>
-        <Menu innerRef={this.getMenu} onMouseLeave={this.handleMenuLeave} style={style}>
+        <Menu ref={this.getMenu} onMouseLeave={this.handleMenuLeave} style={style}>
           {items.map((item, idx) => {
             const { content, ...rest } = item;
             return (

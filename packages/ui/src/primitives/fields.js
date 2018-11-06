@@ -1,4 +1,4 @@
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { colors, gridSize } from '../theme';
 import { withSelector } from './misc';
 

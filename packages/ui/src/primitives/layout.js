@@ -1,7 +1,9 @@
 // @flow
 
-import React, { Children, cloneElement, type Node } from 'react';
-import styled from 'react-emotion';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Children, cloneElement, type Node } from 'react';
+import styled from '@emotion/styled';
 
 import { smOnly } from './media-queries';
 import { gridSize } from '../theme';
@@ -50,27 +52,27 @@ type FlexGroupProps = {
   align: 'stretch' | 'center' | 'flex-start' | 'flex-start',
   children: Array<Node>,
   growIndexes: Array<number>,
-  isContiguous: boolean,
-  isInline: boolean,
-  isVertical: boolean,
+  isContiguous?: boolean,
+  isInline?: boolean,
+  isVertical?: boolean,
   justify: 'space-between' | 'space-around' | 'center' | 'flex-end' | 'flex-start',
-  wrap: boolean,
+  wrap?: boolean,
   spacing: number,
-  stretch: boolean,
+  stretch?: boolean,
   tag: string,
 };
 export const FlexGroup = ({
-  align = 'stretch',
+  align,
   children,
-  growIndexes = [],
+  growIndexes,
   isContiguous,
   isInline,
   isVertical,
-  justify = 'flex-start',
-  wrap = false,
-  spacing = gridSize,
+  justify,
+  wrap,
+  spacing,
   stretch,
-  tag: Tag = 'div',
+  tag: Tag,
   ...props
 }: FlexGroupProps) => {
   const gutter = spacing / 2;
@@ -121,6 +123,14 @@ export const FlexGroup = ({
       })}
     </Tag>
   );
+};
+
+FlexGroup.defaultProps = {
+  align: 'stretch',
+  growIndexes: [],
+  justify: 'flex-start',
+  spacing: gridSize,
+  tag: 'div',
 };
 
 // ==============================

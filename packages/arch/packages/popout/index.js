@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component, type Element } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { createPortal } from 'react-dom';
 import { FocusTrap } from 'react-focus-marshal';
 
@@ -134,7 +134,7 @@ class Popout extends Component<Props, State> {
     return document.body
       ? createPortal(
           <Wrapper
-            innerRef={getModalRef}
+            ref={getModalRef}
             left={leftOffset}
             top={topOffset}
             width={width}

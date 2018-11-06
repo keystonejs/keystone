@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
-import { keyframes } from 'react-emotion';
+// @flow
+/** @jsx jsx */
+import { jsx, keyframes } from '@emotion/core';
+import { Component, type ElementType } from 'react';
 
 const pulse = keyframes`
   from { transform: scale3d(1, 1, 1); }
@@ -25,7 +27,17 @@ const animations = {
   tada,
 };
 
-export default class Animation extends Component {
+type Props = {
+  name: $Keys<typeof animations>,
+  tag: ElementType,
+  duration: string,
+  isInfinite: boolean,
+  timing: string,
+};
+
+type State = { hasAnimation: boolean, name: string };
+
+export default class Animation extends Component<Props, State> {
   state = {
     hasAnimation: true,
     name: this.props.name,
@@ -36,7 +48,7 @@ export default class Animation extends Component {
     tag: 'div',
     timing: 'ease',
   };
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps(props: Props, state: State) {
     if (!state.hasAnimation && props.name !== state.name) {
       return { hasAnimation: true, name: props.name };
     }
@@ -49,7 +61,7 @@ export default class Animation extends Component {
   render() {
     const { duration, isInfinite, tag: Tag, timing, ...props } = this.props;
     const { hasAnimation, name } = this.state;
-    const infinite = infinite ? 'infinite' : '';
+    const infinite = isInfinite ? 'infinite' : '';
     const animation = `${animations[name]} ${duration} ${timing} ${infinite}`;
 
     return (

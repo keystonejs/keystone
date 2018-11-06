@@ -1,9 +1,8 @@
 // @flow
 
 import React, { type Node } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
-import { Container } from '../layout';
 import { colors, gridSize } from '../theme';
 import { FlexProvider, ItemElement, NAV_GUTTER } from './common';
 
@@ -18,7 +17,6 @@ export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => ({
   border: 0,
   borderRadius: '0.25em',
   color: 'white',
-  marginRight: -1,
   paddingLeft: NAV_GUTTER,
   paddingRight: NAV_GUTTER,
   paddingBottom: gridSize * 1.5,
@@ -35,8 +33,6 @@ type Props = { children: Node };
 
 export const PrimaryNav = ({ children }: Props) => (
   <Wrapper>
-    <Container>
-      <FlexProvider>{children}</FlexProvider>
-    </Container>
+    <FlexProvider>{children}</FlexProvider>
   </Wrapper>
 );

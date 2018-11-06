@@ -1,5 +1,7 @@
-import React, { Component, Fragment } from 'react';
-import styled from 'react-emotion';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, Fragment } from 'react';
+import styled from '@emotion/styled';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import * as icons from '@voussoir/icons';
 

@@ -1,7 +1,8 @@
 // @flow
 
 import React from 'react';
-import styled, { keyframes } from 'react-emotion';
+import styled from '@emotion/styled';
+import { keyframes } from '@emotion/core';
 
 import { colors } from '../theme';
 import { A11yText } from './typography';
@@ -46,7 +47,7 @@ const Dot = styled.span(({ appearance, delay = 0, isOffset }: DotProps) => ({
   verticalAlign: 'top',
   width: '1em',
 }));
-export const LoadingIndicator = ({ appearance = 'default', size = 4 }: LoadingIndicatorProps) => (
+export const LoadingIndicator = ({ appearance, size }: LoadingIndicatorProps) => (
   <DotsContainer size={size}>
     <Dot appearance={appearance} />
     <Dot appearance={appearance} delay={160} isOffset />
@@ -54,6 +55,10 @@ export const LoadingIndicator = ({ appearance = 'default', size = 4 }: LoadingIn
     <A11yText>Loading</A11yText>
   </DotsContainer>
 );
+LoadingIndicator.defaultProps = {
+  appearance: 'default',
+  size: 4,
+};
 
 // ==============================
 // Spinner

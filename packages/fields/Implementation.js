@@ -20,6 +20,9 @@ class Field {
       config
     );
 
+    // Should be overwritten by types that implement a Relationship interface
+    this.isRelationship = false;
+
     this.access = parseFieldAccess({
       listKey,
       fieldKey: path,

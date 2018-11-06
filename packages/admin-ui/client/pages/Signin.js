@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 import { Alert } from '@voussoir/ui/src/primitives/alert';
 import { Input } from '@voussoir/ui/src/primitives/forms';
