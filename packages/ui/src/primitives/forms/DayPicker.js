@@ -13,6 +13,7 @@ import {
   setMonth,
   format,
   setDay,
+  setYear,
 } from 'date-fns';
 import { Input } from './index';
 import { Select } from '../filters';
@@ -112,24 +113,22 @@ const TodayMarker = styled.div(({ isSelected }) => ({
 }));
 
 type SelectMonthProps = {
-  handleMonthSelect: (Event, Function, Function) => void,
-  setDate: Function => mixed,
-  setSelectedDate: Function => mixed,
-  date: string,
+  onChange: string => mixed,
+  date: Date,
 };
 
 class SelectMonth extends React.Component<SelectMonthProps> {
   render() {
-    const { handleMonthSelect, setDate, setSelectedDate } = this.props;
+    const { onChange, date } = this.props;
     const months = [...new Array(12)].map((_, month) => format(setMonth(new Date(), month), 'MMM'));
-    const { date } = this.props;
-
-    const onChange = event => {
-      handleMonthSelect(event, setDate, setSelectedDate);
-    };
 
     return (
-      <select onChange={onChange} value={getMonth(date)}>
+      <select
+        onChange={event => {
+          onChange(event.target.value);
+        }}
+        value={getMonth(date)}
+      >
         {months.map((month, i) => (
           <option key={i} value={i}>
             {month}
@@ -236,10 +235,13 @@ export const DayPicker = (props: DayPickerProps) => {
             <ChevronLeftIcon />
           </HeaderButton>
           <SelectMonth
-            date={selectedDate}
-            handleMonthSelect={handleMonthSelect}
-            setDate={setDate}
-            setSelectedDate={setSelectedDate}
+            onChange={month => {
+              const newDate = setMonth(date, month);
+              setDate(newDate);
+              const newSelectedDate = setMonth(selectedDate, month);
+              setSelectedDate(newSelectedDate);
+            }}
+            date={date}
           />
           <SelectYear
             date={selectedDate}
@@ -293,14 +295,6 @@ type Props = {
   children?: Node,
   /** Field disabled */
   isDisabled?: boolean,
-  /** Marks this as a required field */
-  isRequired?: boolean,
-  /** Field name */
-  name?: string,
-  /** onChange event handler */
-  onChange: any => mixed,
-  /** Field value */
-  value: string,
   /** Ref to apply to the inner Element */
   innerRef: Ref<*>,
   date: string,

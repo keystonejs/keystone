@@ -51,8 +51,8 @@ export default class CalendarDayField extends Component {
   };
 
   render() {
-    const { autoFocus, field } = this.props;
-    const { value } = this.state;
+    const { autoFocus, field, item } = this.props;
+    const value = item[field.path];
     const htmlID = `ks-input-${field.path}`;
     const target = (
       <Button autoFocus={autoFocus} id={htmlID} variant="ghost">

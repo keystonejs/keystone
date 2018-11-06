@@ -1,4 +1,4 @@
-import { format, setMonth, setYear } from 'date-fns';
+import { format } from 'date-fns';
 import { DateTime } from 'luxon';
 import React, { Component } from 'react';
 
@@ -43,28 +43,6 @@ export default class CalendarDayField extends Component {
     const newState = { ...this.state, offset: event.value };
     onChange(field, `${newState.date}T${newState.time}${newState.offset}`);
     this.setState(newState);
-  };
-
-  handleMonthSelect = (event, setDate, setSelectedDate) => {
-    const { field, onChange } = this.props;
-    const month = event.target.value;
-    const newDate = setMonth(this.state.date, month);
-    const value = format(newDate, 'YYYY-MM-DD');
-    setDate(newDate);
-    setSelectedDate(newDate);
-    this.setState({ date: value });
-    onChange(field, value);
-  };
-
-  handleYearSelect = (event, setDate, setSelectedDate) => {
-    const { field, onChange } = this.props;
-    const year = event.target.value;
-    const newDate = setYear(this.state.date, year);
-    const value = format(newDate, 'YYYY-MM-DD');
-    setDate(newDate);
-    setSelectedDate(newDate);
-    this.setState({ date: value });
-    onChange(field, value);
   };
 
   render() {
