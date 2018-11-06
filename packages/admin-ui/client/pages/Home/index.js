@@ -35,7 +35,9 @@ class HomePage extends Component {
     return (
       <main>
         <Container>
-          <Title margin="both">Dashboard</Title>
+          <Title as="h1" margin="both">
+            Dashboard
+          </Title>
           <Grid gap={16}>
             {lists.map(list => {
               const { key, path } = list;
