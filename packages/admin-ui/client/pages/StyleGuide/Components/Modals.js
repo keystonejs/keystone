@@ -28,7 +28,7 @@ export default class ModalGuide extends Component {
           target={<Button>Show menu</Button>}
           // selectClosesMenu={false}
           items={[
-            { to: '/admin', content: 'Home' },
+            { to: '/admin', content: 'Dashboard' },
             { content: 'Macaroon', onClick: this.handleDropdownClick },
             { content: 'Cupcake', onClick: this.handleDropdownClick },
             { content: 'Liquorice', onClick: this.handleDropdownClick },

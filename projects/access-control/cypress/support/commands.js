@@ -124,5 +124,5 @@ Cypress.Commands.add('loginToKeystone', (email, password) => {
   cy.get('button[type="submit"]').click();
 
   // Wait for page to load (completing the signin round trip)
-  cy.get('main h1').should('contain', 'Home');
+  cy.get('main h1').should('contain', 'Dashboard');
 });
