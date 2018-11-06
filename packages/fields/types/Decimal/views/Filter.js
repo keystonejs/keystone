@@ -2,16 +2,12 @@
 
 import React, { Component, type Ref } from 'react';
 import { Input } from '@voussoir/ui/src/primitives/forms';
+import type { FilterProps } from '../../../types';
 
-type Props = {
-  field: Object,
-  filter: Object,
-  innerRef: Ref<*>,
-  onChange: Event => void,
-};
-
+type Props = FilterProps<string>;
 export default class TextFilterView extends Component<Props> {
-  componentDidUpdate(prevProps) {
+
+  componentDidUpdate(prevProps: Props) {
     const { filter } = this.props;
 
     if (prevProps.filter !== filter) {
@@ -19,7 +15,7 @@ export default class TextFilterView extends Component<Props> {
     }
   }
 
-  valueToString = value => {
+  valueToString = (value: string | number) => {
     // Make the value a string to prevent loss of accuracy and precision.
     if (typeof value === 'string') {
       return value;
@@ -31,7 +27,7 @@ export default class TextFilterView extends Component<Props> {
     }
   };
 
-  handleChange = event => {
+  handleChange= (event: Object) => {
     const value = event.target.value;
     this.props.onChange(value.replace(/[^0-9.,]+/g, ''));
   };
