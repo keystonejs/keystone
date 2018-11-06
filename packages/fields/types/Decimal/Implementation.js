@@ -68,12 +68,15 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
     });
     // Updates the relevant value in the item provided (by referrence)
     const toServerSide = item => {
-      item[this.path] = mongoose.Types.Decimal128.fromString(item[this.path]);
+      if (item[this.path]) {
+        item[this.path] = mongoose.Types.Decimal128.fromString(item[this.path]);
+      };
     };
 
     const toClientSide = item => {
-      if (item[this.path] === undefined) return;
-      item[this.path] = item[this.path].toString();
+      if(item[this.path]) {
+        item[this.path] = item[this.path].toString();
+      }
     };
 
     schema.post('aggregate', function(result) {
