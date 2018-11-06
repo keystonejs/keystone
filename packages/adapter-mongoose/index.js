@@ -347,7 +347,10 @@ class MongooseListAdapter extends BaseListAdapter {
       query.$count = 'count';
     }
 
-    return this.queryBuilder(query, pipeline => this.model.aggregate(pipeline).exec()).then(
+    return this.queryBuilder(query, pipeline => {
+      pipeline.forEach(p => console.log(p));
+      return this.model.aggregate(pipeline).exec()
+    }).then(
       data => {
         if (meta) {
           // When there are no items, we get undefined back, so we simulate the
@@ -357,7 +360,7 @@ class MongooseListAdapter extends BaseListAdapter {
           }
           return data[0];
         }
-
+        console.log('data', data);
         return data;
       }
     );
