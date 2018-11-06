@@ -4,6 +4,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
+import { gridSize } from '../../theme';
 export const NAV_GUTTER = 16;
 type ItemProps = { isSelected?: boolean, to?: string, href?: string };
 
@@ -17,9 +18,8 @@ export const FlexProvider = styled.div({
   alignItems: 'flex-start',
   display: 'flex',
   flexFlow: 'column nowrap',
-  height: ' 100%',
+  height: ' 100vh',
   justifyContent: 'flex-start',
-  minHeight: '100vh',
   width: '100%',
 });
 
@@ -29,13 +29,15 @@ export const NavGroupIcons = styled.div({
   display: 'flex',
   flexFlow: 'row nowrap',
   justifyContent: 'space-between',
-  paddingBottom: NAV_GUTTER,
+  padding: gridSize * 2,
 });
 
 export const NavGroup = styled.div({
-  display: 'flex',
+  boxSizing: 'border-box',
   flex: 1,
-  flexFlow: 'column nowrap',
+  overflowY: 'auto',
+  paddingLeft: gridSize * 3,
+  paddingRight: gridSize * 3,
   width: '100%',
 });
 export const NavSeparator = styled.div(({ isSelected }) => ({

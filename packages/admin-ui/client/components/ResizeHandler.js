@@ -3,6 +3,7 @@ import raf from 'raf-schd';
 
 const LS_KEY = 'KEYSTONE_NAVIGATION_STATE';
 const DEFAULT_STATE = { width: 240 };
+const MIN_WIDTH = 140;
 
 function getCache() {
   if (typeof localStorage !== 'undefined') {
@@ -31,9 +32,6 @@ export default class ResizeHandler extends Component {
     // bail if not "left click"
     if (event.button && event.button > 0) return;
 
-    // avoid text selection and hover styles
-    document.body.style.pointerEvents = 'none';
-
     // initialize resize gesture
     this.storeState({ initialX: event.pageX, mouseIsDown: true });
 
@@ -61,19 +59,22 @@ export default class ResizeHandler extends Component {
       return;
     }
 
-    const delta = event.pageX - initialX;
+    // allow the product nav to be 75% of the available page width
+    const maxWidth = Math.round((window.innerWidth / 4) * 3);
+    const minWidth = MIN_WIDTH;
+    const adjustedMax = maxWidth - initialWidth;
+    const adjustedMin = minWidth - initialWidth;
+
+    const delta = Math.max(Math.min(event.pageX - initialX, adjustedMax), adjustedMin);
     const width = initialWidth + delta;
 
     this.storeState({ delta, width });
   });
-  handleDoubleClick = () => {
-    console.log('handleDoubleClick');
-    this.storeState({ width: 20 });
-  };
   handleResizeEnd = () => {
-    this.storeState({ isDragging: false, mouseIsDown: false });
+    // reset non-width states
+    this.storeState({ delta: 0, isDragging: false, mouseIsDown: false });
 
-    document.body.style.pointerEvents = null;
+    // cleanup
     window.removeEventListener('mousemove', this.handleResize);
     window.removeEventListener('mouseup', this.handleResizeEnd);
   };
@@ -82,7 +83,6 @@ export default class ResizeHandler extends Component {
     const handlers = {
       title: 'Drag to Resize. Double Click to Collapse.',
       onMouseDown: this.handleResizeStart,
-      onDoubleClick: this.handleDoubleClick,
     };
 
     return this.props.children(handlers, this.state);

@@ -17,7 +17,7 @@ import PageLoading from '../../components/PageLoading';
 import Footer from './Footer';
 import { TriangleLeftIcon, CheckIcon, ClippyIcon, PlusIcon } from '@voussoir/icons';
 import { Container, FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { A11yText, H1 } from '@voussoir/ui/src/primitives/typography';
+import { A11yText, Title } from '@voussoir/ui/src/primitives/typography';
 import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
 import { Alert } from '@voussoir/ui/src/primitives/alert';
 import { AutocompleteCaptor } from '@voussoir/ui/src/primitives/forms';
@@ -292,9 +292,9 @@ const ItemDetails = withRouter(
             </Alert>
           ) : null}
           <FlexGroup align="center" justify="space-between">
-            <H1>
+            <Title as="h1" margin="both">
               <TitleLink to={listHref}>{list.label}</TitleLink>: {titleText}
-            </H1>
+            </Title>
             <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
               Create
             </IconButton>

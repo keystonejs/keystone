@@ -4,7 +4,7 @@ import Media from 'react-media';
 import { Query } from 'react-apollo';
 
 import { Container, Grid, Cell } from '@voussoir/ui/src/primitives/layout';
-import { H1 } from '@voussoir/ui/src/primitives/typography';
+import { Title } from '@voussoir/ui/src/primitives/typography';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import Nav from '../../components/Nav';
@@ -35,7 +35,7 @@ class HomePage extends Component {
     return (
       <main>
         <Container>
-          <H1>Home</H1>
+          <Title margin="both">Dashboard</Title>
           <Grid gap={16}>
             {lists.map(list => {
               const { key, path } = list;

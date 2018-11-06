@@ -114,6 +114,7 @@ class SortLink extends React.Component<SortLinkProps> {
   render() {
     const styles = {
       borderBottom: `2px solid ${colors.N10}`,
+      cursor: 'pointer',
       display: 'table-cell',
       fontWeight: 'normal',
       padding: '8px',

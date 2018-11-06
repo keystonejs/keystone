@@ -1,56 +1,34 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component } from 'react';
+import { createRef, Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import raf from 'raf-schd';
 import { Button, LoadingButton } from '@voussoir/ui/src/primitives/buttons';
-import { colors } from '@voussoir/ui/src/theme';
+import { colors, gridSize } from '@voussoir/ui/src/theme';
 
-const Wrapper = styled.div({
-  marginTop: 60,
-  minHeight: 120,
-  position: 'relative',
+const Placeholder = styled.div({
+  height: 100,
 });
 const Toolbar = styled.div({
   backgroundColor: colors.page,
+  bottom: 0,
   boxShadow: 'rgba(0, 0, 0, 0.1) 0px -2px 0px',
   display: 'flex',
   justifyContent: 'space-between',
-  margin: '24px 0',
-  padding: '24px 0',
+  padding: `${gridSize * 3}px 0`,
+  position: 'fixed',
 });
 
-function getWindowSize() {
-  return {
-    x: window.innerWidth,
-    y: window.innerHeight,
-  };
-}
-
 export default class Footer extends Component {
-  state = {
-    position: 'relative',
-    width: 'auto',
-    height: 'auto',
-    top: 0,
-  };
+  wrapper = createRef();
+  state = { width: 'auto' };
   static propTypes = {
     onDelete: PropTypes.func,
     onReset: PropTypes.func,
     onSave: PropTypes.func,
   };
   componentDidMount() {
-    // Bail in IE8 because React doesn't support the onScroll event in that browser
-    // Conveniently (!) IE8 doesn't have window.getComputedStyle which we also use here
-    if (!window.getComputedStyle) return;
-
-    this.windowSize = getWindowSize();
-    const footerStyle = window.getComputedStyle(this.footer);
-    this.footerSize = {
-      x: this.footer.offsetWidth,
-      y: this.footer.offsetHeight + parseInt(footerStyle.marginTop || '0'),
-    };
     window.addEventListener('scroll', this.recalcPosition, false);
     window.addEventListener('resize', this.recalcPosition, false);
     this.recalcPosition();
@@ -60,62 +38,21 @@ export default class Footer extends Component {
     window.removeEventListener('resize', this.recalcPosition, false);
   }
   recalcPosition = raf(() => {
-    if (this.wrapper === null) {
-      // Due to the use of raf, this function may end up being called *after*
-      // the component is unmounted. If this happens, we can safely return early.
-      return;
-    }
-    this.footerSize.x = this.wrapper.offsetWidth;
+    // Due to the use of raf, this function may end up being called *after*
+    // the component is unmounted. If this happens, we can safely return early.
+    if (this.wrapper.current === null) return;
 
-    var offsetTop = 0;
-    var offsetEl = this.wrapper;
-
-    while (offsetEl) {
-      offsetTop += offsetEl.offsetTop;
-      offsetEl = offsetEl.offsetParent;
-    }
-
-    const maxY = offsetTop + this.footerSize.y;
-    const viewY = window.scrollY + window.innerHeight;
-
-    const newSize = getWindowSize();
-    const sizeChanged = newSize.x !== this.windowSize.x || newSize.y !== this.windowSize.y;
-    this.windowSize = newSize;
-
-    const newState = {
-      height: this.footerSize.y,
-      width: this.footerSize.x,
-    };
-
-    if (viewY > maxY && (sizeChanged || this.mode !== 'inline')) {
-      this.mode = 'inline';
-      newState.top = 0;
-      newState.position = 'absolute';
-      this.setState(newState);
-    } else if (viewY <= maxY && (sizeChanged || this.mode !== 'fixed')) {
-      this.mode = 'fixed';
-      newState.top = window.innerHeight - this.footerSize.y;
-      newState.position = 'fixed';
-      this.setState(newState);
-    }
+    this.setState({ width: this.wrapper.current.offsetWidth });
   });
-  getWrapper = ref => {
-    this.wrapper = ref;
-  };
-  getToolbar = ref => {
-    this.footer = ref;
-  };
 
   render() {
     const { onSave, onDelete, resetInterface, updateInProgress } = this.props;
-    const { height, position, top, width } = this.state;
-
-    const wrapperStyle = { height };
-    const footerStyle = { height, position, top, width };
+    const { width } = this.state;
 
     return (
-      <Wrapper ref={this.getWrapper} style={wrapperStyle} key="wrapper">
-        <Toolbar ref={this.getToolbar} style={footerStyle} key="footer">
+      <Fragment>
+        <Placeholder ref={this.wrapper} key="wrapper" />
+        <Toolbar style={{ width }} key="footer">
           <div css={{ display: 'flex', alignItems: 'center' }}>
             <LoadingButton
               appearance="primary"
@@ -140,7 +77,7 @@ export default class Footer extends Component {
             </Button>
           </div>
         </Toolbar>
-      </Wrapper>
+      </Fragment>
     );
   }
 }

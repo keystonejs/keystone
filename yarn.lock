@@ -7488,6 +7488,10 @@ react-node-resolver@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/react-node-resolver/-/react-node-resolver-2.0.0.tgz#f2de4a79499a47f89529402eb4ebc5d8ef4969e4"
 
+react-prop-toggle@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-prop-toggle/-/react-prop-toggle-1.0.2.tgz#8b0b7e74653606b1427cfcf6c4eaa9198330568e"
+
 react-pseudo-state@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-pseudo-state/-/react-pseudo-state-1.0.2.tgz#dadd4688a72b738e4dcb578203d399f3709353bb"

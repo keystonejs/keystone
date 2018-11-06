@@ -9,6 +9,7 @@ import { FlexProvider, ItemElement } from './common';
 const Wrapper = styled.nav({
   // backgroundColor: colors.N90,
   // color: 'white',
+  boxSizing: 'border-box',
   display: 'flex',
   flexFlow: 'column nowrap',
   fontSize: '0.9rem',
@@ -18,19 +19,15 @@ const Wrapper = styled.nav({
   position: 'fixed',
 });
 const Inner = styled.div({
-  minHeight: '100vh',
-  minWidth: 100,
-  paddingLeft: gridSize * 2,
-  paddingRight: gridSize * 2,
+  minWidth: 140,
 });
 
 export const BrandItem = styled.h2({
-  fontSize: '1rem',
-  fontWeight: 'bold',
+  fontSize: 18,
+  fontWeight: 500,
   margin: 0,
   // padding: gridSize * 2,
   paddingBottom: gridSize * 2,
-  paddingTop: gridSize * 2,
 });
 
 export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => {
@@ -47,12 +44,16 @@ export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => {
     border: 0,
     borderRadius,
     color: colors.N90,
+    display: 'block',
     marginBottom: 2,
+    overflow: 'hidden',
     paddingLeft: gridSize * 2,
     paddingRight: gridSize * 2,
     paddingBottom: gridSize,
     paddingTop: gridSize,
     textDecoration: 'none',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
 
     ':hover, :focus': {
       backgroundColor: colors.B.L80,

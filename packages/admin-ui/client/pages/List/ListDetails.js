@@ -7,10 +7,10 @@ import { withRouter } from 'react-router-dom';
 import { FoldIcon, PlusIcon, SearchIcon, UnfoldIcon, XIcon } from '@voussoir/icons';
 import { Input } from '@voussoir/ui/src/primitives/forms';
 import { Container, FlexGroup, CONTAINER_WIDTH } from '@voussoir/ui/src/primitives/layout';
-import { A11yText, Kbd, H1 } from '@voussoir/ui/src/primitives/typography';
+import { A11yText, Kbd, H1, Title } from '@voussoir/ui/src/primitives/typography';
 import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
 import { LoadingSpinner } from '@voussoir/ui/src/primitives/loading';
-import { colors } from '@voussoir/ui/src/theme';
+import { colors, gridSize } from '@voussoir/ui/src/theme';
 
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
@@ -294,7 +294,7 @@ class ListDetails extends Component<Props, State> {
       <Fragment>
         <main>
           <Container>
-            <H1>
+            <Title as="h1" margin="both">
               {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
               <span>, by</span>
               <Popout
@@ -319,7 +319,7 @@ class ListDetails extends Component<Props, State> {
                   value={sortBy}
                 />
               </Popout>
-            </H1>
+            </Title>
 
             <FlexGroup growIndexes={[0]}>
               <Search

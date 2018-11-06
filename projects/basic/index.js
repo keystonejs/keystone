@@ -124,6 +124,12 @@ keystone.createList('PostCategory', {
   },
 });
 
+keystone.createList('SomeLongNamedList', {
+  fields: {
+    name: { type: Text },
+  },
+});
+
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
 });

@@ -8,7 +8,6 @@ import { colors, gridSize } from '../../theme';
 import { FlexProvider, ItemElement } from './common';
 
 const Wrapper = styled.nav({
-  backgroundColor: colors.N05,
   borderBottom: `1px solid ${colors.N10}`,
   color: colors.text,
   fontSize: '0.85em',
@@ -28,17 +27,11 @@ export const SecondaryNavItem = styled(ItemElement)(({ isSelected }) => ({
     textDecoration: 'none',
   },
 }));
-const SecondaryFlexProvider = styled(FlexProvider)({
-  margin: 0,
-  minHeight: 'auto',
-});
 
 type Props = { children: Node };
 
 export const SecondaryNav = ({ children }: Props) => (
   <Wrapper>
-    <Container>
-      <SecondaryFlexProvider>{children}</SecondaryFlexProvider>
-    </Container>
+  {children}
   </Wrapper>
 );
