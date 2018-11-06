@@ -12,9 +12,6 @@ type Props = {
   innerRef: Ref<*>,
   onChange: Event => void,
   recalcHeight: () => void,
-  yearRangeFrom?: number,
-  yearRangeTo?: number,
-  yearPickerType?: string,
 };
 
 type State = {

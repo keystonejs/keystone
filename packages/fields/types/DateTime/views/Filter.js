@@ -26,7 +26,7 @@ export default class CalendarDayFilterView extends Component<Props, State> {
     };
   }
 
-  onSelectedChange = (day: Date) => {
+  handleDayChange = (day: Date) => {
     const { onChange } = this.props;
     const newState = { ...this.state, date: format(day, 'YYYY-MM-DD') };
     onChange(`${newState.date}T${newState.time}${newState.offset}`);
@@ -61,13 +61,7 @@ export default class CalendarDayFilterView extends Component<Props, State> {
     if (!filter) return null;
 
     const { date, time, offset } = this.state;
-    const {
-      onSelectedChange,
-      handleTimeChange,
-      handleOffsetChange,
-      handleMonthSelect,
-      handleYearSelect,
-    } = this;
+    const { handleDayChange, handleTimeChange, handleOffsetChange } = this;
     return (
       <DateTimePicker
         htmlID="calendar-day-filter"
@@ -76,7 +70,7 @@ export default class CalendarDayFilterView extends Component<Props, State> {
           date,
           time,
           offset,
-          onSelectedChange,
+          handleDayChange,
           handleTimeChange,
           handleOffsetChange,
         }}

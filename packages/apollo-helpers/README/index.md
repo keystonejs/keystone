@@ -262,7 +262,7 @@ Which, when using this module's `<Query>` component, will re-load the now remove
 }
 ```
 
-Now everything's up to date and we didn't have to use `writeQuery` or couple any of our components! 🎉
+Now everything's up to date and we didn't have to use `writeQuery` or couple any of our components! �
 
 ### But why is this coupled to Keystone?
 
@@ -390,7 +390,7 @@ Which, when using this module's `<Query>` component, will re-load the now remove
 }
 ```
 
-Double Hurrah! 🎉
+Double Hurrah! �
 
 ### Can we decouple from Keystone?
 

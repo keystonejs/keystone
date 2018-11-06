@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { parse, format, setYear, setMonth, getYear } from 'date-fns';
+import { parse, format, getYear } from 'date-fns';
 import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
@@ -13,41 +13,16 @@ const FORMAT = 'YYYY-MM-DD';
 const TODAY = new Date();
 
 export default class CalendarDayField extends Component {
-  constructor(props) {
-    super(props);
-    const { item, field } = props;
-    this.state = { value: item[field.path] };
-  }
-
-  yearRangeFrom = this.props.field.config.yearRangeFrom;
-  yearRangeTo = this.props.field.config.yearRangeTo;
-  yearPickerType = this.props.field.config.yearPickerType;
-
-  onSelectedChange = day => {
+  handleSelectedChange = date => {
     const { field, onChange } = this.props;
-    const value = format(day, FORMAT);
+    const value = format(date, FORMAT);
     if (
       getYear(value).toString().length <= 4 &&
-      getYear(value) <= this.yearRangeTo &&
-      getYear(value) >= this.yearRangeFrom
+      getYear(value) <= field.config.yearRangeTo &&
+      getYear(value) >= field.config.yearRangeFrom
     ) {
       onChange(field, value);
-      this.setState({ value });
     }
-  };
-
-  handleMonthSelect = (event, setDate, setSelectedDate) => {
-    const month = event.target.value;
-    const newDate = setMonth(this.state.value, month);
-    setDate(newDate);
-    setSelectedDate(newDate);
-  };
-
-  handleYearSelect = (event, setDate, setSelectedDate) => {
-    const year = event.target.value;
-    const newDate = setYear(this.state.value, year);
-    setSelectedDate(newDate);
-    setDate(newDate);
   };
 
   render() {
@@ -70,12 +45,10 @@ export default class CalendarDayField extends Component {
                 autoFocus={autoFocus}
                 startCurrentDateAt={value ? parse(value) : TODAY}
                 startSelectedDateAt={value ? parse(value) : TODAY}
-                onSelectedChange={this.onSelectedChange}
-                handleYearSelect={this.handleYearSelect}
-                handleMonthSelect={this.handleMonthSelect}
-                yearRangeFrom={this.yearRangeFrom}
-                yearRangeTo={this.yearRangeTo}
-                yearPickerType={this.yearPickerType}
+                onSelectedChange={this.handleSelectedChange}
+                yearRangeFrom={field.config.yearRangeFrom}
+                yearRangeTo={field.config.yearRangeTo}
+                yearPickerType={field.config.yearPickerType}
               />
             </div>
           </Popout>
