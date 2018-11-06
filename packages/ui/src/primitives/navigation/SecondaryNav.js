@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 
 import { Container } from '../layout';
 import { colors, gridSize } from '../../theme';
-import { FlexProvider, ItemElement } from './common';
+import { ItemElement } from './common';
 
 const Wrapper = styled.nav({
   borderBottom: `1px solid ${colors.N10}`,

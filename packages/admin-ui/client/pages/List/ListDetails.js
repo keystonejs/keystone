@@ -7,10 +7,10 @@ import { withRouter } from 'react-router-dom';
 import { FoldIcon, PlusIcon, SearchIcon, UnfoldIcon, XIcon } from '@voussoir/icons';
 import { Input } from '@voussoir/ui/src/primitives/forms';
 import { Container, FlexGroup, CONTAINER_WIDTH } from '@voussoir/ui/src/primitives/layout';
-import { A11yText, Kbd, H1, Title } from '@voussoir/ui/src/primitives/typography';
+import { A11yText, Kbd, Title } from '@voussoir/ui/src/primitives/typography';
 import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
 import { LoadingSpinner } from '@voussoir/ui/src/primitives/loading';
-import { colors, gridSize } from '@voussoir/ui/src/theme';
+import { colors } from '@voussoir/ui/src/theme';
 
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
