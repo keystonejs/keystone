@@ -35,9 +35,7 @@ class Decimal extends Implementation {
   extendAdminMeta(meta) {
     return ({
       ...meta,
-      digits: this.config.digits,
       symbol: this.config.symbol,
-      currency: this.config.currency,
     });
   }
 }

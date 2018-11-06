@@ -99,7 +99,7 @@ keystone.createList('Post', {
     },
     stars: { type: Float },
     views: { type: Integer },
-    price: { type: Decimal, digits: 2, symbol: '$' },
+    price: { type: Decimal, symbol: '$' },
     currency: { type: Text },
     hero: { type: File, adapter: fileAdapter },
   },
