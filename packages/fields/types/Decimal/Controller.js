@@ -13,7 +13,6 @@ export default class TextController extends FieldController {
   };
   getValue = data => {
     const value = data[this.config.path];
-    console.log(typeof value, value);
     // Make the value a string to prevent loss of accuracy and precision.
     if (typeof value === 'string') {
       return value;
