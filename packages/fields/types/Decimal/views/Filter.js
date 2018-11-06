@@ -6,7 +6,6 @@ import type { FilterProps } from '../../../types';
 
 type Props = FilterProps<string>;
 export default class TextFilterView extends Component<Props> {
-
   componentDidUpdate(prevProps: Props) {
     const { filter } = this.props;
 
@@ -27,7 +26,7 @@ export default class TextFilterView extends Component<Props> {
     }
   };
 
-  handleChange= (event: Object) => {
+  handleChange = (event: Object) => {
     const value = event.target.value;
     this.props.onChange(value.replace(/[^0-9.,]+/g, ''));
   };
