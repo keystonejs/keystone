@@ -31,7 +31,7 @@ const initialData = require('./data');
 const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 
 const keystone = new Keystone({
-  name: 'Test Project Basic',
+  name: 'Cypress Test Project Basic',
   adapter: new MongooseAdapter(),
 });
 
