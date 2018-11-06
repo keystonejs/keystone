@@ -68,9 +68,12 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
     });
     // Updates the relevant value in the item provided (by referrence)
     const toServerSide = item => {
-      if (item[this.path]) {
+      if (item[this.path] && typeof item[this.path] === 'string') {
         item[this.path] = mongoose.Types.Decimal128.fromString(item[this.path]);
-      };
+      } else if (!item[this.path]) {
+        item[this.path] = null;
+      }
+      // else: Must either be undefined or a Decimal128 object, so leave it alone.
     };
 
     const toClientSide = item => {
@@ -94,7 +97,7 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
     });
 
     // Attach various pre save/update hooks to convert the decimal value
-    schema.pre('save', function() {
+    schema.pre('validate', function() {
       toServerSide(this);
     });
 
