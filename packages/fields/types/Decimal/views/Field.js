@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput, Currency } from '@voussoir/ui/src/primitives/fields';
+import {
+  FieldContainer,
+  FieldLabel,
+  FieldInput,
+  Currency,
+} from '@voussoir/ui/src/primitives/fields';
 import { Input } from '@voussoir/ui/src/primitives/forms';
 
 export default class TextField extends Component {

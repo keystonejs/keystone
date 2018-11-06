@@ -1,6 +1,7 @@
 # @voussoir/fields
 
 ## 1.0.1
+
 - [patch] Avoid recreating indexes on every app boot (https://github.com/keystonejs/keystone-5/pull/459) [b84dd80](b84dd80)
 
 ## 1.0.0

@@ -54,9 +54,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: price',
     withKeystone(({ server: { server } }) =>
-      match(server, 'where: { price: 50.00 }', [
-        { name: 'price1', price: '50.00' },
-      ])
+      match(server, 'where: { price: 50.00 }', [{ name: 'price1', price: '50.00' }])
     )
   );
 
@@ -87,9 +85,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: price_lt',
     withKeystone(({ server: { server } }) =>
-      match(server, 'where: { price_lt: 0.01 }', [
-        { name: 'price5', price: null },
-      ])
+      match(server, 'where: { price_lt: 0.01 }', [{ name: 'price5', price: null }])
     )
   );
 
@@ -109,9 +105,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: price_gt',
     withKeystone(({ server: { server } }) =>
-      match(server, 'where: { price_gt: 2 }', [
-        { name: 'price4', price: '40000.00' }
-      ])
+      match(server, 'where: { price_gt: 2 }', [{ name: 'price4', price: '40000.00' }])
     )
   );
 

@@ -33,10 +33,10 @@ class Decimal extends Implementation {
     return [`${this.path}: String`];
   }
   extendAdminMeta(meta) {
-    return ({
+    return {
       ...meta,
       symbol: this.config.symbol,
-    });
+    };
   }
 }
 
@@ -55,10 +55,10 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
           validator: required
             ? isValidDecimal
             : a => {
-              if (typeof a === 'object') return true;
-              if (typeof a === 'undefined' || a === null) return true;
-              return false;
-            },
+                if (typeof a === 'object') return true;
+                if (typeof a === 'undefined' || a === null) return true;
+                return false;
+              },
           message: '{VALUE} is not a Decimal value',
         },
         ...mongooseOptions,
@@ -75,7 +75,7 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
     };
 
     const toClientSide = item => {
-      if(item[this.path]) {
+      if (item[this.path]) {
         item[this.path] = item[this.path].toString();
       }
     };
@@ -155,11 +155,21 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
   getQueryConditions() {
     return {
       [this.path]: value => ({ [this.path]: { $eq: mongoose.Types.Decimal128.fromString(value) } }),
-      [`${this.path}_not`]: value => ({ [this.path]: { $ne: mongoose.Types.Decimal128.fromString(value) } }),
-      [`${this.path}_lt`]: value => ({ [this.path]: { $lt: mongoose.Types.Decimal128.fromString(value) } }),
-      [`${this.path}_lte`]: value => ({ [this.path]: { $lte: mongoose.Types.Decimal128.fromString(value) } }),
-      [`${this.path}_gt`]: value => ({ [this.path]: { $gt: mongoose.Types.Decimal128.fromString(value) } }),
-      [`${this.path}_gte`]: value => ({ [this.path]: { $gte: mongoose.Types.Decimal128.fromString(value) } }),
+      [`${this.path}_not`]: value => ({
+        [this.path]: { $ne: mongoose.Types.Decimal128.fromString(value) },
+      }),
+      [`${this.path}_lt`]: value => ({
+        [this.path]: { $lt: mongoose.Types.Decimal128.fromString(value) },
+      }),
+      [`${this.path}_lte`]: value => ({
+        [this.path]: { $lte: mongoose.Types.Decimal128.fromString(value) },
+      }),
+      [`${this.path}_gt`]: value => ({
+        [this.path]: { $gt: mongoose.Types.Decimal128.fromString(value) },
+      }),
+      [`${this.path}_gte`]: value => ({
+        [this.path]: { $gte: mongoose.Types.Decimal128.fromString(value) },
+      }),
     };
   }
 }

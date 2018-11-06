@@ -22,7 +22,6 @@ export default class TextController extends FieldController {
       // If it is neither string nor number then it must be empty.
       return '';
     }
-
   };
   getFilterTypes = () => [
     {
