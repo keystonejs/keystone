@@ -2,7 +2,7 @@ import { Component } from 'react';
 import raf from 'raf-schd';
 
 const LS_KEY = 'KEYSTONE_NAVIGATION_STATE';
-const DEFAULT_STATE = { width: 240 };
+const DEFAULT_STATE = { width: 280 };
 const MIN_WIDTH = 140;
 
 function getCache() {
