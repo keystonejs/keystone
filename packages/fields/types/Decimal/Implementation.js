@@ -68,7 +68,7 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
     });
     // Updates the relevant value in the item provided (by referrence)
     const toServerSide = item => {
-      item[this.path] = new mongoose.Types.Decimal128(item[this.path]);
+      item[this.path] = mongoose.Types.Decimal128.fromString(item[this.path]);
     };
 
     const toClientSide = item => {
@@ -151,12 +151,12 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
 
   getQueryConditions() {
     return {
-      [this.path]: value => ({ [this.path]: { $eq: new mongoose.Types.Decimal128(value) } }),
-      [`${this.path}_not`]: value => ({ [this.path]: { $ne: new mongoose.Types.Decimal128(value) } }),
-      [`${this.path}_lt`]: value => ({ [this.path]: { $lt: new mongoose.Types.Decimal128(value) } }),
-      [`${this.path}_lte`]: value => ({ [this.path]: { $lte: new mongoose.Types.Decimal128(value) } }),
-      [`${this.path}_gt`]: value => ({ [this.path]: { $gt: new mongoose.Types.Decimal128(value) } }),
-      [`${this.path}_gte`]: value => ({ [this.path]: { $gte: new mongoose.Types.Decimal128(value) } }),
+      [this.path]: value => ({ [this.path]: { $eq: mongoose.Types.Decimal128.fromString(value) } }),
+      [`${this.path}_not`]: value => ({ [this.path]: { $ne: mongoose.Types.Decimal128.fromString(value) } }),
+      [`${this.path}_lt`]: value => ({ [this.path]: { $lt: mongoose.Types.Decimal128.fromString(value) } }),
+      [`${this.path}_lte`]: value => ({ [this.path]: { $lte: mongoose.Types.Decimal128.fromString(value) } }),
+      [`${this.path}_gt`]: value => ({ [this.path]: { $gt: mongoose.Types.Decimal128.fromString(value) } }),
+      [`${this.path}_gte`]: value => ({ [this.path]: { $gte: mongoose.Types.Decimal128.fromString(value) } }),
     };
   }
 }
