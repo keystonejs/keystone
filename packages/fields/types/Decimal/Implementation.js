@@ -47,7 +47,7 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
     const { mongooseOptions, unique } = this.config;
     const required = mongooseOptions && mongooseOptions.required;
 
-    const isValidDecimal = s => /^-?\d*\.?\d*$/.test(s) === s;
+    const isValidDecimal = s => /^-?\d*\.?\d*$/.test(s);
 
     schema.add({
       [this.path]: {
@@ -57,7 +57,7 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
           validator: required
             ? isValidDecimal
             : a => {
-              if (typeof a === 'decimal' && isValidDecimal(a)) return true;
+              if (typeof a === 'object') return true;
               if (typeof a === 'undefined' || a === null) return true;
               return false;
             },
@@ -73,7 +73,6 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
 
     const toClientSide = item => {
       if (item[this.path] === undefined) return;
-
       item[this.path] = item[this.path].toString();
     };
 
@@ -91,7 +90,7 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
       toClientSide(result);
     });
 
-    // Attach various pre save/update hooks to convert the datetime value
+    // Attach various pre save/update hooks to convert the decimal value
     schema.pre('save', function() {
       toServerSide(this);
     });
@@ -160,7 +159,6 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
     };
   }
 }
-
 
 module.exports = {
   Decimal,
