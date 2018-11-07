@@ -1,14 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
-import StarEmpty from './star-empty.svg';
-import StarFull from './star-full.svg';
-import StarWrapper from './StarWrapper';
-
-const StarInput = ({ num, value, onClick }) => {
-  const Star = value >= num ? StarFull : StarEmpty;
-  return <img src={Star} onClick={() => onClick(num)} />;
-};
+import Stars from './Stars';
 
 export default class StarField extends PureComponent {
   handleChange = num => {
@@ -28,13 +21,7 @@ export default class StarField extends PureComponent {
       <FieldContainer>
         <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
         <FieldInput>
-          <StarWrapper starCount={starCount}>
-            {Array(starCount)
-              .fill(true)
-              .map((v, index) => (
-                <StarInput key={index} num={index + 1} value={value} onClick={this.handleChange} />
-              ))}
-          </StarWrapper>
+          <Stars count={starCount} value={value} onClick={this.handleChange} />
         </FieldInput>
       </FieldContainer>
     );
