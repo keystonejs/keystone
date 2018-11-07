@@ -1,9 +1,9 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
 import Stars from './Stars';
 
-export default class StarField extends PureComponent {
+export default class StarField extends React.Component {
   handleChange = num => {
     const { field, item, onChange } = this.props;
     const value = item[field.path];
