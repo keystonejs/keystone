@@ -24,7 +24,7 @@ export default withRouter(function StyleGuide(props) {
   } = props;
   return (
     <Nav>
-      <Container css={{ paddingBottom: 200, width: '100%' }}>
+      <Container css={{ paddingBottom: 24 }}>
         <SecondaryNav>
           <FlexGroup>
             {pages.map(page => (

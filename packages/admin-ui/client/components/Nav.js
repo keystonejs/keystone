@@ -57,6 +57,7 @@ const GrabHandle = styled.div({
   right: 0,
   top: 0,
   transition: 'background-color 200ms',
+  transitionDelay: '200ms',
   width: 2,
 
   ':hover': {

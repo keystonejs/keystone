@@ -17,8 +17,8 @@ export const SecondaryNavItem = styled(ItemElement)(({ isSelected }) => ({
   cursor: 'pointer',
   display: 'inline-block',
   marginRight: gridSize,
-  paddingBottom: gridSize * 1.5,
-  paddingTop: gridSize * 1.5,
+  paddingBottom: gridSize * 2,
+  paddingTop: gridSize * 2,
   transition: 'box-shadow 200ms',
 
   ':hover': {
