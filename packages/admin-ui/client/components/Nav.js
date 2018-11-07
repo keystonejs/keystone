@@ -36,21 +36,34 @@ const Page = styled.div({
 const PageWrapper = styled.div({
   display: 'flex',
 });
+const Shadow = styled.div({
+  background: `linear-gradient(to left,
+    rgba(0, 0, 0, 0.1) 0px,
+    rgba(0, 0, 0, 0.1) 1px,
+    rgba(0, 0, 0, 0.05) 1px,
+    rgba(0, 0, 0, 0) 100%
+  )`,
+  bottom: 0,
+  pointerEvents: 'none',
+  position: 'fixed',
+  top: 0,
+  transform: 'translateX(-3px)',
+  width: 3,
+});
 const GrabHandle = styled.div({
-  backgroundColor: colors.N10,
-  bottom: gridSize * 3,
+  bottom: 0,
   cursor: 'col-resize',
   position: 'fixed',
   right: 0,
-  top: gridSize * 3,
+  top: 0,
   transition: 'background-color 200ms',
   width: 2,
 
   ':hover': {
-    backgroundColor: colors.N20,
+    backgroundColor: colors.B.L30,
   },
   ':active': {
-    backgroundColor: colors.N30,
+    backgroundColor: colors.B.L10,
   },
 
   ':before': {
@@ -149,6 +162,7 @@ function Nav(props) {
                 </NavGroupIcons>
               ) : null}
             </PrimaryNav>
+            <Shadow style={makeResizeStyles('left')} />
             <GrabHandle {...handlers} style={makeResizeStyles('left')} />
             <Page style={makeResizeStyles('padding-left')}>{children}</Page>
           </PageWrapper>

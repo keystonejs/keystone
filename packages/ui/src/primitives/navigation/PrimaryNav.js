@@ -7,8 +7,7 @@ import { borderRadius, colors, gridSize } from '../../theme';
 import { FlexProvider, ItemElement } from './common';
 
 const Wrapper = styled.nav({
-  // backgroundColor: colors.N90,
-  // color: 'white',
+  backgroundColor: 'rgb(244, 245, 247)',
   boxSizing: 'border-box',
   display: 'flex',
   flexFlow: 'column nowrap',
@@ -26,7 +25,6 @@ export const BrandItem = styled.h2({
   fontSize: 18,
   fontWeight: 500,
   margin: 0,
-  // padding: gridSize * 2,
   paddingBottom: gridSize * 2,
 });
 

@@ -5,13 +5,13 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import raf from 'raf-schd';
 import { Button, LoadingButton } from '@voussoir/ui/src/primitives/buttons';
-import { colors, gridSize } from '@voussoir/ui/src/theme';
+import { gridSize } from '@voussoir/ui/src/theme';
 
 const Placeholder = styled.div({
   height: 100,
 });
 const Toolbar = styled.div({
-  backgroundColor: colors.page,
+  backgroundColor: 'rgba(250, 251, 252, 0.93)',
   bottom: 0,
   boxShadow: 'rgba(0, 0, 0, 0.1) 0px -2px 0px',
   display: 'flex',
