@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component, type Ref } from 'react';
+import React, { Component } from 'react';
 import { Input } from '@voussoir/ui/src/primitives/forms';
 import type { FilterProps } from '../../../types';
 
