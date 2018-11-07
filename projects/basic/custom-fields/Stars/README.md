@@ -129,7 +129,7 @@ export { default } from '@voussoir/fields/types/Integer/views/Filter';
 
 #### views/Field.js
 
-For now, we're going to re-export the Integer Field Type.
+For now, we're also going to re-export the Integer Field Type.
 
 ```jsx
 export { default } from '@voussoir/fields/types/Integer/views/Field';
@@ -149,6 +149,95 @@ keystone.createList('Post', {
     stars: { type: Stars },
   },
 });
+```
+
+## Update Views
+
+The Field Type works now but it's not super useful since it looks the same as an integer so let's update the views.
+
+### Field component
+
+We've already made a `Stars` component so we can use that here
+
+```jsx
+import React from 'react';
+
+import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import Stars from './Stars';
+
+export default class StarsField extends React.Component {
+  handleChange = num => {
+    const { field, item, onChange } = this.props;
+    const value = item[field.path];
+    const newValue = value === num ? 0 : num;
+    onChange(field, newValue);
+  };
+
+  render() {
+    const { field, item } = this.props;
+    const { starCount } = field.config;
+    const value = item[field.path];
+    const htmlID = `ks-input-${field.path}`;
+
+    return (
+      <FieldContainer>
+        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+        <FieldInput>
+          <Stars value={value} onClick={this.handleChange} />
+        </FieldInput>
+      </FieldContainer>
+    );
+  }
+}
+```
+
+### Cell Component
+
+The Cell component can also use our Stars component.
+
+```jsx
+import React from 'react';
+import Stars from './Stars';
+
+export default function StarsCell({ data }) {
+  return <Stars value={data} />;
+}
+```
+
+## Adding a config option
+
+Now we have a custom Field Type with its own views but we hard coded a maximum of five stars but it would be nice if people could configure the number of stars so let's add a `starCount` option for that.
+
+First we need to expose it to the Admin UI, to do this, we can define a `extendAdminMeta` method on the `Stars` `Implementation`. You can pass anything here that can be stringified to JSON(i.e. no functions).
+
+```jsx
+const { Integer, MongoIntegerInterface } = require('@voussoir/fields/types/Integer/Implementation');
+
+class Stars extends Integer {
+  extendAdminMeta(meta) {
+    return { ...meta, starCount: this.config.starCount || 5 };
+  }
+}
+
+module.exports = {
+  Stars,
+  MongoIntegerInterface,
+};
+```
+
+### Using it in the views
+
+The config option is exposed as `props.field.config` so we use the `starCount` property to get it. Our `Stars` component already accepts a count prop so we can pass the star count and it'll just work.
+
+```jsx
+import React from 'react';
+
+import Stars from './Stars';
+
+export default function StarsCell({ field, data }) {
+  const { starCount } = field.config;
+  return <Stars count={starCount} value={data} />;
+}
 ```
 
 ---

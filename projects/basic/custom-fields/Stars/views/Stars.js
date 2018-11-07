@@ -29,6 +29,7 @@ const Stars = ({ count, value, onClick }) => {
 
 Stars.defaultProps = {
   onClick: () => {},
+  count: 5,
 };
 
 export default Stars;
