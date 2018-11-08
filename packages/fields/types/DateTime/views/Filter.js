@@ -62,7 +62,7 @@ export default class CalendarDayFilterView extends Component<Props, State> {
 
     const { date, time, offset } = this.state;
     const { handleDayChange, handleTimeChange, handleOffsetChange } = this;
-    const { yearRangeFrom,  yearRangeTo, yearPickerType } = field.config;
+    const { yearRangeFrom, yearRangeTo, yearPickerType } = field.config;
 
     return (
       <DateTimePicker
@@ -77,7 +77,7 @@ export default class CalendarDayFilterView extends Component<Props, State> {
           handleOffsetChange,
           yearRangeFrom,
           yearRangeTo,
-          yearPickerType
+          yearPickerType,
         }}
       />
     );
