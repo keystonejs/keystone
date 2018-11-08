@@ -14,18 +14,15 @@ export const NavGroupIcons = styled.div({
   padding: gridSize * 2,
 });
 
-export const NavGroup = styled.div({
+export const NavGroup = styled.div(({ isScrollable }) => ({
   boxSizing: 'border-box',
+  boxShadow: isScrollable ? 'inset 0 -2px 0 rgba(0, 0, 0, 0.1)' : null,
   flex: 1,
   overflowY: 'auto',
+  paddingBottom: gridSize * 3,
   paddingLeft: gridSize * 3,
   paddingRight: gridSize * 3,
   width: '100%',
-});
-export const NavSeparator = styled.div(({ isSelected }) => ({
-  borderLeft: '1px solid rgba(255, 255, 255, 0.2)',
-  height: 20,
-  opacity: isSelected ? 0 : 1,
 }));
 
 export const PrimaryNav = styled.nav({
@@ -35,8 +32,8 @@ export const PrimaryNav = styled.nav({
   flexFlow: 'column nowrap',
   fontSize: '0.9rem',
   fontWeight: 500,
-  minHeight: '100vh',
-  overflowY: 'auto',
+  height: '100vh',
+  overflow: 'hidden',
   position: 'fixed',
 });
 

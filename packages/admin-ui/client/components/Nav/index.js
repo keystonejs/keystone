@@ -25,6 +25,7 @@ import { A11yText, Title } from '@voussoir/ui/src/primitives/typography';
 
 import { withAdminMeta } from '../../providers/AdminMeta';
 import ResizeHandler from './ResizeHandler';
+import ScrollQuery from '../ScrollQuery';
 
 const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
 
@@ -133,6 +134,7 @@ function getPath(str) {
 
 class Nav extends Component {
   state = { mouseIsOverNav: false };
+
   handleMouseEnter = () => {
     this.setState({ mouseIsOverNav: true });
   };
@@ -171,33 +173,37 @@ class Nav extends Component {
                 style={makeResizeStyles('width')}
               >
                 <Inner>
-                  <NavGroup>
-                    <Title as="div" margin="both">
-                      {name}
-                    </Title>
-                    <PrimaryNavItem to={adminPath} isSelected={location.pathname == adminPath}>
-                      Dashboard
-                    </PrimaryNavItem>
+                  <ScrollQuery>
+                    {(ref, snapshot) => (
+                      <NavGroup ref={ref} isScrollable={snapshot.isScrollable}>
+                        <Title as="div" margin="both">
+                          {name}
+                        </Title>
+                        <PrimaryNavItem to={adminPath} isSelected={location.pathname == adminPath}>
+                          Dashboard
+                        </PrimaryNavItem>
 
-                    {listKeys.map(key => {
-                      const list = getListByKey(key);
-                      const href = `${adminPath}/${list.path}`;
-                      const path = getPath(location.pathname);
-                      const isSelected = href === path;
+                        {listKeys.map(key => {
+                          const list = getListByKey(key);
+                          const href = `${adminPath}/${list.path}`;
+                          const path = getPath(location.pathname);
+                          const isSelected = href === path;
 
-                      return (
-                        <Fragment key={key}>
-                          <PrimaryNavItem
-                            id={`ks-nav-${list.path}`}
-                            isSelected={isSelected}
-                            to={href}
-                          >
-                            {list.label}
-                          </PrimaryNavItem>
-                        </Fragment>
-                      );
-                    })}
-                  </NavGroup>
+                          return (
+                            <Fragment key={key}>
+                              <PrimaryNavItem
+                                id={`ks-nav-${list.path}`}
+                                isSelected={isSelected}
+                                to={href}
+                              >
+                                {list.label}
+                              </PrimaryNavItem>
+                            </Fragment>
+                          );
+                        })}
+                      </NavGroup>
+                    )}
+                  </ScrollQuery>
 
                   {ENABLE_DEV_FEATURES || withAuth ? (
                     <NavGroupIcons>
