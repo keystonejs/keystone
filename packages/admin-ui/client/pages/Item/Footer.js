@@ -24,38 +24,36 @@ export default function Footer(props) {
   const { onSave, onDelete, resetInterface, updateInProgress } = props;
 
   return (
-    <ContainerQuery>
-      {({ width }) => (
-        <Fragment>
-          <Placeholder />
-          <Toolbar style={{ width }} key="footer">
-            <div css={{ display: 'flex', alignItems: 'center' }}>
-              <LoadingButton
-                appearance="primary"
-                isDisabled={updateInProgress}
-                isLoading={updateInProgress}
-                onClick={onSave}
-                style={{ marginRight: 8 }}
-                type="submit"
-              >
-                Save Changes
-              </LoadingButton>
-              {resetInterface}
-            </div>
-            <div>
-              <Button
-                appearance="danger"
-                isDisabled={updateInProgress}
-                variant="subtle"
-                onClick={onDelete}
-              >
-                Delete
-              </Button>
-            </div>
-          </Toolbar>
-        </Fragment>
-      )}
-    </ContainerQuery>
+    <ContainerQuery render={({ ref, width }) => (
+      <Fragment>
+        <Placeholder ref={ref} />
+        <Toolbar style={{ width }} key="footer">
+          <div css={{ display: 'flex', alignItems: 'center' }}>
+            <LoadingButton
+              appearance="primary"
+              isDisabled={updateInProgress}
+              isLoading={updateInProgress}
+              onClick={onSave}
+              style={{ marginRight: 8 }}
+              type="submit"
+            >
+              Save Changes
+            </LoadingButton>
+            {resetInterface}
+          </div>
+          <div>
+            <Button
+              appearance="danger"
+              isDisabled={updateInProgress}
+              variant="subtle"
+              onClick={onDelete}
+            >
+              Delete
+            </Button>
+          </div>
+        </Toolbar>
+      </Fragment>
+    )} />
   );
 }
 Footer.propTypes = {

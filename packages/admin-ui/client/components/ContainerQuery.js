@@ -31,10 +31,17 @@ export default class ContainerQuery extends Component {
   };
 
   render() {
-    return (
+    const { children, render } = this.props;
+
+    return render ? (
+      render({
+        ref: this.measureElement,
+        width: this.state.width,
+      })
+    ) : (
       <Fragment>
         <div ref={this.measureElement} />
-        {this.props.children(this.state)}
+        {children(this.state)}
       </Fragment>
     );
   }
