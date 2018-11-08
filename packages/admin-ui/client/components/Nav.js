@@ -98,8 +98,6 @@ function Nav(props) {
           return { [kebabToCamel(key)]: navWidth, ...pointers };
         };
 
-        console.log('state.isDragging');
-
         return (
           <PageWrapper>
             <PropToggle

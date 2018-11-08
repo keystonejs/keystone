@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
-import Media from 'react-media';
 import { Query } from 'react-apollo';
 
 import { Container, Grid, Cell } from '@voussoir/ui/src/primitives/layout';
@@ -11,6 +10,7 @@ import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { Box } from './components';
+import ContainerQuery from '../../components/ContainerQuery';
 import { gqlCountQueries } from '../../classes/List';
 
 class HomePage extends Component {
@@ -38,45 +38,42 @@ class HomePage extends Component {
           <Title as="h1" margin="both">
             Dashboard
           </Title>
-          <Grid gap={16}>
-            {lists.map(list => {
-              const { key, path } = list;
-              const meta = data && data[list.gqlNames.listQueryMetaName];
+          <ContainerQuery>
+            {({ width }) => {
+              let cellWidth = 3;
+              if (width < 1024) cellWidth = 4;
+              if (width < 768) cellWidth = 6;
+              if (width < 480) cellWidth = 12;
 
               return (
-                <Fragment key={key}>
-                  <Media query={{ maxWidth: 1024 }}>
-                    {isMedium => (
-                      <Media query={{ maxWidth: 768 }}>
-                        {isSmall => {
-                          let cellWidth = 3;
-                          if (isMedium) cellWidth = 4;
-                          if (isSmall) cellWidth = 6;
+                <Grid gap={16}>
+                  {lists.map(list => {
+                    const { key, path } = list;
+                    const meta = data && data[list.gqlNames.listQueryMetaName];
 
-                          return (
-                            <Cell width={cellWidth}>
-                              <Box
-                                list={list}
-                                to={`${adminPath}/${path}`}
-                                meta={meta}
-                                onCreateClick={this.openCreateModal(key)}
-                              />
-                            </Cell>
-                          );
-                        }}
-                      </Media>
-                    )}
-                  </Media>
-                  <CreateItemModal
-                    isOpen={createFromList === key}
-                    list={list}
-                    onClose={this.closeCreateModal}
-                    onCreate={this.onCreate(list)}
-                  />
-                </Fragment>
+                    return (
+                      <Fragment key={key}>
+                        <Cell width={cellWidth}>
+                          <Box
+                            list={list}
+                            to={`${adminPath}/${path}`}
+                            meta={meta}
+                            onCreateClick={this.openCreateModal(key)}
+                          />
+                        </Cell>
+                        <CreateItemModal
+                          isOpen={createFromList === key}
+                          list={list}
+                          onClose={this.closeCreateModal}
+                          onCreate={this.onCreate(list)}
+                        />
+                      </Fragment>
+                    );
+                  })}
+                </Grid>
               );
-            })}
-          </Grid>
+            }}
+          </ContainerQuery>
         </Container>
       </main>
     );

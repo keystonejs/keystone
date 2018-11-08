@@ -1,11 +1,11 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { createRef, Component, Fragment } from 'react';
+import { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import raf from 'raf-schd';
 import { Button, LoadingButton } from '@voussoir/ui/src/primitives/buttons';
 import { gridSize } from '@voussoir/ui/src/theme';
+import ContainerQuery from '../../components/ContainerQuery';
 
 const Placeholder = styled.div({
   height: 100,
@@ -20,64 +20,46 @@ const Toolbar = styled.div({
   position: 'fixed',
 });
 
-export default class Footer extends Component {
-  wrapper = createRef();
-  state = { width: 'auto' };
-  static propTypes = {
-    onDelete: PropTypes.func,
-    onReset: PropTypes.func,
-    onSave: PropTypes.func,
-  };
-  componentDidMount() {
-    window.addEventListener('scroll', this.recalcPosition, false);
-    window.addEventListener('resize', this.recalcPosition, false);
-    this.recalcPosition();
-  }
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.recalcPosition, false);
-    window.removeEventListener('resize', this.recalcPosition, false);
-  }
-  recalcPosition = raf(() => {
-    // Due to the use of raf, this function may end up being called *after*
-    // the component is unmounted. If this happens, we can safely return early.
-    if (this.wrapper.current === null) return;
+export default function Footer(props) {
+  const { onSave, onDelete, resetInterface, updateInProgress } = props;
 
-    this.setState({ width: this.wrapper.current.offsetWidth });
-  });
-
-  render() {
-    const { onSave, onDelete, resetInterface, updateInProgress } = this.props;
-    const { width } = this.state;
-
-    return (
-      <Fragment>
-        <Placeholder ref={this.wrapper} key="wrapper" />
-        <Toolbar style={{ width }} key="footer">
-          <div css={{ display: 'flex', alignItems: 'center' }}>
-            <LoadingButton
-              appearance="primary"
-              isDisabled={updateInProgress}
-              isLoading={updateInProgress}
-              onClick={onSave}
-              style={{ marginRight: 8 }}
-              type="submit"
-            >
-              Save Changes
-            </LoadingButton>
-            {resetInterface}
-          </div>
-          <div>
-            <Button
-              appearance="danger"
-              isDisabled={updateInProgress}
-              variant="subtle"
-              onClick={onDelete}
-            >
-              Delete
-            </Button>
-          </div>
-        </Toolbar>
-      </Fragment>
-    );
-  }
+  return (
+    <ContainerQuery>
+      {({ width }) => (
+        <Fragment>
+          <Placeholder />
+          <Toolbar style={{ width }} key="footer">
+            <div css={{ display: 'flex', alignItems: 'center' }}>
+              <LoadingButton
+                appearance="primary"
+                isDisabled={updateInProgress}
+                isLoading={updateInProgress}
+                onClick={onSave}
+                style={{ marginRight: 8 }}
+                type="submit"
+              >
+                Save Changes
+              </LoadingButton>
+              {resetInterface}
+            </div>
+            <div>
+              <Button
+                appearance="danger"
+                isDisabled={updateInProgress}
+                variant="subtle"
+                onClick={onDelete}
+              >
+                Delete
+              </Button>
+            </div>
+          </Toolbar>
+        </Fragment>
+      )}
+    </ContainerQuery>
+  );
 }
+Footer.propTypes = {
+  onDelete: PropTypes.func,
+  onReset: PropTypes.func,
+  onSave: PropTypes.func,
+};

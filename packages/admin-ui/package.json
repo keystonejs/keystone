@@ -48,7 +48,6 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-document-title": "^2.0.3",
     "react-dom": "^16.5.2",
-    "react-media": "^1.8.0",
     "react-node-resolver": "^2.0.0",
     "react-prop-toggle": "^1.0.2",
     "react-pseudo-state": "^1.0.1",
