@@ -1,13 +1,12 @@
-const path = require('path');
 const { Integer, MongoIntegerInterface } = require('./Implementation');
 
 module.exports = {
   type: 'Integer',
   implementation: Integer,
   views: {
-    Controller: path.resolve(__dirname, './Controller'),
-    Field: path.resolve(__dirname, './views/Field'),
-    Filter: path.resolve(__dirname, './views/Filter'),
+    Controller: require.resolve('./Controller'),
+    Field: require.resolve('./views/Field'),
+    Filter: require.resolve('./views/Filter'),
   },
   adapters: {
     mongoose: MongoIntegerInterface,
