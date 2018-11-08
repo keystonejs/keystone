@@ -1,3 +1,4 @@
+// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { LoadingIndicator } from '@voussoir/ui/src/primitives/loading';
