@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, getYear } from 'date-fns';
 import { DateTime } from 'luxon';
 import React, { Component } from 'react';
 
@@ -23,7 +23,13 @@ export default class CalendarDayField extends Component {
   handleDayChange = day => {
     const { field, onChange } = this.props;
     const newState = { ...this.state, date: format(day, 'YYYY-MM-DD') };
-    onChange(field, `${newState.date}T${newState.time}${newState.offset}`);
+    if (
+      getYear(newState.date).toString().length <= 4 &&
+      getYear(newState.date) <= field.config.yearRangeTo &&
+      getYear(newState.date) >= field.config.yearRangeFrom
+    ) {
+      onChange(field, `${newState.date}T${newState.time}${newState.offset}`);
+    }
     this.setState(newState);
   };
 
@@ -68,6 +74,9 @@ export default class CalendarDayField extends Component {
                 handleDayChange,
                 handleTimeChange,
                 handleOffsetChange,
+                yearRangeFrom: field.config.yearRangeFrom,
+                yearRangeTo: field.config.yearRangeTo,
+                yearPickerType: field.config.yearPickerType,
               }}
             />
           </Popout>
