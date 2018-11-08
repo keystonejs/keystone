@@ -66,17 +66,16 @@ This is where we will spend most of our time in this tutorial.
 Field Types should have an `index.js` file which exports the Field Type definition. Explanations on what each thing does can be found [here](/packages/fields/README/index.md).
 
 ```jsx
-const path = require('path');
 const { Stars, MongoIntegerInterface } = require('./Implementation');
 
 module.exports = {
   type: 'Stars',
   implementation: Stars,
   views: {
-    Controller: path.resolve(__dirname, './Controller'),
-    Field: path.resolve(__dirname, './views/Field'),
-    Filter: path.resolve(__dirname, './views/Filter'),
-    Cell: path.resolve(__dirname, './views/Cell'),
+    Controller: require.resolve('./Controller'),
+    Field: require.resolve('./views/Field'),
+    Filter: require.resolve('./views/Filter'),
+    Cell: require.resolve('./views/Cell'),
   },
   adapters: {
     mongoose: MongoIntegerInterface,
