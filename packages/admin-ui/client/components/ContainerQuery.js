@@ -1,5 +1,6 @@
 import React, { createRef, Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import ResizeObserver from 'resize-observer-polyfill';
 
 export default class ContainerQuery extends Component {
   measureElement = createRef();
