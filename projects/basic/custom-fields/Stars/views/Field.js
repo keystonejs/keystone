@@ -5,7 +5,7 @@ import Stars from './Stars';
 
 export default class StarsField extends React.Component {
   handleChange = newValue => {
-    const { field, item, onChange } = this.props;
+    const { field, onChange } = this.props;
     onChange(field, newValue);
   };
 
