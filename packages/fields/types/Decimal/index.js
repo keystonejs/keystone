@@ -4,9 +4,9 @@ module.exports = {
   type: 'Decimal',
   implementation: Decimal,
   views: {
-    Controller: require.resolve(__dirname, './Controller'),
-    Field: require.resolve(__dirname, './views/Field'),
-    Filter: require.resolve(__dirname, './views/Filter'),
+    Controller: require.resolve('./Controller'),
+    Field: require.resolve('./views/Field'),
+    Filter: require.resolve('./views/Filter'),
   },
   adapters: {
     mongoose: MongoDecimalInterface,
