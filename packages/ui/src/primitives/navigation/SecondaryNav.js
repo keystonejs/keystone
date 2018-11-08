@@ -29,8 +29,4 @@ export const SecondaryNavItem = styled(ItemElement)(({ isSelected }) => ({
 
 type Props = { children: Node };
 
-export const SecondaryNav = ({ children }: Props) => (
-  <Wrapper>
-    {children}
-  </Wrapper>
-);
+export const SecondaryNav = ({ children }: Props) => <Wrapper>{children}</Wrapper>;
