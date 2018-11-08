@@ -2,8 +2,9 @@ import { Component } from 'react';
 import raf from 'raf-schd';
 
 const LS_KEY = 'KEYSTONE_NAVIGATION_STATE';
-const DEFAULT_STATE = { width: 280 };
+const DEFAULT_STATE = { isCollapsed: false, width: 280 };
 const MIN_WIDTH = 140;
+const MAX_WIDTH = 800;
 
 function getCache() {
   if (typeof localStorage !== 'undefined') {
@@ -21,11 +22,14 @@ function setCache(state) {
 export default class ResizeHandler extends Component {
   state = getCache();
 
-  storeState = state => {
-    // only store the width property in locals storage
-    if (state.width) setCache({ width: state.width });
+  storeState = s => {
+    // only keep the `isCollapsed` and `width` properties in locals storage
+    const isCollapsed = s.isCollapsed !== undefined ? s.isCollapsed : this.state.isCollapsed;
+    const width = s.width !== undefined ? s.width : this.state.width;
 
-    this.setState(state);
+    setCache({ isCollapsed, width });
+
+    this.setState(s);
   };
 
   handleResizeStart = (event: MouseEvent) => {
@@ -33,7 +37,7 @@ export default class ResizeHandler extends Component {
     if (event.button && event.button > 0) return;
 
     // initialize resize gesture
-    this.storeState({ initialX: event.pageX, mouseIsDown: true });
+    this.setState({ initialX: event.pageX, mouseIsDown: true });
 
     // attach handlers (handleResizeStart is a bound to onMouseDown)
     window.addEventListener('mousemove', this.handleResize);
@@ -43,7 +47,7 @@ export default class ResizeHandler extends Component {
   initializeDrag = () => {
     let initialWidth = this.state.width;
 
-    this.storeState({ initialWidth, isDragging: true });
+    this.setState({ initialWidth, isDragging: true });
   };
 
   handleResize = raf((event: MouseEvent) => {
@@ -60,31 +64,43 @@ export default class ResizeHandler extends Component {
     }
 
     // allow the product nav to be 75% of the available page width
-    const maxWidth = Math.round((window.innerWidth / 4) * 3);
-    const minWidth = MIN_WIDTH;
-    const adjustedMax = maxWidth - initialWidth;
-    const adjustedMin = minWidth - initialWidth;
+    const adjustedMax = MAX_WIDTH - initialWidth;
+    const adjustedMin = MIN_WIDTH - initialWidth;
 
     const delta = Math.max(Math.min(event.pageX - initialX, adjustedMax), adjustedMin);
     const width = initialWidth + delta;
 
-    this.storeState({ delta, width });
+    this.setState({ delta, width });
   });
   handleResizeEnd = () => {
     // reset non-width states
-    this.storeState({ delta: 0, isDragging: false, mouseIsDown: false });
+    this.setState({ delta: 0, isDragging: false, mouseIsDown: false });
+
+    // store the width
+    this.storeState({ width: this.state.width });
 
     // cleanup
     window.removeEventListener('mousemove', this.handleResize);
     window.removeEventListener('mouseup', this.handleResizeEnd);
   };
+  handleCollapse = () => {
+    this.storeState({ isCollapsed: true });
+  };
+  handleExpand = () => {
+    this.storeState({ isCollapsed: false });
+  };
 
   render() {
-    const handlers = {
-      title: 'Drag to Resize. Double Click to Collapse.',
+    const resizeProps = {
+      title: 'Drag to Resize',
       onMouseDown: this.handleResizeStart,
     };
+    const clickProps = {
+      title: this.state.isCollapsed ? 'Click to Expand' : 'Click to Collapse',
+      onClick: this.state.isCollapsed ? this.handleExpand : this.handleCollapse,
+    };
+    const snapshot = this.state;
 
-    return this.props.children(handlers, this.state);
+    return this.props.children(resizeProps, clickProps, snapshot);
   }
 }
