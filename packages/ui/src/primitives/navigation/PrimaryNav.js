@@ -5,7 +5,6 @@ import styled from '@emotion/styled';
 import { borderRadius, colors, gridSize } from '../../theme';
 import { ItemElement } from './common';
 
-
 export const NavGroupIcons = styled.div({
   alignItems: 'center',
   alignSelf: 'stretch',

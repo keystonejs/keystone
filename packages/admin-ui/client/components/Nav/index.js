@@ -105,7 +105,6 @@ const CollapseExpand = styled.button(({ isVisible }) => ({
   visibility: isVisible ? 'visible' : 'hidden',
   width: 24,
   top: 24,
-  position: 'absolute',
 
   '> svg': { position: 'relative' },
 
@@ -118,10 +117,12 @@ const CollapseExpand = styled.button(({ isVisible }) => ({
 }));
 const CollapseButton = styled(CollapseExpand)({
   right: 24,
+  position: 'absolute',
   '> svg': { right: -1 },
 });
 const ExpandButton = styled(CollapseExpand)({
   left: 24,
+  position: 'fixed',
   '> svg': { right: -3 },
 });
 
