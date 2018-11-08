@@ -157,7 +157,7 @@ The Field Type works now but it's not super useful since it looks the same as an
 
 ### Field component
 
-We've already made a `Stars` component so we can use that here
+We've already made a `Stars` component so we can use the component and write some code to handle changes like this.
 
 ```jsx
 import React from 'react';
@@ -166,10 +166,8 @@ import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primiti
 import Stars from './Stars';
 
 export default class StarsField extends React.Component {
-  handleChange = num => {
-    const { field, item, onChange } = this.props;
-    const value = item[field.path];
-    const newValue = value === num ? 0 : num;
+  handleChange = newValue => {
+    const { field, onChange } = this.props;
     onChange(field, newValue);
   };
 
@@ -183,7 +181,7 @@ export default class StarsField extends React.Component {
       <FieldContainer>
         <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
         <FieldInput>
-          <Stars value={value} onClick={this.handleChange} />
+          <Stars count={starCount} value={value} onClick={this.handleChange} />
         </FieldInput>
       </FieldContainer>
     );
@@ -193,7 +191,7 @@ export default class StarsField extends React.Component {
 
 ### Cell Component
 
-The Cell component can also use our Stars component.
+The Cell component can also use our Stars component and the data prop.
 
 ```jsx
 import React from 'react';
@@ -227,7 +225,7 @@ module.exports = {
 
 ### Using it in the views
 
-The config option is exposed as `props.field.config` so we use the `starCount` property to get it. Our `Stars` component already accepts a count prop so we can pass the star count and it'll just work.
+The config option is exposed as `props.field.config` so we use the `starCount` property to get it. Our `Stars` component already accepts a count prop so we can pass the star count and it'll use the option.
 
 ```jsx
 import React from 'react';
@@ -240,23 +238,10 @@ export default function StarsCell({ field, data }) {
 }
 ```
 
----
-
-## So lets get started
-
-- create the directory structure
-- use the default Integer view components and Classes to start.
-- build out and explain what's happening in index.js
-- import our new component to our project and see it working.
-- update the Field component to show stars
-- update our Cell component to show stars
-- add `starCount` config option
-- publish our custom component to npm and consume it in our app (optional).
-
 ## Wrapping up
 
 This was a pretty basic custom field type. We only needed to create some custom UI components and
-expose to Keystone in the way it is expecting.
+expose it to Keystone in the way it is expecting.
 
 In a future post we will dig deeper into some of the nitty gritty of creating custom field types
 which have special database requirements or offer customised GraphQL utilities.

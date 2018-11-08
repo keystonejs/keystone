@@ -21,7 +21,12 @@ const Stars = ({ count, value, onClick }) => {
       {Array(count)
         .fill(true)
         .map((_, index) => (
-          <img src={index >= value ? StarFull : StarEmpty} onClick={() => onClick(index)} />
+          <img
+            src={index >= value ? StarFull : StarEmpty}
+            onClick={() => {
+              onClick(index === value ? 0 : index);
+            }}
+          />
         ))}
     </div>
   );

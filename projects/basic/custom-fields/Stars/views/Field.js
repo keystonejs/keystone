@@ -4,10 +4,8 @@ import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primiti
 import Stars from './Stars';
 
 export default class StarsField extends React.Component {
-  handleChange = num => {
+  handleChange = newValue => {
     const { field, item, onChange } = this.props;
-    const value = item[field.path];
-    const newValue = value === num ? 0 : num;
     onChange(field, newValue);
   };
 
