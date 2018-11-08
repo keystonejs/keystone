@@ -180,7 +180,7 @@ export default class StarsField extends React.Component {
       <FieldContainer>
         <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
         <FieldInput>
-          <Stars count={starCount} value={value} onClick={this.handleChange} />
+          <Stars count={starCount} value={value} onChange={this.handleChange} />
         </FieldInput>
       </FieldContainer>
     );

@@ -7,7 +7,7 @@ const calcWidth = n => n * STAR_WIDTH + (n - 1) * GUTTER;
 import StarEmpty from './star-empty.svg';
 import StarFull from './star-full.svg';
 
-const Stars = ({ count, value, onClick }) => {
+const Stars = ({ count, value, onChange }) => {
   return (
     <div
       style={{
@@ -20,20 +20,25 @@ const Stars = ({ count, value, onClick }) => {
     >
       {Array(count)
         .fill(true)
-        .map((_, index) => (
-          <img
-            src={index >= value ? StarFull : StarEmpty}
-            onClick={() => {
-              onClick(index === value ? 0 : index);
-            }}
-          />
-        ))}
+        .map((_, index) => {
+          // adding 1 because 0 should render as 0 stars
+          let current = index + 1;
+          return (
+            <img
+              key={index}
+              src={current <= value ? StarFull : StarEmpty}
+              onClick={() => {
+                onChange(current === value ? 0 : current);
+              }}
+            />
+          );
+        })}
     </div>
   );
 };
 
 Stars.defaultProps = {
-  onClick: () => {},
+  onChange: () => {},
   count: 5,
 };
 
