@@ -6,7 +6,6 @@
   "scripts": {
     "coverage": "NODE_ENV=test jest --coverage --collectCoverageFrom=packages/**/*.{js}",
     "cypress:run": "status=0; bolt w @voussoir/cypress-project-basic run cypress:run || status=$?; bolt w @voussoir/cypress-project-login run cypress:run || status=$?; bolt w @voussoir/cypress-project-twitter-login run cypress:run || status=$?; bolt w @voussoir/cypress-project-access-control run cypress:run || status=$?; exit $status",
-    "cypress:open": "status=0; bolt w @voussoir/cypress-project-basic run cypress:open || status=$?; bolt w @voussoir/cypress-project-login run cypress:open || status=$?; bolt w @voussoir/cypress-project-twitter-login run cypress:open || status=$?; bolt w @voussoir/cypress-project-access-control run cypress:open || status=$?; exit $status",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.js\" \"**/*.md\"",
     "fresh": "yarn clean && bolt",
