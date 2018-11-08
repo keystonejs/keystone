@@ -40,7 +40,7 @@ export default class CalendarDayFilterView extends Component<Props, State> {
   }
 
   render() {
-    const { filter } = this.props;
+    const { filter, field } = this.props;
 
     if (!filter) return null;
 
@@ -49,6 +49,9 @@ export default class CalendarDayFilterView extends Component<Props, State> {
         startCurrentDateAt={parse(this.state.value)}
         startSelectedDateAt={parse(this.state.value)}
         onSelectedChange={this.handleSelectedChange}
+        yearRangeFrom={field.config.yearRangeFrom}
+        yearRangeTo={field.config.yearRangeTo}
+        yearPickerType={field.config.yearPickerType}
       />
     );
   }
