@@ -1,4 +1,3 @@
-const path = require('path');
 const { Relationship, MongoSelectInterface } = require('./Implementation');
 
 module.exports = {
@@ -6,10 +5,10 @@ module.exports = {
   isRelationship: true, // Used internally for this special case
   implementation: Relationship,
   views: {
-    Controller: path.resolve(__dirname, './Controller'),
-    Field: path.resolve(__dirname, './views/Field'),
-    Filter: path.resolve(__dirname, './views/Filter'),
-    Cell: path.resolve(__dirname, './views/Cell'),
+    Controller: require.resolve('./Controller'),
+    Field: require.resolve('./views/Field'),
+    Filter: require.resolve('./views/Filter'),
+    Cell: require.resolve('./views/Cell'),
   },
   adapters: {
     mongoose: MongoSelectInterface,
