@@ -6,7 +6,6 @@ import { Container, Grid, Cell } from '@voussoir/ui/src/primitives/layout';
 import { Title } from '@voussoir/ui/src/primitives/typography';
 
 import CreateItemModal from '../../components/CreateItemModal';
-import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { Box } from './components';
@@ -125,11 +124,7 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
           // list component so we don't block rendering the lists immediately
           // to the user.
 
-          return (
-            <Nav>
-              <HomePage lists={allowedLists} data={data} {...props} />
-            </Nav>
-          );
+          return <HomePage lists={allowedLists} data={data} {...props} />;
         }}
       </Query>
     </Fragment>
