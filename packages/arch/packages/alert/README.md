@@ -52,7 +52,6 @@ Alert messages start off looking decently neutral—they're just light blue roun
 
 <Alert>Alert message goes here.</Alert>
 
-
 You can put multiple paragraphs of text in an alert—the last paragraph's bottom `margin` will be automatically override.
 
 ```jsx
@@ -97,22 +96,19 @@ Add the appearance property `warning`, `danger`, or `success` to the alert to ma
 <Alert appearance="warning">Alert message goes here.</Alert>
 ```
 
-<Alert appearance="warning">Alert message goes here.</Alert>    
-
+<Alert appearance="warning">Alert message goes here.</Alert>
 
 ```jsx
 <Alert appearance="danger">Alert message goes here.</Alert>
 ```
 
-<Alert appearance="danger">Alert message goes here.</Alert>  
-
+<Alert appearance="danger">Alert message goes here.</Alert>
 
 ```jsx
 <Alert appearance="success">Alert message goes here.</Alert>
 ```
 
-<Alert appearance="success">Alert message goes here.</Alert>   
-
+<Alert appearance="success">Alert message goes here.</Alert>
 
 ## Variations
 
@@ -137,7 +133,7 @@ import { CheckIcon } from '@atlaskit/icons';
 
 <Alert appearance="success" variant="bold" icon={CheckIcon}>
   <span>Alert message with an icon goes here.</span>
-</Alert>
+</Alert>;
 ```
 
 <Alert appearance="success" variant="bold" icon={CheckIcon}>

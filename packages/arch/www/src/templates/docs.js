@@ -8,7 +8,7 @@ import Layout from '../layouts';
 
 const renderAst = new rehypeReact({
   createElement: React.createElement,
-  components: { 'alert': Alert, 'checkicon': CheckIcon },
+  components: { alert: Alert, checkicon: CheckIcon },
 }).Compiler;
 
 export default ({ data }) => {
