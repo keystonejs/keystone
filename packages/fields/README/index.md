@@ -37,8 +37,35 @@ here.
 These are the client-side React Components that render various pieces of UI for
 the field type.
 
-Currently, it just includes the `Field` view, which is the form control rendered
-in the **Item Details** view in the Admin UI.
+There are currently three views that can be provided:
 
-In the future this will be extended to include views for the Cell in the Items
-List, the Filter UI, and possibly more.
+- `Field` - the form control rendered in the **Item Details** view
+- `Cell` - the content rendered in the List view
+- `Filter` - the filter control rendered in the filters dropdown in the List view
+
+```jsx
+type FilterProps<Value> = {
+  innerRef: React.Ref<*>,
+  recalcHeight: () => mixed,
+  value: Value,
+  onChange: Value => mixed,
+  field: Field,
+  filter: *,
+};
+
+type CellProps<Value> = {
+  list: List,
+  field: Field,
+  data: Value,
+  Link: React.ComponentType<{ children: React.Node, id: string, path: string }>,
+};
+
+type FieldProps<Value> = {
+  autoFocus: boolean,
+  field: Field,
+  item: Object,
+  initialData: Object,
+  itemErrors: Object,
+  onChange: (Field, Value) => mixed,
+};
+```

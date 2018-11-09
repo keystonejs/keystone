@@ -1,6 +1,7 @@
 # @voussoir/adapter-mongoose
 
 ## 0.3.1
+
 - [patch] Updated dependencies [74af97e](74af97e)
   - @voussoir/mongo-join-builder@0.2.0
 

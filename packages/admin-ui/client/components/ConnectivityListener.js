@@ -1,7 +1,12 @@
+// @flow
 import React, { Component } from 'react';
-import { withToastManager } from 'react-toast-notifications';
+import { withToastManager, type Context } from 'react-toast-notifications';
 
-class ConnectivityListener extends Component {
+type Props = { toastManager: Context };
+
+type State = { isOnline: boolean };
+
+class ConnectivityListener extends Component<Props, State> {
   state = { isOnline: window ? window.navigator.onLine : false };
   componentDidMount() {
     window.addEventListener('online', this.onLine, false);
@@ -17,10 +22,13 @@ class ConnectivityListener extends Component {
   offLine = () => {
     this.setState({ isOnline: false });
   };
+  offlineToastId: null | string = null;
 
   onlineCallback = () => {
-    this.props.toastManager.remove(this.offlineToastId);
-    this.offlineToastId = null;
+    if (this.offlineToastId !== null) {
+      this.props.toastManager.remove(this.offlineToastId);
+      this.offlineToastId = null;
+    }
   };
   offlineCallback = id => {
     this.offlineToastId = id;

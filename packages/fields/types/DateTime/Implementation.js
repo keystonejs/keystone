@@ -34,7 +34,13 @@ class _DateTime extends Implementation {
     return [`scalar DateTime`];
   }
   extendAdminMeta(meta) {
-    return { ...meta, format: this.config.format };
+    return {
+      ...meta,
+      format: this.config.format,
+      yearRangeFrom: this.config.yearRangeFrom,
+      yearRangeTo: this.config.yearRangeTo,
+      yearPickerType: this.config.yearPickerType,
+    };
   }
   get gqlAuxFieldResolvers() {
     return {
