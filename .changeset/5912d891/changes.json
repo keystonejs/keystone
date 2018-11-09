@@ -1,0 +1,25 @@
+{
+  "releases": [
+    { "name": "@voussoir/access-control", "type": "minor" },
+    { "name": "@voussoir/adapter-mongoose", "type": "minor" },
+    { "name": "@voussoir/admin-ui", "type": "minor" },
+    { "name": "@voussoir/apollo-helpers", "type": "minor" },
+    { "name": "@arch-ui/core", "type": "minor" },
+    { "name": "@voussoir/core", "type": "minor" },
+    { "name": "@voussoir/field-views-loader", "type": "minor" },
+    { "name": "@voussoir/fields", "type": "minor" },
+    { "name": "@voussoir/file-adapters", "type": "minor" },
+    { "name": "@voussoir/icons", "type": "minor" },
+    { "name": "@voussoir/logger", "type": "minor" },
+    { "name": "@voussoir/mongo-join-builder", "type": "minor" },
+    { "name": "@voussoir/server", "type": "minor" },
+    { "name": "@voussoir/test-utils", "type": "minor" },
+    { "name": "@voussoir/ui", "type": "minor" },
+    { "name": "@voussoir/utils", "type": "minor" },
+    { "name": "@voussoir/cypress-project-access-control", "type": "minor" },
+    { "name": "@voussoir/cypress-project-basic", "type": "minor" },
+    { "name": "@voussoir/cypress-project-login", "type": "minor" },
+    { "name": "@voussoir/cypress-project-twitter-login", "type": "minor" }
+  ],
+  "dependents": []
+}

@@ -1,10 +1,11 @@
 # @voussoir/cypress-project-twitter-login
 
 ## 1.0.3
+
 - Updated dependencies [d94b517]:
 - Updated dependencies [a3b995c]:
 - Updated dependencies [5742e25d"
-]:
+  ]:
   - @voussoir/adapter-mongoose@0.3.2
   - @voussoir/core@0.4.0
   - @voussoir/fields@1.1.0

@@ -1,8 +1,9 @@
 # @voussoir/admin-ui
 
 ## 0.3.0
+
 - [minor] 5742e25d"
-:
+  :
 
   - Various improvements
 

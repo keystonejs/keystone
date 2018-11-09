@@ -1,6 +1,7 @@
 # @voussoir/test-utils
 
 ## 0.0.2
+
 - Updated dependencies [d94b517]:
 - Updated dependencies [a3b995c]:
   - @voussoir/adapter-mongoose@0.3.2
