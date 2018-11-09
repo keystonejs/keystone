@@ -12,7 +12,7 @@ type IconProps = ButtonProps & {
 export const IconButton = ({ children, icon: Icon, ...props }: IconProps) => (
   <Button {...props}>
     <span css={{ display: 'flex', alignItems: 'center' }}>
-      <Icon css={{ marginRight: '0.5em' }} />
+      <Icon css={children ? { marginRight: '0.5em' } : null} />
       {children}
     </span>
   </Button>

@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 import { FoldIcon, PlusIcon, SearchIcon, UnfoldIcon, XIcon } from '@voussoir/icons';
 import { Input } from '@voussoir/ui/src/primitives/forms';
 import { Container, FlexGroup, CONTAINER_WIDTH } from '@voussoir/ui/src/primitives/layout';
-import { A11yText, Kbd, H1 } from '@voussoir/ui/src/primitives/typography';
+import { A11yText, Kbd, Title } from '@voussoir/ui/src/primitives/typography';
 import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
 import { LoadingSpinner } from '@voussoir/ui/src/primitives/loading';
 import { colors } from '@voussoir/ui/src/theme';
@@ -16,6 +16,7 @@ import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
 import PageLoading from '../../components/PageLoading';
 import { Popout, DisclosureArrow } from '../../components/Popout';
+import ContainerQuery from '../../components/ContainerQuery';
 
 import ColumnSelect from './ColumnSelect';
 import AddFilterPopout from './Filters/AddFilterPopout';
@@ -243,8 +244,6 @@ class ListDetails extends Component<Props, State> {
   };
 
   renderExpandButton() {
-    if (window && window.innerWidth < CONTAINER_WIDTH) return null;
-
     const { isFullWidth } = this.state;
     const Icon = isFullWidth ? FoldIcon : UnfoldIcon;
     const text = isFullWidth ? 'Collapse' : 'Expand';
@@ -293,112 +292,116 @@ class ListDetails extends Component<Props, State> {
     return (
       <Fragment>
         <main>
-          <Container>
-            <H1>
-              {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
-              <span>, by</span>
-              <Popout
-                innerRef={this.sortPopoutRef}
-                headerTitle="Sort"
-                footerContent={
-                  <Note>
-                    Hold <Kbd>alt</Kbd> to toggle ascending/descending
-                  </Note>
-                }
-                target={
-                  <SortButton>
-                    {sortBy.field.label.toLowerCase()}
-                    <DisclosureArrow size="0.2em" />
-                  </SortButton>
-                }
-              >
-                <SortSelect
-                  popoutRef={this.sortPopoutRef}
-                  fields={list.fields}
-                  onChange={handleSortChange}
-                  value={sortBy}
-                />
-              </Popout>
-            </H1>
+          <ContainerQuery>
+            {({ width }) => (
+              <Container>
+                <Title as="h1" margin="both">
+                  {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
+                  <span>, by</span>
+                  <Popout
+                    innerRef={this.sortPopoutRef}
+                    headerTitle="Sort"
+                    footerContent={
+                      <Note>
+                        Hold <Kbd>alt</Kbd> to toggle ascending/descending
+                      </Note>
+                    }
+                    target={
+                      <SortButton>
+                        {sortBy.field.label.toLowerCase()}
+                        <DisclosureArrow size="0.2em" />
+                      </SortButton>
+                    }
+                  >
+                    <SortSelect
+                      popoutRef={this.sortPopoutRef}
+                      fields={list.fields}
+                      onChange={handleSortChange}
+                      value={sortBy}
+                    />
+                  </Popout>
+                </Title>
 
-            <FlexGroup growIndexes={[0]}>
-              <Search
-                isFetching={query.loading}
-                onClear={this.handleSearchClear}
-                onSubmit={this.handleSearchSubmit}
-                hasValue={searchValue && searchValue.length}
-              >
-                <A11yText tag="label" htmlFor={searchId}>
-                  Search {list.plural}
-                </A11yText>
-                <Input
-                  autoCapitalize="off"
-                  autoComplete="off"
-                  autoCorrect="off"
-                  id={searchId}
-                  onChange={this.handleSearchChange}
-                  placeholder="Search"
-                  name="item-search"
-                  value={searchValue}
-                  type="text"
-                  innerRef={el => (this.searchInput = el)}
-                />
-              </Search>
-              <AddFilterPopout
-                existingFilters={filters}
-                fields={list.fields}
-                onChange={handleFilterAdd}
-              />
-              <Popout buttonLabel="Columns" headerTitle="Columns">
-                <ColumnSelect
-                  fields={list.fields}
-                  onChange={handleFieldChange}
-                  removeIsAllowed={fields.length > 1}
-                  value={fields}
-                />
-              </Popout>
-              {this.renderExpandButton()}
-              <Button onClick={this.props.handleReset} id="ks-reset">
-                Reset
-              </Button>
+                <FlexGroup growIndexes={[0]}>
+                  <Search
+                    isFetching={query.loading}
+                    onClear={this.handleSearchClear}
+                    onSubmit={this.handleSearchSubmit}
+                    hasValue={searchValue && searchValue.length}
+                  >
+                    <A11yText tag="label" htmlFor={searchId}>
+                      Search {list.plural}
+                    </A11yText>
+                    <Input
+                      autoCapitalize="off"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      id={searchId}
+                      onChange={this.handleSearchChange}
+                      placeholder="Search"
+                      name="item-search"
+                      value={searchValue}
+                      type="text"
+                      innerRef={el => (this.searchInput = el)}
+                    />
+                  </Search>
+                  <AddFilterPopout
+                    existingFilters={filters}
+                    fields={list.fields}
+                    onChange={handleFilterAdd}
+                  />
+                  <Popout buttonLabel="Columns" headerTitle="Columns">
+                    <ColumnSelect
+                      fields={list.fields}
+                      onChange={handleFieldChange}
+                      removeIsAllowed={fields.length > 1}
+                      value={fields}
+                    />
+                  </Popout>
+                  {width > CONTAINER_WIDTH ? this.renderExpandButton() : null}
+                  <Button onClick={this.props.handleReset} id="ks-reset">
+                    Reset
+                  </Button>
 
-              <ToolbarSeparator />
-              {list.access.create ? (
-                <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
-                  Create
-                </IconButton>
-              ) : null}
-            </FlexGroup>
+                  <ToolbarSeparator />
+                  {list.access.create ? (
+                    <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
+                      Create
+                    </IconButton>
+                  ) : null}
+                </FlexGroup>
 
-            <ActiveFilters
-              filterList={filters}
-              onUpdate={handleFilterUpdate}
-              onRemove={handleFilterRemove}
-              onClear={handleFilterRemoveAll}
-            />
+                <ActiveFilters
+                  filterList={filters}
+                  onUpdate={handleFilterUpdate}
+                  onRemove={handleFilterRemove}
+                  onClear={handleFilterRemoveAll}
+                />
 
-            <ManageToolbar isVisible={!!itemsCount}>
-              {isManaging ? (
-                <Management
-                  list={list}
-                  onDeleteMany={this.onDeleteSelectedItems}
-                  onUpdateMany={this.onUpdate}
-                  onToggleManage={this.onToggleManage}
-                  selectedItems={selectedItems}
-                />
-              ) : (
-                <Pagination
-                  currentPage={currentPage}
-                  getManageButton={this.manageButton}
-                  itemsCount={itemsCount}
-                  list={list}
-                  onChangePage={handlePageChange}
-                  onToggleManage={this.onToggleManage}
-                  pageSize={pageSize}
-                />
-              )}
-            </ManageToolbar>
-          </Container>
+                <ManageToolbar isVisible={!!itemsCount}>
+                  {isManaging ? (
+                    <Management
+                      list={list}
+                      onDeleteMany={this.onDeleteSelectedItems}
+                      onUpdateMany={this.onUpdate}
+                      onToggleManage={this.onToggleManage}
+                      selectedItems={selectedItems}
+                    />
+                  ) : (
+                    <Pagination
+                      currentPage={currentPage}
+                      getManageButton={this.manageButton}
+                      itemsCount={itemsCount}
+                      list={list}
+                      onChangePage={handlePageChange}
+                      onToggleManage={this.onToggleManage}
+                      pageSize={pageSize}
+                    />
+                  )}
+                </ManageToolbar>
+              </Container>
+            )}
+          </ContainerQuery>
 
           <CreateItemModal
             isOpen={showCreateModal}

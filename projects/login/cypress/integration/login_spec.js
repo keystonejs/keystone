@@ -102,7 +102,7 @@ describe('Testing Login', () => {
       cy.get('button[type="submit"]').click();
 
       cy.get('body').should('contain', 'Users');
-      cy.get('body').should('contain', 'Home');
+      cy.get('body').should('contain', 'Dashboard');
     });
 
     it('Redirects to requested page after login', () => {
@@ -154,7 +154,7 @@ describe('authenticated item', () => {
       cy.get('button[type="submit"]').click();
 
       // Wait for page to load (completing the signin round trip)
-      cy.get('main h1').should('contain', 'Home');
+      cy.get('main h1').should('contain', 'Dashboard');
     });
 
     it('current user query returns user info', () => {
