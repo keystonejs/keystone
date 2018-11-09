@@ -1,5 +1,16 @@
 # @voussoir/fields
 
+## 1.1.0
+- [minor] d94b517:
+
+  Add _ksListsMeta query to gather type and relationship information
+- [minor] a3b995c:
+
+  Add _ksListsMeta query to gather type and relationship information
+- [patch] ca7ce46:
+
+  Correctly hide fields from Relationships when not readable
+
 ## 1.0.1
 
 - [patch] Avoid recreating indexes on every app boot (https://github.com/keystonejs/keystone-5/pull/459) [b84dd80](b84dd80)

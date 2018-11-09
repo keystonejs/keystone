@@ -1,5 +1,11 @@
 # @voussoir/admin-ui
 
+## 0.3.0
+- [minor] 5742e25d"
+:
+
+  - Various improvements
+
 ## 0.2.1
 
 - [patch] Bump all packages for Babel config fixes [d51c833](d51c833)
