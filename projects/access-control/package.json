@@ -1,7 +1,7 @@
 {
   "name": "@voussoir/cypress-project-access-control",
   "private": true,
-  "version": "1.0.3",
+  "version": "1.1.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
@@ -17,18 +17,18 @@
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a projects/access-control/.env file.\nSee projects/access-control/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@voussoir/adapter-mongoose": "^0.3.2",
-    "@voussoir/admin-ui": "^0.3.0",
-    "@voussoir/core": "^0.4.0",
-    "@voussoir/fields": "^1.1.0",
-    "@voussoir/server": "^0.2.1",
-    "@voussoir/ui": "^0.2.1",
-    "@voussoir/utils": "^0.2.0",
+    "@voussoir/adapter-mongoose": "^0.4.0",
+    "@voussoir/admin-ui": "^0.4.0",
+    "@voussoir/core": "^0.5.0",
+    "@voussoir/fields": "^1.2.0",
+    "@voussoir/server": "^0.3.0",
+    "@voussoir/ui": "^0.3.0",
+    "@voussoir/utils": "^0.3.0",
     "dotenv-safe": "^6.0.0",
     "react": "^16.5.2"
   },
   "devDependencies": {
-    "@voussoir/test-utils": "^0.0.2",
+    "@voussoir/test-utils": "^0.1.0",
     "cuid": "^2.1.1",
     "cypress": "^3.1.0",
     "execa": "1.0.0",

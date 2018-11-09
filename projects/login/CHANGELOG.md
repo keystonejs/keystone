@@ -1,5 +1,19 @@
 # @voussoir/cypress-project-login
 
+## 1.2.0
+
+- [minor] 47c7dcf6"
+  :
+
+  - Bump all packages with a minor version to set a new baseline
+
+- Updated dependencies [d94b517]:
+- Updated dependencies [a3b995c]:
+  - @voussoir/adapter-mongoose@0.4.0
+  - @voussoir/test-utils@0.1.0
+  - @voussoir/core@0.5.0
+  - @voussoir/fields@1.2.0
+
 ## 1.1.2
 
 - Updated dependencies [d94b517]:

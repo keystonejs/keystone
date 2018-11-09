@@ -1,5 +1,12 @@
 # @voussoir/admin-ui
 
+## 0.4.0
+
+- [minor] 47c7dcf6"
+  :
+
+  - Bump all packages with a minor version to set a new baseline
+
 ## 0.3.0
 
 - [minor] 5742e25d"
