@@ -3,7 +3,6 @@ const { Keystone } = require('@voussoir/core');
 const {
   File,
   Text,
-  Float,
   Integer,
   Relationship,
   Select,
@@ -15,6 +14,7 @@ const {
   Color,
   Url,
 } = require('@voussoir/fields');
+const Decimal = require('../../packages/fields/types/Decimal');
 const { WebServer } = require('@voussoir/server');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
 
@@ -22,6 +22,8 @@ const { port, staticRoute, staticPath, cloudinary } = require('./config');
 
 const LOCAL_FILE_PATH = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
+
+const Stars = require('./custom-fields/Stars');
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
@@ -105,8 +107,10 @@ keystone.createList('Post', {
       ref: 'PostCategory',
       many: true,
     },
-    stars: { type: Float },
+    stars: { type: Stars, starCount: 5 },
     views: { type: Integer },
+    price: { type: Decimal, symbol: '$' },
+    currency: { type: Text },
     hero: { type: File, adapter: fileAdapter },
   },
   adminConfig: {
