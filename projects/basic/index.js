@@ -14,6 +14,7 @@ const {
   Color,
   Url,
 } = require('@voussoir/fields');
+const Decimal = require('../../packages/fields/types/Decimal');
 const { WebServer } = require('@voussoir/server');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
 
@@ -58,8 +59,17 @@ keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text, unique: true },
-    dob: { type: CalendarDay, format: 'Do MMMM YYYY' },
-    lastOnline: { type: DateTime, format: 'MM/DD/YYYY h:mm A' },
+    dob: {
+      type: CalendarDay,
+      format: 'Do MMMM YYYY',
+      yearRangeFrom: 1901,
+      yearRangeTo: 2018,
+    },
+    lastOnline: {
+      type: DateTime,
+      format: 'MM/DD/YYYY h:mm A',
+      yearRangeFrom: 2013,
+    },
     password: { type: Password },
     isAdmin: { type: Checkbox },
     company: {
@@ -99,6 +109,8 @@ keystone.createList('Post', {
     },
     stars: { type: Stars, starCount: 5 },
     views: { type: Integer },
+    price: { type: Decimal, symbol: '$' },
+    currency: { type: Text },
     hero: { type: File, adapter: fileAdapter },
   },
   adminConfig: {

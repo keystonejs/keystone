@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { parse, format } from 'date-fns';
+import { parse, format, getYear } from 'date-fns';
 import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
@@ -16,7 +16,13 @@ export default class CalendarDayField extends Component {
   handleSelectedChange = date => {
     const { field, onChange } = this.props;
     const value = format(date, FORMAT);
-    onChange(field, value);
+    if (
+      getYear(value).toString().length <= 4 &&
+      getYear(value) <= field.config.yearRangeTo &&
+      getYear(value) >= field.config.yearRangeFrom
+    ) {
+      onChange(field, value);
+    }
   };
 
   render() {
@@ -40,6 +46,9 @@ export default class CalendarDayField extends Component {
                 startCurrentDateAt={value ? parse(value) : TODAY}
                 startSelectedDateAt={value ? parse(value) : TODAY}
                 onSelectedChange={this.handleSelectedChange}
+                yearRangeFrom={field.config.yearRangeFrom}
+                yearRangeTo={field.config.yearRangeTo}
+                yearPickerType={field.config.yearPickerType}
               />
             </div>
           </Popout>

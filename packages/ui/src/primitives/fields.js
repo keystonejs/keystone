@@ -17,5 +17,21 @@ export const FieldLabel = styled.label({
 });
 
 export const FieldInput = styled.div({
+  display: 'flex',
   width: 500,
+});
+
+export const Currency = styled.span({
+  display: 'flex',
+  alignContent: 'center',
+  padding: 10,
+  borderRadius: 4,
+  borderBottomRightRadius: 0,
+  borderTopRightRadius: 0,
+  fontSize: '0.9rem',
+  backgroundColor: colors.N10,
+  border: '1px solid transparent',
+  borderColor: colors.N20,
+  borderRight: 0,
+  marginRight: -2,
 });

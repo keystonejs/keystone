@@ -142,32 +142,58 @@ class SelectMonth extends React.Component<SelectMonthProps> {
 type SelectYearProps = {
   onChange: number => mixed,
   date: Date,
+  yearRangeFrom: any,
+  yearRangeTo: any,
+  yearPickerType: string,
 };
 
 class SelectYear extends React.Component<SelectYearProps> {
   render() {
-    const { onChange, date } = this.props;
-    const years = yearRange(1900, 2050);
+    const {
+      onChange,
+      date,
+      yearRangeFrom = getYear(new Date()) - 100,
+      yearRangeTo = getYear(new Date()),
+      yearPickerType = 'auto',
+    } = this.props;
+    const years = yearRange(yearRangeFrom, yearRangeTo);
 
-    return (
-      <select
-        onChange={event => {
-          onChange(event.target.value);
-        }}
-        value={getYear(date)}
-      >
-        {years.map((year, i) => (
-          <option key={i} value={year}>
-            {year}
-          </option>
-        ))}
-      </select>
-    );
+    if ((years.length > 50 && yearPickerType == 'auto') || yearPickerType == 'input') {
+      return (
+        <input
+          type="number"
+          min={yearRangeFrom}
+          max={yearRangeTo}
+          onChange={event => {
+            onChange(event.target.value);
+          }}
+          value={getYear(date)}
+        />
+      );
+    } else {
+      return (
+        <select
+          onChange={event => {
+            onChange(event.target.value);
+          }}
+          value={getYear(date)}
+        >
+          {years.map((year, i) => (
+            <option key={i} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
+      );
+    }
   }
 }
 
 type DayPickerProps = {
   onSelectedChange: Date => void,
+  yearRangeFrom?: number,
+  yearRangeTo?: number,
+  yearPickerType?: string,
 };
 
 export const DayPicker = (props: DayPickerProps) => {
@@ -182,6 +208,10 @@ export const DayPicker = (props: DayPickerProps) => {
       selectedDate,
       date,
     } = kalendaryo;
+    const yearRangeFrom = props.yearRangeFrom ? props.yearRangeFrom : getYear(new Date()) - 100;
+    const yearRangeTo = props.yearRangeTo ? props.yearRangeTo : getYear(new Date());
+    const yearPickerType = props.yearPickerType ? props.yearPickerType : 'auto';
+
     const weeksInCurrentMonth = getWeeksInMonth();
 
     const setDateNextMonth = () => {
@@ -217,6 +247,9 @@ export const DayPicker = (props: DayPickerProps) => {
               const newSelectedDate = setYear(date, year);
               setSelectedDate(newSelectedDate);
             }}
+            yearRangeFrom={yearRangeFrom}
+            yearRangeTo={yearRangeTo}
+            yearPickerType={yearPickerType}
           />
           <HeaderButton onClick={setDateNextMonth}>
             <ChevronRightIcon />
@@ -271,11 +304,21 @@ type Props = {
   handleDayChange: Date => void,
   handleTimeChange: Function,
   handleOffsetChange: Function,
+  yearRangeFrom?: number,
+  yearRangeTo?: number,
+  yearPickerType?: string,
 };
 
 export const DateTimePicker = (props: Props) => {
   const { date, time, offset, htmlID, autoFocus, isDisabled, innerRef } = props;
-  const { handleDayChange, handleTimeChange, handleOffsetChange } = props;
+  const {
+    handleDayChange,
+    handleTimeChange,
+    handleOffsetChange,
+    yearRangeFrom,
+    yearRangeTo,
+    yearPickerType,
+  } = props;
   const TODAY = new Date();
 
   const options = [
@@ -313,6 +356,9 @@ export const DateTimePicker = (props: Props) => {
       <DayPicker
         autoFocus={autoFocus}
         onSelectedChange={handleDayChange}
+        yearRangeFrom={yearRangeFrom}
+        yearRangeTo={yearRangeTo}
+        yearPickerType={yearPickerType}
         startCurrentDateAt={date ? parse(date) : TODAY}
         startSelectedDateAt={date ? parse(date) : TODAY}
       />
