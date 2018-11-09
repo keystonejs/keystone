@@ -22,6 +22,44 @@ function setCache(state) {
 export default class ResizeHandler extends Component {
   state = getCache();
 
+  componentDidMount() {
+    document.addEventListener('keydown', this.onKeyDown);
+    document.addEventListener('keyup', this.onKeyUp);
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.onKeyDown);
+    document.removeEventListener('keyup', this.onKeyUp);
+  }
+
+  // TODO: move this to a "global" key handler
+  onKeyDown = event => {
+    // bail if there's already a keydown
+    if (this.keyIsDown) return;
+
+    // setup
+    this.keyIsDown = true;
+    const activeNode = document.activeElement.nodeName;
+    const targetKey = '[';
+
+    // bail if the user is focused on an input element
+    if (activeNode === 'INPUT' || activeNode === 'TEXTAREA') {
+      return;
+    }
+
+    // bail on all other keys
+    if (event.key !== targetKey) {
+      return;
+    }
+
+    // toggle collapse/expand
+    const toggle = this.state.isCollapsed ? this.handleExpand : this.handleCollapse;
+    toggle();
+  };
+
+  onKeyUp = () => {
+    this.keyIsDown = false;
+  };
+
   storeState = s => {
     // only keep the `isCollapsed` and `width` properties in locals storage
     const isCollapsed = s.isCollapsed !== undefined ? s.isCollapsed : this.state.isCollapsed;
