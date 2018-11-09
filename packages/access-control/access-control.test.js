@@ -1,8 +1,8 @@
 import {
   parseListAccess,
   parseFieldAccess,
-  testListAccessControl,
-  testFieldAccessControl,
+  validateListAccessControl,
+  validateFieldAccessControl,
 } from './index.js';
 describe('Access control package tests', () => {
   test('parseListAccess', () => {
@@ -139,14 +139,16 @@ describe('Access control package tests', () => {
     expect(() => parseFieldAccess({ access: 10 })).toThrow(Error);
   });
 
-  test('testListAccessControl', () => {
+  test('validateListAccessControl', () => {
     let operation = 'read';
     const access = { [operation]: true };
 
     // Test the static case: returning a boolean
-    expect(testListAccessControl({ access: { [operation]: true }, operation })).toBe(true);
-    expect(testListAccessControl({ access: { [operation]: false }, operation })).toBe(false);
-    expect(() => testListAccessControl({ access: { [operation]: 10 }, operation })).toThrow(Error);
+    expect(validateListAccessControl({ access: { [operation]: true }, operation })).toBe(true);
+    expect(validateListAccessControl({ access: { [operation]: false }, operation })).toBe(false);
+    expect(() => validateListAccessControl({ access: { [operation]: 10 }, operation })).toThrow(
+      Error
+    );
 
     [{}, { item: {} }].forEach(authentication => {
       operation = 'read';
@@ -154,14 +156,14 @@ describe('Access control package tests', () => {
       // Boolean function
       access[operation] = () => true;
       expect(
-        testListAccessControl({
+        validateListAccessControl({
           access: { [operation]: () => true },
           operation,
           authentication,
         })
       ).toBe(true);
       expect(
-        testListAccessControl({
+        validateListAccessControl({
           access: { [operation]: () => false },
           operation,
           authentication,
@@ -169,7 +171,7 @@ describe('Access control package tests', () => {
       ).toBe(false);
       // Object function
       expect(
-        testListAccessControl({
+        validateListAccessControl({
           access: { [operation]: () => ({ a: 1 }) },
           operation,
           authentication,
@@ -179,7 +181,7 @@ describe('Access control package tests', () => {
       // Object function with create operation
       operation = 'create';
       expect(() =>
-        testListAccessControl({
+        validateListAccessControl({
           access: { [operation]: () => ({ a: 1 }) },
           operation,
           authentication,
@@ -188,22 +190,24 @@ describe('Access control package tests', () => {
 
       // Number function
       expect(() =>
-        testListAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
+        validateListAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
       ).toThrow(Error);
     });
   });
 
-  test('testFieldAccessControl', () => {
+  test('validateFieldAccessControl', () => {
     const operation = 'read';
     // Test the StaticAccess case: returning a boolean
-    expect(testFieldAccessControl({ access: { [operation]: true }, operation })).toBe(true);
-    expect(testFieldAccessControl({ access: { [operation]: false }, operation })).toBe(false);
-    expect(() => testFieldAccessControl({ access: { [operation]: 10 }, operation })).toThrow(Error);
+    expect(validateFieldAccessControl({ access: { [operation]: true }, operation })).toBe(true);
+    expect(validateFieldAccessControl({ access: { [operation]: false }, operation })).toBe(false);
+    expect(() => validateFieldAccessControl({ access: { [operation]: 10 }, operation })).toThrow(
+      Error
+    );
 
     [{}, { item: {} }].forEach(authentication => {
       // Test the ImperativeAccess case: a function which should return boolean
       expect(
-        testFieldAccessControl({
+        validateFieldAccessControl({
           access: { [operation]: () => true },
           operation,
           authentication,
@@ -211,7 +215,7 @@ describe('Access control package tests', () => {
       ).toBe(true);
 
       expect(
-        testFieldAccessControl({
+        validateFieldAccessControl({
           access: { [operation]: () => false },
           operation,
           authentication,
@@ -219,7 +223,7 @@ describe('Access control package tests', () => {
       ).toBe(false);
 
       expect(() =>
-        testFieldAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
+        validateFieldAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
       ).toThrow(Error);
     });
   });

@@ -1,0 +1,13 @@
+{
+  "releases": [
+    { "name": "@voussoir/access-control", "type": "minor" },
+    { "name": "@voussoir/fields", "type": "minor" }
+  ],
+  "dependents": [
+    {
+      "name": "@voussoir/core",
+      "type": "patch",
+      "dependencies": ["@voussoir/access-control", "@voussoir/fields"]
+    }
+  ]
+}
