@@ -19,6 +19,7 @@ export const NavGroup = styled.div(({ isScrollable }) => ({
   boxShadow: isScrollable ? 'inset 0 -2px 0 rgba(0, 0, 0, 0.1)' : null,
   flex: 1,
   overflowY: 'auto',
+  overflowX: 'hidden',
   paddingBottom: gridSize * 3,
   paddingLeft: gridSize * 3,
   paddingRight: gridSize * 3,
