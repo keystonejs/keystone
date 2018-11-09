@@ -15,6 +15,7 @@ const {
   Color,
   Url,
 } = require('@voussoir/fields');
+const Decimal = require('../../packages/fields/types/Decimal');
 const { WebServer } = require('@voussoir/server');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
 
@@ -107,6 +108,8 @@ keystone.createList('Post', {
     },
     stars: { type: Float },
     views: { type: Integer },
+    price: { type: Decimal, symbol: '$' },
+    currency: { type: Text },
     hero: { type: File, adapter: fileAdapter },
   },
   adminConfig: {
