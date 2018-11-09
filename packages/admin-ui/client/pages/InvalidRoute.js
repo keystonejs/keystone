@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import PageError from '../components/PageError';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
