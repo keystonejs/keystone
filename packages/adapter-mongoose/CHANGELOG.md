@@ -1,6 +1,18 @@
 # @voussoir/adapter-mongoose
 
+## 0.4.0
+
+- [minor] 47c7dcf6"
+  :
+
+  - Bump all packages with a minor version to set a new baseline
+
+- Updated dependencies [d94b517]:
+- Updated dependencies [a3b995c]:
+  - @voussoir/core@0.5.0
+
 ## 0.3.2
+
 - Updated dependencies [d94b517]:
 - Updated dependencies [a3b995c]:
   - @voussoir/core@0.4.0

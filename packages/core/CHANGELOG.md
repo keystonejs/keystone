@@ -1,12 +1,34 @@
 # @voussoir/core
 
-## 0.4.0
+## 0.5.0
+
 - [minor] d94b517:
 
-  Add _ksListsMeta query to gather type and relationship information
+  Add \_ksListsMeta query to gather type and relationship information
+
 - [minor] a3b995c:
 
-  Add _ksListsMeta query to gather type and relationship information
+  Add \_ksListsMeta query to gather type and relationship information
+
+- [patch] ca7ce46:
+
+  Correctly hide fields from Relationships when not readable
+
+- [minor] 47c7dcf6"
+  :
+
+  - Bump all packages with a minor version to set a new baseline
+
+## 0.4.0
+
+- [minor] d94b517:
+
+  Add \_ksListsMeta query to gather type and relationship information
+
+- [minor] a3b995c:
+
+  Add \_ksListsMeta query to gather type and relationship information
+
 - [patch] ca7ce46:
 
   Correctly hide fields from Relationships when not readable
