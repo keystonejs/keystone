@@ -18,8 +18,8 @@ export const Container = styled.div(({ isFullWidth }) => ({
   marginLeft: 'auto',
   marginRight: 'auto',
   maxWidth: isFullWidth ? '100%' : CONTAINER_WIDTH,
-  paddingLeft: gridSize * 3,
-  paddingRight: gridSize * 3,
+  paddingLeft: gridSize * 6,
+  paddingRight: gridSize * 6,
   transition: 'max-width 200ms cubic-bezier(0.2, 0, 0, 1)',
 
   [smOnly]: {

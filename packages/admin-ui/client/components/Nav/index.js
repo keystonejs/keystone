@@ -117,12 +117,12 @@ const CollapseExpand = styled.button(({ isVisible }) => ({
   },
 }));
 const CollapseButton = styled(CollapseExpand)({
-  right: 24,
+  right: gridSize * 2,
   position: 'absolute',
   '> svg': { right: -1 },
 });
 const ExpandButton = styled(CollapseExpand)({
-  left: 24,
+  left: gridSize * 3,
   position: 'fixed',
   '> svg': { right: -3 },
 });
@@ -176,7 +176,7 @@ class Nav extends Component {
                   <ScrollQuery>
                     {(ref, snapshot) => (
                       <NavGroup ref={ref} isScrollable={snapshot.isScrollable}>
-                        <Title as="div" margin="both">
+                        <Title as="div" margin="both" crop>
                           {name}
                         </Title>
                         <PrimaryNavItem to={adminPath} isSelected={location.pathname == adminPath}>

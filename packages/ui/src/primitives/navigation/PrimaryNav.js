@@ -5,6 +5,8 @@ import styled from '@emotion/styled';
 import { borderRadius, colors, gridSize } from '../../theme';
 import { ItemElement } from './common';
 
+const GUTTER = gridSize * 2;
+
 export const NavGroupIcons = styled.div({
   alignItems: 'center',
   alignSelf: 'stretch',
@@ -20,9 +22,9 @@ export const NavGroup = styled.div(({ isScrollable }) => ({
   flex: 1,
   overflowY: 'auto',
   overflowX: 'hidden',
-  paddingBottom: gridSize * 3,
-  paddingLeft: gridSize * 3,
-  paddingRight: gridSize * 3,
+  paddingBottom: GUTTER,
+  paddingLeft: GUTTER,
+  paddingRight: GUTTER,
   width: '100%',
 }));
 
