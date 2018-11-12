@@ -12,7 +12,7 @@ type Props = {
   onDelete: (Promise<*>) => void,
 };
 
-export default function DeleteItemModal({ isOpen, item, list, onDelete }: Props) {
+export default function DeleteItemModal({ isOpen, item, list, onClose, onDelete }: Props) {
   return (
     <Mutation mutation={list.deleteMutation}>
       {(deleteItem, { loading }) => {
@@ -21,7 +21,7 @@ export default function DeleteItemModal({ isOpen, item, list, onDelete }: Props)
             isOpen={isOpen}
             onKeyDown={e => {
               if (e.key === 'Escape' && !loading) {
-                this.props.onClose();
+                onClose();
               }
             }}
           >
@@ -43,7 +43,7 @@ export default function DeleteItemModal({ isOpen, item, list, onDelete }: Props)
                 variant="subtle"
                 onClick={() => {
                   if (loading) return;
-                  this.props.onClose();
+                  onClose();
                 }}
               >
                 Cancel
