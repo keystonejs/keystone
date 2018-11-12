@@ -313,7 +313,7 @@ class ListManageRow extends Component {
             tabIndex="0"
           />
         </BodyCell>
-        <BodyCell />
+        <BodyCell isSelected={isSelected} />
         {fields.map(({ path }) => (
           <BodyCellTruncated isSelected={isSelected} key={path}>
             {item[path]}
