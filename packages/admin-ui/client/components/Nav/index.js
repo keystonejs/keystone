@@ -69,17 +69,13 @@ const GrabHandle = styled.div({
   bottom: 0,
   cursor: 'col-resize',
   position: 'absolute',
-  right: -2,
+  right: -1,
   top: 0,
   transition: 'background-color 200ms',
-  transitionDelay: '200ms',
-  width: 2,
+  width: 1,
 
-  ':hover': {
-    backgroundColor: colors.B.L30,
-  },
-  ':active': {
-    backgroundColor: colors.B.L10,
+  ':hover, :active': {
+    backgroundColor: colors.N30,
   },
 
   // increase hit-area
