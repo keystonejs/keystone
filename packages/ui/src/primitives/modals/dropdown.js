@@ -1,8 +1,9 @@
 // @flow
 
 import React, { Component, type Node as ReactNode } from 'react';
-import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
+import { createPortal } from 'react-dom';
+import styled from '@emotion/styled';
 
 import { borderRadius, colors, gridSize } from '../../theme';
 import FocusTrap from './FocusTrap';
@@ -40,15 +41,19 @@ const Item = styled(ItemElement)({
     textDecoration: 'none',
   },
 });
-const Menu = styled.div({
-  backgroundColor: 'white',
-  borderRadius: borderRadius,
-  boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.175), 0 3px 8px rgba(0, 0, 0, 0.175)',
-  marginTop: gridSize,
-  minWidth: 160,
-  paddingBottom: gridSize / 2,
-  paddingTop: gridSize / 2,
-  position: 'absolute',
+const Menu = styled.div(({ left, top }) => {
+  const placementStyles = { left, top };
+  return {
+    backgroundColor: 'white',
+    borderRadius: borderRadius,
+    boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.175), 0 3px 8px rgba(0, 0, 0, 0.175)',
+    marginTop: gridSize,
+    minWidth: 160,
+    paddingBottom: gridSize / 2,
+    paddingTop: gridSize / 2,
+    position: 'absolute',
+    ...placementStyles
+  }
 });
 
 type ItemType = {
@@ -72,11 +77,14 @@ function focus(el: ?Node) {
 class Dropdown extends Component<Props> {
   menu: HTMLElement;
   lastHover: HTMLElement;
+  state = { leftOffset: 0, topOffset: 0 };
   static defaultProps = {
+    align: 'left',
     selectClosesMenu: true,
   };
 
   componentDidMount() {
+    this.calculatePosition();
     document.addEventListener('keydown', this.handleKeyDown, false);
   }
   componentWillUnmount() {
@@ -140,12 +148,34 @@ class Dropdown extends Component<Props> {
     }
   };
 
+  calculatePosition = () => {
+    const { align, targetNode, width } = this.props;
+
+    if (!targetNode || !document.body) return;
+
+    const bodyRect = document.body.getBoundingClientRect();
+    const targetRect = targetNode.getBoundingClientRect();
+    const menuWidth = this.menu.clientWidth;
+
+    const leftOffset = align === 'left' ? targetRect.left : targetRect.right - menuWidth;
+    const topOffset = targetRect.bottom - bodyRect.top;
+
+    this.setState({ leftOffset, topOffset });
+  };
+
   render() {
     const { items, style } = this.props;
+    const { leftOffset, topOffset } = this.state;
 
-    return (
+    return document.body ? createPortal(
       <FocusTrap options={{ clickOutsideDeactivates: true }}>
-        <Menu ref={this.getMenu} onMouseLeave={this.handleMenuLeave} style={style}>
+        <Menu
+          left={leftOffset}
+          onMouseLeave={this.handleMenuLeave}
+          ref={this.getMenu}
+          style={style}
+          top={topOffset}
+        >
           {items.map((item, idx) => {
             const { content, ...rest } = item;
             return (
@@ -160,8 +190,9 @@ class Dropdown extends Component<Props> {
             );
           })}
         </Menu>
-      </FocusTrap>
-    );
+      </FocusTrap>,
+      document.body
+    ) : null;
   }
 }
 
