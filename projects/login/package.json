@@ -1,7 +1,7 @@
 {
   "name": "@voussoir/cypress-project-login",
   "private": true,
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
@@ -17,19 +17,19 @@
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a projects/login/.env file.\nSee projects/login/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@voussoir/adapter-mongoose": "^0.4.0",
-    "@voussoir/admin-ui": "^0.4.0",
-    "@voussoir/core": "^0.5.0",
-    "@voussoir/fields": "^1.2.0",
+    "@voussoir/adapter-mongoose": "^0.4.1",
+    "@voussoir/admin-ui": "^0.5.0",
+    "@voussoir/core": "^0.6.0",
+    "@voussoir/fields": "^1.3.0",
     "@voussoir/server": "^0.3.0",
-    "@voussoir/ui": "^0.3.0",
+    "@voussoir/ui": "^0.4.0",
     "body-parser": "^1.18.2",
     "cookie-signature": "^1.1.0",
     "dotenv-safe": "^6.0.0",
     "react": "^16.5.2"
   },
   "devDependencies": {
-    "@voussoir/test-utils": "^0.1.0",
+    "@voussoir/test-utils": "^0.1.1",
     "@voussoir/utils": "^0.3.0",
     "cuid": "^2.1.1",
     "cypress": "^3.1.0",
