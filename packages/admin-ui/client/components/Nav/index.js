@@ -28,6 +28,7 @@ import ResizeHandler from './ResizeHandler';
 import ScrollQuery from '../ScrollQuery';
 
 const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
+const TRANSITION_DURATION = '220ms';
 
 function camelToKebab(string) {
   return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
@@ -39,7 +40,7 @@ const Inner = styled.div({
   flexFlow: 'column nowrap',
   height: ' 100vh',
   justifyContent: 'flex-start',
-  minWidth: 140,
+  overflow:'hidden',
   width: '100%',
 });
 const Page = styled.div({
@@ -68,7 +69,7 @@ const GrabHandle = styled.div({
   bottom: 0,
   cursor: 'col-resize',
   position: 'absolute',
-  left: 0,
+  right: -2,
   top: 0,
   transition: 'background-color 200ms',
   transitionDelay: '200ms',
@@ -91,40 +92,52 @@ const GrabHandle = styled.div({
     top: -gridSize,
   },
 });
-const CollapseExpand = styled.button(({ isVisible }) => ({
-  background: 'white',
-  border: 0,
-  borderRadius: '50%',
-  boxShadow: '0 1px 3px 1px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.06)',
-  color: colors.N60,
-  cursor: 'pointer',
-  display: 'flex',
-  height: 24,
-  opacity: isVisible ? 1 : 0,
-  outline: 0,
-  transition: 'opacity 200ms, transform 50ms, visibility 200ms',
-  visibility: isVisible ? 'visible' : 'hidden',
-  width: 24,
-  top: 24,
+const CollapseExpand = styled.button(({ isCollapsed, isVisible }) => {
+  const SIZE = isCollapsed ? 48 : 24;
+  const GUTTER = isCollapsed ? 12 : 24;
+  const boxShadow = isCollapsed
+    ? '0 2px 4px 1px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.1)'
+    : '0 1px 3px 1px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.06)';
 
-  '> svg': { position: 'relative' },
+  return {
+    alignItems: 'center',
+    background: 'white',
+    border: 0,
+    borderRadius: '50%',
+    boxShadow,
+    color: colors.N60,
+    cursor: 'pointer',
+    display: 'flex',
+    height: SIZE,
+    justifyContent: 'center',
+    right: -SIZE / 2,
+    opacity: isVisible ? 1 : 0,
+    outline: 0,
+    padding: 0,
+    position: 'absolute',
+    transition: `
+      opacity ${TRANSITION_DURATION},
+      right ${TRANSITION_DURATION},
+      transform 50ms,
+      visibility ${TRANSITION_DURATION}
+    `,
+    visibility: isVisible ? 'visible' : 'hidden',
+    width: SIZE,
+    top: GUTTER,
 
-  ':hover': {
-    transform: 'scale(1.1)',
-  },
-  ':active': {
-    transform: 'scale(1)',
-  },
-}));
-const CollapseButton = styled(CollapseExpand)({
-  right: gridSize * 2,
-  position: 'absolute',
-  '> svg': { right: -1 },
-});
-const ExpandButton = styled(CollapseExpand)({
-  left: gridSize * 3,
-  position: 'fixed',
-  '> svg': { right: -3 },
+    '> svg': {
+      position: 'relative',
+      right: isCollapsed ? -9 : 1,
+      transition: `right ${TRANSITION_DURATION}`,
+    },
+
+    ':hover': {
+      transform: 'scale(1.12)',
+    },
+    ':active': {
+      transform: 'scale(1)',
+    },
+  }
 });
 
 function getPath(str) {
@@ -157,7 +170,7 @@ class Nav extends Component {
             const pointers = isDragging ? { pointerEvents: 'none' } : null;
             const transitions = isDragging
               ? null
-              : { transition: `${camelToKebab(key)} 220ms cubic-bezier(0.25, 0, 0, 1)` };
+              : { transition: `${camelToKebab(key)} ${TRANSITION_DURATION} cubic-bezier(0.25, 0, 0, 1)` };
             return { [key]: navWidth, ...pointers, ...transitions };
           };
 
@@ -237,19 +250,12 @@ class Nav extends Component {
                   ) : null}
                 </Inner>
                 <Shadow />
-                <CollapseButton {...clickProps} isVisible={mouseIsOverNav}>
-                  <TriangleLeftIcon />
-                </CollapseButton>
+                {isCollapsed ? null : <GrabHandle {...resizeProps} />}
+                <CollapseExpand {...clickProps} isCollapsed={isCollapsed} isVisible={isCollapsed || mouseIsOverNav}>
+                  {isCollapsed ? <TriangleRightIcon /> : <TriangleLeftIcon />}
+                </CollapseExpand>
               </PrimaryNav>
               <Page style={makeResizeStyles('marginLeft')}>
-                {isCollapsed ? (
-                  <ExpandButton {...clickProps} isVisible>
-                    <TriangleRightIcon />
-                  </ExpandButton>
-                ) : (
-                  <GrabHandle {...resizeProps} />
-                )}
-
                 {children}
               </Page>
             </PageWrapper>

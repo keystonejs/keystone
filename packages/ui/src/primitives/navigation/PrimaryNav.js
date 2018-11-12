@@ -22,6 +22,7 @@ export const NavGroup = styled.div(({ isScrollable }) => ({
   flex: 1,
   overflowY: 'auto',
   overflowX: 'hidden',
+  minWidth: 140,
   paddingBottom: GUTTER,
   paddingLeft: GUTTER,
   paddingRight: GUTTER,
@@ -36,8 +37,8 @@ export const PrimaryNav = styled.nav({
   fontSize: '0.9rem',
   fontWeight: 500,
   height: '100vh',
-  overflow: 'hidden',
   position: 'fixed',
+  zIndex: 1,
 });
 
 export const BrandItem = styled.h2({
