@@ -1,5 +1,10 @@
 # @voussoir/adapter-mongoose
 
+## 0.4.1
+- Updated dependencies [d94b517]:
+- Updated dependencies [a3b995c]:
+  - @voussoir/core@0.6.0
+
 ## 0.4.0
 
 - [minor] 47c7dcf6"

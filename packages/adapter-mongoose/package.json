@@ -1,13 +1,13 @@
 {
   "name": "@voussoir/adapter-mongoose",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/core": "^0.5.0",
+    "@voussoir/core": "^0.6.0",
     "@voussoir/logger": "^0.2.0",
     "@voussoir/mongo-join-builder": "^0.3.0",
     "@voussoir/utils": "^0.3.0",

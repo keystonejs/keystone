@@ -1,5 +1,11 @@
 # @voussoir/ui
 
+## 0.4.0
+- [minor] 1d30a329"
+:
+
+  - Cleanup vertical navigation, more separation between primary/secondary nav primitives
+
 ## 0.3.0
 
 - [minor] 47c7dcf6"
