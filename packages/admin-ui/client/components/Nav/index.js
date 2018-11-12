@@ -7,8 +7,8 @@ import styled from '@emotion/styled';
 
 import {
   TerminalIcon,
-  TriangleLeftIcon,
-  TriangleRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   TelescopeIcon,
   MarkGithubIcon,
   SignOutIcon,
@@ -248,7 +248,7 @@ class Nav extends Component {
                 <Shadow />
                 {isCollapsed ? null : <GrabHandle {...resizeProps} />}
                 <CollapseExpand {...clickProps} isCollapsed={isCollapsed} isVisible={isCollapsed || mouseIsOverNav}>
-                  {isCollapsed ? <TriangleRightIcon /> : <TriangleLeftIcon />}
+                  {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                 </CollapseExpand>
               </PrimaryNav>
               <Page style={makeResizeStyles('marginLeft')}>
