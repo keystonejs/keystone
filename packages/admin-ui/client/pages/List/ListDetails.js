@@ -4,13 +4,14 @@ import { Component, createRef, Fragment } from 'react';
 import styled from '@emotion/styled';
 import { withRouter } from 'react-router-dom';
 
-import { FoldIcon, PlusIcon, SearchIcon, UnfoldIcon, XIcon } from '@voussoir/icons';
+import { FoldIcon, KebabVerticalIcon, PlusIcon, SearchIcon, UnfoldIcon, XIcon, ZapIcon } from '@voussoir/icons';
 import { Input } from '@voussoir/ui/src/primitives/forms';
-import { Container, FlexGroup, CONTAINER_WIDTH } from '@voussoir/ui/src/primitives/layout';
+import { Container, FlexGroup, CONTAINER_GUTTER, CONTAINER_WIDTH } from '@voussoir/ui/src/primitives/layout';
 import { A11yText, Kbd, Title } from '@voussoir/ui/src/primitives/typography';
 import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
 import { LoadingSpinner } from '@voussoir/ui/src/primitives/loading';
-import { colors } from '@voussoir/ui/src/theme';
+import { Dropdown } from '@voussoir/ui/src/primitives/modals';
+import { colors, gridSize } from '@voussoir/ui/src/theme';
 
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
@@ -40,6 +41,13 @@ const Note = styled.div({
   color: colors.N60,
   fontSize: '0.85em',
 });
+
+const DropdownItem = ({ children, icon }) => (
+  <FlexGroup growIndexes={[1]} align="center" style={{ lineHeight: 1 }}>
+    <div key="icon" css={{ width: 16 }}>{icon}</div>
+    <span key="children">{children}</span>
+  </FlexGroup>
+);
 
 const Search = ({ children, hasValue, isFetching, onClear, onSubmit }) => {
   const Icon = hasValue ? XIcon : SearchIcon;
@@ -143,6 +151,10 @@ class ListDetails extends Component<Props, State> {
     this.props.handleSearchClear();
     this.searchInput.focus();
   };
+  handleReset = () => {
+    this.setState({ searchValue: '' });
+    this.props.handleReset();
+  };
   handleSearchSubmit = event => {
     event.preventDefault();
     this.props.handleSearchSubmit();
@@ -243,25 +255,31 @@ class ListDetails extends Component<Props, State> {
     return null;
   };
 
-  renderExpandButton() {
+  renderMoreDropdown(queryWidth) {
     const { isFullWidth } = this.state;
-    const Icon = isFullWidth ? FoldIcon : UnfoldIcon;
-    const text = isFullWidth ? 'Collapse' : 'Expand';
+    const TableIcon = isFullWidth ? FoldIcon : UnfoldIcon;
+    const tableText = isFullWidth ? 'Collapse table' : 'Expand table';
 
-    // Note: we return an array here instead of a <Fragment> because the
-    // <FlexGroup> component it is rendered into passes props to its children
-    return [
-      <ToolbarSeparator key="expand-separator" />,
-      <Button
-        onClick={this.toggleFullWidth}
-        title={text}
-        isActive={isFullWidth}
-        key="expand-button"
-      >
-        <Icon css={{ transform: 'rotate(90deg)' }} />
-        <A11yText>{text}</A11yText>
-      </Button>,
-    ];
+    const items = [{
+      content: <DropdownItem icon={<ZapIcon />}>Reset filters, cols, etc.</DropdownItem>,
+      onClick: this.handleReset,
+    }];
+    if (queryWidth > CONTAINER_WIDTH + (CONTAINER_GUTTER * 2)) {
+      items.push({
+        content: <DropdownItem icon={<TableIcon css={{ transform: 'rotate(90deg)' }} />}>{tableText}</DropdownItem>,
+        onClick: this.toggleFullWidth,
+      })
+    }
+
+    return (
+      <Dropdown
+        align="right"
+        target={(
+          <IconButton variant="subtle" icon={KebabVerticalIcon} />
+        )}
+        items={items}
+      />
+    );
   }
 
   render() {
@@ -358,17 +376,13 @@ class ListDetails extends Component<Props, State> {
                       value={fields}
                     />
                   </Popout>
-                  {width > CONTAINER_WIDTH ? this.renderExpandButton() : null}
-                  <Button onClick={this.props.handleReset} id="ks-reset">
-                    Reset
-                  </Button>
 
-                  <ToolbarSeparator />
                   {list.access.create ? (
                     <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
                       Create
                     </IconButton>
                   ) : null}
+                  {this.renderMoreDropdown(width)}
                 </FlexGroup>
 
                 <ActiveFilters
