@@ -4,14 +4,27 @@ import { Component, createRef, Fragment } from 'react';
 import styled from '@emotion/styled';
 import { withRouter } from 'react-router-dom';
 
-import { FoldIcon, KebabVerticalIcon, PlusIcon, SearchIcon, UnfoldIcon, XIcon, ZapIcon } from '@voussoir/icons';
+import {
+  FoldIcon,
+  KebabVerticalIcon,
+  PlusIcon,
+  SearchIcon,
+  UnfoldIcon,
+  XIcon,
+  ZapIcon,
+} from '@voussoir/icons';
 import { Input } from '@voussoir/ui/src/primitives/forms';
-import { Container, FlexGroup, CONTAINER_GUTTER, CONTAINER_WIDTH } from '@voussoir/ui/src/primitives/layout';
+import {
+  Container,
+  FlexGroup,
+  CONTAINER_GUTTER,
+  CONTAINER_WIDTH,
+} from '@voussoir/ui/src/primitives/layout';
 import { A11yText, Kbd, Title } from '@voussoir/ui/src/primitives/typography';
 import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
 import { LoadingSpinner } from '@voussoir/ui/src/primitives/loading';
 import { Dropdown } from '@voussoir/ui/src/primitives/modals';
-import { colors, gridSize } from '@voussoir/ui/src/theme';
+import { colors } from '@voussoir/ui/src/theme';
 
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
@@ -31,11 +44,11 @@ import type { SortByType } from './DataProvider';
 // Styled Components
 // ==============================
 
-const ToolbarSeparator = styled.div({
-  backgroundColor: 'rgba(0,0,0,0.1)',
-  height: '100%',
-  width: 1,
-});
+// const ToolbarSeparator = styled.div({
+//   backgroundColor: 'rgba(0,0,0,0.1)',
+//   height: '100%',
+//   width: 1,
+// });
 
 const Note = styled.div({
   color: colors.N60,
@@ -44,7 +57,9 @@ const Note = styled.div({
 
 const DropdownItem = ({ children, icon }) => (
   <FlexGroup growIndexes={[1]} align="center" style={{ lineHeight: 1 }}>
-    <div key="icon" css={{ width: 16 }}>{icon}</div>
+    <div key="icon" css={{ width: 16 }}>
+      {icon}
+    </div>
     <span key="children">{children}</span>
   </FlexGroup>
 );
@@ -260,23 +275,27 @@ class ListDetails extends Component<Props, State> {
     const TableIcon = isFullWidth ? FoldIcon : UnfoldIcon;
     const tableText = isFullWidth ? 'Collapse table' : 'Expand table';
 
-    const items = [{
-      content: <DropdownItem icon={<ZapIcon />}>Reset filters, cols, etc.</DropdownItem>,
-      onClick: this.handleReset,
-    }];
-    if (queryWidth > CONTAINER_WIDTH + (CONTAINER_GUTTER * 2)) {
+    const items = [
+      {
+        content: <DropdownItem icon={<ZapIcon />}>Reset filters, cols, etc.</DropdownItem>,
+        onClick: this.handleReset,
+      },
+    ];
+    if (queryWidth > CONTAINER_WIDTH + CONTAINER_GUTTER * 2) {
       items.push({
-        content: <DropdownItem icon={<TableIcon css={{ transform: 'rotate(90deg)' }} />}>{tableText}</DropdownItem>,
+        content: (
+          <DropdownItem icon={<TableIcon css={{ transform: 'rotate(90deg)' }} />}>
+            {tableText}
+          </DropdownItem>
+        ),
         onClick: this.toggleFullWidth,
-      })
+      });
     }
 
     return (
       <Dropdown
         align="right"
-        target={(
-          <IconButton variant="subtle" icon={KebabVerticalIcon} />
-        )}
+        target={<IconButton variant="subtle" icon={KebabVerticalIcon} />}
         items={items}
       />
     );

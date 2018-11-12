@@ -40,7 +40,7 @@ const Inner = styled.div({
   flexFlow: 'column nowrap',
   height: ' 100vh',
   justifyContent: 'flex-start',
-  overflow:'hidden',
+  overflow: 'hidden',
   width: '100%',
 });
 const Page = styled.div({
@@ -133,7 +133,7 @@ const CollapseExpand = styled.button(({ isCollapsed, isVisible }) => {
     ':active': {
       transform: 'scale(1)',
     },
-  }
+  };
 });
 
 function getPath(str) {
@@ -166,7 +166,11 @@ class Nav extends Component {
             const pointers = isDragging ? { pointerEvents: 'none' } : null;
             const transitions = isDragging
               ? null
-              : { transition: `${camelToKebab(key)} ${TRANSITION_DURATION} cubic-bezier(0.25, 0, 0, 1)` };
+              : {
+                  transition: `${camelToKebab(
+                    key
+                  )} ${TRANSITION_DURATION} cubic-bezier(0.25, 0, 0, 1)`,
+                };
             return { [key]: navWidth, ...pointers, ...transitions };
           };
 
@@ -247,13 +251,15 @@ class Nav extends Component {
                 </Inner>
                 <Shadow />
                 {isCollapsed ? null : <GrabHandle {...resizeProps} />}
-                <CollapseExpand {...clickProps} isCollapsed={isCollapsed} isVisible={isCollapsed || mouseIsOverNav}>
+                <CollapseExpand
+                  {...clickProps}
+                  isCollapsed={isCollapsed}
+                  isVisible={isCollapsed || mouseIsOverNav}
+                >
                   {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                 </CollapseExpand>
               </PrimaryNav>
-              <Page style={makeResizeStyles('marginLeft')}>
-                {children}
-              </Page>
+              <Page style={makeResizeStyles('marginLeft')}>{children}</Page>
             </PageWrapper>
           );
         }}

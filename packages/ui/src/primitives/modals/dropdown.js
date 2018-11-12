@@ -52,8 +52,8 @@ const Menu = styled.div(({ left, top }) => {
     paddingBottom: gridSize / 2,
     paddingTop: gridSize / 2,
     position: 'absolute',
-    ...placementStyles
-  }
+    ...placementStyles,
+  };
 });
 
 type ItemType = {
@@ -149,7 +149,7 @@ class Dropdown extends Component<Props> {
   };
 
   calculatePosition = () => {
-    const { align, targetNode, width } = this.props;
+    const { align, targetNode } = this.props;
 
     if (!targetNode || !document.body) return;
 
@@ -167,32 +167,34 @@ class Dropdown extends Component<Props> {
     const { items, style } = this.props;
     const { leftOffset, topOffset } = this.state;
 
-    return document.body ? createPortal(
-      <FocusTrap options={{ clickOutsideDeactivates: true }}>
-        <Menu
-          left={leftOffset}
-          onMouseLeave={this.handleMenuLeave}
-          ref={this.getMenu}
-          style={style}
-          top={topOffset}
-        >
-          {items.map((item, idx) => {
-            const { content, ...rest } = item;
-            return (
-              <Item
-                {...rest}
-                onClick={this.handleItemClick(item)}
-                onMouseEnter={this.handleMouseEnter}
-                key={idx}
-              >
-                {content}
-              </Item>
-            );
-          })}
-        </Menu>
-      </FocusTrap>,
-      document.body
-    ) : null;
+    return document.body
+      ? createPortal(
+          <FocusTrap options={{ clickOutsideDeactivates: true }}>
+            <Menu
+              left={leftOffset}
+              onMouseLeave={this.handleMenuLeave}
+              ref={this.getMenu}
+              style={style}
+              top={topOffset}
+            >
+              {items.map((item, idx) => {
+                const { content, ...rest } = item;
+                return (
+                  <Item
+                    {...rest}
+                    onClick={this.handleItemClick(item)}
+                    onMouseEnter={this.handleMouseEnter}
+                    key={idx}
+                  >
+                    {content}
+                  </Item>
+                );
+              })}
+            </Menu>
+          </FocusTrap>,
+          document.body
+        )
+      : null;
   }
 }
 

@@ -22,11 +22,13 @@ export const Title = ({ as: Tag, crop, margin, ...props }) => {
     Top: { marginBottom: 0, marginTop: gutter },
   };
   const offset = margins[margin];
-  const cropStyles = crop ? {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  } : null;
+  const cropStyles = crop
+    ? {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+      }
+    : null;
 
   return (
     <Tag
