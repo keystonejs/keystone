@@ -1,8 +1,9 @@
 # @voussoir/admin-ui
 
 ## 0.5.0
+
 - [minor] 1d30a329"
-:
+  :
 
   - Cleanup vertical navigation, more separation between primary/secondary nav primitives
 

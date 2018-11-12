@@ -388,6 +388,79 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   hasQueryCondition() {
     return false;
   }
+
+  addToServerHook(schema, toServerSide) {
+    schema.pre('validate', async function() {
+      await toServerSide(this);
+    });
+
+    // These are "Query middleware"; they differ from "document" middleware..
+    // ".. `this` refers to the query object rather than the document being updated."
+    schema.pre('update', async function() {
+      await toServerSide(this['_update'].$set || this['_update']);
+    });
+    schema.pre('updateOne', async function() {
+      await toServerSide(this['_update'].$set || this['_update']);
+    });
+    schema.pre('updateMany', async function() {
+      await toServerSide(this['_update'].$set || this['_update']);
+    });
+    schema.pre('findOneAndUpdate', async function() {
+      await toServerSide(this['_update'].$set || this['_update']);
+    });
+
+    // Model middleware
+    // Docs as second arg? (https://github.com/Automattic/mongoose/commit/3d62d3558c15ec852bdeaab1a5138b1853b4f7cb)
+    schema.pre('insertMany', async function(next, docs) {
+      for (let doc of docs) {
+        await toServerSide(doc);
+      }
+    });
+  }
+
+  addToClientHook(schema, toClientSide) {
+    schema.post('aggregate', function(results) {
+      results.forEach(r => toClientSide(r));
+    });
+
+    schema.post('find', function(results) {
+      results.forEach(r => toClientSide(r));
+    });
+    schema.post('findById', function(result) {
+      toClientSide(result);
+    });
+    schema.post('findOne', function(result) {
+      toClientSide(result);
+    });
+    // After saving, we return the result to the client, so we have to parse it
+    // back again
+    schema.post('save', function() {
+      toClientSide(this);
+    });
+
+    // These are "Query middleware"; they differ from "document" middleware..
+    // ".. `this` refers to the query object rather than the document being updated."
+    schema.post('update', function() {
+      toClientSide(this['_update'].$set || this['_update']);
+    });
+    schema.post('updateOne', function() {
+      toClientSide(this['_update'].$set || this['_update']);
+    });
+    schema.post('updateMany', function() {
+      toClientSide(this['_update'].$set || this['_update']);
+    });
+    schema.post('findOneAndUpdate', function() {
+      toClientSide(this['_update'].$set || this['_update']);
+    });
+
+    // Model middleware
+    // Docs as second arg? (https://github.com/Automattic/mongoose/commit/3d62d3558c15ec852bdeaab1a5138b1853b4f7cb)
+    schema.post('insertMany', function(next, docs) {
+      for (let doc of docs) {
+        toClientSide(doc);
+      }
+    });
+  }
 }
 
 MongooseAdapter.defaultListAdapterClass = MongooseListAdapter;

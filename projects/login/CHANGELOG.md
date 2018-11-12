@@ -1,10 +1,11 @@
 # @voussoir/cypress-project-login
 
 ## 1.2.1
+
 - Updated dependencies [d94b517]:
 - Updated dependencies [a3b995c]:
 - Updated dependencies [1d30a329"
-]:
+  ]:
   - @voussoir/adapter-mongoose@0.4.1
   - @voussoir/test-utils@0.1.1
   - @voussoir/core@0.6.0
