@@ -56,9 +56,6 @@ export default function withModalHandlers(
       const { target } = event;
       const { isOpen } = this.state;
 
-      // appease flow
-      if (!(target instanceof HTMLElement)) return;
-
       // NOTE: Why not use the <Blanket /> component to close?
       // We don't want to interupt the user's flow. Taking this approach allows
       // user to click "through" to other elements and close the popout.
