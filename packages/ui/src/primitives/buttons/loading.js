@@ -1,8 +1,11 @@
 // @flow
 
 /** @jsx jsx */
+// $FlowFixMe
+import { forwardRef } from 'react';
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
+
 
 import { LoadingIndicator, LoadingSpinner } from '../loading';
 import { Button, type ButtonProps } from './primitives';
@@ -28,13 +31,13 @@ type Loading = ButtonProps & {
   isLoading: boolean,
   indicatorVariant: 'spinner' | 'dots',
 };
-export const LoadingButton = ({ children, indicatorVariant, isLoading, ...props }: Loading) => {
+export const LoadingButton = forwardRef(({ children, indicatorVariant, isLoading, ...props }: Loading, ref) => {
   const appearance = getAppearance(props.appearance);
   const textCSS = isLoading ? { visibility: 'hidden' } : null;
   const isSpinner = indicatorVariant === 'spinner';
 
   return (
-    <Button {...props}>
+    <Button ref={ref} {...props}>
       <LoadingButtonInner>
         {isLoading ? (
           <LoadingIndicatorWrapper>
@@ -49,7 +52,7 @@ export const LoadingButton = ({ children, indicatorVariant, isLoading, ...props 
       </LoadingButtonInner>
     </Button>
   );
-};
+});
 LoadingButton.defaultProps = {
   appearance: 'default',
   isLoading: false,

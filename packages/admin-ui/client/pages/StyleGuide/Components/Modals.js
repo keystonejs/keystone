@@ -36,7 +36,7 @@ export default class ModalGuide extends Component {
         <FlexGroup justify="space-between">
           {['top', 'right', 'bottom', 'left'].map(p => (
             <Tooltip key={p} content="Some tooltip content" placement={p}>
-              {ref => <Button innerRef={ref}>Show {p}</Button>}
+              {ref => <Button ref={ref}>Show {p}</Button>}
             </Tooltip>
           ))}
         </FlexGroup>

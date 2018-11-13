@@ -380,7 +380,7 @@ class ListDetails extends Component<Props, State> {
                       name="item-search"
                       value={searchValue}
                       type="text"
-                      innerRef={el => (this.searchInput = el)}
+                      ref={el => (this.searchInput = el)}
                     />
                   </Search>
                   <AddFilterPopout

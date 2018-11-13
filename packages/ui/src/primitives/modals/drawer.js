@@ -5,6 +5,8 @@ import { jsx } from '@emotion/core';
 import {
   PureComponent,
   Fragment,
+  // $FlowFixMe
+  forwardRef,
   type ComponentType,
   type Element,
   type Ref,
@@ -42,11 +44,10 @@ const Positioner = styled.div(({ slideInFrom, width }) => ({
 
 type DialogElementProps = {
   component: ComponentType<*> | string,
-  innerRef?: Ref<*>,
 };
-const Dialog = ({ component: Tag, innerRef, ...props }: DialogElementProps) => (
+const Dialog = forwardRef(({ component: Tag, ...props }: DialogElementProps, ref) => (
   <Tag
-    ref={innerRef}
+    ref={ref}
     role="dialog"
     css={{
       backgroundColor: colors.page,
@@ -58,7 +59,7 @@ const Dialog = ({ component: Tag, innerRef, ...props }: DialogElementProps) => (
     }}
     {...props}
   />
-);
+));
 
 // Content
 

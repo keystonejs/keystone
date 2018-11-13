@@ -369,7 +369,7 @@ export const DateTimePicker = (props: Props) => {
         onChange={handleTimeChange}
         disabled={isDisabled || false}
         isMultiline={false}
-        innerRef={innerRef}
+        ref={innerRef}
       />
       <Select
         value={offset}

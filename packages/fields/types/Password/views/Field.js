@@ -53,7 +53,7 @@ export default class PasswordField extends Component {
                 autoComplete="off"
                 autoFocus={autoFocus}
                 id={htmlID}
-                innerRef={this.focusTarget}
+                ref={this.focusTarget}
                 name="inputPassword"
                 onChange={this.onChange}
                 placeholder="New Password"

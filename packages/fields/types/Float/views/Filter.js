@@ -31,7 +31,7 @@ export default class TextFilterView extends Component<Props> {
     return (
       <Input
         onChange={this.handleChange}
-        innerRef={innerRef}
+        ref={innerRef}
         placeholder={placeholder}
         value={value}
       />

@@ -8520,10 +8520,10 @@ react-prop-toggle@^1.0.2:
   resolved "https://registry.yarnpkg.com/react-prop-toggle/-/react-prop-toggle-1.0.2.tgz#8b0b7e74653606b1427cfcf6c4eaa9198330568e"
   integrity sha512-JmerjAXs7qJ959+d0Ygt7Cb2+4fG+n3I2VXO6JO0AcAY1vkRN/JpZKAN67CMXY889xEJcfylmMPhzvf6nWO68Q==
 
-react-pseudo-state@^1.0.1:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-pseudo-state/-/react-pseudo-state-1.0.2.tgz#dadd4688a72b738e4dcb578203d399f3709353bb"
-  integrity sha512-qiH2xwgs9ZZNOVWpW2Vk8ABc1shwWhgyxVvclbuhbOyWYLn1kdHRXJFOrDe7C9O2W6YdUGpCvPvDkjBzRMn2hg==
+react-pseudo-state@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/react-pseudo-state/-/react-pseudo-state-2.2.1.tgz#9c51e455d7ba34acf674a4a67c3777100c8a78f0"
+  integrity sha512-wB/jz8li2cmWRZkYWP4Go/6IZa1Y0QqxYTxRAiDuGgKvA6gx3W8JpFWVsPrGn+MJtOmFoe0vnEqzdz6tsuX17g==
 
 react-radios@^1.1.0:
   version "1.1.0"

@@ -123,7 +123,7 @@
     "react-focus-trap": "^2.6.0",
     "react-node-resolver": "^2.0.0",
     "react-prop-toggle": "^1.0.2",
-    "react-pseudo-state": "^1.0.1",
+    "react-pseudo-state": "^2.2.1",
     "react-radios": "^1.1.0",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.2.2",
