@@ -6,7 +6,7 @@ import flushable from 'flushable';
 import styled from '@emotion/styled';
 
 import { TransitionProvider, Fade } from './transitions';
-import { borderRadius, colors, gridSize } from '../../theme';
+import { colors, gridSize } from '../../theme';
 
 function getOffset({ left, top }, placement) {
   let x = left;
@@ -19,7 +19,7 @@ function getOffset({ left, top }, placement) {
 
   return {
     transform: `translate3d(${x}px, ${y}px, 0px)`,
-  }
+  };
 }
 
 const TooltipElement = styled.div({
@@ -35,8 +35,17 @@ const TooltipElement = styled.div({
   zIndex: 2,
 });
 
-class TooltipPositioner extends Component {
-  state = { left: 0, top: 0 }
+type PlacementType = 'top' | 'right' | 'bottom' | 'left';
+type PositionerProps = {
+  children: Node,
+  placement: PlacementType,
+  style?: Object,
+  targetNode: HTMLElement,
+};
+type PositionerState = { left: number, top: number };
+
+class TooltipPositioner extends Component<PositionerProps, PositionerState> {
+  state = { left: 0, top: 0 };
   ref = createRef();
   componentDidMount() {
     this.calculatePosition();
@@ -55,15 +64,19 @@ class TooltipPositioner extends Component {
     };
 
     // set left and top offsets
-    if (placement === 'left' || placement === 'right') top = targetCenter.y - tooltipRect.height / 2;
-    if (placement === 'top' || placement === 'bottom') left = targetCenter.x - tooltipRect.width / 2;
+    if (placement === 'left' || placement === 'right') {
+      top = targetCenter.y - tooltipRect.height / 2;
+    }
+    if (placement === 'top' || placement === 'bottom') {
+      left = targetCenter.x - tooltipRect.width / 2;
+    }
     if (placement === 'left') left = targetRect.left - tooltipRect.width;
     if (placement === 'right') left = targetRect.right;
     if (placement === 'top') top = targetRect.top - tooltipRect.height;
     if (placement === 'bottom') top = targetRect.bottom;
 
     this.setState({ left, top });
-  }
+  };
   render() {
     const { children, placement, style } = this.props;
 
@@ -71,17 +84,21 @@ class TooltipPositioner extends Component {
 
     const styles = {
       ...style,
-      ...getOffset(this.state, placement)
-    }
+      ...getOffset(this.state, placement),
+    };
 
-    return createPortal(
-      <TooltipElement ref={this.ref} style={styles}>
-        {children}
-      </TooltipElement>,
-      document.body
-    );
+    if (document.body) {
+      return createPortal(
+        <TooltipElement ref={this.ref} style={styles}>
+          {children}
+        </TooltipElement>,
+        document.body
+      );
+    } else {
+      return null;
+    }
   }
-};
+}
 
 const LISTENER_OPTIONS = { passive: true };
 const NOOP = () => {};
@@ -93,10 +110,7 @@ const showTooltip = (fn: boolean => void, defaultDelay: number) => {
   if (isHidePending) {
     pendingHide.flush();
   }
-  const pendingShow = flushable(
-    () => fn(isHidePending),
-    isHidePending ? 0 : defaultDelay,
-  );
+  const pendingShow = flushable(() => fn(isHidePending), isHidePending ? 0 : defaultDelay);
   return pendingShow.cancel;
 };
 
@@ -106,13 +120,14 @@ const hideTooltip = (fn: boolean => void, defaultDelay: number) => {
 };
 
 type Props = {
-  children: Ref => Node,
+  children: (Ref<HTMLElement>) => Node,
   content: Node,
   delay: number,
   hideOnMouseDown?: boolean,
+  hideOnKeyDown?: boolean,
   onHide?: () => void,
   onShow?: () => void,
-  placement: 'top' | 'right' | 'bottom' | 'left',
+  placement: PlacementType,
 };
 type State = {
   immediatelyHide: boolean,
@@ -125,30 +140,36 @@ export default class Tooltip extends Component<Props, State> {
     immediatelyHide: false,
     immediatelyShow: false,
     isVisible: false,
-  }
+  };
   ref = createRef();
-  cancelPendingSetState = NOOP
+  cancelPendingSetState = NOOP;
   static defaultProps = {
     delay: 300,
     placement: 'bottom',
-  }
+  };
   componentDidMount() {
     if (!this.ref.current) {
       throw new Error('You must pass the ref onto your target node.');
     }
     if (!this.ref.current.nodeName) {
-      throw new Error('It looks like you\'ve passed the ref onto a component. You must pass the ref onto your target node.');
+      throw new Error(
+        "It looks like you've passed the ref onto a component. You must pass the ref onto your target node."
+      );
     }
 
-    this.ref.current.addEventListener('mouseenter', this.handleMouseEnter, LISTENER_OPTIONS);
-    this.ref.current.addEventListener('mouseleave', this.handleMouseLeave, LISTENER_OPTIONS);
-  };
+    if (this.ref && this.ref.current && this.ref.current instanceof HTMLElement) {
+      this.ref.current.addEventListener('mouseenter', this.handleMouseEnter, LISTENER_OPTIONS);
+      this.ref.current.addEventListener('mouseleave', this.handleMouseLeave, LISTENER_OPTIONS);
+    }
+  }
   componentWillUnmount() {
     this.cancelPendingSetState();
 
-    this.ref.current.removeEventListener('mouseenter', this.handleMouseEnter, LISTENER_OPTIONS);
-    this.ref.current.removeEventListener('mouseleave', this.handleMouseLeave, LISTENER_OPTIONS);
-  };
+    if (this.ref && this.ref.current && this.ref.current instanceof HTMLElement) {
+      this.ref.current.removeEventListener('mouseenter', this.handleMouseEnter, LISTENER_OPTIONS);
+      this.ref.current.removeEventListener('mouseleave', this.handleMouseLeave, LISTENER_OPTIONS);
+    }
+  }
 
   cancel = () => {
     this.cancelPendingSetState();
@@ -161,7 +182,7 @@ export default class Tooltip extends Component<Props, State> {
     if (this.state.isVisible) {
       return;
     }
-    if (this.props.hideOnMouseDown) {
+    if (this.props.hideOnMouseDown && this.ref.current) {
       this.ref.current.addEventListener('mousedown', this.cancel, LISTENER_OPTIONS);
     }
     if (this.props.hideOnKeyDown) {
@@ -181,7 +202,7 @@ export default class Tooltip extends Component<Props, State> {
     if (!this.state.isVisible) {
       return;
     }
-    if (this.props.hideOnMouseDown) {
+    if (this.props.hideOnMouseDown && this.ref.current) {
       this.ref.current.removeEventListener('mousedown', this.cancel, LISTENER_OPTIONS);
     }
     if (this.props.hideOnKeyDown) {

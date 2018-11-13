@@ -274,7 +274,7 @@ class ListDetails extends Component<Props, State> {
     const { isFullWidth } = this.state;
     const TableIcon = isFullWidth ? FoldIcon : UnfoldIcon;
     const tableText = isFullWidth ? 'Collapse table' : 'Expand table';
-    const tableToggleIsAvailable = queryWidth > (CONTAINER_WIDTH + CONTAINER_GUTTER * 2);
+    const tableToggleIsAvailable = queryWidth > CONTAINER_WIDTH + CONTAINER_GUTTER * 2;
 
     const items = [
       {
@@ -289,7 +289,7 @@ class ListDetails extends Component<Props, State> {
         ),
         isDisabled: !tableToggleIsAvailable,
         onClick: this.toggleFullWidth,
-      }
+      },
     ];
 
     return (

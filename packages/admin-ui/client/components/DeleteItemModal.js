@@ -9,7 +9,7 @@ type Props = {
   itemIds: Array<string>,
   list: Object,
   item: Object,
-  onClose: (any) => void,
+  onClose: any => void,
   onDelete: (Promise<*>) => void,
 };
 

@@ -21,14 +21,14 @@ const Item = styled(ItemElement)(({ isDisabled }) => ({
   background: 'none',
   border: '1px solid transparent',
   boxSizing: 'border-box',
-  color: isDisabled ? colors.N40 :  colors.text,
+  color: isDisabled ? colors.N40 : colors.text,
   cursor: 'pointer',
   display: 'block',
   fontSize: 14,
   lineHeight: '17px',
   margin: 0,
   padding: `${gridSize}px ${gridSize * 1.5}px`,
-  pointerEvents: isDisabled ? 'none' :  null,
+  pointerEvents: isDisabled ? 'none' : null,
   textAlign: 'left',
   transition: 'box-shadow 100ms linear',
   verticalAlign: 'middle',
@@ -71,6 +71,7 @@ type Props = ModalHandlerProps & {
   items: Array<ItemType>,
   selectClosesMenu: boolean,
   style: Object,
+  targetNode: HTMLElement,
 };
 type State = {
   leftOffset: number,
@@ -174,34 +175,36 @@ class Dropdown extends Component<Props, State> {
     const { items, style } = this.props;
     const { leftOffset, topOffset } = this.state;
 
-    return document.body
-      ? createPortal(
-          <FocusTrap options={{ clickOutsideDeactivates: true }}>
-            <Menu
-              left={leftOffset}
-              onMouseLeave={this.handleMenuLeave}
-              ref={this.getMenu}
-              style={style}
-              top={topOffset}
-            >
-              {items.map((item, idx) => {
-                const { content, ...rest } = item;
-                return (
-                  <Item
-                    {...rest}
-                    onClick={this.handleItemClick(item)}
-                    onMouseEnter={this.handleMouseEnter}
-                    key={idx}
-                  >
-                    {content}
-                  </Item>
-                );
-              })}
-            </Menu>
-          </FocusTrap>,
-          document.body
-        )
-      : null;
+    if (document.body) {
+      return createPortal(
+        <FocusTrap options={{ clickOutsideDeactivates: true }}>
+          <Menu
+            left={leftOffset}
+            onMouseLeave={this.handleMenuLeave}
+            ref={this.getMenu}
+            style={style}
+            top={topOffset}
+          >
+            {items.map((item, idx) => {
+              const { content, ...rest } = item;
+              return (
+                <Item
+                  {...rest}
+                  onClick={this.handleItemClick(item)}
+                  onMouseEnter={this.handleMouseEnter}
+                  key={idx}
+                >
+                  {content}
+                </Item>
+              );
+            })}
+          </Menu>
+        </FocusTrap>,
+        document.body
+      );
+    } else {
+      return null;
+    }
   }
 }
 

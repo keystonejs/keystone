@@ -1,7 +1,7 @@
 /* global ENABLE_DEV_FEATURES */
 /** @jsx jsx */
 
-import React, { Component, Fragment } from 'react';
+import { Component, Fragment } from 'react';
 import { withRouter } from 'react-router';
 import PropToggle from 'react-prop-toggle';
 import styled from '@emotion/styled';
@@ -142,17 +142,22 @@ const CollapseExpand = styled.button(({ isCollapsed, isVisible }) => {
 const TooltipContent = ({ kbd, children }) => (
   <FlexGroup align="center" growIndexes={[0]}>
     <span key="children">{children}</span>
-    <kbd key="kbd" css={{
-      backgroundColor: 'rgba(255, 255, 255, 0.2)',
-      borderRadius: 2,
-      display: 'inline-block',
-      fontWeight: 'bold',
-      height: 14,
-      lineHeight: 1,
-      paddingBottom: 1,
-      paddingLeft: 4,
-      paddingRight: 4,
-    }}>{kbd}</kbd>
+    <kbd
+      key="kbd"
+      css={{
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        borderRadius: 2,
+        display: 'inline-block',
+        fontWeight: 'bold',
+        height: 14,
+        lineHeight: 1,
+        paddingBottom: 1,
+        paddingLeft: 4,
+        paddingRight: 4,
+      }}
+    >
+      {kbd}
+    </kbd>
   </FlexGroup>
 );
 
@@ -272,11 +277,11 @@ class Nav extends Component {
                 <Shadow />
                 {isCollapsed ? null : <GrabHandle {...resizeProps} />}
                 <Tooltip
-                  content={(
+                  content={
                     <TooltipContent kbd={KEYBOARD_SHORTCUT}>
                       {isCollapsed ? 'Click to Expand' : 'Click to Collapse'}
                     </TooltipContent>
-                  )}
+                  }
                   placement="right"
                   hideOnMouseDown
                   hideOnKeyDown

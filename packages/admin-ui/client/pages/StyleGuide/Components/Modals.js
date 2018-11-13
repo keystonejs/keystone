@@ -44,12 +44,7 @@ export default class ModalGuide extends Component {
         <h4>Dropdowns</h4>
         <FlexGroup justify="space-between">
           {['left', 'right'].map(a => (
-            <Dropdown
-              align={a}
-              key={a}
-                target={<Button>Align {a}</Button>}
-                items={dropdownItems}
-            />
+            <Dropdown align={a} key={a} target={<Button>Align {a}</Button>} items={dropdownItems} />
           ))}
         </FlexGroup>
 

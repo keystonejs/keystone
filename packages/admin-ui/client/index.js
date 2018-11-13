@@ -40,7 +40,11 @@ const Keystone = () => (
                         path={`${adminPath}/style-guide/:page?`}
                         render={() => <StyleGuidePage {...adminMeta} />}
                       />
-                      <Route exact path={`${adminPath}`} render={() => <HomePage {...adminMeta} />} />
+                      <Route
+                        exact
+                        path={`${adminPath}`}
+                        render={() => <HomePage {...adminMeta} />}
+                      />
                       <Route
                         path={`${adminPath}/:listKey`}
                         render={({
