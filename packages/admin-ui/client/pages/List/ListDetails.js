@@ -279,6 +279,7 @@ class ListDetails extends Component<Props, State> {
     const items = [
       {
         content: <DropdownItem icon={<ZapIcon />}>Reset filters, cols, etc.</DropdownItem>,
+        id: 'ks-list-dropdown-reset', // for cypress tests
         onClick: this.handleReset,
       },
       {
@@ -295,7 +296,7 @@ class ListDetails extends Component<Props, State> {
     return (
       <Dropdown
         align="right"
-        target={<IconButton variant="subtle" icon={KebabVerticalIcon} />}
+        target={<IconButton variant="subtle" icon={KebabVerticalIcon} id="ks-list-dropdown" />}
         items={items}
       />
     );
