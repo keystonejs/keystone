@@ -174,8 +174,9 @@ class Dropdown extends Component<Props, State> {
   render() {
     const { items, style } = this.props;
     const { leftOffset, topOffset } = this.state;
+    const attachTo =  document.body;
 
-    if (document.body) {
+    if (attachTo) {
       return createPortal(
         <FocusTrap options={{ clickOutsideDeactivates: true }}>
           <Menu
@@ -200,7 +201,7 @@ class Dropdown extends Component<Props, State> {
             })}
           </Menu>
         </FocusTrap>,
-        document.body
+        attachTo
       );
     } else {
       return null;

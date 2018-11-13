@@ -8,19 +8,9 @@ import styled from '@emotion/styled';
 import { TransitionProvider, Fade } from './transitions';
 import { colors, gridSize } from '../../theme';
 
-function getOffset({ left, top }, placement) {
-  let x = left;
-  let y = top;
-
-  if (placement === 'top') y -= gridSize;
-  else if (placement === 'bottom') y += gridSize;
-  else if (placement === 'left') x -= gridSize;
-  else if (placement === 'right') x += gridSize;
-
-  return {
-    transform: `translate3d(${x}px, ${y}px, 0px)`,
-  };
-}
+// ==============================
+// Styled Component
+// ==============================
 
 const TooltipElement = styled.div({
   backgroundColor: colors.N80,
@@ -35,6 +25,24 @@ const TooltipElement = styled.div({
   top: 0,
   zIndex: 2,
 });
+
+// ==============================
+// Positioner
+// ==============================
+
+function getOffset({ left, top }, placement) {
+  let x = left;
+  let y = top;
+
+  if (placement === 'top') y -= gridSize;
+  else if (placement === 'bottom') y += gridSize;
+  else if (placement === 'left') x -= gridSize;
+  else if (placement === 'right') x += gridSize;
+
+  return {
+    transform: `translate3d(${x}px, ${y}px, 0px)`,
+  };
+}
 
 type PlacementType = 'top' | 'right' | 'bottom' | 'left';
 type PositionerProps = {
@@ -82,26 +90,29 @@ class TooltipPositioner extends Component<PositionerProps, PositionerState> {
   };
   render() {
     const { children, placement, style } = this.props;
-
-    if (!document.body) return null;
+    const attachTo =  document.body;
 
     const styles = {
       ...style,
       ...getOffset(this.state, placement),
     };
 
-    if (document.body) {
+    if (attachTo) {
       return createPortal(
         <TooltipElement ref={this.ref} style={styles}>
           {children}
         </TooltipElement>,
-        document.body
+        attachTo
       );
     } else {
       return null;
     }
   }
 }
+
+// ==============================
+// Stateful Component
+// ==============================
 
 const LISTENER_OPTIONS = { passive: true };
 const NOOP = () => {};
@@ -151,26 +162,30 @@ export default class Tooltip extends Component<Props, State> {
     placement: 'bottom',
   };
   componentDidMount() {
-    if (!this.ref.current) {
+    const target = this.ref.current;
+
+    if (!target) {
       throw new Error('You must pass the ref onto your target node.');
     }
-    if (!this.ref.current.nodeName) {
+    if (!target.nodeName) {
       throw new Error(
         "It looks like you've passed the ref onto a component. You must pass the ref onto your target node."
       );
     }
 
-    if (this.ref && this.ref.current && this.ref.current instanceof HTMLElement) {
-      this.ref.current.addEventListener('mouseenter', this.handleMouseEnter, LISTENER_OPTIONS);
-      this.ref.current.addEventListener('mouseleave', this.handleMouseLeave, LISTENER_OPTIONS);
+    if (target) {
+      target.addEventListener('mouseenter', this.handleMouseEnter, LISTENER_OPTIONS);
+      target.addEventListener('mouseleave', this.handleMouseLeave, LISTENER_OPTIONS);
     }
   }
   componentWillUnmount() {
     this.cancelPendingSetState();
 
-    if (this.ref && this.ref.current && this.ref.current instanceof HTMLElement) {
-      this.ref.current.removeEventListener('mouseenter', this.handleMouseEnter, LISTENER_OPTIONS);
-      this.ref.current.removeEventListener('mouseleave', this.handleMouseLeave, LISTENER_OPTIONS);
+    const target = this.ref.current;
+
+    if (target) {
+      target.removeEventListener('mouseenter', this.handleMouseEnter, LISTENER_OPTIONS);
+      target.removeEventListener('mouseleave', this.handleMouseLeave, LISTENER_OPTIONS);
     }
   }
 
