@@ -1,19 +1,21 @@
-import React, { Component, createRef, Fragment } from 'react';
+// @flow
+
+import React, { Component, createRef, Fragment, type Ref, type Node } from 'react';
 import { createPortal } from 'react-dom';
+import flushable from 'flushable';
 import styled from '@emotion/styled';
 
 import { TransitionProvider, Fade } from './transitions';
 import { borderRadius, colors, gridSize } from '../../theme';
 
 function getOffset({ left, top }, placement) {
-  const offset = gridSize / 2;
   let x = left;
   let y = top;
 
-  if (placement === 'top') y -= offset;
-  else if (placement === 'bottom') y += offset;
-  else if (placement === 'left') x -= offset;
-  else if (placement === 'right') x += offset;
+  if (placement === 'top') y -= gridSize;
+  else if (placement === 'bottom') y += gridSize;
+  else if (placement === 'left') x -= gridSize;
+  else if (placement === 'right') x += gridSize;
 
   return {
     transform: `translate3d(${x}px, ${y}px, 0px)`,
@@ -24,7 +26,8 @@ const TooltipElement = styled.div({
   backgroundColor: colors.N80,
   borderRadius: 3,
   color: 'white',
-  fontSize: '0.85rem',
+  fontSize: '0.75rem',
+  fontWeight: 500,
   left: 0,
   padding: `${gridSize / 2}px ${gridSize}px`,
   position: 'fixed',
@@ -80,11 +83,54 @@ class TooltipPositioner extends Component {
   }
 };
 
-export default class Tooltip extends Component {
-  state = { isOpen: false }
+const LISTENER_OPTIONS = { passive: true };
+const NOOP = () => {};
+
+let pendingHide;
+
+const showTooltip = (fn: boolean => void, defaultDelay: number) => {
+  const isHidePending = pendingHide && pendingHide.pending();
+  if (isHidePending) {
+    pendingHide.flush();
+  }
+  const pendingShow = flushable(
+    () => fn(isHidePending),
+    isHidePending ? 0 : defaultDelay,
+  );
+  return pendingShow.cancel;
+};
+
+const hideTooltip = (fn: boolean => void, defaultDelay: number) => {
+  pendingHide = flushable(flushed => fn(flushed), defaultDelay);
+  return pendingHide.cancel;
+};
+
+type Props = {
+  children: Ref => Node,
+  content: Node,
+  delay: number,
+  hideOnMouseDown?: boolean,
+  onHide?: () => void,
+  onShow?: () => void,
+  placement: 'top' | 'right' | 'bottom' | 'left',
+};
+type State = {
+  immediatelyHide: boolean,
+  immediatelyShow: boolean,
+  isVisible: boolean,
+};
+
+export default class Tooltip extends Component<Props, State> {
+  state = {
+    immediatelyHide: false,
+    immediatelyShow: false,
+    isVisible: false,
+  }
   ref = createRef();
+  cancelPendingSetState = NOOP
   static defaultProps = {
-    placement: 'top',
+    delay: 300,
+    placement: 'bottom',
   }
   componentDidMount() {
     if (!this.ref.current) {
@@ -94,29 +140,69 @@ export default class Tooltip extends Component {
       throw new Error('It looks like you\'ve passed the ref onto a component. You must pass the ref onto your target node.');
     }
 
-    this.ref.current.addEventListener('mouseenter', this.handleMouseEnter, { passive: true });
-    this.ref.current.addEventListener('mouseleave', this.handleMouseLeave, { passive: true });
+    this.ref.current.addEventListener('mouseenter', this.handleMouseEnter, LISTENER_OPTIONS);
+    this.ref.current.addEventListener('mouseleave', this.handleMouseLeave, LISTENER_OPTIONS);
   };
   componentWillUnmount() {
-    this.ref.current.removeEventListener('mouseenter', this.handleMouseEnter, { passive: true });
-    this.ref.current.removeEventListener('mouseleave', this.handleMouseLeave, { passive: true });
+    this.cancelPendingSetState();
+
+    this.ref.current.removeEventListener('mouseenter', this.handleMouseEnter, LISTENER_OPTIONS);
+    this.ref.current.removeEventListener('mouseleave', this.handleMouseLeave, LISTENER_OPTIONS);
   };
+
+  cancel = () => {
+    this.cancelPendingSetState();
+    this.setState({ isVisible: false, immediatelyHide: true });
+  };
+
   handleMouseEnter = () => {
-    this.setState({ isOpen: true });
+    this.cancelPendingSetState();
+
+    if (this.state.isVisible) {
+      return;
+    }
+    if (this.props.hideOnMouseDown) {
+      this.ref.current.addEventListener('mousedown', this.cancel, LISTENER_OPTIONS);
+    }
+    if (this.props.hideOnKeyDown) {
+      document.addEventListener('keydown', this.cancel, LISTENER_OPTIONS);
+    }
+
+    this.cancelPendingSetState = showTooltip(immediatelyShow => {
+      this.setState({
+        isVisible: true,
+        immediatelyShow,
+      });
+    }, this.props.delay);
   };
   handleMouseLeave = () => {
-    this.setState({ isOpen: false });
+    this.cancelPendingSetState();
+
+    if (!this.state.isVisible) {
+      return;
+    }
+    if (this.props.hideOnMouseDown) {
+      this.ref.current.removeEventListener('mousedown', this.cancel, LISTENER_OPTIONS);
+    }
+    if (this.props.hideOnKeyDown) {
+      document.removeEventListener('keydown', this.cancel, LISTENER_OPTIONS);
+    }
+
+    this.cancelPendingSetState = hideTooltip(immediatelyHide => {
+      this.setState({ isVisible: false, immediatelyHide });
+    }, this.props.delay);
   };
+
   render() {
-    const { children, content, placement } = this.props;
-    const { isOpen } = this.state;
+    const { children, content, onHide, onShow, placement } = this.props;
+    const { isVisible } = this.state;
     const ref = this.ref;
 
     return (
       <Fragment>
         {children(ref)}
 
-        <TransitionProvider isOpen={isOpen}>
+        <TransitionProvider isOpen={isVisible} onEntered={onShow} onExited={onHide}>
           {transitionState => (
             <Fade transitionState={transitionState}>
               <TooltipPositioner targetNode={this.ref.current} placement={placement}>

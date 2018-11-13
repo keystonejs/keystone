@@ -7,6 +7,7 @@ const LS_KEY = 'KEYSTONE_NAVIGATION_STATE';
 const DEFAULT_STATE = { isCollapsed: false, width: 280 };
 const MIN_WIDTH = 140;
 const MAX_WIDTH = 800;
+export const KEYBOARD_SHORTCUT = '[';
 
 function getCache() {
   if (typeof localStorage !== 'undefined') {
@@ -25,10 +26,10 @@ class ResizeHandler extends Component {
   state = getCache();
 
   componentDidMount() {
-    this.props.keyManager.subscribe('[', this.toggleCollapse);
+    this.props.keyManager.subscribe(KEYBOARD_SHORTCUT, this.toggleCollapse);
   }
   componentWillUnmount() {
-    this.props.keyManager.unsubscribe('[');
+    this.props.keyManager.unsubscribe(KEYBOARD_SHORTCUT);
   }
 
   storeState = s => {
@@ -103,7 +104,6 @@ class ResizeHandler extends Component {
       onMouseDown: this.handleResizeStart,
     };
     const clickProps = {
-      title: this.state.isCollapsed ? 'Click to Expand ([)' : 'Click to Collapse ([)',
       onClick: this.toggleCollapse,
     };
     const snapshot = this.state;

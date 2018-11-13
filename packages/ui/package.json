@@ -12,6 +12,7 @@
     "@voussoir/icons": "^0.2.0",
     "date-fns": "^1.29.0",
     "emotion": "^10.0.0-beta.5",
+    "flushable": "^1.0.0",
     "focus-trap": "^2.4.3",
     "kalendaryo": "^1.10.0",
     "prop-types": "^15.6.1",

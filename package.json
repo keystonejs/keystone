@@ -74,6 +74,7 @@
     "falsey": "^1.0.0",
     "file-loader": "^1.1.11",
     "flow-bin": "^0.82.0",
+    "flushable": "^1.0.0",
     "focus-trap": "^2.4.3",
     "fs-extra": "^7.0.0",
     "graphql": "^0.13.2",

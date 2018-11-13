@@ -1,9 +1,11 @@
 /* global ENABLE_DEV_FEATURES */
+/** @jsx jsx */
 
 import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router';
 import PropToggle from 'react-prop-toggle';
 import styled from '@emotion/styled';
+import { jsx } from '@emotion/core';
 
 import {
   TerminalIcon,
@@ -21,10 +23,11 @@ import {
   NavGroupIcons,
 } from '@voussoir/ui/src/primitives/navigation';
 import { A11yText, Title } from '@voussoir/ui/src/primitives/typography';
-// import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { Tooltip } from '@voussoir/ui/src/primitives/modals';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
 
 import { withAdminMeta } from '../../providers/AdminMeta';
-import ResizeHandler from './ResizeHandler';
+import ResizeHandler, { KEYBOARD_SHORTCUT } from './ResizeHandler';
 import ScrollQuery from '../ScrollQuery';
 
 const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
@@ -135,6 +138,23 @@ const CollapseExpand = styled.button(({ isCollapsed, isVisible }) => {
     },
   };
 });
+
+const TooltipContent = ({ kbd, children }) => (
+  <FlexGroup align="center" growIndexes={[0]}>
+    <span key="children">{children}</span>
+    <kbd key="kbd" css={{
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+      borderRadius: 2,
+      display: 'inline-block',
+      fontWeight: 'bold',
+      height: 14,
+      lineHeight: 1,
+      paddingBottom: 1,
+      paddingLeft: 4,
+      paddingRight: 4,
+    }}>{kbd}</kbd>
+  </FlexGroup>
+);
 
 function getPath(str) {
   const arr = str.split('/');
@@ -251,13 +271,28 @@ class Nav extends Component {
                 </Inner>
                 <Shadow />
                 {isCollapsed ? null : <GrabHandle {...resizeProps} />}
-                <CollapseExpand
-                  {...clickProps}
-                  isCollapsed={isCollapsed}
-                  isVisible={isCollapsed || mouseIsOverNav}
+                <Tooltip
+                  content={(
+                    <TooltipContent kbd={KEYBOARD_SHORTCUT}>
+                      {isCollapsed ? 'Click to Expand' : 'Click to Collapse'}
+                    </TooltipContent>
+                  )}
+                  placement="right"
+                  hideOnMouseDown
+                  hideOnKeyDown
+                  delay={600}
                 >
-                  {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                </CollapseExpand>
+                  {ref => (
+                    <CollapseExpand
+                      {...clickProps}
+                      ref={ref}
+                      isCollapsed={isCollapsed}
+                      isVisible={isCollapsed || mouseIsOverNav}
+                    >
+                      {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                    </CollapseExpand>
+                  )}
+                </Tooltip>
               </PrimaryNav>
               <Page style={makeResizeStyles('marginLeft')}>{children}</Page>
             </PageWrapper>
