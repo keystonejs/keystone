@@ -377,6 +377,88 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
     return {};
   }
 
+  // The following methods provide helpers for constructing the return values of `getQueryConditions`.
+  // Each method takes:
+  //   `v`: A value transformation function which converts from a string type provided
+  //        by graphQL into a native mongoose type.
+  //   `g`: A path transformation function which converts from the field path into the
+  //        mongoose document path.
+  equalityConditions(f = v => v, g = p => p) {
+    return {
+      [this.path]: value => ({ [g(this.path)]: { $eq: f(value) } }),
+      [`${this.path}_not`]: value => ({ [g(this.path)]: { $ne: f(value) } }),
+    };
+  }
+
+  equalityConditionsInsensitive(f = escapeRegExp, g = p => p) {
+    return {
+      [`${this.path}_i`]: value => ({ [g(this.path)]: new RegExp(`^${f(value)}$`, 'i') }),
+      [`${this.path}_not_i`]: value => ({
+        [g(this.path)]: { $not: new RegExp(`^${f(value)}$`, 'i') },
+      }),
+    };
+  }
+
+  inConditions(f = v => v, g = p => p) {
+    return {
+      [`${this.path}_in`]: value => ({ [g(this.path)]: { $in: value.map(s => f(s)) } }),
+      [`${this.path}_not_in`]: value => ({
+        [g(this.path)]: { $not: { $in: value.map(s => f(s)) } },
+      }),
+    };
+  }
+
+  orderingConditions(f = v => v, g = p => p) {
+    return {
+      [`${this.path}_lt`]: value => ({ [g(this.path)]: { $lt: f(value) } }),
+      [`${this.path}_lte`]: value => ({ [g(this.path)]: { $lte: f(value) } }),
+      [`${this.path}_gt`]: value => ({ [g(this.path)]: { $gt: f(value) } }),
+      [`${this.path}_gte`]: value => ({ [g(this.path)]: { $gte: f(value) } }),
+    };
+  }
+
+  stringConditions(f = escapeRegExp, g = p => p) {
+    return {
+      [`${this.path}_contains`]: value => ({ [g(this.path)]: { $regex: new RegExp(f(value)) } }),
+      [`${this.path}_not_contains`]: value => ({ [g(this.path)]: { $not: new RegExp(f(value)) } }),
+      [`${this.path}_starts_with`]: value => ({
+        [g(this.path)]: { $regex: new RegExp(`^${f(value)}`) },
+      }),
+      [`${this.path}_not_starts_with`]: value => ({
+        [g(this.path)]: { $not: new RegExp(`^${f(value)}`) },
+      }),
+      [`${this.path}_ends_with`]: value => ({
+        [g(this.path)]: { $regex: new RegExp(`${f(value)}$`) },
+      }),
+      [`${this.path}_not_ends_with`]: value => ({
+        [g(this.path)]: { $not: new RegExp(`${f(value)}$`) },
+      }),
+    };
+  }
+
+  stringConditionsInsensitive(f = escapeRegExp, g = p => p) {
+    return {
+      [`${this.path}_contains_i`]: value => ({
+        [g(this.path)]: { $regex: new RegExp(f(value), 'i') },
+      }),
+      [`${this.path}_not_contains_i`]: value => ({
+        [g(this.path)]: { $not: new RegExp(f(value), 'i') },
+      }),
+      [`${this.path}_starts_with_i`]: value => ({
+        [g(this.path)]: { $regex: new RegExp(`^${f(value)}`, 'i') },
+      }),
+      [`${this.path}_not_starts_with_i`]: value => ({
+        [g(this.path)]: { $not: new RegExp(`^${f(value)}`, 'i') },
+      }),
+      [`${this.path}_ends_with_i`]: value => ({
+        [g(this.path)]: { $regex: new RegExp(`${f(value)}$`, 'i') },
+      }),
+      [`${this.path}_not_ends_with_i`]: value => ({
+        [g(this.path)]: { $not: new RegExp(`${f(value)}$`, 'i') },
+      }),
+    };
+  }
+
   getRelationshipQueryConditions() {
     return {};
   }

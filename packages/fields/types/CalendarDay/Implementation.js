@@ -13,14 +13,9 @@ class CalendarDay extends Implementation {
   }
   get gqlQueryInputFields() {
     return [
-      `${this.path}: String`,
-      `${this.path}_not: String`,
-      `${this.path}_lt: String`,
-      `${this.path}_lte: String`,
-      `${this.path}_gt: String`,
-      `${this.path}_gte: String`,
-      `${this.path}_in: [String]`,
-      `${this.path}_not_in: [String]`,
+      ...this.equalityInputFields('String'),
+      ...this.orderingInputFields('String'),
+      ...this.inInputFields('String'),
     ];
   }
   get gqlUpdateInputFields() {
@@ -67,14 +62,9 @@ class MongoCalendarDayInterface extends MongooseFieldAdapter {
 
   getQueryConditions() {
     return {
-      [this.path]: value => ({ [this.path]: { $eq: value } }),
-      [`${this.path}_not`]: value => ({ [this.path]: { $ne: value } }),
-      [`${this.path}_lt`]: value => ({ [this.path]: { $lt: value } }),
-      [`${this.path}_lte`]: value => ({ [this.path]: { $lte: value } }),
-      [`${this.path}_gt`]: value => ({ [this.path]: { $gt: value } }),
-      [`${this.path}_gte`]: value => ({ [this.path]: { $gte: value } }),
-      [`${this.path}_in`]: value => ({ [this.path]: { $in: value } }),
-      [`${this.path}_not_in`]: value => ({ [this.path]: { $not: { $in: value } } }),
+      ...this.equalityConditions(),
+      ...this.orderingConditions(),
+      ...this.inConditions(),
     };
   }
 }

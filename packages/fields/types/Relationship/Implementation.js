@@ -361,12 +361,9 @@ class MongoSelectInterface extends MongooseFieldAdapter {
 
   getQueryConditions() {
     return {
-      [`${this.path}_is_null`]: value => {
-        if (value) {
-          return { [this.path]: { $not: { $exists: true, $ne: null } } };
-        }
-        return { [this.path]: { $exists: true, $ne: null } };
-      },
+      [`${this.path}_is_null`]: value => ({
+        [this.path]: value ? { $not: { $exists: true, $ne: null } } : { $exists: true, $ne: null },
+      }),
     };
   }
 

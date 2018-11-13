@@ -14,7 +14,7 @@ class Checkbox extends Implementation {
   }
 
   get gqlQueryInputFields() {
-    return [`${this.path}: Boolean`, `${this.path}_not: Boolean`];
+    return this.equalityInputFields('Boolean');
   }
   get gqlUpdateInputFields() {
     return [`${this.path}: Boolean`];
@@ -33,10 +33,7 @@ class MongoCheckboxInterface extends MongooseFieldAdapter {
   }
 
   getQueryConditions() {
-    return {
-      [this.path]: value => ({ [this.path]: { $eq: value } }),
-      [`${this.path}_not`]: value => ({ [this.path]: { $ne: value } }),
-    };
+    return this.equalityConditions();
   }
 }
 

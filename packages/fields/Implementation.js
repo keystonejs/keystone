@@ -120,6 +120,45 @@ class Field {
   get gqlQueryInputFields() {
     return [];
   }
+
+  equalityInputFields(type) {
+    return [`${this.path}: ${type}`, `${this.path}_not: ${type}`];
+  }
+  equalityInputFieldsInsensitive(type) {
+    return [`${this.path}_i: ${type}`, `${this.path}_not_i: ${type}`];
+  }
+  inInputFields(type) {
+    return [`${this.path}_in: [${type}]`, `${this.path}_not_in: [${type}]`];
+  }
+  orderingInputFields(type) {
+    return [
+      `${this.path}_lt: ${type}`,
+      `${this.path}_lte: ${type}`,
+      `${this.path}_gt: ${type}`,
+      `${this.path}_gte: ${type}`,
+    ];
+  }
+  stringInputFields(type) {
+    return [
+      `${this.path}_contains: ${type}`,
+      `${this.path}_not_contains: ${type}`,
+      `${this.path}_starts_with: ${type}`,
+      `${this.path}_not_starts_with: ${type}`,
+      `${this.path}_ends_with: ${type}`,
+      `${this.path}_not_ends_with: ${type}`,
+    ];
+  }
+  stringInputFieldsInsensitive(type) {
+    return [
+      `${this.path}_contains_i: ${type}`,
+      `${this.path}_not_contains_i: ${type}`,
+      `${this.path}_starts_with_i: ${type}`,
+      `${this.path}_not_starts_with_i: ${type}`,
+      `${this.path}_ends_with_i: ${type}`,
+      `${this.path}_not_ends_with_i: ${type}`,
+    ];
+  }
+
   get gqlCreateInputFields() {
     return [];
   }

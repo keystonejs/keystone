@@ -14,14 +14,9 @@ class _DateTime extends Implementation {
   }
   get gqlQueryInputFields() {
     return [
-      `${this.path}: DateTime`,
-      `${this.path}_not: DateTime`,
-      `${this.path}_lt: DateTime`,
-      `${this.path}_lte: DateTime`,
-      `${this.path}_gt: DateTime`,
-      `${this.path}_gte: DateTime`,
-      `${this.path}_in: [DateTime]`,
-      `${this.path}_not_in: [DateTime]`,
+      ...this.equalityInputFields('DateTime'),
+      ...this.orderingInputFields('DateTime'),
+      ...this.inInputFields('DateTime'),
     ];
   }
   get gqlUpdateInputFields() {
@@ -121,16 +116,9 @@ class MongoDateTimeInterface extends MongooseFieldAdapter {
 
   getQueryConditions() {
     return {
-      [this.path]: value => ({ [`${this.path}_utc`]: { $eq: toDate(value) } }),
-      [`${this.path}_not`]: value => ({ [`${this.path}_utc`]: { $ne: toDate(value) } }),
-      [`${this.path}_lt`]: value => ({ [`${this.path}_utc`]: { $lt: toDate(value) } }),
-      [`${this.path}_lte`]: value => ({ [`${this.path}_utc`]: { $lte: toDate(value) } }),
-      [`${this.path}_gt`]: value => ({ [`${this.path}_utc`]: { $gt: toDate(value) } }),
-      [`${this.path}_gte`]: value => ({ [`${this.path}_utc`]: { $gte: toDate(value) } }),
-      [`${this.path}_in`]: value => ({ [`${this.path}_utc`]: { $in: value.map(s => toDate(s)) } }),
-      [`${this.path}_not_in`]: value => ({
-        [`${this.path}_utc`]: { $not: { $in: value.map(s => toDate(s)) } },
-      }),
+      ...this.equalityConditions(toDate, p => `${p}_utc`),
+      ...this.orderingConditions(toDate, p => `${p}_utc`),
+      ...this.inConditions(toDate, p => `${p}_utc`),
     };
   }
 }
