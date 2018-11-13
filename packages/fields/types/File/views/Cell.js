@@ -1,9 +1,12 @@
 // @flow
 /** @jsx jsx */
+
 import { jsx } from '@emotion/core';
 import type { CellProps } from '../../../types';
 
-const Image = ({ alt, src }) => (
+type ImageProps = { alt: string, src: string };
+
+const Image = ({ alt, src }: ImageProps) => (
   <div
     css={{
       alignItems: 'center',

@@ -40,7 +40,7 @@ type PositionerProps = {
   children: Node,
   placement: PlacementType,
   style?: Object,
-  targetNode: HTMLElement,
+  targetNode: HTMLElement | null,
 };
 type PositionerState = { left: number, top: number };
 
@@ -52,6 +52,8 @@ class TooltipPositioner extends Component<PositionerProps, PositionerState> {
   }
   calculatePosition = () => {
     const { placement, targetNode } = this.props;
+
+    if (!targetNode || !this.ref.current) return null;
 
     // prepare common values
     const tooltipRect = this.ref.current.getBoundingClientRect();
@@ -120,7 +122,7 @@ const hideTooltip = (fn: boolean => void, defaultDelay: number) => {
 };
 
 type Props = {
-  children: (Ref<HTMLElement>) => Node,
+  children: (Ref<*>) => Node,
   content: Node,
   delay: number,
   hideOnMouseDown?: boolean,
