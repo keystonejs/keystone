@@ -30,6 +30,7 @@ const TooltipElement = styled.div({
   fontWeight: 500,
   left: 0,
   padding: `${gridSize / 2}px ${gridSize}px`,
+  pointerEvents: 'none', // tooltips are non-interactive, they shouldn't get in the way of other elements
   position: 'fixed',
   top: 0,
   zIndex: 2,
