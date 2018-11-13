@@ -372,6 +372,19 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   addToMongooseSchema() {
     throw new Error(`Field type [${this.fieldName}] does not implement addToMongooseSchema()`);
   }
+  buildValidator(validator, required) {
+    return required ? validator : a => validator(a) || typeof a === 'undefined' || a === null;
+  }
+  mergeSchemaOptions(schemaOptions, { unique, mongooseOptions }) {
+    if (unique) {
+      // A value of anything other than `true` causes errors with Mongoose
+      // constantly recreating indexes. Ie; if we just splat `unique` onto the
+      // options object, it would be `undefined`, which would cause Mongoose to
+      // drop and recreate all indexes.
+      schemaOptions.unique = true;
+    }
+    return { ...schemaOptions, ...mongooseOptions };
+  }
 
   getQueryConditions() {
     return {};

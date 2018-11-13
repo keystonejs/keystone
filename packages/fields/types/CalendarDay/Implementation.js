@@ -37,27 +37,18 @@ class CalendarDay extends Implementation {
 
 class MongoCalendarDayInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
-    const required = mongooseOptions && mongooseOptions.required;
+    const { mongooseOptions = {} } = this.config;
+    const { required } = mongooseOptions;
 
-    const isValidDate = s => format(parse(s), 'YYYY-MM-DD') === s;
-
-    schema.add({
-      [this.path]: {
-        type: String,
-        validate: {
-          validator: required
-            ? isValidDate
-            : a => {
-                if (typeof a === 'string' && isValidDate(a)) return true;
-                if (typeof a === 'undefined' || a === null) return true;
-                return false;
-              },
-          message: '{VALUE} is not an ISO8601 date string (YYYY-MM-DD)',
-        },
-        ...mongooseOptions,
+    const validator = a => typeof a === 'string' && format(parse(a), 'YYYY-MM-DD') === a;
+    const schemaOptions = {
+      type: String,
+      validate: {
+        validator: this.buildValidator(validator, required),
+        message: '{VALUE} is not an ISO8601 date string (YYYY-MM-DD)',
       },
-    });
+    };
+    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
   }
 
   getQueryConditions() {

@@ -37,28 +37,19 @@ class Decimal extends Implementation {
 
 class MongoDecimalInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
-    const { mongooseOptions, unique } = this.config;
-    const required = mongooseOptions && mongooseOptions.required;
+    const { mongooseOptions = {} } = this.config;
+    const { required } = mongooseOptions;
 
-    const isValidDecimal = s => /^-?\d*\.?\d*$/.test(s);
-
-    schema.add({
-      [this.path]: {
-        type: mongoose.Decimal128,
-        unique,
-        validate: {
-          validator: required
-            ? isValidDecimal
-            : a => {
-                if (typeof a === 'object') return true;
-                if (typeof a === 'undefined' || a === null) return true;
-                return false;
-              },
-          message: '{VALUE} is not a Decimal value',
-        },
-        ...mongooseOptions,
+    const validator = a => typeof a === 'object' && /^-?\d*\.?\d*$/.test(a);
+    const schemaOptions = {
+      type: mongoose.Decimal128,
+      validate: {
+        validator: this.buildValidator(validator, required),
+        message: '{VALUE} is not a Decimal value',
       },
-    });
+    };
+    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
+
     // Updates the relevant value in the item provided (by referrence)
     this.addToServerHook(schema, item => {
       if (item[this.path] && typeof item[this.path] === 'string') {

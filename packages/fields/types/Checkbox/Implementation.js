@@ -26,10 +26,7 @@ class Checkbox extends Implementation {
 
 class MongoCheckboxInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
-    schema.add({
-      [this.path]: { type: Boolean, ...mongooseOptions },
-    });
+    schema.add({ [this.path]: this.mergeSchemaOptions({ type: Boolean }, this.config) });
   }
 
   getQueryConditions() {
