@@ -90,7 +90,7 @@ class TooltipPositioner extends Component<PositionerProps, PositionerState> {
   };
   render() {
     const { children, placement, style } = this.props;
-    const attachTo =  document.body;
+    const attachTo = document.body;
 
     const styles = {
       ...style,

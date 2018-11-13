@@ -174,7 +174,7 @@ class Dropdown extends Component<Props, State> {
   render() {
     const { items, style } = this.props;
     const { leftOffset, topOffset } = this.state;
-    const attachTo =  document.body;
+    const attachTo = document.body;
 
     if (attachTo) {
       return createPortal(

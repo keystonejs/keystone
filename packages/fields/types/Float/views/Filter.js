@@ -29,12 +29,7 @@ export default class TextFilterView extends Component<Props> {
     const placeholder = field.getFilterLabel(filter);
 
     return (
-      <Input
-        onChange={this.handleChange}
-        ref={innerRef}
-        placeholder={placeholder}
-        value={value}
-      />
+      <Input onChange={this.handleChange} ref={innerRef} placeholder={placeholder} value={value} />
     );
   }
 }
