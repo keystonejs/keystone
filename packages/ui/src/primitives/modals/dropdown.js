@@ -16,18 +16,19 @@ const ItemElement = props => {
   return <button type="button" {...props} />;
 };
 
-const Item = styled(ItemElement)({
+const Item = styled(ItemElement)(({ isDisabled }) => ({
   appearance: 'none',
   background: 'none',
   border: '1px solid transparent',
   boxSizing: 'border-box',
-  color: colors.text,
+  color: isDisabled ? colors.N40 :  colors.text,
   cursor: 'pointer',
   display: 'block',
   fontSize: 14,
   lineHeight: '17px',
   margin: 0,
   padding: `${gridSize}px ${gridSize * 1.5}px`,
+  pointerEvents: isDisabled ? 'none' :  null,
   textAlign: 'left',
   transition: 'box-shadow 100ms linear',
   verticalAlign: 'middle',
@@ -40,7 +41,7 @@ const Item = styled(ItemElement)({
     outline: 0,
     textDecoration: 'none',
   },
-});
+}));
 const Menu = styled.div(({ left, top }) => {
   const placementStyles = { left, top };
   return {
@@ -63,18 +64,24 @@ type ItemType = {
   onClick?: (*) => void,
 };
 type ClickArgs = { onClick?: ({ event: MouseEvent, data: Object }) => void };
+
 type Props = ModalHandlerProps & {
+  align: 'left' | 'right',
   getModalRef: HTMLElement => void,
   items: Array<ItemType>,
   selectClosesMenu: boolean,
   style: Object,
+};
+type State = {
+  leftOffset: number,
+  topOffset: number,
 };
 
 function focus(el: ?Node) {
   if (el instanceof HTMLElement) el.focus();
 }
 
-class Dropdown extends Component<Props> {
+class Dropdown extends Component<Props, State> {
   menu: HTMLElement;
   lastHover: HTMLElement;
   state = { leftOffset: 0, topOffset: 0 };

@@ -274,23 +274,23 @@ class ListDetails extends Component<Props, State> {
     const { isFullWidth } = this.state;
     const TableIcon = isFullWidth ? FoldIcon : UnfoldIcon;
     const tableText = isFullWidth ? 'Collapse table' : 'Expand table';
+    const tableToggleIsAvailable = queryWidth > (CONTAINER_WIDTH + CONTAINER_GUTTER * 2);
 
     const items = [
       {
         content: <DropdownItem icon={<ZapIcon />}>Reset filters, cols, etc.</DropdownItem>,
         onClick: this.handleReset,
       },
-    ];
-    if (queryWidth > CONTAINER_WIDTH + CONTAINER_GUTTER * 2) {
-      items.push({
+      {
         content: (
           <DropdownItem icon={<TableIcon css={{ transform: 'rotate(90deg)' }} />}>
             {tableText}
           </DropdownItem>
         ),
+        isDisabled: !tableToggleIsAvailable,
         onClick: this.toggleFullWidth,
-      });
-    }
+      }
+    ];
 
     return (
       <Dropdown
