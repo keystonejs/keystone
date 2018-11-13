@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 // $FlowFixMe
-import { Fragment, PureComponent, type ComponentType, type Ref, type Node, forwardRef } from 'react';
+import { Fragment, PureComponent, type ComponentType, type Node, forwardRef } from 'react';
 import { createPortal } from 'react-dom';
 import ScrollLock from 'react-scrolllock';
 import { jsx } from '@emotion/core';

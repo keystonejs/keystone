@@ -3,7 +3,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 // $FlowFixMe
-import { type Node, type Ref, forwardRef } from 'react';
+import { type Node, forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
 

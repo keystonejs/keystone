@@ -9,7 +9,6 @@ import {
   forwardRef,
   type ComponentType,
   type Element,
-  type Ref,
   type Node,
 } from 'react';
 import { createPortal } from 'react-dom';
