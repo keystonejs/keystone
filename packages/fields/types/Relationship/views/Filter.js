@@ -1,19 +1,20 @@
 // @flow
 
-import React, { Component } from 'react';
+import React, { Component, type Node } from 'react';
 import RelationshipSelect from './RelationshipSelect';
 import type { FilterProps } from '../../../types';
 
 type Props = FilterProps<null | string>;
 
-const EventCatcher = props => (
+const EventCatcher = ({ children }: { children: Node }) => (
   <div
     onClick={e => {
       e.preventDefault();
       e.stopPropagation();
     }}
-    {...props}
-  />
+  >
+    {children}
+  </div>
 );
 
 export default class RelationshipFilterView extends Component<Props> {
