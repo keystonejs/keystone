@@ -5,9 +5,6 @@ const path = require('path');
 const { enableDevFeatures, mode } = require('./env');
 
 module.exports = function({ adminMeta, entry }) {
-  const faviconPlugin = new HtmlWebpackPlugin({
-    favicon: 'assets/favicon.ico',
-  });
   const templatePlugin = new HtmlWebpackPlugin({
     title: 'KeystoneJS',
     template: 'index.html',
@@ -80,7 +77,7 @@ module.exports = function({ adminMeta, entry }) {
     // TODO: We should pay attention to our bundle size at some point, but
     // right now this is just noise
     performance: { hints: false },
-    plugins: [faviconPlugin, environmentPlugin, templatePlugin],
+    plugins: [environmentPlugin, templatePlugin],
     module: {
       rules,
     },
