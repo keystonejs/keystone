@@ -87,7 +87,7 @@ const NoResults = ({ children, ...props }) => (
   </div>
 );
 
-const SortDirectionArrow = styled.span(({ size = '0.2em', rotate = '0deg' }) => ({
+const SortDirectionArrow = styled.span(({ size = '0.25em', rotate = '0deg' }) => ({
   borderLeft: `${size} solid transparent`,
   borderRight: `${size} solid transparent`,
   borderTop: `${size} solid`,
@@ -120,6 +120,7 @@ class SortLink extends React.Component<SortLinkProps> {
   render() {
     const styles = {
       color: this.props.active ? '#000' : '#999',
+      cursor: this.props.sortable ? 'pointer' : 'auto',
     };
 
     // TODO: Do we want to make `sortable` a field config option?
