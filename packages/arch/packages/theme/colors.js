@@ -1,5 +1,5 @@
 // colors with intention
-import { lighten, darken, alpha } from '..i/color-utils';
+import { lighten, darken, alpha } from '../color-utils';
 
 const intent = {
   create: '#34c240',
