@@ -1,0 +1,24 @@
+{
+  "releases": [
+    { "name": "@voussoir/cypress-project-basic", "type": "patch" },
+    { "name": "@voussoir/admin-ui", "type": "minor" },
+    { "name": "@voussoir/ui", "type": "patch" }
+  ],
+  "dependents": [
+    {
+      "name": "@voussoir/cypress-project-access-control",
+      "type": "patch",
+      "dependencies": ["@voussoir/admin-ui", "@voussoir/ui"]
+    },
+    {
+      "name": "@voussoir/cypress-project-login",
+      "type": "patch",
+      "dependencies": ["@voussoir/admin-ui", "@voussoir/ui"]
+    },
+    {
+      "name": "@voussoir/cypress-project-twitter-login",
+      "type": "patch",
+      "dependencies": ["@voussoir/admin-ui", "@voussoir/ui"]
+    }
+  ]
+}
