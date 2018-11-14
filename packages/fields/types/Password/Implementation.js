@@ -94,7 +94,7 @@ class MongoPasswordInterface extends MongooseFieldAdapter {
     });
 
     // Updates the relevant value in the item provided (by referrence)
-    const hashFieldValue = async item => {
+    this.addToServerHook(schema, async item => {
       const list = this.getListByKey(this.listAdapter.key);
       const field = list.fieldsByPath[this.path];
       const plaintext = item[field.path];
@@ -107,34 +107,6 @@ class MongoPasswordInterface extends MongooseFieldAdapter {
         item[field.path] = await field.generateHash(plaintext);
       } else {
         item[field.path] = null;
-      }
-    };
-
-    // Attach various pre save/update hooks to hash the password value
-    schema.pre('save', async function() {
-      await hashFieldValue(this);
-    });
-
-    // These are "Query middleware"; they differ from "document" middleware..
-    // ".. `this` refers to the query object rather than the document being updated."
-    schema.pre('update', async function() {
-      await hashFieldValue(this['_update'].$set || this['_update']);
-    });
-    schema.pre('updateOne', async function() {
-      await hashFieldValue(this['_update'].$set || this['_update']);
-    });
-    schema.pre('updateMany', async function() {
-      await hashFieldValue(this['_update'].$set || this['_update']);
-    });
-    schema.pre('findOneAndUpdate', async function() {
-      await hashFieldValue(this['_update'].$set || this['_update']);
-    });
-
-    // Model middleware
-    // Docs as second arg? (https://github.com/Automattic/mongoose/commit/3d62d3558c15ec852bdeaab1a5138b1853b4f7cb)
-    schema.pre('insertMany', async function(next, docs) {
-      for (let doc of docs) {
-        await hashFieldValue(doc);
       }
     });
   }
