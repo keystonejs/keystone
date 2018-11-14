@@ -1,0 +1,49 @@
+{
+  "releases": [
+    { "name": "@voussoir/core", "type": "minor" },
+    { "name": "@voussoir/fields", "type": "patch" }
+  ],
+  "dependents": [
+    { "name": "@voussoir/adapter-mongoose", "type": "patch", "dependencies": ["@voussoir/core"] },
+    {
+      "name": "@voussoir/test-utils",
+      "type": "patch",
+      "dependencies": ["@voussoir/adapter-mongoose", "@voussoir/core"]
+    },
+    {
+      "name": "@voussoir/cypress-project-access-control",
+      "type": "patch",
+      "dependencies": [
+        "@voussoir/adapter-mongoose",
+        "@voussoir/test-utils",
+        "@voussoir/core",
+        "@voussoir/fields"
+      ]
+    },
+    {
+      "name": "@voussoir/cypress-project-basic",
+      "type": "patch",
+      "dependencies": [
+        "@voussoir/adapter-mongoose",
+        "@voussoir/test-utils",
+        "@voussoir/core",
+        "@voussoir/fields"
+      ]
+    },
+    {
+      "name": "@voussoir/cypress-project-login",
+      "type": "patch",
+      "dependencies": [
+        "@voussoir/adapter-mongoose",
+        "@voussoir/test-utils",
+        "@voussoir/core",
+        "@voussoir/fields"
+      ]
+    },
+    {
+      "name": "@voussoir/cypress-project-twitter-login",
+      "type": "patch",
+      "dependencies": ["@voussoir/adapter-mongoose", "@voussoir/core", "@voussoir/fields"]
+    }
+  ]
+}
