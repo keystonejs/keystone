@@ -54,7 +54,7 @@ describe('List view URL state', () => {
     // Without `fields` we should see the default
     // defaultColumns: 'name, status',
     cy.visit('/admin/posts');
-    cy.get('#ks-list-table thead td')
+    cy.get('#ks-list-table thead th')
       .should('have.lengthOf', 5)
       .should('contain', 'Name')
       .should('contain', 'Status');
@@ -65,7 +65,7 @@ describe('List view URL state', () => {
       .find('input[id^="react-select-"]')
       .clear({ force: true })
       .type(`author{enter}`, { force: true });
-    cy.get('#ks-list-table thead td')
+    cy.get('#ks-list-table thead th')
       .should('have.lengthOf', 6)
       .should('contain', 'Name')
       .should('contain', 'Status')
@@ -74,7 +74,7 @@ describe('List view URL state', () => {
 
     // URL should define the columns
     cy.visit('/admin/posts?fields=name,author,categories');
-    cy.get('#ks-list-table thead td')
+    cy.get('#ks-list-table thead th')
       .should('have.lengthOf', 5)
       .should('contain', 'Name')
       .should('contain', 'Author')
@@ -150,7 +150,7 @@ describe('List view URL state', () => {
     // Search
     cy.get('#ks-list-search-input').should('have.attr', 'value', 'Why');
     // Has the correct columns (fields)
-    cy.get('#ks-list-table thead td')
+    cy.get('#ks-list-table thead th')
       .should('have.lengthOf', 4)
       .should('contain', 'Name')
       .should('contain', 'Views');

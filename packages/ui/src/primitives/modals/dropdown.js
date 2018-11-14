@@ -60,6 +60,7 @@ const Menu = styled.div(({ left, top }) => {
     paddingBottom: gridSize / 2,
     paddingTop: gridSize / 2,
     position: 'absolute',
+    zIndex: 2,
     ...placementStyles,
   };
 });
