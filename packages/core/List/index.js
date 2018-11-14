@@ -325,7 +325,7 @@ module.exports = class List {
     return queries;
   }
 
-  async singleItemResolver({ id, context, name }) {
+  async itemQuery({ id, context, name }) {
     graphqlLogger.debug(
       {
         id,
@@ -359,7 +359,7 @@ module.exports = class List {
     return result;
   }
 
-  gqlMetaResolver(context) {
+  listMeta(context) {
     return {
       name: this.key,
       // Return these as functions so they're lazily evaluated depending
@@ -409,15 +409,15 @@ module.exports = class List {
     if (this.access.read) {
       resolvers = {
         [this.gqlNames.listQueryName]: (_, args, context) =>
-          this.manyQuery(args, context, this.gqlNames.listQueryName),
+          this.listQuery(args, context, this.gqlNames.listQueryName),
 
         [this.gqlNames.listQueryMetaName]: (_, args, context) =>
-          this.manyQueryMeta(args, context, this.gqlNames.listQueryMetaName),
+          this.listQueryMeta(args, context, this.gqlNames.listQueryMetaName),
 
-        [this.gqlNames.listMetaName]: (_, args, context) => this.gqlMetaResolver(context),
+        [this.gqlNames.listMetaName]: (_, args, context) => this.listMeta(context),
 
         [this.gqlNames.itemQueryName]: (_, { where: { id } }, context) =>
-          this.singleItemResolver({ id, context, name: this.gqlNames.itemQueryName }),
+          this.itemQuery({ id, context, name: this.gqlNames.itemQueryName }),
       };
     }
 
@@ -425,20 +425,23 @@ module.exports = class List {
     // authenticate themselves, then they already have access to know that the
     // list exists
     if (this.getAuth()) {
-      resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context) => {
-        if (!context.authedItem || context.authedListKey !== this.key) {
-          return null;
-        }
-
-        return this.singleItemResolver({
-          id: context.authedItem.id,
-          context,
-          name: this.gqlNames.authenticatedQueryName,
-        });
-      };
+      resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context) =>
+        this.authenticatedQuery(context);
     }
 
     return resolvers;
+  }
+
+  authenticatedQuery(context) {
+    if (!context.authedItem || context.authedListKey !== this.key) {
+      return null;
+    }
+
+    return this.itemQuery({
+      id: context.authedItem.id,
+      context,
+      name: this.gqlNames.authenticatedQueryName,
+    });
   }
 
   // Wrap the "inner" resolver for a single output field with an access control check
@@ -928,13 +931,13 @@ module.exports = class List {
     return manyQuery(queryArgs);
   }
 
-  async manyQuery(args, context, queryName) {
+  async listQuery(args, context, queryName) {
     return this._tryManyQuery(args, context, queryName, queryArgs =>
       this.adapter.itemsQuery(queryArgs)
     );
   }
 
-  async manyQueryMeta(args, context, queryName) {
+  async listQueryMeta(args, context, queryName) {
     return {
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
@@ -945,6 +948,48 @@ module.exports = class List {
         );
       },
     };
+  }
+
+  async deleteMutation(id, context) {
+    return this.performActionOnItemWithAccessControl(
+      {
+        id,
+        context,
+        operation: 'delete',
+        errorData: {
+          type: 'mutation',
+          name: this.gqlNames.deleteMutationName,
+        },
+      },
+      async item => {
+        await Promise.all(
+          this.fields.map(field => field.deleteFieldPreHook(item[field.path], item, context))
+        );
+
+        const result = await this.adapter.delete(id);
+
+        await Promise.all(
+          this.fields.map(field => field.deleteFieldPostHook(item[field.path], item, context))
+        );
+
+        return result;
+      }
+    );
+  }
+
+  async deleteManyMutation(ids, context) {
+    return this.performMultiActionOnItemsWithAccessControl(
+      {
+        ids,
+        context,
+        operation: 'delete',
+        errorData: {
+          type: 'mutation',
+          name: this.gqlNames.deleteManyMutationName,
+        },
+      },
+      items => Promise.all(items.map(item => this.adapter.delete(item.id).then(() => item)))
+    );
   }
 
   get gqlMutationResolvers() {
@@ -961,47 +1006,11 @@ module.exports = class List {
     }
 
     if (this.access.delete) {
-      mutationResolvers[this.gqlNames.deleteMutationName] = async (_, { id }, context) => {
-        return this.performActionOnItemWithAccessControl(
-          {
-            id,
-            context,
-            operation: 'delete',
-            errorData: {
-              type: 'mutation',
-              name: this.gqlNames.deleteMutationName,
-            },
-          },
-          async item => {
-            await Promise.all(
-              this.fields.map(field => field.deleteFieldPreHook(item[field.path], item, context))
-            );
+      mutationResolvers[this.gqlNames.deleteMutationName] = async (_, { id }, context) =>
+        this.deleteMutation(id, context);
 
-            const result = await this.adapter.delete(id);
-
-            await Promise.all(
-              this.fields.map(field => field.deleteFieldPostHook(item[field.path], item, context))
-            );
-
-            return result;
-          }
-        );
-      };
-
-      mutationResolvers[this.gqlNames.deleteManyMutationName] = async (_, { ids }, context) => {
-        return this.performMultiActionOnItemsWithAccessControl(
-          {
-            ids,
-            context,
-            operation: 'delete',
-            errorData: {
-              type: 'mutation',
-              name: this.gqlNames.deleteManyMutationName,
-            },
-          },
-          items => Promise.all(items.map(item => this.adapter.delete(item.id).then(() => item)))
-        );
-      };
+      mutationResolvers[this.gqlNames.deleteManyMutationName] = async (_, { ids }, context) =>
+        this.deleteManyMutation(ids, context);
     }
 
     return mutationResolvers;
