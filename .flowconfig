@@ -3,8 +3,6 @@
 [ignore]
 
 .*/packages/arch.*
-.*/packages/admin-ui.*
-.*/packages/fields.*
 .*/node_modules/cypress/.*
 
 [include]

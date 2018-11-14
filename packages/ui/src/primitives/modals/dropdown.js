@@ -65,10 +65,11 @@ const Menu = styled.div(({ left, top }) => {
 });
 
 type ItemType = {
-  to?: string,
   content: ReactNode,
   href?: string,
+  isDisabled: boolean,
   onClick?: (*) => void,
+  to?: string,
 };
 type ClickArgs = { onClick?: ({ event: MouseEvent, data: Object }) => void };
 

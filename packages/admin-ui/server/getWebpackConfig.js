@@ -80,11 +80,7 @@ module.exports = function({ adminMeta, entry }) {
     // TODO: We should pay attention to our bundle size at some point, but
     // right now this is just noise
     performance: { hints: false },
-    plugins: [
-      faviconPlugin,
-      environmentPlugin,
-      templatePlugin,
-    ],
+    plugins: [faviconPlugin, environmentPlugin, templatePlugin],
     module: {
       rules,
     },
