@@ -1,5 +1,5 @@
 const inflection = require('inflection');
-const { parseFieldAccess, testFieldAccessControl } = require('@voussoir/access-control');
+const { parseFieldAccess, validateFieldAccessControl } = require('@voussoir/access-control');
 
 class Field {
   constructor(
@@ -141,8 +141,8 @@ class Field {
   getDefaultValue() {
     return this.config.defaultValue;
   }
-  testAccessControl({ listKey, item, operation, authentication }) {
-    return testFieldAccessControl({
+  validateAccessControl({ listKey, item, operation, authentication }) {
+    return validateFieldAccessControl({
       access: this.access,
       item,
       operation,
