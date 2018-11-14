@@ -66,6 +66,13 @@ const nativeTypeMap = new Map([
   ],
 ]);
 
+const opToType = {
+  read: 'query',
+  create: 'mutation',
+  update: 'mutation',
+  delete: 'mutation',
+};
+
 const mapNativeTypeToKeystonType = (type, listKey, fieldPath) => {
   if (!nativeTypeMap.has(type)) {
     return type;
@@ -326,36 +333,13 @@ module.exports = class List {
   }
 
   async itemQuery({ id, context, name }) {
-    graphqlLogger.debug(
-      {
-        id,
-        operation: 'read',
-        type: 'query',
-        name,
-      },
-      'Start query'
-    );
+    const operation = 'read';
+    graphqlLogger.debug({ id, operation, type: opToType[operation], name }, 'Start query');
     const result = await this.performActionOnItemWithAccessControl(
-      {
-        id,
-        context,
-        operation: 'read',
-        errorData: {
-          type: 'query',
-          name,
-        },
-      },
+      { id, context, operation, gqlName: name },
       item => item
     );
-    graphqlLogger.debug(
-      {
-        id,
-        operation: 'read',
-        type: 'query',
-        name,
-      },
-      'End query'
-    );
+    graphqlLogger.debug({ id, operation, type: opToType[operation], name }, 'End query');
     return result;
   }
 
@@ -444,25 +428,48 @@ module.exports = class List {
     });
   }
 
+  _throwAccessDenied(operation, context, target, extraInternalData = {}, extraData = {}) {
+    throw new AccessDeniedError({
+      data: {
+        type: opToType[operation],
+        target,
+        ...extraData,
+      },
+      internalData: {
+        authedId: context.authedItem && context.authedItem.id,
+        authedListKey: context.authedListKey,
+        ...extraInternalData,
+      },
+    });
+  }
+
+  checkListAccess(context, operation, gqlName, extraInternalData) {
+    const access = context.getListAccessControlForUser(this.key, operation);
+    if (!access) {
+      graphqlLogger.debug(
+        { operation, access, gqlName, ...extraInternalData },
+        'Access statically or implicitly denied'
+      );
+      graphqlLogger.info({ operation, gqlName, ...extraInternalData }, 'Access Denied');
+      // If the client handles errors correctly, it should be able to
+      // receive partial data (for the fields the user has access to),
+      // and then an `errors` array of AccessDeniedError's
+      this._throwAccessDenied(operation, context, gqlName, extraInternalData);
+    }
+    return access;
+  }
+
   // Wrap the "inner" resolver for a single output field with an access control check
   wrapFieldResolverWithAC(field, innerResolver) {
     return (item, args, context, ...rest) => {
       // If not allowed access
-      const access = context.getFieldAccessControlForUser(this.key, field.path, item, 'read');
+      const operation = 'read';
+      const access = context.getFieldAccessControlForUser(this.key, field.path, item, operation);
       if (!access) {
         // If the client handles errors correctly, it should be able to
         // receive partial data (for the fields the user has access to),
         // and then an `errors` array of AccessDeniedError's
-        throw new AccessDeniedError({
-          data: {
-            type: 'query',
-          },
-          internalData: {
-            authedId: context.authedItem && context.authedItem.id,
-            authedListKey: context.authedListKey,
-            itemId: item ? item.id : null,
-          },
-        });
+        this._throwAccessDenied(operation, context, field.path, { itemId: item ? item.id : null });
       }
 
       // Otherwise, execute the original/inner resolver
@@ -545,76 +552,34 @@ module.exports = class List {
     return mutations;
   }
 
-  throwIfAccessDeniedOnFields({
-    accessType,
-    item,
-    inputData,
-    context,
-    errorMeta = {},
-    errorMetaForLogging = {},
-  }) {
+  throwIfAccessDeniedOnFields({ operation, item, data, context, gqlName, extraData = {} }) {
     const restrictedFields = [];
 
     this.fields
-      .filter(field => field.path in inputData)
+      .filter(field => field.path in data)
       .forEach(field => {
-        const access = context.getFieldAccessControlForUser(this.key, field.path, item, accessType);
+        const access = context.getFieldAccessControlForUser(this.key, field.path, item, operation);
         if (!access) {
           restrictedFields.push(field.path);
         }
       });
 
     if (restrictedFields.length) {
-      throw new AccessDeniedError({
-        data: {
-          restrictedFields,
-          ...errorMeta,
-        },
-        internalData: {
-          authedId: context.authedItem && context.authedItem.id,
-          authedListKey: context.authedListKey,
-          ...errorMetaForLogging,
-        },
-      });
+      this._throwAccessDenied(operation, context, gqlName, extraData, { restrictedFields });
     }
   }
 
-  async performActionOnItemWithAccessControl({ operation, id, context, errorData }, action) {
-    const throwAccessDenied = () => {
-      graphqlLogger.info(
-        {
-          id,
-          operation,
-          ...errorData,
-        },
-        'Access Denied'
-      );
+  async performActionOnItemWithAccessControl({ operation, id, context, gqlName }, action) {
+    const throwAccessDenied = (access, msg) => {
+      graphqlLogger.debug({ id, operation, access, gqlName }, msg);
+      graphqlLogger.info({ id, operation, gqlName }, 'Access Denied');
       // If the client handles errors correctly, it should be able to
       // receive partial data (for the fields the user has access to),
       // and then an `errors` array of AccessDeniedError's
-      throw new AccessDeniedError({
-        data: errorData,
-        internalData: {
-          authedId: context.authedItem && context.authedItem.id,
-          authedListKey: context.authedListKey,
-          itemId: id,
-        },
-      });
+      this._throwAccessDenied(operation, context, gqlName, { itemId: id });
     };
 
-    const access = context.getListAccessControlForUser(this.key, operation);
-    if (!access) {
-      graphqlLogger.debug(
-        {
-          id,
-          operation,
-          access,
-          ...errorData,
-        },
-        'Access statically or implicitly denied'
-      );
-      throwAccessDenied();
-    }
+    const access = this.checkListAccess(context, operation, gqlName, { itemId: id });
 
     const throwNotFound = () => {
       // NOTE: There is a potential security risk here if we were to
@@ -625,16 +590,7 @@ module.exports = class List {
       // that return null do not exist). Similar to how S3 returns 403's
       // always instead of ever returning 404's.
       // Our version is to always throw if not found.
-      graphqlLogger.debug(
-        {
-          id,
-          operation,
-          access,
-          ...errorData,
-        },
-        'Zero items found'
-      );
-      throwAccessDenied();
+      throwAccessDenied(access, 'Zero items found');
     };
 
     // Early out - the user has full access to update this list
@@ -663,16 +619,7 @@ module.exports = class List {
       (access.id_in && !access.id_in.includes(id)) ||
       (access.id_not_in && access.id_not_in.includes(id))
     ) {
-      graphqlLogger.debug(
-        {
-          id,
-          operation,
-          access,
-          ...errorData,
-        },
-        'Item excluded this id from filters'
-      );
-      throwAccessDenied();
+      throwAccessDenied(access, 'Item excluded this id from filters');
     }
 
     // NOTE: The fields will be filtered by the ACL checking in
@@ -699,25 +646,12 @@ module.exports = class List {
     return await action(items[0]);
   }
 
-  async performMultiActionOnItemsWithAccessControl({ operation, ids, context, errorData }, action) {
+  async performMultiActionOnItemsWithAccessControl({ operation, ids, context, gqlName }, action) {
     if (ids.length === 0) {
       return [];
     }
 
-    const access = context.getListAccessControlForUser(this.key, operation);
-    if (!access) {
-      // If the client handles errors correctly, it should be able to
-      // receive partial data (for the fields the user has access to),
-      // and then an `errors` array of AccessDeniedError's
-      throw new AccessDeniedError({
-        data: errorData,
-        internalData: {
-          authedId: context.authedItem && context.authedItem.id,
-          authedListKey: context.authedListKey,
-          itemIds: ids,
-        },
-      });
-    }
+    const access = this.checkListAccess(context, operation, gqlName, { itemIds: ids });
 
     const uniqueIds = unique(ids);
 
@@ -786,19 +720,9 @@ module.exports = class List {
   }
 
   async createMutation(data, context) {
-    const access = context.getListAccessControlForUser(this.key, 'create');
-    if (!access) {
-      throw new AccessDeniedError({
-        data: {
-          type: 'mutation',
-          name: this.gqlNames.createMutationName,
-        },
-        internalData: {
-          authedId: context.authedItem && context.authedItem.id,
-          authedListKey: context.authedListKey,
-        },
-      });
-    }
+    const operation = 'create';
+    const gqlName = this.gqlNames.createMutationName;
+    this.checkListAccess(context, operation, gqlName);
 
     // Merge in default Values here
     const item = {
@@ -810,16 +734,7 @@ module.exports = class List {
       ...data,
     };
 
-    this.throwIfAccessDeniedOnFields({
-      accessType: 'create',
-      item,
-      inputData: data,
-      context,
-      errorMeta: {
-        type: 'mutation',
-        name: this.gqlNames.updateMutationName,
-      },
-    });
+    this.throwIfAccessDeniedOnFields({ operation, item, data, context, gqlName });
 
     // Enable pre-hooks to perform some action after the item is created by
     // giving them a promise which will eventually resolve with the value of the
@@ -858,30 +773,13 @@ module.exports = class List {
   }
 
   async updateMutation(id, data, context) {
+    const operation = 'update';
+    const gqlName = this.gqlNames.updateMutationName;
     return this.performActionOnItemWithAccessControl(
-      {
-        id,
-        context,
-        operation: 'update',
-        errorData: {
-          type: 'mutation',
-          name: this.gqlNames.updateMutationName,
-        },
-      },
+      { id, context, operation, gqlName },
       async item => {
-        this.throwIfAccessDeniedOnFields({
-          accessType: 'update',
-          item,
-          inputData: data,
-          context,
-          errorMeta: {
-            type: 'mutation',
-            name: this.gqlNames.updateMutationName,
-          },
-          errorMetaForLogging: {
-            itemId: id,
-          },
-        });
+        const extraData = { itemId: id };
+        this.throwIfAccessDeniedOnFields({ operation, item, data, context, gqlName, extraData });
 
         const resolvedData = await resolveAllKeys(
           mapKeys(data, (value, fieldPath) =>
@@ -902,23 +800,8 @@ module.exports = class List {
     );
   }
 
-  async _tryManyQuery(args, context, queryName, manyQuery) {
-    const access = context.getListAccessControlForUser(this.key, 'read');
-    if (!access) {
-      // If the client handles errors correctly, it should be able to
-      // receive partial data (for the fields the user has access to),
-      // and then an `errors` array of AccessDeniedError's
-      throw new AccessDeniedError({
-        data: {
-          type: 'query',
-          name: queryName,
-        },
-        internalData: {
-          authedId: context.authedItem && context.authedItem.id,
-          authedListKey: context.authedListKey,
-        },
-      });
-    }
+  async _tryManyQuery(args, context, gqlName, manyQuery) {
+    const access = this.checkListAccess(context, 'read', gqlName);
     let queryArgs = mergeWhereClause(args, access);
 
     return manyQuery(queryArgs);
@@ -945,15 +828,7 @@ module.exports = class List {
 
   async deleteMutation(id, context) {
     return this.performActionOnItemWithAccessControl(
-      {
-        id,
-        context,
-        operation: 'delete',
-        errorData: {
-          type: 'mutation',
-          name: this.gqlNames.deleteMutationName,
-        },
-      },
+      { id, context, operation: 'delete', gqlName: this.gqlNames.deleteMutationName },
       async item => {
         await Promise.all(
           this.fields.map(field => field.deleteFieldPreHook(item[field.path], item, context))
@@ -972,15 +847,7 @@ module.exports = class List {
 
   async deleteManyMutation(ids, context) {
     return this.performMultiActionOnItemsWithAccessControl(
-      {
-        ids,
-        context,
-        operation: 'delete',
-        errorData: {
-          type: 'mutation',
-          name: this.gqlNames.deleteManyMutationName,
-        },
-      },
+      { ids, context, operation: 'delete', gqlName: this.gqlNames.deleteManyMutationName },
       items => Promise.all(items.map(item => this.adapter.delete(item.id).then(() => item)))
     );
   }
