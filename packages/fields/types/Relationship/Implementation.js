@@ -129,7 +129,7 @@ class Relationship extends Implementation {
 
           // We do a full query to ensure things like access control are applied
           return refList
-            .manyQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName)
+            .listQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName)
             .then(items => (items && items.length ? items[0] : null));
         },
       };
@@ -156,12 +156,12 @@ class Relationship extends Implementation {
     return {
       [this.path]: (item, args, context, { fieldName }) => {
         const filteredQueryArgs = buildManyQueryArgs(item, args);
-        return refList.manyQuery(filteredQueryArgs, context, fieldName);
+        return refList.listQuery(filteredQueryArgs, context, fieldName);
       },
 
       [`_${this.path}Meta`]: (item, args, context, { fieldName }) => {
         const filteredQueryArgs = buildManyQueryArgs(item, args);
-        return refList.manyQueryMeta(filteredQueryArgs, context, fieldName);
+        return refList.listQueryMeta(filteredQueryArgs, context, fieldName);
       },
     };
   }

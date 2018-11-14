@@ -124,7 +124,13 @@ module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlP
       }
     },
   });
-  server.applyMiddleware({ app, path: apiPath });
+  server.applyMiddleware({
+    app,
+    path: apiPath,
+    // Prevent ApolloServer from overriding Keystone's CORS configuration.
+    // https://www.apollographql.com/docs/apollo-server/api/apollo-server.html#ApolloServer-applyMiddleware
+    cors: false,
+  });
   if (graphiqlPath) {
     app.use(graphiqlPath, (req, res) => {
       if (req.user && req.sessionID) {

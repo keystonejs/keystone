@@ -1,0 +1,1 @@
+- Makes CORS user configurable

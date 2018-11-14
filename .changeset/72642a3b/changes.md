@@ -1,0 +1,1 @@
+- Update the functional API for Keystone List objects for consistency

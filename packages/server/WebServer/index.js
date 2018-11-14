@@ -23,12 +23,9 @@ module.exports = class WebServer {
       this.app.use(require('express-pino-logger')(this.config.pinoOptions));
     }
 
-    this.app.use(
-      cors({
-        origin: true,
-        credentials: true,
-      })
-    );
+    if (this.config.cors) {
+      this.app.use(cors(this.config.cors));
+    }
 
     if (this.config.authStrategy) {
       // Setup the session as the very first thing.

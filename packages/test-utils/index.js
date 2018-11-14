@@ -114,8 +114,7 @@ function getFindOne(server) {
 }
 
 function getUpdate(server) {
-  return (list, id, data) =>
-    server.keystone.getListByKey(list).adapter.update(id, data, { new: true });
+  return (list, id, data) => server.keystone.getListByKey(list).adapter.update(id, data);
 }
 
 function keystoneMongoTest(setupKeystoneFn, testFn) {
