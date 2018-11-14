@@ -552,12 +552,14 @@ module.exports = class List {
   }) {
     const restrictedFields = [];
 
-    this.fields.filter(field => field.path in inputData).forEach(field => {
-      const access = context.getFieldAccessControlForUser(this.key, field.path, item, accessType);
-      if (!access) {
-        restrictedFields.push(field.path);
-      }
-    });
+    this.fields
+      .filter(field => field.path in inputData)
+      .forEach(field => {
+        const access = context.getFieldAccessControlForUser(this.key, field.path, item, accessType);
+        if (!access) {
+          restrictedFields.push(field.path);
+        }
+      });
 
     if (restrictedFields.length) {
       throw new AccessDeniedError({

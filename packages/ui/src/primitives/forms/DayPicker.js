@@ -257,9 +257,11 @@ export const DayPicker = (props: DayPickerProps) => {
         </Header>
         <Body>
           <WeekLabels>
-            {[...new Array(7)].map((_, day) => format(setDay(new Date(), day), 'ddd')).map(d => (
-              <Day key={d}>{d}</Day>
-            ))}
+            {[...new Array(7)]
+              .map((_, day) => format(setDay(new Date(), day), 'ddd'))
+              .map(d => (
+                <Day key={d}>{d}</Day>
+              ))}
           </WeekLabels>
           {weeksInCurrentMonth.map((week, i) => (
             <WeekRow key={i}>
@@ -369,7 +371,7 @@ export const DateTimePicker = (props: Props) => {
         onChange={handleTimeChange}
         disabled={isDisabled || false}
         isMultiline={false}
-        innerRef={innerRef}
+        ref={innerRef}
       />
       <Select
         value={offset}

@@ -129,8 +129,8 @@ export const SlideDown = ({ from = '-8px', ...props }: TransitionProps) => {
     <TransitionReducer
       constant={makeTransitionBase('opacity, transform')}
       dynamic={{
-        entering: { opacity: 1, transform: 'translate3d(0,0,0)' },
-        entered: { opacity: 1, transform: 'translate3d(0,0,0)' },
+        entering: { opacity: 1 },
+        entered: { opacity: 1 },
         exiting: out,
         exited: out,
       }}

@@ -378,9 +378,8 @@ async function toManyNestedMutation({
   } else if (input.disconnect) {
     // We want to avoid DB lookups where possible, so we split the input into
     // two halves; one with ids, and the other without ids
-    const { withId, withoutId } = groupBy(
-      input.disconnect,
-      ({ id }) => (id ? 'withId' : 'withoutId')
+    const { withId, withoutId } = groupBy(input.disconnect, ({ id }) =>
+      id ? 'withId' : 'withoutId'
     );
 
     if (withId && withId.length) {

@@ -1,8 +1,11 @@
 // @flow
+/** @jsx jsx */
 
-import React, { Component, type Node as ReactNode } from 'react';
-import styled from '@emotion/styled';
+import { Component, type Node as ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { createPortal } from 'react-dom';
+import styled from '@emotion/styled';
+import { jsx } from '@emotion/core';
 
 import { borderRadius, colors, gridSize } from '../../theme';
 import FocusTrap from './FocusTrap';
@@ -15,68 +18,89 @@ const ItemElement = props => {
   return <button type="button" {...props} />;
 };
 
-const Item = styled(ItemElement)({
-  appearance: 'none',
-  background: 'none',
-  border: '1px solid transparent',
-  boxSizing: 'border-box',
-  color: colors.text,
-  cursor: 'pointer',
-  display: 'block',
-  fontSize: 14,
-  lineHeight: '17px',
-  margin: 0,
-  padding: `${gridSize}px ${gridSize * 1.5}px`,
-  textAlign: 'left',
-  transition: 'box-shadow 100ms linear',
-  verticalAlign: 'middle',
-  whiteSpace: 'nowrap',
-  width: '100%',
+const Item = ({ isDisabled, ...props }) => (
+  <ItemElement
+    css={{
+      appearance: 'none',
+      background: 'none',
+      border: '1px solid transparent',
+      boxSizing: 'border-box',
+      color: isDisabled ? colors.N40 : colors.text,
+      cursor: 'pointer',
+      display: 'block',
+      fontSize: 14,
+      lineHeight: '17px',
+      margin: 0,
+      padding: `${gridSize}px ${gridSize * 1.5}px`,
+      pointerEvents: isDisabled ? 'none' : null,
+      textAlign: 'left',
+      transition: 'box-shadow 100ms linear',
+      verticalAlign: 'middle',
+      whiteSpace: 'nowrap',
+      width: '100%',
 
-  '&:hover, &:focus': {
-    backgroundColor: colors.B.L90,
-    color: colors.primary,
-    outline: 0,
-    textDecoration: 'none',
-  },
-});
-const Menu = styled.div({
-  backgroundColor: 'white',
-  borderRadius: borderRadius,
-  boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.175), 0 3px 8px rgba(0, 0, 0, 0.175)',
-  marginTop: gridSize,
-  minWidth: 160,
-  paddingBottom: gridSize / 2,
-  paddingTop: gridSize / 2,
-  position: 'absolute',
+      '&:hover, &:focus': {
+        backgroundColor: colors.B.L90,
+        color: colors.primary,
+        outline: 0,
+        textDecoration: 'none',
+      },
+    }}
+    {...props}
+  />
+);
+const Menu = styled.div(({ left, top }) => {
+  const placementStyles = { left, top };
+  return {
+    backgroundColor: 'white',
+    borderRadius: borderRadius,
+    boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.175), 0 3px 8px rgba(0, 0, 0, 0.175)',
+    marginTop: gridSize,
+    minWidth: 160,
+    paddingBottom: gridSize / 2,
+    paddingTop: gridSize / 2,
+    position: 'absolute',
+    ...placementStyles,
+  };
 });
 
 type ItemType = {
-  to?: string,
   content: ReactNode,
   href?: string,
+  isDisabled: boolean,
   onClick?: (*) => void,
+  to?: string,
 };
 type ClickArgs = { onClick?: ({ event: MouseEvent, data: Object }) => void };
+
 type Props = ModalHandlerProps & {
+  align: 'left' | 'right',
   getModalRef: HTMLElement => void,
   items: Array<ItemType>,
   selectClosesMenu: boolean,
   style: Object,
+  targetNode: HTMLElement,
+};
+type State = {
+  leftOffset: number,
+  topOffset: number,
 };
 
 function focus(el: ?Node) {
   if (el instanceof HTMLElement) el.focus();
 }
 
-class Dropdown extends Component<Props> {
+class Dropdown extends Component<Props, State> {
   menu: HTMLElement;
   lastHover: HTMLElement;
+  state = { leftOffset: 0, topOffset: 0 };
   static defaultProps = {
+    align: 'left',
     selectClosesMenu: true,
   };
 
   componentDidMount() {
+    this.calculatePosition();
     document.addEventListener('keydown', this.handleKeyDown, false);
   }
   componentWillUnmount() {
@@ -140,28 +164,56 @@ class Dropdown extends Component<Props> {
     }
   };
 
+  calculatePosition = () => {
+    const { align, targetNode } = this.props;
+
+    if (!targetNode || !document.body) return;
+
+    const bodyRect = document.body.getBoundingClientRect();
+    const targetRect = targetNode.getBoundingClientRect();
+    const menuWidth = this.menu.clientWidth;
+
+    const leftOffset = align === 'left' ? targetRect.left : targetRect.right - menuWidth;
+    const topOffset = targetRect.bottom - bodyRect.top;
+
+    this.setState({ leftOffset, topOffset });
+  };
+
   render() {
     const { items, style } = this.props;
+    const { leftOffset, topOffset } = this.state;
+    const attachTo = document.body;
 
-    return (
-      <FocusTrap options={{ clickOutsideDeactivates: true }}>
-        <Menu ref={this.getMenu} onMouseLeave={this.handleMenuLeave} style={style}>
-          {items.map((item, idx) => {
-            const { content, ...rest } = item;
-            return (
-              <Item
-                {...rest}
-                onClick={this.handleItemClick(item)}
-                onMouseEnter={this.handleMouseEnter}
-                key={idx}
-              >
-                {content}
-              </Item>
-            );
-          })}
-        </Menu>
-      </FocusTrap>
-    );
+    if (attachTo) {
+      return createPortal(
+        <FocusTrap options={{ clickOutsideDeactivates: true }}>
+          <Menu
+            left={leftOffset}
+            onMouseLeave={this.handleMenuLeave}
+            ref={this.getMenu}
+            style={style}
+            top={topOffset}
+          >
+            {items.map((item, idx) => {
+              const { content, ...rest } = item;
+              return (
+                <Item
+                  {...rest}
+                  onClick={this.handleItemClick(item)}
+                  onMouseEnter={this.handleMouseEnter}
+                  key={idx}
+                >
+                  {content}
+                </Item>
+              );
+            })}
+          </Menu>
+        </FocusTrap>,
+        attachTo
+      );
+    } else {
+      return null;
+    }
   }
 }
 

@@ -4,7 +4,7 @@
 import { jsx } from '@emotion/core';
 import { type Node, type Ref } from 'react';
 import { Link } from 'react-router-dom';
-import withPseudoState from 'react-pseudo-state';
+import { withPseudoState } from 'react-pseudo-state';
 
 import { gridSize } from '../theme';
 import { buttonAndInputBase } from '../forms';
