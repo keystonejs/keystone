@@ -254,7 +254,7 @@ export default class FileField extends Component {
             <Wrapper>
               {imagePath ? <Image src={imagePath} alt={field.path} /> : null}
               <Content>
-                <FlexGroup>
+                <FlexGroup style={{ marginBottom: gridSize }}>
                   {this.renderUploadButton()}
                   {this.renderCancelButton()}
                 </FlexGroup>
