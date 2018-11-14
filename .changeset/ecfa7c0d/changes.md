@@ -1,0 +1,1 @@
+- navigation improvements and paper cut fixes
