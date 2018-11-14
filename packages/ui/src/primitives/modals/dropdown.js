@@ -1,9 +1,11 @@
 // @flow
+/** @jsx jsx */
 
-import React, { Component, type Node as ReactNode } from 'react';
+import { Component, type Node as ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import styled from '@emotion/styled';
+import { jsx } from '@emotion/core';
 
 import { borderRadius, colors, gridSize } from '../../theme';
 import FocusTrap from './FocusTrap';
@@ -16,32 +18,37 @@ const ItemElement = props => {
   return <button type="button" {...props} />;
 };
 
-const Item = styled(ItemElement)(({ isDisabled }) => ({
-  appearance: 'none',
-  background: 'none',
-  border: '1px solid transparent',
-  boxSizing: 'border-box',
-  color: isDisabled ? colors.N40 : colors.text,
-  cursor: 'pointer',
-  display: 'block',
-  fontSize: 14,
-  lineHeight: '17px',
-  margin: 0,
-  padding: `${gridSize}px ${gridSize * 1.5}px`,
-  pointerEvents: isDisabled ? 'none' : null,
-  textAlign: 'left',
-  transition: 'box-shadow 100ms linear',
-  verticalAlign: 'middle',
-  whiteSpace: 'nowrap',
-  width: '100%',
+const Item = ({ isDisabled, ...props }) => (
+  <ItemElement
+    css={{
+      appearance: 'none',
+      background: 'none',
+      border: '1px solid transparent',
+      boxSizing: 'border-box',
+      color: isDisabled ? colors.N40 : colors.text,
+      cursor: 'pointer',
+      display: 'block',
+      fontSize: 14,
+      lineHeight: '17px',
+      margin: 0,
+      padding: `${gridSize}px ${gridSize * 1.5}px`,
+      pointerEvents: isDisabled ? 'none' : null,
+      textAlign: 'left',
+      transition: 'box-shadow 100ms linear',
+      verticalAlign: 'middle',
+      whiteSpace: 'nowrap',
+      width: '100%',
 
-  '&:hover, &:focus': {
-    backgroundColor: colors.B.L90,
-    color: colors.primary,
-    outline: 0,
-    textDecoration: 'none',
-  },
-}));
+      '&:hover, &:focus': {
+        backgroundColor: colors.B.L90,
+        color: colors.primary,
+        outline: 0,
+        textDecoration: 'none',
+      },
+    }}
+    {...props}
+  />
+);
 const Menu = styled.div(({ left, top }) => {
   const placementStyles = { left, top };
   return {

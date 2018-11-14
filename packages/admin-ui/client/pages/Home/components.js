@@ -35,6 +35,7 @@ const BoxElement = styled(Link)`
 `;
 
 export const BoxComponent = ({
+  focusOrigin,
   isActive,
   isHover,
   isFocus,
