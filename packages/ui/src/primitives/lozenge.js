@@ -69,6 +69,7 @@ export const Lozenge = styled.div(({ appearance, variant, crop }: Props) => {
     backgroundColor:
       variant === 'bold' ? boldBackgroundColor[appearance] : subtleBackgroundColor[appearance],
     borderColor: variant === 'bold' ? null : subtleBorderColor[appearance],
+    boxSizing: 'border-box',
     color: variant === 'bold' ? boldTextColor[appearance] : subtleTextColor[appearance],
     borderRadius,
     display: 'inline-block',
