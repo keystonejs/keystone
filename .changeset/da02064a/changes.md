@@ -1,0 +1,1 @@
+- Always use $set and { new: true } in the mongoose adapter update() method

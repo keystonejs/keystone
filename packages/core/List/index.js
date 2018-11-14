@@ -889,14 +889,7 @@ module.exports = class List {
           )
         );
 
-        const newItem = await this.adapter.update(
-          id,
-          // avoid any kind of injection attack by explicitly doing a `$set`
-          // operation
-          { $set: resolvedData },
-          // Return the modified item, not the original
-          { new: true }
-        );
+        const newItem = await this.adapter.update(id, resolvedData);
 
         await Promise.all(
           Object.keys(data).map(fieldPath =>
