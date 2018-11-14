@@ -19,7 +19,7 @@ import { colors, gridSize } from '@voussoir/ui/src/theme';
 import {
   PrimaryNav,
   PrimaryNavItem,
-  NavGroup,
+  PrimaryNavScrollArea,
   NavGroupIcons,
 } from '@voussoir/ui/src/primitives/navigation';
 import { A11yText, Title } from '@voussoir/ui/src/primitives/typography';
@@ -213,7 +213,7 @@ class Nav extends Component {
                 <Inner>
                   <ScrollQuery>
                     {(ref, snapshot) => (
-                      <NavGroup ref={ref} isScrollable={snapshot.isScrollable}>
+                      <PrimaryNavScrollArea ref={ref} isScrollable={snapshot.isScrollable}>
                         <Title as="div" margin="both" crop>
                           {name}
                         </Title>
@@ -239,7 +239,7 @@ class Nav extends Component {
                             </Fragment>
                           );
                         })}
-                      </NavGroup>
+                      </PrimaryNavScrollArea>
                     )}
                   </ScrollQuery>
 

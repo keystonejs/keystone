@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { borderRadius, colors, gridSize } from '../../theme';
 import { ItemElement } from './common';
 
-const GUTTER = gridSize * 2;
+export const PRIMARY_NAV_GUTTER = gridSize * 2;
 
 export const NavGroupIcons = styled.div({
   alignItems: 'center',
@@ -13,21 +13,8 @@ export const NavGroupIcons = styled.div({
   display: 'flex',
   flexFlow: 'row nowrap',
   justifyContent: 'space-between',
-  padding: gridSize * 2,
+  padding: PRIMARY_NAV_GUTTER,
 });
-
-export const NavGroup = styled.div(({ isScrollable }) => ({
-  boxSizing: 'border-box',
-  boxShadow: isScrollable ? 'inset 0 -2px 0 rgba(0, 0, 0, 0.1)' : null,
-  flex: 1,
-  overflowY: 'auto',
-  overflowX: 'hidden',
-  minWidth: 140,
-  paddingBottom: GUTTER,
-  paddingLeft: GUTTER,
-  paddingRight: GUTTER,
-  width: '100%',
-}));
 
 export const PrimaryNav = styled.nav({
   backgroundColor: colors.N10,
@@ -40,12 +27,24 @@ export const PrimaryNav = styled.nav({
   position: 'fixed',
   zIndex: 1,
 });
+export const PrimaryNavScrollArea = styled.div(({ isScrollable }) => ({
+  boxSizing: 'border-box',
+  boxShadow: isScrollable ? 'inset 0 -2px 0 rgba(0, 0, 0, 0.1)' : null,
+  flex: 1,
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  minWidth: 140,
+  paddingBottom: PRIMARY_NAV_GUTTER,
+  paddingLeft: PRIMARY_NAV_GUTTER,
+  paddingRight: PRIMARY_NAV_GUTTER,
+  width: '100%',
+}));
 
 export const BrandItem = styled.h2({
   fontSize: 18,
   fontWeight: 500,
   margin: 0,
-  paddingBottom: gridSize * 2,
+  paddingBottom: PRIMARY_NAV_GUTTER,
 });
 
 export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => {
@@ -65,8 +64,8 @@ export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => {
     display: 'block',
     marginBottom: 2,
     overflow: 'hidden',
-    paddingLeft: gridSize * 2,
-    paddingRight: gridSize * 2,
+    paddingLeft: PRIMARY_NAV_GUTTER,
+    paddingRight: PRIMARY_NAV_GUTTER,
     paddingBottom: gridSize,
     paddingTop: gridSize,
     textDecoration: 'none',
