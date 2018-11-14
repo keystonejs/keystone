@@ -19,6 +19,7 @@ import FieldTypes from '../FIELD_TYPES';
 const Table = styled('table')({
   borderCollapse: 'collapse',
   borderSpacing: 0,
+  marginBottom: gridSize * 4,
   tableLayout: 'fixed',
   width: '100%',
 });
