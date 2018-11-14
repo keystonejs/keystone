@@ -30,32 +30,17 @@ class Integer extends Implementation {
 
 class MongoIntegerInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
-    const { mongooseOptions, unique } = this.config;
-    const required = mongooseOptions && mongooseOptions.required;
+    const { mongooseOptions = {} } = this.config;
+    const { required } = mongooseOptions;
 
     const schemaOptions = {
       type: Number,
       validate: {
-        validator: required
-          ? Number.isInteger
-          : a => {
-              if (typeof a === 'number' && Number.isInteger(a)) return true;
-              if (typeof a === 'undefined' || a === null) return true;
-              return false;
-            },
+        validator: this.buildValidator(a => typeof a === 'number' && Number.isInteger(a), required),
         message: '{VALUE} is not an integer value',
       },
-      ...mongooseOptions,
     };
-
-    if (unique) {
-      // A value of anything other than `true` causes errors with Mongoose
-      // constantly recreating indexes. Ie; if we just splat `unique` onto the
-      // options object, it would be `undefined`, which would cause Mongoose to
-      // drop and recreate all indexes.
-      schemaOptions.unique = true;
-    }
-    schema.add({ [this.path]: schemaOptions });
+    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
   }
 
   getQueryConditions() {

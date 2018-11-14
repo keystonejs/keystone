@@ -70,11 +70,10 @@ class MongoDateTimeInterface extends MongooseFieldAdapter {
     schema.add({
       // FIXME: Mongoose needs to know about this field in order for the correct
       // attributes to make it through to the pre-hooks.
-      [field_path]: { type: String },
+      [field_path]: { type: String, ...mongooseOptions },
       // These are the actual fields we care about storing in the database.
-      [utc_field]: { type: Date },
-      [offset_field]: { type: String },
-      ...mongooseOptions,
+      [utc_field]: { type: Date, ...mongooseOptions },
+      [offset_field]: { type: String, ...mongooseOptions },
     });
 
     // Updates the relevant value in the item provided (by referrence)

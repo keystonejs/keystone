@@ -88,10 +88,7 @@ class MongoPasswordInterface extends MongooseFieldAdapter {
   // constructor(fieldName, path, listAdapter, getListByKey, config) {
 
   addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
-    schema.add({
-      [this.path]: { type: String, ...mongooseOptions },
-    });
+    schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
 
     // Updates the relevant value in the item provided (by referrence)
     this.addToServerHook(schema, async item => {

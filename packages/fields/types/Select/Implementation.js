@@ -58,10 +58,7 @@ class Select extends Implementation {
 
 class MongoSelectInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
-    schema.add({
-      [this.path]: { type: String, ...mongooseOptions },
-    });
+    schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
   }
 
   getQueryConditions() {
