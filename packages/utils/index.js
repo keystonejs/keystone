@@ -7,13 +7,12 @@ const camelize = (exports.camelize = str =>
   str
     .split(' ')
     .filter(w => w)
-    .map(
-      (w, i) =>
-        i === 0
-          ? w === w.toUpperCase()
-            ? w.toLowerCase()
-            : w.replace(/\S/, c => c.toLowerCase())
-          : w.replace(/\S/, c => c.toUpperCase())
+    .map((w, i) =>
+      i === 0
+        ? w === w.toUpperCase()
+          ? w.toLowerCase()
+          : w.replace(/\S/, c => c.toLowerCase())
+        : w.replace(/\S/, c => c.toUpperCase())
     )
     .join(''));
 

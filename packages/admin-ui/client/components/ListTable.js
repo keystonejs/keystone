@@ -404,30 +404,29 @@ export default class ListTable extends Component {
           </tr>
         </thead>
         <tbody onMouseUp={this.stopRowSelectOnEnter} onMouseLeave={this.stopRowSelectOnEnter}>
-          {items.map(
-            (item, itemIndex) =>
-              isManaging ? (
-                <ListManageRow
-                  fields={fields}
-                  item={item}
-                  key={item.id}
-                  list={list}
-                  isSelected={selectedItems.includes(item.id)}
-                  selectOnEnter={mouseOverSelectsRow}
-                  onSelect={onSelect}
-                  onSelectStart={this.onSelectStart}
-                />
-              ) : (
-                <ListDisplayRow
-                  fields={fields}
-                  item={item}
-                  itemErrors={itemsErrors[itemIndex] || {}}
-                  key={item.id}
-                  link={({ path, id }) => `${adminPath}/${path}/${id}`}
-                  list={list}
-                  onDelete={onChange}
-                />
-              )
+          {items.map((item, itemIndex) =>
+            isManaging ? (
+              <ListManageRow
+                fields={fields}
+                item={item}
+                key={item.id}
+                list={list}
+                isSelected={selectedItems.includes(item.id)}
+                selectOnEnter={mouseOverSelectsRow}
+                onSelect={onSelect}
+                onSelectStart={this.onSelectStart}
+              />
+            ) : (
+              <ListDisplayRow
+                fields={fields}
+                item={item}
+                itemErrors={itemsErrors[itemIndex] || {}}
+                key={item.id}
+                link={({ path, id }) => `${adminPath}/${path}/${id}`}
+                list={list}
+                onDelete={onChange}
+              />
+            )
           )}
         </tbody>
       </Table>
