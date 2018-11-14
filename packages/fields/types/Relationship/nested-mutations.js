@@ -276,7 +276,7 @@ function settleUniqueItems({ refList, context, wheres }) {
       refList.itemQuery({
         id: where.id,
         context,
-        name: refList.gqlNames.itemQueryName,
+        gqlName: refList.gqlNames.itemQueryName,
       })
   );
 }
