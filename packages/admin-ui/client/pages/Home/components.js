@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
-import withPseudoState from 'react-pseudo-state';
+import { withPseudoState } from 'react-pseudo-state';
 
 import { PlusIcon } from '@voussoir/icons';
 import { colors, borderRadius, gridSize } from '@voussoir/ui/src/theme';
@@ -35,6 +35,7 @@ const BoxElement = styled(Link)`
 `;
 
 export const BoxComponent = ({
+  focusOrigin,
   isActive,
   isHover,
   isFocus,

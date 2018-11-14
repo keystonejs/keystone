@@ -1,11 +1,12 @@
 // @flow
-
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
-import { Fragment, PureComponent, type ComponentType, type Ref, type Node } from 'react';
+
+// $FlowFixMe
+import { Fragment, PureComponent, type ComponentType, type Node, forwardRef } from 'react';
 import { createPortal } from 'react-dom';
-import styled from '@emotion/styled';
 import ScrollLock from 'react-scrolllock';
+import { jsx } from '@emotion/core';
+import styled from '@emotion/styled';
 
 import { borderRadius } from '../../theme';
 import FocusTrap from './FocusTrap';
@@ -30,12 +31,11 @@ const Positioner = styled.div({
 
 type DialogElementProps = {
   component: ComponentType<*> | string,
-  innerRef?: Ref<*>,
   width: number,
 };
-const Dialog = ({ component: Tag, innerRef, width, ...props }: DialogElementProps) => (
+const Dialog = forwardRef(({ component: Tag, width, ...props }: DialogElementProps, ref) => (
   <Tag
-    ref={innerRef}
+    ref={ref}
     role="alertdialog"
     css={{
       backgroundColor: 'white',
@@ -50,7 +50,7 @@ const Dialog = ({ component: Tag, innerRef, width, ...props }: DialogElementProp
     }}
     {...props}
   />
-);
+));
 
 // Content
 const Body = styled.div({

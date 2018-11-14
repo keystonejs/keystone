@@ -2,9 +2,10 @@
 
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { type Node, type Ref } from 'react';
+// $FlowFixMe
+import { type Node, forwardRef } from 'react';
 import { Link } from 'react-router-dom';
-import withPseudoState from 'react-pseudo-state';
+import { withPseudoState } from 'react-pseudo-state';
 
 import { gridSize } from '../../theme';
 import { buttonAndInputBase } from '../forms';
@@ -19,13 +20,13 @@ const SPACING_OPTION = {
 export type ButtonProps = {
   appearance: 'default' | 'primary' | 'warning' | 'danger',
   children: Node,
-  innerRef?: Ref<*>,
   href?: string,
   isBlock?: boolean,
   isDisabled: boolean,
   isActive: boolean,
   isHover: boolean,
   isFocus: boolean,
+  focusOrigin: 'mouse' | 'keyboard',
   spacing: 'comfortable' | 'cozy' | 'cramped',
   to?: string,
   variant: 'bold' | 'ghost' | 'subtle',
@@ -92,13 +93,13 @@ function makeVariant({
 }
 
 // remove props that will create react DOM warnings
-const ButtonElement = (props: ButtonProps) => {
-  const { innerRef, isDisabled, isActive, isFocus, isHover, ...rest } = props;
+const ButtonElement = forwardRef((props: ButtonProps, ref) => {
+  const { isDisabled, isActive, isFocus, isHover, focusOrigin, ...rest } = props;
   const variant = makeVariant(props);
-  if (rest.to) return <Link innerRef={innerRef} css={variant} {...rest} />;
-  if (rest.href) return <a ref={innerRef} css={variant} {...rest} />;
-  return <button type="button" disabled={isDisabled} ref={innerRef} css={variant} {...rest} />;
-};
+  if (rest.to) return <Link innerRef={ref} css={variant} {...rest} />;
+  if (rest.href) return <a ref={ref} css={variant} {...rest} />;
+  return <button type="button" disabled={isDisabled} ref={ref} css={variant} {...rest} />;
+});
 
 ButtonElement.defaultProps = {
   appearance: 'default',

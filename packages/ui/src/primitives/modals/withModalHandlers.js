@@ -56,8 +56,11 @@ export default function withModalHandlers(
       const { target } = event;
       const { isOpen } = this.state;
 
-      // appease flow
-      if (!(target instanceof HTMLElement)) return;
+      // NOTE: Flow doesn't yet have a definition for `SVGElement`
+      // $FlowFixMe
+      if (!(target instanceof HTMLElement) && !(target instanceof SVGElement)) {
+        return;
+      }
 
       // NOTE: Why not use the <Blanket /> component to close?
       // We don't want to interupt the user's flow. Taking this approach allows

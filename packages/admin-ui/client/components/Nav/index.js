@@ -1,14 +1,16 @@
 /* global ENABLE_DEV_FEATURES */
+/** @jsx jsx */
 
-import React, { Component, Fragment } from 'react';
+import { Component, Fragment } from 'react';
 import { withRouter } from 'react-router';
 import PropToggle from 'react-prop-toggle';
 import styled from '@emotion/styled';
+import { jsx } from '@emotion/core';
 
 import {
   TerminalIcon,
-  TriangleLeftIcon,
-  TriangleRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   TelescopeIcon,
   MarkGithubIcon,
   SignOutIcon,
@@ -17,30 +19,36 @@ import { colors, gridSize } from '@voussoir/ui/src/theme';
 import {
   PrimaryNav,
   PrimaryNavItem,
-  NavGroup,
+  PrimaryNavScrollArea,
   NavGroupIcons,
+  PRIMARY_NAV_GUTTER,
 } from '@voussoir/ui/src/primitives/navigation';
 import { A11yText, Title } from '@voussoir/ui/src/primitives/typography';
-// import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { Tooltip } from '@voussoir/ui/src/primitives/modals';
+import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
 
 import { withAdminMeta } from '../../providers/AdminMeta';
-import ResizeHandler from './ResizeHandler';
+import ResizeHandler, { KEYBOARD_SHORTCUT } from './ResizeHandler';
 import ScrollQuery from '../ScrollQuery';
 
 const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
+const TRANSITION_DURATION = '220ms';
 
 function camelToKebab(string) {
   return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-const Inner = styled.div({
+const Col = styled.div({
   alignItems: 'flex-start',
   display: 'flex',
+  flex: 1,
   flexFlow: 'column nowrap',
-  height: ' 100vh',
   justifyContent: 'flex-start',
-  minWidth: 140,
+  overflow: 'hidden',
   width: '100%',
+});
+const Inner = styled(Col)({
+  height: ' 100vh',
 });
 const Page = styled.div({
   flex: 1,
@@ -49,6 +57,10 @@ const Page = styled.div({
 });
 const PageWrapper = styled.div({
   display: 'flex',
+});
+const Relative = styled(Col)({
+  height: ' 100%',
+  position: 'relative',
 });
 const Shadow = styled.div({
   background: `linear-gradient(to left,
@@ -68,17 +80,13 @@ const GrabHandle = styled.div({
   bottom: 0,
   cursor: 'col-resize',
   position: 'absolute',
-  left: 0,
+  right: -1,
   top: 0,
   transition: 'background-color 200ms',
-  transitionDelay: '200ms',
-  width: 2,
+  width: 1,
 
-  ':hover': {
-    backgroundColor: colors.B.L30,
-  },
-  ':active': {
-    backgroundColor: colors.B.L10,
+  ':hover, :active': {
+    backgroundColor: colors.N30,
   },
 
   // increase hit-area
@@ -91,41 +99,75 @@ const GrabHandle = styled.div({
     top: -gridSize,
   },
 });
-const CollapseExpand = styled.button(({ isVisible }) => ({
-  background: 'white',
-  border: 0,
-  borderRadius: '50%',
-  boxShadow: '0 1px 3px 1px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.06)',
-  color: colors.N60,
-  cursor: 'pointer',
-  display: 'flex',
-  height: 24,
-  opacity: isVisible ? 1 : 0,
-  outline: 0,
-  transition: 'opacity 200ms, transform 50ms, visibility 200ms',
-  visibility: isVisible ? 'visible' : 'hidden',
-  width: 24,
-  top: 24,
+const CollapseExpand = styled.button(({ isCollapsed, isVisible }) => {
+  const SIZE = isCollapsed ? 48 : 24;
+  const GUTTER = isCollapsed ? 12 : 24;
+  const boxShadow = isCollapsed
+    ? '0 2px 4px 1px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.1)'
+    : '0 1px 3px 1px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.06)';
 
-  '> svg': { position: 'relative' },
+  return {
+    alignItems: 'center',
+    background: 'white',
+    border: 0,
+    borderRadius: '50%',
+    boxShadow,
+    color: colors.N60,
+    cursor: 'pointer',
+    display: 'flex',
+    height: SIZE,
+    justifyContent: 'center',
+    right: -SIZE / 2,
+    opacity: isVisible ? 1 : 0,
+    outline: 0,
+    padding: 0,
+    position: 'absolute',
+    transition: `
+      opacity ${TRANSITION_DURATION},
+      right ${TRANSITION_DURATION},
+      transform 50ms,
+      visibility ${TRANSITION_DURATION}
+    `,
+    visibility: isVisible ? 'visible' : 'hidden',
+    width: SIZE,
+    top: GUTTER,
 
-  ':hover': {
-    transform: 'scale(1.1)',
-  },
-  ':active': {
-    transform: 'scale(1)',
-  },
-}));
-const CollapseButton = styled(CollapseExpand)({
-  right: 24,
-  position: 'absolute',
-  '> svg': { right: -1 },
+    '> svg': {
+      position: 'relative',
+      right: isCollapsed ? -9 : 1,
+      transition: `right ${TRANSITION_DURATION}`,
+    },
+
+    ':hover': {
+      transform: 'scale(1.12)',
+    },
+    ':active': {
+      transform: 'scale(1)',
+    },
+  };
 });
-const ExpandButton = styled(CollapseExpand)({
-  left: 24,
-  position: 'fixed',
-  '> svg': { right: -3 },
-});
+
+const TooltipContent = ({ kbd, children }) => (
+  <FlexGroup align="center" growIndexes={[0]}>
+    <span key="children">{children}</span>
+    <kbd
+      key="kbd"
+      css={{
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        borderRadius: 2,
+        display: 'inline-block',
+        fontWeight: 'bold',
+        height: 14,
+        lineHeight: 1,
+        paddingBottom: 1,
+        paddingLeft: 4,
+        paddingRight: 4,
+      }}
+    >
+      {kbd}
+    </kbd>
+  </FlexGroup>
+);
 
 function getPath(str) {
   const arr = str.split('/');
@@ -157,8 +199,18 @@ class Nav extends Component {
             const pointers = isDragging ? { pointerEvents: 'none' } : null;
             const transitions = isDragging
               ? null
-              : { transition: `${camelToKebab(key)} 220ms cubic-bezier(0.25, 0, 0, 1)` };
+              : {
+                  transition: `${camelToKebab(
+                    key
+                  )} ${TRANSITION_DURATION} cubic-bezier(0.25, 0, 0, 1)`,
+                };
             return { [key]: navWidth, ...pointers, ...transitions };
+          };
+
+          const titleGutter = {
+            alignSelf: 'stretch',
+            marginLeft: PRIMARY_NAV_GUTTER,
+            marginRight: PRIMARY_NAV_GUTTER,
           };
 
           return (
@@ -173,37 +225,42 @@ class Nav extends Component {
                 style={makeResizeStyles('width')}
               >
                 <Inner>
-                  <ScrollQuery>
-                    {(ref, snapshot) => (
-                      <NavGroup ref={ref} isScrollable={snapshot.isScrollable}>
-                        <Title as="div" margin="both">
-                          {name}
-                        </Title>
-                        <PrimaryNavItem to={adminPath} isSelected={location.pathname == adminPath}>
-                          Dashboard
-                        </PrimaryNavItem>
+                  <Title as="div" margin="both" crop style={titleGutter}>
+                    {name}
+                  </Title>
+                  <Relative>
+                    <ScrollQuery isPassive={false}>
+                      {(ref, snapshot) => (
+                        <PrimaryNavScrollArea ref={ref} {...snapshot}>
+                          <PrimaryNavItem
+                            to={adminPath}
+                            isSelected={location.pathname == adminPath}
+                          >
+                            Dashboard
+                          </PrimaryNavItem>
 
-                        {listKeys.map(key => {
-                          const list = getListByKey(key);
-                          const href = `${adminPath}/${list.path}`;
-                          const path = getPath(location.pathname);
-                          const isSelected = href === path;
+                          {listKeys.map(key => {
+                            const list = getListByKey(key);
+                            const href = `${adminPath}/${list.path}`;
+                            const path = getPath(location.pathname);
+                            const isSelected = href === path;
 
-                          return (
-                            <Fragment key={key}>
-                              <PrimaryNavItem
-                                id={`ks-nav-${list.path}`}
-                                isSelected={isSelected}
-                                to={href}
-                              >
-                                {list.label}
-                              </PrimaryNavItem>
-                            </Fragment>
-                          );
-                        })}
-                      </NavGroup>
-                    )}
-                  </ScrollQuery>
+                            return (
+                              <Fragment key={key}>
+                                <PrimaryNavItem
+                                  id={`ks-nav-${list.path}`}
+                                  isSelected={isSelected}
+                                  to={href}
+                                >
+                                  {list.label}
+                                </PrimaryNavItem>
+                              </Fragment>
+                            );
+                          })}
+                        </PrimaryNavScrollArea>
+                      )}
+                    </ScrollQuery>
+                  </Relative>
 
                   {ENABLE_DEV_FEATURES || withAuth ? (
                     <NavGroupIcons>
@@ -237,21 +294,31 @@ class Nav extends Component {
                   ) : null}
                 </Inner>
                 <Shadow />
-                <CollapseButton {...clickProps} isVisible={mouseIsOverNav}>
-                  <TriangleLeftIcon />
-                </CollapseButton>
+                {isCollapsed ? null : <GrabHandle {...resizeProps} />}
+                <Tooltip
+                  content={
+                    <TooltipContent kbd={KEYBOARD_SHORTCUT}>
+                      {isCollapsed ? 'Click to Expand' : 'Click to Collapse'}
+                    </TooltipContent>
+                  }
+                  placement="right"
+                  hideOnMouseDown
+                  hideOnKeyDown
+                  delay={600}
+                >
+                  {ref => (
+                    <CollapseExpand
+                      {...clickProps}
+                      ref={ref}
+                      isCollapsed={isCollapsed}
+                      isVisible={isCollapsed || mouseIsOverNav}
+                    >
+                      {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                    </CollapseExpand>
+                  )}
+                </Tooltip>
               </PrimaryNav>
-              <Page style={makeResizeStyles('marginLeft')}>
-                {isCollapsed ? (
-                  <ExpandButton {...clickProps} isVisible>
-                    <TriangleRightIcon />
-                  </ExpandButton>
-                ) : (
-                  <GrabHandle {...resizeProps} />
-                )}
-
-                {children}
-              </Page>
+              <Page style={makeResizeStyles('marginLeft')}>{children}</Page>
             </PageWrapper>
           );
         }}

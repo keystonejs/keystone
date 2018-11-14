@@ -1,9 +1,10 @@
 // @flow
-
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
-import { Fragment, type Ref } from 'react';
+
+// $FlowFixMe
+import { Fragment, type Ref, forwardRef } from 'react';
 import ReactSelect from 'react-select';
+import { jsx } from '@emotion/core';
 
 import { borderRadius, colors, gridSize } from '../../theme';
 import { alpha } from '../../theme/color-utils';
@@ -39,8 +40,8 @@ export const buttonAndInputBase = {
 // Basic Input
 // ------------------------------
 
-type InputProps = { innerRef: Ref<*>, isMultiline?: boolean, disabled?: boolean };
-export const Input = ({ innerRef, isMultiline, ...props }: InputProps) => {
+type InputProps = { isMultiline?: boolean, disabled?: boolean };
+export const Input = forwardRef(({ isMultiline, ...props }: InputProps, ref) => {
   const css = {
     ...buttonAndInputBase,
     backgroundColor: props.disabled ? colors.N10 : 'white',
@@ -66,11 +67,11 @@ export const Input = ({ innerRef, isMultiline, ...props }: InputProps) => {
     },
   };
   return isMultiline ? (
-    <textarea ref={innerRef} css={{ ...css, lineHeight: 'inherit', height: 'auto' }} {...props} />
+    <textarea ref={ref} css={{ ...css, lineHeight: 'inherit', height: 'auto' }} {...props} />
   ) : (
-    <input ref={innerRef} css={css} {...props} />
+    <input ref={ref} css={css} {...props} />
   );
-};
+});
 
 // Re-Style React Select
 // ------------------------------

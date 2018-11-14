@@ -102,10 +102,11 @@ export function makeGhostVariant({ appearance, isDisabled }) {
 
     ':hover, :focus': {
       backgroundColor: alpha(border, 0.1),
+      borderColor: darken(border, 10),
     },
     ':active': {
       color: darken(text, 10),
-      borderColor: darken(border, 10),
+      borderColor: darken(border, 20),
       backgroundColor: alpha(border, 0.2),
     },
   };

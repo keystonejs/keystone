@@ -1,10 +1,13 @@
 import { Component } from 'react';
 import raf from 'raf-schd';
 
+import { withKeyboardConsumer } from '../KeyboardShortcuts';
+
 const LS_KEY = 'KEYSTONE_NAVIGATION_STATE';
 const DEFAULT_STATE = { isCollapsed: false, width: 280 };
 const MIN_WIDTH = 140;
 const MAX_WIDTH = 800;
+export const KEYBOARD_SHORTCUT = '[';
 
 function getCache() {
   if (typeof localStorage !== 'undefined') {
@@ -19,46 +22,15 @@ function setCache(state) {
   }
 }
 
-export default class ResizeHandler extends Component {
+class ResizeHandler extends Component {
   state = getCache();
 
   componentDidMount() {
-    document.addEventListener('keydown', this.onKeyDown);
-    document.addEventListener('keyup', this.onKeyUp);
+    this.props.keyManager.subscribe(KEYBOARD_SHORTCUT, this.toggleCollapse);
   }
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.onKeyDown);
-    document.removeEventListener('keyup', this.onKeyUp);
+    this.props.keyManager.unsubscribe(KEYBOARD_SHORTCUT);
   }
-
-  // TODO: move this to a "global" key handler
-  onKeyDown = event => {
-    // bail if there's already a keydown
-    if (this.keyIsDown) return;
-
-    // setup
-    this.keyIsDown = true;
-    const activeNode = document.activeElement.nodeName;
-    const targetKey = '[';
-
-    // bail if the user is focused on an input element
-    if (activeNode === 'INPUT' || activeNode === 'TEXTAREA') {
-      return;
-    }
-
-    // bail on all other keys
-    if (event.key !== targetKey) {
-      return;
-    }
-
-    // toggle collapse/expand
-    const toggle = this.state.isCollapsed ? this.handleExpand : this.handleCollapse;
-    toggle();
-  };
-
-  onKeyUp = () => {
-    this.keyIsDown = false;
-  };
 
   storeState = s => {
     // only keep the `isCollapsed` and `width` properties in locals storage
@@ -121,11 +93,9 @@ export default class ResizeHandler extends Component {
     window.removeEventListener('mousemove', this.handleResize);
     window.removeEventListener('mouseup', this.handleResizeEnd);
   };
-  handleCollapse = () => {
-    this.storeState({ isCollapsed: true });
-  };
-  handleExpand = () => {
-    this.storeState({ isCollapsed: false });
+  toggleCollapse = () => {
+    const isCollapsed = !this.state.isCollapsed;
+    this.storeState({ isCollapsed });
   };
 
   render() {
@@ -134,11 +104,12 @@ export default class ResizeHandler extends Component {
       onMouseDown: this.handleResizeStart,
     };
     const clickProps = {
-      title: this.state.isCollapsed ? 'Click to Expand' : 'Click to Collapse',
-      onClick: this.state.isCollapsed ? this.handleExpand : this.handleCollapse,
+      onClick: this.toggleCollapse,
     };
     const snapshot = this.state;
 
     return this.props.children(resizeProps, clickProps, snapshot);
   }
 }
+
+export default withKeyboardConsumer(ResizeHandler);

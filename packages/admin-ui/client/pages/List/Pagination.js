@@ -29,7 +29,7 @@ export default function ListPagination({
     <FlexGroup align="center">
       <IconButton
         icon={GearIcon}
-        innerRef={getManageButton}
+        ref={getManageButton}
         onClick={onToggleManage}
         variant="ghost"
         style={{ marginRight: '0.5em' }}

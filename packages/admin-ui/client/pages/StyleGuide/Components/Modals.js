@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { Dialog, Dropdown, Popout } from '@voussoir/ui/src/primitives/modals';
+import { Dialog, Dropdown, Popout, Tooltip } from '@voussoir/ui/src/primitives/modals';
 
 export default class ModalGuide extends Component {
   state = { dialogIsOpen: false };
@@ -19,23 +19,34 @@ export default class ModalGuide extends Component {
   };
   render() {
     const { dialogIsOpen } = this.state;
+    const dropdownItems = [
+      { to: '/admin', content: 'Dashboard' },
+      { content: 'Macaroon', onClick: this.handleDropdownClick },
+      { content: 'Cupcake', onClick: this.handleDropdownClick },
+      { content: 'Liquorice', onClick: this.handleDropdownClick },
+      { content: 'Cookie', onClick: this.handleDropdownClick },
+      { content: 'Cake', onClick: this.handleDropdownClick },
+    ];
+
     return (
       <Fragment>
         <h2>Modals</h2>
 
+        <h4>Tooltips</h4>
+        <FlexGroup justify="space-between">
+          {['top', 'right', 'bottom', 'left'].map(p => (
+            <Tooltip key={p} content="Some tooltip content" placement={p}>
+              {ref => <Button ref={ref}>Show {p}</Button>}
+            </Tooltip>
+          ))}
+        </FlexGroup>
+
         <h4>Dropdowns</h4>
-        <Dropdown
-          target={<Button>Show menu</Button>}
-          // selectClosesMenu={false}
-          items={[
-            { to: '/admin', content: 'Dashboard' },
-            { content: 'Macaroon', onClick: this.handleDropdownClick },
-            { content: 'Cupcake', onClick: this.handleDropdownClick },
-            { content: 'Liquorice', onClick: this.handleDropdownClick },
-            { content: 'Cookie', onClick: this.handleDropdownClick },
-            { content: 'Cake', onClick: this.handleDropdownClick },
-          ]}
-        />
+        <FlexGroup justify="space-between">
+          {['left', 'right'].map(a => (
+            <Dropdown align={a} key={a} target={<Button>Align {a}</Button>} items={dropdownItems} />
+          ))}
+        </FlexGroup>
 
         <h4>Popouts</h4>
         <FlexGroup justify="space-between">

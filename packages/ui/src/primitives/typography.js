@@ -4,6 +4,13 @@ import styled from '@emotion/styled';
 
 import { colors, gridSize } from '../theme';
 
+const truncate = {
+  minWidth: 0,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+};
+
 export const SubtleText = styled.span({
   color: colors.N60,
 });
@@ -13,7 +20,9 @@ export const H1 = styled.h1({
   fontWeight: 300,
   margin: '24px 0',
 });
-export const Title = ({ as: Tag, margin, ...props }) => {
+export const Truncate = ({ as: Tag, ...props }) => <Tag css={truncate} {...props} />;
+Truncate.defaultProps = { as: 'div' };
+export const Title = ({ as: Tag, crop, margin, ...props }) => {
   const gutter = gridSize * 3;
   const margins = {
     none: { margin: 0 },
@@ -22,6 +31,7 @@ export const Title = ({ as: Tag, margin, ...props }) => {
     Top: { marginBottom: 0, marginTop: gutter },
   };
   const offset = margins[margin];
+  const cropStyles = crop ? truncate : null;
 
   return (
     <Tag
@@ -29,6 +39,7 @@ export const Title = ({ as: Tag, margin, ...props }) => {
         fontSize: 18,
         fontWeight: 500,
         whiteSpace: 'nowrap',
+        ...cropStyles,
         ...offset,
       }}
       {...props}
@@ -37,6 +48,7 @@ export const Title = ({ as: Tag, margin, ...props }) => {
 };
 Title.defaultProps = {
   as: 'h3',
+  crop: false,
   margin: 'none',
 };
 
