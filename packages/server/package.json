@@ -20,7 +20,6 @@
     "express-pino-logger": "^4.0.0",
     "express-session": "^1.15.6",
     "falsey": "^1.0.0",
-    "fast-memoize": "^2.4.0",
     "graphql": "^0.13.2",
     "graphql-playground-html": "^1.6.0"
   }

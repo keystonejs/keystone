@@ -1,7 +1,12 @@
 const GraphQLJSON = require('graphql-type-json');
 const gql = require('graphql-tag');
+const fastMemoize = require('fast-memoize');
 const { print } = require('graphql/language/printer');
 const { resolveAllKeys, arrayToObject, mapKeys, objMerge, flatten } = require('@voussoir/utils');
+const {
+  validateFieldAccessControl,
+  validateListAccessControl,
+} = require('@voussoir/access-control');
 
 const {
   unmergeRelationships,
@@ -287,17 +292,39 @@ module.exports = class Keystone {
     };
   }
 
-  getListAccessControl({ listKey, operation, authentication }) {
-    return this.lists[listKey].getAccessControl({ operation, authentication });
-  }
-
-  getFieldAccessControl({ item, listKey, fieldKey, operation, authentication }) {
-    return this.lists[listKey].getFieldAccessControl({
-      item,
-      fieldKey,
-      operation,
-      authentication,
+  // Create an access context for the given "user" which can be used to call the
+  // List API methods which are access controlled.
+  getAccessContext({ user, authedListKey }) {
+    // memoizing to avoid requests that hit the same type multiple times.
+    // We do it within the request callback so we can resolve it based on the
+    // request info ( like who's logged in right now, etc)
+    const getListAccessControlForUser = fastMemoize((listKey, operation) => {
+      return validateListAccessControl({
+        access: this.lists[listKey].access,
+        operation,
+        authentication: { item: user, listKey: authedListKey },
+        listKey,
+      });
     });
+
+    const getFieldAccessControlForUser = fastMemoize((listKey, fieldKey, item, operation) => {
+      return validateFieldAccessControl({
+        access: this.lists[listKey].fieldsByPath[fieldKey].access,
+        item,
+        operation,
+        authentication: { item: user, listKey: authedListKey },
+        fieldKey,
+        listKey,
+      });
+    });
+
+    return {
+      // req.user & req.authedListKey come from ../index.js
+      authedItem: user,
+      authedListKey: authedListKey,
+      getListAccessControlForUser,
+      getFieldAccessControlForUser,
+    };
   }
 
   createItem(listKey, itemData) {

@@ -13,7 +13,7 @@ const {
   createLazyDeferred,
 } = require('@voussoir/utils');
 
-const { parseListAccess, validateListAccessControl } = require('@voussoir/access-control');
+const { parseListAccess } = require('@voussoir/access-control');
 
 const logger = require('@voussoir/logger');
 
@@ -841,25 +841,6 @@ module.exports = class List {
     );
 
     return result;
-  }
-
-  getAccessControl({ operation, authentication }) {
-    return validateListAccessControl({
-      access: this.access,
-      operation,
-      authentication,
-      listKey: this.key,
-    });
-  }
-
-  getFieldAccessControl({ fieldKey, item, inputData, operation, authentication }) {
-    return this.fieldsByPath[fieldKey].validateAccessControl({
-      listKey: this.key,
-      item,
-      inputData,
-      operation,
-      authentication,
-    });
   }
 
   getFieldByPath(path) {
