@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 
-import { colors } from '../theme';
+import { colors, gridSize } from '../theme';
 
 export const SubtleText = styled.span({
   color: colors.N60,
@@ -13,6 +13,32 @@ export const H1 = styled.h1({
   fontWeight: 300,
   margin: '24px 0',
 });
+export const Title = ({ as: Tag, margin, ...props }) => {
+  const gutter = gridSize * 3;
+  const margins = {
+    none: { margin: 0 },
+    both: { marginBottom: gutter, marginTop: gutter },
+    bottom: { marginBottom: gutter, marginTop: 0 },
+    Top: { marginBottom: 0, marginTop: gutter },
+  };
+  const offset = margins[margin];
+
+  return (
+    <Tag
+      css={{
+        fontSize: 18,
+        fontWeight: 500,
+        whiteSpace: 'nowrap',
+        ...offset,
+      }}
+      {...props}
+    />
+  );
+};
+Title.defaultProps = {
+  as: 'h3',
+  margin: 'none',
+};
 
 export const Kbd = styled.kbd({
   backgroundColor: colors.N05,

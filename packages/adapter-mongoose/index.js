@@ -372,9 +372,104 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   addToMongooseSchema() {
     throw new Error(`Field type [${this.fieldName}] does not implement addToMongooseSchema()`);
   }
+  buildValidator(validator, required) {
+    return required ? validator : a => validator(a) || typeof a === 'undefined' || a === null;
+  }
+  mergeSchemaOptions(schemaOptions, { unique, mongooseOptions }) {
+    if (unique) {
+      // A value of anything other than `true` causes errors with Mongoose
+      // constantly recreating indexes. Ie; if we just splat `unique` onto the
+      // options object, it would be `undefined`, which would cause Mongoose to
+      // drop and recreate all indexes.
+      schemaOptions.unique = true;
+    }
+    return { ...schemaOptions, ...mongooseOptions };
+  }
 
   getQueryConditions() {
     return {};
+  }
+
+  // The following methods provide helpers for constructing the return values of `getQueryConditions`.
+  // Each method takes:
+  //   `v`: A value transformation function which converts from a string type provided
+  //        by graphQL into a native mongoose type.
+  //   `g`: A path transformation function which converts from the field path into the
+  //        mongoose document path.
+  equalityConditions(f = v => v, g = p => p) {
+    return {
+      [this.path]: value => ({ [g(this.path)]: { $eq: f(value) } }),
+      [`${this.path}_not`]: value => ({ [g(this.path)]: { $ne: f(value) } }),
+    };
+  }
+
+  equalityConditionsInsensitive(f = escapeRegExp, g = p => p) {
+    return {
+      [`${this.path}_i`]: value => ({ [g(this.path)]: new RegExp(`^${f(value)}$`, 'i') }),
+      [`${this.path}_not_i`]: value => ({
+        [g(this.path)]: { $not: new RegExp(`^${f(value)}$`, 'i') },
+      }),
+    };
+  }
+
+  inConditions(f = v => v, g = p => p) {
+    return {
+      [`${this.path}_in`]: value => ({ [g(this.path)]: { $in: value.map(s => f(s)) } }),
+      [`${this.path}_not_in`]: value => ({
+        [g(this.path)]: { $not: { $in: value.map(s => f(s)) } },
+      }),
+    };
+  }
+
+  orderingConditions(f = v => v, g = p => p) {
+    return {
+      [`${this.path}_lt`]: value => ({ [g(this.path)]: { $lt: f(value) } }),
+      [`${this.path}_lte`]: value => ({ [g(this.path)]: { $lte: f(value) } }),
+      [`${this.path}_gt`]: value => ({ [g(this.path)]: { $gt: f(value) } }),
+      [`${this.path}_gte`]: value => ({ [g(this.path)]: { $gte: f(value) } }),
+    };
+  }
+
+  stringConditions(f = escapeRegExp, g = p => p) {
+    return {
+      [`${this.path}_contains`]: value => ({ [g(this.path)]: { $regex: new RegExp(f(value)) } }),
+      [`${this.path}_not_contains`]: value => ({ [g(this.path)]: { $not: new RegExp(f(value)) } }),
+      [`${this.path}_starts_with`]: value => ({
+        [g(this.path)]: { $regex: new RegExp(`^${f(value)}`) },
+      }),
+      [`${this.path}_not_starts_with`]: value => ({
+        [g(this.path)]: { $not: new RegExp(`^${f(value)}`) },
+      }),
+      [`${this.path}_ends_with`]: value => ({
+        [g(this.path)]: { $regex: new RegExp(`${f(value)}$`) },
+      }),
+      [`${this.path}_not_ends_with`]: value => ({
+        [g(this.path)]: { $not: new RegExp(`${f(value)}$`) },
+      }),
+    };
+  }
+
+  stringConditionsInsensitive(f = escapeRegExp, g = p => p) {
+    return {
+      [`${this.path}_contains_i`]: value => ({
+        [g(this.path)]: { $regex: new RegExp(f(value), 'i') },
+      }),
+      [`${this.path}_not_contains_i`]: value => ({
+        [g(this.path)]: { $not: new RegExp(f(value), 'i') },
+      }),
+      [`${this.path}_starts_with_i`]: value => ({
+        [g(this.path)]: { $regex: new RegExp(`^${f(value)}`, 'i') },
+      }),
+      [`${this.path}_not_starts_with_i`]: value => ({
+        [g(this.path)]: { $not: new RegExp(`^${f(value)}`, 'i') },
+      }),
+      [`${this.path}_ends_with_i`]: value => ({
+        [g(this.path)]: { $regex: new RegExp(`${f(value)}$`, 'i') },
+      }),
+      [`${this.path}_not_ends_with_i`]: value => ({
+        [g(this.path)]: { $not: new RegExp(`${f(value)}$`, 'i') },
+      }),
+    };
   }
 
   getRelationshipQueryConditions() {
@@ -387,6 +482,79 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
 
   hasQueryCondition() {
     return false;
+  }
+
+  addToServerHook(schema, toServerSide) {
+    schema.pre('validate', async function() {
+      await toServerSide(this);
+    });
+
+    // These are "Query middleware"; they differ from "document" middleware..
+    // ".. `this` refers to the query object rather than the document being updated."
+    schema.pre('update', async function() {
+      await toServerSide(this['_update'].$set || this['_update']);
+    });
+    schema.pre('updateOne', async function() {
+      await toServerSide(this['_update'].$set || this['_update']);
+    });
+    schema.pre('updateMany', async function() {
+      await toServerSide(this['_update'].$set || this['_update']);
+    });
+    schema.pre('findOneAndUpdate', async function() {
+      await toServerSide(this['_update'].$set || this['_update']);
+    });
+
+    // Model middleware
+    // Docs as second arg? (https://github.com/Automattic/mongoose/commit/3d62d3558c15ec852bdeaab1a5138b1853b4f7cb)
+    schema.pre('insertMany', async function(next, docs) {
+      for (let doc of docs) {
+        await toServerSide(doc);
+      }
+    });
+  }
+
+  addToClientHook(schema, toClientSide) {
+    schema.post('aggregate', function(results) {
+      results.forEach(r => toClientSide(r));
+    });
+
+    schema.post('find', function(results) {
+      results.forEach(r => toClientSide(r));
+    });
+    schema.post('findById', function(result) {
+      toClientSide(result);
+    });
+    schema.post('findOne', function(result) {
+      toClientSide(result);
+    });
+    // After saving, we return the result to the client, so we have to parse it
+    // back again
+    schema.post('save', function() {
+      toClientSide(this);
+    });
+
+    // These are "Query middleware"; they differ from "document" middleware..
+    // ".. `this` refers to the query object rather than the document being updated."
+    schema.post('update', function() {
+      toClientSide(this['_update'].$set || this['_update']);
+    });
+    schema.post('updateOne', function() {
+      toClientSide(this['_update'].$set || this['_update']);
+    });
+    schema.post('updateMany', function() {
+      toClientSide(this['_update'].$set || this['_update']);
+    });
+    schema.post('findOneAndUpdate', function() {
+      toClientSide(this['_update'].$set || this['_update']);
+    });
+
+    // Model middleware
+    // Docs as second arg? (https://github.com/Automattic/mongoose/commit/3d62d3558c15ec852bdeaab1a5138b1853b4f7cb)
+    schema.post('insertMany', function(next, docs) {
+      for (let doc of docs) {
+        toClientSide(doc);
+      }
+    });
   }
 }
 

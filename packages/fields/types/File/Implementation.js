@@ -1,6 +1,5 @@
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
-const { escapeRegExp } = require('@voussoir/utils');
 const mongoose = require('mongoose');
 
 // Disabling the getter of mongoose >= 5.1.0
@@ -29,16 +28,9 @@ class File extends Implementation {
   }
   get gqlQueryInputFields() {
     return [
-      `${this.path}: String`,
-      `${this.path}_not: String`,
-      `${this.path}_contains: String`,
-      `${this.path}_not_contains: String`,
-      `${this.path}_starts_with: String`,
-      `${this.path}_not_starts_with: String`,
-      `${this.path}_ends_with: String`,
-      `${this.path}_not_ends_with: String`,
-      `${this.path}_in: [String!]`,
-      `${this.path}_not_in: [String!]`,
+      ...this.equalityInputFields('String'),
+      ...this.stringInputFields('String'),
+      ...this.inInputFields('String'),
     ];
   }
   getFileUploadType() {
@@ -117,7 +109,6 @@ class File extends Implementation {
 
 class MongoFileInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
-    const { mongooseOptions, unique } = this.config;
     const schemaOptions = {
       type: {
         id: ObjectId,
@@ -126,53 +117,15 @@ class MongoFileInterface extends MongooseFieldAdapter {
         mimetype: String,
         _meta: Object,
       },
-      ...mongooseOptions,
     };
-    if (unique) {
-      // A value of anything other than `true` causes errors with Mongoose
-      // constantly recreating indexes. Ie; if we just splat `unique` onto the
-      // options object, it would be `undefined`, which would cause Mongoose to
-      // drop and recreate all indexes.
-      schemaOptions.unique = true;
-    }
-    schema.add({ [this.path]: schemaOptions });
+    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
   }
 
   getQueryConditions() {
     return {
-      [this.path]: value => ({
-        [this.path]: { $eq: value },
-      }),
-      [`${this.path}_not`]: value => ({
-        [this.path]: { $ne: value },
-      }),
-
-      [`${this.path}_contains`]: value => ({
-        [this.path]: { $regex: new RegExp(escapeRegExp(value)) },
-      }),
-      [`${this.path}_not_contains`]: value => ({
-        [this.path]: { $not: new RegExp(escapeRegExp(value)) },
-      }),
-
-      [`${this.path}_starts_with`]: value => ({
-        [this.path]: { $regex: new RegExp(`^${escapeRegExp(value)}`) },
-      }),
-      [`${this.path}_not_starts_with`]: value => ({
-        [this.path]: { $not: new RegExp(`^${escapeRegExp(value)}`) },
-      }),
-      [`${this.path}_ends_with`]: value => ({
-        [this.path]: { $regex: new RegExp(`${escapeRegExp(value)}$`) },
-      }),
-      [`${this.path}_not_ends_with`]: value => ({
-        [this.path]: { $not: new RegExp(`${escapeRegExp(value)}$`) },
-      }),
-
-      [`${this.path}_in`]: value => ({
-        [this.path]: { $in: value },
-      }),
-      [`${this.path}_not_in`]: value => ({
-        [this.path]: { $not: { $in: value } },
-      }),
+      ...this.equalityConditions(),
+      ...this.stringConditions(),
+      ...this.inConditions(),
     };
   }
 }

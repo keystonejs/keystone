@@ -9,6 +9,7 @@ import globalStyles from '@voussoir/ui/src/globalStyles';
 
 import apolloClient from './apolloClient';
 
+import Nav from './components/Nav';
 import ScrollToTop from './components/ScrollToTop';
 import ConnectivityListener from './components/ConnectivityListener';
 import { AdminMetaProvider } from './providers/AdminMeta';
@@ -31,53 +32,55 @@ const Keystone = () => (
           return (
             <BrowserRouter>
               <ScrollToTop>
-                <Switch>
-                  <Route
-                    path={`${adminPath}/style-guide/:page?`}
-                    render={() => <StyleGuidePage {...adminMeta} />}
-                  />
-                  <Route exact path={`${adminPath}`} render={() => <HomePage {...adminMeta} />} />
-                  <Route
-                    path={`${adminPath}/:listKey`}
-                    render={({
-                      match: {
-                        params: { listKey },
-                      },
-                    }) => {
-                      // TODO: Permission query to show/hide a list from the
-                      // menu
-                      const list = adminMeta.getListByPath(listKey);
-                      return list ? (
-                        <Switch>
-                          <Route
-                            exact
-                            path={`${adminPath}/:list`}
-                            render={() => <ListPage key={listKey} list={list} {...adminMeta} />}
-                          />
-                          <Route
-                            exact
-                            path={`${adminPath}/:list/:itemId`}
-                            render={({
-                              match: {
-                                params: { itemId },
-                              },
-                            }) => (
-                              <ItemPage
-                                key={`${listKey}-${itemId}`}
-                                list={list}
-                                itemId={itemId}
-                                {...adminMeta}
-                              />
-                            )}
-                          />
-                          <Route render={() => <InvalidRoutePage {...adminMeta} />} />
-                        </Switch>
-                      ) : (
-                        <ListNotFoundPage listKey={listKey} {...adminMeta} />
-                      );
-                    }}
-                  />
-                </Switch>
+                <Nav>
+                  <Switch>
+                    <Route
+                      path={`${adminPath}/style-guide/:page?`}
+                      render={() => <StyleGuidePage {...adminMeta} />}
+                    />
+                    <Route exact path={`${adminPath}`} render={() => <HomePage {...adminMeta} />} />
+                    <Route
+                      path={`${adminPath}/:listKey`}
+                      render={({
+                        match: {
+                          params: { listKey },
+                        },
+                      }) => {
+                        // TODO: Permission query to show/hide a list from the
+                        // menu
+                        const list = adminMeta.getListByPath(listKey);
+                        return list ? (
+                          <Switch>
+                            <Route
+                              exact
+                              path={`${adminPath}/:list`}
+                              render={() => <ListPage key={listKey} list={list} {...adminMeta} />}
+                            />
+                            <Route
+                              exact
+                              path={`${adminPath}/:list/:itemId`}
+                              render={({
+                                match: {
+                                  params: { itemId },
+                                },
+                              }) => (
+                                <ItemPage
+                                  key={`${listKey}-${itemId}`}
+                                  list={list}
+                                  itemId={itemId}
+                                  {...adminMeta}
+                                />
+                              )}
+                            />
+                            <Route render={() => <InvalidRoutePage {...adminMeta} />} />
+                          </Switch>
+                        ) : (
+                          <ListNotFoundPage listKey={listKey} {...adminMeta} />
+                        );
+                      }}
+                    />
+                  </Switch>
+                </Nav>
               </ScrollToTop>
             </BrowserRouter>
           );

@@ -1,5 +1,12 @@
 # @voussoir/mongo-join-builder
 
+## 0.3.0
+
+- [minor] 47c7dcf6"
+  :
+
+  - Bump all packages with a minor version to set a new baseline
+
 ## 0.2.0
 
 - [minor] Pipeline and mutation builders are decoupled from each other. [74af97e](74af97e)

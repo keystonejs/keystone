@@ -1,5 +1,26 @@
 # @voussoir/admin-ui
 
+## 0.5.0
+
+- [minor] 1d30a329"
+  :
+
+  - Cleanup vertical navigation, more separation between primary/secondary nav primitives
+
+## 0.4.0
+
+- [minor] 47c7dcf6"
+  :
+
+  - Bump all packages with a minor version to set a new baseline
+
+## 0.3.0
+
+- [minor] 5742e25d"
+  :
+
+  - Various improvements
+
 ## 0.2.1
 
 - [patch] Bump all packages for Babel config fixes [d51c833](d51c833)

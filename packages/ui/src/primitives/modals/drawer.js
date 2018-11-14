@@ -18,12 +18,12 @@ import FocusTrap, { type FocusTarget } from './FocusTrap';
 import { Fade, SlideInHorizontal, withTransitionState } from './transitions';
 import type { TransitionState } from './transitions';
 import { Blanket } from './common';
-import { colors } from '../../theme';
+import { colors, gridSize } from '../../theme';
 import { generateUEID } from '../../utils';
 import { alpha } from '../../theme/color-utils';
 import { A11yText } from '../typography';
 
-const innerGutter = 20;
+const innerGutter = gridSize * 2;
 
 // Styled Components
 // ------------------------------

@@ -341,18 +341,11 @@ class MongoSelectInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
     const {
       refListKey: ref,
-      config: { many, mongooseOptions },
+      config: { many },
     } = this;
     const type = many ? [ObjectId] : ObjectId;
-    const schemaOptions = { type, ref, ...mongooseOptions };
-    if (this.config.unique) {
-      // A value of anything other than `true` causes errors with Mongoose
-      // constantly recreating indexes. Ie; if we just splat `unique` onto the
-      // options object, it would be `undefined`, which would cause Mongoose to
-      // drop and recreate all indexes.
-      schemaOptions.unique = true;
-    }
-    schema.add({ [this.path]: schemaOptions });
+    const schemaOptions = { type, ref };
+    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
   }
 
   getRefListAdapter() {
@@ -361,12 +354,9 @@ class MongoSelectInterface extends MongooseFieldAdapter {
 
   getQueryConditions() {
     return {
-      [`${this.path}_is_null`]: value => {
-        if (value) {
-          return { [this.path]: { $not: { $exists: true, $ne: null } } };
-        }
-        return { [this.path]: { $exists: true, $ne: null } };
-      },
+      [`${this.path}_is_null`]: value => ({
+        [this.path]: value ? { $not: { $exists: true, $ne: null } } : { $exists: true, $ne: null },
+      }),
     };
   }
 

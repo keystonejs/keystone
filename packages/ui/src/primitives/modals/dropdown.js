@@ -19,6 +19,7 @@ const Item = styled(ItemElement)({
   appearance: 'none',
   background: 'none',
   border: '1px solid transparent',
+  boxSizing: 'border-box',
   color: colors.text,
   cursor: 'pointer',
   display: 'block',
@@ -44,7 +45,6 @@ const Menu = styled.div({
   borderRadius: borderRadius,
   boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.175), 0 3px 8px rgba(0, 0, 0, 0.175)',
   marginTop: gridSize,
-  maxHeight: '100%',
   minWidth: 160,
   paddingBottom: gridSize / 2,
   paddingTop: gridSize / 2,
@@ -99,6 +99,9 @@ class Dropdown extends Component<Props> {
       return;
     }
 
+    // kill scroll that occurs on arrow/page key press
+    event.preventDefault();
+
     // prep shorthand key/node helpers
     const isArrowUp = key === 'ArrowUp';
     const isArrowDown = key === 'ArrowDown';
@@ -107,10 +110,6 @@ class Dropdown extends Component<Props> {
 
     const firstItem = this.menu.firstChild;
     const lastItem = this.menu.lastChild;
-    const preventScroll = isArrowUp || isArrowDown || isPageUp || isPageDown;
-
-    // kill scroll that occurs on arrow/page key press
-    if (preventScroll) event.preventDefault();
 
     // typical item traversal
     if (isArrowUp) focus(target.previousSibling);
@@ -122,7 +121,7 @@ class Dropdown extends Component<Props> {
     if (target === firstItem && isArrowUp) focus(lastItem);
     if (target === lastItem && isArrowDown) focus(firstItem);
   };
-  handleMouseOver = ({ target }: MouseEvent) => {
+  handleMouseEnter = ({ target }: MouseEvent) => {
     if (target instanceof HTMLElement) {
       this.lastHover = target;
     }
@@ -153,7 +152,7 @@ class Dropdown extends Component<Props> {
               <Item
                 {...rest}
                 onClick={this.handleItemClick(item)}
-                onMouseOver={this.handleMouseOver}
+                onMouseEnter={this.handleMouseEnter}
                 key={idx}
               >
                 {content}

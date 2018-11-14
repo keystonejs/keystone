@@ -1,0 +1,1 @@
+- Consolidate mongoose schema pre/post hooks for field types

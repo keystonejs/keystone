@@ -3,7 +3,6 @@ import debounce from 'lodash.debounce';
 import { Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { deconstructErrorsToDataShape } from '../../util';
@@ -201,7 +200,6 @@ class ListPageDataProvider extends Component<Props, State> {
     return (
       <Fragment>
         <DocTitle>{list.plural}</DocTitle>
-        <Nav />
         <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
           {({ data, error, loading, refetch }) => {
             // Only show error page if there is no data

@@ -1,16 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
-import Media from 'react-media';
 import { Query } from 'react-apollo';
 
 import { Container, Grid, Cell } from '@voussoir/ui/src/primitives/layout';
-import { H1 } from '@voussoir/ui/src/primitives/typography';
+import { Title } from '@voussoir/ui/src/primitives/typography';
 
 import CreateItemModal from '../../components/CreateItemModal';
-import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { Box } from './components';
+import ContainerQuery from '../../components/ContainerQuery';
 import { gqlCountQueries } from '../../classes/List';
 
 class HomePage extends Component {
@@ -35,36 +34,45 @@ class HomePage extends Component {
     return (
       <main>
         <Container>
-          <H1>Home</H1>
-          <Grid gap={16}>
-            {lists.map(list => {
-              const { key, path } = list;
-              const meta = data && data[list.gqlNames.listQueryMetaName];
+          <Title as="h1" margin="both">
+            Dashboard
+          </Title>
+          <ContainerQuery>
+            {({ width }) => {
+              let cellWidth = 3;
+              if (width < 1024) cellWidth = 4;
+              if (width < 768) cellWidth = 6;
+              if (width < 480) cellWidth = 12;
 
               return (
-                <Fragment key={key}>
-                  <Media query={{ maxWidth: 768 }}>
-                    {isSmall => (
-                      <Cell width={isSmall ? 6 : 3}>
-                        <Box
+                <Grid gap={16}>
+                  {lists.map(list => {
+                    const { key, path } = list;
+                    const meta = data && data[list.gqlNames.listQueryMetaName];
+
+                    return (
+                      <Fragment key={key}>
+                        <Cell width={cellWidth}>
+                          <Box
+                            list={list}
+                            to={`${adminPath}/${path}`}
+                            meta={meta}
+                            onCreateClick={this.openCreateModal(key)}
+                          />
+                        </Cell>
+                        <CreateItemModal
+                          isOpen={createFromList === key}
                           list={list}
-                          to={`${adminPath}/${path}`}
-                          meta={meta}
-                          onCreateClick={this.openCreateModal(key)}
+                          onClose={this.closeCreateModal}
+                          onCreate={this.onCreate(list)}
                         />
-                      </Cell>
-                    )}
-                  </Media>
-                  <CreateItemModal
-                    isOpen={createFromList === key}
-                    list={list}
-                    onClose={this.closeCreateModal}
-                    onCreate={this.onCreate(list)}
-                  />
-                </Fragment>
+                      </Fragment>
+                    );
+                  })}
+                </Grid>
               );
-            })}
-          </Grid>
+            }}
+          </ContainerQuery>
         </Container>
       </main>
     );
@@ -78,7 +86,6 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
 
   return (
     <Fragment>
-      <Nav />
       <DocTitle>Home</DocTitle>
       <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
         {({ data, error }) => {

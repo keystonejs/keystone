@@ -1,41 +1,85 @@
 // @flow
 
-import React, { type Node } from 'react';
 import styled from '@emotion/styled';
 
-import { colors, gridSize } from '../../theme';
-import { FlexProvider, ItemElement, NAV_GUTTER } from './common';
+import { borderRadius, colors, gridSize } from '../../theme';
+import { ItemElement } from './common';
 
-const Wrapper = styled.nav({
-  backgroundColor: colors.primary,
-  color: 'white',
+export const NavGroupIcons = styled.div({
+  alignItems: 'center',
+  alignSelf: 'stretch',
   display: 'flex',
-  flexFlow: 'column nowrap',
-  minHeight: '100vh',
-  minWidth: 220,
+  flexFlow: 'row nowrap',
+  justifyContent: 'space-between',
+  padding: gridSize * 2,
 });
 
-export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => ({
-  background: isSelected ? colors.B.D10 : 'none',
-  border: 0,
-  borderRadius: '0.25em',
-  color: 'white',
-  paddingLeft: NAV_GUTTER,
-  paddingRight: NAV_GUTTER,
-  paddingBottom: gridSize * 1.5,
-  paddingTop: gridSize * 1.5,
-  position: isSelected ? 'relative' : null,
-  textDecoration: 'none',
-
-  ':hover': {
-    textDecoration: isSelected ? 'none' : 'underline',
-  },
+export const NavGroup = styled.div(({ isScrollable }) => ({
+  boxSizing: 'border-box',
+  boxShadow: isScrollable ? 'inset 0 -2px 0 rgba(0, 0, 0, 0.1)' : null,
+  flex: 1,
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  paddingBottom: gridSize * 3,
+  paddingLeft: gridSize * 3,
+  paddingRight: gridSize * 3,
+  width: '100%',
 }));
 
-type Props = { children: Node };
+export const PrimaryNav = styled.nav({
+  backgroundColor: colors.N10,
+  boxSizing: 'border-box',
+  display: 'flex',
+  flexFlow: 'column nowrap',
+  fontSize: '0.9rem',
+  fontWeight: 500,
+  height: '100vh',
+  overflow: 'hidden',
+  position: 'fixed',
+});
 
-export const PrimaryNav = ({ children }: Props) => (
-  <Wrapper>
-    <FlexProvider>{children}</FlexProvider>
-  </Wrapper>
-);
+export const BrandItem = styled.h2({
+  fontSize: 18,
+  fontWeight: 500,
+  margin: 0,
+  paddingBottom: gridSize * 2,
+});
+
+export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => {
+  const selectedStyles = isSelected
+    ? {
+        '&, :hover, :active, :focus': {
+          backgroundColor: colors.N80,
+          color: 'white',
+        },
+      }
+    : {};
+
+  return {
+    border: 0,
+    borderRadius,
+    color: colors.N90,
+    display: 'block',
+    marginBottom: 2,
+    overflow: 'hidden',
+    paddingLeft: gridSize * 2,
+    paddingRight: gridSize * 2,
+    paddingBottom: gridSize,
+    paddingTop: gridSize,
+    textDecoration: 'none',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+
+    ':hover, :focus': {
+      backgroundColor: colors.B.L80,
+      color: colors.B.D20,
+      outline: 0,
+      textDecoration: 'none',
+    },
+    ':active': {
+      backgroundColor: colors.B.L70,
+    },
+
+    ...selectedStyles,
+  };
+});
