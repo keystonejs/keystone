@@ -1,0 +1,1 @@
+- Use consistent query condition builders across all field types

@@ -44,10 +44,8 @@ class Select extends Implementation {
   }
   get gqlQueryInputFields() {
     return [
-      `${this.path}: ${this.getTypeName()}`,
-      `${this.path}_not: ${this.getTypeName()}`,
-      `${this.path}_in: [${this.getTypeName()}!]`,
-      `${this.path}_not_in: [${this.getTypeName()}!]`,
+      ...this.equalityInputFields(this.getTypeName()),
+      ...this.inInputFields(this.getTypeName()),
     ];
   }
   get gqlUpdateInputFields() {
@@ -68,10 +66,8 @@ class MongoSelectInterface extends MongooseFieldAdapter {
 
   getQueryConditions() {
     return {
-      [this.path]: value => ({ [this.path]: { $eq: value } }),
-      [`${this.path}_not`]: value => ({ [this.path]: { $ne: value } }),
-      [`${this.path}_in`]: value => ({ [this.path]: { $in: value } }),
-      [`${this.path}_not_in`]: value => ({ [this.path]: { $nin: value } }),
+      ...this.equalityConditions(),
+      ...this.inConditions(),
     };
   }
 }

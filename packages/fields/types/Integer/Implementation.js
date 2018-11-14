@@ -15,14 +15,9 @@ class Integer extends Implementation {
 
   get gqlQueryInputFields() {
     return [
-      `${this.path}: Int`,
-      `${this.path}_not: Int`,
-      `${this.path}_lt: Int`,
-      `${this.path}_lte: Int`,
-      `${this.path}_gt: Int`,
-      `${this.path}_gte: Int`,
-      `${this.path}_in: [Int]`,
-      `${this.path}_not_in: [Int]`,
+      ...this.equalityInputFields('Int'),
+      ...this.orderingInputFields('Int'),
+      ...this.inInputFields('Int'),
     ];
   }
   get gqlUpdateInputFields() {
@@ -65,14 +60,9 @@ class MongoIntegerInterface extends MongooseFieldAdapter {
 
   getQueryConditions() {
     return {
-      [this.path]: value => ({ [this.path]: { $eq: value } }),
-      [`${this.path}_not`]: value => ({ [this.path]: { $ne: value } }),
-      [`${this.path}_lt`]: value => ({ [this.path]: { $lt: value } }),
-      [`${this.path}_lte`]: value => ({ [this.path]: { $lte: value } }),
-      [`${this.path}_gt`]: value => ({ [this.path]: { $gt: value } }),
-      [`${this.path}_gte`]: value => ({ [this.path]: { $gte: value } }),
-      [`${this.path}_in`]: value => ({ [this.path]: { $in: value } }),
-      [`${this.path}_not_in`]: value => ({ [this.path]: { $not: { $in: value } } }),
+      ...this.equalityConditions(),
+      ...this.orderingConditions(),
+      ...this.inConditions(),
     };
   }
 }
