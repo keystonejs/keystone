@@ -62,31 +62,32 @@ const Relative = styled(Col)({
   height: ' 100%',
   position: 'relative',
 });
-const Shadow = styled.div({
-  background: `linear-gradient(to left,
-    rgba(0, 0, 0, 0.1) 0px,
-    rgba(0, 0, 0, 0.1) 1px,
-    rgba(0, 0, 0, 0.05) 1px,
-    rgba(0, 0, 0, 0) 100%
-  )`,
-  bottom: 0,
-  pointerEvents: 'none',
-  position: 'absolute',
-  top: 0,
-  right: 0,
-  width: 3,
-});
 const GrabHandle = styled.div({
+  background: `linear-gradient(to left, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0))`, // drop-shadow
   bottom: 0,
   cursor: 'col-resize',
   position: 'absolute',
-  right: -1,
+  right: 0,
   top: 0,
-  transition: 'background-color 200ms',
-  width: 1,
+  opacity: 0.6,
+  transition: 'opacity 220ms linear',
+  width: 3,
 
   ':hover, :active': {
-    backgroundColor: colors.N30,
+    opacity: 1,
+    transitionDelay: '100ms', // avoid inadvertent mouse passes
+  },
+
+  // hairline
+  ':after': {
+    background: `rgba(0, 0, 0, 0.125)`,
+    bottom: 0,
+    content: '" "',
+    pointerEvents: 'none',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 1,
   },
 
   // increase hit-area
@@ -293,7 +294,6 @@ class Nav extends Component {
                     </NavGroupIcons>
                   ) : null}
                 </Inner>
-                <Shadow />
                 {isCollapsed ? null : <GrabHandle {...resizeProps} />}
                 <Tooltip
                   content={
