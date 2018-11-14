@@ -1,37 +1,61 @@
 import { createRef, Component } from 'react';
 import PropTypes from 'prop-types';
 import ResizeObserver from 'resize-observer-polyfill';
+import raf from 'raf-schd';
+
+const LISTENER_OPTIONS = { passive: true };
 
 export default class ContainerQuery extends Component {
   scrollElement = createRef();
   state = { hasScroll: false, isScrollable: false, scrollTop: 0 };
   static propTypes = {
     children: PropTypes.func,
+    isPassive: PropTypes.bool,
+  };
+  static defaultProps = {
+    isPassive: true,
   };
 
   componentDidMount() {
-    const measure = this.scrollElement.current;
+    const { isPassive } = this.props;
+    const scrollEl = this.scrollElement.current;
+
+    if (!isPassive) {
+      scrollEl.addEventListener('scroll', this.handleScroll, LISTENER_OPTIONS);
+    }
 
     this.resizeObserver = new ResizeObserver(([entry]) => {
       this.setScroll(entry.target);
     });
-    this.resizeObserver.observe(measure);
+    this.resizeObserver.observe(scrollEl);
 
-    this.setScroll(measure);
+    this.setScroll(scrollEl);
   }
   componentWillUnmount() {
+    const { isPassive } = this.props;
+
+    if (!isPassive) {
+      this.scrollElement.current.removeEventListener('scroll', this.handleScroll, LISTENER_OPTIONS);
+    }
+
     if (this.resizeObserver && this.scrollElement.current) {
       this.resizeObserver.disconnect(this.scrollElement.current);
     }
     this.resizeObserver = null;
   }
 
+  handleScroll = raf(event => {
+    this.setScroll(event.target);
+  });
+
   setScroll = target => {
-    const isScrollable = target.scrollHeight > target.clientHeight;
-    const scrollTop = target.scrollTop;
+    const { clientHeight, scrollHeight, scrollTop } = target;
+    const isScrollable = scrollHeight > clientHeight;
+    const isBottom = scrollTop === scrollHeight - clientHeight;
+    const isTop = scrollTop === 0;
     const hasScroll = !!scrollTop;
 
-    this.setState({ isScrollable, scrollTop, hasScroll });
+    this.setState({ isBottom, isTop, isScrollable, scrollHeight, scrollTop, hasScroll });
   };
 
   render() {

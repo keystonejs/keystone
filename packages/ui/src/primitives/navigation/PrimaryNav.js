@@ -27,18 +27,33 @@ export const PrimaryNav = styled.nav({
   position: 'fixed',
   zIndex: 1,
 });
-export const PrimaryNavScrollArea = styled.div(({ isScrollable }) => ({
-  boxSizing: 'border-box',
-  boxShadow: isScrollable ? 'inset 0 -2px 0 rgba(0, 0, 0, 0.1)' : null,
-  flex: 1,
-  overflowY: 'auto',
-  overflowX: 'hidden',
-  minWidth: 140,
-  paddingBottom: PRIMARY_NAV_GUTTER,
-  paddingLeft: PRIMARY_NAV_GUTTER,
-  paddingRight: PRIMARY_NAV_GUTTER,
-  width: '100%',
-}));
+export const PrimaryNavScrollArea = styled.div(({ hasScroll, isBottom, isScrollable }) => {
+  const divider = {
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    content: '" "',
+    height: 2,
+    left: PRIMARY_NAV_GUTTER,
+    right: PRIMARY_NAV_GUTTER,
+    position: 'absolute',
+  };
+  const before = hasScroll ? { ...divider, top: 0 } : null;
+  const after = isScrollable && !isBottom ? { ...divider, bottom: 0 } : null;
+
+  return {
+    boxSizing: 'border-box',
+    flex: 1,
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    minWidth: 140,
+    paddingBottom: PRIMARY_NAV_GUTTER,
+    paddingLeft: PRIMARY_NAV_GUTTER,
+    paddingRight: PRIMARY_NAV_GUTTER,
+    width: '100%',
+
+    ':before': before,
+    ':after': after,
+  };
+});
 
 export const BrandItem = styled.h2({
   fontSize: 18,

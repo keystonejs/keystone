@@ -21,6 +21,7 @@ import {
   PrimaryNavItem,
   PrimaryNavScrollArea,
   NavGroupIcons,
+  PRIMARY_NAV_GUTTER,
 } from '@voussoir/ui/src/primitives/navigation';
 import { A11yText, Title } from '@voussoir/ui/src/primitives/typography';
 import { Tooltip } from '@voussoir/ui/src/primitives/modals';
@@ -37,14 +38,17 @@ function camelToKebab(string) {
   return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-const Inner = styled.div({
+const Col = styled.div({
   alignItems: 'flex-start',
   display: 'flex',
+  flex: 1,
   flexFlow: 'column nowrap',
-  height: ' 100vh',
   justifyContent: 'flex-start',
   overflow: 'hidden',
   width: '100%',
+});
+const Inner = styled(Col)({
+  height: ' 100vh',
 });
 const Page = styled.div({
   flex: 1,
@@ -53,6 +57,10 @@ const Page = styled.div({
 });
 const PageWrapper = styled.div({
   display: 'flex',
+});
+const Relative = styled(Col)({
+  height: ' 100%',
+  position: 'relative',
 });
 const Shadow = styled.div({
   background: `linear-gradient(to left,
@@ -199,6 +207,12 @@ class Nav extends Component {
             return { [key]: navWidth, ...pointers, ...transitions };
           };
 
+          const titleGutter = {
+            alignSelf: 'stretch',
+            marginLeft: PRIMARY_NAV_GUTTER,
+            marginRight: PRIMARY_NAV_GUTTER,
+          };
+
           return (
             <PageWrapper>
               <PropToggle
@@ -211,37 +225,42 @@ class Nav extends Component {
                 style={makeResizeStyles('width')}
               >
                 <Inner>
-                  <ScrollQuery>
-                    {(ref, snapshot) => (
-                      <PrimaryNavScrollArea ref={ref} isScrollable={snapshot.isScrollable}>
-                        <Title as="div" margin="both" crop>
-                          {name}
-                        </Title>
-                        <PrimaryNavItem to={adminPath} isSelected={location.pathname == adminPath}>
-                          Dashboard
-                        </PrimaryNavItem>
+                  <Title as="div" margin="both" crop style={titleGutter}>
+                    {name}
+                  </Title>
+                  <Relative>
+                    <ScrollQuery isPassive={false}>
+                      {(ref, snapshot) => (
+                        <PrimaryNavScrollArea ref={ref} {...snapshot}>
+                          <PrimaryNavItem
+                            to={adminPath}
+                            isSelected={location.pathname == adminPath}
+                          >
+                            Dashboard
+                          </PrimaryNavItem>
 
-                        {listKeys.map(key => {
-                          const list = getListByKey(key);
-                          const href = `${adminPath}/${list.path}`;
-                          const path = getPath(location.pathname);
-                          const isSelected = href === path;
+                          {listKeys.map(key => {
+                            const list = getListByKey(key);
+                            const href = `${adminPath}/${list.path}`;
+                            const path = getPath(location.pathname);
+                            const isSelected = href === path;
 
-                          return (
-                            <Fragment key={key}>
-                              <PrimaryNavItem
-                                id={`ks-nav-${list.path}`}
-                                isSelected={isSelected}
-                                to={href}
-                              >
-                                {list.label}
-                              </PrimaryNavItem>
-                            </Fragment>
-                          );
-                        })}
-                      </PrimaryNavScrollArea>
-                    )}
-                  </ScrollQuery>
+                            return (
+                              <Fragment key={key}>
+                                <PrimaryNavItem
+                                  id={`ks-nav-${list.path}`}
+                                  isSelected={isSelected}
+                                  to={href}
+                                >
+                                  {list.label}
+                                </PrimaryNavItem>
+                              </Fragment>
+                            );
+                          })}
+                        </PrimaryNavScrollArea>
+                      )}
+                    </ScrollQuery>
+                  </Relative>
 
                   {ENABLE_DEV_FEATURES || withAuth ? (
                     <NavGroupIcons>
