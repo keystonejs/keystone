@@ -61,7 +61,7 @@ const Arrow = styled.div`
 
 type Props = ModalHandlerProps & {
   children: Element<*>,
-  getModalRef: HTMLElement => void,
+  getModalRef: (HTMLElement | null) => void,
   style: Object,
   targetNode: HTMLElement,
   width: number,
@@ -132,7 +132,7 @@ class Popout extends Component<Props, State> {
     return document.body
       ? createPortal(
           <Wrapper
-            innerRef={getModalRef}
+            ref={getModalRef}
             left={leftOffset}
             top={topOffset}
             width={width}
