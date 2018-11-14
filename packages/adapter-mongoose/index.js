@@ -291,8 +291,10 @@ class MongooseListAdapter extends BaseListAdapter {
     return this.model.findByIdAndRemove(id);
   }
 
-  update(id, update, options) {
-    return this.model.findByIdAndUpdate(id, update, options);
+  update(id, data) {
+    // Avoid any kind of injection attack by explicitly doing a `$set` operation
+    // Return the modified item, not the original
+    return this.model.findByIdAndUpdate(id, { $set: data }, { new: true });
   }
 
   findAll() {
