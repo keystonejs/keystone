@@ -6,6 +6,7 @@ const defaultConfig = {
   port: process.env.PORT || 3000,
   apiPath: '/admin/api',
   graphiqlPath: '/admin/graphiql',
+  cors: { origin: true, credentials: true },
 };
 
 const remapKeys = {
