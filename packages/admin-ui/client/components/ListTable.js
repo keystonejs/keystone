@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
 import { ShieldIcon, InfoIcon, TrashcanIcon, ArrowRightIcon } from '@voussoir/icons';
-import { colors } from '@voussoir/ui/src/theme';
+import { colors, gridSize } from '@voussoir/ui/src/theme';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import { CheckboxPrimitive } from '@voussoir/ui/src/primitives/forms';
 import { A11yText } from '@voussoir/ui/src/primitives/typography';
@@ -22,12 +22,17 @@ const Table = styled('table')({
   tableLayout: 'fixed',
   width: '100%',
 });
-const HeaderCell = styled('td')({
-  borderBottom: `2px solid ${colors.N10}`,
+const HeaderCell = styled('th')({
+  backgroundColor: colors.page,
+  boxShadow: '0 2px 0 rgba(0, 0, 0, 0.1)',
+  boxSizing: 'border-box',
   color: '#999',
   display: 'table-cell',
   fontWeight: 'normal',
-  padding: '8px',
+  padding: gridSize,
+  position: 'sticky',
+  top: 0,
+  zIndex: 1,
   textAlign: 'left',
   verticalAlign: 'bottom',
 });
@@ -36,7 +41,8 @@ const BodyCell = styled('td')(({ isSelected }) => ({
   boxShadow: isSelected
     ? `0 1px 0 ${colors.B.L75}, 0 -1px 0 ${colors.B.L75}`
     : `0 -1px 0 ${colors.N10}`,
-  padding: '8px',
+  boxSizing: 'border-box',
+  padding: gridSize,
   position: 'relative',
   fontSize: 15,
 }));
@@ -113,26 +119,19 @@ class SortLink extends React.Component<SortLinkProps> {
 
   render() {
     const styles = {
-      borderBottom: `2px solid ${colors.N10}`,
-      cursor: 'pointer',
-      display: 'table-cell',
-      fontWeight: 'normal',
-      padding: '8px',
-      textAlign: 'left',
-      verticalAlign: 'bottom',
       color: this.props.active ? '#000' : '#999',
     };
 
     // TODO: Do we want to make `sortable` a field config option?
     return (
-      <td style={styles} onClick={this.onClick} data-field={this.props['data-field']}>
+      <HeaderCell style={styles} onClick={this.onClick} data-field={this.props['data-field']}>
         {this.props.field.label}
         {this.props.sortable && (
           <SortDirectionArrow
             rotate={this.props.active && !this.props.sortAscending ? '180deg' : '0deg'}
           />
         )}
-      </td>
+      </HeaderCell>
     );
   }
 }
