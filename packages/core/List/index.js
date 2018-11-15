@@ -332,97 +332,10 @@ module.exports = class List {
     return queries;
   }
 
-  async itemQuery({ id, context, name }) {
-    const operation = 'read';
-    graphqlLogger.debug({ id, operation, type: opToType[operation], name }, 'Start query');
-    const result = await this.getAccessControlledItem({ id, context, operation, gqlName: name });
-    graphqlLogger.debug({ id, operation, type: opToType[operation], name }, 'End query');
-    return result;
-  }
-
-  listMeta(context) {
-    return {
-      name: this.key,
-      // Return these as functions so they're lazily evaluated depending
-      // on what the user requested
-      // Evalutation takes place in ../Keystone/index.js
-      // NOTE: These could return a Boolean or a JSON object (if using the
-      // declarative syntax)
-      getAccess: () => ({
-        getCreate: () => context.getListAccessControlForUser(this.key, 'create'),
-        getRead: () => context.getListAccessControlForUser(this.key, 'read'),
-        getUpdate: () => context.getListAccessControlForUser(this.key, 'update'),
-        getDelete: () => context.getListAccessControlForUser(this.key, 'delete'),
-      }),
-      getSchema: () => {
-        const queries = [
-          this.gqlNames.itemQueryName,
-          this.gqlNames.listQueryName,
-          this.gqlNames.listQueryMetaName,
-        ];
-
-        if (this.getAuth()) {
-          queries.push(this.gqlNames.authenticatedQueryName);
-        }
-
-        // NOTE: Other fields on this type are resolved in the main resolver in
-        // ../Keystone/index.js
-        return {
-          type: this.gqlNames.outputTypeName,
-          queries,
-          key: this.key,
-        };
-      },
-    };
-  }
-
   getFieldsRelatedTo(listKey) {
     return this.fields.filter(
       ({ isRelationship, refListKey }) => isRelationship && refListKey === listKey
     );
-  }
-
-  get gqlQueryResolvers() {
-    let resolvers = {};
-
-    // If set to false, we can confidently remove these resolvers entirely from
-    // the graphql schema
-    if (this.access.read) {
-      resolvers = {
-        [this.gqlNames.listQueryName]: (_, args, context) =>
-          this.listQuery(args, context, this.gqlNames.listQueryName),
-
-        [this.gqlNames.listQueryMetaName]: (_, args, context) =>
-          this.listQueryMeta(args, context, this.gqlNames.listQueryMetaName),
-
-        [this.gqlNames.listMetaName]: (_, args, context) => this.listMeta(context),
-
-        [this.gqlNames.itemQueryName]: (_, { where: { id } }, context) =>
-          this.itemQuery({ id, context, name: this.gqlNames.itemQueryName }),
-      };
-    }
-
-    // NOTE: This query is not effected by the read permissions; if the user can
-    // authenticate themselves, then they already have access to know that the
-    // list exists
-    if (this.getAuth()) {
-      resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context) =>
-        this.authenticatedQuery(context);
-    }
-
-    return resolvers;
-  }
-
-  authenticatedQuery(context) {
-    if (!context.authedItem || context.authedListKey !== this.key) {
-      return null;
-    }
-
-    return this.itemQuery({
-      id: context.authedItem.id,
-      context,
-      name: this.gqlNames.authenticatedQueryName,
-    });
   }
 
   _throwAccessDenied(operation, context, target, extraInternalData = {}, extraData = {}) {
@@ -438,22 +351,6 @@ module.exports = class List {
         ...extraInternalData,
       },
     });
-  }
-
-  checkListAccess(context, operation, gqlName, extraInternalData) {
-    const access = context.getListAccessControlForUser(this.key, operation);
-    if (!access) {
-      graphqlLogger.debug(
-        { operation, access, gqlName, ...extraInternalData },
-        'Access statically or implicitly denied'
-      );
-      graphqlLogger.info({ operation, gqlName, ...extraInternalData }, 'Access Denied');
-      // If the client handles errors correctly, it should be able to
-      // receive partial data (for the fields the user has access to),
-      // and then an `errors` array of AccessDeniedError's
-      this._throwAccessDenied(operation, context, gqlName, extraInternalData);
-    }
-    return access;
   }
 
   // Wrap the "inner" resolver for a single output field with an access control check
@@ -549,7 +446,7 @@ module.exports = class List {
     return mutations;
   }
 
-  throwIfAccessDeniedOnFields({ operation, item, data, context, gqlName, extraData = {} }) {
+  throwIfAccessDeniedOnFields(operation, item, data, context, { gqlName, extraData = {} }) {
     const restrictedFields = [];
 
     this.fields
@@ -566,8 +463,24 @@ module.exports = class List {
     }
   }
 
-  async getAccessControlledItem({ operation, id, context, gqlName }) {
-    const throwAccessDenied = (access, msg) => {
+  checkListAccess(context, operation, { gqlName, ...extraInternalData }) {
+    const access = context.getListAccessControlForUser(this.key, operation);
+    if (!access) {
+      graphqlLogger.debug(
+        { operation, access, gqlName, ...extraInternalData },
+        'Access statically or implicitly denied'
+      );
+      graphqlLogger.info({ operation, gqlName, ...extraInternalData }, 'Access Denied');
+      // If the client handles errors correctly, it should be able to
+      // receive partial data (for the fields the user has access to),
+      // and then an `errors` array of AccessDeniedError's
+      this._throwAccessDenied(operation, context, gqlName, extraInternalData);
+    }
+    return access;
+  }
+
+  async getAccessControlledItem(id, access, { context, operation, gqlName }) {
+    const throwAccessDenied = msg => {
       graphqlLogger.debug({ id, operation, access, gqlName }, msg);
       graphqlLogger.info({ id, operation, gqlName }, 'Access Denied');
       // If the client handles errors correctly, it should be able to
@@ -576,25 +489,16 @@ module.exports = class List {
       this._throwAccessDenied(operation, context, gqlName, { itemId: id });
     };
 
-    const access = this.checkListAccess(context, operation, gqlName, { itemId: id });
-
-    const throwNotFound = () => {
-      // NOTE: There is a potential security risk here if we were to
-      // further check the existence of an item with the given ID: It'd be
-      // possible to figure out if records with particular IDs exist in
-      // the DB even if the user doesn't have access (eg; check a bunch of
-      // IDs, and the ones that return AccessDenied exist, and the ones
-      // that return null do not exist). Similar to how S3 returns 403's
-      // always instead of ever returning 404's.
-      // Our version is to always throw if not found.
-      throwAccessDenied(access, 'Zero items found');
-    };
-
     let item;
     // Early out - the user has full access to update this list
     if (access === true) {
       item = await this.adapter.findById(id);
-    } else {
+    } else if (
+      (access.id && access.id !== id) ||
+      (access.id_not && access.id_not === id) ||
+      (access.id_in && !access.id_in.includes(id)) ||
+      (access.id_not_in && access.id_not_in.includes(id))
+    ) {
       // It's odd, but conceivable the access control specifies a single id
       // the user has access to. So we have to do a check here to see if the
       // ID they're requesting matches that ID.
@@ -603,46 +507,37 @@ module.exports = class List {
       // if(access.id === id) return findById(id)
       // this will result in a possible false match if a declarative access
       // control clause has other items in it
-      if (
-        (access.id && access.id !== id) ||
-        (access.id_not && access.id_not === id) ||
-        (access.id_in && !access.id_in.includes(id)) ||
-        (access.id_not_in && access.id_not_in.includes(id))
-      ) {
-        throwAccessDenied(access, 'Item excluded this id from filters');
-      }
-
-      // NOTE: The fields will be filtered by the ACL checking in
-      // gqlFieldResolvers()
-      let queryArgs = {
-        // We only want 1 item, don't make the DB do extra work
-        first: 1,
-        where: {
-          // NOTE: Order here doesn't matter, if `access.id !== id`, it will
-          // have been caught earlier, so this spread and overwrite can only
-          // ever be additive or overwrite with the same value
-          ...access,
-          id,
-        },
-      };
-      item = (await this.adapter.itemsQuery(queryArgs))[0];
+      throwAccessDenied('Item excluded this id from filters');
+    } else {
+      // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
+      // We only want 1 item, don't make the DB do extra work
+      // NOTE: Order in where: { ... } doesn't matter, if `access.id !== id`, it will
+      // have been caught earlier, so this spread and overwrite can only
+      // ever be additive or overwrite with the same value
+      item = (await this.adapter.itemsQuery({ first: 1, where: { ...access, id } }))[0];
     }
     if (!item) {
       // Throwing an AccessDenied here if the item isn't found because we're
       // strict about accidentally leaking information (that the item doesn't
       // exist)
-      throwNotFound();
+      // NOTE: There is a potential security risk here if we were to
+      // further check the existence of an item with the given ID: It'd be
+      // possible to figure out if records with particular IDs exist in
+      // the DB even if the user doesn't have access (eg; check a bunch of
+      // IDs, and the ones that return AccessDenied exist, and the ones
+      // that return null do not exist). Similar to how S3 returns 403's
+      // always instead of ever returning 404's.
+      // Our version is to always throw if not found.
+      throwAccessDenied('Zero items found');
     }
     // Found the item, and it passed the filter test
     return item;
   }
 
-  async getAccessControlledItems({ operation, ids, context, gqlName }) {
+  async getAccessControlledItems(ids, access) {
     if (ids.length === 0) {
       return [];
     }
-
-    const access = this.checkListAccess(context, operation, gqlName, { itemIds: ids });
 
     const uniqueIds = unique(ids);
 
@@ -689,26 +584,152 @@ module.exports = class List {
       return [];
     }
 
-    // NOTE: The fields will be filtered by the ACL checking in
-    // gqlFieldResolvers()
-    let queryArgs = {
-      where: {
-        ...omit(access, ['id', 'id_not', 'id_in', 'id_not_in']),
-        ...idFilters,
-      },
-    };
+    // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
     // NOTE: Unlike in the single-operation variation, there is no security risk
     // in returning the result of the query here, because if no items match, we
     // return an empty array regarless of if that's because of lack of
     // permissions or because of those items don't exist.
-    return await this.adapter.itemsQuery(queryArgs);
+    const remainingAccess = omit(access, ['id', 'id_not', 'id_in', 'id_not_in']);
+    return await this.adapter.itemsQuery({ where: { ...remainingAccess, ...idFilters } });
+  }
+
+  get gqlQueryResolvers() {
+    let resolvers = {};
+
+    // If set to false, we can confidently remove these resolvers entirely from
+    // the graphql schema
+    if (this.access.read) {
+      resolvers = {
+        [this.gqlNames.listQueryName]: (_, args, context) =>
+          this.listQuery(args, context, this.gqlNames.listQueryName),
+
+        [this.gqlNames.listQueryMetaName]: (_, args, context) =>
+          this.listQueryMeta(args, context, this.gqlNames.listQueryMetaName),
+
+        [this.gqlNames.listMetaName]: (_, args, context) => this.listMeta(context),
+
+        [this.gqlNames.itemQueryName]: (_, { where: { id } }, context) =>
+          this.itemQuery(id, context, this.gqlNames.itemQueryName),
+      };
+    }
+
+    // NOTE: This query is not effected by the read permissions; if the user can
+    // authenticate themselves, then they already have access to know that the
+    // list exists
+    if (this.getAuth()) {
+      resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context) =>
+        this.authenticatedQuery(context);
+    }
+
+    return resolvers;
+  }
+
+  async listQuery(args, context, queryName) {
+    const access = this.checkListAccess(context, 'read', { queryName });
+
+    return this.adapter.itemsQuery(mergeWhereClause(args, access));
+  }
+
+  async listQueryMeta(args, context, queryName) {
+    return {
+      // Return these as functions so they're lazily evaluated depending
+      // on what the user requested
+      // Evalutation takes place in ../Keystone/index.js
+      getCount: () => {
+        const access = this.checkListAccess(context, 'read', { queryName });
+
+        return this.adapter
+          .itemsQueryMeta(mergeWhereClause(args, access))
+          .then(({ count }) => count);
+      },
+    };
+  }
+
+  listMeta(context) {
+    return {
+      name: this.key,
+      // Return these as functions so they're lazily evaluated depending
+      // on what the user requested
+      // Evalutation takes place in ../Keystone/index.js
+      // NOTE: These could return a Boolean or a JSON object (if using the
+      // declarative syntax)
+      getAccess: () => ({
+        getCreate: () => context.getListAccessControlForUser(this.key, 'create'),
+        getRead: () => context.getListAccessControlForUser(this.key, 'read'),
+        getUpdate: () => context.getListAccessControlForUser(this.key, 'update'),
+        getDelete: () => context.getListAccessControlForUser(this.key, 'delete'),
+      }),
+      getSchema: () => {
+        const queries = [
+          this.gqlNames.itemQueryName,
+          this.gqlNames.listQueryName,
+          this.gqlNames.listQueryMetaName,
+        ];
+
+        if (this.getAuth()) {
+          queries.push(this.gqlNames.authenticatedQueryName);
+        }
+
+        // NOTE: Other fields on this type are resolved in the main resolver in
+        // ../Keystone/index.js
+        return {
+          type: this.gqlNames.outputTypeName,
+          queries,
+          key: this.key,
+        };
+      },
+    };
+  }
+
+  async itemQuery(id, context, gqlName) {
+    const operation = 'read';
+    graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'Start query');
+
+    const access = this.checkListAccess(context, operation, { gqlName, itemId: id });
+
+    const result = await this.getAccessControlledItem(id, access, { context, operation, gqlName });
+
+    graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'End query');
+    return result;
+  }
+
+  authenticatedQuery(context) {
+    if (!context.authedItem || context.authedListKey !== this.key) {
+      return null;
+    }
+
+    return this.itemQuery(context.authedItem.id, context, this.gqlNames.authenticatedQueryName);
+  }
+
+  get gqlMutationResolvers() {
+    const mutationResolvers = {};
+
+    if (this.access.create) {
+      mutationResolvers[this.gqlNames.createMutationName] = (_, { data }, context) =>
+        this.createMutation(data, context);
+    }
+
+    if (this.access.update) {
+      mutationResolvers[this.gqlNames.updateMutationName] = async (_, { id, data }, context) =>
+        this.updateMutation(id, data, context);
+    }
+
+    if (this.access.delete) {
+      mutationResolvers[this.gqlNames.deleteMutationName] = async (_, { id }, context) =>
+        this.deleteMutation(id, context);
+
+      mutationResolvers[this.gqlNames.deleteManyMutationName] = async (_, { ids }, context) =>
+        this.deleteManyMutation(ids, context);
+    }
+
+    return mutationResolvers;
   }
 
   async createMutation(data, context) {
     const operation = 'create';
     const gqlName = this.gqlNames.createMutationName;
 
-    this.checkListAccess(context, operation, gqlName);
+    this.checkListAccess(context, operation, { gqlName });
 
     // Merge in default Values here
     const item = {
@@ -720,7 +741,7 @@ module.exports = class List {
       ...data,
     };
 
-    this.throwIfAccessDeniedOnFields({ operation, item, data, context, gqlName });
+    this.throwIfAccessDeniedOnFields(operation, item, data, context, { gqlName });
 
     // Enable pre-hooks to perform some action after the item is created by
     // giving them a promise which will eventually resolve with the value of the
@@ -761,10 +782,13 @@ module.exports = class List {
   async updateMutation(id, data, context) {
     const operation = 'update';
     const gqlName = this.gqlNames.updateMutationName;
-
-    const item = await this.getAccessControlledItem({ id, context, operation, gqlName });
     const extraData = { itemId: id };
-    this.throwIfAccessDeniedOnFields({ operation, item, data, context, gqlName, extraData });
+
+    const access = this.checkListAccess(context, operation, { gqlName, ...extraData });
+
+    const item = await this.getAccessControlledItem(id, access, { context, operation, gqlName });
+
+    this.throwIfAccessDeniedOnFields(operation, item, data, context, { gqlName, extraData });
 
     const resolvedData = await resolveAllKeys(
       mapKeys(data, (value, fieldPath) =>
@@ -783,30 +807,26 @@ module.exports = class List {
     return newItem;
   }
 
-  async _tryManyQuery(args, context, gqlName, manyQuery) {
-    const access = this.checkListAccess(context, 'read', gqlName);
-    let queryArgs = mergeWhereClause(args, access);
+  async deleteMutation(id, context) {
+    const operation = 'delete';
+    const gqlName = this.gqlNames.deleteManyMutationName;
 
-    return manyQuery(queryArgs);
+    const access = this.checkListAccess(context, operation, { gqlName, itemId: id });
+
+    const item = await this.getAccessControlledItem(id, access, { context, operation, gqlName });
+
+    return this._deleteWithFieldHooks(item, context);
   }
 
-  async listQuery(args, context, queryName) {
-    return this._tryManyQuery(args, context, queryName, queryArgs =>
-      this.adapter.itemsQuery(queryArgs)
-    );
-  }
+  async deleteManyMutation(ids, context) {
+    const operation = 'delete';
+    const gqlName = this.gqlNames.deleteManyMutationName;
 
-  async listQueryMeta(args, context, queryName) {
-    return {
-      // Return these as functions so they're lazily evaluated depending
-      // on what the user requested
-      // Evalutation takes place in ../Keystone/index.js
-      getCount: () => {
-        return this._tryManyQuery(args, context, queryName, queryArgs =>
-          this.adapter.itemsQueryMeta(queryArgs).then(({ count }) => count)
-        );
-      },
-    };
+    const access = this.checkListAccess(context, operation, { gqlName, itemIds: ids });
+
+    const items = await this.getAccessControlledItems(ids, access);
+
+    return Promise.all(items.map(async item => this._deleteWithFieldHooks(item, context)));
   }
 
   async _deleteWithFieldHooks(item, context) {
@@ -821,46 +841,6 @@ module.exports = class List {
     );
 
     return result;
-  }
-
-  async deleteMutation(id, context) {
-    const operation = 'delete';
-    const gqlName = this.gqlNames.deleteManyMutationName;
-
-    const item = await this.getAccessControlledItem({ id, context, operation, gqlName });
-    return this._deleteWithFieldHooks(item, context);
-  }
-
-  async deleteManyMutation(ids, context) {
-    const operation = 'delete';
-    const gqlName = this.gqlNames.deleteManyMutationName;
-
-    const items = await this.getAccessControlledItems({ ids, context, operation, gqlName });
-    return Promise.all(items.map(async item => this._deleteWithFieldHooks(item, context)));
-  }
-
-  get gqlMutationResolvers() {
-    const mutationResolvers = {};
-
-    if (this.access.create) {
-      mutationResolvers[this.gqlNames.createMutationName] = (_, { data }, context) =>
-        this.createMutation(data, context);
-    }
-
-    if (this.access.update) {
-      mutationResolvers[this.gqlNames.updateMutationName] = async (_, { id, data }, context) =>
-        this.updateMutation(id, data, context);
-    }
-
-    if (this.access.delete) {
-      mutationResolvers[this.gqlNames.deleteMutationName] = async (_, { id }, context) =>
-        this.deleteMutation(id, context);
-
-      mutationResolvers[this.gqlNames.deleteManyMutationName] = async (_, { ids }, context) =>
-        this.deleteManyMutation(ids, context);
-    }
-
-    return mutationResolvers;
   }
 
   getAccessControl({ operation, authentication }) {
