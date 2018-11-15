@@ -1,5 +1,23 @@
 # @voussoir/core
 
+## 0.7.0
+
+- [patch] d1777cc1:
+
+  - Consolidate logging and error handling mechanisms within core/List/index.js
+
+- [minor] 45d4c379:
+
+  - Update the functional API for Keystone List objects for consistency
+
+- [patch] 9c383fe8:
+
+  - Always use \$set and { new: true } in the mongoose adapter update() method
+
+- Updated dependencies [3ae588b7]:
+  - @voussoir/access-control@0.3.0
+  - @voussoir/fields@1.4.0
+
 ## 0.6.0
 
 - [minor] d94b517:

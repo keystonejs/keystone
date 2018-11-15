@@ -1,5 +1,15 @@
 # @arch-ui/core
 
+## 0.2.1
+
+- [patch] b3742ef:
+
+  Trying to add arch component rendering using gatsby 2.0 when rendering README
+
+- [patch] 589dbc02:
+
+  - navigation improvements and paper cut fixes
+
 ## 0.2.0
 
 - [minor] 47c7dcf6"

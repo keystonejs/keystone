@@ -1,5 +1,15 @@
 # @voussoir/ui
 
+## 0.5.0
+
+- [patch] 7a24b92e:
+
+  - sticky table headers in list view for supporting browsers
+
+- [minor] 589dbc02:
+
+  - navigation improvements and paper cut fixes
+
 ## 0.4.0
 
 - [minor] 1d30a329"

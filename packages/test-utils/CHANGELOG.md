@@ -1,5 +1,18 @@
 # @voussoir/test-utils
 
+## 0.1.2
+
+- [patch] 9c383fe8:
+
+  - Always use \$set and { new: true } in the mongoose adapter update() method
+
+- Updated dependencies [45d4c379]:
+- Updated dependencies [ae3b8fda]:
+- Updated dependencies [b0d19c24]:
+  - @voussoir/adapter-mongoose@0.5.0
+  - @voussoir/core@0.7.0
+  - @voussoir/server@0.4.0
+
 ## 0.1.1
 
 - Updated dependencies [d94b517]:

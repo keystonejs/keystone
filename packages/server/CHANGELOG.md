@@ -1,5 +1,11 @@
 # @voussoir/server
 
+## 0.4.0
+
+- [minor] ae3b8fda:
+
+  - Makes CORS user configurable
+
 ## 0.3.0
 
 - [minor] 47c7dcf6"
