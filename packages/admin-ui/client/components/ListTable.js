@@ -137,6 +137,72 @@ class SortLink extends React.Component<SortLinkProps> {
   }
 }
 
+// ==============================
+// Common for display & manage
+// ==============================
+
+function getFieldCells({ list, link, isSelected, item, itemErrors, fields }, isManaging) {
+  return fields.map(field => {
+    const { path } = field;
+
+    const isLoading = !item.hasOwnProperty(path);
+    if (isLoading) {
+      // TODO: Better loading state?
+      return <BodyCell key={path} />;
+    }
+
+    if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
+      return (
+        <BodyCell key={path}>
+          <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N10 }} />
+          <A11yText>{itemErrors[path].message}</A11yText>
+        </BodyCell>
+      );
+    }
+
+    if (path === '_label_') {
+      return (
+        <BodyCellTruncated isSelected={isSelected} key={path}>
+          {isManaging ? (
+            item._label_
+          ) : (
+            <ItemLink to={link({ path: list.path, id: item.id })}>{item._label_}</ItemLink>
+          )}
+        </BodyCellTruncated>
+      );
+    }
+
+    let content;
+
+    const Cell = FieldTypes[list.key][path].Cell;
+
+    if (Cell) {
+      // fix this later, creating a react component on every render is really bad
+      // react will rerender into the DOM on every react render
+      // probably not a huge deal on a leaf component like this but still bad
+      const LinkComponent = ({ children, ...data }) =>
+        isManaging ? children : <ItemLink to={link(data)}>{children}</ItemLink>;
+      content = (
+        <Cell
+          isSelected={isSelected}
+          list={list}
+          data={item[path]}
+          field={field}
+          Link={LinkComponent}
+        />
+      );
+    } else {
+      content = item[path];
+    }
+
+    return (
+      <BodyCellTruncated isSelected={isSelected} key={path}>
+        {content}
+      </BodyCellTruncated>
+    );
+  });
+}
+
 class ListDisplayRow extends Component {
   static defaultProps = {
     itemErrors: {},
@@ -206,50 +272,7 @@ class ListDisplayRow extends Component {
             <A11yText>Open</A11yText>
           </Button>
         </BodyCell>
-        {fields.map(field => {
-          const { path } = field;
-
-          const isLoading = !item.hasOwnProperty(path);
-          if (isLoading) {
-            // TODO: Better loading state?
-            return <BodyCell key={path} />;
-          }
-
-          if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
-            return (
-              <BodyCell key={path}>
-                <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N10 }} />
-                <A11yText>{itemErrors[path].message}</A11yText>
-              </BodyCell>
-            );
-          }
-
-          if (path === '_label_') {
-            return (
-              <BodyCellTruncated key={path}>
-                <ItemLink to={link({ path: list.path, id: item.id })}>{item._label_}</ItemLink>
-              </BodyCellTruncated>
-            );
-          }
-
-          let content;
-
-          const Cell = FieldTypes[list.key][path].Cell;
-
-          if (Cell) {
-            // fix this later, creating a react component on every render is really bad
-            // react will rerender into the DOM on every react render
-            // probably not a huge deal on a leaf component like this but still bad
-            const LinkComponent = ({ children, ...data }) => (
-              <ItemLink to={link(data)}>{children}</ItemLink>
-            );
-            content = <Cell list={list} data={item[path]} field={field} Link={LinkComponent} />;
-          } else {
-            content = item[path];
-          }
-
-          return <BodyCellTruncated key={path}>{content}</BodyCellTruncated>;
-        })}
+        {getFieldCells(this.props)}
       </tr>
     );
   }
@@ -293,7 +316,7 @@ class ListManageRow extends Component {
     this.checkbox = ref;
   };
   render() {
-    const { fields, isSelected, item } = this.props;
+    const { fields, isSelected, item, list } = this.props;
 
     return (
       <tr
@@ -314,11 +337,7 @@ class ListManageRow extends Component {
           />
         </BodyCell>
         <BodyCell isSelected={isSelected} />
-        {fields.map(({ path }) => (
-          <BodyCellTruncated isSelected={isSelected} key={path}>
-            {item[path]}
-          </BodyCellTruncated>
-        ))}
+        {getFieldCells(this.props, true)}
       </tr>
     );
   }
@@ -411,7 +430,9 @@ export default class ListTable extends Component {
                 fields={fields}
                 item={item}
                 key={item.id}
+                link={({ path, id }) => `${adminPath}/${path}/${id}`}
                 list={list}
+                itemErrors={itemsErrors[itemIndex] || {}}
                 isSelected={selectedItems.includes(item.id)}
                 selectOnEnter={mouseOverSelectsRow}
                 onSelect={onSelect}

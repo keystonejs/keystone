@@ -336,7 +336,7 @@ class ListDetails extends Component<Props, State> {
         <main>
           <ContainerQuery>
             {({ width }) => (
-              <Container>
+              <Container isFullWidth={isFullWidth}>
                 <Title as="h1" margin="both">
                   {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
                   <span>, by</span>
