@@ -297,7 +297,7 @@ class ListDetails extends Component<Props, State> {
       <Dropdown
         align="right"
         target={
-          <IconButton variant="subtle" icon={KebabVerticalIcon} id="ks-list-dropdown">
+          <IconButton variant="nuance" icon={KebabVerticalIcon} id="ks-list-dropdown">
             <A11yText>Show more...</A11yText>
           </IconButton>
         }
