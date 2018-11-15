@@ -625,7 +625,7 @@ module.exports = class List {
           id,
         },
       };
-      item = await this.adapter.itemsQuery(queryArgs)[0];
+      item = (await this.adapter.itemsQuery(queryArgs))[0];
     }
     if (!item) {
       // Throwing an AccessDenied here if the item isn't found because we're
@@ -702,7 +702,7 @@ module.exports = class List {
     // return an empty array regarless of if that's because of lack of
     // permissions or because of those items don't exist.
     return await this.adapter.itemsQuery(queryArgs);
- }
+  }
 
   async createMutation(data, context) {
     const operation = 'create';
