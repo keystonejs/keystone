@@ -1,5 +1,22 @@
 # @voussoir/adapter-mongoose
 
+## 0.5.0
+
+- [patch] ff4b98c5:
+
+  - Consolidate mongoose schema pre/post hooks for field types
+
+- [minor] 9c383fe8:
+
+  - Always use \$set and { new: true } in the mongoose adapter update() method
+
+- [minor] b0d19c24:
+
+  - Use consistent query condition builders across all field types
+
+- Updated dependencies [45d4c379]:
+  - @voussoir/core@0.7.0
+
 ## 0.4.1
 
 - Updated dependencies [d94b517]:

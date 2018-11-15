@@ -1,5 +1,11 @@
 # @voussoir/access-control
 
+## 0.3.0
+
+- [minor] 3ae588b7:
+
+  - Rename test*AccessControl functions to validate*AccessControl
+
 ## 0.2.0
 
 - [minor] 47c7dcf6"

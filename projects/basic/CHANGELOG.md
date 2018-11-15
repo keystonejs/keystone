@@ -1,5 +1,25 @@
 # @voussoir/cypress-project-basic
 
+## 1.3.0
+
+- [patch] 7a24b92e:
+
+  - sticky table headers in list view for supporting browsers
+
+- [minor] 589dbc02:
+
+  - navigation improvements and paper cut fixes
+
+- Updated dependencies [45d4c379]:
+- Updated dependencies [ae3b8fda]:
+- Updated dependencies [9c383fe8]:
+- Updated dependencies [b0d19c24]:
+  - @voussoir/adapter-mongoose@0.5.0
+  - @voussoir/test-utils@0.1.2
+  - @voussoir/core@0.7.0
+  - @voussoir/fields@1.4.0
+  - @voussoir/server@0.4.0
+
 ## 1.2.1
 
 - Updated dependencies [d94b517]:

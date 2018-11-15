@@ -1,1 +1,0 @@
-- sticky table headers in list view for supporting browsers

@@ -1,5 +1,31 @@
 # @voussoir/fields
 
+## 1.4.0
+
+- [minor] 3ae588b7:
+
+  - Rename test*AccessControl functions to validate*AccessControl
+
+- [patch] ff4b98c5:
+
+  - Consolidate mongoose schema pre/post hooks for field types
+
+- [patch] 45d4c379:
+
+  - Update the functional API for Keystone List objects for consistency
+
+- [minor] 589dbc02:
+
+  - navigation improvements and paper cut fixes
+
+- [minor] b0d19c24:
+
+  - Use consistent query condition builders across all field types
+
+- Updated dependencies [9c383fe8]:
+  - @voussoir/adapter-mongoose@0.5.0
+  - @voussoir/test-utils@0.1.2
+
 ## 1.3.0
 
 - [minor] d94b517:

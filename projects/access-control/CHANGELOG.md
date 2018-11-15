@@ -1,5 +1,21 @@
 # @voussoir/cypress-project-access-control
 
+## 1.1.2
+
+- Updated dependencies [45d4c379]:
+- Updated dependencies [ae3b8fda]:
+- Updated dependencies [9c383fe8]:
+- Updated dependencies [7a24b92e]:
+- Updated dependencies [589dbc02]:
+- Updated dependencies [b0d19c24]:
+  - @voussoir/adapter-mongoose@0.5.0
+  - @voussoir/test-utils@0.1.2
+  - @voussoir/core@0.7.0
+  - @voussoir/fields@1.4.0
+  - @voussoir/server@0.4.0
+  - @voussoir/admin-ui@0.6.0
+  - @voussoir/ui@0.5.0
+
 ## 1.1.1
 
 - Updated dependencies [d94b517]:
