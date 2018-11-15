@@ -809,17 +809,12 @@ module.exports = class List {
     };
   }
 
-  async deleteMutation(id, context) {
-    const operation = 'delete';
-    const gqlName = this.gqlNames.deleteManyMutationName;
-
-    const item = await this.getAccessControlledItem({ id, context, operation, gqlName });
-
+  async _deleteWithFieldHooks(item, context) {
     await Promise.all(
       this.fields.map(field => field.deleteFieldPreHook(item[field.path], item, context))
     );
 
-    const result = await this.adapter.delete(id);
+    const result = await this.adapter.delete(item.id);
 
     await Promise.all(
       this.fields.map(field => field.deleteFieldPostHook(item[field.path], item, context))
@@ -828,12 +823,20 @@ module.exports = class List {
     return result;
   }
 
+  async deleteMutation(id, context) {
+    const operation = 'delete';
+    const gqlName = this.gqlNames.deleteManyMutationName;
+
+    const item = await this.getAccessControlledItem({ id, context, operation, gqlName });
+    return this._deleteWithFieldHooks(item, context);
+  }
+
   async deleteManyMutation(ids, context) {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteManyMutationName;
 
     const items = await this.getAccessControlledItems({ ids, context, operation, gqlName });
-    return Promise.all(items.map(item => this.adapter.delete(item.id).then(() => item)));
+    return Promise.all(items.map(async item => this._deleteWithFieldHooks(item, context)));
   }
 
   get gqlMutationResolvers() {
