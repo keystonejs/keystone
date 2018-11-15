@@ -18,7 +18,6 @@ import { TriangleLeftIcon, CheckIcon, ClippyIcon, PlusIcon } from '@voussoir/ico
 import { Container, FlexGroup } from '@voussoir/ui/src/primitives/layout';
 import { A11yText, Title } from '@voussoir/ui/src/primitives/typography';
 import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
-import { Alert } from '@voussoir/ui/src/primitives/alert';
 import { AutocompleteCaptor } from '@voussoir/ui/src/primitives/forms';
 import { colors, gridSize } from '@voussoir/ui/src/theme';
 import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
@@ -264,14 +263,7 @@ const ItemDetails = withRouter(
     };
 
     render() {
-      const {
-        adminPath,
-        list,
-        updateInProgress,
-        updateErrorMessage,
-        itemErrors,
-        item: savedData,
-      } = this.props;
+      const { adminPath, list, updateInProgress, itemErrors, item: savedData } = this.props;
       const { copyText, item } = this.state;
       const isCopied = copyText === item.id;
       const copyIcon = isCopied ? (
@@ -285,11 +277,6 @@ const ItemDetails = withRouter(
       const titleText = savedData._label_;
       return (
         <Fragment>
-          {updateErrorMessage ? (
-            <Alert appearance="danger" css={{ marginTop: gridSize * 3 }}>
-              {updateErrorMessage}
-            </Alert>
-          ) : null}
           <FlexGroup align="center" justify="space-between">
             <Title as="h1" margin="both">
               <TitleLink to={listHref}>{list.label}</TitleLink>: {titleText}
