@@ -826,29 +826,31 @@ module.exports = class List {
     };
   }
 
+  async _deleteWithFieldHooks(item, context) {
+    await Promise.all(
+      this.fields.map(field => field.deleteFieldPreHook(item[field.path], item, context))
+    );
+
+    const result = await this.adapter.delete(item.id);
+
+    await Promise.all(
+      this.fields.map(field => field.deleteFieldPostHook(item[field.path], item, context))
+    );
+
+    return result;
+  }
+
   async deleteMutation(id, context) {
     return this.performActionOnItemWithAccessControl(
       { id, context, operation: 'delete', gqlName: this.gqlNames.deleteMutationName },
-      async item => {
-        await Promise.all(
-          this.fields.map(field => field.deleteFieldPreHook(item[field.path], item, context))
-        );
-
-        const result = await this.adapter.delete(id);
-
-        await Promise.all(
-          this.fields.map(field => field.deleteFieldPostHook(item[field.path], item, context))
-        );
-
-        return result;
-      }
+      async item => this._deleteWithFieldHooks(item, context)
     );
   }
 
   async deleteManyMutation(ids, context) {
     return this.performMultiActionOnItemsWithAccessControl(
       { ids, context, operation: 'delete', gqlName: this.gqlNames.deleteManyMutationName },
-      items => Promise.all(items.map(item => this.adapter.delete(item.id).then(() => item)))
+      items => Promise.all(items.map(async item => this._deleteWithFieldHooks(item, context)))
     );
   }
 
