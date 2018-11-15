@@ -453,6 +453,7 @@ class ListDetails extends Component<Props, State> {
               <ListTable
                 adminPath={adminPath}
                 fields={fields}
+                isFullWidth={isFullWidth}
                 isManaging={isManaging}
                 items={items}
                 itemsErrors={itemsErrors}

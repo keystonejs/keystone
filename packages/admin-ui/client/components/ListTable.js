@@ -20,7 +20,6 @@ const Table = styled('table')({
   borderCollapse: 'collapse',
   borderSpacing: 0,
   marginBottom: gridSize * 4,
-  tableLayout: 'fixed',
   width: '100%',
 });
 const HeaderCell = styled('th')({
@@ -354,6 +353,7 @@ export default class ListTable extends Component {
     const {
       adminPath,
       fields,
+      isFullWidth,
       isManaging,
       items,
       itemsErrors = [],
@@ -368,7 +368,7 @@ export default class ListTable extends Component {
     const { mouseOverSelectsRow } = this.state;
 
     return items.length ? (
-      <Table id="ks-list-table">
+      <Table id="ks-list-table" style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
         <colgroup>
           <col width="32" />
           <col width="32" />
