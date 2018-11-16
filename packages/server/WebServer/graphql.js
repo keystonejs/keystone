@@ -1,5 +1,4 @@
 const express = require('express');
-const fastMemoize = require('fast-memoize');
 const { ApolloServer } = require('apollo-server-express');
 const { formatError, isInstance: isApolloErrorInstance } = require('apollo-errors');
 const { renderPlaygroundPage } = require('graphql-playground-html');
@@ -19,36 +18,7 @@ module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlP
     ...keystone.getAdminSchema(),
     maxFileSize: 200 * 1024 * 1024, // TODO: Make configurable
     maxFiles: 5,
-    context: ({ req }) => {
-      // memoizing to avoid requests that hit the same type multiple times.
-      // We do it within the request callback so we can resolve it based on the
-      // request info ( like who's logged in right now, etc)
-      const getListAccessControlForUser = fastMemoize((listKey, operation) => {
-        return keystone.getListAccessControl({
-          listKey,
-          operation,
-          authentication: { item: req.user, listKey: req.authedListKey },
-        });
-      });
-
-      const getFieldAccessControlForUser = fastMemoize((listKey, fieldKey, item, operation) => {
-        return keystone.getFieldAccessControl({
-          item,
-          listKey,
-          fieldKey,
-          operation,
-          authentication: { item: req.user, listKey: req.authedListKey },
-        });
-      });
-
-      return {
-        // req.user & req.authedListKey come from ../index.js
-        authedItem: req.user,
-        authedListKey: req.authedListKey,
-        getListAccessControlForUser,
-        getFieldAccessControlForUser,
-      };
-    },
+    context: ({ req }) => keystone.getAccessContext(req),
     formatError: error => {
       try {
         // For correlating user error reports with logs
