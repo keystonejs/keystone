@@ -34,7 +34,7 @@
     "react-color": "^2.14.1"
   },
   "peerDependencies": {
-    "react": "^16.5.2"
+    "react": "16.7.0-alpha.2"
   },
   "devDependencies": {
     "@voussoir/test-utils": "^0.1.2",
