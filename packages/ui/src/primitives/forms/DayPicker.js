@@ -3,7 +3,6 @@
 import { jsx } from '@emotion/core';
 import React, { type Node, type Ref } from 'react';
 import styled from '@emotion/styled';
-import Kalendaryo from 'kalendaryo';
 import {
   isToday as isDayToday,
   isSameMonth,
@@ -229,16 +228,46 @@ const SelectYear = ({
 
 type DayPickerProps = {
   onSelectedChange: Date => void,
-  yearRangeFrom?: number,
-  yearRangeTo?: number,
-  yearPickerType?: YearPickerType,
+  yearRangeFrom: number,
+  yearRangeTo: number,
+  yearPickerType: YearPickerType,
+  startCurrentDateAt: Date,
+  startSelectedDateAt: Date,
 };
 
-export const DayPicker = (props: DayPickerProps) => {
-  function BasicCalendar({ setSelectedDate, setDate, selectedDate, date }) {
-    const yearRangeFrom = props.yearRangeFrom ? props.yearRangeFrom : getYear(new Date()) - 100;
-    const yearRangeTo = props.yearRangeTo ? props.yearRangeTo : getYear(new Date());
-    const yearPickerType = props.yearPickerType ? props.yearPickerType : 'auto';
+type DayPickerState = {
+  date: Date,
+  selectedDate: Date,
+};
+
+export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
+  state = {
+    date: this.props.startCurrentDateAt,
+    selectedDate: this.props.startSelectedDateAt,
+  };
+
+  static defaultProps = {
+    yearRangeFrom: getYear(new Date()) - 100,
+    yearRangeTo: getYear(new Date()),
+    yearPickerType: 'auto',
+  };
+  componentDidUpdate(prevProps: DayPickerProps, prevState: DayPickerState) {
+    const selectedDateChanged = !areDatesEqual(prevState.selectedDate, this.state.selectedDate);
+    if (selectedDateChanged) {
+      this.props.onSelectedChange(this.state.selectedDate);
+    }
+  }
+  render() {
+    const { yearRangeFrom, yearRangeTo, yearPickerType } = this.props;
+
+    const setDate = date => {
+      this.setState({ date });
+    };
+    const setSelectedDate = selectedDate => {
+      this.setState({ selectedDate });
+    };
+
+    const { date, selectedDate } = this.state;
 
     const weeksInCurrentMonth = getWeeksInMonth(date);
 
@@ -314,8 +343,7 @@ export const DayPicker = (props: DayPickerProps) => {
       </Wrapper>
     );
   }
-  return <Kalendaryo {...props} render={BasicCalendar} />;
-};
+}
 
 type Props = {
   children?: Node,
