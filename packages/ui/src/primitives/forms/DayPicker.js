@@ -1,7 +1,7 @@
 // @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { type Node, type Ref } from 'react';
+import React, { type Node, type Ref } from 'react';
 import styled from '@emotion/styled';
 import Kalendaryo from 'kalendaryo';
 import {
@@ -14,6 +14,15 @@ import {
   format,
   setDay,
   setYear,
+  isEqual as areDatesEqual,
+  addMonths,
+  subMonths,
+  startOfMonth,
+  eachDay,
+  addWeeks,
+  startOfWeek,
+  endOfWeek,
+  getDate,
 } from 'date-fns';
 import { Input } from './index';
 import { Select } from '../filters';
@@ -117,6 +126,39 @@ type SelectMonthProps = {
   date: Date,
 };
 
+function createDayObject(dateValue) {
+  return {
+    dateValue,
+    label: getDate(dateValue),
+  };
+}
+
+// https://github.com/geeofree/kalendaryo/blob/master/src/index.js#L245-L279
+// should probably refactor this since it seems overly complex
+function getWeeksInMonth(date) {
+  const weekOptions = { weekStartsOn: 0 };
+  const firstDayOfMonth = startOfMonth(date);
+  const firstDayOfFirstWeek = startOfWeek(firstDayOfMonth, weekOptions);
+  const lastDayOfFirstWeek = endOfWeek(firstDayOfMonth, weekOptions);
+
+  const getWeeks = (startDay, endDay, weekArray = []) => {
+    const week = eachDay(startDay, endDay).map(createDayObject);
+    const weeks = [...weekArray, week];
+    const nextWeek = addWeeks(startDay, 1);
+
+    const firstDayNextWeek = startOfWeek(nextWeek, weekOptions);
+    const lastDayNextWeek = endOfWeek(nextWeek, weekOptions);
+
+    if (isSameMonth(firstDayNextWeek, date)) {
+      return getWeeks(firstDayNextWeek, lastDayNextWeek, weeks);
+    }
+
+    return weeks;
+  };
+
+  return getWeeks(firstDayOfFirstWeek, lastDayOfFirstWeek);
+}
+
 const SelectMonth = ({ onChange, date }: SelectMonthProps) => {
   const months = [...new Array(12)].map((_, month) => format(setMonth(new Date(), month), 'MMM'));
 
@@ -193,31 +235,19 @@ type DayPickerProps = {
 };
 
 export const DayPicker = (props: DayPickerProps) => {
-  function BasicCalendar({
-    getFormattedDate,
-    getWeeksInMonth,
-    getDatePrevMonth,
-    getDateNextMonth,
-    setSelectedDate,
-    setDate,
-    selectedDate,
-    date,
-  }) {
+  function BasicCalendar({ setSelectedDate, setDate, selectedDate, date }) {
     const yearRangeFrom = props.yearRangeFrom ? props.yearRangeFrom : getYear(new Date()) - 100;
     const yearRangeTo = props.yearRangeTo ? props.yearRangeTo : getYear(new Date());
     const yearPickerType = props.yearPickerType ? props.yearPickerType : 'auto';
 
-    const weeksInCurrentMonth = getWeeksInMonth();
+    const weeksInCurrentMonth = getWeeksInMonth(date);
 
     const setDateNextMonth = () => {
-      setDate(getDateNextMonth());
+      setDate(addMonths(date, 1));
     };
-
-    const setDatePrevMonth = () => setDate(getDatePrevMonth());
-    const selectDay = _date => () => setSelectedDate(_date);
-
-    const isSelectedDay = _date => getFormattedDate(selectedDate) === getFormattedDate(_date);
-    const isDisabled = dateValue => !isSameMonth(date, dateValue);
+    const setDatePrevMonth = () => {
+      setDate(subMonths(date, 1));
+    };
 
     return (
       <Wrapper>
@@ -261,14 +291,14 @@ export const DayPicker = (props: DayPickerProps) => {
           {weeksInCurrentMonth.map((week, i) => (
             <WeekRow key={i}>
               {week.map(day => {
-                const disabled = isDisabled(day.dateValue);
-                const isSelected = isSelectedDay(day.dateValue);
+                const disabled = !isSameMonth(date, day.dateValue);
+                const isSelected = areDatesEqual(selectedDate, day.dateValue);
                 const isToday = isDayToday(day.dateValue);
                 return (
                   <Day
                     key={day.label}
                     disabled={disabled}
-                    onClick={disabled ? null : selectDay(day.dateValue)}
+                    onClick={disabled ? null : () => setSelectedDate(day.dateValue)}
                     isInteractive={!disabled}
                     isSelected={isSelected}
                     isToday={isToday}
