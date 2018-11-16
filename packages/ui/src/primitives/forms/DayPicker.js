@@ -335,8 +335,10 @@ const useRef: <Value>(initalValue: Value) => {| current: Value |} = (React: any)
 
 const useMemo: <Value>(() => Value, $ReadOnlyArray<any>) => Value = (React: any).useMemo;
 
-const useMutationEffect: (() => mixed, mem?: $ReadOnlyArray<any>) => void = (React: any)
-  .useMutationEffect;
+// const useEffect: (() => mixed, mem?: $ReadOnlyArray<any>) => void = (React: any).useEffect;
+
+const useLayoutEffect: (() => mixed, mem?: $ReadOnlyArray<any>) => void = (React: any)
+  .useLayoutEffect;
 
 function scrollToDate(date: Date, yearRangeFrom: number, ref: { current: List<*> | null }) {
   const list = ref.current;
@@ -354,9 +356,11 @@ export const DayPicker = (props: DayPickerProps) => {
 
   const [date, setDate] = useState(props.startCurrentDateAt);
 
+  const shouldChangeScrollPositionRef = useRef(true);
+
   const controlledSetDate = (newDate: Date) => {
+    shouldChangeScrollPositionRef.current = true;
     setDate(newDate);
-    scrollToDate(date, props.yearRangeFrom, listRef);
   };
 
   const [selectedDate, _setSelectedDate] = useState(props.startSelectedDateAt);
@@ -364,11 +368,15 @@ export const DayPicker = (props: DayPickerProps) => {
     _setSelectedDate(newSelectedDate);
     props.onSelectedChange(newSelectedDate);
   };
-  useMutationEffect(
+
+  useLayoutEffect(
     () => {
-      scrollToDate(props.startCurrentDateAt, props.yearRangeFrom, listRef);
+      if (shouldChangeScrollPositionRef.current) {
+        scrollToDate(date, props.yearRangeFrom, listRef);
+        shouldChangeScrollPositionRef.current = false;
+      }
     },
-    [props.startCurrentDateAt]
+    [date]
   );
 
   const years = useMemo(
