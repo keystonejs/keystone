@@ -238,11 +238,6 @@ type DayPickerProps = {
   startSelectedDateAt: Date,
 };
 
-type DayPickerState = {
-  date: Date,
-  selectedDate: Date,
-};
-
 let DAY_HEIGHT = 32.5;
 
 let months = Array.from({ length: 12 }, (_, i) => i);
@@ -332,137 +327,155 @@ const Month = ({ style, index, data }) => {
   );
 };
 
-export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
-  state = {
-    date: this.props.startCurrentDateAt,
-    selectedDate: this.props.startSelectedDateAt,
-  };
-  listRef = React.createRef();
-  static defaultProps = {
-    yearRangeFrom: getYear(new Date()) - 100,
-    yearRangeTo: getYear(new Date()),
-    yearPickerType: 'auto',
-  };
-  componentDidUpdate(prevProps: DayPickerProps, prevState: DayPickerState) {
-    const selectedDateChanged = !areDatesEqual(prevState.selectedDate, this.state.selectedDate);
-    if (selectedDateChanged) {
-      this.props.onSelectedChange(this.state.selectedDate);
-    }
-  }
-  componentDidMount() {
-    this.scrollToDate(this.props.startCurrentDateAt);
-  }
+const useState: <State>(
+  initialState: (() => State) | State
+) => [State, (State) => void] = (React: any).useState;
 
-  scrollToDate(date: Date) {
-    const list = this.listRef.current;
-    if (list !== null) {
-      const month = date.getMonth();
-      const year = getYear(date);
-      // calculate the index instead of using indexOf because this is much cheaper
-      const index = (year - this.props.yearRangeFrom) * 12 + month;
-      list.scrollToItem(index, 'start');
-    }
-  }
+const useRef: <Value>(initalValue: Value) => {| current: Value |} = (React: any).useRef;
 
-  getItems = memoizeOne((yearRangeFrom: number, yearRangeTo: number) => {
-    const years = yearRange(yearRangeFrom, yearRangeTo);
+const useMemo: <Value>(() => Value, $ReadOnlyArray<any>) => Value = (React: any).useMemo;
 
-    const items: Array<{ year: number, month: number, weeks: Weeks }> = [];
+const useMutationEffect: (() => mixed, mem?: $ReadOnlyArray<any>) => void = (React: any)
+  .useMutationEffect;
 
-    years.forEach(year => {
-      months.forEach(month => {
-        items.push({
-          year,
-          month,
-          weeks: getWeeksInMonth(new Date(year, month, 1)),
-        });
-      });
-    });
-    return { years, items };
-  });
-
-  render() {
-    const { yearRangeFrom, yearRangeTo, yearPickerType } = this.props;
-
-    const setDate = date => {
-      this.setState({ date }, () => {
-        this.scrollToDate(date);
-      });
-    };
-    const setSelectedDate = selectedDate => {
-      this.setState({ selectedDate });
-    };
-
-    const { selectedDate, date } = this.state;
-
-    const setDateNextMonth = () => {
-      setDate(addMonths(date, 1));
-    };
-    const setDatePrevMonth = () => {
-      setDate(subMonths(date, 1));
-    };
-
-    const { years, items } = this.getItems(yearRangeFrom, yearRangeTo);
-
-    return (
-      <Wrapper>
-        <Header>
-          <HeaderButton onClick={setDatePrevMonth}>
-            <ChevronLeftIcon />
-          </HeaderButton>
-          <SelectMonth
-            onChange={month => {
-              const newDate = setMonth(date, month);
-              setDate(newDate);
-            }}
-            date={date}
-          />
-          <SelectYear
-            date={date}
-            onChange={year => {
-              const newDate = setYear(date, year);
-              setDate(newDate);
-            }}
-            yearRangeFrom={yearRangeFrom}
-            yearRangeTo={yearRangeTo}
-            yearPickerType={yearPickerType}
-          />
-          <HeaderButton onClick={setDateNextMonth}>
-            <ChevronRightIcon />
-          </HeaderButton>
-        </Header>
-        <Body>
-          <WeekLabels>
-            {[...new Array(7)]
-              .map((_, day) => format(setDay(new Date(), day), 'ddd'))
-              .map(d => (
-                <Day key={d}>{d}</Day>
-              ))}
-          </WeekLabels>
-
-          <List
-            ref={this.listRef}
-            onItemsRendered={({ visibleStartIndex }) => {
-              const item = items[visibleStartIndex];
-              this.setState({ date: new Date(item.year, item.month, 1) });
-            }}
-            itemSize={index => {
-              const { weeks } = items[index];
-              return weeks.length * DAY_HEIGHT + 26.5;
-            }}
-            // memoize the creation of this object later and probably make Month memoized
-            itemData={{ items, selectedDate, setSelectedDate }}
-            height={6 * DAY_HEIGHT + 26.5}
-            itemCount={years.length * 12}
-            width="100%"
-          >
-            {Month}
-          </List>
-        </Body>
-      </Wrapper>
-    );
+function scrollToDate(date: Date, yearRangeFrom: number, ref: { current: List<*> | null }) {
+  const list = ref.current;
+  if (list !== null) {
+    const month = date.getMonth();
+    const year = getYear(date);
+    // calculate the index instead of using indexOf because this is much cheaper
+    const index = (year - yearRangeFrom) * 12 + month;
+    list.scrollToItem(index, 'start');
   }
 }
+
+export const DayPicker = (props: DayPickerProps) => {
+  const listRef = useRef(null);
+
+  const [date, setDate] = useState(props.startCurrentDateAt);
+
+  const controlledSetDate = (newDate: Date) => {
+    setDate(newDate);
+    scrollToDate(date, props.yearRangeFrom, listRef);
+  };
+
+  const [selectedDate, _setSelectedDate] = useState(props.startSelectedDateAt);
+  const setSelectedDate = (newSelectedDate: Date) => {
+    _setSelectedDate(newSelectedDate);
+    props.onSelectedChange(newSelectedDate);
+  };
+  useMutationEffect(
+    () => {
+      scrollToDate(props.startCurrentDateAt, props.yearRangeFrom, listRef);
+    },
+    [props.startCurrentDateAt]
+  );
+
+  const years = useMemo(
+    () => {
+      return yearRange(props.yearRangeFrom, props.yearRangeTo);
+    },
+    [props.yearRangeFrom, props.yearRangeTo]
+  );
+
+  const items = useMemo(
+    () => {
+      const _items: Array<{ year: number, month: number, weeks: Weeks }> = [];
+
+      years.forEach(year => {
+        months.forEach(month => {
+          _items.push({
+            year,
+            month,
+            weeks: getWeeksInMonth(new Date(year, month, 1)),
+          });
+        });
+      });
+      return _items;
+    },
+    [years]
+  );
+
+  const { yearRangeFrom, yearRangeTo, yearPickerType } = props;
+
+  return (
+    <Wrapper>
+      <Header>
+        <HeaderButton
+          onClick={() => {
+            controlledSetDate(subMonths(date, 1));
+          }}
+        >
+          <ChevronLeftIcon />
+        </HeaderButton>
+
+        <SelectMonth
+          onChange={month => {
+            const newDate = setMonth(date, month);
+            controlledSetDate(newDate);
+          }}
+          date={date}
+        />
+        <SelectYear
+          date={date}
+          onChange={year => {
+            const newDate = setYear(date, year);
+            controlledSetDate(newDate);
+          }}
+          yearRangeFrom={yearRangeFrom}
+          yearRangeTo={yearRangeTo}
+          yearPickerType={yearPickerType}
+        />
+        <HeaderButton
+          onClick={() => {
+            controlledSetDate(addMonths(date, 1));
+          }}
+        >
+          <ChevronRightIcon />
+        </HeaderButton>
+      </Header>
+      <Body>
+        {useMemo(
+          () => (
+            <WeekLabels>
+              {[...new Array(7)]
+                .map((_, day) => format(setDay(new Date(), day), 'ddd'))
+                .map(d => (
+                  <Day key={d}>{d}</Day>
+                ))}
+            </WeekLabels>
+          ),
+          []
+        )}
+
+        <List
+          ref={listRef}
+          onItemsRendered={({ visibleStartIndex }) => {
+            const item = items[visibleStartIndex];
+            setDate(new Date(item.year, item.month, 1));
+          }}
+          itemSize={index => {
+            const { weeks } = items[index];
+            return weeks.length * DAY_HEIGHT + 26.5;
+          }}
+          // probably memoize the creation of this object later and probably make Month memoized
+          itemData={{ items, selectedDate, setSelectedDate }}
+          height={6 * DAY_HEIGHT + 26.5}
+          itemCount={years.length * 12}
+          width="100%"
+        >
+          {Month}
+        </List>
+      </Body>
+    </Wrapper>
+  );
+};
+
+DayPicker.defaultProps = {
+  yearRangeFrom: getYear(new Date()) - 100,
+  yearRangeTo: getYear(new Date()),
+  yearPickerType: 'auto',
+};
 
 type Props = {
   children?: Node,
