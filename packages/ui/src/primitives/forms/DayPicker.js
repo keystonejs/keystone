@@ -262,7 +262,75 @@ let readableMonths = [
   'December',
 ];
 
-function getIndex(yearRangeFrom: number, yearRangeTo: number) {}
+const Month = ({ style, index, data }) => {
+  let { items, selectedDate, setSelectedDate } = data;
+  let { weeks, month, year } = items[index];
+  return (
+    <div style={style}>
+      <div
+        css={{
+          position: 'sticky',
+          top: 0,
+          width: '100%',
+          backgroundColor: '#fff',
+        }}
+      >
+        {/*if you're going to change the styles here make sure
+           to update the size in the itemSize prop above */}
+        <div
+          css={{
+            paddingTop: 4,
+            paddingBottom: 4,
+            border: `1px ${colors.N60} solid`,
+            borderLeft: 0,
+            borderRight: 0,
+            display: 'flex',
+            justifyContent: 'space-between',
+            paddingRight: 12,
+          }}
+        >
+          <span
+            css={{
+              color: colors.N60,
+            }}
+          >
+            {readableMonths[month]}
+          </span>
+          <span
+            css={{
+              color: colors.N60,
+            }}
+          >
+            {year}
+          </span>
+        </div>
+      </div>
+      {weeks.map((week, i) => (
+        <WeekRow key={i}>
+          {week.map(day => {
+            const date = new Date(year, month, 3);
+            const disabled = !isSameMonth(date, day.dateValue);
+            const isSelected = areDatesEqual(selectedDate, day.dateValue);
+            const isToday = isDayToday(day.dateValue);
+            return (
+              <Day
+                key={day.label}
+                disabled={disabled}
+                onClick={disabled ? null : () => setSelectedDate(day.dateValue)}
+                isInteractive={!disabled}
+                isSelected={isSelected}
+                isToday={isToday}
+              >
+                {day.label}
+                {isToday ? <TodayMarker isSelected={isSelected} /> : null}
+              </Day>
+            );
+          })}
+        </WeekRow>
+      ))}
+    </div>
+  );
+};
 
 export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
   state = {
@@ -380,78 +448,13 @@ export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
               const { weeks } = items[index];
               return weeks.length * DAY_HEIGHT + 26.5;
             }}
+            // memoize the creation of this object later and probably make Month memoized
+            itemData={{ items, selectedDate, setSelectedDate }}
             height={6 * DAY_HEIGHT + 26.5}
             itemCount={years.length * 12}
             width="100%"
           >
-            {({ style, index }) => {
-              let { weeks, month, year } = items[index];
-              return (
-                <div style={style}>
-                  <div
-                    css={{
-                      position: 'sticky',
-                      top: 0,
-                      width: '100%',
-                      backgroundColor: '#fff',
-                    }}
-                  >
-                    {/*if you're going to change the styles here make sure
-                       to update the size in the itemSize prop above */}
-                    <div
-                      css={{
-                        paddingTop: 4,
-                        paddingBottom: 4,
-                        border: `1px ${colors.N60} solid`,
-                        borderLeft: 0,
-                        borderRight: 0,
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        paddingRight: 12,
-                      }}
-                    >
-                      <span
-                        css={{
-                          color: colors.N60,
-                        }}
-                      >
-                        {readableMonths[month]}
-                      </span>
-                      <span
-                        css={{
-                          color: colors.N60,
-                        }}
-                      >
-                        {year}
-                      </span>
-                    </div>
-                  </div>
-                  {weeks.map((week, i) => (
-                    <WeekRow key={i}>
-                      {week.map(day => {
-                        const date = new Date(year, month, 3);
-                        const disabled = !isSameMonth(date, day.dateValue);
-                        const isSelected = areDatesEqual(selectedDate, day.dateValue);
-                        const isToday = isDayToday(day.dateValue);
-                        return (
-                          <Day
-                            key={day.label}
-                            disabled={disabled}
-                            onClick={disabled ? null : () => setSelectedDate(day.dateValue)}
-                            isInteractive={!disabled}
-                            isSelected={isSelected}
-                            isToday={isToday}
-                          >
-                            {day.label}
-                            {isToday ? <TodayMarker isSelected={isSelected} /> : null}
-                          </Day>
-                        );
-                      })}
-                    </WeekRow>
-                  ))}
-                </div>
-              );
-            }}
+            {Month}
           </List>
         </Body>
       </Wrapper>
