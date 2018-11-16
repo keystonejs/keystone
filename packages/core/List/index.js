@@ -332,97 +332,10 @@ module.exports = class List {
     return queries;
   }
 
-  async itemQuery(id, context, gqlName) {
-    const operation = 'read';
-    graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'Start query');
-
-    const access = this.checkListAccess(context, operation, { gqlName, itemId: id });
-
-    const result = await this.getAccessControlledItem(id, access, { context, operation, gqlName });
-
-    graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'End query');
-    return result;
-  }
-
-  listMeta(context) {
-    return {
-      name: this.key,
-      // Return these as functions so they're lazily evaluated depending
-      // on what the user requested
-      // Evalutation takes place in ../Keystone/index.js
-      // NOTE: These could return a Boolean or a JSON object (if using the
-      // declarative syntax)
-      getAccess: () => ({
-        getCreate: () => context.getListAccessControlForUser(this.key, 'create'),
-        getRead: () => context.getListAccessControlForUser(this.key, 'read'),
-        getUpdate: () => context.getListAccessControlForUser(this.key, 'update'),
-        getDelete: () => context.getListAccessControlForUser(this.key, 'delete'),
-      }),
-      getSchema: () => {
-        const queries = [
-          this.gqlNames.itemQueryName,
-          this.gqlNames.listQueryName,
-          this.gqlNames.listQueryMetaName,
-        ];
-
-        if (this.getAuth()) {
-          queries.push(this.gqlNames.authenticatedQueryName);
-        }
-
-        // NOTE: Other fields on this type are resolved in the main resolver in
-        // ../Keystone/index.js
-        return {
-          type: this.gqlNames.outputTypeName,
-          queries,
-          key: this.key,
-        };
-      },
-    };
-  }
-
   getFieldsRelatedTo(listKey) {
     return this.fields.filter(
       ({ isRelationship, refListKey }) => isRelationship && refListKey === listKey
     );
-  }
-
-  get gqlQueryResolvers() {
-    let resolvers = {};
-
-    // If set to false, we can confidently remove these resolvers entirely from
-    // the graphql schema
-    if (this.access.read) {
-      resolvers = {
-        [this.gqlNames.listQueryName]: (_, args, context) =>
-          this.listQuery(args, context, this.gqlNames.listQueryName),
-
-        [this.gqlNames.listQueryMetaName]: (_, args, context) =>
-          this.listQueryMeta(args, context, this.gqlNames.listQueryMetaName),
-
-        [this.gqlNames.listMetaName]: (_, args, context) => this.listMeta(context),
-
-        [this.gqlNames.itemQueryName]: (_, { where: { id } }, context) =>
-          this.itemQuery(id, context, this.gqlNames.itemQueryName),
-      };
-    }
-
-    // NOTE: This query is not effected by the read permissions; if the user can
-    // authenticate themselves, then they already have access to know that the
-    // list exists
-    if (this.getAuth()) {
-      resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context) =>
-        this.authenticatedQuery(context);
-    }
-
-    return resolvers;
-  }
-
-  authenticatedQuery(context) {
-    if (!context.authedItem || context.authedListKey !== this.key) {
-      return null;
-    }
-
-    return this.itemQuery(context.authedItem.id, context, this.gqlNames.authenticatedQueryName);
   }
 
   _throwAccessDenied(operation, context, target, extraInternalData = {}, extraData = {}) {
@@ -438,22 +351,6 @@ module.exports = class List {
         ...extraInternalData,
       },
     });
-  }
-
-  checkListAccess(context, operation, { gqlName, ...extraInternalData }) {
-    const access = context.getListAccessControlForUser(this.key, operation);
-    if (!access) {
-      graphqlLogger.debug(
-        { operation, access, gqlName, ...extraInternalData },
-        'Access statically or implicitly denied'
-      );
-      graphqlLogger.info({ operation, gqlName, ...extraInternalData }, 'Access Denied');
-      // If the client handles errors correctly, it should be able to
-      // receive partial data (for the fields the user has access to),
-      // and then an `errors` array of AccessDeniedError's
-      this._throwAccessDenied(operation, context, gqlName, extraInternalData);
-    }
-    return access;
   }
 
   // Wrap the "inner" resolver for a single output field with an access control check
@@ -564,6 +461,22 @@ module.exports = class List {
     if (restrictedFields.length) {
       this._throwAccessDenied(operation, context, gqlName, extraData, { restrictedFields });
     }
+  }
+
+  checkListAccess(context, operation, { gqlName, ...extraInternalData }) {
+    const access = context.getListAccessControlForUser(this.key, operation);
+    if (!access) {
+      graphqlLogger.debug(
+        { operation, access, gqlName, ...extraInternalData },
+        'Access statically or implicitly denied'
+      );
+      graphqlLogger.info({ operation, gqlName, ...extraInternalData }, 'Access Denied');
+      // If the client handles errors correctly, it should be able to
+      // receive partial data (for the fields the user has access to),
+      // and then an `errors` array of AccessDeniedError's
+      this._throwAccessDenied(operation, context, gqlName, extraInternalData);
+    }
+    return access;
   }
 
   async getAccessControlledItem(id, access, { context, operation, gqlName }) {
@@ -680,6 +593,138 @@ module.exports = class List {
     return await this.adapter.itemsQuery({ where: { ...remainingAccess, ...idFilters } });
   }
 
+  get gqlQueryResolvers() {
+    let resolvers = {};
+
+    // If set to false, we can confidently remove these resolvers entirely from
+    // the graphql schema
+    if (this.access.read) {
+      resolvers = {
+        [this.gqlNames.listQueryName]: (_, args, context) =>
+          this.listQuery(args, context, this.gqlNames.listQueryName),
+
+        [this.gqlNames.listQueryMetaName]: (_, args, context) =>
+          this.listQueryMeta(args, context, this.gqlNames.listQueryMetaName),
+
+        [this.gqlNames.listMetaName]: (_, args, context) => this.listMeta(context),
+
+        [this.gqlNames.itemQueryName]: (_, { where: { id } }, context) =>
+          this.itemQuery(id, context, this.gqlNames.itemQueryName),
+      };
+    }
+
+    // NOTE: This query is not effected by the read permissions; if the user can
+    // authenticate themselves, then they already have access to know that the
+    // list exists
+    if (this.getAuth()) {
+      resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context) =>
+        this.authenticatedQuery(context);
+    }
+
+    return resolvers;
+  }
+
+  async listQuery(args, context, queryName) {
+    const access = this.checkListAccess(context, 'read', { queryName });
+
+    return this.adapter.itemsQuery(mergeWhereClause(args, access));
+  }
+
+  async listQueryMeta(args, context, queryName) {
+    return {
+      // Return these as functions so they're lazily evaluated depending
+      // on what the user requested
+      // Evalutation takes place in ../Keystone/index.js
+      getCount: () => {
+        const access = this.checkListAccess(context, 'read', { queryName });
+
+        return this.adapter
+          .itemsQueryMeta(mergeWhereClause(args, access))
+          .then(({ count }) => count);
+      },
+    };
+  }
+
+  listMeta(context) {
+    return {
+      name: this.key,
+      // Return these as functions so they're lazily evaluated depending
+      // on what the user requested
+      // Evalutation takes place in ../Keystone/index.js
+      // NOTE: These could return a Boolean or a JSON object (if using the
+      // declarative syntax)
+      getAccess: () => ({
+        getCreate: () => context.getListAccessControlForUser(this.key, 'create'),
+        getRead: () => context.getListAccessControlForUser(this.key, 'read'),
+        getUpdate: () => context.getListAccessControlForUser(this.key, 'update'),
+        getDelete: () => context.getListAccessControlForUser(this.key, 'delete'),
+      }),
+      getSchema: () => {
+        const queries = [
+          this.gqlNames.itemQueryName,
+          this.gqlNames.listQueryName,
+          this.gqlNames.listQueryMetaName,
+        ];
+
+        if (this.getAuth()) {
+          queries.push(this.gqlNames.authenticatedQueryName);
+        }
+
+        // NOTE: Other fields on this type are resolved in the main resolver in
+        // ../Keystone/index.js
+        return {
+          type: this.gqlNames.outputTypeName,
+          queries,
+          key: this.key,
+        };
+      },
+    };
+  }
+
+  async itemQuery(id, context, gqlName) {
+    const operation = 'read';
+    graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'Start query');
+
+    const access = this.checkListAccess(context, operation, { gqlName, itemId: id });
+
+    const result = await this.getAccessControlledItem(id, access, { context, operation, gqlName });
+
+    graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'End query');
+    return result;
+  }
+
+  authenticatedQuery(context) {
+    if (!context.authedItem || context.authedListKey !== this.key) {
+      return null;
+    }
+
+    return this.itemQuery(context.authedItem.id, context, this.gqlNames.authenticatedQueryName);
+  }
+
+  get gqlMutationResolvers() {
+    const mutationResolvers = {};
+
+    if (this.access.create) {
+      mutationResolvers[this.gqlNames.createMutationName] = (_, { data }, context) =>
+        this.createMutation(data, context);
+    }
+
+    if (this.access.update) {
+      mutationResolvers[this.gqlNames.updateMutationName] = async (_, { id, data }, context) =>
+        this.updateMutation(id, data, context);
+    }
+
+    if (this.access.delete) {
+      mutationResolvers[this.gqlNames.deleteMutationName] = async (_, { id }, context) =>
+        this.deleteMutation(id, context);
+
+      mutationResolvers[this.gqlNames.deleteManyMutationName] = async (_, { ids }, context) =>
+        this.deleteManyMutation(ids, context);
+    }
+
+    return mutationResolvers;
+  }
+
   async createMutation(data, context) {
     const operation = 'create';
     const gqlName = this.gqlNames.createMutationName;
@@ -762,41 +807,6 @@ module.exports = class List {
     return newItem;
   }
 
-  async listQuery(args, context, queryName) {
-    const access = this.checkListAccess(context, 'read', { queryName });
-
-    return this.adapter.itemsQuery(mergeWhereClause(args, access));
-  }
-
-  async listQueryMeta(args, context, queryName) {
-    return {
-      // Return these as functions so they're lazily evaluated depending
-      // on what the user requested
-      // Evalutation takes place in ../Keystone/index.js
-      getCount: () => {
-        const access = this.checkListAccess(context, 'read', { queryName });
-
-        return this.adapter
-          .itemsQueryMeta(mergeWhereClause(args, access))
-          .then(({ count }) => count);
-      },
-    };
-  }
-
-  async _deleteWithFieldHooks(item, context) {
-    await Promise.all(
-      this.fields.map(field => field.deleteFieldPreHook(item[field.path], item, context))
-    );
-
-    const result = await this.adapter.delete(item.id);
-
-    await Promise.all(
-      this.fields.map(field => field.deleteFieldPostHook(item[field.path], item, context))
-    );
-
-    return result;
-  }
-
   async deleteMutation(id, context) {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteManyMutationName;
@@ -819,28 +829,18 @@ module.exports = class List {
     return Promise.all(items.map(async item => this._deleteWithFieldHooks(item, context)));
   }
 
-  get gqlMutationResolvers() {
-    const mutationResolvers = {};
+  async _deleteWithFieldHooks(item, context) {
+    await Promise.all(
+      this.fields.map(field => field.deleteFieldPreHook(item[field.path], item, context))
+    );
 
-    if (this.access.create) {
-      mutationResolvers[this.gqlNames.createMutationName] = (_, { data }, context) =>
-        this.createMutation(data, context);
-    }
+    const result = await this.adapter.delete(item.id);
 
-    if (this.access.update) {
-      mutationResolvers[this.gqlNames.updateMutationName] = async (_, { id, data }, context) =>
-        this.updateMutation(id, data, context);
-    }
+    await Promise.all(
+      this.fields.map(field => field.deleteFieldPostHook(item[field.path], item, context))
+    );
 
-    if (this.access.delete) {
-      mutationResolvers[this.gqlNames.deleteMutationName] = async (_, { id }, context) =>
-        this.deleteMutation(id, context);
-
-      mutationResolvers[this.gqlNames.deleteManyMutationName] = async (_, { ids }, context) =>
-        this.deleteManyMutation(ids, context);
-    }
-
-    return mutationResolvers;
+    return result;
   }
 
   getAccessControl({ operation, authentication }) {
