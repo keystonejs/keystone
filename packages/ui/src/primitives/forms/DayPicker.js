@@ -23,6 +23,7 @@ import {
   endOfWeek,
   getDate,
 } from 'date-fns';
+import { VariableSizeList as List } from 'react-window';
 import { Input } from './index';
 import { Select } from '../filters';
 import { ChevronLeftIcon, ChevronRightIcon } from '@voussoir/icons';
@@ -132,15 +133,16 @@ function createDayObject(dateValue) {
   };
 }
 
+type Weeks = $ReadOnlyArray<$ReadOnlyArray<{ dateValue: Date, label: string }>>;
+
 // https://github.com/geeofree/kalendaryo/blob/master/src/index.js#L245-L279
-// should probably refactor this since it seems overly complex
 function getWeeksInMonth(date) {
   const weekOptions = { weekStartsOn: 0 };
   const firstDayOfMonth = startOfMonth(date);
   const firstDayOfFirstWeek = startOfWeek(firstDayOfMonth, weekOptions);
   const lastDayOfFirstWeek = endOfWeek(firstDayOfMonth, weekOptions);
 
-  const getWeeks = (startDay, endDay, weekArray = []) => {
+  const getWeeks = (startDay, endDay, weekArray: Weeks): Weeks => {
     const week = eachDay(startDay, endDay).map(createDayObject);
     const weeks = [...weekArray, week];
     const nextWeek = addWeeks(startDay, 1);
@@ -155,7 +157,7 @@ function getWeeksInMonth(date) {
     return weeks;
   };
 
-  return getWeeks(firstDayOfFirstWeek, lastDayOfFirstWeek);
+  return getWeeks(firstDayOfFirstWeek, lastDayOfFirstWeek, []);
 }
 
 const SelectMonth = ({ onChange, date }: SelectMonthProps) => {
@@ -240,6 +242,25 @@ type DayPickerState = {
   selectedDate: Date,
 };
 
+let DAY_HEIGHT = 32.5;
+
+let months = Array.from({ length: 12 }, (_, i) => i);
+
+let readableMonths = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
 export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
   state = {
     date: this.props.startCurrentDateAt,
@@ -267,16 +288,28 @@ export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
       this.setState({ selectedDate });
     };
 
-    const { date, selectedDate } = this.state;
-
-    const weeksInCurrentMonth = getWeeksInMonth(date);
+    const { selectedDate } = this.state;
 
     const setDateNextMonth = () => {
-      setDate(addMonths(date, 1));
+      // setDate(addMonths(date, 1));
     };
     const setDatePrevMonth = () => {
-      setDate(subMonths(date, 1));
+      // setDate(subMonths(date, 1));
     };
+
+    const years = yearRange(yearRangeFrom, yearRangeTo);
+
+    let items: Array<{ year: number, month: number, weeks: Weeks }> = [];
+
+    years.forEach(year => {
+      months.forEach(month => {
+        items.push({
+          year,
+          month,
+          weeks: getWeeksInMonth(new Date(year, month, 1)),
+        });
+      });
+    });
 
     return (
       <Wrapper>
@@ -284,7 +317,7 @@ export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
           <HeaderButton onClick={setDatePrevMonth}>
             <ChevronLeftIcon />
           </HeaderButton>
-          <SelectMonth
+          {/* <SelectMonth
             onChange={month => {
               const newDate = setMonth(date, month);
               setDate(newDate);
@@ -292,8 +325,8 @@ export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
               setSelectedDate(newSelectedDate);
             }}
             date={date}
-          />
-          <SelectYear
+          /> */}
+          {/* <SelectYear
             date={date}
             onChange={year => {
               const newDate = setYear(date, year);
@@ -304,7 +337,7 @@ export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
             yearRangeFrom={yearRangeFrom}
             yearRangeTo={yearRangeTo}
             yearPickerType={yearPickerType}
-          />
+          /> */}
           <HeaderButton onClick={setDateNextMonth}>
             <ChevronRightIcon />
           </HeaderButton>
@@ -317,28 +350,85 @@ export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
                 <Day key={d}>{d}</Day>
               ))}
           </WeekLabels>
-          {weeksInCurrentMonth.map((week, i) => (
-            <WeekRow key={i}>
-              {week.map(day => {
-                const disabled = !isSameMonth(date, day.dateValue);
-                const isSelected = areDatesEqual(selectedDate, day.dateValue);
-                const isToday = isDayToday(day.dateValue);
-                return (
-                  <Day
-                    key={day.label}
-                    disabled={disabled}
-                    onClick={disabled ? null : () => setSelectedDate(day.dateValue)}
-                    isInteractive={!disabled}
-                    isSelected={isSelected}
-                    isToday={isToday}
+
+          <List
+            itemSize={index => {
+              const { weeks } = items[index];
+              return weeks.length * DAY_HEIGHT + 26.5;
+            }}
+            height={6 * DAY_HEIGHT + 26.5}
+            itemCount={years.length * 12}
+            width="100%"
+          >
+            {({ style, index }) => {
+              let { weeks, month, year } = items[index];
+              return (
+                <div style={style}>
+                  <div
+                    css={{
+                      position: 'sticky',
+                      top: 0,
+                      width: '100%',
+                      backgroundColor: '#fff',
+                    }}
                   >
-                    {day.label}
-                    {isToday ? <TodayMarker isSelected={isSelected} /> : null}
-                  </Day>
-                );
-              })}
-            </WeekRow>
-          ))}
+                    {/*if you're going to change the styles here make sure
+                       to update the size in the itemSize prop above */}
+                    <div
+                      css={{
+                        paddingTop: 4,
+                        paddingBottom: 4,
+                        border: `1px ${colors.N60} solid`,
+                        borderLeft: 0,
+                        borderRight: 0,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        paddingRight: 12,
+                      }}
+                    >
+                      <span
+                        css={{
+                          color: colors.N60,
+                        }}
+                      >
+                        {readableMonths[month]}
+                      </span>
+                      <span
+                        css={{
+                          color: colors.N60,
+                        }}
+                      >
+                        {year}
+                      </span>
+                    </div>
+                  </div>
+                  {weeks.map((week, i) => (
+                    <WeekRow key={i}>
+                      {week.map(day => {
+                        const date = new Date(year, month, 3);
+                        const disabled = !isSameMonth(date, day.dateValue);
+                        const isSelected = areDatesEqual(selectedDate, day.dateValue);
+                        const isToday = isDayToday(day.dateValue);
+                        return (
+                          <Day
+                            key={day.label}
+                            disabled={disabled}
+                            onClick={disabled ? null : () => setSelectedDate(day.dateValue)}
+                            isInteractive={!disabled}
+                            isSelected={isSelected}
+                            isToday={isToday}
+                          >
+                            {day.label}
+                            {isToday ? <TodayMarker isSelected={isSelected} /> : null}
+                          </Day>
+                        );
+                      })}
+                    </WeekRow>
+                  ))}
+                </div>
+              );
+            }}
+          </List>
         </Body>
       </Wrapper>
     );
