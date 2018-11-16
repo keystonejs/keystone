@@ -263,8 +263,8 @@ let readableMonths = [
 ];
 
 const Month = ({ style, index, data }) => {
-  let { items, selectedDate, setSelectedDate } = data;
-  let { weeks, month, year } = items[index];
+  const { items, selectedDate, setSelectedDate } = data;
+  const { weeks, month, year } = items[index];
   return (
     <div style={style}>
       <div
@@ -310,7 +310,7 @@ const Month = ({ style, index, data }) => {
           {week.map(day => {
             const date = new Date(year, month, 3);
             const disabled = !isSameMonth(date, day.dateValue);
-            const isSelected = areDatesEqual(selectedDate, day.dateValue);
+            const isSelected = !disabled && areDatesEqual(selectedDate, day.dateValue);
             const isToday = isDayToday(day.dateValue);
             return (
               <Day
@@ -367,7 +367,7 @@ export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
   getItems = memoizeOne((yearRangeFrom: number, yearRangeTo: number) => {
     const years = yearRange(yearRangeFrom, yearRangeTo);
 
-    let items: Array<{ year: number, month: number, weeks: Weeks }> = [];
+    const items: Array<{ year: number, month: number, weeks: Weeks }> = [];
 
     years.forEach(year => {
       months.forEach(month => {
@@ -385,19 +385,21 @@ export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
     const { yearRangeFrom, yearRangeTo, yearPickerType } = this.props;
 
     const setDate = date => {
-      this.setState({ date });
+      this.setState({ date }, () => {
+        this.scrollToDate(date);
+      });
     };
     const setSelectedDate = selectedDate => {
       this.setState({ selectedDate });
     };
 
-    const { selectedDate } = this.state;
+    const { selectedDate, date } = this.state;
 
     const setDateNextMonth = () => {
-      // setDate(addMonths(date, 1));
+      setDate(addMonths(date, 1));
     };
     const setDatePrevMonth = () => {
-      // setDate(subMonths(date, 1));
+      setDate(subMonths(date, 1));
     };
 
     const { years, items } = this.getItems(yearRangeFrom, yearRangeTo);
@@ -408,27 +410,23 @@ export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
           <HeaderButton onClick={setDatePrevMonth}>
             <ChevronLeftIcon />
           </HeaderButton>
-          {/* <SelectMonth
+          <SelectMonth
             onChange={month => {
               const newDate = setMonth(date, month);
               setDate(newDate);
-              const newSelectedDate = setMonth(selectedDate, month);
-              setSelectedDate(newSelectedDate);
             }}
             date={date}
-          /> */}
-          {/* <SelectYear
+          />
+          <SelectYear
             date={date}
             onChange={year => {
               const newDate = setYear(date, year);
               setDate(newDate);
-              const newSelectedDate = setYear(date, year);
-              setSelectedDate(newSelectedDate);
             }}
             yearRangeFrom={yearRangeFrom}
             yearRangeTo={yearRangeTo}
             yearPickerType={yearPickerType}
-          /> */}
+          />
           <HeaderButton onClick={setDateNextMonth}>
             <ChevronRightIcon />
           </HeaderButton>
@@ -444,6 +442,10 @@ export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
 
           <List
             ref={this.listRef}
+            onItemsRendered={({ visibleStartIndex }) => {
+              const item = items[visibleStartIndex];
+              this.setState({ date: new Date(item.year, item.month, 1) });
+            }}
             itemSize={index => {
               const { weeks } = items[index];
               return weeks.length * DAY_HEIGHT + 26.5;
