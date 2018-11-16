@@ -1,7 +1,7 @@
 // @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { type Node, type Ref } from 'react';
+import { type Node, type Ref } from 'react';
 import styled from '@emotion/styled';
 import Kalendaryo from 'kalendaryo';
 import {
@@ -117,97 +117,92 @@ type SelectMonthProps = {
   date: Date,
 };
 
-class SelectMonth extends React.Component<SelectMonthProps> {
-  render() {
-    const { onChange, date } = this.props;
-    const months = [...new Array(12)].map((_, month) => format(setMonth(new Date(), month), 'MMM'));
+const SelectMonth = ({ onChange, date }: SelectMonthProps) => {
+  const months = [...new Array(12)].map((_, month) => format(setMonth(new Date(), month), 'MMM'));
 
+  return (
+    <select
+      onChange={event => {
+        onChange(event.target.value);
+      }}
+      value={getMonth(date)}
+    >
+      {months.map((month, i) => (
+        <option key={i} value={i}>
+          {month}
+        </option>
+      ))}
+    </select>
+  );
+};
+
+type YearPickerType = 'auto' | 'input';
+
+type SelectYearProps = {
+  onChange: number => mixed,
+  date: Date,
+  yearRangeFrom?: number,
+  yearRangeTo?: number,
+  yearPickerType: YearPickerType,
+};
+
+const SelectYear = ({
+  onChange,
+  date,
+  yearRangeFrom = getYear(new Date()) - 100,
+  yearRangeTo = getYear(new Date()),
+  yearPickerType = 'auto',
+}: SelectYearProps) => {
+  const years = yearRange(yearRangeFrom, yearRangeTo);
+
+  if ((years.length > 50 && yearPickerType === 'auto') || yearPickerType === 'input') {
+    return (
+      <input
+        type="number"
+        min={yearRangeFrom}
+        max={yearRangeTo}
+        onChange={event => {
+          onChange(event.target.value);
+        }}
+        value={getYear(date)}
+      />
+    );
+  } else {
     return (
       <select
         onChange={event => {
           onChange(event.target.value);
         }}
-        value={getMonth(date)}
+        value={getYear(date)}
       >
-        {months.map((month, i) => (
-          <option key={i} value={i}>
-            {month}
+        {years.map((year, i) => (
+          <option key={i} value={year}>
+            {year}
           </option>
         ))}
       </select>
     );
   }
-}
-
-type SelectYearProps = {
-  onChange: number => mixed,
-  date: Date,
-  yearRangeFrom: any,
-  yearRangeTo: any,
-  yearPickerType: string,
 };
-
-class SelectYear extends React.Component<SelectYearProps> {
-  render() {
-    const {
-      onChange,
-      date,
-      yearRangeFrom = getYear(new Date()) - 100,
-      yearRangeTo = getYear(new Date()),
-      yearPickerType = 'auto',
-    } = this.props;
-    const years = yearRange(yearRangeFrom, yearRangeTo);
-
-    if ((years.length > 50 && yearPickerType == 'auto') || yearPickerType == 'input') {
-      return (
-        <input
-          type="number"
-          min={yearRangeFrom}
-          max={yearRangeTo}
-          onChange={event => {
-            onChange(event.target.value);
-          }}
-          value={getYear(date)}
-        />
-      );
-    } else {
-      return (
-        <select
-          onChange={event => {
-            onChange(event.target.value);
-          }}
-          value={getYear(date)}
-        >
-          {years.map((year, i) => (
-            <option key={i} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
-      );
-    }
-  }
-}
 
 type DayPickerProps = {
   onSelectedChange: Date => void,
   yearRangeFrom?: number,
   yearRangeTo?: number,
-  yearPickerType?: string,
+  yearPickerType?: YearPickerType,
 };
 
 export const DayPicker = (props: DayPickerProps) => {
-  function BasicCalendar(kalendaryo) {
-    const {
-      getFormattedDate,
-      getWeeksInMonth,
-      getDatePrevMonth,
-      getDateNextMonth,
-      setSelectedDate,
-      setDate,
-      selectedDate,
-      date,
-    } = kalendaryo;
+  function BasicCalendar({
+    getFormattedDate,
+    getWeeksInMonth,
+    getDatePrevMonth,
+    getDateNextMonth,
+    setSelectedDate,
+    setDate,
+    selectedDate,
+    date,
+  }) {
     const yearRangeFrom = props.yearRangeFrom ? props.yearRangeFrom : getYear(new Date()) - 100;
     const yearRangeTo = props.yearRangeTo ? props.yearRangeTo : getYear(new Date());
     const yearPickerType = props.yearPickerType ? props.yearPickerType : 'auto';
@@ -308,7 +303,7 @@ type Props = {
   handleOffsetChange: Function,
   yearRangeFrom?: number,
   yearRangeTo?: number,
-  yearPickerType?: string,
+  yearPickerType?: YearPickerType,
 };
 
 export const DateTimePicker = (props: Props) => {
