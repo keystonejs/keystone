@@ -1,0 +1,1 @@
+- Update resolver code to make all list access checks explicit

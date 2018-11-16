@@ -272,12 +272,7 @@ function settleUniqueItems({ refList, context, wheres }) {
     // This will resolve access control, etc for us.
     // In the future, when WhereUniqueInput accepts more than just an id,
     // this will also resolve those queries for us too.
-    where =>
-      refList.itemQuery({
-        id: where.id,
-        context,
-        name: refList.gqlNames.itemQueryName,
-      })
+    where => refList.itemQuery(where.id, context, refList.gqlNames.itemQueryName)
   );
 }
 
