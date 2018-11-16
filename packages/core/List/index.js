@@ -335,10 +335,7 @@ module.exports = class List {
   async itemQuery({ id, context, name }) {
     const operation = 'read';
     graphqlLogger.debug({ id, operation, type: opToType[operation], name }, 'Start query');
-    const result = await this.performActionOnItemWithAccessControl(
-      { id, context, operation, gqlName: name },
-      item => item
-    );
+    const result = await this.getAccessControlledItem({ id, context, operation, gqlName: name });
     graphqlLogger.debug({ id, operation, type: opToType[operation], name }, 'End query');
     return result;
   }
@@ -569,7 +566,7 @@ module.exports = class List {
     }
   }
 
-  async performActionOnItemWithAccessControl({ operation, id, context, gqlName }, action) {
+  async getAccessControlledItem({ operation, id, context, gqlName }) {
     const throwAccessDenied = (access, msg) => {
       graphqlLogger.debug({ id, operation, access, gqlName }, msg);
       graphqlLogger.info({ id, operation, gqlName }, 'Access Denied');
@@ -593,60 +590,54 @@ module.exports = class List {
       throwAccessDenied(access, 'Zero items found');
     };
 
+    let item;
     // Early out - the user has full access to update this list
     if (access === true) {
-      const item = await this.adapter.findById(id);
-      if (!item) {
-        // Throwing an AccessDenied here if the item isn't found because we're
-        // strict about accidentally leaking information (that the item doesn't
-        // exist)
-        throwNotFound();
+      item = await this.adapter.findById(id);
+    } else {
+      // It's odd, but conceivable the access control specifies a single id
+      // the user has access to. So we have to do a check here to see if the
+      // ID they're requesting matches that ID.
+      // Nice side-effect: We can throw without having to ever query the DB.
+      // NOTE: Don't try to early out here by doing
+      // if(access.id === id) return findById(id)
+      // this will result in a possible false match if a declarative access
+      // control clause has other items in it
+      if (
+        (access.id && access.id !== id) ||
+        (access.id_not && access.id_not === id) ||
+        (access.id_in && !access.id_in.includes(id)) ||
+        (access.id_not_in && access.id_not_in.includes(id))
+      ) {
+        throwAccessDenied(access, 'Item excluded this id from filters');
       }
-      return await action(item);
+
+      // NOTE: The fields will be filtered by the ACL checking in
+      // gqlFieldResolvers()
+      let queryArgs = {
+        // We only want 1 item, don't make the DB do extra work
+        first: 1,
+        where: {
+          // NOTE: Order here doesn't matter, if `access.id !== id`, it will
+          // have been caught earlier, so this spread and overwrite can only
+          // ever be additive or overwrite with the same value
+          ...access,
+          id,
+        },
+      };
+      item = (await this.adapter.itemsQuery(queryArgs))[0];
     }
-
-    // It's odd, but conceivable the access control specifies a single id
-    // the user has access to. So we have to do a check here to see if the
-    // ID they're requesting matches that ID.
-    // Nice side-effect: We can throw without having to ever query the DB.
-    // NOTE: Don't try to early out here by doing
-    // if(access.id === id) return findById(id)
-    // this will result in a possible false match if a declarative access
-    // control clause has other items in it
-    if (
-      (access.id && access.id !== id) ||
-      (access.id_not && access.id_not === id) ||
-      (access.id_in && !access.id_in.includes(id)) ||
-      (access.id_not_in && access.id_not_in.includes(id))
-    ) {
-      throwAccessDenied(access, 'Item excluded this id from filters');
-    }
-
-    // NOTE: The fields will be filtered by the ACL checking in
-    // gqlFieldResolvers()
-    let queryArgs = {
-      // We only want 1 item, don't make the DB do extra work
-      first: 1,
-      where: {
-        // NOTE: Order here doesn't matter, if `access.id !== id`, it will
-        // have been caught earlier, so this spread and overwrite can only
-        // ever be additive or overwrite with the same value
-        ...access,
-        id,
-      },
-    };
-
-    const items = await this.adapter.itemsQuery(queryArgs);
-
-    if (items.length === 0) {
+    if (!item) {
+      // Throwing an AccessDenied here if the item isn't found because we're
+      // strict about accidentally leaking information (that the item doesn't
+      // exist)
       throwNotFound();
     }
-
     // Found the item, and it passed the filter test
-    return await action(items[0]);
+    return item;
   }
 
-  async performMultiActionOnItemsWithAccessControl({ operation, ids, context, gqlName }, action) {
+  async getAccessControlledItems({ operation, ids, context, gqlName }) {
     if (ids.length === 0) {
       return [];
     }
@@ -657,10 +648,7 @@ module.exports = class List {
 
     // Early out - the user has full access to operate on this list
     if (access === true) {
-      const items = await this.adapter.itemsQuery({
-        where: { id_in: uniqueIds },
-      });
-      return action(items);
+      return await this.adapter.itemsQuery({ where: { id_in: uniqueIds } });
     }
 
     let idFilters = {};
@@ -709,19 +697,17 @@ module.exports = class List {
         ...idFilters,
       },
     };
-
-    const items = await this.adapter.itemsQuery(queryArgs);
-
     // NOTE: Unlike in the single-operation variation, there is no security risk
     // in returning the result of the query here, because if no items match, we
     // return an empty array regarless of if that's because of lack of
     // permissions or because of those items don't exist.
-    return action(items);
+    return await this.adapter.itemsQuery(queryArgs);
   }
 
   async createMutation(data, context) {
     const operation = 'create';
     const gqlName = this.gqlNames.createMutationName;
+
     this.checkListAccess(context, operation, gqlName);
 
     // Merge in default Values here
@@ -775,29 +761,26 @@ module.exports = class List {
   async updateMutation(id, data, context) {
     const operation = 'update';
     const gqlName = this.gqlNames.updateMutationName;
-    return this.performActionOnItemWithAccessControl(
-      { id, context, operation, gqlName },
-      async item => {
-        const extraData = { itemId: id };
-        this.throwIfAccessDeniedOnFields({ operation, item, data, context, gqlName, extraData });
 
-        const resolvedData = await resolveAllKeys(
-          mapKeys(data, (value, fieldPath) =>
-            this.fieldsByPath[fieldPath].updateFieldPreHook(value, item, context)
-          )
-        );
+    const item = await this.getAccessControlledItem({ id, context, operation, gqlName });
+    const extraData = { itemId: id };
+    this.throwIfAccessDeniedOnFields({ operation, item, data, context, gqlName, extraData });
 
-        const newItem = await this.adapter.update(id, resolvedData);
-
-        await Promise.all(
-          Object.keys(data).map(fieldPath =>
-            this.fieldsByPath[fieldPath].updateFieldPostHook(newItem[fieldPath], newItem, context)
-          )
-        );
-
-        return newItem;
-      }
+    const resolvedData = await resolveAllKeys(
+      mapKeys(data, (value, fieldPath) =>
+        this.fieldsByPath[fieldPath].updateFieldPreHook(value, item, context)
+      )
     );
+
+    const newItem = await this.adapter.update(id, resolvedData);
+
+    await Promise.all(
+      Object.keys(data).map(fieldPath =>
+        this.fieldsByPath[fieldPath].updateFieldPostHook(newItem[fieldPath], newItem, context)
+      )
+    );
+
+    return newItem;
   }
 
   async _tryManyQuery(args, context, gqlName, manyQuery) {
@@ -841,17 +824,19 @@ module.exports = class List {
   }
 
   async deleteMutation(id, context) {
-    return this.performActionOnItemWithAccessControl(
-      { id, context, operation: 'delete', gqlName: this.gqlNames.deleteMutationName },
-      async item => this._deleteWithFieldHooks(item, context)
-    );
+    const operation = 'delete';
+    const gqlName = this.gqlNames.deleteManyMutationName;
+
+    const item = await this.getAccessControlledItem({ id, context, operation, gqlName });
+    return this._deleteWithFieldHooks(item, context);
   }
 
   async deleteManyMutation(ids, context) {
-    return this.performMultiActionOnItemsWithAccessControl(
-      { ids, context, operation: 'delete', gqlName: this.gqlNames.deleteManyMutationName },
-      items => Promise.all(items.map(async item => this._deleteWithFieldHooks(item, context)))
-    );
+    const operation = 'delete';
+    const gqlName = this.gqlNames.deleteManyMutationName;
+
+    const items = await this.getAccessControlledItems({ ids, context, operation, gqlName });
+    return Promise.all(items.map(async item => this._deleteWithFieldHooks(item, context)));
   }
 
   get gqlMutationResolvers() {
