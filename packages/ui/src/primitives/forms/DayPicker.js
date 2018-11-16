@@ -27,10 +27,11 @@ import { VariableSizeList as List } from 'react-window';
 import { Input } from './index';
 import { Select } from '../filters';
 import { ChevronLeftIcon, ChevronRightIcon } from '@voussoir/icons';
+import memoizeOne from 'memoize-one';
 import { borderRadius, colors } from '../../theme';
 
 const yearRange = (from, to) => {
-  const years = [];
+  const years: Array<number> = [];
   let year = from;
   while (year <= to) {
     years.push(year++);
@@ -261,12 +262,14 @@ let readableMonths = [
   'December',
 ];
 
+function getIndex(yearRangeFrom: number, yearRangeTo: number) {}
+
 export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
   state = {
     date: this.props.startCurrentDateAt,
     selectedDate: this.props.startSelectedDateAt,
   };
-
+  listRef = React.createRef();
   static defaultProps = {
     yearRangeFrom: getYear(new Date()) - 100,
     yearRangeTo: getYear(new Date()),
@@ -278,6 +281,38 @@ export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
       this.props.onSelectedChange(this.state.selectedDate);
     }
   }
+  componentDidMount() {
+    this.scrollToDate(this.props.startCurrentDateAt);
+  }
+
+  scrollToDate(date: Date) {
+    const list = this.listRef.current;
+    if (list !== null) {
+      const month = date.getMonth();
+      const year = getYear(date);
+      // calculate the index instead of using indexOf because this is much cheaper
+      const index = (year - this.props.yearRangeFrom) * 12 + month;
+      list.scrollToItem(index, 'start');
+    }
+  }
+
+  getItems = memoizeOne((yearRangeFrom: number, yearRangeTo: number) => {
+    const years = yearRange(yearRangeFrom, yearRangeTo);
+
+    let items: Array<{ year: number, month: number, weeks: Weeks }> = [];
+
+    years.forEach(year => {
+      months.forEach(month => {
+        items.push({
+          year,
+          month,
+          weeks: getWeeksInMonth(new Date(year, month, 1)),
+        });
+      });
+    });
+    return { years, items };
+  });
+
   render() {
     const { yearRangeFrom, yearRangeTo, yearPickerType } = this.props;
 
@@ -297,19 +332,7 @@ export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
       // setDate(subMonths(date, 1));
     };
 
-    const years = yearRange(yearRangeFrom, yearRangeTo);
-
-    let items: Array<{ year: number, month: number, weeks: Weeks }> = [];
-
-    years.forEach(year => {
-      months.forEach(month => {
-        items.push({
-          year,
-          month,
-          weeks: getWeeksInMonth(new Date(year, month, 1)),
-        });
-      });
-    });
+    const { years, items } = this.getItems(yearRangeFrom, yearRangeTo);
 
     return (
       <Wrapper>
@@ -352,6 +375,7 @@ export class DayPicker extends React.Component<DayPickerProps, DayPickerState> {
           </WeekLabels>
 
           <List
+            ref={this.listRef}
             itemSize={index => {
               const { weeks } = items[index];
               return weeks.length * DAY_HEIGHT + 26.5;

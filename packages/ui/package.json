@@ -15,6 +15,7 @@
     "flushable": "^1.0.0",
     "focus-trap": "^2.4.3",
     "kalendaryo": "^1.10.0",
+    "memoize-one": "^4.0.2",
     "prop-types": "^15.6.1",
     "raf-schd": "^4.0.0",
     "react-node-resolver": "^2.0.0",
