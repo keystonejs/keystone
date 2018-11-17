@@ -4,10 +4,18 @@ import React, { Component } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
-import { ShieldIcon, InfoIcon, TrashcanIcon, ArrowRightIcon } from '@voussoir/icons';
+import {
+  ArrowRightIcon,
+  DiffIcon,
+  InfoIcon,
+  LinkIcon,
+  ShieldIcon,
+  TrashcanIcon,
+} from '@voussoir/icons';
 import { colors, gridSize } from '@voussoir/ui/src/theme';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import { CheckboxPrimitive } from '@voussoir/ui/src/primitives/forms';
+import { Dropdown } from '@voussoir/ui/src/primitives/modals';
 import { A11yText } from '@voussoir/ui/src/primitives/typography';
 import DeleteItemModal from './DeleteItemModal';
 
@@ -22,6 +30,11 @@ const Table = styled('table')({
   marginBottom: gridSize * 4,
   width: '100%',
 });
+const TableRow = styled('tr')({
+  ':hover > td': {
+    backgroundColor: 'white',
+  },
+});
 const HeaderCell = styled('th')({
   backgroundColor: colors.page,
   boxShadow: '0 2px 0 rgba(0, 0, 0, 0.1)',
@@ -32,6 +45,7 @@ const HeaderCell = styled('th')({
   padding: gridSize,
   position: 'sticky',
   top: 0,
+  transition: 'background-color 100ms',
   zIndex: 1,
   textAlign: 'left',
   verticalAlign: 'bottom',
@@ -243,10 +257,11 @@ class ListDisplayRow extends Component {
     );
   }
   render() {
-    const { list, link, item, itemErrors, fields } = this.props;
+    const { list, link, item } = this.props;
+    console.log('ListDisplayRow', this.props);
 
-    return (
-      <tr>
+    const row = (
+      <TableRow>
         <BodyCell>
           <Button
             appearance="warning"
@@ -273,8 +288,27 @@ class ListDisplayRow extends Component {
           </Button>
         </BodyCell>
         {getFieldCells(this.props)}
-      </tr>
+      </TableRow>
     );
+    const items = [
+      {
+        content: 'Duplicate',
+        icon: <DiffIcon />,
+        onClick: console.log,
+      },
+      {
+        content: 'Copy Link',
+        icon: <LinkIcon />,
+        onClick: console.log,
+      },
+      {
+        content: 'Delete',
+        icon: <TrashcanIcon />,
+        onClick: console.log,
+      },
+    ];
+
+    return <Dropdown mode="contextmenu" target={row} items={items} />;
   }
 }
 
@@ -316,7 +350,7 @@ class ListManageRow extends Component {
     this.checkbox = ref;
   };
   render() {
-    const { fields, isSelected, item, list } = this.props;
+    const { isSelected, item } = this.props;
 
     return (
       <tr
