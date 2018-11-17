@@ -27,7 +27,6 @@ import { VariableSizeList as List } from 'react-window';
 import { Input } from './index';
 import { Select } from '../filters';
 import { ChevronLeftIcon, ChevronRightIcon } from '@voussoir/icons';
-import memoizeOne from 'memoize-one';
 import { borderRadius, colors } from '../../theme';
 
 const yearRange = (from, to) => {
