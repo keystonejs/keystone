@@ -43,14 +43,19 @@ export default function withModalHandlers(
       this.setState({ isOpen: true });
       document.addEventListener('mousedown', this.handleMouseDown);
       document.addEventListener('keydown', this.handleKeyDown, false);
+      document.addEventListener('wheel', this.handleScroll, false);
     };
     close = (event: Event) => {
       if (event && event.defaultPrevented) return;
       this.setState({ isOpen: false });
       document.removeEventListener('mousedown', this.handleMouseDown);
       document.removeEventListener('keydown', this.handleKeyDown, false);
+      document.removeEventListener('wheel', this.handleScroll, false);
     };
 
+    handleScroll = (event: WheelEvent) => {
+      event.preventDefault();
+    };
     handleMouseDown = (event: MouseEvent) => {
       const { target } = event;
       const { isOpen } = this.state;

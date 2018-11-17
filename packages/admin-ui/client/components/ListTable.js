@@ -258,7 +258,6 @@ class ListDisplayRow extends Component {
   }
   render() {
     const { list, link, item } = this.props;
-    console.log('ListDisplayRow', this.props);
 
     const row = (
       <TableRow>

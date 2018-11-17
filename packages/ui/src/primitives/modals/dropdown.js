@@ -103,8 +103,10 @@ type State = {
   topOffset: number,
 };
 
-function focus(el: ?Node) {
-  if (el instanceof HTMLElement) el.focus();
+function focus(el: ?HTMLElement) {
+  if (el && el instanceof HTMLElement && typeof el.focus === 'function') {
+    el.focus();
+  }
 }
 
 class Dropdown extends Component<Props, State> {
@@ -149,12 +151,14 @@ class Dropdown extends Component<Props, State> {
     const isPageUp = key === 'PageUp';
     const isPageDown = key === 'PageDown';
 
-    const firstItem = this.menu.firstChild;
-    const lastItem = this.menu.lastChild;
+    const firstItem = ((this.menu.firstChild: any): HTMLElement);
+    const lastItem = ((this.menu.lastChild: any): HTMLElement);
+    const previousItem = ((target.previousSibling: any): HTMLElement);
+    const nextItem = ((target.nextSibling: any): HTMLElement);
 
     // typical item traversal
-    if (isArrowUp) focus(target.previousSibling);
-    if (isArrowDown) focus(target.nextSibling);
+    if (isArrowUp) focus(previousItem);
+    if (isArrowDown) focus(nextItem);
     if (isPageUp) focus(firstItem);
     if (isPageDown) focus(lastItem);
 
@@ -172,7 +176,7 @@ class Dropdown extends Component<Props, State> {
     }
   };
   handleMenuLeave = () => {
-    this.lastHover.focus();
+    focus(this.lastHover);
   };
   getMenu = ref => {
     if (ref !== null) {
