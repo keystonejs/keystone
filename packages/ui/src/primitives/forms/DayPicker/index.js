@@ -7,7 +7,7 @@ import { VariableSizeList as List } from 'react-window';
 import { ChevronLeftIcon, ChevronRightIcon } from '@voussoir/icons';
 import { useLayoutEffect, useState, useRef, useMemo, useCallback } from '../../../new-typed-react';
 import { borderRadius, colors } from '../../../theme';
-import { yearRange, months, type Weeks, isNumberInRange, getWeeksInMonth } from './utils';
+import { yearRange, months, type Weeks, getWeeksInMonth } from './utils';
 import { type YearPickerType, SelectMonth, SelectYear } from './selects';
 import { Month } from './month';
 import { WeekLabels, Day } from './comps';
