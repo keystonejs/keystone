@@ -358,17 +358,25 @@ function scrollToDate(date: Date, yearRangeFrom: number, ref: { current: List<*>
   if (list !== null) {
     const month = date.getMonth();
     const year = getYear(date);
+
     // calculate the index instead of using indexOf because this is much cheaper
     const index = (year - yearRangeFrom) * 12 + month;
     list.scrollToItem(index, 'start');
   }
 }
 
-export const DayPicker = (props: DayPickerProps) => {
+export const DayPicker = ({
+  yearRangeFrom,
+  yearRangeTo,
+  yearPickerType,
+  startCurrentDateAt,
+  startSelectedDateAt,
+  onSelectedChange,
+}: DayPickerProps) => {
   const listRef = useRef(null);
 
-  // we're not using babel 7 so type arguments to functions don't work yet
-  const [date, setDate] = useState/*:: <Date> */(props.startCurrentDateAt);
+  // we're not using babel 7 yet so type arguments to functions don't work yet
+  const [date, setDate] = useState/*:: <Date> */(startCurrentDateAt);
 
   const shouldChangeScrollPositionRef = useRef(true);
 
@@ -380,30 +388,30 @@ export const DayPicker = (props: DayPickerProps) => {
     [shouldChangeScrollPositionRef, setDate]
   );
 
-  const [selectedDate, _setSelectedDate] = useState(props.startSelectedDateAt);
+  const [selectedDate, _setSelectedDate] = useState(startSelectedDateAt);
   const setSelectedDate = useCallback(
     (newSelectedDate: Date) => {
       _setSelectedDate(newSelectedDate);
-      props.onSelectedChange(newSelectedDate);
+      onSelectedChange(newSelectedDate);
     },
-    [_setSelectedDate, props.onSelectedChange]
+    [_setSelectedDate, onSelectedChange]
   );
 
   useLayoutEffect(
     () => {
       if (shouldChangeScrollPositionRef.current) {
-        scrollToDate(date, props.yearRangeFrom, listRef);
+        scrollToDate(date, yearRangeFrom, listRef);
         shouldChangeScrollPositionRef.current = false;
       }
     },
-    [date]
+    [date, yearRangeFrom, listRef]
   );
 
   const years = useMemo(
     () => {
-      return yearRange(props.yearRangeFrom, props.yearRangeTo);
+      return yearRange(yearRangeFrom, yearRangeTo);
     },
-    [props.yearRangeFrom, props.yearRangeTo]
+    [yearRangeFrom, yearRangeTo]
   );
 
   const items = useMemo(
@@ -423,8 +431,6 @@ export const DayPicker = (props: DayPickerProps) => {
     },
     [years]
   );
-
-  const { yearRangeFrom, yearRangeTo, yearPickerType } = props;
 
   return (
     <Wrapper>
