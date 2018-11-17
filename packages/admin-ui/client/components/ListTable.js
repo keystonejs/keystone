@@ -3,15 +3,9 @@ import { jsx } from '@emotion/core';
 import React, { Component } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import {
-  ArrowRightIcon,
-  DiffIcon,
-  InfoIcon,
-  LinkIcon,
-  ShieldIcon,
-  TrashcanIcon,
-} from '@voussoir/icons';
+import { ArrowRightIcon, InfoIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@voussoir/icons';
 import { colors, gridSize } from '@voussoir/ui/src/theme';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import { CheckboxPrimitive } from '@voussoir/ui/src/primitives/forms';
@@ -289,21 +283,26 @@ class ListDisplayRow extends Component {
         {getFieldCells(this.props)}
       </TableRow>
     );
+    const copyText = window.location.origin + link({ path: list.path, id: item.id });
     const items = [
+      // TODO build this...
+      // {
+      //   content: 'Duplicate',
+      //   icon: <DiffIcon />,
+      //   onClick: console.log,
+      // },
       {
-        content: 'Duplicate',
-        icon: <DiffIcon />,
-        onClick: console.log,
-      },
-      {
-        content: 'Copy Link',
+        content: (
+          <CopyToClipboard text={copyText}>
+            <span>Copy Link</span>
+          </CopyToClipboard>
+        ),
         icon: <LinkIcon />,
-        onClick: console.log,
       },
       {
         content: 'Delete',
         icon: <TrashcanIcon />,
-        onClick: console.log,
+        onClick: this.showDeleteModal,
       },
     ];
 
