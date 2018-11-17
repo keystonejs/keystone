@@ -2,37 +2,15 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
-import {
-  isToday as isDayToday,
-  isSameMonth,
-  getYear,
-  setMonth,
-  format,
-  setDay,
-  setYear,
-  isEqual as areDatesEqual,
-  addMonths,
-  subMonths,
-  startOfMonth,
-  eachDay,
-  addWeeks,
-  startOfWeek,
-  endOfWeek,
-  getDate,
-} from 'date-fns';
+import { getYear, setMonth, format, setDay, setYear, addMonths, subMonths } from 'date-fns';
 import { VariableSizeList as List } from 'react-window';
 import { ChevronLeftIcon, ChevronRightIcon } from '@voussoir/icons';
-import {
-  memo,
-  useLayoutEffect,
-  useState,
-  useRef,
-  useMemo,
-  useCallback,
-} from '../../../new-typed-react';
+import { useLayoutEffect, useState, useRef, useMemo, useCallback } from '../../../new-typed-react';
 import { borderRadius, colors } from '../../../theme';
-import { yearRange, months } from './utils';
+import { yearRange, months, type Weeks, isNumberInRange, getWeeksInMonth } from './utils';
 import { type YearPickerType, SelectMonth, SelectYear } from './selects';
+import { Month } from './month';
+import { WeekLabels, Day } from './comps';
 
 const Wrapper = styled.div({
   fontSize: '0.85rem',
@@ -65,95 +43,6 @@ const HeaderButton = props => (
     {...props}
   />
 );
-const Body = 'div';
-
-const WeekRow = styled.div({
-  display: 'flex',
-});
-
-const WeekLabels = styled(WeekRow)({
-  color: colors.N40,
-  fontSize: '0.65rem',
-  fontWeight: 500,
-  textTransform: 'uppercase',
-});
-
-const Day = styled.div(({ disabled, isInteractive, isSelected, isToday }) => {
-  let textColor;
-  if (isToday) textColor = colors.danger;
-  if (disabled) textColor = colors.N40;
-  if (isSelected) textColor = 'white';
-
-  return {
-    alignItems: 'center',
-    backgroundColor: isSelected ? colors.primary : null,
-    borderRadius: borderRadius,
-    color: textColor,
-    cursor: isInteractive ? 'pointer' : 'default',
-    display: 'flex',
-    flexDirection: 'column',
-    fontWeight: isSelected || isToday ? 'bold' : null,
-    flexBasis: 'calc(100% / 7)',
-    padding: '0.5rem',
-    textAlign: 'center',
-    width: 'calc(100% / 7)',
-
-    ':hover': {
-      backgroundColor: isInteractive && !isSelected ? colors.B.L90 : null,
-      color: isInteractive && !isSelected && !isToday ? colors.B.D40 : null,
-    },
-    ':active': {
-      backgroundColor: isInteractive && !isSelected ? colors.B.L80 : null,
-    },
-  };
-});
-
-const TodayMarker = styled.div(({ isSelected }) => ({
-  backgroundColor: isSelected ? 'white' : colors.danger,
-  borderRadius: 4,
-  height: 2,
-  marginBottom: -4,
-  marginTop: 2,
-  width: '1em',
-}));
-
-function createDayObject(dateValue) {
-  return {
-    dateValue,
-    label: getDate(dateValue),
-  };
-}
-
-type Weeks = $ReadOnlyArray<$ReadOnlyArray<{ dateValue: Date, label: string }>>;
-
-// https://github.com/geeofree/kalendaryo/blob/master/src/index.js#L245-L279
-function getWeeksInMonth(date) {
-  const weekOptions = { weekStartsOn: 0 };
-  const firstDayOfMonth = startOfMonth(date);
-  const firstDayOfFirstWeek = startOfWeek(firstDayOfMonth, weekOptions);
-  const lastDayOfFirstWeek = endOfWeek(firstDayOfMonth, weekOptions);
-
-  const getWeeks = (startDay, endDay, weekArray: Weeks): Weeks => {
-    const week = eachDay(startDay, endDay).map(createDayObject);
-    const weeks = [...weekArray, week];
-    const nextWeek = addWeeks(startDay, 1);
-
-    const firstDayNextWeek = startOfWeek(nextWeek, weekOptions);
-    const lastDayNextWeek = endOfWeek(nextWeek, weekOptions);
-
-    if (isSameMonth(firstDayNextWeek, date)) {
-      return getWeeks(firstDayNextWeek, lastDayNextWeek, weeks);
-    }
-
-    return weeks;
-  };
-
-  return getWeeks(firstDayOfFirstWeek, lastDayOfFirstWeek, []);
-}
-
-function isNumberInRange(num: number, start: number, end: number) {
-  return num >= start && num <= end;
-}
 
 export type { YearPickerType } from './selects';
 
@@ -167,84 +56,6 @@ type DayPickerProps = {
 };
 
 let DAY_HEIGHT = 32.5;
-
-let readableMonths = months.map(month => format(setMonth(new Date(), month), 'MMMM'));
-
-const MonthHeader = memo(({ month, year }) => {
-  return (
-    <div
-      css={{
-        position: 'sticky',
-        top: 0,
-        width: '100%',
-        backgroundColor: '#fff',
-      }}
-    >
-      {/*if you're going to change the styles here make sure
-   to update the size in the itemSize prop for List in DayPicker */}
-      <div
-        css={{
-          paddingTop: 4,
-          paddingBottom: 4,
-          border: `1px ${colors.N60} solid`,
-          borderLeft: 0,
-          borderRight: 0,
-          display: 'flex',
-          justifyContent: 'space-between',
-          paddingRight: 12,
-        }}
-      >
-        <span
-          css={{
-            color: colors.N60,
-          }}
-        >
-          {readableMonths[month]}
-        </span>
-        <span
-          css={{
-            color: colors.N60,
-          }}
-        >
-          {year}
-        </span>
-      </div>
-    </div>
-  );
-});
-
-const Month = memo(({ style, index, data }) => {
-  const { items, selectedDate, setSelectedDate } = data;
-  const { weeks, month, year } = items[index];
-  return (
-    <div style={style}>
-      <MonthHeader month={month} year={year} />
-      {weeks.map((week, i) => (
-        <WeekRow key={i}>
-          {week.map(day => {
-            const date = new Date(year, month, 3);
-            const disabled = !isSameMonth(date, day.dateValue);
-            const isSelected = !disabled && areDatesEqual(selectedDate, day.dateValue);
-            const isToday = isDayToday(day.dateValue);
-            return (
-              <Day
-                key={day.label}
-                disabled={disabled}
-                onClick={disabled ? null : () => setSelectedDate(day.dateValue)}
-                isInteractive={!disabled}
-                isSelected={isSelected}
-                isToday={isToday}
-              >
-                {day.label}
-                {isToday ? <TodayMarker isSelected={isSelected} /> : null}
-              </Day>
-            );
-          })}
-        </WeekRow>
-      ))}
-    </div>
-  );
-});
 
 function scrollToDate(
   date: Date,
@@ -397,7 +208,7 @@ export const DayPicker = ({
           [controlledSetDate]
         )}
       </Header>
-      <Body>
+      <div>
         {weekLabels}
         <List
           ref={listRef}
@@ -426,7 +237,7 @@ export const DayPicker = ({
         >
           {Month}
         </List>
-      </Body>
+      </div>
     </Wrapper>
   );
 };
