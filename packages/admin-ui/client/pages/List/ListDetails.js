@@ -55,15 +55,6 @@ const Note = styled.div({
   fontSize: '0.85em',
 });
 
-const DropdownItem = ({ children, icon }) => (
-  <FlexGroup growIndexes={[1]} align="center" style={{ lineHeight: 1 }}>
-    <div key="icon" css={{ width: 16 }}>
-      {icon}
-    </div>
-    <span key="children">{children}</span>
-  </FlexGroup>
-);
-
 const Search = ({ children, hasValue, isFetching, onClear, onSubmit }) => {
   const Icon = hasValue ? XIcon : SearchIcon;
   const isLoading = hasValue && isFetching;
@@ -273,21 +264,18 @@ class ListDetails extends Component<Props, State> {
   renderMoreDropdown(queryWidth) {
     const { isFullWidth } = this.state;
     const TableIcon = isFullWidth ? FoldIcon : UnfoldIcon;
-    const tableText = isFullWidth ? 'Collapse table' : 'Expand table';
     const tableToggleIsAvailable = queryWidth > CONTAINER_WIDTH + CONTAINER_GUTTER * 2;
 
     const items = [
       {
-        content: <DropdownItem icon={<ZapIcon />}>Reset filters, cols, etc.</DropdownItem>,
+        content: 'Reset filters, cols, etc.',
+        icon: <ZapIcon />,
         id: 'ks-list-dropdown-reset', // for cypress tests
         onClick: this.handleReset,
       },
       {
-        content: (
-          <DropdownItem icon={<TableIcon css={{ transform: 'rotate(90deg)' }} />}>
-            {tableText}
-          </DropdownItem>
-        ),
+        content: isFullWidth ? 'Collapse table' : 'Expand table',
+        icon: <TableIcon css={{ transform: 'rotate(90deg)' }} />,
         isDisabled: !tableToggleIsAvailable,
         onClick: this.toggleFullWidth,
       },

@@ -17,8 +17,20 @@ const ItemElement = props => {
   if (props.href) return <a {...props} />;
   return <button type="button" {...props} />;
 };
-
-const Item = ({ isDisabled, ...props }) => (
+const ItemInner = ({ children, icon }) =>
+  icon ? (
+    <div css={{ alignItems: 'center', display: 'flex', lineHeight: 1 }}>
+      <div key="icon" css={{ marginRight: gridSize, width: 16, textAlign: 'center' }}>
+        {icon}
+      </div>
+      <div key="children" css={{ flex: 1 }}>
+        {children}
+      </div>
+    </div>
+  ) : (
+    children
+  );
+const Item = ({ children, icon, isDisabled, ...props }) => (
   <ItemElement
     disabled={isDisabled}
     css={{
@@ -48,7 +60,9 @@ const Item = ({ isDisabled, ...props }) => (
       },
     }}
     {...props}
-  />
+  >
+    <ItemInner icon={icon}>{children}</ItemInner>
+  </ItemElement>
 );
 const Menu = styled.div(({ left, top }) => {
   const placementStyles = { left, top };
@@ -167,16 +181,46 @@ class Dropdown extends Component<Props, State> {
   };
 
   calculatePosition = () => {
-    const { align, targetNode } = this.props;
+    const { align, mode, targetNode } = this.props;
 
     if (!targetNode || !document.body) return;
 
     const bodyRect = document.body.getBoundingClientRect();
     const targetRect = targetNode.getBoundingClientRect();
+    const menuHeight = this.menu.clientHeight;
     const menuWidth = this.menu.clientWidth;
+    let leftOffset;
+    let topOffset;
 
-    const leftOffset = align === 'left' ? targetRect.left : targetRect.right - menuWidth;
-    const topOffset = targetRect.bottom - bodyRect.top;
+    // ------------------------------
+    // click menu
+    // ------------------------------
+
+    if (mode === 'click') {
+      leftOffset = align === 'left' ? targetRect.left : targetRect.right - menuWidth;
+      topOffset = targetRect.bottom - bodyRect.top;
+
+      this.setState({ leftOffset, topOffset });
+
+      return;
+    }
+
+    // ------------------------------
+    // context menu
+    // ------------------------------
+
+    const clickPos = { x: event.clientX, y: event.clientY };
+    const screen = { w: window.innerWidth, h: window.innerHeight };
+
+    const right = screen.w - clickPos.x > menuWidth;
+    const left = !right;
+    const top = screen.h - clickPos.y > menuHeight;
+    const bottom = !top;
+
+    if (right) leftOffset = `${clickPos.x}px`;
+    if (left) leftOffset = `${clickPos.x - menuWidth}px`;
+    if (top) topOffset = `${clickPos.y - bodyRect.top}px`;
+    if (bottom) topOffset = `${clickPos.y - bodyRect.top - menuHeight}px`;
 
     this.setState({ leftOffset, topOffset });
   };

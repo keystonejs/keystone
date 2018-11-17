@@ -9,11 +9,13 @@ export type CloseType = (event: Event) => void;
 export type ModalHandlerProps = {
   close: CloseType,
   defaultIsOpen: boolean,
+  mode: 'click' | 'contextmenu',
   onClose: GenericFn,
   onOpen: GenericFn,
   target: Element<*>,
 };
 type State = { isOpen: boolean };
+type Config = { Transition: (*) => * };
 
 function getDisplayName(C) {
   return `withModalHandlers(${C.displayName || C.name})`;
@@ -22,7 +24,7 @@ const NOOP = () => {};
 
 export default function withModalHandlers(
   WrappedComponent: ComponentType<*>,
-  { Transition }: { Transition: (*) => * }
+  { Transition }: Config
 ) {
   class IntermediateComponent extends Component<*, State> {
     lastHover: HTMLElement;
@@ -30,29 +32,26 @@ export default function withModalHandlers(
     targetNode: HTMLElement;
     state = { isOpen: this.props.defaultIsOpen };
     static defaultProps = {
+      mode: 'click',
       onClose: NOOP,
       onOpen: NOOP,
     };
 
-    componentDidMount() {
-      document.addEventListener('click', this.handleClick);
-    }
-    componentWillUnmount() {
-      document.removeEventListener('click', this.handleClick);
-    }
-
     open = (event: Event) => {
       if (event && event.defaultPrevented) return;
+      if (this.props.mode === 'contextmenu') event.preventDefault();
       this.setState({ isOpen: true });
+      document.addEventListener('mousedown', this.handleMouseDown);
       document.addEventListener('keydown', this.handleKeyDown, false);
     };
     close = (event: Event) => {
       if (event && event.defaultPrevented) return;
       this.setState({ isOpen: false });
+      document.removeEventListener('mousedown', this.handleMouseDown);
       document.removeEventListener('keydown', this.handleKeyDown, false);
     };
 
-    handleClick = (event: MouseEvent) => {
+    handleMouseDown = (event: MouseEvent) => {
       const { target } = event;
       const { isOpen } = this.state;
 
@@ -67,11 +66,6 @@ export default function withModalHandlers(
       // user to click "through" to other elements and close the popout.
       if (isOpen && !this.contentNode.contains(target)) {
         this.close(event);
-      }
-
-      // open on target click
-      if (!isOpen && this.targetNode.contains(target)) {
-        this.open(event);
       }
     };
     handleKeyDown = (event: KeyboardEvent) => {
@@ -90,10 +84,15 @@ export default function withModalHandlers(
     };
 
     render() {
-      const { target, onClose, onOpen } = this.props;
+      const { mode, onClose, onOpen, target } = this.props;
       const { isOpen } = this.state;
-      const cloneProps = isOpen ? { isActive: true } : {};
 
+      const cloneProps = {};
+      if (isOpen) cloneProps.isActive = true;
+      if (mode === 'click') cloneProps.onClick = this.open;
+      if (mode === 'contextmenu') cloneProps.onContextMenu = this.open;
+
+      // TODO: prefer functional children that pass refs + snapshot to the target node
       return (
         <Fragment>
           <NodeResolver innerRef={this.getTarget}>{cloneElement(target, cloneProps)}</NodeResolver>
