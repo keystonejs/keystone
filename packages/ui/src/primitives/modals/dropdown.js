@@ -1,7 +1,7 @@
 // @flow
 /** @jsx jsx */
 
-import { Component, type Node as ReactNode } from 'react';
+import { Component, type Node as ReactNode, type Element } from 'react';
 import { Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import styled from '@emotion/styled';
@@ -83,6 +83,7 @@ const Menu = styled.div(({ left, top }) => {
 type ItemType = {
   content: ReactNode,
   href?: string,
+  icon?: Element<*>,
   isDisabled: boolean,
   onClick?: (*) => void,
   to?: string,
@@ -189,8 +190,8 @@ class Dropdown extends Component<Props, State> {
     const targetRect = targetNode.getBoundingClientRect();
     const menuHeight = this.menu.clientHeight;
     const menuWidth = this.menu.clientWidth;
-    let leftOffset;
-    let topOffset;
+    let leftOffset = 0;
+    let topOffset = 0;
 
     // ------------------------------
     // click menu
@@ -209,7 +210,8 @@ class Dropdown extends Component<Props, State> {
     // context menu
     // ------------------------------
 
-    const clickPos = { x: event.clientX, y: event.clientY };
+    const { clientX, clientY } = window.event;
+    const clickPos = { x: clientX, y: clientY };
     const screen = { w: window.innerWidth, h: window.innerHeight };
 
     const right = screen.w - clickPos.x > menuWidth;
@@ -217,10 +219,10 @@ class Dropdown extends Component<Props, State> {
     const top = screen.h - clickPos.y > menuHeight;
     const bottom = !top;
 
-    if (right) leftOffset = `${clickPos.x}px`;
-    if (left) leftOffset = `${clickPos.x - menuWidth}px`;
-    if (top) topOffset = `${clickPos.y - bodyRect.top}px`;
-    if (bottom) topOffset = `${clickPos.y - bodyRect.top - menuHeight}px`;
+    if (right) leftOffset = clickPos.x;
+    if (left) leftOffset = clickPos.x - menuWidth;
+    if (top) topOffset = clickPos.y - bodyRect.top;
+    if (bottom) topOffset = clickPos.y - bodyRect.top - menuHeight;
 
     this.setState({ leftOffset, topOffset });
   };
