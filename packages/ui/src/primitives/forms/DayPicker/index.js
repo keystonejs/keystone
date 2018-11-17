@@ -1,12 +1,10 @@
 // @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { type Node, type Ref, type ComponentType } from 'react';
 import styled from '@emotion/styled';
 import {
   isToday as isDayToday,
   isSameMonth,
-  parse,
   getYear,
   setMonth,
   format,
@@ -23,19 +21,18 @@ import {
   getDate,
 } from 'date-fns';
 import { VariableSizeList as List } from 'react-window';
-import { Input } from './index';
-import { Select } from '../filters';
 import { ChevronLeftIcon, ChevronRightIcon } from '@voussoir/icons';
-import { borderRadius, colors } from '../../theme';
-
-const yearRange = (from, to) => {
-  const years: Array<number> = [];
-  let year = from;
-  while (year <= to) {
-    years.push(year++);
-  }
-  return years;
-};
+import {
+  memo,
+  useLayoutEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from '../../../new-typed-react';
+import { borderRadius, colors } from '../../../theme';
+import { yearRange, months } from './utils';
+import { type YearPickerType, SelectMonth, SelectYear } from './selects';
 
 const Wrapper = styled.div({
   fontSize: '0.85rem',
@@ -154,98 +151,11 @@ function getWeeksInMonth(date) {
   return getWeeks(firstDayOfFirstWeek, lastDayOfFirstWeek, []);
 }
 
-const memo: <Props>(
-  (props: Props) => Node,
-  isEqual?: (Props, Props) => boolean
-) => ComponentType<Props> = (React: any).memo;
-
-const useState: <State>(
-  initialState: (() => State) | State
-) => [State, (State | (State => State)) => void] = (React: any).useState;
-
-const useRef: <Value>(initalValue: Value) => {| current: Value |} = (React: any).useRef;
-
-const useMemo: <Value>(() => Value, $ReadOnlyArray<any>) => Value = (React: any).useMemo;
-
-const useLayoutEffect: (() => mixed, mem?: $ReadOnlyArray<any>) => void = (React: any)
-  .useLayoutEffect;
-
-const useCallback: <T>(callback: T, inputs: Array<mixed> | void | null) => T = (React: any)
-  .useCallback;
-
 function isNumberInRange(num: number, start: number, end: number) {
   return num >= start && num <= end;
 }
 
-let months = Array.from({ length: 12 }, (_, i) => i);
-
-const monthOptions = months.map((month, i) => (
-  <option key={i} value={i}>
-    {format(setMonth(new Date(), month), 'MMM')}
-  </option>
-));
-
-type SelectMonthProps = {
-  onChange: number => mixed,
-  month: number,
-};
-
-const SelectMonth = memo(({ onChange, month }: SelectMonthProps) => {
-  return (
-    <select
-      onChange={event => {
-        onChange(Number(event.target.value));
-      }}
-      value={month}
-    >
-      {monthOptions}
-    </select>
-  );
-});
-
-type YearPickerType = 'auto' | 'input';
-
-type SelectYearProps = {
-  onChange: number => mixed,
-  year: number,
-  yearRangeFrom: number,
-  yearRangeTo: number,
-  yearPickerType: YearPickerType,
-};
-
-// todo: add internal state to this component so consumers of the component only get valid years
-const SelectYear = memo(
-  ({ onChange, year, yearRangeFrom, yearRangeTo, yearPickerType }: SelectYearProps) => {
-    const years = yearRange(yearRangeFrom, yearRangeTo);
-
-    const handleChange = event => {
-      const value = Number(event.target.value);
-      onChange(value);
-    };
-
-    if ((years.length > 50 && yearPickerType === 'auto') || yearPickerType === 'input') {
-      return (
-        <input
-          type="number"
-          min={yearRangeFrom}
-          max={yearRangeTo}
-          onChange={handleChange}
-          value={year}
-        />
-      );
-    } else {
-      return (
-        <select onChange={handleChange} value={year}>
-          {years.map((yearOption, i) => (
-            <option key={i} value={year}>
-              {yearOption}
-            </option>
-          ))}
-        </select>
-      );
-    }
-  }
-);
+export type { YearPickerType } from './selects';
 
 type DayPickerProps = {
   onSelectedChange: Date => void,
@@ -525,95 +435,4 @@ DayPicker.defaultProps = {
   yearRangeFrom: getYear(new Date()) - 100,
   yearRangeTo: getYear(new Date()),
   yearPickerType: 'auto',
-};
-
-type Props = {
-  children?: Node,
-  /** Field disabled */
-  isDisabled?: boolean,
-  /** Ref to apply to the inner Element */
-  innerRef: Ref<*>,
-  date: string,
-  time: string,
-  offset: string,
-  htmlID: string,
-  autoFocus?: boolean,
-  handleDayChange: Date => void,
-  handleTimeChange: Function,
-  handleOffsetChange: Function,
-  yearRangeFrom?: number,
-  yearRangeTo?: number,
-  yearPickerType?: YearPickerType,
-};
-
-export const DateTimePicker = (props: Props) => {
-  const { date, time, offset, htmlID, autoFocus, isDisabled, innerRef } = props;
-  const {
-    handleDayChange,
-    handleTimeChange,
-    handleOffsetChange,
-    yearRangeFrom,
-    yearRangeTo,
-    yearPickerType,
-  } = props;
-  const TODAY = new Date();
-
-  const options = [
-    '-12',
-    '-11',
-    '-11',
-    '-10',
-    '-09',
-    '-08',
-    '-07',
-    '-06',
-    '-05',
-    '-04',
-    '-03',
-    '-02',
-    '-01',
-    '+00',
-    '+01',
-    '+02',
-    '+03',
-    '+04',
-    '+05',
-    '+06',
-    '+07',
-    '+08',
-    '+09',
-    '+10',
-    '+11',
-    '+12',
-    '+13',
-    '+14',
-  ].map(o => ({ value: `${o}:00`, label: `${o}:00` }));
-  return (
-    <div>
-      <DayPicker
-        autoFocus={autoFocus}
-        onSelectedChange={handleDayChange}
-        yearRangeFrom={yearRangeFrom}
-        yearRangeTo={yearRangeTo}
-        yearPickerType={yearPickerType}
-        startCurrentDateAt={date ? parse(date) : TODAY}
-        startSelectedDateAt={date ? parse(date) : TODAY}
-      />
-      <Input
-        type="time"
-        name="time-picker"
-        value={time}
-        onChange={handleTimeChange}
-        disabled={isDisabled || false}
-        isMultiline={false}
-        ref={innerRef}
-      />
-      <Select
-        value={offset}
-        options={options}
-        onChange={handleOffsetChange}
-        id={`react-select-${htmlID}`}
-      />
-    </div>
-  );
 };
