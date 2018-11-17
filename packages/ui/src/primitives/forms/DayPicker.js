@@ -1,7 +1,7 @@
 // @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { type Node, type Ref } from 'react';
+import React, { type Node, type Ref, type ComponentType } from 'react';
 import styled from '@emotion/styled';
 import {
   isToday as isDayToday,
@@ -257,49 +257,60 @@ let readableMonths = [
   'December',
 ];
 
-const Month = ({ style, index, data }) => {
+const memo: <Props>(
+  (props: Props) => Node,
+  isEqual?: (Props, Props) => boolean
+) => ComponentType<Props> = (React: any).memo;
+
+const MonthHeader = memo(({ month, year }) => {
+  return (
+    <div
+      css={{
+        position: 'sticky',
+        top: 0,
+        width: '100%',
+        backgroundColor: '#fff',
+      }}
+    >
+      {/*if you're going to change the styles here make sure
+   to update the size in the itemSize prop for List in DayPicker */}
+      <div
+        css={{
+          paddingTop: 4,
+          paddingBottom: 4,
+          border: `1px ${colors.N60} solid`,
+          borderLeft: 0,
+          borderRight: 0,
+          display: 'flex',
+          justifyContent: 'space-between',
+          paddingRight: 12,
+        }}
+      >
+        <span
+          css={{
+            color: colors.N60,
+          }}
+        >
+          {readableMonths[month]}
+        </span>
+        <span
+          css={{
+            color: colors.N60,
+          }}
+        >
+          {year}
+        </span>
+      </div>
+    </div>
+  );
+});
+
+const Month = memo(({ style, index, data }) => {
   const { items, selectedDate, setSelectedDate } = data;
   const { weeks, month, year } = items[index];
   return (
     <div style={style}>
-      <div
-        css={{
-          position: 'sticky',
-          top: 0,
-          width: '100%',
-          backgroundColor: '#fff',
-        }}
-      >
-        {/*if you're going to change the styles here make sure
-           to update the size in the itemSize prop above */}
-        <div
-          css={{
-            paddingTop: 4,
-            paddingBottom: 4,
-            border: `1px ${colors.N60} solid`,
-            borderLeft: 0,
-            borderRight: 0,
-            display: 'flex',
-            justifyContent: 'space-between',
-            paddingRight: 12,
-          }}
-        >
-          <span
-            css={{
-              color: colors.N60,
-            }}
-          >
-            {readableMonths[month]}
-          </span>
-          <span
-            css={{
-              color: colors.N60,
-            }}
-          >
-            {year}
-          </span>
-        </div>
-      </div>
+      <MonthHeader month={month} year={year} />
       {weeks.map((week, i) => (
         <WeekRow key={i}>
           {week.map(day => {
@@ -325,11 +336,11 @@ const Month = ({ style, index, data }) => {
       ))}
     </div>
   );
-};
+});
 
 const useState: <State>(
   initialState: (() => State) | State
-) => [State, (State) => void] = (React: any).useState;
+) => [State, (State | (State => State)) => void] = (React: any).useState;
 
 const useRef: <Value>(initalValue: Value) => {| current: Value |} = (React: any).useRef;
 
@@ -339,6 +350,9 @@ const useMemo: <Value>(() => Value, $ReadOnlyArray<any>) => Value = (React: any)
 
 const useLayoutEffect: (() => mixed, mem?: $ReadOnlyArray<any>) => void = (React: any)
   .useLayoutEffect;
+
+const useCallback: <T>(callback: T, inputs: Array<mixed> | void | null) => T = (React: any)
+  .useCallback;
 
 function scrollToDate(date: Date, yearRangeFrom: number, ref: { current: List<*> | null }) {
   const list = ref.current;
@@ -354,20 +368,27 @@ function scrollToDate(date: Date, yearRangeFrom: number, ref: { current: List<*>
 export const DayPicker = (props: DayPickerProps) => {
   const listRef = useRef(null);
 
-  const [date, setDate] = useState(props.startCurrentDateAt);
+  // we're not using babel 7 so type arguments to functions don't work yet
+  const [date, setDate] = useState/*:: <Date> */(props.startCurrentDateAt);
 
   const shouldChangeScrollPositionRef = useRef(true);
 
-  const controlledSetDate = (newDate: Date) => {
-    shouldChangeScrollPositionRef.current = true;
-    setDate(newDate);
-  };
+  const controlledSetDate = useCallback(
+    (newDate: Date | (Date => Date)) => {
+      shouldChangeScrollPositionRef.current = true;
+      setDate(newDate);
+    },
+    [shouldChangeScrollPositionRef, setDate]
+  );
 
   const [selectedDate, _setSelectedDate] = useState(props.startSelectedDateAt);
-  const setSelectedDate = (newSelectedDate: Date) => {
-    _setSelectedDate(newSelectedDate);
-    props.onSelectedChange(newSelectedDate);
-  };
+  const setSelectedDate = useCallback(
+    (newSelectedDate: Date) => {
+      _setSelectedDate(newSelectedDate);
+      props.onSelectedChange(newSelectedDate);
+    },
+    [_setSelectedDate, props.onSelectedChange]
+  );
 
   useLayoutEffect(
     () => {
@@ -409,13 +430,18 @@ export const DayPicker = (props: DayPickerProps) => {
   return (
     <Wrapper>
       <Header>
-        <HeaderButton
-          onClick={() => {
-            controlledSetDate(subMonths(date, 1));
-          }}
-        >
-          <ChevronLeftIcon />
-        </HeaderButton>
+        {useMemo(
+          () => (
+            <HeaderButton
+              onClick={() => {
+                controlledSetDate(currentDate => subMonths(currentDate, 1));
+              }}
+            >
+              <ChevronLeftIcon />
+            </HeaderButton>
+          ),
+          [controlledSetDate]
+        )}
 
         <SelectMonth
           onChange={month => {
@@ -434,13 +460,18 @@ export const DayPicker = (props: DayPickerProps) => {
           yearRangeTo={yearRangeTo}
           yearPickerType={yearPickerType}
         />
-        <HeaderButton
-          onClick={() => {
-            controlledSetDate(addMonths(date, 1));
-          }}
-        >
-          <ChevronRightIcon />
-        </HeaderButton>
+        {useMemo(
+          () => (
+            <HeaderButton
+              onClick={() => {
+                controlledSetDate(addMonths(date, 1));
+              }}
+            >
+              <ChevronRightIcon />
+            </HeaderButton>
+          ),
+          [controlledSetDate]
+        )}
       </Header>
       <Body>
         {useMemo(
@@ -466,8 +497,11 @@ export const DayPicker = (props: DayPickerProps) => {
             const { weeks } = items[index];
             return weeks.length * DAY_HEIGHT + 26.5;
           }}
-          // probably memoize the creation of this object later and probably make Month memoized
-          itemData={{ items, selectedDate, setSelectedDate }}
+          itemData={useMemo(() => ({ items, selectedDate, setSelectedDate }), [
+            items,
+            selectedDate,
+            setSelectedDate,
+          ])}
           height={6 * DAY_HEIGHT + 26.5}
           itemCount={years.length * 12}
           width="100%"
