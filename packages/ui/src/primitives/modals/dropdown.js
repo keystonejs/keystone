@@ -1,7 +1,7 @@
 // @flow
 /** @jsx jsx */
 
-import { Component, type Node as ReactNode, type Element } from 'react';
+import { Component, Fragment, type Node as ReactNode, type Element } from 'react';
 import { Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import styled from '@emotion/styled';
@@ -10,6 +10,7 @@ import { jsx } from '@emotion/core';
 import { borderRadius, colors, gridSize } from '../../theme';
 import FocusTrap from './FocusTrap';
 import { SlideDown } from './transitions';
+import { Blanket } from './common';
 import withModalHandlers, { type ModalHandlerProps } from './withModalHandlers';
 
 const ItemElement = props => {
@@ -238,29 +239,32 @@ class Dropdown extends Component<Props, State> {
 
     if (attachTo) {
       return createPortal(
-        <FocusTrap options={{ clickOutsideDeactivates: true }}>
-          <Menu
-            left={leftOffset}
-            onMouseLeave={this.handleMenuLeave}
-            ref={this.getMenu}
-            style={style}
-            top={topOffset}
-          >
-            {items.map((item, idx) => {
-              const { content, ...rest } = item;
-              return (
-                <Item
-                  {...rest}
-                  onClick={this.handleItemClick(item)}
-                  onMouseEnter={this.handleMouseEnter}
-                  key={idx}
-                >
-                  {content}
-                </Item>
-              );
-            })}
-          </Menu>
-        </FocusTrap>,
+        <Fragment>
+          <Blanket />
+          <FocusTrap options={{ clickOutsideDeactivates: true }}>
+            <Menu
+              left={leftOffset}
+              onMouseLeave={this.handleMenuLeave}
+              ref={this.getMenu}
+              style={style}
+              top={topOffset}
+            >
+              {items.map((item, idx) => {
+                const { content, ...rest } = item;
+                return (
+                  <Item
+                    {...rest}
+                    onClick={this.handleItemClick(item)}
+                    onMouseEnter={this.handleMouseEnter}
+                    key={idx}
+                  >
+                    {content}
+                  </Item>
+                );
+              })}
+            </Menu>
+          </FocusTrap>
+        </Fragment>,
         attachTo
       );
     } else {
