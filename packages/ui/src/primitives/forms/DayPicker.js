@@ -8,7 +8,6 @@ import {
   isSameMonth,
   parse,
   getYear,
-  getMonth,
   setMonth,
   format,
   setDay,
@@ -167,8 +166,6 @@ const useState: <State>(
 const useRef: <Value>(initalValue: Value) => {| current: Value |} = (React: any).useRef;
 
 const useMemo: <Value>(() => Value, $ReadOnlyArray<any>) => Value = (React: any).useMemo;
-
-const useEffect: (() => mixed, mem?: $ReadOnlyArray<any>) => void = (React: any).useEffect;
 
 const useLayoutEffect: (() => mixed, mem?: $ReadOnlyArray<any>) => void = (React: any)
   .useLayoutEffect;
