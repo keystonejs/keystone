@@ -20,6 +20,7 @@ type SelectMonthProps = {
 export const SelectMonth: React.ComponentType<SelectMonthProps> = memo(({ onChange, month }) => {
   return (
     <select
+      id="ks-select-month"
       onChange={event => {
         onChange(Number(event.target.value));
       }}
@@ -69,6 +70,7 @@ export const SelectYear: React.ComponentType<SelectYearProps> = memo(
     if ((years.length > 50 && yearPickerType === 'auto') || yearPickerType === 'input') {
       return (
         <input
+          id="ks-input-year"
           type="number"
           min={yearRangeFrom}
           max={yearRangeTo}
@@ -78,7 +80,7 @@ export const SelectYear: React.ComponentType<SelectYearProps> = memo(
       );
     } else {
       return (
-        <select onChange={handleChange} value={internalValue}>
+        <select id="ks-select-year" onChange={handleChange} value={internalValue}>
           {years.map((yearOption, i) => (
             <option key={i} value={year}>
               {yearOption}
