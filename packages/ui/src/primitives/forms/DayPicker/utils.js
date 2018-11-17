@@ -8,6 +8,7 @@ import {
   endOfWeek,
   getDate,
 } from 'date-fns';
+import { useRef, useEffect } from '../../../new-typed-react';
 
 export const yearRange = (from: number, to: number) => {
   const years: Array<number> = [];
@@ -57,4 +58,14 @@ export function getWeeksInMonth(date: Date) {
 
 export function isNumberInRange(num: number, start: number, end: number) {
   return num >= start && num <= end;
+}
+
+export function usePrevious<V>(value: V): V | void {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  });
+
+  return ref.current;
 }

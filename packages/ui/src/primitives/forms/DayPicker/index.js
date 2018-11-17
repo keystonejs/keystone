@@ -66,12 +66,10 @@ function scrollToDate(
   const list = ref.current;
   if (list !== null) {
     const year = getYear(date);
-    if (isNumberInRange(year, yearRangeFrom, yearRangeTo)) {
-      const month = date.getMonth();
-      // calculate the index instead of using indexOf because this is much cheaper
-      const index = (year - yearRangeFrom) * 12 + month;
-      list.scrollToItem(index, 'start');
-    }
+    const month = date.getMonth();
+    // calculate the index instead of using find because this is much cheaper
+    const index = (year - yearRangeFrom) * 12 + month;
+    list.scrollToItem(index, 'start');
   }
 }
 

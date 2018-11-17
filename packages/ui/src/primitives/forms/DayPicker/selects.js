@@ -3,8 +3,8 @@
 import { jsx } from '@emotion/core';
 import * as React from 'react';
 import { setMonth, format } from 'date-fns';
-import { memo } from '../../../new-typed-react';
-import { months, yearRange } from './utils';
+import { memo, useState, useEffect } from '../../../new-typed-react';
+import { months, yearRange, usePrevious, isNumberInRange } from './utils';
 
 const monthOptions = months.map((month, i) => (
   <option key={i} value={i}>
@@ -40,14 +40,30 @@ type SelectYearProps = {
   yearPickerType: YearPickerType,
 };
 
-// todo: add internal state to this component so consumers of the component only get valid years
 export const SelectYear: React.ComponentType<SelectYearProps> = memo(
   ({ onChange, year, yearRangeFrom, yearRangeTo, yearPickerType }) => {
     const years = yearRange(yearRangeFrom, yearRangeTo);
 
+    // using internal state so that the user can input invalid values
+    // but the parent component will only recieve valid values
+    const [internalValue, setInternalValue] = useState(year);
+
+    const previousYearProp = usePrevious(year);
+    useEffect(
+      () => {
+        if (previousYearProp !== undefined && previousYearProp !== year) {
+          setInternalValue(year);
+        }
+      },
+      [previousYearProp, year, setInternalValue]
+    );
+
     const handleChange = event => {
       const value = Number(event.target.value);
-      onChange(value);
+      setInternalValue(value);
+      if (isNumberInRange(value, yearRangeFrom, yearRangeTo)) {
+        onChange(value);
+      }
     };
 
     if ((years.length > 50 && yearPickerType === 'auto') || yearPickerType === 'input') {
@@ -57,12 +73,12 @@ export const SelectYear: React.ComponentType<SelectYearProps> = memo(
           min={yearRangeFrom}
           max={yearRangeTo}
           onChange={handleChange}
-          value={year}
+          value={internalValue}
         />
       );
     } else {
       return (
-        <select onChange={handleChange} value={year}>
+        <select onChange={handleChange} value={internalValue}>
           {years.map((yearOption, i) => (
             <option key={i} value={year}>
               {yearOption}
