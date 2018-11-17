@@ -121,11 +121,6 @@ const TodayMarker = styled.div(({ isSelected }) => ({
   width: '1em',
 }));
 
-type SelectMonthProps = {
-  onChange: string => mixed,
-  date: Date,
-};
-
 function createDayObject(dateValue) {
   return {
     dateValue,
@@ -160,73 +155,100 @@ function getWeeksInMonth(date) {
   return getWeeks(firstDayOfFirstWeek, lastDayOfFirstWeek, []);
 }
 
-const SelectMonth = ({ onChange, date }: SelectMonthProps) => {
-  const months = [...new Array(12)].map((_, month) => format(setMonth(new Date(), month), 'MMM'));
+const memo: <Props>(
+  (props: Props) => Node,
+  isEqual?: (Props, Props) => boolean
+) => ComponentType<Props> = (React: any).memo;
 
+const useState: <State>(
+  initialState: (() => State) | State
+) => [State, (State | (State => State)) => void] = (React: any).useState;
+
+const useRef: <Value>(initalValue: Value) => {| current: Value |} = (React: any).useRef;
+
+const useMemo: <Value>(() => Value, $ReadOnlyArray<any>) => Value = (React: any).useMemo;
+
+const useEffect: (() => mixed, mem?: $ReadOnlyArray<any>) => void = (React: any).useEffect;
+
+const useLayoutEffect: (() => mixed, mem?: $ReadOnlyArray<any>) => void = (React: any)
+  .useLayoutEffect;
+
+const useCallback: <T>(callback: T, inputs: Array<mixed> | void | null) => T = (React: any)
+  .useCallback;
+
+function isNumberInRange(num: number, start: number, end: number) {
+  return num >= start && num <= end;
+}
+
+let months = Array.from({ length: 12 }, (_, i) => i);
+
+const monthOptions = months.map((month, i) => (
+  <option key={i} value={i}>
+    {format(setMonth(new Date(), month), 'MMM')}
+  </option>
+));
+
+type SelectMonthProps = {
+  onChange: number => mixed,
+  month: number,
+};
+
+const SelectMonth = memo(({ onChange, month }: SelectMonthProps) => {
   return (
     <select
       onChange={event => {
-        onChange(event.target.value);
+        onChange(Number(event.target.value));
       }}
-      value={getMonth(date)}
+      value={month}
     >
-      {months.map((month, i) => (
-        <option key={i} value={i}>
-          {month}
-        </option>
-      ))}
+      {monthOptions}
     </select>
   );
-};
+});
 
 type YearPickerType = 'auto' | 'input';
 
 type SelectYearProps = {
   onChange: number => mixed,
-  date: Date,
-  yearRangeFrom?: number,
-  yearRangeTo?: number,
+  year: number,
+  yearRangeFrom: number,
+  yearRangeTo: number,
   yearPickerType: YearPickerType,
 };
 
-const SelectYear = ({
-  onChange,
-  date,
-  yearRangeFrom = getYear(new Date()) - 100,
-  yearRangeTo = getYear(new Date()),
-  yearPickerType = 'auto',
-}: SelectYearProps) => {
-  const years = yearRange(yearRangeFrom, yearRangeTo);
+// todo: add internal state to this component so consumers of the component only get valid years
+const SelectYear = memo(
+  ({ onChange, year, yearRangeFrom, yearRangeTo, yearPickerType }: SelectYearProps) => {
+    const years = yearRange(yearRangeFrom, yearRangeTo);
 
-  if ((years.length > 50 && yearPickerType === 'auto') || yearPickerType === 'input') {
-    return (
-      <input
-        type="number"
-        min={yearRangeFrom}
-        max={yearRangeTo}
-        onChange={event => {
-          onChange(event.target.value);
-        }}
-        value={getYear(date)}
-      />
-    );
-  } else {
-    return (
-      <select
-        onChange={event => {
-          onChange(event.target.value);
-        }}
-        value={getYear(date)}
-      >
-        {years.map((year, i) => (
-          <option key={i} value={year}>
-            {year}
-          </option>
-        ))}
-      </select>
-    );
+    const handleChange = event => {
+      const value = Number(event.target.value);
+      onChange(value);
+    };
+
+    if ((years.length > 50 && yearPickerType === 'auto') || yearPickerType === 'input') {
+      return (
+        <input
+          type="number"
+          min={yearRangeFrom}
+          max={yearRangeTo}
+          onChange={handleChange}
+          value={year}
+        />
+      );
+    } else {
+      return (
+        <select onChange={handleChange} value={year}>
+          {years.map((yearOption, i) => (
+            <option key={i} value={year}>
+              {yearOption}
+            </option>
+          ))}
+        </select>
+      );
+    }
   }
-};
+);
 
 type DayPickerProps = {
   onSelectedChange: Date => void,
@@ -239,27 +261,7 @@ type DayPickerProps = {
 
 let DAY_HEIGHT = 32.5;
 
-let months = Array.from({ length: 12 }, (_, i) => i);
-
-let readableMonths = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
-const memo: <Props>(
-  (props: Props) => Node,
-  isEqual?: (Props, Props) => boolean
-) => ComponentType<Props> = (React: any).memo;
+let readableMonths = months.map(month => format(setMonth(new Date(), month), 'MMMM'));
 
 const MonthHeader = memo(({ month, year }) => {
   return (
@@ -337,33 +339,36 @@ const Month = memo(({ style, index, data }) => {
   );
 });
 
-const useState: <State>(
-  initialState: (() => State) | State
-) => [State, (State | (State => State)) => void] = (React: any).useState;
-
-const useRef: <Value>(initalValue: Value) => {| current: Value |} = (React: any).useRef;
-
-const useMemo: <Value>(() => Value, $ReadOnlyArray<any>) => Value = (React: any).useMemo;
-
-// const useEffect: (() => mixed, mem?: $ReadOnlyArray<any>) => void = (React: any).useEffect;
-
-const useLayoutEffect: (() => mixed, mem?: $ReadOnlyArray<any>) => void = (React: any)
-  .useLayoutEffect;
-
-const useCallback: <T>(callback: T, inputs: Array<mixed> | void | null) => T = (React: any)
-  .useCallback;
-
-function scrollToDate(date: Date, yearRangeFrom: number, ref: { current: List<*> | null }) {
+function scrollToDate(
+  date: Date,
+  yearRangeFrom: number,
+  yearRangeTo: number,
+  ref: { current: List<*> | null }
+) {
   const list = ref.current;
   if (list !== null) {
-    const month = date.getMonth();
     const year = getYear(date);
-
-    // calculate the index instead of using indexOf because this is much cheaper
-    const index = (year - yearRangeFrom) * 12 + month;
-    list.scrollToItem(index, 'start');
+    if (isNumberInRange(year, yearRangeFrom, yearRangeTo)) {
+      const month = date.getMonth();
+      // calculate the index instead of using indexOf because this is much cheaper
+      const index = (year - yearRangeFrom) * 12 + month;
+      list.scrollToItem(index, 'start');
+    }
   }
 }
+
+let weekLabels = (
+  <WeekLabels>
+    {[...new Array(7)]
+      .map((_, day) => format(setDay(new Date(), day), 'ddd'))
+      .map(d => (
+        <Day key={d}>{d}</Day>
+      ))}
+  </WeekLabels>
+);
+
+// this component will rerender a lot really quickly
+// so there's lots of memoization
 
 export const DayPicker = ({
   yearRangeFrom,
@@ -400,11 +405,11 @@ export const DayPicker = ({
   useLayoutEffect(
     () => {
       if (shouldChangeScrollPositionRef.current) {
-        scrollToDate(date, yearRangeFrom, listRef);
+        scrollToDate(date, yearRangeFrom, yearRangeTo, listRef);
         shouldChangeScrollPositionRef.current = false;
       }
     },
-    [date, yearRangeFrom, listRef]
+    [date, yearRangeFrom, yearRangeTo, listRef]
   );
 
   const years = useMemo(
@@ -447,20 +452,27 @@ export const DayPicker = ({
           ),
           [controlledSetDate]
         )}
-
         <SelectMonth
-          onChange={month => {
-            const newDate = setMonth(date, month);
-            controlledSetDate(newDate);
-          }}
-          date={date}
+          onChange={useCallback(
+            month => {
+              controlledSetDate(currentDate => {
+                return setMonth(currentDate, month);
+              });
+            },
+            [controlledSetDate]
+          )}
+          month={date.getMonth()}
         />
         <SelectYear
-          date={date}
-          onChange={year => {
-            const newDate = setYear(date, year);
-            controlledSetDate(newDate);
-          }}
+          year={getYear(date)}
+          onChange={useCallback(
+            year => {
+              controlledSetDate(currentDate => {
+                return setYear(currentDate, year);
+              });
+            },
+            [controlledSetDate]
+          )}
           yearRangeFrom={yearRangeFrom}
           yearRangeTo={yearRangeTo}
           yearPickerType={yearPickerType}
@@ -479,29 +491,23 @@ export const DayPicker = ({
         )}
       </Header>
       <Body>
-        {useMemo(
-          () => (
-            <WeekLabels>
-              {[...new Array(7)]
-                .map((_, day) => format(setDay(new Date(), day), 'ddd'))
-                .map(d => (
-                  <Day key={d}>{d}</Day>
-                ))}
-            </WeekLabels>
-          ),
-          []
-        )}
-
+        {weekLabels}
         <List
           ref={listRef}
-          onItemsRendered={({ visibleStartIndex }) => {
-            const item = items[visibleStartIndex];
-            setDate(new Date(item.year, item.month, 1));
-          }}
-          itemSize={index => {
-            const { weeks } = items[index];
-            return weeks.length * DAY_HEIGHT + 26.5;
-          }}
+          onItemsRendered={useCallback(
+            ({ visibleStartIndex }) => {
+              const item = items[visibleStartIndex];
+              setDate(new Date(item.year, item.month, 1));
+            },
+            [items]
+          )}
+          itemSize={useCallback(
+            index => {
+              const { weeks } = items[index];
+              return weeks.length * DAY_HEIGHT + 26.5;
+            },
+            [items]
+          )}
           itemData={useMemo(() => ({ items, selectedDate, setSelectedDate }), [
             items,
             selectedDate,
