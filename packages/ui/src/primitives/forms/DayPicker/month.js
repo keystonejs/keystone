@@ -42,7 +42,7 @@ export const Month: React.ComponentType<Props> = memo(({ style, index, data }) =
   const { items, selectedDate, setSelectedDate } = data;
   const { weeks, month, year } = items[index];
   return (
-    <div style={style}>
+    <div css={{ scrollSnapAlign: 'start' }} style={style}>
       <MonthHeader month={month} year={year} />
       {weeks.map((week, i) => (
         <WeekRow key={i}>

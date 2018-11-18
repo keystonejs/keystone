@@ -21,7 +21,9 @@ export const yearRange = (from: number, to: number) => {
 
 export const months: Array<number> = Array.from({ length: 12 }, (_, i) => i);
 
-export type Weeks = $ReadOnlyArray<$ReadOnlyArray<{ dateValue: Date, label: string }>>;
+export type Days = $ReadOnlyArray<{ dateValue: Date, label: string }>;
+
+export type Weeks = $ReadOnlyArray<Days>;
 
 // https://github.com/geeofree/kalendaryo/blob/master/src/index.js#L245-L279
 

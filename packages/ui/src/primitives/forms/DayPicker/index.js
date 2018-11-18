@@ -208,8 +208,12 @@ export const DayPicker = ({
       </Header>
       <div>
         {weekLabels}
+        {/* $FlowFixMe */}
         <List
           ref={listRef}
+          css={{
+            scrollSnapType: 'y proximity',
+          }}
           onItemsRendered={useCallback(
             ({ visibleStartIndex }) => {
               const item = items[visibleStartIndex];
