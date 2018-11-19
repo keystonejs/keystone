@@ -61,9 +61,8 @@ function scrollToDate(
   date: Date,
   yearRangeFrom: number,
   yearRangeTo: number,
-  ref: { current: List<*> | null }
+  list: List<*> | null
 ) {
-  const list = ref.current;
   if (list !== null) {
     const year = getYear(date);
     const month = date.getMonth();
@@ -121,7 +120,7 @@ export const DayPicker = ({
   useLayoutEffect(
     () => {
       if (shouldChangeScrollPositionRef.current) {
-        scrollToDate(date, yearRangeFrom, yearRangeTo, listRef);
+        scrollToDate(date, yearRangeFrom, yearRangeTo, listRef.current);
         shouldChangeScrollPositionRef.current = false;
       }
     },
@@ -211,9 +210,6 @@ export const DayPicker = ({
         {/* $FlowFixMe */}
         <List
           ref={listRef}
-          css={{
-            scrollSnapType: 'y proximity',
-          }}
           onItemsRendered={useCallback(
             ({ visibleStartIndex }) => {
               const item = items[visibleStartIndex];
