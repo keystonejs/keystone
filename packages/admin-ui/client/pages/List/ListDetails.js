@@ -44,12 +44,6 @@ import type { SortByType } from './DataProvider';
 // Styled Components
 // ==============================
 
-// const ToolbarSeparator = styled.div({
-//   backgroundColor: 'rgba(0,0,0,0.1)',
-//   height: '100%',
-//   width: 1,
-// });
-
 const Note = styled.div({
   color: colors.N60,
   fontSize: '0.85em',
@@ -116,7 +110,6 @@ type Props = {
 };
 type State = {
   isFullWidth: boolean,
-  isManaging: boolean,
   selectedItems: Array<Object>,
   showCreateModal: boolean,
 };
@@ -124,21 +117,46 @@ type State = {
 class ListDetails extends Component<Props, State> {
   state = {
     isFullWidth: false,
-    isManaging: false,
     selectedItems: [],
     showCreateModal: false,
     searchValue: this.props.search,
   };
+  lastChecked = null;
+  shiftIsDown = false;
 
   // ==============================
   // Refs
   // ==============================
 
-  manageButton = createRef();
   sortPopoutRef = createRef();
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener('keyup', this.handleKeyUp);
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener('keyup', this.handleKeyUp);
+  }
 
   toggleFullWidth = () => {
     this.setState(state => ({ isFullWidth: !state.isFullWidth }));
+  };
+  handleKeyDown = event => {
+    if (event.key === 'Shift') {
+      if (this.state.selectedItems.length > 0) {
+        document.body.style.userSelect = 'none';
+      }
+      this.shiftIsDown = true;
+    }
+  };
+  handleKeyUp = event => {
+    if (event.key === 'Shift') {
+      if (this.state.selectedItems.length > 0) {
+        document.body.style.userSelect = null;
+      }
+      this.shiftIsDown = false;
+    }
   };
 
   closeCreateModal = () => this.setState({ showCreateModal: false });
@@ -147,6 +165,7 @@ class ListDetails extends Component<Props, State> {
   // ==============================
   // Search
   // ==============================
+
   handleSearchChange = ({ target: { value } }) => {
     this.setState({ searchValue: value }, () => {
       this.props.handleSearchChange(value);
@@ -170,40 +189,47 @@ class ListDetails extends Component<Props, State> {
   // Management
   // ==============================
 
-  handleItemSelect = (itemIds: Array<string>) => {
+  handleItemSelect = (itemId: string) => {
     let selectedItems = this.state.selectedItems.slice(0);
 
-    itemIds.forEach(id => {
-      if (selectedItems.includes(id)) {
-        selectedItems = selectedItems.filter(existingId => existingId !== id);
-      } else {
-        selectedItems.push(id);
+    if (this.shiftIsDown) {
+      if (!this.lastChecked) {
+        this.lastChecked = itemId;
+        return;
       }
-    });
 
-    this.setState({ selectedItems });
+      const itemIds = this.props.items.map(i => i.id);
+      const from = itemIds.indexOf(itemId);
+      const to = itemIds.indexOf(this.lastChecked);
+      const start = Math.min(from, to);
+      const end = Math.max(from, to) + 1;
+
+      itemIds
+        .slice(start, end)
+        .filter(id => id !== this.lastChecked)
+        .forEach(id => {
+          if (!selectedItems.includes(this.lastChecked)) {
+            selectedItems = selectedItems.filter(existingId => existingId !== id);
+          } else {
+            selectedItems.push(id);
+          }
+        });
+
+      this.setState({ selectedItems });
+    } else {
+      if (selectedItems.includes(itemId)) {
+        selectedItems = selectedItems.filter(existingId => existingId !== itemId);
+      } else {
+        selectedItems.push(itemId);
+      }
+
+      this.setState({ selectedItems });
+    }
+
+    this.lastChecked = itemId;
   };
   handleItemSelectAll = (selectedItems: Array<string>) => {
     this.setState({ selectedItems });
-  };
-  handleManageKeyDown = ({ key }: Event) => {
-    if (key !== 'Escape') return;
-    this.stopManaging();
-  };
-  startManaging = () => {
-    this.setState({ isManaging: true });
-    document.addEventListener('keydown', this.handleManageKeyDown, false);
-  };
-  stopManaging = () => {
-    this.setState({ isManaging: false, selectedItems: [] }, () => {
-      if (!this.manageButton) return;
-      this.manageButton.current.focus();
-    });
-    document.removeEventListener('keydown', this.handleManageKeyDown, false);
-  };
-  onToggleManage = () => {
-    const fn = this.state.isManaging ? this.stopManaging : this.startManaging;
-    fn();
   };
   onDeleteSelectedItems = () => {
     const { query } = this.props;
@@ -315,7 +341,7 @@ class ListDetails extends Component<Props, State> {
       query,
       sortBy,
     } = this.props;
-    const { isFullWidth, isManaging, selectedItems, showCreateModal, searchValue } = this.state;
+    const { isFullWidth, selectedItems, showCreateModal, searchValue } = this.state;
 
     const searchId = 'ks-list-search-input';
 
@@ -405,22 +431,21 @@ class ListDetails extends Component<Props, State> {
                 />
 
                 <ManageToolbar isVisible={!!itemsCount}>
-                  {isManaging ? (
+                  {selectedItems.length ? (
                     <Management
                       list={list}
                       onDeleteMany={this.onDeleteSelectedItems}
                       onUpdateMany={this.onUpdate}
-                      onToggleManage={this.onToggleManage}
+                      pageSize={pageSize}
                       selectedItems={selectedItems}
+                      totalItems={itemsCount}
                     />
                   ) : (
                     <Pagination
                       currentPage={currentPage}
-                      getManageButton={this.manageButton}
                       itemsCount={itemsCount}
                       list={list}
                       onChangePage={handlePageChange}
-                      onToggleManage={this.onToggleManage}
                       pageSize={pageSize}
                     />
                   )}
@@ -442,7 +467,6 @@ class ListDetails extends Component<Props, State> {
                 adminPath={adminPath}
                 fields={fields}
                 isFullWidth={isFullWidth}
-                isManaging={isManaging}
                 items={items}
                 itemsErrors={itemsErrors}
                 list={list}

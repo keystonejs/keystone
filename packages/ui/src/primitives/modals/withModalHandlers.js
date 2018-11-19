@@ -2,6 +2,7 @@
 
 import React, { cloneElement, Component, Fragment, type ComponentType, type Element } from 'react';
 import NodeResolver from 'react-node-resolver';
+import ScrollLock from 'react-scrolllock';
 import { TransitionProvider } from './transitions';
 
 type GenericFn = any => mixed;
@@ -43,14 +44,12 @@ export default function withModalHandlers(
       this.setState({ isOpen: true });
       document.addEventListener('mousedown', this.handleMouseDown);
       document.addEventListener('keydown', this.handleKeyDown, false);
-      document.addEventListener('wheel', this.handleScroll, false);
     };
     close = (event: Event) => {
       if (event && event.defaultPrevented) return;
       this.setState({ isOpen: false });
       document.removeEventListener('mousedown', this.handleMouseDown);
       document.removeEventListener('keydown', this.handleKeyDown, false);
-      document.removeEventListener('wheel', this.handleScroll, false);
     };
 
     handleScroll = (event: WheelEvent) => {
@@ -101,7 +100,7 @@ export default function withModalHandlers(
       return (
         <Fragment>
           <NodeResolver innerRef={this.getTarget}>{cloneElement(target, cloneProps)}</NodeResolver>
-
+          {isOpen ? <ScrollLock /> : null}
           <TransitionProvider isOpen={isOpen} onEntered={onOpen} onExited={onClose}>
             {transitionState => (
               <Transition transitionState={transitionState}>

@@ -8,10 +8,11 @@ type Props = {
   isOpen: boolean,
   itemIds: Array<string>,
   list: Object,
+  onClose: () => void,
   onDelete: (Promise<*>) => void,
 };
 
-export default function DeleteManyModal({ isOpen, itemIds, list, onDelete }: Props) {
+export default function DeleteManyModal({ isOpen, itemIds, list, onClose, onDelete }: Props) {
   return (
     <Mutation mutation={list.deleteManyMutation}>
       {(deleteItems, { loading }) => {
@@ -20,7 +21,7 @@ export default function DeleteManyModal({ isOpen, itemIds, list, onDelete }: Pro
             isOpen={isOpen}
             onKeyDown={event => {
               if (event.key === 'Escape' && !loading) {
-                this.props.onClose();
+                onClose();
               }
             }}
           >
@@ -46,7 +47,7 @@ export default function DeleteManyModal({ isOpen, itemIds, list, onDelete }: Pro
                 variant="subtle"
                 onClick={() => {
                   if (loading) return;
-                  this.props.onClose();
+                  onClose();
                 }}
               >
                 Cancel
