@@ -53,6 +53,7 @@ export const Month: React.ComponentType<Props> = memo(({ style, index, data }) =
             const isToday = isDayToday(day.dateValue);
             return (
               <Day
+                id={`ks-day-${day.label}-${month}-${year}`}
                 key={day.label}
                 disabled={disabled}
                 onClick={disabled ? null : () => setSelectedDate(day.dateValue)}
