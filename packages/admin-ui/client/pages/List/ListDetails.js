@@ -210,7 +210,9 @@ class ListDetails extends Component<Props, State> {
           }
         });
 
-      this.setState({ selectedItems });
+      // lazy ensure unique
+      const uniqueItems = [...new Set(selectedItems)];
+      this.setState({ selectedItems: uniqueItems });
     } else {
       if (selectedItems.includes(itemId)) {
         selectedItems = selectedItems.filter(existingId => existingId !== itemId);
