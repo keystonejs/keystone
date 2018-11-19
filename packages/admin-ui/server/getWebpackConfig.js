@@ -23,6 +23,7 @@ module.exports = function({ adminMeta, entry }) {
         {
           loader: 'babel-loader',
           options: {
+            configFile: false,
             babelrc: false,
             presets: [
               [
