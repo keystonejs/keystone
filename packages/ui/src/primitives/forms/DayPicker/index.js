@@ -207,7 +207,6 @@ export const DayPicker = ({
       </Header>
       <div>
         {weekLabels}
-        {/* $FlowFixMe */}
         <List
           ref={listRef}
           onItemsRendered={useCallback(
