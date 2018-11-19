@@ -192,12 +192,7 @@ class ListDetails extends Component<Props, State> {
   handleItemSelect = (itemId: string) => {
     let selectedItems = this.state.selectedItems.slice(0);
 
-    if (this.shiftIsDown) {
-      if (!this.lastChecked) {
-        this.lastChecked = itemId;
-        return;
-      }
-
+    if (this.shiftIsDown && this.lastChecked) {
       const itemIds = this.props.items.map(i => i.id);
       const from = itemIds.indexOf(itemId);
       const to = itemIds.indexOf(this.lastChecked);
