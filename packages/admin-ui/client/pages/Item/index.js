@@ -4,9 +4,9 @@ import { Component, Fragment } from 'react';
 import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
 import { Link, withRouter } from 'react-router-dom';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { withToastManager } from 'react-toast-notifications';
 
+import CopyToClipboard from '../../components/CopyToClipboard';
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
 import Animation from '../../components/Animation';
@@ -233,14 +233,12 @@ const ItemDetails = withRouter(
         })
         .then(onUpdate);
     };
-    onCopy = (text, success) => {
-      if (success) {
-        this.setState({ copyText: text }, () => {
-          setTimeout(() => {
-            this.setState({ copyText: '' });
-          }, 500);
-        });
-      }
+    onCopy = text => () => {
+      this.setState({ copyText: text }, () => {
+        setTimeout(() => {
+          this.setState({ copyText: '' });
+        }, 500);
+      });
     };
 
     /**
@@ -287,11 +285,15 @@ const ItemDetails = withRouter(
           </FlexGroup>
           <FlexGroup align="center" isContiguous>
             <ItemId>ID: {item.id}</ItemId>
-            <CopyToClipboard text={item.id} onCopy={this.onCopy}>
-              <Button variant="subtle" title="Copy ID">
-                {copyIcon}
-                <A11yText>Copy ID</A11yText>
-              </Button>
+            <CopyToClipboard
+              as={Button}
+              text={item.id}
+              onSuccess={this.onCopy(item.id)}
+              variant="subtle"
+              title="Copy ID"
+            >
+              {copyIcon}
+              <A11yText>Copy ID</A11yText>
             </CopyToClipboard>
           </FlexGroup>
           <Form>

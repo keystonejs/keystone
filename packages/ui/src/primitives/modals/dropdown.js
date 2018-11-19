@@ -94,6 +94,7 @@ type Props = ModalHandlerProps & {
   align: 'left' | 'right',
   getModalRef: HTMLElement => void,
   items: Array<ItemType>,
+  mouseCoords: { clientX: number, clientY: number },
   selectClosesMenu: boolean,
   style: Object,
   targetNode: HTMLElement,
@@ -186,7 +187,7 @@ class Dropdown extends Component<Props, State> {
   };
 
   calculatePosition = () => {
-    const { align, mode, targetNode } = this.props;
+    const { align, mode, mouseCoords, targetNode } = this.props;
 
     if (!targetNode || !document.body) return;
 
@@ -214,19 +215,18 @@ class Dropdown extends Component<Props, State> {
     // context menu
     // ------------------------------
 
-    const { clientX, clientY } = window.event;
-    const clickPos = { x: clientX, y: clientY };
+    const { clientX, clientY } = mouseCoords;
     const screen = { w: window.innerWidth, h: window.innerHeight };
 
-    const right = screen.w - clickPos.x > menuWidth;
+    const right = screen.w - clientX > menuWidth;
     const left = !right;
-    const top = screen.h - clickPos.y > menuHeight;
+    const top = screen.h - clientY > menuHeight;
     const bottom = !top;
 
-    if (right) leftOffset = clickPos.x;
-    if (left) leftOffset = clickPos.x - menuWidth;
-    if (top) topOffset = clickPos.y - bodyRect.top;
-    if (bottom) topOffset = clickPos.y - bodyRect.top - menuHeight;
+    if (right) leftOffset = clientX;
+    if (left) leftOffset = clientX - menuWidth;
+    if (top) topOffset = clientY - bodyRect.top;
+    if (bottom) topOffset = clientY - bodyRect.top - menuHeight;
 
     this.setState({ leftOffset, topOffset });
   };

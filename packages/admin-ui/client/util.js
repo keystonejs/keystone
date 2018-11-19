@@ -24,6 +24,10 @@ export const deconstructErrorsToDataShape = error => {
   return data;
 };
 
+// ==============================
+// Toast Formatters
+// ==============================
+
 export function toastItemSuccess(toast, item, message = 'Success') {
   const toastContent = (
     <div>
@@ -52,4 +56,42 @@ export function toastError(toast, error) {
   toast.addToast(toastContent, {
     appearance: 'error',
   })();
+}
+
+// ==============================
+// Clipboard
+// ==============================
+
+const defaultSuccessCallback = () => console.log('Copying to clipboard was successful!');
+const defaultErrorCallback = err => console.error('Could not copy text:', err);
+
+function fallbackCopyToClipboard(text, successCb, errorCb) {
+  var textArea = document.createElement('textarea');
+  textArea.value = text;
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  try {
+    var successful = document.execCommand('copy');
+    var callback = successful ? successCb : errorCb;
+    callback();
+  } catch (err) {
+    errorCb(err);
+  }
+
+  document.body.removeChild(textArea);
+}
+export function copyToClipboard(
+  text,
+  successCb = defaultSuccessCallback,
+  errorCb = defaultErrorCallback
+) {
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    navigator.clipboard.writeText(text).then(successCb, errorCb);
+    return;
+  }
+
+  // attempt fallback
+  fallbackCopyToClipboard(text, successCb, errorCb);
 }

@@ -45,7 +45,6 @@
     "raf-schd": "^4.0.0",
     "react": "16.7.0-alpha.2",
     "react-apollo": "^2.2.4",
-    "react-copy-to-clipboard": "^5.0.1",
     "react-document-title": "^2.0.3",
     "react-dom": "16.7.0-alpha.2",
     "react-node-resolver": "^2.0.0",

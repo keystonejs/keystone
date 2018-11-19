@@ -15,7 +15,7 @@ export type ModalHandlerProps = {
   onOpen: GenericFn,
   target: Element<*>,
 };
-type State = { isOpen: boolean };
+type State = { isOpen: boolean, clientX: number, clientY: number };
 type Config = { Transition: (*) => * };
 
 function getDisplayName(C) {
@@ -31,23 +31,29 @@ export default function withModalHandlers(
     lastHover: HTMLElement;
     contentNode: HTMLElement;
     targetNode: HTMLElement;
-    state = { isOpen: this.props.defaultIsOpen };
+    state = { isOpen: this.props.defaultIsOpen, clientX: 0, clientY: 0 };
     static defaultProps = {
       mode: 'click',
       onClose: NOOP,
       onOpen: NOOP,
     };
 
-    open = (event: Event) => {
+    open = (event: MouseEvent) => {
       if (event && event.defaultPrevented) return;
       if (this.props.mode === 'contextmenu') event.preventDefault();
-      this.setState({ isOpen: true });
+
+      const { clientX, clientY } = event;
+
+      this.setState({ isOpen: true, clientX, clientY });
+
       document.addEventListener('mousedown', this.handleMouseDown);
       document.addEventListener('keydown', this.handleKeyDown, false);
     };
     close = (event: Event) => {
       if (event && event.defaultPrevented) return;
-      this.setState({ isOpen: false });
+
+      this.setState({ isOpen: false, clientX: 0, clientY: 0 });
+
       document.removeEventListener('mousedown', this.handleMouseDown);
       document.removeEventListener('keydown', this.handleKeyDown, false);
     };
@@ -89,7 +95,7 @@ export default function withModalHandlers(
 
     render() {
       const { mode, onClose, onOpen, target } = this.props;
-      const { isOpen } = this.state;
+      const { clientX, clientY, isOpen } = this.state;
 
       const cloneProps = {};
       if (isOpen) cloneProps.isActive = true;
@@ -110,8 +116,9 @@ export default function withModalHandlers(
                   getModalRef={this.getContent}
                   targetNode={this.targetNode}
                   contentNode={this.contentNode}
+                  isOpen={isOpen}
+                  mouseCoords={{ clientX, clientY }}
                   {...this.props}
-                  {...this.state}
                 />
               </Transition>
             )}

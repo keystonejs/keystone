@@ -3,7 +3,6 @@ import { jsx } from '@emotion/core';
 import React, { Component } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import { DiffIcon, InfoIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@voussoir/icons';
 import { colors, gridSize } from '@voussoir/ui/src/theme';
@@ -11,6 +10,7 @@ import { CheckboxPrimitive } from '@voussoir/ui/src/primitives/forms';
 import { Dropdown } from '@voussoir/ui/src/primitives/modals';
 import { A11yText } from '@voussoir/ui/src/primitives/typography';
 import DeleteItemModal from './DeleteItemModal';
+import { copyToClipboard } from '../util';
 
 // This import is loaded by the @voussoir/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
@@ -271,15 +271,13 @@ class ListRow extends Component {
       {
         content: 'Duplicate',
         icon: <DiffIcon />,
+        isDisabled: true, // TODO: implement duplicate
         onClick: () => console.log('TODO'),
       },
       {
-        content: (
-          <CopyToClipboard text={copyText}>
-            <span>Copy Link</span>
-          </CopyToClipboard>
-        ),
+        content: 'Copy Link',
         icon: <LinkIcon />,
+        onClick: () => copyToClipboard(copyText),
       },
       {
         content: 'Delete',
