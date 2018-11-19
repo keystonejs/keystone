@@ -11,6 +11,8 @@ type Props = {
   pageSize: number,
 };
 
+const CYPRESS_TEST_ID = 'ks-pagination';
+
 export default function ListPagination({
   currentPage,
   itemsCount,
@@ -22,6 +24,7 @@ export default function ListPagination({
     <Pagination
       currentPage={currentPage}
       displayCount
+      id={CYPRESS_TEST_ID}
       onChange={onChangePage}
       pageSize={pageSize}
       plural={list.plural}

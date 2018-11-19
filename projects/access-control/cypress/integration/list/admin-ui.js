@@ -366,7 +366,7 @@ describe('Access Control Lists > Admin UI', () => {
             // JM 180823: We have no idea why we need { force: true } here
             // Without it the test fails, but only on..
             //   {"create":true,"read":true,"update":true,"delete":true}
-            cy.get('button[data-test-name="manage"]').click({ force: true });
+            cy.get('#ks-list-table input[type="checkbox"]').first().click({ force: true });
             cy.get('button[data-test-name="update"]').should('exist');
           });
 
@@ -395,7 +395,7 @@ describe('Access Control Lists > Admin UI', () => {
 
             cy.visit(`admin/${slug}`);
 
-            cy.get('button[data-test-name="manage"]').click();
+            cy.get('#ks-list-table input[type="checkbox"]').first().click();
             cy.get('button[data-test-name="update"]').should('not.exist');
           });
 
