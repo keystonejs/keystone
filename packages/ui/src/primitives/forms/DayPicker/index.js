@@ -95,8 +95,7 @@ export const DayPicker = ({
 }: DayPickerProps) => {
   const listRef = useRef(null);
 
-  // we're not using babel 7 yet so type arguments to functions don't work yet
-  const [date, setDate] = useState/*:: <Date> */(startCurrentDateAt);
+  const [date, setDate] = useState(startCurrentDateAt);
 
   const shouldChangeScrollPositionRef = useRef(true);
 

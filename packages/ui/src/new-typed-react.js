@@ -13,7 +13,7 @@ export const memo: <Props>(
 
 export const useState: <State>(
   initialState: (() => State) | State
-) => [State, (State | (State => State)) => void] = (React: any).useState;
+) => [State, ((State => State) | State) => void] = (React: any).useState;
 
 export const useRef: <Value>(initalValue: Value) => {| current: Value |} = (React: any).useRef;
 
