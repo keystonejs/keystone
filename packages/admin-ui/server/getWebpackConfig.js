@@ -23,17 +23,20 @@ module.exports = function({ adminMeta, entry }) {
         {
           loader: 'babel-loader',
           options: {
+            configFile: false,
             babelrc: false,
             presets: [
-              ['env', { exclude: ['transform-regenerator', 'transform-async-to-generator'] }],
-              'react',
-              'flow',
+              [
+                '@babel/env',
+                { exclude: ['transform-regenerator', 'transform-async-to-generator'] },
+              ],
+              ['@babel/react', { development: enableDevFeatures }],
+              '@babel/flow',
             ],
             plugins: [
-              'transform-class-properties',
-              'transform-object-rest-spread',
-              ['emotion', enableDevFeatures ? { sourceMap: true } : {}],
-              ...(enableDevFeatures ? ['transform-react-jsx-source'] : []),
+              '@babel/proposal-class-properties',
+              '@babel/proposal-object-rest-spread',
+              'emotion',
             ],
           },
         },
