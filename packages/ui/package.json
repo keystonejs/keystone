@@ -29,8 +29,5 @@
   "peerDependencies": {
     "react": "16.7.0-alpha.2",
     "react-dom": "16.7.0-alpha.2"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.26.0"
   }
 }
