@@ -114,6 +114,13 @@ type State = {
   showCreateModal: boolean,
 };
 
+function bodyUserSelect(val) {
+  document.body.style.WebkitUserSelect = val;
+  document.body.style.MozUserSelect = val;
+  document.body.style.msUserSelect = val;
+  document.body.style.userSelect = val;
+}
+
 class ListDetails extends Component<Props, State> {
   state = {
     isFullWidth: false,
@@ -145,7 +152,7 @@ class ListDetails extends Component<Props, State> {
   handleKeyDown = event => {
     if (event.key === 'Shift') {
       if (this.state.selectedItems.length > 0) {
-        document.body.style.userSelect = 'none';
+        bodyUserSelect('none');
       }
       this.shiftIsDown = true;
     }
@@ -153,7 +160,7 @@ class ListDetails extends Component<Props, State> {
   handleKeyUp = event => {
     if (event.key === 'Shift') {
       if (this.state.selectedItems.length > 0) {
-        document.body.style.userSelect = null;
+        bodyUserSelect(null);
       }
       this.shiftIsDown = false;
     }
