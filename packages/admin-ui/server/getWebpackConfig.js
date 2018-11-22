@@ -84,12 +84,14 @@ module.exports = function({ adminMeta, entry }) {
     module: {
       rules,
     },
-    alias: {
-      // we only want to bundle a single version of react
-      // but we don't want to assume a consumer has the same version of react
-      // that we use so we alias react the react resolved from the admin ui
-      // which depends on the version of react that keystone uses
-      react: require.resolve('react'),
+    resolve: {
+      alias: {
+        // we only want to bundle a single version of react
+        // but we don't want to assume a consumer has the same version of react
+        // that we use so we alias react the react resolved from the admin ui
+        // which depends on the version of react that keystone uses
+        react: require.resolve('react'),
+      },
     },
   };
 };
