@@ -65,7 +65,9 @@ class File extends Implementation {
       },
     };
   }
-  async saveStream(uploadData, previousData) {
+
+  async resolveInput(uploadData, item) {
+    const previousData = item && item[this.path];
     // TODO: FIXME: Handle when uploadData is null. Can happen when:
     // Deleting the file
     if (!uploadData) {
@@ -93,12 +95,7 @@ class File extends Implementation {
 
     return { id, filename, mimetype, encoding, _meta };
   }
-  createFieldPreHook(uploadData) {
-    return this.saveStream(uploadData);
-  }
-  updateFieldPreHook(uploadData, item) {
-    return this.saveStream(uploadData, item[this.path]);
-  }
+
   get gqlUpdateInputFields() {
     return [`${this.path}: ${this.getFileUploadType()}`];
   }

@@ -166,7 +166,7 @@ class Relationship extends Implementation {
     };
   }
 
-  async createUpdatePreHook(input, currentValue, context, getItem) {
+  async resolveInput(input, item, context, createdPromise) {
     const { many, required } = this.config;
 
     const { refList, refField } = this.tryResolveRefList();
@@ -175,6 +175,8 @@ class Relationship extends Implementation {
     if (!required && !input) {
       return input;
     }
+    const currentValue = item && item[this.path];
+    const getItem = createdPromise || Promise.resolve(item);
 
     return await nestedMutation({
       input,
@@ -189,29 +191,13 @@ class Relationship extends Implementation {
     });
   }
 
-  createFieldPreHook(data, context, createdPromise) {
-    return this.createUpdatePreHook(data, undefined, context, createdPromise);
-  }
-
-  updateFieldPreHook(data, item, context) {
-    const getItem = Promise.resolve(item);
-    return this.createUpdatePreHook(data, item[this.path], context, getItem);
-  }
-
-  async updateFieldPostHook(fieldData, item, context) {
+  async afterChange(data, item, context) {
     // We have to wait to the post hook so we have the item's id to connect to!
     await processQueuedDisconnections({ context });
     await processQueuedConnections({ context });
   }
 
-  async createFieldPostHook(data, item, context) {
-    // We have to wait to the post hook so we have the item's id to connect to!
-    // NOTE: We don't do any disconnects here (it's not possible to disconnect
-    // something for a newly created item thanks to the order of operations)
-    await processQueuedConnections({ context });
-  }
-
-  deleteFieldPreHook(data, item, context) {
+  beforeDelete(data, item, context) {
     // Early out for null'd field
     if (!data) {
       return;
@@ -252,7 +238,7 @@ class Relationship extends Implementation {
     // Beware of circular delete hooks!
   }
 
-  async deleteFieldPostHook(fieldData, item, context) {
+  async afterDelete(fieldData, item, context) {
     // We have to wait to the post hook so we have the item's id to discconect.
     await processQueuedDisconnections({ context });
   }
