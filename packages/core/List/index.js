@@ -744,11 +744,16 @@ module.exports = class List {
     // newly created item.
     const createdPromise = createLazyDeferred();
 
+    // Resolve input
     const resolvedData = await resolveAllKeys(
       mapKeys(data, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].createFieldPreHook(value, context, createdPromise.promise)
+        this.fieldsByPath[fieldPath].resolveInput(value, undefined, context, createdPromise.promise)
       )
     );
+
+    // Validate input
+
+    // Before change
 
     let newItem;
     try {
@@ -766,9 +771,10 @@ module.exports = class List {
       throw error;
     }
 
+    // After change
     await Promise.all(
       Object.keys(data).map(fieldPath =>
-        this.fieldsByPath[fieldPath].createFieldPostHook(newItem[fieldPath], newItem, context)
+        this.fieldsByPath[fieldPath].afterChange(newItem[fieldPath], newItem, context)
       )
     );
 
@@ -786,17 +792,23 @@ module.exports = class List {
 
     this.throwIfAccessDeniedOnFields(operation, item, data, context, { gqlName, extraData });
 
+    // Resolve input
     const resolvedData = await resolveAllKeys(
       mapKeys(data, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].updateFieldPreHook(value, item, context)
+        this.fieldsByPath[fieldPath].resolveInput(value, item, context)
       )
     );
 
+    // Validate input
+
+    // Before change
+
     const newItem = await this.adapter.update(id, resolvedData);
 
+    // After change
     await Promise.all(
       Object.keys(data).map(fieldPath =>
-        this.fieldsByPath[fieldPath].updateFieldPostHook(newItem[fieldPath], newItem, context)
+        this.fieldsByPath[fieldPath].afterChange(newItem[fieldPath], newItem, context)
       )
     );
 
@@ -826,15 +838,17 @@ module.exports = class List {
   }
 
   async _deleteWithFieldHooks(item, context) {
+    // Validate delete
+
+    // Before delete
     await Promise.all(
-      this.fields.map(field => field.deleteFieldPreHook(item[field.path], item, context))
+      this.fields.map(field => field.beforeDelete(item[field.path], item, context))
     );
 
     const result = await this.adapter.delete(item.id);
 
-    await Promise.all(
-      this.fields.map(field => field.deleteFieldPostHook(item[field.path], item, context))
-    );
+    // After delete
+    await Promise.all(this.fields.map(field => field.afterDelete(item[field.path], item, context)));
 
     return result;
   }
