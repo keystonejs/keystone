@@ -1021,7 +1021,7 @@ test('gqlMutationResolvers', () => {
 test('createMutation', async () => {
   const list = setup();
   const result = await list.createMutation({ name: 'test', email: 'test@example.com' }, context);
-  expect(result).toEqual({ name: 'test', email: 'test@example.com', index: 3 });
+  expect(result).toEqual({ name: 'test', email: 'test@example.com', index: 3, other: null });
 });
 
 test('updateMutation', async () => {

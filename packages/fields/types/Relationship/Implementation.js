@@ -165,7 +165,7 @@ class Relationship extends Implementation {
     };
   }
 
-  async resolveInput(input, item, context, createdPromise) {
+  async resolveRelationship(input, item, context, createdPromise) {
     const { many, required } = this.config;
 
     const { refList, refField } = this.tryResolveRefList();
@@ -195,7 +195,7 @@ class Relationship extends Implementation {
     await resolveBacklinks(context.queues, context);
   }
 
-  beforeDelete(data, item, context) {
+  registerBacklink(data, item, context) {
     // Early out for null'd field
     if (!data) {
       return;
