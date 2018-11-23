@@ -166,9 +166,11 @@ Applied by the internal list API:
 8. Field type `afterChange()` functions in parallel??
 9. List level `afterChange()` function
 
-At any point, if anything is thrown (uncaught):
+If anything is thrown (uncaught) before step 8:
 
 - The pipeline halts/returned immediately
 - Any registered rollback steps are run
 - DB transaction rolled back
 - Returned as a failure
+
+Any failures in Step 8 or 9 are caught, but do not halt processing of further `afterChange()` calls, because at this point there is no rollback. Any errors are reported to the user.
