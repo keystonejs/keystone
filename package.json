@@ -34,6 +34,7 @@
     "@emotion/core": "^10.0.0-beta.12",
     "@emotion/styled": "^10.0.0-beta.12",
     "@jesstelford/apollo-cache-invalidation": "^0.0.3-gh3-gh5",
+    "@reach/skip-nav": "^0.1.1",
     "apollo-cache-inmemory": "^1.2.10",
     "apollo-client": "^2.4.2",
     "apollo-errors": "^1.9.0",
