@@ -15,7 +15,6 @@
     "@babel/preset-react": "^7.0.0",
     "@emotion/core": "^10.0.0-beta.13",
     "@emotion/styled": "^10.0.0-beta.13",
-    "@reach/skip-nav": "^0.1.1",
     "@voussoir/field-views-loader": "^0.2.0",
     "@voussoir/fields": "^1.4.0",
     "@voussoir/icons": "^0.2.0",

@@ -6,7 +6,6 @@ import { withRouter } from 'react-router';
 import PropToggle from 'react-prop-toggle';
 import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';
-import { SkipNavLink, SkipNavContent } from '@reach/skip-nav';
 
 import {
   TerminalIcon,
@@ -221,7 +220,6 @@ class Nav extends Component {
                 isActive={isDragging}
                 styles={{ cursor: 'col-resize', 'user-select': 'none' }}
               />
-              <SkipNavLink />
               <PrimaryNav
                 onMouseEnter={this.handleMouseEnter}
                 onMouseLeave={this.handleMouseLeave}
@@ -320,7 +318,6 @@ class Nav extends Component {
                   )}
                 </Tooltip>
               </PrimaryNav>
-              <SkipNavContent />
               <Page style={makeResizeStyles('marginLeft')}>{children}</Page>
             </PageWrapper>
           );
