@@ -52,7 +52,7 @@ export const BoxComponent = ({
       <Name
         isHover={isHover || isFocus}
         // this is aria-hidden since the label above shows the label already
-        // so if this was visible screen readers will read the label twice
+        // so if this wasn't aria-hidden screen readers would read the label twice
         aria-hidden
       >
         {label}
