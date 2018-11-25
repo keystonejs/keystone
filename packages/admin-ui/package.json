@@ -27,7 +27,7 @@
     "apollo-link-state": "^0.4.2",
     "apollo-upload-client": "^9.0.0",
     "babel-loader": "^8.0.4",
-    "babel-plugin-emotion": "^10.0.0-beta.13",
+    "babel-plugin-emotion": "10.0.0-beta.13",
     "body-parser": "^1.18.2",
     "cross-fetch": "^2.2.0",
     "cuid": "^2.1.1",
