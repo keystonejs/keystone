@@ -9,6 +9,7 @@ import { useLayoutEffect, useState, useRef, useMemo, useCallback } from '../../.
 import { borderRadius, colors } from '../../../theme';
 import { yearRange, months, type Weeks, getWeeksInMonth } from './utils';
 import { type YearPickerType, SelectMonth, SelectYear } from './selects';
+import { A11yText } from '../../typography';
 import { Month } from './month';
 import { WeekLabels, Day } from './comps';
 
@@ -162,6 +163,7 @@ export const DayPicker = ({
               }}
             >
               <ChevronLeftIcon />
+              <A11yText>Previous Month</A11yText>
             </HeaderButton>
           ),
           [controlledSetDate]
@@ -199,6 +201,7 @@ export const DayPicker = ({
               }}
             >
               <ChevronRightIcon />
+              <A11yText>Next Month</A11yText>
             </HeaderButton>
           ),
           [controlledSetDate]
