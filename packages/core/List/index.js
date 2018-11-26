@@ -744,10 +744,24 @@ module.exports = class List {
     // newly created item.
     const createdPromise = createLazyDeferred();
 
+    // Resolve relationships
+    let resolvedData = await resolveAllKeys(
+      mapKeys(item, (value, fieldPath) =>
+        this.fieldsByPath[fieldPath].isRelationship
+          ? this.fieldsByPath[fieldPath].resolveRelationship(
+              value,
+              undefined,
+              context,
+              createdPromise.promise
+            )
+          : value
+      )
+    );
+
     // Resolve input
-    const resolvedData = await resolveAllKeys(
-      mapKeys(data, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].resolveInput(value, undefined, context, createdPromise.promise)
+    resolvedData = await resolveAllKeys(
+      mapKeys(resolvedData, (value, fieldPath) =>
+        this.fieldsByPath[fieldPath].resolveInput(value, undefined, context)
       )
     );
 
@@ -791,10 +805,18 @@ module.exports = class List {
     const item = await this.getAccessControlledItem(id, access, { context, operation, gqlName });
 
     this.throwIfAccessDeniedOnFields(operation, item, data, context, { gqlName, extraData });
+    // Resolve relationships
+    let resolvedData = await resolveAllKeys(
+      mapKeys(data, (value, fieldPath) =>
+        this.fieldsByPath[fieldPath].isRelationship
+          ? this.fieldsByPath[fieldPath].resolveRelationship(value, item, context)
+          : value
+      )
+    );
 
     // Resolve input
-    const resolvedData = await resolveAllKeys(
-      mapKeys(data, (value, fieldPath) =>
+    resolvedData = await resolveAllKeys(
+      mapKeys(resolvedData, (value, fieldPath) =>
         this.fieldsByPath[fieldPath].resolveInput(value, item, context)
       )
     );
@@ -843,6 +865,13 @@ module.exports = class List {
     // Before delete
     await Promise.all(
       this.fields.map(field => field.beforeDelete(item[field.path], item, context))
+    );
+
+    // Register backlinks
+    await Promise.all(
+      this.fields
+        .filter(field => field.isRelationship)
+        .map(field => field.registerBacklink(item[field.path], item, context))
     );
 
     const result = await this.adapter.delete(item.id);
