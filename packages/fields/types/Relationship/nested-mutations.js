@@ -5,12 +5,6 @@ const { ParameterError } = require('./graphqlErrors');
 
 const NESTED_MUTATIONS = ['create', 'connect', 'disconnect', 'disconnectAll'];
 
-const throwWithErrors = ({ message, errors }) => {
-  const error = new Error(message);
-  error.errors = errors;
-  throw error;
-};
-
 /***  Queue operations ***/
 function _queueIdForOperation({ queue, foreign, local, done }) {
   // The queueID encodes the full list/field path and ID of both the foreign and local fields
@@ -70,16 +64,32 @@ async function resolveBacklinks(queues = {}, context) {
 }
 
 /*** Input validation  ***/
-function validateToManyInput({ input, target }) {
-  // to-many must have an array of at least one item with at least one key
-  const validInputMutations = intersection(Object.keys(input), NESTED_MUTATIONS).filter(
-    mutation =>
-      mutation === 'disconnectAll' ||
-      (Array.isArray(input[mutation]) &&
-        input[mutation].filter(item => Object.keys(item).length).length)
-  );
+const throwWithErrors = ({ message, errors }) => {
+  const error = new Error(message);
+  error.errors = errors;
+  throw error;
+};
 
-  // NOTE: We don't error when _all_ are set in the many case as it's additive
+function validateInput({ input, target, many }) {
+  // Only accept mutations which we know how to handle.
+  let validInputMutations = intersection(Object.keys(input), NESTED_MUTATIONS);
+
+  // Filter out mutations which don't have any parameters
+  if (many) {
+    // to-many must have an array of at least one item with at least one key
+    validInputMutations = validInputMutations.filter(
+      mutation =>
+        mutation === 'disconnectAll' ||
+        (Array.isArray(input[mutation]) &&
+          input[mutation].filter(item => Object.keys(item).length).length)
+    );
+  } else {
+    validInputMutations = validInputMutations.filter(
+      mutation => mutation === 'disconnectAll' || Object.keys(input[mutation]).length
+    );
+  }
+
+  // We must have at least one valid mutation
   if (!validInputMutations.length) {
     throw new ParameterError({
       message: `Must provide a nested mutation (${NESTED_MUTATIONS.join(
@@ -87,25 +97,9 @@ function validateToManyInput({ input, target }) {
       )}) when mutating ${target}`,
     });
   }
-  return validInputMutations;
-}
 
-function validateToSingleInput({ input, target }) {
-  // to-single must have an item with at least one key
-  const validInputMutations = intersection(Object.keys(input), NESTED_MUTATIONS).filter(
-    mutation => mutation === 'disconnectAll' || Object.keys(input[mutation]).length
-  );
-
-  if (!validInputMutations.length) {
-    throw new ParameterError({
-      message: `Must provide a nested mutation (${NESTED_MUTATIONS.join(
-        ', '
-      )}) when mutating ${target}`,
-    });
-  }
-
-  // Can't create AND connect - only one can be set at a time
-  if (validInputMutations.includes('create') && validInputMutations.includes('connect')) {
+  // For a non-many relationship we can't create AND connect - only one can be set at a time
+  if (!many && validInputMutations.includes('create') && validInputMutations.includes('connect')) {
     throw new ParameterError({
       message: `Can only provide one of 'connect' or 'create' when mutating ${target}`,
     });
@@ -115,8 +109,7 @@ function validateToSingleInput({ input, target }) {
 
 const cleanAndValidateInput = ({ input, many, localField, target }) => {
   try {
-    const args = { input, target };
-    return pick(input, many ? validateToManyInput(args) : validateToSingleInput(args));
+    return pick(input, validateInput({ input, target, many }));
   } catch (error) {
     const message = `Nested mutation operation invalid for ${target}`;
     throwWithErrors({ message, errors: [{ ...error, path: [localField.path] }] });
