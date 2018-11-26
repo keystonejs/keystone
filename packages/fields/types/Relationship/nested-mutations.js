@@ -12,83 +12,61 @@ const throwWithErrors = ({ message, errors }) => {
 };
 
 /***  Queue operations ***/
-/** push **/
-function _queueIdForOperation({ queueName, context, foreign, local, done }) {
-  // We use `context` as it's passed around by graphqljs, so is available everywhere
-  context[queueName] = context[queueName] || new Map();
-
-  // The queue id is more than just the id of the item - it's the id + field
-  // combo. And since fields could be named the same across lists, we need to
-  // include the list name also.
-  // TODO: Needs local and foreign info baked into the key.
+function _queueIdForOperation({ queue, foreign, local, done }) {
+  // The queueID encodes the full list/field path and ID of both the foreign and local fields
   const f = info => `${info.list.key}.${info.field.path}.${info.id}`;
-  const queueId = `foreign:${f(foreign)}|local:${f(local)}`;
+  const queueId = `${f(local)}->${f(foreign)}`;
 
   // It may have already been added elsewhere, so we don't want to add it again
-  if (!context[queueName].has(queueId)) {
-    context[queueName].set(queueId, { foreign: { id: foreign.id }, local, done });
+  if (!queue.has(queueId)) {
+    queue.set(queueId, { local, foreign: { id: foreign.id }, done });
   }
 }
 
-function _tellForeignItemToGetQueued(queueName, { context, getItem, local, foreign }) {
-  // queue up the disconnection
-  // NOTE: We don't return this promise, we expect it to be fulfilled at a
-  // future date and don't want to wait for it now.
-  getItem.then(item => {
-    const _local = { ...local, id: item.id };
-    _queueIdForOperation({ queueName, context, foreign: _local, local: foreign, done: false });
+function enqueueBacklinkOperations(operations, queues, getItem, local, foreign) {
+  Object.entries(operations).forEach(([operation, idsToOperateOn = []]) => {
+    queues[operation] = queues[operation] || new Map();
+    const queue = queues[operation];
+    // NOTE: We don't return this promises, we expect it to be fulfilled at a
+    // future date and don't want to wait for it now.
+    getItem.then(item => {
+      const _local = { ...local, id: item.id };
+      idsToOperateOn.forEach(id => {
+        const _foreign = { ...foreign, id };
+        // Enqueue the backlink operation (foreign -> local)
+        _queueIdForOperation({ queue, foreign: _local, local: _foreign, done: false });
 
-    // To avoid any circular updates with the above disconnect, we flag this
-    // item as having already been disconnected
-    _queueIdForOperation({ queueName, context, foreign, local: _local, done: true });
+        // Effectively dequeue the forward link operation (local -> foreign)
+        // To avoid any circular updates with the above disconnect, we flag this
+        // item as having already been connected/disconnected
+        _queueIdForOperation({ queue, foreign: _foreign, local: _local, done: true });
+      });
+    });
   });
 }
 
-function tellForeignItemToDisconnect({ context, getItem, local, foreign }) {
-  _tellForeignItemToGetQueued('disconnectQueue', { context, getItem, local, foreign });
-}
+async function resolveBacklinks(queues = {}, context) {
+  await Promise.all(
+    Object.entries(queues).map(async ([operation, queue]) => {
+      for (let queuedWork of queue.values()) {
+        if (queuedWork.done) {
+          continue;
+        }
+        // Flag it as handled so we don't try again in a nested update
+        // NOTE: We do this first before any other work below to avoid async issues
+        // To avoid issues with looping and Map()s, we directly set the value on the
+        // object as stored in the Map, and don't try to update the Map() itself.
+        queuedWork.done = true;
 
-function tellForeignItemToConnect({ context, getItem, local, foreign }) {
-  _tellForeignItemToGetQueued('connectQueue', { context, getItem, local, foreign });
-}
-
-/** process **/
-async function _processQueue(context, queueName, operation) {
-  const queue = context[queueName];
-  if (!queue) {
-    return Promise.resolve();
-  }
-
-  for (let queuedWork of queue.values()) {
-    if (queuedWork.done) {
-      continue;
-    }
-
-    // Flag it as handled so we don't try again in a nested update
-    // NOTE: We do this first before any other work below to avoid async issues
-    // To avoid issues with looping and Map()s, we directly set the value on the
-    // object as stored in the Map, and don't try to update the Map() itself.
-    queuedWork.done = true;
-
-    // foreign / local from the point of view of the item to be updated.
-    const { foreign, local } = queuedWork;
-    // Setup the correct mutation query params to perform the operation
-    const clause = {
-      [local.field.path]: { [operation]: local.field.config.many ? [foreign] : foreign },
-    };
-
-    // Trigger the operation.
-    // NOTE: This relies on the user having `update` permissions on the other list.
-    await local.list.updateMutation(local.id, clause, context);
-  }
-}
-
-function processQueuedDisconnections({ context }) {
-  return _processQueue(context, 'disconnectQueue', 'disconnect');
-}
-
-function processQueuedConnections({ context }) {
-  return _processQueue(context, 'connectQueue', 'connect');
+        // Run update of local.path <operation>>> foreign.id
+        // NOTE: This relies on the user having `update` permissions on the local list.
+        const { local, foreign } = queuedWork;
+        const { path, config } = local.field;
+        const clause = { [path]: { [operation]: config.many ? [foreign] : foreign } };
+        await local.list.updateMutation(local.id, clause, context);
+      }
+    })
+  );
 }
 
 /*** Input validation  ***/
@@ -202,9 +180,8 @@ async function toManyNestedMutation({
   }
 
   if (refField) {
-    disconnectIds.forEach(idToDisconnect => {
-      tellForeignItemToDisconnect(queueData(idToDisconnect));
-    });
+    const { queues, getItem, local, foreign } = queueData;
+    enqueueBacklinkOperations({ disconnect: disconnectIds }, queues, getItem, local, foreign);
   }
 
   let allConnectedIds = [];
@@ -241,12 +218,11 @@ async function toManyNestedMutation({
       .map(({ id }) => id);
 
     if (refField) {
-      allConnectedIds.forEach(idToConnect => {
-        // At this point, we've not actually added the ID `idToConnect` to the
-        // field `localField` on list `localList`, just flagged it needing to be added.
-        // This is so any recursive checks don't attempt to do it again.
-        tellForeignItemToConnect(queueData(idToConnect));
-      });
+      // At this point, we've not actually added the ID `idToConnect` to the
+      // field `localField` on list `localList`, just flagged it needing to be added.
+      // This is so any recursive checks don't attempt to do it again.
+      const { queues, getItem, local, foreign } = queueData;
+      enqueueBacklinkOperations({ connect: allConnectedIds }, queues, getItem, local, foreign);
     }
 
     const allErrors = [...connectErrors, ...createErrors];
@@ -302,7 +278,9 @@ async function toSingleNestedMutation({
         // At this point, we've not actually removed the ID `idToDisconnect`
         // from the field `localField` on list `localList`, but instead flagged
         // it for removal (by setting `result = null`).
-        tellForeignItemToDisconnect(queueData(idToDisconnect));
+        const { queues, getItem, local, foreign } = queueData;
+        const disconnect = [idToDisconnect];
+        enqueueBacklinkOperations({ disconnect }, queues, getItem, local, foreign);
       }
     }
   }
@@ -329,7 +307,8 @@ async function toSingleNestedMutation({
       // At this point, we've not actually added the ID `item.id` to the
       // field `localField` on list `localList`, just flagged it needing to be added.
       // This is so any recursive checks don't attempt to do it again.
-      tellForeignItemToConnect(queueData(item.id));
+      const { queues, getItem, local, foreign } = queueData;
+      enqueueBacklinkOperations({ connect: [item.id] }, queues, getItem, local, foreign);
     }
 
     return item.id;
@@ -355,12 +334,12 @@ async function nestedMutation({
   const transaction = await openDatabaseTransaction();
 
   try {
-    const queueData = id => ({
-      context,
+    const queueData = {
+      queues: context.queues,
       getItem,
       local: { list: localList, field: localField },
-      foreign: { list: refList, field: refField, id },
-    });
+      foreign: { list: refList, field: refField },
+    };
     const args = {
       currentValue,
       refList,
@@ -382,7 +361,6 @@ async function nestedMutation({
 
 module.exports = {
   nestedMutation,
-  processQueuedDisconnections,
-  processQueuedConnections,
-  tellForeignItemToDisconnect,
+  resolveBacklinks,
+  enqueueBacklinkOperations,
 };
