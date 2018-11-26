@@ -22,7 +22,7 @@ const { Text, Checkbox, Float, Relationship } = require('@voussoir/fields');
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
 
-const { AccessDeniedError } = require('./graphqlErrors');
+const { AccessDeniedError, ValidationFailureError } = require('./graphqlErrors');
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
@@ -106,6 +106,7 @@ module.exports = class List {
     };
     this.config = {
       labelResolver: item => item[config.labelField || 'name'] || item.id,
+      hooks: {},
       ...config,
     };
 
@@ -442,7 +443,7 @@ module.exports = class List {
     return mutations;
   }
 
-  throwIfAccessDeniedOnFields(operation, existingItem, data, context, { gqlName, extraData = {} }) {
+  checkFieldAccess(operation, existingItem, data, context, { gqlName, extraData = {} }) {
     const restrictedFields = [];
 
     this.fields
@@ -726,6 +727,190 @@ module.exports = class List {
     return mutationResolvers;
   }
 
+  _throwValidationFailure(errors, operation, data = {}) {
+    throw new ValidationFailureError({
+      data: {
+        messages: errors.map(e => e.msg),
+        errors: errors.map(e => e.data),
+        listKey: this.key,
+        operation,
+      },
+      internalData: {
+        errors: errors.map(e => e.internalData),
+        data,
+      },
+    });
+  }
+
+  async _mapToFields(fields, action) {
+    return await resolveAllKeys(arrayToObject(fields, 'path', action));
+  }
+
+  _fieldsFromObject(obj) {
+    return Object.keys(obj)
+      .map(fieldPath => this.fieldsByPath[fieldPath])
+      .filter(field => field);
+  }
+
+  async _resolveRelationship(data, existingItem, context, getItem) {
+    const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
+    return {
+      ...data,
+      ...(await this._mapToFields(fields, async field =>
+        field.resolveRelationship(data[field.path], existingItem, context, getItem)
+      )),
+    };
+  }
+
+  async _registerBacklinks(existingItem, context) {
+    const fields = this.fields.filter(field => field.isRelationship);
+    await this._mapToFields(fields, field =>
+      field.registerBacklink(existingItem[field.path], existingItem, context)
+    );
+  }
+
+  async _resolveDefaults(data) {
+    const fields = this.fields.filter(field => field.getDefaultValue() !== undefined);
+    return {
+      ...(await this._mapToFields(fields, field => field.getDefaultValue())),
+      ...data,
+    };
+  }
+
+  async _resolveInput(resolvedData, existingItem, context, operation, originalInput) {
+    const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
+    const fields = this._fieldsFromObject(resolvedData);
+
+    resolvedData = await this._mapToFields(fields, field =>
+      field.resolveInput({ resolvedData, ...args })
+    );
+    resolvedData = {
+      ...resolvedData,
+      ...(await this._mapToFields(fields.filter(field => field.config.hooks.resolveInput), field =>
+        field.config.hooks.resolveInput({ resolvedData, ...args })
+      )),
+    };
+
+    if (this.config.hooks.resolveInput) {
+      resolvedData = await this.config.hooks.resolveInput({ resolvedData, ...args });
+    }
+
+    return resolvedData;
+  }
+
+  async _validateInput(resolvedData, existingItem, context, operation, originalInput) {
+    const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
+    const fields = this._fieldsFromObject(resolvedData);
+
+    const fieldValidationErrors = [];
+    args.addFieldValidationError = (msg, _data = {}, internalData = {}) =>
+      fieldValidationErrors.push({ msg, data: _data, internalData });
+    await this._mapToFields(fields, field => field.validateInput(args));
+    await this._mapToFields(fields.filter(field => field.config.hooks.validateInput), field =>
+      field.config.hooks.validateInput(args)
+    );
+    if (fieldValidationErrors.length) {
+      this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
+    }
+
+    if (this.config.hooks.validateInput) {
+      const listValidationErrors = [];
+      await this.config.hooks.validateInput({
+        ...args,
+        addValidationError: (msg, _data = {}, internalData = {}) =>
+          listValidationErrors.push({ msg, data: _data, internalData }),
+      });
+      if (listValidationErrors.length) {
+        this._throwValidationFailure(listValidationErrors, operation, originalInput);
+      }
+    }
+  }
+
+  async _validateDelete(existingItem, context, operation) {
+    const args = { existingItem, context, adapter: this.adapter };
+    const fields = this.fields;
+
+    const fieldValidationErrors = [];
+    args.addValidationError = (msg, _data = {}, internalData = {}) =>
+      fieldValidationErrors.push({ msg, data: _data, internalData });
+    await this._mapToFields(fields, field => field.validateDelete(args));
+    await this._mapToFields(fields.filter(field => field.config.hooks.validateDelete), field =>
+      field.config.hooks.validateDelete(args)
+    );
+    if (fieldValidationErrors.length) {
+      this._throwValidationFailure(fieldValidationErrors, operation);
+    }
+
+    if (this.config.hooks.validateDelete) {
+      const listValidationErrors = [];
+      await this.config.hooks.validateDelete({
+        ...args,
+        addValidationError: (msg, _data = {}, internalData = {}) =>
+          listValidationErrors.push({ msg, data: _data, internalData }),
+      });
+
+      if (listValidationErrors.length) {
+        this._throwValidationFailure(listValidationErrors, operation);
+      }
+    }
+  }
+
+  async _beforeChange(resolvedData, existingItem, context, originalInput) {
+    const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
+    const fields = this._fieldsFromObject(resolvedData);
+
+    await this._mapToFields(fields, field => field.beforeChange(args));
+    await this._mapToFields(fields.filter(field => field.config.hooks.beforeChange), field =>
+      field.config.hooks.beforeChange(args)
+    );
+
+    if (this.config.hooks.beforeChange) {
+      await this.config.hooks.beforeChange(args);
+    }
+  }
+
+  async _beforeDelete(existingItem, context) {
+    const args = { existingItem, context, adapter: this.adapter };
+    const fields = this._fieldsFromObject(existingItem);
+
+    await this._mapToFields(fields, field => field.beforeDelete(args));
+    await this._mapToFields(fields.filter(field => field.config.hooks.beforeDelete), field =>
+      field.config.hooks.beforeDelete(args)
+    );
+
+    if (this.config.hooks.beforeDelete) {
+      await this.config.hooks.beforeDelete(args);
+    }
+  }
+
+  async _afterChange(updatedItem, existingItem, context, originalInput) {
+    const args = { updatedItem, originalInput, existingItem, context, adapter: this.adapter };
+    const fields = this._fieldsFromObject(originalInput);
+
+    await this._mapToFields(fields, field => field.afterChange(args));
+    await this._mapToFields(fields.filter(field => field.config.hooks.afterChange), field =>
+      field.config.hooks.afterChange(args)
+    );
+
+    if (this.config.hooks.afterChange) {
+      await this.config.hooks.afterChange(args);
+    }
+  }
+
+  async _afterDelete(existingItem, context) {
+    const args = { existingItem, context, adapter: this.adapter };
+    const fields = this._fieldsFromObject(existingItem);
+
+    await this._mapToFields(fields, field => field.afterDelete(args));
+    await this._mapToFields(fields.filter(field => field.config.hooks.afterDelete), field =>
+      field.config.hooks.afterDelete(args)
+    );
+
+    if (this.config.hooks.afterDelete) {
+      await this.config.hooks.afterDelete(args);
+    }
+  }
+
   async createMutation(data, context) {
     const operation = 'create';
     const gqlName = this.gqlNames.createMutationName;
@@ -734,47 +919,27 @@ module.exports = class List {
 
     const existingItem = undefined;
 
-    this.throwIfAccessDeniedOnFields(operation, existingItem, data, context, { gqlName });
+    this.checkFieldAccess(operation, existingItem, data, context, { gqlName });
 
-    // Merge in default Values here
-    const item = {
-      ...arrayToObject(
-        this.fields.filter(field => field.getDefaultValue() !== undefined),
-        'path',
-        field => field.getDefaultValue()
-      ),
-      ...data,
-    };
+    const defaultedItem = await this._resolveDefaults(data);
 
     // Enable pre-hooks to perform some action after the item is created by
     // giving them a promise which will eventually resolve with the value of the
     // newly created item.
     const createdPromise = createLazyDeferred();
 
-    // Resolve relationships
-    let resolvedData = await resolveAllKeys(
-      mapKeys(item, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].isRelationship
-          ? this.fieldsByPath[fieldPath].resolveRelationship(
-              value,
-              existingItem,
-              context,
-              createdPromise.promise
-            )
-          : value
-      )
+    let resolvedData = await this._resolveRelationship(
+      defaultedItem,
+      existingItem,
+      context,
+      createdPromise.promise
     );
 
-    // Resolve input
-    resolvedData = await resolveAllKeys(
-      mapKeys(resolvedData, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].resolveInput(value, existingItem, context)
-      )
-    );
+    resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
 
-    // Validate input
+    await this._validateInput(resolvedData, existingItem, context, operation, data);
 
-    // Before change
+    await this._beforeChange(resolvedData, existingItem, context, operation, data);
 
     let newItem;
     try {
@@ -792,15 +957,9 @@ module.exports = class List {
       throw error;
     }
 
-    // Resolve backlinks
     await Relationship.resolveBacklinks(context.queues, context);
 
-    // After change
-    await Promise.all(
-      Object.keys(data).map(fieldPath =>
-        this.fieldsByPath[fieldPath].afterChange(newItem[fieldPath], newItem, context)
-      )
-    );
+    await this._afterChange(newItem, existingItem, context, operation, data);
 
     return newItem;
   }
@@ -818,41 +977,21 @@ module.exports = class List {
       gqlName,
     });
 
-    this.throwIfAccessDeniedOnFields(operation, existingItem, data, context, {
-      gqlName,
-      extraData,
-    });
-    // Resolve relationships
-    let resolvedData = await resolveAllKeys(
-      mapKeys(data, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].isRelationship
-          ? this.fieldsByPath[fieldPath].resolveRelationship(value, existingItem, context)
-          : value
-      )
-    );
+    this.checkFieldAccess(operation, existingItem, data, context, { gqlName, extraData });
 
-    // Resolve input
-    resolvedData = await resolveAllKeys(
-      mapKeys(resolvedData, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].resolveInput(value, existingItem, context)
-      )
-    );
+    let resolvedData = await this._resolveRelationship(data, existingItem, context);
 
-    // Validate input
+    resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
 
-    // Before change
+    await this._validateInput(resolvedData, existingItem, context, operation, data);
+
+    await this._beforeChange(resolvedData, existingItem, context, operation, data);
 
     const newItem = await this.adapter.update(id, resolvedData);
 
-    // Resolve backlinks
     await Relationship.resolveBacklinks(context.queues, context);
 
-    // After change
-    await Promise.all(
-      Object.keys(data).map(fieldPath =>
-        this.fieldsByPath[fieldPath].afterChange(newItem[fieldPath], newItem, context)
-      )
-    );
+    await this._afterChange(newItem, existingItem, context, operation, data);
 
     return newItem;
   }
@@ -863,9 +1002,13 @@ module.exports = class List {
 
     const access = this.checkListAccess(context, operation, { gqlName, itemId: id });
 
-    const item = await this.getAccessControlledItem(id, access, { context, operation, gqlName });
+    const existingItem = await this.getAccessControlledItem(id, access, {
+      context,
+      operation,
+      gqlName,
+    });
 
-    return this._deleteWithFieldHooks(item, context);
+    return this._deleteWithFieldHooks(existingItem, context);
   }
 
   async deleteManyMutation(ids, context) {
@@ -874,33 +1017,27 @@ module.exports = class List {
 
     const access = this.checkListAccess(context, operation, { gqlName, itemIds: ids });
 
-    const items = await this.getAccessControlledItems(ids, access);
+    const existingItems = await this.getAccessControlledItems(ids, access);
 
-    return Promise.all(items.map(async item => this._deleteWithFieldHooks(item, context)));
+    return Promise.all(
+      existingItems.map(async existingItem => this._deleteWithFieldHooks(existingItem, context))
+    );
   }
 
-  async _deleteWithFieldHooks(item, context) {
-    // Validate delete
+  async _deleteWithFieldHooks(existingItem, context) {
+    const operation = 'delete';
 
-    // Before delete
-    await Promise.all(
-      this.fields.map(field => field.beforeDelete(item[field.path], item, context))
-    );
+    await this._validateDelete(existingItem, context, operation);
 
-    // Register backlinks
-    await Promise.all(
-      this.fields
-        .filter(field => field.isRelationship)
-        .map(field => field.registerBacklink(item[field.path], item, context))
-    );
+    await this._beforeDelete(existingItem, context);
 
-    const result = await this.adapter.delete(item.id);
+    await this._registerBacklinks(existingItem, context);
 
-    // Resolve backlinks
+    const result = await this.adapter.delete(existingItem.id);
+
     await Relationship.resolveBacklinks(context.queues, context);
 
-    // After delete
-    await Promise.all(this.fields.map(field => field.afterDelete(item[field.path], item, context)));
+    await this._afterDelete(existingItem, context);
 
     return result;
   }

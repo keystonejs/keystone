@@ -66,8 +66,9 @@ class File extends Implementation {
     };
   }
 
-  async resolveInput(uploadData, item) {
-    const previousData = item && item[this.path];
+  async resolveInput({ resolvedData, existingItem }) {
+    const previousData = existingItem && existingItem[this.path];
+    const uploadData = resolvedData[this.path];
     // TODO: FIXME: Handle when uploadData is null. Can happen when:
     // Deleting the file
     if (!uploadData) {

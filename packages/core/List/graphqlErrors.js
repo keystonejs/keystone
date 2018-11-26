@@ -7,4 +7,10 @@ module.exports = {
       showPath: true,
     },
   }),
+  ValidationFailureError: createError('ValidationFailureError', {
+    message: 'You attemped to perform an invalid mutation',
+    options: {
+      showPath: true,
+    },
+  }),
 };

@@ -30,7 +30,7 @@ describe('new Implementation()', () => {
     );
     expect(impl).not.toBeNull();
     expect(impl.path).toEqual('path');
-    expect(impl.config).toEqual({});
+    expect(impl.config).toEqual({ hooks: {} });
     expect(impl.getListByKey).toEqual({});
     expect(impl.listKey).toEqual({});
     expect(impl.label).toEqual('Path');
@@ -86,19 +86,19 @@ test('gqlAuxMutationResolvers', () => {
   expect(impl.gqlAuxMutationResolvers).toEqual({});
 });
 
-test('afterChange()', () => {
+test('afterChange()', async () => {
   const impl = new Field('path', config, args);
 
-  const value = impl.afterChange();
+  const value = await impl.afterChange();
   expect(value).toBe(undefined);
 });
 
-test('resolveInput()', () => {
+test('resolveInput()', async () => {
   const impl = new Field('path', config, args);
 
-  const data = { a: 1 };
-  const value = impl.resolveInput(data);
-  expect(value).toEqual(data);
+  const resolvedData = { path: 1 };
+  const value = await impl.resolveInput({ resolvedData });
+  expect(value).toEqual(1);
 });
 
 test('gqlQueryInputFields', () => {

@@ -705,13 +705,13 @@ test('gqlMutations', () => {
   );
 });
 
-test('throwIfAccessDeniedOnFields', () => {
+test('checkFieldAccess', () => {
   const list = setup();
-  list.throwIfAccessDeniedOnFields('read', {}, { name: 'a', email: 'a@example.com' }, context, {
+  list.checkFieldAccess('read', {}, { name: 'a', email: 'a@example.com' }, context, {
     gqlName: 'testing',
   });
   expect(() =>
-    list.throwIfAccessDeniedOnFields(
+    list.checkFieldAccess(
       'read',
       { makeFalse: true },
       { name: 'a', email: 'a@example.com' },
@@ -721,7 +721,7 @@ test('throwIfAccessDeniedOnFields', () => {
   ).toThrow(AccessDeniedError);
   let thrownError;
   try {
-    list.throwIfAccessDeniedOnFields(
+    list.checkFieldAccess(
       'read',
       { makeFalse: true },
       { name: 'a', email: 'a@example.com' },
