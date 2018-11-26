@@ -17,7 +17,7 @@ const { parseListAccess } = require('@voussoir/access-control');
 
 const logger = require('@voussoir/logger');
 
-const { Text, Checkbox, Float } = require('@voussoir/fields');
+const { Text, Checkbox, Float, Relationship } = require('@voussoir/fields');
 
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
@@ -785,6 +785,9 @@ module.exports = class List {
       throw error;
     }
 
+    // Resolve backlinks
+    await Relationship.resolveBacklinks(context.queues, context);
+
     // After change
     await Promise.all(
       Object.keys(data).map(fieldPath =>
@@ -826,6 +829,9 @@ module.exports = class List {
     // Before change
 
     const newItem = await this.adapter.update(id, resolvedData);
+
+    // Resolve backlinks
+    await Relationship.resolveBacklinks(context.queues, context);
 
     // After change
     await Promise.all(
@@ -875,6 +881,9 @@ module.exports = class List {
     );
 
     const result = await this.adapter.delete(item.id);
+
+    // Resolve backlinks
+    await Relationship.resolveBacklinks(context.queues, context);
 
     // After delete
     await Promise.all(this.fields.map(field => field.afterDelete(item[field.path], item, context)));
