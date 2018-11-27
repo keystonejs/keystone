@@ -32,9 +32,12 @@ describe('Adding data', () => {
         cy.get(`#${item}`).type(data[item]);
       });
 
+      const d = new Date();
+      d.setDate(10);
+
       if (url === '/admin/users') {
         cy.get('#ks-input-dob').click();
-        cy.get('#ks-daypicker-dob div:contains("10")')
+        cy.get(`#ks-daypicker-dob #ks-day-${d.getDate()}-${d.getMonth()}-${d.getFullYear()}`)
           .last()
           .click({ force: true });
         cy.get('#ks-input-dob').click();
@@ -48,8 +51,6 @@ describe('Adding data', () => {
         cy.get(`#${item}`).should('have.value', data[item]);
       });
       if (url === '/admin/users') {
-        const d = new Date();
-        d.setDate(10);
         cy.get('#ks-input-dob').should('contain', format(d, 'Do MMMM YYYY'));
       }
     });
