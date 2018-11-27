@@ -12,9 +12,8 @@ const {
 const { Implementation } = require('../../Implementation');
 const {
   nestedMutation,
-  processQueuedDisconnections,
-  processQueuedConnections,
-  tellForeignItemToDisconnect,
+  resolveBacklinks,
+  enqueueBacklinkOperations,
 } = require('./nested-mutations');
 
 class Relationship extends Implementation {
@@ -166,7 +165,7 @@ class Relationship extends Implementation {
     };
   }
 
-  async resolveInput(input, item, context, createdPromise) {
+  async resolveRelationship(input, item, context, createdPromise) {
     const { many, required } = this.config;
 
     const { refList, refField } = this.tryResolveRefList();
@@ -177,7 +176,7 @@ class Relationship extends Implementation {
     }
     const currentValue = item && item[this.path];
     const getItem = createdPromise || Promise.resolve(item);
-
+    context.queues = context.queues || {};
     return await nestedMutation({
       input,
       currentValue,
@@ -193,11 +192,10 @@ class Relationship extends Implementation {
 
   async afterChange(data, item, context) {
     // We have to wait to the post hook so we have the item's id to connect to!
-    await processQueuedDisconnections({ context });
-    await processQueuedConnections({ context });
+    await resolveBacklinks(context.queues, context);
   }
 
-  beforeDelete(data, item, context) {
+  registerBacklink(data, item, context) {
     // Early out for null'd field
     if (!data) {
       return;
@@ -212,25 +210,20 @@ class Relationship extends Implementation {
     }
 
     const itemsToDisconnect = many ? data : [data];
-
-    itemsToDisconnect
-      // The data comes in as an ObjectId, so we have to convert it
-      .map(itemToDisconnect => itemToDisconnect.toString())
-      .forEach(itemToDisconnect => {
-        tellForeignItemToDisconnect({
-          context,
-          getItem: Promise.resolve(item),
-          local: {
-            list: this.getListByKey(this.listKey),
-            field: this,
-          },
-          foreign: {
-            list: refList,
-            field: refField,
-            id: itemToDisconnect,
-          },
-        });
-      });
+    context.queues = context.queues || {};
+    enqueueBacklinkOperations(
+      { disconnect: itemsToDisconnect.map(id => id.toString()) },
+      context.queues,
+      Promise.resolve(item),
+      {
+        list: this.getListByKey(this.listKey),
+        field: this,
+      },
+      {
+        list: refList,
+        field: refField,
+      }
+    );
 
     // TODO: Cascade _deletion_ of any related items (not just setting the
     // reference to null)
@@ -240,7 +233,7 @@ class Relationship extends Implementation {
 
   async afterDelete(fieldData, item, context) {
     // We have to wait to the post hook so we have the item's id to discconect.
-    await processQueuedDisconnections({ context });
+    await resolveBacklinks(context.queues, context);
   }
 
   get gqlAuxTypes() {
