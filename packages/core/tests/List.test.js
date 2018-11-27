@@ -62,8 +62,8 @@ class MockAdapter {
 
 const context = {
   getListAccessControlForUser: () => true,
-  getFieldAccessControlForUser: (listKey, fieldPath, item) =>
-    !(item.makeFalse && fieldPath === 'name'),
+  getFieldAccessControlForUser: (listKey, fieldPath, existingItem) =>
+    !(existingItem && existingItem.makeFalse && fieldPath === 'name'),
   authedItem: {
     id: 1,
   },

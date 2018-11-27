@@ -442,13 +442,18 @@ module.exports = class List {
     return mutations;
   }
 
-  throwIfAccessDeniedOnFields(operation, item, data, context, { gqlName, extraData = {} }) {
+  throwIfAccessDeniedOnFields(operation, existingItem, data, context, { gqlName, extraData = {} }) {
     const restrictedFields = [];
 
     this.fields
       .filter(field => field.path in data)
       .forEach(field => {
-        const access = context.getFieldAccessControlForUser(this.key, field.path, item, operation);
+        const access = context.getFieldAccessControlForUser(
+          this.key,
+          field.path,
+          existingItem,
+          operation
+        );
         if (!access) {
           restrictedFields.push(field.path);
         }
@@ -727,6 +732,10 @@ module.exports = class List {
 
     this.checkListAccess(context, operation, { gqlName });
 
+    const existingItem = undefined;
+
+    this.throwIfAccessDeniedOnFields(operation, existingItem, data, context, { gqlName });
+
     // Merge in default Values here
     const item = {
       ...arrayToObject(
@@ -736,8 +745,6 @@ module.exports = class List {
       ),
       ...data,
     };
-
-    this.throwIfAccessDeniedOnFields(operation, item, data, context, { gqlName });
 
     // Enable pre-hooks to perform some action after the item is created by
     // giving them a promise which will eventually resolve with the value of the
@@ -750,7 +757,7 @@ module.exports = class List {
         this.fieldsByPath[fieldPath].isRelationship
           ? this.fieldsByPath[fieldPath].resolveRelationship(
               value,
-              undefined,
+              existingItem,
               context,
               createdPromise.promise
             )
@@ -761,7 +768,7 @@ module.exports = class List {
     // Resolve input
     resolvedData = await resolveAllKeys(
       mapKeys(resolvedData, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].resolveInput(value, undefined, context)
+        this.fieldsByPath[fieldPath].resolveInput(value, existingItem, context)
       )
     );
 
@@ -805,14 +812,21 @@ module.exports = class List {
 
     const access = this.checkListAccess(context, operation, { gqlName, ...extraData });
 
-    const item = await this.getAccessControlledItem(id, access, { context, operation, gqlName });
+    const existingItem = await this.getAccessControlledItem(id, access, {
+      context,
+      operation,
+      gqlName,
+    });
 
-    this.throwIfAccessDeniedOnFields(operation, item, data, context, { gqlName, extraData });
+    this.throwIfAccessDeniedOnFields(operation, existingItem, data, context, {
+      gqlName,
+      extraData,
+    });
     // Resolve relationships
     let resolvedData = await resolveAllKeys(
       mapKeys(data, (value, fieldPath) =>
         this.fieldsByPath[fieldPath].isRelationship
-          ? this.fieldsByPath[fieldPath].resolveRelationship(value, item, context)
+          ? this.fieldsByPath[fieldPath].resolveRelationship(value, existingItem, context)
           : value
       )
     );
@@ -820,7 +834,7 @@ module.exports = class List {
     // Resolve input
     resolvedData = await resolveAllKeys(
       mapKeys(resolvedData, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].resolveInput(value, item, context)
+        this.fieldsByPath[fieldPath].resolveInput(value, existingItem, context)
       )
     );
 
