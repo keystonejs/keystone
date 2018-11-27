@@ -20,6 +20,7 @@ const ItemElement = props => {
 
 const Item = ({ isDisabled, ...props }) => (
   <ItemElement
+    disabled={isDisabled}
     css={{
       appearance: 'none',
       background: 'none',

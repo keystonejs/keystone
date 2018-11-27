@@ -49,7 +49,14 @@ export const BoxComponent = ({
   return (
     <BoxElement title={`Go to ${label}`} {...props}>
       <A11yText>Go to {label}</A11yText>
-      <Name isHover={isHover || isFocus}>{label}</Name>
+      <Name
+        isHover={isHover || isFocus}
+        // this is aria-hidden since the label above shows the label already
+        // so if this wasn't aria-hidden screen readers would read the label twice
+        aria-hidden
+      >
+        {label}
+      </Name>
       <Count meta={meta} />
       <CreateButton
         title={`Create ${singular}`}
@@ -89,8 +96,9 @@ export const Count = ({ meta }) => {
     </div>
   ) : (
     <div css={{ fontSize: '0.85em' }}>
-      {count} Item
-      {count !== 1 ? 's' : ''}
+      {count}
+      {/* append the text instead of two children so that they're a single text node for screen readers */}
+      {' Item' + (count !== 1 ? 's' : '')}
     </div>
   );
 };
