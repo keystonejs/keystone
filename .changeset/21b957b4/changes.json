@@ -1,0 +1,7 @@
+{
+  "releases": [
+    { "name": "@voussoir/core", "type": "patch" },
+    { "name": "@voussoir/fields", "type": "minor" }
+  ],
+  "dependents": []
+}

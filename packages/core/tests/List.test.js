@@ -3,20 +3,56 @@ const { print } = require('graphql/language/printer');
 
 // We don't want to actually log, so we mock it before we require the class
 jest.doMock('@voussoir/logger', () => {
-  return jest.fn(() => ({ warn: () => {}, log: () => {} }));
+  return jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} }));
 });
 
 const List = require('../List');
-const { Text, Checkbox, Float } = require('@voussoir/fields');
+const { AccessDeniedError } = require('../List/graphqlErrors');
+const { Text, Checkbox, Float, Relationship } = require('@voussoir/fields');
 const { getType } = require('@voussoir/utils');
-
-class MockAdminMeta {}
 
 class MockFieldAdapter {}
 
 class MockListAdapter {
+  constructor() {
+    this.index = 3;
+    this.items = {
+      0: { name: 'a', email: 'a@example.com', index: 0 },
+      1: { name: 'b', email: 'b@example.com', index: 1 },
+      2: { name: 'c', email: 'c@example.com', index: 2 },
+    };
+  }
   newFieldAdapter = () => new MockFieldAdapter();
-  prepareModel = () => {};
+  prepareModel = jest.fn();
+  create = async item => {
+    this.items[this.index] = {
+      ...item,
+      index: this.index,
+    };
+    this.index += 1;
+    return this.items[this.index - 1];
+  };
+  findById = id => this.items[id];
+  delete = async id => {
+    this.items[id] = undefined;
+  };
+  itemsQuery = ({ where: { id_in: ids, id, id_not_in } }) => {
+    return id
+      ? [this.items[id]]
+      : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i]);
+  };
+  itemsQueryMeta = async ({ where: { id_in: ids, id, id_not_in } }) => {
+    return {
+      count: (id
+        ? [this.items[id]]
+        : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i])
+      ).length,
+    };
+  };
+  update = (id, item) => {
+    this.items[id] = { ...this.items[id], ...item };
+    return this.items[id];
+  };
 }
 
 class MockAdapter {
@@ -24,34 +60,15 @@ class MockAdapter {
   newListAdapter = () => new MockListAdapter();
 }
 
-class MockType {
-  constructor(name, { access }) {
-    this.name = name;
-    this.access = access;
-  }
-  getAdminMeta = () => new MockAdminMeta();
-  get gqlOutputFields() {
-    return [`${this.name}_field: String`];
-  }
-  get gqlAuxTypes() {
-    return [`type ${this.name}_type { x: Int }`];
-  }
-  get gqlAuxQueries() {
-    return [];
-  }
-  get gqlAuxMutations() {
-    return [];
-  }
-  get gqlUpdateInputFields() {
-    return [`${this.name}_update_arg: String`];
-  }
-  get gqlCreateInputFields() {
-    return [`${this.name}_create_arg: String`];
-  }
-  get gqlQueryInputFields() {
-    return [`${this.name}_query_arg: String`];
-  }
-}
+const context = {
+  getListAccessControlForUser: () => true,
+  getFieldAccessControlForUser: (listKey, fieldPath, item) =>
+    !(item.makeFalse && fieldPath === 'name'),
+  authedItem: {
+    id: 1,
+  },
+  authedListKey: 'Test',
+};
 
 // Convert a gql field into a normalised format for comparison.
 // Needs to be wrapped in a mock type for gql to correctly parse it.
@@ -59,242 +76,486 @@ const normalise = s => print(gql(`type t { ${s} }`));
 
 const config = {
   fields: {
-    name: {
-      type: {
-        implementation: MockType,
-        views: {
-          viewType1: 'viewPath1',
-          viewType2: 'viewPath2',
-        },
-        adapters: { mock: MockFieldAdapter },
-      },
-      access: {
-        create: true,
-        read: true,
-        update: true,
-      },
-    },
-    email: {
-      type: {
-        implementation: MockType,
-        views: {
-          viewType3: 'viewPath3',
-          viewType4: 'viewPath4',
-        },
-        adapters: { mock: MockFieldAdapter },
-      },
-      access: {
-        create: true,
-        read: true,
-        update: true,
-      },
-    },
+    name: { type: Text },
+    email: { type: Text },
+    other: { type: Relationship, ref: 'Other' },
+    hidden: { type: Text, access: { read: false, create: true, update: true, delete: true } },
+    writeOnce: { type: Text, access: { read: true, create: true, update: false, delete: true } },
   },
 };
 
+const getListByKey = listKey => {
+  if (listKey === 'Other') {
+    return {
+      gqlNames: {
+        outputTypeName: 'Other',
+        createInputName: 'createOther',
+        whereInputName: 'OtherWhereInput',
+        relateToOneInputName: 'OtherRelateToOneInput',
+        whereUniqueInputName: 'OtherWhereUniqueInput',
+      },
+      access: {
+        read: true,
+      },
+    };
+  }
+};
+
+const listExtras = (getAuth = () => true) => ({
+  getListByKey,
+  adapter: new MockAdapter(),
+  getAuth,
+  defaultAccess: { list: true, field: true },
+});
+
+const setup = (access, getAuth) => new List('Test', { ...config, access }, listExtras(getAuth));
+
 describe('new List()', () => {
   test('new List() - Smoke test', () => {
-    const list = new List('Test', config, {
-      adapter: new MockAdapter(),
-      lists: [],
-      getAuth: () => {},
-      defaultAccess: { list: true, field: true },
-    });
+    const list = setup();
     expect(list).not.toBeNull();
+    expect(list.key).toEqual('Test');
+    expect(list.getListByKey).toBe(getListByKey);
+    expect(list.defaultAccess).toEqual({ list: true, field: true });
+    expect(list.getAuth).toBeInstanceOf(Function);
+  });
+
+  test('new List() - Plural throws error', () => {
+    expect(() => new List('Tests', config, listExtras())).toThrow(Error);
+  });
+
+  test('new List() - config', () => {
+    const list = setup();
+    expect(list.config.labelResolver).toBeInstanceOf(Function);
+    expect(list.config.fields).toBeInstanceOf(Object);
+    expect(list.config.adminConfig).toEqual({
+      defaultColumns: 'name,email',
+      defaultPageSize: 50,
+      defaultSort: 'name',
+      maximumPageSize: 1000,
+    });
   });
 
   test('new List() - labels', () => {
-    const list = new List('Test', config, {
-      adapter: new MockAdapter(),
-      lists: [],
-      getAuth: () => {},
-      defaultAccess: { list: true, field: true },
+    const list = setup();
+    expect(list.adminUILabels).toEqual({
+      label: 'Tests',
+      singular: 'Test',
+      plural: 'Tests',
+      path: 'tests',
     });
-    expect(list.adminUILabels.label).toEqual('Tests');
-    expect(list.adminUILabels.singular).toEqual('Test');
-    expect(list.adminUILabels.plural).toEqual('Tests');
-    expect(list.adminUILabels.path).toEqual('tests');
-    expect(list.gqlNames.itemQueryName).toEqual('Test');
-    expect(list.gqlNames.listQueryName).toEqual('allTests');
-    expect(list.gqlNames.listQueryMetaName).toEqual('_allTestsMeta');
-    expect(list.gqlNames.deleteMutationName).toEqual('deleteTest');
-    expect(list.gqlNames.deleteManyMutationName).toEqual('deleteTests');
-    expect(list.gqlNames.updateMutationName).toEqual('updateTest');
-    expect(list.gqlNames.createMutationName).toEqual('createTest');
-    expect(list.gqlNames.whereInputName).toEqual('TestWhereInput');
-    expect(list.gqlNames.whereUniqueInputName).toEqual('TestWhereUniqueInput');
-    expect(list.gqlNames.updateInputName).toEqual('TestUpdateInput');
-    expect(list.gqlNames.createInputName).toEqual('TestCreateInput');
+  });
+
+  test('new List() - gqlNames', () => {
+    const list = setup();
+    expect(list.gqlNames).toEqual({
+      outputTypeName: 'Test',
+      itemQueryName: 'Test',
+      listQueryName: 'allTests',
+      listQueryMetaName: '_allTestsMeta',
+      listMetaName: '_TestsMeta',
+      authenticatedQueryName: 'authenticatedTest',
+      deleteMutationName: 'deleteTest',
+      deleteManyMutationName: 'deleteTests',
+      updateMutationName: 'updateTest',
+      createMutationName: 'createTest',
+      whereInputName: 'TestWhereInput',
+      whereUniqueInputName: 'TestWhereUniqueInput',
+      updateInputName: 'TestUpdateInput',
+      createInputName: 'TestCreateInput',
+      relateToManyInputName: 'TestRelateToManyInput',
+      relateToOneInputName: 'TestRelateToOneInput',
+    });
+  });
+
+  test('new List() - access', () => {
+    const list = setup();
+    expect(list.access).toEqual({
+      create: true,
+      delete: true,
+      read: true,
+      update: true,
+    });
   });
 
   test('new List() - fields', () => {
-    const list = new List('Test', config, {
-      adapter: new MockAdapter(),
-      lists: [],
-      getAuth: () => {},
-      defaultAccess: { list: true, field: true },
-    });
-    expect(list.fields).toHaveLength(2);
-    expect(list.fields[0]).toBeInstanceOf(MockType);
-    expect(list.fields[1]).toBeInstanceOf(MockType);
+    const list = setup();
+    expect(list.fields).toHaveLength(5);
+    expect(list.fields[0]).toBeInstanceOf(Text.implementation);
+    expect(list.fields[1]).toBeInstanceOf(Text.implementation);
+    expect(list.fields[2]).toBeInstanceOf(Relationship.implementation);
+    expect(list.fields[3]).toBeInstanceOf(Text.implementation);
+    expect(list.fields[4]).toBeInstanceOf(Text.implementation);
+
+    expect(list.fieldsByPath['name']).toBeInstanceOf(Text.implementation);
+    expect(list.fieldsByPath['email']).toBeInstanceOf(Text.implementation);
+    expect(list.fieldsByPath['other']).toBeInstanceOf(Relationship.implementation);
+    expect(list.fieldsByPath['hidden']).toBeInstanceOf(Text.implementation);
+    expect(list.fieldsByPath['writeOnce']).toBeInstanceOf(Text.implementation);
+
+    const noFieldsList = new List('NoField', { fields: {} }, listExtras());
+    expect(noFieldsList.fields).toHaveLength(0);
   });
 
   test('new List() - views', () => {
-    const list = new List('Test', config, {
-      adapter: new MockAdapter(),
-      lists: [],
-      getAuth: () => {},
-      defaultAccess: { list: true, field: true },
-    });
+    const list = setup();
     expect(list.views).toEqual({
       name: {
-        viewType1: 'viewPath1',
-        viewType2: 'viewPath2',
+        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
+        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
+        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
       },
       email: {
-        viewType3: 'viewPath3',
-        viewType4: 'viewPath4',
+        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
+        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
+        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
+      },
+      other: {
+        Controller: require.resolve('@voussoir/fields/types/Relationship/Controller'),
+        Field: require.resolve('@voussoir/fields/types/Relationship/views/Field'),
+        Filter: require.resolve('@voussoir/fields/types/Relationship/views/Filter'),
+        Cell: require.resolve('@voussoir/fields/types/Relationship/views/Cell'),
+      },
+      hidden: {
+        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
+        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
+        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
+      },
+      writeOnce: {
+        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
+        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
+        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
       },
     });
   });
+
+  test('new List() - adapter', () => {
+    const list = setup();
+    expect(list.adapter).toBeInstanceOf(MockListAdapter);
+    expect(list.adapter.prepareModel).toBeCalled();
+  });
+});
+
+test('labelResolver', () => {
+  // Default: Use name
+  const list = setup();
+  expect(list.config.labelResolver({ name: 'a', email: 'a@example.com', id: '1' })).toEqual('a');
+
+  // Use config.labelField if supplied
+  const list2 = new List(
+    'List2',
+    {
+      fields: {
+        name: { type: Text },
+        email: { type: Text },
+      },
+      labelField: 'email',
+    },
+    listExtras()
+  );
+  expect(list2.config.labelResolver({ name: 'a', email: 'a@example.com', id: '2' })).toEqual(
+    'a@example.com'
+  );
+
+  // Use config.labelResolver if supplied (over-rides labelField)
+  const list3 = new List(
+    'List3',
+    {
+      fields: {
+        name: { type: Text },
+        email: { type: Text },
+      },
+      labelField: 'email',
+      labelResolver: item => `${item.name} - ${item.email}`,
+    },
+    listExtras()
+  );
+  expect(list3.config.labelResolver({ name: 'a', email: 'a@example.com', id: '3' })).toEqual(
+    'a - a@example.com'
+  );
+
+  // Fall back to id if no name or label resolvers available
+  const list4 = new List(
+    'List4',
+    {
+      fields: {
+        email: { type: Text },
+      },
+    },
+    listExtras()
+  );
+  expect(list4.config.labelResolver({ email: 'a@example.com', id: '4' })).toEqual('4');
 });
 
 describe('getAdminMeta()', () => {
   test('adminMeta() - Smoke test', () => {
-    const list = new List('Test', config, {
-      adapter: new MockAdapter(),
-      lists: [],
-      getAuth: () => {},
-      defaultAccess: { list: true, field: true },
-    });
+    const list = setup();
     const adminMeta = list.getAdminMeta();
     expect(adminMeta).not.toBeNull();
   });
 
   test('getAdminMeta() - labels', () => {
-    const list = new List('Test', config, {
-      adapter: new MockAdapter(),
-      lists: [],
-      getAuth: () => {},
-      defaultAccess: { list: true, field: true },
-    });
+    const list = setup();
     const adminMeta = list.getAdminMeta();
 
     expect(adminMeta.key).toEqual('Test');
+    expect(adminMeta.access).toEqual({
+      create: true,
+      delete: true,
+      read: true,
+      update: true,
+    });
     expect(adminMeta.label).toEqual('Tests');
     expect(adminMeta.singular).toEqual('Test');
     expect(adminMeta.plural).toEqual('Tests');
     expect(adminMeta.path).toEqual('tests');
-    expect(adminMeta.gqlNames.itemQueryName).toEqual('Test');
-    expect(adminMeta.gqlNames.listQueryName).toEqual('allTests');
-    expect(adminMeta.gqlNames.listQueryMetaName).toEqual('_allTestsMeta');
-    expect(adminMeta.gqlNames.deleteMutationName).toEqual('deleteTest');
-    expect(adminMeta.gqlNames.deleteManyMutationName).toEqual('deleteTests');
-    expect(adminMeta.gqlNames.updateMutationName).toEqual('updateTest');
-    expect(adminMeta.gqlNames.createMutationName).toEqual('createTest');
-    expect(adminMeta.gqlNames.whereInputName).toEqual('TestWhereInput');
-    expect(adminMeta.gqlNames.whereUniqueInputName).toEqual('TestWhereUniqueInput');
-    expect(adminMeta.gqlNames.updateInputName).toEqual('TestUpdateInput');
-    expect(adminMeta.gqlNames.createInputName).toEqual('TestCreateInput');
+    expect(adminMeta.gqlNames).toEqual({
+      outputTypeName: 'Test',
+      itemQueryName: 'Test',
+      listQueryName: 'allTests',
+      listQueryMetaName: '_allTestsMeta',
+      listMetaName: '_TestsMeta',
+      authenticatedQueryName: 'authenticatedTest',
+      deleteMutationName: 'deleteTest',
+      deleteManyMutationName: 'deleteTests',
+      updateMutationName: 'updateTest',
+      createMutationName: 'createTest',
+      whereInputName: 'TestWhereInput',
+      whereUniqueInputName: 'TestWhereUniqueInput',
+      updateInputName: 'TestUpdateInput',
+      createInputName: 'TestCreateInput',
+      relateToManyInputName: 'TestRelateToManyInput',
+      relateToOneInputName: 'TestRelateToOneInput',
+    });
+    expect(adminMeta.adminConfig).toEqual({
+      defaultColumns: 'name,email',
+      defaultPageSize: 50,
+      defaultSort: 'name',
+      maximumPageSize: 1000,
+    });
   });
 
   test('getAdminMeta() - fields', () => {
-    const list = new List('Test', config, {
-      adapter: new MockAdapter(),
-      lists: [],
-      getAuth: () => {},
-      defaultAccess: { list: true, field: true },
-    });
+    const list = setup();
     const adminMeta = list.getAdminMeta();
 
-    expect(adminMeta.fields).toHaveLength(2);
-    expect(adminMeta.fields[0]).toBeInstanceOf(MockAdminMeta);
-    expect(adminMeta.fields[1]).toBeInstanceOf(MockAdminMeta);
+    expect(adminMeta.fields).toHaveLength(4);
+    expect(adminMeta.fields[0].path).toEqual('name');
+    expect(adminMeta.fields[1].path).toEqual('email');
+    expect(adminMeta.fields[2].path).toEqual('other');
+    expect(adminMeta.fields[3].path).toEqual('writeOnce');
   });
 
   test('getAdminMeta() - views', () => {
-    const list = new List('Test', config, {
-      adapter: new MockAdapter(),
-      lists: [],
-      getAuth: () => {},
-      defaultAccess: { list: true, field: true },
-    });
+    const list = setup();
     const adminMeta = list.getAdminMeta();
 
     expect(adminMeta.views).toEqual({
       name: {
-        viewType1: 'viewPath1',
-        viewType2: 'viewPath2',
+        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
+        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
+        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
       },
       email: {
-        viewType3: 'viewPath3',
-        viewType4: 'viewPath4',
+        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
+        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
+        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
+      },
+      other: {
+        Controller: require.resolve('@voussoir/fields/types/Relationship/Controller'),
+        Field: require.resolve('@voussoir/fields/types/Relationship/views/Field'),
+        Filter: require.resolve('@voussoir/fields/types/Relationship/views/Filter'),
+        Cell: require.resolve('@voussoir/fields/types/Relationship/views/Cell'),
+      },
+      hidden: {
+        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
+        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
+        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
+      },
+      writeOnce: {
+        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
+        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
+        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
       },
     });
   });
 });
 
 test('gqlTypes', () => {
-  const list = new List('Test', config, {
-    adapter: new MockAdapter(),
-    lists: [],
-    getAuth: () => {},
-    defaultAccess: { list: true, field: true },
-  });
-  const types = list.gqlTypes.map(s => print(gql(s)));
+  const otherInput = `input OtherRelateToOneInput {
+    create: createOther
+    connect: OtherWhereUniqueInput
+    disconnect: OtherWhereUniqueInput
+    disconnectAll: Boolean
+  }`;
+  const type = `type Test {
+    id: ID
+    """
+    This virtual field will be resolved in one of the following ways (in this order):
+     1. Execution of 'labelResolver' set on the Test List config, or
+     2. As an alias to the field set on 'labelField' in the Test List config, or
+     3. As an alias to a 'name' field on the Test List (if one exists), or
+     4. As an alias to the 'id' field on the Test List.
+    """
+    _label_: String
+    name: String
+    email: String
+    other: Other
+    writeOnce: String
+  }`;
+  const whereInput = `input TestWhereInput {
+    id: ID
+    id_not: ID
+    id_in: [ID!]
+    id_not_in: [ID!]
+    AND: [TestWhereInput]
+    OR: [TestWhereInput]
+    name: String
+    name_not: String
+    name_contains: String
+    name_not_contains: String
+    name_starts_with: String
+    name_not_starts_with: String
+    name_ends_with: String
+    name_not_ends_with: String
+    name_i: String
+    name_not_i: String
+    name_contains_i: String
+    name_not_contains_i: String
+    name_starts_with_i: String
+    name_not_starts_with_i: String
+    name_ends_with_i: String
+    name_not_ends_with_i: String
+    name_in: [String]
+    name_not_in: [String]
+    email: String
+    email_not: String
+    email_contains: String
+    email_not_contains: String
+    email_starts_with: String
+    email_not_starts_with: String
+    email_ends_with: String
+    email_not_ends_with: String
+    email_i: String
+    email_not_i: String
+    email_contains_i: String
+    email_not_contains_i: String
+    email_starts_with_i: String
+    email_not_starts_with_i: String
+    email_ends_with_i: String
+    email_not_ends_with_i: String
+    email_in: [String]
+    email_not_in: [String]
+    other: OtherWhereInput
+    other_is_null: Boolean
+    writeOnce: String
+    writeOnce_not: String
+    writeOnce_contains: String
+    writeOnce_not_contains: String
+    writeOnce_starts_with: String
+    writeOnce_not_starts_with: String
+    writeOnce_ends_with: String
+    writeOnce_not_ends_with: String
+    writeOnce_i: String
+    writeOnce_not_i: String
+    writeOnce_contains_i: String
+    writeOnce_not_contains_i: String
+    writeOnce_starts_with_i: String
+    writeOnce_not_starts_with_i: String
+    writeOnce_ends_with_i: String
+    writeOnce_not_ends_with_i: String
+    writeOnce_in: [String]
+    writeOnce_not_in: [String]
+  }`;
+  const whereUniqueInput = `input TestWhereUniqueInput {
+    id: ID!
+  }`;
+  const updateInput = `input TestUpdateInput {
+    name: String
+    email: String
+    other: OtherRelateToOneInput
+    hidden: String
+  }`;
+  const createInput = `input TestCreateInput {
+    name: String
+    email: String
+    other: OtherRelateToOneInput
+    hidden: String
+    writeOnce: String
+  }`;
 
-  expect(types).toEqual(
-    [
-      'type name_type { x: Int }',
-      'type email_type { x: Int }',
-      `type Test {
-      id: ID
-      """
-      This virtual field will be resolved in one of the following ways (in this order):
-      1. Execution of 'labelResolver' set on the Test List config, or
-      2. As an alias to the field set on 'labelField' in the Test List config, or
-      3. As an alias to a 'name' field on the Test List (if one exists), or
-      4. As an alias to the 'id' field on the Test List.
-      """
-      _label_: String
-      name_field: String
-      email_field: String
-    }`,
-      `input TestWhereInput {
-      id: ID
-      id_not: ID
-      id_in: [ID!]
-      id_not_in: [ID!]
-      AND: [TestWhereInput]
-      OR: [TestWhereInput]
-      name_query_arg: String
-      email_query_arg: String
-    }`,
-      `input TestWhereUniqueInput {
-      id: ID!
-    }`,
-      `input TestUpdateInput {
-      name_update_arg: String
-      email_update_arg: String
-    }`,
-      `input TestCreateInput {
-      name_create_arg: String
-      email_create_arg: String
-    }`,
-    ].map(s => print(gql(s)))
+  expect(setup(true).gqlTypes.map(s => print(gql(s)))).toEqual(
+    [otherInput, type, whereInput, whereUniqueInput, updateInput, createInput].map(s =>
+      print(gql(s))
+    )
   );
+
+  expect(setup(false).gqlTypes.map(s => print(gql(s)))).toEqual([].map(s => print(gql(s))));
+
+  expect(
+    setup({ read: true, create: false, update: false, delete: false }).gqlTypes.map(s =>
+      print(gql(s))
+    )
+  ).toEqual([otherInput, type, whereInput, whereUniqueInput].map(s => print(gql(s))));
+
+  expect(
+    setup({ read: false, create: true, update: false, delete: false }).gqlTypes.map(s =>
+      print(gql(s))
+    )
+  ).toEqual([otherInput, type, whereInput, whereUniqueInput, createInput].map(s => print(gql(s))));
+  expect(
+    setup({ read: false, create: false, update: true, delete: false }).gqlTypes.map(s =>
+      print(gql(s))
+    )
+  ).toEqual([otherInput, type, whereInput, whereUniqueInput, updateInput].map(s => print(gql(s))));
+  expect(
+    setup({ read: false, create: false, update: false, delete: true }).gqlTypes.map(s =>
+      print(gql(s))
+    )
+  ).toEqual([otherInput, type, whereInput, whereUniqueInput].map(s => print(gql(s))));
+});
+
+test('getGraphqlFilterFragment', () => {
+  const list = setup();
+  expect(list.getGraphqlFilterFragment()).toEqual([
+    'where: TestWhereInput',
+    'search: String',
+    'orderBy: String',
+    'first: Int',
+    'skip: Int',
+  ]);
 });
 
 test('gqlQueries', () => {
-  const list = new List('Test', config, {
-    adapter: new MockAdapter(),
-    lists: [],
-    getAuth: () => {},
-    defaultAccess: { list: true, field: true },
-  });
-  const queries = list.gqlQueries.map(normalise);
+  expect(setup(true).gqlQueries.map(normalise)).toEqual(
+    [
+      `allTests(
+      where: TestWhereInput
+      search: String
+      orderBy: String
+      first: Int
+      skip: Int
+    ): [Test]`,
+      `Test(
+      where: TestWhereUniqueInput!
+    ): Test`,
+      `_allTestsMeta(
+      where: TestWhereInput
+      search: String
+      orderBy: String
+      first: Int
+      skip: Int
+    ): _QueryMeta`,
+      `_TestsMeta: _ListMeta`,
+      `authenticatedTest: Test`,
+    ].map(normalise)
+  );
 
-  expect(queries).toEqual(
+  expect(setup(false).gqlQueries.map(normalise)).toEqual(
+    [`authenticatedTest: Test`].map(normalise)
+  );
+
+  expect(setup(true, () => false).gqlQueries.map(normalise)).toEqual(
     [
       `allTests(
       where: TestWhereInput
@@ -316,18 +577,79 @@ test('gqlQueries', () => {
       `_TestsMeta: _ListMeta`,
     ].map(normalise)
   );
+
+  expect(setup(false, () => false).gqlQueries.map(normalise)).toEqual([].map(normalise));
+});
+
+test('getFieldsRelatedTo', () => {
+  const list = setup();
+  expect(list.getFieldsRelatedTo('Other')).toEqual([list.fieldsByPath['other']]);
+  expect(list.getFieldsRelatedTo('Missing')).toEqual([]);
+});
+
+test('_throwAccessDenied', () => {
+  const list = setup();
+  expect(() => list._throwAccessDenied('read', context, 'Test')).toThrow(AccessDeniedError);
+
+  let thrownError;
+  try {
+    list._throwAccessDenied('update', context, 'Test');
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError.data).toEqual({ target: 'Test', type: 'mutation' });
+  expect(thrownError.internalData).toEqual({ authedId: 1, authedListKey: 'Test' });
+
+  try {
+    list._throwAccessDenied('delete', context, 'Test', { extraInternal: 2 }, { extraData: 1 });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError.data).toEqual({ target: 'Test', type: 'mutation', extraData: 1 });
+  expect(thrownError.internalData).toEqual({
+    authedId: 1,
+    authedListKey: 'Test',
+    extraInternal: 2,
+  });
+});
+
+test('wrapFieldResolverWithAC', () => {
+  const resolver = () => 'result';
+  const list = setup();
+  const newResolver = list.wrapFieldResolverWithAC(list.fieldsByPath['name'], resolver);
+  expect(newResolver({}, {}, context)).toEqual('result');
+  expect(() => newResolver({ makeFalse: true }, {}, context)).toThrow(AccessDeniedError);
+});
+
+test('gqlFieldResolvers', () => {
+  const resolvers = setup().gqlFieldResolvers;
+  expect(resolvers.Test._label_).toBeInstanceOf(Function);
+  expect(resolvers.Test.email).toBeInstanceOf(Function);
+  expect(resolvers.Test.name).toBeInstanceOf(Function);
+  expect(resolvers.Test.other).toBeInstanceOf(Function);
+  expect(resolvers.Test.writeOnce).toBeInstanceOf(Function);
+  expect(resolvers.Test.hidden).toBe(undefined);
+
+  expect(setup(false).gqlFieldResolvers).toEqual({});
+});
+
+test('gqlAuxFieldResolvers', () => {
+  const list = setup();
+  expect(list.gqlAuxFieldResolvers).toEqual({});
+});
+
+test('gqlAuxQueryResolvers', () => {
+  const list = setup();
+  expect(list.gqlAuxQueryResolvers).toEqual({});
+});
+
+test('gqlAuxMutationResolvers', () => {
+  const list = setup();
+  expect(list.gqlAuxMutationResolvers).toEqual({});
 });
 
 test('gqlMutations', () => {
-  const list = new List('Test', config, {
-    adapter: new MockAdapter(),
-    lists: [],
-    getAuth: () => {},
-    defaultAccess: { list: true, field: true },
-  });
-  const mutations = list.gqlMutations.map(normalise);
-
-  expect(mutations).toEqual(
+  expect(setup(true).gqlMutations.map(normalise)).toEqual(
     [
       `createTest(
       data: TestCreateInput
@@ -344,35 +666,393 @@ test('gqlMutations', () => {
     ): [Test]`,
     ].map(normalise)
   );
+
+  expect(setup(false).gqlMutations.map(normalise)).toEqual([].map(normalise));
+
+  expect(
+    setup({ read: true, create: false, update: false, delete: false }).gqlMutations.map(normalise)
+  ).toEqual([].map(normalise));
+  expect(
+    setup({ read: false, create: true, update: false, delete: false }).gqlMutations.map(normalise)
+  ).toEqual(
+    [
+      `createTest(
+      data: TestCreateInput
+    ): Test`,
+    ].map(normalise)
+  );
+  expect(
+    setup({ read: false, create: false, update: true, delete: false }).gqlMutations.map(normalise)
+  ).toEqual(
+    [
+      `updateTest(
+      id: ID!
+      data: TestUpdateInput
+    ): Test`,
+    ].map(normalise)
+  );
+  expect(
+    setup({ read: false, create: false, update: false, delete: true }).gqlMutations.map(normalise)
+  ).toEqual(
+    [
+      `deleteTest(
+      id: ID!
+    ): Test`,
+      `deleteTests(
+      ids: [ID!]
+    ): [Test]`,
+    ].map(normalise)
+  );
+});
+
+test('throwIfAccessDeniedOnFields', () => {
+  const list = setup();
+  list.throwIfAccessDeniedOnFields('read', {}, { name: 'a', email: 'a@example.com' }, context, {
+    gqlName: 'testing',
+  });
+  expect(() =>
+    list.throwIfAccessDeniedOnFields(
+      'read',
+      { makeFalse: true },
+      { name: 'a', email: 'a@example.com' },
+      context,
+      { gqlName: '' }
+    )
+  ).toThrow(AccessDeniedError);
+  let thrownError;
+  try {
+    list.throwIfAccessDeniedOnFields(
+      'read',
+      { makeFalse: true },
+      { name: 'a', email: 'a@example.com' },
+      context,
+      { gqlName: 'testing', extraData: { extra: 1 } }
+    );
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError.data).toEqual({
+    restrictedFields: ['name'],
+    target: 'testing',
+    type: 'query',
+  });
+  expect(thrownError.internalData).toEqual({
+    authedId: 1,
+    authedListKey: 'Test',
+    extra: 1,
+  });
+});
+
+test('checkListAccess', () => {
+  const list = setup();
+  expect(list.checkListAccess(context, 'read', { gqlName: 'testing' })).toEqual(true);
+
+  const newContext = {
+    ...context,
+    getListAccessControlForUser: (listKey, operation) => operation === 'update',
+  };
+  expect(list.checkListAccess(newContext, 'update', { gqlName: 'testing' })).toEqual(true);
+  expect(() => list.checkListAccess(newContext, 'read', { gqlName: 'testing' })).toThrow(
+    AccessDeniedError
+  );
+});
+
+test('getAccessControlledItem', async () => {
+  const list = setup();
+  expect(
+    await list.getAccessControlledItem(1, true, { context, operation: 'read', gqlName: 'testing' })
+  ).toEqual({
+    name: 'b',
+    email: 'b@example.com',
+    index: 1,
+  });
+  await expect(
+    list.getAccessControlledItem(10, true, { context, operation: 'read', gqlName: 'testing' })
+  ).rejects.toThrow(AccessDeniedError);
+
+  expect(
+    await list.getAccessControlledItem(
+      1,
+      { id: 1 },
+      { context, operation: 'read', gqlName: 'testing' }
+    )
+  ).toEqual({
+    name: 'b',
+    email: 'b@example.com',
+    index: 1,
+  });
+  await expect(
+    list.getAccessControlledItem(1, { id: 2 }, { context, operation: 'read', gqlName: 'testing' })
+  ).rejects.toThrow(AccessDeniedError);
+
+  expect(
+    await list.getAccessControlledItem(
+      1,
+      { id_not: 2 },
+      { context, operation: 'read', gqlName: 'testing' }
+    )
+  ).toEqual({
+    name: 'b',
+    email: 'b@example.com',
+    index: 1,
+  });
+  await expect(
+    list.getAccessControlledItem(
+      1,
+      { id_not: 1 },
+      { context, operation: 'read', gqlName: 'testing' }
+    )
+  ).rejects.toThrow(AccessDeniedError);
+
+  expect(
+    await list.getAccessControlledItem(
+      1,
+      { id_in: [1, 2] },
+      { context, operation: 'read', gqlName: 'testing' }
+    )
+  ).toEqual({
+    name: 'b',
+    email: 'b@example.com',
+    index: 1,
+  });
+  await expect(
+    list.getAccessControlledItem(
+      1,
+      { id_in: [2, 3] },
+      { context, operation: 'read', gqlName: 'testing' }
+    )
+  ).rejects.toThrow(AccessDeniedError);
+
+  expect(
+    await list.getAccessControlledItem(
+      1,
+      { id_not_in: [2, 3] },
+      { context, operation: 'read', gqlName: 'testing' }
+    )
+  ).toEqual({
+    name: 'b',
+    email: 'b@example.com',
+    index: 1,
+  });
+  await expect(
+    list.getAccessControlledItem(
+      1,
+      { id_not_in: [1, 2] },
+      { context, operation: 'read', gqlName: 'testing' }
+    )
+  ).rejects.toThrow(AccessDeniedError);
+});
+
+test('getAccessControlledItems', async () => {
+  const list = setup();
+  expect(await list.getAccessControlledItems([], true)).toEqual([]);
+  expect(await list.getAccessControlledItems([1, 2], true)).toEqual([
+    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'c', email: 'c@example.com', index: 2 },
+  ]);
+  expect(await list.getAccessControlledItems([1, 2, 1, 2], true)).toEqual([
+    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'c', email: 'c@example.com', index: 2 },
+  ]);
+
+  expect(await list.getAccessControlledItems([1, 2], { id: 1 })).toEqual([
+    { name: 'b', email: 'b@example.com', index: 1 },
+  ]);
+  expect(await list.getAccessControlledItems([1, 2], { id: 3 })).toEqual([]);
+
+  expect(await list.getAccessControlledItems([1, 2], { id_in: [1, 2, 3] })).toEqual([
+    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'c', email: 'c@example.com', index: 2 },
+  ]);
+  expect(await list.getAccessControlledItems([1, 2], { id_in: [2, 3] })).toEqual([
+    { name: 'c', email: 'c@example.com', index: 2 },
+  ]);
+  expect(await list.getAccessControlledItems([1, 2], { id_in: [3, 4] })).toEqual([]);
+
+  expect(await list.getAccessControlledItems([1, 2], { id_not: 2 })).toEqual([
+    { name: 'b', email: 'b@example.com', index: 1 },
+  ]);
+  expect(await list.getAccessControlledItems([1, 2], { id_not: 3 })).toEqual([
+    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'c', email: 'c@example.com', index: 2 },
+  ]);
+
+  expect(await list.getAccessControlledItems([1, 2], { id_not_in: [1, 2, 3] })).toEqual([]);
+  expect(await list.getAccessControlledItems([1, 2], { id_not_in: [2, 3] })).toEqual([
+    { name: 'b', email: 'b@example.com', index: 1 },
+  ]);
+  expect(await list.getAccessControlledItems([1, 2], { id_not_in: [3, 4] })).toEqual([
+    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'c', email: 'c@example.com', index: 2 },
+  ]);
 });
 
 test('gqlQueryResolvers', () => {
-  const list = new List('Test', config, {
-    adapter: new MockAdapter(),
-    lists: [],
-    getAuth: () => {},
-    defaultAccess: { list: true, field: true },
-  });
-  const resolvers = list.gqlQueryResolvers;
+  const resolvers = setup(true).gqlQueryResolvers;
+  expect(resolvers['allTests']).toBeInstanceOf(Function); // listQueryName
+  expect(resolvers['_allTestsMeta']).toBeInstanceOf(Function); // listQueryMetaName
+  expect(resolvers['_TestsMeta']).toBeInstanceOf(Function); // listMetaName
+  expect(resolvers['Test']).toBeInstanceOf(Function); // itemQueryName
+  expect(resolvers['authenticatedTest']).toBeInstanceOf(Function); // authenticatedQueryName
 
-  expect(resolvers['Test']).toBeInstanceOf(Function);
-  expect(resolvers['allTests']).toBeInstanceOf(Function);
-  expect(resolvers['_allTestsMeta']).toBeInstanceOf(Function);
+  const resolvers2 = setup(false).gqlQueryResolvers;
+  expect(resolvers2['allTests']).toBe(undefined); // listQueryName
+  expect(resolvers2['_allTestsMeta']).toBe(undefined); // listQueryMetaName
+  expect(resolvers2['_TestsMeta']).toBe(undefined); // listMetaName
+  expect(resolvers2['Test']).toBe(undefined); // itemQueryName
+  expect(resolvers2['authenticatedTest']).toBeInstanceOf(Function); // authenticatedQueryName
+
+  const resolvers3 = setup(true, () => false).gqlQueryResolvers;
+  expect(resolvers3['allTests']).toBeInstanceOf(Function); // listQueryName
+  expect(resolvers3['_allTestsMeta']).toBeInstanceOf(Function); // listQueryMetaName
+  expect(resolvers3['_TestsMeta']).toBeInstanceOf(Function); // listMetaName
+  expect(resolvers3['Test']).toBeInstanceOf(Function); // itemQueryName
+  expect(resolvers3['authenticatedTest']).toBe(undefined); // authenticatedQueryName
+
+  const resolvers4 = setup(false, () => false).gqlQueryResolvers;
+  expect(resolvers4).toEqual({});
+});
+
+test('listQuery', async () => {
+  const list = setup();
+  expect(await list.listQuery({ where: { id: 1 } }, context, 'testing')).toEqual([
+    { name: 'b', email: 'b@example.com', index: 1 },
+  ]);
+});
+
+test('listQueryMeta', async () => {
+  const list = setup();
+  expect(
+    await (await list.listQueryMeta({ where: { id: 1 } }, context, 'testing')).getCount()
+  ).toEqual(1);
+  expect(
+    await (await list.listQueryMeta({ where: { id_in: [1, 2] } }, context, 'testing')).getCount()
+  ).toEqual(2);
+});
+
+test('listMeta', () => {
+  const meta = setup().listMeta(context);
+  expect(meta.getAccess).toBeInstanceOf(Function);
+  expect(meta.getSchema).toBeInstanceOf(Function);
+  expect(meta.name).toEqual('Test');
+
+  const access = meta.getAccess();
+  expect(access.getCreate).toBeInstanceOf(Function);
+  expect(access.getDelete).toBeInstanceOf(Function);
+  expect(access.getRead).toBeInstanceOf(Function);
+  expect(access.getUpdate).toBeInstanceOf(Function);
+
+  expect(access.getCreate()).toEqual(true);
+  expect(access.getDelete()).toEqual(true);
+  expect(access.getRead()).toEqual(true);
+  expect(access.getUpdate()).toEqual(true);
+
+  const schema = meta.getSchema();
+  expect(schema).toEqual({
+    key: 'Test',
+    queries: ['Test', 'allTests', '_allTestsMeta', 'authenticatedTest'],
+    type: 'Test',
+  });
+
+  expect(
+    setup(true, () => false)
+      .listMeta(context)
+      .getSchema()
+  ).toEqual({
+    key: 'Test',
+    queries: ['Test', 'allTests', '_allTestsMeta'],
+    type: 'Test',
+  });
+});
+
+test('itemQuery', async () => {
+  const list = setup();
+  expect(await list.itemQuery(0, context)).toEqual({ name: 'a', email: 'a@example.com', index: 0 });
+  await expect(list.itemQuery(4, context)).rejects.toThrow(AccessDeniedError);
+});
+
+test('authenticatedQuery', async () => {
+  const list = setup();
+  expect(await list.authenticatedQuery(context)).toEqual({
+    name: 'b',
+    email: 'b@example.com',
+    index: 1,
+  });
+  expect(await list.authenticatedQuery({ ...context, authedItem: undefined })).toBe(null);
+  expect(await list.authenticatedQuery({ ...context, authedListKey: 'Other' })).toBe(null);
 });
 
 test('gqlMutationResolvers', () => {
-  const list = new List('Test', config, {
-    adapter: new MockAdapter(),
-    lists: [],
-    getAuth: () => {},
-    defaultAccess: { list: true, field: true },
-  });
-  const resolvers = list.gqlMutationResolvers;
-
+  let resolvers = setup(true).gqlMutationResolvers;
   expect(resolvers['createTest']).toBeInstanceOf(Function);
   expect(resolvers['updateTest']).toBeInstanceOf(Function);
   expect(resolvers['deleteTest']).toBeInstanceOf(Function);
   expect(resolvers['deleteTests']).toBeInstanceOf(Function);
+
+  resolvers = setup(false).gqlMutationResolvers;
+  expect(resolvers).toEqual({});
+
+  resolvers = setup({ read: true, create: false, update: false, delete: false })
+    .gqlMutationResolvers;
+  expect(resolvers).toEqual({});
+
+  resolvers = setup({ read: false, create: true, update: false, delete: false })
+    .gqlMutationResolvers;
+  expect(resolvers['createTest']).toBeInstanceOf(Function);
+  expect(resolvers['updateTest']).toBe(undefined);
+  expect(resolvers['deleteTest']).toBe(undefined);
+  expect(resolvers['deleteTests']).toBe(undefined);
+
+  resolvers = setup({ read: false, create: false, update: true, delete: false })
+    .gqlMutationResolvers;
+  expect(resolvers['createTest']).toBe(undefined);
+  expect(resolvers['updateTest']).toBeInstanceOf(Function);
+  expect(resolvers['deleteTest']).toBe(undefined);
+  expect(resolvers['deleteTests']).toBe(undefined);
+
+  resolvers = setup({ read: false, create: false, update: false, delete: true })
+    .gqlMutationResolvers;
+  expect(resolvers['createTest']).toBe(undefined);
+  expect(resolvers['updateTest']).toBe(undefined);
+  expect(resolvers['deleteTest']).toBeInstanceOf(Function);
+  expect(resolvers['deleteTests']).toBeInstanceOf(Function);
+});
+
+test('createMutation', async () => {
+  const list = setup();
+  const result = await list.createMutation({ name: 'test', email: 'test@example.com' }, context);
+  expect(result).toEqual({ name: 'test', email: 'test@example.com', index: 3, other: null });
+});
+
+test('updateMutation', async () => {
+  const list = setup();
+  const result = await list.updateMutation(
+    1,
+    { name: 'update', email: 'update@example.com' },
+    context
+  );
+  expect(result).toEqual({ name: 'update', email: 'update@example.com', index: 1 });
+});
+
+test('deleteMutation', async () => {
+  const list = setup();
+  const result = await list.deleteMutation(1, context);
+  expect(result).toBe(undefined);
+});
+
+test('deleteManyMutation', async () => {
+  const list = setup();
+  const result = await list.deleteManyMutation([1, 2], context);
+  expect(result).toEqual([undefined, undefined]);
+});
+
+test('getFieldByPath', () => {
+  const list = setup();
+  expect(list.getFieldByPath('name').path).toEqual('name');
+  expect(list.getFieldByPath('email').path).toEqual('email');
+  expect(list.getFieldByPath('hidden').path).toEqual('hidden');
+  expect(list.getFieldByPath('writeOnce').path).toEqual('writeOnce');
+  expect(list.getFieldByPath('missing')).toBe(undefined);
 });
 
 describe('Maps from Native JS types to Keystone types', () => {

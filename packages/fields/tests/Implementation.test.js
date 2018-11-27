@@ -86,34 +86,19 @@ test('gqlAuxMutationResolvers', () => {
   expect(impl.gqlAuxMutationResolvers).toEqual({});
 });
 
-test('createFieldPreHook()', () => {
+test('afterChange()', () => {
   const impl = new Field('path', config, args);
 
-  const data = { a: 1 };
-  const value = impl.createFieldPreHook(data);
-  expect(value).toEqual(data);
-});
-
-test('createFieldPostHook()', () => {
-  const impl = new Field('path', config, args);
-
-  const value = impl.createFieldPostHook();
+  const value = impl.afterChange();
   expect(value).toBe(undefined);
 });
 
-test('updateFieldPreHook()', () => {
+test('resolveInput()', () => {
   const impl = new Field('path', config, args);
 
   const data = { a: 1 };
-  const value = impl.updateFieldPreHook(data);
+  const value = impl.resolveInput(data);
   expect(value).toEqual(data);
-});
-
-test('updateFieldPostHook()', () => {
-  const impl = new Field('path', config, args);
-
-  const value = impl.updateFieldPostHook();
-  expect(value).toBe(undefined);
 });
 
 test('gqlQueryInputFields', () => {

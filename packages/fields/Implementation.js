@@ -70,52 +70,33 @@ class Field {
     return {};
   }
 
-  /**
-   * Hooks for performing actions before / after fields are mutated.
-   * For example: with a field { avatar: { type: S3File }}, it wants to put the
-   * file on S3 in the `createFieldPreHook()`, then return an S3 object ID as
-   * the result to store in `avatar`
-   *
-   * @param data {Mixed} The data received from the query
-   * @param context {Mixed} The GraphQL Context object for the current request
-   */
-  // eslint-disable-next-line no-unused-vars
-  createFieldPreHook(data, context) {
-    return data;
-  }
   /*
    * @param data {Mixed} The value of this field as saved & read from the DB
    * @param item {Object} The existing version of the item
    * @param context {Mixed} The GraphQL Context object for the current request
    */
-  createFieldPostHook(data, item, context) {} // eslint-disable-line no-unused-vars
+  afterChange(data, item, context) {} // eslint-disable-line no-unused-vars
   /*
    * @param data {Mixed} The value of this field received from the query
    * @param item {Object} The existing version of the item
    * @param context {Mixed} The GraphQL Context object for the current request
    */
   // eslint-disable-next-line no-unused-vars
-  updateFieldPreHook(data, item, context) {
+  resolveInput(data, item, context) {
     return data;
   }
   /*
-   * @param data {Mixed} The value of this field as saved & read from the DB
+   * @param data {Mixed} The value of this field as read from the DB
    * @param item {Object} The existing version of the item
    * @param context {Mixed} The GraphQL Context object for the current request
    */
-  updateFieldPostHook(data, item, context) {} // eslint-disable-line no-unused-vars
+  beforeDelete(data, item, context) {} // eslint-disable-line no-unused-vars
   /*
    * @param data {Mixed} The value of this field as read from the DB
    * @param item {Object} The existing version of the item
    * @param context {Mixed} The GraphQL Context object for the current request
    */
-  deleteFieldPreHook(data, item, context) {} // eslint-disable-line no-unused-vars
-  /*
-   * @param data {Mixed} The value of this field as read from the DB
-   * @param item {Object} The existing version of the item
-   * @param context {Mixed} The GraphQL Context object for the current request
-   */
-  deleteFieldPostHook(data, item, context) {} // eslint-disable-line no-unused-vars
+  afterDelete(data, item, context) {} // eslint-disable-line no-unused-vars
 
   get gqlQueryInputFields() {
     return [];

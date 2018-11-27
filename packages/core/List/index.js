@@ -168,20 +168,18 @@ module.exports = class List {
     });
 
     this.fieldsByPath = {};
-    this.fields = config.fields
-      ? Object.keys(sanitisedFieldsConfig).map(path => {
-          const { type, ...fieldSpec } = sanitisedFieldsConfig[path];
-          const implementation = type.implementation;
-          this.fieldsByPath[path] = new implementation(path, fieldSpec, {
-            getListByKey,
-            listKey: key,
-            listAdapter: this.adapter,
-            fieldAdapterClass: type.adapters[adapter.name],
-            defaultAccess: this.defaultAccess.field,
-          });
-          return this.fieldsByPath[path];
-        })
-      : [];
+    this.fields = Object.keys(sanitisedFieldsConfig).map(path => {
+      const { type, ...fieldSpec } = sanitisedFieldsConfig[path];
+      const implementation = type.implementation;
+      this.fieldsByPath[path] = new implementation(path, fieldSpec, {
+        getListByKey,
+        listKey: key,
+        listAdapter: this.adapter,
+        fieldAdapterClass: type.adapters[adapter.name],
+        defaultAccess: this.defaultAccess.field,
+      });
+      return this.fieldsByPath[path];
+    });
 
     this.adapter.prepareModel();
 
@@ -216,10 +214,10 @@ module.exports = class List {
   }
   get gqlTypes() {
     // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
-    const types = flatten(this.fields.map(field => field.gqlAuxTypes));
-
+    const types = [];
     if (this.access.read || this.access.create || this.access.update || this.access.delete) {
       types.push(
+        ...flatten(this.fields.map(field => field.gqlAuxTypes)),
         `
         type ${this.gqlNames.outputTypeName} {
           id: ID
@@ -371,13 +369,6 @@ module.exports = class List {
     };
   }
 
-  // Get the resolvers for the (possibly multiple) output fields and wrap each with access control
-  getWrappedFieldResolvers(field) {
-    return mapKeys(field.gqlOutputFieldResolvers || {}, innerResolver =>
-      this.wrapFieldResolverWithAC(field, innerResolver)
-    );
-  }
-
   get gqlFieldResolvers() {
     if (!this.access.read) {
       return {};
@@ -388,7 +379,12 @@ module.exports = class List {
       ...objMerge(
         this.fields
           .filter(field => field.access.read)
-          .map(field => this.getWrappedFieldResolvers(field))
+          .map(field =>
+            // Get the resolvers for the (possibly multiple) output fields and wrap each with access control
+            mapKeys(field.gqlOutputFieldResolvers, innerResolver =>
+              this.wrapFieldResolverWithAC(field, innerResolver)
+            )
+          )
       ),
     };
     return { [this.gqlNames.outputTypeName]: fieldResolvers };
@@ -748,11 +744,30 @@ module.exports = class List {
     // newly created item.
     const createdPromise = createLazyDeferred();
 
-    const resolvedData = await resolveAllKeys(
-      mapKeys(data, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].createFieldPreHook(value, context, createdPromise.promise)
+    // Resolve relationships
+    let resolvedData = await resolveAllKeys(
+      mapKeys(item, (value, fieldPath) =>
+        this.fieldsByPath[fieldPath].isRelationship
+          ? this.fieldsByPath[fieldPath].resolveRelationship(
+              value,
+              undefined,
+              context,
+              createdPromise.promise
+            )
+          : value
       )
     );
+
+    // Resolve input
+    resolvedData = await resolveAllKeys(
+      mapKeys(resolvedData, (value, fieldPath) =>
+        this.fieldsByPath[fieldPath].resolveInput(value, undefined, context)
+      )
+    );
+
+    // Validate input
+
+    // Before change
 
     let newItem;
     try {
@@ -770,9 +785,10 @@ module.exports = class List {
       throw error;
     }
 
+    // After change
     await Promise.all(
       Object.keys(data).map(fieldPath =>
-        this.fieldsByPath[fieldPath].createFieldPostHook(newItem[fieldPath], newItem, context)
+        this.fieldsByPath[fieldPath].afterChange(newItem[fieldPath], newItem, context)
       )
     );
 
@@ -789,18 +805,32 @@ module.exports = class List {
     const item = await this.getAccessControlledItem(id, access, { context, operation, gqlName });
 
     this.throwIfAccessDeniedOnFields(operation, item, data, context, { gqlName, extraData });
-
-    const resolvedData = await resolveAllKeys(
+    // Resolve relationships
+    let resolvedData = await resolveAllKeys(
       mapKeys(data, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].updateFieldPreHook(value, item, context)
+        this.fieldsByPath[fieldPath].isRelationship
+          ? this.fieldsByPath[fieldPath].resolveRelationship(value, item, context)
+          : value
       )
     );
 
+    // Resolve input
+    resolvedData = await resolveAllKeys(
+      mapKeys(resolvedData, (value, fieldPath) =>
+        this.fieldsByPath[fieldPath].resolveInput(value, item, context)
+      )
+    );
+
+    // Validate input
+
+    // Before change
+
     const newItem = await this.adapter.update(id, resolvedData);
 
+    // After change
     await Promise.all(
       Object.keys(data).map(fieldPath =>
-        this.fieldsByPath[fieldPath].updateFieldPostHook(newItem[fieldPath], newItem, context)
+        this.fieldsByPath[fieldPath].afterChange(newItem[fieldPath], newItem, context)
       )
     );
 
@@ -830,15 +860,24 @@ module.exports = class List {
   }
 
   async _deleteWithFieldHooks(item, context) {
+    // Validate delete
+
+    // Before delete
     await Promise.all(
-      this.fields.map(field => field.deleteFieldPreHook(item[field.path], item, context))
+      this.fields.map(field => field.beforeDelete(item[field.path], item, context))
+    );
+
+    // Register backlinks
+    await Promise.all(
+      this.fields
+        .filter(field => field.isRelationship)
+        .map(field => field.registerBacklink(item[field.path], item, context))
     );
 
     const result = await this.adapter.delete(item.id);
 
-    await Promise.all(
-      this.fields.map(field => field.deleteFieldPostHook(item[field.path], item, context))
-    );
+    // After delete
+    await Promise.all(this.fields.map(field => field.afterDelete(item[field.path], item, context)));
 
     return result;
   }
