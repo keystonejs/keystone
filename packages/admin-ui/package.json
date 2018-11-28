@@ -7,8 +7,8 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@emotion/core": "^10.0.0-beta.12",
-    "@emotion/styled": "^10.0.0-beta.12",
+    "@emotion/core": "^10.0.0",
+    "@emotion/styled": "^10.0.0",
     "@voussoir/field-views-loader": "^0.2.0",
     "@voussoir/fields": "^1.4.0",
     "@voussoir/icons": "^0.2.0",
@@ -22,7 +22,7 @@
     "apollo-upload-client": "^9.0.0",
     "@babel/core": "^7.1.6",
     "babel-loader": "^8.0.4",
-    "babel-plugin-emotion": "^10.0.0-beta.12",
+    "babel-plugin-emotion": "^10.0.0",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
     "@babel/preset-env": "^7.1.6",
@@ -31,7 +31,7 @@
     "body-parser": "^1.18.2",
     "cross-fetch": "^2.2.0",
     "cuid": "^2.1.1",
-    "emotion": "^10.0.0-beta.12",
+    "emotion": "^10.0.0",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "file-loader": "^1.1.11",

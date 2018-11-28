@@ -9,10 +9,10 @@
     "start": "cd ./www && yarn develop"
   },
   "dependencies": {
-    "@emotion/core": "^10.0.0-beta.12",
-    "@emotion/styled": "^10.0.0-beta.12",
+    "@emotion/core": "^10.0.0",
+    "@emotion/styled": "^10.0.0",
     "date-fns": "^1.29.0",
-    "emotion": "^10.0.0-beta.12",
+    "emotion": "^10.0.0",
     "fs-extra": "^7.0.0",
     "kalendaryo": "^1.10.0",
     "octicons": "^7.2.0",
