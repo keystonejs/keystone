@@ -146,14 +146,21 @@ module.exports = {
     return result;
   },
 
-  validateFieldAccessControl({ access, listKey, fieldKey, item, operation, authentication }) {
+  validateFieldAccessControl({
+    access,
+    listKey,
+    fieldKey,
+    existingItem,
+    operation,
+    authentication,
+  }) {
     let result;
     if (typeof access[operation] !== 'function') {
       result = access[operation];
     } else {
       result = access[operation]({
         authentication: authentication.item ? authentication : {},
-        item,
+        existingItem,
       });
     }
 
