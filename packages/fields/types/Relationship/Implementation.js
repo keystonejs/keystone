@@ -10,11 +10,7 @@ const {
 } = mongoose;
 
 const { Implementation } = require('../../Implementation');
-const {
-  nestedMutation,
-  resolveBacklinks,
-  enqueueBacklinkOperations,
-} = require('./nested-mutations');
+const { nestedMutation, enqueueBacklinkOperations } = require('./nested-mutations');
 
 class Relationship extends Implementation {
   constructor() {
@@ -190,11 +186,6 @@ class Relationship extends Implementation {
     });
   }
 
-  async afterChange(data, item, context) {
-    // We have to wait to the post hook so we have the item's id to connect to!
-    await resolveBacklinks(context.queues, context);
-  }
-
   registerBacklink(data, item, context) {
     // Early out for null'd field
     if (!data) {
@@ -229,11 +220,6 @@ class Relationship extends Implementation {
     // reference to null)
     // Accept a config option for cascading: https://www.prisma.io/docs/1.4/reference/service-configuration/data-modelling-(sdl)-eiroozae8u/#the-@relation-directive
     // Beware of circular delete hooks!
-  }
-
-  async afterDelete(fieldData, item, context) {
-    // We have to wait to the post hook so we have the item's id to discconect.
-    await resolveBacklinks(context.queues, context);
   }
 
   get gqlAuxTypes() {
