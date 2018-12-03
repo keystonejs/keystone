@@ -8,7 +8,10 @@ class Field {
     { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess }
   ) {
     this.path = path;
-    this.config = config;
+    this.config = {
+      hooks: {},
+      ...config,
+    };
     this.getListByKey = getListByKey;
     this.listKey = listKey;
     this.label = config.label || inflection.humanize(inflection.underscore(path));
@@ -81,22 +84,21 @@ class Field {
    * @param item {Object} The existing version of the item
    * @param context {Mixed} The GraphQL Context object for the current request
    */
-  // eslint-disable-next-line no-unused-vars
-  resolveInput(data, item, context) {
-    return data;
+  async resolveInput({ resolvedData }) {
+    return resolvedData[this.path];
   }
-  /*
-   * @param data {Mixed} The value of this field as read from the DB
-   * @param item {Object} The existing version of the item
-   * @param context {Mixed} The GraphQL Context object for the current request
-   */
-  beforeDelete(data, item, context) {} // eslint-disable-line no-unused-vars
-  /*
-   * @param data {Mixed} The value of this field as read from the DB
-   * @param item {Object} The existing version of the item
-   * @param context {Mixed} The GraphQL Context object for the current request
-   */
-  afterDelete(data, item, context) {} // eslint-disable-line no-unused-vars
+
+  async validateInput() {}
+
+  async beforeChange() {}
+
+  async afterChange() {}
+
+  async beforeDelete() {}
+
+  async validateDelete() {}
+
+  async afterDelete() {}
 
   get gqlQueryInputFields() {
     return [];

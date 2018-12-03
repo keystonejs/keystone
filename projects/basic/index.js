@@ -87,6 +87,13 @@ keystone.createList('User', {
     ...(cloudinaryAdapter ? { avatar: { type: CloudinaryImage, adapter: cloudinaryAdapter } } : {}),
   },
   labelResolver: item => `${item.name} <${item.email}>`,
+  hooks: {
+    validateInput: async ({ resolvedData, addValidationError }) => {
+      if (resolvedData.name === 'Homer') {
+        addValidationError('Sorry, no Homers allowed', { a: 1 }, { b: 2 });
+      }
+    },
+  },
 });
 
 keystone.createList('Post', {
