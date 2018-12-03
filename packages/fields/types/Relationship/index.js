@@ -1,5 +1,5 @@
 const { Relationship, MongoSelectInterface } = require('./Implementation');
-const { resolveBacklinks } = require('./nested-mutations');
+const { resolveBacklinks } = require('./backlinks');
 
 module.exports = {
   type: 'Relationship',

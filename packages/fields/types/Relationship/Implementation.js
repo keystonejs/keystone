@@ -10,7 +10,8 @@ const {
 } = mongoose;
 
 const { Implementation } = require('../../Implementation');
-const { nestedMutation, enqueueBacklinkOperations } = require('./nested-mutations');
+const { resolveNested } = require('./nested-mutations');
+const { enqueueBacklinkOperations } = require('./backlinks');
 
 class Relationship extends Implementation {
   constructor() {
@@ -161,29 +162,55 @@ class Relationship extends Implementation {
     };
   }
 
-  async resolveRelationship(input, item, context, createdPromise) {
-    const { many, required } = this.config;
+  _enqueueBacklinks(operations, context, listInfo, getItem) {
+    // We use `context` as it's passed around by graphqljs, so is available everywhere
+    context.queues = context.queues || {};
+    const { local, foreign } = listInfo;
+    enqueueBacklinkOperations(operations, context.queues, getItem, local, foreign);
+  }
 
-    const { refList, refField } = this.tryResolveRefList();
+  async resolveRelationship(input, item, context, getItem) {
+    const { many, required } = this.config;
 
     // Early out for null'd field
     if (!required && !input) {
       return input;
     }
-    const currentValue = item && item[this.path];
-    const getItem = createdPromise || Promise.resolve(item);
-    context.queues = context.queues || {};
-    return await nestedMutation({
+
+    const { refList, refField } = this.tryResolveRefList();
+    const listInfo = {
+      local: { list: this.getListByKey(this.listKey), field: this },
+      foreign: { list: refList, field: refField },
+    };
+    let currentValue = item && item[this.path];
+    if (many) {
+      currentValue = (currentValue || []).map(id => id.toString());
+    } else {
+      currentValue = currentValue && currentValue.toString();
+    }
+
+    // Collect the IDs to be connected and disconnected. This step may trigger
+    // createMutation calls in order to obtain these IDs if required.
+    const { connect, disconnect } = await resolveNested({
       input,
       currentValue,
-      localField: this,
-      localList: this.getListByKey(this.listKey),
-      refList,
-      refField,
-      getItem,
+      listInfo,
       many,
       context,
     });
+
+    // Enqueue backlink operations for the connections and disconnections
+    if (refField) {
+      getItem = getItem || Promise.resolve(item);
+      this._enqueueBacklinks({ connect, disconnect }, context, listInfo, getItem);
+    }
+
+    // Resolve the connections and disconnections into a final id/list of ids.
+    if (many) {
+      return [...currentValue.filter(id => !disconnect.includes(id)), ...connect];
+    } else {
+      return connect ? connect[0] : disconnect ? null : currentValue;
+    }
   }
 
   registerBacklink(data, item, context) {
@@ -192,30 +219,15 @@ class Relationship extends Implementation {
       return;
     }
 
-    const { many } = this.config;
     const { refList, refField } = this.tryResolveRefList();
-
-    // No related field to unlink
-    if (!refField) {
-      return;
+    if (refField) {
+      const listInfo = {
+        local: { list: this.getListByKey(this.listKey), field: this },
+        foreign: { list: refList, field: refField },
+      };
+      const disconnect = this.config.many ? data : [data];
+      this._enqueueBacklinks({ disconnect }, context, listInfo, Promise.resolve(item));
     }
-
-    const itemsToDisconnect = many ? data : [data];
-    context.queues = context.queues || {};
-    enqueueBacklinkOperations(
-      { disconnect: itemsToDisconnect.map(id => id.toString()) },
-      context.queues,
-      Promise.resolve(item),
-      {
-        list: this.getListByKey(this.listKey),
-        field: this,
-      },
-      {
-        list: refList,
-        field: refField,
-      }
-    );
-
     // TODO: Cascade _deletion_ of any related items (not just setting the
     // reference to null)
     // Accept a config option for cascading: https://www.prisma.io/docs/1.4/reference/service-configuration/data-modelling-(sdl)-eiroozae8u/#the-@relation-directive
