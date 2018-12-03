@@ -84,7 +84,6 @@ class Field {
    * @param item {Object} The existing version of the item
    * @param context {Mixed} The GraphQL Context object for the current request
    */
-  // eslint-disable-next-line no-unused-vars
   async resolveInput({ resolvedData }) {
     return resolvedData[this.path];
   }

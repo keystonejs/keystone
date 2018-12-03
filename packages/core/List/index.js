@@ -770,6 +770,7 @@ module.exports = class List {
   }
 
   async _resolveDefaults(data) {
+    // FIXME: Consider doing this in a way which only calls getDefaultValue once.
     const fields = this.fields.filter(field => field.getDefaultValue() !== undefined);
     return {
       ...(await this._mapToFields(fields, field => field.getDefaultValue())),
@@ -803,6 +804,7 @@ module.exports = class List {
     const fields = this._fieldsFromObject(resolvedData);
 
     const fieldValidationErrors = [];
+    // FIXME: Can we do this in a way where we simply return validation errors instead?
     args.addFieldValidationError = (msg, _data = {}, internalData = {}) =>
       fieldValidationErrors.push({ msg, data: _data, internalData });
     await this._mapToFields(fields, field => field.validateInput(args));
