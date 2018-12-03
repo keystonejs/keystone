@@ -218,7 +218,13 @@ class Nav extends Component {
             <PageWrapper>
               <PropToggle
                 isActive={isDragging}
-                styles={{ cursor: 'col-resize', 'user-select': 'none' }}
+                styles={{
+                  cursor: 'col-resize',
+                  '-moz-user-select': 'none',
+                  '-ms-user-select': 'none',
+                  '-webkit-user-select': 'none',
+                  'user-select': 'none',
+                }}
               />
               <PrimaryNav
                 onMouseEnter={this.handleMouseEnter}

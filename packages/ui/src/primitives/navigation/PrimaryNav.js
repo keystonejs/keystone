@@ -25,7 +25,7 @@ export const PrimaryNav = styled.nav({
   fontWeight: 500,
   height: '100vh',
   position: 'fixed',
-  zIndex: 1,
+  zIndex: 2,
 });
 export const PrimaryNavScrollArea = styled.div(({ hasScroll, isBottom, isScrollable }) => {
   const divider = {

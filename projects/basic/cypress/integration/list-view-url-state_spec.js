@@ -25,11 +25,11 @@ describe('List view URL state', () => {
     cy.visit('/admin/posts');
 
     // NOTE: Posts in the basic project has defaultPageSize set to 20.
-    cy.get('#ks-pagination nav>div:first').should('contain', 'Showing 1 to 20 of');
+    cy.get('#ks-pagination > div:first').should('contain', 'Showing 1 to 20 of');
     cy.get('#ks-list-table tbody tr').should('have.lengthOf', 20);
 
     cy.visit('/admin/posts?pageSize=75');
-    cy.get('#ks-pagination nav>div:first').should('contain', 'Showing 1 to 75 of');
+    cy.get('#ks-pagination > div:first').should('contain', 'Showing 1 to 75 of');
     cy.get('#ks-list-table tbody tr').should('have.lengthOf', 75);
 
     // click on a page button - to make sure we do not loose the page size
@@ -55,7 +55,7 @@ describe('List view URL state', () => {
     // defaultColumns: 'name, status',
     cy.visit('/admin/posts');
     cy.get('#ks-list-table thead th')
-      .should('have.lengthOf', 5)
+      .should('have.lengthOf', 4)
       .should('contain', 'Name')
       .should('contain', 'Status');
 
@@ -66,7 +66,7 @@ describe('List view URL state', () => {
       .clear({ force: true })
       .type(`author{enter}`, { force: true });
     cy.get('#ks-list-table thead th')
-      .should('have.lengthOf', 6)
+      .should('have.lengthOf', 5)
       .should('contain', 'Name')
       .should('contain', 'Status')
       .should('contain', 'Author');
@@ -75,7 +75,7 @@ describe('List view URL state', () => {
     // URL should define the columns
     cy.visit('/admin/posts?fields=name,author,categories');
     cy.get('#ks-list-table thead th')
-      .should('have.lengthOf', 5)
+      .should('have.lengthOf', 4)
       .should('contain', 'Name')
       .should('contain', 'Author')
       .should('contain', 'Categories');
@@ -146,12 +146,12 @@ describe('List view URL state', () => {
     // Shows the currentPage
     cy.get('#ks-pagination button:nth-of-type(2)').should('have.attr', 'aria-current', 'page');
     // Has the correct number of items per page (pageSize)
-    cy.get('#ks-pagination nav>div:first').should('contain', 'Showing 11 to 20 of');
+    cy.get('#ks-pagination > div:first').should('contain', 'Showing 11 to 20 of');
     // Search
     cy.get('#ks-list-search-input').should('have.attr', 'value', 'Why');
     // Has the correct columns (fields)
     cy.get('#ks-list-table thead th')
-      .should('have.lengthOf', 4)
+      .should('have.lengthOf', 3)
       .should('contain', 'Name')
       .should('contain', 'Views');
     // Is sorted by sortby

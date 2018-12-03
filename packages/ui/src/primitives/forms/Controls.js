@@ -1,12 +1,14 @@
 // @flow
 import React, { Component, type ComponentType, type Node, type Ref } from 'react';
-import styled from '@emotion/styled';
+import memoize from 'memoize-one';
 import {
   CheckboxGroup as ReactCheckboxGroup,
   Checkbox as ReactCheckbox,
   RadioGroup as ReactRadioGroup,
   Radio as ReactRadio,
 } from 'react-radios';
+import { PseudoState } from 'react-pseudo-state';
+import styled from '@emotion/styled';
 
 import { colors } from '../../theme';
 import { HiddenInput } from './index';
@@ -22,12 +24,6 @@ const Label = styled.label({
 });
 const Text = 'span';
 
-type State = {
-  isHovered: boolean,
-  isFocused: boolean,
-  isActive: boolean,
-  mouseIsDown: boolean,
-};
 type Props = {
   children?: Node,
   /** Field disabled */
@@ -57,12 +53,13 @@ type ControlProps = Props & {
 };
 
 type IconProps = {
-  isActive: boolean,
   checked: boolean,
+  isActive: boolean,
   isDisabled: boolean,
-  isFocused: boolean,
+  isFocus: boolean,
+  isHover: boolean,
 };
-const Icon = styled.div(({ isDisabled, isFocused, checked, isActive }: IconProps) => {
+const Icon = styled.div(({ checked, isDisabled, isFocus, isActive, isHover }: IconProps) => {
   // background
   let bg = colors.N05;
   if (isDisabled && checked) {
@@ -71,7 +68,7 @@ const Icon = styled.div(({ isDisabled, isFocused, checked, isActive }: IconProps
     bg = colors.N10;
   } else if (isActive) {
     bg = checked ? colors.B.D10 : colors.N10;
-  } else if (isFocused && !checked) {
+  } else if ((isFocus || isHover) && !checked) {
     bg = 'white';
   } else if (checked) {
     bg = colors.B.base;
@@ -86,14 +83,14 @@ const Icon = styled.div(({ isDisabled, isFocused, checked, isActive }: IconProps
   }
 
   // stroke
-  let innerStroke = isFocused ? colors.B.L20 : colors.N30;
+  let innerStroke = isFocus ? colors.B.L20 : colors.N30;
   let innerStrokeWidth = 1;
   if (checked) {
     innerStroke = isActive ? colors.B.D20 : colors.B.base;
   }
   let outerStroke = 'transparent';
   let outerStrokeWidth = 1;
-  if (isFocused && !isActive) {
+  if (isFocus && !isActive) {
     outerStroke = colors.B.A20;
     outerStrokeWidth = 5;
   }
@@ -118,40 +115,17 @@ const Icon = styled.div(({ isDisabled, isFocused, checked, isActive }: IconProps
 
 const defaultComponents = { Wrapper, Label, Text };
 
-class Control extends Component<ControlProps, State> {
-  components: {
-    Wrapper: ComponentType<*> | string,
-    Label: ComponentType<*> | string,
-    Text: ComponentType<*> | string,
-  };
+class Control extends Component<ControlProps> {
   control: HTMLElement | null;
-  state = {
-    isActive: false,
-    isFocused: false,
-    isHovered: false,
-    mouseIsDown: false,
-  };
   static defaultProps = {
     checked: false,
     components: {},
     isDisabled: false,
   };
-
-  constructor(props: ControlProps) {
-    super(props);
-    this.cacheComponents(props.components);
-  }
-  componentWillReceiveProps(nextProps: ControlProps) {
-    if (nextProps.components !== this.props.components) {
-      this.cacheComponents(nextProps.components);
-    }
-  }
-  cacheComponents = (components?: {}) => {
-    this.components = {
-      ...defaultComponents,
-      ...components,
-    };
-  };
+  cacheComponents = memoize(components => ({
+    ...defaultComponents,
+    ...components,
+  }));
 
   focus() {
     if (this.control) this.control.focus();
@@ -163,42 +137,12 @@ class Control extends Component<ControlProps, State> {
     this.control = ref;
   };
 
-  onBlur = () =>
-    this.setState({
-      // onBlur is called after onMouseDown if the checkbox was focused, however
-      // in this case on blur is called immediately after, and we need to check
-      // whether the mouse is down.
-      isActive: this.state.mouseIsDown && this.state.isActive,
-      isFocused: false,
-    });
-  onFocus = () => this.setState({ isFocused: true });
-
-  doActive = () => {
-    this.setState({ isActive: true, mouseIsDown: true });
-  };
-  undoActive = () => {
-    this.setState({ isActive: false, mouseIsDown: false });
-  };
-
-  onKeyDown = event => {
-    if (event.key !== ' ') return;
-    this.doActive();
-  };
-  onKeyUp = event => {
-    if (event.key !== ' ') return;
-    this.undoActive();
-  };
-  onMouseLeave = () => this.setState({ isActive: false, isHovered: false });
-  onMouseEnter = () => this.setState({ isHovered: true });
-  onMouseUp = () => this.undoActive();
-  onMouseDown = () => this.doActive();
-
   render() {
     const {
+      checked,
       children,
       isDisabled,
       isRequired,
-      checked,
       name,
       onChange,
       svg,
@@ -207,39 +151,58 @@ class Control extends Component<ControlProps, State> {
       value,
       ...wrapperProps
     } = this.props;
-    const { components } = this;
-    const iconProps = { ...this.state, checked, isDisabled };
+    const components = this.cacheComponents(this.props.components);
 
     return (
       <components.Wrapper {...wrapperProps}>
-        <components.Label
-          isChecked={checked}
-          isDisabled={isDisabled}
-          onKeyDown={this.onKeyDown}
-          onKeyUp={this.onKeyUp}
-          onMouseDown={this.onMouseDown}
-          onMouseUp={this.onMouseUp}
-          onMouseEnter={this.onMouseEnter}
-          onMouseLeave={this.onMouseLeave}
-        >
-          <HiddenInput
-            checked={checked}
-            tabIndex={tabIndex || checked ? '0' : '-1'}
-            disabled={isDisabled}
-            innerRef={this.getRef}
-            name={name}
-            onBlur={this.onBlur}
-            onChange={onChange}
-            onFocus={this.onFocus}
-            required={isRequired}
-            type={type}
-            value={value}
-          />
-          <Icon {...iconProps}>
-            <Svg html={svg} />
-          </Icon>
-          {children ? <components.Text>{children}</components.Text> : null}
-        </components.Label>
+        <PseudoState>
+          {(
+            {
+              onBlur,
+              onFocus,
+              onKeyDown,
+              onKeyUp,
+              onMouseDown,
+              onMouseEnter,
+              onMouseLeave,
+              onMouseUp,
+              onTouchEnd,
+              onTouchStart,
+            },
+            snapshot
+          ) => {
+            const labelHandlers = {
+              onMouseDown,
+              onMouseUp,
+              onMouseEnter,
+              onMouseLeave,
+              onTouchEnd,
+              onTouchStart,
+            };
+            const inputHandlers = { onBlur, onChange, onFocus, onKeyDown, onKeyUp };
+            const iconProps = { ...snapshot, checked, isDisabled };
+
+            return (
+              <components.Label isChecked={checked} isDisabled={isDisabled} {...labelHandlers}>
+                <HiddenInput
+                  {...inputHandlers}
+                  checked={checked}
+                  disabled={isDisabled}
+                  innerRef={this.getRef}
+                  name={name}
+                  required={isRequired}
+                  tabIndex={tabIndex || checked ? '0' : '-1'}
+                  type={type}
+                  value={value}
+                />
+                <Icon {...iconProps}>
+                  <Svg html={svg} />
+                </Icon>
+                {children ? <components.Text>{children}</components.Text> : null}
+              </components.Label>
+            );
+          }}
+        </PseudoState>
       </components.Wrapper>
     );
   }

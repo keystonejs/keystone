@@ -67,7 +67,6 @@ const subtleAppearance = {
   danger: {
     text: colors.danger,
     textHover: colors.danger,
-    swapOnHover: makeGhostVariant,
   },
 };
 
@@ -84,6 +83,17 @@ export function makeSubtleVariant({ appearance, isDisabled }) {
           color: textHover,
           textDecoration: 'underline',
         },
+  };
+}
+
+export function makeNuanceVariant({ appearance, isDisabled }) {
+  const { text } = subtleAppearance[appearance];
+
+  return {
+    color: text,
+    fontWeight: 500,
+
+    ':hover, :focus': makeGhostVariant({ appearance, isDisabled }),
   };
 }
 

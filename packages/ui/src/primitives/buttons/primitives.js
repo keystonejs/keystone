@@ -9,7 +9,12 @@ import { withPseudoState } from 'react-pseudo-state';
 
 import { gridSize } from '../../theme';
 import { buttonAndInputBase } from '../forms';
-import { makeSubtleVariant, makeGhostVariant, makeBoldVariant } from './variants';
+import {
+  makeSubtleVariant,
+  makeNuanceVariant,
+  makeGhostVariant,
+  makeBoldVariant,
+} from './variants';
 
 const SPACING_OPTION = {
   comfortable: `${gridSize}px ${gridSize * 1.5}px`,
@@ -43,30 +48,15 @@ function makeVariant({
   spacing,
 }) {
   let variantStyles;
+  const config = { appearance, isDisabled, isActive, isHover, isFocus };
   if (variant === 'subtle') {
-    variantStyles = makeSubtleVariant({
-      appearance,
-      isDisabled,
-      isActive,
-      isHover,
-      isFocus,
-    });
+    variantStyles = makeSubtleVariant(config);
+  } else if (variant === 'nuance') {
+    variantStyles = makeNuanceVariant(config);
   } else if (variant === 'bold') {
-    variantStyles = makeBoldVariant({
-      appearance,
-      isDisabled,
-      isActive,
-      isHover,
-      isFocus,
-    });
+    variantStyles = makeBoldVariant(config);
   } else if (variant === 'ghost') {
-    variantStyles = makeGhostVariant({
-      appearance,
-      isDisabled,
-      isActive,
-      isHover,
-      isFocus,
-    });
+    variantStyles = makeGhostVariant(config);
   }
 
   return {
