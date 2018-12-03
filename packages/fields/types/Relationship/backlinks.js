@@ -31,9 +31,9 @@ function enqueueBacklinkOperations(operations, queues, getItem, local, foreign) 
   });
 }
 
-async function resolveBacklinks(queues = {}, context) {
+async function resolveBacklinks(context, mutationState) {
   await Promise.all(
-    Object.entries(queues).map(async ([operation, queue]) => {
+    Object.entries(mutationState.queues).map(async ([operation, queue]) => {
       for (let queuedWork of queue.values()) {
         if (queuedWork.done) {
           continue;
@@ -49,7 +49,7 @@ async function resolveBacklinks(queues = {}, context) {
         const { local, foreign } = queuedWork;
         const { path, config } = local.field;
         const clause = { [path]: { [operation]: config.many ? [foreign] : foreign } };
-        await local.list.updateMutation(local.id, clause, context);
+        await local.list.updateMutation(local.id, clause, context, mutationState);
       }
     })
   );

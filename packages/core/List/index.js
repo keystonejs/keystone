@@ -752,20 +752,20 @@ module.exports = class List {
       .filter(field => field);
   }
 
-  async _resolveRelationship(data, existingItem, context, getItem) {
+  async _resolveRelationship(data, existingItem, context, getItem, mutationState) {
     const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
     return {
       ...data,
       ...(await this._mapToFields(fields, async field =>
-        field.resolveRelationship(data[field.path], existingItem, context, getItem)
+        field.resolveRelationship(data[field.path], existingItem, context, getItem, mutationState)
       )),
     };
   }
 
-  async _registerBacklinks(existingItem, context) {
+  async _registerBacklinks(existingItem, mutationState) {
     const fields = this.fields.filter(field => field.isRelationship);
     await this._mapToFields(fields, field =>
-      field.registerBacklink(existingItem[field.path], existingItem, context)
+      field.registerBacklink(existingItem[field.path], existingItem, mutationState)
     );
   }
 
@@ -913,7 +913,7 @@ module.exports = class List {
     }
   }
 
-  async createMutation(data, context) {
+  async createMutation(data, context, mutationState) {
     const operation = 'create';
     const gqlName = this.gqlNames.createMutationName;
 
@@ -922,6 +922,11 @@ module.exports = class List {
     const existingItem = undefined;
 
     this.checkFieldAccess(operation, existingItem, data, context, { gqlName });
+
+    const isRootMutation = !mutationState;
+    if (isRootMutation) {
+      mutationState = { afterChangeStack: [], queues: {} };
+    }
 
     const defaultedItem = await this._resolveDefaults(data);
 
@@ -934,7 +939,8 @@ module.exports = class List {
       defaultedItem,
       existingItem,
       context,
-      createdPromise.promise
+      createdPromise.promise,
+      mutationState
     );
 
     resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
@@ -959,14 +965,23 @@ module.exports = class List {
       throw error;
     }
 
-    await Relationship.resolveBacklinks(context.queues, context);
+    await Relationship.resolveBacklinks(context, mutationState);
 
-    await this._afterChange(newItem, existingItem, context, operation, data);
+    mutationState.afterChangeStack.push(() =>
+      this._afterChange(newItem, existingItem, context, operation, data)
+    );
+
+    if (isRootMutation) {
+      const { afterChangeStack } = mutationState;
+      while (afterChangeStack.length) {
+        await afterChangeStack.pop()();
+      }
+    }
 
     return newItem;
   }
 
-  async updateMutation(id, data, context) {
+  async updateMutation(id, data, context, mutationState) {
     const operation = 'update';
     const gqlName = this.gqlNames.updateMutationName;
     const extraData = { itemId: id };
@@ -981,7 +996,18 @@ module.exports = class List {
 
     this.checkFieldAccess(operation, existingItem, data, context, { gqlName, extraData });
 
-    let resolvedData = await this._resolveRelationship(data, existingItem, context);
+    const isRootMutation = !mutationState;
+    if (isRootMutation) {
+      mutationState = { afterChangeStack: [], queues: {} };
+    }
+
+    let resolvedData = await this._resolveRelationship(
+      data,
+      existingItem,
+      context,
+      undefined,
+      mutationState
+    );
 
     resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
 
@@ -991,14 +1017,23 @@ module.exports = class List {
 
     const newItem = await this.adapter.update(id, resolvedData);
 
-    await Relationship.resolveBacklinks(context.queues, context);
+    await Relationship.resolveBacklinks(context, mutationState);
 
-    await this._afterChange(newItem, existingItem, context, operation, data);
+    mutationState.afterChangeStack.push(() =>
+      this._afterChange(newItem, existingItem, context, operation, data)
+    );
+
+    if (isRootMutation) {
+      const { afterChangeStack } = mutationState;
+      while (afterChangeStack.length) {
+        await afterChangeStack.pop()();
+      }
+    }
 
     return newItem;
   }
 
-  async deleteMutation(id, context) {
+  async deleteMutation(id, context, mutationState) {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteManyMutationName;
 
@@ -1010,10 +1045,10 @@ module.exports = class List {
       gqlName,
     });
 
-    return this._deleteWithFieldHooks(existingItem, context);
+    return this._deleteWithFieldHooks(existingItem, context, mutationState);
   }
 
-  async deleteManyMutation(ids, context) {
+  async deleteManyMutation(ids, context, mutationState) {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteManyMutationName;
 
@@ -1022,24 +1057,38 @@ module.exports = class List {
     const existingItems = await this.getAccessControlledItems(ids, access);
 
     return Promise.all(
-      existingItems.map(async existingItem => this._deleteWithFieldHooks(existingItem, context))
+      existingItems.map(async existingItem =>
+        this._deleteWithFieldHooks(existingItem, context, mutationState)
+      )
     );
   }
 
-  async _deleteWithFieldHooks(existingItem, context) {
+  async _deleteWithFieldHooks(existingItem, context, mutationState) {
     const operation = 'delete';
+
+    const isRootMutation = !mutationState;
+    if (isRootMutation) {
+      mutationState = { afterChangeStack: [], queues: {} };
+    }
 
     await this._validateDelete(existingItem, context, operation);
 
     await this._beforeDelete(existingItem, context);
 
-    await this._registerBacklinks(existingItem, context);
+    await this._registerBacklinks(existingItem, mutationState);
 
     const result = await this.adapter.delete(existingItem.id);
 
-    await Relationship.resolveBacklinks(context.queues, context);
+    await Relationship.resolveBacklinks(context, mutationState);
 
-    await this._afterDelete(existingItem, context);
+    mutationState.afterChangeStack.push(() => this._afterDelete(existingItem, context));
+
+    if (isRootMutation) {
+      const { afterChangeStack } = mutationState;
+      while (afterChangeStack.length) {
+        await afterChangeStack.pop()();
+      }
+    }
 
     return result;
   }
