@@ -116,11 +116,14 @@ const cleanAndValidateInput = ({ input, many, localField, target }) => {
   }
 };
 
-const settleToItem = (collection, action) => {
-  return pSettle(
-    (collection || []).map(item => action(item))
-    // Inject the index as a key into the settled data for later use
-  ).then(settled => settled.map((settleInfo, index) => ({ ...settleInfo, index })));
+const _runActions = async (action, targets, path) => {
+  const results = await pSettle((targets || []).map(action));
+  const errors = results
+    .map((settleInfo, index) => ({ ...settleInfo, index }))
+    .filter(({ isRejected }) => isRejected)
+    .map(({ reason, index }) => ({ ...reason, path: [...path, index] }));
+  // If there are no errors we know everything resolved successfully
+  return [errors.length ? [] : results.map(({ value }) => value), errors];
 };
 
 const openDatabaseTransaction = () => {
@@ -182,30 +185,24 @@ async function toManyNestedMutation({
     // This will resolve access control, etc for us.
     // In the future, when WhereUniqueInput accepts more than just an id,
     // this will also resolve those queries for us too.
-    const connect = await settleToItem(input.connect, where =>
-      refList.itemQuery(where.id, context, refList.gqlNames.itemQueryName)
+    const [connectedItems, connectErrors] = await _runActions(
+      where => refList.itemQuery(where.id, context, refList.gqlNames.itemQueryName),
+      input.connect,
+      [localField.path, 'connect']
     );
-    const connectErrors = connect
-      .filter(({ isRejected }) => isRejected)
-      .map(({ reason, index }) => ({ ...reason, path: [localField.path, 'connect', index] }));
-    // If there are no errors we know everything resolved successfully
-    const connectedItems = connectErrors.length ? [] : connect;
 
     // Create related item. Will check for access control itself, no need to do anything extra here.
     // NOTE: We don't check for read access control on the returned ids as the
     // user will not have seen it, so it's ok to return it directly here.
-    const created = await settleToItem(input.create, data => refList.createMutation(data, context));
-    const createErrors = created
-      .filter(({ isRejected }) => isRejected)
-      .map(({ reason, index }) => ({ ...reason, path: [localField.path, 'create', index] }));
-    // If there are no errors we know everything resolved successfully
-    const createdItems = createErrors.length ? [] : created;
+    const [createdItems, createErrors] = await _runActions(
+      data => refList.createMutation(data, context),
+      input.create,
+      [localField.path, 'create']
+    );
 
     // Combine and map the data in the format we actually need
     // Created items now get connected too, so they're coming along for the ride!
     allConnectedIds = [...connectedItems, ...createdItems]
-      // Map back from `p-settle`'s data structure to the raw value
-      .map(({ value }) => value)
       // Possible to get null results when the id doesn't exist, or read access is denied
       .filter(itemConnected => itemConnected)
       .map(({ id }) => id);
