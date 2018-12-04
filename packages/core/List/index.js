@@ -1071,11 +1071,11 @@ module.exports = class List {
       mutationState = { afterChangeStack: [], queues: {} };
     }
 
+    await this._registerBacklinks(existingItem, mutationState);
+
     await this._validateDelete(existingItem, context, operation);
 
     await this._beforeDelete(existingItem, context);
-
-    await this._registerBacklinks(existingItem, mutationState);
 
     const result = await this.adapter.delete(existingItem.id);
 
