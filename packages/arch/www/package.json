@@ -12,7 +12,7 @@
     "gatsby-remark-prismjs": "^3.0.3",
     "gatsby-source-filesystem": "^2.0.6",
     "gatsby-transformer-remark": "^2.1.11",
-    "graphql-anywhere": "^4.1.22",
+    "graphql-anywhere": "^4.1.23",
     "prismjs": "^1.15.0",
     "prop-types": "^15.6.2",
     "react": "^16.6.0",
@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "loader-utils": "^1.1.0",
-    "prettier": "^1.14.3"
+    "prettier": "^1.15.3"
   },
   "peerDependencies": {
     "react": "16.7.0-alpha.2"
