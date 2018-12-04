@@ -112,7 +112,7 @@ describe('Querying with relationship filters', () => {
     );
   });
 
-  describe('to-many', async () => {
+  describe('to-many', () => {
     const setup = async create => {
       const posts = await Promise.all([
         create('Post', { title: 'Hello' }),
@@ -230,7 +230,7 @@ describe('Querying with relationship filters', () => {
     );
   });
 
-  describe('to-many with empty list', async () => {
+  describe('to-many with empty list', () => {
     const setup = async create => {
       const posts = await Promise.all([
         create('Post', { title: 'Hello' }),
