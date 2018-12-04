@@ -162,14 +162,7 @@ class Relationship extends Implementation {
     };
   }
 
-  _enqueueBacklinks(operations, context, listInfo, getItem) {
-    // We use `context` as it's passed around by graphqljs, so is available everywhere
-    context.queues = context.queues || {};
-    const { local, foreign } = listInfo;
-    enqueueBacklinkOperations(operations, context.queues, getItem, local, foreign);
-  }
-
-  async resolveRelationship(input, item, context, getItem) {
+  async resolveRelationship(input, item, context, getItem, mutationState) {
     const { many, required } = this.config;
 
     // Early out for null'd field
@@ -197,12 +190,18 @@ class Relationship extends Implementation {
       listInfo,
       many,
       context,
+      mutationState,
     });
 
     // Enqueue backlink operations for the connections and disconnections
     if (refField) {
-      getItem = getItem || Promise.resolve(item);
-      this._enqueueBacklinks({ connect, disconnect }, context, listInfo, getItem);
+      enqueueBacklinkOperations(
+        { connect, disconnect },
+        mutationState.queues,
+        getItem || Promise.resolve(item),
+        listInfo.local,
+        listInfo.foreign
+      );
     }
 
     // Resolve the connections and disconnections into a final id/list of ids.
@@ -213,7 +212,7 @@ class Relationship extends Implementation {
     }
   }
 
-  registerBacklink(data, item, context) {
+  registerBacklink(data, item, mutationState) {
     // Early out for null'd field
     if (!data) {
       return;
@@ -221,12 +220,13 @@ class Relationship extends Implementation {
 
     const { refList, refField } = this.tryResolveRefList();
     if (refField) {
-      const listInfo = {
-        local: { list: this.getListByKey(this.listKey), field: this },
-        foreign: { list: refList, field: refField },
-      };
-      const disconnect = this.config.many ? data : [data];
-      this._enqueueBacklinks({ disconnect }, context, listInfo, Promise.resolve(item));
+      enqueueBacklinkOperations(
+        { disconnect: this.config.many ? data : [data] },
+        mutationState.queues,
+        Promise.resolve(item),
+        { list: this.getListByKey(this.listKey), field: this },
+        { list: refList, field: refField }
+      );
     }
     // TODO: Cascade _deletion_ of any related items (not just setting the
     // reference to null)

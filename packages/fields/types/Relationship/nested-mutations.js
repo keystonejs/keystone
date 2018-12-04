@@ -68,7 +68,15 @@ const _runActions = async (action, targets, path) => {
   return [errors.length ? [] : results.map(({ value }) => value), errors];
 };
 
-async function resolveNestedMany({ input, currentValue, refList, context, localField, target }) {
+async function resolveNestedMany({
+  input,
+  currentValue,
+  refList,
+  context,
+  localField,
+  target,
+  mutationState,
+}) {
   // Disconnections
   let disconnectIds = [];
   if (input.disconnectAll) {
@@ -114,7 +122,7 @@ async function resolveNestedMany({ input, currentValue, refList, context, localF
     // NOTE: We don't check for read access control on the returned ids as the
     // user will not have seen it, so it's ok to return it directly here.
     const [createdItems, createErrors] = await _runActions(
-      data => refList.createMutation(data, context),
+      data => refList.createMutation(data, context, mutationState),
       input.create,
       [localField.path, 'create']
     );
@@ -136,7 +144,15 @@ async function resolveNestedMany({ input, currentValue, refList, context, localF
   return { disconnect: disconnectIds, connect: allConnectedIds };
 }
 
-async function resolveNestedSingle({ input, currentValue, localField, refList, context, target }) {
+async function resolveNestedSingle({
+  input,
+  currentValue,
+  localField,
+  refList,
+  context,
+  target,
+  mutationState,
+}) {
   let result_ = {};
   if ((input.disconnect || input.disconnectAll) && currentValue) {
     let idToDisconnect;
@@ -172,7 +188,7 @@ async function resolveNestedSingle({ input, currentValue, localField, refList, c
     try {
       item = await (input.connect
         ? refList.itemQuery(input.connect.id, context, refList.gqlNames.itemQueryName)
-        : refList.createMutation(input.create, context));
+        : refList.createMutation(input.create, context, mutationState));
     } catch (error) {
       const operation = input.connect ? 'connect' : 'create';
       const message = `Unable to ${operation} a ${target}`;
@@ -192,7 +208,7 @@ async function resolveNestedSingle({ input, currentValue, localField, refList, c
  *
  * Returns: { connect: [id], disconnect: [id]}
  */
-async function resolveNested({ input, currentValue, many, listInfo, context }) {
+async function resolveNested({ input, currentValue, many, listInfo, context, mutationState }) {
   const localList = listInfo.local.list;
   const localField = listInfo.local.field;
   const refList = listInfo.foreign.list;
@@ -204,6 +220,7 @@ async function resolveNested({ input, currentValue, many, listInfo, context }) {
     context,
     localField,
     target,
+    mutationState,
   };
   return await (many ? resolveNestedMany(args) : resolveNestedSingle(args));
 }
