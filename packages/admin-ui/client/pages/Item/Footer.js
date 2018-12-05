@@ -46,7 +46,7 @@ export default function Footer(props) {
               <Button
                 appearance="danger"
                 isDisabled={updateInProgress}
-                variant="subtle"
+                variant="nuance"
                 onClick={onDelete}
               >
                 Delete

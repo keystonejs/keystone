@@ -30,7 +30,7 @@ describe('new Implementation()', () => {
     );
     expect(impl).not.toBeNull();
     expect(impl.path).toEqual('path');
-    expect(impl.config).toEqual({});
+    expect(impl.config).toEqual({ hooks: {} });
     expect(impl.getListByKey).toEqual({});
     expect(impl.listKey).toEqual({});
     expect(impl.label).toEqual('Path');
@@ -86,34 +86,19 @@ test('gqlAuxMutationResolvers', () => {
   expect(impl.gqlAuxMutationResolvers).toEqual({});
 });
 
-test('createFieldPreHook()', () => {
+test('afterChange()', async () => {
   const impl = new Field('path', config, args);
 
-  const data = { a: 1 };
-  const value = impl.createFieldPreHook(data);
-  expect(value).toEqual(data);
-});
-
-test('createFieldPostHook()', () => {
-  const impl = new Field('path', config, args);
-
-  const value = impl.createFieldPostHook();
+  const value = await impl.afterChange();
   expect(value).toBe(undefined);
 });
 
-test('updateFieldPreHook()', () => {
+test('resolveInput()', async () => {
   const impl = new Field('path', config, args);
 
-  const data = { a: 1 };
-  const value = impl.updateFieldPreHook(data);
-  expect(value).toEqual(data);
-});
-
-test('updateFieldPostHook()', () => {
-  const impl = new Field('path', config, args);
-
-  const value = impl.updateFieldPostHook();
-  expect(value).toBe(undefined);
+  const resolvedData = { path: 1 };
+  const value = await impl.resolveInput({ resolvedData });
+  expect(value).toEqual(1);
 });
 
 test('gqlQueryInputFields', () => {

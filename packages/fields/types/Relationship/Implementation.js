@@ -10,12 +10,8 @@ const {
 } = mongoose;
 
 const { Implementation } = require('../../Implementation');
-const {
-  nestedMutation,
-  processQueuedDisconnections,
-  processQueuedConnections,
-  tellForeignItemToDisconnect,
-} = require('./nested-mutations');
+const { resolveNested } = require('./nested-mutations');
+const { enqueueBacklinkOperations } = require('./backlinks');
 
 class Relationship extends Implementation {
   constructor() {
@@ -166,95 +162,76 @@ class Relationship extends Implementation {
     };
   }
 
-  async createUpdatePreHook(input, currentValue, context, getItem) {
+  async resolveRelationship(input, item, context, getItem, mutationState) {
     const { many, required } = this.config;
-
-    const { refList, refField } = this.tryResolveRefList();
 
     // Early out for null'd field
     if (!required && !input) {
       return input;
     }
 
-    return await nestedMutation({
+    const { refList, refField } = this.tryResolveRefList();
+    const listInfo = {
+      local: { list: this.getListByKey(this.listKey), field: this },
+      foreign: { list: refList, field: refField },
+    };
+    let currentValue = item && item[this.path];
+    if (many) {
+      currentValue = (currentValue || []).map(id => id.toString());
+    } else {
+      currentValue = currentValue && currentValue.toString();
+    }
+
+    // Collect the IDs to be connected and disconnected. This step may trigger
+    // createMutation calls in order to obtain these IDs if required.
+    const { connect, disconnect } = await resolveNested({
       input,
       currentValue,
-      localField: this,
-      localList: this.getListByKey(this.listKey),
-      refList,
-      refField,
-      getItem,
+      listInfo,
       many,
       context,
+      mutationState,
     });
+
+    // Enqueue backlink operations for the connections and disconnections
+    if (refField) {
+      enqueueBacklinkOperations(
+        { connect, disconnect },
+        mutationState.queues,
+        getItem || Promise.resolve(item),
+        listInfo.local,
+        listInfo.foreign
+      );
+    }
+
+    // Resolve the connections and disconnections into a final id/list of ids.
+    if (many) {
+      return [...currentValue.filter(id => !disconnect.includes(id)), ...connect];
+    } else {
+      return connect ? connect[0] : disconnect ? null : currentValue;
+    }
   }
 
-  createFieldPreHook(data, context, createdPromise) {
-    return this.createUpdatePreHook(data, undefined, context, createdPromise);
-  }
-
-  updateFieldPreHook(data, item, context) {
-    const getItem = Promise.resolve(item);
-    return this.createUpdatePreHook(data, item[this.path], context, getItem);
-  }
-
-  async updateFieldPostHook(fieldData, item, context) {
-    // We have to wait to the post hook so we have the item's id to connect to!
-    await processQueuedDisconnections({ context });
-    await processQueuedConnections({ context });
-  }
-
-  async createFieldPostHook(data, item, context) {
-    // We have to wait to the post hook so we have the item's id to connect to!
-    // NOTE: We don't do any disconnects here (it's not possible to disconnect
-    // something for a newly created item thanks to the order of operations)
-    await processQueuedConnections({ context });
-  }
-
-  deleteFieldPreHook(data, item, context) {
+  registerBacklink(data, item, mutationState) {
     // Early out for null'd field
     if (!data) {
       return;
     }
 
-    const { many } = this.config;
     const { refList, refField } = this.tryResolveRefList();
-
-    // No related field to unlink
-    if (!refField) {
-      return;
+    if (refField) {
+      enqueueBacklinkOperations(
+        { disconnect: this.config.many ? data : [data] },
+        mutationState.queues,
+        Promise.resolve(item),
+        { list: this.getListByKey(this.listKey), field: this },
+        { list: refList, field: refField }
+      );
     }
-
-    const itemsToDisconnect = many ? data : [data];
-
-    itemsToDisconnect
-      // The data comes in as an ObjectId, so we have to convert it
-      .map(itemToDisconnect => itemToDisconnect.toString())
-      .forEach(itemToDisconnect => {
-        tellForeignItemToDisconnect({
-          context,
-          getItem: Promise.resolve(item),
-          local: {
-            list: this.getListByKey(this.listKey),
-            field: this,
-          },
-          foreign: {
-            list: refList,
-            field: refField,
-            id: itemToDisconnect,
-          },
-        });
-      });
-
     // TODO: Cascade _deletion_ of any related items (not just setting the
     // reference to null)
     // Accept a config option for cascading: https://www.prisma.io/docs/1.4/reference/service-configuration/data-modelling-(sdl)-eiroozae8u/#the-@relation-directive
     // Beware of circular delete hooks!
-  }
-
-  async deleteFieldPostHook(fieldData, item, context) {
-    // We have to wait to the post hook so we have the item's id to discconect.
-    await processQueuedDisconnections({ context });
   }
 
   get gqlAuxTypes() {

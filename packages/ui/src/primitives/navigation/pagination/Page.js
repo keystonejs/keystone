@@ -52,7 +52,6 @@ const PageElement = styled(PagePrimitive)(({ isDisabled, isSelected }: PageProps
           borderColor: 'transparent',
           color: colors.N80,
           cursor: 'default',
-          zIndex: 2,
         },
       }
     : null;
@@ -67,7 +66,6 @@ const PageElement = styled(PagePrimitive)(({ isDisabled, isSelected }: PageProps
     fontSize: 'inherit',
     marginRight: '.1em',
     padding: '0.25em 0.7em',
-    position: 'relative',
     textDecoration: 'none',
 
     '&:hover, &:focus': {

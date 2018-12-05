@@ -1,7 +1,7 @@
 // @flow
 /** @jsx jsx */
 
-import { Component, type Node as ReactNode } from 'react';
+import { Component, type Node as ReactNode, type Element } from 'react';
 import { Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import styled from '@emotion/styled';
@@ -17,9 +17,22 @@ const ItemElement = props => {
   if (props.href) return <a {...props} />;
   return <button type="button" {...props} />;
 };
-
-const Item = ({ isDisabled, ...props }) => (
+const ItemInner = ({ children, icon }) =>
+  icon ? (
+    <div css={{ alignItems: 'center', display: 'flex', lineHeight: 1 }}>
+      <div key="icon" css={{ marginRight: gridSize, width: 16, textAlign: 'center' }}>
+        {icon}
+      </div>
+      <div key="children" css={{ flex: 1 }}>
+        {children}
+      </div>
+    </div>
+  ) : (
+    children
+  );
+const Item = ({ children, icon, isDisabled, ...props }) => (
   <ItemElement
+    disabled={isDisabled}
     css={{
       appearance: 'none',
       background: 'none',
@@ -47,7 +60,9 @@ const Item = ({ isDisabled, ...props }) => (
       },
     }}
     {...props}
-  />
+  >
+    <ItemInner icon={icon}>{children}</ItemInner>
+  </ItemElement>
 );
 const Menu = styled.div(({ left, top }) => {
   const placementStyles = { left, top };
@@ -68,6 +83,7 @@ const Menu = styled.div(({ left, top }) => {
 type ItemType = {
   content: ReactNode,
   href?: string,
+  icon?: Element<*>,
   isDisabled: boolean,
   onClick?: (*) => void,
   to?: string,
@@ -78,6 +94,7 @@ type Props = ModalHandlerProps & {
   align: 'left' | 'right',
   getModalRef: HTMLElement => void,
   items: Array<ItemType>,
+  mouseCoords: { clientX: number, clientY: number },
   selectClosesMenu: boolean,
   style: Object,
   targetNode: HTMLElement,
@@ -87,8 +104,10 @@ type State = {
   topOffset: number,
 };
 
-function focus(el: ?Node) {
-  if (el instanceof HTMLElement) el.focus();
+function focus(el: ?HTMLElement) {
+  if (el && el instanceof HTMLElement && typeof el.focus === 'function') {
+    el.focus();
+  }
 }
 
 class Dropdown extends Component<Props, State> {
@@ -133,12 +152,14 @@ class Dropdown extends Component<Props, State> {
     const isPageUp = key === 'PageUp';
     const isPageDown = key === 'PageDown';
 
-    const firstItem = this.menu.firstChild;
-    const lastItem = this.menu.lastChild;
+    const firstItem = ((this.menu.firstChild: any): HTMLElement);
+    const lastItem = ((this.menu.lastChild: any): HTMLElement);
+    const previousItem = ((target.previousSibling: any): HTMLElement);
+    const nextItem = ((target.nextSibling: any): HTMLElement);
 
     // typical item traversal
-    if (isArrowUp) focus(target.previousSibling);
-    if (isArrowDown) focus(target.nextSibling);
+    if (isArrowUp) focus(previousItem);
+    if (isArrowDown) focus(nextItem);
     if (isPageUp) focus(firstItem);
     if (isPageDown) focus(lastItem);
 
@@ -156,7 +177,7 @@ class Dropdown extends Component<Props, State> {
     }
   };
   handleMenuLeave = () => {
-    this.lastHover.focus();
+    focus(this.lastHover);
   };
   getMenu = ref => {
     if (ref !== null) {
@@ -166,16 +187,46 @@ class Dropdown extends Component<Props, State> {
   };
 
   calculatePosition = () => {
-    const { align, targetNode } = this.props;
+    const { align, mode, mouseCoords, targetNode } = this.props;
 
     if (!targetNode || !document.body) return;
 
     const bodyRect = document.body.getBoundingClientRect();
     const targetRect = targetNode.getBoundingClientRect();
+    const menuHeight = this.menu.clientHeight;
     const menuWidth = this.menu.clientWidth;
+    let leftOffset = 0;
+    let topOffset = 0;
 
-    const leftOffset = align === 'left' ? targetRect.left : targetRect.right - menuWidth;
-    const topOffset = targetRect.bottom - bodyRect.top;
+    // ------------------------------
+    // click menu
+    // ------------------------------
+
+    if (mode === 'click') {
+      leftOffset = align === 'left' ? targetRect.left : targetRect.right - menuWidth;
+      topOffset = targetRect.bottom - bodyRect.top;
+
+      this.setState({ leftOffset, topOffset });
+
+      return;
+    }
+
+    // ------------------------------
+    // context menu
+    // ------------------------------
+
+    const { clientX, clientY } = mouseCoords;
+    const screen = { w: window.innerWidth, h: window.innerHeight };
+
+    const right = screen.w - clientX > menuWidth;
+    const left = !right;
+    const top = screen.h - clientY > menuHeight;
+    const bottom = !top;
+
+    if (right) leftOffset = clientX;
+    if (left) leftOffset = clientX - menuWidth;
+    if (top) topOffset = clientY - bodyRect.top;
+    if (bottom) topOffset = clientY - bodyRect.top - menuHeight;
 
     this.setState({ leftOffset, topOffset });
   };

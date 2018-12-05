@@ -307,16 +307,18 @@ module.exports = class Keystone {
       });
     });
 
-    const getFieldAccessControlForUser = fastMemoize((listKey, fieldKey, item, operation) => {
-      return validateFieldAccessControl({
-        access: this.lists[listKey].fieldsByPath[fieldKey].access,
-        item,
-        operation,
-        authentication: { item: user, listKey: authedListKey },
-        fieldKey,
-        listKey,
-      });
-    });
+    const getFieldAccessControlForUser = fastMemoize(
+      (listKey, fieldKey, existingItem, operation) => {
+        return validateFieldAccessControl({
+          access: this.lists[listKey].fieldsByPath[fieldKey].access,
+          existingItem,
+          operation,
+          authentication: { item: user, listKey: authedListKey },
+          fieldKey,
+          listKey,
+        });
+      }
+    );
 
     return {
       // req.user & req.authedListKey come from ../index.js

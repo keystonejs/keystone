@@ -44,25 +44,10 @@ import type { SortByType } from './DataProvider';
 // Styled Components
 // ==============================
 
-// const ToolbarSeparator = styled.div({
-//   backgroundColor: 'rgba(0,0,0,0.1)',
-//   height: '100%',
-//   width: 1,
-// });
-
 const Note = styled.div({
   color: colors.N60,
   fontSize: '0.85em',
 });
-
-const DropdownItem = ({ children, icon }) => (
-  <FlexGroup growIndexes={[1]} align="center" style={{ lineHeight: 1 }}>
-    <div key="icon" css={{ width: 16 }}>
-      {icon}
-    </div>
-    <span key="children">{children}</span>
-  </FlexGroup>
-);
 
 const Search = ({ children, hasValue, isFetching, onClear, onSubmit }) => {
   const Icon = hasValue ? XIcon : SearchIcon;
@@ -125,29 +110,60 @@ type Props = {
 };
 type State = {
   isFullWidth: boolean,
-  isManaging: boolean,
   selectedItems: Array<Object>,
   showCreateModal: boolean,
 };
 
+function bodyUserSelect(val) {
+  document.body.style.WebkitUserSelect = val;
+  document.body.style.MozUserSelect = val;
+  document.body.style.msUserSelect = val;
+  document.body.style.userSelect = val;
+}
+
 class ListDetails extends Component<Props, State> {
   state = {
     isFullWidth: false,
-    isManaging: false,
     selectedItems: [],
     showCreateModal: false,
     searchValue: this.props.search,
   };
+  lastChecked = null;
+  shiftIsDown = false;
 
   // ==============================
   // Refs
   // ==============================
 
-  manageButton = createRef();
   sortPopoutRef = createRef();
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener('keyup', this.handleKeyUp);
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener('keyup', this.handleKeyUp);
+  }
 
   toggleFullWidth = () => {
     this.setState(state => ({ isFullWidth: !state.isFullWidth }));
+  };
+  handleKeyDown = event => {
+    if (event.key === 'Shift') {
+      if (this.state.selectedItems.length > 0) {
+        bodyUserSelect('none');
+      }
+      this.shiftIsDown = true;
+    }
+  };
+  handleKeyUp = event => {
+    if (event.key === 'Shift') {
+      if (this.state.selectedItems.length > 0) {
+        bodyUserSelect(null);
+      }
+      this.shiftIsDown = false;
+    }
   };
 
   closeCreateModal = () => this.setState({ showCreateModal: false });
@@ -156,6 +172,7 @@ class ListDetails extends Component<Props, State> {
   // ==============================
   // Search
   // ==============================
+
   handleSearchChange = ({ target: { value } }) => {
     this.setState({ searchValue: value }, () => {
       this.props.handleSearchChange(value);
@@ -179,40 +196,44 @@ class ListDetails extends Component<Props, State> {
   // Management
   // ==============================
 
-  handleItemSelect = (itemIds: Array<string>) => {
+  handleItemSelect = (itemId: string) => {
     let selectedItems = this.state.selectedItems.slice(0);
 
-    itemIds.forEach(id => {
-      if (selectedItems.includes(id)) {
-        selectedItems = selectedItems.filter(existingId => existingId !== id);
-      } else {
-        selectedItems.push(id);
-      }
-    });
+    if (this.shiftIsDown && this.lastChecked) {
+      const itemIds = this.props.items.map(i => i.id);
+      const from = itemIds.indexOf(itemId);
+      const to = itemIds.indexOf(this.lastChecked);
+      const start = Math.min(from, to);
+      const end = Math.max(from, to) + 1;
 
-    this.setState({ selectedItems });
+      itemIds
+        .slice(start, end)
+        .filter(id => id !== this.lastChecked)
+        .forEach(id => {
+          if (!selectedItems.includes(this.lastChecked)) {
+            selectedItems = selectedItems.filter(existingId => existingId !== id);
+          } else {
+            selectedItems.push(id);
+          }
+        });
+
+      // lazy ensure unique
+      const uniqueItems = [...new Set(selectedItems)];
+      this.setState({ selectedItems: uniqueItems });
+    } else {
+      if (selectedItems.includes(itemId)) {
+        selectedItems = selectedItems.filter(existingId => existingId !== itemId);
+      } else {
+        selectedItems.push(itemId);
+      }
+
+      this.setState({ selectedItems });
+    }
+
+    this.lastChecked = itemId;
   };
   handleItemSelectAll = (selectedItems: Array<string>) => {
     this.setState({ selectedItems });
-  };
-  handleManageKeyDown = ({ key }: Event) => {
-    if (key !== 'Escape') return;
-    this.stopManaging();
-  };
-  startManaging = () => {
-    this.setState({ isManaging: true });
-    document.addEventListener('keydown', this.handleManageKeyDown, false);
-  };
-  stopManaging = () => {
-    this.setState({ isManaging: false, selectedItems: [] }, () => {
-      if (!this.manageButton) return;
-      this.manageButton.current.focus();
-    });
-    document.removeEventListener('keydown', this.handleManageKeyDown, false);
-  };
-  onToggleManage = () => {
-    const fn = this.state.isManaging ? this.stopManaging : this.startManaging;
-    fn();
   };
   onDeleteSelectedItems = () => {
     const { query } = this.props;
@@ -273,21 +294,18 @@ class ListDetails extends Component<Props, State> {
   renderMoreDropdown(queryWidth) {
     const { isFullWidth } = this.state;
     const TableIcon = isFullWidth ? FoldIcon : UnfoldIcon;
-    const tableText = isFullWidth ? 'Collapse table' : 'Expand table';
     const tableToggleIsAvailable = queryWidth > CONTAINER_WIDTH + CONTAINER_GUTTER * 2;
 
     const items = [
       {
-        content: <DropdownItem icon={<ZapIcon />}>Reset filters, cols, etc.</DropdownItem>,
+        content: 'Reset filters, cols, etc.',
+        icon: <ZapIcon />,
         id: 'ks-list-dropdown-reset', // for cypress tests
         onClick: this.handleReset,
       },
       {
-        content: (
-          <DropdownItem icon={<TableIcon css={{ transform: 'rotate(90deg)' }} />}>
-            {tableText}
-          </DropdownItem>
-        ),
+        content: isFullWidth ? 'Collapse table' : 'Expand table',
+        icon: <TableIcon css={{ transform: 'rotate(90deg)' }} />,
         isDisabled: !tableToggleIsAvailable,
         onClick: this.toggleFullWidth,
       },
@@ -296,7 +314,11 @@ class ListDetails extends Component<Props, State> {
     return (
       <Dropdown
         align="right"
-        target={<IconButton variant="subtle" icon={KebabVerticalIcon} id="ks-list-dropdown" />}
+        target={
+          <IconButton variant="nuance" icon={KebabVerticalIcon} id="ks-list-dropdown">
+            <A11yText>Show more...</A11yText>
+          </IconButton>
+        }
         items={items}
       />
     );
@@ -323,7 +345,7 @@ class ListDetails extends Component<Props, State> {
       query,
       sortBy,
     } = this.props;
-    const { isFullWidth, isManaging, selectedItems, showCreateModal, searchValue } = this.state;
+    const { isFullWidth, selectedItems, showCreateModal, searchValue } = this.state;
 
     const searchId = 'ks-list-search-input';
 
@@ -332,7 +354,7 @@ class ListDetails extends Component<Props, State> {
         <main>
           <ContainerQuery>
             {({ width }) => (
-              <Container>
+              <Container isFullWidth={isFullWidth}>
                 <Title as="h1" margin="both">
                   {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
                   <span>, by</span>
@@ -413,22 +435,21 @@ class ListDetails extends Component<Props, State> {
                 />
 
                 <ManageToolbar isVisible={!!itemsCount}>
-                  {isManaging ? (
+                  {selectedItems.length ? (
                     <Management
                       list={list}
                       onDeleteMany={this.onDeleteSelectedItems}
                       onUpdateMany={this.onUpdate}
-                      onToggleManage={this.onToggleManage}
+                      pageSize={pageSize}
                       selectedItems={selectedItems}
+                      totalItems={itemsCount}
                     />
                   ) : (
                     <Pagination
                       currentPage={currentPage}
-                      getManageButton={this.manageButton}
                       itemsCount={itemsCount}
                       list={list}
                       onChangePage={handlePageChange}
-                      onToggleManage={this.onToggleManage}
                       pageSize={pageSize}
                     />
                   )}
@@ -449,7 +470,7 @@ class ListDetails extends Component<Props, State> {
               <ListTable
                 adminPath={adminPath}
                 fields={fields}
-                isManaging={isManaging}
+                isFullWidth={isFullWidth}
                 items={items}
                 itemsErrors={itemsErrors}
                 list={list}

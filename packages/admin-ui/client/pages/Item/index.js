@@ -4,9 +4,9 @@ import { Component, Fragment } from 'react';
 import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
 import { Link, withRouter } from 'react-router-dom';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { withToastManager } from 'react-toast-notifications';
 
+import CopyToClipboard from '../../components/CopyToClipboard';
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
 import Animation from '../../components/Animation';
@@ -18,7 +18,6 @@ import { TriangleLeftIcon, CheckIcon, ClippyIcon, PlusIcon } from '@voussoir/ico
 import { Container, FlexGroup } from '@voussoir/ui/src/primitives/layout';
 import { A11yText, Title } from '@voussoir/ui/src/primitives/typography';
 import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
-import { Alert } from '@voussoir/ui/src/primitives/alert';
 import { AutocompleteCaptor } from '@voussoir/ui/src/primitives/forms';
 import { colors, gridSize } from '@voussoir/ui/src/theme';
 import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
@@ -234,14 +233,12 @@ const ItemDetails = withRouter(
         })
         .then(onUpdate);
     };
-    onCopy = (text, success) => {
-      if (success) {
-        this.setState({ copyText: text }, () => {
-          setTimeout(() => {
-            this.setState({ copyText: '' });
-          }, 500);
-        });
-      }
+    onCopy = text => () => {
+      this.setState({ copyText: text }, () => {
+        setTimeout(() => {
+          this.setState({ copyText: '' });
+        }, 500);
+      });
     };
 
     /**
@@ -264,14 +261,7 @@ const ItemDetails = withRouter(
     };
 
     render() {
-      const {
-        adminPath,
-        list,
-        updateInProgress,
-        updateErrorMessage,
-        itemErrors,
-        item: savedData,
-      } = this.props;
+      const { adminPath, list, updateInProgress, itemErrors, item: savedData } = this.props;
       const { copyText, item } = this.state;
       const isCopied = copyText === item.id;
       const copyIcon = isCopied ? (
@@ -285,11 +275,6 @@ const ItemDetails = withRouter(
       const titleText = savedData._label_;
       return (
         <Fragment>
-          {updateErrorMessage ? (
-            <Alert appearance="danger" css={{ marginTop: gridSize * 3 }}>
-              {updateErrorMessage}
-            </Alert>
-          ) : null}
           <FlexGroup align="center" justify="space-between">
             <Title as="h1" margin="both">
               <TitleLink to={listHref}>{list.label}</TitleLink>: {titleText}
@@ -300,11 +285,15 @@ const ItemDetails = withRouter(
           </FlexGroup>
           <FlexGroup align="center" isContiguous>
             <ItemId>ID: {item.id}</ItemId>
-            <CopyToClipboard text={item.id} onCopy={this.onCopy}>
-              <Button variant="subtle" title="Copy ID">
-                {copyIcon}
-                <A11yText>Copy ID</A11yText>
-              </Button>
+            <CopyToClipboard
+              as={Button}
+              text={item.id}
+              onSuccess={this.onCopy(item.id)}
+              variant="subtle"
+              title="Copy ID"
+            >
+              {copyIcon}
+              <A11yText>Copy ID</A11yText>
             </CopyToClipboard>
           </FlexGroup>
           <Form>

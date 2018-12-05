@@ -166,7 +166,6 @@ export default class FileField extends Component {
       });
     };
     reader.onloadend = upload => {
-      console.log('upload.target', upload.target);
       this.setState({ isLoading: false, dataURI: upload.target.result });
     };
   };

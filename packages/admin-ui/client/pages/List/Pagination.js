@@ -1,53 +1,35 @@
 // @flow
-import React, { type Ref } from 'react';
 
-import { GearIcon } from '@voussoir/icons';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { IconButton } from '@voussoir/ui/src/primitives/buttons';
+import React from 'react';
 import { Pagination } from '@voussoir/ui/src/primitives/navigation';
 
 type Props = {
   currentPage: number,
-  getManageButton: Ref<*>,
   itemsCount: number,
   list: Object,
   onChangePage: (*) => void,
-  onToggleManage: (*) => void,
   pageSize: number,
 };
 
+const CYPRESS_TEST_ID = 'ks-pagination';
+
 export default function ListPagination({
   currentPage,
-  getManageButton,
   itemsCount,
   list,
   onChangePage,
-  onToggleManage,
   pageSize,
 }: Props) {
   return (
-    <FlexGroup align="center">
-      <IconButton
-        icon={GearIcon}
-        ref={getManageButton}
-        onClick={onToggleManage}
-        variant="ghost"
-        style={{ marginRight: '0.5em' }}
-        data-test-name="manage"
-      >
-        Manage
-      </IconButton>
-      <div id="ks-pagination">
-        <Pagination
-          currentPage={currentPage}
-          displayCount
-          onChange={onChangePage}
-          pageSize={pageSize}
-          plural={list.plural}
-          single={list.label}
-          total={itemsCount}
-        />
-      </div>
-    </FlexGroup>
+    <Pagination
+      currentPage={currentPage}
+      displayCount
+      id={CYPRESS_TEST_ID}
+      onChange={onChangePage}
+      pageSize={pageSize}
+      plural={list.plural}
+      single={list.label}
+      total={itemsCount}
+    />
   );
 }

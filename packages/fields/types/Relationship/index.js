@@ -1,4 +1,5 @@
 const { Relationship, MongoSelectInterface } = require('./Implementation');
+const { resolveBacklinks } = require('./backlinks');
 
 module.exports = {
   type: 'Relationship',
@@ -13,4 +14,5 @@ module.exports = {
   adapters: {
     mongoose: MongoSelectInterface,
   },
+  resolveBacklinks,
 };

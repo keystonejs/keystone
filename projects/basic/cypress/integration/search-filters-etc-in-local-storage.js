@@ -25,6 +25,6 @@ it('the reset button should remove all search, filters and etc.', () => {
   cy.get('#ks-list-dropdown-reset').click();
   cy.get('#ks-list-table thead tr').then(nodes => {
     expect(nodes).to.have.lengthOf(1);
-    expect(nodes[0].children).to.have.lengthOf(5);
+    expect(nodes[0].children).to.have.lengthOf(4);
   });
 });

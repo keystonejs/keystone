@@ -17,7 +17,8 @@ export {
   RadioPrimitive,
   RadioGroup,
 } from './Controls';
-export { DayPicker, DateTimePicker } from './DayPicker';
+export { DayPicker } from './DayPicker';
+export { DateTimePicker } from './DayTimePicker';
 
 // Styles shared between input and buttons
 // ------------------------------
@@ -164,7 +165,9 @@ export const HiddenInput = ({ innerRef, ...props }: { innerRef?: Ref<*> }) => (
 
 export const AutocompleteCaptor = () => (
   <Fragment>
-    <HiddenInput type="text" tabIndex={-1} />
-    <HiddenInput type="password" tabIndex={-1} />
+    <HiddenInput autoComplete="username" type="text" tabIndex={-1} />
+    <HiddenInput autoComplete="email" type="text" tabIndex={-1} />
+    <HiddenInput autoComplete="current-password" type="password" tabIndex={-1} />
+    <HiddenInput autoComplete="new-password" type="password" tabIndex={-1} />
   </Fragment>
 );

@@ -28,7 +28,6 @@ function countFormatterFn({ end, pageSize, plural, singular, start, total }: Cou
 
   return count;
 }
-
 function getRange({ currentPage, pageSize, total }) {
   if (!total) {
     return {};
@@ -42,6 +41,7 @@ function getRange({ currentPage, pageSize, total }) {
 export type PaginationProps = {
   ariaPageLabel: LabelType,
   countFormatter: CountFormat,
+  currentPage: number,
   displayCount: boolean,
   limit?: number,
   onChange: OnChangeType,
@@ -49,8 +49,8 @@ export type PaginationProps = {
   plural: string,
   singular: string,
   total: number,
-  currentPage: number,
 };
+
 const PaginationElement = styled.nav({
   alignItems: 'center',
   display: 'flex',
@@ -169,8 +169,22 @@ class Pagination extends Component<PaginationProps> {
   }
 
   render() {
+    // strip props to get `rest` attributes; things id, className etc.
+    const {
+      ariaPageLabel,
+      countFormatter,
+      currentPage,
+      displayCount,
+      limit,
+      onChange,
+      pageSize,
+      plural,
+      singular,
+      total,
+      ...rest
+    } = this.props;
     return (
-      <PaginationElement aria-label="Pagination">
+      <PaginationElement aria-label="Pagination" {...rest}>
         {this.renderCount()}
         {this.renderPages()}
       </PaginationElement>

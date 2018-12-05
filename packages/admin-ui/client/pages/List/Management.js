@@ -1,33 +1,32 @@
 /* global ENABLE_DEV_FEATURES */
 
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
+import styled from '@emotion/styled';
 
 import { SettingsIcon, TrashcanIcon } from '@voussoir/icons';
 import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
-import { gridSize } from '@voussoir/ui/src/theme';
+import { IconButton } from '@voussoir/ui/src/primitives/buttons';
+import { colors, gridSize } from '@voussoir/ui/src/theme';
 
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 
-export const ManageToolbar = ({ isVisible, ...props }) => (
-  <div
-    css={{
-      marginBottom: gridSize * 2,
-      marginTop: gridSize,
-      visibility: isVisible ? 'visible' : 'hidden',
-    }}
-    {...props}
-  />
-);
+export const ManageToolbar = styled.div(({ isVisible }) => ({
+  display: 'flex',
+  height: 35,
+  marginBottom: gridSize * 2,
+  marginTop: gridSize,
+  visibility: isVisible ? 'visible' : 'hidden',
+}));
+const SelectedCount = styled.div({
+  color: colors.N60,
+  marginRight: gridSize,
+});
 
 type Props = {
   list: Object,
   onDeleteMany: (*) => void,
   onUpdateMany: (*) => void,
-  onToggleManage: (*) => void,
   selectedItems: Array<string>,
 };
 type State = {
@@ -53,20 +52,21 @@ export default class ListManage extends Component<Props, State> {
   };
 
   render() {
-    const { list, onToggleManage, selectedItems } = this.props;
+    const { list, pageSize, selectedItems, totalItems } = this.props;
     const { showDeleteModal, showUpdateModal } = this.state;
     const selectedCount = selectedItems.length;
-    const hasSelected = Boolean(selectedCount);
 
     return (
       <Fragment>
         <FlexGroup align="center">
+          <SelectedCount>
+            {selectedCount} of {Math.min(pageSize, totalItems)} Selected
+          </SelectedCount>
           {ENABLE_DEV_FEATURES ? (
             list.access.update ? (
               <IconButton
                 appearance="primary"
                 icon={SettingsIcon}
-                isDisabled={!hasSelected}
                 onClick={this.openUpdateModal}
                 variant="ghost"
                 data-test-name="update"
@@ -79,7 +79,6 @@ export default class ListManage extends Component<Props, State> {
             <IconButton
               appearance="danger"
               icon={TrashcanIcon}
-              isDisabled={!hasSelected}
               onClick={this.openDeleteModal}
               variant="ghost"
               data-test-name="delete"
@@ -87,9 +86,6 @@ export default class ListManage extends Component<Props, State> {
               Delete
             </IconButton>
           ) : null}
-          <Button autoFocus onClick={onToggleManage} variant="subtle">
-            Done
-          </Button>
         </FlexGroup>
 
         <UpdateManyItemsModal

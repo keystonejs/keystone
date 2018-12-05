@@ -2,6 +2,7 @@
 
 import React, { cloneElement, Component, Fragment, type ComponentType, type Element } from 'react';
 import NodeResolver from 'react-node-resolver';
+import ScrollLock from 'react-scrolllock';
 import { TransitionProvider } from './transitions';
 
 type GenericFn = any => mixed;
@@ -9,11 +10,13 @@ export type CloseType = (event: Event) => void;
 export type ModalHandlerProps = {
   close: CloseType,
   defaultIsOpen: boolean,
+  mode: 'click' | 'contextmenu',
   onClose: GenericFn,
   onOpen: GenericFn,
   target: Element<*>,
 };
-type State = { isOpen: boolean };
+type State = { isOpen: boolean, clientX: number, clientY: number };
+type Config = { Transition: (*) => * };
 
 function getDisplayName(C) {
   return `withModalHandlers(${C.displayName || C.name})`;
@@ -22,37 +25,43 @@ const NOOP = () => {};
 
 export default function withModalHandlers(
   WrappedComponent: ComponentType<*>,
-  { Transition }: { Transition: (*) => * }
+  { Transition }: Config
 ) {
   class IntermediateComponent extends Component<*, State> {
     lastHover: HTMLElement;
     contentNode: HTMLElement;
     targetNode: HTMLElement;
-    state = { isOpen: this.props.defaultIsOpen };
+    state = { isOpen: this.props.defaultIsOpen, clientX: 0, clientY: 0 };
     static defaultProps = {
+      mode: 'click',
       onClose: NOOP,
       onOpen: NOOP,
     };
 
-    componentDidMount() {
-      document.addEventListener('click', this.handleClick);
-    }
-    componentWillUnmount() {
-      document.removeEventListener('click', this.handleClick);
-    }
-
-    open = (event: Event) => {
+    open = (event: MouseEvent) => {
       if (event && event.defaultPrevented) return;
-      this.setState({ isOpen: true });
+      if (this.props.mode === 'contextmenu') event.preventDefault();
+
+      const { clientX, clientY } = event;
+
+      this.setState({ isOpen: true, clientX, clientY });
+
+      document.addEventListener('mousedown', this.handleMouseDown);
       document.addEventListener('keydown', this.handleKeyDown, false);
     };
     close = (event: Event) => {
       if (event && event.defaultPrevented) return;
-      this.setState({ isOpen: false });
+
+      this.setState({ isOpen: false, clientX: 0, clientY: 0 });
+
+      document.removeEventListener('mousedown', this.handleMouseDown);
       document.removeEventListener('keydown', this.handleKeyDown, false);
     };
 
-    handleClick = (event: MouseEvent) => {
+    handleScroll = (event: WheelEvent) => {
+      event.preventDefault();
+    };
+    handleMouseDown = (event: MouseEvent) => {
       const { target } = event;
       const { isOpen } = this.state;
 
@@ -67,11 +76,6 @@ export default function withModalHandlers(
       // user to click "through" to other elements and close the popout.
       if (isOpen && !this.contentNode.contains(target)) {
         this.close(event);
-      }
-
-      // open on target click
-      if (!isOpen && this.targetNode.contains(target)) {
-        this.open(event);
       }
     };
     handleKeyDown = (event: KeyboardEvent) => {
@@ -90,14 +94,19 @@ export default function withModalHandlers(
     };
 
     render() {
-      const { target, onClose, onOpen } = this.props;
-      const { isOpen } = this.state;
-      const cloneProps = isOpen ? { isActive: true } : {};
+      const { mode, onClose, onOpen, target } = this.props;
+      const { clientX, clientY, isOpen } = this.state;
 
+      const cloneProps = {};
+      if (isOpen) cloneProps.isActive = true;
+      if (mode === 'click') cloneProps.onClick = this.open;
+      if (mode === 'contextmenu') cloneProps.onContextMenu = this.open;
+
+      // TODO: prefer functional children that pass refs + snapshot to the target node
       return (
         <Fragment>
           <NodeResolver innerRef={this.getTarget}>{cloneElement(target, cloneProps)}</NodeResolver>
-
+          {isOpen ? <ScrollLock /> : null}
           <TransitionProvider isOpen={isOpen} onEntered={onOpen} onExited={onClose}>
             {transitionState => (
               <Transition transitionState={transitionState}>
@@ -107,8 +116,9 @@ export default function withModalHandlers(
                   getModalRef={this.getContent}
                   targetNode={this.targetNode}
                   contentNode={this.contentNode}
+                  isOpen={isOpen}
+                  mouseCoords={{ clientX, clientY }}
                   {...this.props}
-                  {...this.state}
                 />
               </Transition>
             )}
