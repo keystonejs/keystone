@@ -75,10 +75,10 @@ Then install the dependencies and start the test project:
 
 ```sh
 bolt
-bolt start
+bolt start {name of project folder}
 ```
 
-_(This will start the project located in `projects/basic`)_
+_(Running `bolt start` will start the project located in `projects/basic` by default)_
 
 ## Contributing
 
