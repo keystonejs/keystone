@@ -46,12 +46,14 @@ const modifierConditions = {
     };
   },
 
-  $orderBy: value => {
+  $orderBy: (value, _, listAdapter) => {
     const [orderField, orderDirection] = value.split('_');
+
+    const mongoField = listAdapter.graphQlQueryPathToMongoField(orderField);
 
     return {
       $sort: {
-        [orderField]: orderDirection === 'DESC' ? -1 : 1,
+        [mongoField]: orderDirection === 'DESC' ? -1 : 1,
       },
     };
   },
@@ -313,6 +315,16 @@ class MongooseListAdapter extends BaseListAdapter {
     return this.model.findOne(condition);
   }
 
+  graphQlQueryPathToMongoField(path) {
+    const fieldAdapter = this.fieldAdapters.find(adapter => adapter.mapsToPath(path));
+
+    if (!fieldAdapter) {
+      throw new Error(`Unable to find Mongo field which maps to graphQL path ${path}`);
+    }
+
+    return fieldAdapter.getMongoFieldName();
+  }
+
   itemsQuery(args, { meta = false } = {}) {
     function graphQlQueryToMongoJoinQuery(query) {
       const _query = {
@@ -557,6 +569,14 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
         toClientSide(doc);
       }
     });
+  }
+
+  getMongoFieldName() {
+    return this.path;
+  }
+
+  mapsToPath(path) {
+    return path === this.path;
   }
 }
 

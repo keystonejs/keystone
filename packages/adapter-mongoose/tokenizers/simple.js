@@ -17,7 +17,7 @@ module.exports = ({ getRelatedListAdapterFromQueryPath, modifierConditions = {} 
 
   if (queryKey in modifierConditions) {
     return {
-      postJoinPipeline: [modifierConditions[queryKey](query[queryKey], query)],
+      postJoinPipeline: [modifierConditions[queryKey](query[queryKey], query, refListAdapter)],
     };
   }
 

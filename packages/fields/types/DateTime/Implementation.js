@@ -120,6 +120,10 @@ class MongoDateTimeInterface extends MongooseFieldAdapter {
       ...this.inConditions(toDate, p => `${p}_utc`),
     };
   }
+
+  getMongoFieldName() {
+    return `${this.path}_utc`;
+  }
 }
 
 module.exports = {
