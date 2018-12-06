@@ -31,12 +31,15 @@ class Integer extends Implementation {
 class MongoIntegerInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
     const { mongooseOptions = {} } = this.config;
-    const { required } = mongooseOptions;
+    const { isRequired } = mongooseOptions;
 
     const schemaOptions = {
       type: Number,
       validate: {
-        validator: this.buildValidator(a => typeof a === 'number' && Number.isInteger(a), required),
+        validator: this.buildValidator(
+          a => typeof a === 'number' && Number.isInteger(a),
+          isRequired
+        ),
         message: '{VALUE} is not an integer value',
       },
     };
