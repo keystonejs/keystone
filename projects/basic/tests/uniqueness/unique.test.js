@@ -9,7 +9,7 @@ function setupKeystone() {
       keystone.createList('User', {
         fields: {
           username: { type: Text },
-          email: { type: Text, unique: true },
+          email: { type: Text, isUnique: true },
         },
       });
     },

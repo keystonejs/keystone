@@ -38,13 +38,13 @@ class CalendarDay extends Implementation {
 class MongoCalendarDayInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
     const { mongooseOptions = {} } = this.config;
-    const { required } = mongooseOptions;
+    const { isRequired } = mongooseOptions;
 
     const validator = a => typeof a === 'string' && format(parse(a), 'YYYY-MM-DD') === a;
     const schemaOptions = {
       type: String,
       validate: {
-        validator: this.buildValidator(validator, required),
+        validator: this.buildValidator(validator, isRequired),
         message: '{VALUE} is not an ISO8601 date string (YYYY-MM-DD)',
       },
     };

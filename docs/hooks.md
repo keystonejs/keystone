@@ -95,7 +95,7 @@ class Text extends Implementation {
 keystone.createList('User', {
   fields: {
     name: { type: Text, minLength: 3 },
-    email: { type: Text, required: true, unique: true },
+    email: { type: Text, isRequired: true, isUnique: true },
     pass: { type: Password, rejectCommon: true },
   },
 

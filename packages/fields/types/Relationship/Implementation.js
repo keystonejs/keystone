@@ -163,10 +163,10 @@ class Relationship extends Implementation {
   }
 
   async resolveRelationship(input, item, context, getItem, mutationState) {
-    const { many, required } = this.config;
+    const { many, isRequired } = this.config;
 
     // Early out for null'd field
-    if (!required && !input) {
+    if (!isRequired && !input) {
       return input;
     }
 
