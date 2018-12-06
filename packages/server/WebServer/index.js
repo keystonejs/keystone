@@ -78,14 +78,7 @@ module.exports = class WebServer {
       this.app.use(injectAuthCookieMiddleware, sessionMiddleware);
 
       // Attach the user to the request for all following route handlers
-      this.app.use(
-        this.keystone.session.validate({
-          valid: ({ req, list, item }) => {
-            req.user = item;
-            req.authedListKey = list.key;
-          },
-        })
-      );
+      this.app.use(this.keystone.sessionManager.populateAuthedItemMiddleware);
     }
 
     if (adminUI && this.config.authStrategy) {

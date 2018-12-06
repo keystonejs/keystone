@@ -78,7 +78,7 @@ exports.configureTwitterAuth = function(keystone, server) {
         });
 
         await keystone.auth.User.twitter.connectItem(req, { item });
-        await keystone.session.create(req, { item, list });
+        await keystone.sessionManager.startAuthedSession(req, { item, list });
         res.redirect('/api/session');
       } catch (createError) {
         next(createError);
