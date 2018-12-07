@@ -1,7 +1,7 @@
-const { gen, sampleOne } = require('testcheck');
-const { Text, DateTime } = require('@voussoir/fields');
 const cuid = require('cuid');
 const { setupServer, graphqlRequest, keystoneMongoTest } = require('@voussoir/test-utils');
+
+const DateTime = require('./');
 
 function setupKeystone() {
   return setupServer({
@@ -9,7 +9,6 @@ function setupKeystone() {
     createLists: keystone => {
       keystone.createList('Post', {
         fields: {
-          title: { type: Text },
           postedAt: { type: DateTime },
         },
       });
@@ -77,10 +76,9 @@ describe('DateTime type', () => {
   test(
     'response is serialized as a String',
     keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const title = sampleOne(gen.alphaNumString.notEmpty());
       const postedAt = '2018-08-31T06:49:07.000Z';
 
-      const createPost = await create('Post', { title, postedAt });
+      const createPost = await create('Post', { postedAt });
 
       // Create an item that does the linking
       const { body } = await graphqlRequest({
