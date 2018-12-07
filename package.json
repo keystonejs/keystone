@@ -105,6 +105,7 @@
     "p-finally": "^1.0.0",
     "p-lazy": "^1.0.0",
     "p-settle": "^2.1.0",
+    "p-waterfall": "^1.0.0",
     "passport": "^0.4.0",
     "passport-twitter": "^1.0.4",
     "pino": "5.0.0-rc.4",
