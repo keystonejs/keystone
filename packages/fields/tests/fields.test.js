@@ -77,7 +77,6 @@ describe('Test CRUD for all fields', () => {
             // Set up a server (but do not .listen(), we will use supertest to access the app)
             const server = new WebServer(keystone, {
               'cookie secret': 'qwerty',
-              session: false,
             });
 
             return { server, keystone };
