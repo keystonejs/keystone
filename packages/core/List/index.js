@@ -868,6 +868,32 @@ module.exports = class List {
     if (this.config.hooks[hookName]) await this.config.hooks[hookName](args);
   }
 
+  async _nestedMutation(mutationState, context, mutation) {
+    // Set up a fresh mutation state if we're the root mutation
+    const isRootMutation = !mutationState;
+    if (isRootMutation) {
+      mutationState = { afterChangeStack: [], queues: {} };
+    }
+
+    // Perform the mutation
+    const { result, afterHook } = await mutation(mutationState);
+
+    // resolve backlinks
+    await Relationship.resolveBacklinks(context, mutationState);
+
+    // Push after-hook onto the stack and resolve all if we're the root.
+    const { afterChangeStack } = mutationState;
+    afterChangeStack.push(afterHook);
+    if (isRootMutation) {
+      while (afterChangeStack.length) {
+        await afterChangeStack.pop()();
+      }
+    }
+
+    // Return the result of the mutation
+    return result;
+  }
+
   async createMutation(data, context, mutationState) {
     const operation = 'create';
     const gqlName = this.gqlNames.createMutationName;
@@ -878,62 +904,49 @@ module.exports = class List {
 
     this.checkFieldAccess(operation, existingItem, data, context, { gqlName });
 
-    const isRootMutation = !mutationState;
-    if (isRootMutation) {
-      mutationState = { afterChangeStack: [], queues: {} };
-    }
+    return await this._nestedMutation(mutationState, context, async mutationState => {
+      const defaultedItem = await this._resolveDefaults(data);
 
-    const defaultedItem = await this._resolveDefaults(data);
+      // Enable resolveRelationship to perform some action after the item is created by
+      // giving them a promise which will eventually resolve with the value of the
+      // newly created item.
+      const createdPromise = createLazyDeferred();
 
-    // Enable pre-hooks to perform some action after the item is created by
-    // giving them a promise which will eventually resolve with the value of the
-    // newly created item.
-    const createdPromise = createLazyDeferred();
+      let resolvedData = await this._resolveRelationship(
+        defaultedItem,
+        existingItem,
+        context,
+        createdPromise.promise,
+        mutationState
+      );
 
-    let resolvedData = await this._resolveRelationship(
-      defaultedItem,
-      existingItem,
-      context,
-      createdPromise.promise,
-      mutationState
-    );
+      resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
 
-    resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
+      await this._validateInput(resolvedData, existingItem, context, operation, data);
 
-    await this._validateInput(resolvedData, existingItem, context, operation, data);
+      await this._beforeChange(resolvedData, existingItem, context, operation, data);
 
-    await this._beforeChange(resolvedData, existingItem, context, operation, data);
-
-    let newItem;
-    try {
-      newItem = await this.adapter.create(resolvedData);
-      createdPromise.resolve(newItem);
-      // Wait until next tick so the promise/micro-task queue can be flushed
-      // fully, ensuring the deferred handlers get executed before we move on
-      await new Promise(res => process.nextTick(res));
-    } catch (error) {
-      createdPromise.reject(error);
-      // Wait until next tick so the promise/micro-task queue can be flushed
-      // fully, ensuring the deferred handlers get executed before we move on
-      await new Promise(res => process.nextTick(res));
-      // Rethrow the error to ensure it's surfaced to Apollo
-      throw error;
-    }
-
-    await Relationship.resolveBacklinks(context, mutationState);
-
-    mutationState.afterChangeStack.push(() =>
-      this._afterChange(newItem, existingItem, context, operation, data)
-    );
-
-    if (isRootMutation) {
-      const { afterChangeStack } = mutationState;
-      while (afterChangeStack.length) {
-        await afterChangeStack.pop()();
+      let newItem;
+      try {
+        newItem = await this.adapter.create(resolvedData);
+        createdPromise.resolve(newItem);
+        // Wait until next tick so the promise/micro-task queue can be flushed
+        // fully, ensuring the deferred handlers get executed before we move on
+        await new Promise(res => process.nextTick(res));
+      } catch (error) {
+        createdPromise.reject(error);
+        // Wait until next tick so the promise/micro-task queue can be flushed
+        // fully, ensuring the deferred handlers get executed before we move on
+        await new Promise(res => process.nextTick(res));
+        // Rethrow the error to ensure it's surfaced to Apollo
+        throw error;
       }
-    }
 
-    return newItem;
+      return {
+        result: newItem,
+        afterHook: () => this._afterChange(newItem, existingItem, context, operation, data),
+      };
+    });
   }
 
   async updateMutation(id, data, context, mutationState) {
@@ -951,46 +964,33 @@ module.exports = class List {
 
     this.checkFieldAccess(operation, existingItem, data, context, { gqlName, extraData });
 
-    const isRootMutation = !mutationState;
-    if (isRootMutation) {
-      mutationState = { afterChangeStack: [], queues: {} };
-    }
+    return await this._nestedMutation(mutationState, context, async mutationState => {
+      let resolvedData = await this._resolveRelationship(
+        data,
+        existingItem,
+        context,
+        undefined,
+        mutationState
+      );
 
-    let resolvedData = await this._resolveRelationship(
-      data,
-      existingItem,
-      context,
-      undefined,
-      mutationState
-    );
+      resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
 
-    resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
+      await this._validateInput(resolvedData, existingItem, context, operation, data);
 
-    await this._validateInput(resolvedData, existingItem, context, operation, data);
+      await this._beforeChange(resolvedData, existingItem, context, operation, data);
 
-    await this._beforeChange(resolvedData, existingItem, context, operation, data);
+      const newItem = await this.adapter.update(id, resolvedData);
 
-    const newItem = await this.adapter.update(id, resolvedData);
-
-    await Relationship.resolveBacklinks(context, mutationState);
-
-    mutationState.afterChangeStack.push(() =>
-      this._afterChange(newItem, existingItem, context, operation, data)
-    );
-
-    if (isRootMutation) {
-      const { afterChangeStack } = mutationState;
-      while (afterChangeStack.length) {
-        await afterChangeStack.pop()();
-      }
-    }
-
-    return newItem;
+      return {
+        result: newItem,
+        afterHook: () => this._afterChange(newItem, existingItem, context, operation, data),
+      };
+    });
   }
 
   async deleteMutation(id, context, mutationState) {
     const operation = 'delete';
-    const gqlName = this.gqlNames.deleteManyMutationName;
+    const gqlName = this.gqlNames.deleteMutationName;
 
     const access = this.checkListAccess(context, operation, { gqlName, itemId: id });
 
@@ -1021,31 +1021,20 @@ module.exports = class List {
   async _deleteWithFieldHooks(existingItem, context, mutationState) {
     const operation = 'delete';
 
-    const isRootMutation = !mutationState;
-    if (isRootMutation) {
-      mutationState = { afterChangeStack: [], queues: {} };
-    }
+    return await this._nestedMutation(mutationState, context, async mutationState => {
+      await this._registerBacklinks(existingItem, mutationState);
 
-    await this._registerBacklinks(existingItem, mutationState);
+      await this._validateDelete(existingItem, context, operation);
 
-    await this._validateDelete(existingItem, context, operation);
+      await this._beforeDelete(existingItem, context);
 
-    await this._beforeDelete(existingItem, context);
+      const result = await this.adapter.delete(existingItem.id);
 
-    const result = await this.adapter.delete(existingItem.id);
-
-    await Relationship.resolveBacklinks(context, mutationState);
-
-    mutationState.afterChangeStack.push(() => this._afterDelete(existingItem, context));
-
-    if (isRootMutation) {
-      const { afterChangeStack } = mutationState;
-      while (afterChangeStack.length) {
-        await afterChangeStack.pop()();
-      }
-    }
-
-    return result;
+      return {
+        result,
+        afterHook: () => this._afterDelete(existingItem, context),
+      };
+    });
   }
 
   getFieldByPath(path) {
