@@ -802,22 +802,32 @@ module.exports = class List {
   async _validateInput(resolvedData, existingItem, context, operation, originalInput) {
     const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
     const fields = this._fieldsFromObject(resolvedData);
+    this._validateHook(args, fields, operation, 'validateInput');
+  }
 
+  async _validateDelete(existingItem, context, operation) {
+    const args = { existingItem, context, adapter: this.adapter };
+    const fields = this.fields;
+    this._validateHook(args, fields, operation, 'validateDelete');
+  }
+
+  async _validateHook(args, fields, operation, hookName) {
+    const { originalInput } = args;
     const fieldValidationErrors = [];
     // FIXME: Can we do this in a way where we simply return validation errors instead?
     args.addFieldValidationError = (msg, _data = {}, internalData = {}) =>
       fieldValidationErrors.push({ msg, data: _data, internalData });
-    await this._mapToFields(fields, field => field.validateInput(args));
-    await this._mapToFields(fields.filter(field => field.config.hooks.validateInput), field =>
-      field.config.hooks.validateInput(args)
+    await this._mapToFields(fields, field => field[hookName](args));
+    await this._mapToFields(fields.filter(field => field.config.hooks[hookName]), field =>
+      field.config.hooks[hookName](args)
     );
     if (fieldValidationErrors.length) {
       this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
     }
 
-    if (this.config.hooks.validateInput) {
+    if (this.config.hooks[hookName]) {
       const listValidationErrors = [];
-      await this.config.hooks.validateInput({
+      await this.config.hooks[hookName]({
         ...args,
         addValidationError: (msg, _data = {}, internalData = {}) =>
           listValidationErrors.push({ msg, data: _data, internalData }),
@@ -828,89 +838,34 @@ module.exports = class List {
     }
   }
 
-  async _validateDelete(existingItem, context, operation) {
-    const args = { existingItem, context, adapter: this.adapter };
-    const fields = this.fields;
-
-    const fieldValidationErrors = [];
-    args.addValidationError = (msg, _data = {}, internalData = {}) =>
-      fieldValidationErrors.push({ msg, data: _data, internalData });
-    await this._mapToFields(fields, field => field.validateDelete(args));
-    await this._mapToFields(fields.filter(field => field.config.hooks.validateDelete), field =>
-      field.config.hooks.validateDelete(args)
-    );
-    if (fieldValidationErrors.length) {
-      this._throwValidationFailure(fieldValidationErrors, operation);
-    }
-
-    if (this.config.hooks.validateDelete) {
-      const listValidationErrors = [];
-      await this.config.hooks.validateDelete({
-        ...args,
-        addValidationError: (msg, _data = {}, internalData = {}) =>
-          listValidationErrors.push({ msg, data: _data, internalData }),
-      });
-
-      if (listValidationErrors.length) {
-        this._throwValidationFailure(listValidationErrors, operation);
-      }
-    }
-  }
-
   async _beforeChange(resolvedData, existingItem, context, originalInput) {
     const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
-    const fields = this._fieldsFromObject(resolvedData);
-
-    await this._mapToFields(fields, field => field.beforeChange(args));
-    await this._mapToFields(fields.filter(field => field.config.hooks.beforeChange), field =>
-      field.config.hooks.beforeChange(args)
-    );
-
-    if (this.config.hooks.beforeChange) {
-      await this.config.hooks.beforeChange(args);
-    }
+    this._runHook(args, resolvedData, 'beforeChange');
   }
 
   async _beforeDelete(existingItem, context) {
     const args = { existingItem, context, adapter: this.adapter };
-    const fields = this._fieldsFromObject(existingItem);
-
-    await this._mapToFields(fields, field => field.beforeDelete(args));
-    await this._mapToFields(fields.filter(field => field.config.hooks.beforeDelete), field =>
-      field.config.hooks.beforeDelete(args)
-    );
-
-    if (this.config.hooks.beforeDelete) {
-      await this.config.hooks.beforeDelete(args);
-    }
+    this._runHook(args, existingItem, 'beforeDelete');
   }
 
   async _afterChange(updatedItem, existingItem, context, originalInput) {
     const args = { updatedItem, originalInput, existingItem, context, adapter: this.adapter };
-    const fields = this._fieldsFromObject(originalInput);
-
-    await this._mapToFields(fields, field => field.afterChange(args));
-    await this._mapToFields(fields.filter(field => field.config.hooks.afterChange), field =>
-      field.config.hooks.afterChange(args)
-    );
-
-    if (this.config.hooks.afterChange) {
-      await this.config.hooks.afterChange(args);
-    }
+    this._runHook(args, originalInput, 'afterChange');
   }
 
   async _afterDelete(existingItem, context) {
     const args = { existingItem, context, adapter: this.adapter };
-    const fields = this._fieldsFromObject(existingItem);
+    this._runHook(args, existingItem, 'afterDelete');
+  }
 
-    await this._mapToFields(fields, field => field.afterDelete(args));
-    await this._mapToFields(fields.filter(field => field.config.hooks.afterDelete), field =>
-      field.config.hooks.afterDelete(args)
+  async _runHook(args, fieldObject, hookName) {
+    const fields = this._fieldsFromObject(fieldObject);
+    await this._mapToFields(fields, field => field[hookName](args));
+    await this._mapToFields(fields.filter(field => field.config.hooks[hookName]), field =>
+      field.config.hooks[hookName](args)
     );
 
-    if (this.config.hooks.afterDelete) {
-      await this.config.hooks.afterDelete(args);
-    }
+    if (this.config.hooks[hookName]) await this.config.hooks[hookName](args);
   }
 
   async createMutation(data, context, mutationState) {
