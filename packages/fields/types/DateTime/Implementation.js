@@ -62,7 +62,7 @@ class _DateTime extends Implementation {
 const toDate = s => s && DateTime.fromISO(s, { zone: 'utc' }).toJSDate();
 
 class MongoDateTimeInterface extends MongooseFieldAdapter {
-  addToMongooseSchema(schema) {
+  addToMongooseSchema(schema, _, { addPreSaveHook, addPostReadHook }) {
     const { mongooseOptions } = this.config;
     const field_path = this.path;
     const utc_field = `${field_path}_utc`;
@@ -77,23 +77,25 @@ class MongoDateTimeInterface extends MongooseFieldAdapter {
     });
 
     // Updates the relevant value in the item provided (by referrence)
-    this.addToServerHook(schema, item => {
+    addPreSaveHook(item => {
       const datetimeString = item[field_path];
 
       if (
         datetimeString === undefined ||
         !DateTime.fromISO(datetimeString, { zone: 'utc' }).isValid
       ) {
-        return;
+        return item;
       }
 
       item[utc_field] = toDate(datetimeString);
       item[offset_field] = DateTime.fromISO(datetimeString, { setZone: true }).toFormat('ZZ');
       item[field_path] = undefined; // Never store this field
+
+      return item;
     });
-    this.addToClientHook(schema, item => {
+    addPostReadHook(item => {
       if (item[utc_field] && item[offset_field] === undefined) {
-        return;
+        return item;
       }
       const datetimeString =
         item[utc_field] &&
@@ -110,6 +112,8 @@ class MongoDateTimeInterface extends MongooseFieldAdapter {
       item[field_path] = datetimeString;
       item[utc_field] = undefined;
       item[offset_field] = undefined;
+
+      return item;
     });
   }
 
