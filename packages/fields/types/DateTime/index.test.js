@@ -142,7 +142,7 @@ describe('DateTime type', () => {
     })
   );
 
-  test.failing(
+  test(
     'allows replacing date with null',
     keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const postedAt = '2018-08-31T06:49:07.000Z';

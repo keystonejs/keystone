@@ -80,11 +80,19 @@ class MongoDateTimeInterface extends MongooseFieldAdapter {
     addPreSaveHook(item => {
       const datetimeString = item[field_path];
 
-      if (
-        datetimeString === undefined ||
-        !DateTime.fromISO(datetimeString, { zone: 'utc' }).isValid
-      ) {
+      // NOTE: Even though `0` is a valid timestamp (the unix epoch), it's not a valid ISO string,
+      // so it's ok to check for falseyness here.
+      if (!datetimeString) {
+        item[utc_field] = null;
+        item[offset_field] = null;
+        item[field_path] = undefined; // Never store this field
         return item;
+      }
+
+      if (!DateTime.fromISO(datetimeString, { zone: 'utc' }).isValid) {
+        throw new Error(
+          'Validation failed: DateTime must be either `null` or a valid ISO 8601 string'
+        );
       }
 
       item[utc_field] = toDate(datetimeString);
@@ -93,22 +101,23 @@ class MongoDateTimeInterface extends MongooseFieldAdapter {
 
       return item;
     });
+
     addPostReadHook(item => {
-      if (item[utc_field] && item[offset_field] === undefined) {
+      if (!item[utc_field] || !item[offset_field]) {
+        item[field_path] = null;
         return item;
       }
-      const datetimeString =
-        item[utc_field] &&
-        item[offset_field] &&
-        DateTime.fromJSDate(item[utc_field], { zone: 'utc' })
-          .setZone(
-            new FixedOffsetZone(
-              DateTime.fromISO(`1234-01-01T00:00:00${item[offset_field]}`, {
-                setZone: true,
-              }).offset
-            )
+
+      const datetimeString = DateTime.fromJSDate(item[utc_field], { zone: 'utc' })
+        .setZone(
+          new FixedOffsetZone(
+            DateTime.fromISO(`1234-01-01T00:00:00${item[offset_field]}`, {
+              setZone: true,
+            }).offset
           )
-          .toISO();
+        )
+        .toISO();
+
       item[field_path] = datetimeString;
       item[utc_field] = undefined;
       item[offset_field] = undefined;
