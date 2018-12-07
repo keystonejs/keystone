@@ -117,4 +117,70 @@ describe('DateTime type', () => {
       expect(body).toHaveProperty('data.createPost.postedAt', postedAt);
     })
   );
+
+  test(
+    'correctly overrides with new value',
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
+      const postedAt = '2018-08-31T06:49:07.000Z';
+      const updatedPostedAt = '2018-12-07T05:54:00.556Z';
+
+      const createPost = await create('Post', { postedAt });
+
+      // Create an item that does the linking
+      const { body } = await graphqlRequest({
+        server,
+        query: `
+        mutation {
+          updatePost(id: "${createPost.id}", data: { postedAt: "${updatedPostedAt}" }) {
+            postedAt
+          }
+        }
+    `,
+      });
+
+      expect(body).toHaveProperty('data.updatePost.postedAt', updatedPostedAt);
+    })
+  );
+
+  test.failing(
+    'allows replacing date with null',
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
+      const postedAt = '2018-08-31T06:49:07.000Z';
+
+      const createPost = await create('Post', { postedAt });
+
+      // Create an item that does the linking
+      const { body } = await graphqlRequest({
+        server,
+        query: `
+        mutation {
+          updatePost(id: "${createPost.id}", data: { postedAt: null }) {
+            postedAt
+          }
+        }
+    `,
+      });
+
+      expect(body).toHaveProperty('data.updatePost.postedAt', null);
+    })
+  );
+
+  test(
+    'allows initialising to null',
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
+      // Create an item that does the linking
+      const { body } = await graphqlRequest({
+        server,
+        query: `
+        mutation {
+          createPost(data: { postedAt: null }) {
+            postedAt
+          }
+        }
+    `,
+      });
+
+      expect(body).toHaveProperty('data.createPost.postedAt', null);
+    })
+  );
 });
