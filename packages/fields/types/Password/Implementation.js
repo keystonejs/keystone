@@ -87,17 +87,17 @@ class Password extends Implementation {
 class MongoPasswordInterface extends MongooseFieldAdapter {
   // constructor(fieldName, path, listAdapter, getListByKey, config) {
 
-  addToMongooseSchema(schema) {
+  addToMongooseSchema(schema, _, { addPreSaveHook }) {
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
 
     // Updates the relevant value in the item provided (by referrence)
-    this.addToServerHook(schema, async item => {
+    addPreSaveHook(async item => {
       const list = this.getListByKey(this.listAdapter.key);
       const field = list.fieldsByPath[this.path];
       const plaintext = item[field.path];
 
       if (typeof plaintext === 'undefined') {
-        return;
+        return item;
       }
 
       if (String(plaintext) === plaintext && plaintext !== '') {
@@ -105,6 +105,7 @@ class MongoPasswordInterface extends MongooseFieldAdapter {
       } else {
         item[field.path] = null;
       }
+      return item;
     });
   }
 

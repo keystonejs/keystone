@@ -36,7 +36,7 @@ class Decimal extends Implementation {
 }
 
 class MongoDecimalInterface extends MongooseFieldAdapter {
-  addToMongooseSchema(schema) {
+  addToMongooseSchema(schema, _, { addPreSaveHook, addPostReadHook }) {
     const { mongooseOptions = {} } = this.config;
     const { isRequired } = mongooseOptions;
 
@@ -51,18 +51,20 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
     schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
 
     // Updates the relevant value in the item provided (by referrence)
-    this.addToServerHook(schema, item => {
+    addPreSaveHook(item => {
       if (item[this.path] && typeof item[this.path] === 'string') {
         item[this.path] = mongoose.Types.Decimal128.fromString(item[this.path]);
       } else if (!item[this.path]) {
         item[this.path] = null;
       }
       // else: Must either be undefined or a Decimal128 object, so leave it alone.
+      return item;
     });
-    this.addToClientHook(schema, item => {
+    addPostReadHook(item => {
       if (item[this.path]) {
         item[this.path] = item[this.path].toString();
       }
+      return item;
     });
   }
 
