@@ -34,6 +34,7 @@ module.exports = class AdminUI {
       signinPath: this.config.signinPath,
       signoutPath: this.config.signoutPath,
       sessionPath: this.config.sessionPath,
+      sortListsAlphabetically: this.config.sortListsAlphabetically,
     };
   }
 

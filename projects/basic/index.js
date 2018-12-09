@@ -143,6 +143,7 @@ keystone.createList('SomeLongNamedList', {
 
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
+  sortListsAlphabetically: true,
 });
 
 const server = new WebServer(keystone, {
