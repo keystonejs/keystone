@@ -3,6 +3,7 @@
 
 import { Component, Fragment } from 'react';
 import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
 import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';
@@ -186,10 +187,11 @@ class Nav extends Component {
   };
   render() {
     const {
-      adminMeta: { adminPath, getListByKey, graphiqlPath, listKeys, name, signoutPath, withAuth },
+      adminMeta: { adminPath, getListByKey, graphiqlPath, name, sortListsAlphabetically, signoutPath, withAuth },
       children,
       location,
     } = this.props;
+    const listKeys = sortListsAlphabetically ? this.props.adminMeta.listKeys.sort() : this.props.adminMeta.listKeys;
     const { mouseIsOverNav } = this.state;
 
     return (
@@ -209,6 +211,8 @@ class Nav extends Component {
           };
 
           const titleGutter = {
+            color: colors.N90,
+            textDecoration: 'none',
             alignSelf: 'stretch',
             marginLeft: PRIMARY_NAV_GUTTER,
             marginRight: PRIMARY_NAV_GUTTER,
@@ -232,7 +236,7 @@ class Nav extends Component {
                 style={makeResizeStyles('width')}
               >
                 <Inner>
-                  <Title as="div" margin="both" crop style={titleGutter}>
+                  <Title as={Link} to={adminPath} margin="both" crop style={titleGutter}>
                     {name}
                   </Title>
                   <Relative>
