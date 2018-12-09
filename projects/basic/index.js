@@ -152,12 +152,6 @@ const server = new WebServer(keystone, {
   port,
 });
 
-server.app.use(
-  keystone.session.validate({
-    valid: ({ req, item }) => (req.user = item),
-  })
-);
-
 server.app.get('/reset-db', (req, res) => {
   const reset = async () => {
     Object.values(keystone.adapters).forEach(async adapter => {

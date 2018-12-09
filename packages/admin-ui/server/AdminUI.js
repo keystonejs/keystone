@@ -56,7 +56,7 @@ module.exports = class AdminUI {
         });
       }
 
-      await this.keystone.session.create(req, result);
+      await this.keystone.sessionManager.startAuthedSession(req, result);
     } catch (e) {
       return next(e);
     }
@@ -76,7 +76,7 @@ module.exports = class AdminUI {
   async signout(req, res, next) {
     let success;
     try {
-      await this.keystone.session.destroy(req);
+      await this.keystone.sessionManager.endAuthedSession(req);
       success = true;
     } catch (e) {
       success = false;

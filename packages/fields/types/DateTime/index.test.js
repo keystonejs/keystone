@@ -1,7 +1,7 @@
-const { gen, sampleOne } = require('testcheck');
-const { Text, DateTime } = require('@voussoir/fields');
 const cuid = require('cuid');
 const { setupServer, graphqlRequest, keystoneMongoTest } = require('@voussoir/test-utils');
+
+const DateTime = require('./');
 
 function setupKeystone() {
   return setupServer({
@@ -9,7 +9,6 @@ function setupKeystone() {
     createLists: keystone => {
       keystone.createList('Post', {
         fields: {
-          title: { type: Text },
           postedAt: { type: DateTime },
         },
       });
@@ -77,10 +76,9 @@ describe('DateTime type', () => {
   test(
     'response is serialized as a String',
     keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const title = sampleOne(gen.alphaNumString.notEmpty());
       const postedAt = '2018-08-31T06:49:07.000Z';
 
-      const createPost = await create('Post', { title, postedAt });
+      const createPost = await create('Post', { postedAt });
 
       // Create an item that does the linking
       const { body } = await graphqlRequest({
@@ -117,6 +115,72 @@ describe('DateTime type', () => {
 
       expect(body).not.toHaveProperty('errors');
       expect(body).toHaveProperty('data.createPost.postedAt', postedAt);
+    })
+  );
+
+  test(
+    'correctly overrides with new value',
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
+      const postedAt = '2018-08-31T06:49:07.000Z';
+      const updatedPostedAt = '2018-12-07T05:54:00.556Z';
+
+      const createPost = await create('Post', { postedAt });
+
+      // Create an item that does the linking
+      const { body } = await graphqlRequest({
+        server,
+        query: `
+        mutation {
+          updatePost(id: "${createPost.id}", data: { postedAt: "${updatedPostedAt}" }) {
+            postedAt
+          }
+        }
+    `,
+      });
+
+      expect(body).toHaveProperty('data.updatePost.postedAt', updatedPostedAt);
+    })
+  );
+
+  test(
+    'allows replacing date with null',
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
+      const postedAt = '2018-08-31T06:49:07.000Z';
+
+      const createPost = await create('Post', { postedAt });
+
+      // Create an item that does the linking
+      const { body } = await graphqlRequest({
+        server,
+        query: `
+        mutation {
+          updatePost(id: "${createPost.id}", data: { postedAt: null }) {
+            postedAt
+          }
+        }
+    `,
+      });
+
+      expect(body).toHaveProperty('data.updatePost.postedAt', null);
+    })
+  );
+
+  test(
+    'allows initialising to null',
+    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
+      // Create an item that does the linking
+      const { body } = await graphqlRequest({
+        server,
+        query: `
+        mutation {
+          createPost(data: { postedAt: null }) {
+            postedAt
+          }
+        }
+    `,
+      });
+
+      expect(body).toHaveProperty('data.createPost.postedAt', null);
     })
   );
 });
