@@ -187,11 +187,21 @@ class Nav extends Component {
   };
   render() {
     const {
-      adminMeta: { adminPath, getListByKey, graphiqlPath, name, sortListsAlphabetically, signoutPath, withAuth },
+      adminMeta: {
+        adminPath,
+        getListByKey,
+        graphiqlPath,
+        name,
+        sortListsAlphabetically,
+        signoutPath,
+        withAuth,
+      },
       children,
       location,
     } = this.props;
-    const listKeys = sortListsAlphabetically ? this.props.adminMeta.listKeys.sort() : this.props.adminMeta.listKeys;
+    const listKeys = sortListsAlphabetically
+      ? this.props.adminMeta.listKeys.sort()
+      : this.props.adminMeta.listKeys;
     const { mouseIsOverNav } = this.state;
 
     return (
