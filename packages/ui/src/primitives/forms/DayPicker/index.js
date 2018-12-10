@@ -151,6 +151,10 @@ export const DayPicker = ({
     },
     [years]
   );
+  const index = (date.getFullYear() - yearRangeFrom) * 12 + date.getMonth();
+
+  const canGoNextMonth = index < items.length - 1;
+  const canGoPreviousMonth = index > 0;
 
   return (
     <Wrapper>
@@ -158,6 +162,7 @@ export const DayPicker = ({
         {useMemo(
           () => (
             <HeaderButton
+              disabled={!canGoPreviousMonth}
               onClick={() => {
                 controlledSetDate(currentDate => subMonths(currentDate, 1));
               }}
@@ -166,7 +171,7 @@ export const DayPicker = ({
               <A11yText>Previous Month</A11yText>
             </HeaderButton>
           ),
-          [controlledSetDate]
+          [controlledSetDate, canGoPreviousMonth]
         )}
         <SelectMonth
           onChange={useCallback(
@@ -196,6 +201,7 @@ export const DayPicker = ({
         {useMemo(
           () => (
             <HeaderButton
+              disabled={!canGoNextMonth}
               onClick={() => {
                 controlledSetDate(addMonths(date, 1));
               }}
@@ -204,7 +210,7 @@ export const DayPicker = ({
               <A11yText>Next Month</A11yText>
             </HeaderButton>
           ),
-          [controlledSetDate]
+          [controlledSetDate, canGoNextMonth]
         )}
       </Header>
       <div>
