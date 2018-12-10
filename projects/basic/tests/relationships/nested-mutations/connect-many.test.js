@@ -109,6 +109,62 @@ describe('no access control', () => {
   );
 
   test(
+    'connect nested from within create many mutation',
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
+      const noteContent = sampleOne(alphanumGenerator);
+      const noteContent2 = sampleOne(alphanumGenerator);
+
+      // Create an item to link against
+      const createNote = await create('Note', { content: noteContent });
+      const createNote2 = await create('Note', { content: noteContent2 });
+
+      // Create an item that does the linking
+      const createUsersOneNote = await graphqlRequest({
+        server,
+        query: `
+        mutation {
+          createUsers(data: [
+            { data: { username: "A thing 1", notes: { connect: [{ id: "${createNote.id}" }] } } },
+            { data: { username: "A thing 2", notes: { connect: [{ id: "${createNote2.id}" }] } } }
+          ]) {
+            id
+          }
+        }
+    `,
+      });
+
+      expect(createUsersOneNote.body.data).toMatchObject({
+        createUsers: [{ id: expect.any(String) }, { id: expect.any(String) }],
+      });
+      expect(createUsersOneNote.body).not.toHaveProperty('errors');
+
+      // Create an item that does the linking
+      const createUsersManyNotes = await graphqlRequest({
+        server,
+        query: `
+        mutation {
+          createUsers(data: [
+            { data: { username: "A thing 1", notes: { connect: [{ id: "${
+              createNote.id
+            }" }, { id: "${createNote2.id}" }] } } },
+            { data: { username: "A thing 2", notes: { connect: [{ id: "${
+              createNote2.id
+            }" }, { id: "${createNote.id}" }] } } }
+          ]) {
+            id
+          }
+        }
+    `,
+      });
+
+      expect(createUsersManyNotes.body.data).toMatchObject({
+        createUsers: [{ id: expect.any(String) }, { id: expect.any(String) }],
+      });
+      expect(createUsersManyNotes.body).not.toHaveProperty('errors');
+    })
+  );
+
+  test(
     'connect nested from within update mutation adds to an empty list',
     keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const noteContent = sampleOne(alphanumGenerator);
@@ -250,6 +306,69 @@ describe('no access control', () => {
         },
       });
       expect(updateUser.body).not.toHaveProperty('errors');
+    })
+  );
+
+  test(
+    'connect nested from within update many mutation adds to an existing list',
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
+      const noteContent = sampleOne(alphanumGenerator);
+      const noteContent2 = sampleOne(alphanumGenerator);
+
+      // Create an item to link against
+      const createNote = await create('Note', { content: noteContent });
+      const createNote2 = await create('Note', { content: noteContent2 });
+
+      // Create an item to update
+      const createUser = await create('User', {
+        username: 'user1',
+        notes: [createNote.id, createNote2.id],
+      });
+      const createUser2 = await create('User', { username: 'user2', notes: [] });
+
+      const updateUsers = await graphqlRequest({
+        server,
+        query: `
+        mutation {
+          updateUsers(data: [
+          { id: "${createUser.id}", data: { notes: { disconnectAll: true, connect: [{ id: "${
+          createNote.id
+        }" }] } } },
+          { id: "${createUser2.id}", data: { notes: { disconnectAll: true, connect: [{ id: "${
+          createNote2.id
+        }" }] } } },
+        ]) {
+          id
+          notes {
+            id
+            content
+          }
+        }
+      }`,
+      });
+      expect(updateUsers.body.data).toMatchObject({
+        updateUsers: [
+          {
+            id: expect.any(String),
+            notes: [
+              {
+                id: createNote.id,
+                content: noteContent,
+              },
+            ],
+          },
+          {
+            id: expect.any(String),
+            notes: [
+              {
+                id: createNote2.id,
+                content: noteContent2,
+              },
+            ],
+          },
+        ],
+      });
+      expect(updateUsers.body).not.toHaveProperty('errors');
     })
   );
 });

@@ -1,0 +1,8 @@
+{
+  "releases": [
+    { "name": "@voussoir/admin-ui", "type": "patch" },
+    { "name": "@voussoir/core", "type": "patch" },
+    { "name": "@voussoir/cypress-project-basic", "type": "patch" }
+  ],
+  "dependents": []
+}
