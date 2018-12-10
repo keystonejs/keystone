@@ -1,15 +1,15 @@
 {
   "name": "@voussoir/test-utils",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/adapter-mongoose": "^0.5.0",
-    "@voussoir/core": "^0.7.0",
-    "@voussoir/server": "^0.4.0",
+    "@voussoir/adapter-mongoose": "^1.0.0",
+    "@voussoir/core": "^1.0.0",
+    "@voussoir/server": "^0.5.0",
     "@voussoir/utils": "^0.3.0",
     "extract-stack": "^1.0.0",
     "mongodb-memory-server": "^2.7.4",

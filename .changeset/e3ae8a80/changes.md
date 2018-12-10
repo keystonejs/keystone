@@ -1,4 +1,0 @@
-- Rename keystone.session to keystone.sessionManager
-  - Rename keystone.session.validate to keystone.sessionManager.populateAuthedItemMiddleware
-  - Rename keystone.session.create to keystone.sessionManager.startAuthedSession
-  - Rename keystone.session.destroy to keystone.sessionManager.endAuthedSession

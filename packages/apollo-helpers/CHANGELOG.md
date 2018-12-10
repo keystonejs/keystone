@@ -1,5 +1,11 @@
 # @voussoir/apollo-helpers
 
+## 0.3.1
+
+- [patch] 8fc0abb3:
+
+  - Make DayPicker scrollable
+
 ## 0.3.0
 
 - [minor] 7f64792:

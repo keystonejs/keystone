@@ -1,5 +1,30 @@
 # @voussoir/adapter-mongoose
 
+## 1.0.0
+
+- [patch] 21626b66:
+
+  - preSave/postRead item hooks run consistently
+
+- [patch] 929b177c:
+
+  - Enable sorting on DateTime fields
+
+- [major] 01718870:
+
+  - Field configuration now tasks isRequired and isUnique, rather than required and unique
+
+- [patch] fc1a9055:
+
+  - Update dependencies to latest patch versions
+
+- Updated dependencies [c83c9ed5]:
+- Updated dependencies [c3ebd9e6]:
+- Updated dependencies [ebae2d6f]:
+- Updated dependencies [78fd9555]:
+- Updated dependencies [d22820b1]:
+  - @voussoir/core@1.0.0
+
 ## 0.5.0
 
 - [patch] ff4b98c5:

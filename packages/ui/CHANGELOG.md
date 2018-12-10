@@ -1,5 +1,27 @@
 # @voussoir/ui
 
+## 0.6.0
+
+- [patch] 32960e4d:
+
+  - Improve accessibility
+
+- [minor] 8145619f:
+
+  - update to selecting and managing items in the list view
+
+- [patch] e3b48810:
+
+  - Use babel 7
+
+- [minor] 8fc0abb3:
+
+  - Make DayPicker scrollable
+
+- [patch] fc1a9055:
+
+  - Update dependencies to latest patch versions
+
 ## 0.5.0
 
 - [patch] 7a24b92e:

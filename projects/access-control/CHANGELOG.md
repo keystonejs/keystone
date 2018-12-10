@@ -1,5 +1,30 @@
 # @voussoir/cypress-project-access-control
 
+## 1.1.3
+
+- [patch] 8145619f:
+
+  - update to selecting and managing items in the list view
+
+- [patch] fc1a9055:
+
+  - Update dependencies to latest patch versions
+
+- Updated dependencies [c83c9ed5]:
+- Updated dependencies [c3ebd9e6]:
+- Updated dependencies [ebae2d6f]:
+- Updated dependencies [78fd9555]:
+- Updated dependencies [01718870]:
+- Updated dependencies [d22820b1]:
+- Updated dependencies [8fc0abb3]:
+  - @voussoir/adapter-mongoose@1.0.0
+  - @voussoir/test-utils@0.1.3
+  - @voussoir/admin-ui@0.7.0
+  - @voussoir/core@1.0.0
+  - @voussoir/fields@2.0.0
+  - @voussoir/server@0.5.0
+  - @voussoir/ui@0.6.0
+
 ## 1.1.2
 
 - Updated dependencies [45d4c379]:

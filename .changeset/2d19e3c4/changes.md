@@ -1,1 +1,0 @@
-- Call field hooks when deleting many items at once.

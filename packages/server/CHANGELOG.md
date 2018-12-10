@@ -1,5 +1,22 @@
 # @voussoir/server
 
+## 0.5.0
+
+- [minor] c83c9ed5:
+
+  - Add Keystone.getAccessContext and remove List.getAccessControl, List.getFieldAccessControl, and Field.validateAccessControl.
+
+- [patch] d22820b1:
+
+  - Rename keystone.session to keystone.sessionManager
+    - Rename keystone.session.validate to keystone.sessionManager.populateAuthedItemMiddleware
+    - Rename keystone.session.create to keystone.sessionManager.startAuthedSession
+    - Rename keystone.session.destroy to keystone.sessionManager.endAuthedSession
+
+- [patch] fc1a9055:
+
+  - Update dependencies to latest patch versions
+
 ## 0.4.0
 
 - [minor] ae3b8fda:

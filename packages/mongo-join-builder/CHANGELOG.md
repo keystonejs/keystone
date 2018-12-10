@@ -1,5 +1,11 @@
 # @voussoir/mongo-join-builder
 
+## 0.3.1
+
+- [patch] fc1a9055:
+
+  - Update dependencies to latest patch versions
+
 ## 0.3.0
 
 - [minor] 47c7dcf6"

@@ -1,5 +1,11 @@
 # @voussoir/icons
 
+## 0.3.0
+
+- [minor] 8fc0abb3:
+
+  - Make DayPicker scrollable
+
 ## 0.2.0
 
 - [minor] 47c7dcf6"

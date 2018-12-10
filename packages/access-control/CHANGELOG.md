@@ -1,5 +1,11 @@
 # @voussoir/access-control
 
+## 0.4.0
+
+- [minor] ffc98ac4:
+
+  - Rename the access control function parameter `item` to `existingItem`
+
 ## 0.3.0
 
 - [minor] 3ae588b7:
