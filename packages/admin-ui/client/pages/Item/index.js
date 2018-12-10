@@ -87,12 +87,10 @@ const ItemDetails = withRouter(
     componentDidMount() {
       this.mounted = true;
       document.addEventListener('keydown', this.onKeyDown, false);
-      document.addEventListener('submit', this.onSave, false);
     }
     componentWillUnmount() {
       this.mounted = false;
       document.removeEventListener('keydown', this.onKeyDown, false);
-      document.removeEventListener('submit', this.onSave, false);
     }
     onKeyDown = event => {
       const { resetRequested } = this.state;
@@ -294,7 +292,7 @@ const ItemDetails = withRouter(
               <A11yText>Copy ID</A11yText>
             </CopyToClipboard>
           </FlexGroup>
-          <Form>
+          <Form onSubmit={this.onSave}>
             <AutocompleteCaptor />
             {list.fields.map((field, i) => {
               const { Field } = FieldTypes[list.key][field.path];
@@ -310,16 +308,16 @@ const ItemDetails = withRouter(
                 />
               );
             })}
-          </Form>
 
-          <Footer
-            onSave={this.onSave}
-            onDelete={this.openDeleteModal}
-            resetInterface={this.renderResetInterface()}
-            updateInProgress={updateInProgress}
-          />
-          {this.renderCreateModal()}
-          {this.renderDeleteModal()}
+            <Footer
+              onSave={this.onSave}
+              onDelete={this.openDeleteModal}
+              resetInterface={this.renderResetInterface()}
+              updateInProgress={updateInProgress}
+            />
+            {this.renderCreateModal()}
+            {this.renderDeleteModal()}
+          </Form>
         </Fragment>
       );
     }
