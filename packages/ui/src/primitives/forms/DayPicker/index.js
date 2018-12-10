@@ -12,6 +12,7 @@ import { type YearPickerType, SelectMonth, SelectYear } from './selects';
 import { A11yText } from '../../typography';
 import { Month } from './month';
 import { WeekLabels, Day } from './comps';
+import 'intersection-observer';
 
 const Wrapper = styled.div({
   fontSize: '0.85rem',
@@ -151,10 +152,34 @@ export const DayPicker = ({
     },
     [years]
   );
-  const index = (date.getFullYear() - yearRangeFrom) * 12 + date.getMonth();
+  const currentIndex = (date.getFullYear() - yearRangeFrom) * 12 + date.getMonth();
 
-  const canGoNextMonth = index < items.length - 1;
-  const canGoPreviousMonth = index > 0;
+  const canGoNextMonth = currentIndex < items.length - 1;
+  const canGoPreviousMonth = currentIndex > 0;
+
+  const observer = useMemo(
+    () => {
+      return new IntersectionObserver(
+        entries => {
+          const filteredEntries = entries
+            .filter(value => value.isIntersecting)
+            .sort((a, b) => {
+              if (a.intersectionRatio > b.intersectionRatio) {
+                return -1;
+              }
+              return 1;
+            });
+          if (filteredEntries.length !== 0) {
+            let index = Number(filteredEntries[0].target.getAttribute('data-index'));
+            let item = items[index];
+            setDate(new Date(item.year, item.month, 1));
+          }
+        },
+        { threshold: 0.6 }
+      );
+    },
+    [items]
+  );
 
   return (
     <Wrapper>
@@ -217,13 +242,6 @@ export const DayPicker = ({
         {weekLabels}
         <List
           ref={listRef}
-          onItemsRendered={useCallback(
-            ({ visibleStartIndex }) => {
-              const item = items[visibleStartIndex];
-              setDate(new Date(item.year, item.month, 1));
-            },
-            [items]
-          )}
           itemSize={useCallback(
             index => {
               const { weeks } = items[index];
@@ -231,11 +249,15 @@ export const DayPicker = ({
             },
             [items]
           )}
-          itemData={useMemo(() => ({ items, selectedDate, setSelectedDate }), [
-            items,
-            selectedDate,
-            setSelectedDate,
-          ])}
+          itemData={useMemo(
+            () => ({
+              items,
+              selectedDate,
+              setSelectedDate,
+              observer,
+            }),
+            [items, selectedDate, setSelectedDate, observer]
+          )}
           height={6 * DAY_HEIGHT + 26.5}
           itemCount={years.length * 12}
           width="100%"
