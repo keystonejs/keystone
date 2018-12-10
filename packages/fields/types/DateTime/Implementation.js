@@ -78,6 +78,13 @@ class MongoDateTimeInterface extends MongooseFieldAdapter {
 
     // Updates the relevant value in the item provided (by referrence)
     addPreSaveHook(item => {
+      // Only run the hook if the item actually contains the datetime field
+      // NOTE: Can't use hasOwnProperty here, as the mongoose data object
+      // returned isn't a POJO
+      if (!(field_path in item)) {
+        return item;
+      }
+
       const datetimeString = item[field_path];
 
       // NOTE: Even though `0` is a valid timestamp (the unix epoch), it's not a valid ISO string,
@@ -103,6 +110,14 @@ class MongoDateTimeInterface extends MongooseFieldAdapter {
     });
 
     addPostReadHook(item => {
+      // If there's no fields stored in the DB (can happen with MongoDB), then
+      // don't bother trying to process anything
+      // NOTE: Can't use hasOwnProperty here, as the mongoose data object
+      // returned isn't a POJO
+      if (!(utc_field in item) && !(offset_field in item)) {
+        return item;
+      }
+
       if (!item[utc_field] || !item[offset_field]) {
         item[field_path] = null;
         return item;

@@ -186,7 +186,7 @@ describe('DateTime type', () => {
     })
   );
 
-  test.failing(
+  test(
     'Does not get clobbered when updating unrelated field',
     keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
       const postedAt = '2018-08-31T06:49:07.000Z';
