@@ -102,9 +102,7 @@ const ItemDetails = withRouter(
             return this.hideConfirmResetMessage();
           }
         case 'Enter':
-          if (event.metaKey) {
-            return this.onSave();
-          }
+          return this.onSave();
       }
     };
     onDelete = deletePromise => {
