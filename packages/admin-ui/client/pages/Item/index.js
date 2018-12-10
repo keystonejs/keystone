@@ -87,10 +87,12 @@ const ItemDetails = withRouter(
     componentDidMount() {
       this.mounted = true;
       document.addEventListener('keydown', this.onKeyDown, false);
+      document.addEventListener('submit', this.onSave, false);
     }
     componentWillUnmount() {
       this.mounted = false;
       document.removeEventListener('keydown', this.onKeyDown, false);
+      document.removeEventListener('submit', this.onSave, false);
     }
     onKeyDown = event => {
       const { resetRequested } = this.state;
@@ -101,8 +103,6 @@ const ItemDetails = withRouter(
           if (resetRequested) {
             return this.hideConfirmResetMessage();
           }
-        case 'Enter':
-          return this.onSave();
       }
     };
     onDelete = deletePromise => {
