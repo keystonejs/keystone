@@ -1,6 +1,6 @@
 {
   "name": "@voussoir/ui",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
@@ -9,7 +9,7 @@
   "dependencies": {
     "@emotion/core": "^10.0.4",
     "@emotion/styled": "^10.0.4",
-    "@voussoir/icons": "^0.2.0",
+    "@voussoir/icons": "^0.3.0",
     "date-fns": "^1.29.0",
     "emotion": "^10.0.4",
     "flushable": "^1.0.0",

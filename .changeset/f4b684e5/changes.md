@@ -1,1 +1,0 @@
-- Make DayPicker scrollable

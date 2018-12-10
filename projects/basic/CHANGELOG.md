@@ -1,5 +1,39 @@
 # @voussoir/cypress-project-basic
 
+## 1.4.0
+
+- [patch] 8145619f:
+
+  - update to selecting and managing items in the list view
+
+- [minor] 01718870:
+
+  - Field configuration now tasks isRequired and isUnique, rather than required and unique
+
+- [patch] d22820b1:
+
+  - Rename keystone.session to keystone.sessionManager
+    - Rename keystone.session.validate to keystone.sessionManager.populateAuthedItemMiddleware
+    - Rename keystone.session.create to keystone.sessionManager.startAuthedSession
+    - Rename keystone.session.destroy to keystone.sessionManager.endAuthedSession
+
+- [patch] fc1a9055:
+
+  - Update dependencies to latest patch versions
+
+- Updated dependencies [c83c9ed5]:
+- Updated dependencies [c3ebd9e6]:
+- Updated dependencies [ebae2d6f]:
+- Updated dependencies [78fd9555]:
+- Updated dependencies [8fc0abb3]:
+  - @voussoir/adapter-mongoose@1.0.0
+  - @voussoir/test-utils@0.1.3
+  - @voussoir/admin-ui@0.7.0
+  - @voussoir/core@1.0.0
+  - @voussoir/fields@2.0.0
+  - @voussoir/server@0.5.0
+  - @voussoir/ui@0.6.0
+
 ## 1.3.0
 
 - [patch] 7a24b92e:

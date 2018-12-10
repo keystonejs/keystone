@@ -1,1 +1,0 @@
-- Report correct gqlName when reporting errors in deleteMutation

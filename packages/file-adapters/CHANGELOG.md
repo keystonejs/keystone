@@ -1,5 +1,11 @@
 # @voussoir/file-adapters
 
+## 0.2.1
+
+- [patch] fc1a9055:
+
+  - Update dependencies to latest patch versions
+
 ## 0.2.0
 
 - [minor] 47c7dcf6"
