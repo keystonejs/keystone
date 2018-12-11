@@ -81,34 +81,34 @@ const RelationshipSelect = ({
               const optionsMap: { [key: string]: { value: string, label: string } } = {};
               _options.forEach(({ id, _label_ }) => {
                 optionsMap[id] = {
-                  value: id,
+                  value: { id },
                   label: _label_,
                 };
               });
 
               const options = Object.keys(optionsMap).map(key => optionsMap[key]);
-
+              console.log(value);
               // Collect IDs to represent and convert them into a value.
-              let currentId;
+              let foo;
               if (item && canRead) {
                 const fieldValue = item[field.path];
                 if (isMulti) {
-                  currentId = Array.isArray(fieldValue) ? fieldValue.map(i => i.id) : [];
+                  foo = (Array.isArray(fieldValue) ? fieldValue : []).map(i => i.id);
                 } else if (fieldValue) {
-                  currentId = fieldValue.id;
+                  foo = fieldValue.id;
                 }
               } else if (value) {
-                currentId = value;
+                foo = value;
               }
 
               let currentValue;
-              if (currentId) {
+              if (foo) {
                 if (isMulti) {
-                  currentValue = currentId
-                    .map(i => options.find(option => option.value === i) || null)
+                  currentValue = foo
+                    .map(i => options.find(option => option.value.id === i) || null)
                     .filter(i => i);
                 } else {
-                  currentValue = options.find(option => option.value === currentId) || null;
+                  currentValue = options.find(option => option.value.id === foo) || null;
                 }
               }
 
@@ -169,6 +169,7 @@ const RelationshipSelect = ({
                     },
                     [count, refList.gqlNames.listQueryName]
                   )}
+                  getOptionValue={option => option.value.id}
                   value={currentValue}
                   placeholder={canRead ? undefined : itemErrors[field.path].message}
                   options={options}
