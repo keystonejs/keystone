@@ -130,8 +130,11 @@ const RelationshipSelect = ({
                           const ref = useRef(null);
 
                           useIntersectionObserver(([{ isIntersecting }]) => {
-                            console.log(children.length, count);
-                            if (!props.isLoading && isIntersecting && children.length < count) {
+                            if (
+                              !props.isLoading &&
+                              isIntersecting &&
+                              props.options.length < count
+                            ) {
                               fetchMore({
                                 query: gql`query RelationshipSelectMore($search: String!, $skip: Int!) {${refList.buildQuery(
                                   refList.gqlNames.listQueryName,
@@ -139,7 +142,7 @@ const RelationshipSelect = ({
                                 )}}`,
                                 variables: {
                                   search,
-                                  skip: children.length,
+                                  skip: props.options.length,
                                 },
                                 updateQuery: (prev, { fetchMoreResult }) => {
                                   if (!fetchMoreResult) return prev;
