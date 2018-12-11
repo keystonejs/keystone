@@ -3,7 +3,6 @@ import * as React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Select } from '@voussoir/ui/src/primitives/filters';
-import { pick } from '@voussoir/utils';
 import { components } from 'react-select';
 import 'intersection-observer';
 import { useState, useMemo, useRef, useEffect } from '@voussoir/ui/src/new-typed-react';
@@ -74,35 +73,42 @@ const RelationshipSelect = ({
         return (
           <Render>
             {() => {
-              const options =
+              const _options =
                 data && data[refList.gqlNames.listQueryName]
-                  ? data[refList.gqlNames.listQueryName].map(listData => ({
-                      value: pick(listData, ['id']),
-                      label: listData._label_,
-                    }))
+                  ? data[refList.gqlNames.listQueryName]
                   : [];
+              // ensure there are no duplicates
+              const optionsMap: { [key: string]: { value: string, label: string } } = {};
+              _options.forEach(({ id, _label_ }) => {
+                optionsMap[id] = {
+                  value: id,
+                  label: _label_,
+                };
+              });
+
+              const options = Object.keys(optionsMap).map(key => optionsMap[key]);
 
               // Collect IDs to represent and convert them into a value.
-              let foo;
+              let currentId;
               if (item && canRead) {
                 const fieldValue = item[field.path];
                 if (isMulti) {
-                  foo = (Array.isArray(fieldValue) ? fieldValue : []).map(i => i.id);
+                  currentId = Array.isArray(fieldValue) ? fieldValue.map(i => i.id) : [];
                 } else if (fieldValue) {
-                  foo = fieldValue.id;
+                  currentId = fieldValue.id;
                 }
               } else if (value) {
-                foo = value;
+                currentId = value;
               }
 
               let currentValue;
-              if (foo) {
+              if (currentId) {
                 if (isMulti) {
-                  currentValue = foo
-                    .map(i => options.find(option => option.value.id === i) || null)
+                  currentValue = currentId
+                    .map(i => options.find(option => option.value === i) || null)
                     .filter(i => i);
                 } else {
-                  currentValue = options.find(option => option.value.id === foo) || null;
+                  currentValue = options.find(option => option.value === currentId) || null;
                 }
               }
 
@@ -124,6 +130,7 @@ const RelationshipSelect = ({
                           const ref = useRef(null);
 
                           useIntersectionObserver(([{ isIntersecting }]) => {
+                            console.log(children.length, count);
                             if (!props.isLoading && isIntersecting && children.length < count) {
                               fetchMore({
                                 query: gql`query RelationshipSelectMore($search: String!, $skip: Int!) {${refList.buildQuery(
@@ -161,7 +168,6 @@ const RelationshipSelect = ({
                   )}
                   value={currentValue}
                   placeholder={canRead ? undefined : itemErrors[field.path].message}
-                  getOptionValue={option => option.value.id}
                   options={options}
                   onChange={onChange}
                   id={`react-select-${htmlID}`}
