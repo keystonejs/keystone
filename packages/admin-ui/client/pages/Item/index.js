@@ -191,7 +191,8 @@ const ItemDetails = withRouter(
         />
       );
     }
-    onSave = () => {
+    onSave = event => {
+      event.preventDefault();
       const { item } = this.state;
       const {
         list: { fields },
@@ -310,7 +311,6 @@ const ItemDetails = withRouter(
             })}
 
             <Footer
-              onSave={this.onSave}
               onDelete={this.openDeleteModal}
               resetInterface={this.renderResetInterface()}
               updateInProgress={updateInProgress}

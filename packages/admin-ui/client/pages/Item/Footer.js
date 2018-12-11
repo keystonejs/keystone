@@ -21,7 +21,7 @@ const Toolbar = styled.div({
 });
 
 export default function Footer(props) {
-  const { onSave, onDelete, resetInterface, updateInProgress } = props;
+  const { onDelete, resetInterface, updateInProgress } = props;
 
   return (
     <ContainerQuery
@@ -34,7 +34,6 @@ export default function Footer(props) {
                 appearance="primary"
                 isDisabled={updateInProgress}
                 isLoading={updateInProgress}
-                onClick={onSave}
                 style={{ marginRight: 8 }}
                 type="submit"
               >
