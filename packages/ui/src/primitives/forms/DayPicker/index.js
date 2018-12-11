@@ -228,7 +228,7 @@ export const DayPicker = ({
             <HeaderButton
               disabled={!canGoNextMonth}
               onClick={() => {
-                controlledSetDate(addMonths(date, 1));
+                controlledSetDate(currentDate => addMonths(currentDate, 1));
               }}
             >
               <ChevronRightIcon />
