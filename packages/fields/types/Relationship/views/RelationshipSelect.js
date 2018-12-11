@@ -78,7 +78,7 @@ const RelationshipSelect = ({
                   ? data[refList.gqlNames.listQueryName]
                   : [];
               // ensure there are no duplicates
-              const optionsMap: { [key: string]: { value: string, label: string } } = {};
+              const optionsMap: { [key: string]: { value: { id: string }, label: string } } = {};
               _options.forEach(({ id, _label_ }) => {
                 optionsMap[id] = {
                   value: { id },
