@@ -73,21 +73,16 @@ const RelationshipSelect = ({
         return (
           <Render>
             {() => {
-              const _options =
+              const options =
                 data && data[refList.gqlNames.listQueryName]
-                  ? data[refList.gqlNames.listQueryName]
+                  ? data[refList.gqlNames.listQueryName].map(({ id, _label_ }) => {
+                      return {
+                        value: { id },
+                        label: _label_,
+                      };
+                    })
                   : [];
-              // ensure there are no duplicates
-              const optionsMap: { [key: string]: { value: { id: string }, label: string } } = {};
-              _options.forEach(({ id, _label_ }) => {
-                optionsMap[id] = {
-                  value: { id },
-                  label: _label_,
-                };
-              });
 
-              const options = Object.keys(optionsMap).map(key => optionsMap[key]);
-              console.log(value);
               // Collect IDs to represent and convert them into a value.
               let foo;
               if (item && canRead) {
