@@ -23,8 +23,7 @@ type Props = {
 
 function useIntersectionObserver(cb, ref) {
   useEffect(() => {
-    // $FlowFixMe flow is wrong, the second argument is optional
-    let observer = new IntersectionObserver(cb);
+    let observer = new IntersectionObserver(cb, {});
     let node = ref.current;
     if (node !== null) {
       observer.observe(node);
