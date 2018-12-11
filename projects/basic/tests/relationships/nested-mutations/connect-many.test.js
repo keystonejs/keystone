@@ -137,30 +137,6 @@ describe('no access control', () => {
         createUsers: [{ id: expect.any(String) }, { id: expect.any(String) }],
       });
       expect(createUsersOneNote.body).not.toHaveProperty('errors');
-
-      // Create an item that does the linking
-      const createUsersManyNotes = await graphqlRequest({
-        server,
-        query: `
-        mutation {
-          createUsers(data: [
-            { data: { username: "A thing 1", notes: { connect: [{ id: "${
-              createNote.id
-            }" }, { id: "${createNote2.id}" }] } } },
-            { data: { username: "A thing 2", notes: { connect: [{ id: "${
-              createNote2.id
-            }" }, { id: "${createNote.id}" }] } } }
-          ]) {
-            id
-          }
-        }
-    `,
-      });
-
-      expect(createUsersManyNotes.body.data).toMatchObject({
-        createUsers: [{ id: expect.any(String) }, { id: expect.any(String) }],
-      });
-      expect(createUsersManyNotes.body).not.toHaveProperty('errors');
     })
   );
 
