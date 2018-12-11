@@ -82,7 +82,7 @@ export const SelectYear: React.ComponentType<SelectYearProps> = memo(
       return (
         <select id="ks-select-year" onChange={handleChange} value={internalValue}>
           {years.map((yearOption, i) => (
-            <option key={i} value={year}>
+            <option key={i} value={yearOption}>
               {yearOption}
             </option>
           ))}
