@@ -143,6 +143,7 @@ keystone.createList('SomeLongNamedList', {
 
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
+  sortListsAlphabetically: true,
 });
 
 const server = new WebServer(keystone, {
@@ -150,12 +151,6 @@ const server = new WebServer(keystone, {
   'admin ui': admin,
   port,
 });
-
-server.app.use(
-  keystone.session.validate({
-    valid: ({ req, item }) => (req.user = item),
-  })
-);
 
 server.app.get('/reset-db', (req, res) => {
   const reset = async () => {

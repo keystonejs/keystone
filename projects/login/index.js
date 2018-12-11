@@ -65,7 +65,7 @@ server.app.post(
   bodyParser.urlencoded({ extended: true }),
   async (req, res, next) => {
     // Cleanup any previous session
-    await keystone.session.destroy(req);
+    await keystone.sessionManager.endAuthedSession(req);
 
     try {
       const result = await keystone.auth.User.password.validate({
@@ -77,7 +77,7 @@ server.app.post(
           success: false,
         });
       }
-      await keystone.session.create(req, result);
+      await keystone.sessionManager.startAuthedSession(req, result);
       res.json({
         success: true,
         itemId: result.item.id,
@@ -91,7 +91,7 @@ server.app.post(
 
 server.app.get('/signout', async (req, res, next) => {
   try {
-    await keystone.session.destroy(req);
+    await keystone.sessionManager.endAuthedSession(req);
     res.json({
       success: true,
     });

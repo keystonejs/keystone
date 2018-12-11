@@ -1,6 +1,6 @@
 {
   "name": "@voussoir/mongo-join-builder",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Jess Telford",
   "license": "MIT",
   "engines": {
@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "lodash.omitby": "^4.6.0",
-    "mongodb": "^3.1.7",
-    "mongodb-memory-server": "^2.4.3"
+    "mongodb": "^3.1.10",
+    "mongodb-memory-server": "^2.7.4"
   }
 }

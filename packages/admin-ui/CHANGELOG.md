@@ -1,5 +1,38 @@
 # @voussoir/admin-ui
 
+## 0.7.0
+
+- [patch] 32960e4d:
+
+  - Improve accessibility
+
+- [minor] 8145619f:
+
+  - update to selecting and managing items in the list view
+
+- [patch] e3b48810:
+
+  - Use babel 7
+
+- [patch] d22820b1:
+
+  - Rename keystone.session to keystone.sessionManager
+    - Rename keystone.session.validate to keystone.sessionManager.populateAuthedItemMiddleware
+    - Rename keystone.session.create to keystone.sessionManager.startAuthedSession
+    - Rename keystone.session.destroy to keystone.sessionManager.endAuthedSession
+
+- [patch] 8fc0abb3:
+
+  - Make DayPicker scrollable
+
+- [patch] fc1a9055:
+
+  - Update dependencies to latest patch versions
+
+- Updated dependencies [c83c9ed5]:
+- Updated dependencies [01718870]:
+  - @voussoir/fields@2.0.0
+
 ## 0.6.0
 
 - [minor] 7a24b92e:

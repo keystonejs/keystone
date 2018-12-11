@@ -10,7 +10,7 @@ import {
   format,
   setMonth,
 } from 'date-fns';
-import { memo } from '../../../new-typed-react';
+import { memo, useRef, useEffect } from '../../../new-typed-react';
 import { colors } from '../../../theme';
 import { months, type Weeks } from './utils';
 import { WeekRow, Day } from './comps';
@@ -19,6 +19,7 @@ type Props = {
   style: Object,
   index: number,
   data: {
+    observer: IntersectionObserver,
     setSelectedDate: Date => void,
     selectedDate: Date,
     items: Array<{
@@ -39,10 +40,22 @@ const TodayMarker = styled.div(({ isSelected }) => ({
 }));
 
 export const Month: React.ComponentType<Props> = memo(({ style, index, data }) => {
-  const { items, selectedDate, setSelectedDate } = data;
+  const { items, selectedDate, setSelectedDate, observer } = data;
+  const ref = useRef(null);
+
+  useEffect(
+    () => {
+      const node = ref.current;
+      if (node !== null) {
+        observer.observe(node);
+        return () => observer.unobserve(node);
+      }
+    },
+    [observer]
+  );
   const { weeks, month, year } = items[index];
   return (
-    <div style={style}>
+    <div ref={ref} data-index={index} style={style}>
       <MonthHeader month={month} year={year} />
       {weeks.map((week, i) => (
         <WeekRow key={i}>

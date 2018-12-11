@@ -1,5 +1,69 @@
 # @voussoir/fields
 
+## 2.0.0
+
+- [patch] 21626b66:
+
+  - preSave/postRead item hooks run consistently
+
+- [patch] 8145619f:
+
+  - update to selecting and managing items in the list view
+
+- [minor] cd885800:
+
+  - Update the field hooks API to use the officially sanctioned hook names.
+
+- [major] c83c9ed5:
+
+  - Add Keystone.getAccessContext and remove List.getAccessControl, List.getFieldAccessControl, and Field.validateAccessControl.
+
+- [patch] c3ebd9e6:
+
+  - Update resolver code to make all list access checks explicit
+
+- [patch] 8ab899dd:
+
+  - Internal refactor of nested mutation handling for relationships
+
+- [patch] 929b177c:
+
+  - Enable sorting on DateTime fields
+
+- [minor] 33843c9e:
+
+  - Update the backlink queue API
+
+- [major] 01718870:
+
+  - Field configuration now tasks isRequired and isUnique, rather than required and unique
+
+- [minor] 3801e040:
+
+  - Separate out the pre-hooks for resolving relationship fields from the field.resolveInput hooks
+
+- [patch] 023a5c72:
+
+  - Enable setting DateTime to null
+
+- [patch] d22820b1:
+
+  - Rename keystone.session to keystone.sessionManager
+    - Rename keystone.session.validate to keystone.sessionManager.populateAuthedItemMiddleware
+    - Rename keystone.session.create to keystone.sessionManager.startAuthedSession
+    - Rename keystone.session.destroy to keystone.sessionManager.endAuthedSession
+
+- [patch] 8fc0abb3:
+
+  - Make DayPicker scrollable
+
+- [patch] fc1a9055:
+
+  - Update dependencies to latest patch versions
+
+- Updated dependencies [ffc98ac4]:
+  - @voussoir/access-control@0.4.0
+
 ## 1.4.0
 
 - [minor] 3ae588b7:

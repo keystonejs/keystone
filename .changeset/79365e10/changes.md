@@ -1,1 +1,0 @@
-- Field configuration now tasks isRequired and isUnique, rather than required and unique

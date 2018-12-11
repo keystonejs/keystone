@@ -1,3 +1,5 @@
+const pWaterfall = require('p-waterfall');
+
 class BaseKeystoneAdapter {
   constructor(config) {
     this.config = {
@@ -34,6 +36,9 @@ class BaseListAdapter {
     this.parentAdapter = parentAdapter;
     this.fieldAdapters = [];
     this.config = config;
+
+    this.preSaveHooks = [];
+    this.postReadHooks = [];
   }
 
   newFieldAdapter(fieldAdapterClass, name, path, getListByKey, config) {
@@ -44,6 +49,26 @@ class BaseListAdapter {
   }
 
   prepareFieldAdapter() {}
+
+  addPreSaveHook(hook) {
+    this.preSaveHooks.push(hook);
+  }
+
+  addPostReadHook(hook) {
+    this.postReadHooks.push(hook);
+  }
+
+  onPreSave(item) {
+    // We waterfall so the final item is a composed version of the input passing
+    // through each consecutive hook
+    return pWaterfall(this.preSaveHooks, item);
+  }
+
+  onPostRead(item) {
+    // We waterfall so the final item is a composed version of the input passing
+    // through each consecutive hook
+    return pWaterfall(this.postReadHooks, item);
+  }
 }
 
 class BaseFieldAdapter {

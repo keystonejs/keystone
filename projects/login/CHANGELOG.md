@@ -1,5 +1,33 @@
 # @voussoir/cypress-project-login
 
+## 1.2.3
+
+- [patch] d22820b1:
+
+  - Rename keystone.session to keystone.sessionManager
+    - Rename keystone.session.validate to keystone.sessionManager.populateAuthedItemMiddleware
+    - Rename keystone.session.create to keystone.sessionManager.startAuthedSession
+    - Rename keystone.session.destroy to keystone.sessionManager.endAuthedSession
+
+- [patch] fc1a9055:
+
+  - Update dependencies to latest patch versions
+
+- Updated dependencies [8145619f]:
+- Updated dependencies [c83c9ed5]:
+- Updated dependencies [c3ebd9e6]:
+- Updated dependencies [ebae2d6f]:
+- Updated dependencies [78fd9555]:
+- Updated dependencies [01718870]:
+- Updated dependencies [8fc0abb3]:
+  - @voussoir/admin-ui@0.7.0
+  - @voussoir/fields@2.0.0
+  - @voussoir/ui@0.6.0
+  - @voussoir/adapter-mongoose@1.0.0
+  - @voussoir/test-utils@0.1.3
+  - @voussoir/core@1.0.0
+  - @voussoir/server@0.5.0
+
 ## 1.2.2
 
 - Updated dependencies [45d4c379]:

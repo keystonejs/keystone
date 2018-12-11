@@ -225,7 +225,10 @@ class MongooseListAdapter extends BaseListAdapter {
   }
 
   prepareFieldAdapter(fieldAdapter) {
-    fieldAdapter.addToMongooseSchema(this.schema, this.mongoose);
+    fieldAdapter.addToMongooseSchema(this.schema, this.mongoose, {
+      addPreSaveHook: this.addPreSaveHook.bind(this),
+      addPostReadHook: this.addPostReadHook.bind(this),
+    });
   }
 
   /**
@@ -285,34 +288,43 @@ class MongooseListAdapter extends BaseListAdapter {
     return deferredIndex.promise.then(() => this.model);
   }
 
-  create(data) {
-    return this.model.create(data);
+  async create(data) {
+    const dataToSave = await this.onPreSave(data);
+    const createdData = await this.model.create(dataToSave);
+    return this.onPostRead(createdData);
   }
 
-  delete(id) {
-    return this.model.findByIdAndRemove(id);
+  async delete(id) {
+    const deletedData = await this.model.findByIdAndRemove(id);
+    return this.onPostRead(deletedData);
   }
 
-  update(id, data) {
+  async update(id, data) {
+    const dataToSave = await this.onPreSave(data);
     // Avoid any kind of injection attack by explicitly doing a `$set` operation
     // Return the modified item, not the original
-    return this.model.findByIdAndUpdate(id, { $set: data }, { new: true });
+    const updatedData = await this.model.findByIdAndUpdate(id, { $set: dataToSave }, { new: true });
+    return this.onPostRead(updatedData);
   }
 
-  findAll() {
-    return this.model.find();
+  async findAll() {
+    const foundItems = await this.model.find();
+    return Promise.all(foundItems.map(item => this.onPostRead(item)));
   }
 
-  findById(id) {
-    return this.model.findById(id);
+  async findById(id) {
+    const foundItem = await this.model.findById(id);
+    return this.onPostRead(foundItem);
   }
 
-  find(condition) {
-    return this.model.find(condition);
+  async find(condition) {
+    const foundItems = await this.model.find(condition);
+    return Promise.all(foundItems.map(item => this.onPostRead(item)));
   }
 
-  findOne(condition) {
-    return this.model.findOne(condition);
+  async findOne(condition) {
+    const foundItem = await this.model.findOne(condition);
+    return this.onPostRead(foundItem);
   }
 
   graphQlQueryPathToMongoField(path) {
@@ -362,17 +374,21 @@ class MongooseListAdapter extends BaseListAdapter {
     }
 
     return this.queryBuilder(query, pipeline => this.model.aggregate(pipeline).exec()).then(
-      data => {
+      foundItems => {
         if (meta) {
           // When there are no items, we get undefined back, so we simulate the
           // normal result of 0 items.
-          if (!data[0]) {
+          if (!foundItems[0]) {
             return { count: 0 };
           }
-          return data[0];
+          return foundItems[0];
         }
 
-        return data;
+        if (foundItems.length) {
+          return Promise.all(foundItems.map(item => this.onPostRead(item)));
+        } else {
+          return foundItems;
+        }
       }
     );
   }
@@ -496,79 +512,6 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
 
   hasQueryCondition() {
     return false;
-  }
-
-  addToServerHook(schema, toServerSide) {
-    schema.pre('validate', async function() {
-      await toServerSide(this);
-    });
-
-    // These are "Query middleware"; they differ from "document" middleware..
-    // ".. `this` refers to the query object rather than the document being updated."
-    schema.pre('update', async function() {
-      await toServerSide(this['_update'].$set || this['_update']);
-    });
-    schema.pre('updateOne', async function() {
-      await toServerSide(this['_update'].$set || this['_update']);
-    });
-    schema.pre('updateMany', async function() {
-      await toServerSide(this['_update'].$set || this['_update']);
-    });
-    schema.pre('findOneAndUpdate', async function() {
-      await toServerSide(this['_update'].$set || this['_update']);
-    });
-
-    // Model middleware
-    // Docs as second arg? (https://github.com/Automattic/mongoose/commit/3d62d3558c15ec852bdeaab1a5138b1853b4f7cb)
-    schema.pre('insertMany', async function(next, docs) {
-      for (let doc of docs) {
-        await toServerSide(doc);
-      }
-    });
-  }
-
-  addToClientHook(schema, toClientSide) {
-    schema.post('aggregate', function(results) {
-      results.forEach(r => toClientSide(r));
-    });
-
-    schema.post('find', function(results) {
-      results.forEach(r => toClientSide(r));
-    });
-    schema.post('findById', function(result) {
-      toClientSide(result);
-    });
-    schema.post('findOne', function(result) {
-      toClientSide(result);
-    });
-    // After saving, we return the result to the client, so we have to parse it
-    // back again
-    schema.post('save', function() {
-      toClientSide(this);
-    });
-
-    // These are "Query middleware"; they differ from "document" middleware..
-    // ".. `this` refers to the query object rather than the document being updated."
-    schema.post('update', function() {
-      toClientSide(this['_update'].$set || this['_update']);
-    });
-    schema.post('updateOne', function() {
-      toClientSide(this['_update'].$set || this['_update']);
-    });
-    schema.post('updateMany', function() {
-      toClientSide(this['_update'].$set || this['_update']);
-    });
-    schema.post('findOneAndUpdate', function() {
-      toClientSide(this['_update'].$set || this['_update']);
-    });
-
-    // Model middleware
-    // Docs as second arg? (https://github.com/Automattic/mongoose/commit/3d62d3558c15ec852bdeaab1a5138b1853b4f7cb)
-    schema.post('insertMany', function(next, docs) {
-      for (let doc of docs) {
-        toClientSide(doc);
-      }
-    });
   }
 
   getMongoFieldName() {

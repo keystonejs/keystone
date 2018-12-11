@@ -1,5 +1,21 @@
 # @voussoir/test-utils
 
+## 0.1.3
+
+- [patch] fc1a9055:
+
+  - Update dependencies to latest patch versions
+
+- Updated dependencies [c83c9ed5]:
+- Updated dependencies [c3ebd9e6]:
+- Updated dependencies [ebae2d6f]:
+- Updated dependencies [78fd9555]:
+- Updated dependencies [01718870]:
+- Updated dependencies [d22820b1]:
+  - @voussoir/adapter-mongoose@1.0.0
+  - @voussoir/core@1.0.0
+  - @voussoir/server@0.5.0
+
 ## 0.1.2
 
 - [patch] 9c383fe8:

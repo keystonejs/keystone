@@ -1,5 +1,61 @@
 # @voussoir/core
 
+## 1.0.0
+
+- [patch] a95e0c69:
+
+  - Report correct gqlName when reporting errors in deleteMutation
+
+- [patch] 21626b66:
+
+  - preSave/postRead item hooks run consistently
+
+- [patch] 84b62eaa:
+
+  - Decouple access of items in the database from operations of them provide room for pre/post hooks
+
+- [patch] cd885800:
+
+  - Update the field hooks API to use the officially sanctioned hook names.
+
+- [patch] c6fff24c:
+
+  - Call field hooks when deleting many items at once.
+
+- [major] c83c9ed5:
+
+  - Add Keystone.getAccessContext and remove List.getAccessControl, List.getFieldAccessControl, and Field.validateAccessControl.
+
+- [patch] ffc98ac4:
+
+  - Rename the access control function parameter `item` to `existingItem`
+
+- [minor] c3ebd9e6:
+
+  - Update resolver code to make all list access checks explicit
+
+- [minor] ebae2d6f:
+
+  - Minor tweaks to the graphQL schema behaviour
+
+- [major] 78fd9555:
+
+  - Field configuration now tasks isRequired and isUnique, rather than required and unique
+
+- [patch] 3801e040:
+
+  - Separate out the pre-hooks for resolving relationship fields from the field.resolveInput hooks
+
+- [major] d22820b1:
+
+  - Rename keystone.session to keystone.sessionManager
+    - Rename keystone.session.validate to keystone.sessionManager.populateAuthedItemMiddleware
+    - Rename keystone.session.create to keystone.sessionManager.startAuthedSession
+    - Rename keystone.session.destroy to keystone.sessionManager.endAuthedSession
+
+- Updated dependencies [01718870]:
+  - @voussoir/fields@2.0.0
+
 ## 0.7.0
 
 - [patch] d1777cc1:

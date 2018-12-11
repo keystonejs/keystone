@@ -232,7 +232,7 @@ describe('new List()', () => {
   test('new List() - adapter', () => {
     const list = setup();
     expect(list.adapter).toBeInstanceOf(MockListAdapter);
-    expect(list.adapter.prepareModel).toBeCalled();
+    expect(list.adapter.prepareModel).toHaveBeenCalled();
   });
 });
 

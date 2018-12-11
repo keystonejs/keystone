@@ -1,19 +1,20 @@
 {
   "name": "@voussoir/ui",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@emotion/core": "^10.0.0",
-    "@emotion/styled": "^10.0.0",
-    "@voussoir/icons": "^0.2.0",
+    "@emotion/core": "^10.0.4",
+    "@emotion/styled": "^10.0.4",
+    "@voussoir/icons": "^0.3.0",
     "date-fns": "^1.29.0",
-    "emotion": "^10.0.0",
+    "emotion": "^10.0.4",
     "flushable": "^1.0.0",
     "focus-trap": "^2.4.3",
+    "intersection-observer": "^0.5.1",
     "kalendaryo": "^1.10.0",
     "memoize-one": "^4.0.2",
     "prop-types": "^15.6.1",
@@ -23,7 +24,7 @@
     "react-radios": "^1.1.0",
     "react-router-dom": "^4.2.2",
     "react-scrolllock": "^3.0.1",
-    "react-select": "^2.0.0",
+    "react-select": "^2.1.2",
     "react-transition-group": "^2.3.1",
     "react-window": "^1.2.4"
   },

@@ -1,1 +1,0 @@
-- Decouple access of items in the database from operations of them provide room for pre/post hooks

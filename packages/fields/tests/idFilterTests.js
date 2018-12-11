@@ -16,14 +16,11 @@ export const initItems = () => {
 
 const getIDs = async keystone => {
   const IDs = {};
-  await keystone.lists['test'].adapter
-    .findAll()
-    .exec()
-    .then(data => {
-      data.forEach(entry => {
-        IDs[entry.name] = entry._id.toString();
-      });
+  await keystone.lists['test'].adapter.findAll().then(data => {
+    data.forEach(entry => {
+      IDs[entry.name] = entry._id.toString();
     });
+  });
   return IDs;
 };
 

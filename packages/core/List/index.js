@@ -802,22 +802,32 @@ module.exports = class List {
   async _validateInput(resolvedData, existingItem, context, operation, originalInput) {
     const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
     const fields = this._fieldsFromObject(resolvedData);
+    this._validateHook(args, fields, operation, 'validateInput');
+  }
 
+  async _validateDelete(existingItem, context, operation) {
+    const args = { existingItem, context, adapter: this.adapter };
+    const fields = this.fields;
+    this._validateHook(args, fields, operation, 'validateDelete');
+  }
+
+  async _validateHook(args, fields, operation, hookName) {
+    const { originalInput } = args;
     const fieldValidationErrors = [];
     // FIXME: Can we do this in a way where we simply return validation errors instead?
     args.addFieldValidationError = (msg, _data = {}, internalData = {}) =>
       fieldValidationErrors.push({ msg, data: _data, internalData });
-    await this._mapToFields(fields, field => field.validateInput(args));
-    await this._mapToFields(fields.filter(field => field.config.hooks.validateInput), field =>
-      field.config.hooks.validateInput(args)
+    await this._mapToFields(fields, field => field[hookName](args));
+    await this._mapToFields(fields.filter(field => field.config.hooks[hookName]), field =>
+      field.config.hooks[hookName](args)
     );
     if (fieldValidationErrors.length) {
       this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
     }
 
-    if (this.config.hooks.validateInput) {
+    if (this.config.hooks[hookName]) {
       const listValidationErrors = [];
-      await this.config.hooks.validateInput({
+      await this.config.hooks[hookName]({
         ...args,
         addValidationError: (msg, _data = {}, internalData = {}) =>
           listValidationErrors.push({ msg, data: _data, internalData }),
@@ -828,89 +838,60 @@ module.exports = class List {
     }
   }
 
-  async _validateDelete(existingItem, context, operation) {
-    const args = { existingItem, context, adapter: this.adapter };
-    const fields = this.fields;
-
-    const fieldValidationErrors = [];
-    args.addValidationError = (msg, _data = {}, internalData = {}) =>
-      fieldValidationErrors.push({ msg, data: _data, internalData });
-    await this._mapToFields(fields, field => field.validateDelete(args));
-    await this._mapToFields(fields.filter(field => field.config.hooks.validateDelete), field =>
-      field.config.hooks.validateDelete(args)
-    );
-    if (fieldValidationErrors.length) {
-      this._throwValidationFailure(fieldValidationErrors, operation);
-    }
-
-    if (this.config.hooks.validateDelete) {
-      const listValidationErrors = [];
-      await this.config.hooks.validateDelete({
-        ...args,
-        addValidationError: (msg, _data = {}, internalData = {}) =>
-          listValidationErrors.push({ msg, data: _data, internalData }),
-      });
-
-      if (listValidationErrors.length) {
-        this._throwValidationFailure(listValidationErrors, operation);
-      }
-    }
-  }
-
   async _beforeChange(resolvedData, existingItem, context, originalInput) {
     const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
-    const fields = this._fieldsFromObject(resolvedData);
-
-    await this._mapToFields(fields, field => field.beforeChange(args));
-    await this._mapToFields(fields.filter(field => field.config.hooks.beforeChange), field =>
-      field.config.hooks.beforeChange(args)
-    );
-
-    if (this.config.hooks.beforeChange) {
-      await this.config.hooks.beforeChange(args);
-    }
+    this._runHook(args, resolvedData, 'beforeChange');
   }
 
   async _beforeDelete(existingItem, context) {
     const args = { existingItem, context, adapter: this.adapter };
-    const fields = this._fieldsFromObject(existingItem);
-
-    await this._mapToFields(fields, field => field.beforeDelete(args));
-    await this._mapToFields(fields.filter(field => field.config.hooks.beforeDelete), field =>
-      field.config.hooks.beforeDelete(args)
-    );
-
-    if (this.config.hooks.beforeDelete) {
-      await this.config.hooks.beforeDelete(args);
-    }
+    this._runHook(args, existingItem, 'beforeDelete');
   }
 
   async _afterChange(updatedItem, existingItem, context, originalInput) {
     const args = { updatedItem, originalInput, existingItem, context, adapter: this.adapter };
-    const fields = this._fieldsFromObject(originalInput);
-
-    await this._mapToFields(fields, field => field.afterChange(args));
-    await this._mapToFields(fields.filter(field => field.config.hooks.afterChange), field =>
-      field.config.hooks.afterChange(args)
-    );
-
-    if (this.config.hooks.afterChange) {
-      await this.config.hooks.afterChange(args);
-    }
+    this._runHook(args, originalInput, 'afterChange');
   }
 
   async _afterDelete(existingItem, context) {
     const args = { existingItem, context, adapter: this.adapter };
-    const fields = this._fieldsFromObject(existingItem);
+    this._runHook(args, existingItem, 'afterDelete');
+  }
 
-    await this._mapToFields(fields, field => field.afterDelete(args));
-    await this._mapToFields(fields.filter(field => field.config.hooks.afterDelete), field =>
-      field.config.hooks.afterDelete(args)
+  async _runHook(args, fieldObject, hookName) {
+    const fields = this._fieldsFromObject(fieldObject);
+    await this._mapToFields(fields, field => field[hookName](args));
+    await this._mapToFields(fields.filter(field => field.config.hooks[hookName]), field =>
+      field.config.hooks[hookName](args)
     );
 
-    if (this.config.hooks.afterDelete) {
-      await this.config.hooks.afterDelete(args);
+    if (this.config.hooks[hookName]) await this.config.hooks[hookName](args);
+  }
+
+  async _nestedMutation(mutationState, context, mutation) {
+    // Set up a fresh mutation state if we're the root mutation
+    const isRootMutation = !mutationState;
+    if (isRootMutation) {
+      mutationState = { afterChangeStack: [], queues: {} };
     }
+
+    // Perform the mutation
+    const { result, afterHook } = await mutation(mutationState);
+
+    // resolve backlinks
+    await Relationship.resolveBacklinks(context, mutationState);
+
+    // Push after-hook onto the stack and resolve all if we're the root.
+    const { afterChangeStack } = mutationState;
+    afterChangeStack.push(afterHook);
+    if (isRootMutation) {
+      while (afterChangeStack.length) {
+        await afterChangeStack.pop()();
+      }
+    }
+
+    // Return the result of the mutation
+    return result;
   }
 
   async createMutation(data, context, mutationState) {
@@ -923,62 +904,49 @@ module.exports = class List {
 
     this.checkFieldAccess(operation, existingItem, data, context, { gqlName });
 
-    const isRootMutation = !mutationState;
-    if (isRootMutation) {
-      mutationState = { afterChangeStack: [], queues: {} };
-    }
+    return await this._nestedMutation(mutationState, context, async mutationState => {
+      const defaultedItem = await this._resolveDefaults(data);
 
-    const defaultedItem = await this._resolveDefaults(data);
+      // Enable resolveRelationship to perform some action after the item is created by
+      // giving them a promise which will eventually resolve with the value of the
+      // newly created item.
+      const createdPromise = createLazyDeferred();
 
-    // Enable pre-hooks to perform some action after the item is created by
-    // giving them a promise which will eventually resolve with the value of the
-    // newly created item.
-    const createdPromise = createLazyDeferred();
+      let resolvedData = await this._resolveRelationship(
+        defaultedItem,
+        existingItem,
+        context,
+        createdPromise.promise,
+        mutationState
+      );
 
-    let resolvedData = await this._resolveRelationship(
-      defaultedItem,
-      existingItem,
-      context,
-      createdPromise.promise,
-      mutationState
-    );
+      resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
 
-    resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
+      await this._validateInput(resolvedData, existingItem, context, operation, data);
 
-    await this._validateInput(resolvedData, existingItem, context, operation, data);
+      await this._beforeChange(resolvedData, existingItem, context, operation, data);
 
-    await this._beforeChange(resolvedData, existingItem, context, operation, data);
-
-    let newItem;
-    try {
-      newItem = await this.adapter.create(resolvedData);
-      createdPromise.resolve(newItem);
-      // Wait until next tick so the promise/micro-task queue can be flushed
-      // fully, ensuring the deferred handlers get executed before we move on
-      await new Promise(res => process.nextTick(res));
-    } catch (error) {
-      createdPromise.reject(error);
-      // Wait until next tick so the promise/micro-task queue can be flushed
-      // fully, ensuring the deferred handlers get executed before we move on
-      await new Promise(res => process.nextTick(res));
-      // Rethrow the error to ensure it's surfaced to Apollo
-      throw error;
-    }
-
-    await Relationship.resolveBacklinks(context, mutationState);
-
-    mutationState.afterChangeStack.push(() =>
-      this._afterChange(newItem, existingItem, context, operation, data)
-    );
-
-    if (isRootMutation) {
-      const { afterChangeStack } = mutationState;
-      while (afterChangeStack.length) {
-        await afterChangeStack.pop()();
+      let newItem;
+      try {
+        newItem = await this.adapter.create(resolvedData);
+        createdPromise.resolve(newItem);
+        // Wait until next tick so the promise/micro-task queue can be flushed
+        // fully, ensuring the deferred handlers get executed before we move on
+        await new Promise(res => process.nextTick(res));
+      } catch (error) {
+        createdPromise.reject(error);
+        // Wait until next tick so the promise/micro-task queue can be flushed
+        // fully, ensuring the deferred handlers get executed before we move on
+        await new Promise(res => process.nextTick(res));
+        // Rethrow the error to ensure it's surfaced to Apollo
+        throw error;
       }
-    }
 
-    return newItem;
+      return {
+        result: newItem,
+        afterHook: () => this._afterChange(newItem, existingItem, context, operation, data),
+      };
+    });
   }
 
   async updateMutation(id, data, context, mutationState) {
@@ -996,46 +964,33 @@ module.exports = class List {
 
     this.checkFieldAccess(operation, existingItem, data, context, { gqlName, extraData });
 
-    const isRootMutation = !mutationState;
-    if (isRootMutation) {
-      mutationState = { afterChangeStack: [], queues: {} };
-    }
+    return await this._nestedMutation(mutationState, context, async mutationState => {
+      let resolvedData = await this._resolveRelationship(
+        data,
+        existingItem,
+        context,
+        undefined,
+        mutationState
+      );
 
-    let resolvedData = await this._resolveRelationship(
-      data,
-      existingItem,
-      context,
-      undefined,
-      mutationState
-    );
+      resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
 
-    resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
+      await this._validateInput(resolvedData, existingItem, context, operation, data);
 
-    await this._validateInput(resolvedData, existingItem, context, operation, data);
+      await this._beforeChange(resolvedData, existingItem, context, operation, data);
 
-    await this._beforeChange(resolvedData, existingItem, context, operation, data);
+      const newItem = await this.adapter.update(id, resolvedData);
 
-    const newItem = await this.adapter.update(id, resolvedData);
-
-    await Relationship.resolveBacklinks(context, mutationState);
-
-    mutationState.afterChangeStack.push(() =>
-      this._afterChange(newItem, existingItem, context, operation, data)
-    );
-
-    if (isRootMutation) {
-      const { afterChangeStack } = mutationState;
-      while (afterChangeStack.length) {
-        await afterChangeStack.pop()();
-      }
-    }
-
-    return newItem;
+      return {
+        result: newItem,
+        afterHook: () => this._afterChange(newItem, existingItem, context, operation, data),
+      };
+    });
   }
 
   async deleteMutation(id, context, mutationState) {
     const operation = 'delete';
-    const gqlName = this.gqlNames.deleteManyMutationName;
+    const gqlName = this.gqlNames.deleteMutationName;
 
     const access = this.checkListAccess(context, operation, { gqlName, itemId: id });
 
@@ -1066,31 +1021,20 @@ module.exports = class List {
   async _deleteWithFieldHooks(existingItem, context, mutationState) {
     const operation = 'delete';
 
-    const isRootMutation = !mutationState;
-    if (isRootMutation) {
-      mutationState = { afterChangeStack: [], queues: {} };
-    }
+    return await this._nestedMutation(mutationState, context, async mutationState => {
+      await this._registerBacklinks(existingItem, mutationState);
 
-    await this._registerBacklinks(existingItem, mutationState);
+      await this._validateDelete(existingItem, context, operation);
 
-    await this._validateDelete(existingItem, context, operation);
+      await this._beforeDelete(existingItem, context);
 
-    await this._beforeDelete(existingItem, context);
+      const result = await this.adapter.delete(existingItem.id);
 
-    const result = await this.adapter.delete(existingItem.id);
-
-    await Relationship.resolveBacklinks(context, mutationState);
-
-    mutationState.afterChangeStack.push(() => this._afterDelete(existingItem, context));
-
-    if (isRootMutation) {
-      const { afterChangeStack } = mutationState;
-      while (afterChangeStack.length) {
-        await afterChangeStack.pop()();
-      }
-    }
-
-    return result;
+      return {
+        result,
+        afterHook: () => this._afterDelete(existingItem, context),
+      };
+    });
   }
 
   getFieldByPath(path) {

@@ -1,19 +1,19 @@
 {
   "name": "@voussoir/adapter-mongoose",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/core": "^0.7.0",
+    "@voussoir/core": "^1.0.0",
     "@voussoir/logger": "^0.2.0",
-    "@voussoir/mongo-join-builder": "^0.3.0",
+    "@voussoir/mongo-join-builder": "^0.3.1",
     "@voussoir/utils": "^0.3.0",
     "inflection": "^1.12.0",
-    "mongodb-memory-server": "^2.4.3",
-    "mongoose": "^5.3.3",
+    "mongodb-memory-server": "^2.7.4",
+    "mongoose": "^5.3.15",
     "p-settle": "^2.1.0"
   }
 }

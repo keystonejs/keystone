@@ -55,9 +55,9 @@ describe('query parser', () => {
         }
       );
 
-      expect(simpleTokenizer.simple).toBeCalledTimes(2);
+      expect(simpleTokenizer.simple).toHaveBeenCalledTimes(2);
       // Change path to array
-      expect(simpleTokenizer.simple).toBeCalledWith(
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith(
         {
           name: 'foobar',
           age_lte: 23,
@@ -65,7 +65,7 @@ describe('query parser', () => {
         'name',
         ['name']
       );
-      expect(simpleTokenizer.simple).toBeCalledWith(
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith(
         {
           name: 'foobar',
           age_lte: 23,
@@ -89,8 +89,8 @@ describe('query parser', () => {
         }
       );
 
-      expect(complexTokenizer.simple).toBeCalledTimes(3);
-      expect(complexTokenizer.simple).toBeCalledWith(
+      expect(complexTokenizer.simple).toHaveBeenCalledTimes(3);
+      expect(complexTokenizer.simple).toHaveBeenCalledWith(
         {
           name: 'foobar',
           age: 23,
@@ -99,7 +99,7 @@ describe('query parser', () => {
         'name',
         ['name']
       );
-      expect(complexTokenizer.simple).toBeCalledWith(
+      expect(complexTokenizer.simple).toHaveBeenCalledWith(
         {
           name: 'foobar',
           age: 23,
@@ -108,13 +108,13 @@ describe('query parser', () => {
         'age',
         ['age']
       );
-      expect(complexTokenizer.simple).toBeCalledWith({ title: 'hello' }, 'title', [
+      expect(complexTokenizer.simple).toHaveBeenCalledWith({ title: 'hello' }, 'title', [
         'posts_every',
         'title',
       ]);
 
-      expect(complexTokenizer.relationship).toBeCalledTimes(1);
-      expect(complexTokenizer.relationship).toBeCalledWith(
+      expect(complexTokenizer.relationship).toHaveBeenCalledTimes(1);
+      expect(complexTokenizer.relationship).toHaveBeenCalledWith(
         {
           name: 'foobar',
           age: 23,
@@ -143,8 +143,8 @@ describe('query parser', () => {
         }
       );
 
-      expect(complexTokenizer.simple).toBeCalledTimes(4);
-      expect(complexTokenizer.simple).toBeCalledWith(
+      expect(complexTokenizer.simple).toHaveBeenCalledTimes(4);
+      expect(complexTokenizer.simple).toHaveBeenCalledWith(
         {
           name: 'foobar',
           age: 23,
@@ -156,7 +156,7 @@ describe('query parser', () => {
         'name',
         ['name']
       );
-      expect(complexTokenizer.simple).toBeCalledWith(
+      expect(complexTokenizer.simple).toHaveBeenCalledWith(
         {
           name: 'foobar',
           age: 23,
@@ -168,7 +168,7 @@ describe('query parser', () => {
         'age',
         ['age']
       );
-      expect(complexTokenizer.simple).toBeCalledWith(
+      expect(complexTokenizer.simple).toHaveBeenCalledWith(
         {
           title: 'hello',
           labels_some: { name: 'foo' },
@@ -176,14 +176,14 @@ describe('query parser', () => {
         'title',
         ['posts_every', 'title']
       );
-      expect(complexTokenizer.simple).toBeCalledWith({ name: 'foo' }, 'name', [
+      expect(complexTokenizer.simple).toHaveBeenCalledWith({ name: 'foo' }, 'name', [
         'posts_every',
         'labels_some',
         'name',
       ]);
 
-      expect(complexTokenizer.relationship).toBeCalledTimes(2);
-      expect(complexTokenizer.relationship).toBeCalledWith(
+      expect(complexTokenizer.relationship).toHaveBeenCalledTimes(2);
+      expect(complexTokenizer.relationship).toHaveBeenCalledWith(
         {
           name: 'foobar',
           age: 23,
@@ -196,7 +196,7 @@ describe('query parser', () => {
         ['posts_every'],
         expect.any(String)
       );
-      expect(complexTokenizer.relationship).toBeCalledWith(
+      expect(complexTokenizer.relationship).toHaveBeenCalledWith(
         {
           title: 'hello',
           labels_some: { name: 'foo' },
@@ -211,9 +211,13 @@ describe('query parser', () => {
       const simpleTokenizer = { simple: jest.fn(() => ({})) };
       queryParser({ tokenizer: simpleTokenizer }, { AND: [{ name: 'foobar' }, { age_lte: 23 }] });
 
-      expect(simpleTokenizer.simple).toBeCalledTimes(2);
-      expect(simpleTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', ['AND', 0, 'name']);
-      expect(simpleTokenizer.simple).toBeCalledWith({ age_lte: 23 }, 'age_lte', [
+      expect(simpleTokenizer.simple).toHaveBeenCalledTimes(2);
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith({ name: 'foobar' }, 'name', [
+        'AND',
+        0,
+        'name',
+      ]);
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith({ age_lte: 23 }, 'age_lte', [
         'AND',
         1,
         'age_lte',
@@ -230,14 +234,18 @@ describe('query parser', () => {
         }
       );
 
-      expect(simpleTokenizer.simple).toBeCalledTimes(3);
-      expect(simpleTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', ['AND', 0, 'name']);
-      expect(simpleTokenizer.simple).toBeCalledWith({ age_lte: 23 }, 'age_lte', [
+      expect(simpleTokenizer.simple).toHaveBeenCalledTimes(3);
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith({ name: 'foobar' }, 'name', [
+        'AND',
+        0,
+        'name',
+      ]);
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith({ age_lte: 23 }, 'age_lte', [
         'AND',
         1,
         'age_lte',
       ]);
-      expect(simpleTokenizer.simple).toBeCalledWith(
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith(
         {
           AND: [{ name: 'foobar' }, { age_lte: 23 }],
           age_gte: 20,
@@ -251,9 +259,13 @@ describe('query parser', () => {
       const simpleTokenizer = { simple: jest.fn(() => ({})) };
       queryParser({ tokenizer: simpleTokenizer }, { OR: [{ name: 'foobar' }, { age_lte: 23 }] });
 
-      expect(simpleTokenizer.simple).toBeCalledTimes(2);
-      expect(simpleTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', ['OR', 0, 'name']);
-      expect(simpleTokenizer.simple).toBeCalledWith({ age_lte: 23 }, 'age_lte', [
+      expect(simpleTokenizer.simple).toHaveBeenCalledTimes(2);
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith({ name: 'foobar' }, 'name', [
+        'OR',
+        0,
+        'name',
+      ]);
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith({ age_lte: 23 }, 'age_lte', [
         'OR',
         1,
         'age_lte',
@@ -270,14 +282,18 @@ describe('query parser', () => {
         }
       );
 
-      expect(simpleTokenizer.simple).toBeCalledTimes(3);
-      expect(simpleTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', ['OR', 0, 'name']);
-      expect(simpleTokenizer.simple).toBeCalledWith({ age_lte: 23 }, 'age_lte', [
+      expect(simpleTokenizer.simple).toHaveBeenCalledTimes(3);
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith({ name: 'foobar' }, 'name', [
+        'OR',
+        0,
+        'name',
+      ]);
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith({ age_lte: 23 }, 'age_lte', [
         'OR',
         1,
         'age_lte',
       ]);
-      expect(simpleTokenizer.simple).toBeCalledWith(
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith(
         {
           OR: [{ name: 'foobar' }, { age_lte: 23 }],
           age_gte: 20,
@@ -297,20 +313,28 @@ describe('query parser', () => {
         }
       );
 
-      expect(simpleTokenizer.simple).toBeCalledTimes(4);
-      expect(simpleTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', ['OR', 0, 'name']);
-      expect(simpleTokenizer.simple).toBeCalledWith({ age_lte: 23 }, 'age_lte', [
+      expect(simpleTokenizer.simple).toHaveBeenCalledTimes(4);
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith({ name: 'foobar' }, 'name', [
+        'OR',
+        0,
+        'name',
+      ]);
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith({ age_lte: 23 }, 'age_lte', [
         'OR',
         1,
         'age_lte',
       ]);
-      expect(simpleTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', ['OR', 0, 'name']);
-      expect(simpleTokenizer.simple).toBeCalledWith({ age_gte: 20 }, 'age_gte', [
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith({ name: 'foobar' }, 'name', [
+        'OR',
+        0,
+        'name',
+      ]);
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith({ age_gte: 20 }, 'age_gte', [
         'AND',
         0,
         'age_gte',
       ]);
-      expect(simpleTokenizer.simple).toBeCalledWith({ email: 'foo@bar.com' }, 'email', [
+      expect(simpleTokenizer.simple).toHaveBeenCalledWith({ email: 'foo@bar.com' }, 'email', [
         'AND',
         1,
         'email',
@@ -345,8 +369,8 @@ describe('query parser', () => {
         }
       );
 
-      expect(complexTokenizer.simple).toBeCalledTimes(4);
-      expect(complexTokenizer.simple).toBeCalledWith(
+      expect(complexTokenizer.simple).toHaveBeenCalledTimes(4);
+      expect(complexTokenizer.simple).toHaveBeenCalledWith(
         {
           name: 'foobar',
           age: 23,
@@ -355,7 +379,7 @@ describe('query parser', () => {
         'name',
         ['name']
       );
-      expect(complexTokenizer.simple).toBeCalledWith(
+      expect(complexTokenizer.simple).toHaveBeenCalledWith(
         {
           name: 'foobar',
           age: 23,
@@ -364,13 +388,13 @@ describe('query parser', () => {
         'age',
         ['age']
       );
-      expect(complexTokenizer.simple).toBeCalledWith({ title: 'hello' }, 'title', [
+      expect(complexTokenizer.simple).toHaveBeenCalledWith({ title: 'hello' }, 'title', [
         'posts_every',
         'AND',
         0,
         'title',
       ]);
-      expect(complexTokenizer.simple).toBeCalledWith({ name: 'foo' }, 'name', [
+      expect(complexTokenizer.simple).toHaveBeenCalledWith({ name: 'foo' }, 'name', [
         'posts_every',
         'AND',
         1,
@@ -378,8 +402,8 @@ describe('query parser', () => {
         'name',
       ]);
 
-      expect(complexTokenizer.relationship).toBeCalledTimes(2);
-      expect(complexTokenizer.relationship).toBeCalledWith(
+      expect(complexTokenizer.relationship).toHaveBeenCalledTimes(2);
+      expect(complexTokenizer.relationship).toHaveBeenCalledWith(
         {
           name: 'foobar',
           age: 23,
@@ -389,7 +413,7 @@ describe('query parser', () => {
         ['posts_every'],
         expect.any(String)
       );
-      expect(complexTokenizer.relationship).toBeCalledWith(
+      expect(complexTokenizer.relationship).toHaveBeenCalledWith(
         { labels_some: { name: 'foo' } },
         'labels_some',
         ['posts_every', 'AND', 1, 'labels_some'],
@@ -411,8 +435,8 @@ describe('query parser', () => {
         }
       );
 
-      expect(complexTokenizer.simple).toBeCalledTimes(4);
-      expect(complexTokenizer.simple).toBeCalledWith(
+      expect(complexTokenizer.simple).toHaveBeenCalledTimes(4);
+      expect(complexTokenizer.simple).toHaveBeenCalledWith(
         {
           name: 'foobar',
           age: 23,
@@ -421,7 +445,7 @@ describe('query parser', () => {
         'name',
         ['name']
       );
-      expect(complexTokenizer.simple).toBeCalledWith(
+      expect(complexTokenizer.simple).toHaveBeenCalledWith(
         {
           name: 'foobar',
           age: 23,
@@ -430,13 +454,13 @@ describe('query parser', () => {
         'age',
         ['age']
       );
-      expect(complexTokenizer.simple).toBeCalledWith({ title: 'hello' }, 'title', [
+      expect(complexTokenizer.simple).toHaveBeenCalledWith({ title: 'hello' }, 'title', [
         'posts_every',
         'OR',
         0,
         'title',
       ]);
-      expect(complexTokenizer.simple).toBeCalledWith({ name: 'foo' }, 'name', [
+      expect(complexTokenizer.simple).toHaveBeenCalledWith({ name: 'foo' }, 'name', [
         'posts_every',
         'OR',
         1,
@@ -444,8 +468,8 @@ describe('query parser', () => {
         'name',
       ]);
 
-      expect(complexTokenizer.relationship).toBeCalledTimes(2);
-      expect(complexTokenizer.relationship).toBeCalledWith(
+      expect(complexTokenizer.relationship).toHaveBeenCalledTimes(2);
+      expect(complexTokenizer.relationship).toHaveBeenCalledWith(
         {
           name: 'foobar',
           age: 23,
@@ -455,7 +479,7 @@ describe('query parser', () => {
         ['posts_every'],
         expect.any(String)
       );
-      expect(complexTokenizer.relationship).toBeCalledWith(
+      expect(complexTokenizer.relationship).toHaveBeenCalledWith(
         { labels_some: { name: 'foo' } },
         'labels_some',
         ['posts_every', 'OR', 1, 'labels_some'],
@@ -479,14 +503,14 @@ describe('query parser', () => {
         }
       );
 
-      expect(complexTokenizer.simple).toBeCalledTimes(4);
-      expect(complexTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', [
+      expect(complexTokenizer.simple).toHaveBeenCalledTimes(4);
+      expect(complexTokenizer.simple).toHaveBeenCalledWith({ name: 'foobar' }, 'name', [
         'AND',
         0,
         'name',
       ]);
-      expect(complexTokenizer.simple).toBeCalledWith({ age: 23 }, 'age', ['AND', 1, 'age']);
-      expect(complexTokenizer.simple).toBeCalledWith({ title: 'hello' }, 'title', [
+      expect(complexTokenizer.simple).toHaveBeenCalledWith({ age: 23 }, 'age', ['AND', 1, 'age']);
+      expect(complexTokenizer.simple).toHaveBeenCalledWith({ title: 'hello' }, 'title', [
         'AND',
         2,
         'posts_every',
@@ -494,7 +518,7 @@ describe('query parser', () => {
         0,
         'title',
       ]);
-      expect(complexTokenizer.simple).toBeCalledWith({ name: 'foo' }, 'name', [
+      expect(complexTokenizer.simple).toHaveBeenCalledWith({ name: 'foo' }, 'name', [
         'AND',
         2,
         'posts_every',
@@ -504,8 +528,8 @@ describe('query parser', () => {
         'name',
       ]);
 
-      expect(complexTokenizer.relationship).toBeCalledTimes(2);
-      expect(complexTokenizer.relationship).toBeCalledWith(
+      expect(complexTokenizer.relationship).toHaveBeenCalledTimes(2);
+      expect(complexTokenizer.relationship).toHaveBeenCalledWith(
         {
           posts_every: {
             AND: [{ title: 'hello' }, { labels_some: { name: 'foo' } }],
@@ -515,7 +539,7 @@ describe('query parser', () => {
         ['AND', 2, 'posts_every'],
         expect.any(String)
       );
-      expect(complexTokenizer.relationship).toBeCalledWith(
+      expect(complexTokenizer.relationship).toHaveBeenCalledWith(
         { labels_some: { name: 'foo' } },
         'labels_some',
         ['AND', 2, 'posts_every', 'AND', 1, 'labels_some'],
@@ -539,10 +563,14 @@ describe('query parser', () => {
         }
       );
 
-      expect(complexTokenizer.simple).toBeCalledTimes(4);
-      expect(complexTokenizer.simple).toBeCalledWith({ name: 'foobar' }, 'name', ['OR', 0, 'name']);
-      expect(complexTokenizer.simple).toBeCalledWith({ age: 23 }, 'age', ['OR', 1, 'age']);
-      expect(complexTokenizer.simple).toBeCalledWith({ title: 'hello' }, 'title', [
+      expect(complexTokenizer.simple).toHaveBeenCalledTimes(4);
+      expect(complexTokenizer.simple).toHaveBeenCalledWith({ name: 'foobar' }, 'name', [
+        'OR',
+        0,
+        'name',
+      ]);
+      expect(complexTokenizer.simple).toHaveBeenCalledWith({ age: 23 }, 'age', ['OR', 1, 'age']);
+      expect(complexTokenizer.simple).toHaveBeenCalledWith({ title: 'hello' }, 'title', [
         'OR',
         2,
         'posts_every',
@@ -550,7 +578,7 @@ describe('query parser', () => {
         0,
         'title',
       ]);
-      expect(complexTokenizer.simple).toBeCalledWith({ name: 'foo' }, 'name', [
+      expect(complexTokenizer.simple).toHaveBeenCalledWith({ name: 'foo' }, 'name', [
         'OR',
         2,
         'posts_every',
@@ -560,8 +588,8 @@ describe('query parser', () => {
         'name',
       ]);
 
-      expect(complexTokenizer.relationship).toBeCalledTimes(2);
-      expect(complexTokenizer.relationship).toBeCalledWith(
+      expect(complexTokenizer.relationship).toHaveBeenCalledTimes(2);
+      expect(complexTokenizer.relationship).toHaveBeenCalledWith(
         {
           posts_every: {
             OR: [{ title: 'hello' }, { labels_some: { name: 'foo' } }],
@@ -571,7 +599,7 @@ describe('query parser', () => {
         ['OR', 2, 'posts_every'],
         expect.any(String)
       );
-      expect(complexTokenizer.relationship).toBeCalledWith(
+      expect(complexTokenizer.relationship).toHaveBeenCalledWith(
         { labels_some: { name: 'foo' } },
         'labels_some',
         ['OR', 2, 'posts_every', 'OR', 1, 'labels_some'],

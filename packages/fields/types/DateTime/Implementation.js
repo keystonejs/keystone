@@ -62,7 +62,7 @@ class _DateTime extends Implementation {
 const toDate = s => s && DateTime.fromISO(s, { zone: 'utc' }).toJSDate();
 
 class MongoDateTimeInterface extends MongooseFieldAdapter {
-  addToMongooseSchema(schema) {
+  addToMongooseSchema(schema, _, { addPreSaveHook, addPostReadHook }) {
     const { mongooseOptions } = this.config;
     const field_path = this.path;
     const utc_field = `${field_path}_utc`;
@@ -77,39 +77,67 @@ class MongoDateTimeInterface extends MongooseFieldAdapter {
     });
 
     // Updates the relevant value in the item provided (by referrence)
-    this.addToServerHook(schema, item => {
+    addPreSaveHook(item => {
+      // Only run the hook if the item actually contains the datetime field
+      // NOTE: Can't use hasOwnProperty here, as the mongoose data object
+      // returned isn't a POJO
+      if (!(field_path in item)) {
+        return item;
+      }
+
       const datetimeString = item[field_path];
 
-      if (
-        datetimeString === undefined ||
-        !DateTime.fromISO(datetimeString, { zone: 'utc' }).isValid
-      ) {
-        return;
+      // NOTE: Even though `0` is a valid timestamp (the unix epoch), it's not a valid ISO string,
+      // so it's ok to check for falseyness here.
+      if (!datetimeString) {
+        item[utc_field] = null;
+        item[offset_field] = null;
+        item[field_path] = undefined; // Never store this field
+        return item;
+      }
+
+      if (!DateTime.fromISO(datetimeString, { zone: 'utc' }).isValid) {
+        throw new Error(
+          'Validation failed: DateTime must be either `null` or a valid ISO 8601 string'
+        );
       }
 
       item[utc_field] = toDate(datetimeString);
       item[offset_field] = DateTime.fromISO(datetimeString, { setZone: true }).toFormat('ZZ');
       item[field_path] = undefined; // Never store this field
+
+      return item;
     });
-    this.addToClientHook(schema, item => {
-      if (item[utc_field] && item[offset_field] === undefined) {
-        return;
+
+    addPostReadHook(item => {
+      // If there's no fields stored in the DB (can happen with MongoDB), then
+      // don't bother trying to process anything
+      // NOTE: Can't use hasOwnProperty here, as the mongoose data object
+      // returned isn't a POJO
+      if (!(utc_field in item) && !(offset_field in item)) {
+        return item;
       }
-      const datetimeString =
-        item[utc_field] &&
-        item[offset_field] &&
-        DateTime.fromJSDate(item[utc_field], { zone: 'utc' })
-          .setZone(
-            new FixedOffsetZone(
-              DateTime.fromISO(`1234-01-01T00:00:00${item[offset_field]}`, {
-                setZone: true,
-              }).offset
-            )
+
+      if (!item[utc_field] || !item[offset_field]) {
+        item[field_path] = null;
+        return item;
+      }
+
+      const datetimeString = DateTime.fromJSDate(item[utc_field], { zone: 'utc' })
+        .setZone(
+          new FixedOffsetZone(
+            DateTime.fromISO(`1234-01-01T00:00:00${item[offset_field]}`, {
+              setZone: true,
+            }).offset
           )
-          .toISO();
+        )
+        .toISO();
+
       item[field_path] = datetimeString;
       item[utc_field] = undefined;
       item[offset_field] = undefined;
+
+      return item;
     });
   }
 
