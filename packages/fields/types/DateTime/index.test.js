@@ -2,6 +2,7 @@ const cuid = require('cuid');
 const { setupServer, graphqlRequest, keystoneMongoTest } = require('@voussoir/test-utils');
 
 const DateTime = require('./');
+const Text = require('../Text');
 
 function setupKeystone() {
   return setupServer({
@@ -9,6 +10,7 @@ function setupKeystone() {
     createLists: keystone => {
       keystone.createList('Post', {
         fields: {
+          title: { type: Text },
           postedAt: { type: DateTime },
         },
       });
@@ -181,6 +183,30 @@ describe('DateTime type', () => {
       });
 
       expect(body).toHaveProperty('data.createPost.postedAt', null);
+    })
+  );
+
+  test(
+    'Does not get clobbered when updating unrelated field',
+    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
+      const postedAt = '2018-08-31T06:49:07.000Z';
+      const title = 'Hello world';
+
+      const createPost = await create('Post', { postedAt, title });
+
+      // Create an item that does the linking
+      const { body } = await graphqlRequest({
+        server,
+        query: `
+        mutation {
+          updatePost(id: "${createPost.id}", data: { title: "Something else" }) {
+            postedAt
+          }
+        }
+    `,
+      });
+
+      expect(body).toHaveProperty('data.updatePost.postedAt', postedAt);
     })
   );
 });
