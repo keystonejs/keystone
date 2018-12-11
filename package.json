@@ -15,6 +15,8 @@
     "lint:flow": "flow check",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:flow",
     "start": "/bin/sh -c 'cd projects/${1:-$0} && yarn start' basic",
+    "website:start": "bolt w @voussoir/website run start",
+    "website:build": "bolt w @voussoir/website run build",
     "arch": "cd packages/arch/www && yarn && cd .. && yarn start",
     "test": "yarn lint && yarn test:unit && yarn cypress:run",
     "test:unit": "DISABLE_LOGGING=true NODE_ENV=test jest",
@@ -149,7 +151,8 @@
   "bolt": {
     "workspaces": [
       "packages/*",
-      "projects/*"
+      "projects/*",
+      "website"
     ]
   },
   "jest": {
@@ -170,6 +173,9 @@
     "mongodb-memory-server": "^2.7.4",
     "pino-colada": "^1.4.4",
     "start-server-and-test": "^1.7.11",
-    "supertest-light": "^1.0.2"
+    "supertest-light": "^1.0.2",
+    "gatsby": "^2.0.60",
+    "gatsby-source-filesystem": "^2.0.10",
+    "gatsby-transformer-remark": "^2.1.15"
   }
 }
