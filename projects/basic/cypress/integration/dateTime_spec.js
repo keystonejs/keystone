@@ -1,28 +1,24 @@
-import { format, subMonths } from 'date-fns';
+import { format, subMonths, addMonths } from 'date-fns';
 
-const date = new Date;
-const dob = '1st January 1990';
-const lastOnline = format('2018-08-16T11:08:18.886+10:00', 'MM/DD/YYYY h:mm A');
+const today = new Date;
 const path = '/admin/users?fields=_label_%2Cdob%2ClastOnline';
+const lastOnline = format('2018-08-16T11:08:18.886+10:00', 'MM/DD/YYYY h:mm A');
 
 const selectCellFromSecondRow = index => `#ks-list-table tbody > tr:nth-child(2) > td:nth-child(${index})`;
 
 describe('CalendarDay Component - Formatting', () => {
-
     beforeEach( () => {
         cy.visit(path);
     });
 
     it('should format date correctly on the list page', () => {
-        cy.get(selectCellFromSecondRow(3)).contains(dob);
+        cy.get(selectCellFromSecondRow(3)).contains('1st January 1990');
     });
-
 
     it('should format date correctly on the details page', () => {
         cy.get(selectCellFromSecondRow(2)).click();
-        cy.get('#ks-input-dob').contains(dob);
+        cy.get('#ks-input-dob').contains('1st January 1990');
     });
-
 });
 
 describe('CalendarDay Component - Functionality', () => {
@@ -31,29 +27,44 @@ describe('CalendarDay Component - Functionality', () => {
         cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2)`).click();
     });
 
-    it(`should open when clicked`, () => {
+    it(`should appear and dissapear`, () => {
         cy.get('button:contains("Set Date")').first().click();
-        cy.get('#ks-daypicker-dob');
+        cy.get('#ks-daypicker-dob').should('exist');
+        cy.get('label:contains("Name")').click();
+        cy.get('#ks-daypicker-dob').should('not.exist');
     });
 
     it(`can select a day in this month`, () => {
-        cy.get('div[id*="ks-day-12-"]').last().click();
-        cy.get(`#ks-day-${format(subMonths(date, 1), 'D-M-YYYY')}`).click();
-
-        cy.wait(1000)
+        cy.get('button:contains("Set Date")').first().click();
+        cy.get(`#ks-day-${format(subMonths(today, 1), 'D-M-YYYY')}`).click();
+        cy.get('label:contains("Name")').click();
+        cy.get(`button:contains("${format(today, 'Do MMMM YYYY')}")`).should('exist');
     });
 
-    it(`should close when clicked away`, () => {
+    it(`can select a day in a previous month`, () => {
+        cy.get(`button:contains("${format(today, 'Do MMMM YYYY')}")`).click();
+        cy.get(`button:contains("Previous Month")`).click();
+        cy.get(`#ks-day-${format(subMonths(today, 4), 'D-M-YYYY')}`).click();
         cy.get('label:contains("Name")').click();
-        cy.get('#ks-daypicker-dob').should('not.exist');
+        cy.get(`button:contains("${format(subMonths(today, 3), 'Do MMMM YYYY')}")`).should('exist').click();
+        cy.wait(1000)
+        cy.get(`#ks-day-${format(subMonths(today, 1), 'D-M-YYYY')}`).click();
+        cy.get('label:contains("Name")').click();
+    });
+
+    it(`can select a day in a previous year`, () => {
+        cy.get(`button:contains("${format(today, 'Do MMMM YYYY')}")`).click();
+        // cy.get(`button:contains("Previous Month")`).click();
+        // cy.get(`#ks-day-${format(subMonths(today, 4), 'D-M-YYYY')}`).click();
+        // cy.wait(1000);
     });
 });
 
 
+///// Begin Date Time Component
 
 
 describe('DateTime Component - Formatting', () => {
-
     beforeEach( () => {
         cy.visit(path);
     });
@@ -67,7 +78,6 @@ describe('DateTime Component - Formatting', () => {
         cy.get(selectCellFromSecondRow(2)).click();
         cy.get('#ks-input-lastOnline').contains(lastOnline);
     });
-
 });
 
 // describe('DateTime Component - Functionality', () => {
