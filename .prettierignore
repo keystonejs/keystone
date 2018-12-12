@@ -3,3 +3,4 @@ packages/icons/icons/*
 reports
 coverage
 packages/test-project/public
+website/.cache/**/*
