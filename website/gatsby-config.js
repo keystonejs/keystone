@@ -12,6 +12,8 @@ async function getPackagePlugins() {
     .map(({ name, dir }) => ({
       resolve: 'gatsby-source-filesystem',
       options: {
+        // This `name` will show up as `sourceInstanceName` on a node's "parent"
+        // See `gatsby-node.js` for where it's used.
         name,
         path: `${dir}/`,
       },
@@ -31,9 +33,6 @@ async function getGatsbyConfig() {
         resolve: 'gatsby-source-filesystem',
         options: { name: 'guides', path: `${__dirname}/guides/` },
       },
-      // TODO: the name from our 'gatsby-source-filesystem' plugins is being lost by the transformer.
-      // It would be great if the name was passed down.
-      // I wouldn't mind finding a way to include some package.json info here as well
       `gatsby-transformer-remark`,
       // TODO: The remark plugin can be made a lot smarter with its own plugins. I've left them off.
     ],
