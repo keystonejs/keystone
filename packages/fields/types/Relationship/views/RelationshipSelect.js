@@ -173,7 +173,6 @@ const RelationshipSelect = ({
                   value={currentValue}
                   placeholder={canRead ? undefined : itemErrors[field.path].message}
                   options={options}
-                  menuIsOpen
                   onChange={onChange}
                   id={`react-select-${htmlID}`}
                   isClearable
