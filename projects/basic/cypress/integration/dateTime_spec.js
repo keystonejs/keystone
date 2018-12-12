@@ -1,4 +1,4 @@
-import { format, subMonths, addMonths } from 'date-fns';
+import { format, subMonths, setMonth, setYear, getMonth } from 'date-fns';
 
 const today = new Date;
 const path = '/admin/users?fields=_label_%2Cdob%2ClastOnline';
@@ -41,22 +41,39 @@ describe('CalendarDay Component - Functionality', () => {
         cy.get(`button:contains("${format(today, 'Do MMMM YYYY')}")`).should('exist');
     });
 
-    it(`can select a day in a previous month`, () => {
+    it(`can use arrows to set month`, () => {
         cy.get(`button:contains("${format(today, 'Do MMMM YYYY')}")`).click();
+        cy.get(`#ks-day-${format(subMonths(today, 1), 'D-M-YYYY')}`).click();
         cy.get(`button:contains("Previous Month")`).click();
-        cy.get(`#ks-day-${format(subMonths(today, 4), 'D-M-YYYY')}`).click();
+        cy.get(`#ks-select-month`).should('have.value', `${subMonths(today, 1).getMonth()}`);
+    });
+
+    it(`can use 'Select' to set month`, () => {
+        cy.get(`button:contains("${format(today, 'Do MMMM YYYY')}")`).click();
+        cy.get(`#ks-select-month`).select('Jun');
+        cy.get(`#ks-day-${format(setMonth(today, 4), 'D-M-YYYY')}`).click();
         cy.get('label:contains("Name")').click();
-        cy.get(`button:contains("${format(subMonths(today, 3), 'Do MMMM YYYY')}")`).should('exist').click();
-        cy.wait(1000)
+        cy.get(`button:contains("${format(setMonth(today, 5), 'Do MMMM YYYY')}")`).should('exist').click();
+
+        // success, resetting to previous state
+        cy.log('success, resetting to previous state');
+        cy.get(`#ks-select-month`).select(format(today,'MMM'));
         cy.get(`#ks-day-${format(subMonths(today, 1), 'D-M-YYYY')}`).click();
         cy.get('label:contains("Name")').click();
     });
 
-    it(`can select a day in a previous year`, () => {
+    it(`can use input to set year`, () => {
         cy.get(`button:contains("${format(today, 'Do MMMM YYYY')}")`).click();
-        // cy.get(`button:contains("Previous Month")`).click();
-        // cy.get(`#ks-day-${format(subMonths(today, 4), 'D-M-YYYY')}`).click();
-        // cy.wait(1000);
+        cy.get(`#ks-input-year`).type('{backspace}{backspace}15');
+        cy.get(`#ks-day-${format(setYear(subMonths(today, 1), 2015), 'D-M-YYYY')}`).click();
+        cy.get('label:contains("Name")').click();
+        cy.get(`button:contains("${format(setYear(today, 2015), 'Do MMMM YYYY')}")`).should('exist').click();
+
+        // success, resetting to previous state
+        cy.log('success, resetting to previous state');
+        cy.get(`#ks-input-year`).type(`{backspace}{backspace}${format(today, 'YY')}`);
+        cy.get(`#ks-day-${format(subMonths(today, 1), 'D-M-YYYY')}`).click();
+        cy.get('label:contains("Name")').click();
     });
 });
 
