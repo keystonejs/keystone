@@ -33,7 +33,8 @@
     "prop-types": "^15.6.1",
     "react": "16.7.0-alpha.2",
     "react-apollo": "^2.2.4",
-    "react-color": "^2.14.1"
+    "react-color": "^2.14.1",
+    "react-select": "^2.1.2"
   },
   "devDependencies": {
     "@voussoir/test-utils": "^0.1.3",

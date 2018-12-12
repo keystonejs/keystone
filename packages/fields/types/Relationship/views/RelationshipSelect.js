@@ -1,4 +1,6 @@
 // @flow
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -45,14 +47,13 @@ const RelationshipSelect = ({
   renderContext,
   htmlID,
   onChange,
-  value,
   isMulti,
 }: Props) => {
   const [search, setSearch] = useState('');
   const refList = field.getRefList();
   const query = gql`query RelationshipSelect($search: String!, $skip: Int!) {${refList.buildQuery(
     refList.gqlNames.listQueryName,
-    `(first: 100, search: $search, skip: $skip)`
+    `(first: 10, search: $search, skip: $skip)`
   )}${refList.countQuery(`(search: $search)`)}}`;
 
   const canRead = !(
@@ -75,35 +76,29 @@ const RelationshipSelect = ({
             {() => {
               const options =
                 data && data[refList.gqlNames.listQueryName]
-                  ? data[refList.gqlNames.listQueryName].map(({ id, _label_ }) => {
+                  ? data[refList.gqlNames.listQueryName].map(val => {
                       return {
-                        value: { id },
-                        label: _label_,
+                        value: val,
+                        label: val._label_,
                       };
                     })
                   : [];
 
-              // Collect IDs to represent and convert them into a value.
-              let foo;
+              let currentValue = null;
               if (item && canRead) {
                 const fieldValue = item[field.path];
                 if (isMulti) {
-                  foo = (Array.isArray(fieldValue) ? fieldValue : []).map(i => i.id);
+                  currentValue = (Array.isArray(fieldValue) ? fieldValue : []).map(val => {
+                    return {
+                      label: val._label_,
+                      value: val,
+                    };
+                  });
                 } else if (fieldValue) {
-                  foo = fieldValue.id;
-                }
-              } else if (value) {
-                foo = value;
-              }
-
-              let currentValue;
-              if (foo) {
-                if (isMulti) {
-                  currentValue = foo
-                    .map(i => options.find(option => option.value.id === i) || null)
-                    .filter(i => i);
-                } else {
-                  currentValue = options.find(option => option.value.id === foo) || null;
+                  currentValue = {
+                    label: fieldValue._label_,
+                    value: fieldValue,
+                  };
                 }
               }
 
@@ -133,7 +128,7 @@ const RelationshipSelect = ({
                               fetchMore({
                                 query: gql`query RelationshipSelectMore($search: String!, $skip: Int!) {${refList.buildQuery(
                                   refList.gqlNames.listQueryName,
-                                  `(first: 100, search: $search, skip: $skip)`
+                                  `(first: 50, search: $search, skip: $skip)`
                                 )}}`,
                                 variables: {
                                   search,
@@ -156,7 +151,17 @@ const RelationshipSelect = ({
                           return (
                             <components.MenuList {...props}>
                               {children}
-                              <div ref={ref} />
+                              <div css={{ textAlign: 'center' }} ref={ref}>
+                                {props.options.length < count && (
+                                  <span
+                                    css={{
+                                      padding: 8,
+                                    }}
+                                  >
+                                    Loading...
+                                  </span>
+                                )}
+                              </div>
                             </components.MenuList>
                           );
                         },
@@ -168,6 +173,7 @@ const RelationshipSelect = ({
                   value={currentValue}
                   placeholder={canRead ? undefined : itemErrors[field.path].message}
                   options={options}
+                  menuIsOpen
                   onChange={onChange}
                   id={`react-select-${htmlID}`}
                   isClearable
