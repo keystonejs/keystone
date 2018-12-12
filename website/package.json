@@ -1,0 +1,21 @@
+{
+    "name": "@voussoir/website",
+    "private": true,
+    "version": "1.0.0",
+    "author": "Jed Watson",
+    "license": "MIT",
+    "engines": {
+        "node": ">=8.4.0"
+    },
+    "scripts": {
+        "start": "gatsby develop",
+        "build": "gatsby build"
+    },
+    "dependencies": {
+        "bolt": "^0.22.1",
+        "gatsby": "^2.0.60",
+        "gatsby-source-filesystem": "^2.0.10",
+        "gatsby-transformer-remark": "^2.1.15",
+        "react": "16.7.0-alpha.2"
+    }
+}
