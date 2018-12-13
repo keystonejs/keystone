@@ -157,7 +157,8 @@
     ]
   },
   "jest": {
-    "setupTestFrameworkScriptFile": "./jest/setup.js"
+    "setupTestFrameworkScriptFile": "./jest/setup.js",
+    "testEnvironment": "node"
   },
   "devDependencies": {
     "apollo-fetch": "^0.7.0",
