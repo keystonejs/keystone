@@ -6,11 +6,9 @@ import { Input } from './index';
 import { Select } from '../filters';
 
 type Props = {
-  children?: Node,
   /** Field disabled */
   isDisabled?: boolean,
   /** Ref to apply to the inner Element */
-  innerRef: React.Ref<*>,
   date: string,
   time: string,
   offset: string,
@@ -24,8 +22,39 @@ type Props = {
   yearPickerType?: YearPickerType,
 };
 
+const options = [
+  '-12',
+  '-11',
+  '-11',
+  '-10',
+  '-09',
+  '-08',
+  '-07',
+  '-06',
+  '-05',
+  '-04',
+  '-03',
+  '-02',
+  '-01',
+  '+00',
+  '+01',
+  '+02',
+  '+03',
+  '+04',
+  '+05',
+  '+06',
+  '+07',
+  '+08',
+  '+09',
+  '+10',
+  '+11',
+  '+12',
+  '+13',
+  '+14',
+].map(o => ({ value: `${o}:00`, label: `${o}:00` }));
+
 export const DateTimePicker = (props: Props) => {
-  const { date, time, offset, htmlID, autoFocus, isDisabled, innerRef } = props;
+  const { date, time, offset, htmlID, autoFocus, isDisabled } = props;
   const {
     handleDayChange,
     handleTimeChange,
@@ -35,39 +64,9 @@ export const DateTimePicker = (props: Props) => {
     yearPickerType,
   } = props;
   const TODAY = new Date();
-
-  const options = [
-    '-12',
-    '-11',
-    '-11',
-    '-10',
-    '-09',
-    '-08',
-    '-07',
-    '-06',
-    '-05',
-    '-04',
-    '-03',
-    '-02',
-    '-01',
-    '+00',
-    '+01',
-    '+02',
-    '+03',
-    '+04',
-    '+05',
-    '+06',
-    '+07',
-    '+08',
-    '+09',
-    '+10',
-    '+11',
-    '+12',
-    '+13',
-    '+14',
-  ].map(o => ({ value: `${o}:00`, label: `${o}:00` }));
+  console.log(offset);
   return (
-    <div>
+    <div id={htmlID}>
       <DayPicker
         autoFocus={autoFocus}
         onSelectedChange={handleDayChange}
@@ -75,7 +74,7 @@ export const DateTimePicker = (props: Props) => {
         yearRangeTo={yearRangeTo}
         yearPickerType={yearPickerType}
         startCurrentDateAt={date ? parse(date) : TODAY}
-        startSelectedDateAt={date ? parse(date) : TODAY}
+        selectedDate={date ? parse(date) : null}
       />
       <Input
         type="time"
@@ -84,13 +83,15 @@ export const DateTimePicker = (props: Props) => {
         onChange={handleTimeChange}
         disabled={isDisabled || false}
         isMultiline={false}
-        ref={innerRef}
+        id={`${htmlID}-time`}
       />
       <Select
-        value={offset}
+        value={options.find(option => option.value === offset)}
         options={options}
-        onChange={handleOffsetChange}
-        id={`react-select-${htmlID}`}
+        onChange={({ value }) => {
+          handleOffsetChange(value);
+        }}
+        id={`${htmlID}-offset`}
       />
     </div>
   );
