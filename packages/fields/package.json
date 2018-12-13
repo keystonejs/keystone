@@ -22,6 +22,7 @@
     "graphql": "^0.13.2",
     "graphql-tag": "^2.8.0",
     "inflection": "^1.12.0",
+    "intersection-observer": "^0.5.1",
     "lodash.get": "^4.4.2",
     "lodash.groupby": "^4.6.0",
     "lodash.omitby": "^4.6.0",
@@ -32,7 +33,8 @@
     "prop-types": "^15.6.1",
     "react": "16.7.0-alpha.2",
     "react-apollo": "^2.2.4",
-    "react-color": "^2.14.1"
+    "react-color": "^2.14.1",
+    "react-select": "^2.1.2"
   },
   "devDependencies": {
     "@voussoir/test-utils": "^0.1.3",

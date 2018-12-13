@@ -10,6 +10,7 @@ const {
   objMerge,
   arrayToObject,
   flatten,
+  zipObj,
   createLazyDeferred,
 } = require('@voussoir/utils');
 
@@ -142,13 +143,17 @@ module.exports = class List {
       listMetaName: `_${listQueryName}Meta`,
       authenticatedQueryName: `authenticated${itemQueryName}`,
       deleteMutationName: `delete${itemQueryName}`,
-      deleteManyMutationName: `delete${listQueryName}`,
       updateMutationName: `update${itemQueryName}`,
       createMutationName: `create${itemQueryName}`,
+      deleteManyMutationName: `delete${listQueryName}`,
+      updateManyMutationName: `update${listQueryName}`,
+      createManyMutationName: `create${listQueryName}`,
       whereInputName: `${itemQueryName}WhereInput`,
       whereUniqueInputName: `${itemQueryName}WhereUniqueInput`,
       updateInputName: `${itemQueryName}UpdateInput`,
       createInputName: `${itemQueryName}CreateInput`,
+      updateManyInputName: `${listQueryName}UpdateInput`,
+      createManyInputName: `${listQueryName}CreateInput`,
       relateToManyInputName: `${itemQueryName}RelateToManyInput`,
       relateToOneInputName: `${itemQueryName}RelateToOneInput`,
     };
@@ -271,6 +276,12 @@ module.exports = class List {
           ).join('\n')}
         }
       `);
+      types.push(`
+        input ${this.gqlNames.updateManyInputName} {
+          id: ID!
+          data: ${this.gqlNames.updateInputName}
+        }
+      `);
     }
 
     if (this.access.create) {
@@ -281,6 +292,11 @@ module.exports = class List {
               .filter(field => field.access.create) // If it's globally set to false, makes sense to never let it be created
               .map(field => field.gqlCreateInputFields)
           ).join('\n')}
+        }
+      `);
+      types.push(`
+        input ${this.gqlNames.createManyInputName} {
+          data: ${this.gqlNames.createInputName}
         }
       `);
     }
@@ -415,6 +431,12 @@ module.exports = class List {
           data: ${this.gqlNames.createInputName}
         ): ${this.gqlNames.outputTypeName}
       `);
+
+      mutations.push(`
+        ${this.gqlNames.createManyMutationName}(
+          data: [${this.gqlNames.createManyInputName}]
+        ): [${this.gqlNames.outputTypeName}]
+      `);
     }
 
     if (this.access.update) {
@@ -423,6 +445,12 @@ module.exports = class List {
           id: ID!
           data: ${this.gqlNames.updateInputName}
         ): ${this.gqlNames.outputTypeName}
+      `);
+
+      mutations.push(`
+        ${this.gqlNames.updateManyMutationName}(
+          data: [${this.gqlNames.updateManyInputName}]
+        ): [${this.gqlNames.outputTypeName}]
       `);
     }
 
@@ -709,11 +737,17 @@ module.exports = class List {
     if (this.access.create) {
       mutationResolvers[this.gqlNames.createMutationName] = (_, { data }, context) =>
         this.createMutation(data, context);
+
+      mutationResolvers[this.gqlNames.createManyMutationName] = (_, { data }, context) =>
+        this.createManyMutation(data, context);
     }
 
     if (this.access.update) {
       mutationResolvers[this.gqlNames.updateMutationName] = async (_, { id, data }, context) =>
         this.updateMutation(id, data, context);
+
+      mutationResolvers[this.gqlNames.updateManyMutationName] = async (_, { data }, context) =>
+        this.updateManyMutation(data, context);
     }
 
     if (this.access.delete) {
@@ -904,6 +938,24 @@ module.exports = class List {
 
     this.checkFieldAccess(operation, existingItem, data, context, { gqlName });
 
+    return await this._createSingle(data, existingItem, context, mutationState);
+  }
+
+  async createManyMutation(data, context, mutationState) {
+    const operation = 'create';
+    const gqlName = this.gqlNames.createManyMutationName;
+
+    this.checkListAccess(context, operation, { gqlName });
+
+    const existingItem = undefined;
+
+    data.forEach(d => this.checkFieldAccess(operation, existingItem, d, context, { gqlName }));
+
+    return Promise.all(data.map(d => this._createSingle(d, existingItem, context, mutationState)));
+  }
+
+  async _createSingle(data, existingItem, context, mutationState) {
+    const operation = 'create';
     return await this._nestedMutation(mutationState, context, async mutationState => {
       const defaultedItem = await this._resolveDefaults(data);
 
@@ -964,6 +1016,38 @@ module.exports = class List {
 
     this.checkFieldAccess(operation, existingItem, data, context, { gqlName, extraData });
 
+    return await this._updateSingle(id, data, existingItem, context, mutationState);
+  }
+
+  async updateManyMutation(data, context, mutationState) {
+    const operation = 'update';
+    const gqlName = this.gqlNames.updateManyMutationName;
+    const ids = data.map(d => d.id);
+    const extraData = { itemId: ids };
+
+    const access = this.checkListAccess(context, operation, { gqlName, ...extraData });
+
+    const existingItems = await this.getAccessControlledItems(ids, access);
+
+    const itemsToUpdate = zipObj({
+      existingItem: existingItems,
+      id: ids,
+      data: data.map(d => d.data),
+    });
+
+    itemsToUpdate.map(({ existingItem, data }) =>
+      this.checkFieldAccess(operation, existingItem, data, context, { gqlName, extraData })
+    );
+
+    return Promise.all(
+      itemsToUpdate.map(({ existingItem, id, data }) =>
+        this._updateSingle(id, data, existingItem, context, mutationState)
+      )
+    );
+  }
+
+  async _updateSingle(id, data, existingItem, context, mutationState) {
+    const operation = 'update';
     return await this._nestedMutation(mutationState, context, async mutationState => {
       let resolvedData = await this._resolveRelationship(
         data,
@@ -1000,7 +1084,7 @@ module.exports = class List {
       gqlName,
     });
 
-    return this._deleteWithFieldHooks(existingItem, context, mutationState);
+    return this._deleteSingle(existingItem, context, mutationState);
   }
 
   async deleteManyMutation(ids, context, mutationState) {
@@ -1012,13 +1096,11 @@ module.exports = class List {
     const existingItems = await this.getAccessControlledItems(ids, access);
 
     return Promise.all(
-      existingItems.map(async existingItem =>
-        this._deleteWithFieldHooks(existingItem, context, mutationState)
-      )
+      existingItems.map(existingItem => this._deleteSingle(existingItem, context, mutationState))
     );
   }
 
-  async _deleteWithFieldHooks(existingItem, context, mutationState) {
+  async _deleteSingle(existingItem, context, mutationState) {
     const operation = 'delete';
 
     return await this._nestedMutation(mutationState, context, async mutationState => {
