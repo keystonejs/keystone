@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import { format, getYear } from 'date-fns';
 import { DateTime } from 'luxon';
 import React, { Component } from 'react';
@@ -6,6 +8,7 @@ import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primiti
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 import { DateTimePicker } from '@voussoir/ui/src/primitives/forms';
 import { Popout } from '@voussoir/ui/src/primitives/modals';
+import { gridSize } from '@voussoir/ui/src/theme';
 
 export default class CalendarDayField extends Component {
   constructor(props) {
@@ -65,6 +68,7 @@ export default class CalendarDayField extends Component {
         <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
         <FieldInput>
           <Popout target={target} width={280}>
+            <div css={{ padding: gridSize }} id={`ks-dateTimePicker-${field.path}`}>
             <DateTimePicker
               {...this.props}
               {...{
@@ -79,9 +83,10 @@ export default class CalendarDayField extends Component {
                 yearPickerType: field.config.yearPickerType,
               }}
             />
+            </div>
           </Popout>
         </FieldInput>
-      </FieldContainer>
+      </FieldContainer >
     );
   }
 }
