@@ -21,7 +21,7 @@ type Props = {
   data: {
     observer: IntersectionObserver,
     setSelectedDate: Date => void,
-    selectedDate: Date,
+    selectedDate: Date | null,
     items: Array<{
       weeks: Weeks,
       month: number,
@@ -62,7 +62,8 @@ export const Month: React.ComponentType<Props> = memo(({ style, index, data }) =
           {week.map(day => {
             const date = new Date(year, month, 3);
             const disabled = !isSameMonth(date, day.dateValue);
-            const isSelected = !disabled && areDatesEqual(selectedDate, day.dateValue);
+            const isSelected =
+              !disabled && selectedDate !== null && areDatesEqual(selectedDate, day.dateValue);
             const isToday = isDayToday(day.dateValue);
             return (
               <Day

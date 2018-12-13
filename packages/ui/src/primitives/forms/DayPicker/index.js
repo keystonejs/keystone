@@ -54,7 +54,7 @@ type DayPickerProps = {
   yearRangeTo: number,
   yearPickerType: YearPickerType,
   startCurrentDateAt: Date,
-  startSelectedDateAt: Date,
+  selectedDate: Date | null,
 };
 
 let DAY_HEIGHT = 32.5;
@@ -92,7 +92,7 @@ export const DayPicker = ({
   yearRangeTo,
   yearPickerType,
   startCurrentDateAt,
-  startSelectedDateAt,
+  selectedDate,
   onSelectedChange,
 }: DayPickerProps) => {
   const listRef = useRef(null);
@@ -109,14 +109,7 @@ export const DayPicker = ({
     [shouldChangeScrollPositionRef, setDate]
   );
 
-  const [selectedDate, _setSelectedDate] = useState(startSelectedDateAt);
-  const setSelectedDate = useCallback(
-    (newSelectedDate: Date) => {
-      _setSelectedDate(newSelectedDate);
-      onSelectedChange(newSelectedDate);
-    },
-    [_setSelectedDate, onSelectedChange]
-  );
+  const setSelectedDate = onSelectedChange;
 
   useLayoutEffect(
     () => {
