@@ -74,12 +74,6 @@ class Field {
   }
 
   /*
-   * @param data {Mixed} The value of this field as saved & read from the DB
-   * @param item {Object} The existing version of the item
-   * @param context {Mixed} The GraphQL Context object for the current request
-   */
-  afterChange(data, item, context) {} // eslint-disable-line no-unused-vars
-  /*
    * @param data {Mixed} The value of this field received from the query
    * @param item {Object} The existing version of the item
    * @param context {Mixed} The GraphQL Context object for the current request
