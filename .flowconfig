@@ -9,6 +9,7 @@
 
 [untyped]
 
+.*/node_modules/react-select/.*
 .*/node_modules/graphql/.*
 
 [libs]
