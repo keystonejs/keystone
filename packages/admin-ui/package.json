@@ -35,7 +35,7 @@
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "file-loader": "^1.1.11",
-    "graphql": "^0.13.2",
+    "graphql": "^14.0.2",
     "graphql-tag": "^2.8.0",
     "html-webpack-plugin": "^3.2.0",
     "lodash.debounce": "^4.0.8",
