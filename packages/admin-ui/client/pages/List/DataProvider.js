@@ -21,6 +21,12 @@ type State = {};
 class ListPageDataProvider extends Component<Props, State> {
   constructor(props) {
     super(props);
+    // We record the number of items returned by the latest query so that the
+    // previous count can be displayed during a loading state.
+    this.itemsCount = 0;
+  }
+
+  componentDidMount() {
     const maybePersistedSearch = this.props.list.getPersistedSearch();
     if (this.props.location.search) {
       if (this.props.location.search !== maybePersistedSearch) {
@@ -32,10 +38,6 @@ class ListPageDataProvider extends Component<Props, State> {
         search: maybePersistedSearch,
       });
     }
-
-    // We record the number of items returned by the latest query so that the
-    // previous count can be displayed during a loading state.
-    this.itemsCount = 0;
   }
 
   // ==============================

@@ -262,9 +262,14 @@ class Nav extends Component {
 
                           {listKeys.map(key => {
                             const list = getListByKey(key);
-                            const href = `${adminPath}/${list.path}`;
+                            let href = `${adminPath}/${list.path}`;
                             const path = getPath(location.pathname);
                             const isSelected = href === path;
+
+                            const maybeSearchParam = list.getPersistedSearch();
+                            if (maybeSearchParam) {
+                              href += maybeSearchParam;
+                            }
 
                             return (
                               <Fragment key={key}>

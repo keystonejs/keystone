@@ -13,6 +13,7 @@ import Animation from '../../components/Animation';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
+import PreventNavigation from '../../components/PreventNavigation';
 import Footer from './Footer';
 import { TriangleLeftIcon, CheckIcon, ClippyIcon, PlusIcon } from '@voussoir/icons';
 import { Container, FlexGroup } from '@voussoir/ui/src/primitives/layout';
@@ -230,6 +231,16 @@ const ItemDetails = withRouter(
             autoDismiss: true,
             appearance: 'success',
           });
+          this.setState(state => {
+            // we only want to set itemHasChanged to false
+            // when it hasn't changed since we did the mutation
+            // otherwise a user could edit the data and
+            // accidentally close the page without a warning
+            if (state.item === item) {
+              return { itemHasChanged: false };
+            }
+            return null;
+          });
         })
         .then(onUpdate);
     };
@@ -262,7 +273,7 @@ const ItemDetails = withRouter(
 
     render() {
       const { adminPath, list, updateInProgress, itemErrors, item: savedData } = this.props;
-      const { copyText, item } = this.state;
+      const { copyText, item, itemHasChanged } = this.state;
       const isCopied = copyText === item.id;
       const copyIcon = isCopied ? (
         <Animation name="pulse" duration="500ms">
@@ -275,6 +286,7 @@ const ItemDetails = withRouter(
       const titleText = savedData._label_;
       return (
         <Fragment>
+          {itemHasChanged && <PreventNavigation />}
           <FlexGroup align="center" justify="space-between">
             <Title as="h1" margin="both">
               <TitleLink to={listHref}>{list.label}</TitleLink>: {titleText}
