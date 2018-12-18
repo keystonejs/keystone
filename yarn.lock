@@ -6920,6 +6920,15 @@ gatsby-link@^2.0.7:
     "@types/reach__router" "^1.0.0"
     prop-types "^15.6.1"
 
+gatsby-plugin-lunr@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-lunr/-/gatsby-plugin-lunr-1.3.0.tgz#169f6edad876fe35fbe2fc44e175ec4550e113bd"
+  integrity sha512-KJ9zpWkE1PDtFcWnlB35zWxYXuRJPeAfpn06S+O3jEirVUcXyK3Zf/7tF1kL+8Zxyh/tPJVnSie9WLkjKhzmuA==
+  dependencies:
+    babel-runtime "^6.26.0"
+    lunr "^2.3.0"
+    lunr-languages "^1.0.0"
+
 gatsby-plugin-page-creator@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/gatsby-plugin-page-creator/-/gatsby-plugin-page-creator-2.0.5.tgz#16b268142aa3515b5856bf802d8eec5a6320dc1c"
@@ -9873,6 +9882,16 @@ ltcdr@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/ltcdr/-/ltcdr-2.2.1.tgz#5ab87ad1d4c1dab8e8c08bbf037ee0c1902287cf"
   integrity sha1-Wrh60dTB2rjowIu/A37gwZAih88=
+
+lunr-languages@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/lunr-languages/-/lunr-languages-1.0.0.tgz#830bca2fe864b713ebe13ff33ed48ee06e635723"
+  integrity sha1-gwvKL+hktxPr4T/zPtSO4G5jVyM=
+
+lunr@^2.3.0:
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/lunr/-/lunr-2.3.5.tgz#7b510bad57e948dfb99a71fdff00c1bf9171bdda"
+  integrity sha512-EtnfmHsHJTr3u24sito9JctSxej5Ds0SgUD2Lm+qRHyLgM7BGesFlW14eNh1mil0fV5Muh8gf3dBBXzADlUlzQ==
 
 luxon@^1.3.3:
   version "1.6.2"
