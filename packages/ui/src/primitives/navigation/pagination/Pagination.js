@@ -1,5 +1,7 @@
 // @flow
 
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import React, { Component } from 'react';
 import styled from '@emotion/styled';
 
@@ -65,18 +67,27 @@ const PageCount = styled.div({
 
 const PageChildren = ({ page, isLoading, isSelected }) => {
   const [shouldShowLoading, setShouldShowLoading] = useState(false);
-  useEffect(() => {
-    if (isLoading && isSelected) {
-      const id = setTimeout(() => {
-        setShouldShowLoading(true);
-      }, 100);
-      return () => {
-        clearTimeout(id);
-      };
-    }
-  });
-
-  return shouldShowLoading ? <LoadingSpinner /> : page;
+  useEffect(
+    () => {
+      if (isLoading && isSelected) {
+        const id = setTimeout(() => {
+          setShouldShowLoading(true);
+        }, 200);
+        return () => {
+          clearTimeout(id);
+          setShouldShowLoading(false);
+        };
+      }
+    },
+    [page, isLoading, isSelected]
+  );
+  return shouldShowLoading ? (
+    <div css={{ height: 18 }}>
+      <LoadingSpinner />
+    </div>
+  ) : (
+    <span>{page}</span>
+  );
 };
 
 class Pagination extends Component<PaginationProps> {
@@ -165,12 +176,7 @@ class Pagination extends Component<PaginationProps> {
           onClick={onChange}
           value={page}
         >
-          <PageChildren
-            key={this.props.isLoading + page + isSelected}
-            isLoading={this.props.isLoading}
-            page={page}
-            isSelected={isSelected}
-          />
+          <PageChildren isLoading={this.props.isLoading} page={page} isSelected={isSelected} />
         </Page>
       );
     }
