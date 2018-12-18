@@ -735,26 +735,26 @@ module.exports = class List {
     const mutationResolvers = {};
 
     if (this.access.create) {
-      mutationResolvers[this.gqlNames.createMutationName] = async (_, { data }, context) =>
+      mutationResolvers[this.gqlNames.createMutationName] = (_, { data }, context) =>
         this.createMutation(data, context);
 
-      mutationResolvers[this.gqlNames.createManyMutationName] = async (_, { data }, context) =>
+      mutationResolvers[this.gqlNames.createManyMutationName] = (_, { data }, context) =>
         this.createManyMutation(data, context);
     }
 
     if (this.access.update) {
-      mutationResolvers[this.gqlNames.updateMutationName] = async (_, { id, data }, context) =>
+      mutationResolvers[this.gqlNames.updateMutationName] = (_, { id, data }, context) =>
         this.updateMutation(id, data, context);
 
-      mutationResolvers[this.gqlNames.updateManyMutationName] = async (_, { data }, context) =>
+      mutationResolvers[this.gqlNames.updateManyMutationName] = (_, { data }, context) =>
         this.updateManyMutation(data, context);
     }
 
     if (this.access.delete) {
-      mutationResolvers[this.gqlNames.deleteMutationName] = async (_, { id }, context) =>
+      mutationResolvers[this.gqlNames.deleteMutationName] = (_, { id }, context) =>
         this.deleteMutation(id, context);
 
-      mutationResolvers[this.gqlNames.deleteManyMutationName] = async (_, { ids }, context) =>
+      mutationResolvers[this.gqlNames.deleteManyMutationName] = (_, { ids }, context) =>
         this.deleteManyMutation(ids, context);
     }
 
