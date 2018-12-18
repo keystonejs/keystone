@@ -743,18 +743,18 @@ module.exports = class List {
     }
 
     if (this.access.update) {
-      mutationResolvers[this.gqlNames.updateMutationName] = async (_, { id, data }, context) =>
+      mutationResolvers[this.gqlNames.updateMutationName] = (_, { id, data }, context) =>
         this.updateMutation(id, data, context);
 
-      mutationResolvers[this.gqlNames.updateManyMutationName] = async (_, { data }, context) =>
+      mutationResolvers[this.gqlNames.updateManyMutationName] = (_, { data }, context) =>
         this.updateManyMutation(data, context);
     }
 
     if (this.access.delete) {
-      mutationResolvers[this.gqlNames.deleteMutationName] = async (_, { id }, context) =>
+      mutationResolvers[this.gqlNames.deleteMutationName] = (_, { id }, context) =>
         this.deleteMutation(id, context);
 
-      mutationResolvers[this.gqlNames.deleteManyMutationName] = async (_, { ids }, context) =>
+      mutationResolvers[this.gqlNames.deleteManyMutationName] = (_, { ids }, context) =>
         this.deleteManyMutation(ids, context);
     }
 
@@ -836,13 +836,13 @@ module.exports = class List {
   async _validateInput(resolvedData, existingItem, context, operation, originalInput) {
     const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
     const fields = this._fieldsFromObject(resolvedData);
-    this._validateHook(args, fields, operation, 'validateInput');
+    await this._validateHook(args, fields, operation, 'validateInput');
   }
 
   async _validateDelete(existingItem, context, operation) {
     const args = { existingItem, context, adapter: this.adapter };
     const fields = this.fields;
-    this._validateHook(args, fields, operation, 'validateDelete');
+    await this._validateHook(args, fields, operation, 'validateDelete');
   }
 
   async _validateHook(args, fields, operation, hookName) {
@@ -874,22 +874,22 @@ module.exports = class List {
 
   async _beforeChange(resolvedData, existingItem, context, originalInput) {
     const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
-    this._runHook(args, resolvedData, 'beforeChange');
+    await this._runHook(args, resolvedData, 'beforeChange');
   }
 
   async _beforeDelete(existingItem, context) {
     const args = { existingItem, context, adapter: this.adapter };
-    this._runHook(args, existingItem, 'beforeDelete');
+    await this._runHook(args, existingItem, 'beforeDelete');
   }
 
   async _afterChange(updatedItem, existingItem, context, originalInput) {
     const args = { updatedItem, originalInput, existingItem, context, adapter: this.adapter };
-    this._runHook(args, originalInput, 'afterChange');
+    await this._runHook(args, originalInput, 'afterChange');
   }
 
   async _afterDelete(existingItem, context) {
     const args = { existingItem, context, adapter: this.adapter };
-    this._runHook(args, existingItem, 'afterDelete');
+    await this._runHook(args, existingItem, 'afterDelete');
   }
 
   async _runHook(args, fieldObject, hookName) {
