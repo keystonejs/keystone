@@ -6,10 +6,12 @@ import {
   setHours,
   setYear,
   getMonth,
-  addHours,
+  getHours,
+  addMinutes,
+  subMinutes,
 } from 'date-fns';
 
-const today = setMinutes(setHours(new Date(), 17), 55);
+const today = setMinutes(new Date(), 0);
 const path = '/admin/users?fields=_label_%2Cdob%2ClastOnline';
 const lastOnline = '2018-08-16T11:08:18.886+10:00';
 
@@ -133,19 +135,24 @@ describe('DateTime Component - Functionality', () => {
     cy.get('#ks-input-lastOnline-picker').should('not.exist');
   });
 
-  it(`can select a day in this month`, () => {
+  it.only(`can select a day in this month`, () => {
     cy.get('button:contains("Set Date & Time")').click();
     cy.get(getDaySelector(today)).click();
     cy.get('input[name=time-picker]')
       .click()
-      .type('17:55');
+      .type(format(today, 'HH:mm'));
 
     cy.get('#ks-input-lastOnline-picker-offset input')
       .click({ force: true })
-      .type(`+11{downarrow}{enter}`, { force: true });
+      .type(`00:00{downarrow}{enter}`, { force: true });
 
     cy.get('label:contains("Name")').click();
-    cy.get(`button:contains("${format(today, 'MM/DD/YYYY h:mm A')}")`).should('exist');
+    cy.get(
+      `button:contains("${format(
+        subMinutes(today, today.getTimezoneOffset()),
+        'MM/DD/YYYY h:mm A'
+      )}")`
+    ).should('exist');
   });
 
   it(`can use arrows to set month`, () => {
