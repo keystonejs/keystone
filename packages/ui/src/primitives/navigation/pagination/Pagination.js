@@ -2,7 +2,7 @@
 
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { Component } from 'react';
+import { Component } from 'react';
 import styled from '@emotion/styled';
 
 import { colors } from '../../../theme';
@@ -82,7 +82,7 @@ const PageChildren = ({ page, isLoading, isSelected }) => {
     [page, isLoading, isSelected]
   );
   return shouldShowLoading ? (
-    <div css={{ height: 18 }}>
+    <div css={{ height: 19 }}>
       <LoadingSpinner />
     </div>
   ) : (
