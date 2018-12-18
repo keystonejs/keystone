@@ -446,6 +446,7 @@ class ListDetails extends Component<Props, State> {
                     />
                   ) : (
                     <Pagination
+                      isLoading={query.loading}
                       currentPage={currentPage}
                       itemsCount={itemsCount}
                       list={list}
