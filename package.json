@@ -15,15 +15,16 @@
     "lint:flow": "flow check",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:flow",
     "start": "/bin/sh -c 'cd projects/${1:-$0} && yarn start' basic",
-    "website:start": "bolt w @voussoir/website run start",
-    "website:build": "bolt w @voussoir/website run build",
+    "website:start": "cd website && yarn start",
+    "website:build": "cd website && yarn build",
     "arch": "cd packages/arch/www && yarn && cd .. && yarn start",
     "test": "yarn lint && yarn test:unit && yarn cypress:run",
     "test:unit": "DISABLE_LOGGING=true NODE_ENV=test jest",
     "test:unit:debug": "NODE_ENV=test node --inspect-brk `which jest` --runInBand",
     "changeset": "build-releases changeset",
     "version-packages": "build-releases version",
-    "publish-changed": "build-releases publish --public"
+    "publish-changed": "build-releases publish --public",
+    "postinstall": "cd website && yarn"
   },
   "dependencies": {
     "@atlaskit/build-releases": "^3.0.3",
@@ -80,11 +81,11 @@
     "flushable": "^1.0.0",
     "focus-trap": "^2.4.3",
     "fs-extra": "^7.0.0",
-    "graphql": "^0.13.2",
+    "graphql": "^14.0.2",
     "graphql-anywhere": "^4.1.23",
     "graphql-playground-html": "^1.6.6",
     "graphql-tag": "^2.8.0",
-    "graphql-tools": "^3.0.0",
+    "graphql-tools": "^4.0.3",
     "graphql-type-json": "^0.2.1",
     "hoist-non-react-statics": "^3.0.1",
     "html-webpack-plugin": "^3.2.0",
@@ -152,8 +153,7 @@
   "bolt": {
     "workspaces": [
       "packages/*",
-      "projects/*",
-      "website"
+      "projects/*"
     ]
   },
   "jest": {

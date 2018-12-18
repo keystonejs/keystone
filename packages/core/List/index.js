@@ -471,23 +471,24 @@ module.exports = class List {
     return mutations;
   }
 
-  checkFieldAccess(operation, existingItem, data, context, { gqlName, extraData = {} }) {
+  checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData = {} }) {
     const restrictedFields = [];
 
-    this.fields
-      .filter(field => field.path in data)
-      .forEach(field => {
-        const access = context.getFieldAccessControlForUser(
-          this.key,
-          field.path,
-          existingItem,
-          operation
-        );
-        if (!access) {
-          restrictedFields.push(field.path);
-        }
-      });
-
+    itemsToUpdate.forEach(({ existingItem, data }) => {
+      this.fields
+        .filter(field => field.path in data)
+        .forEach(field => {
+          const access = context.getFieldAccessControlForUser(
+            this.key,
+            field.path,
+            existingItem,
+            operation
+          );
+          if (!access) {
+            restrictedFields.push(field.path);
+          }
+        });
+    });
     if (restrictedFields.length) {
       this._throwAccessDenied(operation, context, gqlName, extraData, { restrictedFields });
     }
@@ -743,18 +744,18 @@ module.exports = class List {
     }
 
     if (this.access.update) {
-      mutationResolvers[this.gqlNames.updateMutationName] = async (_, { id, data }, context) =>
+      mutationResolvers[this.gqlNames.updateMutationName] = (_, { id, data }, context) =>
         this.updateMutation(id, data, context);
 
-      mutationResolvers[this.gqlNames.updateManyMutationName] = async (_, { data }, context) =>
+      mutationResolvers[this.gqlNames.updateManyMutationName] = (_, { data }, context) =>
         this.updateManyMutation(data, context);
     }
 
     if (this.access.delete) {
-      mutationResolvers[this.gqlNames.deleteMutationName] = async (_, { id }, context) =>
+      mutationResolvers[this.gqlNames.deleteMutationName] = (_, { id }, context) =>
         this.deleteMutation(id, context);
 
-      mutationResolvers[this.gqlNames.deleteManyMutationName] = async (_, { ids }, context) =>
+      mutationResolvers[this.gqlNames.deleteManyMutationName] = (_, { ids }, context) =>
         this.deleteManyMutation(ids, context);
     }
 
@@ -836,13 +837,13 @@ module.exports = class List {
   async _validateInput(resolvedData, existingItem, context, operation, originalInput) {
     const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
     const fields = this._fieldsFromObject(resolvedData);
-    this._validateHook(args, fields, operation, 'validateInput');
+    await this._validateHook(args, fields, operation, 'validateInput');
   }
 
   async _validateDelete(existingItem, context, operation) {
     const args = { existingItem, context, adapter: this.adapter };
     const fields = this.fields;
-    this._validateHook(args, fields, operation, 'validateDelete');
+    await this._validateHook(args, fields, operation, 'validateDelete');
   }
 
   async _validateHook(args, fields, operation, hookName) {
@@ -874,22 +875,22 @@ module.exports = class List {
 
   async _beforeChange(resolvedData, existingItem, context, originalInput) {
     const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
-    this._runHook(args, resolvedData, 'beforeChange');
+    await this._runHook(args, resolvedData, 'beforeChange');
   }
 
   async _beforeDelete(existingItem, context) {
     const args = { existingItem, context, adapter: this.adapter };
-    this._runHook(args, existingItem, 'beforeDelete');
+    await this._runHook(args, existingItem, 'beforeDelete');
   }
 
   async _afterChange(updatedItem, existingItem, context, originalInput) {
     const args = { updatedItem, originalInput, existingItem, context, adapter: this.adapter };
-    this._runHook(args, originalInput, 'afterChange');
+    await this._runHook(args, updatedItem, 'afterChange');
   }
 
   async _afterDelete(existingItem, context) {
     const args = { existingItem, context, adapter: this.adapter };
-    this._runHook(args, existingItem, 'afterDelete');
+    await this._runHook(args, existingItem, 'afterDelete');
   }
 
   async _runHook(args, fieldObject, hookName) {
@@ -906,7 +907,11 @@ module.exports = class List {
     // Set up a fresh mutation state if we're the root mutation
     const isRootMutation = !mutationState;
     if (isRootMutation) {
-      mutationState = { afterChangeStack: [], queues: {} };
+      mutationState = {
+        afterChangeStack: [], // post-hook stack
+        queues: {}, // backlink queues
+        transaction: {}, // transaction
+      };
     }
 
     // Perform the mutation
@@ -919,6 +924,9 @@ module.exports = class List {
     const { afterChangeStack } = mutationState;
     afterChangeStack.push(afterHook);
     if (isRootMutation) {
+      // TODO: Close transation
+
+      // Execute post-hook stack
       while (afterChangeStack.length) {
         await afterChangeStack.pop()();
       }
@@ -936,7 +944,9 @@ module.exports = class List {
 
     const existingItem = undefined;
 
-    this.checkFieldAccess(operation, existingItem, data, context, { gqlName });
+    const itemsToUpdate = [{ existingItem, data }];
+
+    this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName });
 
     return await this._createSingle(data, existingItem, context, mutationState);
   }
@@ -947,11 +957,11 @@ module.exports = class List {
 
     this.checkListAccess(context, operation, { gqlName });
 
-    const existingItem = undefined;
+    const itemsToUpdate = data.map(d => ({ existingItem: undefined, data: d }));
 
-    data.forEach(d => this.checkFieldAccess(operation, existingItem, d, context, { gqlName }));
+    this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName });
 
-    return Promise.all(data.map(d => this._createSingle(d, existingItem, context, mutationState)));
+    return Promise.all(data.map(d => this._createSingle(d, undefined, context, mutationState)));
   }
 
   async _createSingle(data, existingItem, context, mutationState) {
@@ -1014,7 +1024,9 @@ module.exports = class List {
       gqlName,
     });
 
-    this.checkFieldAccess(operation, existingItem, data, context, { gqlName, extraData });
+    const itemsToUpdate = [{ existingItem, data }];
+
+    this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData });
 
     return await this._updateSingle(id, data, existingItem, context, mutationState);
   }
@@ -1035,9 +1047,8 @@ module.exports = class List {
       data: data.map(d => d.data),
     });
 
-    itemsToUpdate.map(({ existingItem, data }) =>
-      this.checkFieldAccess(operation, existingItem, data, context, { gqlName, extraData })
-    );
+    // FIXME: We should do all of these in parallel and return *all* the field access violations
+    this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData });
 
     return Promise.all(
       itemsToUpdate.map(({ existingItem, id, data }) =>
