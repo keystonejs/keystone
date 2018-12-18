@@ -142,7 +142,7 @@ describe('DateTime Component - Functionality', () => {
 
     cy.get('#ks-input-lastOnline-picker-offset input')
       .click({ force: true })
-      .type(`${(today.getTimezoneOffset() / 60) * -1}{downarrow}{enter}`, { force: true });
+      .type(`+11{downarrow}{enter}`, { force: true });
 
     cy.get('label:contains("Name")').click();
     cy.get(`button:contains("${format(today, 'MM/DD/YYYY h:mm A')}")`).should('exist');
