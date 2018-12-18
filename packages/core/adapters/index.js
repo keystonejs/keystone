@@ -38,7 +38,14 @@ class BaseListAdapter {
     this.config = config;
 
     this.preSaveHooks = [];
-    this.postReadHooks = [];
+    this.postReadHooks = [
+      item => {
+        // FIXME: This can hopefully be removed once graphql 14.1.0 is released.
+        // https://github.com/graphql/graphql-js/pull/1520
+        if (item && item.id) item.id = item.id.toString();
+        return item;
+      },
+    ];
   }
 
   newFieldAdapter(fieldAdapterClass, name, path, getListByKey, config) {

@@ -1,0 +1,9 @@
+{
+  "releases": [
+    { "name": "@voussoir/admin-ui", "type": "patch" },
+    { "name": "@voussoir/core", "type": "patch" },
+    { "name": "@voussoir/fields", "type": "patch" },
+    { "name": "@voussoir/server", "type": "patch" }
+  ],
+  "dependents": []
+}
