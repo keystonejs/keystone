@@ -5,7 +5,9 @@ import styled from '@emotion/styled';
 
 import { colors } from '../../../theme';
 import Page from './Page';
+import { LoadingSpinner } from '../../loading';
 import type { CountArgs, CountFormat, LabelType, OnChangeType } from './types';
+import { useEffect, useState } from '../../../new-typed-react';
 
 function ariaPageLabelFn(page: number) {
   return `Go to page ${page}`;
@@ -49,6 +51,7 @@ export type PaginationProps = {
   plural: string,
   singular: string,
   total: number,
+  isLoading: boolean,
 };
 
 const PaginationElement = styled.nav({
@@ -59,6 +62,22 @@ const PageCount = styled.div({
   color: colors.N60,
   marginRight: '1em',
 });
+
+const PageChildren = ({ page, isLoading, isSelected }) => {
+  const [shouldShowLoading, setShouldShowLoading] = useState(false);
+  useEffect(() => {
+    if (isLoading && isSelected) {
+      const id = setTimeout(() => {
+        setShouldShowLoading(true);
+      }, 100);
+      return () => {
+        clearTimeout(id);
+      };
+    }
+  });
+
+  return shouldShowLoading ? <LoadingSpinner /> : page;
+};
 
 class Pagination extends Component<PaginationProps> {
   static defaultProps = {
@@ -146,7 +165,12 @@ class Pagination extends Component<PaginationProps> {
           onClick={onChange}
           value={page}
         >
-          {page}
+          <PageChildren
+            key={this.props.isLoading + page + isSelected}
+            isLoading={this.props.isLoading}
+            page={page}
+            isSelected={isSelected}
+          />
         </Page>
       );
     }
