@@ -1,14 +1,18 @@
 import React from 'react';
-import { graphql } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 
 export default function Template({
   data, // this prop will be injected by the GraphQL query below.
+  pathContext: { workspace, workspaceSlug },
 }) {
-  console.log(data);
   const { markdownRemark } = data; // data.markdownRemark holds our post data
   const { html } = markdownRemark;
   return (
     <div className="blog-post-container">
+      <Link to="/">Voussoir</Link> &gt;{' '}
+      <Link to={workspaceSlug}>
+        <code>{workspace}</code>
+      </Link>
       <div className="blog-post">
         <div className="blog-post-content" dangerouslySetInnerHTML={{ __html: html }} />
       </div>

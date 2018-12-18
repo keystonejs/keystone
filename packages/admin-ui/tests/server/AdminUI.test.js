@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 // We don't want to actually run webpack, so we mock all the bits out
 jest.doMock('webpack', () => {
   const mock = jest.fn(() => {});

@@ -10,7 +10,7 @@
     "@voussoir/logger": "^0.2.0",
     "@voussoir/utils": "^0.3.0",
     "apollo-errors": "^1.9.0",
-    "apollo-server-express": "^2.2.6",
+    "apollo-server-express": "^2.3.1",
     "body-parser": "^1.18.2",
     "cookie": "^0.3.1",
     "cookie-signature": "^1.1.0",
