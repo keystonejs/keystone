@@ -4,3 +4,4 @@ dist
 flow-typed
 reports
 projects/**/cypress
+website/.cache/**/*

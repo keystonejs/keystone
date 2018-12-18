@@ -159,10 +159,14 @@ describe('new List()', () => {
       deleteManyMutationName: 'deleteTests',
       updateMutationName: 'updateTest',
       createMutationName: 'createTest',
+      updateManyMutationName: 'updateTests',
+      createManyMutationName: 'createTests',
       whereInputName: 'TestWhereInput',
       whereUniqueInputName: 'TestWhereUniqueInput',
       updateInputName: 'TestUpdateInput',
       createInputName: 'TestCreateInput',
+      updateManyInputName: 'TestsUpdateInput',
+      createManyInputName: 'TestsCreateInput',
       relateToManyInputName: 'TestRelateToManyInput',
       relateToOneInputName: 'TestRelateToOneInput',
     });
@@ -320,10 +324,14 @@ describe('getAdminMeta()', () => {
       deleteManyMutationName: 'deleteTests',
       updateMutationName: 'updateTest',
       createMutationName: 'createTest',
+      updateManyMutationName: 'updateTests',
+      createManyMutationName: 'createTests',
       whereInputName: 'TestWhereInput',
       whereUniqueInputName: 'TestWhereUniqueInput',
       updateInputName: 'TestUpdateInput',
       createInputName: 'TestCreateInput',
+      updateManyInputName: 'TestsUpdateInput',
+      createManyInputName: 'TestsCreateInput',
       relateToManyInputName: 'TestRelateToManyInput',
       relateToOneInputName: 'TestRelateToOneInput',
     });
@@ -476,6 +484,10 @@ test('gqlTypes', () => {
     other: OtherRelateToOneInput
     hidden: String
   }`;
+  const updateManyInput = `input TestsUpdateInput {
+    id: ID!
+    data: TestUpdateInput
+  }`;
   const createInput = `input TestCreateInput {
     name: String
     email: String
@@ -483,11 +495,21 @@ test('gqlTypes', () => {
     hidden: String
     writeOnce: String
   }`;
+  const createManyInput = `input TestsCreateInput {
+    data: TestCreateInput
+  }`;
 
   expect(setup(true).gqlTypes.map(s => print(gql(s)))).toEqual(
-    [otherInput, type, whereInput, whereUniqueInput, updateInput, createInput].map(s =>
-      print(gql(s))
-    )
+    [
+      otherInput,
+      type,
+      whereInput,
+      whereUniqueInput,
+      updateInput,
+      updateManyInput,
+      createInput,
+      createManyInput,
+    ].map(s => print(gql(s)))
   );
 
   expect(setup(false).gqlTypes.map(s => print(gql(s)))).toEqual([].map(s => print(gql(s))));
@@ -502,12 +524,20 @@ test('gqlTypes', () => {
     setup({ read: false, create: true, update: false, delete: false }).gqlTypes.map(s =>
       print(gql(s))
     )
-  ).toEqual([otherInput, type, whereInput, whereUniqueInput, createInput].map(s => print(gql(s))));
+  ).toEqual(
+    [otherInput, type, whereInput, whereUniqueInput, createInput, createManyInput].map(s =>
+      print(gql(s))
+    )
+  );
   expect(
     setup({ read: false, create: false, update: true, delete: false }).gqlTypes.map(s =>
       print(gql(s))
     )
-  ).toEqual([otherInput, type, whereInput, whereUniqueInput, updateInput].map(s => print(gql(s))));
+  ).toEqual(
+    [otherInput, type, whereInput, whereUniqueInput, updateInput, updateManyInput].map(s =>
+      print(gql(s))
+    )
+  );
   expect(
     setup({ read: false, create: false, update: false, delete: true }).gqlTypes.map(s =>
       print(gql(s))
@@ -651,19 +681,12 @@ test('gqlAuxMutationResolvers', () => {
 test('gqlMutations', () => {
   expect(setup(true).gqlMutations.map(normalise)).toEqual(
     [
-      `createTest(
-      data: TestCreateInput
-    ): Test`,
-      `updateTest(
-      id: ID!
-      data: TestUpdateInput
-    ): Test`,
-      `deleteTest(
-      id: ID!
-    ): Test`,
-      `deleteTests(
-      ids: [ID!]
-    ): [Test]`,
+      `createTest(data: TestCreateInput): Test`,
+      `createTests(data: [TestsCreateInput]): [Test]`,
+      `updateTest(id: ID! data: TestUpdateInput): Test`,
+      `updateTests(data: [TestsUpdateInput]): [Test]`,
+      `deleteTest(id: ID!): Test`,
+      `deleteTests(ids: [ID!]): [Test]`,
     ].map(normalise)
   );
 
@@ -676,33 +699,21 @@ test('gqlMutations', () => {
     setup({ read: false, create: true, update: false, delete: false }).gqlMutations.map(normalise)
   ).toEqual(
     [
-      `createTest(
-      data: TestCreateInput
-    ): Test`,
+      `createTest(data: TestCreateInput): Test`,
+      `createTests(data: [TestsCreateInput]): [Test]`,
     ].map(normalise)
   );
   expect(
     setup({ read: false, create: false, update: true, delete: false }).gqlMutations.map(normalise)
   ).toEqual(
     [
-      `updateTest(
-      id: ID!
-      data: TestUpdateInput
-    ): Test`,
+      `updateTest(id: ID! data: TestUpdateInput): Test`,
+      `updateTests(data: [TestsUpdateInput]): [Test]`,
     ].map(normalise)
   );
   expect(
     setup({ read: false, create: false, update: false, delete: true }).gqlMutations.map(normalise)
-  ).toEqual(
-    [
-      `deleteTest(
-      id: ID!
-    ): Test`,
-      `deleteTests(
-      ids: [ID!]
-    ): [Test]`,
-    ].map(normalise)
-  );
+  ).toEqual([`deleteTest(id: ID!): Test`, `deleteTests(ids: [ID!]): [Test]`].map(normalise));
 });
 
 test('checkFieldAccess', () => {
@@ -1024,6 +1035,18 @@ test('createMutation', async () => {
   expect(result).toEqual({ name: 'test', email: 'test@example.com', index: 3, other: null });
 });
 
+test('createManyMutation', async () => {
+  const list = setup();
+  const result = await list.createManyMutation(
+    [{ name: 'test1', email: 'test1@example.com' }, { name: 'test2', email: 'test2@example.com' }],
+    context
+  );
+  expect(result).toEqual([
+    { name: 'test1', email: 'test1@example.com', index: 3, other: null },
+    { name: 'test2', email: 'test2@example.com', index: 4, other: null },
+  ]);
+});
+
 test('updateMutation', async () => {
   const list = setup();
   const result = await list.updateMutation(
@@ -1032,6 +1055,21 @@ test('updateMutation', async () => {
     context
   );
   expect(result).toEqual({ name: 'update', email: 'update@example.com', index: 1 });
+});
+
+test('updateManyMutation', async () => {
+  const list = setup();
+  const result = await list.updateManyMutation(
+    [
+      { id: 1, data: { name: 'update1', email: 'update1@example.com' } },
+      { id: 2, data: { email: 'update2@example.com' } },
+    ],
+    context
+  );
+  expect(result).toEqual([
+    { name: 'update1', email: 'update1@example.com', index: 1 },
+    { name: 'c', email: 'update2@example.com', index: 2 },
+  ]);
 });
 
 test('deleteMutation', async () => {

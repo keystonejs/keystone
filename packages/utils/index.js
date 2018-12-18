@@ -92,6 +92,12 @@ exports.arrayToObject = (objs, keyedBy, mapFn = i => i) =>
 // [[1, 2, 3], [4, 5], 6, [[7, 8], [9, 10]]] => [1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]
 exports.flatten = arr => Array.prototype.concat(...arr);
 
+// { foo: [1, 2, 3], bar: [4, 5, 6]} => [{ foo: 1, bar; 4}, { foo: 2, bar: 5}, { foo: 3, bar: 6 }]
+exports.zipObj = obj =>
+  Object.values(obj)[0].map((_, i) =>
+    Object.keys(obj).reduce((acc, k) => ({ ...acc, [k]: obj[k][i] }), {})
+  );
+
 exports.mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
   if (
     exports.getType(whereClauseToMergeIn) !== 'Object' ||
