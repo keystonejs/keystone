@@ -718,14 +718,18 @@ test('gqlMutations', () => {
 
 test('checkFieldAccess', () => {
   const list = setup();
-  list.checkFieldAccess('read', {}, { name: 'a', email: 'a@example.com' }, context, {
-    gqlName: 'testing',
-  });
+  list.checkFieldAccess(
+    'read',
+    [{ existingItem: {}, data: { name: 'a', email: 'a@example.com' } }],
+    context,
+    {
+      gqlName: 'testing',
+    }
+  );
   expect(() =>
     list.checkFieldAccess(
       'read',
-      { makeFalse: true },
-      { name: 'a', email: 'a@example.com' },
+      [{ existingItem: { makeFalse: true }, data: { name: 'a', email: 'a@example.com' } }],
       context,
       { gqlName: '' }
     )
@@ -734,8 +738,7 @@ test('checkFieldAccess', () => {
   try {
     list.checkFieldAccess(
       'read',
-      { makeFalse: true },
-      { name: 'a', email: 'a@example.com' },
+      [{ existingItem: { makeFalse: true }, data: { name: 'a', email: 'a@example.com' } }],
       context,
       { gqlName: 'testing', extraData: { extra: 1 } }
     );
