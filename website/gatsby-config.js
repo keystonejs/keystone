@@ -42,9 +42,18 @@ async function getGatsbyConfig() {
         resolve: 'gatsby-source-filesystem',
         options: { name: 'guides', path: `${__dirname}/guides/` },
       },
-      `gatsby-transformer-remark`,
-      // TODO: The remark plugin can be made a lot smarter with its own plugins. I've left them off.
       // TODO: prepend relative markdown URLs with the workspaceSlug field
+      {
+        resolve: `gatsby-transformer-remark`,
+        options: {
+          plugins: [
+            {
+              resolve: `gatsby-remark-prismjs`,
+              options: { aliases: { js: 'javascript' } },
+            },
+          ],
+        },
+      },
       {
         resolve: 'gatsby-plugin-lunr',
         options: {
