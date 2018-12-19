@@ -3,5 +3,5 @@ coverage
 dist
 flow-typed
 reports
-projects/**/cypress
+test-projects/**/cypress
 website/.cache/**/*
