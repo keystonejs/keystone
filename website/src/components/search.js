@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'gatsby';
+import { jsx } from '@emotion/core';
+
+// @jsx jsx
 
 // Search component
 export default class Search extends Component {
@@ -15,7 +18,16 @@ export default class Search extends Component {
     return (
       <div>
         <input type="text" value={this.state.query} onChange={this.search} placeholder="Search" />
-        <ul>
+        <ul
+          css={{
+            background: 'white',
+            maxWidth: 250,
+            position: 'absolute',
+            right: 21,
+            top: 40,
+            padding: 10,
+          }}
+        >
           {this.state.results.map(result => (
             <li>
               <Link to={result.slug}>{result.slug}</Link>{' '}
