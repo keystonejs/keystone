@@ -1,5 +1,18 @@
 # @voussoir/fields
 
+## 2.0.1
+- [patch] 3aede2f5:
+
+  - Make relationship select work for large lists
+
+- [patch] c3dd4295:
+
+  - Don't clobber DateTime fields during update mutation
+
+- [patch] 8d8666ad:
+
+  - Dependency upgrade: graphql -> 14.0.3, graphql-tools -> 4.0.3
+
 ## 2.0.0
 
 - [patch] 21626b66:
