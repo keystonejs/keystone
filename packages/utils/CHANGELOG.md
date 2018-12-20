@@ -1,5 +1,10 @@
 # @voussoir/utils
 
+## 0.3.1
+- [patch] 06b9968e:
+
+  - Add zipObj function
+
 ## 0.3.0
 
 - [minor] 47c7dcf6"

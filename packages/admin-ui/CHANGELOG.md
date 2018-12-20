@@ -1,5 +1,18 @@
 # @voussoir/admin-ui
 
+## 0.8.0
+- [patch] 18ce8bc4:
+
+  - Add warning when leaving item page with unsaved changes
+
+- [patch] 8d8666ad:
+
+  - Dependency upgrade: graphql -> 14.0.3, graphql-tools -> 4.0.3
+
+- [minor] 6d8ce0fc:
+
+  - Add createMany and updateMany mutations
+
 ## 0.7.0
 
 - [patch] 32960e4d:
