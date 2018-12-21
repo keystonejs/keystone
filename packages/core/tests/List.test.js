@@ -101,20 +101,16 @@ const getListByKey = listKey => {
   }
 };
 
-const listExtras = (getAuth = () => true) => ({
+const listExtras = (getAuth = () => true, queryMethod = undefined) => ({
   getListByKey,
-  getAdminSchema: () => ({
-    resolvers: {
-      _QueryMeta: { count: meta => meta.getCount() },
-    },
-  }),
   adapter: new MockAdapter(),
   getAuth,
   defaultAccess: { list: true, field: true },
+  getGraphQLQuery: () => queryMethod,
 });
 
-const setup = (extraConfig, getAuth) =>
-  new List('Test', { ...config, ...extraConfig }, listExtras(getAuth));
+const setup = (extraConfig, getAuth, queryMethod) =>
+  new List('Test', { ...config, ...extraConfig }, listExtras(getAuth, queryMethod));
 
 describe('new List()', () => {
   test('new List() - Smoke test', () => {
@@ -1138,11 +1134,8 @@ describe('List Hooks', () => {
           Object.keys(hooks).forEach(hook => {
             expect(hooks[hook]).toHaveBeenCalledWith(
               expect.objectContaining({
-                list: {
+                actions: {
                   query: expect.any(Function),
-                  queryMany: expect.any(Function),
-                  queryManyMeta: expect.any(Function),
-                  getList: expect.any(Function),
                 },
               })
             );
@@ -1157,78 +1150,54 @@ describe('List Hooks', () => {
           list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
           list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
         ].map(async action => {
-          let queryResult;
+          const queryMethod = jest.fn(() => ({ data: { hello: 'world' } }));
+          const queryString = 'query { /* Fake query string */ }';
 
           const hooks = {
-            beforeChange: jest.fn(async ({ context: queryContext, list }) => {
-              queryResult = await list.query({ where: { id: 0 } }, queryContext);
+            beforeChange: jest.fn(async ({ actions: { query } }) => {
+              await query(queryString);
             }),
           };
 
-          const list = setup({ hooks });
+          const list = setup({ hooks }, undefined, queryMethod);
           await action(list);
 
-          expect(queryResult).toMatchObject({
-            name: 'a',
-            email: 'a@example.com',
-          });
-        })
-      );
-    });
-
-    test('can execute a many query from within a hook', () => {
-      return Promise.all(
-        [
-          list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
-          list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
-        ].map(async action => {
-          let queryResult;
-
-          const hooks = {
-            beforeChange: jest.fn(async ({ context: queryContext, list }) => {
-              queryResult = await list.queryMany({ where: { id_in: [0, 2] } }, queryContext);
-            }),
-          };
-
-          const list = setup({ hooks });
-          await action(list);
-
-          expect(queryResult).toContainEqual(
-            expect.objectContaining({
-              name: 'a',
-              email: 'a@example.com',
-            })
-          );
-          expect(queryResult).toContainEqual(
-            expect.objectContaining({
-              name: 'c',
-              email: 'c@example.com',
-            })
+          expect(queryMethod).toHaveBeenCalledWith(
+            queryString,
+            // The context object
+            expect.any(Object),
+            // no variables
+            undefined
           );
         })
       );
     });
 
-    test('can execute a many meta query from within a hook', () => {
+    test('can execute a query with variables from within a hook', () => {
       return Promise.all(
         [
           list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
           list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
         ].map(async action => {
-          let queryResult;
+          const queryMethod = jest.fn(() => ({ data: { hello: 'world' } }));
+          const queryString = 'query { /* Fake query string */ }';
+          const variables = { id: 'abc123' };
 
           const hooks = {
-            beforeChange: jest.fn(async ({ context: queryContext, list }) => {
-              queryResult = await list.queryManyMeta({ where: { id_in: [0, 2] } }, queryContext);
+            beforeChange: jest.fn(async ({ actions: { query } }) => {
+              await query(queryString, { variables });
             }),
           };
 
-          const list = setup({ hooks });
+          const list = setup({ hooks }, undefined, queryMethod);
           await action(list);
 
-          expect(queryResult).toMatchObject({
-            count: 2,
-          });
+          expect(queryMethod).toHaveBeenCalledWith(
+            queryString,
+            // The context object
+            expect.any(Object),
+            expect.objectContaining(variables)
+          );
         })
       );
     });
@@ -1247,11 +1216,8 @@ describe('List Hooks', () => {
       Object.keys(hooks).forEach(hook => {
         expect(hooks[hook]).toHaveBeenCalledWith(
           expect.objectContaining({
-            list: {
+            actions: {
               query: expect.any(Function),
-              queryMany: expect.any(Function),
-              queryManyMeta: expect.any(Function),
-              getList: expect.any(Function),
             },
           })
         );
