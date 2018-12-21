@@ -5,6 +5,7 @@ const { renderPlaygroundPage } = require('graphql-playground-html');
 const cuid = require('cuid');
 const logger = require('@voussoir/logger');
 const { omit } = require('@voussoir/utils');
+const { graphql } = require('graphql');
 
 const { NestedError } = require('./graphqlErrors');
 
@@ -94,6 +95,7 @@ module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlP
       }
     },
   });
+
   server.applyMiddleware({
     app,
     path: apiPath,
@@ -101,6 +103,7 @@ module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlP
     // https://www.apollographql.com/docs/apollo-server/api/apollo-server.html#ApolloServer-applyMiddleware
     cors: false,
   });
+
   if (graphiqlPath) {
     app.use(graphiqlPath, (req, res) => {
       if (req.user && req.sessionID) {
@@ -113,6 +116,10 @@ module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlP
       res.end();
     });
   }
+
+  keystone.registerGraphQLQueryMethod((query, context, variables) =>
+    graphql(server.schema, query, null, context, variables)
+  );
 
   return app;
 };

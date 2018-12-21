@@ -53,12 +53,13 @@ module.exports = class Keystone {
     this.auth[listKey][authType] = strategy;
     return strategy;
   }
+
   createList(key, config) {
     const { getListByKey, adapters } = this;
     const adapterName = config.adapterName || this.defaultAdapter;
     const list = new List(key, config, {
       getListByKey,
-      getAdminSchema: this.getAdminSchema,
+      getGraphQLQuery: () => this._graphQLQuery,
       adapter: adapters[adapterName],
       defaultAccess: this.defaultAccess,
       getAuth: () => this.auth[key],
@@ -197,11 +198,14 @@ module.exports = class Keystone {
     ].map(s => print(gql(s)));
   }
 
-  getAdminSchema() {
-    if (this._adminSchema) {
-      return this._adminSchema;
-    }
+  // It's not Keystone core's responsibility to create an executable schema, but
+  // once one is, Keystone wants to be able to expose the ability to query that
+  // schema, so this function enables other modules to register that function.
+  registerGraphQLQueryMethod(queryMethod) {
+    this._graphQLQuery = queryMethod;
+  }
 
+  getAdminSchema() {
     const typeDefs = this.getTypeDefs();
     if (debugGraphQLSchemas()) {
       typeDefs.forEach(i => console.log(i));
@@ -287,8 +291,7 @@ module.exports = class Keystone {
       console.log(resolvers);
     }
 
-    this._adminSchema = { typeDefs, resolvers };
-    return this._adminSchema;
+    return { typeDefs, resolvers };
   }
 
   getAuxQueryResolvers() {
