@@ -1,8 +1,9 @@
-const { Text, MongoTextInterface } = require('../Text/Implementation');
+const { MongoTextInterface } = require('../Text/Implementation');
+const { Content } = require('./Implementation');
 
 module.exports = {
   type: 'Content',
-  implementation: Text,
+  implementation: Content,
   views: {
     Controller: require.resolve('../Text/Controller'),
     Field: require.resolve('./views/Field'),

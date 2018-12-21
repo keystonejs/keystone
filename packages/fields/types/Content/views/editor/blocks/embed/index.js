@@ -5,7 +5,7 @@ import { useEffect, Fragment, useRef, useState, useContext } from 'react';
 import { embedType } from '../../constants';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 
-let EmbedlyAPIKeyContext = React.createContext();
+export let EmbedlyAPIKeyContext = React.createContext();
 
 let Embed = ({ url }) => {
   let containerRef = useRef(null);

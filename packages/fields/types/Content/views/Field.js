@@ -1,10 +1,10 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, useEffect, useMemo } from 'react';
+import { useState } from 'react';
 import Editor from './editor';
 import { Value } from 'slate';
 import { initialValue } from './editor/constants';
-import debounce from 'lodash.debounce';
+import { EmbedlyAPIKeyContext } from './editor/blocks/embed';
 
 let TextField = ({ field, item, onChange }) => {
   let parsedValue = item[field.path];
@@ -13,31 +13,25 @@ let TextField = ({ field, item, onChange }) => {
   } else {
     parsedValue = initialValue;
   }
-  let [rawValue, setRawValue] = useState(JSON.stringify(parsedValue));
-
-  let setTheOuterStateThing = newValue => {
-    let newRawValue = JSON.stringify(newValue.toJS());
-    if (newRawValue !== rawValue) {
-      setRawValue(newRawValue);
-      onChange(field, newRawValue);
-    }
-  };
 
   let [value, setValue] = useState(() => Value.fromJS(parsedValue));
-
+  console.log(field.config);
   return (
-    <div>
-      <h1>{field.label}</h1>
-      <Editor
-        value={value}
-        onChange={newValue => {
-          setValue(newValue);
-          if (newValue.document !== value.document) {
-            setTheOuterStateThing(newValue);
-          }
+    <EmbedlyAPIKeyContext.Provider value={field.config.embedlyAPIKey}>
+      <div
+        onBlur={() => {
+          onChange(field, JSON.stringify(value.toJS()));
         }}
-      />
-    </div>
+      >
+        <h1>{field.label}</h1>
+        <Editor
+          value={value}
+          onChange={newValue => {
+            setValue(newValue);
+          }}
+        />
+      </div>
+    </EmbedlyAPIKeyContext.Provider>
   );
 };
 
