@@ -15,7 +15,7 @@ let TextField = ({ field, item, onChange }) => {
   }
 
   let [value, setValue] = useState(() => Value.fromJS(parsedValue));
-  console.log(field.config);
+
   return (
     <EmbedlyAPIKeyContext.Provider value={field.config.embedlyAPIKey}>
       <div
