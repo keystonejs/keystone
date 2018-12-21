@@ -4,6 +4,7 @@ const {
   resolveAllKeys,
   mapKeys,
   omit,
+  omitBy,
   unique,
   intersection,
   mergeWhereClause,
@@ -92,7 +93,7 @@ const mapNativeTypeToKeystonType = (type, listKey, fieldPath) => {
 };
 
 module.exports = class List {
-  constructor(key, config, { getListByKey, adapter, defaultAccess, getAuth }) {
+  constructor(key, config, { getListByKey, getAdminSchema, adapter, defaultAccess, getAuth }) {
     this.key = key;
 
     // 180814 JM TODO: Since there's no access control specified, this implicitly makes name, id or {labelField} readable by all (probably bad?)
@@ -192,6 +193,109 @@ module.exports = class List {
     this.views = mapKeys(sanitisedFieldsConfig, fieldConfig => ({
       ...fieldConfig.type.views,
     }));
+
+    this.hooksApi = {
+      /**
+       * @param args Object The same arguments as the *WhereUniqueInput graphql
+       * type
+       * @param context Object The Apollo context object for this request
+       * @param options.skipAccessControl Boolean By default access control _of
+       * the user making the initial request_ is still tested. Disable all
+       * Access Control checks with this flag
+       *
+       * @return Promise<Object> The found item
+       */
+      query: (args, context, { skipAccessControl = false } = {}) => {
+        let passThroughContext = context;
+
+        if (skipAccessControl) {
+          passThroughContext = {
+            ...context,
+            getListAccessControlForUser: () => true,
+            getFieldAccessControlForUser: () => true,
+          };
+        }
+
+        return this.itemQuery(args, passThroughContext, this.gqlNames.itemQueryName);
+      },
+
+      /**
+       * @param args Object The same arguments as the *WhereInput graphql type
+       * @param context Object The Apollo context object for this request
+       * @param options.skipAccessControl Boolean By default access control _of
+       * the user making the initial request_ is still tested. Disable all
+       * Access Control checks with this flag
+       *
+       * @return Promise<[Object]|[]> The found items. May reject with Access
+       * Control errors.
+       */
+      queryMany: (args, context, { skipAccessControl = false } = {}) => {
+        let passThroughContext = context;
+
+        if (skipAccessControl) {
+          passThroughContext = {
+            ...context,
+            getListAccessControlForUser: () => true,
+            getFieldAccessControlForUser: () => true,
+          };
+        }
+
+        return this.listQuery(args, passThroughContext, this.gqlNames.itemQueryName);
+      },
+
+      /**
+       * @param args Object The same arguments as the *WhereInput graphql type
+       * @param context Object The Apollo context object for this request
+       * @param options.skipAccessControl Boolean By default access control _of
+       * the user making the initial request_ is still tested. Disable all
+       * Access Control checks with this flag
+       *
+       * @return Promise<Object> Meta data about the found items. Currently
+       * contains only a single key: `count`.
+       */
+      queryManyMeta: async (args, context, { skipAccessControl = false } = {}) => {
+        let passThroughContext = context;
+
+        if (skipAccessControl) {
+          passThroughContext = {
+            ...context,
+            getListAccessControlForUser: () => true,
+            getFieldAccessControlForUser: () => true,
+          };
+        }
+
+        // We have to mimic what graphql does to resolve fields
+        const { resolvers } = getAdminSchema();
+
+        const metaResult = await this.listQueryMeta(
+          args,
+          passThroughContext,
+          this.gqlNames.listQueryMetaName
+        );
+
+        return {
+          // By default, we want all the non-function keys included in the
+          // result
+          ...omitBy(metaResult, value => typeof value === 'function'),
+          // And we execute all the function keys to resolve them to their
+          // values
+          // NOTE: This could be a performance problem if any of these keys are
+          // expensive operations.
+          ...(await resolveAllKeys(
+            mapKeys(resolvers._QueryMeta, resolver => resolver(metaResult))
+          )),
+        };
+      },
+
+      /**
+       * @param key String The string name of a Keystone list
+       * @return Object The programatic API of the requested list.
+       */
+      getList: otherListKey => {
+        const list = this.getListByKey(otherListKey);
+        return list ? list.hooksApi : null;
+      },
+    };
   }
 
   getAdminMeta() {
@@ -639,8 +743,8 @@ module.exports = class List {
 
         [this.gqlNames.listMetaName]: (_, args, context) => this.listMeta(context),
 
-        [this.gqlNames.itemQueryName]: (_, { where: { id } }, context) =>
-          this.itemQuery(id, context, this.gqlNames.itemQueryName),
+        [this.gqlNames.itemQueryName]: (_, args, context) =>
+          this.itemQuery(args, context, this.gqlNames.itemQueryName),
       };
     }
 
@@ -712,7 +816,12 @@ module.exports = class List {
     };
   }
 
-  async itemQuery(id, context, gqlName) {
+  async itemQuery(
+    // prettier-ignore
+    { where: { id } },
+    context,
+    gqlName
+  ) {
     const operation = 'read';
     graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'Start query');
 
@@ -729,7 +838,11 @@ module.exports = class List {
       return null;
     }
 
-    return this.itemQuery(context.authedItem.id, context, this.gqlNames.authenticatedQueryName);
+    return this.itemQuery(
+      { where: { id: context.authedItem.id } },
+      context,
+      this.gqlNames.authenticatedQueryName
+    );
   }
 
   get gqlMutationResolvers() {
@@ -814,7 +927,7 @@ module.exports = class List {
   }
 
   async _resolveInput(resolvedData, existingItem, context, operation, originalInput) {
-    const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
+    const args = { resolvedData, existingItem, context, list: this.hooksApi, originalInput };
     const fields = this._fieldsFromObject(resolvedData);
 
     resolvedData = await this._mapToFields(fields, field =>
@@ -835,13 +948,13 @@ module.exports = class List {
   }
 
   async _validateInput(resolvedData, existingItem, context, operation, originalInput) {
-    const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
+    const args = { resolvedData, existingItem, context, list: this.hooksApi, originalInput };
     const fields = this._fieldsFromObject(resolvedData);
     await this._validateHook(args, fields, operation, 'validateInput');
   }
 
   async _validateDelete(existingItem, context, operation) {
-    const args = { existingItem, context, adapter: this.adapter };
+    const args = { existingItem, context, list: this.hooksApi };
     const fields = this.fields;
     await this._validateHook(args, fields, operation, 'validateDelete');
   }
@@ -874,22 +987,22 @@ module.exports = class List {
   }
 
   async _beforeChange(resolvedData, existingItem, context, originalInput) {
-    const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
+    const args = { resolvedData, existingItem, context, list: this.hooksApi, originalInput };
     await this._runHook(args, resolvedData, 'beforeChange');
   }
 
   async _beforeDelete(existingItem, context) {
-    const args = { existingItem, context, adapter: this.adapter };
+    const args = { existingItem, context, list: this.hooksApi };
     await this._runHook(args, existingItem, 'beforeDelete');
   }
 
   async _afterChange(updatedItem, existingItem, context, originalInput) {
-    const args = { updatedItem, originalInput, existingItem, context, adapter: this.adapter };
+    const args = { updatedItem, originalInput, existingItem, context, list: this.hooksApi };
     await this._runHook(args, updatedItem, 'afterChange');
   }
 
   async _afterDelete(existingItem, context) {
-    const args = { existingItem, context, adapter: this.adapter };
+    const args = { existingItem, context, list: this.hooksApi };
     await this._runHook(args, existingItem, 'afterDelete');
   }
 

@@ -1,0 +1,1 @@
+- Expose programatic querying of Lists within hooks via a new 'list' API

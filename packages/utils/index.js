@@ -66,8 +66,9 @@ exports.intersection = (array1, array2) =>
 exports.pick = (obj, keys) =>
   keys.reduce((acc, key) => (key in obj ? { ...acc, [key]: obj[key] } : acc), {});
 
-exports.omit = (obj, keys) =>
-  exports.pick(obj, Object.keys(obj).filter(value => !keys.includes(value)));
+exports.omitBy = (obj, func) => exports.pick(obj, Object.keys(obj).filter(value => !func(value)));
+
+exports.omit = (obj, keys) => exports.omitBy(obj, value => keys.includes(value));
 
 // [{ k1: v1, k2: v2, ...}, { k3: v3, k4: v4, ...}, ...] => { k1: v1, k2: v2, k3: v3, k4, v4, ... }
 // Gives priority to the objects which appear later in the list

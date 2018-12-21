@@ -159,7 +159,11 @@
   },
   "jest": {
     "setupTestFrameworkScriptFile": "./jest/setup.js",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/website/.cache"
+    ]
   },
   "devDependencies": {
     "apollo-fetch": "^0.7.0",
