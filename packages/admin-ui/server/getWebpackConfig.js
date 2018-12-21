@@ -34,6 +34,7 @@ module.exports = function({ adminMeta, entry }) {
               '@babel/flow',
             ],
             plugins: [
+              '@babel/plugin-syntax-dynamic-import',
               '@babel/proposal-class-properties',
               '@babel/proposal-object-rest-spread',
               'emotion',

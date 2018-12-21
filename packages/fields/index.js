@@ -14,4 +14,5 @@ module.exports = {
   Decimal: require('./types/Decimal'),
   Color: require('./types/Color'),
   Url: require('./types/Url'),
+  Content: require('./types/Content'),
 };

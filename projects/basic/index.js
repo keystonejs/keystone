@@ -13,6 +13,7 @@ const {
   DateTime,
   Color,
   Url,
+  Content,
 } = require('@voussoir/fields');
 const Decimal = require('../../packages/fields/types/Decimal');
 const { WebServer } = require('@voussoir/server');
@@ -119,6 +120,7 @@ keystone.createList('Post', {
     price: { type: Decimal, symbol: '$' },
     currency: { type: Text },
     hero: { type: File, adapter: fileAdapter },
+    value: { type: Content },
   },
   adminConfig: {
     defaultPageSize: 20,
