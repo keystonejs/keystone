@@ -1,12 +1,10 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useRef } from 'react';
-import { usePopper } from './hooks';
+import { Popper } from 'react-popper';
 
 let Image = ({ alignment, attributes, isFocused, src, onAlignmentChange }) => {
-  let popperRef = useRef(null);
   let referenceRef = useRef(null);
-  let [style] = usePopper(popperRef, referenceRef, { placement: 'top' }, [alignment]);
 
   return (
     <div>
@@ -21,39 +19,39 @@ let Image = ({ alignment, attributes, isFocused, src, onAlignmentChange }) => {
           outline: isFocused ? 'auto' : null,
         }}
       />
-
-      {isFocused && (
-        <div
-          ref={popperRef}
-          css={{
-            backgroundColor: 'black',
-            padding: 8,
-            transition: 'transform 100ms',
-            // not sure why this is necessary
-            width: 140,
-            height: 36,
-          }}
-          style={style}
-        >
-          {['left', 'center', 'right'].map(align => {
-            return (
-              <button
-                type="button"
-                key={align}
-                onMouseDown={event => {
-                  // so that the image block doesn't get deselected
-                  event.preventDefault();
-                }}
-                onClick={() => {
-                  onAlignmentChange(align);
-                }}
-              >
-                {align}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      <Popper referenceElement={referenceRef.current}>
+        {({ style, ref }) => {
+          return (
+            <div
+              ref={ref}
+              css={{
+                display: isFocused ? 'block' : 'none',
+                backgroundColor: 'black',
+                padding: 8,
+              }}
+              style={style}
+            >
+              {['left', 'center', 'right'].map(align => {
+                return (
+                  <button
+                    type="button"
+                    key={align}
+                    onMouseDown={event => {
+                      // so that the image block doesn't get deselected
+                      event.preventDefault();
+                    }}
+                    onClick={() => {
+                      onAlignmentChange(align);
+                    }}
+                  >
+                    {align}
+                  </button>
+                );
+              })}
+            </div>
+          );
+        }}
+      </Popper>
     </div>
   );
 };
