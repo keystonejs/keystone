@@ -1,1 +1,1 @@
-- Expose programatic querying of Lists within hooks via a new 'list' API
+- Expose access to GraphQL query method within hooks
