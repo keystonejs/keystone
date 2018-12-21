@@ -1,0 +1,1 @@
+- Converts mongoose ObjectIds to string in File field types
