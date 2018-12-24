@@ -5,9 +5,7 @@ import { jsx, Global } from '@emotion/core';
 
 import { colors } from '../styles';
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-//import Sidebar from '../components/Sidebar';
+import Layout from '../templates/layout';
 
 /* @jsx jsx */
 
@@ -19,29 +17,20 @@ export default function Template({
   const { html } = markdownRemark;
   return (
     <div className="blog-post-container">
-      <Global
-        styles={{
-          body: {
-            margin: 0,
-            color: colors.B.D55,
-            fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
-          },
-          '*': { boxSizing: 'border-box' },
-        }}
-      />
-      <Header />
-      <div css={{ display: 'flex', justifyContent: 'space-between' }}>
-        {/* <Sidebar data={pageQuery} /> */}
-        <div id="primary" css={{ padding: '32px' }}>
-          <Link to="/">Voussoir</Link> &gt;{' '}
-          <Link to={workspaceSlug}>
-            <code>{workspace}</code>
-          </Link>
-          <div className="blog-post">
-            <div className="blog-post-content" dangerouslySetInnerHTML={{ __html: html }} />
+      <Layout>
+        <div css={{ display: 'flex', justifyContent: 'space-between' }}>
+          {/* <Sidebar data={pageQuery} /> */}
+          <div id="primary" css={{ padding: '32px' }}>
+            <Link to="/">Voussoir</Link> &gt;{' '}
+            <Link to={workspaceSlug}>
+              <code>{workspace}</code>
+            </Link>
+            <div className="blog-post">
+              <div className="blog-post-content" dangerouslySetInnerHTML={{ __html: html }} />
+            </div>
           </div>
         </div>
-      </div>
+      </Layout>
     </div>
   );
 }
