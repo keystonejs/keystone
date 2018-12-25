@@ -74,6 +74,8 @@ const Header = () => (
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
+      width: '100%',
+      position: 'fixed',
     }}
   >
     <div

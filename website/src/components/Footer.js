@@ -1,6 +1,20 @@
 import React from 'react';
-import { jsx } from '@emotion/core';
+import { jsx, css } from '@emotion/core';
 
-const Footer = () => <footer>Made with love in Thinkmill</footer>;
+import { colors } from '../styles';
+
+// @jsx jsx
+
+const Footer = () => (
+  <footer
+    css={{
+      background: colors.B.A25,
+      padding: 16,
+      textAlign: 'center',
+    }}
+  >
+    Made with love in Thinkmill
+  </footer>
+);
 
 export default Footer;

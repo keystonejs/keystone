@@ -25,10 +25,9 @@ export default () => (
       }
     `}
     render={data => (
-      <div css={{ background: colors.B.A10, maxWidth: 300 }}>
+      <>
         {data.allSitePage.totalCount >= 1 ? (
           <div>
-            <h2>Pages ({data.allSitePage.totalCount})</h2>
             <ul>
               {data.allSitePage.edges
                 // Set up a particular order of results here:
@@ -44,17 +43,20 @@ export default () => (
                       ? -1
                       : 0
                 )
-                .map(({ node }) => (
-                  <li key={node.path}>
-                    <Link to={node.path}>{node.path}</Link>
-                  </li>
-                ))}
+                .map(({ node }) => {
+                  console.log(node);
+                  return (
+                    <li key={node.path}>
+                      <Link to={node.path}>{node.path}</Link>
+                    </li>
+                  );
+                })}
             </ul>
           </div>
         ) : (
           <div>No pages yet</div>
         )}
-      </div>
+      </>
     )}
   />
 );

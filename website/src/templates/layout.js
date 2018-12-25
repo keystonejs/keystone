@@ -18,17 +18,59 @@ const Layout = ({ children }) => (
           background: colors.B.bg,
           fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
         },
-        '*': { boxSizing: 'border-box' },
+
+        'pre[class*="language-"]': {
+          background: 'white',
+          fontSize: '0.8em',
+          width: '100%',
+          maxWidth: 600,
+        },
       }}
     />
     <Header />
-    <div css={{ display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
-      <Sidebar />
-      <main id="primary" css={{ padding: '32px' }}>
-        {children}
+    <div
+      css={{
+        display: 'flex',
+        flexFlow: 'row wrap',
+        paddingTop: 60,
+
+        '> *': {
+          padding: 10,
+        },
+      }}
+    >
+      <aside
+        css={css`
+          background: ${colors.B.A10};
+          height: calc(100vh - 50px);
+          overflow: scroll;
+
+          @media all and (min-width: 600px) {
+            flex: 1 0 0;
+          }
+
+          @media all and (min-width: 800px) {
+            order: 1;
+          }
+        `}
+      >
+        <Sidebar />
+      </aside>
+      <main
+        css={css`
+          padding: 16px;
+          height: calc(100vh - 60px);
+          overflow: scroll;
+
+          @media all and (min-width: 800px) {
+            flex: 3 0px;
+            order: 2;
+          }
+        `}
+      >
+        <div>{children}</div>
       </main>
     </div>
-    <Footer />
   </>
 );
 

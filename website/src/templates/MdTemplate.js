@@ -16,22 +16,17 @@ export default function Template({
   const { markdownRemark } = data; // data.markdownRemark holds our post data
   const { html } = markdownRemark;
   return (
-    <div className="blog-post-container">
-      <Layout>
-        <div css={{ display: 'flex', justifyContent: 'space-between' }}>
-          {/* <Sidebar data={pageQuery} /> */}
-          <div id="primary" css={{ padding: '32px' }}>
-            <Link to="/">Voussoir</Link> &gt;{' '}
-            <Link to={workspaceSlug}>
-              <code>{workspace}</code>
-            </Link>
-            <div className="blog-post">
-              <div className="blog-post-content" dangerouslySetInnerHTML={{ __html: html }} />
-            </div>
-          </div>
+    <Layout>
+      <div id="primary">
+        <Link to="/">Voussoir</Link> &gt;{' '}
+        <Link to={workspaceSlug}>
+          <code>{workspace}</code>
+        </Link>
+        <div className="blog-post">
+          <div className="blog-post-content" dangerouslySetInnerHTML={{ __html: html }} />
         </div>
-      </Layout>
-    </div>
+      </div>
+    </Layout>
   );
 }
 
