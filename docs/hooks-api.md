@@ -40,8 +40,15 @@ keystone.createList('User', {
 
 Example:
 
+<!-- prettier-ignore -->
 ```javascript
-const resolveInput = ({ resolvedData, existingItem, originalInput, context, adapter }) => resolvedData;
+const resolveInput = ({
+  resolvedData,
+  existingItem,
+  originalInput,
+  context,
+  list,
+}) => resolvedData;
 ```
 
 ### `ResolveInputArg: Object`
@@ -52,7 +59,7 @@ const resolveInput = ({ resolvedData, existingItem, originalInput, context, adap
   existingItem: Object,
   originalInput: Object,
   context: Object,
-  adapter: Object,
+  list: Object,
 }
 ```
 
@@ -89,10 +96,55 @@ The [Apollo `context`
 object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context)
 for this request.
 
-#### `ResolveInputArg#adapter`
+#### `ResolveInputArg#list`
 
-The current Lists's internal Keystone Adapter, providing access to the
-underlying Keystone API and model.
+An API providing programatic access to List functions:
+
+```javascript
+{
+  /**
+   * @param args Object The same arguments as the *WhereUniqueInput graphql
+   * type
+   * @param context Object The Apollo context object for this request
+   * @param options.skipAccessControl Boolean By default access control _of
+   * the user making the initial request_ is still tested. Disable all
+   * Access Control checks with this flag
+   *
+   * @return Promise<Object> The found item
+   */
+  query: (args, context, options) => Promise<Object>,
+
+  /**
+   * @param args Object The same arguments as the *WhereInput graphql type
+   * @param context Object The Apollo context object for this request
+   * @param options.skipAccessControl Boolean By default access control _of
+   * the user making the initial request_ is still tested. Disable all
+   * Access Control checks with this flag
+   *
+   * @return Promise<[Object]|[]> The found item. May reject with Access
+   * Control errors.
+   */
+  queryMany: (args, context, options) => Promise<Object|null>,
+
+  /**
+   * @param args Object The same arguments as the *WhereInput graphql type
+   * @param context Object The Apollo context object for this request
+   * @param options.skipAccessControl Boolean By default access control _of
+   * the user making the initial request_ is still tested. Disable all
+   * Access Control checks with this flag
+   *
+   * @return Promise<Object> Meta data about the found items. Currently
+   * contains only a single key: `count`.
+   */
+  queryManyMeta: (args, context, options) => Promise<Object>,
+
+  /**
+   * @param key String The string name of a Keystone list
+   * @return Object The programatic API of the requested list.
+   */
+  getList: (key) => Object,
+}
+```
 
 ### `ResolveInputResult: Object|Promise<Object>`
 
@@ -106,8 +158,18 @@ order]('./hooks.md#hook-excecution-order) as the input data.
 
 Example:
 
+<!-- prettier-ignore -->
 ```javascript
-const validateInput = ({ resolvedData, existingItem, originalInput, addFieldValidationError, context, adapter }) => { /* throw any errors here */ }
+const validateInput = ({
+  resolvedData,
+  existingItem,
+  originalInput,
+  addFieldValidationError,
+  context,
+  list,
+}) => {
+  /* throw any errors here */
+};
 ```
 
 ### `ValidateInputArg: Object`
@@ -119,7 +181,7 @@ const validateInput = ({ resolvedData, existingItem, originalInput, addFieldVali
   originalInput: Object,
   addFieldValidationError: Func,
   context: Object,
-  adapter: Object,
+  list: Object,
 }
 ```
 
@@ -131,8 +193,16 @@ const validateInput = ({ resolvedData, existingItem, originalInput, addFieldVali
 
 Example:
 
+<!-- prettier-ignore -->
 ```javascript
-const validateDelete = ({ existingItem, addFieldValidationError, context, adapter }) => { /* throw any errors here */ }
+const validateDelete = ({
+  existingItem,
+  addFieldValidationError,
+  context,
+  list,
+}) => {
+  /* throw any errors here */
+};
 ```
 
 ### `ValidateDeleteArg: Object`
@@ -142,7 +212,7 @@ const validateDelete = ({ existingItem, addFieldValidationError, context, adapte
   existingItem: Object,
   addFieldValidationError: Func,
   context: Object,
-  adapter: Object,
+  list: Object,
 }
 ```
 
@@ -154,8 +224,17 @@ const validateDelete = ({ existingItem, addFieldValidationError, context, adapte
 
 Example:
 
+<!-- prettier-ignore -->
 ```javascript
-const beforeChange = ({ resolvedData, existingItem, originalInput, context, adapter }) => { /* side effects here */ }
+const beforeChange = ({
+  resolvedData,
+  existingItem,
+  originalInput,
+  context,
+  list,
+}) => {
+  /* side effects here */
+};
 ```
 
 ### `BeforeChangeArg: Object`
@@ -166,7 +245,7 @@ const beforeChange = ({ resolvedData, existingItem, originalInput, context, adap
   existingItem: Object,
   originalInput: Object,
   context: Object,
-  adapter: Object,
+  list: Object,
 }
 ```
 
@@ -178,8 +257,17 @@ const beforeChange = ({ resolvedData, existingItem, originalInput, context, adap
 
 Example:
 
+<!-- prettier-ignore -->
 ```javascript
-const afterChange = ({ updatedItem, existingItem, originalInput, context, adapter }) => { /* side effects here */ }
+const afterChange = ({
+  updatedItem,
+  existingItem,
+  originalInput,
+  context,
+  list,
+}) => {
+  /* side effects here */
+};
 ```
 
 ### `ValidateDeleteArg: Object`
@@ -190,7 +278,7 @@ const afterChange = ({ updatedItem, existingItem, originalInput, context, adapte
   existingItem: Object,
   originalInput: Func,
   context: Object,
-  adapter: Object,
+  list: Object,
 }
 ```
 
@@ -202,8 +290,15 @@ const afterChange = ({ updatedItem, existingItem, originalInput, context, adapte
 
 Example:
 
+<!-- prettier-ignore -->
 ```javascript
-const beforeDelete = ({ existingItem, context, adapter }) => { /* throw any errors here */ }
+const beforeDelete = ({
+  existingItem,
+  context,
+  list,
+}) => {
+  /* throw any errors here */
+};
 ```
 
 ### `BeforeDeleteArg: Object`
@@ -212,7 +307,7 @@ const beforeDelete = ({ existingItem, context, adapter }) => { /* throw any erro
 {
   existingItem: Object,
   context: Object,
-  adapter: Object,
+  list: Object,
 }
 ```
 
@@ -224,8 +319,15 @@ const beforeDelete = ({ existingItem, context, adapter }) => { /* throw any erro
 
 Example:
 
+<!-- prettier-ignore -->
 ```javascript
-const afterDelete = ({ existingItem, context, adapter }) => { /* side effects here */ }
+const afterDelete = ({
+  existingItem,
+  context,
+  list,
+}) => {
+  /* side effects here */
+};
 ```
 
 ### `AfterDeleteArg: Object`
@@ -234,7 +336,7 @@ const afterDelete = ({ existingItem, context, adapter }) => { /* side effects he
 {
   existingItem: Object,
   context: Object,
-  adapter: Object,
+  list: Object,
 }
 ```
 

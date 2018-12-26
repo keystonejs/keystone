@@ -1,1 +1,0 @@
-- Dependency upgrade: graphql -> 14.0.3, graphql-tools -> 4.0.3

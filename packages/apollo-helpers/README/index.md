@@ -26,7 +26,7 @@ import {
   KeystoneProvider,
 } from '@voussoir/apollo-helpers';
 
-const client = ApolloClient({
+const client = new ApolloClient({
   link: new HttpLink({ uri: /* ... */ }),
   cache: new InMemoryCache(),
 });
@@ -81,7 +81,7 @@ const stateLink = withClientState(
   })
 );
 
-const client = ApolloClient({
+const client = new ApolloClient({
   link: ApolloLink.from([stateLink, new HttpLink({ uri: /* ... */ })]),
   cache: cache,
 });
