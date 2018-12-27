@@ -31,12 +31,16 @@ const navLinks = [
     url: '/getting-started',
   },
   {
-    name: 'Documentation',
+    name: 'Docs',
     url: '/docs',
   },
   {
     name: 'Guides',
     url: '/guides',
+  },
+  {
+    name: 'Tutorials',
+    url: '/tutorials',
   },
   {
     name: 'APIs',
@@ -74,8 +78,8 @@ const Header = () => (
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      width: '100%',
-      position: 'fixed',
+      // width: '100%',
+      // position: 'fixed',
     }}
   >
     <div

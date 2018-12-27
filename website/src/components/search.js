@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Link } from 'gatsby';
 import { jsx } from '@emotion/core';
 
+import { colors } from '../styles';
+
 // @jsx jsx
 
 // Search component
@@ -17,20 +19,41 @@ export default class Search extends Component {
   render() {
     return (
       <div>
-        <input type="text" value={this.state.query} onChange={this.search} placeholder="Search" />
+        <input
+          type="text"
+          css={{
+            background: colors.B.A15,
+            padding: 10,
+            fontSize: '1em',
+            //border: `2px solid ${colors.B.base}`,
+            border: 'none',
+            borderRadius: 6,
+
+            '&::placeholder': {
+              color: colors.B.base,
+            },
+          }}
+          value={this.state.query}
+          onChange={this.search}
+          placeholder="Search"
+        />
         <ul
           css={{
             background: 'white',
-            maxWidth: 250,
+            maxWidth: 300,
+            listStyle: 'none',
             position: 'absolute',
             right: 21,
             top: 40,
             padding: 10,
+            display: this.state.results.length ? 'block' : 'none',
           }}
         >
-          {this.state.results.map(result => (
+          {this.state.results.slice(0, 15).map(result => (
             <li>
-              <Link to={result.slug}>{result.slug}</Link>{' '}
+              <Link style={{ color: colors.B.base }} to={result.slug}>
+                {result.slug}
+              </Link>{' '}
               <small style={{ color: 'grey' }}>({result.workspace})</small>
             </li>
           ))}

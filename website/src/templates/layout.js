@@ -14,8 +14,7 @@ const Layout = ({ children }) => (
       styles={{
         body: {
           margin: 0,
-          color: colors.B.D55,
-          background: colors.B.bg,
+          color: colors.B.text,
           fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
         },
 
@@ -32,18 +31,15 @@ const Layout = ({ children }) => (
       css={{
         display: 'flex',
         flexFlow: 'row wrap',
-        paddingTop: 60,
-
-        '> *': {
-          padding: 10,
-        },
       }}
     >
       <aside
         css={css`
-          background: ${colors.B.A10};
-          height: calc(100vh - 50px);
+          background: ${colors.B.A25};
+          height: calc(100vh - 60px);
           overflow: scroll;
+          padding: 16px;
+          box-sizing: border-box;
 
           @media all and (min-width: 600px) {
             flex: 1 0 0;
@@ -58,9 +54,9 @@ const Layout = ({ children }) => (
       </aside>
       <main
         css={css`
-          padding: 16px;
-          height: calc(100vh - 60px);
+          height: calc(100vh - 64px);
           overflow: scroll;
+          background: ${colors.B.A10};
 
           @media all and (min-width: 800px) {
             flex: 3 0px;
@@ -68,7 +64,8 @@ const Layout = ({ children }) => (
           }
         `}
       >
-        <div>{children}</div>
+        <div css={{ padding: 24 }}>{children}</div>
+        <Footer />
       </main>
     </div>
   </>

@@ -13,7 +13,7 @@ const Footer = () => (
       textAlign: 'center',
     }}
   >
-    Made with love in Thinkmill
+    Made with love by Thinkmill and our contributors.
   </footer>
 );
 

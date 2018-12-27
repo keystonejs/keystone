@@ -28,7 +28,21 @@ export default () => (
       <>
         {data.allSitePage.totalCount >= 1 ? (
           <div>
-            <ul>
+            <span
+              css={{
+                fontSize: '1.5em',
+                fontWeight: 700,
+              }}
+            >
+              Docs
+            </span>
+            <ul
+              css={{
+                listStyle: 'none',
+                padding: 0,
+                margin: 0,
+              }}
+            >
               {data.allSitePage.edges
                 // Set up a particular order of results here:
                 // - '/' always comes first
@@ -44,10 +58,26 @@ export default () => (
                       : 0
                 )
                 .map(({ node }) => {
-                  console.log(node);
                   return (
-                    <li key={node.path}>
-                      <Link to={node.path}>{node.path}</Link>
+                    <li
+                      key={node.path}
+                      css={{
+                        marginBottom: 5,
+                      }}
+                    >
+                      <Link
+                        css={{
+                          textDecoration: 'none',
+                          color: colors.B.D55,
+
+                          '&:hover': {
+                            color: colors.B.base,
+                          },
+                        }}
+                        to={node.path}
+                      >
+                        {node.path.replace(new RegExp(/(\/)/g), ' ').replace('docs', '')}
+                      </Link>
                     </li>
                   );
                 })}
