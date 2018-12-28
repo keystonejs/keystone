@@ -13,7 +13,7 @@ const Footer = () => (
       textAlign: 'center',
     }}
   >
-    Made with love by Thinkmill and our contributors.
+    Made with love by <a href="https://www.thinkmill.com.au">Thinkmill</a> and our contributors.
   </footer>
 );
 

@@ -9,6 +9,16 @@ import Layout from '../templates/layout';
 
 /* @jsx jsx */
 
+const linkStyles = {
+  textDecoration: 'none',
+  color: colors.B.base,
+
+  '&:hover': {
+    color: colors.B.D80,
+    textDecoration: 'underline',
+  },
+};
+
 export default function Template({
   data, // this prop will be injected by the GraphQL query below.
   pathContext: { workspace, workspaceSlug },
@@ -18,10 +28,15 @@ export default function Template({
   return (
     <Layout>
       <div id="primary">
-        <Link to="/">Voussoir</Link> &gt;{' '}
-        <Link to={workspaceSlug}>
-          <code>{workspace}</code>
-        </Link>
+        <div css={{ color: colors.B.A50 }}>
+          <Link css={linkStyles} to="/">
+            Keystone
+          </Link>{' '}
+          &gt;{' '}
+          <Link css={linkStyles} to={workspaceSlug}>
+            {workspace}
+          </Link>
+        </div>
         <div className="blog-post">
           <div className="blog-post-content" dangerouslySetInnerHTML={{ __html: html }} />
         </div>

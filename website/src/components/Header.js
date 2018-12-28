@@ -74,12 +74,11 @@ const Header = () => (
   <header
     css={{
       background: 'white',
-      padding: 12,
+      padding: '12px 16px',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      // width: '100%',
-      // position: 'fixed',
+      borderBottom: `1px solid ${colors.B.A25}`,
     }}
   >
     <div

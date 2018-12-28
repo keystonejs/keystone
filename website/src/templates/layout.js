@@ -16,13 +16,24 @@ const Layout = ({ children }) => (
           margin: 0,
           color: colors.B.text,
           fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
+          lineHeight: '1.5em',
+        },
+
+        a: {
+          color: colors.B.base,
         },
 
         'pre[class*="language-"]': {
-          background: 'white',
+          // background: colors.B.A15,
           fontSize: '0.8em',
           width: '100%',
-          maxWidth: 600,
+          boxSizing: 'border-box',
+        },
+
+        ':not(pre) > code[class*="language-"]': {
+          background: 'white',
+          padding: '2px 4px',
+          fontSize: '0.9em',
         },
       }}
     />
@@ -35,11 +46,12 @@ const Layout = ({ children }) => (
     >
       <aside
         css={css`
-          background: ${colors.B.A25};
-          height: calc(100vh - 60px);
+          background: ${colors.B.A20};
+          height: calc(100vh - 66px);
           overflow: scroll;
           padding: 16px;
           box-sizing: border-box;
+          border-right: 1px solid ${colors.B.A20};
 
           @media all and (min-width: 600px) {
             flex: 1 0 0;
@@ -54,7 +66,7 @@ const Layout = ({ children }) => (
       </aside>
       <main
         css={css`
-          height: calc(100vh - 64px);
+          height: calc(100vh - 66px);
           overflow: scroll;
           background: ${colors.B.A10};
 
@@ -64,7 +76,7 @@ const Layout = ({ children }) => (
           }
         `}
       >
-        <div css={{ padding: 24 }}>{children}</div>
+        <div css={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>{children}</div>
         <Footer />
       </main>
     </div>

@@ -28,6 +28,13 @@ export default class Search extends Component {
             //border: `2px solid ${colors.B.base}`,
             border: 'none',
             borderRadius: 6,
+            boxSizing: 'border-box',
+            border: '2px solid transparent',
+
+            '&:focus': {
+              outline: 'none',
+              borderColor: colors.B.base,
+            },
 
             '&::placeholder': {
               color: colors.B.base,
@@ -40,17 +47,19 @@ export default class Search extends Component {
         <ul
           css={{
             background: 'white',
+            boxShadow: `0 3px 10px rgba(0,0,0,0.25)`,
             maxWidth: 300,
             listStyle: 'none',
             position: 'absolute',
             right: 21,
             top: 40,
-            padding: 10,
+            padding: 5,
+            fontSize: '0.8em',
             display: this.state.results.length ? 'block' : 'none',
           }}
         >
-          {this.state.results.slice(0, 15).map(result => (
-            <li>
+          {this.state.results.slice(0, 12).map(result => (
+            <li css={{ padding: 5, borderBottom: `1px solid ${colors.B.A25}` }}>
               <Link style={{ color: colors.B.base }} to={result.slug}>
                 {result.slug}
               </Link>{' '}
