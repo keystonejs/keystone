@@ -1,5 +1,14 @@
 # @voussoir/server
 
+## 0.5.1
+- [patch] 4d198f04:
+
+  - Update dependencies: apollo-server-express -> 2.3.1
+
+- [patch] 8d8666ad:
+
+  - Dependency upgrade: graphql -> 14.0.3, graphql-tools -> 4.0.3
+
 ## 0.5.0
 
 - [minor] c83c9ed5:

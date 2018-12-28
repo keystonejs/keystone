@@ -101,14 +101,16 @@ const getListByKey = listKey => {
   }
 };
 
-const listExtras = (getAuth = () => true) => ({
+const listExtras = (getAuth = () => true, queryMethod = undefined) => ({
   getListByKey,
   adapter: new MockAdapter(),
   getAuth,
   defaultAccess: { list: true, field: true },
+  getGraphQLQuery: () => queryMethod,
 });
 
-const setup = (access, getAuth) => new List('Test', { ...config, access }, listExtras(getAuth));
+const setup = (extraConfig, getAuth, queryMethod) =>
+  new List('Test', { ...config, ...extraConfig }, listExtras(getAuth, queryMethod));
 
 describe('new List()', () => {
   test('new List() - Smoke test', () => {
@@ -499,7 +501,7 @@ test('gqlTypes', () => {
     data: TestCreateInput
   }`;
 
-  expect(setup(true).gqlTypes.map(s => print(gql(s)))).toEqual(
+  expect(setup({ access: true }).gqlTypes.map(s => print(gql(s)))).toEqual(
     [
       otherInput,
       type,
@@ -512,16 +514,18 @@ test('gqlTypes', () => {
     ].map(s => print(gql(s)))
   );
 
-  expect(setup(false).gqlTypes.map(s => print(gql(s)))).toEqual([].map(s => print(gql(s))));
+  expect(setup({ access: false }).gqlTypes.map(s => print(gql(s)))).toEqual(
+    [].map(s => print(gql(s)))
+  );
 
   expect(
-    setup({ read: true, create: false, update: false, delete: false }).gqlTypes.map(s =>
+    setup({ access: { read: true, create: false, update: false, delete: false } }).gqlTypes.map(s =>
       print(gql(s))
     )
   ).toEqual([otherInput, type, whereInput, whereUniqueInput].map(s => print(gql(s))));
 
   expect(
-    setup({ read: false, create: true, update: false, delete: false }).gqlTypes.map(s =>
+    setup({ access: { read: false, create: true, update: false, delete: false } }).gqlTypes.map(s =>
       print(gql(s))
     )
   ).toEqual(
@@ -530,7 +534,7 @@ test('gqlTypes', () => {
     )
   );
   expect(
-    setup({ read: false, create: false, update: true, delete: false }).gqlTypes.map(s =>
+    setup({ access: { read: false, create: false, update: true, delete: false } }).gqlTypes.map(s =>
       print(gql(s))
     )
   ).toEqual(
@@ -539,7 +543,7 @@ test('gqlTypes', () => {
     )
   );
   expect(
-    setup({ read: false, create: false, update: false, delete: true }).gqlTypes.map(s =>
+    setup({ access: { read: false, create: false, update: false, delete: true } }).gqlTypes.map(s =>
       print(gql(s))
     )
   ).toEqual([otherInput, type, whereInput, whereUniqueInput].map(s => print(gql(s))));
@@ -557,7 +561,7 @@ test('getGraphqlFilterFragment', () => {
 });
 
 test('gqlQueries', () => {
-  expect(setup(true).gqlQueries.map(normalise)).toEqual(
+  expect(setup({ access: true }).gqlQueries.map(normalise)).toEqual(
     [
       `allTests(
       where: TestWhereInput
@@ -581,11 +585,11 @@ test('gqlQueries', () => {
     ].map(normalise)
   );
 
-  expect(setup(false).gqlQueries.map(normalise)).toEqual(
+  expect(setup({ access: false }).gqlQueries.map(normalise)).toEqual(
     [`authenticatedTest: Test`].map(normalise)
   );
 
-  expect(setup(true, () => false).gqlQueries.map(normalise)).toEqual(
+  expect(setup({ access: true }, () => false).gqlQueries.map(normalise)).toEqual(
     [
       `allTests(
       where: TestWhereInput
@@ -608,7 +612,9 @@ test('gqlQueries', () => {
     ].map(normalise)
   );
 
-  expect(setup(false, () => false).gqlQueries.map(normalise)).toEqual([].map(normalise));
+  expect(setup({ access: false }, () => false).gqlQueries.map(normalise)).toEqual(
+    [].map(normalise)
+  );
 });
 
 test('getFieldsRelatedTo', () => {
@@ -660,7 +666,7 @@ test('gqlFieldResolvers', () => {
   expect(resolvers.Test.writeOnce).toBeInstanceOf(Function);
   expect(resolvers.Test.hidden).toBe(undefined);
 
-  expect(setup(false).gqlFieldResolvers).toEqual({});
+  expect(setup({ access: false }).gqlFieldResolvers).toEqual({});
 });
 
 test('gqlAuxFieldResolvers', () => {
@@ -679,7 +685,7 @@ test('gqlAuxMutationResolvers', () => {
 });
 
 test('gqlMutations', () => {
-  expect(setup(true).gqlMutations.map(normalise)).toEqual(
+  expect(setup({ access: true }).gqlMutations.map(normalise)).toEqual(
     [
       `createTest(data: TestCreateInput): Test`,
       `createTests(data: [TestsCreateInput]): [Test]`,
@@ -690,13 +696,17 @@ test('gqlMutations', () => {
     ].map(normalise)
   );
 
-  expect(setup(false).gqlMutations.map(normalise)).toEqual([].map(normalise));
+  expect(setup({ access: false }).gqlMutations.map(normalise)).toEqual([].map(normalise));
 
   expect(
-    setup({ read: true, create: false, update: false, delete: false }).gqlMutations.map(normalise)
+    setup({ access: { read: true, create: false, update: false, delete: false } }).gqlMutations.map(
+      normalise
+    )
   ).toEqual([].map(normalise));
   expect(
-    setup({ read: false, create: true, update: false, delete: false }).gqlMutations.map(normalise)
+    setup({ access: { read: false, create: true, update: false, delete: false } }).gqlMutations.map(
+      normalise
+    )
   ).toEqual(
     [
       `createTest(data: TestCreateInput): Test`,
@@ -704,7 +714,9 @@ test('gqlMutations', () => {
     ].map(normalise)
   );
   expect(
-    setup({ read: false, create: false, update: true, delete: false }).gqlMutations.map(normalise)
+    setup({ access: { read: false, create: false, update: true, delete: false } }).gqlMutations.map(
+      normalise
+    )
   ).toEqual(
     [
       `updateTest(id: ID! data: TestUpdateInput): Test`,
@@ -712,7 +724,9 @@ test('gqlMutations', () => {
     ].map(normalise)
   );
   expect(
-    setup({ read: false, create: false, update: false, delete: true }).gqlMutations.map(normalise)
+    setup({ access: { read: false, create: false, update: false, delete: true } }).gqlMutations.map(
+      normalise
+    )
   ).toEqual([`deleteTest(id: ID!): Test`, `deleteTests(ids: [ID!]): [Test]`].map(normalise));
 });
 
@@ -902,28 +916,28 @@ test('getAccessControlledItems', async () => {
 });
 
 test('gqlQueryResolvers', () => {
-  const resolvers = setup(true).gqlQueryResolvers;
+  const resolvers = setup({ access: true }).gqlQueryResolvers;
   expect(resolvers['allTests']).toBeInstanceOf(Function); // listQueryName
   expect(resolvers['_allTestsMeta']).toBeInstanceOf(Function); // listQueryMetaName
   expect(resolvers['_TestsMeta']).toBeInstanceOf(Function); // listMetaName
   expect(resolvers['Test']).toBeInstanceOf(Function); // itemQueryName
   expect(resolvers['authenticatedTest']).toBeInstanceOf(Function); // authenticatedQueryName
 
-  const resolvers2 = setup(false).gqlQueryResolvers;
+  const resolvers2 = setup({ access: false }).gqlQueryResolvers;
   expect(resolvers2['allTests']).toBe(undefined); // listQueryName
   expect(resolvers2['_allTestsMeta']).toBe(undefined); // listQueryMetaName
   expect(resolvers2['_TestsMeta']).toBe(undefined); // listMetaName
   expect(resolvers2['Test']).toBe(undefined); // itemQueryName
   expect(resolvers2['authenticatedTest']).toBeInstanceOf(Function); // authenticatedQueryName
 
-  const resolvers3 = setup(true, () => false).gqlQueryResolvers;
+  const resolvers3 = setup({ access: true }, () => false).gqlQueryResolvers;
   expect(resolvers3['allTests']).toBeInstanceOf(Function); // listQueryName
   expect(resolvers3['_allTestsMeta']).toBeInstanceOf(Function); // listQueryMetaName
   expect(resolvers3['_TestsMeta']).toBeInstanceOf(Function); // listMetaName
   expect(resolvers3['Test']).toBeInstanceOf(Function); // itemQueryName
   expect(resolvers3['authenticatedTest']).toBe(undefined); // authenticatedQueryName
 
-  const resolvers4 = setup(false, () => false).gqlQueryResolvers;
+  const resolvers4 = setup({ access: false }, () => false).gqlQueryResolvers;
   expect(resolvers4).toEqual({});
 });
 
@@ -969,7 +983,7 @@ test('listMeta', () => {
   });
 
   expect(
-    setup(true, () => false)
+    setup({ access: true }, () => false)
       .listMeta(context)
       .getSchema()
   ).toEqual({
@@ -981,8 +995,12 @@ test('listMeta', () => {
 
 test('itemQuery', async () => {
   const list = setup();
-  expect(await list.itemQuery(0, context)).toEqual({ name: 'a', email: 'a@example.com', index: 0 });
-  await expect(list.itemQuery(4, context)).rejects.toThrow(AccessDeniedError);
+  expect(await list.itemQuery({ where: { id: 0 } }, context)).toEqual({
+    name: 'a',
+    email: 'a@example.com',
+    index: 0,
+  });
+  await expect(list.itemQuery({ where: { id: 4 } }, context)).rejects.toThrow(AccessDeniedError);
 });
 
 test('authenticatedQuery', async () => {
@@ -997,34 +1015,34 @@ test('authenticatedQuery', async () => {
 });
 
 test('gqlMutationResolvers', () => {
-  let resolvers = setup(true).gqlMutationResolvers;
+  let resolvers = setup({ access: true }).gqlMutationResolvers;
   expect(resolvers['createTest']).toBeInstanceOf(Function);
   expect(resolvers['updateTest']).toBeInstanceOf(Function);
   expect(resolvers['deleteTest']).toBeInstanceOf(Function);
   expect(resolvers['deleteTests']).toBeInstanceOf(Function);
 
-  resolvers = setup(false).gqlMutationResolvers;
+  resolvers = setup({ access: false }).gqlMutationResolvers;
   expect(resolvers).toEqual({});
 
-  resolvers = setup({ read: true, create: false, update: false, delete: false })
+  resolvers = setup({ access: { read: true, create: false, update: false, delete: false } })
     .gqlMutationResolvers;
   expect(resolvers).toEqual({});
 
-  resolvers = setup({ read: false, create: true, update: false, delete: false })
+  resolvers = setup({ access: { read: false, create: true, update: false, delete: false } })
     .gqlMutationResolvers;
   expect(resolvers['createTest']).toBeInstanceOf(Function);
   expect(resolvers['updateTest']).toBe(undefined);
   expect(resolvers['deleteTest']).toBe(undefined);
   expect(resolvers['deleteTests']).toBe(undefined);
 
-  resolvers = setup({ read: false, create: false, update: true, delete: false })
+  resolvers = setup({ access: { read: false, create: false, update: true, delete: false } })
     .gqlMutationResolvers;
   expect(resolvers['createTest']).toBe(undefined);
   expect(resolvers['updateTest']).toBeInstanceOf(Function);
   expect(resolvers['deleteTest']).toBe(undefined);
   expect(resolvers['deleteTests']).toBe(undefined);
 
-  resolvers = setup({ read: false, create: false, update: false, delete: true })
+  resolvers = setup({ access: { read: false, create: false, update: false, delete: true } })
     .gqlMutationResolvers;
   expect(resolvers['createTest']).toBe(undefined);
   expect(resolvers['updateTest']).toBe(undefined);
@@ -1094,6 +1112,118 @@ test('getFieldByPath', () => {
   expect(list.getFieldByPath('hidden').path).toEqual('hidden');
   expect(list.getFieldByPath('writeOnce').path).toEqual('writeOnce');
   expect(list.getFieldByPath('missing')).toBe(undefined);
+});
+
+describe('List Hooks', () => {
+  describe('change mutation', () => {
+    test('provides the expected list API', () => {
+      return Promise.all(
+        [
+          list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
+          list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
+        ].map(async action => {
+          const hooks = {
+            resolveInput: jest.fn(({ resolvedData }) => resolvedData),
+            validateInput: jest.fn(),
+            beforeChange: jest.fn(),
+            afterChange: jest.fn(),
+          };
+          const list = setup({ hooks });
+          await action(list);
+
+          Object.keys(hooks).forEach(hook => {
+            expect(hooks[hook]).toHaveBeenCalledWith(
+              expect.objectContaining({
+                actions: {
+                  query: expect.any(Function),
+                },
+              })
+            );
+          });
+        })
+      );
+    });
+
+    test('can execute a query from within a hook', () => {
+      return Promise.all(
+        [
+          list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
+          list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
+        ].map(async action => {
+          const queryMethod = jest.fn(() => ({ data: { hello: 'world' } }));
+          const queryString = 'query { /* Fake query string */ }';
+
+          const hooks = {
+            beforeChange: jest.fn(async ({ actions: { query } }) => {
+              await query(queryString);
+            }),
+          };
+
+          const list = setup({ hooks }, undefined, queryMethod);
+          await action(list);
+
+          expect(queryMethod).toHaveBeenCalledWith(
+            queryString,
+            // The context object
+            expect.any(Object),
+            // no variables
+            undefined
+          );
+        })
+      );
+    });
+
+    test('can execute a query with variables from within a hook', () => {
+      return Promise.all(
+        [
+          list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
+          list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
+        ].map(async action => {
+          const queryMethod = jest.fn(() => ({ data: { hello: 'world' } }));
+          const queryString = 'query { /* Fake query string */ }';
+          const variables = { id: 'abc123' };
+
+          const hooks = {
+            beforeChange: jest.fn(async ({ actions: { query } }) => {
+              await query(queryString, { variables });
+            }),
+          };
+
+          const list = setup({ hooks }, undefined, queryMethod);
+          await action(list);
+
+          expect(queryMethod).toHaveBeenCalledWith(
+            queryString,
+            // The context object
+            expect.any(Object),
+            expect.objectContaining(variables)
+          );
+        })
+      );
+    });
+  });
+
+  describe('delete mutation', () => {
+    test('provides the expected list API', async () => {
+      const hooks = {
+        validateDelete: jest.fn(),
+        beforeDelete: jest.fn(),
+        afterDelete: jest.fn(),
+      };
+      const list = setup({ hooks });
+      await list.deleteMutation(1, context);
+
+      Object.keys(hooks).forEach(hook => {
+        expect(hooks[hook]).toHaveBeenCalledWith(
+          expect.objectContaining({
+            actions: {
+              query: expect.any(Function),
+            },
+          })
+        );
+      });
+    });
+  });
 });
 
 describe('Maps from Native JS types to Keystone types', () => {

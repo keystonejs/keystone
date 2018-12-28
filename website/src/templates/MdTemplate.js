@@ -1,6 +1,8 @@
 import React from 'react';
 import { graphql, Link } from 'gatsby';
 
+import Search from '../components/search';
+
 export default function Template({
   data, // this prop will be injected by the GraphQL query below.
   pathContext: { workspace, workspaceSlug },
@@ -9,6 +11,7 @@ export default function Template({
   const { html } = markdownRemark;
   return (
     <div className="blog-post-container">
+      <Search />
       <Link to="/">Voussoir</Link> &gt;{' '}
       <Link to={workspaceSlug}>
         <code>{workspace}</code>

@@ -113,7 +113,7 @@ async function resolveNestedMany({
     // In the future, when WhereUniqueInput accepts more than just an id,
     // this will also resolve those queries for us too.
     const [connectedItems, connectErrors] = await _runActions(
-      where => refList.itemQuery(where.id, context, refList.gqlNames.itemQueryName),
+      where => refList.itemQuery({ where }, context, refList.gqlNames.itemQueryName),
       input.connect,
       [localField.path, 'connect']
     );
@@ -164,7 +164,7 @@ async function resolveNestedSingle({
       try {
         // Support other unique fields for disconnection
         idToDisconnect = (await refList.itemQuery(
-          input.disconnect,
+          { where: input.disconnect },
           context,
           refList.gqlNames.itemQueryName
         )).id.toString();
@@ -187,7 +187,7 @@ async function resolveNestedSingle({
     let item;
     try {
       item = await (input.connect
-        ? refList.itemQuery(input.connect.id, context, refList.gqlNames.itemQueryName)
+        ? refList.itemQuery({ where: input.connect }, context, refList.gqlNames.itemQueryName)
         : refList.createMutation(input.create, context, mutationState));
     } catch (error) {
       const operation = input.connect ? 'connect' : 'create';

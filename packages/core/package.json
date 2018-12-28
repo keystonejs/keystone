@@ -1,6 +1,6 @@
 {
   "name": "@voussoir/core",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
@@ -8,14 +8,14 @@
   },
   "dependencies": {
     "@voussoir/access-control": "^0.4.0",
-    "@voussoir/fields": "^2.0.0",
+    "@voussoir/fields": "^2.0.1",
     "@voussoir/logger": "^0.2.0",
-    "@voussoir/utils": "^0.3.0",
+    "@voussoir/utils": "^0.3.1",
     "apollo-errors": "^1.9.0",
     "fast-memoize": "^2.4.0",
-    "graphql": "^0.13.2",
+    "graphql": "^14.0.2",
     "graphql-tag": "^2.8.0",
-    "graphql-tools": "^3.0.0",
+    "graphql-tools": "^4.0.3",
     "graphql-type-json": "^0.2.1",
     "oauth-libre": "^0.9.17",
     "p-waterfall": "^1.0.0",

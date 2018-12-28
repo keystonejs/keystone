@@ -1,5 +1,10 @@
 # @voussoir/cypress-project-twitter-login
 
+## 1.1.4
+- [patch] e4cc314b:
+
+  - Bump
+
 ## 1.1.3
 
 - [patch] d22820b1:
