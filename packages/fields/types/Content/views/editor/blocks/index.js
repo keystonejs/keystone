@@ -44,7 +44,7 @@ export let blocks = {
     },
   },
   [blockquoteType]: {
-    Toolbar({ editor, editorState }) {
+    ToolbarElement({ editor, editorState }) {
       let hasBlockquote = hasAncestorBlock(editorState, blockquoteType);
 
       return (
@@ -88,7 +88,7 @@ export let blocks = {
     },
   },
   [headingType]: {
-    Toolbar({ editor, editorState }) {
+    ToolbarElement({ editor, editorState }) {
       return (
         <ToolbarButton
           isActive={hasBlock(editorState, headingType)}
@@ -109,7 +109,7 @@ export let blocks = {
     },
   },
   [orderedListType]: {
-    Toolbar({ editor, editorState }) {
+    ToolbarElement({ editor, editorState }) {
       return (
         <ToolbarButton
           isActive={hasAncestorBlock(editorState, orderedListType)}
@@ -126,7 +126,7 @@ export let blocks = {
     },
   },
   [unorderedListType]: {
-    Toolbar({ editor, editorState }) {
+    ToolbarElement({ editor, editorState }) {
       return (
         <ToolbarButton
           isActive={hasAncestorBlock(editorState, unorderedListType)}

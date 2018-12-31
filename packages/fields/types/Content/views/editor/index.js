@@ -1,30 +1,17 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, useCallback, useRef, Fragment, useLayoutEffect } from 'react';
+import { useCallback, useRef, Fragment, useLayoutEffect } from 'react';
 import { Editor } from 'slate-react';
 import { Block } from 'slate';
 import { getVisibleSelectionRect } from 'get-selection-range';
 import { createPortal } from 'react-dom';
 import { useScrollListener, useWindowSize } from './hooks';
 import { marks, markTypes, plugins as markPlugins } from './marks';
-import { LinkMenu } from './LinkMenu';
-import {
-  linkType,
-  blockquoteType,
-  orderedListType,
-  unorderedListType,
-  listItemType,
-  defaultType,
-  imageType,
-  embedType,
-  headingType,
-  captionType,
-} from './constants';
+import { defaultType, imageType, embedType, headingType, captionType } from './constants';
 import AddBlock from './AddBlock';
 import insertImages from 'slate-drop-or-paste-images';
 import placeholderPlugin from 'slate-react-placeholder';
 import imageExtensions from 'image-extensions';
-import { hasBlock, hasAncestorBlock } from './utils';
 import { blockPlugins, blocks, blockTypes } from './blocks';
 import { ToolbarButton } from './ToolbarButton';
 
@@ -113,17 +100,18 @@ let plugins = [
 function Stories({ value: editorState, onChange }) {
   let windowSize = useWindowSize();
 
-  let [linkRange, setLinkRange] = useState(null);
   let toolbarContainerRef = useRef(null);
   let editorRef = useRef(null);
 
   let positionToolbar = useCallback(
     () => {
       let toolbarContainer = toolbarContainerRef.current;
+      if (toolbarContainer === null) {
+        return;
+      }
       const rect = getVisibleSelectionRect();
       if (!rect || rect.width === 0) {
         toolbarContainer.style.display = 'none';
-        setLinkRange(null);
         return;
       }
       toolbarContainer.style.display = 'block';
@@ -136,8 +124,7 @@ function Stories({ value: editorState, onChange }) {
     [toolbarContainerRef, windowSize]
   );
 
-  let hasLinks = editorState.inlines.some(inline => inline.type == linkType);
-  useLayoutEffect(positionToolbar, [linkRange, editorState]);
+  useLayoutEffect(positionToolbar, [editorState]);
   useScrollListener(positionToolbar);
 
   return (
@@ -183,66 +170,62 @@ function Stories({ value: editorState, onChange }) {
             transition: 'transform 100ms',
           }}
         >
-          {linkRange !== null ? (
-            <LinkMenu
-              onSubmit={value => {
-                editorRef.current.wrapInlineAtRange(linkRange, {
-                  type: linkType,
-                  data: { href: value },
-                });
-                // idk why the setTimeout is necessary but it works so ¯\_(ツ)_/¯
-                setTimeout(() => setLinkRange(null), 0);
-              }}
-              onCancel={() => {
-                setLinkRange(null);
-              }}
-            />
-          ) : (
-            <Fragment>
-              {Object.keys(marks).map(name => {
+          {blockTypes
+            .map(x => blocks[x].Toolbar)
+            .filter(x => x)
+            .reduce(
+              (children, Toolbar) => {
                 return (
-                  <ToolbarButton
-                    isActive={editorState.activeMarks.some(mark => mark.type === name)}
-                    onClick={() => {
-                      editorRef.current.toggleMark(name);
-                    }}
-                    key={name}
+                  <Toolbar
+                    // should do something with a ResizeObserver later
+                    reposition={positionToolbar}
+                    editor={editorRef.current}
+                    editorState={editorState}
                   >
-                    {name}
-                  </ToolbarButton>
+                    {children}
+                  </Toolbar>
                 );
-              })}
-              <ToolbarButton
-                onClick={() => {
-                  markTypes.forEach(mark => {
-                    editorRef.current.removeMark(mark);
-                  });
-                }}
-              >
-                Remove Formatting
-              </ToolbarButton>
+              },
+              <Fragment>
+                {Object.keys(marks).map(name => {
+                  return (
+                    <ToolbarButton
+                      isActive={editorState.activeMarks.some(mark => mark.type === name)}
+                      onClick={() => {
+                        editorRef.current.toggleMark(name);
+                      }}
+                      key={name}
+                    >
+                      {name}
+                    </ToolbarButton>
+                  );
+                })}
+                <ToolbarButton
+                  onClick={() => {
+                    markTypes.forEach(mark => {
+                      editorRef.current.removeMark(mark);
+                    });
+                  }}
+                >
+                  Remove Formatting
+                </ToolbarButton>
 
-              <ToolbarButton
-                isActive={hasLinks}
-                onClick={() => {
-                  if (hasLinks) {
-                    editorRef.current.unwrapInline(linkType);
-                  } else {
-                    setLinkRange(editorState.selection);
+                {blockTypes.map(type => {
+                  let ToolbarElement = blocks[type].ToolbarElement;
+                  if (ToolbarElement === undefined) {
+                    return null;
                   }
-                }}
-              >
-                link
-              </ToolbarButton>
-              {blockTypes.map(type => {
-                let Toolbar = blocks[type].Toolbar;
-                if (Toolbar === undefined) {
-                  return null;
-                }
-                return <Toolbar editor={editorRef.current} editorState={editorState} />;
-              })}
-            </Fragment>
-          )}
+                  return (
+                    <ToolbarElement
+                      key={type}
+                      editor={editorRef.current}
+                      editorState={editorState}
+                    />
+                  );
+                })}
+              </Fragment>
+            )}
+          }
         </div>,
         document.body
       )}
