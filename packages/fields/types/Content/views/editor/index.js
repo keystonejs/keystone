@@ -7,26 +7,10 @@ import { getVisibleSelectionRect } from 'get-selection-range';
 import { createPortal } from 'react-dom';
 import { useScrollListener, useWindowSize } from './hooks';
 import { marks, markTypes, plugins as markPlugins } from './marks';
-import { defaultType, imageType } from './constants';
+import { defaultType } from './constants';
 import AddBlock from './AddBlock';
-import insertImages from 'slate-drop-or-paste-images';
-import imageExtensions from 'image-extensions';
 import { blockPlugins, blocks, blockTypes } from './blocks';
 import { ToolbarButton } from './ToolbarButton';
-
-let normalizeImage = (editor, { code, node, key }) => {
-  switch (code) {
-    case 'node_data_invalid': {
-      if (key === 'alignment') {
-        editor.setNodeByKey(node.key, {
-          data: node.data.set('alignment', 'center'),
-        });
-      }
-    }
-  }
-};
-
-let alignmentValidator = value => value === 'center' || value === 'left' || value === 'right';
 
 const schema = {
   document: {
@@ -40,15 +24,7 @@ const schema = {
       }
     },
   },
-  blocks: {
-    [imageType]: {
-      isVoid: true,
-      data: {
-        alignment: alignmentValidator,
-      },
-      normalize: normalizeImage,
-    },
-  },
+  blocks: {},
 };
 
 blockTypes.forEach(type => {
@@ -57,24 +33,7 @@ blockTypes.forEach(type => {
   }
 });
 
-let plugins = [
-  ...markPlugins,
-  ...blockPlugins,
-  insertImages({
-    extensions: imageExtensions,
-    insertImage: (editor, file) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        editor.insertBlock({
-          type: 'image',
-          isVoid: true,
-          data: { src: reader.result },
-        });
-      };
-      reader.readAsDataURL(file);
-    },
-  }),
-];
+let plugins = [...markPlugins, ...blockPlugins];
 
 function Stories({ value: editorState, onChange }) {
   let windowSize = useWindowSize();

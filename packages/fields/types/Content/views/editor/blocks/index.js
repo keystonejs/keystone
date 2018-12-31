@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import {
-  imageType,
   defaultType,
   blockquoteType,
   listItemType,
@@ -34,7 +33,7 @@ let handleListButtonClick = (editor, editorState, type) => {
 
 export let blocks = {
   [embed.type]: embed,
-  [imageType]: image,
+  [image.type]: image,
   [defaultType]: {
     renderNode({ attributes, children }) {
       return <p {...attributes}>{children}</p>;
@@ -135,3 +134,10 @@ export let blockPlugins = [
     },
   },
 ];
+
+blockTypes.forEach(type => {
+  let plugins = blocks[type].plugins;
+  if (plugins !== undefined) {
+    blockPlugins.push(...plugins);
+  }
+});

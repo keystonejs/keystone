@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { getFiles } from '../utils';
-import { imageType } from '../constants';
 import Image from '../Image';
+import insertImages from 'slate-drop-or-paste-images';
+import imageExtensions from 'image-extensions';
+
+export let type = 'image';
 
 export function Sidebar({ editorRef }) {
   return (
@@ -11,7 +14,7 @@ export function Sidebar({ editorRef }) {
         getFiles().then(srcs => {
           srcs.forEach(src => {
             editorRef.current.insertBlock({
-              type: imageType,
+              type,
               data: { src },
             });
           });
@@ -39,3 +42,47 @@ export function renderNode(props, editor) {
     />
   );
 }
+
+export let schema = {
+  isVoid: true,
+  data: {
+    alignment(value) {
+      switch (value) {
+        case 'center':
+        case 'left':
+        case 'right': {
+          return true;
+        }
+      }
+      return false;
+    },
+  },
+  normalize(editor, { code, node, key }) {
+    switch (code) {
+      case 'node_data_invalid': {
+        if (key === 'alignment') {
+          editor.setNodeByKey(node.key, {
+            data: node.data.set('alignment', 'center'),
+          });
+        }
+      }
+    }
+  },
+};
+
+export let plugins = [
+  insertImages({
+    extensions: imageExtensions,
+    insertImage: (editor, file) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        editor.insertBlock({
+          type,
+          isVoid: true,
+          data: { src: reader.result },
+        });
+      };
+      reader.readAsDataURL(file);
+    },
+  }),
+];

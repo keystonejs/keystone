@@ -24,5 +24,4 @@ export let blockquoteType = 'blockquote';
 export let listItemType = 'list-item';
 export let orderedListType = 'ordered-list';
 export let unorderedListType = 'unordered-list';
-export let imageType = 'image';
 export let defaultType = 'paragraph';
