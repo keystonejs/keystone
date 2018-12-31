@@ -20,7 +20,6 @@ export const initialValue = {
   },
 };
 
-export let blockquoteType = 'blockquote';
 export let listItemType = 'list-item';
 export let orderedListType = 'ordered-list';
 export let unorderedListType = 'unordered-list';

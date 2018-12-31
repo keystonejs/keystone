@@ -1,16 +1,11 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import {
-  defaultType,
-  blockquoteType,
-  listItemType,
-  orderedListType,
-  unorderedListType,
-} from '../constants';
+import { defaultType, listItemType, orderedListType, unorderedListType } from '../constants';
 import * as embed from './embed';
 import * as image from './image';
 import * as link from './link';
 import * as heading from './heading';
+import * as blockquote from './blockquote';
 import { hasAncestorBlock, hasBlock } from '../utils';
 import { ToolbarButton } from '../ToolbarButton';
 
@@ -39,43 +34,7 @@ export let blocks = {
       return <p {...attributes}>{children}</p>;
     },
   },
-  [blockquoteType]: {
-    ToolbarElement({ editor, editorState }) {
-      let hasBlockquote = hasAncestorBlock(editorState, blockquoteType);
-
-      return (
-        <ToolbarButton
-          isActive={hasBlockquote}
-          onClick={() => {
-            if (hasBlockquote) {
-              editor.unwrapBlock(blockquoteType);
-            } else {
-              editor.wrapBlock(blockquoteType);
-            }
-          }}
-        >
-          blockquote
-        </ToolbarButton>
-      );
-    },
-    renderNode({ attributes, children }) {
-      return (
-        <blockquote
-          {...attributes}
-          css={{
-            borderLeft: '4px solid #eee',
-            color: '#666',
-            fontStyle: 'italic',
-            margin: 0,
-            marginBottom: '1em',
-            paddingLeft: '1em',
-          }}
-        >
-          {children}
-        </blockquote>
-      );
-    },
-  },
+  [blockquote.type]: blockquote,
   // technically link isn't a block, it's an inline but it's easier to have it here
   [link.type]: link,
   [listItemType]: {
