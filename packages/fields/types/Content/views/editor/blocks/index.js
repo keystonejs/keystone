@@ -7,7 +7,9 @@ import * as link from './link';
 import * as heading from './heading';
 import * as blockquote from './blockquote';
 import { hasAncestorBlock, hasBlock } from '../utils';
-import { ToolbarButton } from '../ToolbarButton';
+import { ListOrderedIcon, ListUnorderedIcon } from '@voussoir/icons';
+import { colors } from '@voussoir/ui/src/theme';
+import { A11yText } from '@voussoir/ui/src/primitives/typography';
 
 let handleListButtonClick = (editor, editorState, type) => {
   let isList = hasBlock(editorState, listItemType);
@@ -24,6 +26,39 @@ let handleListButtonClick = (editor, editorState, type) => {
   } else {
     editor.setBlocks(listItemType).wrapBlock(type);
   }
+};
+
+let ToolbarCheckbox = ({ isActive, onChange, label, id, icon: Icon }) => {
+  return (
+    <label
+      css={{ display: 'inline-flex', justifyContent: 'center', flexDirection: 'column' }}
+      htmlFor={id}
+    >
+      <input
+        type="checkbox"
+        id={id}
+        onMouseDown={e => {
+          e.preventDefault();
+        }}
+        value={isActive}
+        css={{
+          flex: 0,
+          backgroundColor: 'transparent',
+          border: 0,
+          position: 'absolute',
+          opacity: 0,
+          cursor: 'pointer',
+          height: 0,
+          width: 0,
+        }}
+        onChange={() => {
+          onChange();
+        }}
+      />
+      <Icon css={{ color: isActive ? colors.primary : 'white', paddingRight: 4, paddingLeft: 4 }} />
+      <A11yText>{label}</A11yText>
+    </label>
+  );
 };
 
 export let blocks = {
@@ -46,14 +81,15 @@ export let blocks = {
   [orderedListType]: {
     ToolbarElement({ editor, editorState }) {
       return (
-        <ToolbarButton
+        <ToolbarCheckbox
+          label="Ordered List"
+          id="ordered-list-input"
+          icon={ListOrderedIcon}
           isActive={hasAncestorBlock(editorState, orderedListType)}
-          onClick={() => {
+          onChange={() => {
             handleListButtonClick(editor, editorState, orderedListType);
           }}
-        >
-          ordered list
-        </ToolbarButton>
+        />
       );
     },
     renderNode({ attributes, children }) {
@@ -63,14 +99,15 @@ export let blocks = {
   [unorderedListType]: {
     ToolbarElement({ editor, editorState }) {
       return (
-        <ToolbarButton
+        <ToolbarCheckbox
+          label="Unordered List"
+          id="unordered-list-input"
+          icon={ListUnorderedIcon}
           isActive={hasAncestorBlock(editorState, unorderedListType)}
-          onClick={() => {
+          onChange={() => {
             handleListButtonClick(editor, editorState, unorderedListType);
           }}
-        >
-          unordered list
-        </ToolbarButton>
+        />
       );
     },
     renderNode({ attributes, children }) {

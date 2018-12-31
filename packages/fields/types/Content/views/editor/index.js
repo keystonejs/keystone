@@ -52,7 +52,7 @@ function Stories({ value: editorState, onChange }) {
         toolbarContainer.style.display = 'none';
         return;
       }
-      toolbarContainer.style.display = 'block';
+      toolbarContainer.style.display = 'flex';
       const left = rect.left + rect.width / 2 - toolbarContainer.offsetWidth / 2 + window.scrollX;
       toolbarContainer.style.transform = `translateX(${Math.max(
         Math.min(left, windowSize.innerWidth - toolbarContainer.offsetWidth),
@@ -163,7 +163,6 @@ function Stories({ value: editorState, onChange }) {
                 })}
               </Fragment>
             )}
-          }
         </div>,
         document.body
       )}
