@@ -21,12 +21,9 @@ export const initialValue = {
 };
 
 export let blockquoteType = 'blockquote';
-export let linkType = 'link';
 export let listItemType = 'list-item';
 export let orderedListType = 'ordered-list';
 export let unorderedListType = 'unordered-list';
 export let imageType = 'image';
-export let embedType = 'embed';
-export let headingType = 'heading';
 export let defaultType = 'paragraph';
 export let captionType = 'caption';

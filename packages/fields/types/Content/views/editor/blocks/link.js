@@ -2,8 +2,9 @@
 import { jsx } from '@emotion/core';
 import React, { useContext, useState, useLayoutEffect } from 'react';
 import TooltipTrigger from 'react-popper-tooltip';
-import { linkType } from '../constants';
 import { ToolbarButton } from '../ToolbarButton';
+
+export let type = 'link';
 
 export function renderNode({ node, attributes, children }) {
   let { data } = node;
@@ -84,7 +85,7 @@ export function Toolbar({ reposition, children, editor }) {
         <LinkMenu
           onSubmit={value => {
             editor.wrapInlineAtRange(linkRange, {
-              type: linkType,
+              type: type,
               data: { href: value },
             });
             // idk why the setTimeout is necessary but it works so ¯\_(ツ)_/¯
@@ -99,7 +100,7 @@ export function Toolbar({ reposition, children, editor }) {
   );
 }
 export function ToolbarElement({ editor, editorState }) {
-  let hasLinks = editorState.inlines.some(inline => inline.type == linkType);
+  let hasLinks = editorState.inlines.some(inline => inline.type === type);
 
   let setLinkRange = useContext(SetLinkRange);
   return (
@@ -107,7 +108,7 @@ export function ToolbarElement({ editor, editorState }) {
       isActive={hasLinks}
       onClick={() => {
         if (hasLinks) {
-          editor.unwrapInline(linkType);
+          editor.unwrapInline(type);
         } else {
           setLinkRange(editorState.selection);
         }

@@ -2,10 +2,11 @@
 import { jsx } from '@emotion/core';
 import * as React from 'react';
 import { useEffect, Fragment, useRef, useState, useContext } from 'react';
-import { embedType } from '../../constants';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 
 export let EmbedlyAPIKeyContext = React.createContext();
+
+export let type = 'embed';
 
 let Embed = ({ url }) => {
   let containerRef = useRef(null);
@@ -85,7 +86,7 @@ export function Sidebar({ editorRef }) {
     <button
       type="button"
       onClick={() => {
-        editorRef.current.insertBlock({ type: embedType });
+        editorRef.current.insertBlock({ type });
       }}
     >
       Embed
@@ -101,9 +102,13 @@ export function renderNode(props, editor) {
       }}
       onChange={url => {
         editor.setNodeByKey(props.node.key, {
-          data: { url },
+          data: props.node.data.set('url', url),
         });
       }}
     />
   );
 }
+
+export let schema = {
+  isVoid: true,
+};

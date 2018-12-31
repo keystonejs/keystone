@@ -7,7 +7,7 @@ import { getVisibleSelectionRect } from 'get-selection-range';
 import { createPortal } from 'react-dom';
 import { useScrollListener, useWindowSize } from './hooks';
 import { marks, markTypes, plugins as markPlugins } from './marks';
-import { defaultType, imageType, embedType, headingType, captionType } from './constants';
+import { defaultType, imageType, captionType } from './constants';
 import AddBlock from './AddBlock';
 import insertImages from 'slate-drop-or-paste-images';
 import placeholderPlugin from 'slate-react-placeholder';
@@ -60,9 +60,6 @@ const schema = {
       next: { type: captionType },
       normalize: normalizeImage,
     },
-    [embedType]: {
-      isVoid: true,
-    },
     [captionType]: {
       previous: [{ type: imageType }],
       normalize(editor, { child }) {
@@ -71,6 +68,12 @@ const schema = {
     },
   },
 };
+
+blockTypes.forEach(type => {
+  if (blocks[type].schema !== undefined) {
+    schema.blocks[type] = blocks[type].schema;
+  }
+});
 
 let plugins = [
   ...markPlugins,
@@ -142,7 +145,7 @@ function Stories({ value: editorState, onChange }) {
           // the block type will change to a paragraph
           if (
             event.keyCode === 13 &&
-            editorState.blocks.every(block => block.type === headingType)
+            editorState.blocks.every(block => block.type === blocks.heading.type)
           ) {
             editor.splitBlock().setBlocks(defaultType);
             return;

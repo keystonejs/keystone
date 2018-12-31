@@ -1,20 +1,18 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import {
-  embedType,
   imageType,
   defaultType,
   blockquoteType,
   listItemType,
   orderedListType,
   unorderedListType,
-  linkType,
-  headingType,
   captionType,
 } from '../constants';
 import * as embed from './embed';
 import * as image from './image';
 import * as link from './link';
+import * as heading from './heading';
 import { hasAncestorBlock, hasBlock } from '../utils';
 import { ToolbarButton } from '../ToolbarButton';
 
@@ -36,7 +34,7 @@ let handleListButtonClick = (editor, editorState, type) => {
 };
 
 export let blocks = {
-  [embedType]: embed,
+  [embed.type]: embed,
   [imageType]: image,
   [defaultType]: {
     renderNode({ attributes, children }) {
@@ -81,33 +79,13 @@ export let blocks = {
     },
   },
   // technically link isn't a block, it's an inline but it's easier to have it here
-  [linkType]: link,
+  [link.type]: link,
   [listItemType]: {
     renderNode({ attributes, children }) {
       return <li {...attributes}>{children}</li>;
     },
   },
-  [headingType]: {
-    ToolbarElement({ editor, editorState }) {
-      return (
-        <ToolbarButton
-          isActive={hasBlock(editorState, headingType)}
-          onClick={() => {
-            if (hasBlock(editorState, headingType)) {
-              editor.setBlocks({ type: defaultType });
-            } else {
-              editor.setBlocks({ type: headingType });
-            }
-          }}
-        >
-          heading
-        </ToolbarButton>
-      );
-    },
-    renderNode({ attributes, children }) {
-      return <h2 {...attributes}>{children}</h2>;
-    },
-  },
+  [heading.type]: heading,
   [orderedListType]: {
     ToolbarElement({ editor, editorState }) {
       return (
