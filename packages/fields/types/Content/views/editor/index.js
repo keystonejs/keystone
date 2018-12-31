@@ -10,12 +10,11 @@ import { marks, markTypes, plugins as markPlugins } from './marks';
 import { defaultType, imageType } from './constants';
 import AddBlock from './AddBlock';
 import insertImages from 'slate-drop-or-paste-images';
-import placeholderPlugin from 'slate-react-placeholder';
 import imageExtensions from 'image-extensions';
 import { blockPlugins, blocks, blockTypes } from './blocks';
 import { ToolbarButton } from './ToolbarButton';
 
-let normalizeImage = (editor, { code, node, key, child, ...other }) => {
+let normalizeImage = (editor, { code, node, key }) => {
   switch (code) {
     case 'node_data_invalid': {
       if (key === 'alignment') {
