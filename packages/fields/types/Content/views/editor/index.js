@@ -7,7 +7,7 @@ import { getVisibleSelectionRect } from 'get-selection-range';
 import { createPortal } from 'react-dom';
 import { useScrollListener, useWindowSize } from './hooks';
 import { marks, markTypes, plugins as markPlugins } from './marks';
-import { defaultType, imageType, captionType } from './constants';
+import { defaultType, imageType } from './constants';
 import AddBlock from './AddBlock';
 import insertImages from 'slate-drop-or-paste-images';
 import placeholderPlugin from 'slate-react-placeholder';
@@ -16,7 +16,6 @@ import { blockPlugins, blocks, blockTypes } from './blocks';
 import { ToolbarButton } from './ToolbarButton';
 
 let normalizeImage = (editor, { code, node, key, child, ...other }) => {
-  console.log(code, { code, node, key, child, ...other });
   switch (code) {
     case 'node_data_invalid': {
       if (key === 'alignment') {
@@ -24,15 +23,6 @@ let normalizeImage = (editor, { code, node, key, child, ...other }) => {
           data: node.data.set('alignment', 'center'),
         });
       }
-      return;
-    }
-    case 'next_sibling_type_invalid': {
-      const caption = Block.create(captionType);
-      editor.insertNodeByKey(
-        editor.value.document.key,
-        editor.value.document.getBlocks().findIndex(block => block.key === child.key) + 1,
-        caption
-      );
     }
   }
 };
@@ -57,14 +47,7 @@ const schema = {
       data: {
         alignment: alignmentValidator,
       },
-      next: { type: captionType },
       normalize: normalizeImage,
-    },
-    [captionType]: {
-      previous: [{ type: imageType }],
-      normalize(editor, { child }) {
-        editor.removeNodeByKey(child.key);
-      },
     },
   },
 };
@@ -90,12 +73,6 @@ let plugins = [
         });
       };
       reader.readAsDataURL(file);
-    },
-  }),
-  placeholderPlugin({
-    placeholder: 'Enter a caption... (optional)',
-    when(editor, node) {
-      return node.type === captionType && node.text === '';
     },
   }),
 ];

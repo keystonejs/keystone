@@ -7,7 +7,6 @@ import {
   listItemType,
   orderedListType,
   unorderedListType,
-  captionType,
 } from '../constants';
 import * as embed from './embed';
 import * as image from './image';
@@ -118,16 +117,6 @@ export let blocks = {
     },
     renderNode({ attributes, children }) {
       return <ul {...attributes}>{children}</ul>;
-    },
-  },
-  [captionType]: {
-    renderNode({ attributes, children }) {
-      // TODO: add a figure around the Image
-      return (
-        <figcaption css={{ padding: 8, textAlign: 'center' }} {...attributes}>
-          {children}
-        </figcaption>
-      );
     },
   },
 };

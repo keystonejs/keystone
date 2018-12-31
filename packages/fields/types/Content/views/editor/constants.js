@@ -26,4 +26,3 @@ export let orderedListType = 'ordered-list';
 export let unorderedListType = 'unordered-list';
 export let imageType = 'image';
 export let defaultType = 'paragraph';
-export let captionType = 'caption';
