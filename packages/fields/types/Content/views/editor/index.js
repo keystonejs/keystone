@@ -11,6 +11,7 @@ import { defaultType } from './constants';
 import AddBlock from './AddBlock';
 import { blockPlugins, blocks, blockTypes } from './blocks';
 import { ToolbarButton } from './ToolbarButton';
+import { ToolbarCheckbox } from './ToolbarCheckbox';
 
 const schema = {
   document: {
@@ -127,15 +128,15 @@ function Stories({ value: editorState, onChange }) {
               <Fragment>
                 {Object.keys(marks).map(name => {
                   return (
-                    <ToolbarButton
+                    <ToolbarCheckbox
                       isActive={editorState.activeMarks.some(mark => mark.type === name)}
-                      onClick={() => {
+                      onChange={() => {
                         editorRef.current.toggleMark(name);
                       }}
                       key={name}
-                    >
-                      {name}
-                    </ToolbarButton>
+                      label={marks[name].label}
+                      icon={marks[name].icon}
+                    />
                   );
                 })}
                 <ToolbarButton
