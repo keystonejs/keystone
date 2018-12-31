@@ -15,6 +15,25 @@ import {
 import * as embed from './embed';
 import * as image from './image';
 import * as link from './link';
+import { hasAncestorBlock, hasBlock } from '../utils';
+import { ToolbarButton } from '../ToolbarButton';
+
+let handleListButtonClick = (editor, editorState, type) => {
+  let isList = hasBlock(editorState, listItemType);
+  let isOrderedList = hasAncestorBlock(editorState, type);
+
+  let otherListType = type === orderedListType ? unorderedListType : orderedListType;
+
+  if (isList && isOrderedList) {
+    editor.setBlocks(defaultType);
+    editor.unwrapBlock(type);
+  } else if (isList) {
+    editor.unwrapBlock(otherListType);
+    editor.wrapBlock(type);
+  } else {
+    editor.setBlocks(listItemType).wrapBlock(type);
+  }
+};
 
 export let blocks = {
   [embedType]: embed,
@@ -25,6 +44,24 @@ export let blocks = {
     },
   },
   [blockquoteType]: {
+    Toolbar({ editor, editorState }) {
+      let hasBlockquote = hasAncestorBlock(editorState, blockquoteType);
+
+      return (
+        <ToolbarButton
+          isActive={hasBlockquote}
+          onClick={() => {
+            if (hasBlockquote) {
+              editor.unwrapBlock(blockquoteType);
+            } else {
+              editor.wrapBlock(blockquoteType);
+            }
+          }}
+        >
+          blockquote
+        </ToolbarButton>
+      );
+    },
     renderNode({ attributes, children }) {
       return (
         <blockquote
@@ -45,24 +82,64 @@ export let blocks = {
   },
   // technically link isn't a block, it's an inline but it's easier to have it here
   [linkType]: link,
-  [unorderedListType]: {
-    renderNode({ attributes, children }) {
-      return <ul {...attributes}>{children}</ul>;
-    },
-  },
-  [orderedListType]: {
-    renderNode({ attributes, children }) {
-      return <ol {...attributes}>{children}</ol>;
-    },
-  },
   [listItemType]: {
     renderNode({ attributes, children }) {
       return <li {...attributes}>{children}</li>;
     },
   },
   [headingType]: {
+    Toolbar({ editor, editorState }) {
+      return (
+        <ToolbarButton
+          isActive={hasBlock(editorState, headingType)}
+          onClick={() => {
+            if (hasBlock(editorState, headingType)) {
+              editor.setBlocks({ type: defaultType });
+            } else {
+              editor.setBlocks({ type: headingType });
+            }
+          }}
+        >
+          heading
+        </ToolbarButton>
+      );
+    },
     renderNode({ attributes, children }) {
       return <h2 {...attributes}>{children}</h2>;
+    },
+  },
+  [orderedListType]: {
+    Toolbar({ editor, editorState }) {
+      return (
+        <ToolbarButton
+          isActive={hasAncestorBlock(editorState, orderedListType)}
+          onClick={() => {
+            handleListButtonClick(editor, editorState, orderedListType);
+          }}
+        >
+          ordered list
+        </ToolbarButton>
+      );
+    },
+    renderNode({ attributes, children }) {
+      return <ol {...attributes}>{children}</ol>;
+    },
+  },
+  [unorderedListType]: {
+    Toolbar({ editor, editorState }) {
+      return (
+        <ToolbarButton
+          isActive={hasAncestorBlock(editorState, unorderedListType)}
+          onClick={() => {
+            handleListButtonClick(editor, editorState, unorderedListType);
+          }}
+        >
+          unordered list
+        </ToolbarButton>
+      );
+    },
+    renderNode({ attributes, children }) {
+      return <ul {...attributes}>{children}</ul>;
     },
   },
   [captionType]: {

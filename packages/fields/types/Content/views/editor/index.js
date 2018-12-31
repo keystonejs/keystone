@@ -25,29 +25,8 @@ import insertImages from 'slate-drop-or-paste-images';
 import placeholderPlugin from 'slate-react-placeholder';
 import imageExtensions from 'image-extensions';
 import { hasBlock, hasAncestorBlock } from './utils';
-import { blockPlugins } from './blocks';
-
-let preventDefault = e => {
-  e.preventDefault();
-};
-
-let ToolbarButton = ({ isActive, ...props }) => {
-  return (
-    <button
-      type="button"
-      // prevent the text from being deselected when the user clicks the button
-      onMouseDown={preventDefault}
-      {...(typeof isActive === 'boolean'
-        ? {
-            role: 'checkbox',
-            'aria-checked': isActive,
-          }
-        : {})}
-      css={{ color: isActive ? 'lightgreen' : 'black' }}
-      {...props}
-    />
-  );
-};
+import { blockPlugins, blocks, blockTypes } from './blocks';
+import { ToolbarButton } from './ToolbarButton';
 
 let normalizeImage = (editor, { code, node, key, child, ...other }) => {
   console.log(code, { code, node, key, child, ...other });
@@ -157,29 +136,9 @@ function Stories({ value: editorState, onChange }) {
     [toolbarContainerRef, windowSize]
   );
 
-  let hasBlockquote = hasAncestorBlock(editorState, blockquoteType);
   let hasLinks = editorState.inlines.some(inline => inline.type == linkType);
   useLayoutEffect(positionToolbar, [linkRange, editorState]);
   useScrollListener(positionToolbar);
-
-  let handleListButtonClick = type => {
-    let editor = editorRef.current;
-
-    let isList = hasBlock(editorState, listItemType);
-    let isOrderedList = hasAncestorBlock(editorState, type);
-
-    let otherListType = type === orderedListType ? unorderedListType : orderedListType;
-
-    if (isList && isOrderedList) {
-      editor.setBlocks(defaultType);
-      editor.unwrapBlock(type);
-    } else if (isList) {
-      editor.unwrapBlock(otherListType);
-      editor.wrapBlock(type);
-    } else {
-      editor.setBlocks(listItemType).wrapBlock(type);
-    }
-  };
 
   return (
     <Fragment>
@@ -275,49 +234,13 @@ function Stories({ value: editorState, onChange }) {
               >
                 link
               </ToolbarButton>
-              <ToolbarButton
-                isActive={hasBlockquote}
-                onClick={() => {
-                  if (hasBlockquote) {
-                    editorRef.current.unwrapBlock(blockquoteType);
-                  } else {
-                    editorRef.current.wrapBlock(blockquoteType);
-                  }
-                }}
-              >
-                blockquote
-              </ToolbarButton>
-              <ToolbarButton
-                isActive={hasBlock(editorState, headingType)}
-                onClick={() => {
-                  if (hasBlock(editorState, headingType)) {
-                    editorRef.current.setBlocks({ type: defaultType });
-                  } else {
-                    if (hasBlockquote) {
-                      editorRef.current.unwrapBlock(blockquoteType);
-                    }
-                    editorRef.current.setBlocks({ type: headingType });
-                  }
-                }}
-              >
-                heading
-              </ToolbarButton>
-              <ToolbarButton
-                isActive={hasAncestorBlock(editorState, orderedListType)}
-                onClick={() => {
-                  handleListButtonClick(orderedListType);
-                }}
-              >
-                ordered list
-              </ToolbarButton>
-              <ToolbarButton
-                isActive={hasAncestorBlock(editorState, unorderedListType)}
-                onClick={() => {
-                  handleListButtonClick(unorderedListType);
-                }}
-              >
-                unordered list
-              </ToolbarButton>
+              {blockTypes.map(type => {
+                let Toolbar = blocks[type].Toolbar;
+                if (Toolbar === undefined) {
+                  return null;
+                }
+                return <Toolbar editor={editorRef.current} editorState={editorState} />;
+              })}
             </Fragment>
           )}
         </div>,
