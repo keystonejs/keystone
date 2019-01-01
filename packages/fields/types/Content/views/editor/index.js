@@ -76,18 +76,6 @@ function Stories({ value: editorState, onChange }) {
         onChange={({ value }) => {
           onChange(value);
         }}
-        onKeyDown={(event, editor, next) => {
-          // make it so when you press enter after typing a heading,
-          // the block type will change to a paragraph
-          if (
-            event.keyCode === 13 &&
-            editorState.blocks.every(block => block.type === blocks.heading.type)
-          ) {
-            editor.splitBlock().setBlocks(defaultType);
-            return;
-          }
-          return next();
-        }}
       />
       <AddBlock editorRef={editorRef} editorState={editorState} />
       {createPortal(

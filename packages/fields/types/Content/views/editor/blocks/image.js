@@ -6,6 +6,27 @@ import imageExtensions from 'image-extensions';
 
 export let type = 'image';
 
+let getFiles = () =>
+  new Promise(resolve => {
+    let input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = () => {
+      let files = input.files;
+      Promise.all(
+        [...files].map(file => {
+          return new Promise(innerResolve => {
+            const reader = new FileReader();
+            reader.onload = e => {
+              innerResolve(e.target.result);
+            };
+            reader.readAsDataURL(file);
+          });
+        })
+      ).then(resolve);
+    };
+    input.click();
+  });
+
 export function Sidebar({ editorRef }) {
   return (
     <button

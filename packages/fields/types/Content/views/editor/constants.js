@@ -20,7 +20,4 @@ export const initialValue = {
   },
 };
 
-export let listItemType = 'list-item';
-export let orderedListType = 'ordered-list';
-export let unorderedListType = 'unordered-list';
 export let defaultType = 'paragraph';
