@@ -1,85 +1,24 @@
-/** @jsx jsx */
-import { jsx } from '@emotion/core';
-import { defaultType, listItemType, orderedListType, unorderedListType } from '../constants';
 import * as embed from './embed';
 import * as image from './image';
 import * as link from './link';
 import * as heading from './heading';
 import * as blockquote from './blockquote';
-import { hasAncestorBlock, hasBlock } from '../utils';
-import { ListOrderedIcon, ListUnorderedIcon } from '@voussoir/icons';
-import { ToolbarCheckbox } from '../ToolbarCheckbox';
-
-let handleListButtonClick = (editor, editorState, type) => {
-  let isList = hasBlock(editorState, listItemType);
-  let isOrderedList = hasAncestorBlock(editorState, type);
-
-  let otherListType = type === orderedListType ? unorderedListType : orderedListType;
-
-  if (isList && isOrderedList) {
-    editor.setBlocks(defaultType);
-    editor.unwrapBlock(type);
-  } else if (isList) {
-    editor.unwrapBlock(otherListType);
-    editor.wrapBlock(type);
-  } else {
-    editor.setBlocks(listItemType).wrapBlock(type);
-  }
-};
+import * as paragraph from './paragraph';
+import * as listItem from './list-item';
+import * as orderedList from './ordered-list';
+import * as unorderedList from './unordered-list';
 
 export let blocks = {
   [embed.type]: embed,
   [image.type]: image,
-  [defaultType]: {
-    renderNode({ attributes, children }) {
-      return <p {...attributes}>{children}</p>;
-    },
-  },
+  [paragraph.type]: paragraph,
   [blockquote.type]: blockquote,
   // technically link isn't a block, it's an inline but it's easier to have it here
   [link.type]: link,
-  [listItemType]: {
-    renderNode({ attributes, children }) {
-      return <li {...attributes}>{children}</li>;
-    },
-  },
+  [listItem.type]: listItem,
   [heading.type]: heading,
-  [orderedListType]: {
-    ToolbarElement({ editor, editorState }) {
-      return (
-        <ToolbarCheckbox
-          label="Ordered List"
-          id="ordered-list-input"
-          icon={ListOrderedIcon}
-          isActive={hasAncestorBlock(editorState, orderedListType)}
-          onChange={() => {
-            handleListButtonClick(editor, editorState, orderedListType);
-          }}
-        />
-      );
-    },
-    renderNode({ attributes, children }) {
-      return <ol {...attributes}>{children}</ol>;
-    },
-  },
-  [unorderedListType]: {
-    ToolbarElement({ editor, editorState }) {
-      return (
-        <ToolbarCheckbox
-          label="Unordered List"
-          id="unordered-list-input"
-          icon={ListUnorderedIcon}
-          isActive={hasAncestorBlock(editorState, unorderedListType)}
-          onChange={() => {
-            handleListButtonClick(editor, editorState, unorderedListType);
-          }}
-        />
-      );
-    },
-    renderNode({ attributes, children }) {
-      return <ul {...attributes}>{children}</ul>;
-    },
-  },
+  [orderedList.type]: orderedList,
+  [unorderedList.type]: unorderedList,
 };
 
 export let blockTypes = Object.keys(blocks);
