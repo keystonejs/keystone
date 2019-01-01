@@ -6,7 +6,7 @@ import { type as defaultType } from './paragraph';
 import { ListOrderedIcon } from '@voussoir/icons';
 
 // duplicated logic for now, make some of this functionality happen in the schema instead soon
-export let handleListButtonClick = (editor, editorState, type) => {
+let handleListButtonClick = (editor, editorState, type) => {
   let isListItem = hasBlock(editorState, listItemType);
   let isOrderedList = hasAncestorBlock(editorState, type);
 
