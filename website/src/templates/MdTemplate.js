@@ -28,7 +28,7 @@ export default function Template({
   return (
     <Layout>
       <div id="primary">
-        <div css={{ color: colors.B.A50 }}>
+        <div css={{ color: colors.B.A50, textTransform: 'capitalize' }}>
           <Link css={linkStyles} to="/">
             Keystone
           </Link>{' '}

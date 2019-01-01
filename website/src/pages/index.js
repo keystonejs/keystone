@@ -90,8 +90,10 @@ const GetStartedRightNow = () => (
       </code>
       <div css={{ display: 'inline-flex' }}>
         <KSButton primary href="/">
-          Get Started
+          Read Docs
         </KSButton>
+
+        <KSButton href="#">View on Github</KSButton>
       </div>
     </div>
   </div>
