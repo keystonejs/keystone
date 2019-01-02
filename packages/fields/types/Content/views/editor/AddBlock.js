@@ -5,7 +5,7 @@ import { getVisibleSelectionRect } from 'get-selection-range';
 import { useScrollListener, useWindowSize } from './hooks';
 import { type as defaultType } from './block-types/paragraph';
 
-let AddBlock = ({ editorState, editorRef, blocks }) => {
+let AddBlock = ({ editorState, editor, blocks }) => {
   let windowSize = useWindowSize();
 
   let containerRef = useRef(null);
@@ -65,7 +65,7 @@ let AddBlock = ({ editorState, editorRef, blocks }) => {
               if (Sidebar === undefined) {
                 return null;
               }
-              return <Sidebar key={key} editorRef={editorRef} />;
+              return <Sidebar key={key} editor={editor} />;
             })}
           </div>
         )}

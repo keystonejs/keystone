@@ -26,14 +26,14 @@ let getFiles = () =>
     input.click();
   });
 
-export function Sidebar({ editorRef }) {
+export function Sidebar({ editor }) {
   return (
     <button
       type="button"
       onClick={() => {
         getFiles().then(srcs => {
           srcs.forEach(src => {
-            editorRef.current.insertBlock({
+            editor.insertBlock({
               type,
               data: { src },
             });

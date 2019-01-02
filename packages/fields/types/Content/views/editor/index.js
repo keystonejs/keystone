@@ -110,7 +110,7 @@ function Stories({ value: editorState, onChange, blocks }) {
           onChange(value);
         }}
       />
-      <AddBlock editorRef={editorRef} editorState={editorState} blocks={blocks} />
+      <AddBlock editor={editorRef.current} editorState={editorState} blocks={blocks} />
       {createPortal(
         <div
           ref={toolbarContainerRef}

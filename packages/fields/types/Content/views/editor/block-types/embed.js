@@ -83,12 +83,12 @@ let Block = ({ url, onChange, onRemove }) => {
   );
 };
 
-export function Sidebar({ editorRef }) {
+export function Sidebar({ editor }) {
   return (
     <button
       type="button"
       onClick={() => {
-        editorRef.current.insertBlock({ type });
+        editor.insertBlock({ type });
       }}
     >
       Embed
