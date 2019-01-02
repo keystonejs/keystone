@@ -3,10 +3,9 @@ import { jsx } from '@emotion/core';
 import { useState, useCallback, useRef, Fragment, useLayoutEffect } from 'react';
 import { getVisibleSelectionRect } from 'get-selection-range';
 import { useScrollListener, useWindowSize } from './hooks';
-import { defaultType } from './constants';
-import { blocks } from './blocks';
+import { type as defaultType } from './block-types/paragraph';
 
-let AddBlock = ({ editorState, editorRef }) => {
+let AddBlock = ({ editorState, editorRef, blocks }) => {
   let windowSize = useWindowSize();
 
   let containerRef = useRef(null);

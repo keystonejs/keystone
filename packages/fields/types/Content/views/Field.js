@@ -8,7 +8,6 @@ import FieldTypes from './FIELD_TYPES';
 import * as paragraph from './editor/block-types/paragraph';
 
 let ContentField = ({ field, item, onChange }) => {
-  console.log();
   const views = FieldTypes[field.list.key][field.path];
   let blocks = useMemo(
     () => {
@@ -30,21 +29,21 @@ let ContentField = ({ field, item, onChange }) => {
 
       let flatBlocks = [];
 
-      function pushBlocks(blocks) {
-        blocks.forEach(block => {
-          let item = flatBlocks.find(({ type }) => type === block.type);
-          if (item === undefined) {
+      function pushBlocks(blocksToPush) {
+        blocksToPush.forEach(block => {
+          let existingItem = flatBlocks.find(({ type }) => type === block.type);
+          if (existingItem === undefined) {
             let { dependencies, ...blockToInsert } = block;
             flatBlocks.push(blockToInsert);
             if (dependencies !== undefined) {
               pushBlocks(dependencies);
             }
-          } else if (item.renderNode === undefined) {
-            throw new Error(item.type + 'does not have a renderNode function defined');
+          } else if (existingItem.renderNode === undefined) {
+            throw new Error(existingItem.type + 'does not have a renderNode function defined');
           }
           // check the referential equality of renderNode since it has to be defined
           // and if they're equal we know it's the same block
-          else if (item.renderNode !== block.renderNode) {
+          else if (existingItem.renderNode !== block.renderNode) {
             throw new Error('There are two different blocks with the type:' + block.type);
           }
         });
@@ -52,7 +51,7 @@ let ContentField = ({ field, item, onChange }) => {
 
       pushBlocks(combinedBlocks);
 
-      return flatBlocks.forEach((obj, block) => {
+      return flatBlocks.reduce((obj, block) => {
         obj[block.type] = block;
         return obj;
       }, {});

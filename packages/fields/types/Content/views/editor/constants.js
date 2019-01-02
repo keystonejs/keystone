@@ -19,5 +19,3 @@ export const initialValue = {
     ],
   },
 };
-
-export let defaultType = 'paragraph';
