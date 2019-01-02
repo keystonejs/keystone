@@ -120,7 +120,17 @@ keystone.createList('Post', {
     price: { type: Decimal, symbol: '$' },
     currency: { type: Text },
     hero: { type: File, adapter: fileAdapter },
-    value: { type: Content, embedlyAPIKey: process.env.EMBEDLY_API_KEY },
+    value: {
+      type: Content({
+        blocks: [
+          Content.blocks.blockquote,
+          Content.blocks.orderedList,
+          Content.blocks.unorderedList,
+          [Content.blocks.embed, { apiKey: process.env.EMBEDLY_API_KEY }],
+          Content.blocks.image,
+        ],
+      }),
+    },
   },
   adminConfig: {
     defaultPageSize: 20,

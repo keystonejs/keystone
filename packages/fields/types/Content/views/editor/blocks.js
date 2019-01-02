@@ -1,11 +1,11 @@
-import * as embed from './embed';
-import * as image from './image';
-import * as link from './link';
-import * as heading from './heading';
-import * as blockquote from './blockquote';
-import * as paragraph from './paragraph';
-import * as orderedList from './ordered-list';
-import * as unorderedList from './unordered-list';
+import * as embed from './block-types/embed';
+import * as image from './block-types/image';
+import * as link from './block-types/link';
+import * as heading from './block-types/heading';
+import * as blockquote from './block-types/blockquote';
+import * as paragraph from './block-types/paragraph';
+import * as orderedList from './block-types/ordered-list';
+import * as unorderedList from './block-types/unordered-list';
 
 // implicitly a dependency of all other blocks.
 // these blocks have to be included
@@ -52,8 +52,6 @@ flatBlocks.forEach(block => {
   blocks[block.type] = block;
 });
 
-export let blockTypes = Object.keys(blocks);
-
 export let blockPlugins = [
   {
     renderNode(props, editor) {
@@ -67,7 +65,7 @@ export let blockPlugins = [
   },
 ];
 
-blockTypes.forEach(type => {
+Object.keys(blocks).forEach(type => {
   let plugins = blocks[type].plugins;
   if (plugins !== undefined) {
     blockPlugins.push(...plugins);

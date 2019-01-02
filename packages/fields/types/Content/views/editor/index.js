@@ -1,43 +1,76 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useCallback, useRef, Fragment, useLayoutEffect } from 'react';
+import { useCallback, useRef, Fragment, useLayoutEffect, useMemo } from 'react';
 import { Editor } from 'slate-react';
 import { Block } from 'slate';
 import { getVisibleSelectionRect } from 'get-selection-range';
 import { createPortal } from 'react-dom';
 import { useScrollListener, useWindowSize } from './hooks';
 import { marks, markTypes, plugins as markPlugins } from './marks';
-import { defaultType } from './constants';
+import { type as defaultType } from './block-types/paragraph';
 import AddBlock from './AddBlock';
-import { blockPlugins, blocks, blockTypes } from './blocks';
 import { ToolbarButton } from './ToolbarButton';
 import { ToolbarCheckbox } from './ToolbarCheckbox';
 
-const schema = {
-  document: {
-    last: { type: defaultType },
-    normalize: (editor, { code, node }) => {
-      switch (code) {
-        case 'last_child_type_invalid': {
-          const paragraph = Block.create(defaultType);
-          return editor.insertNodeByKey(node.key, node.nodes.size, paragraph);
+function getSchema(blocks) {
+  const schema = {
+    document: {
+      last: { type: defaultType },
+      normalize: (editor, { code, node }) => {
+        switch (code) {
+          case 'last_child_type_invalid': {
+            const paragraph = Block.create(defaultType);
+            return editor.insertNodeByKey(node.key, node.nodes.size, paragraph);
+          }
         }
-      }
+      },
     },
-  },
-  blocks: {},
-};
+    blocks: {},
+  };
+  Object.keys(blocks).forEach(type => {
+    if (blocks[type].schema !== undefined) {
+      schema.blocks[type] = blocks[type].schema;
+    }
+  });
+  return schema;
+}
 
-blockTypes.forEach(type => {
-  if (blocks[type].schema !== undefined) {
-    schema.blocks[type] = blocks[type].schema;
-  }
-});
-
-let plugins = [...markPlugins, ...blockPlugins];
-
-function Stories({ value: editorState, onChange }) {
+function Stories({ value: editorState, onChange, blocks }) {
   let windowSize = useWindowSize();
+
+  let schema = useMemo(
+    () => {
+      return getSchema(blocks);
+    },
+    [blocks]
+  );
+
+  let plugins = useMemo(
+    () => {
+      let combinedPlugins = [
+        ...markPlugins,
+        {
+          renderNode(props, editor) {
+            let block = blocks[props.node.type];
+            if (block) {
+              return block.renderNode(props, editor);
+            }
+            // we don't want to define how how nodes are rendered in any other place
+            throw new Error('Cannot render node of type: ' + props.node.type);
+          },
+        },
+      ];
+
+      Object.keys(blocks).forEach(type => {
+        let blockTypePlugins = blocks[type].plugins;
+        if (blockTypePlugins !== undefined) {
+          combinedPlugins.push(...blockTypePlugins);
+        }
+      });
+      return combinedPlugins;
+    },
+    [blocks]
+  );
 
   let toolbarContainerRef = useRef(null);
   let editorRef = useRef(null);
@@ -97,7 +130,7 @@ function Stories({ value: editorState, onChange }) {
             transition: 'transform 100ms',
           }}
         >
-          {blockTypes
+          {Object.keys(blocks)
             .map(x => blocks[x].Toolbar)
             .filter(x => x)
             .reduce(
@@ -137,7 +170,7 @@ function Stories({ value: editorState, onChange }) {
                   Remove Formatting
                 </ToolbarButton>
 
-                {blockTypes.map(type => {
+                {Object.keys(blocks).map(type => {
                   let ToolbarElement = blocks[type].ToolbarElement;
                   if (ToolbarElement === undefined) {
                     return null;

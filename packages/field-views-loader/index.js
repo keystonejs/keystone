@@ -46,7 +46,7 @@ module.exports = function() {
             return `"${fieldPath}": {
               ${Object.entries(views)
                 .map(([viewType, resolution]) => {
-                  return `${viewType}: require('${resolution}').default`;
+                  return `${viewType}: interopDefault(require('${resolution}'))`;
                 })
                 .join(',\n')}
           }`;
@@ -57,5 +57,9 @@ module.exports = function() {
       .join(',\n')}
   }`;
 
-  return `module.exports = ${stringifiedObject}`;
+  return `
+  function interopDefault(mod) {
+    return mod.default ? mod.default : mod;
+  }
+  module.exports = ${stringifiedObject}`;
 };

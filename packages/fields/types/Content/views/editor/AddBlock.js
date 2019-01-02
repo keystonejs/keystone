@@ -4,7 +4,7 @@ import { useState, useCallback, useRef, Fragment, useLayoutEffect } from 'react'
 import { getVisibleSelectionRect } from 'get-selection-range';
 import { useScrollListener, useWindowSize } from './hooks';
 import { defaultType } from './constants';
-import { blocks, blockTypes } from './blocks';
+import { blocks } from './blocks';
 
 let AddBlock = ({ editorState, editorRef }) => {
   let windowSize = useWindowSize();
@@ -61,7 +61,7 @@ let AddBlock = ({ editorState, editorRef }) => {
       <div css={{ position: 'absolute', top: -10000, left: -10000 }} ref={otherContainerRef}>
         {isOpen && (
           <div>
-            {blockTypes.map(key => {
+            {Object.keys(blocks).map(key => {
               let { Sidebar } = blocks[key];
               if (Sidebar === undefined) {
                 return null;

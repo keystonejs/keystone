@@ -1,23 +1,20 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import * as React from 'react';
-import { useEffect, Fragment, useRef, useState, useContext } from 'react';
+import { useEffect, Fragment, useRef, useState } from 'react';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
-
-export let EmbedlyAPIKeyContext = React.createContext();
 
 export let type = 'embed';
 
-let Embed = ({ url }) => {
+let Embed = ({ url, options }) => {
   let containerRef = useRef(null);
-  let apiKey = useContext(EmbedlyAPIKeyContext);
-  if (apiKey === undefined) {
+
+  if (options == null || options.apiKey === undefined) {
     return 'Please add an Embedly API Key';
   }
   useEffect(
     () => {
       import('@iframely/embed.js').then(() => {
-        window.iframely.extendOptions({ api_key: apiKey });
+        window.iframely.extendOptions({ api_key: options.apiKey });
         window.iframely.load(containerRef.current, url);
       });
     },
