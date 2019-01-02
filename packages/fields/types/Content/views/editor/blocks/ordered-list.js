@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { ToolbarCheckbox } from '../ToolbarCheckbox';
 import { hasAncestorBlock, hasBlock } from '../utils';
-import { type as listItemType } from './list-item';
+import * as listItem from './list-item';
 import { type as defaultType } from './paragraph';
 import { ListOrderedIcon } from '@voussoir/icons';
 
 // duplicated logic for now, make some of this functionality happen in the schema instead soon
 let handleListButtonClick = (editor, editorState, type) => {
-  let isListItem = hasBlock(editorState, listItemType);
+  let isListItem = hasBlock(editorState, listItem.type);
   let isOrderedList = hasAncestorBlock(editorState, type);
 
   let otherListType = type === 'ordered-list' ? 'unordered-list' : 'ordered-list';
@@ -19,7 +19,7 @@ let handleListButtonClick = (editor, editorState, type) => {
     editor.unwrapBlock(otherListType);
     editor.wrapBlock(type);
   } else {
-    editor.setBlocks(listItemType).wrapBlock(type);
+    editor.setBlocks(listItem.type).wrapBlock(type);
   }
 };
 
@@ -42,3 +42,5 @@ export function ToolbarElement({ editor, editorState }) {
 export function renderNode({ attributes, children }) {
   return <ol {...attributes}>{children}</ol>;
 }
+
+export let dependencies = [listItem];

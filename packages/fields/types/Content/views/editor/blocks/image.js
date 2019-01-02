@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { getFiles } from '../utils';
 import Image from '../Image';
 import insertImages from 'slate-drop-or-paste-images';
 import imageExtensions from 'image-extensions';
