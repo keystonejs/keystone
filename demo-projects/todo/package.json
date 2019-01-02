@@ -1,20 +1,14 @@
 {
-  "name": "@voussoir/cypress-project-basic",
+  "name": "keystone_demo_to-do_list_demo",
   "private": true,
-  "version": "1.4.0",
-  "author": "Jed Watson",
+  "version": "1.0.0",
+  "author": "Nathan Simpson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "node -r dotenv-safe/config index.js | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
-    "cypress:run:cmd": "node -r dotenv-safe/config `which cypress` run",
-    "cypress:open:cmd": "node -r dotenv-safe/config `which cypress` open",
-    "prepare-test-server": "NODE_ENV=test DISABLE_LOGGING=true node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.code) })'",
-    "cypress:run:ci": "touch .env && yarn prepare-test-server cypress:run:cmd",
-    "cypress:run": "if [ -f .env ]; then yarn prepare-test-server cypress:run:cmd; else echo \"\nError: Must create a projects/basic/.env file.\nSee projects/basic/.env.example for values\n\"; exit 1; fi",
-    "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a projects/basic/.env file.\nSee projects/basic/.env.example for values\n\"; exit 1; fi"
+    "start": "node -r dotenv-safe/config index.js | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada"
   },
   "dependencies": {
     "@voussoir/adapter-mongoose": "^1.0.0",

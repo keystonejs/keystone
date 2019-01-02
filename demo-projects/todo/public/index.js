@@ -165,8 +165,8 @@ const App = () => (
           if (error) return <p>Error!</p>;
           return (
             <ul css={{ listStyle: 'none', padding: 0 }}>
-              {data.allTodos.map(todo => (
-                <Card todo={todo} />
+              {data.allTodos.map((todo, index) => (
+                <Card todo={todo} key={index} />
               ))}
             </ul>
           );
