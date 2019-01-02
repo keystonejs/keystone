@@ -1,14 +1,19 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useEffect, Fragment, useRef, useState } from 'react';
+import { useEffect, Fragment, useRef, useState, createContext, useContext } from 'react';
 import { Button } from '@voussoir/ui/src/primitives/buttons';
 
 export let type = 'embed';
 
-let Embed = ({ url, options }) => {
-  let containerRef = useRef(null);
+let Context = createContext(null);
 
-  if (options == null || options.apiKey === undefined) {
+export let Provider = Context.Provider;
+
+let Embed = ({ url }) => {
+  let containerRef = useRef(null);
+  let options = useContext(Context);
+
+  if (options === null || options.apiKey === undefined) {
     return 'Please add an Embedly API Key';
   }
   useEffect(

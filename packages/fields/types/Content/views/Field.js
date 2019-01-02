@@ -75,13 +75,23 @@ let ContentField = ({ field, item, onChange }) => {
       }}
     >
       <h1>{field.label}</h1>
-      <Editor
-        blocks={blocks}
-        value={value}
-        onChange={newValue => {
-          setValue(newValue);
-        }}
-      />
+      {Object.keys(blocks)
+        .map(key => blocks[key])
+        .reduce(
+          (children, block) => {
+            if (block.Provider === undefined || block.options === null) {
+              return children;
+            }
+            return <block.Provider value={block.options}>{children}</block.Provider>;
+          },
+          <Editor
+            blocks={blocks}
+            value={value}
+            onChange={newValue => {
+              setValue(newValue);
+            }}
+          />
+        )}
     </div>
   );
 };
