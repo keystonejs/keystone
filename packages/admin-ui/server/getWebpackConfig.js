@@ -92,6 +92,7 @@ module.exports = function({ adminMeta, entry }) {
         // that we use so we alias react the react resolved from the admin ui
         // which depends on the version of react that keystone uses
         react$: require.resolve('react'),
+        'react-dom$': require.resolve('react-dom'),
       },
     },
   };
