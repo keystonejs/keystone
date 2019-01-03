@@ -6,6 +6,10 @@ import { jsx, Global } from '@emotion/core';
 
 /* @jsx jsx */
 
+const tint = (opacity, darkness) => (
+  `hsla(261, 84%, ${darkness == 'dark' ? '14%' : darkness == 'light' ? '98%' : '60%'}, ${opacity || 1})`
+)
+
 const client = new ApolloClient({
   uri: '/admin/api',
 });
@@ -44,10 +48,14 @@ const Form = () => {
     <Mutation
       mutation={ADD_TODO}
       update={(cache, { data: { createTodo } }) => {
+
         const { allTodos } = cache.readQuery({ query: GET_TODOS });
+
+        allTodos.unshift(createTodo);
+
         cache.writeQuery({
           query: GET_TODOS,
-          data: { allTodos: allTodos.concat([createTodo]) },
+          data: { allTodos },
         });
       }}
     >
@@ -63,14 +71,15 @@ const Form = () => {
             <input
               placeholder="Add new item"
               css={{
+                color: tint(1, 'dark'),
                 padding: '12px 16px',
                 fontSize: '1.25em',
                 width: '100%',
                 borderRadius: 6,
                 border: 0,
-                background: '#BCDEFA',
-                '::placeholder': { color: '#2779BD' },
-                ':focus': { outlineColor: '#2779BD' },
+                background: tint(0.4),
+                '::placeholder': { color: tint() },
+                ':focus': { outlineColor: tint() },
               }}
               ref={node => {
                 input = node;
@@ -79,12 +88,12 @@ const Form = () => {
           </form>
         </div>
       )}
-    </Mutation>
+    </Mutation >
   );
 };
 
 const Trash = () => (
-  <svg viewBox="0 0 14 16" css={{ width: 20, height: 20, fill: '#6CB2EB' }}>
+  <svg viewBox="0 0 14 16" css={{ width: 20, height: 20, fill: tint() }}>
     <title>Delete this item</title>
     <path
       fillRule="evenodd"
@@ -93,7 +102,7 @@ const Trash = () => (
   </svg>
 );
 
-const Card = data => (
+const Item = data => (
   <Mutation
     mutation={REMOVE_TODO}
     update={(cache, { data: { deleteTodo } }) => {
@@ -112,16 +121,12 @@ const Card = data => (
       <li
         css={{
           padding: '32px 16px',
-          color: '#12283A',
           fontSize: '1.25em',
           fontWeight: 600,
           width: '100%',
           display: 'flex',
           justifyContent: 'space-between',
-          margin: '0 0 16px 0',
-          background: '#FFFFFF',
-          borderRadius: 6,
-          boxShadow: '0px 8px 16px rgba(0,0,0,0.1)',
+          borderTop: `1px solid ${tint(0.2)}`
         }}
       >
         {data.todo.name}
@@ -130,6 +135,10 @@ const Card = data => (
             background: 0,
             border: 0,
             padding: 0,
+
+            '&:focus': {
+              outline: 'none',
+            }
           }}
           onClick={e => {
             e.preventDefault();
@@ -148,14 +157,15 @@ const App = () => (
     <Global
       styles={{
         body: {
-          background: '#EFF8FF',
+          background: tint(1, 'light'),
+          color: tint(1, 'dark'),
           fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
         },
         '*': { boxSizing: 'border-box' },
       }}
     />
     <div css={{ padding: 50, maxWidth: 450 }}>
-      <h1 css={{ color: '#12283A', textTransform: 'uppercase', fontWeight: 900, marginTop: 0 }}>
+      <h1 css={{ textTransform: 'uppercase', fontWeight: 900, marginTop: 0 }}>
         To-Do List
       </h1>
       <Form />
@@ -166,7 +176,7 @@ const App = () => (
           return (
             <ul css={{ listStyle: 'none', padding: 0 }}>
               {data.allTodos.map((todo, index) => (
-                <Card todo={todo} key={index} />
+                <Item todo={todo} key={index} />
               ))}
             </ul>
           );

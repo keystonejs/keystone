@@ -40,6 +40,9 @@ const server = new WebServer(keystone, {
   port,
 });
 
+const bundler = new Bundler(path.join(staticPath, 'index.html'));
+
+// delete this so you don't accidently nuke your database
 server.app.get('/reset-db', (req, res) => {
   const reset = async () => {
     Object.values(keystone.adapters).forEach(async adapter => {
@@ -50,8 +53,6 @@ server.app.get('/reset-db', (req, res) => {
   };
   reset();
 });
-
-const bundler = new Bundler(path.join(staticPath, 'index.html'));
 
 server.app.use(bundler.middleware());
 
