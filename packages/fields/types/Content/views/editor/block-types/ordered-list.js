@@ -43,4 +43,22 @@ export function renderNode({ attributes, children }) {
   return <ol {...attributes}>{children}</ol>;
 }
 
+export let plugins = [
+  {
+    onKeyDown(event, editor, next) {
+      // make it so when you press enter in an empty list item,
+      // the block type will change to a paragraph
+      if (
+        event.keyCode === 13 &&
+        hasAncestorBlock(editor.value, type) &&
+        editor.value.focusText.text === ''
+      ) {
+        editor.setBlocks(defaultType).unwrapBlock(type);
+        return;
+      }
+      next();
+    },
+  },
+];
+
 export let dependencies = [listItem];
