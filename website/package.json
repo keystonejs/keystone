@@ -14,8 +14,9 @@
     },
     "dependencies": {
         "@emotion/core": "^10.0.5",
-        "@voussoir/ui": "^0.6.0",
+        "@emotion/styled": "^10.0.5",
         "@sindresorhus/slugify": "^0.6.0",
+        "@voussoir/ui": "^0.6.0",
         "bolt": "^0.22.1",
         "gatsby": "^2.0.60",
         "gatsby-plugin-lunr": "^1.3.0",
