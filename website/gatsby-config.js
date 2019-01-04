@@ -42,15 +42,21 @@ async function getGatsbyConfig() {
         resolve: 'gatsby-source-filesystem',
         options: { name: 'guides', path: `${__dirname}/guides/` },
       },
-      // TODO: prepend relative markdown URLs with the workspaceSlug field
+      `gatsby-plugin-sharp`,
       {
-        resolve: `gatsby-transformer-remark`,
+        resolve: `gatsby-mdx`,
         options: {
-          plugins: [
+          extensions: ['.mdx', '.md'],
+          gatsbyRemarkPlugins: [
             {
-              resolve: `gatsby-remark-prismjs`,
-              options: { aliases: { js: 'javascript' } },
+              resolve: 'gatsby-remark-images',
+              options: {
+                maxWidth: 1035,
+                sizeByPixelDensity: true,
+              },
             },
+            // This is needed to resolve svgs
+            { resolve: 'gatsby-remark-copy-linked-files' },
           ],
         },
       },
@@ -68,9 +74,9 @@ async function getGatsbyConfig() {
           ],
           // How to resolve each field's value for a supported node type
           resolvers: {
-            // For any node of type MarkdownRemark, list how to resolve the fields' values
-            MarkdownRemark: {
-              content: node => node.rawMarkdownBody,
+            // For any node of type mdx, list how to resolve the fields' values
+            Mdx: {
+              content: node => node.rawBody,
               slug: node => node.fields.slug,
               workspace: node => node.fields.workspace,
               heading: node => node.fields.heading,
