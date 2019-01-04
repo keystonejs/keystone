@@ -2,12 +2,21 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
-import { getYear, setMonth, format, setDay, setYear, addMonths, subMonths } from 'date-fns';
+import {
+  getYear,
+  setMonth,
+  format,
+  setDay,
+  setYear,
+  addMonths,
+  subMonths,
+  endOfYear,
+} from 'date-fns';
 import { VariableSizeList as List } from 'react-window';
 import { ChevronLeftIcon, ChevronRightIcon } from '@voussoir/icons';
 import { useLayoutEffect, useState, useRef, useMemo, useCallback } from '../../../new-typed-react';
 import { borderRadius, colors } from '../../../theme';
-import { yearRange, months, type Weeks, getWeeksInMonth } from './utils';
+import { yearRange, months, type Weeks, getWeeksInMonth, isNumberInRange } from './utils';
 import { type YearPickerType, SelectMonth, SelectYear } from './selects';
 import { A11yText } from '../../typography';
 import { Month } from './month';
@@ -97,6 +106,17 @@ export const DayPicker = ({
 }: DayPickerProps) => {
   const listRef = useRef(null);
 
+  if (!isNumberInRange(startCurrentDateAt.getFullYear(), yearRangeFrom, yearRangeTo)) {
+    // if startCurrentDateAt is out of the year range then we go to end of
+    // the year of yearRangeTo, ideally we'd throw an error for this case
+    // and fix all the incorrect values for startCurrentDateAt but that
+    // would require a bunch of other changes so it just isn't worth it right now
+    // since we're planning to change a lot of this stuff anyway
+    let date = new Date();
+    date.setFullYear(yearRangeTo);
+    startCurrentDateAt = endOfYear(date);
+  }
+
   const [date, setDate] = useState(startCurrentDateAt);
 
   const shouldChangeScrollPositionRef = useRef(true);
@@ -108,8 +128,6 @@ export const DayPicker = ({
     },
     [shouldChangeScrollPositionRef, setDate]
   );
-
-  const setSelectedDate = onSelectedChange;
 
   useLayoutEffect(
     () => {
@@ -246,10 +264,10 @@ export const DayPicker = ({
             () => ({
               items,
               selectedDate,
-              setSelectedDate,
+              onSelectedChange,
               observer,
             }),
-            [items, selectedDate, setSelectedDate, observer]
+            [items, selectedDate, onSelectedChange, observer]
           )}
           height={6 * DAY_HEIGHT + 26.5}
           itemCount={years.length * 12}

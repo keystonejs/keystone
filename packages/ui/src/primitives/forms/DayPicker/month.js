@@ -20,7 +20,7 @@ type Props = {
   index: number,
   data: {
     observer: IntersectionObserver,
-    setSelectedDate: Date => void,
+    onSelectedChange: Date => void,
     selectedDate: Date | null,
     items: Array<{
       weeks: Weeks,
@@ -40,7 +40,7 @@ const TodayMarker = styled.div(({ isSelected }) => ({
 }));
 
 export const Month: React.ComponentType<Props> = memo(({ style, index, data }) => {
-  const { items, selectedDate, setSelectedDate, observer } = data;
+  const { items, selectedDate, onSelectedChange, observer } = data;
   const ref = useRef(null);
 
   useEffect(
@@ -70,7 +70,7 @@ export const Month: React.ComponentType<Props> = memo(({ style, index, data }) =
                 id={`ks-day-${day.label}-${month}-${year}`}
                 key={day.label}
                 disabled={disabled}
-                onClick={disabled ? null : () => setSelectedDate(day.dateValue)}
+                onClick={disabled ? null : () => onSelectedChange(day.dateValue)}
                 isInteractive={!disabled}
                 isSelected={isSelected}
                 isToday={isToday}
