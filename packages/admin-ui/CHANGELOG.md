@@ -1,6 +1,7 @@
 # @voussoir/admin-ui
 
 ## 0.8.0
+
 - [patch] 18ce8bc4:
 
   - Add warning when leaving item page with unsaved changes

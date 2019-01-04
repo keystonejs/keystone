@@ -51,8 +51,8 @@ export const KSButton = Styled.a(props => ({
     props.primary && props.onDark
       ? colors.B.base
       : props.primary
-        ? 'white'
-        : props.onDark
-          ? 'white'
-          : colors.B.base,
+      ? 'white'
+      : props.onDark
+      ? 'white'
+      : colors.B.base,
 }));
