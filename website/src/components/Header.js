@@ -28,23 +28,19 @@ const Logo = () => (
 const navLinks = [
   {
     name: 'Get Started',
-    url: '/getting-started',
-  },
-  {
-    name: 'Docs',
-    url: '/docs',
+    url: '/tutorials/getting-started',
   },
   {
     name: 'Guides',
-    url: '/guides',
+    url: '/guides/',
   },
   {
     name: 'Tutorials',
-    url: '/tutorials',
+    url: '/tutorials/',
   },
   {
     name: 'APIs',
-    url: '/voussoir',
+    url: '/arch-ui/core/',
   },
 ];
 

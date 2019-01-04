@@ -25,28 +25,38 @@ export default () => (
       }
     `}
     render={data => {
-      const newData = data.allSitePage.edges.reduce(function(result, { node }) {
-        //  /dir/thing
-        const match = node.path.match(new RegExp(/\/[A-Za-z-]+\//g));
+      const navData = data.allSitePage.edges.reduce((pageList, { node }) => {
+        // finding out what directory the file is in (eg '/voussoir')
 
-        if (match != null) {
-          const dir = match[0].replace(new RegExp(/[\/]/g), '');
+        if (node.context.workspace != null && !node.path.includes('changelog')) {
+          let dir = node.context.workspace;
 
-          if (!result[dir]) {
-            result[dir] = [];
+          if (!pageList[dir]) {
+            pageList[dir] = [];
           }
-
-          // node.path = node.path.replace(`/${dir}`, '');
-
-          result[dir].push(node);
+          pageList[dir].push(node);
         }
 
-        return result;
+        return pageList;
       }, {});
 
-      const keys = Object.keys(newData).sort((x, y) => {
-        return x == 'docs' ? -1 : 0;
+      const keys = Object.keys(navData).sort(x => {
+        return x.startsWith('@') ? 0 : -1;
       });
+
+      const prettyName = node => {
+        let pretty = node.path
+          .replace(node.context.workspace.replace('@', ''), '')
+          .replace(new RegExp(/(\/)/g), ' ')
+          .replace('-', ' ')
+          .trim();
+
+        if (pretty.startsWith('packages') || pretty.startsWith('types')) {
+          pretty = pretty.replace('packages', '').replace('types', '');
+        }
+
+        return pretty == '' ? 'index' : pretty;
+      };
 
       return (
         <>
@@ -71,32 +81,33 @@ export default () => (
                         margin: '0 0 32px 0',
                       }}
                     >
-                      {newData[key].map(node => {
+                      {navData[key].map(node => {
                         return (
                           <li
                             key={node.path}
                             css={{
-                              marginBottom: 5,
+                              padding: 10,
+                              borderBottom: `1px solid ${colors.B.A15}`,
                             }}
                           >
                             <Link
                               css={{
                                 textDecoration: 'none',
-                                color: colors.B.D55,
+                                color: colors.B.text,
                                 textTransform: 'capitalize',
 
                                 '&:hover': {
                                   color: colors.B.base,
                                 },
+
+                                '&[aria-current="page"]': {
+                                  color: colors.B.base,
+                                  textDecoration: 'underline',
+                                },
                               }}
                               to={node.path}
                             >
-                              {node.path
-                                .replace(new RegExp(/(\/)/g), ' ')
-                                .replace(key, '')
-                                .trim().length
-                                ? node.path.replace(new RegExp(/(\/)/g), ' ').replace(key, '')
-                                : 'index'}
+                              {prettyName(node)}
                             </Link>
                           </li>
                         );

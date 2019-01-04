@@ -89,7 +89,7 @@ const GetStartedRightNow = () => (
         </div>
       </code>
       <div css={{ display: 'inline-flex' }}>
-        <KSButton primary href="/">
+        <KSButton primary href="/tutorials/getting-started">
           Read Docs
         </KSButton>
 
@@ -125,7 +125,7 @@ export default ({ data }) => (
       <span role="img" aria-label="hand pointing right">
         👉
       </span>{' '}
-      <Link to="/docs">/docs</Link>
+      <Link to="/tutorials">/tutorials</Link>
     </h2>
     <GetStartedRightNow />
     <Footer />
