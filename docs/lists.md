@@ -1,3 +1,5 @@
+import Hooks from './hooks.md';
+
 # Lists
 
 ## Creating Lists
