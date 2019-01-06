@@ -64,7 +64,7 @@ export const DateTimePicker = (props: Props) => {
     yearPickerType,
   } = props;
   const TODAY = new Date();
-  console.log(offset);
+
   return (
     <div id={htmlID}>
       <DayPicker
