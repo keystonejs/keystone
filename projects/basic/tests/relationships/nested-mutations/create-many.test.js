@@ -404,6 +404,12 @@ describe('with access control', () => {
             data: {
               errors: [
                 {
+                  message:
+                    'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>',
+                  path: ['createUserToNotesNoCreate', 'notes'],
+                  name: 'Error',
+                },
+                {
                   path: ['createUserToNotesNoCreate', 'notes', 'create', 0],
                   name: 'AccessDeniedError',
                 },
@@ -476,6 +482,12 @@ describe('with access control', () => {
             name: 'NestedError',
             data: {
               errors: [
+                {
+                  message:
+                    'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>',
+                  path: ['updateUserToNotesNoCreate', 'notes'],
+                  name: 'Error',
+                },
                 {
                   path: ['updateUserToNotesNoCreate', 'notes', 'create', 0],
                   name: 'AccessDeniedError',

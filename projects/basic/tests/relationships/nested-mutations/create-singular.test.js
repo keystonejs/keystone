@@ -299,6 +299,12 @@ describe('with access control', () => {
             data: {
               errors: [
                 {
+                  message: 'Unable to create a EventToGroupNoCreate.group<GroupNoCreate>',
+                  path: ['createEventToGroupNoCreate', 'group'],
+                  name: 'Error',
+                },
+                {
+                  name: 'AccessDeniedError',
                   path: ['createEventToGroupNoCreate', 'group', 'create'],
                 },
               ],
@@ -385,6 +391,12 @@ describe('with access control', () => {
             data: {
               errors: [
                 {
+                  message: 'Unable to create a EventToGroupNoCreate.group<GroupNoCreate>',
+                  path: ['updateEventToGroupNoCreate', 'group'],
+                  name: 'Error',
+                },
+                {
+                  name: 'AccessDeniedError',
                   path: ['updateEventToGroupNoCreate', 'group', 'create'],
                 },
               ],
