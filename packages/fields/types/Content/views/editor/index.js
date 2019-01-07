@@ -11,6 +11,7 @@ import { type as defaultType } from './block-types/paragraph';
 import AddBlock from './AddBlock';
 import { ToolbarCheckbox, ToolbarButton } from './toolbar-components';
 import { A11yText } from '@voussoir/ui/src/primitives/typography';
+import { CircleSlashIcon } from '@voussoir/icons';
 
 function getSchema(blocks) {
   const schema = {
@@ -96,9 +97,9 @@ function Stories({ value: editorState, onChange, blocks }) {
   );
 
   let editorRef = useRef(null);
-
+  let containerRef = useRef(null);
   return (
-    <Fragment>
+    <div ref={containerRef}>
       <Editor
         schema={schema}
         ref={editorRef}
@@ -109,12 +110,20 @@ function Stories({ value: editorState, onChange, blocks }) {
         }}
       />
       <AddBlock editor={editorRef.current} editorState={editorState} blocks={blocks} />
-      <Popper placement="top" referenceElement={selectionElement}>
+      <Popper
+        modifiers={{
+          preventOverflow: {
+            boundariesElement: document.querySelector('main'),
+          },
+        }}
+        placement="top"
+        referenceElement={selectionElement}
+      >
         {({ style, ref, scheduleUpdate }) => {
           return (
             <Render>
               {() => {
-                useLayoutEffect(scheduleUpdate, [editorState.selection]);
+                useLayoutEffect(scheduleUpdate, [editorState]);
                 let shouldShowToolbar = useHasSelection();
 
                 return createPortal(
@@ -124,7 +133,7 @@ function Stories({ value: editorState, onChange, blocks }) {
                     css={{
                       backgroundColor: 'black',
                       padding: 8,
-                      borderRadius: 8,
+                      borderRadius: 6,
                       width: 'auto',
                       position: 'absolute',
                       display: shouldShowToolbar ? 'flex' : 'none',
@@ -137,63 +146,66 @@ function Stories({ value: editorState, onChange, blocks }) {
                       transition: 'transform 100ms',
                     }}
                   >
-                    {Object.keys(blocks)
-                      .map(x => blocks[x].Toolbar)
-                      .filter(x => x)
-                      .reduce(
-                        (children, Toolbar) => {
-                          return (
-                            <Toolbar
-                              // should do something with a ResizeObserver later
-                              reposition={scheduleUpdate}
-                              editor={editorRef.current}
-                              editorState={editorState}
-                            >
-                              {children}
-                            </Toolbar>
-                          );
-                        },
-                        <Fragment>
-                          {Object.keys(marks).map(name => {
-                            let Icon = marks[name].icon;
+                    {shouldShowToolbar &&
+                      Object.keys(blocks)
+                        .map(x => blocks[x].Toolbar)
+                        .filter(x => x)
+                        .reduce(
+                          (children, Toolbar) => {
                             return (
-                              <ToolbarCheckbox
-                                isActive={editorState.activeMarks.some(mark => mark.type === name)}
-                                onChange={() => {
-                                  editorRef.current.toggleMark(name);
-                                }}
-                                key={name}
-                              >
-                                <Icon />
-                                <A11yText>{marks[name].label}</A11yText>
-                              </ToolbarCheckbox>
-                            );
-                          })}
-                          <ToolbarButton
-                            onClick={() => {
-                              markTypes.forEach(mark => {
-                                editorRef.current.removeMark(mark);
-                              });
-                            }}
-                          >
-                            Remove Formatting
-                          </ToolbarButton>
-
-                          {Object.keys(blocks).map(type => {
-                            let ToolbarElement = blocks[type].ToolbarElement;
-                            if (ToolbarElement === undefined) {
-                              return null;
-                            }
-                            return (
-                              <ToolbarElement
-                                key={type}
+                              <Toolbar
+                                // should do something with a ResizeObserver later
+                                reposition={scheduleUpdate}
                                 editor={editorRef.current}
                                 editorState={editorState}
-                              />
+                              >
+                                {children}
+                              </Toolbar>
                             );
-                          })}
-                        </Fragment>
-                      )}
+                          },
+                          <Fragment>
+                            {Object.keys(marks).map(name => {
+                              let Icon = marks[name].icon;
+                              return (
+                                <ToolbarCheckbox
+                                  isActive={editorState.activeMarks.some(
+                                    mark => mark.type === name
+                                  )}
+                                  onChange={() => {
+                                    editorRef.current.toggleMark(name);
+                                  }}
+                                  key={name}
+                                >
+                                  <Icon />
+                                  <A11yText>{marks[name].label}</A11yText>
+                                </ToolbarCheckbox>
+                              );
+                            })}
+                            <ToolbarButton
+                              onClick={() => {
+                                markTypes.forEach(mark => {
+                                  editorRef.current.removeMark(mark);
+                                });
+                              }}
+                            >
+                              <CircleSlashIcon title="Remove Formatting" />
+                            </ToolbarButton>
+
+                            {Object.keys(blocks).map(type => {
+                              let ToolbarElement = blocks[type].ToolbarElement;
+                              if (ToolbarElement === undefined) {
+                                return null;
+                              }
+                              return (
+                                <ToolbarElement
+                                  key={type}
+                                  editor={editorRef.current}
+                                  editorState={editorState}
+                                />
+                              );
+                            })}
+                          </Fragment>
+                        )}
                   </div>,
                   document.body
                 );
@@ -202,7 +214,7 @@ function Stories({ value: editorState, onChange, blocks }) {
           );
         }}
       </Popper>
-    </Fragment>
+    </div>
   );
 }
 

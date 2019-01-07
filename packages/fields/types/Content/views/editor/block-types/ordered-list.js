@@ -34,7 +34,7 @@ export function ToolbarElement({ editor, editorState }) {
         handleListButtonClick(editor, editorState, type);
       }}
     >
-      <ListOrderedIcon label="Ordered List" />
+      <ListOrderedIcon title="Ordered List" />
     </ToolbarCheckbox>
   );
 }
