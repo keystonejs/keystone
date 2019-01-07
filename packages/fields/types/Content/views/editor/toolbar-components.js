@@ -19,10 +19,6 @@ export let ToolbarButton = ({ isActive, ...props }) => {
   return (
     <button
       type="button"
-      // prevent the text from being deselected when the user clicks the button
-      onMouseDown={e => {
-        e.stopPropagation();
-      }}
       css={[
         {
           backgroundColor: 'transparent',
@@ -53,9 +49,6 @@ export let ToolbarCheckbox = ({ isActive, onChange, id, children }) => {
       <input
         type="checkbox"
         id={id}
-        onMouseDown={e => {
-          e.preventDefault();
-        }}
         value={isActive}
         css={{
           flex: 0,

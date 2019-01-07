@@ -49,6 +49,10 @@ function useHasSelection() {
   return hasSelection;
 }
 
+let stopPropagation = e => {
+  e.stopPropagation();
+};
+
 // to use hooks inside of class components
 let Render = ({ children }) => children();
 
@@ -111,6 +115,7 @@ function Stories({ value: editorState, onChange, blocks }) {
 
                 return createPortal(
                   <div
+                    onMouseDown={stopPropagation}
                     ref={ref}
                     style={style}
                     css={{
