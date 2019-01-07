@@ -51,6 +51,8 @@ async function getGatsbyConfig() {
             default: require.resolve('./src/components/mdx-renderer.js'),
           },
           gatsbyRemarkPlugins: [
+            { resolve: require.resolve('./plugins/gatsby-remark-fix-links') },
+
             {
               resolve: 'gatsby-remark-images',
               options: {

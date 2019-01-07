@@ -1,9 +1,9 @@
 const path = require('path');
-const slugify = require('@sindresorhus/slugify');
 const get = require('lodash.get');
+const slugify = require('@sindresorhus/slugify');
+const generateUrl = require('./generateUrl');
 
 const PROJECT_ROOT = path.resolve('..');
-const INDEX_FILES = ['index', 'readme'];
 
 exports.createPages = ({ actions, graphql }) => {
   const { createPage } = actions;
@@ -64,12 +64,6 @@ exports.onCreateWebpackConfig = ({ actions }) => {
   });
 };
 
-const slugifyPath = pathToSlugify =>
-  pathToSlugify
-    .split('/')
-    .map(slugify)
-    .join('/');
-
 const getEditUrl = absPath =>
   `https://github.com/keystonejs/keystone-5/edit/master/${path.relative(PROJECT_ROOT, absPath)}`;
 
@@ -89,11 +83,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
       workspaceSlug: slugify(parent.sourceInstanceName),
       editUrl: getEditUrl(get(node, 'fileAbsolutePath')),
       // The full path to this "node"
-      slug: [
-        `/${slugifyPath(parent.sourceInstanceName)}`,
-        parent.relativeDirectory ? `/${slugifyPath(parent.relativeDirectory)}` : '',
-        `/${INDEX_FILES.includes(parent.name.toLowerCase()) ? '' : slugifyPath(parent.name)}`,
-      ].join(''),
+      slug: generateUrl(parent),
     };
 
     // see: https://github.com/gatsbyjs/gatsby/issues/1634#issuecomment-388899348
