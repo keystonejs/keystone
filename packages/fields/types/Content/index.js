@@ -1,12 +1,12 @@
 const { MongoTextInterface, Text } = require('../Text/Implementation');
 
-module.exports = ({ blocks }) => ({
+module.exports = {
   type: 'Content',
   implementation: class Content extends Text {
     extendAdminMeta(meta) {
       return {
         ...meta,
-        blockOptions: blocks.map(block => {
+        blockOptions: this.config.blocks.map(block => {
           if (Array.isArray(block)) {
             return block[1];
           }
@@ -14,20 +14,25 @@ module.exports = ({ blocks }) => ({
         }),
       };
     }
+    extendViews(views) {
+      return {
+        ...views,
+        ...this.config.blocks.reduce((obj, val, i) => {
+          obj['$$block$$' + i] = Array.isArray(val) ? val[0] : val;
+          return obj;
+        }, {}),
+      };
+    }
   },
   views: {
     Controller: require.resolve('../Text/Controller'),
     Field: require.resolve('./views/Field'),
     Filter: require.resolve('../Text/views/Filter'),
-    ...blocks.reduce((obj, val, i) => {
-      obj['$$block$$' + i] = Array.isArray(val) ? val[0] : val;
-      return obj;
-    }, {}),
   },
   adapters: {
     mongoose: MongoTextInterface,
   },
-});
+};
 
 module.exports.blocks = {
   blockquote: require.resolve('./views/editor/block-types/blockquote'),
