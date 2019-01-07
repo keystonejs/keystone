@@ -12,6 +12,7 @@ import AddBlock from './AddBlock';
 import { ToolbarCheckbox, ToolbarButton } from './toolbar-components';
 import { A11yText } from '@voussoir/ui/src/primitives/typography';
 import { CircleSlashIcon } from '@voussoir/icons';
+import { selectionReference } from './utils';
 
 function getSchema(blocks) {
   const schema = {
@@ -35,16 +36,6 @@ function getSchema(blocks) {
   });
   return schema;
 }
-
-let selectionElement = {
-  getBoundingClientRect: getVisibleSelectionRect,
-  get clientWidth() {
-    return getVisibleSelectionRect().width;
-  },
-  get clientHeight() {
-    return getVisibleSelectionRect().height;
-  },
-};
 
 function useHasSelection() {
   let [hasSelection, setHasSelection] = useState(false);
@@ -110,7 +101,7 @@ function Stories({ value: editorState, onChange, blocks }) {
         }}
       />
       <AddBlock editor={editorRef.current} editorState={editorState} blocks={blocks} />
-      <Popper placement="top" referenceElement={selectionElement}>
+      <Popper placement="top" referenceElement={selectionReference}>
         {({ style, ref, scheduleUpdate }) => {
           return (
             <Render>
