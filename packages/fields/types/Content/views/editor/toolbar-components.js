@@ -10,7 +10,7 @@ function getToolbarItemStyles(isActive) {
       color: isActive ? darken(colors.primary, 10) : lighten(colors.primary, 40),
     },
     ':active': {
-      color: darken(colors.primary, 25),
+      color: isActive ? darken(colors.primary, 25) : lighten(colors.primary, 10),
     },
   };
 }
