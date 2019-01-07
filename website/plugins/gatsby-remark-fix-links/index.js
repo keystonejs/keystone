@@ -12,7 +12,7 @@ module.exports = ({ markdownAST, markdownNode, getNode }) => {
         return hash || '';
       });
     }
-    // This resolves relative paths to relative urls. It may be too frafile.
+    // This resolves relative paths to relative urls. It may be too fragile.
     if (node.url.startsWith('./') || node.url.startsWith('../')) {
       let url = generateUrl(getNode(markdownNode.parent));
       node.url = path.resolve(url, node.url);
