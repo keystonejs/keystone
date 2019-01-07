@@ -110,15 +110,7 @@ function Stories({ value: editorState, onChange, blocks }) {
         }}
       />
       <AddBlock editor={editorRef.current} editorState={editorState} blocks={blocks} />
-      <Popper
-        modifiers={{
-          preventOverflow: {
-            boundariesElement: document.querySelector('main'),
-          },
-        }}
-        placement="top"
-        referenceElement={selectionElement}
-      >
+      <Popper placement="top" referenceElement={selectionElement}>
         {({ style, ref, scheduleUpdate }) => {
           return (
             <Render>
