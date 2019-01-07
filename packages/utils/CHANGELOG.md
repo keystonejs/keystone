@@ -1,6 +1,7 @@
 # @voussoir/utils
 
 ## 0.3.1
+
 - [patch] 06b9968e:
 
   - Add zipObj function

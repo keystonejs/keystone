@@ -1,6 +1,7 @@
 # @voussoir/server
 
 ## 0.5.1
+
 - [patch] 4d198f04:
 
   - Update dependencies: apollo-server-express -> 2.3.1
