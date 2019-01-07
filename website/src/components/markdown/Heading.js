@@ -7,7 +7,4 @@ function dashcase(children) {
   return snakeCase(reactAddonsTextContent(children)).replace(/_/g, '-');
 }
 
-export default props => {
-  const Tag = props.tag;
-  return <Tag id={dashcase(props.children)}>{props.children}</Tag>;
-};
+export default ({ tag: Tag, children }) => <Tag id={dashcase(children)}>{children}</Tag>;

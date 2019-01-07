@@ -4,8 +4,7 @@ import MDXRenderer from 'gatsby-mdx/mdx-renderer';
 import { MDXProvider } from '@mdx-js/tag';
 
 import Search from '../components/search';
-import Heading from '../components/markdown/Heading';
-import Code from '../components/markdown/Code';
+import mdComponents from '../components/markdown';
 
 export default function Template({
   data, // this prop will be injected by the GraphQL query below.
@@ -23,17 +22,7 @@ export default function Template({
       <a href={fields.editUrl}>Edit on github</a>
       <div className="blog-post">
         <div className="blog-post-content">
-          <MDXProvider
-            components={{
-              h1: props => <Heading {...props} tag="h1" />,
-              h2: props => <Heading {...props} tag="h2" />,
-              h3: props => <Heading {...props} tag="h3" />,
-              h4: props => <Heading {...props} tag="h4" />,
-              h5: props => <Heading {...props} tag="h5" />,
-              h6: props => <Heading {...props} tag="h6" />,
-              code: Code,
-            }}
-          >
+          <MDXProvider components={mdComponents}>
             <MDXRenderer>{code.body}</MDXRenderer>
           </MDXProvider>
         </div>

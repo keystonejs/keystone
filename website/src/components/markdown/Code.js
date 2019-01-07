@@ -3,10 +3,6 @@ import Highlight, { defaultProps } from 'prism-react-renderer';
 import reactAddonsTextContent from 'react-addons-text-content';
 import theme from '../../prism-themes/duotoneLight';
 
-const getLanguage = className => {
-  return className.replace('language-', '');
-};
-
 /*
 This solution should be seen as extremely temporary and not a platonic ideal of code highlighting.
 
@@ -23,7 +19,7 @@ export default props =>
       {...defaultProps}
       theme={theme}
       code={reactAddonsTextContent(props.children)}
-      language={getLanguage(props.className)}
+      language={props.className.replace('language-', '')}
     >
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
         <pre className={className} style={style}>
