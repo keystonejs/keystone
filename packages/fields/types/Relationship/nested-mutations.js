@@ -6,10 +6,9 @@ const { ParameterError } = require('./graphqlErrors');
 const NESTED_MUTATIONS = ['create', 'connect', 'disconnect', 'disconnectAll'];
 
 /*** Input validation  ***/
-const throwWithErrors = ({ message, errors }) => {
+const throwWithErrors = (message, meta) => {
   const error = new Error(message);
-  error.errors = errors;
-  throw error;
+  throw Object.assign(error, meta);
 };
 
 function validateInput({ input, target, many }) {
@@ -54,7 +53,8 @@ const cleanAndValidateInput = ({ input, many, localField, target }) => {
     return pick(input, validateInput({ input, target, many }));
   } catch (error) {
     const message = `Nested mutation operation invalid for ${target}`;
-    throwWithErrors({ message, errors: [{ ...error, path: [localField.path] }] });
+    error.path = ['<validate>'];
+    throwWithErrors(message, { errors: [error], path: [localField.path] });
   }
 };
 
@@ -63,7 +63,10 @@ const _runActions = async (action, targets, path) => {
   const errors = results
     .map((settleInfo, index) => ({ ...settleInfo, index }))
     .filter(({ isRejected }) => isRejected)
-    .map(({ reason, index }) => ({ ...reason, path: [...path, index] }));
+    .map(({ reason, index }) => {
+      reason.path = [...path, index];
+      return reason;
+    });
   // If there are no errors we know everything resolved successfully
   return [errors.length ? [] : results.map(({ value }) => value), errors];
 };
@@ -115,7 +118,7 @@ async function resolveNestedMany({
     const [connectedItems, connectErrors] = await _runActions(
       where => refList.itemQuery({ where }, context, refList.gqlNames.itemQueryName),
       input.connect,
-      [localField.path, 'connect']
+      ['connect']
     );
 
     // Create related item. Will check for access control itself, no need to do anything extra here.
@@ -124,7 +127,7 @@ async function resolveNestedMany({
     const [createdItems, createErrors] = await _runActions(
       data => refList.createMutation(data, context, mutationState),
       input.create,
-      [localField.path, 'create']
+      ['create']
     );
 
     // Combine and map the data in the format we actually need
@@ -137,7 +140,7 @@ async function resolveNestedMany({
     const allErrors = [...connectErrors, ...createErrors];
     if (allErrors.length) {
       const message = `Unable to create and/or connect ${allErrors.length} ${target}`;
-      throwWithErrors({ message, errors: allErrors });
+      throwWithErrors(message, { errors: allErrors, path: [localField.path] });
     }
   }
 
@@ -192,7 +195,8 @@ async function resolveNestedSingle({
     } catch (error) {
       const operation = input.connect ? 'connect' : 'create';
       const message = `Unable to ${operation} a ${target}`;
-      throwWithErrors({ message, errors: [{ ...error, path: [localField.path, operation] }] });
+      error.path = [operation];
+      throwWithErrors(message, { errors: [error], path: [localField.path] });
     }
 
     // Might not exist if the input id doesn't exist / the user doesn't have read access
