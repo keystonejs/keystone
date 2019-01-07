@@ -9,8 +9,8 @@ import { Popper } from 'react-popper';
 import { marks, markTypes, plugins as markPlugins } from './marks';
 import { type as defaultType } from './block-types/paragraph';
 import AddBlock from './AddBlock';
-import { ToolbarButton } from './ToolbarButton';
-import { ToolbarCheckbox } from './ToolbarCheckbox';
+import { ToolbarCheckbox, ToolbarButton } from './toolbar-components';
+import { A11yText } from '@voussoir/ui/src/primitives/typography';
 
 function getSchema(blocks) {
   const schema = {
@@ -155,6 +155,7 @@ function Stories({ value: editorState, onChange, blocks }) {
                         },
                         <Fragment>
                           {Object.keys(marks).map(name => {
+                            let Icon = marks[name].icon;
                             return (
                               <ToolbarCheckbox
                                 isActive={editorState.activeMarks.some(mark => mark.type === name)}
@@ -162,9 +163,10 @@ function Stories({ value: editorState, onChange, blocks }) {
                                   editorRef.current.toggleMark(name);
                                 }}
                                 key={name}
-                                label={marks[name].label}
-                                icon={marks[name].icon}
-                              />
+                              >
+                                <Icon />
+                                <A11yText>{marks[name].label}</A11yText>
+                              </ToolbarCheckbox>
                             );
                           })}
                           <ToolbarButton

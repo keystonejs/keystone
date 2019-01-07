@@ -2,7 +2,8 @@
 import { jsx } from '@emotion/core';
 import React, { useContext, useState, useLayoutEffect } from 'react';
 import TooltipTrigger from 'react-popper-tooltip';
-import { ToolbarButton } from '../ToolbarButton';
+import { LinkIcon } from '@voussoir/icons';
+import { ToolbarButton } from '../toolbar-components';
 
 export let type = 'link';
 
@@ -114,7 +115,7 @@ export function ToolbarElement({ editor, editorState }) {
         }
       }}
     >
-      link
+      <LinkIcon title={hasLinks ? 'Remove Link' : 'Link'} />
     </ToolbarButton>
   );
 }

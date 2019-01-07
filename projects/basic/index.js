@@ -128,6 +128,8 @@ keystone.createList('Post', {
           Content.blocks.unorderedList,
           [Content.blocks.embed, { apiKey: process.env.EMBEDLY_API_KEY }],
           Content.blocks.image,
+          Content.blocks.link,
+          Content.blocks.heading,
         ],
       }),
     },
