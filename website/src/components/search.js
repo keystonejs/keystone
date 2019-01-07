@@ -25,7 +25,6 @@ export default class Search extends Component {
             background: colors.B.A15,
             padding: 10,
             fontSize: '1em',
-            //border: `2px solid ${colors.B.base}`,
             border: 'none',
             borderRadius: 6,
             boxSizing: 'border-box',
@@ -59,7 +58,7 @@ export default class Search extends Component {
           }}
         >
           {this.state.results.slice(0, 12).map(result => (
-            <li css={{ padding: 5, borderBottom: `1px solid ${colors.B.A25}` }}>
+            <li css={{ padding: 5, borderBottom: `1px solid ${colors.B.A25}` }} key={result.slug}>
               <Link style={{ color: colors.B.base }} to={result.slug}>
                 {result.slug}
               </Link>{' '}

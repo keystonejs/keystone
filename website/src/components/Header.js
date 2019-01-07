@@ -6,7 +6,6 @@ import logosvg from '../images/logo.svg';
 import Search from '../components/search';
 
 import { colors } from '../styles';
-// import { colors } from '@voussoir/ui/src/theme';
 
 /* @jsx jsx */
 
@@ -32,7 +31,7 @@ const navLinks = [
   },
   {
     name: 'Guides',
-    url: '/guides/',
+    url: '/docs/',
   },
   {
     name: 'Tutorials',
@@ -55,10 +54,10 @@ const Nav = () => (
         justifyContent: 'center',
       }}
     >
-      {navLinks.map(link => (
-        <li css={{ padding: '0px 5px' }}>
-          <Link to={link.url} css={{ textDecoration: 'none', color: 'black' }}>
-            {link.name}
+      {navLinks.map(({ url, name }) => (
+        <li css={{ padding: '0px 5px' }} key={name}>
+          <Link to={url} css={{ textDecoration: 'none', color: 'black' }}>
+            {name}
           </Link>
         </li>
       ))}

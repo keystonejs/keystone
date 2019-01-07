@@ -1,11 +1,24 @@
 import React from 'react';
 import { StaticQuery, graphql, Link } from 'gatsby';
 
-import { jsx } from '@emotion/core';
-
 import { colors } from '../styles';
+import { jsx, css } from '@emotion/core';
 
 // @jsx jsx
+
+const prettyName = node => {
+  let pretty = node.path
+    .replace(node.context.workspace.replace('@', ''), '')
+    .replace(new RegExp(/(\/)/g), ' ')
+    .replace('-', ' ')
+    .trim();
+
+  if (pretty.startsWith('packages') || pretty.startsWith('types')) {
+    pretty = pretty.replace('packages', '').replace('types', '');
+  }
+
+  return pretty == '' ? 'index' : pretty;
+};
 
 export default () => (
   <StaticQuery
@@ -28,7 +41,7 @@ export default () => (
       const navData = data.allSitePage.edges.reduce((pageList, { node }) => {
         // finding out what directory the file is in (eg '/voussoir')
 
-        if (node.context.workspace != null && !node.path.includes('changelog')) {
+        if (node.context.workspace !== null && !node.path.includes('changelog')) {
           let dir = node.context.workspace;
 
           if (!pageList[dir]) {
@@ -40,31 +53,17 @@ export default () => (
         return pageList;
       }, {});
 
-      const keys = Object.keys(navData).sort(x => {
+      const categories = Object.keys(navData).sort(x => {
         return x.startsWith('@') ? 0 : -1;
       });
-
-      const prettyName = node => {
-        let pretty = node.path
-          .replace(node.context.workspace.replace('@', ''), '')
-          .replace(new RegExp(/(\/)/g), ' ')
-          .replace('-', ' ')
-          .trim();
-
-        if (pretty.startsWith('packages') || pretty.startsWith('types')) {
-          pretty = pretty.replace('packages', '').replace('types', '');
-        }
-
-        return pretty == '' ? 'index' : pretty;
-      };
 
       return (
         <>
           {data.allSitePage.totalCount >= 1 ? (
             <div>
-              {keys.map(key => {
+              {categories.map(category => {
                 return (
-                  <div>
+                  <div key={category}>
                     <span
                       css={{
                         fontSize: '1.5em',
@@ -72,7 +71,7 @@ export default () => (
                         textTransform: 'capitalize',
                       }}
                     >
-                      {key}
+                      {category}
                     </span>
                     <ul
                       css={{
@@ -81,7 +80,7 @@ export default () => (
                         margin: '0 0 32px 0',
                       }}
                     >
-                      {navData[key].map(node => {
+                      {navData[category].map(node => {
                         return (
                           <li
                             key={node.path}

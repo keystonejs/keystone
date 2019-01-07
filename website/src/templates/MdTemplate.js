@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql, Link } from 'gatsby';
 
-import { jsx, Global } from '@emotion/core';
+import { jsx } from '@emotion/core';
 
 import { colors } from '../styles';
 

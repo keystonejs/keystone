@@ -22,7 +22,7 @@ async function getPackagePlugins() {
     {
       resolve: 'gatsby-source-filesystem',
       options: {
-        name: 'guides',
+        name: 'docs',
         path: `${rootDir}/docs`,
       },
     },
@@ -38,10 +38,10 @@ async function getGatsbyConfig() {
         resolve: 'gatsby-source-filesystem',
         options: { name: 'tutorials', path: `${__dirname}/tutorials/` },
       },
-      // {
-      //   resolve: 'gatsby-source-filesystem',
-      //   options: { name: 'guides', path: `${__dirname}/guides/` },
-      // },
+      {
+        resolve: 'gatsby-source-filesystem',
+        options: { name: 'guides', path: `${__dirname}/guides/` },
+      },
       // TODO: prepend relative markdown URLs with the workspaceSlug field
       {
         resolve: `gatsby-transformer-remark`,
