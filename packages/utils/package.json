@@ -1,12 +1,13 @@
 {
   "name": "@voussoir/utils",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "p-lazy": "^1.0.0"
+    "p-lazy": "^1.0.0",
+    "p-reflect": "^1.0.0"
   }
 }

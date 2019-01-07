@@ -1,5 +1,11 @@
 # @voussoir/ui
 
+## 0.6.1
+
+- [patch] 7a39fac6:
+
+  - DayPicker fixes
+
 ## 0.6.0
 
 - [patch] 32960e4d:

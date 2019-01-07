@@ -44,6 +44,25 @@ exports.createPages = ({ actions, graphql }) => {
   });
 };
 
+exports.onCreateBabelConfig = ({ actions, stage }) => {
+  actions.setBabelPreset({
+    name: `@babel/preset-flow`,
+    stage,
+  });
+};
+
+exports.onCreateWebpackConfig = ({ actions }) => {
+  actions.setWebpackConfig({
+    resolve: {
+      alias: {
+        // the website isn't part of the monorepo right now so we're aliasing it
+        // so that the components can be used in the website
+        '@voussoir/ui': path.join(__dirname, '..', 'packages', 'ui'),
+      },
+    },
+  });
+};
+
 const slugifyPath = pathToSlugify =>
   pathToSlugify
     .split('/')

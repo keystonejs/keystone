@@ -1,5 +1,11 @@
 # @voussoir/cypress-project-login
 
+## 1.2.4
+
+- [patch] e4cc314b:
+
+  - Bump
+
 ## 1.2.3
 
 - [patch] d22820b1:

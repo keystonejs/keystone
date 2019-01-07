@@ -33,6 +33,8 @@ describe('Adding data', () => {
       });
 
       const d = new Date();
+      d.setFullYear(2018);
+      d.setMonth(11);
       d.setDate(10);
 
       if (url === '/admin/users') {

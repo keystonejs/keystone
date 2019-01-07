@@ -1,0 +1,1 @@
+- Expose access to GraphQL query method within hooks

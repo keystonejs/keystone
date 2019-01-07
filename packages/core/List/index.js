@@ -92,7 +92,7 @@ const mapNativeTypeToKeystonType = (type, listKey, fieldPath) => {
 };
 
 module.exports = class List {
-  constructor(key, config, { getListByKey, adapter, defaultAccess, getAuth }) {
+  constructor(key, config, { getListByKey, getGraphQLQuery, adapter, defaultAccess, getAuth }) {
     this.key = key;
 
     // 180814 JM TODO: Since there's no access control specified, this implicitly makes name, id or {labelField} readable by all (probably bad?)
@@ -192,6 +192,40 @@ module.exports = class List {
     this.views = mapKeys(sanitisedFieldsConfig, fieldConfig => ({
       ...fieldConfig.type.views,
     }));
+
+    this.hooksActions = {
+      /**
+       * @param queryString String A graphQL query string
+       * @param options.skipAccessControl Boolean By default access control _of
+       * the user making the initial request_ is still tested. Disable all
+       * Access Control checks with this flag
+       * @param options.variables Object The variables passed to the graphql
+       * query for the given queryString.
+       *
+       * @return Promise<Object> The graphql query response
+       */
+      query: context => (queryString, { skipAccessControl = false, variables } = {}) => {
+        let passThroughContext = context;
+
+        if (skipAccessControl) {
+          passThroughContext = {
+            ...context,
+            getListAccessControlForUser: () => true,
+            getFieldAccessControlForUser: () => true,
+          };
+        }
+
+        const graphQLQuery = getGraphQLQuery();
+
+        if (!graphQLQuery) {
+          return Promise.reject(
+            new Error('No executable schema is available. Have you setup `@voussoir/server`?')
+          );
+        }
+
+        return graphQLQuery(queryString, passThroughContext, variables);
+      },
+    };
   }
 
   getAdminMeta() {
@@ -639,8 +673,8 @@ module.exports = class List {
 
         [this.gqlNames.listMetaName]: (_, args, context) => this.listMeta(context),
 
-        [this.gqlNames.itemQueryName]: (_, { where: { id } }, context) =>
-          this.itemQuery(id, context, this.gqlNames.itemQueryName),
+        [this.gqlNames.itemQueryName]: (_, args, context) =>
+          this.itemQuery(args, context, this.gqlNames.itemQueryName),
       };
     }
 
@@ -712,7 +746,12 @@ module.exports = class List {
     };
   }
 
-  async itemQuery(id, context, gqlName) {
+  async itemQuery(
+    // prettier-ignore
+    { where: { id } },
+    context,
+    gqlName
+  ) {
     const operation = 'read';
     graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'Start query');
 
@@ -729,7 +768,11 @@ module.exports = class List {
       return null;
     }
 
-    return this.itemQuery(context.authedItem.id, context, this.gqlNames.authenticatedQueryName);
+    return this.itemQuery(
+      { where: { id: context.authedItem.id } },
+      context,
+      this.gqlNames.authenticatedQueryName
+    );
   }
 
   get gqlMutationResolvers() {
@@ -777,8 +820,15 @@ module.exports = class List {
     });
   }
 
-  async _mapToFields(fields, action) {
-    return await resolveAllKeys(arrayToObject(fields, 'path', action));
+  _mapToFields(fields, action) {
+    return resolveAllKeys(arrayToObject(fields, 'path', action)).catch(error => {
+      if (!error.errors) {
+        throw error;
+      }
+      const errorCopy = new Error(error.message || error.toString());
+      errorCopy.errors = Object.values(error.errors);
+      throw errorCopy;
+    });
   }
 
   _fieldsFromObject(obj) {
@@ -814,7 +864,12 @@ module.exports = class List {
   }
 
   async _resolveInput(resolvedData, existingItem, context, operation, originalInput) {
-    const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
+    const args = {
+      resolvedData,
+      existingItem,
+      originalInput,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
     const fields = this._fieldsFromObject(resolvedData);
 
     resolvedData = await this._mapToFields(fields, field =>
@@ -835,13 +890,21 @@ module.exports = class List {
   }
 
   async _validateInput(resolvedData, existingItem, context, operation, originalInput) {
-    const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
+    const args = {
+      resolvedData,
+      existingItem,
+      originalInput,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
     const fields = this._fieldsFromObject(resolvedData);
     await this._validateHook(args, fields, operation, 'validateInput');
   }
 
   async _validateDelete(existingItem, context, operation) {
-    const args = { existingItem, context, adapter: this.adapter };
+    const args = {
+      existingItem,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
     const fields = this.fields;
     await this._validateHook(args, fields, operation, 'validateDelete');
   }
@@ -874,22 +937,38 @@ module.exports = class List {
   }
 
   async _beforeChange(resolvedData, existingItem, context, originalInput) {
-    const args = { resolvedData, existingItem, context, adapter: this.adapter, originalInput };
+    const args = {
+      resolvedData,
+      existingItem,
+      originalInput,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
     await this._runHook(args, resolvedData, 'beforeChange');
   }
 
   async _beforeDelete(existingItem, context) {
-    const args = { existingItem, context, adapter: this.adapter };
+    const args = {
+      existingItem,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
     await this._runHook(args, existingItem, 'beforeDelete');
   }
 
   async _afterChange(updatedItem, existingItem, context, originalInput) {
-    const args = { updatedItem, originalInput, existingItem, context, adapter: this.adapter };
+    const args = {
+      updatedItem,
+      originalInput,
+      existingItem,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
     await this._runHook(args, updatedItem, 'afterChange');
   }
 
   async _afterDelete(existingItem, context) {
-    const args = { existingItem, context, adapter: this.adapter };
+    const args = {
+      existingItem,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
     await this._runHook(args, existingItem, 'afterDelete');
   }
 
