@@ -32,7 +32,6 @@
         "prism-react-renderer": "^0.1.5",
         "prismjs": "^1.15.0",
         "react": "16.7.0-alpha.2",
-        "react-addons-text-content": "^0.0.4",
-        "yarn": "^1.12.3"
+        "react-addons-text-content": "^0.0.4"
     }
 }
