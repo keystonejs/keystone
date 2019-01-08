@@ -1,5 +1,15 @@
 # @voussoir/core
 
+## 1.1.0
+
+- [patch] 8d8666ad:
+
+  - Dependency upgrade: graphql -> 14.0.3, graphql-tools -> 4.0.3
+
+- [minor] 6d8ce0fc:
+
+  - Add createMany and updateMany mutations
+
 ## 1.0.0
 
 - [patch] a95e0c69:

@@ -47,7 +47,7 @@ export default class CalendarDayFilterView extends Component<Props, State> {
     return (
       <DayPicker
         startCurrentDateAt={parse(this.state.value)}
-        startSelectedDateAt={parse(this.state.value)}
+        selectedDate={parse(this.state.value)}
         onSelectedChange={this.handleSelectedChange}
         yearRangeFrom={field.config.yearRangeFrom}
         yearRangeTo={field.config.yearRangeTo}

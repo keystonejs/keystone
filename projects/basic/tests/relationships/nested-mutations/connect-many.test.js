@@ -378,6 +378,12 @@ describe('non-matching filter', () => {
           data: {
             errors: [
               {
+                message: 'Unable to create and/or connect 1 User.notes<Note>',
+                path: ['createUser', 'notes'],
+                name: 'Error',
+              },
+              {
+                name: 'AccessDeniedError',
                 path: ['createUser', 'notes', 'connect', 0],
               },
             ],
@@ -421,6 +427,12 @@ describe('non-matching filter', () => {
           data: {
             errors: [
               {
+                message: 'Unable to create and/or connect 1 User.notes<Note>',
+                path: ['updateUser', 'notes'],
+                name: 'Error',
+              },
+              {
+                name: 'AccessDeniedError',
                 path: ['updateUser', 'notes', 'connect', 0],
               },
             ],
@@ -465,8 +477,13 @@ describe('with access control', () => {
             data: {
               errors: [
                 {
-                  path: ['createUserToNotesNoRead', 'notes', 'connect', 0],
+                  message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+                  path: ['createUserToNotesNoRead', 'notes'],
+                  name: 'Error',
+                },
+                {
                   name: 'AccessDeniedError',
+                  path: ['createUserToNotesNoRead', 'notes', 'connect', 0],
                 },
               ],
             },
@@ -513,8 +530,13 @@ describe('with access control', () => {
             data: {
               errors: [
                 {
-                  path: ['updateUserToNotesNoRead', 'notes', 'connect', 0],
+                  message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+                  path: ['updateUserToNotesNoRead', 'notes'],
+                  name: 'Error',
+                },
+                {
                   name: 'AccessDeniedError',
+                  path: ['updateUserToNotesNoRead', 'notes', 'connect', 0],
                 },
               ],
             },
