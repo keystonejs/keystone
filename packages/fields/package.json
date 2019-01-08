@@ -31,7 +31,7 @@
     "mongoose": "^5.3.15",
     "p-settle": "^2.1.0",
     "prop-types": "^15.6.1",
-    "react": "16.7.0-alpha.2",
+    "react": "16.7.0",
     "react-apollo": "^2.2.4",
     "react-color": "^2.14.1",
     "react-select": "^2.1.2"

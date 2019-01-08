@@ -29,7 +29,7 @@
     "react-window": "^1.2.4"
   },
   "peerDependencies": {
-    "react": "16.7.0-alpha.2",
-    "react-dom": "16.7.0-alpha.2"
+    "react": "16.7.0",
+    "react-dom": "16.7.0"
   }
 }
