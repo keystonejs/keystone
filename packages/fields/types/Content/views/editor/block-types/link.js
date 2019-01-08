@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { useContext, useState, useLayoutEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import TooltipTrigger from 'react-popper-tooltip';
 import { LinkIcon } from '@voussoir/icons';
 import { ToolbarButton } from '../toolbar-components';
@@ -73,10 +73,8 @@ let LinkMenu = props => {
   );
 };
 
-export function Toolbar({ reposition, children, editor }) {
+export function Toolbar({ children, editor }) {
   let [linkRange, setLinkRange] = useState(null);
-
-  useLayoutEffect(reposition, [linkRange]);
 
   return (
     <SetLinkRange.Provider value={setLinkRange}>

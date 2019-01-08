@@ -12,7 +12,9 @@ import AddBlock from './AddBlock';
 import { ToolbarCheckbox, ToolbarButton } from './toolbar-components';
 import { A11yText } from '@voussoir/ui/src/primitives/typography';
 import { CircleSlashIcon } from '@voussoir/icons';
+import ResizeObserver from 'resize-observer-polyfill';
 import { selectionReference } from './utils';
+import { useStateWithEqualityCheck } from './hooks';
 
 function getSchema(blocks) {
   const schema = {
@@ -52,6 +54,36 @@ function useHasSelection() {
 let stopPropagation = e => {
   e.stopPropagation();
 };
+
+export function useContainerQuery(ref) {
+  const [height, setHeight] = useState(0);
+  const [width, setWidth] = useState(0);
+
+  // bail early without ref
+  if (!ref) {
+    throw new Error('You must pass a valid ref as the first argument.');
+  }
+
+  // Updates scheduled inside useLayoutEffect will be flushed synchronously,
+  // before the browser has a chance to paint.
+  useLayoutEffect(() => {
+    // prepare the resize handler
+    let resizeObserver = new ResizeObserver(([entry]) => {
+      setHeight(entry.target.offsetHeight);
+      setWidth(entry.target.offsetWidth);
+    });
+
+    // bind the observer to the consumer DOM node
+    resizeObserver.observe(ref.current);
+
+    // cleanup after ourselves
+    return () => {
+      resizeObserver.disconnect(ref.current);
+    };
+  });
+
+  return { height, width };
+}
 
 // to use hooks inside of class components
 let Render = ({ children }) => children();
@@ -111,7 +143,51 @@ function Stories({ value: editorState, onChange, blocks }) {
             <Render>
               {() => {
                 useLayoutEffect(scheduleUpdate, [editorState]);
+
                 let shouldShowToolbar = useHasSelection();
+
+                let [toolbarElement, setToolbarElement] = useStateWithEqualityCheck(null);
+
+                let observerRef = useRef(null);
+
+                useLayoutEffect(
+                  () => {
+                    if (toolbarElement !== null) {
+                      let rect = toolbarElement.getBoundingClientRect();
+                      let previousHeight = Math.round(rect.height);
+                      let previousWidth = Math.round(rect.width);
+                      observerRef.current = new ResizeObserver(entries => {
+                        let entry = entries[0];
+                        let { height, width } = entry.contentRect;
+                        height = Math.round(height);
+                        width = Math.round(width);
+                        if (
+                          (height !== previousHeight || width !== previousWidth) &&
+                          height !== 0 &&
+                          width !== 0
+                        ) {
+                          previousHeight = Math.round(entry.contentRect.height);
+                          previousWidth = Math.round(entry.contentRect.width);
+                          scheduleUpdate();
+                        }
+                      });
+                    }
+                  },
+                  [scheduleUpdate, toolbarElement]
+                );
+
+                useLayoutEffect(
+                  () => {
+                    if (shouldShowToolbar && toolbarElement !== null) {
+                      let observer = observerRef.current;
+                      observer.observe(toolbarElement);
+                      return () => {
+                        observer.unobserve(toolbarElement);
+                      };
+                    }
+                  },
+                  [shouldShowToolbar, toolbarElement, scheduleUpdate]
+                );
 
                 return createPortal(
                   <div
@@ -134,66 +210,64 @@ function Stories({ value: editorState, onChange, blocks }) {
                       transition: 'transform 100ms',
                     }}
                   >
-                    {shouldShowToolbar &&
-                      Object.keys(blocks)
-                        .map(x => blocks[x].Toolbar)
-                        .filter(x => x)
-                        .reduce(
-                          (children, Toolbar) => {
-                            return (
-                              <Toolbar
-                                // should do something with a ResizeObserver later
-                                reposition={scheduleUpdate}
-                                editor={editorRef.current}
-                                editorState={editorState}
+                    {shouldShowToolbar && (
+                      <div css={{ display: 'flex' }} ref={setToolbarElement}>
+                        {Object.keys(blocks)
+                          .map(x => blocks[x].Toolbar)
+                          .filter(x => x)
+                          .reduce(
+                            (children, Toolbar) => {
+                              return (
+                                <Toolbar editor={editorRef.current} editorState={editorState}>
+                                  {children}
+                                </Toolbar>
+                              );
+                            },
+                            <Fragment>
+                              {Object.keys(marks).map(name => {
+                                let Icon = marks[name].icon;
+                                return (
+                                  <ToolbarCheckbox
+                                    isActive={editorState.activeMarks.some(
+                                      mark => mark.type === name
+                                    )}
+                                    onChange={() => {
+                                      editorRef.current.toggleMark(name);
+                                    }}
+                                    key={name}
+                                  >
+                                    <Icon />
+                                    <A11yText>{marks[name].label}</A11yText>
+                                  </ToolbarCheckbox>
+                                );
+                              })}
+                              <ToolbarButton
+                                onClick={() => {
+                                  markTypes.forEach(mark => {
+                                    editorRef.current.removeMark(mark);
+                                  });
+                                }}
                               >
-                                {children}
-                              </Toolbar>
-                            );
-                          },
-                          <Fragment>
-                            {Object.keys(marks).map(name => {
-                              let Icon = marks[name].icon;
-                              return (
-                                <ToolbarCheckbox
-                                  isActive={editorState.activeMarks.some(
-                                    mark => mark.type === name
-                                  )}
-                                  onChange={() => {
-                                    editorRef.current.toggleMark(name);
-                                  }}
-                                  key={name}
-                                >
-                                  <Icon />
-                                  <A11yText>{marks[name].label}</A11yText>
-                                </ToolbarCheckbox>
-                              );
-                            })}
-                            <ToolbarButton
-                              onClick={() => {
-                                markTypes.forEach(mark => {
-                                  editorRef.current.removeMark(mark);
-                                });
-                              }}
-                            >
-                              <CircleSlashIcon title="Remove Formatting" />
-                            </ToolbarButton>
+                                <CircleSlashIcon title="Remove Formatting" />
+                              </ToolbarButton>
 
-                            {Object.keys(blocks).map(type => {
-                              let ToolbarElement = blocks[type].ToolbarElement;
-                              if (ToolbarElement === undefined) {
-                                return null;
-                              }
-                              return (
-                                <ToolbarElement
-                                  key={type}
-                                  editor={editorRef.current}
-                                  editorState={editorState}
-                                />
-                              );
-                            })}
-                          </Fragment>
-                        )}
+                              {Object.keys(blocks).map(type => {
+                                let ToolbarElement = blocks[type].ToolbarElement;
+                                if (ToolbarElement === undefined) {
+                                  return null;
+                                }
+                                return (
+                                  <ToolbarElement
+                                    key={type}
+                                    editor={editorRef.current}
+                                    editorState={editorState}
+                                  />
+                                );
+                              })}
+                            </Fragment>
+                          )}
+                      </div>
+                    )}
                   </div>,
                   document.body
                 );
