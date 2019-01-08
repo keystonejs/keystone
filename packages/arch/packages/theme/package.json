@@ -4,10 +4,7 @@
   "author": "Jed Watson",
   "license": "MIT",
   "main": "src/index.js",
-  "peerDependencies": {
-    "react": "16.7.0-alpha.2"
-  },
-  "devDependencies": {
-    "react": "16.7.0-alpha.2"
+  "dependencies": {
+    "@arch-ui/color-utils": "0.0.1"
   }
 }

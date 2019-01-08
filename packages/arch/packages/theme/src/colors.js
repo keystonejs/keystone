@@ -1,5 +1,5 @@
 // colors with intention
-import { lighten, darken, alpha } from '../color-utils';
+import { lighten, darken, alpha } from '@arch-ui/color-utils';
 
 const intent = {
   create: '#34c240',
@@ -8,6 +8,7 @@ const intent = {
   primary: '#2684FF',
   warning: '#fa9f47',
 };
+
 // neutrals
 const neutrals = {
   N05: '#F4F5F7',
