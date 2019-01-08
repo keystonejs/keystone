@@ -39,7 +39,7 @@ const TodayMarker = styled.div(({ isSelected }) => ({
   width: '1em',
 }));
 
-export const Month: React.ComponentType<Props> = memo(({ style, index, data }) => {
+export const Month = React.memo<Props>(({ style, index, data }) => {
   const { items, selectedDate, setSelectedDate, observer } = data;
   const ref = useRef(null);
 

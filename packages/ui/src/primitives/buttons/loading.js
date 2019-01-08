@@ -53,6 +53,8 @@ export const LoadingButton = forwardRef<Loading, HTMLAnchorElement | HTMLButtonE
     );
   }
 );
+
+// $FlowFixMe
 LoadingButton.defaultProps = {
   appearance: 'default',
   isLoading: false,

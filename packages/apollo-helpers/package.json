@@ -16,7 +16,7 @@
     "react-apollo": "^2.2.4"
   },
   "peerDependencies": {
-    "react": "^16.5.2 || 16.7.0-alpha.2"
+    "react": "16.7.0-alpha.2"
   },
   "devDependencies": {
     "react": "16.7.0-alpha.2"

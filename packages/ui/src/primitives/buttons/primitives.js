@@ -111,6 +111,7 @@ const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElem
   }
 );
 
+// $FlowFixMe
 ButtonElement.defaultProps = {
   appearance: 'default',
   spacing: 'comfortable',

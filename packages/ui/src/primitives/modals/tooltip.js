@@ -155,7 +155,7 @@ export default class Tooltip extends Component<Props, State> {
     immediatelyShow: false,
     isVisible: false,
   };
-  ref = createRef();
+  ref = createRef<HTMLElement>();
   cancelPendingSetState = NOOP;
   static defaultProps = {
     delay: 300,
