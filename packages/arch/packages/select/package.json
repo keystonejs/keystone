@@ -1,0 +1,13 @@
+{
+  "name": "@arch-ui/select",
+  "version": "0.0.1",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "main": "src/index.js",
+  "peerDependencies": {
+    "react": "16.7.0-alpha.2"
+  },
+  "devDependencies": {
+    "react": "16.7.0-alpha.2"
+  }
+}
