@@ -77,8 +77,13 @@ describe('errors on incomplete data', () => {
           data: {
             errors: [
               {
+                message: 'Nested mutation operation invalid for Event.group<Group>',
                 path: ['createEvent', 'group'],
+                name: 'Error',
+              },
+              {
                 name: 'ParameterError',
+                path: ['createEvent', 'group', '<validate>'],
               },
             ],
           },
@@ -112,8 +117,13 @@ describe('errors on incomplete data', () => {
           data: {
             errors: [
               {
+                message: 'Nested mutation operation invalid for Event.group<Group>',
                 path: ['createEvent', 'group'],
+                name: 'Error',
+              },
+              {
                 name: 'ParameterError',
+                path: ['createEvent', 'group', '<validate>'],
               },
             ],
           },

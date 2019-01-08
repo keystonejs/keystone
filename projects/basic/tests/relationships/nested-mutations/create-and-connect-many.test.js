@@ -224,8 +224,13 @@ describe('errors on incomplete data', () => {
           data: {
             errors: [
               {
+                message: 'Nested mutation operation invalid for User.notes<Note>',
                 path: ['createUser', 'notes'],
+                name: 'Error',
+              },
+              {
                 name: 'ParameterError',
+                path: ['createUser', 'notes', '<validate>'],
               },
             ],
           },
@@ -273,8 +278,13 @@ describe('with access control', () => {
             data: {
               errors: [
                 {
-                  path: ['createUserToNotesNoRead', 'notes', 'connect', 0],
+                  message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+                  path: ['createUserToNotesNoRead', 'notes'],
+                  name: 'Error',
+                },
+                {
                   name: 'AccessDeniedError',
+                  path: ['createUserToNotesNoRead', 'notes', 'connect', 0],
                 },
               ],
             },
@@ -325,8 +335,13 @@ describe('with access control', () => {
             data: {
               errors: [
                 {
-                  path: ['updateUserToNotesNoRead', 'notes', 'connect', 0],
+                  message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+                  path: ['updateUserToNotesNoRead', 'notes'],
+                  name: 'Error',
+                },
+                {
                   name: 'AccessDeniedError',
+                  path: ['updateUserToNotesNoRead', 'notes', 'connect', 0],
                 },
               ],
             },

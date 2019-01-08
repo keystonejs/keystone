@@ -1,9 +1,11 @@
 # @voussoir/cypress-project-basic
 
 ## 1.4.1
+
 - [patch] e4cc314b:
 
   - Bump
+
 - [patch] 6d8ce0fc:
 
   - Add createMany and updateMany mutations

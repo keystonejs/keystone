@@ -1,4 +1,5 @@
 const pLazy = require('p-lazy');
+const pReflect = require('p-reflect');
 
 const camelize = (exports.camelize = str =>
   // split the string into words, lowercase the leading character of the first word,
@@ -49,13 +50,33 @@ exports.mapKeyNames = (obj, func) =>
   );
 
 exports.resolveAllKeys = obj => {
-  const result = {};
+  const returnValue = {};
+  const errors = {};
+
   const allPromises = Object.keys(obj).map(key =>
-    Promise.resolve(obj[key]).then(val => {
-      result[key] = val;
+    pReflect(obj[key]).then(val => {
+      if (val.isFulfilled) {
+        returnValue[key] = val.value;
+      } else if (val.isRejected) {
+        errors[key] = val.reason;
+      }
+
+      return val;
     })
   );
-  return Promise.all(allPromises).then(() => result);
+
+  return Promise.all(allPromises).then(results => {
+    // If there are any errors, we want to surface them in the same shape as the
+    // input object
+    if (Object.keys(errors).length) {
+      const firstError = results.find(({ isRejected }) => isRejected).reason;
+      // Use the first error as the message so it's at least meaningful
+      const error = new Error(firstError.message || firstError.toString());
+      error.errors = errors;
+      throw error;
+    }
+    return returnValue;
+  });
 };
 
 exports.unique = arr => [...new Set(arr)];

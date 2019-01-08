@@ -820,8 +820,15 @@ module.exports = class List {
     });
   }
 
-  async _mapToFields(fields, action) {
-    return await resolveAllKeys(arrayToObject(fields, 'path', action));
+  _mapToFields(fields, action) {
+    return resolveAllKeys(arrayToObject(fields, 'path', action)).catch(error => {
+      if (!error.errors) {
+        throw error;
+      }
+      const errorCopy = new Error(error.message || error.toString());
+      errorCopy.errors = Object.values(error.errors);
+      throw errorCopy;
+    });
   }
 
   _fieldsFromObject(obj) {
