@@ -7,7 +7,7 @@ import gql from 'graphql-tag';
 import { Select } from '@voussoir/ui/src/primitives/filters';
 import { components } from 'react-select';
 import 'intersection-observer';
-import { useState, useMemo, useRef, useEffect } from '@voussoir/ui/src/new-typed-react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 
 type Props = {
   innerRef?: React.Ref<*>,

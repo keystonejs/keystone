@@ -9,7 +9,7 @@ type Filter = { type: string, label: string };
 
 export type FilterProps<Value> = {
   innerRef: React.Ref<*>,
-  recalcHeight: () => mixed,
+  recalcHeight: () => void,
   value: Value,
   onChange: Value => mixed,
   field: Field,

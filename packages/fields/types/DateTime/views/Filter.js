@@ -3,7 +3,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { DateTimePicker } from '@voussoir/ui/src/primitives/forms';
-import { useEffect } from '@voussoir/ui/src/new-typed-react';
+import { useEffect } from 'react';
 import type { FilterProps } from '../../../types';
 import { stringifyDate, parseDate } from './utils';
 
