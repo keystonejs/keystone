@@ -10,7 +10,7 @@ import {
   format,
   setMonth,
 } from 'date-fns';
-import { memo, useRef, useEffect } from '../../../new-typed-react';
+import { memo, useRef, useEffect } from 'react';
 import { colors } from '../../../theme';
 import { months, type Weeks } from './utils';
 import { WeekRow, Day } from './comps';
