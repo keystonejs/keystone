@@ -29,26 +29,26 @@ for the website. Here you can use both `.md` and `.js` to define pages.
 We are using certain concepts to group together our content. Our documenation is either:
 
 - tutorial
-    - designed for newer users
-    - step by step guides to complete a task
-    - does not explore options, nor seek to exhaustively explain options
-    - should have a working output
-    - example tutorials "getting your first keystone project running", "Build a field type"
+  - designed for newer users
+  - step by step guides to complete a task
+  - does not explore options, nor seek to exhaustively explain options
+  - should have a working output
+  - example tutorials "getting your first keystone project running", "Build a field type"
 - guide
-    - designed for newer and intermediary users
-    - explains a topic in detail, exploring different options
-    - does not need a single end result, may suggest multiple implementations or options
-    - explains why behind choices more extensively than tutorials
-    - example guides "Best practices in constructing a field type", "Routing"
+  - designed for newer and intermediary users
+  - explains a topic in detail, exploring different options
+  - does not need a single end result, may suggest multiple implementations or options
+  - explains why behind choices more extensively than tutorials
+  - example guides "Best practices in constructing a field type", "Routing"
 - API
-    - designed for people looking for specific answers on implementation
-    - may make assumptions that the person reading has a basic understanding of the system
-    - Very nitty gritty documentation, mostly explanatory text, often no examples
-    - Verymuch a glossary or dictionary - must be easily searchable
+  - designed for people looking for specific answers on implementation
+  - may make assumptions that the person reading has a basic understanding of the system
+  - Very nitty gritty documentation, mostly explanatory text, often no examples
+  - Verymuch a glossary or dictionary - must be easily searchable
 - Decision documentation
-    - Rarely needed by users
-    - Focused on explaining *why* a decision was made, not just how to use it.
-    - I am unsure where this will currently live.
+  - Rarely needed by users
+  - Focused on explaining _why_ a decision was made, not just how to use it.
+  - I am unsure where this will currently live.
 
 ### Back from our detour
 
