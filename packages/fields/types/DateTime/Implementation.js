@@ -25,7 +25,7 @@ class _DateTime extends Implementation {
   get gqlCreateInputFields() {
     return [`${this.path}: DateTime`];
   }
-  get gqlAuxTypes() {
+  getGqlAuxTypes() {
     return [`scalar DateTime`];
   }
   extendAdminMeta(meta) {

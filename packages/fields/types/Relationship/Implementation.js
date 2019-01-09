@@ -247,7 +247,7 @@ class Relationship extends Implementation {
     // Beware of circular delete hooks!
   }
 
-  get gqlAuxTypes() {
+  getGqlAuxTypes() {
     const { refList } = this.tryResolveRefList();
     // We need an input type that is specific to creating nested items when
     // creating a relationship, ie;
