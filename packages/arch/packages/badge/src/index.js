@@ -3,7 +3,7 @@
 import React, { PureComponent } from 'react';
 import styled from '@emotion/styled';
 
-import { colors } from '../theme';
+import { colors } from '@arch-ui/theme';
 
 const boldBackgroundColor = {
   default: colors.N60,
