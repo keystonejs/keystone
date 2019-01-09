@@ -3,7 +3,10 @@ import styled from '@emotion/styled';
 
 import { Button } from '@arch-ui/button';
 import { FlexGroup } from '@arch-ui/layout';
-import { Dialog, Dropdown, Popout, Tooltip } from '@voussoir/ui/src/primitives/modals';
+import Dialog from '@arch-ui/dialog';
+import Dropdown from '@arch-ui/dropdown';
+import Popout from '@arch-ui/popout';
+import { Tooltip } from '@voussoir/ui/src/primitives/modals';
 
 export default class ModalGuide extends Component {
   state = { dialogIsOpen: false };
