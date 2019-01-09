@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { CheckIcon, DashIcon, XIcon } from '@voussoir/icons';
-import { colors } from '@voussoir/ui/src/theme';
+import { colors } from '@arch-ui/theme';
 import { OptionPrimitive } from '@voussoir/ui/src/primitives/filters';
 
 import { POPOUT_GUTTER } from '../../components/Popout';

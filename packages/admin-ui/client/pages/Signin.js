@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import styled from '@emotion/styled';
 
 import { Alert } from '@voussoir/ui/src/primitives/alert';
-import { Input } from '@voussoir/ui/src/primitives/forms';
-import { LoadingButton } from '@voussoir/ui/src/primitives/buttons';
-import { colors } from '@voussoir/ui/src/theme';
+import { Input } from '@arch-ui/input';
+import { LoadingButton } from '@arch-ui/button';
+import { colors } from '@arch-ui/theme';
 
 import SessionProvider from '../providers/Session';
 

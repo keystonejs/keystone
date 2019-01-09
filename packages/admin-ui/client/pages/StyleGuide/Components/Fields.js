@@ -9,7 +9,7 @@ import {
   Radio,
   Select,
 } from '@voussoir/ui/src/primitives/forms';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { FlexGroup } from '@arch-ui/layout';
 
 const FieldGuide = () => (
   <Fragment>

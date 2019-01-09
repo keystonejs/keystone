@@ -3,8 +3,8 @@ import { jsx } from '@emotion/core';
 import { Component, Fragment } from 'react';
 import styled from '@emotion/styled';
 
-import { colors } from '@voussoir/ui/src/theme';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { colors } from '@arch-ui/theme';
+import { FlexGroup } from '@arch-ui/layout';
 import { LoadingIndicator, LoadingSpinner } from '@voussoir/ui/src/primitives/loading';
 
 const LoadingBox = styled.div(({ on, size }) => ({

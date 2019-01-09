@@ -2,10 +2,10 @@ import React, { Component, Fragment } from 'react';
 import { Mutation } from 'react-apollo';
 import styled from '@emotion/styled';
 
-import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { Button } from '@arch-ui/button';
 import { Drawer } from '@voussoir/ui/src/primitives/modals';
 import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
-import { gridSize } from '@voussoir/ui/src/theme';
+import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@voussoir/ui/src/primitives/forms';
 
 import FieldTypes from '../FIELD_TYPES';

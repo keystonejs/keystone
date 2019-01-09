@@ -6,9 +6,9 @@ import ComponentsGuide from './Components';
 import IconsGuide from './Icons';
 import PaletteGuide from './Palette';
 
-import { Container, FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { SecondaryNav, SecondaryNavItem } from '@voussoir/ui/src/primitives/navigation';
-import { H1 } from '@voussoir/ui/src/primitives/typography';
+import { Container, FlexGroup } from '@arch-ui/layout';
+import { SecondaryNav, SecondaryNavItem } from '@arch-ui/navbar';
+import { H1 } from '@arch-ui/typography';
 
 const pages = ['components', 'palette', 'icons'];
 const upCase = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);

@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import styled from '@emotion/styled';
 
-import { Button } from '@voussoir/ui/src/primitives/buttons';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { Button } from '@arch-ui/button';
+import { FlexGroup } from '@arch-ui/layout';
 import { Dialog, Dropdown, Popout, Tooltip } from '@voussoir/ui/src/primitives/modals';
 
 export default class ModalGuide extends Component {
