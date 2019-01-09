@@ -158,4 +158,4 @@ It also means that if there is a failure of any kind during this hook, the opera
 
 ## Summary
 
-[FIXME: Insert master diagram here]
+![Mutation lifecycle master diagram](./MutationLifecycleMasterDiagram.svg)

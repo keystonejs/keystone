@@ -2,7 +2,6 @@
 
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-// $FlowFixMe
 import { type Node, forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
@@ -83,14 +82,36 @@ function makeVariant({
 }
 
 // remove props that will create react DOM warnings
-const ButtonElement = forwardRef((props: ButtonProps, ref) => {
-  const { isDisabled, isActive, isFocus, isHover, focusOrigin, ...rest } = props;
-  const variant = makeVariant(props);
-  if (rest.to) return <Link innerRef={ref} css={variant} {...rest} />;
-  if (rest.href) return <a ref={ref} css={variant} {...rest} />;
-  return <button type="button" disabled={isDisabled} ref={ref} css={variant} {...rest} />;
-});
+const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElement>(
+  (props, ref) => {
+    const { isDisabled, isActive, isFocus, isHover, focusOrigin, ...rest } = props;
+    const variant = makeVariant(props);
+    if (rest.to) return <Link innerRef={ref} css={variant} {...rest} />;
 
+    if (rest.href) {
+      return (
+        <a
+          css={variant}
+          {...rest}
+          // $FlowFixMe
+          ref={ref}
+        />
+      );
+    }
+    return (
+      <button
+        type="button"
+        disabled={isDisabled}
+        css={variant}
+        {...rest}
+        // $FlowFixMe
+        ref={ref}
+      />
+    );
+  }
+);
+
+// $FlowFixMe
 ButtonElement.defaultProps = {
   appearance: 'default',
   spacing: 'comfortable',

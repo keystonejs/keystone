@@ -14,7 +14,7 @@ import {
 } from 'date-fns';
 import { VariableSizeList as List } from 'react-window';
 import { ChevronLeftIcon, ChevronRightIcon } from '@voussoir/icons';
-import { useLayoutEffect, useState, useRef, useMemo, useCallback } from '../../../new-typed-react';
+import { useLayoutEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { borderRadius, colors } from '../../../theme';
 import { yearRange, months, type Weeks, getWeeksInMonth, isNumberInRange } from './utils';
 import { type YearPickerType, SelectMonth, SelectYear } from './selects';

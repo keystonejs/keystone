@@ -18,12 +18,6 @@ const EventCatcher = ({ children }: { children: Node }) => (
 );
 
 export default class RelationshipFilterView extends Component<Props> {
-  componentDidUpdate(prevProps: Props) {
-    const { filter } = this.props;
-    if (prevProps.filter !== filter) {
-      this.props.recalcHeight();
-    }
-  }
   handleChange = (option: null | { value: { id: string } }) => {
     const { onChange } = this.props;
     if (option === null) {

@@ -2,14 +2,13 @@
 
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component } from 'react';
+import { Component, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 
 import { colors } from '../../../theme';
 import Page from './Page';
 import { LoadingSpinner } from '../../loading';
 import type { CountArgs, CountFormat, LabelType, OnChangeType } from './types';
-import { useEffect, useState } from '../../../new-typed-react';
 
 function ariaPageLabelFn(page: number) {
   return `Go to page ${page}`;

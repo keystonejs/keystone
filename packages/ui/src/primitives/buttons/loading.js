@@ -1,7 +1,6 @@
 // @flow
 
 /** @jsx jsx */
-// $FlowFixMe
 import { forwardRef } from 'react';
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
@@ -30,7 +29,7 @@ type Loading = ButtonProps & {
   isLoading: boolean,
   indicatorVariant: 'spinner' | 'dots',
 };
-export const LoadingButton = forwardRef(
+export const LoadingButton = forwardRef<Loading, HTMLAnchorElement | HTMLButtonElement>(
   ({ children, indicatorVariant, isLoading, ...props }: Loading, ref) => {
     const appearance = getAppearance(props.appearance);
     const textCSS = isLoading ? { visibility: 'hidden' } : null;
@@ -54,6 +53,8 @@ export const LoadingButton = forwardRef(
     );
   }
 );
+
+// $FlowFixMe
 LoadingButton.defaultProps = {
   appearance: 'default',
   isLoading: false,
