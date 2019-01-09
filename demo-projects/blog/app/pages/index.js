@@ -87,7 +87,7 @@ export default () => (
               <div>
                 <div css={{ margin: '24px 0' }}>
                   {data.allPosts.map(post => (
-                    <Post post={post} key={post.title} />
+                    <Post post={post} key={post.id} />
                   ))}
                 </div>
               </div>

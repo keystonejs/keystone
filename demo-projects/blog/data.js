@@ -57,6 +57,7 @@ module.exports = {
     {
       name: 'Herschel Krustofsky',
       email: 'k@krustytheclown.tv',
+      isAdmin: false,
       dob: '1990-01-01',
       password: 'password',
     },

@@ -61,40 +61,39 @@ export default ({
             if (loading) return <p>loading...</p>;
             if (error) return <p>Error!</p>;
 
+            const post = data.allPosts[0];
+
             return (
               <>
-                <div css={{ margin: '24px 0' }}>
-                  {data.allPosts.map(post => (
-                    <div
-                      css={{
-                        background: 'white',
-                        boxShadow: '0px 10px 20px hsla(200, 20%, 20%, 0.20)',
-                        marginBottom: 32,
-                        borderRadius: 6,
-                        overflow: 'hidden',
-                      }}
-                    >
-                      <Head>
-                        <title>{post.title}</title>
-                      </Head>
-                      <img src="https://picsum.photos/900/200/?random" css={{ width: '100%' }} />
-                      <div css={{ padding: '1em' }}>
-                        <h1 css={{ marginTop: 0 }}>{post.title}</h1>
-                        <p>{post.body}</p>
-                        <div css={{ marginTop: '1em', borderTop: '1px solid hsl(200, 20%, 80%)' }}>
-                          <p
-                            css={{
-                              fontSize: '0.8em',
-                              marginBottom: 0,
-                              color: 'hsl(200, 20%, 50%)',
-                            }}
-                          >
-                            Posted by {post.author.name} on {format(post.posted, 'DD/MM/YYYY')}
-                          </p>
-                        </div>
-                      </div>
+                <div
+                  css={{
+                    background: 'white',
+                    margin: '24px 0',
+                    boxShadow: '0px 10px 20px hsla(200, 20%, 20%, 0.20)',
+                    marginBottom: 32,
+                    borderRadius: 6,
+                    overflow: 'hidden',
+                  }}
+                >
+                  <Head>
+                    <title>{post.title}</title>
+                  </Head>
+                  <img src="https://picsum.photos/900/200/?random" css={{ width: '100%' }} />
+                  <div css={{ padding: '1em' }}>
+                    <h1 css={{ marginTop: 0 }}>{post.title}</h1>
+                    <p>{post.body}</p>
+                    <div css={{ marginTop: '1em', borderTop: '1px solid hsl(200, 20%, 80%)' }}>
+                      <p
+                        css={{
+                          fontSize: '0.8em',
+                          marginBottom: 0,
+                          color: 'hsl(200, 20%, 50%)',
+                        }}
+                      >
+                        Posted by {post.author.name} on {format(post.posted, 'DD/MM/YYYY')}
+                      </p>
                     </div>
-                  ))}
+                  </div>
                 </div>
 
                 <div>

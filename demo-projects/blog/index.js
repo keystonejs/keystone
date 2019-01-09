@@ -79,9 +79,10 @@ keystone.createList('Post', {
   },
   adminConfig: {
     defaultPageSize: 20,
-    defaultColumns: 'name, status',
-    defaultSort: 'name',
+    defaultColumns: 'title, status',
+    defaultSort: 'title',
   },
+  labelResolver: item => item.body,
 });
 
 keystone.createList('PostCategory', {
