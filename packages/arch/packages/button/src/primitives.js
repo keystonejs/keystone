@@ -2,13 +2,18 @@
 
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { type Node, type Ref } from 'react';
+import { type Node, forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
 
-import { gridSize } from '../theme';
-import { buttonAndInputBase } from '../forms';
-import { makeSubtleVariant, makeGhostVariant, makeBoldVariant } from './variants';
+import { gridSize } from '@arch-ui/theme';
+import { buttonAndInputBase } from '@arch-ui/common';
+import {
+  makeSubtleVariant,
+  makeNuanceVariant,
+  makeGhostVariant,
+  makeBoldVariant,
+} from './variants';
 
 const SPACING_OPTION = {
   comfortable: `${gridSize}px ${gridSize * 1.5}px`,
@@ -19,13 +24,13 @@ const SPACING_OPTION = {
 export type ButtonProps = {
   appearance: 'default' | 'primary' | 'warning' | 'danger',
   children: Node,
-  innerRef?: Ref<*>,
   href?: string,
   isBlock?: boolean,
   isDisabled: boolean,
   isActive: boolean,
   isHover: boolean,
   isFocus: boolean,
+  focusOrigin: 'mouse' | 'keyboard',
   spacing: 'comfortable' | 'cozy' | 'cramped',
   to?: string,
   variant: 'bold' | 'ghost' | 'subtle',
@@ -42,30 +47,16 @@ function makeVariant({
   spacing,
 }) {
   let variantStyles;
+  const config = { appearance, isDisabled, isActive, isHover, isFocus };
   if (variant === 'subtle') {
-    variantStyles = makeSubtleVariant({
-      appearance,
-      isDisabled,
-      isActive,
-      isHover,
-      isFocus,
-    });
+    variantStyles = makeSubtleVariant(config);
+  } else if (variant === 'nuance') {
+    // $FlowFixMe
+    variantStyles = makeNuanceVariant(config);
   } else if (variant === 'bold') {
-    variantStyles = makeBoldVariant({
-      appearance,
-      isDisabled,
-      isActive,
-      isHover,
-      isFocus,
-    });
+    variantStyles = makeBoldVariant(config);
   } else if (variant === 'ghost') {
-    variantStyles = makeGhostVariant({
-      appearance,
-      isDisabled,
-      isActive,
-      isHover,
-      isFocus,
-    });
+    variantStyles = makeGhostVariant(config);
   }
 
   return {
@@ -92,14 +83,36 @@ function makeVariant({
 }
 
 // remove props that will create react DOM warnings
-const ButtonElement = (props: ButtonProps) => {
-  const { innerRef, isDisabled, isActive, isFocus, isHover, ...rest } = props;
-  const variant = makeVariant(props);
-  if (rest.to) return <Link innerRef={innerRef} css={variant} {...rest} />;
-  if (rest.href) return <a ref={innerRef} css={variant} {...rest} />;
-  return <button type="button" disabled={isDisabled} ref={innerRef} css={variant} {...rest} />;
-};
+const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElement>(
+  (props, ref) => {
+    const { isDisabled, isActive, isFocus, isHover, focusOrigin, ...rest } = props;
+    const variant = makeVariant(props);
+    if (rest.to) return <Link innerRef={ref} css={variant} {...rest} />;
 
+    if (rest.href) {
+      return (
+        <a
+          css={variant}
+          {...rest}
+          // $FlowFixMe
+          ref={ref}
+        />
+      );
+    }
+    return (
+      <button
+        type="button"
+        disabled={isDisabled}
+        css={variant}
+        {...rest}
+        // $FlowFixMe
+        ref={ref}
+      />
+    );
+  }
+);
+
+// $FlowFixMe
 ButtonElement.defaultProps = {
   appearance: 'default',
   spacing: 'comfortable',

@@ -1,3 +1,4 @@
+// @flow
 import { colors } from '@arch-ui/theme';
 import { alpha, darken, lighten } from '@arch-ui/color-utils';
 
@@ -67,30 +68,50 @@ const subtleAppearance = {
   danger: {
     text: colors.danger,
     textHover: colors.danger,
-    swapOnHover: makeGhostVariant,
   },
 };
 
-export function makeSubtleVariant({ appearance, isDisabled }) {
-  const { text, textHover, swapOnHover } = subtleAppearance[appearance];
+export function makeSubtleVariant({ appearance }: { appearance: $Keys<typeof subtleAppearance> }) {
+  const { text, textHover } = subtleAppearance[appearance];
 
   return {
     color: text,
-    fontWeight: swapOnHover ? 500 : null,
+    fontWeight: null,
 
-    ':hover, :focus': swapOnHover
-      ? swapOnHover({ appearance, isDisabled })
-      : {
-          color: textHover,
-          textDecoration: 'underline',
-        },
+    ':hover, :focus': {
+      color: textHover,
+      textDecoration: 'underline',
+    },
+  };
+}
+
+export function makeNuanceVariant({
+  appearance,
+  isDisabled,
+}: {
+  appearance: $Keys<typeof subtleAppearance>,
+  isDisabled: boolean,
+}) {
+  const { text } = subtleAppearance[appearance];
+
+  return {
+    color: text,
+    fontWeight: 500,
+
+    ':hover, :focus': makeGhostVariant({ appearance, isDisabled }),
   };
 }
 
 // Ghost
 // ------------------------------
 
-export function makeGhostVariant({ appearance, isDisabled }) {
+export function makeGhostVariant({
+  appearance,
+  isDisabled,
+}: {
+  appearance: $Keys<typeof ghostAppearance>,
+  isDisabled: boolean,
+}) {
   const { border, text } = ghostAppearance[appearance];
 
   return {
@@ -102,10 +123,11 @@ export function makeGhostVariant({ appearance, isDisabled }) {
 
     ':hover, :focus': {
       backgroundColor: alpha(border, 0.1),
+      borderColor: darken(border, 10),
     },
     ':active': {
       color: darken(text, 10),
-      borderColor: darken(border, 10),
+      borderColor: darken(border, 20),
       backgroundColor: alpha(border, 0.2),
     },
   };
@@ -114,7 +136,20 @@ export function makeGhostVariant({ appearance, isDisabled }) {
 // Bold
 // ------------------------------
 
-export function makeBoldVariant({ appearance, isDisabled, isActive, isHover, isFocus }) {
+export function makeBoldVariant({
+  appearance,
+  isDisabled,
+  isActive,
+  isHover,
+  isFocus,
+}: {
+  appearance: $Keys<typeof boldAppearance>,
+  isDisabled: boolean,
+  isActive: boolean,
+  isHover: boolean,
+  isFocus: boolean,
+}) {
+  // $FlowFixMe
   const { bg, border, focusRing, text } = boldAppearance[appearance];
   const bgTop = lighten(bg, 10);
   const bgBottom = darken(bg, 10);
