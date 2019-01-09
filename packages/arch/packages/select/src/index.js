@@ -74,7 +74,7 @@ const selectStyles = {
   },
   menuPortal: p => ({ ...p, zIndex: 3 }),
 };
-export const Select = ({ innerRef, ...props }: { innerRef?: React.Ref<*> }) => (
+const Select = ({ innerRef, ...props }: { innerRef?: React.Ref<*> }) => (
   <ReactSelect ref={innerRef} styles={selectStyles} {...props} />
 );
 

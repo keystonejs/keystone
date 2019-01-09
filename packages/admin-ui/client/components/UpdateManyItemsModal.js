@@ -3,7 +3,7 @@ import { Mutation } from 'react-apollo';
 import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
-import { Select } from '@voussoir/ui/src/primitives/filters';
+import Select from '@arch-ui/select';
 import { omit } from '@voussoir/utils';
 
 import FieldTypes from '../FIELD_TYPES';
