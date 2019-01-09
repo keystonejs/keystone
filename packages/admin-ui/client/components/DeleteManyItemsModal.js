@@ -2,7 +2,7 @@
 import React from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@arch-ui/button';
-import { Confirm } from '@voussoir/ui/src/primitives/modals';
+import Confirm from '@arch-ui/confirm';
 
 type Props = {
   isOpen: boolean,

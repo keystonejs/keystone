@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { DiffIcon, InfoIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@voussoir/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { CheckboxPrimitive } from '@voussoir/ui/src/primitives/forms';
-import { Dropdown } from '@voussoir/ui/src/primitives/modals';
+import Dropdown from '@arch-ui/dropdown';
 import { A11yText } from '@arch-ui/typography';
 import DeleteItemModal from './DeleteItemModal';
 import { copyToClipboard } from '../util';

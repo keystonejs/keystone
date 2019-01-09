@@ -14,15 +14,10 @@ import {
   ZapIcon,
 } from '@voussoir/icons';
 import { Input } from '@arch-ui/input';
-import {
-  Container,
-  FlexGroup,
-  CONTAINER_GUTTER,
-  CONTAINER_WIDTH,
-} from '@arch-ui/layout';
+import { Container, FlexGroup, CONTAINER_GUTTER, CONTAINER_WIDTH } from '@arch-ui/layout';
 import { A11yText, Kbd, Title } from '@arch-ui/typography';
 import { Button, IconButton } from '@arch-ui/button';
-import { LoadingSpinner } from '@voussoir/ui/src/primitives/loading';
+import { LoadingSpinner } from '@arch-ui/loading';
 import { Dropdown } from '@voussoir/ui/src/primitives/modals';
 import { colors } from '@arch-ui/theme';
 

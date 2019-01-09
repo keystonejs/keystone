@@ -10,7 +10,7 @@ export {
 } from './transitions';
 export type { TransitionState } from './transitions';
 
-export { default as Blanket } from './Blanket';
+export { Blanket } from './Blanket';
 
 export { default as withModalHandlers } from './withModalHandlers';
 export type { ModalHandlerProps } from './withModalHandlers';

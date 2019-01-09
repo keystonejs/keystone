@@ -3,10 +3,10 @@ import { Mutation } from 'react-apollo';
 import styled from '@emotion/styled';
 
 import { Button } from '@arch-ui/button';
-import { Drawer } from '@voussoir/ui/src/primitives/modals';
+import Drawer from '@arch-ui/drawer';
 import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
 import { gridSize } from '@arch-ui/theme';
-import { AutocompleteCaptor } from '@voussoir/ui/src/primitives/forms';
+import { AutocompleteCaptor } from '@arch-ui/input';
 
 import FieldTypes from '../FIELD_TYPES';
 

@@ -1,3 +1,4 @@
+// @flow
 import styled from '@emotion/styled';
 
 import { colors } from '@arch-ui/theme';
