@@ -13,18 +13,19 @@ import { gridSize } from '@arch-ui/theme';
 // ==============================
 
 export const CONTAINER_WIDTH = 1160;
+export const CONTAINER_GUTTER = gridSize * 6;
 
 export const Container = styled.div(({ isFullWidth }) => ({
   marginLeft: 'auto',
   marginRight: 'auto',
   maxWidth: isFullWidth ? '100%' : CONTAINER_WIDTH,
-  paddingLeft: 30,
-  paddingRight: 30,
+  paddingLeft: CONTAINER_GUTTER,
+  paddingRight: CONTAINER_GUTTER,
   transition: 'max-width 200ms cubic-bezier(0.2, 0, 0, 1)',
 
   [mediaQueries.smOnly]: {
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingLeft: gridSize * 2,
+    paddingRight: gridSize * 2,
   },
 }));
 
@@ -52,27 +53,27 @@ type FlexGroupProps = {
   align: 'stretch' | 'center' | 'flex-start' | 'flex-start',
   children: Array<Node>,
   growIndexes: Array<number>,
-  isContiguous: boolean,
-  isInline: boolean,
-  isVertical: boolean,
+  isContiguous?: boolean,
+  isInline?: boolean,
+  isVertical?: boolean,
   justify: 'space-between' | 'space-around' | 'center' | 'flex-end' | 'flex-start',
-  wrap: boolean,
+  wrap?: boolean,
   spacing: number,
-  stretch: boolean,
+  stretch?: boolean,
   tag: string,
 };
 export const FlexGroup = ({
-  align = 'stretch',
+  align,
   children,
-  growIndexes = [],
+  growIndexes,
   isContiguous,
   isInline,
   isVertical,
-  justify = 'flex-start',
-  wrap = false,
-  spacing = gridSize,
+  justify,
+  wrap,
+  spacing,
   stretch,
-  tag: Tag = 'div',
+  tag: Tag,
   ...props
 }: FlexGroupProps) => {
   const gutter = spacing / 2;
@@ -123,6 +124,14 @@ export const FlexGroup = ({
       })}
     </Tag>
   );
+};
+
+FlexGroup.defaultProps = {
+  align: 'stretch',
+  growIndexes: [],
+  justify: 'flex-start',
+  spacing: gridSize,
+  tag: 'div',
 };
 
 // ==============================
