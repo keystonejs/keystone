@@ -8,7 +8,7 @@ import {
   endOfWeek,
   getDate,
 } from 'date-fns';
-import { useRef, useEffect } from '../../../new-typed-react';
+import { useRef, useEffect } from 'react';
 
 export const yearRange = (from: number, to: number) => {
   const years: Array<number> = [];
@@ -62,8 +62,9 @@ export function isNumberInRange(num: number, start: number, end: number) {
   return num >= start && num <= end;
 }
 
-export function usePrevious<V>(value: V): V | void {
-  const ref = useRef();
+export function usePrevious<V>(value: V): V {
+  // $FlowFixMe
+  const ref: { current: V } = useRef(value);
 
   useEffect(() => {
     ref.current = value;

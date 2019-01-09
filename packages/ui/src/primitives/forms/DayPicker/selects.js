@@ -3,7 +3,7 @@
 import { jsx } from '@emotion/core';
 import * as React from 'react';
 import { setMonth, format } from 'date-fns';
-import { memo, useState, useEffect } from '../../../new-typed-react';
+import { memo, useState, useEffect } from 'react';
 import { months, yearRange, usePrevious, isNumberInRange } from './utils';
 
 const monthOptions = months.map((month, i) => (
@@ -52,7 +52,7 @@ export const SelectYear: React.ComponentType<SelectYearProps> = memo(
     const previousYearProp = usePrevious(year);
     useEffect(
       () => {
-        if (previousYearProp !== undefined && previousYearProp !== year) {
+        if (previousYearProp !== year) {
           setInternalValue(year);
         }
       },

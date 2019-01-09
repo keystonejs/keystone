@@ -1,7 +1,6 @@
 // @flow
 /** @jsx jsx */
 
-// $FlowFixMe
 import { Fragment, PureComponent, type ComponentType, type Node, forwardRef } from 'react';
 import { createPortal } from 'react-dom';
 import ScrollLock from 'react-scrolllock';
@@ -73,7 +72,7 @@ type Props = {
 
 class ModalConfirm extends PureComponent<Props> {
   static defaultProps = {
-    attachTo: document.body,
+    attachTo: ((document.body: any): HTMLElement),
     component: 'div',
     width: 400,
   };

@@ -32,7 +32,10 @@ export const withTransitionState = (Comp: ComponentType<*>) => ({
 }: ProviderProps) => {
   return (
     <TransitionProvider isOpen={isOpen}>
-      {state => <Comp transitionState={state} {...props} />}
+      {state => (
+        // $FlowFixMe
+        <Comp transitionState={state} {...props} />
+      )}
     </TransitionProvider>
   );
 };
