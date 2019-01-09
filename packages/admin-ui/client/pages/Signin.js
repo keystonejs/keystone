@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from '@emotion/styled';
 
-import { Alert } from '@voussoir/ui/src/primitives/alert';
+import { Alert } from '@arch-ui/alert';
 import { Input } from '@arch-ui/input';
 import { LoadingButton } from '@arch-ui/button';
 import { colors } from '@arch-ui/theme';

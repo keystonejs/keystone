@@ -18,7 +18,7 @@ import { Container, FlexGroup, CONTAINER_GUTTER, CONTAINER_WIDTH } from '@arch-u
 import { A11yText, Kbd, Title } from '@arch-ui/typography';
 import { Button, IconButton } from '@arch-ui/button';
 import { LoadingSpinner } from '@arch-ui/loading';
-import { Dropdown } from '@voussoir/ui/src/primitives/modals';
+import Dropdown from '@arch-ui/dropdown';
 import { colors } from '@arch-ui/theme';
 
 import ListTable from '../../components/ListTable';

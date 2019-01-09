@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-import { Pill } from '@voussoir/ui/src/primitives/pill';
+import { Pill } from '@arch-ui/pill';
 import { FlexGroup } from '@arch-ui/layout';
 
 const appearances = ['Default', 'Primary', 'Danger', 'Create', 'Warning'];

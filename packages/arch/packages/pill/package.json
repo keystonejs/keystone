@@ -13,6 +13,7 @@
   "dependencies": {
     "@arch-ui/theme": "0.0.1",
     "@emotion/core": "^10.0.4",
-    "@emotion/styled": "^10.0.4"
+    "@emotion/styled": "^10.0.4",
+    "@voussoir/icons": "^0.3.0"
   }
 }

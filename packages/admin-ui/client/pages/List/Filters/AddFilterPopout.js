@@ -6,7 +6,7 @@ import { Transition, TransitionGroup } from 'react-transition-group';
 import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@voussoir/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { A11yText } from '@arch-ui/typography';
-import { Alert } from '@voussoir/ui/src/primitives/alert';
+import { Alert } from '@arch-ui/alert';
 import { OptionPrimitive, Select } from '@voussoir/ui/src/primitives/filters';
 
 import FieldSelect from '../FieldSelect';

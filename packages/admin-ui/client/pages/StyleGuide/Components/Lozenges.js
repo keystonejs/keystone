@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-import { Lozenge } from '@voussoir/ui/src/primitives/lozenge';
+import { Lozenge } from '@arch-ui/lozenge';
 import { FlexGroup } from '@arch-ui/layout';
 
 const appearances = ['Default', 'Primary', 'Danger', 'Create', 'Warning'];

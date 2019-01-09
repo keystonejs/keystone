@@ -1,6 +1,6 @@
 import React from 'react';
 import { FlexGroup } from '@arch-ui/layout';
-import { Pill } from '@voussoir/ui/src/primitives/pill';
+import { Pill } from '@arch-ui/pill';
 import { gridSize } from '@arch-ui/theme';
 
 import AnimateHeight from '../../../components/AnimateHeight';
