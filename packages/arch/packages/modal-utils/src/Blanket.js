@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
-import { colors } from '../theme';
-import { alpha } from '../color-utils';
+import { colors } from '@arch-ui/theme';
+import { alpha } from '@arch-ui/color-utils';
 
 export const Blanket = styled.div(({ isTinted, isLight }) => {
   let bg = 'transparent';

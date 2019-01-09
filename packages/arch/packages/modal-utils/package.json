@@ -9,5 +9,12 @@
   },
   "devDependencies": {
     "react": "16.7.0-alpha.2"
+  },
+  "dependencies": {
+    "@emotion/core": "^10.0.4",
+    "@emotion/styled": "^10.0.4",
+    "react-node-resolver": "^2.0.0",
+    "react-scrolllock": "^3.0.1",
+    "react-transition-group": "^2.3.1"
   }
 }

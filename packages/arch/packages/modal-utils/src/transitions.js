@@ -3,15 +3,15 @@
 import React, { cloneElement, type ComponentType, type Element } from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
-const transitionDurationMs = 220;
-const transitionDuration = `${transitionDurationMs}ms`;
-const transitionTimingFunction = 'cubic-bezier(0.2, 0, 0, 1)';
+export const transitionDurationMs = 220;
+export const transitionDuration = `${transitionDurationMs}ms`;
+export const transitionTimingFunction = 'cubic-bezier(0.2, 0, 0, 1)';
 
 // ==============================
 // Lifecycle Provider
 // ==============================
 
-type TransitionState = 'entering' | 'entered' | 'exiting' | 'exited';
+export type TransitionState = 'entering' | 'entered' | 'exiting' | 'exited';
 type ProviderProps = {
   children: TransitionState => Node | Element<*>,
   isOpen: boolean,
@@ -32,7 +32,10 @@ export const withTransitionState = (Comp: ComponentType<*>) => ({
 }: ProviderProps) => {
   return (
     <TransitionProvider isOpen={isOpen}>
-      {state => <Comp transitionState={state} {...props} />}
+      {state => (
+        // $FlowFixMe
+        <Comp transitionState={state} {...props} />
+      )}
     </TransitionProvider>
   );
 };
@@ -45,6 +48,7 @@ type Styles = { [string]: string | number };
 type TransitionProps = {
   children: Element<*>,
   transitionState: TransitionState,
+  from?: string,
 };
 type ReducerProps = {
   constant: Styles,
@@ -128,8 +132,8 @@ export const SlideDown = ({ from = '-8px', ...props }: TransitionProps) => {
     <TransitionReducer
       constant={makeTransitionBase('opacity, transform')}
       dynamic={{
-        entering: { opacity: 1, transform: 'translate3d(0,0,0)' },
-        entered: { opacity: 1, transform: 'translate3d(0,0,0)' },
+        entering: { opacity: 1 },
+        entered: { opacity: 1 },
         exiting: out,
         exited: out,
       }}
