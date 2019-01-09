@@ -2,11 +2,11 @@
 
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { type ComponentType, type Ref } from 'react';
+import { type ElementType, forwardRef } from 'react';
 import styled from '@emotion/styled';
 
-import { colors } from '../theme';
-import { alpha } from '../color-utils';
+import { colors } from '@arch-ui/theme';
+import { alpha } from '@arch-ui/color-utils';
 
 const outerGutter = 40;
 const innerGutter = 20;
@@ -26,12 +26,11 @@ export const Positioner = styled.div(({ width }) => ({
 }));
 
 type DialogElementProps = {
-  component: ComponentType<*> | string,
-  innerRef?: Ref<*>,
+  component: ElementType,
 };
-export const Dialog = ({ component: Tag, innerRef, ...props }: DialogElementProps) => (
+export const Dialog = forwardRef<DialogElementProps, any>(({ component: Tag, ...props }, ref) => (
   <Tag
-    ref={innerRef}
+    ref={ref}
     role="dialog"
     css={{
       backgroundColor: 'white',
@@ -44,7 +43,7 @@ export const Dialog = ({ component: Tag, innerRef, ...props }: DialogElementProp
     }}
     {...props}
   />
-);
+));
 
 export const HeadFoot = styled.div({
   lineHeight: 1,

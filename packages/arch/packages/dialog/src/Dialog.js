@@ -3,11 +3,17 @@
 import React, { PureComponent, Fragment, type ComponentType, type Element, type Node } from 'react';
 import { createPortal } from 'react-dom';
 import ScrollLock from 'react-scrolllock';
-import FocusTrap, { type FocusTarget } from 'react-focus-marshal';
+import { FocusTrap, type FocusTarget } from 'react-focus-marshal';
 
-import { Fade, SlideUp, withTransitionState, Blanket } from '../modal-utils';
-import { generateUEID } from '../utils';
-import { A11yText } from '../typography';
+import {
+  Fade,
+  SlideUp,
+  withTransitionState,
+  Blanket,
+  generateUEID,
+  type TransitionState,
+} from '@arch-ui/modal-utils';
+import { A11yText } from '@arch-ui/typography';
 
 import { Body, Dialog, Footer, Header, Positioner, Title } from './primitives';
 
@@ -24,12 +30,13 @@ type Props = {
   initialFocus?: FocusTarget,
   onClose: (*) => void,
   onKeyDown: (*) => void,
+  transitionState: TransitionState,
   width?: number,
 };
 
 class ModalDialog extends PureComponent<Props> {
   static defaultProps = {
-    attachTo: document.body,
+    attachTo: ((document.body: any): HTMLElement),
     closeOnBlanketClick: false,
     component: 'div',
     width: 640,
