@@ -5,8 +5,8 @@ import { jsx } from '@emotion/core';
 import { Children, cloneElement, type Node } from 'react';
 import styled from '@emotion/styled';
 
-import { smOnly } from '../common/media-queries';
-import { gridSize } from '../theme';
+import { mediaQueries } from '@arch-ui/common';
+import { gridSize } from '@arch-ui/theme';
 
 // ==============================
 // Container
@@ -22,7 +22,7 @@ export const Container = styled.div(({ isFullWidth }) => ({
   paddingRight: 30,
   transition: 'max-width 200ms cubic-bezier(0.2, 0, 0, 1)',
 
-  [smOnly]: {
+  [mediaQueries.smOnly]: {
     paddingLeft: 15,
     paddingRight: 15,
   },

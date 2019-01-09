@@ -15,4 +15,6 @@ export const buttonAndInputBase = {
   whiteSpace: 'nowrap',
 };
 
-export * as mediaQueries from './media-queries';
+import * as mediaQueries from './media-queries';
+
+export { mediaQueries };
