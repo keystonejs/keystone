@@ -4,8 +4,8 @@
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 
-import { XIcon } from '../icons';
-import { colors } from '../theme';
+import { XIcon } from '@voussoir/icons';
+import { colors } from '@arch-ui/theme';
 
 const boldBackgroundColor = {
   default: { default: colors.N60, hover: colors.N50, active: colors.N70 },
@@ -95,14 +95,14 @@ const PillButton = styled.button(({ appearance, variant }: Props) => {
           : subtleBackgroundColor[appearance].active,
     },
 
-    ':first-child': {
+    ':first-of-type': {
       paddingLeft: '0.9em',
       paddingRight: '0.75em',
       borderTopLeftRadius: borderRadius,
       borderBottomLeftRadius: borderRadius,
       marginRight: 1,
     },
-    ':last-child': {
+    ':last-of-type': {
       paddingLeft: '0.75em',
       paddingRight: '0.9em',
       borderTopRightRadius: borderRadius,
