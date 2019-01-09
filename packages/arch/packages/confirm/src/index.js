@@ -1,15 +1,21 @@
 // @flow
-
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
-import { Fragment, PureComponent, type ComponentType, type Ref, type Node } from 'react';
-import { createPortal } from 'react-dom';
-import styled from '@emotion/styled';
-import ScrollLock from 'react-scrolllock';
-import { FocusTrap } from 'react-focus-trap';
 
-import { borderRadius } from '../theme';
-import { Fade, ZoomInDown, withTransitionState, Blanket } from '../modal-utils';
+import { Fragment, PureComponent, type ComponentType, type Node, forwardRef } from 'react';
+import { createPortal } from 'react-dom';
+import ScrollLock from 'react-scrolllock';
+import { jsx } from '@emotion/core';
+import styled from '@emotion/styled';
+
+import { borderRadius } from '@arch-ui/theme';
+import FocusTrap from 'react-focus-trap';
+import {
+  Fade,
+  ZoomInDown,
+  withTransitionState,
+  type TransitionState,
+  Blanket,
+} from '@arch-ui/modal-utils';
 
 const innerGutter = 15;
 
@@ -28,12 +34,12 @@ const Positioner = styled.div({
 
 type DialogElementProps = {
   component: ComponentType<*> | string,
-  innerRef?: Ref<*>,
   width: number,
 };
-const Dialog = ({ component: Tag, innerRef, width, ...props }: DialogElementProps) => (
+
+const Dialog = forwardRef(({ component: Tag, width, ...props }: DialogElementProps, ref) => (
   <Tag
-    ref={innerRef}
+    ref={ref}
     role="alertdialog"
     css={{
       backgroundColor: 'white',
@@ -48,7 +54,7 @@ const Dialog = ({ component: Tag, innerRef, width, ...props }: DialogElementProp
     }}
     {...props}
   />
-);
+));
 
 // Content
 const Body = styled.div({
@@ -65,12 +71,13 @@ type Props = {
   component: ComponentType<*> | string,
   onClose: (*) => void,
   onKeyDown: (*) => void,
+  transitionState: TransitionState,
   width: number,
 };
 
 class ModalConfirm extends PureComponent<Props> {
   static defaultProps = {
-    attachTo: document.body,
+    attachTo: ((document.body: any): HTMLElement),
     component: 'div',
     width: 400,
   };
