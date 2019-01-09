@@ -2,6 +2,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
+import * as React from 'react';
 
 import { colors, gridSize } from '@arch-ui/theme';
 
@@ -22,19 +23,29 @@ export const H1 = styled.h1({
   margin: '24px 0',
 });
 
-export const Truncate = ({ as: Tag, ...props }) => <Tag css={truncate} {...props} />;
+type TruncateProps = {
+  as: React.ElementType,
+};
+
+export const Truncate = ({ as: Tag, ...props }: TruncateProps) => <Tag css={truncate} {...props} />;
 
 Truncate.defaultProps = {
   as: 'div',
 };
 
-export const Title = ({ as: Tag, crop, margin, ...props }) => {
+type TitleProps = {
+  as: React.ElementType,
+  crop: boolean,
+  margin: 'none' | 'both' | 'bottom' | 'top',
+};
+
+export const Title = ({ as: Tag, crop, margin, ...props }: TitleProps) => {
   const gutter = gridSize * 3;
   const margins = {
     none: { margin: 0 },
     both: { marginBottom: gutter, marginTop: gutter },
     bottom: { marginBottom: gutter, marginTop: 0 },
-    Top: { marginBottom: 0, marginTop: gutter },
+    top: { marginBottom: 0, marginTop: gutter },
   };
   const offset = margins[margin];
   const cropStyles = crop ? truncate : null;
@@ -76,7 +87,11 @@ export const Kbd = styled.kbd({
   whiteSpace: 'nowrap',
 });
 
-export const A11yText = ({ tag: Tag, ...props }) => (
+type A11yTextProps = {
+  tag: React.ElementType,
+};
+
+export const A11yText = ({ tag: Tag, ...props }: A11yTextProps) => (
   <Tag
     css={{
       border: 0,

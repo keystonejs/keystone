@@ -161,7 +161,8 @@
   "bolt": {
     "workspaces": [
       "packages/*",
-      "projects/*"
+      "projects/*",
+      "packages/arch/packages/*"
     ]
   },
   "jest": {
