@@ -8,7 +8,7 @@ import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 
 import { borderRadius } from '@arch-ui/theme';
-import FocusTrap from 'react-focus-trap';
+import { FocusTrap } from 'react-focus-marshal';
 import {
   Fade,
   ZoomInDown,
