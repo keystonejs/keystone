@@ -3,7 +3,7 @@
 import { type Node } from 'react';
 import styled from '@emotion/styled';
 
-import { borderRadius, colors } from '../theme';
+import { borderRadius, colors } from '@arch-ui/theme';
 
 const boldBackgroundColor = {
   info: colors.primary,
