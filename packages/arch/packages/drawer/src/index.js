@@ -5,23 +5,29 @@ import { jsx } from '@emotion/core';
 import {
   PureComponent,
   Fragment,
+  forwardRef,
   type ComponentType,
   type Element,
-  type Ref,
   type Node,
 } from 'react';
 import { createPortal } from 'react-dom';
 import styled from '@emotion/styled';
 import ScrollLock from 'react-scrolllock';
 
-import FocusTrap, { type FocusTarget } from 'react-focus-marshal';
-import { Fade, SlideInHorizontal, withTransitionState, Blanket } from '../modal-utils';
-import { colors } from '../theme';
-import { generateUEID } from '../utils';
-import { alpha } from '../color-utils';
-import { A11yText } from '../typography';
+import { FocusTrap, type FocusTarget } from 'react-focus-marshal';
+import {
+  Blanket,
+  Fade,
+  SlideInHorizontal,
+  withTransitionState,
+  type TransitionState,
+  generateUEID,
+} from '@arch-ui/modal-utils';
+import { colors, gridSize } from '@arch-ui/theme';
+import { alpha } from '@arch-ui/color-utils';
+import { A11yText } from '@arch-ui/typography';
 
-const innerGutter = 20;
+const innerGutter = gridSize * 2;
 
 // Styled Components
 // ------------------------------
@@ -40,11 +46,11 @@ const Positioner = styled.div(({ slideInFrom, width }) => ({
 
 type DialogElementProps = {
   component: ComponentType<*> | string,
-  innerRef?: Ref<*>,
 };
-const Dialog = ({ component: Tag, innerRef, ...props }: DialogElementProps) => (
+
+const Dialog = forwardRef(({ component: Tag, ...props }: DialogElementProps, ref) => (
   <Tag
-    ref={innerRef}
+    ref={ref}
     role="dialog"
     css={{
       backgroundColor: colors.page,
@@ -56,7 +62,7 @@ const Dialog = ({ component: Tag, innerRef, ...props }: DialogElementProps) => (
     }}
     {...props}
   />
-);
+));
 
 // Content
 
@@ -101,12 +107,13 @@ type Props = {
   onClose: (*) => void,
   onKeyDown: (*) => void,
   slideInFrom: 'left' | 'right',
+  transitionState: TransitionState,
   width?: number,
 };
 
 class ModalDialog extends PureComponent<Props> {
   static defaultProps = {
-    attachTo: document.body,
+    attachTo: ((document.body: any): HTMLElement),
     closeOnBlanketClick: false,
     component: 'div',
     width: 560,
