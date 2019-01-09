@@ -1,4 +1,4 @@
-import { borderRadius, gridSize } from '../theme';
+import { borderRadius, gridSize } from '@arch-ui/theme';
 
 export const buttonAndInputBase = {
   appearance: 'none',
@@ -14,3 +14,5 @@ export const buttonAndInputBase = {
   verticalAlign: 'middle',
   whiteSpace: 'nowrap',
 };
+
+export * as mediaQueries from './media-queries';
