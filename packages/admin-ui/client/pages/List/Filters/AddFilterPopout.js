@@ -238,7 +238,7 @@ export default class AddFilterPopout extends Component<Props, State> {
       </Transition>
     );
   };
-  renderFilterUI = ({ ref, recalcHeight }) => {
+  renderFilterUI = ({ ref }) => {
     const { field, filter } = this.state;
     const options = field.getFilterTypes();
 
@@ -315,7 +315,6 @@ export default class AddFilterPopout extends Component<Props, State> {
               ) : null}
               <Filter
                 innerRef={this.filterRef}
-                recalcHeight={recalcHeight}
                 field={field}
                 filter={filter}
                 value={this.state.value}
@@ -341,11 +340,9 @@ export default class AddFilterPopout extends Component<Props, State> {
         onSubmit={this.onSubmit}
         onClose={this.resetState}
       >
-        {({ ref, recalcHeight }) => (
+        {({ ref }) => (
           <TransitionGroup component={null}>
-            {field
-              ? this.renderFilterUI({ ref, recalcHeight })
-              : this.renderFieldSelect({ ref, recalcHeight })}
+            {field ? this.renderFilterUI({ ref }) : this.renderFieldSelect({ ref })}
           </TransitionGroup>
         )}
       </PopoutForm>
