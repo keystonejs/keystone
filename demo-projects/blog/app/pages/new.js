@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import ApolloClient from 'apollo-client';
 import gql from 'graphql-tag';
-import { ApolloProvider, Query } from 'react-apollo';
+import { ApolloProvider, Mutation } from 'react-apollo';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
@@ -43,11 +43,18 @@ const Input = styled.input({
   border: '1px solid hsl(200,20%,70%)',
 });
 
-export default ({
-  url: {
-    query: { id },
-  },
-}) => (
+const ADD_POST = gql`
+  mutation AddPost($type: String!) {
+    addTodo(type: $type) {
+      id
+      type
+    }
+  }
+`;
+
+let input;
+
+export default () => (
   <ApolloProvider client={client}>
     <Layout>
       <div css={{ margin: '48px 0' }}>
@@ -55,50 +62,60 @@ export default ({
           <a css={{ color: 'hsl(200,20%,50%)', cursor: 'pointer' }}>{'< Go Back'}</a>
         </Link>
         <h1>New Post</h1>
-        <form>
-          <FormGroup>
-            <Label htmlFor="title">Title:</Label>
-            <Input type="text" name="title" />
-          </FormGroup>
-
-          <FormGroup>
-            <Label htmlFor="body">Body:</Label>
-            <textarea
-              css={{
-                width: '100%',
-                padding: 8,
-                fontSize: '1em',
-                borderRadius: 4,
-                border: '1px solid hsl(200,20%,70%)',
-                height: 200,
-                resize: 'none',
-              }}
-              name="body"
-            />
-          </FormGroup>
-
-          <FormGroup>
-            <Label htmlFor="image">Image URL:</Label>
-            <Input type="url" name="image" />
-          </FormGroup>
-
-          <FormGroup>
-            <Label htmlFor="image">Post as:</Label>
-            <select
-              name="admin"
-              css={{
-                width: '100%',
-                height: 32,
-                fontSize: '1em',
-                borderRadius: 4,
-                border: '1px solid hsl(200,20%,70%)',
+        <Mutation mutation={ADD_POST}>
+          {(addTodo, { data }) => (
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                addTodo({ variables: { type: input.value } });
+                input.value = '';
               }}
             >
-              <option>Nathan</option>
-              <option>Daniel</option>
-            </select>
-          </FormGroup>
-        </form>
+              <FormGroup>
+                <Label htmlFor="title">Title:</Label>
+                <Input type="text" name="title" />
+              </FormGroup>
+
+              <FormGroup>
+                <Label htmlFor="body">Body:</Label>
+                <textarea
+                  css={{
+                    width: '100%',
+                    padding: 8,
+                    fontSize: '1em',
+                    borderRadius: 4,
+                    border: '1px solid hsl(200,20%,70%)',
+                    height: 200,
+                    resize: 'none',
+                  }}
+                  name="body"
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <Label htmlFor="image">Image URL:</Label>
+                <Input type="url" name="image" />
+              </FormGroup>
+
+              <FormGroup>
+                <Label htmlFor="image">Post as:</Label>
+                <select
+                  name="admin"
+                  css={{
+                    width: '100%',
+                    height: 32,
+                    fontSize: '1em',
+                    borderRadius: 4,
+                    border: '1px solid hsl(200,20%,70%)',
+                  }}
+                >
+                  <option>Nathan</option>
+                  <option>Daniel</option>
+                </select>
+              </FormGroup>
+            </form>
+          )}
+        </Mutation>
       </div>
     </Layout>
   </ApolloProvider>
