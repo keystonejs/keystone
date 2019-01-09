@@ -1,6 +1,7 @@
 const inflection = require('inflection');
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 function initOptions(options) {
   let optionsArray = options;
@@ -69,7 +70,20 @@ class MongoSelectInterface extends MongooseFieldAdapter {
   }
 }
 
+class KnexSelectInterface extends KnexFieldAdapter {
+  createColumn(table) {
+    table.enu(this.path, this.config.options.map(({ value }) => value));
+  }
+  getQueryConditions(f, g) {
+    return {
+      ...this.equalityConditions(f, g),
+      ...this.inConditions(f, g),
+    };
+  }
+}
+
 module.exports = {
   Select,
   MongoSelectInterface,
+  KnexSelectInterface,
 };

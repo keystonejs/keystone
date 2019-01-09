@@ -150,7 +150,10 @@ class Content extends Text {
 
 class MongoContentInterface extends MongoTextInterface {}
 
+class KnexContentInterface extends MongoTextInterface {}
+
 module.exports = {
   Content,
   MongoContentInterface,
+  KnexContentInterface,
 };

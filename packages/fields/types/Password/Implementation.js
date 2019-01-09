@@ -1,5 +1,6 @@
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 const bcrypt = require('bcrypt');
 const dumbPasswords = require('dumb-passwords');
@@ -31,7 +32,8 @@ class Password extends Implementation {
     return {
       [`${this.path}_is_set`]: item => {
         const val = item[this.path];
-        return bcryptHashRegex.test(val);
+        return !!val;
+        // return bcryptHashRegex.test(val);
       },
     };
   }
@@ -118,7 +120,20 @@ class MongoPasswordInterface extends MongooseFieldAdapter {
   }
 }
 
+class KnexPasswordInterface extends KnexFieldAdapter {
+  createColumn(table) {
+    table.text(this.path);
+  }
+  getQueryConditions(f, g) {
+    return {
+      [`${this.path}_is_set`]: value => b =>
+        value ? b.whereNot(g(this.path), '') : b.where(g(this.path), '').orWhereNull(g(this.path)),
+    };
+  }
+}
+
 module.exports = {
   Password,
   MongoPasswordInterface,
+  KnexPasswordInterface,
 };

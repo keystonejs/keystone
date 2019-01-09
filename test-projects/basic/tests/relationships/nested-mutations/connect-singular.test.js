@@ -146,7 +146,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'errors if connecting an item which cannot be found during creating',
         runner(setupKeystone, async ({ server: { server } }) => {
-          const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+          const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
 
           // Create an item that does the linking
           const createEvent = await graphqlRequest({
@@ -189,7 +189,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'errors if connecting an item which cannot be found during update',
         runner(setupKeystone, async ({ server: { server }, create }) => {
-          const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+          const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
 
           // Create an item to link against
           const createEvent = await create('Event', {});

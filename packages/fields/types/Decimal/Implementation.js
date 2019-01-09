@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 class Decimal extends Implementation {
   constructor() {
@@ -77,7 +78,21 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
   }
 }
 
+class KnexDecimalInterface extends KnexFieldAdapter {
+  createColumn(table) {
+    table.decimal(this.path);
+  }
+  getQueryConditions(f, g) {
+    return {
+      ...this.equalityConditions(f, g),
+      ...this.orderingConditions(f, g),
+      ...this.inConditions(f, g),
+    };
+  }
+}
+
 module.exports = {
   Decimal,
   MongoDecimalInterface,
+  KnexDecimalInterface,
 };

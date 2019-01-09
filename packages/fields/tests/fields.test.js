@@ -68,7 +68,7 @@ describe('Test CRUD for all fields', () => {
                 // Populate the database before running the tests
                 await server.keystone.createItems({ [listName]: mod.initItems() });
 
-                return testFn({ server, ...rest });
+                return testFn({ server, adapterName, ...rest });
               }
             );
 

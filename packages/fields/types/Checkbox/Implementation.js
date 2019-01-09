@@ -1,5 +1,6 @@
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 class Checkbox extends Implementation {
   constructor() {
@@ -34,7 +35,18 @@ class MongoCheckboxInterface extends MongooseFieldAdapter {
   }
 }
 
+class KnexCheckboxInterface extends KnexFieldAdapter {
+  createColumn(table) {
+    table.boolean(this.path);
+  }
+
+  getQueryConditions(f, g) {
+    return this.equalityConditions(f, g);
+  }
+}
+
 module.exports = {
   Checkbox,
   MongoCheckboxInterface,
+  KnexCheckboxInterface,
 };

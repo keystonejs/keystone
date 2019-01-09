@@ -1,4 +1,4 @@
-const { Text, MongoTextInterface } = require('../Text/Implementation');
+const { Text, MongoTextInterface, KnexTextInterface } = require('../Text/Implementation');
 
 module.exports = {
   type: 'Color',
@@ -11,5 +11,6 @@ module.exports = {
   },
   adapters: {
     mongoose: MongoTextInterface,
+    knex: KnexTextInterface,
   },
 };

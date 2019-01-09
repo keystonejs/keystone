@@ -1,4 +1,4 @@
-const { Select, MongoSelectInterface } = require('./Implementation');
+const { Select, MongoSelectInterface, KnexSelectInterface } = require('./Implementation');
 
 module.exports = {
   type: 'Select',
@@ -11,5 +11,6 @@ module.exports = {
   },
   adapters: {
     mongoose: MongoSelectInterface,
+    knex: KnexSelectInterface,
   },
 };

@@ -1,5 +1,6 @@
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 class Integer extends Implementation {
   constructor() {
@@ -55,7 +56,22 @@ class MongoIntegerInterface extends MongooseFieldAdapter {
   }
 }
 
+class KnexIntegerInterface extends KnexFieldAdapter {
+  createColumn(table) {
+    table.integer(this.path);
+  }
+
+  getQueryConditions(f, g) {
+    return {
+      ...this.equalityConditions(f, g),
+      ...this.orderingConditions(f, g),
+      ...this.inConditions(f, g),
+    };
+  }
+}
+
 module.exports = {
   Integer,
   MongoIntegerInterface,
+  KnexIntegerInterface,
 };

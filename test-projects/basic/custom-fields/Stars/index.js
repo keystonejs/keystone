@@ -1,4 +1,4 @@
-const { Stars, MongoIntegerInterface } = require('./Implementation');
+const { Stars, MongoIntegerInterface, KnexIntegerInterface } = require('./Implementation');
 
 module.exports = {
   type: 'Stars',
@@ -11,5 +11,6 @@ module.exports = {
   },
   adapters: {
     mongoose: MongoIntegerInterface,
+    knex: KnexIntegerInterface,
   },
 };

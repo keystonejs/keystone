@@ -1,4 +1,4 @@
-const { Checkbox, MongoCheckboxInterface } = require('./Implementation');
+const { Checkbox, MongoCheckboxInterface, KnexCheckboxInterface } = require('./Implementation');
 
 module.exports = {
   type: 'Checkbox',
@@ -11,5 +11,6 @@ module.exports = {
   },
   adapters: {
     mongoose: MongoCheckboxInterface,
+    knex: KnexCheckboxInterface,
   },
 };
