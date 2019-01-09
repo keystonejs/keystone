@@ -166,8 +166,7 @@
     "workspaces": [
       "packages/*",
       "demo-projects/*",
-      "test-projects/*",
-      "website"
+      "test-projects/*"
     ]
   },
   "jest": {
