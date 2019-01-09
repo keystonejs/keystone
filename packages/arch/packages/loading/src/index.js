@@ -4,8 +4,8 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/core';
 
-import { colors } from '../theme';
-import { A11yText } from '../typography';
+import { colors } from '@arch-ui/theme';
+import { A11yText } from '@arch-ui/typography';
 
 // ==============================
 // Dots
@@ -47,7 +47,7 @@ const Dot = styled.span(({ appearance, delay = 0, isOffset }: DotProps) => ({
   verticalAlign: 'top',
   width: '1em',
 }));
-export const LoadingIndicator = ({ appearance = 'default', size = 4 }: LoadingIndicatorProps) => (
+export const LoadingIndicator = ({ appearance, size }: LoadingIndicatorProps) => (
   <DotsContainer size={size}>
     <Dot appearance={appearance} />
     <Dot appearance={appearance} delay={160} isOffset />
@@ -55,6 +55,10 @@ export const LoadingIndicator = ({ appearance = 'default', size = 4 }: LoadingIn
     <A11yText>Loading</A11yText>
   </DotsContainer>
 );
+LoadingIndicator.defaultProps = {
+  appearance: 'default',
+  size: 4,
+};
 
 // ==============================
 // Spinner
@@ -90,7 +94,7 @@ const SpinnerSatellite = styled.div(({ color, size }) => ({
   top: 0,
 }));
 
-export const LoadingSpinner = ({ appearance = 'default', size = 16 }: LoadingIndicatorProps) => {
+export const LoadingSpinner = ({ appearance, size }: LoadingIndicatorProps) => {
   const color = appearanceColor[appearance];
 
   return (
@@ -100,4 +104,9 @@ export const LoadingSpinner = ({ appearance = 'default', size = 16 }: LoadingInd
       <A11yText>Loading</A11yText>
     </SpinnerWrapper>
   );
+};
+
+LoadingSpinner.defaultProps = {
+  appearance: 'default',
+  size: 16,
 };
