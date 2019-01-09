@@ -7,8 +7,8 @@ import {
   Input,
   RadioGroup,
   Radio,
-  Select,
 } from '@voussoir/ui/src/primitives/forms';
+import Select from '@arch-ui/select';
 import { FlexGroup } from '@arch-ui/layout';
 
 const FieldGuide = () => (
