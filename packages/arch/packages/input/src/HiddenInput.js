@@ -1,7 +1,12 @@
+// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import * as React from 'react';
 
-export const HiddenInput = ({ innerRef, ...props }) => (
+// Hidden Input
+// ------------------------------
+
+export const HiddenInput = ({ innerRef, ...props }: { innerRef?: React.Ref<*> }) => (
   <input
     ref={innerRef}
     tabIndex="-1"

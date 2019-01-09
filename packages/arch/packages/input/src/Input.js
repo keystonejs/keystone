@@ -1,18 +1,20 @@
 // @flow
-
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { type Ref } from 'react';
+import { type AbstractComponent, forwardRef } from 'react';
 
-import { buttonAndInputBase } from '../common';
-import { colors } from '../theme';
-import { alpha } from '../color-utils';
+import { buttonAndInputBase } from '@arch-ui/common';
+import { colors } from '@arch-ui/theme';
+import { alpha } from '@arch-ui/color-utils';
 
 // Basic Input
 // ------------------------------
 
-type InputProps = { innerRef: Ref<*>, isMultiline: boolean, disabled: boolean };
-export const Input = ({ innerRef, isMultiline, ...props }: InputProps) => {
+type InputProps = { isMultiline?: boolean, disabled?: boolean };
+export const Input: AbstractComponent<
+  InputProps,
+  HTMLInputElement | HTMLTextAreaElement
+> = forwardRef(({ isMultiline, ...props }: InputProps, ref) => {
   const css = {
     ...buttonAndInputBase,
     backgroundColor: props.disabled ? colors.N10 : 'white',
@@ -38,8 +40,9 @@ export const Input = ({ innerRef, isMultiline, ...props }: InputProps) => {
     },
   };
   return isMultiline ? (
-    <textarea ref={innerRef} css={{ ...css, lineHeight: 'inherit', height: 'auto' }} {...props} />
+    <textarea ref={ref} css={{ ...css, lineHeight: 'inherit', height: 'auto' }} {...props} />
   ) : (
-    <input ref={innerRef} css={css} {...props} />
+    // $FlowFixMe
+    <input ref={ref} css={css} {...props} />
   );
-};
+});
