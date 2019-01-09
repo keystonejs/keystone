@@ -1,38 +1,102 @@
 // @flow
 
-import React, { type Node } from 'react';
 import styled from '@emotion/styled';
 
-import { colors, gridSize } from '../theme';
-import { FlexProvider, ItemElement, NAV_GUTTER } from './common';
+import { borderRadius, colors, gridSize } from '@arch-ui/theme';
+import { ItemElement } from './common';
 
-const Wrapper = styled.nav({
-  backgroundColor: colors.primary,
-  color: 'white',
-  paddingBottom: gridSize,
-  paddingTop: gridSize,
+export const PRIMARY_NAV_GUTTER = gridSize * 2;
+
+export const NavGroupIcons = styled.div({
+  alignItems: 'center',
+  alignSelf: 'stretch',
+  display: 'flex',
+  flexFlow: 'row nowrap',
+  justifyContent: 'space-between',
+  padding: PRIMARY_NAV_GUTTER,
 });
-export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => ({
-  background: isSelected ? colors.B.D10 : 'none',
-  border: 0,
-  borderRadius: '0.25em',
-  color: 'white',
-  paddingLeft: NAV_GUTTER,
-  paddingRight: NAV_GUTTER,
-  paddingBottom: gridSize * 1.5,
-  paddingTop: gridSize * 1.5,
-  position: isSelected ? 'relative' : null,
-  textDecoration: 'none',
 
-  ':hover': {
-    textDecoration: isSelected ? 'none' : 'underline',
-  },
-}));
+export const PrimaryNav = styled.nav({
+  backgroundColor: colors.N10,
+  boxSizing: 'border-box',
+  display: 'flex',
+  flexFlow: 'column nowrap',
+  fontSize: '0.9rem',
+  fontWeight: 500,
+  height: '100vh',
+  position: 'fixed',
+  zIndex: 2,
+});
+export const PrimaryNavScrollArea = styled.div(({ hasScroll, isBottom, isScrollable }) => {
+  const divider = {
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    content: '" "',
+    height: 2,
+    left: PRIMARY_NAV_GUTTER,
+    right: PRIMARY_NAV_GUTTER,
+    position: 'absolute',
+  };
+  const before = hasScroll ? { ...divider, top: 0 } : null;
+  const after = isScrollable && !isBottom ? { ...divider, bottom: 0 } : null;
 
-type Props = { children: Node };
+  return {
+    boxSizing: 'border-box',
+    flex: 1,
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    minWidth: 140,
+    paddingBottom: PRIMARY_NAV_GUTTER,
+    paddingLeft: PRIMARY_NAV_GUTTER,
+    paddingRight: PRIMARY_NAV_GUTTER,
+    width: '100%',
 
-export const PrimaryNav = ({ children }: Props) => (
-  <Wrapper>
-    <FlexProvider>{children}</FlexProvider>
-  </Wrapper>
-);
+    ':before': before,
+    ':after': after,
+  };
+});
+
+export const BrandItem = styled.h2({
+  fontSize: 18,
+  fontWeight: 500,
+  margin: 0,
+  paddingBottom: PRIMARY_NAV_GUTTER,
+});
+
+export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => {
+  const selectedStyles = isSelected
+    ? {
+        '&, :hover, :active, :focus': {
+          backgroundColor: colors.N80,
+          color: 'white',
+        },
+      }
+    : {};
+
+  return {
+    border: 0,
+    borderRadius,
+    color: colors.N90,
+    display: 'block',
+    marginBottom: 2,
+    overflow: 'hidden',
+    paddingLeft: PRIMARY_NAV_GUTTER,
+    paddingRight: PRIMARY_NAV_GUTTER,
+    paddingBottom: gridSize,
+    paddingTop: gridSize,
+    textDecoration: 'none',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+
+    ':hover, :focus': {
+      backgroundColor: colors.B.L80,
+      color: colors.B.D20,
+      outline: 0,
+      textDecoration: 'none',
+    },
+    ':active': {
+      backgroundColor: colors.B.L70,
+    },
+
+    ...selectedStyles,
+  };
+});
