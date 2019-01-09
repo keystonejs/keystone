@@ -3,10 +3,10 @@
 import React, { Component, type Element } from 'react';
 import styled from '@emotion/styled';
 import { createPortal } from 'react-dom';
-import { FocusTrap } from 'react-focus-marshal';
 
-import { borderRadius, gridSize } from '../theme';
-import { SlideDown, withModalHandlers, type CloseType } from '../modal-utils';
+import { borderRadius, gridSize } from '@arch-ui/theme';
+import { FocusTrap } from 'react-focus-marshal';
+import { withModalHandlers, type ModalHandlerProps, SlideDown } from '@arch-ui/modal-utils';
 
 const ARROW_WIDTH = 8;
 const CHROME_GUTTER = 30;
@@ -58,13 +58,10 @@ const Arrow = styled.div`
   }
 `;
 
-type Props = {
+type Props = ModalHandlerProps & {
   children: Element<*>,
-  close: CloseType,
-  defaultIsOpen: boolean,
-  getModalRef: HTMLElement => void,
+  getModalRef: (HTMLElement | null) => void,
   style: Object,
-  target: Element<*>,
   targetNode: HTMLElement,
   width: number,
 };

@@ -5,9 +5,18 @@
   "license": "MIT",
   "main": "src/index.js",
   "peerDependencies": {
-    "react": "16.7.0-alpha.2"
+    "react": "16.7.0-alpha.2",
+    "react-dom": "16.7.0-alpha.2"
   },
   "devDependencies": {
-    "react": "16.7.0-alpha.2"
+    "react": "16.7.0-alpha.2",
+    "react-dom": "16.7.0-alpha.2"
+  },
+  "dependencies": {
+    "@arch-ui/modal-utils": "^0.0.1",
+    "@arch-ui/theme": "^0.0.1",
+    "@emotion/core": "^10.0.4",
+    "@emotion/styled": "^10.0.4",
+    "react-focus-marshal": "^1.0.1"
   }
 }
