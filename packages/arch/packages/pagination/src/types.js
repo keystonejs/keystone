@@ -1,3 +1,4 @@
+// @flow
 export type CountArgs = {
   end: number,
   pageSize: number,
@@ -8,4 +9,12 @@ export type CountArgs = {
 };
 export type CountFormat = CountArgs => Node;
 export type LabelType = number => string;
-export type OnChangeType = number => void;
+export type OnChangeType = (
+  number,
+  {
+    pageSize: number,
+    total: number,
+    minPage: number,
+    maxPage: number,
+  }
+) => void;

@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
+// @flow
+import * as React from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
-import { colors } from '../theme';
+import { colors } from '@arch-ui/theme';
 import type { LabelType, OnChangeType } from './types';
 
 export type PagePrimitiveProps = {
-  children: Node,
+  children: React.Node,
   href?: string,
   isDisabled: boolean,
   isSelected: boolean,
@@ -14,7 +15,7 @@ export type PagePrimitiveProps = {
 };
 type PageProps = PagePrimitiveProps & {
   ariaLabel: LabelType,
-  children: Node,
+  children: React.Node,
   isSelected: boolean,
   onClick: OnChangeType,
   value: number,
@@ -52,7 +53,6 @@ const PageElement = styled(PagePrimitive)(({ isDisabled, isSelected }: PageProps
           borderColor: 'transparent',
           color: colors.N80,
           cursor: 'default',
-          zIndex: 2,
         },
       }
     : null;
@@ -67,7 +67,6 @@ const PageElement = styled(PagePrimitive)(({ isDisabled, isSelected }: PageProps
     fontSize: 'inherit',
     marginRight: '.1em',
     padding: '0.25em 0.7em',
-    position: 'relative',
     textDecoration: 'none',
 
     '&:hover, &:focus': {
@@ -82,12 +81,17 @@ const PageElement = styled(PagePrimitive)(({ isDisabled, isSelected }: PageProps
   };
 });
 
-export default class Page extends Component {
-  onClick = () => {
-    const { onClick, value } = this.props;
-    if (onClick) onClick(value);
-  };
-  render() {
-    return <PageElement {...this.props} onClick={this.onClick} />;
-  }
-}
+const Page = (props: { value: number, onClick: number => void }) => {
+  return (
+    <PageElement
+      {...props}
+      onClick={() => {
+        if (props.onClick) {
+          props.onClick(props.value);
+        }
+      }}
+    />
+  );
+};
+
+export default Page;

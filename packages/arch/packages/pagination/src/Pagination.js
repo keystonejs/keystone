@@ -1,10 +1,12 @@
 // @flow
-
-import React, { Component } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 
 import { colors } from '@arch-ui/theme';
 import Page from './Page';
+import { LoadingSpinner } from '@arch-ui/loading';
 import type { CountArgs, CountFormat, LabelType, OnChangeType } from './types';
 
 function ariaPageLabelFn(page: number) {
@@ -28,7 +30,6 @@ function countFormatterFn({ end, pageSize, plural, singular, start, total }: Cou
 
   return count;
 }
-
 function getRange({ currentPage, pageSize, total }) {
   if (!total) {
     return {};
@@ -42,6 +43,7 @@ function getRange({ currentPage, pageSize, total }) {
 export type PaginationProps = {
   ariaPageLabel: LabelType,
   countFormatter: CountFormat,
+  currentPage: number,
   displayCount: boolean,
   limit?: number,
   onChange: OnChangeType,
@@ -49,8 +51,9 @@ export type PaginationProps = {
   plural: string,
   singular: string,
   total: number,
-  currentPage: number,
+  isLoading: boolean,
 };
+
 const PaginationElement = styled.nav({
   alignItems: 'center',
   display: 'flex',
@@ -59,6 +62,31 @@ const PageCount = styled.div({
   color: colors.N60,
   marginRight: '1em',
 });
+
+const PageChildren = ({ page, isLoading, isSelected }) => {
+  const [shouldShowLoading, setShouldShowLoading] = useState(false);
+  useEffect(
+    () => {
+      if (isLoading && isSelected) {
+        const id = setTimeout(() => {
+          setShouldShowLoading(true);
+        }, 200);
+        return () => {
+          clearTimeout(id);
+          setShouldShowLoading(false);
+        };
+      }
+    },
+    [page, isLoading, isSelected]
+  );
+  return shouldShowLoading ? (
+    <div css={{ height: 19 }}>
+      <LoadingSpinner />
+    </div>
+  ) : (
+    <span>{page}</span>
+  );
+};
 
 class Pagination extends Component<PaginationProps> {
   static defaultProps = {
@@ -146,7 +174,7 @@ class Pagination extends Component<PaginationProps> {
           onClick={onChange}
           value={page}
         >
-          {page}
+          <PageChildren isLoading={this.props.isLoading} page={page} isSelected={isSelected} />
         </Page>
       );
     }
@@ -169,8 +197,22 @@ class Pagination extends Component<PaginationProps> {
   }
 
   render() {
+    // strip props to get `rest` attributes; things id, className etc.
+    const {
+      ariaPageLabel,
+      countFormatter,
+      currentPage,
+      displayCount,
+      limit,
+      onChange,
+      pageSize,
+      plural,
+      singular,
+      total,
+      ...rest
+    } = this.props;
     return (
-      <PaginationElement aria-label="Pagination">
+      <PaginationElement aria-label="Pagination" {...rest}>
         {this.renderCount()}
         {this.renderPages()}
       </PaginationElement>
