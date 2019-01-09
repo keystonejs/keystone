@@ -8,7 +8,7 @@ import { ApolloProvider, Mutation, Query } from 'react-apollo';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
-import { jsx, Global } from '@emotion/core';
+import { jsx, css } from '@emotion/core';
 import styled from '@emotion/styled';
 
 import { format } from 'date-fns';
