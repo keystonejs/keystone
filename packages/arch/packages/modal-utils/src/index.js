@@ -13,6 +13,7 @@ export type { TransitionState } from './transitions';
 export { default as Blanket } from './Blanket';
 
 export { default as withModalHandlers } from './withModalHandlers';
+export type { ModalHandlerProps } from './withModalHandlers';
 
 // Generate a unique enough ID
 export function generateUEID() {
