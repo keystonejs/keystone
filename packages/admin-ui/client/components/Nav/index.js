@@ -25,7 +25,7 @@ import {
   PRIMARY_NAV_GUTTER,
 } from '@arch-ui/navbar';
 import { A11yText, Title } from '@arch-ui/typography';
-import { Tooltip } from '@voussoir/ui/src/primitives/modals';
+import Tooltip from '@arch-ui/tooltip';
 import { FlexGroup } from '@arch-ui/layout';
 
 import { withAdminMeta } from '../../providers/AdminMeta';
