@@ -201,7 +201,7 @@ We're not ready to make promises about breaking changes, stability or feature co
 Having said that; we _are_ using Keystone 5 for a limited number of applications in production, and this is how:
 
 - Create a **private** fork of the repo
-- Make a copy of `./test-projects/basic` and use it as the basis for the project
+- Make a copy of `./demo-projects/todo` and use it as the basis for the project
 - Update the `start` script to run your project
 - Pull upstream changes as needed
 
