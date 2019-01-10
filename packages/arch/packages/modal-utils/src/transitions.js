@@ -26,7 +26,7 @@ export const TransitionProvider = ({ children, isOpen, ...props }: ProviderProps
     ) : null}
   </TransitionGroup>
 );
-export const withTransitionState = <Config: {}>(
+export const withTransitionState = <Config>(
   Comp: AbstractComponent<Config>
 ): AbstractComponent<$Diff<Config, { transitionState: TransitionState }>> => ({
   isOpen,
