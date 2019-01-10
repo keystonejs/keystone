@@ -3,6 +3,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Component, type Element, type Ref, type Node } from 'react';
+import ResizeObserver from 'resize-observer-polyfill';
 import NodeResolver from 'react-node-resolver';
 
 const transition = 'height 220ms cubic-bezier(0.2, 0, 0, 1)';
@@ -23,11 +24,6 @@ export default class AnimateHeight extends Component<Props, State> {
   static defaultProps = {
     autoScroll: false,
     initialHeight: 0,
-  };
-  getNode = (ref: HTMLElement | null) => {
-    if (!ref) return;
-    this.node = ref;
-    this.calculateHeight();
   };
   scrollToTop = () => {
     const { autoScroll } = this.props;
@@ -57,6 +53,18 @@ export default class AnimateHeight extends Component<Props, State> {
       onChange(height);
     }
   };
+  observer = new ResizeObserver(this.calculateHeight);
+  getNode = (ref: HTMLElement | null) => {
+    if (!ref) return;
+    if (this.node !== ref) {
+      if (this.node) {
+        this.observer.unobserve(this.node);
+      }
+      this.observer.observe(ref);
+    }
+    this.node = ref;
+    this.calculateHeight();
+  };
   render() {
     const { autoScroll, children, initialHeight, render, ...props } = this.props;
     const { height, isTransitioning } = this.state;
@@ -69,7 +77,7 @@ export default class AnimateHeight extends Component<Props, State> {
         {...props}
       >
         {render ? (
-          render({ ref: this.getNode, recalcHeight: this.calculateHeight })
+          render({ ref: this.getNode })
         ) : (
           <NodeResolver innerRef={this.getNode}>{children}</NodeResolver>
         )}

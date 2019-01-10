@@ -6,14 +6,6 @@ import type { FilterProps } from '../../../types';
 
 type Props = FilterProps<string>;
 export default class TextFilterView extends Component<Props> {
-  componentDidUpdate(prevProps: Props) {
-    const { filter } = this.props;
-
-    if (prevProps.filter !== filter) {
-      this.props.recalcHeight();
-    }
-  }
-
   valueToString = (value: string | number) => {
     // Make the value a string to prevent loss of accuracy and precision.
     if (typeof value === 'string') {

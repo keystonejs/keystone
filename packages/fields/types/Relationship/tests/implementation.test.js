@@ -91,7 +91,7 @@ describe('Type Generation', () => {
     });
 
     // We're testing the AST is as we expect it to be
-    expect(gql(relationship.gqlAuxTypes.join('\n'))).toMatchObject({
+    expect(gql(relationship.getGqlAuxTypes().join('\n'))).toMatchObject({
       definitions: [
         {
           kind: 'InputObjectTypeDefinition',
@@ -156,7 +156,7 @@ describe('Type Generation', () => {
     });
 
     // We're testing the AST is as we expect it to be
-    expect(gql(relationship.gqlAuxTypes.join('\n'))).toMatchObject({
+    expect(gql(relationship.getGqlAuxTypes().join('\n'))).toMatchObject({
       definitions: [
         {
           kind: 'InputObjectTypeDefinition',
