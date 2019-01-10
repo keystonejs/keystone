@@ -58,7 +58,7 @@ const HeaderButton = props => (
 export type { YearPickerType } from './selects';
 
 type DayPickerProps = {
-  onSelectedChange: Date => void,
+  setSelectedDate: Date => void,
   yearRangeFrom: number,
   yearRangeTo: number,
   yearPickerType: YearPickerType,
@@ -102,7 +102,7 @@ export const DayPicker = ({
   yearPickerType,
   startCurrentDateAt,
   selectedDate,
-  onSelectedChange,
+  setSelectedDate,
 }: DayPickerProps) => {
   const listRef = useRef(null);
 
@@ -129,7 +129,7 @@ export const DayPicker = ({
     [shouldChangeScrollPositionRef, setDate]
   );
 
-  const setSelectedDate = onSelectedChange;
+  // const setSelectedDate = setSelectedDate;
 
   useLayoutEffect(
     () => {
@@ -266,10 +266,10 @@ export const DayPicker = ({
             () => ({
               items,
               selectedDate,
-              onSelectedChange,
+              setSelectedDate,
               observer,
             }),
-            [items, selectedDate, onSelectedChange, observer]
+            [items, selectedDate, setSelectedDate, observer]
           )}
           height={6 * DAY_HEIGHT + 26.5}
           itemCount={years.length * 12}

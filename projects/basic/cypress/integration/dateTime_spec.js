@@ -72,6 +72,7 @@ describe('CalendarDay Component - Functionality', () => {
   it(`can use 'Select' to set month`, () => {
     cy.get(getDateButtonSetTo(today)).click();
     cy.get(`#ks-select-month`).select('Jun');
+    cy.wait(500);
     cy.get(getDaySelector(setMonth(today, 5))).click();
     cy.get('label:contains("Name")').click();
     cy.get(getDateButtonSetTo(setMonth(today, 5)))
@@ -135,7 +136,7 @@ describe('DateTime Component - Functionality', () => {
     cy.get('#ks-input-lastOnline-picker').should('not.exist');
   });
 
-  it.only(`can select a day in this month`, () => {
+  it(`can select a day in this month`, () => {
     cy.get('button:contains("Set Date & Time")').click();
     cy.get(getDaySelector(today)).click();
     cy.get('input[name=time-picker]')
@@ -156,7 +157,7 @@ describe('DateTime Component - Functionality', () => {
   });
 
   it(`can use arrows to set month`, () => {
-    cy.get(getDateTimeButtonSetTo(today)).click();
+    cy.get('#ks-input-dob').click();
     cy.get(getDaySelector(today)).click();
     cy.get(`button:contains("Previous Month")`)
       .click()
