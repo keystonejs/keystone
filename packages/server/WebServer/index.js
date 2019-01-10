@@ -88,10 +88,12 @@ module.exports = class WebServer {
       this.app.use(adminUI.createSessionMiddleware());
     }
 
-    const { apiPath, graphiqlPath } = this.config;
+    const { apiPath, graphiqlPath, apollo } = this.config;
 
     // GraphQL API always exists independent of any adminUI or Session settings
-    this.app.use(createGraphQLMiddleware(keystone, { apiPath, graphiqlPath }));
+    this.app.use(
+      createGraphQLMiddleware(keystone, { apiPath, graphiqlPath, apolloConfig: apollo })
+    );
 
     if (adminUI) {
       // This must be last as it's the "catch all" which falls into Webpack to
