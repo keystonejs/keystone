@@ -3,15 +3,12 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { DateTimePicker } from '@voussoir/ui/src/primitives/forms';
-import { useEffect } from '@voussoir/ui/src/new-typed-react';
 import type { FilterProps } from '../../../types';
 import { stringifyDate, parseDate } from './utils';
 
 type Props = FilterProps<string>;
 
 const CalendarDayFilterView = (props: Props) => {
-  useEffect(props.recalcHeight, [props.filter]);
-
   const parsedDate = props.value ? parseDate(props.value) : parseDate(new Date().toISOString());
 
   let handleDayChange = day => {
