@@ -161,7 +161,7 @@ We've already made a `Stars` component so we can use the component and write som
 ```jsx
 import React from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Stars from './Stars';
 
 export default class StarsField extends React.Component {
