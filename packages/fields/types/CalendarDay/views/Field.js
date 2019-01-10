@@ -45,7 +45,7 @@ export default class CalendarDayField extends Component {
                 autoFocus={autoFocus}
                 startCurrentDateAt={value ? parse(value) : TODAY}
                 selectedDate={value ? parse(value) : null}
-                setSelectedDate={this.handleSelectedChange}
+                onSelectedChange={this.handleSelectedChange}
                 yearRangeFrom={field.config.yearRangeFrom}
                 yearRangeTo={field.config.yearRangeTo}
                 yearPickerType={field.config.yearPickerType}

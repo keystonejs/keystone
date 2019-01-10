@@ -67,7 +67,7 @@ export const DateTimePicker = (props: Props) => {
     <div id={htmlID}>
       <DayPicker
         autoFocus={autoFocus}
-        setSelectedDate={handleDayChange}
+        onSelectedChange={handleDayChange}
         yearRangeFrom={yearRangeFrom}
         yearRangeTo={yearRangeTo}
         yearPickerType={yearPickerType}
