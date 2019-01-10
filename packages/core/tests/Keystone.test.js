@@ -39,7 +39,7 @@ test('unique typeDefs', () => {
         delete: true,
       };
     }
-    get gqlAuxTypes() {
+    getGqlAuxTypes() {
       return ['scalar Foo'];
     }
     get gqlOutputFields() {
@@ -54,10 +54,10 @@ test('unique typeDefs', () => {
     get gqlCreateInputFields() {
       return ['quux: Boolean'];
     }
-    get gqlAuxQueries() {
+    getGqlAuxQueries() {
       return ['getFoo: Boolean'];
     }
-    get gqlAuxMutations() {
+    getGqlAuxMutations() {
       return ['mutateFoo: Boolean'];
     }
   }
