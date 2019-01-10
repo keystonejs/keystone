@@ -39,12 +39,12 @@ export default function Template({
           <Link css={linkStyles} to={workspaceSlug}>
             {workspace}
           </Link>
-          <a href={fields.editUrl}>Edit on github</a>
         </div>
         <div className="blog-post">
           <MDXProvider components={mdComponents}>
             <MDXRenderer>{code.body}</MDXRenderer>
           </MDXProvider>
+          <a href={fields.editUrl}>Edit on Github</a>
         </div>
       </div>
     </Layout>

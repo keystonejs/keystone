@@ -1,3 +1,4 @@
+import React from 'react';
 import { jsx, Global, css } from '@emotion/core';
 
 /** @jsx jsx */
@@ -24,8 +25,7 @@ const Layout = ({ children }) => (
         },
 
         'pre[class*="language-"]': {
-          // background: colors.B.A15,
-          fontSize: '0.8em',
+          padding: 16,
           width: '100%',
           boxSizing: 'border-box',
         },
@@ -34,6 +34,7 @@ const Layout = ({ children }) => (
           background: 'white',
           padding: '2px 4px',
           fontSize: '0.9em',
+          overflow: 'scroll',
         },
       }}
     />
@@ -45,7 +46,7 @@ const Layout = ({ children }) => (
       }}
     >
       <aside
-        css={css({
+        css={{
           background: colors.B.A20,
           height: 'calc(100vh - 66px)',
           overflow: 'scroll',
@@ -60,12 +61,12 @@ const Layout = ({ children }) => (
           '@media all and (min-width: 800px)': {
             order: 1,
           },
-        })}
+        }}
       >
         <Sidebar />
       </aside>
       <main
-        css={css({
+        css={{
           height: 'calc(100vh - 66px)',
           overflow: 'scroll',
           background: colors.B.A10,
@@ -74,7 +75,7 @@ const Layout = ({ children }) => (
             flex: '3 0px',
             order: 2,
           },
-        })}
+        }}
       >
         <div css={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>{children}</div>
         <Footer />

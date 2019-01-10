@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'gatsby';
 import { jsx, Global } from '@emotion/core';
 

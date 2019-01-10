@@ -38,10 +38,10 @@ async function getGatsbyConfig() {
         resolve: 'gatsby-source-filesystem',
         options: { name: 'tutorials', path: `${__dirname}/tutorials/` },
       },
-      {
-        resolve: 'gatsby-source-filesystem',
-        options: { name: 'guides', path: `${__dirname}/guides/` },
-      },
+      // {
+      //   resolve: 'gatsby-source-filesystem',
+      //   options: { name: 'guides', path: `${__dirname}/guides/` },
+      // },
       `gatsby-plugin-sharp`,
       {
         resolve: `gatsby-mdx`,
