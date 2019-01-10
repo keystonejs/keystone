@@ -11,6 +11,7 @@
     "@arch-ui/controls": "^0.0.1",
     "@arch-ui/day-picker": "^0.0.1",
     "@arch-ui/fields": "^0.0.1",
+    "@arch-ui/filters": "^0.0.1",
     "@arch-ui/input": "^0.0.1",
     "@arch-ui/layout": "^0.0.1",
     "@arch-ui/lozenge": "^0.0.1",

@@ -4,7 +4,7 @@
 import { jsx } from '@emotion/core';
 import { Component, Fragment } from 'react';
 import Select from '@arch-ui/select';
-import { OptionRenderer, Radio, RadioGroup } from '@voussoir/ui/src/primitives/filters';
+import { OptionRenderer, Radio, RadioGroup } from '@arch-ui/filters';
 import { gridSize } from '@arch-ui/theme';
 import type { FilterProps } from '../../../types';
 

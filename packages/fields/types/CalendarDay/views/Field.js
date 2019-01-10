@@ -5,7 +5,7 @@ import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { Button } from '@arch-ui/button';
-import { DayPicker } from '@voussoir/ui/src/primitives/forms';
+import { DayPicker } from '@arch-ui/day-picker';
 import Popout from '@arch-ui/popout';
 import { gridSize } from '@arch-ui/theme';
 

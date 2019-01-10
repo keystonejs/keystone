@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { OptionRenderer } from '@voussoir/ui/src/primitives/filters';
+import { OptionRenderer } from '@arch-ui/filters';
 import { arrayToObject } from '@voussoir/utils';
 
 function isOptionSelected(opt, selected) {

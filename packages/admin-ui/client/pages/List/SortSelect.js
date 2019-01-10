@@ -3,9 +3,8 @@ import { jsx } from '@emotion/core';
 import { Component } from 'react';
 import styled from '@emotion/styled';
 import { ChevronDownIcon, ChevronUpIcon } from '@voussoir/icons';
-import { OptionPrimitive } from '@voussoir/ui/src/primitives/filters';
+import { OptionPrimitive, OptionRenderer } from '@arch-ui/filters';
 import { colors } from '@arch-ui/theme';
-import { OptionRenderer } from '@voussoir/ui/src/primitives/filters';
 
 import { POPOUT_GUTTER } from '../../components/Popout';
 

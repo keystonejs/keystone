@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { Button } from '@arch-ui/button';
-import { DateTimePicker } from '@voussoir/ui/src/primitives/forms';
+import { DayTimePicker } from '@arch-ui/day-picker';
 import Popout from '@arch-ui/popout';
 import { gridSize } from '@arch-ui/theme';
 import { parseDate, stringifyDate } from './utils';
@@ -51,7 +51,7 @@ const CalendarDayField = ({ autoFocus, field, onChange, item }: Props) => {
       <FieldInput>
         <Popout target={target} width={280}>
           <div css={{ padding: gridSize }}>
-            <DateTimePicker
+            <DayTimePicker
               {...{
                 htmlID: htmlID + '-picker',
                 date,

@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { CheckIcon, DashIcon, XIcon } from '@voussoir/icons';
 import { colors } from '@arch-ui/theme';
-import { OptionPrimitive } from '@voussoir/ui/src/primitives/filters';
+import { OptionPrimitive } from '@arch-ui/filters';
 
 import { POPOUT_GUTTER } from '../../components/Popout';
 import FieldSelect, { type FieldSelectProps } from './FieldSelect';

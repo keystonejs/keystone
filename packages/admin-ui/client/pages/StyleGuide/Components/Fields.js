@@ -1,13 +1,8 @@
 import React, { Fragment } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
-import {
-  Checkbox,
-  CheckboxGroup,
-  Input,
-  RadioGroup,
-  Radio,
-} from '@voussoir/ui/src/primitives/forms';
+import { Checkbox, CheckboxGroup, RadioGroup, Radio } from '@arch-ui/controls';
+import { Input } from '@arch-ui/input';
 import Select from '@arch-ui/select';
 import { FlexGroup } from '@arch-ui/layout';
 
