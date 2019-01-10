@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import {
   Checkbox,
   CheckboxGroup,

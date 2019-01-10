@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { AlertIcon, ShieldIcon } from '@voussoir/icons';
 import { HiddenInput } from '@arch-ui/input';
 import { Lozenge } from '@arch-ui/lozenge';

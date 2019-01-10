@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 
 // TODO: use pretty checkboxes - these only work in a CheckGroup situation.
 // import { Checkbox } from '@voussoir/ui/src/primitives/forms';
