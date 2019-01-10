@@ -1,5 +1,4 @@
 import React from 'react';
-import Head from 'next/head';
 import Link from 'next/link';
 
 import ApolloClient from 'apollo-client';
@@ -10,8 +9,6 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 
 import { jsx, css } from '@emotion/core';
 import styled from '@emotion/styled';
-
-import { format } from 'date-fns';
 
 import Layout from '../templates/layout';
 

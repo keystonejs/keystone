@@ -1,5 +1,4 @@
 import React from 'react';
-import Head from 'next/head';
 import Link from 'next/link';
 
 import ApolloClient from 'apollo-client';
@@ -36,7 +35,10 @@ const Post = ({ post }) => {
           overflow: 'hidden',
         }}
       >
-        <img src="https://picsum.photos/900/200/?random" css={{ width: '100%' }} />
+        <img
+          src={post.image ? post.image.publicUrl : 'https://picsum.photos/900/200/?random'}
+          css={{ width: '100%' }}
+        />
         <div css={{ padding: '1em' }}>
           <h3 css={{ marginTop: 0 }}>{post.title}</h3>
           <p>{post.body}</p>
@@ -73,6 +75,9 @@ export default () => (
                 id
                 body
                 posted
+                image {
+                  publicUrl
+                }
                 author {
                   name
                 }

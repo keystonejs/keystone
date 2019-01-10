@@ -42,8 +42,11 @@ export default ({
                     title
                     body
                     posted
+                    image {
+                      publicUrl
+                    }
                     author {
-                    name
+                      name
                     }
                 }
 
@@ -78,7 +81,12 @@ export default ({
                   <Head>
                     <title>{post.title}</title>
                   </Head>
-                  <img src="https://picsum.photos/900/200/?random" css={{ width: '100%' }} />
+                  <img
+                    src={
+                      post.image ? post.image.publicUrl : 'https://picsum.photos/900/200/?random'
+                    }
+                    css={{ width: '100%' }}
+                  />
                   <div css={{ padding: '1em' }}>
                     <h1 css={{ marginTop: 0 }}>{post.title}</h1>
                     <p>{post.body}</p>

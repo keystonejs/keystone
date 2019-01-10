@@ -17,18 +17,19 @@ const {
   Password,
   Checkbox,
   CalendarDay,
-  CloudinaryImage,
   DateTime,
-  Url,
 } = require('@voussoir/fields');
 const { WebServer } = require('@voussoir/server');
-const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
+const { LocalFileAdapter } = require('@voussoir/file-adapters');
 const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
-const { port, staticRoute, staticPath, cloudinary } = require('./config');
-
-const initialData = require('./data');
-
 const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
+
+// config
+const path = require('path');
+const port = process.env.PORT;
+const staticRoute = '/public'; // The URL portion
+const staticPath = path.join(process.cwd(), 'public'); // The local path on disk
+const initialData = require('./data');
 
 const keystone = new Keystone({
   name: 'Keystone Demo Blog',
@@ -39,6 +40,11 @@ const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
   sortListsAlphabetically: true,
+});
+
+const fileAdapter = new LocalFileAdapter({
+  directory: `${staticPath}/uploads`,
+  route: `${staticRoute}/uploads`,
 });
 
 keystone.createList('User', {
@@ -76,13 +82,14 @@ keystone.createList('Post', {
     },
     body: { type: Text, isMultiline: true },
     posted: { type: DateTime },
+    image: { type: File, adapter: fileAdapter },
   },
   adminConfig: {
     defaultPageSize: 20,
     defaultColumns: 'title, status',
     defaultSort: 'title',
   },
-  labelResolver: item => item.body,
+  labelResolver: item => item.title,
 });
 
 keystone.createList('PostCategory', {
@@ -131,6 +138,8 @@ server.app.get('/reset-db', (req, res) => {
   };
   reset();
 });
+
+server.app.use(staticRoute, server.express.static(staticPath));
 
 server.app.use(nextApp.getRequestHandler());
 
