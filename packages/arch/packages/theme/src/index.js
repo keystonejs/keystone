@@ -14,4 +14,30 @@ export const borderRadius = 4;
 export const gridSize = 8;
 export const fontSize = 16;
 
-export { default as colors } from './colors';
+import colors from './colors';
+
+export { colors };
+
+export const globalStyles = {
+  body: {
+    backgroundColor: colors.page,
+    color: colors.text,
+    fontFamily: fontFamily,
+    fontSize,
+    letterSpacing: '-0.005em',
+    margin: 0,
+    textDecorationSkip: 'ink',
+    textRendering: 'optimizeLegibility',
+    msOverflowStyle: '-ms-autohiding-scrollbar',
+    MozFontFeatureSettings: "'liga' on",
+    MozOsxFontSmoothing: 'grayscale',
+    WebkitFontSmoothing: 'antialiased',
+  },
+  a: {
+    color: colors.primary,
+    textDecoration: 'none',
+  },
+  'a:hover': {
+    textDecoration: 'underline',
+  },
+};
