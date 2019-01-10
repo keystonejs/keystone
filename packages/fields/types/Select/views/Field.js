@@ -3,9 +3,9 @@ import { jsx } from '@emotion/core';
 import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
-import { Select } from '@voussoir/ui/src/primitives/filters';
+import Select from '@arch-ui/select';
 import { ShieldIcon } from '@voussoir/icons';
-import { colors } from '@voussoir/ui/src/theme';
+import { colors } from '@arch-ui/theme';
 
 export default class SelectField extends Component {
   onChange = option => {

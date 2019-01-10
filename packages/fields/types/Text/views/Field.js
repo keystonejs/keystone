@@ -3,9 +3,9 @@ import { jsx } from '@emotion/core';
 import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
-import { Input } from '@voussoir/ui/src/primitives/forms';
+import { Input } from '@arch-ui/input';
 import { ShieldIcon } from '@voussoir/icons';
-import { colors } from '@voussoir/ui/src/theme';
+import { colors } from '@arch-ui/theme';
 
 export default class TextField extends Component {
   onChange = event => {

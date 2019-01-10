@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import { Input } from '@voussoir/ui/src/primitives/forms';
+import { Input } from '@arch-ui/input';
 import type { FilterProps } from '../../../types';
 
 type Props = FilterProps<string>;

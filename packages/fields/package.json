@@ -7,6 +7,16 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
+    "@arch-ui/button": "^0.0.1",
+    "@arch-ui/controls": "^0.0.1",
+    "@arch-ui/day-picker": "^0.0.1",
+    "@arch-ui/input": "^0.0.1",
+    "@arch-ui/layout": "^0.0.1",
+    "@arch-ui/lozenge": "^0.0.1",
+    "@arch-ui/popout": "^0.0.1",
+    "@arch-ui/select": "^0.0.1",
+    "@arch-ui/theme": "^0.0.1",
+    "@arch-ui/typography": "^0.0.1",
     "@emotion/core": "^10.0.4",
     "@voussoir/access-control": "^0.4.0",
     "@voussoir/adapter-mongoose": "^1.0.0",

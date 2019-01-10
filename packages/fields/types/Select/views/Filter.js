@@ -3,8 +3,9 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Component, Fragment } from 'react';
-import { OptionRenderer, Radio, RadioGroup, Select } from '@voussoir/ui/src/primitives/filters';
-import { gridSize } from '@voussoir/ui/src/theme';
+import Select from '@arch-ui/select';
+import { OptionRenderer, Radio, RadioGroup } from '@voussoir/ui/src/primitives/filters';
+import { gridSize } from '@arch-ui/theme';
 import type { FilterProps } from '../../../types';
 
 const EventCatcher = props => (

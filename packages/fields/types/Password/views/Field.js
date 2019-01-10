@@ -3,11 +3,11 @@ import { jsx } from '@emotion/core';
 import { Component, createRef } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
-import { Input } from '@voussoir/ui/src/primitives/forms';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { Input } from '@arch-ui/input';
+import { FlexGroup } from '@arch-ui/layout';
+import { Button } from '@arch-ui/button';
 import { EyeIcon, LockIcon } from '@voussoir/icons';
-import { A11yText } from '@voussoir/ui/src/primitives/typography';
+import { A11yText } from '@arch-ui/typography';
 
 export default class PasswordField extends Component {
   focusTarget = createRef();

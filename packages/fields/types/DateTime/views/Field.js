@@ -4,10 +4,10 @@ import { jsx } from '@emotion/core';
 import { format } from 'date-fns';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
-import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { Button } from '@arch-ui/button';
 import { DateTimePicker } from '@voussoir/ui/src/primitives/forms';
-import { Popout } from '@voussoir/ui/src/primitives/modals';
-import { gridSize } from '@voussoir/ui/src/theme';
+import Popout from '@arch-ui/popout';
+import { gridSize } from '@arch-ui/theme';
 import { parseDate, stringifyDate } from './utils';
 
 type Props = {

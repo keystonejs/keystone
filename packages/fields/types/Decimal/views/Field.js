@@ -6,7 +6,7 @@ import {
   FieldInput,
   Currency,
 } from '@voussoir/ui/src/primitives/fields';
-import { Input } from '@voussoir/ui/src/primitives/forms';
+import { Input } from '@arch-ui/input';
 
 export default class TextField extends Component {
   onChange = event => {
