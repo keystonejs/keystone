@@ -3,7 +3,7 @@ import * as React from 'react';
 import { parse } from 'date-fns';
 import { DayPicker, type YearPickerType } from './DayPicker';
 import { Input } from '@arch-ui/input';
-import { Select } from '@arch-ui/select';
+import Select from '@arch-ui/select';
 
 type Props = {
   /** Field disabled */

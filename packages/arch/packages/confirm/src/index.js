@@ -69,7 +69,7 @@ type Props = {
   attachTo: HTMLElement,
   children: Node,
   component: ComponentType<*> | string,
-  onClose: (*) => void,
+  onClose?: (*) => void,
   onKeyDown: (*) => void,
   transitionState: TransitionState,
   width: number,

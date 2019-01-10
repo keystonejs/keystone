@@ -1,6 +1,6 @@
 // @flow
 
-import React, { cloneElement, type ComponentType, type Element } from 'react';
+import React, { cloneElement, type AbstractComponent, type Element } from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
 export const transitionDurationMs = 220;
@@ -26,16 +26,15 @@ export const TransitionProvider = ({ children, isOpen, ...props }: ProviderProps
     ) : null}
   </TransitionGroup>
 );
-export const withTransitionState = (Comp: ComponentType<*>) => ({
+export const withTransitionState = <Config: {}>(
+  Comp: AbstractComponent<Config>
+): AbstractComponent<$Diff<Config, { transitionState: TransitionState }>> => ({
   isOpen,
   ...props
-}: ProviderProps) => {
+}) => {
   return (
     <TransitionProvider isOpen={isOpen}>
-      {state => (
-        // $FlowFixMe
-        <Comp transitionState={state} {...props} />
-      )}
+      {state => <Comp transitionState={state} {...props} />}
     </TransitionProvider>
   );
 };

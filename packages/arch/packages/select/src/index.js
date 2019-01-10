@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react';
+import { useMemo } from 'react';
 import ReactSelect from 'react-select';
 import { colors } from '@arch-ui/theme';
 
@@ -74,8 +75,12 @@ const selectStyles = {
   },
   menuPortal: p => ({ ...p, zIndex: 3 }),
 };
-const Select = ({ innerRef, ...props }: { innerRef?: React.Ref<*> }) => (
-  <ReactSelect ref={innerRef} styles={selectStyles} {...props} />
+const Select = ({ innerRef, styles, ...props }: { innerRef?: React.Ref<*>, styles?: Object }) => (
+  <ReactSelect
+    ref={innerRef}
+    styles={useMemo(() => ({ ...selectStyles, ...styles }), [styles])}
+    {...props}
+  />
 );
 
 export default Select;

@@ -1,4 +1,5 @@
 // @flow
+import type { Node } from 'react';
 export type CountArgs = {
   end: number,
   pageSize: number,
