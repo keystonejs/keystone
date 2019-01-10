@@ -1,9 +1,7 @@
 // @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import * as React from 'react';
-import { Children, useMemo } from 'react';
-import ReactSelect, { components as reactSelectComponents } from 'react-select';
+import { Children } from 'react';
 import {
   CheckboxGroup as _CheckboxGroup,
   Checkbox as _Checkbox,
@@ -11,7 +9,7 @@ import {
   Radio as _Radio,
 } from 'react-radios';
 
-import { colors, gridSize } from '@arch-ui/theme';
+import { colors } from '@arch-ui/theme';
 import { CheckboxPrimitive, RadioPrimitive } from '@arch-ui/controls';
 import { FlexGroup } from '@arch-ui/layout';
 
