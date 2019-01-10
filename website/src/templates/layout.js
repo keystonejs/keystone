@@ -1,6 +1,6 @@
-import React from 'react';
-/* @jsx jsx */
 import { jsx, Global, css } from '@emotion/core';
+
+/** @jsx jsx */
 
 import { colors } from '../styles';
 
@@ -45,36 +45,36 @@ const Layout = ({ children }) => (
       }}
     >
       <aside
-        css={css`
-          background: ${colors.B.A20};
-          height: calc(100vh - 66px);
-          overflow: scroll;
-          padding: 16px;
-          box-sizing: border-box;
-          border-right: 1px solid ${colors.B.A20};
+        css={css({
+          background: colors.B.A20,
+          height: 'calc(100vh - 66px)',
+          overflow: 'scroll',
+          padding: 16,
+          boxSizing: 'border-box',
+          borderRight: `1px solid ${colors.B.A20}`,
 
-          @media all and (min-width: 600px) {
-            flex: 1 0 0;
-          }
+          '@media all and (min-width: 600px)': {
+            flex: '1 0 0',
+          },
 
-          @media all and (min-width: 800px) {
-            order: 1;
-          }
-        `}
+          '@media all and (min-width: 800px)': {
+            order: 1,
+          },
+        })}
       >
         <Sidebar />
       </aside>
       <main
-        css={css`
-          height: calc(100vh - 66px);
-          overflow: scroll;
-          background: ${colors.B.A10};
+        css={css({
+          height: 'calc(100vh - 66px)',
+          overflow: 'scroll',
+          background: colors.B.A10,
 
-          @media all and (min-width: 800px) {
-            flex: 3 0px;
-            order: 2;
-          }
-        `}
+          '@media all and (min-width: 800px)': {
+            flex: '3 0px',
+            order: 2,
+          },
+        })}
       >
         <div css={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>{children}</div>
         <Footer />

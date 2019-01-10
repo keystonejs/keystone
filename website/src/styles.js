@@ -1,4 +1,3 @@
-import React from 'react';
 import Styled from '@emotion/styled';
 
 export const colors = {

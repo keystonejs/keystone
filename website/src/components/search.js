@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Link } from 'gatsby';
 import { jsx } from '@emotion/core';
 
 import { colors } from '../styles';
 
-// @jsx jsx
+/** @jsx jsx */
 
 // Search component
 export default class Search extends Component {

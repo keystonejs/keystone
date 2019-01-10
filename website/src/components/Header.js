@@ -1,4 +1,3 @@
-import React from 'react';
 import { jsx } from '@emotion/core';
 import { Link } from 'gatsby';
 
@@ -7,7 +6,7 @@ import Search from '../components/search';
 
 import { colors } from '../styles';
 
-/* @jsx jsx */
+/** @jsx jsx */
 
 const Logo = () => (
   <Link

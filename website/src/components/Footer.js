@@ -1,9 +1,8 @@
-import React from 'react';
-import { jsx, css } from '@emotion/core';
+import { jsx } from '@emotion/core';
 
 import { colors } from '../styles';
 
-// @jsx jsx
+/** @jsx jsx */
 
 const Footer = () => (
   <footer

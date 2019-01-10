@@ -1,4 +1,3 @@
-import React from 'react';
 import { graphql, Link } from 'gatsby';
 import MDXRenderer from 'gatsby-mdx/mdx-renderer';
 import { MDXProvider } from '@mdx-js/tag';
@@ -9,7 +8,7 @@ import { colors } from '../styles';
 
 import Layout from '../templates/layout';
 
-/* @jsx jsx */
+/** @jsx jsx */
 
 const linkStyles = {
   textDecoration: 'none',
@@ -21,7 +20,6 @@ const linkStyles = {
   },
 };
 
-import Search from '../components/search';
 import mdComponents from '../components/markdown';
 
 export default function Template({

@@ -1,10 +1,9 @@
-import React from 'react';
 import { StaticQuery, graphql, Link } from 'gatsby';
 
 import { colors } from '../styles';
-import { jsx, css } from '@emotion/core';
+import { jsx } from '@emotion/core';
 
-// @jsx jsx
+/** @jsx jsx */
 
 const prettyName = node => {
   let pretty = node.path

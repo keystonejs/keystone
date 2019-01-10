@@ -1,7 +1,7 @@
-import React from 'react';
 import { Link } from 'gatsby';
-/* @jsx jsx */
 import { jsx, Global } from '@emotion/core';
+
+/** @jsx jsx */
 
 import { colors, KSButton } from '../styles';
 
@@ -99,7 +99,7 @@ const GetStartedRightNow = () => (
   </div>
 );
 
-export default ({ data }) => (
+export default () => (
   <>
     <Global
       styles={{
