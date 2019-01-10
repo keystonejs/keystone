@@ -1,8 +1,7 @@
 // @flow
 /** @jsx jsx */
 
-// $FlowFixMe
-import { Fragment, type Ref, forwardRef } from 'react';
+import { Fragment, type Ref, forwardRef, type AbstractComponent } from 'react';
 import ReactSelect from 'react-select';
 import { jsx } from '@emotion/core';
 
@@ -42,7 +41,10 @@ export const buttonAndInputBase = {
 // ------------------------------
 
 type InputProps = { isMultiline?: boolean, disabled?: boolean };
-export const Input = forwardRef(({ isMultiline, ...props }: InputProps, ref) => {
+export const Input: AbstractComponent<
+  InputProps,
+  HTMLInputElement | HTMLTextAreaElement
+> = forwardRef(({ isMultiline, ...props }: InputProps, ref) => {
   const css = {
     ...buttonAndInputBase,
     backgroundColor: props.disabled ? colors.N10 : 'white',
@@ -70,6 +72,7 @@ export const Input = forwardRef(({ isMultiline, ...props }: InputProps, ref) => 
   return isMultiline ? (
     <textarea ref={ref} css={{ ...css, lineHeight: 'inherit', height: 'auto' }} {...props} />
   ) : (
+    // $FlowFixMe
     <input ref={ref} css={css} {...props} />
   );
 });

@@ -16,9 +16,9 @@ class CloudinaryImage extends File {
   getFileUploadType() {
     return 'Upload';
   }
-  get gqlAuxTypes() {
+  getGqlAuxTypes() {
     return [
-      ...super.gqlAuxTypes,
+      ...super.getGqlAuxTypes(),
       `
       """Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
       All options are strings as they ultimately end up in a URL."""

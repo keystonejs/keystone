@@ -49,11 +49,10 @@ export default class EditFilterPopout extends Component<Props, State> {
 
     return (
       <PopoutForm target={target} headerTitle={headerTitle} onSubmit={this.onSubmit} showFooter>
-        {({ ref, recalcHeight }) => (
+        {({ ref }) => (
           <div ref={ref} style={{ padding: POPOUT_GUTTER }}>
             <Filter
               innerRef={this.getFilterRef}
-              recalcHeight={recalcHeight}
               field={filter.field}
               filter={filter}
               onChange={this.onChangeFilter}

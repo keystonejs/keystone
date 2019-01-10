@@ -4,11 +4,13 @@
 
 .*/packages/arch.*
 .*/node_modules/cypress/.*
+.*/packages/website/.cache/.*
 
 [include]
 
 [untyped]
 
+.*/node_modules/react-select/.*
 .*/node_modules/graphql/.*
 
 [libs]

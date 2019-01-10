@@ -64,14 +64,18 @@ const flattenNestedErrors = error =>
     []
   );
 
-module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlPath }) {
+module.exports = function createGraphQLMiddleware(
+  keystone,
+  { apiPath, graphiqlPath, apolloConfig }
+) {
   const app = express();
 
   // add the Admin GraphQL API
   const server = new ApolloServer({
-    ...keystone.getAdminSchema(),
-    maxFileSize: 200 * 1024 * 1024, // TODO: Make configurable
+    maxFileSize: 200 * 1024 * 1024,
     maxFiles: 5,
+    ...apolloConfig,
+    ...keystone.getAdminSchema(),
     context: ({ req }) => keystone.getAccessContext(req),
     formatError: error => {
       const { originalError } = error;

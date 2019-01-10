@@ -11,7 +11,6 @@ type Props = {
   filter: Object,
   innerRef: Ref<*>,
   onChange: Event => void,
-  recalcHeight: () => void,
 };
 
 type State = {
@@ -30,14 +29,6 @@ export default class CalendarDayFilterView extends Component<Props, State> {
     onChange(value);
     this.setState({ value });
   };
-
-  componentDidUpdate(prevProps: Props) {
-    const { filter } = this.props;
-
-    if (prevProps.filter !== filter) {
-      this.props.recalcHeight();
-    }
-  }
 
   render() {
     const { filter, field } = this.props;
