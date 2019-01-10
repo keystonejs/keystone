@@ -1,10 +1,9 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 import ApolloClient, { gql } from 'apollo-boost';
 import { Mutation, ApolloProvider, Query } from 'react-apollo';
 import { jsx, Global } from '@emotion/core';
 
-/* @jsx jsx */
+/** @jsx jsx */
 
 const tint = (opacity, darkness) =>
   `hsla(261, 84%, ${darkness == 'dark' ? '14%' : darkness == 'light' ? '95%' : '60%'}, ${opacity ||

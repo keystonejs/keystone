@@ -4,4 +4,6 @@ dist
 flow-typed
 reports
 test-projects/**/cypress
+demo-projects/**/cypress
 website/.cache/**/*
+website/public/**/*

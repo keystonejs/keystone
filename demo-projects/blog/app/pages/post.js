@@ -1,4 +1,3 @@
-import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 
@@ -8,13 +7,13 @@ import { ApolloProvider, Query } from 'react-apollo';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
-import { jsx, css } from '@emotion/core';
+import { jsx } from '@emotion/core';
 import { format } from 'date-fns';
 
 import Layout from '../templates/layout';
 import Header from '../components/header';
 
-/* @jsx jsx */
+/** @jsx jsx */
 
 const fetch = require('node-fetch');
 

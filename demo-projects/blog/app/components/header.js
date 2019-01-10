@@ -1,8 +1,7 @@
-import React from 'react';
 import Link from 'next/link';
-import { jsx, css } from '@emotion/core';
+import { jsx } from '@emotion/core';
 
-/* @jsx jsx */
+/** @jsx jsx */
 
 export default () => (
   <header
