@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 
-// TODO: use pretty checkboxes - these only work in a CheckGroup situation.
-// import { Checkbox } from '@voussoir/ui/src/primitives/forms';
+import { CheckboxPrimitive } from '@arch-ui/controls';
 
 export default class TextField extends Component {
   onChange = event => {
@@ -18,10 +19,9 @@ export default class TextField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
-        <FieldInput>
-          <input
+        <FieldInput css={{ height: 35 }}>
+          <CheckboxPrimitive
             autoFocus={autoFocus}
-            type="checkbox"
             checked={checked}
             onChange={this.onChange}
             id={htmlID}
