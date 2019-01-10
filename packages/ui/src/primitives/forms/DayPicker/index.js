@@ -129,8 +129,6 @@ export const DayPicker = ({
     [shouldChangeScrollPositionRef, setDate]
   );
 
-  // const onSelectedChange = onSelectedChange;
-
   useLayoutEffect(
     () => {
       if (shouldChangeScrollPositionRef.current) {
