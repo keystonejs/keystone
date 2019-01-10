@@ -7,7 +7,7 @@ import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@voussoir/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { A11yText } from '@arch-ui/typography';
 import { Alert } from '@arch-ui/alert';
-import { OptionPrimitive } from '@arch-ui/filters';
+import { OptionPrimitive } from '@arch-ui/options';
 import Select from '@arch-ui/select';
 
 import FieldSelect from '../FieldSelect';

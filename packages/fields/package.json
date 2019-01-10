@@ -15,6 +15,7 @@
     "@arch-ui/input": "^0.0.1",
     "@arch-ui/layout": "^0.0.1",
     "@arch-ui/lozenge": "^0.0.1",
+    "@arch-ui/options": "^0.0.1",
     "@arch-ui/popout": "^0.0.1",
     "@arch-ui/select": "^0.0.1",
     "@arch-ui/theme": "^0.0.1",

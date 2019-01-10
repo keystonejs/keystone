@@ -22,6 +22,7 @@
     "@arch-ui/loading": "^0.0.1",
     "@arch-ui/lozenge": "^0.0.1",
     "@arch-ui/navbar": "^0.0.1",
+    "@arch-ui/options": "^0.0.1",
     "@arch-ui/pagination": "^0.0.1",
     "@arch-ui/pill": "^0.0.1",
     "@arch-ui/popout": "^0.0.1",

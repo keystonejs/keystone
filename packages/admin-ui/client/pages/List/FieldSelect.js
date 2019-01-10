@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { OptionRenderer } from '@arch-ui/filters';
+import { Options } from '@arch-ui/options';
 import { arrayToObject } from '@voussoir/utils';
 
 function isOptionSelected(opt, selected) {
@@ -52,7 +52,7 @@ export default class FieldSelect extends Component<FieldSelectProps> {
 
   render() {
     return (
-      <OptionRenderer
+      <Options
         isOptionSelected={isOptionSelected}
         getOptionValue={getOptionValue}
         {...this.props}

@@ -6,7 +6,7 @@ import * as React from 'react';
 // Hidden Input
 // ------------------------------
 
-export const HiddenInput = ({ innerRef, ...props }: { innerRef?: React.Ref<*> }) => (
+export const HiddenInput = ({ innerRef, ...props }: { innerRef?: React.Ref<'input'> }) => (
   <input
     ref={innerRef}
     tabIndex="-1"
