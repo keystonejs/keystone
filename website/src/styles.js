@@ -1,5 +1,3 @@
-import Styled from '@emotion/styled';
-
 export const colors = {
   B: {
     A95: 'rgba(38, 132, 255, 0.95)',
@@ -27,31 +25,3 @@ export const colors = {
     text: 'rgb(23, 43, 77)',
   },
 };
-
-export const KSButton = Styled.a(props => ({
-  textDecoration: 'none',
-  boxSizing: 'border-box',
-  fontSize: '1.25rem',
-  padding: '1rem 2rem',
-  borderRadius: 6,
-  margin: '0.5rem',
-  transition: 'transform linear 120ms',
-  '&:hover': {
-    transform: 'scale(1.025)',
-  },
-  '&:active': {
-    opacity: 0.8,
-  },
-
-  border: props.onDark ? `2px solid rgba(255,255,255,0.4);` : `2px solid ${colors.B.base}`,
-  background: props.primary && props.onDark ? 'white' : props.primary ? colors.B.base : 'none',
-
-  color:
-    props.primary && props.onDark
-      ? colors.B.base
-      : props.primary
-      ? 'white'
-      : props.onDark
-      ? 'white'
-      : colors.B.base,
-}));

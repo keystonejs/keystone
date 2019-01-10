@@ -4,10 +4,11 @@ import { jsx, Global } from '@emotion/core';
 
 /** @jsx jsx */
 
-import { colors, KSButton } from '../styles';
+import { colors } from '../styles';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Button from '../components/Button';
 
 //import { colors } from '@voussoir/ui/src/theme';
 
@@ -37,12 +38,12 @@ const Hero = () => (
           alignItems: 'center',
         }}
       >
-        <KSButton primary onDark href="#getStartedNow">
+        <Button primary onDark href="#getStartedNow">
           Get Started
-        </KSButton>
-        <KSButton onDark href="#">
+        </Button>
+        <Button onDark href="#">
           Try the Demo
-        </KSButton>
+        </Button>
       </div>
     </div>
   </div>
@@ -90,11 +91,11 @@ const GetStartedRightNow = () => (
         </div>
       </code>
       <div css={{ display: 'inline-flex' }}>
-        <KSButton primary href="/tutorials/getting-started">
+        <Button primary href="/tutorials/getting-started">
           Read Docs
-        </KSButton>
+        </Button>
 
-        <KSButton href="#">View on Github</KSButton>
+        <Button href="#">View on Github</Button>
       </div>
     </div>
   </div>
