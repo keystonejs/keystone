@@ -169,6 +169,12 @@ describe('non-matching filter', () => {
           data: {
             errors: [
               {
+                message: 'Unable to connect a Event.group<Group>',
+                path: ['createEvent', 'group'],
+                name: 'Error',
+              },
+              {
+                name: 'AccessDeniedError',
                 path: ['createEvent', 'group', 'connect'],
               },
             ],
@@ -212,6 +218,12 @@ describe('non-matching filter', () => {
           data: {
             errors: [
               {
+                message: 'Unable to connect a Event.group<Group>',
+                path: ['updateEvent', 'group'],
+                name: 'Error',
+              },
+              {
+                name: 'AccessDeniedError',
                 path: ['updateEvent', 'group', 'connect'],
               },
             ],
@@ -256,8 +268,13 @@ describe('with access control', () => {
             data: {
               errors: [
                 {
-                  path: ['createEventToGroupNoRead', 'group', 'connect'],
+                  message: 'Unable to connect a EventToGroupNoRead.group<GroupNoRead>',
+                  path: ['createEventToGroupNoRead', 'group'],
+                  name: 'Error',
+                },
+                {
                   name: 'AccessDeniedError',
+                  path: ['createEventToGroupNoRead', 'group', 'connect'],
                 },
               ],
             },
@@ -315,8 +332,13 @@ describe('with access control', () => {
             data: {
               errors: [
                 {
-                  path: ['updateEventToGroupNoRead', 'group', 'connect'],
+                  message: 'Unable to connect a EventToGroupNoRead.group<GroupNoRead>',
+                  path: ['updateEventToGroupNoRead', 'group'],
+                  name: 'Error',
+                },
+                {
                   name: 'AccessDeniedError',
+                  path: ['updateEventToGroupNoRead', 'group', 'connect'],
                 },
               ],
             },

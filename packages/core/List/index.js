@@ -252,12 +252,19 @@ module.exports = class List {
       },
     };
   }
-  get gqlTypes() {
+
+  getGqlTypes({ skipAccessControl = false } = {}) {
     // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
     const types = [];
-    if (this.access.read || this.access.create || this.access.update || this.access.delete) {
+    if (
+      skipAccessControl ||
+      this.access.read ||
+      this.access.create ||
+      this.access.update ||
+      this.access.delete
+    ) {
       types.push(
-        ...flatten(this.fields.map(field => field.gqlAuxTypes)),
+        ...flatten(this.fields.map(field => field.getGqlAuxTypes({ skipAccessControl }))),
         `
         type ${this.gqlNames.outputTypeName} {
           id: ID
@@ -271,7 +278,7 @@ module.exports = class List {
           _label_: String
           ${flatten(
             this.fields
-              .filter(field => field.access.read) // If it's globally set to false, makes sense to never show it
+              .filter(field => skipAccessControl || field.access.read) // If it's globally set to false, makes sense to never show it
               .map(field => field.gqlOutputFields)
           ).join('\n')}
         }
@@ -288,7 +295,7 @@ module.exports = class List {
 
           ${flatten(
             this.fields
-              .filter(field => field.access.read) // If it's globally set to false, makes sense to never show it
+              .filter(field => skipAccessControl || field.access.read) // If it's globally set to false, makes sense to never show it
               .map(field => field.gqlQueryInputFields)
           ).join('\n')}
         }`,
@@ -300,12 +307,12 @@ module.exports = class List {
       );
     }
 
-    if (this.access.update) {
+    if (skipAccessControl || this.access.update) {
       types.push(`
         input ${this.gqlNames.updateInputName} {
           ${flatten(
             this.fields
-              .filter(field => field.access.update) // If it's globally set to false, makes sense to never let it be updated
+              .filter(field => skipAccessControl || field.access.update) // If it's globally set to false, makes sense to never let it be updated
               .map(field => field.gqlUpdateInputFields)
           ).join('\n')}
         }
@@ -318,12 +325,12 @@ module.exports = class List {
       `);
     }
 
-    if (this.access.create) {
+    if (skipAccessControl || this.access.create) {
       types.push(`
         input ${this.gqlNames.createInputName} {
           ${flatten(
             this.fields
-              .filter(field => field.access.create) // If it's globally set to false, makes sense to never let it be created
+              .filter(field => skipAccessControl || field.access.create) // If it's globally set to false, makes sense to never let it be created
               .map(field => field.gqlCreateInputFields)
           ).join('\n')}
         }
@@ -348,13 +355,15 @@ module.exports = class List {
     ];
   }
 
-  get gqlQueries() {
+  getGqlQueries({ skipAccessControl = false } = {}) {
     // All the auxiliary queries the fields want to add
-    const queries = flatten(this.fields.map(field => field.gqlAuxQueries));
+    const queries = flatten(
+      this.fields.map(field => field.getGqlAuxQueries({ skipAccessControl }))
+    );
 
     // If `read` is either `true`, or a function (we don't care what the result
     // of the function is, that'll get executed at a later time)
-    if (this.access.read) {
+    if (skipAccessControl || this.access.read) {
       queries.push(
         `
         ${this.gqlNames.listQueryName}(
@@ -454,12 +463,14 @@ module.exports = class List {
     return objMerge(this.fields.map(field => field.gqlAuxMutationResolvers));
   }
 
-  get gqlMutations() {
-    const mutations = flatten(this.fields.map(field => field.gqlAuxMutations));
+  getGqlMutations({ skipAccessControl = false } = {}) {
+    const mutations = flatten(
+      this.fields.map(field => field.getGqlAuxMutations({ skipAccessControl }))
+    );
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
-    if (this.access.create) {
+    if (skipAccessControl || this.access.create) {
       mutations.push(`
         ${this.gqlNames.createMutationName}(
           data: ${this.gqlNames.createInputName}
@@ -473,7 +484,7 @@ module.exports = class List {
       `);
     }
 
-    if (this.access.update) {
+    if (skipAccessControl || this.access.update) {
       mutations.push(`
         ${this.gqlNames.updateMutationName}(
           id: ID!
@@ -488,7 +499,7 @@ module.exports = class List {
       `);
     }
 
-    if (this.access.delete) {
+    if (skipAccessControl || this.access.delete) {
       mutations.push(`
         ${this.gqlNames.deleteMutationName}(
           id: ID!
@@ -820,8 +831,15 @@ module.exports = class List {
     });
   }
 
-  async _mapToFields(fields, action) {
-    return await resolveAllKeys(arrayToObject(fields, 'path', action));
+  _mapToFields(fields, action) {
+    return resolveAllKeys(arrayToObject(fields, 'path', action)).catch(error => {
+      if (!error.errors) {
+        throw error;
+      }
+      const errorCopy = new Error(error.message || error.toString());
+      errorCopy.errors = Object.values(error.errors);
+      throw errorCopy;
+    });
   }
 
   _fieldsFromObject(obj) {

@@ -391,7 +391,7 @@ describe('getAdminMeta()', () => {
   });
 });
 
-test('gqlTypes', () => {
+test('getGqlTypes()', () => {
   const otherInput = `input OtherRelateToOneInput {
     create: createOther
     connect: OtherWhereUniqueInput
@@ -501,7 +501,11 @@ test('gqlTypes', () => {
     data: TestCreateInput
   }`;
 
-  expect(setup({ access: true }).gqlTypes.map(s => print(gql(s)))).toEqual(
+  expect(
+    setup({ access: true })
+      .getGqlTypes()
+      .map(s => print(gql(s)))
+  ).toEqual(
     [
       otherInput,
       type,
@@ -514,38 +518,40 @@ test('gqlTypes', () => {
     ].map(s => print(gql(s)))
   );
 
-  expect(setup({ access: false }).gqlTypes.map(s => print(gql(s)))).toEqual(
-    [].map(s => print(gql(s)))
-  );
+  expect(
+    setup({ access: false })
+      .getGqlTypes()
+      .map(s => print(gql(s)))
+  ).toEqual([].map(s => print(gql(s))));
 
   expect(
-    setup({ access: { read: true, create: false, update: false, delete: false } }).gqlTypes.map(s =>
-      print(gql(s))
-    )
+    setup({ access: { read: true, create: false, update: false, delete: false } })
+      .getGqlTypes()
+      .map(s => print(gql(s)))
   ).toEqual([otherInput, type, whereInput, whereUniqueInput].map(s => print(gql(s))));
 
   expect(
-    setup({ access: { read: false, create: true, update: false, delete: false } }).gqlTypes.map(s =>
-      print(gql(s))
-    )
+    setup({ access: { read: false, create: true, update: false, delete: false } })
+      .getGqlTypes()
+      .map(s => print(gql(s)))
   ).toEqual(
     [otherInput, type, whereInput, whereUniqueInput, createInput, createManyInput].map(s =>
       print(gql(s))
     )
   );
   expect(
-    setup({ access: { read: false, create: false, update: true, delete: false } }).gqlTypes.map(s =>
-      print(gql(s))
-    )
+    setup({ access: { read: false, create: false, update: true, delete: false } })
+      .getGqlTypes()
+      .map(s => print(gql(s)))
   ).toEqual(
     [otherInput, type, whereInput, whereUniqueInput, updateInput, updateManyInput].map(s =>
       print(gql(s))
     )
   );
   expect(
-    setup({ access: { read: false, create: false, update: false, delete: true } }).gqlTypes.map(s =>
-      print(gql(s))
-    )
+    setup({ access: { read: false, create: false, update: false, delete: true } })
+      .getGqlTypes()
+      .map(s => print(gql(s)))
   ).toEqual([otherInput, type, whereInput, whereUniqueInput].map(s => print(gql(s))));
 });
 
@@ -560,8 +566,12 @@ test('getGraphqlFilterFragment', () => {
   ]);
 });
 
-test('gqlQueries', () => {
-  expect(setup({ access: true }).gqlQueries.map(normalise)).toEqual(
+test('getGqlQueries()', () => {
+  expect(
+    setup({ access: true })
+      .getGqlQueries()
+      .map(normalise)
+  ).toEqual(
     [
       `allTests(
       where: TestWhereInput
@@ -585,11 +595,17 @@ test('gqlQueries', () => {
     ].map(normalise)
   );
 
-  expect(setup({ access: false }).gqlQueries.map(normalise)).toEqual(
-    [`authenticatedTest: Test`].map(normalise)
-  );
+  expect(
+    setup({ access: false })
+      .getGqlQueries()
+      .map(normalise)
+  ).toEqual([`authenticatedTest: Test`].map(normalise));
 
-  expect(setup({ access: true }, () => false).gqlQueries.map(normalise)).toEqual(
+  expect(
+    setup({ access: true }, () => false)
+      .getGqlQueries()
+      .map(normalise)
+  ).toEqual(
     [
       `allTests(
       where: TestWhereInput
@@ -612,9 +628,11 @@ test('gqlQueries', () => {
     ].map(normalise)
   );
 
-  expect(setup({ access: false }, () => false).gqlQueries.map(normalise)).toEqual(
-    [].map(normalise)
-  );
+  expect(
+    setup({ access: false }, () => false)
+      .getGqlQueries()
+      .map(normalise)
+  ).toEqual([].map(normalise));
 });
 
 test('getFieldsRelatedTo', () => {
@@ -684,8 +702,12 @@ test('gqlAuxMutationResolvers', () => {
   expect(list.gqlAuxMutationResolvers).toEqual({});
 });
 
-test('gqlMutations', () => {
-  expect(setup({ access: true }).gqlMutations.map(normalise)).toEqual(
+test('getGqlMutations()', () => {
+  expect(
+    setup({ access: true })
+      .getGqlMutations()
+      .map(normalise)
+  ).toEqual(
     [
       `createTest(data: TestCreateInput): Test`,
       `createTests(data: [TestsCreateInput]): [Test]`,
@@ -696,17 +718,21 @@ test('gqlMutations', () => {
     ].map(normalise)
   );
 
-  expect(setup({ access: false }).gqlMutations.map(normalise)).toEqual([].map(normalise));
+  expect(
+    setup({ access: false })
+      .getGqlMutations()
+      .map(normalise)
+  ).toEqual([].map(normalise));
 
   expect(
-    setup({ access: { read: true, create: false, update: false, delete: false } }).gqlMutations.map(
-      normalise
-    )
+    setup({ access: { read: true, create: false, update: false, delete: false } })
+      .getGqlMutations()
+      .map(normalise)
   ).toEqual([].map(normalise));
   expect(
-    setup({ access: { read: false, create: true, update: false, delete: false } }).gqlMutations.map(
-      normalise
-    )
+    setup({ access: { read: false, create: true, update: false, delete: false } })
+      .getGqlMutations()
+      .map(normalise)
   ).toEqual(
     [
       `createTest(data: TestCreateInput): Test`,
@@ -714,9 +740,9 @@ test('gqlMutations', () => {
     ].map(normalise)
   );
   expect(
-    setup({ access: { read: false, create: false, update: true, delete: false } }).gqlMutations.map(
-      normalise
-    )
+    setup({ access: { read: false, create: false, update: true, delete: false } })
+      .getGqlMutations()
+      .map(normalise)
   ).toEqual(
     [
       `updateTest(id: ID! data: TestUpdateInput): Test`,
@@ -724,9 +750,9 @@ test('gqlMutations', () => {
     ].map(normalise)
   );
   expect(
-    setup({ access: { read: false, create: false, update: false, delete: true } }).gqlMutations.map(
-      normalise
-    )
+    setup({ access: { read: false, create: false, update: false, delete: true } })
+      .getGqlMutations()
+      .map(normalise)
   ).toEqual([`deleteTest(id: ID!): Test`, `deleteTests(ids: [ID!]): [Test]`].map(normalise));
 });
 

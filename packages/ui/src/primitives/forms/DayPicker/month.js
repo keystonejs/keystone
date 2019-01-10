@@ -1,7 +1,6 @@
 // @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import * as React from 'react';
 import styled from '@emotion/styled';
 import {
   isToday as isDayToday,
@@ -10,7 +9,7 @@ import {
   format,
   setMonth,
 } from 'date-fns';
-import { memo, useRef, useEffect } from '../../../new-typed-react';
+import { memo, useRef, useEffect } from 'react';
 import { colors } from '../../../theme';
 import { months, type Weeks } from './utils';
 import { WeekRow, Day } from './comps';
@@ -39,8 +38,8 @@ const TodayMarker = styled.div(({ isSelected }) => ({
   width: '1em',
 }));
 
-export const Month: React.ComponentType<Props> = memo(({ style, index, data }) => {
-  const { items, selectedDate, setSelectedDate, observer } = data;
+export const Month = memo<Props>(({ style, index, data }) => {
+  const { items, selectedDate, onSelectedChange, observer } = data;
   const ref = useRef(null);
 
   useEffect(
@@ -70,7 +69,7 @@ export const Month: React.ComponentType<Props> = memo(({ style, index, data }) =
                 id={`ks-day-${day.label}-${month}-${year}`}
                 key={day.label}
                 disabled={disabled}
-                onClick={disabled ? null : () => setSelectedDate(day.dateValue)}
+                onClick={disabled ? null : () => onSelectedChange(day.dateValue)}
                 isInteractive={!disabled}
                 isSelected={isSelected}
                 isToday={isToday}

@@ -19,7 +19,7 @@ type State = { isOpen: boolean, clientX: number, clientY: number };
 type Config = { Transition: (*) => * };
 
 function getDisplayName(C) {
-  return `withModalHandlers(${C.displayName || C.name})`;
+  return `withModalHandlers(${C.displayName || C.name || 'Component'})`;
 }
 const NOOP = () => {};
 

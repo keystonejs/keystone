@@ -50,10 +50,10 @@ test('addToMongooseSchema()', () => {
   }).toThrow(Error);
 });
 
-test('gqlAuxTypes', () => {
+test('getGqlAuxTypes()', () => {
   const impl = new Field('path', config, args);
 
-  expect(impl.gqlAuxTypes).toEqual([]);
+  expect(impl.getGqlAuxTypes()).toEqual([]);
 });
 
 test('gqlAuxFieldResolvers', () => {
@@ -62,10 +62,10 @@ test('gqlAuxFieldResolvers', () => {
   expect(impl.gqlAuxFieldResolvers).toEqual({});
 });
 
-test('gqlAuxQueries', () => {
+test('getGqlAuxQueries()', () => {
   const impl = new Field('path', config, args);
 
-  expect(impl.gqlAuxQueries).toEqual([]);
+  expect(impl.getGqlAuxQueries()).toEqual([]);
 });
 
 test('gqlAuxQueryResolvers', () => {
@@ -74,10 +74,10 @@ test('gqlAuxQueryResolvers', () => {
   expect(impl.gqlAuxQueryResolvers).toEqual({});
 });
 
-test('gqlAuxMutations', () => {
+test('getGqlAuxMutations()', () => {
   const impl = new Field('path', config, args);
 
-  expect(impl.gqlAuxMutations).toEqual([]);
+  expect(impl.getGqlAuxMutations()).toEqual([]);
 });
 
 test('gqlAuxMutationResolvers', () => {

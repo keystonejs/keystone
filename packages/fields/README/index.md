@@ -46,7 +46,6 @@ There are currently three views that can be provided:
 ```jsx
 type FilterProps<Value> = {
   innerRef: React.Ref<*>,
-  recalcHeight: () => mixed,
   value: Value,
   onChange: Value => mixed,
   field: Field,

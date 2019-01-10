@@ -7,13 +7,6 @@ import type { FilterProps } from '../../../types';
 type Props = FilterProps<string>;
 
 export default class TextFilterView extends Component<Props> {
-  componentDidUpdate(prevProps: Props) {
-    const { filter } = this.props;
-
-    if (prevProps.filter !== filter) {
-      this.props.recalcHeight();
-    }
-  }
   handleChange = (event: Object) => {
     const value = event.target.value;
     if (/^-?\d*\.?\d*$/.test(value)) {

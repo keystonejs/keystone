@@ -5,7 +5,6 @@ import { jsx } from '@emotion/core';
 import {
   PureComponent,
   Fragment,
-  // $FlowFixMe
   forwardRef,
   type ComponentType,
   type Element,
@@ -109,7 +108,7 @@ type Props = {
 
 class ModalDialog extends PureComponent<Props> {
   static defaultProps = {
-    attachTo: document.body,
+    attachTo: ((document.body: any): HTMLElement),
     closeOnBlanketClick: false,
     component: 'div',
     width: 560,
