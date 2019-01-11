@@ -19,19 +19,12 @@ const keystone = new Keystone({
 keystone.createList('Todo', {
   fields: {
     name: { type: Text },
-    dateAdded: { type: DateTime },
-  },
-  adminConfig: {
-    defaultPageSize: 20,
-    defaultColumns: 'name, dateAdded',
-    defaultSort: 'dateAdded',
   },
   labelResolver: item => item.name,
 });
 
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
-  sortListsAlphabetically: true,
 });
 
 const server = new WebServer(keystone, {
@@ -41,18 +34,6 @@ const server = new WebServer(keystone, {
 });
 
 const bundler = new Bundler(path.join(staticPath, 'index.html'));
-
-// delete this so you don't accidently nuke your database
-server.app.get('/reset-db', (req, res) => {
-  const reset = async () => {
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
-    await keystone.createItems(initialData);
-    res.redirect(admin.adminPath);
-  };
-  reset();
-});
 
 server.app.use(bundler.middleware());
 

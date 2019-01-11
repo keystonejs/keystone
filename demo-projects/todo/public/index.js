@@ -1,9 +1,7 @@
+import React from 'react';
 import ReactDOM from 'react-dom';
 import ApolloClient, { gql } from 'apollo-boost';
 import { Mutation, ApolloProvider, Query } from 'react-apollo';
-import { jsx, Global } from '@emotion/core';
-
-/** @jsx jsx */
 
 const tint = (opacity, darkness) =>
   `hsla(261, 84%, ${darkness == 'dark' ? '14%' : darkness == 'light' ? '95%' : '60%'}, ${opacity ||
@@ -68,7 +66,7 @@ const Form = () => {
           >
             <input
               placeholder="Add new item"
-              css={{
+              style={{
                 color: tint(1, 'dark'),
                 padding: '12px 16px',
                 fontSize: '1.25em',
@@ -76,9 +74,8 @@ const Form = () => {
                 borderRadius: 6,
                 border: 0,
                 background: tint(0.3),
-                '::placeholder': { color: tint() },
-                ':focus': { outlineColor: tint() },
               }}
+              className="addItem"
               ref={node => {
                 input = node;
               }}
@@ -107,7 +104,7 @@ const Item = data => (
   >
     {removeTodo => (
       <li
-        css={{
+        style={{
           padding: '32px 16px',
           fontSize: '1.25em',
           fontWeight: 600,
@@ -119,21 +116,19 @@ const Item = data => (
       >
         {data.todo.name}
         <button
-          css={{
+          style={{
             background: 0,
             border: 0,
             padding: 0,
-
-            '&:focus': {
-              outline: 'none',
-            },
+            cursor: 'pointer',
           }}
+          className="trash"
           onClick={e => {
             e.preventDefault();
             removeTodo({ variables: { id: data.todo.id } });
           }}
         >
-          <svg viewBox="0 0 14 16" css={{ width: 20, height: 20, fill: tint() }}>
+          <svg viewBox="0 0 14 16" style={{ width: 20, height: 20, fill: tint() }}>
             <title>Delete this item</title>
             <path
               fillRule="evenodd"
@@ -148,25 +143,22 @@ const Item = data => (
 
 const App = () => (
   <ApolloProvider client={client}>
-    <Global
-      styles={{
-        body: {
-          background: tint(1, 'light'),
-          color: tint(1, 'dark'),
-          fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
-        },
-        '*': { boxSizing: 'border-box' },
+    <div
+      style={{
+        padding: 50,
+        maxWidth: 450,
+        color: tint(1, 'dark'),
+        fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
       }}
-    />
-    <div css={{ padding: 50, maxWidth: 450 }}>
-      <h1 css={{ textTransform: 'uppercase', fontWeight: 900, marginTop: 0 }}>To-Do List</h1>
+    >
+      <h1 style={{ textTransform: 'uppercase', fontWeight: 900, marginTop: 0 }}>To-Do List</h1>
       <Form />
       <Query query={GET_TODOS}>
         {({ data, loading, error }) => {
           if (loading) return <p>loading...</p>;
           if (error) return <p>Error!</p>;
           return (
-            <ul css={{ listStyle: 'none', padding: 0 }}>
+            <ul style={{ listStyle: 'none', padding: 0 }}>
               {data.allTodos
                 .slice(0)
                 .reverse()
