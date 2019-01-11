@@ -116,7 +116,7 @@ const DayPicker = (props: Props) => {
       getWeeksInMonth,
       getDatePrevMonth,
       getDateNextMonth,
-      setSelectedDate,
+      onSelectedChange,
       setDate,
       selectedDate,
       date,
@@ -130,7 +130,7 @@ const DayPicker = (props: Props) => {
       setDate(getDateNextMonth());
     };
     const setDatePrevMonth = () => setDate(getDatePrevMonth());
-    const selectDay = _date => () => setSelectedDate(_date);
+    const selectDay = _date => () => onSelectedChange(_date);
 
     const isSelectedDay = _date => getFormattedDate(selectedDate) === getFormattedDate(_date);
     const isDisabled = dateValue => !isSameMonth(date, dateValue);
