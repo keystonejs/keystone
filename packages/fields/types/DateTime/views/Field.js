@@ -20,7 +20,14 @@ type Props = {
 const CalendarDayField = ({ autoFocus, field, onChange, item }: Props) => {
   const value = item[field.path];
   const parsedDate = value ? parseDate(value) : { date: '', time: '', offset: '' };
-  const defaultParsedDate = value ? parseDate(value) : parseDate(new Date().toISOString());
+  const defaultDate = new Date();
+
+  defaultDate.setUTCHours(0);
+  defaultDate.setUTCMinutes(0);
+  defaultDate.setUTCSeconds(0);
+  defaultDate.setUTCMilliseconds(0);
+
+  const defaultParsedDate = value ? parseDate(value) : parseDate(defaultDate.toISOString());
 
   let handleDayChange = day => {
     onChange(field, stringifyDate({ ...defaultParsedDate, date: format(day, 'YYYY-MM-DD') }));

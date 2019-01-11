@@ -25,7 +25,6 @@ type Props = {
 const options = [
   '-12',
   '-11',
-  '-11',
   '-10',
   '-09',
   '-08',
@@ -64,7 +63,6 @@ export const DateTimePicker = (props: Props) => {
     yearPickerType,
   } = props;
   const TODAY = new Date();
-
   return (
     <div id={htmlID}>
       <DayPicker
