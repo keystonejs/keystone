@@ -49,7 +49,7 @@ const Form = () => {
       update={(cache, { data: { createTodo } }) => {
         const { allTodos } = cache.readQuery({ query: GET_TODOS });
 
-        allTodos.unshift(createTodo);
+        allTodos.push(createTodo);
 
         cache.writeQuery({
           query: GET_TODOS,
@@ -167,9 +167,12 @@ const App = () => (
           if (error) return <p>Error!</p>;
           return (
             <ul css={{ listStyle: 'none', padding: 0 }}>
-              {data.allTodos.map((todo, index) => (
-                <Item todo={todo} key={index} />
-              ))}
+              {data.allTodos
+                .slice(0)
+                .reverse()
+                .map((todo, index) => (
+                  <Item todo={todo} key={index} />
+                ))}
             </ul>
           );
         }}

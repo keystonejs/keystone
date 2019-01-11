@@ -22,6 +22,55 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const ADD_COMMENT = gql`
+  mutation AddComment($body: String!, $postId: ID!, $authorId: ID!) {
+    createComment(
+      data: {
+        body: $body
+        author: { connect: { id: $authorId } }
+        postId: { connect: { id: $postId } }
+      }
+    ) {
+      id
+    }
+  }
+`;
+
+const Comments = ({ data }) => (
+  <div>
+    <h2>Comments</h2>
+    {data.allComments.length
+      ? data.allComments.map(comment => (
+          <div
+            css={{
+              marginBottom: 32,
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <img
+              src="https://randomuser.me/api/portraits/men/32.jpg"
+              css={{ width: 48, height: 48, borderRadius: 32 }}
+            />
+            <div css={{ marginLeft: 16 }}>
+              <p
+                css={{
+                  color: 'hsl(200,20%,50%)',
+                  fontSize: '0.8em',
+                  fontWeight: 800,
+                  margin: '8px 0',
+                }}
+              >
+                {comment.author.name} on {format(comment.posted, 'DD MMM YYYY')}
+              </p>
+              <p css={{ margin: '8px 0' }}>{comment.body}</p>
+            </div>
+          </div>
+        ))
+      : 'No comments yet'}
+  </div>
+);
+
 export default ({
   url: {
     query: { id },
@@ -37,27 +86,32 @@ export default ({
         <Query
           query={gql`
             {
-                allPosts(where: { id: "${id}" }) {
-                    title
-                    body
-                    posted
-                    image {
-                      publicUrl
-                    }
-                    author {
-                      name
-                    }
-                }
+              allPosts(where: { id: "${id}" }) {
+                  title
+                  body
+                  posted
+                  image {
+                    publicUrl
+                  }
+                  author {
+                    name
+                  }
+              }
 
-                allComments(where: {originalPost: {id: "${id}"}}){
-                    body
-                    author {
-                      name
-                    }
-                    posted
-                }
-            }
-            `}
+              allComments(where: {originalPost: {id: "${id}"}}){
+                  body
+                  author {
+                    name
+                  }
+                  posted
+              }
+
+              allUsers {
+                name
+                email
+                id
+              }
+            }`}
         >
           {({ data, loading, error }) => {
             if (loading) return <p>loading...</p>;
@@ -103,46 +157,76 @@ export default ({
                   </div>
                 </div>
 
-                <div>
-                  <h2>Comments</h2>
-                  {data.allComments.length
-                    ? data.allComments.map(comment => (
-                        <div
-                          css={{
-                            marginBottom: 32,
-                            display: 'flex',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <img
-                            src="https://randomuser.me/api/portraits/men/32.jpg"
-                            css={{ width: 48, height: 48, borderRadius: 32 }}
-                          />
-                          <div css={{ marginLeft: 16 }}>
-                            <p
-                              css={{
-                                color: 'hsl(200,20%,50%)',
-                                fontSize: '0.8em',
-                                fontWeight: 800,
-                                margin: '8px 0',
-                              }}
-                            >
-                              {comment.author.name} on {format(comment.posted, 'DD MMM YYYY')}
-                            </p>
-                            <p css={{ margin: '8px 0' }}>{comment.body}</p>
-                          </div>
-                        </div>
-                      ))
-                    : 'No comments yet'}
-                </div>
+                <Comments data={data} />
 
                 <div>
                   <h2>Add new Comment</h2>
-                  <form>
-                    <label>
-                      Name:
-                      <input type="text" name="name" />
-                    </label>
+                  <form
+                    onSubmit={e => {
+                      e.preventDefault();
+                      createPost({
+                        variables: {
+                          title: title.value,
+                          body: body.value,
+                          // imageUrl: imageUrl.value,
+                          authorId: adminId.value,
+                        },
+                      });
+                    }}
+                  >
+                    <div>
+                      <textArea
+                        type="text"
+                        placeholder="Write a comment"
+                        name="comment"
+                        css={{
+                          padding: 12,
+                          fontSize: 16,
+                          width: '100%',
+                          height: 60,
+                          border: 0,
+                          borderRadius: 6,
+                          resize: 'none',
+                        }}
+                      />
+                    </div>
+
+                    {/* <div>
+                      <label htmlFor="user" css={{ width: 120, display: 'inline-block' }}>
+                        Choose user:
+                      </label>
+                      <select
+                        name="user"
+                        css={{
+                          height: 32,
+                          fontSize: '1em',
+                          borderRadius: 4,
+                          border: '1px solid hsl(200,20%,70%)',
+                        }}
+                        // ref={node => {
+                        //   user = node;
+                        // }}
+                      >
+                        {data.allUsers.map(user => (
+                          <option value={user.id} key={user.id}>{`${user.name} <${
+                            user.email
+                          }>`}</option>
+                        ))}
+                      </select>
+                    </div> */}
+                    <input
+                      type="submit"
+                      value="Submit"
+                      css={{
+                        padding: '6px 12px',
+                        borderRadius: 6,
+                        background: 'hsl(200, 20%, 50%)',
+                        fontSize: '1em',
+                        color: 'white',
+                        border: 0,
+                        marginTop: 6,
+                      }}
+                    />
                   </form>
                 </div>
               </>
