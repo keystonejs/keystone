@@ -1,10 +1,43 @@
 import { Component } from 'react';
 import { Link } from 'gatsby';
 import { jsx } from '@emotion/core';
+import styled from '@emotion/styled';
 
 import { colors } from '../styles';
 
 /** @jsx jsx */
+
+const Input = styled.input({
+  background: colors.B.A15,
+  padding: 10,
+  fontSize: '1em',
+  border: 'none',
+  borderRadius: 6,
+  boxSizing: 'border-box',
+  border: '2px solid transparent',
+
+  '&:focus': {
+    outline: 'none',
+    borderColor: colors.B.base,
+  },
+
+  '&::placeholder': {
+    color: colors.B.base,
+  },
+});
+
+const ResultsList = styled.ul(props => ({
+  background: 'white',
+  boxShadow: `0 3px 10px rgba(0,0,0,0.25)`,
+  maxWidth: 300,
+  listStyle: 'none',
+  position: 'absolute',
+  right: 21,
+  top: 40,
+  padding: 5,
+  fontSize: '0.8em',
+  display: props.results.length ? 'block' : 'none',
+}));
 
 // Search component
 export default class Search extends Component {
@@ -19,44 +52,8 @@ export default class Search extends Component {
   render() {
     return (
       <div>
-        <input
-          type="text"
-          css={{
-            background: colors.B.A15,
-            padding: 10,
-            fontSize: '1em',
-            border: 'none',
-            borderRadius: 6,
-            boxSizing: 'border-box',
-            border: '2px solid transparent',
-
-            '&:focus': {
-              outline: 'none',
-              borderColor: colors.B.base,
-            },
-
-            '&::placeholder': {
-              color: colors.B.base,
-            },
-          }}
-          value={this.state.query}
-          onChange={this.search}
-          placeholder="Search"
-        />
-        <ul
-          css={{
-            background: 'white',
-            boxShadow: `0 3px 10px rgba(0,0,0,0.25)`,
-            maxWidth: 300,
-            listStyle: 'none',
-            position: 'absolute',
-            right: 21,
-            top: 40,
-            padding: 5,
-            fontSize: '0.8em',
-            display: this.state.results.length ? 'block' : 'none',
-          }}
-        >
+        <Input type="text" value={this.state.query} onChange={this.search} placeholder="Search" />
+        <ResultsList results={this.state.results}>
           {this.state.results.slice(0, 12).map(result => (
             <li css={{ padding: 5, borderBottom: `1px solid ${colors.B.A25}` }} key={result.slug}>
               <Link style={{ color: colors.B.base }} to={result.slug}>
@@ -65,7 +62,7 @@ export default class Search extends Component {
               <small style={{ color: 'grey' }}>({result.workspace})</small>
             </li>
           ))}
-        </ul>
+        </ResultsList>
       </div>
     );
   }
