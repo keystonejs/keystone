@@ -1,6 +1,6 @@
 const { AdminUI } = require('@voussoir/admin-ui');
 const { Keystone } = require('@voussoir/core');
-const { Text, DateTime } = require('@voussoir/fields');
+const { Text } = require('@voussoir/fields');
 const { WebServer } = require('@voussoir/server');
 const Bundler = require('parcel');
 const path = require('path');

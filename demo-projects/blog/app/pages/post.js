@@ -22,20 +22,6 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const ADD_COMMENT = gql`
-  mutation AddComment($body: String!, $postId: ID!, $authorId: ID!) {
-    createComment(
-      data: {
-        body: $body
-        author: { connect: { id: $authorId } }
-        postId: { connect: { id: $postId } }
-      }
-    ) {
-      id
-    }
-  }
-`;
-
 const Comments = ({ data }) => (
   <div>
     <h2>Comments</h2>
@@ -70,6 +56,91 @@ const Comments = ({ data }) => (
       : 'No comments yet'}
   </div>
 );
+
+const AddComments = () => {
+  // let commentInput;
+
+  return (
+    // <Mutation
+    // mutation={gql`
+    //   mutation AddComment($body: String!, $postId: ID!, $authorId: ID!) {
+    //     createComment(
+    //       data: {
+    //         body: $body
+    //         author: { connect: { id: $authorId } }
+    //         postId: { connect: { id: $postId } }
+    //       }
+    //     ) {
+    //       id
+    //     }
+    //   }
+    // `}
+    // update={(cache, { data: { createComment } }) => {
+
+    //   const { allComments } = data;
+
+    //   allComments.push(createComment);
+
+    //   // cache.writeQuery({
+    //   //   query: GET_COMMENTS,
+    //   //   data: { allTodos },
+    //   // });
+    // }}
+    // >
+    //   {createComment => (
+    <div>
+      <h2>Add new Comment</h2>
+      <form
+      // onSubmit={e => {
+      //   e.preventDefault();
+      //   createComment({
+      //     variables: {
+      //       body: commentInput.value,
+      //       authorId: data.allUsers[0].id,
+      //     },
+      //   });
+      // }}
+      >
+        <div>
+          <textarea
+            type="text"
+            placeholder="Write a comment"
+            name="comment"
+            css={{
+              padding: 12,
+              fontSize: 16,
+              width: '100%',
+              height: 60,
+              border: 0,
+              borderRadius: 6,
+              resize: 'none',
+            }}
+            // ref={node => {
+            //   commentInput = node;
+            // }}
+          />
+        </div>
+
+        <input
+          type="submit"
+          value="Submit"
+          css={{
+            padding: '6px 12px',
+            borderRadius: 6,
+            background: 'hsl(200, 20%, 50%)',
+            fontSize: '1em',
+            color: 'white',
+            border: 0,
+            marginTop: 6,
+          }}
+        />
+      </form>
+    </div>
+    //   )}
+    //   ;
+    // </Mutation>
+  );
+};
 
 export default ({
   url: {
@@ -156,79 +227,8 @@ export default ({
                     </div>
                   </div>
                 </div>
-
                 <Comments data={data} />
-
-                <div>
-                  <h2>Add new Comment</h2>
-                  <form
-                    onSubmit={e => {
-                      e.preventDefault();
-                      createPost({
-                        variables: {
-                          title: title.value,
-                          body: body.value,
-                          // imageUrl: imageUrl.value,
-                          authorId: adminId.value,
-                        },
-                      });
-                    }}
-                  >
-                    <div>
-                      <textArea
-                        type="text"
-                        placeholder="Write a comment"
-                        name="comment"
-                        css={{
-                          padding: 12,
-                          fontSize: 16,
-                          width: '100%',
-                          height: 60,
-                          border: 0,
-                          borderRadius: 6,
-                          resize: 'none',
-                        }}
-                      />
-                    </div>
-
-                    {/* <div>
-                      <label htmlFor="user" css={{ width: 120, display: 'inline-block' }}>
-                        Choose user:
-                      </label>
-                      <select
-                        name="user"
-                        css={{
-                          height: 32,
-                          fontSize: '1em',
-                          borderRadius: 4,
-                          border: '1px solid hsl(200,20%,70%)',
-                        }}
-                        // ref={node => {
-                        //   user = node;
-                        // }}
-                      >
-                        {data.allUsers.map(user => (
-                          <option value={user.id} key={user.id}>{`${user.name} <${
-                            user.email
-                          }>`}</option>
-                        ))}
-                      </select>
-                    </div> */}
-                    <input
-                      type="submit"
-                      value="Submit"
-                      css={{
-                        padding: '6px 12px',
-                        borderRadius: 6,
-                        background: 'hsl(200, 20%, 50%)',
-                        fontSize: '1em',
-                        color: 'white',
-                        border: 0,
-                        marginTop: 6,
-                      }}
-                    />
-                  </form>
-                </div>
+                <AddComments data={data} />
               </>
             );
           }}
