@@ -159,12 +159,9 @@ const App = () => (
           if (error) return <p>Error!</p>;
           return (
             <ul style={{ listStyle: 'none', padding: 0 }}>
-              {data.allTodos
-                .slice(0)
-                .reverse()
-                .map((todo, index) => (
-                  <Item todo={todo} key={index} />
-                ))}
+              {[...data.allTodos].reverse().map((todo, index) => (
+                <Item todo={todo} key={index} />
+              ))}
             </ul>
           );
         }}
