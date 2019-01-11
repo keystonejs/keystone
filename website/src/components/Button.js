@@ -1,9 +1,6 @@
 import Styled from '@emotion/styled';
 import { colors } from '../styles';
 
-
-{/* <Button appearance="dark" /> */}
-
 export default Styled.a(props => ({
   textDecoration: 'none',
   boxSizing: 'border-box',
@@ -19,15 +16,17 @@ export default Styled.a(props => ({
     opacity: 0.8,
   },
 
-  border: props.appearance = 'Dark' ? `2px solid rgba(255,255,255,0.4);` : `2px solid ${colors.B.base}`,
-  background: props.primary && props.appearance = 'Dark' ? 'white' : props.primary ? colors.B.base : 'none',
+  border:
+    props.appearance == 'primary-light'
+      ? `2px solid rgba(255,255,255,0.6);`
+      : `2px solid ${colors.B.base}`,
 
-  color:
-    props.primary && props.onDark
+  background:
+    props.appearance == 'primary-light'
+      ? 'white'
+      : props.appearance == 'primary'
       ? colors.B.base
-      : props.primary
-      ? 'white'
-      : props.onDark
-      ? 'white'
-      : colors.B.base,
+      : 'none',
+
+  color: props.appearance == 'primary' || props.appearance == 'light' ? 'white' : colors.B.base,
 }));

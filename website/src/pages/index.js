@@ -38,10 +38,10 @@ const Hero = () => (
           alignItems: 'center',
         }}
       >
-        <Button primary onDark href="#getStartedNow">
+        <Button appearance="primary-light" href="#getStartedNow">
           Get Started
         </Button>
-        <Button onDark href="#">
+        <Button appearance="light" href="#">
           Try the Demo
         </Button>
       </div>
@@ -91,7 +91,7 @@ const GetStartedRightNow = () => (
         </div>
       </code>
       <div css={{ display: 'inline-flex' }}>
-        <Button primary href="/tutorials/getting-started">
+        <Button appearance="primary" href="/tutorials/getting-started">
           Read Docs
         </Button>
 
