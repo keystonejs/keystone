@@ -6,3 +6,4 @@ You're awesome ❤️
 - [Documentation Style Guide](./doc-style-guide.md)
 - [Hooks](./hooks.md)
 - [Mutation Lifecycle](./mutation-lifecycle.md)
+- [Performance](./performance.md)

@@ -84,7 +84,7 @@ jobs:
 
   integration_tests_basic:
     environment:
-      PROJECT_DIRECTORY: projects/basic
+      PROJECT_DIRECTORY: test-projects/basic
       CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME
       CLOUDINARY_KEY: $CLOUDINARY_KEY
       CLOUDINARY_SECRET: $CLOUDINARY_SECRET
@@ -94,14 +94,14 @@ jobs:
 
   integration_tests_login:
     environment:
-      PROJECT_DIRECTORY: projects/login
+      PROJECT_DIRECTORY: test-projects/login
       PORT: 3000
     <<: *job-setup
     <<: *integration-steps
 
   integration_tests_accesscontrol:
     environment:
-      PROJECT_DIRECTORY: projects/access-control
+      PROJECT_DIRECTORY: test-projects/access-control
       PROJECT_NAME: 'Cypress Test Project For Access Control'
       PORT: 3000
     <<: *job-setup
@@ -109,7 +109,7 @@ jobs:
 
   # integration_tests_twitterlogin:
   #   environment:
-  #     PROJECT_DIRECTORY: projects/twitter-login
+  #     PROJECT_DIRECTORY: test-projects/twitter-login
   #     PORT: 3000
   #   <<: *job-setup
   #   <<: *integration-steps

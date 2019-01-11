@@ -24,6 +24,7 @@ const LOCAL_FILE_PATH = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 const Stars = require('./custom-fields/Stars');
+const getYear = require('date-fns/get_year');
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
@@ -63,7 +64,7 @@ keystone.createList('User', {
       type: CalendarDay,
       format: 'Do MMMM YYYY',
       yearRangeFrom: 1901,
-      yearRangeTo: 2018,
+      yearRangeTo: getYear(new Date()),
     },
     lastOnline: {
       type: DateTime,
