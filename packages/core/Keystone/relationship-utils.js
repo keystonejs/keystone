@@ -84,7 +84,6 @@ const unmergeRelationships = (lists, input) => {
   const data = mapKeys(input, (listData, listKey) => listData.map((item, itemIndex) => {
     const { left: relationData, right: scalarData } = splitObject(item, (fieldConditions, fieldKey) => {
       const list = lists[listKey];
-
       if (isRelationshipField({ list, fieldKey })) {
         // Array syntax can only be used with many-relationship fields
         if (Array.isArray(fieldConditions) && !isManyRelationship({ list, fieldKey })) {
