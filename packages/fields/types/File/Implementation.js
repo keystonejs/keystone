@@ -36,7 +36,7 @@ class File extends Implementation {
   getFileUploadType() {
     return 'Upload';
   }
-  get gqlAuxTypes() {
+  getGqlAuxTypes() {
     return [
       `
       type ${this.graphQLOutputType} {
