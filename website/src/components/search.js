@@ -3,7 +3,7 @@ import { Link } from 'gatsby';
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 
-import { colors } from '../styles';
+import { colors } from '@voussoir/ui/src/theme';
 
 /** @jsx jsx */
 

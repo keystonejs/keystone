@@ -5,7 +5,8 @@ import { MDXProvider } from '@mdx-js/tag';
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 
-import { colors } from '../styles';
+//import { colors } from '@voussoir/ui/src/theme';
+import { colors } from '@voussoir/ui/src/theme';
 
 import Layout from '../templates/layout';
 

@@ -4,7 +4,7 @@ import { jsx, Global } from '@emotion/core';
 
 /** @jsx jsx */
 
-import { colors } from '../styles';
+import { colors } from '@voussoir/ui/src/theme';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
