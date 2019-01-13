@@ -1,5 +1,5 @@
-import React from 'react';
-import { jsx, Global, css } from '@emotion/core';
+import React from 'react'; // eslint-disable-line no-unused-vars
+import { jsx, Global } from '@emotion/core';
 
 /** @jsx jsx */
 
