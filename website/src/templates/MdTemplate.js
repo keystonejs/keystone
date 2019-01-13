@@ -3,6 +3,7 @@ import MDXRenderer from 'gatsby-mdx/mdx-renderer';
 import { MDXProvider } from '@mdx-js/tag';
 
 import { jsx } from '@emotion/core';
+import styled from '@emotion/styled';
 
 import { colors } from '../styles';
 
@@ -10,7 +11,7 @@ import Layout from '../templates/layout';
 
 /** @jsx jsx */
 
-const linkStyles = {
+const StyledLink = styled(Link)({
   textDecoration: 'none',
   color: colors.B.base,
 
@@ -18,7 +19,7 @@ const linkStyles = {
     color: colors.B.D80,
     textDecoration: 'underline',
   },
-};
+});
 
 import mdComponents from '../components/markdown';
 
@@ -32,13 +33,8 @@ export default function Template({
     <Layout>
       <div id="primary" className="blog-post-container">
         <div css={{ color: colors.B.A50, textTransform: 'capitalize' }}>
-          <Link css={linkStyles} to="/">
-            Keystone
-          </Link>{' '}
-          &gt;{' '}
-          <Link css={linkStyles} to={workspaceSlug}>
-            {workspace}
-          </Link>
+          <StyledLink to="/">Keystone</StyledLink> &gt;{' '}
+          <StyledLink to={workspaceSlug}>{workspace}</StyledLink>
         </div>
         <div className="blog-post">
           <MDXProvider components={mdComponents}>
