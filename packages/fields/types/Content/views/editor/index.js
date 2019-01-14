@@ -52,6 +52,7 @@ function useHasSelection() {
 }
 
 let stopPropagation = e => {
+  e.preventDefault();
   e.stopPropagation();
 };
 
