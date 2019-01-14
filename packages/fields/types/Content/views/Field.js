@@ -14,17 +14,7 @@ let ContentField = ({ field, item, onChange }) => {
     () => {
       let defaultBlocks = [paragraph];
 
-      let customBlocks = [];
-
-      Object.keys(views).forEach(key => {
-        let match = key.match(/\$\$block\$\$(\d+)/);
-        if (match !== null) {
-          customBlocks.push({
-            ...views[key],
-            options: field.config.blockOptions[Number(match[1])],
-          });
-        }
-      });
+      let customBlocks = views.blocks;
 
       let combinedBlocks = [...defaultBlocks, ...customBlocks];
 

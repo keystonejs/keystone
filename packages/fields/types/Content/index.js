@@ -17,10 +17,7 @@ module.exports = {
     extendViews(views) {
       return {
         ...views,
-        ...this.config.blocks.reduce((obj, val, i) => {
-          obj['$$block$$' + i] = Array.isArray(val) ? val[0] : val;
-          return obj;
-        }, {}),
+        blocks: this.config.blocks.map(block => (Array.isArray(block) ? block[0] : block)),
       };
     }
   },
