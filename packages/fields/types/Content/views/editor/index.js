@@ -102,7 +102,7 @@ function Stories({ value: editorState, onChange, blocks }) {
       let combinedPlugins = [
         ...markPlugins,
         {
-          renderNode(props, editor) {
+          renderNode(props) {
             let block = blocks[props.node.type];
             if (block) {
               return <block.Node {...props} />;
