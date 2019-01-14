@@ -2,14 +2,29 @@ const { AdminUI } = require('@voussoir/admin-ui');
 const { Keystone } = require('@voussoir/core');
 const { Text } = require('@voussoir/fields');
 const { WebServer } = require('@voussoir/server');
+const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 const Bundler = require('parcel');
 const path = require('path');
 
-const { port, staticPath } = require('./config');
+const port = 3000;
+const staticPath = path.join(process.cwd(), 'public');
 
-const initialData = require('./data');
-
-const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
+const initialData = {
+  Todo: [
+    {
+      name: 'Do washing',
+    },
+    {
+      name: 'Call Mum',
+    },
+    {
+      name: 'Try out Keystone',
+    },
+    {
+      name: 'Buy a Mustang',
+    },
+  ],
+};
 
 const keystone = new Keystone({
   name: 'Keystone To-Do List',

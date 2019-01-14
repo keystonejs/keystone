@@ -8,7 +8,7 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "node -r dotenv-safe/config index.js | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada"
+    "start": "node index.js | pino-colada"
   },
   "dependencies": {
     "@voussoir/adapter-mongoose": "^1.0.0",
