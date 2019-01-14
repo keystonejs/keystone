@@ -1,4 +1,5 @@
 const GraphQLJSON = require('graphql-type-json');
+const fs = require('fs');
 const gql = require('graphql-tag');
 const fastMemoize = require('fast-memoize');
 const { print } = require('graphql/language/printer');
@@ -53,12 +54,13 @@ module.exports = class Keystone {
     this.auth[listKey][authType] = strategy;
     return strategy;
   }
+
   createList(key, config) {
     const { getListByKey, adapters } = this;
     const adapterName = config.adapterName || this.defaultAdapter;
     const list = new List(key, config, {
       getListByKey,
-      getAdminSchema: this.getAdminSchema,
+      getGraphQLQuery: () => this._graphQLQuery,
       adapter: adapters[adapterName],
       defaultAccess: this.defaultAccess,
       getAuth: () => this.auth[key],
@@ -122,14 +124,14 @@ module.exports = class Keystone {
     return { lists, name };
   }
 
-  getTypeDefs() {
+  getTypeDefs({ skipAccessControl = false } = {}) {
     // Fields can be represented multiple times within and between lists.
-    // If a field defines a `gqlAuxTypes()` method, it will be
+    // If a field defines a `getGqlAuxTypes()` method, it will be
     // duplicated.
     // graphql-tools will blow up (rightly so) on duplicated types.
     // Deduping here avoids that problem.
     return [
-      ...unique(flatten(this.listsArray.map(list => list.gqlTypes))),
+      ...unique(flatten(this.listsArray.map(list => list.getGqlTypes({ skipAccessControl })))),
       `"""NOTE: Can be JSON, or a Boolean/Int/String
           Why not a union? GraphQL doesn't support a union including a scalar
           (https://github.com/facebook/graphql/issues/215)"""
@@ -188,20 +190,27 @@ module.exports = class Keystone {
           count: Int
        }`,
       `type Query {
-          ${unique(flatten(this.listsArray.map(list => list.gqlQueries))).join('\n')}
+          ${unique(
+            flatten(this.listsArray.map(list => list.getGqlQueries({ skipAccessControl })))
+          ).join('\n')}
           _ksListsMeta: [_ListMeta]
        }`,
       `type Mutation {
-          ${unique(flatten(this.listsArray.map(list => list.gqlMutations))).join('\n')}
+          ${unique(
+            flatten(this.listsArray.map(list => list.getGqlMutations({ skipAccessControl })))
+          ).join('\n')}
        }`,
     ].map(s => print(gql(s)));
   }
 
-  getAdminSchema() {
-    if (this._adminSchema) {
-      return this._adminSchema;
-    }
+  // It's not Keystone core's responsibility to create an executable schema, but
+  // once one is, Keystone wants to be able to expose the ability to query that
+  // schema, so this function enables other modules to register that function.
+  registerGraphQLQueryMethod(queryMethod) {
+    this._graphQLQuery = queryMethod;
+  }
 
+  getAdminSchema() {
     const typeDefs = this.getTypeDefs();
     if (debugGraphQLSchemas()) {
       typeDefs.forEach(i => console.log(i));
@@ -287,8 +296,19 @@ module.exports = class Keystone {
       console.log(resolvers);
     }
 
-    this._adminSchema = { typeDefs, resolvers };
-    return this._adminSchema;
+    return { typeDefs, resolvers };
+  }
+
+  dumpSchema(file) {
+    // The 'Upload' scalar is normally automagically added by Apollo Server
+    // See: https://blog.apollographql.com/file-uploads-with-apollo-server-2-0-5db2f3f60675
+    // Since we don't execute apollo server over this schema, we have to
+    // reinsert it.
+    const schema = `
+      scalar Upload
+      ${this.getTypeDefs({ skipAccessControl: true }).join('\n')}
+    `;
+    fs.writeFileSync(file, schema);
   }
 
   getAuxQueryResolvers() {

@@ -11,7 +11,6 @@ type Props = {
   filter: Object,
   innerRef: Ref<*>,
   onChange: Event => void,
-  recalcHeight: () => void,
 };
 
 type State = {
@@ -31,14 +30,6 @@ export default class CalendarDayFilterView extends Component<Props, State> {
     this.setState({ value });
   };
 
-  componentDidUpdate(prevProps: Props) {
-    const { filter } = this.props;
-
-    if (prevProps.filter !== filter) {
-      this.props.recalcHeight();
-    }
-  }
-
   render() {
     const { filter, field } = this.props;
 
@@ -47,7 +38,7 @@ export default class CalendarDayFilterView extends Component<Props, State> {
     return (
       <DayPicker
         startCurrentDateAt={parse(this.state.value)}
-        startSelectedDateAt={parse(this.state.value)}
+        selectedDate={parse(this.state.value)}
         onSelectedChange={this.handleSelectedChange}
         yearRangeFrom={field.config.yearRangeFrom}
         yearRangeTo={field.config.yearRangeTo}

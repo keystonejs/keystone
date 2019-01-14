@@ -165,16 +165,29 @@ class Relationship extends Implementation {
   async resolveRelationship(input, item, context, getItem, mutationState) {
     const { many, isRequired } = this.config;
 
-    // Early out for null'd field
-    if (!isRequired && !input) {
-      return input;
-    }
-
     const { refList, refField } = this.tryResolveRefList();
     const listInfo = {
       local: { list: this.getListByKey(this.listKey), field: this },
       foreign: { list: refList, field: refField },
     };
+
+    // Possible early out for null'd field
+    // prettier-ignore
+    if (
+      !input
+      && (
+        // If the field is not required, and the value is `null`, we can ignore
+        // it and move on.
+        !isRequired
+        // This field will be backlinked to this field's containing item, so we
+        // can safely ignore it now expecing the backlinking process in the
+        // calling code to take care of it.
+        || (refField && this.getListByKey(refField.refListKey) === listInfo.local.list)
+      )
+    ) {
+      return input;
+    }
+
     let currentValue = item && item[this.path];
     if (many) {
       currentValue = (currentValue || []).map(id => id.toString());
@@ -234,7 +247,7 @@ class Relationship extends Implementation {
     // Beware of circular delete hooks!
   }
 
-  get gqlAuxTypes() {
+  getGqlAuxTypes() {
     const { refList } = this.tryResolveRefList();
     // We need an input type that is specific to creating nested items when
     // creating a relationship, ie;

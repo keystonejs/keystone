@@ -5,25 +5,87 @@ const { renderPlaygroundPage } = require('graphql-playground-html');
 const cuid = require('cuid');
 const logger = require('@voussoir/logger');
 const { omit } = require('@voussoir/utils');
+const { graphql } = require('graphql');
+const StackUtils = require('stack-utils');
+const ensureError = require('ensure-error');
+const serializeError = require('serialize-error');
 
 const { NestedError } = require('./graphqlErrors');
 
 const graphqlLogger = logger('graphql');
 
-module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlPath }) {
+const stackUtil = new StackUtils({ cwd: process.cwd(), internals: StackUtils.nodeInternals() });
+
+const cleanError = maybeError => {
+  if (!maybeError.stack) {
+    return maybeError;
+  }
+  maybeError.stack = stackUtil.clean(maybeError.stack);
+  return maybeError;
+};
+
+const safeFormatError = error => {
+  const formattedError = formatError(error, true);
+  if (formattedError) {
+    return cleanError(formattedError);
+  }
+  return serializeError(cleanError(error));
+};
+
+const duplicateError = (error, ignoreKeys = []) => {
+  const newError = new error.constructor(error.message);
+  if (error.stack) {
+    if (isApolloErrorInstance(error)) {
+      newError._stack = error.stack;
+    } else {
+      newError.stack = error.stack;
+    }
+  }
+  if (error.code) {
+    newError.code = error.code;
+  }
+  return Object.assign(newError, omit(error, ignoreKeys));
+};
+
+const flattenNestedErrors = error =>
+  (error.errors || []).reduce(
+    (errors, nestedError) => [
+      ...errors,
+      ...[duplicateError(nestedError, ['errors']), ...flattenNestedErrors(nestedError)].map(
+        flattenedError => {
+          // Ensure the path is complete
+          if (Array.isArray(error.path) && Array.isArray(flattenedError.path)) {
+            flattenedError.path = [...error.path, ...flattenedError.path];
+          }
+          return flattenedError;
+        }
+      ),
+    ],
+    []
+  );
+
+module.exports = function createGraphQLMiddleware(
+  keystone,
+  { apiPath, graphiqlPath, apolloConfig }
+) {
   const app = express();
 
   // add the Admin GraphQL API
   const server = new ApolloServer({
-    ...keystone.getAdminSchema(),
-    maxFileSize: 200 * 1024 * 1024, // TODO: Make configurable
+    maxFileSize: 200 * 1024 * 1024,
     maxFiles: 5,
+    ...apolloConfig,
+    ...keystone.getAdminSchema(),
     context: ({ req }) => keystone.getAccessContext(req),
     formatError: error => {
+      const { originalError } = error;
+      if (!originalError.path) {
+        originalError.path = error.path;
+      }
+
       try {
         // For correlating user error reports with logs
         error.uid = cuid();
-        const { originalError } = error;
 
         if (isApolloErrorInstance(originalError)) {
           // log internalData to stdout but not include it in the formattedError
@@ -34,48 +96,48 @@ module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlP
             internalData: originalError.internalData,
           });
         } else {
-          if (error.extensions && error.extensions.exception) {
+          const exception = originalError || (error.extensions && error.extensions.exception);
+          if (exception) {
             const pinoError = {
-              message: error.message || error.msg,
-              ...omit(error.extensions.exception, ['name', 'model']),
-              path: error.path,
-              stack: Array.isArray(error.extensions.exception.stacktrace)
-                ? error.extensions.exception.stacktrace.join('\n')
-                : error.extensions.exception.stacktrace,
+              ...omit(serializeError(error), ['extensions']),
+              ...omit(exception, ['name', 'model', 'stacktrace']),
+              stack: stackUtil.clean(exception.stacktrace || exception.stack),
             };
 
-            if (error.extensions.exception.path) {
-              pinoError.path = Array.isArray(pinoError.path)
-                ? [...pinoError.path, error.extensions.exception.path]
-                : [error.extensions.exception.path];
+            if (pinoError.errors) {
+              pinoError.errors = flattenNestedErrors(originalError).map(safeFormatError);
             }
+
             graphqlLogger.error(pinoError);
           } else {
-            graphqlLogger.error(error);
+            const errorOutput = serializeError(ensureError(error));
+            errorOutput.stack = stackUtil.clean(errorOutput.stack);
+            graphqlLogger.error(errorOutput);
           }
         }
+      } catch (formatErrorError) {
+        // Something went wrong with formatting above, so we log the errors
+        graphqlLogger.error(serializeError(ensureError(error)));
+        graphqlLogger.error(serializeError(ensureError(formatErrorError)));
 
+        return safeFormatError(error);
+      }
+
+      try {
         let formattedError;
 
         // Support throwing multiple errors
         if (originalError && originalError.errors) {
           const multipleErrorContainer = new NestedError({
             data: {
-              errors: originalError.errors.map(innerError => {
-                // Ensure the path is complete
-                if (Array.isArray(error.path) && Array.isArray(innerError.path)) {
-                  innerError.path = [...error.path, ...innerError.path];
-                }
-
-                // Format (aka; serialize) the error
-                return formatError(innerError);
-              }),
+              // Format (aka; serialize) the error
+              errors: flattenNestedErrors(originalError).map(safeFormatError),
             },
           });
 
-          formattedError = formatError(multipleErrorContainer);
+          formattedError = safeFormatError(multipleErrorContainer);
         } else {
-          formattedError = formatError(error);
+          formattedError = safeFormatError(error);
         }
 
         if (error.uid) {
@@ -84,16 +146,16 @@ module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlP
 
         return formattedError;
       } catch (formatErrorError) {
-        // Something went wrong with formatting above, so we log the errors
-        graphqlLogger.error(error);
-        graphqlLogger.error(formatErrorError);
+        // NOTE: We don't log again here as we assume the earlier try/catch
+        // correctly logged
 
-        // Then return the original error as a fallback so the client gets at
+        // Return the original error as a fallback so the client gets at
         // least some useful info
-        return formatError(error);
+        return safeFormatError(error);
       }
     },
   });
+
   server.applyMiddleware({
     app,
     path: apiPath,
@@ -101,6 +163,7 @@ module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlP
     // https://www.apollographql.com/docs/apollo-server/api/apollo-server.html#ApolloServer-applyMiddleware
     cors: false,
   });
+
   if (graphiqlPath) {
     app.use(graphiqlPath, (req, res) => {
       if (req.user && req.sessionID) {
@@ -113,6 +176,10 @@ module.exports = function createGraphQLMiddleware(keystone, { apiPath, graphiqlP
       res.end();
     });
   }
+
+  keystone.registerGraphQLQueryMethod((query, context, variables) =>
+    graphql(server.schema, query, null, context, variables)
+  );
 
   return app;
 };

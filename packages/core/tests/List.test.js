@@ -101,20 +101,16 @@ const getListByKey = listKey => {
   }
 };
 
-const listExtras = (getAuth = () => true) => ({
+const listExtras = (getAuth = () => true, queryMethod = undefined) => ({
   getListByKey,
-  getAdminSchema: () => ({
-    resolvers: {
-      _QueryMeta: { count: meta => meta.getCount() },
-    },
-  }),
   adapter: new MockAdapter(),
   getAuth,
   defaultAccess: { list: true, field: true },
+  getGraphQLQuery: () => queryMethod,
 });
 
-const setup = (extraConfig, getAuth) =>
-  new List('Test', { ...config, ...extraConfig }, listExtras(getAuth));
+const setup = (extraConfig, getAuth, queryMethod) =>
+  new List('Test', { ...config, ...extraConfig }, listExtras(getAuth, queryMethod));
 
 describe('new List()', () => {
   test('new List() - Smoke test', () => {
@@ -395,7 +391,7 @@ describe('getAdminMeta()', () => {
   });
 });
 
-test('gqlTypes', () => {
+test('getGqlTypes()', () => {
   const otherInput = `input OtherRelateToOneInput {
     create: createOther
     connect: OtherWhereUniqueInput
@@ -505,7 +501,11 @@ test('gqlTypes', () => {
     data: TestCreateInput
   }`;
 
-  expect(setup({ access: true }).gqlTypes.map(s => print(gql(s)))).toEqual(
+  expect(
+    setup({ access: true })
+      .getGqlTypes()
+      .map(s => print(gql(s)))
+  ).toEqual(
     [
       otherInput,
       type,
@@ -518,38 +518,40 @@ test('gqlTypes', () => {
     ].map(s => print(gql(s)))
   );
 
-  expect(setup({ access: false }).gqlTypes.map(s => print(gql(s)))).toEqual(
-    [].map(s => print(gql(s)))
-  );
+  expect(
+    setup({ access: false })
+      .getGqlTypes()
+      .map(s => print(gql(s)))
+  ).toEqual([].map(s => print(gql(s))));
 
   expect(
-    setup({ access: { read: true, create: false, update: false, delete: false } }).gqlTypes.map(s =>
-      print(gql(s))
-    )
+    setup({ access: { read: true, create: false, update: false, delete: false } })
+      .getGqlTypes()
+      .map(s => print(gql(s)))
   ).toEqual([otherInput, type, whereInput, whereUniqueInput].map(s => print(gql(s))));
 
   expect(
-    setup({ access: { read: false, create: true, update: false, delete: false } }).gqlTypes.map(s =>
-      print(gql(s))
-    )
+    setup({ access: { read: false, create: true, update: false, delete: false } })
+      .getGqlTypes()
+      .map(s => print(gql(s)))
   ).toEqual(
     [otherInput, type, whereInput, whereUniqueInput, createInput, createManyInput].map(s =>
       print(gql(s))
     )
   );
   expect(
-    setup({ access: { read: false, create: false, update: true, delete: false } }).gqlTypes.map(s =>
-      print(gql(s))
-    )
+    setup({ access: { read: false, create: false, update: true, delete: false } })
+      .getGqlTypes()
+      .map(s => print(gql(s)))
   ).toEqual(
     [otherInput, type, whereInput, whereUniqueInput, updateInput, updateManyInput].map(s =>
       print(gql(s))
     )
   );
   expect(
-    setup({ access: { read: false, create: false, update: false, delete: true } }).gqlTypes.map(s =>
-      print(gql(s))
-    )
+    setup({ access: { read: false, create: false, update: false, delete: true } })
+      .getGqlTypes()
+      .map(s => print(gql(s)))
   ).toEqual([otherInput, type, whereInput, whereUniqueInput].map(s => print(gql(s))));
 });
 
@@ -564,8 +566,12 @@ test('getGraphqlFilterFragment', () => {
   ]);
 });
 
-test('gqlQueries', () => {
-  expect(setup({ access: true }).gqlQueries.map(normalise)).toEqual(
+test('getGqlQueries()', () => {
+  expect(
+    setup({ access: true })
+      .getGqlQueries()
+      .map(normalise)
+  ).toEqual(
     [
       `allTests(
       where: TestWhereInput
@@ -589,11 +595,17 @@ test('gqlQueries', () => {
     ].map(normalise)
   );
 
-  expect(setup({ access: false }).gqlQueries.map(normalise)).toEqual(
-    [`authenticatedTest: Test`].map(normalise)
-  );
+  expect(
+    setup({ access: false })
+      .getGqlQueries()
+      .map(normalise)
+  ).toEqual([`authenticatedTest: Test`].map(normalise));
 
-  expect(setup({ access: true }, () => false).gqlQueries.map(normalise)).toEqual(
+  expect(
+    setup({ access: true }, () => false)
+      .getGqlQueries()
+      .map(normalise)
+  ).toEqual(
     [
       `allTests(
       where: TestWhereInput
@@ -616,9 +628,11 @@ test('gqlQueries', () => {
     ].map(normalise)
   );
 
-  expect(setup({ access: false }, () => false).gqlQueries.map(normalise)).toEqual(
-    [].map(normalise)
-  );
+  expect(
+    setup({ access: false }, () => false)
+      .getGqlQueries()
+      .map(normalise)
+  ).toEqual([].map(normalise));
 });
 
 test('getFieldsRelatedTo', () => {
@@ -688,8 +702,12 @@ test('gqlAuxMutationResolvers', () => {
   expect(list.gqlAuxMutationResolvers).toEqual({});
 });
 
-test('gqlMutations', () => {
-  expect(setup({ access: true }).gqlMutations.map(normalise)).toEqual(
+test('getGqlMutations()', () => {
+  expect(
+    setup({ access: true })
+      .getGqlMutations()
+      .map(normalise)
+  ).toEqual(
     [
       `createTest(data: TestCreateInput): Test`,
       `createTests(data: [TestsCreateInput]): [Test]`,
@@ -700,17 +718,21 @@ test('gqlMutations', () => {
     ].map(normalise)
   );
 
-  expect(setup({ access: false }).gqlMutations.map(normalise)).toEqual([].map(normalise));
+  expect(
+    setup({ access: false })
+      .getGqlMutations()
+      .map(normalise)
+  ).toEqual([].map(normalise));
 
   expect(
-    setup({ access: { read: true, create: false, update: false, delete: false } }).gqlMutations.map(
-      normalise
-    )
+    setup({ access: { read: true, create: false, update: false, delete: false } })
+      .getGqlMutations()
+      .map(normalise)
   ).toEqual([].map(normalise));
   expect(
-    setup({ access: { read: false, create: true, update: false, delete: false } }).gqlMutations.map(
-      normalise
-    )
+    setup({ access: { read: false, create: true, update: false, delete: false } })
+      .getGqlMutations()
+      .map(normalise)
   ).toEqual(
     [
       `createTest(data: TestCreateInput): Test`,
@@ -718,9 +740,9 @@ test('gqlMutations', () => {
     ].map(normalise)
   );
   expect(
-    setup({ access: { read: false, create: false, update: true, delete: false } }).gqlMutations.map(
-      normalise
-    )
+    setup({ access: { read: false, create: false, update: true, delete: false } })
+      .getGqlMutations()
+      .map(normalise)
   ).toEqual(
     [
       `updateTest(id: ID! data: TestUpdateInput): Test`,
@@ -728,9 +750,9 @@ test('gqlMutations', () => {
     ].map(normalise)
   );
   expect(
-    setup({ access: { read: false, create: false, update: false, delete: true } }).gqlMutations.map(
-      normalise
-    )
+    setup({ access: { read: false, create: false, update: false, delete: true } })
+      .getGqlMutations()
+      .map(normalise)
   ).toEqual([`deleteTest(id: ID!): Test`, `deleteTests(ids: [ID!]): [Test]`].map(normalise));
 });
 
@@ -1138,11 +1160,8 @@ describe('List Hooks', () => {
           Object.keys(hooks).forEach(hook => {
             expect(hooks[hook]).toHaveBeenCalledWith(
               expect.objectContaining({
-                list: {
+                actions: {
                   query: expect.any(Function),
-                  queryMany: expect.any(Function),
-                  queryManyMeta: expect.any(Function),
-                  getList: expect.any(Function),
                 },
               })
             );
@@ -1157,78 +1176,54 @@ describe('List Hooks', () => {
           list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
           list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
         ].map(async action => {
-          let queryResult;
+          const queryMethod = jest.fn(() => ({ data: { hello: 'world' } }));
+          const queryString = 'query { /* Fake query string */ }';
 
           const hooks = {
-            beforeChange: jest.fn(async ({ context: queryContext, list }) => {
-              queryResult = await list.query({ where: { id: 0 } }, queryContext);
+            beforeChange: jest.fn(async ({ actions: { query } }) => {
+              await query(queryString);
             }),
           };
 
-          const list = setup({ hooks });
+          const list = setup({ hooks }, undefined, queryMethod);
           await action(list);
 
-          expect(queryResult).toMatchObject({
-            name: 'a',
-            email: 'a@example.com',
-          });
-        })
-      );
-    });
-
-    test('can execute a many query from within a hook', () => {
-      return Promise.all(
-        [
-          list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
-          list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
-        ].map(async action => {
-          let queryResult;
-
-          const hooks = {
-            beforeChange: jest.fn(async ({ context: queryContext, list }) => {
-              queryResult = await list.queryMany({ where: { id_in: [0, 2] } }, queryContext);
-            }),
-          };
-
-          const list = setup({ hooks });
-          await action(list);
-
-          expect(queryResult).toContainEqual(
-            expect.objectContaining({
-              name: 'a',
-              email: 'a@example.com',
-            })
-          );
-          expect(queryResult).toContainEqual(
-            expect.objectContaining({
-              name: 'c',
-              email: 'c@example.com',
-            })
+          expect(queryMethod).toHaveBeenCalledWith(
+            queryString,
+            // The context object
+            expect.any(Object),
+            // no variables
+            undefined
           );
         })
       );
     });
 
-    test('can execute a many meta query from within a hook', () => {
+    test('can execute a query with variables from within a hook', () => {
       return Promise.all(
         [
           list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
           list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
         ].map(async action => {
-          let queryResult;
+          const queryMethod = jest.fn(() => ({ data: { hello: 'world' } }));
+          const queryString = 'query { /* Fake query string */ }';
+          const variables = { id: 'abc123' };
 
           const hooks = {
-            beforeChange: jest.fn(async ({ context: queryContext, list }) => {
-              queryResult = await list.queryManyMeta({ where: { id_in: [0, 2] } }, queryContext);
+            beforeChange: jest.fn(async ({ actions: { query } }) => {
+              await query(queryString, { variables });
             }),
           };
 
-          const list = setup({ hooks });
+          const list = setup({ hooks }, undefined, queryMethod);
           await action(list);
 
-          expect(queryResult).toMatchObject({
-            count: 2,
-          });
+          expect(queryMethod).toHaveBeenCalledWith(
+            queryString,
+            // The context object
+            expect.any(Object),
+            expect.objectContaining(variables)
+          );
         })
       );
     });
@@ -1247,11 +1242,8 @@ describe('List Hooks', () => {
       Object.keys(hooks).forEach(hook => {
         expect(hooks[hook]).toHaveBeenCalledWith(
           expect.objectContaining({
-            list: {
+            actions: {
               query: expect.any(Function),
-              queryMany: expect.any(Function),
-              queryManyMeta: expect.any(Function),
-              getList: expect.any(Function),
             },
           })
         );

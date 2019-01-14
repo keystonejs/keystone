@@ -7,6 +7,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "p-lazy": "^1.0.0"
+    "p-lazy": "^1.0.0",
+    "p-reflect": "^1.0.0"
   }
 }
