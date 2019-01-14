@@ -5,6 +5,7 @@ import { useState, useCallback, useRef, Fragment, useLayoutEffect } from 'react'
 import { getVisibleSelectionRect } from 'get-selection-range';
 import { useScrollListener, useWindowSize } from './hooks';
 import { type as defaultType } from './block-types/paragraph';
+import { PlusIcon } from '@voussoir/icons';
 
 let AddBlock = ({ editorState, editor, blocks }) => {
   let windowSize = useWindowSize();
@@ -56,11 +57,24 @@ let AddBlock = ({ editorState, editor, blocks }) => {
       <div ref={openCloseRef} css={{ position: 'absolute', top: -10000, left: -10000 }}>
         <button
           type="button"
+          css={{
+            borderRadius: '100%',
+            border: '1px black solid',
+            width: 30,
+            height: 30,
+            marginRight: 4,
+          }}
           onClick={() => {
             setIsOpen(x => !x);
           }}
         >
-          {isOpen ? 'Close' : 'Open'}
+          <PlusIcon
+            css={{
+              transition: '50ms transform',
+              transform: isOpen ? 'rotateZ(45deg)' : 'rotateZ(0deg)',
+            }}
+            title={isOpen ? 'Close' : 'Open'}
+          />
         </button>
       </div>
       <div css={{ position: 'absolute', top: -10000, left: -10000 }} ref={containerRef}>
