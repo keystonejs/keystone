@@ -1,4 +1,4 @@
-const { Relationship, MongoSelectInterface } = require('./Implementation');
+const { Relationship, MongoRelationshipInterface } = require('./Implementation');
 const { resolveBacklinks } = require('./backlinks');
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
     Cell: require.resolve('./views/Cell'),
   },
   adapters: {
-    mongoose: MongoSelectInterface,
+    mongoose: MongoRelationshipInterface,
   },
   resolveBacklinks,
 };
