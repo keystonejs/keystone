@@ -19,13 +19,26 @@ describe('Relationship Path parser', () => {
       let barListAdapter;
       let zipListAdapter;
 
-      const fieldAdapters = {
-        bar: { getRefListAdapter: jest.fn(() => barListAdapter) },
-        zip: { getRefListAdapter: jest.fn(() => zipListAdapter) },
+      fooListAdapter = {
+        fieldAdapters: [
+          {
+            isRelationship: true,
+            supportsRelationshipQuery: query => query === 'bar',
+            getRelationshipQueryCondition: () => ({}),
+            getRefListAdapter: () => barListAdapter,
+          },
+        ],
       };
-
-      fooListAdapter = { getFieldAdapterByQueryConditionKey: jest.fn(key => fieldAdapters[key]) };
-      barListAdapter = { getFieldAdapterByQueryConditionKey: jest.fn(key => fieldAdapters[key]) };
+      barListAdapter = {
+        fieldAdapters: [
+          {
+            isRelationship: true,
+            supportsRelationshipQuery: query => query === 'zip',
+            getRelationshipQueryCondition: () => ({}),
+            getRefListAdapter: () => zipListAdapter,
+          },
+        ],
+      };
       zipListAdapter = {};
 
       const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(fooListAdapter);
@@ -34,8 +47,16 @@ describe('Relationship Path parser', () => {
 
     test('Handles circular paths correctly', () => {
       let listAdapter;
-      const fieldAdapter = { getRefListAdapter: jest.fn(() => listAdapter) };
-      listAdapter = { getFieldAdapterByQueryConditionKey: jest.fn(() => fieldAdapter) };
+      listAdapter = {
+        fieldAdapters: [
+          {
+            isRelationship: true,
+            supportsRelationshipQuery: query => query === 'foo',
+            getRelationshipQueryCondition: () => ({}),
+            getRefListAdapter: () => listAdapter,
+          },
+        ],
+      };
 
       const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(listAdapter);
       expect(getlistAdapter(['foo', 'foo', 'foo'])).toEqual(listAdapter);
@@ -46,13 +67,26 @@ describe('Relationship Path parser', () => {
       let barListAdapter;
       let zipListAdapter;
 
-      const fieldAdapters = {
-        bar_koodle: { getRefListAdapter: jest.fn(() => barListAdapter) },
-        'zip-boom_zap': { getRefListAdapter: jest.fn(() => zipListAdapter) },
+      fooListAdapter = {
+        fieldAdapters: [
+          {
+            isRelationship: true,
+            supportsRelationshipQuery: query => query === 'bar_koodle',
+            getRelationshipQueryCondition: () => ({}),
+            getRefListAdapter: () => barListAdapter,
+          },
+        ],
       };
-
-      fooListAdapter = { getFieldAdapterByQueryConditionKey: jest.fn(key => fieldAdapters[key]) };
-      barListAdapter = { getFieldAdapterByQueryConditionKey: jest.fn(key => fieldAdapters[key]) };
+      barListAdapter = {
+        fieldAdapters: [
+          {
+            isRelationship: true,
+            supportsRelationshipQuery: query => query === 'zip-boom_zap',
+            getRelationshipQueryCondition: () => ({}),
+            getRefListAdapter: () => zipListAdapter,
+          },
+        ],
+      };
       zipListAdapter = {};
 
       const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(fooListAdapter);
@@ -64,13 +98,26 @@ describe('Relationship Path parser', () => {
       let barListAdapter;
       let zipListAdapter;
 
-      const fieldAdapters = {
-        bar_koodle: { getRefListAdapter: jest.fn(() => barListAdapter) },
-        'zip-boom_zap': { getRefListAdapter: jest.fn(() => zipListAdapter) },
+      fooListAdapter = {
+        fieldAdapters: [
+          {
+            isRelationship: true,
+            supportsRelationshipQuery: query => query === 'bar_koodle',
+            getRelationshipQueryCondition: () => ({}),
+            getRefListAdapter: () => barListAdapter,
+          },
+        ],
       };
-
-      fooListAdapter = { getFieldAdapterByQueryConditionKey: jest.fn(key => fieldAdapters[key]) };
-      barListAdapter = { getFieldAdapterByQueryConditionKey: jest.fn(key => fieldAdapters[key]) };
+      barListAdapter = {
+        fieldAdapters: [
+          {
+            isRelationship: true,
+            supportsRelationshipQuery: query => query === 'zip-boom_zap',
+            getRelationshipQueryCondition: () => ({}),
+            getRefListAdapter: () => zipListAdapter,
+          },
+        ],
+      };
       zipListAdapter = {};
 
       const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(fooListAdapter);
@@ -82,13 +129,26 @@ describe('Relationship Path parser', () => {
       let barListAdapter;
       let zipListAdapter;
 
-      const fieldAdapters = {
-        bar_koodle: { getRefListAdapter: jest.fn(() => barListAdapter) },
-        'zip-boom_zap': { getRefListAdapter: jest.fn(() => zipListAdapter) },
+      fooListAdapter = {
+        fieldAdapters: [
+          {
+            isRelationship: true,
+            supportsRelationshipQuery: query => query === 'bar_koodle',
+            getRelationshipQueryCondition: () => ({ bar_koodle: true }),
+            getRefListAdapter: () => barListAdapter,
+          },
+        ],
       };
-
-      fooListAdapter = { getFieldAdapterByQueryConditionKey: jest.fn(key => fieldAdapters[key]) };
-      barListAdapter = { getFieldAdapterByQueryConditionKey: jest.fn(key => fieldAdapters[key]) };
+      barListAdapter = {
+        fieldAdapters: [
+          {
+            isRelationship: true,
+            supportsRelationshipQuery: query => query === 'zip-boom_zap',
+            getRelationshipQueryCondition: () => ({}),
+            getRefListAdapter: () => zipListAdapter,
+          },
+        ],
+      };
       zipListAdapter = {};
 
       const getlistAdapter = getRelatedListAdapterFromQueryPathFactory(fooListAdapter);
@@ -101,14 +161,17 @@ describe('Relationship Path parser', () => {
       let fooListAdapter;
       let zipListAdapter;
 
-      const fieldAdapters = {
-        // NOTE: bar_koodle is missing to make the test fail
-        'zip-boom_zap': { getRefListAdapter: jest.fn(() => zipListAdapter) },
-      };
-
+      // NOTE: bar_koodle is missing to make the test fail
       fooListAdapter = {
         key: 'foo',
-        getFieldAdapterByQueryConditionKey: jest.fn(key => fieldAdapters[key]),
+        fieldAdapters: [
+          {
+            isRelationship: true,
+            supportsRelationshipQuery: query => query === 'zip-boom_zap',
+            getRelationshipQueryCondition: () => ({}),
+            getRefListAdapter: () => zipListAdapter,
+          },
+        ],
       };
       zipListAdapter = {};
 

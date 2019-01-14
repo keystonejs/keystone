@@ -6,7 +6,6 @@ const {
   getType,
   mapKeys,
   mapKeyNames,
-  objMerge,
   createLazyDeferred,
 } = require('@voussoir/utils');
 const {
@@ -23,15 +22,6 @@ const relationshipTokenizer = require('./tokenizers/relationship');
 const getRelatedListAdapterFromQueryPathFactory = require('./tokenizers/relationship-path');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
-
-const idQueryConditions = {
-  // id is how it looks in the schema
-  // _id is how it looks in the MongoDB
-  id: value => ({ _id: { $eq: mongoose.Types.ObjectId(value) } }),
-  id_not: value => ({ _id: { $ne: mongoose.Types.ObjectId(value) } }),
-  id_in: value => ({ _id: { $in: value.map(id => mongoose.Types.ObjectId(id)) } }),
-  id_not_in: value => ({ _id: { $not: { $in: value.map(id => mongoose.Types.ObjectId(id)) } } }),
-};
 
 const modifierConditions = {
   // TODO: Implement configurable search fields for lists
@@ -205,23 +195,6 @@ class MongooseListAdapter extends BaseListAdapter {
         }),
       },
     });
-  }
-
-  getFieldAdapterByQueryConditionKey(queryCondition) {
-    return this.fieldAdapters.find(adapter => adapter.hasQueryCondition(queryCondition));
-  }
-
-  getSimpleQueryConditions() {
-    return {
-      ...idQueryConditions,
-      ...objMerge(this.fieldAdapters.map(fieldAdapter => fieldAdapter.getQueryConditions())),
-    };
-  }
-
-  getRelationshipQueryConditions() {
-    return objMerge(
-      this.fieldAdapters.map(fieldAdapter => fieldAdapter.getRelationshipQueryConditions())
-    );
   }
 
   prepareFieldAdapter(fieldAdapter) {
@@ -402,9 +375,11 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   addToMongooseSchema() {
     throw new Error(`Field type [${this.fieldName}] does not implement addToMongooseSchema()`);
   }
+
   buildValidator(validator, isRequired) {
     return isRequired ? validator : a => validator(a) || typeof a === 'undefined' || a === null;
   }
+
   mergeSchemaOptions(schemaOptions, { isUnique, mongooseOptions }) {
     if (isUnique) {
       // A value of anything other than `true` causes errors with Mongoose
@@ -414,10 +389,6 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
       schemaOptions.unique = true;
     }
     return { ...schemaOptions, ...mongooseOptions };
-  }
-
-  getQueryConditions() {
-    return {};
   }
 
   // The following methods provide helpers for constructing the return values of `getQueryConditions`.
@@ -500,18 +471,6 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
         [g(this.path)]: { $not: new RegExp(`${f(value)}$`, 'i') },
       }),
     };
-  }
-
-  getRelationshipQueryConditions() {
-    return {};
-  }
-
-  getRefListAdapter() {
-    return undefined;
-  }
-
-  hasQueryCondition() {
-    return false;
   }
 
   getMongoFieldName() {
