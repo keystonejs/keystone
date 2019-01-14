@@ -105,7 +105,7 @@ function Stories({ value: editorState, onChange, blocks }) {
           renderNode(props, editor) {
             let block = blocks[props.node.type];
             if (block) {
-              return block.renderNode(props, editor);
+              return <block.Node {...props} />;
             }
             // we don't want to define how how nodes are rendered in any other place
             throw new Error('Cannot render node of type: ' + props.node.type);

@@ -38,12 +38,12 @@ let ContentField = ({ field, item, onChange }) => {
             if (dependencies !== undefined) {
               pushBlocks(dependencies);
             }
-          } else if (existingItem.renderNode === undefined) {
-            throw new Error(existingItem.type + 'does not have a renderNode function defined');
+          } else if (existingItem.Node === undefined) {
+            throw new Error(existingItem.type + 'does not have a Node component defined');
           }
-          // check the referential equality of renderNode since it has to be defined
+          // check the referential equality of a blocks Node since it has to be defined
           // and if they're equal we know it's the same block
-          else if (existingItem.renderNode !== block.renderNode) {
+          else if (existingItem.Node !== block.Node) {
             throw new Error('There are two different blocks with the type:' + block.type);
           }
         });

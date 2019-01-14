@@ -95,16 +95,16 @@ export function Sidebar({ editor }) {
     </button>
   );
 }
-export function renderNode(props, editor) {
+export function Node({ node, editor }) {
   return (
     <Block
-      url={props.node.data.get('url')}
+      url={node.data.get('url')}
       onRemove={() => {
-        editor.removeNodeByKey(props.node.key);
+        editor.removeNodeByKey(node.key);
       }}
       onChange={url => {
-        editor.setNodeByKey(props.node.key, {
-          data: props.node.data.set('url', url),
+        editor.setNodeByKey(node.key, {
+          data: node.data.set('url', url),
         });
       }}
     />

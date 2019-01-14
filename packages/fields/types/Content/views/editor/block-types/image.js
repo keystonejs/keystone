@@ -45,7 +45,7 @@ export function Sidebar({ editor }) {
     </button>
   );
 }
-export function renderNode(props, editor) {
+export function Node(props) {
   let { data } = props.node;
 
   return (
@@ -55,7 +55,7 @@ export function renderNode(props, editor) {
       isFocused={props.isFocused}
       src={data.get('src')}
       onAlignmentChange={aligment => {
-        editor.setNodeByKey(props.node.key, {
+        props.editor.setNodeByKey(props.node.key, {
           data: data.set('alignment', aligment),
         });
       }}

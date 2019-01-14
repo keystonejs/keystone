@@ -25,7 +25,7 @@ export function ToolbarElement({ editor, editorState }) {
   );
 }
 
-export function renderNode({ attributes, children }) {
+export function Node({ attributes, children }) {
   return (
     <blockquote
       {...attributes}

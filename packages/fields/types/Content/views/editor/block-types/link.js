@@ -7,7 +7,7 @@ import { ToolbarButton } from '../toolbar-components';
 
 export let type = 'link';
 
-export function renderNode({ node, attributes, children }) {
+export function Node({ node, attributes, children }) {
   let { data } = node;
   const href = data.get('href');
   return (

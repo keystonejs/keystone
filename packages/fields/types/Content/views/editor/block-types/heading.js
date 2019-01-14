@@ -23,7 +23,7 @@ export function ToolbarElement({ editor, editorState }) {
     </ToolbarCheckbox>
   );
 }
-export function renderNode({ attributes, children }) {
+export function Node({ attributes, children }) {
   return <h2 {...attributes}>{children}</h2>;
 }
 

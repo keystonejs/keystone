@@ -57,7 +57,7 @@ export let plugins = [
   },
 ];
 
-export function renderNode({ attributes, children }) {
+export function Node({ attributes, children }) {
   return <ul {...attributes}>{children}</ul>;
 }
 

@@ -2,6 +2,6 @@ import React from 'react';
 
 export let type = 'paragraph';
 
-export function renderNode({ attributes, children }) {
+export function Node({ attributes, children }) {
   return <p {...attributes}>{children}</p>;
 }
