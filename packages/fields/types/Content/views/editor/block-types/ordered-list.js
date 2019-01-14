@@ -61,4 +61,21 @@ export let plugins = [
   },
 ];
 
+export const schema = {
+  nodes: [
+    {
+      match: { type: listItem.type },
+      min: 0,
+    },
+  ],
+  normalize(editor, error) {
+    switch (error.code) {
+      case 'child_type_invalid': {
+        editor.unwrapBlockByKey(error.node.key, type);
+        return;
+      }
+    }
+  },
+};
+
 export let dependencies = [listItem];
