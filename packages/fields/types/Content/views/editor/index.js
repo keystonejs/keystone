@@ -9,7 +9,7 @@ import { Popper } from 'react-popper';
 import { marks, markTypes, plugins as markPlugins } from './marks';
 import { type as defaultType } from './blocks/paragraph';
 import AddBlock from './AddBlock';
-import { ToolbarCheckbox, ToolbarButton } from './toolbar-components';
+import { ToolbarButton } from './toolbar-components';
 import { A11yText } from '@voussoir/ui/src/primitives/typography';
 import { CircleSlashIcon } from '@voussoir/icons';
 import ResizeObserver from 'resize-observer-polyfill';
@@ -52,7 +52,9 @@ function useHasSelection() {
 }
 
 let stopPropagation = e => {
-  e.preventDefault();
+  // if (e.nativeEvent.target.tagName !== 'INPUT') {
+  // e.preventDefault();
+  // }
   e.stopPropagation();
 };
 
@@ -228,18 +230,18 @@ function Stories({ value: editorState, onChange, blocks }) {
                               {Object.keys(marks).map(name => {
                                 let Icon = marks[name].icon;
                                 return (
-                                  <ToolbarCheckbox
+                                  <ToolbarButton
                                     isActive={editorState.activeMarks.some(
                                       mark => mark.type === name
                                     )}
-                                    onChange={() => {
+                                    onClick={() => {
                                       editorRef.current.toggleMark(name);
                                     }}
                                     key={name}
                                   >
                                     <Icon />
                                     <A11yText>{marks[name].label}</A11yText>
-                                  </ToolbarCheckbox>
+                                  </ToolbarButton>
                                 );
                               })}
                               <ToolbarButton

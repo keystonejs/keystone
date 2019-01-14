@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { hasBlock } from '../utils';
 import { type as defaultType } from './paragraph';
-import { ToolbarCheckbox } from '../toolbar-components';
+import { ToolbarButton } from '../toolbar-components';
 import { A11yText } from '@voussoir/ui/src/primitives/typography';
 
 export let type = 'heading';
 
 export function ToolbarElement({ editor, editorState }) {
   return (
-    <ToolbarCheckbox
+    <ToolbarButton
       isActive={hasBlock(editorState, type)}
-      onChange={() => {
+      onClick={() => {
         if (hasBlock(editorState, type)) {
           editor.setBlocks({ type: defaultType });
         } else {
@@ -20,7 +20,7 @@ export function ToolbarElement({ editor, editorState }) {
     >
       <span aria-hidden>H</span>
       <A11yText>Heading</A11yText>
-    </ToolbarCheckbox>
+    </ToolbarButton>
   );
 }
 export function Node({ attributes, children }) {

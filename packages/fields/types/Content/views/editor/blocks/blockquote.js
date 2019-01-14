@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { hasAncestorBlock } from '../utils';
 import { QuoteIcon } from '@voussoir/icons';
-import { ToolbarCheckbox } from '../toolbar-components';
+import { ToolbarButton } from '../toolbar-components';
 
 export let type = 'blockquote';
 
@@ -10,9 +10,9 @@ export function ToolbarElement({ editor, editorState }) {
   let hasBlockquote = hasAncestorBlock(editorState, type);
 
   return (
-    <ToolbarCheckbox
+    <ToolbarButton
       isActive={hasBlockquote}
-      onChange={() => {
+      onClick={() => {
         if (hasBlockquote) {
           editor.unwrapBlock(type);
         } else {
@@ -21,7 +21,7 @@ export function ToolbarElement({ editor, editorState }) {
       }}
     >
       <QuoteIcon title="Blockquote" />
-    </ToolbarCheckbox>
+    </ToolbarButton>
   );
 }
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ToolbarCheckbox } from '../toolbar-components';
+import { ToolbarButton } from '../toolbar-components';
 import { hasAncestorBlock, hasBlock } from '../utils';
 import * as listItem from './list-item';
 import { type as defaultType } from './paragraph';
@@ -27,15 +27,14 @@ export let type = 'unordered-list';
 
 export function ToolbarElement({ editor, editorState }) {
   return (
-    <ToolbarCheckbox
-      id="unordered-list-input"
+    <ToolbarButton
       isActive={hasAncestorBlock(editorState, type)}
-      onChange={() => {
+      onClick={() => {
         handleListButtonClick(editor, editorState, type);
       }}
     >
       <ListUnorderedIcon title="Unordered List" />
-    </ToolbarCheckbox>
+    </ToolbarButton>
   );
 }
 

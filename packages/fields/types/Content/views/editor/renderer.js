@@ -38,7 +38,7 @@ export let blocks: Components = {
 };
 
 export let inlines: Components = {
-  link: ({ children, data }) => <a href={data.href}>{children}</a>,
+  link: ({ children, data }) => <a href={data.get('href')}>{children}</a>,
 };
 
 export let Content = (props: Props) => {
