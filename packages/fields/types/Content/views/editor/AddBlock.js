@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import { createPortal } from 'react-dom';
 import { useState, useCallback, useRef, Fragment, useLayoutEffect } from 'react';
 import { getVisibleSelectionRect } from 'get-selection-range';
 import { useScrollListener, useWindowSize } from './hooks';
@@ -8,14 +9,15 @@ import { type as defaultType } from './block-types/paragraph';
 let AddBlock = ({ editorState, editor, blocks }) => {
   let windowSize = useWindowSize();
 
+  let openCloseRef = useRef(null);
   let containerRef = useRef(null);
-  let otherContainerRef = useRef(null);
   let focusBlock = editorState.focusBlock;
   let layout = useCallback(
     () => {
-      let container = containerRef.current;
-      let otherContainer = otherContainerRef.current;
+      let openCloseEle = openCloseRef.current;
+      let containerEle = containerRef.current;
       const rect = getVisibleSelectionRect();
+
       if (
         !rect ||
         rect.width !== 0 ||
@@ -24,19 +26,23 @@ let AddBlock = ({ editorState, editor, blocks }) => {
         focusBlock.type !== defaultType
       ) {
         setIsOpen(false);
-        container.style.top = '';
-        container.style.left = '';
-        otherContainer.style.top = '';
-        otherContainer.style.left = '';
+        openCloseEle.style.top = '';
+        openCloseEle.style.left = '';
+        containerEle.style.top = '';
+        containerEle.style.left = '';
 
         return;
       }
-      const top = rect.top + window.scrollY - container.offsetHeight / 2 + rect.height / 2; // eslint-disable-line
-      const left = rect.left + window.scrollX - container.offsetWidth;
-      container.style.top = `${top}px`;
-      container.style.left = `${left}px`;
-      otherContainer.style.top = `${top}px`;
-      otherContainer.style.left = `${left + container.offsetWidth}px`;
+      console.log(rect);
+      const top = rect.top + window.scrollY - openCloseEle.offsetHeight / 2 + rect.height / 2; // eslint-disable-line
+      openCloseEle.style.top = `${top}px`;
+      containerEle.style.top = `${top}px`;
+      console.log(rect.left, window.scrollX);
+      const containerEleLeft = rect.left + window.scrollX;
+      containerEle.style.left = `${containerEleLeft}px`;
+
+      const left = containerEleLeft - openCloseEle.offsetWidth;
+      openCloseEle.style.left = `${left}px`;
     },
     [focusBlock, windowSize]
   );
@@ -45,9 +51,9 @@ let AddBlock = ({ editorState, editor, blocks }) => {
   useScrollListener(layout);
   let [isOpen, setIsOpen] = useState(false);
 
-  return (
+  return createPortal(
     <Fragment>
-      <div ref={containerRef} css={{ position: 'absolute', top: -10000, left: -10000 }}>
+      <div ref={openCloseRef} css={{ position: 'absolute', top: -10000, left: -10000 }}>
         <button
           type="button"
           onClick={() => {
@@ -57,7 +63,7 @@ let AddBlock = ({ editorState, editor, blocks }) => {
           {isOpen ? 'Close' : 'Open'}
         </button>
       </div>
-      <div css={{ position: 'absolute', top: -10000, left: -10000 }} ref={otherContainerRef}>
+      <div css={{ position: 'absolute', top: -10000, left: -10000 }} ref={containerRef}>
         {isOpen && (
           <div>
             {Object.keys(blocks).map(key => {
@@ -70,7 +76,8 @@ let AddBlock = ({ editorState, editor, blocks }) => {
           </div>
         )}
       </div>
-    </Fragment>
+    </Fragment>,
+    document.body
   );
 };
 
