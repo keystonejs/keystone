@@ -59,9 +59,10 @@ let ContentField = ({ field, item, onChange }) => {
     [views]
   );
 
-  let parsedValue = item[field.path];
-  if (parsedValue) {
-    parsedValue = JSON.parse(parsedValue);
+  let serverValue = item[field.path];
+  let parsedValue;
+  if (serverValue) {
+    parsedValue = JSON.parse(serverValue);
   } else {
     parsedValue = initialValue;
   }
@@ -71,7 +72,10 @@ let ContentField = ({ field, item, onChange }) => {
   return (
     <div
       onBlur={() => {
-        onChange(field, JSON.stringify(value.toJS()));
+        let stringified = JSON.stringify(value.toJS());
+        if (stringified !== serverValue) {
+          onChange(field, stringified);
+        }
       }}
     >
       <h1>{field.label}</h1>
