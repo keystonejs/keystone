@@ -26,9 +26,9 @@ export let selectionReference = {
     return rect;
   },
   get clientWidth() {
-    return getVisibleSelectionRect().width;
+    return selectionReference.getBoundingClientRect().width;
   },
   get clientHeight() {
-    return getVisibleSelectionRect().height;
+    return selectionReference.getBoundingClientRect().height;
   },
 };
