@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import ApolloClient from 'apollo-client';
 import gql from 'graphql-tag';
-import { ApolloProvider, Query } from 'react-apollo';
+import { Mutation, ApolloProvider, Query } from 'react-apollo';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
@@ -20,7 +20,25 @@ const fetch = require('node-fetch');
 const client = new ApolloClient({
   link: new HttpLink({ uri: '/admin/api', fetch: fetch }),
   cache: new InMemoryCache(),
+  onError: e => {
+    console.log(e.graphQLErrors);
+  },
 });
+
+const ADD_COMMENT = gql`
+  mutation AddComment($body: String!, $author: ID!, $postId: ID!, $posted: DateTime!) {
+    createComment(
+      data: {
+        body: $body
+        author: { connect: { id: $author } }
+        originalPost: { connect: { id: $postId } }
+        posted: $posted
+      }
+    ) {
+      id
+    }
+  }
+`;
 
 const Comments = ({ data }) => (
   <div>
@@ -57,88 +75,71 @@ const Comments = ({ data }) => (
   </div>
 );
 
-const AddComments = () => {
-  // let commentInput;
+const AddComments = ({ users, postId }) => {
+  let user = users.filter(u => u.email == 'a@demo.user')[0];
+  let commentInput;
 
   return (
-    // <Mutation
-    // mutation={gql`
-    //   mutation AddComment($body: String!, $postId: ID!, $authorId: ID!) {
-    //     createComment(
-    //       data: {
-    //         body: $body
-    //         author: { connect: { id: $authorId } }
-    //         postId: { connect: { id: $postId } }
-    //       }
-    //     ) {
-    //       id
-    //     }
-    //   }
-    // `}
-    // update={(cache, { data: { createComment } }) => {
-
-    //   const { allComments } = data;
-
-    //   allComments.push(createComment);
-
-    //   // cache.writeQuery({
-    //   //   query: GET_COMMENTS,
-    //   //   data: { allTodos },
-    //   // });
-    // }}
-    // >
-    //   {createComment => (
     <div>
       <h2>Add new Comment</h2>
-      <form
-      // onSubmit={e => {
-      //   e.preventDefault();
-      //   createComment({
-      //     variables: {
-      //       body: commentInput.value,
-      //       authorId: data.allUsers[0].id,
-      //     },
-      //   });
-      // }}
+      <Mutation
+        mutation={ADD_COMMENT}
+        update={() => {
+          location.reload();
+        }}
       >
-        <div>
-          <textarea
-            type="text"
-            placeholder="Write a comment"
-            name="comment"
-            css={{
-              padding: 12,
-              fontSize: 16,
-              width: '100%',
-              height: 60,
-              border: 0,
-              borderRadius: 6,
-              resize: 'none',
-            }}
-            // ref={node => {
-            //   commentInput = node;
-            // }}
-          />
-        </div>
+        {createComment => (
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              console.log(commentInput.value, postId, user.id);
+              createComment({
+                variables: {
+                  body: commentInput.value,
+                  author: user.id,
+                  postId: postId,
+                  posted: new Date(),
+                },
+              });
 
-        <input
-          type="submit"
-          value="Submit"
-          css={{
-            padding: '6px 12px',
-            borderRadius: 6,
-            background: 'hsl(200, 20%, 50%)',
-            fontSize: '1em',
-            color: 'white',
-            border: 0,
-            marginTop: 6,
-          }}
-        />
-      </form>
+              commentInput.value = '';
+            }}
+          >
+            <textarea
+              type="text"
+              placeholder="Write a comment"
+              name="comment"
+              css={{
+                padding: 12,
+                fontSize: 16,
+                width: '100%',
+                height: 60,
+                border: 0,
+                borderRadius: 6,
+                resize: 'none',
+              }}
+              ref={node => {
+                commentInput = node;
+              }}
+            />
+
+            <input
+              type="submit"
+              value="Submit"
+              css={{
+                padding: '6px 12px',
+                borderRadius: 6,
+                background: 'hsl(200, 20%, 50%)',
+                fontSize: '1em',
+                color: 'white',
+                border: 0,
+                marginTop: 6,
+              }}
+            />
+          </form>
+        )}
+      </Mutation>
     </div>
-    //   )}
-    //   ;
-    // </Mutation>
   );
 };
 
@@ -161,6 +162,7 @@ export default ({
                   title
                   body
                   posted
+                  id
                   image {
                     publicUrl
                   }
@@ -228,7 +230,8 @@ export default ({
                   </div>
                 </div>
                 <Comments data={data} />
-                <AddComments data={data} />
+
+                <AddComments postId={post.id} users={data.allUsers} />
               </>
             );
           }}
