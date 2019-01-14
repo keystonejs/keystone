@@ -58,68 +58,62 @@ export default () => (
       });
 
       return (
-        <>
-          {data.allSitePage.totalCount >= 1 ? (
-            <div>
-              {categories.map(category => {
-                return (
-                  <div key={category}>
-                    <span
-                      css={{
-                        fontSize: '1.5em',
-                        fontWeight: 700,
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {category}
-                    </span>
-                    <ul
-                      css={{
-                        listStyle: 'none',
-                        padding: 0,
-                        margin: '0 0 32px 0',
-                      }}
-                    >
-                      {navData[category].map(node => {
-                        return (
-                          <li
-                            key={node.path}
-                            css={{
-                              padding: 10,
-                              borderBottom: `1px solid ${colors.B.A15}`,
-                            }}
-                          >
-                            <Link
-                              css={{
-                                textDecoration: 'none',
-                                color: colors.B.text,
-                                textTransform: 'capitalize',
+        <div>
+          {categories.map(category => {
+            return (
+              <div key={category}>
+                <span
+                  css={{
+                    fontSize: '1.5em',
+                    fontWeight: 700,
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {category}
+                </span>
+                <ul
+                  css={{
+                    listStyle: 'none',
+                    padding: 0,
+                    margin: '0 0 32px 0',
+                  }}
+                >
+                  {navData[category].map(node => {
+                    return (
+                      <li
+                        key={node.path}
+                        css={{
+                          padding: 10,
+                          borderBottom: `1px solid ${colors.B.A15}`,
+                        }}
+                      >
+                        <Link
+                          css={{
+                            textDecoration: 'none',
+                            color: colors.B.text,
+                            textTransform: 'capitalize',
 
-                                '&:hover': {
-                                  color: colors.B.base,
-                                },
+                            '&:hover': {
+                              color: colors.B.base,
+                            },
 
-                                '&[aria-current="page"]': {
-                                  color: colors.B.base,
-                                  textDecoration: 'underline',
-                                },
-                              }}
-                              to={node.path}
-                            >
-                              {prettyName(node)}
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div>No pages yet</div>
-          )}
-        </>
+                            '&[aria-current="page"]': {
+                              color: colors.B.base,
+                              textDecoration: 'underline',
+                            },
+                          }}
+                          to={node.path}
+                        >
+                          {prettyName(node)}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
       );
     }}
   />
