@@ -7,7 +7,7 @@ import { getVisibleSelectionRect } from 'get-selection-range';
 import { createPortal } from 'react-dom';
 import { Popper } from 'react-popper';
 import { marks, markTypes, plugins as markPlugins } from './marks';
-import { type as defaultType } from './block-types/paragraph';
+import { type as defaultType } from './blocks/paragraph';
 import AddBlock from './AddBlock';
 import { ToolbarCheckbox, ToolbarButton } from './toolbar-components';
 import { A11yText } from '@voussoir/ui/src/primitives/typography';

@@ -35,15 +35,15 @@ module.exports = {
 };
 
 module.exports.blocks = {
-  blockquote: require.resolve('./views/editor/block-types/blockquote'),
-  embed: require.resolve('./views/editor/block-types/embed'),
-  heading: require.resolve('./views/editor/block-types/heading'),
-  image: require.resolve('./views/editor/block-types/image'),
-  link: require.resolve('./views/editor/block-types/link'),
-  orderedList: require.resolve('./views/editor/block-types/ordered-list'),
-  unorderedList: require.resolve('./views/editor/block-types/unordered-list'),
+  blockquote: require.resolve('./views/editor/blocks/blockquote'),
+  embed: require.resolve('./views/editor/blocks/embed'),
+  heading: require.resolve('./views/editor/blocks/heading'),
+  image: require.resolve('./views/editor/blocks/image'),
+  link: require.resolve('./views/editor/blocks/link'),
+  orderedList: require.resolve('./views/editor/blocks/ordered-list'),
+  unorderedList: require.resolve('./views/editor/blocks/unordered-list'),
   // not exposing list-item since it's only used internally by the other blocks
-  // listItem: require.resolve('./views/editor/block-types/list-item'),
+  // listItem: require.resolve('./views/editor/blocks/list-item'),
   // not exposing paragraph since it's included by default
-  // paragraph: require.resolve('./views/editor/block-types/paragraph'),
+  // paragraph: require.resolve('./views/editor/blocks/paragraph'),
 };

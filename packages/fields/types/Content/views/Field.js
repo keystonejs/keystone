@@ -5,7 +5,7 @@ import Editor from './editor';
 import { Value } from 'slate';
 import { initialValue } from './editor/constants';
 import FieldTypes from './FIELD_TYPES';
-import * as paragraph from './editor/block-types/paragraph';
+import * as paragraph from './editor/blocks/paragraph';
 
 let ContentField = ({ field, item, onChange }) => {
   const views = FieldTypes[field.list.key][field.path];
