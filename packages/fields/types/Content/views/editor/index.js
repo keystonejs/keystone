@@ -58,36 +58,6 @@ let stopPropagation = e => {
   e.stopPropagation();
 };
 
-export function useContainerQuery(ref) {
-  const [height, setHeight] = useState(0);
-  const [width, setWidth] = useState(0);
-
-  // bail early without ref
-  if (!ref) {
-    throw new Error('You must pass a valid ref as the first argument.');
-  }
-
-  // Updates scheduled inside useLayoutEffect will be flushed synchronously,
-  // before the browser has a chance to paint.
-  useLayoutEffect(() => {
-    // prepare the resize handler
-    let resizeObserver = new ResizeObserver(([entry]) => {
-      setHeight(entry.target.offsetHeight);
-      setWidth(entry.target.offsetWidth);
-    });
-
-    // bind the observer to the consumer DOM node
-    resizeObserver.observe(ref.current);
-
-    // cleanup after ourselves
-    return () => {
-      resizeObserver.disconnect(ref.current);
-    };
-  });
-
-  return { height, width };
-}
-
 // to use hooks inside of class components
 let Render = ({ children }) => children();
 
