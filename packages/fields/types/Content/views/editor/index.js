@@ -96,20 +96,20 @@ function Stories({ value: editorState, onChange, blocks }) {
     [blocks]
   );
 
-  let editorRef = useRef(null);
+  let [editor, setEditor] = useStateWithEqualityCheck(null);
   let containerRef = useRef(null);
   return (
     <div ref={containerRef}>
       <Editor
         schema={schema}
-        ref={editorRef}
+        ref={setEditor}
         plugins={plugins}
         value={editorState}
         onChange={({ value }) => {
           onChange(value);
         }}
       />
-      <AddBlock editor={editorRef.current} editorState={editorState} blocks={blocks} />
+      <AddBlock editor={editor} editorState={editorState} blocks={blocks} />
       <Popper placement="top" referenceElement={selectionReference}>
         {({ style, ref, scheduleUpdate }) => {
           return (
@@ -191,7 +191,7 @@ function Stories({ value: editorState, onChange, blocks }) {
                           .reduce(
                             (children, Toolbar) => {
                               return (
-                                <Toolbar editor={editorRef.current} editorState={editorState}>
+                                <Toolbar editor={editor} editorState={editorState}>
                                   {children}
                                 </Toolbar>
                               );
@@ -205,7 +205,7 @@ function Stories({ value: editorState, onChange, blocks }) {
                                       mark => mark.type === name
                                     )}
                                     onClick={() => {
-                                      editorRef.current.toggleMark(name);
+                                      editor.toggleMark(name);
                                     }}
                                     key={name}
                                   >
@@ -217,7 +217,7 @@ function Stories({ value: editorState, onChange, blocks }) {
                               <ToolbarButton
                                 onClick={() => {
                                   markTypes.forEach(mark => {
-                                    editorRef.current.removeMark(mark);
+                                    editor.removeMark(mark);
                                   });
                                 }}
                               >
@@ -232,7 +232,7 @@ function Stories({ value: editorState, onChange, blocks }) {
                                 return (
                                   <ToolbarElement
                                     key={type}
-                                    editor={editorRef.current}
+                                    editor={editor}
                                     editorState={editorState}
                                   />
                                 );
