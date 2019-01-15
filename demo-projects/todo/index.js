@@ -22,7 +22,7 @@ keystone.createList('Todo', {
       },
 });
 
-const admin = new AdminUI(keystone, { adminPath: '/admin' })
+const admin = new AdminUI(keystone, { adminPath: '/admin' });
 
 const server = new WebServer(keystone, {
       'cookie secret': 'qwerty',
