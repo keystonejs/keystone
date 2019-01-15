@@ -73,6 +73,7 @@ async function getGatsbyConfig() {
           // Attributes for custom indexing logic. See https://lunrjs.com/docs/lunr.Builder.html for details
           fields: [
             { name: 'content' },
+            { name: 'preview', store: true },
             { name: 'slug', store: true },
             { name: 'workspace', store: true },
             { name: 'heading', store: true, attributes: { boost: 20 } },
@@ -82,6 +83,11 @@ async function getGatsbyConfig() {
             // For any node of type mdx, list how to resolve the fields' values
             Mdx: {
               content: node => node.rawBody,
+              preview: node =>
+                node.rawBody
+                  .trim()
+                  .substring(0, 280)
+                  .replace(/(`|#)/gm, ''),
               slug: node => node.fields.slug,
               workspace: node => node.fields.workspace,
               heading: node => node.fields.heading,
@@ -96,3 +102,5 @@ async function getGatsbyConfig() {
 }
 
 module.exports = getGatsbyConfig();
+
+// .replace(/(\r\n\t|\n|\r\t|#)/gm, '. ').substring(0, 140)
