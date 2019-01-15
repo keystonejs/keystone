@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "Jed Watson",
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "dist/icons.cjs.js",
   "peerDependencies": {
     "react": "16.7.0-alpha.2"
   },
@@ -12,5 +12,6 @@
     "octicons": "^7.2.0",
     "react": "16.7.0-alpha.2",
     "to-pascal-case": "^1.0.0"
-  }
+  },
+  "module": "dist/icons.esm.js"
 }

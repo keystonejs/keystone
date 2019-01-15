@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "Jed Watson",
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "dist/pagination.cjs.js",
   "peerDependencies": {
     "react": "16.7.0-alpha.2"
   },
@@ -13,8 +13,10 @@
   "dependencies": {
     "@arch-ui/loading": "^0.0.1",
     "@arch-ui/theme": "^0.0.1",
+    "@babel/runtime": "^7.2.0",
     "@emotion/core": "^10.0.4",
     "@emotion/styled": "^10.0.4",
     "react-router-dom": "^4.2.2"
-  }
+  },
+  "module": "dist/pagination.esm.js"
 }

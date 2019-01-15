@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "Jed Watson",
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "dist/pill.cjs.js",
   "peerDependencies": {
     "react": "16.7.0-alpha.2"
   },
@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@arch-ui/theme": "0.0.1",
+    "@babel/runtime": "^7.2.0",
     "@emotion/core": "^10.0.4",
     "@emotion/styled": "^10.0.4",
     "@voussoir/icons": "^0.3.0"
-  }
+  },
+  "module": "dist/pill.esm.js"
 }
