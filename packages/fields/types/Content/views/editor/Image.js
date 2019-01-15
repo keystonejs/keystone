@@ -6,6 +6,8 @@ import { useStateWithEqualityCheck } from './hooks';
 
 let Render = ({ children }) => children();
 
+let popperModifiers = { preventOverflow: { enabled: false }, flip: { enabled: false } };
+
 let Image = ({ alignment, attributes, isFocused, src, onAlignmentChange, ...props }) => {
   let [referenceElement, setReferenceElement] = useStateWithEqualityCheck(null);
 
@@ -23,7 +25,7 @@ let Image = ({ alignment, attributes, isFocused, src, onAlignmentChange, ...prop
           outline: isFocused ? 'auto' : null,
         }}
       />
-      <Popper placement="top" referenceElement={referenceElement}>
+      <Popper modifiers={popperModifiers} placement="top" referenceElement={referenceElement}>
         {({ style, ref, scheduleUpdate }) => {
           return (
             <Render>
