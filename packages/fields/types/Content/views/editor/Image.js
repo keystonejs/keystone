@@ -6,7 +6,11 @@ import { useStateWithEqualityCheck } from './hooks';
 
 let Render = ({ children }) => children();
 
-let popperModifiers = { preventOverflow: { enabled: false }, flip: { enabled: false } };
+let popperModifiers = {
+  flip: { enabled: false },
+  hide: { enabled: false },
+  preventOverflow: { enabled: false },
+};
 
 let Image = ({ alignment, attributes, isFocused, src, onAlignmentChange, ...props }) => {
   let [referenceElement, setReferenceElement] = useStateWithEqualityCheck(null);
