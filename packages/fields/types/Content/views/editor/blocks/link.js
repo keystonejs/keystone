@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import React, { useContext, useState } from 'react';
 import TooltipTrigger from 'react-popper-tooltip';
-import { LinkIcon } from '@voussoir/icons';
+import { LinkIcon, CheckIcon, CircleSlashIcon } from '@voussoir/icons';
 import { ToolbarButton } from '../toolbar-components';
 
 export let type = 'link';
@@ -53,22 +53,28 @@ let LinkMenu = props => {
         e.preventDefault();
         props.onSubmit(value);
       }}
+      css={{ display: 'flex' }}
     >
       <input
+        placeholder="Link..."
+        // TODO: make autoFocus work
+        // autoFocus
+        css={{ border: 0, outline: 'none', background: 'transparent', color: 'white' }}
         value={value}
         onChange={e => {
           setValue(e.target.value);
         }}
       />
-      <button type="submit">Submit</button>
-      <button
-        type="button"
+      <ToolbarButton type="submit">
+        <CheckIcon title="Submit" />
+      </ToolbarButton>
+      <ToolbarButton
         onClick={() => {
           props.onCancel();
         }}
       >
-        Cancel
-      </button>
+        <CircleSlashIcon title="Cancel" />
+      </ToolbarButton>
     </form>
   );
 };
