@@ -18,6 +18,7 @@
 
 [options]
 module.name_mapper='^@voussoir\/\(.+\)$' -> '<PROJECT_ROOT>/packages/\1'
+module.name_mapper='^@arch-ui\/\([^\/]+\)$' -> '@arch-ui/\1/src/index.js'
 module.name_mapper='.*FIELD_TYPES' -> '<PROJECT_ROOT>/packages/field-views-loader/field-types'
 server.max_workers=1
 
