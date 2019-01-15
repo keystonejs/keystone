@@ -6,7 +6,6 @@ import { Value } from 'slate';
 import { initialValue } from './editor/constants';
 import FieldTypes from './FIELD_TYPES';
 import * as paragraph from './editor/blocks/paragraph';
-import { Content } from './editor/renderer';
 
 let ContentField = ({ field, item, onChange }) => {
   const views = FieldTypes[field.list.key][field.path];
@@ -53,8 +52,6 @@ let ContentField = ({ field, item, onChange }) => {
     [views]
   );
 
-  console.log(blocks);
-
   let serverValue = item[field.path];
   let parsedValue;
   if (serverValue) {
@@ -92,7 +89,6 @@ let ContentField = ({ field, item, onChange }) => {
             }}
           />
         )}
-      <Content value={value} />
     </div>
   );
 };
