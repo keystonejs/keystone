@@ -19,7 +19,6 @@
         "@voussoir/ui": "^0.6.0",
         "@mdx-js/mdx": "^0.16.6",
         "@mdx-js/tag": "^0.16.6",
-        "@sindresorhus/slugify": "^0.6.0",
         "add": "^2.0.6",
         "bolt": "^0.22.1",
         "gatsby": "^2.0.60",

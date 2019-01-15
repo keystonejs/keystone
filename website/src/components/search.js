@@ -26,7 +26,7 @@ const Input = styled.input({
   },
 });
 
-const ResultsList = styled.ul(props => ({
+const ResultsList = styled.ul({
   background: 'white',
   boxShadow: `0 3px 10px rgba(0,0,0,0.25)`,
   maxWidth: 300,
@@ -35,9 +35,8 @@ const ResultsList = styled.ul(props => ({
   right: 21,
   top: 40,
   padding: 5,
-  fontSize: '0.8em',
-  display: props.results.length ? 'block' : 'none',
-}));
+  fontSize: '1em',
+});
 
 // Search component
 export default class Search extends Component {
@@ -53,16 +52,21 @@ export default class Search extends Component {
     return (
       <div>
         <Input type="text" value={this.state.query} onChange={this.search} placeholder="Search" />
-        <ResultsList results={this.state.results}>
-          {this.state.results.slice(0, 12).map(result => (
-            <li css={{ padding: 5, borderBottom: `1px solid ${colors.B.A25}` }} key={result.slug}>
-              <Link style={{ color: colors.B.base }} to={result.slug}>
-                {result.slug}
-              </Link>{' '}
-              <small style={{ color: 'grey' }}>({result.workspace})</small>
-            </li>
-          ))}
-        </ResultsList>
+        {this.state.results.length ? (
+          <ResultsList>
+            {this.state.results.slice(0, 12).map(result => (
+              <li
+                css={{ padding: 10, borderBottom: `1px solid ${colors.B.A25}` }}
+                key={result.slug}
+              >
+                <Link style={{ color: colors.B.base }} to={result.slug}>
+                  {result.slug}
+                </Link>{' '}
+                <small style={{ color: 'grey' }}>({result.workspace})</small>
+              </li>
+            ))}
+          </ResultsList>
+        ) : null}
       </div>
     );
   }

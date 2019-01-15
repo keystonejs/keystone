@@ -31,11 +31,11 @@ export default () => (
           alignItems: 'center',
         }}
       >
-        <Button appearance="primary-light" href="#getStartedNow">
+        <Button appearance="primary-light" href="/tutorials/getting-started">
           Get Started
         </Button>
-        <Button appearance="light" href="#">
-          Try the Demo
+        <Button appearance="light" href="https://github.com/keystonejs/keystone-5">
+          View on GitHub
         </Button>
       </div>
     </div>

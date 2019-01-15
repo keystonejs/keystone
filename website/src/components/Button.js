@@ -17,16 +17,16 @@ export default Styled.a(props => ({
   },
 
   border:
-    props.appearance == 'primary-light'
+    props.appearance === 'primary-light'
       ? `2px solid rgba(255,255,255,0.6);`
       : `2px solid ${colors.B.base}`,
 
   background:
-    props.appearance == 'primary-light'
+    props.appearance === 'primary-light'
       ? 'white'
-      : props.appearance == 'primary'
+      : props.appearance === 'primary'
       ? colors.B.base
       : 'none',
 
-  color: props.appearance == 'primary' || props.appearance == 'light' ? 'white' : colors.B.base,
+  color: props.appearance === 'primary' || props.appearance === 'light' ? 'white' : colors.B.base,
 }));

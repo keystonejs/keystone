@@ -31,12 +31,12 @@ export default function Template({
   const { code, fields } = mdx;
   return (
     <Layout>
-      <div id="primary" className="blog-post-container">
+      <div>
         <div css={{ color: colors.B.A50, textTransform: 'capitalize' }}>
           <StyledLink to="/">Keystone</StyledLink> &gt;{' '}
           <StyledLink to={workspaceSlug}>{workspace}</StyledLink>
         </div>
-        <div className="blog-post">
+        <div>
           <MDXProvider components={mdComponents}>
             <MDXRenderer>{code.body}</MDXRenderer>
           </MDXProvider>

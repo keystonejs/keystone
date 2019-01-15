@@ -24,6 +24,10 @@ const Layout = ({ children }) => (
           color: colors.B.base,
         },
 
+        img: {
+          maxWidth: '100%',
+        },
+
         'pre[class*="language-"]': {
           padding: 16,
           width: '100%',

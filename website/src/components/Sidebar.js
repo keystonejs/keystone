@@ -17,7 +17,7 @@ const prettyName = node => {
     pretty = pretty.replace('packages', '').replace('types', '');
   }
 
-  return pretty == '' ? 'index' : pretty;
+  return pretty === '' ? 'index' : pretty;
 };
 
 export default () => (

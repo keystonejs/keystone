@@ -83,7 +83,7 @@ const Header = () => (
       }}
     >
       <Logo />
-      <Nav links={navLinks} />
+      <Nav />
     </div>
     <Search />
   </header>
