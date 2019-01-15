@@ -90,7 +90,7 @@ export default () => (
                         <Link
                           css={{
                             textDecoration: 'none',
-                            color: colors.B.text,
+                            color: colors.B.D50,
                             textTransform: 'capitalize',
 
                             '&:hover': {

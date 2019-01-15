@@ -8,7 +8,7 @@ import { colors } from '@voussoir/ui/src/theme';
 /** @jsx jsx */
 
 const Input = styled.input({
-  background: colors.B.A15,
+  background: colors.B.A10,
   padding: 10,
   fontSize: '1em',
   border: 'none',

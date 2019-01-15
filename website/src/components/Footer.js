@@ -7,7 +7,7 @@ import { colors } from '@voussoir/ui/src/theme';
 const Footer = () => (
   <footer
     css={{
-      background: colors.B.A25,
+      background: colors.B.A10,
       padding: 16,
       textAlign: 'center',
     }}

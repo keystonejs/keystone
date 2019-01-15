@@ -9,13 +9,15 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Sidebar from '../components/Sidebar';
 
+console.log(colors);
+
 const Layout = ({ children }) => (
   <>
     <Global
       styles={{
         body: {
           margin: 0,
-          color: colors.B.text,
+          color: colors.B.D70,
           fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
           lineHeight: '1.5em',
         },
@@ -51,7 +53,7 @@ const Layout = ({ children }) => (
     >
       <aside
         css={{
-          background: colors.B.A20,
+          background: colors.B.A10,
           height: 'calc(100vh - 66px)',
           overflow: 'scroll',
           padding: 16,
@@ -73,7 +75,7 @@ const Layout = ({ children }) => (
         css={{
           height: 'calc(100vh - 66px)',
           overflow: 'scroll',
-          background: colors.B.A10,
+          background: colors.B.A5,
 
           '@media all and (min-width: 800px)': {
             flex: '3 0px',
