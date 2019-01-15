@@ -1,64 +1,25 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import * as React from 'react';
 import Image from '../Image';
-import insertImages from 'slate-drop-or-paste-images';
-import imageExtensions from 'image-extensions';
 
 export let type = 'image';
 
-let getFiles = () =>
-  new Promise(resolve => {
-    let input = document.createElement('input');
-    input.type = 'file';
-    input.onchange = () => {
-      let files = input.files;
-      Promise.all(
-        [...files].map(file => {
-          return new Promise(innerResolve => {
-            const reader = new FileReader();
-            reader.onload = e => {
-              innerResolve(e.target.result);
-            };
-            reader.readAsDataURL(file);
-          });
-        })
-      ).then(resolve);
-    };
-    input.click();
-  });
+export let ImageAlignmentContext = React.createContext({
+  aligment: '',
+  onAlignmentChange() {},
+});
 
-export function Sidebar({ editor }) {
-  return (
-    <button
-      type="button"
-      onClick={() => {
-        getFiles().then(srcs => {
-          srcs.forEach(src => {
-            editor.insertBlock({
-              type,
-              data: { src },
-            });
-          });
-        });
-      }}
-    >
-      Insert Image
-    </button>
-  );
-}
 export function Node(props) {
   let { data } = props.node;
-
+  let { aligment, onAlignmentChange } = React.useContext(ImageAlignmentContext);
   return (
     <Image
-      alignment={data.get('alignment')}
+      alignment={aligment}
       attributes={props.attributes}
       isFocused={props.isFocused}
       src={data.get('src')}
-      onAlignmentChange={aligment => {
-        props.editor.setNodeByKey(props.node.key, {
-          data: data.set('alignment', aligment),
-        });
-      }}
+      onAlignmentChange={onAlignmentChange}
     />
   );
 }
@@ -89,20 +50,3 @@ export let schema = {
     }
   },
 };
-
-export let plugins = [
-  insertImages({
-    extensions: imageExtensions,
-    insertImage: (editor, file) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        editor.insertBlock({
-          type,
-          isVoid: true,
-          data: { src: reader.result },
-        });
-      };
-      reader.readAsDataURL(file);
-    },
-  }),
-];
