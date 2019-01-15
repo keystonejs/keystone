@@ -13,8 +13,8 @@
     "cypress:open:cmd": "node -r dotenv-safe/config `which cypress` open",
     "prepare-test-server": "NODE_ENV=test DISABLE_LOGGING=true node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.code) })'",
     "cypress:run:ci": "touch .env && yarn prepare-test-server cypress:run:cmd",
-    "cypress:run": "if [ -f .env ]; then yarn prepare-test-server cypress:run:cmd; else echo \"\nError: Must create a projects/basic/.env file.\nSee projects/basic/.env.example for values\n\"; exit 1; fi",
-    "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a projects/basic/.env file.\nSee projects/basic/.env.example for values\n\"; exit 1; fi"
+    "cypress:run": "if [ -f .env ]; then yarn prepare-test-server cypress:run:cmd; else echo \"\nError: Must create a test-projects/basic/.env file.\nSee test-projects/basic/.env.example for values\n\"; exit 1; fi",
+    "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a test-projects/basic/.env file.\nSee test-projects/basic/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
     "@arch-ui/fields": "^0.0.1",

@@ -10,7 +10,7 @@ easier/faster/better to add a new List to an existing test projectt if possible.
 
 ### Environment Variables
 
-Make sure that for each project (eg `projects/basic`), you setup the `.env` file
+Make sure that for each project (eg `test-projects/basic`), you setup the `.env` file
 with the necessary values filled out (see `.env.example` for what's required).
 
 ### Continuous Integration
