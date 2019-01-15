@@ -23,7 +23,7 @@ let Image = ({ alignment, attributes, isFocused, src, onAlignmentChange, ...prop
           outline: isFocused ? 'auto' : null,
         }}
       />
-      <Popper referenceElement={referenceElement}>
+      <Popper placement="top" referenceElement={referenceElement}>
         {({ style, ref, scheduleUpdate }) => {
           return (
             <Render>
