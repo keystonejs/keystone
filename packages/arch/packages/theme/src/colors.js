@@ -43,7 +43,6 @@ const blue = '#2684FF';
 const green = '#34c240';
 const red = '#d64242';
 const yellow = '#fa9f47';
-
 // const neutral = '#7A869A';
 
 const blues = makeVariants(blue);
@@ -51,7 +50,6 @@ const greens = makeVariants(green);
 const reds = makeVariants(red);
 const yellows = makeVariants(yellow);
 // const neutrals = makeVariants(neutral);
-console.log(reds);
 
 export default {
   R: reds,
