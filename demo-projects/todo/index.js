@@ -9,23 +9,6 @@ const path = require('path');
 const port = 3000;
 const staticPath = path.join(process.cwd(), 'public');
 
-const initialData = {
-  Todo: [
-    {
-      name: 'Do washing',
-    },
-    {
-      name: 'Call Mum',
-    },
-    {
-      name: 'Try out Keystone',
-    },
-    {
-      name: 'Buy a Mustang',
-    },
-  ],
-};
-
 const keystone = new Keystone({
   name: 'Keystone To-Do List',
   adapter: new MongooseAdapter(),
@@ -55,13 +38,6 @@ server.app.use(bundler.middleware());
 async function start() {
   await keystone.connect();
   server.start();
-  const todos = await keystone.lists.Todo.adapter.findAll();
-  if (!todos.length) {
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
-    await keystone.createItems(initialData);
-  }
 }
 
 start().catch(error => {
