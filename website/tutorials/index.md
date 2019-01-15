@@ -2,4 +2,4 @@
 
 Welcome to Tutorials!
 
-[Get Started](get-started)
+[Get Started](./get-started)
