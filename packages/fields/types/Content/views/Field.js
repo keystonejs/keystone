@@ -14,7 +14,10 @@ let ContentField = ({ field, item, onChange }) => {
     () => {
       let defaultBlocks = [paragraph];
 
-      let customBlocks = views.blocks;
+      let customBlocks = views.blocks.map((block, i) => ({
+        ...block,
+        options: field.config.blockOptions[i],
+      }));
 
       let combinedBlocks = [...defaultBlocks, ...customBlocks];
 
@@ -49,6 +52,8 @@ let ContentField = ({ field, item, onChange }) => {
     },
     [views]
   );
+
+  console.log(blocks);
 
   let serverValue = item[field.path];
   let parsedValue;

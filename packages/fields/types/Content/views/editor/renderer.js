@@ -50,7 +50,11 @@ export let Content = (props: Props) => {
             if (obj.object === 'block') {
               let Comp = blocks[obj.type] || props.blocks[obj.type];
               if (!Comp) {
-                return <div> cannot render block of type: {children}</div>;
+                return (
+                  <div style={{ color: 'red' }}>
+                    cannot render block of type: {obj.type} {children}
+                  </div>
+                );
               }
               return <Comp data={obj.data}>{children}</Comp>;
             }
@@ -58,7 +62,7 @@ export let Content = (props: Props) => {
               let Comp = inlines[obj.type] || props.inlines[obj.type];
               if (!Comp) {
                 return (
-                  <div>
+                  <div style={{ color: 'red' }}>
                     cannot render inline of type: {obj.type} {children}
                   </div>
                 );

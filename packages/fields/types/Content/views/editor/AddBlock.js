@@ -34,11 +34,9 @@ let AddBlock = ({ editorState, editor, blocks }) => {
 
         return;
       }
-      console.log(rect);
       const top = rect.top + window.scrollY - openCloseEle.offsetHeight / 2 + rect.height / 2; // eslint-disable-line
       openCloseEle.style.top = `${top}px`;
       containerEle.style.top = `${top}px`;
-      console.log(rect.left, window.scrollX);
       const containerEleLeft = rect.left + window.scrollX;
       containerEle.style.left = `${containerEleLeft}px`;
 
