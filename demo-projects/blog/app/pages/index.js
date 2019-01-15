@@ -89,11 +89,11 @@ export default () => (
             if (error) return <p>Error!</p>;
             return (
               <div>
-                <div css={{ margin: '24px 0' }}>
-                  {data.allPosts.map(post => (
-                    <Post post={post} key={post.id} />
-                  ))}
-                </div>
+                {data.allPosts.length ? (
+                  data.allPosts.map(post => <Post post={post} key={post.id} />)
+                ) : (
+                  <p>No posts to display</p>
+                )}
               </div>
             );
           }}
