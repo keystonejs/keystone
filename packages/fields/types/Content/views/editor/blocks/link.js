@@ -93,8 +93,6 @@ export function Toolbar({ children, editor }) {
               type: type,
               data: { href: value },
             });
-            // idk why the setTimeout is necessary but it works so ¯\_(ツ)_/¯
-            setTimeout(() => setLinkRange(null), 0);
           }}
           onCancel={() => {
             setLinkRange(null);
