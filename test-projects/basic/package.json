@@ -24,7 +24,6 @@
     "@voussoir/fields": "^2.0.1",
     "@voussoir/file-adapters": "^0.2.1",
     "@voussoir/server": "^0.5.1",
-    "@voussoir/ui": "^0.6.1",
     "date-fns": "^1.29.0",
     "dotenv-safe": "^6.0.0",
     "react": "16.7.0-alpha.2"
