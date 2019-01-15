@@ -12,32 +12,32 @@ const staticPath = path.join(process.cwd(), 'public');
 const bundler = new Bundler(path.join(staticPath, 'index.html'));
 
 const keystone = new Keystone({
-      name: 'Keystone To-Do List',
-      adapter: new MongooseAdapter(),
+  name: 'Keystone To-Do List',
+  adapter: new MongooseAdapter(),
 });
 
 keystone.createList('Todo', {
-      fields: {
-            name: { type: Text },
-      },
+  fields: {
+    name: { type: Text },
+  },
 });
 
 const admin = new AdminUI(keystone, { adminPath: '/admin' });
 
 const server = new WebServer(keystone, {
-      'cookie secret': 'qwerty',
-      'admin ui': admin,
-      port: 3000,
+  'cookie secret': 'qwerty',
+  'admin ui': admin,
+  port: 3000,
 });
 
 server.app.use(bundler.middleware());
 
 async function start() {
-      await keystone.connect();
-      server.start();
+  await keystone.connect();
+  server.start();
 }
 
 start().catch(error => {
-      console.error(error);
-      process.exit(1);
+  console.error(error);
+  process.exit(1);
 });
