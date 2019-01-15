@@ -29,7 +29,26 @@ const path = require('path');
 const port = process.env.PORT;
 const staticRoute = '/public'; // The URL portion
 const staticPath = path.join(process.cwd(), 'public'); // The local path on disk
-const initialData = require('./data');
+const initialData = {
+  User: [
+    {
+      name: 'Administrator',
+      email: 'admin@keystone.project',
+      isAdmin: true,
+      dob: '1990-01-01',
+      password: 'password',
+    },
+    {
+      name: 'Demo User',
+      email: 'a@demo.user',
+      isAdmin: false,
+      dob: '1995-06-09',
+      password: 'password',
+    },
+  ],
+};
+
+const getYear = require('date-fns/get_year');
 
 const keystone = new Keystone({
   name: 'Keystone Demo Blog',
@@ -47,6 +66,11 @@ const fileAdapter = new LocalFileAdapter({
   route: `${staticRoute}/uploads`,
 });
 
+const avatarFileAdapter = new LocalFileAdapter({
+  directory: `${staticPath}/avatars`,
+  route: `${staticRoute}/avatars`,
+});
+
 keystone.createList('User', {
   fields: {
     name: { type: Text },
@@ -55,10 +79,11 @@ keystone.createList('User', {
       type: CalendarDay,
       format: 'Do MMMM YYYY',
       yearRangeFrom: 1901,
-      yearRangeTo: 2019,
+      yearRangeTo: getYear(new Date()),
     },
     password: { type: Password },
     isAdmin: { type: Checkbox },
+    avatar: { type: File, adapter: avatarFileAdapter },
   },
   labelResolver: item => `${item.name} <${item.email}>`,
 });

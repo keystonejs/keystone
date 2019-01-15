@@ -40,6 +40,11 @@ const ADD_COMMENT = gql`
   }
 `;
 
+const imagePlaceholder = name => `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width="100" height="100">
+<rect width="100" height="100" fill="hsl(200,20%,50%)" />
+<text text-anchor="middle" x="50" y="67" fill="white" style="font-size: 50px; font-family: 'Rubik', sans-serif;">
+${name.charAt(0)}</text></svg>`;
+
 const Comments = ({ data }) => (
   <div>
     <h2>Comments</h2>
@@ -53,7 +58,11 @@ const Comments = ({ data }) => (
             }}
           >
             <img
-              src="https://randomuser.me/api/portraits/men/32.jpg"
+              src={
+                comment.author.avatar
+                  ? comment.author.avatar.publicUrl
+                  : imagePlaceholder(comment.author.name)
+              }
               css={{ width: 48, height: 48, borderRadius: 32 }}
             />
             <div css={{ marginLeft: 16 }}>
@@ -175,6 +184,9 @@ export default ({
                   body
                   author {
                     name
+                    avatar {
+                      publicUrl
+                    }
                   }
                   posted
               }
