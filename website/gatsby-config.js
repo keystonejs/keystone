@@ -112,5 +112,3 @@ async function getGatsbyConfig() {
 }
 
 module.exports = getGatsbyConfig();
-
-// .replace(/(\r\n\t|\n|\r\t|#)/gm, '. ').substring(0, 140)
