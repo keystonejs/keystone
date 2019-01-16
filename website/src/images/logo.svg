@@ -1,13 +1,3 @@
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 100 101.4" enable-background="new 0 0 100 101.4" xml:space="preserve">
-	  <defs>
-    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#00c1da;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#003bca;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-    <g>
-		<path fill="#348DD9" d="M95.6,0H4.4C2,0,0,2,0,4.5v92.5c0,2.5,2,4.5,4.4,4.5h91.2c2.4,0,4.4-2,4.4-4.5V4.5C100,2,98,0,95.6,0z
-			 M63.8,86.8L42.4,57.8l-5.5,6.7v22.3H22.3v-72h14.5v32.2l25-32.2h18.5L52.3,48.5l30,38.3H63.8z"/>
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" version="1" viewBox="0 0 100 101">
+  <path fill="#348DD9" d="M96 0H4C2 0 0 2 0 5v92c0 3 2 5 4 5h92c2 0 4-2 4-5V5c0-3-2-5-4-5zM64 87L42 58l-5 6v23H22V15h15v32l25-32h18L52 49l30 38H64z"/>
 </svg>
