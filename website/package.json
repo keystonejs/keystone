@@ -17,6 +17,7 @@
         "@emotion/styled": "^10.0.5",
         "@mdx-js/mdx": "^0.16.6",
         "@mdx-js/tag": "^0.16.6",
+        "@reach/router": "^1.2.1",
         "@sindresorhus/slugify": "^0.6.0",
         "@voussoir/ui": "^0.6.0",
         "add": "^2.0.6",
