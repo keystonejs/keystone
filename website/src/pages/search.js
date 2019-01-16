@@ -1,6 +1,7 @@
-import React from 'react'; // eslint-disable-line no-unused-vars
+import React from 'react';
 import { Link } from 'gatsby';
 import { jsx, Global } from '@emotion/core';
+import { Input } from '@voussoir/ui/src/primitives/forms';
 
 /** @jsx jsx */
 
@@ -18,17 +19,15 @@ export default class Search extends React.Component {
     };
   }
 
-  componentWillMount = async () => {
+  componentDidMount() {
     const query = new URL(window.location.href).searchParams.get('q');
     const results = this.getSearchResults(query);
-    await this.setState(() => ({ results, query }));
-  };
+    this.setState({ results, query });
+  }
 
   render() {
-    console.log(this.state);
-
     return (
-      <>
+      <React.Fragment>
         <Global
           styles={{
             body: {
@@ -57,7 +56,7 @@ export default class Search extends React.Component {
         >
           <h1>Search Results for '{this.state.query}'</h1>
 
-          <input type="text" value={this.state.query} onChange={this.search} placeholder="Search" />
+          <Input type="text" value={this.state.query} onChange={this.search} placeholder="Search" />
           {this.state.results.length ? (
             <ul css={{ padding: 0 }}>
               {this.state.results.map(result => (
@@ -79,7 +78,7 @@ export default class Search extends React.Component {
                       to={result.slug}
                     >
                       {this.prettyTitle(result)}
-                    </Link>{' '}
+                    </Link>
                     <small style={{ color: 'grey' }}>({result.workspace})</small>
                   </div>
                   <p css={{ marginBottom: 0 }}>{result.preview}</p>
@@ -89,7 +88,7 @@ export default class Search extends React.Component {
           ) : null}
         </div>
         <Footer />
-      </>
+      </React.Fragment>
     );
   }
 
