@@ -1,66 +1,45 @@
-import React from 'react';
-import { graphql, Link } from 'gatsby';
+import React from 'react'; // eslint-disable-line no-unused-vars
+import { Link } from 'gatsby';
+import { jsx, Global } from '@emotion/core';
 
-import Search from '../components/search';
+/** @jsx jsx */
 
-export default ({ data }) => (
-  <div>
-    <Search />
-    <h1>
-      Hello{' '}
-      <span role="img" aria-label="Waving hand">
-        👋
-      </span>
-    </h1>
+import { colors } from '@voussoir/ui/src/theme';
+
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import GetStartedRightNow from '../components/getStartedRightNow';
+import Hero from '../components/hero';
+
+export default () => (
+  <>
+    <Global
+      styles={{
+        body: {
+          margin: 0,
+          color: colors.B.D55,
+          background: colors.B.bg,
+          fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
+        },
+
+        'pre[class*="language-"]': {
+          background: 'white',
+          fontSize: '0.8em',
+          width: '100%',
+          maxWidth: 600,
+        },
+      }}
+    />
+    <Header />
+    <Hero />
     <h2>
       Start here{' '}
       <span role="img" aria-label="hand pointing right">
         👉
       </span>{' '}
-      <Link to="/docs">/docs</Link>
+      <Link to="/tutorials">/tutorials</Link>
     </h2>
-    {data.allSitePage.totalCount >= 1 ? (
-      <div>
-        <h2>Pages ({data.allSitePage.totalCount})</h2>
-        <ul>
-          {data.allSitePage.edges
-            // Set up a particular order of results here:
-            // - '/' always comes first
-            // - '/docs' always comes next
-            // - ... the rest of the results, ordered by 'path' by the query
-            .sort((a, b) =>
-              a.node.path === '/' ||
-              (a.node.context.workspace !== b.node.context.workspace &&
-                a.node.context.workspace === 'docs' &&
-                b.node.path !== '/')
-                ? -1
-                : 0
-            )
-            .map(({ node }) => (
-              <li key={node.path}>
-                <Link to={node.path}>{node.path}</Link>
-              </li>
-            ))}
-        </ul>
-      </div>
-    ) : (
-      <div>No pages yet</div>
-    )}
-  </div>
+    <GetStartedRightNow />
+    <Footer />
+  </>
 );
-
-export const pageQuery = graphql`
-  query Index {
-    allSitePage(filter: { path: { ne: "/dev-404-page/" } }, sort: { fields: [path] }) {
-      totalCount
-      edges {
-        node {
-          path
-          context {
-            workspace
-          }
-        }
-      }
-    }
-  }
-`;

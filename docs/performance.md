@@ -48,7 +48,7 @@ module.exports = {
   service: {
     localSchemaFile: './schema.graphql',
   },
-}
+};
 ```
 
 #### Push Schema To Apollo Engine
@@ -65,7 +65,6 @@ keystone.createList('Foo', {
   /* ... */
 });
 
-
 // ---- Schema dumping ----
 if (typeof process.env.DUMP_SCHEMA === 'string') {
   keystone.dumpSchema(process.env.DUMP_SCHEMA);
@@ -73,7 +72,6 @@ if (typeof process.env.DUMP_SCHEMA === 'string') {
   process.exit(0);
 }
 // ---- End Schema dumping ----
-
 
 const server = new WebServer(keystone, {
   /* ... */

@@ -1,5 +1,9 @@
 const bolt = require('bolt');
 const fs = require('fs');
+const mdx = require('@mdx-js/mdx');
+const compiler = mdx.createMdxAstCompiler({ mdPlugins: [] });
+const prune = require('underscore.string/prune');
+const visit = require('unist-util-visit');
 
 async function getPackagePlugins() {
   const { dir: rootDir } = await bolt.getProject({ cwd: '../' });
@@ -38,10 +42,6 @@ async function getGatsbyConfig() {
         resolve: 'gatsby-source-filesystem',
         options: { name: 'tutorials', path: `${__dirname}/tutorials/` },
       },
-      {
-        resolve: 'gatsby-source-filesystem',
-        options: { name: 'guides', path: `${__dirname}/guides/` },
-      },
       `gatsby-plugin-sharp`,
       {
         resolve: `gatsby-mdx`,
@@ -73,6 +73,7 @@ async function getGatsbyConfig() {
           // Attributes for custom indexing logic. See https://lunrjs.com/docs/lunr.Builder.html for details
           fields: [
             { name: 'content' },
+            { name: 'preview', store: true },
             { name: 'slug', store: true },
             { name: 'workspace', store: true },
             { name: 'heading', store: true, attributes: { boost: 20 } },
@@ -82,6 +83,21 @@ async function getGatsbyConfig() {
             // For any node of type mdx, list how to resolve the fields' values
             Mdx: {
               content: node => node.rawBody,
+              preview: node => {
+                // gatsby-plugin-lunr doesn't fetch stuff with gql, it just reads from the node
+                // and excerpt is implemented as a resolver so we can't call it
+                // we'll probably switch to algolia when this is public so we can remove this
+                // https://github.com/ChristopherBiscardi/gatsby-mdx/blob/46aad4a35ad287b28f02c5191b440335986fbfc3/packages/gatsby-mdx/gatsby/extend-node-type.js#L141-L156
+                const ast = compiler.parse(node.rawBody);
+                const excerptNodes = [];
+                visit(ast, mdNode => {
+                  if (mdNode.type === 'text' || mdNode.type === 'inlineCode') {
+                    excerptNodes.push(mdNode.value);
+                  }
+                });
+
+                return prune(excerptNodes.join(' '), 280, '…');
+              },
               slug: node => node.fields.slug,
               workspace: node => node.fields.workspace,
               heading: node => node.fields.heading,
