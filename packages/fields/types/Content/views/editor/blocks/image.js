@@ -26,27 +26,4 @@ export function Node(props) {
 
 export let schema = {
   isVoid: true,
-  data: {
-    alignment(value) {
-      switch (value) {
-        case 'center':
-        case 'left':
-        case 'right': {
-          return true;
-        }
-      }
-      return false;
-    },
-  },
-  normalize(editor, { code, node, key }) {
-    switch (code) {
-      case 'node_data_invalid': {
-        if (key === 'alignment') {
-          editor.setNodeByKey(node.key, {
-            data: node.data.set('alignment', 'center'),
-          });
-        }
-      }
-    }
-  },
 };
