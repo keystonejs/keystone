@@ -20,7 +20,7 @@ const client = new ApolloClient({
   link: new HttpLink({ uri: '/admin/api', fetch: fetch }),
   cache: new InMemoryCache(),
   onError: e => {
-    console.log(e.graphQLErrors);
+    console.error(e.graphQLErrors);
   },
 });
 

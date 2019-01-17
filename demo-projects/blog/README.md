@@ -2,7 +2,7 @@
 
 ## Running the Project.
 
-Before you can run this demo project, create a .env file within the project folder `/demo-projects/todo`, and write the following...
+Before you can run this demo project, create a .env file within the project folder `touch demo-projects/todo/.env`, and write the following...
 
 ```
 PORT=3000
