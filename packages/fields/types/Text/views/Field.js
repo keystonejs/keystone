@@ -4,7 +4,7 @@ import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
-import { ShieldIcon } from '@voussoir/icons';
+import { ShieldIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
 
 export default class TextField extends Component {

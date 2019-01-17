@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
 
-import { PlusIcon } from '@voussoir/icons';
+import { PlusIcon } from '@arch-ui/icons';
 import { colors, borderRadius, gridSize } from '@arch-ui/theme';
 import { LoadingIndicator } from '@arch-ui/loading';
 import { A11yText } from '@arch-ui/typography';

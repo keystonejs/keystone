@@ -15,7 +15,7 @@ import {
   TelescopeIcon,
   MarkGithubIcon,
   SignOutIcon,
-} from '@voussoir/icons';
+} from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import {
   PrimaryNav,

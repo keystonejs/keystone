@@ -1,3 +1,4 @@
+// @flow
 export { default as AlertIcon } from './icons/Alert';
 export { default as ArrowDownIcon } from './icons/ArrowDown';
 export { default as ArrowLeftIcon } from './icons/ArrowLeft';
@@ -172,3 +173,4 @@ export { default as GrabberIcon } from './icons/Grabber';
 export { default as PlusSmallIcon } from './icons/PlusSmall';
 export { default as LightBulbIcon } from './icons/LightBulb';
 export { default as LinkExternalIcon } from './icons/LinkExternal';
+export { default as ArchiveIcon } from './icons/Archive';

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
-import { AlertIcon, DashboardIcon, PencilIcon, PlusIcon, MegaphoneIcon } from '@voussoir/icons';
+import { AlertIcon, DashboardIcon, PencilIcon, PlusIcon, MegaphoneIcon } from '@arch-ui/icons';
 import { Button, IconButton, LoadingButton } from '@arch-ui/button';
 import { FlexGroup } from '@arch-ui/layout';
 
