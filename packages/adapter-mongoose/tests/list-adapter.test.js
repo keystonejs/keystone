@@ -4,7 +4,6 @@ function createListAdapter(MongooseListAdapter, key, { aggregateResult = [] } = 
     {
       mongoose: { Schema: function schema() {} },
       getListAdapterByKey: () => {},
-      pushSetupTask: () => {},
     },
     {}
   );
