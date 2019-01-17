@@ -23,7 +23,6 @@ class MockListAdapter {
     };
   }
   newFieldAdapter = () => new MockFieldAdapter();
-  prepareModel = jest.fn();
   create = async item => {
     this.items[this.index] = {
       ...item,
@@ -238,7 +237,6 @@ describe('new List()', () => {
   test('new List() - adapter', () => {
     const list = setup();
     expect(list.adapter).toBeInstanceOf(MockListAdapter);
-    expect(list.adapter.prepareModel).toHaveBeenCalled();
   });
 });
 

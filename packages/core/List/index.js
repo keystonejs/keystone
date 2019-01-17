@@ -187,8 +187,6 @@ module.exports = class List {
       return this.fieldsByPath[path];
     });
 
-    this.adapter.prepareModel();
-
     this.views = mapKeys(sanitisedFieldsConfig, fieldConfig => ({
       ...fieldConfig.type.views,
     }));
