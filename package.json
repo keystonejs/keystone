@@ -24,7 +24,8 @@
     "changeset": "build-releases changeset",
     "version-packages": "build-releases version",
     "publish-changed": "build-releases publish --public",
-    "postinstall": "cd website && yarn"
+    "postinstall": "cd website && yarn",
+    "build": "preconstruct build"
   },
   "dependencies": {
     "@atlaskit/build-releases": "^3.0.3",
