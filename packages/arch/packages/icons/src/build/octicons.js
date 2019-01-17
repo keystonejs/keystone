@@ -3,6 +3,7 @@
 const octicons = require('octicons');
 const toPascalCase = require('to-pascal-case');
 const { emptyDirSync, outputFileSync } = require('fs-extra');
+const path = require('path');
 
 const template = require('./template');
 
@@ -37,14 +38,16 @@ Object.getOwnPropertyNames(octicons).forEach(octiconName => {
     svgContents,
   });
 
-  outputFileSync(`./icons/${iconName}.js`, componentSrc);
+  outputFileSync(path.join(__dirname, '..', 'icons', `${iconName}.js`), componentSrc);
 });
 
-const iconsIndexSrc = iconsIndex
-  .map(
-    ({ iconName, componentName }) =>
-      `export { default as ${componentName} } from './icons/${iconName}';`
-  )
-  .join('\n');
+const iconsIndexSrc =
+  '// @flow\n' +
+  iconsIndex
+    .map(
+      ({ iconName, componentName }) =>
+        `export { default as ${componentName} } from './icons/${iconName}';`
+    )
+    .join('\n');
 
-outputFileSync('./index.js', iconsIndexSrc);
+outputFileSync(path.join(__dirname, '..', 'index.js'), iconsIndexSrc);

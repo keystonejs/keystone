@@ -1,28 +1,28 @@
 const template = ({ componentName, height, width, viewBox, ariaHidden, svgContents }) => `
-import React, { Component } from 'react';
+// @flow
+import React from 'react';
 
-class ${componentName} extends Component {
-  render() {
-    var defaults = {
-      'aria-hidden': ${ariaHidden},
-      height: ${height},
-      width: ${width},
-      viewBox: '${viewBox}',
-      style: {
-        display: 'inline-block',
-        verticalAlign: 'text-top',
-        fill: 'currentColor',
-      },
-    };
-    const { title, ...props } = this.props;
-    return (
-      <svg {...defaults} {...props}>
-        {title ? <title>{title}</title> : null}
-        ${svgContents}
-      </svg>
-    );
-  }
-}
+const ${componentName} = ({ title, ...props }: { title: string }) => {
+  return (
+    <svg {...props}>
+      {title ? <title>{title}</title> : null}
+      ${svgContents}
+    </svg>
+  );
+};
+
+${componentName}.defaultProps = {
+  'aria-hidden': ${ariaHidden},
+  height: ${height},
+  width: ${width},
+  viewBox: '${viewBox}',
+  style: {
+    display: 'inline-block',
+    verticalAlign: 'text-top',
+    fill: 'currentColor',
+  },
+};
+
 export default ${componentName};
 `;
 
