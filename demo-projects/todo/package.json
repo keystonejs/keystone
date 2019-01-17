@@ -16,7 +16,6 @@
     "@voussoir/core": "^1.0.0",
     "@voussoir/fields": "^2.0.0",
     "@voussoir/server": "^0.5.0",
-    "@voussoir/ui": "^0.6.1",
     "apollo-boost": "^0.1.22",
     "parcel": "^1.11.0",
     "react": "16.7.0-alpha.2",
