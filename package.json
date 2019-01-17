@@ -34,6 +34,7 @@
     "@babel/preset-env": "^7.1.6",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "@babel/runtime": "^7.2.0",
     "@emotion/core": "^10.0.4",
     "@emotion/styled": "^10.0.4",
     "@jesstelford/apollo-cache-invalidation": "^0.0.3-gh3-gh5",
@@ -120,6 +121,7 @@
     "passport-twitter": "^1.0.4",
     "pino": "5.0.0-rc.4",
     "pluralize": "^7.0.0",
+    "preconstruct": "^0.0.41",
     "prettier": "^1.15.3",
     "prop-types": "^15.6.1",
     "raf-schd": "^4.0.0",
@@ -163,6 +165,12 @@
       "packages/arch/packages/*",
       "demo-projects/*",
       "test-projects/*"
+    ]
+  },
+  "preconstruct": {
+    "packages": [
+      "packages/arch/packages/*",
+      "packages/apollo-helpers"
     ]
   },
   "jest": {

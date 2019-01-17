@@ -7,6 +7,7 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
+    "@babel/runtime": "^7.2.0",
     "@jesstelford/apollo-cache-invalidation": "^0.0.3-gh3-gh5",
     "graphql-tag": "^2.8.0",
     "hoist-non-react-statics": "^3.0.1",
@@ -20,5 +21,7 @@
   },
   "devDependencies": {
     "react": "16.7.0-alpha.2"
-  }
+  },
+  "main": "dist/apollo-helpers.cjs.js",
+  "module": "dist/apollo-helpers.esm.js"
 }

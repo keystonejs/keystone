@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "Jed Watson",
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "dist/controls.cjs.js",
   "peerDependencies": {
     "react": "16.7.0-alpha.2"
   },
@@ -13,10 +13,12 @@
   "dependencies": {
     "@arch-ui/input": "^0.0.1",
     "@arch-ui/theme": "^0.0.1",
+    "@babel/runtime": "^7.2.0",
     "@emotion/core": "^10.0.4",
     "@emotion/styled": "^10.0.4",
     "memoize-one": "^4.0.2",
     "react-pseudo-state": "^2.2.1",
     "react-radios": "^1.1.0"
-  }
+  },
+  "module": "dist/controls.esm.js"
 }
