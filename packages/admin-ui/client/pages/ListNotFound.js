@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PageError from '../components/PageError';
-import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { Button } from '@arch-ui/button';
 import { IssueOpenedIcon } from '@voussoir/icons';
 
 const ListNotFoundPage = ({ listKey, adminPath }) => (

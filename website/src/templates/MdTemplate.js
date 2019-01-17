@@ -1,9 +1,26 @@
-import React from 'react';
 import { graphql, Link } from 'gatsby';
 import MDXRenderer from 'gatsby-mdx/mdx-renderer';
 import { MDXProvider } from '@mdx-js/tag';
 
-import Search from '../components/search';
+import { jsx } from '@emotion/core';
+import styled from '@emotion/styled';
+
+import { colors } from '@arch-ui/theme';
+
+import Layout from '../templates/layout';
+
+/** @jsx jsx */
+
+const StyledLink = styled(Link)({
+  textDecoration: 'none',
+  color: colors.B.base,
+
+  '&:hover': {
+    color: colors.B.D80,
+    textDecoration: 'underline',
+  },
+});
+
 import mdComponents from '../components/markdown';
 
 export default function Template({
@@ -13,21 +30,20 @@ export default function Template({
   const { mdx } = data; // data.mdx holds our post data
   const { code, fields } = mdx;
   return (
-    <div className="blog-post-container">
-      <Search />
-      <Link to="/">Voussoir</Link> &gt;{' '}
-      <Link to={workspaceSlug}>
-        <code>{workspace}</code>
-      </Link>{' '}
-      <a href={fields.editUrl}>Edit on github</a>
-      <div className="blog-post">
-        <div className="blog-post-content">
+    <Layout>
+      <div>
+        <div css={{ color: colors.B.A50, textTransform: 'capitalize' }}>
+          <StyledLink to="/">Keystone</StyledLink> &gt;{' '}
+          <StyledLink to={workspaceSlug}>{workspace}</StyledLink>
+        </div>
+        <div>
           <MDXProvider components={mdComponents}>
             <MDXRenderer>{code.body}</MDXRenderer>
           </MDXProvider>
+          <a href={fields.editUrl}>Edit on Github</a>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
 

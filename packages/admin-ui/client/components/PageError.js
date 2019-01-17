@@ -4,8 +4,8 @@ import { jsx } from '@emotion/core';
 import * as React from 'react';
 
 import { StopIcon } from '@voussoir/icons';
-import { colors } from '@voussoir/ui/src/theme';
-import { Container } from '@voussoir/ui/src/primitives/layout';
+import { colors } from '@arch-ui/theme';
+import { Container } from '@arch-ui/layout';
 
 type Props = {
   children: React.Node,

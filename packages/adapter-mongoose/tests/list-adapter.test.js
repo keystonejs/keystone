@@ -4,7 +4,6 @@ function createListAdapter(MongooseListAdapter, key, { aggregateResult = [] } = 
     {
       mongoose: { Schema: function schema() {} },
       getListAdapterByKey: () => {},
-      pushSetupTask: () => {},
     },
     {}
   );
@@ -34,8 +33,9 @@ describe('MongooseListAdapter', () => {
     const { MongooseListAdapter } = require('../');
 
     listAdapter = createListAdapter(MongooseListAdapter, 'user');
-
-    listAdapter.getSimpleQueryConditions = () => ({ title: value => ({ title: { $eq: value } }) });
+    listAdapter.fieldAdapters = [
+      { getQueryConditions: () => ({ title: value => ({ title: { $eq: value } }) }) },
+    ];
 
     await listAdapter.itemsQuery({ where: { title: 'foo' } });
 
@@ -65,26 +65,29 @@ describe('MongooseListAdapter', () => {
     const { MongooseListAdapter } = require('../');
 
     userListAdapter = createListAdapter(MongooseListAdapter, 'user');
-
-    userListAdapter.getSimpleQueryConditions = () => ({
-      title: value => ({ title: { $eq: value } }),
-    });
-
-    userListAdapter.getRelationshipQueryConditions = () => ({
-      posts_some: () => ({
-        from: 'posts',
-        field: 'posts',
-        matchTerm: { posts_some: true },
-        // Flag this is a to-many relationship
-        many: true,
-      }),
-    });
+    userListAdapter.fieldAdapters = [
+      {
+        isRelationship: false,
+        getQueryConditions: () => ({ title: value => ({ title: { $eq: value } }) }),
+      },
+      {
+        isRelationship: true,
+        getQueryConditions: () => {},
+        supportsRelationshipQuery: query => query === 'posts_some',
+        getRelationshipQueryCondition: () => ({
+          from: 'posts',
+          field: 'posts',
+          matchTerm: { posts_some: true },
+          // Flag this is a to-many relationship
+          many: true,
+        }),
+      },
+    ];
 
     postListAdapter = createListAdapter(MongooseListAdapter, 'post');
-
-    postListAdapter.getSimpleQueryConditions = () => ({
-      name: value => ({ name: { $eq: value } }),
-    });
+    postListAdapter.fieldAdapters = [
+      { getQueryConditions: () => ({ name: value => ({ name: { $eq: value } }) }) },
+    ];
 
     await userListAdapter.itemsQuery({
       where: { AND: [{ posts_some: { name: 'foo' } }, { title: 'bar' }] },
@@ -144,24 +147,29 @@ describe('MongooseListAdapter', () => {
 
     userListAdapter = createListAdapter(MongooseListAdapter, 'user');
 
-    userListAdapter.getSimpleQueryConditions = () => ({});
-
     postListAdapter = createListAdapter(MongooseListAdapter, 'post');
-
-    postListAdapter.getSimpleQueryConditions = () => ({
-      name: value => ({ name: { $eq: value } }),
-      title: value => ({ title: { $eq: value } }),
-    });
-
-    postListAdapter.getRelationshipQueryConditions = () => ({
-      posts_some: () => ({
-        from: 'posts',
-        field: 'posts',
-        matchTerm: { posts_some: true },
-        // Flag this is a to-many relationship
-        many: true,
-      }),
-    });
+    postListAdapter.fieldAdapters = [
+      {
+        isRelationship: false,
+        getQueryConditions: () => ({ name: value => ({ name: { $eq: value } }) }),
+      },
+      {
+        isRelationship: false,
+        getQueryConditions: () => ({ title: value => ({ title: { $eq: value } }) }),
+      },
+      {
+        isRelationship: true,
+        getQueryConditions: () => ({}),
+        supportsRelationshipQuery: query => query === 'posts_some',
+        getRelationshipQueryCondition: () => ({
+          from: 'posts',
+          field: 'posts',
+          matchTerm: { posts_some: true },
+          // Flag this is a to-many relationship
+          many: true,
+        }),
+      },
+    ];
 
     await userListAdapter.itemsQuery({
       where: { posts_some: { AND: [{ name: 'foo' }, { title: 'bar' }] } },

@@ -1,0 +1,19 @@
+{
+  "name": "@arch-ui/navbar",
+  "version": "0.0.1",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "main": "src/index.js",
+  "peerDependencies": {
+    "react": "16.7.0-alpha.2"
+  },
+  "devDependencies": {
+    "react": "16.7.0-alpha.2"
+  },
+  "dependencies": {
+    "@arch-ui/theme": "^0.0.1",
+    "@emotion/core": "^10.0.4",
+    "@emotion/styled": "^10.0.4",
+    "react-router-dom": "^4.2.2"
+  }
+}

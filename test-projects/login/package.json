@@ -22,7 +22,6 @@
     "@voussoir/core": "^1.1.0",
     "@voussoir/fields": "^2.0.1",
     "@voussoir/server": "^0.5.1",
-    "@voussoir/ui": "^0.6.1",
     "body-parser": "^1.18.2",
     "cookie-signature": "^1.1.0",
     "dotenv-safe": "^6.0.0",

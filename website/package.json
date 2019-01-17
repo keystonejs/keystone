@@ -13,9 +13,13 @@
         "build": "gatsby build"
     },
     "dependencies": {
+        "@emotion/core": "^10.0.5",
+        "@emotion/styled": "^10.0.5",
         "@mdx-js/mdx": "^0.16.6",
         "@mdx-js/tag": "^0.16.6",
+        "@reach/router": "^1.2.1",
         "@sindresorhus/slugify": "^0.6.0",
+        "@voussoir/ui": "^0.6.0",
         "add": "^2.0.6",
         "bolt": "^0.22.1",
         "gatsby": "^2.0.60",
@@ -32,6 +36,8 @@
         "prism-react-renderer": "^0.1.5",
         "prismjs": "^1.15.0",
         "react": "16.7.0-alpha.2",
-        "react-addons-text-content": "^0.0.4"
+        "react-addons-text-content": "^0.0.4",
+        "underscore.string": "^3.3.5",
+        "unist-util-visit": "^1.4.0"
     }
 }

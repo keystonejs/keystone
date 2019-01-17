@@ -1,9 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import styled from '@emotion/styled';
 
-import { Button } from '@voussoir/ui/src/primitives/buttons';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { Dialog, Dropdown, Popout, Tooltip } from '@voussoir/ui/src/primitives/modals';
+import { Button } from '@arch-ui/button';
+import { FlexGroup } from '@arch-ui/layout';
+import Dialog from '@arch-ui/dialog';
+import Dropdown from '@arch-ui/dropdown';
+import Popout from '@arch-ui/popout';
+import Tooltip from '@arch-ui/tooltip';
 
 export default class ModalGuide extends Component {
   state = { dialogIsOpen: false };

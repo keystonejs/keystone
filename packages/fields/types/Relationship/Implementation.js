@@ -320,12 +320,13 @@ class Relationship extends Implementation {
   }
 }
 
-class MongoSelectInterface extends MongooseFieldAdapter {
+class MongoRelationshipInterface extends MongooseFieldAdapter {
   constructor(...args) {
     super(...args);
     const [refListKey, refFieldPath] = this.config.ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
+    this.isRelationship = true;
   }
 
   addToMongooseSchema(schema) {
@@ -350,62 +351,59 @@ class MongoSelectInterface extends MongooseFieldAdapter {
     };
   }
 
-  hasQueryCondition(condition) {
-    return Object.keys(this.getRelationshipQueryConditions()).includes(condition);
-  }
-
-  getRelationshipQueryConditions() {
-    const refListAdapter = this.getRefListAdapter();
-    const from = refListAdapter.model.collection.name;
-
-    const buildRelationship = (filterType, uid) => {
-      return {
-        from, // the collection name to join with
-        field: this.path, // The field on this collection
-        // A mutation to run on the data post-join. Useful for merging joined
-        // data back into the original object.
-        // Executed on a depth-first basis for nested relationships.
-        postQueryMutation: (parentObj /*, keyOfRelationship, rootObj, pathToParent*/) => {
-          return omitBy(
-            parentObj,
-            /*
-            {
-              ...parentObj,
-              // Given there could be sorting and limiting that's taken place, we
-              // want to overwrite the entire object rather than merging found items
-              // in.
-              [field]: parentObj[keyOfRelationship],
-            },
-            */
-            // Clean up the result to remove the intermediate results
-            (_, keyToOmit) => keyToOmit.startsWith(uid)
-          );
-        },
-        // The conditions under which an item from the 'orders' collection is
-        // considered a match and included in the end result
-        // All the keys on an 'order' are available, plus 3 special keys:
-        // 1) <uid>_<field>_every - is `true` when every joined item matches the
-        //    query
-        // 2) <uid>_<field>_some - is `true` when some joined item matches the
-        //    query
-        // 3) <uid>_<field>_none - is `true` when none of the joined items match
-        //    the query
-        matchTerm: { [`${uid}_${this.path}_${filterType}`]: true },
-        // Flag this is a to-many relationship
-        many: this.config.many,
-      };
-    };
+  getRelationshipQueryCondition(queryKey, uid) {
+    const filterType = {
+      [this.path]: 'every',
+      [`${this.path}_every`]: 'every',
+      [`${this.path}_some`]: 'some',
+      [`${this.path}_none`]: 'none',
+    }[queryKey];
 
     return {
-      [this.path]: (value, query, uid) => buildRelationship('every', uid),
-      [`${this.path}_every`]: (value, query, uid) => buildRelationship('every', uid),
-      [`${this.path}_some`]: (value, query, uid) => buildRelationship('some', uid),
-      [`${this.path}_none`]: (value, query, uid) => buildRelationship('none', uid),
+      from: this.getRefListAdapter().model.collection.name, // the collection name to join with
+      field: this.path, // The field on this collection
+      // A mutation to run on the data post-join. Useful for merging joined
+      // data back into the original object.
+      // Executed on a depth-first basis for nested relationships.
+      postQueryMutation: (parentObj /*, keyOfRelationship, rootObj, pathToParent*/) => {
+        return omitBy(
+          parentObj,
+          /*
+          {
+            ...parentObj,
+            // Given there could be sorting and limiting that's taken place, we
+            // want to overwrite the entire object rather than merging found items
+            // in.
+            [field]: parentObj[keyOfRelationship],
+          },
+          */
+          // Clean up the result to remove the intermediate results
+          (_, keyToOmit) => keyToOmit.startsWith(uid)
+        );
+      },
+      // The conditions under which an item from the 'orders' collection is
+      // considered a match and included in the end result
+      // All the keys on an 'order' are available, plus 3 special keys:
+      // 1) <uid>_<field>_every - is `true` when every joined item matches the
+      //    query
+      // 2) <uid>_<field>_some - is `true` when some joined item matches the
+      //    query
+      // 3) <uid>_<field>_none - is `true` when none of the joined items match
+      //    the query
+      matchTerm: { [`${uid}_${this.path}_${filterType}`]: true },
+      // Flag this is a to-many relationship
+      many: this.config.many,
     };
+  }
+
+  supportsRelationshipQuery(query) {
+    return [this.path, `${this.path}_every`, `${this.path}_some`, `${this.path}_none`].includes(
+      query
+    );
   }
 }
 
 module.exports = {
   Relationship,
-  MongoSelectInterface,
+  MongoRelationshipInterface,
 };

@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
 
 import { PlusIcon } from '@voussoir/icons';
-import { colors, borderRadius, gridSize } from '@voussoir/ui/src/theme';
-import { LoadingIndicator } from '@voussoir/ui/src/primitives/loading';
-import { A11yText } from '@voussoir/ui/src/primitives/typography';
+import { colors, borderRadius, gridSize } from '@arch-ui/theme';
+import { LoadingIndicator } from '@arch-ui/loading';
+import { A11yText } from '@arch-ui/typography';
 
 const BOX_GUTTER = `${gridSize * 2}px`;
 

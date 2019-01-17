@@ -3,13 +3,13 @@ import { jsx } from '@emotion/core';
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { AlertIcon, ShieldIcon } from '@voussoir/icons';
-import { HiddenInput } from '@voussoir/ui/src/primitives/forms';
-import { Lozenge } from '@voussoir/ui/src/primitives/lozenge';
-import { Button, LoadingButton } from '@voussoir/ui/src/primitives/buttons';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { borderRadius, colors, gridSize } from '@voussoir/ui/src/theme';
+import { HiddenInput } from '@arch-ui/input';
+import { Lozenge } from '@arch-ui/lozenge';
+import { Button, LoadingButton } from '@arch-ui/button';
+import { FlexGroup } from '@arch-ui/layout';
+import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 
 // NOTE: we need flow 😢
 // Status enum: 'empty' | 'stored' | 'removed' | 'updated'

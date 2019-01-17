@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import styled from '@emotion/styled';
 
-import { Grid, Cell } from '@voussoir/ui/src/primitives/layout';
+import { Grid, Cell } from '@arch-ui/layout';
 
 const GridBox = styled.div({
   alignItems: 'center',

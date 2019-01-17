@@ -1,21 +1,13 @@
 const mongoose = require('mongoose');
 const inflection = require('inflection');
-const {
-  escapeRegExp,
-  pick,
-  getType,
-  mapKeys,
-  mapKeyNames,
-  objMerge,
-  createLazyDeferred,
-} = require('@voussoir/utils');
+const { escapeRegExp, pick, getType, mapKeys, mapKeyNames } = require('@voussoir/utils');
+
 const {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
 } = require('@voussoir/core/adapters');
 const joinBuilder = require('@voussoir/mongo-join-builder');
-const pSettle = require('p-settle');
 const logger = require('@voussoir/logger')('mongoose');
 
 const simpleTokenizer = require('./tokenizers/simple');
@@ -23,15 +15,6 @@ const relationshipTokenizer = require('./tokenizers/relationship');
 const getRelatedListAdapterFromQueryPathFactory = require('./tokenizers/relationship-path');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
-
-const idQueryConditions = {
-  // id is how it looks in the schema
-  // _id is how it looks in the MongoDB
-  id: value => ({ _id: { $eq: mongoose.Types.ObjectId(value) } }),
-  id_not: value => ({ _id: { $ne: mongoose.Types.ObjectId(value) } }),
-  id_in: value => ({ _id: { $in: value.map(id => mongoose.Types.ObjectId(id)) } }),
-  id_not_in: value => ({ _id: { $not: { $in: value.map(id => mongoose.Types.ObjectId(id)) } } }),
-};
 
 const modifierConditions = {
   // TODO: Implement configurable search fields for lists
@@ -84,7 +67,6 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     super(...arguments);
 
     this.name = this.name || 'mongoose';
-    this.setupTasks = [];
 
     this.mongoose = new mongoose.Mongoose();
     if (debugMongoose()) {
@@ -93,11 +75,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
   }
 
-  pushSetupTask(task) {
-    this.setupTasks.push(task);
-  }
-
-  async connect(to, config = {}) {
+  async _connect(to, config = {}) {
     const dbName = config.dbName || inflection.dasherize(config.name).toLowerCase();
     // NOTE: We pull out `name` here, but don't use it, so it
     // doesn't conflict with the options the user wants passed to mongodb.
@@ -109,43 +87,18 @@ class MongooseAdapter extends BaseKeystoneAdapter {
       // Default to the localhost instance
       uri = 'mongodb://localhost:27017/';
     }
-
-    try {
-      await this.mongoose.connect(
-        uri,
-        // NOTE: We still pass in the dbName for the case where `to` is set, but
-        // doesn't have a name in the uri.
-        // For the case where `to` does not have a name, and `dbName` is set, the
-        // expected behaviour is for the name to be set to `dbName`.
-        // For the case where `to` has a name, and `dbName` is not set, we are
-        // forcing the name to be the dasherized of the Keystone name.
-        // For the case where both are set, the expected behaviour is for it to be
-        // overwritten.
-        { useNewUrlParser: true, ...adapterConnectOptions, dbName }
-      );
-      const taskResults = await pSettle(
-        this.setupTasks.map(func => func(this.mongoose.connection))
-      );
-      const errors = taskResults.filter(({ isRejected }) => isRejected);
-
-      if (errors.length) {
-        const error = new Error('Mongoose connection error');
-        error.errors = errors.map(({ reason }) => reason);
-        throw error;
-      }
-    } catch (error) {
-      // close the database connection if it was opened
-      try {
-        await this.disconnect();
-      } catch (closeError) {
-        // Add the inability to close the database connection as an additional
-        // error
-        error.errors = error.errors || [];
-        error.errors.push(closeError);
-      }
-      // re-throw the error
-      throw error;
-    }
+    await this.mongoose.connect(
+      uri,
+      // NOTE: We still pass in the dbName for the case where `to` is set, but
+      // doesn't have a name in the uri.
+      // For the case where `to` does not have a name, and `dbName` is set, the
+      // expected behaviour is for the name to be set to `dbName`.
+      // For the case where `to` has a name, and `dbName` is not set, we are
+      // forcing the name to be the dasherized of the Keystone name.
+      // For the case where both are set, the expected behaviour is for it to be
+      // overwritten.
+      { useNewUrlParser: true, ...adapterConnectOptions, dbName }
+    );
   }
 
   disconnect() {
@@ -181,7 +134,6 @@ class MongooseListAdapter extends BaseListAdapter {
     const { configureMongooseSchema, mongooseSchemaOptions } = config;
 
     this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
-    this.pushSetupTask = parentAdapter.pushSetupTask.bind(parentAdapter);
     this.mongoose = parentAdapter.mongoose;
     this.configureMongooseSchema = configureMongooseSchema;
     this.schema = new parentAdapter.mongoose.Schema(
@@ -189,7 +141,7 @@ class MongooseListAdapter extends BaseListAdapter {
       { ...DEFAULT_MODEL_SCHEMA_OPTIONS, ...mongooseSchemaOptions }
     );
 
-    // Need to call prepareModel() once all fields have registered.
+    // Need to call postConnect() once all fields have registered and the database is connected to.
     this.model = null;
 
     this.queryBuilder = joinBuilder({
@@ -207,21 +159,10 @@ class MongooseListAdapter extends BaseListAdapter {
     });
   }
 
-  getFieldAdapterByQueryConditionKey(queryCondition) {
-    return this.fieldAdapters.find(adapter => adapter.hasQueryCondition(queryCondition));
-  }
-
-  getSimpleQueryConditions() {
-    return {
-      ...idQueryConditions,
-      ...objMerge(this.fieldAdapters.map(fieldAdapter => fieldAdapter.getQueryConditions())),
-    };
-  }
-
-  getRelationshipQueryConditions() {
-    return objMerge(
-      this.fieldAdapters.map(fieldAdapter => fieldAdapter.getRelationshipQueryConditions())
-    );
+  findFieldAdapterForQuerySegment(segment) {
+    return this.fieldAdapters
+      .filter(adapter => adapter.isRelationship)
+      .find(adapter => adapter.supportsRelationshipQuery(segment));
   }
 
   prepareFieldAdapter(fieldAdapter) {
@@ -238,7 +179,7 @@ class MongooseListAdapter extends BaseListAdapter {
    *
    * @return Promise<>
    */
-  prepareModel() {
+  async postConnect() {
     if (this.configureMongooseSchema) {
       this.configureMongooseSchema(this.schema, { mongoose: this.mongoose });
     }
@@ -248,44 +189,26 @@ class MongooseListAdapter extends BaseListAdapter {
     // avoid issues with Mongoose's lazy queue and setting up the indexes.
     this.model = this.mongoose.model(this.key, this.schema, null, true);
 
-    const deferredIndex = createLazyDeferred();
-
     // Ensure we wait for any new indexes to be built
-    const setupIndexes = () => {
-      return this.model
-        .init()
-        .then(() => {
-          // Then ensure the indexes are all correct
-          // The indexes can become out of sync if the database was modified
-          // manually, or if the code has been updated. In both cases, the
-          // _existence_ of an index (not the configuration) will cause Mongoose
-          // to think everything is fine.
-          // So, here we must manually force mongoose to check the _configuration_
-          // of the existing indexes before moving on.
-          // NOTE: Why bother with `model.init()` first? Because Mongoose will
-          // always try to create new indexes on model creation in the background,
-          // so we have to wait for that async process to finish before trying to
-          // sync up indexes.
-          // NOTE: There's a potential race condition here when two application
-          // instances both try to recreate the indexes by first dropping then
-          // creating. See
-          // http://thecodebarbarian.com/whats-new-in-mongoose-5-2-syncindexes
-          // NOTE: If an index has changed and needs recreating, this can have a
-          // performance impact when dealing with large datasets!
-          return this.model.syncIndexes();
-        })
-        .then(() => {
-          deferredIndex.resolve();
-        })
-        .catch(error => {
-          // Ensure we capture any issues with creating indexes
-          logger.error(error);
-          deferredIndex.reject(error);
-          throw error;
-        });
-    };
-    this.pushSetupTask(setupIndexes);
-    return deferredIndex.promise.then(() => this.model);
+    await this.model.init();
+    // Then ensure the indexes are all correct
+    // The indexes can become out of sync if the database was modified
+    // manually, or if the code has been updated. In both cases, the
+    // _existence_ of an index (not the configuration) will cause Mongoose
+    // to think everything is fine.
+    // So, here we must manually force mongoose to check the _configuration_
+    // of the existing indexes before moving on.
+    // NOTE: Why bother with `model.init()` first? Because Mongoose will
+    // always try to create new indexes on model creation in the background,
+    // so we have to wait for that async process to finish before trying to
+    // sync up indexes.
+    // NOTE: There's a potential race condition here when two application
+    // instances both try to recreate the indexes by first dropping then
+    // creating. See
+    // http://thecodebarbarian.com/whats-new-in-mongoose-5-2-syncindexes
+    // NOTE: If an index has changed and needs recreating, this can have a
+    // performance impact when dealing with large datasets!
+    return this.model.syncIndexes();
   }
 
   async create(data) {
@@ -402,9 +325,11 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
   addToMongooseSchema() {
     throw new Error(`Field type [${this.fieldName}] does not implement addToMongooseSchema()`);
   }
+
   buildValidator(validator, isRequired) {
     return isRequired ? validator : a => validator(a) || typeof a === 'undefined' || a === null;
   }
+
   mergeSchemaOptions(schemaOptions, { isUnique, mongooseOptions }) {
     if (isUnique) {
       // A value of anything other than `true` causes errors with Mongoose
@@ -414,10 +339,6 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
       schemaOptions.unique = true;
     }
     return { ...schemaOptions, ...mongooseOptions };
-  }
-
-  getQueryConditions() {
-    return {};
   }
 
   // The following methods provide helpers for constructing the return values of `getQueryConditions`.
@@ -500,18 +421,6 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
         [g(this.path)]: { $not: new RegExp(`${f(value)}$`, 'i') },
       }),
     };
-  }
-
-  getRelationshipQueryConditions() {
-    return {};
-  }
-
-  getRefListAdapter() {
-    return undefined;
-  }
-
-  hasQueryCondition() {
-    return false;
   }
 
   getMongoFieldName() {

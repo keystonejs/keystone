@@ -1,0 +1,10 @@
+{
+  "name": "@arch-ui/theme",
+  "version": "0.0.1",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "main": "src/index.js",
+  "dependencies": {
+    "@arch-ui/color-utils": "0.0.1"
+  }
+}

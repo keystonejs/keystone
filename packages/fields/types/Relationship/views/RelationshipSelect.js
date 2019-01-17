@@ -4,7 +4,7 @@ import { jsx } from '@emotion/core';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Select } from '@voussoir/ui/src/primitives/filters';
+import Select from '@arch-ui/select';
 import { components } from 'react-select';
 import 'intersection-observer';
 import { useState, useMemo, useRef, useEffect } from 'react';

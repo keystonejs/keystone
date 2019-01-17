@@ -18,7 +18,7 @@ module.exports = function({ adminMeta, entry }) {
   const rules = [
     {
       test: /\.js$/,
-      exclude: [/node_modules(?!\/@voussoir\/)/],
+      exclude: [/node_modules(?!\/@(voussoir|arch-ui)\/)/],
       use: [
         {
           loader: 'babel-loader',
