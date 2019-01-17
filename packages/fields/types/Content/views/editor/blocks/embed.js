@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useEffect, Fragment, useRef, useState, createContext, useContext } from 'react';
-import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { Button } from '@arch-ui/button';
 
 export let type = 'embed';
 

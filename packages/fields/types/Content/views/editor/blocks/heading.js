@@ -2,7 +2,7 @@ import * as React from 'react';
 import { hasBlock } from '../utils';
 import { type as defaultType } from './paragraph';
 import { ToolbarButton } from '../toolbar-components';
-import { A11yText } from '@voussoir/ui/src/primitives/typography';
+import { A11yText } from '@arch-ui/typography';
 
 export let type = 'heading';
 

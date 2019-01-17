@@ -10,7 +10,7 @@ import { marks, markTypes, plugins as markPlugins } from './marks';
 import { type as defaultType } from './blocks/paragraph';
 import AddBlock from './AddBlock';
 import { ToolbarButton } from './toolbar-components';
-import { A11yText } from '@voussoir/ui/src/primitives/typography';
+import { A11yText } from '@arch-ui/typography';
 import { CircleSlashIcon } from '@voussoir/icons';
 import ResizeObserver from 'resize-observer-polyfill';
 import { selectionReference } from './utils';

@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { colors } from '@voussoir/ui/src/theme';
-import { lighten, darken } from '@voussoir/ui/src/theme/color-utils';
+import { colors } from '@arch-ui/theme';
+import { lighten, darken } from '@arch-ui/color-utils';
 
 export let ToolbarButton = ({ isActive, ...props }) => {
   return (

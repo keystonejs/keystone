@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@arch-ui/button": "^0.0.1",
+    "@arch-ui/color-utils": "^0.0.1",
     "@arch-ui/controls": "^0.0.1",
     "@arch-ui/day-picker": "^0.0.1",
     "@arch-ui/fields": "^0.0.1",
