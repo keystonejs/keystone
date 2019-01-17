@@ -8,7 +8,7 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "node -r dotenv-safe/config index.js",
+    "start": "node index.js",
     "build": "next build"
   },
   "dependencies": {

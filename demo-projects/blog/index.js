@@ -21,7 +21,7 @@ const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 
 // config
 const path = require('path');
-const port = process.env.PORT;
+const port = 3000;
 const staticRoute = '/public'; // The URL portion
 const staticPath = path.join(process.cwd(), 'public'); // The local path on disk
 const initialData = {
