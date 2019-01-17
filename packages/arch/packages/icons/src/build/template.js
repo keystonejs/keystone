@@ -2,7 +2,7 @@ const template = ({ componentName, height, width, viewBox, ariaHidden, svgConten
 // @flow
 import React from 'react';
 
-const ${componentName} = ({ title, ...props }: { title: string }) => {
+const ${componentName} = ({ title, ...props }: { title?: string }) => {
   return (
     <svg {...props}>
       {title ? <title>{title}</title> : null}

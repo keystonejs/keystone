@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-const PrimitiveDotIcon = ({ title, ...props }: { title: string }) => {
+const PrimitiveDotIcon = ({ title, ...props }: { title?: string }) => {
   return (
     <svg {...props}>
       {title ? <title>{title}</title> : null}

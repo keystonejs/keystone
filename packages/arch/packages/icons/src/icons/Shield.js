@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-const ShieldIcon = ({ title, ...props }: { title: string }) => {
+const ShieldIcon = ({ title, ...props }: { title?: string }) => {
   return (
     <svg {...props}>
       {title ? <title>{title}</title> : null}

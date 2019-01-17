@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-const HubotIcon = ({ title, ...props }: { title: string }) => {
+const HubotIcon = ({ title, ...props }: { title?: string }) => {
   return (
     <svg {...props}>
       {title ? <title>{title}</title> : null}
