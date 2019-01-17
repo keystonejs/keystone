@@ -320,7 +320,7 @@ class Relationship extends Implementation {
   }
 }
 
-class MongoSelectInterface extends MongooseFieldAdapter {
+class MongoRelationshipInterface extends MongooseFieldAdapter {
   constructor(...args) {
     super(...args);
     const [refListKey, refFieldPath] = this.config.ref.split('.');
@@ -405,5 +405,5 @@ class MongoSelectInterface extends MongooseFieldAdapter {
 
 module.exports = {
   Relationship,
-  MongoSelectInterface,
+  MongoRelationshipInterface,
 };
