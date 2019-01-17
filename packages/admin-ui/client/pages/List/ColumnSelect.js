@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { CheckIcon, DashIcon, XIcon } from '@voussoir/icons';
+import { CheckIcon, DashIcon, XIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
 import { OptionPrimitive } from '@arch-ui/options';
 

@@ -4,7 +4,7 @@
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 
-import { XIcon } from '@voussoir/icons';
+import { XIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
 
 const boldBackgroundColor = {

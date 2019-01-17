@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 import React from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
-import { ShieldIcon } from '@voussoir/icons';
+import { ShieldIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
 import Popout from '@arch-ui/popout';
 import { Button } from '@arch-ui/button';
