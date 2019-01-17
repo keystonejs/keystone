@@ -1,6 +1,6 @@
 import { jsx } from '@emotion/core';
 
-import { colors } from '@voussoir/ui/src/theme';
+import { colors } from '@arch-ui/theme';
 
 /** @jsx jsx */
 

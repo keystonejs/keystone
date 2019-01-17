@@ -1,5 +1,5 @@
 import Styled from '@emotion/styled';
-import { colors } from '@voussoir/ui/src/theme';
+import { colors } from '@arch-ui/theme';
 
 export default Styled.a(props => ({
   textDecoration: 'none',
