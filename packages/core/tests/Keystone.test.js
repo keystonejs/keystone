@@ -2,7 +2,11 @@ const Keystone = require('../Keystone');
 const List = require('../List');
 const { Text, Relationship } = require('@voussoir/fields');
 
-class MockType {}
+class MockType {
+  extendViews(views) {
+    return views;
+  }
+}
 
 class MockFieldAdapter {}
 
@@ -29,7 +33,7 @@ test('new Keystone()', () => {
 });
 
 test('unique typeDefs', () => {
-  class MockFileType {
+  class MockFileType extends MockType {
     constructor() {
       this.access = {
         create: true,

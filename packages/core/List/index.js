@@ -192,9 +192,6 @@ module.exports = class List {
         ...fieldConfig.type.views,
       })
     );
-    this.views = mapKeys(sanitisedFieldsConfig, fieldConfig => ({
-      ...fieldConfig.type.views,
-    }));
 
     this.hooksActions = {
       /**
