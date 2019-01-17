@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const inflection = require('inflection');
-const { escapeRegExp, pick, getType, mapKeys, mapKeyNames, objMerge } = require('@voussoir/utils');
+const { escapeRegExp, pick, getType, mapKeys, mapKeyNames } = require('@voussoir/utils');
 
 const {
   BaseKeystoneAdapter,
@@ -157,6 +157,12 @@ class MongooseListAdapter extends BaseListAdapter {
         }),
       },
     });
+  }
+
+  findFieldAdapterForQuerySegment(segment) {
+    return this.fieldAdapters
+      .filter(adapter => adapter.isRelationship)
+      .find(adapter => adapter.supportsRelationshipQuery(segment));
   }
 
   prepareFieldAdapter(fieldAdapter) {

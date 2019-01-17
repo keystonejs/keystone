@@ -16,9 +16,7 @@ module.exports = function getRelatedListAdapterFromQueryPathFactory(listAdapter)
       }
 
       // Eg; search for which field adapter handles `posts_some`, and return that one
-      const fieldAdapter = foundListAdapter.fieldAdapters
-        .filter(adapter => adapter.isRelationship)
-        .find(adapter => adapter.supportsRelationshipQuery(segment));
+      const fieldAdapter = foundListAdapter.findFieldAdapterForQuerySegment(segment);
 
       if (!fieldAdapter) {
         // Prettier, you're testing me. Please stop.

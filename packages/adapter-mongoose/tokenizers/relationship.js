@@ -5,11 +5,9 @@ module.exports = ({ getRelatedListAdapterFromQueryPath }) => (query, queryKey, p
   // the "virtual" field is 'author', and the related list is the one at
   // ['posts', 'comments']
   const refListAdapter = getRelatedListAdapterFromQueryPath(path.slice(0, -1));
-  const fieldAdapter = refListAdapter.fieldAdapters
-    .filter(adapter => adapter.isRelationship)
-    .find(adapter => adapter.supportsRelationshipQuery(queryKey));
+  const fieldAdapter = refListAdapter.findFieldAdapterForQuerySegment(queryKey);
 
   // Nothing found, return an empty operation
   // TODO: warn?
-  return fieldAdapter ? fieldAdapter.getRelationshipQueryCondition(queryKey, uid) : {};
+  return (fieldAdapter && fieldAdapter.getRelationshipQueryCondition(queryKey, uid)) || {};
 };

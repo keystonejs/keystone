@@ -2,37 +2,26 @@ const tokenizerFactory = require('./relationship');
 
 describe('Relationship tokenizer', () => {
   test('Uses correct conditions', () => {
-    const getRelationshipQueryCondition = jest.fn(() => ({ foo: 'bar' }));
-    const getRelatedListAdapterFromQueryPath = jest.fn(() => ({
-      fieldAdapters: [
-        {
-          isRelationship: true,
-          supportsRelationshipQuery: () => true,
-          getRelationshipQueryCondition,
-        },
-      ],
+    const relationshipConditions = { name: { foo: 'bar' } };
+    const findFieldAdapterForQuerySegment = jest.fn(() => ({
+      getRelationshipQueryCondition: queryKey => relationshipConditions[queryKey],
     }));
+    const getRelatedListAdapterFromQueryPath = jest.fn(() => ({ findFieldAdapterForQuerySegment }));
 
     const relationship = tokenizerFactory({
       getRelatedListAdapterFromQueryPath,
     });
 
     expect(relationship({ name: 'hi' }, 'name', ['name'])).toMatchObject({ foo: 'bar' });
-    expect(getRelationshipQueryCondition).toHaveBeenCalledTimes(1);
+    expect(findFieldAdapterForQuerySegment).toHaveBeenCalledTimes(1);
   });
 
   test('returns empty array when no matches found', () => {
-    const relationshipConditions = { notinuse: () => ({ foo: 'bar' }) };
-    const getRelationshipQueryCondition = jest.fn(() => relationshipConditions);
-    const getRelatedListAdapterFromQueryPath = jest.fn(() => ({
-      fieldAdapters: [
-        {
-          isRelationship: true,
-          supportsRelationshipQuery: () => true,
-          getRelationshipQueryCondition,
-        },
-      ],
+    const relationshipConditions = { notinuse: { foo: 'bar' } };
+    const findFieldAdapterForQuerySegment = jest.fn(() => ({
+      getRelationshipQueryCondition: queryKey => relationshipConditions[queryKey],
     }));
+    const getRelatedListAdapterFromQueryPath = jest.fn(() => ({ findFieldAdapterForQuerySegment }));
 
     const relationship = tokenizerFactory({
       getRelatedListAdapterFromQueryPath,
@@ -40,27 +29,22 @@ describe('Relationship tokenizer', () => {
 
     const result = relationship({ name: 'hi' }, 'name', ['name']);
     expect(result).toMatchObject({});
-    expect(getRelationshipQueryCondition).toHaveBeenCalledTimes(1);
+    expect(findFieldAdapterForQuerySegment).toHaveBeenCalledTimes(1);
   });
 
   test('calls condition function with correct parameters', () => {
-    const getRelationshipQueryCondition = jest.fn(() => ({ foo: 'bar' }));
-    const getRelatedListAdapterFromQueryPath = jest.fn(() => ({
-      fieldAdapters: [
-        {
-          isRelationship: true,
-          supportsRelationshipQuery: query => query === 'name',
-          getRelationshipQueryCondition,
-        },
-      ],
-    }));
+    const nameConditions = jest.fn(() => ({ foo: 'bar' }));
+    const relationshipConditions = { getRelationshipQueryCondition: nameConditions };
+    const findFieldAdapterForQuerySegment = jest.fn(() => relationshipConditions);
+    const getRelatedListAdapterFromQueryPath = jest.fn(() => ({ findFieldAdapterForQuerySegment }));
 
     const relationship = tokenizerFactory({
       getRelatedListAdapterFromQueryPath,
     });
 
     expect(relationship({ name: 'hi' }, 'name', ['name'], 'abc123')).toMatchObject({ foo: 'bar' });
-    expect(getRelationshipQueryCondition).toHaveBeenCalledTimes(1);
-    expect(getRelationshipQueryCondition).toHaveBeenCalledWith('name', 'abc123');
+    expect(findFieldAdapterForQuerySegment).toHaveBeenCalledTimes(1);
+    expect(nameConditions).toHaveBeenCalledTimes(1);
+    expect(nameConditions).toHaveBeenCalledWith('name', 'abc123');
   });
 });
