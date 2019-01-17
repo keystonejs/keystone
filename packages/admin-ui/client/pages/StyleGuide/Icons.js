@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 
 import CopyToClipboard from '../../components/CopyToClipboard';
 
-import * as icons from '@voussoir/icons';
+import * as icons from '@arch-ui/icons';
 import { Grid, Cell } from '@arch-ui/layout';
 import { colors } from '@arch-ui/theme';
 import { Kbd } from '@arch-ui/typography';
@@ -85,7 +85,7 @@ export default class IconsGuide extends Component {
         )}
         <Grid gap={16}>
           {Object.keys(icons).map(name => {
-            const importText = altIsDown ? `import { ${name} } from '@voussoir/icons';` : name;
+            const importText = altIsDown ? `import { ${name} } from '@arch-ui/icons';` : name;
             const isCopied = copyText === importText;
             const Icon = isCopied ? icons.CheckIcon : icons[name];
             return (
