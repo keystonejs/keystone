@@ -12,7 +12,9 @@ const iconsIndex = [];
 
 const EXCLUDE = ['logo-gist', 'logo-github'];
 
-emptyDirSync('./icons');
+const iconPath = path.join(__dirname, '..', 'icons');
+
+emptyDirSync(iconPath);
 
 Object.getOwnPropertyNames(octicons).forEach(octiconName => {
   if (EXCLUDE.includes(octiconName)) return;
@@ -38,7 +40,7 @@ Object.getOwnPropertyNames(octicons).forEach(octiconName => {
     svgContents,
   });
 
-  outputFileSync(path.join(__dirname, '..', 'icons', `${iconName}.js`), componentSrc);
+  outputFileSync(path.join(iconPath, `${iconName}.js`), componentSrc);
 });
 
 const iconsIndexSrc =
