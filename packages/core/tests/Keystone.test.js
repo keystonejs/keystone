@@ -33,7 +33,7 @@ test('new Keystone()', () => {
 });
 
 test('unique typeDefs', () => {
-  class MockFileType extends MockType {
+  class MockFileType {
     constructor() {
       this.access = {
         create: true,
@@ -62,6 +62,9 @@ test('unique typeDefs', () => {
     }
     getGqlAuxMutations() {
       return ['mutateFoo: Boolean'];
+    }
+    extendViews(views) {
+      return views;
     }
   }
 
