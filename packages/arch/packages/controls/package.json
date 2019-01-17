@@ -1,0 +1,22 @@
+{
+  "name": "@arch-ui/controls",
+  "version": "0.0.1",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "main": "src/index.js",
+  "peerDependencies": {
+    "react": "16.7.0-alpha.2"
+  },
+  "devDependencies": {
+    "react": "16.7.0-alpha.2"
+  },
+  "dependencies": {
+    "@arch-ui/input": "^0.0.1",
+    "@arch-ui/theme": "^0.0.1",
+    "@emotion/core": "^10.0.4",
+    "@emotion/styled": "^10.0.4",
+    "memoize-one": "^4.0.2",
+    "react-pseudo-state": "^2.2.1",
+    "react-radios": "^1.1.0"
+  }
+}

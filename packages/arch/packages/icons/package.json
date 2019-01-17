@@ -1,0 +1,16 @@
+{
+  "name": "@arch-ui/icons",
+  "version": "0.0.1",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "main": "src/index.js",
+  "peerDependencies": {
+    "react": "16.7.0-alpha.2"
+  },
+  "devDependencies": {
+    "fs-extra": "^7.0.0",
+    "octicons": "^7.2.0",
+    "react": "16.7.0-alpha.2",
+    "to-pascal-case": "^1.0.0"
+  }
+}

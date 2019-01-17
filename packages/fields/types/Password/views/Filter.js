@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import { RadioGroup, Radio } from '@voussoir/ui/src/primitives/filters';
+import { RadioGroup, Radio } from '@arch-ui/filters';
 import type { FilterProps } from '../../../types';
 
 type Props = FilterProps<boolean>;

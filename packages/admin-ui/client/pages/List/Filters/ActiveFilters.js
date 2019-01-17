@@ -1,7 +1,7 @@
 import React from 'react';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { Pill } from '@voussoir/ui/src/primitives/pill';
-import { gridSize } from '@voussoir/ui/src/theme';
+import { FlexGroup } from '@arch-ui/layout';
+import { Pill } from '@arch-ui/pill';
+import { gridSize } from '@arch-ui/theme';
 
 import AnimateHeight from '../../../components/AnimateHeight';
 import EditFilterPopout from './EditFilterPopout';

@@ -1,0 +1,10 @@
+{
+  "name": "@arch-ui/common",
+  "version": "0.0.1",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "main": "src/index.js",
+  "dependencies": {
+    "@arch-ui/theme": "^0.0.1"
+  }
+}

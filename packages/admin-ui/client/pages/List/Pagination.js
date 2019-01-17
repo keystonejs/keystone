@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { Pagination } from '@voussoir/ui/src/primitives/navigation';
+import { Pagination } from '@arch-ui/pagination';
 
 type Props = {
   currentPage: number,

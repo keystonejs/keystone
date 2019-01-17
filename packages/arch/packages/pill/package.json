@@ -1,0 +1,19 @@
+{
+  "name": "@arch-ui/pill",
+  "version": "0.0.1",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "main": "src/index.js",
+  "peerDependencies": {
+    "react": "16.7.0-alpha.2"
+  },
+  "devDependencies": {
+    "react": "16.7.0-alpha.2"
+  },
+  "dependencies": {
+    "@arch-ui/theme": "0.0.1",
+    "@emotion/core": "^10.0.4",
+    "@emotion/styled": "^10.0.4",
+    "@voussoir/icons": "^0.3.0"
+  }
+}

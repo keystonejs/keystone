@@ -16,11 +16,11 @@ import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
 import Footer from './Footer';
 import { TriangleLeftIcon, CheckIcon, ClippyIcon, PlusIcon } from '@voussoir/icons';
-import { Container, FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { A11yText, Title } from '@voussoir/ui/src/primitives/typography';
-import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
-import { AutocompleteCaptor } from '@voussoir/ui/src/primitives/forms';
-import { colors, gridSize } from '@voussoir/ui/src/theme';
+import { Container, FlexGroup } from '@arch-ui/layout';
+import { A11yText, Title } from '@arch-ui/typography';
+import { Button, IconButton } from '@arch-ui/button';
+import { AutocompleteCaptor } from '@arch-ui/input';
+import { colors, gridSize } from '@arch-ui/theme';
 import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
 
 import { resolveAllKeys, arrayToObject } from '@voussoir/utils';

@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
 import { Mutation } from 'react-apollo';
-import { Button } from '@voussoir/ui/src/primitives/buttons';
-import { Confirm } from '@voussoir/ui/src/primitives/modals';
+import { Button } from '@arch-ui/button';
+import Confirm from '@arch-ui/confirm';
 
 type Props = {
   isOpen: boolean,

@@ -2,8 +2,8 @@ import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Query } from 'react-apollo';
 
-import { Container, Grid, Cell } from '@voussoir/ui/src/primitives/layout';
-import { Title } from '@voussoir/ui/src/primitives/typography';
+import { Container, Grid, Cell } from '@arch-ui/layout';
+import { Title } from '@arch-ui/typography';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';

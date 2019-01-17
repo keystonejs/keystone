@@ -2,11 +2,11 @@
 import { jsx } from '@emotion/core';
 import React from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { ShieldIcon } from '@voussoir/icons';
-import { colors } from '@voussoir/ui/src/theme';
-import { Popout } from '@voussoir/ui/src/primitives/modals';
-import { Button } from '@voussoir/ui/src/primitives/buttons';
+import { colors } from '@arch-ui/theme';
+import Popout from '@arch-ui/popout';
+import { Button } from '@arch-ui/button';
 import SketchPicker from 'react-color/lib/Sketch';
 
 const ColorField = ({ field, item, itemErrors, onChange }) => {

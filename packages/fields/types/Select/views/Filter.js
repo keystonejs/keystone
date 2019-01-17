@@ -3,8 +3,10 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Component, Fragment } from 'react';
-import { OptionRenderer, Radio, RadioGroup, Select } from '@voussoir/ui/src/primitives/filters';
-import { gridSize } from '@voussoir/ui/src/theme';
+import Select from '@arch-ui/select';
+import { Options } from '@arch-ui/options';
+import { Radio, RadioGroup } from '@arch-ui/filters';
+import { gridSize } from '@arch-ui/theme';
 import type { FilterProps } from '../../../types';
 
 const EventCatcher = props => (
@@ -59,7 +61,7 @@ export default class SelectFilterView extends Component<Props, State> {
               <Select menuPortalTarget={document.body} {...selectProps} />
             </EventCatcher>
           ) : (
-            <OptionRenderer displaySearch={false} {...selectProps} />
+            <Options displaySearch={false} {...selectProps} />
           )}
         </SelectWrapper>
       </Fragment>

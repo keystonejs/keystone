@@ -2,7 +2,6 @@
 
 [ignore]
 
-.*/packages/arch.*
 .*/node_modules/cypress/.*
 .*/packages/website/.cache/.*
 
