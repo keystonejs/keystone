@@ -91,6 +91,11 @@ module.exports = function({ adminMeta, entry }) {
         // that we use so we alias react the react resolved from the admin ui
         // which depends on the version of react that keystone uses
         react$: require.resolve('react'),
+        ...(() => {
+          try {
+            return require('preconstruct').aliases.webpack(path.join(__dirname, '..', '..', '..'));
+          } catch (e) {}
+        })(),
       },
     },
   };
