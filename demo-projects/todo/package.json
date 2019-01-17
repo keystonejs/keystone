@@ -1,0 +1,28 @@
+{
+  "name": "keystone_demo_to-do-list",
+  "private": true,
+  "version": "1.0.0",
+  "author": "Nathan Simpson",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@voussoir/adapter-mongoose": "^1.0.0",
+    "@voussoir/admin-ui": "^0.8.0",
+    "@voussoir/core": "^1.0.0",
+    "@voussoir/fields": "^2.0.0",
+    "@voussoir/server": "^0.5.0",
+    "apollo-boost": "^0.1.22",
+    "parcel": "^1.11.0",
+    "react": "16.7.0-alpha.2",
+    "react-apollo": "^2.2.4",
+    "react-dom": "16.7.0-alpha.2"
+  },
+  "devDependencies": {
+    "@voussoir/utils": "^0.3.0"
+  }
+}
