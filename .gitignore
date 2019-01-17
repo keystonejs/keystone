@@ -82,5 +82,3 @@ cypress/mock
 **/yarn.lock
 package-lock.json
 
-# ignore built files for icons in arch
-packages/arch/packages/icons/icons

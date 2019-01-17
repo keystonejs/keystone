@@ -4,7 +4,7 @@ import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
-import { ShieldIcon } from '@voussoir/icons';
+import { ShieldIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
 
 export default class SelectField extends Component {

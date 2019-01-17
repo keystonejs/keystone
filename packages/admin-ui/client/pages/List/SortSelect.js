@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { Component } from 'react';
 import styled from '@emotion/styled';
-import { ChevronDownIcon, ChevronUpIcon } from '@voussoir/icons';
+import { ChevronDownIcon, ChevronUpIcon } from '@arch-ui/icons';
 import { OptionPrimitive, Options } from '@arch-ui/options';
 import { colors } from '@arch-ui/theme';
 
