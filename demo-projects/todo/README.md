@@ -4,7 +4,7 @@ This is the todo list - the simplest implementation of Keystone. The todo list a
 
 ## Running the Project.
 
-To run this demo project, all you need to do is run `npm install` within the project folder to install all required packages, then run `npm start` to begin running Keystone.
+To run this demo project, all you need to do is run `bolt` within the Keystone project root to install all required packages, then run `bolt start todo` to begin running Keystone.
 
 Once running, the Keystone Admin UI is reachable from `localhost:3000/admin`. To see an example React app using Keystone's GraphQl APIs, head to `localhost:3000`.
 
