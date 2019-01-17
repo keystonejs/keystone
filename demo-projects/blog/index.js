@@ -1,10 +1,5 @@
 //imports for Next.js app core
 const next = require('next');
-const nextApp = next({
-  dir: 'app',
-  distDir: 'build',
-  dev: process.env.NODE_ENV !== 'PRODUCTION',
-});
 
 //imports for Keystone app core
 const { AdminUI } = require('@voussoir/admin-ui');
@@ -47,6 +42,12 @@ const initialData = {
     },
   ],
 };
+
+const nextApp = next({
+  dir: 'app',
+  distDir: 'build',
+  dev: process.env.NODE_ENV !== 'PRODUCTION',
+});
 
 const getYear = require('date-fns/get_year');
 
@@ -150,18 +151,6 @@ const server = new WebServer(keystone, {
   'admin ui': admin,
   port,
   authStrategy: authStrategy,
-});
-
-// delete this so you don't accidently nuke your database
-server.app.get('/reset-db', (req, res) => {
-  const reset = async () => {
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
-    await keystone.createItems(initialData);
-    res.redirect(admin.adminPath);
-  };
-  reset();
 });
 
 server.app.use(staticRoute, server.express.static(staticPath));

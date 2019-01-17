@@ -5,6 +5,7 @@ import gql from 'graphql-tag';
 import { ApolloProvider, Mutation, Query } from 'react-apollo';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import fetch from 'node-fetch';
 
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
@@ -12,8 +13,6 @@ import styled from '@emotion/styled';
 import Layout from '../templates/layout';
 
 /** @jsx jsx */
-
-const fetch = require('node-fetch');
 
 const client = new ApolloClient({
   link: new HttpLink({ uri: '/admin/api', fetch: fetch }),
@@ -50,7 +49,7 @@ const ADD_POST = gql`
 let title;
 let body;
 let adminId;
-// let imageUrl;
+let imageUrl;
 
 export default () => (
   <ApolloProvider client={client}>
@@ -85,25 +84,14 @@ export default () => (
                         variables: {
                           title: title.value,
                           body: body.value,
-                          // imageUrl: imageUrl.value,
+                          imageUrl: imageUrl.value,
                           authorId: adminId.value,
                         },
                       });
 
-                      console.log(
-                        createPost({
-                          variables: {
-                            title: title.value,
-                            body: body.value,
-                            // imageUrl: imageUrl.value,
-                            adminId: adminId.value,
-                          },
-                        })
-                      );
-
                       title.value = '';
                       body.value = '';
-                      // imageUrl.value = '';
+                      imageUrl.value = '';
                     }}
                   >
                     <FormGroup>
@@ -134,7 +122,7 @@ export default () => (
                         name="body"
                       />
                     </FormGroup>
-                    {/* <FormGroup>
+                    <FormGroup>
                       <Label htmlFor="image">Image URL:</Label>
                       <Input
                         type="url"
@@ -143,7 +131,7 @@ export default () => (
                           imageUrl = node;
                         }}
                       />
-                    </FormGroup> */}
+                    </FormGroup>
                     <FormGroup>
                       <Label htmlFor="admin">Post as:</Label>
                       <select

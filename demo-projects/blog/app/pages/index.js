@@ -5,6 +5,7 @@ import gql from 'graphql-tag';
 import { ApolloProvider, Query } from 'react-apollo';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import fetch from 'node-fetch';
 
 import { jsx } from '@emotion/core';
 import { format } from 'date-fns';
@@ -13,8 +14,6 @@ import Layout from '../templates/layout';
 import Header from '../components/header';
 
 /** @jsx jsx */
-
-const fetch = require('node-fetch');
 
 const client = new ApolloClient({
   link: new HttpLink({ uri: '/admin/api', fetch: fetch }),

@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import ApolloClient, { gql } from 'apollo-boost';
 import { Mutation, ApolloProvider, Query } from 'react-apollo';
 
-const tint = (opacity, darkness) =>
-  `hsla(261, 84%, ${darkness == 'dark' ? '14%' : darkness == 'light' ? '95%' : '60%'}, ${opacity ||
-    1})`;
+import styles from './styles';
 
 const client = new ApolloClient({
   uri: '/admin/api',
@@ -39,7 +37,7 @@ const REMOVE_TODO = gql`
 `;
 
 const Form = () => {
-  let input;
+  let [value, setValue] = useState('');
 
   return (
     <Mutation
@@ -47,11 +45,9 @@ const Form = () => {
       update={(cache, { data: { createTodo } }) => {
         const { allTodos } = cache.readQuery({ query: GET_TODOS });
 
-        allTodos.push(createTodo);
-
         cache.writeQuery({
           query: GET_TODOS,
-          data: { allTodos },
+          data: { allTodos: allTodos.concat(createTodo) },
         });
       }}
     >
@@ -60,24 +56,17 @@ const Form = () => {
           <form
             onSubmit={e => {
               e.preventDefault();
-              createTodo({ variables: { type: input.value } });
-              input.value = '';
+              createTodo({ variables: { type: value } });
+              setValue('');
             }}
           >
             <input
               placeholder="Add new item"
-              style={{
-                color: tint(1, 'dark'),
-                padding: '12px 16px',
-                fontSize: '1.25em',
-                width: '100%',
-                borderRadius: 6,
-                border: 0,
-                background: tint(0.3),
-              }}
+              style={styles.formInput}
               className="addItem"
-              ref={node => {
-                input = node;
+              value={value}
+              onChange={event => {
+                setValue(event.target.value);
               }}
             />
           </form>
@@ -103,32 +92,16 @@ const Item = data => (
     }}
   >
     {removeTodo => (
-      <li
-        style={{
-          padding: '32px 16px',
-          fontSize: '1.25em',
-          fontWeight: 600,
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'space-between',
-          borderTop: `1px solid ${tint(0.2)}`,
-        }}
-      >
+      <li style={styles.listItem}>
         {data.todo.name}
         <button
-          style={{
-            background: 0,
-            border: 0,
-            padding: 0,
-            cursor: 'pointer',
-          }}
+          style={styles.deleteButton}
           className="trash"
-          onClick={e => {
-            e.preventDefault();
+          onClick={() => {
             removeTodo({ variables: { id: data.todo.id } });
           }}
         >
-          <svg viewBox="0 0 14 16" style={{ width: 20, height: 20, fill: tint() }}>
+          <svg viewBox="0 0 14 16" style={styles.deleteIcon}>
             <title>Delete this item</title>
             <path
               fillRule="evenodd"
@@ -143,15 +116,8 @@ const Item = data => (
 
 const App = () => (
   <ApolloProvider client={client}>
-    <div
-      style={{
-        padding: 50,
-        maxWidth: 450,
-        color: tint(1, 'dark'),
-        fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
-      }}
-    >
-      <h1 style={{ textTransform: 'uppercase', fontWeight: 900, marginTop: 0 }}>To-Do List</h1>
+    <div style={styles.app}>
+      <h1 style={styles.mainHeading}>To-Do List</h1>
       <Form />
       <Query query={GET_TODOS}>
         {({ data, loading, error }) => {
