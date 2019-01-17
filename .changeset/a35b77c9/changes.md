@@ -1,1 +1,0 @@
-- Fixes for DayPicker

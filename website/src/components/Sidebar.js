@@ -1,7 +1,7 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { StaticQuery, graphql, Link } from 'gatsby';
 
-import { colors } from '@voussoir/ui/src/theme';
+import { colors } from '@arch-ui/theme';
 import { jsx } from '@emotion/core';
 
 /** @jsx jsx */

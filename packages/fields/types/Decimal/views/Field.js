@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 
-import {
-  FieldContainer,
-  FieldLabel,
-  FieldInput,
-  Currency,
-} from '@voussoir/ui/src/primitives/fields';
-import { Input } from '@voussoir/ui/src/primitives/forms';
+import { FieldContainer, FieldLabel, FieldInput, Currency } from '@arch-ui/fields';
+import { Input } from '@arch-ui/input';
 
 export default class TextField extends Component {
   onChange = event => {

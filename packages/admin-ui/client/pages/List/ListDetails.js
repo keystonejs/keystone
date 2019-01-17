@@ -13,18 +13,13 @@ import {
   XIcon,
   ZapIcon,
 } from '@voussoir/icons';
-import { Input } from '@voussoir/ui/src/primitives/forms';
-import {
-  Container,
-  FlexGroup,
-  CONTAINER_GUTTER,
-  CONTAINER_WIDTH,
-} from '@voussoir/ui/src/primitives/layout';
-import { A11yText, Kbd, Title } from '@voussoir/ui/src/primitives/typography';
-import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
-import { LoadingSpinner } from '@voussoir/ui/src/primitives/loading';
-import { Dropdown } from '@voussoir/ui/src/primitives/modals';
-import { colors } from '@voussoir/ui/src/theme';
+import { Input } from '@arch-ui/input';
+import { Container, FlexGroup, CONTAINER_GUTTER, CONTAINER_WIDTH } from '@arch-ui/layout';
+import { A11yText, Kbd, Title } from '@arch-ui/typography';
+import { Button, IconButton } from '@arch-ui/button';
+import { LoadingSpinner } from '@arch-ui/loading';
+import Dropdown from '@arch-ui/dropdown';
+import { colors } from '@arch-ui/theme';
 
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';

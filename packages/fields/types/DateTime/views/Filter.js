@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { format } from 'date-fns';
-import { DateTimePicker } from '@voussoir/ui/src/primitives/forms';
+import { DayTimePicker } from '@arch-ui/day-picker';
 import type { FilterProps } from '../../../types';
 import { stringifyDate, parseDate } from './utils';
 
@@ -28,7 +28,7 @@ const CalendarDayFilterView = (props: Props) => {
   const { yearRangeFrom, yearRangeTo, yearPickerType } = props.field.config;
 
   return (
-    <DateTimePicker
+    <DayTimePicker
       {...{
         ...parsedDate,
         htmlID: 'calendar-day-filter',

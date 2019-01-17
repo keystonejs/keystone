@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { Component, Fragment } from 'react';
 
-import { colors, gridSize } from '@voussoir/ui/src/theme';
+import { colors, gridSize } from '@arch-ui/theme';
 import { Popout } from '../../../components/Popout';
 import AnimateHeight from '../../../components/AnimateHeight';
 

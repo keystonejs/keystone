@@ -58,7 +58,7 @@ exports.onCreateWebpackConfig = ({ actions }) => {
       alias: {
         // the website isn't part of the monorepo right now so we're aliasing it
         // so that the components can be used in the website
-        '@voussoir': path.join(__dirname, '..', 'packages'),
+        '@arch-ui': path.join(__dirname, '..', 'packages', 'arch', 'packages'),
       },
     },
   });

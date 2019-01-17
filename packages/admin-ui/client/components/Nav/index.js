@@ -16,17 +16,17 @@ import {
   MarkGithubIcon,
   SignOutIcon,
 } from '@voussoir/icons';
-import { colors, gridSize } from '@voussoir/ui/src/theme';
+import { colors, gridSize } from '@arch-ui/theme';
 import {
   PrimaryNav,
   PrimaryNavItem,
   PrimaryNavScrollArea,
   NavGroupIcons,
   PRIMARY_NAV_GUTTER,
-} from '@voussoir/ui/src/primitives/navigation';
-import { A11yText, Title } from '@voussoir/ui/src/primitives/typography';
-import { Tooltip } from '@voussoir/ui/src/primitives/modals';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+} from '@arch-ui/navbar';
+import { A11yText, Title } from '@arch-ui/typography';
+import Tooltip from '@arch-ui/tooltip';
+import { FlexGroup } from '@arch-ui/layout';
 
 import { withAdminMeta } from '../../providers/AdminMeta';
 import ResizeHandler, { KEYBOARD_SHORTCUT } from './ResizeHandler';

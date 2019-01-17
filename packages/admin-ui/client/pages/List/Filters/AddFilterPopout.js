@@ -4,10 +4,11 @@ import { Component, createRef } from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
 import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@voussoir/icons';
-import { colors, gridSize } from '@voussoir/ui/src/theme';
-import { A11yText } from '@voussoir/ui/src/primitives/typography';
-import { Alert } from '@voussoir/ui/src/primitives/alert';
-import { OptionPrimitive, Select } from '@voussoir/ui/src/primitives/filters';
+import { colors, gridSize } from '@arch-ui/theme';
+import { A11yText } from '@arch-ui/typography';
+import { Alert } from '@arch-ui/alert';
+import { OptionPrimitive } from '@arch-ui/options';
+import Select from '@arch-ui/select';
 
 import FieldSelect from '../FieldSelect';
 import PopoutForm from './PopoutForm';

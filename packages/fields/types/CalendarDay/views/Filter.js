@@ -2,7 +2,7 @@
 
 import React, { Component, type Ref } from 'react';
 import { parse, format } from 'date-fns';
-import { DayPicker } from '@voussoir/ui/src/primitives/forms';
+import { DayPicker } from '@arch-ui/day-picker';
 
 const FORMAT = 'YYYY-MM-DD';
 

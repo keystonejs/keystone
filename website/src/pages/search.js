@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 import { Link } from 'gatsby';
 import { jsx, Global } from '@emotion/core';
-import { Input } from '@voussoir/ui/src/primitives/forms';
+import { Input } from '@arch-ui/input';
 import { Location as _Location } from '@reach/router';
 
 /** @jsx jsx */
 
-import { colors } from '@voussoir/ui/src/theme';
+import { colors } from '@arch-ui/theme';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';

@@ -4,9 +4,9 @@ import React, { Component, Fragment } from 'react';
 import styled from '@emotion/styled';
 
 import { SettingsIcon, TrashcanIcon } from '@voussoir/icons';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { IconButton } from '@voussoir/ui/src/primitives/buttons';
-import { colors, gridSize } from '@voussoir/ui/src/theme';
+import { FlexGroup } from '@arch-ui/layout';
+import { IconButton } from '@arch-ui/button';
+import { colors, gridSize } from '@arch-ui/theme';
 
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';

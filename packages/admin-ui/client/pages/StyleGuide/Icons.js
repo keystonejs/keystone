@@ -6,9 +6,9 @@ import styled from '@emotion/styled';
 import CopyToClipboard from '../../components/CopyToClipboard';
 
 import * as icons from '@voussoir/icons';
-import { Grid, Cell } from '@voussoir/ui/src/primitives/layout';
-import { colors } from '@voussoir/ui/src/theme';
-import { Kbd } from '@voussoir/ui/src/primitives/typography';
+import { Grid, Cell } from '@arch-ui/layout';
+import { colors } from '@arch-ui/theme';
+import { Kbd } from '@arch-ui/typography';
 
 const Instructions = styled('div')`
   color: ${colors.N60};

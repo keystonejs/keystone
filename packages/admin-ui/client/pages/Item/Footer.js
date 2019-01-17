@@ -3,8 +3,8 @@ import { jsx } from '@emotion/core';
 import { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { Button, LoadingButton } from '@voussoir/ui/src/primitives/buttons';
-import { gridSize } from '@voussoir/ui/src/theme';
+import { Button, LoadingButton } from '@arch-ui/button';
+import { gridSize } from '@arch-ui/theme';
 import ContainerQuery from '../../components/ContainerQuery';
 
 const Placeholder = styled.div({

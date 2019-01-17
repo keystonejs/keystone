@@ -2,9 +2,9 @@
 import { jsx } from '@emotion/core';
 import { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { ShieldIcon } from '@voussoir/icons';
-import { colors } from '@voussoir/ui/src/theme';
+import { colors } from '@arch-ui/theme';
 
 import RelationshipSelect from './RelationshipSelect';
 

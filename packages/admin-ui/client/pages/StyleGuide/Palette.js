@@ -2,8 +2,8 @@
 import { jsx } from '@emotion/core';
 import { Fragment } from 'react';
 
-import { Grid, Cell } from '@voussoir/ui/src/primitives/layout';
-import { colors } from '@voussoir/ui/src/theme';
+import { Grid, Cell } from '@arch-ui/layout';
+import { colors } from '@arch-ui/theme';
 
 const Swatch = ({ color, name, prefix }) => (
   <div

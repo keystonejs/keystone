@@ -2,7 +2,7 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import { jsx } from '@emotion/core';
 /** @jsx jsx */
 
-import { colors } from '@voussoir/ui/src/theme';
+import { colors } from '@arch-ui/theme';
 import Button from '../components/Button';
 
 export default () => (
