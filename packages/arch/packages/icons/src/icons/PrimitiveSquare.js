@@ -1,4 +1,3 @@
-
 // @flow
 import React from 'react';
 
@@ -6,7 +5,7 @@ const PrimitiveSquareIcon = ({ title, ...props }: { title: string }) => {
   return (
     <svg {...props}>
       {title ? <title>{title}</title> : null}
-      <path fillRule="evenodd" d="M8 12H0V4h8v8z"/>
+      <path fillRule="evenodd" d="M8 12H0V4h8v8z" />
     </svg>
   );
 };

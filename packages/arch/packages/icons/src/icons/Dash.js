@@ -1,4 +1,3 @@
-
 // @flow
 import React from 'react';
 
@@ -6,7 +5,7 @@ const DashIcon = ({ title, ...props }: { title: string }) => {
   return (
     <svg {...props}>
       {title ? <title>{title}</title> : null}
-      <path fillRule="evenodd" d="M0 7v2h8V7H0z"/>
+      <path fillRule="evenodd" d="M0 7v2h8V7H0z" />
     </svg>
   );
 };

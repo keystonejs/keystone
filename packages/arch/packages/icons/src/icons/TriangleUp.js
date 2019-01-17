@@ -1,4 +1,3 @@
-
 // @flow
 import React from 'react';
 
@@ -6,7 +5,7 @@ const TriangleUpIcon = ({ title, ...props }: { title: string }) => {
   return (
     <svg {...props}>
       {title ? <title>{title}</title> : null}
-      <path fillRule="evenodd" d="M12 11L6 5l-6 6h12z"/>
+      <path fillRule="evenodd" d="M12 11L6 5l-6 6h12z" />
     </svg>
   );
 };

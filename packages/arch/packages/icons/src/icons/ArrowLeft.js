@@ -1,4 +1,3 @@
-
 // @flow
 import React from 'react';
 
@@ -6,7 +5,7 @@ const ArrowLeftIcon = ({ title, ...props }: { title: string }) => {
   return (
     <svg {...props}>
       {title ? <title>{title}</title> : null}
-      <path fillRule="evenodd" d="M6 3L0 8l6 5v-3h4V6H6V3z"/>
+      <path fillRule="evenodd" d="M6 3L0 8l6 5v-3h4V6H6V3z" />
     </svg>
   );
 };

@@ -1,4 +1,3 @@
-
 // @flow
 import React from 'react';
 
@@ -6,7 +5,7 @@ const TriangleLeftIcon = ({ title, ...props }: { title: string }) => {
   return (
     <svg {...props}>
       {title ? <title>{title}</title> : null}
-      <path fillRule="evenodd" d="M6 2L0 8l6 6V2z"/>
+      <path fillRule="evenodd" d="M6 2L0 8l6 6V2z" />
     </svg>
   );
 };
