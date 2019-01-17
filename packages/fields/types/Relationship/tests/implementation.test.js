@@ -5,7 +5,6 @@ class MockFieldAdapter {}
 
 class MockListAdapter {
   newFieldAdapter = () => new MockFieldAdapter();
-  prepareModel = () => {};
 }
 
 const mockFilterFragment = ['first: Int'];

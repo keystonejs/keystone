@@ -8,7 +8,6 @@ class MockFieldAdapter {}
 
 class MockListAdapter {
   newFieldAdapter = () => new MockFieldAdapter();
-  prepareModel = () => {};
 }
 
 class MockAdapter {
