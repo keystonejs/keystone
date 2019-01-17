@@ -1,33 +1,56 @@
 const pWaterfall = require('p-waterfall');
+const pSettle = require('p-settle');
 
 class BaseKeystoneAdapter {
   constructor(config) {
-    this.config = {
-      listAdapterClass: this.constructor.defaultListAdapterClass,
-      ...config,
-    };
+    this.config = { ...config };
     this.name = this.config.name;
     this.listAdapters = {};
   }
 
   newListAdapter(key, config = {}) {
-    const listAdapterClass = config.listAdapterClass || this.config.listAdapterClass;
-    const adapter = new listAdapterClass(key, this, config);
-    this.prepareListAdapter(adapter);
-    this.listAdapters[key] = adapter;
-    return adapter;
+    const listAdapterClass =
+      config.listAdapterClass ||
+      this.config.listAdapterClass ||
+      this.constructor.defaultListAdapterClass;
+    this.listAdapters[key] = new listAdapterClass(key, this, config);
+    return this.listAdapters[key];
   }
 
   getListAdapterByKey(key) {
     return this.listAdapters[key];
   }
 
-  prepareListAdapter() {}
+  async connect(to, config = {}) {
+    // Connect to the database
+    this._connect(to, config);
 
-  /**
-   * @param Promise
-   */
-  pushSetupTask() {}
+    // Set up all list adapters
+    try {
+      const taskResults = await pSettle(
+        Object.values(this.listAdapters).map(listAdapter => listAdapter.postConnect())
+      );
+      const errors = taskResults.filter(({ isRejected }) => isRejected);
+
+      if (errors.length) {
+        const error = new Error('Connection error');
+        error.errors = errors.map(({ reason }) => reason);
+        throw error;
+      }
+    } catch (error) {
+      // close the database connection if it was opened
+      try {
+        await this.disconnect();
+      } catch (closeError) {
+        // Add the inability to close the database connection as an additional
+        // error
+        error.errors = error.errors || [];
+        error.errors.push(closeError);
+      }
+      // re-throw the error
+      throw error;
+    }
+  }
 }
 
 class BaseListAdapter {
