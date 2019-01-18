@@ -4,3 +4,4 @@ reports
 coverage
 packages/test-project/public
 website/.cache/**/*
+website/public/**/*
