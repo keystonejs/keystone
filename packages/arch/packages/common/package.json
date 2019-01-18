@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "author": "Jed Watson",
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "dist/common.cjs.js",
   "dependencies": {
     "@arch-ui/theme": "^0.0.1"
-  }
+  },
+  "module": "dist/common.esm.js"
 }

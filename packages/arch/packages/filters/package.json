@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "Jed Watson",
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "dist/filters.cjs.js",
   "peerDependencies": {
     "react": "16.7.0-alpha.2"
   },
@@ -14,9 +14,11 @@
     "@arch-ui/controls": "^0.0.1",
     "@arch-ui/layout": "^0.0.1",
     "@arch-ui/theme": "^0.0.1",
+    "@babel/runtime": "^7.2.0",
     "@emotion/core": "^10.0.4",
     "@emotion/styled": "^10.0.4",
     "react-radios": "^1.1.0",
     "react-select": "^2.1.2"
-  }
+  },
+  "module": "dist/filters.esm.js"
 }
