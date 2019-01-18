@@ -76,7 +76,6 @@ const Form = () => {
   );
 };
 
-
 const Item = props => (
   <Mutation
     mutation={REMOVE_TODO}
