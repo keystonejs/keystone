@@ -76,7 +76,7 @@ const Form = () => {
   );
 };
 
-const Item = data => (
+const Item = props => (
   <Mutation
     mutation={REMOVE_TODO}
     update={(cache, { data: { deleteTodo } }) => {
@@ -93,12 +93,12 @@ const Item = data => (
   >
     {removeTodo => (
       <li style={styles.listItem}>
-        {data.todo.name}
+        {props.todo.name}
         <button
           style={styles.deleteButton}
           className="trash"
           onClick={() => {
-            removeTodo({ variables: { id: data.todo.id } });
+            removeTodo({ variables: { id: props.todo.id } });
           }}
         >
           <svg viewBox="0 0 14 16" style={styles.deleteIcon}>
@@ -121,7 +121,7 @@ const App = () => (
       <Form />
       <Query query={GET_TODOS}>
         {({ data, loading, error }) => {
-          if (loading) return <p>loading...</p>;
+          if (loading) return <p>Loading...</p>;
           if (error) return <p>Error!</p>;
           return (
             <ul style={{ listStyle: 'none', padding: 0 }}>

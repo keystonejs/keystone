@@ -14,7 +14,7 @@ The one 'extra' that this project includes is an example React App that consumes
 
 If you wanted to deactivate the example app to rebuild it, or run your app independently of Keystone, just remove any of the imports related to the app in `/index.js`, as well as this line...
 
-```
+```js
 // remove this line from index.js to disable the example React app.
 server.app.use(bundler.middleware());
 ```
