@@ -6,6 +6,7 @@ import { ApolloProvider, Mutation, Query } from 'react-apollo';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import fetch from 'node-fetch';
+import { useState } from 'react';
 
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
@@ -46,122 +47,128 @@ const ADD_POST = gql`
   }
 `;
 
-let title;
-let body;
-let adminId;
-let imageUrl;
+export default () => {
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [authorId, setAuthorId] = useState('');
 
-export default () => (
-  <ApolloProvider client={client}>
-    <Layout>
-      <div css={{ margin: '48px 0' }}>
-        <Link href="/">
-          <a css={{ color: 'hsl(200,20%,50%)', cursor: 'pointer' }}>{'< Go Back'}</a>
-        </Link>
-        <h1>New Post</h1>
-        <Query
-          query={gql`
-            {
-              allUsers(where: { isAdmin: true }) {
-                name
-                email
-                id
+  return (
+    <ApolloProvider client={client}>
+      <Layout>
+        <div css={{ margin: '48px 0' }}>
+          <Link href="/">
+            <a css={{ color: 'hsl(200,20%,50%)', cursor: 'pointer' }}>{'< Go Back'}</a>
+          </Link>
+          <h1>New Post</h1>
+          <Query
+            query={gql`
+              {
+                allUsers(where: { isAdmin: true }) {
+                  name
+                  email
+                  id
+                }
               }
-            }
-          `}
-        >
-          {({ data, loading, error }) => {
-            if (loading) return <p>loading...</p>;
-            if (error) return <p>Error!</p>;
+            `}
+          >
+            {({ data, loading, error }) => {
+              if (loading) return <p>loading...</p>;
+              if (error) return <p>Error!</p>;
 
-            return (
-              <Mutation mutation={ADD_POST}>
-                {createPost => (
-                  <form
-                    onSubmit={e => {
-                      e.preventDefault();
-                      createPost({
-                        variables: {
-                          title: title.value,
-                          body: body.value,
-                          imageUrl: imageUrl.value,
-                          authorId: adminId.value,
-                        },
-                      });
+              return (
+                <Mutation mutation={ADD_POST}>
+                  {createPost => (
+                    <form
+                      onSubmit={e => {
+                        e.preventDefault();
+                        createPost({
+                          variables: {
+                            title,
+                            body,
+                            imageUrl,
+                            authorId: authorId || data.allUsers[0].id,
+                          },
+                        });
 
-                      title.value = '';
-                      body.value = '';
-                      imageUrl.value = '';
-                    }}
-                  >
-                    <FormGroup>
-                      <Label htmlFor="title">Title:</Label>
-                      <Input
-                        type="text"
-                        name="title"
-                        ref={node => {
-                          title = node;
-                        }}
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label htmlFor="body">Body:</Label>
-                      <textarea
-                        css={{
-                          width: '100%',
-                          padding: 8,
-                          fontSize: '1em',
-                          borderRadius: 4,
-                          border: '1px solid hsl(200,20%,70%)',
-                          height: 200,
-                          resize: 'none',
-                        }}
-                        ref={node => {
-                          body = node;
-                        }}
-                        name="body"
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label htmlFor="image">Image URL:</Label>
-                      <Input
-                        type="url"
-                        name="image"
-                        ref={node => {
-                          imageUrl = node;
-                        }}
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label htmlFor="admin">Post as:</Label>
-                      <select
-                        name="admin"
-                        css={{
-                          width: '100%',
-                          height: 32,
-                          fontSize: '1em',
-                          borderRadius: 4,
-                          border: '1px solid hsl(200,20%,70%)',
-                        }}
-                        ref={node => {
-                          adminId = node;
-                        }}
-                      >
-                        {data.allUsers.map(user => (
-                          <option value={user.id} key={user.id}>{`${user.name} <${
-                            user.email
-                          }>`}</option>
-                        ))}
-                      </select>
-                    </FormGroup>
-                    <input type="submit" value="submit" />
-                  </form>
-                )}
-              </Mutation>
-            );
-          }}
-        </Query>
-      </div>
-    </Layout>
-  </ApolloProvider>
-);
+                        setTitle('');
+                        setBody('');
+                        setImageUrl('');
+                      }}
+                    >
+                      <FormGroup>
+                        <Label htmlFor="title">Title:</Label>
+                        <Input
+                          type="text"
+                          name="title"
+                          value={title}
+                          onChange={event => {
+                            setTitle(event.target.value);
+                          }}
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <Label htmlFor="body">Body:</Label>
+                        <textarea
+                          css={{
+                            width: '100%',
+                            padding: 8,
+                            fontSize: '1em',
+                            borderRadius: 4,
+                            border: '1px solid hsl(200,20%,70%)',
+                            height: 200,
+                            resize: 'none',
+                          }}
+                          name="body"
+                          value={body}
+                          onChange={event => {
+                            setBody(event.target.value);
+                          }}
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <Label htmlFor="image">Image URL:</Label>
+                        <Input
+                          type="url"
+                          name="image"
+                          value={imageUrl}
+                          onChange={event => {
+                            setImageUrl(event.target.value);
+                          }}
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <Label htmlFor="admin">Post as:</Label>
+                        <select
+                          name="admin"
+                          css={{
+                            width: '100%',
+                            height: 32,
+                            fontSize: '1em',
+                            borderRadius: 4,
+                            border: '1px solid hsl(200,20%,70%)',
+                          }}
+                          value={authorId}
+                          onSelect={event => {
+                            setAuthorId(event.target.value);
+                          }}
+                        >
+                          {data.allUsers.map(user => (
+                            <option value={user.id} key={user.id}>{`${user.name} <${
+                              user.email
+                            }>`}</option>
+                          ))}
+                        </select>
+                      </FormGroup>
+                      <input type="submit" value="submit" />
+                    </form>
+                  )}
+                </Mutation>
+              );
+            }}
+          </Query>
+        </div>
+      </Layout>
+    </ApolloProvider>
+  );
+};

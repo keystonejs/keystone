@@ -7,6 +7,7 @@ import { Mutation, ApolloProvider, Query } from 'react-apollo';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import fetch from 'node-fetch';
+import { useState } from 'react';
 
 import { jsx } from '@emotion/core';
 import { format } from 'date-fns';
@@ -85,7 +86,7 @@ const Comments = ({ data }) => (
 
 const AddComments = ({ users, postId }) => {
   let user = users.filter(u => u.email == 'a@demo.user')[0];
-  let commentInput;
+  let [comment, setComment] = useState('');
 
   return (
     <div>
@@ -100,17 +101,17 @@ const AddComments = ({ users, postId }) => {
           <form
             onSubmit={e => {
               e.preventDefault();
-              console.log(commentInput.value, postId, user.id);
+
               createComment({
                 variables: {
-                  body: commentInput.value,
+                  body: comment,
                   author: user.id,
                   postId: postId,
                   posted: new Date(),
                 },
               });
 
-              commentInput.value = '';
+              setComment('');
             }}
           >
             <textarea
@@ -126,8 +127,9 @@ const AddComments = ({ users, postId }) => {
                 borderRadius: 6,
                 resize: 'none',
               }}
-              ref={node => {
-                commentInput = node;
+              value={comment}
+              onChange={event => {
+                setComment(event.target.value);
               }}
             />
 
