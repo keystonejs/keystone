@@ -8,7 +8,7 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "DISABLE_LOGGING=true node index.js"
   },
   "dependencies": {
     "@voussoir/adapter-mongoose": "^1.0.0",

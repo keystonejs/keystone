@@ -40,8 +40,10 @@ const Input = styled.input({
 });
 
 const ADD_POST = gql`
-  mutation AddPost($title: String!, $body: String!, $authorId: ID!) {
-    createPost(data: { title: $title, body: $body, author: { connect: { id: $authorId } } }) {
+  mutation AddPost($title: String!, $body: String!, $authorId: ID!, $posted: DateTime!) {
+    createPost(
+      data: { title: $title, body: $body, author: { connect: { id: $authorId } }, posted: $posted }
+    ) {
       id
     }
   }
@@ -88,6 +90,7 @@ export default () => {
                             body,
                             imageUrl,
                             authorId: authorId || data.allUsers[0].id,
+                            posted: new Date(),
                           },
                         });
 
