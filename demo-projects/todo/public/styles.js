@@ -1,6 +1,10 @@
-const tint = (opacity, darkness) =>
-  `hsla(261, 84%, ${darkness == 'dark' ? '14%' : darkness == 'light' ? '95%' : '60%'}, ${opacity ||
-    1})`;
+const brightness = {
+  default: '60%',
+  light: '95%',
+  dark: '14%',
+};
+
+const tint = (opacity = 1, theme = 'default') => `hsla(261, 84%, ${brightness[theme]}, ${opacity})`;
 
 const styles = {
   mainHeading: {

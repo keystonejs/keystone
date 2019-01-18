@@ -10,7 +10,7 @@ const client = new ApolloClient({
 });
 
 const GET_TODOS = gql`
-  {
+  query GetTodos {
     allTodos {
       name
       id
@@ -125,7 +125,7 @@ const App = () => (
           if (error) return <p>Error!</p>;
           return (
             <ul style={{ listStyle: 'none', padding: 0 }}>
-              {[...data.allTodos].reverse().map((todo, index) => (
+              {data.allTodos.map((todo, index) => (
                 <Item todo={todo} key={index} />
               ))}
             </ul>
