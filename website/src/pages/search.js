@@ -35,29 +35,21 @@ const Search = props => {
   return (
     <Location>
       {({ location, navigate }) => {
-        let query = useMemo(
-          () => {
-            return new URL(location.href).searchParams.get('q');
-          },
-          [location.href]
-        );
-        let results = useMemo(
-          () => {
-            if (!query || !window.__LUNR__) return [];
-            const lunrIndex = window.__LUNR__[props.lng || 'en'];
-            const results = lunrIndex.index.search(query); // you can  customize your search , see https://lunrjs.com/guides/searching.html
-            return (
-              results
-                .map(({ ref }) => lunrIndex.store[ref])
-                // Make sure `tutorials` are always first
-                .sort((a, b) =>
-                  a.workspace !== b.workspace && a.workspace === 'tutorials' ? -1 : 0
-                )
-            );
-            return results;
-          },
-          [query]
-        );
+        let query = useMemo(() => {
+          return new URL(location.href).searchParams.get('q');
+        }, [location.href]);
+        let results = useMemo(() => {
+          if (!query || !window.__LUNR__) return [];
+          const lunrIndex = window.__LUNR__[props.lng || 'en'];
+          const results = lunrIndex.index.search(query); // you can  customize your search , see https://lunrjs.com/guides/searching.html
+          return (
+            results
+              .map(({ ref }) => lunrIndex.store[ref])
+              // Make sure `tutorials` are always first
+              .sort((a, b) => (a.workspace !== b.workspace && a.workspace === 'tutorials' ? -1 : 0))
+          );
+          return results;
+        }, [query]);
 
         return (
           <React.Fragment>

@@ -105,52 +105,49 @@ const RelationshipSelect = ({
                 data[refList.gqlNames.listQueryMetaName] &&
                 data[refList.gqlNames.listQueryMetaName].count;
 
-              const selectComponents = useMemo(
-                () => {
-                  return {
-                    MenuList: ({ children, ...props }) => {
-                      const ref = useRef(null);
+              const selectComponents = useMemo(() => {
+                return {
+                  MenuList: ({ children, ...props }) => {
+                    const ref = useRef(null);
 
-                      useIntersectionObserver(([{ isIntersecting }]) => {
-                        if (!props.isLoading && isIntersecting && props.options.length < count) {
-                          fetchMore({
-                            query: gql`query RelationshipSelectMore($search: String!, $skip: Int!) {${refList.buildQuery(
-                              refList.gqlNames.listQueryName,
-                              `(first: ${subsequentItemsToLoad}, search: $search, skip: $skip)`
-                            )}}`,
-                            variables: {
-                              search,
-                              skip: props.options.length,
-                            },
-                            updateQuery: (prev, { fetchMoreResult }) => {
-                              if (!fetchMoreResult) return prev;
-                              return {
-                                ...prev,
-                                [refList.gqlNames.listQueryName]: [
-                                  ...prev[refList.gqlNames.listQueryName],
-                                  ...fetchMoreResult[refList.gqlNames.listQueryName],
-                                ],
-                              };
-                            },
-                          });
-                        }
-                      }, ref);
+                    useIntersectionObserver(([{ isIntersecting }]) => {
+                      if (!props.isLoading && isIntersecting && props.options.length < count) {
+                        fetchMore({
+                          query: gql`query RelationshipSelectMore($search: String!, $skip: Int!) {${refList.buildQuery(
+                            refList.gqlNames.listQueryName,
+                            `(first: ${subsequentItemsToLoad}, search: $search, skip: $skip)`
+                          )}}`,
+                          variables: {
+                            search,
+                            skip: props.options.length,
+                          },
+                          updateQuery: (prev, { fetchMoreResult }) => {
+                            if (!fetchMoreResult) return prev;
+                            return {
+                              ...prev,
+                              [refList.gqlNames.listQueryName]: [
+                                ...prev[refList.gqlNames.listQueryName],
+                                ...fetchMoreResult[refList.gqlNames.listQueryName],
+                              ],
+                            };
+                          },
+                        });
+                      }
+                    }, ref);
 
-                      return (
-                        <components.MenuList {...props}>
-                          {children}
-                          <div css={{ textAlign: 'center' }} ref={ref}>
-                            {props.options.length < count && (
-                              <span css={{ padding: 8 }}>Loading...</span>
-                            )}
-                          </div>
-                        </components.MenuList>
-                      );
-                    },
-                  };
-                },
-                [count, refList.gqlNames.listQueryName]
-              );
+                    return (
+                      <components.MenuList {...props}>
+                        {children}
+                        <div css={{ textAlign: 'center' }} ref={ref}>
+                          {props.options.length < count && (
+                            <span css={{ padding: 8 }}>Loading...</span>
+                          )}
+                        </div>
+                      </components.MenuList>
+                    );
+                  },
+                };
+              }, [count, refList.gqlNames.listQueryName]);
               return (
                 <Select
                   onInputChange={setSearch}

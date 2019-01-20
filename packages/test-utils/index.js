@@ -122,10 +122,7 @@ function keystoneMongoTest(setupKeystoneFn, testFn) {
     const server = setupKeystoneFn();
     const { mongoUri, dbName } = await getMongoMemoryServerConfig();
 
-    await server.keystone.connect(
-      mongoUri,
-      { dbName }
-    );
+    await server.keystone.connect(mongoUri, { dbName });
 
     return pFinally(
       testFn({

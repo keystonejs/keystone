@@ -42,16 +42,13 @@ export const Month = memo<Props>(({ style, index, data }) => {
   const { items, selectedDate, onSelectedChange, observer } = data;
   const ref = useRef(null);
 
-  useEffect(
-    () => {
-      const node = ref.current;
-      if (node !== null) {
-        observer.observe(node);
-        return () => observer.unobserve(node);
-      }
-    },
-    [observer]
-  );
+  useEffect(() => {
+    const node = ref.current;
+    if (node !== null) {
+      observer.observe(node);
+      return () => observer.unobserve(node);
+    }
+  }, [observer]);
   const { weeks, month, year } = items[index];
   return (
     <div ref={ref} data-index={index} style={style}>
