@@ -3,5 +3,6 @@
   "version": "0.0.1",
   "author": "Jed Watson",
   "license": "MIT",
-  "main": "src/index.js"
+  "main": "dist/color-utils.cjs.js",
+  "module": "dist/color-utils.esm.js"
 }
