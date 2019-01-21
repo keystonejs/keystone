@@ -15,14 +15,14 @@ x-job-setup: &job-setup
 # Download and cache dependencies
 x-restore-cache: &restore-cache
   keys:
-    - v11-dependencies-{{ checksum "yarn.lock" }}
+    - v12-dependencies-{{ checksum "yarn.lock" }}
       # fallback to using the latest cache if no exact match is found
-    - v11-dependencies-
+    - v12-dependencies-
 
 x-save-cache: &save-cache
   paths:
     - node_modules
-  key: v11-dependencies-{{ checksum "yarn.lock" }}
+  key: v12-dependencies-{{ checksum "yarn.lock" }}
 
 x-integration-steps: &integration-steps
   steps:
