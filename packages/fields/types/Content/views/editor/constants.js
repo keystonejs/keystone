@@ -9,8 +9,7 @@ export const initialValue = {
             object: 'text',
             leaves: [
               {
-                text:
-                  '',
+                text: '',
               },
             ],
           },
