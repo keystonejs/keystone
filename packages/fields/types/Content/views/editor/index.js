@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useRef, Fragment, useLayoutEffect, useMemo, useState } from 'react';
+import { useRef, Fragment, useLayoutEffect, useMemo } from 'react';
 import { Editor } from 'slate-react';
 import { Block } from 'slate';
 import { getVisibleSelectionRect } from 'get-selection-range';
@@ -40,21 +40,16 @@ function getSchema(blocks) {
 }
 
 function useHasSelection() {
-  let [hasSelection, setHasSelection] = useState(false);
+  let [hasSelection, setHasSelection] = useStateWithEqualityCheck(false);
   useLayoutEffect(() => {
     const rect = getVisibleSelectionRect();
     let newValue = rect && rect.width !== 0;
-    if (newValue !== hasSelection) {
-      setHasSelection(newValue);
-    }
+    setHasSelection(newValue);
   });
   return hasSelection;
 }
 
 let stopPropagation = e => {
-  // if (e.nativeEvent.target.tagName !== 'INPUT') {
-  // e.preventDefault();
-  // }
   e.stopPropagation();
 };
 
@@ -79,8 +74,7 @@ function Stories({ value: editorState, onChange, blocks }) {
             if (block) {
               return <block.Node {...props} />;
             }
-            // we don't want to define how how nodes are rendered in any other place
-            throw new Error('Cannot render node of type: ' + props.node.type);
+            return null;
           },
         },
       ];

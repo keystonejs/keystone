@@ -136,13 +136,6 @@ export let schema = {
         }
         return;
       }
-      case 'child_type_invalid': {
-        // ignore error.index === 0 because if that happens then it's probably bad
-        // and the whole container should be deleted
-        if (error.index === 1) {
-        }
-        return;
-      }
       case 'node_data_invalid': {
         if (error.key === 'alignment') {
           editor.setNodeByKey(error.node.key, {

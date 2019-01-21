@@ -32,7 +32,9 @@ let ContentField = ({ field, item, onChange }) => {
               pushBlocks(dependencies);
             }
           } else if (existingItem.Node === undefined) {
-            throw new Error(`Unable to load Content block '${existingItem.type}' - no Node component defined`);
+            throw new Error(
+              `Unable to load Content block '${existingItem.type}' - no Node component defined`
+            );
           }
           // check the referential equality of a blocks Node since it has to be defined
           // and if they're equal we know it's the same block
@@ -74,21 +76,12 @@ let ContentField = ({ field, item, onChange }) => {
       <h1>{field.label}</h1>
       {Object.keys(blocks)
         .map(key => blocks[key])
-        .reduce(
-          (children, block) => {
-            if (block.Provider === undefined || block.options === null) {
-              return children;
-            }
-            return <block.Provider value={block.options}>{children}</block.Provider>;
-          },
-          <Editor
-            blocks={blocks}
-            value={value}
-            onChange={newValue => {
-              setValue(newValue);
-            }}
-          />
-        )}
+        .reduce((children, block) => {
+          if (block.Provider === undefined || block.options === null) {
+            return children;
+          }
+          return <block.Provider value={block.options}>{children}</block.Provider>;
+        }, <Editor blocks={blocks} value={value} onChange={setValue} />)}
     </div>
   );
 };
