@@ -11,7 +11,7 @@ function serialize(value) {
     return (
       '{\n' +
       Object.keys(value)
-        .map(key => `${key}: ${serialize(value[key])}`)
+        .map(key => `"${key}": ${serialize(value[key])}`)
         .join(',\n') +
       '}'
     );
