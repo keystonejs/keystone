@@ -20,8 +20,6 @@ let Image = ({ alignment, attributes, isFocused, src, onAlignmentChange, ...prop
       <img
         {...props}
         {...attributes}
-        data-focused={isFocused}
-        selected={isFocused}
         src={src}
         ref={setReferenceElement}
         css={{
