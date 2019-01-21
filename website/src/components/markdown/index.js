@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'gatsby';
 import Heading from './Heading';
 import Code from './Code';
 
@@ -10,4 +11,10 @@ export default {
   h5: props => <Heading {...props} tag="h5" />,
   h6: props => <Heading {...props} tag="h6" />,
   code: Code,
+  a: ({ href, ...props }) => {
+    if (!href || href.indexOf('http') === 0 || href.indexOf('#') === 0) {
+      return <a href={href} {...props} />;
+    }
+    return <Link to={href} {...props} />;
+  },
 };
