@@ -10,11 +10,4 @@ Once running, the Keystone Admin UI is reachable from `localhost:3000/admin`. To
 
 ## Demo React App
 
-The one 'extra' that this project includes is an example React App that consumes the data from Keystone via GraphQl and Apollo. The app is bundled together by Parcel, and is housed within the `/public` directory. It allows you to see how easy it is to create an app that can use Keystone's GraphQL APIs.
-
-If you wanted to deactivate the example app to rebuild it, or run your app independently of Keystone, just remove any of the imports related to the app in `/index.js`, as well as this line...
-
-```js
-// remove this line from index.js to disable the example React app.
-server.app.use(bundler.middleware());
-```
+The one 'extra' that this project includes is an example React App that consumes the data from Keystone via GraphQl. The app uses React's UMD build and is housed within the `/public` directory. It allows you to see how easy it is to create an app that can use Keystone's GraphQL APIs.
