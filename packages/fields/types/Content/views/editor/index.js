@@ -57,38 +57,32 @@ let stopPropagation = e => {
 let Render = ({ children }) => children();
 
 function Stories({ value: editorState, onChange, blocks }) {
-  let schema = useMemo(
-    () => {
-      return getSchema(blocks);
-    },
-    [blocks]
-  );
+  let schema = useMemo(() => {
+    return getSchema(blocks);
+  }, [blocks]);
 
-  let plugins = useMemo(
-    () => {
-      let combinedPlugins = [
-        ...markPlugins,
-        {
-          renderNode(props) {
-            let block = blocks[props.node.type];
-            if (block) {
-              return <block.Node {...props} />;
-            }
-            return null;
-          },
+  let plugins = useMemo(() => {
+    let combinedPlugins = [
+      ...markPlugins,
+      {
+        renderNode(props) {
+          let block = blocks[props.node.type];
+          if (block) {
+            return <block.Node {...props} />;
+          }
+          return null;
         },
-      ];
+      },
+    ];
 
-      Object.keys(blocks).forEach(type => {
-        let blockTypePlugins = blocks[type].plugins;
-        if (blockTypePlugins !== undefined) {
-          combinedPlugins.push(...blockTypePlugins);
-        }
-      });
-      return combinedPlugins;
-    },
-    [blocks]
-  );
+    Object.keys(blocks).forEach(type => {
+      let blockTypePlugins = blocks[type].plugins;
+      if (blockTypePlugins !== undefined) {
+        combinedPlugins.push(...blockTypePlugins);
+      }
+    });
+    return combinedPlugins;
+  }, [blocks]);
 
   let [editor, setEditor] = useStateWithEqualityCheck(null);
   let containerRef = useRef(null);
@@ -117,44 +111,38 @@ function Stories({ value: editorState, onChange, blocks }) {
 
                 let observerRef = useRef(null);
 
-                useLayoutEffect(
-                  () => {
-                    if (toolbarElement !== null) {
-                      let rect = toolbarElement.getBoundingClientRect();
-                      let previousHeight = Math.round(rect.height);
-                      let previousWidth = Math.round(rect.width);
-                      observerRef.current = new ResizeObserver(entries => {
-                        let entry = entries[0];
-                        let { height, width } = entry.contentRect;
-                        height = Math.round(height);
-                        width = Math.round(width);
-                        if (
-                          (height !== previousHeight || width !== previousWidth) &&
-                          height !== 0 &&
-                          width !== 0
-                        ) {
-                          previousHeight = height;
-                          previousWidth = width;
-                          scheduleUpdate();
-                        }
-                      });
-                    }
-                  },
-                  [scheduleUpdate, toolbarElement]
-                );
+                useLayoutEffect(() => {
+                  if (toolbarElement !== null) {
+                    let rect = toolbarElement.getBoundingClientRect();
+                    let previousHeight = Math.round(rect.height);
+                    let previousWidth = Math.round(rect.width);
+                    observerRef.current = new ResizeObserver(entries => {
+                      let entry = entries[0];
+                      let { height, width } = entry.contentRect;
+                      height = Math.round(height);
+                      width = Math.round(width);
+                      if (
+                        (height !== previousHeight || width !== previousWidth) &&
+                        height !== 0 &&
+                        width !== 0
+                      ) {
+                        previousHeight = height;
+                        previousWidth = width;
+                        scheduleUpdate();
+                      }
+                    });
+                  }
+                }, [scheduleUpdate, toolbarElement]);
 
-                useLayoutEffect(
-                  () => {
-                    if (shouldShowToolbar && toolbarElement !== null) {
-                      let observer = observerRef.current;
-                      observer.observe(toolbarElement);
-                      return () => {
-                        observer.unobserve(toolbarElement);
-                      };
-                    }
-                  },
-                  [shouldShowToolbar, toolbarElement, scheduleUpdate]
-                );
+                useLayoutEffect(() => {
+                  if (shouldShowToolbar && toolbarElement !== null) {
+                    let observer = observerRef.current;
+                    observer.observe(toolbarElement);
+                    return () => {
+                      observer.unobserve(toolbarElement);
+                    };
+                  }
+                }, [shouldShowToolbar, toolbarElement, scheduleUpdate]);
 
                 return createPortal(
                   <div
