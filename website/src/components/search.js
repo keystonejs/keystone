@@ -1,9 +1,11 @@
-import { Component } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'gatsby';
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 
 import { colors } from '@arch-ui/theme';
+
+import { getResults } from '../utils/search';
 
 /** @jsx jsx */
 
@@ -38,81 +40,52 @@ const ResultsList = styled.div({
 });
 
 // Search component
-export default class Search extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      query: ``,
-      results: [],
-    };
-  }
+const Search = () => {
+  let [query, setQuery] = useState('');
 
-  prettyTitle(node) {
-    let pretty = node.slug
-      .replace(node.workspace.replace('@', ''), '')
-      .replace(new RegExp(/(\/)/g), ' ')
-      .replace('-', ' ')
-      .trim();
+  let results = useMemo(() => getResults(query), [query]);
 
-    if (pretty.startsWith('packages') || pretty.startsWith('types')) {
-      pretty = pretty.replace('packages', '').replace('types', '');
-    }
-
-    return pretty === '' ? 'index' : pretty;
-  }
-
-  render() {
-    return (
-      <div>
-        <Input type="text" value={this.state.query} onChange={this.search} placeholder="Search" />
-        {this.state.results.length ? (
-          <ResultsList>
-            <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
-              {this.state.results.slice(0, 12).map(result => (
-                <li
-                  css={{
-                    padding: 10,
-                    borderBottom: `1px solid ${colors.B.A25}`,
-                  }}
-                  key={result.slug}
+  return (
+    <div>
+      <Input
+        type="text"
+        value={query}
+        onChange={event => {
+          setQuery(event.target.value);
+        }}
+        placeholder="Search"
+      />
+      {results.length ? (
+        <ResultsList>
+          <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
+            {results.slice(0, 12).map(result => (
+              <li
+                css={{
+                  padding: 10,
+                  borderBottom: `1px solid ${colors.B.A25}`,
+                }}
+                key={result.slug}
+              >
+                <Link
+                  style={{ color: colors.B.base, textTransform: 'capitalize' }}
+                  to={result.slug}
                 >
-                  <Link
-                    style={{ color: colors.B.base, textTransform: 'capitalize' }}
-                    to={result.slug}
-                  >
-                    {this.prettyTitle(result)}
-                  </Link>{' '}
-                  <small style={{ color: 'grey' }}>({result.workspace})</small>
-                </li>
-              ))}
-            </ul>
-            <Link
-              to={`/search?q=${this.state.query}`}
-              css={{ textAlign: 'center', padding: 5, display: 'block', color: colors.B.base }}
-            >
-              See More
-            </Link>
-          </ResultsList>
-        ) : null}
-      </div>
-    );
-  }
+                  {result.title}
+                </Link>{' '}
+                <small style={{ color: 'grey' }}>({result.workspace})</small>
+              </li>
+            ))}
+          </ul>
+          <Link
+            to={`/search?q=${encodeURIComponent(query)}`}
+            css={{ textAlign: 'center', padding: 5, display: 'block', color: colors.B.base }}
+          >
+            See More
+          </Link>
+        </ResultsList>
+      ) : null}
+    </div>
+  );
+};
 
-  getSearchResults(query) {
-    if (!query || !window.__LUNR__) return [];
-    const lunrIndex = window.__LUNR__[this.props.lng || 'en'];
-    const results = lunrIndex.index.search(query); // you can  customize your search , see https://lunrjs.com/guides/searching.html
-    return (
-      results
-        .map(({ ref }) => lunrIndex.store[ref])
-        // Make sure `docs` are always first
-        .sort((a, b) => (a.workspace !== b.workspace && a.workspace === 'docs' ? -1 : 0))
-    );
-  }
-
-  search = event => {
-    const query = event.target.value;
-    const results = this.getSearchResults(query);
-    this.setState(() => ({ results, query }));
-  };
-}
+export default Search;
