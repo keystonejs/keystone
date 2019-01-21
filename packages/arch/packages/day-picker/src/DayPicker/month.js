@@ -54,7 +54,7 @@ export const Month = memo<Props>(({ style, index, data }) => {
   );
   const { weeks, month, year } = items[index];
   return (
-    <div ref={ref} data-index={index} style={style}>
+    <div ref={ref} data-index={index} id={`ks-month-${month}-${year}`} style={style}>
       <MonthHeader month={month} year={year} />
       {weeks.map((week, i) => (
         <WeekRow key={i}>

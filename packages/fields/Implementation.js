@@ -168,6 +168,9 @@ class Field {
   extendAdminMeta(meta) {
     return meta;
   }
+  extendViews(views) {
+    return views;
+  }
   getDefaultValue() {
     return this.config.defaultValue;
   }
