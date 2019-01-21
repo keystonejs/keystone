@@ -32,12 +32,12 @@ let ContentField = ({ field, item, onChange }) => {
               pushBlocks(dependencies);
             }
           } else if (existingItem.Node === undefined) {
-            throw new Error(existingItem.type + 'does not have a Node component defined');
+            throw new Error(`Unable to load Content block '${existingItem.type}' - no Node component defined`);
           }
           // check the referential equality of a blocks Node since it has to be defined
           // and if they're equal we know it's the same block
           else if (existingItem.Node !== block.Node) {
-            throw new Error('There are two different blocks with the type:' + block.type);
+            throw new Error(`There are two different Content blocks with the type '${block.type}'`);
           }
         });
       }
@@ -60,7 +60,7 @@ let ContentField = ({ field, item, onChange }) => {
     parsedValue = initialValue;
   }
 
-  let [value, setValue] = useState(() => Value.fromJS(parsedValue));
+  let [value, setValue] = useState(() => Value.fromJSON(parsedValue));
 
   return (
     <div

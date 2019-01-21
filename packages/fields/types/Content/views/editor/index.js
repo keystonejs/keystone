@@ -139,8 +139,8 @@ function Stories({ value: editorState, onChange, blocks }) {
                           height !== 0 &&
                           width !== 0
                         ) {
-                          previousHeight = Math.round(entry.contentRect.height);
-                          previousWidth = Math.round(entry.contentRect.width);
+                          previousHeight = height;
+                          previousWidth = width;
                           scheduleUpdate();
                         }
                       });

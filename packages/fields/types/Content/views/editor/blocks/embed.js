@@ -13,7 +13,7 @@ let Embed = ({ url }) => {
   let containerRef = useRef(null);
   let options = useContext(Context);
 
-  if (options === null || options.apiKey === undefined) {
+  if (!options || !options.apiKey) {
     return 'Please add an Embedly API Key';
   }
   useEffect(
