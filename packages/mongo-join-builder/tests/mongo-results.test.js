@@ -27,7 +27,10 @@ jest.setTimeout(60000);
 beforeAll(async () => {
   mongoServer = new MongoDBMemoryServer();
   const mongoUri = await mongoServer.getConnectionString();
-  mongoConnection = await MongoClient.connect(mongoUri, { useNewUrlParser: true });
+  mongoConnection = await MongoClient.connect(
+    mongoUri,
+    { useNewUrlParser: true }
+  );
   mongoDb = mongoConnection.db(await mongoServer.getDbName());
 });
 

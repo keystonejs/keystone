@@ -13,35 +13,38 @@ let AddBlock = ({ editorState, editor, blocks }) => {
   let openCloseRef = useRef(null);
   let containerRef = useRef(null);
   let focusBlock = editorState.focusBlock;
-  let layout = useCallback(() => {
-    let openCloseEle = openCloseRef.current;
-    let containerEle = containerRef.current;
-    const rect = getVisibleSelectionRect();
+  let layout = useCallback(
+    () => {
+      let openCloseEle = openCloseRef.current;
+      let containerEle = containerRef.current;
+      const rect = getVisibleSelectionRect();
 
-    if (
-      !rect ||
-      rect.width !== 0 ||
-      focusBlock === null ||
-      focusBlock.text !== '' ||
-      focusBlock.type !== defaultType
-    ) {
-      setIsOpen(false);
-      openCloseEle.style.top = '';
-      openCloseEle.style.left = '';
-      containerEle.style.top = '';
-      containerEle.style.left = '';
+      if (
+        !rect ||
+        rect.width !== 0 ||
+        focusBlock === null ||
+        focusBlock.text !== '' ||
+        focusBlock.type !== defaultType
+      ) {
+        setIsOpen(false);
+        openCloseEle.style.top = '';
+        openCloseEle.style.left = '';
+        containerEle.style.top = '';
+        containerEle.style.left = '';
 
-      return;
-    }
-    const top = rect.top + window.scrollY - openCloseEle.offsetHeight / 2 + rect.height / 2; // eslint-disable-line
-    openCloseEle.style.top = `${top}px`;
-    containerEle.style.top = `${top}px`;
-    const containerEleLeft = rect.left + window.scrollX;
-    containerEle.style.left = `${containerEleLeft}px`;
+        return;
+      }
+      const top = rect.top + window.scrollY - openCloseEle.offsetHeight / 2 + rect.height / 2; // eslint-disable-line
+      openCloseEle.style.top = `${top}px`;
+      containerEle.style.top = `${top}px`;
+      const containerEleLeft = rect.left + window.scrollX;
+      containerEle.style.left = `${containerEleLeft}px`;
 
-    const left = containerEleLeft - openCloseEle.offsetWidth;
-    openCloseEle.style.left = `${left}px`;
-  }, [focusBlock, windowSize]);
+      const left = containerEleLeft - openCloseEle.offsetWidth;
+      openCloseEle.style.left = `${left}px`;
+    },
+    [focusBlock, windowSize]
+  );
 
   useLayoutEffect(layout);
   useScrollListener(layout);
