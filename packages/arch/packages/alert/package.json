@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "Jed Watson",
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "dist/alert.cjs.js",
   "peerDependencies": {
     "react": "16.7.0-alpha.2"
   },
@@ -14,5 +14,6 @@
     "@arch-ui/theme": "^0.0.1",
     "@emotion/core": "^10.0.4",
     "@emotion/styled": "^10.0.4"
-  }
+  },
+  "module": "dist/alert.esm.js"
 }
