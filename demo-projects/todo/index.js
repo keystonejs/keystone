@@ -4,12 +4,8 @@ const { AdminUI } = require('@voussoir/admin-ui');
 const { Text } = require('@voussoir/fields');
 const { WebServer } = require('@voussoir/server');
 const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
-
-// Imports for the app
-const Bundler = require('parcel');
+const express = require('express');
 const path = require('path');
-const staticPath = path.join(process.cwd(), 'public');
-const bundler = new Bundler(path.join(staticPath, 'index.html'));
 
 const keystone = new Keystone({
   name: 'Keystone To-Do List',
@@ -30,7 +26,7 @@ const server = new WebServer(keystone, {
   port: 3000,
 });
 
-server.app.use(bundler.middleware());
+server.app.use(express.static(path.join(__dirname, 'public')));
 
 async function start() {
   await keystone.connect();
