@@ -3,7 +3,7 @@
 import React, { Component, Fragment } from 'react';
 import styled from '@emotion/styled';
 
-import { SettingsIcon, TrashcanIcon } from '@voussoir/icons';
+import { SettingsIcon, TrashcanIcon } from '@arch-ui/icons';
 import { FlexGroup } from '@arch-ui/layout';
 import { IconButton } from '@arch-ui/button';
 import { colors, gridSize } from '@arch-ui/theme';

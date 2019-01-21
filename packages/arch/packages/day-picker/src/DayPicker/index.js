@@ -13,7 +13,7 @@ import {
   endOfYear,
 } from 'date-fns';
 import { VariableSizeList as List } from 'react-window';
-import { ChevronLeftIcon, ChevronRightIcon } from '@voussoir/icons';
+import { ChevronLeftIcon, ChevronRightIcon } from '@arch-ui/icons';
 import { useLayoutEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { borderRadius, colors } from '@arch-ui/theme';
 import { yearRange, months, type Weeks, getWeeksInMonth, isNumberInRange } from './utils';

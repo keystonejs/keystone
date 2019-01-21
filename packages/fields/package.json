@@ -25,7 +25,7 @@
     "@iframely/embed.js": "^1.0.1",
     "@voussoir/access-control": "^0.4.0",
     "@voussoir/adapter-mongoose": "^1.0.0",
-    "@voussoir/icons": "^0.3.0",
+    "@arch-ui/icons": "^0.0.1",
     "@voussoir/logger": "^0.2.0",
     "@voussoir/utils": "^0.3.1",
     "apollo-errors": "^1.9.0",

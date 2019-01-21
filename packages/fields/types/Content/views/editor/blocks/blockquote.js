@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { hasAncestorBlock } from '../utils';
-import { QuoteIcon } from '@voussoir/icons';
+import { QuoteIcon } from '@arch-ui/icons';
 import { ToolbarButton } from '../toolbar-components';
 
 export let type = 'blockquote';

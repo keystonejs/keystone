@@ -5,7 +5,7 @@ import { useState, useCallback, useRef, Fragment, useLayoutEffect } from 'react'
 import { getVisibleSelectionRect } from 'get-selection-range';
 import { useScrollListener, useWindowSize } from './hooks';
 import { type as defaultType } from './blocks/paragraph';
-import { PlusIcon } from '@voussoir/icons';
+import { PlusIcon } from '@arch-ui/icons';
 
 let AddBlock = ({ editorState, editor, blocks }) => {
   let windowSize = useWindowSize();

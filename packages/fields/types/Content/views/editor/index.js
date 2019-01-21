@@ -11,7 +11,7 @@ import { type as defaultType } from './blocks/paragraph';
 import AddBlock from './AddBlock';
 import { ToolbarButton } from './toolbar-components';
 import { A11yText } from '@arch-ui/typography';
-import { CircleSlashIcon } from '@voussoir/icons';
+import { CircleSlashIcon } from '@arch-ui/icons';
 import ResizeObserver from 'resize-observer-polyfill';
 import { selectionReference } from './utils';
 import { useStateWithEqualityCheck } from './hooks';

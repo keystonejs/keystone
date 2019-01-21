@@ -12,7 +12,7 @@ import {
   UnfoldIcon,
   XIcon,
   ZapIcon,
-} from '@voussoir/icons';
+} from '@arch-ui/icons';
 import { Input } from '@arch-ui/input';
 import { Container, FlexGroup, CONTAINER_GUTTER, CONTAINER_WIDTH } from '@arch-ui/layout';
 import { A11yText, Kbd, Title } from '@arch-ui/typography';

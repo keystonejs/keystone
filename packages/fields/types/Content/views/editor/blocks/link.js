@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import React, { useContext, useState } from 'react';
 import TooltipTrigger from 'react-popper-tooltip';
-import { LinkIcon, CheckIcon, CircleSlashIcon } from '@voussoir/icons';
+import { LinkIcon, CheckIcon, CircleSlashIcon } from '@arch-ui/icons';
 import { ToolbarButton } from '../toolbar-components';
 
 export let type = 'link';

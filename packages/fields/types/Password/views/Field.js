@@ -6,7 +6,7 @@ import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
 import { FlexGroup } from '@arch-ui/layout';
 import { Button } from '@arch-ui/button';
-import { EyeIcon, LockIcon } from '@voussoir/icons';
+import { EyeIcon, LockIcon } from '@arch-ui/icons';
 import { A11yText } from '@arch-ui/typography';
 
 export default class PasswordField extends Component {

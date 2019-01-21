@@ -3,7 +3,7 @@ import { ToolbarButton } from '../toolbar-components';
 import { hasAncestorBlock, hasBlock } from '../utils';
 import * as listItem from './list-item';
 import { type as defaultType } from './paragraph';
-import { ListUnorderedIcon } from '@voussoir/icons';
+import { ListUnorderedIcon } from '@arch-ui/icons';
 
 // duplicated logic for now, make some of this functionality happen in the schema instead soon
 let handleListButtonClick = (editor, editorState, type) => {

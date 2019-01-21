@@ -15,7 +15,7 @@ import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
 import Footer from './Footer';
-import { TriangleLeftIcon, CheckIcon, ClippyIcon, PlusIcon } from '@voussoir/icons';
+import { TriangleLeftIcon, CheckIcon, ClippyIcon, PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
 import { A11yText, Title } from '@arch-ui/typography';
 import { Button, IconButton } from '@arch-ui/button';
