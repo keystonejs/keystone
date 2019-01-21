@@ -34,6 +34,7 @@ module.exports = function({ adminMeta, entry }) {
               '@babel/flow',
             ],
             plugins: [
+              '@babel/plugin-syntax-dynamic-import',
               '@babel/proposal-class-properties',
               '@babel/proposal-object-rest-spread',
               'emotion',
@@ -91,6 +92,7 @@ module.exports = function({ adminMeta, entry }) {
         // that we use so we alias react the react resolved from the admin ui
         // which depends on the version of react that keystone uses
         react$: require.resolve('react'),
+        'react-dom$': require.resolve('react-dom'),
         ...(() => {
           try {
             return require('preconstruct').aliases.webpack(path.join(__dirname, '..', '..', '..'));

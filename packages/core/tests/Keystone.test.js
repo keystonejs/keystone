@@ -2,7 +2,11 @@ const Keystone = require('../Keystone');
 const List = require('../List');
 const { Text, Relationship } = require('@voussoir/fields');
 
-class MockType {}
+class MockType {
+  extendViews(views) {
+    return views;
+  }
+}
 
 class MockFieldAdapter {}
 
@@ -58,6 +62,9 @@ test('unique typeDefs', () => {
     }
     getGqlAuxMutations() {
       return ['mutateFoo: Boolean'];
+    }
+    extendViews(views) {
+      return views;
     }
   }
 
