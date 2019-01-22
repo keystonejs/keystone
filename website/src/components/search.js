@@ -22,31 +22,29 @@ const Search = () => {
   let results = useMemo(() => getResults(query), [query]);
 
   return (
-    <div>
-      <Location>
-        {({ navigate }) => {
-          return (
-            <Select
-              placeholder="Search..."
-              options={results}
-              value={null}
-              inputValue={query}
-              onInputChange={value => {
-                setQuery(value);
-              }}
-              onChange={result => {
-                navigate(result.slug);
-                setQuery('');
-              }}
-              css={{ width: 256 }}
-              filterOption={() => true}
-              formatOptionLabel={renderOptionLabel}
-              getOptionValue={result => result.slug}
-            />
-          );
-        }}
-      </Location>
-    </div>
+    <Location>
+      {({ navigate }) => {
+        return (
+          <Select
+            placeholder="Search..."
+            options={results}
+            value={null}
+            inputValue={query}
+            onInputChange={value => {
+              setQuery(value);
+            }}
+            onChange={result => {
+              navigate(result.slug);
+              setQuery('');
+            }}
+            css={{ width: 256 }}
+            filterOption={() => true}
+            formatOptionLabel={renderOptionLabel}
+            getOptionValue={result => result.slug}
+          />
+        );
+      }}
+    </Location>
   );
 };
 
