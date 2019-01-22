@@ -72,13 +72,9 @@ exports.onCreateWebpackConfig = ({ actions }) => {
     );
   });
 
-  console.log(preconstructAliases);
-
   actions.setWebpackConfig({
     resolve: {
-      alias: {
-        ...preconstructAliases,
-      },
+      alias: preconstructAliases,
     },
   });
 };
