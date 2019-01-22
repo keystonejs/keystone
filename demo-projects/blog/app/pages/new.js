@@ -66,6 +66,8 @@ export default () => {
   const [body, setBody] = useState('');
   const [image, setImage] = useState('');
   const [authorId, setAuthorId] = useState('');
+  const [showBanner, setShowBanner] = useState(false);
+  const [id, setId] = useState('');
 
   return (
     <ApolloProvider client={client}>
@@ -75,6 +77,33 @@ export default () => {
             <a css={{ color: 'hsl(200,20%,50%)', cursor: 'pointer' }}>{'< Go Back'}</a>
           </Link>
           <h1>New Post</h1>
+
+          {showBanner && (
+            <div
+              css={{
+                background: id ? '#90ee9061' : '#ee909061',
+                border: `1px solid ${id ? 'green' : 'red'}`,
+                color: id ? 'green' : 'red',
+                padding: 12,
+                marginBottom: 32,
+                borderRadius: 6,
+              }}
+            >
+              {id ? (
+                <span>
+                  <strong>Success!</strong> Post has been created.{' '}
+                  <a href={`/post?id=${id}`} css={{ color: 'green' }}>
+                    Check it out
+                  </a>
+                </span>
+              ) : (
+                <span>
+                  <strong>Whoops!</strong> Something has gone wrong
+                </span>
+              )}
+            </div>
+          )}
+
           <Query
             query={gql`
               {
@@ -91,9 +120,14 @@ export default () => {
               if (error) return <p>Error!</p>;
 
               return (
-                <Mutation mutation={ADD_POST}>
+                <Mutation
+                  mutation={ADD_POST}
+                  update={(cache, { data: { createPost } }) => {
+                    setId(createPost.id);
+                    setShowBanner(true);
+                  }}
+                >
                   {createPost => {
-                    console.log(image);
                     return (
                       <form
                         onSubmit={e => {
@@ -149,7 +183,6 @@ export default () => {
                             name="image"
                             // value={image}
                             onChange={event => {
-                              debugger;
                               setImage(event.target.files[0]);
                             }}
                           />
