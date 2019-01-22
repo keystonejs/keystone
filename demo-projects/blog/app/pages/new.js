@@ -3,8 +3,8 @@ import Link from 'next/link';
 import ApolloClient from 'apollo-client';
 import gql from 'graphql-tag';
 import { ApolloProvider, Mutation, Query } from 'react-apollo';
-import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { createUploadLink } from 'apollo-upload-client';
 import fetch from 'node-fetch';
 import { useState } from 'react';
 
@@ -16,7 +16,7 @@ import Layout from '../templates/layout';
 /** @jsx jsx */
 
 const client = new ApolloClient({
-  link: new HttpLink({ uri: '/admin/api', fetch: fetch }),
+  link: createUploadLink({ uri: '/admin/api', fetch: fetch }),
   cache: new InMemoryCache(),
 });
 
@@ -45,7 +45,7 @@ const ADD_POST = gql`
     $body: String!
     $authorId: ID!
     $posted: DateTime!
-    $file: Upload!
+    $image: Upload!
   ) {
     createPost(
       data: {
@@ -53,11 +53,10 @@ const ADD_POST = gql`
         body: $body
         author: { connect: { id: $authorId } }
         posted: $posted
-        file: $file
+        image: $image
       }
     ) {
       id
-      success
     }
   }
 `;
@@ -94,7 +93,7 @@ export default () => {
               return (
                 <Mutation mutation={ADD_POST}>
                   {createPost => {
-                    console.log(createPost);
+                    console.log(image);
                     return (
                       <form
                         onSubmit={e => {
@@ -148,9 +147,10 @@ export default () => {
                           <Input
                             type="file"
                             name="image"
-                            value={image}
+                            // value={image}
                             onChange={event => {
-                              setImage(event.target.value);
+                              debugger;
+                              setImage(event.target.files[0]);
                             }}
                           />
                         </FormGroup>

@@ -24,6 +24,7 @@
     "apollo-cache-inmemory": "^1.3.11",
     "apollo-client": "^2.4.7",
     "apollo-link-http": "^1.5.9",
+    "apollo-upload-client": "^9.0.0",
     "date-fns": "^1.29.0",
     "dotenv-safe": "^6.0.0",
     "graphql": "^14.0.2",

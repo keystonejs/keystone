@@ -42,7 +42,8 @@ const Post = ({ post }) => {
           <p>{post.body}</p>
           <div css={{ marginTop: '1em', borderTop: '1px solid hsl(200, 20%, 80%)' }}>
             <p css={{ fontSize: '0.8em', marginBottom: 0, color: 'hsl(200, 20%, 50%)' }}>
-              Posted by {post.author.name} on {format(post.posted, 'DD/MM/YYYY')}
+              Posted by {post.author ? post.author.name : 'someone'} on{' '}
+              {format(post.posted, 'DD/MM/YYYY')}
             </p>
           </div>
         </div>
