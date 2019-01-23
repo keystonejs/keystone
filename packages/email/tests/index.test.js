@@ -20,4 +20,14 @@ describe('email senders', () => {
     expect(text).toEqual('Foo is Awesome');
     expect(html).toEqual('<!DOCTYPE html><html><body><div>Foo is Awesome</div></body></html>');
   });
+
+  test('mjml', async () => {
+    const emailSender = require('../');
+
+    const mjmlEmailSender = emailSender.mjml({ root: `${__dirname}/mjml-views` });
+    const { html, text } = await mjmlEmailSender('view.jsx').render({ name: 'Foo' });
+
+    expect(text).toMatchSnapshot();
+    expect(html).toMatchSnapshot();
+  });
 });
