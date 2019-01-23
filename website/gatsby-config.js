@@ -47,6 +47,9 @@ async function getGatsbyConfig() {
         resolve: `gatsby-mdx`,
         options: {
           extensions: ['.mdx', '.md'],
+          globalScope: `import { Props } from '${require.resolve('./src/components/props')}'
+          export default { Props }
+          `,
           defaultLayouts: {
             default: require.resolve('./src/components/mdx-renderer.js'),
           },
