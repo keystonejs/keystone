@@ -5,6 +5,7 @@ import * as React from 'react';
 import { useMemo } from 'react';
 import { colors, gridSize } from '@arch-ui/theme';
 import ReactSelect, { components as reactSelectComponents } from 'react-select';
+import Input from './input';
 
 type OptionPrimitiveProps = {
   children: React.Node,
@@ -100,6 +101,7 @@ const defaultComponents = {
   Option: OptionPrimitive,
   DropdownIndicator: null,
   IndicatorSeparator: null,
+  Input,
 };
 
 type OptionsProps = {
