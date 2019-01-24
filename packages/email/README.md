@@ -21,6 +21,8 @@ There is a `jsx` renderer powered by `express-react-views`.
 
 Usage:
 
+`index.js`
+
 ```javascript
 const emailSender = require('@voussoir/email');
 
@@ -37,7 +39,76 @@ await jsxEmailSender('new-user.jsx').send(
 );
 ```
 
+`emails/new-user.jsx`
+
+```javascript
+const React = require('react');
+
+module.exports = class extends React.Component {
+  render() {
+    return (
+      <html>
+        <body>
+          <div>Hello {this.props.name}</div>
+        </body>
+      </html>
+    );
+  }
+};
+```
+
 _NOTE: The `jsx` renderer has a peer dependency on `react` & `react-dom`_.
+
+### mjml
+
+There is support for [`mjml-react`](https://github.com/wix-incubator/mjml-react)
+using the `mjml` renderer.
+
+Usage:
+
+`index.js`
+
+```javascript
+const emailSender = require('@voussoir/email');
+
+const mjmlEmailSender = emailSender.mjml({
+  // The directory containing the email templates
+  root: `${__dirname}/emails`,
+  // The transport to send the emails (see `keystone-email` docs)
+  transport: 'mailgun'
+});
+
+// NOTE: The `.jsx` extension is still used here
+await mjmlEmailSender('new-user.jsx').send(
+  { ... }, // renderer props
+  { ... }, // transport options (api keys, to/from, etc). See `keystone-email` docs
+);
+```
+
+`emails/new-user.jsx`
+
+```javascript
+const React = require('react');
+const { Mjml, MjmlBody, MjmlSection, MjmlColumn, MjmlText } = require('mjml-react');
+
+module.exports = class extends React.Component {
+  render() {
+    return (
+      <Mjml>
+        <MjmlBody width={500}>
+          <MjmlSection fullWidth backgroundColor="#efefef">
+            <MjmlColumn>
+              <MjmlText>Hello!</MjmlText>
+            </MjmlColumn>
+          </MjmlSection>
+        </MjmlBody>
+      </Mjml>
+    );
+  }
+};
+```
+
+_NOTE: The `mjml` renderer has a peer dependency on `react`, `react-dom`, & `mjml-react`_.
 
 ### Jade
 
