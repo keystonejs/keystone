@@ -1,12 +1,10 @@
 import Head from 'next/head';
 import Link from 'next/link';
 
-import ApolloClient from 'apollo-client';
+import withData from '../lib/apollo';
 import gql from 'graphql-tag';
-import { Mutation, ApolloProvider, Query } from 'react-apollo';
-import { HttpLink } from 'apollo-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import fetch from 'node-fetch';
+import React from 'react';
+import { Mutation, Query } from 'react-apollo';
 import { useState } from 'react';
 
 import { jsx } from '@emotion/core';
@@ -16,14 +14,6 @@ import Layout from '../templates/layout';
 import Header from '../components/header';
 
 /** @jsx jsx */
-
-const client = new ApolloClient({
-  link: new HttpLink({ uri: '/admin/api', fetch: fetch }),
-  cache: new InMemoryCache(),
-  onError: e => {
-    console.error(e.graphQLErrors);
-  },
-});
 
 const ADD_COMMENT = gql`
   mutation AddComment($body: String!, $author: ID!, $postId: ID!, $posted: DateTime!) {
@@ -35,6 +25,49 @@ const ADD_COMMENT = gql`
         posted: $posted
       }
     ) {
+      id
+      body
+      author {
+        name
+        avatar {
+          publicUrl
+        }
+      }
+      posted
+    }
+  }
+`;
+
+const ALL_QUERIES = gql`
+  query AllQueries($id: ID!) {
+    allPosts(where: { id: $id }) {
+      title
+      body
+      posted
+      id
+      image {
+        publicUrl
+      }
+      author {
+        name
+      }
+    }
+
+    allComments(where: { originalPost: { id: $id } }) {
+      id
+      body
+      author {
+        name
+        avatar {
+          publicUrl
+        }
+      }
+      posted
+    }
+
+    allUsers {
+      name
+      email
       id
     }
   }
@@ -51,6 +84,7 @@ const Comments = ({ data }) => (
     {data.allComments.length
       ? data.allComments.map(comment => (
           <div
+            key={comment.id}
             css={{
               marginBottom: 32,
               display: 'flex',
@@ -93,8 +127,21 @@ const AddComments = ({ users, postId }) => {
       <h2>Add new Comment</h2>
       <Mutation
         mutation={ADD_COMMENT}
-        update={() => {
-          location.reload();
+        update={(cache, { data: data }) => {
+          const { allComments, allUsers, allPosts } = cache.readQuery({
+            query: ALL_QUERIES,
+            variables: { id: postId },
+          });
+
+          cache.writeQuery({
+            query: ALL_QUERIES,
+            variables: { id: postId },
+            data: {
+              allPosts,
+              allUsers,
+              allComments: allComments.concat([data.createComment]),
+            },
+          });
         }}
       >
         {createComment => (
@@ -153,103 +200,78 @@ const AddComments = ({ users, postId }) => {
   );
 };
 
-export default ({
-  url: {
-    query: { id },
-  },
-}) => (
-  <ApolloProvider client={client}>
-    <Layout>
-      <Header />
-      <div css={{ margin: '48px 0' }}>
-        <Link href="/">
-          <a css={{ color: 'hsl(200,20%,50%)', cursor: 'pointer' }}>{'< Go Back'}</a>
-        </Link>
-        <Query
-          query={gql`
-            {
-              allPosts(where: { id: "${id}" }) {
-                  title
-                  body
-                  posted
-                  id
-                  image {
-                    publicUrl
-                  }
-                  author {
-                    name
-                  }
-              }
+class PostPage extends React.Component {
+  static getInitialProps({ query }) {
+    return { id: query.id };
+  }
+  render() {
+    const { id } = this.props;
+    console.log('rendering post', id);
+    return (
+      <Layout>
+        <Header />
+        <div css={{ margin: '48px 0' }}>
+          <Link href="/">
+            <a css={{ color: 'hsl(200,20%,50%)', cursor: 'pointer' }}>{'< Go Back'}</a>
+          </Link>
+          <Query query={ALL_QUERIES} variables={{ id }}>
+            {({ data, loading, error }) => {
+              console.log('query', loading, error);
+              if (loading) return <p>loading...</p>;
+              if (error) return <p>Error!</p>;
 
-              allComments(where: {originalPost: {id: "${id}"}}){
-                  body
-                  author {
-                    name
-                    avatar {
-                      publicUrl
-                    }
-                  }
-                  posted
-              }
+              const post = data.allPosts[0];
+              console.log('rendering post', post.title);
 
-              allUsers {
-                name
-                email
-                id
-              }
-            }`}
-        >
-          {({ data, loading, error }) => {
-            if (loading) return <p>loading...</p>;
-            if (error) return <p>Error!</p>;
-
-            const post = data.allPosts[0];
-
-            return (
-              <>
-                <div
-                  css={{
-                    background: 'white',
-                    margin: '24px 0',
-                    boxShadow: '0px 10px 20px hsla(200, 20%, 20%, 0.20)',
-                    marginBottom: 32,
-                    borderRadius: 6,
-                    overflow: 'hidden',
-                  }}
-                >
-                  <Head>
-                    <title>{post.title}</title>
-                  </Head>
-                  <img
-                    src={
-                      post.image ? post.image.publicUrl : 'https://picsum.photos/900/200/?random'
-                    }
-                    css={{ width: '100%' }}
-                  />
-                  <div css={{ padding: '1em' }}>
-                    <h1 css={{ marginTop: 0 }}>{post.title}</h1>
-                    <p>{post.body}</p>
-                    <div css={{ marginTop: '1em', borderTop: '1px solid hsl(200, 20%, 80%)' }}>
-                      <p
-                        css={{
-                          fontSize: '0.8em',
-                          marginBottom: 0,
-                          color: 'hsl(200, 20%, 50%)',
-                        }}
-                      >
-                        Posted by {post.author.name} on {format(post.posted, 'DD/MM/YYYY')}
-                      </p>
+              return (
+                <>
+                  <div
+                    css={{
+                      background: 'white',
+                      margin: '24px 0',
+                      boxShadow: '0px 10px 20px hsla(200, 20%, 20%, 0.20)',
+                      marginBottom: 32,
+                      borderRadius: 6,
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <Head>
+                      <title>{post.title}</title>
+                    </Head>
+                    <img
+                      src={
+                        post.image ? post.image.publicUrl : 'https://picsum.photos/900/200/?random'
+                      }
+                      css={{ width: '100%' }}
+                    />
+                    <div css={{ padding: '1em' }}>
+                      <h1 css={{ marginTop: 0 }}>{post.title}</h1>
+                      <p>{post.body}</p>
+                      <div css={{ marginTop: '1em', borderTop: '1px solid hsl(200, 20%, 80%)' }}>
+                        <p
+                          css={{
+                            fontSize: '0.8em',
+                            marginBottom: 0,
+                            color: 'hsl(200, 20%, 50%)',
+                          }}
+                        >
+                          Posted by {post.author.name} on {format(post.posted, 'DD/MM/YYYY')}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <Comments data={data} />
 
-                <AddComments postId={post.id} users={data.allUsers} />
-              </>
-            );
-          }}
-        </Query>
-      </div>
-    </Layout>
-  </ApolloProvider>
-);
+                  <Comments data={data} id={id} />
+
+                  <AddComments postId={post.id} users={data.allUsers} />
+                </>
+              );
+            }}
+          </Query>
+        </div>
+      </Layout>
+    );
+  }
+}
+
+export default withData(PostPage);

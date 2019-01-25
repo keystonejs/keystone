@@ -30,6 +30,7 @@
     "graphql": "^14.0.2",
     "graphql-tag": "^2.8.0",
     "next": "^7.0.2",
+    "next-apollo": "^2.0.7",
     "node-fetch": "^2.3.0",
     "parcel": "^1.11.0",
     "react": "16.7.0-alpha.2",
