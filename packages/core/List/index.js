@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 const pluralize = require('pluralize');
 
 const {
@@ -74,7 +75,7 @@ const opToType = {
   delete: 'mutation',
 };
 
-const mapNativeTypeToKeystonType = (type, listKey, fieldPath) => {
+const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
   if (!nativeTypeMap.has(type)) {
     return type;
   }
@@ -166,31 +167,30 @@ module.exports = class List {
       defaultAccess: this.defaultAccess.list,
     });
 
-    const sanitisedFieldsConfig = mapKeys(config.fields, (fieldConfig, path) => {
-      return {
-        ...fieldConfig,
-        type: mapNativeTypeToKeystonType(fieldConfig.type, key, path),
-      };
+    const sanitisedFieldsConfig = mapKeys(config.fields, (fieldConfig, path) => ({
+      ...fieldConfig,
+      type: mapNativeTypeToKeystoneType(fieldConfig.type, key, path),
+    }));
+    Object.values(sanitisedFieldsConfig).forEach(({ type }) => {
+      if (!type.adapters[adapter.name]) {
+        throw `Adapter type "${adapter.name}" does not support field type "${type.type}"`;
+      }
     });
 
-    this.fieldsByPath = {};
-    this.fields = Object.keys(sanitisedFieldsConfig).map(path => {
-      const { type, ...fieldSpec } = sanitisedFieldsConfig[path];
-      const implementation = type.implementation;
-      this.fieldsByPath[path] = new implementation(path, fieldSpec, {
-        getListByKey,
-        listKey: key,
-        listAdapter: this.adapter,
-        fieldAdapterClass: type.adapters[adapter.name],
-        defaultAccess: this.defaultAccess.field,
-      });
-      return this.fieldsByPath[path];
-    });
-
-    this.views = mapKeys(sanitisedFieldsConfig, (fieldConfig, path) =>
-      this.fieldsByPath[path].extendViews({
-        ...fieldConfig.type.views,
-      })
+    this.fieldsByPath = mapKeys(
+      sanitisedFieldsConfig,
+      ({ type, ...fieldSpec }, path) =>
+        new type.implementation(path, fieldSpec, {
+          getListByKey,
+          listKey: key,
+          listAdapter: this.adapter,
+          fieldAdapterClass: type.adapters[adapter.name],
+          defaultAccess: this.defaultAccess.field,
+        })
+    );
+    this.fields = Object.values(this.fieldsByPath);
+    this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
+      this.fieldsByPath[path].extendViews({ ...type.views })
     );
 
     this.hooksActions = {

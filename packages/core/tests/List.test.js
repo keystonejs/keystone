@@ -59,6 +59,11 @@ class MockAdapter {
   newListAdapter = () => new MockListAdapter();
 }
 
+Text.adapters['mock'] = {};
+Checkbox.adapters['mock'] = {};
+Float.adapters['mock'] = {};
+Relationship.adapters['mock'] = {};
+
 const context = {
   getListAccessControlForUser: () => true,
   getFieldAccessControlForUser: (listKey, fieldPath, existingItem) =>
