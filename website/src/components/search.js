@@ -8,6 +8,9 @@ import { colors } from '@arch-ui/theme';
 import { getResults } from '../utils/search';
 
 let renderOptionLabel = result => {
+  if (result.type === 'show-more') {
+    return <div css={{ color: colors.B.base }}>Show More</div>;
+  }
   return (
     <div>
       <span css={{ color: colors.B.base, textTransform: 'capitalize' }}>{result.title}</span>{' '}
@@ -19,7 +22,19 @@ let renderOptionLabel = result => {
 const Search = () => {
   let [query, setQuery] = useState('');
 
-  let results = useMemo(() => getResults(query), [query]);
+  let results = useMemo(
+    () => {
+      let _results = getResults(query);
+      if (_results.length !== 0) {
+        _results.push({
+          slug: '/search?q=' + encodeURIComponent(query),
+          type: 'show-more',
+        });
+      }
+      return _results;
+    },
+    [query]
+  );
 
   return (
     <Location>
