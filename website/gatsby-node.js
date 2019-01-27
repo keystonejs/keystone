@@ -50,6 +50,10 @@ exports.onCreateBabelConfig = ({ actions, stage }) => {
     name: `@babel/preset-flow`,
     stage,
   });
+  actions.setBabelPlugin({
+    name: `babel-plugin-extract-react-types`,
+    stage,
+  });
 };
 
 exports.onCreateWebpackConfig = ({ actions }) => {

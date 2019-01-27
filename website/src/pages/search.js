@@ -48,52 +48,63 @@ const Search = () => {
             <Header />
             <div
               css={{
-                maxWidth: 900,
-                margin: '0 auto',
-                padding: 16,
+                height: 'calc(100vh - 66px)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
               }}
             >
-              <h1>Search Results for '{query}'</h1>
+              <div>
+                <div
+                  css={{
+                    maxWidth: 900,
+                    margin: '0 auto',
+                    padding: 16,
+                  }}
+                >
+                  <h1>Search Results for '{query}'</h1>
 
-              <Input
-                type="text"
-                value={query}
-                onChange={event => {
-                  navigate(location.pathname + '?q=' + encodeURIComponent(event.target.value), {
-                    replace: true,
-                  });
-                }}
-                placeholder="Search"
-              />
-              <ul css={{ padding: 0 }}>
-                {results.map(result => (
-                  <li
-                    css={{
-                      padding: 10,
-                      borderBottom: `1px solid ${colors.B.A25}`,
-                      listStyle: 'none',
+                  <Input
+                    type="text"
+                    value={query}
+                    onChange={event => {
+                      navigate(location.pathname + '?q=' + encodeURIComponent(event.target.value), {
+                        replace: true,
+                      });
                     }}
-                    key={result.slug}
-                  >
-                    <div>
-                      <Link
-                        style={{
-                          fontSize: '1.25em',
-                          color: colors.B.base,
-                          textTransform: 'capitalize',
+                    placeholder="Search"
+                  />
+                  <ul css={{ padding: 0 }}>
+                    {results.map(result => (
+                      <li
+                        css={{
+                          padding: 10,
+                          borderBottom: `1px solid ${colors.B.A25}`,
+                          listStyle: 'none',
                         }}
-                        to={result.slug}
+                        key={result.slug}
                       >
-                        {result.title}
-                      </Link>
-                      <small style={{ color: 'grey' }}>({result.workspace})</small>
-                    </div>
-                    <p css={{ marginBottom: 0 }}>{result.preview}</p>
-                  </li>
-                ))}
-              </ul>
+                        <div>
+                          <Link
+                            style={{
+                              fontSize: '1.25em',
+                              color: colors.B.base,
+                              textTransform: 'capitalize',
+                            }}
+                            to={result.slug}
+                          >
+                            {result.title}
+                          </Link>
+                          <small style={{ color: 'grey' }}>({result.workspace})</small>
+                        </div>
+                        <p css={{ marginBottom: 0 }}>{result.preview}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <Footer />
             </div>
-            <Footer />
           </React.Fragment>
         );
       }}

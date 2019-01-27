@@ -79,9 +79,14 @@ const Layout = ({ children }) => (
             flex: '3 0px',
             order: 2,
           },
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
         }}
       >
-        <div css={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>{children}</div>
+        <div>
+          <div css={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>{children}</div>
+        </div>
         <Footer />
       </main>
     </div>
