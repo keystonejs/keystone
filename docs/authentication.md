@@ -44,4 +44,4 @@ authentication against the UI.
 ## Strategies
 
 Auth strategies are
-[documented in the core package](../packages/core/auth/README.md).
+[documented in the core package](../packages/core/auth/index.md).
