@@ -67,10 +67,8 @@ describe('CalendarDay Component - Functionality', () => {
   it(`can use arrows to set month`, () => {
     cy.get(getDateButtonSetTo(today)).click();
     cy.get(getMonthSelector(today)).scrollIntoView();
-    cy.get(`button:contains("Previous Month")`)
-      .click()
-      .click();
-    cy.get(`#ks-select-month`).should('have.value', `${subMonths(today, 2).getMonth()}`);
+    cy.get(`button:contains("Previous Month")`).click();
+    cy.get(`#ks-select-month`).should('have.value', `${subMonths(today, 1).getMonth()}`);
   });
 
   it(`can use 'Select' to set month`, () => {
