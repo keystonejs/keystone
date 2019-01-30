@@ -18,7 +18,7 @@ const lastOnline = '2018-08-16T11:08:18.886+10:00';
 
 const getDateButtonSetTo = date => `button:contains("${format(date, 'Do MMMM YYYY')}")`;
 const getDateTimeButtonSetTo = date => `button:contains("${format(date, 'MM/DD/YYYY h:mm A')}")`;
-const getDaySelector = date => `#ks-day-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
+const getDaySelector = date => `#ks-day-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}:not([disabled])`;
 const getMonthSelector = date => `#ks-month-${date.getMonth()}-${date.getFullYear()}`;
 
 const getCellFromSecondRow = index =>
