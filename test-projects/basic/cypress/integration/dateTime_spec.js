@@ -59,6 +59,7 @@ describe('CalendarDay Component - Functionality', () => {
     cy.get('button:contains("Set Date")')
       .first()
       .click();
+    cy.get(getDaySelector(today)).scrollIntoView();
     cy.get(getDaySelector(today)).click();
     cy.get('label:contains("Name")').click();
     cy.get(getDateButtonSetTo(today)).should('exist');

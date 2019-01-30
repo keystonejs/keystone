@@ -1,3 +1,7 @@
+## ATENTION
+
+This folder contains projects used for Cypress tests. You do not want to use these as starting points for your own project. You are better off using the demo projects for that, which are located in `/demo-projects`.
+
 ## Cypress Projects
 
 Each directory here is part of the Bolt monorepo, and represents a single
@@ -6,7 +10,7 @@ runnable project which tests can be run against.
 This is to help with unique setups (eg; testing mongo vs postgres, etc).
 
 Think very carefully before you create new projects, as you may find it's
-easier/faster/better to add a new List to an existing test projectt if possible.
+easier/faster/better to add a new List to an existing test project if possible.
 
 ### Environment Variables
 
