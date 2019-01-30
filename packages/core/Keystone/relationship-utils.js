@@ -31,47 +31,28 @@ function splitObject(input, filterFn) {
  *     {
  *       id: "abc123",
  *       title: "Foobar",
- *       author: {
- *         where: { ... }
- *       }
+ *       author: { where: { ... } }
  *     },
  *     {
  *       id: "def789",
  *       title: "Hello",
- *       author: {
- *         where: { ... }
- *       }
+ *       author: { where: { ... } }
  *     },
  *   ]
  * }
- *
  *
  * @returns {Object}
  * {
  *   data: {
  *     Posts: [
- *       {
- *         id: "abc123",
- *         title: "Foobar",
- *       },
- *       {
- *         id: "def789",
- *         title: "Hello",
- *       },
+ *       { id: "abc123", title: "Foobar" },
+ *       { id: "def789", title: "Hello" },
  *     ]
  *   },
  *   relationships: {
  *     Posts: {
- *       0: {
- *         author: {
- *           where: { ... }
- *         }
- *       },
- *       7: {
- *         author: {
- *           where: { ... }
- *         }
- *       },
+ *       0: { author: { where: { ... } } },
+ *       7: { author: { where: { ... } } },
  *     }
  *   }
  * }
@@ -179,16 +160,8 @@ const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
  * fields that have where clauses. ie;
  * {
  *   Posts: {
- *     0: {
- *       author: {
- *         where: { ... }
- *       }
- *     },
- *     7: {
- *       author: {
- *         where: { ... }
- *       }
- *     },
+ *     0: { author: { where: { ... } } },
+ *     7: { author: { where: { ... } } },
  *   }
  * }
  *
@@ -196,24 +169,12 @@ const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
  * created with no relationships. ie;
  * {
  *   Users: [
- *     {
- *       id: "456zyx",
- *       name: "Jess",
- *     },
- *     {
- *       id: "789wer",
- *       name: "Jed",
- *     },
+ *     { id: "456zyx", name: "Jess" },
+ *     { id: "789wer", name: "Jed" },
  *   ],
  *   Posts: [
- *     {
- *       id: "abc123",
- *       title: "Foobar",
- *     },
- *     {
- *       id: "def789",
- *       title: "Hello",
- *     },
+ *     { id: "abc123", title: "Foobar" },
+ *     { id: "def789", title: "Hello" },
  *   ]
  * }
  *
@@ -221,12 +182,8 @@ const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
  * ids of related items. ie;
  * {
  *   Posts: {
- *     0: {
- *       author: "456zyx",
- *     },
- *     7: {
- *       author: "789wer",
- *     },
+ *     0: { author: "456zyx" },
+ *     7: { author: "789wer" },
  *   }
  * }
  */
