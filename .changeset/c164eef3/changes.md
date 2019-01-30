@@ -1,0 +1,1 @@
+- Move findFieldAdapterForQuerySegment onto the BaseListAdapter
