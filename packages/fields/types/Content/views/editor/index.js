@@ -56,13 +56,8 @@ let stopPropagation = e => {
 // to use hooks inside of class components
 let Render = ({ children }) => children();
 
-function Stories({ value: editorState, onChange, blocks, className }) {
-  let schema = useMemo(
-    () => {
-      return getSchema(blocks);
-    },
-    [blocks]
-  );
+export default function ContentEditor({ value: editorState, onChange, blocks, className }) {
+  let schema = useMemo(() => getSchema(blocks), [blocks]);
 
   let plugins = useMemo(
     () => {
@@ -99,9 +94,7 @@ function Stories({ value: editorState, onChange, blocks, className }) {
         ref={setEditor}
         plugins={plugins}
         value={editorState}
-        onChange={({ value }) => {
-          onChange(value);
-        }}
+        onChange={onChange}
       />
       <AddBlock editor={editor} editorState={editorState} blocks={blocks} />
       <Popper placement="top" referenceElement={selectionReference}>
@@ -246,5 +239,3 @@ function Stories({ value: editorState, onChange, blocks, className }) {
     </div>
   );
 }
-
-export default Stories;

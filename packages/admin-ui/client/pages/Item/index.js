@@ -23,8 +23,9 @@ import { AutocompleteCaptor } from '@arch-ui/input';
 import { colors, gridSize } from '@arch-ui/theme';
 import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
 
-import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
+import { resolveAllKeys, mapKeys, arrayToObject } from '@voussoir/utils';
 import isEqual from 'lodash.isequal';
+import omitBy from 'lodash.omitby';
 
 // This import is loaded by the @voussoir/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
@@ -80,6 +81,7 @@ const ItemDetails = withRouter(
     state = {
       copyText: '',
       item: this.props.item,
+      evaluateOnSave: {},
       itemHasChanged: false,
       showCreateModal: false,
       showDeleteModal: false,
@@ -147,14 +149,24 @@ const ItemDetails = withRouter(
       this.hideConfirmResetMessage();
     };
     onChange = (field, value) => {
-      const { item } = this.state;
-      this.setState({
-        item: {
-          ...item,
-          [field.path]: value,
-        },
-        itemHasChanged: true,
-      });
+      // Lazy value evaluation on save
+      if (typeof value === 'function') {
+        this.setState(({ evaluateOnSave }) => ({
+          evaluateOnSave: {
+            ...evaluateOnSave,
+            [field.path]: value,
+          },
+          itemHasChanged: true,
+        }));
+      } else {
+        this.setState(({ item }) => ({
+          item: {
+            ...item,
+            [field.path]: value,
+          },
+          itemHasChanged: true,
+        }));
+      }
     };
 
     renderResetInterface = () => {
@@ -197,7 +209,7 @@ const ItemDetails = withRouter(
       );
     }
     onSave = () => {
-      const { item } = this.state;
+      const { item, evaluateOnSave } = this.state;
       const {
         list: { fields },
         onUpdate,
@@ -206,19 +218,34 @@ const ItemDetails = withRouter(
         item: initialData,
       } = this.props;
 
-      resolveAllKeys(
-        // Don't try to update anything that hasn't changed.
-        // This is particularly important for access control where a field
-        // may be `read: true, update: false`, so will appear in the item
-        // details, but is not editable, and would cause an error if a value
-        // was sent as part of the update query.
-        arrayToObject(
-          fields.filter(field => !isEqual(field.getValue(initialData), field.getValue(item))),
-          'path',
-          field => field.getValue(item)
-        )
-      )
-        .then(data => updateItem({ variables: { id: item.id, data } }))
+      const lazyItem = mapKeys(evaluateOnSave, field => field());
+
+      console.log({ evaluateOnSave, lazyItem });
+
+      // We've consumed the `lazy` data, so we want to clear it out now
+      this.setState({ evaluateOnSave: {} });
+
+      // Merge the lazily evaluated data and the item data together
+      const mergedItem = {
+        ...item,
+        ...lazyItem,
+      };
+
+      Promise.all([
+        // TODO: Memoize this as the `initialData` wont change unless the props
+        // change
+        resolveAllKeys(arrayToObject(fields, 'path', field => field.getValue(initialData))),
+        resolveAllKeys(arrayToObject(fields, 'path', field => field.getValue(mergedItem))),
+      ])
+        .then(([initialValues, currentValues]) => {
+          // Don't try to update anything that hasn't changed.
+          // This is particularly important for access control where a field
+          // may be `read: true, update: false`, so will appear in the item
+          // details, but is not editable, and would cause an error if a value
+          // was sent as part of the update query.
+          const data = omitBy(currentValues, (value, key) => isEqual(value, initialValues[key]));
+          return updateItem({ variables: { id: item.id, data } });
+        })
         .then(() => {
           const toastContent = (
             <div>

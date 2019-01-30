@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import Editor from './editor';
 import { Value } from 'slate';
 import { initialValue } from './editor/constants';
@@ -9,13 +9,14 @@ import * as paragraph from './editor/blocks/paragraph';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { inputStyles } from '@arch-ui/input';
 
+const editorSyles = inputStyles({ isMultiline: true });
+
 let ContentField = ({ field, item, onChange, autoFocus }) => {
-  const views = FieldTypes[field.list.key][field.path];
   let blocks = useMemo(
     () => {
       let defaultBlocks = [paragraph];
 
-      let customBlocks = views.blocks.map((block, i) => ({
+      let customBlocks = FieldTypes[field.list.key][field.path].blocks.map((block, i) => ({
         ...block,
         options: field.config.blockOptions[i],
       }));
@@ -53,30 +54,33 @@ let ContentField = ({ field, item, onChange, autoFocus }) => {
         return obj;
       }, {});
     },
-    [views]
+    [field.list.key, field.path]
   );
 
-  let serverValue = item[field.path];
-  let parsedValue;
-  if (serverValue) {
-    parsedValue = JSON.parse(serverValue);
-  } else {
-    parsedValue = initialValue;
-  }
-
-  let [value, setValue] = useState(() => Value.fromJSON(parsedValue));
+  const [value, setValue] = useState(() =>
+    Value.fromJSON(item[field.path] ? JSON.parse(item[field.path]) : initialValue)
+  );
 
   const htmlID = `ks-input-${field.path}`;
 
+  const saveDraft = useCallback(
+    draft => {
+      const contentChanged = value.document !== draft.value.document;
+      // Always reflect the latest state internally
+      setValue(draft.value);
+      // And if the data has changed, we send the change event for that
+      if (contentChanged) {
+        // We purposely only stringify when the content has changed, _and_ when
+        // the data is saved to avoid doing extra work when the user is only
+        // changing the selection, etc.
+        onChange(field, () => JSON.stringify(draft.value.toJS()));
+      }
+    },
+    [field.path, setValue, onChange]
+  );
+
   return (
-    <FieldContainer
-      onBlur={() => {
-        let stringified = JSON.stringify(value.toJS());
-        if (stringified !== serverValue) {
-          onChange(field, stringified);
-        }
-      }}
-    >
+    <FieldContainer>
       <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
       <FieldInput>
         {Object.values(blocks)
@@ -88,10 +92,10 @@ let ContentField = ({ field, item, onChange, autoFocus }) => {
             <Editor
               blocks={blocks}
               value={value}
-              onChange={setValue}
+              onChange={saveDraft}
               autoFocus={autoFocus}
               id={htmlID}
-              css={inputStyles({ isMultiline: true })}
+              css={editorSyles}
             />
           )}
       </FieldInput>
