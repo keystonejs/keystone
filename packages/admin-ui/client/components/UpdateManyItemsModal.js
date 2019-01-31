@@ -5,6 +5,7 @@ import Drawer from '@arch-ui/drawer';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
 import { omit } from '@voussoir/utils';
+import { Memoize } from './Memoize';
 
 import FieldTypes from '../FIELD_TYPES';
 
@@ -110,13 +111,17 @@ class UpdateManyModal extends Component {
           {selectedFields.map(field => {
             const { Field } = FieldTypes[list.key][field.path];
             return (
-              <Field
-                item={item}
-                field={field}
-                key={field.path}
-                onChange={this.onChange}
-                renderContext="dialog"
-              />
+              <Memoize deps={[item[field.path], field]}>
+                {() => (
+                  <Field
+                    item={item}
+                    field={field}
+                    key={field.path}
+                    onChange={this.onChange}
+                    renderContext="dialog"
+                  />
+                )}
+              </Memoize>
             );
           })}
         </Fragment>

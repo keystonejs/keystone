@@ -14,6 +14,7 @@ import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
+import { Memoize } from '../../components/Memoize';
 import Footer from './Footer';
 import { TriangleLeftIcon, CheckIcon, ClippyIcon, PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
@@ -313,15 +314,19 @@ const ItemDetails = withRouter(
             {list.fields.map((field, i) => {
               const { Field } = FieldTypes[list.key][field.path];
               return (
-                <Field
-                  autoFocus={!i}
-                  field={field}
-                  item={item}
-                  itemErrors={itemErrors}
-                  initialData={savedData}
-                  key={field.path}
-                  onChange={this.onChange}
-                />
+                <Memoize deps={[field, i, item[field.path], itemErrors, savedData]}>
+                  {() => (
+                    <Field
+                      autoFocus={!i}
+                      field={field}
+                      item={item}
+                      itemErrors={itemErrors}
+                      initialData={savedData}
+                      key={field.path}
+                      onChange={this.onChange}
+                    />
+                  )}
+                </Memoize>
               );
             })}
           </Form>
