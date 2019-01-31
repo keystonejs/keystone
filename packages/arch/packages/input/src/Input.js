@@ -1,7 +1,7 @@
 // @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { type AbstractComponent, forwardRef } from 'react';
+import { forwardRef } from 'react';
 
 import { buttonAndInputBase } from '@arch-ui/common';
 import { colors } from '@arch-ui/theme';
@@ -42,7 +42,7 @@ export const inputStyles = (props: InputProps = {}) => ({
 });
 
 type InputProps = { isMultiline?: boolean, disabled?: boolean };
-export const Input: AbstractComponent<InputProps, any> = forwardRef((props: InputProps, ref) => {
+export const Input = forwardRef<InputProps, any>((props: InputProps, ref) => {
   const Component = props.isMultiline ? 'textarea' : 'input';
   return <Component ref={ref} css={inputStyles(props)} {...props} />;
 });
