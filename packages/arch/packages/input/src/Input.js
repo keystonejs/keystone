@@ -10,7 +10,7 @@ import { alpha } from '@arch-ui/color-utils';
 // Basic Input
 // ------------------------------
 
-export const inputStyles = (props = {}) => ({
+export const inputStyles = (props: InputProps = {}) => ({
   ...buttonAndInputBase,
   backgroundColor: props.disabled ? colors.N10 : 'white',
   borderColor: colors.N20,
@@ -42,10 +42,7 @@ export const inputStyles = (props = {}) => ({
 });
 
 type InputProps = { isMultiline?: boolean, disabled?: boolean };
-export const Input: AbstractComponent<
-  InputProps,
-  HTMLInputElement | HTMLTextAreaElement
-> = forwardRef((props: InputProps, ref) => {
+export const Input: AbstractComponent<InputProps, any> = forwardRef((props: InputProps, ref) => {
   const Component = props.isMultiline ? 'textarea' : 'input';
   return <Component ref={ref} css={inputStyles(props)} {...props} />;
 });
