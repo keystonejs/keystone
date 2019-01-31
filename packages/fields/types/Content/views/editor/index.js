@@ -56,7 +56,7 @@ let stopPropagation = e => {
 // to use hooks inside of class components
 let Render = ({ children }) => children();
 
-function Stories({ value: editorState, onChange, blocks }) {
+function Stories({ value: editorState, onChange, blocks, className }) {
   let schema = useMemo(
     () => {
       return getSchema(blocks);
@@ -93,7 +93,7 @@ function Stories({ value: editorState, onChange, blocks }) {
   let [editor, setEditor] = useStateWithEqualityCheck(null);
   let containerRef = useRef(null);
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className={className}>
       <Editor
         schema={schema}
         ref={setEditor}

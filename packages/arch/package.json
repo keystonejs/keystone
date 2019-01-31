@@ -6,7 +6,8 @@
   "author": "Joss Mackison",
   "license": "MIT",
   "scripts": {
-    "start": "cd ./www && yarn develop"
+    "start": "cd ./www && yarn develop",
+    "build": "echo 'noop - see the Keystone package.json#build script'"
   },
   "dependencies": {
     "@emotion/core": "^10.0.4",
