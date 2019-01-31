@@ -1,0 +1,1 @@
+- Explicitly check whether field types are supported by the adapter
