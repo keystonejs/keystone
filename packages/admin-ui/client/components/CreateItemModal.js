@@ -9,6 +9,7 @@ import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 
 import FieldTypes from '../FIELD_TYPES';
+import { Memoize } from './Memoize';
 
 const Body = styled.div({
   marginBottom: gridSize,
@@ -88,14 +89,17 @@ class CreateItemModal extends Component {
           {list.fields.map(field => {
             const { Field } = FieldTypes[list.key][field.path];
             return (
-              <Field
-                item={item}
-                field={field}
-                key={field.path}
-                itemErrors={[] /* TODO: Permission query results */}
-                onChange={this.onChange}
-                renderContext="dialog"
-              />
+              <Memoize deps={[item[field.path], field]} key={field.path}>
+                {() => (
+                  <Field
+                    item={item}
+                    field={field}
+                    itemErrors={[] /* TODO: Permission query results */}
+                    onChange={this.onChange}
+                    renderContext="dialog"
+                  />
+                )}
+              </Memoize>
             );
           })}
         </Body>

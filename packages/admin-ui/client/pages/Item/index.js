@@ -22,6 +22,7 @@ import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
+import { Memoize } from '../../components/Memoize';
 import Footer from './Footer';
 import { TriangleLeftIcon, CheckIcon, ClippyIcon, PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
@@ -374,23 +375,26 @@ const ItemDetails = withRouter(
           </FlexGroup>
           <Form>
             <AutocompleteCaptor />
-            {list.fields.map((field, index) => {
-              const { Field } = FieldTypes[list.key][field.path];
-              return (
-                <FieldWrapper
-                  autoFocus={!index}
-                  list={list}
-                  item={item}
-                  field={field}
-                  itemErrors={itemErrors}
-                  savedData={savedData}
-                  key={field.path}
-                  Field={Field}
-                  setItemChanged={this.setItemChanged}
-                  ref={this.fieldRefs[field.path]}
-                />
-              );
-            })}
+            {list.fields.map((field, index) => (
+              <Memoize
+                deps={[field, index, item[field.path], itemErrors, savedData]}
+                key={field.path}
+              >
+                {() => (
+                  <FieldWrapper
+                    autoFocus={!index}
+                    list={list}
+                    item={item}
+                    field={field}
+                    itemErrors={itemErrors}
+                    savedData={savedData}
+                    Field={FieldTypes[list.key][field.path].Field}
+                    setItemChanged={this.setItemChanged}
+                    ref={this.fieldRefs[field.path]}
+                  />
+                )}
+              </Memoize>
+            ))}
           </Form>
 
           <Footer
