@@ -1,6 +1,14 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment } from 'react';
+import {
+  Component,
+  Fragment,
+  createRef,
+  forwardRef,
+  useImperativeMethods,
+  useCallback,
+  useState,
+} from 'react';
 import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
 import { Link, withRouter } from 'react-router-dom';
@@ -76,17 +84,66 @@ const TitleLink = ({ children, ...props }) => (
 
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
+// There can be serious performance issues with re-rendering the entire item
+// every time any state changes anywhere. To avoid that, we get imperative!
+// This wrapper captures state changes, then makes the values available upon
+// request (ie; onSave), avoiding the re-renders of the sibling / parent
+// elements.
+// Why not use shouldComponentUpdate? Because the `Field`s aren't pure - they
+// are uncontrolled components.
+const FieldWrapper = forwardRef(
+  ({ autoFocus, list, item, field, itemErrors, savedData, Field, setItemChanged }, ref) => {
+    const [value, setValue] = useState(item[field.path]);
+    const [psuedoItem, setPsuedoItem] = useState(item);
+
+    // memoize an onChange callback
+    const onChange = useCallback(
+      (field, data) => {
+        setValue(data);
+        setPsuedoItem({
+          ...item,
+          [field.path]: data,
+        });
+        setItemChanged(true);
+      },
+      [setValue, setPsuedoItem, setItemChanged]
+    );
+
+    // Expose the `.getValue()` method which returns the value based on the
+    // current state.
+    useImperativeMethods(ref, () => ({
+      getValue: () => value,
+    }));
+
+    return (
+      <Field
+        autoFocus={autoFocus}
+        item={psuedoItem}
+        field={field}
+        value={value}
+        itemErrors={itemErrors}
+        initialData={savedData}
+        onChange={onChange}
+      />
+    );
+  }
+);
+
 const ItemDetails = withRouter(
   class ItemDetails extends Component {
-    state = {
-      copyText: '',
-      item: this.props.item,
-      evaluateOnSave: {},
-      itemHasChanged: false,
-      showCreateModal: false,
-      showDeleteModal: false,
-      resetRequested: false,
-    };
+    constructor(props) {
+      super(props);
+      this.state = {
+        copyText: '',
+        item: props.item,
+        itemHasChanged: false,
+        showCreateModal: false,
+        showDeleteModal: false,
+        resetRequested: false,
+      };
+
+      this.fieldRefs = arrayToObject(props.list.fields, 'path', () => createRef());
+    }
     componentDidMount() {
       this.mounted = true;
       document.addEventListener('keydown', this.onKeyDown, false);
@@ -148,24 +205,9 @@ const ItemDetails = withRouter(
       });
       this.hideConfirmResetMessage();
     };
-    onChange = (field, value) => {
-      // Lazy value evaluation on save
-      if (typeof value === 'function') {
-        this.setState(({ evaluateOnSave }) => ({
-          evaluateOnSave: {
-            ...evaluateOnSave,
-            [field.path]: value,
-          },
-          itemHasChanged: true,
-        }));
-      } else {
-        this.setState(({ item }) => ({
-          item: {
-            ...item,
-            [field.path]: value,
-          },
-          itemHasChanged: true,
-        }));
+    setItemChanged = changed => {
+      if (changed && changed !== this.state.itemHasChanged) {
+        this.setState({ itemHasChanged: true });
       }
     };
 
@@ -209,7 +251,7 @@ const ItemDetails = withRouter(
       );
     }
     onSave = () => {
-      const { item, evaluateOnSave } = this.state;
+      const { item } = this.state;
       const {
         list: { fields },
         onUpdate,
@@ -218,18 +260,13 @@ const ItemDetails = withRouter(
         item: initialData,
       } = this.props;
 
-      const lazyItem = mapKeys(evaluateOnSave, field => field());
-
-      console.log({ evaluateOnSave, lazyItem });
-
-      // We've consumed the `lazy` data, so we want to clear it out now
-      this.setState({ evaluateOnSave: {} });
-
-      // Merge the lazily evaluated data and the item data together
-      const mergedItem = {
-        ...item,
-        ...lazyItem,
-      };
+      const mergedItem = mapKeys(this.fieldRefs, ref => {
+        const value = ref.current.getValue();
+        if (typeof value === 'function') {
+          return value();
+        }
+        return value;
+      });
 
       Promise.all([
         // TODO: Memoize this as the `initialData` wont change unless the props
@@ -337,17 +374,20 @@ const ItemDetails = withRouter(
           </FlexGroup>
           <Form>
             <AutocompleteCaptor />
-            {list.fields.map((field, i) => {
+            {list.fields.map((field, index) => {
               const { Field } = FieldTypes[list.key][field.path];
               return (
-                <Field
-                  autoFocus={!i}
-                  field={field}
+                <FieldWrapper
+                  autoFocus={!index}
+                  list={list}
                   item={item}
+                  field={field}
                   itemErrors={itemErrors}
-                  initialData={savedData}
+                  savedData={savedData}
                   key={field.path}
-                  onChange={this.onChange}
+                  Field={Field}
+                  setItemChanged={this.setItemChanged}
+                  ref={this.fieldRefs[field.path]}
                 />
               );
             })}
