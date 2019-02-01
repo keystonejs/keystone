@@ -12,8 +12,8 @@ export default class TextField extends Component {
     onChange(field, event.target.checked);
   };
   render() {
-    const { autoFocus, field, item } = this.props;
-    const checked = item[field.path] || false;
+    const { autoFocus, field, value } = this.props;
+    const checked = value || false;
     const htmlID = `ks-input-${field.path}`;
 
     return (

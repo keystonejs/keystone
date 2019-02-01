@@ -9,8 +9,8 @@ import Popout from '@arch-ui/popout';
 import { Button } from '@arch-ui/button';
 import SketchPicker from 'react-color/lib/Sketch';
 
-const ColorField = ({ field, item, itemErrors, onChange }) => {
-  const value = item[field.path] || '';
+const ColorField = ({ field, value: serverValue, itemErrors, onChange }) => {
+  const value = serverValue || '';
   const htmlID = `ks-input-${field.path}`;
   const canRead = !(
     itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'

@@ -13,8 +13,8 @@ export default class SelectField extends Component {
     onChange(field, option ? option.value : null);
   };
   render() {
-    const { autoFocus, field, item, renderContext, itemErrors } = this.props;
-    const value = field.options.find(i => i.value === item[field.path]);
+    const { autoFocus, field, value: serverValue, renderContext, itemErrors } = this.props;
+    const value = field.options.find(i => i.value === serverValue);
     const htmlID = `ks-input-${field.path}`;
     const canRead = !(
       itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'

@@ -14,8 +14,7 @@ export default class TextField extends Component {
   };
 
   render() {
-    const { autoFocus, field, item } = this.props;
-    const value = item[field.path] || '';
+    const { autoFocus, field, value } = this.props;
     const htmlID = `ks-input-${field.path}`;
 
     return (

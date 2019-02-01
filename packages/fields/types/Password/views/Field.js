@@ -39,8 +39,8 @@ export default class PasswordField extends Component {
   };
   render() {
     const { isEditing, inputPassword, inputConfirm, showInputValue } = this.state;
-    const { autoFocus, field, item } = this.props;
-    const value = item[field.path] || '';
+    const { autoFocus, field, value: serverValue } = this.props;
+    const value = serverValue || '';
     const htmlID = `ks-input-${field.path}`;
 
     return (

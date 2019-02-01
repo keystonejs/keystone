@@ -39,7 +39,7 @@ export default class RelationshipFilterView extends Component<Props> {
       <EventCatcher>
         <RelationshipSelect
           field={field}
-          item={null}
+          value={null}
           itemErrors={{}}
           renderContext={null}
           htmlID={htmlID}

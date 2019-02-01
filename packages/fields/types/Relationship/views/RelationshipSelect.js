@@ -13,7 +13,6 @@ type Props = {
   innerRef?: React.Ref<*>,
   autoFocus?: boolean,
   field: Object,
-  item: Object | null,
   itemErrors: Object,
   renderContext: string | null,
   htmlID: string,
@@ -45,12 +44,12 @@ const RelationshipSelect = ({
   innerRef,
   autoFocus,
   field,
-  item,
   itemErrors,
   renderContext,
   htmlID,
   onChange,
   isMulti,
+  value,
 }: Props) => {
   const [search, setSearch] = useState('');
   const refList = field.getRefList();
@@ -86,17 +85,16 @@ const RelationshipSelect = ({
                   : [];
 
               let currentValue = null;
-              if (item && canRead) {
-                const fieldValue = item[field.path];
+              if (value !== null && canRead) {
                 if (isMulti) {
-                  currentValue = (Array.isArray(fieldValue) ? fieldValue : []).map(val => ({
+                  currentValue = (Array.isArray(value) ? value : []).map(val => ({
                     label: val._label_,
                     value: val,
                   }));
-                } else if (fieldValue) {
+                } else if (value) {
                   currentValue = {
-                    label: fieldValue._label_,
-                    value: fieldValue,
+                    label: value._label_,
+                    value: value,
                   };
                 }
               }

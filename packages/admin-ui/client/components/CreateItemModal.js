@@ -89,7 +89,7 @@ class CreateItemModal extends Component {
             const { Field } = FieldTypes[list.key][field.path];
             return (
               <Field
-                item={item}
+                value={item[field.path]}
                 field={field}
                 key={field.path}
                 itemErrors={[] /* TODO: Permission query results */}

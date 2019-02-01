@@ -13,8 +13,8 @@ export default class TextField extends Component {
     onChange(field, event.target.value);
   };
   render() {
-    const { autoFocus, field, item, itemErrors } = this.props;
-    const value = item[field.path] || '';
+    const { autoFocus, field, itemErrors, value: serverValue } = this.props;
+    const value = serverValue || '';
     const htmlID = `ks-input-${field.path}`;
     const canRead = !(
       itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'

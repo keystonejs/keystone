@@ -316,8 +316,8 @@ const ItemDetails = withRouter(
                 <Field
                   autoFocus={!i}
                   field={field}
-                  item={item}
                   itemErrors={itemErrors}
+                  value={item[field.path]}
                   initialData={savedData}
                   key={field.path}
                   onChange={this.onChange}

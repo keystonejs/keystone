@@ -171,9 +171,8 @@ export default class StarsField extends React.Component {
   };
 
   render() {
-    const { field, item } = this.props;
+    const { field, item, value } = this.props;
     const { starCount } = field.config;
-    const value = item[field.path];
     const htmlID = `ks-input-${field.path}`;
 
     return (

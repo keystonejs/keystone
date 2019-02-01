@@ -65,9 +65,9 @@ export default class FileField extends Component {
   };
   constructor(props) {
     super(props);
-    const { field, item } = props;
+    const { value } = props;
 
-    this.originalFile = item[field.path];
+    this.originalFile = value;
     const changeStatus = this.originalFile ? 'stored' : 'empty';
 
     this.state = {
@@ -150,11 +150,11 @@ export default class FileField extends Component {
   // ==============================
 
   getFile = () => {
-    const { field, item } = this.props;
+    const { value } = this.props;
     const { changeStatus } = this.state;
 
     const isRemoved = changeStatus === 'removed';
-    const file = isRemoved ? this.originalFile : item[field.path];
+    const file = isRemoved ? this.originalFile : value;
     const type = file && file['__typename'] ? 'server' : 'client';
 
     return { file, type };

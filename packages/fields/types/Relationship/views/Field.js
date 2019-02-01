@@ -19,7 +19,7 @@ export default class RelationshipField extends Component {
     }
   };
   render() {
-    const { autoFocus, field, item, itemErrors, renderContext } = this.props;
+    const { autoFocus, field, value, itemErrors, renderContext } = this.props;
     const { many } = field.config;
     const htmlID = `ks-input-${field.path}`;
     const canRead = !(
@@ -49,7 +49,7 @@ export default class RelationshipField extends Component {
             autoFocus={autoFocus}
             isMulti={many}
             field={field}
-            item={item}
+            value={value}
             itemErrors={itemErrors}
             renderContext={renderContext}
             htmlID={htmlID}

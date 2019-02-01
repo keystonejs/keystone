@@ -23,13 +23,12 @@ export default class TextField extends Component {
   };
 
   render() {
-    const { autoFocus, field, item } = this.props;
+    const { autoFocus, field, value } = this.props;
     const {
       // currency,
       // digits,
       symbol,
     } = field.config;
-    const value = item[field.path];
     const htmlID = `ks-input-${field.path}`;
 
     return (

@@ -111,8 +111,8 @@ class UpdateManyModal extends Component {
             const { Field } = FieldTypes[list.key][field.path];
             return (
               <Field
-                item={item}
                 field={field}
+                value={item[field.path]}
                 key={field.path}
                 onChange={this.onChange}
                 renderContext="dialog"

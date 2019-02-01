@@ -14,11 +14,10 @@ type Props = {
   onChange: (field: Object, value: string | null) => mixed,
   autoFocus: boolean,
   field: Object,
-  item: Object,
+  value: string,
 };
 
-const CalendarDayField = ({ autoFocus, field, onChange, item }: Props) => {
-  const value = item[field.path];
+const CalendarDayField = ({ autoFocus, field, onChange, value }: Props) => {
   const parsedDate = value ? parseDate(value) : { date: '', time: '', offset: '' };
   const defaultDate = new Date();
 
