@@ -63,7 +63,7 @@ type FieldProps<Value> = {
   autoFocus: boolean,
   field: Field,
   value: Value,
-  canRead: boolean,
+  error: Error,
   onChange: Value => mixed,
   renderContext: 'dialog' | 'page',
 };
