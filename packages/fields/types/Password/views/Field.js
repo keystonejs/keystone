@@ -18,11 +18,10 @@ export default class PasswordField extends Component {
     inputConfirm: '',
   };
   onChange = ({ target }) => {
-    const { field, onChange } = this.props;
     const { name, value } = target;
 
     this.setState({ [name]: value }, () => {
-      if (name === 'inputPassword') onChange(field, value);
+      if (name === 'inputPassword') this.props.onChange(value);
     });
   };
   toggleInterface = () => {

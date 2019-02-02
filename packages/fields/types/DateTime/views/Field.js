@@ -11,7 +11,7 @@ import { gridSize } from '@arch-ui/theme';
 import { parseDate, stringifyDate } from './utils';
 
 type Props = {
-  onChange: (field: Object, value: string | null) => mixed,
+  onChange: (value: string | null) => mixed,
   autoFocus: boolean,
   field: Object,
   value: string,
@@ -29,15 +29,15 @@ const CalendarDayField = ({ autoFocus, field, onChange, value }: Props) => {
   const defaultParsedDate = value ? parseDate(value) : parseDate(defaultDate.toISOString());
 
   let handleDayChange = day => {
-    onChange(field, stringifyDate({ ...defaultParsedDate, date: format(day, 'YYYY-MM-DD') }));
+    onChange(stringifyDate({ ...defaultParsedDate, date: format(day, 'YYYY-MM-DD') }));
   };
 
   let handleTimeChange = event => {
-    onChange(field, stringifyDate({ ...defaultParsedDate, time: event.target.value }));
+    onChange(stringifyDate({ ...defaultParsedDate, time: event.target.value }));
   };
 
   let handleOffsetChange = offset => {
-    onChange(field, stringifyDate({ ...defaultParsedDate, offset }));
+    onChange(stringifyDate({ ...defaultParsedDate, offset }));
   };
 
   const { date, time, offset } = parsedDate;

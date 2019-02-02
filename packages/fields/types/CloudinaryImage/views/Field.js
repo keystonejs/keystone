@@ -84,10 +84,8 @@ export default class FileField extends Component {
   // ==============================
 
   onCancel = () => {
-    const { field, onChange } = this.props;
-
     // revert to the original file if available
-    onChange(field, this.originalFile);
+    this.props.onChange(this.originalFile);
 
     this.setState({
       changeStatus: this.originalFile ? 'stored' : 'empty',
@@ -96,14 +94,12 @@ export default class FileField extends Component {
     });
   };
   onRemove = () => {
-    const { field, onChange } = this.props;
-
     this.setState({
       changeStatus: 'removed',
       errorMessage: null,
     });
 
-    onChange(field, null);
+    this.props.onChange(null);
   };
   onChange = ({
     target: {
@@ -113,7 +109,7 @@ export default class FileField extends Component {
   }) => {
     if (!file) return; // bail if the user cancels from the file browser
 
-    const { errorMessage, field, onChange } = this.props;
+    const { errorMessage, onChange } = this.props;
 
     // basic validity check
     if (!validity.valid) {
@@ -138,7 +134,7 @@ export default class FileField extends Component {
       oldImagePath: this.getImagePath(), // used during FileReader processing
     });
 
-    onChange(field, file);
+    onChange(file);
     this.getDataURI(file);
   };
   openFileBrowser = () => {

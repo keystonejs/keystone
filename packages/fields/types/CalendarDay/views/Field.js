@@ -21,7 +21,7 @@ export default class CalendarDayField extends Component {
       getYear(value) <= field.config.yearRangeTo &&
       getYear(value) >= field.config.yearRangeFrom
     ) {
-      onChange(field, value);
+      onChange(value);
     }
   };
 

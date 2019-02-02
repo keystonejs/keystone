@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, useMemo, useCallback } from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
@@ -7,6 +7,8 @@ import Select from '@arch-ui/select';
 import { omit } from '@voussoir/utils';
 
 import FieldTypes from '../FIELD_TYPES';
+
+let Render = ({ children }) => children();
 
 class UpdateManyModal extends Component {
   constructor(props) {
@@ -39,15 +41,6 @@ class UpdateManyModal extends Component {
       case 'Enter':
         return this.onUpdate();
     }
-  };
-  onChange = (field, value) => {
-    const { item } = this.state;
-    this.setState({
-      item: {
-        ...item,
-        [field.path]: value,
-      },
-    });
   };
   handleSelect = selected => {
     const { list } = this.props;
@@ -110,13 +103,29 @@ class UpdateManyModal extends Component {
           {selectedFields.map(field => {
             const { Field } = FieldTypes[list.key][field.path];
             return (
-              <Field
-                field={field}
-                value={item[field.path]}
-                key={field.path}
-                onChange={this.onChange}
-                renderContext="dialog"
-              />
+              <Render key={field.path}>
+                {() => {
+                  let onChange = useCallback(value => {
+                    this.setState(({ item }) => ({
+                      item: {
+                        ...item,
+                        [field.path]: value,
+                      },
+                    }));
+                  });
+                  return useMemo(
+                    () => (
+                      <Field
+                        field={field}
+                        value={item[field.path]}
+                        onChange={onChange}
+                        renderContext="dialog"
+                      />
+                    ),
+                    [field, item[field.path], onChange]
+                  );
+                }}
+              </Render>
             );
           })}
         </Fragment>

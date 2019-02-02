@@ -72,7 +72,7 @@ let ContentField = ({ field, value: serverValue, onChange, autoFocus }) => {
       onBlur={() => {
         let stringified = JSON.stringify(value.toJS());
         if (stringified !== serverValue) {
-          onChange(field, stringified);
+          onChange(stringified);
         }
       }}
     >

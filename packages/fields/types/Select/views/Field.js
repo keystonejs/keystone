@@ -9,8 +9,7 @@ import { colors } from '@arch-ui/theme';
 
 export default class SelectField extends Component {
   onChange = option => {
-    const { field, onChange } = this.props;
-    onChange(field, option ? option.value : null);
+    this.props.onChange(option ? option.value : null);
   };
   render() {
     const { autoFocus, field, value: serverValue, renderContext, itemErrors } = this.props;

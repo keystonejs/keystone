@@ -166,8 +166,7 @@ import Stars from './Stars';
 
 export default class StarsField extends React.Component {
   handleChange = newValue => {
-    const { field, onChange } = this.props;
-    onChange(field, newValue);
+    this.props.onChange(newValue);
   };
 
   render() {

@@ -80,7 +80,7 @@ const ColorField = ({ field, value: serverValue, itemErrors, onChange }) => {
             noAlpha
             color={value}
             onChange={({ hex }) => {
-              onChange(field, hex);
+              onChange(hex);
             }}
           />
         </Popout>

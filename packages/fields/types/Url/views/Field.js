@@ -9,8 +9,7 @@ import { colors } from '@arch-ui/theme';
 
 export default class UrlField extends Component {
   onChange = event => {
-    const { field, onChange } = this.props;
-    onChange(field, event.target.value);
+    this.props.onChange(event.target.value);
   };
   render() {
     const { autoFocus, field, value: serverValue, itemErrors } = this.props;

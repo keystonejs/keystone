@@ -5,8 +5,7 @@ import { Input } from '@arch-ui/input';
 
 export default class PasswordField extends Component {
   onChange = event => {
-    const { field, onChange } = this.props;
-    onChange(field, event.target.value);
+    this.props.onChange(event.target.value);
   };
   render() {
     const { field, value } = this.props;
