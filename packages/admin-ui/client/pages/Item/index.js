@@ -323,11 +323,10 @@ const ItemDetails = withRouter(
                           field={field}
                           itemErrors={itemErrors}
                           value={item[field.path]}
-                          initialData={savedData}
                           onChange={onChange}
                         />
                       ),
-                      [i, field, itemErrors, item[field.path], savedData]
+                      [i, field, itemErrors, item[field.path]]
                     );
                   }}
                 </Render>

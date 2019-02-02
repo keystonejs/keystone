@@ -62,9 +62,8 @@ type CellProps<Value> = {
 type FieldProps<Value> = {
   autoFocus: boolean,
   field: Field,
-  item: Object,
-  initialData: Object,
+  value: Value,
   itemErrors: Object,
-  onChange: (Field, Value) => mixed,
+  onChange: Value => mixed,
 };
 ```
