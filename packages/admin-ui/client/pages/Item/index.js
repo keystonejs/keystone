@@ -321,13 +321,13 @@ const ItemDetails = withRouter(
                         <Field
                           autoFocus={!i}
                           field={field}
-                          itemErrors={itemErrors}
+                          error={itemErrors[field.path]}
                           value={item[field.path]}
                           onChange={onChange}
                           renderContext="page"
                         />
                       ),
-                      [i, field, itemErrors, item[field.path]]
+                      [i, field, itemErrors[field.path], itemErrors, item[field.path]]
                     );
                   }}
                 </Render>

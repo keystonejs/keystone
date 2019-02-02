@@ -12,12 +12,10 @@ export default class TextField extends Component {
     this.props.onChange(event.target.value);
   };
   render() {
-    const { autoFocus, field, itemErrors, value: serverValue } = this.props;
+    const { autoFocus, field, error, value: serverValue } = this.props;
     const value = serverValue || '';
     const htmlID = `ks-input-${field.path}`;
-    const canRead = !(
-      itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
-    );
+    const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
 
     return (
       <FieldContainer>
@@ -31,10 +29,7 @@ export default class TextField extends Component {
         >
           {field.label}{' '}
           {!canRead ? (
-            <ShieldIcon
-              title={itemErrors[field.path].message}
-              css={{ color: colors.N20, marginRight: '1em' }}
-            />
+            <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
           ) : null}
         </FieldLabel>
         <FieldInput>
@@ -43,7 +38,7 @@ export default class TextField extends Component {
             autoFocus={autoFocus}
             type="text"
             value={canRead ? value : undefined}
-            placeholder={canRead ? undefined : itemErrors[field.path].message}
+            placeholder={canRead ? undefined : error.message}
             onChange={this.onChange}
             id={htmlID}
           />

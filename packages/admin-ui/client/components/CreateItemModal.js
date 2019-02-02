@@ -97,7 +97,8 @@ class CreateItemModal extends Component {
                         autoFocus={!i}
                         value={item[field.path]}
                         field={field}
-                        itemErrors={[] /* TODO: Permission query results */}
+                        /* TODO: Permission query results */
+                        // error={}
                         onChange={onChange}
                         renderContext="dialog"
                       />

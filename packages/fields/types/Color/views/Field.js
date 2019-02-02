@@ -9,12 +9,10 @@ import Popout from '@arch-ui/popout';
 import { Button } from '@arch-ui/button';
 import SketchPicker from 'react-color/lib/Sketch';
 
-const ColorField = ({ field, value: serverValue, itemErrors, onChange }) => {
+const ColorField = ({ field, value: serverValue, error, onChange }) => {
   const value = serverValue || '';
   const htmlID = `ks-input-${field.path}`;
-  const canRead = !(
-    itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
-  );
+  const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
 
   const target = (
     <Button variant="ghost">
@@ -63,10 +61,7 @@ const ColorField = ({ field, value: serverValue, itemErrors, onChange }) => {
       >
         {field.label}{' '}
         {!canRead ? (
-          <ShieldIcon
-            title={itemErrors[field.path].message}
-            css={{ color: colors.N20, marginRight: '1em' }}
-          />
+          <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
         ) : null}
       </FieldLabel>
       <FieldInput>

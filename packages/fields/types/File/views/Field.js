@@ -215,16 +215,14 @@ export default class FileField extends Component {
   };
 
   render() {
-    const { autoFocus, field, statusMessage, itemErrors } = this.props;
+    const { autoFocus, field, statusMessage, error } = this.props;
     const { changeStatus, errorMessage } = this.state;
 
     const { file } = this.getFile();
     const imagePath = this.getImagePath();
     const showStatusMessage = ['removed', 'updated'].includes(changeStatus);
     const htmlID = `ks-input-${field.path}`;
-    const canRead = !(
-      itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
-    );
+    const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
 
     return (
       <FieldContainer>
@@ -238,10 +236,7 @@ export default class FileField extends Component {
         >
           {field.label}{' '}
           {!canRead ? (
-            <ShieldIcon
-              title={itemErrors[field.path].message}
-              css={{ color: colors.N20, marginRight: '1em' }}
-            />
+            <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
           ) : null}
         </FieldLabel>
         <FieldInput>

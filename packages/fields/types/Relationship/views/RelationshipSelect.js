@@ -13,7 +13,7 @@ type Props = {
   innerRef?: React.Ref<*>,
   autoFocus?: boolean,
   field: Object,
-  itemErrors: Object,
+  error?: Error,
   renderContext: string | null,
   htmlID: string,
   onChange: Function,
@@ -44,7 +44,7 @@ const RelationshipSelect = ({
   innerRef,
   autoFocus,
   field,
-  itemErrors,
+  error: serverError,
   renderContext,
   htmlID,
   onChange,
@@ -58,9 +58,8 @@ const RelationshipSelect = ({
     `(first: ${initalItemsToLoad}, search: $search, skip: $skip)`
   )}${refList.countQuery(`(search: $search)`)}}`;
 
-  const canRead = !(
-    itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
-  );
+  const canRead = !(serverError instanceof Error && serverError.name === 'AccessDeniedError');
+
   const selectProps = renderContext === 'dialog' ? { menuShouldBlockScroll: true } : null;
 
   return (
@@ -158,7 +157,10 @@ const RelationshipSelect = ({
                   components={selectComponents}
                   getOptionValue={option => option.value.id}
                   value={currentValue}
-                  placeholder={canRead ? undefined : itemErrors[field.path].message}
+                  placeholder={
+                    // $FlowFixMe
+                    canRead ? undefined : serverError.message
+                  }
                   options={options}
                   onChange={onChange}
                   id={`react-select-${htmlID}`}

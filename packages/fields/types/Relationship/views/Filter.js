@@ -40,7 +40,6 @@ export default class RelationshipFilterView extends Component<Props> {
         <RelationshipSelect
           field={field}
           value={null}
-          itemErrors={{}}
           renderContext={null}
           htmlID={htmlID}
           onChange={this.handleChange}
