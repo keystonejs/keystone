@@ -65,5 +65,6 @@ type FieldProps<Value> = {
   value: Value,
   itemErrors: Object,
   onChange: Value => mixed,
+  renderContext: 'dialog' | 'page',
 };
 ```

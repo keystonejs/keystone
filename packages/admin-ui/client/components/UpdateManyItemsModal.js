@@ -100,7 +100,7 @@ class UpdateManyModal extends Component {
               />
             </FieldInput>
           </FieldContainer>
-          {selectedFields.map(field => {
+          {selectedFields.map((field, i) => {
             const { Field } = FieldTypes[list.key][field.path];
             return (
               <Render key={field.path}>
@@ -116,13 +116,14 @@ class UpdateManyModal extends Component {
                   return useMemo(
                     () => (
                       <Field
+                        autoFocus={!i}
                         field={field}
                         value={item[field.path]}
                         onChange={onChange}
                         renderContext="dialog"
                       />
                     ),
-                    [field, item[field.path], onChange]
+                    [i, field, item[field.path], onChange]
                   );
                 }}
               </Render>

@@ -324,6 +324,7 @@ const ItemDetails = withRouter(
                           itemErrors={itemErrors}
                           value={item[field.path]}
                           onChange={onChange}
+                          renderContext="page"
                         />
                       ),
                       [i, field, itemErrors, item[field.path]]

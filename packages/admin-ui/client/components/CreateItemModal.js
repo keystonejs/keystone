@@ -78,7 +78,7 @@ class CreateItemModal extends Component {
       >
         <Body>
           <AutocompleteCaptor />
-          {list.fields.map(field => {
+          {list.fields.map((field, i) => {
             const { Field } = FieldTypes[list.key][field.path];
             return (
               <Render key={field.path}>
@@ -94,6 +94,7 @@ class CreateItemModal extends Component {
                   return useMemo(
                     () => (
                       <Field
+                        autoFocus={!i}
                         value={item[field.path]}
                         field={field}
                         itemErrors={[] /* TODO: Permission query results */}
@@ -101,7 +102,7 @@ class CreateItemModal extends Component {
                         renderContext="dialog"
                       />
                     ),
-                    [item[field.path], field, onChange]
+                    [i, item[field.path], field, onChange]
                   );
                 }}
               </Render>
