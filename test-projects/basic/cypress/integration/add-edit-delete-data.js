@@ -32,19 +32,6 @@ describe('Adding data', () => {
         cy.get(`#${item}`).type(data[item]);
       });
 
-      const d = new Date();
-      d.setFullYear(2018);
-      d.setMonth(11);
-      d.setDate(10);
-
-      if (url === '/admin/users') {
-        cy.get('#ks-input-dob').click();
-        cy.get(`#ks-daypicker-dob #ks-day-${d.getDate()}-${d.getMonth()}-${d.getFullYear()}`)
-          .last()
-          .click({ force: true });
-        cy.get('#ks-input-dob').click();
-      }
-
       cy.get('form[role="dialog"] button[appearance="create"]').click();
 
       cy.location('pathname').should('match', new RegExp(`${url}/.+`));
@@ -52,9 +39,6 @@ describe('Adding data', () => {
       Object.keys(data).forEach(item => {
         cy.get(`#${item}`).should('have.value', data[item]);
       });
-      if (url === '/admin/users') {
-        cy.get('#ks-input-dob').should('contain', format(d, 'Do MMMM YYYY'));
-      }
     });
   });
 
