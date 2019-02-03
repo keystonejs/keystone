@@ -5,7 +5,7 @@ import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { Button } from '@arch-ui/button';
-import { DayPicker } from '@arch-ui/day-picker';
+import { TextDayPicker } from '@arch-ui/day-picker';
 import Popout from '@arch-ui/popout';
 import { gridSize } from '@arch-ui/theme';
 
@@ -15,11 +15,12 @@ const TODAY = new Date();
 export default class CalendarDayField extends Component {
   handleSelectedChange = date => {
     const { field, onChange } = this.props;
-    const value = format(date, FORMAT);
+    const value = date === null ? null : format(date, FORMAT);
     if (
-      getYear(value).toString().length <= 4 &&
-      getYear(value) <= field.config.yearRangeTo &&
-      getYear(value) >= field.config.yearRangeFrom
+      value === null ||
+      (getYear(value).toString().length <= 4 &&
+        getYear(value) <= field.config.yearRangeTo &&
+        getYear(value) >= field.config.yearRangeFrom)
     ) {
       onChange(field, value);
     }
@@ -29,29 +30,17 @@ export default class CalendarDayField extends Component {
     const { autoFocus, field, item } = this.props;
     const value = item[field.path];
     const htmlID = `ks-input-${field.path}`;
-    const target = (
-      <Button autoFocus={autoFocus} id={htmlID} variant="ghost">
-        {value ? format(value, this.props.field.config.format || 'Do MMM YYYY') : 'Set Date'}
-      </Button>
-    );
 
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
         <FieldInput>
-          <Popout target={target} width={280}>
-            <div css={{ padding: gridSize }} id={`ks-daypicker-${field.path}`}>
-              <DayPicker
-                autoFocus={autoFocus}
-                startCurrentDateAt={value ? parse(value) : TODAY}
-                selectedDate={value ? parse(value) : null}
-                onSelectedChange={this.handleSelectedChange}
-                yearRangeFrom={field.config.yearRangeFrom}
-                yearRangeTo={field.config.yearRangeTo}
-                yearPickerType={field.config.yearPickerType}
-              />
-            </div>
-          </Popout>
+          <TextDayPicker
+            id={`ks-daypicker-${field.path}`}
+            autoFocus={autoFocus}
+            date={value ? parse(value) : null}
+            onChange={this.handleSelectedChange}
+          />
         </FieldInput>
       </FieldContainer>
     );
