@@ -21,7 +21,7 @@
         "@mdx-js/tag": "^0.16.8",
         "@reach/router": "^1.2.1",
         "@sindresorhus/slugify": "^0.6.0",
-        "babel-plugin-extract-react-types": "^0.0.3",
+        "babel-plugin-extract-react-types": "^0.0.5",
         "bolt": "^0.22.1",
         "gatsby": "^2.0.111",
         "gatsby-mdx": "^0.3.5",
