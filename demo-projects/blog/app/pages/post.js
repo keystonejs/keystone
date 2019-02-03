@@ -1,7 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
 
-import withData from '../lib/apollo';
 import gql from 'graphql-tag';
 import React from 'react';
 import { Mutation, Query } from 'react-apollo';
@@ -274,4 +273,4 @@ class PostPage extends React.Component {
   }
 }
 
-export default withData(PostPage);
+export default PostPage;

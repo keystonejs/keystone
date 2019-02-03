@@ -29,6 +29,7 @@
     "dotenv-safe": "^6.0.0",
     "graphql": "^14.0.2",
     "graphql-tag": "^2.8.0",
+    "isomorphic-unfetch": "^3.0.0",
     "next": "^7.0.2",
     "next-apollo": "^2.0.7",
     "node-fetch": "^2.3.0",
