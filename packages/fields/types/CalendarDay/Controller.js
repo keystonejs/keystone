@@ -12,7 +12,11 @@ export default class CalendarDayController extends FieldController {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
   getValue = data => {
-    return data[this.config.path];
+    let value = data[this.config.path];
+    if (typeof value !== 'string') {
+      return null;
+    }
+    return value.trim() || null;
   };
   getFilterTypes = () => [
     {
