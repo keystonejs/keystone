@@ -34,11 +34,9 @@ export default function DeleteManyModal({ isOpen, itemIds, list, onClose, onDele
                 variant="ghost"
                 onClick={() => {
                   if (loading) return;
-                  onDelete(
-                    deleteItems({
-                      variables: { ids: itemIds },
-                    })
-                  );
+                  deleteItems({
+                    variables: { ids: itemIds },
+                  }).then(onDelete);
                 }}
               >
                 Delete
