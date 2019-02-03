@@ -4,13 +4,9 @@ import { parse, format, getYear } from 'date-fns';
 import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
-import { Button } from '@arch-ui/button';
 import { TextDayPicker } from '@arch-ui/day-picker';
-import Popout from '@arch-ui/popout';
-import { gridSize } from '@arch-ui/theme';
 
 const FORMAT = 'YYYY-MM-DD';
-const TODAY = new Date();
 
 export default class CalendarDayField extends Component {
   handleSelectedChange = date => {
