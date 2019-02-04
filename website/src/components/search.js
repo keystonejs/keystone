@@ -1,15 +1,18 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import Select from '@arch-ui/select';
 import { Location } from '@reach/router';
 import { colors } from '@arch-ui/theme';
+import debounce from 'lodash.debounce';
 
 import { getResults } from '../utils/search';
 
+const SEARCH_DEBOUNCE = 200;
+
 let renderOptionLabel = result => {
   if (result.type === 'show-more') {
-    return <div css={{ color: colors.B.base }}>Show More</div>;
+    return <div css={{ color: colors.B.base }}>&gt; Show {result.totalNotShown} More</div>;
   }
   return (
     <div>
@@ -20,18 +23,41 @@ let renderOptionLabel = result => {
 };
 
 const Search = () => {
+  let [input, setInput] = useState('');
   let [query, setQuery] = useState('');
+  let [results, setResults] = useState([]);
 
-  let results = useMemo(
+  const setQueryDebounced = useCallback(debounce(value => setQuery(value), SEARCH_DEBOUNCE), [
+    setQuery,
+  ]);
+
+  useEffect(
     () => {
-      let _results = getResults(query);
-      if (_results.length !== 0) {
-        _results.push({
-          slug: '/search?q=' + encodeURIComponent(query),
-          type: 'show-more',
-        });
+      let cancelled = false;
+
+      if (!query) {
+        return;
       }
-      return _results;
+
+      getResults(query, { limit: 10 }).then(queryResults => {
+        if (cancelled) {
+          return;
+        }
+
+        if (queryResults.total !== 0 && queryResults.results.length !== queryResults.total) {
+          queryResults.results.push({
+            slug: '/search?q=' + encodeURIComponent(query),
+            type: 'show-more',
+            totalNotShown: queryResults.total - queryResults.results.length,
+          });
+        }
+
+        setResults(queryResults.results);
+      });
+
+      return () => {
+        cancelled = true;
+      };
     },
     [query]
   );
@@ -44,11 +70,13 @@ const Search = () => {
             placeholder="Search..."
             options={results}
             value={null}
-            inputValue={query}
+            inputValue={input}
             onInputChange={value => {
-              setQuery(value);
+              setInput(value);
+              setQueryDebounced(value);
             }}
             onChange={result => {
+              setQueryDebounced.cancel();
               navigate(result.slug);
               setQuery('');
             }}
@@ -56,6 +84,7 @@ const Search = () => {
             filterOption={() => true}
             formatOptionLabel={renderOptionLabel}
             getOptionValue={result => result.slug}
+            noOptionsMessage={() => (query ? 'No results found' : 'Enter a search term')}
           />
         );
       }}

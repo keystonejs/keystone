@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'gatsby';
 import { jsx, Global } from '@emotion/core';
 import { Input } from '@arch-ui/input';
 import { Location as _Location } from '@reach/router';
+import debounce from 'lodash.debounce';
 
 /** @jsx jsx */
 
@@ -11,6 +12,8 @@ import { colors } from '@arch-ui/theme';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { getResults } from '../utils/search';
+
+const SEARCH_DEBOUNCE = 200;
 
 let Render = ({ children }) => children();
 
@@ -22,8 +25,37 @@ const Search = () => {
   return (
     <Location>
       {({ location, navigate }) => {
-        let query = useMemo(() => new URL(location.href).searchParams.get('q'), [location.href]);
-        let results = useMemo(() => getResults(query), [query]);
+        let [input, setInput] = useState(new URL(location.href).searchParams.get('q'));
+        let [query, setQuery] = useState(input);
+        let [results, setResults] = useState({ results: [] });
+
+        const setQueryDebounced = useCallback(
+          debounce(value => {
+            setQuery(value);
+            navigate(location.pathname + '?q=' + encodeURIComponent(value), {
+              replace: true,
+            });
+          }, SEARCH_DEBOUNCE),
+          [setQuery]
+        );
+
+        useEffect(
+          () => {
+            let cancelled = false;
+
+            getResults(query).then(queryResults => {
+              if (cancelled) {
+                return;
+              }
+              setResults(queryResults);
+            });
+
+            return () => {
+              cancelled = true;
+            };
+          },
+          [query]
+        );
 
         return (
           <React.Fragment>
@@ -66,16 +98,15 @@ const Search = () => {
 
                   <Input
                     type="text"
-                    value={query}
+                    value={input}
                     onChange={event => {
-                      navigate(location.pathname + '?q=' + encodeURIComponent(event.target.value), {
-                        replace: true,
-                      });
+                      setInput(event.target.value);
+                      setQueryDebounced(event.target.value);
                     }}
                     placeholder="Search"
                   />
                   <ul css={{ padding: 0 }}>
-                    {results.map(result => (
+                    {results.results.map(result => (
                       <li
                         css={{
                           padding: 10,

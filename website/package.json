@@ -33,6 +33,7 @@
         "gatsby-remark-prismjs": "^3.2.4",
         "gatsby-source-filesystem": "^2.0.20",
         "gatsby-transformer-remark": "^2.2.3",
+        "lodash.debounce": "^4.0.8",
         "lodash.get": "^4.4.2",
         "lodash.snakecase": "^4.1.1",
         "preconstruct": "^0.0.41",
