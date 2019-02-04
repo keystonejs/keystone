@@ -62,9 +62,9 @@ type CellProps<Value> = {
 type FieldProps<Value> = {
   autoFocus: boolean,
   field: Field,
-  item: Object,
-  initialData: Object,
-  itemErrors: Object,
-  onChange: (Field, Value) => mixed,
+  value: Value,
+  error: Error,
+  onChange: Value => mixed,
+  renderContext: 'dialog' | 'page',
 };
 ```

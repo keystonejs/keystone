@@ -122,9 +122,9 @@ describe('Querying with relationship filters', () => {
       ]);
 
       const users = await Promise.all([
-        create('User', { feed: [posts[0], posts[1]], name: sampleOne(alphanumGenerator) }),
-        create('User', { feed: [posts[2]], name: sampleOne(alphanumGenerator) }),
-        create('User', { feed: [posts[3]], name: sampleOne(alphanumGenerator) }),
+        create('User', { feed: [posts[0].id, posts[1].id], name: sampleOne(alphanumGenerator) }),
+        create('User', { feed: [posts[2].id], name: sampleOne(alphanumGenerator) }),
+        create('User', { feed: [posts[3].id], name: sampleOne(alphanumGenerator) }),
       ]);
 
       return { posts, users };
@@ -238,8 +238,8 @@ describe('Querying with relationship filters', () => {
       ]);
 
       const users = await Promise.all([
-        create('User', { feed: [posts[0], posts[1]], name: sampleOne(alphanumGenerator) }),
-        create('User', { feed: [posts[0]], name: sampleOne(alphanumGenerator) }),
+        create('User', { feed: [posts[0].id, posts[1].id], name: sampleOne(alphanumGenerator) }),
+        create('User', { feed: [posts[0].id], name: sampleOne(alphanumGenerator) }),
         create('User', { feed: [], name: sampleOne(alphanumGenerator) }),
       ]);
 

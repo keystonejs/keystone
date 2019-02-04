@@ -18,7 +18,7 @@ const getIDs = async keystone => {
   const IDs = {};
   await keystone.lists['test'].adapter.findAll().then(data => {
     data.forEach(entry => {
-      IDs[entry.name] = entry._id.toString();
+      IDs[entry.name] = entry.id;
     });
   });
   return IDs;

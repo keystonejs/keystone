@@ -9,7 +9,7 @@ import * as paragraph from './editor/blocks/paragraph';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { inputStyles } from '@arch-ui/input';
 
-let ContentField = ({ field, item, onChange, autoFocus }) => {
+let ContentField = ({ field, value: serverValue, onChange, autoFocus }) => {
   const views = FieldTypes[field.list.key][field.path];
   let blocks = useMemo(
     () => {
@@ -56,7 +56,6 @@ let ContentField = ({ field, item, onChange, autoFocus }) => {
     [views]
   );
 
-  let serverValue = item[field.path];
   let parsedValue;
   if (serverValue) {
     parsedValue = JSON.parse(serverValue);
@@ -73,7 +72,7 @@ let ContentField = ({ field, item, onChange, autoFocus }) => {
       onBlur={() => {
         let stringified = JSON.stringify(value.toJS());
         if (stringified !== serverValue) {
-          onChange(field, stringified);
+          onChange(stringified);
         }
       }}
     >

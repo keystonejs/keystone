@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment } from 'react';
+import { Component, Fragment, useMemo, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
 import { Link, withRouter } from 'react-router-dom';
@@ -29,6 +29,8 @@ import isEqual from 'lodash.isequal';
 // This import is loaded by the @voussoir/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
 import FieldTypes from '../../FIELD_TYPES';
+
+let Render = ({ children }) => children();
 
 const ItemId = styled.div({
   color: colors.N30,
@@ -145,16 +147,6 @@ const ItemDetails = withRouter(
         itemHasChanged: false,
       });
       this.hideConfirmResetMessage();
-    };
-    onChange = (field, value) => {
-      const { item } = this.state;
-      this.setState({
-        item: {
-          ...item,
-          [field.path]: value,
-        },
-        itemHasChanged: true,
-      });
     };
 
     renderResetInterface = () => {
@@ -313,15 +305,35 @@ const ItemDetails = withRouter(
             {list.fields.map((field, i) => {
               const { Field } = FieldTypes[list.key][field.path];
               return (
-                <Field
-                  autoFocus={!i}
-                  field={field}
-                  item={item}
-                  itemErrors={itemErrors}
-                  initialData={savedData}
-                  key={field.path}
-                  onChange={this.onChange}
-                />
+                <Render key={field.path}>
+                  {() => {
+                    let onChange = useCallback(
+                      value => {
+                        this.setState(({ item }) => ({
+                          item: {
+                            ...item,
+                            [field.path]: value,
+                          },
+                          itemHasChanged: true,
+                        }));
+                      },
+                      [field]
+                    );
+                    return useMemo(
+                      () => (
+                        <Field
+                          autoFocus={!i}
+                          field={field}
+                          error={itemErrors[field.path]}
+                          value={item[field.path]}
+                          onChange={onChange}
+                          renderContext="page"
+                        />
+                      ),
+                      [i, field, itemErrors[field.path], item[field.path]]
+                    );
+                  }}
+                </Render>
               );
             })}
           </Form>
