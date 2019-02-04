@@ -1,17 +1,14 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { parse, format, getYear } from 'date-fns';
+import { getYear } from 'date-fns';
 import { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { TextDayPicker } from '@arch-ui/day-picker';
 
-const FORMAT = 'YYYY-MM-DD';
-
 export default class CalendarDayField extends Component {
-  handleSelectedChange = date => {
+  handleSelectedChange = value => {
     const { field, onChange } = this.props;
-    const value = date === null ? null : format(date, FORMAT);
     if (
       value === null ||
       (getYear(value).toString().length <= 4 &&
@@ -33,7 +30,7 @@ export default class CalendarDayField extends Component {
           <TextDayPicker
             id={`ks-daypicker-${field.path}`}
             autoFocus={autoFocus}
-            date={value ? parse(value) : null}
+            date={value}
             onChange={this.handleSelectedChange}
           />
         </FieldInput>
