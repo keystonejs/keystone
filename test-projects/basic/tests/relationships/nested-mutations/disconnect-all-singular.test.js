@@ -170,10 +170,10 @@ describe('with access control', () => {
     test(
       'has no effect when using disconnectAll',
       keystoneMongoTest(setupKeystone, async ({ server: { server }, create, findById }) => {
-        const groupContent = sampleOne(alphanumGenerator);
+        const groupName = sampleOne(alphanumGenerator);
 
         // Create an item to link against
-        const createGroup = await create('GroupNoRead', { content: groupContent });
+        const createGroup = await create('GroupNoRead', { name: groupName });
 
         // Create an item to update
         const createEvent = await create('EventToGroupNoRead', {

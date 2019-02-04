@@ -41,9 +41,7 @@ describe('uniqueness', () => {
       });
 
       expect(queryUser2.body).toHaveProperty('errors.0.message');
-      expect(queryUser2.body.errors[0].message).toEqual(
-        expect.stringMatching(/duplicate key error/)
-      );
+      expect(queryUser2.body.errors[0].message).toEqual(expect.stringMatching(/duplicate key/));
     })
   );
 
@@ -61,9 +59,7 @@ describe('uniqueness', () => {
       });
 
       expect(queryUser.body).toHaveProperty('errors.0.message');
-      expect(queryUser.body.errors[0].message).toEqual(
-        expect.stringMatching(/duplicate key error/)
-      );
+      expect(queryUser.body.errors[0].message).toEqual(expect.stringMatching(/duplicate key/));
     })
   );
 
