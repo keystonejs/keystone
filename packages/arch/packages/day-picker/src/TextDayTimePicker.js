@@ -18,20 +18,20 @@ type Props = {
   onChange: (string | null) => mixed,
 };
 
+function formatDateTime(date) {
+  // why are we using moment when it's so large and provides a mutable API?
+  // because chrono uses it and consistency is nice and
+  // will probably make bugs with conversion less likely
+  return date === null ? '' : moment.parseZone(date).format('h:mm A dddd Do MMMM YYYY Z');
+}
+
 export let TextDayTimePicker = ({ date, onChange, ...props }: Props) => {
   let [value, setValue] = useState('');
   let ref = useRef(null);
 
   useEffect(
     () => {
-      if (date === null) {
-        setValue('');
-      } else {
-        // why are we using moment when it's so large and provides a mutable API?
-        // because chrono uses it and consistency is nice and
-        // will probably make bugs with conversion less likely
-        setValue(moment.parseZone(date).format('h:mm A dddd Do MMMM YYYY Z'));
-      }
+      setValue(formatDateTime(date));
     },
     [date]
   );
@@ -42,34 +42,9 @@ export let TextDayTimePicker = ({ date, onChange, ...props }: Props) => {
       ref={ref}
       placeholder="Enter a date and time..."
       onBlur={() => {
-        let [parsedDate] = chrono.parse(value);
-        if (parsedDate === undefined) {
-          if (date === null) {
-            // if the new date is null and the previous one was null
-            // we want to set the value so that the invalid date is removed
-            // even though the actual value didn't change
-            setValue('');
-          } else {
-            onChange(null);
-          }
-          return;
-        }
-        let dateMoment = parsedDateToMoment(parsedDate);
-
-        let newDate = dateMoment.toISOString(
-          // passing true here keeps the offset in the iso string rather than
-          // convert it to UTC which is the default to align with native JS Dates
-          true
-        );
-
-        if (newDate === date) {
-          // if the new date is the same as the old date
-          // we want to set the value so that it's formatted nicely
-          // even though the actual value didn't change
-          setValue(dateMoment.format('h:mm A dddd Do MMMM YYYY Z'));
-        } else {
-          onChange(newDate);
-        }
+        let parsedDate = parseDate(value);
+        onChange(parsedDate);
+        setValue(formatDateTime(parsedDate));
       }}
       onChange={event => {
         setValue(event.target.value);
@@ -78,6 +53,19 @@ export let TextDayTimePicker = ({ date, onChange, ...props }: Props) => {
     />
   );
 };
+
+function parseDate(value) {
+  let [parsedDate] = chrono.parse(value);
+  if (parsedDate === undefined) {
+    return null;
+  }
+  let dateMoment = parsedDateToMoment(parsedDate);
+  return dateMoment.toISOString(
+    // passing true here keeps the offset in the iso string rather than
+    // convert it to UTC which is the default to align with native JS Dates
+    true
+  );
+}
 
 function parsedDateToMoment(parsedDate) {
   // a copy of https://github.com/wanasit/chrono/blob/fe8db4e5e5f9b44215f96958c811f806458013e9/src/result.js#L102-L122
