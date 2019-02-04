@@ -223,7 +223,7 @@ export default class FileField extends Component {
   };
 
   render() {
-    const { autoFocus, field, statusMessage, canRead, error } = this.props;
+    const { autoFocus, field, statusMessage, error } = this.props;
     const { changeStatus, errorMessage } = this.state;
 
     const { file } = this.getFile();
