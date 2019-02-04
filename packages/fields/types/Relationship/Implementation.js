@@ -115,14 +115,10 @@ class Relationship extends Implementation {
         [this.path]: (item, _, context) => {
           // The field may have already been filled in during an early DB lookup
           // (ie; joining when doing a filter)
-          const id = item[this.path] && item[this.path]._id ? item[this.path]._id : item[this.path];
-
-          if (!id) {
+          if (item[this.path] === null) {
             return null;
           }
-
-          const filteredQueryArgs = { where: { id: id.toString() } };
-
+          const filteredQueryArgs = { where: { id: item[this.path].toString() } };
           // We do a full query to ensure things like access control are applied
           return refList
             .listQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName)
@@ -138,8 +134,8 @@ class Relationship extends Implementation {
           .map(value => {
             // The field may have already been filled in during an early DB lookup
             // (ie; joining when doing a filter)
-            if (value && value._id) {
-              return value._id;
+            if (value && value.id) {
+              return value.id;
             }
 
             return value;
