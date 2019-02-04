@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const inflection = require('inflection');
+const pSettle = require('p-settle');
 const { escapeRegExp, pick, getType, mapKeys, mapKeyNames } = require('@voussoir/utils');
 
 const {
@@ -98,6 +99,11 @@ class MongooseAdapter extends BaseKeystoneAdapter {
       // For the case where both are set, the expected behaviour is for it to be
       // overwritten.
       { useNewUrlParser: true, ...adapterConnectOptions, dbName }
+    );
+  }
+  async postConnect() {
+    return await pSettle(
+      Object.values(this.listAdapters).map(listAdapter => listAdapter.postConnect())
     );
   }
 
