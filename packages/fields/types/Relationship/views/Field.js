@@ -13,18 +13,16 @@ export default class RelationshipField extends Component {
     const { field, onChange } = this.props;
     const { many } = field.config;
     if (many) {
-      onChange(field, option.map(i => i.value));
+      onChange(option.map(i => i.value));
     } else {
-      onChange(field, option ? option.value : null);
+      onChange(option ? option.value : null);
     }
   };
   render() {
-    const { autoFocus, field, item, itemErrors, renderContext } = this.props;
+    const { autoFocus, field, value, renderContext, error } = this.props;
     const { many } = field.config;
     const htmlID = `ks-input-${field.path}`;
-    const canRead = !(
-      itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
-    );
+    const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
 
     return (
       <FieldContainer>
@@ -38,10 +36,7 @@ export default class RelationshipField extends Component {
         >
           {field.label}{' '}
           {!canRead ? (
-            <ShieldIcon
-              title={itemErrors[field.path].message}
-              css={{ color: colors.N20, marginRight: '1em' }}
-            />
+            <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
           ) : null}
         </FieldLabel>
         <FieldInput>
@@ -49,8 +44,8 @@ export default class RelationshipField extends Component {
             autoFocus={autoFocus}
             isMulti={many}
             field={field}
-            item={item}
-            itemErrors={itemErrors}
+            value={value}
+            error={error}
             renderContext={renderContext}
             htmlID={htmlID}
             onChange={this.onChange}

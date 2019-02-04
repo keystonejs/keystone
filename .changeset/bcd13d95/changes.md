@@ -1,0 +1,5 @@
+- Simplify Field component api
+  - Replace item prop with value prop which is equal to item[field.path]
+  - Replace itemErrors prop with error prop which is equal to itemErrors[field.path]
+  - Change onChange prop so that it only accepts the value rather than the field and the value
+  - Remove initialData prop which wasn't used in a Field component and was only pass to the Field components in one the places where the Field component is used

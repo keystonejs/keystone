@@ -13,8 +13,7 @@ type Props = {
   innerRef?: React.Ref<*>,
   autoFocus?: boolean,
   field: Object,
-  item: Object | null,
-  itemErrors: Object,
+  error?: Error,
   renderContext: string | null,
   htmlID: string,
   onChange: Function,
@@ -45,12 +44,12 @@ const RelationshipSelect = ({
   innerRef,
   autoFocus,
   field,
-  item,
-  itemErrors,
+  error: serverError,
   renderContext,
   htmlID,
   onChange,
   isMulti,
+  value,
 }: Props) => {
   const [search, setSearch] = useState('');
   const refList = field.getRefList();
@@ -59,9 +58,8 @@ const RelationshipSelect = ({
     `(first: ${initalItemsToLoad}, search: $search, skip: $skip)`
   )}${refList.countQuery(`(search: $search)`)}}`;
 
-  const canRead = !(
-    itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
-  );
+  const canRead = !(serverError instanceof Error && serverError.name === 'AccessDeniedError');
+
   const selectProps = renderContext === 'dialog' ? { menuShouldBlockScroll: true } : null;
 
   return (
@@ -86,17 +84,16 @@ const RelationshipSelect = ({
                   : [];
 
               let currentValue = null;
-              if (item && canRead) {
-                const fieldValue = item[field.path];
+              if (value !== null && canRead) {
                 if (isMulti) {
-                  currentValue = (Array.isArray(fieldValue) ? fieldValue : []).map(val => ({
+                  currentValue = (Array.isArray(value) ? value : []).map(val => ({
                     label: val._label_,
                     value: val,
                   }));
-                } else if (fieldValue) {
+                } else if (value) {
                   currentValue = {
-                    label: fieldValue._label_,
-                    value: fieldValue,
+                    label: value._label_,
+                    value: value,
                   };
                 }
               }
@@ -160,7 +157,10 @@ const RelationshipSelect = ({
                   components={selectComponents}
                   getOptionValue={option => option.value.id}
                   value={currentValue}
-                  placeholder={canRead ? undefined : itemErrors[field.path].message}
+                  placeholder={
+                    // $FlowFixMe
+                    canRead ? undefined : serverError.message
+                  }
                   options={options}
                   onChange={onChange}
                   id={`react-select-${htmlID}`}

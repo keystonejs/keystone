@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, useCallback, useMemo } from 'react';
 import { Mutation } from 'react-apollo';
 import styled from '@emotion/styled';
 
@@ -14,6 +14,8 @@ const Body = styled.div({
   marginBottom: gridSize,
   marginTop: gridSize,
 });
+
+let Render = ({ children }) => children();
 
 class CreateItemModal extends Component {
   constructor(props) {
@@ -50,15 +52,6 @@ class CreateItemModal extends Component {
         return this.onClose();
     }
   };
-  onChange = (field, value) => {
-    const { item } = this.state;
-    this.setState({
-      item: {
-        ...item,
-        [field.path]: value,
-      },
-    });
-  };
   formComponent = props => <form autoComplete="off" onSubmit={this.onCreate} {...props} />;
   render() {
     const { isLoading, isOpen, list } = this.props;
@@ -85,17 +78,35 @@ class CreateItemModal extends Component {
       >
         <Body>
           <AutocompleteCaptor />
-          {list.fields.map(field => {
+          {list.fields.map((field, i) => {
             const { Field } = FieldTypes[list.key][field.path];
             return (
-              <Field
-                item={item}
-                field={field}
-                key={field.path}
-                itemErrors={[] /* TODO: Permission query results */}
-                onChange={this.onChange}
-                renderContext="dialog"
-              />
+              <Render key={field.path}>
+                {() => {
+                  let onChange = useCallback(value => {
+                    this.setState(({ item }) => ({
+                      item: {
+                        ...item,
+                        [field.path]: value,
+                      },
+                    }));
+                  }, []);
+                  return useMemo(
+                    () => (
+                      <Field
+                        autoFocus={!i}
+                        value={item[field.path]}
+                        field={field}
+                        /* TODO: Permission query results */
+                        // error={}
+                        onChange={onChange}
+                        renderContext="dialog"
+                      />
+                    ),
+                    [i, item[field.path], field, onChange]
+                  );
+                }}
+              </Render>
             );
           })}
         </Body>

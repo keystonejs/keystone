@@ -166,14 +166,12 @@ import Stars from './Stars';
 
 export default class StarsField extends React.Component {
   handleChange = newValue => {
-    const { field, onChange } = this.props;
-    onChange(field, newValue);
+    this.props.onChange(newValue);
   };
 
   render() {
-    const { field, item } = this.props;
+    const { field, item, value } = this.props;
     const { starCount } = field.config;
-    const value = item[field.path];
     const htmlID = `ks-input-${field.path}`;
 
     return (
