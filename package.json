@@ -130,6 +130,7 @@
     "memoize-one": "^4.0.2",
     "mjml": "^4.3.1",
     "mkdirp": "^0.5.1",
+    "moment": "^2.24.0",
     "mongoose": "^5.3.15",
     "next": "^7.0.2",
     "next-apollo": "^2.0.7",
