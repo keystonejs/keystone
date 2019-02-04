@@ -307,15 +307,18 @@ const ItemDetails = withRouter(
               return (
                 <Render key={field.path}>
                   {() => {
-                    let onChange = useCallback(value => {
-                      this.setState(({ item }) => ({
-                        item: {
-                          ...item,
-                          [field.path]: value,
-                        },
-                        itemHasChanged: true,
-                      }));
-                    });
+                    let onChange = useCallback(
+                      value => {
+                        this.setState(({ item }) => ({
+                          item: {
+                            ...item,
+                            [field.path]: value,
+                          },
+                          itemHasChanged: true,
+                        }));
+                      },
+                      [field]
+                    );
                     return useMemo(
                       () => (
                         <Field
@@ -327,7 +330,7 @@ const ItemDetails = withRouter(
                           renderContext="page"
                         />
                       ),
-                      [i, field, itemErrors[field.path], itemErrors, item[field.path]]
+                      [i, field, itemErrors[field.path], item[field.path]]
                     );
                   }}
                 </Render>
