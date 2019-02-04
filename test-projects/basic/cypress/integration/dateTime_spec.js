@@ -72,7 +72,7 @@ describe('CalendarDay Component - Functionality', () => {
     cy.get(`#ks-select-month`).should('have.value', `${subMonths(today, 1).getMonth()}`);
   });
 
-  it(`can use 'Select' to set month`, () => {
+  it.skip(`can use 'Select' to set month`, () => {
     cy.get(getDateButtonSetTo(today)).click();
     cy.get(`#ks-select-month`).select('Jun');
     cy.wait(500);

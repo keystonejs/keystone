@@ -79,7 +79,7 @@ module.exports = function createGraphQLMiddleware(
     context: ({ req }) => keystone.getAccessContext(req),
     formatError: error => {
       const { originalError } = error;
-      if (!originalError.path) {
+      if (originalError && !originalError.path) {
         originalError.path = error.path;
       }
 
@@ -105,7 +105,7 @@ module.exports = function createGraphQLMiddleware(
             };
 
             if (pinoError.errors) {
-              pinoError.errors = flattenNestedErrors(originalError).map(safeFormatError);
+              pinoError.errors = flattenNestedErrors(exception).map(safeFormatError);
             }
 
             graphqlLogger.error(pinoError);
