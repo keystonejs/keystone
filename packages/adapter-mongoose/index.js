@@ -208,7 +208,7 @@ class MongooseListAdapter extends BaseListAdapter {
   async create(data) {
     const dataToSave = await this.onPreSave(data);
     const createdData = await this.model.create(dataToSave);
-    return this.onPostRead(createdData);
+    return this.onPostRead(pick(createdData, ['id', ...Object.keys(data)]));
   }
 
   async delete(id) {
