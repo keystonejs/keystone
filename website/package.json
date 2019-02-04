@@ -14,6 +14,7 @@
     },
     "dependencies": {
         "@arch-ui/input": "^0.0.1",
+        "@arch-ui/select": "^0.0.1",
         "@arch-ui/theme": "^0.0.1",
         "@emotion/core": "^10.0.4",
         "@emotion/styled": "^10.0.4",
