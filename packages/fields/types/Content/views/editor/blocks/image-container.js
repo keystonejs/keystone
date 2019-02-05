@@ -14,42 +14,35 @@ let getFiles = () =>
   new Promise(resolve => {
     let input = document.createElement('input');
     input.type = 'file';
-    input.onchange = () => {
-      let files = input.files;
-      Promise.all(
-        [...files].map(file => {
-          return new Promise(innerResolve => {
-            const reader = new FileReader();
-            reader.onload = e => {
-              innerResolve(e.target.result);
-            };
-            reader.readAsDataURL(file);
-          });
-        })
-      ).then(resolve);
-    };
+    input.onchange = () => resolve([...input.files]);
     input.click();
   });
+
+const insertImageBlockFromFile = (editor, file) => {
+  const reader = new FileReader();
+  reader.onload = event => insertImageBlock(editor, event.target.result);
+  reader.readAsDataURL(file);
+};
+
+const insertImageBlock = (editor, src) => {
+  editor.insertBlock({
+    type,
+    nodes: [
+      Block.create({
+        type: image.type,
+        data: { src },
+      }),
+    ],
+  });
+};
 
 export function Sidebar({ editor }) {
   return (
     <button
       type="button"
       onClick={() => {
-        getFiles().then(srcs => {
-          srcs.forEach(src => {
-            editor.insertBlock({
-              type,
-              nodes: [
-                Block.create({
-                  type: image.type,
-                  data: {
-                    src,
-                  },
-                }),
-              ],
-            });
-          });
+        getFiles().then(files => {
+          files.forEach(file => insertImageBlockFromFile(editor, file));
         });
       }}
     >
@@ -164,23 +157,7 @@ export let schema = {
 export let plugins = [
   insertImages({
     extensions: imageExtensions,
-    insertImage: (editor, file) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        editor.insertBlock({
-          type,
-          nodes: [
-            Block.create({
-              type: image.type,
-              data: {
-                src: reader.result,
-              },
-            }),
-          ],
-        });
-      };
-      reader.readAsDataURL(file);
-    },
+    insertImage: insertImageBlockFromFile,
   }),
   {
     onDragStart(event, editor, next) {
