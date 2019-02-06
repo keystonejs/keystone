@@ -16,7 +16,7 @@ function setupKeystone() {
       keystone.createList('Company', {
         fields: {
           name: { type: Text },
-          employees: { type: Relationship, ref: 'User' },
+          employees: { type: Relationship, ref: 'User', many: true },
         },
       });
 
@@ -131,7 +131,7 @@ describe('_ksListsMeta query for all lists meta data', () => {
             queries: ['User', 'allUsers', '_allUsersMeta'],
             relatedFields: [
               {
-                fields: ['employees'],
+                fields: ['employees', '_employeesMeta'],
                 type: 'Company',
               },
               {
