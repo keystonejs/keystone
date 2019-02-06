@@ -33,7 +33,7 @@
     "next-apollo": "^2.0.7",
     "node-fetch": "^2.3.0",
     "parcel": "^1.11.0",
-    "react": "16.7.0-alpha.2",
+    "react": "^16.8.0",
     "react-apollo": "^2.2.4"
   },
   "devDependencies": {

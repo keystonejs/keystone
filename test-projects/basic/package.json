@@ -26,7 +26,7 @@
     "@voussoir/server": "^0.5.1",
     "date-fns": "^1.29.0",
     "dotenv-safe": "^6.0.0",
-    "react": "16.7.0-alpha.2"
+    "react": "^16.8.0"
   },
   "devDependencies": {
     "@voussoir/test-utils": "^0.1.3",
