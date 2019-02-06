@@ -55,7 +55,7 @@ module.exports = class Keystone {
     return strategy;
   }
 
-  createList(key, config) {
+  createList(key, config, { isAuxList = false } = {}) {
     const { getListByKey, adapters } = this;
     const adapterName = config.adapterName || this.defaultAdapter;
     const list = new List(key, config, {
@@ -64,9 +64,20 @@ module.exports = class Keystone {
       adapter: adapters[adapterName],
       defaultAccess: this.defaultAccess,
       getAuth: () => this.auth[key],
+      isAuxList,
+      createAuxList: (auxKey, auxConfig) => {
+        if (isAuxList) {
+          throw new Error(
+            `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
+          );
+        }
+        return this.createList(auxKey, auxConfig, { isAuxList: true });
+      },
     });
     this.lists[key] = list;
     this.listsArray.push(list);
+    list.initFields();
+    return list;
   }
 
   /**
