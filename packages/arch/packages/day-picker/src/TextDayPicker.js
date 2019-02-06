@@ -39,7 +39,7 @@ export let TextDayPicker = ({ date, onChange, ...props }: Props) => {
 };
 
 function formatDate(date) {
-  return date === null ? '' : format(date, 'dddd Do MMMM YYYY');
+  return date === null ? '' : format(date, 'Do MMMM YYYY');
 }
 
 function parseDate(value) {

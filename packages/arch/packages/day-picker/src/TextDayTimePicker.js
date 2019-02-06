@@ -51,7 +51,7 @@ function formatDateTime(date) {
   // why are we using moment when it's so large and provides a mutable API?
   // because chrono uses it and consistency is nice and
   // will probably make bugs with conversion less likely
-  return date === null ? '' : moment.parseZone(date).format('h:mm A dddd Do MMMM YYYY Z');
+  return date === null ? '' : moment.parseZone(date).format('h:mm A Do MMMM YYYY Z');
 }
 
 function parseDate(value) {
