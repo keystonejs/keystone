@@ -124,11 +124,11 @@ keystone.createList('Post', {
     value: {
       type: Content,
       blocks: [
+        [CloudinaryImage.block, { adapter: cloudinaryAdapter }],
         Content.blocks.blockquote,
         Content.blocks.orderedList,
         Content.blocks.unorderedList,
         [Content.blocks.embed, { apiKey: process.env.EMBEDLY_API_KEY }],
-        Content.blocks.image,
         Content.blocks.link,
         Content.blocks.heading,
       ],
