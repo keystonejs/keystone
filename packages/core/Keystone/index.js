@@ -71,7 +71,7 @@ module.exports = class Keystone {
             `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
           );
         }
-        return this.createList(auxKey, auxConfig, { isAuxList: true });
+        return this.createList(auxKey, { ...auxConfig, access: false }, { isAuxList: true });
       },
     });
     this.lists[key] = list;
@@ -142,7 +142,13 @@ module.exports = class Keystone {
     // graphql-tools will blow up (rightly so) on duplicated types.
     // Deduping here avoids that problem.
     return [
-      ...unique(flatten(this.listsArray.map(list => list.getGqlTypes({ skipAccessControl })))),
+      ...unique(
+        flatten(
+          this.listsArray.map(list =>
+            list.getGqlTypes({ skipAccessControl: skipAccessControl || list.isAuxList })
+          )
+        )
+      ),
       `"""NOTE: Can be JSON, or a Boolean/Int/String
           Why not a union? GraphQL doesn't support a union including a scalar
           (https://github.com/facebook/graphql/issues/215)"""
@@ -202,13 +208,21 @@ module.exports = class Keystone {
        }`,
       `type Query {
           ${unique(
-            flatten(this.listsArray.map(list => list.getGqlQueries({ skipAccessControl })))
+            flatten(
+              this.listsArray.map(list =>
+                list.getGqlQueries({ skipAccessControl: skipAccessControl || list.isAuxList })
+              )
+            )
           ).join('\n')}
           _ksListsMeta: [_ListMeta]
        }`,
       `type Mutation {
           ${unique(
-            flatten(this.listsArray.map(list => list.getGqlMutations({ skipAccessControl })))
+            flatten(
+              this.listsArray.map(list =>
+                list.getGqlMutations({ skipAccessControl: skipAccessControl || list.isAuxList })
+              )
+            )
           ).join('\n')}
        }`,
     ].map(s => print(gql(s)));
