@@ -40,7 +40,7 @@
         "pretty-proptypes": "^0.5.0",
         "prism-react-renderer": "^0.1.5",
         "prismjs": "^1.15.0",
-        "react": "16.7.0-alpha.2",
+        "react": "^16.8.0",
         "react-addons-text-content": "^0.0.4",
         "underscore.string": "^3.3.5",
         "unist-util-visit": "^1.4.0"

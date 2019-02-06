@@ -5,10 +5,10 @@
   "license": "MIT",
   "main": "dist/day-picker.cjs.js",
   "peerDependencies": {
-    "react": "16.7.0-alpha.2"
+    "react": "^16.8.0"
   },
   "devDependencies": {
-    "react": "16.7.0-alpha.2"
+    "react": "^16.8.0"
   },
   "dependencies": {
     "@arch-ui/icons": "^0.0.1",
