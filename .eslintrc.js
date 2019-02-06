@@ -7,7 +7,7 @@ module.exports = {
     jest: true,
     'cypress/globals': true,
   },
-  plugins: ['react', 'jest', 'cypress', 'import', 'flowtype', 'emotion'],
+  plugins: ['react', 'react-hooks', 'jest', 'cypress', 'import', 'flowtype', 'emotion'],
   rules: {
     curly: ['error', 'multi-line'],
     'jsx-quotes': 'error',
@@ -15,6 +15,7 @@ module.exports = {
     'no-trailing-spaces': 'error',
     'no-undef': 'error',
     'no-unused-expressions': 'error',
+    'react-hooks/rules-of-hooks': 'error',
     'no-unused-vars': [
       'error',
       {
