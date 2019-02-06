@@ -6,10 +6,6 @@ import chrono from 'chrono-node';
 import { Input } from '@arch-ui/input';
 import { format } from 'date-fns';
 
-function formatDate(date) {
-  return date === null ? '' : format(date, 'dddd Do MMMM YYYY');
-}
-
 type Props = {
   date: string | null,
   onChange: (string | null) => mixed,
@@ -41,6 +37,10 @@ export let TextDayPicker = ({ date, onChange, ...props }: Props) => {
     />
   );
 };
+
+function formatDate(date) {
+  return date === null ? '' : format(date, 'dddd Do MMMM YYYY');
+}
 
 function parseDate(value) {
   let parsedDates = chrono.parse(value);

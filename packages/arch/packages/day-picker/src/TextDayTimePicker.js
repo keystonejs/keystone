@@ -18,13 +18,6 @@ type Props = {
   onChange: (string | null) => mixed,
 };
 
-function formatDateTime(date) {
-  // why are we using moment when it's so large and provides a mutable API?
-  // because chrono uses it and consistency is nice and
-  // will probably make bugs with conversion less likely
-  return date === null ? '' : moment.parseZone(date).format('h:mm A dddd Do MMMM YYYY Z');
-}
-
 export let TextDayTimePicker = ({ date, onChange, ...props }: Props) => {
   let [value, setValue] = useState('');
   let ref = useRef(null);
@@ -53,6 +46,13 @@ export let TextDayTimePicker = ({ date, onChange, ...props }: Props) => {
     />
   );
 };
+
+function formatDateTime(date) {
+  // why are we using moment when it's so large and provides a mutable API?
+  // because chrono uses it and consistency is nice and
+  // will probably make bugs with conversion less likely
+  return date === null ? '' : moment.parseZone(date).format('h:mm A dddd Do MMMM YYYY Z');
+}
 
 function parseDate(value) {
   let [parsedDate] = chrono.parse(value);
