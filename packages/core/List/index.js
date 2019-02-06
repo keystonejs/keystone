@@ -28,13 +28,22 @@ const { AccessDeniedError, ValidationFailureError } = require('./graphqlErrors')
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
-const keyToLabel = str =>
-  str
+const preventInvalidUnderscorePrefix = str => str.replace(/^__/, '_');
+
+const keyToLabel = str => {
+  let label = str
     .replace(/([a-z])([A-Z])/g, '$1 $2')
     .split(/\s|_|\-/)
     .filter(i => i)
     .map(upcase)
     .join(' ');
+
+  // Retain the leading underscore for auxiliary lists
+  if (str[0] === '_') {
+    label = `_${label}`;
+  }
+  return label;
+};
 
 const labelToPath = str =>
   str
@@ -147,7 +156,7 @@ module.exports = class List {
       itemQueryName: itemQueryName,
       listQueryName: `all${listQueryName}`,
       listQueryMetaName: `_all${listQueryName}Meta`,
-      listMetaName: `_${listQueryName}Meta`,
+      listMetaName: preventInvalidUnderscorePrefix(`_${listQueryName}Meta`),
       authenticatedQueryName: `authenticated${itemQueryName}`,
       deleteMutationName: `delete${itemQueryName}`,
       updateMutationName: `update${itemQueryName}`,
