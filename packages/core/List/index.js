@@ -96,7 +96,7 @@ module.exports = class List {
   constructor(
     key,
     config,
-    { getListByKey, getGraphQLQuery, adapter, defaultAccess, getAuth, createAuxList }
+    { getListByKey, getGraphQLQuery, adapter, defaultAccess, getAuth, createAuxList, isAuxList }
   ) {
     this.key = key;
 
@@ -116,6 +116,7 @@ module.exports = class List {
       ...config,
     };
 
+    this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
     this.getAuth = getAuth;
