@@ -3,9 +3,6 @@ const path = require('path');
 const cuid = require('cuid');
 const { graphqlRequest, multiAdapterRunners, setupServer } = require('@voussoir/test-utils');
 
-const Keystone = require('../../core/Keystone');
-const WebServer = require('../../server/WebServer');
-
 const sorted = (arr, keyFn) => {
   arr = [...arr];
   arr.sort((a, b) => {
