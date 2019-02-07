@@ -1,11 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const cuid = require('cuid');
-const { graphqlRequest, keystoneMongoTest } = require('@voussoir/test-utils');
+const { graphqlRequest, multiAdapterRunners, setupServer } = require('@voussoir/test-utils');
 
 const Keystone = require('../../core/Keystone');
 const WebServer = require('../../server/WebServer');
-const { MongooseAdapter } = require('../../adapter-mongoose');
 
 const sorted = (arr, keyFn) => {
   arr = [...arr];
@@ -49,43 +48,36 @@ describe('Test CRUD for all fields', () => {
     .readdirSync(typesLoc)
     .map(name => `${typesLoc}/${name}/filterTests.js`)
     .filter(filename => fs.existsSync(filename));
-
   testModules.push(path.resolve('packages/fields/tests/idFilterTests.js'));
-  testModules.map(require).forEach(mod => {
-    describe(`All the CRUD tests for module: ${mod.name}`, () => {
-      const listName = 'test';
-      const keystoneTestWrapper = (testFn = () => {}) =>
-        keystoneMongoTest(
-          () => {
-            // Set up a keystone project for each type test to use
-            const keystone = new Keystone({
-              adapter: new MongooseAdapter(),
-              name: `Field tests for ${mod.name} ${cuid}`,
-            });
 
-            // Create a list with all the fields required for testing
-            const fields = mod.getTestFields();
+  multiAdapterRunners().map(({ runner, adapterName }) =>
+    describe(`Adapter: ${adapterName}`, () => {
+      testModules.map(require).forEach(mod => {
+        describe(`All the CRUD tests for module: ${mod.name}`, () => {
+          const listName = 'test';
+          const keystoneTestWrapper = (testFn = () => {}) =>
+            runner(
+              () => {
+                const name = `Field tests for ${mod.name} ${cuid}`;
+                const createLists = keystone => {
+                  // Create a list with all the fields required for testing
+                  const fields = mod.getTestFields();
 
-            const labelResolver = item => item;
+                  keystone.createList(listName, { fields });
+                };
+                return setupServer({ name, adapterName, createLists });
+              },
+              async ({ server, ...rest }) => {
+                // Populate the database before running the tests
+                await server.keystone.createItems({ [listName]: mod.initItems() });
 
-            keystone.createList(listName, { fields, labelResolver });
+                return testFn({ server, ...rest });
+              }
+            );
 
-            // Set up a server (but do not .listen(), we will use supertest to access the app)
-            const server = new WebServer(keystone, {
-              'cookie secret': 'qwerty',
-            });
-
-            return { server, keystone };
-          },
-          async ({ server, ...rest }) => {
-            // Populate the database before running the tests
-            await server.keystone.createItems({ [listName]: mod.initItems() });
-
-            return testFn({ server, ...rest });
-          }
-        );
-
-      mod.filterTests(keystoneTestWrapper);
-    });
-  });
+          mod.filterTests(keystoneTestWrapper);
+        });
+      });
+    })
+  );
 });
