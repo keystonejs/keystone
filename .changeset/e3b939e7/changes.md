@@ -1,0 +1,1 @@
+- Add adapter parameter to setupServer() and add multiAdapterRunners()
