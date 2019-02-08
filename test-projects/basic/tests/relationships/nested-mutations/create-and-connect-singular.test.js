@@ -1,9 +1,10 @@
 const { Text, Relationship } = require('@voussoir/fields');
 const cuid = require('cuid');
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 
-function setupKeystone() {
+function setupKeystone(adapterName) {
   return setupServer({
+    adapterName,
     name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('Group', {
@@ -53,52 +54,53 @@ function setupKeystone() {
     },
   });
 }
-
-describe('errors on incomplete data', () => {
-  test(
-    'when neither id or create data passed',
-    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
-      // Create an item that does the linking
-      const createEvent = await graphqlRequest({
-        server,
-        query: `
+multiAdapterRunners().map(({ runner, adapterName }) =>
+  describe(`Adapter: ${adapterName}`, () => {
+    describe('errors on incomplete data', () => {
+      test(
+        'when neither id or create data passed',
+        runner(setupKeystone, async ({ server: { server } }) => {
+          // Create an item that does the linking
+          const createEvent = await graphqlRequest({
+            server,
+            query: `
         mutation {
           createEvent(data: { group: {} }) {
             id
           }
         }
     `,
-      });
+          });
 
-      expect(createEvent.body).toHaveProperty('data.createEvent', null);
-      expect(createEvent.body.errors).toMatchObject([
-        {
-          name: 'NestedError',
-          data: {
-            errors: [
-              {
-                message: 'Nested mutation operation invalid for Event.group<Group>',
-                path: ['createEvent', 'group'],
-                name: 'Error',
+          expect(createEvent.body).toHaveProperty('data.createEvent', null);
+          expect(createEvent.body.errors).toMatchObject([
+            {
+              name: 'NestedError',
+              data: {
+                errors: [
+                  {
+                    message: 'Nested mutation operation invalid for Event.group<Group>',
+                    path: ['createEvent', 'group'],
+                    name: 'Error',
+                  },
+                  {
+                    name: 'ParameterError',
+                    path: ['createEvent', 'group', '<validate>'],
+                  },
+                ],
               },
-              {
-                name: 'ParameterError',
-                path: ['createEvent', 'group', '<validate>'],
-              },
-            ],
-          },
-        },
-      ]);
-    })
-  );
+            },
+          ]);
+        })
+      );
 
-  test(
-    'when both id and create data passed',
-    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
-      // Create an item that does the linking
-      const createEvent = await graphqlRequest({
-        server,
-        query: `
+      test(
+        'when both id and create data passed',
+        runner(setupKeystone, async ({ server: { server } }) => {
+          // Create an item that does the linking
+          const createEvent = await graphqlRequest({
+            server,
+            query: `
         mutation {
           createEvent(data: { group: {
             connect: { id: "abc123"},
@@ -108,27 +110,29 @@ describe('errors on incomplete data', () => {
           }
         }
     `,
-      });
+          });
 
-      expect(createEvent.body).toHaveProperty('data.createEvent', null);
-      expect(createEvent.body.errors).toMatchObject([
-        {
-          name: 'NestedError',
-          data: {
-            errors: [
-              {
-                message: 'Nested mutation operation invalid for Event.group<Group>',
-                path: ['createEvent', 'group'],
-                name: 'Error',
+          expect(createEvent.body).toHaveProperty('data.createEvent', null);
+          expect(createEvent.body.errors).toMatchObject([
+            {
+              name: 'NestedError',
+              data: {
+                errors: [
+                  {
+                    message: 'Nested mutation operation invalid for Event.group<Group>',
+                    path: ['createEvent', 'group'],
+                    name: 'Error',
+                  },
+                  {
+                    name: 'ParameterError',
+                    path: ['createEvent', 'group', '<validate>'],
+                  },
+                ],
               },
-              {
-                name: 'ParameterError',
-                path: ['createEvent', 'group', '<validate>'],
-              },
-            ],
-          },
-        },
-      ]);
-    })
-  );
-});
+            },
+          ]);
+        })
+      );
+    });
+  })
+);
