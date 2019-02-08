@@ -1,25 +1,16 @@
 // @flow
 import React from 'react';
+import { style } from '../style';
 
-const GrabberIcon = ({ title, ...props }: { title?: string }) => {
+const svgContent = <path fillRule="evenodd" d="M8 4v1H0V4h8zM0 8h8V7H0v1zm0 3h8v-1H0v1z" />;
+
+const GrabberIcon = React.memo<{ title?: string }>(({ title, ...props }) => {
   return (
-    <svg {...props}>
+    <svg aria-hidden height={16} width={8} viewBox="0 0 8 16" style={style} {...props}>
       {title ? <title>{title}</title> : null}
-      <path fillRule="evenodd" d="M8 4v1H0V4h8zM0 8h8V7H0v1zm0 3h8v-1H0v1z" />
+      {svgContent}
     </svg>
   );
-};
-
-GrabberIcon.defaultProps = {
-  'aria-hidden': true,
-  height: 16,
-  width: 8,
-  viewBox: '0 0 8 16',
-  style: {
-    display: 'inline-block',
-    verticalAlign: 'text-top',
-    fill: 'currentColor',
-  },
-};
+});
 
 export default GrabberIcon;
