@@ -18,7 +18,7 @@ const path = '/admin/users?fields=_label_%2Cdob%2ClastOnline';
 const lastOnline = '2018-08-16T11:08:18.886+10:00';
 
 const calendarDayInputSelector = `#ks-daypicker-dob`;
-const dateTimeInputSelector = `#ks-daypicker-last-online`;
+const dateTimeInputSelector = `#ks-input-lastOnline`;
 
 const getCellFromSecondRow = index =>
   `#ks-list-table tbody > tr:nth-child(2) > td:nth-child(${index})`;
@@ -73,8 +73,7 @@ describe('DateTime Component - Formatting', () => {
 
   it('should format date-time correctly on the details page', () => {
     cy.get(getCellFromSecondRow(2)).click();
-    //cy.get('#ks-input-lastOnline').contains(lastOnline);
-    cy.get(getDateTimeButtonSetTo(lastOnline));
+    cy.get(dateTimeInputSelector).should('have.value', '11:08 AM 16th August 2018 +10:00');
   });
 });
 

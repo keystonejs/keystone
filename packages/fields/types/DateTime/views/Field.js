@@ -19,12 +19,7 @@ const DateTimeField = ({ autoFocus, field, onChange, value }: Props) => {
     <FieldContainer>
       <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
       <FieldInput>
-        <TextDayTimePicker
-          id={htmlID + '-picker'}
-          date={value}
-          onChange={onChange}
-          autoFocus={autoFocus}
-        />
+        <TextDayTimePicker id={htmlID} date={value} onChange={onChange} autoFocus={autoFocus} />
       </FieldInput>
     </FieldContainer>
   );
