@@ -1,14 +1,15 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@voussoir/fields');
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 const cuid = require('cuid');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const postNames = ['Post 1', 'Post 2', 'Post 3'];
 
-function setupKeystone() {
+function setupKeystone(adapterName) {
   return setupServer({
+    adapterName,
     name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('UserToPostLimitedRead', {
@@ -31,31 +32,32 @@ function setupKeystone() {
     },
   });
 }
+multiAdapterRunners().map(({ runner, adapterName }) =>
+  describe(`Adapter: ${adapterName}`, () => {
+    describe('relationship filtering with access control', () => {
+      test(
+        'implicitly filters to only the IDs in the database by default',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          // Create all of the posts with the given IDs & random content
+          const posts = await Promise.all(
+            postNames.map(name => {
+              const postContent = sampleOne(alphanumGenerator);
+              return create('PostLimitedRead', { content: postContent, name });
+            })
+          );
+          const postIds = posts.map(({ id }) => id);
+          // Create a user that owns 2 posts which are different from the one
+          // specified in the read access control filter
+          const username = sampleOne(alphanumGenerator);
+          const user = await create('UserToPostLimitedRead', {
+            username,
+            posts: [postIds[1], postIds[2]],
+          });
 
-describe('relationship filtering with access control', () => {
-  test(
-    'implicitly filters to only the IDs in the database by default',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      // Create all of the posts with the given IDs & random content
-      const posts = await Promise.all(
-        postNames.map(name => {
-          const postContent = sampleOne(alphanumGenerator);
-          return create('PostLimitedRead', { content: postContent, name });
-        })
-      );
-      const postIds = posts.map(({ id }) => id);
-      // Create a user that owns 2 posts which are different from the one
-      // specified in the read access control filter
-      const username = sampleOne(alphanumGenerator);
-      const user = await create('UserToPostLimitedRead', {
-        username,
-        posts: [postIds[1], postIds[2]],
-      });
-
-      // Create an item that does the linking
-      const queryUser = await graphqlRequest({
-        server,
-        query: `
+          // Create an item that does the linking
+          const queryUser = await graphqlRequest({
+            server,
+            query: `
         query {
           UserToPostLimitedRead(where: { id: "${user.id}" }) {
             id
@@ -66,42 +68,42 @@ describe('relationship filtering with access control', () => {
           }
         }
       `,
-      });
+          });
 
-      expect(queryUser.body).not.toHaveProperty('errors');
-      expect(queryUser.body.data).toMatchObject({
-        UserToPostLimitedRead: {
-          id: expect.any(String),
-          username,
-          posts: [{ id: postIds[1] }],
-        },
-      });
-    })
-  );
-
-  test(
-    'explicitly filters when given a `where` clause',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      // Create all of the posts with the given IDs & random content
-      const posts = await Promise.all(
-        postNames.map(name => {
-          const postContent = sampleOne(alphanumGenerator);
-          return create('PostLimitedRead', { content: postContent, name });
+          expect(queryUser.body).not.toHaveProperty('errors');
+          expect(queryUser.body.data).toMatchObject({
+            UserToPostLimitedRead: {
+              id: expect.any(String),
+              username,
+              posts: [{ id: postIds[1] }],
+            },
+          });
         })
       );
-      const postIds = posts.map(({ id }) => id);
-      // Create a user that owns 2 posts which are different from the one
-      // specified in the read access control filter
-      const username = sampleOne(alphanumGenerator);
-      const user = await create('UserToPostLimitedRead', {
-        username,
-        posts: [postIds[1], postIds[2]],
-      });
 
-      // Create an item that does the linking
-      const queryUser = await graphqlRequest({
-        server,
-        query: `
+      test(
+        'explicitly filters when given a `where` clause',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          // Create all of the posts with the given IDs & random content
+          const posts = await Promise.all(
+            postNames.map(name => {
+              const postContent = sampleOne(alphanumGenerator);
+              return create('PostLimitedRead', { content: postContent, name });
+            })
+          );
+          const postIds = posts.map(({ id }) => id);
+          // Create a user that owns 2 posts which are different from the one
+          // specified in the read access control filter
+          const username = sampleOne(alphanumGenerator);
+          const user = await create('UserToPostLimitedRead', {
+            username,
+            posts: [postIds[1], postIds[2]],
+          });
+
+          // Create an item that does the linking
+          const queryUser = await graphqlRequest({
+            server,
+            query: `
         query {
           UserToPostLimitedRead(where: { id: "${user.id}" }) {
             id
@@ -114,16 +116,18 @@ describe('relationship filtering with access control', () => {
           }
         }
       `,
-      });
+          });
 
-      expect(queryUser.body).not.toHaveProperty('errors');
-      expect(queryUser.body.data).toMatchObject({
-        UserToPostLimitedRead: {
-          id: expect.any(String),
-          username,
-          posts: [],
-        },
-      });
-    })
-  );
-});
+          expect(queryUser.body).not.toHaveProperty('errors');
+          expect(queryUser.body.data).toMatchObject({
+            UserToPostLimitedRead: {
+              id: expect.any(String),
+              username,
+              posts: [],
+            },
+          });
+        })
+      );
+    });
+  })
+);

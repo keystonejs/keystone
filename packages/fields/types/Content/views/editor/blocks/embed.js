@@ -13,9 +13,6 @@ let Embed = ({ url }) => {
   let containerRef = useRef(null);
   let options = useContext(Context);
 
-  if (!options || !options.apiKey) {
-    return 'Please add an Embedly API Key';
-  }
   useEffect(
     () => {
       import('@iframely/embed.js').then(() => {
@@ -25,6 +22,11 @@ let Embed = ({ url }) => {
     },
     [url]
   );
+
+  if (!options || !options.apiKey) {
+    return 'Please add an Embedly API Key';
+  }
+
   return (
     <Fragment>
       <div ref={containerRef} />

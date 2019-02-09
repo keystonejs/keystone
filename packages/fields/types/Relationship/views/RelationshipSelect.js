@@ -7,7 +7,7 @@ import gql from 'graphql-tag';
 import Select from '@arch-ui/select';
 import { components } from 'react-select';
 import 'intersection-observer';
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect, forwardRef } from 'react';
 
 type Props = {
   innerRef?: React.Ref<*>,
@@ -32,13 +32,125 @@ function useIntersectionObserver(cb, ref) {
   });
 }
 
-// to use hooks in render props
-const Render = props => {
-  return props.children();
-};
-
 const initalItemsToLoad = 10;
 const subsequentItemsToLoad = 50;
+
+// to use hooks in render props
+const Relationship = forwardRef(
+  (
+    {
+      data,
+      loading,
+      value,
+      refList,
+      canRead,
+      isMulti,
+      search,
+      autoFocus,
+      serverError,
+      onChange,
+      htmlID,
+      setSearch,
+      selectProps,
+      fetchMore,
+    },
+    ref
+  ) => {
+    const options =
+      data && data[refList.gqlNames.listQueryName]
+        ? data[refList.gqlNames.listQueryName].map(val => ({
+            value: val,
+            label: val._label_,
+          }))
+        : [];
+
+    let currentValue = null;
+    if (value !== null && canRead) {
+      if (isMulti) {
+        currentValue = (Array.isArray(value) ? value : []).map(val => ({
+          label: val._label_,
+          value: val,
+        }));
+      } else if (value) {
+        currentValue = {
+          label: value._label_,
+          value: value,
+        };
+      }
+    }
+
+    const count =
+      data[refList.gqlNames.listQueryMetaName] && data[refList.gqlNames.listQueryMetaName].count;
+
+    const selectComponents = useMemo(
+      () => ({
+        MenuList: ({ children, ...props }) => {
+          const loadingRef = useRef(null);
+
+          useIntersectionObserver(([{ isIntersecting }]) => {
+            if (!props.isLoading && isIntersecting && props.options.length < count) {
+              fetchMore({
+                query: gql`query RelationshipSelectMore($search: String!, $skip: Int!) {${refList.buildQuery(
+                  refList.gqlNames.listQueryName,
+                  `(first: ${subsequentItemsToLoad}, search: $search, skip: $skip)`
+                )}}`,
+                variables: {
+                  search,
+                  skip: props.options.length,
+                },
+                updateQuery: (prev, { fetchMoreResult }) => {
+                  if (!fetchMoreResult) return prev;
+                  return {
+                    ...prev,
+                    [refList.gqlNames.listQueryName]: [
+                      ...prev[refList.gqlNames.listQueryName],
+                      ...fetchMoreResult[refList.gqlNames.listQueryName],
+                    ],
+                  };
+                },
+              });
+            }
+          }, loadingRef);
+
+          return (
+            <components.MenuList {...props}>
+              {children}
+              <div css={{ textAlign: 'center' }} ref={loadingRef}>
+                {props.options.length < count && <span css={{ padding: 8 }}>Loading...</span>}
+              </div>
+            </components.MenuList>
+          );
+        },
+      }),
+      [count, refList.gqlNames.listQueryName]
+    );
+    return (
+      <Select
+        onInputChange={setSearch}
+        isLoading={loading}
+        autoFocus={autoFocus}
+        isMulti={isMulti}
+        components={selectComponents}
+        getOptionValue={option => option.value.id}
+        value={currentValue}
+        placeholder={
+          // $FlowFixMe
+          canRead ? undefined : serverError.message
+        }
+        options={options}
+        onChange={onChange}
+        id={`react-select-${htmlID}`}
+        isClearable
+        isLoading={loading}
+        instanceId={htmlID}
+        inputId={htmlID}
+        innerRef={ref}
+        menuPortalTarget={document.body}
+        {...selectProps}
+      />
+    );
+  }
+);
 
 const RelationshipSelect = ({
   innerRef,
@@ -73,108 +185,25 @@ const RelationshipSelect = ({
         if (error) return 'Error';
 
         return (
-          <Render>
-            {() => {
-              const options =
-                data && data[refList.gqlNames.listQueryName]
-                  ? data[refList.gqlNames.listQueryName].map(val => ({
-                      value: val,
-                      label: val._label_,
-                    }))
-                  : [];
-
-              let currentValue = null;
-              if (value !== null && canRead) {
-                if (isMulti) {
-                  currentValue = (Array.isArray(value) ? value : []).map(val => ({
-                    label: val._label_,
-                    value: val,
-                  }));
-                } else if (value) {
-                  currentValue = {
-                    label: value._label_,
-                    value: value,
-                  };
-                }
-              }
-
-              const count =
-                data[refList.gqlNames.listQueryMetaName] &&
-                data[refList.gqlNames.listQueryMetaName].count;
-
-              const selectComponents = useMemo(
-                () => {
-                  return {
-                    MenuList: ({ children, ...props }) => {
-                      const ref = useRef(null);
-
-                      useIntersectionObserver(([{ isIntersecting }]) => {
-                        if (!props.isLoading && isIntersecting && props.options.length < count) {
-                          fetchMore({
-                            query: gql`query RelationshipSelectMore($search: String!, $skip: Int!) {${refList.buildQuery(
-                              refList.gqlNames.listQueryName,
-                              `(first: ${subsequentItemsToLoad}, search: $search, skip: $skip)`
-                            )}}`,
-                            variables: {
-                              search,
-                              skip: props.options.length,
-                            },
-                            updateQuery: (prev, { fetchMoreResult }) => {
-                              if (!fetchMoreResult) return prev;
-                              return {
-                                ...prev,
-                                [refList.gqlNames.listQueryName]: [
-                                  ...prev[refList.gqlNames.listQueryName],
-                                  ...fetchMoreResult[refList.gqlNames.listQueryName],
-                                ],
-                              };
-                            },
-                          });
-                        }
-                      }, ref);
-
-                      return (
-                        <components.MenuList {...props}>
-                          {children}
-                          <div css={{ textAlign: 'center' }} ref={ref}>
-                            {props.options.length < count && (
-                              <span css={{ padding: 8 }}>Loading...</span>
-                            )}
-                          </div>
-                        </components.MenuList>
-                      );
-                    },
-                  };
-                },
-                [count, refList.gqlNames.listQueryName]
-              );
-              return (
-                <Select
-                  onInputChange={setSearch}
-                  isLoading={loading}
-                  autoFocus={autoFocus}
-                  isMulti={isMulti}
-                  components={selectComponents}
-                  getOptionValue={option => option.value.id}
-                  value={currentValue}
-                  placeholder={
-                    // $FlowFixMe
-                    canRead ? undefined : serverError.message
-                  }
-                  options={options}
-                  onChange={onChange}
-                  id={`react-select-${htmlID}`}
-                  isClearable
-                  isLoading={loading}
-                  instanceId={htmlID}
-                  inputId={htmlID}
-                  innerRef={innerRef}
-                  menuPortalTarget={document.body}
-                  {...selectProps}
-                />
-              );
+          <Relationship
+            {...{
+              data,
+              loading,
+              value,
+              refList,
+              canRead,
+              isMulti,
+              search,
+              autoFocus,
+              serverError,
+              onChange,
+              htmlID,
+              setSearch,
+              selectProps,
+              fetchMore,
+              ref: innerRef,
             }}
-          </Render>
+          />
         );
       }}
     </Query>

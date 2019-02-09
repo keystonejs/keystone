@@ -28,13 +28,22 @@ const { AccessDeniedError, ValidationFailureError } = require('./graphqlErrors')
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
-const keyToLabel = str =>
-  str
+const preventInvalidUnderscorePrefix = str => str.replace(/^__/, '_');
+
+const keyToLabel = str => {
+  let label = str
     .replace(/([a-z])([A-Z])/g, '$1 $2')
     .split(/\s|_|\-/)
     .filter(i => i)
     .map(upcase)
     .join(' ');
+
+  // Retain the leading underscore for auxiliary lists
+  if (str[0] === '_') {
+    label = `_${label}`;
+  }
+  return label;
+};
 
 const labelToPath = str =>
   str
@@ -93,7 +102,11 @@ const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
 };
 
 module.exports = class List {
-  constructor(key, config, { getListByKey, getGraphQLQuery, adapter, defaultAccess, getAuth }) {
+  constructor(
+    key,
+    config,
+    { getListByKey, getGraphQLQuery, adapter, defaultAccess, getAuth, createAuxList, isAuxList }
+  ) {
     this.key = key;
 
     // 180814 JM TODO: Since there's no access control specified, this implicitly makes name, id or {labelField} readable by all (probably bad?)
@@ -112,9 +125,11 @@ module.exports = class List {
       ...config,
     };
 
+    this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
     this.getAuth = getAuth;
+    this.createAuxList = createAuxList;
 
     const label = keyToLabel(key);
     const singular = pluralize.singular(label);
@@ -141,7 +156,7 @@ module.exports = class List {
       itemQueryName: itemQueryName,
       listQueryName: `all${listQueryName}`,
       listQueryMetaName: `_all${listQueryName}Meta`,
-      listMetaName: `_${listQueryName}Meta`,
+      listMetaName: preventInvalidUnderscorePrefix(`_${listQueryName}Meta`),
       authenticatedQueryName: `authenticated${itemQueryName}`,
       deleteMutationName: `delete${itemQueryName}`,
       updateMutationName: `update${itemQueryName}`,
@@ -159,6 +174,7 @@ module.exports = class List {
       relateToOneInputName: `${itemQueryName}RelateToOneInput`,
     };
 
+    this.adapterName = adapter.name;
     this.adapter = adapter.newListAdapter(this.key, this.config);
 
     this.access = parseListAccess({
@@ -166,32 +182,6 @@ module.exports = class List {
       access: config.access,
       defaultAccess: this.defaultAccess.list,
     });
-
-    const sanitisedFieldsConfig = mapKeys(config.fields, (fieldConfig, path) => ({
-      ...fieldConfig,
-      type: mapNativeTypeToKeystoneType(fieldConfig.type, key, path),
-    }));
-    Object.values(sanitisedFieldsConfig).forEach(({ type }) => {
-      if (!type.adapters[adapter.name]) {
-        throw `Adapter type "${adapter.name}" does not support field type "${type.type}"`;
-      }
-    });
-
-    this.fieldsByPath = mapKeys(
-      sanitisedFieldsConfig,
-      ({ type, ...fieldSpec }, path) =>
-        new type.implementation(path, fieldSpec, {
-          getListByKey,
-          listKey: key,
-          listAdapter: this.adapter,
-          fieldAdapterClass: type.adapters[adapter.name],
-          defaultAccess: this.defaultAccess.field,
-        })
-    );
-    this.fields = Object.values(this.fieldsByPath);
-    this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
-      this.fieldsByPath[path].extendViews({ ...type.views })
-    );
 
     this.hooksActions = {
       /**
@@ -226,6 +216,41 @@ module.exports = class List {
         return graphQLQuery(queryString, passThroughContext, variables);
       },
     };
+  }
+
+  initFields() {
+    if (this.fieldsInitialised) {
+      return;
+    }
+
+    this.fieldsInitialised = true;
+
+    const sanitisedFieldsConfig = mapKeys(this.config.fields, (fieldConfig, path) => ({
+      ...fieldConfig,
+      type: mapNativeTypeToKeystoneType(fieldConfig.type, this.key, path),
+    }));
+    Object.values(sanitisedFieldsConfig).forEach(({ type }) => {
+      if (!type.adapters[this.adapterName]) {
+        throw `Adapter type "${this.adapterName}" does not support field type "${type.type}"`;
+      }
+    });
+
+    this.fieldsByPath = mapKeys(
+      sanitisedFieldsConfig,
+      ({ type, ...fieldSpec }, path) =>
+        new type.implementation(path, fieldSpec, {
+          getListByKey: this.getListByKey,
+          listKey: this.key,
+          listAdapter: this.adapter,
+          fieldAdapterClass: type.adapters[this.adapterName],
+          defaultAccess: this.defaultAccess.field,
+          createAuxList: this.createAuxList,
+        })
+    );
+    this.fields = Object.values(this.fieldsByPath);
+    this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
+      this.fieldsByPath[path].extendViews({ ...type.views })
+    );
   }
 
   getAdminMeta() {

@@ -6,10 +6,11 @@ const { WebServer } = require('@voussoir/server');
 const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
 
-function setupServer({ name, createLists = () => {} }) {
+function setupServer({ name, adapterName, createLists = () => {} }) {
+  const Adapter = { mongoose: MongooseAdapter }[adapterName];
   const keystone = new Keystone({
     name,
-    adapter: new MongooseAdapter(),
+    adapter: new Adapter(),
     defaultAccess: { list: true, field: true },
   });
 
@@ -119,7 +120,7 @@ function getUpdate(server) {
 
 function keystoneMongoTest(setupKeystoneFn, testFn) {
   return async function() {
-    const server = setupKeystoneFn();
+    const server = setupKeystoneFn('mongoose');
     const { mongoUri, dbName } = await getMongoMemoryServerConfig();
 
     await server.keystone.connect(
@@ -140,8 +141,13 @@ function keystoneMongoTest(setupKeystoneFn, testFn) {
   };
 }
 
+function multiAdapterRunners() {
+  return [{ runner: keystoneMongoTest, adapterName: 'mongoose' }];
+}
+
 module.exports = {
   setupServer,
+  multiAdapterRunners,
   graphqlRequest,
   keystoneMongoTest,
 };

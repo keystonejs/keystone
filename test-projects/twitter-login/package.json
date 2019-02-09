@@ -22,7 +22,7 @@
     "@voussoir/file-adapters": "^0.2.1",
     "@voussoir/server": "^0.5.1",
     "dotenv-safe": "^6.0.0",
-    "react": "16.7.0-alpha.2"
+    "react": "^16.8.0"
   },
   "devDependencies": {
     "pino-colada": "^1.4.4"

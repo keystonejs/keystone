@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useRef, Fragment, useLayoutEffect, useMemo } from 'react';
+import { useRef, Fragment, useLayoutEffect, useMemo, forwardRef } from 'react';
 import { Editor } from 'slate-react';
 import { Block } from 'slate';
 import { getVisibleSelectionRect } from 'get-selection-range';
@@ -53,8 +53,129 @@ let stopPropagation = e => {
   e.stopPropagation();
 };
 
-// to use hooks inside of class components
-let Render = ({ children }) => children();
+const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, blocks, editor }, ref) => {
+  useLayoutEffect(scheduleUpdate, [editorState]);
+
+  let shouldShowToolbar = useHasSelection();
+
+  let [toolbarElement, setToolbarElement] = useStateWithEqualityCheck(null);
+
+  let observerRef = useRef(null);
+
+  useLayoutEffect(
+    () => {
+      if (toolbarElement !== null) {
+        let rect = toolbarElement.getBoundingClientRect();
+        let previousHeight = Math.round(rect.height);
+        let previousWidth = Math.round(rect.width);
+        observerRef.current = new ResizeObserver(entries => {
+          let entry = entries[0];
+          let { height, width } = entry.contentRect;
+          height = Math.round(height);
+          width = Math.round(width);
+          if (
+            (height !== previousHeight || width !== previousWidth) &&
+            height !== 0 &&
+            width !== 0
+          ) {
+            previousHeight = height;
+            previousWidth = width;
+            scheduleUpdate();
+          }
+        });
+      }
+    },
+    [scheduleUpdate, toolbarElement]
+  );
+
+  useLayoutEffect(
+    () => {
+      if (shouldShowToolbar && toolbarElement !== null) {
+        let observer = observerRef.current;
+        observer.observe(toolbarElement);
+        return () => {
+          observer.unobserve(toolbarElement);
+        };
+      }
+    },
+    [shouldShowToolbar, toolbarElement, scheduleUpdate]
+  );
+
+  return createPortal(
+    <div
+      onMouseDown={stopPropagation}
+      ref={ref}
+      style={style}
+      css={{
+        backgroundColor: 'black',
+        padding: 8,
+        borderRadius: 6,
+        width: 'auto',
+        position: 'absolute',
+        display: shouldShowToolbar ? 'flex' : 'none',
+        left: 0,
+        top: 0,
+        // this isn't as nice of a transition as i'd like since the time is fixed
+        // i think it would better if it was physics based but that would probably
+        // be a lot of work for little gain
+        // maybe base the transition time on the previous value?
+        transition: 'transform 100ms',
+      }}
+    >
+      {shouldShowToolbar && (
+        <div css={{ display: 'flex' }} ref={setToolbarElement}>
+          {Object.keys(blocks)
+            .map(x => blocks[x].Toolbar)
+            .filter(x => x)
+            .reduce(
+              (children, Toolbar) => {
+                return (
+                  <Toolbar editor={editor} editorState={editorState}>
+                    {children}
+                  </Toolbar>
+                );
+              },
+              <Fragment>
+                {Object.keys(marks).map(name => {
+                  let Icon = marks[name].icon;
+                  return (
+                    <ToolbarButton
+                      isActive={editorState.activeMarks.some(mark => mark.type === name)}
+                      onClick={() => {
+                        editor.toggleMark(name);
+                      }}
+                      key={name}
+                    >
+                      <Icon />
+                      <A11yText>{marks[name].label}</A11yText>
+                    </ToolbarButton>
+                  );
+                })}
+                <ToolbarButton
+                  onClick={() => {
+                    markTypes.forEach(mark => {
+                      editor.removeMark(mark);
+                    });
+                  }}
+                >
+                  <CircleSlashIcon title="Remove Formatting" />
+                </ToolbarButton>
+
+                {Object.keys(blocks).map(type => {
+                  let ToolbarElement = blocks[type].ToolbarElement;
+                  if (ToolbarElement === undefined) {
+                    return null;
+                  }
+                  return <ToolbarElement key={type} editor={editor} editorState={editorState} />;
+                })}
+              </Fragment>
+            )}
+        </div>
+      )}
+    </div>,
+    document.body
+  );
+});
 
 function Stories({ value: editorState, onChange, blocks, className }) {
   let schema = useMemo(
@@ -105,143 +226,9 @@ function Stories({ value: editorState, onChange, blocks, className }) {
       />
       <AddBlock editor={editor} editorState={editorState} blocks={blocks} />
       <Popper placement="top" referenceElement={selectionReference}>
-        {({ style, ref, scheduleUpdate }) => {
-          return (
-            <Render>
-              {() => {
-                useLayoutEffect(scheduleUpdate, [editorState]);
-
-                let shouldShowToolbar = useHasSelection();
-
-                let [toolbarElement, setToolbarElement] = useStateWithEqualityCheck(null);
-
-                let observerRef = useRef(null);
-
-                useLayoutEffect(
-                  () => {
-                    if (toolbarElement !== null) {
-                      let rect = toolbarElement.getBoundingClientRect();
-                      let previousHeight = Math.round(rect.height);
-                      let previousWidth = Math.round(rect.width);
-                      observerRef.current = new ResizeObserver(entries => {
-                        let entry = entries[0];
-                        let { height, width } = entry.contentRect;
-                        height = Math.round(height);
-                        width = Math.round(width);
-                        if (
-                          (height !== previousHeight || width !== previousWidth) &&
-                          height !== 0 &&
-                          width !== 0
-                        ) {
-                          previousHeight = height;
-                          previousWidth = width;
-                          scheduleUpdate();
-                        }
-                      });
-                    }
-                  },
-                  [scheduleUpdate, toolbarElement]
-                );
-
-                useLayoutEffect(
-                  () => {
-                    if (shouldShowToolbar && toolbarElement !== null) {
-                      let observer = observerRef.current;
-                      observer.observe(toolbarElement);
-                      return () => {
-                        observer.unobserve(toolbarElement);
-                      };
-                    }
-                  },
-                  [shouldShowToolbar, toolbarElement, scheduleUpdate]
-                );
-
-                return createPortal(
-                  <div
-                    onMouseDown={stopPropagation}
-                    ref={ref}
-                    style={style}
-                    css={{
-                      backgroundColor: 'black',
-                      padding: 8,
-                      borderRadius: 6,
-                      width: 'auto',
-                      position: 'absolute',
-                      display: shouldShowToolbar ? 'flex' : 'none',
-                      left: 0,
-                      top: 0,
-                      // this isn't as nice of a transition as i'd like since the time is fixed
-                      // i think it would better if it was physics based but that would probably
-                      // be a lot of work for little gain
-                      // maybe base the transition time on the previous value?
-                      transition: 'transform 100ms',
-                    }}
-                  >
-                    {shouldShowToolbar && (
-                      <div css={{ display: 'flex' }} ref={setToolbarElement}>
-                        {Object.keys(blocks)
-                          .map(x => blocks[x].Toolbar)
-                          .filter(x => x)
-                          .reduce(
-                            (children, Toolbar) => {
-                              return (
-                                <Toolbar editor={editor} editorState={editorState}>
-                                  {children}
-                                </Toolbar>
-                              );
-                            },
-                            <Fragment>
-                              {Object.keys(marks).map(name => {
-                                let Icon = marks[name].icon;
-                                return (
-                                  <ToolbarButton
-                                    isActive={editorState.activeMarks.some(
-                                      mark => mark.type === name
-                                    )}
-                                    onClick={() => {
-                                      editor.toggleMark(name);
-                                    }}
-                                    key={name}
-                                  >
-                                    <Icon />
-                                    <A11yText>{marks[name].label}</A11yText>
-                                  </ToolbarButton>
-                                );
-                              })}
-                              <ToolbarButton
-                                onClick={() => {
-                                  markTypes.forEach(mark => {
-                                    editor.removeMark(mark);
-                                  });
-                                }}
-                              >
-                                <CircleSlashIcon title="Remove Formatting" />
-                              </ToolbarButton>
-
-                              {Object.keys(blocks).map(type => {
-                                let ToolbarElement = blocks[type].ToolbarElement;
-                                if (ToolbarElement === undefined) {
-                                  return null;
-                                }
-                                return (
-                                  <ToolbarElement
-                                    key={type}
-                                    editor={editor}
-                                    editorState={editorState}
-                                  />
-                                );
-                              })}
-                            </Fragment>
-                          )}
-                      </div>
-                    )}
-                  </div>,
-                  document.body
-                );
-              }}
-            </Render>
-          );
-        }}
+        {({ style, ref, scheduleUpdate }) => (
+          <PopperRender {...{ scheduleUpdate, editorState, style, blocks, editor, ref }} />
+        )}
       </Popper>
     </div>
   );

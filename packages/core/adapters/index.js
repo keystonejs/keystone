@@ -1,5 +1,4 @@
 const pWaterfall = require('p-waterfall');
-const pSettle = require('p-settle');
 
 class BaseKeystoneAdapter {
   constructor(config) {
@@ -23,17 +22,15 @@ class BaseKeystoneAdapter {
 
   async connect(to, config = {}) {
     // Connect to the database
-    this._connect(to, config);
+    await this._connect(to, config);
 
     // Set up all list adapters
     try {
-      const taskResults = await pSettle(
-        Object.values(this.listAdapters).map(listAdapter => listAdapter.postConnect())
-      );
+      const taskResults = await this.postConnect();
       const errors = taskResults.filter(({ isRejected }) => isRejected);
 
       if (errors.length) {
-        const error = new Error('Connection error');
+        const error = new Error('Post connection error');
         error.errors = errors.map(({ reason }) => reason);
         throw error;
       }
@@ -51,6 +48,8 @@ class BaseKeystoneAdapter {
       throw error;
     }
   }
+
+  async postConnect() {}
 }
 
 class BaseListAdapter {
