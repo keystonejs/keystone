@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useMemo, useCallback } from 'react';
+import { Component, Fragment, useMemo, useCallback, memo, useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
 import { Link, withRouter } from 'react-router-dom';
@@ -75,12 +75,57 @@ const TitleLink = ({ children, ...props }) => (
   </Link>
 );
 
+let CopyIcon = memo(function CopyIcon({ isCopied }) {
+  return isCopied ? (
+    <Animation name="pulse" duration="500ms">
+      <CheckIcon css={{ color: colors.create }} />
+    </Animation>
+  ) : (
+    <ClippyIcon />
+  );
+});
+
+let IdCopy = memo(function IdCopy({ id }) {
+  let [isCopied, setIsCopied] = useState(false);
+
+  useEffect(
+    () => {
+      if (isCopied) {
+        let timeoutID = setTimeout(() => {
+          isCopied(false);
+        }, 500);
+        return () => {
+          clearTimeout(timeoutID);
+        };
+      }
+    },
+    [isCopied, setIsCopied]
+  );
+
+  return (
+    <FlexGroup align="center" isContiguous>
+      <ItemId>ID: {id}</ItemId>
+      <CopyToClipboard
+        as={Button}
+        text={id}
+        onSuccess={useCallback(() => {
+          setIsCopied(true);
+        }, [])}
+        variant="subtle"
+        title="Copy ID"
+      >
+        <CopyIcon isCopied={isCopied} />
+        <A11yText>Copy ID</A11yText>
+      </CopyToClipboard>
+    </FlexGroup>
+  );
+});
+
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
 const ItemDetails = withRouter(
   class ItemDetails extends Component {
     state = {
-      copyText: '',
       item: this.props.item,
       itemHasChanged: false,
       showCreateModal: false,
@@ -236,13 +281,6 @@ const ItemDetails = withRouter(
         })
         .then(onUpdate);
     };
-    onCopy = text => () => {
-      this.setState({ copyText: text }, () => {
-        setTimeout(() => {
-          this.setState({ copyText: '' });
-        }, 500);
-      });
-    };
 
     /**
      * Create item
@@ -265,15 +303,7 @@ const ItemDetails = withRouter(
 
     render() {
       const { adminPath, list, updateInProgress, itemErrors, item: savedData } = this.props;
-      const { copyText, item, itemHasChanged } = this.state;
-      const isCopied = copyText === item.id;
-      const copyIcon = isCopied ? (
-        <Animation name="pulse" duration="500ms">
-          <CheckIcon css={{ color: colors.create }} />
-        </Animation>
-      ) : (
-        <ClippyIcon />
-      );
+      const { item, itemHasChanged } = this.state;
       const listHref = `${adminPath}/${list.path}`;
       const titleText = savedData._label_;
       return (
@@ -287,19 +317,7 @@ const ItemDetails = withRouter(
               Create
             </IconButton>
           </FlexGroup>
-          <FlexGroup align="center" isContiguous>
-            <ItemId>ID: {item.id}</ItemId>
-            <CopyToClipboard
-              as={Button}
-              text={item.id}
-              onSuccess={this.onCopy(item.id)}
-              variant="subtle"
-              title="Copy ID"
-            >
-              {copyIcon}
-              <A11yText>Copy ID</A11yText>
-            </CopyToClipboard>
-          </FlexGroup>
+          <IdCopy id={item.id} />
           <Form>
             <AutocompleteCaptor />
             {list.fields.map((field, i) => {
