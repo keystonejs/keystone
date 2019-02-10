@@ -320,6 +320,50 @@ describe('Type Generation', () => {
 
     expect(fieldAST.definitions[0].fields[0].arguments).toHaveLength(1);
   });
+
+  test('to-many relationships can have meta disabled', () => {
+    const path = 'foo';
+
+    const relationship = createRelationship({
+      path,
+      config: { many: true, ref: 'Zip', withMeta: false },
+    });
+
+    // Wrap it in a mock type because all we get back is the fields
+    const fieldSchema = `
+      type MockType {
+        ${relationship.gqlOutputFields.join('\n')}
+      }
+    `;
+
+    const fieldAST = gql(fieldSchema);
+
+    expect(fieldAST).toMatchObject({
+      definitions: [
+        {
+          fields: [
+            {
+              kind: 'FieldDefinition',
+              name: {
+                value: 'foo',
+              },
+              arguments: mockFilterAST,
+              type: {
+                kind: 'ListType',
+                type: {
+                  name: {
+                    value: 'Zip',
+                  },
+                },
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(fieldAST.definitions[0].fields[0].arguments).toHaveLength(1);
+  });
 });
 
 describe('Referenced list errors', () => {

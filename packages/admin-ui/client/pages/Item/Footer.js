@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Fragment } from 'react';
-import PropTypes from 'prop-types';
+import { Fragment, useState, memo, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Button, LoadingButton } from '@arch-ui/button';
 import { gridSize } from '@arch-ui/theme';
@@ -20,8 +19,62 @@ const Toolbar = styled.div({
   position: 'fixed',
 });
 
-export default function Footer(props) {
-  const { onSave, onDelete, resetInterface, updateInProgress } = props;
+function useKeyListener(listener, deps) {
+  useEffect(() => {
+    document.addEventListener('keydown', listener, false);
+    return () => {
+      document.removeEventListener('keydown', listener, false);
+    };
+  }, deps);
+}
+
+function Reset({ canReset, onReset }) {
+  let [resetRequested, setResetRequested] = useState(false);
+
+  useKeyListener(
+    event => {
+      if (!event.defaultPrevented && event.key === 'Escape') {
+        setResetRequested(false);
+      }
+    },
+    [setResetRequested]
+  );
+
+  if (!canReset && resetRequested) {
+    setResetRequested(false);
+  }
+
+  return resetRequested ? (
+    <div css={{ display: 'flex', alignItems: 'center', marginLeft: gridSize }}>
+      <div css={{ fontSize: '0.9rem', marginRight: gridSize }}>Are you sure?</div>
+      <Button appearance="danger" autoFocus onClick={onReset} variant="ghost">
+        Reset
+      </Button>
+      <Button
+        variant="subtle"
+        onClick={() => {
+          setResetRequested(false);
+        }}
+      >
+        Cancel
+      </Button>
+    </div>
+  ) : (
+    <Button
+      appearance="warning"
+      isDisabled={!canReset}
+      variant="subtle"
+      onClick={() => {
+        setResetRequested(true);
+      }}
+    >
+      Reset Changes
+    </Button>
+  );
+}
+
+export default memo(function Footer(props) {
+  const { onSave, onDelete, canReset, updateInProgress, onReset } = props;
 
   return (
     <ContainerQuery
@@ -40,7 +93,7 @@ export default function Footer(props) {
               >
                 Save Changes
               </LoadingButton>
-              {resetInterface}
+              <Reset canReset={canReset} onReset={onReset} />
             </div>
             <div>
               <Button
@@ -57,9 +110,4 @@ export default function Footer(props) {
       )}
     />
   );
-}
-Footer.propTypes = {
-  onDelete: PropTypes.func,
-  onReset: PropTypes.func,
-  onSave: PropTypes.func,
-};
+});
