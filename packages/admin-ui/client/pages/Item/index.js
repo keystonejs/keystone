@@ -3,25 +3,23 @@ import { jsx } from '@emotion/core';
 import { Component, Fragment, useMemo, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { withToastManager } from 'react-toast-notifications';
 
-import CopyToClipboard from '../../components/CopyToClipboard';
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
-import Animation from '../../components/Animation';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
 import Footer from './Footer';
-import { TriangleLeftIcon, CheckIcon, ClippyIcon, PlusIcon } from '@arch-ui/icons';
-import { Container, FlexGroup } from '@arch-ui/layout';
-import { A11yText, Title } from '@arch-ui/typography';
-import { Button, IconButton } from '@arch-ui/button';
+import { Container } from '@arch-ui/layout';
+import { Button } from '@arch-ui/button';
 import { AutocompleteCaptor } from '@arch-ui/input';
-import { colors, gridSize } from '@arch-ui/theme';
+import { gridSize } from '@arch-ui/theme';
 import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
+import { IdCopy } from './IdCopy';
+import { ItemTitle } from './ItemTitle';
 
 import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
 import isEqual from 'lodash.isequal';
@@ -32,60 +30,19 @@ import FieldTypes from '../../FIELD_TYPES';
 
 let Render = ({ children }) => children();
 
-const ItemId = styled.div({
-  color: colors.N30,
-  fontFamily: 'Monaco, Consolas, monospace',
-  fontSize: '0.85em',
-});
 const Form = styled.form({
   margin: '24px 0',
 });
-const TitleLink = ({ children, ...props }) => (
-  <Link
-    css={{
-      position: 'relative',
-      textDecoration: 'none',
-
-      ':hover': {
-        textDecoration: 'none',
-      },
-
-      '& > svg': {
-        opacity: 0,
-        height: 16,
-        width: 16,
-        position: 'absolute',
-        transitionProperty: 'opacity, transform, visibility',
-        transitionDuration: '300ms',
-        transform: 'translate(-75%, -50%)',
-        top: '50%',
-        visibility: 'hidden',
-      },
-
-      ':hover > svg': {
-        opacity: 0.66,
-        visibility: 'visible',
-        transform: 'translate(-110%, -50%)',
-      },
-    }}
-    {...props}
-  >
-    <TriangleLeftIcon />
-    {children}
-  </Link>
-);
 
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
 const ItemDetails = withRouter(
   class ItemDetails extends Component {
     state = {
-      copyText: '',
       item: this.props.item,
       itemHasChanged: false,
       showCreateModal: false,
       showDeleteModal: false,
-      resetRequested: false,
     };
     componentDidMount() {
       this.mounted = true;
@@ -96,14 +53,9 @@ const ItemDetails = withRouter(
       document.removeEventListener('keydown', this.onKeyDown, false);
     }
     onKeyDown = event => {
-      const { resetRequested } = this.state;
       if (event.defaultPrevented) return;
 
       switch (event.key) {
-        case 'Escape':
-          if (resetRequested) {
-            return this.hideConfirmResetMessage();
-          }
         case 'Enter':
           if (event.metaKey) {
             return this.onSave();
@@ -126,14 +78,6 @@ const ItemDetails = withRouter(
         });
     };
 
-    showConfirmResetMessage = () => {
-      const { itemHasChanged } = this.state;
-      if (!itemHasChanged) return;
-      this.setState({ resetRequested: true });
-    };
-    hideConfirmResetMessage = () => {
-      this.setState({ resetRequested: false });
-    };
     openDeleteModal = () => {
       this.setState({ showDeleteModal: true });
     };
@@ -146,34 +90,8 @@ const ItemDetails = withRouter(
         item: this.props.item,
         itemHasChanged: false,
       });
-      this.hideConfirmResetMessage();
     };
 
-    renderResetInterface = () => {
-      const { updateInProgress } = this.props;
-      const { itemHasChanged, resetRequested } = this.state;
-
-      return resetRequested ? (
-        <div css={{ display: 'flex', alignItems: 'center', marginLeft: gridSize }}>
-          <div css={{ fontSize: '0.9rem', marginRight: gridSize }}>Are you sure?</div>
-          <Button appearance="danger" autoFocus onClick={this.onReset} variant="ghost">
-            Reset
-          </Button>
-          <Button variant="subtle" onClick={this.hideConfirmResetMessage}>
-            Cancel
-          </Button>
-        </div>
-      ) : (
-        <Button
-          appearance="warning"
-          isDisabled={!itemHasChanged || updateInProgress}
-          variant="subtle"
-          onClick={this.showConfirmResetMessage}
-        >
-          Reset Changes
-        </Button>
-      );
-    };
     renderDeleteModal() {
       const { showDeleteModal } = this.state;
       const { item, list } = this.props;
@@ -236,13 +154,6 @@ const ItemDetails = withRouter(
         })
         .then(onUpdate);
     };
-    onCopy = text => () => {
-      this.setState({ copyText: text }, () => {
-        setTimeout(() => {
-          this.setState({ copyText: '' });
-        }, 500);
-      });
-    };
 
     /**
      * Create item
@@ -265,41 +176,17 @@ const ItemDetails = withRouter(
 
     render() {
       const { adminPath, list, updateInProgress, itemErrors, item: savedData } = this.props;
-      const { copyText, item, itemHasChanged } = this.state;
-      const isCopied = copyText === item.id;
-      const copyIcon = isCopied ? (
-        <Animation name="pulse" duration="500ms">
-          <CheckIcon css={{ color: colors.create }} />
-        </Animation>
-      ) : (
-        <ClippyIcon />
-      );
-      const listHref = `${adminPath}/${list.path}`;
-      const titleText = savedData._label_;
+      const { item, itemHasChanged } = this.state;
       return (
         <Fragment>
           {itemHasChanged && <PreventNavigation />}
-          <FlexGroup align="center" justify="space-between">
-            <Title as="h1" margin="both">
-              <TitleLink to={listHref}>{list.label}</TitleLink>: {titleText}
-            </Title>
-            <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
-              Create
-            </IconButton>
-          </FlexGroup>
-          <FlexGroup align="center" isContiguous>
-            <ItemId>ID: {item.id}</ItemId>
-            <CopyToClipboard
-              as={Button}
-              text={item.id}
-              onSuccess={this.onCopy(item.id)}
-              variant="subtle"
-              title="Copy ID"
-            >
-              {copyIcon}
-              <A11yText>Copy ID</A11yText>
-            </CopyToClipboard>
-          </FlexGroup>
+          <ItemTitle
+            onCreateClick={this.openCreateModal}
+            list={list}
+            adminPath={adminPath}
+            titleText={savedData._label_}
+          />
+          <IdCopy id={item.id} />
           <Form>
             <AutocompleteCaptor />
             {list.fields.map((field, i) => {
@@ -341,7 +228,8 @@ const ItemDetails = withRouter(
           <Footer
             onSave={this.onSave}
             onDelete={this.openDeleteModal}
-            resetInterface={this.renderResetInterface()}
+            canReset={itemHasChanged && !updateInProgress}
+            onReset={this.onReset}
             updateInProgress={updateInProgress}
           />
           {this.renderCreateModal()}
