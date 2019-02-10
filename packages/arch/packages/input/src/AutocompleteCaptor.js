@@ -1,5 +1,5 @@
 // @flow
-import React, { Fragment } from 'react';
+import React, { Fragment, memo } from 'react';
 import { HiddenInput } from './HiddenInput';
 // Autocomplete Captor
 // ==============================
@@ -22,11 +22,16 @@ import { HiddenInput } from './HiddenInput';
  *  This component *must* be rendered before your legitimate fields.
  */
 
-export const AutocompleteCaptor = () => (
-  <Fragment>
-    <HiddenInput autoComplete="username" type="text" tabIndex={-1} />
-    <HiddenInput autoComplete="email" type="text" tabIndex={-1} />
-    <HiddenInput autoComplete="current-password" type="password" tabIndex={-1} />
-    <HiddenInput autoComplete="new-password" type="password" tabIndex={-1} />
-  </Fragment>
+export const AutocompleteCaptor = memo<{}>(
+  function AutocompleteCaptor() {
+    return (
+      <Fragment>
+        <HiddenInput autoComplete="username" type="text" tabIndex={-1} />
+        <HiddenInput autoComplete="email" type="text" tabIndex={-1} />
+        <HiddenInput autoComplete="current-password" type="password" tabIndex={-1} />
+        <HiddenInput autoComplete="new-password" type="password" tabIndex={-1} />
+      </Fragment>
+    );
+  },
+  () => true
 );
