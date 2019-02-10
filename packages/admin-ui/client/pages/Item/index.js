@@ -145,7 +145,6 @@ const ItemDetails = withRouter(
       itemHasChanged: false,
       showCreateModal: false,
       showDeleteModal: false,
-      resetRequested: false,
     };
     componentDidMount() {
       this.mounted = true;
@@ -156,14 +155,9 @@ const ItemDetails = withRouter(
       document.removeEventListener('keydown', this.onKeyDown, false);
     }
     onKeyDown = event => {
-      const { resetRequested } = this.state;
       if (event.defaultPrevented) return;
 
       switch (event.key) {
-        case 'Escape':
-          if (resetRequested) {
-            return this.hideConfirmResetMessage();
-          }
         case 'Enter':
           if (event.metaKey) {
             return this.onSave();
@@ -186,14 +180,6 @@ const ItemDetails = withRouter(
         });
     };
 
-    showConfirmResetMessage = () => {
-      const { itemHasChanged } = this.state;
-      if (!itemHasChanged) return;
-      this.setState({ resetRequested: true });
-    };
-    hideConfirmResetMessage = () => {
-      this.setState({ resetRequested: false });
-    };
     openDeleteModal = () => {
       this.setState({ showDeleteModal: true });
     };
@@ -206,34 +192,8 @@ const ItemDetails = withRouter(
         item: this.props.item,
         itemHasChanged: false,
       });
-      this.hideConfirmResetMessage();
     };
 
-    renderResetInterface = () => {
-      const { updateInProgress } = this.props;
-      const { itemHasChanged, resetRequested } = this.state;
-
-      return resetRequested ? (
-        <div css={{ display: 'flex', alignItems: 'center', marginLeft: gridSize }}>
-          <div css={{ fontSize: '0.9rem', marginRight: gridSize }}>Are you sure?</div>
-          <Button appearance="danger" autoFocus onClick={this.onReset} variant="ghost">
-            Reset
-          </Button>
-          <Button variant="subtle" onClick={this.hideConfirmResetMessage}>
-            Cancel
-          </Button>
-        </div>
-      ) : (
-        <Button
-          appearance="warning"
-          isDisabled={!itemHasChanged || updateInProgress}
-          variant="subtle"
-          onClick={this.showConfirmResetMessage}
-        >
-          Reset Changes
-        </Button>
-      );
-    };
     renderDeleteModal() {
       const { showDeleteModal } = this.state;
       const { item, list } = this.props;
@@ -370,7 +330,8 @@ const ItemDetails = withRouter(
           <Footer
             onSave={this.onSave}
             onDelete={this.openDeleteModal}
-            resetInterface={this.renderResetInterface()}
+            canReset={itemHasChanged && !updateInProgress}
+            onReset={this.onReset}
             updateInProgress={updateInProgress}
           />
           {this.renderCreateModal()}
