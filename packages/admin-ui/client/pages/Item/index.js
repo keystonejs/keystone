@@ -121,6 +121,21 @@ let IdCopy = memo(function IdCopy({ id }) {
   );
 });
 
+let ItemTitle = memo(function ItemTitle({ titleText, list, adminPath, onCreateClick }) {
+  const listHref = `${adminPath}/${list.path}`;
+
+  return (
+    <FlexGroup align="center" justify="space-between">
+      <Title as="h1" margin="both">
+        <TitleLink to={listHref}>{list.label}</TitleLink>: {titleText}
+      </Title>
+      <IconButton appearance="create" icon={PlusIcon} onClick={onCreateClick}>
+        Create
+      </IconButton>
+    </FlexGroup>
+  );
+});
+
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
 const ItemDetails = withRouter(
@@ -304,19 +319,15 @@ const ItemDetails = withRouter(
     render() {
       const { adminPath, list, updateInProgress, itemErrors, item: savedData } = this.props;
       const { item, itemHasChanged } = this.state;
-      const listHref = `${adminPath}/${list.path}`;
-      const titleText = savedData._label_;
       return (
         <Fragment>
           {itemHasChanged && <PreventNavigation />}
-          <FlexGroup align="center" justify="space-between">
-            <Title as="h1" margin="both">
-              <TitleLink to={listHref}>{list.label}</TitleLink>: {titleText}
-            </Title>
-            <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
-              Create
-            </IconButton>
-          </FlexGroup>
+          <ItemTitle
+            onCreateClick={this.openCreateModal}
+            list={list}
+            adminPath={adminPath}
+            titleText={savedData._label_}
+          />
           <IdCopy id={item.id} />
           <Form>
             <AutocompleteCaptor />
