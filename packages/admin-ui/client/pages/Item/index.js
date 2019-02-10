@@ -1,27 +1,26 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useMemo, useCallback, memo, useState, useEffect } from 'react';
+import { Component, Fragment, useMemo, useCallback, memo } from 'react';
 import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
 import { Link, withRouter } from 'react-router-dom';
 import { withToastManager } from 'react-toast-notifications';
 
-import CopyToClipboard from '../../components/CopyToClipboard';
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
-import Animation from '../../components/Animation';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
 import Footer from './Footer';
-import { TriangleLeftIcon, CheckIcon, ClippyIcon, PlusIcon } from '@arch-ui/icons';
+import { TriangleLeftIcon, PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
-import { A11yText, Title } from '@arch-ui/typography';
+import { Title } from '@arch-ui/typography';
 import { Button, IconButton } from '@arch-ui/button';
 import { AutocompleteCaptor } from '@arch-ui/input';
-import { colors, gridSize } from '@arch-ui/theme';
+import { gridSize } from '@arch-ui/theme';
 import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
+import { IdCopy } from './IdCopy';
 
 import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
 import isEqual from 'lodash.isequal';
@@ -32,11 +31,6 @@ import FieldTypes from '../../FIELD_TYPES';
 
 let Render = ({ children }) => children();
 
-const ItemId = styled.div({
-  color: colors.N30,
-  fontFamily: 'Monaco, Consolas, monospace',
-  fontSize: '0.85em',
-});
 const Form = styled.form({
   margin: '24px 0',
 });
@@ -74,52 +68,6 @@ const TitleLink = ({ children, ...props }) => (
     {children}
   </Link>
 );
-
-let CopyIcon = memo(function CopyIcon({ isCopied }) {
-  return isCopied ? (
-    <Animation name="pulse" duration="500ms">
-      <CheckIcon css={{ color: colors.create }} />
-    </Animation>
-  ) : (
-    <ClippyIcon />
-  );
-});
-
-let IdCopy = memo(function IdCopy({ id }) {
-  let [isCopied, setIsCopied] = useState(false);
-
-  useEffect(
-    () => {
-      if (isCopied) {
-        let timeoutID = setTimeout(() => {
-          isCopied(false);
-        }, 500);
-        return () => {
-          clearTimeout(timeoutID);
-        };
-      }
-    },
-    [isCopied, setIsCopied]
-  );
-
-  return (
-    <FlexGroup align="center" isContiguous>
-      <ItemId>ID: {id}</ItemId>
-      <CopyToClipboard
-        as={Button}
-        text={id}
-        onSuccess={useCallback(() => {
-          setIsCopied(true);
-        }, [])}
-        variant="subtle"
-        title="Copy ID"
-      >
-        <CopyIcon isCopied={isCopied} />
-        <A11yText>Copy ID</A11yText>
-      </CopyToClipboard>
-    </FlexGroup>
-  );
-});
 
 let ItemTitle = memo(function ItemTitle({ titleText, list, adminPath, onCreateClick }) {
   const listHref = `${adminPath}/${list.path}`;
