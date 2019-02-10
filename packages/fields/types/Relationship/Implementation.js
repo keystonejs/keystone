@@ -263,7 +263,7 @@ class Relationship extends Implementation {
     //
     // Then there's the linking to existing records usecase:
     // mutation createPost() {
-    //   author: { id: 'abc123' }
+    //   author: { connect: { id: 'abc123' } }
     // }
     if (this.config.many) {
       return [
