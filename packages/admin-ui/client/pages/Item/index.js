@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useMemo, useCallback, memo } from 'react';
+import { Component, Fragment, useMemo, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { withToastManager } from 'react-toast-notifications';
 
 import CreateItemModal from '../../components/CreateItemModal';
@@ -13,14 +13,13 @@ import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
 import Footer from './Footer';
-import { TriangleLeftIcon, PlusIcon } from '@arch-ui/icons';
-import { Container, FlexGroup } from '@arch-ui/layout';
-import { Title } from '@arch-ui/typography';
-import { Button, IconButton } from '@arch-ui/button';
+import { Container } from '@arch-ui/layout';
+import { Button } from '@arch-ui/button';
 import { AutocompleteCaptor } from '@arch-ui/input';
 import { gridSize } from '@arch-ui/theme';
 import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
 import { IdCopy } from './IdCopy';
+import { ItemTitle } from './ItemTitle';
 
 import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
 import isEqual from 'lodash.isequal';
@@ -33,55 +32,6 @@ let Render = ({ children }) => children();
 
 const Form = styled.form({
   margin: '24px 0',
-});
-const TitleLink = ({ children, ...props }) => (
-  <Link
-    css={{
-      position: 'relative',
-      textDecoration: 'none',
-
-      ':hover': {
-        textDecoration: 'none',
-      },
-
-      '& > svg': {
-        opacity: 0,
-        height: 16,
-        width: 16,
-        position: 'absolute',
-        transitionProperty: 'opacity, transform, visibility',
-        transitionDuration: '300ms',
-        transform: 'translate(-75%, -50%)',
-        top: '50%',
-        visibility: 'hidden',
-      },
-
-      ':hover > svg': {
-        opacity: 0.66,
-        visibility: 'visible',
-        transform: 'translate(-110%, -50%)',
-      },
-    }}
-    {...props}
-  >
-    <TriangleLeftIcon />
-    {children}
-  </Link>
-);
-
-let ItemTitle = memo(function ItemTitle({ titleText, list, adminPath, onCreateClick }) {
-  const listHref = `${adminPath}/${list.path}`;
-
-  return (
-    <FlexGroup align="center" justify="space-between">
-      <Title as="h1" margin="both">
-        <TitleLink to={listHref}>{list.label}</TitleLink>: {titleText}
-      </Title>
-      <IconButton appearance="create" icon={PlusIcon} onClick={onCreateClick}>
-        Create
-      </IconButton>
-    </FlexGroup>
-  );
 });
 
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
