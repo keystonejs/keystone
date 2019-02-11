@@ -12,6 +12,7 @@ import {
   getYear,
   addDays,
 } from 'date-fns';
+import moment from 'moment';
 
 const today = setMinutes(new Date(), 0);
 const path = '/admin/users?fields=_label_%2Cdob%2ClastOnline';
@@ -83,32 +84,26 @@ describe('DateTime Component - Functionality', () => {
     cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2)`).click();
   });
 
-  it(`can select a day in this month`, () => {
-    cy.get('button:contains("Set Date & Time")').click();
-    cy.get(getDaySelector(today)).click();
-    cy.get('input[name=time-picker]')
-      .click()
-      .type(format(today, 'HH:mm'));
-
-    cy.get('#ks-input-lastOnline-picker-offset input')
-      .click({ force: true })
-      .type(`00:00{downarrow}{enter}`, { force: true });
-
+  it('can accept natural language like tomorrow at 4pm', () => {
+    cy.get(dateTimeInputSelector).type('tomorrow at 4pm');
     cy.get('label:contains("Name")').click();
-    cy.get(
-      `button:contains("${format(
-        subMinutes(today, today.getTimezoneOffset()),
-        'MM/DD/YYYY h:mm A'
-      )}")`
-    ).should('exist');
+    let tomorrow4pmMoment = moment();
+    tomorrow4pmMoment.set('hours', 16);
+    tomorrow4pmMoment.set('minutes', 0);
+    tomorrow4pmMoment.set('seconds', 0);
+
+    tomorrow4pmMoment.add(1, 'day');
+    cy.get(dateTimeInputSelector).should(
+      'have.value',
+      tomorrow4pmMoment.format('h:mm A Do MMMM YYYY Z')
+    );
   });
 
-  it(`can use arrows to set month`, () => {
-    cy.get('#ks-input-dob').click();
-    cy.get(getMonthSelector(today)).scrollIntoView();
-    cy.get(`button:contains("Previous Month")`)
-      .click()
-      .click();
-    cy.get(`#ks-select-month`).should('have.value', `${subMonths(today, 2).getMonth()}`);
+  it(`can accept a date time`, () => {
+    cy.get(dateTimeInputSelector)
+      .clear()
+      .type('1:28 am 12 september 2018 +10:00');
+    cy.get('label:contains("Name")').click();
+    cy.get(dateTimeInputSelector).should('have.value', '1:28 AM 12th September 2018 +10:00');
   });
 });
