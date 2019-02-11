@@ -1,25 +1,16 @@
 // @flow
 import React from 'react';
+import { style } from '../style';
 
-const DashIcon = ({ title, ...props }: { title?: string }) => {
+const svgContent = <path fillRule="evenodd" d="M0 7v2h8V7H0z" />;
+
+const DashIcon = React.memo<{ title?: string }>(({ title, ...props }) => {
   return (
-    <svg {...props}>
+    <svg aria-hidden height={16} width={8} viewBox="0 0 8 16" style={style} {...props}>
       {title ? <title>{title}</title> : null}
-      <path fillRule="evenodd" d="M0 7v2h8V7H0z" />
+      {svgContent}
     </svg>
   );
-};
-
-DashIcon.defaultProps = {
-  'aria-hidden': true,
-  height: 16,
-  width: 8,
-  viewBox: '0 0 8 16',
-  style: {
-    display: 'inline-block',
-    verticalAlign: 'text-top',
-    fill: 'currentColor',
-  },
-};
+});
 
 export default DashIcon;

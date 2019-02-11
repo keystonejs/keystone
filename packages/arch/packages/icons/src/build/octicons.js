@@ -20,7 +20,7 @@ Object.getOwnPropertyNames(octicons).forEach(octiconName => {
   if (EXCLUDE.includes(octiconName)) return;
 
   let {
-    options: { width, height, viewBox, 'aria-hidden': ariaHidden },
+    options: { width, height, viewBox },
     path: svgContents,
   } = octicons[octiconName];
 
@@ -36,7 +36,6 @@ Object.getOwnPropertyNames(octicons).forEach(octiconName => {
     width,
     height,
     viewBox,
-    ariaHidden,
     svgContents,
   });
 
