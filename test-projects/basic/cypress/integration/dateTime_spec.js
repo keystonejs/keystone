@@ -95,7 +95,6 @@ describe('CalendarDay Component - Functionality', () => {
   });
 
   it(`can use input to set year`, () => {
-    cy.get(getDateButtonSetTo(today)).click();
     cy.get(`#ks-input-year`).type('{backspace}{backspace}15');
     cy.get(getDaySelector(setYear(today, 2015))).click();
     cy.get('label:contains("Name")').click();

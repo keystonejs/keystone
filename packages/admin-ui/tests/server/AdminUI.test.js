@@ -1,11 +1,16 @@
 // We don't want to actually run webpack, so we mock all the bits out
 jest.doMock('webpack', () => {
   const mock = jest.fn(() => {});
+  mock.HotModuleReplacementPlugin = jest.fn(() => {});
   mock.DefinePlugin = jest.fn(() => {});
   return mock;
 });
 
 jest.doMock('webpack-dev-middleware', () => {
+  return jest.fn(() => () => {});
+});
+
+jest.doMock('webpack-hot-middleware', () => {
   return jest.fn(() => () => {});
 });
 

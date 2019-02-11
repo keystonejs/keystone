@@ -58,6 +58,14 @@ export default function withModalHandlers(
       document.removeEventListener('keydown', this.handleKeyDown, false);
     };
 
+    toggle = (event: MouseEvent) => {
+      if (this.state.isOpen) {
+        this.close(event);
+      } else {
+        this.open(event);
+      }
+    };
+
     handleScroll = (event: WheelEvent) => {
       event.preventDefault();
     };
@@ -74,7 +82,7 @@ export default function withModalHandlers(
       // NOTE: Why not use the <Blanket /> component to close?
       // We don't want to interupt the user's flow. Taking this approach allows
       // user to click "through" to other elements and close the popout.
-      if (isOpen && !this.contentNode.contains(target)) {
+      if (isOpen && !this.contentNode.contains(target) && !this.targetNode.contains(target)) {
         this.close(event);
       }
     };
@@ -99,7 +107,7 @@ export default function withModalHandlers(
 
       const cloneProps = {};
       if (isOpen) cloneProps.isActive = true;
-      if (mode === 'click') cloneProps.onClick = this.open;
+      if (mode === 'click') cloneProps.onClick = this.toggle;
       if (mode === 'contextmenu') cloneProps.onContextMenu = this.open;
 
       // TODO: prefer functional children that pass refs + snapshot to the target node

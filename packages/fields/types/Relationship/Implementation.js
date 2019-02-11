@@ -20,6 +20,7 @@ class Relationship extends Implementation {
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
     this.isRelationship = true;
+    this.withMeta = typeof this.config.withMeta !== 'undefined' ? this.config.withMeta : true;
   }
 
   tryResolveRefList() {
@@ -59,7 +60,7 @@ class Relationship extends Implementation {
       const filterArgs = refList.getGraphqlFilterFragment().join('\n');
       return [
         `${this.path}(${filterArgs}): [${refList.gqlNames.outputTypeName}]`,
-        `_${this.path}Meta(${filterArgs}): _QueryMeta`,
+        this.withMeta ? `_${this.path}Meta(${filterArgs}): _QueryMeta` : '',
       ];
     }
 
@@ -151,10 +152,12 @@ class Relationship extends Implementation {
         return refList.listQuery(filteredQueryArgs, context, fieldName);
       },
 
-      [`_${this.path}Meta`]: (item, args, context, { fieldName }) => {
-        const filteredQueryArgs = buildManyQueryArgs(item, args);
-        return refList.listQueryMeta(filteredQueryArgs, context, fieldName);
-      },
+      ...(this.withMeta && {
+        [`_${this.path}Meta`]: (item, args, context, { fieldName }) => {
+          const filteredQueryArgs = buildManyQueryArgs(item, args);
+          return refList.listQueryMeta(filteredQueryArgs, context, fieldName);
+        },
+      }),
     };
   }
 
@@ -260,7 +263,7 @@ class Relationship extends Implementation {
     //
     // Then there's the linking to existing records usecase:
     // mutation createPost() {
-    //   author: { id: 'abc123' }
+    //   author: { connect: { id: 'abc123' } }
     // }
     if (this.config.many) {
       return [
