@@ -1,4 +1,5 @@
 const { CloudinaryImage, MongoCloudinaryImageInterface } = require('./Implementation');
+const { CloudinaryBlock } = require('./Block');
 
 module.exports = {
   type: 'CloudinaryImage',
@@ -11,4 +12,5 @@ module.exports = {
   adapters: {
     mongoose: MongoCloudinaryImageInterface,
   },
+  block: CloudinaryBlock,
 };

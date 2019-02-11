@@ -17,6 +17,7 @@ const camelize = (exports.camelize = str =>
     )
     .join(''));
 
+exports.noop = exports.identity = x => x;
 exports.getType = thing => Object.prototype.toString.call(thing).replace(/\[object (.*)\]/, '$1');
 
 exports.fixConfigKeys = (config, remapKeys = {}) => {
@@ -113,6 +114,9 @@ exports.arrayToObject = (objs, keyedBy, mapFn = i => i) =>
 
 // [[1, 2, 3], [4, 5], 6, [[7, 8], [9, 10]]] => [1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]
 exports.flatten = arr => Array.prototype.concat(...arr);
+
+// flatMap([{ vals: [2, 2] }, { vals: [3] }], x => x.vals) => [2, 2, 3]
+exports.flatMap = (arr, fn = exports.identity) => exports.flatten(arr.map(fn));
 
 // { foo: [1, 2, 3], bar: [4, 5, 6]} => [{ foo: 1, bar; 4}, { foo: 2, bar: 5}, { foo: 3, bar: 6 }]
 exports.zipObj = obj =>
