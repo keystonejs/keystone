@@ -315,10 +315,6 @@ class MongooseListAdapter extends BaseListAdapter {
       }
     );
   }
-
-  itemsQueryMeta(args) {
-    return this.itemsQuery(args, { meta: true });
-  }
 }
 
 class MongooseFieldAdapter extends BaseFieldAdapter {

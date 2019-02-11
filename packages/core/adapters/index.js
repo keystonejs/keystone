@@ -104,6 +104,10 @@ class BaseListAdapter {
       .filter(adapter => adapter.isRelationship)
       .find(adapter => adapter.supportsRelationshipQuery(segment));
   }
+
+  itemsQueryMeta(args) {
+    return this.itemsQuery(args, { meta: true });
+  }
 }
 
 class BaseFieldAdapter {

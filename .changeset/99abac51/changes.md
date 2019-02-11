@@ -1,0 +1,1 @@
+- Move itemsQueryMeta onto the base adapter class
