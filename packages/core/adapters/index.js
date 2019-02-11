@@ -97,20 +97,53 @@ class BaseListAdapter {
     return pWaterfall(this.preSaveHooks, item);
   }
 
-  onPostRead(item) {
+  async onPostRead(item) {
     // We waterfall so the final item is a composed version of the input passing
     // through each consecutive hook
-    return pWaterfall(this.postReadHooks, item);
+    return pWaterfall(this.postReadHooks, await item);
+  }
+
+  async create(data) {
+    return this.onPostRead(this._create(await this.onPreSave(data)));
+  }
+
+  async delete(id) {
+    return this.onPostRead(this._delete(id));
+  }
+
+  async update(id, data) {
+    return this.onPostRead(this._update(id, await this.onPreSave(data)));
+  }
+
+  async findAll() {
+    return Promise.all((await this._findAll()).map(item => this.onPostRead(item)));
+  }
+
+  async findById(id) {
+    return this.onPostRead(this._findById(id));
+  }
+
+  async find(condition) {
+    return Promise.all((await this._find(condition)).map(item => this.onPostRead(item)));
+  }
+
+  async findOne(condition) {
+    return this.onPostRead(this._findOne(condition));
+  }
+
+  async itemsQuery(args, { meta = false } = {}) {
+    const results = await this._itemsQuery(args, { meta });
+    return meta ? results : Promise.all(results.map(item => this.onPostRead(item)));
+  }
+
+  itemsQueryMeta(args) {
+    return this.itemsQuery(args, { meta: true });
   }
 
   findFieldAdapterForQuerySegment(segment) {
     return this.fieldAdapters
       .filter(adapter => adapter.isRelationship)
       .find(adapter => adapter.supportsRelationshipQuery(segment));
-  }
-
-  itemsQueryMeta(args) {
-    return this.itemsQuery(args, { meta: true });
   }
 }
 
