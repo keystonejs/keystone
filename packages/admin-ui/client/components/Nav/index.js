@@ -168,50 +168,76 @@ function getPath(str) {
   return `/${arr[1]}/${arr[2]}`;
 }
 
-let PrimaryArea = memo(
-  function PrimaryArea() {
-    let { adminPath, getListByKey, sortListsAlphabetically, listKeys: _listKeys } = useAdminMeta();
-    const listKeys = sortListsAlphabetically ? [..._listKeys].sort() : _listKeys;
+function PrimaryNavItems() {
+  let { adminPath, getListByKey, sortListsAlphabetically, listKeys: _listKeys } = useAdminMeta();
+  const listKeys = sortListsAlphabetically ? [..._listKeys].sort() : _listKeys;
+
+  return (
+    <Relative>
+      <Route>
+        {({ location }) => (
+          <ScrollQuery isPassive={false}>
+            {(ref, snapshot) => (
+              <PrimaryNavScrollArea ref={ref} {...snapshot}>
+                <PrimaryNavItem to={adminPath} isSelected={location.pathname === adminPath}>
+                  Dashboard
+                </PrimaryNavItem>
+
+                {listKeys.map(key => {
+                  const list = getListByKey(key);
+                  let href = `${adminPath}/${list.path}`;
+                  const path = getPath(location.pathname);
+                  const isSelected = href === path;
+
+                  const maybeSearchParam = list.getPersistedSearch();
+                  if (maybeSearchParam) {
+                    href += maybeSearchParam;
+                  }
+
+                  return (
+                    <PrimaryNavItem
+                      key={key}
+                      id={`ks-nav-${list.path}`}
+                      isSelected={isSelected}
+                      to={href}
+                    >
+                      {list.label}
+                    </PrimaryNavItem>
+                  );
+                })}
+              </PrimaryNavScrollArea>
+            )}
+          </ScrollQuery>
+        )}
+      </Route>
+    </Relative>
+  );
+}
+
+let PrimaryNavContent = memo(
+  function PrimaryContent() {
+    let { adminPath, name } = useAdminMeta();
 
     return (
-      <Relative>
-        <Route>
-          {({ location }) => (
-            <ScrollQuery isPassive={false}>
-              {(ref, snapshot) => (
-                <PrimaryNavScrollArea ref={ref} {...snapshot}>
-                  <PrimaryNavItem to={adminPath} isSelected={location.pathname === adminPath}>
-                    Dashboard
-                  </PrimaryNavItem>
-
-                  {listKeys.map(key => {
-                    const list = getListByKey(key);
-                    let href = `${adminPath}/${list.path}`;
-                    const path = getPath(location.pathname);
-                    const isSelected = href === path;
-
-                    const maybeSearchParam = list.getPersistedSearch();
-                    if (maybeSearchParam) {
-                      href += maybeSearchParam;
-                    }
-
-                    return (
-                      <PrimaryNavItem
-                        key={key}
-                        id={`ks-nav-${list.path}`}
-                        isSelected={isSelected}
-                        to={href}
-                      >
-                        {list.label}
-                      </PrimaryNavItem>
-                    );
-                  })}
-                </PrimaryNavScrollArea>
-              )}
-            </ScrollQuery>
-          )}
-        </Route>
-      </Relative>
+      <Inner>
+        <Title
+          as={Link}
+          to={adminPath}
+          margin="both"
+          crop
+          css={{
+            color: colors.N90,
+            textDecoration: 'none',
+            alignSelf: 'stretch',
+            marginLeft: PRIMARY_NAV_GUTTER,
+            marginRight: PRIMARY_NAV_GUTTER,
+          }}
+        >
+          {name}
+        </Title>
+        <PrimaryNavItems />
+        <NavIcons />
+      </Inner>
     );
   },
   () => true
@@ -227,14 +253,7 @@ class Nav extends Component {
     this.setState({ mouseIsOverNav: false });
   };
   render() {
-    const {
-      adminMeta: { adminPath, name, sortListsAlphabetically },
-      children,
-      location,
-    } = this.props;
-    const listKeys = sortListsAlphabetically
-      ? this.props.adminMeta.listKeys.sort()
-      : this.props.adminMeta.listKeys;
+    const { children } = this.props;
     const { mouseIsOverNav } = this.state;
 
     return (
@@ -251,14 +270,6 @@ class Nav extends Component {
                   )} ${TRANSITION_DURATION} cubic-bezier(0.25, 0, 0, 1)`,
                 };
             return { [key]: navWidth, ...pointers, ...transitions };
-          };
-
-          const titleGutter = {
-            color: colors.N90,
-            textDecoration: 'none',
-            alignSelf: 'stretch',
-            marginLeft: PRIMARY_NAV_GUTTER,
-            marginRight: PRIMARY_NAV_GUTTER,
           };
 
           return (
@@ -278,13 +289,7 @@ class Nav extends Component {
                 onMouseLeave={this.handleMouseLeave}
                 style={makeResizeStyles('width')}
               >
-                <Inner>
-                  <Title as={Link} to={adminPath} margin="both" crop style={titleGutter}>
-                    {name}
-                  </Title>
-                  <PrimaryArea />
-                  <NavIcons />
-                </Inner>
+                <PrimaryNavContent />
                 {isCollapsed ? null : <GrabHandle {...resizeProps} />}
                 <Tooltip
                   content={
@@ -318,4 +323,4 @@ class Nav extends Component {
   }
 }
 
-export default withRouter(withAdminMeta(Nav));
+export default withRouter(Nav);
