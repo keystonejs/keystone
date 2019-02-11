@@ -1,0 +1,8 @@
+{
+  "releases": [
+    { "name": "@voussoir/adapter-mongoose", "type": "minor" },
+    { "name": "@voussoir/core", "type": "minor" },
+    { "name": "@voussoir/fields", "type": "minor" }
+  ],
+  "dependents": []
+}

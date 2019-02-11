@@ -37,7 +37,7 @@ class Decimal extends Implementation {
 }
 
 class MongoDecimalInterface extends MongooseFieldAdapter {
-  addToMongooseSchema(schema, _, { addPreSaveHook, addPostReadHook }) {
+  addToMongooseSchema(schema) {
     const { mongooseOptions = {} } = this.config;
     const { isRequired } = mongooseOptions;
 
@@ -50,7 +50,9 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
       },
     };
     schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
+  }
 
+  setupHooks({ addPreSaveHook, addPostReadHook }) {
     // Updates the relevant value in the item provided (by referrence)
     addPreSaveHook(item => {
       if (item[this.path] && typeof item[this.path] === 'string') {

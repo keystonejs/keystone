@@ -90,9 +90,11 @@ class Password extends Implementation {
 class MongoPasswordInterface extends MongooseFieldAdapter {
   // constructor(fieldName, path, listAdapter, getListByKey, config) {
 
-  addToMongooseSchema(schema, _, { addPreSaveHook }) {
+  addToMongooseSchema(schema) {
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
+  }
 
+  setupHooks({ addPreSaveHook }) {
     // Updates the relevant value in the item provided (by referrence)
     addPreSaveHook(async item => {
       const list = this.getListByKey(this.listAdapter.key);
@@ -125,6 +127,7 @@ class KnexPasswordInterface extends KnexFieldAdapter {
   createColumn(table) {
     table.text(this.path);
   }
+
   getQueryConditions(f, g) {
     return {
       [`${this.path}_is_set`]: value => b =>

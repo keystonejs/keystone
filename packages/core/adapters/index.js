@@ -73,6 +73,10 @@ class BaseListAdapter {
   newFieldAdapter(fieldAdapterClass, name, path, getListByKey, config) {
     const adapter = new fieldAdapterClass(name, path, this, getListByKey, config);
     this.prepareFieldAdapter(adapter);
+    adapter.setupHooks({
+      addPreSaveHook: this.addPreSaveHook.bind(this),
+      addPostReadHook: this.addPostReadHook.bind(this),
+    });
     this.fieldAdapters.push(adapter);
     return adapter;
   }
@@ -118,6 +122,8 @@ class BaseFieldAdapter {
     this.config = config;
     this.getListByKey = getListByKey;
   }
+
+  setupHooks() {}
 }
 
 module.exports = {
