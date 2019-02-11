@@ -19,11 +19,10 @@ import { Title } from '@arch-ui/typography';
 import Tooltip from '@arch-ui/tooltip';
 import { FlexGroup } from '@arch-ui/layout';
 
-import { withAdminMeta, useAdminMeta } from '../../providers/AdminMeta';
+import { useAdminMeta } from '../../providers/AdminMeta';
 import ResizeHandler, { KEYBOARD_SHORTCUT } from './ResizeHandler';
 import { NavIcons } from './NavIcons';
 import ScrollQuery from '../ScrollQuery';
-import { Memoize } from '../Memoize';
 
 const TRANSITION_DURATION = '220ms';
 
