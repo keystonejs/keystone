@@ -184,7 +184,11 @@ class KnexListAdapter extends BaseListAdapter {
     const manyItem = await resolveAllKeys(
       arrayToObject(
         this.fieldAdapters.filter(
-          a => a.isRelationship && a.config.many && data[a.path] && data[a.path].length
+          fieldAdapter =>
+            fieldAdapter.isRelationship &&
+            fieldAdapter.config.many &&
+            data[fieldAdapter.path] &&
+            data[fieldAdapter.path].length
         ),
         'path',
         async a =>
@@ -368,8 +372,7 @@ class KnexListAdapter extends BaseListAdapter {
   //   fromTable:
   //   toTable:
   // }]
-  _traverseJoins(where) {
-    const result = [];
+  _traverseJoins(where, alias, aliases) {
     // These are the conditions which we know how to explicitly handle
     const nonJoinConditions = Object.keys(this._allQueryConditions());
     // Which means these are all the `where` conditions which are non-trivial and may require a join operation.
@@ -378,21 +381,26 @@ class KnexListAdapter extends BaseListAdapter {
       .forEach(path => {
         if (path === 'AND' || path === 'OR') {
           // AND/OR we need to traverse their children
-          result.push(...flatten(where[path].map(x => this._traverseJoins(x))));
+          where[path].forEach(x => this._traverseJoins(x, alias, aliases));
         } else {
           const adapter = this.fieldAdapters.find(a => a.path === path);
           if (adapter) {
             // If no adapter is found, it must be a query of the form `foo_some`, `foo_every`, etc.
             // These correspond to many-relationships, which are handled separately
+
+            // We need a join of the form:
+            // ... LEFT OUTER JOIN {otherList} AS t1 ON {alias}.{path} = t1.id
+            // Each join should result in a unique alias (t1, t2, etc), so we key the aliases
+            // object on a key which combines the current alias, path, and the name of the list we're joining to.
             const otherList = adapter.refListKey;
-            result.push(
-              { fromCol: path, fromTable: this.key, toTable: otherList },
-              ...this.getListAdapterByKey(otherList)._traverseJoins(where[path])
-            );
+            const key = `${alias}.${path}.${otherList}`;
+            if (!aliases[key]) {
+              aliases[key] = `t${Object.keys(aliases).length + 1}`;
+            }
+            this.getListAdapterByKey(otherList)._traverseJoins(where[path], aliases[key], aliases);
           }
         }
       });
-    return result;
   }
 
   async _buildManyWhereClause(path, where) {
@@ -406,12 +414,17 @@ class KnexListAdapter extends BaseListAdapter {
     const otherList = this.fieldAdapters.find(a => a.path === p).refListKey;
 
     // If performing an <>_every query, we need to count how many related items each item has
-    const relatedCount = await this._query()
-      .select(thisID)
-      .count('*')
-      .from(tableName)
-      .groupBy(thisID);
-    const relatedCountById = q === 'every' && arrayToObject(relatedCount, thisID, x => x.count);
+    const relatedCountById =
+      q === 'every' &&
+      arrayToObject(
+        await this._query()
+          .select(thisID)
+          .count('*')
+          .from(tableName)
+          .groupBy(thisID),
+        thisID,
+        x => x.count
+      );
 
     // Identify and count all the items in the referenced list which match the query
     const matchingItems = await this.getListAdapterByKey(otherList).itemsQuery({ where });
@@ -440,9 +453,9 @@ class KnexListAdapter extends BaseListAdapter {
 
   // Recursively traverses the `where` query to build up a list of knex query functions.
   // These will be applied as a where ... andWhere chain on the joined table.
-  async _traverseWhereClauses(where, aliases) {
+  async _traverseWhereClauses(where, alias, aliases) {
     let whereClauses = [];
-    const conditions = this._allQueryConditions(aliases[this.key]);
+    const conditions = this._allQueryConditions(alias);
     const nonJoinConditions = Object.keys(conditions);
 
     await Promise.all(
@@ -453,7 +466,7 @@ class KnexListAdapter extends BaseListAdapter {
         } else if (path === 'AND' || path === 'OR') {
           // AND/OR need to traverse both side of the query
           const subClauses = flatten(
-            await Promise.all(where[path].map(d => this._traverseWhereClauses(d, aliases)))
+            await Promise.all(where[path].map(d => this._traverseWhereClauses(d, alias, aliases)))
           );
           whereClauses.push(b => {
             b.where(subClauses[0]);
@@ -467,13 +480,13 @@ class KnexListAdapter extends BaseListAdapter {
           const adapter = this.fieldAdapters.find(a => a.path === path);
           if (adapter) {
             // Non-many relationship. Traverse the sub-query, using the referenced list as a root.
-            whereClauses = [
-              ...whereClauses,
+            whereClauses.push(
               ...(await this.getListAdapterByKey(adapter.refListKey)._traverseWhereClauses(
                 where[path],
+                aliases[`${alias}.${path}.${adapter.refListKey}`],
                 aliases
-              )),
-            ];
+              ))
+            );
           } else {
             // Many relationship
             whereClauses.push(await this._buildManyWhereClause(path, where[path]));
@@ -496,33 +509,20 @@ class KnexListAdapter extends BaseListAdapter {
       partialQuery.select(`${baseAlias}.*`);
     }
 
-    const aliases = { [this.key]: baseAlias };
-    const getAlias = list => {
-      if (!aliases[list]) {
-        aliases[list] = `t${Object.keys(aliases).length}`;
-        return { as: true, alias: aliases[list] };
-      }
-      return { as: false, alias: aliases[list] };
-    };
-
     // Join all the tables required to perform the query
-    const seen = [];
-    this._traverseJoins(where).forEach(({ fromCol, fromTable, toTable }) => {
-      const { alias: fromAlias } = getAlias(fromTable);
-      const { as, alias: toAlias } = getAlias(toTable);
-      const key = `${fromCol}.${fromTable}.${toTable}`;
-      if (!seen.includes(key)) {
-        partialQuery.leftOuterJoin(
-          as ? `${toTable} as ${toAlias}` : toAlias,
-          `${toAlias}.id`,
-          `${fromAlias}.${fromCol}`
-        );
-        seen.push(key);
-      }
+    const aliases = {};
+    this._traverseJoins(where, baseAlias, aliases);
+    Object.entries(aliases).forEach(([key, toAlias]) => {
+      const [fromAlias, fromCol, toTable] = key.split('.');
+      partialQuery.leftOuterJoin(
+        `${toTable} as ${toAlias}`,
+        `${toAlias}.id`,
+        `${fromAlias}.${fromCol}`
+      );
     });
 
     // Add all the where clauses to the query
-    const whereClauses = await this._traverseWhereClauses(where, aliases);
+    const whereClauses = await this._traverseWhereClauses(where, baseAlias, aliases);
     if (whereClauses.length) {
       partialQuery.where(whereClauses[0]);
       whereClauses.slice(1).forEach(whereClause => {
@@ -558,7 +558,7 @@ class KnexListAdapter extends BaseListAdapter {
       if (first !== undefined) {
         count = Math.min(count, first);
       }
-
+      count = Math.max(0, count); // Don't want to go negative from a skip!
       return { count };
     }
 
