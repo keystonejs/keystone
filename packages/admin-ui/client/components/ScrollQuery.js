@@ -5,7 +5,7 @@ import raf from 'raf-schd';
 
 const LISTENER_OPTIONS = { passive: true };
 
-export default class ContainerQuery extends Component {
+export default class ScrollQuery extends Component {
   scrollElement = createRef();
   state = { hasScroll: false, isScrollable: false, scrollTop: 0 };
   static propTypes = {
@@ -54,8 +54,16 @@ export default class ContainerQuery extends Component {
     const isBottom = scrollTop === scrollHeight - clientHeight;
     const isTop = scrollTop === 0;
     const hasScroll = !!scrollTop;
-
-    this.setState({ isBottom, isTop, isScrollable, scrollHeight, scrollTop, hasScroll });
+    if (
+      // we only need to compare some parts of state
+      // because some of the parts are computed from scrollTop
+      this.state.isBottom !== isBottom ||
+      this.state.isScrollable !== isScrollable ||
+      this.state.scrollHeight !== scrollHeight ||
+      this.state.scrollTop !== scrollTop
+    ) {
+      this.setState({ isBottom, isTop, isScrollable, scrollHeight, scrollTop, hasScroll });
+    }
   };
 
   render() {

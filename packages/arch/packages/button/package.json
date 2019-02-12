@@ -19,7 +19,7 @@
     "@emotion/core": "^10.0.4",
     "@emotion/styled": "^10.0.4",
     "react-pseudo-state": "^2.2.1",
-    "react-router-dom": "^4.2.2"
+    "react-router-dom": "4.4.0-beta.6"
   },
   "module": "dist/button.esm.js"
 }
