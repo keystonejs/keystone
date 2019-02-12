@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, useEffect, useState } from 'react';
+import { Component } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
