@@ -11,51 +11,37 @@ import { Button } from '@arch-ui/button';
 
 import RelationshipSelect from './RelationshipSelect';
 
-function SetAsCurrentUser({ sessionPath, listKey, value, onAddUser, many }) {
-  let [userId, setUserId] = useState(null);
-  useEffect(
-    () => {
-      fetch(sessionPath)
-        .then(x => x.json())
-        .then(({ user }) => {
-          if (user && user.id) {
-            setUserId(user.id);
-          }
-        });
-    },
-    [sessionPath, setUserId]
-  );
-
-  if (
-    userId === null ||
-    (value !== null && (many ? value.some(item => item.id === userId) : value.id === userId))
-  ) {
-    return null;
-  }
-
+function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
+  let path = 'authenticated' + listKey;
   return (
     <Query
       query={gql`
-        query User($userId: ID!) {
-          ${listKey}(where: { id: $userId }) {
+        query User {
+          ${path} {
             _label_
             id
           }
         }
       `}
-      variables={{ userId }}
     >
       {({ data }) => {
-        if (data && data[listKey]) {
+        if (data && data[path]) {
+          let userId = data[path].id;
+          if (
+            value !== null &&
+            (many ? value.some(item => item.id === userId) : value.id === userId)
+          ) {
+            return null;
+          }
           return (
             <Button
               css={{ marginLeft: gridSize }}
               variant="ghost"
               onClick={() => {
-                onAddUser(data[listKey]);
+                onAddUser(data[path]);
               }}
             >
-              {many ? 'Add' : 'Set as'} {data[listKey]._label_}
+              {many ? 'Add' : 'Set as'} {data[path]._label_}
             </Button>
           );
         }
@@ -78,7 +64,7 @@ export default class RelationshipField extends Component {
   render() {
     const { autoFocus, field, value, renderContext, error, onChange } = this.props;
     const { many, ref } = field.config;
-    const { authList, withAuth, sessionPath } = field.adminMeta;
+    const { authList, withAuth } = field.adminMeta;
     const htmlID = `ks-input-${field.path}`;
     const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
     return (
@@ -115,7 +101,6 @@ export default class RelationshipField extends Component {
               }}
               value={value}
               listKey={authList}
-              sessionPath={sessionPath}
             />
           )}
         </FieldInput>
