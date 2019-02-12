@@ -126,7 +126,7 @@ const Relationship = forwardRef(
     );
     return (
       <Select
-        // this is necessary react-select passing a second argument to onInputChange
+        // this is necessary because react-select passes a second argument to onInputChange
         // and useState setters log a warning if a second argument is passed
         onInputChange={val => setSearch(val)}
         isLoading={loading}
