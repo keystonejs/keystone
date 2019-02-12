@@ -55,7 +55,7 @@ function SetAsCurrentUser({ sessionPath, listKey, value, onAddUser, many }) {
                 onAddUser(data[listKey]);
               }}
             >
-              Set as {data[listKey]._label_}
+              {many ? 'Add' : 'Set as'} {data[listKey]._label_}
             </Button>
           );
         }
