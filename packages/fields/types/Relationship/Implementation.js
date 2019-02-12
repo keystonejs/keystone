@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const omitBy = require('lodash.omitby');
 const { mergeWhereClause } = require('@voussoir/utils');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 const {
   Schema: {
@@ -402,7 +403,46 @@ class MongoRelationshipInterface extends MongooseFieldAdapter {
   }
 }
 
+class KnexRelationshipInterface extends KnexFieldAdapter {
+  constructor(...args) {
+    super(...args);
+    const [refListKey, refFieldPath] = this.config.ref.split('.');
+    this.refListKey = refListKey;
+    this.refFieldPath = refFieldPath;
+    this.refListId = `${refListKey}_id`;
+    this.isRelationship = true;
+  }
+
+  getRefListAdapter() {
+    return this.getListByKey(this.refListKey).adapter;
+  }
+
+  createColumn(table) {
+    table.integer(this.path).unsigned();
+  }
+
+  createForiegnKey(table, schemaName) {
+    return table
+      .foreign(this.path)
+      .references('id')
+      .inTable(`${schemaName}.${this.refListKey}`);
+  }
+
+  getQueryConditions(f, g) {
+    return {
+      [`${this.path}_is_null`]: value => b =>
+        value ? b.whereNull(g(this.path)) : b.whereNotNull(g(this.path)),
+    };
+  }
+  supportsRelationshipQuery(query) {
+    return [this.path, `${this.path}_every`, `${this.path}_some`, `${this.path}_none`].includes(
+      query
+    );
+  }
+}
+
 module.exports = {
   Relationship,
   MongoRelationshipInterface,
+  KnexRelationshipInterface,
 };

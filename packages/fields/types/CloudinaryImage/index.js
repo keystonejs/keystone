@@ -1,4 +1,8 @@
-const { CloudinaryImage, MongoCloudinaryImageInterface } = require('./Implementation');
+const {
+  CloudinaryImage,
+  MongoCloudinaryImageInterface,
+  KnexCloudinaryImageInterface,
+} = require('./Implementation');
 const { CloudinaryBlock } = require('./Block');
 
 module.exports = {
@@ -11,6 +15,7 @@ module.exports = {
   },
   adapters: {
     mongoose: MongoCloudinaryImageInterface,
+    knex: KnexCloudinaryImageInterface,
   },
   block: CloudinaryBlock,
 };

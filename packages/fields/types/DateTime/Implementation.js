@@ -2,6 +2,7 @@ const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
 const { DateTime, FixedOffsetZone } = require('luxon');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 const { Implementation } = require('../../Implementation');
 
 class _DateTime extends Implementation {
@@ -154,7 +155,21 @@ class MongoDateTimeInterface extends MongooseFieldAdapter {
   }
 }
 
+class KnexDateTimeInterface extends KnexFieldAdapter {
+  createColumn(table) {
+    table.text(this.path);
+  }
+  getQueryConditions(f, g) {
+    return {
+      ...this.equalityConditions(f, g),
+      ...this.orderingConditions(f, g),
+      ...this.inConditions(f, g),
+    };
+  }
+}
+
 module.exports = {
   DateTime: _DateTime,
   MongoDateTimeInterface,
+  KnexDateTimeInterface,
 };

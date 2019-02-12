@@ -1,4 +1,4 @@
-const { Password, MongoPasswordInterface } = require('./Implementation');
+const { Password, MongoPasswordInterface, KnexPasswordInterface } = require('./Implementation');
 
 module.exports = {
   type: 'Password',
@@ -10,5 +10,6 @@ module.exports = {
   },
   adapters: {
     mongoose: MongoPasswordInterface,
+    knex: KnexPasswordInterface,
   },
 };

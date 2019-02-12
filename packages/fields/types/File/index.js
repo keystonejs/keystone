@@ -1,4 +1,4 @@
-const { File, MongoFileInterface } = require('./Implementation');
+const { File, MongoFileInterface, KnexFileInterface } = require('./Implementation');
 
 module.exports = {
   type: 'File',
@@ -10,5 +10,6 @@ module.exports = {
   },
   adapters: {
     mongoose: MongoFileInterface,
+    knex: KnexFileInterface,
   },
 };

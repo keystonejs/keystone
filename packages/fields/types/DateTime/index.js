@@ -1,4 +1,4 @@
-const { DateTime, MongoDateTimeInterface } = require('./Implementation');
+const { DateTime, MongoDateTimeInterface, KnexDateTimeInterface } = require('./Implementation');
 
 module.exports = {
   type: 'DateTime',
@@ -11,5 +11,6 @@ module.exports = {
   },
   adapters: {
     mongoose: MongoDateTimeInterface,
+    knex: KnexDateTimeInterface,
   },
 };

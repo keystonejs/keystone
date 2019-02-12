@@ -1,5 +1,6 @@
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 const mongoose = require('mongoose');
 
 // Disabling the getter of mongoose >= 5.1.0
@@ -133,7 +134,21 @@ class MongoFileInterface extends MongooseFieldAdapter {
   }
 }
 
+class KnexFileInterface extends KnexFieldAdapter {
+  createColumn() {
+    throw new Error('Knex Adapter does not currently support the `File` type.');
+  }
+  getQueryConditions(f) {
+    return {
+      ...this.equalityConditions(f),
+      ...this.stringConditions(f),
+      ...this.inConditions(f),
+    };
+  }
+}
+
 module.exports = {
   File,
   MongoFileInterface,
+  KnexFileInterface,
 };

@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@voussoir/adapter-mongoose": "^1.0.0",
+    "@voussoir/adapter-knex": "^0.0.1",
     "@voussoir/core": "^1.0.0",
     "@voussoir/server": "^0.5.0",
     "@voussoir/utils": "^0.3.0",

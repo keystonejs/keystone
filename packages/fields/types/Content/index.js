@@ -1,4 +1,4 @@
-const { Content, MongoContentInterface } = require('./Implementation');
+const { Content, MongoContentInterface, KnexContentInterface } = require('./Implementation');
 
 module.exports = {
   type: 'Content',
@@ -10,6 +10,7 @@ module.exports = {
   },
   adapters: {
     mongoose: MongoContentInterface,
+    knex: KnexContentInterface,
   },
   blocks: {
     blockquote: { viewPath: require.resolve('./views/editor/blocks/blockquote') },

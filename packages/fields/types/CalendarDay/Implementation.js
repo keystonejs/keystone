@@ -2,6 +2,7 @@ const parse = require('date-fns/parse');
 const format = require('date-fns/format');
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 class CalendarDay extends Implementation {
   constructor() {
@@ -60,7 +61,21 @@ class MongoCalendarDayInterface extends MongooseFieldAdapter {
   }
 }
 
+class KnexCalendarDayInterface extends KnexFieldAdapter {
+  createColumn(table) {
+    table.text(this.path);
+  }
+  getQueryConditions(f, g) {
+    return {
+      ...this.equalityConditions(f, g),
+      ...this.orderingConditions(f, g),
+      ...this.inConditions(f, g),
+    };
+  }
+}
+
 module.exports = {
   CalendarDay,
   MongoCalendarDayInterface,
+  KnexCalendarDayInterface,
 };

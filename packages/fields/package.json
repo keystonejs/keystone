@@ -25,6 +25,7 @@
     "@emotion/core": "^10.0.4",
     "@iframely/embed.js": "^1.0.1",
     "@voussoir/access-control": "^0.4.0",
+    "@voussoir/adapter-knex": "^0.0.1",
     "@voussoir/adapter-mongoose": "^1.0.0",
     "@voussoir/logger": "^0.2.0",
     "@voussoir/utils": "^0.3.1",
