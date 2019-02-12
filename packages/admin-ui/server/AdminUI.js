@@ -32,6 +32,7 @@ module.exports = class AdminUI {
   getAdminMeta() {
     return {
       withAuth: !!this.authStrategy,
+      authList: this.authStrategy ? this.authStrategy.listKey : null,
       adminPath: this.config.adminPath,
       signinPath: this.config.signinPath,
       signoutPath: this.config.signoutPath,
