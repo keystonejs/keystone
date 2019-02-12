@@ -30,6 +30,7 @@ class BaseKeystoneAdapter {
       const errors = taskResults.filter(({ isRejected }) => isRejected);
 
       if (errors.length) {
+        console.log(errors[0].reason);
         const error = new Error('Post connection error');
         error.errors = errors.map(({ reason }) => reason);
         throw error;

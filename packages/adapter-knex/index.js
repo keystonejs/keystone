@@ -74,7 +74,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
     return this.knex.schema.withSchema(this.schemaName);
   }
 
-  query() {
+  getQueryBuilder() {
     return this.knex.withSchema(this.schemaName);
   }
 
@@ -102,7 +102,7 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   _query() {
-    return this.parentAdapter.query();
+    return this.parentAdapter.getQueryBuilder();
   }
 
   _manyTable(path) {
@@ -136,7 +136,7 @@ class KnexListAdapter extends BaseListAdapter {
     await this._schema().table(this.key, table => {
       relationshipAdapters
         .filter(adapter => !adapter.config.many)
-        .forEach(adapter => adapter.createForiegnKey(table));
+        .forEach(adapter => adapter.createForiegnKey(table, this.parentAdapter.schemaName));
     });
 
     // Create adjacency tables for the 'many' relationships
@@ -192,7 +192,7 @@ class KnexListAdapter extends BaseListAdapter {
             .insert(
               data[a.path].map(id => ({
                 [`${this.key}_id`]: item.id,
-                [a.refListId]: Number(id),
+                [a.refListId]: parseInt(id, 10),
               }))
             )
             .into(this._manyTable(a.path))
@@ -269,7 +269,7 @@ class KnexListAdapter extends BaseListAdapter {
     const manyData = omit(data, realKeys);
     await Promise.all(
       Object.entries(manyData).map(async ([path, newValues]) => {
-        newValues = newValues.map(id => Number(id));
+        newValues = newValues.map(id => parseInt(id, 10));
         const a = this.fieldAdapters.find(a => a.path === path);
         const tableName = this._manyTable(a.path);
 
@@ -286,23 +286,25 @@ class KnexListAdapter extends BaseListAdapter {
         const needsDelete = currentValues
           .filter(x => !newValues.includes(x[a.refListId]))
           .map(({ id }) => id);
-        await this._query()
-          .table(tableName)
-          .whereIn('id', needsDelete)
-          .del();
-
+        if (needsDelete.length) {
+          await this._query()
+            .table(tableName)
+            .whereIn('id', needsDelete)
+            .del();
+        }
         // Add what needs to be added
         const currentRefIds = currentValues.map(x => x[a.refListId]);
-        await this._query()
-          .insert(
-            newValues
-              .filter(id => !currentRefIds.includes(id))
-              .map(id => ({
-                [`${this.key}_id`]: item.id,
-                [a.refListId]: id,
-              }))
-          )
-          .into(tableName);
+        const valuesToInsert = newValues
+          .filter(id => !currentRefIds.includes(id))
+          .map(id => ({
+            [`${this.key}_id`]: item.id,
+            [a.refListId]: id,
+          }));
+        if (valuesToInsert.length) {
+          await this._query()
+            .insert(valuesToInsert)
+            .into(tableName);
+        }
       })
     );
 
@@ -320,7 +322,7 @@ class KnexListAdapter extends BaseListAdapter {
     const result = (await this._query()
       .table(this.key)
       .select()
-      .where('id', Number(id)))[0];
+      .where('id', parseInt(id, 10)))[0];
     return this.onPostRead(result ? await this._populateMany(result) : null);
   }
 
@@ -332,19 +334,23 @@ class KnexListAdapter extends BaseListAdapter {
     const f = v => v;
     const g = p => `${tableAlias}.${p}`;
     return {
-      id: value => b => b.where(g('id'), Number(value)),
+      id: value => b => b.where(g('id'), parseInt(value, 10)),
       id_not: value => b =>
         value === null
           ? b.whereNotNull(g('id'))
-          : b.where(g('id'), '!=', Number(value)).orWhereNull(g('id')),
+          : b.where(g('id'), '!=', parseInt(value, 10)).orWhereNull(g('id')),
       id_in: value => b =>
         value.includes(null)
-          ? b.whereIn(g('id'), value.filter(x => x !== null).map(Number)).orWhereNull(g('id'))
-          : b.whereIn(g('id'), value.map(Number)),
+          ? b
+              .whereIn(g('id'), value.filter(x => x !== null).map(x => parseInt(x, 10)))
+              .orWhereNull(g('id'))
+          : b.whereIn(g('id'), value.map(x => parseInt(x, 10))),
       id_not_in: value => b =>
         value.includes(null)
-          ? b.whereNotIn(g('id'), value.filter(x => x !== null).map(Number)).whereNotNull(g('id'))
-          : b.whereNotIn(g('id'), value.map(Number)).orWhereNull(g('id')),
+          ? b
+              .whereNotIn(g('id'), value.filter(x => x !== null).map(x => parseInt(x, 10)))
+              .whereNotNull(g('id'))
+          : b.whereNotIn(g('id'), value.map(x => parseInt(x, 10))).orWhereNull(g('id')),
       ...objMerge(
         this.fieldAdapters
           .filter(a => a.getQueryConditions)
@@ -363,7 +369,7 @@ class KnexListAdapter extends BaseListAdapter {
   //   toTable:
   // }]
   _traverseJoins(where) {
-    let result = [];
+    const result = [];
     // These are the conditions which we know how to explicitly handle
     const nonJoinConditions = Object.keys(this._allQueryConditions());
     // Which means these are all the `where` conditions which are non-trivial and may require a join operation.
@@ -372,17 +378,17 @@ class KnexListAdapter extends BaseListAdapter {
       .forEach(path => {
         if (path === 'AND' || path === 'OR') {
           // AND/OR we need to traverse their children
-          result = [...result, ...flatten(where[path].map(x => this._traverseJoins(x)))];
+          result.push(...flatten(where[path].map(x => this._traverseJoins(x))));
         } else {
           const adapter = this.fieldAdapters.find(a => a.path === path);
           if (adapter) {
-            // If no adapter is found, it must be a many relationship, which is handled separately
+            // If no adapter is found, it must be a query of the form `foo_some`, `foo_every`, etc.
+            // These correspond to many-relationships, which are handled separately
             const otherList = adapter.refListKey;
-            result.push({ fromCol: path, fromTable: this.key, toTable: otherList });
-            result = [
-              ...result,
-              ...this.getListAdapterByKey(otherList)._traverseJoins(where[path]),
-            ];
+            result.push(
+              { fromCol: path, fromTable: this.key, toTable: otherList },
+              ...this.getListAdapterByKey(otherList)._traverseJoins(where[path])
+            );
           }
         }
       });

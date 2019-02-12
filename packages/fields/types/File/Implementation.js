@@ -136,7 +136,7 @@ class MongoFileInterface extends MongooseFieldAdapter {
 
 class KnexFileInterface extends KnexFieldAdapter {
   createColumn() {
-    // FIXME
+    throw new Error('Knex Adapter does not currently support the `File` type.');
   }
   getQueryConditions(f) {
     return {

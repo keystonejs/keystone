@@ -421,11 +421,11 @@ class KnexRelationshipInterface extends KnexFieldAdapter {
     table.integer(this.path).unsigned();
   }
 
-  createForiegnKey(table) {
+  createForiegnKey(table, schemaName) {
     return table
       .foreign(this.path)
       .references('id')
-      .inTable(`keystone.${this.refListKey}`);
+      .inTable(`${schemaName}.${this.refListKey}`);
   }
 
   getQueryConditions(f, g) {

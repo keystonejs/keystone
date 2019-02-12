@@ -1,7 +1,7 @@
 {
   "name": "@voussoir/adapter-knex",
   "version": "0.0.1",
-  "author": "Jed Watson",
+  "author": "Tim Leslie",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
