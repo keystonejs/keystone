@@ -2,7 +2,7 @@
 
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, type Element, type Ref, type Node } from 'react';
+import { Component, type Element, type Ref, type Node, useMemo } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 import NodeResolver from 'react-node-resolver';
 
@@ -17,6 +17,10 @@ type Props = {
   render?: ({ ref: Ref<*> }) => Node,
 };
 type State = { height: Height, isTransitioning: boolean };
+
+function Memoize({ children, deps }) {
+  return useMemo(children, deps);
+}
 
 export default class AnimateHeight extends Component<Props, State> {
   node: HTMLElement;
@@ -77,7 +81,15 @@ export default class AnimateHeight extends Component<Props, State> {
         {...props}
       >
         {render ? (
-          render({ ref: this.getNode })
+          <Memoize
+            // this.getNode will never change so i'm not including it in the deps
+            // render will probably change a bunch but that's fine, the reason for
+            // memoizing this is so that state updates inside of AnimateHeight don't
+            // cause a bunch of rerenders of children
+            deps={[render]}
+          >
+            {() => render({ ref: this.getNode })}
+          </Memoize>
         ) : (
           <NodeResolver innerRef={this.getNode}>{children}</NodeResolver>
         )}
