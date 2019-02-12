@@ -1,0 +1,28 @@
+{
+  "releases": [
+    { "name": "@voussoir/adapter-knex", "type": "patch" },
+    { "name": "@voussoir/core", "type": "minor" }
+  ],
+  "dependents": [
+    {
+      "name": "@voussoir/fields",
+      "type": "patch",
+      "dependencies": ["@voussoir/test-utils", "@voussoir/adapter-knex"]
+    },
+    {
+      "name": "@voussoir/test-utils",
+      "type": "patch",
+      "dependencies": ["@voussoir/adapter-knex", "@voussoir/core"]
+    },
+    {
+      "name": "@voussoir/cypress-project-basic",
+      "type": "patch",
+      "dependencies": [
+        "@voussoir/fields",
+        "@voussoir/test-utils",
+        "@voussoir/adapter-knex",
+        "@voussoir/core"
+      ]
+    }
+  ]
+}

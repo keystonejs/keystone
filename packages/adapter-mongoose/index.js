@@ -239,7 +239,7 @@ class MongooseListAdapter extends BaseListAdapter {
   }
 
   graphQlQueryPathToMongoField(path) {
-    const fieldAdapter = this.fieldAdapters.find(adapter => adapter.mapsToPath(path));
+    const fieldAdapter = this.fieldAdaptersByPath[path];
 
     if (!fieldAdapter) {
       throw new Error(`Unable to find Mongo field which maps to graphQL path ${path}`);
@@ -404,10 +404,6 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
 
   getMongoFieldName() {
     return this.path;
-  }
-
-  mapsToPath(path) {
-    return path === this.path;
   }
 }
 

@@ -274,7 +274,7 @@ class KnexListAdapter extends BaseListAdapter {
     await Promise.all(
       Object.entries(manyData).map(async ([path, newValues]) => {
         newValues = newValues.map(id => parseInt(id, 10));
-        const a = this.fieldAdapters.find(a => a.path === path);
+        const a = this.fieldAdaptersByPath[path];
         const tableName = this._manyTable(a.path);
 
         // Future task: Is there some way to combine the following three
@@ -387,7 +387,7 @@ class KnexListAdapter extends BaseListAdapter {
           // AND/OR we need to traverse their children
           where[path].forEach(x => this._traverseJoins(x, alias, aliases));
         } else {
-          const adapter = this.fieldAdapters.find(a => a.path === path);
+          const adapter = this.fieldAdaptersByPath[path];
           if (adapter) {
             // If no adapter is found, it must be a query of the form `foo_some`, `foo_every`, etc.
             // These correspond to many-relationships, which are handled separately
@@ -415,7 +415,7 @@ class KnexListAdapter extends BaseListAdapter {
     const [p, q] = path.split('_');
     const thisID = `${this.key}_id`;
     const tableName = this._manyTable(p);
-    const otherList = this.fieldAdapters.find(a => a.path === p).refListKey;
+    const otherList = this.fieldAdaptersByPath[p].refListKey;
 
     // If performing an <>_every query, we need to count how many related items each item has
     const relatedCountById =
@@ -481,7 +481,7 @@ class KnexListAdapter extends BaseListAdapter {
           });
         } else {
           // We have a relationship field
-          const adapter = this.fieldAdapters.find(a => a.path === path);
+          const adapter = this.fieldAdaptersByPath[path];
           if (adapter) {
             // Non-many relationship. Traverse the sub-query, using the referenced list as a root.
             whereClauses.push(

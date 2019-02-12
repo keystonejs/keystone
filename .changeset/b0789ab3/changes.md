@@ -1,0 +1,1 @@
+- Remove mapsToPath method from MongooseListAdapter
