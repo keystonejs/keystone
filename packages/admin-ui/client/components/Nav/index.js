@@ -1,38 +1,29 @@
-/* global ENABLE_DEV_FEATURES */
 /** @jsx jsx */
 
-import { Component, Fragment } from 'react';
-import { withRouter } from 'react-router';
+import { Component, memo } from 'react';
+import { withRouter, Route } from 'react-router';
 import { Link } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
 import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';
 
-import {
-  TerminalIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  TelescopeIcon,
-  MarkGithubIcon,
-  SignOutIcon,
-} from '@arch-ui/icons';
+import { ChevronLeftIcon, ChevronRightIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import {
   PrimaryNav,
   PrimaryNavItem,
   PrimaryNavScrollArea,
-  NavGroupIcons,
   PRIMARY_NAV_GUTTER,
 } from '@arch-ui/navbar';
-import { A11yText, Title } from '@arch-ui/typography';
+import { Title } from '@arch-ui/typography';
 import Tooltip from '@arch-ui/tooltip';
 import { FlexGroup } from '@arch-ui/layout';
 
-import { withAdminMeta } from '../../providers/AdminMeta';
+import { useAdminMeta } from '../../providers/AdminMeta';
 import ResizeHandler, { KEYBOARD_SHORTCUT } from './ResizeHandler';
+import { NavIcons } from './NavIcons';
 import ScrollQuery from '../ScrollQuery';
 
-const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone-5';
 const TRANSITION_DURATION = '220ms';
 
 function camelToKebab(string) {
@@ -176,6 +167,81 @@ function getPath(str) {
   return `/${arr[1]}/${arr[2]}`;
 }
 
+function PrimaryNavItems() {
+  let { adminPath, getListByKey, sortListsAlphabetically, listKeys: _listKeys } = useAdminMeta();
+  const listKeys = sortListsAlphabetically ? [..._listKeys].sort() : _listKeys;
+
+  return (
+    <Relative>
+      <Route>
+        {({ location }) => (
+          <ScrollQuery isPassive={false}>
+            {(ref, snapshot) => (
+              <PrimaryNavScrollArea ref={ref} {...snapshot}>
+                <PrimaryNavItem to={adminPath} isSelected={location.pathname === adminPath}>
+                  Dashboard
+                </PrimaryNavItem>
+
+                {listKeys.map(key => {
+                  const list = getListByKey(key);
+                  let href = `${adminPath}/${list.path}`;
+                  const path = getPath(location.pathname);
+                  const isSelected = href === path;
+
+                  const maybeSearchParam = list.getPersistedSearch();
+                  if (maybeSearchParam) {
+                    href += maybeSearchParam;
+                  }
+
+                  return (
+                    <PrimaryNavItem
+                      key={key}
+                      id={`ks-nav-${list.path}`}
+                      isSelected={isSelected}
+                      to={href}
+                    >
+                      {list.label}
+                    </PrimaryNavItem>
+                  );
+                })}
+              </PrimaryNavScrollArea>
+            )}
+          </ScrollQuery>
+        )}
+      </Route>
+    </Relative>
+  );
+}
+
+let PrimaryNavContent = memo(
+  function PrimaryContent() {
+    let { adminPath, name } = useAdminMeta();
+
+    return (
+      <Inner>
+        <Title
+          as={Link}
+          to={adminPath}
+          margin="both"
+          crop
+          css={{
+            color: colors.N90,
+            textDecoration: 'none',
+            alignSelf: 'stretch',
+            marginLeft: PRIMARY_NAV_GUTTER,
+            marginRight: PRIMARY_NAV_GUTTER,
+          }}
+        >
+          {name}
+        </Title>
+        <PrimaryNavItems />
+        <NavIcons />
+      </Inner>
+    );
+  },
+  () => true
+);
+
 class Nav extends Component {
   state = { mouseIsOverNav: false };
 
@@ -186,22 +252,7 @@ class Nav extends Component {
     this.setState({ mouseIsOverNav: false });
   };
   render() {
-    const {
-      adminMeta: {
-        adminPath,
-        getListByKey,
-        graphiqlPath,
-        name,
-        sortListsAlphabetically,
-        signoutPath,
-        withAuth,
-      },
-      children,
-      location,
-    } = this.props;
-    const listKeys = sortListsAlphabetically
-      ? this.props.adminMeta.listKeys.sort()
-      : this.props.adminMeta.listKeys;
+    const { children } = this.props;
     const { mouseIsOverNav } = this.state;
 
     return (
@@ -218,14 +269,6 @@ class Nav extends Component {
                   )} ${TRANSITION_DURATION} cubic-bezier(0.25, 0, 0, 1)`,
                 };
             return { [key]: navWidth, ...pointers, ...transitions };
-          };
-
-          const titleGutter = {
-            color: colors.N90,
-            textDecoration: 'none',
-            alignSelf: 'stretch',
-            marginLeft: PRIMARY_NAV_GUTTER,
-            marginRight: PRIMARY_NAV_GUTTER,
           };
 
           return (
@@ -245,80 +288,7 @@ class Nav extends Component {
                 onMouseLeave={this.handleMouseLeave}
                 style={makeResizeStyles('width')}
               >
-                <Inner>
-                  <Title as={Link} to={adminPath} margin="both" crop style={titleGutter}>
-                    {name}
-                  </Title>
-                  <Relative>
-                    <ScrollQuery isPassive={false}>
-                      {(ref, snapshot) => (
-                        <PrimaryNavScrollArea ref={ref} {...snapshot}>
-                          <PrimaryNavItem
-                            to={adminPath}
-                            isSelected={location.pathname == adminPath}
-                          >
-                            Dashboard
-                          </PrimaryNavItem>
-
-                          {listKeys.map(key => {
-                            const list = getListByKey(key);
-                            let href = `${adminPath}/${list.path}`;
-                            const path = getPath(location.pathname);
-                            const isSelected = href === path;
-
-                            const maybeSearchParam = list.getPersistedSearch();
-                            if (maybeSearchParam) {
-                              href += maybeSearchParam;
-                            }
-
-                            return (
-                              <Fragment key={key}>
-                                <PrimaryNavItem
-                                  id={`ks-nav-${list.path}`}
-                                  isSelected={isSelected}
-                                  to={href}
-                                >
-                                  {list.label}
-                                </PrimaryNavItem>
-                              </Fragment>
-                            );
-                          })}
-                        </PrimaryNavScrollArea>
-                      )}
-                    </ScrollQuery>
-                  </Relative>
-
-                  {ENABLE_DEV_FEATURES || withAuth ? (
-                    <NavGroupIcons>
-                      {withAuth ? (
-                        <PrimaryNavItem href={signoutPath} title="Sign Out">
-                          <SignOutIcon />
-                          <A11yText>Sign Out</A11yText>
-                        </PrimaryNavItem>
-                      ) : null}
-                      {ENABLE_DEV_FEATURES ? (
-                        <Fragment>
-                          <PrimaryNavItem target="_blank" href={GITHUB_PROJECT} title="GitHub">
-                            <MarkGithubIcon />
-                            <A11yText>GitHub</A11yText>
-                          </PrimaryNavItem>
-                          <PrimaryNavItem
-                            target="_blank"
-                            href={graphiqlPath}
-                            title="Graphiql Console"
-                          >
-                            <TerminalIcon />
-                            <A11yText>Graphiql Console</A11yText>
-                          </PrimaryNavItem>
-                          <PrimaryNavItem to={`${adminPath}/style-guide`} title="Style Guide">
-                            <TelescopeIcon />
-                            <A11yText>Style Guide</A11yText>
-                          </PrimaryNavItem>
-                        </Fragment>
-                      ) : null}
-                    </NavGroupIcons>
-                  ) : null}
-                </Inner>
+                <PrimaryNavContent />
                 {isCollapsed ? null : <GrabHandle {...resizeProps} />}
                 <Tooltip
                   content={
@@ -352,4 +322,4 @@ class Nav extends Component {
   }
 }
 
-export default withRouter(withAdminMeta(Nav));
+export default withRouter(Nav);
