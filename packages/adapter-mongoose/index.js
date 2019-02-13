@@ -208,43 +208,34 @@ class MongooseListAdapter extends BaseListAdapter {
     return this.model.syncIndexes();
   }
 
-  async create(data) {
-    const dataToSave = await this.onPreSave(data);
-    const createdData = await this.model.create(dataToSave);
-    return this.onPostRead(pick(createdData, ['id', ...Object.keys(data)]));
+  _create(data) {
+    return this.model.create(data);
   }
 
-  async delete(id) {
-    const deletedData = await this.model.findByIdAndRemove(id);
-    return this.onPostRead(deletedData);
+  _delete(id) {
+    return this.model.findByIdAndRemove(id);
   }
 
-  async update(id, data) {
-    const dataToSave = await this.onPreSave(data);
+  _update(id, data) {
     // Avoid any kind of injection attack by explicitly doing a `$set` operation
     // Return the modified item, not the original
-    const updatedData = await this.model.findByIdAndUpdate(id, { $set: dataToSave }, { new: true });
-    return this.onPostRead(updatedData);
+    return this.model.findByIdAndUpdate(id, { $set: data }, { new: true });
   }
 
-  async findAll() {
-    const foundItems = await this.model.find();
-    return Promise.all(foundItems.map(item => this.onPostRead(item)));
+  _findAll() {
+    return this.model.find();
   }
 
-  async findById(id) {
-    const foundItem = await this.model.findById(id);
-    return this.onPostRead(foundItem);
+  _findById(id) {
+    return this.model.findById(id);
   }
 
-  async find(condition) {
-    const foundItems = await this.model.find(condition);
-    return Promise.all(foundItems.map(item => this.onPostRead(item)));
+  _find(condition) {
+    return this.model.find(condition);
   }
 
-  async findOne(condition) {
-    const foundItem = await this.model.findOne(condition);
-    return this.onPostRead(foundItem);
+  _findOne(condition) {
+    return this.model.findOne(condition);
   }
 
   graphQlQueryPathToMongoField(path) {
@@ -257,7 +248,7 @@ class MongooseListAdapter extends BaseListAdapter {
     return fieldAdapter.getMongoFieldName();
   }
 
-  itemsQuery(args, { meta = false } = {}) {
+  _itemsQuery(args, { meta = false } = {}) {
     function graphQlQueryToMongoJoinQuery(query) {
       const _query = {
         ...query.where,
@@ -303,12 +294,7 @@ class MongooseListAdapter extends BaseListAdapter {
           }
           return foundItems[0];
         }
-
-        if (foundItems.length) {
-          return Promise.all(foundItems.map(item => this.onPostRead(item)));
-        } else {
-          return foundItems;
-        }
+        return foundItems;
       }
     );
   }

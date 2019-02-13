@@ -171,7 +171,7 @@ class KnexListAdapter extends BaseListAdapter {
     );
   }
 
-  async create(data) {
+  async _create(data) {
     // Insert the real data into the table
     const realKeys = this._realKeys();
     const realData = pick(data, realKeys);
@@ -204,10 +204,10 @@ class KnexListAdapter extends BaseListAdapter {
       )
     );
 
-    return this.onPostRead({ ...item, ...manyItem });
+    return { ...item, ...manyItem };
   }
 
-  async delete(id) {
+  async _delete(id) {
     // Traverse all other lists and remove references to this item
     await Promise.all(
       Object.values(this.parentAdapter.listAdapters).map(adapter =>
@@ -257,7 +257,7 @@ class KnexListAdapter extends BaseListAdapter {
     };
   }
 
-  async update(id, data) {
+  async _update(id, data) {
     // Update the real data
     const realKeys = this._realKeys();
     const realData = pick(data, realKeys);
@@ -312,26 +312,30 @@ class KnexListAdapter extends BaseListAdapter {
       })
     );
 
-    return this.onPostRead(this._populateMany(item));
+    return this._populateMany(item);
   }
 
-  async findAll() {
+  async _findAll() {
     const results = await this._query()
       .table(this.key)
       .select();
-    return this.onPostRead(await Promise.all(results.map(result => this._populateMany(result))));
+    return results.map(result => this._populateMany(result));
   }
 
-  async findById(id) {
+  async _findById(id) {
     const result = (await this._query()
       .table(this.key)
       .select()
       .where('id', parseInt(id, 10)))[0];
-    return this.onPostRead(result ? await this._populateMany(result) : null);
+    return result ? await this._populateMany(result) : null;
   }
 
-  async findOne(condition) {
-    return (await this.itemsQuery({ where: { ...condition } }))[0];
+  async _find(condition) {
+    return await this._itemsQuery({ where: { ...condition } });
+  }
+
+  async _findOne(condition) {
+    return (await this._itemsQuery({ where: { ...condition } }))[0];
   }
 
   _allQueryConditions(tableAlias) {
@@ -427,7 +431,7 @@ class KnexListAdapter extends BaseListAdapter {
       );
 
     // Identify and count all the items in the referenced list which match the query
-    const matchingItems = await this.getListAdapterByKey(otherList).itemsQuery({ where });
+    const matchingItems = await this.getListAdapterByKey(otherList)._itemsQuery({ where });
     const matchingCount = await this._query()
       .select(thisID)
       .count('*')
@@ -497,7 +501,7 @@ class KnexListAdapter extends BaseListAdapter {
     return whereClauses;
   }
 
-  async itemsQuery(args, { meta = false } = {}) {
+  async _itemsQuery(args, { meta = false } = {}) {
     const { where = {}, first, skip, orderBy } = args;
 
     // Construct the base of the query, which will either be a select or count operation
@@ -563,7 +567,7 @@ class KnexListAdapter extends BaseListAdapter {
     }
 
     // Populate the `many` fields with IDs and return the result
-    return this.onPostRead(await Promise.all(results.map(result => this._populateMany(result))));
+    return Promise.all(results.map(result => this._populateMany(result)));
   }
 }
 
