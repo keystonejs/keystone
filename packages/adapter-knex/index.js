@@ -25,7 +25,9 @@ class KnexAdapter extends BaseKeystoneAdapter {
   async _connect(to, config = {}) {
     const {
       client = 'postgres',
-      connection = process.env.KNEX_URI || 'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev',
+      connection = to ||
+        process.env.KNEX_URI ||
+        'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev',
       schemaName = 'keystone',
       ...rest
     } = config;
