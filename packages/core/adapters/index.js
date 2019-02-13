@@ -57,6 +57,7 @@ class BaseListAdapter {
     this.key = key;
     this.parentAdapter = parentAdapter;
     this.fieldAdapters = [];
+    this.fieldAdaptersByPath = {};
     this.config = config;
 
     this.preSaveHooks = [];
@@ -78,6 +79,7 @@ class BaseListAdapter {
       addPostReadHook: this.addPostReadHook.bind(this),
     });
     this.fieldAdapters.push(adapter);
+    this.fieldAdaptersByPath[adapter.path] = adapter;
     return adapter;
   }
 

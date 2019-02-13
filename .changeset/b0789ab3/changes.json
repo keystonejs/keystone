@@ -1,0 +1,45 @@
+{
+  "releases": [{ "name": "@voussoir/adapter-mongoose", "type": "major" }],
+  "dependents": [
+    {
+      "name": "@voussoir/fields",
+      "type": "patch",
+      "dependencies": ["@voussoir/test-utils", "@voussoir/adapter-mongoose"]
+    },
+    {
+      "name": "@voussoir/test-utils",
+      "type": "patch",
+      "dependencies": ["@voussoir/adapter-mongoose"]
+    },
+    {
+      "name": "keystone_demo_blog",
+      "type": "patch",
+      "dependencies": ["@voussoir/fields", "@voussoir/adapter-mongoose"]
+    },
+    {
+      "name": "@voussoir/demo-project-todo",
+      "type": "patch",
+      "dependencies": ["@voussoir/fields", "@voussoir/adapter-mongoose"]
+    },
+    {
+      "name": "@voussoir/cypress-project-access-control",
+      "type": "patch",
+      "dependencies": ["@voussoir/fields", "@voussoir/test-utils", "@voussoir/adapter-mongoose"]
+    },
+    {
+      "name": "@voussoir/cypress-project-basic",
+      "type": "patch",
+      "dependencies": ["@voussoir/fields", "@voussoir/test-utils", "@voussoir/adapter-mongoose"]
+    },
+    {
+      "name": "@voussoir/cypress-project-login",
+      "type": "patch",
+      "dependencies": ["@voussoir/fields", "@voussoir/test-utils", "@voussoir/adapter-mongoose"]
+    },
+    {
+      "name": "@voussoir/cypress-project-twitter-login",
+      "type": "patch",
+      "dependencies": ["@voussoir/fields", "@voussoir/adapter-mongoose"]
+    }
+  ]
+}
