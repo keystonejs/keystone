@@ -24,15 +24,14 @@ const keystone = new Keystone({
   adapter: new KnexAdapter(),
 });
 
+const uri = 'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev';
 const client = 'postgres';
-const connection = 'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev';
 const schemaName = 'keystone';
 
 const knexOptions = { ... };
 
-keystone.connect('', {
+keystone.connect(uri, {
   client,
-  connection,
   schemaName,
   ...knexOptions,
 });
@@ -40,19 +39,19 @@ keystone.connect('', {
 
 ## API
 
-### `client`
-
-_**Default:**_ `'postgres'`
-
-Defines the type of backend to use. Current `postgres` is supported, but any value supported by Knex may be supported in the future.
-
-### `connection`
+### `uri`
 
 _**Default:**_ `'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev'`
 
 Either a connection string, or a connection object, as accepted by knex.
 See [knex docs](https://knexjs.org/#Installation-client) for more details.
 If the environment variable `KNEX_URI` is set, its value will be used as the default.
+
+### `client`
+
+_**Default:**_ `'postgres'`
+
+Defines the type of backend to use. Current `postgres` is supported, but any value supported by Knex may be supported in the future.
 
 ### `schemaName`
 
