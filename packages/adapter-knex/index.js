@@ -97,6 +97,13 @@ class KnexListAdapter extends BaseListAdapter {
   constructor(key, parentAdapter) {
     super(...arguments);
     this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
+    this.realKeys = [];
+  }
+
+  prepareFieldAdapter(fieldAdapter) {
+    if (!(fieldAdapter.isRelationship && fieldAdapter.config.many)) {
+      this.realKeys.push(fieldAdapter.path);
+    }
   }
 
   _schema() {
@@ -109,10 +116,6 @@ class KnexListAdapter extends BaseListAdapter {
 
   _manyTable(path) {
     return `${this.key}_${path}`;
-  }
-
-  _realKeys() {
-    return this.fieldAdapters.filter(a => !(a.isRelationship && a.config.many)).map(a => a.path);
   }
 
   async createTable() {
@@ -175,8 +178,7 @@ class KnexListAdapter extends BaseListAdapter {
 
   async _create(data) {
     // Insert the real data into the table
-    const realKeys = this._realKeys();
-    const realData = pick(data, realKeys);
+    const realData = pick(data, this.realKeys);
     const item = (await this._query()
       .insert(realData)
       .into(this.key)
@@ -261,18 +263,17 @@ class KnexListAdapter extends BaseListAdapter {
 
   async _update(id, data) {
     // Update the real data
-    const realKeys = this._realKeys();
-    const realData = pick(data, realKeys);
+    const realData = pick(data, this.realKeys);
     const query = this._query()
       .table(this.key)
       .where({ id });
     if (Object.keys(realData).length) {
       query.update(realData);
     }
-    const item = (await query.returning(['id', ...realKeys]))[0];
+    const item = (await query.returning(['id', ...this.realKeys]))[0];
 
     // For every many-field, update the many-table
-    const manyData = omit(data, realKeys);
+    const manyData = omit(data, this.realKeys);
     await Promise.all(
       Object.entries(manyData).map(async ([path, newValues]) => {
         newValues = newValues.map(id => parseInt(id, 10));
