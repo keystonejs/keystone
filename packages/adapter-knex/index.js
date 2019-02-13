@@ -102,7 +102,7 @@ class KnexListAdapter extends BaseListAdapter {
 
   prepareFieldAdapter(fieldAdapter) {
     if (!(fieldAdapter.isRelationship && fieldAdapter.config.many)) {
-      this.realKeys.push(fieldAdapter.path);
+      this.realKeys.push(...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path]));
     }
   }
 
@@ -547,7 +547,8 @@ class KnexListAdapter extends BaseListAdapter {
       }
       if (orderBy !== undefined) {
         const [orderField, orderDirection] = orderBy.split('_');
-        partialQuery.orderBy(orderField, orderDirection);
+        const sortKey = this.fieldAdaptersByPath[orderField].sortKey || orderField;
+        partialQuery.orderBy(sortKey, orderDirection);
       }
     }
 
@@ -601,12 +602,14 @@ class KnexFieldAdapter extends BaseFieldAdapter {
     return {
       [`${this.path}_in`]: value => b =>
         value.includes(null)
-          ? b.whereIn(g(this.path), f(value.filter(x => x != null))).orWhereNull(g(this.path))
-          : b.whereIn(g(this.path), f(value)),
+          ? b.whereIn(g(this.path), value.filter(x => x !== null).map(f)).orWhereNull(g(this.path))
+          : b.whereIn(g(this.path), value.map(f)),
       [`${this.path}_not_in`]: value => b =>
         value.includes(null)
-          ? b.whereNotIn(g(this.path), f(value.filter(x => x !== null))).whereNotNull(g(this.path))
-          : b.whereNotIn(g(this.path), f(value)).orWhereNull(g(this.path)),
+          ? b
+              .whereNotIn(g(this.path), value.filter(x => x !== null).map(f))
+              .whereNotNull(g(this.path))
+          : b.whereNotIn(g(this.path), value.map(f)).orWhereNull(g(this.path)),
     };
   }
 
