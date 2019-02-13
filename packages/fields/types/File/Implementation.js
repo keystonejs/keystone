@@ -111,7 +111,18 @@ class File extends Implementation {
   }
 }
 
-class MongoFileInterface extends MongooseFieldAdapter {
+const CommonFileInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.stringConditions(dbPath),
+        ...this.inConditions(dbPath),
+      };
+    }
+  };
+
+class MongoFileInterface extends CommonFileInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     const schemaOptions = {
       type: {
@@ -124,26 +135,11 @@ class MongoFileInterface extends MongooseFieldAdapter {
     };
     schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
   }
-
-  getQueryConditions() {
-    return {
-      ...this.equalityConditions(),
-      ...this.stringConditions(),
-      ...this.inConditions(),
-    };
-  }
 }
 
-class KnexFileInterface extends KnexFieldAdapter {
+class KnexFileInterface extends CommonFileInterface(KnexFieldAdapter) {
   createColumn() {
     throw new Error('Knex Adapter does not currently support the `File` type.');
-  }
-  getQueryConditions(f) {
-    return {
-      ...this.equalityConditions(f),
-      ...this.stringConditions(f),
-      ...this.inConditions(f),
-    };
   }
 }
 

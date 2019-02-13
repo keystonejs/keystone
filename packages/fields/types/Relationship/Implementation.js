@@ -343,10 +343,10 @@ class MongoRelationshipInterface extends MongooseFieldAdapter {
     return this.getListByKey(this.refListKey).adapter;
   }
 
-  getQueryConditions() {
+  getQueryConditions(dbPath) {
     return {
       [`${this.path}_is_null`]: value => ({
-        [this.path]: value ? { $not: { $exists: true, $ne: null } } : { $exists: true, $ne: null },
+        [dbPath]: value ? { $not: { $exists: true, $ne: null } } : { $exists: true, $ne: null },
       }),
     };
   }
@@ -428,10 +428,10 @@ class KnexRelationshipInterface extends KnexFieldAdapter {
       .inTable(`${schemaName}.${this.refListKey}`);
   }
 
-  getQueryConditions(f, g) {
+  getQueryConditions(dbPath) {
     return {
       [`${this.path}_is_null`]: value => b =>
-        value ? b.whereNull(g(this.path)) : b.whereNotNull(g(this.path)),
+        value ? b.whereNull(dbPath) : b.whereNotNull(dbPath),
     };
   }
   supportsRelationshipQuery(query) {
