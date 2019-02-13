@@ -166,10 +166,7 @@ class MongooseListAdapter extends BaseListAdapter {
   }
 
   prepareFieldAdapter(fieldAdapter) {
-    fieldAdapter.addToMongooseSchema(this.schema, this.mongoose, {
-      addPreSaveHook: this.addPreSaveHook.bind(this),
-      addPostReadHook: this.addPostReadHook.bind(this),
-    });
+    fieldAdapter.addToMongooseSchema(this.schema, this.mongoose);
   }
 
   /**
