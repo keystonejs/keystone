@@ -87,31 +87,32 @@ class Password extends Implementation {
   }
 }
 
-class MongoPasswordInterface extends MongooseFieldAdapter {
-  // constructor(fieldName, path, listAdapter, getListByKey, config) {
+const CommonPasswordInterface = superclass =>
+  class extends superclass {
+    setupHooks({ addPreSaveHook }) {
+      // Updates the relevant value in the item provided (by referrence)
+      addPreSaveHook(async item => {
+        const list = this.getListByKey(this.listAdapter.key);
+        const field = list.fieldsByPath[this.path];
+        const plaintext = item[field.path];
 
+        if (typeof plaintext === 'undefined') {
+          return item;
+        }
+
+        if (String(plaintext) === plaintext && plaintext !== '') {
+          item[field.path] = await field.generateHash(plaintext);
+        } else {
+          item[field.path] = null;
+        }
+        return item;
+      });
+    }
+  };
+
+class MongoPasswordInterface extends CommonPasswordInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
-  }
-
-  setupHooks({ addPreSaveHook }) {
-    // Updates the relevant value in the item provided (by referrence)
-    addPreSaveHook(async item => {
-      const list = this.getListByKey(this.listAdapter.key);
-      const field = list.fieldsByPath[this.path];
-      const plaintext = item[field.path];
-
-      if (typeof plaintext === 'undefined') {
-        return item;
-      }
-
-      if (String(plaintext) === plaintext && plaintext !== '') {
-        item[field.path] = await field.generateHash(plaintext);
-      } else {
-        item[field.path] = null;
-      }
-      return item;
-    });
   }
 
   getQueryConditions() {
@@ -123,7 +124,7 @@ class MongoPasswordInterface extends MongooseFieldAdapter {
   }
 }
 
-class KnexPasswordInterface extends KnexFieldAdapter {
+class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdapter) {
   createColumn(table) {
     table.text(this.path);
   }
@@ -131,7 +132,9 @@ class KnexPasswordInterface extends KnexFieldAdapter {
   getQueryConditions(f, g) {
     return {
       [`${this.path}_is_set`]: value => b =>
-        value ? b.whereNot(g(this.path), '') : b.where(g(this.path), '').orWhereNull(g(this.path)),
+        value
+          ? b.where(g(this.path), '~', bcryptHashRegex.source)
+          : b.where(g(this.path), '!~', bcryptHashRegex.source).orWhereNull(g(this.path)),
     };
   }
 }
