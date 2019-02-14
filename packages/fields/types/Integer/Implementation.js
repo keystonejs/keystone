@@ -61,7 +61,7 @@ class MongoIntegerInterface extends CommonIntegerInterface(MongooseFieldAdapter)
 
 class KnexIntegerInterface extends CommonIntegerInterface(KnexFieldAdapter) {
   createColumn(table) {
-    table.integer(this.path);
+    return table.integer(this.path);
   }
 }
 

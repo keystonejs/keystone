@@ -185,8 +185,8 @@ class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdapter) {
     const utc_field = `${field_path}_utc`;
     const offset_field = `${field_path}_offset`;
 
-    table.timestamp(utc_field, { useTz: false });
     table.text(offset_field);
+    return table.timestamp(utc_field, { useTz: false });
   }
 }
 
