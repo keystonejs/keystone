@@ -115,10 +115,10 @@ class MongoPasswordInterface extends CommonPasswordInterface(MongooseFieldAdapte
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
   }
 
-  getQueryConditions() {
+  getQueryConditions(dbPath) {
     return {
       [`${this.path}_is_set`]: value => ({
-        [this.path]: value ? { $regex: bcryptHashRegex } : { $not: bcryptHashRegex },
+        [dbPath]: value ? { $regex: bcryptHashRegex } : { $not: bcryptHashRegex },
       }),
     };
   }
@@ -129,12 +129,12 @@ class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdapter) {
     table.text(this.path);
   }
 
-  getQueryConditions(f, g) {
+  getQueryConditions(dbPath) {
     return {
       [`${this.path}_is_set`]: value => b =>
         value
-          ? b.where(g(this.path), '~', bcryptHashRegex.source)
-          : b.where(g(this.path), '!~', bcryptHashRegex.source).orWhereNull(g(this.path)),
+          ? b.where(dbPath, '~', bcryptHashRegex.source)
+          : b.where(dbPath, '!~', bcryptHashRegex.source).orWhereNull(dbPath),
     };
   }
 }

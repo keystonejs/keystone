@@ -71,11 +71,11 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
     });
   }
 
-  getQueryConditions() {
+  getQueryConditions(dbPath) {
     return {
-      ...this.equalityConditions(mongoose.Types.Decimal128.fromString),
-      ...this.orderingConditions(mongoose.Types.Decimal128.fromString),
-      ...this.inConditions(mongoose.Types.Decimal128.fromString),
+      ...this.equalityConditions(dbPath, mongoose.Types.Decimal128.fromString),
+      ...this.orderingConditions(dbPath, mongoose.Types.Decimal128.fromString),
+      ...this.inConditions(dbPath, mongoose.Types.Decimal128.fromString),
     };
   }
 }
@@ -84,11 +84,11 @@ class KnexDecimalInterface extends KnexFieldAdapter {
   createColumn(table) {
     table.decimal(this.path);
   }
-  getQueryConditions(f, g) {
+  getQueryConditions(dbPath) {
     return {
-      ...this.equalityConditions(f, g),
-      ...this.orderingConditions(f, g),
-      ...this.inConditions(f, g),
+      ...this.equalityConditions(dbPath),
+      ...this.orderingConditions(dbPath),
+      ...this.inConditions(dbPath),
     };
   }
 }

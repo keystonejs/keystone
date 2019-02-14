@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const inflection = require('inflection');
 const pSettle = require('p-settle');
-const { escapeRegExp, pick, getType, mapKeys, mapKeyNames } = require('@voussoir/utils');
+const { escapeRegExp, pick, getType, mapKeys, mapKeyNames, identity } = require('@voussoir/utils');
 
 const {
   BaseKeystoneAdapter,
@@ -322,82 +322,70 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
 
   // The following methods provide helpers for constructing the return values of `getQueryConditions`.
   // Each method takes:
-  //   `v`: A value transformation function which converts from a string type provided
-  //        by graphQL into a native mongoose type.
-  //   `g`: A path transformation function which converts from the field path into the
-  //        mongoose document path.
-  equalityConditions(f = v => v, g = p => p) {
+  //   `dbPath`: The database field/column name to be used in the comparison
+  //   `f`: (non-string methods only) A value transformation function which converts from a string type
+  //        provided by graphQL into a native adapter type.
+  equalityConditions(dbPath, f = identity) {
     return {
-      [this.path]: value => ({ [g(this.path)]: { $eq: f(value) } }),
-      [`${this.path}_not`]: value => ({ [g(this.path)]: { $ne: f(value) } }),
+      [this.path]: value => ({ [dbPath]: { $eq: f(value) } }),
+      [`${this.path}_not`]: value => ({ [dbPath]: { $ne: f(value) } }),
     };
   }
 
-  equalityConditionsInsensitive(f = escapeRegExp, g = p => p) {
+  equalityConditionsInsensitive(dbPath) {
+    const f = escapeRegExp;
     return {
-      [`${this.path}_i`]: value => ({ [g(this.path)]: new RegExp(`^${f(value)}$`, 'i') }),
-      [`${this.path}_not_i`]: value => ({
-        [g(this.path)]: { $not: new RegExp(`^${f(value)}$`, 'i') },
-      }),
+      [`${this.path}_i`]: value => ({ [dbPath]: new RegExp(`^${f(value)}$`, 'i') }),
+      [`${this.path}_not_i`]: value => ({ [dbPath]: { $not: new RegExp(`^${f(value)}$`, 'i') } }),
     };
   }
 
-  inConditions(f = v => v, g = p => p) {
+  inConditions(dbPath, f = identity) {
     return {
-      [`${this.path}_in`]: value => ({ [g(this.path)]: { $in: value.map(s => f(s)) } }),
-      [`${this.path}_not_in`]: value => ({
-        [g(this.path)]: { $not: { $in: value.map(s => f(s)) } },
-      }),
+      [`${this.path}_in`]: value => ({ [dbPath]: { $in: value.map(s => f(s)) } }),
+      [`${this.path}_not_in`]: value => ({ [dbPath]: { $not: { $in: value.map(s => f(s)) } } }),
     };
   }
 
-  orderingConditions(f = v => v, g = p => p) {
+  orderingConditions(dbPath, f = identity) {
     return {
-      [`${this.path}_lt`]: value => ({ [g(this.path)]: { $lt: f(value) } }),
-      [`${this.path}_lte`]: value => ({ [g(this.path)]: { $lte: f(value) } }),
-      [`${this.path}_gt`]: value => ({ [g(this.path)]: { $gt: f(value) } }),
-      [`${this.path}_gte`]: value => ({ [g(this.path)]: { $gte: f(value) } }),
+      [`${this.path}_lt`]: value => ({ [dbPath]: { $lt: f(value) } }),
+      [`${this.path}_lte`]: value => ({ [dbPath]: { $lte: f(value) } }),
+      [`${this.path}_gt`]: value => ({ [dbPath]: { $gt: f(value) } }),
+      [`${this.path}_gte`]: value => ({ [dbPath]: { $gte: f(value) } }),
     };
   }
 
-  stringConditions(f = escapeRegExp, g = p => p) {
+  stringConditions(dbPath) {
+    const f = escapeRegExp;
     return {
-      [`${this.path}_contains`]: value => ({ [g(this.path)]: { $regex: new RegExp(f(value)) } }),
-      [`${this.path}_not_contains`]: value => ({ [g(this.path)]: { $not: new RegExp(f(value)) } }),
-      [`${this.path}_starts_with`]: value => ({
-        [g(this.path)]: { $regex: new RegExp(`^${f(value)}`) },
-      }),
+      [`${this.path}_contains`]: value => ({ [dbPath]: { $regex: new RegExp(f(value)) } }),
+      [`${this.path}_not_contains`]: value => ({ [dbPath]: { $not: new RegExp(f(value)) } }),
+      [`${this.path}_starts_with`]: value => ({ [dbPath]: { $regex: new RegExp(`^${f(value)}`) } }),
       [`${this.path}_not_starts_with`]: value => ({
-        [g(this.path)]: { $not: new RegExp(`^${f(value)}`) },
+        [dbPath]: { $not: new RegExp(`^${f(value)}`) },
       }),
-      [`${this.path}_ends_with`]: value => ({
-        [g(this.path)]: { $regex: new RegExp(`${f(value)}$`) },
-      }),
-      [`${this.path}_not_ends_with`]: value => ({
-        [g(this.path)]: { $not: new RegExp(`${f(value)}$`) },
-      }),
+      [`${this.path}_ends_with`]: value => ({ [dbPath]: { $regex: new RegExp(`${f(value)}$`) } }),
+      [`${this.path}_not_ends_with`]: value => ({ [dbPath]: { $not: new RegExp(`${f(value)}$`) } }),
     };
   }
 
-  stringConditionsInsensitive(f = escapeRegExp, g = p => p) {
+  stringConditionsInsensitive(dbPath) {
+    const f = escapeRegExp;
     return {
-      [`${this.path}_contains_i`]: value => ({
-        [g(this.path)]: { $regex: new RegExp(f(value), 'i') },
-      }),
-      [`${this.path}_not_contains_i`]: value => ({
-        [g(this.path)]: { $not: new RegExp(f(value), 'i') },
-      }),
+      [`${this.path}_contains_i`]: value => ({ [dbPath]: { $regex: new RegExp(f(value), 'i') } }),
+      [`${this.path}_not_contains_i`]: value => ({ [dbPath]: { $not: new RegExp(f(value), 'i') } }),
       [`${this.path}_starts_with_i`]: value => ({
-        [g(this.path)]: { $regex: new RegExp(`^${f(value)}`, 'i') },
+        [dbPath]: { $regex: new RegExp(`^${f(value)}`, 'i') },
       }),
       [`${this.path}_not_starts_with_i`]: value => ({
-        [g(this.path)]: { $not: new RegExp(`^${f(value)}`, 'i') },
+        [dbPath]: { $not: new RegExp(`^${f(value)}`, 'i') },
       }),
       [`${this.path}_ends_with_i`]: value => ({
-        [g(this.path)]: { $regex: new RegExp(`${f(value)}$`, 'i') },
+        [dbPath]: { $regex: new RegExp(`${f(value)}$`, 'i') },
       }),
       [`${this.path}_not_ends_with_i`]: value => ({
-        [g(this.path)]: { $not: new RegExp(`${f(value)}$`, 'i') },
+        [dbPath]: { $not: new RegExp(`${f(value)}$`, 'i') },
       }),
     };
   }

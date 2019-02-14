@@ -133,9 +133,22 @@ const CommonDateTimeInterface = superclass =>
         return item;
       });
     }
+
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath, toDate),
+        ...this.orderingConditions(dbPath, toDate),
+        ...this.inConditions(dbPath, toDate),
+      };
+    }
   };
 
 class MongoDateTimeInterface extends CommonDateTimeInterface(MongooseFieldAdapter) {
+  constructor() {
+    super(...arguments);
+    this.dbPath = `${this.path}_utc`;
+  }
+
   addToMongooseSchema(schema) {
     const { mongooseOptions } = this.config;
     const field_path = this.path;
@@ -151,14 +164,6 @@ class MongoDateTimeInterface extends CommonDateTimeInterface(MongooseFieldAdapte
     });
   }
 
-  getQueryConditions() {
-    return {
-      ...this.equalityConditions(toDate, p => `${p}_utc`),
-      ...this.orderingConditions(toDate, p => `${p}_utc`),
-      ...this.inConditions(toDate, p => `${p}_utc`),
-    };
-  }
-
   getMongoFieldName() {
     return `${this.path}_utc`;
   }
@@ -172,6 +177,7 @@ class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdapter) {
     const offset_field = `${field_path}_offset`;
     this.realKeys = [utc_field, offset_field];
     this.sortKey = utc_field;
+    this.dbPath = utc_field;
   }
 
   createColumn(table) {
@@ -181,14 +187,6 @@ class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdapter) {
 
     table.timestamp(utc_field, { useTz: false });
     table.text(offset_field);
-  }
-
-  getQueryConditions(f, g) {
-    return {
-      ...this.equalityConditions(v => f(toDate(v)), p => g(`${p}_utc`)),
-      ...this.orderingConditions(v => f(toDate(v)), p => g(`${p}_utc`)),
-      ...this.inConditions(v => f(toDate(v)), p => g(`${p}_utc`)),
-    };
   }
 }
 

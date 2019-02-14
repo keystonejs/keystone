@@ -29,30 +29,26 @@ class Float extends Implementation {
   }
 }
 
-class MongoFloatInterface extends MongooseFieldAdapter {
+const CommonFloatInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.orderingConditions(dbPath),
+        ...this.inConditions(dbPath),
+      };
+    }
+  };
+
+class MongoFloatInterface extends CommonFloatInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: Number }, this.config) });
   }
-
-  getQueryConditions() {
-    return {
-      ...this.equalityConditions(),
-      ...this.orderingConditions(),
-      ...this.inConditions(),
-    };
-  }
 }
 
-class KnexFloatInterface extends KnexFieldAdapter {
+class KnexFloatInterface extends CommonFloatInterface(KnexFieldAdapter) {
   createColumn(table) {
     table.float(this.path);
-  }
-  getQueryConditions(f, g) {
-    return {
-      ...this.equalityConditions(f, g),
-      ...this.orderingConditions(f, g),
-      ...this.inConditions(f, g),
-    };
   }
 }
 

@@ -25,23 +25,22 @@ class Checkbox extends Implementation {
   }
 }
 
-class MongoCheckboxInterface extends MongooseFieldAdapter {
+const CommonCheckboxInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return this.equalityConditions(dbPath);
+    }
+  };
+
+class MongoCheckboxInterface extends CommonCheckboxInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: Boolean }, this.config) });
   }
-
-  getQueryConditions() {
-    return this.equalityConditions();
-  }
 }
 
-class KnexCheckboxInterface extends KnexFieldAdapter {
+class KnexCheckboxInterface extends CommonCheckboxInterface(KnexFieldAdapter) {
   createColumn(table) {
     table.boolean(this.path);
-  }
-
-  getQueryConditions(f, g) {
-    return this.equalityConditions(f, g);
   }
 }
 
