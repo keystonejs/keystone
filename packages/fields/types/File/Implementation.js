@@ -138,8 +138,8 @@ class MongoFileInterface extends CommonFileInterface(MongooseFieldAdapter) {
 }
 
 class KnexFileInterface extends CommonFileInterface(KnexFieldAdapter) {
-  createColumn() {
-    throw new Error('Knex Adapter does not currently support the `File` type.');
+  createColumn(table) {
+    table.json(this.path);
   }
 }
 
