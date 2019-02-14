@@ -1,6 +1,6 @@
 const pluralize = require('pluralize');
 
-const { MongoTextInterface, Text } = require('../Text/Implementation');
+const { MongoTextInterface, KnexTextInterface, Text } = require('../Text/Implementation');
 const { flatten } = require('@voussoir/utils');
 
 const GQL_TYPE_PREFIX = '_ContentType';
@@ -150,7 +150,7 @@ class Content extends Text {
 
 class MongoContentInterface extends MongoTextInterface {}
 
-class KnexContentInterface extends MongoTextInterface {}
+class KnexContentInterface extends KnexTextInterface {}
 
 module.exports = {
   Content,
