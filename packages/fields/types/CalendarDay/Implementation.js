@@ -36,7 +36,18 @@ class CalendarDay extends Implementation {
   }
 }
 
-class MongoCalendarDayInterface extends MongooseFieldAdapter {
+const CommonCalendarInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.orderingConditions(dbPath),
+        ...this.inConditions(dbPath),
+      };
+    }
+  };
+
+class MongoCalendarDayInterface extends CommonCalendarInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     const { mongooseOptions = {} } = this.config;
     const { isRequired } = mongooseOptions;
@@ -51,26 +62,11 @@ class MongoCalendarDayInterface extends MongooseFieldAdapter {
     };
     schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
   }
-
-  getQueryConditions() {
-    return {
-      ...this.equalityConditions(),
-      ...this.orderingConditions(),
-      ...this.inConditions(),
-    };
-  }
 }
 
-class KnexCalendarDayInterface extends KnexFieldAdapter {
+class KnexCalendarDayInterface extends CommonCalendarInterface(KnexFieldAdapter) {
   createColumn(table) {
     table.text(this.path);
-  }
-  getQueryConditions(f, g) {
-    return {
-      ...this.equalityConditions(f, g),
-      ...this.orderingConditions(f, g),
-      ...this.inConditions(f, g),
-    };
   }
 }
 

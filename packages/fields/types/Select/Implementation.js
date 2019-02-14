@@ -57,28 +57,25 @@ class Select extends Implementation {
   }
 }
 
-class MongoSelectInterface extends MongooseFieldAdapter {
+const CommonSelectInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.inConditions(dbPath),
+      };
+    }
+  };
+
+class MongoSelectInterface extends CommonSelectInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
   }
-
-  getQueryConditions() {
-    return {
-      ...this.equalityConditions(),
-      ...this.inConditions(),
-    };
-  }
 }
 
-class KnexSelectInterface extends KnexFieldAdapter {
+class KnexSelectInterface extends CommonSelectInterface(KnexFieldAdapter) {
   createColumn(table) {
     table.enu(this.path, this.config.options.map(({ value }) => value));
-  }
-  getQueryConditions(f, g) {
-    return {
-      ...this.equalityConditions(f, g),
-      ...this.inConditions(f, g),
-    };
   }
 }
 

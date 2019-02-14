@@ -156,6 +156,7 @@ class BaseFieldAdapter {
     this.listAdapter = listAdapter;
     this.config = config;
     this.getListByKey = getListByKey;
+    this.dbPath = path;
   }
 
   setupHooks() {}

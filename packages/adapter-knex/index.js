@@ -13,6 +13,7 @@ const {
   omit,
   arrayToObject,
   resolveAllKeys,
+  identity,
 } = require('@voussoir/utils');
 
 class KnexAdapter extends BaseKeystoneAdapter {
@@ -342,30 +343,30 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   _allQueryConditions(tableAlias) {
-    const f = v => v;
-    const g = p => `${tableAlias}.${p}`;
+    const dbPathTransform = dbPath => `${tableAlias}.${dbPath}`;
+    const idPath = dbPathTransform('id');
     return {
-      id: value => b => b.where(g('id'), parseInt(value, 10)),
+      id: value => b => b.where(idPath, parseInt(value, 10)),
       id_not: value => b =>
         value === null
-          ? b.whereNotNull(g('id'))
-          : b.where(g('id'), '!=', parseInt(value, 10)).orWhereNull(g('id')),
+          ? b.whereNotNull(idPath)
+          : b.where(idPath, '!=', parseInt(value, 10)).orWhereNull(idPath),
       id_in: value => b =>
         value.includes(null)
           ? b
-              .whereIn(g('id'), value.filter(x => x !== null).map(x => parseInt(x, 10)))
-              .orWhereNull(g('id'))
-          : b.whereIn(g('id'), value.map(x => parseInt(x, 10))),
+              .whereIn(idPath, value.filter(x => x !== null).map(x => parseInt(x, 10)))
+              .orWhereNull(idPath)
+          : b.whereIn(idPath, value.map(x => parseInt(x, 10))),
       id_not_in: value => b =>
         value.includes(null)
           ? b
-              .whereNotIn(g('id'), value.filter(x => x !== null).map(x => parseInt(x, 10)))
-              .whereNotNull(g('id'))
-          : b.whereNotIn(g('id'), value.map(x => parseInt(x, 10))).orWhereNull(g('id')),
+              .whereNotIn(idPath, value.filter(x => x !== null).map(x => parseInt(x, 10)))
+              .whereNotNull(idPath)
+          : b.whereNotIn(idPath, value.map(x => parseInt(x, 10))).orWhereNull(idPath),
       ...objMerge(
-        this.fieldAdapters
-          .filter(a => a.getQueryConditions)
-          .map(fieldAdapter => fieldAdapter.getQueryConditions(f, g))
+        this.fieldAdapters.map(fieldAdapter =>
+          fieldAdapter.getQueryConditions(dbPathTransform(fieldAdapter.dbPath))
+        )
       ),
     };
   }
@@ -580,78 +581,79 @@ class KnexFieldAdapter extends BaseFieldAdapter {
     throw `createColumn not supported for field ${this.path} of type ${this.fieldName}`;
   }
 
-  equalityConditions(f = v => v, g = p => p) {
+  // The following methods provide helpers for constructing the return values of `getQueryConditions`.
+  // Each method takes:
+  //   `dbPath`: The database field/column name to be used in the comparison
+  //   `f`: (non-string methods only) A value transformation function which converts from a string type
+  //        provided by graphQL into a native adapter type.
+  equalityConditions(dbPath, f = identity) {
     return {
-      [this.path]: value => b => b.where(g(this.path), f(value)),
+      [this.path]: value => b => b.where(dbPath, f(value)),
       [`${this.path}_not`]: value => b =>
         value === null
-          ? b.whereNotNull(g(this.path))
-          : b.where(g(this.path), '!=', f(value)).orWhereNull(g(this.path)),
+          ? b.whereNotNull(dbPath)
+          : b.where(dbPath, '!=', f(value)).orWhereNull(dbPath),
     };
   }
 
-  equalityConditionsInsensitive(f = v => v, g = p => p) {
+  equalityConditionsInsensitive(dbPath) {
+    const f = escapeRegExp;
     return {
-      [`${this.path}_i`]: value => b => b.where(g(this.path), '~*', `^${escapeRegExp(f(value))}$`),
+      [`${this.path}_i`]: value => b => b.where(dbPath, '~*', `^${f(value)}$`),
       [`${this.path}_not_i`]: value => b =>
-        b.where(g(this.path), '!~*', `^${escapeRegExp(f(value))}$`).orWhereNull(g(this.path)),
+        b.where(dbPath, '!~*', `^${f(value)}$`).orWhereNull(dbPath),
     };
   }
 
-  inConditions(f = v => v, g = p => p) {
+  inConditions(dbPath, f = identity) {
     return {
       [`${this.path}_in`]: value => b =>
         value.includes(null)
-          ? b.whereIn(g(this.path), value.filter(x => x !== null).map(f)).orWhereNull(g(this.path))
-          : b.whereIn(g(this.path), value.map(f)),
+          ? b.whereIn(dbPath, value.filter(x => x !== null).map(f)).orWhereNull(dbPath)
+          : b.whereIn(dbPath, value.map(f)),
       [`${this.path}_not_in`]: value => b =>
         value.includes(null)
-          ? b
-              .whereNotIn(g(this.path), value.filter(x => x !== null).map(f))
-              .whereNotNull(g(this.path))
-          : b.whereNotIn(g(this.path), value.map(f)).orWhereNull(g(this.path)),
+          ? b.whereNotIn(dbPath, value.filter(x => x !== null).map(f)).whereNotNull(dbPath)
+          : b.whereNotIn(dbPath, value.map(f)).orWhereNull(dbPath),
     };
   }
 
-  orderingConditions(f = v => v, g = p => p) {
+  orderingConditions(dbPath, f = identity) {
     return {
-      [`${this.path}_lt`]: value => b => b.where(g(this.path), '<', f(value)),
-      [`${this.path}_lte`]: value => b => b.where(g(this.path), '<=', f(value)),
-      [`${this.path}_gt`]: value => b => b.where(g(this.path), '>', f(value)),
-      [`${this.path}_gte`]: value => b => b.where(g(this.path), '>=', f(value)),
+      [`${this.path}_lt`]: value => b => b.where(dbPath, '<', f(value)),
+      [`${this.path}_lte`]: value => b => b.where(dbPath, '<=', f(value)),
+      [`${this.path}_gt`]: value => b => b.where(dbPath, '>', f(value)),
+      [`${this.path}_gte`]: value => b => b.where(dbPath, '>=', f(value)),
     };
   }
 
-  stringConditions(f = v => v, g = p => p) {
+  stringConditions(dbPath) {
+    const f = escapeRegExp;
     return {
-      [`${this.path}_contains`]: value => b => b.where(g(this.path), '~', escapeRegExp(f(value))),
+      [`${this.path}_contains`]: value => b => b.where(dbPath, '~', f(value)),
       [`${this.path}_not_contains`]: value => b =>
-        b.where(g(this.path), '!~', escapeRegExp(f(value))).orWhereNull(g(this.path)),
-      [`${this.path}_starts_with`]: value => b =>
-        b.where(g(this.path), '~', `^${escapeRegExp(f(value))}`),
+        b.where(dbPath, '!~', f(value)).orWhereNull(dbPath),
+      [`${this.path}_starts_with`]: value => b => b.where(dbPath, '~', `^${f(value)}`),
       [`${this.path}_not_starts_with`]: value => b =>
-        b.where(g(this.path), '!~', `^${escapeRegExp(f(value))}`).orWhereNull(g(this.path)),
-      [`${this.path}_ends_with`]: value => b =>
-        b.where(g(this.path), '~', `${escapeRegExp(f(value))}$`),
+        b.where(dbPath, '!~', `^${f(value)}`).orWhereNull(dbPath),
+      [`${this.path}_ends_with`]: value => b => b.where(dbPath, '~', `${f(value)}$`),
       [`${this.path}_not_ends_with`]: value => b =>
-        b.where(g(this.path), '!~', `${escapeRegExp(f(value))}$`).orWhereNull(g(this.path)),
+        b.where(dbPath, '!~', `${f(value)}$`).orWhereNull(dbPath),
     };
   }
 
-  stringConditionsInsensitive(f = v => v, g = p => p) {
+  stringConditionsInsensitive(dbPath) {
+    const f = escapeRegExp;
     return {
-      [`${this.path}_contains_i`]: value => b =>
-        b.where(g(this.path), '~*', escapeRegExp(f(value))),
+      [`${this.path}_contains_i`]: value => b => b.where(dbPath, '~*', f(value)),
       [`${this.path}_not_contains_i`]: value => b =>
-        b.where(g(this.path), '!~*', escapeRegExp(f(value))).orWhereNull(g(this.path)),
-      [`${this.path}_starts_with_i`]: value => b =>
-        b.where(g(this.path), '~*', `^${escapeRegExp(f(value))}`),
+        b.where(dbPath, '!~*', f(value)).orWhereNull(dbPath),
+      [`${this.path}_starts_with_i`]: value => b => b.where(dbPath, '~*', `^${f(value)}`),
       [`${this.path}_not_starts_with_i`]: value => b =>
-        b.where(g(this.path), '!~*', `^${escapeRegExp(f(value))}`).orWhereNull(g(this.path)),
-      [`${this.path}_ends_with_i`]: value => b =>
-        b.where(g(this.path), '~*', `${escapeRegExp(f(value))}$`),
+        b.where(dbPath, '!~*', `^${f(value)}`).orWhereNull(dbPath),
+      [`${this.path}_ends_with_i`]: value => b => b.where(dbPath, '~*', `${f(value)}$`),
       [`${this.path}_not_ends_with_i`]: value => b =>
-        b.where(g(this.path), '!~*', `${escapeRegExp(f(value))}$`).orWhereNull(g(this.path)),
+        b.where(dbPath, '!~*', `${f(value)}$`).orWhereNull(dbPath),
     };
   }
 }

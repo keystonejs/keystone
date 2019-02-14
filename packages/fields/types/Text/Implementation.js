@@ -31,35 +31,29 @@ class Text extends Implementation {
   }
 }
 
-class MongoTextInterface extends MongooseFieldAdapter {
+const CommonTextInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.stringConditions(dbPath),
+        ...this.equalityConditionsInsensitive(dbPath),
+        ...this.stringConditionsInsensitive(dbPath),
+        // These have no case-insensitive counter parts
+        ...this.inConditions(dbPath),
+      };
+    }
+  };
+
+class MongoTextInterface extends CommonTextInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
   }
-
-  getQueryConditions() {
-    return {
-      ...this.equalityConditions(),
-      ...this.stringConditions(),
-      ...this.equalityConditionsInsensitive(),
-      ...this.stringConditionsInsensitive(),
-      // These have no case-insensitive counter parts
-      ...this.inConditions(),
-    };
-  }
 }
 
-class KnexTextInterface extends KnexFieldAdapter {
+class KnexTextInterface extends CommonTextInterface(KnexFieldAdapter) {
   createColumn(table) {
     table.text(this.path);
-  }
-  getQueryConditions(f, g) {
-    return {
-      ...this.equalityConditions(f, g),
-      ...this.stringConditions(f, g),
-      ...this.equalityConditionsInsensitive(f, g),
-      ...this.stringConditionsInsensitive(f, g),
-      ...this.inConditions(f, g),
-    };
   }
 }
 
