@@ -418,7 +418,7 @@ class KnexRelationshipInterface extends KnexFieldAdapter {
   }
 
   createColumn(table) {
-    table.integer(this.path).unsigned();
+    return table.integer(this.path).unsigned();
   }
 
   createForiegnKey(table, schemaName) {

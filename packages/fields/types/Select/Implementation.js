@@ -75,7 +75,7 @@ class MongoSelectInterface extends CommonSelectInterface(MongooseFieldAdapter) {
 
 class KnexSelectInterface extends CommonSelectInterface(KnexFieldAdapter) {
   createColumn(table) {
-    table.enu(this.path, this.config.options.map(({ value }) => value));
+    return table.enu(this.path, this.config.options.map(({ value }) => value));
   }
 }
 

@@ -53,7 +53,7 @@ class MongoTextInterface extends CommonTextInterface(MongooseFieldAdapter) {
 
 class KnexTextInterface extends CommonTextInterface(KnexFieldAdapter) {
   createColumn(table) {
-    table.text(this.path);
+    return table.text(this.path);
   }
 }
 

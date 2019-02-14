@@ -40,7 +40,7 @@ class MongoCheckboxInterface extends CommonCheckboxInterface(MongooseFieldAdapte
 
 class KnexCheckboxInterface extends CommonCheckboxInterface(KnexFieldAdapter) {
   createColumn(table) {
-    table.boolean(this.path);
+    return table.boolean(this.path);
   }
 }
 

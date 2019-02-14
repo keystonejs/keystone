@@ -139,7 +139,7 @@ class MongoFileInterface extends CommonFileInterface(MongooseFieldAdapter) {
 
 class KnexFileInterface extends CommonFileInterface(KnexFieldAdapter) {
   createColumn(table) {
-    table.json(this.path);
+    return table.json(this.path);
   }
 }
 

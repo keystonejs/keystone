@@ -48,7 +48,7 @@ class MongoFloatInterface extends CommonFloatInterface(MongooseFieldAdapter) {
 
 class KnexFloatInterface extends CommonFloatInterface(KnexFieldAdapter) {
   createColumn(table) {
-    table.float(this.path);
+    return table.float(this.path);
   }
 }
 

@@ -126,7 +126,7 @@ class MongoPasswordInterface extends CommonPasswordInterface(MongooseFieldAdapte
 
 class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdapter) {
   createColumn(table) {
-    table.text(this.path);
+    return table.text(this.path);
   }
 
   getQueryConditions(dbPath) {

@@ -66,7 +66,7 @@ class MongoCalendarDayInterface extends CommonCalendarInterface(MongooseFieldAda
 
 class KnexCalendarDayInterface extends CommonCalendarInterface(KnexFieldAdapter) {
   createColumn(table) {
-    table.date(this.path);
+    return table.date(this.path);
   }
 
   setupHooks({ addPostReadHook }) {

@@ -126,9 +126,12 @@ class KnexListAdapter extends BaseListAdapter {
       // Create the required columns for each field;
       this.fieldAdapters.forEach(adapter => {
         if (!(adapter.isRelationship && adapter.config.many)) {
-          adapter.createColumn(table);
+          const column = adapter.createColumn(table);
           if (adapter.config.isUnique) {
-            table.unique(adapter.path);
+            column.unique();
+          }
+          if (adapter.config.isRequired && !adapter.isRelationship) {
+            column.notNullable(column);
           }
         }
       });

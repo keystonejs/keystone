@@ -82,7 +82,7 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
 
 class KnexDecimalInterface extends KnexFieldAdapter {
   createColumn(table) {
-    table.decimal(this.path);
+    return table.decimal(this.path);
   }
   getQueryConditions(dbPath) {
     return {
