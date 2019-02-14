@@ -63,7 +63,7 @@ const encodeFields = fields => {
   return fields.map(f => f.path).join(',');
 };
 
-const parseSortBy = (sortBy: string, list: List): SortByType => {
+const parseSortBy = (sortBy: string, list: List): SortByType | null => {
   let key = sortBy;
   let direction = 'ASC';
 
@@ -73,7 +73,9 @@ const parseSortBy = (sortBy: string, list: List): SortByType => {
   }
 
   const field = list.fields.find(f => f.path === key);
-
+  if (!field) {
+    return null;
+  }
   return {
     field: { label: field.label, path: field.path },
     direction,
@@ -160,7 +162,10 @@ export const decodeSearch = (search: string, props: Props): SearchType => {
         acc[key] = parseFields(query[key], props.list);
         break;
       case 'sortBy':
-        acc[key] = parseSortBy(query[key], props.list);
+        let sortBy = parseSortBy(query[key], props.list);
+        if (sortBy !== null) {
+          acc[key] = sortBy;
+        }
         break;
       default:
         acc[key] = query[key];
