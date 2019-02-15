@@ -281,10 +281,11 @@ const META_QUERY = gql`
   }
 `;
 
-// This value is used in memoization functions, so we want to ensure it's always
-// the same by defining it once here
+// These values are used in memoization functions, so we want to ensure it's
+// always the same by defining it once here
 // (ie; we don't create a new empty object on each call)
 const emptyObject = Object.freeze(Object.create(null));
+const emptyArray = [];
 
 // Will contain the result of the META_QUERY above (see note in KeystoneProvider
 // for more info on when/why)
@@ -294,7 +295,7 @@ class KeystoneProvider extends React.Component {
   render() {
     return (
       <KeystoneQuery query={META_QUERY}>
-        {({ data }) => {
+        {({ data, loading }) => {
           // NOTE: We're setting a global variable here, which then impacts the
           // functionality of local resolvers.
           // This is hacky, but there is no other way to get the data into the
@@ -304,7 +305,7 @@ class KeystoneProvider extends React.Component {
           //   _isOptimistic flag.
           // Egg: We need to know the types to set the flag on, but that comes
           //   via a GraphQL query from Apollo).
-          keystoneListsMeta = data._ksListsMeta || emptyObject;
+          keystoneListsMeta = loading || !data ? emptyArray : data._ksListsMeta || emptyArray;
           return (
             <SchemaContext.Provider value={keystoneListsMeta}>
               {this.props.children}
