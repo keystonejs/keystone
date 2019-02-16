@@ -140,26 +140,25 @@ const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, blocks, e
                   let Icon = marks[name].icon;
                   return (
                     <ToolbarButton
+                      label={marks[name].label}
+                      icon={<Icon />}
                       isActive={editorState.activeMarks.some(mark => mark.type === name)}
                       onClick={() => {
                         editor.toggleMark(name);
                       }}
                       key={name}
-                    >
-                      <Icon />
-                      <A11yText>{marks[name].label}</A11yText>
-                    </ToolbarButton>
+                    />
                   );
                 })}
                 <ToolbarButton
+                  label="Remove Formatting"
+                  icon={<CircleSlashIcon />}
                   onClick={() => {
                     markTypes.forEach(mark => {
                       editor.removeMark(mark);
                     });
                   }}
-                >
-                  <CircleSlashIcon title="Remove Formatting" />
-                </ToolbarButton>
+                />
 
                 {Object.keys(blocks).map(type => {
                   let ToolbarElement = blocks[type].ToolbarElement;

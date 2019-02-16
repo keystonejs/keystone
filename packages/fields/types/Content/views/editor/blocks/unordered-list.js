@@ -28,13 +28,13 @@ export let type = 'unordered-list';
 export function ToolbarElement({ editor, editorState }) {
   return (
     <ToolbarButton
+      label="Unordered List"
+      icon={<ListUnorderedIcon />}
       isActive={hasAncestorBlock(editorState, type)}
       onClick={() => {
         handleListButtonClick(editor, editorState, type);
       }}
-    >
-      <ListUnorderedIcon title="Unordered List" />
-    </ToolbarButton>
+    />
   );
 }
 

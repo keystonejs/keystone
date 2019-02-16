@@ -65,16 +65,14 @@ let LinkMenu = props => {
           setValue(e.target.value);
         }}
       />
-      <ToolbarButton type="submit">
-        <CheckIcon title="Submit" />
-      </ToolbarButton>
+      <ToolbarButton label="Submit" icon={<CheckIcon />} type="submit" />
       <ToolbarButton
+        label="Cancel"
+        icon={<CircleSlashIcon />}
         onClick={() => {
           props.onCancel();
         }}
-      >
-        <CircleSlashIcon title="Cancel" />
-      </ToolbarButton>
+      />
     </form>
   );
 };
@@ -109,6 +107,8 @@ export function ToolbarElement({ editor, editorState }) {
   return (
     <ToolbarButton
       isActive={hasLinks}
+      label={hasLinks ? 'Remove Link' : 'Link'}
+      icon={<LinkIcon />}
       onClick={() => {
         if (hasLinks) {
           editor.unwrapInline(type);
@@ -116,8 +116,6 @@ export function ToolbarElement({ editor, editorState }) {
           setLinkRange(editorState.selection);
         }
       }}
-    >
-      <LinkIcon title={hasLinks ? 'Remove Link' : 'Link'} />
-    </ToolbarButton>
+    />
   );
 }

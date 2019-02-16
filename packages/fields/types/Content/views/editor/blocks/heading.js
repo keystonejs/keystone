@@ -2,13 +2,14 @@ import * as React from 'react';
 import { hasBlock } from '../utils';
 import { type as defaultType } from './paragraph';
 import { ToolbarButton } from '../toolbar-components';
-import { A11yText } from '@arch-ui/typography';
 
 export let type = 'heading';
 
 export function ToolbarElement({ editor, editorState }) {
   return (
     <ToolbarButton
+      icon={<span aria-hidden>H</span>}
+      label="Heading"
       isActive={hasBlock(editorState, type)}
       onClick={() => {
         if (hasBlock(editorState, type)) {
@@ -17,10 +18,7 @@ export function ToolbarElement({ editor, editorState }) {
           editor.setBlocks({ type: type });
         }
       }}
-    >
-      <span aria-hidden>H</span>
-      <A11yText>Heading</A11yText>
-    </ToolbarButton>
+    />
   );
 }
 export function Node({ attributes, children }) {

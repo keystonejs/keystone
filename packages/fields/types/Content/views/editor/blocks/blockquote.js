@@ -12,6 +12,8 @@ export function ToolbarElement({ editor, editorState }) {
   return (
     <ToolbarButton
       isActive={hasBlockquote}
+      icon={<QuoteIcon />}
+      label="Blockquote"
       onClick={() => {
         if (hasBlockquote) {
           editor.unwrapBlock(type);
@@ -19,9 +21,7 @@ export function ToolbarElement({ editor, editorState }) {
           editor.wrapBlock(type);
         }
       }}
-    >
-      <QuoteIcon title="Blockquote" />
-    </ToolbarButton>
+    />
   );
 }
 
