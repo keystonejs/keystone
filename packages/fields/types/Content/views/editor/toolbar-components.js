@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { forwardRef } from 'react';
-import { colors } from '@arch-ui/theme';
+import { colors, gridSize } from '@arch-ui/theme';
 import { lighten, darken } from '@arch-ui/color-utils';
 import Tooltip from '@arch-ui/tooltip';
 import { A11yText } from '@arch-ui/typography';
@@ -35,7 +35,7 @@ export let BasicToolbarButton = forwardRef(({ isActive, ...props }, ref) => {
 
 export let ToolbarButton = ({ isActive, label, icon, ...props }) => {
   return (
-    <Tooltip placement="top" content={label}>
+    <Tooltip placement="top" css={{ marginBottom: gridSize / 2 }} content={label}>
       {ref => (
         <BasicToolbarButton ref={ref} isActive={isActive} {...props}>
           {icon}

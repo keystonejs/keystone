@@ -7,6 +7,7 @@ import { Popper } from 'react-popper';
 import { marks, markTypes } from './marks';
 import { ToolbarButton } from './toolbar-components';
 import { CircleSlashIcon } from '@arch-ui/icons';
+import { colors } from '@arch-ui/theme';
 import { useMeasure } from '@arch-ui/hooks';
 import { selectionReference } from './utils';
 import { useStateWithEqualityCheck } from './hooks';
@@ -98,19 +99,15 @@ const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, blocks, e
       ref={ref}
       style={style}
       css={{
-        backgroundColor: 'black',
+        backgroundColor: colors.N90,
         padding: 8,
         borderRadius: 6,
-        width: 'auto',
-        position: 'absolute',
         display: shouldShowToolbar ? 'flex' : 'none',
-        left: 0,
-        top: 0,
         // this isn't as nice of a transition as i'd like since the time is fixed
         // i think it would better if it was physics based but that would probably
         // be a lot of work for little gain
         // maybe base the transition time on the previous value?
-        transition: 'transform 100ms',
+        transition: 'transform 100ms, opacity 100ms',
       }}
     >
       {shouldShowToolbar && (
