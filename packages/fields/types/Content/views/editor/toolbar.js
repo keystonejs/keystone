@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useRef, Fragment, useLayoutEffect, forwardRef } from 'react';
+import { useRef, Fragment, useLayoutEffect, forwardRef, memo } from 'react';
 import { getVisibleSelectionRect } from 'get-selection-range';
 import { createPortal } from 'react-dom';
 import { Popper } from 'react-popper';
@@ -25,7 +25,13 @@ let stopPropagation = e => {
   e.stopPropagation();
 };
 
-function InnerToolbar({ blocks, editor, editorState, scheduleUpdate }) {
+// why is this component being memoized when editorState will change a lot?
+// it's done to stop it from rerendering when the popper updates but the
+// internals don't update, it's especially important since
+// when the popper updates, the parent element will be animating
+// to its new position and doing expensive rerender in that time
+// will make the animation janky
+let InnerToolbar = memo(function InnerToolbar({ blocks, editor, editorState, scheduleUpdate }) {
   let ref = useRef(null);
   let snapshot = useMeasure(ref);
   useLayoutEffect(scheduleUpdate, [snapshot]);
@@ -79,7 +85,7 @@ function InnerToolbar({ blocks, editor, editorState, scheduleUpdate }) {
         )}
     </div>
   );
-}
+});
 
 const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, blocks, editor }, ref) => {
   useLayoutEffect(scheduleUpdate, [editorState]);
