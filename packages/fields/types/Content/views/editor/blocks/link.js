@@ -91,6 +91,7 @@ export function Toolbar({ children, editor }) {
               type: type,
               data: { href: value },
             });
+            editor.deselect();
           }}
           onCancel={() => {
             setLinkRange(null);

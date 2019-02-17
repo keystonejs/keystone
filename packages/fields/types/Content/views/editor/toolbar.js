@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useRef, Fragment, useLayoutEffect, forwardRef, memo } from 'react';
-import { getVisibleSelectionRect } from 'get-selection-range';
+import { useRef, Fragment, useLayoutEffect, forwardRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Popper } from 'react-popper';
 import { marks, markTypes } from './marks';
@@ -10,18 +9,7 @@ import { CircleSlashIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
 import { useMeasure } from '@arch-ui/hooks';
 import { selectionReference } from './utils';
-import { useStateWithEqualityCheck } from './hooks';
 import applyRef from 'apply-ref';
-
-function useHasSelection() {
-  let [hasSelection, setHasSelection] = useStateWithEqualityCheck(false);
-  useLayoutEffect(() => {
-    const rect = getVisibleSelectionRect();
-    let newValue = rect && rect.width !== 0;
-    setHasSelection(newValue);
-  });
-  return hasSelection;
-}
 
 let stopPropagation = e => {
   e.stopPropagation();
@@ -51,6 +39,7 @@ function InnerToolbar({ blocks, editor, editorState }) {
                   isActive={editorState.activeMarks.some(mark => mark.type === name)}
                   onClick={() => {
                     editor.toggleMark(name);
+                    editor.focus();
                   }}
                   key={name}
                 />
@@ -63,6 +52,7 @@ function InnerToolbar({ blocks, editor, editorState }) {
                 markTypes.forEach(mark => {
                   editor.removeMark(mark);
                 });
+                editor.focus();
               }}
             />
 
@@ -80,7 +70,8 @@ function InnerToolbar({ blocks, editor, editorState }) {
 }
 
 const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children }, ref) => {
-  let shouldShowToolbar = useHasSelection();
+  let { fragment } = editorState;
+  let shouldShowToolbar = fragment.text !== '';
   let containerRef = useRef(null);
 
   let snapshot = useMeasure(containerRef);

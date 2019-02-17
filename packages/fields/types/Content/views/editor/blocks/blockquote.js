@@ -20,6 +20,7 @@ export function ToolbarElement({ editor, editorState }) {
         } else {
           editor.wrapBlock(type);
         }
+        editor.focus();
       }}
     />
   );

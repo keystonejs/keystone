@@ -21,6 +21,7 @@ let handleListButtonClick = (editor, editorState, type) => {
   } else {
     editor.setBlocks(listItem.type).wrapBlock(type);
   }
+  editor.focus();
 };
 
 export let type = 'ordered-list';

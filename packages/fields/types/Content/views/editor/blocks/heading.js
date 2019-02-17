@@ -17,6 +17,7 @@ export function ToolbarElement({ editor, editorState }) {
         } else {
           editor.setBlocks({ type: type });
         }
+        editor.focus();
       }}
     />
   );
