@@ -28,7 +28,7 @@ let stopPropagation = e => {
 function InnerToolbar({ blocks, editor, editorState, scheduleUpdate }) {
   let ref = useRef(null);
   let snapshot = useMeasure(ref);
-  useLayoutEffect(scheduleUpdate, [snapshot]);
+  useLayoutEffect(scheduleUpdate, [snapshot, editorState]);
 
   return (
     <div css={{ display: 'flex' }} ref={ref}>
@@ -82,8 +82,6 @@ function InnerToolbar({ blocks, editor, editorState, scheduleUpdate }) {
 }
 
 const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, blocks, editor }, ref) => {
-  useLayoutEffect(scheduleUpdate, [editorState]);
-
   let shouldShowToolbar = useHasSelection();
 
   return createPortal(
