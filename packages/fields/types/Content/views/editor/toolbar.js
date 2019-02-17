@@ -11,6 +11,7 @@ import { colors } from '@arch-ui/theme';
 import { useMeasure } from '@arch-ui/hooks';
 import { selectionReference } from './utils';
 import { useStateWithEqualityCheck } from './hooks';
+import applyRef from 'apply-ref';
 
 function useHasSelection() {
   let [hasSelection, setHasSelection] = useStateWithEqualityCheck(false);
@@ -26,19 +27,9 @@ let stopPropagation = e => {
   e.stopPropagation();
 };
 
-// why is this component being memoized when editorState will change a lot?
-// it's done to stop it from rerendering when the popper updates but the
-// internals don't update, it's especially important since
-// when the popper updates, the parent element will be animating
-// to its new position and doing expensive rerender in that time
-// will make the animation janky
-let InnerToolbar = memo(function InnerToolbar({ blocks, editor, editorState, scheduleUpdate }) {
-  let ref = useRef(null);
-  let snapshot = useMeasure(ref);
-  useLayoutEffect(scheduleUpdate, [snapshot]);
-
+function InnerToolbar({ blocks, editor, editorState }) {
   return (
-    <div css={{ display: 'flex' }} ref={ref}>
+    <div css={{ display: 'flex' }}>
       {Object.keys(blocks)
         .map(x => blocks[x].Toolbar)
         .filter(x => x)
@@ -86,17 +77,30 @@ let InnerToolbar = memo(function InnerToolbar({ blocks, editor, editorState, sch
         )}
     </div>
   );
-});
+}
 
-const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, blocks, editor }, ref) => {
-  useLayoutEffect(scheduleUpdate, [editorState]);
-
+const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children }, ref) => {
   let shouldShowToolbar = useHasSelection();
+  let containerRef = useRef(null);
+
+  let snapshot = useMeasure(containerRef);
+
+  useLayoutEffect(
+    () => {
+      if (shouldShowToolbar) {
+        scheduleUpdate();
+      }
+    },
+    [scheduleUpdate, editorState, snapshot, shouldShowToolbar]
+  );
 
   return createPortal(
     <div
       onMouseDown={stopPropagation}
-      ref={ref}
+      ref={node => {
+        applyRef(ref, node);
+        applyRef(containerRef, node);
+      }}
       style={style}
       css={{
         backgroundColor: colors.N90,
@@ -110,24 +114,20 @@ const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, blocks, e
         transition: 'transform 100ms, opacity 100ms',
       }}
     >
-      {shouldShowToolbar && (
-        <InnerToolbar
-          blocks={blocks}
-          editor={editor}
-          editorState={editorState}
-          scheduleUpdate={scheduleUpdate}
-        />
-      )}
+      {shouldShowToolbar && children}
     </div>,
     document.body
   );
 });
 
 export default ({ editorState, blocks, editor }) => {
+  // this element is created here so that when the popper rerenders
+  // the inner toolbar won't have to update
+  let children = <InnerToolbar blocks={blocks} editor={editor} editorState={editorState} />;
   return (
     <Popper placement="top" referenceElement={selectionReference}>
       {({ style, ref, scheduleUpdate }) => (
-        <PopperRender {...{ scheduleUpdate, editorState, style, blocks, editor, ref }} />
+        <PopperRender {...{ scheduleUpdate, editorState, style, blocks, editor, ref, children }} />
       )}
     </Popper>
   );

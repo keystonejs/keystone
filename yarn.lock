@@ -3132,6 +3132,11 @@ append-transform@^0.4.0:
   dependencies:
     default-require-extensions "^1.0.0"
 
+apply-ref@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/apply-ref/-/apply-ref-0.1.1.tgz#f4ef078ffef3640bb65163ad78e7b4b7ad539c6b"
+  integrity sha512-TNNC33d5bk67yUX8ICK2yuR9E61U2Pe8y4ZIH8VlLwG3lEmo8VSj6oFVAjnMowA+/Cx4z2QJ+o0b79vvl99P5A==
+
 aproba@^1.0.3, aproba@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/aproba/-/aproba-1.2.0.tgz#6802e6264efd18c790a1b0d517f0f2627bf2c94a"
