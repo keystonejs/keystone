@@ -10,9 +10,8 @@ import { marks, markTypes, plugins as markPlugins } from './marks';
 import { type as defaultType } from './blocks/paragraph';
 import AddBlock from './AddBlock';
 import { ToolbarButton } from './toolbar-components';
-import { A11yText } from '@arch-ui/typography';
 import { CircleSlashIcon } from '@arch-ui/icons';
-import ResizeObserver from 'resize-observer-polyfill';
+import { useMeasure } from '@arch-ui/hooks';
 import { selectionReference } from './utils';
 import { useStateWithEqualityCheck } from './hooks';
 
@@ -53,53 +52,66 @@ let stopPropagation = e => {
   e.stopPropagation();
 };
 
+function InnerToolbar({ blocks, editor, editorState, scheduleUpdate }) {
+  let ref = useRef(null);
+  let snapshot = useMeasure(ref);
+  useLayoutEffect(scheduleUpdate, [snapshot]);
+
+  return (
+    <div css={{ display: 'flex' }} ref={ref}>
+      {Object.keys(blocks)
+        .map(x => blocks[x].Toolbar)
+        .filter(x => x)
+        .reduce(
+          (children, Toolbar) => {
+            return (
+              <Toolbar editor={editor} editorState={editorState}>
+                {children}
+              </Toolbar>
+            );
+          },
+          <Fragment>
+            {Object.keys(marks).map(name => {
+              let Icon = marks[name].icon;
+              return (
+                <ToolbarButton
+                  label={marks[name].label}
+                  icon={<Icon />}
+                  isActive={editorState.activeMarks.some(mark => mark.type === name)}
+                  onClick={() => {
+                    editor.toggleMark(name);
+                  }}
+                  key={name}
+                />
+              );
+            })}
+            <ToolbarButton
+              label="Remove Formatting"
+              icon={<CircleSlashIcon />}
+              onClick={() => {
+                markTypes.forEach(mark => {
+                  editor.removeMark(mark);
+                });
+              }}
+            />
+
+            {Object.keys(blocks).map(type => {
+              let ToolbarElement = blocks[type].ToolbarElement;
+              if (ToolbarElement === undefined) {
+                return null;
+              }
+              return <ToolbarElement key={type} editor={editor} editorState={editorState} />;
+            })}
+          </Fragment>
+        )}
+    </div>
+  );
+}
+
 const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, blocks, editor }, ref) => {
   useLayoutEffect(scheduleUpdate, [editorState]);
 
   let shouldShowToolbar = useHasSelection();
-
-  let [toolbarElement, setToolbarElement] = useStateWithEqualityCheck(null);
-
-  let observerRef = useRef(null);
-
-  useLayoutEffect(
-    () => {
-      if (toolbarElement !== null) {
-        let rect = toolbarElement.getBoundingClientRect();
-        let previousHeight = Math.round(rect.height);
-        let previousWidth = Math.round(rect.width);
-        observerRef.current = new ResizeObserver(entries => {
-          let entry = entries[0];
-          let { height, width } = entry.contentRect;
-          height = Math.round(height);
-          width = Math.round(width);
-          if (
-            (height !== previousHeight || width !== previousWidth) &&
-            height !== 0 &&
-            width !== 0
-          ) {
-            previousHeight = height;
-            previousWidth = width;
-            scheduleUpdate();
-          }
-        });
-      }
-    },
-    [scheduleUpdate, toolbarElement]
-  );
-
-  useLayoutEffect(
-    () => {
-      if (shouldShowToolbar && toolbarElement !== null) {
-        let observer = observerRef.current;
-        observer.observe(toolbarElement);
-        return () => {
-          observer.unobserve(toolbarElement);
-        };
-      }
-    },
-    [shouldShowToolbar, toolbarElement, scheduleUpdate]
-  );
 
   return createPortal(
     <div
@@ -123,53 +135,12 @@ const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, blocks, e
       }}
     >
       {shouldShowToolbar && (
-        <div css={{ display: 'flex' }} ref={setToolbarElement}>
-          {Object.keys(blocks)
-            .map(x => blocks[x].Toolbar)
-            .filter(x => x)
-            .reduce(
-              (children, Toolbar) => {
-                return (
-                  <Toolbar editor={editor} editorState={editorState}>
-                    {children}
-                  </Toolbar>
-                );
-              },
-              <Fragment>
-                {Object.keys(marks).map(name => {
-                  let Icon = marks[name].icon;
-                  return (
-                    <ToolbarButton
-                      label={marks[name].label}
-                      icon={<Icon />}
-                      isActive={editorState.activeMarks.some(mark => mark.type === name)}
-                      onClick={() => {
-                        editor.toggleMark(name);
-                      }}
-                      key={name}
-                    />
-                  );
-                })}
-                <ToolbarButton
-                  label="Remove Formatting"
-                  icon={<CircleSlashIcon />}
-                  onClick={() => {
-                    markTypes.forEach(mark => {
-                      editor.removeMark(mark);
-                    });
-                  }}
-                />
-
-                {Object.keys(blocks).map(type => {
-                  let ToolbarElement = blocks[type].ToolbarElement;
-                  if (ToolbarElement === undefined) {
-                    return null;
-                  }
-                  return <ToolbarElement key={type} editor={editor} editorState={editorState} />;
-                })}
-              </Fragment>
-            )}
-        </div>
+        <InnerToolbar
+          blocks={blocks}
+          editor={editor}
+          editorState={editorState}
+          scheduleUpdate={scheduleUpdate}
+        />
       )}
     </div>,
     document.body
