@@ -58,6 +58,9 @@ export default class AnimateHeight extends Component<Props, State> {
     }
   };
   observer = new ResizeObserver(this.calculateHeight);
+  componentWillUnmount() {
+    this.observer.disconnect();
+  }
   getNode = (ref: HTMLElement | null) => {
     if (!ref) return;
     if (this.node !== ref) {
