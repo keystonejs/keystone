@@ -1,5 +1,38 @@
 # @voussoir/adapter-mongoose
 
+## 2.0.0
+
+- [minor] 5f891cff:
+
+  - Add a setupHooks method to BaseFieldAdapter
+
+- [major] 53e27d75:
+
+  - Removes methods from Mongoose adapter classes: getFieldAdapterByQueryConditionKey, getSimpleQueryConditions, getRelationshipQueryConditions, getQueryConditions, getRelationshipQueryConditions, getRefListAdapter, hasQueryCondition.
+
+- [patch] 797dc862:
+
+  - Move itemsQueryMeta onto the base adapter class
+
+- [major] 6471fc4a:
+
+  - Remove mapsToPath method from MongooseListAdapter
+
+- [major] 48773907:
+
+  - Move findFieldAdapterForQuerySegment onto the BaseListAdapter
+
+- [major] 860c3b80:
+
+  - Add a postConnect method to list adapters to capture all the work which needs to be done after the database has been connected to
+
+- Updated dependencies [723371a0]:
+- Updated dependencies [aca26f71]:
+- Updated dependencies [a3d5454d]:
+  - @voussoir/core@2.0.0
+  - @voussoir/mongo-join-builder@0.3.2
+  - @voussoir/utils@1.0.0
+
 ## 1.0.0
 
 - [patch] 21626b66:
