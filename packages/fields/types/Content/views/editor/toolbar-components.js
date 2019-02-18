@@ -29,7 +29,6 @@ export let ToolbarButton = ({ isActive, label, icon, ...props }) => {
             outline: 'none',
           }}
           ref={ref}
-          isActive={isActive}
           {...props}
         >
           {icon}

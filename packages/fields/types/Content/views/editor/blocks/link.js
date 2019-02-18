@@ -56,9 +56,8 @@ let LinkMenu = props => {
       css={{ display: 'flex' }}
     >
       <input
+        autoFocus
         placeholder="Link..."
-        // TODO: make autoFocus work
-        // autoFocus
         css={{ border: 0, outline: 'none', background: 'transparent', color: 'white' }}
         value={value}
         onChange={e => {
