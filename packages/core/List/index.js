@@ -493,19 +493,28 @@ module.exports = class List {
     // TODO: Obey the same ACL rules based on parent type
     return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers));
   }
+
   get gqlAuxQueryResolvers() {
     // TODO: Obey the same ACL rules based on parent type
     return objMerge(this.fields.map(field => field.gqlAuxQueryResolvers));
   }
+
   get gqlAuxMutationResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.gqlAuxMutationResolvers));
+    return objMerge(
+      this.fields
+        .map(field => field.gqlAuxMutationResolvers)
+        .concat(this.config.gqlAuxMutationResolvers || [])
+    );
   }
 
   getGqlMutations({ skipAccessControl = false } = {}) {
     const mutations = flatten(
       this.fields.map(field => field.getGqlAuxMutations({ skipAccessControl }))
     );
+    if (this.config.getGqlAuxMutations) {
+      mutations.push(this.config.getGqlAuxMutations({ skipAccessControl }));
+    }
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)

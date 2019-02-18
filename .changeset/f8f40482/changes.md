@@ -1,0 +1,1 @@
+- Allow getGqlAuxMutations and gqlAuxMutationResolvers to be specified in createList
