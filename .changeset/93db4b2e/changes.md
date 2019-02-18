@@ -1,0 +1,1 @@
+- Allow lists and fields to specify a schemaDoc field

@@ -206,6 +206,7 @@ module.exports = class Keystone {
           ${unique(
             flatten(this.listsArray.map(list => list.getGqlQueries({ skipAccessControl })))
           ).join('\n')}
+          """ Retrieve the meta-data for all lists. """
           _ksListsMeta: [_ListMeta]
        }`,
       `type Mutation {
