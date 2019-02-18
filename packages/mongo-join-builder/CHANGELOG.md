@@ -1,5 +1,12 @@
 # @voussoir/mongo-join-builder
 
+## 0.3.2
+
+- Updated dependencies [723371a0]:
+- Updated dependencies [aca26f71]:
+- Updated dependencies [a3d5454d]:
+  - @voussoir/utils@1.0.0
+
 ## 0.3.1
 
 - [patch] fc1a9055:
