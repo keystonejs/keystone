@@ -1,5 +1,74 @@
 # @voussoir/fields
 
+## 3.0.0
+
+- [patch] 513c7b63:
+
+  - Rename MongoSelectInterface to MongoRelationshipInterface in the relationship field type
+
+- [minor] 5f891cff:
+
+  - Add a setupHooks method to BaseFieldAdapter
+
+- [patch] 723371a0:
+
+  - Correctly surface nested errors from GraphQL
+
+- [major] 53e27d75:
+
+  - Removes methods from Mongoose adapter classes: getFieldAdapterByQueryConditionKey, getSimpleQueryConditions, getRelationshipQueryConditions, getQueryConditions, getRelationshipQueryConditions, getRefListAdapter, hasQueryCondition.
+
+- [minor] 4faf5cfd:
+
+  - Add withMeta flag to Relationship field for disabling meta queries
+
+- [patch] 306f0b7e:
+
+  - Remove recalcHeight prop from Filter props
+
+- [patch] 266b5733:
+
+  - Don't try to resolve nested mutations which will be later backfilled
+
+- [minor] dc53492c:
+
+  - Add support for the Knex adapter
+
+- [patch] 7ce811ab:
+
+  - Converts mongoose ObjectIds to string in File field types
+
+- [major] 5f8043b5:
+
+  - Simplify Field component api
+    - Replace item prop with value prop which is equal to item[field.path]
+    - Replace itemErrors prop with error prop which is equal to itemErrors[field.path]
+    - Change onChange prop so that it only accepts the value rather than the field and the value
+    - Remove initialData prop which wasn't used in a Field component and was only pass to the Field components in one the places where the Field component is used
+
+- [minor] f37a8086:
+
+  - Can now dump the GraphQL schema with keystone.dumpSchema(filePath)
+
+- [patch] 9f2ee393:
+
+  - Add adapter parameter to setupServer() and add multiAdapterRunners()
+
+- [patch] 860c3b80:
+
+  - Add a postConnect method to list adapters to capture all the work which needs to be done after the database has been connected to
+
+- Updated dependencies [aca26f71]:
+- Updated dependencies [6471fc4a]:
+- Updated dependencies [6471fc4a]:
+- Updated dependencies [48773907]:
+- Updated dependencies [a3d5454d]:
+  - @voussoir/access-control@0.4.1
+  - @voussoir/adapter-mongoose@2.0.0
+  - @voussoir/test-utils@1.0.0
+  - @voussoir/utils@1.0.0
+  - @voussoir/adapter-knex@0.0.2
+
 ## 2.0.1
 
 - [patch] 3aede2f5:

@@ -1,5 +1,12 @@
 # @voussoir/access-control
 
+## 0.4.1
+
+- Updated dependencies [723371a0]:
+- Updated dependencies [aca26f71]:
+- Updated dependencies [a3d5454d]:
+  - @voussoir/utils@1.0.0
+
 ## 0.4.0
 
 - [minor] ffc98ac4:

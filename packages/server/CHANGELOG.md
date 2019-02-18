@@ -1,5 +1,19 @@
 # @voussoir/server
 
+## 1.0.0
+
+- [major] 723371a0:
+
+  - Correctly surface nested errors from GraphQL
+
+- [minor] ced0edb3:
+
+  - Allow passing of Apollo Server config via webserver
+
+- Updated dependencies [aca26f71]:
+- Updated dependencies [a3d5454d]:
+  - @voussoir/utils@1.0.0
+
 ## 0.5.1
 
 - [patch] 4d198f04:

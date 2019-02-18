@@ -1,1 +1,0 @@
-- Correctly surface nested errors from GraphQL
