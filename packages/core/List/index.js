@@ -396,7 +396,7 @@ module.exports = class List {
     if (skipAccessControl || this.access.read) {
       queries.push(
         `
-        """ Search for all ${this.gqlNames.outputTypeName} items which match the query. """
+        """ Search for all ${this.gqlNames.outputTypeName} items which match the where clause. """
         ${this.gqlNames.listQueryName}(
           ${this.getGraphqlFilterFragment().join('\n')}
         ): [${this.gqlNames.outputTypeName}]`,
@@ -408,9 +408,9 @@ module.exports = class List {
         ): ${this.gqlNames.outputTypeName}`,
 
         `
-        """ Perform a meta-query (count) on all ${
+        """ Perform a meta-query on all ${
           this.gqlNames.outputTypeName
-        } items which match the query. """
+        } items which match the where clause. """
         ${this.gqlNames.listQueryMetaName}(
           ${this.getGraphqlFilterFragment().join('\n')}
         ): _QueryMeta`,

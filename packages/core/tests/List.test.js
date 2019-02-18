@@ -581,7 +581,7 @@ test('getGqlQueries()', () => {
       .map(normalise)
   ).toEqual(
     [
-      `""" Search for all Test items which match the query. """
+      `""" Search for all Test items which match the where clause. """
       allTests(
       where: TestWhereInput
       search: String
@@ -593,7 +593,7 @@ test('getGqlQueries()', () => {
       Test(
       where: TestWhereUniqueInput!
     ): Test`,
-      `""" Perform a meta-query (count) on all Test items which match the query. """
+      `""" Perform a meta-query on all Test items which match the where clause. """
       _allTestsMeta(
       where: TestWhereInput
       search: String
@@ -619,7 +619,7 @@ test('getGqlQueries()', () => {
       .map(normalise)
   ).toEqual(
     [
-      `""" Search for all Test items which match the query. """
+      `""" Search for all Test items which match the where clause. """
       allTests(
       where: TestWhereInput
       search: String
@@ -631,7 +631,7 @@ test('getGqlQueries()', () => {
       Test(
       where: TestWhereUniqueInput!
     ): Test`,
-      `""" Perform a meta-query (count) on all Test items which match the query. """
+      `""" Perform a meta-query on all Test items which match the where clause. """
       _allTestsMeta(
       where: TestWhereInput
       search: String
