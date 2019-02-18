@@ -1,13 +1,13 @@
 {
   "name": "@voussoir/mongo-join-builder",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": "Jess Telford",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/utils": "^0.3.0",
+    "@voussoir/utils": "^1.0.0",
     "cuid": "^2.1.1"
   },
   "devDependencies": {

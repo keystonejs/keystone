@@ -1,1 +1,0 @@
-- Add fieldAdaptersByPath object to field adapters
