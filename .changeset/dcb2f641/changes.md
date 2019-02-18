@@ -1,1 +1,0 @@
-- Allow passing of Apollo Server config via webserver
