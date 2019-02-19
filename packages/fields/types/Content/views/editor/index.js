@@ -80,7 +80,7 @@ function Stories({ value: editorState, onChange, blocks, className }) {
         }}
       />
       <AddBlock editor={editor} editorState={editorState} blocks={blocks} />
-      <Toolbar {...{ editorState, editor, blocks }} />
+      <Toolbar {...{ editorState, editor, blocks, containerRef }} />
     </div>
   );
 }

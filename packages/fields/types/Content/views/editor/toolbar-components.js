@@ -5,12 +5,19 @@ import { lighten, darken } from '@arch-ui/color-utils';
 import Tooltip from '@arch-ui/tooltip';
 import { A11yText } from '@arch-ui/typography';
 
-export let ToolbarButton = ({ isActive, label, icon, ...props }) => {
+export let ToolbarButton = ({
+  isActive,
+  label,
+  icon,
+  as: Tag = 'button',
+  tooltipPlacement = 'top',
+  ...props
+}) => {
   return (
-    <Tooltip placement="top" css={{ marginBottom: gridSize / 2 }} content={label}>
+    <Tooltip placement={tooltipPlacement} css={{ margin: gridSize / 2 }} content={label}>
       {ref => (
-        <button
-          type="button"
+        <Tag
+          {...(Tag === 'button' ? { type: 'button' } : null)}
           css={{
             display: 'flex',
             justifyContent: 'center',
@@ -33,7 +40,7 @@ export let ToolbarButton = ({ isActive, label, icon, ...props }) => {
         >
           {icon}
           <A11yText>{label}</A11yText>
-        </button>
+        </Tag>
       )}
     </Tooltip>
   );
