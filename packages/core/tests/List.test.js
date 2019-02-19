@@ -405,7 +405,8 @@ test('getGqlTypes()', () => {
     disconnect: OtherWhereUniqueInput
     disconnectAll: Boolean
   }`;
-  const type = `type Test {
+  const type = `""" A keystone list """
+  type Test {
     id: ID
     """
     This virtual field will be resolved in one of the following ways (in this order):
@@ -580,24 +581,28 @@ test('getGqlQueries()', () => {
       .map(normalise)
   ).toEqual(
     [
-      `allTests(
+      `""" Search for all Test items which match the where clause. """
+      allTests(
       where: TestWhereInput
       search: String
       orderBy: String
       first: Int
       skip: Int
     ): [Test]`,
-      `Test(
+      `""" Search for the Test item with the matching ID. """
+      Test(
       where: TestWhereUniqueInput!
     ): Test`,
-      `_allTestsMeta(
+      `""" Perform a meta-query on all Test items which match the where clause. """
+      _allTestsMeta(
       where: TestWhereInput
       search: String
       orderBy: String
       first: Int
       skip: Int
     ): _QueryMeta`,
-      `_TestsMeta: _ListMeta`,
+      `""" Retrieve the meta-data for the Test list. """
+      _TestsMeta: _ListMeta`,
       `authenticatedTest: Test`,
     ].map(normalise)
   );
@@ -614,24 +619,28 @@ test('getGqlQueries()', () => {
       .map(normalise)
   ).toEqual(
     [
-      `allTests(
+      `""" Search for all Test items which match the where clause. """
+      allTests(
       where: TestWhereInput
       search: String
       orderBy: String
       first: Int
       skip: Int
     ): [Test]`,
-      `Test(
+      `""" Search for the Test item with the matching ID. """
+      Test(
       where: TestWhereUniqueInput!
     ): Test`,
-      `_allTestsMeta(
+      `""" Perform a meta-query on all Test items which match the where clause. """
+      _allTestsMeta(
       where: TestWhereInput
       search: String
       orderBy: String
       first: Int
       skip: Int
     ): _QueryMeta`,
-      `_TestsMeta: _ListMeta`,
+      `""" Retrieve the meta-data for the Test list. """
+      _TestsMeta: _ListMeta`,
     ].map(normalise)
   );
 
@@ -716,12 +725,12 @@ test('getGqlMutations()', () => {
       .map(normalise)
   ).toEqual(
     [
-      `createTest(data: TestCreateInput): Test`,
-      `createTests(data: [TestsCreateInput]): [Test]`,
-      `updateTest(id: ID! data: TestUpdateInput): Test`,
-      `updateTests(data: [TestsUpdateInput]): [Test]`,
-      `deleteTest(id: ID!): Test`,
-      `deleteTests(ids: [ID!]): [Test]`,
+      `""" Create a single Test item. """ createTest(data: TestCreateInput): Test`,
+      `""" Create multiple Test items. """ createTests(data: [TestsCreateInput]): [Test]`,
+      `""" Update a single Test item by ID. """ updateTest(id: ID! data: TestUpdateInput): Test`,
+      `""" Update multiple Test items by ID. """ updateTests(data: [TestsUpdateInput]): [Test]`,
+      `""" Delete a single Test item by ID. """ deleteTest(id: ID!): Test`,
+      `""" Delete multiple Test items by ID. """ deleteTests(ids: [ID!]): [Test]`,
     ].map(normalise)
   );
 
@@ -742,8 +751,8 @@ test('getGqlMutations()', () => {
       .map(normalise)
   ).toEqual(
     [
-      `createTest(data: TestCreateInput): Test`,
-      `createTests(data: [TestsCreateInput]): [Test]`,
+      `""" Create a single Test item. """ createTest(data: TestCreateInput): Test`,
+      `""" Create multiple Test items. """ createTests(data: [TestsCreateInput]): [Test]`,
     ].map(normalise)
   );
   expect(
@@ -752,15 +761,20 @@ test('getGqlMutations()', () => {
       .map(normalise)
   ).toEqual(
     [
-      `updateTest(id: ID! data: TestUpdateInput): Test`,
-      `updateTests(data: [TestsUpdateInput]): [Test]`,
+      `""" Update a single Test item by ID. """ updateTest(id: ID! data: TestUpdateInput): Test`,
+      `""" Update multiple Test items by ID. """ updateTests(data: [TestsUpdateInput]): [Test]`,
     ].map(normalise)
   );
   expect(
     setup({ access: { read: false, create: false, update: false, delete: true } })
       .getGqlMutations()
       .map(normalise)
-  ).toEqual([`deleteTest(id: ID!): Test`, `deleteTests(ids: [ID!]): [Test]`].map(normalise));
+  ).toEqual(
+    [
+      `""" Delete a single Test item by ID. """ deleteTest(id: ID!): Test`,
+      `""" Delete multiple Test items by ID. """ deleteTests(ids: [ID!]): [Test]`,
+    ].map(normalise)
+  );
 });
 
 test('checkFieldAccess', () => {

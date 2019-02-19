@@ -1,0 +1,7 @@
+{
+  "releases": [
+    { "name": "@voussoir/demo-project-todo", "type": "patch" },
+    { "name": "@voussoir/core", "type": "minor" }
+  ],
+  "dependents": []
+}

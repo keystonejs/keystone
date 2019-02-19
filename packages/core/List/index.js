@@ -291,6 +291,7 @@ module.exports = class List {
       types.push(
         ...flatten(this.fields.map(field => field.getGqlAuxTypes({ skipAccessControl }))),
         `
+        """ ${this.config.schemaDoc || 'A keystone list'} """
         type ${this.gqlNames.outputTypeName} {
           id: ID
           """
@@ -304,7 +305,11 @@ module.exports = class List {
           ${flatten(
             this.fields
               .filter(field => skipAccessControl || field.access.read) // If it's globally set to false, makes sense to never show it
-              .map(field => field.gqlOutputFields)
+              .map(field =>
+                field.config.schemaDoc
+                  ? `""" ${field.config.schemaDoc} """ ${field.gqlOutputFields}`
+                  : field.gqlOutputFields
+              )
           ).join('\n')}
         }
       `,
@@ -391,19 +396,28 @@ module.exports = class List {
     if (skipAccessControl || this.access.read) {
       queries.push(
         `
+        """ Search for all ${this.gqlNames.outputTypeName} items which match the where clause. """
         ${this.gqlNames.listQueryName}(
           ${this.getGraphqlFilterFragment().join('\n')}
         ): [${this.gqlNames.outputTypeName}]`,
 
-        `${this.gqlNames.itemQueryName}(
+        `
+        """ Search for the ${this.gqlNames.outputTypeName} item with the matching ID. """
+        ${this.gqlNames.itemQueryName}(
           where: ${this.gqlNames.whereUniqueInputName}!
         ): ${this.gqlNames.outputTypeName}`,
 
-        `${this.gqlNames.listQueryMetaName}(
+        `
+        """ Perform a meta-query on all ${
+          this.gqlNames.outputTypeName
+        } items which match the where clause. """
+        ${this.gqlNames.listQueryMetaName}(
           ${this.getGraphqlFilterFragment().join('\n')}
         ): _QueryMeta`,
 
-        `${this.gqlNames.listMetaName}: _ListMeta`
+        `
+        """ Retrieve the meta-data for the ${this.gqlNames.itemQueryName} list. """
+        ${this.gqlNames.listMetaName}: _ListMeta`
       );
     }
 
@@ -497,12 +511,14 @@ module.exports = class List {
     // function is executed later in the resolver)
     if (skipAccessControl || this.access.create) {
       mutations.push(`
+        """ Create a single ${this.gqlNames.outputTypeName} item. """
         ${this.gqlNames.createMutationName}(
           data: ${this.gqlNames.createInputName}
         ): ${this.gqlNames.outputTypeName}
       `);
 
       mutations.push(`
+        """ Create multiple ${this.gqlNames.outputTypeName} items. """
         ${this.gqlNames.createManyMutationName}(
           data: [${this.gqlNames.createManyInputName}]
         ): [${this.gqlNames.outputTypeName}]
@@ -511,6 +527,7 @@ module.exports = class List {
 
     if (skipAccessControl || this.access.update) {
       mutations.push(`
+      """ Update a single ${this.gqlNames.outputTypeName} item by ID. """
         ${this.gqlNames.updateMutationName}(
           id: ID!
           data: ${this.gqlNames.updateInputName}
@@ -518,6 +535,7 @@ module.exports = class List {
       `);
 
       mutations.push(`
+      """ Update multiple ${this.gqlNames.outputTypeName} items by ID. """
         ${this.gqlNames.updateManyMutationName}(
           data: [${this.gqlNames.updateManyInputName}]
         ): [${this.gqlNames.outputTypeName}]
@@ -526,12 +544,14 @@ module.exports = class List {
 
     if (skipAccessControl || this.access.delete) {
       mutations.push(`
+        """ Delete a single ${this.gqlNames.outputTypeName} item by ID. """
         ${this.gqlNames.deleteMutationName}(
           id: ID!
         ): ${this.gqlNames.outputTypeName}
       `);
 
       mutations.push(`
+        """ Delete multiple ${this.gqlNames.outputTypeName} items by ID. """
         ${this.gqlNames.deleteManyMutationName}(
           ids: [ID!]
         ): [${this.gqlNames.outputTypeName}]
