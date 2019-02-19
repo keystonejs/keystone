@@ -41,6 +41,7 @@ test('unique typeDefs', () => {
         update: true,
         delete: true,
       };
+      this.config = {};
     }
     getGqlAuxTypes() {
       return ['scalar Foo'];
