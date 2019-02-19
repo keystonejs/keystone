@@ -501,11 +501,10 @@ module.exports = class List {
 
   get gqlAuxMutationResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(
-      this.fields
-        .map(field => field.gqlAuxMutationResolvers)
-        .concat(this.config.gqlAuxMutationResolvers || [])
-    );
+    return objMerge([
+      this.config.gqlAuxMutationResolvers,
+      ...this.fields.map(field => field.gqlAuxMutationResolvers),
+    ]);
   }
 
   getGqlMutations({ skipAccessControl = false } = {}) {
