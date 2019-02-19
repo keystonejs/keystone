@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useRef, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Editor } from 'slate-react';
 import { Block } from 'slate';
 import { plugins as markPlugins } from './marks';
@@ -67,9 +67,8 @@ function Stories({ value: editorState, onChange, blocks, className }) {
   );
 
   let [editor, setEditor] = useStateWithEqualityCheck(null);
-  let containerRef = useRef(null);
   return (
-    <div ref={containerRef} className={className}>
+    <div className={className}>
       <Editor
         schema={schema}
         ref={setEditor}
@@ -80,7 +79,7 @@ function Stories({ value: editorState, onChange, blocks, className }) {
         }}
       />
       <AddBlock editor={editor} editorState={editorState} blocks={blocks} />
-      <Toolbar {...{ editorState, editor, blocks, containerRef }} />
+      <Toolbar {...{ editorState, editor, blocks }} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { useContext, useState, Fragment } from 'react';
+import React, { useContext, useState, Fragment, useEffect } from 'react';
 import { LinkIcon, CheckIcon, CircleSlashIcon, LinkExternalIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { Popper } from 'react-popper';
@@ -14,8 +14,18 @@ export function Node({ node, attributes, children, isSelected, editor }) {
   const href = data.get('href');
   let [aElement, setAElement] = useState(null);
 
-  // this is terrible but probably necessary
-  // if we just up
+  let [linkInputValue, setLinkInputValue] = useState(href);
+
+  // this is terrible
+  // but probably necessary
+  // because if we just do editor.setNodeByKey in the input onChange
+  // and let that change propagate the cursor position breaks
+  useEffect(
+    () => {
+      setLinkInputValue(href);
+    },
+    [href]
+  );
 
   return (
     <Fragment>
@@ -44,8 +54,9 @@ export function Node({ node, attributes, children, isSelected, editor }) {
                     }}
                   >
                     <LinkInput
-                      value={href}
+                      value={linkInputValue}
                       onChange={event => {
+                        setLinkInputValue(event.target.value);
                         editor.setNodeByKey(node.key, {
                           data: data.set('href', event.target.value),
                         });

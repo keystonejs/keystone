@@ -117,14 +117,20 @@ const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children 
   );
 });
 
-export default ({ editorState, blocks, editor, containerRef }) => {
+export default ({ editorState, blocks, editor }) => {
   // this element is created here so that when the popper rerenders
   // the inner toolbar won't have to update
   let children = <InnerToolbar blocks={blocks} editor={editor} editorState={editorState} />;
   return (
     <Popper
       placement="top"
-      referenceElement={useMemo(() => getSelectionReference(containerRef), [containerRef])}
+      referenceElement={
+        // the reason we do this rather than having the selection reference
+        // be constant is because the selection reference
+        // has some internal state and it shouldn't persist between different
+        // editor references
+        useMemo(getSelectionReference, [])
+      }
     >
       {({ style, ref, scheduleUpdate }) => (
         <PopperRender {...{ scheduleUpdate, editorState, style, blocks, editor, ref, children }} />
