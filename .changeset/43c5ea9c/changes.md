@@ -1,0 +1,1 @@
+- Support client side resolution of KS Meta query
