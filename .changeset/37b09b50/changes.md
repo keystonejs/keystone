@@ -1,1 +1,0 @@
-- Add a setupHooks method to BaseFieldAdapter

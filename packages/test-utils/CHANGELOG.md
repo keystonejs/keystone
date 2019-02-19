@@ -1,5 +1,30 @@
 # @voussoir/test-utils
 
+## 1.0.0
+
+- [minor] dc53492c:
+
+  - Add support for the Knex adapter
+
+- [major] 9f2ee393:
+
+  - Add adapter parameter to setupServer() and add multiAdapterRunners()
+
+- Updated dependencies [723371a0]:
+- Updated dependencies [aca26f71]:
+- Updated dependencies [53e27d75]:
+- Updated dependencies [6471fc4a]:
+- Updated dependencies [6471fc4a]:
+- Updated dependencies [48773907]:
+- Updated dependencies [a3d5454d]:
+- Updated dependencies [ced0edb3]:
+- Updated dependencies [860c3b80]:
+  - @voussoir/adapter-mongoose@2.0.0
+  - @voussoir/core@2.0.0
+  - @voussoir/server@1.0.0
+  - @voussoir/utils@1.0.0
+  - @voussoir/adapter-knex@0.0.2
+
 ## 0.1.3
 
 - [patch] fc1a9055:

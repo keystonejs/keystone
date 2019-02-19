@@ -1,1 +1,0 @@
-- Can now dump the GraphQL schema with keystone.dumpSchema(filePath)

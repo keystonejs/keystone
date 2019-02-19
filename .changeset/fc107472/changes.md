@@ -1,1 +1,0 @@
-- Add a postConnect method to list adapters to capture all the work which needs to be done after the database has been connected to
