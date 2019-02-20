@@ -36,7 +36,7 @@
         "lodash.debounce": "^4.0.8",
         "lodash.get": "^4.4.2",
         "lodash.snakecase": "^4.1.1",
-        "preconstruct": "^0.0.41",
+        "preconstruct": "^0.0.42",
         "pretty-proptypes": "^0.5.0",
         "prism-react-renderer": "^0.1.5",
         "prismjs": "^1.15.0",
