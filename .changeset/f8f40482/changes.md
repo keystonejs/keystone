@@ -1,1 +1,1 @@
-- Allow getGqlAuxMutations and gqlAuxMutationResolvers to be specified in createList
+- Allow mutations: [{ schema: ..., resolver: ...}] to be specified in createList

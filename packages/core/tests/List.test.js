@@ -714,18 +714,26 @@ test('gqlAuxQueryResolvers', () => {
 });
 
 test('gqlAuxMutationResolvers', () => {
-  const getGqlAuxMutations = () => ['example(id: ID): String'];
   const resolver = id => `Hello, ${id}`;
-  const gqlAuxMutationResolvers = { example: resolver };
-  const list = setup({ getGqlAuxMutations, gqlAuxMutationResolvers });
-  expect(list.gqlAuxMutationResolvers).toEqual({ example: resolver });
+  const mutations = [
+    {
+      schema: 'example(id: ID): String',
+      resolver,
+    },
+  ];
+  const list = setup({ mutations });
+  expect(list.gqlAuxMutationResolvers.example).toBeInstanceOf(Function);
 });
 
 test('getGqlMutations()', () => {
-  const getGqlAuxMutations = () => ['example(id: ID): String'];
   const resolver = id => `Hello, ${id}`;
-  const gqlAuxMutationResolvers = { example: resolver };
-  const extraConfig = { getGqlAuxMutations, gqlAuxMutationResolvers };
+  const mutations = [
+    {
+      schema: 'example(id: ID): String',
+      resolver,
+    },
+  ];
+  const extraConfig = { mutations };
   expect(
     setup({ access: true, ...extraConfig })
       .getGqlMutations()
