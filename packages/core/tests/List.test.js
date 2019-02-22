@@ -714,17 +714,33 @@ test('gqlAuxQueryResolvers', () => {
 });
 
 test('gqlAuxMutationResolvers', () => {
-  const list = setup();
-  expect(list.gqlAuxMutationResolvers).toEqual({});
+  const resolver = id => `Hello, ${id}`;
+  const mutations = [
+    {
+      schema: 'example(id: ID): String',
+      resolver,
+    },
+  ];
+  const list = setup({ mutations });
+  expect(list.gqlAuxMutationResolvers.example).toBeInstanceOf(Function);
 });
 
 test('getGqlMutations()', () => {
+  const resolver = id => `Hello, ${id}`;
+  const mutations = [
+    {
+      schema: 'example(id: ID): String',
+      resolver,
+    },
+  ];
+  const extraConfig = { mutations };
   expect(
-    setup({ access: true })
+    setup({ access: true, ...extraConfig })
       .getGqlMutations()
       .map(normalise)
   ).toEqual(
     [
+      `example(id: ID): String`,
       `""" Create a single Test item. """ createTest(data: TestCreateInput): Test`,
       `""" Create multiple Test items. """ createTests(data: [TestsCreateInput]): [Test]`,
       `""" Update a single Test item by ID. """ updateTest(id: ID! data: TestUpdateInput): Test`,
@@ -735,42 +751,45 @@ test('getGqlMutations()', () => {
   );
 
   expect(
-    setup({ access: false })
+    setup({ access: false, ...extraConfig })
       .getGqlMutations()
       .map(normalise)
-  ).toEqual([].map(normalise));
+  ).toEqual([`example(id: ID): String`].map(normalise));
 
   expect(
-    setup({ access: { read: true, create: false, update: false, delete: false } })
+    setup({ access: { read: true, create: false, update: false, delete: false }, ...extraConfig })
       .getGqlMutations()
       .map(normalise)
-  ).toEqual([].map(normalise));
+  ).toEqual([`example(id: ID): String`].map(normalise));
   expect(
-    setup({ access: { read: false, create: true, update: false, delete: false } })
+    setup({ access: { read: false, create: true, update: false, delete: false }, ...extraConfig })
       .getGqlMutations()
       .map(normalise)
   ).toEqual(
     [
+      `example(id: ID): String`,
       `""" Create a single Test item. """ createTest(data: TestCreateInput): Test`,
       `""" Create multiple Test items. """ createTests(data: [TestsCreateInput]): [Test]`,
     ].map(normalise)
   );
   expect(
-    setup({ access: { read: false, create: false, update: true, delete: false } })
+    setup({ access: { read: false, create: false, update: true, delete: false }, ...extraConfig })
       .getGqlMutations()
       .map(normalise)
   ).toEqual(
     [
+      `example(id: ID): String`,
       `""" Update a single Test item by ID. """ updateTest(id: ID! data: TestUpdateInput): Test`,
       `""" Update multiple Test items by ID. """ updateTests(data: [TestsUpdateInput]): [Test]`,
     ].map(normalise)
   );
   expect(
-    setup({ access: { read: false, create: false, update: false, delete: true } })
+    setup({ access: { read: false, create: false, update: false, delete: true }, ...extraConfig })
       .getGqlMutations()
       .map(normalise)
   ).toEqual(
     [
+      `example(id: ID): String`,
       `""" Delete a single Test item by ID. """ deleteTest(id: ID!): Test`,
       `""" Delete multiple Test items by ID. """ deleteTests(ids: [ID!]): [Test]`,
     ].map(normalise)
