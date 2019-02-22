@@ -21,6 +21,7 @@ const logger = require('@voussoir/logger');
 
 const { Text, Checkbox, Float, Relationship } = require('@voussoir/fields');
 
+const gql = require('graphql-tag');
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
 
@@ -493,19 +494,33 @@ module.exports = class List {
     // TODO: Obey the same ACL rules based on parent type
     return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers));
   }
+
   get gqlAuxQueryResolvers() {
     // TODO: Obey the same ACL rules based on parent type
     return objMerge(this.fields.map(field => field.gqlAuxQueryResolvers));
   }
+
   get gqlAuxMutationResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.gqlAuxMutationResolvers));
+    return objMerge([
+      ...(this.config.mutations || []).map(({ schema, resolver }) => {
+        const mutationName = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
+        return {
+          [mutationName]: (obj, args, context, info) =>
+            resolver(obj, args, context, info, mapKeys(this.hooksActions, hook => hook(context))),
+        };
+      }),
+      ...this.fields.map(field => field.gqlAuxMutationResolvers),
+    ]);
   }
 
   getGqlMutations({ skipAccessControl = false } = {}) {
     const mutations = flatten(
       this.fields.map(field => field.getGqlAuxMutations({ skipAccessControl }))
     );
+    if (this.config.mutations) {
+      mutations.push(...this.config.mutations.map(({ schema }) => schema));
+    }
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
