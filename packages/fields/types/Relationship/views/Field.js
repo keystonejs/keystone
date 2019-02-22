@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component } from 'react';
+import { Component, Fragment, useState } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
@@ -9,6 +9,7 @@ import { ShieldIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { Button } from '@arch-ui/button';
 
+import CreateItemModal from './CreateItemModal';
 import RelationshipSelect from './RelationshipSelect';
 
 function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
@@ -35,7 +36,7 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
           }
           return (
             <Button
-              css={{ marginLeft: gridSize }}
+              css={{ marginLeft: gridSize, marginRight: gridSize }}
               variant="ghost"
               onClick={() => {
                 onAddUser(data[path]);
@@ -48,6 +49,37 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
         return null;
       }}
     </Query>
+  );
+}
+
+function CreateAndAddItem({ field, onCreate }) {
+  let relatedList = field.adminMeta.getListByKey(field.config.ref);
+  let [isOpen, setIsOpen] = useState(false);
+  console.log(relatedList);
+  return (
+    <Fragment>
+      <Button
+        onClick={() => {
+          setIsOpen(true);
+        }}
+        variant="ghost"
+        css={{ marginLeft: gridSize }}
+      >
+        Create and add {relatedList.singular}
+      </Button>
+      <CreateItemModal
+        isOpen={isOpen}
+        list={relatedList}
+        onClose={() => {
+          setIsOpen(false);
+        }}
+        onCreate={({ data }) => {
+          setIsOpen(false);
+          console.log(data);
+          onCreate(data[relatedList.gqlNames.createMutationName]);
+        }}
+      />
+    </Fragment>
   );
 }
 
@@ -103,6 +135,12 @@ export default class RelationshipField extends Component {
               listKey={authList}
             />
           )}
+          <CreateAndAddItem
+            onCreate={item => {
+              onChange(many ? (value || []).concat(item) : item);
+            }}
+            field={field}
+          />
         </FieldInput>
       </FieldContainer>
     );

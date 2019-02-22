@@ -23,6 +23,7 @@ export default class List {
       mutation create($data: ${this.gqlNames.createInputName}!) {
         ${this.gqlNames.createMutationName}(data: $data) {
           id
+          _label_
         }
       }
     `;

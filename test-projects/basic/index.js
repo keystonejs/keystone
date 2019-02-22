@@ -74,6 +74,7 @@ keystone.createList('User', {
     },
     password: { type: Password },
     isAdmin: { type: Checkbox },
+    favouritePosts: { type: Relationship, ref: 'Post' },
     company: {
       type: Select,
       options: [
