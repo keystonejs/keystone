@@ -28,8 +28,6 @@ import isEqual from 'lodash.isequal';
 // It imports all the views required for a keystone app by looking at the adminMetaData
 import FieldTypes from '../../FIELD_TYPES';
 
-console.log(FieldTypes);
-
 let Render = ({ children }) => children();
 
 const Form = styled.form({
