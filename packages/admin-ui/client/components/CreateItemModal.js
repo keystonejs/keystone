@@ -23,6 +23,14 @@ class CreateItemModal extends Component {
   onCreate = event => {
     // prevent form submission
     event.preventDefault();
+    // we have to stop propagation so that if this modal is inside another form
+    // it won't submit the form above it
+    // this will most likely happen when a CreateItemModal is nested inside
+    // another CreateItemModal when creating an item in a relationship field
+    // if you're thinking, why is this necessary, the modal is in a portal?
+    // it's important to remember that react events
+    // propagate through portals as if they aren't there
+    event.stopPropagation();
 
     const {
       list: { fields },
