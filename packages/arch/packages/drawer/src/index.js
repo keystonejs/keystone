@@ -3,12 +3,15 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import {
-  PureComponent,
   Fragment,
   forwardRef,
   type ComponentType,
   type Element,
   type Node,
+  memo,
+  useMemo,
+  useEffect,
+  useRef,
 } from 'react';
 import { createPortal } from 'react-dom';
 import styled from '@emotion/styled';
@@ -26,13 +29,14 @@ import {
 import { colors, gridSize } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
 import { A11yText } from '@arch-ui/typography';
+import { useStackIndex } from './stacks';
 
 const innerGutter = gridSize * 2;
 
 // Styled Components
 // ------------------------------
 
-const Positioner = styled.div(({ slideInFrom, width }) => ({
+const Positioner = styled.div(({ slideInFrom, width, stackIndex }) => ({
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
@@ -40,7 +44,8 @@ const Positioner = styled.div(({ slideInFrom, width }) => ({
   position: 'fixed',
   [slideInFrom]: 0,
   top: 0,
-  width: width,
+  width: width + stackIndex * 0.5 * width,
+  transition: 'width 100ms',
   zIndex: 2,
 }));
 
@@ -111,69 +116,81 @@ type Props = {
   width?: number,
 };
 
-class ModalDialog extends PureComponent<Props> {
-  static defaultProps = {
-    attachTo: ((document.body: any): HTMLElement),
-    closeOnBlanketClick: false,
-    component: 'div',
-    width: 560,
-  };
-  componentDidMount() {
-    document.addEventListener('keydown', this.onKeyDown, false);
-  }
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.onKeyDown, false);
-  }
-  onKeyDown = (e: any) => {
-    if (this.props.onKeyDown) this.props.onKeyDown(e);
-  };
-  render() {
-    const {
-      attachTo,
-      children,
-      closeOnBlanketClick,
-      component,
-      footer,
-      heading,
-      initialFocus,
-      onClose,
-      slideInFrom,
-      width,
-      ...transitionProps
-    } = this.props;
-    const dialogTitleId = generateUEID();
-
-    return createPortal(
-      <Fragment>
-        <Fade {...transitionProps}>
-          <Blanket onClick={closeOnBlanketClick ? onClose : undefined} isTinted />
-        </Fade>
-        <SlideInHorizontal slideInFrom={slideInFrom} {...transitionProps}>
-          <Positioner slideInFrom={slideInFrom} width={width}>
-            <FocusTrap
-              options={{
-                initialFocus,
-                clickOutsideDeactivates: closeOnBlanketClick,
-              }}
-            >
-              <Dialog component={component} aria-labelledby={dialogTitleId}>
-                <A11yText id={dialogTitleId}>{heading} Dialog</A11yText>
-                {heading ? (
-                  <Header>
-                    <Title>{heading}</Title>
-                  </Header>
-                ) : null}
-                <Body>{children}</Body>
-                {footer ? <Footer>{footer}</Footer> : null}
-              </Dialog>
-            </FocusTrap>
-          </Positioner>
-        </SlideInHorizontal>
-        <ScrollLock />
-      </Fragment>,
-      attachTo
-    );
-  }
+function useKeydownHandler(handler) {
+  let handlerRef = useRef(handler);
+  useEffect(() => {
+    handlerRef.current = handler;
+  });
+  useEffect(() => {
+    function handle(event) {
+      handlerRef.current(event);
+    }
+    document.addEventListener('keydown', handle, false);
+    return () => {
+      document.removeEventListener('keydown', handle, false);
+    };
+  }, []);
 }
+
+let ModalDialog = memo<Props>(function ModalDialog({
+  attachTo,
+  children,
+  closeOnBlanketClick,
+  component,
+  footer,
+  heading,
+  initialFocus,
+  onClose,
+  slideInFrom,
+  width,
+  onKeyDown,
+  ...transitionProps
+}) {
+  let stackIndex = useStackIndex();
+  useKeydownHandler(event => {
+    if (onKeyDown && stackIndex === 0) {
+      onKeyDown(event);
+    }
+  });
+  const dialogTitleId = useMemo(generateUEID, []);
+
+  return createPortal(
+    <Fragment>
+      <Fade {...transitionProps}>
+        <Blanket onClick={closeOnBlanketClick ? onClose : undefined} isTinted />
+      </Fade>
+      <SlideInHorizontal slideInFrom={slideInFrom} {...transitionProps}>
+        <Positioner slideInFrom={slideInFrom} width={width} stackIndex={stackIndex}>
+          <FocusTrap
+            options={{
+              initialFocus,
+              clickOutsideDeactivates: closeOnBlanketClick,
+            }}
+          >
+            <Dialog component={component} aria-labelledby={dialogTitleId}>
+              <A11yText id={dialogTitleId}>{heading} Dialog</A11yText>
+              {heading ? (
+                <Header>
+                  <Title>{heading}</Title>
+                </Header>
+              ) : null}
+              <Body>{children}</Body>
+              {footer ? <Footer>{footer}</Footer> : null}
+            </Dialog>
+          </FocusTrap>
+        </Positioner>
+      </SlideInHorizontal>
+      <ScrollLock />
+    </Fragment>,
+    attachTo
+  );
+});
+
+ModalDialog.defaultProps = {
+  attachTo: ((document.body: any): HTMLElement),
+  closeOnBlanketClick: false,
+  component: 'div',
+  width: 560,
+};
 
 export default withTransitionState(ModalDialog);

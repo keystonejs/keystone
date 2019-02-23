@@ -55,7 +55,7 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
 function CreateAndAddItem({ field, onCreate }) {
   let relatedList = field.adminMeta.getListByKey(field.config.ref);
   let [isOpen, setIsOpen] = useState(false);
-  console.log(relatedList);
+
   return (
     <Fragment>
       <Button
