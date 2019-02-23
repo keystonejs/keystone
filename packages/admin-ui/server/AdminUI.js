@@ -1,8 +1,10 @@
 const bodyParser = require('body-parser');
+const falsey = require('falsey');
 const express = require('express');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+const pkgInfo = require('../package.json');
 
 const getWebpackConfig = require('./getWebpackConfig');
 const { mode } = require('./env');
@@ -144,6 +146,9 @@ module.exports = class AdminUI {
     const { adminPath } = this;
 
     // ensure any non-resource requests are rewritten for history api fallback
+    if (falsey(process.env.DISABLE_LOGGING)) {
+      console.log(`[ROUTE ${adminPath}(/.*)?]: Keystone Admin UI (v${pkgInfo.version})`);
+    }
     app.use(adminPath, (req, res, next) => {
       // TODO: make sure that this change is OK. (regex was testing on url, not path)
       // Changed because this was preventing adminui pages loading when a querystrings
