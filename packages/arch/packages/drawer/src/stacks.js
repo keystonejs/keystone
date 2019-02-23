@@ -20,18 +20,25 @@ let updateStackConsumers = () => {
 // - When a modal mounts, all other modals have to adjust their position
 // - When a modal unmounts, all other modals have to adjust their position
 
-export function useStackIndex(): number {
-  let [stackIndex, setStackIndex] = useState(0);
-  useLayoutEffect(() => {
-    let update = () => {
-      setStackIndex(stackConsumers.indexOf(update));
-    };
-    stackConsumers.unshift(update);
-    updateStackConsumers();
-    return () => {
-      stackConsumers = stackConsumers.filter(x => x !== update);
-      updateStackConsumers();
-    };
-  }, []);
+export function useStackIndex(isOpen: boolean): number {
+  let [stackIndex, setStackIndex] = useState(isOpen ? 0 : -1);
+  useLayoutEffect(
+    () => {
+      if (isOpen) {
+        let update = () => {
+          setStackIndex(stackConsumers.indexOf(update));
+        };
+        stackConsumers.unshift(update);
+        updateStackConsumers();
+        return () => {
+          stackConsumers = stackConsumers.filter(x => x !== update);
+          updateStackConsumers();
+        };
+      } else {
+        setStackIndex(-1);
+      }
+    },
+    [isOpen]
+  );
   return stackIndex;
 }

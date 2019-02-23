@@ -45,7 +45,11 @@ const Positioner = styled.div(({ slideInFrom, width, stackIndex }) => ({
   [slideInFrom]: 0,
   top: 0,
   width: width + stackIndex * 0.5 * width,
-  transition: 'width 100ms',
+  // TODO: this is bad but necessary because of the transition stuff
+  // in the modal-utils package, make the transition stuff better
+  // also, animating width is bad, do something better
+  // transitionProperty: 'width, transform !important',
+  // transitionTimingFunction: 'ease-out !important',
   zIndex: 2,
 }));
 
@@ -146,7 +150,9 @@ let ModalDialog = memo<Props>(function ModalDialog({
   onKeyDown,
   ...transitionProps
 }) {
-  let stackIndex = useStackIndex();
+  let stackIndex = useStackIndex(
+    transitionProps.transitionState === 'entered' || transitionProps.transitionState === 'entering'
+  );
   useKeydownHandler(event => {
     if (onKeyDown && stackIndex === 0) {
       onKeyDown(event);
