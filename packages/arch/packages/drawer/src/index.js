@@ -36,22 +36,34 @@ const innerGutter = gridSize * 2;
 // Styled Components
 // ------------------------------
 
-const Positioner = styled.div(({ slideInFrom, width, stackIndex }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  height: '100%',
-  maxWidth: '90%',
-  position: 'fixed',
-  [slideInFrom]: 0,
-  top: 0,
-  width: width + stackIndex * 0.5 * width,
-  // TODO: this is bad but necessary because of the transition stuff
-  // in the modal-utils package, make the transition stuff better
-  // also, animating width is bad, do something better
-  // transitionProperty: 'width, transform !important',
-  // transitionTimingFunction: 'ease-out !important',
-  zIndex: 2,
-}));
+const Positioner = ({
+  slideInFrom,
+  width,
+  stackIndex,
+  style: { transform, ...style },
+  ...props
+}) => {
+  return (
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        maxWidth: '90%',
+        position: 'fixed',
+        [slideInFrom]: 0,
+        top: 0,
+        width,
+        zIndex: 2,
+        transform: `${transform}${
+          stackIndex <= 0 ? '' : `translate(-${stackIndex * 0.5 * width}px)`
+        }`,
+        ...style,
+      }}
+      {...props}
+    />
+  );
+};
 
 type DialogElementProps = {
   component: ComponentType<*> | string,
