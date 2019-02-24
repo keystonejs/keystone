@@ -42,7 +42,10 @@ const Positioner = ({
   stackIndex,
   style: { transform, ...style },
   ...props
-}) => {
+}: // using any because the transition component uses cloneElement to add the style prop
+// TODO: different api for transitions
+// could probably just be a function that accepts the transitionState and returns the style
+any) => {
   return (
     <div
       css={{
@@ -129,7 +132,7 @@ type Props = {
   onKeyDown: (*) => void,
   slideInFrom: 'left' | 'right',
   transitionState: TransitionState,
-  width?: number,
+  width: number,
 };
 
 function useKeydownHandler(handler) {
@@ -138,7 +141,8 @@ function useKeydownHandler(handler) {
     handlerRef.current = handler;
   });
   useEffect(() => {
-    function handle(event) {
+    function handle(event: KeyboardEvent) {
+      // $FlowFixMe flow's definition of useRef is wrong
       handlerRef.current(event);
     }
     document.addEventListener('keydown', handle, false);
@@ -204,6 +208,7 @@ let ModalDialog = memo<Props>(function ModalDialog({
   );
 });
 
+// $FlowFixMe
 ModalDialog.defaultProps = {
   attachTo: ((document.body: any): HTMLElement),
   closeOnBlanketClick: false,
