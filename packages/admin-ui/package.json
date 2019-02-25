@@ -41,6 +41,7 @@
     "@babel/preset-react": "^7.0.0",
     "@emotion/core": "^10.0.4",
     "@emotion/styled": "^10.0.4",
+    "@voussoir/admin-view-pseudolabel": "^1.0.0",
     "@voussoir/field-views-loader": "^0.2.0",
     "@voussoir/fields": "^3.0.0",
     "@voussoir/utils": "^1.0.0",

@@ -32,6 +32,7 @@ module.exports = {
           '**/tests/**/*.js',
           '**/examples/**/*.js',
           '**/build/**/*.js',
+          '**/fields/**/filterTests.js',
         ],
       },
     ],

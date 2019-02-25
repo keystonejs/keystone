@@ -6,7 +6,6 @@ import { withRouter } from 'react-router-dom';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { deconstructErrorsToDataShape } from '../../util';
-import { pseudoLabelField } from './FieldSelect';
 import { decodeSearch, encodeSearch } from './url-state';
 
 type Props = {
@@ -105,15 +104,15 @@ class ListPageDataProvider extends Component<Props, State> {
 
     // Ensure that the displayed fields maintain their original sortDirection
     // when they're added/removed
-    const fields = [pseudoLabelField]
-      .concat(list.fields)
+    const fields = list
+      .getFields()
       .filter(field => selectedFields.some(selectedField => selectedField.path === field.path));
 
     // Reset `sortBy` if we were ordering by a field which has been removed.
     const { sortBy } = decodeSearch(location.search, this.props);
     const newSort = fields.includes(sortBy.field)
       ? sortBy
-      : { ...sortBy, field: fields.filter(field => field !== pseudoLabelField)[0] };
+      : { ...sortBy, field: fields.find(field => field.isSortable()) };
     this.setSearch({ fields, sortBy: newSort });
   };
 

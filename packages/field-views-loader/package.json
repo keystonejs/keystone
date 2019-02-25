@@ -6,6 +6,8 @@
   "author": "Jed Watson",
   "license": "MIT",
   "dependencies": {
+    "@voussoir/utils": "^1.0.0",
+    "falsey": "^1.0.0",
     "loader-utils": "^1.1.0"
   }
 }

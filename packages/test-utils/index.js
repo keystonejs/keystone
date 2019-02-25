@@ -164,12 +164,45 @@ function keystoneKnexTest(setupKeystoneFn, testFn) {
 function multiAdapterRunners() {
   return [
     { runner: keystoneMongoTest, adapterName: 'mongoose' },
-    { runner: keystoneKnexTest, adapterName: 'knex' },
+    //    { runner: keystoneKnexTest, adapterName: 'knex' },
   ];
+}
+
+function sorted(arr, keyFn) {
+  arr = [...arr];
+  arr.sort((a, b) => {
+    a = keyFn(a);
+    b = keyFn(b);
+    if (a < b) {
+      return -1;
+    }
+    if (a > b) {
+      return 1;
+    }
+    return 0;
+  });
+  return arr;
+}
+
+function runQuery(server, snippet) {
+  return graphqlRequest({
+    server,
+    query: `query { ${snippet} }`,
+  }).then(res => res.body.data);
+}
+
+function matchFilter(server, gqlArgs, fields, target, sortkey) {
+  gqlArgs = gqlArgs ? `(${gqlArgs})` : '';
+  const snippet = `allTests ${gqlArgs} ${fields}`;
+  return runQuery(server, snippet).then(data => {
+    const value = sortkey ? sorted(data.allTests || [], i => i[sortkey]) : data.allTests;
+    expect(value).toEqual(target);
+  });
 }
 
 module.exports = {
   setupServer,
   multiAdapterRunners,
   graphqlRequest,
+  matchFilter,
 };

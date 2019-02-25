@@ -1,0 +1,14 @@
+{
+  "name": "@voussoir/admin-view",
+  "version": "1.0.0",
+  "main": "dist/admin-view.cjs.js",
+  "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^16.8.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.2.0"
+  },
+  "module": "dist/admin-view.esm.js"
+}

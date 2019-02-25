@@ -1,11 +1,10 @@
-/* global KEYSTONE_ADMIN_META */
-
 import React from 'react';
 
 import List from '../classes/List';
+import { adminMeta as adminMetaFields } from '../FIELD_TYPES';
 
 // TODO: Pull this off `window.X` to support server side permission queries
-const { lists, ...srcMeta } = KEYSTONE_ADMIN_META;
+const { lists, ...srcMeta } = adminMetaFields;
 
 const listKeys = Object.keys(lists || {});
 const listsByKey = {};

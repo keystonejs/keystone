@@ -1,7 +1,7 @@
 // Keystone imports
 const { Keystone } = require('@voussoir/core');
 const { AdminUI } = require('@voussoir/admin-ui');
-const { Text } = require('@voussoir/fields');
+const Text = require('@voussoir/field-text');
 const { WebServer } = require('@voussoir/server');
 const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 const express = require('express');

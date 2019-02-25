@@ -1,0 +1,16 @@
+{
+  "name": "@voussoir/field-color",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
+  "license": "MIT",
+  "dependencies": {
+    "@emotion/core": "^10.0.4",
+    "@voussoir/field-text": "^1.0.0",
+    "react": "^16.8.0",
+    "react-color": "^2.14.1"
+  },
+  "peerDependencies": {
+    "@voussoir/admin-view-color": "^1.0.0"
+  }
+}

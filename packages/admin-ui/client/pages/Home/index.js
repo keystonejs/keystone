@@ -65,6 +65,7 @@ class HomePage extends Component {
                           list={list}
                           onClose={this.closeCreateModal}
                           onCreate={this.onCreate(list)}
+                          adminMeta={null /* TODO */}
                         />
                       </Fragment>
                     );

@@ -1,0 +1,22 @@
+{
+  "name": "@voussoir/field-date-time",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
+  "license": "MIT",
+  "dependencies": {
+    "@voussoir/adapter-knex": "^0.0.2",
+    "@voussoir/adapter-mongoose": "^2.0.0",
+    "@voussoir/field": "^1.0.0",
+    "graphql": "^14.0.2",
+    "luxon": "^1.3.3"
+  },
+  "devDependencies": {
+    "@voussoir/field-text": "^1.0.0",
+    "@voussoir/test-utils": "^1.0.0",
+    "cuid": "^2.1.1"
+  },
+  "peerDependencies": {
+    "@voussoir/admin-view-date-time": "^1.0.0"
+  }
+}

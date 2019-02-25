@@ -13,9 +13,9 @@ const {
   DateTime,
   Color,
   Url,
-  Content,
+  //Content,
+  Decimal,
 } = require('@voussoir/fields');
-const Decimal = require('../../packages/fields/types/Decimal');
 const { WebServer } = require('@voussoir/server');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
 
@@ -24,7 +24,7 @@ const { port, staticRoute, staticPath, cloudinary } = require('./config');
 const LOCAL_FILE_PATH = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
-const Stars = require('./custom-fields/Stars');
+const Stars = require('./custom-fields/StarsField');
 const getYear = require('date-fns/get_year');
 
 // TODO: Make this work again
@@ -122,6 +122,7 @@ keystone.createList('Post', {
     price: { type: Decimal, symbol: '$' },
     currency: { type: Text },
     hero: { type: File, adapter: fileAdapter },
+    /*
     value: {
       type: Content,
       blocks: [
@@ -134,6 +135,7 @@ keystone.createList('Post', {
         Content.blocks.heading,
       ],
     },
+    */
   },
   adminConfig: {
     defaultPageSize: 20,

@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-import FieldTypes from '../FIELD_TYPES';
+import { viewMeta, loadView } from '../FIELD_TYPES';
 import { arrayToObject } from '@voussoir/utils';
 
 export const gqlCountQueries = lists => gql`{
@@ -10,14 +10,11 @@ export const gqlCountQueries = lists => gql`{
 export default class List {
   constructor(config, adminMeta) {
     this.config = config;
+    this.adminMeta = adminMeta;
 
     // TODO: undo this
     Object.assign(this, config);
-
-    this.fields = config.fields.map(fieldConfig => {
-      const { Controller } = FieldTypes[config.key][fieldConfig.path];
-      return new Controller(fieldConfig, this, adminMeta);
-    });
+    delete this.fields;
 
     this.createMutation = gql`
       mutation create($data: ${this.gqlNames.createInputName}!) {
@@ -68,11 +65,52 @@ export default class List {
     `;
   }
 
+  /**
+   * @return Promise<undefined> resolves when all the field modules are loaded
+   */
+  initFields() {
+    // Ensure we only trigger loading once, and any new requests to load are
+    // resolved when the first request is resolved (or rejected);
+    if (!this._loadingPromise) {
+      // NOTE: We purposely don't `await` here as we want the `_loadingPromise` to
+      // be resolved _after_ the `.then()` because it contains the
+      // `this._fields` assignment.
+      this._loadingPromise = Promise.all(
+        this.config.fields.map(fieldConfig => loadView(viewMeta[this.config.key][fieldConfig.path]))
+      ).then(fieldModules => {
+        this._fields = fieldModules.map(({ Controller, ...views }, index) => {
+          const controller = new Controller(this.config.fields[index], this, this.adminMeta);
+          // Mix the `.views` fields into the controller for use throughout the
+          // UI
+          controller.views = views;
+          return controller;
+        });
+
+        // Flag as loaded
+        this._fieldsLoaded = true;
+      });
+    }
+
+    return this._loadingPromise;
+  }
+
+  getFields() {
+    if (!this.loaded()) {
+      throw new Error(
+        `Attempted to read fields from list ${this.config.key} before they were laoded`
+      );
+    }
+    return this._fields;
+  }
+
+  loaded() {
+    return !!this._fieldsLoaded;
+  }
+
   buildQuery(queryName, queryArgs = '', fields = []) {
     return `
       ${queryName}${queryArgs} {
         id
-        _label_
         ${fields.map(field => field.getQueryFragment()).join(' ')}
       }`;
   }
@@ -93,16 +131,19 @@ export default class List {
 
   getItemQuery(itemId) {
     return gql`{
-      ${this.buildQuery(this.gqlNames.itemQueryName, `(where: { id: "${itemId}" })`, this.fields)}
+      ${this.buildQuery(
+        this.gqlNames.itemQueryName,
+        `(where: { id: "${itemId}" })`,
+        this.getFields()
+      )}
     }`;
   }
 
   getQuery({ fields, filters, search, orderBy, skip, first }) {
     const queryArgs = List.getQueryArgs({ first, filters, search, skip, orderBy });
     const metaQueryArgs = List.getQueryArgs({ filters, search });
-    const safeFields = fields.filter(field => field.path !== '_label_');
     return gql`{
-      ${this.buildQuery(this.gqlNames.listQueryName, queryArgs, safeFields)}
+      ${this.buildQuery(this.gqlNames.listQueryName, queryArgs, fields)}
       ${this.countQuery(metaQueryArgs)}
     }`;
   }
@@ -119,7 +160,9 @@ export default class List {
   }
 
   getInitialItemData() {
-    return arrayToObject(this.fields, 'path', field => field.getInitialData());
+    return arrayToObject(this.getFields().filter(field => field.isEditable()), 'path', field =>
+      field.getInitialData()
+    );
   }
   formatCount(items) {
     const count = Array.isArray(items) ? items.length : items;

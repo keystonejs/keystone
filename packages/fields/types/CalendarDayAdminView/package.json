@@ -1,0 +1,20 @@
+{
+  "name": "@voussoir/admin-view-calendar-day",
+  "version": "1.0.0",
+  "main": "dist/admin-view-calendar-day.cjs.js",
+  "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
+  "license": "MIT",
+  "dependencies": {
+    "@arch-ui/button": "^0.0.1",
+    "@arch-ui/day-picker": "^0.0.1",
+    "@arch-ui/fields": "^0.0.1",
+    "@arch-ui/popout": "^0.0.1",
+    "@arch-ui/theme": "^0.0.1",
+    "@babel/runtime": "^7.2.0",
+    "@emotion/core": "^10.0.4",
+    "@voussoir/admin-view": "^1.0.0",
+    "date-fns": "^1.29.0",
+    "react": "^16.8.0"
+  },
+  "module": "dist/admin-view-calendar-day.esm.js"
+}

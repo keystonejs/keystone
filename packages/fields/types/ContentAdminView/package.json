@@ -1,0 +1,38 @@
+{
+  "name": "@voussoir/admin-view-content",
+  "version": "1.0.0",
+  "main": "dist/admin-view-content.cjs.js",
+  "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
+  "license": "MIT",
+  "dependencies": {
+    "@arch-ui/color-utils": "^0.0.1",
+    "@arch-ui/fields": "^0.0.1",
+    "@arch-ui/hooks": "^0.0.1",
+    "@arch-ui/icons": "^0.0.1",
+    "@arch-ui/input": "^0.0.1",
+    "@arch-ui/theme": "^0.0.1",
+    "@arch-ui/tooltip": "^0.0.1",
+    "@arch-ui/typography": "^0.0.1",
+    "@babel/runtime": "^7.2.0",
+    "@emotion/core": "^10.0.4",
+    "@voussoir/admin-view": "^1.0.0",
+    "@voussoir/admin-view-text": "^1.0.0",
+    "apply-ref": "^0.1.1",
+    "get-selection-range": "^0.1.0",
+    "image-extensions": "^1.1.0",
+    "is-hotkey": "^0.1.4",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "react-popper": "^1.3.2",
+    "react-popper-tooltip": "^2.7.2",
+    "slate": "^0.44.9",
+    "slate-drop-or-paste-images": "^0.9.1",
+    "slate-html-serializer": "^0.7.33",
+    "slate-react": "^0.21.15"
+  },
+  "module": "dist/admin-view-content.esm.js",
+  "browser": {
+    "./dist/admin-view-content.cjs.js": "./dist/admin-view-content.browser.cjs.js",
+    "./dist/admin-view-content.esm.js": "./dist/admin-view-content.browser.esm.js"
+  }
+}

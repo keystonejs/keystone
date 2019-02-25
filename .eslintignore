@@ -6,3 +6,4 @@ reports
 test-projects/**/cypress
 website/.cache/**/*
 website/public/**/*
+packages/**/dist/*

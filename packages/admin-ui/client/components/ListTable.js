@@ -12,10 +12,6 @@ import { A11yText } from '@arch-ui/typography';
 import DeleteItemModal from './DeleteItemModal';
 import { copyToClipboard } from '../util';
 
-// This import is loaded by the @voussoir/field-views-loader loader.
-// It imports all the views required for a keystone app by looking at the adminMetaData
-import FieldTypes from '../FIELD_TYPES';
-
 // Styled Components
 const Table = styled('table')({
   borderCollapse: 'collapse',
@@ -225,17 +221,9 @@ class ListRow extends Component {
             );
           }
 
-          if (path === '_label_') {
-            return (
-              <BodyCellTruncated isSelected={isSelected} key={path}>
-                <ItemLink to={link({ path: list.path, id: item.id })}>{item._label_}</ItemLink>
-              </BodyCellTruncated>
-            );
-          }
-
           let content;
 
-          const Cell = FieldTypes[list.key][path].Cell;
+          const { Cell } = field.views;
 
           if (Cell) {
             // TODO
@@ -250,6 +238,7 @@ class ListRow extends Component {
                 isSelected={isSelected}
                 list={list}
                 data={item[path]}
+                itemId={item.id}
                 field={field}
                 Link={LinkComponent}
               />
@@ -334,7 +323,7 @@ export default class ListTable extends Component {
               <SortLink
                 data-field={field.path}
                 key={field.path}
-                sortable={field.path !== '_label_'}
+                sortable={field.isSortable()}
                 field={field}
                 handleSortChange={handleSortChange}
                 active={sortBy.field.path === field.path}

@@ -5,7 +5,6 @@ import * as React from 'react';
 
 import List from '../../classes/List';
 import type { FieldControllerType } from '@voussoir/fields/Controller';
-import { pseudoLabelField } from './FieldSelect';
 import type { AdminMeta } from '../../providers/AdminMeta';
 
 export type SortByType = {
@@ -25,7 +24,7 @@ export type SearchType = {
   pageSize: number,
   search: string,
   fields: Array<FieldControllerType>,
-  sortBy: SortByType,
+  sortBy: SortByType | null,
   filters: Array<FilterType>,
 };
 
@@ -40,8 +39,13 @@ const getSearchDefaults = (props: Props): SearchType => {
 
   // Dynamic defaults
   const fields = parseFields(defaultColumns, props.list);
-  const sortBy = parseSortBy(defaultSort, props.list) || { field: fields[0], direction: 'ASC' };
-  fields.unshift(pseudoLabelField);
+  let sortBy = parseSortBy(defaultSort, props.list);
+  if (!sortBy) {
+    const sortableField = fields.find(field => field.isSortable());
+    if (sortableField) {
+      sortBy = { field: sortableField, direction: 'ASC' };
+    }
+  }
   return {
     currentPage: 1,
     pageSize: defaultPageSize,
@@ -54,9 +58,12 @@ const getSearchDefaults = (props: Props): SearchType => {
 
 const parseFields = (fields, list) => {
   const fieldPaths = fields.split(',');
-  return fieldPaths
-    .map(path => (path === '_label_' ? pseudoLabelField : list.fields.find(f => f.path === path)))
-    .filter(f => !!f); // remove anything that was not found.
+  return (
+    fieldPaths
+      .map(path => list.getFields().find(f => f.path === path))
+      // remove anything that was not found.
+      .filter(f => !!f)
+  );
 };
 
 const encodeFields = fields => {
@@ -72,8 +79,8 @@ const parseSortBy = (sortBy: string, list: List): SortByType | null => {
     direction = 'DESC';
   }
 
-  const field = list.fields.find(f => f.path === key);
-  if (!field) {
+  const field = list.getFields().find(f => f.path === key);
+  if (!field || !field.isSortable()) {
     return null;
   }
   return {
@@ -83,21 +90,21 @@ const parseSortBy = (sortBy: string, list: List): SortByType | null => {
 };
 
 const encodeSortBy = (sortBy: SortByType): string => {
-  const {
-    direction,
-    field: { path },
-  } = sortBy;
-  return direction === 'ASC' ? path : `-${path}`;
+  const { direction, field } = sortBy;
+  if (!field) {
+    return null;
+  }
+  return direction === 'ASC' ? field.path : `-${field.path}`;
 };
 
 const parseFilter = (filter: [string, string], list): FilterType | null => {
   const [key, value] = filter;
   let type;
   let label;
-  const field = list.fields.find(f => {
-    if (key.indexOf(f.path) !== 0) return false;
-    const filterType = f.getFilterTypes().find(t => {
-      return key === `${f.path}_${t.type}`;
+  const filterField = list.getFields().find(field => {
+    if (key.indexOf(field.path) !== 0) return false;
+    const filterType = field.getFilterTypes().find(t => {
+      return key === `${field.path}_${t.type}`;
     });
     if (filterType) {
       type = filterType.type;
@@ -108,7 +115,7 @@ const parseFilter = (filter: [string, string], list): FilterType | null => {
     }
   });
 
-  if (!field || !type || !label) return null;
+  if (!filterField || !type || !label) return null;
 
   // Try to parse the value
   let parsedValue;
@@ -120,9 +127,9 @@ const parseFilter = (filter: [string, string], list): FilterType | null => {
   }
 
   return {
-    field,
+    field: filterField,
     label,
-    path: field.path,
+    path: filterField.path,
     type,
     value: parsedValue,
   };
@@ -215,7 +222,7 @@ export const encodeSearch = (data: SearchType, props: Props): string => {
       case 'sortBy':
         const sortBy = encodeSortBy(data[key]);
         const defaultSortBy = encodeSortBy(searchDefaults[key]);
-        if (sortBy !== defaultSortBy) acc[key] = sortBy;
+        if (sortBy && sortBy !== defaultSortBy) acc[key] = sortBy;
         break;
       case 'filters':
         data[key].forEach(filter => {

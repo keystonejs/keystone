@@ -1,0 +1,24 @@
+{
+  "name": "@voussoir/field-relationship",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
+  "license": "MIT",
+  "dependencies": {
+    "@voussoir/adapter-knex": "^0.0.2",
+    "@voussoir/adapter-mongoose": "^2.0.0",
+    "@voussoir/field": "^1.0.0",
+    "@voussoir/utils": "^1.0.0",
+    "apollo-errors": "^1.9.0",
+    "lodash.groupby": "^4.6.0",
+    "lodash.omitby": "^4.6.0",
+    "mongoose": "^5.3.15",
+    "p-settle": "^2.1.0"
+  },
+  "peerDependencies": {
+    "@voussoir/admin-view-relationship": "^1.0.0"
+  },
+  "devDependencies": {
+    "graphql-tag": "^2.8.0"
+  }
+}

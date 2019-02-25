@@ -24,10 +24,6 @@ import { ItemTitle } from './ItemTitle';
 import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
 import isEqual from 'lodash.isequal';
 
-// This import is loaded by the @voussoir/field-views-loader loader.
-// It imports all the views required for a keystone app by looking at the adminMetaData
-import FieldTypes from '../../FIELD_TYPES';
-
 let Render = ({ children }) => children();
 
 const Form = styled.form({
@@ -108,13 +104,7 @@ const ItemDetails = withRouter(
     }
     onSave = () => {
       const { item } = this.state;
-      const {
-        list: { fields },
-        onUpdate,
-        toastManager,
-        updateItem,
-        item: initialData,
-      } = this.props;
+      const { list, onUpdate, toastManager, updateItem, item: initialData } = this.props;
 
       resolveAllKeys(
         // Don't try to update anything that hasn't changed.
@@ -123,7 +113,7 @@ const ItemDetails = withRouter(
         // details, but is not editable, and would cause an error if a value
         // was sent as part of the update query.
         arrayToObject(
-          fields.filter(field => !isEqual(field.getValue(initialData), field.getValue(item))),
+          list.getFields().filter(f => !isEqual(f.getValue(initialData), f.getValue(item))),
           'path',
           field => field.getValue(item)
         )
@@ -176,7 +166,7 @@ const ItemDetails = withRouter(
 
     render() {
       const { adminPath, list, updateInProgress, itemErrors, item: savedData } = this.props;
-      const { item, itemHasChanged } = this.state;
+      const { item: editedItem, itemHasChanged } = this.state;
       return (
         <Fragment>
           {itemHasChanged && <PreventNavigation />}
@@ -186,43 +176,49 @@ const ItemDetails = withRouter(
             adminPath={adminPath}
             titleText={savedData._label_}
           />
-          <IdCopy id={item.id} />
+          <IdCopy id={editedItem.id} />
           <Form>
             <AutocompleteCaptor />
-            {list.fields.map((field, i) => {
-              const { Field } = FieldTypes[list.key][field.path];
-              return (
-                <Render key={field.path}>
-                  {() => {
-                    let onChange = useCallback(
-                      value => {
-                        this.setState(({ item }) => ({
-                          item: {
-                            ...item,
-                            [field.path]: value,
-                          },
-                          itemHasChanged: true,
-                        }));
-                      },
-                      [field]
-                    );
-                    return useMemo(
-                      () => (
-                        <Field
-                          autoFocus={!i}
-                          field={field}
-                          error={itemErrors[field.path]}
-                          value={item[field.path]}
-                          onChange={onChange}
-                          renderContext="page"
-                        />
-                      ),
-                      [i, field, itemErrors[field.path], item[field.path]]
-                    );
-                  }}
-                </Render>
-              );
-            })}
+            {list
+              .getFields()
+              .filter(field => field.isEditable())
+              .map((field, i) => {
+                const { Field } = field.views;
+                if (!Field) {
+                  return null;
+                }
+                return (
+                  <Render key={field.path}>
+                    {() => {
+                      let onChange = useCallback(
+                        value => {
+                          this.setState(({ item }) => ({
+                            item: {
+                              ...item,
+                              [field.path]: value,
+                            },
+                            itemHasChanged: true,
+                          }));
+                        },
+                        [field]
+                      );
+                      return useMemo(
+                        () => (
+                          <Field
+                            autoFocus={!i}
+                            field={field}
+                            error={itemErrors[field.path]}
+                            value={editedItem[field.path]}
+                            onChange={onChange}
+                            renderContext="page"
+                          />
+                        ),
+                        [i, field, itemErrors[field.path], editedItem[field.path]]
+                      );
+                    }}
+                  </Render>
+                );
+              })}
           </Form>
 
           <Footer

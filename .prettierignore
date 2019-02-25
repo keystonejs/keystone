@@ -8,3 +8,4 @@ website/public/**/*
 demo-projects/todo/.cache
 demo-projects/todo/dist
 demo-projects/blog/app/.next
+packages/**/dist/*

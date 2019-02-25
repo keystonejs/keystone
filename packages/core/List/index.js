@@ -249,9 +249,7 @@ module.exports = class List {
         })
     );
     this.fields = Object.values(this.fieldsByPath);
-    this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
-      this.fieldsByPath[path].extendViews({ ...type.views })
-    );
+    this.views = mapKeys(sanitisedFieldsConfig, ({ type }) => type.views);
   }
 
   getAdminMeta() {

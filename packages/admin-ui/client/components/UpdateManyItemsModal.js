@@ -6,8 +6,6 @@ import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
 import { omit } from '@voussoir/utils';
 
-import FieldTypes from '../FIELD_TYPES';
-
 let Render = ({ children }) => children();
 
 class UpdateManyModal extends Component {
@@ -45,7 +43,7 @@ class UpdateManyModal extends Component {
   handleSelect = selected => {
     const { list } = this.props;
     const selectedFields = selected.map(({ path, value }) => {
-      return list.fields.find(f => f.path === path || f.path === value);
+      return list.getFields().find(field => field.path === path || field.path === value);
     });
     this.setState({ selectedFields });
   };
@@ -58,7 +56,10 @@ class UpdateManyModal extends Component {
   getOptions = () => {
     const { list } = this.props;
     // remove the `options` key from select type fields
-    return list.fields.map(f => omit(f, ['options']));
+    return list
+      .getFields()
+      .filter(field => field.isEditable())
+      .map(f => omit(f, ['options']));
   };
   render() {
     const { isLoading, isOpen, items, list } = this.props;
@@ -101,14 +102,14 @@ class UpdateManyModal extends Component {
             </FieldInput>
           </FieldContainer>
           {selectedFields.map((field, i) => {
-            const { Field } = FieldTypes[list.key][field.path];
+            const { Field } = field.views;
             return (
               <Render key={field.path}>
                 {() => {
                   let onChange = useCallback(value => {
-                    this.setState(({ item }) => ({
+                    this.setState(({ item: existingItem }) => ({
                       item: {
-                        ...item,
+                        ...existingItem,
                         [field.path]: value,
                       },
                     }));
@@ -123,7 +124,7 @@ class UpdateManyModal extends Component {
                         renderContext="dialog"
                       />
                     ),
-                    [i, field, item[field.path], onChange]
+                    [i, field, item[field.path], onChange, Field]
                   );
                 }}
               </Render>

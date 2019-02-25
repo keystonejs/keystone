@@ -1,0 +1,21 @@
+{
+  "name": "@voussoir/field-password",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
+  "license": "MIT",
+  "dependencies": {
+    "@voussoir/adapter-knex": "^0.0.2",
+    "@voussoir/adapter-mongoose": "^2.0.0",
+    "@voussoir/field": "^1.0.0",
+    "bcrypt": "^3.0.0",
+    "dumb-passwords": "^0.2.1"
+  },
+  "peerDependencies": {
+    "@voussoir/admin-view-password": "^1.0.0"
+  },
+  "devDependencies": {
+    "@voussoir/field-text": "^1.0.0",
+    "@voussoir/test-utils": "^1.0.0"
+  }
+}

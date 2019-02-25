@@ -14,10 +14,6 @@ import FieldSelect from '../FieldSelect';
 import PopoutForm from './PopoutForm';
 import { POPOUT_GUTTER } from '../../../components/Popout';
 
-// This import is loaded by the @voussoir/field-views-loader loader.
-// It imports all the views required for a keystone app by looking at the adminMetaData
-import FieldTypes from '../../../FIELD_TYPES';
-
 const EventCatcher = props => (
   <div
     onClick={e => {
@@ -105,13 +101,13 @@ export default class AddFilterPopout extends Component<Props, State> {
   resetState = () => {
     this.setState(getInitialState());
   };
-  matchesExistingFilterType = opt => {
+  matchesExistingFilterType = option => {
     const { existingFilters } = this.props;
     const { field } = this.state;
 
     const matches = field
-      ? x => x.field.path === field.path && x.type === opt.type
-      : x => x.type === opt.type;
+      ? x => x.field.path === field.path && x.type === option.type
+      : x => x.type === option.type;
 
     return existingFilters.some(matches);
   };
@@ -194,10 +190,9 @@ export default class AddFilterPopout extends Component<Props, State> {
   // Renderers
   // ==============================
 
-  getFieldOptions = () => {
-    const { fields } = this.props;
-    return fields.filter(f => f.getFilterTypes() && f.getFilterTypes().length);
-  };
+  getFieldOptions = () =>
+    this.props.fields.filter(f => f.getFilterTypes() && f.getFilterTypes().length);
+
   renderFieldSelect = ({ ref }) => {
     return (
       <Transition
@@ -266,19 +261,20 @@ export default class AddFilterPopout extends Component<Props, State> {
             exited: { transform: 'translateX(100%)' },
           };
           const style = { ...base, ...states[state] };
-          const { Filter } = FieldTypes[field.list.key][field.path];
-          const Code = p => (
-            <code
-              css={{
-                background: 'rgba(0,0,0,0.1)',
-                padding: '1px 5px',
-                borderRadius: 2,
-              }}
-              {...p}
-            />
-          );
+          const { Filter } = field.views;
 
           if (!Filter) {
+            const Code = p => (
+              <code
+                css={{
+                  background: 'rgba(0,0,0,0.1)',
+                  padding: '1px 5px',
+                  borderRadius: 2,
+                }}
+                {...p}
+              />
+            );
+
             return (
               <div ref={ref} style={style}>
                 <Alert appearance="warning" variant="bold">

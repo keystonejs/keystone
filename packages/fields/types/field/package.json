@@ -1,0 +1,11 @@
+{
+  "name": "@voussoir/field",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
+  "license": "MIT",
+  "dependencies": {
+    "@voussoir/access-control": "^0.4.1",
+    "inflection": "^1.12.0"
+  }
+}

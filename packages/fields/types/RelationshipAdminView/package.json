@@ -1,0 +1,27 @@
+{
+  "name": "@voussoir/admin-view-relationship",
+  "version": "1.0.0",
+  "main": "dist/admin-view-relationship.cjs.js",
+  "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
+  "license": "MIT",
+  "dependencies": {
+    "@arch-ui/button": "^0.0.1",
+    "@arch-ui/drawer": "^0.0.1",
+    "@arch-ui/fields": "^0.0.1",
+    "@arch-ui/icons": "^0.0.1",
+    "@arch-ui/input": "^0.0.1",
+    "@arch-ui/select": "^0.0.1",
+    "@arch-ui/theme": "^0.0.1",
+    "@arch-ui/tooltip": "^0.0.1",
+    "@babel/runtime": "^7.2.0",
+    "@emotion/core": "^10.0.4",
+    "@voussoir/admin-view": "^1.0.0",
+    "@voussoir/utils": "^1.0.0",
+    "graphql-tag": "^2.8.0",
+    "intersection-observer": "^0.5.1",
+    "react": "^16.8.0",
+    "react-apollo": "^2.2.4",
+    "react-select": "^2.1.2"
+  },
+  "module": "dist/admin-view-relationship.esm.js"
+}

@@ -207,6 +207,7 @@
       "packages/*",
       "!packages/arch",
       "packages/arch/packages/*",
+      "packages/fields/types/*",
       "demo-projects/*",
       "test-projects/*",
       "website"
@@ -215,7 +216,9 @@
   "preconstruct": {
     "packages": [
       "packages/arch/packages/*",
-      "packages/apollo-helpers"
+      "packages/apollo-helpers",
+      "packages/fields/types/*AdminView",
+      "packages/fields/types/admin-view"
     ]
   },
   "jest": {
@@ -236,6 +239,7 @@
     "gatsby": "^2.0.111",
     "gatsby-source-filesystem": "^2.0.20",
     "gatsby-transformer-remark": "^2.2.3",
+    "globby": "^9.0.0",
     "jade": "^1.11.0",
     "junit-merge": "^2.0.0",
     "lodash.omitby": "^4.6.0",

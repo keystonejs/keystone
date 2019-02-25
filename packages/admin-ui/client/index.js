@@ -21,6 +21,7 @@ import ListNotFoundPage from './pages/ListNotFound';
 import ItemPage from './pages/Item';
 import InvalidRoutePage from './pages/InvalidRoute';
 import StyleGuidePage from './pages/StyleGuide';
+import PageWithListFields from './pages/PageWithListFields';
 
 const Keystone = () => (
   <ApolloProvider client={apolloClient}>
@@ -60,7 +61,11 @@ const Keystone = () => (
                               <Route
                                 exact
                                 path={`${adminPath}/:list`}
-                                render={() => <ListPage key={listKey} list={list} {...adminMeta} />}
+                                render={() => (
+                                  <PageWithListFields key={listKey} list={list}>
+                                    <ListPage list={list} {...adminMeta} />
+                                  </PageWithListFields>
+                                )}
                               />
                               <Route
                                 exact
@@ -70,12 +75,9 @@ const Keystone = () => (
                                     params: { itemId },
                                   },
                                 }) => (
-                                  <ItemPage
-                                    key={`${listKey}-${itemId}`}
-                                    list={list}
-                                    itemId={itemId}
-                                    {...adminMeta}
-                                  />
+                                  <PageWithListFields key={`${listKey}-${itemId}`} list={list}>
+                                    <ItemPage list={list} itemId={itemId} {...adminMeta} />
+                                  </PageWithListFields>
                                 )}
                               />
                               <Route render={() => <InvalidRoutePage {...adminMeta} />} />

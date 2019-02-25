@@ -1,39 +1,7 @@
-const fs = require('fs');
 const path = require('path');
 const cuid = require('cuid');
-const { graphqlRequest, multiAdapterRunners, setupServer } = require('@voussoir/test-utils');
-
-const sorted = (arr, keyFn) => {
-  arr = [...arr];
-  arr.sort((a, b) => {
-    a = keyFn(a);
-    b = keyFn(b);
-    if (a < b) {
-      return -1;
-    }
-    if (a > b) {
-      return 1;
-    }
-    return 0;
-  });
-  return arr;
-};
-
-export const runQuery = (server, snippet) => {
-  return graphqlRequest({
-    server,
-    query: `query { ${snippet} }`,
-  }).then(res => res.body.data);
-};
-
-export const matchFilter = (server, gqlArgs, fields, target, sortkey) => {
-  gqlArgs = gqlArgs ? `(${gqlArgs})` : '';
-  const snippet = `allTests ${gqlArgs} ${fields}`;
-  return runQuery(server, snippet).then(data => {
-    const value = sortkey ? sorted(data.allTests || [], i => i[sortkey]) : data.allTests;
-    expect(value).toEqual(target);
-  });
-};
+const globby = require('globby');
+const { multiAdapterRunners, setupServer } = require('@voussoir/test-utils');
 
 // `mongodb-memory-server` downloads a binary on first run in CI, which can take
 // a while, so we bump up the timeout here.
@@ -41,11 +9,8 @@ jest.setTimeout(60000);
 
 describe('Test CRUD for all fields', () => {
   const typesLoc = path.resolve('packages/fields/types');
-  const testModules = fs
-    .readdirSync(typesLoc)
-    .map(name => `${typesLoc}/${name}/filterTests.js`)
-    .filter(filename => fs.existsSync(filename));
-  testModules.push(path.resolve('packages/fields/tests/idFilterTests.js'));
+  const testModules = globby.sync(`${typesLoc}/*Field/filterTests.js`);
+  testModules.push(path.resolve(`${__dirname}/idFilterTests.js`));
 
   multiAdapterRunners().map(({ runner, adapterName }) =>
     describe(`Adapter: ${adapterName}`, () => {

@@ -1,0 +1,20 @@
+{
+  "name": "@voussoir/admin-view-select",
+  "version": "1.0.0",
+  "main": "dist/admin-view-select.cjs.js",
+  "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
+  "license": "MIT",
+  "dependencies": {
+    "@arch-ui/fields": "^0.0.1",
+    "@arch-ui/filters": "^0.0.1",
+    "@arch-ui/icons": "^0.0.1",
+    "@arch-ui/options": "^0.0.1",
+    "@arch-ui/select": "^0.0.1",
+    "@arch-ui/theme": "^0.0.1",
+    "@babel/runtime": "^7.2.0",
+    "@emotion/core": "^10.0.4",
+    "@voussoir/admin-view": "^1.0.0",
+    "react": "^16.8.0"
+  },
+  "module": "dist/admin-view-select.esm.js"
+}

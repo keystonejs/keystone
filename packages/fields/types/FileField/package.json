@@ -1,0 +1,16 @@
+{
+  "name": "@voussoir/field-file",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
+  "license": "MIT",
+  "dependencies": {
+    "@voussoir/adapter-knex": "^0.0.2",
+    "@voussoir/adapter-mongoose": "^2.0.0",
+    "@voussoir/field": "^1.0.0",
+    "mongoose": "^5.3.15"
+  },
+  "peerDependencies": {
+    "@voussoir/admin-view-file": "^1.0.0"
+  }
+}

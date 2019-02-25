@@ -1,0 +1,15 @@
+{
+  "name": "@voussoir/field-content",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
+  "license": "MIT",
+  "dependencies": {
+    "@voussoir/field-text": "^1.0.0",
+    "@voussoir/utils": "^1.0.0",
+    "pluralize": "^7.0.0"
+  },
+  "peerDependencies": {
+    "@voussoir/admin-view-content": "^1.0.0"
+  }
+}

@@ -12,7 +12,6 @@ module.exports = function({ adminMeta, entry }) {
   const environmentPlugin = new webpack.DefinePlugin({
     ENABLE_DEV_FEATURES: enableDevFeatures,
     IS_PUBLIC_BUNDLE: entry === 'public',
-    KEYSTONE_ADMIN_META: JSON.stringify(adminMeta),
   });
 
   const rules = [
@@ -70,6 +69,7 @@ module.exports = function({ adminMeta, entry }) {
     });
   }
   const entryPath = `./${entry}.js`;
+  console.log('looking for modules in', `${process.cwd()}/node_modules`);
   return {
     mode,
     context: path.resolve(__dirname, '../client/'),
@@ -105,6 +105,14 @@ module.exports = function({ adminMeta, entry }) {
           } catch (e) {}
         })(),
       },
+      modules: [
+        './node_modules',
+        // Look for views in the project's node_modules
+        `${process.cwd()}/node_modules`,
+        // If using the meta wrapper package `@voussoir/fields`, we might need
+        // to look in its directory for the views
+        `${process.cwd()}/node_modules/@voussoir/fields/node_modules`,
+      ],
     },
   };
 };

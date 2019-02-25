@@ -1,5 +1,5 @@
-import { matchFilter } from './fields.test';
-import Text from '../types/Text';
+import { matchFilter } from '@voussoir/test-utils';
+import Text from '@voussoir/field-text';
 // import Checkbox from './';
 
 export const name = 'ID';

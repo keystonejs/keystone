@@ -371,7 +371,7 @@ class ListDetails extends Component<Props, State> {
               >
                 <SortSelect
                   popoutRef={this.sortPopoutRef}
-                  fields={list.fields}
+                  fields={list.getFields()}
                   onChange={handleSortChange}
                   value={sortBy}
                 />
@@ -403,12 +403,12 @@ class ListDetails extends Component<Props, State> {
               </Search>
               <AddFilterPopout
                 existingFilters={filters}
-                fields={list.fields}
+                fields={list.getFields()}
                 onChange={handleFilterAdd}
               />
               <Popout buttonLabel="Columns" headerTitle="Columns">
                 <ColumnSelect
-                  fields={list.fields}
+                  fields={list.getFields()}
                   onChange={handleFieldChange}
                   removeIsAllowed={fields.length > 1}
                   value={fields}
@@ -469,7 +469,7 @@ class ListDetails extends Component<Props, State> {
             {items ? (
               <ListTable
                 adminPath={adminPath}
-                fields={fields}
+                fields={list.getFields().filter(field => fields.find(f => f.path === field.path))}
                 isFullWidth={isFullWidth}
                 items={items}
                 itemsErrors={itemsErrors}

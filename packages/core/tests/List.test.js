@@ -214,32 +214,11 @@ describe('new List()', () => {
   test('new List() - views', () => {
     const list = setup();
     expect(list.views).toEqual({
-      name: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
-      },
-      email: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
-      },
-      other: {
-        Controller: require.resolve('@voussoir/fields/types/Relationship/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Relationship/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Relationship/views/Filter'),
-        Cell: require.resolve('@voussoir/fields/types/Relationship/views/Cell'),
-      },
-      hidden: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
-      },
-      writeOnce: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
-      },
+      name: '@voussoir/admin-view-text',
+      email: '@voussoir/admin-view-text',
+      other: '@voussoir/admin-view-relationship',
+      hidden: '@voussoir/admin-view-text',
+      writeOnce: '@voussoir/admin-view-text',
     });
   });
 
@@ -368,32 +347,11 @@ describe('getAdminMeta()', () => {
     const adminMeta = list.getAdminMeta();
 
     expect(adminMeta.views).toEqual({
-      name: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
-      },
-      email: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
-      },
-      other: {
-        Controller: require.resolve('@voussoir/fields/types/Relationship/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Relationship/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Relationship/views/Filter'),
-        Cell: require.resolve('@voussoir/fields/types/Relationship/views/Cell'),
-      },
-      hidden: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
-      },
-      writeOnce: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
-      },
+      name: '@voussoir/admin-view-text',
+      email: '@voussoir/admin-view-text',
+      other: '@voussoir/admin-view-relationship',
+      hidden: '@voussoir/admin-view-text',
+      writeOnce: '@voussoir/admin-view-text',
     });
   });
 });
