@@ -205,6 +205,7 @@
   "bolt": {
     "workspaces": [
       "packages/*",
+      "!packages/arch",
       "packages/arch/packages/*",
       "demo-projects/*",
       "test-projects/*",
