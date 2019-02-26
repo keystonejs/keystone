@@ -5,9 +5,10 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
-import { ShieldIcon } from '@arch-ui/icons';
+import { ShieldIcon, PlusIcon, PersonIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
-import { Button } from '@arch-ui/button';
+import { IconButton } from '@arch-ui/button';
+import Tooltip from '@arch-ui/tooltip';
 
 import CreateItemModal from './CreateItemModal';
 import RelationshipSelect from './RelationshipSelect';
@@ -34,16 +35,22 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
           ) {
             return null;
           }
+          let label = `${many ? 'Add' : 'Set as'} ${data[path]._label_}`;
           return (
-            <Button
-              css={{ marginLeft: gridSize, marginRight: gridSize }}
-              variant="ghost"
-              onClick={() => {
-                onAddUser(data[path]);
-              }}
-            >
-              {many ? 'Add' : 'Set as'} {data[path]._label_}
-            </Button>
+            <Tooltip placement="top" content={label}>
+              {ref => (
+                <IconButton
+                  css={{ marginLeft: gridSize }}
+                  variant="ghost"
+                  ref={ref}
+                  onClick={() => {
+                    onAddUser(data[path]);
+                  }}
+                  icon={PersonIcon}
+                  title={label}
+                />
+              )}
+            </Tooltip>
           );
         }
         return null;
@@ -55,18 +62,23 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
 function CreateAndAddItem({ field, onCreate }) {
   let relatedList = field.adminMeta.getListByKey(field.config.ref);
   let [isOpen, setIsOpen] = useState(false);
-
+  let label = `Create and add ${relatedList.singular}`;
   return (
     <Fragment>
-      <Button
-        onClick={() => {
-          setIsOpen(true);
-        }}
-        variant="ghost"
-        css={{ marginLeft: gridSize }}
-      >
-        Create and add {relatedList.singular}
-      </Button>
+      <Tooltip placement="top" content={label}>
+        {ref => (
+          <IconButton
+            ref={ref}
+            onClick={() => {
+              setIsOpen(true);
+            }}
+            icon={PlusIcon}
+            title={label}
+            variant="ghost"
+            css={{ marginLeft: gridSize }}
+          />
+        )}
+      </Tooltip>
       <CreateItemModal
         isOpen={isOpen}
         list={relatedList}
@@ -125,6 +137,12 @@ export default class RelationshipField extends Component {
             htmlID={htmlID}
             onChange={this.onChange}
           />
+          <CreateAndAddItem
+            onCreate={item => {
+              onChange(many ? (value || []).concat(item) : item);
+            }}
+            field={field}
+          />
           {withAuth && ref === authList && (
             <SetAsCurrentUser
               many={many}
@@ -135,12 +153,6 @@ export default class RelationshipField extends Component {
               listKey={authList}
             />
           )}
-          <CreateAndAddItem
-            onCreate={item => {
-              onChange(many ? (value || []).concat(item) : item);
-            }}
-            field={field}
-          />
         </FieldInput>
       </FieldContainer>
     );
