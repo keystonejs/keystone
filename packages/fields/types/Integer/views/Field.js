@@ -5,9 +5,8 @@ import { Input } from '@arch-ui/input';
 
 export default class TextField extends Component {
   onChange = event => {
-    const { field, onChange } = this.props;
     const value = event.target.value;
-    onChange(field, value.replace(/\D/g, ''));
+    this.props.onChange(value.replace(/\D/g, ''));
   };
 
   valueToString = value => {
@@ -23,8 +22,7 @@ export default class TextField extends Component {
   };
 
   render() {
-    const { autoFocus, field, item } = this.props;
-    const value = item[field.path];
+    const { autoFocus, field, value } = this.props;
     const htmlID = `ks-input-${field.path}`;
 
     return (

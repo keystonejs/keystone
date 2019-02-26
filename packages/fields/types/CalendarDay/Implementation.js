@@ -2,6 +2,7 @@ const parse = require('date-fns/parse');
 const format = require('date-fns/format');
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 class CalendarDay extends Implementation {
   constructor() {
@@ -35,7 +36,18 @@ class CalendarDay extends Implementation {
   }
 }
 
-class MongoCalendarDayInterface extends MongooseFieldAdapter {
+const CommonCalendarInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.orderingConditions(dbPath),
+        ...this.inConditions(dbPath),
+      };
+    }
+  };
+
+class MongoCalendarDayInterface extends CommonCalendarInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     const { mongooseOptions = {} } = this.config;
     const { isRequired } = mongooseOptions;
@@ -50,17 +62,25 @@ class MongoCalendarDayInterface extends MongooseFieldAdapter {
     };
     schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
   }
+}
 
-  getQueryConditions() {
-    return {
-      ...this.equalityConditions(),
-      ...this.orderingConditions(),
-      ...this.inConditions(),
-    };
+class KnexCalendarDayInterface extends CommonCalendarInterface(KnexFieldAdapter) {
+  createColumn(table) {
+    return table.date(this.path);
+  }
+
+  setupHooks({ addPostReadHook }) {
+    addPostReadHook(item => {
+      if (item[this.path]) {
+        item[this.path] = format(item[this.path], 'YYYY-MM-DD');
+      }
+      return item;
+    });
   }
 }
 
 module.exports = {
   CalendarDay,
   MongoCalendarDayInterface,
+  KnexCalendarDayInterface,
 };

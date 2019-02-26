@@ -1,4 +1,4 @@
-const { Decimal, MongoDecimalInterface } = require('./Implementation');
+const { Decimal, MongoDecimalInterface, KnexDecimalInterface } = require('./Implementation');
 
 module.exports = {
   type: 'Decimal',
@@ -10,5 +10,6 @@ module.exports = {
   },
   adapters: {
     mongoose: MongoDecimalInterface,
+    knex: KnexDecimalInterface,
   },
 };

@@ -1,12 +1,13 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@voussoir/fields');
 const cuid = require('cuid');
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-function setupKeystone() {
+function setupKeystone(adapterName) {
   return setupServer({
+    adapterName,
     name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('Note', {
@@ -56,20 +57,21 @@ function setupKeystone() {
     },
   });
 }
+multiAdapterRunners().map(({ runner, adapterName }) =>
+  describe(`Adapter: ${adapterName}`, () => {
+    describe('no access control', () => {
+      test(
+        'connect nested from within create mutation',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const noteContent = sampleOne(alphanumGenerator);
 
-describe('no access control', () => {
-  test(
-    'connect nested from within create mutation',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const noteContent = sampleOne(alphanumGenerator);
+          // Create an item to link against
+          const createNote = await create('Note', { content: noteContent });
 
-      // Create an item to link against
-      const createNote = await create('Note', { content: noteContent });
-
-      // Create an item that does the linking
-      const createUserOneNote = await graphqlRequest({
-        server,
-        query: `
+          // Create an item that does the linking
+          const createUserOneNote = await graphqlRequest({
+            server,
+            query: `
         mutation {
           createUser(data: {
             username: "A thing",
@@ -79,17 +81,17 @@ describe('no access control', () => {
           }
         }
     `,
-      });
+          });
 
-      expect(createUserOneNote.body.data).toMatchObject({
-        createUser: { id: expect.any(String) },
-      });
-      expect(createUserOneNote.body).not.toHaveProperty('errors');
+          expect(createUserOneNote.body.data).toMatchObject({
+            createUser: { id: expect.any(String) },
+          });
+          expect(createUserOneNote.body).not.toHaveProperty('errors');
 
-      // Create an item that does the linking
-      const createUserManyNotes = await graphqlRequest({
-        server,
-        query: `
+          // Create an item that does the linking
+          const createUserManyNotes = await graphqlRequest({
+            server,
+            query: `
         mutation {
           createUser(data: {
             username: "A thing",
@@ -99,29 +101,29 @@ describe('no access control', () => {
           }
         }
     `,
-      });
+          });
 
-      expect(createUserManyNotes.body.data).toMatchObject({
-        createUser: { id: expect.any(String) },
-      });
-      expect(createUserManyNotes.body).not.toHaveProperty('errors');
-    })
-  );
+          expect(createUserManyNotes.body.data).toMatchObject({
+            createUser: { id: expect.any(String) },
+          });
+          expect(createUserManyNotes.body).not.toHaveProperty('errors');
+        })
+      );
 
-  test(
-    'connect nested from within create many mutation',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const noteContent = sampleOne(alphanumGenerator);
-      const noteContent2 = sampleOne(alphanumGenerator);
+      test(
+        'connect nested from within create many mutation',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const noteContent = sampleOne(alphanumGenerator);
+          const noteContent2 = sampleOne(alphanumGenerator);
 
-      // Create an item to link against
-      const createNote = await create('Note', { content: noteContent });
-      const createNote2 = await create('Note', { content: noteContent2 });
+          // Create an item to link against
+          const createNote = await create('Note', { content: noteContent });
+          const createNote2 = await create('Note', { content: noteContent2 });
 
-      // Create an item that does the linking
-      const createUsersOneNote = await graphqlRequest({
-        server,
-        query: `
+          // Create an item that does the linking
+          const createUsersOneNote = await graphqlRequest({
+            server,
+            query: `
         mutation {
           createUsers(data: [
             { data: { username: "A thing 1", notes: { connect: [{ id: "${createNote.id}" }] } } },
@@ -131,32 +133,32 @@ describe('no access control', () => {
           }
         }
     `,
-      });
+          });
 
-      expect(createUsersOneNote.body.data).toMatchObject({
-        createUsers: [{ id: expect.any(String) }, { id: expect.any(String) }],
-      });
-      expect(createUsersOneNote.body).not.toHaveProperty('errors');
-    })
-  );
+          expect(createUsersOneNote.body.data).toMatchObject({
+            createUsers: [{ id: expect.any(String) }, { id: expect.any(String) }],
+          });
+          expect(createUsersOneNote.body).not.toHaveProperty('errors');
+        })
+      );
 
-  test(
-    'connect nested from within update mutation adds to an empty list',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const noteContent = sampleOne(alphanumGenerator);
-      const noteContent2 = sampleOne(alphanumGenerator);
+      test(
+        'connect nested from within update mutation adds to an empty list',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const noteContent = sampleOne(alphanumGenerator);
+          const noteContent2 = sampleOne(alphanumGenerator);
 
-      // Create an item to link against
-      const createNote = await create('Note', { content: noteContent });
-      const createNote2 = await create('Note', { content: noteContent2 });
+          // Create an item to link against
+          const createNote = await create('Note', { content: noteContent });
+          const createNote2 = await create('Note', { content: noteContent2 });
 
-      // Create an item to update
-      const createUser = await create('User', { username: 'A thing' });
+          // Create an item to update
+          const createUser = await create('User', { username: 'A thing' });
 
-      // Update the item and link the relationship field
-      const updateUser = await graphqlRequest({
-        server,
-        query: `
+          // Update the item and link the relationship field
+          const updateUser = await graphqlRequest({
+            server,
+            query: `
         mutation {
           updateUser(
             id: "${createUser.id}"
@@ -173,25 +175,25 @@ describe('no access control', () => {
           }
         }
     `,
-      });
+          });
 
-      expect(updateUser.body.data).toMatchObject({
-        updateUser: {
-          id: expect.any(String),
-          notes: [
-            {
+          expect(updateUser.body.data).toMatchObject({
+            updateUser: {
               id: expect.any(String),
-              content: noteContent,
+              notes: [
+                {
+                  id: expect.any(String),
+                  content: noteContent,
+                },
+              ],
             },
-          ],
-        },
-      });
-      expect(updateUser.body).not.toHaveProperty('errors');
+          });
+          expect(updateUser.body).not.toHaveProperty('errors');
 
-      // Update the item and link multiple relationship fields
-      const { body } = await graphqlRequest({
-        server,
-        query: `
+          // Update the item and link multiple relationship fields
+          const { body } = await graphqlRequest({
+            server,
+            query: `
         mutation {
           updateUser(
             id: "${createUser.id}"
@@ -210,44 +212,44 @@ describe('no access control', () => {
           }
         }
     `,
-      });
+          });
 
-      expect(body.data).toMatchObject({
-        updateUser: {
-          id: expect.any(String),
-          notes: [
-            {
-              id: createNote.id,
-              content: noteContent,
+          expect(body.data).toMatchObject({
+            updateUser: {
+              id: expect.any(String),
+              notes: [
+                {
+                  id: createNote.id,
+                  content: noteContent,
+                },
+                {
+                  id: createNote2.id,
+                  content: noteContent2,
+                },
+              ],
             },
-            {
-              id: createNote2.id,
-              content: noteContent2,
-            },
-          ],
-        },
-      });
-      expect(body).not.toHaveProperty('errors');
-    })
-  );
+          });
+          expect(body).not.toHaveProperty('errors');
+        })
+      );
 
-  test(
-    'connect nested from within update mutation adds to an existing list',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const noteContent = sampleOne(alphanumGenerator);
-      const noteContent2 = sampleOne(alphanumGenerator);
+      test(
+        'connect nested from within update mutation adds to an existing list',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const noteContent = sampleOne(alphanumGenerator);
+          const noteContent2 = sampleOne(alphanumGenerator);
 
-      // Create an item to link against
-      const createNote = await create('Note', { content: noteContent });
-      const createNote2 = await create('Note', { content: noteContent2 });
+          // Create an item to link against
+          const createNote = await create('Note', { content: noteContent });
+          const createNote2 = await create('Note', { content: noteContent2 });
 
-      // Create an item to update
-      const createUser = await create('User', { username: 'A thing', notes: [createNote.id] });
+          // Create an item to update
+          const createUser = await create('User', { username: 'A thing', notes: [createNote.id] });
 
-      // Update the item and link the relationship field
-      const updateUser = await graphqlRequest({
-        server,
-        query: `
+          // Update the item and link the relationship field
+          const updateUser = await graphqlRequest({
+            server,
+            query: `
         mutation {
           updateUser(
             id: "${createUser.id}"
@@ -264,55 +266,55 @@ describe('no access control', () => {
           }
         }
     `,
-      });
+          });
 
-      expect(updateUser.body.data).toMatchObject({
-        updateUser: {
-          id: expect.any(String),
-          notes: [
-            {
-              id: createNote.id,
-              content: noteContent,
+          expect(updateUser.body.data).toMatchObject({
+            updateUser: {
+              id: expect.any(String),
+              notes: [
+                {
+                  id: createNote.id,
+                  content: noteContent,
+                },
+                {
+                  id: createNote2.id,
+                  content: noteContent2,
+                },
+              ],
             },
-            {
-              id: createNote2.id,
-              content: noteContent2,
-            },
-          ],
-        },
-      });
-      expect(updateUser.body).not.toHaveProperty('errors');
-    })
-  );
+          });
+          expect(updateUser.body).not.toHaveProperty('errors');
+        })
+      );
 
-  test(
-    'connect nested from within update many mutation adds to an existing list',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const noteContent = sampleOne(alphanumGenerator);
-      const noteContent2 = sampleOne(alphanumGenerator);
+      test(
+        'connect nested from within update many mutation adds to an existing list',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const noteContent = sampleOne(alphanumGenerator);
+          const noteContent2 = sampleOne(alphanumGenerator);
 
-      // Create an item to link against
-      const createNote = await create('Note', { content: noteContent });
-      const createNote2 = await create('Note', { content: noteContent2 });
+          // Create an item to link against
+          const createNote = await create('Note', { content: noteContent });
+          const createNote2 = await create('Note', { content: noteContent2 });
 
-      // Create an item to update
-      const createUser = await create('User', {
-        username: 'user1',
-        notes: [createNote.id, createNote2.id],
-      });
-      const createUser2 = await create('User', { username: 'user2', notes: [] });
+          // Create an item to update
+          const createUser = await create('User', {
+            username: 'user1',
+            notes: [createNote.id, createNote2.id],
+          });
+          const createUser2 = await create('User', { username: 'user2', notes: [] });
 
-      const updateUsers = await graphqlRequest({
-        server,
-        query: `
+          const updateUsers = await graphqlRequest({
+            server,
+            query: `
         mutation {
           updateUsers(data: [
           { id: "${createUser.id}", data: { notes: { disconnectAll: true, connect: [{ id: "${
-          createNote.id
-        }" }] } } },
+              createNote.id
+            }" }] } } },
           { id: "${createUser2.id}", data: { notes: { disconnectAll: true, connect: [{ id: "${
-          createNote2.id
-        }" }] } } },
+              createNote2.id
+            }" }] } } },
         ]) {
           id
           notes {
@@ -321,44 +323,44 @@ describe('no access control', () => {
           }
         }
       }`,
-      });
-      expect(updateUsers.body.data).toMatchObject({
-        updateUsers: [
-          {
-            id: expect.any(String),
-            notes: [
+          });
+          expect(updateUsers.body.data).toMatchObject({
+            updateUsers: [
               {
-                id: createNote.id,
-                content: noteContent,
+                id: expect.any(String),
+                notes: [
+                  {
+                    id: createNote.id,
+                    content: noteContent,
+                  },
+                ],
+              },
+              {
+                id: expect.any(String),
+                notes: [
+                  {
+                    id: createNote2.id,
+                    content: noteContent2,
+                  },
+                ],
               },
             ],
-          },
-          {
-            id: expect.any(String),
-            notes: [
-              {
-                id: createNote2.id,
-                content: noteContent2,
-              },
-            ],
-          },
-        ],
-      });
-      expect(updateUsers.body).not.toHaveProperty('errors');
-    })
-  );
-});
+          });
+          expect(updateUsers.body).not.toHaveProperty('errors');
+        })
+      );
+    });
 
-describe('non-matching filter', () => {
-  test(
-    'errors if connecting items which cannot be found during creating',
-    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
-      const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+    describe('non-matching filter', () => {
+      test(
+        'errors if connecting items which cannot be found during creating',
+        runner(setupKeystone, async ({ server: { server } }) => {
+          const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
 
-      // Create an item that does the linking
-      const createUser = await graphqlRequest({
-        server,
-        query: `
+          // Create an item that does the linking
+          const createUser = await graphqlRequest({
+            server,
+            query: `
         mutation {
           createUser(data: {
             notes: {
@@ -369,42 +371,42 @@ describe('non-matching filter', () => {
           }
         }
     `,
-      });
+          });
 
-      expect(createUser.body).toHaveProperty('data.createUser', null);
-      expect(createUser.body.errors).toMatchObject([
-        {
-          name: 'NestedError',
-          data: {
-            errors: [
-              {
-                message: 'Unable to create and/or connect 1 User.notes<Note>',
-                path: ['createUser', 'notes'],
-                name: 'Error',
+          expect(createUser.body).toHaveProperty('data.createUser', null);
+          expect(createUser.body.errors).toMatchObject([
+            {
+              name: 'NestedError',
+              data: {
+                errors: [
+                  {
+                    message: 'Unable to create and/or connect 1 User.notes<Note>',
+                    path: ['createUser', 'notes'],
+                    name: 'Error',
+                  },
+                  {
+                    name: 'AccessDeniedError',
+                    path: ['createUser', 'notes', 'connect', 0],
+                  },
+                ],
               },
-              {
-                name: 'AccessDeniedError',
-                path: ['createUser', 'notes', 'connect', 0],
-              },
-            ],
-          },
-        },
-      ]);
-    })
-  );
+            },
+          ]);
+        })
+      );
 
-  test(
-    'errors if connecting items which cannot be found during update',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+      test(
+        'errors if connecting items which cannot be found during update',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
 
-      // Create an item to link against
-      const createUser = await create('User', {});
+          // Create an item to link against
+          const createUser = await create('User', {});
 
-      // Create an item that does the linking
-      const updateUser = await graphqlRequest({
-        server,
-        query: `
+          // Create an item that does the linking
+          const updateUser = await graphqlRequest({
+            server,
+            query: `
         mutation {
           updateUser(
             id: "${createUser.id}",
@@ -418,47 +420,47 @@ describe('non-matching filter', () => {
           }
         }
     `,
-      });
+          });
 
-      expect(updateUser.body).toHaveProperty('data.updateUser', null);
-      expect(updateUser.body.errors).toMatchObject([
-        {
-          name: 'NestedError',
-          data: {
-            errors: [
-              {
-                message: 'Unable to create and/or connect 1 User.notes<Note>',
-                path: ['updateUser', 'notes'],
-                name: 'Error',
+          expect(updateUser.body).toHaveProperty('data.updateUser', null);
+          expect(updateUser.body.errors).toMatchObject([
+            {
+              name: 'NestedError',
+              data: {
+                errors: [
+                  {
+                    message: 'Unable to create and/or connect 1 User.notes<Note>',
+                    path: ['updateUser', 'notes'],
+                    name: 'Error',
+                  },
+                  {
+                    name: 'AccessDeniedError',
+                    path: ['updateUser', 'notes', 'connect', 0],
+                  },
+                ],
               },
-              {
-                name: 'AccessDeniedError',
-                path: ['updateUser', 'notes', 'connect', 0],
-              },
-            ],
-          },
-        },
-      ]);
-    })
-  );
-});
+            },
+          ]);
+        })
+      );
+    });
 
-describe('with access control', () => {
-  describe('read: false on related list', () => {
-    test(
-      'throws when link nested from within create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-        const noteContent = sampleOne(alphanumGenerator);
+    describe('with access control', () => {
+      describe('read: false on related list', () => {
+        test(
+          'throws when link nested from within create mutation',
+          runner(setupKeystone, async ({ server: { server }, create }) => {
+            const noteContent = sampleOne(alphanumGenerator);
 
-        // Create an item to link against
-        const createNoteNoRead = await create('NoteNoRead', {
-          content: noteContent,
-        });
+            // Create an item to link against
+            const createNoteNoRead = await create('NoteNoRead', {
+              content: noteContent,
+            });
 
-        // Create an item that does the linking
-        const createUserOneNote = await graphqlRequest({
-          server,
-          query: `
+            // Create an item that does the linking
+            const createUserOneNote = await graphqlRequest({
+              server,
+              query: `
           mutation {
             createUserToNotesNoRead(data: {
               username: "A thing",
@@ -468,47 +470,48 @@ describe('with access control', () => {
             }
           }
       `,
-        });
+            });
 
-        expect(createUserOneNote.body).toHaveProperty('data.createUserToNotesNoRead', null);
-        expect(createUserOneNote.body.errors).toMatchObject([
-          {
-            name: 'NestedError',
-            data: {
-              errors: [
-                {
-                  message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
-                  path: ['createUserToNotesNoRead', 'notes'],
-                  name: 'Error',
+            expect(createUserOneNote.body).toHaveProperty('data.createUserToNotesNoRead', null);
+            expect(createUserOneNote.body.errors).toMatchObject([
+              {
+                name: 'NestedError',
+                data: {
+                  errors: [
+                    {
+                      message:
+                        'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+                      path: ['createUserToNotesNoRead', 'notes'],
+                      name: 'Error',
+                    },
+                    {
+                      name: 'AccessDeniedError',
+                      path: ['createUserToNotesNoRead', 'notes', 'connect', 0],
+                    },
+                  ],
                 },
-                {
-                  name: 'AccessDeniedError',
-                  path: ['createUserToNotesNoRead', 'notes', 'connect', 0],
-                },
-              ],
-            },
-          },
-        ]);
-      })
-    );
+              },
+            ]);
+          })
+        );
 
-    test(
-      'throws when link nested from within update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-        const noteContent = sampleOne(alphanumGenerator);
+        test(
+          'throws when link nested from within update mutation',
+          runner(setupKeystone, async ({ server: { server }, create }) => {
+            const noteContent = sampleOne(alphanumGenerator);
 
-        // Create an item to link against
-        const createNote = await create('NoteNoRead', { content: noteContent });
+            // Create an item to link against
+            const createNote = await create('NoteNoRead', { content: noteContent });
 
-        // Create an item to update
-        const createUser = await create('UserToNotesNoRead', {
-          username: 'A thing',
-        });
+            // Create an item to update
+            const createUser = await create('UserToNotesNoRead', {
+              username: 'A thing',
+            });
 
-        // Update the item and link the relationship field
-        const { body } = await graphqlRequest({
-          server,
-          query: `
+            // Update the item and link the relationship field
+            const { body } = await graphqlRequest({
+              server,
+              query: `
           mutation {
             updateUserToNotesNoRead(
               id: "${createUser.id}"
@@ -521,46 +524,47 @@ describe('with access control', () => {
             }
           }
       `,
-        });
+            });
 
-        expect(body).toHaveProperty('data.updateUserToNotesNoRead', null);
-        expect(body.errors).toMatchObject([
-          {
-            name: 'NestedError',
-            data: {
-              errors: [
-                {
-                  message: 'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
-                  path: ['updateUserToNotesNoRead', 'notes'],
-                  name: 'Error',
+            expect(body).toHaveProperty('data.updateUserToNotesNoRead', null);
+            expect(body.errors).toMatchObject([
+              {
+                name: 'NestedError',
+                data: {
+                  errors: [
+                    {
+                      message:
+                        'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>',
+                      path: ['updateUserToNotesNoRead', 'notes'],
+                      name: 'Error',
+                    },
+                    {
+                      name: 'AccessDeniedError',
+                      path: ['updateUserToNotesNoRead', 'notes', 'connect', 0],
+                    },
+                  ],
                 },
-                {
-                  name: 'AccessDeniedError',
-                  path: ['updateUserToNotesNoRead', 'notes', 'connect', 0],
-                },
-              ],
-            },
-          },
-        ]);
-      })
-    );
-  });
+              },
+            ]);
+          })
+        );
+      });
 
-  describe('create: false on related list', () => {
-    test(
-      'does not throw when link nested from within create mutation',
-      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-        const noteContent = sampleOne(alphanumGenerator);
+      describe('create: false on related list', () => {
+        test(
+          'does not throw when link nested from within create mutation',
+          runner(setupKeystone, async ({ server: { server }, create }) => {
+            const noteContent = sampleOne(alphanumGenerator);
 
-        // Create an item to link against
-        const createNoteNoCreate = await create('NoteNoCreate', {
-          content: noteContent,
-        });
+            // Create an item to link against
+            const createNoteNoCreate = await create('NoteNoCreate', {
+              content: noteContent,
+            });
 
-        // Create an item that does the linking
-        const createUserOneNote = await graphqlRequest({
-          server,
-          query: `
+            // Create an item that does the linking
+            const createUserOneNote = await graphqlRequest({
+              server,
+              query: `
           mutation {
             createUserToNotesNoCreate(data: {
               username: "A thing",
@@ -570,29 +574,29 @@ describe('with access control', () => {
             }
           }
       `,
-        });
+            });
 
-        expect(createUserOneNote.body).not.toHaveProperty('errors');
-      })
-    );
+            expect(createUserOneNote.body).not.toHaveProperty('errors');
+          })
+        );
 
-    test(
-      'does not throw when link nested from within update mutation',
-      keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-        const noteContent = sampleOne(alphanumGenerator);
+        test(
+          'does not throw when link nested from within update mutation',
+          runner(setupKeystone, async ({ server: { server }, create }) => {
+            const noteContent = sampleOne(alphanumGenerator);
 
-        // Create an item to link against
-        const createNote = await create('NoteNoCreate', { content: noteContent });
+            // Create an item to link against
+            const createNote = await create('NoteNoCreate', { content: noteContent });
 
-        // Create an item to update
-        const createUser = await create('UserToNotesNoCreate', {
-          username: 'A thing',
-        });
+            // Create an item to update
+            const createUser = await create('UserToNotesNoCreate', {
+              username: 'A thing',
+            });
 
-        // Update the item and link the relationship field
-        const { body } = await graphqlRequest({
-          server,
-          query: `
+            // Update the item and link the relationship field
+            const { body } = await graphqlRequest({
+              server,
+              query: `
           mutation {
             updateUserToNotesNoCreate(
               id: "${createUser.id}"
@@ -607,10 +611,12 @@ describe('with access control', () => {
             }
           }
       `,
-        });
+            });
 
-        expect(body).not.toHaveProperty('errors');
-      })
-    );
-  });
-});
+            expect(body).not.toHaveProperty('errors');
+          })
+        );
+      });
+    });
+  })
+);

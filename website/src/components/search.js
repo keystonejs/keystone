@@ -1,118 +1,95 @@
-import { Component } from 'react';
-import { Link } from 'gatsby';
-import { jsx } from '@emotion/core';
-import styled from '@emotion/styled';
-
-import { colors } from '@arch-ui/theme';
-
+import { useState, useEffect, useCallback } from 'react';
 /** @jsx jsx */
+import { jsx } from '@emotion/core';
+import Select from '@arch-ui/select';
+import { Location } from '@reach/router';
+import { colors } from '@arch-ui/theme';
+import debounce from 'lodash.debounce';
 
-const Input = styled.input({
-  background: colors.B.A10,
-  padding: 10,
-  fontSize: '1em',
-  border: 'none',
-  borderRadius: 6,
-  boxSizing: 'border-box',
-  border: '2px solid transparent',
+import { getResults } from '../utils/search';
 
-  '&:focus': {
-    outline: 'none',
-    borderColor: colors.B.base,
-  },
+const SEARCH_DEBOUNCE = 200;
 
-  '&::placeholder': {
-    color: colors.B.base,
-  },
-});
-
-const ResultsList = styled.div({
-  background: 'white',
-  boxShadow: `0 3px 10px rgba(0,0,0,0.25)`,
-  maxWidth: 300,
-  padding: '0px 15px',
-  position: 'absolute',
-  right: 21,
-  top: 60,
-  fontSize: '1em',
-});
-
-// Search component
-export default class Search extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      query: ``,
-      results: [],
-    };
+let renderOptionLabel = result => {
+  if (result.type === 'show-more') {
+    return <div css={{ color: colors.B.base }}>&gt; Show {result.totalNotShown} More</div>;
   }
+  return (
+    <div>
+      <span css={{ color: colors.B.base, textTransform: 'capitalize' }}>{result.title}</span>{' '}
+      <small style={{ color: 'grey' }}>({result.workspace})</small>
+    </div>
+  );
+};
 
-  prettyTitle(node) {
-    let pretty = node.slug
-      .replace(node.workspace.replace('@', ''), '')
-      .replace(new RegExp(/(\/)/g), ' ')
-      .replace('-', ' ')
-      .trim();
+const Search = () => {
+  let [input, setInput] = useState('');
+  let [query, setQuery] = useState('');
+  let [results, setResults] = useState([]);
 
-    if (pretty.startsWith('packages') || pretty.startsWith('types')) {
-      pretty = pretty.replace('packages', '').replace('types', '');
-    }
+  const setQueryDebounced = useCallback(debounce(value => setQuery(value), SEARCH_DEBOUNCE), [
+    setQuery,
+  ]);
 
-    return pretty === '' ? 'index' : pretty;
-  }
+  useEffect(
+    () => {
+      let cancelled = false;
 
-  render() {
-    return (
-      <div>
-        <Input type="text" value={this.state.query} onChange={this.search} placeholder="Search" />
-        {this.state.results.length ? (
-          <ResultsList>
-            <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
-              {this.state.results.slice(0, 12).map(result => (
-                <li
-                  css={{
-                    padding: 10,
-                    borderBottom: `1px solid ${colors.B.A25}`,
-                  }}
-                  key={result.slug}
-                >
-                  <Link
-                    style={{ color: colors.B.base, textTransform: 'capitalize' }}
-                    to={result.slug}
-                  >
-                    {this.prettyTitle(result)}
-                  </Link>{' '}
-                  <small style={{ color: 'grey' }}>({result.workspace})</small>
-                </li>
-              ))}
-            </ul>
-            <Link
-              to={`/search?q=${this.state.query}`}
-              css={{ textAlign: 'center', padding: 5, display: 'block', color: colors.B.base }}
-            >
-              See More
-            </Link>
-          </ResultsList>
-        ) : null}
-      </div>
-    );
-  }
+      if (!query) {
+        return;
+      }
 
-  getSearchResults(query) {
-    if (!query || !window.__LUNR__) return [];
-    const lunrIndex = window.__LUNR__[this.props.lng || 'en'];
-    const results = lunrIndex.index.search(query); // you can  customize your search , see https://lunrjs.com/guides/searching.html
-    return (
-      results
-        .map(({ ref }) => lunrIndex.store[ref])
-        // Make sure `docs` are always first
-        .sort((a, b) => (a.workspace !== b.workspace && a.workspace === 'docs' ? -1 : 0))
-    );
-  }
+      getResults(query, { limit: 10 }).then(queryResults => {
+        if (cancelled) {
+          return;
+        }
 
-  search = event => {
-    const query = event.target.value;
-    const results = this.getSearchResults(query);
-    this.setState(() => ({ results, query }));
-  };
-}
+        if (queryResults.total !== 0 && queryResults.results.length !== queryResults.total) {
+          queryResults.results.push({
+            slug: '/search?q=' + encodeURIComponent(query),
+            type: 'show-more',
+            totalNotShown: queryResults.total - queryResults.results.length,
+          });
+        }
+
+        setResults(queryResults.results);
+      });
+
+      return () => {
+        cancelled = true;
+      };
+    },
+    [query]
+  );
+
+  return (
+    <Location>
+      {({ navigate }) => {
+        return (
+          <Select
+            placeholder="Search..."
+            options={results}
+            value={null}
+            inputValue={input}
+            onInputChange={value => {
+              setInput(value);
+              setQueryDebounced(value);
+            }}
+            onChange={result => {
+              setQueryDebounced.cancel();
+              navigate(result.slug);
+              setQuery('');
+            }}
+            css={{ width: 256 }}
+            filterOption={() => true}
+            formatOptionLabel={renderOptionLabel}
+            getOptionValue={result => result.slug}
+            noOptionsMessage={() => (query ? 'No results found' : 'Enter a search term')}
+          />
+        );
+      }}
+    </Location>
+  );
+};
+
+export default Search;

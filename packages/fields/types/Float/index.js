@@ -1,4 +1,4 @@
-const { Float, MongoFloatInterface } = require('./Implementation');
+const { Float, MongoFloatInterface, KnexFloatInterface } = require('./Implementation');
 
 module.exports = {
   type: 'Float',
@@ -10,5 +10,6 @@ module.exports = {
   },
   adapters: {
     mongoose: MongoFloatInterface,
+    knex: KnexFloatInterface,
   },
 };

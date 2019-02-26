@@ -1,25 +1,16 @@
 // @flow
 import React from 'react';
+import { style } from '../style';
 
-const ArrowSmallUpIcon = ({ title, ...props }: { title?: string }) => {
+const svgContent = <path fillRule="evenodd" d="M3 5L0 9h2v2h2V9h2L3 5z" />;
+
+const ArrowSmallUpIcon = React.memo<{ title?: string }>(({ title, ...props }) => {
   return (
-    <svg {...props}>
+    <svg aria-hidden height={16} width={6} viewBox="0 0 6 16" style={style} {...props}>
       {title ? <title>{title}</title> : null}
-      <path fillRule="evenodd" d="M3 5L0 9h2v2h2V9h2L3 5z" />
+      {svgContent}
     </svg>
   );
-};
-
-ArrowSmallUpIcon.defaultProps = {
-  'aria-hidden': true,
-  height: 16,
-  width: 6,
-  viewBox: '0 0 6 16',
-  style: {
-    display: 'inline-block',
-    verticalAlign: 'text-top',
-    fill: 'currentColor',
-  },
-};
+});
 
 export default ArrowSmallUpIcon;

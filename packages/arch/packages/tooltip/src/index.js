@@ -1,6 +1,8 @@
 // @flow
 
-import React, { Component, createRef, Fragment, type Ref, type Node } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, createRef, Fragment, type Ref, type Node } from 'react';
 import { createPortal } from 'react-dom';
 import flushable from 'flushable';
 import styled from '@emotion/styled';
@@ -18,11 +20,8 @@ const TooltipElement = styled.div({
   color: 'white',
   fontSize: '0.75rem',
   fontWeight: 500,
-  left: 0,
   padding: `${gridSize / 2}px ${gridSize}px`,
   pointerEvents: 'none', // tooltips are non-interactive, they shouldn't get in the way of other elements
-  position: 'fixed',
-  top: 0,
   zIndex: 2,
 });
 
@@ -49,6 +48,7 @@ type PositionerProps = {
   children: Node,
   placement: PlacementType,
   style?: Object,
+  className?: string,
   targetNode: HTMLElement | null,
 };
 type PositionerState = { left: number, top: number };
@@ -89,24 +89,18 @@ class TooltipPositioner extends Component<PositionerProps, PositionerState> {
     this.setState({ left, top });
   };
   render() {
-    const { children, placement, style } = this.props;
-    const attachTo = document.body;
-
+    const { children, placement, style, className } = this.props;
     const styles = {
       ...style,
       ...getOffset(this.state, placement),
     };
 
-    if (attachTo) {
-      return createPortal(
-        <TooltipElement ref={this.ref} style={styles}>
-          {children}
-        </TooltipElement>,
-        attachTo
-      );
-    } else {
-      return null;
-    }
+    return createPortal(
+      <div css={{ position: 'fixed', top: 0, left: 0 }} ref={this.ref} style={styles}>
+        <TooltipElement className={className}>{children}</TooltipElement>
+      </div>,
+      (document.body: any)
+    );
   }
 }
 
@@ -142,6 +136,7 @@ type Props = {
   onHide?: () => void,
   onShow?: () => void,
   placement: PlacementType,
+  className?: string,
 };
 type State = {
   immediatelyHide: boolean,
@@ -233,7 +228,7 @@ export default class Tooltip extends Component<Props, State> {
   };
 
   render() {
-    const { children, content, onHide, onShow, placement } = this.props;
+    const { children, content, onHide, onShow, placement, className } = this.props;
     const { isVisible } = this.state;
     const ref = this.ref;
 
@@ -244,7 +239,11 @@ export default class Tooltip extends Component<Props, State> {
         <TransitionProvider isOpen={isVisible} onEntered={onShow} onExited={onHide}>
           {transitionState => (
             <Fade transitionState={transitionState}>
-              <TooltipPositioner targetNode={this.ref.current} placement={placement}>
+              <TooltipPositioner
+                targetNode={this.ref.current}
+                placement={placement}
+                className={className}
+              >
                 {content}
               </TooltipPositioner>
             </Fade>

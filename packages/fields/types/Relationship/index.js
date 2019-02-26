@@ -1,4 +1,8 @@
-const { Relationship, MongoRelationshipInterface } = require('./Implementation');
+const {
+  Relationship,
+  MongoRelationshipInterface,
+  KnexRelationshipInterface,
+} = require('./Implementation');
 const { resolveBacklinks } = require('./backlinks');
 
 module.exports = {
@@ -13,6 +17,7 @@ module.exports = {
   },
   adapters: {
     mongoose: MongoRelationshipInterface,
+    knex: KnexRelationshipInterface,
   },
   resolveBacklinks,
 };

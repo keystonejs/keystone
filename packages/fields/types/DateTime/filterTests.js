@@ -192,17 +192,25 @@ export const filterTests = withKeystone => {
 
   test(
     'Sorting: orderBy: lastOnline_ASC',
-    withKeystone(({ server: { server } }) =>
+    withKeystone(({ server: { server }, adapterName }) =>
       match(
         server,
         'orderBy: "lastOnline_ASC"',
-        [
-          { name: 'person5', lastOnline: null },
-          { name: 'person4', lastOnline: '1666-04-12T00:08:00.000+10:00' },
-          { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
-          { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
-          { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
-        ],
+        adapterName === 'mongoose'
+          ? [
+              { name: 'person5', lastOnline: null },
+              { name: 'person4', lastOnline: '1666-04-12T00:08:00.000+10:00' },
+              { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
+              { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
+              { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
+            ]
+          : [
+              { name: 'person4', lastOnline: '1666-04-12T00:08:00.000+10:00' },
+              { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
+              { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
+              { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
+              { name: 'person5', lastOnline: null },
+            ],
         null
       )
     )
@@ -210,17 +218,25 @@ export const filterTests = withKeystone => {
 
   test(
     'Sorting: orderBy: lastOnline_DESC',
-    withKeystone(({ server: { server } }) =>
+    withKeystone(({ server: { server }, adapterName }) =>
       match(
         server,
         'orderBy: "lastOnline_DESC"',
-        [
-          { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
-          { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
-          { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
-          { name: 'person4', lastOnline: '1666-04-12T00:08:00.000+10:00' },
-          { name: 'person5', lastOnline: null },
-        ],
+        adapterName === 'mongoose'
+          ? [
+              { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
+              { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
+              { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
+              { name: 'person4', lastOnline: '1666-04-12T00:08:00.000+10:00' },
+              { name: 'person5', lastOnline: null },
+            ]
+          : [
+              { name: 'person5', lastOnline: null },
+              { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
+              { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
+              { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
+              { name: 'person4', lastOnline: '1666-04-12T00:08:00.000+10:00' },
+            ],
         null
       )
     )

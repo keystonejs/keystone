@@ -1,4 +1,8 @@
-const { CalendarDay, MongoCalendarDayInterface } = require('./Implementation');
+const {
+  CalendarDay,
+  MongoCalendarDayInterface,
+  KnexCalendarDayInterface,
+} = require('./Implementation');
 
 module.exports = {
   type: 'CalendarDay',
@@ -11,5 +15,6 @@ module.exports = {
   },
   adapters: {
     mongoose: MongoCalendarDayInterface,
+    knex: KnexCalendarDayInterface,
   },
 };

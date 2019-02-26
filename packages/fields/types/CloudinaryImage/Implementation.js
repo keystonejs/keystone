@@ -1,4 +1,4 @@
-const { File, MongoFileInterface } = require('../File/Implementation');
+const { File, MongoFileInterface, KnexFileInterface } = require('../File/Implementation');
 
 class CloudinaryImage extends File {
   constructor() {
@@ -87,4 +87,5 @@ class CloudinaryImage extends File {
 module.exports = {
   CloudinaryImage,
   MongoCloudinaryImageInterface: MongoFileInterface,
+  KnexCloudinaryImageInterface: KnexFileInterface,
 };

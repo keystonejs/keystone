@@ -1,5 +1,6 @@
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 class Integer extends Implementation {
   constructor() {
@@ -28,7 +29,18 @@ class Integer extends Implementation {
   }
 }
 
-class MongoIntegerInterface extends MongooseFieldAdapter {
+const CommonIntegerInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.orderingConditions(dbPath),
+        ...this.inConditions(dbPath),
+      };
+    }
+  };
+
+class MongoIntegerInterface extends CommonIntegerInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     const { mongooseOptions = {} } = this.config;
     const { isRequired } = mongooseOptions;
@@ -45,17 +57,16 @@ class MongoIntegerInterface extends MongooseFieldAdapter {
     };
     schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
   }
+}
 
-  getQueryConditions() {
-    return {
-      ...this.equalityConditions(),
-      ...this.orderingConditions(),
-      ...this.inConditions(),
-    };
+class KnexIntegerInterface extends CommonIntegerInterface(KnexFieldAdapter) {
+  createColumn(table) {
+    return table.integer(this.path);
   }
 }
 
 module.exports = {
   Integer,
   MongoIntegerInterface,
+  KnexIntegerInterface,
 };

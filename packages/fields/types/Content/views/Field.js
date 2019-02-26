@@ -6,8 +6,10 @@ import { Value } from 'slate';
 import { initialValue } from './editor/constants';
 import FieldTypes from './FIELD_TYPES';
 import * as paragraph from './editor/blocks/paragraph';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { inputStyles } from '@arch-ui/input';
 
-let ContentField = ({ field, item, onChange }) => {
+let ContentField = ({ field, value: serverValue, onChange, autoFocus }) => {
   const views = FieldTypes[field.list.key][field.path];
   let blocks = useMemo(
     () => {
@@ -54,7 +56,6 @@ let ContentField = ({ field, item, onChange }) => {
     [views]
   );
 
-  let serverValue = item[field.path];
   let parsedValue;
   if (serverValue) {
     parsedValue = JSON.parse(serverValue);
@@ -64,25 +65,36 @@ let ContentField = ({ field, item, onChange }) => {
 
   let [value, setValue] = useState(() => Value.fromJSON(parsedValue));
 
+  const htmlID = `ks-input-${field.path}`;
+
   return (
-    <div
+    <FieldContainer
       onBlur={() => {
         let stringified = JSON.stringify(value.toJS());
         if (stringified !== serverValue) {
-          onChange(field, stringified);
+          onChange(stringified);
         }
       }}
     >
-      <h1>{field.label}</h1>
-      {Object.keys(blocks)
-        .map(key => blocks[key])
-        .reduce((children, block) => {
-          if (block.Provider === undefined || block.options === null) {
-            return children;
-          }
-          return <block.Provider value={block.options}>{children}</block.Provider>;
-        }, <Editor blocks={blocks} value={value} onChange={setValue} />)}
-    </div>
+      <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+      <FieldInput>
+        {Object.values(blocks)
+          .filter(({ Provider, options }) => Provider && options)
+          .reduce(
+            (children, { Provider, options }) => (
+              <Provider value={options}>{children}</Provider>
+            ),
+            <Editor
+              blocks={blocks}
+              value={value}
+              onChange={setValue}
+              autoFocus={autoFocus}
+              id={htmlID}
+              css={inputStyles({ isMultiline: true })}
+            />
+          )}
+      </FieldInput>
+    </FieldContainer>
   );
 };
 

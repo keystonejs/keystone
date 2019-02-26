@@ -1,29 +1,21 @@
-const template = ({ componentName, height, width, viewBox, ariaHidden, svgContents }) => `
+const template = ({ componentName, height, width, viewBox, svgContents }) =>
+  `
 // @flow
 import React from 'react';
+import { style } from '../style';
 
-const ${componentName} = ({ title, ...props }: { title?: string }) => {
+const svgContent = ${svgContents};
+
+const ${componentName} = React.memo<{ title?: string }>(({ title, ...props }) => {
   return (
-    <svg {...props}>
+    <svg aria-hidden height={${height}} width={${width}} viewBox="${viewBox}" style={style} {...props}>
       {title ? <title>{title}</title> : null}
-      ${svgContents}
+      {svgContent}
     </svg>
   );
-};
-
-${componentName}.defaultProps = {
-  'aria-hidden': ${ariaHidden},
-  height: ${height},
-  width: ${width},
-  viewBox: '${viewBox}',
-  style: {
-    display: 'inline-block',
-    verticalAlign: 'text-top',
-    fill: 'currentColor',
-  },
-};
+});
 
 export default ${componentName};
-`;
+`.trim() + '\n';
 
 module.exports = template;

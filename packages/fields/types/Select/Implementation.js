@@ -1,6 +1,7 @@
 const inflection = require('inflection');
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 function initOptions(options) {
   let optionsArray = options;
@@ -56,20 +57,30 @@ class Select extends Implementation {
   }
 }
 
-class MongoSelectInterface extends MongooseFieldAdapter {
+const CommonSelectInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.inConditions(dbPath),
+      };
+    }
+  };
+
+class MongoSelectInterface extends CommonSelectInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
   }
+}
 
-  getQueryConditions() {
-    return {
-      ...this.equalityConditions(),
-      ...this.inConditions(),
-    };
+class KnexSelectInterface extends CommonSelectInterface(KnexFieldAdapter) {
+  createColumn(table) {
+    return table.enu(this.path, this.config.options.map(({ value }) => value));
   }
 }
 
 module.exports = {
   Select,
   MongoSelectInterface,
+  KnexSelectInterface,
 };

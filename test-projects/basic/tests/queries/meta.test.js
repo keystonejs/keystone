@@ -1,9 +1,10 @@
 const { Text, Relationship } = require('@voussoir/fields');
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 const cuid = require('cuid');
 
-function setupKeystone() {
+function setupKeystone(adapterName) {
   return setupServer({
+    adapterName,
     name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('User', {
@@ -16,7 +17,7 @@ function setupKeystone() {
       keystone.createList('Company', {
         fields: {
           name: { type: Text },
-          employees: { type: Relationship, ref: 'User' },
+          employees: { type: Relationship, ref: 'User', many: true },
         },
       });
 
@@ -29,14 +30,15 @@ function setupKeystone() {
     },
   });
 }
-
-describe('_FooMeta query for individual list meta data', () => {
-  test(
-    `'schema' field returns results`,
-    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
-      const query = await graphqlRequest({
-        server,
-        query: `
+multiAdapterRunners().map(({ runner, adapterName }) =>
+  describe(`Adapter: ${adapterName}`, () => {
+    describe('_FooMeta query for individual list meta data', () => {
+      test(
+        `'schema' field returns results`,
+        runner(setupKeystone, async ({ server: { server } }) => {
+          const query = await graphqlRequest({
+            server,
+            query: `
           query {
             _CompaniesMeta {
               schema {
@@ -50,29 +52,29 @@ describe('_FooMeta query for individual list meta data', () => {
             }
           }
       `,
-      });
+          });
 
-      expect(query.body).not.toHaveProperty('errors');
-      expect(query.body).toHaveProperty('data._CompaniesMeta.schema');
-      expect(query.body.data._CompaniesMeta.schema).toMatchObject({
-        type: 'Company',
-        queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
-        relatedFields: [
-          {
-            type: 'User',
-            fields: ['company', 'workHistory', '_workHistoryMeta'],
-          },
-        ],
-      });
-    })
-  );
+          expect(query.body).not.toHaveProperty('errors');
+          expect(query.body).toHaveProperty('data._CompaniesMeta.schema');
+          expect(query.body.data._CompaniesMeta.schema).toMatchObject({
+            type: 'Company',
+            queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
+            relatedFields: [
+              {
+                type: 'User',
+                fields: ['company', 'workHistory', '_workHistoryMeta'],
+              },
+            ],
+          });
+        })
+      );
 
-  test(
-    `'schema.relatedFields' returns empty array when none exist`,
-    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
-      const query = await graphqlRequest({
-        server,
-        query: `
+      test(
+        `'schema.relatedFields' returns empty array when none exist`,
+        runner(setupKeystone, async ({ server: { server } }) => {
+          const query = await graphqlRequest({
+            server,
+            query: `
           query {
             _PostsMeta {
               schema {
@@ -86,26 +88,26 @@ describe('_FooMeta query for individual list meta data', () => {
             }
           }
       `,
-      });
+          });
 
-      expect(query.body).not.toHaveProperty('errors');
-      expect(query.body).toHaveProperty('data._PostsMeta.schema');
-      expect(query.body.data._PostsMeta.schema).toMatchObject({
-        type: 'Post',
-        queries: ['Post', 'allPosts', '_allPostsMeta'],
-        relatedFields: [],
-      });
-    })
-  );
-});
+          expect(query.body).not.toHaveProperty('errors');
+          expect(query.body).toHaveProperty('data._PostsMeta.schema');
+          expect(query.body.data._PostsMeta.schema).toMatchObject({
+            type: 'Post',
+            queries: ['Post', 'allPosts', '_allPostsMeta'],
+            relatedFields: [],
+          });
+        })
+      );
+    });
 
-describe('_ksListsMeta query for all lists meta data', () => {
-  test(
-    'returns results for all lists',
-    keystoneMongoTest(setupKeystone, async ({ server: { server } }) => {
-      const query = await graphqlRequest({
-        server,
-        query: `
+    describe('_ksListsMeta query for all lists meta data', () => {
+      test(
+        'returns results for all lists',
+        runner(setupKeystone, async ({ server: { server } }) => {
+          const query = await graphqlRequest({
+            server,
+            query: `
           query {
             _ksListsMeta {
               name
@@ -120,50 +122,52 @@ describe('_ksListsMeta query for all lists meta data', () => {
             }
           }
       `,
-      });
+          });
 
-      expect(query.body).not.toHaveProperty('errors');
-      expect(query.body).toHaveProperty('data._ksListsMeta');
-      expect(query.body.data._ksListsMeta).toMatchObject([
-        {
-          name: 'User',
-          schema: {
-            queries: ['User', 'allUsers', '_allUsersMeta'],
-            relatedFields: [
-              {
-                fields: ['employees'],
-                type: 'Company',
+          expect(query.body).not.toHaveProperty('errors');
+          expect(query.body).toHaveProperty('data._ksListsMeta');
+          expect(query.body.data._ksListsMeta).toMatchObject([
+            {
+              name: 'User',
+              schema: {
+                queries: ['User', 'allUsers', '_allUsersMeta'],
+                relatedFields: [
+                  {
+                    fields: ['employees', '_employeesMeta'],
+                    type: 'Company',
+                  },
+                  {
+                    fields: ['author'],
+                    type: 'Post',
+                  },
+                ],
+                type: 'User',
               },
-              {
-                fields: ['author'],
+            },
+            {
+              name: 'Company',
+              schema: {
+                type: 'Company',
+                queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
+                relatedFields: [
+                  {
+                    type: 'User',
+                    fields: ['company', 'workHistory', '_workHistoryMeta'],
+                  },
+                ],
+              },
+            },
+            {
+              name: 'Post',
+              schema: {
+                queries: ['Post', 'allPosts', '_allPostsMeta'],
+                relatedFields: [],
                 type: 'Post',
               },
-            ],
-            type: 'User',
-          },
-        },
-        {
-          name: 'Company',
-          schema: {
-            type: 'Company',
-            queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
-            relatedFields: [
-              {
-                type: 'User',
-                fields: ['company', 'workHistory', '_workHistoryMeta'],
-              },
-            ],
-          },
-        },
-        {
-          name: 'Post',
-          schema: {
-            queries: ['Post', 'allPosts', '_allPostsMeta'],
-            relatedFields: [],
-            type: 'Post',
-          },
-        },
-      ]);
-    })
-  );
-});
+            },
+          ]);
+        })
+      );
+    });
+  })
+);

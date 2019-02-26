@@ -55,7 +55,7 @@ module.exports = class Keystone {
     return strategy;
   }
 
-  createList(key, config) {
+  createList(key, config, { isAuxList = false } = {}) {
     const { getListByKey, adapters } = this;
     const adapterName = config.adapterName || this.defaultAdapter;
     const list = new List(key, config, {
@@ -64,9 +64,20 @@ module.exports = class Keystone {
       adapter: adapters[adapterName],
       defaultAccess: this.defaultAccess,
       getAuth: () => this.auth[key],
+      isAuxList,
+      createAuxList: (auxKey, auxConfig) => {
+        if (isAuxList) {
+          throw new Error(
+            `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
+          );
+        }
+        return this.createList(auxKey, auxConfig, { isAuxList: true });
+      },
     });
     this.lists[key] = list;
     this.listsArray.push(list);
+    list.initFields();
+    return list;
   }
 
   /**
@@ -117,8 +128,10 @@ module.exports = class Keystone {
     // violates the read permission as it leaks the fact that item exists.
     // In all these cases, the Admin UI becomes unnecessarily complex.
     // So we only allow all these actions if you also have read access.
-    const lists = arrayToObject(this.listsArray.filter(list => list.access.read), 'key', list =>
-      list.getAdminMeta()
+    const lists = arrayToObject(
+      this.listsArray.filter(list => list.access.read && !list.isAuxList),
+      'key',
+      list => list.getAdminMeta()
     );
 
     return { lists, name };
@@ -193,6 +206,7 @@ module.exports = class Keystone {
           ${unique(
             flatten(this.listsArray.map(list => list.getGqlQueries({ skipAccessControl })))
           ).join('\n')}
+          """ Retrieve the meta-data for all lists. """
           _ksListsMeta: [_ListMeta]
        }`,
       `type Mutation {
@@ -236,6 +250,10 @@ module.exports = class Keystone {
       delete: access => access.getDelete(),
     };
 
+    // Aux lists are only there for typing and internal operations, they should
+    // not have any GraphQL operations performed on them
+    const firstClassLists = this.listsArray.filter(list => !list.isAuxList);
+
     // NOTE: some fields are passed through unchanged from the list, and so are
     // not specified here.
     const listSchemaResolver = {
@@ -245,7 +263,7 @@ module.exports = class Keystone {
       // NOTE: We purposely include the list we're looking for as it may have a
       // self-referential field (eg: User { friends: [User] })
       relatedFields: ({ key }) =>
-        this.listsArray
+        firstClassLists
           .map(list => ({
             type: list.gqlNames.outputTypeName,
             fields: flatten(
@@ -267,8 +285,8 @@ module.exports = class Keystone {
     const resolvers = {
       // Order of spreading is important here - we don't want user-defined types
       // to accidentally override important things like `Query`.
-      ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers)),
-      ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers)),
+      ...objMerge(firstClassLists.map(list => list.gqlAuxFieldResolvers)),
+      ...objMerge(firstClassLists.map(list => list.gqlFieldResolvers)),
 
       JSON: GraphQLJSON,
 
@@ -280,15 +298,15 @@ module.exports = class Keystone {
       Query: {
         // Order is also important here, any TypeQuery's defined by types
         // shouldn't be able to override list-level queries
-        ...objMerge(this.listsArray.map(list => list.gqlAuxQueryResolvers)),
-        ...objMerge(this.listsArray.map(list => list.gqlQueryResolvers)),
+        ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers)),
+        ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers)),
         // And the Keystone meta queries must always be available
         ...this.getAuxQueryResolvers(),
       },
 
       Mutation: {
-        ...objMerge(this.listsArray.map(list => list.gqlAuxMutationResolvers)),
-        ...objMerge(this.listsArray.map(list => list.gqlMutationResolvers)),
+        ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers)),
+        ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers)),
       },
     };
 
@@ -360,24 +378,15 @@ module.exports = class Keystone {
   }
 
   async createItems(itemsToCreate) {
-    const createItems = data => {
-      return resolveAllKeys(
-        mapKeys(data, (value, list) => Promise.all(value.map(item => this.createItem(list, item))))
-      );
-    };
-
-    const cleanupItems = createdItems =>
-      Promise.all(
-        Object.keys(createdItems).map(listKey =>
-          Promise.all(createdItems[listKey].map(({ id }) => this.lists[listKey].adapter.delete(id)))
-        )
-      );
-
     // 1. Split it apart
     const { relationships, data } = unmergeRelationships(this.lists, itemsToCreate);
     // 2. Create the items
     // NOTE: Only works if all relationships fields are non-"required"
-    const createdItems = await createItems(data);
+    const createdItems = await resolveAllKeys(
+      mapKeys(data, (items, listKey) =>
+        Promise.all(items.map(itemData => this.createItem(listKey, itemData)))
+      )
+    );
 
     let createdRelationships;
     try {
@@ -385,7 +394,11 @@ module.exports = class Keystone {
       createdRelationships = await createRelationships(this.lists, relationships, createdItems);
     } catch (error) {
       // 3.5. If creation of relationships didn't work, unwind the createItems
-      cleanupItems(createdItems);
+      Promise.all(
+        Object.entries(createdItems).map(([listKey, items]) =>
+          Promise.all(items.map(({ id }) => this.lists[listKey].adapter.delete(id)))
+        )
+      );
       // Re-throw the error now that we've cleaned up
       throw error;
     }

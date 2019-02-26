@@ -18,7 +18,8 @@ const lastOnline = '2018-08-16T11:08:18.886+10:00';
 
 const getDateButtonSetTo = date => `button:contains("${format(date, 'Do MMMM YYYY')}")`;
 const getDateTimeButtonSetTo = date => `button:contains("${format(date, 'MM/DD/YYYY h:mm A')}")`;
-const getDaySelector = date => `#ks-day-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
+const getDaySelector = date =>
+  `#ks-day-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}:not([disabled])`;
 const getMonthSelector = date => `#ks-month-${date.getMonth()}-${date.getFullYear()}`;
 
 const getCellFromSecondRow = index =>
@@ -58,6 +59,7 @@ describe('CalendarDay Component - Functionality', () => {
     cy.get('button:contains("Set Date")')
       .first()
       .click();
+    cy.get(getDaySelector(today)).scrollIntoView();
     cy.get(getDaySelector(today)).click();
     cy.get('label:contains("Name")').click();
     cy.get(getDateButtonSetTo(today)).should('exist');
@@ -66,13 +68,11 @@ describe('CalendarDay Component - Functionality', () => {
   it(`can use arrows to set month`, () => {
     cy.get(getDateButtonSetTo(today)).click();
     cy.get(getMonthSelector(today)).scrollIntoView();
-    cy.get(`button:contains("Previous Month")`)
-      .click()
-      .click();
-    cy.get(`#ks-select-month`).should('have.value', `${subMonths(today, 2).getMonth()}`);
+    cy.get(`button:contains("Previous Month")`).click();
+    cy.get(`#ks-select-month`).should('have.value', `${subMonths(today, 1).getMonth()}`);
   });
 
-  it(`can use 'Select' to set month`, () => {
+  it.skip(`can use 'Select' to set month`, () => {
     cy.get(getDateButtonSetTo(today)).click();
     cy.get(`#ks-select-month`).select('Jun');
     cy.wait(500);
@@ -95,7 +95,6 @@ describe('CalendarDay Component - Functionality', () => {
   });
 
   it(`can use input to set year`, () => {
-    cy.get(getDateButtonSetTo(today)).click();
     cy.get(`#ks-input-year`).type('{backspace}{backspace}15');
     cy.get(getDaySelector(setYear(today, 2015))).click();
     cy.get('label:contains("Name")').click();

@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 const pluralize = require('pluralize');
 
 const {
@@ -20,6 +21,7 @@ const logger = require('@voussoir/logger');
 
 const { Text, Checkbox, Float, Relationship } = require('@voussoir/fields');
 
+const gql = require('graphql-tag');
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
 
@@ -27,13 +29,22 @@ const { AccessDeniedError, ValidationFailureError } = require('./graphqlErrors')
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
-const keyToLabel = str =>
-  str
+const preventInvalidUnderscorePrefix = str => str.replace(/^__/, '_');
+
+const keyToLabel = str => {
+  let label = str
     .replace(/([a-z])([A-Z])/g, '$1 $2')
     .split(/\s|_|\-/)
     .filter(i => i)
     .map(upcase)
     .join(' ');
+
+  // Retain the leading underscore for auxiliary lists
+  if (str[0] === '_') {
+    label = `_${label}`;
+  }
+  return label;
+};
 
 const labelToPath = str =>
   str
@@ -74,7 +85,7 @@ const opToType = {
   delete: 'mutation',
 };
 
-const mapNativeTypeToKeystonType = (type, listKey, fieldPath) => {
+const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
   if (!nativeTypeMap.has(type)) {
     return type;
   }
@@ -92,7 +103,11 @@ const mapNativeTypeToKeystonType = (type, listKey, fieldPath) => {
 };
 
 module.exports = class List {
-  constructor(key, config, { getListByKey, getGraphQLQuery, adapter, defaultAccess, getAuth }) {
+  constructor(
+    key,
+    config,
+    { getListByKey, getGraphQLQuery, adapter, defaultAccess, getAuth, createAuxList, isAuxList }
+  ) {
     this.key = key;
 
     // 180814 JM TODO: Since there's no access control specified, this implicitly makes name, id or {labelField} readable by all (probably bad?)
@@ -111,9 +126,11 @@ module.exports = class List {
       ...config,
     };
 
+    this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
     this.getAuth = getAuth;
+    this.createAuxList = createAuxList;
 
     const label = keyToLabel(key);
     const singular = pluralize.singular(label);
@@ -140,7 +157,7 @@ module.exports = class List {
       itemQueryName: itemQueryName,
       listQueryName: `all${listQueryName}`,
       listQueryMetaName: `_all${listQueryName}Meta`,
-      listMetaName: `_${listQueryName}Meta`,
+      listMetaName: preventInvalidUnderscorePrefix(`_${listQueryName}Meta`),
       authenticatedQueryName: `authenticated${itemQueryName}`,
       deleteMutationName: `delete${itemQueryName}`,
       updateMutationName: `update${itemQueryName}`,
@@ -158,6 +175,7 @@ module.exports = class List {
       relateToOneInputName: `${itemQueryName}RelateToOneInput`,
     };
 
+    this.adapterName = adapter.name;
     this.adapter = adapter.newListAdapter(this.key, this.config);
 
     this.access = parseListAccess({
@@ -165,33 +183,6 @@ module.exports = class List {
       access: config.access,
       defaultAccess: this.defaultAccess.list,
     });
-
-    const sanitisedFieldsConfig = mapKeys(config.fields, (fieldConfig, path) => {
-      return {
-        ...fieldConfig,
-        type: mapNativeTypeToKeystonType(fieldConfig.type, key, path),
-      };
-    });
-
-    this.fieldsByPath = {};
-    this.fields = Object.keys(sanitisedFieldsConfig).map(path => {
-      const { type, ...fieldSpec } = sanitisedFieldsConfig[path];
-      const implementation = type.implementation;
-      this.fieldsByPath[path] = new implementation(path, fieldSpec, {
-        getListByKey,
-        listKey: key,
-        listAdapter: this.adapter,
-        fieldAdapterClass: type.adapters[adapter.name],
-        defaultAccess: this.defaultAccess.field,
-      });
-      return this.fieldsByPath[path];
-    });
-
-    this.views = mapKeys(sanitisedFieldsConfig, (fieldConfig, path) =>
-      this.fieldsByPath[path].extendViews({
-        ...fieldConfig.type.views,
-      })
-    );
 
     this.hooksActions = {
       /**
@@ -226,6 +217,41 @@ module.exports = class List {
         return graphQLQuery(queryString, passThroughContext, variables);
       },
     };
+  }
+
+  initFields() {
+    if (this.fieldsInitialised) {
+      return;
+    }
+
+    this.fieldsInitialised = true;
+
+    const sanitisedFieldsConfig = mapKeys(this.config.fields, (fieldConfig, path) => ({
+      ...fieldConfig,
+      type: mapNativeTypeToKeystoneType(fieldConfig.type, this.key, path),
+    }));
+    Object.values(sanitisedFieldsConfig).forEach(({ type }) => {
+      if (!type.adapters[this.adapterName]) {
+        throw `Adapter type "${this.adapterName}" does not support field type "${type.type}"`;
+      }
+    });
+
+    this.fieldsByPath = mapKeys(
+      sanitisedFieldsConfig,
+      ({ type, ...fieldSpec }, path) =>
+        new type.implementation(path, fieldSpec, {
+          getListByKey: this.getListByKey,
+          listKey: this.key,
+          listAdapter: this.adapter,
+          fieldAdapterClass: type.adapters[this.adapterName],
+          defaultAccess: this.defaultAccess.field,
+          createAuxList: this.createAuxList,
+        })
+    );
+    this.fields = Object.values(this.fieldsByPath);
+    this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
+      this.fieldsByPath[path].extendViews({ ...type.views })
+    );
   }
 
   getAdminMeta() {
@@ -266,6 +292,7 @@ module.exports = class List {
       types.push(
         ...flatten(this.fields.map(field => field.getGqlAuxTypes({ skipAccessControl }))),
         `
+        """ ${this.config.schemaDoc || 'A keystone list'} """
         type ${this.gqlNames.outputTypeName} {
           id: ID
           """
@@ -279,7 +306,11 @@ module.exports = class List {
           ${flatten(
             this.fields
               .filter(field => skipAccessControl || field.access.read) // If it's globally set to false, makes sense to never show it
-              .map(field => field.gqlOutputFields)
+              .map(field =>
+                field.config.schemaDoc
+                  ? `""" ${field.config.schemaDoc} """ ${field.gqlOutputFields}`
+                  : field.gqlOutputFields
+              )
           ).join('\n')}
         }
       `,
@@ -366,19 +397,28 @@ module.exports = class List {
     if (skipAccessControl || this.access.read) {
       queries.push(
         `
+        """ Search for all ${this.gqlNames.outputTypeName} items which match the where clause. """
         ${this.gqlNames.listQueryName}(
           ${this.getGraphqlFilterFragment().join('\n')}
         ): [${this.gqlNames.outputTypeName}]`,
 
-        `${this.gqlNames.itemQueryName}(
+        `
+        """ Search for the ${this.gqlNames.outputTypeName} item with the matching ID. """
+        ${this.gqlNames.itemQueryName}(
           where: ${this.gqlNames.whereUniqueInputName}!
         ): ${this.gqlNames.outputTypeName}`,
 
-        `${this.gqlNames.listQueryMetaName}(
+        `
+        """ Perform a meta-query on all ${
+          this.gqlNames.outputTypeName
+        } items which match the where clause. """
+        ${this.gqlNames.listQueryMetaName}(
           ${this.getGraphqlFilterFragment().join('\n')}
         ): _QueryMeta`,
 
-        `${this.gqlNames.listMetaName}: _ListMeta`
+        `
+        """ Retrieve the meta-data for the ${this.gqlNames.itemQueryName} list. """
+        ${this.gqlNames.listMetaName}: _ListMeta`
       );
     }
 
@@ -454,30 +494,46 @@ module.exports = class List {
     // TODO: Obey the same ACL rules based on parent type
     return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers));
   }
+
   get gqlAuxQueryResolvers() {
     // TODO: Obey the same ACL rules based on parent type
     return objMerge(this.fields.map(field => field.gqlAuxQueryResolvers));
   }
+
   get gqlAuxMutationResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.gqlAuxMutationResolvers));
+    return objMerge([
+      ...(this.config.mutations || []).map(({ schema, resolver }) => {
+        const mutationName = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
+        return {
+          [mutationName]: (obj, args, context, info) =>
+            resolver(obj, args, context, info, mapKeys(this.hooksActions, hook => hook(context))),
+        };
+      }),
+      ...this.fields.map(field => field.gqlAuxMutationResolvers),
+    ]);
   }
 
   getGqlMutations({ skipAccessControl = false } = {}) {
     const mutations = flatten(
       this.fields.map(field => field.getGqlAuxMutations({ skipAccessControl }))
     );
+    if (this.config.mutations) {
+      mutations.push(...this.config.mutations.map(({ schema }) => schema));
+    }
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
     if (skipAccessControl || this.access.create) {
       mutations.push(`
+        """ Create a single ${this.gqlNames.outputTypeName} item. """
         ${this.gqlNames.createMutationName}(
           data: ${this.gqlNames.createInputName}
         ): ${this.gqlNames.outputTypeName}
       `);
 
       mutations.push(`
+        """ Create multiple ${this.gqlNames.outputTypeName} items. """
         ${this.gqlNames.createManyMutationName}(
           data: [${this.gqlNames.createManyInputName}]
         ): [${this.gqlNames.outputTypeName}]
@@ -486,6 +542,7 @@ module.exports = class List {
 
     if (skipAccessControl || this.access.update) {
       mutations.push(`
+      """ Update a single ${this.gqlNames.outputTypeName} item by ID. """
         ${this.gqlNames.updateMutationName}(
           id: ID!
           data: ${this.gqlNames.updateInputName}
@@ -493,6 +550,7 @@ module.exports = class List {
       `);
 
       mutations.push(`
+      """ Update multiple ${this.gqlNames.outputTypeName} items by ID. """
         ${this.gqlNames.updateManyMutationName}(
           data: [${this.gqlNames.updateManyInputName}]
         ): [${this.gqlNames.outputTypeName}]
@@ -501,12 +559,14 @@ module.exports = class List {
 
     if (skipAccessControl || this.access.delete) {
       mutations.push(`
+        """ Delete a single ${this.gqlNames.outputTypeName} item by ID. """
         ${this.gqlNames.deleteMutationName}(
           id: ID!
         ): ${this.gqlNames.outputTypeName}
       `);
 
       mutations.push(`
+        """ Delete multiple ${this.gqlNames.outputTypeName} items by ID. """
         ${this.gqlNames.deleteManyMutationName}(
           ids: [ID!]
         ): [${this.gqlNames.outputTypeName}]
