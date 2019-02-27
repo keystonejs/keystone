@@ -7,7 +7,7 @@ import { A11yText } from '@arch-ui/typography';
 
 export let ToolbarButton = ({ isActive, label, icon, ...props }) => {
   return (
-    <Tooltip placement="top" css={{ marginBottom: gridSize / 2 }} content={label}>
+    <Tooltip placement="top" css={{ marginBottom: gridSize * 2 }} content={label}>
       {ref => (
         <button
           type="button"
