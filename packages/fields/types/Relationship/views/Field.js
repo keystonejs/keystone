@@ -127,16 +127,18 @@ export default class RelationshipField extends Component {
           ) : null}
         </FieldLabel>
         <FieldInput>
-          <RelationshipSelect
-            autoFocus={autoFocus}
-            isMulti={many}
-            field={field}
-            value={value}
-            error={error}
-            renderContext={renderContext}
-            htmlID={htmlID}
-            onChange={this.onChange}
-          />
+          <div css={{ flex: 1 }}>
+            <RelationshipSelect
+              autoFocus={autoFocus}
+              isMulti={many}
+              field={field}
+              value={value}
+              error={error}
+              renderContext={renderContext}
+              htmlID={htmlID}
+              onChange={this.onChange}
+            />
+          </div>
           <CreateAndAddItem
             onCreate={item => {
               onChange(many ? (value || []).concat(item) : item);
