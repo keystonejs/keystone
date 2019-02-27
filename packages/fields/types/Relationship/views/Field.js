@@ -47,7 +47,7 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
                     onAddUser(data[path]);
                   }}
                   icon={PersonIcon}
-                  title={label}
+                  aria-label={label}
                 />
               )}
             </Tooltip>
@@ -73,7 +73,7 @@ function CreateAndAddItem({ field, onCreate }) {
               setIsOpen(true);
             }}
             icon={PlusIcon}
-            title={label}
+            aria-label={label}
             variant="ghost"
             css={{ marginLeft: gridSize }}
           />

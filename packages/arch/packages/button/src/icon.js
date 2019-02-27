@@ -7,14 +7,13 @@ import { Button, type ButtonProps } from './primitives';
 
 type IconProps = ButtonProps & {
   icon: ComponentType<*>,
-  title?: string,
 };
 
 export const IconButton = forwardRef<IconProps, Button>(
-  ({ children, icon: Icon, title, ...props }, ref) => (
+  ({ children, icon: Icon, ...props }, ref) => (
     <Button ref={ref} {...props}>
       <span css={{ display: 'flex', alignItems: 'center' }}>
-        <Icon css={children ? { marginRight: '0.5em' } : null} title={title} />
+        <Icon css={children ? { marginRight: '0.5em' } : null} />
         {children}
       </span>
     </Button>
