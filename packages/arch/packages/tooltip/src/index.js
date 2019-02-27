@@ -6,6 +6,7 @@ import { Component, createRef, Fragment, type Ref, type Node } from 'react';
 import { createPortal } from 'react-dom';
 import flushable from 'flushable';
 import styled from '@emotion/styled';
+import { Popper } from 'react-popper';
 
 import { TransitionProvider, Fade } from '@arch-ui/modal-utils';
 import { colors, gridSize } from '@arch-ui/theme';
@@ -25,24 +26,6 @@ const TooltipElement = styled.div({
   zIndex: 2,
 });
 
-// ==============================
-// Positioner
-// ==============================
-
-function getOffset({ left, top }, placement) {
-  let x = left;
-  let y = top;
-
-  if (placement === 'top') y -= gridSize;
-  else if (placement === 'bottom') y += gridSize;
-  else if (placement === 'left') x -= gridSize;
-  else if (placement === 'right') x += gridSize;
-
-  return {
-    transform: `translate3d(${x}px, ${y}px, 0px)`,
-  };
-}
-
 type PlacementType = 'top' | 'right' | 'bottom' | 'left';
 type PositionerProps = {
   children: Node,
@@ -51,58 +34,21 @@ type PositionerProps = {
   className?: string,
   targetNode: HTMLElement | null,
 };
-type PositionerState = { left: number, top: number };
 
-class TooltipPositioner extends Component<PositionerProps, PositionerState> {
-  state = { left: 0, top: 0 };
-  ref = createRef();
-  componentDidMount() {
-    this.calculatePosition();
-  }
-  calculatePosition = () => {
-    const { placement, targetNode } = this.props;
-
-    if (!targetNode || !this.ref.current) return null;
-
-    // prepare common values
-    const tooltipRect = this.ref.current.getBoundingClientRect();
-    const targetRect = targetNode.getBoundingClientRect();
-    let left, top;
-
-    const targetCenter = {
-      x: targetRect.left + targetRect.width / 2,
-      y: targetRect.top + targetRect.height / 2,
-    };
-
-    // set left and top offsets
-    if (placement === 'left' || placement === 'right') {
-      top = targetCenter.y - tooltipRect.height / 2;
-    }
-    if (placement === 'top' || placement === 'bottom') {
-      left = targetCenter.x - tooltipRect.width / 2;
-    }
-    if (placement === 'left') left = targetRect.left - tooltipRect.width;
-    if (placement === 'right') left = targetRect.right;
-    if (placement === 'top') top = targetRect.top - tooltipRect.height;
-    if (placement === 'bottom') top = targetRect.bottom;
-
-    this.setState({ left, top });
-  };
-  render() {
-    const { children, placement, style, className } = this.props;
-    const styles = {
-      ...style,
-      ...getOffset(this.state, placement),
-    };
-
-    return createPortal(
-      <div css={{ position: 'fixed', top: 0, left: 0 }} ref={this.ref} style={styles}>
-        <TooltipElement className={className}>{children}</TooltipElement>
-      </div>,
-      (document.body: any)
-    );
-  }
-}
+let TooltipPositioner = (props: PositionerProps) => {
+  return createPortal(
+    <Popper referenceElement={props.targetNode} placement={props.placement}>
+      {({ ref, style }) => (
+        <div ref={ref} css={{ zIndex: 2000 }} style={{ ...props.style, ...style }}>
+          <div css={{ margin: gridSize }}>
+            <TooltipElement className={props.className}>{props.children}</TooltipElement>
+          </div>
+        </div>
+      )}
+    </Popper>,
+    (document.body: any)
+  );
+};
 
 // ==============================
 // Stateful Component
