@@ -59,7 +59,7 @@ any) => {
         width,
         zIndex: 2,
         transform: `${transform}${
-          stackIndex <= 0 ? '' : `translate(-${stackIndex * 0.5 * width}px)`
+          stackIndex <= 0 ? '' : `translate(-${stackIndex * 0.3 * width}px)`
         }`,
         ...style,
       }}
