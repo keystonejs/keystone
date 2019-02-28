@@ -440,7 +440,7 @@ class ListDetails extends Component<Props, State> {
                 <Management
                   list={list}
                   onDeleteMany={this.onDeleteSelectedItems}
-                  onUpdateMany={this.onUpdate}
+                  onUpdateMany={query.refetch}
                   pageSize={pageSize}
                   selectedItems={selectedItems}
                   totalItems={itemsCount}

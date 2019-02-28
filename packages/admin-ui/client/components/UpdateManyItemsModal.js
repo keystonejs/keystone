@@ -4,7 +4,7 @@ import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
-import { omit } from '@voussoir/utils';
+import { omit, arrayToObject, resolveAllKeys } from '@voussoir/utils';
 
 import FieldTypes from '../FIELD_TYPES';
 
@@ -19,14 +19,19 @@ class UpdateManyModal extends Component {
     this.state = { item, selectedFields };
   }
   onUpdate = () => {
-    const { updateItem, isLoading } = this.props;
-    console.log('onUpdate called');
-    return;
+    const { updateItem, isLoading, items } = this.props;
+    const { item, selectedFields } = this.state;
     if (isLoading) return;
-    const { item } = this.state;
-    updateItem({
-      variables: { data: item },
-    }).then(this.props.onUpdate);
+
+    resolveAllKeys(arrayToObject(selectedFields, 'path', field => field.getValue(item)))
+      .then(data => {
+        updateItem({
+          variables: {
+            data: items.map(id => ({ id, data })),
+          },
+        });
+      })
+      .then(this.props.onUpdate);
   };
   onClose = () => {
     const { isLoading } = this.props;
@@ -142,7 +147,7 @@ export default class UpdateManyModalWithMutation extends Component {
     // to update many things all at once. This doesn't appear to be common pattern
     // across the board.
     return (
-      <Mutation mutation={list.updateMutation}>
+      <Mutation mutation={list.updateManyMutation}>
         {(updateItem, { loading }) => (
           <UpdateManyModal updateItem={updateItem} isLoading={loading} {...this.props} />
         )}
