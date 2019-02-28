@@ -14,7 +14,7 @@ export let ToolbarButton = ({
   ...props
 }) => {
   return (
-    <Tooltip placement={tooltipPlacement} css={{ margin: gridSize / 2 }} content={label}>
+    <Tooltip placement={tooltipPlacement} css={{ marginBottom: gridSize * 2 }} content={label}>
       {ref => (
         <Tag
           {...(Tag === 'button' ? { type: 'button' } : null)}

@@ -1,0 +1,9 @@
+{
+  "releases": [
+    { "name": "@voussoir/admin-ui", "type": "patch" },
+    { "name": "@arch-ui/drawer", "type": "patch" },
+    { "name": "@voussoir/field-views-loader", "type": "minor" },
+    { "name": "@voussoir/fields", "type": "minor" }
+  ],
+  "dependents": []
+}
