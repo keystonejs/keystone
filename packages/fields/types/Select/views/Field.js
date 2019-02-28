@@ -47,7 +47,7 @@ export default class SelectField extends Component {
             placeholder={canRead ? undefined : error.message}
             options={field.options}
             onChange={this.onChange}
-            isClearable
+            isClearable={!field.config.isRequired}
             id={`react-select-${htmlID}`}
             inputId={htmlID}
             instanceId={htmlID}

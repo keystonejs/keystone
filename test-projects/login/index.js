@@ -1,6 +1,6 @@
 const { AdminUI } = require('@voussoir/admin-ui');
 const { Keystone } = require('@voussoir/core');
-const { Text, Password, Relationship } = require('@voussoir/fields');
+const { Text, Password, Relationship, Select } = require('@voussoir/fields');
 const { WebServer } = require('@voussoir/server');
 const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
 const bodyParser = require('body-parser');
@@ -38,6 +38,11 @@ keystone.createList('User', {
 keystone.createList('Post', {
   fields: {
     title: { type: Text },
+    status: {
+      type: Select,
+      isRequired: true,
+      options: [{ value: 'draft', label: 'Draft' }, { value: 'published', label: 'Published' }],
+    },
     author: { type: Relationship, ref: 'User' },
     editors: { type: Relationship, ref: 'User', many: true },
   },
