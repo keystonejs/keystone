@@ -1,5 +1,15 @@
 # @voussoir/core
 
+## 2.1.0
+
+- [minor] 64e6abcc:
+
+  - Allow lists and fields to specify a schemaDoc field
+
+- [minor] 7a4950bf:
+
+  - Allow mutations: [{ schema: ..., resolver: ...}] to be specified in createList
+
 ## 2.0.0
 
 - [minor] 5f891cff:

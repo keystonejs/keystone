@@ -9,7 +9,7 @@ import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 
-import FieldTypes from '../FIELD_TYPES';
+import FieldTypes from './FIELD_TYPES';
 
 let Render = ({ children }) => children();
 

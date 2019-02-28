@@ -1,1 +1,0 @@
-- Allow mutations: [{ schema: ..., resolver: ...}] to be specified in createList

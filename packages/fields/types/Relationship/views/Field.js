@@ -1,14 +1,16 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component } from 'react';
+import { Component, Fragment, useState } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
-import { ShieldIcon } from '@arch-ui/icons';
+import { ShieldIcon, PlusIcon, PersonIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
-import { Button } from '@arch-ui/button';
+import { IconButton } from '@arch-ui/button';
+import Tooltip from '@arch-ui/tooltip';
 
+import CreateItemModal from './CreateItemModal';
 import RelationshipSelect from './RelationshipSelect';
 
 function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
@@ -33,21 +35,63 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
           ) {
             return null;
           }
+          let label = `${many ? 'Add' : 'Set as'} ${data[path]._label_}`;
           return (
-            <Button
-              css={{ marginLeft: gridSize }}
-              variant="ghost"
-              onClick={() => {
-                onAddUser(data[path]);
-              }}
-            >
-              {many ? 'Add' : 'Set as'} {data[path]._label_}
-            </Button>
+            <Tooltip placement="top" content={label}>
+              {ref => (
+                <IconButton
+                  css={{ marginLeft: gridSize }}
+                  variant="ghost"
+                  ref={ref}
+                  onClick={() => {
+                    onAddUser(data[path]);
+                  }}
+                  icon={PersonIcon}
+                  aria-label={label}
+                />
+              )}
+            </Tooltip>
           );
         }
         return null;
       }}
     </Query>
+  );
+}
+
+function CreateAndAddItem({ field, onCreate }) {
+  let relatedList = field.adminMeta.getListByKey(field.config.ref);
+  let [isOpen, setIsOpen] = useState(false);
+  let label = `Create and add ${relatedList.singular}`;
+  return (
+    <Fragment>
+      <Tooltip placement="top" content={label}>
+        {ref => (
+          <IconButton
+            ref={ref}
+            onClick={() => {
+              setIsOpen(true);
+            }}
+            icon={PlusIcon}
+            aria-label={label}
+            variant="ghost"
+            css={{ marginLeft: gridSize }}
+          />
+        )}
+      </Tooltip>
+      <CreateItemModal
+        isOpen={isOpen}
+        list={relatedList}
+        onClose={() => {
+          setIsOpen(false);
+        }}
+        onCreate={({ data }) => {
+          setIsOpen(false);
+          console.log(data);
+          onCreate(data[relatedList.gqlNames.createMutationName]);
+        }}
+      />
+    </Fragment>
   );
 }
 
@@ -83,15 +127,23 @@ export default class RelationshipField extends Component {
           ) : null}
         </FieldLabel>
         <FieldInput>
-          <RelationshipSelect
-            autoFocus={autoFocus}
-            isMulti={many}
+          <div css={{ flex: 1 }}>
+            <RelationshipSelect
+              autoFocus={autoFocus}
+              isMulti={many}
+              field={field}
+              value={value}
+              error={error}
+              renderContext={renderContext}
+              htmlID={htmlID}
+              onChange={this.onChange}
+            />
+          </div>
+          <CreateAndAddItem
+            onCreate={item => {
+              onChange(many ? (value || []).concat(item) : item);
+            }}
             field={field}
-            value={value}
-            error={error}
-            renderContext={renderContext}
-            htmlID={htmlID}
-            onChange={this.onChange}
           />
           {withAuth && ref === authList && (
             <SetAsCurrentUser

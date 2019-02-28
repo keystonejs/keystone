@@ -1,5 +1,11 @@
 # @voussoir/apollo-helpers
 
+## 0.3.2
+
+- [patch] 9ed3bf87:
+
+  - Support client side resolution of KS Meta query
+
 ## 0.3.1
 
 - [patch] 8fc0abb3:
