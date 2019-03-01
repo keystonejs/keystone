@@ -1,13 +1,14 @@
 const { Text, MongoTextInterface, KnexTextInterface } = require('../Text/Implementation');
+const path = require('path');
 
 module.exports = {
   type: 'Color',
   implementation: Text,
   views: {
-    Controller: require.resolve('../Text/Controller'),
-    Field: require.resolve('./views/Field'),
-    Cell: require.resolve('./views/Cell'),
-    Filter: require.resolve('../Text/views/Filter'),
+    Controller: path.join(__dirname, '../Text/Controller'),
+    Field: path.join(__dirname, './views/Field'),
+    Cell: path.join(__dirname, './views/Cell'),
+    Filter: path.join(__dirname, '../Text/views/Filter'),
   },
   adapters: {
     mongoose: MongoTextInterface,
