@@ -14,8 +14,8 @@ const ColorField = ({ field, value: serverValue, error, onChange }) => {
   const htmlID = `ks-input-${field.path}`;
   const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
 
-  const target = (
-    <Button variant="ghost">
+  const target = props => (
+    <Button {...props} variant="ghost">
       {value ? (
         <React.Fragment>
           <div
