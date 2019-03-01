@@ -10,6 +10,12 @@ const List = require('../List');
 const { AccessDeniedError } = require('../List/graphqlErrors');
 const { Text, Checkbox, Float, Relationship } = require('@voussoir/fields');
 const { getType } = require('@voussoir/utils');
+const path = require('path');
+
+let fieldsPackagePath = path.dirname(require.resolve('@voussoir/fields/package.json'));
+function resolveViewPath(viewPath) {
+  return path.join(fieldsPackagePath, 'types', viewPath);
+}
 
 class MockFieldAdapter {}
 
@@ -215,30 +221,30 @@ describe('new List()', () => {
     const list = setup();
     expect(list.views).toEqual({
       name: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
+        Controller: resolveViewPath('Text/Controller'),
+        Field: resolveViewPath('Text/views/Field'),
+        Filter: resolveViewPath('Text/views/Filter'),
       },
       email: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
+        Controller: resolveViewPath('Text/Controller'),
+        Field: resolveViewPath('Text/views/Field'),
+        Filter: resolveViewPath('Text/views/Filter'),
       },
       other: {
-        Controller: require.resolve('@voussoir/fields/types/Relationship/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Relationship/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Relationship/views/Filter'),
-        Cell: require.resolve('@voussoir/fields/types/Relationship/views/Cell'),
+        Controller: resolveViewPath('Relationship/Controller'),
+        Field: resolveViewPath('Relationship/views/Field'),
+        Filter: resolveViewPath('Relationship/views/Filter'),
+        Cell: resolveViewPath('Relationship/views/Cell'),
       },
       hidden: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
+        Controller: resolveViewPath('Text/Controller'),
+        Field: resolveViewPath('Text/views/Field'),
+        Filter: resolveViewPath('Text/views/Filter'),
       },
       writeOnce: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
+        Controller: resolveViewPath('Text/Controller'),
+        Field: resolveViewPath('Text/views/Field'),
+        Filter: resolveViewPath('Text/views/Filter'),
       },
     });
   });
@@ -369,30 +375,30 @@ describe('getAdminMeta()', () => {
 
     expect(adminMeta.views).toEqual({
       name: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
+        Controller: resolveViewPath('Text/Controller'),
+        Field: resolveViewPath('Text/views/Field'),
+        Filter: resolveViewPath('Text/views/Filter'),
       },
       email: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
+        Controller: resolveViewPath('Text/Controller'),
+        Field: resolveViewPath('Text/views/Field'),
+        Filter: resolveViewPath('Text/views/Filter'),
       },
       other: {
-        Controller: require.resolve('@voussoir/fields/types/Relationship/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Relationship/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Relationship/views/Filter'),
-        Cell: require.resolve('@voussoir/fields/types/Relationship/views/Cell'),
+        Controller: resolveViewPath('Relationship/Controller'),
+        Field: resolveViewPath('Relationship/views/Field'),
+        Filter: resolveViewPath('Relationship/views/Filter'),
+        Cell: resolveViewPath('Relationship/views/Cell'),
       },
       hidden: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
+        Controller: resolveViewPath('Text/Controller'),
+        Field: resolveViewPath('Text/views/Field'),
+        Filter: resolveViewPath('Text/views/Filter'),
       },
       writeOnce: {
-        Controller: require.resolve('@voussoir/fields/types/Text/Controller'),
-        Field: require.resolve('@voussoir/fields/types/Text/views/Field'),
-        Filter: require.resolve('@voussoir/fields/types/Text/views/Filter'),
+        Controller: resolveViewPath('Text/Controller'),
+        Field: resolveViewPath('Text/views/Field'),
+        Filter: resolveViewPath('Text/views/Filter'),
       },
     });
   });
