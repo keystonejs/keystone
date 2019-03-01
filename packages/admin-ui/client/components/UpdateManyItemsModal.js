@@ -6,8 +6,6 @@ import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
 import { omit } from '@voussoir/utils';
 
-import FieldTypes from '../FIELD_TYPES';
-
 let Render = ({ children }) => children();
 
 class UpdateManyModal extends Component {
@@ -101,10 +99,10 @@ class UpdateManyModal extends Component {
             </FieldInput>
           </FieldContainer>
           {selectedFields.map((field, i) => {
-            const { Field } = FieldTypes[list.key][field.path];
             return (
               <Render key={field.path}>
                 {() => {
+                  let [Field] = field.readViews(field.views.Field);
                   let onChange = useCallback(value => {
                     this.setState(({ item }) => ({
                       item: {
@@ -142,11 +140,13 @@ export default class UpdateManyModalWithMutation extends Component {
     // to update many things all at once. This doesn't appear to be common pattern
     // across the board.
     return (
-      <Mutation mutation={list.updateMutation}>
-        {(updateItem, { loading }) => (
-          <UpdateManyModal updateItem={updateItem} isLoading={loading} {...this.props} />
-        )}
-      </Mutation>
+      <Suspense fallback={null}>
+        <Mutation mutation={list.updateMutation}>
+          {(updateItem, { loading }) => (
+            <UpdateManyModal updateItem={updateItem} isLoading={loading} {...this.props} />
+          )}
+        </Mutation>
+      </Suspense>
     );
   }
 }
