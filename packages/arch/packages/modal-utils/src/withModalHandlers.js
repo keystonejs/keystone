@@ -1,18 +1,25 @@
 // @flow
 
-import React, { Component, Fragment, type ComponentType, type Element, memo } from 'react';
+import React, { Component, Fragment, type ComponentType, type Node, type Ref, memo } from 'react';
 import ScrollLock from 'react-scrolllock';
 import { TransitionProvider } from './transitions';
 
 type GenericFn = any => mixed;
 export type CloseType = (event: Event) => void;
+type TargetArg = {
+  isActive: boolean,
+  onClick?: () => mixed,
+  onContextMenu?: () => mixed,
+  ref: Function,
+};
+
 export type ModalHandlerProps = {
   close: CloseType,
   defaultIsOpen: boolean,
   mode: 'click' | 'contextmenu',
   onClose: GenericFn,
   onOpen: GenericFn,
-  target: Element<*>,
+  target: TargetArg => Node,
 };
 type State = { isOpen: boolean, clientX: number, clientY: number };
 type Config = { Transition: (*) => * };
@@ -23,10 +30,10 @@ function getDisplayName(C) {
 const NOOP = () => {};
 
 let Target = memo(function Target({ isOpen, mode, target, targetRef }) {
-  const cloneProps = { isActive: isOpen, ref: targetRef };
+  const cloneProps: TargetArg = { isActive: isOpen, ref: targetRef };
   if (mode === 'click') cloneProps.onClick = this.toggle;
   if (mode === 'contextmenu') cloneProps.onContextMenu = this.open;
-  return target({});
+  return target(cloneProps);
 });
 
 export default function withModalHandlers(
