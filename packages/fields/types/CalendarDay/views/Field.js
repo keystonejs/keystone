@@ -28,8 +28,8 @@ export default class CalendarDayField extends Component {
   render() {
     const { autoFocus, field, value } = this.props;
     const htmlID = `ks-input-${field.path}`;
-    const target = (
-      <Button autoFocus={autoFocus} id={htmlID} variant="ghost">
+    const target = props => (
+      <Button {...props} autoFocus={autoFocus} id={htmlID} variant="ghost">
         {value ? format(value, this.props.field.config.format || 'Do MMM YYYY') : 'Set Date'}
       </Button>
     );

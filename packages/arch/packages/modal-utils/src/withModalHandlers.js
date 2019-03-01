@@ -1,7 +1,6 @@
 // @flow
 
-import React, { cloneElement, Component, Fragment, type ComponentType, type Element } from 'react';
-import NodeResolver from 'react-node-resolver';
+import React, { Component, Fragment, type ComponentType, type Element, memo } from 'react';
 import ScrollLock from 'react-scrolllock';
 import { TransitionProvider } from './transitions';
 
@@ -22,6 +21,13 @@ function getDisplayName(C) {
   return `withModalHandlers(${C.displayName || C.name || 'Component'})`;
 }
 const NOOP = () => {};
+
+let Target = memo(function Target({ isOpen, mode, target, targetRef }) {
+  const cloneProps = { isActive: isOpen, ref: targetRef };
+  if (mode === 'click') cloneProps.onClick = this.toggle;
+  if (mode === 'contextmenu') cloneProps.onContextMenu = this.open;
+  return target({});
+});
 
 export default function withModalHandlers(
   WrappedComponent: ComponentType<*>,
@@ -105,15 +111,16 @@ export default function withModalHandlers(
       const { mode, onClose, onOpen, target } = this.props;
       const { clientX, clientY, isOpen } = this.state;
 
-      const cloneProps = {};
-      if (isOpen) cloneProps.isActive = true;
-      if (mode === 'click') cloneProps.onClick = this.toggle;
-      if (mode === 'contextmenu') cloneProps.onContextMenu = this.open;
-
-      // TODO: prefer functional children that pass refs + snapshot to the target node
       return (
         <Fragment>
-          <NodeResolver innerRef={this.getTarget}>{cloneElement(target, cloneProps)}</NodeResolver>
+          <Target
+            targetRef={this.getTarget}
+            target={target}
+            mode={mode}
+            isOpen={isOpen}
+            toggle={this.toggle}
+            open={this.open}
+          />
           {isOpen ? <ScrollLock /> : null}
           <TransitionProvider isOpen={isOpen} onEntered={onOpen} onExited={onClose}>
             {transitionState => (
