@@ -23,37 +23,40 @@ type Props = {
 
 export default function ActiveFilters({ filterList, onClear, onRemove, onUpdate }: Props) {
   return (
-    <AnimateHeight style={{ paddingTop: gridSize }}>
-      <FlexGroup wrap id="ks-list-active-filters">
-        {filterList.length
-          ? filterList.map(filter => {
-              const label = filter.field.formatFilter(filter);
-              return (
-                <EditFilterPopout
-                  key={label}
-                  onChange={onUpdate}
-                  filter={filter}
-                  target={props => (
-                    <Pill
-                      {...props}
-                      appearance="primary"
-                      onRemove={onRemove(filter)}
-                      style={pillStyle}
-                    >
-                      {label}
-                    </Pill>
-                  )}
-                />
-              );
-            })
-          : null}
+    <AnimateHeight
+      style={{ paddingTop: gridSize }}
+      render={ref => (
+        <FlexGroup ref={ref} wrap id="ks-list-active-filters">
+          {filterList.length
+            ? filterList.map(filter => {
+                const label = filter.field.formatFilter(filter);
+                return (
+                  <EditFilterPopout
+                    key={label}
+                    onChange={onUpdate}
+                    filter={filter}
+                    target={props => (
+                      <Pill
+                        {...props}
+                        appearance="primary"
+                        onRemove={onRemove(filter)}
+                        style={pillStyle}
+                      >
+                        {label}
+                      </Pill>
+                    )}
+                  />
+                );
+              })
+            : null}
 
-        {filterList.length > 1 ? (
-          <Pill key="clear" onClick={onClear} style={pillStyle}>
-            Clear All
-          </Pill>
-        ) : null}
-      </FlexGroup>
-    </AnimateHeight>
+          {filterList.length > 1 ? (
+            <Pill key="clear" onClick={onClear} style={pillStyle}>
+              Clear All
+            </Pill>
+          ) : null}
+        </FlexGroup>
+      )}
+    />
   );
 }

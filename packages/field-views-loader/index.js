@@ -14,7 +14,7 @@ function serialize(value, allPaths) {
       Object.keys(value)
         .map(key => {
           // we need to use getters so circular dependencies work
-          return `"${key}"(): ${serialize(value[key], allPaths)}`;
+          return `"${key}": ${serialize(value[key], allPaths)}`;
         })
         .join(',\n') +
       '}'
@@ -72,7 +72,7 @@ module.exports = function() {
 
   let loaders = `{\n${[...allPaths]
     .map(path => {
-      return `'${path}': () => import('${path}')`;
+      return `'${path}': () => import('${path}').then(interopDefault)`;
     })
     .join(',\n')}\n}`;
 
