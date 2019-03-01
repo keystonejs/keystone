@@ -1,12 +1,13 @@
 const { Decimal, MongoDecimalInterface, KnexDecimalInterface } = require('./Implementation');
+const path = require('path');
 
 module.exports = {
   type: 'Decimal',
   implementation: Decimal,
   views: {
-    Controller: require.resolve('./Controller'),
-    Field: require.resolve('./views/Field'),
-    Filter: require.resolve('./views/Filter'),
+    Controller: path.join(__dirname, './Controller'),
+    Field: path.join(__dirname, './views/Field'),
+    Filter: path.join(__dirname, './views/Filter'),
   },
   adapters: {
     mongoose: MongoDecimalInterface,
