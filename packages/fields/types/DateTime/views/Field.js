@@ -43,8 +43,8 @@ const CalendarDayField = ({ autoFocus, field, onChange, value }: Props) => {
   const { date, time, offset } = parsedDate;
 
   const htmlID = `ks-input-${field.path}`;
-  const target = (
-    <Button autoFocus={autoFocus} id={htmlID} variant="ghost">
+  const target = props => (
+    <Button {...props} autoFocus={autoFocus} id={htmlID} variant="ghost">
       {value
         ? format(date + ' ' + time + offset, field.config.format || 'Do MMM YYYY')
         : 'Set Date & Time'}

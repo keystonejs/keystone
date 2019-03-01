@@ -33,11 +33,16 @@ export default function ActiveFilters({ filterList, onClear, onRemove, onUpdate 
                   key={label}
                   onChange={onUpdate}
                   filter={filter}
-                  target={
-                    <Pill appearance="primary" onRemove={onRemove(filter)} style={pillStyle}>
+                  target={props => (
+                    <Pill
+                      {...props}
+                      appearance="primary"
+                      onRemove={onRemove(filter)}
+                      style={pillStyle}
+                    >
                       {label}
                     </Pill>
-                  }
+                  )}
                 />
               );
             })

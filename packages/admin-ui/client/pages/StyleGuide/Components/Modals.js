@@ -47,25 +47,30 @@ export default class ModalGuide extends Component {
         <h4>Dropdowns</h4>
         <FlexGroup justify="space-between">
           {['left', 'right'].map(a => (
-            <Dropdown align={a} key={a} target={<Button>Align {a}</Button>} items={dropdownItems} />
+            <Dropdown
+              align={a}
+              key={a}
+              target={props => <Button {...props}>Align {a}</Button>}
+              items={dropdownItems}
+            />
           ))}
         </FlexGroup>
 
         <h4>Popouts</h4>
         <FlexGroup justify="space-between">
-          <Popout target={<Button>Left</Button>}>
+          <Popout target={props => <Button {...props}>Left</Button>}>
             <PopoutContent>Left</PopoutContent>
           </Popout>
-          <Popout target={<Button>Intermediate Left</Button>}>
+          <Popout target={props => <Button {...props}>Intermediate Left</Button>}>
             <PopoutContent>Intermediate Left</PopoutContent>
           </Popout>
-          <Popout target={<Button>Middle</Button>}>
+          <Popout target={props => <Button {...props}>Middle</Button>}>
             <PopoutContent>Middle</PopoutContent>
           </Popout>
-          <Popout target={<Button>Intermediate Right</Button>}>
+          <Popout target={props => <Button {...props}>Intermediate Right</Button>}>
             <PopoutContent>Intermediate Right</PopoutContent>
           </Popout>
-          <Popout target={<Button>Right</Button>}>
+          <Popout target={props => <Button {...props}>Right</Button>}>
             <PopoutContent>Right</PopoutContent>
           </Popout>
         </FlexGroup>

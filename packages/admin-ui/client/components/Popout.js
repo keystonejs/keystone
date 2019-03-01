@@ -89,8 +89,8 @@ export const Popout = ({
   target,
   ...props
 }: Props) => {
-  const defaultTarget = (
-    <Button>
+  const defaultTarget = props => (
+    <Button {...props}>
       {buttonLabel}
       <DisclosureArrow />
     </Button>
