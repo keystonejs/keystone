@@ -29,10 +29,10 @@ function getDisplayName(C) {
 }
 const NOOP = () => {};
 
-let Target = memo(function Target({ isOpen, mode, target, targetRef }) {
+let Target = memo(function Target({ isOpen, mode, target, targetRef, open, toggle }) {
   const cloneProps: TargetArg = { isActive: isOpen, ref: targetRef };
-  if (mode === 'click') cloneProps.onClick = this.toggle;
-  if (mode === 'contextmenu') cloneProps.onContextMenu = this.open;
+  if (mode === 'click') cloneProps.onClick = toggle;
+  if (mode === 'contextmenu') cloneProps.onContextMenu = open;
   return target(cloneProps);
 });
 
