@@ -25,7 +25,7 @@ export default function ActiveFilters({ filterList, onClear, onRemove, onUpdate 
   return (
     <AnimateHeight
       style={{ paddingTop: gridSize }}
-      render={ref => (
+      render={({ ref }) => (
         <FlexGroup ref={ref} wrap id="ks-list-active-filters">
           {filterList.length
             ? filterList.map(filter => {
