@@ -8,8 +8,8 @@ type GenericFn = any => mixed;
 export type CloseType = (event: Event) => void;
 type TargetArg = {
   isActive: boolean,
-  onClick?: () => mixed,
-  onContextMenu?: () => mixed,
+  onClick?: Function,
+  onContextMenu?: Function,
   ref: Function,
 };
 
