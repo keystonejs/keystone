@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component, Fragment, type ComponentType, type Node, type Ref, memo } from 'react';
+import React, { Component, Fragment, type ComponentType, type Node, memo } from 'react';
 import ScrollLock from 'react-scrolllock';
 import { TransitionProvider } from './transitions';
 
