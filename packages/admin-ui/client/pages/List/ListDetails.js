@@ -310,11 +310,11 @@ class ListDetails extends Component<Props, State> {
     return (
       <Dropdown
         align="right"
-        target={
-          <IconButton variant="nuance" icon={KebabVerticalIcon} id="ks-list-dropdown">
+        target={props => (
+          <IconButton {...props} variant="nuance" icon={KebabVerticalIcon} id="ks-list-dropdown">
             <A11yText>Show more...</A11yText>
           </IconButton>
-        }
+        )}
         items={items}
       />
     );
@@ -362,12 +362,12 @@ class ListDetails extends Component<Props, State> {
                     Hold <Kbd>alt</Kbd> to toggle ascending/descending
                   </Note>
                 }
-                target={
-                  <SortButton>
+                target={props => (
+                  <SortButton {...props}>
                     {sortBy.field.label.toLowerCase()}
                     <DisclosureArrow size="0.2em" />
                   </SortButton>
-                }
+                )}
               >
                 <SortSelect
                   popoutRef={this.sortPopoutRef}

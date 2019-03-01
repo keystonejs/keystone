@@ -7,8 +7,8 @@ import { IconButton } from '@arch-ui/button';
 import Dropdown from '@arch-ui/dropdown';
 import { useMeasure } from '@arch-ui/hooks';
 
-let dropdownTarget = (
-  <IconButton variant="nuance" icon={KebabVerticalIcon} id="ks-list-dropdown">
+let dropdownTarget = props => (
+  <IconButton {...props} variant="nuance" icon={KebabVerticalIcon} id="ks-list-dropdown">
     <A11yText>Show more...</A11yText>
   </IconButton>
 );
