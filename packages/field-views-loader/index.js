@@ -2,7 +2,7 @@ const loaderUtils = require('loader-utils');
 
 function serialize(value) {
   if (typeof value === 'string') {
-    return `interopDefault(require('${value}'))`;
+    return `() => import('${value}').then(interopDefault)`;
   }
   if (Array.isArray(value)) {
     return `[${value.map(serialize).join(', ')}]`;
@@ -13,7 +13,7 @@ function serialize(value) {
       Object.keys(value)
         .map(key => {
           // we need to use getters so circular dependencies work
-          return `get "${key}"() { return ${serialize(value[key])}; }`;
+          return `"${key}"(): ${serialize(value[key])}`;
         })
         .join(',\n') +
       '}'
@@ -67,8 +67,59 @@ module.exports = function() {
   );
 
   return `
+  // this is done so that if there are multiple versions of this module
+  // there will only be one view object and one of each cache
+  // TODO: maybe refactor stuff so there is only a single FIELD_TYPES file imported(like in #745)
+
+  if (!window.___ksViewsPromiseCache) {
+    window.___ksViewsPromiseCache = new Map();
+  } 
+  if (!window.___ksViewsValueCache) {
+    window.___ksViewsValueCache = new Map();
+  } 
+  let promiseCache = window.___ksViewsPromiseCache;
+  let valueCache = window.___ksViewsValueCache;
+
+
+  function loadView(view) {
+    if (promiseCache.has(view)) {
+      return promiseCache.get(view);
+    }
+    let promise = view().then(value => {
+      valueCache.set(view, value);
+    });
+    promiseCache.set(view, promise);
+    return promise;
+  }
+
+  export function preloadViews(views) {
+    views.forEach(loadView);
+  }
+
+  export function readViews(views) {
+    let promises = [];
+    let values = [];
+    views.forEach(view => {
+      if (valueCache.has(view)) {
+        values.push(valueCache.get(view));
+      } else {
+        promises.push(loadView(view));
+      }
+    });
+    if (promises.length) {
+      throw new Promise.all(promises);
+    }
+    return values;
+  }
+
   function interopDefault(mod) {
     return mod.default ? mod.default : mod;
   }
-  module.exports = ${stringifiedObject}`;
+
+  if (!window.___ksFieldTypes) {
+
+    window.___ksFieldTypes = ${stringifiedObject};
+  }
+  
+  export let views = window.___ksFieldTypes`;
 };
