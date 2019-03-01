@@ -3,10 +3,6 @@ import React, { Component } from 'react';
 import { POPOUT_GUTTER } from '../../../components/Popout';
 import PopoutForm from './PopoutForm';
 
-// This import is loaded by the @voussoir/field-views-loader loader.
-// It imports all the views required for a keystone app by looking at the adminMetaData
-import FieldTypes from '../../../FIELD_TYPES';
-
 type Props = {
   filter: Object,
   onChange: Event => void,
@@ -44,7 +40,7 @@ export default class EditFilterPopout extends Component<Props, State> {
   render() {
     const { filter, target } = this.props;
     const { value } = this.state;
-    const { Filter } = FieldTypes[filter.field.list.key][filter.field.path];
+    let [Filter] = filter.field.adminMeta.readViews([filter.field.views.Filter]);
     const headerTitle = filter.field.getFilterLabel(filter);
 
     return (
