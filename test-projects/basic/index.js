@@ -181,7 +181,7 @@ server.app.get('/reset-db', (req, res) => {
 server.app.use(staticRoute, server.express.static(staticPath));
 
 async function start() {
-  await keystone.connect();
+  await keystone.connect(process.env.MONGODB_URI);
   server.start();
   const users = await keystone.lists.User.adapter.findAll();
   if (!users.length) {
