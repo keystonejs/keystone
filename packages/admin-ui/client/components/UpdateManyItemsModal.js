@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useMemo, useCallback } from 'react';
+import React, { Component, Fragment, useMemo, useCallback, Suspense } from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
