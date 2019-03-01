@@ -1,6 +1,5 @@
 import gql from 'graphql-tag';
 
-import FieldTypes from '../FIELD_TYPES';
 import { arrayToObject } from '@voussoir/utils';
 
 export const gqlCountQueries = lists => gql`{
@@ -8,15 +7,15 @@ export const gqlCountQueries = lists => gql`{
 }`;
 
 export default class List {
-  constructor(config, adminMeta) {
+  constructor(config, adminMeta, views) {
     this.config = config;
 
     // TODO: undo this
     Object.assign(this, config);
 
     this.fields = config.fields.map(fieldConfig => {
-      const { Controller } = FieldTypes[config.key][fieldConfig.path];
-      return new Controller(fieldConfig, this, adminMeta);
+      const [Controller] = adminMeta.readViews([views[fieldConfig.path].Controller]);
+      return new Controller(fieldConfig, this, adminMeta, views[fieldConfig.path]);
     });
 
     this.createMutation = gql`

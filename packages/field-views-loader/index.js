@@ -1,11 +1,12 @@
 const loaderUtils = require('loader-utils');
 
-function serialize(value) {
+function serialize(value, allPaths) {
   if (typeof value === 'string') {
-    return `() => import('${value}').then(interopDefault)`;
+    allPaths.add(value);
+    return `loaders['${value}']`;
   }
   if (Array.isArray(value)) {
-    return `[${value.map(serialize).join(', ')}]`;
+    return `[${value.map(val => serialize(val, allPaths)).join(', ')}]`;
   }
   if (typeof value === 'object' && value !== null) {
     return (
@@ -13,7 +14,7 @@ function serialize(value) {
       Object.keys(value)
         .map(key => {
           // we need to use getters so circular dependencies work
-          return `"${key}"(): ${serialize(value[key])}`;
+          return `"${key}"(): ${serialize(value[key], allPaths)}`;
         })
         .join(',\n') +
       '}'
@@ -59,27 +60,25 @@ module.exports = function() {
   }
    */
 
+  let allPaths = new Set();
+
   const stringifiedObject = serialize(
     Object.entries(adminMeta.lists).reduce((obj, [listPath, { views }]) => {
       obj[listPath] = views;
       return obj;
-    }, {})
+    }, {}),
+    allPaths
   );
 
+  let loaders = `{\n${[...allPaths]
+    .map(path => {
+      return `'${path}': () => import('${path}')`;
+    })
+    .join(',\n')}\n}`;
+
   return `
-  // this is done so that if there are multiple versions of this module
-  // there will only be one view object and one of each cache
-  // TODO: maybe refactor stuff so there is only a single FIELD_TYPES file imported(like in #745)
-
-  if (!window.___ksViewsPromiseCache) {
-    window.___ksViewsPromiseCache = new Map();
-  } 
-  if (!window.___ksViewsValueCache) {
-    window.___ksViewsValueCache = new Map();
-  } 
-  let promiseCache = window.___ksViewsPromiseCache;
-  let valueCache = window.___ksViewsValueCache;
-
+  let promiseCache = new Map();
+  let valueCache = new Map();
 
   function loadView(view) {
     if (promiseCache.has(view)) {
@@ -107,7 +106,7 @@ module.exports = function() {
       }
     });
     if (promises.length) {
-      throw new Promise.all(promises);
+      throw Promise.all(promises);
     }
     return values;
   }
@@ -116,10 +115,7 @@ module.exports = function() {
     return mod.default ? mod.default : mod;
   }
 
-  if (!window.___ksFieldTypes) {
+  let loaders = ${loaders};
 
-    window.___ksFieldTypes = ${stringifiedObject};
-  }
-  
-  export let views = window.___ksFieldTypes`;
+  export let views = ${stringifiedObject}`;
 };
