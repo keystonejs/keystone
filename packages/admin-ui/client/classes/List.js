@@ -9,6 +9,7 @@ export const gqlCountQueries = lists => gql`{
 export default class List {
   constructor(config, adminMeta, views) {
     this.config = config;
+    this.adminMeta = adminMeta;
 
     // TODO: undo this
     Object.assign(this, config);

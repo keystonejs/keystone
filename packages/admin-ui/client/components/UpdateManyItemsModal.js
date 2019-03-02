@@ -102,7 +102,7 @@ class UpdateManyModal extends Component {
             return (
               <Render key={field.path}>
                 {() => {
-                  let [Field] = field.readViews(field.views.Field);
+                  let [Field] = field.adminMeta.readViews([field.views.Field]);
                   let onChange = useCallback(value => {
                     this.setState(({ item }) => ({
                       item: {

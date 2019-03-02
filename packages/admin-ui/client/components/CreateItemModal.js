@@ -61,6 +61,16 @@ class CreateItemModal extends Component {
   render() {
     const { isLoading, isOpen, list } = this.props;
     const { item } = this.state;
+    // we want to read all of the fields before reading the views individually
+    // note we want to _read_ before not just preload because the important thing
+    // isn't doing all the requests in parallel, that already happens
+    // what we're doing here is making sure there aren't a bunch of rerenders as
+    // each of the promises resolve
+    // this probably won't be necessary with concurrent mode/maybe just other react changes
+    // also, note that this is just an optimisation, it's not strictly necessary and it should
+    // probably be removed in the future because i'm guessing this will make performance _worse_ in concurrent mode
+    list.adminMeta.readViews(list.fields.map(({ views }) => views.Field));
+
     return (
       <Drawer
         closeOnBlanketClick
