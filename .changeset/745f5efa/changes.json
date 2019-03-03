@@ -1,0 +1,10 @@
+{
+  "releases": [
+    { "name": "@voussoir/admin-ui", "type": "patch" },
+    { "name": "@voussoir/cypress-project-access-control", "type": "patch" },
+    { "name": "@voussoir/cypress-project-basic", "type": "patch" },
+    { "name": "@voussoir/cypress-project-login", "type": "patch" },
+    { "name": "@voussoir/website", "type": "patch" }
+  ],
+  "dependents": []
+}
