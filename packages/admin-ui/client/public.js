@@ -1,6 +1,6 @@
 import React, { useMemo, Suspense } from 'react';
 import ReactDOM from 'react-dom';
-import { ApolloProvider, Suspense } from 'react-apollo';
+import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ToastProvider } from 'react-toast-notifications';
 import { Global } from '@emotion/core';
