@@ -1,0 +1,8 @@
+{
+  "releases": [
+    { "name": "keystone_demo_blog", "type": "patch" },
+    { "name": "@voussoir/admin-ui", "type": "patch" },
+    { "name": "@voussoir/server", "type": "patch" }
+  ],
+  "dependents": []
+}
