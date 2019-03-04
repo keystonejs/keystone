@@ -51,6 +51,7 @@ Add a script to your `package.json`:
 
 Create a file `index.js`:
 
+<!-- prettier-ignore -->
 ```javascript
 const { Keystone }        = require('@voussoir/keystone');
 const { AdminUI }         = require('@voussoir/admin-ui');
@@ -103,9 +104,9 @@ module.exports = {
     authStrategy: authStrategy, // See 'Adding Authentication' below
     apiPath: '/admin/api',
     graphiqlPath: '/admin/graphiql',
-    port: 4444,
-  }
+  },
 };
+// TODO: Document _all_ the options
 ```
 
 ### Custom Server
@@ -119,18 +120,23 @@ must handle executing the different parts of Keystone.
 
 Create the `server.js` file:
 
+<!-- prettier-ignore -->
 ```javascript
 const keystone = require('@voussoir/core');
 
-keystone.prepare().then(({ server }) => {
-  server.app.get('/', (req, res) => {
-    res.end('Hello world');
-  });
-
-  server.start().then(({ port }) => {
+keystone.prepare({ port: 3000 })
+  .then(({ server, keystone }) => {
+    server.app.get('/', (req, res) => {
+      res.end('Hello world');
+    });
+    return server.start();
+  })
+  .then(({ port }) => {
     console.log(`Listening on port ${port}`);
+  })
+  .catch(error => {
+    console.error(error);
   });
-});
 ```
 
 Run keystone as you normally would:
@@ -138,6 +144,21 @@ Run keystone as you normally would:
 ```
 npm run dev
 ```
+
+#### Custom Server Configuration
+
+When using a custom server, you should pass the `serverConfig` object to the
+`prepare()` method:
+
+```javascript
+keystone.prepare({
+  serverConfig: {
+    /* ... */
+  },
+});
+```
+
+For available options, see [Server Configuration](#server-configuration).
 
 ### Production Build
 
@@ -205,6 +226,7 @@ _See [Authentication docs]()._
 To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`:
 
+<!-- prettier-ignore -->
 ```javascript
 const { Keystone }        = require('@voussoir/keystone');
 const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
