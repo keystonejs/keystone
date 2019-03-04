@@ -111,8 +111,10 @@ module.exports = function createGraphQLMiddleware(
       devQueryLog[id] = `${graphiqlPath}?${queryParams}`;
 
       const ast = gql(req.body.query);
-      
-      const operations = ast.definitions.map(def => `${def.operation} ${def.name ? `${def.name.value} ` : ''}{ .. }`);
+
+      const operations = ast.definitions.map(
+        def => `${def.operation} ${def.name ? `${def.name.value} ` : ''}{ .. }`
+      );
 
       // Make the queries clickable in the terminal where supported
       console.log(
