@@ -3,6 +3,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
+import { forwardRef, type Node } from 'react';
 
 import { XIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
@@ -45,11 +46,14 @@ const subtleTextColor = {
   warning: colors.warning,
 };
 
+type Variant = 'bold' | 'subtle';
+type Appearance = 'default' | 'primary' | 'danger' | 'create' | 'warning';
+
 type ButtonProps = {
   /* Affects the visual style of the lozenge */
-  appearance: 'default' | 'primary' | 'danger' | 'create' | 'warning',
+  appearance?: Appearance,
   /* The value displayed within the lozenge. */
-  variant: 'bold' | 'subtle',
+  variant?: Variant,
 };
 type Props = ButtonProps & {
   children: Node,
@@ -58,75 +62,78 @@ type Props = ButtonProps & {
 };
 
 const PillWrapper = styled.div({ display: 'inline-flex' });
-const PillButton = styled.button(({ appearance, variant }: Props) => {
-  const fontSizeNumeric = 0.75;
-  const fontSize = `${fontSizeNumeric}em`;
-  const borderRadius = `${fontSizeNumeric * 2}em`;
+const PillButton = styled.button(
+  ({ appearance, variant }: { appearance: Appearance, variant: Variant }) => {
+    const fontSizeNumeric = 0.75;
+    const fontSize = `${fontSizeNumeric}em`;
+    const borderRadius = `${fontSizeNumeric * 2}em`;
 
-  return {
-    backgroundColor:
-      variant === 'bold'
-        ? boldBackgroundColor[appearance].default
-        : subtleBackgroundColor[appearance].default,
-    color: variant === 'bold' ? boldTextColor[appearance] : subtleTextColor[appearance],
-    alignItems: 'center',
-    border: 0,
-    cursor: 'pointer',
-    display: 'flex',
-    fontSize: fontSize,
-    fontWeight: 500,
-    lineHeight: '1.8em',
-    justifyContent: 'center',
-    maxWidth: '100%',
-    minWidth: 1,
-    outline: 0,
-    whiteSpace: 'nowrap',
-
-    ':hover,:focus': {
+    return {
       backgroundColor:
         variant === 'bold'
-          ? boldBackgroundColor[appearance].hover
-          : subtleBackgroundColor[appearance].hover,
-    },
-    ':active': {
-      backgroundColor:
-        variant === 'bold'
-          ? boldBackgroundColor[appearance].active
-          : subtleBackgroundColor[appearance].active,
-    },
+          ? boldBackgroundColor[appearance].default
+          : subtleBackgroundColor[appearance].default,
+      color: variant === 'bold' ? boldTextColor[appearance] : subtleTextColor[appearance],
+      alignItems: 'center',
+      border: 0,
+      cursor: 'pointer',
+      display: 'flex',
+      fontSize: fontSize,
+      fontWeight: 500,
+      lineHeight: '1.8em',
+      justifyContent: 'center',
+      maxWidth: '100%',
+      minWidth: 1,
+      outline: 0,
+      whiteSpace: 'nowrap',
 
-    ':first-of-type': {
-      paddingLeft: '0.9em',
-      paddingRight: '0.75em',
-      borderTopLeftRadius: borderRadius,
-      borderBottomLeftRadius: borderRadius,
-      marginRight: 1,
-    },
-    ':last-of-type': {
-      paddingLeft: '0.75em',
-      paddingRight: '0.9em',
-      borderTopRightRadius: borderRadius,
-      borderBottomRightRadius: borderRadius,
-      marginLeft: 1,
-    },
-  };
-});
+      ':hover,:focus': {
+        backgroundColor:
+          variant === 'bold'
+            ? boldBackgroundColor[appearance].hover
+            : subtleBackgroundColor[appearance].hover,
+      },
+      ':active': {
+        backgroundColor:
+          variant === 'bold'
+            ? boldBackgroundColor[appearance].active
+            : subtleBackgroundColor[appearance].active,
+      },
 
-export const Pill = ({ appearance, children, onClick, onRemove, variant, ...props }: Props) => {
-  return (
-    <PillWrapper {...props}>
-      <PillButton appearance={appearance} variant={variant} onClick={onClick}>
-        {children}
-      </PillButton>
-      {onRemove ? (
-        <PillButton appearance={appearance} variant={variant} onClick={onRemove}>
-          <XIcon css={{ height: 12 }} />
+      ':first-of-type': {
+        paddingLeft: '0.9em',
+        paddingRight: '0.75em',
+        borderTopLeftRadius: borderRadius,
+        borderBottomLeftRadius: borderRadius,
+        marginRight: 1,
+      },
+      ':last-of-type': {
+        paddingLeft: '0.75em',
+        paddingRight: '0.9em',
+        borderTopRightRadius: borderRadius,
+        borderBottomRightRadius: borderRadius,
+        marginLeft: 1,
+      },
+    };
+  }
+);
+
+export const Pill = forwardRef<Props, HTMLDivElement>(
+  (
+    { appearance = 'default', children, onClick, onRemove, variant = 'subtle', ...props }: Props,
+    ref
+  ) => {
+    return (
+      <PillWrapper {...props} ref={ref}>
+        <PillButton appearance={appearance} variant={variant} onClick={onClick}>
+          {children}
         </PillButton>
-      ) : null}
-    </PillWrapper>
-  );
-};
-Pill.defaultProps = {
-  appearance: 'default',
-  variant: 'subtle',
-};
+        {onRemove ? (
+          <PillButton appearance={appearance} variant={variant} onClick={onRemove}>
+            <XIcon css={{ height: 12 }} />
+          </PillButton>
+        ) : null}
+      </PillWrapper>
+    );
+  }
+);
