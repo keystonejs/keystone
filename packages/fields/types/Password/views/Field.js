@@ -18,11 +18,10 @@ export default class PasswordField extends Component {
     inputConfirm: '',
   };
   onChange = ({ target }) => {
-    const { field, onChange } = this.props;
     const { name, value } = target;
 
     this.setState({ [name]: value }, () => {
-      if (name === 'inputPassword') onChange(field, value);
+      if (name === 'inputPassword') this.props.onChange(value);
     });
   };
   toggleInterface = () => {
@@ -39,8 +38,8 @@ export default class PasswordField extends Component {
   };
   render() {
     const { isEditing, inputPassword, inputConfirm, showInputValue } = this.state;
-    const { autoFocus, field, item } = this.props;
-    const value = item[field.path] || '';
+    const { autoFocus, field, value: serverValue } = this.props;
+    const value = serverValue || '';
     const htmlID = `ks-input-${field.path}`;
 
     return (

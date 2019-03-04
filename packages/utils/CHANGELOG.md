@@ -1,5 +1,19 @@
 # @voussoir/utils
 
+## 1.0.0
+
+- [major] 723371a0:
+
+  - Correctly surface nested errors from GraphQL
+
+- [minor] aca26f71:
+
+  - Expose access to GraphQL query method within hooks
+
+- [minor] a3d5454d:
+
+  - Add flatMap, noop, identity functions
+
 ## 0.3.1
 
 - [patch] 06b9968e:

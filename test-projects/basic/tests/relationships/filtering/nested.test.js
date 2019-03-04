@@ -1,9 +1,10 @@
 const { Text, Relationship } = require('@voussoir/fields');
-const { keystoneMongoTest, setupServer, graphqlRequest } = require('@voussoir/test-utils');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@voussoir/test-utils');
 const cuid = require('cuid');
 
-function setupKeystone() {
+function setupKeystone(adapterName) {
   return setupServer({
+    adapterName,
     name: `ks5-testdb-${cuid()}`,
     createLists: keystone => {
       keystone.createList('User', {
@@ -27,25 +28,26 @@ function setupKeystone() {
     },
   });
 }
+multiAdapterRunners().map(({ runner, adapterName }) =>
+  describe(`Adapter: ${adapterName}`, () => {
+    describe('relationship filtering', () => {
+      test(
+        'nested to-many relationships can be filtered',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const ids = [];
 
-describe('relationship filtering', () => {
-  test(
-    'nested to-many relationships can be filtered',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const ids = [];
+          ids.push((await create('Post', { content: 'Hello world' })).id);
+          ids.push((await create('Post', { content: 'hi world' })).id);
+          ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
 
-      ids.push((await create('Post', { content: 'Hello world' })).id);
-      ids.push((await create('Post', { content: 'hi world' })).id);
-      ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+          const user = await create('User', { posts: ids });
 
-      const user = await create('User', { posts: ids });
+          // Create a dummy user to make sure we're actually filtering it out
+          const user2 = await create('User', { posts: [ids[0]] });
 
-      // Create a dummy user to make sure we're actually filtering it out
-      const user2 = await create('User', { posts: [ids[0]] });
-
-      const queryUser = await graphqlRequest({
-        server,
-        query: `
+          const queryUser = await graphqlRequest({
+            server,
+            query: `
         query {
           allUsers {
             id
@@ -58,43 +60,43 @@ describe('relationship filtering', () => {
           }
         }
       `,
-      });
+          });
 
-      expect(queryUser.body).not.toHaveProperty('errors');
-      expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
-      expect(queryUser.body.data.allUsers[0].posts).toHaveLength(2);
-      expect(queryUser.body.data).toMatchObject({
-        allUsers: [
-          {
-            id: user.id,
-            posts: [{ id: ids[1] }, { id: ids[2] }],
-          },
-          {
-            id: user2.id,
-            posts: [],
-          },
-        ],
-      });
-    })
-  );
+          expect(queryUser.body).not.toHaveProperty('errors');
+          expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
+          expect(queryUser.body.data.allUsers[0].posts).toHaveLength(2);
+          expect(queryUser.body.data).toMatchObject({
+            allUsers: [
+              {
+                id: user.id,
+                posts: [{ id: ids[1] }, { id: ids[2] }],
+              },
+              {
+                id: user2.id,
+                posts: [],
+              },
+            ],
+          });
+        })
+      );
 
-  test(
-    'nested to-many relationships can be limited',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const ids = [];
+      test(
+        'nested to-many relationships can be limited',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const ids = [];
 
-      ids.push((await create('Post', { content: 'Hello world' })).id);
-      ids.push((await create('Post', { content: 'hi world' })).id);
-      ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+          ids.push((await create('Post', { content: 'Hello world' })).id);
+          ids.push((await create('Post', { content: 'hi world' })).id);
+          ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
 
-      const user = await create('User', { posts: ids });
+          const user = await create('User', { posts: ids });
 
-      // Create a dummy user to make sure we're actually filtering it out
-      const user2 = await create('User', { posts: [ids[0]] });
+          // Create a dummy user to make sure we're actually filtering it out
+          const user2 = await create('User', { posts: [ids[0]] });
 
-      const queryUser = await graphqlRequest({
-        server,
-        query: `
+          const queryUser = await graphqlRequest({
+            server,
+            query: `
         query {
           allUsers {
             id
@@ -105,43 +107,43 @@ describe('relationship filtering', () => {
           }
         }
       `,
-      });
+          });
 
-      expect(queryUser.body).not.toHaveProperty('errors');
-      expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
-      expect(queryUser.body.data.allUsers[0].posts).toHaveLength(1);
-      expect(queryUser.body.data).toMatchObject({
-        allUsers: [
-          {
-            id: user.id,
-            posts: [{ id: ids[0] }],
-          },
-          {
-            id: user2.id,
-            posts: [{ id: ids[0] }],
-          },
-        ],
-      });
-    })
-  );
+          expect(queryUser.body).not.toHaveProperty('errors');
+          expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
+          expect(queryUser.body.data.allUsers[0].posts).toHaveLength(1);
+          expect(queryUser.body.data).toMatchObject({
+            allUsers: [
+              {
+                id: user.id,
+                posts: [{ id: ids[0] }],
+              },
+              {
+                id: user2.id,
+                posts: [{ id: ids[0] }],
+              },
+            ],
+          });
+        })
+      );
 
-  test(
-    'nested to-many relationships can be filtered within AND clause',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const ids = [];
+      test(
+        'nested to-many relationships can be filtered within AND clause',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const ids = [];
 
-      ids.push((await create('Post', { content: 'Hello world' })).id);
-      ids.push((await create('Post', { content: 'hi world' })).id);
-      ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+          ids.push((await create('Post', { content: 'Hello world' })).id);
+          ids.push((await create('Post', { content: 'hi world' })).id);
+          ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
 
-      const user = await create('User', { posts: ids });
+          const user = await create('User', { posts: ids });
 
-      // Create a dummy user to make sure we're actually filtering it out
-      const user2 = await create('User', { posts: [ids[0]] });
+          // Create a dummy user to make sure we're actually filtering it out
+          const user2 = await create('User', { posts: [ids[0]] });
 
-      const queryUser = await graphqlRequest({
-        server,
-        query: `
+          const queryUser = await graphqlRequest({
+            server,
+            query: `
         query {
           allUsers {
             id
@@ -157,43 +159,43 @@ describe('relationship filtering', () => {
           }
         }
       `,
-      });
+          });
 
-      expect(queryUser.body).not.toHaveProperty('errors');
-      expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
-      expect(queryUser.body.data.allUsers[0].posts).toHaveLength(1);
-      expect(queryUser.body.data).toMatchObject({
-        allUsers: [
-          {
-            id: user.id,
-            posts: [{ id: ids[2] }],
-          },
-          {
-            id: user2.id,
-            posts: [],
-          },
-        ],
-      });
-    })
-  );
+          expect(queryUser.body).not.toHaveProperty('errors');
+          expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
+          expect(queryUser.body.data.allUsers[0].posts).toHaveLength(1);
+          expect(queryUser.body.data).toMatchObject({
+            allUsers: [
+              {
+                id: user.id,
+                posts: [{ id: ids[2] }],
+              },
+              {
+                id: user2.id,
+                posts: [],
+              },
+            ],
+          });
+        })
+      );
 
-  test(
-    'nested to-many relationships can be filtered within OR clause',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const ids = [];
+      test(
+        'nested to-many relationships can be filtered within OR clause',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const ids = [];
 
-      ids.push((await create('Post', { content: 'Hello world' })).id);
-      ids.push((await create('Post', { content: 'hi world' })).id);
-      ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+          ids.push((await create('Post', { content: 'Hello world' })).id);
+          ids.push((await create('Post', { content: 'hi world' })).id);
+          ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
 
-      const user = await create('User', { posts: ids });
+          const user = await create('User', { posts: ids });
 
-      // Create a dummy user to make sure we're actually filtering it out
-      const user2 = await create('User', { posts: [ids[0]] });
+          // Create a dummy user to make sure we're actually filtering it out
+          const user2 = await create('User', { posts: [ids[0]] });
 
-      const queryUser = await graphqlRequest({
-        server,
-        query: `
+          const queryUser = await graphqlRequest({
+            server,
+            query: `
         query {
           allUsers {
             id
@@ -209,50 +211,50 @@ describe('relationship filtering', () => {
           }
         }
       `,
-      });
+          });
 
-      expect(queryUser.body).not.toHaveProperty('errors');
-      expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
-      expect(queryUser.body.data).toMatchObject({
-        allUsers: [
-          {
-            id: user.id,
-            posts: expect.arrayContaining([
-              expect.objectContaining({ id: ids[1] }),
-              expect.objectContaining({ id: ids[2] }),
-            ]),
-          },
-          {
-            id: user2.id,
-            posts: [],
-          },
-        ],
-      });
-      // `expect.arrayContaining()` doesn't fail if there are _more_ results
-      // than expected
-      expect(queryUser.body.data.allUsers[0].posts).toHaveLength(2);
-    })
-  );
-});
+          expect(queryUser.body).not.toHaveProperty('errors');
+          expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
+          expect(queryUser.body.data).toMatchObject({
+            allUsers: [
+              {
+                id: user.id,
+                posts: expect.arrayContaining([
+                  expect.objectContaining({ id: ids[1] }),
+                  expect.objectContaining({ id: ids[2] }),
+                ]),
+              },
+              {
+                id: user2.id,
+                posts: [],
+              },
+            ],
+          });
+          // `expect.arrayContaining()` doesn't fail if there are _more_ results
+          // than expected
+          expect(queryUser.body.data.allUsers[0].posts).toHaveLength(2);
+        })
+      );
+    });
 
-describe('relationship meta filtering', () => {
-  test(
-    'nested to-many relationships return meta info',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const ids = [];
+    describe('relationship meta filtering', () => {
+      test(
+        'nested to-many relationships return meta info',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const ids = [];
 
-      ids.push((await create('Post', { content: 'Hello world' })).id);
-      ids.push((await create('Post', { content: 'hi world' })).id);
-      ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+          ids.push((await create('Post', { content: 'Hello world' })).id);
+          ids.push((await create('Post', { content: 'hi world' })).id);
+          ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
 
-      const user = await create('User', { posts: ids });
+          const user = await create('User', { posts: ids });
 
-      // Create a dummy user to make sure we're actually filtering it out
-      const user2 = await create('User', { posts: [ids[0]] });
+          // Create a dummy user to make sure we're actually filtering it out
+          const user2 = await create('User', { posts: [ids[0]] });
 
-      const queryUser = await graphqlRequest({
-        server,
-        query: `
+          const queryUser = await graphqlRequest({
+            server,
+            query: `
         query {
           allUsers {
             id
@@ -262,43 +264,43 @@ describe('relationship meta filtering', () => {
           }
         }
       `,
-      });
+          });
 
-      expect(queryUser.body).not.toHaveProperty('errors');
-      expect(queryUser.body.data.allUsers).toHaveLength(2);
-      expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
-      expect(queryUser.body.data).toMatchObject({
-        allUsers: [
-          {
-            id: user.id,
-            _postsMeta: { count: 3 },
-          },
-          {
-            id: user2.id,
-            _postsMeta: { count: 1 },
-          },
-        ],
-      });
-    })
-  );
+          expect(queryUser.body).not.toHaveProperty('errors');
+          expect(queryUser.body.data.allUsers).toHaveLength(2);
+          expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
+          expect(queryUser.body.data).toMatchObject({
+            allUsers: [
+              {
+                id: user.id,
+                _postsMeta: { count: 3 },
+              },
+              {
+                id: user2.id,
+                _postsMeta: { count: 1 },
+              },
+            ],
+          });
+        })
+      );
 
-  test(
-    'nested to-many relationship meta can be filtered',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const ids = [];
+      test(
+        'nested to-many relationship meta can be filtered',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const ids = [];
 
-      ids.push((await create('Post', { content: 'Hello world' })).id);
-      ids.push((await create('Post', { content: 'hi world' })).id);
-      ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+          ids.push((await create('Post', { content: 'Hello world' })).id);
+          ids.push((await create('Post', { content: 'hi world' })).id);
+          ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
 
-      const user = await create('User', { posts: ids });
+          const user = await create('User', { posts: ids });
 
-      // Create a dummy user to make sure we're actually filtering it out
-      const user2 = await create('User', { posts: [ids[0]] });
+          // Create a dummy user to make sure we're actually filtering it out
+          const user2 = await create('User', { posts: [ids[0]] });
 
-      const queryUser = await graphqlRequest({
-        server,
-        query: `
+          const queryUser = await graphqlRequest({
+            server,
+            query: `
         query {
           allUsers {
             id
@@ -310,43 +312,43 @@ describe('relationship meta filtering', () => {
           }
         }
       `,
-      });
+          });
 
-      expect(queryUser.body).not.toHaveProperty('errors');
-      expect(queryUser.body.data.allUsers).toHaveLength(2);
-      expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
-      expect(queryUser.body.data).toMatchObject({
-        allUsers: [
-          {
-            id: user.id,
-            _postsMeta: { count: 2 },
-          },
-          {
-            id: user2.id,
-            _postsMeta: { count: 0 },
-          },
-        ],
-      });
-    })
-  );
+          expect(queryUser.body).not.toHaveProperty('errors');
+          expect(queryUser.body.data.allUsers).toHaveLength(2);
+          expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
+          expect(queryUser.body.data).toMatchObject({
+            allUsers: [
+              {
+                id: user.id,
+                _postsMeta: { count: 2 },
+              },
+              {
+                id: user2.id,
+                _postsMeta: { count: 0 },
+              },
+            ],
+          });
+        })
+      );
 
-  test(
-    'nested to-many relationship meta can be limited',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const ids = [];
+      test(
+        'nested to-many relationship meta can be limited',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const ids = [];
 
-      ids.push((await create('Post', { content: 'Hello world' })).id);
-      ids.push((await create('Post', { content: 'hi world' })).id);
-      ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+          ids.push((await create('Post', { content: 'Hello world' })).id);
+          ids.push((await create('Post', { content: 'hi world' })).id);
+          ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
 
-      const user = await create('User', { posts: ids });
+          const user = await create('User', { posts: ids });
 
-      // Create a dummy user to make sure we're actually filtering it out
-      const user2 = await create('User', { posts: [ids[0]] });
+          // Create a dummy user to make sure we're actually filtering it out
+          const user2 = await create('User', { posts: [ids[0]] });
 
-      const queryUser = await graphqlRequest({
-        server,
-        query: `
+          const queryUser = await graphqlRequest({
+            server,
+            query: `
         query {
           allUsers {
             id
@@ -356,43 +358,43 @@ describe('relationship meta filtering', () => {
           }
         }
       `,
-      });
+          });
 
-      expect(queryUser.body).not.toHaveProperty('errors');
-      expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
-      expect(queryUser.body.data.allUsers).toHaveLength(2);
-      expect(queryUser.body.data).toMatchObject({
-        allUsers: [
-          {
-            id: user.id,
-            _postsMeta: { count: 1 },
-          },
-          {
-            id: user2.id,
-            _postsMeta: { count: 1 },
-          },
-        ],
-      });
-    })
-  );
+          expect(queryUser.body).not.toHaveProperty('errors');
+          expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
+          expect(queryUser.body.data.allUsers).toHaveLength(2);
+          expect(queryUser.body.data).toMatchObject({
+            allUsers: [
+              {
+                id: user.id,
+                _postsMeta: { count: 1 },
+              },
+              {
+                id: user2.id,
+                _postsMeta: { count: 1 },
+              },
+            ],
+          });
+        })
+      );
 
-  test(
-    'nested to-many relationship meta can be filtered within AND clause',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const ids = [];
+      test(
+        'nested to-many relationship meta can be filtered within AND clause',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const ids = [];
 
-      ids.push((await create('Post', { content: 'Hello world' })).id);
-      ids.push((await create('Post', { content: 'hi world' })).id);
-      ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+          ids.push((await create('Post', { content: 'Hello world' })).id);
+          ids.push((await create('Post', { content: 'hi world' })).id);
+          ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
 
-      const user = await create('User', { posts: ids });
+          const user = await create('User', { posts: ids });
 
-      // Create a dummy user to make sure we're actually filtering it out
-      const user2 = await create('User', { posts: [ids[0]] });
+          // Create a dummy user to make sure we're actually filtering it out
+          const user2 = await create('User', { posts: [ids[0]] });
 
-      const queryUser = await graphqlRequest({
-        server,
-        query: `
+          const queryUser = await graphqlRequest({
+            server,
+            query: `
         query {
           allUsers {
             id
@@ -407,43 +409,43 @@ describe('relationship meta filtering', () => {
           }
         }
       `,
-      });
+          });
 
-      expect(queryUser.body).not.toHaveProperty('errors');
-      expect(queryUser.body.data.allUsers).toHaveLength(2);
-      expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
-      expect(queryUser.body.data).toMatchObject({
-        allUsers: [
-          {
-            id: user.id,
-            _postsMeta: { count: 1 },
-          },
-          {
-            id: user2.id,
-            _postsMeta: { count: 0 },
-          },
-        ],
-      });
-    })
-  );
+          expect(queryUser.body).not.toHaveProperty('errors');
+          expect(queryUser.body.data.allUsers).toHaveLength(2);
+          expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
+          expect(queryUser.body.data).toMatchObject({
+            allUsers: [
+              {
+                id: user.id,
+                _postsMeta: { count: 1 },
+              },
+              {
+                id: user2.id,
+                _postsMeta: { count: 0 },
+              },
+            ],
+          });
+        })
+      );
 
-  test(
-    'nested to-many relationship meta can be filtered within OR clause',
-    keystoneMongoTest(setupKeystone, async ({ server: { server }, create }) => {
-      const ids = [];
+      test(
+        'nested to-many relationship meta can be filtered within OR clause',
+        runner(setupKeystone, async ({ server: { server }, create }) => {
+          const ids = [];
 
-      ids.push((await create('Post', { content: 'Hello world' })).id);
-      ids.push((await create('Post', { content: 'hi world' })).id);
-      ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
+          ids.push((await create('Post', { content: 'Hello world' })).id);
+          ids.push((await create('Post', { content: 'hi world' })).id);
+          ids.push((await create('Post', { content: 'Hello? Or hi?' })).id);
 
-      const user = await create('User', { posts: ids });
+          const user = await create('User', { posts: ids });
 
-      // Create a dummy user to make sure we're actually filtering it out
-      const user2 = await create('User', { posts: [ids[0]] });
+          // Create a dummy user to make sure we're actually filtering it out
+          const user2 = await create('User', { posts: [ids[0]] });
 
-      const queryUser = await graphqlRequest({
-        server,
-        query: `
+          const queryUser = await graphqlRequest({
+            server,
+            query: `
         query {
           allUsers {
             id
@@ -458,23 +460,25 @@ describe('relationship meta filtering', () => {
           }
         }
       `,
-      });
+          });
 
-      expect(queryUser.body).not.toHaveProperty('errors');
-      expect(queryUser.body.data.allUsers).toHaveLength(2);
-      expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
-      expect(queryUser.body.data).toMatchObject({
-        allUsers: [
-          {
-            id: user.id,
-            _postsMeta: { count: 2 },
-          },
-          {
-            id: user2.id,
-            _postsMeta: { count: 0 },
-          },
-        ],
-      });
-    })
-  );
-});
+          expect(queryUser.body).not.toHaveProperty('errors');
+          expect(queryUser.body.data.allUsers).toHaveLength(2);
+          expect(queryUser.body.data).toHaveProperty('allUsers.0._postsMeta');
+          expect(queryUser.body.data).toMatchObject({
+            allUsers: [
+              {
+                id: user.id,
+                _postsMeta: { count: 2 },
+              },
+              {
+                id: user2.id,
+                _postsMeta: { count: 0 },
+              },
+            ],
+          });
+        })
+      );
+    });
+  })
+);

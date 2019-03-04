@@ -195,8 +195,8 @@ class ListRow extends Component {
   render() {
     const { list, link, isSelected, item, itemErrors, fields } = this.props;
 
-    const row = (
-      <TableRow>
+    const row = props => (
+      <TableRow {...props}>
         <BodyCell isSelected={isSelected} key="checkbox">
           <CheckboxPrimitive
             checked={isSelected}

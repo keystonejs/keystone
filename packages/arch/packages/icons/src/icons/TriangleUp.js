@@ -1,25 +1,16 @@
 // @flow
 import React from 'react';
+import { style } from '../style';
 
-const TriangleUpIcon = ({ title, ...props }: { title?: string }) => {
+const svgContent = <path fillRule="evenodd" d="M12 11L6 5l-6 6h12z" />;
+
+const TriangleUpIcon = React.memo<{ title?: string }>(({ title, ...props }) => {
   return (
-    <svg {...props}>
+    <svg aria-hidden height={16} width={12} viewBox="0 0 12 16" style={style} {...props}>
       {title ? <title>{title}</title> : null}
-      <path fillRule="evenodd" d="M12 11L6 5l-6 6h12z" />
+      {svgContent}
     </svg>
   );
-};
-
-TriangleUpIcon.defaultProps = {
-  'aria-hidden': true,
-  height: 16,
-  width: 12,
-  viewBox: '0 0 12 16',
-  style: {
-    display: 'inline-block',
-    verticalAlign: 'text-top',
-    fill: 'currentColor',
-  },
-};
+});
 
 export default TriangleUpIcon;

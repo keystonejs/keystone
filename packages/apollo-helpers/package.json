@@ -1,10 +1,13 @@
 {
   "name": "@voussoir/apollo-helpers",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": "Jess Telford <hi+github@jes.st> (https://jes.st)",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
+  },
+  "scripts": {
+    "build": "echo 'noop - see the Keystone package.json#build script'"
   },
   "dependencies": {
     "@babel/runtime": "^7.2.0",
@@ -17,10 +20,10 @@
     "react-apollo": "^2.2.4"
   },
   "peerDependencies": {
-    "react": "^16.5.2 || 16.7.0-alpha.2"
+    "react": "^16.8.0"
   },
   "devDependencies": {
-    "react": "16.7.0-alpha.2"
+    "react": "^16.8.0"
   },
   "main": "dist/apollo-helpers.cjs.js",
   "module": "dist/apollo-helpers.esm.js"

@@ -1,5 +1,4 @@
 const pWaterfall = require('p-waterfall');
-const pSettle = require('p-settle');
 
 class BaseKeystoneAdapter {
   constructor(config) {
@@ -23,17 +22,15 @@ class BaseKeystoneAdapter {
 
   async connect(to, config = {}) {
     // Connect to the database
-    this._connect(to, config);
+    await this._connect(to, config);
 
     // Set up all list adapters
     try {
-      const taskResults = await pSettle(
-        Object.values(this.listAdapters).map(listAdapter => listAdapter.postConnect())
-      );
+      const taskResults = await this.postConnect();
       const errors = taskResults.filter(({ isRejected }) => isRejected);
 
       if (errors.length) {
-        const error = new Error('Connection error');
+        const error = new Error('Post connection error');
         error.errors = errors.map(({ reason }) => reason);
         throw error;
       }
@@ -51,6 +48,8 @@ class BaseKeystoneAdapter {
       throw error;
     }
   }
+
+  async postConnect() {}
 }
 
 class BaseListAdapter {
@@ -58,6 +57,7 @@ class BaseListAdapter {
     this.key = key;
     this.parentAdapter = parentAdapter;
     this.fieldAdapters = [];
+    this.fieldAdaptersByPath = {};
     this.config = config;
 
     this.preSaveHooks = [];
@@ -74,7 +74,12 @@ class BaseListAdapter {
   newFieldAdapter(fieldAdapterClass, name, path, getListByKey, config) {
     const adapter = new fieldAdapterClass(name, path, this, getListByKey, config);
     this.prepareFieldAdapter(adapter);
+    adapter.setupHooks({
+      addPreSaveHook: this.addPreSaveHook.bind(this),
+      addPostReadHook: this.addPostReadHook.bind(this),
+    });
     this.fieldAdapters.push(adapter);
+    this.fieldAdaptersByPath[adapter.path] = adapter;
     return adapter;
   }
 
@@ -94,10 +99,47 @@ class BaseListAdapter {
     return pWaterfall(this.preSaveHooks, item);
   }
 
-  onPostRead(item) {
+  async onPostRead(item) {
     // We waterfall so the final item is a composed version of the input passing
     // through each consecutive hook
-    return pWaterfall(this.postReadHooks, item);
+    return pWaterfall(this.postReadHooks, await item);
+  }
+
+  async create(data) {
+    return this.onPostRead(this._create(await this.onPreSave(data)));
+  }
+
+  async delete(id) {
+    return this.onPostRead(this._delete(id));
+  }
+
+  async update(id, data) {
+    return this.onPostRead(this._update(id, await this.onPreSave(data)));
+  }
+
+  async findAll() {
+    return Promise.all((await this._findAll()).map(item => this.onPostRead(item)));
+  }
+
+  async findById(id) {
+    return this.onPostRead(this._findById(id));
+  }
+
+  async find(condition) {
+    return Promise.all((await this._find(condition)).map(item => this.onPostRead(item)));
+  }
+
+  async findOne(condition) {
+    return this.onPostRead(this._findOne(condition));
+  }
+
+  async itemsQuery(args, { meta = false } = {}) {
+    const results = await this._itemsQuery(args, { meta });
+    return meta ? results : Promise.all(results.map(item => this.onPostRead(item)));
+  }
+
+  itemsQueryMeta(args) {
+    return this.itemsQuery(args, { meta: true });
   }
 
   findFieldAdapterForQuerySegment(segment) {
@@ -114,7 +156,10 @@ class BaseFieldAdapter {
     this.listAdapter = listAdapter;
     this.config = config;
     this.getListByKey = getListByKey;
+    this.dbPath = path;
   }
+
+  setupHooks() {}
 }
 
 module.exports = {

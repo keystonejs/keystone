@@ -72,7 +72,7 @@ describe('CalendarDay Component - Functionality', () => {
     cy.get(`#ks-select-month`).should('have.value', `${subMonths(today, 1).getMonth()}`);
   });
 
-  it(`can use 'Select' to set month`, () => {
+  it.skip(`can use 'Select' to set month`, () => {
     cy.get(getDateButtonSetTo(today)).click();
     cy.get(`#ks-select-month`).select('Jun');
     cy.wait(500);
@@ -95,7 +95,6 @@ describe('CalendarDay Component - Functionality', () => {
   });
 
   it(`can use input to set year`, () => {
-    cy.get(getDateButtonSetTo(today)).click();
     cy.get(`#ks-input-year`).type('{backspace}{backspace}15');
     cy.get(getDaySelector(setYear(today, 2015))).click();
     cy.get('label:contains("Name")').click();

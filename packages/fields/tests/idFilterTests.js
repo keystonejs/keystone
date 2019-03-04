@@ -18,7 +18,7 @@ const getIDs = async keystone => {
   const IDs = {};
   await keystone.lists['test'].adapter.findAll().then(data => {
     data.forEach(entry => {
-      IDs[entry.name] = entry._id.toString();
+      IDs[entry.name] = entry.id.toString();
     });
   });
   return IDs;
@@ -132,9 +132,10 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: id_not_in - missing id',
-    withKeystone(async ({ server: { server, keystone } }) => {
+    withKeystone(async ({ server: { server, keystone }, adapterName }) => {
       const IDs = await getIDs(keystone);
-      return match(server, 'where: { id_not_in: ["0123456789abcdef01234567"] }', [
+      const fakeID = adapterName === 'mongoose' ? '"0123456789abcdef01234567"' : 1000;
+      return match(server, `where: { id_not_in: [${fakeID}] }`, [
         { id: IDs['person1'], name: 'person1' },
         { id: IDs['person2'], name: 'person2' },
         { id: IDs['person3'], name: 'person3' },

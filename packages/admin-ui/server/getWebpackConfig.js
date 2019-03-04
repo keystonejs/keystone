@@ -69,11 +69,13 @@ module.exports = function({ adminMeta, entry }) {
       ],
     });
   }
+  const entryPath = `./${entry}.js`;
   return {
     mode,
     context: path.resolve(__dirname, '../client/'),
     devtool: mode === 'development' ? 'inline-source-map' : undefined,
-    entry: `./${entry}.js`,
+    entry:
+      mode === 'production' ? entryPath : [entryPath, 'webpack-hot-middleware/client?reload=true'],
     output: {
       filename: `${entry}.js`,
       publicPath: adminMeta.adminPath,
@@ -81,7 +83,11 @@ module.exports = function({ adminMeta, entry }) {
     // TODO: We should pay attention to our bundle size at some point, but
     // right now this is just noise
     performance: { hints: false },
-    plugins: [environmentPlugin, templatePlugin],
+    plugins: [
+      environmentPlugin,
+      templatePlugin,
+      ...(mode === 'development' ? [new webpack.HotModuleReplacementPlugin()] : []),
+    ],
     module: {
       rules,
     },

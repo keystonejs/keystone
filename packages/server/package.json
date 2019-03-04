@@ -1,6 +1,6 @@
 {
   "name": "@voussoir/server",
-  "version": "0.5.1",
+  "version": "1.0.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
@@ -8,9 +8,9 @@
   },
   "dependencies": {
     "@voussoir/logger": "^0.2.0",
-    "@voussoir/utils": "^0.3.1",
+    "@voussoir/utils": "^1.0.0",
     "apollo-errors": "^1.9.0",
-    "apollo-server-express": "^2.3.1",
+    "apollo-server-express": "^2.4.8",
     "body-parser": "^1.18.2",
     "cookie": "^0.3.1",
     "cookie-signature": "^1.1.0",

@@ -1,14 +1,16 @@
-const { Float, MongoFloatInterface } = require('./Implementation');
+const { Float, MongoFloatInterface, KnexFloatInterface } = require('./Implementation');
+const path = require('path');
 
 module.exports = {
   type: 'Float',
   implementation: Float,
   views: {
-    Controller: require.resolve('./Controller'),
-    Field: require.resolve('./views/Field'),
-    Filter: require.resolve('./views/Filter'),
+    Controller: path.join(__dirname, './Controller'),
+    Field: path.join(__dirname, './views/Field'),
+    Filter: path.join(__dirname, './views/Filter'),
   },
   adapters: {
     mongoose: MongoFloatInterface,
+    knex: KnexFloatInterface,
   },
 };

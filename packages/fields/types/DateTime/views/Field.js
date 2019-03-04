@@ -11,14 +11,13 @@ import { gridSize } from '@arch-ui/theme';
 import { parseDate, stringifyDate } from './utils';
 
 type Props = {
-  onChange: (field: Object, value: string | null) => mixed,
+  onChange: (value: string | null) => mixed,
   autoFocus: boolean,
   field: Object,
-  item: Object,
+  value: string,
 };
 
-const CalendarDayField = ({ autoFocus, field, onChange, item }: Props) => {
-  const value = item[field.path];
+const CalendarDayField = ({ autoFocus, field, onChange, value }: Props) => {
   const parsedDate = value ? parseDate(value) : { date: '', time: '', offset: '' };
   const defaultDate = new Date();
 
@@ -30,22 +29,22 @@ const CalendarDayField = ({ autoFocus, field, onChange, item }: Props) => {
   const defaultParsedDate = value ? parseDate(value) : parseDate(defaultDate.toISOString());
 
   let handleDayChange = day => {
-    onChange(field, stringifyDate({ ...defaultParsedDate, date: format(day, 'YYYY-MM-DD') }));
+    onChange(stringifyDate({ ...defaultParsedDate, date: format(day, 'YYYY-MM-DD') }));
   };
 
   let handleTimeChange = event => {
-    onChange(field, stringifyDate({ ...defaultParsedDate, time: event.target.value }));
+    onChange(stringifyDate({ ...defaultParsedDate, time: event.target.value }));
   };
 
   let handleOffsetChange = offset => {
-    onChange(field, stringifyDate({ ...defaultParsedDate, offset }));
+    onChange(stringifyDate({ ...defaultParsedDate, offset }));
   };
 
   const { date, time, offset } = parsedDate;
 
   const htmlID = `ks-input-${field.path}`;
-  const target = (
-    <Button autoFocus={autoFocus} id={htmlID} variant="ghost">
+  const target = props => (
+    <Button {...props} autoFocus={autoFocus} id={htmlID} variant="ghost">
       {value
         ? format(date + ' ' + time + offset, field.config.format || 'Do MMM YYYY')
         : 'Set Date & Time'}

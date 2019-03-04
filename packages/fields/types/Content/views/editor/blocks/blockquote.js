@@ -12,16 +12,17 @@ export function ToolbarElement({ editor, editorState }) {
   return (
     <ToolbarButton
       isActive={hasBlockquote}
+      icon={<QuoteIcon />}
+      label="Blockquote"
       onClick={() => {
         if (hasBlockquote) {
           editor.unwrapBlock(type);
         } else {
           editor.wrapBlock(type);
         }
+        editor.focus();
       }}
-    >
-      <QuoteIcon title="Blockquote" />
-    </ToolbarButton>
+    />
   );
 }
 

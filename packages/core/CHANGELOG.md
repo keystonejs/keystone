@@ -1,5 +1,61 @@
 # @voussoir/core
 
+## 2.1.0
+
+- [minor] 64e6abcc:
+
+  - Allow lists and fields to specify a schemaDoc field
+
+- [minor] 7a4950bf:
+
+  - Allow mutations: [{ schema: ..., resolver: ...}] to be specified in createList
+
+## 2.0.0
+
+- [minor] 5f891cff:
+
+  - Add a setupHooks method to BaseFieldAdapter
+
+- [minor] aca26f71:
+
+  - Expose access to GraphQL query method within hooks
+
+- [minor] 6471fc4a:
+
+  - Add fieldAdaptersByPath object to field adapters
+
+- [patch] 797dc862:
+
+  - Move itemsQueryMeta onto the base adapter class
+
+- [patch] 266b5733:
+
+  - Don't try to resolve nested mutations which will be later backfilled
+
+- [major] 48773907:
+
+  - Move findFieldAdapterForQuerySegment onto the BaseListAdapter
+
+- [minor] f37a8086:
+
+  - Can now dump the GraphQL schema with keystone.dumpSchema(filePath)
+
+- [patch] e6e3ea06:
+
+  - Explicitly check whether field types are supported by the adapter
+
+- [major] 860c3b80:
+
+  - Add a postConnect method to list adapters to capture all the work which needs to be done after the database has been connected to
+
+- Updated dependencies [723371a0]:
+- Updated dependencies [53e27d75]:
+- Updated dependencies [5f8043b5]:
+- Updated dependencies [a3d5454d]:
+  - @voussoir/access-control@0.4.1
+  - @voussoir/fields@3.0.0
+  - @voussoir/utils@1.0.0
+
 ## 1.1.0
 
 - [patch] 8d8666ad:

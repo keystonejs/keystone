@@ -74,6 +74,7 @@ keystone.createList('User', {
     },
     password: { type: Password },
     isAdmin: { type: Checkbox },
+    favouritePosts: { type: Relationship, ref: 'Post', many: true },
     company: {
       type: Select,
       options: [
@@ -124,11 +125,11 @@ keystone.createList('Post', {
     value: {
       type: Content,
       blocks: [
+        [CloudinaryImage.block, { adapter: cloudinaryAdapter }],
         Content.blocks.blockquote,
         Content.blocks.orderedList,
         Content.blocks.unorderedList,
         [Content.blocks.embed, { apiKey: process.env.EMBEDLY_API_KEY }],
-        Content.blocks.image,
         Content.blocks.link,
         Content.blocks.heading,
       ],
@@ -180,7 +181,7 @@ server.app.get('/reset-db', (req, res) => {
 server.app.use(staticRoute, server.express.static(staticPath));
 
 async function start() {
-  await keystone.connect();
+  await keystone.connect(process.env.MONGODB_URI);
   server.start();
   const users = await keystone.lists.User.adapter.findAll();
   if (!users.length) {

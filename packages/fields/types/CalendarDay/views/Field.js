@@ -21,16 +21,15 @@ export default class CalendarDayField extends Component {
       getYear(value) <= field.config.yearRangeTo &&
       getYear(value) >= field.config.yearRangeFrom
     ) {
-      onChange(field, value);
+      onChange(value);
     }
   };
 
   render() {
-    const { autoFocus, field, item } = this.props;
-    const value = item[field.path];
+    const { autoFocus, field, value } = this.props;
     const htmlID = `ks-input-${field.path}`;
-    const target = (
-      <Button autoFocus={autoFocus} id={htmlID} variant="ghost">
+    const target = props => (
+      <Button {...props} autoFocus={autoFocus} id={htmlID} variant="ghost">
         {value ? format(value, this.props.field.config.format || 'Do MMM YYYY') : 'Set Date'}
       </Button>
     );
