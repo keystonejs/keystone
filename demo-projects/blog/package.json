@@ -16,7 +16,7 @@
     "@emotion/styled": "^10.0.4",
     "@voussoir/adapter-mongoose": "^2.0.0",
     "@voussoir/admin-ui": "^1.0.0",
-    "@voussoir/core": "^2.0.0",
+    "@voussoir/keystone": "^0.0.0",
     "@voussoir/fields": "^3.0.0",
     "@voussoir/file-adapters": "^0.2.1",
     "@voussoir/server": "^1.0.0",

@@ -1,5 +1,5 @@
 // Keystone imports
-const { Keystone } = require('@voussoir/core');
+const { Keystone } = require('@voussoir/keystone');
 const { AdminUI } = require('@voussoir/admin-ui');
 const { Text } = require('@voussoir/fields');
 const { WebServer } = require('@voussoir/server');

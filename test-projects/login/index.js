@@ -1,8 +1,8 @@
 const { AdminUI } = require('@voussoir/admin-ui');
-const { Keystone } = require('@voussoir/core');
+const { Keystone } = require('@voussoir/keystone');
 const { Text, Password, Relationship } = require('@voussoir/fields');
 const { WebServer } = require('@voussoir/server');
-const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
+const PasswordAuthStrategy = require('@voussoir/keystone/auth/Password');
 const bodyParser = require('body-parser');
 
 const { port, staticRoute, staticPath } = require('./config');

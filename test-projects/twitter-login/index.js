@@ -1,5 +1,5 @@
 const { AdminUI } = require('@voussoir/admin-ui');
-const { Keystone } = require('@voussoir/core');
+const { Keystone } = require('@voussoir/keystone');
 const {
   File,
   Text,
@@ -10,7 +10,7 @@ const {
   CloudinaryImage,
 } = require('@voussoir/fields');
 const { WebServer } = require('@voussoir/server');
-const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
+const PasswordAuthStrategy = require('@voussoir/keystone/auth/Password');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
 
 const { twitterAuthEnabled, port, staticRoute, staticPath, cloudinary } = require('./config');

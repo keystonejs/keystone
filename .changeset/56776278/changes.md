@@ -1,0 +1,1 @@
+- Rename package core -> keystone

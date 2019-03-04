@@ -209,7 +209,7 @@ list used for authentication in `index.js`:
 const { Keystone }        = require('@voussoir/keystone');
 const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 const { Text, Password }  = require('@voussoir/fields');
-const PasswordAuth        = require('@voussoir/core/auth/Password');
+const PasswordAuth        = require('@voussoir/keystone/auth/Password');
 
 const keystone = new Keystone({
   name: 'Keystone With Auth',

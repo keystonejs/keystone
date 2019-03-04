@@ -1,6 +1,6 @@
 {
-  "name": "@voussoir/core",
-  "version": "2.1.0",
+  "name": "@voussoir/keystone",
+  "version": "0.0.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {

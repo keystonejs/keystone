@@ -1,5 +1,5 @@
 const { AdminUI } = require('@voussoir/admin-ui');
-const { Keystone } = require('@voussoir/core');
+const { Keystone } = require('@voussoir/keystone');
 const {
   File,
   Text,

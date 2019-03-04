@@ -3,7 +3,7 @@ const next = require('next');
 
 //imports for Keystone app core
 const { AdminUI } = require('@voussoir/admin-ui');
-const { Keystone } = require('@voussoir/core');
+const { Keystone } = require('@voussoir/keystone');
 const {
   File,
   Text,
@@ -16,7 +16,7 @@ const {
 } = require('@voussoir/fields');
 const { WebServer } = require('@voussoir/server');
 const { LocalFileAdapter } = require('@voussoir/file-adapters');
-const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
+const PasswordAuthStrategy = require('@voussoir/keystone/auth/Password');
 const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 
 // config
