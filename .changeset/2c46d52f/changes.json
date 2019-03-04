@@ -1,0 +1,7 @@
+{
+  "releases": [
+    { "name": "@voussoir/admin-ui", "type": "patch" },
+    { "name": "@voussoir/field-views-loader", "type": "patch" }
+  ],
+  "dependents": []
+}
