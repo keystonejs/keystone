@@ -41,11 +41,7 @@ class Select extends Implementation {
   }
 
   extendAdminMeta(meta) {
-    return {
-      ...meta,
-      options: this.options,
-      isRequired: !!this.config.isRequired,
-    };
+    return { ...meta, options: this.options };
   }
   get gqlQueryInputFields() {
     return [
