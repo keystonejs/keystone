@@ -6520,6 +6520,11 @@ decompress@^4.0.0, decompress@^4.2.0:
     pify "^2.3.0"
     strip-dirs "^2.0.0"
 
+dedent@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/dedent/-/dedent-0.7.0.tgz#2495ddbaf6eb874abb0e1be9df22d2e5a544326c"
+  integrity sha1-JJXduvbrh0q7Dhvp3yLS5aVEMmw=
+
 deep-equal@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
@@ -9174,10 +9179,10 @@ get-port@^3.0.0, get-port@^3.2.0:
   resolved "https://registry.yarnpkg.com/get-port/-/get-port-3.2.0.tgz#dd7ce7de187c06c8bf353796ac71e099f0980ebc"
   integrity sha1-3Xzn3hh8Bsi/NTeWrHHgmfCYDrw=
 
-get-port@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/get-port/-/get-port-4.0.0.tgz#373c85960138ee20027c070e3cb08019fea29816"
-  integrity sha512-Yy3yNI2oShgbaWg4cmPhWjkZfktEvpKI09aDX4PZzNtlU9obuYrX7x2mumQsrNxlF+Ls7OtMQW/u+X4s896bOQ==
+get-port@^4.1.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/get-port/-/get-port-4.2.0.tgz#e37368b1e863b7629c43c5a323625f95cf24b119"
+  integrity sha512-/b3jarXkH8KJoOMQc3uVGHASwGLPq3gSFJ7tgJm2diza+bydJPTGOibin2steecKeOylE8oY2JERlVWkAJO6yw==
 
 get-proxy@^2.0.0:
   version "2.1.0"
@@ -12414,7 +12419,7 @@ lodash.foreach@^4.3.0, lodash.foreach@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.foreach/-/lodash.foreach-4.5.0.tgz#1a6a35eace401280c7f06dddec35165ab27e3e53"
   integrity sha1-Gmo16s5AEoDH8G3d7DUWWrJ+PlM=
 
-lodash.get@4.4.2, lodash.get@^4.4.2:
+lodash.get@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
   integrity sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=
@@ -13729,10 +13734,10 @@ moment@^2.22.1:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
-mongodb-core@3.1.9:
-  version "3.1.9"
-  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-3.1.9.tgz#c31ee407bf932b0149eaed775c17ee09974e4ca3"
-  integrity sha512-MJpciDABXMchrZphh3vMcqu8hkNf/Mi+Gk6btOimVg1XMxLXh87j6FAvRm+KmwD1A9fpu3qRQYcbQe4egj23og==
+mongodb-core@3.1.11:
+  version "3.1.11"
+  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-3.1.11.tgz#b253038dbb4d7329f3d1c2ee5400bb0c9221fde5"
+  integrity sha512-rD2US2s5qk/ckbiiGFHeu+yKYDXdJ1G87F6CG3YdaZpzdOm5zpoAZd/EKbPmFO6cQZ+XVXBXBJ660sSI0gc6qg==
   dependencies:
     bson "^1.1.0"
     require_optional "^1.0.1"
@@ -13740,16 +13745,17 @@ mongodb-core@3.1.9:
   optionalDependencies:
     saslprep "^1.0.0"
 
-mongodb-memory-server@^2.7.4:
-  version "2.7.4"
-  resolved "https://registry.yarnpkg.com/mongodb-memory-server/-/mongodb-memory-server-2.7.4.tgz#08f48489606c6bcb219a898b06956ed9672734c8"
-  integrity sha512-oxMd9is2vPu+ORdnFqh6hVHwXyBPYeBPXlySG4Chl0uHMtx77HKDbcFDol9wz7ehhp2d3JJNLKsIJ8cpfGj6vA==
+mongodb-memory-server@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/mongodb-memory-server/-/mongodb-memory-server-3.1.2.tgz#5de1742770dc5aa4938b611bc64684ab5b68f9d4"
+  integrity sha512-3I3VwsbKALZsNj4GSvtF68LJZK3zHUfKqPbKU53AmiU745o0muJFJBI8v4AIsqeKPN5k9/5QVnXQWwt3NbfyJA==
   dependencies:
-    "@babel/runtime" "^7.1.2"
-    debug "^4.1.0"
+    "@babel/runtime" "^7.2.0"
+    debug "^4.1.1"
     decompress "^4.2.0"
+    dedent "^0.7.0"
     find-cache-dir "^2.0.0"
-    get-port "^4.0.0"
+    get-port "^4.1.0"
     getos "^3.1.1"
     https-proxy-agent "^2.2.1"
     lockfile "^1.0.4"
@@ -13758,12 +13764,12 @@ mongodb-memory-server@^2.7.4:
     tmp "^0.0.33"
     uuid "^3.2.1"
 
-mongodb@3.1.10, mongodb@^3.1.10:
-  version "3.1.10"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.1.10.tgz#45ad9b74ea376f4122d0881b75e5489b9e504ed7"
-  integrity sha512-Uml42GeFxhTGQVml1XQ4cD0o/rp7J2ROy0fdYUcVitoE7vFqEhKH4TYVqRDpQr/bXtCJVxJdNQC1ntRxNREkPQ==
+mongodb@3.1.13, mongodb@^3.1.13:
+  version "3.1.13"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.1.13.tgz#f8cdcbb36ad7a08b570bd1271c8525753f75f9f4"
+  integrity sha512-sz2dhvBZQWf3LRNDhbd30KHVzdjZx9IKC0L+kSZ/gzYquCF5zPOgGqRz6sSCqYZtKP2ekB4nfLxhGtzGHnIKxA==
   dependencies:
-    mongodb-core "3.1.9"
+    mongodb-core "3.1.11"
     safe-buffer "^5.1.2"
 
 mongoose-legacy-pluralize@1.0.2:
@@ -13771,21 +13777,20 @@ mongoose-legacy-pluralize@1.0.2:
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
   integrity sha512-Yo/7qQU4/EyIS8YDFSeenIvXxZN+ld7YdV9LqFVQJzTLye8unujAWPZ4NWKfFA+RNjh+wvTWKY9Z3E5XM6ZZiQ==
 
-mongoose@^5.3.15:
-  version "5.3.15"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.3.15.tgz#11a803a4ae640b0cce29a2579282ac9dd005c47a"
-  integrity sha512-51PchMQn2kFZYPSe0vfr8RcJxm6g7RokfcVl2xVORogtT5GUKu6RgnRXsUV7v9vZ+b3Wh//ph53kuIyhtXi56g==
+mongoose@^5.4.16:
+  version "5.4.17"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.4.17.tgz#354c4fef04ea7a3d10ddbd0dd9cb4a40d9d135b8"
+  integrity sha512-9aAg8M0YUmGHQRDYvsKJ02wx/Qaof1Jn2iDH21ZtWGAZpQt9uVLNEOdcBuzi+lPJwGbLYh2dphdKX0sZ+dXAJQ==
   dependencies:
     async "2.6.1"
     bson "~1.1.0"
     kareem "2.3.0"
-    lodash.get "4.4.2"
-    mongodb "3.1.10"
-    mongodb-core "3.1.9"
+    mongodb "3.1.13"
+    mongodb-core "3.1.11"
     mongoose-legacy-pluralize "1.0.2"
     mpath "0.5.1"
     mquery "3.2.0"
-    ms "2.0.0"
+    ms "2.1.1"
     regexp-clone "0.0.1"
     safe-buffer "5.1.2"
     sliced "1.0.1"
@@ -13843,7 +13848,7 @@ ms@2.0.0:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
   integrity sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=
 
-ms@^2.1.1:
+ms@2.1.1, ms@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.1.tgz#30a5864eb3ebb0a66f2ebe6d727af06a09d86e0a"
   integrity sha512-tgp+dl5cGk28utYktBsrFqA7HKgrhgPsg6Z/EfhWI4gl1Hwq8B/GmY/0oXZ6nF8hDVesS/FpnYaD/kOWhYQvyg==
