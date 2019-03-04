@@ -1,0 +1,11 @@
+{
+  "releases": [
+    { "name": "@voussoir/adapter-mongoose", "type": "patch" },
+    { "name": "@voussoir/fields", "type": "patch" },
+    { "name": "@voussoir/mongo-join-builder", "type": "patch" },
+    { "name": "@voussoir/test-utils", "type": "patch" },
+    { "name": "@voussoir/cypress-project-access-control", "type": "patch" },
+    { "name": "@voussoir/cypress-project-basic", "type": "patch" }
+  ],
+  "dependents": []
+}
