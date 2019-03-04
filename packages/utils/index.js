@@ -1,4 +1,5 @@
 const pLazy = require('p-lazy');
+const pReflect = require('p-reflect');
 
 const camelize = (exports.camelize = str =>
   // split the string into words, lowercase the leading character of the first word,
@@ -7,16 +8,16 @@ const camelize = (exports.camelize = str =>
   str
     .split(' ')
     .filter(w => w)
-    .map(
-      (w, i) =>
-        i === 0
-          ? w === w.toUpperCase()
-            ? w.toLowerCase()
-            : w.replace(/\S/, c => c.toLowerCase())
-          : w.replace(/\S/, c => c.toUpperCase())
+    .map((w, i) =>
+      i === 0
+        ? w === w.toUpperCase()
+          ? w.toLowerCase()
+          : w.replace(/\S/, c => c.toLowerCase())
+        : w.replace(/\S/, c => c.toUpperCase())
     )
     .join(''));
 
+exports.noop = exports.identity = x => x;
 exports.getType = thing => Object.prototype.toString.call(thing).replace(/\[object (.*)\]/, '$1');
 
 exports.fixConfigKeys = (config, remapKeys = {}) => {
@@ -50,13 +51,33 @@ exports.mapKeyNames = (obj, func) =>
   );
 
 exports.resolveAllKeys = obj => {
-  const result = {};
+  const returnValue = {};
+  const errors = {};
+
   const allPromises = Object.keys(obj).map(key =>
-    Promise.resolve(obj[key]).then(val => {
-      result[key] = val;
+    pReflect(obj[key]).then(val => {
+      if (val.isFulfilled) {
+        returnValue[key] = val.value;
+      } else if (val.isRejected) {
+        errors[key] = val.reason;
+      }
+
+      return val;
     })
   );
-  return Promise.all(allPromises).then(() => result);
+
+  return Promise.all(allPromises).then(results => {
+    // If there are any errors, we want to surface them in the same shape as the
+    // input object
+    if (Object.keys(errors).length) {
+      const firstError = results.find(({ isRejected }) => isRejected).reason;
+      // Use the first error as the message so it's at least meaningful
+      const error = new Error(firstError.message || firstError.toString());
+      error.errors = errors;
+      throw error;
+    }
+    return returnValue;
+  });
 };
 
 exports.unique = arr => [...new Set(arr)];
@@ -67,8 +88,9 @@ exports.intersection = (array1, array2) =>
 exports.pick = (obj, keys) =>
   keys.reduce((acc, key) => (key in obj ? { ...acc, [key]: obj[key] } : acc), {});
 
-exports.omit = (obj, keys) =>
-  exports.pick(obj, Object.keys(obj).filter(value => !keys.includes(value)));
+exports.omitBy = (obj, func) => exports.pick(obj, Object.keys(obj).filter(value => !func(value)));
+
+exports.omit = (obj, keys) => exports.omitBy(obj, value => keys.includes(value));
 
 // [{ k1: v1, k2: v2, ...}, { k3: v3, k4: v4, ...}, ...] => { k1: v1, k2: v2, k3: v3, k4, v4, ... }
 // Gives priority to the objects which appear later in the list
@@ -92,6 +114,15 @@ exports.arrayToObject = (objs, keyedBy, mapFn = i => i) =>
 
 // [[1, 2, 3], [4, 5], 6, [[7, 8], [9, 10]]] => [1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]
 exports.flatten = arr => Array.prototype.concat(...arr);
+
+// flatMap([{ vals: [2, 2] }, { vals: [3] }], x => x.vals) => [2, 2, 3]
+exports.flatMap = (arr, fn = exports.identity) => exports.flatten(arr.map(fn));
+
+// { foo: [1, 2, 3], bar: [4, 5, 6]} => [{ foo: 1, bar; 4}, { foo: 2, bar: 5}, { foo: 3, bar: 6 }]
+exports.zipObj = obj =>
+  Object.values(obj)[0].map((_, i) =>
+    Object.keys(obj).reduce((acc, k) => ({ ...acc, [k]: obj[k][i] }), {})
+  );
 
 exports.mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
   if (

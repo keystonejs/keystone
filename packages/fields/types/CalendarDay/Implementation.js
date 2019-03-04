@@ -2,6 +2,7 @@ const parse = require('date-fns/parse');
 const format = require('date-fns/format');
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 class CalendarDay extends Implementation {
   constructor() {
@@ -13,14 +14,9 @@ class CalendarDay extends Implementation {
   }
   get gqlQueryInputFields() {
     return [
-      `${this.path}: String`,
-      `${this.path}_not: String`,
-      `${this.path}_lt: String`,
-      `${this.path}_lte: String`,
-      `${this.path}_gt: String`,
-      `${this.path}_gte: String`,
-      `${this.path}_in: [String]`,
-      `${this.path}_not_in: [String]`,
+      ...this.equalityInputFields('String'),
+      ...this.orderingInputFields('String'),
+      ...this.inInputFields('String'),
     ];
   }
   get gqlUpdateInputFields() {
@@ -30,50 +26,61 @@ class CalendarDay extends Implementation {
     return [`${this.path}: String`];
   }
   extendAdminMeta(meta) {
-    return { ...meta, format: this.config.format };
+    return {
+      ...meta,
+      format: this.config.format,
+      yearRangeFrom: this.config.yearRangeFrom,
+      yearRangeTo: this.config.yearRangeTo,
+      yearPickerType: this.config.yearPickerType,
+    };
   }
 }
 
-class MongoCalendarDayInterface extends MongooseFieldAdapter {
+const CommonCalendarInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.orderingConditions(dbPath),
+        ...this.inConditions(dbPath),
+      };
+    }
+  };
+
+class MongoCalendarDayInterface extends CommonCalendarInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
-    const required = mongooseOptions && mongooseOptions.required;
+    const { mongooseOptions = {} } = this.config;
+    const { isRequired } = mongooseOptions;
 
-    const isValidDate = s => format(parse(s), 'YYYY-MM-DD') === s;
-
-    schema.add({
-      [this.path]: {
-        type: String,
-        validate: {
-          validator: required
-            ? isValidDate
-            : a => {
-                if (typeof a === 'string' && isValidDate(a)) return true;
-                if (typeof a === 'undefined' || a === null) return true;
-                return false;
-              },
-          message: '{VALUE} is not an ISO8601 date string (YYYY-MM-DD)',
-        },
-        ...mongooseOptions,
+    const validator = a => typeof a === 'string' && format(parse(a), 'YYYY-MM-DD') === a;
+    const schemaOptions = {
+      type: String,
+      validate: {
+        validator: this.buildValidator(validator, isRequired),
+        message: '{VALUE} is not an ISO8601 date string (YYYY-MM-DD)',
       },
-    });
+    };
+    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
+  }
+}
+
+class KnexCalendarDayInterface extends CommonCalendarInterface(KnexFieldAdapter) {
+  createColumn(table) {
+    return table.date(this.path);
   }
 
-  getQueryConditions() {
-    return {
-      [this.path]: value => ({ [this.path]: { $eq: value } }),
-      [`${this.path}_not`]: value => ({ [this.path]: { $ne: value } }),
-      [`${this.path}_lt`]: value => ({ [this.path]: { $lt: value } }),
-      [`${this.path}_lte`]: value => ({ [this.path]: { $lte: value } }),
-      [`${this.path}_gt`]: value => ({ [this.path]: { $gt: value } }),
-      [`${this.path}_gte`]: value => ({ [this.path]: { $gte: value } }),
-      [`${this.path}_in`]: value => ({ [this.path]: { $in: value } }),
-      [`${this.path}_not_in`]: value => ({ [this.path]: { $not: { $in: value } } }),
-    };
+  setupHooks({ addPostReadHook }) {
+    addPostReadHook(item => {
+      if (item[this.path]) {
+        item[this.path] = format(item[this.path], 'YYYY-MM-DD');
+      }
+      return item;
+    });
   }
 }
 
 module.exports = {
   CalendarDay,
   MongoCalendarDayInterface,
+  KnexCalendarDayInterface,
 };

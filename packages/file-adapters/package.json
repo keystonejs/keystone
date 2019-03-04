@@ -1,13 +1,13 @@
 {
   "name": "@voussoir/file-adapters",
-  "version": "0.1.3",
+  "version": "0.2.1",
   "description": "Adapters for handling storage of the File type",
   "main": "index.js",
   "repository": "https://github.com/keystonejs/keystone-5.git",
   "author": "Jess Telford <hi+npm@jes.st>",
   "license": "MIT",
   "dependencies": {
-    "cloudinary": "^1.11.0",
+    "cloudinary": "^1.13.2",
     "mkdirp": "^0.5.1"
   }
 }

@@ -75,10 +75,10 @@ Then install the dependencies and start the test project:
 
 ```sh
 bolt
-bolt start
+bolt start {name of project folder}
 ```
 
-_(This will start the project located in `projects/basic`)_
+_(Running `bolt start` will start the project located in `demo-projects/todo` by default)_
 
 ## Contributing
 
@@ -118,7 +118,7 @@ bolt coverage
 ### End-to-End Tests
 
 Keystone tests end-to-end functionality with the help of [Cypress](https://www.cypress.io).
-Each project (ie; `projects/basic`, `projects/login`, etc) have their own set of Cypress tests.
+Each project (ie; `test-projects/basic`, `test-projects/login`, etc) have their own set of Cypress tests.
 To run an individual project's tests, `cd` into that directory and run:
 
 ```sh
@@ -129,7 +129,7 @@ Cypress can be run in interactive mode from project directories with its built i
 which is useful when developing and debugging tests:
 
 ```sh
-cd projects/basic && bolt cypress:open
+cd test-projects/basic && bolt cypress:open
 ```
 
 End-to-end tests live in `project/**/cypress/integration/*spec.js`.
@@ -201,7 +201,7 @@ We're not ready to make promises about breaking changes, stability or feature co
 Having said that; we _are_ using Keystone 5 for a limited number of applications in production, and this is how:
 
 - Create a **private** fork of the repo
-- Make a copy of `./projects/basic` and use it as the basis for the project
+- Make a copy of `./demo-projects/todo` and use it as the basis for the project
 - Update the `start` script to run your project
 - Pull upstream changes as needed
 

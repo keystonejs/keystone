@@ -1,28 +1,23 @@
 // @flow
 
-import React, { Component } from 'react';
+import React, { Component, type Node } from 'react';
 import RelationshipSelect from './RelationshipSelect';
 import type { FilterProps } from '../../../types';
 
 type Props = FilterProps<null | string>;
 
-const EventCatcher = props => (
+const EventCatcher = ({ children }: { children: Node }) => (
   <div
     onClick={e => {
       e.preventDefault();
       e.stopPropagation();
     }}
-    {...props}
-  />
+  >
+    {children}
+  </div>
 );
 
 export default class RelationshipFilterView extends Component<Props> {
-  componentDidUpdate(prevProps: Props) {
-    const { filter } = this.props;
-    if (prevProps.filter !== filter) {
-      this.props.recalcHeight();
-    }
-  }
   handleChange = (option: null | { value: { id: string } }) => {
     const { onChange } = this.props;
     if (option === null) {
@@ -44,8 +39,7 @@ export default class RelationshipFilterView extends Component<Props> {
       <EventCatcher>
         <RelationshipSelect
           field={field}
-          item={null}
-          itemErrors={{}}
+          value={null}
           renderContext={null}
           htmlID={htmlID}
           onChange={this.handleChange}

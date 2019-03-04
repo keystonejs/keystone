@@ -1,5 +1,6 @@
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 const bcrypt = require('bcrypt');
 const dumbPasswords = require('dumb-passwords');
@@ -31,7 +32,9 @@ class Password extends Implementation {
     return {
       [`${this.path}_is_set`]: item => {
         const val = item[this.path];
-        return bcryptHashRegex.test(val);
+        return !!val;
+        // FIXME: Re-enable this test once bcrypt for Knex is supported.
+        // return bcryptHashRegex.test(val);
       },
     };
   }
@@ -84,66 +87,54 @@ class Password extends Implementation {
   }
 }
 
-class MongoPasswordInterface extends MongooseFieldAdapter {
-  // constructor(fieldName, path, listAdapter, getListByKey, config) {
+const CommonPasswordInterface = superclass =>
+  class extends superclass {
+    setupHooks({ addPreSaveHook }) {
+      // Updates the relevant value in the item provided (by referrence)
+      addPreSaveHook(async item => {
+        const list = this.getListByKey(this.listAdapter.key);
+        const field = list.fieldsByPath[this.path];
+        const plaintext = item[field.path];
 
+        if (typeof plaintext === 'undefined') {
+          return item;
+        }
+
+        if (String(plaintext) === plaintext && plaintext !== '') {
+          item[field.path] = await field.generateHash(plaintext);
+        } else {
+          item[field.path] = null;
+        }
+        return item;
+      });
+    }
+  };
+
+class MongoPasswordInterface extends CommonPasswordInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
-    schema.add({
-      [this.path]: { type: String, ...mongooseOptions },
-    });
-
-    // Updates the relevant value in the item provided (by referrence)
-    const hashFieldValue = async item => {
-      const list = this.getListByKey(this.listAdapter.key);
-      const field = list.fieldsByPath[this.path];
-      const plaintext = item[field.path];
-
-      if (typeof plaintext === 'undefined') {
-        return;
-      }
-
-      if (String(plaintext) === plaintext && plaintext !== '') {
-        item[field.path] = await field.generateHash(plaintext);
-      } else {
-        item[field.path] = null;
-      }
-    };
-
-    // Attach various pre save/update hooks to hash the password value
-    schema.pre('save', async function() {
-      await hashFieldValue(this);
-    });
-
-    // These are "Query middleware"; they differ from "document" middleware..
-    // ".. `this` refers to the query object rather than the document being updated."
-    schema.pre('update', async function() {
-      await hashFieldValue(this['_update'].$set || this['_update']);
-    });
-    schema.pre('updateOne', async function() {
-      await hashFieldValue(this['_update'].$set || this['_update']);
-    });
-    schema.pre('updateMany', async function() {
-      await hashFieldValue(this['_update'].$set || this['_update']);
-    });
-    schema.pre('findOneAndUpdate', async function() {
-      await hashFieldValue(this['_update'].$set || this['_update']);
-    });
-
-    // Model middleware
-    // Docs as second arg? (https://github.com/Automattic/mongoose/commit/3d62d3558c15ec852bdeaab1a5138b1853b4f7cb)
-    schema.pre('insertMany', async function(next, docs) {
-      for (let doc of docs) {
-        await hashFieldValue(doc);
-      }
-    });
+    schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
   }
 
-  getQueryConditions() {
+  getQueryConditions(dbPath) {
     return {
       [`${this.path}_is_set`]: value => ({
-        [this.path]: value ? { $regex: bcryptHashRegex } : { $not: bcryptHashRegex },
+        [dbPath]: value ? { $regex: bcryptHashRegex } : { $not: bcryptHashRegex },
       }),
+    };
+  }
+}
+
+class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdapter) {
+  createColumn(table) {
+    return table.text(this.path);
+  }
+
+  getQueryConditions(dbPath) {
+    return {
+      [`${this.path}_is_set`]: value => b =>
+        value
+          ? b.where(dbPath, '~', bcryptHashRegex.source)
+          : b.where(dbPath, '!~', bcryptHashRegex.source).orWhereNull(dbPath),
     };
   }
 }
@@ -151,4 +142,5 @@ class MongoPasswordInterface extends MongooseFieldAdapter {
 module.exports = {
   Password,
   MongoPasswordInterface,
+  KnexPasswordInterface,
 };

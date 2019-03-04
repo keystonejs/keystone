@@ -3,9 +3,9 @@
 import React, { Fragment, type ComponentType, type Node, type Ref } from 'react';
 import styled from '@emotion/styled';
 
-import { Button } from '@voussoir/ui/src/primitives/buttons';
-import { Popout as PopoutModal } from '@voussoir/ui/src/primitives/modals';
-import { gridSize } from '@voussoir/ui/src/theme';
+import { Button } from '@arch-ui/button';
+import PopoutModal from '@arch-ui/popout';
+import { gridSize } from '@arch-ui/theme';
 
 export const POPOUT_GUTTER = gridSize * 2;
 
@@ -89,8 +89,8 @@ export const Popout = ({
   target,
   ...props
 }: Props) => {
-  const defaultTarget = (
-    <Button>
+  const defaultTarget = props => (
+    <Button {...props}>
       {buttonLabel}
       <DisclosureArrow />
     </Button>

@@ -1,13 +1,14 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
 import { Component, Fragment } from 'react';
+import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import * as icons from '@voussoir/icons';
 
-import { Grid, Cell } from '@voussoir/ui/src/primitives/layout';
-import { colors } from '@voussoir/ui/src/theme';
-import { Kbd } from '@voussoir/ui/src/primitives/typography';
+import CopyToClipboard from '../../components/CopyToClipboard';
+
+import * as icons from '@arch-ui/icons';
+import { Grid, Cell } from '@arch-ui/layout';
+import { colors } from '@arch-ui/theme';
+import { Kbd } from '@arch-ui/typography';
 
 const Instructions = styled('div')`
   color: ${colors.N60};
@@ -63,14 +64,12 @@ export default class IconsGuide extends Component {
     if (e.key !== 'Alt') return;
     this.setState({ altIsDown: false });
   };
-  handleCopy = (text, success) => {
-    if (success) {
-      this.setState({ copyText: text }, () => {
-        setTimeout(() => {
-          this.setState({ copyText: '' });
-        }, 500);
-      });
-    }
+  handleCopy = text => () => {
+    this.setState({ copyText: text }, () => {
+      setTimeout(() => {
+        this.setState({ copyText: '' });
+      }, 500);
+    });
   };
   render() {
     const { altIsDown, copyText } = this.state;
@@ -86,22 +85,24 @@ export default class IconsGuide extends Component {
         )}
         <Grid gap={16}>
           {Object.keys(icons).map(name => {
-            const importText = altIsDown ? `import { ${name} } from '@voussoir/icons';` : name;
+            const importText = altIsDown ? `import { ${name} } from '@arch-ui/icons';` : name;
             const isCopied = copyText === importText;
             const Icon = isCopied ? icons.CheckIcon : icons[name];
             return (
               <Cell width={2} key={name}>
-                <CopyToClipboard text={importText} onCopy={this.handleCopy}>
-                  <IconContainer>
-                    <Icon
-                      css={{
-                        fill: isCopied ? `${colors.create} !important` : 'inherit',
-                        width: 24,
-                        height: 24,
-                      }}
-                    />
-                    <IconName className="icon-text">{isCopied ? 'Copied!' : name}</IconName>
-                  </IconContainer>
+                <CopyToClipboard
+                  as={IconContainer}
+                  text={importText}
+                  onSuccess={this.handleCopy(importText)}
+                >
+                  <Icon
+                    css={{
+                      fill: isCopied ? `${colors.create} !important` : 'inherit',
+                      width: 24,
+                      height: 24,
+                    }}
+                  />
+                  <IconName className="icon-text">{isCopied ? 'Copied!' : name}</IconName>
                 </CopyToClipboard>
               </Cell>
             );

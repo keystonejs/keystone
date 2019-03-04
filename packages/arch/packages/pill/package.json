@@ -1,0 +1,21 @@
+{
+  "name": "@arch-ui/pill",
+  "version": "0.0.1",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "main": "dist/pill.cjs.js",
+  "peerDependencies": {
+    "react": "^16.8.0"
+  },
+  "devDependencies": {
+    "react": "^16.8.0"
+  },
+  "dependencies": {
+    "@arch-ui/icons": "^0.0.1",
+    "@arch-ui/theme": "0.0.1",
+    "@babel/runtime": "^7.2.0",
+    "@emotion/core": "^10.0.4",
+    "@emotion/styled": "^10.0.4"
+  },
+  "module": "dist/pill.esm.js"
+}

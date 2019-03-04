@@ -5,7 +5,6 @@ class MockFieldAdapter {}
 
 class MockListAdapter {
   newFieldAdapter = () => new MockFieldAdapter();
-  prepareModel = () => {};
 }
 
 const mockFilterFragment = ['first: Int'];
@@ -91,7 +90,7 @@ describe('Type Generation', () => {
     });
 
     // We're testing the AST is as we expect it to be
-    expect(gql(relationship.gqlAuxTypes.join('\n'))).toMatchObject({
+    expect(gql(relationship.getGqlAuxTypes().join('\n'))).toMatchObject({
       definitions: [
         {
           kind: 'InputObjectTypeDefinition',
@@ -156,7 +155,7 @@ describe('Type Generation', () => {
     });
 
     // We're testing the AST is as we expect it to be
-    expect(gql(relationship.gqlAuxTypes.join('\n'))).toMatchObject({
+    expect(gql(relationship.getGqlAuxTypes().join('\n'))).toMatchObject({
       definitions: [
         {
           kind: 'InputObjectTypeDefinition',
@@ -311,6 +310,50 @@ describe('Type Generation', () => {
               type: {
                 name: {
                   value: '_QueryMeta',
+                },
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(fieldAST.definitions[0].fields[0].arguments).toHaveLength(1);
+  });
+
+  test('to-many relationships can have meta disabled', () => {
+    const path = 'foo';
+
+    const relationship = createRelationship({
+      path,
+      config: { many: true, ref: 'Zip', withMeta: false },
+    });
+
+    // Wrap it in a mock type because all we get back is the fields
+    const fieldSchema = `
+      type MockType {
+        ${relationship.gqlOutputFields.join('\n')}
+      }
+    `;
+
+    const fieldAST = gql(fieldSchema);
+
+    expect(fieldAST).toMatchObject({
+      definitions: [
+        {
+          fields: [
+            {
+              kind: 'FieldDefinition',
+              name: {
+                value: 'foo',
+              },
+              arguments: mockFilterAST,
+              type: {
+                kind: 'ListType',
+                type: {
+                  name: {
+                    value: 'Zip',
+                  },
                 },
               },
             },

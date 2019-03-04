@@ -1,108 +1,81 @@
-import { format, setMonth, setYear } from 'date-fns';
-import { DateTime } from 'luxon';
-import React, { Component } from 'react';
+// @flow
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { format } from 'date-fns';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
-import { Button } from '@voussoir/ui/src/primitives/buttons';
-import { DateTimePicker } from '@voussoir/ui/src/primitives/forms';
-import { Popout } from '@voussoir/ui/src/primitives/modals';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { Button } from '@arch-ui/button';
+import { DayTimePicker } from '@arch-ui/day-picker';
+import Popout from '@arch-ui/popout';
+import { gridSize } from '@arch-ui/theme';
+import { parseDate, stringifyDate } from './utils';
 
-export default class CalendarDayField extends Component {
-  constructor(props) {
-    super(props);
-    const { item, field } = props;
-    const value = item[field.path];
-    const dt = DateTime.fromISO(value, { setZone: true });
-    this.state = {
-      date: value && dt.toFormat('yyyy-LL-dd'),
-      time: value && dt.toFormat('HH:mm:ss.SSS'),
-      offset: value && dt.toFormat('ZZ'),
-    };
-  }
+type Props = {
+  onChange: (value: string | null) => mixed,
+  autoFocus: boolean,
+  field: Object,
+  value: string,
+};
 
-  handleDayChange = day => {
-    const { field, onChange } = this.props;
-    const newState = { ...this.state, date: format(day, 'YYYY-MM-DD') };
-    onChange(field, `${newState.date}T${newState.time}${newState.offset}`);
-    this.setState(newState);
+const CalendarDayField = ({ autoFocus, field, onChange, value }: Props) => {
+  const parsedDate = value ? parseDate(value) : { date: '', time: '', offset: '' };
+  const defaultDate = new Date();
+
+  defaultDate.setUTCHours(0);
+  defaultDate.setUTCMinutes(0);
+  defaultDate.setUTCSeconds(0);
+  defaultDate.setUTCMilliseconds(0);
+
+  const defaultParsedDate = value ? parseDate(value) : parseDate(defaultDate.toISOString());
+
+  let handleDayChange = day => {
+    onChange(stringifyDate({ ...defaultParsedDate, date: format(day, 'YYYY-MM-DD') }));
   };
 
-  handleTimeChange = event => {
-    const { field, onChange } = this.props;
-    const newState = { ...this.state, time: event.target.value };
-    onChange(field, `${newState.date}T${newState.time}${newState.offset}`);
-    this.setState(newState);
+  let handleTimeChange = event => {
+    onChange(stringifyDate({ ...defaultParsedDate, time: event.target.value }));
   };
 
-  handleOffsetChange = event => {
-    const { field, onChange } = this.props;
-    const newState = { ...this.state, offset: event.value };
-    onChange(field, `${newState.date}T${newState.time}${newState.offset}`);
-    this.setState(newState);
+  let handleOffsetChange = offset => {
+    onChange(stringifyDate({ ...defaultParsedDate, offset }));
   };
 
-  handleMonthSelect = (event, setDate, setSelectedDate) => {
-    const { field, onChange } = this.props;
-    const month = event.target.value;
-    const newDate = setMonth(this.state.date, month);
-    const value = format(newDate, 'YYYY-MM-DD');
-    setDate(newDate);
-    setSelectedDate(newDate);
-    this.setState({ date: value });
-    onChange(field, value);
-  };
+  const { date, time, offset } = parsedDate;
 
-  handleYearSelect = (event, setDate, setSelectedDate) => {
-    const { field, onChange } = this.props;
-    const year = event.target.value;
-    const newDate = setYear(this.state.date, year);
-    const value = format(newDate, 'YYYY-MM-DD');
-    setDate(newDate);
-    setSelectedDate(newDate);
-    this.setState({ date: value });
-    onChange(field, value);
-  };
+  const htmlID = `ks-input-${field.path}`;
+  const target = props => (
+    <Button {...props} autoFocus={autoFocus} id={htmlID} variant="ghost">
+      {value
+        ? format(date + ' ' + time + offset, field.config.format || 'Do MMM YYYY')
+        : 'Set Date & Time'}
+    </Button>
+  );
 
-  render() {
-    const { autoFocus, field } = this.props;
-    const { date, time, offset } = this.state;
-    const htmlID = `ks-input-${field.path}`;
-    const target = (
-      <Button autoFocus={autoFocus} id={htmlID} variant="ghost">
-        {date
-          ? format(date + ' ' + time + offset, this.props.field.config.format || 'Do MMM YYYY')
-          : 'Set Date & Time'}
-      </Button>
-    );
-
-    const {
-      handleDayChange,
-      handleTimeChange,
-      handleOffsetChange,
-      handleMonthSelect,
-      handleYearSelect,
-    } = this;
-    return (
-      <FieldContainer>
-        <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
-        <FieldInput>
-          <Popout target={target} width={280}>
-            <DateTimePicker
-              {...this.props}
+  return (
+    <FieldContainer>
+      <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+      <FieldInput>
+        <Popout target={target} width={280}>
+          <div css={{ padding: gridSize }}>
+            <DayTimePicker
               {...{
+                htmlID: htmlID + '-picker',
                 date,
                 time,
                 offset,
                 handleDayChange,
                 handleTimeChange,
                 handleOffsetChange,
-                handleMonthSelect,
-                handleYearSelect,
+                yearRangeFrom: field.config.yearRangeFrom,
+                yearRangeTo: field.config.yearRangeTo,
+                yearPickerType: field.config.yearPickerType,
               }}
             />
-          </Popout>
-        </FieldInput>
-      </FieldContainer>
-    );
-  }
-}
+          </div>
+        </Popout>
+      </FieldInput>
+    </FieldContainer>
+  );
+};
+
+export default CalendarDayField;

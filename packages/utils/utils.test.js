@@ -16,6 +16,8 @@ const {
   defaultObj,
   arrayToObject,
   flatten,
+  flatMap,
+  ...utils
 } = require('./index');
 
 describe('utils', () => {
@@ -225,6 +227,32 @@ describe('utils', () => {
     expect(flatten([1, 2, 3])).toEqual([1, 2, 3]);
     expect(flatten([[1, 2, 3]])).toEqual([1, 2, 3]);
     expect(flatten(a)).toEqual([1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]);
+  });
+
+  test('flatMap', () => {
+    expect(flatMap([])).toEqual([]);
+    expect(flatMap([1, 2, 3])).toEqual([1, 2, 3]);
+    expect(flatMap([[1, 2, 3]])).toEqual([1, 2, 3]);
+    expect(flatMap([[1, 2, 3], [4, 5], 6, [[7, 8], [9, 10]]])).toEqual([
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      [7, 8],
+      [9, 10],
+    ]);
+    expect(flatMap([{ vals: [2, 2] }, { vals: [3] }], x => x.vals)).toEqual([2, 2, 3]);
+  });
+
+  ['noop', 'identity'].forEach(fnName => {
+    test(fnName, () => {
+      expect(utils[fnName]()).toEqual(undefined);
+      expect(utils[fnName]('hello')).toEqual('hello');
+      const input = { bar: 'zip' };
+      expect(utils[fnName](input)).toEqual(input);
+    });
   });
 
   test('mergeWhereClause', () => {

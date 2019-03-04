@@ -1,16 +1,21 @@
+const {
+  CalendarDay,
+  MongoCalendarDayInterface,
+  KnexCalendarDayInterface,
+} = require('./Implementation');
 const path = require('path');
-const { CalendarDay, MongoCalendarDayInterface } = require('./Implementation');
 
 module.exports = {
   type: 'CalendarDay',
   implementation: CalendarDay,
   views: {
-    Controller: path.resolve(__dirname, './Controller'),
-    Field: path.resolve(__dirname, './views/Field'),
-    Filter: path.resolve(__dirname, './views/Filter'),
-    Cell: path.resolve(__dirname, './views/Cell'),
+    Controller: path.join(__dirname, './Controller'),
+    Field: path.join(__dirname, './views/Field'),
+    Filter: path.join(__dirname, './views/Filter'),
+    Cell: path.join(__dirname, './views/Cell'),
   },
   adapters: {
     mongoose: MongoCalendarDayInterface,
+    knex: KnexCalendarDayInterface,
   },
 };

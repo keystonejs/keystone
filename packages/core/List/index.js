@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 const pluralize = require('pluralize');
 
 const {
@@ -10,29 +11,40 @@ const {
   objMerge,
   arrayToObject,
   flatten,
+  zipObj,
   createLazyDeferred,
 } = require('@voussoir/utils');
 
-const { parseListAccess, testListAccessControl } = require('@voussoir/access-control');
+const { parseListAccess } = require('@voussoir/access-control');
 
 const logger = require('@voussoir/logger');
 
-const { Text, Checkbox, Float } = require('@voussoir/fields');
+const { Text, Checkbox, Float, Relationship } = require('@voussoir/fields');
 
+const gql = require('graphql-tag');
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
 
-const { AccessDeniedError } = require('./graphqlErrors');
+const { AccessDeniedError, ValidationFailureError } = require('./graphqlErrors');
 
 const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
 
-const keyToLabel = str =>
-  str
+const preventInvalidUnderscorePrefix = str => str.replace(/^__/, '_');
+
+const keyToLabel = str => {
+  let label = str
     .replace(/([a-z])([A-Z])/g, '$1 $2')
     .split(/\s|_|\-/)
     .filter(i => i)
     .map(upcase)
     .join(' ');
+
+  // Retain the leading underscore for auxiliary lists
+  if (str[0] === '_') {
+    label = `_${label}`;
+  }
+  return label;
+};
 
 const labelToPath = str =>
   str
@@ -66,7 +78,14 @@ const nativeTypeMap = new Map([
   ],
 ]);
 
-const mapNativeTypeToKeystonType = (type, listKey, fieldPath) => {
+const opToType = {
+  read: 'query',
+  create: 'mutation',
+  update: 'mutation',
+  delete: 'mutation',
+};
+
+const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
   if (!nativeTypeMap.has(type)) {
     return type;
   }
@@ -84,7 +103,11 @@ const mapNativeTypeToKeystonType = (type, listKey, fieldPath) => {
 };
 
 module.exports = class List {
-  constructor(key, config, { getListByKey, adapter, defaultAccess, getAuth }) {
+  constructor(
+    key,
+    config,
+    { getListByKey, getGraphQLQuery, adapter, defaultAccess, getAuth, createAuxList, isAuxList }
+  ) {
     this.key = key;
 
     // 180814 JM TODO: Since there's no access control specified, this implicitly makes name, id or {labelField} readable by all (probably bad?)
@@ -99,12 +122,15 @@ module.exports = class List {
     };
     this.config = {
       labelResolver: item => item[config.labelField || 'name'] || item.id,
+      hooks: {},
       ...config,
     };
 
+    this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
     this.getAuth = getAuth;
+    this.createAuxList = createAuxList;
 
     const label = keyToLabel(key);
     const singular = pluralize.singular(label);
@@ -131,20 +157,25 @@ module.exports = class List {
       itemQueryName: itemQueryName,
       listQueryName: `all${listQueryName}`,
       listQueryMetaName: `_all${listQueryName}Meta`,
-      listMetaName: `_${listQueryName}Meta`,
+      listMetaName: preventInvalidUnderscorePrefix(`_${listQueryName}Meta`),
       authenticatedQueryName: `authenticated${itemQueryName}`,
       deleteMutationName: `delete${itemQueryName}`,
-      deleteManyMutationName: `delete${listQueryName}`,
       updateMutationName: `update${itemQueryName}`,
       createMutationName: `create${itemQueryName}`,
+      deleteManyMutationName: `delete${listQueryName}`,
+      updateManyMutationName: `update${listQueryName}`,
+      createManyMutationName: `create${listQueryName}`,
       whereInputName: `${itemQueryName}WhereInput`,
       whereUniqueInputName: `${itemQueryName}WhereUniqueInput`,
       updateInputName: `${itemQueryName}UpdateInput`,
       createInputName: `${itemQueryName}CreateInput`,
+      updateManyInputName: `${listQueryName}UpdateInput`,
+      createManyInputName: `${listQueryName}CreateInput`,
       relateToManyInputName: `${itemQueryName}RelateToManyInput`,
       relateToOneInputName: `${itemQueryName}RelateToOneInput`,
     };
 
+    this.adapterName = adapter.name;
     this.adapter = adapter.newListAdapter(this.key, this.config);
 
     this.access = parseListAccess({
@@ -153,34 +184,74 @@ module.exports = class List {
       defaultAccess: this.defaultAccess.list,
     });
 
-    const sanitisedFieldsConfig = mapKeys(config.fields, (fieldConfig, path) => {
-      return {
-        ...fieldConfig,
-        type: mapNativeTypeToKeystonType(fieldConfig.type, key, path),
-      };
+    this.hooksActions = {
+      /**
+       * @param queryString String A graphQL query string
+       * @param options.skipAccessControl Boolean By default access control _of
+       * the user making the initial request_ is still tested. Disable all
+       * Access Control checks with this flag
+       * @param options.variables Object The variables passed to the graphql
+       * query for the given queryString.
+       *
+       * @return Promise<Object> The graphql query response
+       */
+      query: context => (queryString, { skipAccessControl = false, variables } = {}) => {
+        let passThroughContext = context;
+
+        if (skipAccessControl) {
+          passThroughContext = {
+            ...context,
+            getListAccessControlForUser: () => true,
+            getFieldAccessControlForUser: () => true,
+          };
+        }
+
+        const graphQLQuery = getGraphQLQuery();
+
+        if (!graphQLQuery) {
+          return Promise.reject(
+            new Error('No executable schema is available. Have you setup `@voussoir/server`?')
+          );
+        }
+
+        return graphQLQuery(queryString, passThroughContext, variables);
+      },
+    };
+  }
+
+  initFields() {
+    if (this.fieldsInitialised) {
+      return;
+    }
+
+    this.fieldsInitialised = true;
+
+    const sanitisedFieldsConfig = mapKeys(this.config.fields, (fieldConfig, path) => ({
+      ...fieldConfig,
+      type: mapNativeTypeToKeystoneType(fieldConfig.type, this.key, path),
+    }));
+    Object.values(sanitisedFieldsConfig).forEach(({ type }) => {
+      if (!type.adapters[this.adapterName]) {
+        throw `Adapter type "${this.adapterName}" does not support field type "${type.type}"`;
+      }
     });
 
-    this.fieldsByPath = {};
-    this.fields = config.fields
-      ? Object.keys(sanitisedFieldsConfig).map(path => {
-          const { type, ...fieldSpec } = sanitisedFieldsConfig[path];
-          const implementation = type.implementation;
-          this.fieldsByPath[path] = new implementation(path, fieldSpec, {
-            getListByKey,
-            listKey: key,
-            listAdapter: this.adapter,
-            fieldAdapterClass: type.adapters[adapter.name],
-            defaultAccess: this.defaultAccess.field,
-          });
-          return this.fieldsByPath[path];
+    this.fieldsByPath = mapKeys(
+      sanitisedFieldsConfig,
+      ({ type, ...fieldSpec }, path) =>
+        new type.implementation(path, fieldSpec, {
+          getListByKey: this.getListByKey,
+          listKey: this.key,
+          listAdapter: this.adapter,
+          fieldAdapterClass: type.adapters[this.adapterName],
+          defaultAccess: this.defaultAccess.field,
+          createAuxList: this.createAuxList,
         })
-      : [];
-
-    this.adapter.prepareModel();
-
-    this.views = mapKeys(sanitisedFieldsConfig, fieldConfig => ({
-      ...fieldConfig.type.views,
-    }));
+    );
+    this.fields = Object.values(this.fieldsByPath);
+    this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
+      this.fieldsByPath[path].extendViews({ ...type.views })
+    );
   }
 
   getAdminMeta() {
@@ -207,13 +278,21 @@ module.exports = class List {
       },
     };
   }
-  get gqlTypes() {
-    // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
-    const types = flatten(this.fields.map(field => field.gqlAuxTypes));
 
-    if (this.access.read || this.access.create || this.access.update || this.access.delete) {
+  getGqlTypes({ skipAccessControl = false } = {}) {
+    // https://github.com/opencrud/opencrud/blob/master/spec/2-relational/2-2-queries/2-2-3-filters.md#boolean-expressions
+    const types = [];
+    if (
+      skipAccessControl ||
+      this.access.read ||
+      this.access.create ||
+      this.access.update ||
+      this.access.delete
+    ) {
       types.push(
+        ...flatten(this.fields.map(field => field.getGqlAuxTypes({ skipAccessControl }))),
         `
+        """ ${this.config.schemaDoc || 'A keystone list'} """
         type ${this.gqlNames.outputTypeName} {
           id: ID
           """
@@ -226,8 +305,12 @@ module.exports = class List {
           _label_: String
           ${flatten(
             this.fields
-              .filter(field => field.access.read) // If it's globally set to false, makes sense to never show it
-              .map(field => field.gqlOutputFields)
+              .filter(field => skipAccessControl || field.access.read) // If it's globally set to false, makes sense to never show it
+              .map(field =>
+                field.config.schemaDoc
+                  ? `""" ${field.config.schemaDoc} """ ${field.gqlOutputFields}`
+                  : field.gqlOutputFields
+              )
           ).join('\n')}
         }
       `,
@@ -243,7 +326,7 @@ module.exports = class List {
 
           ${flatten(
             this.fields
-              .filter(field => field.access.read) // If it's globally set to false, makes sense to never show it
+              .filter(field => skipAccessControl || field.access.read) // If it's globally set to false, makes sense to never show it
               .map(field => field.gqlQueryInputFields)
           ).join('\n')}
         }`,
@@ -255,26 +338,37 @@ module.exports = class List {
       );
     }
 
-    if (this.access.update) {
+    if (skipAccessControl || this.access.update) {
       types.push(`
         input ${this.gqlNames.updateInputName} {
           ${flatten(
             this.fields
-              .filter(field => field.access.update) // If it's globally set to false, makes sense to never let it be updated
+              .filter(field => skipAccessControl || field.access.update) // If it's globally set to false, makes sense to never let it be updated
               .map(field => field.gqlUpdateInputFields)
           ).join('\n')}
         }
       `);
+      types.push(`
+        input ${this.gqlNames.updateManyInputName} {
+          id: ID!
+          data: ${this.gqlNames.updateInputName}
+        }
+      `);
     }
 
-    if (this.access.create) {
+    if (skipAccessControl || this.access.create) {
       types.push(`
         input ${this.gqlNames.createInputName} {
           ${flatten(
             this.fields
-              .filter(field => field.access.create) // If it's globally set to false, makes sense to never let it be created
+              .filter(field => skipAccessControl || field.access.create) // If it's globally set to false, makes sense to never let it be created
               .map(field => field.gqlCreateInputFields)
           ).join('\n')}
+        }
+      `);
+      types.push(`
+        input ${this.gqlNames.createManyInputName} {
+          data: ${this.gqlNames.createInputName}
         }
       `);
     }
@@ -292,28 +386,39 @@ module.exports = class List {
     ];
   }
 
-  get gqlQueries() {
+  getGqlQueries({ skipAccessControl = false } = {}) {
     // All the auxiliary queries the fields want to add
-    const queries = flatten(this.fields.map(field => field.gqlAuxQueries));
+    const queries = flatten(
+      this.fields.map(field => field.getGqlAuxQueries({ skipAccessControl }))
+    );
 
     // If `read` is either `true`, or a function (we don't care what the result
     // of the function is, that'll get executed at a later time)
-    if (this.access.read) {
+    if (skipAccessControl || this.access.read) {
       queries.push(
         `
+        """ Search for all ${this.gqlNames.outputTypeName} items which match the where clause. """
         ${this.gqlNames.listQueryName}(
           ${this.getGraphqlFilterFragment().join('\n')}
         ): [${this.gqlNames.outputTypeName}]`,
 
-        `${this.gqlNames.itemQueryName}(
+        `
+        """ Search for the ${this.gqlNames.outputTypeName} item with the matching ID. """
+        ${this.gqlNames.itemQueryName}(
           where: ${this.gqlNames.whereUniqueInputName}!
         ): ${this.gqlNames.outputTypeName}`,
 
-        `${this.gqlNames.listQueryMetaName}(
+        `
+        """ Perform a meta-query on all ${
+          this.gqlNames.outputTypeName
+        } items which match the where clause. """
+        ${this.gqlNames.listQueryMetaName}(
           ${this.getGraphqlFilterFragment().join('\n')}
         ): _QueryMeta`,
 
-        `${this.gqlNames.listMetaName}: _ListMeta`
+        `
+        """ Retrieve the meta-data for the ${this.gqlNames.itemQueryName} list. """
+        ${this.gqlNames.listMetaName}: _ListMeta`
       );
     }
 
@@ -325,153 +430,43 @@ module.exports = class List {
     return queries;
   }
 
-  async singleItemResolver({ id, context, name }) {
-    graphqlLogger.debug(
-      {
-        id,
-        operation: 'read',
-        type: 'query',
-        name,
-      },
-      'Start query'
-    );
-    const result = await this.performActionOnItemWithAccessControl(
-      {
-        id,
-        context,
-        operation: 'read',
-        errorData: {
-          type: 'query',
-          name,
-        },
-      },
-      item => item
-    );
-    graphqlLogger.debug(
-      {
-        id,
-        operation: 'read',
-        type: 'query',
-        name,
-      },
-      'End query'
-    );
-    return result;
-  }
-
-  gqlMetaResolver(context) {
-    return {
-      name: this.key,
-      // Return these as functions so they're lazily evaluated depending
-      // on what the user requested
-      // Evalutation takes place in ../Keystone/index.js
-      // NOTE: These could return a Boolean or a JSON object (if using the
-      // declarative syntax)
-      getAccess: () => ({
-        getCreate: () => context.getListAccessControlForUser(this.key, 'create'),
-        getRead: () => context.getListAccessControlForUser(this.key, 'read'),
-        getUpdate: () => context.getListAccessControlForUser(this.key, 'update'),
-        getDelete: () => context.getListAccessControlForUser(this.key, 'delete'),
-      }),
-      getSchema: () => {
-        const queries = [
-          this.gqlNames.itemQueryName,
-          this.gqlNames.listQueryName,
-          this.gqlNames.listQueryMetaName,
-        ];
-
-        if (this.getAuth()) {
-          queries.push(this.gqlNames.authenticatedQueryName);
-        }
-
-        // NOTE: Other fields on this type are resolved in the main resolver in
-        // ../Keystone/index.js
-        return {
-          type: this.gqlNames.outputTypeName,
-          queries,
-          key: this.key,
-        };
-      },
-    };
-  }
-
   getFieldsRelatedTo(listKey) {
     return this.fields.filter(
       ({ isRelationship, refListKey }) => isRelationship && refListKey === listKey
     );
   }
 
-  get gqlQueryResolvers() {
-    let resolvers = {};
-
-    // If set to false, we can confidently remove these resolvers entirely from
-    // the graphql schema
-    if (this.access.read) {
-      resolvers = {
-        [this.gqlNames.listQueryName]: (_, args, context) =>
-          this.manyQuery(args, context, this.gqlNames.listQueryName),
-
-        [this.gqlNames.listQueryMetaName]: (_, args, context) =>
-          this.manyQueryMeta(args, context, this.gqlNames.listQueryMetaName),
-
-        [this.gqlNames.listMetaName]: (_, args, context) => this.gqlMetaResolver(context),
-
-        [this.gqlNames.itemQueryName]: (_, { where: { id } }, context) =>
-          this.singleItemResolver({ id, context, name: this.gqlNames.itemQueryName }),
-      };
-    }
-
-    // NOTE: This query is not effected by the read permissions; if the user can
-    // authenticate themselves, then they already have access to know that the
-    // list exists
-    if (this.getAuth()) {
-      resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context) => {
-        if (!context.authedItem || context.authedListKey !== this.key) {
-          return null;
-        }
-
-        return this.singleItemResolver({
-          id: context.authedItem.id,
-          context,
-          name: this.gqlNames.authenticatedQueryName,
-        });
-      };
-    }
-
-    return resolvers;
+  _throwAccessDenied(operation, context, target, extraInternalData = {}, extraData = {}) {
+    throw new AccessDeniedError({
+      data: {
+        type: opToType[operation],
+        target,
+        ...extraData,
+      },
+      internalData: {
+        authedId: context.authedItem && context.authedItem.id,
+        authedListKey: context.authedListKey,
+        ...extraInternalData,
+      },
+    });
   }
 
   // Wrap the "inner" resolver for a single output field with an access control check
   wrapFieldResolverWithAC(field, innerResolver) {
     return (item, args, context, ...rest) => {
       // If not allowed access
-      const access = context.getFieldAccessControlForUser(this.key, field.path, item, 'read');
+      const operation = 'read';
+      const access = context.getFieldAccessControlForUser(this.key, field.path, item, operation);
       if (!access) {
         // If the client handles errors correctly, it should be able to
         // receive partial data (for the fields the user has access to),
         // and then an `errors` array of AccessDeniedError's
-        throw new AccessDeniedError({
-          data: {
-            type: 'query',
-          },
-          internalData: {
-            authedId: context.authedItem && context.authedItem.id,
-            authedListKey: context.authedListKey,
-            itemId: item ? item.id : null,
-          },
-        });
+        this._throwAccessDenied(operation, context, field.path, { itemId: item ? item.id : null });
       }
 
       // Otherwise, execute the original/inner resolver
       return innerResolver(item, args, context, ...rest);
     };
-  }
-
-  // Get the resolvers for the (possibly multiple) output fields and wrap each with access control
-  getWrappedFieldResolvers(field) {
-    return mapKeys(field.gqlOutputFieldResolvers || {}, innerResolver =>
-      this.wrapFieldResolverWithAC(field, innerResolver)
-    );
   }
 
   get gqlFieldResolvers() {
@@ -484,7 +479,12 @@ module.exports = class List {
       ...objMerge(
         this.fields
           .filter(field => field.access.read)
-          .map(field => this.getWrappedFieldResolvers(field))
+          .map(field =>
+            // Get the resolvers for the (possibly multiple) output fields and wrap each with access control
+            mapKeys(field.gqlOutputFieldResolvers, innerResolver =>
+              this.wrapFieldResolverWithAC(field, innerResolver)
+            )
+          )
       ),
     };
     return { [this.gqlNames.outputTypeName]: fieldResolvers };
@@ -494,45 +494,79 @@ module.exports = class List {
     // TODO: Obey the same ACL rules based on parent type
     return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers));
   }
+
   get gqlAuxQueryResolvers() {
     // TODO: Obey the same ACL rules based on parent type
     return objMerge(this.fields.map(field => field.gqlAuxQueryResolvers));
   }
+
   get gqlAuxMutationResolvers() {
     // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.gqlAuxMutationResolvers));
+    return objMerge([
+      ...(this.config.mutations || []).map(({ schema, resolver }) => {
+        const mutationName = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
+        return {
+          [mutationName]: (obj, args, context, info) =>
+            resolver(obj, args, context, info, mapKeys(this.hooksActions, hook => hook(context))),
+        };
+      }),
+      ...this.fields.map(field => field.gqlAuxMutationResolvers),
+    ]);
   }
 
-  get gqlMutations() {
-    const mutations = flatten(this.fields.map(field => field.gqlAuxMutations));
+  getGqlMutations({ skipAccessControl = false } = {}) {
+    const mutations = flatten(
+      this.fields.map(field => field.getGqlAuxMutations({ skipAccessControl }))
+    );
+    if (this.config.mutations) {
+      mutations.push(...this.config.mutations.map(({ schema }) => schema));
+    }
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
-    if (this.access.create) {
+    if (skipAccessControl || this.access.create) {
       mutations.push(`
+        """ Create a single ${this.gqlNames.outputTypeName} item. """
         ${this.gqlNames.createMutationName}(
           data: ${this.gqlNames.createInputName}
         ): ${this.gqlNames.outputTypeName}
       `);
+
+      mutations.push(`
+        """ Create multiple ${this.gqlNames.outputTypeName} items. """
+        ${this.gqlNames.createManyMutationName}(
+          data: [${this.gqlNames.createManyInputName}]
+        ): [${this.gqlNames.outputTypeName}]
+      `);
     }
 
-    if (this.access.update) {
+    if (skipAccessControl || this.access.update) {
       mutations.push(`
+      """ Update a single ${this.gqlNames.outputTypeName} item by ID. """
         ${this.gqlNames.updateMutationName}(
           id: ID!
           data: ${this.gqlNames.updateInputName}
         ): ${this.gqlNames.outputTypeName}
       `);
+
+      mutations.push(`
+      """ Update multiple ${this.gqlNames.outputTypeName} items by ID. """
+        ${this.gqlNames.updateManyMutationName}(
+          data: [${this.gqlNames.updateManyInputName}]
+        ): [${this.gqlNames.outputTypeName}]
+      `);
     }
 
-    if (this.access.delete) {
+    if (skipAccessControl || this.access.delete) {
       mutations.push(`
+        """ Delete a single ${this.gqlNames.outputTypeName} item by ID. """
         ${this.gqlNames.deleteMutationName}(
           id: ID!
         ): ${this.gqlNames.outputTypeName}
       `);
 
       mutations.push(`
+        """ Delete multiple ${this.gqlNames.outputTypeName} items by ID. """
         ${this.gqlNames.deleteManyMutationName}(
           ids: [ID!]
         ): [${this.gqlNames.outputTypeName}]
@@ -542,76 +576,86 @@ module.exports = class List {
     return mutations;
   }
 
-  throwIfAccessDeniedOnFields({
-    accessType,
-    item,
-    inputData,
-    context,
-    errorMeta = {},
-    errorMetaForLogging = {},
-  }) {
+  checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData = {} }) {
     const restrictedFields = [];
 
-    this.fields.filter(field => field.path in inputData).forEach(field => {
-      const access = context.getFieldAccessControlForUser(this.key, field.path, item, accessType);
-      if (!access) {
-        restrictedFields.push(field.path);
-      }
+    itemsToUpdate.forEach(({ existingItem, data }) => {
+      this.fields
+        .filter(field => field.path in data)
+        .forEach(field => {
+          const access = context.getFieldAccessControlForUser(
+            this.key,
+            field.path,
+            existingItem,
+            operation
+          );
+          if (!access) {
+            restrictedFields.push(field.path);
+          }
+        });
     });
-
     if (restrictedFields.length) {
-      throw new AccessDeniedError({
-        data: {
-          restrictedFields,
-          ...errorMeta,
-        },
-        internalData: {
-          authedId: context.authedItem && context.authedItem.id,
-          authedListKey: context.authedListKey,
-          ...errorMetaForLogging,
-        },
-      });
+      this._throwAccessDenied(operation, context, gqlName, extraData, { restrictedFields });
     }
   }
 
-  async performActionOnItemWithAccessControl({ operation, id, context, errorData }, action) {
-    const throwAccessDenied = () => {
-      graphqlLogger.info(
-        {
-          id,
-          operation,
-          ...errorData,
-        },
-        'Access Denied'
-      );
-      // If the client handles errors correctly, it should be able to
-      // receive partial data (for the fields the user has access to),
-      // and then an `errors` array of AccessDeniedError's
-      throw new AccessDeniedError({
-        data: errorData,
-        internalData: {
-          authedId: context.authedItem && context.authedItem.id,
-          authedListKey: context.authedListKey,
-          itemId: id,
-        },
-      });
-    };
-
+  checkListAccess(context, operation, { gqlName, ...extraInternalData }) {
     const access = context.getListAccessControlForUser(this.key, operation);
     if (!access) {
       graphqlLogger.debug(
-        {
-          id,
-          operation,
-          access,
-          ...errorData,
-        },
+        { operation, access, gqlName, ...extraInternalData },
         'Access statically or implicitly denied'
       );
-      throwAccessDenied();
+      graphqlLogger.info({ operation, gqlName, ...extraInternalData }, 'Access Denied');
+      // If the client handles errors correctly, it should be able to
+      // receive partial data (for the fields the user has access to),
+      // and then an `errors` array of AccessDeniedError's
+      this._throwAccessDenied(operation, context, gqlName, extraInternalData);
     }
+    return access;
+  }
 
-    const throwNotFound = () => {
+  async getAccessControlledItem(id, access, { context, operation, gqlName }) {
+    const throwAccessDenied = msg => {
+      graphqlLogger.debug({ id, operation, access, gqlName }, msg);
+      graphqlLogger.info({ id, operation, gqlName }, 'Access Denied');
+      // If the client handles errors correctly, it should be able to
+      // receive partial data (for the fields the user has access to),
+      // and then an `errors` array of AccessDeniedError's
+      this._throwAccessDenied(operation, context, gqlName, { itemId: id });
+    };
+
+    let item;
+    // Early out - the user has full access to update this list
+    if (access === true) {
+      item = await this.adapter.findById(id);
+    } else if (
+      (access.id && access.id !== id) ||
+      (access.id_not && access.id_not === id) ||
+      (access.id_in && !access.id_in.includes(id)) ||
+      (access.id_not_in && access.id_not_in.includes(id))
+    ) {
+      // It's odd, but conceivable the access control specifies a single id
+      // the user has access to. So we have to do a check here to see if the
+      // ID they're requesting matches that ID.
+      // Nice side-effect: We can throw without having to ever query the DB.
+      // NOTE: Don't try to early out here by doing
+      // if(access.id === id) return findById(id)
+      // this will result in a possible false match if a declarative access
+      // control clause has other items in it
+      throwAccessDenied('Item excluded this id from filters');
+    } else {
+      // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
+      // We only want 1 item, don't make the DB do extra work
+      // NOTE: Order in where: { ... } doesn't matter, if `access.id !== id`, it will
+      // have been caught earlier, so this spread and overwrite can only
+      // ever be additive or overwrite with the same value
+      item = (await this.adapter.itemsQuery({ first: 1, where: { ...access, id } }))[0];
+    }
+    if (!item) {
+      // Throwing an AccessDenied here if the item isn't found because we're
+      // strict about accidentally leaking information (that the item doesn't
+      // exist)
       // NOTE: There is a potential security risk here if we were to
       // further check the existence of an item with the given ID: It'd be
       // possible to figure out if records with particular IDs exist in
@@ -620,108 +664,22 @@ module.exports = class List {
       // that return null do not exist). Similar to how S3 returns 403's
       // always instead of ever returning 404's.
       // Our version is to always throw if not found.
-      graphqlLogger.debug(
-        {
-          id,
-          operation,
-          access,
-          ...errorData,
-        },
-        'Zero items found'
-      );
-      throwAccessDenied();
-    };
-
-    // Early out - the user has full access to update this list
-    if (access === true) {
-      const item = await this.adapter.findById(id);
-      if (!item) {
-        // Throwing an AccessDenied here if the item isn't found because we're
-        // strict about accidentally leaking information (that the item doesn't
-        // exist)
-        throwNotFound();
-      }
-      return await action(item);
+      throwAccessDenied('Zero items found');
     }
-
-    // It's odd, but conceivable the access control specifies a single id
-    // the user has access to. So we have to do a check here to see if the
-    // ID they're requesting matches that ID.
-    // Nice side-effect: We can throw without having to ever query the DB.
-    // NOTE: Don't try to early out here by doing
-    // if(access.id === id) return findById(id)
-    // this will result in a possible false match if a declarative access
-    // control clause has other items in it
-    if (
-      (access.id && access.id !== id) ||
-      (access.id_not && access.id_not === id) ||
-      (access.id_in && !access.id_in.includes(id)) ||
-      (access.id_not_in && access.id_not_in.includes(id))
-    ) {
-      graphqlLogger.debug(
-        {
-          id,
-          operation,
-          access,
-          ...errorData,
-        },
-        'Item excluded this id from filters'
-      );
-      throwAccessDenied();
-    }
-
-    // NOTE: The fields will be filtered by the ACL checking in
-    // gqlFieldResolvers()
-    let queryArgs = {
-      // We only want 1 item, don't make the DB do extra work
-      first: 1,
-      where: {
-        // NOTE: Order here doesn't matter, if `access.id !== id`, it will
-        // have been caught earlier, so this spread and overwrite can only
-        // ever be additive or overwrite with the same value
-        ...access,
-        id,
-      },
-    };
-
-    const items = await this.adapter.itemsQuery(queryArgs);
-
-    if (items.length === 0) {
-      throwNotFound();
-    }
-
     // Found the item, and it passed the filter test
-    return await action(items[0]);
+    return item;
   }
 
-  async performMultiActionOnItemsWithAccessControl({ operation, ids, context, errorData }, action) {
+  async getAccessControlledItems(ids, access) {
     if (ids.length === 0) {
       return [];
-    }
-
-    const access = context.getListAccessControlForUser(this.key, operation);
-    if (!access) {
-      // If the client handles errors correctly, it should be able to
-      // receive partial data (for the fields the user has access to),
-      // and then an `errors` array of AccessDeniedError's
-      throw new AccessDeniedError({
-        data: errorData,
-        internalData: {
-          authedId: context.authedItem && context.authedItem.id,
-          authedListKey: context.authedListKey,
-          itemIds: ids,
-        },
-      });
     }
 
     const uniqueIds = unique(ids);
 
     // Early out - the user has full access to operate on this list
     if (access === true) {
-      const items = await this.adapter.itemsQuery({
-        where: { id_in: uniqueIds },
-      });
-      return action(items);
+      return await this.adapter.itemsQuery({ where: { id_in: uniqueIds } });
     }
 
     let idFilters = {};
@@ -762,187 +720,130 @@ module.exports = class List {
       return [];
     }
 
-    // NOTE: The fields will be filtered by the ACL checking in
-    // gqlFieldResolvers()
-    let queryArgs = {
-      where: {
-        ...omit(access, ['id', 'id_not', 'id_in', 'id_not_in']),
-        ...idFilters,
-      },
-    };
-
-    const items = await this.adapter.itemsQuery(queryArgs);
-
+    // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
     // NOTE: Unlike in the single-operation variation, there is no security risk
     // in returning the result of the query here, because if no items match, we
     // return an empty array regarless of if that's because of lack of
     // permissions or because of those items don't exist.
-    return action(items);
+    const remainingAccess = omit(access, ['id', 'id_not', 'id_in', 'id_not_in']);
+    return await this.adapter.itemsQuery({ where: { ...remainingAccess, ...idFilters } });
   }
 
-  async createMutation(data, context) {
-    const access = context.getListAccessControlForUser(this.key, 'create');
-    if (!access) {
-      throw new AccessDeniedError({
-        data: {
-          type: 'mutation',
-          name: this.gqlNames.createMutationName,
-        },
-        internalData: {
-          authedId: context.authedItem && context.authedItem.id,
-          authedListKey: context.authedListKey,
-        },
-      });
+  get gqlQueryResolvers() {
+    let resolvers = {};
+
+    // If set to false, we can confidently remove these resolvers entirely from
+    // the graphql schema
+    if (this.access.read) {
+      resolvers = {
+        [this.gqlNames.listQueryName]: (_, args, context) =>
+          this.listQuery(args, context, this.gqlNames.listQueryName),
+
+        [this.gqlNames.listQueryMetaName]: (_, args, context) =>
+          this.listQueryMeta(args, context, this.gqlNames.listQueryMetaName),
+
+        [this.gqlNames.listMetaName]: (_, args, context) => this.listMeta(context),
+
+        [this.gqlNames.itemQueryName]: (_, args, context) =>
+          this.itemQuery(args, context, this.gqlNames.itemQueryName),
+      };
     }
 
-    // Merge in default Values here
-    const item = {
-      ...arrayToObject(
-        this.fields.filter(field => field.getDefaultValue() !== undefined),
-        'path',
-        field => field.getDefaultValue()
-      ),
-      ...data,
-    };
-
-    this.throwIfAccessDeniedOnFields({
-      accessType: 'create',
-      item,
-      inputData: data,
-      context,
-      errorMeta: {
-        type: 'mutation',
-        name: this.gqlNames.updateMutationName,
-      },
-    });
-
-    // Enable pre-hooks to perform some action after the item is created by
-    // giving them a promise which will eventually resolve with the value of the
-    // newly created item.
-    const createdPromise = createLazyDeferred();
-
-    const resolvedData = await resolveAllKeys(
-      mapKeys(data, (value, fieldPath) =>
-        this.fieldsByPath[fieldPath].createFieldPreHook(value, context, createdPromise.promise)
-      )
-    );
-
-    let newItem;
-    try {
-      newItem = await this.adapter.create(resolvedData);
-      createdPromise.resolve(newItem);
-      // Wait until next tick so the promise/micro-task queue can be flushed
-      // fully, ensuring the deferred handlers get executed before we move on
-      await new Promise(res => process.nextTick(res));
-    } catch (error) {
-      createdPromise.reject(error);
-      // Wait until next tick so the promise/micro-task queue can be flushed
-      // fully, ensuring the deferred handlers get executed before we move on
-      await new Promise(res => process.nextTick(res));
-      // Rethrow the error to ensure it's surfaced to Apollo
-      throw error;
+    // NOTE: This query is not effected by the read permissions; if the user can
+    // authenticate themselves, then they already have access to know that the
+    // list exists
+    if (this.getAuth()) {
+      resolvers[this.gqlNames.authenticatedQueryName] = (_, __, context) =>
+        this.authenticatedQuery(context);
     }
 
-    await Promise.all(
-      Object.keys(data).map(fieldPath =>
-        this.fieldsByPath[fieldPath].createFieldPostHook(newItem[fieldPath], newItem, context)
-      )
-    );
-
-    return newItem;
+    return resolvers;
   }
 
-  async updateMutation(id, data, context) {
-    return this.performActionOnItemWithAccessControl(
-      {
-        id,
-        context,
-        operation: 'update',
-        errorData: {
-          type: 'mutation',
-          name: this.gqlNames.updateMutationName,
-        },
-      },
-      async item => {
-        this.throwIfAccessDeniedOnFields({
-          accessType: 'update',
-          item,
-          inputData: data,
-          context,
-          errorMeta: {
-            type: 'mutation',
-            name: this.gqlNames.updateMutationName,
-          },
-          errorMetaForLogging: {
-            itemId: id,
-          },
-        });
+  async listQuery(args, context, queryName) {
+    const access = this.checkListAccess(context, 'read', { queryName });
 
-        const resolvedData = await resolveAllKeys(
-          mapKeys(data, (value, fieldPath) =>
-            this.fieldsByPath[fieldPath].updateFieldPreHook(value, item, context)
-          )
-        );
-
-        const newItem = await this.adapter.update(
-          id,
-          // avoid any kind of injection attack by explicitly doing a `$set`
-          // operation
-          { $set: resolvedData },
-          // Return the modified item, not the original
-          { new: true }
-        );
-
-        await Promise.all(
-          Object.keys(data).map(fieldPath =>
-            this.fieldsByPath[fieldPath].updateFieldPostHook(newItem[fieldPath], newItem, context)
-          )
-        );
-
-        return newItem;
-      }
-    );
+    return this.adapter.itemsQuery(mergeWhereClause(args, access));
   }
 
-  async _tryManyQuery(args, context, queryName, manyQuery) {
-    const access = context.getListAccessControlForUser(this.key, 'read');
-    if (!access) {
-      // If the client handles errors correctly, it should be able to
-      // receive partial data (for the fields the user has access to),
-      // and then an `errors` array of AccessDeniedError's
-      throw new AccessDeniedError({
-        data: {
-          type: 'query',
-          name: queryName,
-        },
-        internalData: {
-          authedId: context.authedItem && context.authedItem.id,
-          authedListKey: context.authedListKey,
-        },
-      });
-    }
-    let queryArgs = mergeWhereClause(args, access);
-
-    return manyQuery(queryArgs);
-  }
-
-  async manyQuery(args, context, queryName) {
-    return this._tryManyQuery(args, context, queryName, queryArgs =>
-      this.adapter.itemsQuery(queryArgs)
-    );
-  }
-
-  async manyQueryMeta(args, context, queryName) {
+  async listQueryMeta(args, context, queryName) {
     return {
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
       // Evalutation takes place in ../Keystone/index.js
       getCount: () => {
-        return this._tryManyQuery(args, context, queryName, queryArgs =>
-          this.adapter.itemsQueryMeta(queryArgs).then(({ count }) => count)
-        );
+        const access = this.checkListAccess(context, 'read', { queryName });
+
+        return this.adapter
+          .itemsQueryMeta(mergeWhereClause(args, access))
+          .then(({ count }) => count);
       },
     };
+  }
+
+  listMeta(context) {
+    return {
+      name: this.key,
+      // Return these as functions so they're lazily evaluated depending
+      // on what the user requested
+      // Evalutation takes place in ../Keystone/index.js
+      // NOTE: These could return a Boolean or a JSON object (if using the
+      // declarative syntax)
+      getAccess: () => ({
+        getCreate: () => context.getListAccessControlForUser(this.key, 'create'),
+        getRead: () => context.getListAccessControlForUser(this.key, 'read'),
+        getUpdate: () => context.getListAccessControlForUser(this.key, 'update'),
+        getDelete: () => context.getListAccessControlForUser(this.key, 'delete'),
+      }),
+      getSchema: () => {
+        const queries = [
+          this.gqlNames.itemQueryName,
+          this.gqlNames.listQueryName,
+          this.gqlNames.listQueryMetaName,
+        ];
+
+        if (this.getAuth()) {
+          queries.push(this.gqlNames.authenticatedQueryName);
+        }
+
+        // NOTE: Other fields on this type are resolved in the main resolver in
+        // ../Keystone/index.js
+        return {
+          type: this.gqlNames.outputTypeName,
+          queries,
+          key: this.key,
+        };
+      },
+    };
+  }
+
+  async itemQuery(
+    // prettier-ignore
+    { where: { id } },
+    context,
+    gqlName
+  ) {
+    const operation = 'read';
+    graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'Start query');
+
+    const access = this.checkListAccess(context, operation, { gqlName, itemId: id });
+
+    const result = await this.getAccessControlledItem(id, access, { context, operation, gqlName });
+
+    graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'End query');
+    return result;
+  }
+
+  authenticatedQuery(context) {
+    if (!context.authedItem || context.authedListKey !== this.key) {
+      return null;
+    }
+
+    return this.itemQuery(
+      { where: { id: context.authedItem.id } },
+      context,
+      this.gqlNames.authenticatedQueryName
+    );
   }
 
   get gqlMutationResolvers() {
@@ -951,76 +852,431 @@ module.exports = class List {
     if (this.access.create) {
       mutationResolvers[this.gqlNames.createMutationName] = (_, { data }, context) =>
         this.createMutation(data, context);
+
+      mutationResolvers[this.gqlNames.createManyMutationName] = (_, { data }, context) =>
+        this.createManyMutation(data, context);
     }
 
     if (this.access.update) {
-      mutationResolvers[this.gqlNames.updateMutationName] = async (_, { id, data }, context) =>
+      mutationResolvers[this.gqlNames.updateMutationName] = (_, { id, data }, context) =>
         this.updateMutation(id, data, context);
+
+      mutationResolvers[this.gqlNames.updateManyMutationName] = (_, { data }, context) =>
+        this.updateManyMutation(data, context);
     }
 
     if (this.access.delete) {
-      mutationResolvers[this.gqlNames.deleteMutationName] = async (_, { id }, context) => {
-        return this.performActionOnItemWithAccessControl(
-          {
-            id,
-            context,
-            operation: 'delete',
-            errorData: {
-              type: 'mutation',
-              name: this.gqlNames.deleteMutationName,
-            },
-          },
-          async item => {
-            await Promise.all(
-              this.fields.map(field => field.deleteFieldPreHook(item[field.path], item, context))
-            );
+      mutationResolvers[this.gqlNames.deleteMutationName] = (_, { id }, context) =>
+        this.deleteMutation(id, context);
 
-            const result = await this.adapter.delete(id);
-
-            await Promise.all(
-              this.fields.map(field => field.deleteFieldPostHook(item[field.path], item, context))
-            );
-
-            return result;
-          }
-        );
-      };
-
-      mutationResolvers[this.gqlNames.deleteManyMutationName] = async (_, { ids }, context) => {
-        return this.performMultiActionOnItemsWithAccessControl(
-          {
-            ids,
-            context,
-            operation: 'delete',
-            errorData: {
-              type: 'mutation',
-              name: this.gqlNames.deleteManyMutationName,
-            },
-          },
-          items => Promise.all(items.map(item => this.adapter.delete(item.id).then(() => item)))
-        );
-      };
+      mutationResolvers[this.gqlNames.deleteManyMutationName] = (_, { ids }, context) =>
+        this.deleteManyMutation(ids, context);
     }
 
     return mutationResolvers;
   }
 
-  getAccessControl({ operation, authentication }) {
-    return testListAccessControl({
-      access: this.access,
-      operation,
-      authentication,
-      listKey: this.key,
+  _throwValidationFailure(errors, operation, data = {}) {
+    throw new ValidationFailureError({
+      data: {
+        messages: errors.map(e => e.msg),
+        errors: errors.map(e => e.data),
+        listKey: this.key,
+        operation,
+      },
+      internalData: {
+        errors: errors.map(e => e.internalData),
+        data,
+      },
     });
   }
 
-  getFieldAccessControl({ fieldKey, item, inputData, operation, authentication }) {
-    return this.fieldsByPath[fieldKey].testAccessControl({
-      listKey: this.key,
-      item,
-      inputData,
+  _mapToFields(fields, action) {
+    return resolveAllKeys(arrayToObject(fields, 'path', action)).catch(error => {
+      if (!error.errors) {
+        throw error;
+      }
+      const errorCopy = new Error(error.message || error.toString());
+      errorCopy.errors = Object.values(error.errors);
+      throw errorCopy;
+    });
+  }
+
+  _fieldsFromObject(obj) {
+    return Object.keys(obj)
+      .map(fieldPath => this.fieldsByPath[fieldPath])
+      .filter(field => field);
+  }
+
+  async _resolveRelationship(data, existingItem, context, getItem, mutationState) {
+    const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
+    return {
+      ...data,
+      ...(await this._mapToFields(fields, async field =>
+        field.resolveRelationship(data[field.path], existingItem, context, getItem, mutationState)
+      )),
+    };
+  }
+
+  async _registerBacklinks(existingItem, mutationState) {
+    const fields = this.fields.filter(field => field.isRelationship);
+    await this._mapToFields(fields, field =>
+      field.registerBacklink(existingItem[field.path], existingItem, mutationState)
+    );
+  }
+
+  async _resolveDefaults(data) {
+    // FIXME: Consider doing this in a way which only calls getDefaultValue once.
+    const fields = this.fields.filter(field => field.getDefaultValue() !== undefined);
+    return {
+      ...(await this._mapToFields(fields, field => field.getDefaultValue())),
+      ...data,
+    };
+  }
+
+  async _resolveInput(resolvedData, existingItem, context, operation, originalInput) {
+    const args = {
+      resolvedData,
+      existingItem,
+      originalInput,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
+    const fields = this._fieldsFromObject(resolvedData);
+
+    resolvedData = await this._mapToFields(fields, field =>
+      field.resolveInput({ resolvedData, ...args })
+    );
+    resolvedData = {
+      ...resolvedData,
+      ...(await this._mapToFields(fields.filter(field => field.config.hooks.resolveInput), field =>
+        field.config.hooks.resolveInput({ resolvedData, ...args })
+      )),
+    };
+
+    if (this.config.hooks.resolveInput) {
+      resolvedData = await this.config.hooks.resolveInput({ resolvedData, ...args });
+    }
+
+    return resolvedData;
+  }
+
+  async _validateInput(resolvedData, existingItem, context, operation, originalInput) {
+    const args = {
+      resolvedData,
+      existingItem,
+      originalInput,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
+    const fields = this._fieldsFromObject(resolvedData);
+    await this._validateHook(args, fields, operation, 'validateInput');
+  }
+
+  async _validateDelete(existingItem, context, operation) {
+    const args = {
+      existingItem,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
+    const fields = this.fields;
+    await this._validateHook(args, fields, operation, 'validateDelete');
+  }
+
+  async _validateHook(args, fields, operation, hookName) {
+    const { originalInput } = args;
+    const fieldValidationErrors = [];
+    // FIXME: Can we do this in a way where we simply return validation errors instead?
+    args.addFieldValidationError = (msg, _data = {}, internalData = {}) =>
+      fieldValidationErrors.push({ msg, data: _data, internalData });
+    await this._mapToFields(fields, field => field[hookName](args));
+    await this._mapToFields(fields.filter(field => field.config.hooks[hookName]), field =>
+      field.config.hooks[hookName](args)
+    );
+    if (fieldValidationErrors.length) {
+      this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
+    }
+
+    if (this.config.hooks[hookName]) {
+      const listValidationErrors = [];
+      await this.config.hooks[hookName]({
+        ...args,
+        addValidationError: (msg, _data = {}, internalData = {}) =>
+          listValidationErrors.push({ msg, data: _data, internalData }),
+      });
+      if (listValidationErrors.length) {
+        this._throwValidationFailure(listValidationErrors, operation, originalInput);
+      }
+    }
+  }
+
+  async _beforeChange(resolvedData, existingItem, context, originalInput) {
+    const args = {
+      resolvedData,
+      existingItem,
+      originalInput,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
+    await this._runHook(args, resolvedData, 'beforeChange');
+  }
+
+  async _beforeDelete(existingItem, context) {
+    const args = {
+      existingItem,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
+    await this._runHook(args, existingItem, 'beforeDelete');
+  }
+
+  async _afterChange(updatedItem, existingItem, context, originalInput) {
+    const args = {
+      updatedItem,
+      originalInput,
+      existingItem,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
+    await this._runHook(args, updatedItem, 'afterChange');
+  }
+
+  async _afterDelete(existingItem, context) {
+    const args = {
+      existingItem,
+      actions: mapKeys(this.hooksActions, hook => hook(context)),
+    };
+    await this._runHook(args, existingItem, 'afterDelete');
+  }
+
+  async _runHook(args, fieldObject, hookName) {
+    const fields = this._fieldsFromObject(fieldObject);
+    await this._mapToFields(fields, field => field[hookName](args));
+    await this._mapToFields(fields.filter(field => field.config.hooks[hookName]), field =>
+      field.config.hooks[hookName](args)
+    );
+
+    if (this.config.hooks[hookName]) await this.config.hooks[hookName](args);
+  }
+
+  async _nestedMutation(mutationState, context, mutation) {
+    // Set up a fresh mutation state if we're the root mutation
+    const isRootMutation = !mutationState;
+    if (isRootMutation) {
+      mutationState = {
+        afterChangeStack: [], // post-hook stack
+        queues: {}, // backlink queues
+        transaction: {}, // transaction
+      };
+    }
+
+    // Perform the mutation
+    const { result, afterHook } = await mutation(mutationState);
+
+    // resolve backlinks
+    await Relationship.resolveBacklinks(context, mutationState);
+
+    // Push after-hook onto the stack and resolve all if we're the root.
+    const { afterChangeStack } = mutationState;
+    afterChangeStack.push(afterHook);
+    if (isRootMutation) {
+      // TODO: Close transation
+
+      // Execute post-hook stack
+      while (afterChangeStack.length) {
+        await afterChangeStack.pop()();
+      }
+    }
+
+    // Return the result of the mutation
+    return result;
+  }
+
+  async createMutation(data, context, mutationState) {
+    const operation = 'create';
+    const gqlName = this.gqlNames.createMutationName;
+
+    this.checkListAccess(context, operation, { gqlName });
+
+    const existingItem = undefined;
+
+    const itemsToUpdate = [{ existingItem, data }];
+
+    this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName });
+
+    return await this._createSingle(data, existingItem, context, mutationState);
+  }
+
+  async createManyMutation(data, context, mutationState) {
+    const operation = 'create';
+    const gqlName = this.gqlNames.createManyMutationName;
+
+    this.checkListAccess(context, operation, { gqlName });
+
+    const itemsToUpdate = data.map(d => ({ existingItem: undefined, data: d }));
+
+    this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName });
+
+    return Promise.all(data.map(d => this._createSingle(d, undefined, context, mutationState)));
+  }
+
+  async _createSingle(data, existingItem, context, mutationState) {
+    const operation = 'create';
+    return await this._nestedMutation(mutationState, context, async mutationState => {
+      const defaultedItem = await this._resolveDefaults(data);
+
+      // Enable resolveRelationship to perform some action after the item is created by
+      // giving them a promise which will eventually resolve with the value of the
+      // newly created item.
+      const createdPromise = createLazyDeferred();
+
+      let resolvedData = await this._resolveRelationship(
+        defaultedItem,
+        existingItem,
+        context,
+        createdPromise.promise,
+        mutationState
+      );
+
+      resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
+
+      await this._validateInput(resolvedData, existingItem, context, operation, data);
+
+      await this._beforeChange(resolvedData, existingItem, context, operation, data);
+
+      let newItem;
+      try {
+        newItem = await this.adapter.create(resolvedData);
+        createdPromise.resolve(newItem);
+        // Wait until next tick so the promise/micro-task queue can be flushed
+        // fully, ensuring the deferred handlers get executed before we move on
+        await new Promise(res => process.nextTick(res));
+      } catch (error) {
+        createdPromise.reject(error);
+        // Wait until next tick so the promise/micro-task queue can be flushed
+        // fully, ensuring the deferred handlers get executed before we move on
+        await new Promise(res => process.nextTick(res));
+        // Rethrow the error to ensure it's surfaced to Apollo
+        throw error;
+      }
+
+      return {
+        result: newItem,
+        afterHook: () => this._afterChange(newItem, existingItem, context, operation, data),
+      };
+    });
+  }
+
+  async updateMutation(id, data, context, mutationState) {
+    const operation = 'update';
+    const gqlName = this.gqlNames.updateMutationName;
+    const extraData = { itemId: id };
+
+    const access = this.checkListAccess(context, operation, { gqlName, ...extraData });
+
+    const existingItem = await this.getAccessControlledItem(id, access, {
+      context,
       operation,
-      authentication,
+      gqlName,
+    });
+
+    const itemsToUpdate = [{ existingItem, data }];
+
+    this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData });
+
+    return await this._updateSingle(id, data, existingItem, context, mutationState);
+  }
+
+  async updateManyMutation(data, context, mutationState) {
+    const operation = 'update';
+    const gqlName = this.gqlNames.updateManyMutationName;
+    const ids = data.map(d => d.id);
+    const extraData = { itemId: ids };
+
+    const access = this.checkListAccess(context, operation, { gqlName, ...extraData });
+
+    const existingItems = await this.getAccessControlledItems(ids, access);
+
+    const itemsToUpdate = zipObj({
+      existingItem: existingItems,
+      id: ids,
+      data: data.map(d => d.data),
+    });
+
+    // FIXME: We should do all of these in parallel and return *all* the field access violations
+    this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName, extraData });
+
+    return Promise.all(
+      itemsToUpdate.map(({ existingItem, id, data }) =>
+        this._updateSingle(id, data, existingItem, context, mutationState)
+      )
+    );
+  }
+
+  async _updateSingle(id, data, existingItem, context, mutationState) {
+    const operation = 'update';
+    return await this._nestedMutation(mutationState, context, async mutationState => {
+      let resolvedData = await this._resolveRelationship(
+        data,
+        existingItem,
+        context,
+        undefined,
+        mutationState
+      );
+
+      resolvedData = await this._resolveInput(resolvedData, existingItem, context, operation, data);
+
+      await this._validateInput(resolvedData, existingItem, context, operation, data);
+
+      await this._beforeChange(resolvedData, existingItem, context, operation, data);
+
+      const newItem = await this.adapter.update(id, resolvedData);
+
+      return {
+        result: newItem,
+        afterHook: () => this._afterChange(newItem, existingItem, context, operation, data),
+      };
+    });
+  }
+
+  async deleteMutation(id, context, mutationState) {
+    const operation = 'delete';
+    const gqlName = this.gqlNames.deleteMutationName;
+
+    const access = this.checkListAccess(context, operation, { gqlName, itemId: id });
+
+    const existingItem = await this.getAccessControlledItem(id, access, {
+      context,
+      operation,
+      gqlName,
+    });
+
+    return this._deleteSingle(existingItem, context, mutationState);
+  }
+
+  async deleteManyMutation(ids, context, mutationState) {
+    const operation = 'delete';
+    const gqlName = this.gqlNames.deleteManyMutationName;
+
+    const access = this.checkListAccess(context, operation, { gqlName, itemIds: ids });
+
+    const existingItems = await this.getAccessControlledItems(ids, access);
+
+    return Promise.all(
+      existingItems.map(existingItem => this._deleteSingle(existingItem, context, mutationState))
+    );
+  }
+
+  async _deleteSingle(existingItem, context, mutationState) {
+    const operation = 'delete';
+
+    return await this._nestedMutation(mutationState, context, async mutationState => {
+      await this._registerBacklinks(existingItem, mutationState);
+
+      await this._validateDelete(existingItem, context, operation);
+
+      await this._beforeDelete(existingItem, context);
+
+      const result = await this.adapter.delete(existingItem.id);
+
+      return {
+        result,
+        afterHook: () => this._afterDelete(existingItem, context),
+      };
     });
   }
 

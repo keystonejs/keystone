@@ -1,11 +1,18 @@
+// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import * as React from 'react';
 
-import { StopIcon } from '@voussoir/icons';
-import { colors } from '@voussoir/ui/src/theme';
-import { Container } from '@voussoir/ui/src/primitives/layout';
+import { StopIcon } from '@arch-ui/icons';
+import { colors } from '@arch-ui/theme';
+import { Container } from '@arch-ui/layout';
 
-export default function PageError({ children, Icon, ...props }) {
+type Props = {
+  children: React.Node,
+  Icon: React.ElementType,
+};
+
+export default function PageError({ children, Icon, ...props }: Props) {
   return (
     <Container>
       <div

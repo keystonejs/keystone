@@ -1,15 +1,10 @@
 import React, { Fragment } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
-import {
-  Checkbox,
-  CheckboxGroup,
-  Input,
-  RadioGroup,
-  Radio,
-  Select,
-} from '@voussoir/ui/src/primitives/forms';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { Checkbox, CheckboxGroup, RadioGroup, Radio } from '@arch-ui/controls';
+import { Input } from '@arch-ui/input';
+import Select from '@arch-ui/select';
+import { FlexGroup } from '@arch-ui/layout';
 
 const FieldGuide = () => (
   <Fragment>

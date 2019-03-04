@@ -3,7 +3,6 @@ import debounce from 'lodash.debounce';
 import { Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
-import Nav from '../../components/Nav';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { deconstructErrorsToDataShape } from '../../util';
@@ -22,6 +21,12 @@ type State = {};
 class ListPageDataProvider extends Component<Props, State> {
   constructor(props) {
     super(props);
+    // We record the number of items returned by the latest query so that the
+    // previous count can be displayed during a loading state.
+    this.itemsCount = 0;
+  }
+
+  componentDidMount() {
     const maybePersistedSearch = this.props.list.getPersistedSearch();
     if (this.props.location.search) {
       if (this.props.location.search !== maybePersistedSearch) {
@@ -33,10 +38,6 @@ class ListPageDataProvider extends Component<Props, State> {
         search: maybePersistedSearch,
       });
     }
-
-    // We record the number of items returned by the latest query so that the
-    // previous count can be displayed during a loading state.
-    this.itemsCount = 0;
   }
 
   // ==============================
@@ -201,7 +202,6 @@ class ListPageDataProvider extends Component<Props, State> {
     return (
       <Fragment>
         <DocTitle>{list.plural}</DocTitle>
-        <Nav />
         <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
           {({ data, error, loading, refetch }) => {
             // Only show error page if there is no data

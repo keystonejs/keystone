@@ -2,12 +2,12 @@
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
-import withPseudoState from 'react-pseudo-state';
+import { withPseudoState } from 'react-pseudo-state';
 
-import { PlusIcon } from '@voussoir/icons';
-import { colors, borderRadius, gridSize } from '@voussoir/ui/src/theme';
-import { LoadingIndicator } from '@voussoir/ui/src/primitives/loading';
-import { A11yText } from '@voussoir/ui/src/primitives/typography';
+import { PlusIcon } from '@arch-ui/icons';
+import { colors, borderRadius, gridSize } from '@arch-ui/theme';
+import { LoadingIndicator } from '@arch-ui/loading';
+import { A11yText } from '@arch-ui/typography';
 
 const BOX_GUTTER = `${gridSize * 2}px`;
 
@@ -28,9 +28,14 @@ const BoxElement = styled(Link)`
     outline: 0;
     text-decoration: none;
   }
+  &:active {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.075), 0 0 0 1px ${colors.B.A60};
+    bottom: -1px;
+  }
 `;
 
 export const BoxComponent = ({
+  focusOrigin,
   isActive,
   isHover,
   isFocus,
@@ -44,7 +49,14 @@ export const BoxComponent = ({
   return (
     <BoxElement title={`Go to ${label}`} {...props}>
       <A11yText>Go to {label}</A11yText>
-      <Name isHover={isHover || isFocus}>{label}</Name>
+      <Name
+        isHover={isHover || isFocus}
+        // this is aria-hidden since the label above shows the label already
+        // so if this wasn't aria-hidden screen readers would read the label twice
+        aria-hidden
+      >
+        {label}
+      </Name>
       <Count meta={meta} />
       <CreateButton
         title={`Create ${singular}`}
@@ -84,8 +96,9 @@ export const Count = ({ meta }) => {
     </div>
   ) : (
     <div css={{ fontSize: '0.85em' }}>
-      {count} Item
-      {count !== 1 ? 's' : ''}
+      {count}
+      {/* append the text instead of two children so that they're a single text node for screen readers */}
+      {' Item' + (count !== 1 ? 's' : '')}
     </div>
   );
 };

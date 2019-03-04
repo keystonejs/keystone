@@ -32,6 +32,13 @@ listKeys.forEach(key => {
 // TODO: Permission query to see which lists to provide
 export const AdminMetaProvider = ({ children }) => children(adminMeta);
 
+// why are we using a hook rather just exporting the adminMeta?
+// so that we can add more logic later like reading the adminMeta from context so
+// we can do a permission query
+export const useAdminMeta = () => {
+  return adminMeta;
+};
+
 // HOC Wrapper
 
 function setDisplayName(c) {

@@ -271,7 +271,7 @@ class TwitterAuthStrategy {
 
     try {
       const twitterItem = await this.getSessionList()
-        .adapter.update(twitterSessionId, { item: item.id }, { new: true })
+        .adapter.update(twitterSessionId, { item: item.id })
         .exec();
 
       await this.getList()

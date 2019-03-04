@@ -1,5 +1,5 @@
 const inflection = require('inflection');
-const { parseFieldAccess, testFieldAccessControl } = require('@voussoir/access-control');
+const { parseFieldAccess } = require('@voussoir/access-control');
 
 class Field {
   constructor(
@@ -8,7 +8,10 @@ class Field {
     { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess }
   ) {
     this.path = path;
-    this.config = config;
+    this.config = {
+      hooks: {},
+      ...config,
+    };
     this.getListByKey = getListByKey;
     this.listKey = listKey;
     this.label = config.label || inflection.humanize(inflection.underscore(path));
@@ -48,78 +51,105 @@ class Field {
    *
    * NOTE: When a naming conflic occurs, a list's types/queries/mutations will
    * overwrite any auxiliary types defined by an individual type.
+   *
+   * @param options Object skipAccessControl: will be true when the types
+   * should include those that otherwise would be excluded due to access control
+   * checks.
    */
-  get gqlAuxTypes() {
+  getGqlAuxTypes() {
     return [];
   }
   get gqlAuxFieldResolvers() {
     return {};
   }
 
-  get gqlAuxQueries() {
+  /**
+   * @param options Object skipAccessControl: will be true when the types
+   * should include those that otherwise would be excluded due to access control
+   * checks.
+   */
+  getGqlAuxQueries() {
     return [];
   }
   get gqlAuxQueryResolvers() {
     return {};
   }
 
-  get gqlAuxMutations() {
+  /**
+   * @param options Object skipAccessControl: will be true when the types
+   * should include those that otherwise would be excluded due to access control
+   * checks.
+   */
+  getGqlAuxMutations() {
     return [];
   }
   get gqlAuxMutationResolvers() {
     return {};
   }
 
-  /**
-   * Hooks for performing actions before / after fields are mutated.
-   * For example: with a field { avatar: { type: S3File }}, it wants to put the
-   * file on S3 in the `createFieldPreHook()`, then return an S3 object ID as
-   * the result to store in `avatar`
-   *
-   * @param data {Mixed} The data received from the query
-   * @param context {Mixed} The GraphQL Context object for the current request
-   */
-  // eslint-disable-next-line no-unused-vars
-  createFieldPreHook(data, context) {
-    return data;
-  }
-  /*
-   * @param data {Mixed} The value of this field as saved & read from the DB
-   * @param item {Object} The existing version of the item
-   * @param context {Mixed} The GraphQL Context object for the current request
-   */
-  createFieldPostHook(data, item, context) {} // eslint-disable-line no-unused-vars
   /*
    * @param data {Mixed} The value of this field received from the query
    * @param item {Object} The existing version of the item
    * @param context {Mixed} The GraphQL Context object for the current request
    */
-  // eslint-disable-next-line no-unused-vars
-  updateFieldPreHook(data, item, context) {
-    return data;
+  async resolveInput({ resolvedData }) {
+    return resolvedData[this.path];
   }
-  /*
-   * @param data {Mixed} The value of this field as saved & read from the DB
-   * @param item {Object} The existing version of the item
-   * @param context {Mixed} The GraphQL Context object for the current request
-   */
-  updateFieldPostHook(data, item, context) {} // eslint-disable-line no-unused-vars
-  /*
-   * @param data {Mixed} The value of this field as read from the DB
-   * @param item {Object} The existing version of the item
-   * @param context {Mixed} The GraphQL Context object for the current request
-   */
-  deleteFieldPreHook(data, item, context) {} // eslint-disable-line no-unused-vars
-  /*
-   * @param data {Mixed} The value of this field as read from the DB
-   * @param item {Object} The existing version of the item
-   * @param context {Mixed} The GraphQL Context object for the current request
-   */
-  deleteFieldPostHook(data, item, context) {} // eslint-disable-line no-unused-vars
+
+  async validateInput() {}
+
+  async beforeChange() {}
+
+  async afterChange() {}
+
+  async beforeDelete() {}
+
+  async validateDelete() {}
+
+  async afterDelete() {}
 
   get gqlQueryInputFields() {
     return [];
   }
+
+  equalityInputFields(type) {
+    return [`${this.path}: ${type}`, `${this.path}_not: ${type}`];
+  }
+  equalityInputFieldsInsensitive(type) {
+    return [`${this.path}_i: ${type}`, `${this.path}_not_i: ${type}`];
+  }
+  inInputFields(type) {
+    return [`${this.path}_in: [${type}]`, `${this.path}_not_in: [${type}]`];
+  }
+  orderingInputFields(type) {
+    return [
+      `${this.path}_lt: ${type}`,
+      `${this.path}_lte: ${type}`,
+      `${this.path}_gt: ${type}`,
+      `${this.path}_gte: ${type}`,
+    ];
+  }
+  stringInputFields(type) {
+    return [
+      `${this.path}_contains: ${type}`,
+      `${this.path}_not_contains: ${type}`,
+      `${this.path}_starts_with: ${type}`,
+      `${this.path}_not_starts_with: ${type}`,
+      `${this.path}_ends_with: ${type}`,
+      `${this.path}_not_ends_with: ${type}`,
+    ];
+  }
+  stringInputFieldsInsensitive(type) {
+    return [
+      `${this.path}_contains_i: ${type}`,
+      `${this.path}_not_contains_i: ${type}`,
+      `${this.path}_starts_with_i: ${type}`,
+      `${this.path}_not_starts_with_i: ${type}`,
+      `${this.path}_ends_with_i: ${type}`,
+      `${this.path}_not_ends_with_i: ${type}`,
+    ];
+  }
+
   get gqlCreateInputFields() {
     return [];
   }
@@ -138,18 +168,11 @@ class Field {
   extendAdminMeta(meta) {
     return meta;
   }
+  extendViews(views) {
+    return views;
+  }
   getDefaultValue() {
     return this.config.defaultValue;
-  }
-  testAccessControl({ listKey, item, operation, authentication }) {
-    return testFieldAccessControl({
-      access: this.access,
-      item,
-      operation,
-      authentication,
-      fieldKey: this.path,
-      listKey,
-    });
   }
 }
 

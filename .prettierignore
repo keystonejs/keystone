@@ -3,3 +3,8 @@ packages/icons/icons/*
 reports
 coverage
 packages/test-project/public
+website/.cache/**/*
+website/public/**/*
+demo-projects/todo/.cache
+demo-projects/todo/dist
+demo-projects/blog/app/.next

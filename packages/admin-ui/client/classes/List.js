@@ -23,15 +23,31 @@ export default class List {
       mutation create($data: ${this.gqlNames.createInputName}!) {
         ${this.gqlNames.createMutationName}(data: $data) {
           id
+          _label_
         }
       }
     `;
+    this.createManyMutation = gql`
+    mutation createMany($data: ${this.gqlNames.createManyInputName}!) {
+      ${this.gqlNames.createManyMutationName}(data: $data) {
+        id
+      }
+    }
+  `;
     this.updateMutation = gql`
       mutation update(
         $id: ID!,
         $data: ${this.gqlNames.updateInputName})
       {
         ${this.gqlNames.updateMutationName}(id: $id, data: $data) {
+          id
+        }
+      }
+    `;
+    this.updateManyMutation = gql`
+      mutation updateMany($data: [${this.gqlNames.updateManyInputName}])
+      {
+        ${this.gqlNames.updateMutationName}(data: $data) {
           id
         }
       }

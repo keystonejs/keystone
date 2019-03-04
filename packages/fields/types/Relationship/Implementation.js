@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const omitBy = require('lodash.omitby');
 const { mergeWhereClause } = require('@voussoir/utils');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 const {
   Schema: {
@@ -10,12 +11,8 @@ const {
 } = mongoose;
 
 const { Implementation } = require('../../Implementation');
-const {
-  nestedMutation,
-  processQueuedDisconnections,
-  processQueuedConnections,
-  tellForeignItemToDisconnect,
-} = require('./nested-mutations');
+const { resolveNested } = require('./nested-mutations');
+const { enqueueBacklinkOperations } = require('./backlinks');
 
 class Relationship extends Implementation {
   constructor() {
@@ -24,6 +21,7 @@ class Relationship extends Implementation {
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
     this.isRelationship = true;
+    this.withMeta = typeof this.config.withMeta !== 'undefined' ? this.config.withMeta : true;
   }
 
   tryResolveRefList() {
@@ -63,7 +61,7 @@ class Relationship extends Implementation {
       const filterArgs = refList.getGraphqlFilterFragment().join('\n');
       return [
         `${this.path}(${filterArgs}): [${refList.gqlNames.outputTypeName}]`,
-        `_${this.path}Meta(${filterArgs}): _QueryMeta`,
+        this.withMeta ? `_${this.path}Meta(${filterArgs}): _QueryMeta` : '',
       ];
     }
 
@@ -119,17 +117,13 @@ class Relationship extends Implementation {
         [this.path]: (item, _, context) => {
           // The field may have already been filled in during an early DB lookup
           // (ie; joining when doing a filter)
-          const id = item[this.path] && item[this.path]._id ? item[this.path]._id : item[this.path];
-
-          if (!id) {
+          if (item[this.path] === null) {
             return null;
           }
-
-          const filteredQueryArgs = { where: { id: id.toString() } };
-
+          const filteredQueryArgs = { where: { id: item[this.path].toString() } };
           // We do a full query to ensure things like access control are applied
           return refList
-            .manyQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName)
+            .listQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName)
             .then(items => (items && items.length ? items[0] : null));
         },
       };
@@ -142,8 +136,8 @@ class Relationship extends Implementation {
           .map(value => {
             // The field may have already been filled in during an early DB lookup
             // (ie; joining when doing a filter)
-            if (value && value._id) {
-              return value._id;
+            if (value && value.id) {
+              return value.id;
             }
 
             return value;
@@ -156,108 +150,104 @@ class Relationship extends Implementation {
     return {
       [this.path]: (item, args, context, { fieldName }) => {
         const filteredQueryArgs = buildManyQueryArgs(item, args);
-        return refList.manyQuery(filteredQueryArgs, context, fieldName);
+        return refList.listQuery(filteredQueryArgs, context, fieldName);
       },
 
-      [`_${this.path}Meta`]: (item, args, context, { fieldName }) => {
-        const filteredQueryArgs = buildManyQueryArgs(item, args);
-        return refList.manyQueryMeta(filteredQueryArgs, context, fieldName);
-      },
+      ...(this.withMeta && {
+        [`_${this.path}Meta`]: (item, args, context, { fieldName }) => {
+          const filteredQueryArgs = buildManyQueryArgs(item, args);
+          return refList.listQueryMeta(filteredQueryArgs, context, fieldName);
+        },
+      }),
     };
   }
 
-  async createUpdatePreHook(input, currentValue, context, getItem) {
-    const { many, required } = this.config;
+  async resolveRelationship(input, item, context, getItem, mutationState) {
+    const { many, isRequired } = this.config;
 
     const { refList, refField } = this.tryResolveRefList();
+    const listInfo = {
+      local: { list: this.getListByKey(this.listKey), field: this },
+      foreign: { list: refList, field: refField },
+    };
 
-    // Early out for null'd field
-    if (!required && !input) {
+    // Possible early out for null'd field
+    // prettier-ignore
+    if (
+      !input
+      && (
+        // If the field is not required, and the value is `null`, we can ignore
+        // it and move on.
+        !isRequired
+        // This field will be backlinked to this field's containing item, so we
+        // can safely ignore it now expecing the backlinking process in the
+        // calling code to take care of it.
+        || (refField && this.getListByKey(refField.refListKey) === listInfo.local.list)
+      )
+    ) {
       return input;
     }
 
-    return await nestedMutation({
+    let currentValue = item && item[this.path];
+    if (many) {
+      currentValue = (currentValue || []).map(id => id.toString());
+    } else {
+      currentValue = currentValue && currentValue.toString();
+    }
+
+    // Collect the IDs to be connected and disconnected. This step may trigger
+    // createMutation calls in order to obtain these IDs if required.
+    const { connect, disconnect } = await resolveNested({
       input,
       currentValue,
-      localField: this,
-      localList: this.getListByKey(this.listKey),
-      refList,
-      refField,
-      getItem,
+      listInfo,
       many,
       context,
+      mutationState,
     });
+
+    // Enqueue backlink operations for the connections and disconnections
+    if (refField) {
+      enqueueBacklinkOperations(
+        { connect, disconnect },
+        mutationState.queues,
+        getItem || Promise.resolve(item),
+        listInfo.local,
+        listInfo.foreign
+      );
+    }
+
+    // Resolve the connections and disconnections into a final id/list of ids.
+    if (many) {
+      return [...currentValue.filter(id => !disconnect.includes(id)), ...connect];
+    } else {
+      return connect ? connect[0] : disconnect ? null : currentValue;
+    }
   }
 
-  createFieldPreHook(data, context, createdPromise) {
-    return this.createUpdatePreHook(data, undefined, context, createdPromise);
-  }
-
-  updateFieldPreHook(data, item, context) {
-    const getItem = Promise.resolve(item);
-    return this.createUpdatePreHook(data, item[this.path], context, getItem);
-  }
-
-  async updateFieldPostHook(fieldData, item, context) {
-    // We have to wait to the post hook so we have the item's id to connect to!
-    await processQueuedDisconnections({ context });
-    await processQueuedConnections({ context });
-  }
-
-  async createFieldPostHook(data, item, context) {
-    // We have to wait to the post hook so we have the item's id to connect to!
-    // NOTE: We don't do any disconnects here (it's not possible to disconnect
-    // something for a newly created item thanks to the order of operations)
-    await processQueuedConnections({ context });
-  }
-
-  deleteFieldPreHook(data, item, context) {
+  registerBacklink(data, item, mutationState) {
     // Early out for null'd field
     if (!data) {
       return;
     }
 
-    const { many } = this.config;
     const { refList, refField } = this.tryResolveRefList();
-
-    // No related field to unlink
-    if (!refField) {
-      return;
+    if (refField) {
+      enqueueBacklinkOperations(
+        { disconnect: this.config.many ? data : [data] },
+        mutationState.queues,
+        Promise.resolve(item),
+        { list: this.getListByKey(this.listKey), field: this },
+        { list: refList, field: refField }
+      );
     }
-
-    const itemsToDisconnect = many ? data : [data];
-
-    itemsToDisconnect
-      // The data comes in as an ObjectId, so we have to convert it
-      .map(itemToDisconnect => itemToDisconnect.toString())
-      .forEach(itemToDisconnect => {
-        tellForeignItemToDisconnect({
-          context,
-          getItem: Promise.resolve(item),
-          local: {
-            list: this.getListByKey(this.listKey),
-            field: this,
-          },
-          foreign: {
-            list: refList,
-            field: refField,
-            id: itemToDisconnect,
-          },
-        });
-      });
-
     // TODO: Cascade _deletion_ of any related items (not just setting the
     // reference to null)
     // Accept a config option for cascading: https://www.prisma.io/docs/1.4/reference/service-configuration/data-modelling-(sdl)-eiroozae8u/#the-@relation-directive
     // Beware of circular delete hooks!
   }
 
-  async deleteFieldPostHook(fieldData, item, context) {
-    // We have to wait to the post hook so we have the item's id to discconect.
-    await processQueuedDisconnections({ context });
-  }
-
-  get gqlAuxTypes() {
+  getGqlAuxTypes() {
     const { refList } = this.tryResolveRefList();
     // We need an input type that is specific to creating nested items when
     // creating a relationship, ie;
@@ -274,7 +264,7 @@ class Relationship extends Implementation {
     //
     // Then there's the linking to existing records usecase:
     // mutation createPost() {
-    //   author: { id: 'abc123' }
+    //   author: { connect: { id: 'abc123' } }
     // }
     if (this.config.many) {
       return [
@@ -330,102 +320,129 @@ class Relationship extends Implementation {
   }
 }
 
-class MongoSelectInterface extends MongooseFieldAdapter {
+class MongoRelationshipInterface extends MongooseFieldAdapter {
   constructor(...args) {
     super(...args);
     const [refListKey, refFieldPath] = this.config.ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
+    this.isRelationship = true;
   }
 
   addToMongooseSchema(schema) {
     const {
       refListKey: ref,
-      config: { many, mongooseOptions },
+      config: { many },
     } = this;
     const type = many ? [ObjectId] : ObjectId;
-    const schemaOptions = { type, ref, ...mongooseOptions };
-    if (this.config.unique) {
-      // A value of anything other than `true` causes errors with Mongoose
-      // constantly recreating indexes. Ie; if we just splat `unique` onto the
-      // options object, it would be `undefined`, which would cause Mongoose to
-      // drop and recreate all indexes.
-      schemaOptions.unique = true;
-    }
-    schema.add({ [this.path]: schemaOptions });
+    const schemaOptions = { type, ref };
+    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
   }
 
   getRefListAdapter() {
     return this.getListByKey(this.refListKey).adapter;
   }
 
-  getQueryConditions() {
+  getQueryConditions(dbPath) {
     return {
-      [`${this.path}_is_null`]: value => {
-        if (value) {
-          return { [this.path]: { $not: { $exists: true, $ne: null } } };
-        }
-        return { [this.path]: { $exists: true, $ne: null } };
+      [`${this.path}_is_null`]: value => ({
+        [dbPath]: value ? { $not: { $exists: true, $ne: null } } : { $exists: true, $ne: null },
+      }),
+    };
+  }
+
+  getRelationshipQueryCondition(queryKey, uid) {
+    const filterType = {
+      [this.path]: 'every',
+      [`${this.path}_every`]: 'every',
+      [`${this.path}_some`]: 'some',
+      [`${this.path}_none`]: 'none',
+    }[queryKey];
+
+    return {
+      from: this.getRefListAdapter().model.collection.name, // the collection name to join with
+      field: this.path, // The field on this collection
+      // A mutation to run on the data post-join. Useful for merging joined
+      // data back into the original object.
+      // Executed on a depth-first basis for nested relationships.
+      postQueryMutation: (parentObj /*, keyOfRelationship, rootObj, pathToParent*/) => {
+        return omitBy(
+          parentObj,
+          /*
+          {
+            ...parentObj,
+            // Given there could be sorting and limiting that's taken place, we
+            // want to overwrite the entire object rather than merging found items
+            // in.
+            [field]: parentObj[keyOfRelationship],
+          },
+          */
+          // Clean up the result to remove the intermediate results
+          (_, keyToOmit) => keyToOmit.startsWith(uid)
+        );
       },
+      // The conditions under which an item from the 'orders' collection is
+      // considered a match and included in the end result
+      // All the keys on an 'order' are available, plus 3 special keys:
+      // 1) <uid>_<field>_every - is `true` when every joined item matches the
+      //    query
+      // 2) <uid>_<field>_some - is `true` when some joined item matches the
+      //    query
+      // 3) <uid>_<field>_none - is `true` when none of the joined items match
+      //    the query
+      matchTerm: { [`${uid}_${this.path}_${filterType}`]: true },
+      // Flag this is a to-many relationship
+      many: this.config.many,
     };
   }
 
-  hasQueryCondition(condition) {
-    return Object.keys(this.getRelationshipQueryConditions()).includes(condition);
+  supportsRelationshipQuery(query) {
+    return [this.path, `${this.path}_every`, `${this.path}_some`, `${this.path}_none`].includes(
+      query
+    );
+  }
+}
+
+class KnexRelationshipInterface extends KnexFieldAdapter {
+  constructor(...args) {
+    super(...args);
+    const [refListKey, refFieldPath] = this.config.ref.split('.');
+    this.refListKey = refListKey;
+    this.refFieldPath = refFieldPath;
+    this.refListId = `${refListKey}_id`;
+    this.isRelationship = true;
   }
 
-  getRelationshipQueryConditions() {
-    const refListAdapter = this.getRefListAdapter();
-    const from = refListAdapter.model.collection.name;
+  getRefListAdapter() {
+    return this.getListByKey(this.refListKey).adapter;
+  }
 
-    const buildRelationship = (filterType, uid) => {
-      return {
-        from, // the collection name to join with
-        field: this.path, // The field on this collection
-        // A mutation to run on the data post-join. Useful for merging joined
-        // data back into the original object.
-        // Executed on a depth-first basis for nested relationships.
-        postQueryMutation: (parentObj /*, keyOfRelationship, rootObj, pathToParent*/) => {
-          return omitBy(
-            parentObj,
-            /*
-            {
-              ...parentObj,
-              // Given there could be sorting and limiting that's taken place, we
-              // want to overwrite the entire object rather than merging found items
-              // in.
-              [field]: parentObj[keyOfRelationship],
-            },
-            */
-            // Clean up the result to remove the intermediate results
-            (_, keyToOmit) => keyToOmit.startsWith(uid)
-          );
-        },
-        // The conditions under which an item from the 'orders' collection is
-        // considered a match and included in the end result
-        // All the keys on an 'order' are available, plus 3 special keys:
-        // 1) <uid>_<field>_every - is `true` when every joined item matches the
-        //    query
-        // 2) <uid>_<field>_some - is `true` when some joined item matches the
-        //    query
-        // 3) <uid>_<field>_none - is `true` when none of the joined items match
-        //    the query
-        matchTerm: { [`${uid}_${this.path}_${filterType}`]: true },
-        // Flag this is a to-many relationship
-        many: this.config.many,
-      };
-    };
+  createColumn(table) {
+    return table.integer(this.path).unsigned();
+  }
 
+  createForiegnKey(table, schemaName) {
+    return table
+      .foreign(this.path)
+      .references('id')
+      .inTable(`${schemaName}.${this.refListKey}`);
+  }
+
+  getQueryConditions(dbPath) {
     return {
-      [this.path]: (value, query, uid) => buildRelationship('every', uid),
-      [`${this.path}_every`]: (value, query, uid) => buildRelationship('every', uid),
-      [`${this.path}_some`]: (value, query, uid) => buildRelationship('some', uid),
-      [`${this.path}_none`]: (value, query, uid) => buildRelationship('none', uid),
+      [`${this.path}_is_null`]: value => b =>
+        value ? b.whereNull(dbPath) : b.whereNotNull(dbPath),
     };
+  }
+  supportsRelationshipQuery(query) {
+    return [this.path, `${this.path}_every`, `${this.path}_some`, `${this.path}_none`].includes(
+      query
+    );
   }
 }
 
 module.exports = {
   Relationship,
-  MongoSelectInterface,
+  MongoRelationshipInterface,
+  KnexRelationshipInterface,
 };

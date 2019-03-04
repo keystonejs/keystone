@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { CheckIcon, DashIcon, XIcon } from '@voussoir/icons';
-import { colors } from '@voussoir/ui/src/theme';
-import { OptionPrimitive } from '@voussoir/ui/src/primitives/filters';
+import { CheckIcon, DashIcon, XIcon } from '@arch-ui/icons';
+import { colors } from '@arch-ui/theme';
+import { OptionPrimitive } from '@arch-ui/options';
 
 import { POPOUT_GUTTER } from '../../components/Popout';
 import FieldSelect, { type FieldSelectProps } from './FieldSelect';

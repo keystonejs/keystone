@@ -1,6 +1,6 @@
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
-const { escapeRegExp } = require('@voussoir/utils');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 const mongoose = require('mongoose');
 
 // Disabling the getter of mongoose >= 5.1.0
@@ -29,22 +29,15 @@ class File extends Implementation {
   }
   get gqlQueryInputFields() {
     return [
-      `${this.path}: String`,
-      `${this.path}_not: String`,
-      `${this.path}_contains: String`,
-      `${this.path}_not_contains: String`,
-      `${this.path}_starts_with: String`,
-      `${this.path}_not_starts_with: String`,
-      `${this.path}_ends_with: String`,
-      `${this.path}_not_ends_with: String`,
-      `${this.path}_in: [String!]`,
-      `${this.path}_not_in: [String!]`,
+      ...this.equalityInputFields('String'),
+      ...this.stringInputFields('String'),
+      ...this.inInputFields('String'),
     ];
   }
   getFileUploadType() {
     return 'Upload';
   }
-  get gqlAuxTypes() {
+  getGqlAuxTypes() {
     return [
       `
       type ${this.graphQLOutputType} {
@@ -66,6 +59,11 @@ class File extends Implementation {
         if (!itemValues) {
           return null;
         }
+
+        // FIXME: This can hopefully be removed once graphql 14.1.0 is released.
+        // https://github.com/graphql/graphql-js/pull/1520
+        if (itemValues.id) itemValues.id = itemValues.id.toString();
+
         return {
           publicUrl: this.config.adapter.publicUrl(itemValues),
           ...itemValues,
@@ -73,7 +71,10 @@ class File extends Implementation {
       },
     };
   }
-  async saveStream(uploadData, previousData) {
+
+  async resolveInput({ resolvedData, existingItem }) {
+    const previousData = existingItem && existingItem[this.path];
+    const uploadData = resolvedData[this.path];
     // TODO: FIXME: Handle when uploadData is null. Can happen when:
     // Deleting the file
     if (!uploadData) {
@@ -101,12 +102,7 @@ class File extends Implementation {
 
     return { id, filename, mimetype, encoding, _meta };
   }
-  createFieldPreHook(uploadData) {
-    return this.saveStream(uploadData);
-  }
-  updateFieldPreHook(uploadData, item) {
-    return this.saveStream(uploadData, item[this.path]);
-  }
+
   get gqlUpdateInputFields() {
     return [`${this.path}: ${this.getFileUploadType()}`];
   }
@@ -115,9 +111,19 @@ class File extends Implementation {
   }
 }
 
-class MongoFileInterface extends MongooseFieldAdapter {
+const CommonFileInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.stringConditions(dbPath),
+        ...this.inConditions(dbPath),
+      };
+    }
+  };
+
+class MongoFileInterface extends CommonFileInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
-    const { mongooseOptions, unique } = this.config;
     const schemaOptions = {
       type: {
         id: ObjectId,
@@ -126,58 +132,19 @@ class MongoFileInterface extends MongooseFieldAdapter {
         mimetype: String,
         _meta: Object,
       },
-      ...mongooseOptions,
     };
-    if (unique) {
-      // A value of anything other than `true` causes errors with Mongoose
-      // constantly recreating indexes. Ie; if we just splat `unique` onto the
-      // options object, it would be `undefined`, which would cause Mongoose to
-      // drop and recreate all indexes.
-      schemaOptions.unique = true;
-    }
-    schema.add({ [this.path]: schemaOptions });
+    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
   }
+}
 
-  getQueryConditions() {
-    return {
-      [this.path]: value => ({
-        [this.path]: { $eq: value },
-      }),
-      [`${this.path}_not`]: value => ({
-        [this.path]: { $ne: value },
-      }),
-
-      [`${this.path}_contains`]: value => ({
-        [this.path]: { $regex: new RegExp(escapeRegExp(value)) },
-      }),
-      [`${this.path}_not_contains`]: value => ({
-        [this.path]: { $not: new RegExp(escapeRegExp(value)) },
-      }),
-
-      [`${this.path}_starts_with`]: value => ({
-        [this.path]: { $regex: new RegExp(`^${escapeRegExp(value)}`) },
-      }),
-      [`${this.path}_not_starts_with`]: value => ({
-        [this.path]: { $not: new RegExp(`^${escapeRegExp(value)}`) },
-      }),
-      [`${this.path}_ends_with`]: value => ({
-        [this.path]: { $regex: new RegExp(`${escapeRegExp(value)}$`) },
-      }),
-      [`${this.path}_not_ends_with`]: value => ({
-        [this.path]: { $not: new RegExp(`${escapeRegExp(value)}$`) },
-      }),
-
-      [`${this.path}_in`]: value => ({
-        [this.path]: { $in: value },
-      }),
-      [`${this.path}_not_in`]: value => ({
-        [this.path]: { $not: { $in: value } },
-      }),
-    };
+class KnexFileInterface extends CommonFileInterface(KnexFieldAdapter) {
+  createColumn(table) {
+    return table.json(this.path);
   }
 }
 
 module.exports = {
   File,
   MongoFileInterface,
+  KnexFileInterface,
 };

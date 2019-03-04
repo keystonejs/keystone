@@ -1,5 +1,192 @@
 # @voussoir/core
 
+## 2.1.0
+
+- [minor] 64e6abcc:
+
+  - Allow lists and fields to specify a schemaDoc field
+
+- [minor] 7a4950bf:
+
+  - Allow mutations: [{ schema: ..., resolver: ...}] to be specified in createList
+
+## 2.0.0
+
+- [minor] 5f891cff:
+
+  - Add a setupHooks method to BaseFieldAdapter
+
+- [minor] aca26f71:
+
+  - Expose access to GraphQL query method within hooks
+
+- [minor] 6471fc4a:
+
+  - Add fieldAdaptersByPath object to field adapters
+
+- [patch] 797dc862:
+
+  - Move itemsQueryMeta onto the base adapter class
+
+- [patch] 266b5733:
+
+  - Don't try to resolve nested mutations which will be later backfilled
+
+- [major] 48773907:
+
+  - Move findFieldAdapterForQuerySegment onto the BaseListAdapter
+
+- [minor] f37a8086:
+
+  - Can now dump the GraphQL schema with keystone.dumpSchema(filePath)
+
+- [patch] e6e3ea06:
+
+  - Explicitly check whether field types are supported by the adapter
+
+- [major] 860c3b80:
+
+  - Add a postConnect method to list adapters to capture all the work which needs to be done after the database has been connected to
+
+- Updated dependencies [723371a0]:
+- Updated dependencies [53e27d75]:
+- Updated dependencies [5f8043b5]:
+- Updated dependencies [a3d5454d]:
+  - @voussoir/access-control@0.4.1
+  - @voussoir/fields@3.0.0
+  - @voussoir/utils@1.0.0
+
+## 1.1.0
+
+- [patch] 8d8666ad:
+
+  - Dependency upgrade: graphql -> 14.0.3, graphql-tools -> 4.0.3
+
+- [minor] 6d8ce0fc:
+
+  - Add createMany and updateMany mutations
+
+## 1.0.0
+
+- [patch] a95e0c69:
+
+  - Report correct gqlName when reporting errors in deleteMutation
+
+- [patch] 21626b66:
+
+  - preSave/postRead item hooks run consistently
+
+- [patch] 84b62eaa:
+
+  - Decouple access of items in the database from operations of them provide room for pre/post hooks
+
+- [patch] cd885800:
+
+  - Update the field hooks API to use the officially sanctioned hook names.
+
+- [patch] c6fff24c:
+
+  - Call field hooks when deleting many items at once.
+
+- [major] c83c9ed5:
+
+  - Add Keystone.getAccessContext and remove List.getAccessControl, List.getFieldAccessControl, and Field.validateAccessControl.
+
+- [patch] ffc98ac4:
+
+  - Rename the access control function parameter `item` to `existingItem`
+
+- [minor] c3ebd9e6:
+
+  - Update resolver code to make all list access checks explicit
+
+- [minor] ebae2d6f:
+
+  - Minor tweaks to the graphQL schema behaviour
+
+- [major] 78fd9555:
+
+  - Field configuration now tasks isRequired and isUnique, rather than required and unique
+
+- [patch] 3801e040:
+
+  - Separate out the pre-hooks for resolving relationship fields from the field.resolveInput hooks
+
+- [major] d22820b1:
+
+  - Rename keystone.session to keystone.sessionManager
+    - Rename keystone.session.validate to keystone.sessionManager.populateAuthedItemMiddleware
+    - Rename keystone.session.create to keystone.sessionManager.startAuthedSession
+    - Rename keystone.session.destroy to keystone.sessionManager.endAuthedSession
+
+- Updated dependencies [01718870]:
+  - @voussoir/fields@2.0.0
+
+## 0.7.0
+
+- [patch] d1777cc1:
+
+  - Consolidate logging and error handling mechanisms within core/List/index.js
+
+- [minor] 45d4c379:
+
+  - Update the functional API for Keystone List objects for consistency
+
+- [patch] 9c383fe8:
+
+  - Always use \$set and { new: true } in the mongoose adapter update() method
+
+- Updated dependencies [3ae588b7]:
+  - @voussoir/access-control@0.3.0
+  - @voussoir/fields@1.4.0
+
+## 0.6.0
+
+- [minor] d94b517:
+
+  Add \_ksListsMeta query to gather type and relationship information
+
+- [minor] a3b995c:
+
+  Add \_ksListsMeta query to gather type and relationship information
+
+- [patch] ca7ce46:
+
+  Correctly hide fields from Relationships when not readable
+
+## 0.5.0
+
+- [minor] d94b517:
+
+  Add \_ksListsMeta query to gather type and relationship information
+
+- [minor] a3b995c:
+
+  Add \_ksListsMeta query to gather type and relationship information
+
+- [patch] ca7ce46:
+
+  Correctly hide fields from Relationships when not readable
+
+- [minor] 47c7dcf6"
+  :
+
+  - Bump all packages with a minor version to set a new baseline
+
+## 0.4.0
+
+- [minor] d94b517:
+
+  Add \_ksListsMeta query to gather type and relationship information
+
+- [minor] a3b995c:
+
+  Add \_ksListsMeta query to gather type and relationship information
+
+- [patch] ca7ce46:
+
+  Correctly hide fields from Relationships when not readable
+
 ## 0.3.0
 
 - [patch] Bump all packages for Babel config fixes [d51c833](d51c833)

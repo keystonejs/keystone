@@ -1,0 +1,8 @@
+{
+  "name": "@arch-ui/color-utils",
+  "version": "0.0.1",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "main": "dist/color-utils.cjs.js",
+  "module": "dist/color-utils.esm.js"
+}

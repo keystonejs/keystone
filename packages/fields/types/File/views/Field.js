@@ -3,13 +3,13 @@ import { jsx } from '@emotion/core';
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
-import { AlertIcon, ShieldIcon } from '@voussoir/icons';
-import { HiddenInput } from '@voussoir/ui/src/primitives/forms';
-import { Lozenge } from '@voussoir/ui/src/primitives/lozenge';
-import { Button, LoadingButton } from '@voussoir/ui/src/primitives/buttons';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { borderRadius, colors, gridSize } from '@voussoir/ui/src/theme';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { AlertIcon, ShieldIcon } from '@arch-ui/icons';
+import { HiddenInput } from '@arch-ui/input';
+import { Lozenge } from '@arch-ui/lozenge';
+import { Button, LoadingButton } from '@arch-ui/button';
+import { FlexGroup } from '@arch-ui/layout';
+import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 
 // NOTE: we need flow 😢
 // Status enum: 'empty' | 'stored' | 'removed' | 'updated'
@@ -63,9 +63,9 @@ export default class FileField extends Component {
   };
   constructor(props) {
     super(props);
-    const { field, item } = props;
+    const { value } = props;
 
-    this.originalFile = item[field.path];
+    this.originalFile = value;
     const changeStatus = this.originalFile ? 'stored' : 'empty';
 
     this.state = {
@@ -82,10 +82,8 @@ export default class FileField extends Component {
   // ==============================
 
   onCancel = () => {
-    const { field, onChange } = this.props;
-
     // revert to the original file if available
-    onChange(field, this.originalFile);
+    this.props.onChange(this.originalFile);
 
     this.setState({
       changeStatus: this.originalFile ? 'stored' : 'empty',
@@ -94,14 +92,12 @@ export default class FileField extends Component {
     });
   };
   onRemove = () => {
-    const { field, onChange } = this.props;
-
     this.setState({
       changeStatus: 'removed',
       errorMessage: null,
     });
 
-    onChange(field, null);
+    this.props.onChange(null);
   };
   onChange = ({
     target: {
@@ -111,7 +107,7 @@ export default class FileField extends Component {
   }) => {
     if (!file) return; // bail if the user cancels from the file browser
 
-    const { errorMessage, field, onChange } = this.props;
+    const { errorMessage, onChange } = this.props;
     const newState = { changeStatus: 'updated' };
 
     // basic validity check
@@ -130,7 +126,7 @@ export default class FileField extends Component {
       this.setState({ dataURI: null, errorMessage: null });
     }
 
-    onChange(field, file);
+    onChange(file);
     this.setState(newState);
   };
   openFileBrowser = () => {
@@ -142,11 +138,11 @@ export default class FileField extends Component {
   // ==============================
 
   getFile = () => {
-    const { field, item } = this.props;
+    const { value } = this.props;
     const { changeStatus } = this.state;
 
     const isRemoved = changeStatus === 'removed';
-    const file = isRemoved ? this.originalFile : item[field.path];
+    const file = isRemoved ? this.originalFile : value;
     const type = file && file['__typename'] ? 'server' : 'client';
 
     return { file, type };
@@ -166,7 +162,6 @@ export default class FileField extends Component {
       });
     };
     reader.onloadend = upload => {
-      console.log('upload.target', upload.target);
       this.setState({ isLoading: false, dataURI: upload.target.result });
     };
   };
@@ -220,16 +215,14 @@ export default class FileField extends Component {
   };
 
   render() {
-    const { autoFocus, field, statusMessage, itemErrors } = this.props;
+    const { autoFocus, field, statusMessage, error } = this.props;
     const { changeStatus, errorMessage } = this.state;
 
     const { file } = this.getFile();
     const imagePath = this.getImagePath();
     const showStatusMessage = ['removed', 'updated'].includes(changeStatus);
     const htmlID = `ks-input-${field.path}`;
-    const canRead = !(
-      itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
-    );
+    const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
 
     return (
       <FieldContainer>
@@ -243,10 +236,7 @@ export default class FileField extends Component {
         >
           {field.label}{' '}
           {!canRead ? (
-            <ShieldIcon
-              title={itemErrors[field.path].message}
-              css={{ color: colors.N20, marginRight: '1em' }}
-            />
+            <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
           ) : null}
         </FieldLabel>
         <FieldInput>
@@ -254,7 +244,7 @@ export default class FileField extends Component {
             <Wrapper>
               {imagePath ? <Image src={imagePath} alt={field.path} /> : null}
               <Content>
-                <FlexGroup>
+                <FlexGroup style={{ marginBottom: gridSize }}>
                   {this.renderUploadButton()}
                   {this.renderCancelButton()}
                 </FlexGroup>

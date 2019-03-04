@@ -5,25 +5,39 @@ const path = require('path');
 const { enableDevFeatures, mode } = require('./env');
 
 module.exports = function({ adminMeta, entry }) {
+  const templatePlugin = new HtmlWebpackPlugin({
+    title: 'KeystoneJS',
+    template: 'index.html',
+  });
+  const environmentPlugin = new webpack.DefinePlugin({
+    ENABLE_DEV_FEATURES: enableDevFeatures,
+    IS_PUBLIC_BUNDLE: entry === 'public',
+    KEYSTONE_ADMIN_META: JSON.stringify(adminMeta),
+  });
+
   const rules = [
     {
       test: /\.js$/,
-      exclude: [/node_modules(?!\/@voussoir\/)/],
+      exclude: [/node_modules(?!\/@(voussoir|arch-ui)\/)/],
       use: [
         {
           loader: 'babel-loader',
           options: {
+            configFile: false,
             babelrc: false,
             presets: [
-              ['env', { exclude: ['transform-regenerator', 'transform-async-to-generator'] }],
-              'react',
-              'flow',
+              [
+                '@babel/env',
+                { exclude: ['transform-regenerator', 'transform-async-to-generator'] },
+              ],
+              ['@babel/react', { development: enableDevFeatures }],
+              '@babel/flow',
             ],
             plugins: [
-              'transform-class-properties',
-              'transform-object-rest-spread',
-              ['emotion', enableDevFeatures ? { sourceMap: true } : {}],
-              ...(enableDevFeatures ? ['transform-react-jsx-source'] : []),
+              '@babel/plugin-syntax-dynamic-import',
+              '@babel/proposal-class-properties',
+              '@babel/proposal-object-rest-spread',
+              'emotion',
             ],
           },
         },
@@ -55,11 +69,13 @@ module.exports = function({ adminMeta, entry }) {
       ],
     });
   }
+  const entryPath = `./${entry}.js`;
   return {
     mode,
     context: path.resolve(__dirname, '../client/'),
     devtool: mode === 'development' ? 'inline-source-map' : undefined,
-    entry: `./${entry}.js`,
+    entry:
+      mode === 'production' ? entryPath : [entryPath, 'webpack-hot-middleware/client?reload=true'],
     output: {
       filename: `${entry}.js`,
       publicPath: adminMeta.adminPath,
@@ -68,18 +84,27 @@ module.exports = function({ adminMeta, entry }) {
     // right now this is just noise
     performance: { hints: false },
     plugins: [
-      new webpack.DefinePlugin({
-        ENABLE_DEV_FEATURES: enableDevFeatures,
-        IS_PUBLIC_BUNDLE: entry === 'public',
-        KEYSTONE_ADMIN_META: JSON.stringify(adminMeta),
-      }),
-      new HtmlWebpackPlugin({
-        title: 'KeystoneJS',
-        template: 'index.html',
-      }),
+      environmentPlugin,
+      templatePlugin,
+      ...(mode === 'development' ? [new webpack.HotModuleReplacementPlugin()] : []),
     ],
     module: {
       rules,
+    },
+    resolve: {
+      alias: {
+        // we only want to bundle a single version of react
+        // but we don't want to assume a consumer has the same version of react
+        // that we use so we alias react the react resolved from the admin ui
+        // which depends on the version of react that keystone uses
+        react$: require.resolve('react'),
+        'react-dom$': require.resolve('react-dom'),
+        ...(() => {
+          try {
+            return require('preconstruct').aliases.webpack(path.join(__dirname, '..', '..', '..'));
+          } catch (e) {}
+        })(),
+      },
     },
   };
 };

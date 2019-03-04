@@ -2,10 +2,9 @@
 import { jsx } from '@emotion/core';
 import { Component } from 'react';
 import styled from '@emotion/styled';
-import { ChevronDownIcon, ChevronUpIcon } from '@voussoir/icons';
-import { OptionPrimitive } from '@voussoir/ui/src/primitives/filters';
-import { colors } from '@voussoir/ui/src/theme';
-import { OptionRenderer } from '@voussoir/ui/src/primitives/filters';
+import { ChevronDownIcon, ChevronUpIcon } from '@arch-ui/icons';
+import { OptionPrimitive, Options } from '@arch-ui/options';
+import { colors } from '@arch-ui/theme';
 
 import { POPOUT_GUTTER } from '../../components/Popout';
 
@@ -106,7 +105,7 @@ export default class SortSelect extends Component<Props, State> {
 
     return (
       <div css={{ padding: POPOUT_GUTTER }}>
-        <OptionRenderer
+        <Options
           components={{ Option: this.enhancedOption }}
           isOptionSelected={isOptionSelected}
           onChange={this.handleChange}

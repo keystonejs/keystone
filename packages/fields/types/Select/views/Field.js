@@ -2,23 +2,20 @@
 import { jsx } from '@emotion/core';
 import { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
-import { Select } from '@voussoir/ui/src/primitives/filters';
-import { ShieldIcon } from '@voussoir/icons';
-import { colors } from '@voussoir/ui/src/theme';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import Select from '@arch-ui/select';
+import { ShieldIcon } from '@arch-ui/icons';
+import { colors } from '@arch-ui/theme';
 
 export default class SelectField extends Component {
   onChange = option => {
-    const { field, onChange } = this.props;
-    onChange(field, option ? option.value : null);
+    this.props.onChange(option ? option.value : null);
   };
   render() {
-    const { autoFocus, field, item, renderContext, itemErrors } = this.props;
-    const value = field.options.find(i => i.value === item[field.path]);
+    const { autoFocus, field, value: serverValue, renderContext, error } = this.props;
+    const value = field.options.find(i => i.value === serverValue);
     const htmlID = `ks-input-${field.path}`;
-    const canRead = !(
-      itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
-    );
+    const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
 
     const selectProps =
       renderContext === 'dialog'
@@ -40,17 +37,14 @@ export default class SelectField extends Component {
         >
           {field.label}{' '}
           {!canRead ? (
-            <ShieldIcon
-              title={itemErrors[field.path].message}
-              css={{ color: colors.N20, marginRight: '1em' }}
-            />
+            <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
           ) : null}
         </FieldLabel>
         <FieldInput>
           <Select
             autoFocus={autoFocus}
             value={canRead ? value : undefined}
-            placeholder={canRead ? undefined : itemErrors[field.path].message}
+            placeholder={canRead ? undefined : error.message}
             options={field.options}
             onChange={this.onChange}
             id={`react-select-${htmlID}`}

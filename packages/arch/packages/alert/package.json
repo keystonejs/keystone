@@ -1,0 +1,19 @@
+{
+  "name": "@arch-ui/alert",
+  "version": "0.0.1",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "main": "dist/alert.cjs.js",
+  "peerDependencies": {
+    "react": "^16.8.0"
+  },
+  "devDependencies": {
+    "react": "^16.8.0"
+  },
+  "dependencies": {
+    "@arch-ui/theme": "^0.0.1",
+    "@emotion/core": "^10.0.4",
+    "@emotion/styled": "^10.0.4"
+  },
+  "module": "dist/alert.esm.js"
+}

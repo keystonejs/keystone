@@ -1,6 +1,27 @@
 # @voussoir/mongo-join-builder
 
+## 0.3.2
+
+- Updated dependencies [723371a0]:
+- Updated dependencies [aca26f71]:
+- Updated dependencies [a3d5454d]:
+  - @voussoir/utils@1.0.0
+
+## 0.3.1
+
+- [patch] fc1a9055:
+
+  - Update dependencies to latest patch versions
+
+## 0.3.0
+
+- [minor] 47c7dcf6"
+  :
+
+  - Bump all packages with a minor version to set a new baseline
+
 ## 0.2.0
+
 - [minor] Pipeline and mutation builders are decoupled from each other. [74af97e](74af97e)
 
 ## 0.1.3

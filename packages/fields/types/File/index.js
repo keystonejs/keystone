@@ -1,15 +1,16 @@
+const { File, MongoFileInterface, KnexFileInterface } = require('./Implementation');
 const path = require('path');
-const { File, MongoFileInterface } = require('./Implementation');
 
 module.exports = {
   type: 'File',
   implementation: File,
   views: {
-    Controller: path.resolve(__dirname, './Controller'),
-    Field: path.resolve(__dirname, './views/Field'),
-    Cell: path.resolve(__dirname, './views/Cell'),
+    Controller: path.join(__dirname, './Controller'),
+    Field: path.join(__dirname, './views/Field'),
+    Cell: path.join(__dirname, './views/Cell'),
   },
   adapters: {
     mongoose: MongoFileInterface,
+    knex: KnexFileInterface,
   },
 };

@@ -1,5 +1,27 @@
 const loaderUtils = require('loader-utils');
 
+function serialize(value) {
+  if (typeof value === 'string') {
+    return `interopDefault(require('${value}'))`;
+  }
+  if (Array.isArray(value)) {
+    return `[${value.map(serialize).join(', ')}]`;
+  }
+  if (typeof value === 'object' && value !== null) {
+    return (
+      '{\n' +
+      Object.keys(value)
+        .map(key => {
+          // we need to use getters so circular dependencies work
+          return `get "${key}"() { return ${serialize(value[key])}; }`;
+        })
+        .join(',\n') +
+      '}'
+    );
+  }
+  throw new Error('cannot serialize value of type: ' + typeof value);
+}
+
 module.exports = function() {
   const options = loaderUtils.getOptions(this);
   const adminMeta = options.adminMeta;
@@ -37,25 +59,16 @@ module.exports = function() {
   }
    */
 
-  const stringifiedObject = `{
-    ${Object.entries(adminMeta.lists)
-      .map(([listPath, list]) => {
-        return `"${listPath}": {
-        ${Object.entries(list.views)
-          .map(([fieldPath, views]) => {
-            return `"${fieldPath}": {
-              ${Object.entries(views)
-                .map(([viewType, resolution]) => {
-                  return `${viewType}: require('${resolution}').default`;
-                })
-                .join(',\n')}
-          }`;
-          })
-          .join(',\n')}
-      }`;
-      })
-      .join(',\n')}
-  }`;
+  const stringifiedObject = serialize(
+    Object.entries(adminMeta.lists).reduce((obj, [listPath, { views }]) => {
+      obj[listPath] = views;
+      return obj;
+    }, {})
+  );
 
-  return `module.exports = ${stringifiedObject}`;
+  return `
+  function interopDefault(mod) {
+    return mod.default ? mod.default : mod;
+  }
+  module.exports = ${stringifiedObject}`;
 };

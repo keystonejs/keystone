@@ -1,27 +1,26 @@
-import React, { Component } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 
-// TODO: use pretty checkboxes - these only work in a CheckGroup situation.
-// import { Checkbox } from '@voussoir/ui/src/primitives/forms';
+import { CheckboxPrimitive } from '@arch-ui/controls';
 
 export default class TextField extends Component {
   onChange = event => {
-    const { field, onChange } = this.props;
-    onChange(field, event.target.checked);
+    this.props.onChange(event.target.checked);
   };
   render() {
-    const { autoFocus, field, item } = this.props;
-    const checked = item[field.path] || false;
+    const { autoFocus, field, value } = this.props;
+    const checked = value || false;
     const htmlID = `ks-input-${field.path}`;
 
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
-        <FieldInput>
-          <input
+        <FieldInput css={{ height: 35 }}>
+          <CheckboxPrimitive
             autoFocus={autoFocus}
-            type="checkbox"
             checked={checked}
             onChange={this.onChange}
             id={htmlID}

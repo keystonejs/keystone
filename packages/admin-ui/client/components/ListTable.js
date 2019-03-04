@@ -4,12 +4,13 @@ import React, { Component } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
-import { ShieldIcon, InfoIcon, TrashcanIcon, ArrowRightIcon } from '@voussoir/icons';
-import { colors } from '@voussoir/ui/src/theme';
-import { Button } from '@voussoir/ui/src/primitives/buttons';
-import { CheckboxPrimitive } from '@voussoir/ui/src/primitives/forms';
-import { A11yText } from '@voussoir/ui/src/primitives/typography';
+import { DiffIcon, InfoIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
+import { colors, gridSize } from '@arch-ui/theme';
+import { CheckboxPrimitive } from '@arch-ui/controls';
+import Dropdown from '@arch-ui/dropdown';
+import { A11yText } from '@arch-ui/typography';
 import DeleteItemModal from './DeleteItemModal';
+import { copyToClipboard } from '../util';
 
 // This import is loaded by the @voussoir/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
@@ -19,15 +20,26 @@ import FieldTypes from '../FIELD_TYPES';
 const Table = styled('table')({
   borderCollapse: 'collapse',
   borderSpacing: 0,
-  tableLayout: 'fixed',
+  marginBottom: gridSize * 4,
   width: '100%',
 });
-const HeaderCell = styled('td')({
-  borderBottom: `2px solid ${colors.N10}`,
+const TableRow = styled('tr')(({ isActive }) => ({
+  '> td': {
+    backgroundColor: isActive ? 'rgba(0, 0, 0, 0.02)' : null,
+  },
+}));
+const HeaderCell = styled('th')({
+  backgroundColor: colors.page,
+  boxShadow: '0 2px 0 rgba(0, 0, 0, 0.1)',
+  boxSizing: 'border-box',
   color: '#999',
   display: 'table-cell',
   fontWeight: 'normal',
-  padding: '8px',
+  padding: gridSize,
+  position: 'sticky',
+  top: 0,
+  transition: 'background-color 100ms',
+  zIndex: 1,
   textAlign: 'left',
   verticalAlign: 'bottom',
 });
@@ -36,7 +48,8 @@ const BodyCell = styled('td')(({ isSelected }) => ({
   boxShadow: isSelected
     ? `0 1px 0 ${colors.B.L75}, 0 -1px 0 ${colors.B.L75}`
     : `0 -1px 0 ${colors.N10}`,
-  padding: '8px',
+  boxSizing: 'border-box',
+  padding: gridSize,
   position: 'relative',
   fontSize: 15,
 }));
@@ -81,7 +94,7 @@ const NoResults = ({ children, ...props }) => (
   </div>
 );
 
-const SortDirectionArrow = styled.span(({ size = '0.2em', rotate = '0deg' }) => ({
+const SortDirectionArrow = styled.span(({ size = '0.25em', rotate = '0deg' }) => ({
   borderLeft: `${size} solid transparent`,
   borderRight: `${size} solid transparent`,
   borderTop: `${size} solid`,
@@ -113,43 +126,47 @@ class SortLink extends React.Component<SortLinkProps> {
 
   render() {
     const styles = {
-      borderBottom: `2px solid ${colors.N10}`,
-      display: 'table-cell',
-      fontWeight: 'normal',
-      padding: '8px',
-      textAlign: 'left',
-      verticalAlign: 'bottom',
       color: this.props.active ? '#000' : '#999',
+      cursor: this.props.sortable ? 'pointer' : 'auto',
     };
 
     // TODO: Do we want to make `sortable` a field config option?
     return (
-      <td style={styles} onClick={this.onClick} data-field={this.props['data-field']}>
+      <HeaderCell style={styles} onClick={this.onClick} data-field={this.props['data-field']}>
         {this.props.field.label}
         {this.props.sortable && (
           <SortDirectionArrow
             rotate={this.props.active && !this.props.sortAscending ? '180deg' : '0deg'}
           />
         )}
-      </td>
+      </HeaderCell>
     );
   }
 }
 
-class ListDisplayRow extends Component {
-  static defaultProps = {
-    itemErrors: {},
-  };
+// ==============================
+// Common for display & manage
+// ==============================
 
-  state = {
-    showDeleteModal: false,
-  };
+class ListRow extends Component {
+  static defaultProps = { itemErrors: {} };
+  state = { showDeleteModal: false };
   componentDidMount() {
     this.mounted = true;
   }
   componentWillUnmount() {
     this.mounted = false;
   }
+
+  onCheckboxChange = () => {
+    const { item, onSelect } = this.props;
+    onSelect(item.id);
+  };
+
+  // ==============================
+  // Display
+  // ==============================
+
   showDeleteModal = () => {
     this.setState({ showDeleteModal: true });
   };
@@ -176,42 +193,27 @@ class ListDisplayRow extends Component {
     );
   }
   render() {
-    const { list, link, item, itemErrors, fields } = this.props;
+    const { list, link, isSelected, item, itemErrors, fields } = this.props;
 
-    return (
-      <tr>
-        <BodyCell>
-          <Button
-            appearance="warning"
-            onClick={this.showDeleteModal}
-            spacing="cozy"
-            variant="subtle"
-            style={{ height: 24 }}
-          >
-            <TrashcanIcon />
-            <A11yText>Remove</A11yText>
-          </Button>
+    const row = props => (
+      <TableRow {...props}>
+        <BodyCell isSelected={isSelected} key="checkbox">
+          <CheckboxPrimitive
+            checked={isSelected}
+            innerRef={this.getCheckbox}
+            value={item.id}
+            onChange={this.onCheckboxChange}
+            tabIndex="0"
+          />
           {this.renderDeleteModal()}
-        </BodyCell>
-        <BodyCell>
-          <Button
-            appearance="primary"
-            to={link({ path: list.path, id: item.id })}
-            spacing="cozy"
-            variant="subtle"
-            style={{ height: 24 }}
-          >
-            <ArrowRightIcon />
-            <A11yText>Open</A11yText>
-          </Button>
         </BodyCell>
         {fields.map(field => {
           const { path } = field;
 
           const isLoading = !item.hasOwnProperty(path);
+
           if (isLoading) {
-            // TODO: Better loading state?
-            return <BodyCell key={path} />;
+            return <BodyCell key={path} />; // TODO: Better loading state?
           }
 
           if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
@@ -225,7 +227,7 @@ class ListDisplayRow extends Component {
 
           if (path === '_label_') {
             return (
-              <BodyCellTruncated key={path}>
+              <BodyCellTruncated isSelected={isSelected} key={path}>
                 <ItemLink to={link({ path: list.path, id: item.id })}>{item._label_}</ItemLink>
               </BodyCellTruncated>
             );
@@ -236,98 +238,59 @@ class ListDisplayRow extends Component {
           const Cell = FieldTypes[list.key][path].Cell;
 
           if (Cell) {
+            // TODO
             // fix this later, creating a react component on every render is really bad
             // react will rerender into the DOM on every react render
             // probably not a huge deal on a leaf component like this but still bad
             const LinkComponent = ({ children, ...data }) => (
               <ItemLink to={link(data)}>{children}</ItemLink>
             );
-            content = <Cell list={list} data={item[path]} field={field} Link={LinkComponent} />;
+            content = (
+              <Cell
+                isSelected={isSelected}
+                list={list}
+                data={item[path]}
+                field={field}
+                Link={LinkComponent}
+              />
+            );
           } else {
             content = item[path];
           }
 
-          return <BodyCellTruncated key={path}>{content}</BodyCellTruncated>;
+          return (
+            <BodyCellTruncated isSelected={isSelected} key={path}>
+              {content}
+            </BodyCellTruncated>
+          );
         })}
-      </tr>
+      </TableRow>
     );
-  }
-}
+    const copyText = window.location.origin + link({ path: list.path, id: item.id });
+    const items = [
+      {
+        content: 'Duplicate',
+        icon: <DiffIcon />,
+        isDisabled: true, // TODO: implement duplicate
+        onClick: () => console.log('TODO'),
+      },
+      {
+        content: 'Copy Link',
+        icon: <LinkIcon />,
+        onClick: () => copyToClipboard(copyText),
+      },
+      {
+        content: 'Delete',
+        icon: <TrashcanIcon />,
+        onClick: this.showDeleteModal,
+      },
+    ];
 
-function isKeyboardEvent(e) {
-  return e.clientX === 0 && e.clientY === 0;
-}
-
-class ListManageRow extends Component {
-  onMouseDown = e => {
-    // bail when MouseClick on the actual input, which calls onClick twice
-    if (e.target.nodeName === 'INPUT' && !isKeyboardEvent(e)) return;
-
-    // trigger onClick with the current ID
-    const { isSelected, item, onSelect, onSelectStart } = this.props;
-    onSelectStart(!isSelected);
-    onSelect([item.id]);
-  };
-  onMouseUp = () => {
-    // make keyboard selection easier following a mouse select
-    this.checkbox.focus();
-  };
-  onMouseEnter = () => {
-    const { isSelected, item, selectOnEnter, onSelect } = this.props;
-    if (
-      (selectOnEnter === 'select' && !isSelected) ||
-      (selectOnEnter === 'deselect' && isSelected)
-    ) {
-      onSelect([item.id]);
-    }
-  };
-  onCheckboxChange = () => {
-    const { item, onSelect } = this.props;
-    onSelect([item.id]);
-  };
-  onCheckboxMouseDown = e => {
-    e.stopPropagation();
-  };
-  getCheckbox = ref => {
-    this.checkbox = ref;
-  };
-  render() {
-    const { fields, isSelected, item } = this.props;
-
-    return (
-      <tr
-        onMouseDown={this.onMouseDown}
-        onMouseEnter={this.onMouseEnter}
-        onMouseUp={this.onMouseUp}
-        css={{ cursor: 'default', userSelect: 'none' }}
-      >
-        <BodyCell isSelected={isSelected} key="checkbox">
-          <CheckboxPrimitive
-            checked={isSelected}
-            innerRef={this.getCheckbox}
-            value={item.id}
-            onChange={this.onCheckboxChange}
-            onMouseDown={this.onCheckboxMouseDown}
-            css={{ marginLeft: 1 }}
-            tabIndex="0"
-          />
-        </BodyCell>
-        <BodyCell />
-        {fields.map(({ path }) => (
-          <BodyCellTruncated isSelected={isSelected} key={path}>
-            {item[path]}
-          </BodyCellTruncated>
-        ))}
-      </tr>
-    );
+    return <Dropdown mode="contextmenu" target={row} items={items} />;
   }
 }
 
 export default class ListTable extends Component {
-  state = {
-    mouseOverSelectsRow: false,
-  };
-
   handleSelectAll = () => {
     const { items, onSelectAll, selectedItems } = this.props;
     const allSelected = items.length === selectedItems.length;
@@ -335,24 +298,11 @@ export default class ListTable extends Component {
     onSelectAll(value);
   };
 
-  onSelectStart = select => {
-    const { isManaging } = this.props;
-    if (!isManaging) return;
-    this.setState({
-      mouseOverSelectsRow: select ? 'select' : 'deselect',
-    });
-  };
-  stopRowSelectOnEnter = () => {
-    const { mouseOverSelectsRow } = this.state;
-    if (mouseOverSelectsRow) {
-      this.setState({ mouseOverSelectsRow: false });
-    }
-  };
   render() {
     const {
       adminPath,
       fields,
-      isManaging,
+      isFullWidth,
       items,
       itemsErrors = [],
       list,
@@ -363,24 +313,16 @@ export default class ListTable extends Component {
       sortBy,
       selectedItems,
     } = this.props;
-    const { mouseOverSelectsRow } = this.state;
 
     return items.length ? (
-      <Table id="ks-list-table">
+      <Table id="ks-list-table" style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
         <colgroup>
-          <col width="32" />
           <col width="32" />
         </colgroup>
         <thead>
           <tr>
             <HeaderCell>
-              <div
-                css={{
-                  position: 'relative',
-                  top: 3,
-                  visibility: isManaging ? 'visible' : 'hidden',
-                }}
-              >
+              <div css={{ position: 'relative', top: 3 }}>
                 <CheckboxPrimitive
                   checked={items.length === selectedItems.length}
                   onChange={this.handleSelectAll}
@@ -388,7 +330,6 @@ export default class ListTable extends Component {
                 />
               </div>
             </HeaderCell>
-            <HeaderCell />
             {fields.map(field => (
               <SortLink
                 data-field={field.path}
@@ -402,32 +343,20 @@ export default class ListTable extends Component {
             ))}
           </tr>
         </thead>
-        <tbody onMouseUp={this.stopRowSelectOnEnter} onMouseLeave={this.stopRowSelectOnEnter}>
-          {items.map(
-            (item, itemIndex) =>
-              isManaging ? (
-                <ListManageRow
-                  fields={fields}
-                  item={item}
-                  key={item.id}
-                  list={list}
-                  isSelected={selectedItems.includes(item.id)}
-                  selectOnEnter={mouseOverSelectsRow}
-                  onSelect={onSelect}
-                  onSelectStart={this.onSelectStart}
-                />
-              ) : (
-                <ListDisplayRow
-                  fields={fields}
-                  item={item}
-                  itemErrors={itemsErrors[itemIndex] || {}}
-                  key={item.id}
-                  link={({ path, id }) => `${adminPath}/${path}/${id}`}
-                  list={list}
-                  onDelete={onChange}
-                />
-              )
-          )}
+        <tbody>
+          {items.map((item, itemIndex) => (
+            <ListRow
+              fields={fields}
+              isSelected={selectedItems.includes(item.id)}
+              item={item}
+              itemErrors={itemsErrors[itemIndex] || {}}
+              key={item.id}
+              link={({ path, id }) => `${adminPath}/${path}/${id}`}
+              list={list}
+              onDelete={onChange}
+              onSelect={onSelect}
+            />
+          ))}
         </tbody>
       </Table>
     ) : (

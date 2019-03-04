@@ -1,4 +1,4 @@
-const { File, MongoFileInterface } = require('../File/Implementation');
+const { File, MongoFileInterface, KnexFileInterface } = require('../File/Implementation');
 
 class CloudinaryImage extends File {
   constructor() {
@@ -16,9 +16,9 @@ class CloudinaryImage extends File {
   getFileUploadType() {
     return 'Upload';
   }
-  get gqlAuxTypes() {
+  getGqlAuxTypes() {
     return [
-      ...super.gqlAuxTypes,
+      ...super.getGqlAuxTypes(),
       `
       """Mirrors the formatting options [Cloudinary provides](https://cloudinary.com/documentation/image_transformation_reference).
       All options are strings as they ultimately end up in a URL."""
@@ -68,6 +68,11 @@ class CloudinaryImage extends File {
         if (!itemValues) {
           return null;
         }
+
+        // FIXME: This can hopefully be removed once graphql 14.1.0 is released.
+        // https://github.com/graphql/graphql-js/pull/1520
+        if (itemValues.id) itemValues.id = itemValues.id.toString();
+
         return {
           publicUrl: this.config.adapter.publicUrl(itemValues),
           publicUrlTransformed: ({ transformation }) =>
@@ -82,4 +87,5 @@ class CloudinaryImage extends File {
 module.exports = {
   CloudinaryImage,
   MongoCloudinaryImageInterface: MongoFileInterface,
+  KnexCloudinaryImageInterface: KnexFileInterface,
 };

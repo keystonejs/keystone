@@ -4,13 +4,22 @@ import { Component, createRef, Fragment } from 'react';
 import styled from '@emotion/styled';
 import { withRouter } from 'react-router-dom';
 
-import { FoldIcon, PlusIcon, SearchIcon, UnfoldIcon, XIcon } from '@voussoir/icons';
-import { Input } from '@voussoir/ui/src/primitives/forms';
-import { Container, FlexGroup, CONTAINER_WIDTH } from '@voussoir/ui/src/primitives/layout';
-import { A11yText, Kbd, H1 } from '@voussoir/ui/src/primitives/typography';
-import { Button, IconButton } from '@voussoir/ui/src/primitives/buttons';
-import { LoadingSpinner } from '@voussoir/ui/src/primitives/loading';
-import { colors } from '@voussoir/ui/src/theme';
+import {
+  FoldIcon,
+  KebabVerticalIcon,
+  PlusIcon,
+  SearchIcon,
+  UnfoldIcon,
+  XIcon,
+  ZapIcon,
+} from '@arch-ui/icons';
+import { Input } from '@arch-ui/input';
+import { Container, FlexGroup, CONTAINER_GUTTER, CONTAINER_WIDTH } from '@arch-ui/layout';
+import { A11yText, Kbd, Title } from '@arch-ui/typography';
+import { Button, IconButton } from '@arch-ui/button';
+import { LoadingSpinner } from '@arch-ui/loading';
+import Dropdown from '@arch-ui/dropdown';
+import { colors } from '@arch-ui/theme';
 
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
@@ -24,16 +33,11 @@ import SortSelect, { SortButton } from './SortSelect';
 import Pagination from './Pagination';
 import Management, { ManageToolbar } from './Management';
 import type { SortByType } from './DataProvider';
+import { MoreDropdown } from './MoreDropdown';
 
 // ==============================
 // Styled Components
 // ==============================
-
-const ToolbarSeparator = styled.div({
-  backgroundColor: 'rgba(0,0,0,0.1)',
-  height: '100%',
-  width: 1,
-});
 
 const Note = styled.div({
   color: colors.N60,
@@ -101,29 +105,61 @@ type Props = {
 };
 type State = {
   isFullWidth: boolean,
-  isManaging: boolean,
   selectedItems: Array<Object>,
   showCreateModal: boolean,
 };
 
+function bodyUserSelect(val) {
+  document.body.style.WebkitUserSelect = val;
+  document.body.style.MozUserSelect = val;
+  document.body.style.msUserSelect = val;
+  document.body.style.userSelect = val;
+}
+
 class ListDetails extends Component<Props, State> {
   state = {
     isFullWidth: false,
-    isManaging: false,
     selectedItems: [],
     showCreateModal: false,
     searchValue: this.props.search,
   };
+  lastChecked = null;
+  shiftIsDown = false;
 
   // ==============================
   // Refs
   // ==============================
 
-  manageButton = createRef();
   sortPopoutRef = createRef();
+  measureElementRef = createRef();
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener('keyup', this.handleKeyUp);
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener('keyup', this.handleKeyUp);
+  }
 
   toggleFullWidth = () => {
     this.setState(state => ({ isFullWidth: !state.isFullWidth }));
+  };
+  handleKeyDown = event => {
+    if (event.key === 'Shift') {
+      if (this.state.selectedItems.length > 0) {
+        bodyUserSelect('none');
+      }
+      this.shiftIsDown = true;
+    }
+  };
+  handleKeyUp = event => {
+    if (event.key === 'Shift') {
+      if (this.state.selectedItems.length > 0) {
+        bodyUserSelect(null);
+      }
+      this.shiftIsDown = false;
+    }
   };
 
   closeCreateModal = () => this.setState({ showCreateModal: false });
@@ -132,6 +168,7 @@ class ListDetails extends Component<Props, State> {
   // ==============================
   // Search
   // ==============================
+
   handleSearchChange = ({ target: { value } }) => {
     this.setState({ searchValue: value }, () => {
       this.props.handleSearchChange(value);
@@ -142,6 +179,10 @@ class ListDetails extends Component<Props, State> {
     this.props.handleSearchClear();
     this.searchInput.focus();
   };
+  handleReset = () => {
+    this.setState({ searchValue: '' });
+    this.props.handleReset();
+  };
   handleSearchSubmit = event => {
     event.preventDefault();
     this.props.handleSearchSubmit();
@@ -151,40 +192,44 @@ class ListDetails extends Component<Props, State> {
   // Management
   // ==============================
 
-  handleItemSelect = (itemIds: Array<string>) => {
+  handleItemSelect = (itemId: string) => {
     let selectedItems = this.state.selectedItems.slice(0);
 
-    itemIds.forEach(id => {
-      if (selectedItems.includes(id)) {
-        selectedItems = selectedItems.filter(existingId => existingId !== id);
-      } else {
-        selectedItems.push(id);
-      }
-    });
+    if (this.shiftIsDown && this.lastChecked) {
+      const itemIds = this.props.items.map(i => i.id);
+      const from = itemIds.indexOf(itemId);
+      const to = itemIds.indexOf(this.lastChecked);
+      const start = Math.min(from, to);
+      const end = Math.max(from, to) + 1;
 
-    this.setState({ selectedItems });
+      itemIds
+        .slice(start, end)
+        .filter(id => id !== this.lastChecked)
+        .forEach(id => {
+          if (!selectedItems.includes(this.lastChecked)) {
+            selectedItems = selectedItems.filter(existingId => existingId !== id);
+          } else {
+            selectedItems.push(id);
+          }
+        });
+
+      // lazy ensure unique
+      const uniqueItems = [...new Set(selectedItems)];
+      this.setState({ selectedItems: uniqueItems });
+    } else {
+      if (selectedItems.includes(itemId)) {
+        selectedItems = selectedItems.filter(existingId => existingId !== itemId);
+      } else {
+        selectedItems.push(itemId);
+      }
+
+      this.setState({ selectedItems });
+    }
+
+    this.lastChecked = itemId;
   };
   handleItemSelectAll = (selectedItems: Array<string>) => {
     this.setState({ selectedItems });
-  };
-  handleManageKeyDown = ({ key }: Event) => {
-    if (key !== 'Escape') return;
-    this.stopManaging();
-  };
-  startManaging = () => {
-    this.setState({ isManaging: true });
-    document.addEventListener('keydown', this.handleManageKeyDown, false);
-  };
-  stopManaging = () => {
-    this.setState({ isManaging: false, selectedItems: [] }, () => {
-      if (!this.manageButton) return;
-      this.manageButton.current.focus();
-    });
-    document.removeEventListener('keydown', this.handleManageKeyDown, false);
-  };
-  onToggleManage = () => {
-    const fn = this.state.isManaging ? this.stopManaging : this.startManaging;
-    fn();
   };
   onDeleteSelectedItems = () => {
     const { query } = this.props;
@@ -242,27 +287,37 @@ class ListDetails extends Component<Props, State> {
     return null;
   };
 
-  renderExpandButton() {
-    if (window && window.innerWidth < CONTAINER_WIDTH) return null;
-
+  renderMoreDropdown(queryWidth) {
     const { isFullWidth } = this.state;
-    const Icon = isFullWidth ? FoldIcon : UnfoldIcon;
-    const text = isFullWidth ? 'Collapse' : 'Expand';
+    const TableIcon = isFullWidth ? FoldIcon : UnfoldIcon;
+    const tableToggleIsAvailable = queryWidth > CONTAINER_WIDTH + CONTAINER_GUTTER * 2;
 
-    // Note: we return an array here instead of a <Fragment> because the
-    // <FlexGroup> component it is rendered into passes props to its children
-    return [
-      <ToolbarSeparator key="expand-separator" />,
-      <Button
-        onClick={this.toggleFullWidth}
-        title={text}
-        isActive={isFullWidth}
-        key="expand-button"
-      >
-        <Icon css={{ transform: 'rotate(90deg)' }} />
-        <A11yText>{text}</A11yText>
-      </Button>,
+    const items = [
+      {
+        content: 'Reset filters, cols, etc.',
+        icon: <ZapIcon />,
+        id: 'ks-list-dropdown-reset', // for cypress tests
+        onClick: this.handleReset,
+      },
+      {
+        content: isFullWidth ? 'Collapse table' : 'Expand table',
+        icon: <TableIcon css={{ transform: 'rotate(90deg)' }} />,
+        isDisabled: !tableToggleIsAvailable,
+        onClick: this.toggleFullWidth,
+      },
     ];
+
+    return (
+      <Dropdown
+        align="right"
+        target={props => (
+          <IconButton {...props} variant="nuance" icon={KebabVerticalIcon} id="ks-list-dropdown">
+            <A11yText>Show more...</A11yText>
+          </IconButton>
+        )}
+        items={items}
+      />
+    );
   }
 
   render() {
@@ -286,15 +341,17 @@ class ListDetails extends Component<Props, State> {
       query,
       sortBy,
     } = this.props;
-    const { isFullWidth, isManaging, selectedItems, showCreateModal, searchValue } = this.state;
+    const { isFullWidth, selectedItems, showCreateModal, searchValue } = this.state;
 
     const searchId = 'ks-list-search-input';
 
     return (
       <Fragment>
         <main>
-          <Container>
-            <H1>
+          <div ref={this.measureElementRef} />
+
+          <Container isFullWidth={isFullWidth}>
+            <Title as="h1" margin="both">
               {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
               <span>, by</span>
               <Popout
@@ -305,12 +362,12 @@ class ListDetails extends Component<Props, State> {
                     Hold <Kbd>alt</Kbd> to toggle ascending/descending
                   </Note>
                 }
-                target={
-                  <SortButton>
+                target={props => (
+                  <SortButton {...props}>
                     {sortBy.field.label.toLowerCase()}
                     <DisclosureArrow size="0.2em" />
                   </SortButton>
-                }
+                )}
               >
                 <SortSelect
                   popoutRef={this.sortPopoutRef}
@@ -319,7 +376,7 @@ class ListDetails extends Component<Props, State> {
                   value={sortBy}
                 />
               </Popout>
-            </H1>
+            </Title>
 
             <FlexGroup growIndexes={[0]}>
               <Search
@@ -341,7 +398,7 @@ class ListDetails extends Component<Props, State> {
                   name="item-search"
                   value={searchValue}
                   type="text"
-                  innerRef={el => (this.searchInput = el)}
+                  ref={el => (this.searchInput = el)}
                 />
               </Search>
               <AddFilterPopout
@@ -357,17 +414,18 @@ class ListDetails extends Component<Props, State> {
                   value={fields}
                 />
               </Popout>
-              {this.renderExpandButton()}
-              <Button onClick={this.props.handleReset} id="ks-reset">
-                Reset
-              </Button>
 
-              <ToolbarSeparator />
               {list.access.create ? (
                 <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
                   Create
                 </IconButton>
               ) : null}
+              <MoreDropdown
+                measureRef={this.measureElementRef}
+                isFullWidth={isFullWidth}
+                onFullWidthToggle={this.toggleFullWidth}
+                onReset={this.handleReset}
+              />
             </FlexGroup>
 
             <ActiveFilters
@@ -378,22 +436,22 @@ class ListDetails extends Component<Props, State> {
             />
 
             <ManageToolbar isVisible={!!itemsCount}>
-              {isManaging ? (
+              {selectedItems.length ? (
                 <Management
                   list={list}
                   onDeleteMany={this.onDeleteSelectedItems}
                   onUpdateMany={this.onUpdate}
-                  onToggleManage={this.onToggleManage}
+                  pageSize={pageSize}
                   selectedItems={selectedItems}
+                  totalItems={itemsCount}
                 />
               ) : (
                 <Pagination
+                  isLoading={query.loading}
                   currentPage={currentPage}
-                  getManageButton={this.manageButton}
                   itemsCount={itemsCount}
                   list={list}
                   onChangePage={handlePageChange}
-                  onToggleManage={this.onToggleManage}
                   pageSize={pageSize}
                 />
               )}
@@ -412,7 +470,7 @@ class ListDetails extends Component<Props, State> {
               <ListTable
                 adminPath={adminPath}
                 fields={fields}
-                isManaging={isManaging}
+                isFullWidth={isFullWidth}
                 items={items}
                 itemsErrors={itemsErrors}
                 list={list}

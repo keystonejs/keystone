@@ -2,12 +2,12 @@
 import { jsx } from '@emotion/core';
 import { Component, createRef } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
-import { Input } from '@voussoir/ui/src/primitives/forms';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { Button } from '@voussoir/ui/src/primitives/buttons';
-import { EyeIcon, LockIcon } from '@voussoir/icons';
-import { A11yText } from '@voussoir/ui/src/primitives/typography';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { Input } from '@arch-ui/input';
+import { FlexGroup } from '@arch-ui/layout';
+import { Button } from '@arch-ui/button';
+import { EyeIcon, LockIcon } from '@arch-ui/icons';
+import { A11yText } from '@arch-ui/typography';
 
 export default class PasswordField extends Component {
   focusTarget = createRef();
@@ -18,11 +18,10 @@ export default class PasswordField extends Component {
     inputConfirm: '',
   };
   onChange = ({ target }) => {
-    const { field, onChange } = this.props;
     const { name, value } = target;
 
     this.setState({ [name]: value }, () => {
-      if (name === 'inputPassword') onChange(field, value);
+      if (name === 'inputPassword') this.props.onChange(value);
     });
   };
   toggleInterface = () => {
@@ -39,8 +38,8 @@ export default class PasswordField extends Component {
   };
   render() {
     const { isEditing, inputPassword, inputConfirm, showInputValue } = this.state;
-    const { autoFocus, field, item } = this.props;
-    const value = item[field.path] || '';
+    const { autoFocus, field, value: serverValue } = this.props;
+    const value = serverValue || '';
     const htmlID = `ks-input-${field.path}`;
 
     return (
@@ -53,7 +52,7 @@ export default class PasswordField extends Component {
                 autoComplete="off"
                 autoFocus={autoFocus}
                 id={htmlID}
-                innerRef={this.focusTarget}
+                ref={this.focusTarget}
                 name="inputPassword"
                 onChange={this.onChange}
                 placeholder="New Password"

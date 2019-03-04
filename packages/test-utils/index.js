@@ -4,12 +4,14 @@ const extractStack = require('extract-stack');
 const { Keystone } = require('@voussoir/core');
 const { WebServer } = require('@voussoir/server');
 const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexAdapter } = require('@voussoir/adapter-knex');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
 
-function setupServer({ name, createLists = () => {} }) {
+function setupServer({ name, adapterName, createLists = () => {} }) {
+  const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
   const keystone = new Keystone({
     name,
-    adapter: new MongooseAdapter(),
+    adapter: new Adapter(),
     defaultAccess: { list: true, field: true },
   });
 
@@ -114,19 +116,15 @@ function getFindOne(server) {
 }
 
 function getUpdate(server) {
-  return (list, id, data) =>
-    server.keystone.getListByKey(list).adapter.update(id, data, { new: true });
+  return (list, id, data) => server.keystone.getListByKey(list).adapter.update(id, data);
 }
 
 function keystoneMongoTest(setupKeystoneFn, testFn) {
   return async function() {
-    const server = setupKeystoneFn();
+    const server = setupKeystoneFn('mongoose');
     const { mongoUri, dbName } = await getMongoMemoryServerConfig();
 
-    await server.keystone.connect(
-      mongoUri,
-      { dbName }
-    );
+    await server.keystone.connect(mongoUri, { dbName });
 
     return pFinally(
       testFn({
@@ -141,8 +139,34 @@ function keystoneMongoTest(setupKeystoneFn, testFn) {
   };
 }
 
+function keystoneKnexTest(setupKeystoneFn, testFn) {
+  return async function() {
+    const server = setupKeystoneFn('knex');
+
+    await server.keystone.connect();
+
+    return pFinally(
+      testFn({
+        server,
+        create: getCreate(server),
+        findById: getFindById(server),
+        findOne: getFindOne(server),
+        update: getUpdate(server),
+      }),
+      () => server.keystone.disconnect()
+    );
+  };
+}
+
+function multiAdapterRunners() {
+  return [
+    { runner: keystoneMongoTest, adapterName: 'mongoose' },
+    { runner: keystoneKnexTest, adapterName: 'knex' },
+  ];
+}
+
 module.exports = {
   setupServer,
+  multiAdapterRunners,
   graphqlRequest,
-  keystoneMongoTest,
 };

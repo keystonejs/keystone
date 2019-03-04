@@ -1,6 +1,6 @@
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
-const { escapeRegExp } = require('@voussoir/utils');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 class Text extends Implementation {
   constructor() {
@@ -16,24 +16,11 @@ class Text extends Implementation {
 
   get gqlQueryInputFields() {
     return [
-      `${this.path}: String`,
-      `${this.path}_i: String`,
-      `${this.path}_not: String`,
-      `${this.path}_not_i: String`,
-      `${this.path}_contains: String`,
-      `${this.path}_contains_i: String`,
-      `${this.path}_not_contains: String`,
-      `${this.path}_not_contains_i: String`,
-      `${this.path}_starts_with: String`,
-      `${this.path}_starts_with_i: String`,
-      `${this.path}_not_starts_with: String`,
-      `${this.path}_not_starts_with_i: String`,
-      `${this.path}_ends_with: String`,
-      `${this.path}_ends_with_i: String`,
-      `${this.path}_not_ends_with: String`,
-      `${this.path}_not_ends_with_i: String`,
-      `${this.path}_in: [String!]`,
-      `${this.path}_not_in: [String!]`,
+      ...this.equalityInputFields('String'),
+      ...this.stringInputFields('String'),
+      ...this.equalityInputFieldsInsensitive('String'),
+      ...this.stringInputFieldsInsensitive('String'),
+      ...this.inInputFields('String'),
     ];
   }
   get gqlUpdateInputFields() {
@@ -44,85 +31,34 @@ class Text extends Implementation {
   }
 }
 
-class MongoTextInterface extends MongooseFieldAdapter {
-  addToMongooseSchema(schema) {
-    const { mongooseOptions, unique } = this.config;
-    const schemaOptions = { type: String, ...mongooseOptions };
-    if (unique) {
-      // A value of anything other than `true` causes errors with Mongoose
-      // constantly recreating indexes. Ie; if we just splat `unique` onto the
-      // options object, it would be `undefined`, which would cause Mongoose to
-      // drop and recreate all indexes.
-      schemaOptions.unique = true;
+const CommonTextInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.stringConditions(dbPath),
+        ...this.equalityConditionsInsensitive(dbPath),
+        ...this.stringConditionsInsensitive(dbPath),
+        // These have no case-insensitive counter parts
+        ...this.inConditions(dbPath),
+      };
     }
-    schema.add({ [this.path]: schemaOptions });
+  };
+
+class MongoTextInterface extends CommonTextInterface(MongooseFieldAdapter) {
+  addToMongooseSchema(schema) {
+    schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
   }
+}
 
-  getQueryConditions() {
-    return {
-      [this.path]: value => ({
-        [this.path]: { $eq: value },
-      }),
-      [`${this.path}_i`]: value => ({
-        [this.path]: new RegExp(`^${escapeRegExp(value)}$`, 'i'),
-      }),
-      [`${this.path}_not`]: value => ({
-        [this.path]: { $ne: value },
-      }),
-      [`${this.path}_not_i`]: value => ({
-        [this.path]: { $not: new RegExp(`^${escapeRegExp(value)}$`, 'i') },
-      }),
-
-      [`${this.path}_contains`]: value => ({
-        [this.path]: { $regex: new RegExp(escapeRegExp(value)) },
-      }),
-      [`${this.path}_contains_i`]: value => ({
-        [this.path]: { $regex: new RegExp(escapeRegExp(value), 'i') },
-      }),
-      [`${this.path}_not_contains`]: value => ({
-        [this.path]: { $not: new RegExp(escapeRegExp(value)) },
-      }),
-      [`${this.path}_not_contains_i`]: value => ({
-        [this.path]: { $not: new RegExp(escapeRegExp(value), 'i') },
-      }),
-
-      [`${this.path}_starts_with`]: value => ({
-        [this.path]: { $regex: new RegExp(`^${escapeRegExp(value)}`) },
-      }),
-      [`${this.path}_starts_with_i`]: value => ({
-        [this.path]: { $regex: new RegExp(`^${escapeRegExp(value)}`, 'i') },
-      }),
-      [`${this.path}_not_starts_with`]: value => ({
-        [this.path]: { $not: new RegExp(`^${escapeRegExp(value)}`) },
-      }),
-      [`${this.path}_not_starts_with_i`]: value => ({
-        [this.path]: { $not: new RegExp(`^${escapeRegExp(value)}`, 'i') },
-      }),
-      [`${this.path}_ends_with`]: value => ({
-        [this.path]: { $regex: new RegExp(`${escapeRegExp(value)}$`) },
-      }),
-      [`${this.path}_ends_with_i`]: value => ({
-        [this.path]: { $regex: new RegExp(`${escapeRegExp(value)}$`, 'i') },
-      }),
-      [`${this.path}_not_ends_with`]: value => ({
-        [this.path]: { $not: new RegExp(`${escapeRegExp(value)}$`) },
-      }),
-      [`${this.path}_not_ends_with_i`]: value => ({
-        [this.path]: { $not: new RegExp(`${escapeRegExp(value)}$`, 'i') },
-      }),
-
-      // These have no case-insensitive counter parts
-      [`${this.path}_in`]: value => ({
-        [this.path]: { $in: value },
-      }),
-      [`${this.path}_not_in`]: value => ({
-        [this.path]: { $not: { $in: value } },
-      }),
-    };
+class KnexTextInterface extends CommonTextInterface(KnexFieldAdapter) {
+  createColumn(table) {
+    return table.text(this.path);
   }
 }
 
 module.exports = {
   Text,
   MongoTextInterface,
+  KnexTextInterface,
 };

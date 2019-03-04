@@ -1,19 +1,12 @@
 // @flow
 
 import React, { Component } from 'react';
-import { Input } from '@voussoir/ui/src/primitives/forms';
+import { Input } from '@arch-ui/input';
 import type { FilterProps } from '../../../types';
 
 type Props = FilterProps<string>;
 
 export default class TextFilterView extends Component<Props> {
-  componentDidUpdate(prevProps: Props) {
-    const { filter } = this.props;
-
-    if (prevProps.filter !== filter) {
-      this.props.recalcHeight();
-    }
-  }
   handleChange = (event: Object) => {
     const value = event.target.value;
     this.props.onChange(value.replace(/\D/g, ''));
@@ -27,12 +20,7 @@ export default class TextFilterView extends Component<Props> {
     const placeholder = field.getFilterLabel(filter);
 
     return (
-      <Input
-        onChange={this.handleChange}
-        innerRef={innerRef}
-        placeholder={placeholder}
-        value={value}
-      />
+      <Input onChange={this.handleChange} ref={innerRef} placeholder={placeholder} value={value} />
     );
   }
 }

@@ -1,6 +1,7 @@
 const inflection = require('inflection');
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 function initOptions(options) {
   let optionsArray = options;
@@ -26,7 +27,7 @@ class Select extends Implementation {
   getTypeName() {
     return `${this.listKey}${inflection.classify(this.path)}Type`;
   }
-  get gqlAuxTypes() {
+  getGqlAuxTypes() {
     // TODO: I'm really not sure it's safe to generate GraphQL Enums from
     // whatever options people provide, this could easily break with spaces and
     // special characters in values so may not be worth it...
@@ -44,10 +45,8 @@ class Select extends Implementation {
   }
   get gqlQueryInputFields() {
     return [
-      `${this.path}: ${this.getTypeName()}`,
-      `${this.path}_not: ${this.getTypeName()}`,
-      `${this.path}_in: [${this.getTypeName()}!]`,
-      `${this.path}_not_in: [${this.getTypeName()}!]`,
+      ...this.equalityInputFields(this.getTypeName()),
+      ...this.inInputFields(this.getTypeName()),
     ];
   }
   get gqlUpdateInputFields() {
@@ -58,25 +57,30 @@ class Select extends Implementation {
   }
 }
 
-class MongoSelectInterface extends MongooseFieldAdapter {
-  addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
-    schema.add({
-      [this.path]: { type: String, ...mongooseOptions },
-    });
-  }
+const CommonSelectInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.inConditions(dbPath),
+      };
+    }
+  };
 
-  getQueryConditions() {
-    return {
-      [this.path]: value => ({ [this.path]: { $eq: value } }),
-      [`${this.path}_not`]: value => ({ [this.path]: { $ne: value } }),
-      [`${this.path}_in`]: value => ({ [this.path]: { $in: value } }),
-      [`${this.path}_not_in`]: value => ({ [this.path]: { $nin: value } }),
-    };
+class MongoSelectInterface extends CommonSelectInterface(MongooseFieldAdapter) {
+  addToMongooseSchema(schema) {
+    schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
+  }
+}
+
+class KnexSelectInterface extends CommonSelectInterface(KnexFieldAdapter) {
+  createColumn(table) {
+    return table.enu(this.path, this.config.options.map(({ value }) => value));
   }
 }
 
 module.exports = {
   Select,
   MongoSelectInterface,
+  KnexSelectInterface,
 };

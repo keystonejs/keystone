@@ -1,0 +1,17 @@
+{
+  "name": "@arch-ui/hooks",
+  "version": "0.0.1",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "main": "dist/hooks.cjs.js",
+  "peerDependencies": {
+    "react": "^16.8.0"
+  },
+  "devDependencies": {
+    "react": "^16.8.0"
+  },
+  "module": "dist/hooks.esm.js",
+  "dependencies": {
+    "resize-observer-polyfill": "^1.5.1"
+  }
+}

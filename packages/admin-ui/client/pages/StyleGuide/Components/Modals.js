@@ -1,9 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import styled from '@emotion/styled';
 
-import { Button } from '@voussoir/ui/src/primitives/buttons';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { Dialog, Dropdown, Popout } from '@voussoir/ui/src/primitives/modals';
+import { Button } from '@arch-ui/button';
+import { FlexGroup } from '@arch-ui/layout';
+import Dialog from '@arch-ui/dialog';
+import Dropdown from '@arch-ui/dropdown';
+import Popout from '@arch-ui/popout';
+import Tooltip from '@arch-ui/tooltip';
 
 export default class ModalGuide extends Component {
   state = { dialogIsOpen: false };
@@ -19,39 +22,55 @@ export default class ModalGuide extends Component {
   };
   render() {
     const { dialogIsOpen } = this.state;
+    const dropdownItems = [
+      { to: '/admin', content: 'Dashboard' },
+      { content: 'Macaroon', onClick: this.handleDropdownClick },
+      { content: 'Cupcake', onClick: this.handleDropdownClick },
+      { content: 'Liquorice', onClick: this.handleDropdownClick },
+      { content: 'Cookie', onClick: this.handleDropdownClick },
+      { content: 'Cake', onClick: this.handleDropdownClick },
+    ];
+
     return (
       <Fragment>
         <h2>Modals</h2>
 
+        <h4>Tooltips</h4>
+        <FlexGroup justify="space-between">
+          {['top', 'right', 'bottom', 'left'].map(p => (
+            <Tooltip key={p} content="Some tooltip content" placement={p}>
+              {ref => <Button ref={ref}>Show {p}</Button>}
+            </Tooltip>
+          ))}
+        </FlexGroup>
+
         <h4>Dropdowns</h4>
-        <Dropdown
-          target={<Button>Show menu</Button>}
-          // selectClosesMenu={false}
-          items={[
-            { to: '/admin', content: 'Home' },
-            { content: 'Macaroon', onClick: this.handleDropdownClick },
-            { content: 'Cupcake', onClick: this.handleDropdownClick },
-            { content: 'Liquorice', onClick: this.handleDropdownClick },
-            { content: 'Cookie', onClick: this.handleDropdownClick },
-            { content: 'Cake', onClick: this.handleDropdownClick },
-          ]}
-        />
+        <FlexGroup justify="space-between">
+          {['left', 'right'].map(a => (
+            <Dropdown
+              align={a}
+              key={a}
+              target={props => <Button {...props}>Align {a}</Button>}
+              items={dropdownItems}
+            />
+          ))}
+        </FlexGroup>
 
         <h4>Popouts</h4>
         <FlexGroup justify="space-between">
-          <Popout target={<Button>Left</Button>}>
+          <Popout target={props => <Button {...props}>Left</Button>}>
             <PopoutContent>Left</PopoutContent>
           </Popout>
-          <Popout target={<Button>Intermediate Left</Button>}>
+          <Popout target={props => <Button {...props}>Intermediate Left</Button>}>
             <PopoutContent>Intermediate Left</PopoutContent>
           </Popout>
-          <Popout target={<Button>Middle</Button>}>
+          <Popout target={props => <Button {...props}>Middle</Button>}>
             <PopoutContent>Middle</PopoutContent>
           </Popout>
-          <Popout target={<Button>Intermediate Right</Button>}>
+          <Popout target={props => <Button {...props}>Intermediate Right</Button>}>
             <PopoutContent>Intermediate Right</PopoutContent>
           </Popout>
-          <Popout target={<Button>Right</Button>}>
+          <Popout target={props => <Button {...props}>Right</Button>}>
             <PopoutContent>Right</PopoutContent>
           </Popout>
         </FlexGroup>

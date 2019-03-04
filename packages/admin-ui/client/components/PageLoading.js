@@ -1,6 +1,7 @@
+// @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { LoadingIndicator } from '@voussoir/ui/src/primitives/loading';
+import { LoadingIndicator } from '@arch-ui/loading';
 
 export default function PageLoading() {
   return (

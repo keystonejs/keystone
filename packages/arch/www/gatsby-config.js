@@ -3,6 +3,7 @@ module.exports = {
     title: 'Arch - Keystone UI Kit',
   },
   plugins: [
+    `gatsby-plugin-flow`,
     'gatsby-plugin-react-helmet',
     {
       resolve: `gatsby-source-filesystem`,
@@ -29,6 +30,7 @@ module.exports = {
               inlineCodeMarker: null,
             },
           },
+          'gatsby-remark-component',
         ],
       },
     },

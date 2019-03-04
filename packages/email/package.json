@@ -1,0 +1,27 @@
+{
+  "name": "@voussoir/email",
+  "version": "0.0.1",
+  "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "dependencies": {
+    "express-react-views": "^0.11.0",
+    "keystone-email": "^1.1.0",
+    "memoize-one": "^4.0.2",
+    "mjml": "^4.3.1",
+    "pify": "^4.0.1"
+  },
+  "peerDependencies": {
+    "mjml-react": "^1.0.42",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  },
+  "devDependencies": {
+    "jade": "^1.11.0",
+    "mjml-react": "^1.0.42",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  }
+}

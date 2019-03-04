@@ -1,24 +1,11 @@
 // @flow
 
-import React, { Component, type Ref } from 'react';
+import React, { Component } from 'react';
+import type { FilterProps } from '../../../types';
 
-type Props = {
-  field: Object,
-  filter: Object,
-  innerRef: Ref<*>,
-  onChange: Event => void,
-  recalcHeight: () => void,
-  value: string,
-};
+type Props = FilterProps<'true' | 'false' | 'null'>;
 
 export default class CheckboxFilterView extends Component<Props> {
-  componentDidUpdate(prevProps: Props) {
-    const { filter } = this.props;
-
-    if (prevProps.filter !== filter) {
-      this.props.recalcHeight();
-    }
-  }
   handleChange = ({ target: { value } }: Object) => {
     this.props.onChange(value);
   };

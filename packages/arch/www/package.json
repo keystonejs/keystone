@@ -4,16 +4,21 @@
   "version": "1.0.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
-    "gatsby": "^1.9.277",
-    "gatsby-link": "^1.6.46",
-    "prop-types": "^15.6.1",
-    "gatsby-plugin-react-helmet": "^2.0.11",
-    "gatsby-remark-prismjs": "^2.0.5",
-    "gatsby-source-filesystem": "^1.5.39",
-    "gatsby-transformer-remark": "^1.7.44",
+    "gatsby": "^2.1.19",
+    "gatsby-link": "^2.0.6",
+    "gatsby-plugin-flow": "^1.0.2",
+    "gatsby-plugin-react-helmet": "^3.0.1",
+    "gatsby-remark-component": "^1.1.3",
+    "gatsby-remark-prismjs": "^3.0.3",
+    "gatsby-source-filesystem": "^2.0.23",
+    "gatsby-transformer-remark": "^2.1.11",
+    "graphql-anywhere": "^4.1.23",
     "prismjs": "^1.15.0",
-    "graphql-anywhere": "^4.1.19",
-    "react-helmet": "^5.2.0"
+    "prop-types": "^15.6.2",
+    "react": "^16.6.0",
+    "react-dom": "^16.6.0",
+    "react-helmet": "^5.2.0",
+    "rehype-react": "^3.0.3"
   },
   "keywords": [
     "gatsby"
@@ -27,10 +32,10 @@
   },
   "devDependencies": {
     "loader-utils": "^1.1.0",
-    "prettier": "^1.14.3"
+    "prettier": "^1.15.3"
   },
   "peerDependencies": {
-    "react": "^16.5.2"
+    "react": "16.7.0-alpha.2"
   },
   "repository": {
     "type": "git",

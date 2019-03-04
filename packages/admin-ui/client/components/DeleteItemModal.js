@@ -1,49 +1,58 @@
-import React, { Component } from 'react';
+// @flow
+import React from 'react';
 import { Mutation } from 'react-apollo';
-import { Button } from '@voussoir/ui/src/primitives/buttons';
-import { Confirm } from '@voussoir/ui/src/primitives/modals';
+import { Button } from '@arch-ui/button';
+import Confirm from '@arch-ui/confirm';
 
-export default class DeleteItemModal extends Component {
-  onClose = () => {
-    if (this.isLoading) return;
-    this.props.onClose();
-  };
-  onKeyDown = e => {
-    if (e.key === 'Escape') {
-      this.props.onClose();
-    }
-  };
-  render() {
-    const { isOpen, item, list, onDelete } = this.props;
+type Props = {
+  isOpen: boolean,
+  itemIds: Array<string>,
+  list: Object,
+  item: Object,
+  onClose: any => void,
+  onDelete: (Promise<*>) => void,
+};
 
-    return (
-      <Mutation mutation={list.deleteMutation}>
-        {(deleteItem, { loading }) => {
-          this.isLoading = loading;
-          return (
-            <Confirm isOpen={isOpen} onKeyDown={this.onKeyDown}>
-              <p style={{ marginTop: 0 }}>
-                Are you sure you want to delete <strong>{item._label_}</strong>?
-              </p>
-              <footer>
-                <Button
-                  appearance="danger"
-                  variant="ghost"
-                  onClick={() => {
-                    if (loading) return;
-                    onDelete(deleteItem({ variables: { id: item.id } }));
-                  }}
-                >
-                  Delete
-                </Button>
-                <Button variant="subtle" onClick={this.onClose}>
-                  Cancel
-                </Button>
-              </footer>
-            </Confirm>
-          );
-        }}
-      </Mutation>
-    );
-  }
+export default function DeleteItemModal({ isOpen, item, list, onClose, onDelete }: Props) {
+  return (
+    <Mutation mutation={list.deleteMutation}>
+      {(deleteItem, { loading }) => {
+        return (
+          <Confirm
+            isOpen={isOpen}
+            onKeyDown={e => {
+              if (e.key === 'Escape' && !loading) {
+                onClose();
+              }
+            }}
+          >
+            <p style={{ marginTop: 0 }}>
+              Are you sure you want to delete <strong>{item._label_}</strong>?
+            </p>
+            <footer>
+              <Button
+                appearance="danger"
+                variant="ghost"
+                onClick={() => {
+                  if (loading) return;
+                  onDelete(deleteItem({ variables: { id: item.id } }));
+                }}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="subtle"
+                onClick={() => {
+                  if (loading) return;
+                  onClose();
+                }}
+              >
+                Cancel
+              </Button>
+            </footer>
+          </Confirm>
+        );
+      }}
+    </Mutation>
+  );
 }

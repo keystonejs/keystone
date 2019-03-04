@@ -1,7 +1,7 @@
 import React from 'react';
-import { FlexGroup } from '@voussoir/ui/src/primitives/layout';
-import { Pill } from '@voussoir/ui/src/primitives/pill';
-import { gridSize } from '@voussoir/ui/src/theme';
+import { FlexGroup } from '@arch-ui/layout';
+import { Pill } from '@arch-ui/pill';
+import { gridSize } from '@arch-ui/theme';
 
 import AnimateHeight from '../../../components/AnimateHeight';
 import EditFilterPopout from './EditFilterPopout';
@@ -33,11 +33,16 @@ export default function ActiveFilters({ filterList, onClear, onRemove, onUpdate 
                   key={label}
                   onChange={onUpdate}
                   filter={filter}
-                  target={
-                    <Pill appearance="primary" onRemove={onRemove(filter)} style={pillStyle}>
+                  target={props => (
+                    <Pill
+                      {...props}
+                      appearance="primary"
+                      onRemove={onRemove(filter)}
+                      style={pillStyle}
+                    >
                       {label}
                     </Pill>
-                  }
+                  )}
                 />
               );
             })

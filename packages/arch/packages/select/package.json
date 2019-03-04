@@ -1,0 +1,19 @@
+{
+  "name": "@arch-ui/select",
+  "version": "0.0.1",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "main": "dist/select.cjs.js",
+  "peerDependencies": {
+    "react": "^16.8.0"
+  },
+  "devDependencies": {
+    "react": "^16.8.0"
+  },
+  "dependencies": {
+    "@arch-ui/theme": "^0.0.1",
+    "@babel/runtime": "^7.2.0",
+    "react-select": "^2.1.2"
+  },
+  "module": "dist/select.esm.js"
+}

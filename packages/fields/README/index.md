@@ -46,7 +46,6 @@ There are currently three views that can be provided:
 ```jsx
 type FilterProps<Value> = {
   innerRef: React.Ref<*>,
-  recalcHeight: () => mixed,
   value: Value,
   onChange: Value => mixed,
   field: Field,
@@ -63,9 +62,9 @@ type CellProps<Value> = {
 type FieldProps<Value> = {
   autoFocus: boolean,
   field: Field,
-  item: Object,
-  initialData: Object,
-  itemErrors: Object,
-  onChange: (Field, Value) => mixed,
+  value: Value,
+  error: Error,
+  onChange: Value => mixed,
+  renderContext: 'dialog' | 'page',
 };
 ```

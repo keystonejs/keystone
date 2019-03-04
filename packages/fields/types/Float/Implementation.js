@@ -1,5 +1,6 @@
 const { Implementation } = require('../../Implementation');
 const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
 
 class Float extends Implementation {
   constructor() {
@@ -15,14 +16,9 @@ class Float extends Implementation {
 
   get gqlQueryInputFields() {
     return [
-      `${this.path}: Float`,
-      `${this.path}_not: Float`,
-      `${this.path}_lt: Float`,
-      `${this.path}_lte: Float`,
-      `${this.path}_gt: Float`,
-      `${this.path}_gte: Float`,
-      `${this.path}_in: [Float]`,
-      `${this.path}_not_in: [Float]`,
+      ...this.equalityInputFields('Float'),
+      ...this.orderingInputFields('Float'),
+      ...this.inInputFields('Float'),
     ];
   }
   get gqlUpdateInputFields() {
@@ -33,35 +29,31 @@ class Float extends Implementation {
   }
 }
 
-class MongoFloatInterface extends MongooseFieldAdapter {
-  addToMongooseSchema(schema) {
-    const { mongooseOptions, unique } = this.config;
-    const schemaOptions = { type: Number, ...mongooseOptions };
-    if (unique) {
-      // A value of anything other than `true` causes errors with Mongoose
-      // constantly recreating indexes. Ie; if we just splat `unique` onto the
-      // options object, it would be `undefined`, which would cause Mongoose to
-      // drop and recreate all indexes.
-      schemaOptions.unique = true;
+const CommonFloatInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.orderingConditions(dbPath),
+        ...this.inConditions(dbPath),
+      };
     }
-    schema.add({ [this.path]: schemaOptions });
-  }
+  };
 
-  getQueryConditions() {
-    return {
-      [this.path]: value => ({ [this.path]: { $eq: value } }),
-      [`${this.path}_not`]: value => ({ [this.path]: { $ne: value } }),
-      [`${this.path}_lt`]: value => ({ [this.path]: { $lt: value } }),
-      [`${this.path}_lte`]: value => ({ [this.path]: { $lte: value } }),
-      [`${this.path}_gt`]: value => ({ [this.path]: { $gt: value } }),
-      [`${this.path}_gte`]: value => ({ [this.path]: { $gte: value } }),
-      [`${this.path}_in`]: value => ({ [this.path]: { $in: value } }),
-      [`${this.path}_not_in`]: value => ({ [this.path]: { $not: { $in: value } } }),
-    };
+class MongoFloatInterface extends CommonFloatInterface(MongooseFieldAdapter) {
+  addToMongooseSchema(schema) {
+    schema.add({ [this.path]: this.mergeSchemaOptions({ type: Number }, this.config) });
+  }
+}
+
+class KnexFloatInterface extends CommonFloatInterface(KnexFieldAdapter) {
+  createColumn(table) {
+    return table.float(this.path);
   }
 }
 
 module.exports = {
   Float,
   MongoFloatInterface,
+  KnexFloatInterface,
 };

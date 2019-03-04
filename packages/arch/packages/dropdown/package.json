@@ -1,0 +1,25 @@
+{
+  "name": "@arch-ui/dropdown",
+  "version": "0.0.1",
+  "author": "Jed Watson",
+  "license": "MIT",
+  "main": "dist/dropdown.cjs.js",
+  "peerDependencies": {
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  },
+  "devDependencies": {
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  },
+  "dependencies": {
+    "@arch-ui/modal-utils": "^0.0.1",
+    "@arch-ui/theme": "^0.0.1",
+    "@babel/runtime": "^7.2.0",
+    "@emotion/core": "^10.0.4",
+    "@emotion/styled": "^10.0.4",
+    "react-focus-marshal": "^1.0.1",
+    "react-router-dom": "4.4.0-beta.6"
+  },
+  "module": "dist/dropdown.esm.js"
+}

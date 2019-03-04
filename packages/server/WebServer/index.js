@@ -23,12 +23,9 @@ module.exports = class WebServer {
       this.app.use(require('express-pino-logger')(this.config.pinoOptions));
     }
 
-    this.app.use(
-      cors({
-        origin: true,
-        credentials: true,
-      })
-    );
+    if (this.config.cors) {
+      this.app.use(cors(this.config.cors));
+    }
 
     if (this.config.authStrategy) {
       // Setup the session as the very first thing.
@@ -81,14 +78,7 @@ module.exports = class WebServer {
       this.app.use(injectAuthCookieMiddleware, sessionMiddleware);
 
       // Attach the user to the request for all following route handlers
-      this.app.use(
-        this.keystone.session.validate({
-          valid: ({ req, list, item }) => {
-            req.user = item;
-            req.authedListKey = list.key;
-          },
-        })
-      );
+      this.app.use(this.keystone.sessionManager.populateAuthedItemMiddleware);
     }
 
     if (adminUI && this.config.authStrategy) {
@@ -98,10 +88,12 @@ module.exports = class WebServer {
       this.app.use(adminUI.createSessionMiddleware());
     }
 
-    const { apiPath, graphiqlPath } = this.config;
+    const { apiPath, graphiqlPath, apollo } = this.config;
 
     // GraphQL API always exists independent of any adminUI or Session settings
-    this.app.use(createGraphQLMiddleware(keystone, { apiPath, graphiqlPath }));
+    this.app.use(
+      createGraphQLMiddleware(keystone, { apiPath, graphiqlPath, apolloConfig: apollo })
+    );
 
     if (adminUI) {
       // This must be last as it's the "catch all" which falls into Webpack to

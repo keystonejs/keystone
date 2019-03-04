@@ -2,8 +2,10 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackHotMiddleware = require('webpack-hot-middleware');
 
 const getWebpackConfig = require('./getWebpackConfig');
+const { mode } = require('./env');
 
 module.exports = class AdminUI {
   constructor(keystone, config) {
@@ -30,10 +32,12 @@ module.exports = class AdminUI {
   getAdminMeta() {
     return {
       withAuth: !!this.authStrategy,
+      authList: this.authStrategy ? this.authStrategy.listKey : null,
       adminPath: this.config.adminPath,
       signinPath: this.config.signinPath,
       signoutPath: this.config.signoutPath,
       sessionPath: this.config.sessionPath,
+      sortListsAlphabetically: this.config.sortListsAlphabetically,
     };
   }
 
@@ -55,7 +59,7 @@ module.exports = class AdminUI {
         });
       }
 
-      await this.keystone.session.create(req, result);
+      await this.keystone.sessionManager.startAuthedSession(req, result);
     } catch (e) {
       return next(e);
     }
@@ -75,7 +79,7 @@ module.exports = class AdminUI {
   async signout(req, res, next) {
     let success;
     try {
-      await this.keystone.session.destroy(req);
+      await this.keystone.sessionManager.endAuthedSession(req);
       success = true;
     } catch (e) {
       success = false;
@@ -161,33 +165,41 @@ module.exports = class AdminUI {
       stats: 'minimal',
     };
 
-    const secureMiddleware = webpackDevMiddleware(
-      webpack(
-        getWebpackConfig({
-          adminMeta,
-          entry: 'index',
-        })
-      ),
-      webpackMiddlewareConfig
+    const secureCompiler = webpack(
+      getWebpackConfig({
+        adminMeta,
+        entry: 'index',
+      })
     );
 
+    const secureMiddleware = webpackDevMiddleware(secureCompiler, webpackMiddlewareConfig);
+    const secureHotMiddleware = webpackHotMiddleware(secureCompiler);
+
     if (this.authStrategy) {
-      const publicMiddleware = webpackDevMiddleware(
-        webpack(
-          getWebpackConfig({
-            // override lists so that schema and field views are excluded
-            adminMeta: { ...adminMeta, lists: {} },
-            entry: 'public',
-          })
-        ),
-        webpackMiddlewareConfig
+      const publicCompiler = webpack(
+        getWebpackConfig({
+          // override lists so that schema and field views are excluded
+          adminMeta: { ...adminMeta, lists: {} },
+          entry: 'public',
+        })
       );
+
+      const publicMiddleware = webpackDevMiddleware(publicCompiler, webpackMiddlewareConfig);
+      const publicHotMiddleware = webpackHotMiddleware(publicCompiler);
 
       // app.use(adminMiddleware);
       app.use((req, res, next) => {
         // TODO: Better security, should check some property of the user
         return req.user ? secureMiddleware(req, res, next) : publicMiddleware(req, res, next);
       });
+
+      if (mode === 'development') {
+        app.use((req, res, next) => {
+          return req.user
+            ? secureHotMiddleware(req, res, next)
+            : publicHotMiddleware(req, res, next);
+        });
+      }
 
       this.stopDevServer = () => {
         return new Promise(resolve => {
@@ -199,7 +211,9 @@ module.exports = class AdminUI {
     } else {
       // No auth required? Everyone can access the "secure" area
       app.use(secureMiddleware);
-
+      if (mode === 'development') {
+        app.use(secureHotMiddleware);
+      }
       this.stopDevServer = () => {
         return new Promise(resolve => {
           secureMiddleware.close(resolve);

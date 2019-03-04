@@ -2,23 +2,20 @@
 import { jsx } from '@emotion/core';
 import { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@voussoir/ui/src/primitives/fields';
-import { Input } from '@voussoir/ui/src/primitives/forms';
-import { ShieldIcon } from '@voussoir/icons';
-import { colors } from '@voussoir/ui/src/theme';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { Input } from '@arch-ui/input';
+import { ShieldIcon } from '@arch-ui/icons';
+import { colors } from '@arch-ui/theme';
 
 export default class UrlField extends Component {
   onChange = event => {
-    const { field, onChange } = this.props;
-    onChange(field, event.target.value);
+    this.props.onChange(event.target.value);
   };
   render() {
-    const { autoFocus, field, item, itemErrors } = this.props;
-    const value = item[field.path] || '';
+    const { autoFocus, field, value: serverValue, error } = this.props;
+    const value = serverValue || '';
     const htmlID = `ks-input-${field.path}`;
-    const canRead = !(
-      itemErrors[field.path] instanceof Error && itemErrors[field.path].name === 'AccessDeniedError'
-    );
+    const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
 
     return (
       <FieldContainer>
@@ -32,10 +29,7 @@ export default class UrlField extends Component {
         >
           {field.label}{' '}
           {!canRead ? (
-            <ShieldIcon
-              title={itemErrors[field.path].message}
-              css={{ color: colors.N20, marginRight: '1em' }}
-            />
+            <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
           ) : null}
         </FieldLabel>
         <FieldInput>
@@ -44,7 +38,7 @@ export default class UrlField extends Component {
             autoFocus={autoFocus}
             type="url"
             value={canRead ? value : undefined}
-            placeholder={canRead ? undefined : itemErrors[field.path].message}
+            placeholder={canRead ? undefined : error.message}
             onChange={this.onChange}
             id={htmlID}
           />

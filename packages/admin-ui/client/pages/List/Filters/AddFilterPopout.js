@@ -3,11 +3,12 @@ import { jsx } from '@emotion/core';
 import { Component, createRef } from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
-import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@voussoir/icons';
-import { colors, gridSize } from '@voussoir/ui/src/theme';
-import { A11yText } from '@voussoir/ui/src/primitives/typography';
-import { Alert } from '@voussoir/ui/src/primitives/alert';
-import { OptionPrimitive, Select } from '@voussoir/ui/src/primitives/filters';
+import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@arch-ui/icons';
+import { colors, gridSize } from '@arch-ui/theme';
+import { A11yText } from '@arch-ui/typography';
+import { Alert } from '@arch-ui/alert';
+import { OptionPrimitive } from '@arch-ui/options';
+import Select from '@arch-ui/select';
 
 import FieldSelect from '../FieldSelect';
 import PopoutForm from './PopoutForm';
@@ -238,7 +239,7 @@ export default class AddFilterPopout extends Component<Props, State> {
       </Transition>
     );
   };
-  renderFilterUI = ({ ref, recalcHeight }) => {
+  renderFilterUI = ({ ref }) => {
     const { field, filter } = this.state;
     const options = field.getFilterTypes();
 
@@ -315,7 +316,6 @@ export default class AddFilterPopout extends Component<Props, State> {
               ) : null}
               <Filter
                 innerRef={this.filterRef}
-                recalcHeight={recalcHeight}
                 field={field}
                 filter={filter}
                 value={this.state.value}
@@ -341,11 +341,9 @@ export default class AddFilterPopout extends Component<Props, State> {
         onSubmit={this.onSubmit}
         onClose={this.resetState}
       >
-        {({ ref, recalcHeight }) => (
+        {({ ref }) => (
           <TransitionGroup component={null}>
-            {field
-              ? this.renderFilterUI({ ref, recalcHeight })
-              : this.renderFieldSelect({ ref, recalcHeight })}
+            {field ? this.renderFilterUI({ ref }) : this.renderFieldSelect({ ref })}
           </TransitionGroup>
         )}
       </PopoutForm>

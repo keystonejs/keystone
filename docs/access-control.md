@@ -86,14 +86,14 @@ keystone.createList('User', {
     email: {
       type: Email,
       // 1.
-      access: ({ item, authentication }) => item.id === authentication.item.id,
+      access: ({ existingItem, authentication }) => existingItem.id === authentication.item.id,
     },
     password: {
       type: Password,
       access: {
         // 2.
         read: false,
-        update: ({ item, authentication }) => item.id === authentication.item.id,
+        update: ({ existingItem, authentication }) => existingItem.id === authentication.item.id,
       },
     },
   },
@@ -183,12 +183,6 @@ type ListConfig = {
 ie; for a list `User`, it would match the input type `UserWhereInput`.
 
 `AccessInput` function parameter
-
-<!-- TODO:
-  Having keying the currently authenticated item as `item` makes unpacking it painful.
-  The access functions are already supplied an `item` argument.
-  See linting errors in the "Granular functions returning Boolean" secion.
--->
 
 - `authentication` describes the currently authenticated user.
   - `.item` is the details of the current user. Will be `undefined` for anonymous users.
@@ -385,7 +379,7 @@ type AccessInput = {
     item?: {},
     listKey?: string,
   },
-  item: {},
+  existingItem: {},
 };
 
 type StaticAccess = boolean;
@@ -416,7 +410,7 @@ only to modify it).
 - `authentication` describes the currently authenticated user.
   - `.item` is the details of the current user. Will be `undefined` for anonymous users.
   - `.listKey` is the list key of the currently authenticated user. Will be `undefined` for anonymous users.
-- `item` is the item this field belongs to.
+- `existingItem` is the existing item this field belongs to (undefined on create).
 
 When defining `StaticAccess`;
 
@@ -484,7 +478,7 @@ keystone.createList('User', {
   fields: {
     name: {
       type: Text,
-      access: ({ authentication: { item, listKey }, item }) => {
+      access: ({ authentication: { item, listKey }, existingItem }) => {
         return true;
       },
     },
@@ -501,11 +495,10 @@ include the field in the GraphQL Schema.
 
 ```js
 keystone.createList('User', {
-
   access: {
-    create: ({ authentication: { item, listKey }, item }) => true,
-    read: ({ authentication: { item, listKey }, item }) => true,
-    update: ({ authentication: { item, listKey }, item }) => true,
+    create: ({ authentication: { item, listKey }, existingItem }) => true,
+    read: ({ authentication: { item, listKey }, existingItem }) => true,
+    update: ({ authentication: { item, listKey }, existingItem }) => true,
   },
 
   fields: {
@@ -702,13 +695,13 @@ keystone.createList('User', {
     address: { type: Text },
     email: {
       type: Email,
-      access: ({ item, auth }) => item.id === auth.id,
+      access: ({ existingItem, auth }) => existingItem.id === auth.id,
     },
     password: {
       type: Password,
       access: {
         read: false,
-        update: ({ item, auth }) => item.id === auth.id,
+        update: ({ existingItem, auth }) => existingItem.id === auth.id,
       },
     },
   },
@@ -833,13 +826,13 @@ keystone.createList('User', {
     address: { type: Text },
     email: {
       type: Email,
-      access: ({ item, auth }) => item.id === auth.id,
+      access: ({ existingItem, auth }) => existingItem.id === auth.id,
     },
     password: {
       type: Password,
       access: {
         read: false,
-        update: ({ item, auth }) => item.id === auth.id,
+        update: ({ existingItem, auth }) => existingItem.id === auth.id,
       },
     },
   },

@@ -1,16 +1,17 @@
+const { Select, MongoSelectInterface, KnexSelectInterface } = require('./Implementation');
 const path = require('path');
-const { Select, MongoSelectInterface } = require('./Implementation');
 
 module.exports = {
   type: 'Select',
   implementation: Select,
   views: {
-    Controller: path.resolve(__dirname, './Controller'),
-    Field: path.resolve(__dirname, './views/Field'),
-    Filter: path.resolve(__dirname, './views/Filter'),
-    Cell: path.resolve(__dirname, './views/Cell'),
+    Controller: path.join(__dirname, './Controller'),
+    Field: path.join(__dirname, './views/Field'),
+    Filter: path.join(__dirname, './views/Filter'),
+    Cell: path.join(__dirname, './views/Cell'),
   },
   adapters: {
     mongoose: MongoSelectInterface,
+    knex: KnexSelectInterface,
   },
 };

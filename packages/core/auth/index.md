@@ -127,10 +127,8 @@ The time spend verifying an actors credentials should be constant-time regardles
 
 ```javascript
 server.app.use(
-  keystone.session.validate({
-    // When logged in, we'll get a req.user object
-    valid: ({ req, item }) => (req.user = item),
-  })
+  // When logged in, we'll get a req.user object
+  keystone.sessionManager.populateAuthedItemMiddleware
 );
 
 const twitterAuth = keystone.createAuthStrategy({
@@ -168,7 +166,7 @@ server.app.get(
 
       try {
         await keystone.auth.User.twitter.connectItem(req, { item: authedItem });
-        await keystone.session.create(req, {
+        await keystone.sessionManager.startAuthedSession(req, {
           item: authedItem,
           list: info.list,
         });
@@ -198,10 +196,8 @@ bank's password over multiple server requests / page refreshes:
 
 ```javascript
 server.app.use(
-  keystone.session.validate({
-    // When logged in, we'll get a req.user object
-    valid: ({ req, item }) => (req.user = item),
-  })
+  // When logged in, we'll get a req.user object
+  keystone.sessionManager.populateAuthedItemMiddleware
 );
 
 const twitterAuth = keystone.createAuthStrategy({
@@ -280,7 +276,7 @@ server.app.post('/auth/twitter/complete', async (req, res, next) => {
     });
 
     await keystone.auth.User.twitter.connectItem(req, { item });
-    await keystone.session.create(req, { item, list });
+    await keystone.sessionManager.startAuthedSession(req, { item, list });
     res.redirect('/api/session');
   } catch (createError) {
     next(createError);
