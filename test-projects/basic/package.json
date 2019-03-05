@@ -26,7 +26,6 @@
     "@voussoir/file-adapters": "^0.2.1",
     "@voussoir/server": "^1.0.0",
     "date-fns": "^1.29.0",
-    "dotenv-safe": "^6.0.0",
     "react": "^16.8.0"
   },
   "devDependencies": {
@@ -34,6 +33,7 @@
     "@voussoir/utils": "^1.0.0",
     "cuid": "^2.1.1",
     "cypress": "^3.1.5",
+    "dotenv-safe": "^6.0.0",
     "execa": "1.0.0",
     "extract-stack": "^1.0.0",
     "mocha": "^5.2.0",

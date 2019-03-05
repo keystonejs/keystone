@@ -21,10 +21,10 @@
     "@voussoir/fields": "^3.0.0",
     "@voussoir/file-adapters": "^0.2.1",
     "@voussoir/server": "^1.0.0",
-    "dotenv-safe": "^6.0.0",
     "react": "^16.8.0"
   },
   "devDependencies": {
+    "dotenv-safe": "^6.0.0",
     "pino-colada": "^1.4.4"
   }
 }
