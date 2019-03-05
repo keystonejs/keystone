@@ -22,16 +22,14 @@
     "@voussoir/core": "^2.0.0",
     "@voussoir/fields": "^3.0.0",
     "@voussoir/server": "^1.0.0",
-    "body-parser": "^1.18.2",
-    "cookie-signature": "^1.1.0",
-    "dotenv-safe": "^6.0.0",
-    "react": "^16.8.0"
+    "body-parser": "^1.18.2"
   },
   "devDependencies": {
     "@voussoir/test-utils": "^1.0.0",
-    "@voussoir/utils": "^1.0.0",
+    "cookie-signature": "^1.1.0",
     "cuid": "^2.1.1",
     "cypress": "^3.1.5",
+    "dotenv-safe": "^6.0.0",
     "execa": "1.0.0",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.18.0",
