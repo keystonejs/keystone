@@ -165,7 +165,7 @@
     "supertest-light": "^1.0.2",
     "underscore.string": "^3.3.5",
     "unist-util-visit": "^1.4.0",
-    "webpack": "^4.28.4",
+    "webpack": "4.28.4",
     "webpack-dev-middleware": "^3.6.0",
     "webpack-hot-middleware": "^2.24.3"
   },
