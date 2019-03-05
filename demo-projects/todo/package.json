@@ -8,13 +8,14 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "DISABLE_LOGGING=true node index.js"
+    "start": "DISABLE_LOGGING=true keystone --entry=index.js"
   },
   "dependencies": {
     "@voussoir/adapter-mongoose": "^2.0.0",
     "@voussoir/admin-ui": "^1.0.0",
-    "@voussoir/keystone": "^0.0.0",
+    "@voussoir/core": "^2.1.0",
     "@voussoir/fields": "^3.0.0",
+    "@voussoir/keystone": "^0.0.0",
     "@voussoir/server": "^1.0.0",
     "express": "^4.16.3"
   }

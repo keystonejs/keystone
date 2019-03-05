@@ -8,7 +8,7 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "node -r dotenv-safe/config index.js | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
+    "start": "node -r dotenv-safe/config `yarn bin`/keystone | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
     "cypress:run:ci": "exit 0",
     "cypress:run": "exit 0"
   },
@@ -17,6 +17,7 @@
     "@arch-ui/input": "^0.0.1",
     "@voussoir/adapter-mongoose": "^2.0.0",
     "@voussoir/admin-ui": "^1.0.0",
+    "@voussoir/core": "^2.1.0",
     "@voussoir/keystone": "^0.0.0",
     "@voussoir/fields": "^3.0.0",
     "@voussoir/file-adapters": "^0.2.1",
