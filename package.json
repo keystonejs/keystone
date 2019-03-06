@@ -221,7 +221,7 @@
     "jade": "^1.11.0",
     "jest": "^24.1.0",
     "jest-junit": "^6.3.0",
-    "mjml-react": "^1.0.42",
+    "mjml-react": "^1.0.51",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.18.0",
     "mocha-multi-reporters": "^1.1.7",
