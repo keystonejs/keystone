@@ -32,9 +32,7 @@ class Password extends Implementation {
     return {
       [`${this.path}_is_set`]: item => {
         const val = item[this.path];
-        return !!val;
-        // FIXME: Re-enable this test once bcrypt for Knex is supported.
-        // return bcryptHashRegex.test(val);
+        return bcryptHashRegex.test(val);
       },
     };
   }
