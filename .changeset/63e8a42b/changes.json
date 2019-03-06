@@ -7,8 +7,6 @@
     { "name": "@voussoir/adapter-mongoose", "type": "patch" },
     { "name": "@voussoir/admin-ui", "type": "patch" },
     { "name": "@arch-ui/alert", "type": "patch" },
-    { "name": "@arch-ui/badge", "type": "patch" },
-    { "name": "@arch-ui/controls", "type": "patch" },
     { "name": "@arch-ui/fields", "type": "patch" },
     { "name": "@arch-ui/filters", "type": "patch" },
     { "name": "@arch-ui/hooks", "type": "patch" },
@@ -16,8 +14,6 @@
     { "name": "@arch-ui/input", "type": "patch" },
     { "name": "@arch-ui/lozenge", "type": "patch" },
     { "name": "@arch-ui/modal-utils", "type": "patch" },
-    { "name": "@arch-ui/navbar", "type": "patch" },
-    { "name": "@arch-ui/popout", "type": "patch" },
     { "name": "@voussoir/core", "type": "patch" },
     { "name": "@voussoir/email", "type": "patch" },
     { "name": "@voussoir/fields", "type": "patch" },
@@ -36,10 +32,12 @@
       "dependencies": ["@arch-ui/icons", "@arch-ui/input"]
     },
     { "name": "@arch-ui/pill", "type": "patch", "dependencies": ["@arch-ui/icons"] },
+    { "name": "@arch-ui/controls", "type": "patch", "dependencies": ["@arch-ui/input"] },
     { "name": "@arch-ui/confirm", "type": "patch", "dependencies": ["@arch-ui/modal-utils"] },
     { "name": "@arch-ui/dialog", "type": "patch", "dependencies": ["@arch-ui/modal-utils"] },
     { "name": "@arch-ui/drawer", "type": "patch", "dependencies": ["@arch-ui/modal-utils"] },
     { "name": "@arch-ui/dropdown", "type": "patch", "dependencies": ["@arch-ui/modal-utils"] },
+    { "name": "@arch-ui/popout", "type": "patch", "dependencies": ["@arch-ui/modal-utils"] },
     { "name": "@arch-ui/tooltip", "type": "patch", "dependencies": ["@arch-ui/modal-utils"] }
   ]
 }
