@@ -1,0 +1,10 @@
+{
+  "releases": [{ "name": "@voussoir/core", "type": "major" }],
+  "dependents": [
+    {
+      "name": "@voussoir/keystone",
+      "type": "patch",
+      "dependencies": ["@voussoir/fields", "@voussoir/core"]
+    }
+  ]
+}
