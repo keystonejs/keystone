@@ -122,9 +122,9 @@ Create the `server.js` file:
 
 <!-- prettier-ignore -->
 ```javascript
-const keystone = require('@voussoir/core');
+const keystoneServer = require('@voussoir/core');
 
-keystone.prepare({ port: 3000 })
+keystoneServer.prepare({ port: 3000 })
   .then(({ server, keystone }) => {
     server.app.get('/', (req, res) => {
       res.end('Hello world');

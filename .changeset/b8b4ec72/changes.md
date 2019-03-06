@@ -1,1 +1,1 @@
-- Hijacking the core package for use with custom servers
+- Use the `@voussoir/core` package as the entry point for custom servers.

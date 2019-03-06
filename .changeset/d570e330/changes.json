@@ -1,0 +1,11 @@
+{
+  "releases": [
+    { "name": "keystone_demo_blog", "type": "major" },
+    { "name": "@voussoir/demo-project-todo", "type": "major" },
+    { "name": "@voussoir/cypress-project-access-control", "type": "major" },
+    { "name": "@voussoir/cypress-project-basic", "type": "major" },
+    { "name": "@voussoir/cypress-project-login", "type": "major" },
+    { "name": "@voussoir/cypress-project-twitter-login", "type": "major" }
+  ],
+  "dependents": []
+}

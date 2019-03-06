@@ -120,6 +120,8 @@ module.exports = {
   staticRoute,
   staticPath,
   keystone,
-  authStrategy,
   admin,
+  serverConfig: {
+    authStrategy,
+  },
 };
