@@ -1,6 +1,6 @@
 {
   "name": "@voussoir/email",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
   "license": "MIT",
   "engines": {

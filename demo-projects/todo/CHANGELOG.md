@@ -1,5 +1,14 @@
 # @voussoir/demo-project-todo
 
+## 1.0.3
+- [patch] 6fa810f7:
+
+  - Rename package core -> keystone
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
 ## 1.0.2
 
 - [patch] 64e6abcc:

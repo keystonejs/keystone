@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/hooks",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/hooks.cjs.js",

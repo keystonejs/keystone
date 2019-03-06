@@ -1,5 +1,17 @@
 # @voussoir/server
 
+## 1.1.0
+- [minor] 6fedba68:
+
+  - DX: Show incoming queries in console and GraphiQL
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
+- [patch] d0fbd66f:
+
+  - Update apollo dependencies on both client and server
+
 ## 1.0.0
 
 - [major] 723371a0:

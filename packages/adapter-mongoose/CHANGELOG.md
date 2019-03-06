@@ -1,5 +1,18 @@
 # @voussoir/adapter-mongoose
 
+## 2.0.1
+- [patch] 6fa810f7:
+
+  - Rename package core -> keystone
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
+- [patch] b155d942:
+
+  - Update mongo/mongoose dependencies
+
 ## 2.0.0
 
 - [minor] 5f891cff:

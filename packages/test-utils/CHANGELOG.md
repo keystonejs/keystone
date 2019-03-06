@@ -1,5 +1,18 @@
 # @voussoir/test-utils
 
+## 1.0.1
+- [patch] 6fa810f7:
+
+  - Rename package core -> keystone
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
+- [patch] b155d942:
+
+  - Update mongo/mongoose dependencies
+
 ## 1.0.0
 
 - [minor] dc53492c:

@@ -1,5 +1,22 @@
 # @voussoir/cypress-project-login
 
+## 1.2.6
+- [patch] 70187044:
+
+  - Move some dependencies into devDependencies
+
+- [patch] 6fa810f7:
+
+  - Rename package core -> keystone
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
+- [patch] 1855d1ba:
+
+  - Update dependencies with 'yarn audit' identified issues
+
 ## 1.2.5
 
 - [patch] 9f2ee393:

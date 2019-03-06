@@ -102,6 +102,8 @@ git pull
 git checkout -D temp-release-branch
 git checkout -b temp-release-branch
 bolt version-packages
+git add .
+git commit -m "Run version-packages"
 git push -f
 ```
 

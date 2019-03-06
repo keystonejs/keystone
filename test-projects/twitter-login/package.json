@@ -1,7 +1,7 @@
 {
   "name": "@voussoir/cypress-project-twitter-login",
   "private": true,
-  "version": "1.1.5",
+  "version": "1.1.6",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
@@ -13,15 +13,15 @@
     "cypress:run": "exit 0"
   },
   "dependencies": {
-    "@arch-ui/fields": "^0.0.1",
-    "@arch-ui/input": "^0.0.1",
-    "@voussoir/adapter-mongoose": "^2.0.0",
-    "@voussoir/admin-ui": "^1.0.0",
-    "@voussoir/core": "^2.1.0",
-    "@voussoir/keystone": "^0.0.0",
-    "@voussoir/fields": "^3.0.0",
+    "@arch-ui/fields": "^0.0.2",
+    "@arch-ui/input": "^0.0.2",
+    "@voussoir/adapter-mongoose": "^2.0.1",
+    "@voussoir/admin-ui": "^1.0.1",
+    "@voussoir/core": "^3.0.0",
+    "@voussoir/fields": "^3.1.0",
     "@voussoir/file-adapters": "^0.2.1",
-    "@voussoir/server": "^1.0.0",
+    "@voussoir/keystone": "^1.0.0",
+    "@voussoir/server": "^1.1.0",
     "react": "^16.8.0"
   },
   "devDependencies": {

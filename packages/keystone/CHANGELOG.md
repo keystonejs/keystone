@@ -1,3 +1,14 @@
+# @voussoir/keystone
+
+## 1.0.0
+- [major] 6fa810f7:
+
+  - Rename package core -> keystone
+
+- Updated dependencies [1db45262]:
+  - @voussoir/fields@3.1.0
+  - @voussoir/core@3.0.0
+
 # @voussoir/core
 
 ## 2.1.0

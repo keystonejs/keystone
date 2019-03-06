@@ -1,5 +1,10 @@
 # @voussoir/apollo-helpers
 
+## 0.3.3
+- [patch] 23c3fee5:
+
+  - Update babel packages and plugins
+
 ## 0.3.2
 
 - [patch] 9ed3bf87:

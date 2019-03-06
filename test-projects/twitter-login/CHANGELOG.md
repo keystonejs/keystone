@@ -1,5 +1,24 @@
 # @voussoir/cypress-project-twitter-login
 
+## 1.1.6
+- [patch] 70187044:
+
+  - Move some dependencies into devDependencies
+
+- [patch] 6fa810f7:
+
+  - Rename package core -> keystone
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
+- Updated dependencies [23c3fee5]:
+  - @voussoir/fields@3.1.0
+  - @voussoir/admin-ui@1.0.1
+  - @arch-ui/fields@0.0.2
+  - @arch-ui/input@0.0.2
+
 ## 1.1.5
 
 - Updated dependencies [723371a0]:

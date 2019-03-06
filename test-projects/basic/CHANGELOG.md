@@ -1,5 +1,31 @@
 # @voussoir/cypress-project-basic
 
+## 1.5.1
+- [patch] 70187044:
+
+  - Move some dependencies into devDependencies
+
+- [patch] 6fa810f7:
+
+  - Rename package core -> keystone
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
+- [patch] 1855d1ba:
+
+  - Update dependencies with 'yarn audit' identified issues
+
+- [patch] b155d942:
+
+  - Update mongo/mongoose dependencies
+
+- Updated dependencies [23c3fee5]:
+  - @voussoir/fields@3.1.0
+  - @voussoir/admin-ui@1.0.1
+  - @arch-ui/fields@0.0.2
+
 ## 1.5.0
 
 - [minor] dc53492c:
