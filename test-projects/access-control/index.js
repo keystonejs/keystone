@@ -1,8 +1,7 @@
 const { AdminUI } = require('@voussoir/admin-ui');
-const { Keystone } = require('@voussoir/core');
+const { Keystone } = require('@voussoir/keystone');
 const { Text, Password, Select } = require('@voussoir/fields');
-const { WebServer } = require('@voussoir/server');
-const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
+const PasswordAuthStrategy = require('@voussoir/keystone/auth/Password');
 const { objMerge } = require('@voussoir/utils');
 const {
   getStaticListName,
@@ -13,9 +12,7 @@ const {
   fieldAccessVariations,
 } = require('./cypress/integration/util');
 
-const { port, staticRoute, staticPath, projectName } = require('./config');
-
-const initialData = require('./data');
+const { projectName } = require('./config');
 
 const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 
@@ -146,41 +143,10 @@ const admin = new AdminUI(keystone, {
   adminPath: '/admin',
 });
 
-const server = new WebServer(keystone, {
-  'cookie secret': 'qwerty',
-  'admin ui': admin,
-  authStrategy: authStrategy,
-  apiPath: '/admin/api',
-  graphiqlPath: '/admin/graphiql',
-  port,
-});
-
-server.app.get('/reset-db', (req, res) => {
-  const reset = async () => {
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
-    await keystone.createItems(initialData);
-    res.redirect(admin.adminPath);
-  };
-  reset();
-});
-
-server.app.use(staticRoute, server.express.static(staticPath));
-
-async function start() {
-  await keystone.connect();
-  server.start();
-  const users = await keystone.lists.User.adapter.findAll();
-  if (!users.length) {
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
-    await keystone.createItems(initialData);
-  }
-}
-
-start().catch(error => {
-  console.error(error);
-  process.exit(1);
-});
+module.exports = {
+  keystone,
+  admin,
+  serverConfig: {
+    authStrategy,
+  },
+};

@@ -8,7 +8,7 @@ const getWebpackConfig = require('./getWebpackConfig');
 const { mode } = require('./env');
 
 module.exports = class AdminUI {
-  constructor(keystone, config) {
+  constructor(keystone, config = {}) {
     this.keystone = keystone;
 
     if (config.adminPath === '/') {
@@ -33,7 +33,7 @@ module.exports = class AdminUI {
     return {
       withAuth: !!this.authStrategy,
       authList: this.authStrategy ? this.authStrategy.listKey : null,
-      adminPath: this.config.adminPath,
+      adminPath: this.adminPath,
       signinPath: this.config.signinPath,
       signoutPath: this.config.signoutPath,
       sessionPath: this.config.sessionPath,
@@ -68,7 +68,7 @@ module.exports = class AdminUI {
   }
 
   redirectSuccessfulSignin(req, res) {
-    const htmlResponse = () => res.redirect(this.config.adminPath);
+    const htmlResponse = () => res.redirect(this.adminPath);
     return res.format({
       default: htmlResponse,
       'text/html': htmlResponse,
