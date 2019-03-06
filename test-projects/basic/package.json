@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "@arch-ui/fields": "^0.0.1",
-    "@voussoir/adapter-knex": "^0.0.2",
     "@voussoir/adapter-mongoose": "^2.0.0",
     "@voussoir/admin-ui": "^1.0.0",
     "@voussoir/core": "^2.0.0",
@@ -30,20 +29,15 @@
   },
   "devDependencies": {
     "@voussoir/test-utils": "^1.0.0",
-    "@voussoir/utils": "^1.0.0",
     "cuid": "^2.1.1",
     "cypress": "^3.1.5",
     "dotenv-safe": "^6.0.0",
     "execa": "1.0.0",
-    "extract-stack": "^1.0.0",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.18.0",
     "mocha-multi-reporters": "^1.1.7",
-    "mongodb-memory-server": "^3.1.2",
-    "mongoose": "^5.4.16",
     "pino-colada": "^1.4.4",
     "start-server-and-test": "^1.7.11",
-    "supertest-light": "^1.0.2",
     "testcheck": "^1.0.0-rc.2"
   }
 }
