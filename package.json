@@ -4,7 +4,7 @@
   "author": "Jed Watson",
   "license": "MIT",
   "scripts": {
-    "coverage": "NODE_ENV=test jest --coverage --collectCoverageFrom=packages/**/*.{js}",
+    "coverage": "DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
     "cypress:run": "status=0; bolt w @voussoir/cypress-project-basic run cypress:run || status=$?; bolt w @voussoir/cypress-project-login run cypress:run || status=$?; bolt w @voussoir/cypress-project-twitter-login run cypress:run || status=$?; bolt w @voussoir/cypress-project-access-control run cypress:run || status=$?; exit $status",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.js{,on}\" \"**/*.md\"",
@@ -194,11 +194,14 @@
     ]
   },
   "jest": {
-    "setupTestFrameworkScriptFile": "./jest/setup.js",
+    "setupFilesAfterEnv": ["./jest/setup.js"],
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "/node_modules/",
       "<rootDir>/website/.cache"
+    ],
+    "collectCoverageFrom": [
+      "<rootDir>/packages/**/*.js"
     ]
   },
   "devDependencies": {
