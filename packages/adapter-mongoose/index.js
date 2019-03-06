@@ -7,7 +7,7 @@ const {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
-} = require('@voussoir/core/adapters');
+} = require('@voussoir/keystone/adapters');
 const joinBuilder = require('@voussoir/mongo-join-builder');
 const logger = require('@voussoir/logger')('mongoose');
 

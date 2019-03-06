@@ -23,7 +23,7 @@ Then, pass that instance into the Web Server setup:
 
 ```javascript
 const { WebServer } = require('@voussoir/server');
-const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
+const PasswordAuthStrategy = require('@voussoir/keystone/auth/Password');
 
 const keystone = // ...
 

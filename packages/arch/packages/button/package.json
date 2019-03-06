@@ -15,7 +15,7 @@
     "@arch-ui/common": "^0.0.1",
     "@arch-ui/loading": "^0.0.1",
     "@arch-ui/theme": "^0.0.1",
-    "@babel/runtime": "^7.2.0",
+    "@babel/runtime": "^7.3.4",
     "@emotion/core": "^10.0.4",
     "@emotion/styled": "^10.0.4",
     "react-pseudo-state": "^2.2.1",

@@ -1,0 +1,1 @@
+// Mock default entry file

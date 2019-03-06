@@ -7,13 +7,12 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/core": "^2.0.0",
+    "@voussoir/keystone": "^0.0.0",
     "@voussoir/logger": "^0.2.0",
     "@voussoir/mongo-join-builder": "^0.3.2",
     "@voussoir/utils": "^1.0.0",
     "inflection": "^1.12.0",
-    "mongodb-memory-server": "^2.7.4",
-    "mongoose": "^5.3.15",
+    "mongoose": "^5.4.16",
     "p-settle": "^2.1.0"
   }
 }

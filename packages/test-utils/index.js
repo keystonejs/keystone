@@ -1,7 +1,7 @@
 const pFinally = require('p-finally');
 const supertest = require('supertest-light');
 const extractStack = require('extract-stack');
-const { Keystone } = require('@voussoir/core');
+const { Keystone } = require('@voussoir/keystone');
 const { WebServer } = require('@voussoir/server');
 const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
 const { KnexAdapter } = require('@voussoir/adapter-knex');

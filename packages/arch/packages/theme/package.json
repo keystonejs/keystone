@@ -6,7 +6,7 @@
   "main": "dist/theme.cjs.js",
   "dependencies": {
     "@arch-ui/color-utils": "0.0.1",
-    "@babel/runtime": "^7.2.0"
+    "@babel/runtime": "^7.3.4"
   },
   "module": "dist/theme.esm.js"
 }
