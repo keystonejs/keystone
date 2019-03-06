@@ -1,1 +1,0 @@
-- Update apollo dependencies on both client and server

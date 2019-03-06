@@ -1,5 +1,107 @@
 # @voussoir/cypress-project-basic
 
+## 2.0.0
+
+- [patch] 70187044:
+
+  - Move some dependencies into devDependencies
+
+- [patch] 6fa810f7:
+
+  - Rename `@voussoir/core` -> `@voussoir/keystone`. This is to free up the
+    `@voussoir/core` package for a different purpose, and make the main import for
+    new Keystone projects be `@voussoir/keystone`. The exports have stayed the
+    same.
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
+- [patch] 1855d1ba:
+
+  - Update dependencies with 'yarn audit' identified issues
+
+- [patch] b155d942:
+
+  - Update mongo/mongoose dependencies
+
+- [major] 582464a8:
+
+  - Migrate projects to new method of exporting and running keystone instances.
+
+  **Migration Guide**
+
+  <!-- prettier-ignore -->
+  1. Ensure your main entry point is `index.js`
+  1. Add the new keystone module: `yarn add @voussoir/keystone`
+  1. Remove the old keystone module: `yarn remove @voussoir/core`
+  1. Update your imports:
+      ```diff
+      - const { Keystone } = require('@voussoir/core');
+      + const { Keystone } = require('@voussoir/keystone');
+      ```
+  1. Update your `package.json` to start Keystone like so:
+      ```json
+      {
+        "scripts": {
+          "start": "keystone",
+        }
+      }
+      ```
+  1. Export your `keystone` and (optional) `admin` instances from `index.js`:
+      ```javascript
+      const keystone = new Keystone(/* .. */);
+      const admin = new AdminUI(/* .. */);
+      /* .. */
+      module.exports = {
+        keystone,
+        admin,
+      };
+      ```
+  1. Remove any usage of `@voussoir/server` / instantiations of `new WebServer()`
+  1. If using an auth strategy, export it:
+      ```javascript
+      const authStrategy = keystone.createAuthStrategy(/* .. */);
+      /* .. */
+      module.exports = {
+        keystone,
+        admin,
+        serverConfig: {
+          authStrategy,
+        },
+      };
+      ```
+  1. If using any custom routes / modifying `server.app` in any way you'll need a
+     _Custom Server_:
+      1. Create a `server.js` along side your `index.js`
+      1. Add the new core package: `yarn add @voussoir/core`
+      1. Start with this boilerplate custom server in `server.js`:
+          ```javascript
+          const keystoneServer = require('@voussoir/core');
+
+          keystoneServer.prepare({ port: 3000 })
+            .then(({ server, keystone }) => {
+
+              // [*] Custom routes get attached to `server.app` here.
+              // If needed, you can access your Keystone instance via `keystone`.
+
+              return server.start();
+            })
+            .then(({ port }) => {
+              console.log(`Listening on port ${port}`);
+            })
+            .catch(error => {
+              console.error(error);
+            });
+          ```
+      1. Put your custom routes, etc, at the `[*]` marker in `server.js`.
+  1. Run `yarn start`
+
+- Updated dependencies [23c3fee5]:
+  - @voussoir/fields@3.1.0
+  - @voussoir/admin-ui@1.0.1
+  - @arch-ui/fields@0.0.2
+
 ## 1.5.0
 
 - [minor] dc53492c:

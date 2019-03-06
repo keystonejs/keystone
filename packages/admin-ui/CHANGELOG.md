@@ -1,5 +1,38 @@
 # @voussoir/admin-ui
 
+## 1.0.1
+
+- [patch] 23c3fee5:
+
+  - Update babel packages and plugins
+
+- [patch] ca1f0ad3:
+
+  - Update to latest webpack packages
+
+- [patch] 6fedba68:
+
+  - DX: Show incoming queries in console and GraphiQL
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
+- [patch] 1855d1ba:
+
+  - Update dependencies with 'yarn audit' identified issues
+
+- [patch] eaab547c:
+
+  - Allow adding related items from the Relationship field
+
+- [patch] d0fbd66f:
+
+  - Update apollo dependencies on both client and server
+
+- Updated dependencies [e16315d5]:
+  - @arch-ui/pill@0.1.0
+
 ## 1.0.0
 
 - [minor] 306f0b7e:

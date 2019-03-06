@@ -1,7 +1,7 @@
 {
   "name": "@voussoir/demo-project-todo",
   "private": true,
-  "version": "1.0.2",
+  "version": "2.0.0",
   "author": "Nathan Simpson",
   "license": "MIT",
   "engines": {
@@ -11,12 +11,12 @@
     "start": "DISABLE_LOGGING=true keystone --entry=index.js"
   },
   "dependencies": {
-    "@voussoir/adapter-mongoose": "^2.0.0",
-    "@voussoir/admin-ui": "^1.0.0",
-    "@voussoir/core": "^2.1.0",
-    "@voussoir/fields": "^3.0.0",
-    "@voussoir/keystone": "^0.0.0",
-    "@voussoir/server": "^1.0.0",
+    "@voussoir/adapter-mongoose": "^2.0.1",
+    "@voussoir/admin-ui": "^1.0.1",
+    "@voussoir/core": "^3.0.0",
+    "@voussoir/fields": "^3.1.0",
+    "@voussoir/keystone": "^1.0.0",
+    "@voussoir/server": "^1.1.0",
     "express": "^4.16.3"
   }
 }

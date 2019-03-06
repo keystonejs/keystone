@@ -1,1 +1,0 @@
-- Re-enable check for bcrypt regex in <password>\_is_set
