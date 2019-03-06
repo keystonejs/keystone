@@ -9,7 +9,9 @@
   },
   "devDependencies": {
     "fs-extra": "^7.0.0",
-    "react": "^16.8.0"
+    "octicons": "^7.2.0",
+    "react": "^16.8.0",
+    "to-pascal-case": "^1.0.0"
   },
   "module": "dist/icons.esm.js",
   "dependencies": {
