@@ -4,7 +4,7 @@ const {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
-} = require('@voussoir/core/adapters');
+} = require('@voussoir/keystone/adapters');
 const {
   objMerge,
   flatten,

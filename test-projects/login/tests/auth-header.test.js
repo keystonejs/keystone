@@ -1,8 +1,8 @@
 const supertest = require('supertest-light');
-const { Keystone } = require('@voussoir/core');
+const { Keystone } = require('@voussoir/keystone');
 const { Text, Password } = require('@voussoir/fields');
 const { WebServer } = require('@voussoir/server');
-const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
+const PasswordAuthStrategy = require('@voussoir/keystone/auth/Password');
 const bodyParser = require('body-parser');
 const cookieSignature = require('cookie-signature');
 const { multiAdapterRunners } = require('@voussoir/test-utils');

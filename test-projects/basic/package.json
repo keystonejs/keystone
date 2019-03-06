@@ -8,7 +8,7 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "node -r dotenv-safe/config index.js | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
+    "start": "node -r dotenv-safe/config `yarn bin`/keystone | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
     "cypress:run:cmd": "node -r dotenv-safe/config `which cypress` run",
     "cypress:open:cmd": "node -r dotenv-safe/config `which cypress` open",
     "prepare-test-server": "NODE_ENV=test DISABLE_LOGGING=true node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.code) })'",
@@ -20,7 +20,8 @@
     "@arch-ui/fields": "^0.0.1",
     "@voussoir/adapter-mongoose": "^2.0.0",
     "@voussoir/admin-ui": "^1.0.0",
-    "@voussoir/core": "^2.0.0",
+    "@voussoir/core": "^2.1.0",
+    "@voussoir/keystone": "^0.0.0",
     "@voussoir/fields": "^3.0.0",
     "@voussoir/file-adapters": "^0.2.1",
     "@voussoir/server": "^1.0.0",
