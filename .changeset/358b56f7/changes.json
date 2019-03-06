@@ -1,0 +1,9 @@
+{
+  "releases": [
+    { "name": "@voussoir/cypress-project-access-control", "type": "patch" },
+    { "name": "@voussoir/cypress-project-basic", "type": "patch" },
+    { "name": "@voussoir/cypress-project-login", "type": "patch" },
+    { "name": "@voussoir/cypress-project-twitter-login", "type": "patch" }
+  ],
+  "dependents": []
+}
