@@ -1,5 +1,11 @@
 # @voussoir/mongo-join-builder
 
+## 0.3.3
+
+- [patch] b155d942:
+
+  - Update mongo/mongoose dependencies
+
 ## 0.3.2
 
 - Updated dependencies [723371a0]:

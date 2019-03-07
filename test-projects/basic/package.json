@@ -1,7 +1,7 @@
 {
   "name": "@voussoir/cypress-project-basic",
   "private": true,
-  "version": "1.5.0",
+  "version": "2.0.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
@@ -17,19 +17,19 @@
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a test-projects/basic/.env file.\nSee test-projects/basic/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@arch-ui/fields": "^0.0.1",
-    "@voussoir/adapter-mongoose": "^2.0.0",
-    "@voussoir/admin-ui": "^1.0.0",
-    "@voussoir/core": "^2.1.0",
-    "@voussoir/keystone": "^0.0.0",
-    "@voussoir/fields": "^3.0.0",
+    "@arch-ui/fields": "^0.0.2",
+    "@voussoir/adapter-mongoose": "^2.0.1",
+    "@voussoir/admin-ui": "^1.0.1",
+    "@voussoir/core": "^3.0.0",
+    "@voussoir/fields": "^3.1.0",
     "@voussoir/file-adapters": "^0.2.1",
-    "@voussoir/server": "^1.0.0",
+    "@voussoir/keystone": "^1.0.0",
+    "@voussoir/server": "^1.1.0",
     "date-fns": "^1.29.0",
     "react": "^16.8.0"
   },
   "devDependencies": {
-    "@voussoir/test-utils": "^1.0.0",
+    "@voussoir/test-utils": "^1.0.1",
     "cuid": "^2.1.1",
     "cypress": "^3.1.5",
     "dotenv-safe": "^6.0.0",
