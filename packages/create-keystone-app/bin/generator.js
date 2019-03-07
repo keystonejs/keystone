@@ -43,7 +43,7 @@ function generate(name) {
   fs.mkdirSync(projectDir);
   copyTemplate(`${templateDir}/todo`, projectDir, {
     name,
-    appName
+    appName,
   });
   installDependencies(projectDir);
   done(name, appName);
@@ -56,11 +56,9 @@ function generate(name) {
  * @param {Object} templateData template data for ejs rendering
  */
 function copyTemplate(templatePath, projectDir, templateData) {
-
   const filesToCreate = fs.readdirSync(templatePath);
 
   filesToCreate.forEach(file => {
-
     const origFilePath = `${templatePath}/${file}`;
     let writePath = `${projectDir}/${file}`;
     // get stats about the current file
@@ -92,7 +90,7 @@ function installDependencies(projectDir) {
   const currentDir = process.cwd();
   process.chdir(projectDir);
   child_process.spawnSync('yarnpkg', {
-    stdio: ['inherit', 'inherit', 'inherit']
+    stdio: ['inherit', 'inherit', 'inherit'],
   });
   process.chdir(currentDir);
 }
@@ -114,17 +112,17 @@ function done(name, appName) {
  */
 
 function createAppName(pathName) {
-  return path.basename(pathName)
+  return path
+    .basename(pathName)
     .replace(/[^A-Za-z0-9.-]+/g, '-')
     .replace(/^[-_.]+|-+$/g, '')
     .toLowerCase();
 }
 
-
 module.exports = {
   version: () => info.version,
 
-  help: () => endent `
+  help: () => endent`
     Usage
       $ ${info.exeName} <project name>
 
@@ -133,7 +131,7 @@ module.exports = {
       --help, -h      Displays this message
   `,
 
-  exec: (args) => {
+  exec: args => {
     const name = args._.join(' ');
     try {
       generate(name);

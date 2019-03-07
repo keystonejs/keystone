@@ -28,7 +28,7 @@ if (args['--help']) {
 }
 
 // if project name is missing print help
-if(args._.length === 0) {
+if (args._.length === 0) {
   console.log(generator.help());
   process.exit(0);
 }
