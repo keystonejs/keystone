@@ -1,12 +1,12 @@
 {
-  "name": "@voussoir/access-control",
-  "version": "0.4.2",
+  "name": "@keystone-alpha/access-control",
+  "version": "1.0.0",
   "author": "Jess Telford",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/utils": "^1.0.0"
+    "@keystone-alpha/utils": "^1.0.0"
   }
 }

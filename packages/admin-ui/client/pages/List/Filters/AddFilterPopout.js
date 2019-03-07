@@ -14,7 +14,7 @@ import FieldSelect from '../FieldSelect';
 import PopoutForm from './PopoutForm';
 import { POPOUT_GUTTER } from '../../../components/Popout';
 
-// This import is loaded by the @voussoir/field-views-loader loader.
+// This import is loaded by the @keystone-alpha/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
 import FieldTypes from '../../../FIELD_TYPES';
 

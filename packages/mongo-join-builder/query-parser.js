@@ -1,5 +1,5 @@
 const cuid = require('cuid');
-const { getType, flatten, objMerge } = require('@voussoir/utils');
+const { getType, flatten, objMerge } = require('@keystone-alpha/utils');
 
 // If it's 0 or 1 items, we can use it as-is. Any more needs an $and/$or
 const joinTerms = (matchTerms, joinOp) =>

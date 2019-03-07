@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 import FieldTypes from '../FIELD_TYPES';
-import { arrayToObject } from '@voussoir/utils';
+import { arrayToObject } from '@keystone-alpha/utils';
 
 export const gqlCountQueries = lists => gql`{
   ${lists.map(list => list.countQuery()).join('\n')}
