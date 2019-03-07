@@ -1,6 +1,6 @@
 {
   "name": "@keystone-alpha/apollo-helpers",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "Jess Telford <hi+github@jes.st> (https://jes.st)",
   "license": "MIT",
   "engines": {

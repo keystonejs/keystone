@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/demo-project-todo",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "Nathan Simpson",
   "license": "MIT",
   "engines": {
@@ -11,12 +11,12 @@
     "start": "DISABLE_LOGGING=true keystone --entry=index.js"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-mongoose": "^0.0.0",
-    "@keystone-alpha/admin-ui": "^0.0.0",
-    "@keystone-alpha/core": "^0.0.0",
-    "@keystone-alpha/fields": "^0.0.0",
-    "@keystone-alpha/keystone": "^0.0.0",
-    "@keystone-alpha/server": "^0.0.0",
+    "@keystone-alpha/adapter-mongoose": "^1.0.0",
+    "@keystone-alpha/admin-ui": "^1.0.0",
+    "@keystone-alpha/core": "^1.0.0",
+    "@keystone-alpha/fields": "^1.0.0",
+    "@keystone-alpha/keystone": "^1.0.0",
+    "@keystone-alpha/server": "^1.0.0",
     "express": "^4.16.3"
   }
 }
