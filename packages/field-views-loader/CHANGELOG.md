@@ -1,5 +1,15 @@
 # @voussoir/field-views-loader
 
+## 0.3.0
+
+- [patch] ca1f0ad3:
+
+  - Update to latest webpack packages
+
+- [minor] eaab547c:
+
+  - Allow adding related items from the Relationship field
+
 ## 0.2.0
 
 - [minor] 47c7dcf6"

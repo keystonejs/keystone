@@ -1,1 +1,0 @@
-- Use the `@voussoir/core` package as the entry point for custom servers.

@@ -1,5 +1,48 @@
 # @voussoir/fields
 
+## 3.1.0
+
+- [patch] 6fa810f7:
+
+  - Rename `@voussoir/core` -> `@voussoir/keystone`. This is to free up the
+    `@voussoir/core` package for a different purpose, and make the main import for
+    new Keystone projects be `@voussoir/keystone`. The exports have stayed the
+    same.
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
+- [minor] eaab547c:
+
+  - Allow adding related items from the Relationship field
+
+- [patch] b155d942:
+
+  - Update mongo/mongoose dependencies
+
+- [patch] d035c199:
+
+  - Re-enable check for bcrypt regex in <password>\_is_set
+
+- Updated dependencies [23c3fee5]:
+  - @arch-ui/button@0.0.2
+  - @arch-ui/controls@0.0.2
+  - @arch-ui/day-picker@0.0.2
+  - @arch-ui/drawer@0.0.2
+  - @arch-ui/fields@0.0.2
+  - @arch-ui/filters@0.0.2
+  - @arch-ui/icons@0.0.2
+  - @arch-ui/input@0.0.2
+  - @arch-ui/layout@0.0.2
+  - @arch-ui/lozenge@0.0.2
+  - @arch-ui/options@0.0.2
+  - @arch-ui/popout@0.0.2
+  - @arch-ui/select@0.0.2
+  - @arch-ui/theme@0.0.2
+  - @arch-ui/tooltip@0.0.2
+  - @arch-ui/typography@0.0.2
+
 ## 3.0.0
 
 - [patch] 513c7b63:
