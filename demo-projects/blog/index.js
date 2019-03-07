@@ -1,6 +1,6 @@
 //imports for Keystone app core
-const { AdminUI } = require('@voussoir/admin-ui');
-const { Keystone } = require('@voussoir/keystone');
+const { AdminUI } = require('@keystone-alpha/admin-ui');
+const { Keystone } = require('@keystone-alpha/keystone');
 const {
   File,
   Text,
@@ -10,10 +10,10 @@ const {
   Checkbox,
   CalendarDay,
   DateTime,
-} = require('@voussoir/fields');
-const { LocalFileAdapter } = require('@voussoir/file-adapters');
-const PasswordAuthStrategy = require('@voussoir/keystone/auth/Password');
-const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
+} = require('@keystone-alpha/fields');
+const { LocalFileAdapter } = require('@voukeystone-alphassoir/file-adapters');
+const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 // config
 const path = require('path');

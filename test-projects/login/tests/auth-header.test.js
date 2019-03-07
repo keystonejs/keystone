@@ -1,12 +1,12 @@
 const supertest = require('supertest-light');
-const { Keystone } = require('@voussoir/keystone');
-const { Text, Password } = require('@voussoir/fields');
-const { WebServer } = require('@voussoir/server');
-const PasswordAuthStrategy = require('@voussoir/keystone/auth/Password');
+const { Keystone } = require('@keystone-alpha/keystone');
+const { Text, Password } = require('@keystone-alpha/fields');
+const { WebServer } = require('@keystone-alpha/server');
+const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
 const bodyParser = require('body-parser');
 const cookieSignature = require('cookie-signature');
-const { multiAdapterRunners } = require('@voussoir/test-utils');
-const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
+const { multiAdapterRunners } = require('@keystone-alpha/test-utils');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const cuid = require('cuid');
 
 const initialData = require('../data');

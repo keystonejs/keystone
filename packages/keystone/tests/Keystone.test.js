@@ -1,6 +1,6 @@
 const Keystone = require('../Keystone');
 const List = require('../List');
-const { Text, Relationship } = require('@voussoir/fields');
+const { Text, Relationship } = require('@keystone-alpha/fields');
 
 class MockType {
   extendViews(views) {

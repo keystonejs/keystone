@@ -6,7 +6,7 @@ A set of functions and components to ease using
 ## Installation
 
 ```bash
-yarn add @voussoir/apollo-helpers
+yarn add @keystone-alpha/apollo-helpers
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ import { ApolloProvider } from 'react-apollo';
 import {
   Query,
   KeystoneProvider,
-} from '@voussoir/apollo-helpers';
+} from '@keystone-alpha/apollo-helpers';
 
 const client = new ApolloClient({
   link: new HttpLink({ uri: /* ... */ }),
@@ -64,7 +64,7 @@ import {
   KeystoneProvider,
   injectIsOptimisticFlag,
   flattenApollo,
-} from '@voussoir/apollo-helpers';
+} from '@keystone-alpha/apollo-helpers';
 
 const cache = new InMemoryCache();
 

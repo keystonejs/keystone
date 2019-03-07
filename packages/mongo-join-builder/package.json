@@ -1,13 +1,13 @@
 {
-  "name": "@voussoir/mongo-join-builder",
-  "version": "0.3.3",
+  "name": "@keystone-alpha/mongo-join-builder",
+  "version": "1.0.0",
   "author": "Jess Telford",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/utils": "^1.0.0",
+    "@keystone-alpha/utils": "^1.0.0",
     "cuid": "^2.1.1"
   },
   "devDependencies": {

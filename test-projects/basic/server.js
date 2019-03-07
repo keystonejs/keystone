@@ -1,4 +1,4 @@
-const keystone = require('@voussoir/core');
+const keystone = require('@keystone-alpha/core');
 
 const { port, staticRoute, staticPath } = require('./config');
 

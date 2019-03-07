@@ -1,9 +1,9 @@
-const { AdminUI } = require('@voussoir/admin-ui');
-const { Keystone } = require('@voussoir/keystone');
-const { Text, Password, Relationship } = require('@voussoir/fields');
-const PasswordAuthStrategy = require('@voussoir/keystone/auth/Password');
+const { AdminUI } = require('@keystone-alpha/admin-ui');
+const { Keystone } = require('@keystone-alpha/keystone');
+const { Text, Password, Relationship } = require('@keystone-alpha/fields');
+const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
 
-const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'Cypress Test Project For Login',

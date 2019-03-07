@@ -1,5 +1,5 @@
 const cuid = require('cuid');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@voussoir/test-utils');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystone-alpha/test-utils');
 
 const DateTime = require('./');
 const Text = require('../Text');

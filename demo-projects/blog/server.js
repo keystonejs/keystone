@@ -1,4 +1,4 @@
-const keystone = require('@voussoir/core');
+const keystone = require('@keystone-alpha/core');
 const next = require('next');
 
 const { staticRoute, staticPath } = require('./index');
