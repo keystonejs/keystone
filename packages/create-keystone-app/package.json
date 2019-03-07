@@ -1,0 +1,22 @@
+{
+  "name": "create-keystone-app",
+  "version": "0.1.0",
+  "description": "Create minimal Keystone 5 app",
+  "bin": {
+    "create-keystone-app": "bin/cli.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "keystonejs"
+  ],
+  "author": "Gautam Singh <gsgit@gs4.in>",
+  "license": "MIT",
+  "dependencies": {
+    "arg": "^4.1.0",
+    "chalk": "^2.4.2",
+    "ejs": "^2.6.1",
+    "endent": "^1.3.0"
+  }
+}
