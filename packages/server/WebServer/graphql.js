@@ -78,9 +78,15 @@ const buildGraphiqlQueryParams = ({ query, variables }) =>
     variables: JSON.stringify(variables),
   });
 
+const ttyClickableUrl = ({ path, port }) => {
+  const url = `http://localhost:${port}${path}`;
+  const prettyUrl = chalk.blue(url);
+  return terminalLink(prettyUrl, url, { fallback: () => prettyUrl });
+};
+
 module.exports = function createGraphQLMiddleware(
   keystone,
-  { apiPath, graphiqlPath, apolloConfig }
+  { apiPath, graphiqlPath, apolloConfig, port }
 ) {
   const app = express();
 
@@ -233,7 +239,7 @@ module.exports = function createGraphQLMiddleware(
   });
 
   if (falsey(process.env.DISABLE_LOGGING)) {
-    console.log(`[ROUTE ${apiPath}]: GraphQL API`);
+    console.log(`🔗 ${chalk.green('GraphQL API:')} ${ttyClickableUrl({ path: apiPath, port })}`);
   }
   server.applyMiddleware({
     app,
@@ -246,7 +252,12 @@ module.exports = function createGraphQLMiddleware(
   if (graphiqlPath) {
     if (devLoggingEnabled) {
       // parses shortlinks and redirects to the GraphiQL editor
-      console.log(`[ROUTE ${graphiqlPath}/go]: GraphQL Playground short links`);
+      console.log(
+        `🔗 ${chalk.green('GraphQL Debug Links:')} ${ttyClickableUrl({
+          path: `${graphiqlPath}/go`,
+          port,
+        })}`
+      );
       app.use(`${graphiqlPath}/go`, (req, res) => {
         const { id } = req.query;
         if (!devQueryLog[id]) {
@@ -260,7 +271,12 @@ module.exports = function createGraphQLMiddleware(
     }
 
     if (falsey(process.env.DISABLE_LOGGING)) {
-      console.log(`[ROUTE ${graphiqlPath}]: GraphQL Playground (v${playgroundPkg.version})`);
+      console.log(
+        `🔗 ${chalk.green('GraphQL Playground:')} ${ttyClickableUrl({
+          path: graphiqlPath,
+          port,
+        })} (v${playgroundPkg.version})`
+      );
     }
     app.use(graphiqlPath, (req, res) => {
       const tab = {

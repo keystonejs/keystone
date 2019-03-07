@@ -1,0 +1,7 @@
+{
+  "releases": [
+    { "name": "@voussoir/admin-ui", "type": "minor" },
+    { "name": "@voussoir/server", "type": "minor" }
+  ],
+  "dependents": []
+}
