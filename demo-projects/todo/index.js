@@ -1,7 +1,7 @@
-const { Keystone } = require('@voussoir/keystone');
-const { AdminUI } = require('@voussoir/admin-ui');
-const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
-const { Text } = require('@voussoir/fields');
+const { Keystone } = require('@keystone-alpha/keystone');
+const { AdminUI } = require('@keystone-alpha/admin-ui');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { Text } = require('@keystone-alpha/fields');
 
 const keystone = new Keystone({
   name: 'Keystone To-Do List',

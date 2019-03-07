@@ -2,17 +2,17 @@ const gql = require('graphql-tag');
 const { print } = require('graphql/language/printer');
 
 // We don't want to actually log, so we mock it before we require the class
-jest.doMock('@voussoir/logger', () => {
+jest.doMock('@keystone-alpha/logger', () => {
   return jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} }));
 });
 
 const List = require('../List');
 const { AccessDeniedError } = require('../List/graphqlErrors');
-const { Text, Checkbox, Float, Relationship } = require('@voussoir/fields');
-const { getType } = require('@voussoir/utils');
+const { Text, Checkbox, Float, Relationship } = require('@keystone-alpha/fields');
+const { getType } = require('@keystone-alpha/utils');
 const path = require('path');
 
-let fieldsPackagePath = path.dirname(require.resolve('@voussoir/fields/package.json'));
+let fieldsPackagePath = path.dirname(require.resolve('@keystone-alpha/fields/package.json'));
 function resolveViewPath(viewPath) {
   return path.join(fieldsPackagePath, 'types', viewPath);
 }

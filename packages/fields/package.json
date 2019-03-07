@@ -1,6 +1,6 @@
 {
-  "name": "@voussoir/fields",
-  "version": "3.1.0",
+  "name": "@keystone-alpha/fields",
+  "version": "0.0.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
@@ -27,10 +27,10 @@
     "@arch-ui/typography": "^0.0.2",
     "@emotion/core": "^10.0.4",
     "@iframely/embed.js": "^1.0.1",
-    "@voussoir/access-control": "^0.4.2",
-    "@voussoir/adapter-knex": "^0.0.3",
-    "@voussoir/adapter-mongoose": "^2.0.1",
-    "@voussoir/utils": "^1.0.0",
+    "@keystone-alpha/access-control": "^0.0.0",
+    "@keystone-alpha/adapter-knex": "^0.0.0",
+    "@keystone-alpha/adapter-mongoose": "^0.0.0",
+    "@keystone-alpha/utils": "^0.0.0",
     "apollo-errors": "^1.9.0",
     "apply-ref": "^0.1.1",
     "bcrypt": "^3.0.0",
@@ -63,7 +63,7 @@
     "slate-react": "^0.21.15"
   },
   "devDependencies": {
-    "@voussoir/test-utils": "^1.0.1",
+    "@keystone-alpha/test-utils": "^0.0.0",
     "cuid": "^2.1.1"
   }
 }

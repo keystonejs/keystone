@@ -1,6 +1,6 @@
 {
-  "name": "@voussoir/admin-ui",
-  "version": "1.0.1",
+  "name": "@keystone-alpha/admin-ui",
+  "version": "0.0.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
@@ -40,9 +40,9 @@
     "@babel/preset-react": "^7.0.0",
     "@emotion/core": "^10.0.4",
     "@emotion/styled": "^10.0.4",
-    "@voussoir/field-views-loader": "^0.3.0",
-    "@voussoir/fields": "^3.1.0",
-    "@voussoir/utils": "^1.0.0",
+    "@keystone-alpha/field-views-loader": "^0.0.0",
+    "@keystone-alpha/fields": "^0.0.0",
+    "@keystone-alpha/utils": "^0.0.0",
     "apollo-cache-inmemory": "^1.5.1",
     "apollo-client": "^2.5.1",
     "apollo-link": "^1.2.8",

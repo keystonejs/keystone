@@ -2,7 +2,7 @@
 
 ## API
 
-### `require('@voussoir/logger')(name)`
+### `require('@keystone-alpha/logger')(name)`
 
 Provides an instance of [`pino`](https://github.com/pinojs/pino) based on the
 given `name`.

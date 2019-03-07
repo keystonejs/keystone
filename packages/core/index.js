@@ -1,4 +1,4 @@
-const { WebServer } = require('@voussoir/server');
+const { WebServer } = require('@keystone-alpha/server');
 const endent = require('endent');
 const pick = require('lodash.pick');
 const path = require('path');

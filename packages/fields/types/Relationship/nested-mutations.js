@@ -1,6 +1,6 @@
 const groupBy = require('lodash.groupby');
 const pSettle = require('p-settle');
-const { intersection, pick } = require('@voussoir/utils');
+const { intersection, pick } = require('@keystone-alpha/utils');
 const { ParameterError } = require('./graphqlErrors');
 
 const NESTED_MUTATIONS = ['create', 'connect', 'disconnect', 'disconnectAll'];

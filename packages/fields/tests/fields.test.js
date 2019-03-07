@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const cuid = require('cuid');
-const { graphqlRequest, multiAdapterRunners, setupServer } = require('@voussoir/test-utils');
+const { graphqlRequest, multiAdapterRunners, setupServer } = require('@keystone-alpha/test-utils');
 
 const sorted = (arr, keyFn) => {
   arr = [...arr];

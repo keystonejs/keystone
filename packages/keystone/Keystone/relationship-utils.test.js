@@ -3,7 +3,7 @@ const {
   unmergeRelationships,
   createRelationships,
 } = require('./relationship-utils');
-const { Text, Relationship } = require('@voussoir/fields');
+const { Text, Relationship } = require('@keystone-alpha/fields');
 
 describe('mergeRelationships', () => {
   test('merges relationships', () => {
