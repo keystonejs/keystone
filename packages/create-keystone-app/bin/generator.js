@@ -101,8 +101,8 @@ function installDependencies(projectDir) {
  * @param {String} appName npm friendly name of the project
  */
 function done(name, appName) {
-  console.log(chalk.green(`Your project "${name}"is ready in ${appName}`));
-  console.log(chalk.green(`You can run your app by using 'cd ${appName} && yarn start'`));
+  console.log(chalk.green(`Your app "${name}"is ready in ${appName}`));
+  console.log(chalk.green(`You can start your app by 'cd ${appName}' and 'yarn start'`));
 }
 
 /**
