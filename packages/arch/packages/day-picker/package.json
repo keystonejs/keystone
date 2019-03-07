@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/day-picker",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/day-picker.cjs.js",
@@ -11,11 +11,11 @@
     "react": "^16.8.0"
   },
   "dependencies": {
-    "@arch-ui/icons": "^0.0.1",
-    "@arch-ui/input": "^0.0.1",
-    "@arch-ui/select": "^0.0.1",
-    "@arch-ui/theme": "^0.0.1",
-    "@arch-ui/typography": "^0.0.1",
+    "@arch-ui/icons": "^0.0.2",
+    "@arch-ui/input": "^0.0.2",
+    "@arch-ui/select": "^0.0.2",
+    "@arch-ui/theme": "^0.0.2",
+    "@arch-ui/typography": "^0.0.2",
     "@babel/runtime": "^7.3.4",
     "@emotion/core": "^10.0.4",
     "@emotion/styled": "^10.0.4",

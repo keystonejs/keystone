@@ -1,1 +1,0 @@
-- DX: Show incoming queries in console and GraphiQL

@@ -1,5 +1,32 @@
 # @voussoir/cypress-project-twitter-login
 
+## 2.0.0
+
+- [patch] 70187044:
+
+  - Move some dependencies into devDependencies
+
+- [patch] 6fa810f7:
+
+  - Rename `@voussoir/core` -> `@voussoir/keystone`. This is to free up the
+    `@voussoir/core` package for a different purpose, and make the main import for
+    new Keystone projects be `@voussoir/keystone`. The exports have stayed the
+    same.
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
+- [major] 582464a8:
+
+  - Migrate projects to new method of exporting and running keystone instances.
+
+- Updated dependencies [23c3fee5]:
+  - @voussoir/fields@3.1.0
+  - @voussoir/admin-ui@1.0.1
+  - @arch-ui/fields@0.0.2
+  - @arch-ui/input@0.0.2
+
 ## 1.1.5
 
 - Updated dependencies [723371a0]:

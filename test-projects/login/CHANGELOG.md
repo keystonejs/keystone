@@ -1,5 +1,30 @@
 # @voussoir/cypress-project-login
 
+## 2.0.0
+
+- [patch] 70187044:
+
+  - Move some dependencies into devDependencies
+
+- [patch] 6fa810f7:
+
+  - Rename `@voussoir/core` -> `@voussoir/keystone`. This is to free up the
+    `@voussoir/core` package for a different purpose, and make the main import for
+    new Keystone projects be `@voussoir/keystone`. The exports have stayed the
+    same.
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
+- [patch] 1855d1ba:
+
+  - Update dependencies with 'yarn audit' identified issues
+
+- [major] 582464a8:
+
+  - Migrate projects to new method of exporting and running keystone instances.
+
 ## 1.2.5
 
 - [patch] 9f2ee393:

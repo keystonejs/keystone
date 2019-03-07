@@ -1,3 +1,18 @@
+# @voussoir/keystone
+
+## 1.0.0
+
+- [major] 6fa810f7:
+
+  - Rename `@voussoir/core` -> `@voussoir/keystone`. This is to free up the
+    `@voussoir/core` package for a different purpose, and make the main import for
+    new Keystone projects be `@voussoir/keystone`. The exports have stayed the
+    same.
+
+- Updated dependencies [1db45262]:
+  - @voussoir/fields@3.1.0
+  - @voussoir/core@3.0.0
+
 # @voussoir/core
 
 ## 2.1.0

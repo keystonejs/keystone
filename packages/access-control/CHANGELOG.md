@@ -1,5 +1,11 @@
 # @voussoir/access-control
 
+## 0.4.2
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
 ## 0.4.1
 
 - Updated dependencies [723371a0]:

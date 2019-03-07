@@ -1,6 +1,6 @@
 {
   "name": "@voussoir/mongo-join-builder",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "author": "Jess Telford",
   "license": "MIT",
   "engines": {

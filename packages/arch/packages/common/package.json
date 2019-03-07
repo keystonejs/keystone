@@ -1,11 +1,11 @@
 {
   "name": "@arch-ui/common",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/common.cjs.js",
   "dependencies": {
-    "@arch-ui/theme": "^0.0.1"
+    "@arch-ui/theme": "^0.0.2"
   },
   "module": "dist/common.esm.js"
 }
