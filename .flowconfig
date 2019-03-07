@@ -17,7 +17,7 @@
 [lints]
 
 [options]
-module.name_mapper='^@voussoir\/\(.+\)$' -> '<PROJECT_ROOT>/packages/\1'
+module.name_mapper='^@keystone-alpha\/\(.+\)$' -> '<PROJECT_ROOT>/packages/\1'
 module.name_mapper='.*FIELD_TYPES' -> '<PROJECT_ROOT>/packages/field-views-loader/field-types'
 module.name_mapper='^@arch-ui\/\([^\/]+\)$' -> '@arch-ui/\1/src/index.js'
 server.max_workers=1

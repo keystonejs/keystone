@@ -61,7 +61,7 @@ describe('dev command', () => {
       jest.restoreAllMocks();
       // See: https://twitter.com/JessTelford/status/1102801062489018369
       jest.resetModules();
-      jest.dontMock('@voussoir/core');
+      jest.dontMock('@keystone-alpha/core');
     });
 
     test('rejects when file not found', () => {
@@ -71,7 +71,7 @@ describe('dev command', () => {
     });
 
     test('is setup with a default server', async () => {
-      const coreModule = require('@voussoir/core');
+      const coreModule = require('@keystone-alpha/core');
 
       const mockLog = jest.spyOn(global.console, 'log').mockImplementation(jest.fn());
       const mockServerStart = jest.fn();
@@ -83,7 +83,7 @@ describe('dev command', () => {
 
       // clear the core module from the cache so we can mock it
       jest.resetModules();
-      jest.doMock('@voussoir/core', () => ({
+      jest.doMock('@keystone-alpha/core', () => ({
         ...coreModule,
         prepare: mockPrepare,
       }));
@@ -111,13 +111,13 @@ describe('dev command', () => {
       jest.restoreAllMocks();
       // See: https://twitter.com/JessTelford/status/1102801062489018369
       jest.resetModules();
-      jest.dontMock('@voussoir/core');
+      jest.dontMock('@keystone-alpha/core');
     });
 
     test('prepares server with default port', async () => {
       // Load up a fresh copy of the core module for use within our mock below
       jest.resetModules();
-      const coreModule = require('@voussoir/core');
+      const coreModule = require('@keystone-alpha/core');
 
       const mockLog = jest.spyOn(global.console, 'log').mockImplementation(jest.fn());
       const mockPrepare = jest.fn(() =>
@@ -128,7 +128,7 @@ describe('dev command', () => {
 
       // clear the core module from the cache so we can mock it
       jest.resetModules();
-      jest.doMock('@voussoir/core', () => ({
+      jest.doMock('@keystone-alpha/core', () => ({
         ...coreModule,
         prepare: mockPrepare,
       }));
@@ -154,7 +154,7 @@ describe('dev command', () => {
     test('prepare server with passed in port', async () => {
       // Load up a fresh copy of the core module for use within our mock below
       jest.resetModules();
-      const coreModule = require('@voussoir/core');
+      const coreModule = require('@keystone-alpha/core');
 
       const mockLog = jest.spyOn(global.console, 'log').mockImplementation(jest.fn());
       const mockPrepare = jest.fn(() =>
@@ -165,7 +165,7 @@ describe('dev command', () => {
 
       // clear the core module from the cache so we can mock it
       jest.resetModules();
-      jest.doMock('@voussoir/core', () => ({
+      jest.doMock('@keystone-alpha/core', () => ({
         ...coreModule,
         prepare: mockPrepare,
       }));

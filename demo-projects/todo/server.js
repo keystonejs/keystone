@@ -1,4 +1,4 @@
-const keystone = require('@voussoir/core');
+const keystone = require('@keystone-alpha/core');
 const express = require('express');
 const path = require('path');
 

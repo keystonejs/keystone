@@ -1,0 +1,28 @@
+{
+  "releases": [
+    { "name": "keystone_demo_blog", "type": "major" },
+    { "name": "@keystone-alpha/demo-project-todo", "type": "major" },
+    { "name": "@keystone-alpha/access-control", "type": "major" },
+    { "name": "@keystone-alpha/adapter-knex", "type": "major" },
+    { "name": "@keystone-alpha/adapter-mongoose", "type": "major" },
+    { "name": "@keystone-alpha/admin-ui", "type": "major" },
+    { "name": "@keystone-alpha/apollo-helpers", "type": "major" },
+    { "name": "@keystone-alpha/core", "type": "major" },
+    { "name": "@keystone-alpha/email", "type": "major" },
+    { "name": "@keystone-alpha/field-views-loader", "type": "major" },
+    { "name": "@keystone-alpha/fields", "type": "major" },
+    { "name": "@keystone-alpha/file-adapters", "type": "major" },
+    { "name": "@keystone-alpha/keystone", "type": "major" },
+    { "name": "@keystone-alpha/logger", "type": "major" },
+    { "name": "@keystone-alpha/mongo-join-builder", "type": "major" },
+    { "name": "@keystone-alpha/server", "type": "major" },
+    { "name": "@keystone-alpha/test-utils", "type": "major" },
+    { "name": "@keystone-alpha/utils", "type": "major" },
+    { "name": "@keystone-alpha/cypress-project-access-control", "type": "major" },
+    { "name": "@keystone-alpha/cypress-project-basic", "type": "major" },
+    { "name": "@keystone-alpha/cypress-project-login", "type": "major" },
+    { "name": "@keystone-alpha/cypress-project-twitter-login", "type": "major" },
+    { "name": "@keystone-alpha/website", "type": "major" }
+  ],
+  "dependents": []
+}

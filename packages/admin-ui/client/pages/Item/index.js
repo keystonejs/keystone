@@ -21,10 +21,10 @@ import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../.
 import { IdCopy } from './IdCopy';
 import { ItemTitle } from './ItemTitle';
 
-import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
+import { resolveAllKeys, arrayToObject } from '@keystone-alpha/utils';
 import isEqual from 'lodash.isequal';
 
-// This import is loaded by the @voussoir/field-views-loader loader.
+// This import is loaded by the @keystone-alpha/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
 import FieldTypes from '../../FIELD_TYPES';
 

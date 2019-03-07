@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const omitBy = require('lodash.omitby');
-const { mergeWhereClause } = require('@voussoir/utils');
-const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
-const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
+const { mergeWhereClause } = require('@keystone-alpha/utils');
+const { MongooseFieldAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { KnexFieldAdapter } = require('@keystone-alpha/adapter-knex');
 
 const {
   Schema: {

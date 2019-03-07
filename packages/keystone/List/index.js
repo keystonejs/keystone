@@ -13,13 +13,13 @@ const {
   flatten,
   zipObj,
   createLazyDeferred,
-} = require('@voussoir/utils');
+} = require('@keystone-alpha/utils');
 
-const { parseListAccess } = require('@voussoir/access-control');
+const { parseListAccess } = require('@keystone-alpha/access-control');
 
-const logger = require('@voussoir/logger');
+const logger = require('@keystone-alpha/logger');
 
-const { Text, Checkbox, Float, Relationship } = require('@voussoir/fields');
+const { Text, Checkbox, Float, Relationship } = require('@keystone-alpha/fields');
 
 const gql = require('graphql-tag');
 const graphqlLogger = logger('graphql');
@@ -96,7 +96,7 @@ const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
     { nativeType: type, keystoneType, listKey, fieldPath },
     `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${
       keystoneType.type.type
-    }' from the @voussoir/fields package.`
+    }' from the @keystone-alpha/fields package.`
   );
 
   return keystoneType;
@@ -210,7 +210,7 @@ module.exports = class List {
 
         if (!graphQLQuery) {
           return Promise.reject(
-            new Error('No executable schema is available. Have you setup `@voussoir/server`?')
+            new Error('No executable schema is available. Have you setup `@keystone-alpha/server`?')
           );
         }
 

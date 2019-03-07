@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { POPOUT_GUTTER } from '../../../components/Popout';
 import PopoutForm from './PopoutForm';
 
-// This import is loaded by the @voussoir/field-views-loader loader.
+// This import is loaded by the @keystone-alpha/field-views-loader loader.
 // It imports all the views required for a keystone app by looking at the adminMetaData
 import FieldTypes from '../../../FIELD_TYPES';
 

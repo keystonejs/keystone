@@ -1,6 +1,6 @@
 {
-  "name": "@voussoir/logger",
-  "version": "0.2.0",
+  "name": "@keystone-alpha/logger",
+  "version": "0.0.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {

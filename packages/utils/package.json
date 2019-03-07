@@ -1,6 +1,6 @@
 {
-  "name": "@voussoir/utils",
-  "version": "1.0.0",
+  "name": "@keystone-alpha/utils",
+  "version": "0.0.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {

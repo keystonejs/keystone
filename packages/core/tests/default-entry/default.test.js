@@ -1,6 +1,6 @@
 const core = require('../../');
 
-describe('@voussoir/core/index.js', () => {
+describe('@keystone-alpha/core/index.js', () => {
   describe('#prepare() default entry', () => {
     test('loads the default entry file', () => {
       // NOTE: prepare will still reject (because the default file doesn't have

@@ -33,7 +33,7 @@ Some quick house rules:
 ### Setup
 
 ```
-npm install --save @voussoir/keystone @voussoir/fields @voussoir/adapter-mongoose @voussoir/admin-ui
+npm install --save @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/admin-ui
 ```
 
 _NOTE: You must have a [working version of `mongo`
@@ -53,10 +53,10 @@ Create a file `index.js`:
 
 <!-- prettier-ignore -->
 ```javascript
-const { Keystone }        = require('@voussoir/keystone');
-const { AdminUI }         = require('@voussoir/admin-ui');
-const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
-const { Text }            = require('@voussoir/fields');
+const { Keystone }        = require('@keystone-alpha/keystone');
+const { AdminUI }         = require('@keystone-alpha/admin-ui');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { Text }            = require('@keystone-alpha/fields');
 
 const keystone = new Keystone({
   name: 'Keystone To-Do List',
@@ -122,7 +122,7 @@ Create the `server.js` file:
 
 <!-- prettier-ignore -->
 ```javascript
-const keystoneServer = require('@voussoir/core');
+const keystoneServer = require('@keystone-alpha/core');
 
 keystoneServer.prepare({ port: 3000 })
   .then(({ server, keystone }) => {
@@ -228,10 +228,10 @@ list used for authentication in `index.js`:
 
 <!-- prettier-ignore -->
 ```javascript
-const { Keystone }        = require('@voussoir/keystone');
-const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
-const { Text, Password }  = require('@voussoir/fields');
-const PasswordAuth        = require('@voussoir/keystone/auth/Password');
+const { Keystone }        = require('@keystone-alpha/keystone');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { Text, Password }  = require('@keystone-alpha/fields');
+const PasswordAuth        = require('@keystone-alpha/keystone/auth/Password');
 
 const keystone = new Keystone({
   name: 'Keystone With Auth',

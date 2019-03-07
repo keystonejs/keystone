@@ -5,7 +5,7 @@ const isPromise = require('p-is-promise');
 
 const core = require('../');
 
-describe('@voussoir/core/index.js', () => {
+describe('@keystone-alpha/core/index.js', () => {
   test('exports', () => {
     expect(typeof core.DEFAULT_PORT).toBe('number');
     expect(typeof core.DEFAULT_ENTRY).toBe('string');
@@ -78,7 +78,7 @@ describe('@voussoir/core/index.js', () => {
         jest.restoreAllMocks();
         // See: https://twitter.com/JessTelford/status/1102801062489018369
         jest.resetModules();
-        jest.dontMock('@voussoir/server');
+        jest.dontMock('@keystone-alpha/server');
       });
 
       test('Cannot pass both entryFile#serverConfig and .serverConfig', () => {
@@ -116,7 +116,7 @@ describe('@voussoir/core/index.js', () => {
         // here, and replace the implementation on a per-test basis
         const mockServerClass = jest.fn(() => {});
         jest.resetModules();
-        jest.doMock('@voussoir/server', () => ({
+        jest.doMock('@keystone-alpha/server', () => ({
           // Mock the class to do nothing
           WebServer: mockServerClass,
         }));
@@ -135,7 +135,7 @@ describe('@voussoir/core/index.js', () => {
         // here, and replace the implementation on a per-test basis
         const mockServerClass = jest.fn(() => {});
         jest.resetModules();
-        jest.doMock('@voussoir/server', () => ({
+        jest.doMock('@keystone-alpha/server', () => ({
           // Mock the class to do nothing
           WebServer: mockServerClass,
         }));
@@ -161,7 +161,7 @@ describe('@voussoir/core/index.js', () => {
         // here, and replace the implementation on a per-test basis
         const mockServerClass = jest.fn(() => {});
         jest.resetModules();
-        jest.doMock('@voussoir/server', () => ({
+        jest.doMock('@keystone-alpha/server', () => ({
           // Mock the class to do nothing
           WebServer: mockServerClass,
         }));
@@ -212,7 +212,7 @@ describe('@voussoir/core/index.js', () => {
         // here, and replace the implementation on a per-test basis
         const mockServerClass = jest.fn(() => {});
         jest.resetModules();
-        jest.doMock('@voussoir/server', () => ({
+        jest.doMock('@keystone-alpha/server', () => ({
           // Mock the class to do nothing
           WebServer: mockServerClass,
         }));
@@ -247,7 +247,7 @@ describe('@voussoir/core/index.js', () => {
         const mockServerResult = {};
         const mockServerClass = jest.fn(() => mockServerResult);
         jest.resetModules();
-        jest.doMock('@voussoir/server', () => ({
+        jest.doMock('@keystone-alpha/server', () => ({
           // Mock the class to do nothing
           WebServer: mockServerClass,
         }));
@@ -267,7 +267,7 @@ describe('@voussoir/core/index.js', () => {
         const mockServerResult = {};
         const mockServerClass = jest.fn(() => mockServerResult);
         jest.resetModules();
-        jest.doMock('@voussoir/server', () => ({
+        jest.doMock('@keystone-alpha/server', () => ({
           // Mock the class to do nothing
           WebServer: mockServerClass,
         }));

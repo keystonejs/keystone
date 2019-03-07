@@ -1,3 +1,5 @@
+# @keystone-alpha/email
+
 # @voussoir/email
 
 ## 0.0.2

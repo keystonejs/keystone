@@ -39,7 +39,7 @@ export default () => (
     `}
     render={data => {
       const navData = data.allSitePage.edges.reduce((pageList, { node }) => {
-        // finding out what directory the file is in (eg '/voussoir')
+        // finding out what directory the file is in (eg '/keystone-alpha')
 
         if (node.context.workspace !== null && !node.path.includes('changelog')) {
           let dir = node.context.workspace;

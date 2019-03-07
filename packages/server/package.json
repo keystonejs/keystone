@@ -1,14 +1,14 @@
 {
-  "name": "@voussoir/server",
-  "version": "1.1.0",
+  "name": "@keystone-alpha/server",
+  "version": "0.0.0",
   "author": "Jed Watson",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/logger": "^0.2.0",
-    "@voussoir/utils": "^1.0.0",
+    "@keystone-alpha/logger": "^0.0.0",
+    "@keystone-alpha/utils": "^0.0.0",
     "apollo-errors": "^1.9.0",
     "apollo-server-express": "^2.4.8",
     "body-parser": "^1.18.2",

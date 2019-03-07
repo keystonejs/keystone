@@ -1,7 +1,7 @@
 const passport = require('passport');
 const { OAuth } = require('oauth-libre');
 const PassportTwitter = require('passport-twitter');
-const { Text, Relationship } = require('@voussoir/fields');
+const { Text, Relationship } = require('@keystone-alpha/fields');
 
 const FIELD_TWITTER_ID = 'twitterId';
 const FIELD_TWITTER_USERNAME = 'twitterUsername';

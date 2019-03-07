@@ -1,15 +1,22 @@
 const mongoose = require('mongoose');
 const inflection = require('inflection');
 const pSettle = require('p-settle');
-const { escapeRegExp, pick, getType, mapKeys, mapKeyNames, identity } = require('@voussoir/utils');
+const {
+  escapeRegExp,
+  pick,
+  getType,
+  mapKeys,
+  mapKeyNames,
+  identity,
+} = require('@keystone-alpha/utils');
 
 const {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
-} = require('@voussoir/keystone/adapters');
-const joinBuilder = require('@voussoir/mongo-join-builder');
-const logger = require('@voussoir/logger')('mongoose');
+} = require('@keystone-alpha/keystone/adapters');
+const joinBuilder = require('@keystone-alpha/mongo-join-builder');
+const logger = require('@keystone-alpha/logger')('mongoose');
 
 const simpleTokenizer = require('./tokenizers/simple');
 const relationshipTokenizer = require('./tokenizers/relationship');
