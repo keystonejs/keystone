@@ -1,5 +1,5 @@
-const { AdminUI } = require('@voussoir/admin-ui');
-const { Keystone } = require('@voussoir/core');
+const { AdminUI } = require('@keystone-alpha/admin-ui');
+const { Keystone } = require('@keystone-alpha/keystone');
 const {
   File,
   Text,
@@ -8,13 +8,11 @@ const {
   Select,
   Password,
   CloudinaryImage,
-} = require('@voussoir/fields');
-const { WebServer } = require('@voussoir/server');
-const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
-const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
+} = require('@keystone-alpha/fields');
+const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
+const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
 
-const { twitterAuthEnabled, port, staticRoute, staticPath, cloudinary } = require('./config');
-const { configureTwitterAuth } = require('./twitter');
+const { staticRoute, staticPath, cloudinary } = require('./config');
 
 const { DISABLE_AUTH } = process.env;
 const LOCAL_FILE_PATH = `${staticPath}/avatars`;
@@ -23,9 +21,7 @@ const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
 
-const initialData = require('./data');
-
-const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'Cypress Test for Twitter Login',
@@ -163,48 +159,12 @@ keystone.createList('Note', {
     authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
 });
 
-const admin = new AdminUI(keystone, {
-  adminPath: '/admin',
-  // allow disabling of admin auth for test environments
-  authStrategy: DISABLE_AUTH ? undefined : authStrategy,
-});
+const admin = new AdminUI(keystone);
 
-const server = new WebServer(keystone, {
-  'cookie secret': 'qwerty',
-  'admin ui': admin,
-  port,
-});
-
-if (twitterAuthEnabled) {
-  configureTwitterAuth(keystone, server);
-}
-
-server.app.get('/reset-db', (req, res) => {
-  const reset = async () => {
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
-    await keystone.createItems(initialData);
-    res.redirect(admin.adminPath);
-  };
-  reset();
-});
-
-server.app.use(staticRoute, server.express.static(staticPath));
-
-async function start() {
-  await keystone.connect();
-  server.start();
-  const users = await keystone.lists.User.adapter.findAll();
-  if (!users.length) {
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
-    await keystone.createItems(initialData);
-  }
-}
-
-start().catch(error => {
-  console.error(error);
-  process.exit(1);
-});
+module.exports = {
+  keystone,
+  admin,
+  serverConfig: {
+    authStrategy: DISABLE_AUTH ? undefined : authStrategy,
+  },
+};

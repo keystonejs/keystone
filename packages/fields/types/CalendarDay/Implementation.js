@@ -1,8 +1,8 @@
 const parse = require('date-fns/parse');
 const format = require('date-fns/format');
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
-const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
+const { MongooseFieldAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { KnexFieldAdapter } = require('@keystone-alpha/adapter-knex');
 
 class CalendarDay extends Implementation {
   constructor() {

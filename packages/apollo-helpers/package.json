@@ -1,7 +1,7 @@
 {
-  "name": "@voussoir/apollo-helpers",
-  "version": "0.3.2",
-  "author": "Jess Telford <hi+github@jes.st> (https://jes.st)",
+  "name": "@keystone-alpha/apollo-helpers",
+  "version": "1.0.0",
+  "author": "The Keystone Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
@@ -10,7 +10,7 @@
     "build": "echo 'noop - see the Keystone package.json#build script'"
   },
   "dependencies": {
-    "@babel/runtime": "^7.2.0",
+    "@babel/runtime": "^7.3.4",
     "@jesstelford/apollo-cache-invalidation": "^0.0.3-gh3-gh5",
     "graphql-tag": "^2.8.0",
     "hoist-non-react-statics": "^3.0.1",

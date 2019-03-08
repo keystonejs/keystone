@@ -1,6 +1,6 @@
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
-const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
+const { MongooseFieldAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { KnexFieldAdapter } = require('@keystone-alpha/adapter-knex');
 
 const bcrypt = require('bcrypt');
 const dumbPasswords = require('dumb-passwords');
@@ -32,9 +32,7 @@ class Password extends Implementation {
     return {
       [`${this.path}_is_set`]: item => {
         const val = item[this.path];
-        return !!val;
-        // FIXME: Re-enable this test once bcrypt for Knex is supported.
-        // return bcryptHashRegex.test(val);
+        return bcryptHashRegex.test(val);
       },
     };
   }

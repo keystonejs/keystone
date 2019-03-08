@@ -102,16 +102,22 @@ module.exports = class WebServer {
     }
   }
 
-  start() {
+  async start() {
     const {
       app,
       config: { port },
     } = this;
 
-    app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './default.html')));
+    await this.keystone.connect();
+    return new Promise((resolve, reject) => {
+      app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './default.html')));
 
-    app.listen(port, () => {
-      console.log(`KeystoneJS 5 ready on port ${port}`);
+      app.listen(port, error => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve({ port });
+      });
     });
   }
 };

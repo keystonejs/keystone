@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/hooks",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/hooks.cjs.js",
@@ -12,6 +12,7 @@
   },
   "module": "dist/hooks.esm.js",
   "dependencies": {
+    "@babel/runtime": "^7.3.4",
     "resize-observer-polyfill": "^1.5.1"
   }
 }

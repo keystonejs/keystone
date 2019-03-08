@@ -1,4 +1,4 @@
-# Email Sending in Voussoir
+# Email Sending in keystone-alpha
 
 Send emails via various transports, rendered with Express-compatible
 renderers.
@@ -24,7 +24,7 @@ Usage:
 `index.js`
 
 ```javascript
-const emailSender = require('@voussoir/email');
+const emailSender = require('@keystone-alpha/email');
 
 const jsxEmailSender = emailSender.jsx({
   // The directory containing the email templates
@@ -69,7 +69,7 @@ Usage:
 `index.js`
 
 ```javascript
-const emailSender = require('@voussoir/email');
+const emailSender = require('@keystone-alpha/email');
 
 const mjmlEmailSender = emailSender.mjml({
   // The directory containing the email templates
@@ -115,7 +115,7 @@ _NOTE: The `mjml` renderer has a peer dependency on `react`, `react-dom`, & `mjm
 Usage:
 
 ```javascript
-const emailSender = require('@voussoir/email');
+const emailSender = require('@keystone-alpha/email');
 
 const jadeEmailSender = emailSender.jade({
   // The directory containing the email templates
@@ -137,7 +137,7 @@ Above are examples of using 2 renderers, `jsx`, and `jade`.
 In general, renderers are available directly on the exported object:
 
 ```javascript
-const emailSender = require('@voussoir/email');
+const emailSender = require('@keystone-alpha/email');
 
 emailSender.<renderer>(...);
 ```

@@ -1,7 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
-const { Text, Relationship } = require('@voussoir/fields');
+const { Text, Relationship } = require('@keystone-alpha/fields');
 const cuid = require('cuid');
-const { setupServer, graphqlRequest, multiAdapterRunners } = require('@voussoir/test-utils');
+const { setupServer, graphqlRequest, multiAdapterRunners } = require('@keystone-alpha/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 

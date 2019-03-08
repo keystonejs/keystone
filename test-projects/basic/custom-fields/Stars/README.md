@@ -88,7 +88,10 @@ Right now, the Field Type defintion is referencing a bunch of files that don't e
 For now, `Implementation.js` is only going to re-export from the `Integer` implementation
 
 ```jsx
-const { Integer, MongoIntegerInterface } = require('@voussoir/fields/types/Integer/Implementation');
+const {
+  Integer,
+  MongoIntegerInterface,
+} = require('@keystone-alpha/fields/types/Integer/Implementation');
 
 class Stars extends Integer {}
 
@@ -101,7 +104,7 @@ module.exports = {
 `Controller.js` is also going to re-export from the `Integer` Controller.
 
 ```jsx
-export { default } from '@voussoir/fields/types/Integer/Controller';
+export { default } from '@keystone-alpha/fields/types/Integer/Controller';
 ```
 
 ### Views
@@ -123,7 +126,7 @@ export default function Cell(props) {
 We're going to reuse the Integer filter here so we'll re-export it.
 
 ```jsx
-export { default } from '@voussoir/fields/types/Integer/views/Filter';
+export { default } from '@keystone-alpha/fields/types/Integer/views/Filter';
 ```
 
 #### views/Field.js
@@ -131,7 +134,7 @@ export { default } from '@voussoir/fields/types/Integer/views/Filter';
 For now, we're also going to re-export the Integer Field Type.
 
 ```jsx
-export { default } from '@voussoir/fields/types/Integer/views/Field';
+export { default } from '@keystone-alpha/fields/types/Integer/views/Field';
 ```
 
 ## Use the Field Type
@@ -206,7 +209,10 @@ Now we have a custom Field Type with its own views but we hard coded a maximum o
 First we need to expose it to the Admin UI, to do this, we can define a `extendAdminMeta` method on the `Stars` `Implementation`. You can pass anything here that can be stringified to JSON(i.e. no functions).
 
 ```jsx
-const { Integer, MongoIntegerInterface } = require('@voussoir/fields/types/Integer/Implementation');
+const {
+  Integer,
+  MongoIntegerInterface,
+} = require('@keystone-alpha/fields/types/Integer/Implementation');
 
 class Stars extends Integer {
   extendAdminMeta(meta) {

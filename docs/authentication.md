@@ -22,8 +22,8 @@ First, setup [a `PasswordAuthStrategy` instance](#passwordauthstrategy).
 Then, pass that instance into the Web Server setup:
 
 ```javascript
-const { WebServer } = require('@voussoir/server');
-const PasswordAuthStrategy = require('@voussoir/core/auth/Password');
+const { WebServer } = require('@keystone-alpha/server');
+const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
 
 const keystone = // ...
 
