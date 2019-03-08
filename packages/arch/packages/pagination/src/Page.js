@@ -1,13 +1,13 @@
 // @flow
 import * as React from 'react';
 import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
 
 import { colors } from '@arch-ui/theme';
 import type { LabelType, OnChangeType } from './types';
 
 export type PagePrimitiveProps = {
   children: React.Node,
+  as: React.Node,
   href?: string,
   isDisabled: boolean,
   isSelected: boolean,
@@ -21,15 +21,18 @@ type PageProps = PagePrimitiveProps & {
   value: number,
 };
 
+const PageButton = ({ isDisabled, current, props }) => (
+  <button type="button" disabled={isDisabled} aria-current={current} {...props} />
+);
+
 // Element Switch
 // remove props that will create react DOM warnings
 // ------------------------------
 
-const PagePrimitive = ({ isDisabled, isSelected, ...props }: PagePrimitiveProps) => {
+const PagePrimitive = ({ isSelected, as: Tag, ...props }: PagePrimitiveProps) => {
   const current = isSelected ? 'page' : null;
-  if (props.to) return <Link aria-current={current} {...props} />;
-  if (props.href) return <a aria-current={current} {...props} />;
-  return <button type="button" disabled={isDisabled} aria-current={current} {...props} />;
+  if (Tag) return <Tag aria-current={current} {...props} />;
+  return <PageButton {...props} />;
 };
 PagePrimitive.defaultProps = {
   isDisabled: false,

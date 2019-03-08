@@ -1,13 +1,12 @@
 const { Text, MongoTextInterface, KnexTextInterface } = require('./Implementation');
-const path = require('path');
 
 module.exports = {
   type: 'Text',
   implementation: Text,
   views: {
-    Controller: path.join(__dirname, './views/Controller'),
-    Field: path.join(__dirname, './views/Field'),
-    Filter: path.join(__dirname, './views/Filter'),
+    Controller: '@keystone-alpha/fields/types/Text/views/Controller',
+    Field: '@keystone-alpha/fields/types/Text/views/Field',
+    Filter: '@keystone-alpha/fields/types/Text/views/Filter',
   },
   adapters: {
     mongoose: MongoTextInterface,

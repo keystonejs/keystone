@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
-import React, { Component, memo } from 'react'; // eslint-disable-line no-unused-vars
-import { withRouter, Route, Link } from 'react-router-dom';
+import { Fragment, Component, memo } from 'react';
 import PropToggle from 'react-prop-toggle';
 import { uid } from 'react-uid';
 import styled from '@emotion/styled';
@@ -20,6 +19,7 @@ import { Title } from '@arch-ui/typography';
 import Tooltip from '@arch-ui/tooltip';
 import { FlexGroup } from '@arch-ui/layout';
 
+import { Link, withRouter, routes } from '../../providers/Router';
 import { useAdminMeta } from '../../providers/AdminMeta';
 import ResizeHandler, { KEYBOARD_SHORTCUT } from './ResizeHandler';
 import { NavIcons } from './NavIcons';
@@ -151,21 +151,16 @@ const TooltipContent = ({ kbd, children }) => (
   </FlexGroup>
 );
 
-function getPath(str) {
-  const arr = str.split('/');
-  return `/${arr[1]}/${arr[2]}`;
-}
-
-function renderChildren(node, getListByKey, adminPath, depth) {
+function renderChildren(node, getListByKey, depth, router) {
   if (node.children) {
     const groupKey = uid(node.children);
     depth += 1;
 
     return (
-      <React.Fragment key={groupKey}>
+      <Fragment key={groupKey}>
         {node.label && <PrimaryNavHeading depth={depth}>{node.label}</PrimaryNavHeading>}
-        {node.children.map(child => renderChildren(child, getListByKey, adminPath, depth))}
-      </React.Fragment>
+        {node.children.map(child => renderChildren(child, getListByKey, depth, router))}
+      </Fragment>
     );
   }
 
@@ -177,72 +172,77 @@ function renderChildren(node, getListByKey, adminPath, depth) {
   }
 
   const label = node.label || list.label;
-  const maybeSearchParam = list.getPersistedSearch() || '';
-  const path = getPath(location.pathname);
-  const href = `${adminPath}/${list.path}`;
+  const href = routes.list.to({ listPath: list.path }).as;
+  const path = router.asPath.split('?')[0].split('#')[0];
   const isSelected = href === path;
   const id = `ks-nav-${list.path}`;
 
+  const maybeSearchParam = list.getPersistedSearch();
+
   return (
-    <PrimaryNavItem
+    <Link
+      passHref
+      route="list"
+      params={{ ...maybeSearchParam, listPath: list.path }}
       key={key}
-      depth={depth}
-      id={id}
-      isSelected={isSelected}
-      to={`${href}${maybeSearchParam}`}
     >
-      {label}
-    </PrimaryNavItem>
+      <PrimaryNavItem
+        depth={depth}
+        id={id}
+        isSelected={isSelected}
+        as="a"
+      >
+        {label}
+      </PrimaryNavItem>
+    </Link>
   );
 }
 
-function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys }) {
+const PrimaryNavItems = withRouter(({ adminPath, getListByKey, pages, listKeys, router }) => {
   return (
     <Relative>
-      <Route>
-        {({ location }) => (
-          <ScrollQuery isPassive={false}>
-            {(ref, snapshot) => (
-              <PrimaryNavScrollArea ref={ref} {...snapshot}>
-                <PrimaryNavItem to={adminPath} isSelected={location.pathname === adminPath}>
-                  Dashboard
-                </PrimaryNavItem>
-
-                {pages && pages.length
-                  ? pages.map(node => renderChildren(node, getListByKey, adminPath, 0))
-                  : listKeys.map(key => renderChildren(key, getListByKey, adminPath))}
-              </PrimaryNavScrollArea>
-            )}
-          </ScrollQuery>
+      <ScrollQuery isPassive={false}>
+        {(ref, snapshot) => (
+          <PrimaryNavScrollArea ref={ref} {...snapshot}>
+            <Link passHref route="index">
+              <PrimaryNavItem as="a" isSelected={router.pathname === '/'}>
+                Dashboard
+              </PrimaryNavItem>
+            </Link>
+            {pages && pages.length
+              ? pages.map(node => renderChildren(node, getListByKey, 0, router))
+              : listKeys.map(key => renderChildren(key, getListByKey, 0, router))
+            }
+          </PrimaryNavScrollArea>
         )}
-      </Route>
+      </ScrollQuery>
     </Relative>
   );
-}
+});
 
 let PrimaryNavContent = memo(
   function PrimaryContent() {
-    let { adminPath, getListByKey, listKeys, name, pages } = useAdminMeta();
+    let { getListByKey, listKeys, name, pages } = useAdminMeta();
 
     return (
       <Inner>
-        <Title
-          as={Link}
-          to={adminPath}
-          margin="both"
-          crop
-          css={{
-            color: colors.N90,
-            textDecoration: 'none',
-            alignSelf: 'stretch',
-            marginLeft: PRIMARY_NAV_GUTTER,
-            marginRight: PRIMARY_NAV_GUTTER,
-          }}
-        >
-          {name}
-        </Title>
+        <Link passHref route="index">
+          <Title
+            as="a"
+            margin="both"
+            crop
+            css={{
+              color: colors.N90,
+              textDecoration: 'none',
+              alignSelf: 'stretch',
+              marginLeft: PRIMARY_NAV_GUTTER,
+              marginRight: PRIMARY_NAV_GUTTER,
+            }}
+          >
+            {name}
+          </Title>
+        </Link>
         <PrimaryNavItems
-          adminPath={adminPath}
           getListByKey={getListByKey}
           listKeys={listKeys.sort()}
           pages={pages}
@@ -334,4 +334,4 @@ class Nav extends Component {
   }
 }
 
-export default withRouter(Nav);
+export default Nav;

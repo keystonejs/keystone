@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useCallback, useMemo } from 'react';
+import { Component, Fragment, useCallback, useMemo, useEffect, useState } from 'react';
 import { Mutation } from 'react-apollo';
 
 import { Button } from '@arch-ui/button';
@@ -9,15 +9,107 @@ import { resolveAllKeys, arrayToObject } from '@keystone-alpha/utils';
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 
+import { viewLoadables } from '../providers/loadables';
+import PageLoading from './PageLoading';
+
 let Render = ({ children }) => children();
 
-class CreateItemModal extends Component {
-  constructor(props) {
-    super(props);
-    const { list } = props;
-    const item = list.getInitialItemData();
-    this.state = { item };
+const CreateItemBody = ({ list, onChange, item }) => {
+  const [defaultsLoaded, setDefaultsLoaded] = useState(false);
+  const [nestedCreateModal, setNestedCreateModal] = useState(null);
+  useEffect(() => {
+    if (!defaultsLoaded) {
+      const initialData = list.getInitialItemData();
+      setDefaultsLoaded(true);
+      onChange(initialData);
+    }
+  }, [list, defaultsLoaded, setDefaultsLoaded]);
+
+  if (!defaultsLoaded) {
+    // Don't render anything on the first pass, we'll have actual data next time
+    // through once the useEffect() hook has run
+    return <PageLoading />;
   }
+
+  return (
+    <Fragment>
+      <AutocompleteCaptor />
+      {list
+        .getFieldControllers()
+        .filter(field => field.isEditable())
+        .map((field, i) => {
+          const Field = viewLoadables.Field[field.views.Field];
+          if (!Field) {
+            return null;
+          }
+          // TODO: Replace this with an access on the `list._fields[]` object?
+          // It should have all the views, etc, loaded by now
+          return (
+            <Render key={field.path}>
+              {() => {
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                let onFieldChange = useCallback(
+                  value => {
+                    onChange({
+                      ...item,
+                      [field.path]: value,
+                    });
+                  },
+                  [onChange, item]
+                );
+
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                let onNestedCreate = useCallback(
+                  ({ list: relatedList, onCreate }) => {
+                    // Remove the nested modal by setting the rendered
+                    // component to null so the previously set one is
+                    // unmounted
+                    const closeIt = () => setNestedCreateModal(null);
+                    // When a nested create is requested, we force the
+                    // component to be the below which includes the
+                    // appropriate callbacks, etc
+                    setNestedCreateModal(
+                      <CreateItemModalWithMutation
+                        isOpen
+                        list={relatedList}
+                        onClose={closeIt}
+                        onCreate={({ data }) => {
+                          onCreate(data[relatedList.gqlNames.createMutationName]);
+                          closeIt();
+                        }}
+                      />
+                    );
+                  },
+                  [setNestedCreateModal]
+                );
+
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                return useMemo(
+                  () => (
+                    <Field
+                      onNestedCreate={onNestedCreate}
+                      autoFocus={!i}
+                      value={item[field.path]}
+                      field={field}
+                      /* TODO: Permission query results */
+                      // error={}
+                      onChange={onFieldChange}
+                      renderContext="dialog"
+                    />
+                  ),
+                  [i, item[field.path], field, item, onFieldChange]
+                );
+              }}
+            </Render>
+          );
+        })}
+      {nestedCreateModal}
+    </Fragment>
+  );
+};
+
+class CreateItemModal extends Component {
+  state = { item: {} };
   onCreate = event => {
     // prevent form submission
     event.preventDefault();
@@ -30,15 +122,15 @@ class CreateItemModal extends Component {
     // propagate through portals as if they aren't there
     event.stopPropagation();
 
-    const {
-      list: { fields },
-      createItem,
-      isLoading,
-    } = this.props;
-    if (isLoading) return;
+    const { list, createItem, isSaving } = this.props;
+    if (isSaving) return;
     const { item } = this.state;
 
-    resolveAllKeys(arrayToObject(fields, 'path', field => field.getValue(item)))
+    resolveAllKeys(
+      arrayToObject(list.getFieldControllers().filter(field => field.isEditable()), 'path', field =>
+        field.getValue(item)
+      )
+    )
       .then(data => createItem({ variables: { data } }))
       .then(data => {
         this.props.onCreate(data);
@@ -46,8 +138,8 @@ class CreateItemModal extends Component {
       });
   };
   onClose = () => {
-    const { isLoading } = this.props;
-    if (isLoading) return;
+    const { isSaving } = this.props;
+    if (isSaving) return;
     this.props.onClose();
   };
   onKeyDown = event => {
@@ -59,8 +151,8 @@ class CreateItemModal extends Component {
   };
   formComponent = props => <form autoComplete="off" onSubmit={this.onCreate} {...props} />;
   render() {
-    const { isLoading, isOpen, list } = this.props;
-    const { item } = this.state;
+    const { isSaving, isOpen, list } = this.props;
+    const List = this.props.list.getComponent();
     return (
       <Drawer
         closeOnBlanketClick
@@ -73,7 +165,7 @@ class CreateItemModal extends Component {
         footer={
           <Fragment>
             <Button appearance="create" type="submit">
-              {isLoading ? 'Loading...' : 'Create'}
+              {isSaving ? 'Loading...' : 'Create'}
             </Button>
             <Button appearance="warning" variant="subtle" onClick={this.onClose}>
               Cancel
@@ -87,38 +179,13 @@ class CreateItemModal extends Component {
             marginTop: gridSize,
           }}
         >
-          <AutocompleteCaptor />
-          {list.fields.map((field, i) => {
-            const { Field } = field.views;
-            return (
-              <Render key={field.path}>
-                {() => {
-                  let onChange = useCallback(value => {
-                    this.setState(({ item }) => ({
-                      item: {
-                        ...item,
-                        [field.path]: value,
-                      },
-                    }));
-                  }, []);
-                  return useMemo(
-                    () => (
-                      <Field
-                        autoFocus={!i}
-                        value={item[field.path]}
-                        field={field}
-                        /* TODO: Permission query results */
-                        // error={}
-                        onChange={onChange}
-                        renderContext="dialog"
-                      />
-                    ),
-                    [i, item[field.path], field, onChange]
-                  );
-                }}
-              </Render>
-            );
-          })}
+          <List>
+            <CreateItemBody
+              list={this.props.list}
+              item={this.state.item}
+              onChange={item => this.setState({ item })}
+            />
+          </List>
         </div>
       </Drawer>
     );
@@ -131,7 +198,7 @@ export default class CreateItemModalWithMutation extends Component {
     return (
       <Mutation mutation={list.createMutation}>
         {(createItem, { loading }) => (
-          <CreateItemModal createItem={createItem} isLoading={loading} {...this.props} />
+          <CreateItemModal createItem={createItem} isSaving={loading} {...this.props} />
         )}
       </Mutation>
     );

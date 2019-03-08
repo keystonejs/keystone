@@ -1,12 +1,15 @@
 import React from 'react';
-
-import PageError from '../components/PageError';
 import { Button } from '@arch-ui/button';
 
-const InvalidRoutePage = ({ adminPath }) => (
+import PageError from '../components/PageError';
+import { Link } from '../providers/Router';
+
+const InvalidRoutePage = ({ statusCode }) => (
   <PageError>
-    <p>Page Not Found (404)</p>
-    <Button to={adminPath}>Go Home</Button>
+    <p>{statusCode === 404 ? 'Page Not Found (404)' : 'Internal Server Error'}</p>
+    <Link passHref route="index">
+      <Button as="a">Go Home</Button>
+    </Link>
   </PageError>
 );
 

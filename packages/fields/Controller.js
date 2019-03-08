@@ -15,4 +15,8 @@ export default class FieldController {
 
   getValue = data => data[this.config.path] || '';
   getInitialData = () => this.config.defaultValue || '';
+
+  isSortable = () => true;
+
+  isEditable = () => true;
 }

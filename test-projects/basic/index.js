@@ -23,7 +23,7 @@ const { staticRoute, staticPath, cloudinary } = require('./config');
 const LOCAL_FILE_PATH = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
-const Stars = require('./custom-fields/Stars');
+//const Stars = require('./custom-fields/Stars');
 const getYear = require('date-fns/get_year');
 
 // TODO: Make this work again
@@ -114,7 +114,7 @@ keystone.createList('Post', {
       ref: 'PostCategory',
       many: true,
     },
-    stars: { type: Stars, starCount: 5 },
+    //stars: { type: Stars, starCount: 5 },
     views: { type: Integer },
     price: { type: Decimal, symbol: '$' },
     currency: { type: Text },

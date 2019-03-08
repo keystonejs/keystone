@@ -120,6 +120,7 @@ module.exports = class Keystone {
 
   getAdminMeta() {
     const { name } = this.config;
+
     // We've consciously made a design choice that the `read` permission on a
     // list is a master switch in the Admin UI (not the GraphQL API).
     // Justification: If you want to Create without the Read permission, you

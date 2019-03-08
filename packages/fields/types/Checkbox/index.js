@@ -1,14 +1,13 @@
 const { Checkbox, MongoCheckboxInterface, KnexCheckboxInterface } = require('./Implementation');
-const path = require('path');
 
 module.exports = {
   type: 'Checkbox',
   implementation: Checkbox,
   views: {
-    Controller: path.join(__dirname, './views/Controller'),
-    Field: path.join(__dirname, './views/Field'),
-    Filter: path.join(__dirname, './views/Filter'),
-    Cell: path.join(__dirname, './views/Cell'),
+    Controller: '@keystone-alpha/fields/types/Checkbox/views/Controller',
+    Field: '@keystone-alpha/fields/types/Checkbox/views/Field',
+    Filter: '@keystone-alpha/fields/types/Checkbox/views/Filter',
+    Cell: '@keystone-alpha/fields/types/Checkbox/views/Cell',
   },
   adapters: {
     mongoose: MongoCheckboxInterface,

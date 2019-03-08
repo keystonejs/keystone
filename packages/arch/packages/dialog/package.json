@@ -21,6 +21,7 @@
     "@babel/runtime": "^7.3.4",
     "@emotion/core": "^10.0.9",
     "@emotion/styled": "^10.0.9",
+    "@jesstelford/react-portal-universal": "^1.0.0",
     "react-focus-marshal": "^1.0.1",
     "react-scrolllock": "^4.0.1"
   },

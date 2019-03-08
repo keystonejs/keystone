@@ -4,17 +4,16 @@ const {
   KnexRelationshipInterface,
 } = require('./Implementation');
 const { resolveBacklinks } = require('./backlinks');
-const path = require('path');
 
 module.exports = {
   type: 'Relationship',
   isRelationship: true, // Used internally for this special case
   implementation: Relationship,
   views: {
-    Controller: path.join(__dirname, './views/Controller'),
-    Field: path.join(__dirname, './views/Field'),
-    Filter: path.join(__dirname, './views/Filter'),
-    Cell: path.join(__dirname, './views/Cell'),
+    Controller: '@keystone-alpha/fields/types/Relationship/views/Controller',
+    Field: '@keystone-alpha/fields/types/Relationship/views/Field',
+    Filter: '@keystone-alpha/fields/types/Relationship/views/Filter',
+    Cell: '@keystone-alpha/fields/types/Relationship/views/Cell',
   },
   adapters: {
     mongoose: MongoRelationshipInterface,

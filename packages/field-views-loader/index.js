@@ -1,74 +1,190 @@
+const falsey = require('falsey');
 const loaderUtils = require('loader-utils');
+const { unique } = require('@keystone-alpha/utils');
+const memoizeOne = require('memoize-one');
+const flattenDeep = require('lodash.flattendeep');
+
+//  adminMeta gives us a `lists` object in the shape:
+//  ```
+//  {
+//    [listPath]: {  // e.g "Post"
+//      ...
+//      access: { create, read, update, delete },
+//      views: {
+//        // e.g fieldPath1 === 'title'
+//        [fieldPath1]: "@keystone-alpha/admin-view-text",
+//        [fieldPath2]: ["@keystone-alpha/admin-view-text", "@keystone-alpha/admin-view-contentblock-blockquote"],
+//        ...
+//      }
+//    }
+//  }
+//  ```
+//
+//  This loader creates a single file containing all the modules as dynamic
+//  imports:
+//
+//  ```
+//  export const loadView = viewModule => {
+//    switch(viewModule) {
+//      case '@keystone-alpha/admin-view-text': {
+//        return import(
+//          /* webpackChunkName: "keystone-alpha-admin-view-text", webpackPrefetch: true */
+//          '@keystone-alpha/admin-view-text'
+//        );
+//      }
+//      ...
+//      default: {
+//        return Promise.reject(new Error(`Unknown view module '${viewModule}'. Did you mean '@keystone-alpha/admin-view-text', or '...'?`));
+//      }
+//    }
+//  }
+//  export const viewMeta = {
+//    "Post": {
+//      "title": "@keystone-alpha/admin-view-text",
+//      "post": ["@keystone-alpha/admin-view-text", "@keystone-alpha/admin-view-contentblock-blockquote"],
+//      ...
+//    },
+//    ...
+//  }
+//  export const adminMeta = {
+//
+//  }
+//  ```
+//
+//  This later allows writing code like:
+//
+//  ```
+//  import { viewMeta, loadView } from './FIELD_TYPES';
+//
+//  const list = 'User';
+//  const field = 'email';
+//
+//  const viewModule = FieldTypes.meta[list][field];
+//
+//  loadView(viewModule).then(({ Controller, Filter, ... }) => {
+//    // Render here
+//  });
+//  ```
+//
+//  Webpack handles the dynamic imports making our first render nice and snappy,
+//  as well as only importing the things we actually need
 
 function serialize(value) {
   if (typeof value === 'string') {
-    return `interopDefault(require('${value}'))`;
+    return `'${value}'`;
   }
   if (Array.isArray(value)) {
-    return `[${value.map(serialize).join(', ')}]`;
+    return `[${unique(value)
+      .map(serialize)
+      .join(', ')}]`;
   }
   if (typeof value === 'object' && value !== null) {
-    return (
-      '{\n' +
-      Object.keys(value)
+    return `{
+      ${Object.keys(value)
         .map(key => {
-          // we need to use getters so circular dependencies work
-          return `get "${key}"() { return ${serialize(value[key])}; }`;
+          return `"${key}": ${serialize(value[key])}`;
         })
-        .join(',\n') +
-      '}'
-    );
+        .join(',\n')}
+    }`;
   }
   throw new Error('cannot serialize value of type: ' + typeof value);
 }
 
-module.exports = function() {
-  const options = loaderUtils.getOptions(this);
-  const adminMeta = options.adminMeta;
+const generateFieldViews = memoizeOne((adminMeta, injectViews) => {
+  const views = {};
+  let modules = [];
 
-  /* adminMeta gives us a `lists` object in the shape:
-    {
-      [listPath]: {  // e.g "User"
-        ...
-        access: { create, read, update, delete },
+  // Inject the pseudo field `_label_` into each list
+  const adminMetaWithLabels = {
+    ...adminMeta,
+    lists: Object.keys(adminMeta.lists).reduce((memo, listKey) => {
+      memo[listKey] = {
+        ...adminMeta.lists[listKey],
         views: {
-          [fieldPath]: {  // e.g 'email'
-            Controller: 'absolute/path/to/controller',
-            [fieldTypeView]: 'absolute/path/to/view', // e.g 'Field'
-            [fieldTypeView]: 'another/absolute/path'  // e.g 'Column'
-            ...
+          ...injectViews,
+          ...adminMeta.lists[listKey].views,
+        },
+        fields: [{ label: 'Label', path: '_label_' }, ...adminMeta.lists[listKey].fields],
+        adminConfig: {
+          ...adminMeta.lists[listKey].adminConfig,
+          defaultColumns: [
+            ...Object.keys(injectViews),
+            ...(adminMeta.lists[listKey].adminConfig.defaultColumns || '').split(','),
+          ].join(','),
+        },
+      };
+
+      // Gather up the views into a separate object
+      views[listKey] = memo[listKey].views;
+
+      // And gather up the modules individually into an array
+      modules.push(Object.values(views[listKey]).map(fieldViews => Object.values(fieldViews)));
+
+      // Remove the now duplicate data
+      delete memo[listKey].views;
+
+      return memo;
+    }, {}),
+  };
+
+  modules = unique(flattenDeep(modules));
+
+  const result = `
+    function interopDefault(mod) {
+      return mod.default ? mod.default : mod;
+    }
+    const loaders = {};
+    export const loadView = viewModule => {
+      switch(viewModule) {
+        ${modules
+          .map(
+            module => `
+          case '${module}': {
+            return loaders['${module}'] || (
+              loaders['${module}'] = import(${
+              process.env.NODE_ENV !== 'production'
+                ? `
+                /* webpackChunkName: "${module
+                  .replace(/[^a-zA-Z0-9]+/g, '-')
+                  .replace(/--+/g, '-')
+                  .replace(/(^-)|(-$)/g, '')}" */`
+                : ''
+            }
+                '${module}'
+              ).then(interopDefault)
+            );
           }
-          ...
+        `
+          )
+          .join('')}
+        default: {
+          return Promise.reject(new Error("Unknown view module '" + viewModule + "'."));
         }
       }
     }
+    export const viewMeta = ${serialize(views)}
+    export const adminMeta = ${require('util').inspect(adminMetaWithLabels, {
+      pretty: true,
+      colors: false,
+      depth: null,
+    })}
+  `;
 
-  and our loader simply tranforms it into usuable code that looks like this:
-
-  module.exports = {
-    "User": {
-      "email": {
-        Controller: require('absolute/path/to/controller'),
-        Field: require('relative/path/to/view'),
-        Column: require('another/relative/path')
-        ...
-      },
-      ...
-    }
-    ...
+  if (falsey(process.env.DISABLE_LOGGING)) {
+    const totalLists = Object.keys(adminMeta.lists).length;
+    console.log(
+      `[Webpack] Processed Admin UI Schema containing ${totalLists} list${
+        totalLists > 1 ? 's' : ''
+      } & ${modules.length} unique view${modules.length > 1 ? 's' : ''}.`
+    );
   }
-   */
 
-  const stringifiedObject = serialize(
-    Object.entries(adminMeta.lists).reduce((obj, [listPath, { views }]) => {
-      obj[listPath] = views;
-      return obj;
-    }, {})
-  );
+  return result;
+});
 
-  return `
-  function interopDefault(mod) {
-    return mod.default ? mod.default : mod;
-  }
-  module.exports = ${stringifiedObject}`;
+module.exports = function() {
+  const options = loaderUtils.getOptions(this);
+  const { adminMeta, injectViews } = options;
+
+  return generateFieldViews(adminMeta, injectViews);
 };

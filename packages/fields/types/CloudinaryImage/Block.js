@@ -1,5 +1,4 @@
 const { Block } = require('../../Block');
-const path = require('path');
 
 class CloudinaryBlock extends Block {
   constructor({ adapter }, { fromList, createAuxList, getListByKey }) {
@@ -33,7 +32,7 @@ class CloudinaryBlock extends Block {
   }
 
   static get viewPath() {
-    return path.join(__dirname, '../Content/views/blocks/image-container');
+    return '@keystone-alpha/fields/types/Content/views/blocks/image-container';
   }
 }
 

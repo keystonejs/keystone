@@ -34,7 +34,7 @@ describe('Adding data', () => {
 
       cy.get('form[role="dialog"] button[appearance="create"]').click();
 
-      cy.location('pathname').should('match', new RegExp(`${url}/.+`));
+      cy.location('pathname', { timeout: 20000 }).should('match', new RegExp(`${url}/.+`));
 
       Object.keys(data).forEach(item => {
         cy.get(`#${item}`).should('have.value', data[item]);
@@ -54,7 +54,9 @@ describe('Adding data', () => {
     cy.get('#ks-input-name').type('My post');
     cy.get('#ks-input-slug').type('mypost');
     cy.get('#ks-input-author').click({ force: true });
-    cy.get('#ks-input-author').type('John Doe{downarrow}{enter}', {
+    // Wait for the options to load
+    cy.get('#react-select-ks-input-author-option-0');
+    cy.get('#ks-input-author').type('John Molomby{downarrow}{enter}', {
       force: true,
     });
 
@@ -64,7 +66,7 @@ describe('Adding data', () => {
 
     cy.get('#ks-input-name').should('have.value', 'My post');
     cy.get('#ks-input-slug').should('have.value', 'mypost');
-    cy.get('#react-select-ks-input-author').should('contain', 'John Doe');
+    cy.get('#react-select-ks-input-author').should('contain', 'John Molomby');
   });
 });
 
@@ -75,7 +77,7 @@ describe('Editing data', () => {
       url: '/admin/users',
       field: {
         id: '#ks-input-name',
-        value: 'John Doe',
+        value: 'Ben Conolly',
         newValue: 'Jonny Dox',
       },
     },
@@ -137,6 +139,11 @@ describe('Editing data', () => {
 
       // Select the first item
       cy.get('#ks-input-author').click({ force: true });
+
+      // Wait for the options to load
+      cy.get('#react-select-ks-input-author-option-0');
+
+      // Select the first option
       cy.get('#ks-input-author').type('{downarrow}{enter}', { force: true });
       cy.get('#react-select-ks-input-author').then(([authorInput]) => {
         const userText = authorInput.textContent.replace(/.*option (.*), selected.*/, '$1');

@@ -6,6 +6,9 @@ import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
 import { omit } from '@keystone-alpha/utils';
 
+import CreateItemModal from './CreateItemModal';
+import { viewLoadables } from '../providers/loadables';
+
 let Render = ({ children }) => children();
 
 class UpdateManyModal extends Component {
@@ -14,7 +17,7 @@ class UpdateManyModal extends Component {
     const { list } = props;
     const selectedFields = [];
     const item = list.getInitialItemData();
-    this.state = { item, selectedFields };
+    this.state = { item, selectedFields, nestedCreateModal: null };
   }
   onUpdate = () => {
     const { updateItem, isLoading } = this.props;
@@ -43,7 +46,7 @@ class UpdateManyModal extends Component {
   handleSelect = selected => {
     const { list } = this.props;
     const selectedFields = selected.map(({ path, value }) => {
-      return list.fields.find(f => f.path === path || f.path === value);
+      return list.getFieldControllers().find(field => field.path === path || field.path === value);
     });
     this.setState({ selectedFields });
   };
@@ -56,7 +59,10 @@ class UpdateManyModal extends Component {
   getOptions = () => {
     const { list } = this.props;
     // remove the `options` key from select type fields
-    return list.fields.map(f => omit(f, ['options']));
+    return list
+      .getFieldControllers()
+      .filter(field => field.isEditable())
+      .map(f => omit(f, ['options']));
   };
   render() {
     const { isLoading, isOpen, items, list } = this.props;
@@ -99,21 +105,49 @@ class UpdateManyModal extends Component {
             </FieldInput>
           </FieldContainer>
           {selectedFields.map((field, i) => {
-            const { Field } = field.views;
+            const Field = viewLoadables.Field[field.views.Field];
             return (
               <Render key={field.path}>
                 {() => {
                   let onChange = useCallback(value => {
-                    this.setState(({ item }) => ({
+                    this.setState(({ item: existingItem }) => ({
                       item: {
-                        ...item,
+                        ...existingItem,
                         [field.path]: value,
                       },
                     }));
                   });
+
+                  let onNestedCreate = useCallback(
+                    ({ list: relatedList, onCreate }) => {
+                      // Remove the nested modal by setting the rendered
+                      // component to null so the previously set one is
+                      // unmounted
+                      const closeIt = () => this.setState(() => ({ nestedCreateModal: null }));
+                      // When a nested create is requested, we force the
+                      // component to be the below which includes the
+                      // appropriate callbacks, etc
+                      this.setState(() => ({
+                        nestedCreateModal: (
+                          <CreateItemModal
+                            isOpen
+                            list={relatedList}
+                            onClose={closeIt}
+                            onCreate={({ data }) => {
+                              onCreate(data[relatedList.gqlNames.createMutationName]);
+                              closeIt();
+                            }}
+                          />
+                        ),
+                      }));
+                    },
+                    [this.setState]
+                  );
+
                   return useMemo(
                     () => (
                       <Field
+                        onNestedCreate={onNestedCreate}
                         autoFocus={!i}
                         field={field}
                         value={item[field.path]}
@@ -121,12 +155,13 @@ class UpdateManyModal extends Component {
                         renderContext="dialog"
                       />
                     ),
-                    [i, field, item[field.path], onChange]
+                    [i, field, item[field.path], onChange, Field]
                   );
                 }}
               </Render>
             );
           })}
+          {this.state.nestedCreateModal}
         </Fragment>
       </Drawer>
     );

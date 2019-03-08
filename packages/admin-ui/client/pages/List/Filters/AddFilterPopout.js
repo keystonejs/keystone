@@ -13,6 +13,7 @@ import Select from '@arch-ui/select';
 import FieldSelect from '../FieldSelect';
 import PopoutForm from './PopoutForm';
 import { POPOUT_GUTTER } from '../../../components/Popout';
+import { viewLoadables } from '../../../providers/loadables';
 
 const EventCatcher = props => (
   <div
@@ -194,6 +195,7 @@ export default class AddFilterPopout extends Component<Props, State> {
     const { fields } = this.props;
     return fields.filter(f => f.getFilterTypes() && f.getFilterTypes().length);
   };
+
   renderFieldSelect = ({ ref }) => {
     return (
       <Transition
@@ -262,19 +264,20 @@ export default class AddFilterPopout extends Component<Props, State> {
             exited: { transform: 'translateX(100%)' },
           };
           const style = { ...base, ...states[state] };
-          const { Filter } = field.views;
-          const Code = p => (
-            <code
-              css={{
-                background: 'rgba(0,0,0,0.1)',
-                padding: '1px 5px',
-                borderRadius: 2,
-              }}
-              {...p}
-            />
-          );
+          const Filter = viewLoadables.Filter[field.views.Filter];
 
           if (!Filter) {
+            const Code = p => (
+              <code
+                css={{
+                  background: 'rgba(0,0,0,0.1)',
+                  padding: '1px 5px',
+                  borderRadius: 2,
+                }}
+                {...p}
+              />
+            );
+
             return (
               <div ref={ref} style={style}>
                 <Alert appearance="warning" variant="bold">

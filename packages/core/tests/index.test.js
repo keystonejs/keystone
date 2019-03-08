@@ -206,6 +206,38 @@ describe('@keystone-alpha/core/index.js', () => {
         );
       });
 
+      test('constructs server with default cookie secret if authStrategy set', async () => {
+        // Called internally within the .prepare() function, so we mock it out
+        // here, and replace the implementation on a per-test basis
+        const mockServerClass = jest.fn(() => {});
+        jest.resetModules();
+        jest.doMock('@keystone-alpha/server', () => ({
+          // Mock the class to do nothing
+          WebServer: mockServerClass,
+        }));
+
+        const entryFileObj = tmp.fileSync({ postfix: '.js' });
+        fs.writeFileSync(
+          entryFileObj.fd,
+          `module.exports = { keystone: {}, serverConfig: { authStrategy: {} } }`
+        );
+
+        const localCore = require('../');
+        await localCore.prepare({
+          entryFile: entryFileObj.name,
+        });
+
+        expect(mockServerClass).toHaveBeenCalledWith(
+          // The keystone object
+          expect.anything(),
+          // The config object
+          expect.objectContaining({
+            authStrategy: {},
+            'cookie secret': 'qwerty',
+          })
+        );
+      });
+
       test('returns the server instance', async () => {
         // Called internally within the .prepare() function, so we mock it out
         // here, and replace the implementation on a per-test basis

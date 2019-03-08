@@ -1,8 +1,7 @@
 // @flow
 /** @jsx jsx */
 
-import { Fragment, PureComponent, type ComponentType, type Node, forwardRef } from 'react';
-import { createPortal } from 'react-dom';
+import { PureComponent, type ComponentType, type Node, forwardRef } from 'react';
 import ScrollLock from 'react-scrolllock';
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
@@ -16,6 +15,7 @@ import {
   type TransitionState,
   Blanket,
 } from '@arch-ui/modal-utils';
+import { UniversalPortal } from '@jesstelford/react-portal-universal';
 
 const innerGutter = 15;
 
@@ -66,7 +66,7 @@ const Body = styled.div({
 // ------------------------------
 
 type Props = {
-  attachTo: HTMLElement,
+  attachTo: string,
   children: Node,
   component: ComponentType<*> | string,
   onClose?: (*) => void,
@@ -77,7 +77,7 @@ type Props = {
 
 class ModalConfirm extends PureComponent<Props> {
   static defaultProps = {
-    attachTo: ((document.body: any): HTMLElement),
+    attachTo: 'body',
     component: 'div',
     width: 400,
   };
@@ -93,8 +93,8 @@ class ModalConfirm extends PureComponent<Props> {
   render() {
     const { attachTo, children, component, onClose, width, ...transitionProps } = this.props;
 
-    return createPortal(
-      <Fragment>
+    return (
+      <UniversalPortal selector={attachTo}>
         <Fade {...transitionProps}>
           <Blanket isTinted isLight />
         </Fade>
@@ -108,8 +108,7 @@ class ModalConfirm extends PureComponent<Props> {
             <ScrollLock />
           </Positioner>
         </ZoomInDown>
-      </Fragment>,
-      attachTo
+      </UniversalPortal>
     );
   }
 }

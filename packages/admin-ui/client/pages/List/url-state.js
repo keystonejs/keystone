@@ -1,12 +1,9 @@
 // @flow
 
-import querystring from 'querystring';
 import * as React from 'react';
 
 import List from '../../classes/List';
 import type { FieldControllerType } from '@keystone-alpha/fields/Controller';
-import { pseudoLabelField } from './FieldSelect';
-import type { AdminMeta } from '../../providers/AdminMeta';
 
 export type SortByType = {
   field: { label: string, path: string },
@@ -25,7 +22,7 @@ export type SearchType = {
   pageSize: number,
   search: string,
   fields: Array<FieldControllerType>,
-  sortBy: SortByType,
+  sortBy: SortByType | null,
   filters: Array<FilterType>,
 };
 
@@ -40,8 +37,13 @@ const getSearchDefaults = (props: Props): SearchType => {
 
   // Dynamic defaults
   const fields = parseFields(defaultColumns, props.list);
-  const sortBy = parseSortBy(defaultSort, props.list) || { field: fields[0], direction: 'ASC' };
-  fields.unshift(pseudoLabelField);
+  let sortBy = parseSortBy(defaultSort, props.list);
+  if (!sortBy) {
+    const sortableField = fields.find(field => field.isSortable());
+    if (sortableField) {
+      sortBy = { field: sortableField, direction: 'ASC' };
+    }
+  }
   return {
     currentPage: 1,
     pageSize: defaultPageSize,
@@ -54,9 +56,12 @@ const getSearchDefaults = (props: Props): SearchType => {
 
 const parseFields = (fields, list) => {
   const fieldPaths = fields.split(',');
-  return fieldPaths
-    .map(path => (path === '_label_' ? pseudoLabelField : list.fields.find(f => f.path === path)))
-    .filter(f => !!f); // remove anything that was not found.
+  return (
+    fieldPaths
+      .map(path => list.getFieldControllers().find(f => f.path === path))
+      // remove anything that was not found.
+      .filter(f => !!f)
+  );
 };
 
 const encodeFields = fields => {
@@ -72,8 +77,8 @@ const parseSortBy = (sortBy: string, list: List): SortByType | null => {
     direction = 'DESC';
   }
 
-  const field = list.fields.find(f => f.path === key);
-  if (!field) {
+  const field = list.getFieldControllers().find(f => f.path === key);
+  if (!field || !field.isSortable()) {
     return null;
   }
   return {
@@ -83,21 +88,21 @@ const parseSortBy = (sortBy: string, list: List): SortByType | null => {
 };
 
 const encodeSortBy = (sortBy: SortByType): string => {
-  const {
-    direction,
-    field: { path },
-  } = sortBy;
-  return direction === 'ASC' ? path : `-${path}`;
+  const { direction, field } = sortBy;
+  if (!field) {
+    return null;
+  }
+  return direction === 'ASC' ? field.path : `-${field.path}`;
 };
 
 const parseFilter = (filter: [string, string], list): FilterType | null => {
   const [key, value] = filter;
   let type;
   let label;
-  const field = list.fields.find(f => {
-    if (key.indexOf(f.path) !== 0) return false;
-    const filterType = f.getFilterTypes().find(t => {
-      return key === `${f.path}_${t.type}`;
+  const filterField = list.getFieldControllers().find(field => {
+    if (key.indexOf(field.path) !== 0) return false;
+    const filterType = field.getFilterTypes().find(t => {
+      return key === `${field.path}_${t.type}`;
     });
     if (filterType) {
       type = filterType.type;
@@ -108,7 +113,7 @@ const parseFilter = (filter: [string, string], list): FilterType | null => {
     }
   });
 
-  if (!field || !type || !label) return null;
+  if (!filterField || !type || !label) return null;
 
   // Try to parse the value
   let parsedValue;
@@ -120,9 +125,9 @@ const parseFilter = (filter: [string, string], list): FilterType | null => {
   }
 
   return {
-    field,
+    field: filterField,
     label,
-    path: field.path,
+    path: filterField.path,
     type,
     value: parsedValue,
   };
@@ -134,16 +139,13 @@ const encodeFilter = (filter: FilterType): [string, string] => {
 };
 
 type Props = {
-  adminMeta: AdminMeta,
   children: (*) => React.Node,
   history: Object,
   list: Object,
   location: Object,
-  match: Object,
 };
 
-export const decodeSearch = (search: string, props: Props): SearchType => {
-  const query = querystring.parse(search.replace('?', ''));
+export const decodeSearch = (query: object, props: Props): SearchType => {
   const searchDefaults = getSearchDefaults(props);
   const params = Object.keys(query).reduce((acc, key) => {
     // Remove anything that is not "allowed"
@@ -196,9 +198,9 @@ export const decodeSearch = (search: string, props: Props): SearchType => {
   };
 };
 
-export const encodeSearch = (data: SearchType, props: Props): string => {
+export const encodeSearch = (data: SearchType, props: Props): object => {
   const searchDefaults = getSearchDefaults(props);
-  const params = Object.keys(data).reduce((acc, key) => {
+  return Object.keys(data).reduce((acc, key) => {
     // strip anthing which matches the default (matching primitive types)
     if (data[key] === searchDefaults[key]) return acc;
 
@@ -229,7 +231,4 @@ export const encodeSearch = (data: SearchType, props: Props): string => {
 
     return acc;
   }, {});
-
-  if (Object.keys(params).length === 0) return '';
-  return '?' + querystring.stringify(params);
 };

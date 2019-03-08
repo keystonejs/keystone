@@ -21,7 +21,10 @@ import { type YearPickerType, SelectMonth, SelectYear } from './selects';
 import { A11yText } from '@arch-ui/typography';
 import { Month } from './month';
 import { WeekLabels, Day } from './comps';
-import 'intersection-observer';
+
+if (process.browser) {
+  require('intersection-observer');
+}
 
 const Wrapper = styled.div({
   fontSize: '0.85rem',

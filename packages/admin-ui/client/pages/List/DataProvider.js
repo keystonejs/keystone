@@ -1,19 +1,16 @@
 import React, { Component, Fragment } from 'react';
 import debounce from 'lodash.debounce';
 import { Query } from 'react-apollo';
-import { withRouter } from 'react-router-dom';
 
+import { Router, withRouter } from '../../providers/Router';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
 import { deconstructErrorsToDataShape } from '../../util';
-import { pseudoLabelField } from './FieldSelect';
 import { decodeSearch, encodeSearch } from './url-state';
 
 type Props = {
   list: Object,
-  match: Object,
-  location: Object,
-  history: Object,
+  router: Object,
 };
 
 type State = {};
@@ -27,15 +24,18 @@ class ListPageDataProvider extends Component<Props, State> {
   }
 
   componentDidMount() {
-    const maybePersistedSearch = this.props.list.getPersistedSearch();
-    if (this.props.location.search) {
-      if (this.props.location.search !== maybePersistedSearch) {
-        this.props.list.setPersistedSearch(this.props.location.search);
+    const { list, router } = this.props;
+    const maybePersistedSearch = list.getPersistedSearch();
+    if (Object.keys(router.query).length) {
+      if (router.query !== maybePersistedSearch) {
+        list.setPersistedSearch(router.query);
       }
     } else if (maybePersistedSearch) {
-      this.props.history.replace({
-        ...this.props.location,
-        search: maybePersistedSearch,
+      // NOTE: .asPath already contains the prefix, so we don't need to add it
+      // again here
+      Router.replace({
+        pathname: router.asPath,
+        query: maybePersistedSearch,
       });
     }
   }
@@ -45,22 +45,24 @@ class ListPageDataProvider extends Component<Props, State> {
   // ==============================
 
   handleSearchChange = debounce(newSearch => {
-    const { location } = this.props;
-    const { search } = decodeSearch(location.search, this.props);
+    const { router } = this.props;
+    const { search } = decodeSearch(router.query, this.props);
     const addHistoryRecord = !search;
     this.setSearch({ search: newSearch }, addHistoryRecord);
   }, 300);
   handleSearchClear = () => {
-    const { location } = this.props;
-    const { search } = decodeSearch(location.search, this.props);
+    const { router } = this.props;
+    const { search } = decodeSearch(router.query, this.props);
     const addHistoryRecord = !!search;
     this.setSearch({ search: '' }, addHistoryRecord);
   };
   handleSearchSubmit = () => {
-    const { history, match } = this.props;
+    const { router } = this.props;
     // FIXME: This seems likely to do the wrong thing if data is not yet loaded.
     if (this.items.length === 1) {
-      history.push(`${match.url}/${this.items[0].id}`);
+      // NOTE: .asPath already contains the prefix, so we don't need to add it
+      // again here
+      Router.push(`${router.asPath.split('?')[0]}/${this.items[0].id}`);
     }
   };
 
@@ -69,7 +71,8 @@ class ListPageDataProvider extends Component<Props, State> {
   // ==============================
 
   handleFilterRemove = value => () => {
-    const { filters } = decodeSearch(location.search, this.props);
+    const { router } = this.props;
+    const { filters } = decodeSearch(router.query, this.props);
     const newFilters = filters.filter(f => {
       return !(f.field.path === value.field.path && f.type === value.type);
     });
@@ -79,14 +82,14 @@ class ListPageDataProvider extends Component<Props, State> {
     this.setSearch({ filters: [] });
   };
   handleFilterAdd = value => {
-    const { location } = this.props;
-    const { filters } = decodeSearch(location.search, this.props);
+    const { router } = this.props;
+    const { filters } = decodeSearch(router.query, this.props);
     filters.push(value);
     this.setSearch({ filters });
   };
   handleFilterUpdate = updatedFilter => {
-    const { location } = this.props;
-    const { filters } = decodeSearch(location.search, this.props);
+    const { router } = this.props;
+    const { filters } = decodeSearch(router.query, this.props);
 
     const updateIndex = filters.findIndex(i => {
       return i.field.path === updatedFilter.field.path && i.type === updatedFilter.type;
@@ -101,19 +104,19 @@ class ListPageDataProvider extends Component<Props, State> {
   // ==============================
 
   handleFieldChange = selectedFields => {
-    const { list, location } = this.props;
+    const { list, router } = this.props;
 
     // Ensure that the displayed fields maintain their original sortDirection
     // when they're added/removed
-    const fields = [pseudoLabelField]
-      .concat(list.fields)
+    const fields = list
+      .getFieldControllers()
       .filter(field => selectedFields.some(selectedField => selectedField.path === field.path));
 
     // Reset `sortBy` if we were ordering by a field which has been removed.
-    const { sortBy } = decodeSearch(location.search, this.props);
+    const { sortBy } = decodeSearch(router.query, this.props);
     const newSort = fields.includes(sortBy.field)
       ? sortBy
-      : { ...sortBy, field: fields.filter(field => field !== pseudoLabelField)[0] };
+      : { ...sortBy, field: fields.find(field => field.isSortable()) };
     this.setSearch({ fields, sortBy: newSort });
   };
 
@@ -140,8 +143,8 @@ class ListPageDataProvider extends Component<Props, State> {
   };
 
   setSearch = (changes, addHistoryRecord = true) => {
-    const { location, history } = this.props;
-    const currentState = decodeSearch(location.search, this.props);
+    const { router } = this.props;
+    const currentState = decodeSearch(router.query, this.props);
     let overrides = {};
 
     // NOTE: some changes should reset the currentPage number to 1.
@@ -152,7 +155,7 @@ class ListPageDataProvider extends Component<Props, State> {
     }
 
     // encode the new search string
-    const search = encodeSearch(
+    const query = encodeSearch(
       {
         ...currentState,
         ...changes,
@@ -161,29 +164,30 @@ class ListPageDataProvider extends Component<Props, State> {
       this.props
     );
 
-    const newLocation = {
-      ...location,
-      search,
+    // TODO: FIXME: This should be { route: '', params: { ...originalQueryParams, ...query } }
+    const newRoute = {
+      pathname: router.asPath,
+      query,
     };
 
-    this.props.list.setPersistedSearch(search);
+    this.props.list.setPersistedSearch(query);
 
     // Do we want to add an item to history or not
     if (addHistoryRecord) {
-      history.push(newLocation);
+      Router.push(newRoute);
     } else {
-      history.replace(newLocation);
+      Router.replace(newRoute);
     }
   };
 
   handleReset = () => {
-    this.setSearch(decodeSearch('', this.props));
+    this.setSearch(decodeSearch({}, this.props));
   };
 
   render() {
-    const { children, list, location } = this.props;
+    const { children, list, router } = this.props;
     const { currentPage, pageSize, search, fields, sortBy, filters } = decodeSearch(
-      location.search,
+      router.query,
       this.props
     );
 

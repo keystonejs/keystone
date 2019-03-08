@@ -2,6 +2,8 @@ const keystone = require('@keystone-alpha/core');
 const endent = require('endent');
 const path = require('path');
 
+const { getEntryFileFullPath } = require('../util');
+
 function getCustomServerFullPath(args, { exeName, _cwd }) {
   const serverFile = args['--server'] ? args['--server'] : keystone.DEFAULT_SERVER;
   try {
@@ -48,20 +50,6 @@ function executeCustomServer(serverFileFullPath) {
     // Something went wrong when requiring their custom server (eg; syntax
     // error, etc). We make sure to expose the error here.
     return Promise.reject(error);
-  }
-}
-
-function getEntryFileFullPath(args, { exeName, _cwd }) {
-  const entryFile = args['--entry'] ? args['--entry'] : keystone.DEFAULT_ENTRY;
-  try {
-    return Promise.resolve(require.resolve(path.resolve(_cwd, entryFile)));
-  } catch (error) {
-    return Promise.reject(
-      new Error(endent`
-        --entry=${entryFile} was passed to ${exeName}, but '${entryFile}' couldn't be found in ${process.cwd()}.
-        Ensure you're running ${exeName} from within the root directory of the project.
-      `)
-    );
   }
 }
 

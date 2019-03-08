@@ -3,9 +3,10 @@ import { jsx } from '@emotion/core';
 import { Component, Fragment, useMemo, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
-import { withRouter } from 'react-router-dom';
 import { withToastManager } from 'react-toast-notifications';
 
+import { viewLoadables } from '../../providers/loadables';
+import { withRouter, Link } from '../../providers/Router';
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
 import DocTitle from '../../components/DocTitle';
@@ -31,14 +32,14 @@ const Form = styled.form({
 });
 
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
-
 const ItemDetails = withRouter(
-  class ItemDetails extends Component {
+  class extends Component {
     state = {
       item: this.props.item,
       itemHasChanged: false,
       showCreateModal: false,
       showDeleteModal: false,
+      nestedCreateModal: null,
     };
     componentDidMount() {
       this.mounted = true;
@@ -59,13 +60,13 @@ const ItemDetails = withRouter(
       }
     };
     onDelete = deletePromise => {
-      const { adminPath, history, list, item } = this.props;
+      const { list, item, router } = this.props;
       deletePromise
         .then(() => {
           if (this.mounted) {
             this.setState({ showDeleteModal: false });
           }
-          history.push(`${adminPath}/${list.path}`);
+          router.push({ route: 'list', params: { listPath: list.path } });
 
           toastItemSuccess(this.props.toast, item, 'Deleted successfully');
         })
@@ -104,13 +105,7 @@ const ItemDetails = withRouter(
     }
     onSave = () => {
       const { item } = this.state;
-      const {
-        list: { fields },
-        onUpdate,
-        toastManager,
-        updateItem,
-        item: initialData,
-      } = this.props;
+      const { list, onUpdate, toastManager, updateItem, item: initialData } = this.props;
 
       resolveAllKeys(
         // Don't try to update anything that hasn't changed.
@@ -119,7 +114,9 @@ const ItemDetails = withRouter(
         // details, but is not editable, and would cause an error if a value
         // was sent as part of the update query.
         arrayToObject(
-          fields.filter(field => !isEqual(field.getValue(initialData), field.getValue(item))),
+          list
+            .getFieldControllers()
+            .filter(field => !isEqual(field.getValue(initialData), field.getValue(item))),
           'path',
           field => field.getValue(item)
         )
@@ -165,60 +162,94 @@ const ItemDetails = withRouter(
       />
     );
     onCreate = ({ data }) => {
-      const { list, adminPath, history } = this.props;
+      const { list, router } = this.props;
       const { id } = data[list.gqlNames.createMutationName];
-      history.push(`${adminPath}/${list.path}/${id}`);
+      router.push({ route: 'item', params: { listPath: list.path, itemId: id } });
     };
 
     render() {
-      const { adminPath, list, updateInProgress, itemErrors, item: savedData } = this.props;
-      const { item, itemHasChanged } = this.state;
+      const { list, updateInProgress, itemErrors, item: savedData } = this.props;
+      const { item: editedItem, itemHasChanged } = this.state;
       return (
         <Fragment>
           {itemHasChanged && <PreventNavigation />}
           <ItemTitle
             onCreateClick={this.openCreateModal}
             list={list}
-            adminPath={adminPath}
             titleText={savedData._label_}
           />
-          <IdCopy id={item.id} />
+          <IdCopy id={editedItem.id} />
           <Form>
             <AutocompleteCaptor />
-            {list.fields.map((field, i) => {
-              const { Field } = field.views;
-              return (
-                <Render key={field.path}>
-                  {() => {
-                    let onChange = useCallback(
-                      value => {
-                        this.setState(({ item }) => ({
-                          item: {
-                            ...item,
-                            [field.path]: value,
-                          },
-                          itemHasChanged: true,
-                        }));
-                      },
-                      [field]
-                    );
-                    return useMemo(
-                      () => (
-                        <Field
-                          autoFocus={!i}
-                          field={field}
-                          error={itemErrors[field.path]}
-                          value={item[field.path]}
-                          onChange={onChange}
-                          renderContext="page"
-                        />
-                      ),
-                      [i, field, itemErrors[field.path], item[field.path]]
-                    );
-                  }}
-                </Render>
-              );
-            })}
+            {list
+              .getFieldControllers()
+              .filter(field => field.isEditable())
+              .map((field, i) => {
+                const Field = viewLoadables.Field[field.views.Field];
+                if (!Field) {
+                  return null;
+                }
+                return (
+                  <Render key={field.path}>
+                    {() => {
+                      let onChange = useCallback(
+                        value => {
+                          this.setState(({ item }) => ({
+                            item: {
+                              ...item,
+                              [field.path]: value,
+                            },
+                            itemHasChanged: true,
+                          }));
+                        },
+                        [field]
+                      );
+
+                      let onNestedCreate = useCallback(
+                        ({ list: relatedList, onCreate }) => {
+                          // Remove the nested modal by setting the rendered
+                          // component to null so the previously set one is
+                          // unmounted
+                          const closeIt = () => this.setState(() => ({ nestedCreateModal: null }));
+                          // When a nested create is requested, we force the
+                          // component to be the below which includes the
+                          // appropriate callbacks, etc
+                          this.setState(() => ({
+                            nestedCreateModal: (
+                              <CreateItemModal
+                                isOpen
+                                list={relatedList}
+                                onClose={closeIt}
+                                onCreate={({ data }) => {
+                                  onCreate(data[relatedList.gqlNames.createMutationName]);
+                                  closeIt();
+                                }}
+                              />
+                            ),
+                          }));
+                        },
+                        [this.setState]
+                      );
+
+                      return useMemo(
+                        () => (
+                          <Field
+                            onNestedCreate={onNestedCreate}
+                            autoFocus={!i}
+                            field={field}
+                            error={itemErrors[field.path]}
+                            value={editedItem[field.path]}
+                            onChange={onChange}
+                            renderContext="page"
+                          />
+                        ),
+                        [i, field, itemErrors[field.path], editedItem[field.path]]
+                      );
+                    }}
+                  </Render>
+                );
+              })}
+            {this.state.nestedCreateModal}
           </Form>
 
           <Footer
@@ -235,12 +266,14 @@ const ItemDetails = withRouter(
     }
   }
 );
-const ItemNotFound = ({ adminPath, errorMessage, list }) => (
+const ItemNotFound = ({ errorMessage, list }) => (
   <PageError>
     <p>Couldn't find a {list.singular} matching that ID</p>
-    <Button to={`${adminPath}/${list.path}`} variant="ghost">
-      Back to List
-    </Button>
+    <Link passHref route="list" params={{ listPath: list.path }}>
+      <Button as="a" variant="ghost">
+        Back to List
+      </Button>
+    </Link>
     {errorMessage ? (
       <p style={{ fontSize: '0.75rem', marginTop: gridSize * 4 }}>
         <code>{errorMessage}</code>
@@ -249,7 +282,7 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
   </PageError>
 );
 
-const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
+const ItemPage = ({ list, itemId, getListByKey, toastManager }) => {
   const itemQuery = list.getItemQuery(itemId);
   return (
     <Fragment>
@@ -270,7 +303,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
             return (
               <Fragment>
                 <DocTitle>{list.singular} not found</DocTitle>
-                <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
+                <ItemNotFound errorMessage={error.message} list={list} />
               </Fragment>
             );
           }
@@ -305,7 +338,6 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
                   {(updateItem, { loading: updateInProgress, error: updateError }) => {
                     return (
                       <ItemDetails
-                        adminPath={adminPath}
                         item={item}
                         itemErrors={itemErrors}
                         key={itemId}
@@ -323,7 +355,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
               </Container>
             </main>
           ) : (
-            <ItemNotFound adminPath={adminPath} list={list} />
+            <ItemNotFound list={list} />
           );
         }}
       </Query>

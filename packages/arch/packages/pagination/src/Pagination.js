@@ -1,7 +1,7 @@
 // @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, useEffect, useState } from 'react';
+import { Node, Component, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 
 import { colors } from '@arch-ui/theme';
@@ -52,6 +52,7 @@ export type PaginationProps = {
   singular: string,
   total: number,
   isLoading: boolean,
+  as: Node,
 };
 
 const PaginationElement = styled.nav({
@@ -114,7 +115,7 @@ class Pagination extends Component<PaginationProps> {
   }
 
   renderPages() {
-    let { ariaPageLabel, currentPage, limit, pageSize, total } = this.props;
+    let { ariaPageLabel, as, currentPage, limit, pageSize, total } = this.props;
 
     if (total <= pageSize) return null;
 
@@ -154,7 +155,7 @@ class Pagination extends Component<PaginationProps> {
     // go to first
     if (minPage > 1) {
       pages.push(
-        <Page aria-label={ariaPageLabel(1)} key="page_start" onClick={onChange} value={1}>
+        <Page aria-label={ariaPageLabel(1)} key="page_start" onClick={onChange} value={1} as={as}>
           {moreCharacter}
         </Page>
       );
@@ -170,6 +171,7 @@ class Pagination extends Component<PaginationProps> {
           isSelected={isSelected}
           onClick={onChange}
           value={page}
+          as={as}
         >
           <PageChildren isLoading={this.props.isLoading} page={page} isSelected={isSelected} />
         </Page>
@@ -184,6 +186,7 @@ class Pagination extends Component<PaginationProps> {
           key="page_end"
           onClick={onChange}
           value={totalPages}
+          as={as}
         >
           {moreCharacter}
         </Page>
