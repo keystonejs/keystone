@@ -189,6 +189,7 @@
       "packages/arch/packages/*",
       "demo-projects/*",
       "test-projects/*",
+      "api-tests",
       "website"
     ]
   },

@@ -168,8 +168,42 @@ function multiAdapterRunners() {
   ];
 }
 
+const sorted = (arr, keyFn) => {
+  arr = [...arr];
+  arr.sort((a, b) => {
+    a = keyFn(a);
+    b = keyFn(b);
+    if (a < b) {
+      return -1;
+    }
+    if (a > b) {
+      return 1;
+    }
+    return 0;
+  });
+  return arr;
+};
+
+const runQuery = (server, snippet) => {
+  return graphqlRequest({
+    server,
+    query: `query { ${snippet} }`,
+  }).then(res => res.body.data);
+};
+
+const matchFilter = (server, gqlArgs, fields, target, sortkey) => {
+  gqlArgs = gqlArgs ? `(${gqlArgs})` : '';
+  const snippet = `allTests ${gqlArgs} ${fields}`;
+  return runQuery(server, snippet).then(data => {
+    const value = sortkey ? sorted(data.allTests || [], i => i[sortkey]) : data.allTests;
+    expect(value).toEqual(target);
+  });
+};
+
 module.exports = {
   setupServer,
   multiAdapterRunners,
   graphqlRequest,
+  matchFilter,
+  runQuery,
 };
