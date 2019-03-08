@@ -9,7 +9,20 @@ const { multiAdapterRunners } = require('@keystone-alpha/test-utils');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const cuid = require('cuid');
 
-const initialData = require('../data');
+const initialData = {
+  User: [
+    {
+      name: 'Boris Bozic',
+      email: 'boris@keystone-alpha.com',
+      password: 'correctbattery',
+    },
+    {
+      name: 'Jed Watson',
+      email: 'jed@keystone-alpha.com',
+      password: 'horsestaple',
+    },
+  ],
+};
 
 const COOKIE_SECRET = 'qwerty';
 

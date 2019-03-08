@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/email",
   "version": "1.0.0",
-  "author": "Jess Telford <hi+npm@jes.st> (https://jes.st)",
+  "author": "The Keystone Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
