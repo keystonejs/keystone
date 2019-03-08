@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/adapter-knex",
   "version": "1.0.0",
-  "author": "Tim Leslie",
+  "author": "The Keystone Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"

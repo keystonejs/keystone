@@ -2,7 +2,7 @@
   "name": "keystone_demo_blog",
   "private": true,
   "version": "1.0.0",
-  "author": "Nathan Simpson",
+  "author": "The Keystone Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
