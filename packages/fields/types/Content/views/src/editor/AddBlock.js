@@ -1,11 +1,11 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { createPortal } from 'react-dom';
-import { useState, useCallback, useRef, Fragment, useLayoutEffect } from 'react';
+import { useState, useCallback, useRef, useLayoutEffect } from 'react';
 import { getVisibleSelectionRect } from 'get-selection-range';
 import { useScrollListener, useWindowSize } from './hooks';
 import { type as defaultType } from './blocks/paragraph';
 import { PlusIcon } from '@arch-ui/icons';
+import { UniversalPortal } from '@jesstelford/react-portal-universal';
 
 let AddBlock = ({ editorState, editor, blocks }) => {
   let windowSize = useWindowSize();
@@ -47,8 +47,8 @@ let AddBlock = ({ editorState, editor, blocks }) => {
   useScrollListener(layout);
   let [isOpen, setIsOpen] = useState(false);
 
-  return createPortal(
-    <Fragment>
+  return (
+    <UniversalPortal selector="body">
       <div ref={openCloseRef} css={{ position: 'absolute', top: -10000, left: -10000 }}>
         <button
           type="button"
@@ -85,8 +85,7 @@ let AddBlock = ({ editorState, editor, blocks }) => {
           </div>
         )}
       </div>
-    </Fragment>,
-    document.body
+    </UniversalPortal>
   );
 };
 

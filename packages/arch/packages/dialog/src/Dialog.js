@@ -1,7 +1,6 @@
 // @flow
 
-import React, { PureComponent, Fragment, type ComponentType, type Element, type Node } from 'react';
-import { createPortal } from 'react-dom';
+import React, { PureComponent, type ComponentType, type Element, type Node } from 'react';
 import ScrollLock from 'react-scrolllock';
 import { FocusTrap, type FocusTarget } from 'react-focus-marshal';
 
@@ -14,6 +13,7 @@ import {
   type TransitionState,
 } from '@arch-ui/modal-utils';
 import { A11yText } from '@arch-ui/typography';
+import { UniversalPortal } from '@jesstelford/react-portal-universal';
 
 import { Body, Dialog, Footer, Header, Positioner, Title } from './primitives';
 
@@ -21,7 +21,7 @@ import { Body, Dialog, Footer, Header, Positioner, Title } from './primitives';
 // ------------------------------
 
 type Props = {
-  attachTo: HTMLElement,
+  attachTo: string,
   children: Node,
   closeOnBlanketClick: boolean,
   component: ComponentType<*> | string,
@@ -36,7 +36,7 @@ type Props = {
 
 class ModalDialog extends PureComponent<Props> {
   static defaultProps = {
-    attachTo: ((document.body: any): HTMLElement),
+    attachTo: 'body',
     closeOnBlanketClick: false,
     component: 'div',
     width: 640,
@@ -65,8 +65,8 @@ class ModalDialog extends PureComponent<Props> {
     } = this.props;
     const dialogTitleId = generateUEID();
 
-    return createPortal(
-      <Fragment>
+    return (
+      <UniversalPortal selector={attachTo}>
         <Fade {...transitionProps}>
           <Blanket onClick={closeOnBlanketClick ? onClose : undefined} isTinted />
         </Fade>
@@ -92,8 +92,7 @@ class ModalDialog extends PureComponent<Props> {
           </Positioner>
         </SlideUp>
         <ScrollLock />
-      </Fragment>,
-      attachTo
+      </UniversalPortal>
     );
   }
 }

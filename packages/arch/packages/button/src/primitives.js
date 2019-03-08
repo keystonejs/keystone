@@ -3,7 +3,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { type Node, forwardRef } from 'react';
-import { Link } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
 
 import { gridSize } from '@arch-ui/theme';
@@ -24,6 +23,7 @@ const SPACING_OPTION = {
 export type ButtonProps = {
   appearance: 'default' | 'primary' | 'warning' | 'danger',
   children: Node,
+  as: Node,
   href?: string,
   isBlock?: boolean,
   isDisabled: boolean,
@@ -85,15 +85,14 @@ function makeVariant({
 // remove props that will create react DOM warnings
 const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElement>(
   (props, ref) => {
-    const { isDisabled, isActive, isFocus, isHover, focusOrigin, ...rest } = props;
+    const { isDisabled, isActive, isFocus, isHover, focusOrigin, as: Tag, ...rest } = props;
     const variant = makeVariant(props);
-    if (rest.to) return <Link innerRef={ref} css={variant} {...rest} />;
-
-    if (rest.href) {
+    if (rest.href || rest.to) {
       return (
-        <a
+        <Tag
           css={variant}
           {...rest}
+          href={rest.href || rest.to}
           // $FlowFixMe
           ref={ref}
         />
@@ -117,6 +116,7 @@ ButtonElement.defaultProps = {
   appearance: 'default',
   spacing: 'comfortable',
   variant: 'bold',
+  as: 'button',
 };
 
 export const Button = withPseudoState(ButtonElement);

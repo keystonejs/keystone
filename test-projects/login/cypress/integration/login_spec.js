@@ -122,6 +122,49 @@ describe('Testing Login', () => {
       cy.get('body').should('contain', 'Users');
       cy.get('body').should('contain', 'Showing 2 Users');
     });
+
+    it('Redirects to home page after login from signin page', () => {
+      cy.visit('/admin/signin');
+
+      cy.get('input[name="username"]')
+        .clear({ force: true })
+        .type(USERNAME, { force: true });
+
+      cy.get('[name="password"]')
+        .clear({ force: true })
+        .type(PASSWORD, { force: true });
+
+      cy.get('button[type="submit"]').click();
+
+      cy.url().should('match', /admin$/);
+      cy.get('body').should('contain', 'Users');
+    });
+  });
+});
+
+describe('logout', () => {
+  it('Logs out correctly', () => {
+    cy.visit('/admin');
+
+    cy.get('input[name="username"]')
+      .clear({ force: true })
+      .type(USERNAME, { force: true });
+
+    cy.get('[name="password"]')
+      .clear({ force: true })
+      .type(PASSWORD, { force: true });
+
+    cy.get('button[type="submit"]').click();
+
+    cy.get('body').should('contain', 'Users');
+    cy.get('body').should('contain', 'Dashboard');
+
+    cy.visit('/admin/signout');
+    cy.get('body').should('contain', 'You have been signed out.');
+
+    cy.get('a').click();
+    cy.get('[name="username"]').should('exist');
+    cy.get('[name="password"]').should('exist');
   });
 });
 

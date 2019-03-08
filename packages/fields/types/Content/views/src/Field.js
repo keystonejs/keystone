@@ -49,7 +49,7 @@ let ContentField = ({ field, value: serverValue, onChange, autoFocus }) => {
       obj[block.type] = block;
       return obj;
     }, {});
-  }, [field]);
+  }, [field.views]);
 
   let parsedValue;
   if (serverValue) {

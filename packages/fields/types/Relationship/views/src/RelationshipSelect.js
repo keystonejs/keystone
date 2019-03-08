@@ -1,16 +1,18 @@
 // @flow
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import * as React from 'react';
+import { Ref, useState, useMemo, useRef, useEffect, forwardRef } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import Select from '@arch-ui/select';
 import { components } from 'react-select';
-import 'intersection-observer';
-import { useState, useMemo, useRef, useEffect, forwardRef } from 'react';
+
+if (process.browser) {
+  require('intersection-observer');
+}
 
 type Props = {
-  innerRef?: React.Ref<*>,
+  innerRef?: Ref<*>,
   autoFocus?: boolean,
   field: Object,
   error?: Error,
@@ -80,7 +82,9 @@ const Relationship = forwardRef(
     }
 
     const count =
-      data[refList.gqlNames.listQueryMetaName] && data[refList.gqlNames.listQueryMetaName].count;
+      data &&
+      data[refList.gqlNames.listQueryMetaName] &&
+      data[refList.gqlNames.listQueryMetaName].count;
 
     const selectComponents = useMemo(
       () => ({
@@ -147,7 +151,7 @@ const Relationship = forwardRef(
         instanceId={htmlID}
         inputId={htmlID}
         innerRef={ref}
-        menuPortalTarget={document.body}
+        {...process.browser && { menuPortalTarget: document.body }}
         {...selectProps}
       />
     );
@@ -167,9 +171,11 @@ const RelationshipSelect = ({
 }: Props) => {
   const [search, setSearch] = useState('');
   const refList = field.getRefList();
+
   const query = gql`query RelationshipSelect($search: String!, $skip: Int!) {${refList.buildQuery(
     refList.gqlNames.listQueryName,
-    `(first: ${initalItemsToLoad}, search: $search, skip: $skip)`
+    `(first: ${initalItemsToLoad}, search: $search, skip: $skip)`,
+    refList.getFieldControllers().filter(refField => refField.path === '_label_')
   )}${refList.countQuery(`(search: $search)`)}}`;
 
   const canRead = !(serverError instanceof Error && serverError.name === 'AccessDeniedError');
@@ -212,4 +218,15 @@ const RelationshipSelect = ({
   );
 };
 
-export default RelationshipSelect;
+const RelationshipList = props => {
+  const refList = props.field.getRefList();
+  const List = refList.getComponent();
+
+  return (
+    <List>
+      <RelationshipSelect {...props} />
+    </List>
+  );
+};
+
+export default RelationshipList;

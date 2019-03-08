@@ -7,7 +7,7 @@ type Props = { toastManager: Context };
 type State = { isOnline: boolean };
 
 class ConnectivityListener extends Component<Props, State> {
-  state = { isOnline: window ? window.navigator.onLine : false };
+  state = { isOnline: typeof window !== 'undefined' ? window.navigator.onLine : false };
   componentDidMount() {
     window.addEventListener('online', this.onLine, false);
     window.addEventListener('offline', this.offLine, false);

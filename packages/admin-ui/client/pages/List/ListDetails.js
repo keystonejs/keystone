@@ -2,7 +2,6 @@
 import { jsx } from '@emotion/core';
 import { Component, createRef, Fragment } from 'react';
 import styled from '@emotion/styled';
-import { withRouter } from 'react-router-dom';
 
 import {
   FoldIcon,
@@ -21,6 +20,7 @@ import { LoadingSpinner } from '@arch-ui/loading';
 import Dropdown from '@arch-ui/dropdown';
 import { colors } from '@arch-ui/theme';
 
+import { withRouter } from '../../providers/Router';
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
 import PageLoading from '../../components/PageLoading';
@@ -88,6 +88,7 @@ type Props = {
     loading: boolean,
     refetch: GenericFn,
   },
+  router: Object,
   currentPage: number,
   fields: Array<Object>,
   handleFieldChange: GenericFn,
@@ -116,380 +117,380 @@ function bodyUserSelect(val) {
   document.body.style.userSelect = val;
 }
 
-class ListDetails extends Component<Props, State> {
-  state = {
-    isFullWidth: false,
-    selectedItems: [],
-    showCreateModal: false,
-    searchValue: this.props.search,
-  };
-  lastChecked = null;
-  shiftIsDown = false;
+export default withRouter(
+  class ListDetails extends Component<Props, State> {
+    state = {
+      isFullWidth: false,
+      selectedItems: [],
+      showCreateModal: false,
+      searchValue: this.props.search,
+    };
+    lastChecked = null;
+    shiftIsDown = false;
 
-  // ==============================
-  // Refs
-  // ==============================
+    // ==============================
+    // Refs
+    // ==============================
 
-  sortPopoutRef = createRef();
-  measureElementRef = createRef();
+    sortPopoutRef = createRef();
+    measureElementRef = createRef();
 
-  componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
-    document.addEventListener('keyup', this.handleKeyUp);
-  }
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown);
-    document.removeEventListener('keyup', this.handleKeyUp);
-  }
-
-  toggleFullWidth = () => {
-    this.setState(state => ({ isFullWidth: !state.isFullWidth }));
-  };
-  handleKeyDown = event => {
-    if (event.key === 'Shift') {
-      if (this.state.selectedItems.length > 0) {
-        bodyUserSelect('none');
-      }
-      this.shiftIsDown = true;
+    componentDidMount() {
+      document.addEventListener('keydown', this.handleKeyDown);
+      document.addEventListener('keyup', this.handleKeyUp);
     }
-  };
-  handleKeyUp = event => {
-    if (event.key === 'Shift') {
-      if (this.state.selectedItems.length > 0) {
-        bodyUserSelect(null);
-      }
-      this.shiftIsDown = false;
+    componentWillUnmount() {
+      document.removeEventListener('keydown', this.handleKeyDown);
+      document.removeEventListener('keyup', this.handleKeyUp);
     }
-  };
 
-  closeCreateModal = () => this.setState({ showCreateModal: false });
-  openCreateModal = () => this.setState({ showCreateModal: true });
+    toggleFullWidth = () => {
+      this.setState(state => ({ isFullWidth: !state.isFullWidth }));
+    };
+    handleKeyDown = event => {
+      if (event.key === 'Shift') {
+        if (this.state.selectedItems.length > 0) {
+          bodyUserSelect('none');
+        }
+        this.shiftIsDown = true;
+      }
+    };
+    handleKeyUp = event => {
+      if (event.key === 'Shift') {
+        if (this.state.selectedItems.length > 0) {
+          bodyUserSelect(null);
+        }
+        this.shiftIsDown = false;
+      }
+    };
 
-  // ==============================
-  // Search
-  // ==============================
+    closeCreateModal = () => this.setState({ showCreateModal: false });
+    openCreateModal = () => this.setState({ showCreateModal: true });
 
-  handleSearchChange = ({ target: { value } }) => {
-    this.setState({ searchValue: value }, () => {
-      this.props.handleSearchChange(value);
-    });
-  };
-  handleSearchClear = () => {
-    this.setState({ searchValue: '' });
-    this.props.handleSearchClear();
-    this.searchInput.focus();
-  };
-  handleReset = () => {
-    this.setState({ searchValue: '' });
-    this.props.handleReset();
-  };
-  handleSearchSubmit = event => {
-    event.preventDefault();
-    this.props.handleSearchSubmit();
-  };
+    // ==============================
+    // Search
+    // ==============================
 
-  // ==============================
-  // Management
-  // ==============================
+    handleSearchChange = ({ target: { value } }) => {
+      this.setState({ searchValue: value }, () => {
+        this.props.handleSearchChange(value);
+      });
+    };
+    handleSearchClear = () => {
+      this.setState({ searchValue: '' });
+      this.props.handleSearchClear();
+      this.searchInput.focus();
+    };
+    handleReset = () => {
+      this.setState({ searchValue: '' });
+      this.props.handleReset();
+    };
+    handleSearchSubmit = event => {
+      event.preventDefault();
+      this.props.handleSearchSubmit();
+    };
 
-  handleItemSelect = (itemId: string) => {
-    let selectedItems = this.state.selectedItems.slice(0);
+    // ==============================
+    // Management
+    // ==============================
 
-    if (this.shiftIsDown && this.lastChecked) {
-      const itemIds = this.props.items.map(i => i.id);
-      const from = itemIds.indexOf(itemId);
-      const to = itemIds.indexOf(this.lastChecked);
-      const start = Math.min(from, to);
-      const end = Math.max(from, to) + 1;
+    handleItemSelect = (itemId: string) => {
+      let selectedItems = this.state.selectedItems.slice(0);
 
-      itemIds
-        .slice(start, end)
-        .filter(id => id !== this.lastChecked)
-        .forEach(id => {
-          if (!selectedItems.includes(this.lastChecked)) {
-            selectedItems = selectedItems.filter(existingId => existingId !== id);
-          } else {
-            selectedItems.push(id);
-          }
-        });
+      if (this.shiftIsDown && this.lastChecked) {
+        const itemIds = this.props.items.map(i => i.id);
+        const from = itemIds.indexOf(itemId);
+        const to = itemIds.indexOf(this.lastChecked);
+        const start = Math.min(from, to);
+        const end = Math.max(from, to) + 1;
 
-      // lazy ensure unique
-      const uniqueItems = [...new Set(selectedItems)];
-      this.setState({ selectedItems: uniqueItems });
-    } else {
-      if (selectedItems.includes(itemId)) {
-        selectedItems = selectedItems.filter(existingId => existingId !== itemId);
+        itemIds
+          .slice(start, end)
+          .filter(id => id !== this.lastChecked)
+          .forEach(id => {
+            if (!selectedItems.includes(this.lastChecked)) {
+              selectedItems = selectedItems.filter(existingId => existingId !== id);
+            } else {
+              selectedItems.push(id);
+            }
+          });
+
+        // lazy ensure unique
+        const uniqueItems = [...new Set(selectedItems)];
+        this.setState({ selectedItems: uniqueItems });
       } else {
-        selectedItems.push(itemId);
+        if (selectedItems.includes(itemId)) {
+          selectedItems = selectedItems.filter(existingId => existingId !== itemId);
+        } else {
+          selectedItems.push(itemId);
+        }
+
+        this.setState({ selectedItems });
       }
 
+      this.lastChecked = itemId;
+    };
+    handleItemSelectAll = (selectedItems: Array<string>) => {
       this.setState({ selectedItems });
-    }
+    };
+    onDeleteSelectedItems = () => {
+      const { query } = this.props;
+      if (query.refetch) query.refetch();
+      this.setState({ selectedItems: [] });
+    };
+    onCreate = ({ data }) => {
+      let { list, router } = this.props;
+      let id = data[list.gqlNames.createMutationName].id;
+      router.push({ route: 'item', params: { listPath: list.path, itemId: id } });
+    };
 
-    this.lastChecked = itemId;
-  };
-  handleItemSelectAll = (selectedItems: Array<string>) => {
-    this.setState({ selectedItems });
-  };
-  onDeleteSelectedItems = () => {
-    const { query } = this.props;
-    if (query.refetch) query.refetch();
-    this.setState({ selectedItems: [] });
-  };
-  onCreate = ({ data }) => {
-    let { list, adminPath, history } = this.props;
-    let id = data[list.gqlNames.createMutationName].id;
-    history.push(`${adminPath}/${list.path}/${id}`);
-  };
+    // ==============================
+    // Renderers
+    // ==============================
 
-  // ==============================
-  // Renderers
-  // ==============================
+    getNoResultsMessage = () => {
+      const { filters, itemsCount, list, search, currentPage, handlePageReset } = this.props;
 
-  getNoResultsMessage = () => {
-    const { filters, itemsCount, list, search, currentPage, handlePageReset } = this.props;
+      if (filters && filters.length) {
+        return (
+          <span>
+            No {list.plural.toLowerCase()} found matching the{' '}
+            {filters.length > 1 ? 'filters' : 'filter'}
+          </span>
+        );
+      }
+      if (search && search.length) {
+        return (
+          <span>
+            No {list.plural.toLowerCase()} found matching &ldquo;
+            {search}
+            &rdquo;
+          </span>
+        );
+      }
 
-    if (filters && filters.length) {
+      if (currentPage !== 1) {
+        return (
+          <div>
+            <p>
+              Not enough {list.plural.toLowerCase()} found to show page {currentPage}.
+            </p>
+            <Button variant="ghost" onClick={handlePageReset}>
+              Show first page
+            </Button>
+          </div>
+        );
+      }
+
+      if (itemsCount === 0) {
+        return <span>No {list.plural.toLowerCase()} to display yet...</span>;
+      }
+
+      return null;
+    };
+
+    renderMoreDropdown(queryWidth) {
+      const { isFullWidth } = this.state;
+      const TableIcon = isFullWidth ? FoldIcon : UnfoldIcon;
+      const tableToggleIsAvailable = queryWidth > CONTAINER_WIDTH + CONTAINER_GUTTER * 2;
+
+      const items = [
+        {
+          content: 'Reset filters, cols, etc.',
+          icon: <ZapIcon />,
+          id: 'ks-list-dropdown-reset', // for cypress tests
+          onClick: this.handleReset,
+        },
+        {
+          content: isFullWidth ? 'Collapse table' : 'Expand table',
+          icon: <TableIcon css={{ transform: 'rotate(90deg)' }} />,
+          isDisabled: !tableToggleIsAvailable,
+          onClick: this.toggleFullWidth,
+        },
+      ];
+
       return (
-        <span>
-          No {list.plural.toLowerCase()} found matching the{' '}
-          {filters.length > 1 ? 'filters' : 'filter'}
-        </span>
+        <Dropdown
+          align="right"
+          target={props => (
+            <IconButton {...props} variant="nuance" icon={KebabVerticalIcon} id="ks-list-dropdown">
+              <A11yText>Show more...</A11yText>
+            </IconButton>
+          )}
+          items={items}
+        />
       );
     }
-    if (search && search.length) {
+
+    render() {
+      const {
+        currentPage,
+        fields,
+        filters,
+        handleFieldChange,
+        handleFilterAdd,
+        handleFilterRemove,
+        handleFilterRemoveAll,
+        handleFilterUpdate,
+        handlePageChange,
+        handleSortChange,
+        items,
+        itemsCount,
+        itemsErrors,
+        list,
+        pageSize,
+        query,
+        sortBy,
+      } = this.props;
+      const { isFullWidth, selectedItems, showCreateModal, searchValue } = this.state;
+
+      const searchId = 'ks-list-search-input';
+
       return (
-        <span>
-          No {list.plural.toLowerCase()} found matching &ldquo;
-          {search}
-          &rdquo;
-        </span>
-      );
-    }
+        <Fragment>
+          <main>
+            <div ref={this.measureElementRef} />
 
-    if (currentPage !== 1) {
-      return (
-        <div>
-          <p>
-            Not enough {list.plural.toLowerCase()} found to show page {currentPage}.
-          </p>
-          <Button variant="ghost" onClick={handlePageReset}>
-            Show first page
-          </Button>
-        </div>
-      );
-    }
+            <Container isFullWidth={isFullWidth}>
+              <Title as="h1" margin="both">
+                {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
+                <span>, by</span>
+                <Popout
+                  innerRef={this.sortPopoutRef}
+                  headerTitle="Sort"
+                  footerContent={
+                    <Note>
+                      Hold <Kbd>alt</Kbd> to toggle ascending/descending
+                    </Note>
+                  }
+                  target={props => (
+                    <SortButton {...props}>
+                      {sortBy.field.label.toLowerCase()}
+                      <DisclosureArrow size="0.2em" />
+                    </SortButton>
+                  )}
+                >
+                  <SortSelect
+                    popoutRef={this.sortPopoutRef}
+                    fields={list.getFieldControllers()}
+                    onChange={handleSortChange}
+                    value={sortBy}
+                  />
+                </Popout>
+              </Title>
 
-    if (itemsCount === 0) {
-      return <span>No {list.plural.toLowerCase()} to display yet...</span>;
-    }
+              <FlexGroup growIndexes={[0]}>
+                <Search
+                  isFetching={query.loading}
+                  onClear={this.handleSearchClear}
+                  onSubmit={this.handleSearchSubmit}
+                  hasValue={searchValue && searchValue.length}
+                >
+                  <A11yText tag="label" htmlFor={searchId}>
+                    Search {list.plural}
+                  </A11yText>
+                  <Input
+                    autoCapitalize="off"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    id={searchId}
+                    onChange={this.handleSearchChange}
+                    placeholder="Search"
+                    name="item-search"
+                    value={searchValue}
+                    type="text"
+                    ref={el => (this.searchInput = el)}
+                  />
+                </Search>
+                <AddFilterPopout
+                  existingFilters={filters}
+                  fields={list.getFieldControllers()}
+                  onChange={handleFilterAdd}
+                />
+                <Popout buttonLabel="Columns" headerTitle="Columns">
+                  <ColumnSelect
+                    fields={list.getFieldControllers()}
+                    onChange={handleFieldChange}
+                    removeIsAllowed={fields.length > 1}
+                    value={fields}
+                  />
+                </Popout>
 
-    return null;
-  };
+                {list.access.create ? (
+                  <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
+                    Create
+                  </IconButton>
+                ) : null}
+                <MoreDropdown
+                  measureRef={this.measureElementRef}
+                  isFullWidth={isFullWidth}
+                  onFullWidthToggle={this.toggleFullWidth}
+                  onReset={this.handleReset}
+                />
+              </FlexGroup>
 
-  renderMoreDropdown(queryWidth) {
-    const { isFullWidth } = this.state;
-    const TableIcon = isFullWidth ? FoldIcon : UnfoldIcon;
-    const tableToggleIsAvailable = queryWidth > CONTAINER_WIDTH + CONTAINER_GUTTER * 2;
+              <ActiveFilters
+                filterList={filters}
+                onUpdate={handleFilterUpdate}
+                onRemove={handleFilterRemove}
+                onClear={handleFilterRemoveAll}
+              />
 
-    const items = [
-      {
-        content: 'Reset filters, cols, etc.',
-        icon: <ZapIcon />,
-        id: 'ks-list-dropdown-reset', // for cypress tests
-        onClick: this.handleReset,
-      },
-      {
-        content: isFullWidth ? 'Collapse table' : 'Expand table',
-        icon: <TableIcon css={{ transform: 'rotate(90deg)' }} />,
-        isDisabled: !tableToggleIsAvailable,
-        onClick: this.toggleFullWidth,
-      },
-    ];
-
-    return (
-      <Dropdown
-        align="right"
-        target={props => (
-          <IconButton {...props} variant="nuance" icon={KebabVerticalIcon} id="ks-list-dropdown">
-            <A11yText>Show more...</A11yText>
-          </IconButton>
-        )}
-        items={items}
-      />
-    );
-  }
-
-  render() {
-    const {
-      adminPath,
-      currentPage,
-      fields,
-      filters,
-      handleFieldChange,
-      handleFilterAdd,
-      handleFilterRemove,
-      handleFilterRemoveAll,
-      handleFilterUpdate,
-      handlePageChange,
-      handleSortChange,
-      items,
-      itemsCount,
-      itemsErrors,
-      list,
-      pageSize,
-      query,
-      sortBy,
-    } = this.props;
-    const { isFullWidth, selectedItems, showCreateModal, searchValue } = this.state;
-
-    const searchId = 'ks-list-search-input';
-
-    return (
-      <Fragment>
-        <main>
-          <div ref={this.measureElementRef} />
-
-          <Container isFullWidth={isFullWidth}>
-            <Title as="h1" margin="both">
-              {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
-              <span>, by</span>
-              <Popout
-                innerRef={this.sortPopoutRef}
-                headerTitle="Sort"
-                footerContent={
-                  <Note>
-                    Hold <Kbd>alt</Kbd> to toggle ascending/descending
-                  </Note>
-                }
-                target={props => (
-                  <SortButton {...props}>
-                    {sortBy.field.label.toLowerCase()}
-                    <DisclosureArrow size="0.2em" />
-                  </SortButton>
+              <ManageToolbar isVisible={!!itemsCount}>
+                {selectedItems.length ? (
+                  <Management
+                    list={list}
+                    onDeleteMany={this.onDeleteSelectedItems}
+                    onUpdateMany={this.onUpdate}
+                    pageSize={pageSize}
+                    selectedItems={selectedItems}
+                    totalItems={itemsCount}
+                  />
+                ) : (
+                  <Pagination
+                    isLoading={query.loading}
+                    currentPage={currentPage}
+                    itemsCount={itemsCount}
+                    list={list}
+                    onChangePage={handlePageChange}
+                    pageSize={pageSize}
+                  />
                 )}
-              >
-                <SortSelect
-                  popoutRef={this.sortPopoutRef}
-                  fields={list.fields}
-                  onChange={handleSortChange}
-                  value={sortBy}
-                />
-              </Popout>
-            </Title>
+              </ManageToolbar>
+            </Container>
 
-            <FlexGroup growIndexes={[0]}>
-              <Search
-                isFetching={query.loading}
-                onClear={this.handleSearchClear}
-                onSubmit={this.handleSearchSubmit}
-                hasValue={searchValue && searchValue.length}
-              >
-                <A11yText tag="label" htmlFor={searchId}>
-                  Search {list.plural}
-                </A11yText>
-                <Input
-                  autoCapitalize="off"
-                  autoComplete="off"
-                  autoCorrect="off"
-                  id={searchId}
-                  onChange={this.handleSearchChange}
-                  placeholder="Search"
-                  name="item-search"
-                  value={searchValue}
-                  type="text"
-                  ref={el => (this.searchInput = el)}
-                />
-              </Search>
-              <AddFilterPopout
-                existingFilters={filters}
-                fields={list.fields}
-                onChange={handleFilterAdd}
-              />
-              <Popout buttonLabel="Columns" headerTitle="Columns">
-                <ColumnSelect
-                  fields={list.fields}
-                  onChange={handleFieldChange}
-                  removeIsAllowed={fields.length > 1}
-                  value={fields}
-                />
-              </Popout>
-
-              {list.access.create ? (
-                <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
-                  Create
-                </IconButton>
-              ) : null}
-              <MoreDropdown
-                measureRef={this.measureElementRef}
-                isFullWidth={isFullWidth}
-                onFullWidthToggle={this.toggleFullWidth}
-                onReset={this.handleReset}
-              />
-            </FlexGroup>
-
-            <ActiveFilters
-              filterList={filters}
-              onUpdate={handleFilterUpdate}
-              onRemove={handleFilterRemove}
-              onClear={handleFilterRemoveAll}
+            <CreateItemModal
+              isOpen={showCreateModal}
+              list={list}
+              onClose={this.closeCreateModal}
+              onCreate={this.onCreate}
             />
 
-            <ManageToolbar isVisible={!!itemsCount}>
-              {selectedItems.length ? (
-                <Management
+            <Container isFullWidth={isFullWidth}>
+              {items ? (
+                <ListTable
+                  fields={list
+                    .getFieldControllers()
+                    .filter(field => fields.find(f => f.path === field.path))}
+                  isFullWidth={isFullWidth}
+                  items={items}
+                  itemsErrors={itemsErrors}
                   list={list}
-                  onDeleteMany={this.onDeleteSelectedItems}
-                  onUpdateMany={this.onUpdate}
-                  pageSize={pageSize}
+                  onChange={query.refetch}
+                  onSelect={this.handleItemSelect}
+                  onSelectAll={this.handleItemSelectAll}
+                  handleSortChange={handleSortChange}
+                  sortBy={sortBy}
                   selectedItems={selectedItems}
-                  totalItems={itemsCount}
+                  noResultsMessage={this.getNoResultsMessage()}
                 />
               ) : (
-                <Pagination
-                  isLoading={query.loading}
-                  currentPage={currentPage}
-                  itemsCount={itemsCount}
-                  list={list}
-                  onChangePage={handlePageChange}
-                  pageSize={pageSize}
-                />
+                <PageLoading />
               )}
-            </ManageToolbar>
-          </Container>
-
-          <CreateItemModal
-            isOpen={showCreateModal}
-            list={list}
-            onClose={this.closeCreateModal}
-            onCreate={this.onCreate}
-          />
-
-          <Container isFullWidth={isFullWidth}>
-            {items ? (
-              <ListTable
-                adminPath={adminPath}
-                fields={fields}
-                isFullWidth={isFullWidth}
-                items={items}
-                itemsErrors={itemsErrors}
-                list={list}
-                onChange={query.refetch}
-                onSelect={this.handleItemSelect}
-                onSelectAll={this.handleItemSelectAll}
-                handleSortChange={handleSortChange}
-                sortBy={sortBy}
-                selectedItems={selectedItems}
-                noResultsMessage={this.getNoResultsMessage()}
-              />
-            ) : (
-              <PageLoading />
-            )}
-          </Container>
-        </main>
-      </Fragment>
-    );
+            </Container>
+          </main>
+        </Fragment>
+      );
+    }
   }
-}
-
-export default withRouter(ListDetails);
+);

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useState } from 'react';
+import { Component, Fragment } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
@@ -10,7 +10,6 @@ import { colors, gridSize } from '@arch-ui/theme';
 import { IconButton } from '@arch-ui/button';
 import Tooltip from '@arch-ui/tooltip';
 
-import CreateItemModal from './CreateItemModal';
 import RelationshipSelect from './RelationshipSelect';
 
 function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
@@ -59,9 +58,8 @@ function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
   );
 }
 
-function CreateAndAddItem({ field, onCreate }) {
+function CreateAndAddItem({ field, onNestedCreate, onCreate }) {
   let relatedList = field.adminMeta.getListByKey(field.config.ref);
-  let [isOpen, setIsOpen] = useState(false);
   let label = `Create and add ${relatedList.singular}`;
   return (
     <Fragment>
@@ -70,7 +68,10 @@ function CreateAndAddItem({ field, onCreate }) {
           <IconButton
             ref={ref}
             onClick={() => {
-              setIsOpen(true);
+              onNestedCreate({
+                list: relatedList,
+                onCreate,
+              });
             }}
             icon={PlusIcon}
             aria-label={label}
@@ -79,18 +80,6 @@ function CreateAndAddItem({ field, onCreate }) {
           />
         )}
       </Tooltip>
-      <CreateItemModal
-        isOpen={isOpen}
-        list={relatedList}
-        onClose={() => {
-          setIsOpen(false);
-        }}
-        onCreate={({ data }) => {
-          setIsOpen(false);
-          console.log(data);
-          onCreate(data[relatedList.gqlNames.createMutationName]);
-        }}
-      />
     </Fragment>
   );
 }
@@ -106,7 +95,7 @@ export default class RelationshipField extends Component {
     }
   };
   render() {
-    const { autoFocus, field, value, renderContext, error, onChange } = this.props;
+    const { autoFocus, field, value, renderContext, error, onChange, onNestedCreate } = this.props;
     const { many, ref } = field.config;
     const { authList, withAuth } = field.adminMeta;
     const htmlID = `ks-input-${field.path}`;
@@ -143,6 +132,7 @@ export default class RelationshipField extends Component {
             onCreate={item => {
               onChange(many ? (value || []).concat(item) : item);
             }}
+            onNestedCreate={onNestedCreate}
             field={field}
           />
           {withAuth && ref === authList && (

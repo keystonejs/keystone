@@ -6,10 +6,9 @@ import { onError } from 'apollo-link-error';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import ApolloClient from 'apollo-client';
 
-import { adminMeta } from './providers/AdminMeta';
-const { apiPath } = adminMeta;
-
 const fetch = require('cross-fetch');
+
+let apolloClient = null;
 
 // Ejected from apollo-boost v0.1.4:
 // https://github.com/apollographql/apollo-client/tree/4e2b2b90b181d9c1927a721de4e26e4ed3c86637/packages/apollo-boost
@@ -18,11 +17,11 @@ const fetch = require('cross-fetch');
 // https://github.com/jaydenseric/apollo-upload-client
 
 class BoostClientWithUplaod extends ApolloClient {
-  constructor(config) {
-    const cache =
-      config && config.cacheRedirects
-        ? new InMemoryCache({ cacheRedirects: config.cacheRedirects })
-        : new InMemoryCache();
+  constructor(config, initialState = {}) {
+    const cache = (config && config.cacheRedirects
+      ? new InMemoryCache({ cacheRedirects: config.cacheRedirects })
+      : new InMemoryCache()
+    ).restore(initialState);
 
     const stateLink =
       config && config.clientState ? withClientState({ ...config.clientState, cache }) : false;
@@ -78,11 +77,32 @@ class BoostClientWithUplaod extends ApolloClient {
 
     const link = ApolloLink.from([errorLink, requestHandler, stateLink, httpLink].filter(x => x));
 
-    // super hacky, we will fix the types eventually
-    super({ cache, link });
+    super({ ...config, cache, link });
   }
 }
 
-export default new BoostClientWithUplaod({
-  uri: apiPath,
-});
+function create(uri, initialState) {
+  return new BoostClientWithUplaod(
+    {
+      uri,
+      connectToDevTools: process.env.NODE_ENV !== 'production' && process.browser,
+      ssrMode: !process.browser, // Disables forceFetch on the server (so queries are only run once)
+    },
+    initialState
+  );
+}
+
+export default function initApollo(uri, initialState) {
+  // Make sure to create a new client for every server-side request so that data
+  // isn't shared between connections (which would be bad)
+  if (!process.browser) {
+    return create(uri, initialState);
+  }
+
+  // Reuse client on the client-side
+  if (!apolloClient) {
+    apolloClient = create(uri, initialState);
+  }
+
+  return apolloClient;
+}

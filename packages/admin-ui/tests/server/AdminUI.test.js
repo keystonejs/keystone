@@ -46,7 +46,7 @@ describe('Add Middleware', () => {
 
     //expect(adminUI.createSessionMiddleware()).not.toBe(null);
     expect(
-      adminUI.createDevMiddleware({
+      adminUI.createServer({
         apiPath: adminPath,
         graphiqlPath: `${adminPath}/graphiql`,
       })

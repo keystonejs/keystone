@@ -3,7 +3,6 @@
 import styled from '@emotion/styled';
 
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
-import { ItemElement } from './common';
 
 export const PRIMARY_NAV_GUTTER = gridSize * 2;
 
@@ -62,7 +61,7 @@ export const BrandItem = styled.h2({
   paddingBottom: PRIMARY_NAV_GUTTER,
 });
 
-export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => {
+export const PrimaryNavItem = styled.button(({ isSelected }) => {
   const selectedStyles = isSelected
     ? {
         '&, :hover, :active, :focus': {

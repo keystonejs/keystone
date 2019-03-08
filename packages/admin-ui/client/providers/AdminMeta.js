@@ -1,12 +1,11 @@
-/* global KEYSTONE_ADMIN_META */
-
 import React from 'react';
-import FieldTypes from '../FIELD_TYPES';
+import hoistNonReactStatics from 'hoist-non-react-statics';
 
 import List from '../classes/List';
+import { adminMeta as adminMetaFields } from '../FIELD_TYPES';
 
 // TODO: Pull this off `window.X` to support server side permission queries
-const { lists, ...srcMeta } = KEYSTONE_ADMIN_META;
+const { lists, ...srcMeta } = adminMetaFields;
 
 const listKeys = Object.keys(lists || {});
 const listsByKey = {};
@@ -24,7 +23,7 @@ export const adminMeta = {
 };
 
 listKeys.forEach(key => {
-  const list = new List(lists[key], adminMeta, FieldTypes[key]);
+  const list = new List(lists[key], adminMeta);
   listsByKey[key] = list;
   listsByPath[list.path] = list;
 });
@@ -41,12 +40,12 @@ export const useAdminMeta = () => {
 };
 
 // HOC Wrapper
-
-function setDisplayName(c) {
-  c.displayName = `withAdminMeta(${c.name || c.displayName})`;
-}
-export const withAdminMeta = Component => props => {
-  setDisplayName(Component);
-  // TODO: Permission query to see which lists to provide
-  return <Component {...props} adminMeta={adminMeta} />;
+export const withAdminMeta = Component => {
+  const NewComponent = props => {
+    // TODO: Permission query to see which lists to provide
+    return <Component {...props} adminMeta={adminMeta} />;
+  };
+  hoistNonReactStatics(NewComponent, Component);
+  NewComponent.displayName = `withAdminMeta(${Component.name || Component.displayName})`;
+  return NewComponent;
 };

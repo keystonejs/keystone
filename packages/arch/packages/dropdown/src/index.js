@@ -2,18 +2,15 @@
 /** @jsx jsx */
 
 import { Component, type Node as ReactNode, type Element } from 'react';
-import { Link } from 'react-router-dom';
-import { createPortal } from 'react-dom';
 import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';
 
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 import { FocusTrap } from 'react-focus-marshal';
 import { withModalHandlers, SlideDown, type ModalHandlerProps } from '@arch-ui/modal-utils';
+import { UniversalPortal } from '@jesstelford/react-portal-universal';
 
 const ItemElement = props => {
-  if (props.to) return <Link {...props} />;
-  if (props.href) return <a {...props} />;
   return <button type="button" {...props} />;
 };
 const ItemInner = ({ children, icon }) =>
@@ -233,10 +230,9 @@ class Dropdown extends Component<Props, State> {
   render() {
     const { items, style } = this.props;
     const { leftOffset, topOffset } = this.state;
-    const attachTo = document.body;
 
-    if (attachTo) {
-      return createPortal(
+    return (
+      <UniversalPortal selector="body">
         <FocusTrap options={{ clickOutsideDeactivates: true }}>
           <Menu
             left={leftOffset}
@@ -259,12 +255,9 @@ class Dropdown extends Component<Props, State> {
               );
             })}
           </Menu>
-        </FocusTrap>,
-        attachTo
-      );
-    } else {
-      return null;
-    }
+        </FocusTrap>
+      </UniversalPortal>
+    );
   }
 }
 

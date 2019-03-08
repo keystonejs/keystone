@@ -1,6 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
+import { Link } from 'next-prefixed';
 
 import ComponentsGuide from './Components';
 import IconsGuide from './Icons';
@@ -15,7 +17,6 @@ const upCase = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
 
 export default withRouter(function StyleGuide(props) {
   const {
-    adminPath,
     match: {
       params: { page: currentPage },
     },
@@ -25,23 +26,21 @@ export default withRouter(function StyleGuide(props) {
       <SecondaryNav>
         <FlexGroup>
           {pages.map(page => (
-            <SecondaryNavItem
-              key={page}
-              isSelected={currentPage === page}
-              to={`${adminPath}/style-guide/${page}`}
-            >
-              {upCase(page)}
-            </SecondaryNavItem>
+            <Link passHref href={`/style-guide/${page}`}>
+              <SecondaryNavItem key={page} isSelected={currentPage === page} as="a">
+                {upCase(page)}
+              </SecondaryNavItem>
+            </Link>
           ))}
         </FlexGroup>
       </SecondaryNav>
       <H1>Style Guide: {upCase(currentPage)}</H1>
       <Switch>
-        <Route exact path={`${adminPath}/style-guide/palette`} component={PaletteGuide} />
-        <Route exact path={`${adminPath}/style-guide/icons`} component={IconsGuide} />
-        <Route path={`${adminPath}/style-guide/components`} component={ComponentsGuide} />
+        <Route exact path="/style-guide/palette" component={PaletteGuide} />
+        <Route exact path="/style-guide/icons" component={IconsGuide} />
+        <Route path="/style-guide/components" component={ComponentsGuide} />
         <Route>
-          <Redirect to={`${adminPath}/style-guide/components`} />
+          <Redirect to="/style-guide/components" />
         </Route>
       </Switch>
     </Container>

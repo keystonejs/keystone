@@ -2,11 +2,11 @@
 
 import React, { Component, type Element } from 'react';
 import styled from '@emotion/styled';
-import { createPortal } from 'react-dom';
 
 import { borderRadius, gridSize } from '@arch-ui/theme';
 import { FocusTrap } from 'react-focus-marshal';
 import { withModalHandlers, type ModalHandlerProps, SlideDown } from '@arch-ui/modal-utils';
+import { UniversalPortal } from '@jesstelford/react-portal-universal';
 
 const ARROW_WIDTH = 8;
 const CHROME_GUTTER = 30;
@@ -128,25 +128,24 @@ class Popout extends Component<Props, State> {
     const { children, getModalRef, style, width } = this.props;
     let { leftOffset, topOffset, arrowLeftOffset } = this.state;
 
-    return document.body
-      ? createPortal(
-          <Wrapper
-            ref={getModalRef}
-            left={leftOffset}
-            top={topOffset}
-            width={width}
-            style={style} // style comes from Transition
-          >
-            <FocusTrap options={{ clickOutsideDeactivates: true }}>
-              <WrapperInner>
-                <Arrow left={arrowLeftOffset} />
-                {children}
-              </WrapperInner>
-            </FocusTrap>
-          </Wrapper>,
-          document.body
-        )
-      : null;
+    return (
+      <UniversalPortal selector="body">
+        <Wrapper
+          ref={getModalRef}
+          left={leftOffset}
+          top={topOffset}
+          width={width}
+          style={style} // style comes from Transition
+        >
+          <FocusTrap options={{ clickOutsideDeactivates: true }}>
+            <WrapperInner>
+              <Arrow left={arrowLeftOffset} />
+              {children}
+            </WrapperInner>
+          </FocusTrap>
+        </Wrapper>
+      </UniversalPortal>
+    );
   }
 }
 

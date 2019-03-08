@@ -9,7 +9,9 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "node -r dotenv-safe/config `yarn bin`/keystone | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
+    "dev": "node -r dotenv-safe/config `yarn bin`/keystone | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
+    "build": "ANALYZE_DIR=analysis NODE_ENV=production node -r dotenv-safe/config `yarn bin`/keystone build --out dist",
+    "start": "NODE_ENV=production node -r dotenv-safe/config `yarn bin`/keystone --distDir dist | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
     "cypress:run:cmd": "TZ=UTC node -r dotenv-safe/config `which cypress` run",
     "cypress:open:cmd": "TZ=UTC node -r dotenv-safe/config `which cypress` open",
     "prepare-test-server": "NODE_ENV=test DISABLE_LOGGING=true node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.code) })'",
@@ -22,6 +24,7 @@
     "@keystone-alpha/adapter-mongoose": "^1.0.2",
     "@keystone-alpha/admin-ui": "^3.0.0",
     "@keystone-alpha/core": "^2.0.0",
+    "@keystone-alpha/keystone": "^0.0.0",
     "@keystone-alpha/fields": "^3.0.0",
     "@keystone-alpha/file-adapters": "^1.0.1",
     "@keystone-alpha/keystone": "^1.0.3",
@@ -30,6 +33,8 @@
     "react": "^16.8.4"
   },
   "devDependencies": {
+    "@keystone-alpha/test-utils": "^1.0.0",
+    "cuid": "^2.1.6",
     "cypress": "^3.2.0",
     "dotenv-safe": "^6.0.0",
     "execa": "1.0.0",

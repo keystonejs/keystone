@@ -1,15 +1,38 @@
-import React, { useEffect, memo } from 'react';
-import { Prompt } from 'react-router-dom';
+import { useEffect, memo } from 'react';
 
-export default memo(function PreventNavigation() {
-  // to handle when the user closes the tab, does an actual browser navigation away or etc.
-  useEffect(() => {
-    const handler = event => {
-      event.preventDefault();
-    };
-    window.addEventListener('beforeunload', handler);
-    return () => window.removeEventListener('beforeunload', handler);
-  }, []);
-  // to handle the user clicking a react-router Link
-  return <Prompt when message="This page has unsaved data. Are you sure you want to leave?" />;
-});
+import { withRouter } from '../providers/Router';
+
+const confirmMessage = 'This page has unsaved data. Are you sure you want to leave?';
+
+export default withRouter(
+  memo(function PreventNavigation({ router }) {
+    // to handle when the user closes the tab, does an actual browser navigation away or etc.
+    useEffect(() => {
+      // Prevent browser unload events
+      const unloadHandler = event => {
+        event.preventDefault();
+        return confirmMessage;
+      };
+      window.addEventListener('beforeunload', unloadHandler);
+
+      // Prevent clicking back/forward between client-side pages
+      router.beforePopState(() => window.confirm(confirmMessage));
+
+      // Prevent changing route when clicking a Next Route link
+      const routeHandler = () => {
+        if (!window.confirm(confirmMessage)) {
+          throw new Error('Route change aborted.');
+        }
+      };
+      router.events.on('routeChangeStart', routeHandler);
+
+      // Restore everythign when this component is unmounted
+      return () => {
+        window.removeEventListener('beforeunload', unloadHandler);
+        router.events.off('routeChangeStart', routeHandler);
+        router.beforePopState(() => true);
+      };
+    }, []);
+    return null;
+  })
+);

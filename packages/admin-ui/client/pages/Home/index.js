@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter } from '../../providers/Router';
 import { Query } from 'react-apollo';
 
 import { Container, Grid, Cell } from '@arch-ui/layout';
@@ -8,76 +8,79 @@ import { Title } from '@arch-ui/typography';
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
-import { Box } from './components';
+import { ListBox } from './components';
 import ContainerQuery from '../../components/ContainerQuery';
 import { gqlCountQueries } from '../../classes/List';
 
-class HomePage extends Component {
-  state = { createFromList: null };
+const HomePage = withRouter(
+  class extends Component {
+    state = { createFromList: null };
 
-  openCreateModal = createFromList => event => {
-    event.preventDefault();
-    this.setState({ createFromList });
-  };
-  closeCreateModal = () => this.setState({ createFromList: null });
+    openCreateModal = createFromList => event => {
+      event.preventDefault();
+      this.setState({ createFromList });
+    };
+    closeCreateModal = () => this.setState({ createFromList: null });
 
-  onCreate = list => ({ data }) => {
-    let { adminPath, history } = this.props;
-    let id = data[list.gqlNames.createMutationName].id;
-    history.push(`${adminPath}/${list.path}/${id}`);
-  };
+    onCreate = list => ({ data }) => {
+      let { router } = this.props;
+      let id = data[list.gqlNames.createMutationName].id;
+      router.push({ route: 'item', params: { listPath: list.path, itemId: id } });
+    };
 
-  render() {
-    const { lists, data, adminPath } = this.props;
-    const { createFromList } = this.state;
+    render() {
+      const { lists, data } = this.props;
+      const { createFromList } = this.state;
 
-    return (
-      <main>
-        <Container>
-          <Title as="h1" margin="both">
-            Dashboard
-          </Title>
-          <ContainerQuery>
-            {({ width }) => {
-              let cellWidth = 3;
-              if (width < 1024) cellWidth = 4;
-              if (width < 768) cellWidth = 6;
-              if (width < 480) cellWidth = 12;
+      return (
+        <main>
+          <Container>
+            <Title as="h1" margin="both">
+              Dashboard
+            </Title>
+            <ContainerQuery>
+              {({ width }) => {
+                let cellWidth = 3;
+                if (width < 1024) cellWidth = 4;
+                if (width < 768) cellWidth = 6;
+                if (width < 480) cellWidth = 12;
 
-              return (
-                <Grid gap={16}>
-                  {lists.map(list => {
-                    const { key, path } = list;
-                    const meta = data && data[list.gqlNames.listQueryMetaName];
+                return (
+                  <Grid gap={16}>
+                    {lists.map(list => {
+                      const { key, path } = list;
+                      const meta = data && data[list.gqlNames.listQueryMetaName];
 
-                    return (
-                      <Fragment key={key}>
-                        <Cell width={cellWidth}>
-                          <Box
+                      return (
+                        <Fragment key={key}>
+                          <Cell width={cellWidth}>
+                            <ListBox
+                              list={list}
+                              meta={meta}
+                              onCreateClick={this.openCreateModal(key)}
+                              route="list"
+                              params={{ listPath: path }}
+                            />
+                          </Cell>
+                          <CreateItemModal
+                            isOpen={createFromList === key}
                             list={list}
-                            to={`${adminPath}/${path}`}
-                            meta={meta}
-                            onCreateClick={this.openCreateModal(key)}
+                            onClose={this.closeCreateModal}
+                            onCreate={this.onCreate(list)}
                           />
-                        </Cell>
-                        <CreateItemModal
-                          isOpen={createFromList === key}
-                          list={list}
-                          onClose={this.closeCreateModal}
-                          onCreate={this.onCreate(list)}
-                        />
-                      </Fragment>
-                    );
-                  })}
-                </Grid>
-              );
-            }}
-          </ContainerQuery>
-        </Container>
-      </main>
-    );
+                        </Fragment>
+                      );
+                    })}
+                  </Grid>
+                );
+              }}
+            </ContainerQuery>
+          </Container>
+        </main>
+      );
+    }
   }
-}
+);
 
 const ListProvider = ({ getListByKey, listKeys, ...props }) => {
   // TODO: A permission query to limit which lists are visible
@@ -131,4 +134,4 @@ const ListProvider = ({ getListByKey, listKeys, ...props }) => {
   );
 };
 
-export default withRouter(ListProvider);
+export default ListProvider;

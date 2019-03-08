@@ -4,15 +4,14 @@ const {
   KnexCloudinaryImageInterface,
 } = require('./Implementation');
 const { CloudinaryBlock } = require('./Block');
-const path = require('path');
 
 module.exports = {
   type: 'CloudinaryImage',
   implementation: CloudinaryImage,
   views: {
-    Controller: path.join(__dirname, './views/Controller'),
-    Field: path.join(__dirname, './views/Field'),
-    Cell: path.join(__dirname, './views/Cell'),
+    Controller: '@keystone-alpha/fields/types/CloudinaryImage/views/Controller',
+    Field: '@keystone-alpha/fields/types/CloudinaryImage/views/Field',
+    Cell: '@keystone-alpha/fields/types/CloudinaryImage/views/Cell',
   },
   adapters: {
     mongoose: MongoCloudinaryImageInterface,

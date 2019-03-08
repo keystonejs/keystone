@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useRef, Fragment, useLayoutEffect, forwardRef, useMemo } from 'react';
-import { createPortal } from 'react-dom';
 import { Popper } from 'react-popper';
 import { marks, markTypes } from './marks';
 import { ToolbarButton } from './toolbar-components';
@@ -10,6 +9,7 @@ import { colors, gridSize } from '@arch-ui/theme';
 import { useMeasure } from '@arch-ui/hooks';
 import { getSelectionReference } from './utils';
 import applyRef from 'apply-ref';
+import { UniversalPortal } from '@jesstelford/react-portal-universal';
 
 let stopPropagation = e => {
   e.stopPropagation();
@@ -82,35 +82,36 @@ const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children 
     }
   }, [scheduleUpdate, editorState, snapshot, shouldShowToolbar]);
 
-  return createPortal(
-    <div
-      onMouseDown={stopPropagation}
-      ref={node => {
-        applyRef(ref, node);
-        applyRef(containerRef, node);
-      }}
-      style={style}
-      css={{
-        // this isn't as nice of a transition as i'd like since the time is fixed
-        // i think it would better if it was physics based but that would probably
-        // be a lot of work for little gain
-        // maybe base the transition time on the previous value?
-        transition: 'transform 100ms, opacity 100ms',
-      }}
-    >
+  return (
+    <UniversalPortal selector="body">
       <div
+        onMouseDown={stopPropagation}
+        ref={node => {
+          applyRef(ref, node);
+          applyRef(containerRef, node);
+        }}
+        style={style}
         css={{
-          backgroundColor: colors.N90,
-          padding: 8,
-          borderRadius: 6,
-          margin: gridSize,
-          display: shouldShowToolbar ? 'flex' : 'none',
+          // this isn't as nice of a transition as i'd like since the time is fixed
+          // i think it would better if it was physics based but that would probably
+          // be a lot of work for little gain
+          // maybe base the transition time on the previous value?
+          transition: 'transform 100ms, opacity 100ms',
         }}
       >
-        {shouldShowToolbar && children}
+        <div
+          css={{
+            backgroundColor: colors.N90,
+            padding: 8,
+            borderRadius: 6,
+            margin: gridSize,
+            display: shouldShowToolbar ? 'flex' : 'none',
+          }}
+        >
+          {shouldShowToolbar && children}
+        </div>
       </div>
-    </div>,
-    document.body
+    </UniversalPortal>
   );
 });
 

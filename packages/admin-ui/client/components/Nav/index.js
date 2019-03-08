@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
 import { Component, memo } from 'react';
-import { withRouter, Route, Link } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
 import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';
@@ -18,6 +17,7 @@ import { Title } from '@arch-ui/typography';
 import Tooltip from '@arch-ui/tooltip';
 import { FlexGroup } from '@arch-ui/layout';
 
+import { Link, withRouter, routes } from '../../providers/Router';
 import { useAdminMeta } from '../../providers/AdminMeta';
 import ResizeHandler, { KEYBOARD_SHORTCUT } from './ResizeHandler';
 import { NavIcons } from './NavIcons';
@@ -161,78 +161,71 @@ const TooltipContent = ({ kbd, children }) => (
   </FlexGroup>
 );
 
-function getPath(str) {
-  const arr = str.split('/');
-  return `/${arr[1]}/${arr[2]}`;
-}
-
-function PrimaryNavItems() {
-  let { adminPath, getListByKey, sortListsAlphabetically, listKeys: _listKeys } = useAdminMeta();
+const PrimaryNavItems = withRouter(({ router }) => {
+  let { getListByKey, sortListsAlphabetically, listKeys: _listKeys } = useAdminMeta();
   const listKeys = sortListsAlphabetically ? [..._listKeys].sort() : _listKeys;
 
   return (
     <Relative>
-      <Route>
-        {({ location }) => (
-          <ScrollQuery isPassive={false}>
-            {(ref, snapshot) => (
-              <PrimaryNavScrollArea ref={ref} {...snapshot}>
-                <PrimaryNavItem to={adminPath} isSelected={location.pathname === adminPath}>
-                  Dashboard
-                </PrimaryNavItem>
+      <ScrollQuery isPassive={false}>
+        {(ref, snapshot) => (
+          <PrimaryNavScrollArea ref={ref} {...snapshot}>
+            <Link passHref route="index">
+              <PrimaryNavItem as="a" isSelected={router.pathname === '/'}>
+                Dashboard
+              </PrimaryNavItem>
+            </Link>
 
-                {listKeys.map(key => {
-                  const list = getListByKey(key);
-                  let href = `${adminPath}/${list.path}`;
-                  const path = getPath(location.pathname);
-                  const isSelected = href === path;
+            {listKeys.map(key => {
+              const list = getListByKey(key);
+              const href = routes.list.to({ listPath: list.path }).as;
+              const path = router.asPath.split('?')[0].split('#')[0];
+              const isSelected = href === path;
 
-                  const maybeSearchParam = list.getPersistedSearch();
-                  if (maybeSearchParam) {
-                    href += maybeSearchParam;
-                  }
+              const maybeSearchParam = list.getPersistedSearch();
 
-                  return (
-                    <PrimaryNavItem
-                      key={key}
-                      id={`ks-nav-${list.path}`}
-                      isSelected={isSelected}
-                      to={href}
-                    >
-                      {list.label}
-                    </PrimaryNavItem>
-                  );
-                })}
-              </PrimaryNavScrollArea>
-            )}
-          </ScrollQuery>
+              return (
+                <Link
+                  passHref
+                  route="list"
+                  params={{ ...maybeSearchParam, listPath: list.path }}
+                  key={list.path}
+                >
+                  <PrimaryNavItem id={`ks-nav-${list.path}`} isSelected={isSelected} as="a">
+                    {list.label}
+                  </PrimaryNavItem>
+                </Link>
+              );
+            })}
+          </PrimaryNavScrollArea>
         )}
-      </Route>
+      </ScrollQuery>
     </Relative>
   );
-}
+});
 
 let PrimaryNavContent = memo(
   function PrimaryContent() {
-    let { adminPath, name } = useAdminMeta();
+    let { name } = useAdminMeta();
 
     return (
       <Inner>
-        <Title
-          as={Link}
-          to={adminPath}
-          margin="both"
-          crop
-          css={{
-            color: colors.N90,
-            textDecoration: 'none',
-            alignSelf: 'stretch',
-            marginLeft: PRIMARY_NAV_GUTTER,
-            marginRight: PRIMARY_NAV_GUTTER,
-          }}
-        >
-          {name}
-        </Title>
+        <Link passHref route="index">
+          <Title
+            as="a"
+            margin="both"
+            crop
+            css={{
+              color: colors.N90,
+              textDecoration: 'none',
+              alignSelf: 'stretch',
+              marginLeft: PRIMARY_NAV_GUTTER,
+              marginRight: PRIMARY_NAV_GUTTER,
+            }}
+          >
+            {name}
+          </Title>
+        </Link>
         <PrimaryNavItems />
         <NavIcons />
       </Inner>
@@ -321,4 +314,4 @@ class Nav extends Component {
   }
 }
 
-export default withRouter(Nav);
+export default Nav;

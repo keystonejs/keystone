@@ -3,13 +3,13 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Component, createRef, Fragment, type Ref, type Node } from 'react';
-import { createPortal } from 'react-dom';
 import flushable from 'flushable';
 import styled from '@emotion/styled';
 import { Popper } from 'react-popper';
 
 import { TransitionProvider, Fade } from '@arch-ui/modal-utils';
 import { colors, gridSize } from '@arch-ui/theme';
+import { UniversalPortal } from '@jesstelford/react-portal-universal';
 
 // ==============================
 // Styled Component
@@ -35,8 +35,8 @@ type PositionerProps = {
   targetNode: HTMLElement | null,
 };
 
-let TooltipPositioner = (props: PositionerProps) => {
-  return createPortal(
+let TooltipPositioner = (props: PositionerProps) => (
+  <UniversalPortal selector="body">
     <Popper referenceElement={props.targetNode} placement={props.placement}>
       {({ ref, style }) => (
         <div ref={ref} css={{ zIndex: 2000 }} style={{ ...props.style, ...style }}>
@@ -45,10 +45,9 @@ let TooltipPositioner = (props: PositionerProps) => {
           </div>
         </div>
       )}
-    </Popper>,
-    (document.body: any)
-  );
-};
+    </Popper>
+  </UniversalPortal>
+);
 
 // ==============================
 // Stateful Component

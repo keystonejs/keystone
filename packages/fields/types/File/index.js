@@ -1,13 +1,12 @@
 const { File, MongoFileInterface, KnexFileInterface } = require('./Implementation');
-const path = require('path');
 
 module.exports = {
   type: 'File',
   implementation: File,
   views: {
-    Controller: path.join(__dirname, './views/Controller'),
-    Field: path.join(__dirname, './views/Field'),
-    Cell: path.join(__dirname, './views/Cell'),
+    Controller: '@keystone-alpha/fields/types/File/views/Controller',
+    Field: '@keystone-alpha/fields/types/File/views/Field',
+    Cell: '@keystone-alpha/fields/types/File/views/Cell',
   },
   adapters: {
     mongoose: MongoFileInterface,

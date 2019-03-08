@@ -3,7 +3,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import {
-  Fragment,
   forwardRef,
   type ComponentType,
   type Element,
@@ -13,7 +12,6 @@ import {
   useEffect,
   useRef,
 } from 'react';
-import { createPortal } from 'react-dom';
 import styled from '@emotion/styled';
 import ScrollLock from 'react-scrolllock';
 
@@ -30,6 +28,8 @@ import { colors, gridSize } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
 import { A11yText } from '@arch-ui/typography';
 import { useStackIndex } from './stacks';
+
+import { UniversalPortal } from '@jesstelford/react-portal-universal';
 
 const innerGutter = gridSize * 2;
 
@@ -121,7 +121,7 @@ const Body = styled.div({
 // ------------------------------
 
 type Props = {
-  attachTo: HTMLElement,
+  attachTo: string,
   children: Node,
   closeOnBlanketClick: boolean,
   component: ComponentType<*> | string,
@@ -176,8 +176,8 @@ let ModalDialog = memo<Props>(function ModalDialog({
   });
   const dialogTitleId = useMemo(generateUEID, []);
 
-  return createPortal(
-    <Fragment>
+  return (
+    <UniversalPortal selector={attachTo}>
       <Fade {...transitionProps}>
         <Blanket onClick={closeOnBlanketClick ? onClose : undefined} isTinted />
       </Fade>
@@ -203,14 +203,13 @@ let ModalDialog = memo<Props>(function ModalDialog({
         </Positioner>
       </SlideInHorizontal>
       <ScrollLock />
-    </Fragment>,
-    attachTo
+    </UniversalPortal>
   );
 });
 
 // $FlowFixMe
 ModalDialog.defaultProps = {
-  attachTo: ((document.body: any): HTMLElement),
+  attachTo: 'body',
   closeOnBlanketClick: false,
   component: 'div',
   width: 560,

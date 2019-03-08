@@ -6,14 +6,13 @@ const cookie = require('cookie');
 const expressSession = require('express-session');
 const cookieSignature = require('cookie-signature');
 const createGraphQLMiddleware = require('./graphql');
-const initConfig = require('./initConfig');
 
 const COOKIE_NAME = 'keystone.sid';
 
 module.exports = class WebServer {
   constructor(keystone, config) {
     this.keystone = keystone;
-    this.config = initConfig(config);
+    this.config = config;
     this.express = express;
     this.app = express();
 
@@ -96,9 +95,11 @@ module.exports = class WebServer {
     );
 
     if (adminUI) {
-      // This must be last as it's the "catch all" which falls into Webpack to
+      // This must be last as it's the "catch all" which falls into next.js to
       // serve the Admin UI.
-      this.app.use(adminUI.createDevMiddleware({ apiPath, graphiqlPath, port }));
+      this.app.use(
+        adminUI.createServer({ apiPath, graphiqlPath, port, distDir: this.config.distDir })
+      );
     }
   }
 

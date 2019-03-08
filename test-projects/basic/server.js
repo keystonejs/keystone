@@ -1,11 +1,15 @@
 const keystone = require('@keystone-alpha/core');
+const path = require('path');
 
 const { port, staticRoute, staticPath } = require('./config');
 
 const initialData = require('./data');
 
 keystone
-  .prepare({ port })
+  .prepare({
+    port,
+    distDir: process.env.NODE_ENV === 'production' ? path.join(__dirname, 'dist') : undefined,
+  })
   .then(async ({ server, keystone: keystoneApp }) => {
     server.app.get('/reset-db', async (req, res) => {
       Object.values(keystoneApp.adapters).forEach(async adapter => {

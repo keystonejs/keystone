@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { POPOUT_GUTTER } from '../../../components/Popout';
+import { viewLoadables } from '../../../providers/loadables';
 import PopoutForm from './PopoutForm';
 
 type Props = {
@@ -40,7 +41,7 @@ export default class EditFilterPopout extends Component<Props, State> {
   render() {
     const { filter, target } = this.props;
     const { value } = this.state;
-    const { Filter } = filter.field.views;
+    const Filter = viewLoadables.Filter[filter.field.views.Filter];
     const headerTitle = filter.field.getFilterLabel(filter);
 
     return (

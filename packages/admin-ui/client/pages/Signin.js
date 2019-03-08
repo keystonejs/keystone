@@ -6,9 +6,9 @@ import { Input } from '@arch-ui/input';
 import { LoadingButton } from '@arch-ui/button';
 import { colors } from '@arch-ui/theme';
 
+import { prefixURL } from '../providers/Router';
+import { withAdminMeta } from '../providers/AdminMeta';
 import SessionProvider from '../providers/Session';
-
-import logo from '../assets/logo.png';
 
 const Container = styled.div({
   alignItems: 'center',
@@ -91,7 +91,7 @@ class SigninPage extends Component {
           ) : null}
         </Alerts>
         <Form method="post" onSubmit={this.onSubmit}>
-          <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
+          <img src={prefixURL('/static/logo.png')} width="205" height="68" alt="KeystoneJS Logo" />
           <Divider />
           <div>
             <Fields>
@@ -113,7 +113,7 @@ class SigninPage extends Component {
             <LoadingButton
               appearance="primary"
               type="submit"
-              isLoading={isLoading}
+              isLoading={isLoading || this.reloading}
               indicatorVariant="dots"
             >
               Sign In
@@ -126,8 +126,8 @@ class SigninPage extends Component {
   }
 }
 
-export default ({ sessionPath, signinPath, signoutPath }) => (
+export default withAdminMeta(({ adminMeta: { sessionPath, signinPath, signoutPath } }) => (
   <SessionProvider signinPath={signinPath} signoutPath={signoutPath} sessionPath={sessionPath}>
     {props => <SigninPage {...props} />}
   </SessionProvider>
-);
+));

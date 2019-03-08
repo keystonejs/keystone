@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 
+import { Link, prefixURL } from '../providers/Router';
+import { withAdminMeta } from '../providers/AdminMeta';
 import SessionProvider from '../providers/Session';
-import logo from '../assets/logo.png';
 
 const Container = styled.div({
   alignItems: 'center',
@@ -49,7 +49,7 @@ const Spacer = styled.div({
   height: 120,
 });
 
-const SignedOutPage = ({ isLoading, isSignedIn, signinPath, signOut }) => {
+const SignedOutPage = ({ isLoading, isSignedIn, signOut }) => {
   let showLoading = isLoading;
   // If the user is still signed in, sign them out
   if (isSignedIn) {
@@ -60,7 +60,7 @@ const SignedOutPage = ({ isLoading, isSignedIn, signinPath, signOut }) => {
     <Container>
       <Alerts />
       <Box>
-        <img src={logo} width="205" height="68" alt="KeystoneJS Logo" />
+        <img src={prefixURL('/static/logo.png')} width="205" height="68" alt="KeystoneJS Logo" />
         <Divider />
         <Content>
           {showLoading ? (
@@ -69,7 +69,9 @@ const SignedOutPage = ({ isLoading, isSignedIn, signinPath, signOut }) => {
             <Fragment>
               <p>You have been signed out.</p>
               <p>
-                <Link to={signinPath}>Sign In</Link>
+                <Link route="login">
+                  <a>Sign In</a>
+                </Link>
               </p>
             </Fragment>
           )}
@@ -80,8 +82,8 @@ const SignedOutPage = ({ isLoading, isSignedIn, signinPath, signOut }) => {
   );
 };
 
-export default ({ signinPath, signoutPath, sessionPath }) => (
+export default withAdminMeta(({ adminMeta: { signinPath, signoutPath, sessionPath } }) => (
   <SessionProvider signinPath={signinPath} signoutPath={signoutPath} sessionPath={sessionPath}>
-    {props => <SignedOutPage signinPath={signinPath} {...props} />}
+    {props => <SignedOutPage {...props} />}
   </SessionProvider>
-);
+));

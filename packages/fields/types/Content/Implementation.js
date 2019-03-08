@@ -30,20 +30,20 @@ class Content extends Text {
     const Relationship = require('../Relationship').implementation;
 
     this.complexBlocks = this.config.blocks
-      .map(blockConfig => {
-        let Impl = blockConfig;
-        let config = {};
+      .map(blockSpec => {
+        let Impl = blockSpec;
+        let blockConfig = {};
 
-        if (Array.isArray(blockConfig)) {
-          Impl = blockConfig[0];
-          config = blockConfig[1];
+        if (Array.isArray(blockSpec)) {
+          Impl = blockSpec[0];
+          blockConfig = blockSpec[1];
         }
 
         if (!Impl.isComplexDataType) {
           return null;
         }
 
-        const block = new Impl(config, {
+        const block = new Impl(blockConfig, {
           fromList: this.listKey,
           createAuxList: listConfig.createAuxList,
           getListByKey: listConfig.getListByKey,

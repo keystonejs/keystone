@@ -2,15 +2,17 @@
 import { jsx } from '@emotion/core';
 import React, { Component } from 'react';
 import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
 
 import { DiffIcon, InfoIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { CheckboxPrimitive } from '@arch-ui/controls';
 import Dropdown from '@arch-ui/dropdown';
 import { A11yText } from '@arch-ui/typography';
+
 import DeleteItemModal from './DeleteItemModal';
 import { copyToClipboard } from '../util';
+import { Link, withRouter } from '../providers/Router';
+import { viewLoadables } from '../providers/loadables';
 
 // Styled Components
 const Table = styled('table')({
@@ -49,7 +51,7 @@ const BodyCell = styled('td')(({ isSelected }) => ({
   position: 'relative',
   fontSize: 15,
 }));
-const ItemLink = styled(Link)`
+const ItemLink = styled.a`
   color: ${colors.text};
 
   /* Increase hittable area on item link */
@@ -144,147 +146,152 @@ class SortLink extends React.Component<SortLinkProps> {
 // Common for display & manage
 // ==============================
 
-class ListRow extends Component {
-  static defaultProps = { itemErrors: {} };
-  state = { showDeleteModal: false };
-  componentDidMount() {
-    this.mounted = true;
-  }
-  componentWillUnmount() {
-    this.mounted = false;
-  }
+const ListRow = withRouter(
+  class extends Component {
+    static defaultProps = { itemErrors: {} };
+    state = { showDeleteModal: false };
+    componentDidMount() {
+      this.mounted = true;
+    }
+    componentWillUnmount() {
+      this.mounted = false;
+    }
 
-  onCheckboxChange = () => {
-    const { item, onSelect } = this.props;
-    onSelect(item.id);
-  };
+    onCheckboxChange = () => {
+      const { item, onSelect } = this.props;
+      onSelect(item.id);
+    };
 
-  // ==============================
-  // Display
-  // ==============================
+    // ==============================
+    // Display
+    // ==============================
 
-  showDeleteModal = () => {
-    this.setState({ showDeleteModal: true });
-  };
-  closeDeleteModal = () => {
-    this.setState({ showDeleteModal: false });
-  };
-  onDelete = result => {
-    if (this.props.onDelete) this.props.onDelete(result);
-    if (!this.mounted) return;
-    this.setState({ showDeleteModal: false });
-  };
-  renderDeleteModal() {
-    const { showDeleteModal } = this.state;
-    const { item, list } = this.props;
+    showDeleteModal = () => {
+      this.setState({ showDeleteModal: true });
+    };
+    closeDeleteModal = () => {
+      this.setState({ showDeleteModal: false });
+    };
+    onDelete = result => {
+      if (this.props.onDelete) this.props.onDelete(result);
+      if (!this.mounted) return;
+      this.setState({ showDeleteModal: false });
+    };
+    renderDeleteModal() {
+      const { showDeleteModal } = this.state;
+      const { item, list } = this.props;
 
-    return (
-      <DeleteItemModal
-        isOpen={showDeleteModal}
-        item={item}
-        list={list}
-        onClose={this.closeDeleteModal}
-        onDelete={this.onDelete}
-      />
-    );
-  }
-  render() {
-    const { list, link, isSelected, item, itemErrors, fields } = this.props;
+      return (
+        <DeleteItemModal
+          isOpen={showDeleteModal}
+          item={item}
+          list={list}
+          onClose={this.closeDeleteModal}
+          onDelete={this.onDelete}
+        />
+      );
+    }
+    render() {
+      const { list, isSelected, item, itemErrors, fields, router } = this.props;
 
-    const row = props => (
-      <TableRow {...props}>
-        <BodyCell isSelected={isSelected} key="checkbox">
-          <CheckboxPrimitive
-            checked={isSelected}
-            innerRef={this.getCheckbox}
-            value={item.id}
-            onChange={this.onCheckboxChange}
-            tabIndex="0"
-          />
-          {this.renderDeleteModal()}
-        </BodyCell>
-        {fields.map(field => {
-          const { path } = field;
+      const row = props => (
+        <TableRow {...props}>
+          <BodyCell isSelected={isSelected} key="checkbox">
+            <CheckboxPrimitive
+              checked={isSelected}
+              innerRef={this.getCheckbox}
+              value={item.id}
+              onChange={this.onCheckboxChange}
+              tabIndex="0"
+            />
+            {this.renderDeleteModal()}
+          </BodyCell>
+          {fields.map(field => {
+            const { path } = field;
 
-          const isLoading = !item.hasOwnProperty(path);
+            const isLoading = !item.hasOwnProperty(path);
 
-          if (isLoading) {
-            return <BodyCell key={path} />; // TODO: Better loading state?
-          }
+            if (isLoading) {
+              return <BodyCell key={path} />; // TODO: Better loading state?
+            }
 
-          if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
-            return (
-              <BodyCell key={path}>
-                <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N10 }} />
-                <A11yText>{itemErrors[path].message}</A11yText>
-              </BodyCell>
-            );
-          }
+            if (
+              itemErrors[path] instanceof Error &&
+              itemErrors[path].name === 'AccessDeniedError'
+            ) {
+              return (
+                <BodyCell key={path}>
+                  <ShieldIcon title={itemErrors[path].message} css={{ color: colors.N10 }} />
+                  <A11yText>{itemErrors[path].message}</A11yText>
+                </BodyCell>
+              );
+            }
 
-          if (path === '_label_') {
+            let content;
+
+            const Cell = viewLoadables.Cell[field.views.Cell];
+
+            if (Cell) {
+              // TODO
+              // fix this later, creating a react component on every render is really bad
+              // react will rerender into the DOM on every react render
+              // probably not a huge deal on a leaf component like this but still bad
+              const LinkComponent = ({ children, path: listPath, id, ...linkProps }) => (
+                <Link passHref route="item" params={{ listPath, itemId: id }} {...linkProps}>
+                  <ItemLink>{children}</ItemLink>
+                </Link>
+              );
+              content = (
+                <Cell
+                  isSelected={isSelected}
+                  list={list}
+                  data={item[path]}
+                  itemId={item.id}
+                  field={field}
+                  Link={LinkComponent}
+                />
+              );
+            } else {
+              content = item[path];
+            }
+
             return (
               <BodyCellTruncated isSelected={isSelected} key={path}>
-                <ItemLink to={link({ path: list.path, id: item.id })}>{item._label_}</ItemLink>
+                {content}
               </BodyCellTruncated>
             );
-          }
+          })}
+        </TableRow>
+      );
+      const items = [
+        {
+          content: 'Duplicate',
+          icon: <DiffIcon />,
+          isDisabled: true, // TODO: implement duplicate
+          onClick: () => console.log('TODO'),
+        },
+        {
+          content: 'Copy Link',
+          icon: <LinkIcon />,
+          onClick: () => {
+            const href = router.as({
+              route: 'item',
+              params: { listPath: list.path, itemId: item.id },
+            });
+            copyToClipboard(window.location.origin + href);
+          },
+        },
+        {
+          content: 'Delete',
+          icon: <TrashcanIcon />,
+          onClick: this.showDeleteModal,
+        },
+      ];
 
-          let content;
-
-          const { Cell } = field.views;
-
-          if (Cell) {
-            // TODO
-            // fix this later, creating a react component on every render is really bad
-            // react will rerender into the DOM on every react render
-            // probably not a huge deal on a leaf component like this but still bad
-            const LinkComponent = ({ children, ...data }) => (
-              <ItemLink to={link(data)}>{children}</ItemLink>
-            );
-            content = (
-              <Cell
-                isSelected={isSelected}
-                list={list}
-                data={item[path]}
-                field={field}
-                Link={LinkComponent}
-              />
-            );
-          } else {
-            content = item[path];
-          }
-
-          return (
-            <BodyCellTruncated isSelected={isSelected} key={path}>
-              {content}
-            </BodyCellTruncated>
-          );
-        })}
-      </TableRow>
-    );
-    const copyText = window.location.origin + link({ path: list.path, id: item.id });
-    const items = [
-      {
-        content: 'Duplicate',
-        icon: <DiffIcon />,
-        isDisabled: true, // TODO: implement duplicate
-        onClick: () => console.log('TODO'),
-      },
-      {
-        content: 'Copy Link',
-        icon: <LinkIcon />,
-        onClick: () => copyToClipboard(copyText),
-      },
-      {
-        content: 'Delete',
-        icon: <TrashcanIcon />,
-        onClick: this.showDeleteModal,
-      },
-    ];
-
-    return <Dropdown mode="contextmenu" target={row} items={items} />;
+      return <Dropdown mode="contextmenu" target={row} items={items} />;
+    }
   }
-}
+);
 
 export default class ListTable extends Component {
   handleSelectAll = () => {
@@ -296,7 +303,6 @@ export default class ListTable extends Component {
 
   render() {
     const {
-      adminPath,
       fields,
       isFullWidth,
       items,
@@ -330,7 +336,7 @@ export default class ListTable extends Component {
               <SortLink
                 data-field={field.path}
                 key={field.path}
-                sortable={field.path !== '_label_'}
+                sortable={field.isSortable()}
                 field={field}
                 handleSortChange={handleSortChange}
                 active={sortBy.field.path === field.path}
@@ -347,7 +353,6 @@ export default class ListTable extends Component {
               item={item}
               itemErrors={itemsErrors[itemIndex] || {}}
               key={item.id}
-              link={({ path, id }) => `${adminPath}/${path}/${id}`}
               list={list}
               onDelete={onChange}
               onSelect={onSelect}

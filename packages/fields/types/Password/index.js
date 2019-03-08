@@ -1,13 +1,12 @@
 const { Password, MongoPasswordInterface, KnexPasswordInterface } = require('./Implementation');
-const path = require('path');
 
 module.exports = {
   type: 'Password',
   implementation: Password,
   views: {
-    Controller: path.join(__dirname, './views/Controller'),
-    Field: path.join(__dirname, './views/Field'),
-    Filter: path.join(__dirname, './views/Filter'),
+    Controller: '@keystone-alpha/fields/types/Password/views/Controller',
+    Field: '@keystone-alpha/fields/types/Password/views/Field',
+    Filter: '@keystone-alpha/fields/types/Password/views/Filter',
   },
   adapters: {
     mongoose: MongoPasswordInterface,

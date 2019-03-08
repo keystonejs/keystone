@@ -1,22 +1,40 @@
 import gql from 'graphql-tag';
+import React from 'react';
+import dedent from 'dedent';
+import dynamic from 'next/dynamic';
+import { arrayToObject, mapKeys } from '@keystone-alpha/utils';
 
-import { arrayToObject } from '@keystone-alpha/utils';
+import PageLoading from '../components/PageLoading';
+import PageError from '../components/PageError';
+import { viewMeta, loadView } from '../FIELD_TYPES';
 
 export const gqlCountQueries = lists => gql`{
   ${lists.map(list => list.countQuery()).join('\n')}
 }`;
 
+const ControllerLoading = ({ error, pastDelay }) => {
+  // avoid flash-of-loading-component
+  if (!pastDelay) return null;
+  if (error) {
+    return (
+      <PageError>
+        {process.env.NODE_ENV === 'production'
+          ? 'There was an error loading the page'
+          : error.message || error.toString()}
+      </PageError>
+    );
+  }
+  return <PageLoading />;
+};
+
 export default class List {
-  constructor(config, adminMeta, views) {
+  constructor(config, adminMeta) {
     this.config = config;
+    this.adminMeta = adminMeta;
 
     // TODO: undo this
     Object.assign(this, config);
-
-    this.fields = config.fields.map(fieldConfig => {
-      const { Controller } = views[fieldConfig.path];
-      return new Controller(fieldConfig, this, adminMeta, views[fieldConfig.path]);
-    });
+    delete this.fields;
 
     this.createMutation = gql`
       mutation create($data: ${this.gqlNames.createInputName}!) {
@@ -65,13 +83,79 @@ export default class List {
         }
       }
     `;
+
+    this._component = dynamic({
+      // Create an object of field paths to load functions;
+      // {
+      //   name: () => import('@keystone-alpha/fields/text/Controller'),
+      // }
+      modules: () => mapKeys(this._getFieldControllerModules(), module => () => loadView(module)),
+      loading: ControllerLoading,
+      render: ({ children }, controllers) => {
+        if (!this.controllersLoaded()) {
+          this._setFieldControllers(controllers);
+        }
+        return children;
+      },
+    });
+  }
+
+  /**
+   * An object of field path to module name:
+   * {
+   *   _label_: '@keystone-alpha/fields/pseudolable/Controller',
+   *   name: '@keystone-alpha/fields/text/Controller',
+   * }
+   */
+  _getFieldControllerModules() {
+    return this.config.fields.reduce((memo, fieldConfig) => {
+      memo[fieldConfig.path] = viewMeta[this.config.key][fieldConfig.path].Controller;
+      return memo;
+    }, {});
+  }
+
+  _setFieldControllers(controllers) {
+    this.fieldControllers = controllers;
+    this._controllersLoaded = true;
+
+    this._fieldControllers = this.config.fields.map(fieldConfig => {
+      const Controller = controllers[fieldConfig.path];
+      const controller = new Controller(fieldConfig, this, this.adminMeta);
+      // Mix the `.views` fields into the controller for use throughout the
+      // UI
+      controller.views = viewMeta[this.config.key][fieldConfig.path];
+      return controller;
+    });
+  }
+
+  controllersLoaded() {
+    return !!this._controllersLoaded;
+  }
+
+  getFieldControllers() {
+    if (!this.controllersLoaded()) {
+      throw new Error(dedent`
+        Attempted to read fields from list ${this.config.key} before they were loaded.
+        Be sure to wrap your render tree inside the component returned from .getComponent():
+          const List = list.getComponent();
+          return (
+            <List>
+              <h1>Hello world</h2>
+            </List>
+          );
+      `);
+    }
+    return this._fieldControllers;
+  }
+
+  getComponent() {
+    return this._component;
   }
 
   buildQuery(queryName, queryArgs = '', fields = []) {
     return `
       ${queryName}${queryArgs} {
         id
-        _label_
         ${fields.map(field => field.getQueryFragment()).join(' ')}
       }`;
   }
@@ -92,16 +176,19 @@ export default class List {
 
   getItemQuery(itemId) {
     return gql`{
-      ${this.buildQuery(this.gqlNames.itemQueryName, `(where: { id: "${itemId}" })`, this.fields)}
+      ${this.buildQuery(
+        this.gqlNames.itemQueryName,
+        `(where: { id: "${itemId}" })`,
+        this.getFieldControllers()
+      )}
     }`;
   }
 
   getQuery({ fields, filters, search, orderBy, skip, first }) {
     const queryArgs = List.getQueryArgs({ first, filters, search, skip, orderBy });
     const metaQueryArgs = List.getQueryArgs({ filters, search });
-    const safeFields = fields.filter(field => field.path !== '_label_');
     return gql`{
-      ${this.buildQuery(this.gqlNames.listQueryName, queryArgs, safeFields)}
+      ${this.buildQuery(this.gqlNames.listQueryName, queryArgs, fields)}
       ${this.countQuery(metaQueryArgs)}
     }`;
   }
@@ -118,16 +205,32 @@ export default class List {
   }
 
   getInitialItemData() {
-    return arrayToObject(this.fields, 'path', field => field.getInitialData());
+    return arrayToObject(
+      this.getFieldControllers().filter(field => field.isEditable()),
+      'path',
+      field => field.getInitialData()
+    );
   }
   formatCount(items) {
     const count = Array.isArray(items) ? items.length : items;
     return count === 1 ? `1 ${this.singular}` : `${count} ${this.plural}`;
   }
   getPersistedSearch() {
-    return localStorage.getItem(`search:${this.config.path}`);
+    if (typeof localStorage === 'undefined') {
+      return {};
+    }
+    try {
+      return JSON.parse(localStorage.getItem(`search:${this.config.path}`));
+    } catch (error) {
+      // If it's a parse failure, it's because we've never set a value, or the
+      // value is corrupt. We set a default value now.
+      this.setPersistedSearch({});
+      return {};
+    }
   }
   setPersistedSearch(value) {
-    localStorage.setItem(`search:${this.config.path}`, value);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(`search:${this.config.path}`, JSON.stringify(value));
+    }
   }
 }
