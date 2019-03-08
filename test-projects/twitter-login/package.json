@@ -1,5 +1,6 @@
 {
   "name": "@keystone-alpha/cypress-project-twitter-login",
+  "description": "A Keystone demo project for integration testing. See @keystone-alpha/keystone for more.",
   "private": true,
   "version": "1.0.0",
   "author": "The Keystone Development Team",

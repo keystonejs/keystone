@@ -1,5 +1,6 @@
 {
   "name": "@keystone-alpha/adapter-knex",
+  "description": "Keystone Knex Database Adapter",
   "version": "1.0.0",
   "author": "The Keystone Development Team",
   "license": "MIT",

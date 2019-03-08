@@ -1,5 +1,6 @@
 {
   "name": "@keystone-alpha/adapter-mongoose",
+  "description": "Keystone Mongoose Database adapter.",
   "version": "1.0.0",
   "author": "The Keystone Development Team",
   "license": "MIT",

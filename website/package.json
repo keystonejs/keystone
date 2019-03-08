@@ -1,5 +1,6 @@
 {
   "name": "@keystone-alpha/website",
+  "description": "Keystone docs site. Powered by Gatsby.",
   "private": true,
   "version": "1.0.0",
   "author": "The Keystone Development Team",

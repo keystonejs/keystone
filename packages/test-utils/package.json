@@ -1,5 +1,6 @@
 {
   "name": "@keystone-alpha/test-utils",
+  "description": "Common utilities used while testing @keystone-alpha/* packages.",
   "version": "1.0.0",
   "author": "The Keystone Development Team",
   "license": "MIT",

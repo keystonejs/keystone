@@ -1,5 +1,6 @@
 {
   "name": "@keystone-alpha/admin-ui",
+  "description": "Keystone Admin UI.",
   "version": "1.0.0",
   "author": "The Keystone Development Team",
   "license": "MIT",

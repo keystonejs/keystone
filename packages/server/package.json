@@ -1,5 +1,6 @@
 {
   "name": "@keystone-alpha/server",
+  "description": "Internal @keystone-alpha API & AdminUI server. For Custom Servers, see: @keystone-alpha/core",
   "version": "1.0.0",
   "author": "The Keystone Development Team",
   "license": "MIT",

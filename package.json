@@ -1,5 +1,7 @@
 {
   "name": "@keystone-alpha/mono-repo",
+  "description": "Keystone monorepo for all the @keystone-alpha / @arch-ui (and more) packages. Powered by Bolt Package Manager.",
+  "private": true,
   "version": "5.0.0",
   "author": "The Keystone Development Team",
   "license": "MIT",

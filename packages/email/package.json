@@ -1,5 +1,6 @@
 {
   "name": "@keystone-alpha/email",
+  "description": "Easily send emails from a Keystone application",
   "version": "1.0.0",
   "author": "The Keystone Development Team",
   "license": "MIT",

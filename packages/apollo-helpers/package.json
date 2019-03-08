@@ -1,5 +1,6 @@
 {
   "name": "@keystone-alpha/apollo-helpers",
+  "description": "Utilities to make using react-apollo + Keystone easier.",
   "version": "1.0.0",
   "author": "The Keystone Development Team",
   "license": "MIT",

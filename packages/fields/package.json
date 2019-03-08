@@ -1,5 +1,6 @@
 {
   "name": "@keystone-alpha/fields",
+  "description": "Keystone Field Types including Text, Password, DateTime, Integer, and more.",
   "version": "1.0.0",
   "author": "The Keystone Development Team",
   "license": "MIT",

@@ -1,5 +1,6 @@
 {
   "name": "@keystone-alpha/access-control",
+  "description": "Keystone Access Control parsing and validating utilities.",
   "version": "1.0.0",
   "author": "The Keystone Development Team",
   "license": "MIT",

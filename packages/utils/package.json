@@ -1,5 +1,6 @@
 {
   "name": "@keystone-alpha/utils",
+  "description": "Common utility functions used throughout @keystone-alpha packages.",
   "version": "1.0.0",
   "author": "The Keystone Development Team",
   "license": "MIT",

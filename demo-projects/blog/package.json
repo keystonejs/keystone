@@ -1,5 +1,6 @@
 {
   "name": "keystone_demo_blog",
+  "description": "An example Keystone project showcasing a Blogging Site.",
   "private": true,
   "version": "1.0.0",
   "author": "The Keystone Development Team",
