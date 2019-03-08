@@ -8,7 +8,15 @@ export let hasAncestorBlock = (editorState, type) => {
   });
 };
 
+// this has a bit of strange logic because
+// we want to always make sure that we're returning
+// the rect for the most recent selection
 export let getSelectionReference = () => {
+  // note that we store the last range
+  // _not_ the rect, this means that
+  // this will always return the correct rect
+  // wrt scroll position or any other reason
+  // for the elements moving
   let lastRange;
   let getBoundingClientRect = () => {
     let selection = window.getSelection();
@@ -28,10 +36,14 @@ export let getSelectionReference = () => {
         width: 0,
       };
     }
+    let newBoundingClientRect = getRangeBoundingClientRect(range);
+    if (newBoundingClientRect.width === 0 && newBoundingClientRect.height === 0) {
+      return getRangeBoundingClientRect(lastRange);
+    }
 
     lastRange = range;
 
-    return getRangeBoundingClientRect(range);
+    return newBoundingClientRect;
   };
 
   return {
