@@ -4,7 +4,7 @@
   "description": "Adapters for handling storage of the File type",
   "main": "index.js",
   "repository": "https://github.com/keystonejs/keystone-5.git",
-  "author": "Jess Telford <hi+npm@jes.st>",
+  "author": "The Keystone Development Team",
   "license": "MIT",
   "dependencies": {
     "cloudinary": "^1.13.2",

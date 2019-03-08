@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/fields",
   "version": "1.0.0",
-  "author": "Jed Watson",
+  "author": "The Keystone Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
@@ -30,6 +30,7 @@
     "@keystone-alpha/access-control": "^1.0.0",
     "@keystone-alpha/adapter-knex": "^1.0.0",
     "@keystone-alpha/adapter-mongoose": "^1.0.0",
+    "@keystone-alpha/test-utils": "^1.0.0",
     "@keystone-alpha/utils": "^1.0.0",
     "apollo-errors": "^1.9.0",
     "apply-ref": "^0.1.1",
@@ -63,7 +64,6 @@
     "slate-react": "^0.21.15"
   },
   "devDependencies": {
-    "@keystone-alpha/test-utils": "^1.0.0",
     "cuid": "^2.1.1"
   }
 }
