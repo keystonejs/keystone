@@ -38,7 +38,7 @@ const navLinks = [
   },
   {
     name: 'APIs',
-    url: '/arch-ui/badge/',
+    url: '/arch-ui/alert/',
   },
 ];
 
