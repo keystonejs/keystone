@@ -8,7 +8,11 @@ x-job-setup: &job-setup
   docker:
     # specify the version you desire here
     - image: circleci/node:carbon-browsers
+      environment:
+        TEST_DATABASE_URL: postgresql://root@localhost/circle_test
+        KNEX_URI: 'postgres://keystone5:k3yst0n3@localhost:5432/circle_test'
     - image: mongo:3.6.7
+    - image: circleci/postgres:9.6.5-alpine-ram
 
   working_directory: /home/circleci/repo
 
@@ -62,6 +66,11 @@ jobs:
     steps:
       - checkout
       - restore_cache: *restore-cache
+      - run: sudo apt-get update
+      - run: sudo apt-get install postgresql-client-9.6
+      - run: psql -d $TEST_DATABASE_URL -c "CREATE SCHEMA keystone;"
+      - run: psql -d $TEST_DATABASE_URL -c "CREATE USER keystone5 PASSWORD 'k3yst0n3';"
+      - run: psql -d $TEST_DATABASE_URL -c "GRANT ALL ON SCHEMA keystone TO keystone5;"
       - run: sudo yarn global add bolt
       # Set Cypress cache dir here, in case this job runs/completes first, and
       # hence clobbers the `node_modules` cache with a non-cypress version,
@@ -74,7 +83,7 @@ jobs:
       - run: yarn lint:flow
       - run:
           name: Unit tests
-          command: yarn jest --ci --testResultsProcessor="jest-junit" --maxWorkers=2
+          command: yarn jest --ci --testResultsProcessor="jest-junit" --maxWorkers=1
           environment:
             JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
       - store_test_results:

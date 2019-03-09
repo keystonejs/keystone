@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/pagination",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/pagination.cjs.js",
@@ -11,12 +11,12 @@
     "react": "^16.8.0"
   },
   "dependencies": {
-    "@arch-ui/loading": "^0.0.1",
-    "@arch-ui/theme": "^0.0.1",
-    "@babel/runtime": "^7.2.0",
+    "@arch-ui/loading": "^0.0.2",
+    "@arch-ui/theme": "^0.0.2",
+    "@babel/runtime": "^7.3.4",
     "@emotion/core": "^10.0.4",
     "@emotion/styled": "^10.0.4",
-    "react-router-dom": "^4.2.2"
+    "react-router-dom": "4.4.0-beta.6"
   },
   "module": "dist/pagination.esm.js"
 }

@@ -1,7 +1,0 @@
-{
-  "releases": [
-    { "name": "@voussoir/core", "type": "minor" },
-    { "name": "@voussoir/fields", "type": "minor" }
-  ],
-  "dependents": []
-}

@@ -1,5 +1,6 @@
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { MongooseFieldAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { KnexFieldAdapter } = require('@keystone-alpha/adapter-knex');
 
 class Text extends Implementation {
   constructor() {
@@ -30,24 +31,34 @@ class Text extends Implementation {
   }
 }
 
-class MongoTextInterface extends MongooseFieldAdapter {
+const CommonTextInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.stringConditions(dbPath),
+        ...this.equalityConditionsInsensitive(dbPath),
+        ...this.stringConditionsInsensitive(dbPath),
+        // These have no case-insensitive counter parts
+        ...this.inConditions(dbPath),
+      };
+    }
+  };
+
+class MongoTextInterface extends CommonTextInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
   }
+}
 
-  getQueryConditions() {
-    return {
-      ...this.equalityConditions(),
-      ...this.stringConditions(),
-      ...this.equalityConditionsInsensitive(),
-      ...this.stringConditionsInsensitive(),
-      // These have no case-insensitive counter parts
-      ...this.inConditions(),
-    };
+class KnexTextInterface extends CommonTextInterface(KnexFieldAdapter) {
+  createColumn(table) {
+    return table.text(this.path);
   }
 }
 
 module.exports = {
   Text,
   MongoTextInterface,
+  KnexTextInterface,
 };

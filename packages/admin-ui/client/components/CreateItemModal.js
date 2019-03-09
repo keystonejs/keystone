@@ -1,19 +1,15 @@
-import React, { Component, Fragment, useCallback, useMemo } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, Fragment, useCallback, useMemo } from 'react';
 import { Mutation } from 'react-apollo';
-import styled from '@emotion/styled';
 
 import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
-import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
+import { resolveAllKeys, arrayToObject } from '@keystone-alpha/utils';
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 
 import FieldTypes from '../FIELD_TYPES';
-
-const Body = styled.div({
-  marginBottom: gridSize,
-  marginTop: gridSize,
-});
 
 let Render = ({ children }) => children();
 
@@ -27,6 +23,14 @@ class CreateItemModal extends Component {
   onCreate = event => {
     // prevent form submission
     event.preventDefault();
+    // we have to stop propagation so that if this modal is inside another form
+    // it won't submit the form above it
+    // this will most likely happen when a CreateItemModal is nested inside
+    // another CreateItemModal when creating an item in a relationship field
+    // if you're thinking, why is this necessary, the modal is in a portal?
+    // it's important to remember that react events
+    // propagate through portals as if they aren't there
+    event.stopPropagation();
 
     const {
       list: { fields },
@@ -38,7 +42,10 @@ class CreateItemModal extends Component {
 
     resolveAllKeys(arrayToObject(fields, 'path', field => field.getValue(item)))
       .then(data => createItem({ variables: { data } }))
-      .then(this.props.onCreate);
+      .then(data => {
+        this.props.onCreate(data);
+        this.setState({ item: this.props.list.getInitialItemData() });
+      });
   };
   onClose = () => {
     const { isLoading } = this.props;
@@ -76,7 +83,12 @@ class CreateItemModal extends Component {
           </Fragment>
         }
       >
-        <Body>
+        <div
+          css={{
+            marginBottom: gridSize,
+            marginTop: gridSize,
+          }}
+        >
           <AutocompleteCaptor />
           {list.fields.map((field, i) => {
             const { Field } = FieldTypes[list.key][field.path];
@@ -109,7 +121,7 @@ class CreateItemModal extends Component {
               </Render>
             );
           })}
-        </Body>
+        </div>
       </Drawer>
     );
   }

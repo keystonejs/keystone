@@ -1,14 +1,22 @@
-const { CloudinaryImage, MongoCloudinaryImageInterface } = require('./Implementation');
+const {
+  CloudinaryImage,
+  MongoCloudinaryImageInterface,
+  KnexCloudinaryImageInterface,
+} = require('./Implementation');
+const { CloudinaryBlock } = require('./Block');
+const path = require('path');
 
 module.exports = {
   type: 'CloudinaryImage',
   implementation: CloudinaryImage,
   views: {
-    Controller: require.resolve('./Controller'),
-    Field: require.resolve('./views/Field'),
-    Cell: require.resolve('./views/Cell'),
+    Controller: path.join(__dirname, './Controller'),
+    Field: path.join(__dirname, './views/Field'),
+    Cell: path.join(__dirname, './views/Cell'),
   },
   adapters: {
     mongoose: MongoCloudinaryImageInterface,
+    knex: KnexCloudinaryImageInterface,
   },
+  block: CloudinaryBlock,
 };

@@ -1,25 +1,16 @@
 // @flow
 import React from 'react';
+import { style } from '../style';
 
-const ArrowLeftIcon = ({ title, ...props }: { title?: string }) => {
+const svgContent = <path fillRule="evenodd" d="M6 3L0 8l6 5v-3h4V6H6V3z" />;
+
+const ArrowLeftIcon = React.memo<{ title?: string }>(({ title, ...props }) => {
   return (
-    <svg {...props}>
+    <svg aria-hidden height={16} width={10} viewBox="0 0 10 16" style={style} {...props}>
       {title ? <title>{title}</title> : null}
-      <path fillRule="evenodd" d="M6 3L0 8l6 5v-3h4V6H6V3z" />
+      {svgContent}
     </svg>
   );
-};
-
-ArrowLeftIcon.defaultProps = {
-  'aria-hidden': true,
-  height: 16,
-  width: 10,
-  viewBox: '0 0 10 16',
-  style: {
-    display: 'inline-block',
-    verticalAlign: 'text-top',
-    fill: 'currentColor',
-  },
-};
+});
 
 export default ArrowLeftIcon;

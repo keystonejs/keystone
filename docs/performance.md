@@ -2,7 +2,7 @@
 
 ## Query Performance Monitoring with Apollo Engine
 
-The GraphQL stack in Voussoir is powered by [Apollo Server](https://www.apollographql.com/docs/apollo-server/),
+The GraphQL stack in keystone-alpha is powered by [Apollo Server](https://www.apollographql.com/docs/apollo-server/),
 which comes with performance monitoring built in via the [Apollo Engine](https://engine.apollographql.com).
 
 Apollo Engine provides a free service up to 25 million monthly requests,

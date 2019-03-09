@@ -40,7 +40,7 @@ function createRelationship({ path, config = {}, getListByKey = () => new MockLi
         delete: true,
       };
     }
-    // The actual implementation in `@voussoir/core/List/index.js` returns
+    // The actual implementation in `@keystone-alpha/keystone/List/index.js` returns
     // more, but we only want to test that this codepath is called
     getGraphqlFilterFragment = () => mockFilterFragment;
   }
@@ -310,6 +310,50 @@ describe('Type Generation', () => {
               type: {
                 name: {
                   value: '_QueryMeta',
+                },
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(fieldAST.definitions[0].fields[0].arguments).toHaveLength(1);
+  });
+
+  test('to-many relationships can have meta disabled', () => {
+    const path = 'foo';
+
+    const relationship = createRelationship({
+      path,
+      config: { many: true, ref: 'Zip', withMeta: false },
+    });
+
+    // Wrap it in a mock type because all we get back is the fields
+    const fieldSchema = `
+      type MockType {
+        ${relationship.gqlOutputFields.join('\n')}
+      }
+    `;
+
+    const fieldAST = gql(fieldSchema);
+
+    expect(fieldAST).toMatchObject({
+      definitions: [
+        {
+          fields: [
+            {
+              kind: 'FieldDefinition',
+              name: {
+                value: 'foo',
+              },
+              arguments: mockFilterAST,
+              type: {
+                kind: 'ListType',
+                type: {
+                  name: {
+                    value: 'Zip',
+                  },
                 },
               },
             },

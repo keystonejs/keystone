@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const omitBy = require('lodash.omitby');
-const { mergeWhereClause } = require('@voussoir/utils');
-const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { mergeWhereClause } = require('@keystone-alpha/utils');
+const { MongooseFieldAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { KnexFieldAdapter } = require('@keystone-alpha/adapter-knex');
 
 const {
   Schema: {
@@ -20,6 +21,7 @@ class Relationship extends Implementation {
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
     this.isRelationship = true;
+    this.withMeta = typeof this.config.withMeta !== 'undefined' ? this.config.withMeta : true;
   }
 
   tryResolveRefList() {
@@ -59,7 +61,7 @@ class Relationship extends Implementation {
       const filterArgs = refList.getGraphqlFilterFragment().join('\n');
       return [
         `${this.path}(${filterArgs}): [${refList.gqlNames.outputTypeName}]`,
-        `_${this.path}Meta(${filterArgs}): _QueryMeta`,
+        this.withMeta ? `_${this.path}Meta(${filterArgs}): _QueryMeta` : '',
       ];
     }
 
@@ -151,10 +153,12 @@ class Relationship extends Implementation {
         return refList.listQuery(filteredQueryArgs, context, fieldName);
       },
 
-      [`_${this.path}Meta`]: (item, args, context, { fieldName }) => {
-        const filteredQueryArgs = buildManyQueryArgs(item, args);
-        return refList.listQueryMeta(filteredQueryArgs, context, fieldName);
-      },
+      ...(this.withMeta && {
+        [`_${this.path}Meta`]: (item, args, context, { fieldName }) => {
+          const filteredQueryArgs = buildManyQueryArgs(item, args);
+          return refList.listQueryMeta(filteredQueryArgs, context, fieldName);
+        },
+      }),
     };
   }
 
@@ -260,7 +264,7 @@ class Relationship extends Implementation {
     //
     // Then there's the linking to existing records usecase:
     // mutation createPost() {
-    //   author: { id: 'abc123' }
+    //   author: { connect: { id: 'abc123' } }
     // }
     if (this.config.many) {
       return [
@@ -339,10 +343,10 @@ class MongoRelationshipInterface extends MongooseFieldAdapter {
     return this.getListByKey(this.refListKey).adapter;
   }
 
-  getQueryConditions() {
+  getQueryConditions(dbPath) {
     return {
       [`${this.path}_is_null`]: value => ({
-        [this.path]: value ? { $not: { $exists: true, $ne: null } } : { $exists: true, $ne: null },
+        [dbPath]: value ? { $not: { $exists: true, $ne: null } } : { $exists: true, $ne: null },
       }),
     };
   }
@@ -399,7 +403,46 @@ class MongoRelationshipInterface extends MongooseFieldAdapter {
   }
 }
 
+class KnexRelationshipInterface extends KnexFieldAdapter {
+  constructor(...args) {
+    super(...args);
+    const [refListKey, refFieldPath] = this.config.ref.split('.');
+    this.refListKey = refListKey;
+    this.refFieldPath = refFieldPath;
+    this.refListId = `${refListKey}_id`;
+    this.isRelationship = true;
+  }
+
+  getRefListAdapter() {
+    return this.getListByKey(this.refListKey).adapter;
+  }
+
+  createColumn(table) {
+    return table.integer(this.path).unsigned();
+  }
+
+  createForiegnKey(table, schemaName) {
+    return table
+      .foreign(this.path)
+      .references('id')
+      .inTable(`${schemaName}.${this.refListKey}`);
+  }
+
+  getQueryConditions(dbPath) {
+    return {
+      [`${this.path}_is_null`]: value => b =>
+        value ? b.whereNull(dbPath) : b.whereNotNull(dbPath),
+    };
+  }
+  supportsRelationshipQuery(query) {
+    return [this.path, `${this.path}_every`, `${this.path}_some`, `${this.path}_none`].includes(
+      query
+    );
+  }
+}
+
 module.exports = {
   Relationship,
   MongoRelationshipInterface,
+  KnexRelationshipInterface,
 };

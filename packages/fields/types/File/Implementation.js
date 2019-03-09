@@ -1,5 +1,6 @@
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { MongooseFieldAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { KnexFieldAdapter } = require('@keystone-alpha/adapter-knex');
 const mongoose = require('mongoose');
 
 // Disabling the getter of mongoose >= 5.1.0
@@ -110,7 +111,18 @@ class File extends Implementation {
   }
 }
 
-class MongoFileInterface extends MongooseFieldAdapter {
+const CommonFileInterface = superclass =>
+  class extends superclass {
+    getQueryConditions(dbPath) {
+      return {
+        ...this.equalityConditions(dbPath),
+        ...this.stringConditions(dbPath),
+        ...this.inConditions(dbPath),
+      };
+    }
+  };
+
+class MongoFileInterface extends CommonFileInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     const schemaOptions = {
       type: {
@@ -123,17 +135,16 @@ class MongoFileInterface extends MongooseFieldAdapter {
     };
     schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
   }
+}
 
-  getQueryConditions() {
-    return {
-      ...this.equalityConditions(),
-      ...this.stringConditions(),
-      ...this.inConditions(),
-    };
+class KnexFileInterface extends CommonFileInterface(KnexFieldAdapter) {
+  createColumn(table) {
+    return table.json(this.path);
   }
 }
 
 module.exports = {
   File,
   MongoFileInterface,
+  KnexFileInterface,
 };

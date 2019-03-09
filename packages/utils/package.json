@@ -1,7 +1,7 @@
 {
-  "name": "@voussoir/utils",
-  "version": "0.3.1",
-  "author": "Jed Watson",
+  "name": "@keystone-alpha/utils",
+  "version": "1.0.0",
+  "author": "The Keystone Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"

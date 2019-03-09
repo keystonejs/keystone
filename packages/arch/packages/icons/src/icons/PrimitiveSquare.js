@@ -1,25 +1,16 @@
 // @flow
 import React from 'react';
+import { style } from '../style';
 
-const PrimitiveSquareIcon = ({ title, ...props }: { title?: string }) => {
+const svgContent = <path fillRule="evenodd" d="M8 12H0V4h8v8z" />;
+
+const PrimitiveSquareIcon = React.memo<{ title?: string }>(({ title, ...props }) => {
   return (
-    <svg {...props}>
+    <svg aria-hidden height={16} width={8} viewBox="0 0 8 16" style={style} {...props}>
       {title ? <title>{title}</title> : null}
-      <path fillRule="evenodd" d="M8 12H0V4h8v8z" />
+      {svgContent}
     </svg>
   );
-};
-
-PrimitiveSquareIcon.defaultProps = {
-  'aria-hidden': true,
-  height: 16,
-  width: 8,
-  viewBox: '0 0 8 16',
-  style: {
-    display: 'inline-block',
-    verticalAlign: 'text-top',
-    fill: 'currentColor',
-  },
-};
+});
 
 export default PrimitiveSquareIcon;

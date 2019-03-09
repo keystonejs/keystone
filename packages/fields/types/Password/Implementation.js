@@ -1,5 +1,6 @@
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { MongooseFieldAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { KnexFieldAdapter } = require('@keystone-alpha/adapter-knex');
 
 const bcrypt = require('bcrypt');
 const dumbPasswords = require('dumb-passwords');
@@ -84,36 +85,54 @@ class Password extends Implementation {
   }
 }
 
-class MongoPasswordInterface extends MongooseFieldAdapter {
-  // constructor(fieldName, path, listAdapter, getListByKey, config) {
+const CommonPasswordInterface = superclass =>
+  class extends superclass {
+    setupHooks({ addPreSaveHook }) {
+      // Updates the relevant value in the item provided (by referrence)
+      addPreSaveHook(async item => {
+        const list = this.getListByKey(this.listAdapter.key);
+        const field = list.fieldsByPath[this.path];
+        const plaintext = item[field.path];
 
-  addToMongooseSchema(schema, _, { addPreSaveHook }) {
-    schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
+        if (typeof plaintext === 'undefined') {
+          return item;
+        }
 
-    // Updates the relevant value in the item provided (by referrence)
-    addPreSaveHook(async item => {
-      const list = this.getListByKey(this.listAdapter.key);
-      const field = list.fieldsByPath[this.path];
-      const plaintext = item[field.path];
-
-      if (typeof plaintext === 'undefined') {
+        if (String(plaintext) === plaintext && plaintext !== '') {
+          item[field.path] = await field.generateHash(plaintext);
+        } else {
+          item[field.path] = null;
+        }
         return item;
-      }
+      });
+    }
+  };
 
-      if (String(plaintext) === plaintext && plaintext !== '') {
-        item[field.path] = await field.generateHash(plaintext);
-      } else {
-        item[field.path] = null;
-      }
-      return item;
-    });
+class MongoPasswordInterface extends CommonPasswordInterface(MongooseFieldAdapter) {
+  addToMongooseSchema(schema) {
+    schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
   }
 
-  getQueryConditions() {
+  getQueryConditions(dbPath) {
     return {
       [`${this.path}_is_set`]: value => ({
-        [this.path]: value ? { $regex: bcryptHashRegex } : { $not: bcryptHashRegex },
+        [dbPath]: value ? { $regex: bcryptHashRegex } : { $not: bcryptHashRegex },
       }),
+    };
+  }
+}
+
+class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdapter) {
+  createColumn(table) {
+    return table.text(this.path);
+  }
+
+  getQueryConditions(dbPath) {
+    return {
+      [`${this.path}_is_set`]: value => b =>
+        value
+          ? b.where(dbPath, '~', bcryptHashRegex.source)
+          : b.where(dbPath, '!~', bcryptHashRegex.source).orWhereNull(dbPath),
     };
   }
 }
@@ -121,4 +140,5 @@ class MongoPasswordInterface extends MongooseFieldAdapter {
 module.exports = {
   Password,
   MongoPasswordInterface,
+  KnexPasswordInterface,
 };

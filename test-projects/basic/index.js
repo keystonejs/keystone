@@ -1,5 +1,5 @@
-const { AdminUI } = require('@voussoir/admin-ui');
-const { Keystone } = require('@voussoir/core');
+const { AdminUI } = require('@keystone-alpha/admin-ui');
+const { Keystone } = require('@keystone-alpha/keystone');
 const {
   File,
   Text,
@@ -14,12 +14,11 @@ const {
   Color,
   Url,
   Content,
-} = require('@voussoir/fields');
+} = require('@keystone-alpha/fields');
 const Decimal = require('../../packages/fields/types/Decimal');
-const { WebServer } = require('@voussoir/server');
-const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
+const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
 
-const { port, staticRoute, staticPath, cloudinary } = require('./config');
+const { staticRoute, staticPath, cloudinary } = require('./config');
 
 const LOCAL_FILE_PATH = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
@@ -30,9 +29,7 @@ const getYear = require('date-fns/get_year');
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
 
-const initialData = require('./data');
-
-const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'Cypress Test Project Basic',
@@ -74,6 +71,7 @@ keystone.createList('User', {
     },
     password: { type: Password },
     isAdmin: { type: Checkbox },
+    favouritePosts: { type: Relationship, ref: 'Post', many: true },
     company: {
       type: Select,
       options: [
@@ -124,11 +122,11 @@ keystone.createList('Post', {
     value: {
       type: Content,
       blocks: [
+        [CloudinaryImage.block, { adapter: cloudinaryAdapter }],
         Content.blocks.blockquote,
         Content.blocks.orderedList,
         Content.blocks.unorderedList,
         [Content.blocks.embed, { apiKey: process.env.EMBEDLY_API_KEY }],
-        Content.blocks.image,
         Content.blocks.link,
         Content.blocks.heading,
       ],
@@ -160,38 +158,7 @@ const admin = new AdminUI(keystone, {
   sortListsAlphabetically: true,
 });
 
-const server = new WebServer(keystone, {
-  'cookie secret': 'qwerty',
-  'admin ui': admin,
-  port,
-});
-
-server.app.get('/reset-db', (req, res) => {
-  const reset = async () => {
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
-    await keystone.createItems(initialData);
-    res.redirect(admin.adminPath);
-  };
-  reset();
-});
-
-server.app.use(staticRoute, server.express.static(staticPath));
-
-async function start() {
-  await keystone.connect();
-  server.start();
-  const users = await keystone.lists.User.adapter.findAll();
-  if (!users.length) {
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
-    await keystone.createItems(initialData);
-  }
-}
-
-start().catch(error => {
-  console.error(error);
-  process.exit(1);
-});
+module.exports = {
+  keystone,
+  admin,
+};

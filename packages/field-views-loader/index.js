@@ -11,7 +11,10 @@ function serialize(value) {
     return (
       '{\n' +
       Object.keys(value)
-        .map(key => `"${key}": ${serialize(value[key])}`)
+        .map(key => {
+          // we need to use getters so circular dependencies work
+          return `get "${key}"() { return ${serialize(value[key])}; }`;
+        })
         .join(',\n') +
       '}'
     );
@@ -56,13 +59,12 @@ module.exports = function() {
   }
    */
 
-  const stringifiedObject = `{
-    ${Object.entries(adminMeta.lists)
-      .map(([listPath, list]) => {
-        return `"${listPath}": ${serialize(list.views)}`;
-      })
-      .join(',\n')}
-  }`;
+  const stringifiedObject = serialize(
+    Object.entries(adminMeta.lists).reduce((obj, [listPath, { views }]) => {
+      obj[listPath] = views;
+      return obj;
+    }, {})
+  );
 
   return `
   function interopDefault(mod) {

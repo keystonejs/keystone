@@ -1,4 +1,8 @@
-const { Integer, MongoIntegerInterface } = require('@voussoir/fields/types/Integer/Implementation');
+const {
+  Integer,
+  MongoIntegerInterface,
+  KnexIntegerInterface,
+} = require('@keystone-alpha/fields/types/Integer/Implementation');
 
 class Stars extends Integer {
   extendAdminMeta(meta) {
@@ -9,4 +13,5 @@ class Stars extends Integer {
 module.exports = {
   Stars,
   MongoIntegerInterface,
+  KnexIntegerInterface,
 };

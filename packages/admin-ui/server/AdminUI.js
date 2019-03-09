@@ -1,14 +1,16 @@
 const bodyParser = require('body-parser');
+const falsey = require('falsey');
 const express = require('express');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+const pkgInfo = require('../package.json');
 
 const getWebpackConfig = require('./getWebpackConfig');
 const { mode } = require('./env');
 
 module.exports = class AdminUI {
-  constructor(keystone, config) {
+  constructor(keystone, config = {}) {
     this.keystone = keystone;
 
     if (config.adminPath === '/') {
@@ -32,7 +34,8 @@ module.exports = class AdminUI {
   getAdminMeta() {
     return {
       withAuth: !!this.authStrategy,
-      adminPath: this.config.adminPath,
+      authList: this.authStrategy ? this.authStrategy.listKey : null,
+      adminPath: this.adminPath,
       signinPath: this.config.signinPath,
       signoutPath: this.config.signoutPath,
       sessionPath: this.config.sessionPath,
@@ -67,7 +70,7 @@ module.exports = class AdminUI {
   }
 
   redirectSuccessfulSignin(req, res) {
-    const htmlResponse = () => res.redirect(this.config.adminPath);
+    const htmlResponse = () => res.redirect(this.adminPath);
     return res.format({
       default: htmlResponse,
       'text/html': htmlResponse,
@@ -143,6 +146,9 @@ module.exports = class AdminUI {
     const { adminPath } = this;
 
     // ensure any non-resource requests are rewritten for history api fallback
+    if (falsey(process.env.DISABLE_LOGGING)) {
+      console.log(`[ROUTE ${adminPath}(/.*)?]: Keystone Admin UI (v${pkgInfo.version})`);
+    }
     app.use(adminPath, (req, res, next) => {
       // TODO: make sure that this change is OK. (regex was testing on url, not path)
       // Changed because this was preventing adminui pages loading when a querystrings

@@ -1,13 +1,14 @@
 const pFinally = require('p-finally');
 const supertest = require('supertest-light');
 const extractStack = require('extract-stack');
-const { Keystone } = require('@voussoir/core');
-const { WebServer } = require('@voussoir/server');
-const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
+const { Keystone } = require('@keystone-alpha/keystone');
+const { WebServer } = require('@keystone-alpha/server');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
 
 function setupServer({ name, adapterName, createLists = () => {} }) {
-  const Adapter = { mongoose: MongooseAdapter }[adapterName];
+  const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
   const keystone = new Keystone({
     name,
     adapter: new Adapter(),
@@ -141,13 +142,68 @@ function keystoneMongoTest(setupKeystoneFn, testFn) {
   };
 }
 
-function multiAdapterRunners() {
-  return [{ runner: keystoneMongoTest, adapterName: 'mongoose' }];
+function keystoneKnexTest(setupKeystoneFn, testFn) {
+  return async function() {
+    const server = setupKeystoneFn('knex');
+
+    await server.keystone.connect();
+
+    return pFinally(
+      testFn({
+        server,
+        create: getCreate(server),
+        findById: getFindById(server),
+        findOne: getFindOne(server),
+        update: getUpdate(server),
+      }),
+      () => server.keystone.disconnect()
+    );
+  };
 }
+
+function multiAdapterRunners() {
+  return [
+    { runner: keystoneMongoTest, adapterName: 'mongoose' },
+    { runner: keystoneKnexTest, adapterName: 'knex' },
+  ];
+}
+
+const sorted = (arr, keyFn) => {
+  arr = [...arr];
+  arr.sort((a, b) => {
+    a = keyFn(a);
+    b = keyFn(b);
+    if (a < b) {
+      return -1;
+    }
+    if (a > b) {
+      return 1;
+    }
+    return 0;
+  });
+  return arr;
+};
+
+const runQuery = (server, snippet) => {
+  return graphqlRequest({
+    server,
+    query: `query { ${snippet} }`,
+  }).then(res => res.body.data);
+};
+
+const matchFilter = (server, gqlArgs, fields, target, sortkey) => {
+  gqlArgs = gqlArgs ? `(${gqlArgs})` : '';
+  const snippet = `allTests ${gqlArgs} ${fields}`;
+  return runQuery(server, snippet).then(data => {
+    const value = sortkey ? sorted(data.allTests || [], i => i[sortkey]) : data.allTests;
+    expect(value).toEqual(target);
+  });
+};
 
 module.exports = {
   setupServer,
   multiAdapterRunners,
   graphqlRequest,
-  keystoneMongoTest,
+  matchFilter,
+  runQuery,
 };

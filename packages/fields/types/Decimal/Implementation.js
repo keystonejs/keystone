@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
+const { MongooseFieldAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { KnexFieldAdapter } = require('@keystone-alpha/adapter-knex');
 
 class Decimal extends Implementation {
   constructor() {
@@ -36,7 +37,7 @@ class Decimal extends Implementation {
 }
 
 class MongoDecimalInterface extends MongooseFieldAdapter {
-  addToMongooseSchema(schema, _, { addPreSaveHook, addPostReadHook }) {
+  addToMongooseSchema(schema) {
     const { mongooseOptions = {} } = this.config;
     const { isRequired } = mongooseOptions;
 
@@ -49,7 +50,9 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
       },
     };
     schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
+  }
 
+  setupHooks({ addPreSaveHook, addPostReadHook }) {
     // Updates the relevant value in the item provided (by referrence)
     addPreSaveHook(item => {
       if (item[this.path] && typeof item[this.path] === 'string') {
@@ -68,11 +71,24 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
     });
   }
 
-  getQueryConditions() {
+  getQueryConditions(dbPath) {
     return {
-      ...this.equalityConditions(mongoose.Types.Decimal128.fromString),
-      ...this.orderingConditions(mongoose.Types.Decimal128.fromString),
-      ...this.inConditions(mongoose.Types.Decimal128.fromString),
+      ...this.equalityConditions(dbPath, mongoose.Types.Decimal128.fromString),
+      ...this.orderingConditions(dbPath, mongoose.Types.Decimal128.fromString),
+      ...this.inConditions(dbPath, mongoose.Types.Decimal128.fromString),
+    };
+  }
+}
+
+class KnexDecimalInterface extends KnexFieldAdapter {
+  createColumn(table) {
+    return table.decimal(this.path);
+  }
+  getQueryConditions(dbPath) {
+    return {
+      ...this.equalityConditions(dbPath),
+      ...this.orderingConditions(dbPath),
+      ...this.inConditions(dbPath),
     };
   }
 }
@@ -80,4 +96,5 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
 module.exports = {
   Decimal,
   MongoDecimalInterface,
+  KnexDecimalInterface,
 };

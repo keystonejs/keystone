@@ -1,15 +1,22 @@
 const mongoose = require('mongoose');
 const inflection = require('inflection');
 const pSettle = require('p-settle');
-const { escapeRegExp, pick, getType, mapKeys, mapKeyNames } = require('@voussoir/utils');
+const {
+  escapeRegExp,
+  pick,
+  getType,
+  mapKeys,
+  mapKeyNames,
+  identity,
+} = require('@keystone-alpha/utils');
 
 const {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
-} = require('@voussoir/core/adapters');
-const joinBuilder = require('@voussoir/mongo-join-builder');
-const logger = require('@voussoir/logger')('mongoose');
+} = require('@keystone-alpha/keystone/adapters');
+const joinBuilder = require('@keystone-alpha/mongo-join-builder');
+const logger = require('@keystone-alpha/logger')('mongoose');
 
 const simpleTokenizer = require('./tokenizers/simple');
 const relationshipTokenizer = require('./tokenizers/relationship');
@@ -166,10 +173,7 @@ class MongooseListAdapter extends BaseListAdapter {
   }
 
   prepareFieldAdapter(fieldAdapter) {
-    fieldAdapter.addToMongooseSchema(this.schema, this.mongoose, {
-      addPreSaveHook: this.addPreSaveHook.bind(this),
-      addPostReadHook: this.addPostReadHook.bind(this),
-    });
+    fieldAdapter.addToMongooseSchema(this.schema, this.mongoose);
   }
 
   /**
@@ -211,47 +215,38 @@ class MongooseListAdapter extends BaseListAdapter {
     return this.model.syncIndexes();
   }
 
-  async create(data) {
-    const dataToSave = await this.onPreSave(data);
-    const createdData = await this.model.create(dataToSave);
-    return this.onPostRead(pick(createdData, ['id', ...Object.keys(data)]));
+  _create(data) {
+    return this.model.create(data);
   }
 
-  async delete(id) {
-    const deletedData = await this.model.findByIdAndRemove(id);
-    return this.onPostRead(deletedData);
+  _delete(id) {
+    return this.model.findByIdAndRemove(id);
   }
 
-  async update(id, data) {
-    const dataToSave = await this.onPreSave(data);
+  _update(id, data) {
     // Avoid any kind of injection attack by explicitly doing a `$set` operation
     // Return the modified item, not the original
-    const updatedData = await this.model.findByIdAndUpdate(id, { $set: dataToSave }, { new: true });
-    return this.onPostRead(updatedData);
+    return this.model.findByIdAndUpdate(id, { $set: data }, { new: true });
   }
 
-  async findAll() {
-    const foundItems = await this.model.find();
-    return Promise.all(foundItems.map(item => this.onPostRead(item)));
+  _findAll() {
+    return this.model.find();
   }
 
-  async findById(id) {
-    const foundItem = await this.model.findById(id);
-    return this.onPostRead(foundItem);
+  _findById(id) {
+    return this.model.findById(id);
   }
 
-  async find(condition) {
-    const foundItems = await this.model.find(condition);
-    return Promise.all(foundItems.map(item => this.onPostRead(item)));
+  _find(condition) {
+    return this.model.find(condition);
   }
 
-  async findOne(condition) {
-    const foundItem = await this.model.findOne(condition);
-    return this.onPostRead(foundItem);
+  _findOne(condition) {
+    return this.model.findOne(condition);
   }
 
   graphQlQueryPathToMongoField(path) {
-    const fieldAdapter = this.fieldAdapters.find(adapter => adapter.mapsToPath(path));
+    const fieldAdapter = this.fieldAdaptersByPath[path];
 
     if (!fieldAdapter) {
       throw new Error(`Unable to find Mongo field which maps to graphQL path ${path}`);
@@ -260,7 +255,7 @@ class MongooseListAdapter extends BaseListAdapter {
     return fieldAdapter.getMongoFieldName();
   }
 
-  itemsQuery(args, { meta = false } = {}) {
+  _itemsQuery(args, { meta = false } = {}) {
     function graphQlQueryToMongoJoinQuery(query) {
       const _query = {
         ...query.where,
@@ -306,18 +301,9 @@ class MongooseListAdapter extends BaseListAdapter {
           }
           return foundItems[0];
         }
-
-        if (foundItems.length) {
-          return Promise.all(foundItems.map(item => this.onPostRead(item)));
-        } else {
-          return foundItems;
-        }
+        return foundItems;
       }
     );
-  }
-
-  itemsQueryMeta(args) {
-    return this.itemsQuery(args, { meta: true });
   }
 }
 
@@ -343,92 +329,76 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
 
   // The following methods provide helpers for constructing the return values of `getQueryConditions`.
   // Each method takes:
-  //   `v`: A value transformation function which converts from a string type provided
-  //        by graphQL into a native mongoose type.
-  //   `g`: A path transformation function which converts from the field path into the
-  //        mongoose document path.
-  equalityConditions(f = v => v, g = p => p) {
+  //   `dbPath`: The database field/column name to be used in the comparison
+  //   `f`: (non-string methods only) A value transformation function which converts from a string type
+  //        provided by graphQL into a native adapter type.
+  equalityConditions(dbPath, f = identity) {
     return {
-      [this.path]: value => ({ [g(this.path)]: { $eq: f(value) } }),
-      [`${this.path}_not`]: value => ({ [g(this.path)]: { $ne: f(value) } }),
+      [this.path]: value => ({ [dbPath]: { $eq: f(value) } }),
+      [`${this.path}_not`]: value => ({ [dbPath]: { $ne: f(value) } }),
     };
   }
 
-  equalityConditionsInsensitive(f = escapeRegExp, g = p => p) {
+  equalityConditionsInsensitive(dbPath) {
+    const f = escapeRegExp;
     return {
-      [`${this.path}_i`]: value => ({ [g(this.path)]: new RegExp(`^${f(value)}$`, 'i') }),
-      [`${this.path}_not_i`]: value => ({
-        [g(this.path)]: { $not: new RegExp(`^${f(value)}$`, 'i') },
-      }),
+      [`${this.path}_i`]: value => ({ [dbPath]: new RegExp(`^${f(value)}$`, 'i') }),
+      [`${this.path}_not_i`]: value => ({ [dbPath]: { $not: new RegExp(`^${f(value)}$`, 'i') } }),
     };
   }
 
-  inConditions(f = v => v, g = p => p) {
+  inConditions(dbPath, f = identity) {
     return {
-      [`${this.path}_in`]: value => ({ [g(this.path)]: { $in: value.map(s => f(s)) } }),
-      [`${this.path}_not_in`]: value => ({
-        [g(this.path)]: { $not: { $in: value.map(s => f(s)) } },
-      }),
+      [`${this.path}_in`]: value => ({ [dbPath]: { $in: value.map(s => f(s)) } }),
+      [`${this.path}_not_in`]: value => ({ [dbPath]: { $not: { $in: value.map(s => f(s)) } } }),
     };
   }
 
-  orderingConditions(f = v => v, g = p => p) {
+  orderingConditions(dbPath, f = identity) {
     return {
-      [`${this.path}_lt`]: value => ({ [g(this.path)]: { $lt: f(value) } }),
-      [`${this.path}_lte`]: value => ({ [g(this.path)]: { $lte: f(value) } }),
-      [`${this.path}_gt`]: value => ({ [g(this.path)]: { $gt: f(value) } }),
-      [`${this.path}_gte`]: value => ({ [g(this.path)]: { $gte: f(value) } }),
+      [`${this.path}_lt`]: value => ({ [dbPath]: { $lt: f(value) } }),
+      [`${this.path}_lte`]: value => ({ [dbPath]: { $lte: f(value) } }),
+      [`${this.path}_gt`]: value => ({ [dbPath]: { $gt: f(value) } }),
+      [`${this.path}_gte`]: value => ({ [dbPath]: { $gte: f(value) } }),
     };
   }
 
-  stringConditions(f = escapeRegExp, g = p => p) {
+  stringConditions(dbPath) {
+    const f = escapeRegExp;
     return {
-      [`${this.path}_contains`]: value => ({ [g(this.path)]: { $regex: new RegExp(f(value)) } }),
-      [`${this.path}_not_contains`]: value => ({ [g(this.path)]: { $not: new RegExp(f(value)) } }),
-      [`${this.path}_starts_with`]: value => ({
-        [g(this.path)]: { $regex: new RegExp(`^${f(value)}`) },
-      }),
+      [`${this.path}_contains`]: value => ({ [dbPath]: { $regex: new RegExp(f(value)) } }),
+      [`${this.path}_not_contains`]: value => ({ [dbPath]: { $not: new RegExp(f(value)) } }),
+      [`${this.path}_starts_with`]: value => ({ [dbPath]: { $regex: new RegExp(`^${f(value)}`) } }),
       [`${this.path}_not_starts_with`]: value => ({
-        [g(this.path)]: { $not: new RegExp(`^${f(value)}`) },
+        [dbPath]: { $not: new RegExp(`^${f(value)}`) },
       }),
-      [`${this.path}_ends_with`]: value => ({
-        [g(this.path)]: { $regex: new RegExp(`${f(value)}$`) },
-      }),
-      [`${this.path}_not_ends_with`]: value => ({
-        [g(this.path)]: { $not: new RegExp(`${f(value)}$`) },
-      }),
+      [`${this.path}_ends_with`]: value => ({ [dbPath]: { $regex: new RegExp(`${f(value)}$`) } }),
+      [`${this.path}_not_ends_with`]: value => ({ [dbPath]: { $not: new RegExp(`${f(value)}$`) } }),
     };
   }
 
-  stringConditionsInsensitive(f = escapeRegExp, g = p => p) {
+  stringConditionsInsensitive(dbPath) {
+    const f = escapeRegExp;
     return {
-      [`${this.path}_contains_i`]: value => ({
-        [g(this.path)]: { $regex: new RegExp(f(value), 'i') },
-      }),
-      [`${this.path}_not_contains_i`]: value => ({
-        [g(this.path)]: { $not: new RegExp(f(value), 'i') },
-      }),
+      [`${this.path}_contains_i`]: value => ({ [dbPath]: { $regex: new RegExp(f(value), 'i') } }),
+      [`${this.path}_not_contains_i`]: value => ({ [dbPath]: { $not: new RegExp(f(value), 'i') } }),
       [`${this.path}_starts_with_i`]: value => ({
-        [g(this.path)]: { $regex: new RegExp(`^${f(value)}`, 'i') },
+        [dbPath]: { $regex: new RegExp(`^${f(value)}`, 'i') },
       }),
       [`${this.path}_not_starts_with_i`]: value => ({
-        [g(this.path)]: { $not: new RegExp(`^${f(value)}`, 'i') },
+        [dbPath]: { $not: new RegExp(`^${f(value)}`, 'i') },
       }),
       [`${this.path}_ends_with_i`]: value => ({
-        [g(this.path)]: { $regex: new RegExp(`${f(value)}$`, 'i') },
+        [dbPath]: { $regex: new RegExp(`${f(value)}$`, 'i') },
       }),
       [`${this.path}_not_ends_with_i`]: value => ({
-        [g(this.path)]: { $not: new RegExp(`${f(value)}$`, 'i') },
+        [dbPath]: { $not: new RegExp(`${f(value)}$`, 'i') },
       }),
     };
   }
 
   getMongoFieldName() {
     return this.path;
-  }
-
-  mapsToPath(path) {
-    return path === this.path;
   }
 }
 

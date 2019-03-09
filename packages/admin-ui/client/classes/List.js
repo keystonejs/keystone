@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 import FieldTypes from '../FIELD_TYPES';
-import { arrayToObject } from '@voussoir/utils';
+import { arrayToObject } from '@keystone-alpha/utils';
 
 export const gqlCountQueries = lists => gql`{
   ${lists.map(list => list.countQuery()).join('\n')}
@@ -23,6 +23,7 @@ export default class List {
       mutation create($data: ${this.gqlNames.createInputName}!) {
         ${this.gqlNames.createMutationName}(data: $data) {
           id
+          _label_
         }
       }
     `;
