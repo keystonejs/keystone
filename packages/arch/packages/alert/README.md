@@ -3,6 +3,8 @@ section: misc
 title: Alert
 ---
 
+import { Alert } from './src';
+
 # Arch Alert
 
 #### TODO
@@ -136,12 +138,6 @@ import { CheckIcon } from '@atlaskit/icons';
 </Alert>;
 ```
 
-<Alert appearance="success" variant="bold" icon={CheckIcon}>
-  <span>Alert message with an icon goes here.</span>
-</Alert>
-
-<!-- <checkicon></checkicon> -->
-
 ## Full width alert
 
 An alert that is full width; removes border and border radius.
@@ -151,10 +147,6 @@ An alert that is full width; removes border and border radius.
   <Container>Full width alert.</Container>
 </Alert>
 ```
-
-<Alert isFullWidth>
-  <Container>Full width alert.</Container>
-</Alert>
 
 <!-- %proptypes -->
 
