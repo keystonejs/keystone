@@ -42,7 +42,7 @@ export function Node({ node, attributes, children, isSelected, editor }) {
           <Popper placement="bottom" referenceElement={aElement}>
             {({ style, ref }) => {
               return (
-                <div style={style} css={{ margin: gridSize }}>
+                <div style={style} css={{ margin: gridSize, display: 'flex' }}>
                   <div
                     ref={ref}
                     css={{
@@ -69,6 +69,7 @@ export function Node({ node, attributes, children, isSelected, editor }) {
                       target="_blank"
                       rel="noopener"
                       label="Open Link"
+                      css={{ marginLeft: gridSize }}
                       href={href}
                     />
                   </div>
