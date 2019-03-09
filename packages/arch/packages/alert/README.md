@@ -126,18 +126,6 @@ Alerts default to a `subtle` variant, but if you need to pack more punch, add th
   Alert message goes here.
 </Alert>
 
-## With icon
-
-Include an icon to the left of the alert for some added attention.
-
-```jsx
-import { CheckIcon } from '@atlaskit/icons';
-
-<Alert appearance="success" variant="bold" icon={CheckIcon}>
-  <span>Alert message with an icon goes here.</span>
-</Alert>;
-```
-
 ## Full width alert
 
 An alert that is full width; removes border and border radius.
