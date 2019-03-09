@@ -1283,4 +1283,32 @@ module.exports = class List {
   getFieldByPath(path) {
     return this.fieldsByPath[path];
   }
+
+  async create(data) {
+    return this.adapter.create(data);
+  }
+
+  async delete(id) {
+    return this.adapter.delete(id);
+  }
+
+  async update(id, data) {
+    return this.adapter.update(id, data);
+  }
+
+  async findAll() {
+    return this.adapter.findAll();
+  }
+
+  async findById(id) {
+    return this.adapter.findById(id);
+  }
+
+  async find(condition) {
+    return this.adapter.find(condition);
+  }
+
+  async findOne(condition) {
+    return this.adapter.findOne(condition);
+  }
 };
