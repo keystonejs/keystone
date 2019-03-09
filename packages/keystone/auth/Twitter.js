@@ -191,16 +191,17 @@ class TwitterAuthStrategy {
 
     // Lookup a past, verified session, that links to a user
     let pastSessionItem;
+    let fieldItemPopulated;
     try {
       // NOTE: We don't need to filter on verifiedAt as these rows can only
       // possibly exist after we've validated with Twitter (see above)
       pastSessionItem = await this.getSessionList()
         .adapter.findOne({
           [FIELD_TWITTER_ID]: jsonData.id_str,
-        })
-        // do a JOIN on the item
-        .populate(FIELD_ITEM)
-        .exec();
+        });
+        // find user item related to past session, join not possible atm
+      fieldItemPopulated = pastSessionItem && await this.getList()
+        .adapter.findById(pastSessionItem[FIELD_ITEM].toString());
     } catch (sessionFindError) {
       // TODO: Better error message. Why would this fail? DB connection lost? A
       // "not found" shouldn't throw (it'll just return null).
@@ -215,7 +216,7 @@ class TwitterAuthStrategy {
 
     // Only add a reference to the parent list when we know the link exists
     if (pastSessionItem) {
-      newSessionData.item = pastSessionItem.item.id;
+      newSessionData[FIELD_ITEM] = fieldItemPopulated.id;
     }
 
     const sessionItem = await this.keystone.createItem(this.config.sessionListKey, newSessionData);
@@ -235,7 +236,7 @@ class TwitterAuthStrategy {
       };
     }
 
-    const previouslyVerifiedItem = pastSessionItem[FIELD_ITEM];
+    const previouslyVerifiedItem = fieldItemPopulated;
     return {
       ...result,
       item: previouslyVerifiedItem,
@@ -270,15 +271,13 @@ class TwitterAuthStrategy {
 
     try {
       const twitterItem = await this.getSessionList()
-        .adapter.update(twitterSessionId, { item: item.id })
-        .exec();
+        .adapter.update(twitterSessionId, { item: item.id });
 
       await this.getList()
         .adapter.update(item.id, {
           [this.config.idField]: twitterItem[FIELD_TWITTER_ID],
           [this.config.usernameField]: twitterItem[FIELD_TWITTER_USERNAME],
-        })
-        .exec();
+        });
     } catch (error) {
       return { success: false, error };
     }
