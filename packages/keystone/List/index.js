@@ -1311,4 +1311,12 @@ module.exports = class List {
   async findOne(condition) {
     return this.adapter.findOne(condition);
   }
+
+  addPreSaveHook(hook) {
+    this.adapter.addPreSaveHook(hook);
+  }
+
+  addPostReadHook(hook) {
+    this.adapter.addPostReadHook(hook);
+  }
 };
