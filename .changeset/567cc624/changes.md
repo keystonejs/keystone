@@ -1,0 +1,1 @@
+- Update the package.json author field to "The Keystone Development Team"

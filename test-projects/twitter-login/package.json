@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/cypress-project-twitter-login",
   "private": true,
   "version": "1.0.0",
-  "author": "Jed Watson",
+  "author": "The Keystone Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
