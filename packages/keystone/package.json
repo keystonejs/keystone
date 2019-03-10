@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/keystone",
   "description": "The main @keystone-alpha class & CLI. This is where the magic happens.",
   "version": "1.0.0",
-  "author": "The Keystone Development Team",
+  "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"

@@ -1,9 +1,9 @@
 {
   "name": "@keystone-alpha/api-tests",
-  "description": "A set of tests for running against the Keystone API.",
+  "description": "A set of tests for running against the KeystoneJS API.",
   "private": true,
   "version": "0.0.0",
-  "author": "The Keystone Development Team",
+  "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
