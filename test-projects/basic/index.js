@@ -1,5 +1,5 @@
-const { AdminUI } = require('@voussoir/admin-ui');
-const { Keystone } = require('@voussoir/keystone');
+const { AdminUI } = require('@keystone-alpha/admin-ui');
+const { Keystone } = require('@keystone-alpha/keystone');
 const {
   File,
   Text,
@@ -14,9 +14,9 @@ const {
   Color,
   Url,
   Content,
-} = require('@voussoir/fields');
+} = require('@keystone-alpha/fields');
 const Decimal = require('../../packages/fields/types/Decimal');
-const { CloudinaryAdapter, LocalFileAdapter } = require('@voussoir/file-adapters');
+const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
 
 const { staticRoute, staticPath, cloudinary } = require('./config');
 
@@ -29,7 +29,7 @@ const getYear = require('date-fns/get_year');
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
 
-const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const keystone = new Keystone({
   name: 'Cypress Test Project Basic',

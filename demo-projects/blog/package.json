@@ -1,8 +1,8 @@
 {
   "name": "keystone_demo_blog",
   "private": true,
-  "version": "1.0.1",
-  "author": "Nathan Simpson",
+  "version": "1.0.0",
+  "author": "The Keystone Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
@@ -14,13 +14,13 @@
   "dependencies": {
     "@emotion/core": "^10.0.4",
     "@emotion/styled": "^10.0.4",
-    "@voussoir/adapter-mongoose": "^2.0.0",
-    "@voussoir/admin-ui": "^1.0.0",
-    "@voussoir/core": "^2.1.0",
-    "@voussoir/fields": "^3.0.0",
-    "@voussoir/file-adapters": "^0.2.1",
-    "@voussoir/keystone": "^0.0.0",
-    "@voussoir/server": "^1.0.0",
+    "@keystone-alpha/adapter-mongoose": "^1.0.0",
+    "@keystone-alpha/admin-ui": "^1.0.0",
+    "@keystone-alpha/core": "^1.0.0",
+    "@keystone-alpha/fields": "^1.0.0",
+    "@keystone-alpha/file-adapters": "^1.0.0",
+    "@keystone-alpha/keystone": "^1.0.0",
+    "@keystone-alpha/server": "^1.0.0",
     "apollo-cache-inmemory": "^1.5.1",
     "apollo-client": "^2.5.1",
     "apollo-link-http": "^1.5.11",

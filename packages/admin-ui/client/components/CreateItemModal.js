@@ -5,7 +5,7 @@ import { Mutation } from 'react-apollo';
 
 import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
-import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
+import { resolveAllKeys, arrayToObject } from '@keystone-alpha/utils';
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 

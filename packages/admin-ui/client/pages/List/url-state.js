@@ -4,7 +4,7 @@ import querystring from 'querystring';
 import * as React from 'react';
 
 import List from '../../classes/List';
-import type { FieldControllerType } from '@voussoir/fields/Controller';
+import type { FieldControllerType } from '@keystone-alpha/fields/Controller';
 import { pseudoLabelField } from './FieldSelect';
 import type { AdminMeta } from '../../providers/AdminMeta';
 

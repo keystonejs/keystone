@@ -16,7 +16,15 @@ import { getResults } from '../utils/search';
 const SEARCH_DEBOUNCE = 200;
 
 const Search = ({ location, navigate }) => {
-  let [input, setInput] = useState(new URL(location.href).searchParams.get('q'));
+  let [input, setInput] = useState();
+  let [defaultInputInjected, setDefaultInputInjected] = useState(false);
+  useEffect(() => {
+    if (!defaultInputInjected) {
+      setDefaultInputInjected(true);
+      setInput(new URL(location.href).searchParams.get('q'));
+    }
+  }, setInput);
+
   let [query, setQuery] = useState(input);
   let [results, setResults] = useState({ results: [] });
 
@@ -130,6 +138,12 @@ const Search = ({ location, navigate }) => {
   );
 };
 
-const SearchPage = () => <Location>{props => <Search {...props} />}</Location>;
+const SearchPage = () => (
+  <Location>
+    {props => {
+      return <Search {...props} />;
+    }}
+  </Location>
+);
 
 export default SearchPage;

@@ -1,4 +1,4 @@
-import { matchFilter } from './fields.test';
+import { matchFilter } from '@keystone-alpha/test-utils';
 import Text from '../types/Text';
 // import Checkbox from './';
 

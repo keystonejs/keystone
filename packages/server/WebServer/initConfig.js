@@ -1,4 +1,4 @@
-const { fixConfigKeys, checkRequiredConfig } = require('@voussoir/utils');
+const { fixConfigKeys, checkRequiredConfig } = require('@keystone-alpha/utils');
 
 const requiredConfig = [];
 

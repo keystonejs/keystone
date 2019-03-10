@@ -1,8 +1,12 @@
 const bodyParser = require('body-parser');
+const falsey = require('falsey');
 const express = require('express');
 const webpack = require('webpack');
+const chalk = require('chalk');
+const terminalLink = require('terminal-link');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+const pkgInfo = require('../package.json');
 
 const getWebpackConfig = require('./getWebpackConfig');
 const { mode } = require('./env');
@@ -139,11 +143,18 @@ module.exports = class AdminUI {
     return app;
   }
 
-  createDevMiddleware({ apiPath, graphiqlPath }) {
+  createDevMiddleware({ apiPath, graphiqlPath, port }) {
     const app = express();
     const { adminPath } = this;
 
     // ensure any non-resource requests are rewritten for history api fallback
+    if (falsey(process.env.DISABLE_LOGGING)) {
+      const url = `http://localhost:${port}${adminPath}`;
+      const prettyUrl = chalk.blue(`${url}(/.*)?`);
+      const clickableUrl = terminalLink(prettyUrl, url, { fallback: () => prettyUrl });
+
+      console.log(`🔗 ${chalk.green('Keystone Admin UI:')} ${clickableUrl} (v${pkgInfo.version})`);
+    }
     app.use(adminPath, (req, res, next) => {
       // TODO: make sure that this change is OK. (regex was testing on url, not path)
       // Changed because this was preventing adminui pages loading when a querystrings

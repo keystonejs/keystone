@@ -2,12 +2,20 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const { formatError, isInstance: isApolloErrorInstance } = require('apollo-errors');
 const { renderPlaygroundPage } = require('graphql-playground-html');
+const playgroundPkg = require('graphql-playground-react/package.json');
+const gql = require('graphql-tag');
 const cuid = require('cuid');
-const logger = require('@voussoir/logger');
-const { omit } = require('@voussoir/utils');
+const hash = require('object-hash');
+const chalk = require('chalk');
+const logger = require('@keystone-alpha/logger');
+const falsey = require('falsey');
+const { omit } = require('@keystone-alpha/utils');
 const { graphql } = require('graphql');
 const StackUtils = require('stack-utils');
+const bodyParser = require('body-parser');
+const querystring = require('querystring');
 const ensureError = require('ensure-error');
+const terminalLink = require('terminal-link');
 const serializeError = require('serialize-error');
 
 const { NestedError } = require('./graphqlErrors');
@@ -64,11 +72,74 @@ const flattenNestedErrors = error =>
     []
   );
 
+const buildGraphiqlQueryParams = ({ query, variables }) =>
+  querystring.stringify({
+    query,
+    variables: JSON.stringify(variables),
+  });
+
+const ttyClickableUrl = ({ path, port }) => {
+  const url = `http://localhost:${port}${path}`;
+  const prettyUrl = chalk.blue(url);
+  return terminalLink(prettyUrl, url, { fallback: () => prettyUrl });
+};
+
 module.exports = function createGraphQLMiddleware(
   keystone,
-  { apiPath, graphiqlPath, apolloConfig }
+  { apiPath, graphiqlPath, apolloConfig, port }
 ) {
   const app = express();
+
+  const devQueryLog = {};
+  const devLoggingEnabled =
+    process.env.NODE_ENV !== 'production' && falsey(process.env.DISABLE_LOGGING);
+
+  if (graphiqlPath && devLoggingEnabled) {
+    // Needed to read the body contents out below
+    app.use(bodyParser.json());
+
+    const chalkColour = new chalk.constructor({ enabled: true, level: 3 });
+
+    // peeks at incoming graphql requests and builds shortlinks
+    // NOTE: Must come before we setup the API below
+    app.use(apiPath, (req, res, next) => {
+      // Skip requests from graphiql itself
+      if (req.headers.referer && req.headers.referer.includes(graphiqlPath)) {
+        return next();
+      }
+
+      // hash query into id so that identical queries occupy
+      // the same space in the devQueryLog map.
+      const id = hash({ query: req.body.query, variables: req.body.variables });
+
+      // Store the loadable GraphiQL URL against that id
+      const queryParams = buildGraphiqlQueryParams(req.body);
+      devQueryLog[id] = `${graphiqlPath}?${queryParams}`;
+
+      const ast = gql(req.body.query);
+
+      const operations = ast.definitions.map(
+        def => `${def.operation} ${def.name ? `${def.name.value} ` : ''}{ .. }`
+      );
+
+      // Make the queries clickable in the terminal where supported
+      console.log(
+        terminalLink(
+          `${chalk.blue(operations.map(op => chalkColour.bold(op)).join(', '))}${
+            terminalLink.isSupported ? ` (👈 click to view)` : ''
+          }`,
+          `${req.protocol}://${req.get('host')}${graphiqlPath}/go?id=${id}`,
+          {
+            // Otherwise, show the link on a new line
+            fallback: (text, url) => `${text}\n${chalkColour.gray(` ⤷ inspect @ ${url}`)}`,
+          }
+        )
+      );
+
+      // finally pass requests to the actual graphql endpoint
+      next();
+    });
+  }
 
   // add the Admin GraphQL API
   const server = new ApolloServer({
@@ -77,6 +148,17 @@ module.exports = function createGraphQLMiddleware(
     ...apolloConfig,
     ...keystone.getAdminSchema(),
     context: ({ req }) => keystone.getAccessContext(req),
+    ...(process.env.ENGINE_API_KEY
+      ? {
+          engine: {
+            apiKey: process.env.ENGINE_API_KEY,
+          },
+          tracing: true,
+        }
+      : {
+          engine: false,
+          tracing: process.env.NODE_ENV !== 'production',
+        }),
     formatError: error => {
       const { originalError } = error;
       if (originalError && !originalError.path) {
@@ -156,6 +238,9 @@ module.exports = function createGraphQLMiddleware(
     },
   });
 
+  if (falsey(process.env.DISABLE_LOGGING)) {
+    console.log(`🔗 ${chalk.green('GraphQL API:')} ${ttyClickableUrl({ path: apiPath, port })}`);
+  }
   server.applyMiddleware({
     app,
     path: apiPath,
@@ -165,14 +250,48 @@ module.exports = function createGraphQLMiddleware(
   });
 
   if (graphiqlPath) {
+    if (devLoggingEnabled) {
+      // parses shortlinks and redirects to the GraphiQL editor
+      console.log(
+        `🔗 ${chalk.green('GraphQL Debug Links:')} ${ttyClickableUrl({
+          path: `${graphiqlPath}/go`,
+          port,
+        })}`
+      );
+      app.use(`${graphiqlPath}/go`, (req, res) => {
+        const { id } = req.query;
+        if (!devQueryLog[id]) {
+          const queryParams = buildGraphiqlQueryParams({
+            query: `# Unable to locate query '${id}'.\n# NOTE: You may have restarted your dev server. Doing so will clear query short URLs.`,
+          });
+          return res.redirect(`${graphiqlPath}?${queryParams}`);
+        }
+        return res.redirect(devQueryLog[id]);
+      });
+    }
+
+    if (falsey(process.env.DISABLE_LOGGING)) {
+      console.log(
+        `🔗 ${chalk.green('GraphQL Playground:')} ${ttyClickableUrl({
+          path: graphiqlPath,
+          port,
+        })} (v${playgroundPkg.version})`
+      );
+    }
     app.use(graphiqlPath, (req, res) => {
-      if (req.user && req.sessionID) {
-        // This is a literal string which is injected into the HTML string and
-        // used as part of a JSON object...
-        res.setHeader('Authorization', `Bearer ${req.sessionID}`);
+      const tab = {
+        endpoint: apiPath,
+      };
+
+      if (req.query && req.query.query) {
+        tab.query = req.query.query;
+        tab.variables = req.query.variables;
       }
+
       res.setHeader('Content-Type', 'text/html');
-      res.write(renderPlaygroundPage({ endpoint: apiPath, version: '1.6.0' }));
+      res.write(
+        renderPlaygroundPage({ endpoint: apiPath, version: playgroundPkg.version, tabs: [tab] })
+      );
       res.end();
     });
   }

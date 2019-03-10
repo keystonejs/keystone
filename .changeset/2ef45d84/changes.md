@@ -1,0 +1,1 @@
+- Mongoose option useFindAndModify is defaulted to false, resolves deprecation warnings

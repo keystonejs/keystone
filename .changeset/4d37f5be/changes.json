@@ -1,6 +1,0 @@
-{
-  "releases": [{ "name": "@arch-ui/pill", "type": "minor" }],
-  "dependents": [
-    { "name": "@voussoir/admin-ui", "type": "patch", "dependencies": ["@arch-ui/pill"] }
-  ]
-}

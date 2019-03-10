@@ -1,4 +1,24 @@
+# @keystone-alpha/field-views-loader
+
+## 1.0.0
+
+- [major] 8b6734ae:
+
+  - This is the first release of keystone-alpha (previously voussoir).
+    All packages in the `@voussoir` namespace are now available in the `@keystone-alpha` namespace, starting at version `1.0.0`.
+    To upgrade your project you must update any `@voussoir/<foo>` dependencies in `package.json` to point to `@keystone-alpha/<foo>: "^1.0.0"` and update any `require`/`import` statements in your code.
+
 # @voussoir/field-views-loader
+
+## 0.3.0
+
+- [patch] ca1f0ad3:
+
+  - Update to latest webpack packages
+
+- [minor] eaab547c:
+
+  - Allow adding related items from the Relationship field
 
 ## 0.2.0
 

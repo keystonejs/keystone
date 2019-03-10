@@ -1,4 +1,4 @@
-const keystone = require('@voussoir/core');
+const keystone = require('@keystone-alpha/core');
 
 const { twitterAuthEnabled, port, staticRoute, staticPath } = require('./config');
 const { configureTwitterAuth } = require('./twitter');

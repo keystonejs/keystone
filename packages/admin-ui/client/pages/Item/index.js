@@ -21,7 +21,7 @@ import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../.
 import { IdCopy } from './IdCopy';
 import { ItemTitle } from './ItemTitle';
 
-import { resolveAllKeys, arrayToObject } from '@voussoir/utils';
+import { resolveAllKeys, arrayToObject } from '@keystone-alpha/utils';
 import isEqual from 'lodash.isequal';
 
 let Render = ({ children }) => children();

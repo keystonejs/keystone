@@ -3,11 +3,17 @@ const fs = require('fs');
 const gql = require('graphql-tag');
 const fastMemoize = require('fast-memoize');
 const { print } = require('graphql/language/printer');
-const { resolveAllKeys, arrayToObject, mapKeys, objMerge, flatten } = require('@voussoir/utils');
+const {
+  resolveAllKeys,
+  arrayToObject,
+  mapKeys,
+  objMerge,
+  flatten,
+} = require('@keystone-alpha/utils');
 const {
   validateFieldAccessControl,
   validateListAccessControl,
-} = require('@voussoir/access-control');
+} = require('@keystone-alpha/access-control');
 
 const {
   unmergeRelationships,
