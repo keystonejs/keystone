@@ -1,5 +1,5 @@
 import React, { useEffect, memo } from 'react';
-import { Prompt } from 'react-router';
+import { Prompt } from 'react-router-dom';
 
 export default memo(function PreventNavigation() {
   // to handle when the user closes the tab, does an actual browser navigation away or etc.

@@ -105,7 +105,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
       // forcing the name to be the dasherized of the Keystone name.
       // For the case where both are set, the expected behaviour is for it to be
       // overwritten.
-      { useNewUrlParser: true, ...adapterConnectOptions, dbName }
+      { useNewUrlParser: true, useFindAndModify: false, ...adapterConnectOptions, dbName }
     );
   }
   async postConnect() {
