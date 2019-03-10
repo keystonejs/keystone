@@ -73,7 +73,7 @@ const Layout = ({ children }) => (
         css={{
           height: 'calc(100vh - 66px)',
           overflow: 'scroll',
-          background: colors.B.A5,
+          background: 'white',
 
           '@media all and (min-width: 800px)': {
             flex: '3 0px',
