@@ -21,6 +21,7 @@ async function getPackagePlugins() {
           // See `gatsby-node.js` for where it's used.
           name,
           path: `${dir}/`,
+          ignore: [`**/**/CHANGELOG.md`],
         },
       })),
     {

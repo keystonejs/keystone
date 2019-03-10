@@ -71,6 +71,7 @@
     "cuid": "^2.1.1",
     "date-fns": "^1.29.0",
     "dumb-passwords": "^0.2.1",
+    "ejs": "^2.6.1",
     "endent": "^1.3.0",
     "ensure-error": "^1.0.0",
     "express": "^4.16.3",
@@ -157,7 +158,6 @@
     "react-prop-toggle": "^1.0.2",
     "react-pseudo-state": "^2.2.1",
     "react-radios": "^1.1.0",
-    "react-router": "4.4.0-beta.6",
     "react-router-dom": "4.4.0-beta.6",
     "react-scrolllock": "^3.0.1",
     "react-select": "^2.1.2",
@@ -243,9 +243,9 @@
     "pino-colada": "^1.4.4",
     "prettier": "^1.15.3",
     "start-server-and-test": "^1.7.11",
+    "supertest-light": "^1.0.2",
     "terminal-link": "^1.2.0",
     "testcheck": "^1.0.0-rc.2",
-    "supertest-light": "^1.0.2",
     "tmp": "^0.0.33"
   }
 }

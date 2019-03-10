@@ -1,8 +1,7 @@
 /** @jsx jsx */
 
 import { Component, memo } from 'react';
-import { withRouter, Route } from 'react-router';
-import { Link } from 'react-router-dom';
+import { withRouter, Route, Link } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
 import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';

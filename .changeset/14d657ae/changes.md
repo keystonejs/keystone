@@ -1,0 +1,1 @@
+- Make links in terminal clicky where possible
