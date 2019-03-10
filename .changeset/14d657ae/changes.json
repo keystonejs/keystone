@@ -1,0 +1,7 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/admin-ui", "type": "minor" },
+    { "name": "@keystone-alpha/server", "type": "minor" }
+  ],
+  "dependents": []
+}
