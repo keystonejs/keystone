@@ -35,7 +35,7 @@ async function getPackagePlugins() {
     ...workspaces
       .map(({ dir, config }) => ({ dir, name: config.name }))
       .filter(({ dir }) => fs.existsSync(dir))
-      .filter(({ dir }) => !dir.includes('website') || !dir.includes('arch'))
+      .filter(({ dir }) => !dir.includes('website') && !dir.includes('arch'))
       .map(({ name, dir }) => ({
         resolve: 'gatsby-source-filesystem',
         options: {
