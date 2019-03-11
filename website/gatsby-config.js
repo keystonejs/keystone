@@ -54,7 +54,6 @@ async function getGatsbyConfig() {
   return {
     plugins: [
       ...packageFilesPlugins,
-
       `gatsby-plugin-sharp`,
       {
         resolve: `gatsby-mdx`,
@@ -121,6 +120,13 @@ async function getGatsbyConfig() {
           },
           //custom index file name, default is search_index.json
           filename: 'search_index.json',
+        },
+      },
+      {
+        resolve: `gatsby-plugin-google-analytics`,
+        options: {
+          trackingId: 'UA-43970386-1',
+          head: true,
         },
       },
     ],
