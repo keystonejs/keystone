@@ -1,12 +1,10 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
-import { Link } from 'gatsby';
 import { jsx, Global } from '@emotion/core';
 
 /** @jsx jsx */
 
 import { colors } from '@arch-ui/theme';
 import Button from '../components/Button';
-import Header from '../components/Header';
 import Footer from '../components/Footer';
 import logosvg from '../images/logo.svg';
 
