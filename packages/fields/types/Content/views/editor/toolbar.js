@@ -1,14 +1,14 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useRef, Fragment, useLayoutEffect, forwardRef } from 'react';
+import { useRef, Fragment, useLayoutEffect, forwardRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Popper } from 'react-popper';
 import { marks, markTypes } from './marks';
 import { ToolbarButton } from './toolbar-components';
 import { CircleSlashIcon } from '@arch-ui/icons';
-import { colors } from '@arch-ui/theme';
+import { colors, gridSize } from '@arch-ui/theme';
 import { useMeasure } from '@arch-ui/hooks';
-import { selectionReference } from './utils';
+import { getSelectionReference } from './utils';
 import applyRef from 'apply-ref';
 
 let stopPropagation = e => {
@@ -94,10 +94,6 @@ const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children 
       }}
       style={style}
       css={{
-        backgroundColor: colors.N90,
-        padding: 8,
-        borderRadius: 6,
-        display: shouldShowToolbar ? 'flex' : 'none',
         // this isn't as nice of a transition as i'd like since the time is fixed
         // i think it would better if it was physics based but that would probably
         // be a lot of work for little gain
@@ -105,7 +101,17 @@ const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children 
         transition: 'transform 100ms, opacity 100ms',
       }}
     >
-      {shouldShowToolbar && children}
+      <div
+        css={{
+          backgroundColor: colors.N90,
+          padding: 8,
+          borderRadius: 6,
+          margin: gridSize,
+          display: shouldShowToolbar ? 'flex' : 'none',
+        }}
+      >
+        {shouldShowToolbar && children}
+      </div>
     </div>,
     document.body
   );
@@ -116,7 +122,16 @@ export default ({ editorState, blocks, editor }) => {
   // the inner toolbar won't have to update
   let children = <InnerToolbar blocks={blocks} editor={editor} editorState={editorState} />;
   return (
-    <Popper placement="top" referenceElement={selectionReference}>
+    <Popper
+      placement="top"
+      referenceElement={
+        // the reason we do this rather than having the selection reference
+        // be constant is because the selection reference
+        // has some internal state and it shouldn't persist between different
+        // editor references
+        useMemo(getSelectionReference, [])
+      }
+    >
       {({ style, ref, scheduleUpdate }) => (
         <PopperRender {...{ scheduleUpdate, editorState, style, blocks, editor, ref, children }} />
       )}
