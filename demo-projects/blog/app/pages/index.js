@@ -24,10 +24,7 @@ const Post = ({ post }) => {
           overflow: 'hidden',
         }}
       >
-        <img
-          src={post.image ? post.image.publicUrl : 'https://picsum.photos/900/200/?random'}
-          css={{ width: '100%' }}
-        />
+        {post.image ? <img src={post.image.publicUrl} css={{ width: '100%' }} /> : null}
         <div css={{ padding: '1em' }}>
           <h3 css={{ marginTop: 0 }}>{post.title}</h3>
           <p>{post.body}</p>
