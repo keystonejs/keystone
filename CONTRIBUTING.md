@@ -22,12 +22,12 @@ Summary: Fixed a bug that caused relationships to be added twice
 
 Release notes: <none>
 
-Releases: @voussoir/core@minor, @voussoir/adapter-mongoose@patch
+Releases: @keystone-alpha/core@minor, @keystone-alpha/adapter-mongoose@patch
 
-Dependents: @voussoir/cypress-project-access-control@patch, @voussoir/cypress-project-basic@patch, @voussoir/cypress-project-login@patch, @voussoir/cypress-project-twitter-login@patch
+Dependents: @keystone-alpha/cypress-project-access-control@patch, @keystone-alpha/cypress-project-basic@patch, @keystone-alpha/cypress-project-login@patch, @keystone-alpha/cypress-project-twitter-login@patch
 
 ---
-{"summary":"Fixed a bug that caused relationships to be added twice","releases":[{"name":"@voussoir/core","type":"minor"},{"name":"@voussoir/adapter-mongoose","type":"patch"}],"dependents":[{"name":"@voussoir/cypress-project-access-control","type":"patch","dependencies":["@voussoir/core","@voussoir/adapter-mongoose"]},{"name":"@voussoir/cypress-project-basic","type":"patch","dependencies":["@voussoir/core","@voussoir/adapter-mongoose"]},{"name":"@voussoir/cypress-project-login","type":"patch","dependencies":["@voussoir/core","@voussoir/adapter-mongoose"]},{"name":"@voussoir/cypress-project-twitter-login","type":"patch","dependencies":["@voussoir/core","@voussoir/adapter-mongoose"]}]}
+{"summary":"Fixed a bug that caused relationships to be added twice","releases":[{"name":"@keystone-alpha/core","type":"minor"},{"name":"@keystone-alpha/adapter-mongoose","type":"patch"}],"dependents":[{"name":"@keystone-alpha/cypress-project-access-control","type":"patch","dependencies":["@keystone-alpha/core","@keystone-alpha/adapter-mongoose"]},{"name":"@keystone-alpha/cypress-project-basic","type":"patch","dependencies":["@keystone-alpha/core","@keystone-alpha/adapter-mongoose"]},{"name":"@keystone-alpha/cypress-project-login","type":"patch","dependencies":["@keystone-alpha/core","@keystone-alpha/adapter-mongoose"]},{"name":"@keystone-alpha/cypress-project-twitter-login","type":"patch","dependencies":["@keystone-alpha/core","@keystone-alpha/adapter-mongoose"]}]}
 ---
 ```
 
@@ -59,7 +59,7 @@ To demonstrate, imagine you have the following two changesets:
 ...
 Summary: Fixed a bug that caused relationships to be added twice
 
-Releases: @voussoir/core@minor, @voussoir/adapter-mongoose@patch
+Releases: @keystone-alpha/core@minor, @keystone-alpha/adapter-mongoose@patch
 ...
 ```
 
@@ -69,7 +69,7 @@ and the second changest:
 ...
 Summary: Converted functions to arrow functions for some reason
 
-Releases: @voussoir/core@patch
+Releases: @keystone-alpha/core@patch
 ...
 ```
 
@@ -99,9 +99,11 @@ The commands to run are:
 ```sh
 git checkout master
 git pull
-git checkout -D temp-release-branch
+git branch -D temp-release-branch
 git checkout -b temp-release-branch
 bolt version-packages
+git add .
+git commit -m "Run version-packages"
 git push -f
 ```
 

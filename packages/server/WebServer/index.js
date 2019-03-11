@@ -88,30 +88,36 @@ module.exports = class WebServer {
       this.app.use(adminUI.createSessionMiddleware());
     }
 
-    const { apiPath, graphiqlPath, apollo } = this.config;
+    const { apiPath, graphiqlPath, apollo, port } = this.config;
 
     // GraphQL API always exists independent of any adminUI or Session settings
     this.app.use(
-      createGraphQLMiddleware(keystone, { apiPath, graphiqlPath, apolloConfig: apollo })
+      createGraphQLMiddleware(keystone, { apiPath, graphiqlPath, apolloConfig: apollo, port })
     );
 
     if (adminUI) {
       // This must be last as it's the "catch all" which falls into Webpack to
       // serve the Admin UI.
-      this.app.use(adminUI.createDevMiddleware({ apiPath, graphiqlPath }));
+      this.app.use(adminUI.createDevMiddleware({ apiPath, graphiqlPath, port }));
     }
   }
 
-  start() {
+  async start() {
     const {
       app,
       config: { port },
     } = this;
 
-    app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './default.html')));
+    await this.keystone.connect();
+    return new Promise((resolve, reject) => {
+      app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './default.html')));
 
-    app.listen(port, () => {
-      console.log(`KeystoneJS 5 ready on port ${port}`);
+      app.listen(port, error => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve({ port });
+      });
     });
   }
 };

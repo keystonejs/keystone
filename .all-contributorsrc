@@ -1,0 +1,158 @@
+{
+  "projectName": "keystone-5",
+  "projectOwner": "keystonejs",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "JedWatson",
+      "name": "Jed Watson",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/872310?v=4",
+      "profile": "http://www.thinkmill.com.au",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jesstelford",
+      "name": "Jess Telford",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/612020?v=4",
+      "profile": "http://jes.st/about",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "timleslie",
+      "name": "Tim Leslie",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/616382?v=4",
+      "profile": "http://www.timl.id.au",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mitchellhamilton",
+      "name": "Mitchell Hamilton",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/11481355?v=4",
+      "profile": "https://hamil.town",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jossmac",
+      "name": "Joss Mackison",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2730833?v=4",
+      "profile": "https://twitter.com/JossMackison",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "nathansimpsondesign",
+      "name": "Nathan Simpson",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/12689383?v=4",
+      "profile": "http://nathansimpson.design",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mikehazell",
+      "name": "Mike",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/814227?v=4",
+      "profile": "https://github.com/mikehazell",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "molomby",
+      "name": "John Molomby",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/2416367?v=4",
+      "profile": "https://github.com/molomby",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "dominikwilkowski",
+      "name": "Dominik Wilkowski",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1266923?v=4",
+      "profile": "https://dominik-wilkowski.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Noviny",
+      "name": "Ben Conolly",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/15622106?v=4",
+      "profile": "https://github.com/Noviny",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jaredcrowe",
+      "name": "Jared Crowe",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/4995433?v=4",
+      "profile": "https://github.com/jaredcrowe",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "gautamsi",
+      "name": "Gautam Singh",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5769869?v=4",
+      "profile": "https://www.linkedin.com/in/gautamsi",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "lukebatchelor",
+      "name": "lukebatchelor",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/18694878?v=4",
+      "profile": "https://github.com/lukebatchelor",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ticidesign",
+      "name": "Ticiana de Andrade",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/289889?v=4",
+      "profile": "http://www.ticidesign.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "aghaabbasq",
+      "name": "aghaabbasq",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/17919384?v=4",
+      "profile": "https://github.com/aghaabbasq",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ajaymathur",
+      "name": "Ajay Narain Mathur",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/9667784?v=4",
+      "profile": "http://ajaymathur.github.io/",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

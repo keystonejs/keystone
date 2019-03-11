@@ -6,16 +6,17 @@ import { jsx } from '@emotion/core';
 
 /** @jsx jsx */
 
-const prettyName = node => {
+const prettyName = (node, category) => {
+  const cat = category.replace('@', '');
+
   let pretty = node.path
-    .replace(node.context.workspace.replace('@', ''), '')
-    .replace(new RegExp(/(\/)/g), ' ')
+    .replace('/api', '')
+    .replace(cat, '')
+    .replace(new RegExp(/(\/\/)/g), '')
+    .replace(new RegExp(/\/$/g), '')
+    .replace(new RegExp(/^\//g), '')
     .replace('-', ' ')
     .trim();
-
-  if (pretty.startsWith('packages') || pretty.startsWith('types')) {
-    pretty = pretty.replace('packages', '').replace('types', '');
-  }
 
   return pretty === '' ? 'index' : pretty;
 };
@@ -39,10 +40,19 @@ export default () => (
     `}
     render={data => {
       const navData = data.allSitePage.edges.reduce((pageList, { node }) => {
-        // finding out what directory the file is in (eg '/voussoir')
+        // finding out what directory the file is in (eg '/keystone-alpha')
 
-        if (node.context.workspace !== null && !node.path.includes('changelog')) {
-          let dir = node.context.workspace;
+        if (node.context.workspace !== null) {
+          let dir;
+
+          console.log(node.context.workspace);
+
+          if (node.context.workspace.includes('api')) {
+            dir = node.context.workspace.match('api/@?([a-z]|_|-)+/?')[0].replace('api/', '');
+            console.log(dir);
+          } else {
+            dir = node.context.workspace;
+          }
 
           if (!pageList[dir]) {
             pageList[dir] = [];
@@ -52,6 +62,8 @@ export default () => (
 
         return pageList;
       }, {});
+
+      console.log(navData);
 
       const categories = Object.keys(navData).sort(x => {
         return x.startsWith('@') ? 0 : -1;
@@ -64,7 +76,7 @@ export default () => (
               <div key={category}>
                 <span
                   css={{
-                    fontSize: '1.5em',
+                    fontSize: '1.25em',
                     fontWeight: 700,
                     textTransform: 'capitalize',
                   }}
@@ -80,18 +92,13 @@ export default () => (
                 >
                   {navData[category].map(node => {
                     return (
-                      <li
-                        key={node.path}
-                        css={{
-                          padding: 10,
-                          borderBottom: `1px solid ${colors.B.A15}`,
-                        }}
-                      >
+                      <li key={node.path} css={{}}>
                         <Link
                           css={{
                             textDecoration: 'none',
                             color: colors.B.D50,
                             textTransform: 'capitalize',
+                            marginLeft: 4,
 
                             '&:hover': {
                               color: colors.B.base,
@@ -104,7 +111,7 @@ export default () => (
                           }}
                           to={node.path}
                         >
-                          {prettyName(node)}
+                          {prettyName(node, category)}
                         </Link>
                       </li>
                     );

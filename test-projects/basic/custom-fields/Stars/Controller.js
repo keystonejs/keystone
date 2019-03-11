@@ -1,1 +1,1 @@
-export { default } from '@voussoir/fields/types/Integer/Controller';
+export { default } from '@keystone-alpha/fields/types/Integer/Controller';

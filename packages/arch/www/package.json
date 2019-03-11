@@ -1,6 +1,6 @@
 {
   "name": "gatsby-starter-default",
-  "description": "Gatsby default starter",
+  "description": "@arch-ui documentation site.",
   "version": "1.0.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
@@ -11,12 +11,10 @@
     "gatsby-remark-component": "^1.1.3",
     "gatsby-remark-prismjs": "^3.0.3",
     "gatsby-source-filesystem": "^2.0.23",
-    "gatsby-transformer-remark": "^2.1.11",
-    "graphql-anywhere": "^4.1.23",
+    "gatsby-transformer-remark": "^2.3.0",
     "prismjs": "^1.15.0",
     "prop-types": "^15.6.2",
     "react": "^16.6.0",
-    "react-dom": "^16.6.0",
     "react-helmet": "^5.2.0",
     "rehype-react": "^3.0.3"
   },
@@ -29,13 +27,6 @@
     "develop": "gatsby develop",
     "format": "prettier --write 'src/**/*.js'",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "devDependencies": {
-    "loader-utils": "^1.1.0",
-    "prettier": "^1.15.3"
-  },
-  "peerDependencies": {
-    "react": "16.7.0-alpha.2"
   },
   "repository": {
     "type": "git",

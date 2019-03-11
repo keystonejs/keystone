@@ -26,11 +26,11 @@ const Logo = () => (
 const navLinks = [
   {
     name: 'Get Started',
-    url: '/tutorials/getting-started',
+    url: '/getting-started',
   },
   {
     name: 'Guides',
-    url: '/docs/',
+    url: '/guides/',
   },
   {
     name: 'Tutorials',
@@ -38,7 +38,7 @@ const navLinks = [
   },
   {
     name: 'APIs',
-    url: '/arch-ui/core/',
+    url: '/api/keystone-alpha/core/',
   },
 ];
 

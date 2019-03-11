@@ -1,7 +1,8 @@
 {
-  "name": "@voussoir/utils",
+  "name": "@keystone-alpha/utils",
+  "description": "Common utility functions used throughout @keystone-alpha packages.",
   "version": "1.0.0",
-  "author": "Jed Watson",
+  "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"

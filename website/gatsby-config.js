@@ -11,25 +11,41 @@ async function getPackagePlugins() {
   const workspaces = await bolt.getWorkspaces({ cwd: rootDir });
 
   return [
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'guides',
+        path: `${rootDir}/docs/guides`,
+      },
+    },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'tutorials',
+        path: `${rootDir}/docs/tutorials/`,
+      },
+    },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'getting-started',
+        path: `${rootDir}/docs/getting-started/`,
+      },
+    },
     ...workspaces
       .map(({ dir, config }) => ({ dir, name: config.name }))
       .filter(({ dir }) => fs.existsSync(dir))
+      .filter(({ dir }) => !dir.includes('website') && !dir.includes('arch'))
       .map(({ name, dir }) => ({
         resolve: 'gatsby-source-filesystem',
         options: {
           // This `name` will show up as `sourceInstanceName` on a node's "parent"
           // See `gatsby-node.js` for where it's used.
-          name,
-          path: `${dir}/`,
+          name: `api/${name}`,
+          path: `${dir}`,
+          ignore: [`**/**/CHANGELOG.md`],
         },
       })),
-    {
-      resolve: 'gatsby-source-filesystem',
-      options: {
-        name: 'docs',
-        path: `${rootDir}/docs`,
-      },
-    },
   ];
 }
 
@@ -38,10 +54,7 @@ async function getGatsbyConfig() {
   return {
     plugins: [
       ...packageFilesPlugins,
-      {
-        resolve: 'gatsby-source-filesystem',
-        options: { name: 'tutorials', path: `${__dirname}/tutorials/` },
-      },
+
       `gatsby-plugin-sharp`,
       {
         resolve: `gatsby-mdx`,

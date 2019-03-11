@@ -1,4 +1,4 @@
-import { matchFilter } from '../../tests/fields.test';
+import { matchFilter } from '@keystone-alpha/test-utils';
 import Password from './';
 import Text from '../Text';
 
