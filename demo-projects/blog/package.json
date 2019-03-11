@@ -1,5 +1,5 @@
 {
-  "name": "keystone_demo_blog",
+  "name": "@keystone-alpha/demo-project-blog",
   "description": "An example KeystoneJS project showcasing a Blogging Site.",
   "private": true,
   "version": "1.0.1",
