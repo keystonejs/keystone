@@ -36,7 +36,7 @@ export default () => (
     >
       5
     </p>
-    <Footer />
+    <Footer textCenter />
   </>
 );
 
