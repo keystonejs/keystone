@@ -6,19 +6,18 @@ import { jsx } from '@emotion/core';
 
 /** @jsx jsx */
 
-const prettyName = node => {
+const prettyName = (node, category) => {
+  const cat = category.replace('@', '');
+
   let pretty = node.path
-    .replace(node.context.workspace.replace('@', ''), '')
-    .replace(new RegExp(/(\/)/g), ' ')
+    .replace('api', '')
+    .replace(cat, '')
+    .replace(new RegExp(/(\/\/)/g), '')
+    .replace(new RegExp(/\/$/g), '')
     .replace('-', ' ')
     .trim();
 
-  if (pretty.startsWith('packages') || pretty.startsWith('types')) {
-    pretty = pretty.replace('packages', '').replace('types', '');
-  }
-
-  return pretty === '' ? node.context.workspace.replace(new RegExp(/api\/|@/g), '') : pretty;
-  // return pretty === '' ? 'index' : pretty;
+  return pretty === '' ? 'index' : pretty;
 };
 
 export default () => (
@@ -111,7 +110,7 @@ export default () => (
                           }}
                           to={node.path}
                         >
-                          {prettyName(node)}
+                          {prettyName(node, category)}
                         </Link>
                       </li>
                     );
