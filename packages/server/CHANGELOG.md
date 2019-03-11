@@ -1,5 +1,19 @@
 # @keystone-alpha/server
 
+## 1.1.0
+
+- [minor][91557b24](https://github.com/keystonejs/keystone-5/commit/91557b24):
+
+  - Make links in terminal clicky where possible
+
+- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+
+  - Update the package.json author field to "The Keystone Development Team"
+
+- [patch][9534f98f](https://github.com/keystonejs/keystone-5/commit/9534f98f):
+
+  - Add README.md to package
+
 ## 1.0.0
 
 - [major] 8b6734ae:

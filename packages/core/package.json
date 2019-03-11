@@ -1,14 +1,14 @@
 {
   "name": "@keystone-alpha/core",
   "description": "Custom Server plumbing for running a @keystone-alpha instance. See also @keystone-alpha/keystone.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone-alpha/server": "^1.0.0",
+    "@keystone-alpha/server": "^1.1.0",
     "endent": "^1.3.0",
     "lodash.pick": "^4.4.0"
   },

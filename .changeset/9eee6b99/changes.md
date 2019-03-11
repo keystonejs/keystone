@@ -1,1 +1,0 @@
-- Initial release for create-keystone-app. This will enable quick start based on todo demo project
