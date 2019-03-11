@@ -28,7 +28,9 @@
     "changeset": "build-releases changeset",
     "version-packages": "build-releases version",
     "publish-changed": "yarn build && build-releases publish --public",
-    "build": "preconstruct build"
+    "build": "preconstruct build",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors generate"
   },
   "dependencies": {
     "@babel/core": "^7.3.4",
@@ -202,7 +204,9 @@
     ]
   },
   "jest": {
-    "setupFilesAfterEnv": ["./jest/setup.js"],
+    "setupFilesAfterEnv": [
+      "./jest/setup.js"
+    ],
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "/node_modules/",
@@ -214,6 +218,7 @@
   },
   "devDependencies": {
     "@atlaskit/build-releases": "^3.0.3",
+    "all-contributors-cli": "^6.1.2",
     "babel-eslint": "^10.0.1",
     "bolt": "^0.22.1",
     "chalk": "^2.4.2",
