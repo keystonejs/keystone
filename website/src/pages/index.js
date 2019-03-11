@@ -69,7 +69,7 @@ const Hero = () => (
           Keystone 5
         </h1>
 
-        <div css={{ color: '#596d88', margin: '20px 0' }}>
+        <div css={{ color: '#596d88', margin: '20px 0', lineHeight: 1.5 }}>
           <p>It’s a major re-imagining of Keystone for 2019 and beyond.</p>
 
           <p>
@@ -90,13 +90,13 @@ const Hero = () => (
         >
           <Button
             appearance="primary"
-            href="https://docs.google.com/forms/d/e/1FAIpQLSfOrULmIgp10UiLSKyvJP_hWQ6R5tz5f5l9sRosG6Myrt_2_Q/viewform?usp=sf_link"
+            href="/getting-started"
             style={{ margin: 0, marginRight: 8 }}
           >
-            Join the Preview
+            Get Started
           </Button>
-          <Button href="/tutorials/getting-started" style={{ margin: 0 }}>
-            Read the Docs
+          <Button href="https://github.com/keystonejs/keystone-5" style={{ margin: 0 }}>
+            View on GitHub
           </Button>
         </div>
       </div>
