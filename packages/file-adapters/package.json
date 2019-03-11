@@ -1,5 +1,6 @@
 {
   "name": "@keystone-alpha/file-adapters",
+  "description": "Adapters for various @keystone-alpha field types to read/write to different local/remote file storage engines.",
   "version": "1.0.0",
   "description": "Adapters for handling storage of the File type",
   "main": "index.js",

@@ -1,7 +1,8 @@
 {
   "name": "@keystone-alpha/server",
+  "description": "Internal @keystone-alpha API & Admin UI server. For Custom Servers, see: @keystone-alpha/core",
   "version": "1.0.0",
-  "author": "The Keystone Development Team",
+  "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"

@@ -1,5 +1,6 @@
 {
   "name": "@arch-ui/badge",
+  "description": "Badge Component used in @keystone-alpha Admin UI.",
   "version": "0.0.2",
   "author": "Jed Watson",
   "license": "MIT",
