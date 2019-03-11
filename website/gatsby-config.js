@@ -11,10 +11,31 @@ async function getPackagePlugins() {
   const workspaces = await bolt.getWorkspaces({ cwd: rootDir });
 
   return [
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'guides',
+        path: `${rootDir}/docs/guides`,
+      },
+    },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'tutorials',
+        path: `${rootDir}/docs/tutorials/`,
+      },
+    },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'getting-started',
+        path: `${rootDir}/docs/getting-started/`,
+      },
+    },
     ...workspaces
       .map(({ dir, config }) => ({ dir, name: config.name }))
       .filter(({ dir }) => fs.existsSync(dir))
-      .filter(({ dir }) => !dir.includes('website'))
+      .filter(({ dir }) => !dir.includes('website') && !dir.includes('arch'))
       .map(({ name, dir }) => ({
         resolve: 'gatsby-source-filesystem',
         options: {
@@ -25,17 +46,6 @@ async function getPackagePlugins() {
           ignore: [`**/**/CHANGELOG.md`],
         },
       })),
-    {
-      resolve: 'gatsby-source-filesystem',
-      options: {
-        name: 'docs',
-        path: `${rootDir}/docs`,
-      },
-    },
-    {
-      resolve: 'gatsby-source-filesystem',
-      options: { name: 'tutorials', path: `${__dirname}/tutorials/` },
-    },
   ];
 }
 
