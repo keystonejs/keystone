@@ -25,7 +25,7 @@ const initialData = {
 const nextApp = next({
   dir: 'app',
   distDir: 'build',
-  dev: process.env.NODE_ENV !== 'PRODUCTION',
+  dev: process.env.NODE_ENV !== 'production',
 });
 
 Promise.all([keystone.prepare({ port: 3000 }), nextApp.prepare()])
