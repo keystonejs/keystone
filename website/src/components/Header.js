@@ -40,6 +40,10 @@ const navLinks = [
     name: 'APIs',
     url: '/api/keystone-alpha/core/',
   },
+  {
+    name: 'GitHub',
+    url: 'https://github.com/keystonejs/keystone-5',
+  },
 ];
 
 const Nav = () => (
