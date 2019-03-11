@@ -40,10 +40,6 @@ const navLinks = [
     name: 'APIs',
     url: '/api/keystone-alpha/core/',
   },
-  {
-    name: 'GitHub',
-    url: 'https://github.com/keystonejs/keystone-5',
-  },
 ];
 
 const Nav = () => (
@@ -64,6 +60,14 @@ const Nav = () => (
           </Link>
         </li>
       ))}
+      <li css={{ padding: '0px 5px' }} key={name}>
+        <a
+          href="https://github.com/keystonejs/keystone-5"
+          css={{ textDecoration: 'none', color: 'black' }}
+        >
+          GitHub
+        </a>
+      </li>
     </ul>
   </nav>
 );
