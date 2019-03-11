@@ -1,7 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
 
-import withData from '../lib/apollo';
 import gql from 'graphql-tag';
 import React from 'react';
 import { Mutation, Query } from 'react-apollo';
@@ -40,7 +39,7 @@ const ADD_COMMENT = gql`
 
 const ALL_QUERIES = gql`
   query AllQueries($id: ID!) {
-    allPosts(where: { id: $id }) {
+    Post(where: { id: $id }) {
       title
       body
       posted
@@ -206,7 +205,6 @@ class PostPage extends React.Component {
   }
   render() {
     const { id } = this.props;
-    console.log('rendering post', id);
     return (
       <Layout>
         <Header />
@@ -216,12 +214,10 @@ class PostPage extends React.Component {
           </Link>
           <Query query={ALL_QUERIES} variables={{ id }}>
             {({ data, loading, error }) => {
-              console.log('query', loading, error);
               if (loading) return <p>loading...</p>;
               if (error) return <p>Error!</p>;
 
-              const post = data.allPosts[0];
-              console.log('rendering post', post.title);
+              const post = data.Post;
 
               return (
                 <>
@@ -238,24 +234,16 @@ class PostPage extends React.Component {
                     <Head>
                       <title>{post.title}</title>
                     </Head>
-                    <img
-                      src={
-                        post.image ? post.image.publicUrl : 'https://picsum.photos/900/200/?random'
-                      }
-                      css={{ width: '100%' }}
-                    />
+                    {post.image ? <img src={post.image.publicUrl} css={{ width: '100%' }} /> : null}
                     <div css={{ padding: '1em' }}>
                       <h1 css={{ marginTop: 0 }}>{post.title}</h1>
                       <p>{post.body}</p>
                       <div css={{ marginTop: '1em', borderTop: '1px solid hsl(200, 20%, 80%)' }}>
                         <p
-                          css={{
-                            fontSize: '0.8em',
-                            marginBottom: 0,
-                            color: 'hsl(200, 20%, 50%)',
-                          }}
+                          css={{ fontSize: '0.8em', marginBottom: 0, color: 'hsl(200, 20%, 50%)' }}
                         >
-                          Posted by {post.author.name} on {format(post.posted, 'DD/MM/YYYY')}
+                          Posted by {post.author ? post.author.name : 'someone'} on{' '}
+                          {format(post.posted, 'DD/MM/YYYY')}
                         </p>
                       </div>
                     </div>
@@ -274,4 +262,4 @@ class PostPage extends React.Component {
   }
 }
 
-export default withData(PostPage);
+export default PostPage;
