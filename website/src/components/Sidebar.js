@@ -10,10 +10,11 @@ const prettyName = (node, category) => {
   const cat = category.replace('@', '');
 
   let pretty = node.path
-    .replace('api', '')
+    .replace('/api', '')
     .replace(cat, '')
     .replace(new RegExp(/(\/\/)/g), '')
     .replace(new RegExp(/\/$/g), '')
+    .replace(new RegExp(/^\//g), '')
     .replace('-', ' ')
     .trim();
 

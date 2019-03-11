@@ -51,7 +51,7 @@ const Layout = ({ children }) => (
     >
       <aside
         css={{
-          background: colors.B.A10,
+          background: colors.B.A5,
           height: 'calc(100vh - 66px)',
           overflow: 'scroll',
           padding: 16,
