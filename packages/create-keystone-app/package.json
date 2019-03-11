@@ -1,0 +1,23 @@
+{
+  "name": "create-keystone-app",
+  "description": "Quickly scaffold a new Keystone application based on an example project.",
+  "version": "0.1.0",
+  "description": "Create minimal Keystone 5 app",
+  "bin": {
+    "create-keystone-app": "bin/cli.js"
+  },
+  "scripts": {
+    "test": "DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1"
+  },
+  "keywords": [
+    "keystonejs"
+  ],
+  "author": "Gautam Singh <gsgit@gs4.in>",
+  "license": "MIT",
+  "dependencies": {
+    "arg": "^4.1.0",
+    "chalk": "^2.4.2",
+    "ejs": "^2.6.1",
+    "endent": "^1.3.0"
+  }
+}
