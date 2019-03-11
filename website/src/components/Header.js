@@ -73,23 +73,30 @@ const Header = () => (
     css={{
       background: 'white',
       padding: '12px 16px',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
       borderBottom: `1px solid ${colors.B.A25}`,
     }}
   >
     <div
       css={{
+        maxWidth: 1190,
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
+        margin: '0 auto',
       }}
     >
-      <Logo />
-      <Nav />
+      <div
+        css={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Logo />
+        <Nav />
+      </div>
+      <Search />
     </div>
-    <Search />
   </header>
 );
 

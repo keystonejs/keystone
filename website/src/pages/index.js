@@ -16,20 +16,19 @@ export default () => (
           margin: 0,
           color: colors.B.D55,
           fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
-          overflow: 'hidden',
         },
       }}
     />
     <Hero />
     <p
       css={{
-        fontSize: 1100,
+        fontSize: 'calc(calc(130vh - 16px) - 1rem)',
         fontWeight: 900,
         position: 'absolute',
-        lineHeight: 0,
+        lineHeight: 1,
         margin: 0,
         zIndex: -1,
-        top: 320,
+        top: '-0.2em',
         right: 0,
         color: '#2684FF',
         opacity: 0.2,

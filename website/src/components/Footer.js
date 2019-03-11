@@ -7,9 +7,8 @@ import { colors } from '@arch-ui/theme';
 const Footer = () => (
   <footer
     css={{
-      background: colors.B.A10,
-      padding: 16,
-      textAlign: 'center',
+      borderTop: `1px solid ${colors.B.A25}`,
+      padding: 24,
     }}
   >
     Made with ❤️ by{' '}

@@ -46,7 +46,7 @@ const Layout = ({ children }) => (
     <div
       css={{
         display: 'grid',
-        gridTemplateColumns: '350px auto',
+        gridTemplateColumns: 'minmax(252px,calc((100% - 972px) / 2 + 226px)) 880px 1fr',
         gridTemplateRows: '66px auto',
       }}
     >
@@ -55,7 +55,7 @@ const Layout = ({ children }) => (
           gridRowStart: 1,
           gridRowEnd: 1,
           gridColumnStart: 1,
-          gridColumnEnd: 3,
+          gridColumnEnd: 4,
         }}
       >
         <Header />
@@ -73,6 +73,8 @@ const Layout = ({ children }) => (
           gridRowEnd: 2,
           gridColumnStart: 1,
           gridColumnEnd: 1,
+          display: 'flex',
+          justifyContent: 'flex-end',
         }}
       >
         <Sidebar />
