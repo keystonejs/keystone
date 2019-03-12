@@ -60,7 +60,7 @@ const Nav = () => (
           </Link>
         </li>
       ))}
-      <li css={{ padding: '0px 5px' }} key={name}>
+      <li css={{ padding: '0px 5px' }}>
         <a
           href="https://github.com/keystonejs/keystone-5"
           css={{ textDecoration: 'none', color: 'black' }}
