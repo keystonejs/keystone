@@ -37,4 +37,23 @@ describe('create-keystone-app generator', () => {
     expect(cli.stdout.toString().trim()).toEqual(expect.stringContaining('Usage'));
     expect(cli.stderr.toString().trim()).toEqual('');
   });
+
+  test('copies the templates', () => {
+    const folderName = 'unti-test-cli-tool';
+    const folderPath = path.normalize(`${process.cwd()}/${folderName}`);
+
+    const cli = child_process.spawnSync('node', [
+      path.normalize(`${__dirname}/../../bin/cli.js`),
+      folderName,
+      '-n',
+    ]);
+    const files = child_process.spawnSync('ls', [folderPath]);
+    child_process.spawnSync('rm', ['-rf', folderPath]);
+    expect(cli.stdout.toString().trim()).toEqual(
+      expect.stringContaining('You can start your app with')
+    );
+    expect(cli.stderr.toString().trim()).toEqual('');
+    expect(files.stdout.toString().trim()).toEqual(expect.stringContaining('package.json'));
+    expect(files.stdout.toString().trim()).toEqual(expect.stringContaining('index.js'));
+  });
 });

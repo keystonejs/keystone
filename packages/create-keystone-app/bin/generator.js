@@ -27,7 +27,7 @@ function checkEmptyDir(dir) {
  * creates project
  * @param {String} name name of the project, input from user
  */
-function generate(name) {
+function generate(name, noDeps) {
   const currentDir = process.cwd();
   const appName = createAppName(name);
   const projectDir = `${currentDir}/${appName}`;
@@ -37,7 +37,9 @@ function generate(name) {
     name,
     appName,
   });
-  installDependencies(projectDir);
+  if (!noDeps) {
+    installDependencies(projectDir);
+  }
   return { name, appName };
 }
 
@@ -104,9 +106,9 @@ function createAppName(pathName) {
 }
 
 module.exports = {
-  exec: name => {
+  exec: (name, noDeps = false) => {
     try {
-      return Promise.resolve(generate(name));
+      return Promise.resolve(generate(name, noDeps));
     } catch (error) {
       return Promise.reject(error);
     }

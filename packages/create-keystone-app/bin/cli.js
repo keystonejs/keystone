@@ -25,6 +25,12 @@ const argSpecDescription = [
     alias: '-v',
     value: Boolean,
   },
+  {
+    description: `No dependencies`,
+    command: '--no-deps',
+    alias: '-n',
+    value: Boolean,
+  },
 ];
 
 // Translate args to arg format
@@ -97,17 +103,17 @@ try {
 }
 
 // Everything else is assumed to be a command we want to execute - more options added
-exec(name)
+exec(name, args['--no-deps'])
   .catch(error => {
     console.error(error);
     process.exit(1);
   })
-  .then(({ name, appName }) => {
+  .then(res => {
     console.log();
-    console.log(chalk.green(`Your app "${name}" is ready in ${appName}/`));
+    console.log(chalk.green(`Your app "${res.name}" is ready in ${res.appName}/`));
     console.log(
       chalk.green(
-        `You can start your app with ${chalk.yellow(`cd ${appName}`)} and ${chalk.yellow(
+        `You can start your app with ${chalk.yellow(`cd ${res.appName}`)} and ${chalk.yellow(
           `yarn start`
         )}`
       )
