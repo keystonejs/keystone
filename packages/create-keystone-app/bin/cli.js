@@ -85,7 +85,7 @@ if (args['--help']) {
   process.exit(0);
 }
 
-const name = createAppName(args._[0]);
+const name = createAppName(args._[0] || '');
 
 // if project name is missing print help
 if (args._.length === 0 || name === '') {
