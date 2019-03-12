@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
 const arg = require('arg');
 const chalk = require('chalk');
 const generator = require('./generator');
