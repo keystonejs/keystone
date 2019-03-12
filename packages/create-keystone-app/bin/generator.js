@@ -24,7 +24,7 @@ function checkEmptyDir(dir) {
   try {
     const readDir = fs.readdirSync(dir);
     if (readDir && readDir.length > 0) {
-      throw new Error(`Project directory is not empty: ${path.basename(dir)}`);
+      throw new Error(`Project directory is not empty: ${path.basename(dir)}/`);
     }
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
@@ -101,8 +101,14 @@ function installDependencies(projectDir) {
  * @param {String} appName npm friendly name of the project
  */
 function done(name, appName) {
-  console.log(chalk.green(`Your app "${name}"is ready in ${appName}`));
-  console.log(chalk.green(`You can start your app by 'cd ${appName}' and 'yarn start'`));
+  console.log(chalk.green(`Your app "${name}" is ready in ${appName}/`));
+  console.log(
+    chalk.green(
+      `You can start your app with ${chalk.yellow(`cd ${appName}`)} and ${chalk.yellow(
+        `yarn start`
+      )}`
+    )
+  );
 }
 
 /**
@@ -122,17 +128,19 @@ function createAppName(pathName) {
 module.exports = {
   version: () => info.version,
 
-  help: () => endent`
+  help: () => endent`\n
+     ╦╔═ ╔═╗ ╦ ╦ ╔═╗ ╔╦╗ ╔═╗ ╔╗╔ ╔═╗  ╦ ╔═╗
+     ╠╩╗ ║╣  ╚╦╝ ╚═╗  ║  ║ ║ ║║║ ║╣   ║ ╚═╗
+     ╩ ╩ ╚═╝  ╩  ╚═╝  ╩  ╚═╝ ╝╚╝ ╚═╝ ╚╝ ╚═╝
+
     Usage
-      $ ${info.exeName} <project name>
+      ${chalk.gray('$')} ${info.exeName} ${chalk.gray('<project name>')}
 
     Common Options
-      --version       Version number
-      --help, -h      Displays this message
-  `,
+      --version, -V   Version number
+      --help, -h      Displays help\n`,
 
-  exec: args => {
-    const name = args._.join(' ');
+  exec: name => {
     try {
       generate(name);
       return Promise.resolve();
@@ -140,4 +148,7 @@ module.exports = {
       return Promise.reject(error);
     }
   },
+
+  createAppName,
+  checkEmptyDir,
 };
