@@ -22,6 +22,16 @@ If you use the knex adapter, KeystoneJS _will_ delete your database every time y
 
 ## Getting Started
 
+### Quick start
+
+To get up and running with a basic project template, run the following commands.
+
+```bash
+yarn create keystone-app my-app
+cd my-app
+yarn start
+```
+
 ### Setup
 
 ```

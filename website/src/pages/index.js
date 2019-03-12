@@ -87,11 +87,7 @@ const Hero = () => (
             alignItems: 'center',
           }}
         >
-          <Button
-            appearance="primary"
-            href="/getting-started"
-            style={{ margin: 0, marginRight: 8 }}
-          >
+          <Button appearance="primary" href="/quick-start" style={{ margin: 0, marginRight: 8 }}>
             Get Started
           </Button>
           <Button href="https://github.com/keystonejs/keystone-5" style={{ margin: 0 }}>

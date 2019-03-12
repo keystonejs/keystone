@@ -14,8 +14,8 @@ async function getPackagePlugins() {
     {
       resolve: 'gatsby-source-filesystem',
       options: {
-        name: 'guides',
-        path: `${rootDir}/docs/guides`,
+        name: 'quick-start',
+        path: `${rootDir}/docs/quick-start/`,
       },
     },
     {
@@ -28,8 +28,8 @@ async function getPackagePlugins() {
     {
       resolve: 'gatsby-source-filesystem',
       options: {
-        name: 'getting-started',
-        path: `${rootDir}/docs/getting-started/`,
+        name: 'guides',
+        path: `${rootDir}/docs/guides`,
       },
     },
     ...workspaces
