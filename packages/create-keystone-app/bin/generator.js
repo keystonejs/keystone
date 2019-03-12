@@ -5,14 +5,6 @@ const fs = require('fs');
 const path = require('path');
 const child_process = require('child_process');
 var ejs = require('ejs');
-const endent = require('endent');
-
-const pkgInfo = require('../package.json');
-
-const info = {
-  exeName: Object.keys(pkgInfo.bin)[0],
-  version: pkgInfo.version,
-};
 
 const templateDir = path.join(__dirname, '..', 'templates');
 
@@ -46,7 +38,7 @@ function generate(name) {
     appName,
   });
   installDependencies(projectDir);
-  done(name, appName);
+  return { name, appName };
 }
 
 /**
@@ -86,29 +78,15 @@ function copyTemplate(templatePath, projectDir, templateData) {
  * @param {String} projectDir project drectory
  */
 function installDependencies(projectDir) {
-  console.log(chalk.green(`Created app in ${projectDir}, installing project dependencies now`));
+  console.log(
+    chalk.green(`\nCreated app in ${chalk.yellow(projectDir)}\nInstalling project dependencies now`)
+  );
   const currentDir = process.cwd();
   process.chdir(projectDir);
   child_process.spawnSync('yarnpkg', {
     stdio: ['inherit', 'inherit', 'inherit'],
   });
   process.chdir(currentDir);
-}
-
-/**
- * prints success message after completion
- * @param {String} name name of the project
- * @param {String} appName npm friendly name of the project
- */
-function done(name, appName) {
-  console.log(chalk.green(`Your app "${name}" is ready in ${appName}/`));
-  console.log(
-    chalk.green(
-      `You can start your app with ${chalk.yellow(`cd ${appName}`)} and ${chalk.yellow(
-        `yarn start`
-      )}`
-    )
-  );
 }
 
 /**
@@ -126,29 +104,13 @@ function createAppName(pathName) {
 }
 
 module.exports = {
-  version: () => info.version,
-
-  help: () => endent`\n
-     ╦╔═ ╔═╗ ╦ ╦ ╔═╗ ╔╦╗ ╔═╗ ╔╗╔ ╔═╗  ╦ ╔═╗
-     ╠╩╗ ║╣  ╚╦╝ ╚═╗  ║  ║ ║ ║║║ ║╣   ║ ╚═╗
-     ╩ ╩ ╚═╝  ╩  ╚═╝  ╩  ╚═╝ ╝╚╝ ╚═╝ ╚╝ ╚═╝
-
-    Usage
-      ${chalk.gray('$')} ${info.exeName} ${chalk.gray('<project name>')}
-
-    Common Options
-      --version, -V   Version number
-      --help, -h      Displays help\n`,
-
   exec: name => {
     try {
-      generate(name);
-      return Promise.resolve();
+      return Promise.resolve(generate(name));
     } catch (error) {
       return Promise.reject(error);
     }
   },
-
   createAppName,
   checkEmptyDir,
 };
