@@ -48,7 +48,7 @@ const help = args => {
 ╩ ╩ ╚═╝  ╩  ╚═╝  ╩  ╚═╝ ╝╚╝ ╚═╝ ╚╝ ╚═╝
 
 ${chalk.bold('Usage')}
-  ${chalk.gray('$')} ${info.exeName} ${chalk.gray('<project name>')}
+  ${chalk.gray('$')} ${info.exeName} "${chalk.gray('<project name>')}"
 
 ${chalk.bold('Common Options')}
 ${args
@@ -85,7 +85,7 @@ if (args['--help']) {
   process.exit(0);
 }
 
-const name = createAppName(args._.join(' '));
+const name = createAppName(args._[0]);
 
 // if project name is missing print help
 if (args._.length === 0 || name === '') {
