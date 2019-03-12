@@ -1,19 +1,15 @@
+/** @jsx jsx */
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'gatsby';
+import debounce from 'lodash.debounce';
 import { jsx, Global } from '@emotion/core';
 import { Input } from '@arch-ui/input';
 import { Location } from '@reach/router';
-import debounce from 'lodash.debounce';
-
-/** @jsx jsx */
-
 import { colors } from '@arch-ui/theme';
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import { Header, Footer } from '../components';
 import { getResults } from '../utils/search';
-
-const SEARCH_DEBOUNCE = 200;
 
 const Search = ({ location, navigate }) => {
   let [input, setInput] = useState();
@@ -34,7 +30,7 @@ const Search = ({ location, navigate }) => {
       navigate(location.pathname + '?q=' + encodeURIComponent(value), {
         replace: true,
       });
-    }, SEARCH_DEBOUNCE),
+    }, 200),
     [setQuery]
   );
 

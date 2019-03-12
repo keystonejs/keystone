@@ -1,10 +1,9 @@
+/** @jsx jsx */
+
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { StaticQuery, graphql, Link } from 'gatsby';
-
-import { colors } from '@arch-ui/theme';
+import { colors, gridSize } from '@arch-ui/theme';
 import { jsx } from '@emotion/core';
-
-/** @jsx jsx */
 
 const prettyName = (node, navGroup) => {
   let pretty = node.path
@@ -19,7 +18,7 @@ const prettyName = (node, navGroup) => {
   return pretty === '' ? 'index' : pretty;
 };
 
-export default () => (
+export const Sidebar = () => (
   <StaticQuery
     query={graphql`
       query HeadingQuery {
@@ -78,10 +77,11 @@ export default () => (
                       <li key={node.path} css={{}}>
                         <Link
                           css={{
-                            textDecoration: 'none',
                             color: colors.B.D50,
+                            display: 'block',
+                            padding: gridSize,
+                            textDecoration: 'none',
                             textTransform: 'capitalize',
-                            marginLeft: 4,
 
                             '&:hover': {
                               color: colors.B.base,
@@ -103,7 +103,7 @@ export default () => (
               </div>
             );
           })}
-        </div>
+        </nav>
       );
     }}
   />

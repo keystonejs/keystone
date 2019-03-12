@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
 /** @jsx jsx */
+
+import { useState, useEffect, useCallback } from 'react';
 import { jsx } from '@emotion/core';
 import Select from '@arch-ui/select';
 import { Location } from '@reach/router';
@@ -7,8 +8,6 @@ import { colors } from '@arch-ui/theme';
 import debounce from 'lodash.debounce';
 
 import { getResults } from '../utils/search';
-
-const SEARCH_DEBOUNCE = 200;
 
 let renderOptionLabel = result => {
   if (result.type === 'show-more') {
@@ -22,14 +21,12 @@ let renderOptionLabel = result => {
   );
 };
 
-const Search = () => {
+export const Search = () => {
   let [input, setInput] = useState('');
   let [query, setQuery] = useState('');
   let [results, setResults] = useState([]);
 
-  const setQueryDebounced = useCallback(debounce(value => setQuery(value), SEARCH_DEBOUNCE), [
-    setQuery,
-  ]);
+  const setQueryDebounced = useCallback(debounce(value => setQuery(value), 200), [setQuery]);
 
   useEffect(() => {
     let cancelled = false;
@@ -88,5 +85,3 @@ const Search = () => {
     </Location>
   );
 };
-
-export default Search;

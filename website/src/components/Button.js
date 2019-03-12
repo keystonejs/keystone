@@ -1,31 +1,59 @@
-import Styled from '@emotion/styled';
+/** @jsx jsx */
+
+import React from 'react'; // eslint-disable-line no-unused-vars
+import { Link } from 'gatsby';
+import { jsx } from '@emotion/core';
 import { colors } from '@arch-ui/theme';
 
-export default Styled.a(props => ({
-  textDecoration: 'none',
-  boxSizing: 'border-box',
-  fontSize: '1.1rem',
-  padding: '1rem 1.5rem',
-  borderRadius: 6,
-  margin: '0.5rem',
-  transition: 'transform linear 120ms',
-  '&:hover': {
-    transform: 'scale(1.025)',
-  },
-  '&:active': {
-    opacity: 0.8,
-  },
+// TODO
+const styles = {
+  primary: {},
+};
 
-  border:
-    props.appearance === 'primary-light'
-      ? `2px solid rgba(255,255,255,0.6);`
-      : `2px solid ${colors.B.base}`,
+export const Button = ({ appearance, as, ...props }) => {
+  let Tag = as;
+  if (props.href) {
+    Tag = 'a';
+  } else if (props.to) {
+    Tag = Link;
+  }
 
-  background:
-    {
-      'primary-light': 'white',
-      primary: colors.B.base,
-    }[props.appearance] || 'none',
+  return (
+    <Tag
+      css={{
+        borderRadius: 6,
+        boxSizing: 'border-box',
+        cursor: 'pointer',
+        fontSize: '1.1rem',
+        margin: '0.5rem',
+        padding: '1rem 1.5rem',
+        textDecoration: 'none',
+        transition: 'transform linear 120ms',
 
-  color: props.appearance === 'primary' || props.appearance === 'light' ? 'white' : colors.B.base,
-}));
+        '&:hover': {
+          transform: 'scale(1.025)',
+        },
+        '&:active': {
+          opacity: 0.8,
+        },
+
+        border:
+          appearance === 'primary-light'
+            ? `2px solid rgba(255,255,255,0.6);`
+            : `2px solid ${colors.B.base}`,
+
+        background:
+          {
+            'primary-light': 'white',
+            primary: colors.B.base,
+          }[appearance] || 'none',
+
+        color: appearance === 'primary' || appearance === 'light' ? 'white' : colors.B.base,
+      }}
+      {...props}
+    />
+  );
+};
+Button.defaultProps = {
+  as: 'button',
+};

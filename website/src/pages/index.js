@@ -1,11 +1,10 @@
-import React from 'react'; // eslint-disable-line no-unused-vars
-import { jsx, Global } from '@emotion/core';
-
 /** @jsx jsx */
 
+import React from 'react'; // eslint-disable-line no-unused-vars
+import { jsx, Global } from '@emotion/core';
 import { colors } from '@arch-ui/theme';
-import Button from '../components/Button';
-import Footer from '../components/Footer';
+
+import { Button, Container, Footer } from '../components';
 import logosvg from '../images/logo.svg';
 
 export default () => (
@@ -50,7 +49,7 @@ const Hero = () => (
         height: 'calc(100vh - 48px)',
       }}
     >
-      <div css={{ maxWidth: 600, padding: 32 }}>
+      <Container>
         <img alt="Keystone JS" src={logosvg} css={{ width: 60, marginBottom: 12 }} />
 
         <h1
@@ -87,14 +86,14 @@ const Hero = () => (
             alignItems: 'center',
           }}
         >
-          <Button appearance="primary" href="/quick-start" style={{ margin: 0, marginRight: 8 }}>
+          <Button appearance="primary" to="/quick-start" style={{ margin: 0, marginRight: 8 }}>
             Get Started
           </Button>
           <Button href="https://github.com/keystonejs/keystone-5" style={{ margin: 0 }}>
             View on GitHub
           </Button>
         </div>
-      </div>
+      </Container>
     </div>
   </div>
 );
