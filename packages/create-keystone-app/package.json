@@ -1,8 +1,7 @@
 {
   "name": "create-keystone-app",
-  "description": "Quickly scaffold a new Keystone application based on an example project.",
-  "version": "0.1.0",
   "description": "Create minimal Keystone 5 app",
+  "version": "0.2.0",
   "bin": {
     "create-keystone-app": "bin/cli.js"
   },
