@@ -29,9 +29,9 @@ const argSpecDescription = [
 
 // Translate args to arg format
 const argSpec = {};
-argSpecDescription.map(arg => {
-  argSpec[arg.command] = arg.value;
-  argSpec[arg.alias] = arg.command;
+argSpecDescription.map(argument => {
+  argSpec[argument.command] = argument.value;
+  argSpec[argument.alias] = argument.command;
 });
 
 // Generate help from our arg specs
@@ -45,8 +45,11 @@ ${chalk.bold('Usage')}
   ${chalk.gray('$')} ${info.exeName} ${chalk.gray('<project name>')}
 
 ${chalk.bold('Common Options')}
-${argSpecDescription
-    .map(arg => `  ${`${arg.command}, ${arg.alias}`.padEnd(20, ' ')} ${arg.description}`)
+${args
+    .map(
+      argument =>
+        `  ${`${argument.command}, ${argument.alias}`.padEnd(20, ' ')} ${argument.description}`
+    )
     .join('\n')}\n
 `;
 };
@@ -61,7 +64,7 @@ try {
 } catch (error) {
   if (error.code === 'ARG_UNKNOWN_OPTION') {
     console.error(chalk.red(`\nError: ${error.message}`));
-    console.info(help());
+    console.info(help(argSpecDescription));
     process.exit(0);
   }
 }
@@ -72,7 +75,7 @@ if (args['--version']) {
 }
 
 if (args['--help']) {
-  console.info(help());
+  console.info(help(argSpecDescription));
   process.exit(0);
 }
 
@@ -80,7 +83,7 @@ const name = createAppName(args._.join(' '));
 
 // if project name is missing print help
 if (args._.length === 0 || name === '') {
-  console.info(help());
+  console.info(help(argSpecDescription));
   process.exit(0);
 }
 
@@ -89,7 +92,7 @@ try {
   checkEmptyDir(name);
 } catch (error) {
   console.error(chalk.red(`\n${error}`));
-  console.info(help());
+  console.info(help(argSpecDescription));
   process.exit(0);
 }
 
