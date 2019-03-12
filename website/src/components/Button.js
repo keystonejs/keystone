@@ -25,13 +25,13 @@ export const Button = ({ appearance, as, ...props }) => {
         boxSizing: 'border-box',
         cursor: 'pointer',
         fontSize: '1.1rem',
-        margin: '0.5rem',
         padding: '1rem 1.5rem',
         textDecoration: 'none',
         transition: 'transform linear 120ms',
 
         '&:hover': {
           transform: 'scale(1.025)',
+          textDecoration: 'none',
         },
         '&:active': {
           opacity: 0.8,

@@ -48,7 +48,6 @@ export const Sidebar = () => (
         return pageList;
       }, {});
 
-      console.log({ navData });
       const navGroups = Object.keys(navData);
 
       return (

@@ -9,12 +9,12 @@ import logosvg from '../images/logo.svg';
 import { Container } from '../components';
 
 export const Header = forwardRef((props, ref) => (
-  <header ref={ref}>
+  <header ref={ref} {...props}>
     <Container>
       <div
         css={{
           alignItems: 'center',
-          borderBottom: `1px solid ${colors.N10}`,
+          boxShadow: `0 1px 0 rgba(0, 0, 0, 0.1)`,
           display: 'flex',
           justifyContent: 'space-between',
           paddingBottom: 12,
@@ -34,7 +34,7 @@ export const Header = forwardRef((props, ref) => (
 
 const Logo = () => (
   <Link to="/">
-    <img alt="Keystone JS" src={logosvg} css={{ width: 40 }} />
+    <img alt="KeystoneJS Logo" src={logosvg} css={{ width: 40 }} />
   </Link>
 );
 const NavItem = props => {
@@ -52,6 +52,11 @@ const NavItem = props => {
           paddingLeft: gridSize,
           paddingRight: gridSize,
           textDecoration: 'none',
+
+          ':hover, :focus': {
+            color: colors.N80,
+            textDecoration: 'none',
+          },
         }}
         {...props}
       />

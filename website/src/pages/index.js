@@ -2,74 +2,73 @@
 
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { jsx, Global } from '@emotion/core';
-import { colors } from '@arch-ui/theme';
+import { colors, globalStyles } from '@arch-ui/theme';
 
-import { Button, Container, Footer } from '../components';
-import logosvg from '../images/logo.svg';
+import { Button, Container, Header } from '../components';
 
 export default () => (
   <>
-    <Global
-      styles={{
-        body: {
-          margin: 0,
-          color: colors.B.D55,
-          fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
-        },
-      }}
-    />
+    <Global styles={globalStyles} />
+    <Header key="global-header" style={{ position: 'fixed', left: 0, right: 0, top: 0 }} />
     <Hero />
-    <p
-      css={{
-        fontSize: 'calc(calc(130vh - 16px) - 1rem)',
-        fontWeight: 900,
-        position: 'absolute',
-        lineHeight: 1,
-        margin: 0,
-        zIndex: -1,
-        top: '-0.2em',
-        right: 0,
-        color: '#2684FF',
-        opacity: 0.2,
-      }}
-    >
-      5
-    </p>
-    <Footer textCenter />
+    <Five />
+
+    {/* <Footer textCenter /> */}
   </>
 );
 
-const Hero = () => (
-  <div css={{ maxWidth: 1200, margin: '0 auto' }}>
-    <div
-      css={{
-        display: 'flex',
-        // justifyContent: 'center',
-        alignItems: 'center',
-        height: 'calc(100vh - 48px)',
-      }}
+const Five = () => (
+  <svg
+    viewBox="0 0 10.5 10.5"
+    style={{
+      position: 'fixed',
+      top: 0,
+      right: 0,
+      height: '100vh',
+      width: '100vh',
+      userSelect: 'none',
+      zIndex: -1,
+    }}
+  >
+    <text
+      x="2"
+      y="8"
+      fill={colors.B.A10}
+      style={{ fontFamily: 'Georgia, Times, serif', fontWeight: 'bold' }}
     >
-      <Container>
-        <img alt="Keystone JS" src={logosvg} css={{ width: 60, marginBottom: 12 }} />
+      5
+    </text>
+  </svg>
+);
 
+const Hero = () => (
+  <div
+    css={{
+      alignItems: 'center',
+      display: 'flex',
+      fontSize: 18,
+      height: '100vh',
+    }}
+  >
+    <Container>
+      {/* <img alt="Keystone JS" src={logosvg} css={{ width: 60, marginBottom: 12 }} /> */}
+
+      <div css={{ paddingRight: '18vw' }}>
         <h1
           css={{
+            color: colors.N100,
             fontSize: '4em',
             fontWeight: 800,
-            margin: 0,
-            color: '#224A7E',
-            textTransform: 'uppercase',
             lineHeight: 1,
+            margin: 0,
           }}
         >
-          This is
-          <br />
-          Keystone 5
+          Build bulletproof node.js applications, faster.
+          {/* Get a headstart on your node.js application API */}
+          {/* Build applications faster with Keystone 5, a node.js CMS and API provider */}
         </h1>
 
-        <div css={{ color: '#596d88', margin: '20px 0', lineHeight: 1.5 }}>
-          <p>It’s a major re-imagining of Keystone for 2019 and beyond.</p>
-
+        <div css={{ color: colors.N80, margin: '3em 0', lineHeight: 1.6 }}>
           <p>
             Keystone 5 includes first-class GraphQL support, a modular architecture and a completely
             new Admin UI. We're focusing less on serving the front-end, and more on providing a
@@ -80,20 +79,20 @@ const Hero = () => (
             start sharing it with the community.
           </p>
         </div>
-        <div
-          css={{
-            display: 'inline-flex',
-            alignItems: 'center',
-          }}
-        >
-          <Button appearance="primary" to="/quick-start" style={{ margin: 0, marginRight: 8 }}>
-            Get Started
-          </Button>
-          <Button href="https://github.com/keystonejs/keystone-5" style={{ margin: 0 }}>
-            View on GitHub
-          </Button>
-        </div>
-      </Container>
-    </div>
+      </div>
+      <div
+        css={{
+          display: 'inline-flex',
+          alignItems: 'center',
+        }}
+      >
+        <Button appearance="primary" to="/quick-start" style={{ margin: 0, marginRight: 8 }}>
+          Get Started
+        </Button>
+        <Button href="https://github.com/keystonejs/keystone-5" style={{ margin: 0 }}>
+          View on GitHub
+        </Button>
+      </div>
+    </Container>
   </div>
 );

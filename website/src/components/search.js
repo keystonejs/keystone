@@ -15,8 +15,8 @@ let renderOptionLabel = result => {
   }
   return (
     <div>
-      <span css={{ color: colors.B.base, textTransform: 'capitalize' }}>{result.title}</span>{' '}
-      <small style={{ color: 'grey' }}>({result.navGroup})</small>
+      <div css={{ textTransform: 'capitalize' }}>{result.title}</div>
+      <small style={{ color: 'grey' }}>{result.navGroup}</small>
     </div>
   );
 };
@@ -74,7 +74,7 @@ export const Search = () => {
               navigate(result.slug);
               setQuery('');
             }}
-            css={{ width: 256 }}
+            css={{ zIndex: 2 }}
             filterOption={() => true}
             formatOptionLabel={renderOptionLabel}
             getOptionValue={result => result.slug}

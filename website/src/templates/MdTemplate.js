@@ -12,7 +12,7 @@ import mdComponents from '../components/markdown';
 const EditButton = props => (
   <a
     css={{
-      backgroundColor: colors.N10,
+      border: `1px solid rgba(0, 0, 0, 0.1)`,
       borderRadius: borderRadius,
       color: colors.N60,
       display: 'block',
@@ -23,11 +23,11 @@ const EditButton = props => (
       outline: 'none',
 
       ':hover, :focus': {
-        backgroundColor: colors.N15,
+        backgroundColor: colors.N05,
         textDecoration: 'none',
       },
       ':active': {
-        backgroundColor: colors.N20,
+        backgroundColor: colors.N10,
       },
     }}
     {...props}
@@ -51,7 +51,7 @@ export default function Template({
           <StyledLink to={workspaceSlug}>{workspace}</StyledLink>
         </div> */}
       <EditButton href={fields.editUrl} target="_blank">
-        Edit on Github
+        Edit Page
       </EditButton>
       <MDXProvider components={mdComponents}>
         <MDXRenderer>{code.body}</MDXRenderer>

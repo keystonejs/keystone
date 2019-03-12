@@ -14,14 +14,14 @@ export const Footer = () => (
       textAlign: 'center',
     }}
   >
-    Made with ❤️ by{' '}
+    Made with ❤️by{' '}
     <Anchor href="https://www.thinkmill.com.au" target="_blank">
       Thinkmill
     </Anchor>
     <br />
     and our{' '}
     <Anchor href="https://github.com/keystonejs/keystone-5/graphs/contributors" target="_blank">
-      contributors.
+      contributors
     </Anchor>
   </footer>
 );
