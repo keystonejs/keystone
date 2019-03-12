@@ -11,7 +11,7 @@
   "keywords": [
     "keystonejs"
   ],
-  "author": "Gautam Singh <gsgit@gs4.in>",
+  "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "dependencies": {
     "arg": "^4.1.0",
