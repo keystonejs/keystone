@@ -1,5 +1,19 @@
 # @keystone-alpha/adapter-mongoose
 
+## 1.0.1
+
+- [patch][6ba2fd99](https://github.com/keystonejs/keystone-5/commit/6ba2fd99):
+
+  - Mongoose option useFindAndModify is defaulted to false, resolves deprecation warnings
+
+- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+
+  - Update the package.json author field to "The Keystone Development Team"
+
+- [patch][9534f98f](https://github.com/keystonejs/keystone-5/commit/9534f98f):
+
+  - Add README.md to package
+
 ## 1.0.0
 
 - [major] 8b6734ae:

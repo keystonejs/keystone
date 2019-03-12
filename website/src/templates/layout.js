@@ -42,29 +42,39 @@ const Layout = ({ children }) => (
         },
       }}
     />
-    <Header />
+
     <div
       css={{
-        display: 'flex',
-        flexFlow: 'row wrap',
+        display: 'grid',
+        gridTemplateColumns: 'minmax(252px,calc((100% - 972px) / 2 + 226px)) 880px 1fr',
+        gridTemplateRows: '66px auto',
       }}
     >
+      <div
+        css={{
+          gridRowStart: 1,
+          gridRowEnd: 1,
+          gridColumnStart: 1,
+          gridColumnEnd: 4,
+        }}
+      >
+        <Header />
+      </div>
+
       <aside
         css={{
-          background: colors.B.A10,
+          background: colors.B.A5,
           height: 'calc(100vh - 66px)',
           overflow: 'scroll',
           padding: 16,
           boxSizing: 'border-box',
           borderRight: `1px solid ${colors.B.A20}`,
-
-          '@media all and (min-width: 600px)': {
-            flex: '1 0 0',
-          },
-
-          '@media all and (min-width: 800px)': {
-            order: 1,
-          },
+          gridRowStart: 2,
+          gridRowEnd: 2,
+          gridColumnStart: 1,
+          gridColumnEnd: 1,
+          display: 'flex',
+          justifyContent: 'flex-end',
         }}
       >
         <Sidebar />
@@ -73,15 +83,11 @@ const Layout = ({ children }) => (
         css={{
           height: 'calc(100vh - 66px)',
           overflow: 'scroll',
-          background: colors.B.A5,
-
-          '@media all and (min-width: 800px)': {
-            flex: '3 0px',
-            order: 2,
-          },
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
+          background: 'white',
+          gridRowStart: 2,
+          gridRowEnd: 2,
+          gridColumnStart: 2,
+          gridColumnEnd: 2,
         }}
       >
         <div>

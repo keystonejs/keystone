@@ -1,7 +1,8 @@
 {
   "name": "@keystone-alpha/logger",
-  "version": "1.0.0",
-  "author": "The Keystone Development Team",
+  "description": "Common logging functionality used within @keystone-alpha/* packages.",
+  "version": "1.0.1",
+  "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"

@@ -25,12 +25,12 @@ const Logo = () => (
 
 const navLinks = [
   {
-    name: 'Get Started',
-    url: '/tutorials/getting-started',
+    name: 'Quick Start',
+    url: '/quick-start',
   },
   {
     name: 'Guides',
-    url: '/docs/',
+    url: '/guides/',
   },
   {
     name: 'Tutorials',
@@ -38,7 +38,7 @@ const navLinks = [
   },
   {
     name: 'APIs',
-    url: '/arch-ui/core/',
+    url: '/api/keystone-alpha/core/',
   },
 ];
 
@@ -60,6 +60,14 @@ const Nav = () => (
           </Link>
         </li>
       ))}
+      <li css={{ padding: '0px 5px' }}>
+        <a
+          href="https://github.com/keystonejs/keystone-5"
+          css={{ textDecoration: 'none', color: 'black' }}
+        >
+          GitHub
+        </a>
+      </li>
     </ul>
   </nav>
 );
@@ -69,23 +77,30 @@ const Header = () => (
     css={{
       background: 'white',
       padding: '12px 16px',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
       borderBottom: `1px solid ${colors.B.A25}`,
     }}
   >
     <div
       css={{
+        maxWidth: 1190,
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
+        margin: '0 auto',
       }}
     >
-      <Logo />
-      <Nav />
+      <div
+        css={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Logo />
+        <Nav />
+      </div>
+      <Search />
     </div>
-    <Search />
   </header>
 );
 

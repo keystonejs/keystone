@@ -1,5 +1,19 @@
 # @keystone-alpha/test-utils
 
+## 1.1.0
+
+- [minor][c0e64c01](https://github.com/keystonejs/keystone-5/commit/c0e64c01):
+
+  - Add `matchFilter` and `runQuery` functions.
+
+- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+
+  - Update the package.json author field to "The Keystone Development Team"
+
+- [patch][9534f98f](https://github.com/keystonejs/keystone-5/commit/9534f98f):
+
+  - Add README.md to package
+
 ## 1.0.0
 
 - [major] 8b6734ae:

@@ -1,4 +1,11 @@
-## Contribution Guidelines
+# Contributing
+
+Contributions to KeystoneJS in the form of issues and PRs are welcomed.
+
+During the alpha stage of development we are focussing on getting the core systems working smoothly.
+Contributions which improve the documention and test coverage are particularly welcomed.
+
+## Release Guidelines
 
 ## Publishing
 
@@ -102,6 +109,7 @@ git pull
 git branch -D temp-release-branch
 git checkout -b temp-release-branch
 bolt version-packages
+bolt format
 git add .
 git commit -m "Run version-packages"
 git push -f

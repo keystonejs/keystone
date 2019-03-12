@@ -1,34 +1,36 @@
-# Keystone 5
+# KeystoneJS
 
-[![CircleCI](https://circleci.com/gh/keystonejs/keystone-5.svg?style=shield&circle-token=6b4c9e250b2b61403b64c9b66ab7f4de6b0b4dde)](https://circleci.com/gh/keystonejs/keystone-5)
+[![CircleCI](https://circleci.com/gh/keystonejs/keystone-5.svg?style=shield&circle-token=6b4c9e250b2b61403b64c9b66ab7f4de6b0b4dde)](https://circleci.com/gh/keystonejs/keystone-5) [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors)
 
-This is a prototype architecture for Keystone 5.
+Welcome to Keystone 5, the development project for the future of KeystoneJS.
 
-Everything is WIP.
+`schema => ({ api, adminUI })`
 
-## Welcome and Disclaimer
+KeystoneJS is a platform which takes a user defined schema and builds a server which provides a GraphQL CRUD API backed by a database, along with an Admin UI for interacting with the database.
 
-If you can see this repo, it means you've been invited to work with us on the future of KeystoneJS.
+- [WARNING](#WARNING)
+- [Getting Started](#Getting-Started)
+- [Developing](#Developing)
+- [License](#License)
 
-Some quick house rules:
+## WARNING
 
-- This project will be made public when we're ready.
-  There is a lot to do, and a lot to write (including code, guides, documentation, and plans) before that happens.
-  Please be patient - we're 100% focused on the coding and planning at the moment and don't yet have bandwidth for questions or support.
-- Because so much is still being worked out,
-  please don't demo or discuss the plans and features present in this repo outside of the Keystone slack
-  (we have a dedicated #keystone-next channel for that)
-- In order to preserve focus, speculative issues not related to our immediate development goals may be closed at any time.
-  We'll be open to broader topics being discussed in issues when
-- PRs are welcome, but contributions may not be accepted unless they have been discussed and specified in a corresponding issue beforehand.
-  Issues marked `ready`, `help wanted` and `good first issue` are fair game.
-- The new version is not being published to npm at the moment; the goal here is to develop keystone itself,
-  not build projects with it (at this stage).
-- And it probably goes without saying, but **please do not publish any of this code publicly or share preview urls** until
-  [@JedWatson](https://github.com/JedWatson) does.
-  The project is MIT licensed in anticipation of a future release, so this is not a legal restriction, but a friendly request.
+This project is currently very much in the `alpha` phase of development.
+There are known bugs, missing features, and limited documentation.
+APIs have not been finalised and may change with each release (although semver will always be respected when this happens).
+If you use the knex adapter, KeystoneJS _will_ delete your database every time you restart your application.
 
 ## Getting Started
+
+### Quick start
+
+To get up and running with a basic project template, run the following commands.
+
+```bash
+yarn create keystone-app my-app
+cd my-app
+yarn start
+```
 
 ### Setup
 
@@ -267,7 +269,7 @@ there are no Users created. It is recommended to first run an instance of
 Keystone **without** an auth strategy, create your first User, then re-enable
 the auth strategy._
 
-## Contributing
+## Developing
 
 All source code should be formatted with [Prettier](https://github.com/prettier/prettier).
 Code is not automatically formatted in commit hooks to avoid unexpected behaviour,
@@ -421,23 +423,18 @@ To start, run
 bolt arch
 ```
 
-## Developing Projects with Keystone 5
-
-As noted in the house rules, this preview isn't intended to be used for projects.
-If you want to do so, you may, at your own risk.
-We're not ready to make promises about breaking changes, stability or feature completeness yet.
-
-Having said that; we _are_ using Keystone 5 for a limited number of applications in production, and this is how:
-
-- Create a **private** fork of the repo
-- Make a copy of `./demo-projects/todo` and use it as the basis for the project
-- Update the `start` script to run your project
-- Pull upstream changes as needed
-
-When we're ready, Keystone 5 will be properly supported with semantic versioned releases,
-changelogs, and everything else you'd expect.
-Until then, you're on your own 🙂
-
 ## License
 
 Copyright (c) 2018 Jed Watson. Licensed under the MIT License.
+
+## Contributors
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+<table><tr><td align="center"><a href="http://www.thinkmill.com.au"><img src="https://avatars3.githubusercontent.com/u/872310?v=4" width="100px;" alt="Jed Watson"/><br /><sub><b>Jed Watson</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=JedWatson" title="Code">💻</a></td><td align="center"><a href="http://jes.st/about"><img src="https://avatars1.githubusercontent.com/u/612020?v=4" width="100px;" alt="Jess Telford"/><br /><sub><b>Jess Telford</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=jesstelford" title="Code">💻</a></td><td align="center"><a href="http://www.timl.id.au"><img src="https://avatars0.githubusercontent.com/u/616382?v=4" width="100px;" alt="Tim Leslie"/><br /><sub><b>Tim Leslie</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=timleslie" title="Code">💻</a></td><td align="center"><a href="https://hamil.town"><img src="https://avatars1.githubusercontent.com/u/11481355?v=4" width="100px;" alt="Mitchell Hamilton"/><br /><sub><b>Mitchell Hamilton</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=mitchellhamilton" title="Code">💻</a></td><td align="center"><a href="https://twitter.com/JossMackison"><img src="https://avatars3.githubusercontent.com/u/2730833?v=4" width="100px;" alt="Joss Mackison"/><br /><sub><b>Joss Mackison</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=jossmac" title="Code">💻</a></td><td align="center"><a href="http://nathansimpson.design"><img src="https://avatars2.githubusercontent.com/u/12689383?v=4" width="100px;" alt="Nathan Simpson"/><br /><sub><b>Nathan Simpson</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=nathansimpsondesign" title="Code">💻</a></td><td align="center"><a href="https://github.com/mikehazell"><img src="https://avatars0.githubusercontent.com/u/814227?v=4" width="100px;" alt="Mike"/><br /><sub><b>Mike</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=mikehazell" title="Code">💻</a></td></tr><tr><td align="center"><a href="https://github.com/molomby"><img src="https://avatars0.githubusercontent.com/u/2416367?v=4" width="100px;" alt="John Molomby"/><br /><sub><b>John Molomby</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=molomby" title="Code">💻</a></td><td align="center"><a href="https://dominik-wilkowski.com"><img src="https://avatars3.githubusercontent.com/u/1266923?v=4" width="100px;" alt="Dominik Wilkowski"/><br /><sub><b>Dominik Wilkowski</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=dominikwilkowski" title="Code">💻</a></td><td align="center"><a href="https://github.com/Noviny"><img src="https://avatars1.githubusercontent.com/u/15622106?v=4" width="100px;" alt="Ben Conolly"/><br /><sub><b>Ben Conolly</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=Noviny" title="Code">💻</a></td><td align="center"><a href="https://github.com/jaredcrowe"><img src="https://avatars1.githubusercontent.com/u/4995433?v=4" width="100px;" alt="Jared Crowe"/><br /><sub><b>Jared Crowe</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=jaredcrowe" title="Code">💻</a></td><td align="center"><a href="https://www.linkedin.com/in/gautamsi"><img src="https://avatars2.githubusercontent.com/u/5769869?v=4" width="100px;" alt="Gautam Singh"/><br /><sub><b>Gautam Singh</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=gautamsi" title="Code">💻</a></td><td align="center"><a href="https://github.com/lukebatchelor"><img src="https://avatars2.githubusercontent.com/u/18694878?v=4" width="100px;" alt="lukebatchelor"/><br /><sub><b>lukebatchelor</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=lukebatchelor" title="Code">💻</a></td><td align="center"><a href="http://www.ticidesign.com"><img src="https://avatars2.githubusercontent.com/u/289889?v=4" width="100px;" alt="Ticiana de Andrade"/><br /><sub><b>Ticiana de Andrade</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=ticidesign" title="Code">💻</a></td></tr><tr><td align="center"><a href="https://github.com/aghaabbasq"><img src="https://avatars2.githubusercontent.com/u/17919384?v=4" width="100px;" alt="aghaabbasq"/><br /><sub><b>aghaabbasq</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=aghaabbasq" title="Code">💻</a></td><td align="center"><a href="http://ajaymathur.github.io/"><img src="https://avatars1.githubusercontent.com/u/9667784?v=4" width="100px;" alt="Ajay Narain Mathur"/><br /><sub><b>Ajay Narain Mathur</b></sub></a><br /><a href="https://github.com/keystonejs/keystone-5/commits?author=ajaymathur" title="Code">💻</a></td></tr></table>
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

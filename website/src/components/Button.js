@@ -4,8 +4,8 @@ import { colors } from '@arch-ui/theme';
 export default Styled.a(props => ({
   textDecoration: 'none',
   boxSizing: 'border-box',
-  fontSize: '1.25rem',
-  padding: '1rem 2rem',
+  fontSize: '1.1rem',
+  padding: '1rem 1.5rem',
   borderRadius: 6,
   margin: '0.5rem',
   transition: 'transform linear 120ms',

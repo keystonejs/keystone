@@ -1,8 +1,9 @@
 {
   "name": "@keystone-alpha/website",
+  "description": "KeystoneJS documentation. Powered by Gatsby.",
   "private": true,
-  "version": "1.0.0",
-  "author": "The Keystone Development Team",
+  "version": "1.0.1",
+  "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
@@ -26,6 +27,7 @@
     "bolt": "^0.22.1",
     "gatsby": "^2.1.19",
     "gatsby-mdx": "^0.4.0",
+    "gatsby-plugin-google-analytics": "^2.0.16",
     "gatsby-plugin-lunr": "^1.4.0",
     "gatsby-plugin-sharp": "^2.0.23",
     "gatsby-remark-copy-linked-files": "^2.0.9",

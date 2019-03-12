@@ -1,5 +1,15 @@
 # @keystone-alpha/cypress-project-login
 
+## 1.0.1
+
+- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+
+  - Update the package.json author field to "The Keystone Development Team"
+
+- [patch][c0e64c01](https://github.com/keystonejs/keystone-5/commit/c0e64c01):
+
+  - Move system tests into api-tests package
+
 ## 1.0.0
 
 - [major] 8b6734ae:

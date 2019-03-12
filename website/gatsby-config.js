@@ -11,25 +11,41 @@ async function getPackagePlugins() {
   const workspaces = await bolt.getWorkspaces({ cwd: rootDir });
 
   return [
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'quick-start',
+        path: `${rootDir}/docs/quick-start/`,
+      },
+    },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'tutorials',
+        path: `${rootDir}/docs/tutorials/`,
+      },
+    },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'guides',
+        path: `${rootDir}/docs/guides`,
+      },
+    },
     ...workspaces
       .map(({ dir, config }) => ({ dir, name: config.name }))
       .filter(({ dir }) => fs.existsSync(dir))
+      .filter(({ dir }) => !dir.includes('website') && !dir.includes('arch'))
       .map(({ name, dir }) => ({
         resolve: 'gatsby-source-filesystem',
         options: {
           // This `name` will show up as `sourceInstanceName` on a node's "parent"
           // See `gatsby-node.js` for where it's used.
-          name,
-          path: `${dir}/`,
+          name: `api/${name}`,
+          path: `${dir}`,
+          ignore: [`**/**/CHANGELOG.md`],
         },
       })),
-    {
-      resolve: 'gatsby-source-filesystem',
-      options: {
-        name: 'docs',
-        path: `${rootDir}/docs`,
-      },
-    },
   ];
 }
 
@@ -38,10 +54,6 @@ async function getGatsbyConfig() {
   return {
     plugins: [
       ...packageFilesPlugins,
-      {
-        resolve: 'gatsby-source-filesystem',
-        options: { name: 'tutorials', path: `${__dirname}/tutorials/` },
-      },
       `gatsby-plugin-sharp`,
       {
         resolve: `gatsby-mdx`,
@@ -108,6 +120,13 @@ async function getGatsbyConfig() {
           },
           //custom index file name, default is search_index.json
           filename: 'search_index.json',
+        },
+      },
+      {
+        resolve: `gatsby-plugin-google-analytics`,
+        options: {
+          trackingId: 'UA-43970386-1',
+          head: true,
         },
       },
     ],
