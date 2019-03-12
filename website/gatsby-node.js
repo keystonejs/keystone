@@ -1,9 +1,12 @@
 const path = require('path');
+const bolt = require('bolt');
 const get = require('lodash.get');
 const slugify = require('@sindresorhus/slugify');
 const generateUrl = require('./generateUrl');
 
 const PROJECT_ROOT = path.resolve('..');
+
+const NAV_BAR_ORDER = ['quick-start', 'tutorials', 'guides', 'packages'];
 
 exports.createPages = ({ actions, graphql }) => {
   const { createPage } = actions;
@@ -21,6 +24,9 @@ exports.createPages = ({ actions, graphql }) => {
               slug
               navGroup
               workspaceSlug
+              sortOrder
+              isPackageIndex
+              pageTitle
             }
           }
         }
@@ -70,27 +76,39 @@ exports.onCreateWebpackConfig = ({ actions }) => {
 const getEditUrl = absPath =>
   `https://github.com/keystonejs/keystone-5/edit/master/${path.relative(PROJECT_ROOT, absPath)}`;
 
-exports.onCreateNode = ({ node, actions, getNode }) => {
+exports.onCreateNode = async ({ node, actions, getNode }) => {
   const { createNodeField } = actions;
 
   // Only for our markdown files
   if (get(node, 'internal.type') === `Mdx`) {
     // Get the parent node which includes info about the file paths, etc
     const parent = getNode(node.parent);
-    const { sourceInstanceName } = parent;
+    const { sourceInstanceName, relativePath } = parent;
 
     const isPackage = !['quick-start', 'tutorials', 'guides'].includes(sourceInstanceName);
     const navGroup = isPackage ? 'packages' : sourceInstanceName;
+
+    let pageTitle;
+    if (isPackage) {
+      const { dir: rootDir } = await bolt.getProject({ cwd: '../' });
+      const workspaces = await bolt.getWorkspaces({ cwd: rootDir, only: sourceInstanceName });
+      pageTitle = workspaces[0].name;
+    } else {
+      pageTitle = relativePath.split('.')[0];
+    }
     const fieldsToAdd = {
       // This value is added in `gatsby-config` as the "name" of the plugin.
       // Since we scan every workspace and add that as a separate plugin, we
       // have the opportunity there to add the "name", which we pull from the
       // workspace's `package.json`, and can use here.
       navGroup,
-      workspaceSlug: slugify(parent.sourceInstanceName),
+      workspaceSlug: slugify(sourceInstanceName),
       editUrl: getEditUrl(get(node, 'fileAbsolutePath')),
       // The full path to this "node"
       slug: generateUrl(parent),
+      sortOrder: NAV_BAR_ORDER.indexOf(navGroup),
+      isPackageIndex: isPackage && relativePath === 'README.md',
+      pageTitle: pageTitle,
     };
 
     // see: https://github.com/gatsbyjs/gatsby/issues/1634#issuecomment-388899348
