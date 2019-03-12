@@ -16,20 +16,19 @@ export default () => (
           margin: 0,
           color: colors.B.D55,
           fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
-          overflow: 'hidden',
         },
       }}
     />
     <Hero />
     <p
       css={{
-        fontSize: 1100,
+        fontSize: 'calc(calc(130vh - 16px) - 1rem)',
         fontWeight: 900,
         position: 'absolute',
-        lineHeight: 0,
+        lineHeight: 1,
         margin: 0,
         zIndex: -1,
-        top: 320,
+        top: '-0.2em',
         right: 0,
         color: '#2684FF',
         opacity: 0.2,
@@ -37,7 +36,7 @@ export default () => (
     >
       5
     </p>
-    <Footer />
+    <Footer textCenter />
   </>
 );
 
@@ -69,7 +68,7 @@ const Hero = () => (
           Keystone 5
         </h1>
 
-        <div css={{ color: '#596d88', margin: '20px 0' }}>
+        <div css={{ color: '#596d88', margin: '20px 0', lineHeight: 1.5 }}>
           <p>It’s a major re-imagining of Keystone for 2019 and beyond.</p>
 
           <p>
@@ -90,13 +89,13 @@ const Hero = () => (
         >
           <Button
             appearance="primary"
-            href="https://docs.google.com/forms/d/e/1FAIpQLSfOrULmIgp10UiLSKyvJP_hWQ6R5tz5f5l9sRosG6Myrt_2_Q/viewform?usp=sf_link"
+            href="/getting-started"
             style={{ margin: 0, marginRight: 8 }}
           >
-            Join the Preview
+            Get Started
           </Button>
-          <Button href="/tutorials/getting-started" style={{ margin: 0 }}>
-            Read the Docs
+          <Button href="https://github.com/keystonejs/keystone-5" style={{ margin: 0 }}>
+            View on GitHub
           </Button>
         </div>
       </div>

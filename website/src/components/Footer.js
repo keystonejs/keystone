@@ -4,15 +4,21 @@ import { colors } from '@arch-ui/theme';
 
 /** @jsx jsx */
 
-const Footer = () => (
+const Footer = ({ textCenter }) => (
   <footer
-    css={{
-      background: colors.B.A10,
-      padding: 16,
-      textAlign: 'center',
-    }}
+    css={[
+      !textCenter && {
+        borderTop: `1px solid ${colors.B.A25}`,
+        padding: 24,
+      },
+      textCenter && { textAlign: 'center' },
+    ]}
   >
-    Made with love by <a href="https://www.thinkmill.com.au">Thinkmill</a> and our contributors.
+    Made with ❤️ by{' '}
+    <a href="https://www.thinkmill.com.au" css={{ color: colors.primary, textDecoration: 'none' }}>
+      Thinkmill
+    </a>{' '}
+    and our contributors.
   </footer>
 );
 

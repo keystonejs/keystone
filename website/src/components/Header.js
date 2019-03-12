@@ -26,7 +26,7 @@ const Logo = () => (
 const navLinks = [
   {
     name: 'Get Started',
-    url: '/getting-started',
+    url: '/getting-started/',
   },
   {
     name: 'Guides',
@@ -60,6 +60,14 @@ const Nav = () => (
           </Link>
         </li>
       ))}
+      <li css={{ padding: '0px 5px' }}>
+        <a
+          href="https://github.com/keystonejs/keystone-5"
+          css={{ textDecoration: 'none', color: 'black' }}
+        >
+          GitHub
+        </a>
+      </li>
     </ul>
   </nav>
 );
@@ -69,23 +77,30 @@ const Header = () => (
     css={{
       background: 'white',
       padding: '12px 16px',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
       borderBottom: `1px solid ${colors.B.A25}`,
     }}
   >
     <div
       css={{
+        maxWidth: 1190,
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
+        margin: '0 auto',
       }}
     >
-      <Logo />
-      <Nav />
+      <div
+        css={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Logo />
+        <Nav />
+      </div>
+      <Search />
     </div>
-    <Search />
   </header>
 );
 
