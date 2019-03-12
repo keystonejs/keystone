@@ -47,10 +47,9 @@ if (args._.length === 0) {
 // check if folder exists and is not empty
 const name = generator.createAppName(args._.join(' '));
 try {
-	generator.checkEmptyDir(name);
-}
-catch (error) {
-	console.error(chalk.red(`\n${error}`));
+  generator.checkEmptyDir(name);
+} catch (error) {
+  console.error(chalk.red(`\n${error}`));
   console.info(generator.help());
   process.exit(0);
 }

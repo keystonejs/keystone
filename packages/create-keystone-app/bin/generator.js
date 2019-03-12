@@ -102,7 +102,13 @@ function installDependencies(projectDir) {
  */
 function done(name, appName) {
   console.log(chalk.green(`Your app "${name}" is ready in ${appName}/`));
-  console.log(chalk.green(`You can start your app with ${chalk.yellow(`cd ${appName}`)} and ${chalk.yellow(`yarn start`)}`));
+  console.log(
+    chalk.green(
+      `You can start your app with ${chalk.yellow(`cd ${appName}`)} and ${chalk.yellow(
+        `yarn start`
+      )}`
+    )
+  );
 }
 
 /**
