@@ -25,8 +25,8 @@ const Logo = () => (
 
 const navLinks = [
   {
-    name: 'Get Started',
-    url: '/getting-started/',
+    name: 'Quick Start',
+    url: '/quick-start',
   },
   {
     name: 'Guides',

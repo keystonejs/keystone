@@ -1,34 +1,36 @@
-# Keystone 5
+# KeystoneJS
 
 [![CircleCI](https://circleci.com/gh/keystonejs/keystone-5.svg?style=shield&circle-token=6b4c9e250b2b61403b64c9b66ab7f4de6b0b4dde)](https://circleci.com/gh/keystonejs/keystone-5) [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors)
 
-This is a prototype architecture for Keystone 5.
+Welcome to Keystone 5, the development project for the future of KeystoneJS.
 
-Everything is WIP.
+`schema => ({ api, adminUI })`
 
-## Welcome and Disclaimer
+KeystoneJS is a platform which takes a user defined schema and builds a server which provides a GraphQL CRUD API backed by a database, along with an Admin UI for interacting with the database.
 
-If you can see this repo, it means you've been invited to work with us on the future of KeystoneJS.
+- [WARNING](#WARNING)
+- [Getting Started](#Getting-Started)
+- [Developing](#Developing)
+- [License](#License)
 
-Some quick house rules:
+## WARNING
 
-- This project will be made public when we're ready.
-  There is a lot to do, and a lot to write (including code, guides, documentation, and plans) before that happens.
-  Please be patient - we're 100% focused on the coding and planning at the moment and don't yet have bandwidth for questions or support.
-- Because so much is still being worked out,
-  please don't demo or discuss the plans and features present in this repo outside of the Keystone slack
-  (we have a dedicated #keystone-next channel for that)
-- In order to preserve focus, speculative issues not related to our immediate development goals may be closed at any time.
-  We'll be open to broader topics being discussed in issues when
-- PRs are welcome, but contributions may not be accepted unless they have been discussed and specified in a corresponding issue beforehand.
-  Issues marked `ready`, `help wanted` and `good first issue` are fair game.
-- The new version is not being published to npm at the moment; the goal here is to develop keystone itself,
-  not build projects with it (at this stage).
-- And it probably goes without saying, but **please do not publish any of this code publicly or share preview urls** until
-  [@JedWatson](https://github.com/JedWatson) does.
-  The project is MIT licensed in anticipation of a future release, so this is not a legal restriction, but a friendly request.
+This project is currently very much in the `alpha` phase of development.
+There are known bugs, missing features, and limited documentation.
+APIs have not been finalised and may change with each release (although semver will always be respected when this happens).
+If you use the knex adapter, KeystoneJS _will_ delete your database every time you restart your application.
 
 ## Getting Started
+
+### Quick start
+
+To get up and running with a basic project template, run the following commands.
+
+```bash
+yarn create keystone-app my-app
+cd my-app
+yarn start
+```
 
 ### Setup
 
@@ -267,7 +269,7 @@ there are no Users created. It is recommended to first run an instance of
 Keystone **without** an auth strategy, create your first User, then re-enable
 the auth strategy._
 
-## Contributing
+## Developing
 
 All source code should be formatted with [Prettier](https://github.com/prettier/prettier).
 Code is not automatically formatted in commit hooks to avoid unexpected behaviour,
@@ -420,23 +422,6 @@ To start, run
 ```sh
 bolt arch
 ```
-
-## Developing Projects with Keystone 5
-
-As noted in the house rules, this preview isn't intended to be used for projects.
-If you want to do so, you may, at your own risk.
-We're not ready to make promises about breaking changes, stability or feature completeness yet.
-
-Having said that; we _are_ using Keystone 5 for a limited number of applications in production, and this is how:
-
-- Create a **private** fork of the repo
-- Make a copy of `./demo-projects/todo` and use it as the basis for the project
-- Update the `start` script to run your project
-- Pull upstream changes as needed
-
-When we're ready, Keystone 5 will be properly supported with semantic versioned releases,
-changelogs, and everything else you'd expect.
-Until then, you're on your own 🙂
 
 ## License
 
