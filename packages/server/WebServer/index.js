@@ -96,9 +96,14 @@ module.exports = class WebServer {
     );
 
     if (adminUI) {
-      // This must be last as it's the "catch all" which falls into Webpack to
-      // serve the Admin UI.
-      this.app.use(adminUI.createDevMiddleware({ apiPath, graphiqlPath, port }));
+      if (process.env.NODE_ENV === 'production') {
+        this.app.use('/admin', express.static(path.join(process.cwd(), 'build', 'admin')));
+        // TODO: handle client side routing
+      } else {
+        // This must be last as it's the "catch all" which falls into Webpack to
+        // serve the Admin UI.
+        this.app.use(adminUI.createDevMiddleware({ apiPath, graphiqlPath, port }));
+      }
     }
   }
 

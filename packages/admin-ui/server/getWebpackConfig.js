@@ -4,7 +4,7 @@ const path = require('path');
 
 const { enableDevFeatures, mode } = require('./env');
 
-module.exports = function({ adminMeta, entry }) {
+module.exports = function({ adminMeta, entry, outputPath }) {
   const templatePlugin = new HtmlWebpackPlugin({
     title: 'KeystoneJS',
     template: 'index.html',
@@ -77,6 +77,7 @@ module.exports = function({ adminMeta, entry }) {
     entry:
       mode === 'production' ? entryPath : [entryPath, 'webpack-hot-middleware/client?reload=true'],
     output: {
+      path: outputPath,
       filename: `${entry}.js`,
       publicPath: adminMeta.adminPath,
     },

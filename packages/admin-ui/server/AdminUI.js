@@ -143,6 +143,39 @@ module.exports = class AdminUI {
     return app;
   }
 
+  staticBuild({ outputPath, apiPath, graphiqlPath }) {
+    // TODO: support auth
+
+    const secureCompiler = webpack(
+      getWebpackConfig({
+        adminMeta: this.getAdminUIMeta({ apiPath, graphiqlPath }),
+        entry: 'index',
+        outputPath,
+      })
+    );
+    return new Promise((resolve, reject) => {
+      secureCompiler.run(err => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
+
+  getAdminUIMeta({ apiPath, graphiqlPath }) {
+    const { adminPath } = this;
+
+    return {
+      adminPath,
+      apiPath,
+      graphiqlPath,
+      ...this.getAdminMeta(),
+      ...this.keystone.getAdminMeta(),
+    };
+  }
+
   createDevMiddleware({ apiPath, graphiqlPath, port }) {
     const app = express();
     const { adminPath } = this;
@@ -164,13 +197,9 @@ module.exports = class AdminUI {
     });
 
     // add the webpack dev middleware
-    const adminMeta = {
-      adminPath,
-      apiPath,
-      graphiqlPath,
-      ...this.getAdminMeta(),
-      ...this.keystone.getAdminMeta(),
-    };
+
+    let adminMeta = this.getAdminUIMeta({ apiPath, graphiqlPath });
+
     const webpackMiddlewareConfig = {
       publicPath: adminPath,
       stats: 'minimal',
