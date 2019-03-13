@@ -23,19 +23,16 @@ let CopyIcon = memo(function CopyIcon({ isCopied }) {
 export let IdCopy = memo(function IdCopy({ id }) {
   let [isCopied, setIsCopied] = useState(false);
 
-  useEffect(
-    () => {
-      if (isCopied) {
-        let timeoutID = setTimeout(() => {
-          isCopied(false);
-        }, 500);
-        return () => {
-          clearTimeout(timeoutID);
-        };
-      }
-    },
-    [isCopied, setIsCopied]
-  );
+  useEffect(() => {
+    if (isCopied) {
+      let timeoutID = setTimeout(() => {
+        isCopied(false);
+      }, 500);
+      return () => {
+        clearTimeout(timeoutID);
+      };
+    }
+  }, [isCopied, setIsCopied]);
 
   return (
     <FlexGroup align="center" isContiguous>

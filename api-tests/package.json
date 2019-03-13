@@ -16,7 +16,7 @@
     "@keystone-alpha/test-utils": "^1.1.0",
     "body-parser": "^1.18.2",
     "cookie-signature": "^1.1.0",
-    "cuid": "^2.1.1",
+    "cuid": "^2.1.6",
     "supertest-light": "^1.0.2",
     "testcheck": "^1.0.0-rc.2"
   }

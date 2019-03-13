@@ -38,23 +38,20 @@ const Search = ({ location, navigate }) => {
     [setQuery]
   );
 
-  useEffect(
-    () => {
-      let cancelled = false;
+  useEffect(() => {
+    let cancelled = false;
 
-      getResults(query).then(queryResults => {
-        if (cancelled) {
-          return;
-        }
-        setResults(queryResults);
-      });
+    getResults(query).then(queryResults => {
+      if (cancelled) {
+        return;
+      }
+      setResults(queryResults);
+    });
 
-      return () => {
-        cancelled = true;
-      };
-    },
-    [query]
-  );
+    return () => {
+      cancelled = true;
+    };
+  }, [query]);
 
   return (
     <React.Fragment>
@@ -124,7 +121,7 @@ const Search = ({ location, navigate }) => {
                     >
                       {result.title}
                     </Link>
-                    <small style={{ color: 'grey' }}>({result.workspace})</small>
+                    <small style={{ color: 'grey' }}>({result.navGroup})</small>
                   </div>
                   <p css={{ marginBottom: 0 }}>{result.preview}</p>
                 </li>

@@ -37,8 +37,8 @@ const navLinks = [
     url: '/tutorials/',
   },
   {
-    name: 'APIs',
-    url: '/api/keystone-alpha/core/',
+    name: 'Packages',
+    url: '/keystone-alpha/core/',
   },
 ];
 
