@@ -31,7 +31,7 @@ export default () => (
             node {
               path
               context {
-                workspace
+                navGroup
               }
             }
           }
@@ -42,16 +42,13 @@ export default () => (
       const navData = data.allSitePage.edges.reduce((pageList, { node }) => {
         // finding out what directory the file is in (eg '/keystone-alpha')
 
-        if (node.context.workspace !== null) {
+        if (node.context.navGroup !== null) {
           let dir;
 
-          console.log(node.context.workspace);
-
-          if (node.context.workspace.includes('api')) {
-            dir = node.context.workspace.match('api/@?([a-z]|_|-)+/?')[0].replace('api/', '');
-            console.log(dir);
+          if (node.context.navGroup.includes('api')) {
+            dir = node.context.navGroup.match('api/@?([a-z]|_|-)+/?')[0].replace('api/', '');
           } else {
-            dir = node.context.workspace;
+            dir = node.context.navGroup;
           }
 
           if (!pageList[dir]) {

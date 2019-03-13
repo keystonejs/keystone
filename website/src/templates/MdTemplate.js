@@ -25,7 +25,7 @@ import mdComponents from '../components/markdown';
 
 export default function Template({
   data, // this prop will be injected by the GraphQL query below.
-  pageContext: { workspace, workspaceSlug },
+  pageContext: { navGroup, workspaceSlug },
 }) {
   const { mdx } = data; // data.mdx holds our post data
   const { code, fields } = mdx;
@@ -34,7 +34,7 @@ export default function Template({
       <div>
         <div css={{ color: colors.B.A50, textTransform: 'capitalize' }}>
           <StyledLink to="/">Keystone</StyledLink> &gt;{' '}
-          <StyledLink to={workspaceSlug}>{workspace}</StyledLink>
+          <StyledLink to={workspaceSlug}>{navGroup}</StyledLink>
         </div>
         <div>
           <MDXProvider components={mdComponents}>
