@@ -17,7 +17,7 @@ let renderOptionLabel = result => {
   return (
     <div>
       <span css={{ color: colors.B.base, textTransform: 'capitalize' }}>{result.title}</span>{' '}
-      <small style={{ color: 'grey' }}>({result.workspace})</small>
+      <small style={{ color: 'grey' }}>({result.navGroup})</small>
     </div>
   );
 };

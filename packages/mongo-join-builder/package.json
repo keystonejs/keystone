@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@keystone-alpha/utils": "^1.0.1",
-    "cuid": "^2.1.1"
+    "cuid": "^2.1.6"
   },
   "devDependencies": {
     "lodash.omitby": "^4.6.0",

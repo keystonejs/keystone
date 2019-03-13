@@ -6,19 +6,19 @@
   "license": "MIT",
   "main": "dist/confirm.cjs.js",
   "peerDependencies": {
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
   },
   "devDependencies": {
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
   },
   "dependencies": {
     "@arch-ui/modal-utils": "^0.0.2",
     "@arch-ui/theme": "^0.0.2",
     "@babel/runtime": "^7.3.4",
-    "@emotion/core": "^10.0.4",
-    "@emotion/styled": "^10.0.4",
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9",
     "react-focus-marshal": "^1.0.1",
     "react-scrolllock": "^3.0.1"
   },

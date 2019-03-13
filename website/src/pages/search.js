@@ -121,7 +121,7 @@ const Search = ({ location, navigate }) => {
                     >
                       {result.title}
                     </Link>
-                    <small style={{ color: 'grey' }}>({result.workspace})</small>
+                    <small style={{ color: 'grey' }}>({result.navGroup})</small>
                   </div>
                   <p css={{ marginBottom: 0 }}>{result.preview}</p>
                 </li>
