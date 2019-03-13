@@ -1,6 +1,6 @@
 function prettyTitle(node) {
   let pretty = node.slug
-    .replace(node.navGroup.replace('@', ''), '')
+    .replace(node.navGroup, '')
     .replace(new RegExp(/(\/)/g), ' ')
     .replace('-', ' ')
     .trim();

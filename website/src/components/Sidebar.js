@@ -6,12 +6,10 @@ import { jsx } from '@emotion/core';
 
 /** @jsx jsx */
 
-const prettyName = (node, category) => {
-  const cat = category.replace('@', '');
-
+const prettyName = (node, navGroup) => {
   let pretty = node.path
-    .replace('/api', '')
-    .replace(cat, '')
+    .replace('/packages', '')
+    .replace(navGroup, '')
     .replace(new RegExp(/(\/\/)/g), '')
     .replace(new RegExp(/\/$/g), '')
     .replace(new RegExp(/^\//g), '')
@@ -41,36 +39,24 @@ export default () => (
     render={data => {
       const navData = data.allSitePage.edges.reduce((pageList, { node }) => {
         // finding out what directory the file is in (eg '/keystone-alpha')
-
         if (node.context.navGroup !== null) {
-          let dir;
-
-          if (node.context.navGroup.includes('api')) {
-            dir = node.context.navGroup.match('api/@?([a-z]|_|-)+/?')[0].replace('api/', '');
-          } else {
-            dir = node.context.navGroup;
+          if (!pageList[node.context.navGroup]) {
+            pageList[node.context.navGroup] = [];
           }
-
-          if (!pageList[dir]) {
-            pageList[dir] = [];
-          }
-          pageList[dir].push(node);
+          pageList[node.context.navGroup].push(node);
         }
 
         return pageList;
       }, {});
 
-      console.log(navData);
-
-      const categories = Object.keys(navData).sort(x => {
-        return x.startsWith('@') ? 0 : -1;
-      });
+      console.log({ navData });
+      const navGroups = Object.keys(navData);
 
       return (
         <div>
-          {categories.map(category => {
+          {navGroups.map(navGroup => {
             return (
-              <div key={category}>
+              <div key={navGroup}>
                 <span
                   css={{
                     fontSize: '1.25em',
@@ -78,7 +64,7 @@ export default () => (
                     textTransform: 'capitalize',
                   }}
                 >
-                  {category}
+                  {navGroup}
                 </span>
                 <ul
                   css={{
@@ -87,7 +73,7 @@ export default () => (
                     margin: '0 0 32px 0',
                   }}
                 >
-                  {navData[category].map(node => {
+                  {navData[navGroup].map(node => {
                     return (
                       <li key={node.path} css={{}}>
                         <Link
@@ -108,7 +94,7 @@ export default () => (
                           }}
                           to={node.path}
                         >
-                          {prettyName(node, category)}
+                          {prettyName(node, navGroup)}
                         </Link>
                       </li>
                     );

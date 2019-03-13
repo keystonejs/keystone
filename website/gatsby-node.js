@@ -77,12 +77,16 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
   if (get(node, 'internal.type') === `Mdx`) {
     // Get the parent node which includes info about the file paths, etc
     const parent = getNode(node.parent);
+    const { sourceInstanceName } = parent;
+
+    const isPackage = !['quick-start', 'tutorials', 'guides'].includes(sourceInstanceName);
+    const navGroup = isPackage ? 'packages' : sourceInstanceName;
     const fieldsToAdd = {
       // This value is added in `gatsby-config` as the "name" of the plugin.
       // Since we scan every workspace and add that as a separate plugin, we
       // have the opportunity there to add the "name", which we pull from the
       // workspace's `package.json`, and can use here.
-      navGroup: parent.sourceInstanceName,
+      navGroup,
       workspaceSlug: slugify(parent.sourceInstanceName),
       editUrl: getEditUrl(get(node, 'fileAbsolutePath')),
       // The full path to this "node"
