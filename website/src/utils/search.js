@@ -1,6 +1,6 @@
 function prettyTitle(node) {
   let pretty = node.slug
-    .replace(node.workspace.replace('@', ''), '')
+    .replace(node.navGroup.replace('@', ''), '')
     .replace(new RegExp(/(\/)/g), ' ')
     .replace('-', ' ')
     .trim();
@@ -52,7 +52,7 @@ export function getResults(query, options = { limit: Infinity }) {
           return { ...node, title: prettyTitle(node) };
         })
         // Make sure `tutorials` are always first
-        .sort((a, b) => (a.workspace !== b.workspace && a.workspace === 'tutorials' ? -1 : 0))
+        .sort((a, b) => (a.navGroup !== b.navGroup && a.navGroup === 'tutorials' ? -1 : 0))
         .slice(0, options.limit),
     };
   });

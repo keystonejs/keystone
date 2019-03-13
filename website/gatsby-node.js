@@ -19,7 +19,7 @@ exports.createPages = ({ actions, graphql }) => {
             id
             fields {
               slug
-              workspace
+              navGroup
               workspaceSlug
             }
           }
@@ -82,7 +82,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
       // Since we scan every workspace and add that as a separate plugin, we
       // have the opportunity there to add the "name", which we pull from the
       // workspace's `package.json`, and can use here.
-      workspace: parent.sourceInstanceName,
+      navGroup: parent.sourceInstanceName,
       workspaceSlug: slugify(parent.sourceInstanceName),
       editUrl: getEditUrl(get(node, 'fileAbsolutePath')),
       // The full path to this "node"

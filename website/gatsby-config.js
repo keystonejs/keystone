@@ -90,7 +90,7 @@ async function getGatsbyConfig() {
             { name: 'content' },
             { name: 'preview', store: true },
             { name: 'slug', store: true },
-            { name: 'workspace', store: true },
+            { name: 'navGroup', store: true },
             { name: 'heading', store: true, attributes: { boost: 20 } },
           ],
           // How to resolve each field's value for a supported node type
@@ -114,7 +114,7 @@ async function getGatsbyConfig() {
                 return prune(excerptNodes.join(' '), 280, '…');
               },
               slug: node => node.fields.slug,
-              workspace: node => node.fields.workspace,
+              navGroup: node => node.fields.navGroup,
               heading: node => node.fields.heading,
             },
           },
