@@ -55,16 +55,8 @@ export const Sidebar = () => (
           {navGroups.map(navGroup => {
             return (
               <div key={navGroup}>
-                <h3
-                  css={{
-                    fontSize: '1.25em',
-                    fontWeight: 700,
-                    textTransform: 'capitalize',
-                  }}
-                >
-                  {navGroup}
-                </h3>
-                <ul css={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                <GroupHeading>{navGroup}</GroupHeading>
+                <List>
                   {navData[navGroup].map(node => {
                     return (
                       <ListItem key={node.path} to={node.path}>
@@ -72,7 +64,7 @@ export const Sidebar = () => (
                       </ListItem>
                     );
                   })}
-                </ul>
+                </List>
               </div>
             );
           })}
@@ -82,16 +74,34 @@ export const Sidebar = () => (
   />
 );
 
+const GroupHeading = props => (
+  <h3
+    css={{
+      color: colors.N80,
+      fontSize: '0.9rem',
+      fontWeight: 700,
+      marginTop: '2.4em',
+      textTransform: 'uppercase',
+    }}
+    {...props}
+  />
+);
+const List = props => (
+  <ul css={{ listStyle: 'none', fontSize: '0.9rem', padding: 0, margin: 0 }} {...props} />
+);
 const ListItem = props => (
   <li>
     <Link
       css={{
         color: colors.B.D50,
         display: 'block',
+        overflow: 'hidden',
         paddingBottom: gridSize * 0.75,
         paddingTop: gridSize * 0.75,
         textDecoration: 'none',
+        textOverflow: 'ellipsis',
         textTransform: 'capitalize',
+        whiteSpace: 'nowrap',
 
         ':hover, :focus': {
           // color: colors.B.base,

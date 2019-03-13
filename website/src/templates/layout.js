@@ -28,12 +28,12 @@ const Layout = ({ children }) => {
             padding: 4,
           },
           'main a': {
-            borderBottom: '1px solid rgba(0,0,0,0.2)',
-            color: '#1a1a1a',
+            borderBottom: '1px solid rgba(0, 0, 0, 0.2)',
+            color: colors.N100,
             textDecoration: 'none',
 
             ':hover, :focus': {
-              backgroundColor: colors.B.A5,
+              backgroundColor: colors.B.A10,
               textDecoration: 'none',
             },
           },

@@ -15,7 +15,9 @@ const Hr = props => (
       backgroundColor: colors.N80,
       height: 3,
       border: 0,
-      margin: '2em auto',
+      marginBottom: '3rem',
+      marginTop: '3rem',
+      marginLeft: 0,
       width: 120,
       position: 'relative',
     }}

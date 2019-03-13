@@ -30,15 +30,11 @@ export const H1 = props => (
 export const H2 = props => (
   <Heading {...props} css={{ fontSize: '2.4rem', fontWeight: 300, marginTop: '1.33em' }} as="h2" />
 );
-export const H3 = props => <Heading css={{ fontSize: '1.8rem' }} {...props} as="h3" />;
-export const H4 = props => <Heading css={{ fontSize: '1.2rem' }} {...props} as="h4" />;
-export const H5 = props => (
-  <Heading
-    {...props}
-    css={{ color: colors.N60, fontSize: '1rem', textTransform: 'uppercase' }}
-    as="h5"
-  />
+export const H3 = props => (
+  <Heading css={{ fontSize: '1.6rem', fontWeight: 500 }} {...props} as="h3" />
 );
-export const H6 = props => <Heading {...props} css={{ fontSize: '1rem' }} as="h6" />;
+export const H4 = props => <Heading css={{ fontSize: '1.2rem' }} {...props} as="h4" />;
+export const H5 = props => <Heading {...props} css={{ fontSize: '1rem' }} as="h5" />;
+export const H6 = props => <Heading {...props} css={{ fontSize: '0.9rem' }} as="h6" />;
 
 export default Heading;

@@ -45,8 +45,6 @@ const NavItem = props => {
         href="https://github.com/keystonejs/keystone-5"
         css={{
           color: colors.N60,
-          fontSize: '0.9em',
-          fontWeight: 500,
           paddingBottom: gridSize / 2,
           paddingTop: gridSize / 2,
           paddingLeft: gridSize,
@@ -67,6 +65,8 @@ const List = props => (
   <ul
     css={{
       display: 'flex',
+      fontSize: '0.9rem',
+      fontWeight: 500,
       justifyContent: 'center',
       listStyle: 'none',
       margin: 0,

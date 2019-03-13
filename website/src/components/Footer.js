@@ -11,10 +11,11 @@ export const Footer = () => (
     css={{
       color: colors.N40,
       fontSize: '0.75rem',
+      marginTop: '3rem',
       textAlign: 'center',
     }}
   >
-    Made with ❤️by{' '}
+    Made with ❤️ by{' '}
     <Anchor href="https://www.thinkmill.com.au" target="_blank">
       Thinkmill
     </Anchor>
