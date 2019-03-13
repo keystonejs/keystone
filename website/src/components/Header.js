@@ -83,7 +83,9 @@ const Nav = () => (
           {name}
         </NavItem>
       ))}
-      <NavItem href="https://github.com/keystonejs/keystone-5">GitHub</NavItem>
+      <NavItem href="https://github.com/keystonejs/keystone-5" title="Opens in new window">
+        GitHub
+      </NavItem>
     </List>
   </nav>
 );

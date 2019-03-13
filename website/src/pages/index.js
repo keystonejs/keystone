@@ -63,21 +63,24 @@ const Hero = () => (
             margin: 0,
           }}
         >
-          Build bulletproof node.js applications, faster.
+          Build amazing node.js applications, faster.
           {/* Get a headstart on your node.js application API */}
           {/* Build applications faster with Keystone 5, a node.js CMS and API provider */}
         </h1>
 
         <div css={{ color: colors.N80, margin: '3em 0', lineHeight: 1.6 }}>
           <p>
-            Keystone 5 includes first-class GraphQL support, a modular architecture and a completely
-            new Admin UI. We're focusing less on serving the front-end, and more on providing a
-            scalable platform for content management and node.js applications.
+            Keystone 5 includes first-class GraphQL support, a modular architecture and an improved
+            Admin UI.
           </p>
           <p>
+            We're focusing less on serving the front-end, and more on providing a scalable platform
+            for content management and node.js applications.
+          </p>
+          {/* <p>
             We've been building the next generation of KeystoneJS at Thinkmill and are excited to
             start sharing it with the community.
-          </p>
+          </p> */}
         </div>
       </div>
       <div
@@ -86,10 +89,19 @@ const Hero = () => (
           alignItems: 'center',
         }}
       >
-        <Button appearance="primary" to="/quick-start" style={{ margin: 0, marginRight: 8 }}>
+        <Button
+          appearance="primary"
+          variant="solid"
+          to="/quick-start"
+          style={{ margin: 0, marginRight: 8 }}
+        >
           Get Started
         </Button>
-        <Button href="https://github.com/keystonejs/keystone-5" style={{ margin: 0 }}>
+        <Button
+          appearance="primary"
+          href="https://github.com/keystonejs/keystone-5"
+          style={{ margin: 0 }}
+        >
           View on GitHub
         </Button>
       </div>

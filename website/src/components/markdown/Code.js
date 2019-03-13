@@ -1,7 +1,12 @@
-import React from 'react';
+/** @jsx jsx */
+
+import React from 'react'; // eslint-disable-line
 import Highlight, { defaultProps } from 'prism-react-renderer';
 import reactAddonsTextContent from 'react-addons-text-content';
-import theme from '../../prism-themes/duotoneLight';
+import { jsx } from '@emotion/core';
+import { borderRadius, colors, gridSize } from '@arch-ui/theme';
+
+import theme from '../../prism-themes/keystone';
 
 /*
 This solution should be seen as extremely temporary and not a platonic ideal of code highlighting.
@@ -13,25 +18,32 @@ I highly encourage changing this.
 Leaving styling the inline component until we have emotion
 */
 
+console.log('defaultProps', defaultProps);
+
 export default props =>
   props.className ? (
     <Highlight
       {...defaultProps}
+      tag="div"
       theme={theme}
       code={reactAddonsTextContent(props.children)}
       language={props.className.replace('language-', '')}
+      data-test="what"
+      style={{ backgroundColor: 'red' }}
     >
-      {({ className, style, tokens, getLineProps, getTokenProps }) => (
-        <pre className={className} style={style}>
-          {tokens.map((line, i) => (
-            <div {...getLineProps({ line, key: i })}>
-              {line.map((token, key) => (
-                <span {...getTokenProps({ token, key })} />
-              ))}
-            </div>
-          ))}
-        </pre>
-      )}
+      {({ className, style, tokens, getLineProps, getTokenProps }) =>
+        console.log('pre', className, style) || (
+          <code>
+            {tokens.map((line, i) => (
+              <div {...getLineProps({ line, key: i })}>
+                {line.map((token, key) => (
+                  <span {...getTokenProps({ token, key })} />
+                ))}
+              </div>
+            ))}
+          </code>
+        )
+      }
     </Highlight>
   ) : (
     <code {...props} />

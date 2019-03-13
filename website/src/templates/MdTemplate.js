@@ -23,11 +23,14 @@ const EditButton = props => (
       outline: 'none',
 
       ':hover, :focus': {
-        backgroundColor: colors.N05,
+        backgroundColor: 'white',
+        borderColor: `rgba(0, 0, 0, 0.15)`,
+        boxShadow: '0 1px 0 rgba(0,0,0,0.05)',
         textDecoration: 'none',
       },
       ':active': {
-        backgroundColor: colors.N10,
+        backgroundColor: colors.N05,
+        boxShadow: 'none',
       },
     }}
     {...props}
@@ -50,7 +53,7 @@ export default function Template({
           <StyledLink to="/">Keystone</StyledLink> &gt;{' '}
           <StyledLink to={workspaceSlug}>{workspace}</StyledLink>
         </div> */}
-      <EditButton href={fields.editUrl} target="_blank">
+      <EditButton href={fields.editUrl} target="_blank" title="Edit this page on GitHub">
         Edit Page
       </EditButton>
       <MDXProvider components={mdComponents}>

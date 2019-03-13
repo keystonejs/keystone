@@ -107,3 +107,29 @@ export const Sidebar = () => (
     }}
   />
 );
+
+const ListItem = props => (
+  <li>
+    <Link
+      css={{
+        color: colors.B.D50,
+        display: 'block',
+        paddingBottom: gridSize * 0.75,
+        paddingTop: gridSize * 0.75,
+        textDecoration: 'none',
+        textTransform: 'capitalize',
+
+        ':hover, :focus': {
+          // color: colors.B.base,
+          textDecoration: 'underline',
+        },
+
+        '&[aria-current="page"]': {
+          color: colors.B.base,
+          fontWeight: 'bold',
+        },
+      }}
+      {...props}
+    />
+  </li>
+);

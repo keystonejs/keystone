@@ -6,49 +6,59 @@ import { jsx } from '@emotion/core';
 import { colors } from '@arch-ui/theme';
 
 // TODO
-const styles = {
-  primary: {},
+const variants = {
+  hollow: {
+    default: {
+      boxShadow: `inset 0 0 0 2px ${colors.N80}`,
+      color: colors.N80,
+    },
+    primary: {
+      boxShadow: `inset 0 0 0 2px ${colors.B.base}`,
+      color: colors.B.base,
+    },
+  },
+  solid: {
+    default: {
+      backgroundColor: colors.N80,
+      color: 'white',
+    },
+    primary: {
+      backgroundColor: colors.B.base,
+      color: 'white',
+    },
+  },
 };
 
-export const Button = ({ appearance, as, ...props }) => {
+export const Button = ({ appearance, variant, as, ...props }) => {
   let Tag = as;
   if (props.href) {
     Tag = 'a';
   } else if (props.to) {
     Tag = Link;
   }
+  const dynamicStyles = variants[variant][appearance];
 
   return (
     <Tag
       css={{
-        borderRadius: 6,
+        borderRadius: 4,
         boxSizing: 'border-box',
         cursor: 'pointer',
-        fontSize: '1.1rem',
+        fontWeight: 500,
         padding: '1rem 1.5rem',
         textDecoration: 'none',
-        transition: 'transform linear 120ms',
+        transition: 'transform ease 120ms',
 
         '&:hover': {
           transform: 'scale(1.025)',
           textDecoration: 'none',
+          // opacity: 0.9,
         },
         '&:active': {
-          opacity: 0.8,
+          transform: 'scale(1)',
         },
 
-        border:
-          appearance === 'primary-light'
-            ? `2px solid rgba(255,255,255,0.6);`
-            : `2px solid ${colors.B.base}`,
-
-        background:
-          {
-            'primary-light': 'white',
-            primary: colors.B.base,
-          }[appearance] || 'none',
-
-        color: appearance === 'primary' || appearance === 'light' ? 'white' : colors.B.base,
+        ...dynamicStyles,
       }}
       {...props}
     />
@@ -56,4 +66,6 @@ export const Button = ({ appearance, as, ...props }) => {
 };
 Button.defaultProps = {
   as: 'button',
+  appearance: 'default',
+  variant: 'hollow',
 };

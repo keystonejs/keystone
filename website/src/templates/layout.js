@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'; // eslint-disable-line no-unused-vars
 import { jsx, Global } from '@emotion/core';
-import { colors, globalStyles, gridSize } from '@arch-ui/theme';
+import { borderRadius, colors, globalStyles, gridSize } from '@arch-ui/theme';
 import throttle from 'lodash.throttle';
 
 import { Container, Footer, Header, Sidebar, Search } from '../components';
@@ -17,26 +17,54 @@ const Layout = ({ children }) => {
       <Global
         styles={{
           ...globalStyles,
-          backgroundColor: 'white',
 
-          img: {
-            maxWidth: '100%',
-          },
-          h1: {
-            marginTop: 0,
-          },
-
-          'pre[class*="language-"]': {
-            padding: gridSize * 2,
-            width: '100%',
+          // TODO: doesn't play nice with "gatsby-resp-image-wrapper"
+          'main img': {
+            backgroundColor: 'white',
+            borderRadius,
             boxSizing: 'border-box',
+            boxShadow: '0 0 0 1px hsla(0, 0%, 0%, 0.1), 0 4px 11px hsla(0, 0%, 0%, 0.1) !important',
+            maxWidth: '100%',
+            padding: 4,
+          },
+          'main a': {
+            borderBottom: '1px solid rgba(0,0,0,0.2)',
+            color: '#1a1a1a',
+            textDecoration: 'none',
+
+            ':hover, :focus': {
+              backgroundColor: colors.B.A5,
+              textDecoration: 'none',
+            },
+          },
+          'main ul': {
+            lineHeight: 1.8,
           },
 
-          ':not(pre) > code[class*="language-"]': {
-            background: 'white',
-            padding: '2px 4px',
-            fontSize: '0.9em',
-            overflow: 'scroll',
+          code: {
+            fontFamily: 'Consolas, Menlo, Monaco, "Andale Mono", "Ubuntu Mono", monospace',
+            fontSize: '0.85em',
+          },
+          pre: {
+            backgroundColor: 'rgba(9, 30, 66, 0.03)',
+            boxShadow: '-4px 0 0 rgba(9, 30, 66, 0.09)',
+            boxSizing: 'border-box',
+            fontFamily: 'Consolas,Menlo,Monaco,"Andale Mono","Ubuntu Mono",monospace',
+            padding: gridSize * 2,
+            overflowX: 'auto',
+            tabSize: 2,
+            width: '100%',
+            '.token-line:last-of-type': {
+              display: 'none', // our snippets seem to have an extra line...
+            },
+          },
+
+          ':not(pre) > code': {
+            backgroundColor: 'rgba(255,229,100,0.2)',
+            borderRadius: 2,
+            color: 'rgb(9, 30, 66)',
+            margin: 0,
+            padding: '0.2em 0.4em',
           },
         }}
       />
@@ -119,7 +147,9 @@ const Main = props => (
   <main
     css={{
       flex: 1,
+      lineHeight: '1.4',
       marginLeft: SIDEBAR_WIDTH,
+      minWidth: 0,
       paddingLeft: gutter,
       paddingBottom: gutter,
       paddingTop: gutter,

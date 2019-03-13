@@ -8,7 +8,7 @@ import { Input } from '@arch-ui/input';
 import { Location } from '@reach/router';
 import { colors } from '@arch-ui/theme';
 
-import { Header, Footer } from '../components';
+import { Header } from '../components';
 import { getResults } from '../utils/search';
 
 const Search = ({ location, navigate }) => {
@@ -125,7 +125,6 @@ const Search = ({ location, navigate }) => {
             </ul>
           </div>
         </div>
-        <Footer />
       </div>
     </React.Fragment>
   );
