@@ -23,7 +23,7 @@
     "@keystone-alpha/file-adapters": "^1.0.1",
     "@keystone-alpha/keystone": "^1.0.1",
     "@keystone-alpha/server": "^1.1.0",
-    "react": "^16.8.0"
+    "react": "^16.8.4"
   },
   "devDependencies": {
     "dotenv-safe": "^6.0.0",

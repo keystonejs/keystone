@@ -27,7 +27,7 @@
     "@keystone-alpha/keystone": "^1.0.1",
     "@keystone-alpha/server": "^1.1.0",
     "date-fns": "^1.29.0",
-    "react": "^16.8.0"
+    "react": "^16.8.4"
   },
   "devDependencies": {
     "cypress": "^3.1.5",

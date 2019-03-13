@@ -6,15 +6,15 @@
   "license": "MIT",
   "main": "dist/alert.cjs.js",
   "peerDependencies": {
-    "react": "^16.8.0"
+    "react": "^16.8.4"
   },
   "devDependencies": {
-    "react": "^16.8.0"
+    "react": "^16.8.4"
   },
   "dependencies": {
     "@arch-ui/theme": "^0.0.2",
-    "@emotion/core": "^10.0.4",
-    "@emotion/styled": "^10.0.4"
+    "@emotion/core": "^10.0.9",
+    "@emotion/styled": "^10.0.9"
   },
   "module": "dist/alert.esm.js"
 }
