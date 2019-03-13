@@ -10,6 +10,6 @@
   "dependencies": {
     "falsey": "^1.0.0",
     "fast-memoize": "^2.4.0",
-    "pino": "5.0.0-rc.4"
+    "pino": "5.11.1"
   }
 }
