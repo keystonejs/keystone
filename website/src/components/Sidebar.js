@@ -51,11 +51,11 @@ export const Sidebar = () => (
       const navGroups = Object.keys(navData);
 
       return (
-        <div>
+        <nav>
           {navGroups.map(navGroup => {
             return (
               <div key={navGroup}>
-                <span
+                <h3
                   css={{
                     fontSize: '1.25em',
                     fontWeight: 700,
@@ -63,39 +63,13 @@ export const Sidebar = () => (
                   }}
                 >
                   {navGroup}
-                </span>
-                <ul
-                  css={{
-                    listStyle: 'none',
-                    padding: 0,
-                    margin: '0 0 32px 0',
-                  }}
-                >
+                </h3>
+                <ul css={{ listStyle: 'none', padding: 0, margin: 0 }}>
                   {navData[navGroup].map(node => {
                     return (
-                      <li key={node.path} css={{}}>
-                        <Link
-                          css={{
-                            color: colors.B.D50,
-                            display: 'block',
-                            padding: gridSize,
-                            textDecoration: 'none',
-                            textTransform: 'capitalize',
-
-                            '&:hover': {
-                              color: colors.B.base,
-                            },
-
-                            '&[aria-current="page"]': {
-                              color: colors.B.base,
-                              textDecoration: 'underline',
-                            },
-                          }}
-                          to={node.path}
-                        >
-                          {prettyName(node, navGroup)}
-                        </Link>
-                      </li>
+                      <ListItem key={node.path} to={node.path}>
+                        {prettyName(node, navGroup)}
+                      </ListItem>
                     );
                   })}
                 </ul>
