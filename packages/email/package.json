@@ -16,13 +16,13 @@
   },
   "peerDependencies": {
     "mjml-react": "^1.0.51",
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
   },
   "devDependencies": {
     "jade": "^1.11.0",
     "mjml-react": "^1.0.51",
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
   }
 }
