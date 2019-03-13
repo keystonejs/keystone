@@ -33,38 +33,32 @@ function getSchema(blocks) {
 }
 
 function Stories({ value: editorState, onChange, blocks, className }) {
-  let schema = useMemo(
-    () => {
-      return getSchema(blocks);
-    },
-    [blocks]
-  );
+  let schema = useMemo(() => {
+    return getSchema(blocks);
+  }, [blocks]);
 
-  let plugins = useMemo(
-    () => {
-      let combinedPlugins = [
-        ...markPlugins,
-        {
-          renderNode(props) {
-            let block = blocks[props.node.type];
-            if (block) {
-              return <block.Node {...props} />;
-            }
-            return null;
-          },
+  let plugins = useMemo(() => {
+    let combinedPlugins = [
+      ...markPlugins,
+      {
+        renderNode(props) {
+          let block = blocks[props.node.type];
+          if (block) {
+            return <block.Node {...props} />;
+          }
+          return null;
         },
-      ];
+      },
+    ];
 
-      Object.keys(blocks).forEach(type => {
-        let blockTypePlugins = blocks[type].plugins;
-        if (blockTypePlugins !== undefined) {
-          combinedPlugins.push(...blockTypePlugins);
-        }
-      });
-      return combinedPlugins;
-    },
-    [blocks]
-  );
+    Object.keys(blocks).forEach(type => {
+      let blockTypePlugins = blocks[type].plugins;
+      if (blockTypePlugins !== undefined) {
+        combinedPlugins.push(...blockTypePlugins);
+      }
+    });
+    return combinedPlugins;
+  }, [blocks]);
 
   let [editor, setEditor] = useStateWithEqualityCheck(null);
   return (

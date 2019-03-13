@@ -65,20 +65,17 @@ const PageCount = styled.div({
 
 const PageChildren = ({ page, isLoading, isSelected }) => {
   const [shouldShowLoading, setShouldShowLoading] = useState(false);
-  useEffect(
-    () => {
-      if (isLoading && isSelected) {
-        const id = setTimeout(() => {
-          setShouldShowLoading(true);
-        }, 200);
-        return () => {
-          clearTimeout(id);
-          setShouldShowLoading(false);
-        };
-      }
-    },
-    [page, isLoading, isSelected]
-  );
+  useEffect(() => {
+    if (isLoading && isSelected) {
+      const id = setTimeout(() => {
+        setShouldShowLoading(true);
+      }, 200);
+      return () => {
+        clearTimeout(id);
+        setShouldShowLoading(false);
+      };
+    }
+  }, [page, isLoading, isSelected]);
   return shouldShowLoading ? (
     <div css={{ height: 19 }}>
       <LoadingSpinner />

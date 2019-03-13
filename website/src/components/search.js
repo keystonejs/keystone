@@ -31,36 +31,33 @@ const Search = () => {
     setQuery,
   ]);
 
-  useEffect(
-    () => {
-      let cancelled = false;
+  useEffect(() => {
+    let cancelled = false;
 
-      if (!query) {
+    if (!query) {
+      return;
+    }
+
+    getResults(query, { limit: 10 }).then(queryResults => {
+      if (cancelled) {
         return;
       }
 
-      getResults(query, { limit: 10 }).then(queryResults => {
-        if (cancelled) {
-          return;
-        }
+      if (queryResults.total !== 0 && queryResults.results.length !== queryResults.total) {
+        queryResults.results.push({
+          slug: '/search?q=' + encodeURIComponent(query),
+          type: 'show-more',
+          totalNotShown: queryResults.total - queryResults.results.length,
+        });
+      }
 
-        if (queryResults.total !== 0 && queryResults.results.length !== queryResults.total) {
-          queryResults.results.push({
-            slug: '/search?q=' + encodeURIComponent(query),
-            type: 'show-more',
-            totalNotShown: queryResults.total - queryResults.results.length,
-          });
-        }
+      setResults(queryResults.results);
+    });
 
-        setResults(queryResults.results);
-      });
-
-      return () => {
-        cancelled = true;
-      };
-    },
-    [query]
-  );
+    return () => {
+      cancelled = true;
+    };
+  }, [query]);
 
   return (
     <Location>
