@@ -2,9 +2,6 @@
 
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { jsx } from '@emotion/core';
-import * as theme from '@arch-ui/theme';
-
-console.log('THEME', theme);
 
 export const Container = props => (
   <div
