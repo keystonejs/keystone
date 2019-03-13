@@ -1,0 +1,1 @@
+- Reformat code using latest version of Prettier (1.16.4)

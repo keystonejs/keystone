@@ -76,14 +76,11 @@ const PopperRender = forwardRef(({ scheduleUpdate, editorState, style, children 
 
   let snapshot = useMeasure(containerRef);
 
-  useLayoutEffect(
-    () => {
-      if (shouldShowToolbar) {
-        scheduleUpdate();
-      }
-    },
-    [scheduleUpdate, editorState, snapshot, shouldShowToolbar]
-  );
+  useLayoutEffect(() => {
+    if (shouldShowToolbar) {
+      scheduleUpdate();
+    }
+  }, [scheduleUpdate, editorState, snapshot, shouldShowToolbar]);
 
   return createPortal(
     <div

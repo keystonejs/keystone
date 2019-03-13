@@ -4,10 +4,7 @@ const MongoDBMemoryServer = require('mongodb-memory-server').default;
 module.exports = async () => {
   const mongoServer = new MongoDBMemoryServer();
   const mongoUri = await mongoServer.getConnectionString();
-  const mongoConnection = await MongoClient.connect(
-    mongoUri,
-    { useNewUrlParser: true }
-  );
+  const mongoConnection = await MongoClient.connect(mongoUri, { useNewUrlParser: true });
   const mongoDb = mongoConnection.db(await mongoServer.getDbName());
 
   // Only item 2 & 3 have stock. Item 2 only has stock in warehouse A.Item 3 used

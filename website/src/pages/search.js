@@ -38,23 +38,20 @@ const Search = ({ location, navigate }) => {
     [setQuery]
   );
 
-  useEffect(
-    () => {
-      let cancelled = false;
+  useEffect(() => {
+    let cancelled = false;
 
-      getResults(query).then(queryResults => {
-        if (cancelled) {
-          return;
-        }
-        setResults(queryResults);
-      });
+    getResults(query).then(queryResults => {
+      if (cancelled) {
+        return;
+      }
+      setResults(queryResults);
+    });
 
-      return () => {
-        cancelled = true;
-      };
-    },
-    [query]
-  );
+    return () => {
+      cancelled = true;
+    };
+  }, [query]);
 
   return (
     <React.Fragment>

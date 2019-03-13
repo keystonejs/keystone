@@ -13,15 +13,12 @@ let Embed = ({ url }) => {
   let containerRef = useRef(null);
   let options = useContext(Context);
 
-  useEffect(
-    () => {
-      import('@iframely/embed.js').then(() => {
-        window.iframely.extendOptions({ api_key: options.apiKey });
-        window.iframely.load(containerRef.current, url);
-      });
-    },
-    [url]
-  );
+  useEffect(() => {
+    import('@iframely/embed.js').then(() => {
+      window.iframely.extendOptions({ api_key: options.apiKey });
+      window.iframely.load(containerRef.current, url);
+    });
+  }, [url]);
 
   if (!options || !options.apiKey) {
     return 'Please add an Embedly API Key';

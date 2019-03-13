@@ -248,7 +248,7 @@
     "mongodb-memory-server": "^3.1.2",
     "p-is-promise": "^2.0.0",
     "pino-colada": "^1.4.4",
-    "prettier": "^1.15.3",
+    "prettier": "^1.16.4",
     "start-server-and-test": "^1.7.11",
     "supertest-light": "^1.0.2",
     "terminal-link": "^1.2.0",
