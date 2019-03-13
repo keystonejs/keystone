@@ -52,11 +52,11 @@ ${chalk.bold('Usage')}
 
 ${chalk.bold('Common Options')}
 ${args
-    .map(
-      argument =>
-        `  ${`${argument.command}, ${argument.alias}`.padEnd(20, ' ')} ${argument.description}`
-    )
-    .join('\n')}\n
+  .map(
+    argument =>
+      `  ${`${argument.command}, ${argument.alias}`.padEnd(20, ' ')} ${argument.description}`
+  )
+  .join('\n')}\n
 `;
 };
 

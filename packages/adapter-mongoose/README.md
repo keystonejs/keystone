@@ -15,10 +15,7 @@ const mongooseOptions = {
 };
 const mongoDbUri = '';
 
-keystone.connect(
-  mongoDbUri,
-  mongooseOptions
-);
+keystone.connect(mongoDbUri, mongooseOptions);
 ```
 
 ## API

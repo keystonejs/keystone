@@ -97,15 +97,12 @@ module.exports = class Keystone {
 
     return resolveAllKeys(
       mapKeys(adapters, adapter =>
-        adapter.connect(
-          to,
-          {
-            name,
-            dbName,
-            ...adapterConnectOptions,
-            ...options,
-          }
-        )
+        adapter.connect(to, {
+          name,
+          dbName,
+          ...adapterConnectOptions,
+          ...options,
+        })
       )
       // Don't unnecessarily leak any connection info
     ).then(() => {});

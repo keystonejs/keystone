@@ -20,12 +20,9 @@ export function Node({ node, attributes, children, isSelected, editor }) {
   // but probably necessary
   // because if we just do editor.setNodeByKey in the input onChange
   // and let that change propagate the cursor position breaks
-  useEffect(
-    () => {
-      setLinkInputValue(href);
-    },
-    [href]
-  );
+  useEffect(() => {
+    setLinkInputValue(href);
+  }, [href]);
 
   return (
     <Fragment>

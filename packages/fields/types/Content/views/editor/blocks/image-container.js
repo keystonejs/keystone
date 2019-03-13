@@ -80,19 +80,16 @@ export function Node(props) {
       {...props.attributes}
     >
       <image.ImageAlignmentContext.Provider
-        value={useMemo(
-          () => {
-            return {
-              alignment,
-              onAlignmentChange(newAlignment) {
-                props.editor.setNodeByKey(props.node.key, {
-                  data: props.node.data.set('alignment', newAlignment),
-                });
-              },
-            };
-          },
-          [props.node.key, alignment, props.editor, props.node.data]
-        )}
+        value={useMemo(() => {
+          return {
+            alignment,
+            onAlignmentChange(newAlignment) {
+              props.editor.setNodeByKey(props.node.key, {
+                data: props.node.data.set('alignment', newAlignment),
+              });
+            },
+          };
+        }, [props.node.key, alignment, props.editor, props.node.data])}
       >
         {props.children}
       </image.ImageAlignmentContext.Provider>

@@ -22,23 +22,20 @@ let updateStackConsumers = () => {
 
 export function useStackIndex(isOpen: boolean): number {
   let [stackIndex, setStackIndex] = useState(isOpen ? 0 : -1);
-  useLayoutEffect(
-    () => {
-      if (isOpen) {
-        let update = () => {
-          setStackIndex(stackConsumers.indexOf(update));
-        };
-        stackConsumers.unshift(update);
+  useLayoutEffect(() => {
+    if (isOpen) {
+      let update = () => {
+        setStackIndex(stackConsumers.indexOf(update));
+      };
+      stackConsumers.unshift(update);
+      updateStackConsumers();
+      return () => {
+        stackConsumers = stackConsumers.filter(x => x !== update);
         updateStackConsumers();
-        return () => {
-          stackConsumers = stackConsumers.filter(x => x !== update);
-          updateStackConsumers();
-        };
-      } else {
-        setStackIndex(-1);
-      }
-    },
-    [isOpen]
-  );
+      };
+    } else {
+      setStackIndex(-1);
+    }
+  }, [isOpen]);
   return stackIndex;
 }

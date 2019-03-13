@@ -1,0 +1,16 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/adapter-mongoose", "type": "patch" },
+    { "name": "@keystone-alpha/admin-ui", "type": "patch" },
+    { "name": "@arch-ui/day-picker", "type": "patch" },
+    { "name": "@arch-ui/drawer", "type": "patch" },
+    { "name": "@arch-ui/pagination", "type": "patch" },
+    { "name": "create-keystone-app", "type": "patch" },
+    { "name": "@keystone-alpha/fields", "type": "patch" },
+    { "name": "@keystone-alpha/keystone", "type": "patch" },
+    { "name": "@keystone-alpha/mongo-join-builder", "type": "patch" },
+    { "name": "@keystone-alpha/test-utils", "type": "patch" },
+    { "name": "@keystone-alpha/website", "type": "patch" }
+  ],
+  "dependents": []
+}
