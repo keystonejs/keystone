@@ -1,4 +1,4 @@
-# `Relationship` Type
+# Field Type: `Relationship`
 
 ## Nested Mutations
 

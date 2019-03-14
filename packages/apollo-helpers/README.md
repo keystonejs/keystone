@@ -1,4 +1,4 @@
-# Keystone Apollo Helpers
+# Apollo Helpers
 
 A set of functions and components to ease using
 [Apollo](https://www.apollographql.com/docs/react/) with Keystone.
@@ -208,7 +208,7 @@ We've created a new `Event` with data `{ id: "def456" }`, which Apollo will also
 }
 ```
 
-⚠️ But notice the `allEvents` & `Group:xyz789.events` queries were _not_ updated with the new event! This is a caching problem.
+> Notice the `allEvents` and `Group:xyz789.events` queries were _not_ updated with the new event; this is a caching problem.
 
 To work around it, we have 2 options:
 
@@ -234,7 +234,7 @@ What does that mean? Let's continue using the above example but with this module
 />
 ```
 
-_(Notice the new `invalidateTypes="Event"` prop we've passed - this instructs on which GraphQL type(s) to clear from the Apollo cache)_
+> Notice the new `invalidateTypes="Event"` prop we've passed - this instructs on which GraphQL type(s) to clear from the Apollo cache
 
 Will immediately result in the following cache:
 
@@ -247,8 +247,7 @@ Will immediately result in the following cache:
 }
 ```
 
-_(Notice `allEvents` and `Group:xyz789.events` have been cleared as they
-referred to the type `Event`)_
+> Notice `allEvents` and `Group:xyz789.events` have been cleared as they referred to the type `Event`
 
 Which, when using this module's `<Query>` component, will re-load the now removed data from the server, resulting in a final cache of:
 
@@ -262,7 +261,7 @@ Which, when using this module's `<Query>` component, will re-load the now remove
 }
 ```
 
-Now everything's up to date and we didn't have to use `writeQuery` or couple any of our components! 🎉
+Now everything's up to date and we didn't have to use `writeQuery` or couple any of our components.
 
 ### But why is this coupled to Keystone?
 
@@ -339,7 +338,7 @@ If we were to use this module's `<Mutation>` component, _but decoupled from Keys
 }
 ```
 
-_(Notice `allEvents`, and `Group:xyz789.events` are cleared, but `_allEventsMeta` is not)_
+> Notice `allEvents`, and `Group:xyz789.events` are cleared, but `_allEventsMeta` is not
 
 This example highlights the limits of other approaches (see below for possible workarounds / other solutions to this).
 
@@ -374,7 +373,7 @@ Will result in an immediate cache of:
 }
 ```
 
-_(Notice `allEvents`, `Group:xyz789.events`, and now `_allEventsMeta` have been cleared)_
+> Notice `allEvents`, `Group:xyz789.events`, and now `_allEventsMeta` have been cleared
 
 Which, when using this module's `<Query>` component, will re-load the now removed data from the server, resulting in a final cache of:
 
@@ -389,8 +388,6 @@ Which, when using this module's `<Query>` component, will re-load the now remove
   "Group:xyz789": { "id": "xyz789", "events": ["abc123", "def456", "hij098"] }
 }
 ```
-
-Double Hurrah! 🎉
 
 ### Can we decouple from Keystone?
 
@@ -407,7 +404,7 @@ type Query {
 }
 ```
 
-_(Note the `@relatedToType()` directive)_
+> Note the `@relatedToType()` directive
 
 Which could be simplified by combining it with GraphQL AST scanning to become:
 

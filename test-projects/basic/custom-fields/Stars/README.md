@@ -1,4 +1,4 @@
-# Custom fields in Keystone 5
+# Custom Field: `Stars`
 
 One Keystone feature request that has been around for a very long time is Custom Fields.
 Finally this is available in Keystone 5 🎉.
