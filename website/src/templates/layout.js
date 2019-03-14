@@ -101,7 +101,7 @@ const Aside = ({ offsetTarget, isVisible, ...props }) => {
         // borderRight: `1px solid ${colors.N10}`,
         boxSizing: 'border-box',
         overflowY: 'auto',
-        paddingBottom: gutter,
+        paddingBottom: '3rem',
         paddingTop: gutter,
         paddingLeft: 3, // NOTE: the 3px is to stop the select's shadows being cropped
 
@@ -123,7 +123,7 @@ const Main = props => (
       flex: 1,
       lineHeight: '1.6',
       minWidth: 0,
-      paddingBottom: gutter * 2,
+      paddingBottom: '3rem',
       paddingTop: gutter,
 
       [media.lg]: {

@@ -38,14 +38,22 @@ exports.createPages = ({ actions, graphql }) => {
     }
 
     /*
-    If you end up with multiple ways to generate a markdown page, you will need to split out to new templates, with their own graphql queries
+      If you end up with multiple ways to generate a markdown page, you will
+      need to split out to new templates, with their own graphql queries
     */
-    result.data.allMdx.edges.forEach(({ node: { id, fields } }) => {
+    const pages = result.data.allMdx.edges;
+
+    pages.forEach(({ node: { id, fields } }, index) => {
       // The 'fields' values are injected during the `onCreateNode` call below
       createPage({
         path: `${fields.slug}`,
         component: MdTemplate,
-        context: { mdPageId: id, ...fields }, // additional data can be passed via context
+        context: {
+          mdPageId: id,
+          prev: index === 0 ? null : pages[index - 1].node,
+          next: index === pages.length - 1 ? null : pages[index + 1].node,
+          ...fields,
+        }, // additional data can be passed via context
       });
     });
   });
