@@ -5,16 +5,17 @@ import { Link } from 'gatsby';
 import { jsx } from '@emotion/core';
 import { colors } from '@arch-ui/theme';
 
-export default Styled.a(props => ({
-  textDecoration: 'none',
-  boxSizing: 'border-box',
-  fontSize: '1.1rem',
-  padding: '1rem 3rem',
-  borderRadius: 12,
-  margin: '0.5rem',
-  transition: 'transform linear 120ms',
-  '&:hover': {
-    transform: 'scale(1.025)',
+// TODO
+const variants = {
+  hollow: {
+    default: {
+      boxShadow: `inset 0 0 0 2px ${colors.N80}`,
+      color: colors.N80,
+    },
+    primary: {
+      boxShadow: `inset 0 0 0 2px ${colors.B.base}`,
+      color: colors.B.base,
+    },
   },
   solid: {
     default: {
@@ -37,14 +38,34 @@ export const Button = ({ appearance, variant, as, ...props }) => {
   }
   const dynamicStyles = variants[variant][appearance];
 
-  border:
-    props.appearance === 'primary-light' ? `2px solid rgba(255,255,255,0.6);` : `2px solid #007AFF`,
+  return (
+    <Tag
+      css={{
+        borderRadius: 4,
+        boxSizing: 'border-box',
+        cursor: 'pointer',
+        fontWeight: 500,
+        padding: '1rem 1.5rem',
+        textDecoration: 'none',
+        transition: 'transform ease 120ms',
 
-  background:
-    {
-      'primary-light': 'white',
-      primary: '#007AFF',
-    }[props.appearance] || 'none',
+        '&:hover': {
+          transform: 'scale(1.025)',
+          textDecoration: 'none',
+          // opacity: 0.9,
+        },
+        '&:active': {
+          transform: 'scale(1)',
+        },
 
-  color: props.appearance === 'primary' || props.appearance === 'light' ? 'white' : '#007AFF',
-}));
+        ...dynamicStyles,
+      }}
+      {...props}
+    />
+  );
+};
+Button.defaultProps = {
+  as: 'button',
+  appearance: 'default',
+  variant: 'hollow',
+};
