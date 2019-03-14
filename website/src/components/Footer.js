@@ -1,25 +1,34 @@
-import { jsx } from '@emotion/core';
-
-import { colors } from '@arch-ui/theme';
-
 /** @jsx jsx */
 
-const Footer = ({ textCenter }) => (
+import React from 'react'; // eslint-disable-line no-unused-vars
+import { jsx } from '@emotion/core';
+import { colors } from '@arch-ui/theme';
+
+const Anchor = props => <a css={{ color: colors.N60, textDecoration: 'none' }} {...props} />;
+
+export const Footer = () => (
   <footer
-    css={[
-      !textCenter && {
-        borderTop: `1px solid ${colors.B.A25}`,
-        padding: 24,
-      },
-      textCenter && { textAlign: 'center' },
-    ]}
+    css={{
+      backgroundColor: 'white',
+      borderRadius: 3,
+      boxShadow: '0 0 0 1px rgba(9, 30, 66, 0.09)',
+      color: colors.N40,
+      fontSize: '0.75rem',
+      marginTop: '3rem',
+      paddingBottom: '1em',
+      paddingTop: '1em',
+      textAlign: 'center',
+    }}
   >
     Made with ❤️ by{' '}
-    <a href="https://www.thinkmill.com.au" css={{ color: colors.primary, textDecoration: 'none' }}>
+    <Anchor href="https://www.thinkmill.com.au" target="_blank">
       Thinkmill
-    </a>{' '}
-    and our contributors.
+    </Anchor>{' '}
+    and
+    <br />
+    amazing{' '}
+    <Anchor href="https://github.com/keystonejs/keystone-5/graphs/contributors" target="_blank">
+      contributors
+    </Anchor>
   </footer>
 );
-
-export default Footer;

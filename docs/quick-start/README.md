@@ -1,4 +1,4 @@
-# Keystone Quick Start
+# Quick Start
 
 This quick start guide will get you up and running with a fresh new Keystone application in just a few easy commands.
 

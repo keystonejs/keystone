@@ -1,4 +1,4 @@
-# Keystone Apollo Helpers
+# Apollo Helpers
 
 A set of functions and components to ease using
 [Apollo](https://www.apollographql.com/docs/react/) with Keystone.

@@ -54,7 +54,7 @@ async function getGatsbyConfig() {
             {
               resolve: 'gatsby-remark-images',
               options: {
-                maxWidth: 1035,
+                maxWidth: 860,
                 sizeByPixelDensity: true,
               },
             },

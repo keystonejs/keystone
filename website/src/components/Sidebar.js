@@ -1,10 +1,9 @@
+/** @jsx jsx */
+
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { StaticQuery, graphql, Link } from 'gatsby';
-
-import { colors } from '@arch-ui/theme';
+import { colors, gridSize } from '@arch-ui/theme';
 import { jsx } from '@emotion/core';
-
-/** @jsx jsx */
 
 const prettyName = (node, navGroup) => {
   let pretty = node.path
@@ -19,7 +18,7 @@ const prettyName = (node, navGroup) => {
   return pretty === '' ? 'index' : pretty;
 };
 
-export default () => (
+export const Sidebar = () => (
   <StaticQuery
     query={graphql`
       query HeadingQuery {
@@ -49,62 +48,74 @@ export default () => (
         return pageList;
       }, {});
 
-      console.log({ navData });
       const navGroups = Object.keys(navData);
 
       return (
-        <div>
+        <nav>
           {navGroups.map(navGroup => {
             return (
               <div key={navGroup}>
-                <span
-                  css={{
-                    fontSize: '1.25em',
-                    fontWeight: 700,
-                    textTransform: 'capitalize',
-                  }}
-                >
-                  {navGroup}
-                </span>
-                <ul
-                  css={{
-                    listStyle: 'none',
-                    padding: 0,
-                    margin: '0 0 32px 0',
-                  }}
-                >
+                <GroupHeading>{navGroup}</GroupHeading>
+                <List>
                   {navData[navGroup].map(node => {
                     return (
-                      <li key={node.path} css={{}}>
-                        <Link
-                          css={{
-                            textDecoration: 'none',
-                            color: colors.B.D50,
-                            textTransform: 'capitalize',
-                            marginLeft: 4,
-
-                            '&:hover': {
-                              color: colors.B.base,
-                            },
-
-                            '&[aria-current="page"]': {
-                              color: colors.B.base,
-                              textDecoration: 'underline',
-                            },
-                          }}
-                          to={node.path}
-                        >
-                          {prettyName(node, navGroup)}
-                        </Link>
-                      </li>
+                      <ListItem key={node.path} to={node.path}>
+                        {prettyName(node, navGroup)}
+                      </ListItem>
                     );
                   })}
-                </ul>
+                </List>
               </div>
             );
           })}
-        </div>
+        </nav>
       );
     }}
   />
+);
+
+const GroupHeading = props => (
+  <h3
+    css={{
+      color: colors.N80,
+      fontSize: '0.9rem',
+      fontWeight: 700,
+      marginTop: '2.4em',
+      textTransform: 'uppercase',
+    }}
+    {...props}
+  />
+);
+const List = props => (
+  <ul css={{ listStyle: 'none', fontSize: '0.9rem', padding: 0, margin: 0 }} {...props} />
+);
+const ListItem = props => (
+  <li>
+    <Link
+      css={{
+        color: colors.N80,
+        borderRadius: 3,
+        display: 'block',
+        overflow: 'hidden',
+        marginBottom: 1,
+        padding: `${gridSize * 0.75}px ${gridSize * 1.5}px`,
+        textDecoration: 'none',
+        textOverflow: 'ellipsis',
+        textTransform: 'capitalize',
+        whiteSpace: 'nowrap',
+
+        ':hover, :focus': {
+          backgroundColor: colors.B.A5,
+          color: colors.N100,
+          textDecoration: 'none',
+        },
+
+        '&[aria-current="page"]': {
+          backgroundColor: colors.B.A10,
+          fontWeight: 500,
+        },
+      }}
+      {...props}
+    />
+  </li>
 );

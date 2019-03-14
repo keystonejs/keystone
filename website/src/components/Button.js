@@ -1,31 +1,71 @@
-import Styled from '@emotion/styled';
+/** @jsx jsx */
+
+import React from 'react'; // eslint-disable-line no-unused-vars
+import { Link } from 'gatsby';
+import { jsx } from '@emotion/core';
 import { colors } from '@arch-ui/theme';
 
-export default Styled.a(props => ({
-  textDecoration: 'none',
-  boxSizing: 'border-box',
-  fontSize: '1.1rem',
-  padding: '1rem 1.5rem',
-  borderRadius: 6,
-  margin: '0.5rem',
-  transition: 'transform linear 120ms',
-  '&:hover': {
-    transform: 'scale(1.025)',
+// TODO
+const variants = {
+  hollow: {
+    default: {
+      boxShadow: `inset 0 0 0 2px ${colors.N80}`,
+      color: colors.N80,
+    },
+    primary: {
+      boxShadow: `inset 0 0 0 2px ${colors.B.base}`,
+      color: colors.B.base,
+    },
   },
-  '&:active': {
-    opacity: 0.8,
+  solid: {
+    default: {
+      backgroundColor: colors.N80,
+      color: 'white',
+    },
+    primary: {
+      backgroundColor: colors.B.base,
+      color: 'white',
+    },
   },
+};
 
-  border:
-    props.appearance === 'primary-light'
-      ? `2px solid rgba(255,255,255,0.6);`
-      : `2px solid ${colors.B.base}`,
+export const Button = ({ appearance, variant, as, ...props }) => {
+  let Tag = as;
+  if (props.href) {
+    Tag = 'a';
+  } else if (props.to) {
+    Tag = Link;
+  }
+  const dynamicStyles = variants[variant][appearance];
 
-  background:
-    {
-      'primary-light': 'white',
-      primary: colors.B.base,
-    }[props.appearance] || 'none',
+  return (
+    <Tag
+      css={{
+        borderRadius: 4,
+        boxSizing: 'border-box',
+        cursor: 'pointer',
+        fontWeight: 500,
+        padding: '1rem 1.5rem',
+        textDecoration: 'none',
+        transition: 'transform ease 120ms',
 
-  color: props.appearance === 'primary' || props.appearance === 'light' ? 'white' : colors.B.base,
-}));
+        '&:hover': {
+          transform: 'scale(1.025)',
+          textDecoration: 'none',
+          // opacity: 0.9,
+        },
+        '&:active': {
+          transform: 'scale(1)',
+        },
+
+        ...dynamicStyles,
+      }}
+      {...props}
+    />
+  );
+};
+Button.defaultProps = {
+  as: 'button',
+  appearance: 'default',
+  variant: 'hollow',
+};

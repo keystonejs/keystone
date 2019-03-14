@@ -1,4 +1,4 @@
-# Keystone Field Types
+# Field Types
 
 What makes up a Field Type:
 

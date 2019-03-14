@@ -1,7 +1,11 @@
-import React from 'react';
+/** @jsx jsx */
+
+import React from 'react'; // eslint-disable-line
 import Highlight, { defaultProps } from 'prism-react-renderer';
 import reactAddonsTextContent from 'react-addons-text-content';
-import theme from '../../prism-themes/duotoneLight';
+import { jsx } from '@emotion/core';
+
+import theme from '../../prism-themes/custom';
 
 /*
 This solution should be seen as extremely temporary and not a platonic ideal of code highlighting.
@@ -17,12 +21,13 @@ export default props =>
   props.className ? (
     <Highlight
       {...defaultProps}
+      tag="div"
       theme={theme}
       code={reactAddonsTextContent(props.children)}
       language={props.className.replace('language-', '')}
     >
-      {({ className, style, tokens, getLineProps, getTokenProps }) => (
-        <pre className={className} style={style}>
+      {({ tokens, getLineProps, getTokenProps }) => (
+        <code>
           {tokens.map((line, i) => (
             <div {...getLineProps({ line, key: i })}>
               {line.map((token, key) => (
@@ -30,7 +35,7 @@ export default props =>
               ))}
             </div>
           ))}
-        </pre>
+        </code>
       )}
     </Highlight>
   ) : (

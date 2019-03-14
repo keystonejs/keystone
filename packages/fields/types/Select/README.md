@@ -1,4 +1,4 @@
-# Admin UI
+# Field Type: `Select`
 
 ```DOCS_TODO
 TODO
