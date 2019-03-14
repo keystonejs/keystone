@@ -7,8 +7,9 @@ import { colors, gridSize } from '@arch-ui/theme';
 
 import logosvg from '../images/logo.svg';
 import { Container } from '../components';
+import { media } from '../utils/media';
 
-export const Header = forwardRef((props, ref) => (
+export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
   <header ref={ref} {...props}>
     <Container>
       <div
@@ -22,7 +23,7 @@ export const Header = forwardRef((props, ref) => (
         }}
       >
         <Logo />
-        <Nav />
+        <Nav toggleMenu={toggleMenu} />
       </div>
     </Container>
   </header>
@@ -37,19 +38,24 @@ const Logo = () => (
     <img alt="KeystoneJS Logo" src={logosvg} css={{ width: 40 }} />
   </Link>
 );
-const NavItem = props => {
-  const Tag = props.to ? Link : 'a';
+const NavItem = ({ as, lgOnly, ...props }) => {
+  const Tag = props.to ? Link : as;
   return (
     <li>
       <Tag
         href="https://github.com/keystonejs/keystone-5"
         css={{
+          background: 0,
+          border: 0,
           color: colors.N60,
-          paddingBottom: gridSize / 2,
-          paddingTop: gridSize / 2,
-          paddingLeft: gridSize,
-          paddingRight: gridSize,
+          cursor: 'pointer',
+          outline: 0,
+          padding: `${gridSize / 2}px ${gridSize}px`,
           textDecoration: 'none',
+
+          [media.xs]: {
+            display: lgOnly ? 'none' : 'block',
+          },
 
           ':hover, :focus': {
             color: colors.N80,
@@ -61,9 +67,13 @@ const NavItem = props => {
     </li>
   );
 };
+NavItem.defaultProps = {
+  as: 'a',
+};
 const List = props => (
   <ul
     css={{
+      alignItems: 'center',
       display: 'flex',
       fontSize: '0.9rem',
       fontWeight: 500,
@@ -75,17 +85,34 @@ const List = props => (
     {...props}
   />
 );
-const Nav = () => (
+const Nav = ({ toggleMenu }) => (
   <nav>
     <List>
       {NAV_LINKS.map(({ url, name }) => (
-        <NavItem key={name} to={url}>
+        <NavItem key={name} to={url} lgOnly>
           {name}
         </NavItem>
       ))}
       <NavItem href="https://github.com/keystonejs/keystone-5" title="Opens in new window">
         GitHub
       </NavItem>
+      {toggleMenu && (
+        <NavItem
+          as="button"
+          onClick={toggleMenu}
+          css={{
+            [media.lg]: { display: 'none' },
+          }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" focusable="false" role="presentation">
+            <path
+              d="M5 15h14v2H5zm0-8h14v2H5zm0 4h14v2H5z"
+              fill="currentColor"
+              fillRule="evenodd"
+            />
+          </svg>
+        </NavItem>
+      )}
     </List>
   </nav>
 );

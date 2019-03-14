@@ -8,11 +8,13 @@ import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 
 import Layout from '../templates/layout';
 import mdComponents from '../components/markdown';
+import { media } from '../utils/media';
 
 const EditButton = props => (
   <a
     css={{
       border: `1px solid rgba(0, 0, 0, 0.1)`,
+      borderBottomColor: `rgba(0, 0, 0, 0.2) !important`,
       borderRadius: borderRadius,
       color: colors.N60,
       display: 'block',
@@ -23,14 +25,18 @@ const EditButton = props => (
       outline: 'none',
 
       ':hover, :focus': {
-        backgroundColor: 'white',
+        backgroundColor: 'white !important',
         borderColor: `rgba(0, 0, 0, 0.15)`,
         boxShadow: '0 1px 0 rgba(0,0,0,0.05)',
         textDecoration: 'none',
       },
       ':active': {
-        backgroundColor: colors.N05,
+        backgroundColor: `${colors.N05} !important`,
         boxShadow: 'none',
+      },
+
+      [media.sm]: {
+        display: 'none',
       },
     }}
     {...props}

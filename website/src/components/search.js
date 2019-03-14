@@ -24,6 +24,7 @@ export const Search = () => {
     }
 
     getResults(query, { limit: 10 }).then(queryResults => {
+      console.log('getResults');
       if (cancelled) {
         return;
       }
@@ -50,7 +51,7 @@ export const Search = () => {
         return (
           <Select
             key="select"
-            components={{ Control, DropdownIndicator, IndicatorSeparator }}
+            components={{ Control, DropdownIndicator, IndicatorSeparator, Input }}
             placeholder="Search..."
             options={results}
             value={null}
@@ -90,10 +91,11 @@ const DropdownIndicator = ({ innerProps, isFocused }) => (
     </svg>
   </div>
 );
-const Control = ({ children, innerProps, isFocused }) => {
+const Control = ({ children, innerProps, innerRef, isFocused }) => {
   const backgroundColor = isFocused ? 'rgba(9, 30, 66, 0.1)' : 'rgba(9, 30, 66, 0.05)';
   return (
     <div
+      ref={innerRef}
       css={{
         backgroundColor,
         boxSizing: 'border-box',
@@ -108,6 +110,40 @@ const Control = ({ children, innerProps, isFocused }) => {
     </div>
   );
 };
+const Input = ({
+  className,
+  cx,
+  getStyles,
+  innerRef,
+  isHidden,
+  isDisabled,
+  theme,
+  selectProps,
+  ...props
+}) => (
+  <div
+    css={{
+      paddingLeft: 2,
+      paddingRight: 2,
+    }}
+  >
+    <input
+      ref={innerRef}
+      css={{
+        background: 0,
+        border: 0,
+        color: 'inherit',
+        display: 'block',
+        fontSize: 'inherit',
+        margin: 0,
+        outline: 0,
+        padding: 0,
+        width: '100%',
+      }}
+      {...props}
+    />
+  </div>
+);
 const IndicatorSeparator = null;
 
 // ==============================

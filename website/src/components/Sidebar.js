@@ -97,10 +97,8 @@ const ListItem = props => (
         borderRadius: 3,
         display: 'block',
         overflow: 'hidden',
-        paddingBottom: gridSize * 0.75,
-        paddingRight: gridSize * 1.5,
-        paddingLeft: gridSize * 1.5,
-        paddingTop: gridSize * 0.75,
+        marginBottom: 1,
+        padding: `${gridSize * 0.75}px ${gridSize * 1.5}px`,
         textDecoration: 'none',
         textOverflow: 'ellipsis',
         textTransform: 'capitalize',
@@ -114,7 +112,6 @@ const ListItem = props => (
 
         '&[aria-current="page"]': {
           backgroundColor: colors.B.A10,
-          // color: colors.B.base,
           fontWeight: 500,
         },
       }}
