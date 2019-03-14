@@ -1,4 +1,4 @@
-# Keystone 5 Mongoose Database Adapter
+# Mongoose Database Adapter
 
 ## Usage
 
@@ -29,11 +29,11 @@ of the database.
 
 ### `mongooseOptions`
 
-####`mongooseOptions.dbName`
+#### `mongooseOptions.dbName`
 
 When set, this will overwrite any name specified in the `mongoDbUri` string.
 
-####`mongooseOptions.*`
+#### `mongooseOptions.*`
 
 All other options are passed directly to Mongoose.
 See [the Mongoose docs](https://mongoosejs.com/docs/connections.html) for more.

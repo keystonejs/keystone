@@ -1,4 +1,4 @@
-# Keystone Adapter Framework
+# Adapter Framework
 
 This document describes the role of data store adapters in Keystone 5 and how they relate to lists and fields.
 

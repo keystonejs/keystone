@@ -1,4 +1,4 @@
-# Keystone 5 Logger
+# Logger
 
 ## API
 

@@ -1,4 +1,4 @@
-# Admin UI
+# Field Type: `Float`
 
 ```DOCS_TODO
 TODO

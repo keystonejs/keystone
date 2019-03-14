@@ -1,4 +1,4 @@
-# Email Sending in keystone-alpha
+# Email Sending
 
 Send emails via various transports, rendered with Express-compatible
 renderers.

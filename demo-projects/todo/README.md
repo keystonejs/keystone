@@ -1,4 +1,4 @@
-# Demo Project - Todo List
+# Demo Project: Todo List
 
 This is the todo list - the simplest implementation of Keystone. The todo list allows you to see what the minimum requirements are for running Keystone. It has no fancy extras and only one list - easy peasy!
 
