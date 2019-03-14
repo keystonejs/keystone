@@ -93,10 +93,13 @@ const ListItem = props => (
   <li>
     <Link
       css={{
-        color: colors.B.D50,
+        color: colors.N80,
+        borderRadius: 3,
         display: 'block',
         overflow: 'hidden',
         paddingBottom: gridSize * 0.75,
+        paddingRight: gridSize * 1.5,
+        paddingLeft: gridSize * 1.5,
         paddingTop: gridSize * 0.75,
         textDecoration: 'none',
         textOverflow: 'ellipsis',
@@ -104,13 +107,15 @@ const ListItem = props => (
         whiteSpace: 'nowrap',
 
         ':hover, :focus': {
-          // color: colors.B.base,
-          textDecoration: 'underline',
+          backgroundColor: colors.B.A5,
+          color: colors.N100,
+          textDecoration: 'none',
         },
 
         '&[aria-current="page"]': {
-          color: colors.B.base,
-          fontWeight: 'bold',
+          backgroundColor: colors.B.A10,
+          // color: colors.B.base,
+          fontWeight: 500,
         },
       }}
       {...props}

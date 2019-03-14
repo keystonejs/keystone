@@ -18,6 +18,27 @@ const Layout = ({ children }) => {
         styles={{
           ...globalStyles,
 
+          // Tables
+          // ------------------------------
+
+          'main table': {
+            borderCollapse: 'collapse',
+            fontSize: '0.9rem',
+            width: '100%',
+          },
+          'main th, main td': {
+            paddingBottom: gridSize,
+            paddingTop: gridSize,
+            textAlign: 'left',
+          },
+          'main th': {
+            borderBottom: `2px solid ${colors.N10}`,
+            fontWeight: 500,
+          },
+          'main td': {
+            borderTop: `1px solid ${colors.N10}`,
+          },
+
           // TODO: doesn't play nice with "gatsby-resp-image-wrapper"
           'main img': {
             backgroundColor: 'white',
@@ -27,19 +48,37 @@ const Layout = ({ children }) => {
             maxWidth: '100%',
             padding: 4,
           },
+
+          // Misc. Typography
+          // ------------------------------
+
           'main a': {
-            borderBottom: '1px solid rgba(0, 0, 0, 0.2)',
+            borderBottom: `1px solid ${colors.B.A30}`,
             color: colors.N100,
+            // padding: '0.2em',
             textDecoration: 'none',
 
             ':hover, :focus': {
               backgroundColor: colors.B.A10,
+              borderBottomColor: colors.B.A50,
               textDecoration: 'none',
             },
           },
           'main ul': {
             lineHeight: 1.8,
           },
+          'main blockquote': {
+            fontSize: '1.25rem',
+            fontStyle: 'italic',
+            color: colors.N60,
+            margin: `3rem 0`,
+            padding: 0,
+            paddingLeft: '3rem',
+            position: 'relative',
+          },
+
+          // Code
+          // ------------------------------
 
           code: {
             fontFamily: 'Consolas, Menlo, Monaco, "Andale Mono", "Ubuntu Mono", monospace',
@@ -60,9 +99,11 @@ const Layout = ({ children }) => {
           },
 
           ':not(pre) > code': {
-            backgroundColor: 'rgba(255,229,100,0.2)',
+            // backgroundColor: 'rgba(255,229,100,0.2)',
+            backgroundColor: '#FFEBE6', // pinpk
+            backgroundColor: '#FFFAE6',
             borderRadius: 2,
-            color: 'rgb(9, 30, 66)',
+            color: colors.N100,
             margin: 0,
             padding: '0.2em 0.4em',
           },
@@ -129,12 +170,14 @@ const Aside = ({ offsetTarget, ...props }) => {
     <aside
       ref={asideRef}
       css={{
-        borderRight: `1px solid ${colors.N10}`,
+        // borderRight: `1px solid ${colors.N10}`,
         boxSizing: 'border-box',
         height: isStuck ? '100%' : `calc(100% - ${offsetTop}px)`,
         overflowY: 'auto',
         position: isStuck ? 'fixed' : 'absolute',
-        padding: gutter,
+        paddingBottom: gutter,
+        paddingRight: gutter,
+        paddingTop: gutter,
         paddingLeft: 3, // NOTE: the 3px is to stop the select's shadows being cropped
         width: SIDEBAR_WIDTH,
         top: isStuck ? 0 : offsetTop,
@@ -151,7 +194,7 @@ const Main = props => (
       marginLeft: SIDEBAR_WIDTH,
       minWidth: 0,
       paddingLeft: gutter,
-      paddingBottom: gutter,
+      paddingBottom: gutter * 2,
       paddingTop: gutter,
     }}
     {...props}

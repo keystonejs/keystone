@@ -1,14 +1,14 @@
 // Custom Theme Attempt
 
 const colors = {
-  blue: '#0052CC',
+  blue: '#0065FF',
   red: '#DE350B',
   yellow: '#FF991F',
-  green: '#00875A',
-  teal: '#00A3BF',
-  purple: '#5243AA',
+  green: '#36B37E',
+  teal: '#00B8D9',
+  purple: '#6554C0',
   gray: '#5E6C84',
-  grayLight: '#8993A4',
+  grayLight: '#97A0AF',
   grayDark: '#172B4D',
 };
 
@@ -18,9 +18,15 @@ export default {
   },
   styles: [
     {
-      types: ['comment', 'prolog', 'doctype', 'cdata', 'punctuation'],
+      types: ['comment', 'prolog', 'doctype', 'cdata'],
       style: {
         color: colors.grayLight,
+      },
+    },
+    {
+      types: ['punctuation'],
+      style: {
+        color: colors.gray,
       },
     },
     {
@@ -48,28 +54,19 @@ export default {
       },
     },
     {
-      types: ['attr-name'],
-      style: {
-        color: colors.purple,
-      },
-    },
-    {
-      types: ['keyword', 'unit', 'statement', 'regex', 'at-rule', 'tag'],
+      types: ['attr-name', 'class-name'],
       style: {
         color: colors.red,
       },
     },
     {
-      types: [
-        'attr-value',
-        'boolean',
-        'class-name',
-        'control',
-        'directive',
-        'entity',
-        'number',
-        'url',
-      ],
+      types: ['keyword', 'unit', 'statement', 'regex', 'at-rule', 'tag'],
+      style: {
+        color: colors.purple,
+      },
+    },
+    {
+      types: ['attr-value', 'boolean', 'control', 'directive', 'entity', 'number', 'url'],
       style: {
         color: colors.yellow,
       },

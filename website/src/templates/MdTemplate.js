@@ -19,7 +19,7 @@ const EditButton = props => (
       float: 'right',
       fontSize: '0.85rem',
       fontWeight: 500,
-      padding: `${gridSize}px ${gridSize * 2}px`,
+      padding: `${gridSize * 0.75}px ${gridSize * 2}px`,
       outline: 'none',
 
       ':hover, :focus': {
