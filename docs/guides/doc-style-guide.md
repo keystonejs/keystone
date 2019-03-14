@@ -58,6 +58,7 @@ _JM: Any tips for other editors? VS Code anyone?_
 - Headings at all levels use [Title Case](https://en.wikipedia.org/wiki/Letter_case#Stylistic_or_specialised_usage)
 - Try to keep all headings unique so they can be [linked to](#headings) reliably
 - Emphasis (eg. **bold**) should not be used in place of headings
+- Try to limit `code` use within headings
 
 ## Text Blocks
 

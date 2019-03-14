@@ -101,7 +101,7 @@ const Aside = ({ offsetTarget, isVisible, ...props }) => {
         // borderRight: `1px solid ${colors.N10}`,
         boxSizing: 'border-box',
         overflowY: 'auto',
-        paddingBottom: gutter,
+        paddingBottom: '3rem',
         paddingTop: gutter,
         paddingLeft: 3, // NOTE: the 3px is to stop the select's shadows being cropped
 
@@ -123,7 +123,7 @@ const Main = props => (
       flex: 1,
       lineHeight: '1.6',
       minWidth: 0,
-      paddingBottom: gutter * 2,
+      paddingBottom: '3rem',
       paddingTop: gutter,
 
       [media.lg]: {
@@ -209,6 +209,7 @@ const Main = props => (
       code: {
         fontFamily: 'Consolas, Menlo, Monaco, "Andale Mono", "Ubuntu Mono", monospace',
         fontSize: '0.85em',
+        fontWeight: 'normal',
       },
       pre: {
         backgroundColor: 'rgba(9, 30, 66, 0.03)',
@@ -237,6 +238,10 @@ const Main = props => (
         [media.sm]: {
           wordBreak: 'break-word',
         },
+      },
+
+      '& h1 > code, & h2 > code, & h3 > code, & h4 > code, & h5 > code, & h6 > code': {
+        backgroundColor: 'rgba(255, 235, 229, 0.6)',
       },
     }}
     {...props}
