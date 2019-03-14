@@ -25,7 +25,7 @@ Your application also has an admin UI, which lets you directly manipulate the da
 <a href="http://localhost:3000/admin/">http://localhost:3000/admin</a>
 </pre>
 
-The [Admin UI Tutorial](../tutorials/admin-ui) will walk you through the functionality provided by the Admin UI.
+The [Admin UI Tutorial](../tutorials/admin-ui.md) will walk you through the functionality provided by the Admin UI.
 
 Both your application and the admin UI are being powered by a GraphQL API.
 Keystone provides a web interface for this API at
@@ -34,7 +34,7 @@ Keystone provides a web interface for this API at
 <a href="http://localhost:3000/admin/graphiql">http://localhost:3000/admin/graphiql</a>
 </pre>
 
-The [Introduction To GraphQL](../tutorials/intro-to-graphql) tutorial will guide you through the basics of using GraphQL to interact with your Keystone system.
+The [Introduction To GraphQL](../tutorials/intro-to-graphql.md) tutorial will guide you through the basics of using GraphQL to interact with your Keystone system.
 
 ## Installing `mongodb`
 

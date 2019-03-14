@@ -5,30 +5,21 @@ import { StaticQuery, graphql, Link } from 'gatsby';
 import { colors, gridSize } from '@arch-ui/theme';
 import { jsx } from '@emotion/core';
 
-const prettyName = (node, navGroup) => {
-  let pretty = node.path
-    .replace('/packages', '')
-    .replace(navGroup, '')
-    .replace(new RegExp(/(\/\/)/g), '')
-    .replace(new RegExp(/\/$/g), '')
-    .replace(new RegExp(/^\//g), '')
-    .replace('-', ' ')
-    .trim();
-
-  return pretty === '' ? 'index' : pretty;
-};
-
 export const Sidebar = () => (
   <StaticQuery
     query={graphql`
       query HeadingQuery {
-        allSitePage(filter: { path: { ne: "/dev-404-page/" } }, sort: { fields: [path] }) {
-          totalCount
+        allSitePage(
+          filter: { path: { ne: "/dev-404-page/" } }
+          sort: { fields: [context___sortOrder] }
+        ) {
           edges {
             node {
               path
               context {
                 navGroup
+                isPackageIndex
+                pageTitle
               }
             }
           }
@@ -53,17 +44,26 @@ export const Sidebar = () => (
       return (
         <nav>
           {navGroups.map(navGroup => {
+            const intro = navData[navGroup].find(node => node.context.pageTitle === 'README');
             return (
               <div key={navGroup}>
                 <GroupHeading>{navGroup}</GroupHeading>
                 <List>
-                  {navData[navGroup].map(node => {
-                    return (
-                      <ListItem key={node.path} to={node.path}>
-                        {prettyName(node, navGroup)}
-                      </ListItem>
-                    );
-                  })}
+                  {intro && (
+                    <ListItem key={intro.path} to={intro.path}>
+                      Introduction
+                    </ListItem>
+                  )}
+                  {navData[navGroup]
+                    .filter(node => node.context.pageTitle !== 'README')
+                    .filter(node => navGroup !== 'packages' || node.context.isPackageIndex)
+                    .map(node => {
+                      return (
+                        <ListItem key={node.path} to={node.path}>
+                          {node.context.pageTitle}
+                        </ListItem>
+                      );
+                    })}
                 </List>
               </div>
             );
