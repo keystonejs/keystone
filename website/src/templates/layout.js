@@ -209,6 +209,7 @@ const Main = props => (
       code: {
         fontFamily: 'Consolas, Menlo, Monaco, "Andale Mono", "Ubuntu Mono", monospace',
         fontSize: '0.85em',
+        fontWeight: 'normal',
       },
       pre: {
         backgroundColor: 'rgba(9, 30, 66, 0.03)',
@@ -237,6 +238,10 @@ const Main = props => (
         [media.sm]: {
           wordBreak: 'break-word',
         },
+      },
+
+      '& h1 > code, & h2 > code, & h3 > code, & h4 > code, & h5 > code, & h6 > code': {
+        backgroundColor: 'rgba(255, 235, 229, 0.6)',
       },
     }}
     {...props}
