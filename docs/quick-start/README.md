@@ -2,6 +2,8 @@
 
 This quick start guide will get you up and running with a fresh new Keystone application in just a few easy commands.
 
+Make sure you have `mongodb` [installed and running](#installing-mongodb).
+
 To create a new KeystoneJS application, run the following commands.
 
 ```sh
@@ -10,9 +12,7 @@ cd my-app
 yarn start
 ```
 
-If you see _error_, then make sure you have `mongodb` installed and running.
-
-Congratulation, you are now running your very own Keystone application!
+Congratulation! You are now running your very own Keystone application.
 To visit your running application (a simple todo list), visit
 
 <pre>
