@@ -12785,10 +12785,10 @@ mem@^4.0.0:
     mimic-fn "^1.0.0"
     p-is-promise "^1.1.0"
 
-"memoize-one@>=3.1.1 <6":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.0.0.tgz#d55007dffefb8de7546659a1722a5d42e128286e"
-  integrity sha512-7g0+ejkOaI9w5x6LvQwmj68kUj6rxROywPSCqmclG/HBacmFnZqhVscQ8kovkn9FBCNJmOz6SY42+jnvZzDWdw==
+memoize-one@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-3.1.1.tgz#ef609811e3bc28970eac2884eece64d167830d17"
+  integrity sha512-YqVh744GsMlZu6xkhGslPSqSurOv6P+kLN2J3ysBZfagLcL5FdRK/0UpgLoL8hwjjEvvAVkjJZyFP+1T6p1vgA==
 
 memoize-one@^4.0.0, memoize-one@^4.0.2:
   version "4.0.3"
@@ -16674,13 +16674,13 @@ react-virtualized@^9.12.0:
     prop-types "^15.6.0"
     react-lifecycles-compat "^3.0.4"
 
-react-window@^1.6.2:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.6.2.tgz#ed11df47bd248dc3bb751e77228af74292c66d24"
-  integrity sha512-oB33VVZAF1ts3E8KQclwX0BltholxZAJ5kWrl7NmIDY/lBpIhOsKvBGM+lrLDkFqlp9wtqTb1fjw73+Dgids/Q==
+react-window@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.2.4.tgz#21ff1a52205451e59523bb636225e6db682f660d"
+  integrity sha512-xuxVvp4Mpf/vx/yktRihHQ6BjxjyMMLaBhE1hpUSqQ+YAAAEpPdoKHY+hfeXxw2x7NJe6Q8vCF85sKwNqOHRtA==
   dependencies:
     "@babel/runtime" "^7.0.0"
-    memoize-one ">=3.1.1 <6"
+    memoize-one "^3.1.1"
 
 react@16.8.2:
   version "16.8.2"
