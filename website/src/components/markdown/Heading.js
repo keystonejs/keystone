@@ -17,6 +17,7 @@ const Heading = ({ as: Tag, children, ...props }) => (
   <Tag
     css={{
       color: colors.N100,
+      lineHeight: 1,
       marginBottom: '0.66em',
     }}
     id={dashcase(children)}
@@ -30,8 +31,8 @@ export const H1 = props => (
   <Heading
     css={{
       fontSize: '2.4rem',
-      lineHeight: 1,
       marginTop: 0,
+
       [media.lg]: {
         fontSize: '3.2rem',
       },
@@ -47,6 +48,7 @@ export const H2 = props => (
       fontSize: '1.8rem',
       fontWeight: 300,
       marginTop: '1.33em',
+
       [media.lg]: {
         fontSize: '2.4rem',
       },
@@ -59,6 +61,8 @@ export const H3 = props => (
     css={{
       fontSize: '1.4rem',
       fontWeight: 500,
+      marginTop: '1.5em',
+
       [media.lg]: {
         fontSize: '1.6rem',
       },

@@ -51,7 +51,7 @@ export const Search = () => {
         return (
           <Select
             key="select"
-            components={{ Control, DropdownIndicator, IndicatorSeparator, Input }}
+            components={{ Control, DropdownIndicator, IndicatorSeparator }}
             placeholder="Search..."
             options={results}
             value={null}
@@ -110,40 +110,6 @@ const Control = ({ children, innerProps, innerRef, isFocused }) => {
     </div>
   );
 };
-const Input = ({
-  className,
-  cx,
-  getStyles,
-  innerRef,
-  isHidden,
-  isDisabled,
-  theme,
-  selectProps,
-  ...props
-}) => (
-  <div
-    css={{
-      paddingLeft: 2,
-      paddingRight: 2,
-    }}
-  >
-    <input
-      ref={innerRef}
-      css={{
-        background: 0,
-        border: 0,
-        color: 'inherit',
-        display: 'block',
-        fontSize: 'inherit',
-        margin: 0,
-        outline: 0,
-        padding: 0,
-        width: '100%',
-      }}
-      {...props}
-    />
-  </div>
-);
 const IndicatorSeparator = null;
 
 // ==============================

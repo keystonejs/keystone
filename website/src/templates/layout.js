@@ -121,7 +121,7 @@ const Main = props => (
   <main
     css={{
       flex: 1,
-      lineHeight: '1.4',
+      lineHeight: '1.6',
       minWidth: 0,
       paddingBottom: gutter * 2,
       paddingTop: gutter,
@@ -136,6 +136,7 @@ const Main = props => (
 
       table: {
         borderCollapse: 'collapse',
+        borderSpacing: 0,
         fontSize: '0.9rem',
         width: '100%',
       },
@@ -143,6 +144,10 @@ const Main = props => (
         paddingBottom: gridSize,
         paddingTop: gridSize,
         textAlign: 'left',
+
+        '&[align="right"]': {
+          textAlign: 'right',
+        },
       },
       th: {
         borderBottom: `2px solid ${colors.N10}`,
@@ -168,7 +173,6 @@ const Main = props => (
       a: {
         borderBottom: `1px solid ${colors.B.A40}`,
         color: colors.N100,
-        // padding: '0.2em',
         textDecoration: 'none',
 
         ':hover, :focus': {
@@ -176,6 +180,12 @@ const Main = props => (
           borderBottomColor: 'currentColor',
           textDecoration: 'none',
         },
+      },
+
+      // NOTE: consider removing `gatsby-remark-images`
+      '.gatsby-resp-image-link, .gatsby-resp-image-link:hover, .gatsby-resp-image-link:focus': {
+        background: 0,
+        border: 0,
       },
       ul: {
         lineHeight: 1.8,
@@ -205,6 +215,7 @@ const Main = props => (
         boxShadow: '-4px 0 0 rgba(9, 30, 66, 0.09)',
         boxSizing: 'border-box',
         fontFamily: 'Consolas,Menlo,Monaco,"Andale Mono","Ubuntu Mono",monospace',
+        lineHeight: '1.4',
         padding: gridSize * 2,
         overflowX: 'auto',
         tabSize: 2,
