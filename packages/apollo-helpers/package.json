@@ -14,11 +14,11 @@
     "@babel/runtime": "^7.3.4",
     "@jesstelford/apollo-cache-invalidation": "^0.0.3-gh3-gh5",
     "graphql-tag": "^2.10.1",
-    "hoist-non-react-statics": "^3.3.0",
+    "hoist-non-react-statics": "^3.0.1",
     "lodash.mapvalues": "^4.6.0",
     "memoize-one": "^4.0.2",
     "react-adopt": "^0.6.0",
-    "react-apollo": "^2.5.2"
+    "react-apollo": "^2.2.4"
   },
   "peerDependencies": {
     "react": "^16.8.4"

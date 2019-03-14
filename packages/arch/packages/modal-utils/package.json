@@ -18,7 +18,7 @@
     "@emotion/core": "^10.0.9",
     "@emotion/styled": "^10.0.9",
     "react-scrolllock": "^3.0.1",
-    "react-transition-group": "^2.6.0"
+    "react-transition-group": "^2.3.1"
   },
   "module": "dist/modal-utils.esm.js"
 }
