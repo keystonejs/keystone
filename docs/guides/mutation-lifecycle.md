@@ -1,3 +1,8 @@
+---
+section: guides
+title: Mutation Lifecycle
+---
+
 # Mutation Lifecycle
 
 - [Mutation Phases](#mutation-phases)

@@ -1,3 +1,8 @@
+---
+section: guides
+title: Introduction
+---
+
 # Guides
 
 Some guides to help you perform various tasks in the KeystoneJS ecosystem.

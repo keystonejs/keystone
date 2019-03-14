@@ -1,3 +1,8 @@
+---
+section: field-types
+title: Password
+---
+
 # Field Type: `Password`
 
 `Password` fields are unusual in that they do not store the value they are supplied.

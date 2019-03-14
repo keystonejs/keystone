@@ -1,3 +1,8 @@
+---
+section: guides
+title: Authentication
+---
+
 # Authentication
 
 _Note on terminology_:

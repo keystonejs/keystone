@@ -1,3 +1,8 @@
+---
+section: packages
+title: Create Keystone App
+---
+
 # Create Keystone App
 
 ```sh

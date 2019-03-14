@@ -1,3 +1,8 @@
+---
+section: packages
+title: Apollo Helpers
+---
+
 # Apollo Helpers
 
 A set of functions and components to ease using

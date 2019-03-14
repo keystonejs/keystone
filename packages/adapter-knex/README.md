@@ -1,3 +1,8 @@
+---
+section: packages
+title: Database Adapter: Knex
+---
+
 # Knex Database Adapter
 
 The [Knex](https://knexjs.org/#changelog) adapter is a general purpose adapter which can be used to connect to a range of different database backends.

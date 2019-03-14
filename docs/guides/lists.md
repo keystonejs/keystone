@@ -1,3 +1,8 @@
+---
+section: guides
+title: Lists
+---
+
 # Lists
 
 ## Creating Lists

@@ -1,3 +1,8 @@
+---
+section: field-types
+title: Relationship
+---
+
 # Field Type: `Relationship`
 
 ## Nested Mutations
