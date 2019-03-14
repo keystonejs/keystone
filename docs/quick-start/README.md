@@ -24,7 +24,7 @@ cd my-app
 yarn start
 ```
 
-If you see an error, please make sure that you have [MongoDB installed](/quick-start/mongodb) and running.
+If you see an error, please make sure that you have [MongoDB installed](../quick-start/mongodb.md) and running.
 
 Congratulation, you are now running your very own Keystone application!
 To visit your running application (a simple todo list), visit
