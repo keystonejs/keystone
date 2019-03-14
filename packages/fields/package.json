@@ -59,10 +59,10 @@
     "react-popper": "^1.3.3",
     "react-popper-tooltip": "^2.7.2",
     "react-select": "^2.1.2",
-    "slate": "^0.44.9",
+    "slate": "^0.44.12",
     "slate-drop-or-paste-images": "^0.9.1",
-    "slate-html-serializer": "^0.7.33",
-    "slate-react": "^0.21.15"
+    "slate-html-serializer": "^0.7.36",
+    "slate-react": "^0.21.18"
   },
   "devDependencies": {
     "cuid": "^2.1.6"
