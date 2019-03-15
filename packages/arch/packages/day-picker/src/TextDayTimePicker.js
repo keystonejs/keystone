@@ -22,12 +22,9 @@ export let TextDayTimePicker = ({ date, onChange, ...props }: Props) => {
   let [value, setValue] = useState('');
   let ref = useRef(null);
 
-  useEffect(
-    () => {
-      setValue(formatDateTime(date));
-    },
-    [date]
-  );
+  useEffect(() => {
+    setValue(formatDateTime(date));
+  }, [date]);
 
   return (
     <Input

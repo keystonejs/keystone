@@ -14,12 +14,9 @@ type Props = {
 export let TextDayPicker = ({ date, onChange, ...props }: Props) => {
   let [value, setValue] = useState(formatDate(date));
 
-  useEffect(
-    () => {
-      setValue(formatDate(date));
-    },
-    [date]
-  );
+  useEffect(() => {
+    setValue(formatDate(date));
+  }, [date]);
 
   return (
     <Input
