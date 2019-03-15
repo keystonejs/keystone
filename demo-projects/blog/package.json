@@ -32,6 +32,6 @@
     "next-apollo": "^2.0.9",
     "node-fetch": "^2.3.0",
     "react": "^16.8.4",
-    "react-apollo": "^2.2.4"
+    "react-apollo": "2.4.0"
   }
 }

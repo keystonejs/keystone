@@ -158,6 +158,10 @@ const NAV_LINKS = [
     url: '/tutorials/',
   },
   {
+    name: 'Discussions',
+    url: '/discussions/',
+  },
+  {
     name: 'Packages',
     url: '/keystone-alpha/core/',
   },

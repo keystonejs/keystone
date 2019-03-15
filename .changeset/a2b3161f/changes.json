@@ -1,0 +1,22 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/demo-project-blog", "type": "patch" },
+    { "name": "@keystone-alpha/admin-ui", "type": "patch" },
+    { "name": "@keystone-alpha/apollo-helpers", "type": "patch" },
+    { "name": "@arch-ui/confirm", "type": "patch" },
+    { "name": "@arch-ui/day-picker", "type": "patch" },
+    { "name": "@arch-ui/dialog", "type": "patch" },
+    { "name": "@arch-ui/drawer", "type": "patch" },
+    { "name": "@arch-ui/modal-utils", "type": "patch" },
+    { "name": "@arch-ui/options", "type": "patch" },
+    { "name": "@arch-ui/select", "type": "patch" },
+    { "name": "@keystone-alpha/fields", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-basic", "type": "patch" }
+  ],
+  "dependents": [
+    { "name": "@arch-ui/dropdown", "type": "patch", "dependencies": ["@arch-ui/modal-utils"] },
+    { "name": "@arch-ui/popout", "type": "patch", "dependencies": ["@arch-ui/modal-utils"] },
+    { "name": "@arch-ui/tooltip", "type": "patch", "dependencies": ["@arch-ui/modal-utils"] },
+    { "name": "@keystone-alpha/website", "type": "patch", "dependencies": ["@arch-ui/select"] }
+  ]
+}
