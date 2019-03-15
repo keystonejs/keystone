@@ -11,7 +11,7 @@
     "express-react-views": "^0.11.0",
     "keystone-email": "^1.1.0",
     "memoize-one": "^4.0.2",
-    "mjml": "^4.3.1",
+    "mjml": "^4.4.0-beta.1",
     "pify": "^4.0.1"
   },
   "peerDependencies": {
