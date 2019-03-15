@@ -9,10 +9,7 @@ This quick start guide will get you up and running with a fresh new Keystone app
 Please make sure your computer/server meets the following requirements:
 
 - [Node.js](https://nodejs.org/) >= 10.x: Node.js is a server platform which runs JavaScript.
-- The database of your choice:
-  - [MongoDB](https://www.mongodb.com/) >= 3.x: MongoDB is a powerful document store.
-  - [MySQL](https://www.mysql.com/) >= 5.6: MySQL is an open-source relational database management system.
-  - [PostgreSQL](https://www.postgresql.org/) >= 10: PostgreSQL is an open-source object-relational database management system.
+- [MongoDB](https://www.mongodb.com/) >= 3.x: MongoDB is a powerful document store.
 
 ## Installation
 

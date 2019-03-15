@@ -6,7 +6,7 @@ const generateUrl = require('./generateUrl');
 
 const PROJECT_ROOT = path.resolve('..');
 
-const NAV_BAR_ORDER = ['quick-start', 'tutorials', 'guides', 'packages'];
+const NAV_BAR_ORDER = ['quick-start', 'tutorials', 'guides', 'discussions', 'packages'];
 
 exports.createPages = ({ actions, graphql }) => {
   const { createPage } = actions;
@@ -93,7 +93,9 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
     const parent = getNode(node.parent);
     const { sourceInstanceName, relativePath } = parent;
 
-    const isPackage = !['quick-start', 'tutorials', 'guides'].includes(sourceInstanceName);
+    const isPackage = !['quick-start', 'tutorials', 'guides', 'discussions'].includes(
+      sourceInstanceName
+    );
     const navGroup = isPackage ? 'packages' : sourceInstanceName;
 
     let pageTitle;
