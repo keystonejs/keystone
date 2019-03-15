@@ -1,6 +1,6 @@
 ---
 section: packages
-title: Database Adapter: Mongoose
+title: Database Adapter - Mongoose
 ---
 
 # Mongoose Database Adapter

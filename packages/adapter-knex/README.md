@@ -1,6 +1,6 @@
 ---
 section: packages
-title: Database Adapter: Knex
+title: Database Adapter - Knex
 ---
 
 # Knex Database Adapter
