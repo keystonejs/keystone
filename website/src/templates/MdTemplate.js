@@ -1,5 +1,6 @@
 /** @jsx jsx */
 
+import React, { useEffect } from 'react'; // eslint-disable-line no-unused-vars
 import { Link, graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-mdx/mdx-renderer';
 import { MDXProvider } from '@mdx-js/tag';
@@ -74,7 +75,7 @@ const Button = ({ as: Tag, ...props }) => (
       ':hover, :focus': {
         backgroundColor: 'white !important',
         borderColor: `rgba(0, 0, 0, 0.15)`,
-        boxShadow: '0 2px 0 rgba(0,0,0,0.05)',
+        boxShadow: '0 2px 1px rgba(0,0,0,0.05)',
         textDecoration: 'none',
       },
       ':active': {
