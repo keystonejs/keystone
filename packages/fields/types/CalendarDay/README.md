@@ -1,3 +1,8 @@
+---
+section: field-types
+title: CalendarDay
+---
+
 # Field Type: `CalendarDay`
 
 ## Usage

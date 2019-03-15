@@ -10,12 +10,12 @@ import debounce from 'lodash.debounce';
 import { getResults } from '../utils/search';
 
 export const Search = () => {
-  let [input, setInput] = useState('');
   let [query, setQuery] = useState('');
   let [results, setResults] = useState([]);
 
   const setQueryDebounced = useCallback(debounce(value => setQuery(value), 200), [setQuery]);
 
+  // TODO: `isLoading`
   useEffect(() => {
     let cancelled = false;
 
@@ -24,11 +24,11 @@ export const Search = () => {
     }
 
     getResults(query, { limit: 10 }).then(queryResults => {
-      console.log('getResults');
       if (cancelled) {
         return;
       }
 
+      // Append "Show More" link to the results
       if (queryResults.total !== 0 && queryResults.results.length !== queryResults.total) {
         queryResults.results.push({
           slug: '/search?q=' + encodeURIComponent(query),
@@ -44,22 +44,17 @@ export const Search = () => {
       cancelled = true;
     };
   }, [query]);
-
   return (
     <Location>
       {({ navigate }) => {
         return (
           <Select
             key="select"
-            components={{ Control, DropdownIndicator, IndicatorSeparator }}
+            components={{ Control, DropdownIndicator, IndicatorSeparator, Input }}
             placeholder="Search..."
             options={results}
             value={null}
-            inputValue={input}
-            onInputChange={value => {
-              setInput(value);
-              setQueryDebounced(value);
-            }}
+            onInputChange={setQueryDebounced}
             onChange={result => {
               setQueryDebounced.cancel();
               navigate(result.slug);
@@ -110,6 +105,40 @@ const Control = ({ children, innerProps, innerRef, isFocused }) => {
     </div>
   );
 };
+const Input = ({
+  className,
+  cx,
+  getStyles,
+  innerRef,
+  isDisabled,
+  isHidden,
+  selectProps,
+  theme,
+  ...props
+}) => (
+  <div
+    css={{
+      margin: 2,
+      paddingBottom: 2,
+      paddingTop: 2,
+      visibility: isDisabled ? 'hidden' : 'visible',
+    }}
+  >
+    <input
+      ref={innerRef}
+      css={{
+        background: 0,
+        border: 0,
+        color: 'inherit',
+        fontSize: 'inherit',
+        opacity: isHidden ? 0 : 1,
+        outline: 0,
+        padding: 0,
+      }}
+      {...props}
+    />
+  </div>
+);
 const IndicatorSeparator = null;
 
 // ==============================

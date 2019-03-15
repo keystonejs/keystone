@@ -1,3 +1,8 @@
+---
+section: field-types
+title: Introduction
+---
+
 # Field Types
 
 What makes up a Field Type:

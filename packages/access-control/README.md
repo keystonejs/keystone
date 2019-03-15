@@ -1,3 +1,8 @@
+---
+section: packages
+title: Access Control
+---
+
 # Access Control
 
 This package is an internal helper package used by Keystone to parse and validate access control expressions.

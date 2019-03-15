@@ -1,4 +1,9 @@
-# Documentation Style Guide
+---
+section: guides
+title: Documentation Style
+---
+
+# Documentation Style
 
 This document describes the conventions for formatting and style used throughout Keystone 5 docs.
 

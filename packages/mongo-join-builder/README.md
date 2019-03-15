@@ -1,3 +1,8 @@
+---
+section: packages
+title: Mongo Join Builder
+---
+
 # Mongo Join Builder
 
 Perform JOINs in Mongo with a simplified query syntax.

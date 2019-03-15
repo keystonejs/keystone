@@ -1,3 +1,8 @@
+---
+section: packages
+title: File Adapters
+---
+
 # File Adapters
 
 The `File` field type can support files hosted in a range of different contexts, e.g. in the local filestem, or on a cloud based file server.

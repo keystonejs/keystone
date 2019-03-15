@@ -1,3 +1,8 @@
+---
+section: guides
+title: Performance
+---
+
 # Performance
 
 ## Query Performance Monitoring with Apollo Engine

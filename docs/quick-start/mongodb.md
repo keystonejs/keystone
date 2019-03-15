@@ -1,3 +1,8 @@
+---
+section: quick-start
+title: MongoDB
+---
+
 # MongoDB
 
 The simplest way to install [MongoDB](https://www.mongodb.com/) is using [Homebrew](https://brew.sh/).

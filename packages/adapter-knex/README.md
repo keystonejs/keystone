@@ -1,3 +1,8 @@
+---
+section: packages
+title: Database Adapter - Knex
+---
+
 # Knex Database Adapter
 
 ** WARNING: This adapter is under active development and is not production ready. It _will_ drop your entire database every time you connect! **

@@ -1,3 +1,8 @@
+---
+section: quick-start
+title: Introduction
+---
+
 # Quick Start
 
 ## Welcome
