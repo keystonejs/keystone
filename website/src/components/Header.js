@@ -147,7 +147,7 @@ const NewWindowIcon = () => (
 const NAV_LINKS = [
   {
     name: 'Quick Start',
-    url: '/quick-start',
+    url: '/quick-start/',
   },
   {
     name: 'Guides',
