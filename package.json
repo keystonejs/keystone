@@ -144,7 +144,7 @@
     "pify": "^4.0.1",
     "pino": "5.0.0-rc.4",
     "pluralize": "^7.0.0",
-    "preconstruct": "^0.0.42",
+    "preconstruct": "^0.0.45",
     "pretty-proptypes": "^0.5.0",
     "prism-react-renderer": "^0.1.5",
     "prop-types": "^15.6.1",
@@ -203,7 +203,8 @@
   "preconstruct": {
     "packages": [
       "packages/arch/packages/*",
-      "packages/apollo-helpers"
+      "packages/apollo-helpers",
+      "packages/fields"
     ]
   },
   "jest": {
