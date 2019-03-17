@@ -72,7 +72,8 @@
     "entrypoints": [
       "types/*/views/Cell",
       "types/*/views/Field",
-      "types/*/views/Filter"
+      "types/*/views/Filter",
+      "types/Content/views/blocks/*"
     ]
   }
 }
