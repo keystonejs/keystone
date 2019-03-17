@@ -1,8 +1,13 @@
+---
+section: packages
+title: Adapter Framework
+---
+
 # Adapter Framework
 
 This document describes the role of data store adapters in Keystone 5 and how they relate to lists and fields.
 
-A `Keystone` system consists of mulitple `Lists`, each of which contains multiple `Fields`.
+A `Keystone` system consists of multiple `Lists`, each of which contains multiple `Fields`.
 This data structure needs to be backed by a persistent data store of some kind.
 The _Keystone Adapter Framework_ facilitates this by providing an abstraction layer which can be implemented
 by adapters for different data stores (e.g. Mongoose, Postgres, etc).
@@ -69,6 +74,8 @@ These in turn have back reference to the `ListAdapter` in the property `.listAda
 
 This data model allows all fields under a `KeystoneAdapter` to access all other fields in the same adapter,
 which is required to facilitate relationship operations.
+
+<!--- TODO Create a diagram/illustration for the below ASCII --->
 
 ```
 Keystone    .adapters  ->   KeystoneAdapter   (.listAdapters)
