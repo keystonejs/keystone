@@ -20,11 +20,13 @@ export const Table = props => {
   }, 200);
 
   useEffect(() => {
-    ref.current.addEventListener('scroll', handleScroll, true);
+    const el = ref.current; // store the ref for cleanup
+
+    el.addEventListener('scroll', handleScroll, true);
     window.addEventListener('resize', handleScroll, true);
 
     return () => {
-      ref.current.removeEventListener('scroll', handleScroll, true);
+      el.removeEventListener('scroll', handleScroll, true);
       window.removeEventListener('resize', handleScroll, true);
     };
   }, [ref.current]);
