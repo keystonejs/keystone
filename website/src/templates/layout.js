@@ -195,7 +195,7 @@ const Main = props => (
         [media.sm]: {
           marginLeft: -CONTAINER_GUTTERS[0],
           marginRight: -CONTAINER_GUTTERS[0],
-        }
+        },
       },
 
       '& :not(pre) > code': {
