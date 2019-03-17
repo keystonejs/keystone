@@ -241,7 +241,6 @@
     "gatsby": "^2.1.31",
     "jade": "^1.11.0",
     "jest": "^24.5.0",
-    "jest-resolve": "^24.1.0",
     "jest-junit": "^6.3.0",
     "jest-resolve": "^24.5.0",
     "mjml-react": "^1.0.51",
