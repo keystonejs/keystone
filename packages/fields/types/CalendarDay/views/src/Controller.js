@@ -1,9 +1,9 @@
-import FieldController from '../../Controller';
+import FieldController from '../../../../Controller';
 
-export default class TextController extends FieldController {
+export default class CalendarDayController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
-    return `${key}: ${value}`;
+    return `${key}: "${value}"`;
   };
   getFilterLabel = ({ label }) => {
     return `${this.label} ${label.toLowerCase()}`;
@@ -12,16 +12,11 @@ export default class TextController extends FieldController {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
   getValue = data => {
-    const value = data[this.config.path];
-    if (typeof value === 'number') {
-      return value;
-    } else if (typeof value === 'string' && value.length > 0) {
-      // The field component enforces numeric values
-      return parseInt(value);
-    } else {
-      // if it is not a String or a Number then the field must be empty
+    let value = data[this.config.path];
+    if (typeof value !== 'string') {
       return null;
     }
+    return value.trim() || null;
   };
   getFilterTypes = () => [
     {
@@ -36,25 +31,25 @@ export default class TextController extends FieldController {
     },
     {
       type: 'gt',
-      label: 'Is greater than',
+      label: 'Is after',
       getInitialValue: () => '',
     },
     {
       type: 'lt',
-      label: 'Is less than',
+      label: 'Is before',
       getInitialValue: () => '',
     },
     {
       type: 'gte',
-      label: 'Is greater than or equal to',
+      label: 'Is after or equal to',
       getInitialValue: () => '',
     },
     {
       type: 'lte',
-      label: 'Is less than or equal to',
+      label: 'Is before or equal to',
       getInitialValue: () => '',
     },
-    // QUESTION: should we support "in" and "not_in" filters for Integer?
+    // QUESTION: should we support "in" and "not_in" filters for DateTime?
     // What does the UI look like for that.
   ];
 }

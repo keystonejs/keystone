@@ -1,4 +1,4 @@
-import TextController from '../Text/Controller';
+import TextController from '../../../Text/views/src/Controller';
 
 export default class ContentController extends TextController {
   getValue = data => {

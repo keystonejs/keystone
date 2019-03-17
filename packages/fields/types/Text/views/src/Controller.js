@@ -1,9 +1,9 @@
-import FieldController from '../../Controller';
+import FieldController from '../../../../Controller';
 
 export default class TextController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
-    return `${key}: ${value}`;
+    return `${key}: "${value}"`;
   };
   getFilterLabel = ({ label }) => {
     return `${this.label} ${label.toLowerCase()}`;
@@ -11,19 +11,17 @@ export default class TextController extends FieldController {
   formatFilter = ({ label, value }) => {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
-  getValue = data => {
-    const value = data[this.config.path];
-    if (typeof value === 'number') {
-      return value;
-    } else if (typeof value === 'string' && value.length > 0) {
-      // The field component enforces numeric values
-      return parseFloat(value);
-    } else {
-      // if it is not a String or a Number then the field must be empty
-      return null;
-    }
-  };
   getFilterTypes = () => [
+    {
+      type: 'contains',
+      label: 'Contains',
+      getInitialValue: () => '',
+    },
+    {
+      type: 'not_contains',
+      label: 'Does not contain',
+      getInitialValue: () => '',
+    },
     {
       type: 'is',
       label: 'Is exactly',
@@ -35,23 +33,23 @@ export default class TextController extends FieldController {
       getInitialValue: () => '',
     },
     {
-      type: 'gt',
-      label: 'Is greater than',
+      type: 'starts_with',
+      label: 'Starts with',
       getInitialValue: () => '',
     },
     {
-      type: 'lt',
-      label: 'Is less than',
+      type: 'not_starts_with',
+      label: 'Does not start with',
       getInitialValue: () => '',
     },
     {
-      type: 'gte',
-      label: 'Is greater than or equal to',
+      type: 'ends_with',
+      label: 'Ends with',
       getInitialValue: () => '',
     },
     {
-      type: 'lte',
-      label: 'Is less than or equal to',
+      type: 'not_ends_with',
+      label: 'Does not end with',
       getInitialValue: () => '',
     },
   ];

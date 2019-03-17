@@ -73,6 +73,7 @@
       "types/*/views/Cell",
       "types/*/views/Field",
       "types/*/views/Filter",
+      "types/*/views/Controller",
       "types/Content/views/blocks/*"
     ]
   }

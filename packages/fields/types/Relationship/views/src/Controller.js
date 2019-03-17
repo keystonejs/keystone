@@ -1,4 +1,4 @@
-import FieldController from '../../Controller';
+import FieldController from '../../../../Controller';
 
 export default class RelationshipController extends FieldController {
   getRefList() {

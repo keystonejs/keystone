@@ -1,9 +1,9 @@
-import FieldController from '../../Controller';
+import FieldController from '../../../../Controller';
 
 export default class TextController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
-    return `${key}: "${value}"`;
+    return `${key}: ${value}`;
   };
   getFilterLabel = ({ label }) => {
     return `${this.label} ${label.toLowerCase()}`;
@@ -13,14 +13,14 @@ export default class TextController extends FieldController {
   };
   getValue = data => {
     const value = data[this.config.path];
-    // Make the value a string to prevent loss of accuracy and precision.
-    if (typeof value === 'string') {
+    if (typeof value === 'number') {
       return value;
-    } else if (typeof value === 'number') {
-      return String(value);
+    } else if (typeof value === 'string' && value.length > 0) {
+      // The field component enforces numeric values
+      return parseInt(value);
     } else {
-      // If it is neither string nor number then it must be empty.
-      return '';
+      // if it is not a String or a Number then the field must be empty
+      return null;
     }
   };
   getFilterTypes = () => [
@@ -54,5 +54,7 @@ export default class TextController extends FieldController {
       label: 'Is less than or equal to',
       getInitialValue: () => '',
     },
+    // QUESTION: should we support "in" and "not_in" filters for Integer?
+    // What does the UI look like for that.
   ];
 }

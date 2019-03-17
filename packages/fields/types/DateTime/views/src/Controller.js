@@ -1,6 +1,6 @@
-import FieldController from '../../Controller';
+import FieldController from '../../../../Controller';
 
-export default class TextController extends FieldController {
+export default class DateTimeController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
     return `${key}: "${value}"`;
@@ -11,17 +11,14 @@ export default class TextController extends FieldController {
   formatFilter = ({ label, value }) => {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
+  getValue = data => {
+    let value = data[this.config.path];
+    if (typeof value !== 'string') {
+      return null;
+    }
+    return value.trim() || null;
+  };
   getFilterTypes = () => [
-    {
-      type: 'contains',
-      label: 'Contains',
-      getInitialValue: () => '',
-    },
-    {
-      type: 'not_contains',
-      label: 'Does not contain',
-      getInitialValue: () => '',
-    },
     {
       type: 'is',
       label: 'Is exactly',
@@ -33,24 +30,26 @@ export default class TextController extends FieldController {
       getInitialValue: () => '',
     },
     {
-      type: 'starts_with',
-      label: 'Starts with',
+      type: 'gt',
+      label: 'Is after',
       getInitialValue: () => '',
     },
     {
-      type: 'not_starts_with',
-      label: 'Does not start with',
+      type: 'lt',
+      label: 'Is before',
       getInitialValue: () => '',
     },
     {
-      type: 'ends_with',
-      label: 'Ends with',
+      type: 'gte',
+      label: 'Is after or equal to',
       getInitialValue: () => '',
     },
     {
-      type: 'not_ends_with',
-      label: 'Does not end with',
+      type: 'lte',
+      label: 'Is before or equal to',
       getInitialValue: () => '',
     },
+    // QUESTION: should we support "in" and "not_in" filters for DateTime?
+    // What does the UI look like for that.
   ];
 }
