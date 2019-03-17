@@ -1,4 +1,9 @@
-# Email Sending in keystone-alpha
+---
+section: packages
+title: Email Sending
+---
+
+# Email Sending
 
 Send emails via various transports, rendered with Express-compatible
 renderers.

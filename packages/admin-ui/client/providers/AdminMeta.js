@@ -1,6 +1,7 @@
 /* global KEYSTONE_ADMIN_META */
 
 import React from 'react';
+import FieldTypes from '../FIELD_TYPES';
 
 import List from '../classes/List';
 
@@ -23,7 +24,7 @@ export const adminMeta = {
 };
 
 listKeys.forEach(key => {
-  const list = new List(lists[key], adminMeta);
+  const list = new List(lists[key], adminMeta, FieldTypes[key]);
   listsByKey[key] = list;
   listsByPath[list.path] = list;
 });

@@ -1,10 +1,15 @@
-# Keystone Core
+---
+section: packages
+title: Keystone
+---
+
+# Keystone
 
 ## `Keystone` class
 
 ### `Keystone::createItems(<items>)`
 
-Allows progromatically creating a batch of items described as JSON objects.
+Allows programatically creating a batch of items described as JSON objects.
 
 This method's primary use is indended for migration scripts, or initial seeding
 of databases.
@@ -22,7 +27,7 @@ keystone.createItems({
 ```
 
 > The format of the data must match the schema setup with calls to
-> `keyston.createList()`.
+> `keystone.createList()`.
 
 #### Relationships
 

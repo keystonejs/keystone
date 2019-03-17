@@ -1,4 +1,9 @@
-# `DateTime` Field Type
+---
+section: field-types
+title: CalendarDay
+---
+
+# CalendarDay
 
 ## Usage
 
@@ -8,8 +13,8 @@ keystone.createList('User', {
     email: { type: Text },
     password: { type: Password },
     lastOnline: {
-      type: DateTime,
-      format: 'MM/DD/YYYY h:mm A',
+      type: CalendarDay,
+      format: 'Do MMMM YYYY',
       yearRangeFrom: 1901,
       yearRangeTo: 2018,
       yearPickerType: 'auto',
@@ -29,25 +34,25 @@ keystone.createList('User', {
 
 #### `format`
 
-Defines the format of string that the component generates. For example, `MM/DD/YYYY h:mm A`.
+Defines the format of string that the component generates. For example, `Do MMMM YYYY`.
 
 #### `yearRangeFrom`
 
-The DateTime component includes an input that allows the user to change the current year from a range of options.
+The CalendarDay component includes an input that allows the user to change the current year from a range of options.
 This prop allows the user to set the beginning of that range.
 
 The default value for this field is 100 years before the current year.
 
 #### `yearRangeTo`
 
-The DateTime component includes an input that allows the user to change the current year from a range of options.
+The CalendarDay component includes an input that allows the user to change the current year from a range of options.
 This prop allows the user to set the end of that range.
 
 The default value for this field is the current year.
 
 #### `yearPickerType`
 
-The DateTime component includes an input that allows the user to change the current year from a range of options. This prop allows the user to change the type of that input.
+The CalendarDay component includes an input that allows the user to change the current year from a range of options. This prop allows the user to change the type of that input.
 
 | Option   | Description                                                                             |
 | -------- | --------------------------------------------------------------------------------------- |

@@ -1,3 +1,8 @@
+---
+section: guides
+title: Hooks
+---
+
 # Hooks
 
 > _NOTE: Below is an overview of hooks. For API docs see

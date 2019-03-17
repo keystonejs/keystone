@@ -1,4 +1,9 @@
-# Keystone 5 Logger
+---
+section: packages
+title: Logger
+---
+
+# Logger
 
 ## API
 
