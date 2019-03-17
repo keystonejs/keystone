@@ -3,7 +3,7 @@ section: field-types
 title: Float
 ---
 
-# Field Type: `Float`
+# Float
 
 ```DOCS_TODO
 TODO

@@ -3,7 +3,7 @@ section: field-types
 title: CloudinaryImage
 ---
 
-# Field Type: `CloudinaryImage`
+# CloudinaryImage
 
 ```DOCS_TODO
 TODO

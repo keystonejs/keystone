@@ -133,32 +133,6 @@ const Main = props => (
         paddingLeft: gutter,
       },
 
-      // Tables
-      // ------------------------------
-
-      table: {
-        borderCollapse: 'collapse',
-        borderSpacing: 0,
-        fontSize: '0.9rem',
-        width: '100%',
-      },
-      'th, td': {
-        paddingBottom: gridSize,
-        paddingTop: gridSize,
-        textAlign: 'left',
-
-        '&[align="right"]': {
-          textAlign: 'right',
-        },
-      },
-      th: {
-        borderBottom: `2px solid ${colors.N10}`,
-        fontWeight: 500,
-      },
-      td: {
-        borderTop: `1px solid ${colors.N10}`,
-      },
-
       // TODO: doesn't play nice with "gatsby-resp-image-wrapper"
       img: {
         backgroundColor: 'white',
@@ -171,18 +145,6 @@ const Main = props => (
 
       // Misc. Typography
       // ------------------------------
-
-      a: {
-        borderBottom: `1px solid ${colors.B.A40}`,
-        color: colors.N100,
-        textDecoration: 'none',
-
-        ':hover, :focus': {
-          backgroundColor: colors.B.A10,
-          borderBottomColor: 'currentColor',
-          textDecoration: 'none',
-        },
-      },
 
       // NOTE: consider removing `gatsby-remark-images`
       '.gatsby-resp-image-link, .gatsby-resp-image-link:hover, .gatsby-resp-image-link:focus': {
@@ -236,10 +198,6 @@ const Main = props => (
         color: colors.N100,
         margin: 0,
         padding: '0.2em 0.4em',
-
-        [media.sm]: {
-          wordBreak: 'break-word',
-        },
       },
 
       '& h1 > code, & h2 > code, & h3 > code, & h4 > code, & h5 > code, & h6 > code': {

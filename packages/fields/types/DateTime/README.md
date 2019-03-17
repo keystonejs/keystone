@@ -3,7 +3,7 @@ section: field-types
 title: DateTime
 ---
 
-# Field Type: `DateTime`
+# DateTime
 
 ## Usage
 

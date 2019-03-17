@@ -3,7 +3,7 @@ section: field-types
 title: Color
 ---
 
-# Field Type: `Color`
+# Color
 
 ```DOCS_TODO
 TODO
