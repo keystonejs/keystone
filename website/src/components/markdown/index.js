@@ -6,8 +6,8 @@ import { colors } from '@arch-ui/theme';
 
 import { Link } from 'gatsby';
 import { H1, H2, H3, H4, H5, H6 } from './Heading';
-import Code from './Code';
-// import Code from './Pre';
+import { Code } from './Code';
+import { Table } from './Table';
 
 const Hr = props => (
   <hr
@@ -24,6 +24,25 @@ const Hr = props => (
     {...props}
   />
 );
+const Anchor = ({ href, ...props }) => {
+  const styles = {
+    borderBottom: `1px solid ${colors.B.A40}`,
+    color: colors.N100,
+    textDecoration: 'none',
+    WebkitTapHighlightColor: 'transparent',
+
+    ':hover, :focus': {
+      backgroundColor: colors.B.A10,
+      borderBottomColor: 'currentColor',
+      textDecoration: 'none',
+    },
+  };
+
+  if (!href || href.indexOf('http') === 0 || href.indexOf('#') === 0) {
+    return <a href={href} css={styles} {...props} />;
+  }
+  return <Link to={href} css={styles} {...props} />;
+};
 
 export default {
   h1: H1,
@@ -34,10 +53,6 @@ export default {
   h6: H6,
   hr: Hr,
   code: Code,
-  a: ({ href, ...props }) => {
-    if (!href || href.indexOf('http') === 0 || href.indexOf('#') === 0) {
-      return <a href={href} {...props} />;
-    }
-    return <Link to={href} {...props} />;
-  },
+  table: Table,
+  a: Anchor,
 };

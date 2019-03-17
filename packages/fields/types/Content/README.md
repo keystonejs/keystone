@@ -3,7 +3,7 @@ section: field-types
 title: Content
 ---
 
-# Field Type: `Content`
+# Content
 
 ```DOCS_TODO
 TODO

@@ -3,7 +3,7 @@ section: field-types
 title: Checkbox
 ---
 
-# Field Type: `Checkbox`
+# Checkbox
 
 ```DOCS_TODO
 TODO

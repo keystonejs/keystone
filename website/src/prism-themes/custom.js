@@ -21,6 +21,7 @@ export default {
       types: ['comment', 'prolog', 'doctype', 'cdata'],
       style: {
         color: colors.grayLight,
+        fontStyle: 'italic',
       },
     },
     {
@@ -54,11 +55,17 @@ export default {
       },
     },
     {
-      types: ['attr-name', 'class-name'],
+      types: ['class-name'],
       style: {
         color: colors.red,
       },
     },
+    // {
+    //   types: ['attr-name'],
+    //   style: {
+    //     color: 'hotpink',
+    //   },
+    // },
     {
       types: ['keyword', 'unit', 'statement', 'regex', 'at-rule', 'tag'],
       style: {

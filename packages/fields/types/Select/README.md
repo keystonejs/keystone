@@ -3,7 +3,7 @@ section: field-types
 title: Select
 ---
 
-# Field Type: `Select`
+# Select
 
 ```DOCS_TODO
 TODO
