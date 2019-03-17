@@ -4,17 +4,15 @@ import { useState, useMemo } from 'react';
 import Editor from './editor';
 import { Value } from 'slate';
 import { initialValue } from './editor/constants';
-import FieldTypes from './FIELD_TYPES';
 import * as paragraph from './editor/blocks/paragraph';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { inputStyles } from '@arch-ui/input';
 
 let ContentField = ({ field, value: serverValue, onChange, autoFocus }) => {
-  const views = FieldTypes[field.list.key][field.path];
   let blocks = useMemo(() => {
     let defaultBlocks = [paragraph];
 
-    let customBlocks = views.blocks.map((block, i) => ({
+    let customBlocks = field.views.blocks.map((block, i) => ({
       ...block,
       options: field.config.blockOptions[i],
     }));
@@ -51,7 +49,7 @@ let ContentField = ({ field, value: serverValue, onChange, autoFocus }) => {
       obj[block.type] = block;
       return obj;
     }, {});
-  }, [views]);
+  }, [field]);
 
   let parsedValue;
   if (serverValue) {
