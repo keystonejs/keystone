@@ -2,7 +2,7 @@
 
 import React, { Component, type Node } from 'react';
 import RelationshipSelect from './RelationshipSelect';
-import type { FilterProps } from '../../../types';
+import type { FilterProps } from '../../../../types';
 
 type Props = FilterProps<null | string>;
 
