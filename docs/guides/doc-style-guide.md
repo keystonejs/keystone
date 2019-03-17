@@ -27,6 +27,7 @@ The aim of these conventions is to ensure:
 - Write clearly and keep it factual
 - If you must assume knowledge on the part of the reader, link to related docs on the topic
 - Emoji can be used, sparingly please ✨
+- Ampersands should be avoided outside of headings
 
 Also, it should go without saying:
 
@@ -134,24 +135,22 @@ Remember, you can also ~~strikeout~~ text using tildes (`~~text~~`).
 
 ## Tables
 
-Use tables if it helps with clarity.
-Prettier will respace the values for you so the information will remain readable as text.
-Avoid using codeblocks as a preformatted pseudo-table.
-
-Eg. this is silly:
+Use tables if it helps with clarity. Prettier will re-space the values for you
+so the information will remain readable as text. Avoid using code blocks as a
+pre-formatted pseudo-table. For example:
 
 ```
 Name      Age
 --------- -------
 Jimmy     41
-Jannet    42
+Janet     42
 ```
 
 Just use a table:
 
-| Name   | Age |
-| ------ | --: |
-| Jimmy  |  41 |
-| Jannet |  42 |
+| Name  | Age |
+| ----- | --: |
+| Jimmy |  41 |
+| Janet |  42 |
 
 Remember you can control the horizontal alignment of text within a column using the `:` char, as above.
