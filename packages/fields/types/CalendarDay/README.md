@@ -3,7 +3,7 @@ section: field-types
 title: CalendarDay
 ---
 
-# Field Type: `CalendarDay`
+# CalendarDay
 
 ## Usage
 

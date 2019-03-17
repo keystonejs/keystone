@@ -15,7 +15,7 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
       <div
         css={{
           alignItems: 'center',
-          boxShadow: `0 1px 0 rgba(0, 0, 0, 0.1)`,
+          boxShadow: `0 1px 0 ${colors.N10}`,
           display: 'flex',
           justifyContent: 'space-between',
           paddingBottom: 12,
@@ -147,7 +147,7 @@ const NewWindowIcon = () => (
 const NAV_LINKS = [
   {
     name: 'Quick Start',
-    url: '/quick-start',
+    url: '/quick-start/',
   },
   {
     name: 'Guides',

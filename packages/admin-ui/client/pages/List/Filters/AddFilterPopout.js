@@ -14,10 +14,6 @@ import FieldSelect from '../FieldSelect';
 import PopoutForm from './PopoutForm';
 import { POPOUT_GUTTER } from '../../../components/Popout';
 
-// This import is loaded by the @keystone-alpha/field-views-loader loader.
-// It imports all the views required for a keystone app by looking at the adminMetaData
-import FieldTypes from '../../../FIELD_TYPES';
-
 const EventCatcher = props => (
   <div
     onClick={e => {
@@ -266,7 +262,7 @@ export default class AddFilterPopout extends Component<Props, State> {
             exited: { transform: 'translateX(100%)' },
           };
           const style = { ...base, ...states[state] };
-          const { Filter } = FieldTypes[field.list.key][field.path];
+          const { Filter } = field.views;
           const Code = p => (
             <code
               css={{

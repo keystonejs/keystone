@@ -3,7 +3,7 @@ section: field-types
 title: Url
 ---
 
-# Field Type: `Url`
+# Url
 
 ```DOCS_TODO
 TODO

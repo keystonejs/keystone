@@ -1,4 +1,9 @@
-# Keystone Docs Philosophy
+---
+section: discussions
+title: Docs Philosophy
+---
+
+# Docs Philosophy
 
 Keystone is a complex project with a large surface area and as such having good documentation is important for both developers and users.
 This document outlines the philosophy behind how the Keystone documentation is organised, so that you can contribute docs easily and effectively.
@@ -70,7 +75,7 @@ Discussion documents are **understanding oriented**.
 Keystone 5 is still in the alpha phase of development, and the documentation is still evolving.
 PRs which contribute new content, or which improve the existing content by editing it to better suit its category are welcomed.
 
-## Credit/Further Reading
+### Credit and Further Reading
 
 This model of documentation is borrowed directly from a talk given by Daniele Procida at Pycon Australia 2017, and all credit for these ideas belong to him.
 

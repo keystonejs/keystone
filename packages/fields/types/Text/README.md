@@ -3,7 +3,7 @@ section: field-types
 title: Text
 ---
 
-# Field Type: `Text`
+# Text
 
 ```DOCS_TODO
 TODO

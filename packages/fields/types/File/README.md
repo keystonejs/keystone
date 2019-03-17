@@ -3,7 +3,7 @@ section: field-types
 title: File
 ---
 
-# Field Type: `File`
+# File
 
 ```DOCS_TODO
 TODO

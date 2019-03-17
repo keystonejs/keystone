@@ -1,12 +1,12 @@
 const path = require('path');
-const bolt = require('bolt');
 const get = require('lodash.get');
 const slugify = require('@sindresorhus/slugify');
 const generateUrl = require('./generateUrl');
 
 const PROJECT_ROOT = path.resolve('..');
 
-const NAV_BAR_ORDER = ['quick-start', 'tutorials', 'guides', 'discussions', 'packages'];
+const SECTIONS = ['quick-start', 'tutorials', 'guides', 'discussions', 'packages', 'field-types'];
+const SECTIONS_NO_PKG = SECTIONS.filter(s => s !== 'packages');
 
 exports.createPages = ({ actions, graphql }) => {
   const { createPage } = actions;
@@ -93,30 +93,21 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
     const parent = getNode(node.parent);
     const { sourceInstanceName, relativePath } = parent;
 
-    const isPackage = !['quick-start', 'tutorials', 'guides', 'discussions'].includes(
-      sourceInstanceName
-    );
-    const navGroup = isPackage ? 'packages' : sourceInstanceName;
+    const isPackage = !SECTIONS_NO_PKG.includes(sourceInstanceName);
+    const pageTitle = node.frontmatter.title;
+    const navGroup = node.frontmatter.section;
 
-    let pageTitle;
-    if (isPackage) {
-      const { dir: rootDir } = await bolt.getProject({ cwd: '../' });
-      const workspaces = await bolt.getWorkspaces({ cwd: rootDir, only: sourceInstanceName });
-      pageTitle = workspaces[0].name;
-    } else {
-      pageTitle = relativePath.split('.')[0];
-    }
+    // This value is added in `gatsby-config` as the "name" of the plugin.
+    // Since we scan every workspace and add that as a separate plugin, we
+    // have the opportunity there to add the "name", which we pull from the
+    // workspace's `package.json`, and can use here.
     const fieldsToAdd = {
-      // This value is added in `gatsby-config` as the "name" of the plugin.
-      // Since we scan every workspace and add that as a separate plugin, we
-      // have the opportunity there to add the "name", which we pull from the
-      // workspace's `package.json`, and can use here.
-      navGroup,
+      navGroup: navGroup,
       workspaceSlug: slugify(sourceInstanceName),
       editUrl: getEditUrl(get(node, 'fileAbsolutePath')),
       // The full path to this "node"
       slug: generateUrl(parent),
-      sortOrder: NAV_BAR_ORDER.indexOf(navGroup),
+      sortOrder: SECTIONS.indexOf(node.frontmatter.section),
       isPackageIndex: isPackage && relativePath === 'README.md',
       pageTitle: pageTitle,
     };

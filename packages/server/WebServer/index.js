@@ -102,13 +102,13 @@ module.exports = class WebServer {
     }
   }
 
-  async start() {
+  async start(...args) {
     const {
       app,
       config: { port },
     } = this;
 
-    await this.keystone.connect();
+    await this.keystone.connect(...args);
     return new Promise((resolve, reject) => {
       app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './default.html')));
 
