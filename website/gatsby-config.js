@@ -74,7 +74,7 @@ async function getGatsbyConfig() {
             { name: 'preview', store: true },
             { name: 'slug', store: true },
             { name: 'navGroup', store: true },
-            { name: 'heading', store: true, attributes: { boost: 20 } },
+            { name: 'title', store: true, attributes: { boost: 20 } },
           ],
           // How to resolve each field's value for a supported node type
           resolvers: {
@@ -98,7 +98,7 @@ async function getGatsbyConfig() {
               },
               slug: node => node.fields.slug,
               navGroup: node => node.fields.navGroup,
-              heading: node => node.fields.heading,
+              title: node => node.fields.pageTitle,
             },
           },
           //custom index file name, default is search_index.json
