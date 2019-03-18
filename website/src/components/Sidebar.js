@@ -109,6 +109,9 @@ const ListItem = props => (
           color: colors.N100,
           textDecoration: 'none',
         },
+        ':active': {
+          backgroundColor: colors.B.A10,
+        },
 
         '&[aria-current="page"]': {
           backgroundColor: colors.B.A10,

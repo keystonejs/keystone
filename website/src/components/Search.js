@@ -1,13 +1,45 @@
 /** @jsx jsx */
 
 import { useState, useEffect, useCallback } from 'react';
+import debounce from 'lodash.debounce';
 import { jsx } from '@emotion/core';
 import Select from '@arch-ui/select';
 import { Location } from '@reach/router';
-import { colors } from '@arch-ui/theme';
-import debounce from 'lodash.debounce';
 
 import { getResults } from '../utils/search';
+
+const buildOptions = arr => {
+  let ops = [];
+
+  arr.forEach(i => {
+    if (!i.navGroup) {
+      return;
+    }
+
+    const groupLabel = i.navGroup.replace('-', ' ');
+
+    if (!ops.some(o => o.label === groupLabel)) {
+      ops.push({
+        label: groupLabel,
+        options: [],
+      });
+    }
+
+    ops.find(o => o.label === groupLabel).options.push(i);
+  });
+
+  return ops;
+};
+const defaultOptions = [
+  {
+    label: 'Recommended',
+    options: [
+      { title: 'Quick Start', slug: '/quick-start/', navGroup: 'recommended' },
+      { title: 'Field Types', slug: '/keystone-alpha/fields/', navGroup: 'recommended' },
+      { title: 'Access Control', slug: '/keystone-alpha/access-control/', navGroup: 'recommended' },
+    ],
+  },
+];
 
 export const Search = () => {
   let [query, setQuery] = useState('');
@@ -31,19 +63,20 @@ export const Search = () => {
       // Append "Show More" link to the results
       if (queryResults.total !== 0 && queryResults.results.length !== queryResults.total) {
         queryResults.results.push({
+          navGroup: 'more-results',
           slug: '/search?q=' + encodeURIComponent(query),
-          type: 'show-more',
-          totalNotShown: queryResults.total - queryResults.results.length,
+          title: `Show ${queryResults.total - queryResults.results.length} More`,
         });
       }
 
-      setResults(queryResults.results);
+      setResults(buildOptions(queryResults.results));
     });
 
     return () => {
       cancelled = true;
     };
   }, [query]);
+
   return (
     <Location>
       {({ navigate }) => {
@@ -52,7 +85,7 @@ export const Search = () => {
             key="select"
             components={{ Control, DropdownIndicator, IndicatorSeparator, Input }}
             placeholder="Search..."
-            options={results}
+            options={query ? results : defaultOptions}
             value={null}
             onInputChange={setQueryDebounced}
             onChange={result => {
@@ -61,9 +94,9 @@ export const Search = () => {
               setQuery('');
             }}
             css={{ zIndex: 2 }}
-            filterOption={() => true}
-            formatOptionLabel={renderOptionLabel}
+            filterOption={filterOption}
             getOptionValue={result => result.slug}
+            getOptionLabel={result => result.title}
             noOptionsMessage={() => (query ? 'No results found' : 'Enter a search term')}
           />
         );
@@ -145,14 +178,5 @@ const IndicatorSeparator = null;
 // Utilities
 // ==============================
 
-let renderOptionLabel = result => {
-  if (result.type === 'show-more') {
-    return <div css={{ color: colors.B.base }}>&gt; Show {result.totalNotShown} More</div>;
-  }
-  return (
-    <div>
-      <div css={{ textTransform: 'capitalize' }}>{result.title}</div>
-      <small style={{ color: 'grey' }}>{result.navGroup}</small>
-    </div>
-  );
-};
+// remove options that aren't present in the sidebar
+let filterOption = ({ data }) => Boolean(data.navGroup);
