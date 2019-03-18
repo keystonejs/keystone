@@ -27,7 +27,7 @@ keystone.createList('User', {
 
 | Option           | Type     | Default                | Description                                                                |
 | ---------------- | -------- | ---------------------- | -------------------------------------------------------------------------- |
-| `format`         | `String` | `???`                  | Defines the format of string that the component generates                  |
+| `format`         | `String` | `--`                   | Defines the format of string that the component generates                  |
 | `yearRangeFrom`  | `String` | The current year - 100 | Defines the starting point of the year range, eg `1918`                    |
 | `yearRangeTo`    | `String` | The current year       | Defines the ending point of the range in the yearSelect field , e.g `2018` |
 | `yearPickerType` | `String` | `auto`                 | Defines the input type for the year selector                               |

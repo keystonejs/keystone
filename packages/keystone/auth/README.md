@@ -1,3 +1,8 @@
+---
+section: packages
+title: Authentication Strategies
+---
+
 # Authentication Strategies
 
 When calling `keystone.createAuthStrategy()` you must supply specify the auth strategy to be used

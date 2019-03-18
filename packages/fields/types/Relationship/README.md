@@ -37,12 +37,12 @@ mutated as part of a mutation on items in the parent list (eg; during a
 
 The available nested mutations:
 
-| Nested Mutation | to-single relationship                                                                                                   | to-many relationship                                                                                                                                 |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `create`        | Create a new item, and set it as the relation. _Note: the previously set item (if any) is **not** deleted._              | Create 1 or more new items, and append them to the list of related items.                                                                            |
-| `connect`       | Filter for an item, and set it as the relation. _Note: the previously set item (if any) is **not** deleted._             | Filter for one or more items, and append them to the list of related items.                                                                          |
-| `disconnect`    | Unset the relation (if any) if it matches the given filter. _Note: the previously set item (if any) is **not** deleted._ | Filter for one or more items, and unset them from the list of related items (if any). _Note: the previously set items (if any) are **not** deleted._ |
-| `disconnectAll` | Unset the relation (if any). _Note: the previously set item (if any) is **not** deleted._                                | Unset the list of related items (if any). _Note: the previously set items (if any) are **not** deleted._                                             |
+| Nested Mutation | to-single relationship                                                                                                        | to-many relationship                                                                                                                                      |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `create`        | Create a new item, and set it as the relation. <br/>_Note: the previously set item (if any) is **not** deleted._              | Create 1 or more new items, and append them to the list of related items.                                                                                 |
+| `connect`       | Filter for an item, and set it as the relation. <br/>_Note: the previously set item (if any) is **not** deleted._             | Filter for one or more items, and append them to the list of related items.                                                                               |
+| `disconnect`    | Unset the relation (if any) if it matches the given filter. <br/>_Note: the previously set item (if any) is **not** deleted._ | Filter for one or more items, and unset them from the list of related items (if any). <br/>_Note: the previously set items (if any) are **not** deleted._ |
+| `disconnectAll` | Unset the relation (if any). <br/>_Note: the previously set item (if any) is **not** deleted._                                | Unset the list of related items (if any). <br/>_Note: the previously set items (if any) are **not** deleted._                                             |
 
 ### Order of execution
 

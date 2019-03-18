@@ -17,8 +17,8 @@ KeystoneJS is a platform which takes a user defined schema and builds a server w
 
 This project is currently very much in the `alpha` phase of development.
 There are known bugs, missing features, and limited documentation.
-APIs have not been finalised and may change with each release (although semver will always be respected when this happens).
-If you use the knex adapter, KeystoneJS _will_ delete your database every time you restart your application.
+APIs have not been finalised and may change with each release (although SemVer will always be respected when this happens).
+If you use the Knex adapter, KeystoneJS _will_ delete your database every time you restart your application.
 
 ## Getting Started
 
@@ -275,7 +275,7 @@ All source code should be formatted with [Prettier](https://github.com/prettier/
 Code is not automatically formatted in commit hooks to avoid unexpected behaviour,
 so we recommended using an editor plugin to format your code as you work.
 You can also run `bolt format` to prettier all the things.
-The `lint` script will validate source code with both eslint and prettier.
+The `lint` script will validate source code with both ESLint and prettier.
 
 ### Setup
 
@@ -339,8 +339,7 @@ To see test coverage of the files touched by the unit tests, run:
 bolt jest --coverage
 ```
 
-To see test coverage of the entire mono-repo, including files which have zero test coverage,
-use the special script:
+To see test coverage of the entire monorepo, including files which have zero test coverage, use the special script:
 
 ```sh
 bolt coverage

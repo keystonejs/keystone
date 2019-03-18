@@ -22,7 +22,7 @@ Tutorials are **learning oriented** documents.
 - Getting started
 - Inspiring confidence
 - Repeatability
-- Immediate sense of achievemnt
+- Immediate sense of achievement
 - Concreteness, not abstraction
 - Minimum necessary explanation
 - No distractions

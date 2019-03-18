@@ -1,5 +1,31 @@
 # @keystone-alpha/admin-ui
 
+## 2.0.0
+
+- [major][dcb93771](https://github.com/keystonejs/keystone-5/commit/dcb93771):
+
+  - Put field type views onto field controllers
+
+- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+
+  - Update minor-level dependencies
+
+- [patch][3a775092](https://github.com/keystonejs/keystone-5/commit/3a775092):
+
+  - Update dependencies
+
+- [patch][619b17c2](https://github.com/keystonejs/keystone-5/commit/619b17c2):
+
+  - Reformat code using latest version of Prettier (1.16.4)
+
+- [patch][d9a1be91](https://github.com/keystonejs/keystone-5/commit/d9a1be91):
+
+  - Update dependencies
+
+- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+
+  - Update patch-level dependencies
+
 ## 1.1.0
 
 - [minor][91557b24](https://github.com/keystonejs/keystone-5/commit/91557b24):

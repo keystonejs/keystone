@@ -8,7 +8,7 @@ title: Database Adapter - Knex
 ** WARNING: This adapter is under active development and is not production ready. It _will_ drop your entire database every time you connect! **
 
 The [Knex](https://knexjs.org/#changelog) adapter is a general purpose adapter which can be used to connect to a range of different database backends.
-At present, the only fully tested backend is `Postgres`, however knex gives the potential for `MSSQL`, `MySQL`, `MariaDB`, `SQLite3`, `Oracle`, and `Amazon Redshift` to be supported.
+At present, the only fully tested backend is `Postgres`, however Knex gives the potential for `MSSQL`, `MySQL`, `MariaDB`, `SQLite3`, `Oracle`, and `Amazon Redshift` to be supported.
 
 ## Setting Up Your Database
 
@@ -50,7 +50,7 @@ keystone.connect(uri, {
 
 _**Default:**_ `'postgres://keystone5:k3yst0n3@127.0.0.1:5432/ks5_dev'`
 
-Either a connection string, or a connection object, as accepted by knex.
+Either a connection string, or a connection object, as accepted by Knex.
 See [knex docs](https://knexjs.org/#Installation-client) for more details.
 If the environment variable `KNEX_URI` is set, its value will be used as the default.
 
@@ -68,8 +68,8 @@ All keystone tables are grouped within a schema. This value should match the nam
 
 ### `knexOptions`
 
-Any extra options provided will be passed through to the knex configuration function. See the [Knex docs](https://knexjs.org/#Installation-client) for possible values.
+Any extra options provided will be passed through to the Knex configuration function. See the [Knex docs](https://knexjs.org/#Installation-client) for possible values.
 
 ## Debugging
 
-To log all knex queries, run the server with the environment variable `DEBUG=knex:query`.
+To log all Knex queries, run the server with the environment variable `DEBUG=knex:query`.

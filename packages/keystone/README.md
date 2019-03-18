@@ -11,8 +11,7 @@ title: Keystone
 
 Allows programatically creating a batch of items described as JSON objects.
 
-This method's primary use is indended for migration scripts, or initial seeding
-of databases.
+This method's primary use is intended for migration scripts, or initial seeding of databases.
 
 #### `items`
 
@@ -156,7 +155,7 @@ keystone.createItems({
 });
 ```
 
-Will match all users whos name starts with `'J'`, skipping the first two matches,
+Will match all users whose name starts with `'J'`, skipping the first two matches,
 ultimately matching against `'John'`.
 
 #### Errors
