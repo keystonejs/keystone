@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/drawer",
   "description": "Drawer Portal UI as used in @keystone-alpha Admin UI.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/drawer.cjs.js",
@@ -15,9 +15,9 @@
   },
   "dependencies": {
     "@arch-ui/color-utils": "^0.0.1",
-    "@arch-ui/modal-utils": "^0.0.2",
+    "@arch-ui/modal-utils": "^0.0.3",
     "@arch-ui/theme": "^0.0.2",
-    "@arch-ui/typography": "^0.0.2",
+    "@arch-ui/typography": "^0.0.3",
     "@babel/runtime": "^7.3.4",
     "@emotion/core": "^10.0.9",
     "@emotion/styled": "^10.0.9",

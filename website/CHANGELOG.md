@@ -1,5 +1,34 @@
 # @keystone-alpha/website
 
+## 1.0.2
+
+- [patch][60c13d0d](https://github.com/keystonejs/keystone-5/commit/60c13d0d):
+
+  - Internal code changes
+
+- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+
+  - Update minor-level dependencies
+
+- [patch][3a775092](https://github.com/keystonejs/keystone-5/commit/3a775092):
+
+  - Update dependencies
+
+- [patch][619b17c2](https://github.com/keystonejs/keystone-5/commit/619b17c2):
+
+  - Reformat code using latest version of Prettier (1.16.4)
+
+- [patch][233dd5a1](https://github.com/keystonejs/keystone-5/commit/233dd5a1):
+
+  - Adding trailing slash to quick-start main navigation link to appropriately trigger the active state in the sidebar.
+
+- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+
+  - Update patch-level dependencies
+
+- Updated dependencies [d9a1be91](https://github.com/keystonejs/keystone-5/commit/d9a1be91):
+  - @arch-ui/select@0.0.3
+
 ## 1.0.1
 
 - [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):

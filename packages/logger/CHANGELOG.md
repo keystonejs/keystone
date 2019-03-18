@@ -1,5 +1,15 @@
 # @keystone-alpha/logger
 
+## 1.0.2
+
+- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+
+  - Update minor-level dependencies
+
+- [patch][3a775092](https://github.com/keystonejs/keystone-5/commit/3a775092):
+
+  - Update dependencies
+
 ## 1.0.1
 
 - [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):

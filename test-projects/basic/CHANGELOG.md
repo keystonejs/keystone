@@ -1,5 +1,28 @@
 # @keystone-alpha/cypress-project-basic
 
+## 1.0.2
+
+- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+
+  - Update minor-level dependencies
+
+- [patch][3a775092](https://github.com/keystonejs/keystone-5/commit/3a775092):
+
+  - Update dependencies
+
+- [patch][d9a1be91](https://github.com/keystonejs/keystone-5/commit/d9a1be91):
+
+  - Update dependencies
+
+- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+
+  - Update patch-level dependencies
+
+- Updated dependencies [dcb93771](https://github.com/keystonejs/keystone-5/commit/dcb93771):
+  - @keystone-alpha/keystone@1.0.2
+  - @keystone-alpha/admin-ui@2.0.0
+  - @keystone-alpha/fields@2.0.0
+
 ## 1.0.1
 
 - [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
