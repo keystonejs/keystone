@@ -34,7 +34,7 @@ On the second step, you will see a screen such as:
 
 Ignore the `npx apollo service:push` command for now,
 we'll need to upload the schema a slightly different way to account for any
-[Access Control](./access-control.md) you may have setup.
+[Access Control](../access-control.md) you may have setup.
 
 #### Config
 
@@ -112,7 +112,7 @@ Now we can push our generated schema to Apollo Engine with the command:
 npx apollo service:push
 ```
 
-_(Note: For performance and securiry reasons,
+_(Note: For performance and security reasons,
 you may wish to add `apollo` to your devDependencies,
 and add the command above to your `package.json` without the `npx` prefix)_
 

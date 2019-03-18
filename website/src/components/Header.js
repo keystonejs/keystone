@@ -159,7 +159,7 @@ const NAV_LINKS = [
   },
   {
     name: 'Discussions',
-    url: '/discussions/',
+    url: '/discussions/documentation',
   },
   {
     name: 'Packages',

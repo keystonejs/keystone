@@ -93,7 +93,7 @@ class CustomFieldType extends Field {
 }
 ```
 
-## Hook Excecution Order
+## Hook Execution Order
 
 The hooks are invoked in a specific order during a mutation operation.
 
@@ -133,3 +133,7 @@ Which [Field](#field-hooks) & [Field Type](#field-type-hooks) hooks are executed
 - `afterDelete`: Called on all fields.
 
 ## Error Handling
+
+```DOCS_TODO
+TODO
+```

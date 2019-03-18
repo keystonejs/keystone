@@ -12,7 +12,7 @@ _Note on terminology_:
 - _Access Control_ refers to the specific actions an authenticated or anonymous
   user can take. Often referred to as _authorization_ elsewhere.
   The specifics of how this is done is outside the scope of this document.
-  See [Access Control](./access-control.md) for more.
+  See [Access Control](../access-control.md) for more.
 
 ## Admin UI
 
@@ -20,7 +20,7 @@ Username / Password authentication can be enabled on the Admin UI.
 
 > NOTE: Admin Authentication will only restrict access to the Admin _UI_.
 > To also restrict access to the _API_,
-> you must setup [Access Control](./access-control.md) config.
+> you must setup [Access Control](../access-control.md) config.
 
 First, setup [a `PasswordAuthStrategy` instance](#passwordauthstrategy).
 
@@ -49,4 +49,4 @@ authentication against the UI.
 ## Strategies
 
 Auth strategies are
-[documented in the core package](../packages/core/auth/index.md).
+[documented in the keystone package](../../packages/keystone/auth/README.md).

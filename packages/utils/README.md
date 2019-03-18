@@ -5,7 +5,7 @@ title: Utilities
 
 # Utilities
 
-This package is an internal Keystone package which contains various helper functions which are used throughout the mono-repo.
+This package is an internal Keystone package which contains various helper functions which are used throughout the monorepo.
 
 ## Installation
 
