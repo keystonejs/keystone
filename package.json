@@ -144,7 +144,7 @@
     "pify": "^4.0.1",
     "pino": "5.0.0-rc.4",
     "pluralize": "^7.0.0",
-    "preconstruct": "^0.0.48",
+    "preconstruct": "^0.0.49",
     "pretty-proptypes": "^0.5.0",
     "prism-react-renderer": "^0.1.5",
     "prop-types": "^15.6.1",
