@@ -1,0 +1,15 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/demo-project-blog", "type": "patch" },
+    { "name": "@keystone-alpha/adapter-knex", "type": "patch" },
+    { "name": "@keystone-alpha/admin-ui", "type": "patch" },
+    { "name": "@arch-ui/day-picker", "type": "patch" },
+    { "name": "@keystone-alpha/fields", "type": "patch" },
+    { "name": "@keystone-alpha/logger", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-access-control", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-basic", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-login", "type": "patch" },
+    { "name": "@keystone-alpha/website", "type": "patch" }
+  ],
+  "dependents": []
+}
