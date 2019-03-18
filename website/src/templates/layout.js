@@ -5,7 +5,8 @@ import { jsx, Global } from '@emotion/core';
 import { borderRadius, colors, globalStyles, gridSize } from '@arch-ui/theme';
 import throttle from 'lodash.throttle';
 
-import { Container, Footer, Header, Sidebar, Search } from '../components';
+import { Footer, Header, Sidebar, Search } from '../components';
+import { Container, CONTAINER_GUTTERS } from '../components/Container';
 import { media } from '../utils/media';
 import { useDimensions } from '../utils/hooks';
 
@@ -184,11 +185,16 @@ const Main = props => (
         padding: gridSize * 2,
         overflowX: 'auto',
         tabSize: 2,
-        width: '100%',
         WebkitOverflowScrolling: 'touch',
 
+        // our snippets seem to have an extra line...
         '.token-line:last-of-type': {
-          display: 'none', // our snippets seem to have an extra line...
+          display: 'none',
+        },
+
+        [media.sm]: {
+          marginLeft: -CONTAINER_GUTTERS[0],
+          marginRight: -CONTAINER_GUTTERS[0],
         },
       },
 

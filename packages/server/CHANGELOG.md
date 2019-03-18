@@ -1,5 +1,15 @@
 # @keystone-alpha/server
 
+## 1.2.0
+
+- [minor][74e0363](https://github.com/keystonejs/keystone-5/commit/74e0363):
+
+  - Reinstate ability to pass args to keystone.connect
+
+- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+
+  - Update patch-level dependencies
+
 ## 1.1.0
 
 - [minor][91557b24](https://github.com/keystonejs/keystone-5/commit/91557b24):

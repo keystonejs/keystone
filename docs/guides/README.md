@@ -7,7 +7,7 @@ title: Introduction
 
 Some guides to help you perform various tasks in the KeystoneJS ecosystem.
 
-- [Access Control](./access-control.md)
+- [Access Control](../access-control.md)
 - [Documentation Style Guide](./doc-style-guide.md)
 - [Hooks](./hooks.md)
 - [Mutation Lifecycle](./mutation-lifecycle.md)

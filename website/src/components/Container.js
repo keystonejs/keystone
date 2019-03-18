@@ -5,6 +5,8 @@ import { jsx } from '@emotion/core';
 import { media } from '../utils/media';
 import { gridSize } from '@arch-ui/theme';
 
+export const CONTAINER_GUTTERS = [gridSize * 2, gridSize * 3, gridSize * 5];
+
 export const Container = props => (
   <div
     css={{
@@ -13,16 +15,16 @@ export const Container = props => (
       marginRight: 'auto',
 
       [media.lg]: {
-        paddingLeft: gridSize * 5,
-        paddingRight: gridSize * 5,
+        paddingLeft: CONTAINER_GUTTERS[2],
+        paddingRight: CONTAINER_GUTTERS[2],
       },
       [media.sm]: {
-        paddingLeft: gridSize * 3,
-        paddingRight: gridSize * 3,
+        paddingLeft: CONTAINER_GUTTERS[1],
+        paddingRight: CONTAINER_GUTTERS[1],
       },
       [media.xs]: {
-        paddingLeft: gridSize * 2,
-        paddingRight: gridSize * 2,
+        paddingLeft: CONTAINER_GUTTERS[0],
+        paddingRight: CONTAINER_GUTTERS[0],
       },
     }}
     {...props}

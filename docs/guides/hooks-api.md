@@ -155,7 +155,7 @@ An API providing programatic access to List functions:
 
 The result of `resolveInput()` should have the same structure as the input (ie;
 the same keys). It is passed to [the next function in the execution
-order]('./hooks.md#hook-excecution-order) as the input data.
+order](../hooks.md#hook-excecution-order) as the input data.
 
 ---
 
@@ -190,7 +190,9 @@ const validateInput = ({
 }
 ```
 
-> TODO: docs
+```DOCS_TODO
+TODO
+```
 
 ---
 
@@ -221,7 +223,9 @@ const validateDelete = ({
 }
 ```
 
-> TODO: docs
+```DOCS_TODO
+TODO
+```
 
 ---
 
@@ -254,7 +258,9 @@ const beforeChange = ({
 }
 ```
 
-> TODO: docs
+```DOCS_TODO
+TODO
+```
 
 ---
 
@@ -287,7 +293,9 @@ const afterChange = ({
 }
 ```
 
-> TODO: docs
+```DOCS_TODO
+TODO
+```
 
 ---
 
@@ -316,7 +324,9 @@ const beforeDelete = ({
 }
 ```
 
-> TODO: docs
+```DOCS_TODO
+TODO
+```
 
 ---
 
@@ -345,4 +355,6 @@ const afterDelete = ({
 }
 ```
 
-> TODO: docs
+```DOCS_TODO
+TODO
+```
