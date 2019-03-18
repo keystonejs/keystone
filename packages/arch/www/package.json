@@ -13,7 +13,7 @@
     "gatsby-source-filesystem": "^2.0.24",
     "gatsby-transformer-remark": "^2.3.2",
     "prismjs": "^1.15.0",
-    "prop-types": "^15.6.2",
+    "prop-types": "^15.7.2",
     "react": "^16.6.0",
     "react-helmet": "^5.2.0",
     "rehype-react": "^3.0.3"
