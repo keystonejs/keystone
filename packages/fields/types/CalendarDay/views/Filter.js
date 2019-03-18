@@ -1,8 +1,8 @@
 // @flow
 
 import React, { Component, type Ref } from 'react';
-import { parse, format } from 'date-fns';
-import { DayPicker } from '@arch-ui/day-picker';
+import { format } from 'date-fns';
+import { TextDayPicker } from '@arch-ui/day-picker';
 
 const FORMAT = 'YYYY-MM-DD';
 
@@ -10,7 +10,7 @@ type Props = {
   field: Object,
   filter: Object,
   innerRef: Ref<*>,
-  onChange: Event => void,
+  onChange: string => void,
 };
 
 type State = {
@@ -23,27 +23,20 @@ export default class CalendarDayFilterView extends Component<Props, State> {
     this.state = { value: format(new Date(), FORMAT) };
   }
 
-  handleSelectedChange = (day: Date) => {
+  handleSelectedChange = (value: string | null) => {
     const { onChange } = this.props;
-    const value = format(day, FORMAT);
+    if (value === null) {
+      value = format(new Date(), FORMAT);
+    }
     onChange(value);
     this.setState({ value });
   };
 
   render() {
-    const { filter, field } = this.props;
+    const { filter } = this.props;
 
     if (!filter) return null;
 
-    return (
-      <DayPicker
-        startCurrentDateAt={parse(this.state.value)}
-        selectedDate={parse(this.state.value)}
-        onSelectedChange={this.handleSelectedChange}
-        yearRangeFrom={field.config.yearRangeFrom}
-        yearRangeTo={field.config.yearRangeTo}
-        yearPickerType={field.config.yearPickerType}
-      />
-    );
+    return <TextDayPicker date={this.state.value} onChange={this.handleSelectedChange} />;
   }
 }
