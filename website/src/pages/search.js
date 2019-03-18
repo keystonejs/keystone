@@ -1,22 +1,26 @@
+/** @jsx jsx */
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'gatsby';
+import debounce from 'lodash.debounce';
 import { jsx, Global } from '@emotion/core';
 import { Input } from '@arch-ui/input';
 import { Location } from '@reach/router';
-import debounce from 'lodash.debounce';
-
-/** @jsx jsx */
-
 import { colors } from '@arch-ui/theme';
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import { Header } from '../components';
 import { getResults } from '../utils/search';
 
-const SEARCH_DEBOUNCE = 200;
-
 const Search = ({ location, navigate }) => {
-  let [input, setInput] = useState(new URL(location.href).searchParams.get('q'));
+  let [input, setInput] = useState();
+  let [defaultInputInjected, setDefaultInputInjected] = useState(false);
+  useEffect(() => {
+    if (!defaultInputInjected) {
+      setDefaultInputInjected(true);
+      setInput(new URL(location.href).searchParams.get('q'));
+    }
+  }, setInput);
+
   let [query, setQuery] = useState(input);
   let [results, setResults] = useState({ results: [] });
 
@@ -26,27 +30,24 @@ const Search = ({ location, navigate }) => {
       navigate(location.pathname + '?q=' + encodeURIComponent(value), {
         replace: true,
       });
-    }, SEARCH_DEBOUNCE),
+    }, 200),
     [setQuery]
   );
 
-  useEffect(
-    () => {
-      let cancelled = false;
+  useEffect(() => {
+    let cancelled = false;
 
-      getResults(query).then(queryResults => {
-        if (cancelled) {
-          return;
-        }
-        setResults(queryResults);
-      });
+    getResults(query).then(queryResults => {
+      if (cancelled) {
+        return;
+      }
+      setResults(queryResults);
+    });
 
-      return () => {
-        cancelled = true;
-      };
-    },
-    [query]
-  );
+    return () => {
+      cancelled = true;
+    };
+  }, [query]);
 
   return (
     <React.Fragment>
@@ -116,7 +117,7 @@ const Search = ({ location, navigate }) => {
                     >
                       {result.title}
                     </Link>
-                    <small style={{ color: 'grey' }}>({result.workspace})</small>
+                    <small style={{ color: 'grey' }}>({result.navGroup})</small>
                   </div>
                   <p css={{ marginBottom: 0 }}>{result.preview}</p>
                 </li>
@@ -124,12 +125,17 @@ const Search = ({ location, navigate }) => {
             </ul>
           </div>
         </div>
-        <Footer />
       </div>
     </React.Fragment>
   );
 };
 
-const SearchPage = () => <Location>{props => <Search {...props} />}</Location>;
+const SearchPage = () => (
+  <Location>
+    {props => {
+      return <Search {...props} />;
+    }}
+  </Location>
+);
 
 export default SearchPage;

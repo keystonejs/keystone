@@ -1,19 +1,25 @@
 // @flow
 
-import React, { cloneElement, Component, Fragment, type ComponentType, type Element } from 'react';
-import NodeResolver from 'react-node-resolver';
+import React, { Component, Fragment, type ComponentType, type Node, memo } from 'react';
 import ScrollLock from 'react-scrolllock';
 import { TransitionProvider } from './transitions';
 
 type GenericFn = any => mixed;
 export type CloseType = (event: Event) => void;
+type TargetArg = {
+  isActive: boolean,
+  onClick?: Function,
+  onContextMenu?: Function,
+  ref: Function,
+};
+
 export type ModalHandlerProps = {
   close: CloseType,
   defaultIsOpen: boolean,
   mode: 'click' | 'contextmenu',
   onClose: GenericFn,
   onOpen: GenericFn,
-  target: Element<*>,
+  target: TargetArg => Node,
 };
 type State = { isOpen: boolean, clientX: number, clientY: number };
 type Config = { Transition: (*) => * };
@@ -22,6 +28,13 @@ function getDisplayName(C) {
   return `withModalHandlers(${C.displayName || C.name || 'Component'})`;
 }
 const NOOP = () => {};
+
+let Target = memo(function Target({ isOpen, mode, target, targetRef, open, toggle }) {
+  const cloneProps: TargetArg = { isActive: isOpen, ref: targetRef };
+  if (mode === 'click') cloneProps.onClick = toggle;
+  if (mode === 'contextmenu') cloneProps.onContextMenu = open;
+  return target(cloneProps);
+});
 
 export default function withModalHandlers(
   WrappedComponent: ComponentType<*>,
@@ -105,15 +118,16 @@ export default function withModalHandlers(
       const { mode, onClose, onOpen, target } = this.props;
       const { clientX, clientY, isOpen } = this.state;
 
-      const cloneProps = {};
-      if (isOpen) cloneProps.isActive = true;
-      if (mode === 'click') cloneProps.onClick = this.toggle;
-      if (mode === 'contextmenu') cloneProps.onContextMenu = this.open;
-
-      // TODO: prefer functional children that pass refs + snapshot to the target node
       return (
         <Fragment>
-          <NodeResolver innerRef={this.getTarget}>{cloneElement(target, cloneProps)}</NodeResolver>
+          <Target
+            targetRef={this.getTarget}
+            target={target}
+            mode={mode}
+            isOpen={isOpen}
+            toggle={this.toggle}
+            open={this.open}
+          />
           {isOpen ? <ScrollLock /> : null}
           <TransitionProvider isOpen={isOpen} onEntered={onOpen} onExited={onClose}>
             {transitionState => (

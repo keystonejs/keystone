@@ -11,25 +11,24 @@ async function getPackagePlugins() {
   const workspaces = await bolt.getWorkspaces({ cwd: rootDir });
 
   return [
+    ...['quick-start', 'tutorials', 'guides', 'discussions'].map(name => ({
+      resolve: 'gatsby-source-filesystem',
+      options: { name, path: `${rootDir}/docs/${name}/` },
+    })),
     ...workspaces
-      .map(({ dir, config }) => ({ dir, name: config.name }))
+      .filter(({ config }) => !config.private)
       .filter(({ dir }) => fs.existsSync(dir))
-      .map(({ name, dir }) => ({
+      .filter(({ dir }) => !dir.includes('arch'))
+      .map(({ dir, config }) => ({
         resolve: 'gatsby-source-filesystem',
         options: {
           // This `name` will show up as `sourceInstanceName` on a node's "parent"
           // See `gatsby-node.js` for where it's used.
-          name,
-          path: `${dir}/`,
+          name: config.name,
+          path: `${dir}`,
+          ignore: [`**/**/CHANGELOG.md`],
         },
       })),
-    {
-      resolve: 'gatsby-source-filesystem',
-      options: {
-        name: 'docs',
-        path: `${rootDir}/docs`,
-      },
-    },
   ];
 }
 
@@ -38,10 +37,6 @@ async function getGatsbyConfig() {
   return {
     plugins: [
       ...packageFilesPlugins,
-      {
-        resolve: 'gatsby-source-filesystem',
-        options: { name: 'tutorials', path: `${__dirname}/tutorials/` },
-      },
       `gatsby-plugin-sharp`,
       {
         resolve: `gatsby-mdx`,
@@ -59,7 +54,7 @@ async function getGatsbyConfig() {
             {
               resolve: 'gatsby-remark-images',
               options: {
-                maxWidth: 1035,
+                maxWidth: 860,
                 sizeByPixelDensity: true,
               },
             },
@@ -78,7 +73,7 @@ async function getGatsbyConfig() {
             { name: 'content' },
             { name: 'preview', store: true },
             { name: 'slug', store: true },
-            { name: 'workspace', store: true },
+            { name: 'navGroup', store: true },
             { name: 'heading', store: true, attributes: { boost: 20 } },
           ],
           // How to resolve each field's value for a supported node type
@@ -102,12 +97,19 @@ async function getGatsbyConfig() {
                 return prune(excerptNodes.join(' '), 280, '…');
               },
               slug: node => node.fields.slug,
-              workspace: node => node.fields.workspace,
+              navGroup: node => node.fields.navGroup,
               heading: node => node.fields.heading,
             },
           },
           //custom index file name, default is search_index.json
           filename: 'search_index.json',
+        },
+      },
+      {
+        resolve: `gatsby-plugin-google-analytics`,
+        options: {
+          trackingId: 'UA-43970386-1',
+          head: true,
         },
       },
     ],

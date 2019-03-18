@@ -1,4 +1,4 @@
-const { getType, pick, defaultObj } = require('@voussoir/utils');
+const { getType, pick, defaultObj } = require('@keystone-alpha/utils');
 
 const validateGranularConfigTypes = (longHandAccess, validationError) => {
   const errors = Object.entries(longHandAccess)

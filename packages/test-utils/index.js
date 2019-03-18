@@ -1,10 +1,10 @@
 const pFinally = require('p-finally');
 const supertest = require('supertest-light');
 const extractStack = require('extract-stack');
-const { Keystone } = require('@voussoir/core');
-const { WebServer } = require('@voussoir/server');
-const { MongooseAdapter } = require('@voussoir/adapter-mongoose');
-const { KnexAdapter } = require('@voussoir/adapter-knex');
+const { Keystone } = require('@keystone-alpha/keystone');
+const { WebServer } = require('@keystone-alpha/server');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
 
 function setupServer({ name, adapterName, createLists = () => {} }) {
@@ -124,10 +124,7 @@ function keystoneMongoTest(setupKeystoneFn, testFn) {
     const server = setupKeystoneFn('mongoose');
     const { mongoUri, dbName } = await getMongoMemoryServerConfig();
 
-    await server.keystone.connect(
-      mongoUri,
-      { dbName }
-    );
+    await server.keystone.connect(mongoUri, { dbName });
 
     return pFinally(
       testFn({
@@ -168,8 +165,42 @@ function multiAdapterRunners() {
   ];
 }
 
+const sorted = (arr, keyFn) => {
+  arr = [...arr];
+  arr.sort((a, b) => {
+    a = keyFn(a);
+    b = keyFn(b);
+    if (a < b) {
+      return -1;
+    }
+    if (a > b) {
+      return 1;
+    }
+    return 0;
+  });
+  return arr;
+};
+
+const runQuery = (server, snippet) => {
+  return graphqlRequest({
+    server,
+    query: `query { ${snippet} }`,
+  }).then(res => res.body.data);
+};
+
+const matchFilter = (server, gqlArgs, fields, target, sortkey) => {
+  gqlArgs = gqlArgs ? `(${gqlArgs})` : '';
+  const snippet = `allTests ${gqlArgs} ${fields}`;
+  return runQuery(server, snippet).then(data => {
+    const value = sortkey ? sorted(data.allTests || [], i => i[sortkey]) : data.allTests;
+    expect(value).toEqual(target);
+  });
+};
+
 module.exports = {
   setupServer,
   multiAdapterRunners,
   graphqlRequest,
+  matchFilter,
+  runQuery,
 };

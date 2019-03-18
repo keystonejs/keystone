@@ -1,15 +1,22 @@
 const mongoose = require('mongoose');
 const inflection = require('inflection');
 const pSettle = require('p-settle');
-const { escapeRegExp, pick, getType, mapKeys, mapKeyNames, identity } = require('@voussoir/utils');
+const {
+  escapeRegExp,
+  pick,
+  getType,
+  mapKeys,
+  mapKeyNames,
+  identity,
+} = require('@keystone-alpha/utils');
 
 const {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
-} = require('@voussoir/core/adapters');
-const joinBuilder = require('@voussoir/mongo-join-builder');
-const logger = require('@voussoir/logger')('mongoose');
+} = require('@keystone-alpha/keystone/adapters');
+const joinBuilder = require('@keystone-alpha/mongo-join-builder');
+const logger = require('@keystone-alpha/logger')('mongoose');
 
 const simpleTokenizer = require('./tokenizers/simple');
 const relationshipTokenizer = require('./tokenizers/relationship');
@@ -98,7 +105,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
       // forcing the name to be the dasherized of the Keystone name.
       // For the case where both are set, the expected behaviour is for it to be
       // overwritten.
-      { useNewUrlParser: true, ...adapterConnectOptions, dbName }
+      { useNewUrlParser: true, useFindAndModify: false, ...adapterConnectOptions, dbName }
     );
   }
   async postConnect() {

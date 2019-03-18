@@ -1,12 +1,13 @@
 {
-  "name": "@voussoir/access-control",
-  "version": "0.4.1",
-  "author": "Jess Telford",
+  "name": "@keystone-alpha/access-control",
+  "description": "KeystoneJS Access Control parsing and validating utilities.",
+  "version": "1.0.1",
+  "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/utils": "^1.0.0"
+    "@keystone-alpha/utils": "^1.0.1"
   }
 }

@@ -1,19 +1,19 @@
 {
-  "name": "@voussoir/test-utils",
-  "version": "1.0.0",
-  "author": "Jed Watson",
+  "name": "@keystone-alpha/test-utils",
+  "description": "Common utilities used while testing @keystone-alpha/* packages.",
+  "version": "1.1.1",
+  "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/adapter-knex": "^0.0.2",
-    "@voussoir/adapter-mongoose": "^2.0.0",
-    "@voussoir/core": "^2.0.0",
-    "@voussoir/server": "^1.0.0",
-    "@voussoir/utils": "^1.0.0",
+    "@keystone-alpha/adapter-knex": "^1.0.2",
+    "@keystone-alpha/adapter-mongoose": "^1.0.2",
+    "@keystone-alpha/keystone": "^1.0.2",
+    "@keystone-alpha/server": "^1.2.0",
     "extract-stack": "^1.0.0",
-    "mongodb-memory-server": "^2.7.4",
+    "mongodb-memory-server": "^3.1.2",
     "p-finally": "^1.0.0",
     "supertest-light": "^1.0.2"
   }

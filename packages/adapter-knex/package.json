@@ -1,16 +1,17 @@
 {
-  "name": "@voussoir/adapter-knex",
-  "version": "0.0.2",
-  "author": "Tim Leslie",
+  "name": "@keystone-alpha/adapter-knex",
+  "description": "KeystoneJS Knex Database Adapter",
+  "version": "1.0.2",
+  "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/core": "^2.0.0",
-    "@voussoir/utils": "^1.0.0",
+    "@keystone-alpha/keystone": "^1.0.2",
+    "@keystone-alpha/utils": "^1.0.1",
     "knex": "^0.16.3",
     "p-settle": "^2.1.0",
-    "pg": "^7.8.0"
+    "pg": "^7.9.0"
   }
 }

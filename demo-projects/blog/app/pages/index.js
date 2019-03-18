@@ -1,11 +1,7 @@
 import Link from 'next/link';
 
-import ApolloClient from 'apollo-client';
 import gql from 'graphql-tag';
-import { ApolloProvider, Query } from 'react-apollo';
-import { HttpLink } from 'apollo-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import fetch from 'node-fetch';
+import { Query } from 'react-apollo';
 
 import { jsx } from '@emotion/core';
 import { format } from 'date-fns';
@@ -14,11 +10,6 @@ import Layout from '../templates/layout';
 import Header from '../components/header';
 
 /** @jsx jsx */
-
-const client = new ApolloClient({
-  link: new HttpLink({ uri: '/admin/api', fetch: fetch }),
-  cache: new InMemoryCache(),
-});
 
 const Post = ({ post }) => {
   return (
@@ -33,10 +24,7 @@ const Post = ({ post }) => {
           overflow: 'hidden',
         }}
       >
-        <img
-          src={post.image ? post.image.publicUrl : 'https://picsum.photos/900/200/?random'}
-          css={{ width: '100%' }}
-        />
+        {post.image ? <img src={post.image.publicUrl} css={{ width: '100%' }} /> : null}
         <div css={{ padding: '1em' }}>
           <h3 css={{ marginTop: 0 }}>{post.title}</h3>
           <p>{post.body}</p>
@@ -53,52 +41,50 @@ const Post = ({ post }) => {
 };
 
 export default () => (
-  <ApolloProvider client={client}>
-    <Layout>
-      <Header />
-      <section css={{ margin: '48px 0' }}>
-        <h2>About</h2>
-        <p>
-          This blog was created in KeystoneJS, a fantastic open source framework for developing
-          database-driven websites, applications and APIs in Node.js and GraphQL.
-        </p>
-      </section>
+  <Layout>
+    <Header />
+    <section css={{ margin: '48px 0' }}>
+      <h2>About</h2>
+      <p>
+        This blog was created in KeystoneJS, a fantastic open source framework for developing
+        database-driven websites, applications and APIs in Node.js and GraphQL.
+      </p>
+    </section>
 
-      <section css={{ margin: '48px 0' }}>
-        <h2>Latest Posts</h2>
-        <Query
-          query={gql`
-            {
-              allPosts {
-                title
-                id
-                body
-                posted
-                image {
-                  publicUrl
-                }
-                author {
-                  name
-                }
+    <section css={{ margin: '48px 0' }}>
+      <h2>Latest Posts</h2>
+      <Query
+        query={gql`
+          {
+            allPosts {
+              title
+              id
+              body
+              posted
+              image {
+                publicUrl
+              }
+              author {
+                name
               }
             }
-          `}
-        >
-          {({ data, loading, error }) => {
-            if (loading) return <p>loading...</p>;
-            if (error) return <p>Error!</p>;
-            return (
-              <div>
-                {data.allPosts.length ? (
-                  data.allPosts.map(post => <Post post={post} key={post.id} />)
-                ) : (
-                  <p>No posts to display</p>
-                )}
-              </div>
-            );
-          }}
-        </Query>
-      </section>
-    </Layout>
-  </ApolloProvider>
+          }
+        `}
+      >
+        {({ data, loading, error }) => {
+          if (loading) return <p>loading...</p>;
+          if (error) return <p>Error!</p>;
+          return (
+            <div>
+              {data.allPosts.length ? (
+                data.allPosts.map(post => <Post post={post} key={post.id} />)
+              ) : (
+                <p>No posts to display</p>
+              )}
+            </div>
+          );
+        }}
+      </Query>
+    </section>
+  </Layout>
 );

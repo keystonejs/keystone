@@ -1,4 +1,8 @@
 {
     "name": "gatsby-remark-fix-links",
-    "version": "0.0.1"
-}
+    "description": "Gatsby plugin for fixing links generated with remark",
+    "version": "0.0.1",
+    "dependencies": {
+      "unist-util-visit": "^1.4.0"
+    }
+  }

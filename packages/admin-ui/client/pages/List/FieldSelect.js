@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Options } from '@arch-ui/options';
-import { arrayToObject } from '@voussoir/utils';
+import { arrayToObject } from '@keystone-alpha/utils';
 
 function isOptionSelected(opt, selected) {
   return Boolean(selected.filter(x => x.path === opt.path).length);

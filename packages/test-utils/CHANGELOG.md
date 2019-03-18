@@ -1,4 +1,55 @@
+# @keystone-alpha/test-utils
+
+## 1.1.1
+
+- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+
+  - Update minor-level dependencies
+
+- [patch][619b17c2](https://github.com/keystonejs/keystone-5/commit/619b17c2):
+
+  - Reformat code using latest version of Prettier (1.16.4)
+
+## 1.1.0
+
+- [minor][c0e64c01](https://github.com/keystonejs/keystone-5/commit/c0e64c01):
+
+  - Add `matchFilter` and `runQuery` functions.
+
+- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+
+  - Update the package.json author field to "The Keystone Development Team"
+
+- [patch][9534f98f](https://github.com/keystonejs/keystone-5/commit/9534f98f):
+
+  - Add README.md to package
+
+## 1.0.0
+
+- [major] 8b6734ae:
+
+  - This is the first release of keystone-alpha (previously voussoir).
+    All packages in the `@voussoir` namespace are now available in the `@keystone-alpha` namespace, starting at version `1.0.0`.
+    To upgrade your project you must update any `@voussoir/<foo>` dependencies in `package.json` to point to `@keystone-alpha/<foo>: "^1.0.0"` and update any `require`/`import` statements in your code.
+
 # @voussoir/test-utils
+
+## 1.0.1
+
+- [patch] 6fa810f7:
+
+  - Rename `@voussoir/core` -> `@voussoir/keystone`. This is to free up the
+    `@voussoir/core` package for a different purpose, and make the main import for
+    new Keystone projects be `@voussoir/keystone`. The exports have stayed the
+    same.
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
+- [patch] b155d942:
+
+  - Update mongo/mongoose dependencies
 
 ## 1.0.0
 

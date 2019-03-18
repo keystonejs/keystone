@@ -18,18 +18,15 @@ function getSize() {
 export default function useWindowSize() {
   let [windowSize, setWindowSize] = useState(getSize());
 
-  useEffect(
-    () => {
-      function handleResize() {
-        setWindowSize(getSize());
-      }
-      window.addEventListener('resize', handleResize);
-      return () => {
-        window.removeEventListener('resize', handleResize);
-      };
-    },
-    [setWindowSize]
-  );
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize(getSize());
+    }
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [setWindowSize]);
 
   return windowSize;
 }

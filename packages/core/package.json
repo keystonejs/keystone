@@ -1,27 +1,19 @@
 {
-  "name": "@voussoir/core",
-  "version": "2.1.0",
-  "author": "Jed Watson",
+  "name": "@keystone-alpha/core",
+  "description": "Custom Server plumbing for running a @keystone-alpha instance. See also @keystone-alpha/keystone.",
+  "version": "1.0.1",
+  "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@voussoir/access-control": "^0.4.1",
-    "@voussoir/fields": "^3.0.0",
-    "@voussoir/logger": "^0.2.0",
-    "@voussoir/utils": "^1.0.0",
-    "apollo-errors": "^1.9.0",
-    "fast-memoize": "^2.4.0",
-    "graphql": "^14.0.2",
-    "graphql-tag": "^2.8.0",
-    "graphql-tools": "^4.0.3",
-    "graphql-type-json": "^0.2.1",
-    "oauth-libre": "^0.9.17",
-    "p-settle": "^2.1.0",
-    "p-waterfall": "^1.0.0",
-    "passport": "^0.4.0",
-    "passport-twitter": "^1.0.4",
-    "pluralize": "^7.0.0"
+    "@keystone-alpha/server": "^1.1.0",
+    "endent": "^1.3.0",
+    "lodash.pick": "^4.4.0"
+  },
+  "devDependencies": {
+    "p-is-promise": "^2.0.0",
+    "tmp": "^0.0.33"
   }
 }
