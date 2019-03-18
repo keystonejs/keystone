@@ -45,6 +45,13 @@ describe('CalendarDay Component - Functionality', () => {
     cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2)`).click();
   });
 
+  it('can accept natural language like today', () => {
+    cy.get(calendarDayInputSelector).type('today');
+    cy.get('label:contains("Name")').click();
+
+    cy.get(calendarDayInputSelector).should('have.value', format(new Date(), 'Do MMMM YYYY'));
+  });
+
   it(`can accept natural language like tomorrow`, () => {
     cy.get(calendarDayInputSelector).type('tomorrow');
     cy.get('label:contains("Name")').click();
@@ -84,8 +91,24 @@ describe('DateTime Component - Functionality', () => {
     cy.get(`#ks-list-table tbody > tr:nth-child(1) > td:nth-child(2)`).click();
   });
 
+  it('can accept natural language like today at 4pm', () => {
+    cy.get(dateTimeInputSelector).type('today at 4pm');
+    cy.get('label:contains("Name")').click();
+    let today4pmMoment = moment();
+    today4pmMoment.set('hours', 16);
+    today4pmMoment.set('minutes', 0);
+    today4pmMoment.set('seconds', 0);
+
+    cy.get(dateTimeInputSelector).should(
+      'have.value',
+      today4pmMoment.format('h:mm A Do MMMM YYYY Z')
+    );
+  });
+
   it('can accept natural language like tomorrow at 4pm', () => {
-    cy.get(dateTimeInputSelector).type('tomorrow at 4pm');
+    cy.get(dateTimeInputSelector)
+      .clear()
+      .type('tomorrow at 4pm');
     cy.get('label:contains("Name")').click();
     let tomorrow4pmMoment = moment();
     tomorrow4pmMoment.set('hours', 16);
