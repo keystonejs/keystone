@@ -15,7 +15,7 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
       <div
         css={{
           alignItems: 'center',
-          boxShadow: `0 1px 0 rgba(0, 0, 0, 0.1)`,
+          boxShadow: `0 1px 0 ${colors.N10}`,
           display: 'flex',
           justifyContent: 'space-between',
           paddingBottom: 12,
@@ -45,10 +45,12 @@ const NavItem = ({ as, lgOnly, ...props }) => {
       <Tag
         href="https://github.com/keystonejs/keystone-5"
         css={{
+          alignItems: 'center',
           background: 0,
           border: 0,
           color: colors.N60,
           cursor: 'pointer',
+          display: 'flex',
           outline: 0,
           padding: `${gridSize / 2}px ${gridSize}px`,
           textDecoration: 'none',
@@ -95,6 +97,7 @@ const Nav = ({ toggleMenu }) => (
       ))}
       <NavItem href="https://github.com/keystonejs/keystone-5" title="Opens in new window">
         GitHub
+        <NewWindowIcon />
       </NavItem>
       {toggleMenu && (
         <NavItem
@@ -116,6 +119,26 @@ const Nav = ({ toggleMenu }) => (
     </List>
   </nav>
 );
+const NewWindowIcon = () => (
+  <span css={{ marginLeft: gridSize / 2, opacity: 0.6 }}>
+    <svg x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" className="css-19vhmgv">
+      <path
+        fill="currentColor"
+        d="
+      M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,
+      0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z
+    "
+      />
+      <polygon
+        fill="currentColor"
+        points="
+      45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,
+      14.9 62.8,22.9 71.5,22.9
+      "
+      />
+    </svg>
+  </span>
+);
 
 // ==============================
 // Data
@@ -124,7 +147,7 @@ const Nav = ({ toggleMenu }) => (
 const NAV_LINKS = [
   {
     name: 'Quick Start',
-    url: '/quick-start',
+    url: '/quick-start/',
   },
   {
     name: 'Guides',
@@ -133,6 +156,10 @@ const NAV_LINKS = [
   {
     name: 'Tutorials',
     url: '/tutorials/',
+  },
+  {
+    name: 'Discussions',
+    url: '/discussions/',
   },
   {
     name: 'Packages',

@@ -1,3 +1,8 @@
+---
+section: packages
+title: Logger
+---
+
 # Logger
 
 ## API

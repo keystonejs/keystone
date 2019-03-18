@@ -1,3 +1,8 @@
+---
+section: packages
+title: Keystone
+---
+
 # Keystone
 
 ## `Keystone` class

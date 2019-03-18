@@ -47,7 +47,7 @@ export const Sidebar = () => (
             const intro = navData[navGroup].find(node => node.context.pageTitle === 'README');
             return (
               <div key={navGroup}>
-                <GroupHeading>{navGroup}</GroupHeading>
+                <GroupHeading>{navGroup.replace('-', ' ')}</GroupHeading>
                 <List>
                   {intro && (
                     <ListItem key={intro.path} to={intro.path}>

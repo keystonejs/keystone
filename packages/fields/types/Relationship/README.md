@@ -1,4 +1,9 @@
-# Field Type: `Relationship`
+---
+section: field-types
+title: Relationship
+---
+
+# Relationship
 
 ## Nested Mutations
 
@@ -32,51 +37,12 @@ mutated as part of a mutation on items in the parent list (eg; during a
 
 The available nested mutations:
 
-<table>
-  <tr>
-    <th>Nested Mutation</th>
-    <th>to-single relationship</th>
-    <th>to-many relationship</th>
-  </tr>
-  <tr>
-    <td><code>create</code></td>
-    <td>
-      Create a new item, and set it as the relation.<br />
-      <i>Note: the previously set item (if any) is <b>not</b> deleted.</i>
-    </td>
-    <td>Create 1 or more new items, and append them to the list of related items.</td>
-  </tr>
-  <tr>
-    <td><code>connect</code></td>
-    <td>
-      Filter for an item, and set it as the relation.<br />
-      <i>Note: the previously set item (if any) is <b>not</b> deleted.</i>
-    </td>
-    <td>Filter for one or more items, and append them to the list of related items.</td>
-  </tr>
-  <tr>
-    <td><code>disconnect</code></td>
-    <td>
-      Unset the relation (if any) if it matches the given filter.<br />
-      <i>Note: the previously set item (if any) is <b>not</b> deleted.</i>
-    </td>
-    <td>
-      Filter for one or more items, and unset them from the list of related items (if any).
-      <br /><i>Note: the previously set items (if any) are <b>not</b> deleted.</i>
-    </td>
-  </tr>
-  <tr>
-    <td><code>disconnectAll</code></td>
-    <td>
-      Unset the relation (if any).<br />
-      <i>Note: the previously set item (if any) is <b>not</b> deleted.</i>
-    </td>
-    <td>
-      Unset the list of related items (if any).<br />
-      <i>Note: the previously set items (if any) are <b>not</b> deleted.</i>
-    </td>
-  </tr>
-</table>
+| Nested Mutation | to-single relationship                                                                                                   | to-many relationship                                                                                                                                 |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `create`        | Create a new item, and set it as the relation. _Note: the previously set item (if any) is **not** deleted._              | Create 1 or more new items, and append them to the list of related items.                                                                            |
+| `connect`       | Filter for an item, and set it as the relation. _Note: the previously set item (if any) is **not** deleted._             | Filter for one or more items, and append them to the list of related items.                                                                          |
+| `disconnect`    | Unset the relation (if any) if it matches the given filter. _Note: the previously set item (if any) is **not** deleted._ | Filter for one or more items, and unset them from the list of related items (if any). _Note: the previously set items (if any) are **not** deleted._ |
+| `disconnectAll` | Unset the relation (if any). _Note: the previously set item (if any) is **not** deleted._                                | Unset the list of related items (if any). _Note: the previously set items (if any) are **not** deleted._                                             |
 
 ### Order of execution
 

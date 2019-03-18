@@ -1,5 +1,6 @@
 /** @jsx jsx */
 
+import React from 'react'; // eslint-disable-line no-unused-vars
 import { Link, graphql } from 'gatsby';
 import MDXRenderer from 'gatsby-mdx/mdx-renderer';
 import { MDXProvider } from '@mdx-js/tag';
@@ -27,17 +28,23 @@ export default function Template({
           <StyledLink to="/">Keystone</StyledLink> &gt;{' '}
           <StyledLink to={workspaceSlug}>{workspace}</StyledLink>
         </div> */}
-      <EditButton href={fields.editUrl} target="_blank" title="Edit this page on GitHub">
-        Edit Page
-      </EditButton>
       <MDXProvider components={mdComponents}>
         <MDXRenderer>{code.body}</MDXRenderer>
       </MDXProvider>
+      <EditSection>
+        <p>
+          Have you found a mistake, something that is missing, or could be improved on this page?
+          Please edit the Markdown file on GitHub and submit a PR with your changes.
+        </p>
+        <EditButton href={fields.editUrl} target="_blank" title="Edit this page on GitHub">
+          Edit Page
+        </EditButton>
+      </EditSection>
       <NavWrapper>
         {prev ? (
           <NavButton to={prev.fields.slug}>
             <small>Prev</small>
-            {prev.fields.pageTitle.replace('-', ' ')}
+            <span>{prev.fields.pageTitle.replace('-', ' ')}</span>
           </NavButton>
         ) : (
           <NavPlaceholder />
@@ -45,7 +52,7 @@ export default function Template({
         {next ? (
           <NavButton to={next.fields.slug}>
             <small>Next</small>
-            {next.fields.pageTitle.replace('-', ' ')}
+            <span>{next.fields.pageTitle.replace('-', ' ')}</span>
           </NavButton>
         ) : (
           <NavPlaceholder />
@@ -65,8 +72,8 @@ const Button = ({ as: Tag, ...props }) => (
       border: `1px solid rgba(0, 0, 0, 0.1)`,
       borderBottomColor: `rgba(0, 0, 0, 0.2) !important`,
       borderRadius: borderRadius,
-      color: colors.N60,
-      display: 'block',
+      color: colors.text,
+      display: 'inline-block',
       fontWeight: 500,
       padding: `${gridSize * 0.75}px ${gridSize * 2}px`,
       outline: 'none',
@@ -74,7 +81,7 @@ const Button = ({ as: Tag, ...props }) => (
       ':hover, :focus': {
         backgroundColor: 'white !important',
         borderColor: `rgba(0, 0, 0, 0.15)`,
-        boxShadow: '0 2px 0 rgba(0,0,0,0.05)',
+        boxShadow: '0 2px 1px rgba(0,0,0,0.05)',
         textDecoration: 'none',
       },
       ':active': {
@@ -85,12 +92,23 @@ const Button = ({ as: Tag, ...props }) => (
     {...props}
   />
 );
-const EditButton = props => (
-  <Button
-    as="a"
+
+// Edit
+// ------------------------------
+
+const EditSection = props => (
+  <section
     css={{
-      float: 'right',
-      fontSize: '0.85rem',
+      borderBottom: `1px solid ${colors.N10}`,
+      borderTop: `1px solid ${colors.N10}`,
+      marginBottom: '3rem',
+      marginTop: '3rem',
+      paddingBottom: '3rem',
+      paddingTop: '3rem',
+
+      p: {
+        marginTop: 0,
+      },
 
       [media.sm]: {
         display: 'none',
@@ -99,7 +117,10 @@ const EditButton = props => (
     {...props}
   />
 );
+const EditButton = props => <Button as="a" css={{ fontSize: '0.85rem' }} {...props} />;
 
+// Previous / Next Navigation
+// ------------------------------
 const gutter = gridSize / 2;
 
 const NavWrapper = props => (
@@ -119,6 +140,7 @@ const NavButton = props => (
     as={Link}
     css={{
       flex: 1,
+      lineHeight: 1.4,
       marginLeft: gutter,
       marginRight: gutter,
       textTransform: 'capitalize',
@@ -126,6 +148,13 @@ const NavButton = props => (
       small: {
         color: colors.N60,
         display: 'block',
+        fontSize: '0.85rem',
+        marginTop: gutter,
+      },
+      span: {
+        display: 'block',
+        fontSize: '1.25rem',
+        marginBottom: gutter,
       },
     }}
     {...props}

@@ -1,4 +1,9 @@
-# Field Type: `Text`
+---
+section: field-types
+title: Text
+---
+
+# Text
 
 ```DOCS_TODO
 TODO

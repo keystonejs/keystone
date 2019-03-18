@@ -1,3 +1,8 @@
+---
+section: guides
+title: Access Control
+---
+
 # Access Control
 
 Control who can do what with your GraphQL API.

@@ -20,7 +20,7 @@
     "@emotion/core": "^10.0.9",
     "@emotion/styled": "^10.0.9",
     "react-focus-marshal": "^1.0.1",
-    "react-scrolllock": "^3.0.1"
+    "react-scrolllock": "^4.0.1"
   },
   "module": "dist/confirm.esm.js"
 }

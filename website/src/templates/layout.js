@@ -7,13 +7,14 @@ import throttle from 'lodash.throttle';
 
 import { Container, Footer, Header, Sidebar, Search } from '../components';
 import { media } from '../utils/media';
+import { useDimensions } from '../utils/hooks';
 
 const SIDEBAR_WIDTH = 260;
 
 const Layout = ({ children }) => {
-  const headerRef = useRef(null);
   const [isVisible, setVisible] = useState(false);
   const toggleMenu = bool => () => setVisible(bool);
+  const [headerRef, headerDimensions] = useDimensions();
 
   return (
     <>
@@ -33,14 +34,12 @@ const Layout = ({ children }) => {
       />
       <Header key="global-header" ref={headerRef} toggleMenu={toggleMenu(!isVisible)} />
       <Container>
-        <div css={{ display: 'flex', [media.sm]: { flexDirection: 'column' } }}>
-          <Aside isVisible={isVisible} offsetTarget={headerRef}>
-            <Search />
-            <Sidebar />
-            <Footer />
-          </Aside>
-          <Main>{children}</Main>
-        </div>
+        <Aside isVisible={isVisible} offsetTop={headerDimensions.height} key="sidebar">
+          <Search />
+          <Sidebar />
+          <Footer />
+        </Aside>
+        <Main key="main">{children}</Main>
       </Container>
     </>
   );
@@ -51,15 +50,15 @@ const Layout = ({ children }) => {
 // ==============================
 
 const gutter = gridSize * 4;
+let oldSidebarOffset = 0;
+let oldWindowOffset = 0;
 
-let oldScrollTop = 0;
-
-const Aside = ({ offsetTarget, isVisible, ...props }) => {
+const Aside = ({ offsetTop, isVisible, ...props }) => {
   const asideRef = useRef();
-  const [isStuck, setSticky] = useState(Boolean(offsetTarget));
-  const offsetTop = offsetTarget.current ? offsetTarget.current.offsetHeight : 0;
+  const [isStuck, setSticky] = useState(false);
 
   const handleWindowScroll = () => {
+    oldWindowOffset = window.pageYOffset;
     if (window.pageYOffset > offsetTop && !isStuck) {
       setSticky(true);
     }
@@ -69,16 +68,12 @@ const Aside = ({ offsetTarget, isVisible, ...props }) => {
   };
 
   const maintainSidebarScroll = throttle(() => {
-    oldScrollTop = asideRef.current.scrollTop;
+    oldSidebarOffset = asideRef.current.scrollTop;
   });
 
   useEffect(() => {
-    handleWindowScroll();
     window.addEventListener('scroll', handleWindowScroll);
     asideRef.current.addEventListener('scroll', maintainSidebarScroll);
-
-    // keep the user's scroll whilst navigating between pages
-    asideRef.current.scrollTo(0, oldScrollTop);
 
     // cleanup
     return () => {
@@ -86,6 +81,14 @@ const Aside = ({ offsetTarget, isVisible, ...props }) => {
       asideRef.current.removeEventListener('scroll', maintainSidebarScroll);
     };
   });
+
+  // NOTE: maintain the user's scroll whilst navigating between pages.
+  // This is a symptom of Gatsby remounting the entire tree (template) on each
+  // page change via `createPage` in "gatsby-node.js".
+  useEffect(() => {
+    const scrollTop = oldWindowOffset ? oldSidebarOffset + offsetTop : oldSidebarOffset;
+    asideRef.current.scrollTop = scrollTop;
+  }, [asideRef.current]);
 
   const stickyStyles = {
     height: isStuck ? '100%' : `calc(100% - ${offsetTop}px)`,
@@ -120,41 +123,14 @@ const Aside = ({ offsetTarget, isVisible, ...props }) => {
 const Main = props => (
   <main
     css={{
-      flex: 1,
-      lineHeight: '1.6',
       minWidth: 0,
+      lineHeight: '1.6',
       paddingBottom: '3rem',
       paddingTop: gutter,
 
       [media.lg]: {
         marginLeft: SIDEBAR_WIDTH,
         paddingLeft: gutter,
-      },
-
-      // Tables
-      // ------------------------------
-
-      table: {
-        borderCollapse: 'collapse',
-        borderSpacing: 0,
-        fontSize: '0.9rem',
-        width: '100%',
-      },
-      'th, td': {
-        paddingBottom: gridSize,
-        paddingTop: gridSize,
-        textAlign: 'left',
-
-        '&[align="right"]': {
-          textAlign: 'right',
-        },
-      },
-      th: {
-        borderBottom: `2px solid ${colors.N10}`,
-        fontWeight: 500,
-      },
-      td: {
-        borderTop: `1px solid ${colors.N10}`,
       },
 
       // TODO: doesn't play nice with "gatsby-resp-image-wrapper"
@@ -169,18 +145,6 @@ const Main = props => (
 
       // Misc. Typography
       // ------------------------------
-
-      a: {
-        borderBottom: `1px solid ${colors.B.A40}`,
-        color: colors.N100,
-        textDecoration: 'none',
-
-        ':hover, :focus': {
-          backgroundColor: colors.B.A10,
-          borderBottomColor: 'currentColor',
-          textDecoration: 'none',
-        },
-      },
 
       // NOTE: consider removing `gatsby-remark-images`
       '.gatsby-resp-image-link, .gatsby-resp-image-link:hover, .gatsby-resp-image-link:focus': {
@@ -234,10 +198,6 @@ const Main = props => (
         color: colors.N100,
         margin: 0,
         padding: '0.2em 0.4em',
-
-        [media.sm]: {
-          wordBreak: 'break-word',
-        },
       },
 
       '& h1 > code, & h2 > code, & h3 > code, & h4 > code, & h5 > code, & h6 > code': {

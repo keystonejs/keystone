@@ -1,4 +1,9 @@
-# Field Type: `DateTime`
+---
+section: field-types
+title: DateTime
+---
+
+# DateTime
 
 ## Usage
 

@@ -1,3 +1,8 @@
+---
+section: guides
+title: Hooks API
+---
+
 # Hooks API
 
 The APIs for each hook are mostly the same across the 3 hook types
