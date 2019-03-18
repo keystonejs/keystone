@@ -1,17 +1,3 @@
-function prettyTitle(node) {
-  let pretty = node.slug
-    .replace(node.navGroup, '')
-    .replace(new RegExp(/(\/)/g), ' ')
-    .replace('-', ' ')
-    .trim();
-
-  if (pretty.startsWith('packages') || pretty.startsWith('types')) {
-    pretty = pretty.replace('packages', '').replace('types', '');
-  }
-
-  return pretty === '' ? 'index' : pretty;
-}
-
 let lunrLoaded;
 
 export function getResults(query, options = { limit: Infinity }) {
@@ -48,8 +34,7 @@ export function getResults(query, options = { limit: Infinity }) {
       results: results
         .map(({ ref }) => {
           let node = lunrIndex.store[ref];
-
-          return { ...node, title: prettyTitle(node) };
+          return node;
         })
         // Make sure `tutorials` are always first
         .sort((a, b) => (a.navGroup !== b.navGroup && a.navGroup === 'tutorials' ? -1 : 0))

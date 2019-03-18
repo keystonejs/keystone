@@ -25,6 +25,7 @@
     "@sindresorhus/slugify": "^0.6.0",
     "babel-plugin-extract-react-types": "^0.1.0",
     "bolt": "^0.22.6",
+    "emotion-server": "9.2.12",
     "gatsby": "^2.1.31",
     "gatsby-mdx": "^0.4.3",
     "gatsby-plugin-google-analytics": "^2.0.17",
@@ -43,6 +44,7 @@
     "prism-react-renderer": "^0.1.6",
     "react": "^16.8.4",
     "react-addons-text-content": "^0.0.4",
+    "react-dom": "^16.8.4",
     "underscore.string": "^3.3.5",
     "unist-util-visit": "^1.4.0"
   }
