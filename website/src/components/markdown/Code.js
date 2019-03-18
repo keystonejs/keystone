@@ -17,22 +17,24 @@ I highly encourage changing this.
 Leaving styling the inline component until we have emotion
 */
 
-export default props =>
-  props.className ? (
+export const Code = props => {
+  const lang = props.className ? props.className.replace('language-', '') : null;
+
+  return lang ? (
     <Highlight
       {...defaultProps}
-      tag="div"
       theme={theme}
       code={reactAddonsTextContent(props.children)}
-      language={props.className.replace('language-', '')}
+      language={lang}
     >
       {({ tokens, getLineProps, getTokenProps }) => (
-        <code>
-          {tokens.map((line, i) => (
-            <div {...getLineProps({ line, key: i })}>
-              {line.map((token, key) => (
-                <span {...getTokenProps({ token, key })} />
-              ))}
+        <code {...props}>
+          {tokens.map((line, idx) => (
+            <div {...getLineProps({ line, key: idx })}>
+              {line.map((token, key) => {
+                const { style, ...tokenProps } = getTokenProps({ token, key });
+                return <span css={style} {...tokenProps} />;
+              })}
             </div>
           ))}
         </code>
@@ -41,3 +43,4 @@ export default props =>
   ) : (
     <code {...props} />
   );
+};

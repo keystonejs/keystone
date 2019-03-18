@@ -3,6 +3,7 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { jsx } from '@emotion/core';
 import { media } from '../utils/media';
+import { gridSize } from '@arch-ui/theme';
 
 export const Container = props => (
   <div
@@ -12,16 +13,16 @@ export const Container = props => (
       marginRight: 'auto',
 
       [media.lg]: {
-        paddingLeft: 40,
-        paddingRight: 40,
+        paddingLeft: gridSize * 5,
+        paddingRight: gridSize * 5,
       },
       [media.sm]: {
-        paddingLeft: 20,
-        paddingRight: 20,
+        paddingLeft: gridSize * 3,
+        paddingRight: gridSize * 3,
       },
       [media.xs]: {
-        paddingLeft: 10,
-        paddingRight: 10,
+        paddingLeft: gridSize * 2,
+        paddingRight: gridSize * 2,
       },
     }}
     {...props}

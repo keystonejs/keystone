@@ -3,7 +3,7 @@ section: field-types
 title: Password
 ---
 
-# Field Type: `Password`
+# Password
 
 `Password` fields are unusual in that they do not store the value they are supplied.
 The value is run through the `bcrypt` algorithm to generate a hash which is stored instead.
