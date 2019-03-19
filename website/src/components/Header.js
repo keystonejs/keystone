@@ -9,6 +9,8 @@ import logosvg from '../images/logo.svg';
 import { Container } from '../components';
 import { media } from '../utils/media';
 
+export const HEADER_HEIGHT = 60;
+
 export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
   <header ref={ref} {...props}>
     <Container>
@@ -17,9 +19,8 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
           alignItems: 'center',
           boxShadow: `0 1px 0 ${colors.N10}`,
           display: 'flex',
+          height: HEADER_HEIGHT,
           justifyContent: 'space-between',
-          paddingBottom: 12,
-          paddingTop: 12,
         }}
       >
         <Logo />
@@ -35,7 +36,7 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
 
 const Logo = () => (
   <Link to="/">
-    <img alt="KeystoneJS Logo" src={logosvg} css={{ width: 40 }} />
+    <img alt="KeystoneJS Logo" src={logosvg} css={{ display: 'block', width: 40 }} />
   </Link>
 );
 const NavItem = ({ as, lgOnly, ...props }) => {

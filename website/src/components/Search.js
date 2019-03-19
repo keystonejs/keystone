@@ -47,7 +47,6 @@ export const Search = () => {
 
   const setQueryDebounced = useCallback(debounce(value => setQuery(value), 200), [setQuery]);
 
-  // TODO: `isLoading`
   useEffect(() => {
     let cancelled = false;
 
@@ -60,6 +59,7 @@ export const Search = () => {
         return;
       }
 
+      // NOTE: is this really necessary?
       // Append "Show More" link to the results
       if (queryResults.total !== 0 && queryResults.results.length !== queryResults.total) {
         queryResults.results.push({

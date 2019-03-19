@@ -73,13 +73,14 @@ const Aside = ({ offsetTop, isVisible, ...props }) => {
   });
 
   useEffect(() => {
+    const asideEl = asideRef.current; // maintain ref for cleanup
     window.addEventListener('scroll', handleWindowScroll);
-    asideRef.current.addEventListener('scroll', maintainSidebarScroll);
+    asideEl.addEventListener('scroll', maintainSidebarScroll);
 
     // cleanup
     return () => {
       window.removeEventListener('scroll', handleWindowScroll);
-      asideRef.current.removeEventListener('scroll', maintainSidebarScroll);
+      asideEl.removeEventListener('scroll', maintainSidebarScroll);
     };
   });
 
@@ -102,7 +103,6 @@ const Aside = ({ offsetTop, isVisible, ...props }) => {
     <aside
       ref={asideRef}
       css={{
-        // borderRight: `1px solid ${colors.N10}`,
         boxSizing: 'border-box',
         overflowY: 'auto',
         paddingBottom: '3rem',
@@ -140,18 +140,22 @@ const Main = props => (
         borderRadius,
         boxSizing: 'border-box',
         boxShadow: '0 0 0 1px hsla(0, 0%, 0%, 0.1), 0 4px 11px hsla(0, 0%, 0%, 0.1) !important',
+        display: 'block',
+        marginBottom: '2rem',
+        marginTop: '2rem',
         maxWidth: '100%',
-        padding: 4,
+      },
+
+      // NOTE: consider removing `gatsby-resp-image-wrapper`
+      '.gatsby-resp-image-link, .gatsby-resp-image-link:hover, .gatsby-resp-image-link:focus': {
+        background: 0,
+        border: 0,
+        marginBottom: '2rem',
+        marginTop: '2rem',
       },
 
       // Misc. Typography
       // ------------------------------
-
-      // NOTE: consider removing `gatsby-remark-images`
-      '.gatsby-resp-image-link, .gatsby-resp-image-link:hover, .gatsby-resp-image-link:focus': {
-        background: 0,
-        border: 0,
-      },
       ul: {
         lineHeight: 1.8,
       },
