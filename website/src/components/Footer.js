@@ -9,14 +9,13 @@ const Anchor = props => <a css={{ color: colors.N60, textDecoration: 'none' }} {
 export const Footer = () => (
   <footer
     css={{
-      backgroundColor: 'white',
-      borderRadius: 3,
-      boxShadow: '0 0 0 1px rgba(9, 30, 66, 0.09)',
+      borderBottom: `1px solid ${colors.N10}`,
+      borderTop: `1px solid ${colors.N10}`,
       color: colors.N40,
       fontSize: '0.75rem',
       marginTop: '3rem',
-      paddingBottom: '1em',
-      paddingTop: '1em',
+      paddingBottom: '1.25em',
+      paddingTop: '1.25em',
       textAlign: 'center',
     }}
   >

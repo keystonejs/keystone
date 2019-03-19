@@ -10,7 +10,7 @@ import { Container, CONTAINER_GUTTERS } from '../components/Container';
 import { media } from '../utils/media';
 import { useDimensions } from '../utils/hooks';
 
-const SIDEBAR_WIDTH = 260;
+const SIDEBAR_WIDTH = 280;
 
 const Layout = ({ children }) => {
   const [isVisible, setVisible] = useState(false);
@@ -40,7 +40,9 @@ const Layout = ({ children }) => {
           <Sidebar />
           <Footer />
         </Aside>
-        <Main key="main">{children}</Main>
+        <Main key="main">
+          {children}
+        </Main>
       </Container>
     </>
   );

@@ -11,7 +11,7 @@ export const Sidebar = () => (
       query HeadingQuery {
         allSitePage(
           filter: { path: { ne: "/dev-404-page/" } }
-          sort: { fields: [context___sortOrder] }
+          sort: { fields: [context___sortOrder, context___pageTitle] }
         ) {
           edges {
             node {
@@ -44,7 +44,7 @@ export const Sidebar = () => (
       return (
         <nav>
           {navGroups.map(navGroup => {
-            const intro = navData[navGroup].find(node => node.context.pageTitle === 'README');
+            const intro = navData[navGroup].find(node => node.context.pageTitle === 'Introduction');
             return (
               <div key={navGroup}>
                 <GroupHeading>{navGroup.replace('-', ' ')}</GroupHeading>
@@ -55,7 +55,7 @@ export const Sidebar = () => (
                     </ListItem>
                   )}
                   {navData[navGroup]
-                    .filter(node => node.context.pageTitle !== 'README')
+                    .filter(node => node.context.pageTitle !== 'Introduction')
                     .filter(node => navGroup !== 'packages' || node.context.isPackageIndex)
                     .map(node => {
                       return (
@@ -101,7 +101,6 @@ const ListItem = props => (
         padding: `${gridSize * 0.75}px ${gridSize * 1.5}px`,
         textDecoration: 'none',
         textOverflow: 'ellipsis',
-        textTransform: 'capitalize',
         whiteSpace: 'nowrap',
 
         ':hover, :focus': {
