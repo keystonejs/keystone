@@ -13,7 +13,6 @@ function cleanServerConfig(config) {
     'sessionStore',
     'pinoOptions',
     'cors',
-    'authStrategy',
     'apiPath',
     'graphiqlPath',
     'apollo',
@@ -69,12 +68,6 @@ module.exports = {
       const cleanedServerConfig = cleanServerConfig(resolvedConfig || {});
 
       const server = new WebServer(appEntry.keystone, {
-        // When an auth strategy is defined, we need a cookie secret
-        ...(cleanedServerConfig.authStrategy
-          ? {
-              'cookie secret': 'qwerty',
-            }
-          : {}),
         // Set all the other options
         ...cleanedServerConfig,
         // Force the admin & port

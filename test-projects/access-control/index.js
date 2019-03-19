@@ -141,12 +141,10 @@ listAccessVariations.forEach(createListWithDeclarativeAccess);
 
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
+  authStrategy,
 });
 
 module.exports = {
   keystone,
   admin,
-  serverConfig: {
-    authStrategy,
-  },
 };

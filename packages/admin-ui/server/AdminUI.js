@@ -20,6 +20,11 @@ module.exports = class AdminUI {
     }
 
     this.adminPath = config.adminPath || '/admin';
+    const { authStrategy } = config;
+    if (authStrategy && authStrategy.authType !== 'password') {
+      throw new Error('Keystone 5 Admin currently only supports the `PasswordAuthStrategy`');
+    }
+    this.authStrategy = authStrategy;
 
     this.config = {
       ...config,
@@ -39,14 +44,6 @@ module.exports = class AdminUI {
       sessionPath: this.config.sessionPath,
       sortListsAlphabetically: this.config.sortListsAlphabetically,
     };
-  }
-
-  setAuthStrategy(authStrategy) {
-    if (authStrategy.authType !== 'password') {
-      throw new Error('Keystone 5 Admin currently only supports the `PasswordAuthStrategy`');
-    }
-
-    this.authStrategy = authStrategy;
   }
 
   createSessionMiddleware() {
