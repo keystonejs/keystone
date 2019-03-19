@@ -32,7 +32,7 @@ const Container = props => (
 );
 
 const Hero = () => (
-  <div css={mq({ overflow: 'hidden', [media.sm]: { marginTop: -HEADER_HEIGHT / 2 } })}>
+  <div css={mq({ overflow: 'hidden' })}>
     <Container
       css={mq({
         display: 'flex',
