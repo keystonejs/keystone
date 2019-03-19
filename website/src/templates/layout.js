@@ -40,9 +40,7 @@ const Layout = ({ children }) => {
           <Sidebar />
           <Footer />
         </Aside>
-        <Main key="main">
-          {children}
-        </Main>
+        <Main key="main">{children}</Main>
       </Container>
     </>
   );
