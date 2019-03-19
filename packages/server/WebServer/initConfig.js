@@ -8,6 +8,7 @@ const defaultConfig = {
   graphiqlPath: '/admin/graphiql',
   apollo: undefined,
   cors: { origin: true, credentials: true },
+  cookieSecret: 'qwerty',
 };
 
 const remapKeys = {

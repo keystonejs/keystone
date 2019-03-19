@@ -114,6 +114,7 @@ keystone.createList('Comment', {
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
   sortListsAlphabetically: true,
+  authStrategy,
 });
 
 module.exports = {
@@ -121,7 +122,4 @@ module.exports = {
   staticPath,
   keystone,
   admin,
-  serverConfig: {
-    authStrategy,
-  },
 };

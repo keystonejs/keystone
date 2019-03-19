@@ -27,7 +27,8 @@ module.exports = class WebServer {
       this.app.use(cors(this.config.cors));
     }
 
-    if (this.config.authStrategy) {
+    if (Object.keys(keystone.auth).length > 0) {
+      // We have at least one auth strategy
       // Setup the session as the very first thing.
       // The way express works, the `req.session` (and, really, anything added
       // to `req`) will be available to all sub `express()` instances.
@@ -81,8 +82,7 @@ module.exports = class WebServer {
       this.app.use(this.keystone.sessionManager.populateAuthedItemMiddleware);
     }
 
-    if (adminUI && this.config.authStrategy) {
-      adminUI.setAuthStrategy(this.config.authStrategy);
+    if (adminUI && adminUI.authStrategy) {
       // Inject the Admin specific session routes.
       // ie; this includes the signin/signout UI
       this.app.use(adminUI.createSessionMiddleware());
