@@ -20,14 +20,6 @@ export default function Template({
 
   return (
     <Layout>
-      {/*
-        NOTE: our content hierarchy isn't deep enough (one level) to need breadcrumbs.
-        Might need it later?
-      */}
-      {/* <div css={{ color: colors.B.A50, textTransform: 'capitalize' }}>
-          <StyledLink to="/">Keystone</StyledLink> &gt;{' '}
-          <StyledLink to={workspaceSlug}>{workspace}</StyledLink>
-        </div> */}
       <MDXProvider components={mdComponents}>
         <MDXRenderer>{code.body}</MDXRenderer>
       </MDXProvider>
@@ -37,21 +29,30 @@ export default function Template({
           Please edit the Markdown file on GitHub and submit a PR with your changes.
         </p>
         <EditButton href={fields.editUrl} target="_blank" title="Edit this page on GitHub">
+          <svg
+            fill="currentColor"
+            height="1.25em"
+            width="1.25em"
+            viewBox="0 0 40 40"
+            css={{ marginLeft: -(gridSize / 2), marginRight: '0.5em' }}
+          >
+            <path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z" />
+          </svg>
           Edit Page
         </EditButton>
       </EditSection>
       <NavWrapper>
         {prev ? (
           <NavButton to={prev.fields.slug}>
-            <small>Prev</small>
+            <small>&larr; Prev</small>
             <span>{prev.fields.pageTitle.replace('-', ' ')}</span>
           </NavButton>
         ) : (
           <NavPlaceholder />
         )}
         {next ? (
-          <NavButton to={next.fields.slug}>
-            <small>Next</small>
+          <NavButton align="right" to={next.fields.slug}>
+            <small>Next &rarr;</small>
             <span>{next.fields.pageTitle.replace('-', ' ')}</span>
           </NavButton>
         ) : (
@@ -117,7 +118,17 @@ const EditSection = props => (
     {...props}
   />
 );
-const EditButton = props => <Button as="a" css={{ fontSize: '0.85rem' }} {...props} />;
+const EditButton = props => (
+  <Button
+    as="a"
+    css={{
+      alignItems: 'center',
+      display: 'inline-flex',
+      fontSize: '0.85rem',
+    }}
+    {...props}
+  />
+);
 
 // Previous / Next Navigation
 // ------------------------------
@@ -135,7 +146,7 @@ const NavWrapper = props => (
   />
 );
 const NavPlaceholder = props => <div css={{ flex: 1 }} {...props} />;
-const NavButton = props => (
+const NavButton = ({ align = 'left', ...props }) => (
   <Button
     as={Link}
     css={{
@@ -144,6 +155,7 @@ const NavButton = props => (
       marginLeft: gutter,
       marginRight: gutter,
       textTransform: 'capitalize',
+      textAlign: align,
 
       small: {
         color: colors.N60,

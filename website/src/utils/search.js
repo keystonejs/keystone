@@ -27,8 +27,18 @@ export function getResults(query, options = { limit: Infinity }) {
     });
   }
 
+  // NOTE: documentation of syntax for customizing search can be found:
+  // https://lunrjs.com/guides/searching.html
   return lunrLoaded.then(({ en: lunrIndex }) => {
-    const results = lunrIndex.index.search(query); // you can  customize your search , see https://lunrjs.com/guides/searching.html
+    // find matches that *begin* with the query ("perf" will match "performance")
+    let results = lunrIndex.index.search(`${query}*`);
+
+    // when no matches are found, try again, but allow results that are off by
+    // one ("accrss contrll" will match "access control")
+    if (!results.length) {
+      results = lunrIndex.index.search(`${query}~1`);
+    }
+
     return {
       total: results.length,
       results: results

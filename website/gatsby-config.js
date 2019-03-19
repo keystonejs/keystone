@@ -1,9 +1,5 @@
 const bolt = require('bolt');
 const fs = require('fs');
-const mdx = require('@mdx-js/mdx');
-const compiler = mdx.createMdxAstCompiler({ mdPlugins: [] });
-const prune = require('underscore.string/prune');
-const visit = require('unist-util-visit');
 
 async function getPackagePlugins() {
   const { dir: rootDir } = await bolt.getProject({ cwd: '../' });
@@ -54,7 +50,7 @@ async function getGatsbyConfig() {
             {
               resolve: 'gatsby-remark-images',
               options: {
-                maxWidth: 860,
+                maxWidth: 848, // TODO: remove magic number -- width of main col
                 sizeByPixelDensity: true,
               },
             },
@@ -71,9 +67,8 @@ async function getGatsbyConfig() {
           // Attributes for custom indexing logic. See https://lunrjs.com/docs/lunr.Builder.html for details
           fields: [
             { name: 'content' },
-            { name: 'preview', store: true },
-            { name: 'slug', store: true },
             { name: 'navGroup', store: true },
+            { name: 'slug', store: true },
             { name: 'title', store: true, attributes: { boost: 20 } },
           ],
           // How to resolve each field's value for a supported node type
@@ -81,23 +76,8 @@ async function getGatsbyConfig() {
             // For any node of type mdx, list how to resolve the fields' values
             Mdx: {
               content: node => node.rawBody,
-              preview: node => {
-                // gatsby-plugin-lunr doesn't fetch stuff with gql, it just reads from the node
-                // and excerpt is implemented as a resolver so we can't call it
-                // we'll probably switch to algolia when this is public so we can remove this
-                // https://github.com/ChristopherBiscardi/gatsby-mdx/blob/46aad4a35ad287b28f02c5191b440335986fbfc3/packages/gatsby-mdx/gatsby/extend-node-type.js#L141-L156
-                const ast = compiler.parse(node.rawBody);
-                const excerptNodes = [];
-                visit(ast, mdNode => {
-                  if (mdNode.type === 'text' || mdNode.type === 'inlineCode') {
-                    excerptNodes.push(mdNode.value);
-                  }
-                });
-
-                return prune(excerptNodes.join(' '), 280, '…');
-              },
-              slug: node => node.fields.slug,
               navGroup: node => node.fields.navGroup,
+              slug: node => node.fields.slug,
               title: node => node.fields.pageTitle,
             },
           },
