@@ -5,7 +5,7 @@ import { jsx } from '@emotion/core';
 import { media } from '../utils/media';
 import { gridSize } from '@arch-ui/theme';
 
-export const CONTAINER_GUTTERS = [gridSize * 2, gridSize * 3, gridSize * 5];
+export const CONTAINER_GUTTERS = [gridSize * 2, gridSize * 3, gridSize * 4];
 
 export const Container = props => (
   <div
