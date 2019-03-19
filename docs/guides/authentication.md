@@ -37,10 +37,12 @@ const authStrategy = keystone.createAuthStrategy({
   list: 'User',
 });
 
-const server = new WebServer(keystone, {
-  authStrategy: authStrategy,
-  // ... other config
-});
+module.exports = {
+  keystone,
+  serverConfig: {
+    authStrategy
+  },
+};
 ```
 
 The Admin UI will then come with the correct routes and checks for
