@@ -53,16 +53,13 @@ describe('CalendarDay Component - Functionality', () => {
     cy.get(calendarDayInputSelector).type('today');
     cy.get('label:contains("Name")').click();
 
-    cy.get(calendarDayInputSelector).should('have.value', format(new Date(), 'Do MMMM YYYY'));
+    cy.get(calendarDayInputSelector).should('have.value', '3rd March 2019');
   });
 
   it(`can accept natural language like tomorrow`, () => {
     cy.get(calendarDayInputSelector).type('tomorrow');
     cy.get('label:contains("Name")').click();
-    cy.get(calendarDayInputSelector).should(
-      'have.value',
-      format(addDays(new Date(), 1), 'Do MMMM YYYY')
-    );
+    cy.get(calendarDayInputSelector).should('have.value', '4th March 2019');
   });
 
   it(`can accept a date`, () => {
@@ -98,15 +95,8 @@ describe('DateTime Component - Functionality', () => {
   it('can accept natural language like today at 4pm', () => {
     cy.get(dateTimeInputSelector).type('today at 4pm');
     cy.get('label:contains("Name")').click();
-    let today4pmMoment = moment();
-    today4pmMoment.set('hours', 16);
-    today4pmMoment.set('minutes', 0);
-    today4pmMoment.set('seconds', 0);
 
-    cy.get(dateTimeInputSelector).should(
-      'have.value',
-      today4pmMoment.format('h:mm A Do MMMM YYYY Z')
-    );
+    cy.get(dateTimeInputSelector).should('have.value', '4:00 PM 3rd March 2019 +00:00');
   });
 
   it('can accept natural language like tomorrow at 4pm', () => {
@@ -114,16 +104,8 @@ describe('DateTime Component - Functionality', () => {
       .clear()
       .type('tomorrow at 4pm');
     cy.get('label:contains("Name")').click();
-    let tomorrow4pmMoment = moment();
-    tomorrow4pmMoment.set('hours', 16);
-    tomorrow4pmMoment.set('minutes', 0);
-    tomorrow4pmMoment.set('seconds', 0);
 
-    tomorrow4pmMoment.add(1, 'day');
-    cy.get(dateTimeInputSelector).should(
-      'have.value',
-      tomorrow4pmMoment.format('h:mm A Do MMMM YYYY Z')
-    );
+    cy.get(dateTimeInputSelector).should('have.value', '4:00 PM 4th March 2019 +00:00');
   });
 
   it(`can accept a date time`, () => {
