@@ -45,7 +45,7 @@ export default function Template({
         {prev ? (
           <NavButton to={prev.fields.slug}>
             <small>&larr; Prev</small>
-            <span>{prev.fields.pageTitle.replace('-', ' ')}</span>
+            <span>{prev.fields.pageTitle}</span>
           </NavButton>
         ) : (
           <NavPlaceholder />
@@ -53,7 +53,7 @@ export default function Template({
         {next ? (
           <NavButton align="right" to={next.fields.slug}>
             <small>Next &rarr;</small>
-            <span>{next.fields.pageTitle.replace('-', ' ')}</span>
+            <span>{next.fields.pageTitle}</span>
           </NavButton>
         ) : (
           <NavPlaceholder />
@@ -154,7 +154,6 @@ const NavButton = ({ align = 'left', ...props }) => (
       lineHeight: 1.4,
       marginLeft: gutter,
       marginRight: gutter,
-      textTransform: 'capitalize',
       textAlign: align,
 
       small: {
@@ -167,6 +166,7 @@ const NavButton = ({ align = 'left', ...props }) => (
         display: 'block',
         fontSize: '1.25rem',
         marginBottom: gutter,
+        whiteSpace: 'nowrap',
       },
     }}
     {...props}

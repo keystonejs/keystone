@@ -116,7 +116,7 @@ node --version
 
 All code blocks should specify the language they contain;
 this produces syntax highlighting when published on GitHub.
-A complete list of languages recognised by GitHut can be found in the
+A complete list of languages recognised by GitHub can be found in the
 [`linguist` languages file](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
 
 ## Emphasis
