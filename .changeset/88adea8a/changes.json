@@ -1,0 +1,88 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/admin-ui", "type": "major" },
+    { "name": "@keystone-alpha/core", "type": "major" },
+    { "name": "@keystone-alpha/server", "type": "major" }
+  ],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/demo-project-blog",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/admin-ui",
+        "@keystone-alpha/core",
+        "@keystone-alpha/server"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-todo",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/admin-ui",
+        "@keystone-alpha/core",
+        "@keystone-alpha/server"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-access-control",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/admin-ui",
+        "@keystone-alpha/core",
+        "@keystone-alpha/server"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-basic",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/admin-ui",
+        "@keystone-alpha/core",
+        "@keystone-alpha/server"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/admin-ui",
+        "@keystone-alpha/core",
+        "@keystone-alpha/server"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-twitter-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/admin-ui",
+        "@keystone-alpha/core",
+        "@keystone-alpha/server"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/keystone",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/core"]
+    },
+    {
+      "name": "@keystone-alpha/test-utils",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/keystone", "@keystone-alpha/server"]
+    },
+    {
+      "name": "@keystone-alpha/api-tests",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/test-utils",
+        "@keystone-alpha/server"
+      ]
+    }
+  ]
+}

@@ -103,7 +103,6 @@ module.exports = {
   admin,
   serverConfig: {
     'cookie secret': 'qwerty',
-    authStrategy: authStrategy, // See 'Adding Authentication' below
     apiPath: '/admin/api',
     graphiqlPath: '/admin/graphiql',
   },
@@ -231,6 +230,7 @@ list used for authentication in `index.js`:
 <!-- prettier-ignore -->
 ```javascript
 const { Keystone }        = require('@keystone-alpha/keystone');
+const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text, Password }  = require('@keystone-alpha/fields');
 const PasswordAuth        = require('@keystone-alpha/keystone/auth/Password');
@@ -256,11 +256,14 @@ const authStrategy = keystone.createAuthStrategy({
   }
 });
 
+const admin = new AdminUI(keystone, {
+  adminPath: '/admin',
+  authStrategy,
+});
+
 module.exports = {
   keystone,
-  serverConfig: {
-    authStrategy,
-  }
+  admin,
 };
 ```
 

@@ -159,12 +159,9 @@ keystone.createList('Note', {
     authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
 });
 
-const admin = new AdminUI(keystone);
+const admin = new AdminUI(keystone, { authStrategy: DISABLE_AUTH ? undefined : authStrategy });
 
 module.exports = {
   keystone,
   admin,
-  serverConfig: {
-    authStrategy: DISABLE_AUTH ? undefined : authStrategy,
-  },
 };

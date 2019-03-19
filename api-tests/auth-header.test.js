@@ -43,14 +43,13 @@ function setupKeystone() {
     },
   });
 
-  const authStrategy = keystone.createAuthStrategy({
+  keystone.createAuthStrategy({
     type: PasswordAuthStrategy,
     list: 'User',
   });
 
   const server = new WebServer(keystone, {
     'cookie secret': COOKIE_SECRET,
-    authStrategy: authStrategy,
     apiPath: '/admin/api',
     graphiqlPath: '/admin/graphiql',
   });

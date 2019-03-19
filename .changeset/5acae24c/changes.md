@@ -1,0 +1,1 @@
+- Use new authStrategy APIs
