@@ -24,8 +24,8 @@ const dateTimeInputSelector = `#ks-input-lastOnline`;
 const getCellFromSecondRow = index =>
   `#ks-list-table tbody > tr:nth-child(2) > td:nth-child(${index})`;
 
-before(() => {
-  cy.clock(1552924922000);
+beforeEach(() => {
+  cy.clock(1551628922000);
 });
 
 describe('CalendarDay Component - Formatting', () => {
