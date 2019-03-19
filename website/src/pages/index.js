@@ -97,23 +97,39 @@ const Hero = () => (
         </div>
         <div
           css={{
-            display: 'flex',
             alignItems: 'center',
+            display: 'flex',
             margin: '2em 0',
+
+            [mediaMax.xs]: {
+              alignItems: 'stretch',
+              flexDirection: 'column',
+              margin: '2em auto',
+            },
           }}
         >
           <Button
             appearance="primary"
             variant="solid"
             to="/quick-start/"
-            css={{ marginRight: 4, [mediaMax.sm]: { flex: 1 } }}
+            css={{
+              [mediaMax.sm]: { flex: 1 },
+              [media.sm]: {
+                marginRight: 4,
+              },
+            }}
           >
             Get Started
           </Button>
           <Button
             variant="link"
             href="https://github.com/keystonejs/keystone-5"
-            css={{ marginLeft: 4, [mediaMax.sm]: { flex: 1 } }}
+            css={{
+              [mediaMax.sm]: { flex: 1 },
+              [media.sm]: {
+                marginLeft: 4,
+              },
+            }}
             target="_blank"
           >
             View on GitHub
