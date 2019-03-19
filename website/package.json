@@ -21,7 +21,6 @@
     "@emotion/styled": "^10.0.9",
     "@mdx-js/mdx": "^0.16.8",
     "@mdx-js/tag": "^0.16.8",
-    "@reach/router": "^1.2.1",
     "@sindresorhus/slugify": "^0.6.0",
     "babel-plugin-extract-react-types": "^0.1.0",
     "bolt": "^0.22.6",

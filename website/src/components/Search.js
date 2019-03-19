@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 import { jsx } from '@emotion/core';
 import Select from '@arch-ui/select';
-import { Location } from '@reach/router';
+import { navigate } from 'gatsby';
 
 import { getResults } from '../utils/search';
 
@@ -30,16 +30,6 @@ const buildOptions = arr => {
 
   return ops;
 };
-const defaultOptions = [
-  {
-    label: 'Recommended',
-    options: [
-      { title: 'Quick Start', slug: '/quick-start/', navGroup: 'recommended' },
-      { title: 'Field Types', slug: '/keystone-alpha/fields/', navGroup: 'recommended' },
-      { title: 'Access Control', slug: '/keystone-alpha/access-control/', navGroup: 'recommended' },
-    ],
-  },
-];
 
 export const Search = () => {
   let [query, setQuery] = useState('');
@@ -54,19 +44,9 @@ export const Search = () => {
       return;
     }
 
-    getResults(query, { limit: 10 }).then(queryResults => {
+    getResults(query, { limit: 20 }).then(queryResults => {
       if (cancelled) {
         return;
-      }
-
-      // NOTE: is this really necessary?
-      // Append "Show More" link to the results
-      if (queryResults.total !== 0 && queryResults.results.length !== queryResults.total) {
-        queryResults.results.push({
-          navGroup: 'more-results',
-          slug: '/search?q=' + encodeURIComponent(query),
-          title: `Show ${queryResults.total - queryResults.results.length} More`,
-        });
       }
 
       setResults(buildOptions(queryResults.results));
@@ -78,30 +58,26 @@ export const Search = () => {
   }, [query]);
 
   return (
-    <Location>
-      {({ navigate }) => {
-        return (
-          <Select
-            key="select"
-            components={{ Control, DropdownIndicator, IndicatorSeparator, Input }}
-            placeholder="Search..."
-            options={query ? results : defaultOptions}
-            value={null}
-            onInputChange={setQueryDebounced}
-            onChange={result => {
-              setQueryDebounced.cancel();
-              navigate(result.slug);
-              setQuery('');
-            }}
-            css={{ zIndex: 2 }}
-            filterOption={filterOption}
-            getOptionValue={result => result.slug}
-            getOptionLabel={result => result.title}
-            noOptionsMessage={() => (query ? 'No results found' : 'Enter a search term')}
-          />
-        );
+    <Select
+      key="select"
+      components={{ Control, DropdownIndicator, IndicatorSeparator, Input }}
+      placeholder="Search..."
+      options={results}
+      value={null}
+      onInputChange={setQueryDebounced}
+      openMenuOnClick={false}
+      tabSelectsValue={false}
+      onChange={result => {
+        setQueryDebounced.cancel();
+        navigate(result.slug);
+        setQuery('');
       }}
-    </Location>
+      css={{ zIndex: 2 }}
+      filterOption={filterOption}
+      getOptionValue={result => result.slug}
+      getOptionLabel={result => result.title}
+      noOptionsMessage={() => (query ? 'No results found' : 'Enter a search term')}
+    />
   );
 };
 

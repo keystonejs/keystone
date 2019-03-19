@@ -10,7 +10,7 @@ import { Container, CONTAINER_GUTTERS } from '../components/Container';
 import { media, mediaMax } from '../utils/media';
 import { useDimensions } from '../utils/hooks';
 
-const SIDEBAR_WIDTH = 260;
+const SIDEBAR_WIDTH = 280;
 
 const Layout = ({ children }) => {
   const [isVisible, setVisible] = useState(false);
