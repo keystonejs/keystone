@@ -2,8 +2,8 @@ import facepaint from 'facepaint';
 
 export const BREAK_POINTS = { xs: 576, sm: 768, md: 992, lg: 1200 };
 const bpEntries = Object.entries(BREAK_POINTS);
-const maxWidth = width => `@media (max-width: ${width}px)`;
-const minWidth = width => `@media (min-width: ${width}px)`;
+const maxWidth = (width, m = true) => `${m ? '@media ' : ''}(max-width: ${width}px)`;
+const minWidth = (width, m = true) => `${m ? '@media ' : ''}(min-width: ${width}px)`;
 
 // MIN-width queries (default)
 export const media = bpEntries.reduce(
@@ -28,7 +28,7 @@ export const mediaOnly = bpEntries.reduce((obj, entry, idx) => {
 
   return {
     ...obj,
-    [size]: `@media (min-width: ${min}px) and (max-width: ${max}px)`,
+    [size]: `${minWidth(min)} and ${maxWidth(max, false)}`,
   };
 }, {});
 
