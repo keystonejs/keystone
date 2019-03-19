@@ -7,7 +7,7 @@ import { colors, gridSize } from '@arch-ui/theme';
 
 import logosvg from '../images/logo.svg';
 import { Container } from '../components';
-import { media } from '../utils/media';
+import { media, mediaOnly, mediaMax } from '../utils/media';
 
 export const HEADER_HEIGHT = 60;
 
@@ -19,6 +19,8 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
           alignItems: 'center',
           boxShadow: `0 1px 0 ${colors.N10}`,
           display: 'flex',
+          fontSize: '0.9rem',
+          fontWeight: 500,
           height: HEADER_HEIGHT,
           justifyContent: 'space-between',
         }}
@@ -35,8 +37,19 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
 // ==============================
 
 const Logo = () => (
-  <Link to="/">
+  <Link to="/" css={{ alignItems: 'center', color: 'inherit', display: 'inline-flex' }}>
     <img alt="KeystoneJS Logo" src={logosvg} css={{ display: 'block', width: 40 }} />
+    <span
+      css={{
+        marginLeft: '0.66rem',
+
+        [mediaOnly.sm]: {
+          display: 'none',
+        },
+      }}
+    >
+      KeystoneJS
+    </span>
   </Link>
 );
 const NavItem = ({ as, lgOnly, ...props }) => {
@@ -56,7 +69,7 @@ const NavItem = ({ as, lgOnly, ...props }) => {
           padding: `${gridSize / 2}px ${gridSize}px`,
           textDecoration: 'none',
 
-          [media.xs]: {
+          [mediaMax.xs]: {
             display: lgOnly ? 'none' : 'block',
           },
 
@@ -78,8 +91,6 @@ const List = props => (
     css={{
       alignItems: 'center',
       display: 'flex',
-      fontSize: '0.9rem',
-      fontWeight: 500,
       justifyContent: 'center',
       listStyle: 'none',
       margin: 0,
@@ -105,7 +116,7 @@ const Nav = ({ toggleMenu }) => (
           as="button"
           onClick={toggleMenu}
           css={{
-            [media.lg]: { display: 'none' },
+            [media.sm]: { display: 'none' },
           }}
         >
           <svg width="24" height="24" viewBox="0 0 24 24" focusable="false" role="presentation">
