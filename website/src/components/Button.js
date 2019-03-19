@@ -17,14 +17,42 @@ const variants = {
       color: colors.B.base,
     },
   },
+  link: {
+    default: {
+      color: colors.N80,
+
+      '&:hover': {
+        textDecoration: 'underline',
+      },
+    },
+    primary: {
+      color: colors.B.base,
+
+      '&:hover': {
+        textDecoration: 'underline',
+      },
+    },
+  },
   solid: {
     default: {
       backgroundColor: colors.N80,
       color: 'white',
+      transition: 'background-color 150ms',
+
+      '&:hover': {
+        backgroundColor: colors.N70,
+        textDecoration: 'none',
+      },
     },
     primary: {
       backgroundColor: colors.B.base,
       color: 'white',
+      transition: 'background-color 150ms',
+
+      '&:hover': {
+        backgroundColor: colors.B.L10,
+        textDecoration: 'none',
+      },
     },
   },
 };
@@ -41,22 +69,16 @@ export const Button = ({ appearance, variant, as, ...props }) => {
   return (
     <Tag
       css={{
-        borderRadius: 4,
+        borderRadius: '0.66rem',
         boxSizing: 'border-box',
         cursor: 'pointer',
         fontWeight: 500,
-        padding: '1rem 1.5rem',
+        padding: '0.85rem 1.85rem',
         textDecoration: 'none',
-        transition: 'transform ease 120ms',
 
-        '&:hover': {
-          transform: 'scale(1.025)',
-          textDecoration: 'none',
-          // opacity: 0.9,
-        },
-        '&:active': {
-          transform: 'scale(1)',
-        },
+        // '&:active': {
+        //   transform: 'scale(0.97)',
+        // },
 
         ...dynamicStyles,
       }}

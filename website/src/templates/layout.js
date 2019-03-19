@@ -7,7 +7,7 @@ import throttle from 'lodash.throttle';
 
 import { Footer, Header, Sidebar, Search } from '../components';
 import { Container, CONTAINER_GUTTERS } from '../components/Container';
-import { media } from '../utils/media';
+import { media, mediaMax } from '../utils/media';
 import { useDimensions } from '../utils/hooks';
 
 const SIDEBAR_WIDTH = 280;
@@ -23,11 +23,11 @@ const Layout = ({ children }) => {
         styles={{
           ...globalStyles,
 
-          [media.sm]: {
+          [mediaMax.sm]: {
             body: { fontSize: 'inherit' },
             html: { fontSize: 14 },
           },
-          [media.lg]: {
+          [media.sm]: {
             body: { fontSize: 'inherit' },
             html: { fontSize: 16 },
           },
@@ -109,10 +109,10 @@ const Aside = ({ offsetTop, isVisible, ...props }) => {
         paddingTop: gutter,
         paddingLeft: 3, // NOTE: the 3px is to stop the select's shadows being cropped
 
-        [media.sm]: {
+        [mediaMax.sm]: {
           display: isVisible ? 'block' : 'none',
         },
-        [media.lg]: {
+        [media.sm]: {
           paddingRight: gutter,
           ...stickyStyles,
         },
@@ -129,7 +129,7 @@ const Main = props => (
       paddingBottom: '3rem',
       paddingTop: gutter,
 
-      [media.lg]: {
+      [media.sm]: {
         marginLeft: SIDEBAR_WIDTH,
         paddingLeft: gutter,
       },
@@ -196,7 +196,7 @@ const Main = props => (
           display: 'none',
         },
 
-        [media.sm]: {
+        [mediaMax.sm]: {
           marginLeft: -CONTAINER_GUTTERS[0],
           marginRight: -CONTAINER_GUTTERS[0],
         },

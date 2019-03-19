@@ -9,7 +9,7 @@ import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 
 import Layout from '../templates/layout';
 import mdComponents from '../components/markdown';
-import { media } from '../utils/media';
+import { mediaMax } from '../utils/media';
 
 export default function Template({
   data, // this prop will be injected by the GraphQL query below.
@@ -111,7 +111,7 @@ const EditSection = props => (
         marginTop: 0,
       },
 
-      [media.sm]: {
+      [mediaMax.sm]: {
         display: 'none',
       },
     }}
