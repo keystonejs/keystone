@@ -4,107 +4,149 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import { jsx, Global } from '@emotion/core';
 import { colors, globalStyles } from '@arch-ui/theme';
 
-import { Button, Container, Header } from '../components';
+import { Button, Header } from '../components';
+import { CONTAINER_GUTTERS } from '../components/Container';
+import { HEADER_HEIGHT } from '../components/Header';
+import { media, mediaOnly, mediaMax, mq } from '../utils/media';
+import illustrationPNG from '../images/illustration.png';
+
+console.log('mediaOnly', mediaOnly.sm);
 
 export default () => (
   <>
     <Global styles={globalStyles} />
-    <Header key="global-header" style={{ position: 'fixed', left: 0, right: 0, top: 0 }} />
+    <Header key="global-header" style={{ position: 'relative', zIndex: 1 }} />
     <Hero />
-    <Five />
-
-    {/* <Footer textCenter /> */}
   </>
 );
 
-const Five = () => (
-  <svg
-    viewBox="0 0 10.5 10.5"
-    style={{
-      position: 'fixed',
-      top: 0,
-      right: 0,
-      height: '100vh',
-      width: '100vh',
-      userSelect: 'none',
-      zIndex: -1,
-    }}
-  >
-    <text
-      x="2"
-      y="8"
-      fill={colors.B.A10}
-      style={{ fontFamily: 'Georgia, Times, serif', fontWeight: 'bold' }}
-    >
-      5
-    </text>
-  </svg>
+const Container = props => (
+  <div
+    css={mq({
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      paddingLeft: CONTAINER_GUTTERS,
+      paddingRight: CONTAINER_GUTTERS,
+      width: [null, null, 992, 1140],
+    })}
+    {...props}
+  />
 );
 
 const Hero = () => (
   <div
-    css={{
-      alignItems: 'center',
-      display: 'flex',
-      fontSize: 18,
-      height: '100vh',
-    }}
-  >
-    <Container>
-      {/* <img alt="Keystone JS" src={logosvg} css={{ width: 60, marginBottom: 12 }} /> */}
+    css={mq({
+      overflow: 'hidden',
 
-      <div css={{ paddingRight: '18vw' }}>
+      [media.sm]: {
+        marginTop: -HEADER_HEIGHT / 2,
+      },
+    })}
+  >
+    <Container
+      css={mq({
+        display: 'flex',
+        flexDirection: ['column', 'row'],
+        fontSize: [14, 18],
+        lineHeight: 1.6,
+        height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+        position: 'relative',
+
+        [media.sm]: {
+          background: `url(${illustrationPNG}) no-repeat center right`,
+          backgroundSize: '761px 410px',
+        },
+      })}
+    >
+      <div
+        css={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          flex: 1,
+
+          [mediaMax.sm]: {
+            textAlign: 'center',
+          },
+          [mediaOnly.md]: {
+            paddingRight: '10em',
+          },
+        }}
+      >
         <h1
           css={{
             color: colors.N100,
-            fontSize: '4em',
+            fontSize: '2.4em',
             fontWeight: 800,
             lineHeight: 1,
             margin: 0,
+
+            [mediaMax.sm]: {
+              marginTop: '1em',
+            },
           }}
         >
-          Build amazing node.js applications, faster.
-          {/* Get a headstart on your node.js application API */}
-          {/* Build applications faster with Keystone 5, a node.js CMS and API provider */}
+          Keystone 5
         </h1>
 
-        <div css={{ color: colors.N80, margin: '3em 0', lineHeight: 1.6 }}>
+        <div css={{ color: colors.N80 }}>
+          <p>A scalable platform and CMS to build Node.js applications.</p>
           <p>
-            Keystone 5 includes first-class GraphQL support, a modular architecture and an improved
-            Admin UI.
+            Includes first-class GraphQL support, a modular architecture and an improved Admin UI.
           </p>
-          <p>
-            We're focusing less on serving the front-end, and more on providing a scalable platform
-            for content management and node.js applications.
-          </p>
-          {/* <p>
-            We've been building the next generation of KeystoneJS at Thinkmill and are excited to
-            start sharing it with the community.
-          </p> */}
         </div>
+        <div
+          css={{
+            display: 'flex',
+            alignItems: 'center',
+            margin: '2em 0',
+          }}
+        >
+          <Button
+            appearance="primary"
+            variant="solid"
+            to="/quick-start/"
+            css={{ marginRight: 4, [mediaMax.sm]: { flex: 1 } }}
+          >
+            Get Started
+          </Button>
+          <Button
+            variant="link"
+            href="https://github.com/keystonejs/keystone-5"
+            css={{ marginLeft: 4, [mediaMax.sm]: { flex: 1 } }}
+            target="_blank"
+          >
+            View on GitHub
+          </Button>
+        </div>
+        <img
+          src={illustrationPNG}
+          css={mq({
+            display: 'block',
+            height: 'auto',
+            margin: [`2em -40px`, `2em auto`],
+            maxWidth: ['calc(100% + 80px)', '80%'],
+
+            [media.sm]: {
+              display: 'none',
+            },
+          })}
+        />
+        <p css={{ color: colors.N40, fontSize: '0.85em' }}>
+          Keystone 5 is currently in alpha release and under intensive development by Thinkmill and
+          contributors around the world.
+        </p>
       </div>
       <div
         css={{
-          display: 'inline-flex',
-          alignItems: 'center',
+          display: 'none',
+
+          [media.sm]: {
+            display: 'block',
+            flex: 1,
+          },
         }}
-      >
-        <Button
-          appearance="primary"
-          variant="solid"
-          to="/quick-start"
-          style={{ margin: 0, marginRight: 8 }}
-        >
-          Get Started
-        </Button>
-        <Button
-          appearance="primary"
-          href="https://github.com/keystonejs/keystone-5"
-          style={{ margin: 0 }}
-        >
-          View on GitHub
-        </Button>
-      </div>
+      />
     </Container>
   </div>
 );
