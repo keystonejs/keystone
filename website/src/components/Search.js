@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 import { jsx } from '@emotion/core';
 import Select from '@arch-ui/select';
-import { Location } from '@reach/router';
+import { navigate } from 'gatsby';
 
 import { getResults } from '../utils/search';
 
@@ -58,32 +58,26 @@ export const Search = () => {
   }, [query]);
 
   return (
-    <Location>
-      {({ navigate }) => {
-        return (
-          <Select
-            key="select"
-            components={{ Control, DropdownIndicator, IndicatorSeparator, Input }}
-            placeholder="Search..."
-            options={results}
-            value={null}
-            onInputChange={setQueryDebounced}
-            openMenuOnClick={false}
-            tabSelectsValue={false}
-            onChange={result => {
-              setQueryDebounced.cancel();
-              navigate(result.slug);
-              setQuery('');
-            }}
-            css={{ zIndex: 2 }}
-            filterOption={filterOption}
-            getOptionValue={result => result.slug}
-            getOptionLabel={result => result.title}
-            noOptionsMessage={() => (query ? 'No results found' : 'Enter a search term')}
-          />
-        );
+    <Select
+      key="select"
+      components={{ Control, DropdownIndicator, IndicatorSeparator, Input }}
+      placeholder="Search..."
+      options={results}
+      value={null}
+      onInputChange={setQueryDebounced}
+      openMenuOnClick={false}
+      tabSelectsValue={false}
+      onChange={result => {
+        setQueryDebounced.cancel();
+        navigate(result.slug);
+        setQuery('');
       }}
-    </Location>
+      css={{ zIndex: 2 }}
+      filterOption={filterOption}
+      getOptionValue={result => result.slug}
+      getOptionLabel={result => result.title}
+      noOptionsMessage={() => (query ? 'No results found' : 'Enter a search term')}
+    />
   );
 };
 
