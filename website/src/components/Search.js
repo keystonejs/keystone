@@ -30,16 +30,6 @@ const buildOptions = arr => {
 
   return ops;
 };
-const defaultOptions = [
-  {
-    label: 'Recommended',
-    options: [
-      { title: 'Quick Start', slug: '/quick-start/', navGroup: 'recommended' },
-      { title: 'Field Types', slug: '/keystone-alpha/fields/', navGroup: 'recommended' },
-      { title: 'Access Control', slug: '/keystone-alpha/access-control/', navGroup: 'recommended' },
-    ],
-  },
-];
 
 export const Search = () => {
   let [query, setQuery] = useState('');
@@ -54,19 +44,9 @@ export const Search = () => {
       return;
     }
 
-    getResults(query, { limit: 10 }).then(queryResults => {
+    getResults(query, { limit: 20 }).then(queryResults => {
       if (cancelled) {
         return;
-      }
-
-      // NOTE: is this really necessary?
-      // Append "Show More" link to the results
-      if (queryResults.total !== 0 && queryResults.results.length !== queryResults.total) {
-        queryResults.results.push({
-          navGroup: 'more-results',
-          slug: '/search?q=' + encodeURIComponent(query),
-          title: `Show ${queryResults.total - queryResults.results.length} More`,
-        });
       }
 
       setResults(buildOptions(queryResults.results));
@@ -85,9 +65,11 @@ export const Search = () => {
             key="select"
             components={{ Control, DropdownIndicator, IndicatorSeparator, Input }}
             placeholder="Search..."
-            options={query ? results : defaultOptions}
+            options={results}
             value={null}
             onInputChange={setQueryDebounced}
+            openMenuOnClick={false}
+            tabSelectsValue={false}
             onChange={result => {
               setQueryDebounced.cancel();
               navigate(result.slug);

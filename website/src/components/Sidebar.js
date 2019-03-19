@@ -98,6 +98,7 @@ const ListItem = props => (
         display: 'block',
         overflow: 'hidden',
         marginBottom: 1,
+        outline: 0,
         padding: `${gridSize * 0.75}px ${gridSize * 1.5}px`,
         textDecoration: 'none',
         textOverflow: 'ellipsis',
