@@ -207,7 +207,8 @@
   "preconstruct": {
     "packages": [
       "packages/arch/packages/*",
-      "packages/apollo-helpers"
+      "packages/apollo-helpers",
+      "packages/utils"
     ]
   },
   "jest": {
