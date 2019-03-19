@@ -3,6 +3,8 @@ const next = require('next');
 
 const { staticRoute, staticPath } = require('./index');
 
+const PORT = process.env.PORT || 3000;
+
 const initialData = {
   User: [
     {
@@ -28,7 +30,7 @@ const nextApp = next({
   dev: process.env.NODE_ENV !== 'production',
 });
 
-Promise.all([keystone.prepare({ port: 3000 }), nextApp.prepare()])
+Promise.all([keystone.prepare({ port: PORT }), nextApp.prepare()])
   .then(async ([{ server, keystone: keystoneApp }]) => {
     server.app.use(staticRoute, server.express.static(staticPath));
 
