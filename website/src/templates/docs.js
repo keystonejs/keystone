@@ -25,6 +25,8 @@ import { CONTAINER_GUTTERS } from '../components/Container';
 const SIDEBAR_WIDTH = 280;
 
 function titleCase(str, at = '-') {
+  if (!str) return str;
+
   const arr = str
     .toLowerCase()
     .split(at)
@@ -39,9 +41,8 @@ export default function Template({
 }) {
   const { code, fields } = mdx;
   const { description, heading } = getMeta(matter(mdx.rawBody).content);
-  const title = `${fields.pageTitle.charAt(0) === '@' ? heading : fields.pageTitle} (${titleCase(
-    fields.navGroup
-  )})`;
+  const suffix = fields.navGroup ? ` (${titleCase(fields.navGroup)})` : '';
+  const title = `${fields.pageTitle.charAt(0) === '@' ? heading : fields.pageTitle}${suffix}`;
 
   return (
     <>
