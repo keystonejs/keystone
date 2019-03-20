@@ -17,7 +17,6 @@
     "@keystone-alpha/core": "^1.0.1",
     "@keystone-alpha/fields": "^2.0.0",
     "@keystone-alpha/keystone": "^1.0.2",
-    "@keystone-alpha/server": "^1.2.0",
-    "express": "^4.16.3"
+    "@keystone-alpha/server": "^1.2.0"
   }
 }
