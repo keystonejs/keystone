@@ -4,23 +4,28 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import { jsx, Global } from '@emotion/core';
 import { colors, globalStyles } from '@arch-ui/theme';
 
-import { Button, Header } from '../components';
+import Layout from '../templates/layout';
+import { Button } from '../components';
 import { CONTAINER_GUTTERS } from '../components/Container';
 import { HEADER_HEIGHT } from '../components/Header';
 import { media, mediaOnly, mediaMax, mq } from '../utils/media';
-import illustrationPNG from '../images/illustration.png';
+import illustrationPNG from '../assets/illustration.png';
 
 export default () => (
-  <>
-    <Global styles={globalStyles} />
-    <Header key="global-header" style={{ position: 'relative', zIndex: 1 }} />
-    <Hero />
-  </>
+  <Layout>
+    {() => (
+      <>
+        <Global styles={globalStyles} />
+        <Hero />
+      </>
+    )}
+  </Layout>
 );
 
-const Container = props => (
+const CustomContainer = props => (
   <div
     css={mq({
+      boxSizing: 'border-box',
       marginLeft: 'auto',
       marginRight: 'auto',
       paddingLeft: CONTAINER_GUTTERS,
@@ -32,14 +37,14 @@ const Container = props => (
 );
 
 const Hero = () => (
-  <div css={mq({ overflow: 'hidden' })}>
-    <Container
+  <div css={{ overflow: 'hidden' }}>
+    <CustomContainer
       css={mq({
         display: 'flex',
         flexDirection: ['column', 'row'],
         fontSize: [14, 18],
         lineHeight: 1.6,
-        height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+        minHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
 
         [media.sm]: {
           background: `url(${illustrationPNG}) no-repeat center right`,
@@ -92,7 +97,7 @@ const Hero = () => (
         </div>
       </InnerLayout>
       <LgDeviceColPlaceholder />
-    </Container>
+    </CustomContainer>
   </div>
 );
 
