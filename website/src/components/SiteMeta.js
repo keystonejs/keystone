@@ -2,8 +2,6 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { graphql, StaticQuery } from 'gatsby';
 
-import keystoneIllustration from '../assets/illustration.png';
-
 export const SiteMeta = ({ pathname }) => (
   <StaticQuery
     query={graphql`
@@ -45,13 +43,13 @@ export const SiteMeta = ({ pathname }) => (
           <meta property="og:type" content="website" />
           <meta property="og:locale" content="en" />
           <meta property="og:site_name" content={title} />
-          <meta property="og:image" content={`${siteUrl}${keystoneIllustration}`} />
-          <meta property="og:image:width" content="382" />
-          <meta property="og:image:height" content="382" />
+          <meta property="og:image" content={`${siteUrl}/og-image-landscape.png`} />
+          <meta property="og:image:width" content="761" />
+          <meta property="og:image:height" content="410" />
 
           <meta name="twitter:card" content="summary" />
           <meta name="twitter:site" content={twitter} />
-          <meta name="twitter:image" content="/og-image.png" />
+          <meta name="twitter:image" content={`${siteUrl}/og-image-square.png`} />
         </Helmet>
       );
     }}
