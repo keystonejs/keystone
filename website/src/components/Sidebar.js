@@ -42,13 +42,14 @@ export const Sidebar = () => (
       const navGroups = Object.keys(navData);
 
       return (
-        <nav>
+        <nav aria-label="Documentation Menu">
           {navGroups.map(navGroup => {
             const intro = navData[navGroup].find(node => node.context.pageTitle === 'Introduction');
+            const sectionId = `docs-menu-${navGroup}`;
             return (
               <div key={navGroup}>
-                <GroupHeading>{navGroup.replace('-', ' ')}</GroupHeading>
-                <List>
+                <GroupHeading id={sectionId}>{navGroup.replace('-', ' ')}</GroupHeading>
+                <List aria-labelledby={sectionId}>
                   {intro && (
                     <ListItem key={intro.path} to={intro.path}>
                       Introduction

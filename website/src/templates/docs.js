@@ -88,7 +88,7 @@ export default function Template({
                   Edit Page
                 </EditButton>
               </EditSection>
-              <Pagination>
+              <Pagination aria-label="Pagination">
                 {prev ? (
                   <PaginationButton to={prev.fields.slug}>
                     <small>&larr; Prev</small>
@@ -207,7 +207,7 @@ const EditButton = props => (
 const gutter = gridSize / 2;
 
 const Pagination = props => (
-  <div
+  <nav
     css={{
       display: 'flex',
       marginLeft: -gutter,
