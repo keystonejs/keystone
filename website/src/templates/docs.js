@@ -36,10 +36,11 @@ function titleCase(str, at = '-') {
 }
 
 export default function Template({
-  data: { mdx }, // this prop will be injected by the GraphQL query below.
+  data: { mdx, site }, // this prop will be injected by the GraphQL query below.
   pageContext: { prev, next },
 }) {
   const { code, fields } = mdx;
+  const { siteMetadata } = site;
   const { description, heading } = getMeta(matter(mdx.rawBody).content);
   const suffix = fields.navGroup ? ` (${titleCase(fields.navGroup)})` : '';
   const title = `${fields.pageTitle.charAt(0) === '@' ? heading : fields.pageTitle}${suffix}`;
@@ -51,6 +52,7 @@ export default function Template({
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta property="og:description" content={description} />
+        <meta property="og:url" content={`${siteMetadata.siteUrl}${fields.slug}`} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
         <meta name="twitter:description" content={description} />
@@ -439,6 +441,11 @@ export const pageQuery = graphql`
         pageTitle
         navGroup
         slug
+      }
+    }
+    site {
+      siteMetadata {
+        siteUrl
       }
     }
   }
