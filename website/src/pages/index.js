@@ -3,6 +3,7 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { jsx, Global } from '@emotion/core';
 import { colors, globalStyles } from '@arch-ui/theme';
+import { SkipNavContent } from '@reach/skip-nav';
 
 import Layout from '../templates/layout';
 import { Button } from '../components';
@@ -38,6 +39,7 @@ const CustomContainer = props => (
 
 const Hero = () => (
   <div css={{ overflow: 'hidden' }}>
+    <SkipNavContent />
     <CustomContainer
       css={mq({
         display: 'flex',
