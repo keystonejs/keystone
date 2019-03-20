@@ -1,5 +1,15 @@
 # create-keystone-app
 
+## 0.3.1
+
+- [patch][08d3ddc9](https://github.com/keystonejs/keystone-5/commit/08d3ddc9):
+
+  - Use server.express in TODO demo project
+
+- [patch][ee769467](https://github.com/keystonejs/keystone-5/commit/ee769467):
+
+  - Env vars for PORT config and documentation on demos/project templates
+
 ## 0.3.0
 
 - [patch][1a6ca7ae](https://github.com/keystonejs/keystone-5/commit/1a6ca7ae):

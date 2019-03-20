@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/fields",
   "description": "KeystoneJS Field Types including Text, Password, DateTime, Integer, and more.",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -11,7 +11,7 @@
     "@arch-ui/button": "^0.0.3",
     "@arch-ui/color-utils": "^0.0.1",
     "@arch-ui/controls": "^0.0.3",
-    "@arch-ui/day-picker": "^0.0.3",
+    "@arch-ui/day-picker": "^0.0.4",
     "@arch-ui/drawer": "^0.0.3",
     "@arch-ui/fields": "^0.0.3",
     "@arch-ui/filters": "^0.0.3",
@@ -32,7 +32,7 @@
     "@keystone-alpha/access-control": "^1.0.1",
     "@keystone-alpha/adapter-knex": "^1.0.2",
     "@keystone-alpha/adapter-mongoose": "^1.0.2",
-    "@keystone-alpha/test-utils": "^1.1.1",
+    "@keystone-alpha/test-utils": "^1.1.2",
     "@keystone-alpha/utils": "^1.0.1",
     "apollo-errors": "^1.9.0",
     "apply-ref": "^0.1.1",
