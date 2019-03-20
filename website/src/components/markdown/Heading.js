@@ -6,7 +6,7 @@ import { colors } from '@arch-ui/theme';
 import reactAddonsTextContent from 'react-addons-text-content';
 import snakeCase from 'lodash.snakecase';
 
-import { media } from '../../utils/media';
+import { mq } from '../../utils/media';
 
 function dashcase(children) {
   // this matches the IDs that are used for links naturally by remark
@@ -29,14 +29,10 @@ const Heading = ({ as: Tag, children, ...props }) => (
 
 export const H1 = props => (
   <Heading
-    css={{
-      fontSize: '2.4rem',
+    css={mq({
+      fontSize: ['2.4rem', '3.2rem'],
       marginTop: 0,
-
-      [media.lg]: {
-        fontSize: '3.2rem',
-      },
-    }}
+    })}
     {...props}
     as="h1"
   />
@@ -44,29 +40,21 @@ export const H1 = props => (
 export const H2 = props => (
   <Heading
     {...props}
-    css={{
-      fontSize: '1.8rem',
+    css={mq({
+      fontSize: ['1.8rem', '2.4rem'],
       fontWeight: 300,
       marginTop: '1.33em',
-
-      [media.lg]: {
-        fontSize: '2.4rem',
-      },
-    }}
+    })}
     as="h2"
   />
 );
 export const H3 = props => (
   <Heading
-    css={{
-      fontSize: '1.4rem',
+    css={mq({
+      fontSize: ['1.4rem', '1.6rem'],
       fontWeight: 500,
       marginTop: '1.5em',
-
-      [media.lg]: {
-        fontSize: '1.6rem',
-      },
-    }}
+    })}
     {...props}
     as="h3"
   />

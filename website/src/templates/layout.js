@@ -7,10 +7,10 @@ import throttle from 'lodash.throttle';
 
 import { Footer, Header, Sidebar, Search } from '../components';
 import { Container, CONTAINER_GUTTERS } from '../components/Container';
-import { media } from '../utils/media';
+import { media, mediaMax } from '../utils/media';
 import { useDimensions } from '../utils/hooks';
 
-const SIDEBAR_WIDTH = 260;
+const SIDEBAR_WIDTH = 280;
 
 const Layout = ({ children }) => {
   const [isVisible, setVisible] = useState(false);
@@ -23,11 +23,11 @@ const Layout = ({ children }) => {
         styles={{
           ...globalStyles,
 
-          [media.sm]: {
+          [mediaMax.sm]: {
             body: { fontSize: 'inherit' },
             html: { fontSize: 14 },
           },
-          [media.lg]: {
+          [media.sm]: {
             body: { fontSize: 'inherit' },
             html: { fontSize: 16 },
           },
@@ -73,13 +73,14 @@ const Aside = ({ offsetTop, isVisible, ...props }) => {
   });
 
   useEffect(() => {
+    const asideEl = asideRef.current; // maintain ref for cleanup
     window.addEventListener('scroll', handleWindowScroll);
-    asideRef.current.addEventListener('scroll', maintainSidebarScroll);
+    asideEl.addEventListener('scroll', maintainSidebarScroll);
 
     // cleanup
     return () => {
       window.removeEventListener('scroll', handleWindowScroll);
-      asideRef.current.removeEventListener('scroll', maintainSidebarScroll);
+      asideEl.removeEventListener('scroll', maintainSidebarScroll);
     };
   });
 
@@ -102,17 +103,16 @@ const Aside = ({ offsetTop, isVisible, ...props }) => {
     <aside
       ref={asideRef}
       css={{
-        // borderRight: `1px solid ${colors.N10}`,
         boxSizing: 'border-box',
         overflowY: 'auto',
         paddingBottom: '3rem',
         paddingTop: gutter,
         paddingLeft: 3, // NOTE: the 3px is to stop the select's shadows being cropped
 
-        [media.sm]: {
+        [mediaMax.sm]: {
           display: isVisible ? 'block' : 'none',
         },
-        [media.lg]: {
+        [media.sm]: {
           paddingRight: gutter,
           ...stickyStyles,
         },
@@ -129,7 +129,7 @@ const Main = props => (
       paddingBottom: '3rem',
       paddingTop: gutter,
 
-      [media.lg]: {
+      [media.sm]: {
         marginLeft: SIDEBAR_WIDTH,
         paddingLeft: gutter,
       },
@@ -140,18 +140,22 @@ const Main = props => (
         borderRadius,
         boxSizing: 'border-box',
         boxShadow: '0 0 0 1px hsla(0, 0%, 0%, 0.1), 0 4px 11px hsla(0, 0%, 0%, 0.1) !important',
+        display: 'block',
+        marginBottom: '2rem',
+        marginTop: '2rem',
         maxWidth: '100%',
-        padding: 4,
+      },
+
+      // NOTE: consider removing `gatsby-resp-image-wrapper`
+      '.gatsby-resp-image-link, .gatsby-resp-image-link:hover, .gatsby-resp-image-link:focus': {
+        background: 0,
+        border: 0,
+        marginBottom: '2rem',
+        marginTop: '2rem',
       },
 
       // Misc. Typography
       // ------------------------------
-
-      // NOTE: consider removing `gatsby-remark-images`
-      '.gatsby-resp-image-link, .gatsby-resp-image-link:hover, .gatsby-resp-image-link:focus': {
-        background: 0,
-        border: 0,
-      },
       ul: {
         lineHeight: 1.8,
       },
@@ -192,7 +196,7 @@ const Main = props => (
           display: 'none',
         },
 
-        [media.sm]: {
+        [mediaMax.sm]: {
           marginLeft: -CONTAINER_GUTTERS[0],
           marginRight: -CONTAINER_GUTTERS[0],
         },
