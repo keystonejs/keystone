@@ -37,7 +37,21 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
 // ==============================
 
 const Logo = () => (
-  <Link to="/" css={{ alignItems: 'center', color: 'inherit', display: 'inline-flex' }}>
+  <Link
+    to="/"
+    css={{
+      alignItems: 'center',
+      color: 'inherit',
+      display: 'inline-flex',
+
+      ':hover': {
+        textDecoration: 'none',
+        span: {
+          textDecoration: 'underline',
+        },
+      },
+    }}
+  >
     <img alt="KeystoneJS Logo" src={logosvg} css={{ display: 'block', width: 40 }} />
     <span
       css={{
@@ -48,8 +62,19 @@ const Logo = () => (
         },
       }}
     >
-      KeystoneJS
+      KeystoneJS{' '}
     </span>
+    <abbr
+      css={{
+        cursor: 'help',
+        fontSize: '1.66em',
+        marginLeft: '0.2em',
+        textDecoration: 'none',
+      }}
+      title="Keystone 5 is currently in alpha"
+    >
+      (α)
+    </abbr>
   </Link>
 );
 const NavItem = ({ as, lgOnly, ...props }) => {
