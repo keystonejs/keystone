@@ -26,6 +26,7 @@
     "@arch-ui/theme": "^0.0.2",
     "@arch-ui/tooltip": "^0.0.3",
     "@arch-ui/typography": "^0.0.3",
+    "@babel/runtime": "^7.3.4",
     "@emotion/core": "^10.0.9",
     "@iframely/embed.js": "^1.1.1",
     "@keystone-alpha/access-control": "^1.0.1",
@@ -66,5 +67,14 @@
   },
   "devDependencies": {
     "cuid": "^2.1.6"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      "types/*/views/Cell",
+      "types/*/views/Field",
+      "types/*/views/Filter",
+      "types/*/views/Controller",
+      "types/Content/views/blocks/*"
+    ]
   }
 }
