@@ -1,1 +1,0 @@
-- Build field type views before publishing to npm and stop running Babel on Keystone packages in node_modules in the Admin UI

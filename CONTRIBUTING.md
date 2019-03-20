@@ -109,10 +109,11 @@ git pull
 git branch -D temp-release-branch
 git checkout -b temp-release-branch
 bolt version-packages
+<update package.json.ejs to match todo/package.json> # FIXME: This should be automated at some point!
 bolt format
 git add .
 git commit -m "Run version-packages"
-git push -f
+git push --set-upstream origin temp-release-branch
 ```
 
 Once you have run this you will need to make a pull request to merge this back into master.

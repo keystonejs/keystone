@@ -1,7 +1,0 @@
-{
-  "releases": [
-    { "name": "@keystone-alpha/demo-project-todo", "type": "patch" },
-    { "name": "create-keystone-app", "type": "patch" }
-  ],
-  "dependents": []
-}
