@@ -4,3 +4,4 @@ export { Header } from './Header';
 export { Footer } from './Footer';
 export { Sidebar } from './Sidebar';
 export { Search } from './Search';
+export { SiteMeta } from './SiteMeta';

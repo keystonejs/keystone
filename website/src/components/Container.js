@@ -10,9 +10,10 @@ export const CONTAINER_GUTTERS = [gridSize * 2, gridSize * 3, gridSize * 4];
 export const Container = props => (
   <div
     css={mq({
-      maxWidth: 1140,
+      boxSizing: 'border-box',
       marginLeft: 'auto',
       marginRight: 'auto',
+      maxWidth: 1140,
       paddingLeft: CONTAINER_GUTTERS,
       paddingRight: CONTAINER_GUTTERS,
     })}

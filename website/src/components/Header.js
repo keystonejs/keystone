@@ -5,7 +5,7 @@ import { Link } from 'gatsby';
 import { jsx } from '@emotion/core';
 import { colors, gridSize } from '@arch-ui/theme';
 
-import logosvg from '../images/logo.svg';
+import logosvg from '../assets/logo.svg';
 import { Container } from '../components';
 import { media, mediaOnly, mediaMax } from '../utils/media';
 

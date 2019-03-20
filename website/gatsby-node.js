@@ -11,7 +11,7 @@ const GROUPS_NO_PKG = GROUPS.filter(s => s !== 'packages');
 exports.createPages = ({ actions, graphql }) => {
   const { createPage } = actions;
 
-  const MdTemplate = path.resolve(`src/templates/MdTemplate.js`);
+  const template = path.resolve(`src/templates/docs.js`);
 
   // The 'fields' values are injected during the `onCreateNode` call below
   return graphql(`
@@ -47,7 +47,7 @@ exports.createPages = ({ actions, graphql }) => {
       // The 'fields' values are injected during the `onCreateNode` call below
       createPage({
         path: `${fields.slug}`,
-        component: MdTemplate,
+        component: template,
         context: {
           mdPageId: id,
           prev: index === 0 ? null : pages[index - 1].node,
