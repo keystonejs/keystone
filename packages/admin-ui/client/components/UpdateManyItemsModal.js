@@ -31,12 +31,17 @@ class UpdateManyModal extends Component {
       })
       .then(() => {
         this.props.onUpdate();
-        this.setState({ item: this.props.list.getInitialItemData(), selectedFields: [] });
+        this.resetState();
       });
+  };
+
+  resetState = () => {
+    this.setState({ item: this.props.list.getInitialItemData(), selectedFields: [] });
   };
   onClose = () => {
     const { isLoading } = this.props;
     if (isLoading) return;
+    this.resetState();
     this.props.onClose();
   };
   onKeyDown = event => {
