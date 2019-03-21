@@ -75,6 +75,7 @@ class UpdateManyModal extends Component {
       <Drawer
         isOpen={isOpen}
         onClose={this.onClose}
+        closeOnBlanketClick
         heading={`Update ${list.formatCount(items)}`}
         onKeyDown={this.onKeyDown}
         slideInFrom="left"
