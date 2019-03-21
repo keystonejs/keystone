@@ -24,10 +24,10 @@ Username / Password authentication can be enabled on the Admin UI.
 
 First, setup [a `PasswordAuthStrategy` instance](#passwordauthstrategy).
 
-Then, pass that instance into the Web Server setup:
+Then, pass that instance into the Admin UI setup:
 
 ```javascript
-const { WebServer } = require('@keystone-alpha/server');
+const { AdminUI } = require('@keystone-alpha/admin-ui');
 const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
 
 const keystone = // ...
@@ -37,9 +37,9 @@ const authStrategy = keystone.createAuthStrategy({
   list: 'User',
 });
 
-const server = new WebServer(keystone, {
-  authStrategy: authStrategy,
-  // ... other config
+const admin = new AdminUI(keystone, {
+  adminPath: '/admin',
+  authStrategy,
 });
 ```
 

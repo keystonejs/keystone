@@ -1,17 +1,17 @@
 const path = require('path');
+const bolt = require('bolt');
 const get = require('lodash.get');
 const slugify = require('@sindresorhus/slugify');
 const generateUrl = require('./generateUrl');
 
 const PROJECT_ROOT = path.resolve('..');
-
-const SECTIONS = ['quick-start', 'tutorials', 'guides', 'discussions', 'packages', 'field-types'];
-const SECTIONS_NO_PKG = SECTIONS.filter(s => s !== 'packages');
+const GROUPS = ['quick-start', 'tutorials', 'guides', 'discussions', 'packages', 'field-types'];
+const GROUPS_NO_PKG = GROUPS.filter(s => s !== 'packages');
 
 exports.createPages = ({ actions, graphql }) => {
   const { createPage } = actions;
 
-  const MdTemplate = path.resolve(`src/templates/MdTemplate.js`);
+  const template = path.resolve(`src/templates/docs.js`);
 
   // The 'fields' values are injected during the `onCreateNode` call below
   return graphql(`
@@ -47,7 +47,7 @@ exports.createPages = ({ actions, graphql }) => {
       // The 'fields' values are injected during the `onCreateNode` call below
       createPage({
         path: `${fields.slug}`,
-        component: MdTemplate,
+        component: template,
         context: {
           mdPageId: id,
           prev: index === 0 ? null : pages[index - 1].node,
@@ -93,9 +93,15 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
     const parent = getNode(node.parent);
     const { sourceInstanceName, relativePath } = parent;
 
-    const isPackage = !SECTIONS_NO_PKG.includes(sourceInstanceName);
-    const pageTitle = node.frontmatter.title;
+    const isPackage = !GROUPS_NO_PKG.includes(sourceInstanceName);
     const navGroup = node.frontmatter.section;
+    let pageTitle = node.frontmatter.title;
+
+    if (isPackage && sourceInstanceName !== '@keystone-alpha/fields') {
+      const { dir: rootDir } = await bolt.getProject({ cwd: '../' });
+      const workspaces = await bolt.getWorkspaces({ cwd: rootDir, only: sourceInstanceName });
+      pageTitle = workspaces[0].name;
+    }
 
     // This value is added in `gatsby-config` as the "name" of the plugin.
     // Since we scan every workspace and add that as a separate plugin, we
@@ -107,7 +113,7 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       editUrl: getEditUrl(get(node, 'fileAbsolutePath')),
       // The full path to this "node"
       slug: generateUrl(parent),
-      sortOrder: SECTIONS.indexOf(node.frontmatter.section),
+      sortOrder: GROUPS.indexOf(navGroup),
       isPackageIndex: isPackage && relativePath === 'README.md',
       pageTitle: pageTitle,
     };

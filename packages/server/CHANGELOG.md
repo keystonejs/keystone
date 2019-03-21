@@ -1,5 +1,20 @@
 # @keystone-alpha/server
 
+## 2.0.0
+
+- [patch][1f2ebc81](https://github.com/keystonejs/keystone-5/commit/1f2ebc81):
+
+  - Internal refactoring
+
+- [major][de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+
+  - Update authStrategy APIs
+    - Removes `authStrategy` from the `config` API of `Webserver`.
+    - Removes `authStrategy` from the `serverConfig` of the core `keystone` system builder.
+    - Removes the `setAuthStrategy` method from `AdminUI`.
+    - Adds `authStrategy` to the `config` API of `AdminUI`.
+    - `Webserver` checks `keystone.auth` to determine whether to set up auth session middlewares.
+
 ## 1.2.0
 
 - [minor][74e0363](https://github.com/keystonejs/keystone-5/commit/74e0363):

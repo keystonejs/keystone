@@ -18,7 +18,7 @@ module.exports = function({ adminMeta, entry }) {
   const rules = [
     {
       test: /\.js$/,
-      exclude: [/node_modules(?!\/@(keystone-alpha|arch-ui)\/)/],
+      exclude: [/node_modules(?!\/@keystone-alpha\/admin-ui)/],
       use: [
         {
           loader: 'babel-loader',
