@@ -1,5 +1,12 @@
 # @keystone-alpha/keystone
 
+## 1.0.3
+
+- Updated dependencies [9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):
+- Updated dependencies [de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+  - @keystone-alpha/fields@3.0.0
+  - @keystone-alpha/core@2.0.0
+
 ## 1.0.2
 
 - [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):

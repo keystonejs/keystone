@@ -1,5 +1,11 @@
 # @keystone-alpha/website
 
+## 1.0.3
+
+- [patch][9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):
+
+  - Build field type views before publishing to npm and stop running Babel on Keystone packages in node_modules in the Admin UI
+
 ## 1.0.2
 
 - [patch][60c13d0d](https://github.com/keystonejs/keystone-5/commit/60c13d0d):

@@ -1,5 +1,24 @@
 # @keystone-alpha/demo-project-todo
 
+## 1.0.3
+
+- [patch][08d3ddc9](https://github.com/keystonejs/keystone-5/commit/08d3ddc9):
+
+  - Use server.express in TODO demo project
+
+- [patch][ee769467](https://github.com/keystonejs/keystone-5/commit/ee769467):
+
+  - Env vars for PORT config and documentation on demos/project templates
+
+- Updated dependencies [9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):
+- Updated dependencies [de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+- Updated dependencies [4ed35dfd](https://github.com/keystonejs/keystone-5/commit/4ed35dfd):
+  - @keystone-alpha/keystone@1.0.3
+  - @keystone-alpha/admin-ui@3.0.0
+  - @keystone-alpha/fields@3.0.0
+  - @keystone-alpha/core@2.0.0
+  - @keystone-alpha/server@2.0.0
+
 ## 1.0.2
 
 - Updated dependencies [dcb93771](https://github.com/keystonejs/keystone-5/commit/dcb93771):

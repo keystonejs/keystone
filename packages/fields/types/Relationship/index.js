@@ -11,7 +11,7 @@ module.exports = {
   isRelationship: true, // Used internally for this special case
   implementation: Relationship,
   views: {
-    Controller: path.join(__dirname, './Controller'),
+    Controller: path.join(__dirname, './views/Controller'),
     Field: path.join(__dirname, './views/Field'),
     Filter: path.join(__dirname, './views/Filter'),
     Cell: path.join(__dirname, './views/Cell'),

@@ -1,5 +1,34 @@
 # @keystone-alpha/admin-ui
 
+## 3.0.1
+
+- [patch][f12a2a80](https://github.com/keystonejs/keystone-5/commit/f12a2a80):
+
+  - Fix running Babel on Admin UI src when on npm
+
+## 3.0.0
+
+- [major][9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):
+
+  - Build field type views before publishing to npm and stop running Babel on Keystone packages in node_modules in the Admin UI
+
+- [major][de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+
+  - Update authStrategy APIs
+    - Removes `authStrategy` from the `config` API of `Webserver`.
+    - Removes `authStrategy` from the `serverConfig` of the core `keystone` system builder.
+    - Removes the `setAuthStrategy` method from `AdminUI`.
+    - Adds `authStrategy` to the `config` API of `AdminUI`.
+    - `Webserver` checks `keystone.auth` to determine whether to set up auth session middlewares.
+
+- [major][4ed35dfd](https://github.com/keystonejs/keystone-5/commit/4ed35dfd):
+
+  - Remove methods from `AdminUI` class:
+    - `redirectSuccessfulSignin`
+    - `signin`
+    - `signout`
+    - `session`
+
 ## 2.0.0
 
 - [major][dcb93771](https://github.com/keystonejs/keystone-5/commit/dcb93771):

@@ -1,5 +1,11 @@
 # @keystone-alpha/test-utils
 
+## 1.1.2
+
+- Updated dependencies [de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+  - @keystone-alpha/keystone@1.0.3
+  - @keystone-alpha/server@2.0.0
+
 ## 1.1.1
 
 - [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):

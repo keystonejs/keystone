@@ -1,5 +1,15 @@
 # @keystone-alpha/fields
 
+## 3.0.0
+
+- [patch][39067f44](https://github.com/keystonejs/keystone-5/commit/39067f44):
+
+  - Add text date and time pickers
+
+- [major][9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):
+
+  - Build field type views before publishing to npm and stop running Babel on Keystone packages in node_modules in the Admin UI
+
 ## 2.0.0
 
 - [major][dcb93771](https://github.com/keystonejs/keystone-5/commit/dcb93771):

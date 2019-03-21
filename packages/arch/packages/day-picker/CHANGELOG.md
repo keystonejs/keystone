@@ -1,5 +1,11 @@
 # @arch-ui/day-picker
 
+## 0.0.4
+
+- [patch][39067f44](https://github.com/keystonejs/keystone-5/commit/39067f44):
+
+  - Add text date and time pickers
+
 ## 0.0.3
 
 - [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):

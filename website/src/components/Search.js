@@ -143,6 +143,10 @@ const Input = ({
         opacity: isHidden ? 0 : 1,
         outline: 0,
         padding: 0,
+
+        '&.focus-visible': {
+          outline: 0,
+        },
       }}
       {...props}
     />
