@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 0.3.2
+
+- [patch][](https://github.com/keystonejs/keystone-5/commit/):
+
+  - Bump template dependencies
+
 ## 0.3.1
 
 - [patch][08d3ddc9](https://github.com/keystonejs/keystone-5/commit/08d3ddc9):
