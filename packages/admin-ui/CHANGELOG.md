@@ -1,5 +1,11 @@
 # @keystone-alpha/admin-ui
 
+## 3.0.1
+
+- [patch][f12a2a80](https://github.com/keystonejs/keystone-5/commit/f12a2a80):
+
+  - Fix running Babel on Admin UI src when on npm
+
 ## 3.0.0
 
 - [major][9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):

@@ -125,6 +125,7 @@ Once the version changes are merged back in to master, to do a manual release:
 ```sh
 git checkout master
 git pull
+bolt
 bolt publish-changed
 git push --tags
 ```
