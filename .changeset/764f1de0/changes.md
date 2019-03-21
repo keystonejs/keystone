@@ -1,0 +1,1 @@
+- Fix running Babel on Admin UI src when on npm
