@@ -1,5 +1,11 @@
 # @keystone-alpha/server
 
+## 2.0.1
+
+- [patch][0c754410](https://github.com/keystonejs/keystone-5/commit/0c754410):
+
+  - Fix the graphql dev query links
+
 ## 2.0.0
 
 - [patch][1f2ebc81](https://github.com/keystonejs/keystone-5/commit/1f2ebc81):
