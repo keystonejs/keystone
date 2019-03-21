@@ -21,8 +21,7 @@ export const PrimaryNav = styled.nav({
   boxSizing: 'border-box',
   display: 'flex',
   flexFlow: 'column nowrap',
-  fontSize: '0.9rem',
-  fontWeight: 500,
+  fontSize: 15,
   height: '100vh',
   position: 'fixed',
   zIndex: 2,
@@ -66,8 +65,8 @@ export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => {
   const selectedStyles = isSelected
     ? {
         '&, :hover, :active, :focus': {
-          backgroundColor: colors.N80,
-          color: 'white',
+          backgroundColor: colors.B.A10,
+          fontWeight: 500,
         },
       }
     : {};
@@ -88,15 +87,21 @@ export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => {
     whiteSpace: 'nowrap',
 
     ':hover, :focus': {
-      backgroundColor: colors.B.L80,
-      color: colors.B.D20,
-      outline: 0,
+      backgroundColor: colors.B.A5,
+      color: colors.N100,
       textDecoration: 'none',
     },
     ':active': {
-      backgroundColor: colors.B.L70,
+      backgroundColor: colors.B.A10,
     },
 
     ...selectedStyles,
   };
+});
+export const PrimaryNavHeading = styled.h3({
+  color: colors.N60,
+  fontSize: '0.85em',
+  fontWeight: '700',
+  marginTop: '2.4em',
+  textTransform: 'uppercase',
 });
