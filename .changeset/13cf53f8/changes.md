@@ -1,1 +1,0 @@
-- Fix the graphql dev query links
