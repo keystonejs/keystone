@@ -11,6 +11,7 @@ import { colors, gridSize } from '@arch-ui/theme';
 import {
   PrimaryNav,
   PrimaryNavItem,
+  PrimaryNavHeading,
   PrimaryNavScrollArea,
   PRIMARY_NAV_GUTTER,
 } from '@arch-ui/navbar';
@@ -166,10 +167,38 @@ function getPath(str) {
   return `/${arr[1]}/${arr[2]}`;
 }
 
-function PrimaryNavItems() {
-  let { adminPath, getListByKey, sortListsAlphabetically, listKeys: _listKeys } = useAdminMeta();
-  const listKeys = sortListsAlphabetically ? [..._listKeys].sort() : _listKeys;
+function renderChildren(node, getListByKey, adminPath) {
+  if (node.children) {
+    return (
+      <>
+        <PrimaryNavHeading>{node.label}</PrimaryNavHeading>
+        {node.children.map(child => renderChildren(child, getListByKey, adminPath))}
+      </>
+    );
+  }
 
+  const key = typeof node === 'string' ? node : node.listKey;
+  const list = getListByKey(key);
+
+  if (!list) {
+    throw new Error(`Unable to resolve list for key ${key}`);
+  }
+
+  const label = node.label || list.label;
+  const maybeSearchParam = list.getPersistedSearch() || '';
+  const path = getPath(location.pathname);
+  const href = `${adminPath}/${list.path}`;
+  const isSelected = href === path;
+  const id = `ks-nav-${list.path}`;
+
+  return (
+    <PrimaryNavItem key={key} id={id} isSelected={isSelected} to={`${href}${maybeSearchParam}`}>
+      {label}
+    </PrimaryNavItem>
+  );
+}
+
+function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys }) {
   return (
     <Relative>
       <Route>
@@ -181,28 +210,9 @@ function PrimaryNavItems() {
                   Dashboard
                 </PrimaryNavItem>
 
-                {listKeys.map(key => {
-                  const list = getListByKey(key);
-                  let href = `${adminPath}/${list.path}`;
-                  const path = getPath(location.pathname);
-                  const isSelected = href === path;
-
-                  const maybeSearchParam = list.getPersistedSearch();
-                  if (maybeSearchParam) {
-                    href += maybeSearchParam;
-                  }
-
-                  return (
-                    <PrimaryNavItem
-                      key={key}
-                      id={`ks-nav-${list.path}`}
-                      isSelected={isSelected}
-                      to={href}
-                    >
-                      {list.label}
-                    </PrimaryNavItem>
-                  );
-                })}
+                {pages && pages.length
+                  ? pages.map(node => renderChildren(node, getListByKey, adminPath))
+                  : listKeys.map(key => renderChildren(key, getListByKey, adminPath))}
               </PrimaryNavScrollArea>
             )}
           </ScrollQuery>
@@ -214,7 +224,7 @@ function PrimaryNavItems() {
 
 let PrimaryNavContent = memo(
   function PrimaryContent() {
-    let { adminPath, name } = useAdminMeta();
+    let { adminPath, getListByKey, listKeys, name, pages } = useAdminMeta();
 
     return (
       <Inner>
@@ -233,7 +243,12 @@ let PrimaryNavContent = memo(
         >
           {name}
         </Title>
-        <PrimaryNavItems />
+        <PrimaryNavItems
+          adminPath={adminPath}
+          getListByKey={getListByKey}
+          listKeys={listKeys.sort()}
+          pages={pages}
+        />
         <NavIcons />
       </Inner>
     );

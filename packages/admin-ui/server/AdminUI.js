@@ -36,13 +36,13 @@ module.exports = class AdminUI {
 
   getAdminMeta() {
     return {
-      withAuth: !!this.authStrategy,
-      authList: this.authStrategy ? this.authStrategy.listKey : null,
       adminPath: this.adminPath,
+      authList: this.authStrategy ? this.authStrategy.listKey : null,
+      pages: this.config.pages,
+      sessionPath: this.config.sessionPath,
       signinPath: this.config.signinPath,
       signoutPath: this.config.signoutPath,
-      sessionPath: this.config.sessionPath,
-      sortListsAlphabetically: this.config.sortListsAlphabetically,
+      withAuth: !!this.authStrategy,
     };
   }
 
