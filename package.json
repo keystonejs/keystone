@@ -273,7 +273,6 @@
     "mocha-junit-reporter": "^1.18.0",
     "mocha-multi-reporters": "^1.1.7",
     "mongodb": "^3.1.13",
-    "mongodb-memory-server": "^3.1.2",
     "p-is-promise": "^2.0.0",
     "pino-colada": "^1.4.4",
     "prettier": "^1.16.4",
