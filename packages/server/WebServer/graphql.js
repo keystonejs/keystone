@@ -176,8 +176,6 @@ module.exports = function createGraphQLMiddleware(
   const app = express();
 
   if (graphiqlPath) {
-    ttyLink('GraphQL Playground:', graphiqlPath, port, playgroundPkg.version);
-    app.use(graphiqlPath, graphiqlMiddleware(apiPath));
     if (process.env.NODE_ENV !== 'production' && falsey(process.env.DISABLE_LOGGING)) {
       const devQueryPath = `${graphiqlPath}/go`;
       ttyLink('GraphQL Debug Links:', devQueryPath, port);
@@ -185,6 +183,8 @@ module.exports = function createGraphQLMiddleware(
       // NOTE: Must come before we setup the API below
       addDevQueryMiddlewares(app, apiPath, graphiqlPath, devQueryPath);
     }
+    ttyLink('GraphQL Playground:', graphiqlPath, port, playgroundPkg.version);
+    app.use(graphiqlPath, graphiqlMiddleware(apiPath));
   }
 
   // add the Admin GraphQL API
