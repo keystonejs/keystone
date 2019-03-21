@@ -37,13 +37,7 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
 // ==============================
 
 const Logo = () => (
-  <div
-    css={{
-      alignItems: 'center',
-      color: 'inherit',
-      display: 'inline-flex',
-    }}
-  >
+  <div css={{ alignItems: 'center', display: 'inline-flex' }}>
     <Link
       to="/"
       css={{
