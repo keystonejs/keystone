@@ -5,12 +5,16 @@ title: Introduction
 
 # Guides
 
-Some guides to help you perform various tasks in the KeystoneJS ecosystem.
+Keystone is a powerful framework which gives you many different tools for building your system.
+These guides will walk you through how to use these tools to solve a range of different problems.
 
-- [Authentication](./authentication.md)
-- [Access Control](./access-control.md)
-- [Hooks](./hooks.md)
-- [Hooks API](./hooks-api.md)
-- [Lists](./lists.md)
-- [Mutation Lifecycle](./mutation-lifecycle.md)
-- [Performance](./performance.md)
+If this if your first time using Keystone, we recommend working through the [tutorials](../tutorials) to get a feel for how Keystone works and how to set up your very first project.
+
+- [Creating a New Keystone Project](./new-project)
+- [Adding Lists To Your Keystone Project](./add-lists)
+- [Creating Relationships Between Lists](./relationships.md)
+- [Adding Validation Rules To Lists](./validation.md)
+- [Configuring Your Admin UI](./admin-config.md)
+- [Password Protecting Your Admin UI](./admin-password.md)
+- [Monitoring Your GraphQL Performance](./performance.md)
+- [Deploying Keystone to Heroku](./heroku.md)
