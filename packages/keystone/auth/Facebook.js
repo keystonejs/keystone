@@ -9,15 +9,12 @@ const FIELD_ITEM = 'item';
 
 function validateWithFacebook(strategy, accessToken) {
   return new Promise((resolve, reject) => {
-    strategy.userProfile(
-      accessToken,
-      async (error, data) => {
-        if (error) {
-          return reject(error);
-        }
-        resolve(data._json);
+    strategy.userProfile(accessToken, async (error, data) => {
+      if (error) {
+        return reject(error);
       }
-    );
+      resolve(data._json);
+    });
   });
 }
 
@@ -89,10 +86,7 @@ class FacebookAuthStrategy {
     return this.keystone.lists[this.config.sessionListKey];
   }
   async validate({ accessToken }) {
-    const jsonData = await validateWithFacebook(
-      this.passportStrategy,
-      accessToken
-    );
+    const jsonData = await validateWithFacebook(this.passportStrategy, accessToken);
 
     // Lookup a past, verified session, that links to a user
     let pastSessionItem;
@@ -100,13 +94,13 @@ class FacebookAuthStrategy {
     try {
       // NOTE: We don't need to filter on verifiedAt as these rows can only
       // possibly exist after we've validated with Facebook (see above)
-      pastSessionItem = await this.getSessionList()
-        .adapter.findOne({
-          [FIELD_FACEBOOK_ID]: jsonData.id,
-        });
-        // find user item related to past session, join not possible atm
-      fieldItemPopulated = pastSessionItem && await this.getList()
-        .adapter.findById(pastSessionItem[FIELD_ITEM].toString());
+      pastSessionItem = await this.getSessionList().adapter.findOne({
+        [FIELD_FACEBOOK_ID]: jsonData.id,
+      });
+      // find user item related to past session, join not possible atm
+      fieldItemPopulated =
+        pastSessionItem &&
+        (await this.getList().adapter.findById(pastSessionItem[FIELD_ITEM].toString()));
     } catch (sessionFindError) {
       // TODO: Better error message. Why would this fail? DB connection lost? A
       // "not found" shouldn't throw (it'll just return null).
@@ -175,14 +169,14 @@ class FacebookAuthStrategy {
     }
 
     try {
-      const facebookItem = await this.getSessionList()
-        .adapter.update(facebookSessionId, { item: item.id });
+      const facebookItem = await this.getSessionList().adapter.update(facebookSessionId, {
+        item: item.id,
+      });
 
-      await this.getList()
-        .adapter.update(item.id, {
-          [this.config.idField]: facebookItem[FIELD_FACEBOOK_ID],
-          [this.config.usernameField]: facebookItem[FIELD_FACEBOOK_USERNAME],
-        });
+      await this.getList().adapter.update(item.id, {
+        [this.config.idField]: facebookItem[FIELD_FACEBOOK_ID],
+        [this.config.usernameField]: facebookItem[FIELD_FACEBOOK_USERNAME],
+      });
     } catch (error) {
       return { success: false, error };
     }
@@ -222,7 +216,9 @@ class FacebookAuthStrategy {
    */
   authenticateMiddleware({ failedVerification, verified }) {
     if (!failedVerification) {
-      throw new Error('Must supply a `failedVerification` function to `authenticateFacebookUser()`');
+      throw new Error(
+        'Must supply a `failedVerification` function to `authenticateFacebookUser()`'
+      );
     }
     if (!verified) {
       throw new Error('Must supply a `verified` function to `authenticateFacebookUser()`');

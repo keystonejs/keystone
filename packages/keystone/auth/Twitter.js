@@ -9,18 +9,13 @@ const FIELD_ITEM = 'item';
 
 function validateWithTwitter(strategy, token, tokenSecret) {
   return new Promise((resolve, reject) => {
-    strategy.userProfile(
-      token,
-      tokenSecret,
-      {},
-      async (error, data) => {
-        if (error) {
-          return reject(error);
-        }
-
-        resolve(data._json);
+    strategy.userProfile(token, tokenSecret, {}, async (error, data) => {
+      if (error) {
+        return reject(error);
       }
-    );
+
+      resolve(data._json);
+    });
   });
 }
 
@@ -59,7 +54,7 @@ class TwitterAuthStrategy {
       });
     }
 
-    this. passportStrategy = new PassportTwitter(
+    this.passportStrategy = new PassportTwitter(
       {
         consumerKey: this.config.consumerKey,
         consumerSecret: this.config.consumerSecret,
@@ -120,13 +115,13 @@ class TwitterAuthStrategy {
     try {
       // NOTE: We don't need to filter on verifiedAt as these rows can only
       // possibly exist after we've validated with Twitter (see above)
-      pastSessionItem = await this.getSessionList()
-        .adapter.findOne({
-          [FIELD_TWITTER_ID]: jsonData.id_str,
-        });
-        // find user item related to past session, join not possible atm
-      fieldItemPopulated = pastSessionItem && await this.getList()
-        .adapter.findById(pastSessionItem[FIELD_ITEM].toString());
+      pastSessionItem = await this.getSessionList().adapter.findOne({
+        [FIELD_TWITTER_ID]: jsonData.id_str,
+      });
+      // find user item related to past session, join not possible atm
+      fieldItemPopulated =
+        pastSessionItem &&
+        (await this.getList().adapter.findById(pastSessionItem[FIELD_ITEM].toString()));
     } catch (sessionFindError) {
       // TODO: Better error message. Why would this fail? DB connection lost? A
       // "not found" shouldn't throw (it'll just return null).
@@ -195,14 +190,14 @@ class TwitterAuthStrategy {
     }
 
     try {
-      const twitterItem = await this.getSessionList()
-        .adapter.update(twitterSessionId, { item: item.id });
+      const twitterItem = await this.getSessionList().adapter.update(twitterSessionId, {
+        item: item.id,
+      });
 
-      await this.getList()
-        .adapter.update(item.id, {
-          [this.config.idField]: twitterItem[FIELD_TWITTER_ID],
-          [this.config.usernameField]: twitterItem[FIELD_TWITTER_USERNAME],
-        });
+      await this.getList().adapter.update(item.id, {
+        [this.config.idField]: twitterItem[FIELD_TWITTER_ID],
+        [this.config.usernameField]: twitterItem[FIELD_TWITTER_USERNAME],
+      });
     } catch (error) {
       return { success: false, error };
     }
