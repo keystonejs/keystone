@@ -49,9 +49,7 @@ describe('create-keystone-app generator', () => {
     ]);
     const files = child_process.spawnSync('ls', [folderPath]);
     child_process.spawnSync('rm', ['-rf', folderPath]);
-    expect(cli.stdout.toString().trim()).toEqual(
-      expect.stringContaining('You can start your app with')
-    );
+    expect(cli.stdout.toString().trim()).toEqual(expect.stringContaining('KeystoneJS app created'));
     expect(cli.stderr.toString().trim()).toEqual('');
     expect(files.stdout.toString().trim()).toEqual(expect.stringContaining('package.json'));
     expect(files.stdout.toString().trim()).toEqual(expect.stringContaining('index.js'));
