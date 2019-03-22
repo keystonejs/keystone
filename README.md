@@ -22,9 +22,9 @@ We believe it's the ideal back-end for rich React / Vue / Angular applications, 
 
 ## WARNING
 
-This project is currently very much in the `alpha` phase of development. There are known bugs, missing features, and limited documentation. APIs have not been finalised and may change with each release.
+This project is currently very much in the **alpha** phase of development. There are known bugs, missing features, and limited documentation. APIs have not been finalised and may change with each release.
 
-To make this clear, we're currently publishing all packages to the `@keystone-alpha` scope on npm. As the project matures, we'll migrate over to our new `@keystone` scope and
+To make this clear, we're currently publishing all packages to the `@keystone-alpha` scope on npm.
 
 ## Getting Started
 
@@ -41,20 +41,21 @@ First, you'll need Bolt installed:
 yarn global add bolt
 ```
 
-You'll also need [MongoDB](https://docs.mongodb.com/manual/installation/) installed. If you're on MacOS, the easiest way is to use [Homebrew](https://brew.sh/):
+You'll also need MongoDB installed. If you need help check out our [MongoDB Guide](https://v5.keystonejs.com/quick-start/mongodb)
 
-```bash
-brew install mongodb
-brew services start mongodb
-```
-
-Then clone this repo, use Bolt to install the dependencies, and start a demo project:
+Then clone this repo and use Bolt to install the dependencies:
 
 ```bash
 git clone https://github.com/keystonejs/keystone-5.git
 cd keystone-5
 bolt
-yarn start {project}
+```
+
+Finally, run the build and start a project:
+
+```bash
+yarn build
+yarn start
 ```
 
 There are currently two projects available: `todo` and `blog`. You can specify the project you want to start:
