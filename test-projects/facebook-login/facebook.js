@@ -1,4 +1,4 @@
-const FacebookAuthStrategy = require('@keystonejs/core/auth/Facebook');
+const FacebookAuthStrategy = require('@keystone-alpha/keystone/auth/Facebook');
 
 const { appURL, facebookAppKey, facebookAppSecret } = require('./config');
 
@@ -28,11 +28,30 @@ exports.configureFacebookAuth = function(keystone, server) {
     })
   );
 
+  server.app.get('/api/session', (req, res) => {
+    res.json({
+      signedIn: !!req.session.keystoneItemId,
+      userId: req.session.keystoneItemId,
+      name: req.user ? req.user.name : undefined,
+    });
+  });
+
+  server.app.get('/api/signout', async (req, res, next) => {
+    try {
+      await keystone.sessionManager.endAuthedSession(req);
+      res.json({
+        success: true,
+      });
+    } catch (e) {
+      next(e);
+    }
+  });
+
   // Facebook will redirect the user to this URL after approval.
   server.app.get(
     '/auth/facebook/callback',
     facebookAuth.authenticateMiddleware({
-      async verified(item, info, req, res) {
+      async verified(item, { list }, req, res) {
         // You could try and find user by email address here to match users
         // if you get the email data back from Facebook, then refer to
         // connectItem, for example:
@@ -46,9 +65,7 @@ exports.configureFacebookAuth = function(keystone, server) {
         }
 
         // Otheriwse create a session based on the user we have already
-        const list = keystone.getListByKey('User');
-        await keystone.session.create(req, { item, list });
-
+        await keystone.sessionManager.startAuthedSession(req, { item, list });
         // Redirect on sign in
         res.redirect('/api/session');
       },
@@ -98,8 +115,7 @@ exports.configureFacebookAuth = function(keystone, server) {
         });
 
         await keystone.auth.User.facebook.connectItem(req, { item });
-        await keystone.session.create(req, { item, list });
-
+        await keystone.sessionManager.startAuthedSession(req, { item, list });
         res.redirect('/api/session');
       } catch (createError) {
         next(createError);

@@ -1,7 +1,7 @@
 const passport = require('passport');
 const PassportFacebook = require('passport-facebook');
 const fetch = require('cross-fetch');
-const { Text, Relationship } = require('@keystonejs/fields');
+const { Text, Relationship } = require('@keystone-alpha/fields');
 
 const FIELD_FACEBOOK_ID = 'facebookId';
 const FIELD_FACEBOOK_USERNAME = 'facebookUsername';
@@ -104,17 +104,17 @@ class FacebookAuthStrategy {
 
     // Lookup a past, verified session, that links to a user
     let pastSessionItem;
+    let fieldItemPopulated;
     try {
       // NOTE: We don't need to filter on verifiedAt as these rows can only
       // possibly exist after we've validated with Facebook (see above)
       pastSessionItem = await this.getSessionList()
         .adapter.findOne({
           [FIELD_FACEBOOK_ID]: jsonData.data.user_id,
-          [FIELD_ITEM]: { $exists: true },
-        })
-        // do a JOIN on the item
-        .populate(FIELD_ITEM)
-        .exec();
+        });
+        // find user item related to past session, join not possible atm
+      fieldItemPopulated = pastSessionItem && await this.getList()
+        .adapter.findById(pastSessionItem[FIELD_ITEM].toString());
     } catch (sessionFindError) {
       // TODO: Better error message. Why would this fail? DB connection lost? A
       // "not found" shouldn't throw (it'll just return null).
@@ -128,8 +128,8 @@ class FacebookAuthStrategy {
     };
 
     // Only add a reference to the parent list when we know the link exists
-    if (pastSessionItem && pastSessionItem.item) {
-      newSessionData.item = pastSessionItem.item.id;
+    if (pastSessionItem) {
+      newSessionData[FIELD_ITEM] = fieldItemPopulated.id;
     }
 
     const sessionItem = await this.keystone.createItem(this.config.sessionListKey, newSessionData);
@@ -149,7 +149,7 @@ class FacebookAuthStrategy {
       };
     }
 
-    const previouslyVerifiedItem = pastSessionItem[FIELD_ITEM];
+    const previouslyVerifiedItem = fieldItemPopulated;
     return {
       ...result,
       item: previouslyVerifiedItem,
@@ -184,15 +184,13 @@ class FacebookAuthStrategy {
 
     try {
       const facebookItem = await this.getSessionList()
-        .adapter.update(facebookSessionId, { item: item.id }, { new: true })
-        .exec();
+        .adapter.update(facebookSessionId, { item: item.id });
 
       await this.getList()
         .adapter.update(item.id, {
           [this.config.idField]: facebookItem[FIELD_FACEBOOK_ID],
           [this.config.usernameField]: facebookItem[FIELD_FACEBOOK_USERNAME],
-        })
-        .exec();
+        });
     } catch (error) {
       return { success: false, error };
     }
@@ -232,9 +230,7 @@ class FacebookAuthStrategy {
    */
   authenticateMiddleware({ failedVerification, verified }) {
     if (!failedVerification) {
-      throw new Error(
-        'Must supply a `failedVerification` function to `authenticateFacebookUser()`'
-      );
+      throw new Error('Must supply a `failedVerification` function to `authenticateFacebookUser()`');
     }
     if (!verified) {
       throw new Error('Must supply a `verified` function to `authenticateFacebookUser()`');

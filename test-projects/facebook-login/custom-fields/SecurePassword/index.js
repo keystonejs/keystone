@@ -1,5 +1,5 @@
 const path = require('path');
-const DefaultPasswordField = require('@keystonejs/fields').Password;
+const DefaultPasswordField = require('@keystone-alpha/fields').Password;
 
 module.exports = Object.assign({}, DefaultPasswordField, {
   type: 'Password',

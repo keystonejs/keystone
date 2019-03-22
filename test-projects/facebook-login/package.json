@@ -1,26 +1,27 @@
 {
-  "name": "@keystonejs/cypress-project-facebook-login",
+  "name": "@keystone-alpha/cypress-project-facebook-login",
   "private": true,
   "version": "1.0.0",
-  "author": "Jed Watson",
+  "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "node -r dotenv-safe/config index.js",
+    "start": "node -r dotenv-safe/config `yarn bin`/keystone | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
     "cypress:run:ci": "exit 0",
     "cypress:run": "exit 0"
   },
   "dependencies": {
-    "@voussoir/adapter-mongoose": "^0.3.1",
-    "@voussoir/admin-ui": "^0.2.1",
-    "@voussoir/core": "^0.3.0",
-    "@voussoir/fields": "^1.0.1",
-    "@voussoir/file-adapters": "^0.1.3",
-    "@voussoir/server": "^0.2.1",
-    "@voussoir/ui": "^0.2.1",
-    "dotenv-safe": "^6.0.0",
-    "react": "^16.5.2"
+    "@arch-ui/fields": "^0.0.3",
+    "@arch-ui/input": "^0.0.3",
+    "@keystone-alpha/adapter-mongoose": "^1.0.2",
+    "@keystone-alpha/admin-ui": "^3.0.0",
+    "@keystone-alpha/core": "^2.0.0",
+    "@keystone-alpha/fields": "^3.0.0",
+    "@keystone-alpha/file-adapters": "^1.0.1",
+    "@keystone-alpha/keystone": "^1.0.3",
+    "@keystone-alpha/server": "^2.0.0",
+    "react": "^16.8.4"
   }
 }

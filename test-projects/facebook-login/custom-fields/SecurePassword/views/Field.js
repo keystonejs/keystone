@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@keystonejs/ui/src/primitives/fields';
-import { Input } from '@keystonejs/ui/src/primitives/forms';
+import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { Input } from '@arch-ui/input';
 
 export default class PasswordField extends Component {
   onChange = event => {

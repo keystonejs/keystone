@@ -15,7 +15,7 @@ function validateWithTwitter(strategy, token, tokenSecret) {
       {},
       async (error, data) => {
         if (error) {
-                    return reject(error);
+          return reject(error);
         }
 
         resolve(data._json);
