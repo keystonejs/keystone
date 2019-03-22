@@ -16,8 +16,6 @@ brew install mongodb
 brew services start mongodb
 ```
 
-### Linux
+### Other Platforms
 
-```sh
-TODO (apt-get install mongo or something?)
-```
+Follow the [official MongoDB installation guide](https://www.mongodb.com/download-center/community).
