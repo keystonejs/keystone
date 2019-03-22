@@ -36,6 +36,17 @@ exports.configureTwitterAuth = function(keystone, server) {
     });
   });
 
+  server.app.get('/api/signout', async (req, res, next) => {
+    try {
+      await keystone.sessionManager.endAuthedSession(req);
+      res.json({
+        success: true,
+      });
+    } catch (e) {
+      next(e);
+    }
+  });
+
   // Twitter will redirect the user to this URL after approval.
   server.app.get(
     '/auth/twitter/callback',
