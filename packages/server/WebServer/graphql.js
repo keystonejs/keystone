@@ -160,7 +160,7 @@ const graphiqlMiddleware = endpoint => (req, res) => {
 };
 
 const ttyLink = (text, path, port, version) => {
-  if (falsey(process.env.DISABLE_LOGGING)) {
+  if (process.env.NODE_ENV !== 'production') {
     const url = `http://localhost:${port}${path}`;
     const prettyUrl = chalk.blue(url);
     const link = terminalLink(prettyUrl, url, { fallback: () => prettyUrl });
@@ -176,12 +176,14 @@ module.exports = function createGraphQLMiddleware(
   const app = express();
 
   if (graphiqlPath) {
-    if (process.env.NODE_ENV !== 'production' && falsey(process.env.DISABLE_LOGGING)) {
+    if (process.env.NODE_ENV !== 'production') {
       const devQueryPath = `${graphiqlPath}/go`;
       ttyLink('GraphQL Debug Links:', devQueryPath, port);
 
-      // NOTE: Must come before we setup the API below
-      addDevQueryMiddlewares(app, apiPath, graphiqlPath, devQueryPath);
+      if (falsey(process.env.DISABLE_LOGGING)) {
+        // NOTE: Must come before we setup the API below
+        addDevQueryMiddlewares(app, apiPath, graphiqlPath, devQueryPath);
+      }
     }
     ttyLink('GraphQL Playground:', graphiqlPath, port, playgroundPkg.version);
     app.use(graphiqlPath, graphiqlMiddleware(apiPath));
