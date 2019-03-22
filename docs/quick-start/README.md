@@ -9,17 +9,11 @@ title: Introduction
 
 This quick start guide will get you up and running with a fresh new Keystone application in just a few easy commands.
 
-<center>
-  <a href="./img/todo.png" target="_blank">
-    <img width="300" src="./img/todo.png" alt="Screenshot of the final Todo app" />
-  </a>
-  <a href="./img/admin-dashboard.png" target="_blank">
-    <img width="300" src="./img/admin-dashboard.png" alt="Screenshot of KeystoneJS Admin Dashboard" />
-  </a>
-  <a href="./img/admin-list.png" target="_blank">
-    <img width="300" src="./img/admin-list.png" alt="Screenshot of KeystoneJS Admin Todo List" />
-  </a>
-</center>
+[![Screenshot of the final Todo app](./img/todo-thumb.png)](https://raw.githubusercontent.com/keystonejs/keystone-5/master/docs/quick-start/img/todo.png)
+
+[![Screenshot of KeystoneJS Admin Dashboard](./img/admin-dashboard-thumb.png)](https://raw.githubusercontent.com/keystonejs/keystone-5/master/docs/quick-start/img/admin-dashboard.png)
+
+[![Screenshot of KeystoneJS Admin Todo List](./img/admin-list-thumb.png)](https://raw.githubusercontent.com/keystonejs/keystone-5/master/docs/quick-start/img/admin-list.png)
 
 ## Requirements
 
