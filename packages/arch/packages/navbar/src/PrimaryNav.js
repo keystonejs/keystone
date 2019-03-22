@@ -2,7 +2,7 @@
 
 import styled from '@emotion/styled';
 
-import { borderRadius, colors, gridSize } from '@arch-ui/theme';
+import { colors, gridSize } from '@arch-ui/theme';
 import { ItemElement } from './common';
 
 export const PRIMARY_NAV_GUTTER = gridSize * 2;
@@ -17,7 +17,7 @@ export const NavGroupIcons = styled.div({
 });
 
 export const PrimaryNav = styled.nav({
-  backgroundColor: colors.N10,
+  backgroundColor: 'rgba(9, 30, 66, 0.02)',
   boxSizing: 'border-box',
   display: 'flex',
   flexFlow: 'column nowrap',
@@ -45,8 +45,6 @@ export const PrimaryNavScrollArea = styled.div(({ hasScroll, isBottom, isScrolla
     overflowX: 'hidden',
     minWidth: 140,
     paddingBottom: PRIMARY_NAV_GUTTER,
-    paddingLeft: PRIMARY_NAV_GUTTER,
-    paddingRight: PRIMARY_NAV_GUTTER,
     width: '100%',
 
     ':before': before,
@@ -61,10 +59,11 @@ export const BrandItem = styled.h2({
   paddingBottom: PRIMARY_NAV_GUTTER,
 });
 
-export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => {
+export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
   const selectedStyles = isSelected
     ? {
         '&, :hover, :active, :focus': {
+          borderLeftColor: colors.B.base,
           backgroundColor: colors.B.A10,
           fontWeight: 500,
         },
@@ -73,12 +72,12 @@ export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => {
 
   return {
     border: 0,
-    borderRadius,
+    borderLeft: '3px solid transparent',
     color: colors.N90,
     display: 'block',
     marginBottom: 2,
     overflow: 'hidden',
-    paddingLeft: PRIMARY_NAV_GUTTER,
+    paddingLeft: depth ? PRIMARY_NAV_GUTTER * depth : PRIMARY_NAV_GUTTER,
     paddingRight: PRIMARY_NAV_GUTTER,
     paddingBottom: gridSize,
     paddingTop: gridSize,
@@ -98,10 +97,12 @@ export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => {
     ...selectedStyles,
   };
 });
-export const PrimaryNavHeading = styled.h3({
-  color: colors.N60,
+export const PrimaryNavHeading = styled.h3(({ depth }) => ({
+  color: colors.N40,
   fontSize: '0.85em',
-  fontWeight: '700',
-  marginTop: '2.4em',
+  fontWeight: 'bold',
+  marginTop: '2em',
+  paddingLeft: depth ? PRIMARY_NAV_GUTTER * depth : PRIMARY_NAV_GUTTER,
+  paddingRight: PRIMARY_NAV_GUTTER,
   textTransform: 'uppercase',
-});
+}));

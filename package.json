@@ -177,6 +177,7 @@
     "react-select": "2.3.0",
     "react-toast-notifications": "^1.2.0",
     "react-transition-group": "^2.6.1",
+    "react-uid": "^2.2.0",
     "react-window": "^1.7.0",
     "resize-observer-polyfill": "^1.5.1",
     "serialize-error": "^3.0.0",

@@ -1,8 +1,9 @@
 /** @jsx jsx */
 
-import { Component, memo } from 'react';
+import React, { Component, memo } from 'react'; // eslint-disable-line no-unused-vars
 import { withRouter, Route, Link } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
+import { uid } from 'react-uid';
 import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';
 
@@ -55,31 +56,19 @@ const Relative = styled(Col)({
   position: 'relative',
 });
 const GrabHandle = styled.div({
-  background: `linear-gradient(to left, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0))`, // drop-shadow
+  backgroundColor: 'rgba(9, 30, 66, 0.2)',
   bottom: 0,
   cursor: 'col-resize',
+  opacity: 0.5,
   position: 'absolute',
   right: 0,
   top: 0,
-  opacity: 0.6,
   transition: 'opacity 220ms linear',
-  width: 3,
+  width: 1,
 
   ':hover, :active': {
     opacity: 1,
     transitionDelay: '100ms', // avoid inadvertent mouse passes
-  },
-
-  // hairline
-  ':after': {
-    background: `rgba(0, 0, 0, 0.125)`,
-    bottom: 0,
-    content: '" "',
-    pointerEvents: 'none',
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 1,
   },
 
   // increase hit-area
@@ -167,13 +156,16 @@ function getPath(str) {
   return `/${arr[1]}/${arr[2]}`;
 }
 
-function renderChildren(node, getListByKey, adminPath) {
+function renderChildren(node, getListByKey, adminPath, depth) {
   if (node.children) {
+    const groupKey = uid(node.children);
+    depth += 1;
+
     return (
-      <>
-        <PrimaryNavHeading>{node.label}</PrimaryNavHeading>
-        {node.children.map(child => renderChildren(child, getListByKey, adminPath))}
-      </>
+      <React.Fragment key={groupKey}>
+        {node.label && <PrimaryNavHeading depth={depth}>{node.label}</PrimaryNavHeading>}
+        {node.children.map(child => renderChildren(child, getListByKey, adminPath, depth))}
+      </React.Fragment>
     );
   }
 
@@ -192,7 +184,13 @@ function renderChildren(node, getListByKey, adminPath) {
   const id = `ks-nav-${list.path}`;
 
   return (
-    <PrimaryNavItem key={key} id={id} isSelected={isSelected} to={`${href}${maybeSearchParam}`}>
+    <PrimaryNavItem
+      key={key}
+      depth={depth}
+      id={id}
+      isSelected={isSelected}
+      to={`${href}${maybeSearchParam}`}
+    >
       {label}
     </PrimaryNavItem>
   );
@@ -211,7 +209,7 @@ function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys }) {
                 </PrimaryNavItem>
 
                 {pages && pages.length
-                  ? pages.map(node => renderChildren(node, getListByKey, adminPath))
+                  ? pages.map(node => renderChildren(node, getListByKey, adminPath, 0))
                   : listKeys.map(key => renderChildren(key, getListByKey, adminPath))}
               </PrimaryNavScrollArea>
             )}
