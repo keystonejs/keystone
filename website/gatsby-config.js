@@ -117,7 +117,7 @@ async function getGatsbyConfig() {
       {
         resolve: `gatsby-plugin-google-analytics`,
         options: {
-          trackingId: 'UA-43970386-1',
+          trackingId: 'UA-43970386-3',
           head: true,
         },
       },
