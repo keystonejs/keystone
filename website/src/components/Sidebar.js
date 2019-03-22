@@ -30,9 +30,7 @@ export const Sidebar = () => (
       const navData = data.allSitePage.edges.reduce((pageList, { node }) => {
         // finding out what directory the file is in (eg '/keystone-alpha')
         if (node.context.navGroup !== null) {
-          if (!pageList[node.context.navGroup]) {
-            pageList[node.context.navGroup] = [];
-          }
+          pageList[node.context.navGroup] = pageList[node.context.navGroup] || [];
           pageList[node.context.navGroup].push(node);
         }
 

@@ -3,7 +3,7 @@ section: guides
 title: Authentication
 ---
 
-# Authentication
+# Authentication Guide
 
 _Note on terminology_:
 

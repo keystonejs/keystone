@@ -1,6 +1,6 @@
 ---
-section: guides
-title: Hooks API
+section: api
+title: Hooks
 ---
 
 # Hooks API
