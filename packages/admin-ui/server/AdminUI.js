@@ -1,4 +1,3 @@
-const falsey = require('falsey');
 const express = require('express');
 const webpack = require('webpack');
 const chalk = require('chalk');
@@ -60,7 +59,7 @@ module.exports = class AdminUI {
     const { adminPath } = this;
 
     // ensure any non-resource requests are rewritten for history api fallback
-    if (falsey(process.env.DISABLE_LOGGING)) {
+    if (process.env.NODE_ENV !== 'production') {
       const url = `http://localhost:${port}${adminPath}`;
       const prettyUrl = chalk.blue(`${url}(/.*)?`);
       const clickableUrl = terminalLink(prettyUrl, url, { fallback: () => prettyUrl });

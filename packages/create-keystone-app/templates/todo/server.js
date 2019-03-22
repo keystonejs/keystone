@@ -19,9 +19,6 @@ keystone
     // GraphQL API
     return server.start();
   })
-  .then(({ port }) => {
-    console.log(`Listening on port ${port}`);
-  })
   .catch(error => {
     console.error(error);
     process.exit(1);
