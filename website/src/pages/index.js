@@ -89,8 +89,8 @@ const Hero = () => (
         </ButtonWrapper>
         <SmDeviceIllustration />
         <p css={{ color: colors.N40, fontSize: '0.85em' }}>
-          Keystone 5 is currently in alpha release and under intensive development by Thinkmill and
-          contributors around the world.
+          Keystone 5 is currently in alpha release and under intensive development by
+          <a href="https://www.thinkmill.com.au">Thinkmill</a> and contributors around the world.
         </p>
         <div css={mq({ display: 'flex', margin: [`2em auto`, `2em auto`, `2em 0`] })}>
           <IconTwitter href="https://twitter.com/keystonejs" target="_blank" title="Twitter" />
