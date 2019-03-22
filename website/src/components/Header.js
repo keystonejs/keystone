@@ -201,8 +201,8 @@ const NAV_LINKS = [
     url: '/tutorials/',
   },
   {
-    name: 'Discussions',
-    url: '/discussions/documentation',
+    name: 'API',
+    url: '/api/',
   },
   {
     name: 'Packages',

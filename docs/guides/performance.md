@@ -3,7 +3,7 @@ section: guides
 title: Performance
 ---
 
-# Performance
+# Performance Guide
 
 ## Query Performance Monitoring with Apollo Engine
 

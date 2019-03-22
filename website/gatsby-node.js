@@ -5,7 +5,15 @@ const slugify = require('@sindresorhus/slugify');
 const generateUrl = require('./generateUrl');
 
 const PROJECT_ROOT = path.resolve('..');
-const GROUPS = ['quick-start', 'tutorials', 'guides', 'discussions', 'packages', 'field-types'];
+const GROUPS = [
+  'quick-start',
+  'tutorials',
+  'guides',
+  'api',
+  'discussions',
+  'packages',
+  'field-types',
+];
 const GROUPS_NO_PKG = GROUPS.filter(s => s !== 'packages');
 
 exports.createPages = ({ actions, graphql }) => {
