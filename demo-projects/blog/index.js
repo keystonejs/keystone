@@ -112,7 +112,7 @@ keystone.createList('Comment', {
 
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
-  // authStrategy,
+  authStrategy,
   pages: [
     {
       label: 'Blog',
