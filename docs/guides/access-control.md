@@ -54,7 +54,7 @@ See [Authentication](../authentication.md).
 
 ## GraphQL Access Control
 
-Access control is about limiting CRUD actions that can be performed based on the
+Access control is about limiting CRUD (Create, Read, Update, Delete) actions that can be performed based on the
 access level of the currently authenticated (or anonymous) user.
 
 For example, the below access control states:
