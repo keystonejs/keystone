@@ -47,9 +47,11 @@ Each of these mutations is implemented within Keystone by a corresponding resolv
 - `updateUsers` → `updateManyMutation`
 - `deleteUsers` → `deleteManyMutation`
 
+<!-- Dead links
 Please refer to the [API documentation](LINK_TODO)) for full details on how to call these mutations either from [GraphQL](LINK_TODO)) or directly from [Keystone](LINK_TODO)).
+-->
 
-Keystone provides [access control](LINK_TODO)) mechanisms and a [hook system](LINK_TODO)) which allows the developer to customise the behaviour of each of these mutations.
+Keystone provides [access control](../access-control.md)) mechanisms and a [hook system](../hooks.md)) which allows the developer to customise the behaviour of each of these mutations.
 
 This document details the lifecycle of each mutation, and how the different access control mechanisms and hooks interact.
 
@@ -58,7 +60,7 @@ This document details the lifecycle of each mutation, and how the different acce
 Each mutation goes through two key phases: the _Access Control Phase_ and the _Operational Phase_.
 During the Access Control Phase the developer defined access controls are evaluated, and the target items are retrieved from the database (`update` and `delete` only).
 
-During the Operational Phase the developer defined hooks are invoked, the mutation operation (create/update/delete) is performed in the database, and any [nested mutations](LINK_TODO)) are performed.
+During the Operational Phase the developer defined hooks are invoked, the mutation operation (create/update/delete) is performed in the database, and any nested mutations are performed.
 
 A new `execution transaction` is created at the beginning of the Operational Phase.
 
@@ -74,7 +76,9 @@ Each of these `single` mutations is executed within its own transaction.
 
 As such, a `many` mutation maybe have partial success during this phase, as some of the the single mutations may succeed while others fail.
 
+<!-- Dead link
 See [Error Handling](LINK_TODO)) for more details on this.
+-->
 
 ### Access Control Phase
 
@@ -88,7 +92,7 @@ The first step in all mutations is to check that the user has access to perform 
 
 If access control has been defined statically or imperatively this check can be performed here. An `AccessDeniedError` is returned if the access control failed. If the access control mechanism for this list is defined declaratively (i.e using a GraphQL `where` statement), this check is deferred until the next step.
 
-For more information on how to define access control, please consult the [access control documentation](LINK_TODO)).
+For more information on how to define access control, please consult the [access control documentation](../access-control.md)).
 
 #### 2. Get item(s) (`update/delete`)
 

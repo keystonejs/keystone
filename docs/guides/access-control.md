@@ -69,7 +69,7 @@ For example, the below access control states:
 4.  Only authenticated users can update their own password. Admins can update
     anyone's password.
 
-_NOTE: The code below depends on having a correct [authentication setup](./authentication.md)._
+_NOTE: The code below depends on having a correct [authentication setup](../authentication.md)._
 
 ```javascript
 const { Text, Select, Checkbox, Password } = require('@keystone-alpha/fields');
