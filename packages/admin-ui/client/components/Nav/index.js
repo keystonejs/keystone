@@ -1,8 +1,9 @@
 /** @jsx jsx */
 
-import { Component, memo } from 'react';
+import React, { Component, memo } from 'react'; // eslint-disable-line no-unused-vars
 import { withRouter, Route, Link } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
+import { uid } from 'react-uid';
 import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';
 
@@ -11,6 +12,7 @@ import { colors, gridSize } from '@arch-ui/theme';
 import {
   PrimaryNav,
   PrimaryNavItem,
+  PrimaryNavHeading,
   PrimaryNavScrollArea,
   PRIMARY_NAV_GUTTER,
 } from '@arch-ui/navbar';
@@ -54,31 +56,19 @@ const Relative = styled(Col)({
   position: 'relative',
 });
 const GrabHandle = styled.div({
-  background: `linear-gradient(to left, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0))`, // drop-shadow
+  backgroundColor: 'rgba(9, 30, 66, 0.2)',
   bottom: 0,
   cursor: 'col-resize',
+  opacity: 0.5,
   position: 'absolute',
   right: 0,
   top: 0,
-  opacity: 0.6,
   transition: 'opacity 220ms linear',
-  width: 3,
+  width: 1,
 
   ':hover, :active': {
     opacity: 1,
     transitionDelay: '100ms', // avoid inadvertent mouse passes
-  },
-
-  // hairline
-  ':after': {
-    background: `rgba(0, 0, 0, 0.125)`,
-    bottom: 0,
-    content: '" "',
-    pointerEvents: 'none',
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 1,
   },
 
   // increase hit-area
@@ -166,10 +156,47 @@ function getPath(str) {
   return `/${arr[1]}/${arr[2]}`;
 }
 
-function PrimaryNavItems() {
-  let { adminPath, getListByKey, sortListsAlphabetically, listKeys: _listKeys } = useAdminMeta();
-  const listKeys = sortListsAlphabetically ? [..._listKeys].sort() : _listKeys;
+function renderChildren(node, getListByKey, adminPath, depth) {
+  if (node.children) {
+    const groupKey = uid(node.children);
+    depth += 1;
 
+    return (
+      <React.Fragment key={groupKey}>
+        {node.label && <PrimaryNavHeading depth={depth}>{node.label}</PrimaryNavHeading>}
+        {node.children.map(child => renderChildren(child, getListByKey, adminPath, depth))}
+      </React.Fragment>
+    );
+  }
+
+  const key = typeof node === 'string' ? node : node.listKey;
+  const list = getListByKey(key);
+
+  if (!list) {
+    throw new Error(`Unable to resolve list for key ${key}`);
+  }
+
+  const label = node.label || list.label;
+  const maybeSearchParam = list.getPersistedSearch() || '';
+  const path = getPath(location.pathname);
+  const href = `${adminPath}/${list.path}`;
+  const isSelected = href === path;
+  const id = `ks-nav-${list.path}`;
+
+  return (
+    <PrimaryNavItem
+      key={key}
+      depth={depth}
+      id={id}
+      isSelected={isSelected}
+      to={`${href}${maybeSearchParam}`}
+    >
+      {label}
+    </PrimaryNavItem>
+  );
+}
+
+function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys }) {
   return (
     <Relative>
       <Route>
@@ -181,28 +208,9 @@ function PrimaryNavItems() {
                   Dashboard
                 </PrimaryNavItem>
 
-                {listKeys.map(key => {
-                  const list = getListByKey(key);
-                  let href = `${adminPath}/${list.path}`;
-                  const path = getPath(location.pathname);
-                  const isSelected = href === path;
-
-                  const maybeSearchParam = list.getPersistedSearch();
-                  if (maybeSearchParam) {
-                    href += maybeSearchParam;
-                  }
-
-                  return (
-                    <PrimaryNavItem
-                      key={key}
-                      id={`ks-nav-${list.path}`}
-                      isSelected={isSelected}
-                      to={href}
-                    >
-                      {list.label}
-                    </PrimaryNavItem>
-                  );
-                })}
+                {pages && pages.length
+                  ? pages.map(node => renderChildren(node, getListByKey, adminPath, 0))
+                  : listKeys.map(key => renderChildren(key, getListByKey, adminPath))}
               </PrimaryNavScrollArea>
             )}
           </ScrollQuery>
@@ -214,7 +222,7 @@ function PrimaryNavItems() {
 
 let PrimaryNavContent = memo(
   function PrimaryContent() {
-    let { adminPath, name } = useAdminMeta();
+    let { adminPath, getListByKey, listKeys, name, pages } = useAdminMeta();
 
     return (
       <Inner>
@@ -233,7 +241,12 @@ let PrimaryNavContent = memo(
         >
           {name}
         </Title>
-        <PrimaryNavItems />
+        <PrimaryNavItems
+          adminPath={adminPath}
+          getListByKey={getListByKey}
+          listKeys={listKeys.sort()}
+          pages={pages}
+        />
         <NavIcons />
       </Inner>
     );

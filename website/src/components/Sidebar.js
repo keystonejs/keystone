@@ -11,7 +11,7 @@ export const Sidebar = () => (
       query HeadingQuery {
         allSitePage(
           filter: { path: { ne: "/dev-404-page/" } }
-          sort: { fields: [context___sortOrder] }
+          sort: { fields: [context___sortOrder, context___pageTitle] }
         ) {
           edges {
             node {
@@ -30,9 +30,7 @@ export const Sidebar = () => (
       const navData = data.allSitePage.edges.reduce((pageList, { node }) => {
         // finding out what directory the file is in (eg '/keystone-alpha')
         if (node.context.navGroup !== null) {
-          if (!pageList[node.context.navGroup]) {
-            pageList[node.context.navGroup] = [];
-          }
+          pageList[node.context.navGroup] = pageList[node.context.navGroup] || [];
           pageList[node.context.navGroup].push(node);
         }
 
@@ -42,20 +40,21 @@ export const Sidebar = () => (
       const navGroups = Object.keys(navData);
 
       return (
-        <nav>
+        <nav aria-label="Documentation Menu">
           {navGroups.map(navGroup => {
-            const intro = navData[navGroup].find(node => node.context.pageTitle === 'README');
+            const intro = navData[navGroup].find(node => node.context.pageTitle === 'Introduction');
+            const sectionId = `docs-menu-${navGroup}`;
             return (
               <div key={navGroup}>
-                <GroupHeading>{navGroup.replace('-', ' ')}</GroupHeading>
-                <List>
+                <GroupHeading id={sectionId}>{navGroup.replace('-', ' ')}</GroupHeading>
+                <List aria-labelledby={sectionId}>
                   {intro && (
                     <ListItem key={intro.path} to={intro.path}>
                       Introduction
                     </ListItem>
                   )}
                   {navData[navGroup]
-                    .filter(node => node.context.pageTitle !== 'README')
+                    .filter(node => node.context.pageTitle !== 'Introduction')
                     .filter(node => navGroup !== 'packages' || node.context.isPackageIndex)
                     .map(node => {
                       return (
@@ -98,16 +97,19 @@ const ListItem = props => (
         display: 'block',
         overflow: 'hidden',
         marginBottom: 1,
+        outline: 0,
         padding: `${gridSize * 0.75}px ${gridSize * 1.5}px`,
         textDecoration: 'none',
         textOverflow: 'ellipsis',
-        textTransform: 'capitalize',
         whiteSpace: 'nowrap',
 
         ':hover, :focus': {
           backgroundColor: colors.B.A5,
           color: colors.N100,
           textDecoration: 'none',
+        },
+        ':active': {
+          backgroundColor: colors.B.A10,
         },
 
         '&[aria-current="page"]': {

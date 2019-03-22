@@ -1,6 +1,7 @@
 /** @jsx jsx */
 
 import React, { useEffect, useRef, useState } from 'react'; // eslint-disable-line no-unused-vars
+import throttle from 'lodash.throttle';
 import { jsx } from '@emotion/core';
 import { colors, gridSize } from '@arch-ui/theme';
 
@@ -10,70 +11,73 @@ export const Table = props => {
   const [isScrollable, setScrollable] = useState(false);
   const [isScrollEnd, setScrollEnd] = useState(false);
 
-  const handleScroll = e => {
-    if (!isScrollable) {
-      return;
-    }
-
+  const handleScroll = throttle(() => {
     const el = ref.current;
 
+    setScrollable(el.scrollWidth > el.clientWidth);
     setHasScroll(Boolean(el.scrollLeft));
     setScrollEnd(el.scrollLeft === el.scrollWidth - el.clientWidth);
-
-    console.log('handleScroll', e);
-  };
+  }, 200);
 
   useEffect(() => {
-    setScrollable(ref.current.scrollWidth > ref.current.clientWidth);
-  }, []);
+    const el = ref.current; // store the ref for cleanup
 
-  useEffect(() => {
-    ref.current.addEventListener('scroll', handleScroll, true);
+    el.addEventListener('scroll', handleScroll, true);
+    window.addEventListener('resize', handleScroll, true);
+
     return () => {
-      ref.current.addEventListener('scroll', handleScroll, true);
+      el.removeEventListener('scroll', handleScroll, true);
+      window.removeEventListener('resize', handleScroll, true);
     };
   }, [ref.current]);
 
-  const maskStyles = {
-    bottom: 0,
-    content: '" "',
-    pointerEvents: 'none',
-    position: 'absolute',
-    top: 0,
-    transition: 'opacity 200ms linear',
-    width: 3,
+  // run once on mount
+  useEffect(handleScroll, []);
+
+  const makeGradient = clr => `linear-gradient(transparent, ${clr} 10%, ${clr} 90%, transparent)`;
+  const makeMask = (width, side, gradient) => {
+    const condition = side === 'left' ? hasScroll : !isScrollEnd;
+    return {
+      background: gradient,
+      bottom: 0,
+      content: '" "',
+      pointerEvents: 'none',
+      position: 'absolute',
+      top: 0,
+      transition: 'opacity 200ms linear',
+      [side]: 0,
+      opacity: condition ? 1 : 0,
+      width,
+    };
   };
-  const mobilePanStyles = isScrollable
+
+  const outerStyles = isScrollable
+    ? {
+        position: 'relative',
+
+        '&::before': makeMask(3, 'left', makeGradient('rgba(9, 30, 66, 0.08)')),
+        '&::after': makeMask(3, 'right', makeGradient('rgba(9, 30, 66, 0.08)')),
+      }
+    : null;
+  const innerStyles = isScrollable
     ? {
         overflowX: 'auto',
-        position: 'relative',
         WebkitOverflowScrolling: 'touch',
 
-        '&::before': {
-          ...maskStyles,
-          backgroundColor: `rgba(9, 30, 66, 0.08)`,
-          borderLeft: `1px solid rgba(9, 30, 66, 0.12)`,
-          left: 0,
-          opacity: hasScroll ? 1 : 0,
-        },
-        '&::after': {
-          ...maskStyles,
-          backgroundColor: `rgba(9, 30, 66, 0.08)`,
-          borderRight: `1px solid rgba(9, 30, 66, 0.12)`,
-          right: 0,
-          opacity: !isScrollEnd ? 1 : 0,
-        },
+        '&::before': makeMask(1, 'left', makeGradient('rgba(9, 30, 66, 0.12)')),
+        '&::after': makeMask(1, 'right', makeGradient('rgba(9, 30, 66, 0.12)')),
       }
     : null;
 
   return (
-    <div css={mobilePanStyles}>
-      <div css={{ overflowX: 'auto' }} ref={ref}>
+    <div css={outerStyles}>
+      <div css={innerStyles} ref={ref}>
         <table
           css={{
             borderCollapse: 'collapse',
             borderSpacing: 0,
             fontSize: '0.9rem',
+            whiteSpace: 'nowrap',
             width: '100%',
 
             'th, td': {

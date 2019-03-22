@@ -29,7 +29,6 @@ const keystone = new Keystone({
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
-  sortListsAlphabetically: true,
 });
 
 const fileAdapter = new LocalFileAdapter({
@@ -113,7 +112,24 @@ keystone.createList('Comment', {
 
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
-  sortListsAlphabetically: true,
+  authStrategy,
+  pages: [
+    {
+      label: 'Blog',
+      children: [
+        { listKey: 'Post' },
+        { label: 'Categories', listKey: 'PostCategory' },
+        {
+          label: 'Nested',
+          children: [{ label: 'Comments', listKey: 'Comment' }],
+        },
+      ],
+    },
+    {
+      label: 'Other',
+      children: ['User'],
+    },
+  ],
 });
 
 module.exports = {
@@ -121,7 +137,4 @@ module.exports = {
   staticPath,
   keystone,
   admin,
-  serverConfig: {
-    authStrategy,
-  },
 };

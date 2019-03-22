@@ -1,5 +1,31 @@
 # @keystone-alpha/cypress-project-login
 
+## 1.0.3
+
+- [patch][de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+
+  - Use new authStrategy APIs
+
+- Updated dependencies [9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):
+- Updated dependencies [de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+- Updated dependencies [4ed35dfd](https://github.com/keystonejs/keystone-5/commit/4ed35dfd):
+  - @keystone-alpha/keystone@1.0.3
+  - @keystone-alpha/admin-ui@3.0.0
+  - @keystone-alpha/fields@3.0.0
+  - @keystone-alpha/core@2.0.0
+  - @keystone-alpha/server@2.0.0
+
+## 1.0.2
+
+- [patch][3a775092](https://github.com/keystonejs/keystone-5/commit/3a775092):
+
+  - Update dependencies
+
+- Updated dependencies [dcb93771](https://github.com/keystonejs/keystone-5/commit/dcb93771):
+  - @keystone-alpha/keystone@1.0.2
+  - @keystone-alpha/admin-ui@2.0.0
+  - @keystone-alpha/fields@2.0.0
+
 ## 1.0.1
 
 - [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):

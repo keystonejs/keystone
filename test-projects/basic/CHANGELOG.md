@@ -1,5 +1,41 @@
 # @keystone-alpha/cypress-project-basic
 
+## 1.0.3
+
+- [patch][9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):
+
+  - Build field type views before publishing to npm and stop running Babel on Keystone packages in node_modules in the Admin UI
+
+- Updated dependencies [de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+- Updated dependencies [4ed35dfd](https://github.com/keystonejs/keystone-5/commit/4ed35dfd):
+  - @keystone-alpha/keystone@1.0.3
+  - @keystone-alpha/admin-ui@3.0.0
+  - @keystone-alpha/core@2.0.0
+  - @keystone-alpha/server@2.0.0
+
+## 1.0.2
+
+- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+
+  - Update minor-level dependencies
+
+- [patch][3a775092](https://github.com/keystonejs/keystone-5/commit/3a775092):
+
+  - Update dependencies
+
+- [patch][d9a1be91](https://github.com/keystonejs/keystone-5/commit/d9a1be91):
+
+  - Update dependencies
+
+- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+
+  - Update patch-level dependencies
+
+- Updated dependencies [dcb93771](https://github.com/keystonejs/keystone-5/commit/dcb93771):
+  - @keystone-alpha/keystone@1.0.2
+  - @keystone-alpha/admin-ui@2.0.0
+  - @keystone-alpha/fields@2.0.0
+
 ## 1.0.1
 
 - [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):

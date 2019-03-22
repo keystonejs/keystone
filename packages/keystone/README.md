@@ -11,8 +11,7 @@ title: Keystone
 
 Allows programatically creating a batch of items described as JSON objects.
 
-This method's primary use is indended for migration scripts, or initial seeding
-of databases.
+This method's primary use is intended for migration scripts, or initial seeding of databases.
 
 #### `items`
 
@@ -156,7 +155,7 @@ keystone.createItems({
 });
 ```
 
-Will match all users whos name starts with `'J'`, skipping the first two matches,
+Will match all users whose name starts with `'J'`, skipping the first two matches,
 ultimately matching against `'John'`.
 
 #### Errors
@@ -185,3 +184,11 @@ Limitations include:
 
 When these limitations apply to your task at hand, we recommend using the
 GraphQL API instead. It is more verbose, but much more powerful.
+
+<!--
+The linked page seems to be skipped by Gatsby. Will re-add this section once
+fixed.
+## Auth Strategies
+
+For more info on Auth strategies, see [the Authentication Strategies documentation](../../packages/keystone/auth/README.md).
+-->

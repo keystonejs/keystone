@@ -221,28 +221,28 @@ describe('new List()', () => {
     const list = setup();
     expect(list.views).toEqual({
       name: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },
       email: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },
       other: {
-        Controller: resolveViewPath('Relationship/Controller'),
+        Controller: resolveViewPath('Relationship/views/Controller'),
         Field: resolveViewPath('Relationship/views/Field'),
         Filter: resolveViewPath('Relationship/views/Filter'),
         Cell: resolveViewPath('Relationship/views/Cell'),
       },
       hidden: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },
       writeOnce: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },
@@ -375,28 +375,28 @@ describe('getAdminMeta()', () => {
 
     expect(adminMeta.views).toEqual({
       name: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },
       email: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },
       other: {
-        Controller: resolveViewPath('Relationship/Controller'),
+        Controller: resolveViewPath('Relationship/views/Controller'),
         Field: resolveViewPath('Relationship/views/Field'),
         Filter: resolveViewPath('Relationship/views/Filter'),
         Cell: resolveViewPath('Relationship/views/Cell'),
       },
       hidden: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },
       writeOnce: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },

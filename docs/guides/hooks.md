@@ -3,10 +3,10 @@ section: guides
 title: Hooks
 ---
 
-# Hooks
+# Hooks Guide
 
 > _NOTE: Below is an overview of hooks. For API docs see
-> [Hooks API](./hooks-api.md)._
+> [Hooks API](../../api/hooks.md)._
 
 Keystone provide a system of hooks on the `create`, `update`, and `delete` mutations which allow developers to customise the behaviour of their system.
 
@@ -93,7 +93,7 @@ class CustomFieldType extends Field {
 }
 ```
 
-## Hook Excecution Order
+## Hook Execution Order
 
 The hooks are invoked in a specific order during a mutation operation.
 
@@ -133,3 +133,7 @@ Which [Field](#field-hooks) & [Field Type](#field-type-hooks) hooks are executed
 - `afterDelete`: Called on all fields.
 
 ## Error Handling
+
+```DOCS_TODO
+TODO
+```

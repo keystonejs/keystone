@@ -1,13 +1,14 @@
 const keystone = require('@keystone-alpha/core');
-const express = require('express');
 const path = require('path');
+const PORT = process.env.PORT || 3000;
 
 keystone
   .prepare({
-    port: 3000,
+    entryFile: 'index.js',
+    port: PORT,
   })
   .then(({ server }) => {
-    server.app.use(express.static(path.join(__dirname, 'public')));
+    server.app.use(server.express.static(path.join(__dirname, 'public')));
     return server.start();
   })
   .then(({ port }) => {
