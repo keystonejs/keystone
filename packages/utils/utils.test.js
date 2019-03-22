@@ -18,7 +18,7 @@ const {
   flatten,
   flatMap,
   ...utils
-} = require('./index');
+} = require('./');
 
 describe('utils', () => {
   test('camelize', () => {

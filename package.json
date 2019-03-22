@@ -29,6 +29,8 @@
     "version-packages": "build-releases version",
     "publish-changed": "yarn build && build-releases publish --public",
     "build": "preconstruct build",
+    "prepare": "yarn run --silent contributing-guide",
+    "contributing-guide": "is-ci && exit 0 || chalk -t \"\n\n{bold 📝 Contributing to KeystoneJS?}\n\nBe sure to build the modules first:\n> {yellow.bold yarn build}\n\" && link '🔗 Read the full Contributing Guide' 'https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md' && echo \"\n\n\"",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate"
   },
@@ -214,7 +216,8 @@
     "packages": [
       "packages/arch/packages/*",
       "packages/apollo-helpers",
-      "packages/fields"
+      "packages/fields",
+      "packages/utils"
     ]
   },
   "jest": {
@@ -236,6 +239,7 @@
     "babel-eslint": "^10.0.1",
     "bolt": "^0.22.6",
     "chalk": "^2.4.2",
+    "chalk-cli": "^4.1.0",
     "cypress": "^3.2.0",
     "dotenv-safe": "^6.0.0",
     "eslint": "^5.15.1",
@@ -249,6 +253,7 @@
     "execa": "1.0.0",
     "flow-bin": "0.91.0",
     "gatsby": "^2.1.31",
+    "is-ci": "^2.0.0",
     "jade": "^1.11.0",
     "jest": "^24.5.0",
     "jest-junit": "^6.3.0",
@@ -265,6 +270,7 @@
     "start-server-and-test": "^1.7.11",
     "supertest-light": "^1.0.2",
     "terminal-link": "^1.2.0",
+    "terminal-link-cli": "^2.0.0",
     "testcheck": "^1.0.0-rc.2",
     "tmp": "^0.0.33"
   }
