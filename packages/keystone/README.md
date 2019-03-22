@@ -184,3 +184,11 @@ Limitations include:
 
 When these limitations apply to your task at hand, we recommend using the
 GraphQL API instead. It is more verbose, but much more powerful.
+
+<!--
+The linked page seems to be skipped by Gatsby. Will re-add this section once
+fixed.
+## Auth Strategies
+
+For more info on Auth strategies, see [the Authentication Strategies documentation](../../packages/keystone/auth/README.md).
+-->
