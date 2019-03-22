@@ -1,14 +1,18 @@
-const bodyParser = require('body-parser');
+const falsey = require('falsey');
 const express = require('express');
 const webpack = require('webpack');
+const chalk = require('chalk');
+const terminalLink = require('terminal-link');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+const pkgInfo = require('../package.json');
 
 const getWebpackConfig = require('./getWebpackConfig');
+const { createSessionMiddleware } = require('./sessionMiddleware');
 const { mode } = require('./env');
 
 module.exports = class AdminUI {
-  constructor(keystone, config) {
+  constructor(keystone, config = {}) {
     this.keystone = keystone;
 
     if (config.adminPath === '/') {
@@ -16,6 +20,11 @@ module.exports = class AdminUI {
     }
 
     this.adminPath = config.adminPath || '/admin';
+    const { authStrategy } = config;
+    if (authStrategy && authStrategy.authType !== 'password') {
+      throw new Error('Keystone 5 Admin currently only supports the `PasswordAuthStrategy`');
+    }
+    this.authStrategy = authStrategy;
 
     this.config = {
       ...config,
@@ -23,17 +32,13 @@ module.exports = class AdminUI {
       signoutPath: `${this.adminPath}/signout`,
       sessionPath: `${this.adminPath}/session`,
     };
-
-    this.signin = this.signin.bind(this);
-    this.signout = this.signout.bind(this);
-    this.session = this.session.bind(this);
   }
 
   getAdminMeta() {
     return {
       withAuth: !!this.authStrategy,
       authList: this.authStrategy ? this.authStrategy.listKey : null,
-      adminPath: this.config.adminPath,
+      adminPath: this.adminPath,
       signinPath: this.config.signinPath,
       signoutPath: this.config.signoutPath,
       sessionPath: this.config.sessionPath,
@@ -41,109 +46,27 @@ module.exports = class AdminUI {
     };
   }
 
-  async signin(req, res, next) {
-    try {
-      // TODO: How could we support, for example, the twitter auth flow?
-      const result = await this.authStrategy.validate({
-        identity: req.body.username,
-        secret: req.body.password,
-      });
-
-      if (!result.success) {
-        // TODO - include some sort of error in the page
-        const htmlResponse = () => res.redirect(this.config.signinPath);
-        return res.format({
-          default: htmlResponse,
-          'text/html': htmlResponse,
-          'application/json': () => res.json({ success: false, message: result.message }),
-        });
-      }
-
-      await this.keystone.sessionManager.startAuthedSession(req, result);
-    } catch (e) {
-      return next(e);
-    }
-
-    return this.redirectSuccessfulSignin(req, res);
-  }
-
-  redirectSuccessfulSignin(req, res) {
-    const htmlResponse = () => res.redirect(this.config.adminPath);
-    return res.format({
-      default: htmlResponse,
-      'text/html': htmlResponse,
-      'application/json': () => res.json({ success: true }),
-    });
-  }
-
-  async signout(req, res, next) {
-    let success;
-    try {
-      await this.keystone.sessionManager.endAuthedSession(req);
-      success = true;
-    } catch (e) {
-      success = false;
-      // TODO: Better error logging?
-      console.error(e);
-    }
-
-    // NOTE: Because session is destroyed here, before webpack can handle the
-    // request, the "public" bundle will load the "signed out" page
-    const htmlResponse = () => next();
-    return res.format({
-      default: htmlResponse,
-      'text/html': htmlResponse,
-      'application/json': () => res.json({ success }),
-    });
-  }
-
-  session(req, res) {
-    res.json({
-      signedIn: !!req.user,
-      user: req.user ? { id: req.user.id, name: req.user.name } : undefined,
-    });
-  }
-
-  setAuthStrategy(authStrategy) {
-    if (authStrategy.authType !== 'password') {
-      throw new Error('Keystone 5 Admin currently only supports the `PasswordAuthStrategy`');
-    }
-
-    this.authStrategy = authStrategy;
-  }
-
   createSessionMiddleware() {
-    const app = express();
-
-    // Listen to POST events for form signin form submission (GET falls through
-    // to the webpack server(s))
-    app.post(
-      this.config.signinPath,
-      bodyParser.json(),
-      bodyParser.urlencoded({ extended: true }),
-      this.signin
+    const { signinPath, signoutPath, sessionPath } = this.config;
+    return createSessionMiddleware(
+      { signinPath, signoutPath, sessionPath, successPath: this.adminPath },
+      this.keystone.sessionManager,
+      this.authStrategy
     );
-
-    // Listen to both POST and GET events, and always sign the user out.
-    app.use(this.config.signoutPath, this.signout);
-
-    // Allow clients to AJAX for user info
-    app.get(this.config.sessionPath, this.session);
-
-    // Short-circuit GET requests when the user already signed in (avoids
-    // downloading UI bundle, doing a client side redirect, etc)
-    app.get(this.config.signinPath, (req, res, next) => {
-      return req.user ? this.redirectSuccessfulSignin(req, res) : next();
-    });
-
-    return app;
   }
 
-  createDevMiddleware({ apiPath, graphiqlPath }) {
+  createDevMiddleware({ apiPath, graphiqlPath, port }) {
     const app = express();
     const { adminPath } = this;
 
     // ensure any non-resource requests are rewritten for history api fallback
+    if (falsey(process.env.DISABLE_LOGGING)) {
+      const url = `http://localhost:${port}${adminPath}`;
+      const prettyUrl = chalk.blue(`${url}(/.*)?`);
+      const clickableUrl = terminalLink(prettyUrl, url, { fallback: () => prettyUrl });
+
+      console.log(`🔗 ${chalk.green('Keystone Admin UI:')} ${clickableUrl} (v${pkgInfo.version})`);
+    }
     app.use(adminPath, (req, res, next) => {
       // TODO: make sure that this change is OK. (regex was testing on url, not path)
       // Changed because this was preventing adminui pages loading when a querystrings

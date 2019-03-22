@@ -4,9 +4,7 @@ import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
-import { omit } from '@voussoir/utils';
-
-import FieldTypes from '../FIELD_TYPES';
+import { omit } from '@keystone-alpha/utils';
 
 let Render = ({ children }) => children();
 
@@ -101,7 +99,7 @@ class UpdateManyModal extends Component {
             </FieldInput>
           </FieldContainer>
           {selectedFields.map((field, i) => {
-            const { Field } = FieldTypes[list.key][field.path];
+            const { Field } = field.views;
             return (
               <Render key={field.path}>
                 {() => {

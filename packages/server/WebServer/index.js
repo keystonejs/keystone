@@ -27,7 +27,8 @@ module.exports = class WebServer {
       this.app.use(cors(this.config.cors));
     }
 
-    if (this.config.authStrategy) {
+    if (Object.keys(keystone.auth).length > 0) {
+      // We have at least one auth strategy
       // Setup the session as the very first thing.
       // The way express works, the `req.session` (and, really, anything added
       // to `req`) will be available to all sub `express()` instances.
@@ -81,37 +82,42 @@ module.exports = class WebServer {
       this.app.use(this.keystone.sessionManager.populateAuthedItemMiddleware);
     }
 
-    if (adminUI && this.config.authStrategy) {
-      adminUI.setAuthStrategy(this.config.authStrategy);
+    if (adminUI && adminUI.authStrategy) {
       // Inject the Admin specific session routes.
       // ie; this includes the signin/signout UI
       this.app.use(adminUI.createSessionMiddleware());
     }
 
-    const { apiPath, graphiqlPath, apollo } = this.config;
+    const { apiPath, graphiqlPath, apollo, port } = this.config;
 
     // GraphQL API always exists independent of any adminUI or Session settings
     this.app.use(
-      createGraphQLMiddleware(keystone, { apiPath, graphiqlPath, apolloConfig: apollo })
+      createGraphQLMiddleware(keystone, { apiPath, graphiqlPath, apolloConfig: apollo, port })
     );
 
     if (adminUI) {
       // This must be last as it's the "catch all" which falls into Webpack to
       // serve the Admin UI.
-      this.app.use(adminUI.createDevMiddleware({ apiPath, graphiqlPath }));
+      this.app.use(adminUI.createDevMiddleware({ apiPath, graphiqlPath, port }));
     }
   }
 
-  start() {
+  async start(...args) {
     const {
       app,
       config: { port },
     } = this;
 
-    app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './default.html')));
+    await this.keystone.connect(...args);
+    return new Promise((resolve, reject) => {
+      app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './default.html')));
 
-    app.listen(port, () => {
-      console.log(`KeystoneJS 5 ready on port ${port}`);
+      app.listen(port, error => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve({ port });
+      });
     });
   }
 };

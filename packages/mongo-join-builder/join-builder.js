@@ -1,4 +1,4 @@
-const { flatten } = require('@voussoir/utils');
+const { flatten } = require('@keystone-alpha/utils');
 
 /**
  * Format of input object:

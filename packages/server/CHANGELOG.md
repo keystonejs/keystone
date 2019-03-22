@@ -1,4 +1,73 @@
+# @keystone-alpha/server
+
+## 2.0.1
+
+- [patch][0c754410](https://github.com/keystonejs/keystone-5/commit/0c754410):
+
+  - Fix the graphql dev query links
+
+## 2.0.0
+
+- [patch][1f2ebc81](https://github.com/keystonejs/keystone-5/commit/1f2ebc81):
+
+  - Internal refactoring
+
+- [major][de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+
+  - Update authStrategy APIs
+    - Removes `authStrategy` from the `config` API of `Webserver`.
+    - Removes `authStrategy` from the `serverConfig` of the core `keystone` system builder.
+    - Removes the `setAuthStrategy` method from `AdminUI`.
+    - Adds `authStrategy` to the `config` API of `AdminUI`.
+    - `Webserver` checks `keystone.auth` to determine whether to set up auth session middlewares.
+
+## 1.2.0
+
+- [minor][74e0363](https://github.com/keystonejs/keystone-5/commit/74e0363):
+
+  - Reinstate ability to pass args to keystone.connect
+
+- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+
+  - Update patch-level dependencies
+
+## 1.1.0
+
+- [minor][91557b24](https://github.com/keystonejs/keystone-5/commit/91557b24):
+
+  - Make links in terminal clicky where possible
+
+- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+
+  - Update the package.json author field to "The Keystone Development Team"
+
+- [patch][9534f98f](https://github.com/keystonejs/keystone-5/commit/9534f98f):
+
+  - Add README.md to package
+
+## 1.0.0
+
+- [major] 8b6734ae:
+
+  - This is the first release of keystone-alpha (previously voussoir).
+    All packages in the `@voussoir` namespace are now available in the `@keystone-alpha` namespace, starting at version `1.0.0`.
+    To upgrade your project you must update any `@voussoir/<foo>` dependencies in `package.json` to point to `@keystone-alpha/<foo>: "^1.0.0"` and update any `require`/`import` statements in your code.
+
 # @voussoir/server
+
+## 1.1.0
+
+- [minor] 6fedba68:
+
+  - DX: Show incoming queries in console and GraphiQL
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
+- [patch] d0fbd66f:
+
+  - Update apollo dependencies on both client and server
 
 ## 1.0.0
 

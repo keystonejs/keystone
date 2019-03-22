@@ -1,8 +1,8 @@
 const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
 const { DateTime, FixedOffsetZone } = require('luxon');
-const { MongooseFieldAdapter } = require('@voussoir/adapter-mongoose');
-const { KnexFieldAdapter } = require('@voussoir/adapter-knex');
+const { MongooseFieldAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { KnexFieldAdapter } = require('@keystone-alpha/adapter-knex');
 const { Implementation } = require('../../Implementation');
 
 class _DateTime extends Implementation {

@@ -2,7 +2,7 @@ const {
   Integer,
   MongoIntegerInterface,
   KnexIntegerInterface,
-} = require('@voussoir/fields/types/Integer/Implementation');
+} = require('@keystone-alpha/fields/types/Integer/Implementation');
 
 class Stars extends Integer {
   extendAdminMeta(meta) {

@@ -1,4 +1,4 @@
-const { fixConfigKeys, checkRequiredConfig } = require('@voussoir/utils');
+const { fixConfigKeys, checkRequiredConfig } = require('@keystone-alpha/utils');
 
 const requiredConfig = [];
 
@@ -8,6 +8,7 @@ const defaultConfig = {
   graphiqlPath: '/admin/graphiql',
   apollo: undefined,
   cors: { origin: true, credentials: true },
+  cookieSecret: 'qwerty',
 };
 
 const remapKeys = {
