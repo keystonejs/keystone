@@ -1,7 +1,7 @@
-const pLazy = require('p-lazy');
-const pReflect = require('p-reflect');
+import pLazy from 'p-lazy';
+import pReflect from 'p-reflect';
 
-const camelize = (exports.camelize = str =>
+export const camelize = str =>
   // split the string into words, lowercase the leading character of the first word,
   // uppercase the leading character of all other words, then join together.
   // If the first word is all uppercase, lowercase the whole thing.
@@ -15,12 +15,14 @@ const camelize = (exports.camelize = str =>
           : w.replace(/\S/, c => c.toLowerCase())
         : w.replace(/\S/, c => c.toUpperCase())
     )
-    .join(''));
+    .join('');
 
-exports.noop = exports.identity = x => x;
-exports.getType = thing => Object.prototype.toString.call(thing).replace(/\[object (.*)\]/, '$1');
+export const noop = x => x;
+export const identity = noop;
+export const getType = thing =>
+  Object.prototype.toString.call(thing).replace(/\[object (.*)\]/, '$1');
 
-exports.fixConfigKeys = (config, remapKeys = {}) => {
+export const fixConfigKeys = (config, remapKeys = {}) => {
   const rtn = {};
   Object.keys(config).forEach(key => {
     if (remapKeys[key]) rtn[remapKeys[key]] = config[key];
@@ -29,7 +31,7 @@ exports.fixConfigKeys = (config, remapKeys = {}) => {
   return rtn;
 };
 
-exports.checkRequiredConfig = (config, requiredKeys = []) => {
+export const checkRequiredConfig = (config, requiredKeys = []) => {
   requiredKeys.forEach(key => {
     if (config[key] === undefined) {
       throw new Error(`Required key ${key} is not defined in the config`);
@@ -37,20 +39,21 @@ exports.checkRequiredConfig = (config, requiredKeys = []) => {
   });
 };
 
-exports.escapeRegExp = str => (str || '').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+export const escapeRegExp = str =>
+  (str || '').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
 // { key: value, ... } => { key: mapFn(value, key), ... }
-exports.mapKeys = (obj, func) =>
+export const mapKeys = (obj, func) =>
   Object.entries(obj).reduce((acc, [key, value]) => ({ ...acc, [key]: func(value, key, obj) }), {});
 
 // { key: value, ... } => { mapFn(key, value): value, ... }
-exports.mapKeyNames = (obj, func) =>
+export const mapKeyNames = (obj, func) =>
   Object.entries(obj).reduce(
     (acc, [key, value]) => ({ ...acc, [func(key, value, obj)]: value }),
     {}
   );
 
-exports.resolveAllKeys = obj => {
+export const resolveAllKeys = obj => {
   const returnValue = {};
   const errors = {};
 
@@ -80,24 +83,24 @@ exports.resolveAllKeys = obj => {
   });
 };
 
-exports.unique = arr => [...new Set(arr)];
+export const unique = arr => [...new Set(arr)];
 
-exports.intersection = (array1, array2) =>
-  exports.unique(array1.filter(value => array2.includes(value)));
+export const intersection = (array1, array2) =>
+  unique(array1.filter(value => array2.includes(value)));
 
-exports.pick = (obj, keys) =>
+export const pick = (obj, keys) =>
   keys.reduce((acc, key) => (key in obj ? { ...acc, [key]: obj[key] } : acc), {});
 
-exports.omitBy = (obj, func) => exports.pick(obj, Object.keys(obj).filter(value => !func(value)));
+export const omitBy = (obj, func) => pick(obj, Object.keys(obj).filter(value => !func(value)));
 
-exports.omit = (obj, keys) => exports.omitBy(obj, value => keys.includes(value));
+export const omit = (obj, keys) => omitBy(obj, value => keys.includes(value));
 
 // [{ k1: v1, k2: v2, ...}, { k3: v3, k4: v4, ...}, ...] => { k1: v1, k2: v2, k3: v3, k4, v4, ... }
 // Gives priority to the objects which appear later in the list
-exports.objMerge = objs => objs.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+export const objMerge = objs => objs.reduce((acc, obj) => ({ ...acc, ...obj }), {});
 
 // [x, y, z] => { x: val, y: val, z: val}
-exports.defaultObj = (keys, val) => keys.reduce((acc, key) => ({ ...acc, [key]: val }), {});
+export const defaultObj = (keys, val) => keys.reduce((acc, key) => ({ ...acc, [key]: val }), {});
 
 // [x, y, z] => { x[keyedBy]: mapFn(x), ... }
 // [{ name: 'a', animal: 'cat' },
@@ -109,24 +112,24 @@ exports.defaultObj = (keys, val) => keys.reduce((acc, key) => ({ ...acc, [key]: 
 //   b: 'dog',
 //   c: 'cat',
 //   d: 'dog'}
-exports.arrayToObject = (objs, keyedBy, mapFn = i => i) =>
+export const arrayToObject = (objs, keyedBy, mapFn = i => i) =>
   objs.reduce((acc, obj) => ({ ...acc, [obj[keyedBy]]: mapFn(obj) }), {});
 
 // [[1, 2, 3], [4, 5], 6, [[7, 8], [9, 10]]] => [1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]
-exports.flatten = arr => Array.prototype.concat(...arr);
+export const flatten = arr => Array.prototype.concat(...arr);
 
 // flatMap([{ vals: [2, 2] }, { vals: [3] }], x => x.vals) => [2, 2, 3]
-exports.flatMap = (arr, fn = exports.identity) => exports.flatten(arr.map(fn));
+export const flatMap = (arr, fn = identity) => flatten(arr.map(fn));
 
 // { foo: [1, 2, 3], bar: [4, 5, 6]} => [{ foo: 1, bar; 4}, { foo: 2, bar: 5}, { foo: 3, bar: 6 }]
-exports.zipObj = obj =>
+export const zipObj = obj =>
   Object.values(obj)[0].map((_, i) =>
     Object.keys(obj).reduce((acc, k) => ({ ...acc, [k]: obj[k][i] }), {})
   );
 
-exports.mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
+export const mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
   if (
-    exports.getType(whereClauseToMergeIn) !== 'Object' ||
+    getType(whereClauseToMergeIn) !== 'Object' ||
     Object.keys(whereClauseToMergeIn).length === 0
   ) {
     return queryArgs;
@@ -145,7 +148,7 @@ exports.mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
   };
 };
 
-exports.createLazyDeferred = () => {
+export const createLazyDeferred = () => {
   let state;
   let resolvedWith;
   let rejectedWith;

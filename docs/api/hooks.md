@@ -1,13 +1,13 @@
 ---
-section: guides
-title: Hooks API
+section: api
+title: Hooks
 ---
 
 # Hooks API
 
 The APIs for each hook are mostly the same across the 3 hook types
-([list hooks](#list-hooks), [field hooks](#field-hooks), [field type
-hooks](#field-type-hooks)).
+([list hooks](../hooks#list-hooks), [field hooks](../hooks#field-hooks), [field type
+hooks](../hooks#field-type-hooks)).
 Any differences are called out in the documentation for that hook below.
 
 Usage:

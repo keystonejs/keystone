@@ -17,7 +17,7 @@ keystone
     });
 
     if (twitterAuthEnabled) {
-      configureTwitterAuth(keystone, server);
+      configureTwitterAuth(keystoneApp, server);
     }
 
     server.app.use(staticRoute, server.express.static(staticPath));

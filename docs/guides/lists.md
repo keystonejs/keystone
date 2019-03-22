@@ -3,7 +3,7 @@ section: guides
 title: Lists
 ---
 
-# Lists
+# Lists Guide
 
 ```DOCS_TODO
 TODO

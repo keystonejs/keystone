@@ -1,0 +1,70 @@
+{
+  "releases": [{ "name": "@keystone-alpha/utils", "type": "major" }],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/access-control",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/utils"]
+    },
+    {
+      "name": "@keystone-alpha/adapter-knex",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/keystone", "@keystone-alpha/utils"]
+    },
+    {
+      "name": "@keystone-alpha/adapter-mongoose",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/mongo-join-builder",
+        "@keystone-alpha/utils"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/admin-ui",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields", "@keystone-alpha/utils"]
+    },
+    {
+      "name": "@keystone-alpha/fields",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/access-control",
+        "@keystone-alpha/adapter-knex",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/utils"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/keystone",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/access-control",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/utils"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/mongo-join-builder",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/utils"]
+    },
+    {
+      "name": "@keystone-alpha/server",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/utils"]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-access-control",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/admin-ui",
+        "@keystone-alpha/fields",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/server",
+        "@keystone-alpha/utils"
+      ]
+    }
+  ]
+}

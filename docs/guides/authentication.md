@@ -3,7 +3,7 @@ section: guides
 title: Authentication
 ---
 
-# Authentication
+# Authentication Guide
 
 _Note on terminology_:
 
@@ -19,34 +19,85 @@ _Note on terminology_:
 Username / Password authentication can be enabled on the Admin UI.
 
 > NOTE: Admin Authentication will only restrict access to the Admin _UI_.
+>
 > To also restrict access to the _API_,
 > you must setup [Access Control](../access-control.md) config.
 
-First, setup [a `PasswordAuthStrategy` instance](#passwordauthstrategy).
+To setup authentication, you must instantiate an _Auth Strategy_, and create a
+list used for authentication in `index.js`:
 
-Then, pass that instance into the Admin UI setup:
+Here, we will setup a `PasswordAuthStrategy` instance:
 
 ```javascript
-const { AdminUI } = require('@keystone-alpha/admin-ui');
-const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
+const { AdminUI }         = require('@keystone-alpha/admin-ui');
+const { Text, Password }  = require('@keystone-alpha/fields');
+const PasswordAuth        = require('@keystone-alpha/keystone/auth/Password');
 
 const keystone = // ...
 
-const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuthStrategy,
-  list: 'User',
+keystone.createList('User', {
+  fields: {
+    username: { type: Text },
+    password: { type: Password },
+  },
 });
 
-const admin = new AdminUI(keystone, {
-  adminPath: '/admin',
-  authStrategy,
+const authStrategy = keystone.createAuthStrategy({
+  type: PasswordAuth,
+  list: 'User',
+  config: {
+    identityField: 'username', // default: 'email'
+    secretField: 'password',   // default: 'password'
+  }
 });
+
+// Enable Admin UI login by adding the authentication strategy
+const admin = new AdminUI(keystone, { authStrategy });
 ```
 
-The Admin UI will then come with the correct routes and checks for
-authentication against the UI.
+Once your Keystone server is restarted, the Admin UI will now enforce
+authentication.
 
-## Strategies
+### Logging in to the Admin UI
 
-Auth strategies are
-[documented in the keystone package](../../packages/keystone/auth/README.md).
+The first time you setup authentication, you may not be able to login. This is
+because there are no `User`s who can do the logging in.
+
+First, disable authentication on the Admin UI by removing `authStrategy` from
+the `new AdminUI()` call:
+
+```diff
+- const admin = new AdminUI(keystone, { authStrategy });
++ const admin = new AdminUI(keystone, { });
+```
+
+Restart your Keystone App, and visit [http://localhost:3000/users](http://localhost:3000/users) - you should now be able to access the Admin UI without logging in.
+
+Next, create a User (be sure to set both a username and password).
+
+Add the `authStrategy` config back to the `new AdminUI()` call
+
+```diff
+- const admin = new AdminUI(keystone, { });
++ const admin = new AdminUI(keystone, { authStrategy });
+```
+
+Restart your Keystone App once more, and try to visit [http://localhost:3000/users](http://localhost:3000/users); you will be presented with the login screen.
+
+Finally; login with the newly created `User`'s credentials.
+
+## API Access Control
+
+Adding Authentication as above will only enable login to the Admin UI, it _will
+not_ restrict API access.
+
+**To also restrict API access, you must setup [Access Control](../access-control.md).**
+
+<!--
+The linked page seems to be skipped by Gatsby. Will re-add this section once
+fixed.
+## Auth Strategies
+
+For more info on Auth strategies, see [the `@keystone-alpha/keystone`
+package](../../packages/keystone/auth/README.md).
+-->

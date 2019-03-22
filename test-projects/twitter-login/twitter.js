@@ -28,11 +28,19 @@ exports.configureTwitterAuth = function(keystone, server) {
     })
   );
 
+  server.app.get('/api/session', (req, res) => {
+    res.json({
+      signedIn: !!req.session.keystoneItemId,
+      userId: req.session.keystoneItemId,
+      name: req.user ? req.user.name : undefined,
+    });
+  });
+
   // Twitter will redirect the user to this URL after approval.
   server.app.get(
     '/auth/twitter/callback',
     twitterAuth.authenticateMiddleware({
-      async verified(item, info, req, res) {
+      async verified(item, { list }, req, res) {
         // You could try and find user by email address here to match users
         // if you get the email data back from Twitter, then refer to
         // connectItem, for example:
@@ -44,12 +52,7 @@ exports.configureTwitterAuth = function(keystone, server) {
         if (!item) {
           return res.redirect('/auth/twitter/create');
         }
-
-        // Otheriwse create a session based on the user we have already
-        const list = keystone.getListByKey('User');
-        await keystone.session.create(req, { item, list });
-
-        // Redirect on sign in
+        await keystone.sessionManager.startAuthedSession(req, { item, list });
         res.redirect('/api/session');
       },
       failedVerification(error, req, res) {

@@ -1,5 +1,4 @@
 const passport = require('passport');
-const { OAuth } = require('oauth-libre');
 const PassportTwitter = require('passport-twitter');
 const { Text, Relationship } = require('@keystone-alpha/fields');
 
@@ -8,83 +7,21 @@ const FIELD_TWITTER_USERNAME = 'twitterUsername';
 const FIELD_TOKEN_SECRET = 'tokenSecret';
 const FIELD_ITEM = 'item';
 
-function validateWithTwitter(client, token, tokenSecret) {
+function validateWithTwitter(strategy, token, tokenSecret) {
   return new Promise((resolve, reject) => {
-    client.get(
-      'https://api.twitter.com/1.1/account/verify_credentials.json',
+    strategy.userProfile(
       token,
       tokenSecret,
+      {},
       async (error, data) => {
-        let jsonData;
-
         if (error) {
-          const { statusCode, data: errorData } = error;
-
-          let message;
-
-          try {
-            jsonData = JSON.parse(errorData);
-          } catch (jsonParseError) {
-            jsonData = {};
-          }
-
-          // For more detailed error messages, see:
-          // https://developer.twitter.com/en/docs/basics/response-codes
-          if (statusCode >= 400 && statusCode < 500) {
-            message = 'An error occured while contacting Twitter.';
-          } else if (statusCode >= 500) {
-            message = 'Twitter is temporarily having issues.';
-          }
-
-          // reduce the error messages into a coherent string
-          const errorsString = reduceTwitterErrorsToString(jsonData);
-
-          if (errorsString) {
-            message = `${message} ${errorsString}`;
-          }
-
-          return reject(new Error(message));
+                    return reject(error);
         }
 
-        if (data) {
-          try {
-            jsonData = JSON.parse(data);
-          } catch (e) {
-            return reject(
-              'Unable to parse server response from Twitter. Expected JSON, got:',
-              require('utils').inspect(data)
-            );
-          }
-        } else {
-          jsonData = {};
-        }
-
-        resolve(jsonData);
+        resolve(data._json);
       }
     );
   });
-}
-
-// reduce the error messages into a coherent string
-function reduceTwitterErrorsToString(jsonData) {
-  if (!jsonData.errors) {
-    return '';
-  }
-
-  const errors = Array.isArray(jsonData.errors) ? jsonData.errors : [jsonData.errors];
-
-  // reduce the error messages into a coherent string
-  return errors
-    .map(errorBody => {
-      if (errorBody.message && errorBody.code) {
-        return `(${errorBody.code}) ${errorBody.message}.`;
-      } else if (Object.prototype.toString.call(errorBody) === '[object Object]') {
-        return JSON.stringify(errorBody);
-      }
-      return errorBody.toString();
-    })
-    .join(' ')
-    .trim();
 }
 
 class TwitterAuthStrategy {
@@ -97,18 +34,6 @@ class TwitterAuthStrategy {
       sessionListKey: 'TwitterSession',
       ...config,
     };
-
-    this.twitterClient = new OAuth(
-      'https://api.twitter.com/oauth/request_token',
-      'https://api.twitter.com/oauth/access_token',
-      this.config.consumerKey,
-      this.config.consumerSecret,
-      '1.0A',
-      null,
-      'HMAC-SHA1'
-    );
-
-    this.twitterClient.setDefaultContentType('application/json');
 
     if (!this.getSessionList()) {
       // TODO: Set read permissions to be 'internal' (within keystone) only so
@@ -134,49 +59,49 @@ class TwitterAuthStrategy {
       });
     }
 
-    passport.use(
-      new PassportTwitter(
-        {
-          consumerKey: this.config.consumerKey,
-          consumerSecret: this.config.consumerSecret,
-          callbackURL: this.config.callbackURL,
-          passReqToCallback: true,
-        },
-        /**
-         * from: https://github.com/jaredhanson/passport-oauth1/blob/master/lib/strategy.js#L24-L37
-         * ---
-         * Applications must supply a `verify` callback, for which the function
-         * signature is:
-         *
-         *     function(token, tokenSecret, oauthParams, profile, done) { ... }
-         *
-         * The verify callback is responsible for finding or creating the user, and
-         * invoking `done` with the following arguments:
-         *
-         *     done(err, user, info);
-         *
-         * `user` should be set to `false` to indicate an authentication failure.
-         * Additional `info` can optionally be passed as a third argument, typically
-         * used to display informational messages.  If an exception occured, `err`
-         * should be set.
-         */
-        async (req, token, tokenSecret, oauthParams, profile, done) => {
-          try {
-            let result = await this.keystone.auth.User.twitter.validate({
-              token,
-              tokenSecret,
-            });
-            if (!result.success) {
-              // false indicates an authentication failure
-              return done(null, false, { ...result, profile });
-            }
-            return done(null, result.item, { ...result, profile });
-          } catch (error) {
-            return done(error);
+    this. passportStrategy = new PassportTwitter(
+      {
+        consumerKey: this.config.consumerKey,
+        consumerSecret: this.config.consumerSecret,
+        callbackURL: this.config.callbackURL,
+        passReqToCallback: true,
+      },
+      /**
+       * from: https://github.com/jaredhanson/passport-oauth1/blob/master/lib/strategy.js#L24-L37
+       * ---
+       * Applications must supply a `verify` callback, for which the function
+       * signature is:
+       *
+       *     function(token, tokenSecret, oauthParams, profile, done) { ... }
+       *
+       * The verify callback is responsible for finding or creating the user, and
+       * invoking `done` with the following arguments:
+       *
+       *     done(err, user, info);
+       *
+       * `user` should be set to `false` to indicate an authentication failure.
+       * Additional `info` can optionally be passed as a third argument, typically
+       * used to display informational messages.  If an exception occured, `err`
+       * should be set.
+       */
+      async (req, token, tokenSecret, oauthParams, profile, done) => {
+        try {
+          let result = await this.keystone.auth.User.twitter.validate({
+            token,
+            tokenSecret,
+          });
+          if (!result.success) {
+            // false indicates an authentication failure
+            return done(null, false, { ...result, profile });
           }
+          return done(null, result.item, { ...result, profile });
+        } catch (error) {
+          return done(error);
         }
-      )
+      }
     );
+
+    passport.use(this.passportStrategy);
 
     this.config.server.app.use(passport.initialize());
   }
@@ -187,21 +112,21 @@ class TwitterAuthStrategy {
     return this.keystone.lists[this.config.sessionListKey];
   }
   async validate({ token, tokenSecret }) {
-    const jsonData = await validateWithTwitter(this.twitterClient, token, tokenSecret);
+    const jsonData = await validateWithTwitter(this.passportStrategy, token, tokenSecret);
 
     // Lookup a past, verified session, that links to a user
     let pastSessionItem;
+    let fieldItemPopulated;
     try {
       // NOTE: We don't need to filter on verifiedAt as these rows can only
       // possibly exist after we've validated with Twitter (see above)
       pastSessionItem = await this.getSessionList()
         .adapter.findOne({
           [FIELD_TWITTER_ID]: jsonData.id_str,
-          [FIELD_ITEM]: { $exists: true },
-        })
-        // do a JOIN on the item
-        .populate(FIELD_ITEM)
-        .exec();
+        });
+        // find user item related to past session, join not possible atm
+      fieldItemPopulated = pastSessionItem && await this.getList()
+        .adapter.findById(pastSessionItem[FIELD_ITEM].toString());
     } catch (sessionFindError) {
       // TODO: Better error message. Why would this fail? DB connection lost? A
       // "not found" shouldn't throw (it'll just return null).
@@ -215,8 +140,8 @@ class TwitterAuthStrategy {
     };
 
     // Only add a reference to the parent list when we know the link exists
-    if (pastSessionItem && pastSessionItem.item) {
-      newSessionData.item = pastSessionItem.item.id;
+    if (pastSessionItem) {
+      newSessionData[FIELD_ITEM] = fieldItemPopulated.id;
     }
 
     const sessionItem = await this.keystone.createItem(this.config.sessionListKey, newSessionData);
@@ -236,7 +161,7 @@ class TwitterAuthStrategy {
       };
     }
 
-    const previouslyVerifiedItem = pastSessionItem[FIELD_ITEM];
+    const previouslyVerifiedItem = fieldItemPopulated;
     return {
       ...result,
       item: previouslyVerifiedItem,
@@ -271,15 +196,13 @@ class TwitterAuthStrategy {
 
     try {
       const twitterItem = await this.getSessionList()
-        .adapter.update(twitterSessionId, { item: item.id })
-        .exec();
+        .adapter.update(twitterSessionId, { item: item.id });
 
       await this.getList()
         .adapter.update(item.id, {
           [this.config.idField]: twitterItem[FIELD_TWITTER_ID],
           [this.config.usernameField]: twitterItem[FIELD_TWITTER_USERNAME],
-        })
-        .exec();
+        });
     } catch (error) {
       return { success: false, error };
     }
