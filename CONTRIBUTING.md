@@ -5,6 +5,10 @@ Contributions to KeystoneJS in the form of issues and PRs are welcomed.
 During the alpha stage of development we are focussing on getting the core systems working smoothly.
 Contributions which improve the documention and test coverage are particularly welcomed.
 
+## Code of Conduct
+
+KeystoneJS adheres to the [Contributor Covenant Code of Conduct](code-of-conduct.md).
+
 ## Release Guidelines
 
 ## Publishing

@@ -425,6 +425,10 @@ To start, run
 bolt arch
 ```
 
+## Code of Conduct
+
+KeystoneJS adheres to the [Contributor Covenant Code of Conduct](code-of-conduct.md).
+
 ## License
 
 Copyright (c) 2018 Jed Watson. Licensed under the MIT License.
