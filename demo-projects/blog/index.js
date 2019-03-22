@@ -112,8 +112,24 @@ keystone.createList('Comment', {
 
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
-  sortListsAlphabetically: true,
   authStrategy,
+  pages: [
+    {
+      label: 'Blog',
+      children: [
+        { listKey: 'Post' },
+        { label: 'Categories', listKey: 'PostCategory' },
+        {
+          label: 'Nested',
+          children: [{ label: 'Comments', listKey: 'Comment' }],
+        },
+      ],
+    },
+    {
+      label: 'Other',
+      children: ['User'],
+    },
+  ],
 });
 
 module.exports = {
