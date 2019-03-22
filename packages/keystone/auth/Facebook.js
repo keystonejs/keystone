@@ -1,6 +1,5 @@
 const passport = require('passport');
 const PassportFacebook = require('passport-facebook');
-const fetch = require('cross-fetch');
 const { Text, Relationship } = require('@keystone-alpha/fields');
 
 const FIELD_FACEBOOK_ID = 'facebookId';
@@ -8,23 +7,18 @@ const FIELD_FACEBOOK_USERNAME = 'facebookUsername';
 const FIELD_TOKEN_SECRET = 'tokenSecret';
 const FIELD_ITEM = 'item';
 
-function validateWithFacebook(consumerKey, consumerSecret, accessToken) {
-  return fetch(
-    'https://graph.facebook.com/v3.0/debug_token' +
-      '?input_token=' +
-      accessToken +
-      '&access_token=' +
-      consumerKey +
-      '|' +
-      consumerSecret,
-    {
-      cache: 'no-cache',
-      headers: {
-        'content-type': 'application/json',
-        Accept: 'application/json',
-      },
-    }
-  ).then(response => response.json());
+function validateWithFacebook(strategy, accessToken) {
+  return new Promise((resolve, reject) => {
+    strategy.userProfile(
+      accessToken,
+      async (error, data) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(data._json);
+      }
+    );
+  });
 }
 
 class FacebookAuthStrategy {
@@ -62,30 +56,29 @@ class FacebookAuthStrategy {
       });
     }
 
-    passport.use(
-      new PassportFacebook(
-        {
-          clientID: this.config.consumerKey,
-          clientSecret: this.config.consumerSecret,
-          callbackURL: this.config.callbackURL,
-          passReqToCallback: true,
-        },
-        async (req, accessToken, refreshToken, profile, done) => {
-          try {
-            let result = await this.keystone.auth.User.facebook.validate({
-              accessToken,
-            });
-            if (!result.success) {
-              // false indicates an authentication failure
-              return done(null, false, { ...result, profile });
-            }
-            return done(null, result.item, { ...result, profile });
-          } catch (error) {
-            return done(error);
+    this.passportStrategy = new PassportFacebook(
+      {
+        clientID: this.config.consumerKey,
+        clientSecret: this.config.consumerSecret,
+        callbackURL: this.config.callbackURL,
+        passReqToCallback: true,
+      },
+      async (req, accessToken, refreshToken, profile, done) => {
+        try {
+          let result = await this.keystone.auth.User.facebook.validate({
+            accessToken,
+          });
+          if (!result.success) {
+            // false indicates an authentication failure
+            return done(null, false, { ...result, profile });
           }
+          return done(null, result.item, { ...result, profile });
+        } catch (error) {
+          return done(error);
         }
-      )
+      }
     );
+    passport.use(this.passportStrategy);
 
     this.config.server.app.use(passport.initialize());
   }
@@ -97,8 +90,7 @@ class FacebookAuthStrategy {
   }
   async validate({ accessToken }) {
     const jsonData = await validateWithFacebook(
-      this.config.consumerKey,
-      this.config.consumerSecret,
+      this.passportStrategy,
       accessToken
     );
 
@@ -110,7 +102,7 @@ class FacebookAuthStrategy {
       // possibly exist after we've validated with Facebook (see above)
       pastSessionItem = await this.getSessionList()
         .adapter.findOne({
-          [FIELD_FACEBOOK_ID]: jsonData.data.user_id,
+          [FIELD_FACEBOOK_ID]: jsonData.id,
         });
         // find user item related to past session, join not possible atm
       fieldItemPopulated = pastSessionItem && await this.getList()
@@ -123,7 +115,7 @@ class FacebookAuthStrategy {
 
     const newSessionData = {
       [FIELD_TOKEN_SECRET]: accessToken,
-      [FIELD_FACEBOOK_ID]: jsonData.data.user_id,
+      [FIELD_FACEBOOK_ID]: jsonData.id,
       [FIELD_FACEBOOK_USERNAME]: null,
     };
 
