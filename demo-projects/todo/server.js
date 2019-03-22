@@ -12,7 +12,13 @@ keystone
     return server.start();
   })
   .then(({ port }) => {
-    console.log(`Listening on port ${port}`);
+    console.log(`
+      Success! Your application is available at:
+
+      App URL: http://localhost:${port}
+      Admin URL: http://localhost:${port}/admin
+      GraphQL Playground: http://localhost:${port}/admin/graphiql
+    `);
   })
   .catch(error => {
     console.error(error);
