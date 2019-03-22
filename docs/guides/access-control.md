@@ -59,46 +59,67 @@ access level of the currently authenticated (or anonymous) user.
 
 For example, the below access control states:
 
-1.  Only authenticated users can read/update their own email, not any other
-    user's.
-2.  Only authenticated users can update their own password, they cannot read their
-    own or other user's passwords.
-3.  Only admins can read deactivated user accounts
+1.  Only admins can read deactivated user accounts.
+2.  Only authenticated users can read/update their own email, not any other
+    user's. Admins can read/update anyone's email.
+3.  Only admins can see if a password is set. No-one can read their own or other
+    user's passwords.
+    - _NOTE: It is **never** possible in Keystone to read a password via the
+      Admin UI or the API)_
+4.  Only authenticated users can update their own password. Admins can update
+    anyone's password.
 
-```js
+_NOTE: The code below depends on having a correct [authentication setup](./authentication.md)._
+
+```javascript
+const { Text, Select, Checkbox, Password } = require('@keystone-alpha/fields');
+
+const keystone = // ...
+
+// Setup the Authentication Strategy.
+// See https://v5.keystonejs.com/guides/authentication for more
+const authStrategy = // ...
+
 keystone.createList('User', {
   access: {
-    // 3.
+    // 1. Only admins can read deactivated user accounts
     read: ({ authentication: { item } }) => {
       if (item.isAdmin) {
         return {}; // Don't filter any items for admins
       }
+      // Approximately; users.filter(user => user.state !== 'deactivated');
       return {
         state_not: 'deactivated',
       };
     },
   },
-
   fields: {
     name: { type: Text },
     address: { type: Text },
     state: {
       type: Select,
       options: ['active', 'deactivated'],
-      default: 'active',
+      defaultValue: 'active',
     },
-    isAdmin: { type: Bool, default: false },
+    isAdmin: { type: Checkbox, defaultValue: false },
     email: {
-      type: Email,
-      // 1.
-      access: ({ existingItem, authentication }) => existingItem.id === authentication.item.id,
+      type: Text,
+      // 2. Only authenticated users can read/update their own email, not any other user's. Admins can read/update anyone's email.
+      access: ({ existingItem, authentication }) => (
+        authentication.item.isAdmin
+        || existingItem.id === authentication.item.id
+      ),
     },
     password: {
       type: Password,
       access: {
-        // 2.
-        read: false,
-        update: ({ existingItem, authentication }) => existingItem.id === authentication.item.id,
+        // 3. Only admins can see if a password is set. No-one can read their own or other user's passwords.
+        read: ({ authentication }) => authentication.item.isAdmin,
+        // 4. Only authenticated users can update their own password. Admins can update anyone's password.
+        update: ({ existingItem, authentication }) => (
+          authentication.item.isAdmin
+          || existingItem.id === authentication.item.id
+        ),
       },
     },
   },
@@ -354,7 +375,7 @@ keystone.createList('User', {
     state: {
       type: Select,
       options: ['active', 'deactivated'],
-      default: 'active',
+      defaultValue: 'active',
     },
     // ...
   },
