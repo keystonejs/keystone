@@ -1,26 +1,68 @@
 # KeystoneJS
 
-[![CircleCI](https://circleci.com/gh/keystonejs/keystone-5.svg?style=shield&circle-token=6b4c9e250b2b61403b64c9b66ab7f4de6b0b4dde)](https://circleci.com/gh/keystonejs/keystone-5) [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors)
+[![CircleCI](https://circleci.com/gh/keystonejs/keystone-5.svg?style=shield&circle-token=6b4c9e250b2b61403b64c9b66ab7f4de6b0b4dde)](https://circleci.com/gh/keystonejs/keystone-5)
 
 Welcome to Keystone 5, the development project for the future of KeystoneJS.
 
-`schema => ({ api, adminUI })`
+`schema => ({ GraphQL, AdminUI })`
 
-KeystoneJS is a platform which takes a user defined schema and builds a server which provides a GraphQL CRUD API backed by a database, along with an Admin UI for interacting with the database.
+KeystoneJS is a scalable platform and CMS for Node.js applications.
 
-- [WARNING](#WARNING)
-- [Getting Started](#Getting-Started)
-- [Developing](#Developing)
-- [License](#License)
+Keystone 5 introduces first-class GraphQL support, a new extensible architecture, and an improved Admin UI.
+
+It is currently in alpha and under intensive development by [Thinkmill](https://www.thinkmill.com.au) and contributors around the world.
+
+### What's new?
+
+Keystone 5 is a complete re-imagining of KeystoneJS for the future. It builds on the lessons we learned over the last 5 years of the Keystone's history and focuses on the things we believe are the most powerful features for modern web and mobile applications.
+
+This means less focus on hand-holding Node.js template-driven websites and more focus on flexible architecture, a powerful GraphQL API with deep access control features, an extensible Admin UI and plugins for rich field types, file and database adapters, and session management.
+
+We believe it's the ideal back-end for rich React / Vue / Angular applications, Next.js websites, Mobile applications and more. It also makes a great Headless CMS.
 
 ## WARNING
 
-This project is currently very much in the `alpha` phase of development.
-There are known bugs, missing features, and limited documentation.
-APIs have not been finalised and may change with each release (although SemVer will always be respected when this happens).
-If you use the Knex adapter, KeystoneJS _will_ delete your database every time you restart your application.
+This project is currently very much in the **alpha** phase of development. There are known bugs, missing features, and limited documentation. APIs have not been finalised and may change with each release.
+
+To make this clear, we're currently publishing all packages to the `@keystone-alpha` scope on npm.
 
 ## Getting Started
+
+If you're interested in checking out our progress, the simplest way to do so is to clone this repo and run one of the demo projects.
+
+_NOTE: You must have a [working version of `mongo`
+installed](https://docs.mongodb.com/manual/installation/#mongodb-community-edition)._
+
+### Demo Projects
+
+First, you'll need Bolt installed:
+
+```bash
+yarn global add bolt
+```
+
+You'll also need MongoDB installed. If you need help check out our [MongoDB Guide](https://v5.keystonejs.com/quick-start/mongodb)
+
+Then clone this repo and use Bolt to install the dependencies:
+
+```bash
+git clone https://github.com/keystonejs/keystone-5.git
+cd keystone-5
+bolt
+```
+
+Finally, run the build and start a project:
+
+```bash
+yarn build
+yarn start
+```
+
+There are currently two projects available: `todo` and `blog`. You can specify the project you want to start:
+
+```bash
+yarn start blog
+```
 
 ### Quick start
 
@@ -37,9 +79,6 @@ yarn start
 ```
 npm install --save @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/admin-ui
 ```
-
-_NOTE: You must have a [working version of `mongo`
-installed](https://docs.mongodb.com/manual/installation/#mongodb-community-edition)._
 
 Add a script to your `package.json`:
 
@@ -282,7 +321,8 @@ The `lint` script will validate source code with both ESLint and prettier.
 
 ### Setup
 
-Keystone 5 is set up as a monorepo, using [Bolt](http://boltpkg.com)
+Keystone 5 is set up as a monorepo, using [Bolt](http://boltpkg.com).
+
 First, clone the Keystone 5 repository
 
 ```
@@ -415,16 +455,10 @@ circleci local execute --job simple_tests
 Where `simple_tests` can be replaced with any job listed in
 [`.circleci/config.yml`](./.circleci/config.yml) under the `jobs:` section.
 
-### Arch - Keystone UI Kit
+## Code of Conduct
 
-Resources, tooling, and design guidelines by KeystoneJS using [GastbyJS](https://www.gatsbyjs.org/)
-
-To start, run
-
-```sh
-bolt arch
-```
+KeystoneJS adheres to the [Contributor Covenant Code of Conduct](code-of-conduct.md).
 
 ## License
 
-Copyright (c) 2018 Jed Watson. Licensed under the MIT License.
+Copyright (c) 2019 Jed Watson. Licensed under the MIT License.

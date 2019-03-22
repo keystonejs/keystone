@@ -9,24 +9,28 @@ title: Introduction
 
 This quick start guide will get you up and running with a fresh new Keystone application in just a few easy commands.
 
+[![Screenshot of the final Todo app](./img/todo-thumb.png)](https://raw.githubusercontent.com/keystonejs/keystone-5/master/docs/quick-start/img/todo.png)
+
+[![Screenshot of KeystoneJS Admin Dashboard](./img/admin-dashboard-thumb.png)](https://raw.githubusercontent.com/keystonejs/keystone-5/master/docs/quick-start/img/admin-dashboard.png)
+
+[![Screenshot of KeystoneJS Admin Todo List](./img/admin-list-thumb.png)](https://raw.githubusercontent.com/keystonejs/keystone-5/master/docs/quick-start/img/admin-list.png)
+
 ## Requirements
 
 Please make sure your computer/server meets the following requirements:
 
 - [Node.js](https://nodejs.org/) >= 10.x: Node.js is a server platform which runs JavaScript.
-- [MongoDB](https://www.mongodb.com/) >= 3.x: MongoDB is a powerful document store.
+- [MongoDB](../quick-start/mongodb.md) >= 4.x: MongoDB is a powerful document store.
 
 ## Installation
 
 To create a new KeystoneJS application, run the following commands.
 
 ```sh
-yarn create keystone-app my-app
+npx create-keystone-app my-app
 cd my-app
-yarn start
+npm start
 ```
-
-If you see an error, please make sure that you have [MongoDB installed](../quick-start/mongodb.md) and running.
 
 Congratulation, you are now running your very own Keystone application!
 To visit your running application (a simple todo list), visit
