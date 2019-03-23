@@ -1,5 +1,10 @@
 # @keystone-alpha/mongo-join-builder
 
+## 1.0.3
+
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+  - @keystone-alpha/utils@2.0.0
+
 ## 1.0.2
 
 - [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):

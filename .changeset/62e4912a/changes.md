@@ -1,1 +1,0 @@
-- Always display clickable links when starting a server in dev mode

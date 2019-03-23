@@ -1,1 +1,0 @@
-- Distribute CommonJS & ESM builds of the @keystone-alpha/utils package.
