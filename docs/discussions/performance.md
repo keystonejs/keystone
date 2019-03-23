@@ -1,5 +1,5 @@
 ---
-section: discussion
+section: discussions
 title: Performance
 ---
 
