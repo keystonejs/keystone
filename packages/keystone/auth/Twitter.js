@@ -9,18 +9,13 @@ const FIELD_ITEM = 'item';
 
 function validateWithTwitter(strategy, token, tokenSecret) {
   return new Promise((resolve, reject) => {
-    strategy.userProfile(
-      token,
-      tokenSecret,
-      {},
-      async (error, data) => {
-        if (error) {
-                    return reject(error);
-        }
-
-        resolve(data._json);
+    strategy.userProfile(token, tokenSecret, {}, async (error, data) => {
+      if (error) {
+        return reject(error);
       }
-    );
+
+      resolve(data._json);
+    });
   });
 }
 
@@ -59,7 +54,7 @@ class TwitterAuthStrategy {
       });
     }
 
-    this. passportStrategy = new PassportTwitter(
+    this.passportStrategy = new PassportTwitter(
       {
         consumerKey: this.config.consumerKey,
         consumerSecret: this.config.consumerSecret,
@@ -120,13 +115,13 @@ class TwitterAuthStrategy {
     try {
       // NOTE: We don't need to filter on verifiedAt as these rows can only
       // possibly exist after we've validated with Twitter (see above)
-      pastSessionItem = await this.getSessionList()
-        .adapter.findOne({
-          [FIELD_TWITTER_ID]: jsonData.id_str,
-        });
-        // find user item related to past session, join not possible atm
-      fieldItemPopulated = pastSessionItem && await this.getList()
-        .adapter.findById(pastSessionItem[FIELD_ITEM].toString());
+      pastSessionItem = await this.getSessionList().adapter.findOne({
+        [FIELD_TWITTER_ID]: jsonData.id_str,
+      });
+      // find user item related to past session, join not possible atm
+      fieldItemPopulated =
+        pastSessionItem &&
+        (await this.getList().adapter.findById(pastSessionItem[FIELD_ITEM].toString()));
     } catch (sessionFindError) {
       // TODO: Better error message. Why would this fail? DB connection lost? A
       // "not found" shouldn't throw (it'll just return null).
@@ -195,14 +190,14 @@ class TwitterAuthStrategy {
     }
 
     try {
-      const twitterItem = await this.getSessionList()
-        .adapter.update(twitterSessionId, { item: item.id });
+      const twitterItem = await this.getSessionList().adapter.update(twitterSessionId, {
+        item: item.id,
+      });
 
-      await this.getList()
-        .adapter.update(item.id, {
-          [this.config.idField]: twitterItem[FIELD_TWITTER_ID],
-          [this.config.usernameField]: twitterItem[FIELD_TWITTER_USERNAME],
-        });
+      await this.getList().adapter.update(item.id, {
+        [this.config.idField]: twitterItem[FIELD_TWITTER_ID],
+        [this.config.usernameField]: twitterItem[FIELD_TWITTER_USERNAME],
+      });
     } catch (error) {
       return { success: false, error };
     }
@@ -241,6 +236,9 @@ class TwitterAuthStrategy {
    * process. Default: calls `next()`, skipping the rest of the auth flow.
    */
   authenticateMiddleware({ failedVerification, verified }) {
+    if (!failedVerification) {
+      throw new Error('Must supply a `failedVerification` function to `authenticateTwitterUser()`');
+    }
     if (!verified) {
       throw new Error('Must supply a `verified` function to `authenticateTwitterUser()`');
     }
@@ -249,14 +247,17 @@ class TwitterAuthStrategy {
       // This middleware will call the `verify` callback we passed up the top to
       // the `new PassportTwitter` constructor
       passport.authenticate('twitter', async (verifyError, authedItem, info) => {
+        // If we get a error, bail and display the message we get
         if (verifyError) {
-          if (failedVerification) {
-            failedVerification(verifyError.message || verifyError.toString(), req, res, next);
-          } else {
-            return next();
-          }
+          return failedVerification(verifyError.message || verifyError.toString(), req, res, next);
         }
-
+        // If we don't authorise Twitter we won't have any info about the
+        // user so we need to bail
+        if (!info) {
+          return failedVerification(null, req, res, next);
+        }
+        // Otherwise, store the Twitter data in session so we can refer
+        // back to it
         try {
           await this.keystone.auth.User.twitter.pauseValidation(req, info);
 
