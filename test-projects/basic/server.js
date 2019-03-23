@@ -17,7 +17,7 @@ keystone
 
     server.app.use(staticRoute, server.express.static(staticPath));
 
-    await server.start(process.env.MONGODB_URI);
+    await server.start();
 
     // Initialise some data.
     // NOTE: This is only for test purposes and should not be used in production
