@@ -1,5 +1,5 @@
 ---
-section: guides
+section: discussion
 title: Mutation Lifecycle
 ---
 

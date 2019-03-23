@@ -1,5 +1,5 @@
 ---
-section: guides
+section: discussion
 title: Authentication
 ---
 
@@ -29,13 +29,11 @@ list used for authentication in `index.js`:
 Here, we will setup a `PasswordAuthStrategy` instance:
 
 ```javascript
-const { AdminUI }         = require('@keystone-alpha/admin-ui');
-const { Text, Password }  = require('@keystone-alpha/fields');
-const PasswordAuth        = require('@keystone-alpha/keystone/auth/Password');
+const { AdminUI } = require('@keystone-alpha/admin-ui');
+const { Text, Password } = require('@keystone-alpha/fields');
+const PasswordAuth = require('@keystone-alpha/keystone/auth/Password');
 
-const keystone = // ...
-
-keystone.createList('User', {
+const keystone = keystone.createList('User', { // ...
   fields: {
     username: { type: Text },
     password: { type: Password },
@@ -47,8 +45,8 @@ const authStrategy = keystone.createAuthStrategy({
   list: 'User',
   config: {
     identityField: 'username', // default: 'email'
-    secretField: 'password',   // default: 'password'
-  }
+    secretField: 'password', // default: 'password'
+  },
 });
 
 // Enable Admin UI login by adding the authentication strategy
