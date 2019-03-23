@@ -1,5 +1,5 @@
 ---
-section: discussion
+section: discussions
 title: Authentication
 ---
 
@@ -33,7 +33,8 @@ const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { Text, Password } = require('@keystone-alpha/fields');
 const PasswordAuth = require('@keystone-alpha/keystone/auth/Password');
 
-const keystone = keystone.createList('User', { // ...
+const keystone = keystone.createList('User', {
+  // ...
   fields: {
     username: { type: Text },
     password: { type: Password },
