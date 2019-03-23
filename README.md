@@ -18,7 +18,7 @@ Keystone 5 is a complete re-imagining of KeystoneJS for the future. It builds on
 
 This means less focus on hand-holding Node.js template-driven websites and more focus on flexible architecture, a powerful GraphQL API with deep access control features, an extensible Admin UI and plugins for rich field types, file and database adapters, and session management.
 
-We believe it's the ideal back-end for rich React / Vue / Angular applications, Next.js websites, Mobile applications and more. It also makes a great Headless CMS.
+We believe it's the ideal back-end for rich React / Vue / Angular applications, Gatsby and Next.js websites, Mobile applications and more. It also makes a great Headless CMS.
 
 ## WARNING
 
