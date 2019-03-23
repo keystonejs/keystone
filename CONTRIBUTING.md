@@ -113,7 +113,6 @@ git pull
 git branch -D temp-release-branch
 git checkout -b temp-release-branch
 bolt version-packages
-<update package.json.ejs to match todo/package.json> # FIXME: This should be automated at some point!
 bolt format
 git add .
 git commit -m "Run version-packages"

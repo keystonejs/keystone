@@ -1,0 +1,14 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/demo-project-blog", "type": "patch" },
+    { "name": "@keystone-alpha/admin-ui", "type": "patch" },
+    { "name": "@keystone-alpha/core", "type": "patch" },
+    { "name": "create-keystone-app", "type": "patch" },
+    { "name": "@keystone-alpha/server", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-access-control", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-basic", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-login", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-twitter-login", "type": "patch" }
+  ],
+  "dependents": []
+}

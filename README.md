@@ -171,9 +171,6 @@ keystoneServer.prepare({ port: 3000 })
     });
     return server.start();
   })
-  .then(({ port }) => {
-    console.log(`Listening on port ${port}`);
-  })
   .catch(error => {
     console.error(error);
   });
