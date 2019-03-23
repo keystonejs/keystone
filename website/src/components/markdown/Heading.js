@@ -19,10 +19,33 @@ const Heading = ({ as: Tag, children, ...props }) => (
       color: colors.N100,
       lineHeight: 1,
       marginBottom: '0.66em',
+      '&:hover a': {
+        opacity: 0.5,
+      },
     }}
     id={dashcase(children)}
     {...props}
   >
+    <a
+      href={`#${dashcase(children)}`}
+      css={{
+        display: 'inline-block',
+        width: 0,
+        overflow: 'visible',
+        transform: 'scaleX(-1)',
+        // This provides some space between the components, while still ensuring
+        // they take up a single continuous space to avoid hover flicker.
+        marginLeft: '-0.2em',
+        paddingLeft: '0.2em',
+        fontSize: '0.7em',
+        opacity: 0,
+        '&:hover': {
+          opacity: 0.8,
+        },
+      }}
+    >
+      🔗
+    </a>
     {children}
   </Tag>
 );
