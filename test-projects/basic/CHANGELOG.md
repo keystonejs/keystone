@@ -1,5 +1,11 @@
 # @keystone-alpha/cypress-project-basic
 
+## 1.0.4
+
+- [patch][5ddb2ed6](https://github.com/keystonejs/keystone-5/commit/5ddb2ed6):
+
+  - Always display clickable links when starting a server in dev mode
+
 ## 1.0.3
 
 - [patch][9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):

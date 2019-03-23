@@ -1,5 +1,19 @@
 # @keystone-alpha/cypress-project-access-control
 
+## 1.0.4
+
+- [patch][5ddb2ed6](https://github.com/keystonejs/keystone-5/commit/5ddb2ed6):
+
+  - Always display clickable links when starting a server in dev mode
+
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+  - @keystone-alpha/adapter-mongoose@1.0.3
+  - @keystone-alpha/admin-ui@3.0.2
+  - @keystone-alpha/fields@3.0.1
+  - @keystone-alpha/keystone@1.0.4
+  - @keystone-alpha/server@2.0.2
+  - @keystone-alpha/utils@2.0.0
+
 ## 1.0.3
 
 - [patch][de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
