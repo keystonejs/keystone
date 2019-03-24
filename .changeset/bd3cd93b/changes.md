@@ -1,1 +1,0 @@
-- Add PrimaryNavHeading component and change styles

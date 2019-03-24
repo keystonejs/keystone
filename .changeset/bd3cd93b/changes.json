@@ -1,6 +1,0 @@
-{
-  "releases": [{ "name": "@arch-ui/navbar", "type": "patch" }],
-  "dependents": [
-    { "name": "@keystone-alpha/admin-ui", "type": "patch", "dependencies": ["@arch-ui/navbar"] }
-  ]
-}
