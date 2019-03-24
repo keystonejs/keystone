@@ -17,7 +17,7 @@ keystone
     });
 
     if (twitterAuthEnabled) {
-      configureTwitterAuth(keystone, server);
+      configureTwitterAuth(keystoneApp, server);
     }
 
     server.app.use(staticRoute, server.express.static(staticPath));
@@ -33,8 +33,6 @@ keystone
       });
       await keystoneApp.createItems(initialData);
     }
-
-    console.log(`Listening on port ${port}`);
   })
   .catch(error => {
     console.error(error);

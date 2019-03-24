@@ -1,19 +1,20 @@
 {
   "name": "@arch-ui/select",
-  "version": "0.0.2",
+  "description": "Select Component used in @keystone-alpha Admin UI.",
+  "version": "0.0.3",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/select.cjs.js",
   "peerDependencies": {
-    "react": "^16.8.0"
+    "react": "^16.8.4"
   },
   "devDependencies": {
-    "react": "^16.8.0"
+    "react": "^16.8.4"
   },
   "dependencies": {
     "@arch-ui/theme": "^0.0.2",
     "@babel/runtime": "^7.3.4",
-    "react-select": "^2.1.2"
+    "react-select": "2.3.0"
   },
   "module": "dist/select.esm.js"
 }

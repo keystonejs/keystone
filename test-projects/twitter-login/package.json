@@ -1,8 +1,9 @@
 {
   "name": "@keystone-alpha/cypress-project-twitter-login",
+  "description": "A KeystoneJS demo project for integration testing. See @keystone-alpha/keystone for more.",
   "private": true,
-  "version": "1.0.0",
-  "author": "The Keystone Development Team",
+  "version": "1.0.4",
+  "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
@@ -13,16 +14,16 @@
     "cypress:run": "exit 0"
   },
   "dependencies": {
-    "@arch-ui/fields": "^0.0.2",
-    "@arch-ui/input": "^0.0.2",
-    "@keystone-alpha/adapter-mongoose": "^1.0.0",
-    "@keystone-alpha/admin-ui": "^1.0.0",
-    "@keystone-alpha/core": "^1.0.0",
-    "@keystone-alpha/fields": "^1.0.0",
-    "@keystone-alpha/file-adapters": "^1.0.0",
-    "@keystone-alpha/keystone": "^1.0.0",
-    "@keystone-alpha/server": "^1.0.0",
-    "react": "^16.8.0"
+    "@arch-ui/fields": "^0.0.3",
+    "@arch-ui/input": "^0.0.3",
+    "@keystone-alpha/adapter-mongoose": "^1.0.3",
+    "@keystone-alpha/admin-ui": "^3.0.2",
+    "@keystone-alpha/core": "^2.0.1",
+    "@keystone-alpha/fields": "^3.0.1",
+    "@keystone-alpha/file-adapters": "^1.0.1",
+    "@keystone-alpha/keystone": "^1.0.4",
+    "@keystone-alpha/server": "^2.0.2",
+    "react": "^16.8.4"
   },
   "devDependencies": {
     "dotenv-safe": "^6.0.0",

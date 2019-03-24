@@ -1,5 +1,59 @@
 # @keystone-alpha/server
 
+## 2.0.2
+
+- [patch][5ddb2ed6](https://github.com/keystonejs/keystone-5/commit/5ddb2ed6):
+
+  - Always display clickable links when starting a server in dev mode
+
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+  - @keystone-alpha/utils@2.0.0
+
+## 2.0.1
+
+- [patch][0c754410](https://github.com/keystonejs/keystone-5/commit/0c754410):
+
+  - Fix the graphql dev query links
+
+## 2.0.0
+
+- [patch][1f2ebc81](https://github.com/keystonejs/keystone-5/commit/1f2ebc81):
+
+  - Internal refactoring
+
+- [major][de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+
+  - Update authStrategy APIs
+    - Removes `authStrategy` from the `config` API of `Webserver`.
+    - Removes `authStrategy` from the `serverConfig` of the core `keystone` system builder.
+    - Removes the `setAuthStrategy` method from `AdminUI`.
+    - Adds `authStrategy` to the `config` API of `AdminUI`.
+    - `Webserver` checks `keystone.auth` to determine whether to set up auth session middlewares.
+
+## 1.2.0
+
+- [minor][74e0363](https://github.com/keystonejs/keystone-5/commit/74e0363):
+
+  - Reinstate ability to pass args to keystone.connect
+
+- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+
+  - Update patch-level dependencies
+
+## 1.1.0
+
+- [minor][91557b24](https://github.com/keystonejs/keystone-5/commit/91557b24):
+
+  - Make links in terminal clicky where possible
+
+- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+
+  - Update the package.json author field to "The Keystone Development Team"
+
+- [patch][9534f98f](https://github.com/keystonejs/keystone-5/commit/9534f98f):
+
+  - Add README.md to package
+
 ## 1.0.0
 
 - [major] 8b6734ae:

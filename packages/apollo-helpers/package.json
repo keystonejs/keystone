@@ -1,7 +1,8 @@
 {
   "name": "@keystone-alpha/apollo-helpers",
-  "version": "1.0.0",
-  "author": "The Keystone Development Team",
+  "description": "Utilities to make using react-apollo + KeystoneJS easier.",
+  "version": "1.0.2",
+  "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
@@ -12,18 +13,18 @@
   "dependencies": {
     "@babel/runtime": "^7.3.4",
     "@jesstelford/apollo-cache-invalidation": "^0.0.3-gh3-gh5",
-    "graphql-tag": "^2.8.0",
+    "graphql-tag": "^2.10.1",
     "hoist-non-react-statics": "^3.0.1",
     "lodash.mapvalues": "^4.6.0",
     "memoize-one": "^4.0.2",
     "react-adopt": "^0.6.0",
-    "react-apollo": "^2.2.4"
+    "react-apollo": "2.4.0"
   },
   "peerDependencies": {
-    "react": "^16.8.0"
+    "react": "^16.8.4"
   },
   "devDependencies": {
-    "react": "^16.8.0"
+    "react": "^16.8.4"
   },
   "main": "dist/apollo-helpers.cjs.js",
   "module": "dist/apollo-helpers.esm.js"

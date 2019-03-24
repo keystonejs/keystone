@@ -1,3 +1,8 @@
+---
+section: packages
+title: Arch UI
+---
+
 # Arch - Keystone UI Kit
 
 Resources, tooling, and design guidelines by KeystoneJS using [GastbyJS](https://www.gatsbyjs.org/)

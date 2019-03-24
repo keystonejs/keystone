@@ -50,14 +50,11 @@ export const SelectYear: React.ComponentType<SelectYearProps> = memo(
     const [internalValue, setInternalValue] = useState(year);
 
     const previousYearProp = usePrevious(year);
-    useEffect(
-      () => {
-        if (previousYearProp !== year) {
-          setInternalValue(year);
-        }
-      },
-      [previousYearProp, year, setInternalValue]
-    );
+    useEffect(() => {
+      if (previousYearProp !== year) {
+        setInternalValue(year);
+      }
+    }, [previousYearProp, year, setInternalValue]);
 
     const handleChange = event => {
       const value = Number(event.target.value);

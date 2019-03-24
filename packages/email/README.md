@@ -1,4 +1,9 @@
-# Email Sending in keystone-alpha
+---
+section: packages
+title: Email Sending
+---
+
+# Email Sending
 
 Send emails via various transports, rendered with Express-compatible
 renderers.
@@ -57,7 +62,7 @@ module.exports = class extends React.Component {
 };
 ```
 
-_NOTE: The `jsx` renderer has a peer dependency on `react` & `react-dom`_.
+> NOTE: The `jsx` renderer has a peer dependency on `react` and `react-dom`
 
 ### mjml
 
@@ -108,7 +113,7 @@ module.exports = class extends React.Component {
 };
 ```
 
-_NOTE: The `mjml` renderer has a peer dependency on `react`, `react-dom`, & `mjml-react`_.
+> NOTE: The `mjml` renderer has a peer dependency on `react`, `react-dom`, and `mjml-react`
 
 ### Jade
 

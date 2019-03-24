@@ -1,4 +1,4 @@
-# Demo Project - Todo List
+# Demo Project: Todo List
 
 This is the todo list - the simplest implementation of Keystone. The todo list allows you to see what the minimum requirements are for running Keystone. It has no fancy extras and only one list - easy peasy!
 
@@ -7,6 +7,12 @@ This is the todo list - the simplest implementation of Keystone. The todo list a
 To run this demo project, all you need to do is run `bolt` within the Keystone project root to install all required packages, then run `bolt start todo` to begin running Keystone.
 
 Once running, the Keystone Admin UI is reachable from `localhost:3000/admin`. To see an example React app using Keystone's GraphQl APIs, head to `localhost:3000`.
+
+You can change the port that this application runs on by setting the `PORT` environment variable.
+
+```sh
+PORT=5000 bolt start todo
+```
 
 ## Demo React App
 

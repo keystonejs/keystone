@@ -1,17 +1,3 @@
-function prettyTitle(node) {
-  let pretty = node.slug
-    .replace(node.workspace.replace('@', ''), '')
-    .replace(new RegExp(/(\/)/g), ' ')
-    .replace('-', ' ')
-    .trim();
-
-  if (pretty.startsWith('packages') || pretty.startsWith('types')) {
-    pretty = pretty.replace('packages', '').replace('types', '');
-  }
-
-  return pretty === '' ? 'index' : pretty;
-}
-
 let lunrLoaded;
 
 export function getResults(query, options = { limit: Infinity }) {
@@ -41,18 +27,27 @@ export function getResults(query, options = { limit: Infinity }) {
     });
   }
 
+  // NOTE: documentation of syntax for customizing search can be found:
+  // https://lunrjs.com/guides/searching.html
   return lunrLoaded.then(({ en: lunrIndex }) => {
-    const results = lunrIndex.index.search(query); // you can  customize your search , see https://lunrjs.com/guides/searching.html
+    // find matches that *begin* with the query ("perf" will match "performance")
+    let results = lunrIndex.index.search(`${query}*`);
+
+    // when no matches are found, try again, but allow results that are off by
+    // one ("accrss contrll" will match "access control")
+    if (!results.length) {
+      results = lunrIndex.index.search(`${query}~1`);
+    }
+
     return {
       total: results.length,
       results: results
         .map(({ ref }) => {
           let node = lunrIndex.store[ref];
-
-          return { ...node, title: prettyTitle(node) };
+          return node;
         })
         // Make sure `tutorials` are always first
-        .sort((a, b) => (a.workspace !== b.workspace && a.workspace === 'tutorials' ? -1 : 0))
+        .sort((a, b) => (a.navGroup !== b.navGroup && a.navGroup === 'tutorials' ? -1 : 0))
         .slice(0, options.limit),
     };
   });

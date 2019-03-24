@@ -153,10 +153,7 @@ keystone.createList('SomeLongNamedList', {
   },
 });
 
-const admin = new AdminUI(keystone, {
-  adminPath: '/admin',
-  sortListsAlphabetically: true,
-});
+const admin = new AdminUI(keystone);
 
 module.exports = {
   keystone,

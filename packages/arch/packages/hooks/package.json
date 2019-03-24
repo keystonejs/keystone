@@ -1,14 +1,15 @@
 {
   "name": "@arch-ui/hooks",
-  "version": "0.0.2",
+  "description": "Custom Hooks used in @arch-ui packages.",
+  "version": "0.0.3",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/hooks.cjs.js",
   "peerDependencies": {
-    "react": "^16.8.0"
+    "react": "^16.8.4"
   },
   "devDependencies": {
-    "react": "^16.8.0"
+    "react": "^16.8.4"
   },
   "module": "dist/hooks.esm.js",
   "dependencies": {

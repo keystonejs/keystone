@@ -5,7 +5,7 @@ module.exports = {
   type: 'Select',
   implementation: Select,
   views: {
-    Controller: path.join(__dirname, './Controller'),
+    Controller: path.join(__dirname, './views/Controller'),
     Field: path.join(__dirname, './views/Field'),
     Filter: path.join(__dirname, './views/Filter'),
     Cell: path.join(__dirname, './views/Cell'),

@@ -3,6 +3,8 @@ const next = require('next');
 
 const { staticRoute, staticPath } = require('./index');
 
+const PORT = process.env.PORT || 3000;
+
 const initialData = {
   User: [
     {
@@ -25,16 +27,16 @@ const initialData = {
 const nextApp = next({
   dir: 'app',
   distDir: 'build',
-  dev: process.env.NODE_ENV !== 'PRODUCTION',
+  dev: process.env.NODE_ENV !== 'production',
 });
 
-Promise.all([keystone.prepare({ port: 3000 }), nextApp.prepare()])
+Promise.all([keystone.prepare({ port: PORT }), nextApp.prepare()])
   .then(async ([{ server, keystone: keystoneApp }]) => {
     server.app.use(staticRoute, server.express.static(staticPath));
 
     server.app.use(nextApp.getRequestHandler());
 
-    const { port } = await server.start();
+    await server.start();
 
     // Initialise some data.
     // NOTE: This is only for demo purposes and should not be used in production
@@ -42,8 +44,6 @@ Promise.all([keystone.prepare({ port: 3000 }), nextApp.prepare()])
     if (!users.length) {
       await keystoneApp.createItems(initialData);
     }
-
-    console.log(`Listening on port ${port}`);
   })
   .catch(error => {
     console.error(error);
