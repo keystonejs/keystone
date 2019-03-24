@@ -133,6 +133,12 @@ bolt publish-changed
 git push --tags
 ```
 
+**Note**: if you have two-factor authentication enabled for npm, you'll need to provide your 2FA code to the `publish-changed` task, like this:
+
+```sh
+NPM_CONFIG_OTP=123456 bolt publish-changed
+```
+
 The `bolt publish-changed` command finds packages where the version listed in the `package.json` is ahead of the version published on npm, and attempts to publish just those packages.
 
 Because of this, we should keep the following in mind:
