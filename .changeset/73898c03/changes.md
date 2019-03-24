@@ -1,0 +1,2 @@
+- Introduce `pages` config option
+- Remove `sortListsAlphabetically`
