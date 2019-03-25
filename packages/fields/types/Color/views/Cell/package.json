@@ -2,6 +2,6 @@
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
   "preconstruct": {
-    "source": "../src/Cell"
+    "source": "./Cell"
   }
 }
