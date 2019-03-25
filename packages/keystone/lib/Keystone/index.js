@@ -59,6 +59,7 @@ module.exports = class Keystone {
       throw new Error('Need an adapter, yo');
     }
   }
+
   createAuthStrategy(options) {
     const { type: StrategyType, list: listKey, config } = options;
     const { authType } = StrategyType;
@@ -235,7 +236,8 @@ module.exports = class Keystone {
       graphql(schema, query, null, context, variables);
   }
 
-  getAdminSchema() {
+  getSchema(/*accessRestriction*/) {
+    // FIXME: consolidate accessRestriction
     const typeDefs = this.getTypeDefs();
     if (debugGraphQLSchemas()) {
       typeDefs.forEach(i => console.log(i));
@@ -338,6 +340,7 @@ module.exports = class Keystone {
   }
 
   dumpSchema(file) {
+    // FIXME: Do we maybe want to make this go by schema name?
     // The 'Upload' scalar is normally automagically added by Apollo Server
     // See: https://blog.apollographql.com/file-uploads-with-apollo-server-2-0-5db2f3f60675
     // Since we don't execute apollo server over this schema, we have to
@@ -351,39 +354,44 @@ module.exports = class Keystone {
 
   // Create an access context for the given "user" which can be used to call the
   // List API methods which are access controlled.
-  getAccessContext(schemaName, { user, authedListKey }) {
-    // memoizing to avoid requests that hit the same type multiple times.
-    // We do it within the request callback so we can resolve it based on the
-    // request info ( like who's logged in right now, etc)
-    const getListAccessControlForUser = fastMemoize((listKey, operation) => {
-      return validateListAccessControl({
-        access: this.lists[listKey].access,
-        operation,
-        authentication: { item: user, listKey: authedListKey },
-        listKey,
-      });
-    });
-
-    const getFieldAccessControlForUser = fastMemoize(
-      (listKey, fieldKey, existingItem, operation) => {
-        return validateFieldAccessControl({
-          access: this.lists[listKey].fieldsByPath[fieldKey].access,
-          existingItem,
+  getAccessContext(schemaName /*accessRestriction*/) {
+    // FIXME: Use accessRestriction
+    // using other middleware to block things before they get to here...
+    return ({ user, authedListKey, audiences }) => {
+      // memoizing to avoid requests that hit the same type multiple times.
+      // We do it within the request callback so we can resolve it based on the
+      // request info ( like who's logged in right now, etc)
+      const getListAccessControlForUser = fastMemoize((listKey, operation) => {
+        return validateListAccessControl({
+          access: this.lists[listKey].access,
           operation,
           authentication: { item: user, listKey: authedListKey },
-          fieldKey,
           listKey,
         });
-      }
-    );
+      });
 
-    return {
-      // req.user & req.authedListKey come from ../index.js
-      schemaName,
-      authedItem: user,
-      authedListKey: authedListKey,
-      getListAccessControlForUser,
-      getFieldAccessControlForUser,
+      const getFieldAccessControlForUser = fastMemoize(
+        (listKey, fieldKey, existingItem, operation) => {
+          return validateFieldAccessControl({
+            access: this.lists[listKey].fieldsByPath[fieldKey].access,
+            existingItem,
+            operation,
+            authentication: { item: user, listKey: authedListKey },
+            fieldKey,
+            listKey,
+          });
+        }
+      );
+
+      return {
+        // req.user & req.authedListKey come from ../index.js
+        schemaName,
+        authedItem: user,
+        authedListKey: authedListKey,
+        audiences: audiences,
+        getListAccessControlForUser,
+        getFieldAccessControlForUser,
+      };
     };
   }
 

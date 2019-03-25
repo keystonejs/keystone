@@ -140,8 +140,8 @@ const _formatError = error => {
   }
 };
 
-function createApolloServer(keystone, apolloConfig, schemaName, dev, cookieSecret) {
-  // add the Admin GraphQL API
+function createApolloServer(keystone, apolloConfig, schemaName, dev, cookieSecret, accessRestriction) {
+  // Create an ApolloServer with the appropriate schema/context function
   const server = new ApolloServer({
     maxFileSize: 200 * 1024 * 1024,
     maxFiles: 5,
@@ -151,7 +151,7 @@ function createApolloServer(keystone, apolloConfig, schemaName, dev, cookieSecre
       startAuthedSession: ({ item, list }, audiences) =>
         startAuthedSession(req, { item, list }, audiences, cookieSecret),
       endAuthedSession: endAuthedSession.bind(null, req),
-      ...keystone.getAccessContext(schemaName, req),
+      ...keystone.getAccessContext(schemaName, accessRestriction)(req),
       req,
     }),
     ...(process.env.ENGINE_API_KEY
@@ -168,8 +168,11 @@ function createApolloServer(keystone, apolloConfig, schemaName, dev, cookieSecre
         }),
     formatError: _formatError,
   });
-  keystone.registerSchema(schemaName, server.schema);
 
+  // Add the ability to programmatically execute queries against the schema
+  if (schemaName) {
+    keystone.registerSchema(schemaName, server.schema);
+  }
   return server;
 }
 
