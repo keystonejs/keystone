@@ -221,6 +221,7 @@
       "packages/arch/packages/*",
       "packages/apollo-helpers",
       "packages/fields",
+      "packages/fields-wysiwyg-tinymce",
       "packages/utils"
     ]
   },
