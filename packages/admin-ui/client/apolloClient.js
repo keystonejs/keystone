@@ -6,9 +6,6 @@ import { onError } from 'apollo-link-error';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import ApolloClient from 'apollo-client';
 
-import { adminMeta } from './providers/AdminMeta';
-const { apiPath } = adminMeta;
-
 const fetch = require('cross-fetch');
 
 // Ejected from apollo-boost v0.1.4:
@@ -17,7 +14,7 @@ const fetch = require('cross-fetch');
 // Then modified to replace apollo-link-http with apollo-upload-client:
 // https://github.com/jaydenseric/apollo-upload-client
 
-class BoostClientWithUplaod extends ApolloClient {
+class BoostClientWithUpload extends ApolloClient {
   constructor(config) {
     const cache =
       config && config.cacheRedirects
@@ -83,6 +80,4 @@ class BoostClientWithUplaod extends ApolloClient {
   }
 }
 
-export default new BoostClientWithUplaod({
-  uri: apiPath,
-});
+export default BoostClientWithUpload;

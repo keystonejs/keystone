@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useCallback, useMemo } from 'react';
+import { Component, Fragment, useCallback, useMemo, Suspense } from 'react';
 import { Mutation } from 'react-apollo';
 
 import { Button } from '@arch-ui/button';
@@ -89,10 +89,10 @@ class CreateItemModal extends Component {
         >
           <AutocompleteCaptor />
           {list.fields.map((field, i) => {
-            const { Field } = field.views;
             return (
               <Render key={field.path}>
                 {() => {
+                  let [Field] = field.adminMeta.readViews([field.views.Field]);
                   let onChange = useCallback(value => {
                     this.setState(({ item }) => ({
                       item: {
@@ -129,11 +129,13 @@ export default class CreateItemModalWithMutation extends Component {
   render() {
     const { list } = this.props;
     return (
-      <Mutation mutation={list.createMutation}>
-        {(createItem, { loading }) => (
-          <CreateItemModal createItem={createItem} isLoading={loading} {...this.props} />
-        )}
-      </Mutation>
+      <Suspense fallback={null}>
+        <Mutation mutation={list.createMutation}>
+          {(createItem, { loading }) => (
+            <CreateItemModal createItem={createItem} isLoading={loading} {...this.props} />
+          )}
+        </Mutation>
+      </Suspense>
     );
   }
 }

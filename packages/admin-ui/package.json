@@ -54,6 +54,7 @@
     "babel-plugin-emotion": "^10.0.9",
     "body-parser": "^1.18.2",
     "chalk": "^2.4.2",
+    "compression": "^1.7.4",
     "cross-fetch": "^2.2.0",
     "express": "^4.16.3",
     "falsey": "^1.0.0",

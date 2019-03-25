@@ -231,9 +231,9 @@ class ListRow extends Component {
 
           let content;
 
-          const { Cell } = field.views;
+          if (field.views.Cell) {
+            const [Cell] = field.adminMeta.readViews([field.views.Cell]);
 
-          if (Cell) {
             // TODO
             // fix this later, creating a react component on every render is really bad
             // react will rerender into the DOM on every react render
