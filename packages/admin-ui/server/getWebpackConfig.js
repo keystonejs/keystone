@@ -18,11 +18,7 @@ module.exports = function({ adminMeta, entry }) {
   const rules = [
     {
       test: /\.js$/,
-      exclude: [
-        /node_modules(?!\/@keystone-alpha\/admin-ui)/,
-        /@arch-ui/,
-        /@keystone-alpha\/fields/,
-      ],
+      exclude: [/node_modules(?!\/@keystone-alpha\/admin-ui)/],
       use: [
         {
           loader: 'babel-loader',
@@ -103,6 +99,11 @@ module.exports = function({ adminMeta, entry }) {
         // which depends on the version of react that keystone uses
         react$: require.resolve('react'),
         'react-dom$': require.resolve('react-dom'),
+        ...(() => {
+          try {
+            return require('preconstruct').aliases.webpack(path.join(__dirname, '..', '..', '..'));
+          } catch (e) {}
+        })(),
       },
     },
   };
