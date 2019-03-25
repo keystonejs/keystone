@@ -1,10 +1,11 @@
 /** @jsx jsx */
 
 import React from 'react'; // eslint-disable-line no-unused-vars
-import { jsx } from '@emotion/core';
-import { colors } from '@arch-ui/theme';
 import reactAddonsTextContent from 'react-addons-text-content';
 import snakeCase from 'lodash.snakecase';
+import { jsx } from '@emotion/core';
+import { colors, gridSize } from '@arch-ui/theme';
+import { LinkIcon } from '@arch-ui/icons';
 
 import { mq } from '../../utils/media';
 
@@ -13,42 +14,59 @@ function dashcase(children) {
   return snakeCase(reactAddonsTextContent(children)).replace(/_/g, '-');
 }
 
-const Heading = ({ as: Tag, children, ...props }) => (
-  <Tag
-    css={{
-      color: colors.N100,
-      lineHeight: 1,
-      marginBottom: '0.66em',
-      '&:hover a': {
-        opacity: 0.5,
-      },
-    }}
-    id={dashcase(children)}
-    {...props}
-  >
+const Heading = ({ as: Tag, children, ...props }) => {
+  const id = dashcase(children);
+  const iconSize = 24;
+  const depth = parseInt(Tag.slice(1), 10);
+  const hasLink = depth > 1 && depth < 5;
+  const link = hasLink && (
     <a
-      href={`#${dashcase(children)}`}
+      href={`#${id}`}
       css={{
-        display: 'inline-block',
-        width: 0,
-        overflow: 'visible',
-        transform: 'scaleX(-1)',
-        // This provides some space between the components, while still ensuring
-        // they take up a single continuous space to avoid hover flicker.
-        marginLeft: '-0.2em',
-        paddingLeft: '0.2em',
-        fontSize: '0.7em',
+        alignItems: 'center',
+        color: colors.N40,
+        display: 'flex',
+        fontSize: '1rem',
+        height: iconSize,
+        justifyContent: 'center',
+        marginTop: -iconSize / 2,
         opacity: 0,
+        overflow: 'visible',
+        paddingRight: gridSize / 2,
+        position: 'absolute',
+        top: '50%',
+        transform: 'translateX(-100%)',
+        width: iconSize,
+
         '&:hover': {
-          opacity: 0.8,
+          color: colors.primary,
         },
       }}
     >
-      🔗
+      <LinkIcon width={24} />
     </a>
-    {children}
-  </Tag>
-);
+  );
+
+  return (
+    <Tag
+      css={{
+        color: colors.N100,
+        lineHeight: 1,
+        marginBottom: '0.66em',
+        position: 'relative',
+
+        '&:hover a': {
+          opacity: 1,
+        },
+      }}
+      id={id}
+      {...props}
+    >
+      {link}
+      {children}
+    </Tag>
+  );
+};
 
 export const H1 = props => (
   <Heading
