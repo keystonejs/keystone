@@ -69,7 +69,12 @@ module.exports = class AdminUI {
       console.log(`🔗 ${chalk.green('Keystone Admin UI:')} ${clickableUrl} (v${pkgInfo.version})`);
     }
 
-    app.use(compression());
+    if (mode === 'production') {
+      // only use compression in production because it breaks server sent events
+      // which is what webpack-hot-middleware uses
+      app.use(compression());
+    }
+
     app.use(adminPath, (req, res, next) => {
       // TODO: make sure that this change is OK. (regex was testing on url, not path)
       // Changed because this was preventing adminui pages loading when a querystrings
