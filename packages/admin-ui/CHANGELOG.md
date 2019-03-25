@@ -1,10 +1,12 @@
 # @keystone-alpha/admin-ui
 
 ## 3.0.3
-- [patch] [85cb44a9](https://github.com/keystonejs/keystone-5/commit/85cb44a9):
+
+- [patch][85cb44a9](https://github.com/keystonejs/keystone-5/commit/85cb44a9):
 
   - Introduce `pages` config option
   - Remove `sortListsAlphabetically`
+
 - Updated dependencies [85cb44a9](https://github.com/keystonejs/keystone-5/commit/85cb44a9):
   - @arch-ui/navbar@0.0.4
 

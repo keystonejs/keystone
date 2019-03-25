@@ -304,7 +304,8 @@ module.exports = class Keystone {
         ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers)),
         ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers)),
         // And the Keystone meta queries must always be available
-        ...this.getAuxQueryResolvers(),
+        _ksListsMeta: (_, args, context) =>
+          this.listsArray.filter(list => list.access.read).map(list => list.listMeta(context)),
       },
 
       Mutation: {
@@ -330,13 +331,6 @@ module.exports = class Keystone {
       ${this.getTypeDefs({ skipAccessControl: true }).join('\n')}
     `;
     fs.writeFileSync(file, schema);
-  }
-
-  getAuxQueryResolvers() {
-    return {
-      _ksListsMeta: (_, args, context) =>
-        this.listsArray.filter(list => list.access.read).map(list => list.listMeta(context)),
-    };
   }
 
   // Create an access context for the given "user" which can be used to call the
