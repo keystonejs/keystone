@@ -17,7 +17,7 @@ function dashcase(children) {
 const Heading = ({ as: Tag, children, ...props }) => {
   const id = dashcase(children);
   const iconSize = 24;
-  const depth = parseInt(Tag.slice(1));
+  const depth = parseInt(Tag.slice(1), 10);
   const hasLink = depth > 1 && depth < 5;
   const link = hasLink && (
     <a
