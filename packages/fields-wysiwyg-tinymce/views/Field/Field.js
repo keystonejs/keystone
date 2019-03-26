@@ -22,6 +22,8 @@ export default class WysiwygField extends Component {
     const htmlID = `ks-input-${field.path}`;
     const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
 
+    if (!canRead) return null;
+
     return (
       <FieldContainer>
         <FieldLabel
@@ -32,12 +34,9 @@ export default class WysiwygField extends Component {
             justifyContent: 'space-between',
           }}
         >
-          {field.label}{' '}
-          {!canRead ? (
-            <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
-          ) : null}
+          {field.label}
         </FieldLabel>
-        <div css={{ display: 'flex' }}>
+        <div css={{ display: 'flex', flex: 1 }}>
           <Editor
             value={canRead ? value : undefined}
             onChange={this.onChange}

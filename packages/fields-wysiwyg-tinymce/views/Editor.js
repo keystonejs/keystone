@@ -1,7 +1,41 @@
 import React, { useEffect, useRef } from 'react';
+import { Global, css } from '@emotion/core';
 import PropTypes from 'prop-types';
 import tinymce from 'tinymce/tinymce';
-import 'tinymce/themes/silver';
+
+// Tell TinyMCE where its assets are
+tinymce.baseURL = '/tinymce';
+
+const defaultOptions = {
+  // min_height: 80,
+  autoresize_bottom_margin: 20,
+  branding: false,
+  menubar: false,
+  // toolbar_drawer: 'floating',
+  statusbar: false,
+  quickbars_selection_toolbar:
+    'bold italic underline strikethrough | h1 h2 h3 | quicklink blockquote removeformat',
+  quickbars_insert_toolbar: false,
+};
+
+const defaultPlugins =
+  'link lists code autoresize paste textcolor quickbars hr table emoticons image';
+
+const defaultToolbar =
+  'formatselect forecolor | alignleft aligncenter alignright alignjustify | bullist numlist indent outdent | link unlink | image table emoticons hr | code';
+
+// The GlobalStyles component overrides some of the TinyMCE theme
+// to better match the Admin UI style
+const GlobalStyles = () => (
+  <Global
+    styles={css`
+      .tox-tinymce {
+        border-radius: 5px !important;
+        border-color: #c1c7d0 !important;
+      }
+    `}
+  />
+);
 
 const Editor = props => {
   const { value, name, isDisabled } = props;
@@ -27,16 +61,12 @@ const Editor = props => {
     const { autoFocus, plugins, toolbar } = props;
     // TODO: allow additional options to be mixed in
     const options = {
+      ...defaultOptions,
       auto_focus: autoFocus,
-      branding: false,
-      content_css: '/tinymce/skins/content/default/content.css',
-      menubar: false,
-      plugins: plugins,
+      plugins: plugins || defaultPlugins,
       readonly: isDisabled,
-      skin_url: '/tinymce/skins/ui/oxide',
       target: elementRef.current,
-      toolbar: toolbar,
-      toolbar_drawer: 'floating',
+      toolbar: toolbar || defaultToolbar,
       setup: editor => {
         editorRef.current = editor;
         editor.on('init', () => {
@@ -66,7 +96,12 @@ const Editor = props => {
     editorRef.current.setMode(isDisabled ? 'readonly' : 'design');
   }, [isDisabled]);
 
-  return <textarea ref={elementRef} style={{ visibility: 'hidden' }} name={name} />;
+  return (
+    <>
+      <GlobalStyles />
+      <textarea ref={elementRef} style={{ visibility: 'hidden', width: '100%' }} name={name} />
+    </>
+  );
 };
 
 Editor.propTypes = {
