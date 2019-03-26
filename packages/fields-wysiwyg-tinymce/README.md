@@ -10,3 +10,7 @@ This field inserts a string path into your schema based on the `Text` field type
 ```DOCS_TODO
 TODO
 ```
+
+## Credit
+
+The `Editor` implementation was inspired by the [tinymce-react](https://github.com/tinymce/tinymce-react) Official TinyMCE React component, Copyright 2017-present Ephox, Inc.

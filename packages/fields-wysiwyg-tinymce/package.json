@@ -15,7 +15,10 @@
     "@babel/runtime": "^7.3.4",
     "@emotion/core": "^10.0.9",
     "@keystone-alpha/fields": "^3.0.1",
-    "react": "^16.8.4"
+    "cuid": "^2.1.6",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4",
+    "tinymce": "^5.0.3"
   },
   "preconstruct": {
     "entrypoints": [

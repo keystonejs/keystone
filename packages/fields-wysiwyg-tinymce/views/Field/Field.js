@@ -4,14 +4,17 @@
 import { jsx } from '@emotion/core';
 import { Component } from 'react';
 
-import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
-import { Input } from '@arch-ui/input';
+import { FieldContainer, FieldLabel } from '@arch-ui/fields';
 import { ShieldIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
 
-export default class TextField extends Component {
-  onChange = event => {
-    this.props.onChange(event.target.value);
+import Editor from '../Editor';
+
+export default class WysiwygField extends Component {
+  onChange = value => {
+    if (typeof value === 'string' && value !== this.props.value) {
+      this.props.onChange(value);
+    }
   };
   render() {
     const { autoFocus, field, error, value: serverValue } = this.props;
@@ -34,17 +37,14 @@ export default class TextField extends Component {
             <ShieldIcon title={error.message} css={{ color: colors.N20, marginRight: '1em' }} />
           ) : null}
         </FieldLabel>
-        <FieldInput>
-          <Input
-            autoComplete="off"
-            autoFocus={autoFocus}
-            type="text"
+        <div css={{ display: 'flex' }}>
+          <Editor
             value={canRead ? value : undefined}
-            placeholder={canRead ? undefined : error.message}
             onChange={this.onChange}
             id={htmlID}
+            autoFocus={autoFocus}
           />
-        </FieldInput>
+        </div>
       </FieldContainer>
     );
   }
