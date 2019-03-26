@@ -1,0 +1,33 @@
+{
+  "name": "@keystone-alpha/cypress-project-facebook-login",
+  "description": "A KeystoneJS demo project for integration testing. See @keystone-alpha/keystone for more.",
+  "private": true,
+  "version": "1.0.0",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "scripts": {
+    "start": "node -r dotenv-safe/config `yarn bin`/keystone | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
+    "cypress:run:ci": "exit 0",
+    "cypress:run": "exit 0"
+  },
+  "dependencies": {
+    "@arch-ui/fields": "^0.0.3",
+    "@arch-ui/input": "^0.0.3",
+    "@keystone-alpha/adapter-mongoose": "^1.0.3",
+    "@keystone-alpha/admin-ui": "^3.0.2",
+    "@keystone-alpha/core": "^2.0.1",
+    "@keystone-alpha/fields": "^3.0.1",
+    "@keystone-alpha/file-adapters": "^1.0.1",
+    "@keystone-alpha/keystone": "^1.0.4",
+    "@keystone-alpha/server": "^2.0.2",
+    "@keystone-alpha/session": "^0.0.0",
+    "react": "^16.8.4"
+  },
+  "devDependencies": {
+    "dotenv-safe": "^6.0.0",
+    "pino-colada": "^1.4.4"
+  }
+}
