@@ -9,6 +9,7 @@ const chalk = require('chalk');
 const terminalLink = require('terminal-link');
 const { isInternalUrl } = require('next-server/dist/server/utils');
 const compression = require('compression');
+const { getCustomPageMap } = require('@keystone-alpha/field-views-loader');
 
 const withKeystone = require('./next-plugin-keystone');
 const router = require('../client/router');
@@ -69,7 +70,7 @@ module.exports = class AdminUI {
     );
   }
 
-  getNextConfig({ apiPath, graphiqlPath, analyze = '' }) {
+  getNextConfig({ apiPath, graphiqlPath, customPages = {}, analyze = '' }) {
     const { adminPath } = this.config;
 
     const adminMeta = {
@@ -86,6 +87,7 @@ module.exports = class AdminUI {
       // of its internal scripts, bundles, etc.
       assetPrefix: adminPath,
       adminMeta,
+      customPages,
     });
   }
 
@@ -109,7 +111,9 @@ module.exports = class AdminUI {
       console.log(`🔗 ${chalk.green('Keystone Admin UI:')} ${clickableUrl} (v${pkgInfo.version})`);
     }
 
-    const routes = router(adminPath);
+    const customPages = getCustomPageMap(this.config.pages);
+
+    const routes = router(adminPath, customPages);
 
     // Make sure we're dealing absolute paths
     const absNextDir = path.resolve(nextDir);
@@ -122,7 +126,7 @@ module.exports = class AdminUI {
         dev: !outDir,
         dir: outDir ? path.resolve(outDir, BUILD_DIR, type) : path.join(absNextDir, type),
         conf: {
-          ...this.getNextConfig({ apiPath, graphiqlPath }),
+          ...this.getNextConfig({ apiPath, graphiqlPath, customPages }),
           ...(outDir && { distDir: '.' }),
         },
       });
@@ -192,7 +196,7 @@ module.exports = class AdminUI {
         }
 
         prepare().then(() =>
-          adminApp.render(req, res, route.page, { ...req.query, ...req.params })
+          adminApp.render(req, res, route.page, { ...req.query, ...route.defaultParams, ...req.params })
         );
       });
     });
@@ -220,7 +224,9 @@ module.exports = class AdminUI {
       this.setAuthStrategy(authStrategy);
     }
 
-    const nextConfig = this.getNextConfig({ apiPath, graphiqlPath, analyze });
+    const customPages = getCustomPageMap(this.config.pages);
+
+    const nextConfig = this.getNextConfig({ apiPath, graphiqlPath, analyze, customPages });
 
     // Make sure we're dealing absolute paths
     const absOutDir = path.resolve(outDir, BUILD_DIR);

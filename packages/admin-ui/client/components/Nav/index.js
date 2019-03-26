@@ -164,26 +164,46 @@ function renderChildren(node, getListByKey, depth, router) {
     );
   }
 
-  const key = typeof node === 'string' ? node : node.listKey;
-  const list = getListByKey(key);
+  let key;
+  let route;
+  let params = {};
+  let label;
+  let href;
+  let id;
 
-  if (!list) {
-    throw new Error(`Unable to resolve list for key ${key}`);
+  if (typeof node === 'string' || (typeof node === 'object' && node.listKey)) {
+    key = typeof node === 'string' ? node : node.listKey;
+    route = 'list';
+
+    const list = getListByKey(key);
+
+    if (!list) {
+      throw new Error(`Unable to resolve list for key ${key}`);
+    }
+
+    label = node.label || list.label;
+    href = routes.list.to({ listPath: list.path }).as;
+    id = `ks-nav-${list.path}`;
+
+    params = { ...list.getPersistedSearch(), listPath: list.path };
+  } else if (typeof node === 'object' && node.path) {
+    key = node.path;
+    route = node.path;
+    label = node.label || node.path;
+    href = routes[node.path].to().as;
+    id = `ks-nav-${node.path}`;
+  } else {
+    throw new Error(`Cannot understand custom page config: ${JSON.stringify(node)}`);
   }
 
-  const label = node.label || list.label;
-  const href = routes.list.to({ listPath: list.path }).as;
   const path = router.asPath.split('?')[0].split('#')[0];
   const isSelected = href === path;
-  const id = `ks-nav-${list.path}`;
-
-  const maybeSearchParam = list.getPersistedSearch();
 
   return (
     <Link
       passHref
-      route="list"
-      params={{ ...maybeSearchParam, listPath: list.path }}
+      route={route}
+      params={params}
       key={key}
     >
       <PrimaryNavItem
@@ -198,7 +218,7 @@ function renderChildren(node, getListByKey, depth, router) {
   );
 }
 
-const PrimaryNavItems = withRouter(({ adminPath, getListByKey, pages, listKeys, router }) => {
+const PrimaryNavItems = withRouter(({ getListByKey, pages, listKeys, router }) => {
   return (
     <Relative>
       <ScrollQuery isPassive={false}>

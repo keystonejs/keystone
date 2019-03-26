@@ -1,9 +1,15 @@
 const { pick, omit } = require('@keystone-alpha/utils');
 
-const withTo = ({ route, page }, params = []) => ({
+const withTo = ({ route, page, defaultParams = {} }, params = []) => ({
   route,
   page,
-  to: (query = {}) => {
+  defaultParams,
+  to: (inputQuery = {}) => {
+    const query = {
+      ...defaultParams,
+      ...inputQuery,
+    };
+
     params.forEach(param => {
       if (!query[param]) {
         throw new Error(
@@ -33,7 +39,7 @@ const withTo = ({ route, page }, params = []) => ({
  *
  * @param adminPath String A base path. Must have a leading '/'
  */
-module.exports = adminPath => ({
+module.exports = (adminPath, customPages = {}) => ({
   'style-guide': withTo({
     route: `${adminPath}/style-guide`,
     page: '/style-guide',
@@ -46,6 +52,17 @@ module.exports = adminPath => ({
     route: `${adminPath}/signout`,
     page: '/signout',
   }),
+  ...Object.entries(customPages).reduce((memo, [path, { component }]) => {
+    memo[path] = withTo(
+      {
+        route: `${adminPath}/${path.replace(/(^\/+)|(\/+$)/g, '')}`,
+        page: '/custom',
+        defaultParams: { path, component },
+      },
+      ['path', 'component']
+    );
+    return memo;
+  }, {}),
   item: withTo(
     {
       route: `${adminPath}/:listPath/:itemId`,

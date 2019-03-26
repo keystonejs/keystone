@@ -3,11 +3,15 @@ const withBundleAnalyzer = require('@zeit/next-bundle-analyzer');
 const withTranspileModules = require('@weco/next-plugin-transpile-modules');
 
 module.exports = (nextConfig = {}) => {
-  const { analyze, assetPrefix, adminMeta, webpack } = nextConfig;
+  const { analyze, assetPrefix, adminMeta, customPages = {}, webpack } = nextConfig;
   return withBundleAnalyzer(
     withTranspileModules({
       ...nextConfig,
-      transpileModules: ['@keystone-alpha', '@arch-ui'],
+      transpileModules: [
+        '@keystone-alpha',
+        '@arch-ui',
+        ...Object.values(customPages).map(({ component }) => component),
+      ],
       // Output bundle analysis
       ...(analyze && {
         analyzeServer: true,

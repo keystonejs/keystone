@@ -153,7 +153,38 @@ keystone.createList('SomeLongNamedList', {
   },
 });
 
-const admin = new AdminUI(keystone);
+const admin = new AdminUI(keystone, {
+  pages: [
+    {
+      label: 'Posts',
+      children: [{ listKey: 'Post' }, { listKey: 'PostCategory', label: 'Categories' }],
+    },
+    {
+      label: 'Accounts',
+      children: ['User'],
+    },
+    {
+      label: 'Reports',
+      children: [
+        {
+          label: 'New Posts',
+          path: '/report/new-posts',
+          component: require.resolve('./custom-pages/report-new-posts'),
+        },
+        {
+          label: 'New Users',
+          path: '/report/new-users',
+          component: require.resolve('./custom-pages/report-new-users'),
+          ssr: false,
+        },
+      ],
+    },
+    {
+      label: 'Other',
+      children: ['SomeLongNamedList'],
+    },
+  ],
+});
 
 module.exports = {
   keystone,

@@ -4,9 +4,10 @@ import { prefixURL } from 'next-prefixed';
 import React, { Component } from 'react';
 import NextRouter, { withRouter as nextWithRouter } from 'next/router';
 
+import { customPages } from '../FIELD_TYPES';
 import router from '../router';
 
-export const routes = router(process.env.assetPrefix);
+export const routes = router(process.env.assetPrefix, customPages);
 
 export const Link = ({ route, params, ...props }) => (
   <NextLink {...props} {...route && routes[route].to(params)} />

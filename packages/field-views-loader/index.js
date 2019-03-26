@@ -73,6 +73,9 @@ function serialize(value) {
   if (typeof value === 'string') {
     return `'${value}'`;
   }
+  if (typeof value === 'boolean' || typeof value === 'number') {
+    return `${value}`;
+  }
   if (Array.isArray(value)) {
     return `[${unique(value)
       .map(serialize)
@@ -88,6 +91,24 @@ function serialize(value) {
     }`;
   }
   throw new Error('cannot serialize value of type: ' + typeof value);
+}
+
+function getCustomPageMap(pages, pathToComponents = {}) {
+  // breadth first
+  pages
+    .filter(page => typeof page === 'object' && (!!page.path && !!page.component))
+    .reduce((memo, page) => {
+      // Remove children; this is a flat view of the pages
+      const { children, ...flatPage } = page;
+      memo[page.path] = memo[page.path] || flatPage;
+      return memo;
+    }, pathToComponents);
+
+  pages
+    .filter(page => typeof page === 'object' && Array.isArray(page.children))
+    .reduce((memo, { children }) => getCustomPageMap(children, memo), pathToComponents);
+
+  return pathToComponents;
 }
 
 const generateFieldViews = memoizeOne((adminMeta, injectViews) => {
@@ -127,7 +148,12 @@ const generateFieldViews = memoizeOne((adminMeta, injectViews) => {
     }, {}),
   };
 
-  modules = unique(flattenDeep(modules));
+  const customPages = getCustomPageMap(adminMeta.pages);
+
+  modules = unique([
+    ...Object.values(customPages).map(({ component }) => component),
+    ...flattenDeep(modules),
+  ]);
 
   const result = `
     function interopDefault(mod) {
@@ -135,6 +161,7 @@ const generateFieldViews = memoizeOne((adminMeta, injectViews) => {
     }
     const loaders = {};
     export const loadView = viewModule => {
+
       switch(viewModule) {
         ${modules
           .map(
@@ -168,6 +195,7 @@ const generateFieldViews = memoizeOne((adminMeta, injectViews) => {
       colors: false,
       depth: null,
     })}
+    export const customPages = ${serialize(customPages)}
   `;
 
   if (falsey(process.env.DISABLE_LOGGING)) {
@@ -188,3 +216,5 @@ module.exports = function() {
 
   return generateFieldViews(adminMeta, injectViews);
 };
+
+module.exports.getCustomPageMap = getCustomPageMap;
