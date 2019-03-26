@@ -21,7 +21,6 @@ const {
   mergeRelationships,
 } = require('./relationship-utils');
 const List = require('../List');
-const SessionManager = require('./session');
 
 const unique = arr => [...new Set(arr)];
 
@@ -37,7 +36,6 @@ module.exports = class Keystone {
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
-    this.sessionManager = new SessionManager(this);
 
     if (config.adapters) {
       this.adapters = config.adapters;
@@ -304,7 +302,8 @@ module.exports = class Keystone {
         ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers)),
         ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers)),
         // And the Keystone meta queries must always be available
-        ...this.getAuxQueryResolvers(),
+        _ksListsMeta: (_, args, context) =>
+          this.listsArray.filter(list => list.access.read).map(list => list.listMeta(context)),
       },
 
       Mutation: {
@@ -330,13 +329,6 @@ module.exports = class Keystone {
       ${this.getTypeDefs({ skipAccessControl: true }).join('\n')}
     `;
     fs.writeFileSync(file, schema);
-  }
-
-  getAuxQueryResolvers() {
-    return {
-      _ksListsMeta: (_, args, context) =>
-        this.listsArray.filter(list => list.access.read).map(list => list.listMeta(context)),
-    };
   }
 
   // Create an access context for the given "user" which can be used to call the

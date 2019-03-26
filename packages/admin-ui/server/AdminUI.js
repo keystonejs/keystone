@@ -5,11 +5,11 @@ const terminalLink = require('terminal-link');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const compression = require('compression');
+const { createSessionMiddleware } = require('@keystone-alpha/session');
 
 const pkgInfo = require('../package.json');
 
 const getWebpackConfig = require('./getWebpackConfig');
-const { createSessionMiddleware } = require('./sessionMiddleware');
 const { mode } = require('./env');
 
 module.exports = class AdminUI {
@@ -51,7 +51,6 @@ module.exports = class AdminUI {
     const { signinPath, signoutPath, sessionPath } = this.config;
     return createSessionMiddleware(
       { signinPath, signoutPath, sessionPath, successPath: this.adminPath },
-      this.keystone.sessionManager,
       this.authStrategy
     );
   }

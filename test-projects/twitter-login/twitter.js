@@ -1,5 +1,5 @@
 const TwitterAuthStrategy = require('@keystone-alpha/keystone/auth/Twitter');
-
+const { startAuthedSession } = require('@keystone-alpha/session');
 const { appURL, twitterAppKey, twitterAppSecret } = require('./config');
 
 exports.configureTwitterAuth = function(keystone, server) {
@@ -45,7 +45,7 @@ exports.configureTwitterAuth = function(keystone, server) {
         if (!item) {
           return res.redirect('/auth/twitter/details');
         }
-        await keystone.sessionManager.startAuthedSession(req, { item, list });
+        await startAuthedSession(req, { item, list });
         res.redirect('/api/session');
       },
       failedVerification(error, req, res) {
@@ -86,7 +86,7 @@ exports.configureTwitterAuth = function(keystone, server) {
         });
 
         await keystone.auth.User.twitter.connectItem(req, { item });
-        await keystone.sessionManager.startAuthedSession(req, { item, list });
+        await startAuthedSession(req, { item, list });
         res.redirect('/api/session');
       } catch (createError) {
         next(createError);
