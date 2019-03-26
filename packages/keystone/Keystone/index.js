@@ -21,7 +21,6 @@ const {
   mergeRelationships,
 } = require('./relationship-utils');
 const List = require('../List');
-const SessionManager = require('./session');
 
 const unique = arr => [...new Set(arr)];
 
@@ -37,7 +36,6 @@ module.exports = class Keystone {
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
-    this.sessionManager = new SessionManager(this);
 
     if (config.adapters) {
       this.adapters = config.adapters;
