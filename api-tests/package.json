@@ -13,6 +13,7 @@
     "@keystone-alpha/fields": "^3.0.0",
     "@keystone-alpha/keystone": "^1.0.3",
     "@keystone-alpha/server": "^2.0.0",
+    "@keystone-alpha/session": "^0.0.0",
     "@keystone-alpha/test-utils": "^1.1.2",
     "body-parser": "^1.18.2",
     "cookie-signature": "^1.1.0",

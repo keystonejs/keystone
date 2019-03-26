@@ -23,6 +23,7 @@
     "@keystone-alpha/file-adapters": "^1.0.1",
     "@keystone-alpha/keystone": "^1.0.4",
     "@keystone-alpha/server": "^2.0.2",
+    "@keystone-alpha/session": "^0.0.0",
     "react": "^16.8.4"
   },
   "devDependencies": {
