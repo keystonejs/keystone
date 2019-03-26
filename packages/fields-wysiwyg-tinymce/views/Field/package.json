@@ -1,6 +1,6 @@
 {
-  "main": "dist/fields.cjs.js",
-  "module": "dist/fields.esm.js",
+  "main": "dist/fields-wysiwyg-tinymce.cjs.js",
+  "module": "dist/fields-wysiwyg-tinymce.esm.js",
   "preconstruct": {
     "source": "./Field"
   }
