@@ -37,7 +37,12 @@ module.exports = class WebServer {
 
     // GraphQL API always exists independent of any adminUI or Session settings
     this.app.use(
-      createGraphQLMiddleware(keystone, { apiPath, graphiqlPath, apolloConfig: apollo, port })
+      createGraphQLMiddleware(keystone, 'admin', {
+        apiPath,
+        graphiqlPath,
+        apolloConfig: apollo,
+        port,
+      })
     );
 
     if (adminUI) {

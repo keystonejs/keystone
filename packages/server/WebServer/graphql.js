@@ -8,7 +8,6 @@ const chalk = require('chalk');
 const logger = require('@keystone-alpha/logger');
 const falsey = require('falsey');
 const { omit } = require('@keystone-alpha/utils');
-const { graphql } = require('graphql');
 const StackUtils = require('stack-utils');
 const ensureError = require('ensure-error');
 const terminalLink = require('terminal-link');
@@ -171,6 +170,7 @@ const ttyLink = (text, path, port, version) => {
 
 module.exports = function createGraphQLMiddleware(
   keystone,
+  schemaName,
   { apiPath, graphiqlPath, apolloConfig, port }
 ) {
   const app = express();
@@ -195,7 +195,7 @@ module.exports = function createGraphQLMiddleware(
     maxFiles: 5,
     ...apolloConfig,
     ...keystone.getAdminSchema(),
-    context: ({ req }) => keystone.getAccessContext(req),
+    context: ({ req }) => keystone.getAccessContext(schemaName, req),
     ...(process.env.ENGINE_API_KEY
       ? {
           engine: { apiKey: process.env.ENGINE_API_KEY },
@@ -207,9 +207,7 @@ module.exports = function createGraphQLMiddleware(
         }),
     formatError: _formatError,
   });
-  keystone.registerGraphQLQueryMethod((query, context, variables) =>
-    graphql(server.schema, query, null, context, variables)
-  );
+  keystone.registerSchema(schemaName, server.schema);
 
   ttyLink('GraphQL API:', apiPath, port);
   // { cors: false } - prevent ApolloServer from overriding Keystone's CORS configuration.
