@@ -33,6 +33,8 @@ keystone
       });
       await keystoneApp.createItems(initialData);
     }
+
+    console.log(`Listening on port ${port}`);
   })
   .catch(error => {
     console.error(error);
