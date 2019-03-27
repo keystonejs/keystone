@@ -115,14 +115,13 @@ class TwitterAuthStrategy {
     try {
       // NOTE: We don't need to filter on verifiedAt as these rows can only
       // possibly exist after we've validated with Twitter (see above)
-      pastSessionItem = await this.getSessionList()
-        .adapter.findOne({
-          [FIELD_TWITTER_ID]: jsonData.id_str,
-          [FIELD_ITEM]: { $exists: true },
-        })
-        // do a JOIN on the item
-        .populate(FIELD_ITEM)
-        .exec();
+      pastSessionItem = await this.getSessionList().adapter.findOne({
+        [FIELD_TWITTER_ID]: jsonData.id_str,
+      });
+      // find user item related to past session, join not possible atm
+      fieldItemPopulated =
+        pastSessionItem &&
+        (await this.getList().adapter.findById(pastSessionItem[FIELD_ITEM].toString()));
     } catch (sessionFindError) {
       // TODO: Better error message. Why would this fail? DB connection lost? A
       // "not found" shouldn't throw (it'll just return null).
@@ -136,8 +135,8 @@ class TwitterAuthStrategy {
     };
 
     // Only add a reference to the parent list when we know the link exists
-    if (pastSessionItem && pastSessionItem.item) {
-      newSessionData.item = pastSessionItem.item.id;
+    if (pastSessionItem) {
+      newSessionData[FIELD_ITEM] = fieldItemPopulated.id;
     }
 
     const sessionItem = await this.keystone.createItem(this.config.sessionListKey, newSessionData);
