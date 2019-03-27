@@ -17,18 +17,17 @@ export const NavGroupIcons = styled.div({
 });
 
 export const PrimaryNav = styled.nav({
-  backgroundColor: 'rgba(9, 30, 66, 0.02)',
   boxSizing: 'border-box',
   display: 'flex',
   flexFlow: 'column nowrap',
-  fontSize: 15,
+  fontSize: '0.9rem',
   height: '100vh',
   position: 'fixed',
   zIndex: 2,
 });
 export const PrimaryNavScrollArea = styled.div(({ hasScroll, isBottom, isScrollable }) => {
   const divider = {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'rgba(9, 30, 66, 0.1)',
     content: '" "',
     height: 2,
     left: PRIMARY_NAV_GUTTER,
@@ -63,7 +62,7 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
   const selectedStyles = isSelected
     ? {
         '&, :hover, :active, :focus': {
-          borderLeftColor: colors.B.base,
+          borderRightColor: colors.primary,
           backgroundColor: colors.B.A10,
           fontWeight: 500,
         },
@@ -72,7 +71,7 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
 
   return {
     border: 0,
-    borderLeft: '3px solid transparent',
+    borderRight: '1px solid transparent',
     color: colors.N90,
     display: 'block',
     marginBottom: 2,
@@ -87,11 +86,12 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
 
     ':hover, :focus': {
       backgroundColor: colors.B.A5,
-      color: colors.N100,
+      // color: colors.primary,
       textDecoration: 'none',
     },
     ':active': {
       backgroundColor: colors.B.A10,
+      // color: colors.N100,
     },
 
     ...selectedStyles,
