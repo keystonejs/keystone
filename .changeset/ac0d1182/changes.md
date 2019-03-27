@@ -1,0 +1,1 @@
+- Use the new Keystone.registerSchema interface.

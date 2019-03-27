@@ -206,7 +206,7 @@ module.exports = class List {
           };
         }
 
-        const graphQLQuery = getGraphQLQuery();
+        const graphQLQuery = getGraphQLQuery(context.schemaName);
 
         if (!graphQLQuery) {
           return Promise.reject(
