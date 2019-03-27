@@ -11,7 +11,6 @@ const defaultOptions = {
   autoresize_bottom_margin: 20,
   branding: false,
   menubar: false,
-  // toolbar_drawer: 'floating',
   statusbar: false,
   quickbars_selection_toolbar:
     'bold italic underline strikethrough | h1 h2 h3 | quicklink blockquote removeformat',
