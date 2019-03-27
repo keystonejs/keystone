@@ -20,8 +20,12 @@ module.exports = function({ adminMeta, entry }) {
       test: /\.js$/,
       exclude: [
         /node_modules(?!\/@keystone-alpha\/admin-ui)/,
-        /@keystone-alpha\/field/,
-        /@arch-ui/,
+        // this only affects things while developing in the monorepo
+        // we do this so we can use less memory on heroku, this uses less memory
+        // since it doesn't have to compile these things with babel
+        // note that the preconstruct aliases are also disabled on heroku to enable this
+        // when we have static builds for the admin ui, we can remove this
+        ...(process.env.HEROKU === 'true' ? [/@keystone-alpha\/field/, /@arch-ui/] : []),
       ],
       use: [
         {
@@ -103,6 +107,13 @@ module.exports = function({ adminMeta, entry }) {
         // which depends on the version of react that keystone uses
         react$: require.resolve('react'),
         'react-dom$': require.resolve('react-dom'),
+        ...(() => {
+          try {
+            // see the comment in the babel-loader exclude option for why this is disabled on heroku
+            if (process.env.HEROKU === 'true') return;
+            return require('preconstruct').aliases.webpack(path.join(__dirname, '..', '..', '..'));
+          } catch (e) {}
+        })(),
       },
     },
   };

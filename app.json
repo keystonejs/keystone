@@ -13,6 +13,9 @@
     },
     "NPM_CONFIG_PRODUCTION": {
       "required": true
+    },
+    "HEROKU": {
+      "required": true
     }
   },
   "formation": {
