@@ -4,10 +4,12 @@ const chalk = require('chalk');
 const terminalLink = require('terminal-link');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+const compression = require('compression');
+const { createSessionMiddleware } = require('@keystone-alpha/session');
+
 const pkgInfo = require('../package.json');
 
 const getWebpackConfig = require('./getWebpackConfig');
-const { createSessionMiddleware } = require('./sessionMiddleware');
 const { mode } = require('./env');
 
 module.exports = class AdminUI {
@@ -49,7 +51,6 @@ module.exports = class AdminUI {
     const { signinPath, signoutPath, sessionPath } = this.config;
     return createSessionMiddleware(
       { signinPath, signoutPath, sessionPath, successPath: this.adminPath },
-      this.keystone.sessionManager,
       this.authStrategy
     );
   }
@@ -66,6 +67,13 @@ module.exports = class AdminUI {
 
       console.log(`🔗 ${chalk.green('Keystone Admin UI:')} ${clickableUrl} (v${pkgInfo.version})`);
     }
+
+    if (mode === 'production') {
+      // only use compression in production because it breaks server sent events
+      // which is what webpack-hot-middleware uses
+      app.use(compression());
+    }
+
     app.use(adminPath, (req, res, next) => {
       // TODO: make sure that this change is OK. (regex was testing on url, not path)
       // Changed because this was preventing adminui pages loading when a querystrings
@@ -142,7 +150,6 @@ module.exports = class AdminUI {
         });
       };
     }
-
     // handle errors
     // eslint-disable-next-line no-unused-vars
     app.use(function(err, req, res, next) {
