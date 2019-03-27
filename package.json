@@ -33,7 +33,7 @@
     "contributing-guide": "is-ci && exit 0 || chalk -t \"\n\n{bold 📝 Contributing to KeystoneJS?}\n\nBe sure to build the modules first:\n> {yellow.bold yarn build}\n\" && link '🔗 Read the full Contributing Guide' 'https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md' && echo \"\n\n\"",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "heroku-postbuild": "bolt && yarn build"
+    "heroku-postbuild": "bolt && yarn build && cd demo-projects/blog && yarn build"
   },
   "dependencies": {
     "@babel/core": "^7.3.4",

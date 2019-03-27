@@ -36,7 +36,7 @@ Promise.all([keystone.prepare({ port: PORT }), nextApp.prepare()])
 
     server.app.use(nextApp.getRequestHandler());
 
-    await server.start();
+    await server.start(process.env.MONGODB_URI);
 
     // Initialise some data.
     // NOTE: This is only for demo purposes and should not be used in production
