@@ -1,6 +1,7 @@
 import { ApolloClient, InMemoryCache } from 'apollo-boost';
 import { createUploadLink } from 'apollo-upload-client';
 import fetch from 'isomorphic-unfetch';
+import os from 'os';
 
 let apolloClient = null;
 
@@ -9,7 +10,7 @@ let isBrowser = typeof window !== 'undefined';
 function create(initialState) {
   // TODO: server-side requests must have an absolute URI. We should find a way
   // to make this part of the project config, seems highly opinionated here
-  const uriHost = !isBrowser ? 'http://localhost:3000' : '';
+  const uriHost = !isBrowser ? `http://${os.hostname()}:${process.env.PORT || 3000}` : '';
   const uri = `${uriHost}/admin/api`;
 
   return new ApolloClient({
