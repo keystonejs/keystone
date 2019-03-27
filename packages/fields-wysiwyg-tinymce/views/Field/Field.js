@@ -5,8 +5,6 @@ import { jsx } from '@emotion/core';
 import { Component } from 'react';
 
 import { FieldContainer, FieldLabel } from '@arch-ui/fields';
-import { ShieldIcon } from '@arch-ui/icons';
-import { colors } from '@arch-ui/theme';
 
 import Editor from '../Editor';
 
@@ -37,12 +35,7 @@ export default class WysiwygField extends Component {
           {field.label}
         </FieldLabel>
         <div css={{ display: 'flex', flex: 1 }}>
-          <Editor
-            value={canRead ? value : undefined}
-            onChange={this.onChange}
-            id={htmlID}
-            autoFocus={autoFocus}
-          />
+          <Editor value={value} onChange={this.onChange} id={htmlID} autoFocus={autoFocus} />
         </div>
       </FieldContainer>
     );

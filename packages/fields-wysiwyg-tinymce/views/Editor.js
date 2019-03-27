@@ -7,7 +7,6 @@ import tinymce from 'tinymce/tinymce';
 tinymce.baseURL = '/tinymce-assets';
 
 const defaultOptions = {
-  // min_height: 80,
   autoresize_bottom_margin: 20,
   branding: false,
   menubar: false,
@@ -37,7 +36,7 @@ const GlobalStyles = () => (
 );
 
 const Editor = props => {
-  const { value, name, isDisabled } = props;
+  const { value, name, isDisabled, autoFocus, plugins, toolbar } = props;
 
   const elementRef = useRef(null);
   const editorRef = useRef(null);
@@ -57,7 +56,6 @@ const Editor = props => {
 
   // Set up the Editor
   useEffect(() => {
-    const { autoFocus, plugins, toolbar } = props;
     // TODO: allow additional options to be mixed in
     const options = {
       ...defaultOptions,
@@ -81,7 +79,7 @@ const Editor = props => {
     return () => {
       tinymce.remove(editorRef.current);
     };
-  }, []);
+  }, [plugins, toolbar]);
 
   // Update the Editor content when the value prop changes
   useEffect(() => {
@@ -93,7 +91,7 @@ const Editor = props => {
   useEffect(() => {
     if (!editorIsReady()) return;
     editorRef.current.setMode(isDisabled ? 'readonly' : 'design');
-  }, [isDisabled]);
+  }, [isDisabled, editorRef.current]);
 
   return (
     <>
