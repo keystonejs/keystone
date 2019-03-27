@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "DISABLE_LOGGING=true keystone",
-    "build": "next build"
+    "build": "next build app"
   },
   "dependencies": {
     "@emotion/core": "^10.0.9",
