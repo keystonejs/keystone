@@ -4,7 +4,7 @@ const path = require('path');
 
 const { enableDevFeatures, mode } = require('./env');
 
-let isHerokuEnv = process.env.HEROKU === 'true';
+const isHerokuEnv = process.env.HEROKU === 'true';
 
 module.exports = function({ adminMeta, entry }) {
   const templatePlugin = new HtmlWebpackPlugin({
