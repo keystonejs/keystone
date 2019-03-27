@@ -1,0 +1,1 @@
+- Decouple creation of ApolloServer from setting up of middleware

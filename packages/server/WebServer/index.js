@@ -5,6 +5,7 @@ const falsey = require('falsey');
 const { commonSessionMiddleware } = require('@keystone-alpha/session');
 const createGraphQLMiddleware = require('./graphql');
 const initConfig = require('./initConfig');
+const { createApolloServer } = require('./apolloServer');
 
 module.exports = class WebServer {
   constructor(keystone, config) {
@@ -33,17 +34,12 @@ module.exports = class WebServer {
       this.app.use(adminUI.createSessionMiddleware());
     }
 
-    const { apiPath, graphiqlPath, apollo, port } = this.config;
+    const { apollo } = this.config;
+    const server = createApolloServer(keystone, apollo, 'admin');
 
     // GraphQL API always exists independent of any adminUI or Session settings
-    this.app.use(
-      createGraphQLMiddleware(keystone, 'admin', {
-        apiPath,
-        graphiqlPath,
-        apolloConfig: apollo,
-        port,
-      })
-    );
+    const { apiPath, graphiqlPath, port } = this.config;
+    this.app.use(createGraphQLMiddleware(server, { apiPath, graphiqlPath, port }));
 
     if (adminUI) {
       // This must be last as it's the "catch all" which falls into Webpack to

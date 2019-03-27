@@ -6,7 +6,6 @@ const falsey = require('falsey');
 const terminalLink = require('terminal-link');
 
 const { addDevQueryMiddlewares } = require('./devQuery');
-const { createApolloServer } = require('./apolloServer');
 
 const graphiqlMiddleware = endpoint => (req, res) => {
   const tab = { endpoint };
@@ -30,11 +29,7 @@ const ttyLink = (text, path, port, version) => {
   }
 };
 
-module.exports = function createGraphQLMiddleware(
-  keystone,
-  schemaName,
-  { apiPath, graphiqlPath, apolloConfig, port }
-) {
+module.exports = function createGraphQLMiddleware(server, { apiPath, graphiqlPath, port }) {
   const app = express();
 
   if (graphiqlPath) {
@@ -50,8 +45,6 @@ module.exports = function createGraphQLMiddleware(
     ttyLink('GraphQL Playground:', graphiqlPath, port, playgroundPkg.version);
     app.use(graphiqlPath, graphiqlMiddleware(apiPath));
   }
-
-  const server = createApolloServer(keystone, apolloConfig, schemaName);
 
   ttyLink('GraphQL API:', apiPath, port);
   // { cors: false } - prevent ApolloServer from overriding Keystone's CORS configuration.
