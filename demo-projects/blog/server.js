@@ -26,6 +26,7 @@ const initialData = {
 
 const nextApp = next({
   dir: 'app',
+  distDir: 'build',
   dev: process.env.NODE_ENV !== 'production',
 });
 
