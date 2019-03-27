@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import tinymce from 'tinymce/tinymce';
 
 // Tell TinyMCE where its assets are
-tinymce.baseURL = '/tinymce';
+tinymce.baseURL = '/tinymce-assets';
 
 const defaultOptions = {
   // min_height: 80,

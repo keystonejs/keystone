@@ -4,7 +4,7 @@ const path = require('path');
 function bindStaticMiddleware(server) {
   const tinymce = require.resolve('tinymce');
   const tinymcePath = tinymce.substr(0, tinymce.lastIndexOf('/'));
-  server.app.use('/tinymce', server.express.static(tinymcePath));
+  server.app.use('/tinymce-assets', server.express.static(tinymcePath));
 }
 
 module.exports = {
