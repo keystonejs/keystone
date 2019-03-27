@@ -69,7 +69,7 @@ const Logo = () => (
     <abbr
       css={{
         cursor: 'help',
-        fontSize: '1.66em',
+        fontSize: '1.2em',
         marginLeft: '0.2em',
         textDecoration: 'none',
       }}
@@ -134,7 +134,11 @@ const Nav = ({ toggleMenu }) => (
           {name}
         </NavItem>
       ))}
-      <NavItem href="https://github.com/keystonejs/keystone-5" title="Opens in new window">
+      <NavItem
+        href="https://github.com/keystonejs/keystone-5"
+        title="Opens in new window"
+        target="_blank"
+      >
         GitHub
         <NewWindowIcon />
       </NavItem>
@@ -197,8 +201,8 @@ const NAV_LINKS = [
     url: '/tutorials/',
   },
   {
-    name: 'Discussions',
-    url: '/discussions/documentation',
+    name: 'API',
+    url: '/api/',
   },
   {
     name: 'Packages',

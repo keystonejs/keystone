@@ -3,6 +3,7 @@ const fs = require('fs');
 const gql = require('graphql-tag');
 const fastMemoize = require('fast-memoize');
 const { print } = require('graphql/language/printer');
+const { graphql } = require('graphql');
 const {
   resolveAllKeys,
   arrayToObject,
@@ -21,7 +22,6 @@ const {
   mergeRelationships,
 } = require('./relationship-utils');
 const List = require('../List');
-const SessionManager = require('./session');
 
 const unique = arr => [...new Set(arr)];
 
@@ -37,7 +37,7 @@ module.exports = class Keystone {
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
-    this.sessionManager = new SessionManager(this);
+    this._graphQLQuery = {};
 
     if (config.adapters) {
       this.adapters = config.adapters;
@@ -66,7 +66,7 @@ module.exports = class Keystone {
     const adapterName = config.adapterName || this.defaultAdapter;
     const list = new List(key, config, {
       getListByKey,
-      getGraphQLQuery: () => this._graphQLQuery,
+      getGraphQLQuery: schemaName => this._graphQLQuery[schemaName],
       adapter: adapters[adapterName],
       defaultAccess: this.defaultAccess,
       getAuth: () => this.auth[key],
@@ -223,8 +223,9 @@ module.exports = class Keystone {
   // It's not Keystone core's responsibility to create an executable schema, but
   // once one is, Keystone wants to be able to expose the ability to query that
   // schema, so this function enables other modules to register that function.
-  registerGraphQLQueryMethod(queryMethod) {
-    this._graphQLQuery = queryMethod;
+  registerSchema(schemaName, schema) {
+    this._graphQLQuery[schemaName] = (query, context, variables) =>
+      graphql(schema, query, null, context, variables);
   }
 
   getAdminSchema() {
@@ -304,7 +305,8 @@ module.exports = class Keystone {
         ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers)),
         ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers)),
         // And the Keystone meta queries must always be available
-        ...this.getAuxQueryResolvers(),
+        _ksListsMeta: (_, args, context) =>
+          this.listsArray.filter(list => list.access.read).map(list => list.listMeta(context)),
       },
 
       Mutation: {
@@ -332,16 +334,9 @@ module.exports = class Keystone {
     fs.writeFileSync(file, schema);
   }
 
-  getAuxQueryResolvers() {
-    return {
-      _ksListsMeta: (_, args, context) =>
-        this.listsArray.filter(list => list.access.read).map(list => list.listMeta(context)),
-    };
-  }
-
   // Create an access context for the given "user" which can be used to call the
   // List API methods which are access controlled.
-  getAccessContext({ user, authedListKey }) {
+  getAccessContext(schemaName, { user, authedListKey }) {
     // memoizing to avoid requests that hit the same type multiple times.
     // We do it within the request callback so we can resolve it based on the
     // request info ( like who's logged in right now, etc)
@@ -369,6 +364,7 @@ module.exports = class Keystone {
 
     return {
       // req.user & req.authedListKey come from ../index.js
+      schemaName,
       authedItem: user,
       authedListKey: authedListKey,
       getListAccessControlForUser,

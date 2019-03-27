@@ -1,5 +1,13 @@
 # @keystone-alpha/fields
 
+## 3.0.1
+
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+  - @keystone-alpha/access-control@1.0.2
+  - @keystone-alpha/adapter-knex@1.0.3
+  - @keystone-alpha/adapter-mongoose@1.0.3
+  - @keystone-alpha/utils@2.0.0
+
 ## 3.0.0
 
 - [patch][39067f44](https://github.com/keystonejs/keystone-5/commit/39067f44):

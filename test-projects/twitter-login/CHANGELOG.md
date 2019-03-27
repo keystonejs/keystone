@@ -1,5 +1,11 @@
 # @keystone-alpha/cypress-project-twitter-login
 
+## 1.0.4
+
+- [patch][5ddb2ed6](https://github.com/keystonejs/keystone-5/commit/5ddb2ed6):
+
+  - Always display clickable links when starting a server in dev mode
+
 ## 1.0.3
 
 - [patch][de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):

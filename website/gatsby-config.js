@@ -7,7 +7,7 @@ async function getPackagePlugins() {
   const workspaces = await bolt.getWorkspaces({ cwd: rootDir });
 
   return [
-    ...['quick-start', 'tutorials', 'guides', 'discussions'].map(name => ({
+    ...['quick-start', 'tutorials', 'guides', 'api', 'discussions'].map(name => ({
       resolve: 'gatsby-source-filesystem',
       options: { name, path: `${rootDir}/docs/${name}/` },
     })),
@@ -117,7 +117,7 @@ async function getGatsbyConfig() {
       {
         resolve: `gatsby-plugin-google-analytics`,
         options: {
-          trackingId: 'UA-43970386-1',
+          trackingId: 'UA-43970386-3',
           head: true,
         },
       },

@@ -55,12 +55,27 @@ const Hero = () => (
       })}
     >
       <InnerLayout>
-        <Heading>Keystone 5</Heading>
+        <Heading>
+          Keystone 5
+          <abbr
+            css={{
+              cursor: 'help',
+              // fontSize: '0.8em',
+              marginLeft: '0.2em',
+              textDecoration: 'none',
+              fontWeight: 'normal',
+            }}
+            title="Keystone 5 is currently in alpha"
+          >
+            (α)
+          </abbr>
+        </Heading>
 
         <div css={{ color: colors.N80 }}>
           <p>A scalable platform and CMS to build Node.js applications.</p>
           <p>
-            Includes first-class GraphQL support, a modular architecture and an improved Admin UI.
+            Keystone 5 introduces first-class GraphQL support, a new extensible architecture, and an
+            improved Admin UI.
           </p>
         </div>
         <ButtonWrapper>
@@ -88,9 +103,12 @@ const Hero = () => (
           </Button>
         </ButtonWrapper>
         <SmDeviceIllustration />
-        <p css={{ color: colors.N40, fontSize: '0.85em' }}>
-          Keystone 5 is currently in alpha release and under intensive development by Thinkmill and
-          contributors around the world.
+        <p css={{ color: colors.N40, fontSize: '0.9em' }}>
+          Keystone 5 is currently in alpha and under intensive development by{' '}
+          <a css={{ color: colors.N80 }} href="https://www.thinkmill.com.au">
+            Thinkmill
+          </a>{' '}
+          and contributors around the world.
         </p>
         <div css={mq({ display: 'flex', margin: [`2em auto`, `2em auto`, `2em 0`] })}>
           <IconTwitter href="https://twitter.com/keystonejs" target="_blank" title="Twitter" />

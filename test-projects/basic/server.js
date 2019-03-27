@@ -17,7 +17,7 @@ keystone
 
     server.app.use(staticRoute, server.express.static(staticPath));
 
-    await server.start();
+    await server.start(process.env.MONGODB_URI);
 
     // Initialise some data.
     // NOTE: This is only for test purposes and should not be used in production
@@ -28,8 +28,6 @@ keystone
       });
       await keystoneApp.createItems(initialData);
     }
-
-    console.log(`Listening on port ${port}`);
   })
   .catch(error => {
     console.error(error);

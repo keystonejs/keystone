@@ -1,13 +1,16 @@
 {
   "name": "@keystone-alpha/utils",
   "description": "Common utility functions used throughout @keystone-alpha packages.",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
+  "main": "dist/utils.cjs.js",
+  "module": "dist/utils.esm.js",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
+    "@babel/runtime": "^7.3.4",
     "p-lazy": "^1.0.0",
     "p-reflect": "^1.0.0"
   }
