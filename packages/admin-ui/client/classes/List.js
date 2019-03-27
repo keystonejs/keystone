@@ -9,12 +9,13 @@ export const gqlCountQueries = lists => gql`{
 export default class List {
   constructor(config, adminMeta, views) {
     this.config = config;
+    this.adminMeta = adminMeta;
 
     // TODO: undo this
     Object.assign(this, config);
 
     this.fields = config.fields.map(fieldConfig => {
-      const { Controller } = views[fieldConfig.path];
+      const [Controller] = adminMeta.readViews([views[fieldConfig.path].Controller]);
       return new Controller(fieldConfig, this, adminMeta, views[fieldConfig.path]);
     });
 

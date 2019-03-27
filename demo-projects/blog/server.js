@@ -36,7 +36,7 @@ Promise.all([keystone.prepare({ port: PORT }), nextApp.prepare()])
 
     server.app.use(nextApp.getRequestHandler());
 
-    const { port } = await server.start();
+    await server.start();
 
     // Initialise some data.
     // NOTE: This is only for demo purposes and should not be used in production
@@ -44,8 +44,6 @@ Promise.all([keystone.prepare({ port: PORT }), nextApp.prepare()])
     if (!users.length) {
       await keystoneApp.createItems(initialData);
     }
-
-    console.log(`Listening on port ${port}`);
   })
   .catch(error => {
     console.error(error);

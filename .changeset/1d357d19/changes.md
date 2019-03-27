@@ -1,0 +1,1 @@
+- Lazy load field type views with suspense

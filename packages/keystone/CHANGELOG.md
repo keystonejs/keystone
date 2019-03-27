@@ -1,5 +1,12 @@
 # @keystone-alpha/keystone
 
+## 1.0.4
+
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+  - @keystone-alpha/access-control@1.0.2
+  - @keystone-alpha/fields@3.0.1
+  - @keystone-alpha/utils@2.0.0
+
 ## 1.0.3
 
 - Updated dependencies [9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):

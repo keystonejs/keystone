@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useMemo, useCallback } from 'react';
+import React, { Component, Fragment, useMemo, useCallback, Suspense } from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
@@ -113,10 +113,10 @@ class UpdateManyModal extends Component {
             </FieldInput>
           </FieldContainer>
           {selectedFields.map((field, i) => {
-            const { Field } = field.views;
             return (
               <Render key={field.path}>
                 {() => {
+                  let [Field] = field.adminMeta.readViews([field.views.Field]);
                   let onChange = useCallback(value => {
                     this.setState(({ item }) => ({
                       item: {
@@ -150,15 +150,14 @@ class UpdateManyModal extends Component {
 export default class UpdateManyModalWithMutation extends Component {
   render() {
     const { list } = this.props;
-    // FIXME: updateMutation is the wrong thing to do here! We need to work out how
-    // to update many things all at once. This doesn't appear to be common pattern
-    // across the board.
     return (
-      <Mutation mutation={list.updateManyMutation}>
-        {(updateItem, { loading }) => (
-          <UpdateManyModal updateItem={updateItem} isLoading={loading} {...this.props} />
-        )}
-      </Mutation>
+      <Suspense fallback={null}>
+        <Mutation mutation={list.updateManyMutation}>
+          {(updateItem, { loading }) => (
+            <UpdateManyModal updateItem={updateItem} isLoading={loading} {...this.props} />
+          )}
+        </Mutation>
+      </Suspense>
     );
   }
 }

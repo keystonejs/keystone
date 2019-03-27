@@ -8,7 +8,7 @@ const {
 } = require('../util');
 
 function prettyListName(name) {
-  return `${name}s`.replace(/[A-Z]/g, ' $&').trim();
+  return name.replace(/[A-Z]/g, ' $&').trim();
 }
 
 function listSlug(name) {

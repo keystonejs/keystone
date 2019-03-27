@@ -1,4 +1,5 @@
 const keystone = require('@keystone-alpha/core');
+const { startAuthedSession, endAuthedSession } = require('@keystone-alpha/session');
 const bodyParser = require('body-parser');
 
 const { port, staticRoute, staticPath } = require('./config');
@@ -33,7 +34,7 @@ keystone
       bodyParser.urlencoded({ extended: true }),
       async (req, res, next) => {
         // Cleanup any previous session
-        await keystoneApp.sessionManager.endAuthedSession(req);
+        await endAuthedSession(req);
 
         try {
           const result = await keystoneApp.auth.User.password.validate({
@@ -45,7 +46,7 @@ keystone
               success: false,
             });
           }
-          await keystoneApp.sessionManager.startAuthedSession(req, result);
+          await startAuthedSession(req, result);
           res.json({
             success: true,
             itemId: result.item.id,
@@ -59,7 +60,7 @@ keystone
 
     server.app.get('/signout', async (req, res, next) => {
       try {
-        await keystoneApp.sessionManager.endAuthedSession(req);
+        await endAuthedSession(req);
         res.json({
           success: true,
         });
@@ -81,8 +82,6 @@ keystone
       });
       await keystoneApp.createItems(initialData);
     }
-
-    console.log(`Listening on port ${port}`);
   })
   .catch(error => {
     console.error(error);

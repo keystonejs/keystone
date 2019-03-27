@@ -1,10 +1,11 @@
 /** @jsx jsx */
 
 import React from 'react'; // eslint-disable-line no-unused-vars
-import { jsx } from '@emotion/core';
-import { colors } from '@arch-ui/theme';
 import reactAddonsTextContent from 'react-addons-text-content';
 import snakeCase from 'lodash.snakecase';
+import { jsx } from '@emotion/core';
+import { colors, gridSize } from '@arch-ui/theme';
+import { LinkIcon } from '@arch-ui/icons';
 
 import { mq } from '../../utils/media';
 
@@ -13,19 +14,59 @@ function dashcase(children) {
   return snakeCase(reactAddonsTextContent(children)).replace(/_/g, '-');
 }
 
-const Heading = ({ as: Tag, children, ...props }) => (
-  <Tag
-    css={{
-      color: colors.N100,
-      lineHeight: 1,
-      marginBottom: '0.66em',
-    }}
-    id={dashcase(children)}
-    {...props}
-  >
-    {children}
-  </Tag>
-);
+const Heading = ({ as: Tag, children, ...props }) => {
+  const id = dashcase(children);
+  const iconSize = 24;
+  const depth = parseInt(Tag.slice(1), 10);
+  const hasLink = depth > 1 && depth < 5;
+  const link = hasLink && (
+    <a
+      href={`#${id}`}
+      css={{
+        alignItems: 'center',
+        color: colors.N40,
+        display: 'flex',
+        fontSize: '1rem',
+        height: iconSize,
+        justifyContent: 'center',
+        marginTop: -iconSize / 2,
+        opacity: 0,
+        overflow: 'visible',
+        paddingRight: gridSize / 2,
+        position: 'absolute',
+        top: '50%',
+        transform: 'translateX(-100%)',
+        width: iconSize,
+
+        '&:hover': {
+          color: colors.primary,
+        },
+      }}
+    >
+      <LinkIcon width={24} />
+    </a>
+  );
+
+  return (
+    <Tag
+      css={{
+        color: colors.N100,
+        lineHeight: 1,
+        marginBottom: '0.66em',
+        position: 'relative',
+
+        '&:hover a': {
+          opacity: 1,
+        },
+      }}
+      id={id}
+      {...props}
+    >
+      {link}
+      {children}
+    </Tag>
+  );
+};
 
 export const H1 = props => (
   <Heading

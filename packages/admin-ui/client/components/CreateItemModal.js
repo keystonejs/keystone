@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useCallback, useMemo } from 'react';
+import { Component, Fragment, useCallback, useMemo, Suspense } from 'react';
 import { Mutation } from 'react-apollo';
 
 import { Button } from '@arch-ui/button';
@@ -61,6 +61,16 @@ class CreateItemModal extends Component {
   render() {
     const { isLoading, isOpen, list } = this.props;
     const { item } = this.state;
+    // we want to read all of the fields before reading the views individually
+    // note we want to _read_ before not just preload because the important thing
+    // isn't doing all the requests in parallel, that already happens
+    // what we're doing here is making sure there aren't a bunch of rerenders as
+    // each of the promises resolve
+    // this probably won't be necessary with concurrent mode/maybe just other react changes
+    // also, note that this is just an optimisation, it's not strictly necessary and it should
+    // probably be removed in the future because i'm guessing this will make performance _worse_ in concurrent mode
+    list.adminMeta.readViews(list.fields.map(({ views }) => views.Field));
+
     return (
       <Drawer
         closeOnBlanketClick
@@ -89,10 +99,10 @@ class CreateItemModal extends Component {
         >
           <AutocompleteCaptor />
           {list.fields.map((field, i) => {
-            const { Field } = field.views;
             return (
               <Render key={field.path}>
                 {() => {
+                  let [Field] = field.adminMeta.readViews([field.views.Field]);
                   let onChange = useCallback(value => {
                     this.setState(({ item }) => ({
                       item: {
@@ -129,11 +139,13 @@ export default class CreateItemModalWithMutation extends Component {
   render() {
     const { list } = this.props;
     return (
-      <Mutation mutation={list.createMutation}>
-        {(createItem, { loading }) => (
-          <CreateItemModal createItem={createItem} isLoading={loading} {...this.props} />
-        )}
-      </Mutation>
+      <Suspense fallback={null}>
+        <Mutation mutation={list.createMutation}>
+          {(createItem, { loading }) => (
+            <CreateItemModal createItem={createItem} isLoading={loading} {...this.props} />
+          )}
+        </Mutation>
+      </Suspense>
     );
   }
 }

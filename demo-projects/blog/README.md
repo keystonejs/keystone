@@ -19,3 +19,9 @@ You can change the port that this demo runs on by setting the `PORT` environment
 ```sh
 PORT=5000 bolt start blog
 ```
+
+## TODO: Permissions and Authorisation
+
+Although the "Password" auth strategy is enabled for the Admin UI on this project, we haven't implemented any restrictions on the GraphQL API yet. So unauthenticated users are able to create and destroy admin users (!)
+
+See the [Access Control](https://v5.keystonejs.com/guides/access-control) documentation for information on how to do this.

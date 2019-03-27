@@ -1,5 +1,5 @@
 const TwitterAuthStrategy = require('@keystone-alpha/keystone/auth/Twitter');
-
+const { startAuthedSession } = require('@keystone-alpha/session');
 const { appURL, twitterAppKey, twitterAppSecret } = require('./config');
 
 exports.configureTwitterAuth = function(keystone, server) {
@@ -29,15 +29,23 @@ exports.configureTwitterAuth = function(keystone, server) {
     })
   );
 
+  server.app.get('/api/session', (req, res) => {
+    res.json({
+      signedIn: !!req.session.keystoneItemId,
+      userId: req.session.keystoneItemId,
+      name: req.user ? req.user.name : undefined,
+    });
+  });
+
   // Twitter will redirect the user to this URL after approval.
   server.app.get(
     '/auth/twitter/callback',
     twitterAuth.authenticateMiddleware({
-      async verified(item, info, req, res) {
+      async verified(item, { list }, req, res) {
         if (!item) {
           return res.redirect('/auth/twitter/details');
         }
-
+        await startAuthedSession(req, { item, list });
         res.redirect('/api/session');
       },
       failedVerification(error, req, res) {
@@ -78,7 +86,7 @@ exports.configureTwitterAuth = function(keystone, server) {
         });
 
         await keystone.auth.User.twitter.connectItem(req, { item });
-        await keystone.sessionManager.startAuthedSession(req, { item, list });
+        await startAuthedSession(req, { item, list });
         res.redirect('/api/session');
       } catch (createError) {
         next(createError);

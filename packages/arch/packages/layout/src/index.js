@@ -2,7 +2,7 @@
 
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Children, cloneElement, type Node } from 'react';
+import { Children, cloneElement, type Node, forwardRef } from 'react';
 import styled from '@emotion/styled';
 
 import { mediaQueries } from '@arch-ui/common';
@@ -62,70 +62,77 @@ type FlexGroupProps = {
   stretch?: boolean,
   tag: string,
 };
-export const FlexGroup = ({
-  align,
-  children,
-  growIndexes,
-  isContiguous,
-  isInline,
-  isVertical,
-  justify,
-  wrap,
-  spacing,
-  stretch,
-  tag: Tag,
-  ...props
-}: FlexGroupProps) => {
-  const gutter = spacing / 2;
-  const length = Children.count(children);
-  const childArray = Children.toArray(children).filter(child => child); // filter out null and undefined children
+export const FlexGroup = forwardRef<FlexGroupProps, any>(
+  (
+    {
+      align,
+      children,
+      growIndexes,
+      isContiguous,
+      isInline,
+      isVertical,
+      justify,
+      wrap,
+      spacing,
+      stretch,
+      tag: Tag,
+      ...props
+    }: FlexGroupProps,
+    ref
+  ) => {
+    const gutter = spacing / 2;
+    const length = Children.count(children);
+    const childArray = Children.toArray(children).filter(child => child); // filter out null and undefined children
 
-  return (
-    <Tag
-      css={{
-        alignItems: align,
-        display: isInline ? 'inline-flex' : 'flex',
-        flexDirection: isVertical ? 'column' : 'row',
-        flexWrap: wrap ? 'wrap' : 'nowrap',
-        justifyContent: justify,
-        marginBottom: isVertical ? -gutter : null,
-        marginLeft: isContiguous || isVertical ? null : -gutter,
-        marginRight: isContiguous || isVertical ? null : -gutter,
-        marginTop: isVertical ? -gutter : null,
-        maxWidth: isInline ? `calc(100% + ${gutter * 2}px)` : null,
-      }}
-      {...props}
-    >
-      {childArray.map((child, idx) => {
-        const style = isContiguous ? collapseBorderRadii(idx, length) : null;
-        const leftOffset = isContiguous && idx ? -1 : gutter;
-        const rightOffset = isContiguous ? null : gutter;
+    return (
+      <Tag
+        css={{
+          alignItems: align,
+          display: isInline ? 'inline-flex' : 'flex',
+          flexDirection: isVertical ? 'column' : 'row',
+          flexWrap: wrap ? 'wrap' : 'nowrap',
+          justifyContent: justify,
+          marginBottom: isVertical ? -gutter : null,
+          marginLeft: isContiguous || isVertical ? null : -gutter,
+          marginRight: isContiguous || isVertical ? null : -gutter,
+          marginTop: isVertical ? -gutter : null,
+          maxWidth: isInline ? `calc(100% + ${gutter * 2}px)` : null,
+        }}
+        ref={ref}
+        {...props}
+      >
+        {childArray.map((child, idx) => {
+          const style = isContiguous ? collapseBorderRadii(idx, length) : null;
+          const leftOffset = isContiguous && idx ? -1 : gutter;
+          const rightOffset = isContiguous ? null : gutter;
 
-        return (
-          <div
-            key={child.key}
-            css={{
-              flex: stretch || growIndexes.includes(idx) ? 1 : null,
-              marginLeft: isVertical ? null : leftOffset,
-              marginRight: isVertical ? null : rightOffset,
-              marginTop: isVertical ? gutter : null,
-              marginBottom: isVertical ? gutter : null,
-              minWidth: 0, // allows text-overflow on children
+          return (
+            <div
+              key={child.key}
+              css={{
+                flex: stretch || growIndexes.includes(idx) ? 1 : null,
+                marginLeft: isVertical ? null : leftOffset,
+                marginRight: isVertical ? null : rightOffset,
+                marginTop: isVertical ? gutter : null,
+                marginBottom: isVertical ? gutter : null,
+                minWidth: 0, // allows text-overflow on children
 
-              // bring the focus styles over the top of siblings
-              '&:focus-within': {
-                position: 'relative',
-              },
-            }}
-          >
-            {isContiguous ? cloneElement(child, { style }) : child}
-          </div>
-        );
-      })}
-    </Tag>
-  );
-};
+                // bring the focus styles over the top of siblings
+                '&:focus-within': {
+                  position: 'relative',
+                },
+              }}
+            >
+              {isContiguous ? cloneElement(child, { style }) : child}
+            </div>
+          );
+        })}
+      </Tag>
+    );
+  }
+);
 
+// $FlowFixMe
 FlexGroup.defaultProps = {
   align: 'stretch',
   growIndexes: [],

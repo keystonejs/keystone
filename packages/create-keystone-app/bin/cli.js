@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
 const arg = require('arg');
+const path = require('path');
 const chalk = require('chalk');
-const { exec, createAppName, checkEmptyDir } = require('./generator');
+const endent = require('endent');
+const terminalLink = require('terminal-link');
+const { exec, createAppName } = require('./generator');
 
 const pkgInfo = require('../package.json');
 
@@ -14,13 +17,13 @@ const info = {
 // Setup all the args
 const argSpecDescription = [
   {
-    description: 'Version number',
+    description: 'Displays help',
     command: '--help',
     alias: '-h',
     value: Boolean,
   },
   {
-    description: 'Displays help',
+    description: 'Version number',
     command: '--version',
     alias: '-v',
     value: Boolean,
@@ -40,24 +43,28 @@ argSpecDescription.map(argument => {
   argSpec[argument.alias] = argument.command;
 });
 
+const title = endent`
+  ╦╔═ ╔═╗ ╦ ╦ ╔═╗ ╔╦╗ ╔═╗ ╔╗╔ ╔═╗  ╦ ╔═╗
+  ╠╩╗ ║╣  ╚╦╝ ╚═╗  ║  ║ ║ ║║║ ║╣   ║ ╚═╗
+  ╩ ╩ ╚═╝  ╩  ╚═╝  ╩  ╚═╝ ╝╚╝ ╚═╝ ╚╝ ╚═╝
+`;
+
 // Generate help from our arg specs
 const help = args => {
-  return `
-╦╔═ ╔═╗ ╦ ╦ ╔═╗ ╔╦╗ ╔═╗ ╔╗╔ ╔═╗  ╦ ╔═╗
-╠╩╗ ║╣  ╚╦╝ ╚═╗  ║  ║ ║ ║║║ ║╣   ║ ╚═╗
-╩ ╩ ╚═╝  ╩  ╚═╝  ╩  ╚═╝ ╝╚╝ ╚═╝ ╚╝ ╚═╝
+  return endent`
+    ${title}
 
-${chalk.bold('Usage')}
-  ${chalk.gray('$')} ${info.exeName} "${chalk.gray('<project name>')}"
+    ${chalk.bold('Usage')}
+      ${chalk.gray('$')} ${info.exeName} "${chalk.gray('<project name>')}"
 
-${chalk.bold('Common Options')}
-${args
-  .map(
-    argument =>
-      `  ${`${argument.command}, ${argument.alias}`.padEnd(20, ' ')} ${argument.description}`
-  )
-  .join('\n')}\n
-`;
+    ${chalk.bold('Common Options')}
+    ${args
+      .map(
+        argument =>
+          `  ${`${argument.command}, ${argument.alias}`.padEnd(20, ' ')} ${argument.description}`
+      )
+      .join('\n')}\n
+  `;
 };
 
 let args;
@@ -93,31 +100,31 @@ if (args._.length === 0 || name === '') {
   process.exit(0);
 }
 
-// check if folder exists and is not empty
-try {
-  checkEmptyDir(name);
-} catch (error) {
-  console.error(chalk.red(`\n${error}`));
-  console.info(help(argSpecDescription));
-  process.exit(0);
-}
+console.log(`${title}\n`);
 
 // Everything else is assumed to be a command we want to execute - more options added
 exec(name, args['--no-deps'])
-  .catch(error => {
-    console.error(error);
+  .catch(() => {
     process.exit(1);
   })
-  .then(res => {
+  .then(({ projectDir, hasYarn }) => {
     console.log();
-    console.log(chalk.green(`Your app "${res.name}" is ready in ${res.appName}/`));
-    console.log(
-      chalk.green(
-        `You can start your app with ${chalk.yellow(`cd ${res.appName}`)} and ${chalk.yellow(
-          `yarn start`
-        )}`
-      )
-    );
-    console.log();
+    console.log(endent`
+      🎉 KeystoneJS app created in ${chalk.bold(projectDir)}
+
+      ${chalk.bold('Get started:')}
+
+      ${chalk.yellow.bold(endent`
+        cd ${projectDir}
+        ${hasYarn ? 'yarn' : 'npm run'} start
+      `)}
+
+      ${chalk.bold('Next steps:')}
+
+      - Edit ${chalk.bold(`${projectDir}${path.sep}index.js`)} to customize your app.
+      - ${terminalLink('Open the Admin UI', 'http://localhost:3000/admin')}
+      - ${terminalLink('Read the docs', 'https://v5.keystonejs.com')}
+      - ${terminalLink('Star KeystoneJS on GitHub', 'https://github.com/keystonejs/keystone-5')}
+    `);
     process.exit(0);
   });

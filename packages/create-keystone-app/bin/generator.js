@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 
-const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
-const child_process = require('child_process');
-var ejs = require('ejs');
+const execa = require('execa');
+const Listr = require('listr');
+const ejs = require('ejs');
+const split = require('split');
+const { merge, throwError } = require('rxjs');
+const { filter, catchError } = require('rxjs/operators');
+const streamToObservable = require('@samverschueren/stream-to-observable');
 
 const templateDir = path.join(__dirname, '..', 'templates');
 
@@ -23,24 +27,62 @@ function checkEmptyDir(dir) {
   }
 }
 
+// from https://github.com/sindresorhus/np/blob/master/source/index.js#L24
+const exec = (cmd, args) => {
+  const cp = execa(cmd, args);
+
+  return merge(
+    streamToObservable(cp.stdout.pipe(split())),
+    streamToObservable(cp.stderr.pipe(split())),
+    cp
+  ).pipe(filter(Boolean));
+};
+
 /**
  * creates project
  * @param {String} name name of the project, input from user
  */
 function generate(name, noDeps) {
-  const currentDir = process.cwd();
   const appName = createAppName(name);
-  const projectDir = `${currentDir}/${appName}`;
-  checkEmptyDir(projectDir);
-  fs.mkdirSync(projectDir);
-  copyTemplate(`${templateDir}/todo`, projectDir, {
-    name,
-    appName,
-  });
-  if (!noDeps) {
-    installDependencies(projectDir);
-  }
-  return { name, appName };
+  const projectDir = `.${path.sep}${path.relative(process.cwd(), appName)}`;
+  const hasYarn = true;
+
+  const tasks = new Listr([
+    {
+      title: `Check ${projectDir}`,
+      task: () => {
+        checkEmptyDir(projectDir);
+        fs.mkdirSync(projectDir);
+      },
+    },
+    {
+      title: 'Create KeystoneJS Project',
+      task: () =>
+        copyTemplate(`${templateDir}/todo`, projectDir, {
+          name,
+          appName,
+        }),
+    },
+    {
+      title: 'Install dependencies with Yarn',
+      skip: () => noDeps && '--no-deps flag set',
+      task: (ctx, task) =>
+        exec('yarnpkg', { cwd: path.resolve(projectDir) }).pipe(
+          catchError(error => {
+            hasYarn = false;
+            task.skip('Yarn not available, attempting with `npm`');
+            return throwError(error);
+          })
+        ),
+    },
+    {
+      title: 'Install dependencies with npm',
+      enabled: () => !noDeps && hasYarn === false,
+      task: () => exec('npm', ['install'], { cwd: path.resolve(projectDir) }),
+    },
+  ]);
+
+  return tasks.run().then(() => ({ hasYarn, projectDir }));
 }
 
 /**
@@ -73,22 +115,6 @@ function copyTemplate(templatePath, projectDir, templateData) {
       copyTemplate(origFilePath, `${projectDir}/${file}`, templateData);
     }
   });
-}
-
-/**
- * installs dependency for the project
- * @param {String} projectDir project drectory
- */
-function installDependencies(projectDir) {
-  console.log(
-    chalk.green(`\nCreated app in ${chalk.yellow(projectDir)}\nInstalling project dependencies now`)
-  );
-  const currentDir = process.cwd();
-  process.chdir(projectDir);
-  child_process.spawnSync('yarnpkg', {
-    stdio: ['inherit', 'inherit', 'inherit'],
-  });
-  process.chdir(currentDir);
 }
 
 /**

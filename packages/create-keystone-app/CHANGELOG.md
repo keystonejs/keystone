@@ -1,5 +1,19 @@
 # create-keystone-app
 
+## 0.4.0
+
+- [minor][5c038b72](https://github.com/keystonejs/keystone-5/commit/5c038b72):
+
+  - Improve CLI output for `create-keystone-app`
+
+- [patch][5ddb2ed6](https://github.com/keystonejs/keystone-5/commit/5ddb2ed6):
+
+  - Always display clickable links when starting a server in dev mode
+
+- [patch][341178c5](https://github.com/keystonejs/keystone-5/commit/341178c5):
+
+  - Better create-keystone-app comments and docs
+
 ## 0.3.2
 
 - [patch][](https://github.com/keystonejs/keystone-5/commit/):

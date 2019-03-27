@@ -2,17 +2,15 @@
 
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, type Element, type Ref, type Node, useMemo } from 'react';
+import { Component, type Ref, type Node, useMemo } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
-import NodeResolver from 'react-node-resolver';
 
 type Height = number | string;
 type Props = {
   autoScroll: boolean | HTMLElement,
-  children?: Element<*>,
   initialHeight: Height,
   onChange?: Height => any,
-  render?: ({ ref: Ref<*> }) => Node,
+  render: ({ ref: Ref<*> }) => Node,
 };
 type State = { height: Height, isTransitioning: boolean };
 
@@ -88,7 +86,7 @@ export default class AnimateHeight extends Component<Props, State> {
     this.calculateHeight();
   };
   render() {
-    const { autoScroll, children, initialHeight, render, ...props } = this.props;
+    const { autoScroll, initialHeight, render, ...props } = this.props;
     const { height, isTransitioning } = this.state;
     const overflow = isTransitioning ? 'hidden' : null;
 
@@ -109,19 +107,15 @@ export default class AnimateHeight extends Component<Props, State> {
         }}
         {...props}
       >
-        {render ? (
-          <Memoize
-            // this.getNode will never change so i'm not including it in the deps
-            // render will probably change a bunch but that's fine, the reason for
-            // memoizing this is so that state updates inside of AnimateHeight don't
-            // cause a bunch of rerenders of children
-            deps={[render]}
-          >
-            {() => render({ ref: this.getNode })}
-          </Memoize>
-        ) : (
-          <NodeResolver innerRef={this.getNode}>{children}</NodeResolver>
-        )}
+        <Memoize
+          // this.getNode will never change so i'm not including it in the deps
+          // render will probably change a bunch but that's fine, the reason for
+          // memoizing this is so that state updates inside of AnimateHeight don't
+          // cause a bunch of rerenders of children
+          deps={[render]}
+        >
+          {() => render({ ref: this.getNode })}
+        </Memoize>
       </div>
     );
   }

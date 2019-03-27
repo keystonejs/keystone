@@ -1,5 +1,11 @@
 # @keystone-alpha/website
 
+## 1.0.4
+
+- [patch][2d704f98](https://github.com/keystonejs/keystone-5/commit/2d704f98):
+
+  - Make all docs headers clicky for perma-linking.
+
 ## 1.0.3
 
 - [patch][9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):
