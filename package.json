@@ -193,6 +193,7 @@
     "slate-react": "^0.21.18",
     "split": "^1.0.1",
     "stack-utils": "^1.0.2",
+    "tinymce": "^5.0.3",
     "to-pascal-case": "^1.0.0",
     "underscore.string": "^3.3.5",
     "unist-util-visit": "^1.4.0",
@@ -222,6 +223,7 @@
       "packages/arch/packages/*",
       "packages/apollo-helpers",
       "packages/fields",
+      "packages/fields-wysiwyg-tinymce",
       "packages/utils"
     ]
   },
