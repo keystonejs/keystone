@@ -152,9 +152,17 @@
 
         return (
           <div style={styles.app}>
-            <h1 style={styles.mainHeading}>To-Do List</h1>
-            <Form refetch={fetch} />
-            <List data={data} state={state} refetch={fetch} />
+            <h1 style={styles.mainHeading}>Welcome to Keystone 5!</h1>
+            <p style={styles.introText}>
+              Here's a simple demo app that lets you add/remove todo items. Create a few entries,
+              then go check them out from your <a href="/admin">Keystone 5 Admin UI</a>!
+            </p>
+            <hr style={styles.divider} />
+            <div style={styles.formWrapper}>
+              <h2 style={styles.appHeading}>To-Do List</h2>
+              <Form refetch={fetch} />
+              <List data={data} state={state} refetch={fetch} />
+            </div>
           </div>
         );
       };
@@ -169,17 +177,35 @@
         `hsla(261, 84%, ${brightness[theme]}, ${opacity})`;
 
       const styles = {
-        mainHeading: {
-          textTransform: 'uppercase',
-          fontWeight: 900,
-          marginTop: 0,
-        },
-
         app: {
           padding: 50,
-          maxWidth: 450,
+          maxWidth: 600,
           color: tint(1, 'dark'),
           fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
+        },
+        mainHeading: {
+          fontWeight: 900,
+          marginTop: 50,
+        },
+        introText: {
+          lineHeight: 1.5,
+          color: tint(0.6, 'dark'),
+        },
+        divider: {
+          marginTop: 30,
+          marginLeft: 0,
+          width: 48,
+          height: 4,
+          borderWidth: 0,
+          backgroundColor: tint(0.3),
+        },
+        formWrapper: {
+          maxWidth: 500,
+        },
+        appHeading: {
+          textTransform: 'uppercase',
+          fontWeight: 900,
+          marginTop: 50,
         },
         formInput: {
           color: tint(1, 'dark'),
