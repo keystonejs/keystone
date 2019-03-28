@@ -159,58 +159,7 @@ keystone.createList('Note', {
     authentication.listKey === authStrategy.listKey && item.user.id === authentication.item.id,
 });
 
-const admin = new AdminUI(keystone, {
-  adminPath: '/admin',
-  // allow disabling of admin auth for test environments
-  authStrategy: DISABLE_AUTH ? undefined : authStrategy,
-});
-
-const server = new WebServer(keystone, {
-  'cookie secret': 'qwerty',
-  'admin ui': admin,
-  port,
-});
-
-if (twitterAuthEnabled) {
-  configureTwitterAuth(keystone, server);
-}
-
-server.app.get('/api/session', (req, res) => {
-  const data = {
-    signedIn: !!req.session.keystoneItemId,
-    userId: req.session.keystoneItemId,
-  };
-  if (req.user) {
-    Object.assign(data, {
-      name: req.user.name,
-    });
-  }
-  res.json(data);
-});
-
-server.app.get('/api/signout', async (req, res, next) => {
-  try {
-    await keystone.session.destroy(req);
-    res.json({
-      success: true,
-    });
-  } catch (e) {
-    next(e);
-  }
-});
-
-server.app.get('/reset-db', (req, res) => {
-  const reset = async () => {
-    Object.values(keystone.adapters).forEach(async adapter => {
-      await adapter.dropDatabase();
-    });
-    await keystone.createItems(initialData);
-    res.redirect(admin.adminPath);
-  };
-  reset();
-});
-
-server.app.use(staticRoute, server.express.static(staticPath));
+const admin = new AdminUI(keystone, { authStrategy: DISABLE_AUTH ? undefined : authStrategy });
 
 module.exports = {
   keystone,
