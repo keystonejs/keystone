@@ -11,6 +11,7 @@ const {
   CalendarDay,
   DateTime,
 } = require('@keystone-alpha/fields');
+const Wysiwyg = require('@keystone-alpha/fields-wysiwyg-tinymce');
 const { LocalFileAdapter } = require('@keystone-alpha/file-adapters');
 const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
@@ -75,7 +76,7 @@ keystone.createList('Post', {
       defaultValue: 'draft',
       options: [{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }],
     },
-    body: { type: Text, isMultiline: true },
+    body: { type: Wysiwyg },
     posted: { type: DateTime },
     image: { type: File, adapter: fileAdapter },
   },

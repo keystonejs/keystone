@@ -19860,6 +19860,11 @@ tinycolor2@^1.1.2, tinycolor2@^1.4.1:
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
   integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=
 
+tinymce@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.0.3.tgz#40fa8658b5bdf58e7f04c816b38e1b06f96f6cfe"
+  integrity sha512-x7D0ttqn176Z4CWQIITMjcEtMGUjiaK0Y2FN2vO8DiyUeIHCdr70jJDSoGhuXtXX70Sw4Bd5UFfqIn/bG3HXcg==
+
 title-case@^2.1.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/title-case/-/title-case-2.1.1.tgz#3e127216da58d2bc5becf137ab91dae3a7cd8faa"
