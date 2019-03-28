@@ -49,9 +49,14 @@ module.exports = class AdminUI {
 
   createSessionMiddleware() {
     const { signinPath, signoutPath, sessionPath } = this.config;
+    // This session allows the user to authenticate as part of the 'admin' audience.
+    // This isn't used by anything just yet. In the near future we will set up the admin-ui
+    // application and api to be non-public.
+    const audiences = ['admin'];
     return createSessionMiddleware(
       { signinPath, signoutPath, sessionPath, successPath: this.adminPath },
-      this.authStrategy
+      this.authStrategy,
+      audiences
     );
   }
 

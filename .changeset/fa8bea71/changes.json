@@ -1,0 +1,7 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/demo-project-blog", "type": "patch" },
+    { "name": "@keystone-alpha/fields-wysiwyg-tinymce", "type": "major" }
+  ],
+  "dependents": []
+}
