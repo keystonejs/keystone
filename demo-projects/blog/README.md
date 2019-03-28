@@ -8,8 +8,9 @@ The Blog is a great example and boilerplate for more complex, real-world impleme
 
 To run this project, open your terminal and run `bolt` within the Keystone project root to install all required packages, then run `bolt start blog` to begin running Keystone.
 
-The Keystone Admin UI is reachable from `localhost:3000/admin`. To log in, use the following credentials...
-Username: `admin@keystone.project`
+The Keystone Admin UI is reachable from `localhost:3000/admin`. To log in, use the following credentials:
+
+Username: `admin@keystonejs.com`
 Password: `password`
 
 To see an example Next.js app using Keystone's GraphQl APIs, head to `localhost:3000`.
