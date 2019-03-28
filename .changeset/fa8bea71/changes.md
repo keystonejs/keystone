@@ -1,0 +1,1 @@
+- Adding WYSIWYG HTML field type powered by TinyMCE

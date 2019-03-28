@@ -1,0 +1,1 @@
+- Add the `admin` audience when signing in via the admin UI session middleware.
