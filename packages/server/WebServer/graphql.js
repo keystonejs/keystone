@@ -4,6 +4,7 @@ const playgroundPkg = require('graphql-playground-react/package.json');
 const chalk = require('chalk');
 const falsey = require('falsey');
 const terminalLink = require('terminal-link');
+const { restrictAudienceMiddleware } = require('@keystone-alpha/session');
 
 const { addDevQueryMiddlewares } = require('./devQuery');
 
@@ -29,8 +30,13 @@ const ttyLink = (text, path, port, version) => {
   }
 };
 
-module.exports = function createGraphQLMiddleware(server, { apiPath, graphiqlPath, port }) {
+module.exports = function createGraphQLMiddleware(
+  server,
+  { apiPath, graphiqlPath, port },
+  { isPublic, audiences }
+) {
   const app = express();
+  const restrict = restrictAudienceMiddleware({ isPublic, audiences });
 
   if (graphiqlPath) {
     if (process.env.NODE_ENV !== 'production') {
@@ -39,16 +45,19 @@ module.exports = function createGraphQLMiddleware(server, { apiPath, graphiqlPat
 
       if (falsey(process.env.DISABLE_LOGGING)) {
         // NOTE: Must come before we setup the API below
+        app.use(devQueryPath, restrict);
         addDevQueryMiddlewares(app, apiPath, graphiqlPath, devQueryPath);
       }
     }
     ttyLink('GraphQL Playground:', graphiqlPath, port, playgroundPkg.version);
+    app.use(graphiqlPath, restrict);
     app.use(graphiqlPath, graphiqlMiddleware(apiPath));
   }
 
   ttyLink('GraphQL API:', apiPath, port);
   // { cors: false } - prevent ApolloServer from overriding Keystone's CORS configuration.
   // https://www.apollographql.com/docs/apollo-server/api/apollo-server.html#ApolloServer-applyMiddleware
+  app.use(apiPath, restrict);
   server.applyMiddleware({ app, path: apiPath, cors: false });
 
   return app;

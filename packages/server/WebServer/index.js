@@ -39,7 +39,12 @@ module.exports = class WebServer {
 
     // GraphQL API always exists independent of any adminUI or Session settings
     const { apiPath, graphiqlPath, port } = this.config;
-    this.app.use(createGraphQLMiddleware(server, { apiPath, graphiqlPath, port }));
+    // We currently make the admin UI public. In the future we want to be able
+    // to restrict this to a limited audience, while setting up a separate
+    // public API with much stricter access control.
+    this.app.use(
+      createGraphQLMiddleware(server, { apiPath, graphiqlPath, port }, { isPublic: true })
+    );
 
     if (adminUI) {
       // This must be last as it's the "catch all" which falls into Webpack to
