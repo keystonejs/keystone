@@ -1,0 +1,1 @@
+- Dynamically load Admin UI views with React Suspense
