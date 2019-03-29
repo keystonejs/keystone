@@ -70,6 +70,7 @@
     "raf-schd": "^4.0.0",
     "react": "^16.8.4",
     "react-apollo": "2.4.0",
+    "react-apollo-hooks": "^0.4.4",
     "react-document-title": "^2.0.3",
     "react-dom": "^16.8.4",
     "react-node-resolver": "^2.0.1",
