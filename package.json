@@ -205,7 +205,7 @@
     "react-radios": "^1.1.0",
     "react-router-dom": "5.0.0",
     "react-scrolllock": "^4.0.1",
-    "react-select": "2.3.0",
+    "react-select": "^2.4.0",
     "react-toast-notifications": "^1.2.0",
     "react-transition-group": "^2.6.1",
     "react-uid": "^2.2.0",
