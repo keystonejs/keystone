@@ -34,13 +34,15 @@ export const SortButton = styled.button(({ isActive }) => {
 });
 
 export const SortOption = ({ altIsDown, children, isFocused, isSelected, ...props }) => {
-  const Icon = isSelected ? ChevronUpIcon : altIsDown ? ChevronUpIcon : ChevronDownIcon;
-  const iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
+  let direction = '(Desc)';
+  if ((altIsDown || isSelected) && !(altIsDown && isSelected)) {
+    direction = '(Asc)';
+  }
 
   return (
     <OptionPrimitive isFocused={isFocused} isSelected={isSelected} {...props}>
       <span>{children}</span>
-      <Icon css={{ color: iconColor }} />
+      <small css={{ color: colors.N40 }}>&nbsp;{direction}</small>
     </OptionPrimitive>
   );
 };

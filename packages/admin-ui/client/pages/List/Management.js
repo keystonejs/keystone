@@ -1,11 +1,14 @@
 /* global ENABLE_DEV_FEATURES */
 
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import React, { Component, Fragment } from 'react';
 import styled from '@emotion/styled';
 
 import { SettingsIcon, TrashcanIcon } from '@arch-ui/icons';
 import { FlexGroup } from '@arch-ui/layout';
 import { IconButton } from '@arch-ui/button';
+import { Card } from '@arch-ui/card';
 import { colors, gridSize } from '@arch-ui/theme';
 
 import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
@@ -13,9 +16,7 @@ import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 
 export const ManageToolbar = styled.div(({ isVisible }) => ({
   display: 'flex',
-  height: 35,
-  marginBottom: gridSize * 2,
-  marginTop: gridSize,
+  // height: 35,
   visibility: isVisible ? 'visible' : 'hidden',
 }));
 const SelectedCount = styled.div({
@@ -57,14 +58,12 @@ export default class ListManage extends Component<Props, State> {
     const selectedCount = selectedItems.length;
 
     return (
-      <Fragment>
+      <div css={{ paddingBottom: gridSize }}>
         <FlexGroup align="center">
-          <SelectedCount>
-            {selectedCount} of {Math.min(pageSize, totalItems)} Selected
-          </SelectedCount>
           {ENABLE_DEV_FEATURES ? (
             list.access.update ? (
               <IconButton
+                css={{ paddingBottom: 4, paddingTop: 4 }}
                 appearance="primary"
                 icon={SettingsIcon}
                 onClick={this.openUpdateModal}
@@ -77,6 +76,7 @@ export default class ListManage extends Component<Props, State> {
           ) : null}
           {list.access.update ? (
             <IconButton
+              css={{ paddingBottom: 4, paddingTop: 4 }}
               appearance="danger"
               icon={TrashcanIcon}
               onClick={this.openDeleteModal}
@@ -86,6 +86,9 @@ export default class ListManage extends Component<Props, State> {
               Delete
             </IconButton>
           ) : null}
+          <SelectedCount>
+            {selectedCount} of {Math.min(pageSize, totalItems)} Selected
+          </SelectedCount>
         </FlexGroup>
 
         <UpdateManyItemsModal
@@ -102,7 +105,7 @@ export default class ListManage extends Component<Props, State> {
           onClose={this.closeDeleteModal}
           onDelete={this.handleDelete}
         />
-      </Fragment>
+      </div>
     );
   }
 }

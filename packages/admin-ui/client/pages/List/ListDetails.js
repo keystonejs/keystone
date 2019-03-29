@@ -4,23 +4,16 @@ import { Component, createRef, Fragment, Suspense } from 'react';
 import styled from '@emotion/styled';
 import { withRouter } from 'react-router-dom';
 
-import {
-  FoldIcon,
-  KebabVerticalIcon,
-  PlusIcon,
-  SearchIcon,
-  UnfoldIcon,
-  XIcon,
-  ZapIcon,
-} from '@arch-ui/icons';
+import { KebabHorizontalIcon, PlusIcon, SearchIcon, XIcon } from '@arch-ui/icons';
 import { Input } from '@arch-ui/input';
-import { Container, FlexGroup, CONTAINER_GUTTER, CONTAINER_WIDTH } from '@arch-ui/layout';
+import { Container, FlexGroup } from '@arch-ui/layout';
 import { A11yText, Kbd, Title } from '@arch-ui/typography';
 import { Button, IconButton } from '@arch-ui/button';
 import { LoadingSpinner } from '@arch-ui/loading';
-import Dropdown from '@arch-ui/dropdown';
-import { colors } from '@arch-ui/theme';
+import { Card, Canvas } from '@arch-ui/card';
+import { colors, gridSize } from '@arch-ui/theme';
 
+import AnimateHeight from '../../components/AnimateHeight';
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
 import PageLoading from '../../components/PageLoading';
@@ -52,7 +45,7 @@ const Search = ({ children, hasValue, isFetching, onClear, onSubmit }) => {
   // NOTE: `autoComplete="off"` doesn't behave as expected on `<input />` in
   // webkit, so we apply the attribute to a form tag here.
   return (
-    <form css={{ position: 'relative' }} autoComplete="off" onSubmit={onSubmit}>
+    <form css={{ position: 'relative', flexShrink: 0 }} autoComplete="off" onSubmit={onSubmit}>
       {children}
       <div
         css={{
@@ -119,7 +112,7 @@ function bodyUserSelect(val) {
 
 class ListDetails extends Component<Props, State> {
   state = {
-    isFullWidth: false,
+    isFullWidth: true,
     selectedItems: [],
     showCreateModal: false,
     searchValue: this.props.search,
@@ -288,39 +281,6 @@ class ListDetails extends Component<Props, State> {
     return null;
   };
 
-  renderMoreDropdown(queryWidth) {
-    const { isFullWidth } = this.state;
-    const TableIcon = isFullWidth ? FoldIcon : UnfoldIcon;
-    const tableToggleIsAvailable = queryWidth > CONTAINER_WIDTH + CONTAINER_GUTTER * 2;
-
-    const items = [
-      {
-        content: 'Reset filters, cols, etc.',
-        icon: <ZapIcon />,
-        id: 'ks-list-dropdown-reset', // for cypress tests
-        onClick: this.handleReset,
-      },
-      {
-        content: isFullWidth ? 'Collapse table' : 'Expand table',
-        icon: <TableIcon css={{ transform: 'rotate(90deg)' }} />,
-        isDisabled: !tableToggleIsAvailable,
-        onClick: this.toggleFullWidth,
-      },
-    ];
-
-    return (
-      <Dropdown
-        align="right"
-        target={props => (
-          <IconButton {...props} variant="nuance" icon={KebabVerticalIcon} id="ks-list-dropdown">
-            <A11yText>Show more...</A11yText>
-          </IconButton>
-        )}
-        items={items}
-      />
-    );
-  }
-
   render() {
     const {
       adminMeta,
@@ -357,34 +317,46 @@ class ListDetails extends Component<Props, State> {
           <div ref={this.measureElementRef} />
 
           <Container isFullWidth={isFullWidth}>
-            <Title as="h1" margin="both">
-              {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
-              <span>, by</span>
-              <Popout
-                innerRef={this.sortPopoutRef}
-                headerTitle="Sort"
-                footerContent={
-                  <Note>
-                    Hold <Kbd>alt</Kbd> to toggle ascending/descending
-                  </Note>
-                }
-                target={props => (
-                  <SortButton {...props}>
-                    {sortBy.field.label.toLowerCase()}
-                    <DisclosureArrow size="0.2em" />
-                  </SortButton>
-                )}
-              >
-                <SortSelect
-                  popoutRef={this.sortPopoutRef}
-                  fields={list.fields}
-                  onChange={handleSortChange}
-                  value={sortBy}
-                />
-              </Popout>
-            </Title>
+            <FlexGroup align="center" growIndexes={[0]}>
+              <Title as="h1" margin="both">
+                {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
+                <span>, by</span>
+                <Popout
+                  innerRef={this.sortPopoutRef}
+                  headerTitle="Sort"
+                  footerContent={
+                    <Note>
+                      Hold <Kbd>alt</Kbd> to toggle ascending/descending
+                    </Note>
+                  }
+                  target={props => (
+                    <SortButton {...props}>
+                      {sortBy.field.label.toLowerCase()}
+                      <DisclosureArrow size="0.2em" />
+                    </SortButton>
+                  )}
+                >
+                  <SortSelect
+                    popoutRef={this.sortPopoutRef}
+                    fields={list.fields}
+                    onChange={handleSortChange}
+                    value={sortBy}
+                  />
+                </Popout>
+              </Title>
+              {list.access.create ? (
+                <IconButton
+                  variant="ghost"
+                  appearance="primary"
+                  icon={PlusIcon}
+                  onClick={this.openCreateModal}
+                >
+                  Create
+                </IconButton>
+              ) : null}
+            </FlexGroup>
 
-            <FlexGroup growIndexes={[0]}>
+            <div css={{ display: 'flex', flexWrap: 'wrap', marginBottom: 24 }}>
               <Search
                 isFetching={query.loading}
                 onClear={this.handleSearchClear}
@@ -398,6 +370,7 @@ class ListDetails extends Component<Props, State> {
                   autoCapitalize="off"
                   autoComplete="off"
                   autoCorrect="off"
+                  css={{ borderRadius: '2em' }}
                   id={searchId}
                   onChange={this.handleSearchChange}
                   placeholder="Search"
@@ -407,61 +380,22 @@ class ListDetails extends Component<Props, State> {
                   ref={el => (this.searchInput = el)}
                 />
               </Search>
-              <AddFilterPopout
-                existingFilters={filters}
+              <ActiveFilters
                 fields={list.fields}
-                onChange={handleFilterAdd}
+                filterList={filters}
+                onAdd={handleFilterAdd}
+                onUpdate={handleFilterUpdate}
+                onRemove={handleFilterRemove}
+                onClear={handleFilterRemoveAll}
               />
-              <Popout buttonLabel="Columns" headerTitle="Columns">
-                <ColumnSelect
-                  fields={list.fields}
-                  onChange={handleFieldChange}
-                  removeIsAllowed={fields.length > 1}
-                  value={fields}
-                />
-              </Popout>
 
-              {list.access.create ? (
-                <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
-                  Create
-                </IconButton>
-              ) : null}
-              <MoreDropdown
+              {/* <MoreDropdown
                 measureRef={this.measureElementRef}
                 isFullWidth={isFullWidth}
                 onFullWidthToggle={this.toggleFullWidth}
                 onReset={this.handleReset}
-              />
-            </FlexGroup>
-
-            <ActiveFilters
-              filterList={filters}
-              onUpdate={handleFilterUpdate}
-              onRemove={handleFilterRemove}
-              onClear={handleFilterRemoveAll}
-            />
-
-            <ManageToolbar isVisible={!!itemsCount}>
-              {selectedItems.length ? (
-                <Management
-                  list={list}
-                  onDeleteMany={this.onDeleteSelectedItems}
-                  onUpdateMany={this.onUpdate}
-                  pageSize={pageSize}
-                  selectedItems={selectedItems}
-                  totalItems={itemsCount}
-                />
-              ) : (
-                <Pagination
-                  isLoading={query.loading}
-                  currentPage={currentPage}
-                  itemsCount={itemsCount}
-                  list={list}
-                  onChangePage={handlePageChange}
-                  pageSize={pageSize}
-                />
-              )}
-            </ManageToolbar>
+              /> */}
+            </div>
           </Container>
 
           <CreateItemModal
@@ -474,20 +408,64 @@ class ListDetails extends Component<Props, State> {
           <Container isFullWidth={isFullWidth}>
             {items ? (
               <Suspense fallback={<PageLoading />}>
-                <ListTable
-                  adminPath={adminPath}
-                  fields={fields}
-                  isFullWidth={isFullWidth}
-                  items={items}
-                  itemsErrors={itemsErrors}
+                <Card>
+                  <AnimateHeight
+                    render={({ ref }) => (
+                      <div ref={ref}>
+                        {selectedItems.length ? (
+                          <Management
+                            list={list}
+                            onDeleteMany={this.onDeleteSelectedItems}
+                            onUpdateMany={this.onUpdate}
+                            pageSize={pageSize}
+                            selectedItems={selectedItems}
+                            totalItems={itemsCount}
+                          />
+                        ) : null}
+                      </div>
+                    )}
+                  />
+                  <ListTable
+                    adminPath={adminPath}
+                    columnControl={
+                      <Popout
+                        target={handlers => (
+                          <Button variant="subtle" {...handlers}>
+                            <KebabHorizontalIcon />
+                          </Button>
+                        )}
+                        headerTitle="Columns"
+                      >
+                        <ColumnSelect
+                          fields={list.fields}
+                          onChange={handleFieldChange}
+                          removeIsAllowed={fields.length > 1}
+                          value={fields}
+                        />
+                      </Popout>
+                    }
+                    fields={fields}
+                    isFullWidth={isFullWidth}
+                    items={items}
+                    itemsErrors={itemsErrors}
+                    list={list}
+                    onChange={query.refetch}
+                    onSelect={this.handleItemSelect}
+                    onSelectAll={this.handleItemSelectAll}
+                    handleSortChange={handleSortChange}
+                    sortBy={sortBy}
+                    selectedItems={selectedItems}
+                    noResultsMessage={this.getNoResultsMessage()}
+                  />
+                </Card>
+
+                <Pagination
+                  isLoading={query.loading}
+                  currentPage={currentPage}
+                  itemsCount={itemsCount}
                   list={list}
-                  onChange={query.refetch}
-                  onSelect={this.handleItemSelect}
-                  onSelectAll={this.handleItemSelectAll}
-                  handleSortChange={handleSortChange}
-                  sortBy={sortBy}
-                  selectedItems={selectedItems}
-                  noResultsMessage={this.getNoResultsMessage()}
+                  onChangePage={handlePageChange}
+                  pageSize={pageSize}
                 />
               </Suspense>
             ) : (

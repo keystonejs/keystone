@@ -76,13 +76,13 @@ keystone.createList('Post', {
       options: [{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }],
     },
     body: { type: Text, isMultiline: true },
-    posted: { type: DateTime },
+    posted: { type: DateTime, format: 'DD MMM YYYY' },
     image: { type: File, adapter: fileAdapter },
   },
   adminConfig: {
-    defaultPageSize: 20,
-    defaultColumns: 'title, status',
-    defaultSort: 'title',
+    defaultPageSize: 15,
+    defaultColumns: 'author, categories, status, posted',
+    defaultSort: 'posted',
   },
   labelResolver: item => item.title,
 });
@@ -110,6 +110,29 @@ keystone.createList('Comment', {
   labelResolver: item => item.body,
 });
 
+keystone.createList('Zico', { fields: { name: { type: Text } } });
+keystone.createList('Administrator', {
+  singular: 'Administrator',
+  plural: 'Administrators',
+  fields: { name: { type: Text } },
+});
+keystone.createList('Vape', { fields: { name: { type: Text } } });
+keystone.createList('Water', { fields: { name: { type: Text } } });
+keystone.createList('Bowl', { fields: { name: { type: Text } } });
+keystone.createList('Tissue', { fields: { name: { type: Text } } });
+keystone.createList('Table', { fields: { name: { type: Text } } });
+keystone.createList('Chair', { fields: { name: { type: Text } } });
+keystone.createList('Cable', { fields: { name: { type: Text } } });
+keystone.createList('Television', { fields: { name: { type: Text } } });
+keystone.createList('Camera', { fields: { name: { type: Text } } });
+keystone.createList('Speaker', { fields: { name: { type: Text } } });
+keystone.createList('Microphone', { fields: { name: { type: Text } } });
+keystone.createList('Tree', { fields: { name: { type: Text } } });
+keystone.createList('Plant', { fields: { name: { type: Text } } });
+keystone.createList('Bush', { fields: { name: { type: Text } } });
+keystone.createList('Trashcan', { fields: { name: { type: Text } } });
+keystone.createList('Board', { fields: { name: { type: Text } } });
+
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
   authStrategy,
@@ -123,6 +146,45 @@ const admin = new AdminUI(keystone, {
           label: 'Nested',
           children: [{ label: 'Comments', listKey: 'Comment' }],
         },
+      ],
+    },
+    {
+      label: 'Word play',
+      children: [
+        'Table',
+        'Chair',
+        'Cable',
+        {
+          label: 'First',
+          children: [
+            'Zico',
+            'Administrator',
+            'Vape',
+            {
+              label: 'Second',
+              children: [
+                'Water',
+                'Bowl',
+                'Tissue',
+                {
+                  // label: 'Thrid',
+                  children: [
+                    'Television',
+                    'Camera',
+                    'Speaker',
+                    {
+                      // label: 'Fourth',
+                      children: ['Microphone', 'Tree', 'Plant'],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        'Bush',
+        'Trashcan',
+        'Board',
       ],
     },
     {

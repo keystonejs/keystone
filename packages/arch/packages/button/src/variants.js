@@ -4,29 +4,29 @@ import { alpha, darken, lighten } from '@arch-ui/color-utils';
 
 const boldAppearance = {
   default: {
-    bg: colors.N05,
+    bg: '#fff',
     border: colors.N20,
     focusRing: colors.primary,
     text: colors.text,
   },
   primary: {
     bg: colors.primary,
-    border: darken(colors.primary, 16),
+    border: colors.primary,
     text: 'white',
   },
   create: {
     bg: colors.create,
-    border: darken(colors.create, 16),
+    border: colors.create,
     text: 'white',
   },
   danger: {
     bg: colors.danger,
-    border: darken(colors.danger, 8),
+    border: colors.danger,
     text: 'white',
   },
   warning: {
     bg: colors.warning,
-    border: darken(colors.warning, 12),
+    border: colors.warning,
     text: 'white',
   },
 };
@@ -151,10 +151,10 @@ export function makeBoldVariant({
 }) {
   // $FlowFixMe
   const { bg, border, focusRing, text } = boldAppearance[appearance];
-  const bgTop = lighten(bg, 10);
-  const bgBottom = darken(bg, 10);
-  const borderTop = lighten(border, 8);
-  const borderBottom = darken(border, 16);
+  // const bgTop = lighten(bg, 10);
+  // const bgBottom = darken(bg, 10);
+  // const borderTop = lighten(border, 8);
+  // const borderBottom = darken(border, 16);
   const activeBg = darken(bg, 12);
   const textShadow =
     appearance === 'default' ? '0 1px 0 rgba(255, 255, 255, 0.5)' : '0 -1px 0 rgba(0, 0, 0, 0.25)';
@@ -162,17 +162,14 @@ export function makeBoldVariant({
   const hoverAndFocus =
     isHover || isFocus
       ? {
-          borderColor: `${darken(borderTop, 8)} ${darken(border, 8)} ${darken(borderBottom, 8)}`,
-          background: `linear-gradient(to bottom, ${lighten(bgTop, 10)} 0%, ${lighten(
-            bgBottom,
-            8
-          )} 100%)`,
+          borderColor: border,
+          background: bg,
         }
       : null;
   const hoverStyles = isHover
     ? {
         ...hoverAndFocus,
-        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.12)',
       }
     : null;
   const focusStyles =
@@ -186,16 +183,16 @@ export function makeBoldVariant({
   const activeStyles = isActive
     ? {
         background: activeBg,
-        borderColor: `${darken(border, 24)} ${darken(border, 16)} ${darken(border, 12)}`,
-        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.12)',
+        borderColor: border,
+        // boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.12)',
       }
     : null;
 
   return {
-    backgroundColor: bgBottom,
+    backgroundColor: bg,
     backgroundRepeat: 'repeat-x',
-    background: isDisabled ? null : `linear-gradient(to bottom, ${bgTop} 0%, ${bgBottom} 100%)`,
-    borderColor: isDisabled ? null : `${borderTop} ${border} ${borderBottom}`,
+    // background: isDisabled ? null : `linear-gradient(to bottom, ${bgTop} 0%, ${bgBottom} 100%)`,
+    borderColor: isDisabled ? null : border,
     color: text,
     fontWeight: 500,
     textShadow,

@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 
 import Alerts from './Alerts';
 import Badges from './Badges';
+import Cards from './Cards';
 import Buttons from './Buttons';
 import Fields from './Fields';
 import Grid from './Grid';
@@ -16,6 +17,7 @@ const ComponentsGuide = () => (
   <Fragment>
     <Pagination />
     <Badges />
+    <Cards />
     <Lozenges />
     <Pills />
     <Buttons />
@@ -23,7 +25,7 @@ const ComponentsGuide = () => (
     <Fields />
     <Layout />
     <Loading />
-    <Alerts />
+    {/* <Alerts /> */}
     <Grid />
   </Fragment>
 );

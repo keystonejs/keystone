@@ -4,7 +4,7 @@ import type { Variants } from './types';
 
 // colors with intention
 const intent = {
-  create: '#34c240',
+  create: '#2CBE4E',
   danger: '#d64242',
   info: '#0090e0',
   primary: '#2684FF',
@@ -40,7 +40,7 @@ function makeVariants(color): Variants {
 }
 
 const blue = '#2684FF';
-const green = '#34c240';
+const green = '#2CBE4E';
 const red = '#d64242';
 const yellow = '#fa9f47';
 // const neutral = '#7A869A';

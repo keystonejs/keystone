@@ -4,7 +4,7 @@ import React, { Component, type Element } from 'react';
 import styled from '@emotion/styled';
 import { createPortal } from 'react-dom';
 
-import { borderRadius, gridSize } from '@arch-ui/theme';
+import { borderRadius, gridSize, shadows } from '@arch-ui/theme';
 import { FocusTrap } from 'react-focus-marshal';
 import { withModalHandlers, type ModalHandlerProps, SlideDown } from '@arch-ui/modal-utils';
 
@@ -16,8 +16,8 @@ const Wrapper = styled.div(({ left, top, width }) => {
 
   return {
     backgroundColor: 'white',
-    borderRadius: borderRadius,
-    boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.175), 0 3px 8px rgba(0, 0, 0, 0.175)',
+    borderRadius: borderRadius * 2,
+    boxShadow: shadows[2],
     marginTop: gridSize * 2,
     maxHeight: '100%',
     position: 'absolute',
@@ -49,7 +49,7 @@ const Arrow = styled.div`
   }
 
   &::before {
-    border-bottom-color: rgba(0, 0, 0, 0.2);
+    border-bottom-color: rgba(0, 0, 0, 0.1);
     top: -1px;
   }
 

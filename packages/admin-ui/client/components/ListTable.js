@@ -4,8 +4,16 @@ import React, { Component } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
-import { DiffIcon, InfoIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
+import {
+  DiffIcon,
+  InfoIcon,
+  KebabHorizontalIcon,
+  LinkIcon,
+  ShieldIcon,
+  TrashcanIcon,
+} from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
+import { Button } from '@arch-ui/button';
 import { CheckboxPrimitive } from '@arch-ui/controls';
 import Dropdown from '@arch-ui/dropdown';
 import { A11yText } from '@arch-ui/typography';
@@ -16,7 +24,6 @@ import { copyToClipboard } from '../util';
 const Table = styled('table')({
   borderCollapse: 'collapse',
   borderSpacing: 0,
-  marginBottom: gridSize * 4,
   width: '100%',
 });
 const TableRow = styled('tr')(({ isActive }) => ({
@@ -25,7 +32,7 @@ const TableRow = styled('tr')(({ isActive }) => ({
   },
 }));
 const HeaderCell = styled('th')({
-  backgroundColor: colors.page,
+  backgroundColor: 'white',
   boxShadow: '0 2px 0 rgba(0, 0, 0, 0.1)',
   boxSizing: 'border-box',
   color: '#999',
@@ -40,9 +47,9 @@ const HeaderCell = styled('th')({
   verticalAlign: 'bottom',
 });
 const BodyCell = styled('td')(({ isSelected }) => ({
-  backgroundColor: isSelected ? colors.B.L90 : null,
+  backgroundColor: isSelected ? colors.B.L95 : null,
   boxShadow: isSelected
-    ? `0 1px 0 ${colors.B.L75}, 0 -1px 0 ${colors.B.L75}`
+    ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`
     : `0 -1px 0 ${colors.N10}`,
   boxSizing: 'border-box',
   padding: gridSize,
@@ -64,7 +71,7 @@ const ItemLink = styled(Link)`
 `;
 
 const BodyCellTruncated = styled(BodyCell)`
-  max-width: 100%;
+  max-width: 10rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -190,6 +197,25 @@ class ListRow extends Component {
   }
   render() {
     const { list, link, isSelected, item, itemErrors, fields } = this.props;
+    const copyText = window.location.origin + link({ path: list.path, id: item.id });
+    const items = [
+      {
+        content: 'Duplicate',
+        icon: <DiffIcon />,
+        isDisabled: true, // TODO: implement duplicate
+        onClick: () => console.log('TODO'),
+      },
+      {
+        content: 'Copy Link',
+        icon: <LinkIcon />,
+        onClick: () => copyToClipboard(copyText),
+      },
+      {
+        content: 'Delete',
+        icon: <TrashcanIcon />,
+        onClick: this.showDeleteModal,
+      },
+    ];
 
     const row = props => (
       <TableRow {...props}>
@@ -260,27 +286,19 @@ class ListRow extends Component {
             </BodyCellTruncated>
           );
         })}
+        <BodyCell isSelected={isSelected} css={{ padding: 0 }}>
+          <Dropdown
+            align="right"
+            target={h => (
+              <Button variant="subtle" {...h}>
+                <KebabHorizontalIcon />
+              </Button>
+            )}
+            items={items}
+          />
+        </BodyCell>
       </TableRow>
     );
-    const copyText = window.location.origin + link({ path: list.path, id: item.id });
-    const items = [
-      {
-        content: 'Duplicate',
-        icon: <DiffIcon />,
-        isDisabled: true, // TODO: implement duplicate
-        onClick: () => console.log('TODO'),
-      },
-      {
-        content: 'Copy Link',
-        icon: <LinkIcon />,
-        onClick: () => copyToClipboard(copyText),
-      },
-      {
-        content: 'Delete',
-        icon: <TrashcanIcon />,
-        onClick: this.showDeleteModal,
-      },
-    ];
 
     return <Dropdown mode="contextmenu" target={row} items={items} />;
   }
@@ -297,6 +315,7 @@ export default class ListTable extends Component {
   render() {
     const {
       adminPath,
+      columnControl,
       fields,
       isFullWidth,
       items,
@@ -313,6 +332,10 @@ export default class ListTable extends Component {
     return items.length ? (
       <Table id="ks-list-table" style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
         <colgroup>
+          <col width="32" />
+          {fields.map(f => (
+            <col key={f.path} />
+          ))}
           <col width="32" />
         </colgroup>
         <thead>
@@ -337,6 +360,7 @@ export default class ListTable extends Component {
                 sortAscending={sortBy.direction === 'ASC'}
               />
             ))}
+            <HeaderCell css={{ padding: 0 }}>{columnControl}</HeaderCell>
           </tr>
         </thead>
         <tbody>

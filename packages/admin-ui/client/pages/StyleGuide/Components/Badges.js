@@ -3,7 +3,7 @@ import React, { Fragment } from 'react';
 import { Badge } from '@arch-ui/badge';
 import { FlexGroup } from '@arch-ui/layout';
 
-const appearances = ['default', 'primary', 'created', 'warning', 'danger', 'inverted'];
+const appearances = ['default', 'primary', 'danger', 'inverted'];
 const BadgeGuide = () => (
   <Fragment>
     <h2>Badges</h2>

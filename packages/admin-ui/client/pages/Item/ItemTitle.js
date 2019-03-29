@@ -51,7 +51,7 @@ export let ItemTitle = memo(function ItemTitle({ titleText, list, adminPath, onC
       <Title as="h1" margin="both">
         <TitleLink to={listHref}>{list.label}</TitleLink>: {titleText}
       </Title>
-      <IconButton appearance="create" icon={PlusIcon} onClick={onCreateClick}>
+      <IconButton variant="ghost" appearance="primary" icon={PlusIcon} onClick={onCreateClick}>
         Create
       </IconButton>
     </FlexGroup>

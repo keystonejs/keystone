@@ -3,10 +3,10 @@
 import { jsx } from '@emotion/core';
 import { Component, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-
-import { colors } from '@arch-ui/theme';
-import Page from './Page';
+import { colors, gridSize } from '@arch-ui/theme';
 import { LoadingSpinner } from '@arch-ui/loading';
+
+import Page from './Page';
 import type { CountArgs, CountFormat, LabelType, OnChangeType } from './types';
 
 function ariaPageLabelFn(page: number) {
@@ -60,7 +60,8 @@ const PaginationElement = styled.nav({
 });
 const PageCount = styled.div({
   color: colors.N60,
-  marginRight: '1em',
+  fontSize: '0.8rem',
+  marginTop: '1em',
 });
 
 const PageChildren = ({ page, isLoading, isSelected }) => {
@@ -209,10 +210,20 @@ class Pagination extends Component<PaginationProps> {
       ...rest
     } = this.props;
     return (
-      <PaginationElement aria-label="Pagination" {...rest}>
+      <div
+        css={{
+          alignItems: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          marginBottom: gridSize * 4,
+          marginTop: gridSize * 2,
+        }}
+      >
+        <PaginationElement aria-label="Pagination" {...rest}>
+          {this.renderPages()}
+        </PaginationElement>
         {this.renderCount()}
-        {this.renderPages()}
-      </PaginationElement>
+      </div>
     );
   }
 }

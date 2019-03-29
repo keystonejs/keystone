@@ -31,15 +31,17 @@ const boldTextColor = {
   warning: 'white',
 };
 
+const shade = alpha => `rgba(9, 30, 66, ${alpha})`;
+
 const subtleBackgroundColor = {
-  default: { default: colors.N10, hover: colors.N15, active: colors.N20 },
-  primary: { default: colors.B.L85, hover: colors.B.L80, active: colors.B.L75 },
-  danger: { default: colors.R.L85, hover: colors.R.L80, active: colors.R.L75 },
-  create: { default: colors.G.L85, hover: colors.G.L80, active: colors.G.L75 },
-  warning: { default: colors.Y.L85, hover: colors.Y.L80, active: colors.Y.L75 },
+  default: { default: shade(0.04), hover: shade(0.08), active: shade(0.12) },
+  primary: { default: colors.B.L90, hover: colors.B.L85, active: colors.B.L80 },
+  danger: { default: colors.R.L90, hover: colors.R.L85, active: colors.R.L80 },
+  create: { default: colors.G.L90, hover: colors.G.L85, active: colors.G.L80 },
+  warning: { default: colors.Y.L90, hover: colors.Y.L85, active: colors.Y.L80 },
 };
 const subtleTextColor = {
-  default: colors.N50,
+  default: colors.N60,
   primary: colors.primary,
   danger: colors.danger,
   create: colors.create,
@@ -63,24 +65,25 @@ type Props = ButtonProps & {
 
 const PillWrapper = styled.div({ display: 'inline-flex' });
 const PillButton = styled.button(
-  ({ appearance, variant }: { appearance: Appearance, variant: Variant }) => {
-    const fontSizeNumeric = 0.75;
-    const fontSize = `${fontSizeNumeric}em`;
-    const borderRadius = `${fontSizeNumeric * 2}em`;
+  ({ appearance, nuanced, variant }: { appearance: Appearance, variant: Variant }) => {
+    const fontSizeNumeric = 0.85;
+    const fontSize = `${fontSizeNumeric}rem`;
+    const borderRadius = '1.9em';
 
     return {
-      backgroundColor:
-        variant === 'bold'
-          ? boldBackgroundColor[appearance].default
-          : subtleBackgroundColor[appearance].default,
+      backgroundColor: nuanced
+        ? 'transparent'
+        : variant === 'bold'
+        ? boldBackgroundColor[appearance].default
+        : subtleBackgroundColor[appearance].default,
       color: variant === 'bold' ? boldTextColor[appearance] : subtleTextColor[appearance],
       alignItems: 'center',
       border: 0,
       cursor: 'pointer',
       display: 'flex',
       fontSize: fontSize,
-      fontWeight: 500,
-      lineHeight: '1.8em',
+      // fontWeight: 500,
+      lineHeight: '2rem',
       justifyContent: 'center',
       maxWidth: '100%',
       minWidth: 1,
@@ -101,18 +104,22 @@ const PillButton = styled.button(
       },
 
       ':first-of-type': {
-        paddingLeft: '0.9em',
-        paddingRight: '0.75em',
+        paddingLeft: '1.1em',
+        paddingRight: '0.85em',
         borderTopLeftRadius: borderRadius,
         borderBottomLeftRadius: borderRadius,
-        marginRight: 1,
       },
       ':last-of-type': {
-        paddingLeft: '0.75em',
-        paddingRight: '0.9em',
+        paddingLeft: '0.85em',
+        paddingRight: '1.1em',
         borderTopRightRadius: borderRadius,
         borderBottomRightRadius: borderRadius,
         marginLeft: 1,
+      },
+      ':only-of-type': {
+        paddingLeft: '1.1em',
+        paddingRight: '1.1em',
+        margin: 0,
       },
     };
   }
@@ -120,16 +127,25 @@ const PillButton = styled.button(
 
 export const Pill = forwardRef<Props, HTMLDivElement>(
   (
-    { appearance = 'default', children, onClick, onRemove, variant = 'subtle', ...props }: Props,
+    {
+      appearance = 'default',
+      children,
+      onClick,
+      onRemove,
+      nuanced,
+      variant = 'subtle',
+      ...props
+    }: Props,
     ref
   ) => {
+    const common = { appearance, nuanced, variant };
     return (
       <PillWrapper {...props} ref={ref}>
-        <PillButton appearance={appearance} variant={variant} onClick={onClick}>
+        <PillButton {...common} onClick={onClick}>
           {children}
         </PillButton>
         {onRemove ? (
-          <PillButton appearance={appearance} variant={variant} onClick={onRemove}>
+          <PillButton {...common} onClick={onRemove}>
             <XIcon css={{ height: 12 }} />
           </PillButton>
         ) : null}

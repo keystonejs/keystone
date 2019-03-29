@@ -16,6 +16,7 @@ export const gridSize = 8;
 export const fontSize = 16;
 
 import colors from './colors';
+export { shadows } from './shadows';
 
 export { colors };
 

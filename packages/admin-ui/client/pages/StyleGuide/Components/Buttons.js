@@ -21,8 +21,6 @@ export default class ButtonGuide extends Component {
     const iconTypes = [
       { appearance: 'default', icon: DashboardIcon },
       { appearance: 'primary', icon: PencilIcon },
-      { appearance: 'create', icon: PlusIcon },
-      { appearance: 'warning', icon: MegaphoneIcon },
       { appearance: 'danger', icon: AlertIcon },
     ];
     return (
@@ -31,7 +29,7 @@ export default class ButtonGuide extends Component {
         <h4>Variant: Bold</h4>
         <FlexGroup>
           <FlexGroup isInline>
-            {['Default', 'Primary', 'Create', 'Warning', 'Danger'].map(s => (
+            {['Default', 'Primary', 'Danger'].map(s => (
               <Button key={s} appearance={s.toLowerCase()}>
                 {s}
               </Button>
@@ -61,7 +59,7 @@ export default class ButtonGuide extends Component {
         </FlexGroup>
         <h4>Variant: Subtle</h4>
         <FlexGroup isInline>
-          {['Default', 'Primary', 'Warning', 'Danger'].map(s => (
+          {['Default', 'Primary', 'Danger'].map(s => (
             <Button key={s} variant="subtle" appearance={s.toLowerCase()}>
               {s}
             </Button>
@@ -69,7 +67,7 @@ export default class ButtonGuide extends Component {
         </FlexGroup>
         <h4>Variant: Ghost</h4>
         <FlexGroup isInline>
-          {['Default', 'Primary', 'Create', 'Warning', 'Danger'].map(s => (
+          {['Default', 'Primary', 'Danger'].map(s => (
             <Button key={s} variant="ghost" appearance={s.toLowerCase()}>
               {s}
             </Button>

@@ -10,13 +10,13 @@ const Placeholder = styled.div({
   height: 100,
 });
 const Toolbar = styled.div({
-  backgroundColor: 'rgba(250, 251, 252, 0.93)',
+  backgroundColor: 'white',
   bottom: 0,
   boxShadow: 'rgba(0, 0, 0, 0.1) 0px -2px 0px',
   display: 'flex',
   justifyContent: 'space-between',
   padding: `${gridSize * 3}px 0`,
-  position: 'fixed',
+  position: 'absolute',
 });
 
 function useKeyListener(listener, deps) {

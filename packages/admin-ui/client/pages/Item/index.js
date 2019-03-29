@@ -16,6 +16,7 @@ import Footer from './Footer';
 import { Container } from '@arch-ui/layout';
 import { Button } from '@arch-ui/button';
 import { AutocompleteCaptor } from '@arch-ui/input';
+import { Card, Canvas } from '@arch-ui/card';
 import { gridSize } from '@arch-ui/theme';
 import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
 import { IdCopy } from './IdCopy';
@@ -192,53 +193,60 @@ const ItemDetails = withRouter(
             adminPath={adminPath}
             titleText={savedData._label_}
           />
-          <IdCopy id={item.id} />
-          <Form>
-            <AutocompleteCaptor />
-            {list.fields.map((field, i) => {
-              return (
-                <Render key={field.path}>
-                  {() => {
-                    let [Field] = field.adminMeta.readViews([field.views.Field]);
+          <Canvas>
+            <IdCopy id={item.id} />
+            <div css={{ display: 'flex' }}>
+              <Card css={{ position: 'relative', flex: 3 }}>
+                <Form>
+                  <AutocompleteCaptor />
+                  {list.fields.map((field, i) => {
+                    return (
+                      <Render key={field.path}>
+                        {() => {
+                          let [Field] = field.adminMeta.readViews([field.views.Field]);
 
-                    let onChange = useCallback(
-                      value => {
-                        this.setState(({ item }) => ({
-                          item: {
-                            ...item,
-                            [field.path]: value,
-                          },
-                          itemHasChanged: true,
-                        }));
-                      },
-                      [field]
+                          let onChange = useCallback(
+                            value => {
+                              this.setState(({ item }) => ({
+                                item: {
+                                  ...item,
+                                  [field.path]: value,
+                                },
+                                itemHasChanged: true,
+                              }));
+                            },
+                            [field]
+                          );
+                          return useMemo(
+                            () => (
+                              <Field
+                                autoFocus={!i}
+                                field={field}
+                                error={itemErrors[field.path]}
+                                value={item[field.path]}
+                                onChange={onChange}
+                                renderContext="page"
+                              />
+                            ),
+                            [i, field, itemErrors[field.path], item[field.path]]
+                          );
+                        }}
+                      </Render>
                     );
-                    return useMemo(
-                      () => (
-                        <Field
-                          autoFocus={!i}
-                          field={field}
-                          error={itemErrors[field.path]}
-                          value={item[field.path]}
-                          onChange={onChange}
-                          renderContext="page"
-                        />
-                      ),
-                      [i, field, itemErrors[field.path], item[field.path]]
-                    );
-                  }}
-                </Render>
-              );
-            })}
-          </Form>
+                  })}
+                </Form>
 
-          <Footer
-            onSave={this.onSave}
-            onDelete={this.openDeleteModal}
-            canReset={itemHasChanged && !updateInProgress}
-            onReset={this.onReset}
-            updateInProgress={updateInProgress}
-          />
+                <Footer
+                  onSave={this.onSave}
+                  onDelete={this.openDeleteModal}
+                  canReset={itemHasChanged && !updateInProgress}
+                  onReset={this.onReset}
+                  updateInProgress={updateInProgress}
+                />
+              </Card>
+              <Card css={{ flex: 1, marginLeft: 8 }}>Secondary Content???</Card>
+            </div>
+          </Canvas>
           {this.renderCreateModal()}
           {this.renderDeleteModal()}
         </Fragment>
@@ -294,7 +302,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
               <DocTitle>
                 {item._label_} - {list.singular}
               </DocTitle>
-              <Container id="toast-boundary">
+              <Container isFullWidth id="toast-boundary">
                 <Mutation
                   mutation={list.updateMutation}
                   onError={updateError => {

@@ -3,8 +3,38 @@
 import { jsx } from '@emotion/core';
 import * as React from 'react';
 import { useMemo } from 'react';
-import { colors, gridSize } from '@arch-ui/theme';
 import ReactSelect, { components as reactSelectComponents } from 'react-select';
+import { colors, gridSize } from '@arch-ui/theme';
+import { alpha } from '@arch-ui/color-utils';
+
+// ==============================
+// Controls
+// ==============================
+
+const Checkbox = () => (
+  <svg width="24" height="24" focusable="false" role="presentation">
+    <g fillRule="evenodd">
+      <rect
+        className="checkbox-rect"
+        fill="currentColor"
+        x="6"
+        y="6"
+        width="12"
+        height="12"
+        rx="2"
+      />
+      <path
+        className="checkbox-mark"
+        d="M9.707 11.293a1 1 0 1 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4a1 1 0 1 0-1.414-1.414L11 12.586l-1.293-1.293z"
+        fill="inherit"
+      />
+    </g>
+  </svg>
+);
+
+// ==============================
+// Primitives
+// ==============================
 
 type OptionPrimitiveProps = {
   children: React.Node,
@@ -16,22 +46,20 @@ type OptionPrimitiveProps = {
 
 export const OptionPrimitive = ({
   children,
+  hasCheckbox,
   isDisabled,
   isFocused,
   isSelected,
-  innerProps: { innerRef, ...innerProps },
+  innerProps,
+  innerRef,
 }: OptionPrimitiveProps) => {
-  const hoverAndFocusStyles = {
-    backgroundColor: colors.B.L90,
-    color: colors.primary,
-  };
-  const focusedStyles = isFocused && !isDisabled ? hoverAndFocusStyles : null;
-  const selectedStyles =
-    isSelected && !isDisabled
+  const focusedStyles =
+    isFocused && !isDisabled
       ? {
-          '&, &:hover, &:focus, &:active': {
-            backgroundColor: colors.primary,
-            color: 'white',
+          backgroundColor: colors.N05,
+
+          '.checkbox-rect': {
+            fill: isSelected ? colors.B.L10 : colors.N15,
           },
         }
       : null;
@@ -41,37 +69,48 @@ export const OptionPrimitive = ({
       ref={innerRef}
       css={{
         alignItems: 'center',
-        backgroundColor: colors.N05,
+        // backgroundColor: alpha(colors.N100, 0.03),
         borderRadius: 3,
         color: isDisabled ? colors.N60 : null,
         cursor: 'pointer',
         display: 'flex',
         fontSize: '0.9em',
-        justifyContent: 'space-between',
+        height: '1.6rem',
+        lineHeight: '1.5rem',
         marginBottom: 4,
         opacity: isDisabled ? 0.6 : null,
         outline: 0,
-        padding: `${gridSize}px ${gridSize * 1.5}px`,
+        padding: gridSize / 2,
         pointerEvents: isDisabled ? 'none' : null,
 
+        '.checkbox-rect': {
+          fill: isSelected ? colors.primary : colors.N10,
+        },
+        '.checkbox-mark': {
+          fill: isSelected ? 'white' : 'transparent',
+        },
+
+        ':hover': {},
+
         ':active': {
-          backgroundColor: colors.B.L80,
-          color: colors.primary,
+          backgroundColor: colors.N10,
+
+          '.checkbox-rect': {
+            fill: isSelected ? colors.B.D10 : colors.N20,
+          },
+          '.checkbox-mark': {
+            fill: isSelected ? 'white' : colors.N40,
+          },
         },
 
         ...focusedStyles,
-        ...selectedStyles,
       }}
       {...innerProps}
     >
+      {hasCheckbox ? <Checkbox /> : null}
       {children}
     </div>
   );
-};
-
-const optionRendererStyles = {
-  menu: () => ({ marginTop: 8 }),
-  menuList: provided => ({ ...provided, padding: 0 }),
 };
 
 const Control = ({ selectProps, ...props }) => {
@@ -93,6 +132,19 @@ const Control = ({ selectProps, ...props }) => {
       <reactSelectComponents.Control {...props} />
     </div>
   );
+};
+
+const styles = {
+  control: (base, { isFocused }) => ({
+    ...base,
+    borderColor: isFocused ? colors.primary : colors.N15,
+    boxShadow: isFocused ? `0 0 0 3px ${alpha(colors.primary, 0.2)}` : null,
+    fontSize: '0.9rem',
+    outline: 0,
+    ':hover': { borderColor: isFocused ? colors.primary : colors.N20 },
+  }),
+  menu: () => ({ marginTop: 8 }),
+  menuList: provided => ({ ...provided, padding: 0 }),
 };
 
 const defaultComponents = {
@@ -136,7 +188,7 @@ export const Options = ({
       menuShouldScrollIntoView={false}
       ref={innerRef}
       shouldDisplaySearchControl={displaySearch}
-      styles={optionRendererStyles}
+      styles={styles}
       // TODO: JW: Not a fan of this, but it doesn't seem to make a difference
       // if we take it out. react-select bug maybe?
       tabSelectsValue={false}

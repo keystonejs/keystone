@@ -4,6 +4,7 @@ import { Component, createRef, Suspense } from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 
 import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@arch-ui/icons';
+import { Pill } from '@arch-ui/pill';
 import { colors, gridSize } from '@arch-ui/theme';
 import { A11yText } from '@arch-ui/typography';
 import { Alert } from '@arch-ui/alert';
@@ -30,7 +31,7 @@ export const FieldOption = ({ children, ...props }) => {
   let iconColor = !props.isFocused && !props.isSelected ? colors.N40 : 'currentColor';
 
   return (
-    <OptionPrimitive {...props}>
+    <OptionPrimitive hasCheckbox={false} {...props}>
       <span>{children}</span>
       <ChevronRightIcon css={{ color: iconColor }} />
     </OptionPrimitive>
@@ -352,7 +353,36 @@ export default class AddFilterPopout extends Component<Props, State> {
 
     return (
       <PopoutForm
-        buttonLabel="Filters"
+        target={targetProps => (
+          <Pill
+            appearance="primary"
+            // nuanced
+            // variant="bold"
+            css={{ marginBottom: 4, marginLeft: 4 }}
+            {...targetProps}
+          >
+            <div
+              css={{
+                alignItems: 'center',
+                display: 'flex',
+                height: 30,
+                justifyContent: 'center',
+                marginTop: 2,
+                width: '2rem',
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 125" width="12" height="15">
+                <path
+                  fill="currentColor"
+                  d="M93.111 7.647c-.697-1.744-1.908-2.617-3.641-2.617H10.528c-1.725 0-2.94.874-3.64 2.617-.699 1.833-.41 3.397.865 4.694l30.406 33.07v28.166c0 1.162.391 2.173 1.17 3.021l15.793 17.168c.736.853 1.662 1.279 2.773 1.279.492 0 1.008-.114 1.543-.338 1.604-.76 2.406-2.078 2.406-3.957V45.412l30.408-33.07c1.275-1.298 1.557-2.862.859-4.695z"
+                />
+              </svg>
+              <DisclosureArrow />
+            </div>
+            {/* Filter
+            <DisclosureArrow css={{ marginTop: 3 }} /> */}
+          </Pill>
+        )}
         headerBefore={back}
         headerTitle={field ? field.label : 'Filter'}
         showFooter={!!field}
@@ -368,3 +398,21 @@ export default class AddFilterPopout extends Component<Props, State> {
     );
   }
 }
+
+// Other
+export const DisclosureArrow = ({ size = '0.3em', ...props }) => (
+  <span
+    css={{
+      borderLeft: `${size} solid transparent`,
+      borderRight: `${size} solid transparent`,
+      borderTop: `${size} solid`,
+      display: 'inline-block',
+      height: 0,
+      marginLeft: '0.33em',
+      marginTop: '-0.125em',
+      verticalAlign: 'middle',
+      width: 0,
+    }}
+    {...props}
+  />
+);

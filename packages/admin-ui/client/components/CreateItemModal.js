@@ -82,7 +82,7 @@ class CreateItemModal extends Component {
         slideInFrom="right"
         footer={
           <Fragment>
-            <Button appearance="create" type="submit">
+            <Button appearance="primary" type="submit">
               {isLoading ? 'Loading...' : 'Create'}
             </Button>
             <Button appearance="warning" variant="subtle" onClick={this.onClose}>

@@ -1,12 +1,13 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import React from 'react';
-import { FlexGroup } from '@arch-ui/layout';
 import { Pill } from '@arch-ui/pill';
 import { gridSize } from '@arch-ui/theme';
 
-import AnimateHeight from '../../../components/AnimateHeight';
+import AddFilterPopout from './AddFilterPopout';
 import EditFilterPopout from './EditFilterPopout';
 
-const pillStyle = { marginBottom: gridSize / 2, marginTop: gridSize / 2 };
+const pillStyle = { marginBottom: gridSize / 2, marginLeft: gridSize / 2 };
 
 export type FilterType = {
   field: { label: string, list: Object, path: string, type: string },
@@ -21,42 +22,42 @@ type Props = {
   onUpdate: FilterType => void,
 };
 
-export default function ActiveFilters({ filterList, onClear, onRemove, onUpdate }: Props) {
+export default function ActiveFilters({
+  fields,
+  filterList,
+  onAdd,
+  onClear,
+  onRemove,
+  onUpdate,
+}: Props) {
   return (
-    <AnimateHeight
-      style={{ paddingTop: gridSize }}
-      render={({ ref }) => (
-        <FlexGroup ref={ref} wrap id="ks-list-active-filters">
-          {filterList.length
-            ? filterList.map(filter => {
-                const label = filter.field.formatFilter(filter);
-                return (
-                  <EditFilterPopout
-                    key={label}
-                    onChange={onUpdate}
-                    filter={filter}
-                    target={props => (
-                      <Pill
-                        {...props}
-                        appearance="primary"
-                        onRemove={onRemove(filter)}
-                        style={pillStyle}
-                      >
-                        {label}
-                      </Pill>
-                    )}
-                  />
-                );
-              })
-            : null}
+    <>
+      {filterList.length
+        ? filterList.map(filter => {
+            const labelArray = filter.field.formatFilter(filter).split(' ');
+            return (
+              <EditFilterPopout
+                key={labelArray.join('-')}
+                onChange={onUpdate}
+                filter={filter}
+                target={props => (
+                  <Pill {...props} onRemove={onRemove(filter)} css={pillStyle}>
+                    <strong css={{ fontWeight: 500 }}>{labelArray[0]}&nbsp;</strong>
+                    {labelArray.slice(1).join(' ')}
+                  </Pill>
+                )}
+              />
+            );
+          })
+        : null}
 
-          {filterList.length > 1 ? (
-            <Pill key="clear" onClick={onClear} style={pillStyle}>
-              Clear All
-            </Pill>
-          ) : null}
-        </FlexGroup>
-      )}
-    />
+      <AddFilterPopout existingFilters={filterList} fields={fields} onChange={onAdd} />
+
+      {filterList.length > 1 ? (
+        <Pill key="clear" onClick={onClear} style={pillStyle} nuanced>
+          Clear All
+        </Pill>
+      ) : null}
+    </>
   );
 }

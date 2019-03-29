@@ -17,6 +17,7 @@ export const NavGroupIcons = styled.div({
 });
 
 export const PrimaryNav = styled.nav({
+  backgroundColor: 'rgba(9, 30, 66, 0.03)',
   boxSizing: 'border-box',
   display: 'flex',
   flexFlow: 'column nowrap',

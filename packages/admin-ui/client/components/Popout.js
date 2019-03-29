@@ -1,5 +1,7 @@
 // @flow
 
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
 import React, { Fragment, type ComponentType, type Node, type Ref } from 'react';
 import styled from '@emotion/styled';
 
@@ -10,14 +12,21 @@ import { gridSize } from '@arch-ui/theme';
 export const POPOUT_GUTTER = gridSize * 2;
 
 // Layout
-const Bar = styled.div({
-  paddingBottom: gridSize * 1.5,
-  paddingTop: gridSize * 1.5,
-  marginLeft: POPOUT_GUTTER,
-  marginRight: POPOUT_GUTTER,
-  position: 'relative',
-  zIndex: 1,
-});
+const Bar = props => {
+  return (
+    <div
+      css={{
+        paddingBottom: gridSize * 1.5,
+        paddingTop: gridSize * 1.5,
+        marginLeft: POPOUT_GUTTER,
+        marginRight: POPOUT_GUTTER,
+        position: 'relative',
+        zIndex: 1,
+      }}
+      {...props}
+    />
+  );
+};
 const Header = styled(Bar)({
   alignItems: 'center',
   boxShadow: '0 2px 0 rgba(0,0,0,0.1)',
@@ -89,8 +98,12 @@ export const Popout = ({
   target,
   ...props
 }: Props) => {
-  const defaultTarget = props => (
-    <Button {...props}>
+  const defaultTarget = handlers => (
+    <Button
+      variant="ghost"
+      css={{ display: 'inline-flex', alignItems: 'center', paddingBottom: 4, paddingTop: 4 }}
+      {...handlers}
+    >
       {buttonLabel}
       <DisclosureArrow />
     </Button>
