@@ -1,5 +1,31 @@
 # @keystone-alpha/server
 
+## 3.0.0
+
+- [patch][022724ab](https://github.com/keystonejs/keystone-5/commit/022724ab):
+
+  - Factor out a `createApolloServer` function.
+
+- [patch][289123a6](https://github.com/keystonejs/keystone-5/commit/289123a6):
+
+  - Decouple creation of ApolloServer from setting up of middleware
+
+- [patch][52f1c47b](https://github.com/keystonejs/keystone-5/commit/52f1c47b):
+
+  - Use the new Keystone.registerSchema interface.
+
+- [major][5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+
+  - Remove the .sessionManager property from the Keystone class
+
+- [patch][5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+
+  - Use the new @keystone-alpha/session package
+
+- Updated dependencies [d718c016](https://github.com/keystonejs/keystone-5/commit/d718c016):
+- Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+  - @keystone-alpha/session@1.0.0
+
 ## 2.0.2
 
 - [patch][5ddb2ed6](https://github.com/keystonejs/keystone-5/commit/5ddb2ed6):
