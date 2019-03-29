@@ -1,5 +1,19 @@
 # @keystone-alpha/demo-project-todo
 
+## 1.0.4
+
+- [patch][06ca8a99](https://github.com/keystonejs/keystone-5/commit/06ca8a99):
+
+  - Adding intro text + link to admin UI
+
+- Updated dependencies [8d385ede](https://github.com/keystonejs/keystone-5/commit/8d385ede):
+- Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+- Updated dependencies [52f1c47b](https://github.com/keystonejs/keystone-5/commit/52f1c47b):
+  - @keystone-alpha/adapter-mongoose@1.0.4
+  - @keystone-alpha/keystone@2.0.0
+  - @keystone-alpha/core@2.0.2
+  - @keystone-alpha/server@3.0.0
+
 ## 1.0.3
 
 - [patch][08d3ddc9](https://github.com/keystonejs/keystone-5/commit/08d3ddc9):

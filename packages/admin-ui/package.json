@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/admin-ui",
   "description": "KeystoneJS Admin UI.",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -20,7 +20,7 @@
     "@arch-ui/hooks": "^0.0.3",
     "@arch-ui/icons": "^0.0.3",
     "@arch-ui/input": "^0.0.3",
-    "@arch-ui/layout": "^0.0.3",
+    "@arch-ui/layout": "^0.1.0",
     "@arch-ui/loading": "^0.0.3",
     "@arch-ui/lozenge": "^0.0.3",
     "@arch-ui/navbar": "^0.0.4",
@@ -42,8 +42,8 @@
     "@emotion/core": "^10.0.9",
     "@emotion/styled": "^10.0.9",
     "@keystone-alpha/field-views-loader": "^1.0.1",
-    "@keystone-alpha/fields": "^3.0.1",
-    "@keystone-alpha/session": "^0.0.0",
+    "@keystone-alpha/fields": "^3.0.2",
+    "@keystone-alpha/session": "^1.0.0",
     "@keystone-alpha/utils": "^2.0.0",
     "apollo-cache-inmemory": "^1.5.1",
     "apollo-client": "^2.5.1",
