@@ -21,9 +21,9 @@
     "@keystone-alpha/core": "^2.0.1",
     "@keystone-alpha/fields": "^3.0.1",
     "@keystone-alpha/file-adapters": "^1.0.1",
-    "@keystone-alpha/keystone": "^1.0.4",
-    "@keystone-alpha/server": "^2.0.2",
-    "@keystone-alpha/session": "^0.0.0",
+    "@keystone-alpha/keystone": "^2.0.0",
+    "@keystone-alpha/server": "^3.0.0",
+    "@keystone-alpha/session": "^1.0.1",
     "react": "^16.8.4"
   },
   "devDependencies": {
