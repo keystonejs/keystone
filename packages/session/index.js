@@ -161,7 +161,7 @@ function populateAuthedItemMiddleware(keystone) {
     }
     req.user = item;
     req.authedListKey = list.key;
-    req.audiences = session.audiences;
+    req.audiences = req.session.audiences;
 
     next();
   };

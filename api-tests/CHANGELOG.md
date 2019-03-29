@@ -1,5 +1,22 @@
 # @keystone-alpha/api-tests
 
+## 1.0.3
+
+- [patch][5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+
+  - Use the new @keystone-alpha/session package
+
+- Updated dependencies [8d385ede](https://github.com/keystonejs/keystone-5/commit/8d385ede):
+- Updated dependencies [d718c016](https://github.com/keystonejs/keystone-5/commit/d718c016):
+- Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+- Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+- Updated dependencies [52f1c47b](https://github.com/keystonejs/keystone-5/commit/52f1c47b):
+  - @keystone-alpha/adapter-mongoose@1.0.4
+  - @keystone-alpha/test-utils@1.1.3
+  - @keystone-alpha/keystone@2.0.0
+  - @keystone-alpha/server@3.0.0
+  - @keystone-alpha/session@1.0.0
+
 ## 1.0.2
 
 - [patch][de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):

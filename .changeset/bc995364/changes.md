@@ -1,1 +1,0 @@
-- Remove the .sessionManager property from the Keystone class

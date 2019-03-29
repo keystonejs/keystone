@@ -1,1 +1,0 @@
-- Updating the template to match the changes in the todo demo app

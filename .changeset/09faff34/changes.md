@@ -1,1 +1,0 @@
-- Remove keystone.getAuxQueryResolvers method
