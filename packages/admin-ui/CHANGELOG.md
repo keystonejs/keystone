@@ -1,5 +1,10 @@
 # @keystone-alpha/admin-ui
 
+## 3.0.5
+
+- Updated dependencies [4131e232](https://github.com/keystonejs/keystone-5/commit/4131e232):
+  - @keystone-alpha/field-views-loader@2.0.0
+
 ## 3.0.4
 
 - [patch][d718c016](https://github.com/keystonejs/keystone-5/commit/d718c016):

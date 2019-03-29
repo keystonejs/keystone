@@ -1,5 +1,11 @@
 # @keystone-alpha/session
 
+## 1.0.1
+
+- [patch][62e2d517](https://github.com/keystonejs/keystone-5/commit/62e2d517):
+
+  - Fix bug in session audiences
+
 ## 1.0.0
 
 - [minor][d718c016](https://github.com/keystonejs/keystone-5/commit/d718c016):
