@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/admin-ui",
   "description": "KeystoneJS Admin UI.",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -41,7 +41,7 @@
     "@babel/preset-react": "^7.0.0",
     "@emotion/core": "^10.0.9",
     "@emotion/styled": "^10.0.9",
-    "@keystone-alpha/field-views-loader": "^1.0.1",
+    "@keystone-alpha/field-views-loader": "^2.0.0",
     "@keystone-alpha/fields": "^3.0.2",
     "@keystone-alpha/session": "^1.0.0",
     "@keystone-alpha/utils": "^2.0.0",
