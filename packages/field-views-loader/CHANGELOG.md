@@ -1,5 +1,11 @@
 # @keystone-alpha/field-views-loader
 
+## 2.0.0
+
+- [major][4131e232](https://github.com/keystonejs/keystone-5/commit/4131e232):
+
+  - Dynamically load Admin UI views with React Suspense
+
 ## 1.0.1
 
 - [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
