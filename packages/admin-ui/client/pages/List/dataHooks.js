@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { __RouterContext as RouterContext } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 import { useQuery } from 'react-apollo-hooks';
@@ -59,10 +59,13 @@ export function useListData(listKey) {
   // Get and store items
   const query = list.getQuery({ fields, filters, search, orderBy, skip, first });
   const { data, error, loading, refetch } = useQuery(query);
-  const maybeItems = data && data[list.gqlNames.listQueryName]; // NOTE: this feels wrong...
 
-  setItems(maybeItems);
-  setItemCount(maybeItems.count);
+  useEffect(() => {
+    const maybeItems = data && data[list.gqlNames.listQueryName]; // NOTE: this feels wrong...
+
+    setItems(maybeItems);
+    setItemCount((maybeItems && maybeItems.count) || 0);
+  }, [listKey]);
 
   // get errors
   const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.listQueryName] || [];
@@ -195,7 +198,7 @@ export function useListData(listKey) {
       fields,
       filters,
       items,
-      itemCount,
+      // itemCount,
       pageSize,
       search,
       skip,

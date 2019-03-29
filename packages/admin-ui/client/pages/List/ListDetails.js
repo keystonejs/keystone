@@ -35,6 +35,17 @@ import Pagination from './Pagination';
 import Management, { ManageToolbar } from './Management';
 import type { SortByType } from './DataProvider';
 import { MoreDropdown } from './MoreDropdown';
+import { useListFilter } from './dataHooks';
+
+// ==============================
+// Hooky Thing
+// ==============================
+
+const FilterAttempt = ({ listKey }) => {
+  const { handleRemove, handleRemoveAll, handleAdd, handleUpdate } = useListFilter(listKey);
+  console.log('FilterAttempt', { handleRemove, handleRemoveAll, handleAdd, handleUpdate });
+  return <div>FilterAttempt</div>;
+};
 
 // ==============================
 // Styled Components
@@ -433,6 +444,8 @@ class ListDetails extends Component<Props, State> {
                 onReset={this.handleReset}
               />
             </FlexGroup>
+
+            <FilterAttempt listKey={list.key} />
 
             <ActiveFilters
               filterList={filters}
