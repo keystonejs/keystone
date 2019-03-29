@@ -1,11 +1,15 @@
 //imports for Keystone app core
 const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { Keystone } = require('@keystone-alpha/keystone');
+const { WebServer } = require('@keystone-alpha/server');
 const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const WysiwygField = require('@keystone-alpha/fields-wysiwyg-tinymce');
+const next = require('next');
 
-const { staticRoute, staticPath } = require('./config');
+const { port, staticRoute, staticPath } = require('./config');
 const { User, Post, PostCategory, Comment } = require('./schema');
+const initialData = require('./initialData');
 
 const keystone = new Keystone({
   name: 'Keystone Demo Blog',
@@ -22,7 +26,7 @@ keystone.createList('Post', Post);
 keystone.createList('PostCategory', PostCategory);
 keystone.createList('Comment', Comment);
 
-const admin = new AdminUI(keystone, {
+const adminUI = new AdminUI(keystone, {
   adminPath: '/admin',
   authStrategy,
   pages: [
@@ -41,9 +45,31 @@ const admin = new AdminUI(keystone, {
   ],
 });
 
-module.exports = {
-  staticRoute,
-  staticPath,
-  keystone,
-  admin,
-};
+const server = new WebServer(keystone, {
+  adminUI,
+  port,
+  static: {
+    [staticRoute]: staticPath,
+    [WysiwygField.staticRoute]: WysiwygField.staticRoute,
+  },
+  next: next({
+    dir: 'app',
+    distDir: 'build',
+    dev: process.env.NODE_ENV !== 'production',
+  }),
+});
+
+server
+  .start()
+  .then(async () => {
+    const users = await keystone.lists.User.adapter.findAll();
+    if (!users.length) {
+      await keystone.createItems(initialData);
+    }
+  })
+  .catch(error => {
+    // Initialise some data.
+    // NOTE: This is only for demo purposes and should not be used in production
+    console.error(error);
+    process.exit(1);
+  });

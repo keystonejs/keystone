@@ -1,10 +1,12 @@
 const { Text } = require('@keystone-alpha/fields');
 const path = require('path');
 
+const staticPath = '/tinymce-assets';
+const tinymce = require.resolve('tinymce');
+const tinymcePath = tinymce.substr(0, tinymce.lastIndexOf('/'));
+
 function bindStaticMiddleware(server) {
-  const tinymce = require.resolve('tinymce');
-  const tinymcePath = tinymce.substr(0, tinymce.lastIndexOf('/'));
-  server.app.use('/tinymce-assets', server.express.static(tinymcePath));
+  server.app.use(staticPath, server.express.static(tinymcePath));
 }
 
 module.exports = {
@@ -17,4 +19,6 @@ module.exports = {
   },
   adapters: Text.adapters,
   bindStaticMiddleware,
+  staticPath,
+  tinymcePath,
 };
