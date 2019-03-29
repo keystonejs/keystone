@@ -1,0 +1,1 @@
+- Fix bug in session audiences
