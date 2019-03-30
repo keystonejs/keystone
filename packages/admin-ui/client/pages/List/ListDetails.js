@@ -40,11 +40,12 @@ import { useList, useListQuery, useListSearch } from './dataHooks';
 // ==============================
 
 const Search = ({ listKey }) => {
-  const ref = useRef();
-  const [value, setValue] = useState();
   const list = useList(listKey);
-  const { loading } = useListQuery(listKey);
   const { searchValue, onChange, onClear, onSubmit } = useListSearch(listKey);
+  const [value, setValue] = useState(searchValue);
+  const { loading } = useListQuery(listKey);
+  const ref = useRef();
+
   const hasValue = searchValue && searchValue.length;
   const Icon = hasValue ? XIcon : SearchIcon;
   const isLoading = hasValue && loading;
