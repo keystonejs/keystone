@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { __RouterContext as RouterContext } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 import { useQuery } from 'react-apollo-hooks';
@@ -61,11 +61,13 @@ export function useListData(listKey) {
   const { data, error, loading, refetch } = useQuery(query);
 
   useEffect(() => {
-    const maybeItems = data && data[list.gqlNames.listQueryName]; // NOTE: this feels wrong...
-
-    setItems(maybeItems);
-    setItemCount((maybeItems && maybeItems.count) || 0);
-  }, [listKey]);
+    if (data[list.gqlNames.listQueryName]) {
+      setItems(data[list.gqlNames.listQueryName]);
+    }
+    if (data[list.gqlNames.listQueryMetaName]) {
+      setItemCount(data[list.gqlNames.listQueryMetaName].count);
+    }
+  }); // FIXME this gets called SO OFTEN. needs deps e.g. `listKey`, but then we don't get data in time...
 
   // get errors
   const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.listQueryName] || [];
@@ -117,7 +119,7 @@ export function useListData(listKey) {
   // Columns
   // ------------------------------
 
-  const handleFieldChange = selectedFields => {
+  const handleColumnChange = selectedFields => {
     // Ensure that the displayed fields maintain their original sortDirection
     // when they're added/removed
     const newFields = [pseudoLabelField]
@@ -171,7 +173,7 @@ export function useListData(listKey) {
         ...changes,
         ...overrides,
       },
-      this.props
+      decodeConfig
     );
 
     const newLocation = { ...location, search: encodedSearch };
@@ -198,30 +200,39 @@ export function useListData(listKey) {
       fields,
       filters,
       items,
-      // itemCount,
+      itemCount,
       pageSize,
       search,
       skip,
       sortBy,
     },
-    handleSearchChange,
-    handleSearchClear,
-    handleSearchSubmit,
+    handleColumnChange,
+    handleFilterAdd,
     handleFilterRemove,
     handleFilterRemoveAll,
-    handleFilterAdd,
     handleFilterUpdate,
-    handleFieldChange,
-    handleSortChange,
     handlePageChange,
     handlePageReset,
     handlePageSizeChange,
     handleReset,
+    handleSearchChange,
+    handleSearchClear,
+    handleSearchSubmit,
+    handleSortChange,
   };
 }
 
 // ==============================
-// Search Hooks
+// List Hook
+// ==============================
+
+export const useList = listKey => {
+  const { getListByKey } = useAdminMeta();
+  return getListByKey(listKey);
+};
+
+// ==============================
+// Search Hook
 // ==============================
 
 export const useListSearch = listKey => {
@@ -235,11 +246,12 @@ export const useListSearch = listKey => {
 };
 
 // ==============================
-// Filter Hooks
+// Filter Hook
 // ==============================
 
 export const useListFilter = listKey => {
   const {
+    data,
     handleFilterRemove,
     handleFilterRemoveAll,
     handleFilterAdd,
@@ -247,23 +259,52 @@ export const useListFilter = listKey => {
   } = useListData(listKey);
 
   return {
-    handleRemove: handleFilterRemove,
-    handleRemoveAll: handleFilterRemoveAll,
-    handleAdd: handleFilterAdd,
-    handleUpdate: handleFilterUpdate,
+    filters: data.filters,
+    onRemove: handleFilterRemove,
+    onRemoveAll: handleFilterRemoveAll,
+    onAdd: handleFilterAdd,
+    onUpdate: handleFilterUpdate,
   };
 };
 
 // ==============================
-// Pagination Hooks
+// Pagination Hook
 // ==============================
 
 export const useListPagination = listKey => {
-  const { handlePageChange, handlePageReset, handlePageSizeChange } = useListData(listKey);
+  const { data, query, handlePageChange, handlePageReset, handlePageSizeChange } = useListData(
+    listKey
+  );
 
   return {
-    handleChange: handlePageChange,
-    handleReset: handlePageReset,
-    handleSizeChange: handlePageSizeChange,
+    data: {
+      currentPage: data.currentPage,
+      isLoading: query.loading,
+      itemCount: data.itemCount,
+      pageSize: data.pageSize,
+    },
+    onChange: handlePageChange,
+    onChangeSize: handlePageSizeChange,
+    onReset: handlePageReset,
   };
+};
+
+// ==============================
+// Sort Hook
+// ==============================
+
+export const useListSort = listKey => {
+  const { data, handleSortChange } = useListData(listKey);
+
+  return [data.sortBy, handleSortChange];
+};
+
+// ==============================
+// Column Hook
+// ==============================
+
+export const useListColumns = listKey => {
+  const { data, handleColumnChange } = useListData(listKey);
+
+  return [data.fields, handleColumnChange];
 };

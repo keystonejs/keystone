@@ -2,37 +2,29 @@
 
 import React from 'react';
 import { Pagination } from '@arch-ui/pagination';
+import { useList, useListPagination } from './dataHooks';
 
 type Props = {
-  currentPage: number,
-  itemsCount: number,
-  list: Object,
-  onChangePage: (*) => void,
-  pageSize: number,
-  isLoading: boolean,
+  listKey: string,
 };
 
 const CYPRESS_TEST_ID = 'ks-pagination';
 
-export default function ListPagination({
-  currentPage,
-  itemsCount,
-  list,
-  onChangePage,
-  pageSize,
-  isLoading,
-}: Props) {
+export default function ListPagination({ listKey }: Props) {
+  const list = useList(listKey);
+  const { data, onChange } = useListPagination(listKey);
+
   return (
     <Pagination
-      currentPage={currentPage}
+      currentPage={data.currentPage}
       displayCount
       id={CYPRESS_TEST_ID}
-      onChange={onChangePage}
-      isLoading={isLoading}
-      pageSize={pageSize}
+      onChange={onChange}
+      isLoading={data.isLoading}
+      pageSize={data.pageSize}
       plural={list.plural}
       single={list.label}
-      total={itemsCount}
+      total={data.itemCount}
     />
   );
 }

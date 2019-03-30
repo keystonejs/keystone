@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Component, createRef, Fragment, Suspense } from 'react';
-import styled from '@emotion/styled';
 import { withRouter } from 'react-router-dom';
 
 import {
@@ -15,7 +14,7 @@ import {
 } from '@arch-ui/icons';
 import { Input } from '@arch-ui/input';
 import { Container, FlexGroup, CONTAINER_GUTTER, CONTAINER_WIDTH } from '@arch-ui/layout';
-import { A11yText, Kbd, Title } from '@arch-ui/typography';
+import { A11yText, Title } from '@arch-ui/typography';
 import { Button, IconButton } from '@arch-ui/button';
 import { LoadingSpinner } from '@arch-ui/loading';
 import Dropdown from '@arch-ui/dropdown';
@@ -24,37 +23,20 @@ import { colors } from '@arch-ui/theme';
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
 import PageLoading from '../../components/PageLoading';
-import { Popout, DisclosureArrow } from '../../components/Popout';
 import { withAdminMeta } from '../../providers/AdminMeta';
 
-import ColumnSelect from './ColumnSelect';
+import ColumnPopout from './ColumnSelect';
 import AddFilterPopout from './Filters/AddFilterPopout';
 import ActiveFilters from './Filters/ActiveFilters';
-import SortSelect, { SortButton } from './SortSelect';
+import SortPopout from './SortSelect';
 import Pagination from './Pagination';
 import Management, { ManageToolbar } from './Management';
 import type { SortByType } from './DataProvider';
 import { MoreDropdown } from './MoreDropdown';
-import { useListFilter } from './dataHooks';
-
-// ==============================
-// Hooky Thing
-// ==============================
-
-const FilterAttempt = ({ listKey }) => {
-  const { handleRemove, handleRemoveAll, handleAdd, handleUpdate } = useListFilter(listKey);
-  console.log('FilterAttempt', { handleRemove, handleRemoveAll, handleAdd, handleUpdate });
-  return <div>FilterAttempt</div>;
-};
 
 // ==============================
 // Styled Components
 // ==============================
-
-const Note = styled.div({
-  color: colors.N60,
-  fontSize: '0.85em',
-});
 
 const Search = ({ children, hasValue, isFetching, onClear, onSubmit }) => {
   const Icon = hasValue ? XIcon : SearchIcon;
@@ -336,15 +318,9 @@ class ListDetails extends Component<Props, State> {
     const {
       adminMeta,
       adminPath,
-      currentPage,
       fields,
       filters,
-      handleFieldChange,
       handleFilterAdd,
-      handleFilterRemove,
-      handleFilterRemoveAll,
-      handleFilterUpdate,
-      handlePageChange,
       handleSortChange,
       items,
       itemsCount,
@@ -371,28 +347,7 @@ class ListDetails extends Component<Props, State> {
             <Title as="h1" margin="both">
               {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
               <span>, by</span>
-              <Popout
-                innerRef={this.sortPopoutRef}
-                headerTitle="Sort"
-                footerContent={
-                  <Note>
-                    Hold <Kbd>alt</Kbd> to toggle ascending/descending
-                  </Note>
-                }
-                target={props => (
-                  <SortButton {...props}>
-                    {sortBy.field.label.toLowerCase()}
-                    <DisclosureArrow size="0.2em" />
-                  </SortButton>
-                )}
-              >
-                <SortSelect
-                  popoutRef={this.sortPopoutRef}
-                  fields={list.fields}
-                  onChange={handleSortChange}
-                  value={sortBy}
-                />
-              </Popout>
+              <SortPopout listKey={list.key} />
             </Title>
 
             <FlexGroup growIndexes={[0]}>
@@ -419,18 +374,13 @@ class ListDetails extends Component<Props, State> {
                 />
               </Search>
               <AddFilterPopout
+                listKey={list.key}
                 existingFilters={filters}
                 fields={list.fields}
                 onChange={handleFilterAdd}
               />
-              <Popout buttonLabel="Columns" headerTitle="Columns">
-                <ColumnSelect
-                  fields={list.fields}
-                  onChange={handleFieldChange}
-                  removeIsAllowed={fields.length > 1}
-                  value={fields}
-                />
-              </Popout>
+
+              <ColumnPopout listKey={list.key} />
 
               {list.access.create ? (
                 <IconButton appearance="create" icon={PlusIcon} onClick={this.openCreateModal}>
@@ -445,14 +395,7 @@ class ListDetails extends Component<Props, State> {
               />
             </FlexGroup>
 
-            <FilterAttempt listKey={list.key} />
-
-            <ActiveFilters
-              filterList={filters}
-              onUpdate={handleFilterUpdate}
-              onRemove={handleFilterRemove}
-              onClear={handleFilterRemoveAll}
-            />
+            <ActiveFilters listKey={list.key} />
 
             <ManageToolbar isVisible={!!itemsCount}>
               {selectedItems.length ? (
@@ -465,14 +408,7 @@ class ListDetails extends Component<Props, State> {
                   totalItems={itemsCount}
                 />
               ) : (
-                <Pagination
-                  isLoading={query.loading}
-                  currentPage={currentPage}
-                  itemsCount={itemsCount}
-                  list={list}
-                  onChangePage={handlePageChange}
-                  pageSize={pageSize}
-                />
+                <Pagination listKey={list.key} />
               )}
             </ManageToolbar>
           </Container>
