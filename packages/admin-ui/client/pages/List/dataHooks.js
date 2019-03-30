@@ -1,5 +1,3 @@
-// @flow
-
 import { useContext, useEffect, useState } from 'react';
 import { __RouterContext as RouterContext } from 'react-router-dom';
 import debounce from 'lodash.debounce';
