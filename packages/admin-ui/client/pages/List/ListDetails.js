@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, createRef, Fragment, Suspense } from 'react';
+import { Component, createRef, Fragment, Suspense, useRef, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 
 import {
@@ -33,20 +33,55 @@ import Pagination from './Pagination';
 import Management, { ManageToolbar } from './Management';
 import type { SortByType } from './DataProvider';
 import { MoreDropdown } from './MoreDropdown';
+import { useList, useListQuery, useListSearch } from './dataHooks';
 
 // ==============================
 // Styled Components
 // ==============================
 
-const Search = ({ children, hasValue, isFetching, onClear, onSubmit }) => {
+const Search = ({ listKey }) => {
+  const ref = useRef();
+  const [value, setValue] = useState();
+  const list = useList(listKey);
+  const { loading } = useListQuery(listKey);
+  const { searchValue, onChange, onClear, onSubmit } = useListSearch(listKey);
+  const hasValue = searchValue && searchValue.length;
   const Icon = hasValue ? XIcon : SearchIcon;
-  const isLoading = hasValue && isFetching;
+  const isLoading = hasValue && loading;
+
+  const handleChange = event => {
+    setValue(event.target.value);
+    onChange(event.target.value);
+  };
+  const handleClear = () => {
+    if (ref.current) {
+      ref.current.focus();
+    }
+    setValue('');
+    onClear();
+  };
+
+  const id = 'ks-list-search-input';
 
   // NOTE: `autoComplete="off"` doesn't behave as expected on `<input />` in
   // webkit, so we apply the attribute to a form tag here.
   return (
     <form css={{ position: 'relative' }} autoComplete="off" onSubmit={onSubmit}>
-      {children}
+      <A11yText tag="label" htmlFor={id}>
+        Search {list.plural}
+      </A11yText>
+      <Input
+        autoCapitalize="off"
+        autoComplete="off"
+        autoCorrect="off"
+        id={id}
+        onChange={handleChange}
+        placeholder="Search"
+        name="item-search"
+        value={value}
+        type="text"
+        ref={ref}
+      />
       <div
         css={{
           alignItems: 'center',
@@ -66,7 +101,11 @@ const Search = ({ children, hasValue, isFetching, onClear, onSubmit }) => {
           },
         }}
       >
-        {isLoading ? <LoadingSpinner size={16} /> : <Icon onClick={hasValue ? onClear : null} />}
+        {isLoading ? (
+          <LoadingSpinner size={16} />
+        ) : (
+          <Icon onClick={hasValue ? handleClear : null} />
+        )}
       </div>
     </form>
   );
@@ -86,9 +125,6 @@ type Props = {
   fields: Array<Object>,
   handleFieldChange: GenericFn,
   handlePageChange: GenericFn,
-  handleSearchChange: GenericFn,
-  handleSearchClear: GenericFn,
-  handleSearchSubmit: GenericFn,
   handleSortChange: GenericFn,
   items: Array<Object>,
   itemsCount: number,
@@ -163,23 +199,9 @@ class ListDetails extends Component<Props, State> {
   // Search
   // ==============================
 
-  handleSearchChange = ({ target: { value } }) => {
-    this.setState({ searchValue: value }, () => {
-      this.props.handleSearchChange(value);
-    });
-  };
-  handleSearchClear = () => {
-    this.setState({ searchValue: '' });
-    this.props.handleSearchClear();
-    this.searchInput.focus();
-  };
   handleReset = () => {
     this.setState({ searchValue: '' });
     this.props.handleReset();
-  };
-  handleSearchSubmit = event => {
-    event.preventDefault();
-    this.props.handleSearchSubmit();
   };
 
   // ==============================
@@ -330,9 +352,7 @@ class ListDetails extends Component<Props, State> {
       query,
       sortBy,
     } = this.props;
-    const { isFullWidth, selectedItems, showCreateModal, searchValue } = this.state;
-
-    const searchId = 'ks-list-search-input';
+    const { isFullWidth, selectedItems, showCreateModal } = this.state;
 
     // we want to preload the Field components
     // so that we don't have a waterfall after the data loads
@@ -351,28 +371,7 @@ class ListDetails extends Component<Props, State> {
             </Title>
 
             <FlexGroup growIndexes={[0]}>
-              <Search
-                isFetching={query.loading}
-                onClear={this.handleSearchClear}
-                onSubmit={this.handleSearchSubmit}
-                hasValue={searchValue && searchValue.length}
-              >
-                <A11yText tag="label" htmlFor={searchId}>
-                  Search {list.plural}
-                </A11yText>
-                <Input
-                  autoCapitalize="off"
-                  autoComplete="off"
-                  autoCorrect="off"
-                  id={searchId}
-                  onChange={this.handleSearchChange}
-                  placeholder="Search"
-                  name="item-search"
-                  value={searchValue}
-                  type="text"
-                  ref={el => (this.searchInput = el)}
-                />
-              </Search>
+              <Search listKey={list.key} />
               <AddFilterPopout
                 listKey={list.key}
                 existingFilters={filters}

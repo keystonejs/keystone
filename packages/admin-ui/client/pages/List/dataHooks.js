@@ -196,7 +196,7 @@ export function useReset(listKey) {
  * ------------------------------
  * @param {string} listKey - The key for the list to operate on.
  * @returns {Object}
- * - search - the current search string
+ * - searchValue - the current search string
  * - onChange - change the current search
  * - onClear - clear the current search
  * - onSubmit - commit the current search to history and update the URL
@@ -204,21 +204,25 @@ export function useReset(listKey) {
 
 export function useListSearch(listKey) {
   const { urlState } = useListUrlState(listKey);
-  const { search } = urlState;
+  const { search: searchValue } = urlState;
   const setSearch = useListModifier(listKey);
   const { items } = useListItems(listKey);
   const routeProps = useRouter();
   const { history, match } = routeProps;
 
   const onChange = debounce(newSearch => {
-    const addHistoryRecord = !search;
+    const addHistoryRecord = !searchValue;
     setSearch({ search: newSearch }, addHistoryRecord);
   }, 300);
   const onClear = () => {
-    const addHistoryRecord = !!search;
+    const addHistoryRecord = !!searchValue;
     setSearch({ search: '' }, addHistoryRecord);
   };
-  const onSubmit = () => {
+  const onSubmit = event => {
+    if (event) {
+      event.preventDefault();
+    }
+
     // FIXME: This seems likely to do the wrong thing if data is not yet loaded.
     if (items.length === 1) {
       history.push(`${match.url}/${items[0].id}`);
@@ -226,7 +230,7 @@ export function useListSearch(listKey) {
   };
 
   return {
-    search,
+    searchValue,
     onChange,
     onClear,
     onSubmit,
