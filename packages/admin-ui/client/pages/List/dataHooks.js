@@ -1,3 +1,5 @@
+// @flow
+
 import { useContext, useEffect, useState } from 'react';
 import { __RouterContext as RouterContext } from 'react-router-dom';
 import debounce from 'lodash.debounce';
@@ -23,91 +25,255 @@ export function useRouter() {
   return useContext(RouterContext);
 }
 
-// ==============================
-// Primary Hook
-// ==============================
+/**
+ * List Hook
+ * ------------------------------
+ * @param {string} listKey - The key for the list to operate on.
+ * @returns {Object} list - The matching list object
+ */
 
-/*
-this is what the data provider had access to
-type Props = {
-  adminMeta: AdminMeta,
-  history: Object,
-  list: Object,
-  location: Object,
-  match: Object,
-};
-*/
-
-export function useListData(listKey) {
-  const [items, setItems] = useState([]);
-  const [itemCount, setItemCount] = useState(0);
-  const routeInfo = useRouter();
-  const { history, location, match } = routeInfo;
-
-  // Get the current list
+export const useList = listKey => {
   const { getListByKey } = useAdminMeta();
   const list = getListByKey(listKey);
 
+  if (!list) {
+    throw new Error(`No list matching key "${listKey}"`);
+  }
+
+  return list;
+};
+
+/**
+ * URL State Hook
+ * ------------------------------
+ * @param {string} listKey - The key for the list to operate on.
+ * @returns {Object}
+ * - decodeConfig - config necessary to decode url state
+ * - urlState - the current list state decoded from from the URL
+ */
+
+// type UrlState = {
+//  currentPage: number,
+//  fields: Array<FieldController>,
+//  filters: Array<Object>,
+//  pageSize: number,
+//  search: string,
+//  sortBy: SortBy,
+// };
+// type DecodeConfig = {
+//  history: HistoryInterface,
+//  list: ListMeta,
+//  location: LocationInterface,
+//  match: MatchInterface,
+// };
+
+export function useListUrlState(listKey) {
+  const routeProps = useRouter();
+  const list = useList(listKey);
+  const decodeConfig = { ...routeProps, list };
+  const urlState = decodeSearch(routeProps.location.search, decodeConfig);
+
+  return { decodeConfig, urlState };
+}
+
+/**
+ * Query Hook
+ * ------------------------------
+ * @param {string} listKey - The key for the list to operate on.
+ * @returns {Object}
+ * - data - maybe some data
+ * - error - maybe an error
+ * - loading - whether the query is loading
+ * - refetch - function to refetch data
+ */
+
+export function useListQuery(listKey) {
+  const list = useList(listKey);
+  const { urlState } = useListUrlState(listKey);
+
   // Query prep
-  const decodeConfig = { ...routeInfo, list };
-  const searchState = decodeSearch(location.search, decodeConfig);
-  const { currentPage, fields, filters, pageSize, search, sortBy } = searchState;
+  const { currentPage, fields, filters, pageSize, search, sortBy } = urlState;
   const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
   const first = pageSize;
   const skip = (currentPage - 1) * pageSize;
 
   // Get and store items
   const query = list.getQuery({ fields, filters, search, orderBy, skip, first });
-  const { data, error, loading, refetch } = useQuery(query);
+  const result = useQuery(query);
+
+  return result;
+}
+
+/**
+ * Modifier Hook
+ * ------------------------------
+ * @param {string} listKey - The key for the list to operate on.
+ * @returns {function} setSearch - Used for internal hooks to modify the URL
+ */
+
+export function useListModifier(listKey) {
+  const routeProps = useRouter();
+  const { history, location } = routeProps;
+  const list = useList(listKey);
+  const { decodeConfig, urlState } = useListUrlState(listKey);
+
+  /**
+   * setSearch
+   * ------------------------------
+   * @param {string} changes - configuration object
+   * @param {boolean} addHistoryRecord - whether to add an item to history, or not
+   * @returns {undefined}
+   */
+  return function setSearch(changes, addHistoryRecord = true) {
+    let overrides = {};
+
+    // NOTE: some changes should reset the currentPage number to 1.
+    // eg: typing in the search box or changing filters
+    const resetsCurrentPage = ['search', 'pageSize', 'filters'];
+    if (Object.keys(changes).some(k => resetsCurrentPage.includes(k))) {
+      overrides.currentPage = 1;
+    }
+
+    // encode the new search string
+    const encodedSearch = encodeSearch({ ...urlState, ...changes, ...overrides }, decodeConfig);
+    const newLocation = { ...location, search: encodedSearch };
+
+    list.setPersistedSearch(encodedSearch);
+
+    if (addHistoryRecord) {
+      history.push(newLocation);
+    } else {
+      history.replace(newLocation);
+    }
+  };
+}
+
+/**
+ * Items Hook
+ * ------------------------------
+ * @param {string} listKey - The key for the list to operate on.
+ * @returns {Object}
+ * - items - array, length `pageSize`, of item data (fields matching the current columns)
+ * - itemCount - the number of all items; regardles of filters, page etc.
+ * - itemErrors - array of errors
+ */
+
+export function useListItems(listKey) {
+  const [items, setItems] = useState([]);
+  const [itemErrors, setErrors] = useState([]);
+  const [itemCount, setCount] = useState(0);
+
+  const list = useList(listKey);
+  const { data } = useListQuery(listKey);
 
   useEffect(() => {
     if (data[list.gqlNames.listQueryName]) {
       setItems(data[list.gqlNames.listQueryName]);
+      setErrors(deconstructErrorsToDataShape(data.error)[list.gqlNames.listQueryName]);
     }
     if (data[list.gqlNames.listQueryMetaName]) {
-      setItemCount(data[list.gqlNames.listQueryMetaName].count);
+      setCount(data[list.gqlNames.listQueryMetaName].count);
     }
   }); // FIXME this gets called SO OFTEN. needs deps e.g. `listKey`, but then we don't get data in time...
 
-  // get errors
-  const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.listQueryName] || [];
+  return { items, itemCount, itemErrors };
+}
 
-  // Search
-  // ------------------------------
+/**
+ * Reset Hook
+ * ------------------------------
+ * @param {string} listKey - The key for the list to operate on.
+ * @returns {undefined}
+ */
 
-  const handleSearchChange = debounce(newSearch => {
+export function useReset(listKey) {
+  const { decodeConfig } = useListUrlState(listKey);
+  const setSearch = useListModifier(listKey);
+
+  setSearch(decodeSearch('', decodeConfig));
+}
+
+/**
+ * Search Hook
+ * ------------------------------
+ * @param {string} listKey - The key for the list to operate on.
+ * @returns {Object}
+ * - search - the current search string
+ * - onChange - change the current search
+ * - onClear - clear the current search
+ * - onSubmit - commit the current search to history and update the URL
+ */
+
+export function useListSearch(listKey) {
+  const { urlState } = useListUrlState(listKey);
+  const { search } = urlState;
+  const setSearch = useListModifier(listKey);
+  const { items } = useListItems(listKey);
+  const routeProps = useRouter();
+  const { history, match } = routeProps;
+
+  const onChange = debounce(newSearch => {
     const addHistoryRecord = !search;
     setSearch({ search: newSearch }, addHistoryRecord);
   }, 300);
-
-  const handleSearchClear = () => {
+  const onClear = () => {
     const addHistoryRecord = !!search;
     setSearch({ search: '' }, addHistoryRecord);
   };
-  const handleSearchSubmit = () => {
+  const onSubmit = () => {
     // FIXME: This seems likely to do the wrong thing if data is not yet loaded.
     if (items.length === 1) {
       history.push(`${match.url}/${items[0].id}`);
     }
   };
 
-  // Filters
-  // ------------------------------
+  return {
+    search,
+    onChange,
+    onClear,
+    onSubmit,
+  };
+}
 
-  const handleFilterRemove = value => () => {
+/**
+ * Filter Hook
+ * ------------------------------
+ * @param {string} listKey - The key for the list to operate on.
+ * @returns {Object}
+ * - filters - the active filter array
+ * - onRemove - remove a given filter
+ * - onRemoveAll - clear all filters
+ * - onAdd - add a filter
+ * - onUpdate - update a filter
+ */
+
+// type Filters = Array<{
+//   field: FieldController,
+//   label: string,
+//   path: string,
+//   type: string,
+//   value: any,
+// }>
+
+export function useListFilter(listKey) {
+  const { urlState } = useListUrlState(listKey);
+  const { filters } = urlState;
+  const setSearch = useListModifier(listKey);
+
+  const onRemove = value => () => {
     const newFilters = filters.filter(f => {
       return !(f.field.path === value.field.path && f.type === value.type);
     });
     setSearch({ filters: newFilters });
   };
-  const handleFilterRemoveAll = () => {
+  const onRemoveAll = () => {
     setSearch({ filters: [] });
   };
-  const handleFilterAdd = value => {
+  const onAdd = value => {
     filters.push(value);
     setSearch({ filters });
   };
-  const handleFilterUpdate = updatedFilter => {
+  const onUpdate = updatedFilter => {
     const updateIndex = filters.findIndex(i => {
       return i.field.path === updatedFilter.field.path && i.type === updatedFilter.type;
     });
@@ -116,10 +282,101 @@ export function useListData(listKey) {
     setSearch({ filters });
   };
 
-  // Columns
-  // ------------------------------
+  return { filters, onRemove, onRemoveAll, onAdd, onUpdate };
+}
 
-  const handleColumnChange = selectedFields => {
+/**
+ * Pagination Hook
+ * ------------------------------
+ * @param {string} listKey - The key for the list to operate on.
+ * @returns {Object}
+ * - data - the pagination data
+ * - onChange - change the current page
+ * - onChangeSize - change the page size
+ * - onReset - reset to the first page
+ */
+
+// type PaginationData = {
+//   currentPage: number,
+//   isLoading: boolean,
+//   itemCount: numnber,
+//   pageSize: numnber,
+// }
+
+export function useListPagination(listKey) {
+  const { urlState } = useListUrlState(listKey);
+  const { currentPage, pageSize } = urlState;
+  const setSearch = useListModifier(listKey);
+  const { itemCount } = useListItems(listKey);
+  const { loading } = useListQuery(listKey);
+
+  const onChange = cp => {
+    setSearch({ currentPage: cp });
+  };
+  const onChangeSize = ps => {
+    setSearch({ pageSize: ps });
+  };
+  const onReset = () => {
+    setSearch({ currentPage: 1 });
+  };
+
+  return {
+    data: {
+      currentPage: currentPage,
+      isLoading: loading,
+      itemCount: itemCount,
+      pageSize: pageSize,
+    },
+    onChange,
+    onChangeSize,
+    onReset,
+  };
+}
+
+/**
+ * Sort Hook
+ * ------------------------------
+ * @param {string} listKey - The key for the list to operate on.
+ * @returns {[Object, Function]}
+ * - sortBy - the sort config object
+ * - onChange - the change handler for sorting
+ */
+
+// type SortBy = {
+//   direction: 'ASC' | 'DESC',
+//   field: { label: string, path: string },
+// };
+
+export function useListSort(listKey) {
+  const { urlState } = useListUrlState(listKey);
+  const { sortBy } = urlState;
+  const setSearch = useListModifier(listKey);
+
+  const onChange = sb => {
+    setSearch({ sortBy: sb });
+  };
+
+  return [sortBy, onChange];
+}
+
+/**
+ * Column Hook
+ * ------------------------------
+ * @param {string} listKey - The key for the list to operate on.
+ * @returns {[Object, Function]}
+ * - fields - an array of the current columns
+ * - onChange - the change handler for columns
+ */
+
+// type Fields = Array<FieldController>;
+
+export function useListColumns(listKey) {
+  const list = useList(listKey);
+  const { urlState } = useListUrlState(listKey);
+  const { fields, sortBy } = urlState;
+  const setSearch = useListModifier(listKey);
+
+  const onChange = selectedFields => {
     // Ensure that the displayed fields maintain their original sortDirection
     // when they're added/removed
     const newFields = [pseudoLabelField]
@@ -133,178 +390,5 @@ export function useListData(listKey) {
     setSearch({ fields: newFields, sortBy: newSort });
   };
 
-  // Sorting
-  // ------------------------------
-
-  const handleSortChange = sb => {
-    setSearch({ sortBy: sb });
-  };
-
-  // Pagination
-  // ------------------------------
-
-  const handlePageChange = cp => {
-    setSearch({ currentPage: cp });
-  };
-  const handlePageReset = () => {
-    setSearch({ currentPage: 1 });
-  };
-  const handlePageSizeChange = ps => {
-    setSearch({ pageSize: ps });
-  };
-
-  // Utils
-  // ------------------------------
-
-  const setSearch = (changes, addHistoryRecord = true) => {
-    let overrides = {};
-
-    // NOTE: some changes should reset the currentPage number to 1.
-    // eg: typing in the search box or changing filters
-    const resetsCurrentPage = ['search', 'pageSize', 'filters'];
-    if (Object.keys(changes).some(k => resetsCurrentPage.includes(k))) {
-      overrides.currentPage = 1;
-    }
-
-    // encode the new search string
-    const encodedSearch = encodeSearch(
-      {
-        ...searchState,
-        ...changes,
-        ...overrides,
-      },
-      decodeConfig
-    );
-
-    const newLocation = { ...location, search: encodedSearch };
-
-    list.setPersistedSearch(encodedSearch);
-
-    // Do we want to add an item to history or not
-    if (addHistoryRecord) {
-      history.push(newLocation);
-    } else {
-      history.replace(newLocation);
-    }
-  };
-
-  const handleReset = () => {
-    setSearch(decodeSearch('', decodeConfig));
-  };
-
-  return {
-    query: { data, error, loading, refetch },
-    itemErrors,
-    data: {
-      currentPage,
-      fields,
-      filters,
-      items,
-      itemCount,
-      pageSize,
-      search,
-      skip,
-      sortBy,
-    },
-    handleColumnChange,
-    handleFilterAdd,
-    handleFilterRemove,
-    handleFilterRemoveAll,
-    handleFilterUpdate,
-    handlePageChange,
-    handlePageReset,
-    handlePageSizeChange,
-    handleReset,
-    handleSearchChange,
-    handleSearchClear,
-    handleSearchSubmit,
-    handleSortChange,
-  };
+  return [fields, onChange];
 }
-
-// ==============================
-// List Hook
-// ==============================
-
-export const useList = listKey => {
-  const { getListByKey } = useAdminMeta();
-  return getListByKey(listKey);
-};
-
-// ==============================
-// Search Hook
-// ==============================
-
-export const useListSearch = listKey => {
-  const { handleSearchChange, handleSearchClear, handleSearchSubmit } = useListData(listKey);
-
-  return {
-    handleChange: handleSearchChange,
-    handleClear: handleSearchClear,
-    handleSubmit: handleSearchSubmit,
-  };
-};
-
-// ==============================
-// Filter Hook
-// ==============================
-
-export const useListFilter = listKey => {
-  const {
-    data,
-    handleFilterRemove,
-    handleFilterRemoveAll,
-    handleFilterAdd,
-    handleFilterUpdate,
-  } = useListData(listKey);
-
-  return {
-    filters: data.filters,
-    onRemove: handleFilterRemove,
-    onRemoveAll: handleFilterRemoveAll,
-    onAdd: handleFilterAdd,
-    onUpdate: handleFilterUpdate,
-  };
-};
-
-// ==============================
-// Pagination Hook
-// ==============================
-
-export const useListPagination = listKey => {
-  const { data, query, handlePageChange, handlePageReset, handlePageSizeChange } = useListData(
-    listKey
-  );
-
-  return {
-    data: {
-      currentPage: data.currentPage,
-      isLoading: query.loading,
-      itemCount: data.itemCount,
-      pageSize: data.pageSize,
-    },
-    onChange: handlePageChange,
-    onChangeSize: handlePageSizeChange,
-    onReset: handlePageReset,
-  };
-};
-
-// ==============================
-// Sort Hook
-// ==============================
-
-export const useListSort = listKey => {
-  const { data, handleSortChange } = useListData(listKey);
-
-  return [data.sortBy, handleSortChange];
-};
-
-// ==============================
-// Column Hook
-// ==============================
-
-export const useListColumns = listKey => {
-  const { data, handleColumnChange } = useListData(listKey);
-
-  return [data.fields, handleColumnChange];
-};
