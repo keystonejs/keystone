@@ -5,6 +5,7 @@ import { Pagination } from '@arch-ui/pagination';
 import { useList, useListPagination } from './dataHooks';
 
 type Props = {
+  isLoading: boolean,
   listKey: string,
 };
 
