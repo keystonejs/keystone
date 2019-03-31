@@ -2,10 +2,11 @@
 import { jsx } from '@emotion/core';
 import { Fragment, Suspense, useRef, useState } from 'react';
 
-import { PlusIcon } from '@arch-ui/icons';
-import { Container, FlexGroup } from '@arch-ui/layout';
-import { Title } from '@arch-ui/typography';
 import { Button, IconButton } from '@arch-ui/button';
+import { InfoIcon, PlusIcon } from '@arch-ui/icons';
+import { Container, FlexGroup } from '@arch-ui/layout';
+import { colors } from '@arch-ui/theme';
+import { Title } from '@arch-ui/typography';
 
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
@@ -84,49 +85,6 @@ export default function ListDetails(props: Props) {
     history.push(`${adminPath}/${list.path}/${id}`);
   };
 
-  // ==============================
-  // Renderers
-  // ==============================
-
-  const getNoResultsMessage = () => {
-    if (filters && filters.length) {
-      return (
-        <span>
-          No {list.plural.toLowerCase()} found matching the{' '}
-          {filters.length > 1 ? 'filters' : 'filter'}
-        </span>
-      );
-    }
-    if (search && search.length) {
-      return (
-        <span>
-          No {list.plural.toLowerCase()} found matching &ldquo;
-          {search}
-          &rdquo;
-        </span>
-      );
-    }
-
-    if (currentPage !== 1) {
-      return (
-        <div>
-          <p>
-            Not enough {list.plural.toLowerCase()} found to show page {currentPage}.
-          </p>
-          <Button variant="ghost" onClick={handleReset}>
-            Show first page
-          </Button>
-        </div>
-      );
-    }
-
-    if (itemCount === 0) {
-      return <span>No {list.plural.toLowerCase()} to display yet...</span>;
-    }
-
-    return null;
-  };
-
   // TODO: put this in some effect to limit calls
   // we want to preload the Field components
   // so that we don't have a waterfall after the data loads
@@ -197,21 +155,31 @@ export default function ListDetails(props: Props) {
         <Container isFullWidth={isFullWidth}>
           {items ? (
             <Suspense fallback={<PageLoading />}>
-              <ListTable
-                adminPath={adminPath}
-                fields={fields}
-                isFullWidth={isFullWidth}
-                items={items}
-                itemsErrors={itemErrors}
-                list={list}
-                onChange={query.refetch}
-                selectedItems={selectedItems}
-                onSelectChange={onSelectChange}
-                handleSortChange={handleSortChange}
-                sortBy={sortBy}
-                selectedItems={selectedItems}
-                noResultsMessage={getNoResultsMessage()}
-              />
+              {items.length ? (
+                <ListTable
+                  adminPath={adminPath}
+                  fields={fields}
+                  isFullWidth={isFullWidth}
+                  items={items}
+                  itemsErrors={itemErrors}
+                  list={list}
+                  onChange={query.refetch}
+                  selectedItems={selectedItems}
+                  onSelectChange={onSelectChange}
+                  handleSortChange={handleSortChange}
+                  sortBy={sortBy}
+                  selectedItems={selectedItems}
+                />
+              ) : (
+                <NoResults
+                  currentPage={currentPage}
+                  filters={filters}
+                  handleReset={handleReset}
+                  itemCount={itemCount}
+                  list={list}
+                  search={search}
+                />
+              )}
             </Suspense>
           ) : (
             <PageLoading />
@@ -221,3 +189,65 @@ export default function ListDetails(props: Props) {
     </Fragment>
   );
 }
+
+// ==============================
+// No Results
+// ==============================
+
+const NoResultsWrapper = ({ children, ...props }) => (
+  <div
+    css={{
+      alignItems: 'center',
+      color: colors.N30,
+      display: 'flex',
+      flexDirection: 'column',
+      fontSize: 32,
+      justifyContent: 'center',
+      padding: '1em',
+      textAlign: 'center',
+    }}
+    {...props}
+  >
+    <InfoIcon css={{ height: 48, width: 48, marginBottom: '0.5em' }} />
+    {children}
+  </div>
+);
+
+const NoResults = ({ currentPage, filters, handleReset, itemCount, list, search }) => {
+  if (filters && filters.length) {
+    return (
+      <NoResultsWrapper>
+        No {list.plural.toLowerCase()} found matching the{' '}
+        {filters.length > 1 ? 'filters' : 'filter'}
+      </NoResultsWrapper>
+    );
+  }
+  if (search && search.length) {
+    return (
+      <NoResultsWrapper>
+        No {list.plural.toLowerCase()} found matching &ldquo;
+        {search}
+        &rdquo;
+      </NoResultsWrapper>
+    );
+  }
+
+  if (currentPage !== 1) {
+    return (
+      <NoResultsWrapper>
+        <p>
+          Not enough {list.plural.toLowerCase()} found to show page {currentPage}.
+        </p>
+        <Button variant="ghost" onClick={handleReset}>
+          Show first page
+        </Button>
+      </NoResultsWrapper>
+    );
+  }
+
+  if (itemCount === 0) {
+    return <NoResultsWrapper>No {list.plural.toLowerCase()} to display yet...</NoResultsWrapper>;
+  }
+
+  return null;
+};

@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
-import { DiffIcon, InfoIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
+import { DiffIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { CheckboxPrimitive } from '@arch-ui/controls';
 import Dropdown from '@arch-ui/dropdown';
@@ -71,25 +71,6 @@ const BodyCellTruncated = styled(BodyCell)`
   white-space: nowrap;
   word-wrap: normal;
 `;
-
-const NoResults = ({ children, ...props }) => (
-  <div
-    css={{
-      alignItems: 'center',
-      color: colors.N30,
-      display: 'flex',
-      flexDirection: 'column',
-      fontSize: 32,
-      justifyContent: 'center',
-      padding: '1em',
-      textAlign: 'center',
-    }}
-    {...props}
-  >
-    <InfoIcon css={{ height: 48, width: 48, marginBottom: '0.5em' }} />
-    {children}
-  </div>
-);
 
 const SortDirectionArrow = styled.span(({ size = '0.25em', rotate = '0deg' }) => ({
   borderLeft: `${size} solid transparent`,
@@ -295,7 +276,6 @@ export default function ListTable(props) {
     items,
     itemsErrors = [],
     list,
-    noResultsMessage,
     onChange,
     onSelectChange,
     selectedItems,
@@ -311,7 +291,7 @@ export default function ListTable(props) {
 
   const cypressId = 'ks-list-table';
 
-  return items.length ? (
+  return (
     <Table id={cypressId} style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
       <colgroup>
         <col width="32" />
@@ -356,7 +336,5 @@ export default function ListTable(props) {
         ))}
       </tbody>
     </Table>
-  ) : (
-    <NoResults>{noResultsMessage}</NoResults>
   );
 }
