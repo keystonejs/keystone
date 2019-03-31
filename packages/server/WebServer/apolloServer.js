@@ -5,7 +5,7 @@ const serializeError = require('serialize-error');
 const StackUtils = require('stack-utils');
 const cuid = require('cuid');
 const { omit } = require('@keystone-alpha/utils');
-const logger = require('@keystone-alpha/logger');
+const { logger } = require('@keystone-alpha/logger');
 
 const { NestedError } = require('./graphqlErrors');
 

@@ -2,9 +2,9 @@ const gql = require('graphql-tag');
 const { print } = require('graphql/language/printer');
 
 // We don't want to actually log, so we mock it before we require the class
-jest.doMock('@keystone-alpha/logger', () => {
-  return jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} }));
-});
+jest.doMock('@keystone-alpha/logger', () => ({
+  logger: jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} })),
+}));
 
 const List = require('../lib/List');
 const { AccessDeniedError } = require('../lib/List/graphqlErrors');
