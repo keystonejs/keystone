@@ -1,0 +1,1 @@
+- Export { mongoJoinBuilder } as the API, rather than a default export
