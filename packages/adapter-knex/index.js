@@ -1,4 +1,4 @@
-const { KnexAdapter, KnexListAdapter, KnexFieldAdapter } = require('./src/knex-adapter');
+const { KnexAdapter, KnexListAdapter, KnexFieldAdapter } = require('./src/adapter-knex');
 
 module.exports = {
   KnexAdapter,
