@@ -57,19 +57,20 @@ const server = new WebServer(keystone, {
     distDir: 'build',
     dev: process.env.NODE_ENV !== 'production',
   }),
-});
-
-server
-  .start()
-  .then(async () => {
+  onStart: async () => {
+    // Initialise some data.
+    // NOTE: This is only for demo purposes and should not be used in production
     const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
       await keystone.createItems(initialData);
     }
-  })
+  },
+});
+
+server
+  .start()
+  .then(async () => {})
   .catch(error => {
-    // Initialise some data.
-    // NOTE: This is only for demo purposes and should not be used in production
     console.error(error);
     process.exit(1);
   });
