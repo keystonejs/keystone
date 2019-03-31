@@ -1,10 +1,5 @@
-const falsey = require('falsey');
-const pino = require('pino');
-const memoize = require('fast-memoize');
+const logger = require('./src/logger');
 
-module.exports = memoize(function(name) {
-  return pino({
-    name,
-    enabled: falsey(process.env.DISABLE_LOGGING),
-  });
-});
+module.exports = {
+  logger,
+};

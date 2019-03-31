@@ -17,7 +17,7 @@ const {
 
 const { parseListAccess } = require('@keystone-alpha/access-control');
 
-const logger = require('@keystone-alpha/logger');
+const { logger } = require('@keystone-alpha/logger');
 const gql = require('graphql-tag');
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
