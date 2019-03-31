@@ -1,4 +1,4 @@
-const tokenizerFactory = require('./simple');
+const tokenizerFactory = require('../lib/tokenizers/simple');
 
 describe('Simple tokenizer', () => {
   test('Uses correct conditions', () => {
