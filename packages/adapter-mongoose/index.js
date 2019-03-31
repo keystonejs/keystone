@@ -1,6 +1,8 @@
-const {   MongooseAdapter,
+const {
+  MongooseAdapter,
   MongooseListAdapter,
-  MongooseFieldAdapter, } = require('./src/adapter-mongoose');
+  MongooseFieldAdapter,
+} = require('./src/adapter-mongoose');
 
 module.exports = {
   MongooseAdapter,

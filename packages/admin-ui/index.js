@@ -1,1 +1,4 @@
-exports.AdminUI = require('./server/AdminUI');
+const AdminUI = require('./src/server/AdminUI');
+module.exports = {
+  AdminUI,
+};
