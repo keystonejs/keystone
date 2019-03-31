@@ -1,6 +1,6 @@
 import { matchFilter } from '@keystone-alpha/test-utils';
 import Text from '../Text';
-import Float from './';
+import Float from '.';
 
 export const name = 'Float';
 
