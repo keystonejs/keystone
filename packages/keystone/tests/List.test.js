@@ -3,7 +3,7 @@ const { print } = require('graphql/language/printer');
 
 // We don't want to actually log, so we mock it before we require the class
 jest.doMock('@keystone-alpha/logger', () => ({
-  logger: jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} }))
+  logger: jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} })),
 }));
 
 const List = require('../src/List');
