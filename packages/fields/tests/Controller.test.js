@@ -1,4 +1,4 @@
-import FieldController from '../Controller';
+import FieldController from '../src/Controller';
 
 const config = {
   path: 'path',

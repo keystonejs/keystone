@@ -14,7 +14,7 @@ const path = require('path');
 
 let fieldsPackagePath = path.dirname(require.resolve('@keystone-alpha/fields/package.json'));
 function resolveViewPath(viewPath) {
-  return path.join(fieldsPackagePath, 'types', viewPath);
+  return path.join(fieldsPackagePath, 'src', 'types', viewPath);
 }
 
 class MockFieldAdapter {}

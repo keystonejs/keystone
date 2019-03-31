@@ -2,7 +2,7 @@
 // has tested it and it works.
 describe('email senders', () => {
   test('jsx', async () => {
-    const emailSender = require('../');
+    const { emailSender } = require('../');
 
     const jsxEmailSender = emailSender.jsx({ root: `${__dirname}/jsx-views` });
     const { html, text } = await jsxEmailSender('view.jsx').render({ name: 'Foo' });
@@ -12,7 +12,7 @@ describe('email senders', () => {
   });
 
   test('jade', async () => {
-    const emailSender = require('../');
+    const { emailSender } = require('../');
 
     const jadeEmailSender = emailSender.jade({ root: `${__dirname}/jade-views` });
     const { html, text } = await jadeEmailSender('view.jade').render({ name: 'Foo' });
@@ -22,7 +22,7 @@ describe('email senders', () => {
   });
 
   test('mjml', async () => {
-    const emailSender = require('../');
+    const { emailSender } = require('../');
 
     const mjmlEmailSender = emailSender.mjml({ root: `${__dirname}/mjml-views` });
     const { html, text } = await mjmlEmailSender('view.jsx').render({ name: 'Foo' });

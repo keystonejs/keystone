@@ -1,18 +1,35 @@
+const Implementation = require('./src/Implementation');
+const Integer = require('./src/types/Integer');
+const Password = require('./src/types/Password');
+const Text = require('./src/types/Text');
+const Float = require('./src/types/Float');
+const Checkbox = require('./src/types/Checkbox');
+const Select = require('./src/types/Select');
+const Relationship = require('./src/types/Relationship');
+const File = require('./src/types/File');
+const CloudinaryImage = require('./src/types/CloudinaryImage');
+const CalendarDay = require('./src/types/CalendarDay');
+const DateTime = require('./src/types/DateTime');
+const Decimal = require('./src/types/Decimal');
+const Color = require('./src/types/Color');
+const Url = require('./src/types/Url');
+const Content = require('./src/types/Content');
+
 module.exports = {
-  Implementation: require('./Implementation'),
-  Integer: require('./types/Integer'),
-  Password: require('./types/Password'),
-  Text: require('./types/Text'),
-  Float: require('./types/Float'),
-  Checkbox: require('./types/Checkbox'),
-  Select: require('./types/Select'),
-  Relationship: require('./types/Relationship'),
-  File: require('./types/File'),
-  CloudinaryImage: require('./types/CloudinaryImage'),
-  CalendarDay: require('./types/CalendarDay'),
-  DateTime: require('./types/DateTime'),
-  Decimal: require('./types/Decimal'),
-  Color: require('./types/Color'),
-  Url: require('./types/Url'),
-  Content: require('./types/Content'),
+  Implementation,
+  Integer,
+  Password,
+  Text,
+  Float,
+  Checkbox,
+  Select,
+  Relationship,
+  File,
+  CloudinaryImage,
+  CalendarDay,
+  DateTime,
+  Decimal,
+  Color,
+  Url,
+  Content,
 };
