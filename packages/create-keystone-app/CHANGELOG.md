@@ -1,5 +1,11 @@
 # create-keystone-app
 
+## 0.4.1
+
+- [patch][05ee3533](https://github.com/keystonejs/keystone-5/commit/05ee3533):
+
+  - Updating the template to match the changes in the todo demo app
+
 ## 0.4.0
 
 - [minor][5c038b72](https://github.com/keystonejs/keystone-5/commit/5c038b72):

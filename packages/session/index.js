@@ -68,7 +68,7 @@ const formatResponse = (res, htmlResponse, json) =>
 const redirectSuccessfulSignin = (target, req, res) =>
   formatResponse(res, () => res.redirect(target), { success: true });
 
-const signin = (signinPath, successPath, authStrategy) => async (req, res, next) => {
+const signin = (signinPath, successPath, authStrategy, audiences) => async (req, res, next) => {
   try {
     // TODO: How could we support, for example, the twitter auth flow?
     const result = await authStrategy.validate({
@@ -82,7 +82,7 @@ const signin = (signinPath, successPath, authStrategy) => async (req, res, next)
       return formatResponse(res, htmlResponse, { success: false, message: result.message });
     }
 
-    await startAuthedSession(req, result);
+    await startAuthedSession(req, result, audiences);
   } catch (e) {
     return next(e);
   }
@@ -115,7 +115,8 @@ const session = (req, res) => {
 
 const createSessionMiddleware = (
   { signinPath, signoutPath, sessionPath, successPath },
-  authStrategy
+  authStrategy,
+  audiences
 ) => {
   const app = express();
 
@@ -125,7 +126,7 @@ const createSessionMiddleware = (
     signinPath,
     bodyParser.json(),
     bodyParser.urlencoded({ extended: true }),
-    signin(signinPath, successPath, authStrategy)
+    signin(signinPath, successPath, authStrategy, audiences)
   );
 
   // Listen to both POST and GET events, and always sign the user out.
@@ -160,17 +161,39 @@ function populateAuthedItemMiddleware(keystone) {
     }
     req.user = item;
     req.authedListKey = list.key;
+    req.audiences = req.session.audiences;
 
     next();
   };
 }
 
-function startAuthedSession(req, { item, list }) {
+function restrictAudienceMiddleware({ isPublic, audiences }) {
+  return (req, res, next) => {
+    if (isPublic) {
+      // If the session restriction is marked public, we let everything through.
+      next();
+    } else if (
+      req.audiences &&
+      audiences &&
+      Array.isArray(audiences) &&
+      req.audiences.some(audience => audiences.includes(audience))
+    ) {
+      // Otherwise, if one of the session audiences matches one of the restriction audiences, we let them through.
+      next();
+    } else {
+      // If the don't make it through, we simply respond with a 403 Permission Denied
+      res.status(403).send();
+    }
+  };
+}
+
+function startAuthedSession(req, { item, list }, audiences) {
   return new Promise((resolve, reject) =>
     req.session.regenerate(err => {
       if (err) return reject(err);
       req.session.keystoneListKey = list.key;
       req.session.keystoneItemId = item.id;
+      req.session.audiences = audiences;
       resolve();
     })
   );
@@ -188,6 +211,7 @@ function endAuthedSession(req) {
 module.exports = {
   commonSessionMiddleware,
   createSessionMiddleware,
+  restrictAudienceMiddleware,
   startAuthedSession,
   endAuthedSession,
 };

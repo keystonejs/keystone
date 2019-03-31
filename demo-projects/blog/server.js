@@ -1,28 +1,9 @@
 const keystone = require('@keystone-alpha/core');
+const WysiwygField = require('@keystone-alpha/fields-wysiwyg-tinymce');
 const next = require('next');
 
-const { staticRoute, staticPath } = require('./index');
-
-const PORT = process.env.PORT || 3000;
-
-const initialData = {
-  User: [
-    {
-      name: 'Administrator',
-      email: 'admin@keystone.project',
-      isAdmin: true,
-      dob: '1990-01-01',
-      password: 'password',
-    },
-    {
-      name: 'Demo User',
-      email: 'a@demo.user',
-      isAdmin: false,
-      dob: '1995-06-09',
-      password: 'password',
-    },
-  ],
-};
+const { port, staticRoute, staticPath } = require('./config');
+const initialData = require('./initialData');
 
 const nextApp = next({
   dir: 'app',
@@ -30,10 +11,10 @@ const nextApp = next({
   dev: process.env.NODE_ENV !== 'production',
 });
 
-Promise.all([keystone.prepare({ port: PORT }), nextApp.prepare()])
+Promise.all([keystone.prepare({ port }), nextApp.prepare()])
   .then(async ([{ server, keystone: keystoneApp }]) => {
+    WysiwygField.bindStaticMiddleware(server);
     server.app.use(staticRoute, server.express.static(staticPath));
-
     server.app.use(nextApp.getRequestHandler());
 
     await server.start();

@@ -1,5 +1,11 @@
 # @arch-ui/layout
 
+## 0.1.0
+
+- [minor][3f075eb5](https://github.com/keystonejs/keystone-5/commit/3f075eb5):
+
+  - Forward refs passed to FlexGroup to the container element
+
 ## 0.0.3
 
 - [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
