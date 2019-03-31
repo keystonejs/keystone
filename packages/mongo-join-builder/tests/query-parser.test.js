@@ -1,4 +1,4 @@
-const { queryParser } = require('../query-parser');
+const { queryParser } = require('../src/query-parser');
 
 describe('query parser', () => {
   test('requires a tokenizer option', () => {

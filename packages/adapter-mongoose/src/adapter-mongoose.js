@@ -14,7 +14,7 @@ const {
   BaseListAdapter,
   BaseFieldAdapter,
 } = require('@keystone-alpha/keystone');
-const joinBuilder = require('@keystone-alpha/mongo-join-builder');
+const { mongoJoinBuilder } = require('@keystone-alpha/mongo-join-builder');
 const logger = require('@keystone-alpha/logger')('mongoose');
 
 const simpleTokenizer = require('./tokenizers/simple');
@@ -156,7 +156,7 @@ class MongooseListAdapter extends BaseListAdapter {
     // Need to call postConnect() once all fields have registered and the database is connected to.
     this.model = null;
 
-    this.queryBuilder = joinBuilder({
+    this.queryBuilder = mongoJoinBuilder({
       tokenizer: {
         // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
         simple: simpleTokenizer({
