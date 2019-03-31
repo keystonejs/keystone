@@ -1,1 +1,3 @@
-exports.WebServer = require('./WebServer');
+const WebServer = require('./src');
+
+module.exports = { WebServer };
