@@ -1,7 +1,6 @@
 const { AdminUI } = require('@keystone-alpha/admin-ui');
-const { Keystone } = require('@keystone-alpha/keystone');
+const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { Text, Password, Relationship } = require('@keystone-alpha/fields');
-const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
 
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 

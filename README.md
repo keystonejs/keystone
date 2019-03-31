@@ -265,11 +265,10 @@ list used for authentication in `index.js`:
 
 <!-- prettier-ignore -->
 ```javascript
-const { Keystone }        = require('@keystone-alpha/keystone');
+const { Keystone, PasswordAuth } = require('@keystone-alpha/keystone');
 const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text, Password }  = require('@keystone-alpha/fields');
-const PasswordAuth        = require('@keystone-alpha/keystone/auth/Password');
 
 const keystone = new Keystone({
   name: 'Keystone With Auth',

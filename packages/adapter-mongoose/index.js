@@ -14,7 +14,7 @@ const {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
-} = require('@keystone-alpha/keystone/adapters');
+} = require('@keystone-alpha/keystone');
 const joinBuilder = require('@keystone-alpha/mongo-join-builder');
 const logger = require('@keystone-alpha/logger')('mongoose');
 

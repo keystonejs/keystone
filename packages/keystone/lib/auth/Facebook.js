@@ -1,36 +1,36 @@
 const passport = require('passport');
-const PassportTwitter = require('passport-twitter');
-const { Text, Relationship } = require('@keystone-alpha/fields');
+const PassportFacebook = require('passport-facebook');
 
-const FIELD_TWITTER_ID = 'twitterId';
-const FIELD_TWITTER_USERNAME = 'twitterUsername';
+const FIELD_FACEBOOK_ID = 'facebookId';
+const FIELD_FACEBOOK_USERNAME = 'facebookUsername';
 const FIELD_TOKEN_SECRET = 'tokenSecret';
 const FIELD_ITEM = 'item';
 
-function validateWithTwitter(strategy, token, tokenSecret) {
+function validateWithFacebook(strategy, accessToken) {
   return new Promise((resolve, reject) => {
-    strategy.userProfile(token, tokenSecret, {}, async (error, data) => {
+    strategy.userProfile(accessToken, async (error, data) => {
       if (error) {
         return reject(error);
       }
-
       resolve(data._json);
     });
   });
 }
 
-class TwitterAuthStrategy {
+class FacebookAuthStrategy {
   constructor(keystone, listKey, config) {
     this.keystone = keystone;
     this.listKey = listKey;
     this.config = {
-      idField: 'twitterId',
-      usernameField: 'twitterUsername',
-      sessionListKey: 'TwitterSession',
+      idField: 'facebookId',
+      usernameField: 'facebookUsername',
+      sessionListKey: 'FacebookSession',
       ...config,
     };
 
     if (!this.getSessionList()) {
+      const { Text, Relationship } = require('@keystone-alpha/fields');
+
       // TODO: Set read permissions to be 'internal' (within keystone) only so
       // it doesn't expose a graphQL endpoint, or can be read or modified by
       // another user
@@ -39,8 +39,8 @@ class TwitterAuthStrategy {
       // reasons
       this.keystone.createList(this.config.sessionListKey, {
         fields: {
-          [FIELD_TWITTER_ID]: { type: Text },
-          [FIELD_TWITTER_USERNAME]: { type: Text },
+          [FIELD_FACEBOOK_ID]: { type: Text },
+          [FIELD_FACEBOOK_USERNAME]: { type: Text },
           [FIELD_TOKEN_SECRET]: { type: Text },
           [FIELD_ITEM]: {
             type: Relationship,
@@ -54,36 +54,17 @@ class TwitterAuthStrategy {
       });
     }
 
-    this.passportStrategy = new PassportTwitter(
+    this.passportStrategy = new PassportFacebook(
       {
-        consumerKey: this.config.consumerKey,
-        consumerSecret: this.config.consumerSecret,
+        clientID: this.config.consumerKey,
+        clientSecret: this.config.consumerSecret,
         callbackURL: this.config.callbackURL,
         passReqToCallback: true,
       },
-      /**
-       * from: https://github.com/jaredhanson/passport-oauth1/blob/master/lib/strategy.js#L24-L37
-       * ---
-       * Applications must supply a `verify` callback, for which the function
-       * signature is:
-       *
-       *     function(token, tokenSecret, oauthParams, profile, done) { ... }
-       *
-       * The verify callback is responsible for finding or creating the user, and
-       * invoking `done` with the following arguments:
-       *
-       *     done(err, user, info);
-       *
-       * `user` should be set to `false` to indicate an authentication failure.
-       * Additional `info` can optionally be passed as a third argument, typically
-       * used to display informational messages.  If an exception occured, `err`
-       * should be set.
-       */
-      async (req, token, tokenSecret, oauthParams, profile, done) => {
+      async (req, accessToken, refreshToken, profile, done) => {
         try {
-          let result = await this.keystone.auth.User.twitter.validate({
-            token,
-            tokenSecret,
+          let result = await this.keystone.auth.User.facebook.validate({
+            accessToken,
           });
           if (!result.success) {
             // false indicates an authentication failure
@@ -95,7 +76,6 @@ class TwitterAuthStrategy {
         }
       }
     );
-
     passport.use(this.passportStrategy);
 
     this.config.server.app.use(passport.initialize());
@@ -106,17 +86,17 @@ class TwitterAuthStrategy {
   getSessionList() {
     return this.keystone.lists[this.config.sessionListKey];
   }
-  async validate({ token, tokenSecret }) {
-    const jsonData = await validateWithTwitter(this.passportStrategy, token, tokenSecret);
+  async validate({ accessToken }) {
+    const jsonData = await validateWithFacebook(this.passportStrategy, accessToken);
 
     // Lookup a past, verified session, that links to a user
     let pastSessionItem;
     let fieldItemPopulated;
     try {
       // NOTE: We don't need to filter on verifiedAt as these rows can only
-      // possibly exist after we've validated with Twitter (see above)
+      // possibly exist after we've validated with Facebook (see above)
       pastSessionItem = await this.getSessionList().adapter.findOne({
-        [FIELD_TWITTER_ID]: jsonData.id_str,
+        [FIELD_FACEBOOK_ID]: jsonData.id,
       });
       // find user item related to past session, join not possible atm
       fieldItemPopulated =
@@ -125,13 +105,13 @@ class TwitterAuthStrategy {
     } catch (sessionFindError) {
       // TODO: Better error message. Why would this fail? DB connection lost? A
       // "not found" shouldn't throw (it'll just return null).
-      throw new Error(`Unable to lookup existing Twitter sessions: ${sessionFindError}`);
+      throw new Error(`Unable to lookup existing Facebook sessions: ${sessionFindError}`);
     }
 
     const newSessionData = {
-      [FIELD_TOKEN_SECRET]: tokenSecret,
-      [FIELD_TWITTER_ID]: jsonData.id_str,
-      [FIELD_TWITTER_USERNAME]: jsonData.screen_name,
+      [FIELD_TOKEN_SECRET]: accessToken,
+      [FIELD_FACEBOOK_ID]: jsonData.id,
+      [FIELD_FACEBOOK_USERNAME]: null,
     };
 
     // Only add a reference to the parent list when we know the link exists
@@ -144,12 +124,12 @@ class TwitterAuthStrategy {
     const result = {
       success: true,
       list: this.getList(),
-      twitterSession: sessionItem.id,
+      facebookSession: sessionItem.id,
     };
 
     if (!pastSessionItem) {
-      // If no previous twitterSession found...
-      // Create a new Twitter session that doesn't like to an item yet
+      // If no previous facebookSession found...
+      // Create a new Facebook session that doesn't like to an item yet
       return {
         ...result,
         newUser: true,
@@ -163,40 +143,40 @@ class TwitterAuthStrategy {
     };
   }
 
-  pauseValidation(req, { twitterSession }) {
-    if (!twitterSession) {
-      throw new Error('Expected a twitterSession (ID) when pausing authentication validation');
+  pauseValidation(req, { facebookSession }) {
+    if (!facebookSession) {
+      throw new Error('Expected a facebookSession (ID) when pausing authentication validation');
     }
     // Store id in the req.session so it persists across requests (while they
     // potentially fill out a mutli-step form)
-    req.session.keystoneTwitterSessionId = twitterSession;
+    req.session.keystoneFacebookSessionId = facebookSession;
   }
 
   async connectItem(req, { item }) {
     if (!item) {
-      throw new Error('Must provide an `item` to connect to a twitter session');
+      throw new Error('Must provide an `item` to connect to a facebook session');
     }
 
     if (!req) {
-      throw new Error('Must provide `req` when connecting a Twitter Session to an item');
+      throw new Error('Must provide `req` when connecting a Facebook Session to an item');
     }
 
-    const twitterSessionId = req.session.keystoneTwitterSessionId;
+    const facebookSessionId = req.session.keystoneFacebookSessionId;
 
-    if (!twitterSessionId) {
+    if (!facebookSessionId) {
       throw new Error(
-        "Unable to extract Twitter Id from session. Maybe `pauseValidation()` wasn't called?"
+        "Unable to extract Facebook Id from session. Maybe `pauseValidation()` wasn't called?"
       );
     }
 
     try {
-      const twitterItem = await this.getSessionList().adapter.update(twitterSessionId, {
+      const facebookItem = await this.getSessionList().adapter.update(facebookSessionId, {
         item: item.id,
       });
 
       await this.getList().adapter.update(item.id, {
-        [this.config.idField]: twitterItem[FIELD_TWITTER_ID],
-        [this.config.usernameField]: twitterItem[FIELD_TWITTER_USERNAME],
+        [this.config.idField]: facebookItem[FIELD_FACEBOOK_ID],
+        [this.config.usernameField]: facebookItem[FIELD_FACEBOOK_USERNAME],
       });
     } catch (error) {
       return { success: false, error };
@@ -205,11 +185,11 @@ class TwitterAuthStrategy {
   }
 
   /**
-   * Express Middleware to trigger the Twitter login flow (OAuth 1.0a)
+   * Express Middleware to trigger the Facebook login flow (OAuth 1.0a)
    *
    * @param sessionExists {Function(itemId, req, res, next)}
-   * Called when an existing session is detected (twitter or otherwise).
-   * If not provided, will call `next()` directly, skipping Twitter login flow.
+   * Called when an existing session is detected (facebook or otherwise).
+   * If not provided, will call `next()` directly, skipping Facebook login flow.
    */
   loginMiddleware({ sessionExists }) {
     return (req, res, next) => {
@@ -222,44 +202,46 @@ class TwitterAuthStrategy {
       }
 
       // If the user isn't already logged in
-      // kick off the twitter auth process
-      passport.authenticate('twitter', { session: false })(req, res, next);
+      // kick off the facebook auth process
+      passport.authenticate('facebook', { session: false })(req, res, next);
     };
   }
 
   /**
-   * Express Middleware to handle Twitter's response to the OAuth flow.
+   * Express Middleware to handle Facebook's response to the OAuth flow.
    *
    * @param failedVerification {Function(error<String>, req, res, next)}
-   * Called when we can't verifiy the user details with Twitter. Shouldn't happen
+   * Called when we can't verifiy the user details with Facebook. Shouldn't happen
    * in normal operation, however can be an attack vector upon the authentication
    * process. Default: calls `next()`, skipping the rest of the auth flow.
    */
   authenticateMiddleware({ failedVerification, verified }) {
     if (!failedVerification) {
-      throw new Error('Must supply a `failedVerification` function to `authenticateTwitterUser()`');
+      throw new Error(
+        'Must supply a `failedVerification` function to `authenticateFacebookUser()`'
+      );
     }
     if (!verified) {
-      throw new Error('Must supply a `verified` function to `authenticateTwitterUser()`');
+      throw new Error('Must supply a `verified` function to `authenticateFacebookUser()`');
     }
 
     return (req, res, next) => {
       // This middleware will call the `verify` callback we passed up the top to
-      // the `new PassportTwitter` constructor
-      passport.authenticate('twitter', async (verifyError, authedItem, info) => {
+      // the `new PassportFacebook` constructor
+      passport.authenticate('facebook', async (verifyError, authedItem, info) => {
         // If we get a error, bail and display the message we get
         if (verifyError) {
           return failedVerification(verifyError.message || verifyError.toString(), req, res, next);
         }
-        // If we don't authorise Twitter we won't have any info about the
+        // If we don't authorise Facebook we won't have any info about the
         // user so we need to bail
         if (!info) {
           return failedVerification(null, req, res, next);
         }
-        // Otherwise, store the Twitter data in session so we can refer
+        // Otherwise, store the Facebook data in session so we can refer
         // back to it
         try {
-          await this.keystone.auth.User.twitter.pauseValidation(req, info);
+          await this.keystone.auth.User.facebook.pauseValidation(req, info);
 
           await verified(authedItem, info, req, res, next);
         } catch (validationVerificationError) {
@@ -270,6 +252,6 @@ class TwitterAuthStrategy {
   }
 }
 
-TwitterAuthStrategy.authType = 'twitter';
+FacebookAuthStrategy.authType = 'facebook';
 
-module.exports = TwitterAuthStrategy;
+module.exports = FacebookAuthStrategy;
