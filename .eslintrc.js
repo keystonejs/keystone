@@ -33,7 +33,6 @@ module.exports = {
           '**/examples/**/*.js',
           '**/build/**/*.js',
           `packages/fields/types/**/filterTests.js`,
-          `packages/fields/types/**/FilterTests.js`,
         ],
       },
     ],
