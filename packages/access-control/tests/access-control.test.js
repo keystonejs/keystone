@@ -1,9 +1,9 @@
-import {
+const {
   parseListAccess,
   parseFieldAccess,
   validateListAccessControl,
   validateFieldAccessControl,
-} from './index.js';
+} = require('../index.js');
 describe('Access control package tests', () => {
   test('parseListAccess', () => {
     const statics = [true, false]; // type StaticAccess = boolean;
