@@ -309,8 +309,10 @@ export default function ListTable(props) {
     onSelectChange(value);
   };
 
+  const cypressId = 'ks-list-table';
+
   return items.length ? (
-    <Table id="ks-list-table" style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
+    <Table id={cypressId} style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
       <colgroup>
         <col width="32" />
       </colgroup>

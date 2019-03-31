@@ -80,6 +80,9 @@ export default function ListDetails(props: Props) {
     if (query.refetch) query.refetch();
     onSelectChange([]);
   };
+  const onUpdateSelectedItems = () => {
+    // coming in https://github.com/keystonejs/keystone-5/pull/961
+  };
   const onCreate = ({ data }) => {
     let id = data[list.gqlNames.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
@@ -176,6 +179,7 @@ export default function ListDetails(props: Props) {
               <Management
                 list={list}
                 onDeleteMany={onDeleteSelectedItems}
+                onUpdateMany={onUpdateSelectedItems}
                 pageSize={pageSize}
                 selectedItems={selectedItems}
                 onSelectChange={onSelectChange}
