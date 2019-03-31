@@ -2,13 +2,10 @@
 import { jsx } from '@emotion/core';
 import { Fragment, Suspense, useRef, useState } from 'react';
 
-import { PlusIcon, SearchIcon, XIcon } from '@arch-ui/icons';
-import { Input } from '@arch-ui/input';
+import { PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
-import { A11yText, Title } from '@arch-ui/typography';
+import { Title } from '@arch-ui/typography';
 import { Button, IconButton } from '@arch-ui/button';
-import { LoadingSpinner } from '@arch-ui/loading';
-import { colors } from '@arch-ui/theme';
 
 import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
@@ -19,14 +16,13 @@ import AddFilterPopout from './Filters/AddFilterPopout';
 import ActiveFilters from './Filters/ActiveFilters';
 import SortPopout from './SortSelect';
 import Pagination from './Pagination';
+import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { MoreDropdown } from './MoreDropdown';
 import {
-  useList,
   useListFilter,
   useListItems,
   useListQuery,
-  useListSearch,
   useListSelect,
   useListSort,
   useListUrlState,
@@ -149,7 +145,7 @@ export default function ListDetails(props: Props) {
           </Title>
 
           <FlexGroup growIndexes={[0]}>
-            <Search listKey={list.key} />
+            <Search list={list} isLoading={query.loading} />
             <AddFilterPopout
               listKey={list.key}
               existingFilters={filters}
@@ -225,80 +221,3 @@ export default function ListDetails(props: Props) {
     </Fragment>
   );
 }
-
-// ==============================
-// Styled Components
-// ==============================
-
-const Search = ({ listKey }) => {
-  const list = useList(listKey);
-  const { searchValue, onChange, onClear, onSubmit } = useListSearch(listKey);
-  const [value, setValue] = useState(searchValue);
-  const { loading } = useListQuery(listKey);
-  const ref = useRef();
-
-  const hasValue = searchValue && searchValue.length;
-  const Icon = hasValue ? XIcon : SearchIcon;
-  const isLoading = hasValue && loading;
-
-  const handleChange = event => {
-    setValue(event.target.value);
-    onChange(event.target.value);
-  };
-  const handleClear = () => {
-    if (ref.current) {
-      ref.current.focus();
-    }
-    setValue('');
-    onClear();
-  };
-
-  const id = 'ks-list-search-input';
-
-  // NOTE: `autoComplete="off"` doesn't behave as expected on `<input />` in
-  // webkit, so we apply the attribute to a form tag here.
-  return (
-    <form css={{ position: 'relative' }} autoComplete="off" onSubmit={onSubmit}>
-      <A11yText tag="label" htmlFor={id}>
-        Search {list.plural}
-      </A11yText>
-      <Input
-        autoCapitalize="off"
-        autoComplete="off"
-        autoCorrect="off"
-        id={id}
-        onChange={handleChange}
-        placeholder="Search"
-        name="item-search"
-        value={value}
-        type="text"
-        ref={ref}
-      />
-      <div
-        css={{
-          alignItems: 'center',
-          color: colors.N30,
-          cursor: 'pointer',
-          display: 'flex',
-          height: 34,
-          justifyContent: 'center',
-          pointerEvents: hasValue ? 'all' : 'none',
-          position: 'absolute',
-          right: 0,
-          top: 0,
-          width: 40,
-
-          ':hover': {
-            color: hasValue ? colors.text : colors.N30,
-          },
-        }}
-      >
-        {isLoading ? (
-          <LoadingSpinner size={16} />
-        ) : (
-          <Icon onClick={hasValue ? handleClear : null} />
-        )}
-      </div>
-    </form>
-  );
-};
