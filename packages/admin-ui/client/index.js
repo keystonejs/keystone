@@ -65,7 +65,14 @@ const Keystone = () => {
                               <Route
                                 exact
                                 path={`${adminPath}/:list`}
-                                render={() => <ListPage key={listKey} list={list} {...adminMeta} />}
+                                render={routeProps => (
+                                  <ListPage
+                                    key={listKey}
+                                    list={list}
+                                    adminMeta={adminMeta}
+                                    routeProps={routeProps}
+                                  />
+                                )}
                               />
                               <Route
                                 exact

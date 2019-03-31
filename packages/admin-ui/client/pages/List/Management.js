@@ -1,6 +1,6 @@
 /* global ENABLE_DEV_FEATURES */
 
-import React, { Component, Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import styled from '@emotion/styled';
 
 import { SettingsIcon, TrashcanIcon } from '@arch-ui/icons';
@@ -29,80 +29,70 @@ type Props = {
   onUpdateMany: (*) => void,
   selectedItems: Array<string>,
 };
-type State = {
-  showDeleteModal: boolean,
-  showUpdateModal: boolean,
-};
 
-export default class ListManage extends Component<Props, State> {
-  state = { showDeleteModal: false, showUpdateModal: false };
+export default function ListManage(props: Props) {
+  const { onDeleteMany, onUpdateMany, selectedItems } = props;
+  const [deleteModalIsVisible, toggleDeleteModal] = useState(false);
+  const [updateModalIsVisible, toggleUpdateModal] = useState(false);
 
-  closeDeleteModal = () => this.setState({ showDeleteModal: false });
-  openDeleteModal = () => this.setState({ showDeleteModal: true });
-  closeUpdateModal = () => this.setState({ showUpdateModal: false });
-  openUpdateModal = () => this.setState({ showUpdateModal: true });
-
-  handleDelete = () => {
-    this.closeDeleteModal();
-    this.props.onDeleteMany();
+  const handleDelete = () => {
+    toggleDeleteModal(false);
+    onDeleteMany();
   };
-  handleUpdate = () => {
-    this.closeUpdateModal();
-    this.props.onUpdateMany();
+  const handleUpdate = () => {
+    toggleUpdateModal(false);
+    onUpdateMany();
   };
 
-  render() {
-    const { list, pageSize, selectedItems, totalItems } = this.props;
-    const { showDeleteModal, showUpdateModal } = this.state;
-    const selectedCount = selectedItems.length;
+  const { list, pageSize, totalItems } = props;
+  const selectedCount = selectedItems.length;
 
-    return (
-      <Fragment>
-        <FlexGroup align="center">
-          <SelectedCount>
-            {selectedCount} of {Math.min(pageSize, totalItems)} Selected
-          </SelectedCount>
-          {ENABLE_DEV_FEATURES ? (
-            list.access.update ? (
-              <IconButton
-                appearance="primary"
-                icon={SettingsIcon}
-                onClick={this.openUpdateModal}
-                variant="ghost"
-                data-test-name="update"
-              >
-                Update
-              </IconButton>
-            ) : null
-          ) : null}
-          {list.access.update ? (
+  return (
+    <Fragment>
+      <FlexGroup align="center">
+        <SelectedCount>
+          {selectedCount} of {Math.min(pageSize, totalItems)} Selected
+        </SelectedCount>
+        {ENABLE_DEV_FEATURES ? (
+          list.access.update ? (
             <IconButton
-              appearance="danger"
-              icon={TrashcanIcon}
-              onClick={this.openDeleteModal}
+              appearance="primary"
+              icon={SettingsIcon}
+              onClick={() => toggleUpdateModal(true)}
               variant="ghost"
-              data-test-name="delete"
+              data-test-name="update"
             >
-              Delete
+              Update
             </IconButton>
-          ) : null}
-        </FlexGroup>
+          ) : null
+        ) : null}
+        {list.access.update ? (
+          <IconButton
+            appearance="danger"
+            icon={TrashcanIcon}
+            onClick={() => toggleDeleteModal(true)}
+            variant="ghost"
+            data-test-name="delete"
+          >
+            Delete
+          </IconButton>
+        ) : null}
+      </FlexGroup>
 
-        <UpdateManyItemsModal
-          isOpen={showUpdateModal}
-          items={selectedItems}
-          list={list}
-          onClose={this.closeUpdateModal}
-          onUpdate={this.handleUpdate}
-        />
-        <DeleteManyItemsModal
-          isOpen={showDeleteModal}
-          itemIds={selectedItems}
-          list={list}
-          onClose={this.closeDeleteModal}
-          onDelete={this.handleDelete}
-        />
-      </Fragment>
-    );
-  }
+      <UpdateManyItemsModal
+        isOpen={updateModalIsVisible}
+        items={selectedItems}
+        list={list}
+        onClose={() => toggleUpdateModal(false)}
+        onUpdate={handleUpdate}
+      />
+      <DeleteManyItemsModal
+        isOpen={deleteModalIsVisible}
+        itemIds={selectedItems}
+        list={list}
+        onClose={() => toggleDeleteModal(false)}
+        onDelete={handleDelete}
+      />
+    </Fragment>
+  );
 }

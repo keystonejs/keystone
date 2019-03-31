@@ -10,7 +10,7 @@ type Props = {
 
 const CYPRESS_TEST_ID = 'ks-pagination';
 
-export default function ListPagination({ listKey }: Props) {
+export default function ListPagination({ isLoading, listKey }: Props) {
   const list = useList(listKey);
   const { data, onChange } = useListPagination(listKey);
 
@@ -20,7 +20,7 @@ export default function ListPagination({ listKey }: Props) {
       displayCount
       id={CYPRESS_TEST_ID}
       onChange={onChange}
-      isLoading={data.isLoading}
+      isLoading={isLoading}
       pageSize={data.pageSize}
       plural={list.plural}
       single={list.label}

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { __RouterContext as RouterContext } from 'react-router-dom';
+import { __RouterContext } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 import { useQuery } from 'react-apollo-hooks';
 
@@ -20,7 +20,7 @@ import { useAdminMeta } from '../../providers/AdminMeta';
 // https://github.com/ReactTraining/react-router
 
 export function useRouter() {
-  return useContext(RouterContext);
+  return useContext(__RouterContext);
 }
 
 /**
@@ -310,7 +310,6 @@ export function useListPagination(listKey) {
   const { currentPage, pageSize } = urlState;
   const setSearch = useListModifier(listKey);
   const { itemCount } = useListItems(listKey);
-  const { loading } = useListQuery(listKey);
 
   const onChange = cp => {
     setSearch({ currentPage: cp });
@@ -325,7 +324,6 @@ export function useListPagination(listKey) {
   return {
     data: {
       currentPage: currentPage,
-      isLoading: loading,
       itemCount: itemCount,
       pageSize: pageSize,
     },
@@ -393,4 +391,119 @@ export function useListColumns(listKey) {
   };
 
   return [fields, onChange];
+}
+
+/**
+ * Selection Hook
+ * ------------------------------
+ * @param {string} listKey - The key for the list to operate on.
+ * @returns {[Object, Function]}
+ * - fields - an array of the current columns
+ * - onChange - the change handler for columns
+ */
+
+// NOTE: disable text selection
+// ensures the browser receives the click event on our checkbox
+const bodyUserSelect = val => {
+  ['WebkitUserSelect', 'MozUserSelect', 'msUserSelect', 'userSelect'].forEach(k => {
+    document.body.style[k] = val;
+  });
+};
+
+export function useListSelect(items) {
+  const [lastChecked, setLastChecked] = useState(null);
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleKeyDown = () => {
+    if (selectedItems.length > 0) bodyUserSelect('none');
+  };
+  const handleKeyUp = () => {
+    if (selectedItems.length > 0) bodyUserSelect(null);
+  };
+  const shiftIsDown = useKeyDown('Shift', [handleKeyDown, handleKeyUp]);
+
+  const onSelect = (value: string | Array<string>) => {
+    let nextSelected = selectedItems.slice(0);
+
+    if (Array.isArray(value)) {
+      setSelectedItems(value);
+    } else if (shiftIsDown && lastChecked) {
+      const itemIds = items.map(i => i.id);
+      const from = itemIds.indexOf(value);
+      const to = itemIds.indexOf(lastChecked);
+      const start = Math.min(from, to);
+      const end = Math.max(from, to) + 1;
+
+      itemIds
+        .slice(start, end)
+        .filter(id => id !== lastChecked)
+        .forEach(id => {
+          if (!nextSelected.includes(lastChecked)) {
+            nextSelected = nextSelected.filter(existingId => existingId !== id);
+          } else {
+            nextSelected.push(id);
+          }
+        });
+
+      const uniqueItems = [...new Set(nextSelected)]; // lazy ensure unique
+
+      setLastChecked(value);
+      setSelectedItems(uniqueItems);
+    } else {
+      if (nextSelected.includes(value)) {
+        nextSelected = nextSelected.filter(existingId => existingId !== value);
+      } else {
+        nextSelected.push(value);
+      }
+
+      setLastChecked(value);
+      setSelectedItems(nextSelected);
+    }
+  };
+
+  // TODO: deal with this elsewhere
+  // const deleteSelectedItems = () => {
+  //   const { query } = this.props;
+  //   if (query.refetch) query.refetch();
+  //   setSelectedItems([]);
+  // };
+
+  return [selectedItems, onSelect];
+}
+
+/**
+ * Key Down Hook
+ * ------------------------------
+ * @param {string} targetKey - The key to target e.g. 'Alt', or 'Shift'
+ * @param {tuple} [keydownHandler, keyupHandler] - Optional event handlers
+ * @returns {boolean} keyIsDown - whether or not the target key is down
+ */
+
+export function useKeyDown(targetKey, [keydownHandler, keyupHandler] = []) {
+  const [keyIsDown, setKeyDown] = useState(false);
+
+  const handleKeyDown = e => {
+    if (e.key !== targetKey) return;
+    if (keydownHandler) keydownHandler(e);
+
+    setKeyDown(true);
+  };
+  const handleKeyUp = e => {
+    if (e.key !== targetKey) return;
+    if (keyupHandler) keyupHandler(e);
+
+    setKeyDown(false);
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown, false);
+    document.addEventListener('keyup', handleKeyUp, false);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    };
+  });
+
+  return keyIsDown;
 }

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
 import styled from '@emotion/styled';
 import { ChevronDownIcon, ChevronUpIcon } from '@arch-ui/icons';
 import { OptionPrimitive, Options } from '@arch-ui/options';
@@ -8,7 +8,7 @@ import { colors } from '@arch-ui/theme';
 import { Kbd } from '@arch-ui/typography';
 
 import { DisclosureArrow, Popout, POPOUT_GUTTER } from '../../components/Popout';
-import { useList, useListSort } from './dataHooks';
+import { useList, useListSort, useKeyDown } from './dataHooks';
 
 type Props = {
   listKey: string,
@@ -17,7 +17,7 @@ type Props = {
 export default function SortPopout({ listKey }: Props) {
   const list = useList(listKey);
   const [sortValue, handleSortChange] = useListSort(listKey);
-  const altIsDown = useAltDown();
+  const altIsDown = useKeyDown('Alt');
   const popoutRef = useRef();
 
   const handleChange = field => {
@@ -97,7 +97,7 @@ export const SortButton = styled.button(({ isActive }) => {
 });
 
 export const SortOption = ({ children, isFocused, isSelected, ...props }) => {
-  const altIsDown = useAltDown();
+  const altIsDown = useKeyDown('Alt');
   const Icon = isSelected ? ChevronUpIcon : altIsDown ? ChevronUpIcon : ChevronDownIcon;
   const iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
 
@@ -124,28 +124,4 @@ function invertDirection(direction) {
 }
 function isOptionSelected(opt, selected) {
   return opt.path === selected[0].field.path;
-}
-
-function useAltDown() {
-  const [altPressed, setAltDown] = useState(false);
-
-  const handleKeyDown = e => {
-    if (e.key !== 'Alt') return;
-    setAltDown(true);
-  };
-  const handleKeyUp = e => {
-    if (e.key !== 'Alt') return;
-    setAltDown(false);
-  };
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown, false);
-    document.addEventListener('keyup', handleKeyUp, false);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('keyup', handleKeyUp);
-    };
-  });
-
-  return altPressed;
 }
