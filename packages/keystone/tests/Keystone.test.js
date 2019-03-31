@@ -1,5 +1,5 @@
-const Keystone = require('../Keystone');
-const List = require('../List');
+const Keystone = require('../src/Keystone');
+const List = require('../src/List');
 const { Text, Relationship } = require('@keystone-alpha/fields');
 
 class MockType {

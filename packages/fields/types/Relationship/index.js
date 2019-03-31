@@ -5,7 +5,6 @@ const {
 } = require('./Implementation');
 const { resolveBacklinks } = require('./backlinks');
 const path = require('path');
-
 module.exports = {
   type: 'Relationship',
   isRelationship: true, // Used internally for this special case

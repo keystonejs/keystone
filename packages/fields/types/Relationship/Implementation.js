@@ -3,7 +3,6 @@ const omitBy = require('lodash.omitby');
 const { mergeWhereClause } = require('@keystone-alpha/utils');
 const { MongooseFieldAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { KnexFieldAdapter } = require('@keystone-alpha/adapter-knex');
-
 const {
   Schema: {
     Types: { ObjectId },

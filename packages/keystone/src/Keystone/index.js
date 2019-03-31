@@ -22,7 +22,6 @@ const {
   mergeRelationships,
 } = require('./relationship-utils');
 const List = require('../List');
-
 const unique = arr => [...new Set(arr)];
 
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;

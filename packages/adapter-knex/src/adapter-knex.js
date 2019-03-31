@@ -4,7 +4,7 @@ const {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
-} = require('@keystone-alpha/keystone/adapters');
+} = require('@keystone-alpha/keystone');
 const {
   objMerge,
   flatten,
@@ -15,7 +15,6 @@ const {
   resolveAllKeys,
   identity,
 } = require('@keystone-alpha/utils');
-
 class KnexAdapter extends BaseKeystoneAdapter {
   constructor() {
     super(...arguments);

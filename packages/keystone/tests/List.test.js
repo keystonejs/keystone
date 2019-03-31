@@ -6,8 +6,8 @@ jest.doMock('@keystone-alpha/logger', () => {
   return jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} }));
 });
 
-const List = require('../List');
-const { AccessDeniedError } = require('../List/graphqlErrors');
+const List = require('../src/List');
+const { AccessDeniedError } = require('../src/List/graphqlErrors');
 const { Text, Checkbox, Float, Relationship } = require('@keystone-alpha/fields');
 const { getType } = require('@keystone-alpha/utils');
 const path = require('path');
