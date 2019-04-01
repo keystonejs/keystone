@@ -45,7 +45,7 @@ const adminUI = new AdminUI(keystone, {
   ],
 });
 
-const server = new WebServer(keystone, {
+const webServer = new WebServer(keystone, {
   adminUI,
   port,
   static: {
@@ -66,3 +66,9 @@ const server = new WebServer(keystone, {
     }
   },
 });
+
+module.exports = {
+  keystone,
+  adminUI,
+  webServer,
+};
