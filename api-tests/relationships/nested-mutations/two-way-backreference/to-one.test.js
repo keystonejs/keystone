@@ -34,10 +34,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('nested connect', () => {
         test(
           'during create mutation',
-          runner(setupKeystone, async ({ server: { server }, create, findById }) => {
+          runner(setupKeystone, async ({ keystone, create, findById }) => {
             let location = await create('Location', {});
-            const queryResult = await graphqlRequest({
-              server,
+            const { data } = await graphqlRequest({
+              keystone,
               query: `
           mutation {
             createCompany(data: {
@@ -52,9 +52,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryResult.body).not.toHaveProperty('errors');
-
-            const companyId = queryResult.body.data.createCompany.id;
+            const companyId = data.createCompany.id;
 
             location = await findById('Location', location.id);
             const company = await findById('Company', companyId);
@@ -67,7 +65,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'during update mutation',
-          runner(setupKeystone, async ({ server: { server }, create, findById }) => {
+          runner(setupKeystone, async ({ keystone, create, findById }) => {
             // Manually setup a connected Company <-> Location
             let location = await create('Location', {});
             let company = await create('Company', {});
@@ -76,8 +74,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(company.location).toBe(undefined);
             expect(location.company).toBe(undefined);
 
-            const queryResult = await graphqlRequest({
-              server,
+            await graphqlRequest({
+              keystone,
               query: `
           mutation {
             updateCompany(
@@ -95,8 +93,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryResult.body).not.toHaveProperty('errors');
-
             location = await findById('Location', location.id);
             company = await findById('Company', company.id);
 
@@ -110,10 +106,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('nested create', () => {
         test(
           'during create mutation',
-          runner(setupKeystone, async ({ server: { server }, findById }) => {
+          runner(setupKeystone, async ({ keystone, findById }) => {
             const locationName = sampleOne(alphanumGenerator);
-            const queryResult = await graphqlRequest({
-              server,
+            const { data } = await graphqlRequest({
+              keystone,
               query: `
           mutation {
             createCompany(data: {
@@ -128,10 +124,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryResult.body).not.toHaveProperty('errors');
-
-            const companyId = queryResult.body.data.createCompany.id;
-            const locationId = queryResult.body.data.createCompany.location.id;
+            const companyId = data.createCompany.id;
+            const locationId = data.createCompany.location.id;
 
             const location = await findById('Location', locationId);
             const company = await findById('Company', companyId);
@@ -144,11 +138,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'during update mutation',
-          runner(setupKeystone, async ({ server: { server }, create, findById }) => {
+          runner(setupKeystone, async ({ keystone, create, findById }) => {
             const locationName = sampleOne(alphanumGenerator);
             let company = await create('Company', {});
-            const queryResult = await graphqlRequest({
-              server,
+            const { data } = await graphqlRequest({
+              keystone,
               query: `
           mutation {
             updateCompany(
@@ -167,9 +161,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryResult.body).not.toHaveProperty('errors');
-
-            const locationId = queryResult.body.data.updateCompany.location.id;
+            const locationId = data.updateCompany.location.id;
 
             const location = await findById('Location', locationId);
             company = await findById('Company', company.id);
@@ -183,7 +175,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested disconnect during update mutation',
-        runner(setupKeystone, async ({ server: { server }, create, update, findById }) => {
+        runner(setupKeystone, async ({ keystone, create, update, findById }) => {
           // Manually setup a connected Company <-> Location
           let location = await create('Location', {});
           let company = await create('Company', { location: location.id });
@@ -197,8 +189,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(location.company.toString()).toBe(company.id.toString());
 
           // Run the query to disconnect the location from company
-          const queryResult = await graphqlRequest({
-            server,
+          await graphqlRequest({
+            keystone,
             query: `
         mutation {
           updateCompany(
@@ -217,8 +209,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(queryResult.body).not.toHaveProperty('errors');
-
           // Check the link has been broken
           location = await findById('Location', location.id);
           company = await findById('Company', company.id);
@@ -230,7 +220,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested disconnectAll during update mutation',
-        runner(setupKeystone, async ({ server: { server }, create, update, findById }) => {
+        runner(setupKeystone, async ({ keystone, create, update, findById }) => {
           // Manually setup a connected Company <-> Location
           let location = await create('Location', {});
           let company = await create('Company', { location: location.id });
@@ -244,8 +234,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(location.company.toString()).toBe(company.id.toString());
 
           // Run the query to disconnect the location from company
-          const queryResult = await graphqlRequest({
-            server,
+          await graphqlRequest({
+            keystone,
             query: `
         mutation {
           updateCompany(
@@ -264,8 +254,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(queryResult.body).not.toHaveProperty('errors');
-
           // Check the link has been broken
           location = await findById('Location', location.id);
           company = await findById('Company', company.id);
@@ -278,7 +266,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
     test(
       'one to one relationship back reference on deletes',
-      runner(setupKeystone, async ({ server: { server }, create, update, findById }) => {
+      runner(setupKeystone, async ({ keystone, create, update, findById }) => {
         // Manually setup a connected Company <-> Location
         let location = await create('Location', {});
         let company = await create('Company', { location: location.id });
@@ -292,8 +280,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         expect(location.company.toString()).toBe(company.id.toString());
 
         // Run the query to disconnect the location from company
-        const queryResult = await graphqlRequest({
-          server,
+        await graphqlRequest({
+          keystone,
           query: `
       mutation {
         deleteCompany(id: "${company.id}") {
@@ -302,8 +290,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       }
   `,
         });
-
-        expect(queryResult.body).not.toHaveProperty('errors');
 
         // Check the link has been broken
         location = await findById('Location', location.id);

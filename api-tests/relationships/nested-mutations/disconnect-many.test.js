@@ -63,7 +63,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('no access control', () => {
       test(
         'removes matched items from list',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const noteContent = `foo${sampleOne(alphanumGenerator)}`;
           const noteContent2 = `foo${sampleOne(alphanumGenerator)}`;
 
@@ -78,8 +78,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Update the item and link the relationship field
-          const updateUser = await graphqlRequest({
-            server,
+          const { data } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           updateUser(
@@ -99,7 +99,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(updateUser.body.data).toMatchObject({
+          expect(data).toMatchObject({
             updateUser: {
               id: expect.any(String),
               notes: [
@@ -110,20 +110,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               ],
             },
           });
-          expect(updateUser.body).not.toHaveProperty('errors');
         })
       );
 
       test(
         'silently succeeds if used during create',
-        runner(setupKeystone, async ({ server: { server } }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
           // Create an item that does the linking
-          const {
-            body: { data },
-          } = await graphqlRequest({
-            server,
+          const { data } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           createUser(data: {
@@ -152,17 +149,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('non-matching filter', () => {
       test(
         'silently succeeds if items to disconnect cannot be found during update',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
           // Create an item to link against
           const createUser = await create('User', {});
 
           // Create an item that does the linking
-          const {
-            body: { data },
-          } = await graphqlRequest({
-            server,
+          const { data } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           updateUser(
@@ -192,7 +187,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'removes items that match, silently ignores those that do not',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
           const noteContent = sampleOne(alphanumGenerator);
           const noteContent2 = sampleOne(alphanumGenerator);
@@ -208,8 +203,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Update the item and link the relationship field
-          const updateUser = await graphqlRequest({
-            server,
+          const { data } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           updateUser(
@@ -228,7 +223,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(updateUser.body.data).toMatchObject({
+          expect(data).toMatchObject({
             updateUser: {
               id: expect.any(String),
               notes: [
@@ -239,7 +234,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               ],
             },
           });
-          expect(updateUser.body).not.toHaveProperty('errors');
         })
       );
     });
@@ -248,7 +242,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'has no impact when disconnecting directly with an id',
-          runner(setupKeystone, async ({ server: { server }, create, findById }) => {
+          runner(setupKeystone, async ({ keystone, create, findById }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
@@ -261,8 +255,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            const { body } = await graphqlRequest({
-              server,
+            await graphqlRequest({
+              keystone,
               query: `
           mutation {
             updateUserToNotesNoRead(
@@ -278,10 +272,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(body).not.toHaveProperty('data.updateUserToNotesNoRead.errors');
-
             const userData = await findById('UserToNotesNoRead', createUser.id);
-
             expect(userData.notes).toHaveLength(0);
           })
         );

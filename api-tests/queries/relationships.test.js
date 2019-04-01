@@ -33,7 +33,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('to-single', () => {
         test(
           'with data',
-          runner(setupKeystone, async ({ server: { server }, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             // Create an item to link against
             const users = await Promise.all([
               create('User', { name: 'Jess' }),
@@ -49,8 +49,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ]);
 
             // Create an item that does the linking
-            const queryAllPosts = await graphqlRequest({
-              server,
+            const { data } = await graphqlRequest({
+              keystone,
               query: `
           query {
             allPosts(where: {
@@ -63,11 +63,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryAllPosts.body).not.toHaveProperty('errors');
-            expect(queryAllPosts.body.data).toHaveProperty('allPosts');
-            expect(queryAllPosts.body.data.allPosts).toHaveLength(3);
+            expect(data).toHaveProperty('allPosts');
+            expect(data.allPosts).toHaveLength(3);
 
-            const allPosts = queryAllPosts.body.data.allPosts;
+            const { allPosts } = data;
 
             // We don't know the order, so we have to check individually
             expect(allPosts).toContainEqual({ id: posts[0].id, title: posts[0].title });
@@ -78,7 +77,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'without data',
-          runner(setupKeystone, async ({ server: { server }, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             // Create an item to link against
             const user = await create('User', { name: 'Jess' });
 
@@ -88,8 +87,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ]);
 
             // Create an item that does the linking
-            const queryAllPosts = await graphqlRequest({
-              server,
+            const { data } = await graphqlRequest({
+              keystone,
               query: `
           query {
             allPosts(where: {
@@ -106,10 +105,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryAllPosts.body.data).toMatchObject({
+            expect(data).toMatchObject({
               allPosts: [{ id: posts[0].id, title: posts[0].title }],
             });
-            expect(queryAllPosts.body).not.toHaveProperty('errors');
           })
         );
       });
@@ -137,12 +135,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_every condition',
-          runner(setupKeystone, async ({ server: { server }, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const { users } = await setup(create);
 
             // EVERY
-            const queryFeedEvery = await graphqlRequest({
-              server,
+            const { data } = await graphqlRequest({
+              keystone,
               query: `
           query {
             allUsers(where: {
@@ -159,21 +157,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryFeedEvery.body.data).toMatchObject({
+            expect(data).toMatchObject({
               allUsers: [{ id: users[2].id, feed: [{ title: 'I like Jelly' }] }],
             });
-            expect(queryFeedEvery.body).not.toHaveProperty('errors');
           })
         );
 
         test(
           '_some condition',
-          runner(setupKeystone, async ({ server: { server }, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const { users } = await setup(create);
 
             // SOME
-            const queryFeedSome = await graphqlRequest({
-              server,
+            const { data } = await graphqlRequest({
+              keystone,
               query: `
           query {
             allUsers(where: {
@@ -188,11 +185,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryFeedSome.body).not.toHaveProperty('errors');
-            expect(queryFeedSome.body.data).toHaveProperty('allUsers');
-            expect(queryFeedSome.body.data.allUsers).toHaveLength(2);
+            expect(data).toHaveProperty('allUsers');
+            expect(data.allUsers).toHaveLength(2);
 
-            const allUsers = queryFeedSome.body.data.allUsers;
+            const { allUsers } = data;
 
             // We don't know the order, so we have to check individually
             expect(allUsers).toContainEqual({
@@ -205,12 +201,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_none condition',
-          runner(setupKeystone, async ({ server: { server }, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const { users } = await setup(create);
 
             // NONE
-            const queryFeedNone = await graphqlRequest({
-              server,
+            const { data } = await graphqlRequest({
+              keystone,
               query: `
           query {
             allUsers(where: {
@@ -227,10 +223,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryFeedNone.body.data).toMatchObject({
+            expect(data).toMatchObject({
               allUsers: [{ id: users[1].id, feed: [{ title: 'Bye' }] }],
             });
-            expect(queryFeedNone.body).not.toHaveProperty('errors');
           })
         );
       });
@@ -256,12 +251,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_every condition',
-          runner(setupKeystone, async ({ server: { server }, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const { users } = await setup(create);
 
             // EVERY
-            const queryFeedEvery = await graphqlRequest({
-              server,
+            const { data } = await graphqlRequest({
+              keystone,
               query: `
           query {
             allUsers(where: {
@@ -278,21 +273,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryFeedEvery.body.data).toMatchObject({
-              allUsers: [{ id: users[2].id, feed: [] }],
-            });
-            expect(queryFeedEvery.body).not.toHaveProperty('errors');
+            expect(data).toMatchObject({ allUsers: [{ id: users[2].id, feed: [] }] });
           })
         );
 
         test(
           '_some condition',
-          runner(setupKeystone, async ({ server: { server }, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const { users } = await setup(create);
 
             // SOME
-            const queryFeedSome = await graphqlRequest({
-              server,
+            const { data } = await graphqlRequest({
+              keystone,
               query: `
           query {
             allUsers(where: {
@@ -309,24 +301,23 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryFeedSome.body.data).toMatchObject({
+            expect(data).toMatchObject({
               allUsers: [
                 { id: users[0].id, feed: [{ title: 'Hello' }, { title: 'I like Jelly' }] },
               ],
             });
-            expect(queryFeedSome.body.data.allUsers).toHaveLength(1);
-            expect(queryFeedSome.body).not.toHaveProperty('errors');
+            expect(data.allUsers).toHaveLength(1);
           })
         );
 
         test(
           '_none condition',
-          runner(setupKeystone, async ({ server: { server }, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const { users } = await setup(create);
 
             // NONE
-            const queryFeedNone = await graphqlRequest({
-              server,
+            const { data } = await graphqlRequest({
+              keystone,
               query: `
           query {
             allUsers(where: {
@@ -341,11 +332,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryFeedNone.body).not.toHaveProperty('errors');
-            expect(queryFeedNone.body.data).toHaveProperty('allUsers');
-            expect(queryFeedNone.body.data.allUsers).toHaveLength(2);
+            expect(data).toHaveProperty('allUsers');
+            expect(data.allUsers).toHaveLength(2);
 
-            const allUsers = queryFeedNone.body.data.allUsers;
+            const { allUsers } = data;
 
             // We don't know the order, so we have to check individually
             expect(allUsers).toContainEqual({ id: users[1].id, feed: [{ title: 'Hello' }] });

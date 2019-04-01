@@ -59,10 +59,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('errors on incomplete data', () => {
       test(
         'when neither id or create data passed',
-        runner(setupKeystone, async ({ server: { server } }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           // Create an item that does the linking
-          const createEvent = await graphqlRequest({
-            server,
+          const { errors } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           createEvent(data: { group: {} }) {
@@ -72,34 +72,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(createEvent.body).toHaveProperty('data.createEvent', null);
-          expect(createEvent.body.errors).toMatchObject([
-            {
-              name: 'NestedError',
-              data: {
-                errors: [
-                  {
-                    message: 'Nested mutation operation invalid for Event.group<Group>',
-                    path: ['createEvent', 'group'],
-                    name: 'Error',
-                  },
-                  {
-                    name: 'ParameterError',
-                    path: ['createEvent', 'group', '<validate>'],
-                  },
-                ],
-              },
-            },
+          expect(errors).toMatchObject([
+            { message: 'Nested mutation operation invalid for Event.group<Group>' },
           ]);
         })
       );
 
       test(
         'when both id and create data passed',
-        runner(setupKeystone, async ({ server: { server } }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           // Create an item that does the linking
-          const createEvent = await graphqlRequest({
-            server,
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           createEvent(data: { group: {
@@ -112,24 +96,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(createEvent.body).toHaveProperty('data.createEvent', null);
-          expect(createEvent.body.errors).toMatchObject([
-            {
-              name: 'NestedError',
-              data: {
-                errors: [
-                  {
-                    message: 'Nested mutation operation invalid for Event.group<Group>',
-                    path: ['createEvent', 'group'],
-                    name: 'Error',
-                  },
-                  {
-                    name: 'ParameterError',
-                    path: ['createEvent', 'group', '<validate>'],
-                  },
-                ],
-              },
-            },
+          expect(data.createEvent).toBe(null);
+          expect(errors).toMatchObject([
+            { message: 'Nested mutation operation invalid for Event.group<Group>' },
           ]);
         })
       );
