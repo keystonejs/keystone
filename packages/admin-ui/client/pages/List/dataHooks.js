@@ -181,14 +181,14 @@ export function useListItems(listKey) {
  * Reset Hook
  * ------------------------------
  * @param {string} listKey - The key for the list to operate on.
- * @returns {undefined}
+ * @returns {Function} - The function to reset url state
  */
 
 export function useReset(listKey) {
   const { decodeConfig } = useListUrlState(listKey);
   const setSearch = useListModifier(listKey);
 
-  setSearch(decodeSearch('', decodeConfig));
+  return () => setSearch(decodeSearch('', decodeConfig));
 }
 
 /**

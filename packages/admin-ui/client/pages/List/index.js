@@ -1,15 +1,18 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Fragment, Suspense, useRef, useState } from 'react';
+import { Fragment, Suspense, useEffect, useRef, useState } from 'react';
 
 import { IconButton } from '@arch-ui/button';
 import { PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
 import { Title } from '@arch-ui/typography';
 
-import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
+import DocTitle from '../../components/DocTitle';
+import ListTable from '../../components/ListTable';
+import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
+import { deconstructErrorsToDataShape } from '../../util';
 
 import ColumnPopout from './ColumnSelect';
 import AddFilterPopout from './Filters/AddFilterPopout';
@@ -22,7 +25,6 @@ import { MoreDropdown } from './MoreDropdown';
 import { NoResults } from './NoResults';
 import {
   useListFilter,
-  useListItems,
   useListQuery,
   useListSelect,
   useListSort,
@@ -39,17 +41,31 @@ export default function ListDetails(props: Props) {
   const { adminMeta, list, routeProps } = props;
   const [isFullWidth, setFullWidth] = useState(false);
   const [showCreateModal, toggleCreateModal] = useState(false);
+  const forceUpdate = useState()[1]; /// HACK
   const measureElementRef = useRef();
 
   const { urlState } = useListUrlState(list.key);
   const { filters, onAdd: handleFilterAdd } = useListFilter(list.key);
-  const { items, itemCount, itemErrors } = useListItems(list.key);
+  // const { items, itemCount, itemErrors } = useListItems(list.key);
   const [sortBy, handleSortChange] = useListSort(list.key);
   const query = useListQuery(list.key);
 
   const { adminPath, preloadViews } = adminMeta;
-  const { history } = routeProps;
+  const { history, location } = routeProps;
   const { currentPage, fields, pageSize, search } = urlState;
+
+  // get item data
+  let items;
+  let itemCount;
+  let itemErrors;
+  if (query.data[list.gqlNames.listQueryName]) {
+    items = query.data[list.gqlNames.listQueryName];
+    itemErrors = deconstructErrorsToDataShape(query.data.error)[list.gqlNames.listQueryName];
+  }
+  if (query.data[list.gqlNames.listQueryMetaName]) {
+    itemCount = query.data[list.gqlNames.listQueryMetaName].count;
+  }
+  console.log('items', items);
 
   const closeCreateModal = () => {
     toggleCreateModal(false);
@@ -60,15 +76,25 @@ export default function ListDetails(props: Props) {
 
   const [selectedItems, onSelectChange] = useListSelect(items);
 
-  // ==============================
-  // Search
-  // ==============================
+  // Mount with Persisted Search
+  // ------------------------------
+  useEffect(() => {
+    const maybePersistedSearch = list.getPersistedSearch();
 
-  const handleReset = () => {
-    this.setState({ searchValue: '' });
-    props.handleReset();
-  };
+    if (location.search) {
+      if (location.search !== maybePersistedSearch) {
+        list.setPersistedSearch(location.search);
+      }
+    } else if (maybePersistedSearch) {
+      history.replace({
+        ...location,
+        search: maybePersistedSearch,
+      });
+    }
+  }, []);
 
+  // Misc.
+  // ------------------------------
   const toggleFullWidth = () => {
     setFullWidth(!isFullWidth);
   };
@@ -77,12 +103,17 @@ export default function ListDetails(props: Props) {
     if (query.refetch) query.refetch();
     onSelectChange([]);
   };
+  const onDeleteItem = () => {
+    if (query.refetch) query.refetch();
+    forceUpdate();
+  };
   const onUpdateSelectedItems = () => {
     // coming in https://github.com/keystonejs/keystone-5/pull/961
   };
   const onCreate = ({ data }) => {
     let id = data[list.gqlNames.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
+    if (query.refetch) query.refetch();
   };
 
   // TODO: put this in some effect to limit calls
@@ -90,10 +121,47 @@ export default function ListDetails(props: Props) {
   // so that we don't have a waterfall after the data loads
   preloadViews(fields.map(({ views }) => views && views.Cell).filter(x => x));
 
-  console.log('query', query.loading, query);
+  // Error
+  // ------------------------------
+  // Only show error page if there is no data
+  // (ie; there could be partial data + partial errors)
+  if (
+    query.error &&
+    (!query.data ||
+      !query.data[list.gqlNames.listQueryName] ||
+      !Object.keys(query.data[list.gqlNames.listQueryName]).length)
+  ) {
+    let message = query.error.message;
 
+    // If there was an error returned by GraphQL, use that message
+    // instead
+    if (
+      query.error.networkError &&
+      query.error.networkError.result &&
+      query.error.networkError.result.errors &&
+      query.error.networkError.result.errors[0]
+    ) {
+      message = query.error.networkError.result.errors[0].message || message;
+    }
+
+    // Special case for when trying to access a non-existent list or a
+    // list that is set to `read: false`.
+    if (message.startsWith('Cannot query field')) {
+      message = `Unable to access list ${list.plural}`;
+    }
+
+    return (
+      <PageError>
+        <p>{message}</p>
+      </PageError>
+    );
+  }
+
+  // Success
+  // ------------------------------
   return (
     <Fragment>
+      <DocTitle>{list.plural}</DocTitle>
       <main>
         <div ref={measureElementRef} />
 
@@ -124,7 +192,7 @@ export default function ListDetails(props: Props) {
               measureRef={measureElementRef}
               isFullWidth={isFullWidth}
               onFullWidthToggle={toggleFullWidth}
-              onReset={handleReset}
+              listKey={list.key}
             />
           </FlexGroup>
 
@@ -165,7 +233,7 @@ export default function ListDetails(props: Props) {
                   items={items}
                   itemsErrors={itemErrors}
                   list={list}
-                  onChange={query.refetch}
+                  onChange={onDeleteItem}
                   selectedItems={selectedItems}
                   onSelectChange={onSelectChange}
                   handleSortChange={handleSortChange}
@@ -176,7 +244,6 @@ export default function ListDetails(props: Props) {
                 <NoResults
                   currentPage={currentPage}
                   filters={filters}
-                  handleReset={handleReset}
                   itemCount={itemCount}
                   list={list}
                   search={search}
