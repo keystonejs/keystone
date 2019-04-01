@@ -66,11 +66,3 @@ const server = new WebServer(keystone, {
     }
   },
 });
-
-server
-  .start()
-  .then(async () => {})
-  .catch(error => {
-    console.error(error);
-    process.exit(1);
-  });
