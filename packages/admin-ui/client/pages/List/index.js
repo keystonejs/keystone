@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Fragment, Suspense, useEffect, useRef, useState } from 'react';
+import { Query } from 'react-apollo';
 
 import { IconButton } from '@arch-ui/button';
 import { PlusIcon } from '@arch-ui/icons';
@@ -23,13 +24,7 @@ import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { MoreDropdown } from './MoreDropdown';
 import { NoResults } from './NoResults';
-import {
-  useListFilter,
-  useListQuery,
-  useListSelect,
-  useListSort,
-  useListUrlState,
-} from './dataHooks';
+import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
 
 type Props = {
   adminMeta: Object,
@@ -63,7 +58,6 @@ function ListLayout(props: LayoutProps) {
   const openCreateModal = () => {
     toggleCreateModal(true);
   };
-  console.log('ListLayout items', items);
 
   const [selectedItems, onSelectChange] = useListSelect(items);
 
@@ -96,7 +90,6 @@ function ListLayout(props: LayoutProps) {
   };
   const onDeleteItem = () => {
     query.refetch();
-    onSelectChange(selectedItems); // FIXME: force update
   };
   const onUpdateSelectedItems = () => {
     // coming in https://github.com/keystonejs/keystone-5/pull/961
@@ -206,10 +199,9 @@ function ListLayout(props: LayoutProps) {
   );
 }
 
-export default function List(props: Props) {
-  const { adminMeta, list, routeProps } = props;
+function List(props: Props) {
+  const { adminMeta, list, query, routeProps } = props;
   const { urlState } = useListUrlState(list.key);
-  const query = useListQuery(list.key);
 
   // get item data
   let items;
@@ -296,5 +288,23 @@ export default function List(props: Props) {
         query={query}
       />
     </Fragment>
+  );
+}
+
+export default function ListData(props: Props) {
+  const { list } = props;
+  const { urlState } = useListUrlState(list.key);
+
+  const { currentPage, fields, filters, pageSize, search, sortBy } = urlState;
+  const orderBy = `${sortBy.field.path}_${sortBy.direction}`;
+  const first = pageSize;
+  const skip = (currentPage - 1) * pageSize;
+
+  const query = list.getQuery({ fields, filters, search, orderBy, skip, first });
+
+  return (
+    <Query query={query} fetchPolicy="cache-and-network" errorPolicy="all">
+      {res => <List query={res} {...props} />}
+    </Query>
   );
 }
