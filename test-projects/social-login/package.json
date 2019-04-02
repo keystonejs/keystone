@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-alpha/cypress-project-facebook-login",
+  "name": "@keystone-alpha/cypress-project-social-login",
   "description": "A KeystoneJS demo project for integration testing. See @keystone-alpha/keystone for more.",
   "private": true,
   "version": "1.0.0",
