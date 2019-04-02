@@ -3,6 +3,7 @@ import React from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@arch-ui/button';
 import Confirm from '@arch-ui/confirm';
+import { useApolloClient } from 'react-apollo-hooks';
 
 type Props = {
   isOpen: boolean,
@@ -14,8 +15,14 @@ type Props = {
 };
 
 export default function DeleteItemModal({ isOpen, item, list, onClose, onDelete }: Props) {
+  let client = useApolloClient();
   return (
-    <Mutation mutation={list.deleteMutation}>
+    <Mutation
+      onCompleted={() => {
+        client.resetStore();
+      }}
+      mutation={list.deleteMutation}
+    >
       {(deleteItem, { loading }) => {
         return (
           <Confirm
