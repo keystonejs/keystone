@@ -92,7 +92,7 @@ function ListLayout(props: LayoutProps) {
     query.refetch();
   };
   const onUpdateSelectedItems = () => {
-    // coming in https://github.com/keystonejs/keystone-5/pull/961
+    query.refetch();
   };
   const onCreate = ({ data }) => {
     let id = data[list.gqlNames.createMutationName].id;
