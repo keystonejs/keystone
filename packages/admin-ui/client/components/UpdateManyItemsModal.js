@@ -4,7 +4,7 @@ import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
-import { omit } from '@keystone-alpha/utils';
+import { omit, arrayToObject, resolveAllKeys } from '@keystone-alpha/utils';
 
 let Render = ({ children }) => children();
 
@@ -17,18 +17,31 @@ class UpdateManyModal extends Component {
     this.state = { item, selectedFields };
   }
   onUpdate = () => {
-    const { updateItem, isLoading } = this.props;
-    console.log('onUpdate called');
-    return;
+    const { updateItem, isLoading, items } = this.props;
+    const { item, selectedFields } = this.state;
     if (isLoading) return;
-    const { item } = this.state;
-    updateItem({
-      variables: { data: item },
-    }).then(this.props.onUpdate);
+
+    resolveAllKeys(arrayToObject(selectedFields, 'path', field => field.getValue(item)))
+      .then(data => {
+        updateItem({
+          variables: {
+            data: items.map(id => ({ id, data })),
+          },
+        });
+      })
+      .then(() => {
+        this.props.onUpdate();
+        this.resetState();
+      });
+  };
+
+  resetState = () => {
+    this.setState({ item: this.props.list.getInitialItemData(), selectedFields: [] });
   };
   onClose = () => {
     const { isLoading } = this.props;
     if (isLoading) return;
+    this.resetState();
     this.props.onClose();
   };
   onKeyDown = event => {
@@ -67,6 +80,7 @@ class UpdateManyModal extends Component {
       <Drawer
         isOpen={isOpen}
         onClose={this.onClose}
+        closeOnBlanketClick
         heading={`Update ${list.formatCount(items)}`}
         onKeyDown={this.onKeyDown}
         slideInFrom="left"
@@ -136,12 +150,9 @@ class UpdateManyModal extends Component {
 export default class UpdateManyModalWithMutation extends Component {
   render() {
     const { list } = this.props;
-    // FIXME: updateMutation is the wrong thing to do here! We need to work out how
-    // to update many things all at once. This doesn't appear to be common pattern
-    // across the board.
     return (
       <Suspense fallback={null}>
-        <Mutation mutation={list.updateMutation}>
+        <Mutation mutation={list.updateManyMutation}>
           {(updateItem, { loading }) => (
             <UpdateManyModal updateItem={updateItem} isLoading={loading} {...this.props} />
           )}
