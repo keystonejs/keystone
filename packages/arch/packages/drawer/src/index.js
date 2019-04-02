@@ -167,7 +167,8 @@ let ModalDialog = memo<Props>(function ModalDialog({
   ...transitionProps
 }) {
   let stackIndex = useStackIndex(
-    transitionProps.transitionState === 'entered' || transitionProps.transitionState === 'entering'
+    transitionProps.transitionState === 'entered' || transitionProps.transitionState === 'entering',
+    slideInFrom
   );
   useKeydownHandler(event => {
     if (onKeyDown && stackIndex === 0) {
