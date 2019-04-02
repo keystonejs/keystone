@@ -79,8 +79,9 @@ const Relationship = forwardRef(
       }
     }
 
-    const count =
-      data[refList.gqlNames.listQueryMetaName] && data[refList.gqlNames.listQueryMetaName].count;
+    const count = (data)
+      ? (data[refList.gqlNames.listQueryMetaName] && data[refList.gqlNames.listQueryMetaName].count)
+      : 0;
 
     const selectComponents = useMemo(
       () => ({
