@@ -36,36 +36,26 @@ type Props = {
   list: Object,
   routeProps: Object,
 };
+type LayoutProps = Props & {
+  items: Array<Object>,
+  itemCount: number,
+  itemErrors: Array<Object>,
+};
 
-export default function ListDetails(props: Props) {
-  const { adminMeta, list, routeProps } = props;
+function ListLayout(props: LayoutProps) {
+  const { adminMeta, items, itemCount, itemErrors, list, routeProps, query } = props;
   const [isFullWidth, setFullWidth] = useState(false);
   const [showCreateModal, toggleCreateModal] = useState(false);
-  const forceUpdate = useState()[1]; /// HACK
   const measureElementRef = useRef();
 
   const { urlState } = useListUrlState(list.key);
   const { filters, onAdd: handleFilterAdd } = useListFilter(list.key);
   // const { items, itemCount, itemErrors } = useListItems(list.key);
   const [sortBy, handleSortChange] = useListSort(list.key);
-  const query = useListQuery(list.key);
 
-  const { adminPath, preloadViews } = adminMeta;
+  const { adminPath } = adminMeta;
   const { history, location } = routeProps;
   const { currentPage, fields, pageSize, search } = urlState;
-
-  // get item data
-  let items;
-  let itemCount;
-  let itemErrors;
-  if (query.data[list.gqlNames.listQueryName]) {
-    items = query.data[list.gqlNames.listQueryName];
-    itemErrors = deconstructErrorsToDataShape(query.data.error)[list.gqlNames.listQueryName];
-  }
-  if (query.data[list.gqlNames.listQueryMetaName]) {
-    itemCount = query.data[list.gqlNames.listQueryMetaName].count;
-  }
-  console.log('items', items);
 
   const closeCreateModal = () => {
     toggleCreateModal(false);
@@ -73,6 +63,7 @@ export default function ListDetails(props: Props) {
   const openCreateModal = () => {
     toggleCreateModal(true);
   };
+  console.log('ListLayout items', items);
 
   const [selectedItems, onSelectChange] = useListSelect(items);
 
@@ -100,12 +91,12 @@ export default function ListDetails(props: Props) {
   };
 
   const onDeleteSelectedItems = () => {
-    if (query.refetch) query.refetch();
+    query.refetch();
     onSelectChange([]);
   };
   const onDeleteItem = () => {
-    if (query.refetch) query.refetch();
-    forceUpdate();
+    query.refetch();
+    onSelectChange(selectedItems); // FIXME: force update
   };
   const onUpdateSelectedItems = () => {
     // coming in https://github.com/keystonejs/keystone-5/pull/961
@@ -113,13 +104,148 @@ export default function ListDetails(props: Props) {
   const onCreate = ({ data }) => {
     let id = data[list.gqlNames.createMutationName].id;
     history.push(`${adminPath}/${list.path}/${id}`);
-    if (query.refetch) query.refetch();
+    query.refetch();
   };
+
+  // Success
+  // ------------------------------
+  return (
+    <main>
+      <div ref={measureElementRef} />
+
+      <Container isFullWidth={isFullWidth}>
+        <Title as="h1" margin="both">
+          {itemCount > 0 ? list.formatCount(itemCount) : list.plural}
+          <span>, by</span>
+          <SortPopout listKey={list.key} />
+        </Title>
+
+        <FlexGroup growIndexes={[0]}>
+          <Search list={list} isLoading={query.loading} />
+          <AddFilterPopout
+            listKey={list.key}
+            existingFilters={filters}
+            fields={list.fields}
+            onChange={handleFilterAdd}
+          />
+
+          <ColumnPopout listKey={list.key} />
+
+          {list.access.create ? (
+            <IconButton appearance="create" icon={PlusIcon} onClick={openCreateModal}>
+              Create
+            </IconButton>
+          ) : null}
+          <MoreDropdown
+            measureRef={measureElementRef}
+            isFullWidth={isFullWidth}
+            onFullWidthToggle={toggleFullWidth}
+            listKey={list.key}
+          />
+        </FlexGroup>
+
+        <ActiveFilters listKey={list.key} />
+
+        <ManageToolbar isVisible={!!itemCount}>
+          {selectedItems.length ? (
+            <Management
+              list={list}
+              onDeleteMany={onDeleteSelectedItems}
+              onUpdateMany={onUpdateSelectedItems}
+              pageSize={pageSize}
+              selectedItems={selectedItems}
+              onSelectChange={onSelectChange}
+              totalItems={itemCount}
+            />
+          ) : (
+            <Pagination listKey={list.key} isLoading={query.loading} />
+          )}
+        </ManageToolbar>
+      </Container>
+
+      <CreateItemModal
+        isOpen={showCreateModal}
+        list={list}
+        onClose={closeCreateModal}
+        onCreate={onCreate}
+      />
+
+      <Container isFullWidth={isFullWidth}>
+        {items ? (
+          <Suspense fallback={<PageLoading />}>
+            {items.length ? (
+              <ListTable
+                adminPath={adminPath}
+                fields={fields}
+                isFullWidth={isFullWidth}
+                items={items}
+                itemsErrors={itemErrors}
+                list={list}
+                onChange={onDeleteItem}
+                selectedItems={selectedItems}
+                onSelectChange={onSelectChange}
+                handleSortChange={handleSortChange}
+                sortBy={sortBy}
+                selectedItems={selectedItems}
+              />
+            ) : (
+              <NoResults
+                currentPage={currentPage}
+                filters={filters}
+                itemCount={itemCount}
+                list={list}
+                search={search}
+              />
+            )}
+          </Suspense>
+        ) : (
+          <PageLoading />
+        )}
+      </Container>
+    </main>
+  );
+}
+
+export default function List(props: Props) {
+  const { adminMeta, list, routeProps } = props;
+  const { urlState } = useListUrlState(list.key);
+  const query = useListQuery(list.key);
+
+  // get item data
+  let items;
+  let itemCount;
+  let itemErrors;
+  if (query.data[list.gqlNames.listQueryName]) {
+    items = query.data[list.gqlNames.listQueryName];
+    itemErrors = deconstructErrorsToDataShape(query.data.error)[list.gqlNames.listQueryName];
+  }
+  if (query.data[list.gqlNames.listQueryMetaName]) {
+    itemCount = query.data[list.gqlNames.listQueryMetaName].count;
+  }
+
+  const { history, location } = routeProps;
+
+  // Mount with Persisted Search
+  // ------------------------------
+  useEffect(() => {
+    const maybePersistedSearch = list.getPersistedSearch();
+
+    if (location.search) {
+      if (location.search !== maybePersistedSearch) {
+        list.setPersistedSearch(location.search);
+      }
+    } else if (maybePersistedSearch) {
+      history.replace({
+        ...location,
+        search: maybePersistedSearch,
+      });
+    }
+  }, []);
 
   // TODO: put this in some effect to limit calls
   // we want to preload the Field components
   // so that we don't have a waterfall after the data loads
-  preloadViews(fields.map(({ views }) => views && views.Cell).filter(x => x));
+  adminMeta.preloadViews(urlState.fields.map(({ views }) => views && views.Cell).filter(x => x));
 
   // Error
   // ------------------------------
@@ -162,99 +288,13 @@ export default function ListDetails(props: Props) {
   return (
     <Fragment>
       <DocTitle>{list.plural}</DocTitle>
-      <main>
-        <div ref={measureElementRef} />
-
-        <Container isFullWidth={isFullWidth}>
-          <Title as="h1" margin="both">
-            {itemCount > 0 ? list.formatCount(itemCount) : list.plural}
-            <span>, by</span>
-            <SortPopout listKey={list.key} />
-          </Title>
-
-          <FlexGroup growIndexes={[0]}>
-            <Search list={list} isLoading={query.loading} />
-            <AddFilterPopout
-              listKey={list.key}
-              existingFilters={filters}
-              fields={list.fields}
-              onChange={handleFilterAdd}
-            />
-
-            <ColumnPopout listKey={list.key} />
-
-            {list.access.create ? (
-              <IconButton appearance="create" icon={PlusIcon} onClick={openCreateModal}>
-                Create
-              </IconButton>
-            ) : null}
-            <MoreDropdown
-              measureRef={measureElementRef}
-              isFullWidth={isFullWidth}
-              onFullWidthToggle={toggleFullWidth}
-              listKey={list.key}
-            />
-          </FlexGroup>
-
-          <ActiveFilters listKey={list.key} />
-
-          <ManageToolbar isVisible={!!itemCount}>
-            {selectedItems.length ? (
-              <Management
-                list={list}
-                onDeleteMany={onDeleteSelectedItems}
-                onUpdateMany={onUpdateSelectedItems}
-                pageSize={pageSize}
-                selectedItems={selectedItems}
-                onSelectChange={onSelectChange}
-                totalItems={itemCount}
-              />
-            ) : (
-              <Pagination listKey={list.key} isLoading={query.loading} />
-            )}
-          </ManageToolbar>
-        </Container>
-
-        <CreateItemModal
-          isOpen={showCreateModal}
-          list={list}
-          onClose={closeCreateModal}
-          onCreate={onCreate}
-        />
-
-        <Container isFullWidth={isFullWidth}>
-          {items ? (
-            <Suspense fallback={<PageLoading />}>
-              {items.length ? (
-                <ListTable
-                  adminPath={adminPath}
-                  fields={fields}
-                  isFullWidth={isFullWidth}
-                  items={items}
-                  itemsErrors={itemErrors}
-                  list={list}
-                  onChange={onDeleteItem}
-                  selectedItems={selectedItems}
-                  onSelectChange={onSelectChange}
-                  handleSortChange={handleSortChange}
-                  sortBy={sortBy}
-                  selectedItems={selectedItems}
-                />
-              ) : (
-                <NoResults
-                  currentPage={currentPage}
-                  filters={filters}
-                  itemCount={itemCount}
-                  list={list}
-                  search={search}
-                />
-              )}
-            </Suspense>
-          ) : (
-            <PageLoading />
-          )}
-        </Container>
-      </main>
+      <ListLayout
+        {...props}
+        items={items}
+        itemCount={itemCount}
+        itemErrors={itemErrors}
+        query={query}
+      />
     </Fragment>
   );
 }
