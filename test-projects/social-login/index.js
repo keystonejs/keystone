@@ -79,6 +79,11 @@ keystone.createList('User', {
     // TODO: Create a GitHub field type to encapsulate these
     githubId: { type: Text },
     githubUsername: { type: Text },
+
+    // TODO: Create a Twitter field type to encapsulate these
+    twitterId: { type: Text },
+    twitterUsername: { type: Text },
+
     isAdmin: { type: Checkbox },
     company: {
       type: Select,
