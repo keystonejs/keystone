@@ -241,6 +241,7 @@
       "packages/**/*.js",
       "!packages/**/dist/**",
       "!packages/admin-ui/client/**",
+      "!packages/apollo-helpers/**",
       "!packages/arch/**",
       "!packages/create-keystone-app/templates/**",
       "!packages/core/tests/default-entry/index.js",

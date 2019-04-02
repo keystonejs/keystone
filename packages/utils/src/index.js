@@ -121,7 +121,7 @@ export const flatten = arr => Array.prototype.concat(...arr);
 // flatMap([{ vals: [2, 2] }, { vals: [3] }], x => x.vals) => [2, 2, 3]
 export const flatMap = (arr, fn = identity) => flatten(arr.map(fn));
 
-// { foo: [1, 2, 3], bar: [4, 5, 6]} => [{ foo: 1, bar; 4}, { foo: 2, bar: 5}, { foo: 3, bar: 6 }]
+// { foo: [1, 2, 3], bar: [4, 5, 6]} => [{ foo: 1, bar: 4}, { foo: 2, bar: 5}, { foo: 3, bar: 6 }]
 export const zipObj = obj =>
   Object.values(obj)[0].map((_, i) =>
     Object.keys(obj).reduce((acc, k) => ({ ...acc, [k]: obj[k][i] }), {})
