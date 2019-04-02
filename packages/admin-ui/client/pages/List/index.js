@@ -206,11 +206,11 @@ function List(props: Props) {
   let items;
   let itemCount;
   let itemErrors;
-  if (query.data[list.gqlNames.listQueryName]) {
+  if (query.data && query.data[list.gqlNames.listQueryName]) {
     items = query.data[list.gqlNames.listQueryName];
     itemErrors = deconstructErrorsToDataShape(query.data.error)[list.gqlNames.listQueryName];
   }
-  if (query.data[list.gqlNames.listQueryMetaName]) {
+  if (query.data && query.data[list.gqlNames.listQueryMetaName]) {
     itemCount = query.data[list.gqlNames.listQueryMetaName].count;
   }
 
