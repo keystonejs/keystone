@@ -97,7 +97,7 @@ export function useListQuery(listKey) {
 
   // Get and store items
   const query = list.getQuery({ fields, filters, search, orderBy, skip, first });
-  const result = useQuery(query);
+  const result = useQuery(query, { fetchPolicy: 'cache-and-network' });
 
   return result;
 }
