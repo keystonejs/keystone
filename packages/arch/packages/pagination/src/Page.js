@@ -44,6 +44,7 @@ const PageElement = styled(PagePrimitive)(({ isDisabled, isSelected }: PageProps
     ? {
         color: colors.N40,
         cursor: 'default',
+        pointerEvents: 'none',
       }
     : null;
   const selectedStyles = isSelected

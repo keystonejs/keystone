@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, createRef, Fragment, Suspense } from 'react';
+import React, { Component, createRef, Fragment, Suspense } from 'react';
 import styled from '@emotion/styled';
 import { withRouter } from 'react-router-dom';
 
@@ -318,32 +318,7 @@ class ListDetails extends Component<Props, State> {
 
           <Container isFullWidth={isFullWidth}>
             <FlexGroup align="center" growIndexes={[0]}>
-              <Title as="h1" margin="both">
-                {itemsCount > 0 ? list.formatCount(itemsCount) : list.plural}
-                <span>, by</span>
-                <Popout
-                  innerRef={this.sortPopoutRef}
-                  headerTitle="Sort"
-                  footerContent={
-                    <Note>
-                      Hold <Kbd>alt</Kbd> to toggle ascending/descending
-                    </Note>
-                  }
-                  target={props => (
-                    <SortButton {...props}>
-                      {sortBy.field.label.toLowerCase()}
-                      <DisclosureArrow size="0.2em" />
-                    </SortButton>
-                  )}
-                >
-                  <SortSelect
-                    popoutRef={this.sortPopoutRef}
-                    fields={list.fields}
-                    onChange={handleSortChange}
-                    value={sortBy}
-                  />
-                </Popout>
-              </Title>
+              <h1 style={{ marginTop: 14 }}>{list.plural}</h1>
               {list.access.create ? (
                 <IconButton
                   variant="ghost"
@@ -409,41 +384,71 @@ class ListDetails extends Component<Props, State> {
             {items ? (
               <Suspense fallback={<PageLoading />}>
                 <Card>
-                  <AnimateHeight
-                    render={({ ref }) => (
-                      <div ref={ref}>
-                        {selectedItems.length ? (
-                          <Management
-                            list={list}
-                            onDeleteMany={this.onDeleteSelectedItems}
-                            onUpdateMany={this.onUpdate}
-                            pageSize={pageSize}
-                            selectedItems={selectedItems}
-                            totalItems={itemsCount}
+                  <div css={{ fontSize: '0.85rem', height: 32 }}>
+                    {selectedItems.length ? (
+                      <Management
+                        list={list}
+                        onDeleteMany={this.onDeleteSelectedItems}
+                        onUpdateMany={this.onUpdate}
+                        pageSize={pageSize}
+                        selectedItems={selectedItems}
+                        totalItems={itemsCount}
+                      />
+                    ) : (
+                      <FlexGroup align="center">
+                        <Popout
+                          innerRef={this.sortPopoutRef}
+                          headerTitle="Sort"
+                          footerContent={
+                            <Note>
+                              Hold <Kbd>alt</Kbd> to toggle ascending/descending
+                            </Note>
+                          }
+                          target={handlers => (
+                            <SortButton {...handlers}>
+                              Sort: "{sortBy.field.label.toLowerCase()}"
+                              <DisclosureArrow size="0.2rem" />
+                            </SortButton>
+                          )}
+                        >
+                          <SortSelect
+                            popoutRef={this.sortPopoutRef}
+                            fields={list.fields}
+                            onChange={handleSortChange}
+                            value={sortBy}
                           />
-                        ) : null}
-                      </div>
+                        </Popout>
+                        <Popout
+                          target={handlers => (
+                            <SortButton {...handlers}>
+                              Columns
+                              <DisclosureArrow size="0.2rem" />
+                            </SortButton>
+                          )}
+                          headerTitle="Columns"
+                        >
+                          <ColumnSelect
+                            fields={list.fields}
+                            onChange={handleFieldChange}
+                            removeIsAllowed={fields.length > 1}
+                            value={fields}
+                          />
+                        </Popout>
+                        <div />
+                        <Pagination
+                          isLoading={query.loading}
+                          currentPage={currentPage}
+                          itemsCount={itemsCount}
+                          list={list}
+                          onChangePage={handlePageChange}
+                          pageSize={pageSize}
+                        />
+                      </FlexGroup>
                     )}
-                  />
+                  </div>
                   <ListTable
                     adminPath={adminPath}
-                    columnControl={
-                      <Popout
-                        target={handlers => (
-                          <Button variant="subtle" {...handlers}>
-                            <KebabHorizontalIcon />
-                          </Button>
-                        )}
-                        headerTitle="Columns"
-                      >
-                        <ColumnSelect
-                          fields={list.fields}
-                          onChange={handleFieldChange}
-                          removeIsAllowed={fields.length > 1}
-                          value={fields}
-                        />
-                      </Popout>
-                    }
+                    columnControl={null}
                     fields={fields}
                     isFullWidth={isFullWidth}
                     items={items}
@@ -458,15 +463,6 @@ class ListDetails extends Component<Props, State> {
                     noResultsMessage={this.getNoResultsMessage()}
                   />
                 </Card>
-
-                <Pagination
-                  isLoading={query.loading}
-                  currentPage={currentPage}
-                  itemsCount={itemsCount}
-                  list={list}
-                  onChangePage={handlePageChange}
-                  pageSize={pageSize}
-                />
               </Suspense>
             ) : (
               <PageLoading />

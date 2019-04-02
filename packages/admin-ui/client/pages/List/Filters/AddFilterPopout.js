@@ -32,8 +32,12 @@ export const FieldOption = ({ children, ...props }) => {
 
   return (
     <OptionPrimitive hasCheckbox={false} {...props}>
-      <span>{children}</span>
-      <ChevronRightIcon css={{ color: iconColor }} />
+      <div
+        css={{ display: 'flex', flex: 1, alignItems: 'center', justifyContent: 'space-between' }}
+      >
+        <span>{children}</span>
+        <ChevronRightIcon css={{ color: iconColor }} />
+      </div>
     </OptionPrimitive>
   );
 };

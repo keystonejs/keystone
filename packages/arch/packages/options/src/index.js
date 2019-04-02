@@ -46,7 +46,7 @@ type OptionPrimitiveProps = {
 
 export const OptionPrimitive = ({
   children,
-  hasCheckbox,
+  hasCheckbox = true,
   isDisabled,
   isFocused,
   isSelected,
@@ -56,7 +56,7 @@ export const OptionPrimitive = ({
   const focusedStyles =
     isFocused && !isDisabled
       ? {
-          backgroundColor: colors.N05,
+          backgroundColor: alpha(colors.primary, 0.04),
 
           '.checkbox-rect': {
             fill: isSelected ? colors.B.L10 : colors.N15,
@@ -90,10 +90,8 @@ export const OptionPrimitive = ({
           fill: isSelected ? 'white' : 'transparent',
         },
 
-        ':hover': {},
-
         ':active': {
-          backgroundColor: colors.N10,
+          backgroundColor: alpha(colors.primary, 0.08),
 
           '.checkbox-rect': {
             fill: isSelected ? colors.B.D10 : colors.N20,
@@ -137,8 +135,9 @@ const Control = ({ selectProps, ...props }) => {
 const styles = {
   control: (base, { isFocused }) => ({
     ...base,
-    borderColor: isFocused ? colors.primary : colors.N15,
-    boxShadow: isFocused ? `0 0 0 3px ${alpha(colors.primary, 0.2)}` : null,
+    backgroundColor: isFocused ? alpha(colors.N100, 0.08) : alpha(colors.N100, 0.04),
+    boxShadow: 'none',
+    border: 0,
     fontSize: '0.9rem',
     outline: 0,
     ':hover': { borderColor: isFocused ? colors.primary : colors.N20 },
