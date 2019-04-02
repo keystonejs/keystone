@@ -35,7 +35,7 @@ export default function SortPopout({ listKey }: Props) {
     popoutRef.current.close();
   };
 
-  const cachedOptions = useMemo(() => list.fields.map(({ options, ...field }) => field));
+  const cachedOptions = useMemo(() => list.fields.map(({ options, ...field }) => field), [list]);
 
   return (
     <Popout
