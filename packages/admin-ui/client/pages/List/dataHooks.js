@@ -317,9 +317,6 @@ export function useListPagination(listKey) {
   const onChangeSize = ps => {
     setSearch({ pageSize: ps });
   };
-  const onReset = () => {
-    setSearch({ currentPage: 1 });
-  };
 
   return {
     data: {
@@ -329,7 +326,6 @@ export function useListPagination(listKey) {
     },
     onChange,
     onChangeSize,
-    onReset,
   };
 }
 

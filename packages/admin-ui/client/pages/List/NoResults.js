@@ -28,10 +28,24 @@ const NoResultsWrapper = ({ children, ...props }) => (
 );
 
 export const NoResults = ({ currentPage, filters, itemCount, list, search }) => {
-  const { onReset } = useListPagination(list.key);
+  const { onChange } = useListPagination(list.key);
+  const onResetPage = () => onChange(1);
+
+  const pageDepthMessage = (
+    <NoResultsWrapper>
+      <p>
+        Not enough {list.plural.toLowerCase()} found to show page {currentPage}.
+      </p>
+      <Button variant="ghost" onClick={onResetPage}>
+        Show first page
+      </Button>
+    </NoResultsWrapper>
+  );
 
   if (filters && filters.length) {
-    return (
+    return currentPage !== 1 ? (
+      pageDepthMessage
+    ) : (
       <NoResultsWrapper>
         No {list.plural.toLowerCase()} found matching the{' '}
         {filters.length > 1 ? 'filters' : 'filter'}
@@ -39,24 +53,13 @@ export const NoResults = ({ currentPage, filters, itemCount, list, search }) => 
     );
   }
   if (search && search.length) {
-    return (
+    return currentPage !== 1 ? (
+      pageDepthMessage
+    ) : (
       <NoResultsWrapper>
         No {list.plural.toLowerCase()} found matching &ldquo;
         {search}
         &rdquo;
-      </NoResultsWrapper>
-    );
-  }
-
-  if (currentPage !== 1) {
-    return (
-      <NoResultsWrapper>
-        <p>
-          Not enough {list.plural.toLowerCase()} found to show page {currentPage}.
-        </p>
-        <Button variant="ghost" onClick={onReset}>
-          Show first page
-        </Button>
       </NoResultsWrapper>
     );
   }
