@@ -14,7 +14,7 @@ import { useListSearch } from './dataHooks';
 export default function Search({ isLoading, list }) {
   const { searchValue, onChange, onClear, onSubmit } = useListSearch(list.key);
   const [value, setValue] = useState(searchValue);
-  const ref = useRef();
+  const inputRef = useRef();
 
   const hasValue = searchValue && searchValue.length;
   const Icon = hasValue ? XIcon : SearchIcon;
@@ -25,8 +25,8 @@ export default function Search({ isLoading, list }) {
     onChange(event.target.value);
   };
   const handleClear = () => {
-    if (ref.current) {
-      ref.current.focus();
+    if (inputRef.current) {
+      inputRef.current.focus();
     }
     setValue('');
     onClear();
@@ -51,7 +51,7 @@ export default function Search({ isLoading, list }) {
         name="item-search"
         value={value}
         type="text"
-        ref={ref}
+        ref={inputRef}
       />
       <div
         css={{

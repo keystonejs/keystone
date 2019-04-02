@@ -32,15 +32,15 @@ type Props = {
 
 export default function ListManage(props: Props) {
   const { onDeleteMany, onUpdateMany, selectedItems } = props;
-  const [deleteModalIsVisible, toggleDeleteModal] = useState(false);
-  const [updateModalIsVisible, toggleUpdateModal] = useState(false);
+  const [deleteModalIsVisible, setDeleteModal] = useState(false);
+  const [updateModalIsVisible, setUpdateModal] = useState(false);
 
   const handleDelete = () => {
-    toggleDeleteModal(false);
+    setDeleteModal(false);
     onDeleteMany();
   };
   const handleUpdate = () => {
-    toggleUpdateModal(false);
+    setUpdateModal(false);
     onUpdateMany();
   };
 
@@ -58,7 +58,7 @@ export default function ListManage(props: Props) {
             <IconButton
               appearance="primary"
               icon={SettingsIcon}
-              onClick={() => toggleUpdateModal(true)}
+              onClick={() => setUpdateModal(true)}
               variant="ghost"
               data-test-name="update"
             >
@@ -70,7 +70,7 @@ export default function ListManage(props: Props) {
           <IconButton
             appearance="danger"
             icon={TrashcanIcon}
-            onClick={() => toggleDeleteModal(true)}
+            onClick={() => setDeleteModal(true)}
             variant="ghost"
             data-test-name="delete"
           >
@@ -83,14 +83,14 @@ export default function ListManage(props: Props) {
         isOpen={updateModalIsVisible}
         items={selectedItems}
         list={list}
-        onClose={() => toggleUpdateModal(false)}
+        onClose={() => setUpdateModal(false)}
         onUpdate={handleUpdate}
       />
       <DeleteManyItemsModal
         isOpen={deleteModalIsVisible}
         itemIds={selectedItems}
         list={list}
-        onClose={() => toggleDeleteModal(false)}
+        onClose={() => setDeleteModal(false)}
         onDelete={handleDelete}
       />
     </Fragment>
