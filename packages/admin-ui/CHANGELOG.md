@@ -1,5 +1,34 @@
 # @keystone-alpha/admin-ui
 
+## 3.0.5
+
+- Updated dependencies [4131e232](https://github.com/keystonejs/keystone-5/commit/4131e232):
+  - @keystone-alpha/field-views-loader@2.0.0
+
+## 3.0.4
+
+- [patch][d718c016](https://github.com/keystonejs/keystone-5/commit/d718c016):
+
+  - Add the `admin` audience when signing in via the admin UI session middleware.
+
+- [patch][5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+
+  - Use the new @keystone-alpha/session package
+
+- Updated dependencies [d718c016](https://github.com/keystonejs/keystone-5/commit/d718c016):
+- Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+  - @keystone-alpha/session@1.0.0
+
+## 3.0.3
+
+- [patch][85cb44a9](https://github.com/keystonejs/keystone-5/commit/85cb44a9):
+
+  - Introduce `pages` config option
+  - Remove `sortListsAlphabetically`
+
+- Updated dependencies [85cb44a9](https://github.com/keystonejs/keystone-5/commit/85cb44a9):
+  - @arch-ui/navbar@0.0.4
+
 ## 3.0.2
 
 - [patch][5ddb2ed6](https://github.com/keystonejs/keystone-5/commit/5ddb2ed6):

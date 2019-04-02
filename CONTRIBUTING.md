@@ -22,6 +22,7 @@ When publishing keystone, we are using `@atlaskit/build-releases` in combination
   - what packages you want to publish
   - what version you are releasing them at
   - a message to summarise the changes (this message will be written to the changelog of bumped packages)
+  - _Changesets are powered by @noviny's [@atlaskit/build-releases](https://github.com/noviny/changesets)_
 - Before you accept the changeset, it will inform you of any other dependent packages within the repo that will also be bumped by this changeset. If this looks fine, agree, and a changeset commit will be generated.
 
 Here is what a changeset commit looks like:
@@ -131,6 +132,12 @@ git pull
 bolt
 bolt publish-changed
 git push --tags
+```
+
+**Note**: if you have two-factor authentication enabled for npm, you'll need to provide your 2FA code to the `publish-changed` task, like this:
+
+```sh
+NPM_CONFIG_OTP=123456 bolt publish-changed
 ```
 
 The `bolt publish-changed` command finds packages where the version listed in the `package.json` is ahead of the version published on npm, and attempts to publish just those packages.

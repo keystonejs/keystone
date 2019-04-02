@@ -32,7 +32,8 @@
     "prepare": "yarn run --silent contributing-guide",
     "contributing-guide": "is-ci && exit 0 || chalk -t \"\n\n{bold 📝 Contributing to KeystoneJS?}\n\nBe sure to build the modules first:\n> {yellow.bold yarn build}\n\" && link '🔗 Read the full Contributing Guide' 'https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md' && echo \"\n\n\"",
     "contributors:add": "all-contributors add",
-    "contributors:generate": "all-contributors generate"
+    "contributors:generate": "all-contributors generate",
+    "heroku-postbuild": "bolt && yarn build"
   },
   "dependencies": {
     "@babel/core": "^7.3.4",
@@ -71,6 +72,7 @@
     "body-parser": "^1.18.2",
     "chrono-node": "^1.3.5",
     "cloudinary": "^1.13.2",
+    "compression": "^1.7.4",
     "cookie": "^0.3.1",
     "cookie-signature": "^1.1.0",
     "cors": "^2.8.4",
@@ -114,6 +116,7 @@
     "hoist-non-react-statics": "^3.0.1",
     "html-webpack-plugin": "^3.2.0",
     "image-extensions": "^1.1.0",
+    "immutable": "^3.8.1",
     "inflection": "^1.12.0",
     "intersection-observer": "^0.5.1",
     "is-hotkey": "^0.1.4",
@@ -150,6 +153,7 @@
     "p-settle": "^2.1.0",
     "p-waterfall": "^1.0.0",
     "passport": "^0.4.0",
+    "passport-facebook": "^3.0.0",
     "passport-twitter": "^1.0.4",
     "pg": "^7.9.0",
     "pify": "^4.0.1",
@@ -191,6 +195,7 @@
     "slate-react": "^0.21.18",
     "split": "^1.0.1",
     "stack-utils": "^1.0.2",
+    "tinymce": "^5.0.3",
     "to-pascal-case": "^1.0.0",
     "underscore.string": "^3.3.5",
     "unist-util-visit": "^1.4.0",
@@ -220,6 +225,7 @@
       "packages/arch/packages/*",
       "packages/apollo-helpers",
       "packages/fields",
+      "packages/fields-wysiwyg-tinymce",
       "packages/utils"
     ]
   },
@@ -259,6 +265,7 @@
     "is-ci": "^2.0.0",
     "jade": "^1.11.0",
     "jest": "^24.5.0",
+    "jest-haste-map": "^24.5.0",
     "jest-junit": "^6.3.0",
     "jest-resolve": "^24.5.0",
     "mjml-react": "^1.0.51",

@@ -1,5 +1,11 @@
 # @keystone-alpha/fields
 
+## 3.0.2
+
+- [patch][03ea2b1d](https://github.com/keystonejs/keystone-5/commit/03ea2b1d):
+
+  - Bump version of @arch-ui/layout
+
 ## 3.0.1
 
 - Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):

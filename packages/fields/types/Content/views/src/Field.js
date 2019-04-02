@@ -9,10 +9,11 @@ import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { inputStyles } from '@arch-ui/input';
 
 let ContentField = ({ field, value: serverValue, onChange, autoFocus }) => {
+  const blocksModules = field.adminMeta.readViews(field.views.blocks);
   let blocks = useMemo(() => {
     let defaultBlocks = [paragraph];
 
-    let customBlocks = field.views.blocks.map((block, i) => ({
+    let customBlocks = blocksModules.map((block, i) => ({
       ...block,
       options: field.config.blockOptions[i],
     }));
@@ -49,7 +50,7 @@ let ContentField = ({ field, value: serverValue, onChange, autoFocus }) => {
       obj[block.type] = block;
       return obj;
     }, {});
-  }, [field]);
+  }, [blocksModules]);
 
   let parsedValue;
   if (serverValue) {

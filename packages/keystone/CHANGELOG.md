@@ -1,5 +1,15 @@
 # @keystone-alpha/keystone
 
+## 2.0.0
+
+- [major][8d385ede](https://github.com/keystonejs/keystone-5/commit/8d385ede):
+
+  - Remove keystone.getAuxQueryResolvers method
+
+- [major][52f1c47b](https://github.com/keystonejs/keystone-5/commit/52f1c47b):
+
+  - Replace `Keystone.registerGraphQLQueryMethod` with `Keystone.registerSchema`. Add `schemaName` parameter to `getAccessContext`. The `getGraphQLQuery` parameter to `List` now takes a `schemaName` argument. These changes allow us to register more than one ApolloServer instance in our Keystone system.
+
 ## 1.0.4
 
 - Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):

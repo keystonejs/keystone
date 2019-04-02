@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, createRef, Fragment } from 'react';
+import { Component, createRef, Fragment, Suspense } from 'react';
 import styled from '@emotion/styled';
 import { withRouter } from 'react-router-dom';
 
@@ -25,6 +25,7 @@ import ListTable from '../../components/ListTable';
 import CreateItemModal from '../../components/CreateItemModal';
 import PageLoading from '../../components/PageLoading';
 import { Popout, DisclosureArrow } from '../../components/Popout';
+import { withAdminMeta } from '../../providers/AdminMeta';
 
 import ColumnSelect from './ColumnSelect';
 import AddFilterPopout from './Filters/AddFilterPopout';
@@ -322,6 +323,7 @@ class ListDetails extends Component<Props, State> {
 
   render() {
     const {
+      adminMeta,
       adminPath,
       currentPage,
       fields,
@@ -344,6 +346,10 @@ class ListDetails extends Component<Props, State> {
     const { isFullWidth, selectedItems, showCreateModal, searchValue } = this.state;
 
     const searchId = 'ks-list-search-input';
+
+    // we want to preload the Field components
+    // so that we don't have a waterfall after the data loads
+    adminMeta.preloadViews(fields.map(({ views }) => views && views.Cell).filter(x => x));
 
     return (
       <Fragment>
@@ -467,21 +473,23 @@ class ListDetails extends Component<Props, State> {
 
           <Container isFullWidth={isFullWidth}>
             {items ? (
-              <ListTable
-                adminPath={adminPath}
-                fields={fields}
-                isFullWidth={isFullWidth}
-                items={items}
-                itemsErrors={itemsErrors}
-                list={list}
-                onChange={query.refetch}
-                onSelect={this.handleItemSelect}
-                onSelectAll={this.handleItemSelectAll}
-                handleSortChange={handleSortChange}
-                sortBy={sortBy}
-                selectedItems={selectedItems}
-                noResultsMessage={this.getNoResultsMessage()}
-              />
+              <Suspense fallback={<PageLoading />}>
+                <ListTable
+                  adminPath={adminPath}
+                  fields={fields}
+                  isFullWidth={isFullWidth}
+                  items={items}
+                  itemsErrors={itemsErrors}
+                  list={list}
+                  onChange={query.refetch}
+                  onSelect={this.handleItemSelect}
+                  onSelectAll={this.handleItemSelectAll}
+                  handleSortChange={handleSortChange}
+                  sortBy={sortBy}
+                  selectedItems={selectedItems}
+                  noResultsMessage={this.getNoResultsMessage()}
+                />
+              </Suspense>
             ) : (
               <PageLoading />
             )}
@@ -492,4 +500,4 @@ class ListDetails extends Component<Props, State> {
   }
 }
 
-export default withRouter(ListDetails);
+export default withAdminMeta(withRouter(ListDetails));

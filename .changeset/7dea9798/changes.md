@@ -1,1 +1,0 @@
-- Make all docs headers clicky for perma-linking.
