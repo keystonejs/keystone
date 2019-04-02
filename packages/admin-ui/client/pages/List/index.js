@@ -170,16 +170,15 @@ function ListLayout(props: LayoutProps) {
               <ListTable
                 adminPath={adminPath}
                 fields={fields}
+                handleSortChange={handleSortChange}
                 isFullWidth={isFullWidth}
                 items={items}
                 itemsErrors={itemErrors}
                 list={list}
                 onChange={onDeleteItem}
-                selectedItems={selectedItems}
                 onSelectChange={onSelectChange}
-                handleSortChange={handleSortChange}
-                sortBy={sortBy}
                 selectedItems={selectedItems}
+                sortBy={sortBy}
               />
             ) : (
               <NoResults
