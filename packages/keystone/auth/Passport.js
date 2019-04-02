@@ -23,6 +23,7 @@ class PassportAuthStrategy {
       authRoot: 'auth',
       authSuccessRedirect: '/',
       authFailureRedirect: '/',
+      scope: [],
       ...config,
     };
     this.ServiceStrategy = ServiceStrategy;
@@ -210,7 +211,10 @@ class PassportAuthStrategy {
 
       // If the user isn't already logged in
       // kick off the service auth process
-      passport.authenticate(this.authType, { session: this.config.useSession })(req, res, next);
+      passport.authenticate(this.authType, {
+        session: this.config.useSession,
+        scope: this.config.scope,
+      })(req, res, next);
     };
   }
 

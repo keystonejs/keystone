@@ -15,6 +15,10 @@ exports.twitterAppKey = process.env.TWITTER_APP_KEY;
 exports.twitterAppSecret = process.env.TWITTER_APP_SECRET;
 exports.twitterAuthEnabled = exports.twitterAppKey && exports.twitterAppSecret;
 
+exports.googleAppKey = process.env.GOOGLE_APP_KEY;
+exports.googleAppSecret = process.env.GOOGLE_APP_SECRET;
+exports.googleAuthEnabled = exports.googleAppKey && exports.googleAppSecret;
+
 exports.staticRoute = '/public'; // The URL portion
 exports.staticPath = path.join(process.cwd(), 'public'); // The local path on disk
 

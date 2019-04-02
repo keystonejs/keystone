@@ -84,6 +84,10 @@ keystone.createList('User', {
     twitterId: { type: Text },
     twitterUsername: { type: Text },
 
+    // TODO: Create a Google field type to encapsulate these
+    googleId: { type: Text },
+    googleUsername: { type: Text },
+
     isAdmin: { type: Checkbox },
     company: {
       type: Select,
