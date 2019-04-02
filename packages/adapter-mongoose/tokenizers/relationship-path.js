@@ -35,9 +35,9 @@ module.exports = function getRelatedListAdapterFromQueryPathFactory(listAdapter)
         // Seriously, though, Prettier. Don't.
         // prettier-ignore
         throw new Error(
-          `'${foundListAdapter.key}' Mongo List Adapter doesn't have a related list.`
+          ` Mongo List Adapter doesn't have a related list.`
           + ` Are you attempting to do a relationship query on a non-relationship field?`
-          + ` '${foundListAdapter.key}' was found by following the query`
+          + ` Key was found by following the query`
           + ` '${queryPath.slice(0, index + 1).join(' > ')}'.`
         );
       }
