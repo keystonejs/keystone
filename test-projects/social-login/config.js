@@ -11,6 +11,10 @@ exports.githubAppKey = process.env.GITHUB_APP_KEY;
 exports.githubAppSecret = process.env.GITHUB_APP_SECRET;
 exports.githubAuthEnabled = exports.githubAppKey && exports.githubAppSecret;
 
+exports.twitterAppKey = process.env.TWITTER_APP_KEY;
+exports.twitterAppSecret = process.env.TWITTER_APP_SECRET;
+exports.twitterAuthEnabled = exports.twitterAppKey && exports.twitterAppSecret;
+
 exports.staticRoute = '/public'; // The URL portion
 exports.staticPath = path.join(process.cwd(), 'public'); // The local path on disk
 

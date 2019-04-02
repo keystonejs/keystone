@@ -3,12 +3,14 @@ const { endAuthedSession } = require('@keystone-alpha/session');
 const {
   facebookAuthEnabled,
   githubAuthEnabled,
+  twitterAuthEnabled,
   port,
   staticRoute,
   staticPath,
 } = require('./config');
 const { configureFacebookAuth } = require('./facebook');
 const { configureGitHubAuth } = require('./github');
+const { configureTwitterAuth } = require('./twitter');
 
 const initialData = require('./data');
 
@@ -29,6 +31,10 @@ keystone
 
     if (githubAuthEnabled) {
       configureGitHubAuth(keystoneApp, server);
+    }
+
+    if (twitterAuthEnabled) {
+      configureTwitterAuth(keystoneApp, server);
     }
 
     server.app.use(staticRoute, server.express.static(staticPath));

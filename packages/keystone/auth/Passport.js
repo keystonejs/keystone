@@ -87,8 +87,8 @@ class PassportAuthStrategy {
     });
   }
 
-  async validate({ accessToken }) {
-    const validatedInfo = await this.validateWithService(this.passportStrategy, accessToken);
+  async validate({ accessToken, ...validationArgs }) {
+    const validatedInfo = await this.validateWithService(this.passportStrategy, accessToken, validationArgs);
 
     // Lookup a past, verified session, that links to a user
     let pastSessionItem;

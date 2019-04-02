@@ -12,7 +12,7 @@ exports.configureFacebookAuth = function(keystone, server) {
       callbackURL: `${appURL}/auth/facebook/callback`,
       idField: 'facebookId',
       usernameField: 'facebookUsername',
-      authSuccessRedirect: '/api/session',
+      authSuccessRedirect: '/api/session', // defaults to '/'
       server,
     },
   });
