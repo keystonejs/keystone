@@ -261,7 +261,7 @@ class MongooseListAdapter extends BaseListAdapter {
         ...query.where,
         ...mapKeyNames(
           // Grab all the modifiers
-          pick(query || {}, ['search', 'orderBy', 'skip', 'first']),
+          pick(query, ['search', 'orderBy', 'skip', 'first']),
           // and prefix with a dollar symbol so they can be picked out by the
           // query builder tokeniser
           key => `$${key}`

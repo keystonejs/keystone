@@ -38,7 +38,7 @@ const argSpecDescription = [
 
 // Translate args to arg format
 const argSpec = {};
-argSpecDescription.map(argument => {
+argSpecDescription.forEach(argument => {
   argSpec[argument.command] = argument.value;
   argSpec[argument.alias] = argument.command;
 });

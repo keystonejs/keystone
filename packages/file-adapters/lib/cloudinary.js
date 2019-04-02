@@ -55,7 +55,7 @@ module.exports = class CloudinaryAdapter {
 
     const { prettyName, ...transformation } = options;
     // No formatting options provided, return the publicUrl field
-    if (!transformation || !Object.keys(transformation).length) {
+    if (!Object.keys(transformation).length) {
       return this.publicUrl({ _meta });
     }
     const { public_id, format } = _meta;

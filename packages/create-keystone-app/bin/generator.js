@@ -45,7 +45,7 @@ const exec = (cmd, args) => {
 function generate(name, noDeps) {
   const appName = createAppName(name);
   const projectDir = `.${path.sep}${path.relative(process.cwd(), appName)}`;
-  const hasYarn = true;
+  let hasYarn = true;
 
   const tasks = new Listr([
     {

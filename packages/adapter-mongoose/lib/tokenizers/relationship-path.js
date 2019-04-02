@@ -29,15 +29,16 @@ module.exports = function getRelatedListAdapterFromQueryPathFactory(listAdapter)
       }
 
       // Then follow the breadcrumbs to find the list adapter
+      const currentKey = foundListAdapter.key;
       foundListAdapter = fieldAdapter.getRefListAdapter();
 
       if (!foundListAdapter) {
         // Seriously, though, Prettier. Don't.
         // prettier-ignore
         throw new Error(
-          `'${foundListAdapter.key}' Mongo List Adapter doesn't have a related list.`
+          `'${currentKey}' Mongo List Adapter doesn't have a related list.`
           + ` Are you attempting to do a relationship query on a non-relationship field?`
-          + ` '${foundListAdapter.key}' was found by following the query`
+          + ` '${currentKey}' was found by following the query`
           + ` '${queryPath.slice(0, index + 1).join(' > ')}'.`
         );
       }
