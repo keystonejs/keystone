@@ -7,6 +7,10 @@ exports.facebookAppKey = process.env.FACEBOOK_APP_KEY;
 exports.facebookAppSecret = process.env.FACEBOOK_APP_SECRET;
 exports.facebookAuthEnabled = exports.facebookAppKey && exports.facebookAppSecret;
 
+exports.githubAppKey = process.env.GITHUB_APP_KEY;
+exports.githubAppSecret = process.env.GITHUB_APP_SECRET;
+exports.githubAuthEnabled = exports.githubAppKey && exports.githubAppSecret;
+
 exports.staticRoute = '/public'; // The URL portion
 exports.staticPath = path.join(process.cwd(), 'public'); // The local path on disk
 

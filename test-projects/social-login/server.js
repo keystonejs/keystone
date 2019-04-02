@@ -1,7 +1,8 @@
 const keystone = require('@keystone-alpha/core');
 
-const { facebookAuthEnabled, port, staticRoute, staticPath } = require('./config');
+const { facebookAuthEnabled, githubAuthEnabled, port, staticRoute, staticPath } = require('./config');
 const { configureFacebookAuth } = require('./facebook');
+const { configureGitHubAuth } = require('./github');
 
 const initialData = require('./data');
 
@@ -18,6 +19,10 @@ keystone
 
     if (facebookAuthEnabled) {
       configureFacebookAuth(keystoneApp, server);
+    }
+
+    if (githubAuthEnabled) {
+      configureGitHubAuth(keystoneApp, server);
     }
 
     server.app.use(staticRoute, server.express.static(staticPath));

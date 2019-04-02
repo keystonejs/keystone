@@ -76,6 +76,9 @@ keystone.createList('User', {
     // TODO: Create a Facebook field type to encapsulate these
     facebookId: { type: Text },
     facebookUsername: { type: Text },
+    // TODO: Create a GitHub field type to encapsulate these
+    githubId: { type: Text },
+    githubUsername: { type: Text },
     isAdmin: { type: Checkbox },
     company: {
       type: Select,
