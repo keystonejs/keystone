@@ -9,7 +9,7 @@ keystone
   })
   .then(({ server }) => {
     server.app.use(server.express.static(path.join(__dirname, 'public')));
-    return server.start();
+    return server.start(process.env.MONGODB_URI);
   })
   .then(({ port }) => {
     console.log(`Listening on port ${port}`);
