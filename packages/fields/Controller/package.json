@@ -2,6 +2,6 @@
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
   "preconstruct": {
-    "source": "../Controller-src.js"
+    "source": "../Controller/src/index.js"
   }
 }

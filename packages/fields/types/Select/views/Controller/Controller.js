@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
-import FieldController from '../../../../Controller-src';
+import FieldController from '../../../../Controller/src/index';
 
 export default class SelectController extends FieldController {
   constructor(...args) {

@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import FieldController from '../../../../Controller-src';
+import FieldController from '../../../../Controller/src/index';
 
 export default class PasswordController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
