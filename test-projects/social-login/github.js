@@ -7,8 +7,8 @@ exports.configureGitHubAuth = function(keystone, server) {
     type: GitHubAuthStrategy,
     list: 'User',
     config: {
-      consumerKey: githubAppKey,
-      consumerSecret: githubAppSecret,
+      clientID: githubAppKey,
+      clientSecret: githubAppSecret,
       enableAuthRoutes: true, // default true
       authRoot: 'auth',
       callbackURL: `${appURL}/auth/github/callback`,

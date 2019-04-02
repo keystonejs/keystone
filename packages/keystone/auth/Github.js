@@ -7,35 +7,9 @@ class GitHubAuthStrategy extends PassportAuthStrategy {
       sessionIdField: 'githubSession',
       keystoneSessionIdField: 'keystoneGitHubSessionId',
       ...config,
-    });
+    },
+    PassportGitHub);
   }
-
-  //#region implementing abstract methods
-  getPassportStrategy() {
-    return new PassportGitHub(
-      {
-        clientID: this.config.consumerKey,
-        clientSecret: this.config.consumerSecret,
-        callbackURL: this.config.callbackURL,
-        passReqToCallback: true,
-      },
-      async (req, accessToken, refreshToken, profile, done) => {
-        try {
-          let result = await this.keystone.auth.User.github.validate({
-            accessToken,
-          });
-          if (!result.success) {
-            // false indicates an authentication failure
-            return done(null, false, { ...result, profile });
-          }
-          return done(null, result.item, { ...result, profile });
-        } catch (error) {
-          return done(error);
-        }
-      }
-    );
-  }
-  //#endregion
 }
 
 GitHubAuthStrategy.authType = 'github';

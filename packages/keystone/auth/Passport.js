@@ -6,7 +6,7 @@ const FIELD_TOKEN_SECRET = 'tokenSecret';
 const FIELD_ITEM = 'item';
 
 class PassportAuthStrategy {
-  constructor(authType, keystone, listKey, config) {
+  constructor(authType, keystone, listKey, config, ServiceStrategy = null) {
     this.authType = authType;
     this.keystone = keystone;
     this.listKey = listKey;
@@ -25,6 +25,7 @@ class PassportAuthStrategy {
       authFailureRedirect: '/',
       ...config,
     };
+    this.ServiceStrategy = ServiceStrategy;
 
     this.createSessionList();
 
@@ -251,9 +252,34 @@ class PassportAuthStrategy {
     };
   }
 
-  //#region abstract method, must implement
+  //#region abstract method, must implement if ServiceStrategy is not provided in constructor
   getPassportStrategy() {
-    throw new Error('must provide PassportJs strategy instance');
+    if (!this.ServiceStrategy) {
+      throw new Error(`Must provide PassportJs strategy Type in constructor or override this method in ${this.authType}`);
+    }
+
+    return new this.ServiceStrategy(
+      {
+        clientID: this.config.clientID,
+        clientSecret: this.config.clientSecret,
+        callbackURL: this.config.callbackURL,
+        passReqToCallback: true,
+      },
+      async (req, accessToken, refreshToken, profile, done) => {
+        try {
+          let result = await this.keystone.auth.User[this.authType].validate({
+            accessToken,
+          });
+          if (!result.success) {
+            // false indicates an authentication failure
+            return done(null, false, { ...result, profile });
+          }
+          return done(null, result.item, { ...result, profile });
+        } catch (error) {
+          return done(error);
+        }
+      }
+    );
   }
   //#endregion
 
