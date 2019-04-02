@@ -156,7 +156,9 @@ class PassportAuthStrategy {
 
     if (!serviceSessionId) {
       throw new Error(
-        `Unable to extract ${this.authType} Id from session. Maybe \`pauseValidation()\` wasn't called?`
+        `Unable to extract ${
+          this.authType
+        } Id from session. Maybe \`pauseValidation()\` wasn't called?`
       );
     }
 

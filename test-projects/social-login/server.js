@@ -1,6 +1,12 @@
 const keystone = require('@keystone-alpha/core');
 const { endAuthedSession } = require('@keystone-alpha/session');
-const { facebookAuthEnabled, githubAuthEnabled, port, staticRoute, staticPath } = require('./config');
+const {
+  facebookAuthEnabled,
+  githubAuthEnabled,
+  port,
+  staticRoute,
+  staticPath,
+} = require('./config');
 const { configureFacebookAuth } = require('./facebook');
 const { configureGitHubAuth } = require('./github');
 
