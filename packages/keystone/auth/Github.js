@@ -1,4 +1,3 @@
-// const passport = require('passport');
 const PassportGitHub = require('passport-github');
 const PassportAuthStrategy = require('./Passport');
 
