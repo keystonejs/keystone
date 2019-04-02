@@ -1,5 +1,5 @@
 const keystone = require('@keystone-alpha/core');
-
+const { endAuthedSession } = require('@keystone-alpha/session');
 const { facebookAuthEnabled, githubAuthEnabled, port, staticRoute, staticPath } = require('./config');
 const { configureFacebookAuth } = require('./facebook');
 const { configureGitHubAuth } = require('./github');
@@ -26,6 +26,25 @@ keystone
     }
 
     server.app.use(staticRoute, server.express.static(staticPath));
+
+    server.app.get('/api/session', (req, res) => {
+      res.json({
+        signedIn: !!req.session.keystoneItemId,
+        userId: req.session.keystoneItemId,
+        name: req.user ? req.user.name : undefined,
+      });
+    });
+
+    server.app.get('/api/signout', async (req, res, next) => {
+      try {
+        await endAuthedSession(req);
+        res.json({
+          success: true,
+        });
+      } catch (e) {
+        next(e);
+      }
+    });
 
     await server.start();
 

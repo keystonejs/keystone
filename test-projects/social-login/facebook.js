@@ -1,5 +1,5 @@
 const FacebookAuthStrategy = require('@keystone-alpha/keystone/auth/Facebook');
-const { startAuthedSession, endAuthedSession } = require('@keystone-alpha/session');
+const { startAuthedSession } = require('@keystone-alpha/session');
 
 const { appURL, facebookAppKey, facebookAppSecret } = require('./config');
 
@@ -29,25 +29,6 @@ exports.configureFacebookAuth = function(keystone, server) {
       },
     })
   );
-
-  server.app.get('/api/session', (req, res) => {
-    res.json({
-      signedIn: !!req.session.keystoneItemId,
-      userId: req.session.keystoneItemId,
-      name: req.user ? req.user.name : undefined,
-    });
-  });
-
-  server.app.get('/api/signout', async (req, res, next) => {
-    try {
-      await endAuthedSession(req);
-      res.json({
-        success: true,
-      });
-    } catch (e) {
-      next(e);
-    }
-  });
 
   // Facebook will redirect the user to this URL after approval.
   server.app.get(
