@@ -4,13 +4,14 @@ import React, { Component } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
-import { DiffIcon, InfoIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
+import { DiffIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { CheckboxPrimitive } from '@arch-ui/controls';
 import Dropdown from '@arch-ui/dropdown';
 import { A11yText } from '@arch-ui/typography';
 import DeleteItemModal from './DeleteItemModal';
 import { copyToClipboard } from '../util';
+import { useListSort } from '../pages/List/dataHooks';
 
 // Styled Components
 const Table = styled('table')({
@@ -70,25 +71,6 @@ const BodyCellTruncated = styled(BodyCell)`
   white-space: nowrap;
   word-wrap: normal;
 `;
-
-const NoResults = ({ children, ...props }) => (
-  <div
-    css={{
-      alignItems: 'center',
-      color: colors.N30,
-      display: 'flex',
-      flexDirection: 'column',
-      fontSize: 32,
-      justifyContent: 'center',
-      padding: '1em',
-      textAlign: 'center',
-    }}
-    {...props}
-  >
-    <InfoIcon css={{ height: 48, width: 48, marginBottom: '0.5em' }} />
-    {children}
-  </div>
-);
 
 const SortDirectionArrow = styled.span(({ size = '0.25em', rotate = '0deg' }) => ({
   borderLeft: `${size} solid transparent`,
@@ -155,8 +137,8 @@ class ListRow extends Component {
   }
 
   onCheckboxChange = () => {
-    const { item, onSelect } = this.props;
-    onSelect(item.id);
+    const { item, onSelectChange } = this.props;
+    onSelectChange(item.id);
   };
 
   // ==============================
@@ -286,77 +268,73 @@ class ListRow extends Component {
   }
 }
 
-export default class ListTable extends Component {
-  handleSelectAll = () => {
-    const { items, onSelectAll, selectedItems } = this.props;
+export default function ListTable(props) {
+  const {
+    adminPath,
+    fields,
+    isFullWidth,
+    items,
+    itemsErrors = [],
+    list,
+    onChange,
+    onSelectChange,
+    selectedItems,
+  } = props;
+
+  const [sortBy, onSortChange] = useListSort(list.key);
+
+  const handleSelectAll = () => {
     const allSelected = items.length === selectedItems.length;
     const value = allSelected ? [] : items.map(i => i.id);
-    onSelectAll(value);
+    onSelectChange(value);
   };
 
-  render() {
-    const {
-      adminPath,
-      fields,
-      isFullWidth,
-      items,
-      itemsErrors = [],
-      list,
-      noResultsMessage,
-      onChange,
-      onSelect,
-      handleSortChange,
-      sortBy,
-      selectedItems,
-    } = this.props;
+  const cypressId = 'ks-list-table';
 
-    return items.length ? (
-      <Table id="ks-list-table" style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
-        <colgroup>
-          <col width="32" />
-        </colgroup>
-        <thead>
-          <tr>
-            <HeaderCell>
-              <div css={{ position: 'relative', top: 3 }}>
-                <CheckboxPrimitive
-                  checked={items.length === selectedItems.length}
-                  onChange={this.handleSelectAll}
-                  tabIndex="0"
-                />
-              </div>
-            </HeaderCell>
-            {fields.map(field => (
-              <SortLink
-                data-field={field.path}
-                key={field.path}
-                sortable={field.path !== '_label_'}
-                field={field}
-                handleSortChange={handleSortChange}
-                active={sortBy.field.path === field.path}
-                sortAscending={sortBy.direction === 'ASC'}
+  return (
+    <Table id={cypressId} style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
+      <colgroup>
+        <col width="32" />
+      </colgroup>
+      <thead>
+        <tr>
+          <HeaderCell>
+            <div css={{ position: 'relative', top: 3 }}>
+              <CheckboxPrimitive
+                checked={items.length === selectedItems.length}
+                onChange={handleSelectAll}
+                tabIndex="0"
               />
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item, itemIndex) => (
-            <ListRow
-              fields={fields}
-              isSelected={selectedItems.includes(item.id)}
-              item={item}
-              itemErrors={itemsErrors[itemIndex] || {}}
-              key={item.id}
-              link={({ path, id }) => `${adminPath}/${path}/${id}`}
-              list={list}
-              onDelete={onChange}
-              onSelect={onSelect}
+            </div>
+          </HeaderCell>
+          {fields.map(field => (
+            <SortLink
+              data-field={field.path}
+              key={field.path}
+              sortable={field.path !== '_label_'}
+              field={field}
+              handleSortChange={onSortChange}
+              active={sortBy.field.path === field.path}
+              sortAscending={sortBy.direction === 'ASC'}
             />
           ))}
-        </tbody>
-      </Table>
-    ) : (
-      <NoResults>{noResultsMessage}</NoResults>
-    );
-  }
+        </tr>
+      </thead>
+      <tbody>
+        {items.map((item, itemIndex) => (
+          <ListRow
+            fields={fields}
+            isSelected={selectedItems.includes(item.id)}
+            item={item}
+            itemErrors={itemsErrors[itemIndex] || {}}
+            key={item.id}
+            link={({ path, id }) => `${adminPath}/${path}/${id}`}
+            list={list}
+            onDelete={onChange}
+            onSelectChange={onSelectChange}
+          />
+        ))}
+      </tbody>
+    </Table>
+  );
 }

@@ -1,6 +1,7 @@
 import React, { useMemo, Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks'; // FIXME: Use the provided API when hooks ready
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ToastProvider } from 'react-toast-notifications';
 import { Global } from '@emotion/core';
@@ -26,28 +27,31 @@ import SigninPage from './pages/Signin';
 const Keystone = () => {
   let adminMeta = useAdminMeta();
   let { apiPath } = adminMeta;
+  const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
 
   return (
-    <ApolloProvider client={useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath])}>
-      <ToastProvider>
-        <ConnectivityListener />
-        <Global styles={globalStyles} />
+    <ApolloProvider client={apolloClient}>
+      <ApolloHooksProvider client={apolloClient}>
+        <ToastProvider>
+          <ConnectivityListener />
+          <Global styles={globalStyles} />
 
-        {adminMeta.withAuth ? (
-          <BrowserRouter>
-            <Switch>
-              <Route
-                exact
-                path={adminMeta.signoutPath}
-                render={() => <SignoutPage {...adminMeta} />}
-              />
-              <Route render={() => <SigninPage {...adminMeta} />} />
-            </Switch>
-          </BrowserRouter>
-        ) : (
-          <InvalidRoutePage {...adminMeta} />
-        )}
-      </ToastProvider>
+          {adminMeta.withAuth ? (
+            <BrowserRouter>
+              <Switch>
+                <Route
+                  exact
+                  path={adminMeta.signoutPath}
+                  render={() => <SignoutPage {...adminMeta} />}
+                />
+                <Route render={() => <SigninPage {...adminMeta} />} />
+              </Switch>
+            </BrowserRouter>
+          ) : (
+            <InvalidRoutePage {...adminMeta} />
+          )}
+        </ToastProvider>
+      </ApolloHooksProvider>
     </ApolloProvider>
   );
 };

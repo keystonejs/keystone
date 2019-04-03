@@ -5,6 +5,7 @@ import { gridSize } from '@arch-ui/theme';
 
 import AnimateHeight from '../../../components/AnimateHeight';
 import EditFilterPopout from './EditFilterPopout';
+import { useListFilter } from '../dataHooks';
 
 const pillStyle = { marginBottom: gridSize / 2, marginTop: gridSize / 2 };
 
@@ -15,20 +16,19 @@ export type FilterType = {
   value: string,
 };
 type Props = {
-  filterList: Array<FilterType>,
-  onClear: FilterType => void,
-  onRemove: FilterType => void,
-  onUpdate: FilterType => void,
+  listKey: string,
 };
 
-export default function ActiveFilters({ filterList, onClear, onRemove, onUpdate }: Props) {
+export default function ActiveFilters({ listKey }: Props) {
+  const { filters, onRemove, onRemoveAll, onUpdate } = useListFilter(listKey);
+
   return (
     <AnimateHeight
       style={{ paddingTop: gridSize }}
       render={({ ref }) => (
         <FlexGroup ref={ref} wrap id="ks-list-active-filters">
-          {filterList.length
-            ? filterList.map(filter => {
+          {filters.length
+            ? filters.map(filter => {
                 const label = filter.field.formatFilter(filter);
                 return (
                   <EditFilterPopout
@@ -50,8 +50,8 @@ export default function ActiveFilters({ filterList, onClear, onRemove, onUpdate 
               })
             : null}
 
-          {filterList.length > 1 ? (
-            <Pill key="clear" onClick={onClear} style={pillStyle}>
+          {filters.length > 1 ? (
+            <Pill key="clear" onClick={onRemoveAll} style={pillStyle}>
               Clear All
             </Pill>
           ) : null}

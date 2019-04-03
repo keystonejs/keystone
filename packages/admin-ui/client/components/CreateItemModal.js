@@ -135,17 +135,15 @@ class CreateItemModal extends Component {
   }
 }
 
-export default class CreateItemModalWithMutation extends Component {
-  render() {
-    const { list } = this.props;
-    return (
-      <Suspense fallback={null}>
-        <Mutation mutation={list.createMutation}>
-          {(createItem, { loading }) => (
-            <CreateItemModal createItem={createItem} isLoading={loading} {...this.props} />
-          )}
-        </Mutation>
-      </Suspense>
-    );
-  }
+export default function CreateItemModalWithMutation(props) {
+  const { list } = props;
+  return (
+    <Suspense fallback={null}>
+      <Mutation mutation={list.createMutation}>
+        {(createItem, { loading }) => (
+          <CreateItemModal createItem={createItem} isLoading={loading} {...props} />
+        )}
+      </Mutation>
+    </Suspense>
+  );
 }
