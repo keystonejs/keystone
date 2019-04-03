@@ -239,7 +239,16 @@
       "<rootDir>/website/.cache"
     ],
     "collectCoverageFrom": [
-      "<rootDir>/packages/**/*.js"
+      "packages/**/*.js",
+      "!packages/**/dist/**",
+      "!packages/admin-ui/client/**",
+      "!packages/arch/**",
+      "!packages/create-keystone-app/templates/**",
+      "!packages/core/tests/default-entry/index.js",
+      "!packages/fields/**/views/**",
+      "!packages/fields/**/filterTests.js",
+      "!packages/fields/types.js",
+      "!packages/mongo-join-builder/examples/**"
     ]
   },
   "devDependencies": {
