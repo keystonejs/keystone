@@ -3,7 +3,7 @@ import {
   parseFieldAccess,
   validateListAccessControl,
   validateFieldAccessControl,
-} from './index.js';
+} from '../';
 describe('Access control package tests', () => {
   test('parseListAccess', () => {
     const statics = [true, false]; // type StaticAccess = boolean;
