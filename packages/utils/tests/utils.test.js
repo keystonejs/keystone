@@ -18,7 +18,7 @@ const {
   flatten,
   flatMap,
   ...utils
-} = require('./');
+} = require('../');
 
 describe('utils', () => {
   test('camelize', () => {
