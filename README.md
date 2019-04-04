@@ -286,7 +286,7 @@ keystone.createList('User', {
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuth,
   list: 'User',
-  {
+  config: {
     identityField: 'username', // default: 'email'
     secretField: 'password',   // default: 'password'
   }
