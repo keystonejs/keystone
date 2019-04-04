@@ -1,0 +1,538 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@babel/runtime installed: babel-runtime-installed.cjs.dev.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+class Bar {}
+
+class Foo extends Bar {}
+
+exports.Foo = Foo;
+"
+`;
+
+exports[`@babel/runtime installed: babel-runtime-installed.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./babel-runtime-installed.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./babel-runtime-installed.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`@babel/runtime installed: babel-runtime-installed.cjs.prod.js 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
+class Bar {}
+class Foo extends Bar {}
+exports.Foo = Foo;
+"
+`;
+
+exports[`@babel/runtime installed: babel-runtime-installed.esm.js 1`] = `
+"class Bar {}
+
+class Foo extends Bar {}
+
+export { Foo };
+"
+`;
+
+exports[`clears dist folder: already-has-things-in-dist.cjs.dev.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var index = \\"something\\";
+exports.default = index;
+"
+`;
+
+exports[`clears dist folder: already-has-things-in-dist.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./already-has-things-in-dist.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./already-has-things-in-dist.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`clears dist folder: already-has-things-in-dist.cjs.prod.js 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
+var index = \\"something\\";
+exports.default = index;
+"
+`;
+
+exports[`flow: flow.cjs.dev.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var a = \\"wow\\";
+
+function doSomething(arg) {
+  return \\"something\\" + arg;
+}
+
+exports.doSomething = doSomething;
+exports.something = a;
+"
+`;
+
+exports[`flow: flow.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./flow.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./flow.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`flow: flow.cjs.js.flow 1`] = `
+"// @flow
+export * from \\"../src/index.js\\";
+"
+`;
+
+exports[`flow: flow.cjs.prod.js 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
+var a = \\"wow\\";
+function doSomething(arg) {
+  return \\"something\\" + arg;
+}
+(exports.doSomething = doSomething), (exports.something = a);
+"
+`;
+
+exports[`flow: flow.esm.js 1`] = `
+"var a = \\"wow\\";
+
+function doSomething(arg) {
+  return \\"something\\" + arg;
+}
+
+export { doSomething, a as something };
+"
+`;
+
+exports[`flow: flow-export-default.cjs.dev.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function doSomething(arg) {
+  return \\"something\\" + arg;
+}
+
+var index = \\"wow\\";
+exports.doSomething = doSomething;
+exports.default = index;
+"
+`;
+
+exports[`flow: flow-export-default.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./flow-export-default.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./flow-export-default.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`flow: flow-export-default.cjs.js.flow 1`] = `
+"// @flow
+export * from \\"../src/index.js\\";
+export { default } from \\"../src/index.js\\";
+"
+`;
+
+exports[`flow: flow-export-default.cjs.prod.js 1`] = `
+"\\"use strict\\";
+function doSomething(arg) {
+  return \\"something\\" + arg;
+}
+Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
+var index = \\"wow\\";
+(exports.doSomething = doSomething), (exports.default = index);
+"
+`;
+
+exports[`flow: flow-export-default.esm.js 1`] = `
+"function doSomething(arg) {
+  return \\"something\\" + arg;
+}
+var index = \\"wow\\";
+
+export default index;
+export { doSomething };
+"
+`;
+
+exports[`monorepo single package: package-two-single-package.cjs.dev.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var index = 2;
+exports.default = index;
+"
+`;
+
+exports[`monorepo single package: package-two-single-package.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./package-two-single-package.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./package-two-single-package.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`monorepo single package: package-two-single-package.cjs.prod.js 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
+var index = 2;
+exports.default = index;
+"
+`;
+
+exports[`monorepo single package: package-two-single-package.esm.js 1`] = `
+"var index = 2;
+
+export default index;
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-four-umd-with-dep.cjs.dev.js 1`] = `
+"'use strict';
+
+require('@some-scope/package-one-umd-with-dep');
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-four-umd-with-dep.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./package-four-umd-with-dep.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./package-four-umd-with-dep.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-four-umd-with-dep.cjs.prod.js 1`] = `
+"\\"use strict\\";
+require(\\"@some-scope/package-one-umd-with-dep\\");
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-four-umd-with-dep.umd.min.js 1`] = `
+"!function(e,t){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?t(require(\\"react\\")):\\"function\\"==typeof define&&define.amd?define([\\"react\\"],t):t((e=e||self).React)}(this,function(e){\\"use strict\\";e.createElement(\\"div\\",null)});
+//# sourceMappingURL=package-four-umd-with-dep.umd.min.js.map
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-four-umd-with-dep.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"package-four-umd-with-dep.umd.min.js\\",\\"sources\\":[\\"../../package-one/src/index.js\\"],\\"sourcesContent\\":[\\"import { createElement } from \\\\\\"react\\\\\\";\\\\n\\\\ncreateElement(\\\\\\"div\\\\\\", null);\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"sNAEc,MAAO\\"}"`;
+
+exports[`monorepo umd with dep on other module: package-one-umd-with-dep.cjs.dev.js 1`] = `
+"'use strict';
+
+var react = require('react');
+
+react.createElement(\\"div\\", null);
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-one-umd-with-dep.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./package-one-umd-with-dep.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./package-one-umd-with-dep.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-one-umd-with-dep.cjs.prod.js 1`] = `
+"\\"use strict\\";
+var react = require(\\"react\\");
+react.createElement(\\"div\\", null);
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-one-umd-with-dep.umd.min.js 1`] = `
+"!function(e,t){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?t(require(\\"react\\")):\\"function\\"==typeof define&&define.amd?define([\\"react\\"],t):t((e=e||self).React)}(this,function(e){\\"use strict\\";e.createElement(\\"div\\",null)});
+//# sourceMappingURL=package-one-umd-with-dep.umd.min.js.map
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-one-umd-with-dep.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"package-one-umd-with-dep.umd.min.js\\",\\"sources\\":[\\"../src/index.js\\"],\\"sourcesContent\\":[\\"import { createElement } from \\\\\\"react\\\\\\";\\\\n\\\\ncreateElement(\\\\\\"div\\\\\\", null);\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"sNAEc,MAAO\\"}"`;
+
+exports[`monorepo umd with dep on other module: package-three-umd-with-dep.cjs.dev.js 1`] = `
+"'use strict';
+
+require('@some-scope/package-one-umd-with-dep');
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-three-umd-with-dep.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./package-three-umd-with-dep.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./package-three-umd-with-dep.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-three-umd-with-dep.cjs.prod.js 1`] = `
+"\\"use strict\\";
+require(\\"@some-scope/package-one-umd-with-dep\\");
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-three-umd-with-dep.umd.min.js 1`] = `
+"!function(e){\\"function\\"==typeof define&&define.amd?define([\\"@some-scope/package-one-umd-with-dep\\"],e):e()}(function(){});
+//# sourceMappingURL=package-three-umd-with-dep.umd.min.js.map
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-three-umd-with-dep.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"package-three-umd-with-dep.umd.min.js\\",\\"sources\\":[],\\"sourcesContent\\":[],\\"names\\":[],\\"mappings\\":\\"\\"}"`;
+
+exports[`monorepo umd with dep on other module: package-two-umd-with-dep.cjs.dev.js 1`] = `
+"'use strict';
+
+var react = require('react');
+
+react.createElement(\\"h1\\", null);
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-two-umd-with-dep.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./package-two-umd-with-dep.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./package-two-umd-with-dep.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-two-umd-with-dep.cjs.prod.js 1`] = `
+"\\"use strict\\";
+var react = require(\\"react\\");
+react.createElement(\\"h1\\", null);
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-two-umd-with-dep.umd.min.js 1`] = `
+"!function(e,t){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?t(require(\\"react\\")):\\"function\\"==typeof define&&define.amd?define([\\"react\\"],t):t((e=e||self).React)}(this,function(e){\\"use strict\\";e.createElement(\\"h1\\",null)});
+//# sourceMappingURL=package-two-umd-with-dep.umd.min.js.map
+"
+`;
+
+exports[`monorepo umd with dep on other module: package-two-umd-with-dep.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"package-two-umd-with-dep.umd.min.js\\",\\"sources\\":[\\"../src/index.js\\"],\\"sourcesContent\\":[\\"import { createElement } from \\\\\\"react\\\\\\";\\\\n\\\\ncreateElement(\\\\\\"h1\\\\\\", null);\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"sNAEc,KAAM\\"}"`;
+
+exports[`monorepo: package-one.cjs.dev.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var index = 1;
+exports.default = index;
+"
+`;
+
+exports[`monorepo: package-one.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./package-one.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./package-one.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`monorepo: package-one.cjs.prod.js 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
+var index = 1;
+exports.default = index;
+"
+`;
+
+exports[`monorepo: package-one.esm.js 1`] = `
+"var index = 1;
+
+export default index;
+"
+`;
+
+exports[`monorepo: package-two.cjs.dev.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var index = 2;
+exports.default = index;
+"
+`;
+
+exports[`monorepo: package-two.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./package-two.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./package-two.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`monorepo: package-two.cjs.prod.js 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
+var index = 2;
+exports.default = index;
+"
+`;
+
+exports[`monorepo: package-two.esm.js 1`] = `
+"var index = 2;
+
+export default index;
+"
+`;
+
+exports[`no module: no-module.cjs.dev.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var index = \\"this does not have a module build\\";
+exports.default = index;
+"
+`;
+
+exports[`no module: no-module.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./no-module.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./no-module.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`no module: no-module.cjs.prod.js 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
+var index = \\"this does not have a module build\\";
+exports.default = index;
+"
+`;
+
+exports[`prod checks: prod-checks.cjs.dev.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function thing() {
+  if (process.env.NODE_ENV !== \\"production\\") {
+    return \\"not prod\\";
+  }
+
+  return \\"prod\\";
+}
+
+exports.thing = thing;
+"
+`;
+
+exports[`prod checks: prod-checks.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./prod-checks.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./prod-checks.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`prod checks: prod-checks.cjs.prod.js 1`] = `
+"\\"use strict\\";
+function thing() {
+  return \\"prod\\";
+}
+Object.defineProperty(exports, \\"__esModule\\", { value: !0 }),
+  (exports.thing = thing);
+"
+`;
+
+exports[`umd with dep on other module: umd-with-dep.cjs.dev.js 1`] = `
+"'use strict';
+
+var react = require('react');
+
+react.createElement(\\"div\\", null);
+"
+`;
+
+exports[`umd with dep on other module: umd-with-dep.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./umd-with-dep.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./umd-with-dep.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`umd with dep on other module: umd-with-dep.cjs.prod.js 1`] = `
+"\\"use strict\\";
+var react = require(\\"react\\");
+react.createElement(\\"div\\", null);
+"
+`;
+
+exports[`umd with dep on other module: umd-with-dep.umd.min.js 1`] = `
+"!function(e,t){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?t(require(\\"react\\")):\\"function\\"==typeof define&&define.amd?define([\\"react\\"],t):t((e=e||self).React)}(this,function(e){\\"use strict\\";e.createElement(\\"div\\",null)});
+//# sourceMappingURL=umd-with-dep.umd.min.js.map
+"
+`;
+
+exports[`umd with dep on other module: umd-with-dep.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"umd-with-dep.umd.min.js\\",\\"sources\\":[\\"../src/index.js\\"],\\"sourcesContent\\":[\\"import { createElement } from \\\\\\"react\\\\\\";\\\\n\\\\ncreateElement(\\\\\\"div\\\\\\", null);\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"sNAEc,MAAO\\"}"`;

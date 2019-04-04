@@ -1,0 +1,12 @@
+{
+  "name": "flow-export-default",
+  "version": "1.0.0",
+  "main": "dist/flow-export-default.cjs.js",
+  "license": "MIT",
+  "private": true,
+  "module": "dist/flow-export-default.esm.js",
+  "dependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-flow": "^7.0.0"
+  }
+}

@@ -1,0 +1,140 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`needs @babel/runtime allow install: dist/use-babel-runtime.cjs.dev.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopDefault(ex) {
+  return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
+}
+
+var _possibleConstructorReturn = _interopDefault(require(\\"@babel/runtime/helpers/possibleConstructorReturn\\"));
+
+var _getPrototypeOf = _interopDefault(require(\\"@babel/runtime/helpers/getPrototypeOf\\"));
+
+var _inherits = _interopDefault(require(\\"@babel/runtime/helpers/inherits\\"));
+
+var _classCallCheck = _interopDefault(require(\\"@babel/runtime/helpers/classCallCheck\\"));
+
+var Bar = function Bar() {
+  _classCallCheck(this, Bar);
+};
+
+var Foo =
+/*#__PURE__*/
+function (_Bar) {
+  _inherits(Foo, _Bar);
+
+  function Foo() {
+    _classCallCheck(this, Foo);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Foo).apply(this, arguments));
+  }
+
+  return Foo;
+}(Bar);
+
+exports.Foo = Foo;
+"
+`;
+
+exports[`needs @babel/runtime allow install: dist/use-babel-runtime.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./use-babel-runtime.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./use-babel-runtime.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`needs @babel/runtime allow install: dist/use-babel-runtime.cjs.prod.js 1`] = `
+"\\"use strict\\";
+function _interopDefault(ex) {
+  return ex && \\"object\\" == typeof ex && \\"default\\" in ex ? ex.default : ex;
+}
+Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
+var _possibleConstructorReturn = _interopDefault(
+    require(\\"@babel/runtime/helpers/possibleConstructorReturn\\")
+  ),
+  _getPrototypeOf = _interopDefault(
+    require(\\"@babel/runtime/helpers/getPrototypeOf\\")
+  ),
+  _inherits = _interopDefault(require(\\"@babel/runtime/helpers/inherits\\")),
+  _classCallCheck = _interopDefault(
+    require(\\"@babel/runtime/helpers/classCallCheck\\")
+  ),
+  Bar = function Bar() {
+    _classCallCheck(this, Bar);
+  },
+  Foo = (function(_Bar) {
+    function Foo() {
+      return (
+        _classCallCheck(this, Foo),
+        _possibleConstructorReturn(
+          this,
+          _getPrototypeOf(Foo).apply(this, arguments)
+        )
+      );
+    }
+    return _inherits(Foo, Bar), Foo;
+  })();
+exports.Foo = Foo;
+"
+`;
+
+exports[`needs @babel/runtime allow install: dist/use-babel-runtime.esm.js 1`] = `
+"import _possibleConstructorReturn from '@babel/runtime/helpers/esm/possibleConstructorReturn';
+import _getPrototypeOf from '@babel/runtime/helpers/esm/getPrototypeOf';
+import _inherits from '@babel/runtime/helpers/esm/inherits';
+import _classCallCheck from '@babel/runtime/helpers/esm/classCallCheck';
+
+var Bar = function Bar() {
+  _classCallCheck(this, Bar);
+};
+
+var Foo =
+/*#__PURE__*/
+function (_Bar) {
+  _inherits(Foo, _Bar);
+
+  function Foo() {
+    _classCallCheck(this, Foo);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Foo).apply(this, arguments));
+  }
+
+  return Foo;
+}(Bar);
+
+export { Foo };
+"
+`;
+
+exports[`needs @babel/runtime allow install: package.json 1`] = `
+"{
+  \\"name\\": \\"use-babel-runtime\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"main\\": \\"dist/use-babel-runtime.cjs.js\\",
+  \\"module\\": \\"dist/use-babel-runtime.esm.js\\",
+  \\"license\\": \\"MIT\\",
+  \\"private\\": true,
+  \\"dependencies\\": {
+    \\"@babel/core\\": \\"^7.4.3\\",
+    \\"@babel/preset-env\\": \\"^7.4.3\\",
+    \\"@babel/runtime\\": \\"^7.4.3\\"
+  }
+}
+"
+`;
+
+exports[`needs @babel/runtime allow install: src/index.js 1`] = `
+"class Bar {}
+
+export class Foo extends Bar {}
+"
+`;

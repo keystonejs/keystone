@@ -1,0 +1,17 @@
+{
+  "name": "umd-with-dep",
+  "version": "1.0.0",
+  "main": "dist/umd-with-dep.cjs.js",
+  "license": "MIT",
+  "private": true,
+  "umd:main": "dist/umd-with-dep.umd.min.js",
+  "preconstruct": {
+    "umdName": "umdWithDep"
+  },
+  "peerDependencies": {
+    "react": "^16.6.3"
+  },
+  "devDependencies": {
+    "react": "^16.6.3"
+  }
+}

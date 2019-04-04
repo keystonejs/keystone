@@ -1,0 +1,14 @@
+{
+  "name": "@some-scope/package-four-umd-with-dep",
+  "version": "1.0.0",
+  "main": "dist/package-four-umd-with-dep.cjs.js",
+  "umd:main": "dist/package-four-umd-with-dep.umd.min.js",
+  "license": "MIT",
+  "private": true,
+  "preconstruct": {
+    "umdName": "packageFour"
+  },
+  "dependencies": {
+    "@some-scope/package-one-umd-with-dep": "1.0.0"
+  }
+}

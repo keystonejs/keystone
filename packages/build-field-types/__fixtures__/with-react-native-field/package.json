@@ -1,0 +1,12 @@
+{
+  "name": "with-react-native-field",
+  "version": "1.0.0",
+  "main": "dist/with-react-native-field.cjs.js",
+  "module": "dist/with-react-native-field.esm.js",
+  "react-native": {
+    "./dist/with-react-native-field.cjs.js": "./dist/with-react-native-field.native.cjs.js",
+    "./dist/with-react-native-field.esm.js": "./dist/with-react-native-field.native.esm.js"
+  },
+  "license": "MIT",
+  "private": true
+}

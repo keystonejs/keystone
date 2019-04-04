@@ -1,0 +1,7 @@
+{
+  "name": "already-has-things-in-dist",
+  "version": "1.0.0",
+  "main": "dist/already-has-things-in-dist.cjs.js",
+  "license": "MIT",
+  "private": true
+}

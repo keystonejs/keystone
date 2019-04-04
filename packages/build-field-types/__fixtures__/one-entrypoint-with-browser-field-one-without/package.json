@@ -1,0 +1,15 @@
+{
+  "name": "one-entrypoint-with-browser-field-one-without",
+  "version": "1.0.0",
+  "main": "dist/one-entrypoint-with-browser-field-one-without.cjs.js",
+  "license": "MIT",
+  "private": true,
+  "module": "dist/one-entrypoint-with-browser-field-one-without.esm.js",
+  "preconstruct": {
+    "source": "src/sum",
+    "entrypoints": [
+      ".",
+      "multiply"
+    ]
+  }
+}

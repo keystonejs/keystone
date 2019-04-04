@@ -1,0 +1,15 @@
+{
+  "name": "multiple-entrypoints",
+  "version": "1.0.0",
+  "main": "dist/multiple-entrypoints.cjs.js",
+  "license": "MIT",
+  "private": true,
+  "module": "dist/multiple-entrypoints.esm.js",
+  "preconstruct": {
+    "source": "src/sum",
+    "entrypoints": [
+      ".",
+      "multiply"
+    ]
+  }
+}

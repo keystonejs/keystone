@@ -1,0 +1,17 @@
+{
+  "name": "@some-scope/package-two-umd-with-dep",
+  "version": "1.0.0",
+  "main": "dist/package-two-umd-with-dep.cjs.js",
+  "umd:main": "dist/package-two-umd-with-dep.umd.min.js",
+  "license": "MIT",
+  "private": true,
+  "preconstruct": {
+    "umdName": "packageTwo"
+  },
+  "peerDependencies": {
+    "react": "^16.6.3"
+  },
+  "devDependencies": {
+    "react": "^16.6.3"
+  }
+}

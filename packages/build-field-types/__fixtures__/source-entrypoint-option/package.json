@@ -1,0 +1,10 @@
+{
+  "name": "source-entrypoint-option",
+  "version": "1.0.0",
+  "main": "dist/source-entrypoint-option.cjs.js",
+  "license": "MIT",
+  "private": true,
+  "preconstruct": {
+    "source": "modules"
+  }
+}
