@@ -6,7 +6,7 @@ exports[`basic: valid-package.cjs.dev.js 1`] = `
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-var index = \\"something\\";
+var index = 'something';
 exports.default = index;
 "
 `;
@@ -31,7 +31,7 @@ exports.default = index;
 `;
 
 exports[`basic: valid-package.esm.js 1`] = `
-"var index = \\"something\\";
+"var index = 'something';
 
 export default index;
 "
@@ -43,4 +43,4 @@ exports[`basic: valid-package.umd.min.js 1`] = `
 "
 `;
 
-exports[`basic: valid-package.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"valid-package.umd.min.js\\",\\"sources\\":[\\"../src/index.js\\"],\\"sourcesContent\\":[\\"export default \\\\\\"something\\\\\\";\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"wMAAe\\"}"`;
+exports[`basic: valid-package.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"valid-package.umd.min.js\\",\\"sources\\":[\\"../src/index.js\\"],\\"sourcesContent\\":[\\"export default 'something';\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"wMAAe\\"}"`;

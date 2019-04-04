@@ -50,7 +50,7 @@ exports[`clears dist folder: already-has-things-in-dist.cjs.dev.js 1`] = `
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-var index = \\"something\\";
+var index = 'something';
 exports.default = index;
 "
 `;
@@ -74,16 +74,73 @@ exports.default = index;
 "
 `;
 
+exports[`flow export default: flow-export-default.cjs.dev.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function doSomething(arg) {
+  return 'something' + arg;
+}
+
+var index = 'wow';
+exports.doSomething = doSomething;
+exports.default = index;
+"
+`;
+
+exports[`flow export default: flow-export-default.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./flow-export-default.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./flow-export-default.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`flow export default: flow-export-default.cjs.js.flow 1`] = `
+"// @flow
+export * from \\"../src/index.js\\";
+export { default } from \\"../src/index.js\\";
+"
+`;
+
+exports[`flow export default: flow-export-default.cjs.prod.js 1`] = `
+"\\"use strict\\";
+function doSomething(arg) {
+  return \\"something\\" + arg;
+}
+Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
+var index = \\"wow\\";
+(exports.doSomething = doSomething), (exports.default = index);
+"
+`;
+
+exports[`flow export default: flow-export-default.esm.js 1`] = `
+"function doSomething(arg) {
+  return 'something' + arg;
+}
+var index = 'wow';
+
+export default index;
+export { doSomething };
+"
+`;
+
 exports[`flow: flow.cjs.dev.js 1`] = `
 "'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-var a = \\"wow\\";
+var a = 'wow';
 
 function doSomething(arg) {
-  return \\"something\\" + arg;
+  return 'something' + arg;
 }
 
 exports.doSomething = doSomething;
@@ -120,70 +177,13 @@ function doSomething(arg) {
 `;
 
 exports[`flow: flow.esm.js 1`] = `
-"var a = \\"wow\\";
+"var a = 'wow';
 
 function doSomething(arg) {
-  return \\"something\\" + arg;
+  return 'something' + arg;
 }
 
 export { doSomething, a as something };
-"
-`;
-
-exports[`flow: flow-export-default.cjs.dev.js 1`] = `
-"'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function doSomething(arg) {
-  return \\"something\\" + arg;
-}
-
-var index = \\"wow\\";
-exports.doSomething = doSomething;
-exports.default = index;
-"
-`;
-
-exports[`flow: flow-export-default.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./flow-export-default.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./flow-export-default.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`flow: flow-export-default.cjs.js.flow 1`] = `
-"// @flow
-export * from \\"../src/index.js\\";
-export { default } from \\"../src/index.js\\";
-"
-`;
-
-exports[`flow: flow-export-default.cjs.prod.js 1`] = `
-"\\"use strict\\";
-function doSomething(arg) {
-  return \\"something\\" + arg;
-}
-Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
-var index = \\"wow\\";
-(exports.doSomething = doSomething), (exports.default = index);
-"
-`;
-
-exports[`flow: flow-export-default.esm.js 1`] = `
-"function doSomething(arg) {
-  return \\"something\\" + arg;
-}
-var index = \\"wow\\";
-
-export default index;
-export { doSomething };
 "
 `;
 
@@ -254,14 +254,14 @@ exports[`monorepo umd with dep on other module: package-four-umd-with-dep.umd.mi
 "
 `;
 
-exports[`monorepo umd with dep on other module: package-four-umd-with-dep.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"package-four-umd-with-dep.umd.min.js\\",\\"sources\\":[\\"../../package-one/src/index.js\\"],\\"sourcesContent\\":[\\"import { createElement } from \\\\\\"react\\\\\\";\\\\n\\\\ncreateElement(\\\\\\"div\\\\\\", null);\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"sNAEc,MAAO\\"}"`;
+exports[`monorepo umd with dep on other module: package-four-umd-with-dep.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"package-four-umd-with-dep.umd.min.js\\",\\"sources\\":[\\"../../package-one/src/index.js\\"],\\"sourcesContent\\":[\\"import { createElement } from 'react';\\\\n\\\\ncreateElement('div', null);\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"sNAEc,MAAO\\"}"`;
 
 exports[`monorepo umd with dep on other module: package-one-umd-with-dep.cjs.dev.js 1`] = `
 "'use strict';
 
 var react = require('react');
 
-react.createElement(\\"div\\", null);
+react.createElement('div', null);
 "
 `;
 
@@ -289,7 +289,7 @@ exports[`monorepo umd with dep on other module: package-one-umd-with-dep.umd.min
 "
 `;
 
-exports[`monorepo umd with dep on other module: package-one-umd-with-dep.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"package-one-umd-with-dep.umd.min.js\\",\\"sources\\":[\\"../src/index.js\\"],\\"sourcesContent\\":[\\"import { createElement } from \\\\\\"react\\\\\\";\\\\n\\\\ncreateElement(\\\\\\"div\\\\\\", null);\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"sNAEc,MAAO\\"}"`;
+exports[`monorepo umd with dep on other module: package-one-umd-with-dep.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"package-one-umd-with-dep.umd.min.js\\",\\"sources\\":[\\"../src/index.js\\"],\\"sourcesContent\\":[\\"import { createElement } from 'react';\\\\n\\\\ncreateElement('div', null);\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"sNAEc,MAAO\\"}"`;
 
 exports[`monorepo umd with dep on other module: package-three-umd-with-dep.cjs.dev.js 1`] = `
 "'use strict';
@@ -328,7 +328,7 @@ exports[`monorepo umd with dep on other module: package-two-umd-with-dep.cjs.dev
 
 var react = require('react');
 
-react.createElement(\\"h1\\", null);
+react.createElement('h1', null);
 "
 `;
 
@@ -356,7 +356,7 @@ exports[`monorepo umd with dep on other module: package-two-umd-with-dep.umd.min
 "
 `;
 
-exports[`monorepo umd with dep on other module: package-two-umd-with-dep.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"package-two-umd-with-dep.umd.min.js\\",\\"sources\\":[\\"../src/index.js\\"],\\"sourcesContent\\":[\\"import { createElement } from \\\\\\"react\\\\\\";\\\\n\\\\ncreateElement(\\\\\\"h1\\\\\\", null);\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"sNAEc,KAAM\\"}"`;
+exports[`monorepo umd with dep on other module: package-two-umd-with-dep.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"package-two-umd-with-dep.umd.min.js\\",\\"sources\\":[\\"../src/index.js\\"],\\"sourcesContent\\":[\\"import { createElement } from 'react';\\\\n\\\\ncreateElement('h1', null);\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"sNAEc,KAAM\\"}"`;
 
 exports[`monorepo: package-one.cjs.dev.js 1`] = `
 "'use strict';
@@ -438,7 +438,7 @@ exports[`no module: no-module.cjs.dev.js 1`] = `
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-var index = \\"this does not have a module build\\";
+var index = 'this does not have a module build';
 exports.default = index;
 "
 `;
@@ -470,11 +470,11 @@ Object.defineProperty(exports, '__esModule', {
 });
 
 function thing() {
-  if (process.env.NODE_ENV !== \\"production\\") {
-    return \\"not prod\\";
+  if (process.env.NODE_ENV !== 'production') {
+    return 'not prod';
   }
 
-  return \\"prod\\";
+  return 'prod';
 }
 
 exports.thing = thing;
@@ -507,7 +507,7 @@ exports[`umd with dep on other module: umd-with-dep.cjs.dev.js 1`] = `
 
 var react = require('react');
 
-react.createElement(\\"div\\", null);
+react.createElement('div', null);
 "
 `;
 
@@ -535,4 +535,4 @@ exports[`umd with dep on other module: umd-with-dep.umd.min.js 1`] = `
 "
 `;
 
-exports[`umd with dep on other module: umd-with-dep.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"umd-with-dep.umd.min.js\\",\\"sources\\":[\\"../src/index.js\\"],\\"sourcesContent\\":[\\"import { createElement } from \\\\\\"react\\\\\\";\\\\n\\\\ncreateElement(\\\\\\"div\\\\\\", null);\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"sNAEc,MAAO\\"}"`;
+exports[`umd with dep on other module: umd-with-dep.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"umd-with-dep.umd.min.js\\",\\"sources\\":[\\"../src/index.js\\"],\\"sourcesContent\\":[\\"import { createElement } from 'react';\\\\n\\\\ncreateElement('div', null);\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"sNAEc,MAAO\\"}"`;

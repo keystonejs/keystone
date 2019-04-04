@@ -78,9 +78,15 @@ export { multiply };
 "
 `;
 
-exports[`multiple entrypoints: src/multiply.js 1`] = `"export let multiply = (a, b) => a * b;"`;
+exports[`multiple entrypoints: src/multiply.js 1`] = `
+"export let multiply = (a, b) => a * b;
+"
+`;
 
-exports[`multiple entrypoints: src/sum.js 1`] = `"export let sum = (a, b) => a + b;"`;
+exports[`multiple entrypoints: src/sum.js 1`] = `
+"export let sum = (a, b) => a + b;
+"
+`;
 
 exports[`source entrypoint option flow: source-entrypoint-option-flow.cjs.dev.js 1`] = `
 "'use strict';
@@ -88,7 +94,7 @@ exports[`source entrypoint option flow: source-entrypoint-option-flow.cjs.dev.js
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-let something = \\"\\";
+let something = '';
 exports.something = something;
 "
 `;
@@ -124,7 +130,7 @@ exports[`source entrypoint option: source-entrypoint-option.cjs.dev.js 1`] = `
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-let something = \\"\\";
+let something = '';
 exports.something = something;
 "
 `;
@@ -221,7 +227,7 @@ exports[`two entrypoints where one requires the other entrypoint: src/identity.j
 `;
 
 exports[`two entrypoints where one requires the other entrypoint: src/multiply.js 1`] = `
-"import { identity } from \\"./identity\\";
+"import { identity } from './identity';
 
 export let multiply = (a, b) => identity(a * b);
 "
@@ -344,14 +350,14 @@ exports[`two entrypoints with a common dependency: src/identity.js 1`] = `
 `;
 
 exports[`two entrypoints with a common dependency: src/multiply.js 1`] = `
-"import { identity } from \\"./identity\\";
+"import { identity } from './identity';
 
 export let multiply = (a, b) => identity(a * b);
 "
 `;
 
 exports[`two entrypoints with a common dependency: src/sum.js 1`] = `
-"import { identity } from \\"./identity\\";
+"import { identity } from './identity';
 
 export let sum = (a, b) => identity(a + b);
 "

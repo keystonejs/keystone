@@ -6,12 +6,12 @@ exports[`browser no module: dist/browser-no-module.browser.cjs.js 1`] = `
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-let thing = \\"wow\\";
+let thing = 'wow';
 {
-  thing = \\"something\\";
+  thing = 'something';
 }
 {
-  thing += \\"other\\";
+  thing += 'other';
 }
 var thing$1 = thing;
 exports.default = thing$1;
@@ -24,14 +24,14 @@ exports[`browser no module: dist/browser-no-module.cjs.dev.js 1`] = `
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-let thing = \\"wow\\";
+let thing = 'wow';
 
-if (typeof window !== \\"undefined\\") {
-  thing = \\"something\\";
+if (typeof window !== 'undefined') {
+  thing = 'something';
 }
 
 if (typeof document !== undefined) {
-  thing += \\"other\\";
+  thing += 'other';
 }
 
 var thing$1 = thing;
@@ -76,14 +76,14 @@ exports[`browser no module: package.json 1`] = `
 `;
 
 exports[`browser no module: src/index.js 1`] = `
-"let thing = \\"wow\\";
+"let thing = 'wow';
 
-if (typeof window !== \\"undefined\\") {
-  thing = \\"something\\";
+if (typeof window !== 'undefined') {
+  thing = 'something';
 }
 
 if (typeof document !== undefined) {
-  thing += \\"other\\";
+  thing += 'other';
 }
 
 export default thing;
@@ -96,12 +96,12 @@ exports[`browser: dist/browser.browser.cjs.js 1`] = `
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-let thing = \\"wow\\";
+let thing = 'wow';
 {
-  thing = \\"something\\";
+  thing = 'something';
 }
 {
-  thing += \\"other\\";
+  thing += 'other';
 }
 var thing$1 = thing;
 exports.default = thing$1;
@@ -109,14 +109,14 @@ exports.default = thing$1;
 `;
 
 exports[`browser: dist/browser.browser.esm.js 1`] = `
-"let thing = \\"wow\\";
+"let thing = 'wow';
 
 {
-  thing = \\"something\\";
+  thing = 'something';
 }
 
 {
-  thing += \\"other\\";
+  thing += 'other';
 }
 
 var thing$1 = thing;
@@ -131,14 +131,14 @@ exports[`browser: dist/browser.cjs.dev.js 1`] = `
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-let thing = \\"wow\\";
+let thing = 'wow';
 
-if (typeof window !== \\"undefined\\") {
-  thing = \\"something\\";
+if (typeof window !== 'undefined') {
+  thing = 'something';
 }
 
 if (typeof document !== undefined) {
-  thing += \\"other\\";
+  thing += 'other';
 }
 
 var thing$1 = thing;
@@ -169,14 +169,14 @@ exports.default = thing$1;
 `;
 
 exports[`browser: dist/browser.esm.js 1`] = `
-"let thing = \\"wow\\";
+"let thing = 'wow';
 
-if (typeof window !== \\"undefined\\") {
-  thing = \\"something\\";
+if (typeof window !== 'undefined') {
+  thing = 'something';
 }
 
 if (typeof document !== undefined) {
-  thing += \\"other\\";
+  thing += 'other';
 }
 
 var thing$1 = thing;
@@ -202,14 +202,14 @@ exports[`browser: package.json 1`] = `
 `;
 
 exports[`browser: src/index.js 1`] = `
-"let thing = \\"wow\\";
+"let thing = 'wow';
 
-if (typeof window !== \\"undefined\\") {
-  thing = \\"something\\";
+if (typeof window !== 'undefined') {
+  thing = 'something';
 }
 
 if (typeof document !== undefined) {
-  thing += \\"other\\";
+  thing += 'other';
 }
 
 export default thing;
@@ -222,7 +222,7 @@ exports[`react native: with-react-native-field.cjs.dev.js 1`] = `
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-var index = \\"react native\\";
+var index = 'react native';
 exports.default = index;
 "
 `;
@@ -247,7 +247,7 @@ exports.default = index;
 `;
 
 exports[`react native: with-react-native-field.esm.js 1`] = `
-"var index = \\"react native\\";
+"var index = 'react native';
 
 export default index;
 "
@@ -259,13 +259,13 @@ exports[`react native: with-react-native-field.native.cjs.js 1`] = `
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-var index = \\"react native\\";
+var index = 'react native';
 exports.default = index;
 "
 `;
 
 exports[`react native: with-react-native-field.native.esm.js 1`] = `
-"var index = \\"react native\\";
+"var index = 'react native';
 
 export default index;
 "
