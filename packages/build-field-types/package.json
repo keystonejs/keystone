@@ -9,14 +9,12 @@
     "lib"
   ],
   "bin": {
-    "preconstruct": "./bin.js"
+    "build-field-types": "./bin.js"
   },
   "scripts": {
-    "build": "rimraf lib && babel src --out-dir lib --ignore '**/__tests__/**/*','**/__mocks__/**/*'",
-    "release": "yarn build && npm publish && git push && git push --tags",
-    "test": "jest"
+    "build": "rimraf lib && babel src --out-dir lib --ignore '**/__tests__/**/*','**/__mocks__/**/*'"
   },
-  "repository": "https://github.com/preconstruct/preconstruct",
+  "repository": "https://github.com/keystonejs/keystone-5/tree/master/packages/build-field-types",
   "license": "MIT",
   "dependencies": {
     "@babel/core": "^7.3.4",

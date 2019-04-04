@@ -27,7 +27,7 @@
     "changeset": "build-releases changeset",
     "version-packages": "build-releases version",
     "publish-changed": "yarn build && build-releases publish --public",
-    "build": "preconstruct build",
+    "build": "preconstruct build && cd packages/build-field-types && yarn build",
     "prepare": "yarn run --silent contributing-guide",
     "contributing-guide": "is-ci && exit 0 || chalk -t \"\n\n{bold 📝 Contributing to KeystoneJS?}\n\nBe sure to build the modules first:\n> {yellow.bold yarn build}\n\" && link '🔗 Read the full Contributing Guide' 'https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md' && echo \"\n\n\"",
     "contributors:add": "all-contributors add",
