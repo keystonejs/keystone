@@ -19,8 +19,6 @@ const { parseListAccess } = require('@keystone-alpha/access-control');
 
 const logger = require('@keystone-alpha/logger');
 
-const { Text, Checkbox, Float, Relationship } = require('@keystone-alpha/fields');
-
 const gql = require('graphql-tag');
 const graphqlLogger = logger('graphql');
 const keystoneLogger = logger('keystone');
@@ -54,30 +52,6 @@ const labelToPath = str =>
 
 const labelToClass = str => str.replace(/\s+/g, '');
 
-const nativeTypeMap = new Map([
-  [
-    Boolean,
-    {
-      name: 'Boolean',
-      keystoneType: Checkbox,
-    },
-  ],
-  [
-    String,
-    {
-      name: 'String',
-      keystoneType: Text,
-    },
-  ],
-  [
-    Number,
-    {
-      name: 'Number',
-      keystoneType: Float,
-    },
-  ],
-]);
-
 const opToType = {
   read: 'query',
   create: 'mutation',
@@ -86,6 +60,32 @@ const opToType = {
 };
 
 const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
+  const { Text, Checkbox, Float } = require('@keystone-alpha/fields');
+
+  const nativeTypeMap = new Map([
+    [
+      Boolean,
+      {
+        name: 'Boolean',
+        keystoneType: Checkbox,
+      },
+    ],
+    [
+      String,
+      {
+        name: 'String',
+        keystoneType: Text,
+      },
+    ],
+    [
+      Number,
+      {
+        name: 'Number',
+        keystoneType: Float,
+      },
+    ],
+  ]);
+
   if (!nativeTypeMap.has(type)) {
     return type;
   }
@@ -1054,6 +1054,7 @@ module.exports = class List {
   }
 
   async _nestedMutation(mutationState, context, mutation) {
+    const { Relationship } = require('@keystone-alpha/fields');
     // Set up a fresh mutation state if we're the root mutation
     const isRootMutation = !mutationState;
     if (isRootMutation) {

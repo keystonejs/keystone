@@ -1,0 +1,13 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/api-tests", "type": "patch" },
+    { "name": "@keystone-alpha/demo-project-blog", "type": "patch" },
+    { "name": "@keystone-alpha/adapter-knex", "type": "patch" },
+    { "name": "@keystone-alpha/adapter-mongoose", "type": "patch" },
+    { "name": "@keystone-alpha/keystone", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-access-control", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-login", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-twitter-login", "type": "patch" }
+  ],
+  "dependents": []
+}
