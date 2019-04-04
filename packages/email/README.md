@@ -29,7 +29,7 @@ Usage:
 `index.js`
 
 ```javascript
-const emailSender = require('@keystone-alpha/email');
+const { emailSender } = require('@keystone-alpha/email');
 
 const jsxEmailSender = emailSender.jsx({
   // The directory containing the email templates
@@ -74,7 +74,7 @@ Usage:
 `index.js`
 
 ```javascript
-const emailSender = require('@keystone-alpha/email');
+const { emailSender } = require('@keystone-alpha/email');
 
 const mjmlEmailSender = emailSender.mjml({
   // The directory containing the email templates
@@ -120,7 +120,7 @@ module.exports = class extends React.Component {
 Usage:
 
 ```javascript
-const emailSender = require('@keystone-alpha/email');
+const { emailSender } = require('@keystone-alpha/email');
 
 const jadeEmailSender = emailSender.jade({
   // The directory containing the email templates
@@ -142,7 +142,7 @@ Above are examples of using 2 renderers, `jsx`, and `jade`.
 In general, renderers are available directly on the exported object:
 
 ```javascript
-const emailSender = require('@keystone-alpha/email');
+const { emailSender } = require('@keystone-alpha/email');
 
 emailSender.<renderer>(...);
 ```
