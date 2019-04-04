@@ -1,15 +1,15 @@
 // @flow
-import is from "sarcastic";
-import { readFileSync } from "fs";
-import * as fs from "fs-extra";
-import nodePath from "path";
-import { validateEntrypoint } from "./validate";
-import { Item } from "./item";
-import { getNameForDist } from "./utils";
-import { confirms, errors } from "./messages";
-import { validatePackage } from "./validate-package";
-import resolve from "resolve";
-import { EXTENSIONS } from "./constants";
+import is from 'sarcastic';
+import { readFileSync } from 'fs';
+import * as fs from 'fs-extra';
+import nodePath from 'path';
+import { validateEntrypoint } from './validate';
+import { Item } from './item';
+import { getNameForDist } from './utils';
+import { confirms, errors } from './messages';
+import { validatePackage } from './validate-package';
+import resolve from 'resolve';
+import { EXTENSIONS } from './constants';
 
 /*::
 import { Package } from './package'
@@ -24,29 +24,20 @@ export class Entrypoint extends Item {
   }
 
   static async create(directory: string, pkg: Package): Promise<Entrypoint> {
-    let filePath = nodePath.join(directory, "package.json");
+    let filePath = nodePath.join(directory, 'package.json');
     let contents;
 
     try {
-      contents = await fs.readFile(filePath, "utf-8");
+      contents = await fs.readFile(filePath, 'utf-8');
     } catch (e) {
-      if (e.code === "ENOENT" && pkg.directory !== directory) {
-        let shouldCreateEntrypointPkgJson = await confirms.createEntrypointPkgJson(
-          {
-            name: nodePath.join(
-              pkg.name,
-              nodePath.relative(pkg.directory, directory)
-            )
-          }
-        );
+      if (e.code === 'ENOENT' && pkg.directory !== directory) {
+        let shouldCreateEntrypointPkgJson = await confirms.createEntrypointPkgJson({
+          name: nodePath.join(pkg.name, nodePath.relative(pkg.directory, directory)),
+        });
         if (!shouldCreateEntrypointPkgJson) {
           throw new Error(errors.noEntrypointPkgJson);
         }
-        contents = JSON.stringify(
-          { main: `dist/${getNameForDist(pkg.name)}.cjs.js` },
-          null,
-          2
-        );
+        contents = JSON.stringify({ main: `dist/${getNameForDist(pkg.name)}.cjs.js` }, null, 2);
         await fs.writeFile(filePath, contents);
       } else {
         throw e;
@@ -55,8 +46,8 @@ export class Entrypoint extends Item {
     return new Entrypoint(filePath, contents, pkg);
   }
   static createSync(directory: string, pkg: Package): Entrypoint {
-    let filePath = nodePath.join(directory, "package.json");
-    let contents = readFileSync(filePath, "utf-8");
+    let filePath = nodePath.join(directory, 'package.json');
+    let contents = readFileSync(filePath, 'utf-8');
     return new Entrypoint(filePath, contents, pkg);
   }
 
@@ -80,38 +71,32 @@ export class Entrypoint extends Item {
     this.json.module = path;
   }
   get browser(): null | string | { [key: string]: string } {
-    return is(
-      this.json.browser,
-      is.maybe(is.either(is.string, is.objectOf(is.string)))
-    );
+    return is(this.json.browser, is.maybe(is.either(is.string, is.objectOf(is.string))));
   }
   set browser(option: string | { [key: string]: string }) {
     this.json.browser = option;
   }
   get reactNative(): null | string | { [key: string]: string } {
-    return is(
-      this.json["react-native"],
-      is.maybe(is.either(is.string, is.objectOf(is.string)))
-    );
+    return is(this.json['react-native'], is.maybe(is.either(is.string, is.objectOf(is.string))));
   }
   set reactNative(option: string | { [key: string]: string }) {
-    this.json["react-native"] = option;
+    this.json['react-native'] = option;
   }
 
   get umdMain(): string | null {
-    return is(this.json["umd:main"], is.maybe(is.string));
+    return is(this.json['umd:main'], is.maybe(is.string));
   }
   set umdMain(path: string) {
-    this.json["umd:main"] = path;
+    this.json['umd:main'] = path;
   }
 
   get configSource(): string {
-    return is(this._config.source, is.default(is.string, "src/index"));
+    return is(this._config.source, is.default(is.string, 'src/index'));
   }
 
   get source(): string {
     return resolve.sync(nodePath.join(this.directory, this.configSource), {
-      extensions: EXTENSIONS
+      extensions: EXTENSIONS,
     });
   }
   get umdName(): null | string {
@@ -130,11 +115,7 @@ export class Entrypoint extends Item {
     if (!this._strict) {
       validatePackage(this.package);
       validateEntrypoint(this, false);
-      this._strict = new StrictEntrypoint(
-        this.path,
-        this._contents,
-        this.package
-      );
+      this._strict = new StrictEntrypoint(this.path, this._contents, this.package);
     }
     return this._strict;
   }

@@ -1,63 +1,56 @@
 // @flow
-import build from "../";
-import fixturez from "fixturez";
-import path from "path";
-import {
-  initBasic,
-  getPkg,
-  snapshotDistFiles,
-  install
-} from "../../../test-utils";
-import { promptInput } from "../../prompt";
-import { confirms } from "../../messages";
-import { FatalError } from "../../errors";
+import build from '../';
+import fixturez from 'fixturez';
+import path from 'path';
+import { initBasic, getPkg, snapshotDistFiles, install } from '../../../test-utils';
+import { promptInput } from '../../prompt';
+import { confirms } from '../../messages';
+import { FatalError } from '../../errors';
 
 const f = fixturez(__dirname);
 
-jest.mock("../../prompt");
+jest.mock('../../prompt');
 
 let unsafePromptInput: any = promptInput;
 
-jest.mock("install-packages");
+jest.mock('install-packages');
 
 let unsafeRequire = require;
 
-test("monorepo", async () => {
-  let tmpPath = f.copy("monorepo");
+test('monorepo', async () => {
+  let tmpPath = f.copy('monorepo');
   await initBasic(tmpPath);
   await install(tmpPath);
   await build(tmpPath);
   let counter = 1;
-  for (let pkg of ["package-one", "package-two"]) {
-    let pkgPath = path.join(tmpPath, "packages", pkg);
+  for (let pkg of ['package-one', 'package-two']) {
+    let pkgPath = path.join(tmpPath, 'packages', pkg);
     await snapshotDistFiles(pkgPath);
 
     expect(unsafeRequire(pkgPath).default).toBe(counter++);
   }
 });
 
-test("no module", async () => {
-  let tmpPath = f.copy("no-module");
+test('no module', async () => {
+  let tmpPath = f.copy('no-module');
 
   await build(tmpPath);
 
   await snapshotDistFiles(tmpPath);
 
-  expect(unsafeRequire(tmpPath).default).toBe(
-    "this does not have a module build"
-  );
+  expect(unsafeRequire(tmpPath).default).toBe('this does not have a module build');
 });
 
-test("clears dist folder", async () => {
-  let tmpPath = f.copy("already-has-things-in-dist");
+test('clears dist folder', async () => {
+  let tmpPath = f.copy('already-has-things-in-dist');
 
   await build(tmpPath);
 
   await snapshotDistFiles(tmpPath);
 });
 
-test("flow", async () => {
-  let tmpPath = f.copy("flow");
+test('flow', async () => {
+  let tmpPath = f.copy('flow');
 
   await install(tmpPath);
 
@@ -66,8 +59,8 @@ test("flow", async () => {
   await snapshotDistFiles(tmpPath);
 });
 
-test("flow", async () => {
-  let tmpPath = f.copy("flow-export-default");
+test('flow export default', async () => {
+  let tmpPath = f.copy('flow-export-default');
 
   await install(tmpPath);
 
@@ -76,8 +69,8 @@ test("flow", async () => {
   await snapshotDistFiles(tmpPath);
 });
 
-test("prod checks", async () => {
-  let tmpPath = f.copy("prod-checks");
+test('prod checks', async () => {
+  let tmpPath = f.copy('prod-checks');
 
   await build(tmpPath);
 
@@ -87,16 +80,16 @@ test("prod checks", async () => {
 // TODO: make it faster so this isn't required
 jest.setTimeout(20000);
 
-test("umd with dep on other module", async () => {
-  let tmpPath = f.copy("umd-with-dep");
+test('umd with dep on other module', async () => {
+  let tmpPath = f.copy('umd-with-dep');
 
   await install(tmpPath);
 
   unsafePromptInput.mockImplementation(async question => {
     if (question === `What should the umdName of react be?`) {
-      return "React";
+      return 'React';
     }
-    throw new Error("unexpected question: " + question);
+    throw new Error('unexpected question: ' + question);
   });
 
   await build(tmpPath);
@@ -126,29 +119,28 @@ Object {
 `);
 });
 
-test("monorepo umd with dep on other module", async () => {
-  let tmpPath = f.copy("monorepo-umd-with-dep");
+test('monorepo umd with dep on other module', async () => {
+  let tmpPath = f.copy('monorepo-umd-with-dep');
   let asked = false;
   unsafePromptInput.mockImplementation(async question => {
     if (asked) {
-      throw new Error("only one prompt should happen: " + question);
+      throw new Error('only one prompt should happen: ' + question);
     }
     if (question === `What should the umdName of react be?`) {
       asked = true;
-      return "React";
+      return 'React';
     }
-    throw new Error("unexpected question: " + question);
+    throw new Error('unexpected question: ' + question);
   });
   await install(tmpPath);
   await build(tmpPath);
 
-  await snapshotDistFiles(path.join(tmpPath, "packages", "package-one"));
-  await snapshotDistFiles(path.join(tmpPath, "packages", "package-two"));
-  await snapshotDistFiles(path.join(tmpPath, "packages", "package-three"));
-  await snapshotDistFiles(path.join(tmpPath, "packages", "package-four"));
+  await snapshotDistFiles(path.join(tmpPath, 'packages', 'package-one'));
+  await snapshotDistFiles(path.join(tmpPath, 'packages', 'package-two'));
+  await snapshotDistFiles(path.join(tmpPath, 'packages', 'package-three'));
+  await snapshotDistFiles(path.join(tmpPath, 'packages', 'package-four'));
 
-  expect(await getPkg(path.join(tmpPath, "packages", "package-one")))
-    .toMatchInlineSnapshot(`
+  expect(await getPkg(path.join(tmpPath, 'packages', 'package-one'))).toMatchInlineSnapshot(`
 Object {
   "devDependencies": Object {
     "react": "^16.6.3",
@@ -168,8 +160,7 @@ Object {
 }
 `);
 
-  expect(await getPkg(path.join(tmpPath, "packages", "package-two")))
-    .toMatchInlineSnapshot(`
+  expect(await getPkg(path.join(tmpPath, 'packages', 'package-two'))).toMatchInlineSnapshot(`
 Object {
   "devDependencies": Object {
     "react": "^16.6.3",
@@ -211,8 +202,8 @@ Object {
 `);
 });
 
-test("@babel/runtime installed", async () => {
-  let tmpPath = f.copy("babel-runtime-installed");
+test('@babel/runtime installed', async () => {
+  let tmpPath = f.copy('babel-runtime-installed');
 
   await install(tmpPath);
 
@@ -221,20 +212,20 @@ test("@babel/runtime installed", async () => {
   await snapshotDistFiles(tmpPath);
 });
 
-test("monorepo single package", async () => {
-  let tmpPath = f.copy("monorepo-single-package");
+test('monorepo single package', async () => {
+  let tmpPath = f.copy('monorepo-single-package');
   await initBasic(tmpPath);
   await install(tmpPath);
 
   await build(tmpPath);
-  let pkgPath = path.join(tmpPath, "packages", "package-two");
+  let pkgPath = path.join(tmpPath, 'packages', 'package-two');
   await snapshotDistFiles(pkgPath);
 
   expect(unsafeRequire(pkgPath).default).toBe(2);
 });
 
-test("needs @babel/runtime disallow install", async () => {
-  let tmpPath = f.copy("use-babel-runtime");
+test('needs @babel/runtime disallow install', async () => {
+  let tmpPath = f.copy('use-babel-runtime');
   await install(tmpPath);
   confirms.shouldInstallBabelRuntime.mockReturnValue(Promise.resolve(false));
 
@@ -246,7 +237,7 @@ test("needs @babel/runtime disallow install", async () => {
       `"@babel/runtime should be in dependencies of use-babel-runtime"`
     );
     // TODO: investigate why this is called more than one time
-    expect(confirms.shouldInstallBabelRuntime).toBeCalled();
+    expect(confirms.shouldInstallBabelRuntime).toHaveBeenCalled();
     return;
   }
   expect(true).toBe(false);

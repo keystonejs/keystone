@@ -5,27 +5,25 @@ export interface TransformSourceDescription extends SourceDescription {
   dependencies?: string[];
 }
 
-export type GlobalsOption =
-  | { [name: string]: string }
-  | ((name: string) => string);
+export type GlobalsOption = { [name: string]: string } | ((name: string) => string);
 
 export type ModuleFormat =
-  | "amd"
-  | "cjs"
-  | "commonjs"
-  | "es"
-  | "esm"
-  | "iife"
-  | "module"
-  | "system"
-  | "umd";
+  | 'amd'
+  | 'cjs'
+  | 'commonjs'
+  | 'es'
+  | 'esm'
+  | 'iife'
+  | 'module'
+  | 'system'
+  | 'umd';
 
 export type OptionsPaths = { [key: string]: string } | ((id: string) => string);
 
 export interface OutputOptions {
   amd?: {
     define?: string,
-    id?: string
+    id?: string,
   };
   assetFileNames?: string;
   banner?: string | (() => string | Promise<string>);
@@ -36,7 +34,7 @@ export interface OutputOptions {
   dynamicImportFunction?: string;
   entryFileNames?: string;
   esModule?: boolean;
-  exports?: "default" | "named" | "none" | "auto";
+  exports?: 'default' | 'named' | 'none' | 'auto';
   extend?: boolean;
   // only required for bundle.write
   file?: string;
@@ -55,7 +53,7 @@ export interface OutputOptions {
   outro?: string | (() => string | Promise<string>);
   paths?: OptionsPaths;
   preferConst?: boolean;
-  sourcemap?: boolean | "inline";
+  sourcemap?: boolean | 'inline';
   sourcemapExcludeSources?: boolean;
   sourcemapFile?: string;
   sourcemapPathTransform?: (sourcePath: string) => string;
@@ -72,7 +70,7 @@ export interface ExistingRawSourceMap {
   version: number;
 }
 
-export type RawSourceMap = { mappings: "" } | ExistingRawSourceMap;
+export type RawSourceMap = { mappings: '' } | ExistingRawSourceMap;
 
 export interface SourceDescription {
   code: string;
@@ -100,7 +98,7 @@ export interface RenderedChunk {
   isDynamicEntry: boolean;
   isEntry: boolean;
   modules: {
-    [id: string]: RenderedModule
+    [id: string]: RenderedModule,
   };
   name: string;
 }
@@ -112,11 +110,7 @@ export type ResolveIdHook = (
   parent: string
 ) => Promise<ResolveIdResult> | ResolveIdResult;
 
-export type IsExternal = (
-  id: string,
-  parentId: string,
-  isResolved: boolean
-) => boolean | void;
+export type IsExternal = (id: string, parentId: string, isResolved: boolean) => boolean | void;
 
 export interface SerializablePluginCache {
   [key: string]: [number, any];
@@ -147,7 +141,7 @@ export interface RollupLogProps {
   loc?: {
     column: number,
     file?: string,
-    line: number
+    line: number,
   };
   message: string;
   name?: string;
@@ -157,10 +151,7 @@ export interface RollupLogProps {
   url?: string;
 }
 
-export type InputOption =
-  | string
-  | Array<string>
-  | { [entryAlias: string]: string };
+export type InputOption = string | Array<string> | { [entryAlias: string]: string };
 
 export type ExternalOption = Array<string> | IsExternal;
 
@@ -202,7 +193,7 @@ export interface WatchOptions {
   awaitWriteFinish?:
     | {
         pollInterval?: number,
-        stabilityThreshold?: number
+        stabilityThreshold?: number,
       }
     | boolean;
   binaryInterval?: number;
@@ -228,11 +219,7 @@ export interface WatcherOptions {
 
 export type LoadHook = (
   id: string
-) =>
-  | Promise<SourceDescription | string | null>
-  | SourceDescription
-  | string
-  | null;
+) => Promise<SourceDescription | string | null> | SourceDescription | string | null;
 
 export type TransformHook = (
   code: string,
@@ -282,7 +269,7 @@ export type OutputAsset = {
   code?: void,
   fileName: string,
   isAsset: true,
-  source: string | Buffer
+  source: string | Buffer,
 };
 
 export interface OutputChunk extends RenderedChunk {

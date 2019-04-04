@@ -1,1 +1,1 @@
-export default "react native";
+export default 'react native';

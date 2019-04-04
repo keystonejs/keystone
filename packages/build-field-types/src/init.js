@@ -1,18 +1,18 @@
 // @flow
-import { Package } from "./package";
-import { Project } from "./project";
-import { promptInput } from "./prompt";
-import { FatalError, FixableError } from "./errors";
-import { success, info } from "./logger";
-import { infos, confirms, errors, inputs } from "./messages";
+import { Package } from './package';
+import { Project } from './project';
+import { promptInput } from './prompt';
+import { FatalError, FixableError } from './errors';
+import { success, info } from './logger';
+import { infos, confirms, errors, inputs } from './messages';
 import {
   validateEntrypointSource,
   isMainFieldValid,
   isModuleFieldValid,
   isUmdMainFieldValid,
   isUmdNameSpecified,
-  isBrowserFieldValid
-} from "./validate";
+  isBrowserFieldValid,
+} from './validate';
 
 async function doInit(pkg: Package) {
   pkg.entrypoints.forEach(entrypoint => {
@@ -25,7 +25,7 @@ async function doInit(pkg: Package) {
     if (!canWriteMainField) {
       throw new FatalError(errors.deniedWriteMainField, pkg);
     }
-    pkg.setFieldOnEntrypoints("main");
+    pkg.setFieldOnEntrypoints('main');
   }
 
   let allEntrypointsAreMissingAModuleField = pkg.entrypoints.every(
@@ -37,7 +37,7 @@ async function doInit(pkg: Package) {
   if (allEntrypointsAreMissingAModuleField || someEntrypointsAreNotValid) {
     let canWriteModuleField = await confirms.writeModuleField(pkg);
     if (canWriteModuleField) {
-      pkg.setFieldOnEntrypoints("module");
+      pkg.setFieldOnEntrypoints('module');
     } else if (!allEntrypointsAreMissingAModuleField) {
       throw new FixableError(errors.invalidModuleField, pkg);
     }
@@ -63,7 +63,7 @@ async function doInit(pkg: Package) {
   ) {
     let shouldWriteUMDBuilds = await confirms.writeUmdBuilds(pkg);
     if (shouldWriteUMDBuilds) {
-      pkg.setFieldOnEntrypoints("umdMain");
+      pkg.setFieldOnEntrypoints('umdMain');
       for (let entrypoint of pkg.entrypoints) {
         let umdName = await promptInput(inputs.getUmdName, entrypoint);
         entrypoint.umdName = umdName;
@@ -83,13 +83,10 @@ async function doInit(pkg: Package) {
   let someEntrypointsHaveAnInvalidBrowserField = pkg.entrypoints.some(
     entrypoint => !isBrowserFieldValid(entrypoint)
   );
-  if (
-    someEntrypointsHaveABrowserField &&
-    someEntrypointsHaveAnInvalidBrowserField
-  ) {
+  if (someEntrypointsHaveABrowserField && someEntrypointsHaveAnInvalidBrowserField) {
     let shouldFixBrowserField = await confirms.fixBrowserField(pkg);
     if (shouldFixBrowserField) {
-      pkg.setFieldOnEntrypoints("browser");
+      pkg.setFieldOnEntrypoints('browser');
     } else {
       throw new FixableError(errors.invalidBrowserField, pkg);
     }
@@ -103,9 +100,5 @@ export default async function init(directory: string) {
 
   await Promise.all(project.packages.map(doInit));
 
-  success(
-    project.packages.length > 1
-      ? "initialised packages!"
-      : "initialised package!"
-  );
+  success(project.packages.length > 1 ? 'initialised packages!' : 'initialised package!');
 }

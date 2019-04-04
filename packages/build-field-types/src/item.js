@@ -1,8 +1,8 @@
 // @flow
-import * as fs from "fs-extra";
-import nodePath from "path";
-import is from "sarcastic";
-import { PKG_JSON_CONFIG_FIELD } from "./constants";
+import * as fs from 'fs-extra';
+import nodePath from 'path';
+import is from 'sarcastic';
+import { PKG_JSON_CONFIG_FIELD } from './constants';
 
 let itemsByPath: { [string]: Set<Item> } = {};
 
@@ -31,7 +31,7 @@ export class Item {
   }
 
   async refresh() {
-    let contents: string = await fs.readFile(this.path, "utf-8");
+    let contents: string = await fs.readFile(this.path, 'utf-8');
     let json = is(JSON.parse(contents), is.object);
     for (let item of itemsByPath[this.path]) {
       item.updater(json);
@@ -45,7 +45,7 @@ export class Item {
     }
     let stringified = JSON.stringify(this.json, null, 2);
     if (stringified !== this._stringifiedSavedJson) {
-      await fs.writeFile(this.path, JSON.stringify(this.json, null, 2) + "\n");
+      await fs.writeFile(this.path, JSON.stringify(this.json, null, 2) + '\n');
 
       this._config = this.json[PKG_JSON_CONFIG_FIELD] || {};
       for (let item of itemsByPath[this.path]) {

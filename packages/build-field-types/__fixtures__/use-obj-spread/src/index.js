@@ -1,3 +1,3 @@
 export let something = {
-  ...{ something: true }
+  ...{ something: true },
 };

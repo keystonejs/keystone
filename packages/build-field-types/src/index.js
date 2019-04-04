@@ -4,7 +4,7 @@
 // because if we allow other entrypoints in the future,
 // we can support that here and the same config that's
 // used for bundling will be used for aliasing
-import { Project } from "./project";
+import { Project } from './project';
 
 function getAbsoluteAliases(cwd, converter = x => x) {
   let project = Project.createSync(cwd);
@@ -49,7 +49,7 @@ export let aliases = {
   webpack(cwd: string = process.cwd()) {
     return {
       ...getAbsoluteAliases(cwd, name => `${name}$`),
-      ...getAbsoluteAbsoluteAliases(cwd, name => `${name}$`)
+      ...getAbsoluteAbsoluteAliases(cwd, name => `${name}$`),
     };
-  }
+  },
 };

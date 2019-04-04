@@ -1,13 +1,6 @@
 // @flow
 
-export type ModuleFormat =
-  | "amd"
-  | "cjs"
-  | "system"
-  | "es"
-  | "esm"
-  | "iife"
-  | "umd";
+export type ModuleFormat = 'amd' | 'cjs' | 'system' | 'es' | 'esm' | 'iife' | 'umd';
 
 type GlobalsOption = { [name: string]: string } | ((name: string) => string);
 
@@ -19,15 +12,15 @@ export type OutputOptions =
       entryFileNames: string,
       chunkFileNames: string,
       format: ModuleFormat,
-      exports?: "named"
+      exports?: 'named',
     }
   | {
-      format: "umd",
+      format: 'umd',
       entryFileNames: string,
       dir: string,
       sourcemap: boolean,
       name: string,
-      globals: Object
+      globals: Object,
     };
 
 // https://github.com/rollup/rollup/blob/7746e0fd90a58e9ffa250e92c48410f49055584c/src/rollup/types.d.ts
@@ -52,16 +45,16 @@ type ActualOutputOptions = {
   footer?: string | (() => string | Promise<string>),
   intro?: string | (() => string | Promise<string>),
   outro?: string | (() => string | Promise<string>),
-  sourcemap?: boolean | "inline",
+  sourcemap?: boolean | 'inline',
   sourcemapFile?: string,
   sourcemapPathTransform?: (sourcePath: string) => string,
   interop?: boolean,
   extend?: boolean,
 
-  exports?: "default" | "named" | "none" | "auto",
+  exports?: 'default' | 'named' | 'none' | 'auto',
   amd?: {
     id?: string,
-    define?: string
+    define?: string,
   },
   indent?: boolean,
   strict?: boolean,
@@ -75,7 +68,7 @@ type ActualOutputOptions = {
 
   // deprecated
   dest?: string,
-  moduleId?: string
+  moduleId?: string,
 };
 
 export interface RollupError {
@@ -87,7 +80,7 @@ export interface RollupError {
   loc?: {
     file?: string,
     line: number,
-    column: number
+    column: number,
   };
   stack?: string;
   frame?: string;
@@ -132,7 +125,7 @@ export interface RenderedChunk {
   imports: string[];
   exports: string[];
   modules: {
-    [id: string]: RenderedModule
+    [id: string]: RenderedModule,
   };
 }
 

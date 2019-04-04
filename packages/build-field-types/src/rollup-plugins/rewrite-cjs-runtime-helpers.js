@@ -1,10 +1,10 @@
-import { getWorker } from "../worker-client";
+import { getWorker } from '../worker-client';
 
 export default function rewriteCjsRuntimeHelpers() {
   return {
-    name: "rewrite-cjs-runtime-helpers",
+    name: 'rewrite-cjs-runtime-helpers',
     renderChunk(code, chunkInfo, { format }) {
-      if (format !== "cjs") {
+      if (format !== 'cjs') {
         return null;
       }
 
@@ -14,12 +14,10 @@ export default function rewriteCjsRuntimeHelpers() {
           JSON.stringify({
             babelrc: false,
             configFile: false,
-            plugins: [
-              require.resolve("../babel-plugins/rewrite-cjs-runtime-helpers")
-            ]
+            plugins: [require.resolve('../babel-plugins/rewrite-cjs-runtime-helpers')],
           })
         )
         .then(({ code }) => code);
-    }
+    },
   };
 }

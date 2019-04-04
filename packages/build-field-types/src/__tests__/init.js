@@ -1,18 +1,13 @@
 // @flow
-import fixturez from "fixturez";
-import path from "path";
-import init from "../init";
-import { confirms, errors } from "../messages";
-import {
-  logMock,
-  modifyPkg,
-  getPkg,
-  createPackageCheckTestCreator
-} from "../../test-utils";
+import fixturez from 'fixturez';
+import path from 'path';
+import init from '../init';
+import { confirms, errors } from '../messages';
+import { logMock, modifyPkg, getPkg, createPackageCheckTestCreator } from '../../test-utils';
 
 const f = fixturez(__dirname);
 
-jest.mock("../prompt");
+jest.mock('../prompt');
 
 let testInit = createPackageCheckTestCreator(init);
 
@@ -20,17 +15,17 @@ afterEach(() => {
   jest.resetAllMocks();
 });
 
-test("no entrypoint", async () => {
-  let tmpPath = f.copy("no-entrypoint");
+test('no entrypoint', async () => {
+  let tmpPath = f.copy('no-entrypoint');
   try {
     await init(tmpPath);
   } catch (error) {
-    expect(error.message).toBe(errors.noSource("src/index"));
+    expect(error.message).toBe(errors.noSource('src/index'));
   }
 });
 
-test("do not allow write", async () => {
-  let tmpPath = f.copy("basic-package");
+test('do not allow write', async () => {
+  let tmpPath = f.copy('basic-package');
 
   confirms.writeMainField.mockReturnValue(true);
 
@@ -39,20 +34,20 @@ test("do not allow write", async () => {
   } catch (error) {
     expect(error.message).toBe(errors.deniedWriteMainField);
   }
-  expect(confirms.writeMainField).toBeCalledTimes(1);
+  expect(confirms.writeMainField).toHaveBeenCalledTimes(1);
 });
 
-test("set only main field", async () => {
-  let tmpPath = f.copy("basic-package");
+test('set only main field', async () => {
+  let tmpPath = f.copy('basic-package');
 
   confirms.writeMainField.mockReturnValue(true);
   confirms.writeModuleField.mockReturnValue(false);
   confirms.writeUmdBuilds.mockReturnValue(false);
 
   await init(tmpPath);
-  expect(confirms.writeMainField).toBeCalledTimes(1);
-  expect(confirms.writeModuleField).toBeCalledTimes(1);
-  expect(confirms.writeUmdBuilds).toBeCalledTimes(1);
+  expect(confirms.writeMainField).toHaveBeenCalledTimes(1);
+  expect(confirms.writeModuleField).toHaveBeenCalledTimes(1);
+  expect(confirms.writeUmdBuilds).toHaveBeenCalledTimes(1);
 
   let pkg = await getPkg(tmpPath);
   expect(pkg).toMatchInlineSnapshot(`
@@ -66,17 +61,17 @@ Object {
 `);
 });
 
-test("set main and module field", async () => {
-  let tmpPath = f.copy("basic-package");
+test('set main and module field', async () => {
+  let tmpPath = f.copy('basic-package');
 
   confirms.writeMainField.mockReturnValue(true);
   confirms.writeModuleField.mockReturnValue(true);
   confirms.writeUmdBuilds.mockReturnValue(false);
 
   await init(tmpPath);
-  expect(confirms.writeMainField).toBeCalledTimes(1);
-  expect(confirms.writeModuleField).toBeCalledTimes(1);
-  expect(confirms.writeUmdBuilds).toBeCalledTimes(1);
+  expect(confirms.writeMainField).toHaveBeenCalledTimes(1);
+  expect(confirms.writeModuleField).toHaveBeenCalledTimes(1);
+  expect(confirms.writeUmdBuilds).toHaveBeenCalledTimes(1);
 
   let pkg = await getPkg(tmpPath);
 
@@ -92,17 +87,17 @@ Object {
 `);
 });
 
-test("scoped package", async () => {
-  let tmpPath = f.copy("scoped");
+test('scoped package', async () => {
+  let tmpPath = f.copy('scoped');
 
   confirms.writeMainField.mockReturnValue(true);
   confirms.writeModuleField.mockReturnValue(true);
   confirms.writeUmdBuilds.mockReturnValue(false);
 
   await init(tmpPath);
-  expect(confirms.writeMainField).toBeCalledTimes(1);
-  expect(confirms.writeModuleField).toBeCalledTimes(1);
-  expect(confirms.writeUmdBuilds).toBeCalledTimes(1);
+  expect(confirms.writeMainField).toHaveBeenCalledTimes(1);
+  expect(confirms.writeModuleField).toHaveBeenCalledTimes(1);
+  expect(confirms.writeUmdBuilds).toHaveBeenCalledTimes(1);
   let pkg = await getPkg(tmpPath);
 
   expect(pkg).toMatchInlineSnapshot(`
@@ -117,20 +112,20 @@ Object {
 `);
 });
 
-test("monorepo", async () => {
-  let tmpPath = f.copy("monorepo");
+test('monorepo', async () => {
+  let tmpPath = f.copy('monorepo');
 
   confirms.writeMainField.mockReturnValue(true);
   confirms.writeModuleField.mockReturnValue(true);
   confirms.writeUmdBuilds.mockReturnValue(false);
 
   await init(tmpPath);
-  expect(confirms.writeMainField).toBeCalledTimes(2);
-  expect(confirms.writeModuleField).toBeCalledTimes(2);
-  expect(confirms.writeUmdBuilds).toBeCalledTimes(2);
+  expect(confirms.writeMainField).toHaveBeenCalledTimes(2);
+  expect(confirms.writeModuleField).toHaveBeenCalledTimes(2);
+  expect(confirms.writeUmdBuilds).toHaveBeenCalledTimes(2);
 
-  let pkg1 = await getPkg(path.join(tmpPath, "packages", "package-one"));
-  let pkg2 = await getPkg(path.join(tmpPath, "packages", "package-two"));
+  let pkg1 = await getPkg(path.join(tmpPath, 'packages', 'package-one'));
+  let pkg2 = await getPkg(path.join(tmpPath, 'packages', 'package-two'));
 
   expect(pkg1).toMatchInlineSnapshot(`
 Object {
@@ -155,8 +150,8 @@ Object {
 `);
 });
 
-test("does not prompt or modify if already valid", async () => {
-  let tmpPath = f.copy("valid-package");
+test('does not prompt or modify if already valid', async () => {
+  let tmpPath = f.copy('valid-package');
   let original = await getPkg(tmpPath);
 
   await init(tmpPath);
@@ -180,8 +175,8 @@ Array [
 `);
 });
 
-test("invalid fields", async () => {
-  let tmpPath = f.copy("invalid-fields");
+test('invalid fields', async () => {
+  let tmpPath = f.copy('invalid-fields');
 
   confirms.writeMainField.mockReturnValue(true);
   confirms.writeModuleField.mockReturnValue(true);
@@ -189,9 +184,9 @@ test("invalid fields", async () => {
 
   await init(tmpPath);
 
-  expect(confirms.writeMainField).toBeCalledTimes(1);
-  expect(confirms.writeModuleField).toBeCalledTimes(1);
-  expect(confirms.writeUmdBuilds).toBeCalledTimes(1);
+  expect(confirms.writeMainField).toHaveBeenCalledTimes(1);
+  expect(confirms.writeModuleField).toHaveBeenCalledTimes(1);
+  expect(confirms.writeUmdBuilds).toHaveBeenCalledTimes(1);
 
   let pkg = await getPkg(tmpPath);
 
@@ -208,13 +203,13 @@ Object {
 `);
 });
 
-test("fix browser", async () => {
-  let tmpPath = f.copy("valid-package");
+test('fix browser', async () => {
+  let tmpPath = f.copy('valid-package');
 
   confirms.fixBrowserField.mockReturnValue(true);
 
   await modifyPkg(tmpPath, pkg => {
-    pkg.browser = "invalid.js";
+    pkg.browser = 'invalid.js';
   });
 
   await init(tmpPath);
@@ -240,35 +235,32 @@ Object {
 });
 
 let basicThreeEntrypoints = {
-  "": {
-    name: "something",
+  '': {
+    name: 'something',
     preconstruct: {
-      entrypoints: [".", "two", "three"]
-    }
+      entrypoints: ['.', 'two', 'three'],
+    },
   },
   one: {
     preconstruct: {
-      source: "../src"
-    }
+      source: '../src',
+    },
   },
   two: {
     preconstruct: {
-      source: "../src"
-    }
-  }
+      source: '../src',
+    },
+  },
 };
 
-testInit(
-  "three entrypoints, no main, only add main",
-  basicThreeEntrypoints,
-  async run => {
-    confirms.writeMainField.mockReturnValue(true);
-    confirms.writeModuleField.mockReturnValue(false);
-    confirms.writeUmdBuilds.mockReturnValue(false);
+testInit('three entrypoints, no main, only add main', basicThreeEntrypoints, async run => {
+  confirms.writeMainField.mockReturnValue(true);
+  confirms.writeModuleField.mockReturnValue(false);
+  confirms.writeUmdBuilds.mockReturnValue(false);
 
-    let result = await run();
+  let result = await run();
 
-    expect(result).toMatchInlineSnapshot(`
+  expect(result).toMatchInlineSnapshot(`
 Object {
   "": Object {
     "main": "dist/something.cjs.js",
@@ -294,20 +286,16 @@ Object {
   },
 }
 `);
-  }
-);
+});
 
-testInit(
-  "three entrypoints, no main, add main and module",
-  basicThreeEntrypoints,
-  async run => {
-    confirms.writeMainField.mockReturnValue(true);
-    confirms.writeModuleField.mockReturnValue(true);
-    confirms.writeUmdBuilds.mockReturnValue(false);
+testInit('three entrypoints, no main, add main and module', basicThreeEntrypoints, async run => {
+  confirms.writeMainField.mockReturnValue(true);
+  confirms.writeModuleField.mockReturnValue(true);
+  confirms.writeUmdBuilds.mockReturnValue(false);
 
-    let result = await run();
+  let result = await run();
 
-    expect(result).toMatchInlineSnapshot(`
+  expect(result).toMatchInlineSnapshot(`
 Object {
   "": Object {
     "main": "dist/something.cjs.js",
@@ -335,14 +323,13 @@ Object {
   },
 }
 `);
-  }
-);
+});
 
 testInit(
-  "three entrypoints, no main, add main and fix browser",
+  'three entrypoints, no main, add main and fix browser',
   {
     ...basicThreeEntrypoints,
-    "": { ...basicThreeEntrypoints[""], browser: "" }
+    '': { ...basicThreeEntrypoints[''], browser: '' },
   },
   async run => {
     confirms.writeMainField.mockReturnValue(true);

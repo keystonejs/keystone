@@ -13,9 +13,9 @@
  * https://github.com/flowtype/flow-typed
  */
 
-declare module "globby" {
+declare module 'globby' {
   declare module.exports: {
     (globs: string | Array<string>, options: Object): Promise<Array<string>>,
-    sync: (globs: string | Array<string>, options: Object) => Array<string>
+    sync: (globs: string | Array<string>, options: Object) => Array<string>,
   };
 }

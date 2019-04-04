@@ -1,1 +1,1 @@
-export default "wow";
+export default 'wow';

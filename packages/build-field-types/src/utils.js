@@ -1,8 +1,8 @@
 // @flow
-import { Entrypoint } from "./entrypoint";
+import { Entrypoint } from './entrypoint';
 
 export function getNameForDist(name: string): string {
-  return name.replace(/.*\//, "");
+  return name.replace(/.*\//, '');
 }
 
 export function getValidMainField(entrypoint: Entrypoint) {
@@ -16,41 +16,37 @@ export function getValidModuleField(entrypoint: Entrypoint) {
 }
 
 export function getValidCjsBrowserPath(entrypoint: Entrypoint) {
-  return getValidMainField(entrypoint).replace("cjs", "browser.cjs");
+  return getValidMainField(entrypoint).replace('cjs', 'browser.cjs');
 }
 
 export function getValidModuleBrowserPath(entrypoint: Entrypoint) {
-  return getValidModuleField(entrypoint).replace("esm", "browser.esm");
+  return getValidModuleField(entrypoint).replace('esm', 'browser.esm');
 }
 
 export function getValidCjsReactNativePath(entrypoint: Entrypoint) {
-  return getValidMainField(entrypoint).replace("cjs", "native.cjs");
+  return getValidMainField(entrypoint).replace('cjs', 'native.cjs');
 }
 
 export function getValidModuleReactNativePath(entrypoint: Entrypoint) {
-  return getValidModuleField(entrypoint).replace("esm", "native.esm");
+  return getValidModuleField(entrypoint).replace('esm', 'native.esm');
 }
 
 export function getValidBrowserField(entrypoint: Entrypoint) {
   let obj = {
-    [`./${getValidMainField(entrypoint)}`]:
-      "./" + getValidCjsBrowserPath(entrypoint)
+    [`./${getValidMainField(entrypoint)}`]: './' + getValidCjsBrowserPath(entrypoint),
   };
   if (entrypoint.module !== null) {
-    obj[`./${getValidModuleField(entrypoint)}`] =
-      "./" + getValidModuleBrowserPath(entrypoint);
+    obj[`./${getValidModuleField(entrypoint)}`] = './' + getValidModuleBrowserPath(entrypoint);
   }
   return obj;
 }
 
 export function getValidReactNativeField(entrypoint: Entrypoint) {
   let obj = {
-    [`./${getValidMainField(entrypoint)}`]:
-      "./" + getValidCjsReactNativePath(entrypoint)
+    [`./${getValidMainField(entrypoint)}`]: './' + getValidCjsReactNativePath(entrypoint),
   };
   if (entrypoint.module !== null) {
-    obj[`./${getValidModuleField(entrypoint)}`] =
-      "./" + getValidModuleReactNativePath(entrypoint);
+    obj[`./${getValidModuleField(entrypoint)}`] = './' + getValidModuleReactNativePath(entrypoint);
   }
   return obj;
 }

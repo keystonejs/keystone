@@ -1,16 +1,16 @@
 // @flow
-import { FatalError, FixableError } from "./errors";
-import { errors } from "./messages";
-/*:: 
+import { FatalError, FixableError } from './errors';
+import { errors } from './messages';
+/*::
 import { Package } from "./package";
 */
 
 let camelToPkgJsonField = {
-  main: "main",
-  module: "module",
-  umdMain: "umd:main",
-  browser: "browser",
-  reactNative: "react-native"
+  main: 'main',
+  module: 'module',
+  umdMain: 'umd:main',
+  browser: 'browser',
+  reactNative: 'react-native',
 };
 
 export async function fixPackage(pkg: Package) {
@@ -22,7 +22,7 @@ export async function fixPackage(pkg: Package) {
     module: pkg.entrypoints.some(x => x.module),
     umdMain: pkg.entrypoints.some(x => x.umdMain),
     browser: pkg.entrypoints.some(x => x.browser),
-    reactNative: pkg.entrypoints.some(x => x.reactNative)
+    reactNative: pkg.entrypoints.some(x => x.reactNative),
   };
 
   Object.keys(fields)
@@ -44,7 +44,7 @@ export function validatePackage(pkg: Package) {
     module: !!pkg.entrypoints[0].module,
     umdMain: !!pkg.entrypoints[0].umdMain,
     browser: !!pkg.entrypoints[0].browser,
-    reactNative: !!pkg.entrypoints[0].reactNative
+    reactNative: !!pkg.entrypoints[0].reactNative,
   };
 
   pkg.entrypoints.forEach(entrypoint => {
@@ -55,9 +55,9 @@ export function validatePackage(pkg: Package) {
         !fields[field]
       ) {
         throw new FixableError(
-          `${pkg.entrypoints[0].name} has a ${
-            camelToPkgJsonField[field]
-          } build but ${entrypoint.name} does not have a ${
+          `${pkg.entrypoints[0].name} has a ${camelToPkgJsonField[field]} build but ${
+            entrypoint.name
+          } does not have a ${
             camelToPkgJsonField[field]
           } build. Entrypoints in a package must either all have a particular build type or all not have a particular build type.`,
           pkg

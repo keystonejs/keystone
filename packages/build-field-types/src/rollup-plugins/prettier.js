@@ -22,15 +22,15 @@
  * SOFTWARE.
  */
 
-"use strict";
+'use strict';
 
-const isEmpty = require("lodash.isempty");
-const omitBy = require("lodash.omitby");
-const MagicString = require("magic-string");
-const diff = require("diff");
-const { getWorker } = require("../worker-client");
+const isEmpty = require('lodash.isempty');
+const omitBy = require('lodash.omitby');
+const MagicString = require('magic-string');
+const diff = require('diff');
+const { getWorker } = require('../worker-client');
 
-const NAME = "rollup-plugin-prettier";
+const NAME = 'rollup-plugin-prettier';
 
 module.exports = options => {
   let sourcemap = null;
@@ -101,9 +101,7 @@ module.exports = options => {
       }
 
       console.log(`[${NAME}] Sourcemap is enabled, computing diff is required`);
-      console.log(
-        `[${NAME}] This may take a moment (depends on the size of your bundle)`
-      );
+      console.log(`[${NAME}] This may take a moment (depends on the size of your bundle)`);
 
       const magicString = new MagicString(source);
       const changes = diff.diffChars(source, output);
@@ -126,16 +124,16 @@ module.exports = options => {
       return {
         code: magicString.toString(),
         map: magicString.generateMap({
-          hires: true
-        })
+          hires: true,
+        }),
       };
-    }
+    },
   };
 };
 
 const SOURCE_MAPS_OPTS = [
-  "sourcemap", // Name of the property with rollup >= 0.48.
-  "sourceMap" // Name of the property with rollup < 0.48.
+  'sourcemap', // Name of the property with rollup >= 0.48.
+  'sourceMap', // Name of the property with rollup < 0.48.
 ];
 
 /**
@@ -145,7 +143,7 @@ const SOURCE_MAPS_OPTS = [
  * @return {Object} New option object.
  */
 function omitCwd(opts) {
-  return omitBy(opts, (v, k) => k === "cwd");
+  return omitBy(opts, (v, k) => k === 'cwd');
 }
 
 /**

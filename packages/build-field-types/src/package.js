@@ -1,19 +1,19 @@
 // @flow
 // based on https://github.com/jamiebuilds/std-pkg but reading fewer things, adding setters and reading the file
-import is from "sarcastic";
-import globby from "globby";
-import * as fs from "fs-extra";
-import { readFileSync } from "fs";
-import nodePath from "path";
-import { Item } from "./item";
-import { Entrypoint, StrictEntrypoint } from "./entrypoint";
+import is from 'sarcastic';
+import globby from 'globby';
+import * as fs from 'fs-extra';
+import { readFileSync } from 'fs';
+import nodePath from 'path';
+import { Item } from './item';
+import { Entrypoint, StrictEntrypoint } from './entrypoint';
 import {
   getValidMainField,
   getValidModuleField,
   getValidBrowserField,
   getValidUmdMainField,
-  getValidReactNativeField
-} from "./utils";
+  getValidReactNativeField,
+} from './utils';
 
 /*::
 import {Project} from './project'
@@ -23,22 +23,19 @@ export class Package extends Item {
   project: Project;
   entrypoints: Array<Entrypoint>;
   get configEntrypoints(): Array<string> {
-    return is(
-      this._config.entrypoints,
-      is.default(is.arrayOf(is.string), ["."])
-    );
+    return is(this._config.entrypoints, is.default(is.arrayOf(is.string), ['.']));
   }
   static async create(directory: string): Promise<Package> {
-    let filePath = nodePath.join(directory, "package.json");
+    let filePath = nodePath.join(directory, 'package.json');
 
-    let contents = await fs.readFile(filePath, "utf-8");
+    let contents = await fs.readFile(filePath, 'utf-8');
     let pkg = new Package(filePath, contents);
 
     let filenames = await globby(pkg.configEntrypoints, {
       cwd: pkg.directory,
       onlyDirectories: true,
       absolute: true,
-      expandDirectories: false
+      expandDirectories: false,
     });
 
     pkg.entrypoints = await Promise.all(
@@ -51,14 +48,14 @@ export class Package extends Item {
     return pkg;
   }
   static createSync(directory: string): Package {
-    let filePath = nodePath.join(directory, "package.json");
-    let contents = readFileSync(filePath, "utf-8");
+    let filePath = nodePath.join(directory, 'package.json');
+    let contents = readFileSync(filePath, 'utf-8');
     let pkg = new Package(filePath, contents);
     let filenames = globby.sync(pkg.configEntrypoints, {
       cwd: pkg.directory,
       onlyDirectories: true,
       absolute: true,
-      expandDirectories: false
+      expandDirectories: false,
     });
 
     pkg.entrypoints = filenames.map(filename => {
@@ -68,28 +65,26 @@ export class Package extends Item {
     return pkg;
   }
 
-  setFieldOnEntrypoints(
-    field: "main" | "browser" | "module" | "umdMain" | "reactNative"
-  ) {
+  setFieldOnEntrypoints(field: 'main' | 'browser' | 'module' | 'umdMain' | 'reactNative') {
     this.entrypoints.forEach(entrypoint => {
       switch (field) {
-        case "main": {
+        case 'main': {
           entrypoint.main = getValidMainField(entrypoint);
           break;
         }
-        case "module": {
+        case 'module': {
           entrypoint.module = getValidModuleField(entrypoint);
           break;
         }
-        case "browser": {
+        case 'browser': {
           entrypoint.browser = getValidBrowserField(entrypoint);
           break;
         }
-        case "umdMain": {
+        case 'umdMain': {
           entrypoint.umdMain = getValidUmdMainField(entrypoint);
           break;
         }
-        case "reactNative": {
+        case 'reactNative': {
           entrypoint.reactNative = getValidReactNativeField(entrypoint);
           break;
         }

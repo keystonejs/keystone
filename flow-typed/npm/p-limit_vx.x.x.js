@@ -13,11 +13,8 @@
  * https://github.com/flowtype/flow-typed
  */
 
-declare module "p-limit" {
+declare module 'p-limit' {
   declare module.exports: (
     concurrency: number
-  ) => <V, Args>(
-    func: (...args: Args) => Promise<V>,
-    ...args: Args
-  ) => Promise<V>;
+  ) => <V, Args>(func: (...args: Args) => Promise<V>, ...args: Args) => Promise<V>;
 }

@@ -1,11 +1,11 @@
-let thing = "wow";
+let thing = 'wow';
 
-if (typeof window !== "undefined") {
-  thing = "something";
+if (typeof window !== 'undefined') {
+  thing = 'something';
 }
 
 if (typeof document !== undefined) {
-  thing += "other";
+  thing += 'other';
 }
 
 export default thing;

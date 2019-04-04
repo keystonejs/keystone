@@ -1,14 +1,14 @@
 // @flow
-import meow from "meow";
-import init from "./init";
-import validate from "./validate";
-import build from "./build";
-import watch from "./build/watch";
-import fix from "./fix";
-import { error, info } from "./logger";
-import { FatalError, FixableError } from "./errors";
+import meow from 'meow';
+import init from './init';
+import validate from './validate';
+import build from './build';
+import watch from './build/watch';
+import fix from './fix';
+import { error, info } from './logger';
+import { FatalError, FixableError } from './errors';
 
-process.env.NODE_ENV = "production";
+process.env.NODE_ENV = 'production';
 
 let { input } = meow(
   `
@@ -25,7 +25,7 @@ Commands
 );
 
 let errors = {
-  commandNotFound: "Command not found"
+  commandNotFound: 'Command not found',
 };
 
 class CommandNotFoundError extends Error {}
@@ -33,23 +33,23 @@ class CommandNotFoundError extends Error {}
 (async () => {
   if (input.length === 1) {
     switch (input[0]) {
-      case "init": {
+      case 'init': {
         await init(process.cwd());
         return;
       }
-      case "validate": {
+      case 'validate': {
         await validate(process.cwd());
         return;
       }
-      case "build": {
+      case 'build': {
         await build(process.cwd());
         return;
       }
-      case "watch": {
+      case 'watch': {
         await watch(process.cwd());
         return;
       }
-      case "fix": {
+      case 'fix': {
         await fix(process.cwd());
         return;
       }
@@ -63,10 +63,7 @@ class CommandNotFoundError extends Error {}
 })().catch(err => {
   if (err instanceof FixableError) {
     error(err.message, err.item);
-    info(
-      "The above error can be fixed automatically by running preconstruct fix",
-      err.item
-    );
+    info('The above error can be fixed automatically by running preconstruct fix', err.item);
   } else if (err instanceof FatalError) {
     error(err.message, err.item);
   } else if (err instanceof CommandNotFoundError) {

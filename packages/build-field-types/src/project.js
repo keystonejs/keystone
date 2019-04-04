@@ -1,15 +1,15 @@
 // @flow
-import is from "sarcastic";
-import nodePath from "path";
-import { promptInput } from "./prompt";
-import pLimit from "p-limit";
-import resolveFrom from "resolve-from";
-import globby from "globby";
-import { readFileSync } from "fs";
-import * as fs from "fs-extra";
-import { Item } from "./item";
-import { Package } from "./package";
-import { PKG_JSON_CONFIG_FIELD } from "./constants";
+import is from 'sarcastic';
+import nodePath from 'path';
+import { promptInput } from './prompt';
+import pLimit from 'p-limit';
+import resolveFrom from 'resolve-from';
+import globby from 'globby';
+import { readFileSync } from 'fs';
+import * as fs from 'fs-extra';
+import { Item } from './item';
+import { Package } from './package';
+import { PKG_JSON_CONFIG_FIELD } from './constants';
 
 let unsafeRequire = require;
 
@@ -17,7 +17,7 @@ let askGlobalLimit = pLimit(1);
 
 export class Project extends Item {
   get configPackages(): Array<string> {
-    return is(this._config.packages, is.default(is.arrayOf(is.string), ["."]));
+    return is(this._config.packages, is.default(is.arrayOf(is.string), ['.']));
   }
   // probably gonna be irrelevant later but i want it for now
   get isBolt(): boolean {
@@ -30,16 +30,16 @@ export class Project extends Item {
     return hasBolt && !hasYarnWorkspaces;
   }
   static async create(directory: string): Promise<Project> {
-    let filePath = nodePath.join(directory, "package.json");
-    let contents = await fs.readFile(filePath, "utf-8");
+    let filePath = nodePath.join(directory, 'package.json');
+    let contents = await fs.readFile(filePath, 'utf-8');
     let project = new Project(filePath, contents);
     project.packages = await project._packages();
 
     return project;
   }
   static createSync(directory: string): Project {
-    let filePath = nodePath.join(directory, "package.json");
-    let contents = readFileSync(filePath, "utf-8");
+    let filePath = nodePath.join(directory, 'package.json');
+    let contents = readFileSync(filePath, 'utf-8');
     let project = new Project(filePath, contents);
     project.packages = project._packagesSync();
 
@@ -68,12 +68,12 @@ export class Project extends Item {
       let workspaces = is(_workspaces, is.arrayOf(is.string));
 
       let packages = await promptInput(
-        "what packages should preconstruct build?",
+        'what packages should preconstruct build?',
         this,
-        workspaces.join(",")
+        workspaces.join(',')
       );
 
-      this._config.packages = packages.split(",");
+      this._config.packages = packages.split(',');
 
       await this.save();
     }
@@ -83,7 +83,7 @@ export class Project extends Item {
         cwd: this.directory,
         onlyDirectories: true,
         absolute: true,
-        expandDirectories: false
+        expandDirectories: false,
       });
 
       let packages = await Promise.all(
@@ -107,7 +107,7 @@ export class Project extends Item {
         cwd: this.directory,
         onlyDirectories: true,
         absolute: true,
-        expandDirectories: false
+        expandDirectories: false,
       });
       let packages = filenames.map(x => {
         let pkg = Package.createSync(x);
@@ -129,17 +129,13 @@ export class Project extends Item {
     } else {
       try {
         let pkgJson = unsafeRequire(
-          resolveFrom(this.directory, nodePath.join(pkg, "package.json"))
+          resolveFrom(this.directory, nodePath.join(pkg, 'package.json'))
         );
-        if (
-          pkgJson &&
-          pkgJson[PKG_JSON_CONFIG_FIELD] &&
-          pkgJson[PKG_JSON_CONFIG_FIELD].umdName
-        ) {
+        if (pkgJson && pkgJson[PKG_JSON_CONFIG_FIELD] && pkgJson[PKG_JSON_CONFIG_FIELD].umdName) {
           return pkgJson[PKG_JSON_CONFIG_FIELD].umdName;
         }
       } catch (err) {
-        if (err.code !== "MODULE_NOT_FOUND") {
+        if (err.code !== 'MODULE_NOT_FOUND') {
           throw err;
         }
       }
@@ -149,10 +145,7 @@ export class Project extends Item {
           if (this._config.globals !== undefined && this._config.globals[pkg]) {
             return;
           }
-          let response = await promptInput(
-            `What should the umdName of ${pkg} be?`,
-            this
-          );
+          let response = await promptInput(`What should the umdName of ${pkg} be?`, this);
           this._addGlobal(pkg, response);
           await this.save();
         })()

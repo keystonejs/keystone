@@ -1,17 +1,17 @@
 // @flow
-import { Project } from "../project";
-import { Package } from "../package";
-import { watch } from "rollup";
-import chalk from "chalk";
-import path from "path";
-import ms from "ms";
-import * as fs from "fs-extra";
-import { getRollupConfigs } from "./config";
-import { type Aliases, getAliases } from "./aliases";
-import { toUnsafeRollupConfig } from "./rollup";
-import { success, info } from "../logger";
-import { successes } from "../messages";
-import { createWorker } from "../worker-client";
+import { Project } from '../project';
+import { Package } from '../package';
+import { watch } from 'rollup';
+import chalk from 'chalk';
+import path from 'path';
+import ms from 'ms';
+import * as fs from 'fs-extra';
+import { getRollupConfigs } from './config';
+import { type Aliases, getAliases } from './aliases';
+import { toUnsafeRollupConfig } from './rollup';
+import { success, info } from '../logger';
+import { successes } from '../messages';
+import { createWorker } from '../worker-client';
 
 function relativePath(id: string) {
   return path.relative(process.cwd(), id);
@@ -19,7 +19,7 @@ function relativePath(id: string) {
 
 async function watchPackage(pkg: Package, aliases: Aliases) {
   const _configs = getRollupConfigs(pkg, aliases);
-  await fs.remove(path.join(pkg.directory, "dist"));
+  await fs.remove(path.join(pkg.directory, 'dist'));
   let configs = _configs.map(config => {
     return { ...toUnsafeRollupConfig(config.config), output: config.outputs };
   });
@@ -32,56 +32,56 @@ async function watchPackage(pkg: Package, aliases: Aliases) {
   let startPromise = new Promise(resolve => {
     startResolve = resolve;
   });
-  watcher.on("event", event => {
+  watcher.on('event', event => {
     // https://github.com/rollup/rollup/blob/aed954e4e6e8beabd47268916ff0955fbb20682d/bin/src/run/watch.ts#L71-L115
     switch (event.code) {
-      case "FATAL": {
+      case 'FATAL': {
         reject(event.error);
         break;
       }
 
-      case "ERROR": {
+      case 'ERROR': {
         reject(event.error);
         break;
       }
 
-      case "START":
+      case 'START':
         startResolve();
         break;
 
-      case "BUNDLE_START": {
+      case 'BUNDLE_START': {
         info(
           chalk.cyan(
             `bundles ${chalk.bold(
-              typeof event.input === "string"
+              typeof event.input === 'string'
                 ? relativePath(event.input)
                 : Array.isArray(event.input)
-                ? event.input.map(relativePath).join(", ")
+                ? event.input.map(relativePath).join(', ')
                 : Object.values(event.input)
                     // $FlowFixMe
                     .map(relativePath)
-                    .join(", ")
-            )} → ${chalk.bold(event.output.map(relativePath).join(", "))}...`
+                    .join(', ')
+            )} → ${chalk.bold(event.output.map(relativePath).join(', '))}...`
           ),
           pkg
         );
         break;
       }
 
-      case "BUNDLE_END": {
+      case 'BUNDLE_END': {
         info(
           chalk.green(
-            `created ${chalk.bold(
-              event.output.map(relativePath).join(", ")
-            )} in ${chalk.bold(ms(event.duration))}`
+            `created ${chalk.bold(event.output.map(relativePath).join(', '))} in ${chalk.bold(
+              ms(event.duration)
+            )}`
           ),
           pkg
         );
         break;
       }
 
-      case "END": {
-        info("waiting for changes...", pkg);
+      case 'END': {
+        info('waiting for changes...', pkg);
       }
     }
   });

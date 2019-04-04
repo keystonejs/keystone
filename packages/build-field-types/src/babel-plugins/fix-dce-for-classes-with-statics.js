@@ -8,29 +8,28 @@ module.exports = function plugin(babel) {
         let programPath = state.file.path;
         if (
           looksLike(path.node, {
-            leadingComments: val =>
-              val && val.some(comment => /[@#]__PURE__/.test(comment.value)),
+            leadingComments: val => val && val.some(comment => /[@#]__PURE__/.test(comment.value)),
             callee: {
-              type: "FunctionExpression"
-            }
+              type: 'FunctionExpression',
+            },
           }) &&
           t.isVariableDeclarator(path.parentPath.node)
         ) {
-          programPath.get("body").forEach(statementPath => {
+          programPath.get('body').forEach(statementPath => {
             if (
               looksLike(statementPath.node, {
-                type: "ExpressionStatement",
+                type: 'ExpressionStatement',
                 expression: {
-                  type: "AssignmentExpression",
-                  operator: "=",
+                  type: 'AssignmentExpression',
+                  operator: '=',
                   left: {
-                    type: "MemberExpression",
+                    type: 'MemberExpression',
                     object: {
-                      type: "Identifier",
-                      name: path.parent.id.name
-                    }
-                  }
-                }
+                      type: 'Identifier',
+                      name: path.parent.id.name,
+                    },
+                  },
+                },
               })
             ) {
               path.node.callee.body.body.splice(
@@ -42,8 +41,8 @@ module.exports = function plugin(babel) {
             }
           });
         }
-      }
-    }
+      },
+    },
   };
 };
 
@@ -54,12 +53,10 @@ function looksLike(a, b) {
     Object.keys(b).every(bKey => {
       const bVal = b[bKey];
       const aVal = a[bKey];
-      if (typeof bVal === "function") {
+      if (typeof bVal === 'function') {
         return bVal(aVal);
       }
-      return typeof bVal === "object" && bVal !== null
-        ? looksLike(aVal, bVal)
-        : bVal === aVal;
+      return typeof bVal === 'object' && bVal !== null ? looksLike(aVal, bVal) : bVal === aVal;
     })
   );
 }

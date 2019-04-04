@@ -1,20 +1,20 @@
 // @flow
-import { Project } from "./project";
-import { Entrypoint } from "./entrypoint";
-import { errors, successes, infos } from "./messages";
-import { FatalError, FixableError } from "./errors";
+import { Project } from './project';
+import { Entrypoint } from './entrypoint';
+import { errors, successes, infos } from './messages';
+import { FatalError, FixableError } from './errors';
 import {
   getValidModuleField,
   getValidMainField,
   getValidUmdMainField,
   getValidBrowserField,
-  getValidReactNativeField
-} from "./utils";
-import { EXTENSIONS } from "./constants";
-import * as logger from "./logger";
-import equal from "fast-deep-equal";
-import { validatePackage } from "./validate-package";
-import resolve from "resolve";
+  getValidReactNativeField,
+} from './utils';
+import { EXTENSIONS } from './constants';
+import * as logger from './logger';
+import equal from 'fast-deep-equal';
+import { validatePackage } from './validate-package';
+import resolve from 'resolve';
 
 // this doesn't offer to fix anything
 // just does validation
@@ -24,11 +24,8 @@ export function validateEntrypointSource(entrypoint: Entrypoint) {
   try {
     resolve.sync(entrypoint.source, { extensions: EXTENSIONS });
   } catch (e) {
-    if (e.code === "MODULE_NOT_FOUND") {
-      throw new FatalError(
-        errors.noSource(entrypoint.configSource),
-        entrypoint
-      );
+    if (e.code === 'MODULE_NOT_FOUND') {
+      throw new FatalError(errors.noSource(entrypoint.configSource), entrypoint);
     }
     throw e;
   }
@@ -55,7 +52,7 @@ export function isReactNativeFieldValid(entrypoint: Entrypoint): boolean {
 }
 
 export function isUmdNameSpecified(entrypoint: Entrypoint) {
-  return typeof entrypoint._config.umdName === "string";
+  return typeof entrypoint._config.umdName === 'string';
 }
 
 export function validateEntrypoint(entrypoint: Entrypoint, log: boolean) {
@@ -92,20 +89,14 @@ export function validateEntrypoint(entrypoint: Entrypoint, log: boolean) {
     }
   }
   if (entrypoint.browser !== null) {
-    if (
-      typeof entrypoint.browser === "string" ||
-      !isBrowserFieldValid(entrypoint)
-    ) {
+    if (typeof entrypoint.browser === 'string' || !isBrowserFieldValid(entrypoint)) {
       throw new FixableError(errors.invalidBrowserField, entrypoint);
     } else if (log) {
       logger.info(infos.validBrowserField, entrypoint);
     }
   }
   if (entrypoint.reactNative !== null) {
-    if (
-      typeof entrypoint.reactNative === "string" ||
-      !isReactNativeFieldValid(entrypoint)
-    ) {
+    if (typeof entrypoint.reactNative === 'string' || !isReactNativeFieldValid(entrypoint)) {
       throw new FixableError(errors.invalidReactNativeField, entrypoint);
     } else if (log) {
       logger.info(infos.validReactNativeField, entrypoint);

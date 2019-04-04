@@ -1,10 +1,10 @@
 // @flow
-import Worker from "jest-worker";
+import Worker from 'jest-worker';
 
 let worker;
 
 export function createWorker() {
-  worker = new Worker(require.resolve("./worker"));
+  worker = new Worker(require.resolve('./worker'));
 }
 
 export function destroyWorker() {
@@ -17,7 +17,7 @@ export function destroyWorker() {
 
 export function getWorker() {
   if (worker === undefined) {
-    throw new Error("worker not defined");
+    throw new Error('worker not defined');
   }
   return worker;
 }

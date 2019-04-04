@@ -1,35 +1,35 @@
 // @flow
-const resolve = require("rollup-plugin-node-resolve");
-const alias = require("rollup-plugin-alias");
-const cjs = require("rollup-plugin-commonjs");
-const replace = require("rollup-plugin-replace");
-const resolveFrom = require("resolve-from");
-const chalk = require("chalk");
-import path from "path";
-import builtInModules from "builtin-modules";
-import { Package } from "../package";
-import { StrictEntrypoint } from "../entrypoint";
-import { rollup as _rollup } from "rollup";
-import type { Aliases } from "./aliases";
-import { FatalError } from "../errors";
-import { confirms } from "../messages";
-import rewriteCjsRuntimeHelpers from "../rollup-plugins/rewrite-cjs-runtime-helpers";
-import flowAndNodeDevProdEntry from "../rollup-plugins/flow-and-prod-dev-entry";
-import babel from "../rollup-plugins/babel";
-import prettier from "../rollup-plugins/prettier";
-import terser from "../rollup-plugins/terser";
-import { limit } from "../prompt";
-import { getNameForDist } from "../utils";
-import { EXTENSIONS } from "../constants";
+const resolve = require('rollup-plugin-node-resolve');
+const alias = require('rollup-plugin-alias');
+const cjs = require('rollup-plugin-commonjs');
+const replace = require('rollup-plugin-replace');
+const resolveFrom = require('resolve-from');
+const chalk = require('chalk');
+import path from 'path';
+import builtInModules from 'builtin-modules';
+import { Package } from '../package';
+import { StrictEntrypoint } from '../entrypoint';
+import { rollup as _rollup } from 'rollup';
+import type { Aliases } from './aliases';
+import { FatalError } from '../errors';
+import { confirms } from '../messages';
+import rewriteCjsRuntimeHelpers from '../rollup-plugins/rewrite-cjs-runtime-helpers';
+import flowAndNodeDevProdEntry from '../rollup-plugins/flow-and-prod-dev-entry';
+import babel from '../rollup-plugins/babel';
+import prettier from '../rollup-plugins/prettier';
+import terser from '../rollup-plugins/terser';
+import { limit } from '../prompt';
+import { getNameForDist } from '../utils';
+import { EXTENSIONS } from '../constants';
 
-import installPackages from "install-packages";
+import installPackages from 'install-packages';
 
 // this makes sure nested imports of external packages are external
 const makeExternalPredicate = externalArr => {
   if (externalArr.length === 0) {
     return () => false;
   }
-  const pattern = new RegExp(`^(${externalArr.join("|")})($|/)`);
+  const pattern = new RegExp(`^(${externalArr.join('|')})($|/)`);
   return (id: string) => pattern.test(id);
 };
 
@@ -39,7 +39,7 @@ let pkgJsonsAllowedToFail = [
   // the package.json can't be found for this package on ci so for now,
   // we're just going to ignore it
   // TODO: investigate why it fails
-  "nopt"
+  'nopt',
 ];
 
 function getChildPeerDeps(
@@ -55,14 +55,9 @@ function getChildPeerDeps(
     .forEach(key => {
       let pkgJson;
       try {
-        pkgJson = unsafeRequire(
-          resolveFrom(pkg.directory, key + "/package.json")
-        );
+        pkgJson = unsafeRequire(resolveFrom(pkg.directory, key + '/package.json'));
       } catch (err) {
-        if (
-          err.code === "MODULE_NOT_FOUND" &&
-          pkgJsonsAllowedToFail.includes(key)
-        ) {
+        if (err.code === 'MODULE_NOT_FOUND' && pkgJsonsAllowedToFail.includes(key)) {
           return;
         }
         throw err;
@@ -94,7 +89,7 @@ function getChildPeerDeps(
     });
 }
 
-import type { RollupSingleFileBuild } from "./types";
+import type { RollupSingleFileBuild } from './types';
 
 export let rollup: RollupConfig => Promise<RollupSingleFileBuild> = _rollup;
 
@@ -104,12 +99,7 @@ export function toUnsafeRollupConfig(config: RollupConfig): Object {
   return config;
 }
 
-export type RollupConfigType =
-  | "umd"
-  | "browser"
-  | "node-dev"
-  | "node-prod"
-  | "react-native";
+export type RollupConfigType = 'umd' | 'browser' | 'node-dev' | 'node-prod' | 'react-native';
 
 export let getRollupConfig = (
   pkg: Package,
@@ -121,20 +111,18 @@ export let getRollupConfig = (
   if (pkg.peerDependencies) {
     external.push(...Object.keys(pkg.peerDependencies));
   }
-  if (pkg.dependencies && type !== "umd") {
+  if (pkg.dependencies && type !== 'umd') {
     external.push(...Object.keys(pkg.dependencies));
   }
   getChildPeerDeps(
     external,
-    type === "umd",
-    external.concat(
-      type === "umd" && pkg.dependencies ? Object.keys(pkg.dependencies) : []
-    ),
+    type === 'umd',
+    external.concat(type === 'umd' && pkg.dependencies ? Object.keys(pkg.dependencies) : []),
     [],
     aliases,
     pkg
   );
-  if (type === "node-dev" || type === "node-prod") {
+  if (type === 'node-dev' || type === 'node-prod') {
     external.push(...builtInModules);
   }
 
@@ -144,7 +132,7 @@ export let getRollupConfig = (
     try {
       rollupAliases[key] = resolveFrom(pkg.directory, aliases[key]);
     } catch (err) {
-      if (err.code !== "MODULE_NOT_FOUND") {
+      if (err.code !== 'MODULE_NOT_FOUND') {
         throw err;
       }
     }
@@ -156,7 +144,7 @@ export let getRollupConfig = (
     input[
       path.relative(
         pkg.directory,
-        path.join(entrypoint.directory, "dist", getNameForDist(pkg.name))
+        path.join(entrypoint.directory, 'dist', getNameForDist(pkg.name))
       )
     ] = entrypoint.strict().source;
   });
@@ -166,23 +154,21 @@ export let getRollupConfig = (
     external: makeExternalPredicate(external),
     onwarn: (warning: *) => {
       switch (warning.code) {
-        case "UNUSED_EXTERNAL_IMPORT": {
+        case 'UNUSED_EXTERNAL_IMPORT': {
           break;
         }
-        case "UNRESOLVED_IMPORT": {
+        case 'UNRESOLVED_IMPORT': {
           if (/^@babel\/runtime\/helpers\//.test(warning.source)) {
             throw (async () => {
-              let shouldInstallBabelRuntime = await confirms.shouldInstallBabelRuntime(
-                pkg
-              );
+              let shouldInstallBabelRuntime = await confirms.shouldInstallBabelRuntime(pkg);
 
               if (shouldInstallBabelRuntime) {
                 await limit(() =>
                   installPackages({
-                    packages: ["@babel/runtime"],
+                    packages: ['@babel/runtime'],
                     cwd: pkg.directory,
                     installPeers: false,
-                    packageManager: pkg.project.isBolt ? "bolt" : undefined
+                    packageManager: pkg.project.isBolt ? 'bolt' : undefined,
                   })
                 );
                 await pkg.refresh();
@@ -194,7 +180,7 @@ export let getRollupConfig = (
               }
             })();
           }
-          if (!warning.source.startsWith(".")) {
+          if (!warning.source.startsWith('.')) {
             throw new FatalError(
               `"${warning.source}" is imported by "${path.relative(
                 pkg.directory,
@@ -206,9 +192,7 @@ export let getRollupConfig = (
         }
         default: {
           throw new FatalError(
-            `There was an error compiling ${pkg.name}: ${chalk.red(
-              warning.toString()
-            )}`,
+            `There was an error compiling ${pkg.name}: ${chalk.red(warning.toString())}`,
             pkg
           );
         }
@@ -219,47 +203,39 @@ export let getRollupConfig = (
         cwd: pkg.project.directory,
         plugins: [
           // TODO: revisit these plugins
-          require.resolve(
-            "../babel-plugins/add-basic-constructor-to-react-component"
-          ),
-          [
-            require.resolve("@babel/plugin-proposal-class-properties"),
-            { loose: true }
-          ],
-          require.resolve("../babel-plugins/fix-dce-for-classes-with-statics"),
-          [
-            require.resolve("@babel/plugin-transform-runtime"),
-            { useESModules: true }
-          ]
+          require.resolve('../babel-plugins/add-basic-constructor-to-react-component'),
+          [require.resolve('@babel/plugin-proposal-class-properties'), { loose: true }],
+          require.resolve('../babel-plugins/fix-dce-for-classes-with-statics'),
+          [require.resolve('@babel/plugin-transform-runtime'), { useESModules: true }],
         ],
-        extensions: EXTENSIONS
+        extensions: EXTENSIONS,
       }),
       cjs(),
-      (type === "browser" || type === "umd") &&
+      (type === 'browser' || type === 'umd') &&
         replace({
-          "typeof document": JSON.stringify("object"),
-          "typeof window": JSON.stringify("object")
+          'typeof document': JSON.stringify('object'),
+          'typeof window': JSON.stringify('object'),
         }),
       rewriteCjsRuntimeHelpers(),
-      type === "umd" && alias(rollupAliases),
+      type === 'umd' && alias(rollupAliases),
       resolve({
         extensions: EXTENSIONS,
         customResolveOptions: {
-          moduleDirectory: type === "umd" ? "node_modules" : []
-        }
+          moduleDirectory: type === 'umd' ? 'node_modules' : [],
+        },
       }),
-      (type === "umd" || type === "node-prod") &&
+      (type === 'umd' || type === 'node-prod') &&
         replace({
-          "process.env.NODE_ENV": '"production"'
+          'process.env.NODE_ENV': '"production"',
         }),
-      type === "umd" && terser(),
-      type === "node-prod" &&
+      type === 'umd' && terser(),
+      type === 'node-prod' &&
         terser({
-          mangle: false
+          mangle: false,
         }),
-      type === "node-prod" && prettier(),
-      type === "node-prod" && flowAndNodeDevProdEntry()
-    ].filter(Boolean)
+      type === 'node-prod' && prettier(),
+      type === 'node-prod' && flowAndNodeDevProdEntry(),
+    ].filter(Boolean),
   };
 
   return config;

@@ -1,38 +1,33 @@
 // @flow
-import fixturez from "fixturez";
-import fix from "../fix";
-import path from "path";
-import { confirms, errors, inputs } from "../messages";
-import {
-  getPkg,
-  modifyPkg,
-  logMock,
-  createPackageCheckTestCreator
-} from "../../test-utils";
-import { promptInput } from "../prompt";
+import fixturez from 'fixturez';
+import fix from '../fix';
+import path from 'path';
+import { confirms, errors, inputs } from '../messages';
+import { getPkg, modifyPkg, logMock, createPackageCheckTestCreator } from '../../test-utils';
+import { promptInput } from '../prompt';
 
 const f = fixturez(__dirname);
 
-jest.mock("../prompt");
+jest.mock('../prompt');
 
 let testFix = createPackageCheckTestCreator(fix);
 
-test("no entrypoint", async () => {
-  let tmpPath = f.copy("no-entrypoint");
+test('no entrypoint', async () => {
+  let tmpPath = f.copy('no-entrypoint');
   try {
     await fix(tmpPath);
   } catch (error) {
-    expect(error.message).toBe(errors.noSource("src/index"));
+    expect(error.message).toBe(errors.noSource('src/index'));
   }
 });
 
-test("only main", async () => {
-  let tmpPath = f.copy("no-module");
+test('only main', async () => {
+  let tmpPath = f.copy('no-module');
 
   confirms.writeMainField.mockReturnValue(true);
   let origJson = await getPkg(tmpPath);
   await modifyPkg(tmpPath, json => {
-    json.main = "bad";
+    json.main = 'bad';
   });
 
   await fix(tmpPath);
@@ -40,11 +35,11 @@ test("only main", async () => {
   expect(origJson).toEqual(await getPkg(tmpPath));
 });
 
-test("set main and module field", async () => {
-  let tmpPath = f.copy("basic-package");
+test('set main and module field', async () => {
+  let tmpPath = f.copy('basic-package');
 
   await modifyPkg(tmpPath, json => {
-    json.module = "bad.js";
+    json.module = 'bad.js';
   });
 
   await fix(tmpPath);
@@ -63,19 +58,19 @@ Object {
 `);
 });
 
-test("monorepo", async () => {
-  let tmpPath = f.copy("monorepo");
+test('monorepo', async () => {
+  let tmpPath = f.copy('monorepo');
 
-  for (let name of ["package-one", "package-two"]) {
-    await modifyPkg(path.join(tmpPath, "packages", name), pkg => {
-      pkg.module = "bad.js";
+  for (let name of ['package-one', 'package-two']) {
+    await modifyPkg(path.join(tmpPath, 'packages', name), pkg => {
+      pkg.module = 'bad.js';
     });
   }
 
   await fix(tmpPath);
 
-  let pkg1 = await getPkg(path.join(tmpPath, "packages", "package-one"));
-  let pkg2 = await getPkg(path.join(tmpPath, "packages", "package-two"));
+  let pkg1 = await getPkg(path.join(tmpPath, 'packages', 'package-one'));
+  let pkg2 = await getPkg(path.join(tmpPath, 'packages', 'package-two'));
 
   expect(pkg1).toMatchInlineSnapshot(`
 Object {
@@ -100,8 +95,8 @@ Object {
 `);
 });
 
-test("does not modify if already valid", async () => {
-  let tmpPath = f.copy("valid-package");
+test('does not modify if already valid', async () => {
+  let tmpPath = f.copy('valid-package');
   let original = await getPkg(tmpPath);
 
   await fix(tmpPath);
@@ -117,8 +112,8 @@ Array [
 `);
 });
 
-test("invalid fields", async () => {
-  let tmpPath = f.copy("invalid-fields");
+test('invalid fields', async () => {
+  let tmpPath = f.copy('invalid-fields');
 
   await fix(tmpPath);
 
@@ -140,11 +135,11 @@ Object {
 `);
 });
 
-test("fix browser", async () => {
-  let tmpPath = f.copy("valid-package");
+test('fix browser', async () => {
+  let tmpPath = f.copy('valid-package');
 
   await modifyPkg(tmpPath, pkg => {
-    pkg.browser = "bad.js";
+    pkg.browser = 'bad.js';
   });
 
   await fix(tmpPath);
@@ -169,8 +164,8 @@ Object {
 `);
 });
 
-test("monorepo single package", async () => {
-  let tmpPath = f.copy("monorepo-single-package");
+test('monorepo single package', async () => {
+  let tmpPath = f.copy('monorepo-single-package');
 
   await fix(tmpPath);
   expect(logMock.log.mock.calls).toMatchInlineSnapshot(`
@@ -184,22 +179,22 @@ Array [
 });
 
 testFix(
-  "umd:main but no umdName specified",
+  'umd:main but no umdName specified',
   {
-    "": {
-      name: "something",
-      main: "dist/something.cjs.js",
-      "umd:main": "will be fixed",
+    '': {
+      name: 'something',
+      main: 'dist/something.cjs.js',
+      'umd:main': 'will be fixed',
       preconstruct: {
-        entrypoints: [".", "two", "three"]
-      }
-    }
+        entrypoints: ['.', 'two', 'three'],
+      },
+    },
   },
   async run => {
     (promptInput: any).mockImplementation((message, item) => {
       expect(message).toBe(inputs.getUmdName);
-      expect(item.name).toBe("something");
-      return "somethingUmdName";
+      expect(item.name).toBe('something');
+      return 'somethingUmdName';
     });
 
     let contents = await run();
@@ -221,9 +216,9 @@ Object {
   },
 }
 `);
-    expect(contents[""].preconstruct.umdName).toBe("somethingUmdName");
-    expect(contents[""]["umd:main"]).toBe("dist/something.umd.min.js");
+    expect(contents[''].preconstruct.umdName).toBe('somethingUmdName');
+    expect(contents['']['umd:main']).toBe('dist/something.umd.min.js');
 
-    expect(promptInput).toBeCalledTimes(1);
+    expect(promptInput).toHaveBeenCalledTimes(1);
   }
 );

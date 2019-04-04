@@ -1,1 +1,1 @@
-import "@some-scope/package-one-umd-with-dep";
+import '@some-scope/package-one-umd-with-dep';

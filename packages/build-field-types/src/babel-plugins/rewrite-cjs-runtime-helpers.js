@@ -3,11 +3,11 @@ const helperPath = /^@babel\/runtime\/helpers\/esm\/(\w+)$/;
 module.exports = ({ types: t }) => ({
   visitor: {
     CallExpression(path) {
-      if (path.get("callee").node.name !== "require") {
+      if (path.get('callee').node.name !== 'require') {
         return;
       }
 
-      const argument = path.get("arguments.0");
+      const argument = path.get('arguments.0');
 
       if (!argument.isStringLiteral()) {
         return;
@@ -19,12 +19,9 @@ module.exports = ({ types: t }) => ({
         return;
       }
 
-      const rewritten = nodeModule.replace(
-        helperPath,
-        "@babel/runtime/helpers/$1"
-      );
+      const rewritten = nodeModule.replace(helperPath, '@babel/runtime/helpers/$1');
 
       argument.replaceWith(t.stringLiteral(rewritten));
-    }
-  }
+    },
+  },
 });

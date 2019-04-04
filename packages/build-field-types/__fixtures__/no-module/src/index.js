@@ -1,1 +1,1 @@
-export default "this does not have a module build";
+export default 'this does not have a module build';

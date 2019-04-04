@@ -1,1 +1,1 @@
-export let something = "";
+export let something = '';

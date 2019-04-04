@@ -1,3 +1,3 @@
 // @flow
 
-export default "something";
+export default 'something';

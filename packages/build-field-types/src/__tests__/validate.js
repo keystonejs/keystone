@@ -1,20 +1,20 @@
 // @flow
-import fixturez from "fixturez";
-import validate from "../validate";
-import { logMock, modifyPkg } from "../../test-utils";
-import { FatalError } from "../errors";
-import { errors } from "../messages";
+import fixturez from 'fixturez';
+import validate from '../validate';
+import { logMock, modifyPkg } from '../../test-utils';
+import { FatalError } from '../errors';
+import { errors } from '../messages';
 
 const f = fixturez(__dirname);
 
-jest.mock("../prompt");
+jest.mock('../prompt');
 
 afterEach(() => {
   jest.resetAllMocks();
 });
 
-test("reports correct result on valid package", async () => {
-  let tmpPath = f.find("valid-package");
+test('reports correct result on valid package', async () => {
+  let tmpPath = f.find('valid-package');
 
   await validate(tmpPath);
   expect(logMock.log.mock.calls).toMatchInlineSnapshot(`
@@ -47,8 +47,8 @@ Array [
 `);
 });
 
-test("no main field", async () => {
-  let tmpPath = f.find("no-main-field");
+test('no main field', async () => {
+  let tmpPath = f.find('no-main-field');
 
   try {
     await validate(tmpPath);
@@ -60,8 +60,8 @@ test("no main field", async () => {
   expect(true).toBe(false);
 });
 
-test("no module", async () => {
-  let tmpPath = f.find("no-module");
+test('no module', async () => {
+  let tmpPath = f.find('no-module');
 
   await validate(tmpPath);
   expect(logMock.log.mock.calls).toMatchInlineSnapshot(`
@@ -86,11 +86,11 @@ Array [
 `);
 });
 
-test("invalid browser", async () => {
-  let tmpPath = f.copy("no-module");
+test('invalid browser', async () => {
+  let tmpPath = f.copy('no-module');
 
   await modifyPkg(tmpPath, pkg => {
-    pkg.browser = "invalid.js";
+    pkg.browser = 'invalid.js';
   });
 
   try {
@@ -101,13 +101,13 @@ test("invalid browser", async () => {
   }
 });
 
-test("valid browser", async () => {
-  let tmpPath = f.copy("valid-package");
+test('valid browser', async () => {
+  let tmpPath = f.copy('valid-package');
 
   await modifyPkg(tmpPath, pkg => {
     pkg.browser = {
-      ["./dist/valid-package.cjs.js"]: "./dist/valid-package.browser.cjs.js",
-      ["./dist/valid-package.esm.js"]: "./dist/valid-package.browser.esm.js"
+      ['./dist/valid-package.cjs.js']: './dist/valid-package.browser.cjs.js',
+      ['./dist/valid-package.esm.js']: './dist/valid-package.browser.esm.js',
     };
   });
 
@@ -146,8 +146,8 @@ Array [
 `);
 });
 
-test("valid react-native", async () => {
-  let tmpPath = f.copy("with-react-native-field");
+test('valid react-native', async () => {
+  let tmpPath = f.copy('with-react-native-field');
 
   await validate(tmpPath);
   expect(logMock.log.mock.calls).toMatchInlineSnapshot(`
@@ -180,8 +180,8 @@ Array [
 `);
 });
 
-test("monorepo single package", async () => {
-  let tmpPath = f.copy("monorepo-single-package");
+test('monorepo single package', async () => {
+  let tmpPath = f.copy('monorepo-single-package');
 
   await validate(tmpPath);
   expect(logMock.log.mock.calls).toMatchInlineSnapshot(`
@@ -206,8 +206,8 @@ Array [
 `);
 });
 
-test("one-entrypoint-with-browser-field-one-without", async () => {
-  let tmpPath = f.copy("one-entrypoint-with-browser-field-one-without");
+test('one-entrypoint-with-browser-field-one-without', async () => {
+  let tmpPath = f.copy('one-entrypoint-with-browser-field-one-without');
   try {
     await validate(tmpPath);
   } catch (e) {

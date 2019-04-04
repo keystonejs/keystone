@@ -1,4 +1,4 @@
-import pLimit from "p-limit";
+import pLimit from 'p-limit';
 
 export let promptInput = jest.fn();
 
