@@ -53,22 +53,15 @@ module.exports = class WebServer {
     }
   }
 
-  async start(...args) {
+  async start() {
     const {
       app,
       config: { port },
     } = this;
 
-    await this.keystone.connect(...args);
     return new Promise((resolve, reject) => {
       app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './default.html')));
-
-      app.listen(port, error => {
-        if (error) {
-          return reject(error);
-        }
-        return resolve({ port });
-      });
+      app.listen(port, error => (error ? reject(error) : resolve({ port })));
     });
   }
 };
