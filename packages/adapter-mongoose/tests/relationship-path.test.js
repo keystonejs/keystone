@@ -1,4 +1,4 @@
-const getRelatedListAdapterFromQueryPathFactory = require('./relationship-path');
+const getRelatedListAdapterFromQueryPathFactory = require('../lib/tokenizers/relationship-path');
 
 describe('Relationship Path parser', () => {
   describe('factory function', () => {

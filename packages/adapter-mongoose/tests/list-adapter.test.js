@@ -24,7 +24,7 @@ describe('MongooseListAdapter', () => {
     let listAdapter;
 
     // Mock things before we require other things
-    jest.doMock('../tokenizers/relationship-path', () => {
+    jest.doMock('../lib/tokenizers/relationship-path', () => {
       return jest.fn(() => {
         return jest.fn(() => listAdapter);
       });
@@ -50,7 +50,7 @@ describe('MongooseListAdapter', () => {
     let postListAdapter;
 
     // Mock things before we require other things
-    jest.doMock('../tokenizers/relationship-path', () =>
+    jest.doMock('../lib/tokenizers/relationship-path', () =>
       jest.fn(() =>
         jest.fn(query => {
           if (query[query.length - 1] === 'posts_some') {
@@ -139,7 +139,7 @@ describe('MongooseListAdapter', () => {
     let postListAdapter;
 
     // Mock things before we require other things
-    jest.doMock('../tokenizers/relationship-path', () =>
+    jest.doMock('../lib/tokenizers/relationship-path', () =>
       jest.fn(() => jest.fn(() => postListAdapter))
     );
 
