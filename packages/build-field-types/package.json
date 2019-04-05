@@ -18,6 +18,7 @@
   "license": "MIT",
   "dependencies": {
     "@babel/core": "^7.3.4",
+    "@babel/helper-module-imports": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.3.4",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-flow-strip-types": "^7.4.0",

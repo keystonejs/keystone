@@ -1,4 +1,4 @@
-// todo: needs to support ESM
+const { addNamed } = require('@babel/helper-module-imports');
 module.exports = function(babel) {
   const { types: t } = babel;
   let isPromiseResolve = t.buildMatchMemberExpression('Promise.resolve');
@@ -9,6 +9,10 @@ module.exports = function(babel) {
         if (path.get('callee').node.name !== '___KS_BUILD_SYSTEM_INTERNAL___importView') {
           return;
         }
+        if (!state.pathJoinIdentifierName) {
+          state.pathJoinIdentifierName = addNamed(path, 'join', 'path').name;
+        }
+        let pathJoinIdentifier = t.identifier(state.pathJoinIdentifierName);
         if (moduleFormat === 'cjs') {
           let promiseResolveCall = path.get('arguments')[0];
           if (
@@ -25,8 +29,8 @@ module.exports = function(babel) {
               path.replaceWith(
                 t.callExpression(
                   // this should use path.join(__dirname, path) but that's for the real implementation
-                  t.memberExpression(t.identifier('require'), t.identifier('resolve')),
-                  [requireCall.node.arguments[0]]
+                  pathJoinIdentifier,
+                  [t.identifier('__dirname'), requireCall.node.arguments[0]]
                 )
               );
               return;
@@ -42,10 +46,7 @@ module.exports = function(babel) {
           ) {
             let stringLiteral = importCall.get('arguments.0').node;
             path.replaceWith(
-              t.callExpression(
-                t.memberExpression(t.identifier('require'), t.identifier('resolve')),
-                [stringLiteral]
-              )
+              t.callExpression(pathJoinIdentifier, [t.identifier('__dirname'), stringLiteral])
             );
             return;
           }

@@ -3,12 +3,14 @@
 exports[`basic field type: dist/basic-field-type.cjs.dev.js 1`] = `
 "'use strict';
 
+var _join = require(\\"path\\").join;
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 let MyCoolFieldType = {
   views: {
-    Field: require.resolve('./chunk-9ca5ae48.cjs.dev.js')
+    Field: _join(__dirname, './chunk-9ca5ae48.cjs.dev.js')
   }
 };
 exports.MyCoolFieldType = MyCoolFieldType;
@@ -28,18 +30,20 @@ if (process.env.NODE_ENV === \\"production\\") {
 
 exports[`basic field type: dist/basic-field-type.cjs.prod.js 1`] = `
 "\\"use strict\\";
+var _join = require(\\"path\\").join;
 Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
 let MyCoolFieldType = {
-  views: { Field: require.resolve(\\"./chunk-9ca5ae48.cjs.prod.js\\") }
+  views: { Field: _join(__dirname, \\"./chunk-9ca5ae48.cjs.prod.js\\") }
 };
 exports.MyCoolFieldType = MyCoolFieldType;
 "
 `;
 
 exports[`basic field type: dist/basic-field-type.esm.js 1`] = `
-"let MyCoolFieldType = {
+"import { join as _join } from \\"path\\";
+let MyCoolFieldType = {
   views: {
-    Field: require.resolve('./chunk-605adae5.esm.js')
+    Field: _join(__dirname, './chunk-605adae5.esm.js')
   }
 };
 export { MyCoolFieldType };

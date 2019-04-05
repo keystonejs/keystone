@@ -37,6 +37,7 @@
   "dependencies": {
     "@babel/cli": "^7.1.2",
     "@babel/core": "^7.3.4",
+    "@babel/helper-module-imports": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.3.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.3.4",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
@@ -261,7 +262,9 @@
     ]
   },
   "field-types": {
-    "packages": ["packages/fields-wysiwyg-tinymce"]
+    "packages": [
+      "packages/fields-wysiwyg-tinymce"
+    ]
   },
   "jest": {
     "setupFilesAfterEnv": [

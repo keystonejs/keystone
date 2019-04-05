@@ -11,6 +11,7 @@ export default function rewriteCjsRuntimeHelpers() {
             JSON.stringify({
               babelrc: false,
               configFile: false,
+              sourceType: 'script',
               plugins: [
                 require.resolve('../babel-plugins/rewrite-cjs-runtime-helpers'),
                 [
