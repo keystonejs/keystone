@@ -250,7 +250,7 @@ class PassportAuthStrategy {
         // Otherwise, store the Service data in session so we can refer
         // back to it
         try {
-          await this.pauseValidation(req, info);
+          this.pauseValidation(req, info);
 
           await verified(passportUser, info, req, res, next);
         } catch (validationVerificationError) {
