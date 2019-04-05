@@ -88,42 +88,6 @@ exports[`multiple entrypoints: src/sum.js 1`] = `
 "
 `;
 
-exports[`source entrypoint option flow: source-entrypoint-option-flow.cjs.dev.js 1`] = `
-"'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-let something = '';
-exports.something = something;
-"
-`;
-
-exports[`source entrypoint option flow: source-entrypoint-option-flow.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./source-entrypoint-option-flow.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./source-entrypoint-option-flow.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`source entrypoint option flow: source-entrypoint-option-flow.cjs.js.flow 1`] = `
-"// @flow
-export * from \\"../modules/index.js\\";
-"
-`;
-
-exports[`source entrypoint option flow: source-entrypoint-option-flow.cjs.prod.js 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
-let something = \\"\\";
-exports.something = something;
-"
-`;
-
 exports[`source entrypoint option: source-entrypoint-option.cjs.dev.js 1`] = `
 "'use strict';
 

@@ -5,7 +5,7 @@
   "license": "MIT",
   "private": true,
   "module": "dist/two-entrypoints-one-module-one-not.esm.js",
-  "preconstruct": {
+  "field-types": {
     "source": "src/sum",
     "entrypoints": [
       ".",

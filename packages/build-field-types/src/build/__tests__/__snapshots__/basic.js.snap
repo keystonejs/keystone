@@ -32,15 +32,6 @@ exports.default = index;
 
 exports[`basic: valid-package.esm.js 1`] = `
 "var index = 'something';
-
 export default index;
 "
 `;
-
-exports[`basic: valid-package.umd.min.js 1`] = `
-"!function(e,t){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=t():\\"function\\"==typeof define&&define.amd?define(t):(e=e||self).validPackage=t()}(this,function(){\\"use strict\\";return\\"something\\"});
-//# sourceMappingURL=valid-package.umd.min.js.map
-"
-`;
-
-exports[`basic: valid-package.umd.min.js.map 1`] = `"{\\"version\\":3,\\"file\\":\\"valid-package.umd.min.js\\",\\"sources\\":[\\"../src/index.js\\"],\\"sourcesContent\\":[\\"export default 'something';\\\\n\\"],\\"names\\":[],\\"mappings\\":\\"wMAAe\\"}"`;

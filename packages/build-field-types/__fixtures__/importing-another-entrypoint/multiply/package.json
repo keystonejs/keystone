@@ -1,6 +1,6 @@
 {
   "main": "dist/common-dependency-two-entrypoints.cjs.js",
-  "preconstruct": {
+  "field-types": {
     "source": "../src/multiply.js"
   }
 }

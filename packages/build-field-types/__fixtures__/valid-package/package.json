@@ -6,7 +6,7 @@
   "private": true,
   "module": "dist/valid-package.esm.js",
   "umd:main": "dist/valid-package.umd.min.js",
-  "preconstruct": {
+  "field-types": {
     "umdName": "validPackage"
   }
 }

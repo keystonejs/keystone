@@ -4,7 +4,7 @@
   "main": "dist/common-dependency-two-entrypoints.cjs.js",
   "license": "MIT",
   "private": true,
-  "preconstruct": {
+  "field-types": {
     "source": "src/identity",
     "entrypoints": [
       ".",

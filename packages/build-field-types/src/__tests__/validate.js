@@ -1,9 +1,7 @@
 // @flow
 import fixturez from 'fixturez';
 import validate from '../validate';
-import { logMock, modifyPkg } from '../../test-utils';
-import { FatalError } from '../errors';
-import { errors } from '../messages';
+import { logMock } from '../../test-utils';
 
 const f = fixturez(__dirname);
 
@@ -30,10 +28,6 @@ Array [
   Array [
     "🎁 info valid-package",
     "module field is valid",
-  ],
-  Array [
-    "🎁 info valid-package",
-    "umd:main field is valid",
   ],
   Array [
     "🎁 info valid-package",
@@ -76,100 +70,6 @@ Array [
   ],
   Array [
     "🎁 info no-module",
-    "package entrypoints are valid",
-  ],
-  Array [
-    "🎁 success",
-    "project is valid!",
-  ],
-]
-`);
-});
-
-test('invalid browser', async () => {
-  let tmpPath = f.copy('no-module');
-
-  await modifyPkg(tmpPath, pkg => {
-    pkg.browser = 'invalid.js';
-  });
-
-  try {
-    await validate(tmpPath);
-  } catch (e) {
-    expect(e).toBeInstanceOf(FatalError);
-    expect(e.message).toBe(errors.invalidBrowserField);
-  }
-});
-
-test('valid browser', async () => {
-  let tmpPath = f.copy('valid-package');
-
-  await modifyPkg(tmpPath, pkg => {
-    pkg.browser = {
-      ['./dist/valid-package.cjs.js']: './dist/valid-package.browser.cjs.js',
-      ['./dist/valid-package.esm.js']: './dist/valid-package.browser.esm.js',
-    };
-  });
-
-  await validate(tmpPath);
-  expect(logMock.log.mock.calls).toMatchInlineSnapshot(`
-Array [
-  Array [
-    "🎁 info valid-package",
-    "a valid entry point exists.",
-  ],
-  Array [
-    "🎁 info valid-package",
-    "main field is valid",
-  ],
-  Array [
-    "🎁 info valid-package",
-    "module field is valid",
-  ],
-  Array [
-    "🎁 info valid-package",
-    "umd:main field is valid",
-  ],
-  Array [
-    "🎁 info valid-package",
-    "browser field is valid",
-  ],
-  Array [
-    "🎁 info valid-package",
-    "package entrypoints are valid",
-  ],
-  Array [
-    "🎁 success",
-    "project is valid!",
-  ],
-]
-`);
-});
-
-test('valid react-native', async () => {
-  let tmpPath = f.copy('with-react-native-field');
-
-  await validate(tmpPath);
-  expect(logMock.log.mock.calls).toMatchInlineSnapshot(`
-Array [
-  Array [
-    "🎁 info with-react-native-field",
-    "a valid entry point exists.",
-  ],
-  Array [
-    "🎁 info with-react-native-field",
-    "main field is valid",
-  ],
-  Array [
-    "🎁 info with-react-native-field",
-    "module field is valid",
-  ],
-  Array [
-    "🎁 info with-react-native-field",
-    "react-native field is valid",
-  ],
-  Array [
-    "🎁 info with-react-native-field",
     "package entrypoints are valid",
   ],
   Array [

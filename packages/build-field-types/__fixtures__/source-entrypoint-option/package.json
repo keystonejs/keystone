@@ -4,7 +4,7 @@
   "main": "dist/source-entrypoint-option.cjs.js",
   "license": "MIT",
   "private": true,
-  "preconstruct": {
+  "field-types": {
     "source": "modules"
   }
 }
