@@ -12,7 +12,7 @@ module.exports = {
   implementation: Text.implementation,
   views: {
     Controller: '@keystone-alpha/fields/types/Text/views/Controller',
-    Field: path.join(__dirname, './views/Field/Field'),
+    Field: path.join(__dirname, './views/Field'),
     Filter: '@keystone-alpha/fields/types/Text/views/Filter',
   },
   adapters: Text.adapters,
