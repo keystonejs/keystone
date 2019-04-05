@@ -9,14 +9,11 @@ exports.configureGoogleAuth = function(keystone, server) {
     config: {
       clientID: googleAppKey,
       clientSecret: googleAppSecret,
-      enableAuthRoutes: true, // default true
-      authRoot: 'auth',
       callbackURL: `${appURL}/auth/google/callback`,
-      authSuccessRedirect: '/api/session', // defaults to '/'
       idField: 'googleId', // default value
       usernameField: 'googleUsername', // default value
       server,
     },
   });
-  setupAuthRoutes(strategy);
+  setupAuthRoutes({ strategy });
 };

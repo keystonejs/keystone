@@ -9,14 +9,11 @@ exports.configureGitHubAuth = function(keystone, server) {
     config: {
       clientID: githubAppKey,
       clientSecret: githubAppSecret,
-      enableAuthRoutes: true, // default true
-      authRoot: 'auth',
       callbackURL: `${appURL}/auth/github/callback`,
-      authSuccessRedirect: '/api/session', // defaults to '/'
       idField: 'githubId', // default value
       usernameField: 'githubUsername', // default value
       server,
     },
   });
-  setupAuthRoutes(strategy);
+  setupAuthRoutes({ strategy });
 };

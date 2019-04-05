@@ -12,9 +12,8 @@ exports.configureTwitterAuth = function(keystone, server) {
       callbackURL: `${appURL}/auth/twitter/callback`,
       idField: 'twitterId', //default value
       usernameField: 'twitterUsername', //default value
-      authSuccessRedirect: '/api/session', // defaults to '/'
       server,
     },
   });
-  setupAuthRoutes(strategy);
+  setupAuthRoutes({ strategy });
 };

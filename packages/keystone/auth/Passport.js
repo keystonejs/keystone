@@ -20,9 +20,6 @@ class PassportAuthStrategy {
       useSession: false,
       sessionIdField: 'passport',
       keystoneSessionIdField: 'keystone_passport',
-      authRoot: 'auth',
-      authSuccessRedirect: '/',
-      authFailureRedirect: '/',
       scope: [],
       ...config,
     };
