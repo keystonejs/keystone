@@ -1,0 +1,1 @@
+- Export { logger } as the API, rather than a default export

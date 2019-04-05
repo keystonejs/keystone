@@ -52,7 +52,7 @@ export default function withModalHandlers(
     };
 
     open = (event: MouseEvent) => {
-      if (event && event.defaultPrevented) return;
+      if (event.defaultPrevented) return;
       if (this.props.mode === 'contextmenu') event.preventDefault();
 
       const { clientX, clientY } = event;

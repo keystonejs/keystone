@@ -114,10 +114,8 @@ export default class Tooltip extends Component<Props, State> {
       );
     }
 
-    if (target) {
-      target.addEventListener('mouseenter', this.handleMouseEnter, LISTENER_OPTIONS);
-      target.addEventListener('mouseleave', this.handleMouseLeave, LISTENER_OPTIONS);
-    }
+    target.addEventListener('mouseenter', this.handleMouseEnter, LISTENER_OPTIONS);
+    target.addEventListener('mouseleave', this.handleMouseLeave, LISTENER_OPTIONS);
   }
   componentWillUnmount() {
     this.cancelPendingSetState();

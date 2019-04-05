@@ -40,7 +40,6 @@ export default class RelationshipFilterView extends Component<Props> {
       <EventCatcher>
         <RelationshipSelect
           field={field}
-          value={null}
           renderContext={null}
           htmlID={htmlID}
           onChange={this.handleChange}

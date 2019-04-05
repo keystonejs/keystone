@@ -47,7 +47,7 @@ export default class List {
     this.updateManyMutation = gql`
       mutation updateMany($data: [${this.gqlNames.updateManyInputName}])
       {
-        ${this.gqlNames.updateMutationName}(data: $data) {
+        ${this.gqlNames.updateManyMutationName}(data: $data) {
           id
         }
       }

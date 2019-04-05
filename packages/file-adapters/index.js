@@ -1,4 +1,4 @@
-module.exports = {
-  LocalFileAdapter: require('./local-file'),
-  CloudinaryAdapter: require('./cloudinary'),
-};
+const LocalFileAdapter = require('./lib/local-file');
+const CloudinaryAdapter = require('./lib/cloudinary');
+
+module.exports = { LocalFileAdapter, CloudinaryAdapter };
