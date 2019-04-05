@@ -24,6 +24,7 @@
     "@keystone-alpha/keystone": "^2.0.0",
     "@keystone-alpha/server": "^3.0.0",
     "@keystone-alpha/session": "^1.0.1",
+    "passport-wordpress": "^0.0.4",
     "react": "^16.8.4"
   },
   "devDependencies": {

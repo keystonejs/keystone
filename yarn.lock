@@ -15273,6 +15273,14 @@ passport-oauth2@1.x.x:
     uid2 "0.0.x"
     utils-merge "1.x.x"
 
+passport-oauth@1.x.x:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/passport-oauth/-/passport-oauth-1.0.0.tgz#90aff63387540f02089af28cdad39ea7f80d77df"
+  integrity sha1-kK/2M4dUDwIImvKM2tOep/gNd98=
+  dependencies:
+    passport-oauth1 "1.x.x"
+    passport-oauth2 "1.x.x"
+
 passport-strategy@1.x.x:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/passport-strategy/-/passport-strategy-1.0.0.tgz#b5539aa8fc225a3d1ad179476ddf236b440f52e4"
@@ -15285,6 +15293,14 @@ passport-twitter@^1.0.4:
   dependencies:
     passport-oauth1 "1.x.x"
     xtraverse "0.1.x"
+
+passport-wordpress@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/passport-wordpress/-/passport-wordpress-0.0.4.tgz#553b54812f9711171951f34d15ce4e001a98f1b0"
+  integrity sha1-VTtUgS+XERcZUfNNFc5OABqY8bA=
+  dependencies:
+    passport-oauth "1.x.x"
+    pkginfo "0.2.x"
 
 passport@^0.4.0:
   version "0.4.0"
@@ -15623,6 +15639,11 @@ pkg-up@^2.0.0:
   integrity sha1-yBmscoBZpGHKscOImivjxJoATX8=
   dependencies:
     find-up "^2.1.0"
+
+pkginfo@0.2.x:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/pkginfo/-/pkginfo-0.2.3.tgz#7239c42a5ef6c30b8f328439d9b9ff71042490f8"
+  integrity sha1-cjnEKl72wwuPMoQ52bn/cQQkkPg=
 
 plur@^1.0.0:
   version "1.0.0"

@@ -88,6 +88,10 @@ keystone.createList('User', {
     googleId: { type: Text },
     googleUsername: { type: Text },
 
+    // TODO: Create a WordPress field type to encapsulate these
+    wordpressId: { type: Text },
+    wordpressUsername: { type: Text },
+
     isAdmin: { type: Checkbox },
     company: {
       type: Select,

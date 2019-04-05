@@ -157,6 +157,7 @@
     "passport-github": "^1.1.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-twitter": "^1.0.4",
+    "passport-wordpress": "^0.0.4",
     "pg": "^7.9.0",
     "pify": "^4.0.1",
     "pino": "5.11.1",

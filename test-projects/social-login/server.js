@@ -5,6 +5,7 @@ const {
   githubAuthEnabled,
   twitterAuthEnabled,
   googleAuthEnabled,
+  wpAuthEnabled,
   port,
   staticRoute,
   staticPath,
@@ -13,6 +14,7 @@ const { configureFacebookAuth } = require('./facebook');
 const { configureGitHubAuth } = require('./github');
 const { configureTwitterAuth } = require('./twitter');
 const { configureGoogleAuth } = require('./google');
+const { configureWPAuth } = require('./wordpress');
 
 const initialData = require('./data');
 
@@ -41,6 +43,10 @@ keystone
 
     if (googleAuthEnabled) {
       configureGoogleAuth(keystoneApp, server);
+    }
+
+    if (wpAuthEnabled) {
+      configureWPAuth(keystoneApp, server);
     }
 
     server.app.use(staticRoute, server.express.static(staticPath));

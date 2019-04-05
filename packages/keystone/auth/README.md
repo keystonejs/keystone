@@ -131,10 +131,9 @@ The time spend verifying an actors credentials should be constant-time regardles
 #### 0-step new user creation
 
 ```javascript
-server.app.use(
-  // When logged in, we'll get a req.user object
-  keystone.sessionManager.populateAuthedItemMiddleware
-);
+const TwitterAuthStrategy = require('@keystone-alpha/keystone/auth/Twitter');
+
+// before keystone.prepare()
 
 const twitterAuth = keystone.createAuthStrategy({
   type: TwitterAuthStrategy,
@@ -200,10 +199,9 @@ address, their social security info, their mother's maiden name, and their
 bank's password over multiple server requests / page refreshes:
 
 ```javascript
-server.app.use(
-  // When logged in, we'll get a req.user object
-  keystone.sessionManager.populateAuthedItemMiddleware
-);
+const TwitterAuthStrategy = require('@keystone-alpha/keystone/auth/Twitter');
+
+// before keystone.prepare()
 
 const twitterAuth = keystone.createAuthStrategy({
   type: TwitterAuthStrategy,
@@ -287,4 +285,56 @@ server.app.post('/auth/twitter/complete', async (req, res, next) => {
     next(createError);
   }
 });
+```
+
+## Facebook, Google, GitHub
+#### See Twitter Example
+
+## Using other PassportJs Strategy
+
+### Inherit from Keystone PassportAuthStrategy
+```js
+const PassportWordPress = require('passport-wordpress').Strategy;
+const PassportAuthStrategy = require('@keystone-alpha/keystone/auth/Passport');
+
+class WordPressAuthStrategy extends PassportAuthStrategy {
+  constructor(keystone, listKey, config) {
+    super(
+      WordPressAuthStrategy.authType,
+      keystone,
+      listKey,
+      {
+        sessionIdField: 'wordpressSession',
+        keystoneSessionIdField: 'keystoneWordPressSessionId',
+        ...config,
+      },
+      PassportWordPress
+    );
+  }
+}
+
+WordPressAuthStrategy.authType = 'wordpress';
+
+module.exports = WordPressAuthStrategy;
+```
+
+### Usage
+Configure similar to Twitter Strategy
+
+```js
+// before keystone.prepare()
+
+const wpAuth = keystone.createAuthStrategy({
+  type: WordPressAuthStrategy,
+  list: 'User',
+  config: {
+    consumerKey: process.env.WP_APP_KEY,
+    consumerSecret: process.env.WP_APP_SECRET,
+    callbackURL: `http://localhost:${PORT}/auth/wordpress/callback`,
+    idField: 'wordpressId',
+    usernameField: 'wordpressUsername',
+    server,
+  },
+});
+// rest of the code for configuring routes, similar to Twitter
 ```
