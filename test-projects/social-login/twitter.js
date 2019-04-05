@@ -1,8 +1,9 @@
 const TwitterAuthStrategy = require('@keystone-alpha/keystone/auth/Twitter');
 const { appURL, twitterAppKey, twitterAppSecret } = require('./config');
+const setupAuthRoutes = require('./setupAuthRoutes');
 
 exports.configureTwitterAuth = function(keystone, server) {
-  keystone.createAuthStrategy({
+  const strategy = keystone.createAuthStrategy({
     type: TwitterAuthStrategy,
     list: 'User',
     config: {
@@ -15,4 +16,5 @@ exports.configureTwitterAuth = function(keystone, server) {
       server,
     },
   });
+  setupAuthRoutes(strategy);
 };

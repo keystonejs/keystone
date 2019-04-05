@@ -15,7 +15,6 @@
     "@keystone-alpha/core": "^2.0.2",
     "@keystone-alpha/fields": "^3.0.2",
     "@keystone-alpha/logger": "^1.0.2",
-    "@keystone-alpha/session": "^1.0.1",
     "@keystone-alpha/utils": "^2.0.0",
     "apollo-errors": "^1.9.0",
     "arg": "^4.1.0",

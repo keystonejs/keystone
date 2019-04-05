@@ -1,6 +1,5 @@
 const passport = require('passport');
 const { Text, Relationship } = require('@keystone-alpha/fields');
-const { startAuthedSession } = require('@keystone-alpha/session');
 
 const FIELD_TOKEN_SECRET = 'tokenSecret';
 const FIELD_ITEM = 'item';
@@ -21,7 +20,6 @@ class PassportAuthStrategy {
       useSession: false,
       sessionIdField: 'passport',
       keystoneSessionIdField: 'keystone_passport',
-      enableAuthRoutes: true,
       authRoot: 'auth',
       authSuccessRedirect: '/',
       authFailureRedirect: '/',
@@ -36,10 +34,6 @@ class PassportAuthStrategy {
 
     this.passportStrategy = this.getPassportStrategy();
     passport.use(this.passportStrategy);
-
-    if (this.config.enableAuthRoutes) {
-      this.setupAuthRoutes();
-    }
   }
 
   static initializePassport(server) {
@@ -246,7 +240,7 @@ class PassportAuthStrategy {
     return (req, res, next) => {
       // This middleware will call the `verify` callback we passed up the top to
       // the `new Passport{Service}` constructor
-      passport.authenticate(this.authType, async (verifyError, authedItem, info) => {
+      passport.authenticate(this.authType, async (verifyError, passportUser, info) => {
         // If we get a error, bail and display the message we get
         if (verifyError) {
           return failedVerification(verifyError.message || verifyError.toString(), req, res, next);
@@ -261,7 +255,7 @@ class PassportAuthStrategy {
         try {
           await this.keystone.auth.User[this.authType].pauseValidation(req, info);
 
-          await verified(authedItem, info, req, res, next);
+          await verified(passportUser, info, req, res, next);
         } catch (validationVerificationError) {
           next(validationVerificationError);
         }
@@ -303,98 +297,6 @@ class PassportAuthStrategy {
     );
   }
   //#endregion
-
-  setupAuthRoutes() {
-    // Hit this route to start the auth process for service
-    this.config.server.app.get(
-      `/${this.config.authRoot}/${this.authType}`,
-      this.loginMiddleware({
-        // If not set, will just call `next()`
-        sessionExists: (itemId, req, res) => {
-          console.log(`Already logged in as ${itemId} 🎉`);
-          // logged in already? Send 'em home!
-          return res.redirect(this.config.authSuccessRedirect);
-        },
-      })
-    );
-
-    // oAuth service will redirect the user to this URL after approval.
-    this.config.server.app.get(
-      `/${this.config.authRoot}/${this.authType}/callback`,
-      this.authenticateMiddleware({
-        verified: async (item, { list }, req, res) => {
-          // You could try and find user by email address here to match users
-          // if you get the email data back from auth service, then refer to
-          // connectItem, for example:
-          // await keystone.auth.User[this.authType].connectItem(req, { item });
-          // ...
-
-          // If we don't have a matching user in our system, force redirect to
-          // the create step
-          if (!item) {
-            return res.redirect(`/${this.config.authRoot}/${this.authType}/create`);
-          }
-
-          // Otherwise create a session based on the user we have already
-          await startAuthedSession(req, { item, list });
-          // Redirect on sign in
-          res.redirect(this.config.authSuccessRedirect);
-        },
-        failedVerification: (error, req, res) => {
-          console.log(`Failed to verify ${this.authType} login creds`);
-          res.redirect(this.config.authFailureRedirect);
-        },
-      })
-    );
-
-    // Sample page to collect a name, submits to the completion step which will
-    // create a user
-    this.config.server.app.get(`/${this.config.authRoot}/${this.authType}/create`, (req, res) => {
-      // Redirect if we're already signed in
-      if (req.user) {
-        return res.redirect(this.config.authSuccessRedirect);
-      }
-      // If we don't have a keystone[serviceName]SessionId (this.config.keystoneSessionIdField) at this point, the form
-      // submission will fail, so fail out to the first step
-      if (!req.session[this.config.keystoneSessionIdField]) {
-        return res.redirect(`/${this.config.authRoot}/${this.authType}`);
-      }
-
-      res.send(`
-        <form action="/${this.config.authRoot}/${this.authType}/complete" method="post">
-          <input type="text" placeholder="name" name="name" />
-          <button type="submit">Submit</button>
-        </form>
-      `);
-    });
-
-    // Gets the name and creates a new User
-    this.config.server.app.post(
-      `/${this.config.authRoot}/${this.authType}/complete`,
-      this.config.server.express.urlencoded({ extended: true }),
-      async (req, res, next) => {
-        // Redirect if we're already signed in
-        if (req.user) {
-          return res.redirect(this.config.authSuccessRedirect);
-        }
-
-        // Create a new User
-        try {
-          const list = this.getList();
-
-          const item = await this.keystone.createItem(list.key, {
-            name: req.body.name,
-          });
-
-          await this.keystone.auth.User[this.authType].connectItem(req, { item });
-          await startAuthedSession(req, { item, list });
-          res.redirect(this.config.authSuccessRedirect);
-        } catch (createError) {
-          next(createError);
-        }
-      }
-    );
-  }
 }
 
 PassportAuthStrategy.authType = 'base-abstract';

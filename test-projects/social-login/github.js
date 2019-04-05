@@ -1,9 +1,9 @@
 const GitHubAuthStrategy = require('@keystone-alpha/keystone/auth/GitHub');
-
 const { appURL, githubAppKey, githubAppSecret } = require('./config');
+const setupAuthRoutes = require('./setupAuthRoutes');
 
 exports.configureGitHubAuth = function(keystone, server) {
-  keystone.createAuthStrategy({
+  const strategy = keystone.createAuthStrategy({
     type: GitHubAuthStrategy,
     list: 'User',
     config: {
@@ -18,4 +18,5 @@ exports.configureGitHubAuth = function(keystone, server) {
       server,
     },
   });
+  setupAuthRoutes(strategy);
 };

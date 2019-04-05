@@ -1,9 +1,9 @@
 const GoogleAuthStrategy = require('@keystone-alpha/keystone/auth/Google');
-
 const { appURL, googleAppKey, googleAppSecret } = require('./config');
+const setupAuthRoutes = require('./setupAuthRoutes');
 
 exports.configureGoogleAuth = function(keystone, server) {
-  keystone.createAuthStrategy({
+  const strategy = keystone.createAuthStrategy({
     type: GoogleAuthStrategy,
     list: 'User',
     config: {
@@ -18,4 +18,5 @@ exports.configureGoogleAuth = function(keystone, server) {
       server,
     },
   });
+  setupAuthRoutes(strategy);
 };

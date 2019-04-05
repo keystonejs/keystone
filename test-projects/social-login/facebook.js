@@ -1,9 +1,9 @@
 const FacebookAuthStrategy = require('@keystone-alpha/keystone/auth/Facebook');
-
 const { appURL, facebookAppKey, facebookAppSecret } = require('./config');
+const setupAuthRoutes = require('./setupAuthRoutes');
 
 exports.configureFacebookAuth = function(keystone, server) {
-  keystone.createAuthStrategy({
+  const strategy = keystone.createAuthStrategy({
     type: FacebookAuthStrategy,
     list: 'User',
     config: {
@@ -16,4 +16,5 @@ exports.configureFacebookAuth = function(keystone, server) {
       server,
     },
   });
+  setupAuthRoutes(strategy);
 };
