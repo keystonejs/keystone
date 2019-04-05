@@ -1,5 +1,5 @@
 const keystone = require('@keystone-alpha/core');
-const WysiwygField = require('@keystone-alpha/fields-wysiwyg-tinymce');
+const { Wysiwyg } = require('@keystone-alpha/fields-wysiwyg-tinymce');
 const next = require('next');
 
 const { port, staticRoute, staticPath } = require('./config');
@@ -13,7 +13,7 @@ const nextApp = next({
 
 Promise.all([keystone.prepare({ port }), nextApp.prepare()])
   .then(async ([{ server, keystone: keystoneApp }]) => {
-    WysiwygField.bindStaticMiddleware(server);
+    Wysiwyg.bindStaticMiddleware(server);
     server.app.use(staticRoute, server.express.static(staticPath));
     server.app.use(nextApp.getRequestHandler());
 
