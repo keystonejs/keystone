@@ -16,7 +16,7 @@ const {
   BaseFieldAdapter,
 } = require('@keystone-alpha/keystone');
 const joinBuilder = require('@keystone-alpha/mongo-join-builder');
-const logger = require('@keystone-alpha/logger')('mongoose');
+const logger = require('@keystone-alpha/logger').logger('mongoose');
 
 const simpleTokenizer = require('./tokenizers/simple');
 const relationshipTokenizer = require('./tokenizers/relationship');

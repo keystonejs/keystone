@@ -7,7 +7,7 @@ title: Logger
 
 ## API
 
-### `require('@keystone-alpha/logger')(name)`
+### `require('@keystone-alpha/logger').logger(name)`
 
 Provides an instance of [`pino`](https://github.com/pinojs/pino) based on the given `name`.
 
