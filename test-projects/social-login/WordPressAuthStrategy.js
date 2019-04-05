@@ -1,5 +1,5 @@
 const PassportWordPress = require('passport-wordpress').Strategy;
-const PassportAuthStrategy = require('@keystone-alpha/keystone/auth/Passport');
+const { PassportAuthStrategy } = require('@keystone-alpha/keystone');
 
 class WordPressAuthStrategy extends PassportAuthStrategy {
   constructor(keystone, listKey, config) {

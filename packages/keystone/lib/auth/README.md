@@ -131,9 +131,9 @@ The time spend verifying an actors credentials should be constant-time regardles
 #### 0-step new user creation
 
 ```javascript
-const TwitterAuthStrategy = require('@keystone-alpha/keystone/auth/Twitter');
+const { TwitterAuthStrategy } = require('@keystone-alpha/keystone');
 
-// before keystone.prepare()
+// before keystone.conenct()
 
 const twitterAuth = keystone.createAuthStrategy({
   type: TwitterAuthStrategy,
@@ -199,9 +199,9 @@ address, their social security info, their mother's maiden name, and their
 bank's password over multiple server requests / page refreshes:
 
 ```javascript
-const TwitterAuthStrategy = require('@keystone-alpha/keystone/auth/Twitter');
+const { TwitterAuthStrategy } = require('@keystone-alpha/keystone');
 
-// before keystone.prepare()
+// before keystone.connect()
 
 const twitterAuth = keystone.createAuthStrategy({
   type: TwitterAuthStrategy,
@@ -295,7 +295,7 @@ server.app.post('/auth/twitter/complete', async (req, res, next) => {
 ### Inherit from Keystone PassportAuthStrategy
 ```js
 const PassportWordPress = require('passport-wordpress').Strategy;
-const PassportAuthStrategy = require('@keystone-alpha/keystone/auth/Passport');
+const { PassportAuthStrategy } = require('@keystone-alpha/keystone');
 
 class WordPressAuthStrategy extends PassportAuthStrategy {
   constructor(keystone, listKey, config) {

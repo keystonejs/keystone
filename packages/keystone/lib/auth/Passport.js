@@ -1,5 +1,4 @@
 const passport = require('passport');
-const { Text, Relationship } = require('@keystone-alpha/fields');
 
 const FIELD_TOKEN_SECRET = 'tokenSecret';
 const FIELD_ITEM = 'item';
@@ -42,6 +41,8 @@ class PassportAuthStrategy {
 
   createSessionList() {
     if (!this.getSessionList()) {
+      const { Text, Relationship } = require('@keystone-alpha/fields');
+
       // TODO: Set read permissions to be 'internal' (within keystone) only so
       // it doesn't expose a graphQL endpoint, or can be read or modified by
       // another user
