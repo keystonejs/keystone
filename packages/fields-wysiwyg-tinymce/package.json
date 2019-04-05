@@ -24,5 +24,6 @@
     "entrypoints": [
       "views/Field"
     ]
-  }
+  },
+  "main": "dist/fields-wysiwyg-tinymce.cjs.js"
 }

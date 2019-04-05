@@ -6,7 +6,7 @@ import { Component } from 'react';
 
 import { FieldContainer, FieldLabel } from '@arch-ui/fields';
 
-import Editor from '../Editor';
+import Editor from './Editor';
 
 export default class WysiwygField extends Component {
   onChange = value => {

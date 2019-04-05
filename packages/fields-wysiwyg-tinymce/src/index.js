@@ -1,5 +1,5 @@
-const { Text } = require('@keystone-alpha/fields');
-const path = require('path');
+import { Text } from '@keystone-alpha/fields';
+import { importView } from '@keystone-alpha/build-field-types';
 
 function bindStaticMiddleware(server) {
   const tinymce = require.resolve('tinymce');
@@ -7,13 +7,13 @@ function bindStaticMiddleware(server) {
   server.app.use('/tinymce-assets', server.express.static(tinymcePath));
 }
 
-module.exports = {
+export let Wysiwyg = {
   type: 'Wysiwyg',
   implementation: Text.implementation,
   views: {
-    Controller: '@keystone-alpha/fields/types/Text/views/Controller',
-    Field: path.join(__dirname, './views/Field/Field'),
-    Filter: '@keystone-alpha/fields/types/Text/views/Filter',
+    Controller: Text.views.Controller,
+    Field: importView('./views/Field'),
+    Filter: Text.views.Filter,
   },
   adapters: Text.adapters,
   bindStaticMiddleware,

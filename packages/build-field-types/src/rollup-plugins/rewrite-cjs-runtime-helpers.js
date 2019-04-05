@@ -14,10 +14,13 @@ export default function rewriteCjsRuntimeHelpers() {
           JSON.stringify({
             babelrc: false,
             configFile: false,
-            plugins: [require.resolve('../babel-plugins/rewrite-cjs-runtime-helpers')],
+            plugins: [
+              require.resolve('../babel-plugins/rewrite-cjs-runtime-helpers'),
+              require.resolve('../babel-plugins/ks-field-types-render-chunk'),
+            ],
           })
         )
-        .then(({ code }) => code);
+        .then(output => output.code);
     },
   };
 }
