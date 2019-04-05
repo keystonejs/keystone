@@ -78,6 +78,7 @@ describe('dev command', () => {
       const mockPrepare = jest.fn(() =>
         Promise.resolve({
           server: { start: mockServerStart },
+          keystone: { connect: jest.fn() },
         })
       );
 
@@ -123,6 +124,7 @@ describe('dev command', () => {
       const mockPrepare = jest.fn(() =>
         Promise.resolve({
           server: { start: jest.fn() },
+          keystone: { connect: jest.fn() },
         })
       );
 
@@ -160,6 +162,7 @@ describe('dev command', () => {
       const mockPrepare = jest.fn(() =>
         Promise.resolve({
           server: { start: jest.fn() },
+          keystone: { connect: jest.fn() },
         })
       );
 

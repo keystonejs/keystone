@@ -7,15 +7,7 @@ const initialData = require('./data');
 keystone
   .prepare({ port })
   .then(async ({ server, keystone: keystoneApp }) => {
-    server.app.get('/reset-db', async (req, res) => {
-      Object.values(keystoneApp.adapters).forEach(async adapter => {
-        await adapter.dropDatabase();
-      });
-      await keystoneApp.createItems(initialData);
-      res.redirect('/admin');
-    });
-
-    await server.start();
+    await keystoneApp.connect();
 
     // Initialise some data.
     // NOTE: This is only for test purposes and should not be used in production
@@ -26,6 +18,15 @@ keystone
       });
       await keystoneApp.createItems(initialData);
     }
+
+    server.app.get('/reset-db', async (req, res) => {
+      Object.values(keystoneApp.adapters).forEach(async adapter => {
+        await adapter.dropDatabase();
+      });
+      await keystoneApp.createItems(initialData);
+      res.redirect('/admin');
+    });
+    await server.start();
   })
   .catch(error => {
     console.error(error);
