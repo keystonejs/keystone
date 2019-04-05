@@ -250,7 +250,7 @@ class PassportAuthStrategy {
         // Otherwise, store the Service data in session so we can refer
         // back to it
         try {
-          await this.keystone.auth.User[this.authType].pauseValidation(req, info);
+          await this.pauseValidation(req, info);
 
           await verified(passportUser, info, req, res, next);
         } catch (validationVerificationError) {
@@ -279,7 +279,7 @@ class PassportAuthStrategy {
       },
       async (req, accessToken, refreshToken, profile, done) => {
         try {
-          let result = await this.keystone.auth.User[this.authType].validate({
+          let result = await this.validate({
             accessToken,
           });
           if (!result.success) {

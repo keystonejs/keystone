@@ -27,7 +27,7 @@ module.exports = ({
         // You could try and find user by email address here to match users
         // if you get the email data back from auth service, then refer to
         // connectItem, for example:
-        // await keystone.auth.User[strategy.authType].connectItem(req, { item });
+        // await keystone.auth[<User list>][strategy.authType].connectItem(req, { item });
         // ...
 
         // If we don't have a matching user in our system, force redirect to
@@ -87,7 +87,7 @@ module.exports = ({
           name: req.body.name,
         });
 
-        await strategy.keystone.auth.User[strategy.authType].connectItem(req, { item });
+        await strategy.connectItem(req, { item });
         await startAuthedSession(req, { item, list });
         res.redirect(successRedirect);
       } catch (createError) {
