@@ -216,6 +216,65 @@ export default thing;
 "
 `;
 
+exports[`package resolvable but not in deps: dist/typescript.cjs.dev.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+let thing = \\"something\\";
+exports.default = thing;
+"
+`;
+
+exports[`package resolvable but not in deps: dist/typescript.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./typescript.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./typescript.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`package resolvable but not in deps: dist/typescript.cjs.prod.js 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
+let thing = \\"something\\";
+exports.default = thing;
+"
+`;
+
+exports[`package resolvable but not in deps: dist/typescript.esm.js 1`] = `
+"let thing = \\"something\\";
+export default thing;
+"
+`;
+
+exports[`package resolvable but not in deps: package.json 1`] = `
+"{
+  \\"name\\": \\"typescript\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"main\\": \\"dist/typescript.cjs.js\\",
+  \\"license\\": \\"MIT\\",
+  \\"private\\": true,
+  \\"module\\": \\"dist/typescript.esm.js\\",
+  \\"dependencies\\": {
+    \\"@babel/core\\": \\"^7.4.3\\",
+    \\"@babel/preset-typescript\\": \\"^7.3.3\\"
+  }
+}
+"
+`;
+
+exports[`package resolvable but not in deps: src/index.ts 1`] = `
+"let thing: string = \\"something\\";
+
+export default thing;
+"
+`;
+
 exports[`react native: with-react-native-field.cjs.dev.js 1`] = `
 "'use strict';
 
@@ -328,5 +387,41 @@ exports[`typescript: src/index.ts 1`] = `
 "let thing: string = \\"something\\";
 
 export default thing;
+"
+`;
+
+exports[`typescript: with-react-native-field.cjs.dev.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var index = 'react native';
+exports.default = index;
+"
+`;
+
+exports[`typescript: with-react-native-field.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./with-react-native-field.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./with-react-native-field.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`typescript: with-react-native-field.cjs.prod.js 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
+var index = \\"react native\\";
+exports.default = index;
+"
+`;
+
+exports[`typescript: with-react-native-field.esm.js 1`] = `
+"var index = 'react native';
+export default index;
 "
 `;

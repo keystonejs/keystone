@@ -70,25 +70,6 @@ export class Entrypoint extends Item {
   set module(path: string) {
     this.json.module = path;
   }
-  get browser(): null | string | { [key: string]: string } {
-    return is(this.json.browser, is.maybe(is.either(is.string, is.objectOf(is.string))));
-  }
-  set browser(option: string | { [key: string]: string }) {
-    this.json.browser = option;
-  }
-  get reactNative(): null | string | { [key: string]: string } {
-    return is(this.json['react-native'], is.maybe(is.either(is.string, is.objectOf(is.string))));
-  }
-  set reactNative(option: string | { [key: string]: string }) {
-    this.json['react-native'] = option;
-  }
-
-  get umdMain(): string | null {
-    return is(this.json['umd:main'], is.maybe(is.string));
-  }
-  set umdMain(path: string) {
-    this.json['umd:main'] = path;
-  }
 
   get configSource(): string {
     return is(this._config.source, is.default(is.string, 'src/index'));
@@ -98,16 +79,6 @@ export class Entrypoint extends Item {
     return resolve.sync(nodePath.join(this.directory, this.configSource), {
       extensions: EXTENSIONS,
     });
-  }
-  get umdName(): null | string {
-    return is(this._config.umdName, is.maybe(is.string));
-  }
-  set umdName(umdName: null | string) {
-    if (umdName === null) {
-      delete this._config.umdName;
-    } else {
-      this._config.umdName = umdName;
-    }
   }
 
   _strict: StrictEntrypoint;

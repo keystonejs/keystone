@@ -7,13 +7,7 @@ import { readFileSync } from 'fs';
 import nodePath from 'path';
 import { Item } from './item';
 import { Entrypoint, StrictEntrypoint } from './entrypoint';
-import {
-  getValidMainField,
-  getValidModuleField,
-  getValidBrowserField,
-  getValidUmdMainField,
-  getValidReactNativeField,
-} from './utils';
+import { getValidMainField, getValidModuleField } from './utils';
 
 /*::
 import {Project} from './project'
@@ -65,7 +59,7 @@ export class Package extends Item {
     return pkg;
   }
 
-  setFieldOnEntrypoints(field: 'main' | 'browser' | 'module' | 'umdMain' | 'reactNative') {
+  setFieldOnEntrypoints(field: 'main' | 'module') {
     this.entrypoints.forEach(entrypoint => {
       switch (field) {
         case 'main': {
@@ -74,18 +68,6 @@ export class Package extends Item {
         }
         case 'module': {
           entrypoint.module = getValidModuleField(entrypoint);
-          break;
-        }
-        case 'browser': {
-          entrypoint.browser = getValidBrowserField(entrypoint);
-          break;
-        }
-        case 'umdMain': {
-          entrypoint.umdMain = getValidUmdMainField(entrypoint);
-          break;
-        }
-        case 'reactNative': {
-          entrypoint.reactNative = getValidReactNativeField(entrypoint);
           break;
         }
       }

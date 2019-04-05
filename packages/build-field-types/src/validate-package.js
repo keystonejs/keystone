@@ -5,14 +5,6 @@ import { errors } from './messages';
 import { Package } from "./package";
 */
 
-let camelToPkgJsonField = {
-  main: 'main',
-  module: 'module',
-  umdMain: 'umd:main',
-  browser: 'browser',
-  reactNative: 'react-native',
-};
-
 export async function fixPackage(pkg: Package) {
   if (pkg.entrypoints.length === 0) {
     throw new FatalError(errors.noEntrypoints, pkg);
@@ -20,9 +12,6 @@ export async function fixPackage(pkg: Package) {
   let fields = {
     main: true,
     module: pkg.entrypoints.some(x => x.module),
-    umdMain: pkg.entrypoints.some(x => x.umdMain),
-    browser: pkg.entrypoints.some(x => x.browser),
-    reactNative: pkg.entrypoints.some(x => x.reactNative),
   };
 
   Object.keys(fields)
@@ -42,9 +31,6 @@ export function validatePackage(pkg: Package) {
     // it will be validated in validateEntrypoint and the case
     // which this function validates will never happen
     module: !!pkg.entrypoints[0].module,
-    umdMain: !!pkg.entrypoints[0].umdMain,
-    browser: !!pkg.entrypoints[0].browser,
-    reactNative: !!pkg.entrypoints[0].reactNative,
   };
 
   pkg.entrypoints.forEach(entrypoint => {
@@ -55,11 +41,9 @@ export function validatePackage(pkg: Package) {
         !fields[field]
       ) {
         throw new FixableError(
-          `${pkg.entrypoints[0].name} has a ${camelToPkgJsonField[field]} build but ${
+          `${pkg.entrypoints[0].name} has a ${field} build but ${
             entrypoint.name
-          } does not have a ${
-            camelToPkgJsonField[field]
-          } build. Entrypoints in a package must either all have a particular build type or all not have a particular build type.`,
+          } does not have a ${field} build. Entrypoints in a package must either all have a particular build type or all not have a particular build type.`,
           pkg
         );
       }
@@ -69,11 +53,9 @@ export function validatePackage(pkg: Package) {
         fields[field]
       ) {
         throw new FixableError(
-          `${entrypoint.name} has a ${camelToPkgJsonField[field]} build but ${
+          `${entrypoint.name} has a ${field} build but ${
             pkg.entrypoints[0].name
-          } does not have a ${
-            camelToPkgJsonField[field]
-          } build. Entrypoints in a package must either all have a particular build type or all not have a particular build type.`,
+          } does not have a ${field} build. Entrypoints in a package must either all have a particular build type or all not have a particular build type.`,
           pkg
         );
       }

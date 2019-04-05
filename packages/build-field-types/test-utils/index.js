@@ -30,12 +30,10 @@ import { confirms } from '../src/messages';
 export async function initBasic(directory: string) {
   confirms.writeMainField.mockReturnValue(true);
   confirms.writeModuleField.mockReturnValue(true);
-  confirms.writeUmdBuilds.mockReturnValue(false);
 
   await init(directory);
   confirms.writeMainField.mockReset();
   confirms.writeModuleField.mockReset();
-  confirms.writeUmdBuilds.mockReset();
 }
 
 function getPkgPath(tmpPath: string) {

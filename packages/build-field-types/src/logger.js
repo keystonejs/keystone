@@ -8,8 +8,8 @@ function suffix(pkg?: ItemUnion) {
   return pkg !== undefined ? ` ${pkg.name}` : '';
 }
 
-export function error(error: string, pkg?: ItemUnion) {
-  console.error(preconstructEmoji + chalk.red('error') + suffix(pkg), error);
+export function error(message: string, pkg?: ItemUnion) {
+  console.error(preconstructEmoji + chalk.red('error') + suffix(pkg), message);
 }
 
 export function success(message: string, pkg?: ItemUnion) {

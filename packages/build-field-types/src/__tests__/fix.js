@@ -2,15 +2,12 @@
 import fixturez from 'fixturez';
 import fix from '../fix';
 import path from 'path';
-import { confirms, errors, inputs } from '../messages';
-import { getPkg, modifyPkg, logMock, createPackageCheckTestCreator } from '../../test-utils';
-import { promptInput } from '../prompt';
+import { confirms, errors } from '../messages';
+import { getPkg, modifyPkg, logMock } from '../../test-utils';
 
 const f = fixturez(__dirname);
 
 jest.mock('../prompt');
-
-let testFix = createPackageCheckTestCreator(fix);
 
 test('no entrypoint', async () => {
   let tmpPath = f.copy('no-entrypoint');
@@ -177,48 +174,3 @@ Array [
 ]
 `);
 });
-
-testFix(
-  'umd:main but no umdName specified',
-  {
-    '': {
-      name: 'something',
-      main: 'dist/something.cjs.js',
-      'umd:main': 'will be fixed',
-      preconstruct: {
-        entrypoints: ['.', 'two', 'three'],
-      },
-    },
-  },
-  async run => {
-    (promptInput: any).mockImplementation((message, item) => {
-      expect(message).toBe(inputs.getUmdName);
-      expect(item.name).toBe('something');
-      return 'somethingUmdName';
-    });
-
-    let contents = await run();
-
-    expect(contents).toMatchInlineSnapshot(`
-Object {
-  "": Object {
-    "main": "dist/something.cjs.js",
-    "name": "something",
-    "preconstruct": Object {
-      "entrypoints": Array [
-        ".",
-        "two",
-        "three",
-      ],
-      "umdName": "somethingUmdName",
-    },
-    "umd:main": "dist/something.umd.min.js",
-  },
-}
-`);
-    expect(contents[''].preconstruct.umdName).toBe('somethingUmdName');
-    expect(contents['']['umd:main']).toBe('dist/something.umd.min.js');
-
-    expect(promptInput).toHaveBeenCalledTimes(1);
-  }
-);

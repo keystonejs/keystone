@@ -3,7 +3,6 @@ import build from '../';
 import fixturez from 'fixturez';
 import { FatalError } from '../../errors';
 import { snapshotDistFiles, snapshotDirectory, install } from '../../../test-utils';
-import { confirms } from '../../messages';
 
 const f = fixturez(__dirname);
 
@@ -19,26 +18,6 @@ test('react native', async () => {
   await build(tmpPath);
 
   await snapshotDistFiles(tmpPath);
-});
-
-test('browser', async () => {
-  let tmpPath = f.copy('browser');
-
-  confirms.addBrowserField.mockReturnValue(Promise.resolve(true));
-
-  await build(tmpPath);
-  expect(confirms.addBrowserField).toHaveBeenCalledTimes(1);
-  await snapshotDirectory(tmpPath, 'all');
-});
-
-test('browser no module', async () => {
-  let tmpPath = f.copy('browser-no-module');
-
-  confirms.addBrowserField.mockReturnValue(Promise.resolve(true));
-
-  await build(tmpPath);
-  expect(confirms.addBrowserField).toHaveBeenCalledTimes(1);
-  await snapshotDirectory(tmpPath, 'all');
 });
 
 test('typescript', async () => {

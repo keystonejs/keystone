@@ -1,24 +1,8 @@
 // @flow
-import { Entrypoint } from './entrypoint';
 import { Project } from './project';
-import { promptInput } from './prompt';
 import { success } from './logger';
-import { inputs } from './messages';
-import { validateEntrypointSource, isUmdNameSpecified } from './validate';
+import { validateEntrypointSource } from './validate';
 import { fixPackage } from './validate-package';
-
-async function fixEntrypoint(entrypoint: Entrypoint) {
-  validateEntrypointSource(entrypoint);
-
-  if (entrypoint.umdMain !== null && !isUmdNameSpecified(entrypoint)) {
-    let umdName = await promptInput(inputs.getUmdName, entrypoint);
-    entrypoint.umdName = umdName;
-    await entrypoint.save();
-
-    return true;
-  }
-  return false;
-}
 
 export default async function fix(directory: string) {
   let { packages } = await Project.create(directory);
@@ -27,10 +11,8 @@ export default async function fix(directory: string) {
   let didModify = (await Promise.all(
     packages.map(async pkg => {
       let didModifyInPkgFix = await fixPackage(pkg);
-      let didModifyInEntrypointsFix = (await Promise.all(pkg.entrypoints.map(fixEntrypoint))).some(
-        x => x
-      );
-      return didModifyInPkgFix || didModifyInEntrypointsFix;
+      pkg.entrypoints.forEach(validateEntrypointSource);
+      return didModifyInPkgFix;
     })
   )).some(x => x);
 
