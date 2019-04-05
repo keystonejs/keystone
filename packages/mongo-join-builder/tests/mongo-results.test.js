@@ -1,4 +1,4 @@
-const mongoJoinBuilder = require('../');
+const { mongoJoinBuilder } = require('../');
 
 const { MongoClient } = require('mongodb');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;

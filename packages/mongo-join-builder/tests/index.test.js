@@ -1,4 +1,4 @@
-const mongoJoinBuilder = require('../');
+const { mongoJoinBuilder } = require('../');
 
 describe('Test main export', () => {
   describe('throws if tokenising function returns non-Object', () => {
