@@ -7,8 +7,8 @@ exports.configureFacebookAuth = function(keystone, server) {
     type: FacebookAuthStrategy,
     list: 'User',
     config: {
-      clientID: facebookAppKey,
-      clientSecret: facebookAppSecret,
+      consumerKey: facebookAppKey,
+      consumerSecret: facebookAppSecret,
       callbackURL: `${appURL}/auth/facebook/callback`,
       idField: 'facebookId',
       usernameField: 'facebookUsername',

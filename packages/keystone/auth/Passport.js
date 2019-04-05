@@ -272,8 +272,8 @@ class PassportAuthStrategy {
 
     return new this.ServiceStrategy(
       {
-        clientID: this.config.clientID,
-        clientSecret: this.config.clientSecret,
+        clientID: this.config.consumerKey,
+        clientSecret: this.config.consumerSecret,
         callbackURL: this.config.callbackURL,
         passReqToCallback: true,
       },

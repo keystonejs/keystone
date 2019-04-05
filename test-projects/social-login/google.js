@@ -7,8 +7,8 @@ exports.configureGoogleAuth = function(keystone, server) {
     type: GoogleAuthStrategy,
     list: 'User',
     config: {
-      clientID: googleAppKey,
-      clientSecret: googleAppSecret,
+      consumerKey: googleAppKey,
+      consumerSecret: googleAppSecret,
       callbackURL: `${appURL}/auth/google/callback`,
       idField: 'googleId', // default value
       usernameField: 'googleUsername', // default value
