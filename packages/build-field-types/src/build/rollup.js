@@ -1,6 +1,5 @@
 // @flow
 const resolve = require('rollup-plugin-node-resolve');
-const alias = require('rollup-plugin-alias');
 const cjs = require('rollup-plugin-commonjs');
 const replace = require('rollup-plugin-replace');
 const resolveFrom = require('resolve-from');
@@ -73,19 +72,6 @@ function getChildPeerDeps(
           pkg
         );
       }
-      // when we're building a UMD bundle, we're also bundling the dependencies so we need
-      // to get the peerDependencies of dependencies
-      if (pkgJson.dependencies && isUMD) {
-        doneDeps.push(...Object.keys(pkgJson.dependencies));
-        getChildPeerDeps(
-          finalPeerDeps,
-          isUMD,
-          Object.keys(pkgJson.dependencies),
-          doneDeps,
-          aliases,
-          pkg
-        );
-      }
     });
 }
 
@@ -99,7 +85,7 @@ export function toUnsafeRollupConfig(config: RollupConfig): Object {
   return config;
 }
 
-export type RollupConfigType = 'umd' | 'browser' | 'node-dev' | 'node-prod' | 'react-native';
+export type RollupConfigType = 'node-dev' | 'node-prod';
 
 export let getRollupConfig = (
   pkg: Package,
@@ -111,17 +97,10 @@ export let getRollupConfig = (
   if (pkg.peerDependencies) {
     external.push(...Object.keys(pkg.peerDependencies));
   }
-  if (pkg.dependencies && type !== 'umd') {
+  if (pkg.dependencies) {
     external.push(...Object.keys(pkg.dependencies));
   }
-  getChildPeerDeps(
-    external,
-    type === 'umd',
-    external.concat(type === 'umd' && pkg.dependencies ? Object.keys(pkg.dependencies) : []),
-    [],
-    aliases,
-    pkg
-  );
+  getChildPeerDeps(external, false, external, [], aliases, pkg);
   if (type === 'node-dev' || type === 'node-prod') {
     external.push(...builtInModules);
   }
@@ -212,24 +191,18 @@ export let getRollupConfig = (
         extensions: EXTENSIONS,
       }),
       cjs(),
-      (type === 'browser' || type === 'umd') &&
-        replace({
-          'typeof document': JSON.stringify('object'),
-          'typeof window': JSON.stringify('object'),
-        }),
+
       rewriteCjsRuntimeHelpers(),
-      type === 'umd' && alias(rollupAliases),
       resolve({
         extensions: EXTENSIONS,
         customResolveOptions: {
-          moduleDirectory: type === 'umd' ? 'node_modules' : [],
+          moduleDirectory: [],
         },
       }),
-      (type === 'umd' || type === 'node-prod') &&
+      type === 'node-prod' &&
         replace({
           'process.env.NODE_ENV': '"production"',
         }),
-      type === 'umd' && terser(),
       type === 'node-prod' &&
         terser({
           mangle: false,
