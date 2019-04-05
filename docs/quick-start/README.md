@@ -32,7 +32,7 @@ cd my-app
 npm start
 ```
 
-Congratulation, you are now running your very own Keystone application!
+Congratulations, you are now running your very own Keystone application!
 To visit your running application (a simple todo list), visit
 
 <pre>
