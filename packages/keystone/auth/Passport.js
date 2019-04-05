@@ -5,6 +5,8 @@ const { startAuthedSession } = require('@keystone-alpha/session');
 const FIELD_TOKEN_SECRET = 'tokenSecret';
 const FIELD_ITEM = 'item';
 
+let isInitialized = false;
+
 class PassportAuthStrategy {
   constructor(authType, keystone, listKey, config, ServiceStrategy = null) {
     this.authType = authType;
@@ -30,14 +32,21 @@ class PassportAuthStrategy {
 
     this.createSessionList();
 
+    PassportAuthStrategy.initializePassport(this.config.server);
+
     this.passportStrategy = this.getPassportStrategy();
     passport.use(this.passportStrategy);
-
-    this.config.server.app.use(passport.initialize());
 
     if (this.config.enableAuthRoutes) {
       this.setupAuthRoutes();
     }
+  }
+
+  static initializePassport(server) {
+    if (!isInitialized) {
+      server.app.use(passport.initialize());
+    }
+    isInitialized = true;
   }
 
   createSessionList() {
