@@ -80,7 +80,9 @@ const Relationship = forwardRef(
     }
 
     const count =
-      data[refList.gqlNames.listQueryMetaName] && data[refList.gqlNames.listQueryMetaName].count;
+      data && data[refList.gqlNames.listQueryMetaName]
+        ? data[refList.gqlNames.listQueryMetaName].count
+        : 0;
 
     const selectComponents = useMemo(
       () => ({
@@ -143,7 +145,6 @@ const Relationship = forwardRef(
         onChange={onChange}
         id={`react-select-${htmlID}`}
         isClearable
-        isLoading={loading}
         instanceId={htmlID}
         inputId={htmlID}
         innerRef={ref}

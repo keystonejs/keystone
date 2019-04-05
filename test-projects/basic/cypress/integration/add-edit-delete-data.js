@@ -1,5 +1,3 @@
-import format from 'date-fns/format';
-
 describe('Adding data', () => {
   [
     {
