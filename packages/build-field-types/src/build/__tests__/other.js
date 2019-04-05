@@ -2,7 +2,7 @@
 import build from '../';
 import fixturez from 'fixturez';
 import { FatalError } from '../../errors';
-import { snapshotDistFiles, snapshotDirectory, install } from '../../../test-utils';
+import { snapshotDirectory, install } from '../../../test-utils';
 
 const f = fixturez(__dirname);
 
@@ -10,14 +10,6 @@ jest.mock('../../prompt');
 
 afterEach(() => {
   jest.resetAllMocks();
-});
-
-test('react native', async () => {
-  let tmpPath = f.copy('with-react-native-field');
-
-  await build(tmpPath);
-
-  await snapshotDistFiles(tmpPath);
 });
 
 test('typescript', async () => {

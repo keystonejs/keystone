@@ -1,7 +1,0 @@
-{
-  "name": "browser-no-module",
-  "version": "1.0.0",
-  "main": "dist/browser-no-module.cjs.js",
-  "license": "MIT",
-  "private": true
-}

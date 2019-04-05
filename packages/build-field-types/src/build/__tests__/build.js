@@ -49,26 +49,6 @@ test('clears dist folder', async () => {
   await snapshotDistFiles(tmpPath);
 });
 
-test('flow', async () => {
-  let tmpPath = f.copy('flow');
-
-  await install(tmpPath);
-
-  await build(tmpPath);
-
-  await snapshotDistFiles(tmpPath);
-});
-
-test('flow export default', async () => {
-  let tmpPath = f.copy('flow-export-default');
-
-  await install(tmpPath);
-
-  await build(tmpPath);
-
-  await snapshotDistFiles(tmpPath);
-});
-
 test('prod checks', async () => {
   let tmpPath = f.copy('prod-checks');
 
