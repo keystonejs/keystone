@@ -69,11 +69,12 @@ function executeDefaultServer(args, entryFile) {
   const port = args['--port'] ? args['--port'] : keystone.DEFAULT_PORT;
 
   return keystone
-    .prepare({
-      entryFile,
-      port,
+    .prepare({ entryFile, port })
+    .then(async ({ server, keystone: keystoneApp }) => {
+      await keystoneApp.connect();
+
+      return server.start();
     })
-    .then(({ server }) => server.start())
     .then(() => {
       console.log(`KeystoneJS ready on port ${port}`);
     });

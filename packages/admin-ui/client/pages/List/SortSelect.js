@@ -1,12 +1,75 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component } from 'react';
+import { useMemo, useRef } from 'react';
 import styled from '@emotion/styled';
 import { ChevronDownIcon, ChevronUpIcon } from '@arch-ui/icons';
 import { OptionPrimitive, Options } from '@arch-ui/options';
 import { colors } from '@arch-ui/theme';
+import { Kbd } from '@arch-ui/typography';
 
-import { POPOUT_GUTTER } from '../../components/Popout';
+import { DisclosureArrow, Popout, POPOUT_GUTTER } from '../../components/Popout';
+import { useList, useListSort, useKeyDown } from './dataHooks';
+
+type Props = {
+  listKey: string,
+};
+
+export default function SortPopout({ listKey }: Props) {
+  const list = useList(listKey);
+  const [sortValue, handleSortChange] = useListSort(listKey);
+  const altIsDown = useKeyDown('Alt');
+  const popoutRef = useRef();
+
+  const handleChange = field => {
+    const isSelected = field.path === sortValue.field.path;
+    console.log('handleChange', field);
+
+    let direction = 'ASC';
+    if (isSelected) {
+      direction = invertDirection(sortValue.direction);
+    } else if (altIsDown) {
+      direction = 'DESC';
+    }
+
+    handleSortChange({ field, direction });
+    popoutRef.current.close();
+  };
+
+  const cachedOptions = useMemo(() => list.fields.map(({ options, ...field }) => field), [list]);
+
+  return (
+    <Popout
+      innerRef={popoutRef}
+      headerTitle="Sort"
+      footerContent={
+        <Note>
+          Hold <Kbd>alt</Kbd> to toggle ascending/descending
+        </Note>
+      }
+      target={handlers => (
+        <SortButton {...handlers}>
+          {sortValue.field.label.toLowerCase()}
+          <DisclosureArrow size="0.2em" />
+        </SortButton>
+      )}
+    >
+      <div css={{ padding: POPOUT_GUTTER }}>
+        <Options
+          components={{ Option: SortOption }}
+          isOptionSelected={isOptionSelected}
+          onChange={handleChange}
+          options={cachedOptions}
+          placeholder="Find a field..."
+          value={sortValue}
+        />
+      </div>
+    </Popout>
+  );
+}
+
+// ==============================
+// Styled Components
+// ==============================
 
 export const SortButton = styled.button(({ isActive }) => {
   const overStyles = {
@@ -33,7 +96,8 @@ export const SortButton = styled.button(({ isActive }) => {
   };
 });
 
-export const SortOption = ({ altIsDown, children, isFocused, isSelected, ...props }) => {
+export const SortOption = ({ children, isFocused, isSelected, ...props }) => {
+  const altIsDown = useKeyDown('Alt');
   const Icon = isSelected ? ChevronUpIcon : altIsDown ? ChevronUpIcon : ChevronDownIcon;
   const iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
 
@@ -45,75 +109,19 @@ export const SortOption = ({ altIsDown, children, isFocused, isSelected, ...prop
   );
 };
 
+const Note = styled.div({
+  color: colors.N60,
+  fontSize: '0.85em',
+});
+
+// ==============================
+// Utilities
+// ==============================
+
 function invertDirection(direction) {
   const inverted = { ASC: 'DESC', DESC: 'ASC' };
   return inverted[direction] || direction;
 }
 function isOptionSelected(opt, selected) {
   return opt.path === selected[0].field.path;
-}
-
-type FieldType = Object;
-type Props = {
-  fields: Array<FieldType>,
-  onChange: FieldType => void,
-  value: FieldType,
-};
-type State = { altIsDown: boolean };
-
-export default class SortSelect extends Component<Props, State> {
-  state = { altIsDown: false };
-  componentDidMount() {
-    document.body.addEventListener('keydown', this.handleKeyDown, false);
-    document.body.addEventListener('keyup', this.handleKeyUp, false);
-  }
-  componentWillUnmount() {
-    document.body.removeEventListener('keydown', this.handleKeyDown);
-    document.body.removeEventListener('keyup', this.handleKeyUp);
-  }
-  handleKeyDown = e => {
-    if (e.key !== 'Alt') return;
-    this.setState({ altIsDown: true });
-  };
-  handleKeyUp = e => {
-    if (e.key !== 'Alt') return;
-    this.setState({ altIsDown: false });
-  };
-  handleChange = field => {
-    const { onChange, popoutRef, value } = this.props;
-    const { altIsDown } = this.state;
-    const isSelected = field.path === value.field.path;
-
-    let direction = 'ASC';
-    if (isSelected) {
-      direction = invertDirection(value.direction);
-    } else if (altIsDown) {
-      direction = 'DESC';
-    }
-
-    onChange({ field, direction });
-    popoutRef.current.close();
-  };
-  enhancedOption = props => <SortOption altIsDown={this.state.altIsDown} {...props} />;
-  getOptions = () => {
-    const { fields } = this.props;
-    return fields.map(({ options, ...field }) => field);
-  };
-
-  render() {
-    const { value } = this.props;
-
-    return (
-      <div css={{ padding: POPOUT_GUTTER }}>
-        <Options
-          components={{ Option: this.enhancedOption }}
-          isOptionSelected={isOptionSelected}
-          onChange={this.handleChange}
-          options={this.getOptions()}
-          placeholder="Find a field..."
-          value={value}
-        />
-      </div>
-    );
-  }
 }

@@ -23,19 +23,21 @@ describe('Columns', () => {
       cy.get('button:contains("Columns")').click();
 
       enable.forEach(name => {
-        cy.get('#app ~ div')
+        cy.get('#ks-column-select')
           .find('input[id^="react-select-"]')
           .clear({ force: true })
           .type(`${name}{enter}`, { force: true });
-        cy.get('main').should('contain', name);
+
+        cy.get('#ks-list-table').should('contain', name);
       });
 
       disable.forEach(name => {
-        cy.get('#app ~ div')
+        cy.get('#ks-column-select')
           .find('input[id^="react-select-"]')
           .clear({ force: true })
           .type(`${name}{enter}`, { force: true });
-        cy.get('main').should('not.contain', name);
+
+        cy.get('#ks-list-table').should('not.contain', name);
       });
     });
   });

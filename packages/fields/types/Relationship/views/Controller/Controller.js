@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
-import FieldController from '../../../../Controller';
+import FieldController from '../../../../Controller/src';
 
 export default class RelationshipController extends FieldController {
   getRefList() {
@@ -43,7 +43,7 @@ export default class RelationshipController extends FieldController {
 
     if (many) {
       if (!Array.isArray(data[path]) || !data[path].length) {
-        return many ? { disconnectAll: true } : null;
+        return { disconnectAll: true };
       }
       return this.buildRelateToManyInput(data[path], path);
     }

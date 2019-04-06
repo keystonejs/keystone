@@ -1,5 +1,5 @@
-const Keystone = require('../Keystone');
-const List = require('../List');
+const Keystone = require('../lib/Keystone');
+const List = require('../lib/List');
 const { Text, Relationship } = require('@keystone-alpha/fields');
 
 class MockType {
@@ -241,7 +241,7 @@ describe('Keystone.createItems()', () => {
     // mock the lists
     keystone.lists = lists;
 
-    setupMocks(keystone);
+    setupMocks();
 
     await keystone.createItems({
       User: [{ name: 'Jess' }, { name: 'Lauren' }],

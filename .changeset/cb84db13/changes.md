@@ -1,0 +1,1 @@
+- Use compiled Field component to fix webpack compilation error when building Admin UI

@@ -108,7 +108,7 @@ describe('List view URL state', () => {
     );
 
     // Clear the filter
-    cy.get('#ks-list-active-filters button:nth-of-type(2)').click();
+    cy.get('#ks-list-active-filters button:nth-of-type(2)').click({ force: true }); // FIXME: this is likely due to the filters' height animating
     cy.location('search').should('eq', '');
 
     // Set a filter

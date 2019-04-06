@@ -245,7 +245,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   content: noteContent2,
                 },
                 {
-                  id: noteContent3.id,
                   id: expect.any(String),
                   content: noteContent3,
                 },

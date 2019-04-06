@@ -1,4 +1,4 @@
-const FacebookAuthStrategy = require('@keystone-alpha/keystone/auth/Facebook');
+const { FacebookAuthStrategy } = require('@keystone-alpha/keystone');
 const { startAuthedSession, endAuthedSession } = require('@keystone-alpha/session');
 
 const { appURL, facebookAppKey, facebookAppSecret } = require('./config');

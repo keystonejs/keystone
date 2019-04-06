@@ -1,0 +1,8 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/adapter-mongoose", "type": "patch" },
+    { "name": "@keystone-alpha/keystone", "type": "patch" },
+    { "name": "@keystone-alpha/server", "type": "patch" }
+  ],
+  "dependents": []
+}

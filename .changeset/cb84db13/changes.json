@@ -1,0 +1,4 @@
+{
+  "releases": [{ "name": "@keystone-alpha/fields-wysiwyg-tinymce", "type": "patch" }],
+  "dependents": []
+}
