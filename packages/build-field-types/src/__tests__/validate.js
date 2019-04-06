@@ -1,6 +1,7 @@
 // @flow
 import fixturez from 'fixturez';
 import validate from '../validate';
+import { FixableError } from '../errors';
 import { logMock } from '../../test-utils';
 
 const f = fixturez(__dirname);
@@ -16,29 +17,25 @@ test('reports correct result on valid package', async () => {
 
   await validate(tmpPath);
   expect(logMock.log.mock.calls).toMatchInlineSnapshot(`
-Array [
-  Array [
-    "🎁 info valid-package",
-    "a valid entry point exists.",
-  ],
-  Array [
-    "🎁 info valid-package",
-    "main field is valid",
-  ],
-  Array [
-    "🎁 info valid-package",
-    "module field is valid",
-  ],
-  Array [
-    "🎁 info valid-package",
-    "package entrypoints are valid",
-  ],
-  Array [
-    "🎁 success",
-    "project is valid!",
-  ],
-]
-`);
+        Array [
+          Array [
+            "🎁 info valid-package",
+            "a valid entry point exists.",
+          ],
+          Array [
+            "🎁 info valid-package",
+            "main field is valid",
+          ],
+          Array [
+            "🎁 info valid-package",
+            "module field is valid",
+          ],
+          Array [
+            "🎁 success",
+            "project is valid!",
+          ],
+        ]
+    `);
 });
 
 test('no main field', async () => {
@@ -56,28 +53,14 @@ test('no main field', async () => {
 
 test('no module', async () => {
   let tmpPath = f.find('no-module');
-
-  await validate(tmpPath);
-  expect(logMock.log.mock.calls).toMatchInlineSnapshot(`
-Array [
-  Array [
-    "🎁 info no-module",
-    "a valid entry point exists.",
-  ],
-  Array [
-    "🎁 info no-module",
-    "main field is valid",
-  ],
-  Array [
-    "🎁 info no-module",
-    "package entrypoints are valid",
-  ],
-  Array [
-    "🎁 success",
-    "project is valid!",
-  ],
-]
-`);
+  try {
+    await validate(tmpPath);
+  } catch (err) {
+    expect(err).toBeInstanceOf(FixableError);
+    expect(err.message).toMatchInlineSnapshot(`"module field is invalid"`);
+    return;
+  }
+  expect(true).toBe(false);
 });
 
 test('monorepo single package', async () => {
@@ -85,34 +68,23 @@ test('monorepo single package', async () => {
 
   await validate(tmpPath);
   expect(logMock.log.mock.calls).toMatchInlineSnapshot(`
-Array [
-  Array [
-    "🎁 info @some-scope/package-two-single-package",
-    "a valid entry point exists.",
-  ],
-  Array [
-    "🎁 info @some-scope/package-two-single-package",
-    "main field is valid",
-  ],
-  Array [
-    "🎁 info @some-scope/package-two-single-package",
-    "package entrypoints are valid",
-  ],
-  Array [
-    "🎁 success",
-    "project is valid!",
-  ],
-]
-`);
-});
-
-test('one-entrypoint-with-browser-field-one-without', async () => {
-  let tmpPath = f.copy('one-entrypoint-with-browser-field-one-without');
-  try {
-    await validate(tmpPath);
-  } catch (e) {
-    expect(e).toMatchInlineSnapshot(
-      `[Error: one-entrypoint-with-browser-field-one-without has a browser build but one-entrypoint-with-browser-field-one-without/multiply does not have a browser build. Entrypoints in a package must either all have a particular build type or all not have a particular build type.]`
-    );
-  }
+    Array [
+      Array [
+        "🎁 info @some-scope/package-two-single-package",
+        "a valid entry point exists.",
+      ],
+      Array [
+        "🎁 info @some-scope/package-two-single-package",
+        "main field is valid",
+      ],
+      Array [
+        "🎁 info @some-scope/package-two-single-package",
+        "module field is valid",
+      ],
+      Array [
+        "🎁 success",
+        "project is valid!",
+      ],
+    ]
+  `);
 });

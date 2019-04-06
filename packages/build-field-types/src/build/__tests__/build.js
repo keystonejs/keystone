@@ -28,24 +28,6 @@ test('monorepo', async () => {
   }
 });
 
-test('no module', async () => {
-  let tmpPath = f.copy('no-module');
-
-  await build(tmpPath);
-
-  await snapshotDistFiles(tmpPath);
-
-  expect(unsafeRequire(tmpPath).default).toBe('this does not have a module build');
-});
-
-test('clears dist folder', async () => {
-  let tmpPath = f.copy('already-has-things-in-dist');
-
-  await build(tmpPath);
-
-  await snapshotDistFiles(tmpPath);
-});
-
 test('prod checks', async () => {
   let tmpPath = f.copy('prod-checks');
 

@@ -50,34 +50,6 @@ export { MyCoolFieldType };
 "
 `;
 
-exports[`basic field type: dist/basic-field-type.native.cjs.js 1`] = `
-"'use strict';
-
-var _join = require(\\"path\\").join;
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-let MyCoolFieldType = {
-  views: {
-    Field: _join(__dirname, './chunk-9ca5ae48.native.cjs.js')
-  }
-};
-exports.MyCoolFieldType = MyCoolFieldType;
-"
-`;
-
-exports[`basic field type: dist/basic-field-type.native.esm.js 1`] = `
-"import { join as _join } from \\"path\\";
-let MyCoolFieldType = {
-  views: {
-    Field: _join(__dirname, './chunk-605adae5.native.esm.js')
-  }
-};
-export { MyCoolFieldType };
-"
-`;
-
 exports[`basic field type: dist/chunk-9ca5ae48.cjs.dev.js 1`] = `
 "'use strict';
 
@@ -96,17 +68,6 @@ exports.default = Field;
 "
 `;
 
-exports[`basic field type: dist/chunk-9ca5ae48.native.cjs.js 1`] = `
-"'use strict';
-
-var Field = () => {
-  return 'my cool react component stuff';
-};
-
-exports.default = Field;
-"
-`;
-
 exports[`basic field type: dist/chunk-605adae5.esm.js 1`] = `
 "var Field = () => {
   return 'my cool react component stuff';
@@ -116,12 +77,15 @@ export default Field;
 "
 `;
 
-exports[`basic field type: dist/chunk-605adae5.native.esm.js 1`] = `
-"var Field = () => {
-  return 'my cool react component stuff';
-};
-
-export default Field;
+exports[`basic field type: package.json 1`] = `
+"{
+  \\"name\\": \\"basic-field-type\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"main\\": \\"dist/basic-field-type.cjs.js\\",
+  \\"module\\": \\"dist/basic-field-type.esm.js\\",
+  \\"license\\": \\"MIT\\",
+  \\"private\\": true
+}
 "
 `;
 

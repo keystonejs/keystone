@@ -6,7 +6,6 @@ import { FatalError, FixableError } from './errors';
 import { getValidModuleField, getValidMainField } from './utils';
 import { EXTENSIONS } from './constants';
 import * as logger from './logger';
-import { validatePackage } from './validate-package';
 import resolve from 'resolve';
 
 // this doesn't offer to fix anything
@@ -40,30 +39,21 @@ export function validateEntrypoint(entrypoint: Entrypoint, log: boolean) {
   if (!isMainFieldValid(entrypoint)) {
     throw new FixableError(errors.invalidMainField, entrypoint);
   }
-  if (log) {
-    logger.info(infos.validMainField, entrypoint);
+  logger.info(infos.validMainField, entrypoint);
+
+  if (!isModuleFieldValid(entrypoint)) {
+    throw new FixableError(errors.invalidModuleField, entrypoint);
   }
-  if (entrypoint.module !== null) {
-    if (isModuleFieldValid(entrypoint)) {
-      if (log) {
-        logger.info(infos.validModuleField, entrypoint);
-      }
-    } else {
-      throw new FixableError(errors.invalidModuleField, entrypoint);
-    }
-  }
+  logger.info(infos.validModuleField, entrypoint);
 }
 
 export default async function validate(directory: string) {
   let project = await Project.create(directory);
 
   for (let pkg of project.packages) {
-    validatePackage(pkg);
     for (let entrypoint of pkg.entrypoints) {
       validateEntrypoint(entrypoint, true);
     }
-    logger.info(infos.validPackageEntrypoints, pkg);
   }
-
   logger.success(successes.validProject);
 }

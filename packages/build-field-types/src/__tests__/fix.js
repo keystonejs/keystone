@@ -2,7 +2,7 @@
 import fixturez from 'fixturez';
 import fix from '../fix';
 import path from 'path';
-import { confirms, errors } from '../messages';
+import { errors } from '../messages';
 import { getPkg, modifyPkg, logMock } from '../../test-utils';
 
 const f = fixturez(__dirname);
@@ -16,20 +16,6 @@ test('no entrypoint', async () => {
   } catch (error) {
     expect(error.message).toBe(errors.noSource('src/index'));
   }
-});
-
-test('only main', async () => {
-  let tmpPath = f.copy('no-module');
-
-  confirms.writeMainField.mockReturnValue(true);
-  let origJson = await getPkg(tmpPath);
-  await modifyPkg(tmpPath, json => {
-    json.main = 'bad';
-  });
-
-  await fix(tmpPath);
-
-  expect(origJson).toEqual(await getPkg(tmpPath));
 });
 
 test('set main and module field', async () => {

@@ -44,36 +44,6 @@ export { Foo };
 "
 `;
 
-exports[`clears dist folder: already-has-things-in-dist.cjs.dev.js 1`] = `
-"'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-var index = 'something';
-exports.default = index;
-"
-`;
-
-exports[`clears dist folder: already-has-things-in-dist.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./already-has-things-in-dist.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./already-has-things-in-dist.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`clears dist folder: already-has-things-in-dist.cjs.prod.js 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
-var index = \\"something\\";
-exports.default = index;
-"
-`;
-
 exports[`monorepo single package: package-two-single-package.cjs.dev.js 1`] = `
 "'use strict';
 
@@ -182,33 +152,75 @@ export default index;
 "
 `;
 
-exports[`no module: no-module.cjs.dev.js 1`] = `
+exports[`prod checks: package-one.cjs.dev.js 1`] = `
 "'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-var index = 'this does not have a module build';
+var index = 1;
 exports.default = index;
 "
 `;
 
-exports[`no module: no-module.cjs.js 1`] = `
+exports[`prod checks: package-one.cjs.js 1`] = `
 "'use strict';
 
 if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./no-module.cjs.prod.js\\");
+  module.exports = require(\\"./package-one.cjs.prod.js\\");
 } else {
-  module.exports = require(\\"./no-module.cjs.dev.js\\");
+  module.exports = require(\\"./package-one.cjs.dev.js\\");
 }
 "
 `;
 
-exports[`no module: no-module.cjs.prod.js 1`] = `
+exports[`prod checks: package-one.cjs.prod.js 1`] = `
 "\\"use strict\\";
 Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
-var index = \\"this does not have a module build\\";
+var index = 1;
 exports.default = index;
+"
+`;
+
+exports[`prod checks: package-one.esm.js 1`] = `
+"var index = 1;
+export default index;
+"
+`;
+
+exports[`prod checks: package-two.cjs.dev.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var index = 2;
+exports.default = index;
+"
+`;
+
+exports[`prod checks: package-two.cjs.js 1`] = `
+"'use strict';
+
+if (process.env.NODE_ENV === \\"production\\") {
+  module.exports = require(\\"./package-two.cjs.prod.js\\");
+} else {
+  module.exports = require(\\"./package-two.cjs.dev.js\\");
+}
+"
+`;
+
+exports[`prod checks: package-two.cjs.prod.js 1`] = `
+"\\"use strict\\";
+Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
+var index = 2;
+exports.default = index;
+"
+`;
+
+exports[`prod checks: package-two.esm.js 1`] = `
+"var index = 2;
+export default index;
 "
 `;
 
@@ -249,5 +261,18 @@ function thing() {
 }
 Object.defineProperty(exports, \\"__esModule\\", { value: !0 }),
   (exports.thing = thing);
+"
+`;
+
+exports[`prod checks: prod-checks.esm.js 1`] = `
+"function thing() {
+  if (process.env.NODE_ENV !== 'production') {
+    return 'not prod';
+  }
+
+  return 'prod';
+}
+
+export { thing };
 "
 `;

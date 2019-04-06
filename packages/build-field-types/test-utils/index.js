@@ -28,12 +28,9 @@ import init from '../src/init';
 import { confirms } from '../src/messages';
 
 export async function initBasic(directory: string) {
-  confirms.writeMainField.mockReturnValue(true);
-  confirms.writeModuleField.mockReturnValue(true);
-
+  confirms.writeMainModuleFields.mockReturnValue(true);
   await init(directory);
-  confirms.writeMainField.mockReset();
-  confirms.writeModuleField.mockReset();
+  confirms.writeMainModuleFields.mockReset();
 }
 
 function getPkgPath(tmpPath: string) {

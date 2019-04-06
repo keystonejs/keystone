@@ -16,9 +16,9 @@ test('basic field type', async () => {
 
   await build(tmpPath);
 
-  await snapshotDirectory(tmpPath);
+  await snapshotDirectory(tmpPath, 'all');
 
   let { MyCoolFieldType } = unsafeRequire(tmpPath);
-
-  expect(MyCoolFieldType.views.Field()).toBe('my cool react component stuff');
+  let Field = unsafeRequire(MyCoolFieldType.views.Field);
+  expect(Field.default()).toBe('my cool react component stuff');
 });

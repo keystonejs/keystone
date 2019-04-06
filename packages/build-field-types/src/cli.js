@@ -13,9 +13,9 @@ process.env.NODE_ENV = 'production';
 let { input } = meow(
   `
 Usage
-  $ preconstruct [command]
+  $ build-field-types [command]
 Commands
-  init         initialise preconstruct
+  init         initialise a project
   build        build the package(s)
   watch        start a watch process to build the package(s)
   validate     validate the package(s)
@@ -63,7 +63,7 @@ class CommandNotFoundError extends Error {}
 })().catch(err => {
   if (err instanceof FixableError) {
     error(err.message, err.item);
-    info('The above error can be fixed automatically by running preconstruct fix', err.item);
+    info('The above error can be fixed automatically by running build-field-types fix', err.item);
   } else if (err instanceof FatalError) {
     error(err.message, err.item);
   } else if (err instanceof CommandNotFoundError) {

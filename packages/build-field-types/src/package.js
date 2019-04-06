@@ -6,7 +6,7 @@ import * as fs from 'fs-extra';
 import { readFileSync } from 'fs';
 import nodePath from 'path';
 import { Item } from './item';
-import { Entrypoint, StrictEntrypoint } from './entrypoint';
+import { Entrypoint } from './entrypoint';
 import { getValidMainField, getValidModuleField } from './utils';
 
 /*::
@@ -87,8 +87,4 @@ export class Package extends Item {
   get peerDependencies(): null | { [key: string]: string } {
     return is(this.json.peerDependencies, is.maybe(is.objectOf(is.string)));
   }
-}
-
-export class StrictPackage extends Package {
-  strictEntrypoints: Array<StrictEntrypoint>;
 }

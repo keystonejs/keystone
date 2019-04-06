@@ -118,82 +118,9 @@ exports.something = something;
 "
 `;
 
-exports[`two entrypoints where one requires the other entrypoint: dist/common-dependency-two-entrypoints.cjs.dev.js 1`] = `
-"'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-let identity = x => x;
-
-exports.identity = identity;
-"
-`;
-
-exports[`two entrypoints where one requires the other entrypoint: dist/common-dependency-two-entrypoints.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./common-dependency-two-entrypoints.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./common-dependency-two-entrypoints.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`two entrypoints where one requires the other entrypoint: dist/common-dependency-two-entrypoints.cjs.prod.js 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
-let identity = x => x;
-exports.identity = identity;
-"
-`;
-
-exports[`two entrypoints where one requires the other entrypoint: multiply/dist/common-dependency-two-entrypoints.cjs.dev.js 1`] = `
-"'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var commonDependencyTwoEntrypoints = require('../../dist/common-dependency-two-entrypoints.cjs.dev.js');
-
-let multiply = (a, b) => commonDependencyTwoEntrypoints.identity(a * b);
-
-exports.multiply = multiply;
-"
-`;
-
-exports[`two entrypoints where one requires the other entrypoint: multiply/dist/common-dependency-two-entrypoints.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./common-dependency-two-entrypoints.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./common-dependency-two-entrypoints.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`two entrypoints where one requires the other entrypoint: multiply/dist/common-dependency-two-entrypoints.cjs.prod.js 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
-var commonDependencyTwoEntrypoints = require(\\"../../dist/common-dependency-two-entrypoints.cjs.prod.js\\");
-let multiply = (a, b) => commonDependencyTwoEntrypoints.identity(a * b);
-exports.multiply = multiply;
-"
-`;
-
-exports[`two entrypoints where one requires the other entrypoint: src/identity.js 1`] = `
-"export let identity = x => x;
-"
-`;
-
-exports[`two entrypoints where one requires the other entrypoint: src/multiply.js 1`] = `
-"import { identity } from './identity';
-
-export let multiply = (a, b) => identity(a * b);
+exports[`source entrypoint option: source-entrypoint-option.esm.js 1`] = `
+"let something = '';
+export { something };
 "
 `;
 
