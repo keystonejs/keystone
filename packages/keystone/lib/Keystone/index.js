@@ -49,6 +49,16 @@ module.exports = class Keystone {
       throw new Error('Need an adapter, yo');
     }
   }
+
+  runModifiers(modifiers, listKey, listConfig) {
+    if(typeof modifiers === 'function') {
+      return modifiers(listKey, listConfig);
+    }
+    if(Array.isArray(modifiers)) {
+      modifiers.forEach(modifier => this.runModifiers(modifier, listKey, listConfig));
+    }
+  }
+
   createAuthStrategy(options) {
     const { type: StrategyType, list: listKey, config } = options;
     const { authType } = StrategyType;
@@ -61,9 +71,10 @@ module.exports = class Keystone {
     return strategy;
   }
 
-  createList(key, config, { isAuxList = false } = {}) {
+  createList(key, config, { isAuxList = false, modifiers = [] } = {}) {
     const { getListByKey, adapters } = this;
     const adapterName = config.adapterName || this.defaultAdapter;
+    this.runModifiers(modifiers, key, config);
     const list = new List(key, config, {
       getListByKey,
       getGraphQLQuery: schemaName => this._graphQLQuery[schemaName],

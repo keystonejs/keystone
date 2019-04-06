@@ -6,6 +6,10 @@ const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { staticRoute, staticPath } = require('./config');
 const { User, Post, PostCategory, Comment } = require('./schema');
 
+const timeTracker = require('./modifiers/trackTime');
+const timeTracker2 = require('./modifiers/trackTime2');
+const withTracking = require('./withTracking');
+
 const keystone = new Keystone({
   name: 'Keystone Demo Blog',
   adapter: new MongooseAdapter(),
@@ -17,8 +21,9 @@ const authStrategy = keystone.createAuthStrategy({
 });
 
 keystone.createList('User', User);
-keystone.createList('Post', Post);
-keystone.createList('PostCategory', PostCategory);
+keystone.createList('Post', withTracking(Post), { modifiers: timeTracker });
+
+keystone.createList('PostCategory', withTracking(PostCategory),  { modifiers: timeTracker2 });
 keystone.createList('Comment', Comment);
 
 const admin = new AdminUI(keystone, {
