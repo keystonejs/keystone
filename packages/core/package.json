@@ -13,7 +13,7 @@
     "lodash.pick": "^4.4.0"
   },
   "devDependencies": {
-    "p-is-promise": "^2.0.0",
-    "tmp": "^0.0.33"
+    "p-is-promise": "^2.1.0",
+    "tmp": "^0.1.0"
   }
 }

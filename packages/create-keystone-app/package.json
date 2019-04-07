@@ -23,6 +23,6 @@
     "listr": "^0.14.3",
     "rxjs": "^6.4.0",
     "split": "^1.0.1",
-    "terminal-link": "^1.2.0"
+    "terminal-link": "^1.3.0"
   }
 }

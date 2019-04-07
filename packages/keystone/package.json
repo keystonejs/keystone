@@ -31,6 +31,6 @@
     "pluralize": "^7.0.0"
   },
   "devDependencies": {
-    "tmp": "^0.0.33"
+    "tmp": "^0.1.0"
   }
 }
