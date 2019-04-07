@@ -70,7 +70,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createNote = await create('Note', { content: noteContent });
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -100,6 +100,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               ],
             },
           });
+          expect(errors).toBe(undefined);
 
           // Sanity check that the items are actually created
           const {
@@ -135,7 +136,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createUser = await create('User', { username: 'A thing' });
 
           // Update the item and link the relationship field
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -174,6 +175,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               ],
             },
           });
+          expect(errors).toBe(undefined);
 
           // Sanity check that the items are actually created
           const {

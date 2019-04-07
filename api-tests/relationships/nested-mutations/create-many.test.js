@@ -68,7 +68,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const noteContent3 = sampleOne(alphanumGenerator);
 
           // Create an item that does the nested create
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -86,6 +86,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data).toMatchObject({
             createUser: {
               id: expect.any(String),
@@ -200,6 +201,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           const {
             data: { updateUser },
+            errors,
           } = await graphqlRequest({
             keystone,
             query: `
@@ -226,6 +228,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
+          expect(errors).toBe(undefined);
           expect(updateUser).toMatchObject({
             id: expect.any(String),
             notes: [

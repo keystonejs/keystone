@@ -55,7 +55,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         query {
@@ -70,6 +70,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data).toMatchObject({
             UserToPostLimitedRead: {
               id: expect.any(String),
@@ -100,7 +101,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         query {
@@ -117,6 +118,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data).toMatchObject({
             UserToPostLimitedRead: {
               id: expect.any(String),

@@ -78,7 +78,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Update the item and link the relationship field
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
           mutation {
@@ -105,6 +105,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               notes: [],
             },
           });
+          expect(errors).toBe(undefined);
         })
       );
 
@@ -112,7 +113,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'silently succeeds if used during create',
         runner(setupKeystone, async ({ keystone }) => {
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
           mutation {
@@ -130,6 +131,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data.createUser).toMatchObject({
             id: expect.any(String),
             notes: [],
@@ -155,7 +157,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            await graphqlRequest({
+            const { errors } = await graphqlRequest({
               keystone,
               query: `
             mutation {
@@ -172,6 +174,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         `,
             });
 
+            expect(errors).toBe(undefined);
             const userData = await findById('UserToNotesNoRead', createUser.id);
 
             expect(userData.notes).toHaveLength(0);

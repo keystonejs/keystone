@@ -59,7 +59,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(toStr(teacher2.students)).toHaveLength(0);
 
             // Run the query to disconnect the teacher from student
-            const { data } = await graphqlRequest({
+            const { data, errors } = await graphqlRequest({
               keystone,
               query: `
           mutation {
@@ -76,6 +76,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
         `,
             });
+
+            expect(errors).toBe(undefined);
 
             let newStudent = data.createStudent;
 
@@ -118,7 +120,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(toStr(teacher2.students)).toHaveLength(0);
 
             // Run the query to disconnect the teacher from student
-            await graphqlRequest({
+            const { errors } = await graphqlRequest({
               keystone,
               query: `
           mutation {
@@ -136,6 +138,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
             });
+
+            expect(errors).toBe(undefined);
 
             // Check the link has been broken
             teacher1 = await findById('Teacher', teacher1.id);
@@ -163,7 +167,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const teacherName2 = sampleOne(alphanumGenerator);
 
             // Run the query to disconnect the teacher from student
-            const { data } = await graphqlRequest({
+            const { data, errors } = await graphqlRequest({
               keystone,
               query: `
           mutation {
@@ -180,6 +184,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
             });
+
+            expect(errors).toBe(undefined);
 
             let newStudent = data.createStudent;
             let newTeachers = data.createStudent.teachers;
@@ -206,7 +212,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const teacherName2 = sampleOne(alphanumGenerator);
 
             // Run the query to disconnect the teacher from student
-            const { data } = await graphqlRequest({
+            const { data, errors } = await graphqlRequest({
               keystone,
               query: `
           mutation {
@@ -224,6 +230,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
             });
+
+            expect(errors).toBe(undefined);
 
             let newTeachers = data.updateStudent.teachers;
 
@@ -278,7 +286,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           ]);
 
           // Run the query to disconnect the teacher from student
-          await graphqlRequest({
+          const { errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -296,6 +304,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
+
+          expect(errors).toBe(undefined);
 
           // Check the link has been broken
           teacher1 = await findById('Teacher', teacher1.id);
@@ -353,7 +363,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           ]);
 
           // Run the query to disconnect the teacher from student
-          await graphqlRequest({
+          const { errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -371,6 +381,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
+
+          expect(errors).toBe(undefined);
 
           // Check the link has been broken
           teacher1 = await findById('Teacher', teacher1.id);
@@ -426,7 +438,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         ]);
 
         // Run the query to delete the student
-        await graphqlRequest({
+        const { errors } = await graphqlRequest({
           keystone,
           query: `
       mutation {
@@ -436,6 +448,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       }
   `,
         });
+
+        expect(errors).toBe(undefined);
 
         teacher1 = await findById('Teacher', teacher1.id);
         teacher2 = await findById('Teacher', teacher2.id);

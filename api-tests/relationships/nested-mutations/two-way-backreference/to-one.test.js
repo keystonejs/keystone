@@ -36,7 +36,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'during create mutation',
           runner(setupKeystone, async ({ keystone, create, findById }) => {
             let location = await create('Location', {});
-            const { data } = await graphqlRequest({
+            const { data, errors } = await graphqlRequest({
               keystone,
               query: `
           mutation {
@@ -51,6 +51,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
             });
+
+            expect(errors).toBe(undefined);
 
             const companyId = data.createCompany.id;
 
@@ -74,7 +76,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(company.location).toBe(undefined);
             expect(location.company).toBe(undefined);
 
-            await graphqlRequest({
+            const { errors } = await graphqlRequest({
               keystone,
               query: `
           mutation {
@@ -93,6 +95,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
+            expect(errors).toBe(undefined);
+
             location = await findById('Location', location.id);
             company = await findById('Company', company.id);
 
@@ -108,7 +112,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'during create mutation',
           runner(setupKeystone, async ({ keystone, findById }) => {
             const locationName = sampleOne(alphanumGenerator);
-            const { data } = await graphqlRequest({
+            const { data, errors } = await graphqlRequest({
               keystone,
               query: `
           mutation {
@@ -123,6 +127,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
             });
+
+            expect(errors).toBe(undefined);
 
             const companyId = data.createCompany.id;
             const locationId = data.createCompany.location.id;
@@ -141,7 +147,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           runner(setupKeystone, async ({ keystone, create, findById }) => {
             const locationName = sampleOne(alphanumGenerator);
             let company = await create('Company', {});
-            const { data } = await graphqlRequest({
+            const { data, errors } = await graphqlRequest({
               keystone,
               query: `
           mutation {
@@ -160,6 +166,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
             });
+
+            expect(errors).toBe(undefined);
 
             const locationId = data.updateCompany.location.id;
 
@@ -189,7 +197,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(location.company.toString()).toBe(company.id.toString());
 
           // Run the query to disconnect the location from company
-          await graphqlRequest({
+          const { errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -208,6 +216,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
+
+          expect(errors).toBe(undefined);
 
           // Check the link has been broken
           location = await findById('Location', location.id);
@@ -234,7 +244,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(location.company.toString()).toBe(company.id.toString());
 
           // Run the query to disconnect the location from company
-          await graphqlRequest({
+          const { errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -253,6 +263,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
+
+          expect(errors).toBe(undefined);
 
           // Check the link has been broken
           location = await findById('Location', location.id);
@@ -280,7 +292,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         expect(location.company.toString()).toBe(company.id.toString());
 
         // Run the query to disconnect the location from company
-        await graphqlRequest({
+        const { errors } = await graphqlRequest({
           keystone,
           query: `
       mutation {
@@ -290,6 +302,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       }
   `,
         });
+
+        expect(errors).toBe(undefined);
 
         // Check the link has been broken
         location = await findById('Location', location.id);

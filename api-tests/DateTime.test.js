@@ -102,7 +102,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const postedAt = '2018-08-31T06:49:07.000Z';
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -113,6 +113,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('createPost.postedAt', postedAt);
         })
       );

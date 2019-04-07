@@ -67,7 +67,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createGroup = await create('Group', { name: groupName });
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
           mutation {
@@ -82,6 +82,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           expect(data).toMatchObject({ createEvent: { id: expect.any(String) } });
+          expect(errors).toBe(undefined);
         })
       );
 
@@ -102,7 +103,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Update the item and link the relationship field
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -132,6 +133,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               },
             },
           });
+          expect(errors).toBe(undefined);
         })
       );
     });
@@ -297,7 +299,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { id } = await create('GroupNoCreate', { name: groupName });
 
             // Create an item that does the linking
-            const { data } = await graphqlRequest({
+            const { data, errors } = await graphqlRequest({
               keystone,
               query: `
           mutation {
@@ -317,6 +319,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data).toMatchObject({
               createEventToGroupNoCreate: { id: expect.any(String), group: { id } },
             });
+            expect(errors).toBe(undefined);
           })
         );
 
@@ -337,7 +340,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            const { data } = await graphqlRequest({
+            const { data, errors } = await graphqlRequest({
               keystone,
               query: `
           mutation {
@@ -367,6 +370,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 },
               },
             });
+            expect(errors).toBe(undefined);
 
             // See that it actually stored the group ID on the Event record
             const event = await findOne('EventToGroupNoCreate', { title: 'A thing' });

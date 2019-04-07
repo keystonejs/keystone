@@ -35,7 +35,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'nested create',
         runner(setupKeystone, async ({ keystone, findById }) => {
           const locationName = sampleOne(alphanumGenerator);
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -50,6 +50,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         }
     `,
           });
+
+          expect(errors).toBe(undefined);
 
           const companyId = data.createCompany.id;
           const locationId = data.createCompany.location.id;

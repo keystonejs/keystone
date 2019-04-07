@@ -62,7 +62,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(createEvent.group.toString()).toBe(createGroup.id);
 
           // Update the item and link the relationship field
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -87,6 +87,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               group: null,
             },
           });
+          expect(errors).toBe(undefined);
 
           // Avoid false-positives by checking the database directly
           const eventData = await findById('Event', createEvent.id);
@@ -226,7 +227,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(createEvent.group.toString()).toBe(createGroup.id);
 
             // Update the item and link the relationship field
-            await graphqlRequest({
+            const { errors } = await graphqlRequest({
               keystone,
               query: `
           mutation {
@@ -241,6 +242,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
             });
+            expect(errors).toBe(undefined);
 
             // Avoid false-positives by checking the database directly
             const eventData = await findById('EventToGroupNoRead', createEvent.id);

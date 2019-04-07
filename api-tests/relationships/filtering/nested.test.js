@@ -45,7 +45,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           const user2 = await create('User', { posts: [ids[0]] });
 
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         query {
@@ -62,6 +62,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
           expect(data.allUsers[0].posts).toHaveLength(2);
           expect(data).toMatchObject({
@@ -93,7 +94,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           const user2 = await create('User', { posts: [ids[0]] });
 
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         query {
@@ -108,6 +109,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
           expect(data.allUsers[0].posts).toHaveLength(1);
           expect(data).toMatchObject({
@@ -139,7 +141,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           const user2 = await create('User', { posts: [ids[0]] });
 
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         query {
@@ -159,6 +161,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
           expect(data.allUsers[0].posts).toHaveLength(1);
           expect(data).toMatchObject({
@@ -190,7 +193,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           const user2 = await create('User', { posts: [ids[0]] });
 
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         query {
@@ -210,6 +213,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
           expect(data).toMatchObject({
             allUsers: [
@@ -248,7 +252,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           const user2 = await create('User', { posts: [ids[0]] });
 
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         query {
@@ -262,6 +266,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data.allUsers).toHaveLength(2);
           expect(data).toHaveProperty('allUsers.0._postsMeta');
           expect(data).toMatchObject({
@@ -293,7 +298,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           const user2 = await create('User', { posts: [ids[0]] });
 
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         query {
@@ -309,6 +314,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data.allUsers).toHaveLength(2);
           expect(data).toHaveProperty('allUsers.0._postsMeta');
           expect(data).toMatchObject({
@@ -340,7 +346,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           const user2 = await create('User', { posts: [ids[0]] });
 
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         query {
@@ -354,6 +360,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0._postsMeta');
           expect(data.allUsers).toHaveLength(2);
           expect(data).toMatchObject({
@@ -385,7 +392,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           const user2 = await create('User', { posts: [ids[0]] });
 
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         query {
@@ -404,6 +411,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data.allUsers).toHaveLength(2);
           expect(data).toHaveProperty('allUsers.0._postsMeta');
           expect(data).toMatchObject({
@@ -435,7 +443,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           const user2 = await create('User', { posts: [ids[0]] });
 
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         query {
@@ -454,6 +462,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data.allUsers).toHaveLength(2);
           expect(data).toHaveProperty('allUsers.0._postsMeta');
           expect(data).toMatchObject({

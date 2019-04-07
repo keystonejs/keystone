@@ -64,7 +64,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
           // Create an item that does the nested create
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -82,6 +82,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data).toMatchObject({
             createEvent: {
               id: expect.any(String),
@@ -122,7 +123,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createEvent = await create('Event', { title: 'A thing' });
 
           // Update an item that does the nested create
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -143,6 +144,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data).toMatchObject({
             updateEvent: {
               id: expect.any(String),
@@ -183,7 +185,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
             // Create an item that does the nested create
-            const { data } = await graphqlRequest({
+            const { data, errors } = await graphqlRequest({
               keystone,
               query: `
           mutation {
@@ -197,6 +199,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
+            expect(errors).toBe(undefined);
             expect(data).toMatchObject({
               createEventToGroupNoRead: { id: expect.any(String) },
             });
@@ -223,7 +226,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update an item that does the nested create
-            const { data } = await graphqlRequest({
+            const { data, errors } = await graphqlRequest({
               keystone,
               query: `
           mutation {
@@ -240,6 +243,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
+            expect(errors).toBe(undefined);
             expect(data).toMatchObject({ updateEventToGroupNoRead: { id: expect.any(String) } });
 
             // See that it actually stored the group ID on the Event record

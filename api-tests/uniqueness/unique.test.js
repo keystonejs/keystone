@@ -66,7 +66,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'Configuring uniqueness on one field does not affect others',
         runner(setupKeystone, async ({ keystone }) => {
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -76,6 +76,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('foo.id');
           expect(data).toHaveProperty('bar.id');
         })

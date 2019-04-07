@@ -40,7 +40,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const user = await create('User', { company: company.id });
           await create('User', { company: otherCompany.id });
 
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         query {
@@ -60,6 +60,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data.allUsers).toHaveLength(1);
           expect(data).toMatchObject({
             allUsers: [
@@ -84,7 +85,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const user = await create('User', { company: company.id });
           await create('User', { company: otherCompany.id });
 
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
           query {
@@ -104,6 +105,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data.allUsers).toHaveLength(1);
           expect(data).toMatchObject({
             allUsers: [
@@ -133,7 +135,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           await create('User', { posts: [] });
 
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         query {
@@ -153,6 +155,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
           expect(data.allUsers[0].posts).toHaveLength(3);
           expect(data).toMatchObject({
@@ -180,7 +183,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           await create('User', { posts: [] });
 
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
           query {
@@ -200,6 +203,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         `,
           });
 
+          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
           expect(data.allUsers[0].posts).toHaveLength(3);
           expect(data).toMatchObject({

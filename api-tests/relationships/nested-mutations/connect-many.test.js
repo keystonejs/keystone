@@ -69,7 +69,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createNote = await create('Note', { content: noteContent });
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -86,6 +86,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(data).toMatchObject({
             createUser: { id: expect.any(String) },
           });
+          expect(errors).toBe(undefined);
 
           // Create an item that does the linking
           const {
@@ -121,7 +122,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createNote2 = await create('Note', { content: noteContent2 });
 
           // Create an item that does the linking
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -138,6 +139,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(data).toMatchObject({
             createUsers: [{ id: expect.any(String) }, { id: expect.any(String) }],
           });
+          expect(errors).toBe(undefined);
         })
       );
 
@@ -155,7 +157,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createUser = await create('User', { username: 'A thing' });
 
           // Update the item and link the relationship field
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -187,6 +189,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               ],
             },
           });
+          expect(errors).toBe(undefined);
 
           // Update the item and link multiple relationship fields
           const {
@@ -244,7 +247,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createUser = await create('User', { username: 'A thing', notes: [createNote.id] });
 
           // Update the item and link the relationship field
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -280,6 +283,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               ],
             },
           });
+          expect(errors).toBe(undefined);
         })
       );
 
@@ -300,7 +304,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
           const createUser2 = await create('User', { username: 'user2', notes: [] });
 
-          const { data } = await graphqlRequest({
+          const { data, errors } = await graphqlRequest({
             keystone,
             query: `
         mutation {
@@ -342,6 +346,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               },
             ],
           });
+          expect(errors).toBe(undefined);
         })
       );
     });
