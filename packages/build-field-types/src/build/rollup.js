@@ -30,13 +30,6 @@ const makeExternalPredicate = externalArr => {
 
 let unsafeRequire = require;
 
-let pkgJsonsAllowedToFail = [
-  // the package.json can't be found for this package on ci so for now,
-  // we're just going to ignore it
-  // TODO: investigate why it fails
-  'nopt',
-];
-
 function getChildPeerDeps(
   finalPeerDeps: Array<string>,
   isUMD: boolean,
@@ -52,7 +45,7 @@ function getChildPeerDeps(
       try {
         pkgJson = unsafeRequire(resolveFrom(pkg.directory, key + '/package.json'));
       } catch (err) {
-        if (err.code === 'MODULE_NOT_FOUND' && pkgJsonsAllowedToFail.includes(key)) {
+        if (err.code === 'MODULE_NOT_FOUND') {
           return;
         }
         throw err;
@@ -159,6 +152,13 @@ export let getRollupConfig = (
               pkg
             );
           }
+          throw new FatalError(
+            `"${warning.source}" is imported by "${path.relative(
+              pkg.directory,
+              warning.importer
+            )}" but it could not be resolved`,
+            pkg
+          );
         }
         default: {
           throw new FatalError(
@@ -172,10 +172,6 @@ export let getRollupConfig = (
       babel({
         cwd: pkg.project.directory,
         plugins: [
-          // TODO: revisit these plugins
-          require.resolve('../babel-plugins/add-basic-constructor-to-react-component'),
-          [require.resolve('@babel/plugin-proposal-class-properties'), { loose: true }],
-          require.resolve('../babel-plugins/fix-dce-for-classes-with-statics'),
           [require.resolve('../babel-plugins/ks-field-types-in-babel'), { pkgDir: pkg.directory }],
           [require.resolve('@babel/plugin-transform-runtime'), { useESModules: true }],
         ],

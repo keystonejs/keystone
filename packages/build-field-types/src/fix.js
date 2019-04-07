@@ -12,11 +12,9 @@ export async function fixPackage(pkg: Package) {
   if (pkg.entrypoints.length === 0) {
     throw new FatalError(errors.noEntrypoints, pkg);
   }
-  let fields = ['main', 'module'];
+  pkg.setFieldOnEntrypoints('main');
+  pkg.setFieldOnEntrypoints('module');
 
-  fields.forEach(field => {
-    pkg.setFieldOnEntrypoints(field);
-  });
   return (await Promise.all(pkg.entrypoints.map(x => x.save()))).some(x => x);
 }
 
@@ -25,8 +23,8 @@ export default async function fix(directory: string) {
 
   let didModify = (await Promise.all(
     packages.map(async pkg => {
-      let didModifyInPkgFix = await fixPackage(pkg);
       pkg.entrypoints.forEach(validateEntrypointSource);
+      let didModifyInPkgFix = await fixPackage(pkg);
       return didModifyInPkgFix;
     })
   )).some(x => x);

@@ -61,7 +61,7 @@ export class Project extends Item {
       let workspaces = is(_workspaces, is.arrayOf(is.string));
 
       let packages = await promptInput(
-        'what packages should preconstruct build?',
+        'what packages should build-field-types build?',
         this,
         workspaces.join(',')
       );
@@ -71,48 +71,34 @@ export class Project extends Item {
       await this.save();
     }
 
-    try {
-      let filenames = await globby(this.configPackages, {
-        cwd: this.directory,
-        onlyDirectories: true,
-        absolute: true,
-        expandDirectories: false,
-      });
+    let filenames = await globby(this.configPackages, {
+      cwd: this.directory,
+      onlyDirectories: true,
+      absolute: true,
+      expandDirectories: false,
+    });
 
-      let packages = await Promise.all(
-        filenames.map(async x => {
-          let pkg = await Package.create(x);
-          pkg.project = this;
-          return pkg;
-        })
-      );
-      return packages;
-    } catch (error) {
-      if (error instanceof is.AssertionError) {
-        return [];
-      }
-      throw error;
-    }
-  }
-  _packagesSync(): Array<Package> {
-    try {
-      let filenames = globby.sync(this.configPackages, {
-        cwd: this.directory,
-        onlyDirectories: true,
-        absolute: true,
-        expandDirectories: false,
-      });
-      let packages = filenames.map(x => {
-        let pkg = Package.createSync(x);
+    let packages = await Promise.all(
+      filenames.map(async x => {
+        let pkg = await Package.create(x);
         pkg.project = this;
         return pkg;
-      });
-      return packages;
-    } catch (error) {
-      if (error instanceof is.AssertionError) {
-        return [];
-      }
-      throw error;
-    }
+      })
+    );
+    return packages;
+  }
+  _packagesSync(): Array<Package> {
+    let filenames = globby.sync(this.configPackages, {
+      cwd: this.directory,
+      onlyDirectories: true,
+      absolute: true,
+      expandDirectories: false,
+    });
+    let packages = filenames.map(x => {
+      let pkg = Package.createSync(x);
+      pkg.project = this;
+      return pkg;
+    });
+    return packages;
   }
 }

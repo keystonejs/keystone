@@ -24,10 +24,6 @@ Commands
   {}
 );
 
-let errors = {
-  commandNotFound: 'Command not found',
-};
-
 class CommandNotFoundError extends Error {}
 
 (async () => {
@@ -67,7 +63,7 @@ class CommandNotFoundError extends Error {}
   } else if (err instanceof FatalError) {
     error(err.message, err.item);
   } else if (err instanceof CommandNotFoundError) {
-    error(errors.commandNotFound);
+    error('Command not found');
   } else {
     console.error(err);
   }

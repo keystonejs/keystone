@@ -1,30 +1,18 @@
 // @flow
-import * as babel from '@babel/core';
 import { createFilter } from 'rollup-pluginutils';
 import { getWorker } from '../worker-client';
 
 const regExpCharactersRegExp = /[\\^$.*+?()[\]{}|]/g;
 const escapeRegExpCharacters = (str: string) => str.replace(regExpCharactersRegExp, '\\$&');
 
-const unpackOptions = ({
-  extensions = babel.DEFAULT_EXTENSIONS,
-  // rollup uses sourcemap, babel uses sourceMaps
-  // just normalize them here so people don't have to worry about it
-  sourcemap = true,
-  sourcemaps = true,
-  sourceMap = true,
-  sourceMaps = true,
-  ...rest
-}: any = {}) => ({
-  extensions,
+const unpackOptions = (options: any = {}) => ({
   plugins: [],
-  sourceMaps: sourcemap && sourcemaps && sourceMap && sourceMaps,
-  ...rest,
+  ...options,
   caller: {
     name: 'rollup-plugin-babel',
     supportsStaticESM: true,
     supportsDynamicImport: true,
-    ...rest.caller,
+    ...options.caller,
   },
 });
 
