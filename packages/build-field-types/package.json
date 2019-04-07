@@ -2,17 +2,17 @@
   "name": "@keystone-alpha/build-field-types",
   "version": "0.0.53",
   "description": "A build tool for KeystoneJS 5 Field Types",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "files": [
     "src",
     "bin.js",
-    "lib"
+    "dist"
   ],
   "bin": {
     "build-field-types": "./bin.js"
   },
   "scripts": {
-    "build": "rimraf lib && babel src --out-dir lib --ignore '**/__tests__/**/*','**/__mocks__/**/*'"
+    "build": "rimraf lib && babel src --out-dir dist --ignore '**/__tests__/**/*','**/__mocks__/**/*'"
   },
   "repository": "https://github.com/keystonejs/keystone-5/tree/master/packages/build-field-types",
   "license": "MIT",
