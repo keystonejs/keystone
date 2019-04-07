@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`basic field type: dist/basic-field-type.cjs.dev.js 1`] = `
+exports[`basic field type: dist/basic-field-type.cjs.js 1`] = `
 "'use strict';
 
 var _join = require(\\"path\\").join;
@@ -17,28 +17,6 @@ exports.MyCoolFieldType = MyCoolFieldType;
 "
 `;
 
-exports[`basic field type: dist/basic-field-type.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./basic-field-type.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./basic-field-type.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`basic field type: dist/basic-field-type.cjs.prod.js 1`] = `
-"\\"use strict\\";
-var _join = require(\\"path\\").join;
-Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
-let MyCoolFieldType = {
-  views: { Field: _join(__dirname, \\"./chunk-9ca5ae48\\") }
-};
-exports.MyCoolFieldType = MyCoolFieldType;
-"
-`;
-
 exports[`basic field type: dist/basic-field-type.esm.js 1`] = `
 "import { join as _join } from \\"path\\";
 let MyCoolFieldType = {
@@ -50,31 +28,13 @@ export { MyCoolFieldType };
 "
 `;
 
-exports[`basic field type: dist/chunk-9ca5ae48/chunk.cjs.dev.js 1`] = `
+exports[`basic field type: dist/chunk-9ca5ae48/chunk.cjs.js 1`] = `
 "'use strict';
 
 var Field = () => {
   return 'my cool react component stuff';
 };
 
-exports.default = Field;
-"
-`;
-
-exports[`basic field type: dist/chunk-9ca5ae48/chunk.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./chunk.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./chunk.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`basic field type: dist/chunk-9ca5ae48/chunk.cjs.prod.js 1`] = `
-"\\"use strict\\";
-var Field = () => \\"my cool react component stuff\\";
 exports.default = Field;
 "
 `;
@@ -93,6 +53,14 @@ exports[`basic field type: dist/chunk-605adae5/chunk.esm.js 1`] = `
 };
 
 export default Field;
+"
+`;
+
+exports[`basic field type: dist/chunk-605adae5/package.json 1`] = `
+"{
+  \\"main\\": \\"chunk.cjs.js\\",
+  \\"module\\": \\"chunk.esm.js\\"
+}
 "
 `;
 

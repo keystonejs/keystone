@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`@babel/runtime installed: babel-runtime-installed.cjs.dev.js 1`] = `
+exports[`@babel/runtime installed: babel-runtime-installed.cjs.js 1`] = `
 "'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -11,26 +11,6 @@ class Bar {}
 
 class Foo extends Bar {}
 
-exports.Foo = Foo;
-"
-`;
-
-exports[`@babel/runtime installed: babel-runtime-installed.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./babel-runtime-installed.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./babel-runtime-installed.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`@babel/runtime installed: babel-runtime-installed.cjs.prod.js 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
-class Bar {}
-class Foo extends Bar {}
 exports.Foo = Foo;
 "
 `;
@@ -44,31 +24,12 @@ export { Foo };
 "
 `;
 
-exports[`monorepo single package: package-two-single-package.cjs.dev.js 1`] = `
+exports[`monorepo single package: package-two-single-package.cjs.js 1`] = `
 "'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-var index = 2;
-exports.default = index;
-"
-`;
-
-exports[`monorepo single package: package-two-single-package.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./package-two-single-package.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./package-two-single-package.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`monorepo single package: package-two-single-package.cjs.prod.js 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
 var index = 2;
 exports.default = index;
 "
@@ -80,31 +41,12 @@ export default index;
 "
 `;
 
-exports[`monorepo: package-one.cjs.dev.js 1`] = `
+exports[`monorepo: package-one.cjs.js 1`] = `
 "'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-var index = 1;
-exports.default = index;
-"
-`;
-
-exports[`monorepo: package-one.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./package-one.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./package-one.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`monorepo: package-one.cjs.prod.js 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
 var index = 1;
 exports.default = index;
 "
@@ -116,31 +58,12 @@ export default index;
 "
 `;
 
-exports[`monorepo: package-two.cjs.dev.js 1`] = `
+exports[`monorepo: package-two.cjs.js 1`] = `
 "'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-var index = 2;
-exports.default = index;
-"
-`;
-
-exports[`monorepo: package-two.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./package-two.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./package-two.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`monorepo: package-two.cjs.prod.js 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
 var index = 2;
 exports.default = index;
 "
@@ -149,130 +72,5 @@ exports.default = index;
 exports[`monorepo: package-two.esm.js 1`] = `
 "var index = 2;
 export default index;
-"
-`;
-
-exports[`prod checks: package-one.cjs.dev.js 1`] = `
-"'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-var index = 1;
-exports.default = index;
-"
-`;
-
-exports[`prod checks: package-one.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./package-one.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./package-one.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`prod checks: package-one.cjs.prod.js 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
-var index = 1;
-exports.default = index;
-"
-`;
-
-exports[`prod checks: package-one.esm.js 1`] = `
-"var index = 1;
-export default index;
-"
-`;
-
-exports[`prod checks: package-two.cjs.dev.js 1`] = `
-"'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-var index = 2;
-exports.default = index;
-"
-`;
-
-exports[`prod checks: package-two.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./package-two.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./package-two.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`prod checks: package-two.cjs.prod.js 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
-var index = 2;
-exports.default = index;
-"
-`;
-
-exports[`prod checks: package-two.esm.js 1`] = `
-"var index = 2;
-export default index;
-"
-`;
-
-exports[`prod checks: prod-checks.cjs.dev.js 1`] = `
-"'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function thing() {
-  if (process.env.NODE_ENV !== 'production') {
-    return 'not prod';
-  }
-
-  return 'prod';
-}
-
-exports.thing = thing;
-"
-`;
-
-exports[`prod checks: prod-checks.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./prod-checks.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./prod-checks.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`prod checks: prod-checks.cjs.prod.js 1`] = `
-"\\"use strict\\";
-function thing() {
-  return \\"prod\\";
-}
-Object.defineProperty(exports, \\"__esModule\\", { value: !0 }),
-  (exports.thing = thing);
-"
-`;
-
-exports[`prod checks: prod-checks.esm.js 1`] = `
-"function thing() {
-  if (process.env.NODE_ENV !== 'production') {
-    return 'not prod';
-  }
-
-  return 'prod';
-}
-
-export { thing };
 "
 `;

@@ -1,8 +1,0 @@
-{
-  "name": "prod-checks",
-  "version": "1.0.0",
-  "main": "dist/prod-checks.cjs.js",
-  "module": "dist/prod-checks.esm.js",
-  "license": "MIT",
-  "private": true
-}

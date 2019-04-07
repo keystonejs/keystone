@@ -1,31 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`basic: valid-package.cjs.dev.js 1`] = `
+exports[`basic: valid-package.cjs.js 1`] = `
 "'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 var index = 'something';
-exports.default = index;
-"
-`;
-
-exports[`basic: valid-package.cjs.js 1`] = `
-"'use strict';
-
-if (process.env.NODE_ENV === \\"production\\") {
-  module.exports = require(\\"./valid-package.cjs.prod.js\\");
-} else {
-  module.exports = require(\\"./valid-package.cjs.dev.js\\");
-}
-"
-`;
-
-exports[`basic: valid-package.cjs.prod.js 1`] = `
-"\\"use strict\\";
-Object.defineProperty(exports, \\"__esModule\\", { value: !0 });
-var index = \\"something\\";
 exports.default = index;
 "
 `;

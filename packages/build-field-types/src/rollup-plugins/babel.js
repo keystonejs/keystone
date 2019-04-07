@@ -1,7 +1,7 @@
 // @flow
 import * as babel from '@babel/core';
 import { createFilter } from 'rollup-pluginutils';
-import { getWorker } from '../../worker-client';
+import { getWorker } from '../worker-client';
 
 const regExpCharactersRegExp = /[\\^$.*+?()[\]{}|]/g;
 const escapeRegExpCharacters = (str: string) => str.replace(regExpCharactersRegExp, '\\$&');

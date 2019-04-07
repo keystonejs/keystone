@@ -14,21 +14,3 @@ export function getValidModuleField(entrypoint: Entrypoint) {
   let nameForDist = getNameForDist(entrypoint.package.name);
   return `dist/${nameForDist}.esm.js`;
 }
-
-export function getValidCjsBrowserPath(entrypoint: Entrypoint) {
-  return getValidMainField(entrypoint).replace('cjs', 'browser.cjs');
-}
-
-export function getValidModuleBrowserPath(entrypoint: Entrypoint) {
-  return getValidModuleField(entrypoint).replace('esm', 'browser.esm');
-}
-
-export function getValidBrowserField(entrypoint: Entrypoint) {
-  let obj = {
-    [`./${getValidMainField(entrypoint)}`]: './' + getValidCjsBrowserPath(entrypoint),
-  };
-  if (entrypoint.module !== null) {
-    obj[`./${getValidModuleField(entrypoint)}`] = './' + getValidModuleBrowserPath(entrypoint);
-  }
-  return obj;
-}

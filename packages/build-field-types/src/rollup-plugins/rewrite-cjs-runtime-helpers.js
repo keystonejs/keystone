@@ -13,10 +13,10 @@ export default function rewriteCjsRuntimeHelpers() {
               configFile: false,
               sourceType: 'script',
               plugins: [
-                // require.resolve('../babel-plugins/rewrite-cjs-runtime-helpers'),
+                require.resolve('../babel-plugins/rewrite-cjs-runtime-helpers'),
                 [
                   require.resolve('../babel-plugins/ks-field-types-render-chunk'),
-                  { moduleFormat: 'esm' },
+                  { moduleFormat: 'cjs' },
                 ],
               ],
             })

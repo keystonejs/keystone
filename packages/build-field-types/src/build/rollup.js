@@ -1,7 +1,6 @@
 // @flow
 const resolve = require('rollup-plugin-node-resolve');
 const cjs = require('rollup-plugin-commonjs');
-const replace = require('rollup-plugin-replace');
 const resolveFrom = require('resolve-from');
 const chalk = require('chalk');
 import path from 'path';
@@ -15,8 +14,6 @@ import { confirms } from '../messages';
 import rewriteCjsRuntimeHelpers from '../rollup-plugins/rewrite-cjs-runtime-helpers';
 import flowAndNodeDevProdEntry from '../rollup-plugins/flow-and-prod-dev-entry';
 import babel from '../rollup-plugins/babel';
-import prettier from '../rollup-plugins/prettier';
-import terser from '../rollup-plugins/terser';
 import { limit } from '../prompt';
 import { getNameForDist } from '../utils';
 import { EXTENSIONS } from '../constants';
@@ -85,13 +82,10 @@ export function toUnsafeRollupConfig(config: RollupConfig): Object {
   return config;
 }
 
-export type RollupConfigType = 'node-dev' | 'node-prod';
-
 export let getRollupConfig = (
   pkg: Package,
   entrypoints: Array<StrictEntrypoint>,
-  aliases: Aliases,
-  type: RollupConfigType
+  aliases: Aliases
 ): RollupConfig => {
   let external = [];
   if (pkg.peerDependencies) {
@@ -101,9 +95,7 @@ export let getRollupConfig = (
     external.push(...Object.keys(pkg.dependencies));
   }
   getChildPeerDeps(external, false, external, [], aliases, pkg);
-  if (type === 'node-dev' || type === 'node-prod') {
-    external.push(...builtInModules);
-  }
+  external.push(...builtInModules);
 
   let rollupAliases = {};
 
@@ -199,16 +191,7 @@ export let getRollupConfig = (
           moduleDirectory: [],
         },
       }),
-      type === 'node-prod' &&
-        replace({
-          'process.env.NODE_ENV': '"production"',
-        }),
-      type === 'node-prod' &&
-        terser({
-          mangle: false,
-        }),
-      type === 'node-prod' && prettier(),
-      type === 'node-prod' && flowAndNodeDevProdEntry(),
+      flowAndNodeDevProdEntry(),
     ].filter(Boolean),
   };
 

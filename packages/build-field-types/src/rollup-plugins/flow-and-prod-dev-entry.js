@@ -1,7 +1,12 @@
 // @flow
 import path from 'path';
 import type { Plugin } from './types';
-import { getDevPath, getProdPath } from '../build/utils';
+
+export function esmPlugin(): Plugin {
+  return {
+    name: 'esm thing',
+  };
+}
 
 export default function flowAndNodeDevProdEntry(): Plugin {
   return {
@@ -25,21 +30,6 @@ export default function flowAndNodeDevProdEntry(): Plugin {
               JSON.stringify({ main: 'chunk.cjs.js', module: 'chunk.esm.js' }, null, 2) + '\n',
           };
         }
-
-        let mainFieldPath = file.fileName.replace(/\.prod\.js$/, '.js');
-
-        let mainEntrySource = `'use strict';
-
-if (process.env.NODE_ENV === "production") {
-  module.exports = require("./${path.basename(getProdPath(mainFieldPath))}");
-} else {
-  module.exports = require("./${path.basename(getDevPath(mainFieldPath))}");
-}\n`;
-        bundle[mainFieldPath] = {
-          fileName: mainFieldPath,
-          isAsset: true,
-          source: mainEntrySource,
-        };
       }
     },
   };

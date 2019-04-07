@@ -28,14 +28,6 @@ test('monorepo', async () => {
   }
 });
 
-test('prod checks', async () => {
-  let tmpPath = f.copy('prod-checks');
-
-  await build(tmpPath);
-
-  await snapshotDistFiles(tmpPath);
-});
-
 // TODO: make it faster so this isn't required
 jest.setTimeout(20000);
 
