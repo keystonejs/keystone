@@ -2,8 +2,8 @@
 
 exports[`basic field type: dist/11z4har/package.json 1`] = `
 "{
-  \\"main\\": \\"../chunk-9ca5ae48/chunk.cjs.js\\",
-  \\"module\\": \\"../chunk-605adae5/chunk.esm.js\\"
+  \\"main\\": \\"../chunk-9ca5ae48.cjs.js\\",
+  \\"module\\": \\"../chunk-605adae5.esm.js\\"
 }
 "
 `;
@@ -36,7 +36,7 @@ export { MyCoolFieldType };
 "
 `;
 
-exports[`basic field type: dist/chunk-9ca5ae48/chunk.cjs.js 1`] = `
+exports[`basic field type: dist/chunk-9ca5ae48.cjs.js 1`] = `
 "'use strict';
 
 var Field = () => {
@@ -47,7 +47,7 @@ exports.default = Field;
 "
 `;
 
-exports[`basic field type: dist/chunk-605adae5/chunk.esm.js 1`] = `
+exports[`basic field type: dist/chunk-605adae5.esm.js 1`] = `
 "var Field = () => {
   return 'my cool react component stuff';
 };

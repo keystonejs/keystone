@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`package resolvable but not in deps: dist/typescript.cjs.js 1`] = `
+exports[`typescript: dist/typescript.cjs.js 1`] = `
 "'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -11,13 +11,13 @@ exports.default = thing;
 "
 `;
 
-exports[`package resolvable but not in deps: dist/typescript.esm.js 1`] = `
+exports[`typescript: dist/typescript.esm.js 1`] = `
 "let thing = \\"something\\";
 export default thing;
 "
 `;
 
-exports[`package resolvable but not in deps: package.json 1`] = `
+exports[`typescript: package.json 1`] = `
 "{
   \\"name\\": \\"typescript\\",
   \\"version\\": \\"1.0.0\\",
@@ -33,7 +33,7 @@ exports[`package resolvable but not in deps: package.json 1`] = `
 "
 `;
 
-exports[`package resolvable but not in deps: src/index.ts 1`] = `
+exports[`typescript: src/index.ts 1`] = `
 "let thing: string = \\"something\\";
 
 export default thing;

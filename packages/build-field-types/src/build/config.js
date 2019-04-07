@@ -7,7 +7,7 @@ import type { Aliases } from './aliases';
 let getNames = (ext: string) => {
   return {
     entryFileNames: `[name]${ext}`,
-    chunkFileNames: `dist/[name]-[hash]/chunk${ext}`,
+    chunkFileNames: `dist/[name]-[hash]${ext}`,
   };
 };
 
