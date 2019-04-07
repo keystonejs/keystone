@@ -4,6 +4,13 @@ import { type RollupConfig, getRollupConfig } from './rollup';
 import type { OutputOptions } from './types';
 import type { Aliases } from './aliases';
 
+let getNames = (ext: string) => {
+  return {
+    entryFileNames: `[name]${ext}`,
+    chunkFileNames: `dist/[name]/chunk${ext}`,
+  };
+};
+
 export function getRollupConfigs(pkg: Package, aliases: Aliases) {
   let configs: Array<{
     config: RollupConfig,
@@ -12,28 +19,20 @@ export function getRollupConfigs(pkg: Package, aliases: Aliases) {
 
   let strictEntrypoints = pkg.entrypoints.map(x => x.strict());
 
-  let hasModuleField = strictEntrypoints[0].module !== null;
-
   configs.push({
     config: getRollupConfig(pkg, strictEntrypoints, aliases, 'node-dev'),
     outputs: [
       {
         format: 'cjs',
-        entryFileNames: '[name].cjs.dev.js',
-        chunkFileNames: 'dist/[name]-[hash].cjs.dev.js',
+        ...getNames('.cjs.dev.js'),
         dir: pkg.directory,
         exports: 'named',
       },
-      ...(hasModuleField
-        ? [
-            {
-              format: 'es',
-              entryFileNames: '[name].esm.js',
-              chunkFileNames: 'dist/[name]-[hash].esm.js',
-              dir: pkg.directory,
-            },
-          ]
-        : []),
+      {
+        format: 'es',
+        ...getNames('.esm.js'),
+        dir: pkg.directory,
+      },
     ],
   });
 
@@ -42,8 +41,7 @@ export function getRollupConfigs(pkg: Package, aliases: Aliases) {
     outputs: [
       {
         format: 'cjs',
-        entryFileNames: '[name].cjs.prod.js',
-        chunkFileNames: 'dist/[name]-[hash].cjs.prod.js',
+        ...getNames('.cjs.prod.js'),
         dir: pkg.directory,
         exports: 'named',
       },

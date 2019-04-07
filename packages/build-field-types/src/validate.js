@@ -39,12 +39,15 @@ export function validateEntrypoint(entrypoint: Entrypoint, log: boolean) {
   if (!isMainFieldValid(entrypoint)) {
     throw new FixableError(errors.invalidMainField, entrypoint);
   }
-  logger.info(infos.validMainField, entrypoint);
-
+  if (log) {
+    logger.info(infos.validMainField, entrypoint);
+  }
   if (!isModuleFieldValid(entrypoint)) {
     throw new FixableError(errors.invalidModuleField, entrypoint);
   }
-  logger.info(infos.validModuleField, entrypoint);
+  if (log) {
+    logger.info(infos.validModuleField, entrypoint);
+  }
 }
 
 export default async function validate(directory: string) {

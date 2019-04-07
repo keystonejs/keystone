@@ -1,4 +1,6 @@
 const { addNamed } = require('@babel/helper-module-imports');
+const nodePath = require('path');
+
 module.exports = function(babel) {
   const { types: t } = babel;
   let isPromiseResolve = t.buildMatchMemberExpression('Promise.resolve');
@@ -26,11 +28,14 @@ module.exports = function(babel) {
               requireCall.get('callee').node.name === 'require' &&
               requireCall.get('arguments')[0].isStringLiteral()
             ) {
+              let stringLiteral = t.stringLiteral(
+                nodePath.dirname(requireCall.node.arguments[0].value)
+              );
               path.replaceWith(
                 t.callExpression(
                   // this should use path.join(__dirname, path) but that's for the real implementation
                   pathJoinIdentifier,
-                  [t.identifier('__dirname'), requireCall.node.arguments[0]]
+                  [t.identifier('__dirname'), stringLiteral]
                 )
               );
               return;
@@ -44,7 +49,9 @@ module.exports = function(babel) {
             importCall.get('callee').isImport() &&
             importCall.get('arguments.0').isStringLiteral()
           ) {
-            let stringLiteral = importCall.get('arguments.0').node;
+            let stringLiteral = t.stringLiteral(
+              nodePath.dirname(importCall.node.arguments[0].value)
+            );
             path.replaceWith(
               t.callExpression(pathJoinIdentifier, [t.identifier('__dirname'), stringLiteral])
             );

@@ -12,8 +12,18 @@ export default function flowAndNodeDevProdEntry(): Plugin {
         const file = bundle[n];
         // $FlowFixMe
         let facadeModuleId = file.facadeModuleId;
-        if (file.isAsset || !file.isEntry || facadeModuleId == null) {
+        if (file.isAsset || !(file.isEntry || file.isDynamicEntry) || facadeModuleId == null) {
           continue;
+        }
+
+        if (file.isDynamicEntry) {
+          let pkgJsonFileName = path.join(path.dirname(file.fileName), 'package.json');
+          bundle[pkgJsonFileName] = {
+            fileName: pkgJsonFileName,
+            isAsset: true,
+            source:
+              JSON.stringify({ main: 'chunk.cjs.js', module: 'chunk.esm.js' }, null, 2) + '\n',
+          };
         }
 
         let mainFieldPath = file.fileName.replace(/\.prod\.js$/, '.js');
