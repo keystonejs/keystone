@@ -11,7 +11,6 @@ import { rollup as _rollup } from 'rollup';
 import type { Aliases } from './aliases';
 import { FatalError } from '../errors';
 import { confirms } from '../messages';
-import rewriteCjsRuntimeHelpers from '../rollup-plugins/rewrite-cjs-runtime-helpers';
 import flowAndNodeDevProdEntry from '../rollup-plugins/flow-and-prod-dev-entry';
 import babel from '../rollup-plugins/babel';
 import { limit } from '../prompt';
@@ -177,14 +176,12 @@ export let getRollupConfig = (
           require.resolve('../babel-plugins/add-basic-constructor-to-react-component'),
           [require.resolve('@babel/plugin-proposal-class-properties'), { loose: true }],
           require.resolve('../babel-plugins/fix-dce-for-classes-with-statics'),
-          require.resolve('../babel-plugins/ks-field-types-in-babel'),
+          [require.resolve('../babel-plugins/ks-field-types-in-babel'), { pkgDir: pkg.directory }],
           [require.resolve('@babel/plugin-transform-runtime'), { useESModules: true }],
         ],
         extensions: EXTENSIONS,
       }),
       cjs(),
-
-      rewriteCjsRuntimeHelpers(),
       resolve({
         extensions: EXTENSIONS,
         customResolveOptions: {

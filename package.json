@@ -48,6 +48,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.3.4",
     "@emotion/core": "^10.0.9",
+    "@emotion/hash": "^0.7.1",
     "@emotion/styled": "^10.0.9",
     "@iframely/embed.js": "^1.1.1",
     "@jesstelford/apollo-cache-invalidation": "^0.0.3-gh3-gh5",

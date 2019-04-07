@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`basic field type: dist/11z4har/package.json 1`] = `
+"{
+  \\"main\\": \\"../chunk-9ca5ae48/chunk.cjs.js\\",
+  \\"module\\": \\"../chunk-605adae5/chunk.esm.js\\"
+}
+"
+`;
+
 exports[`basic field type: dist/basic-field-type.cjs.js 1`] = `
 "'use strict';
 
@@ -10,7 +18,7 @@ Object.defineProperty(exports, '__esModule', {
 });
 let MyCoolFieldType = {
   views: {
-    Field: _join(__dirname, \\"./chunk-9ca5ae48\\")
+    Field: _join(__dirname, \\"11z4har\\")
   }
 };
 exports.MyCoolFieldType = MyCoolFieldType;
@@ -21,7 +29,7 @@ exports[`basic field type: dist/basic-field-type.esm.js 1`] = `
 "import { join as _join } from \\"path\\";
 let MyCoolFieldType = {
   views: {
-    Field: _join(__dirname, \\"./chunk-605adae5\\")
+    Field: _join(__dirname, \\"11z4har\\")
   }
 };
 export { MyCoolFieldType };
@@ -39,28 +47,12 @@ exports.default = Field;
 "
 `;
 
-exports[`basic field type: dist/chunk-9ca5ae48/package.json 1`] = `
-"{
-  \\"main\\": \\"chunk.cjs.js\\",
-  \\"module\\": \\"chunk.esm.js\\"
-}
-"
-`;
-
 exports[`basic field type: dist/chunk-605adae5/chunk.esm.js 1`] = `
 "var Field = () => {
   return 'my cool react component stuff';
 };
 
 export default Field;
-"
-`;
-
-exports[`basic field type: dist/chunk-605adae5/package.json 1`] = `
-"{
-  \\"main\\": \\"chunk.cjs.js\\",
-  \\"module\\": \\"chunk.esm.js\\"
-}
 "
 `;
 
