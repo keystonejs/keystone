@@ -25,7 +25,9 @@ class Content extends Text {
       output: type,
     };
 
-    this.complexBlocks = this.config.blocks
+    this.blocks = Array.isArray(this.blocks) || [];
+
+    this.complexBlocks = this.blocks
       .map(blockConfig => {
         let Impl = blockConfig;
         let fieldConfig = {};
@@ -64,7 +66,7 @@ class Content extends Text {
     return {
       ...meta,
       // NOTE: We rely on order, which is why we end up with a sparse array
-      blockOptions: this.config.blocks.map(block => (Array.isArray(block) ? block[1] : undefined)),
+      blockOptions: this.blocks.map(block => (Array.isArray(block) ? block[1] : undefined)),
     };
   }
   // Add the blocks config to the views object for usage in the admin UI
@@ -72,7 +74,7 @@ class Content extends Text {
   extendViews(views) {
     return {
       ...views,
-      blocks: this.config.blocks.map(block => (Array.isArray(block) ? block[0] : block).viewPath),
+      blocks: this.blocks.map(block => (Array.isArray(block) ? block[0] : block).viewPath),
     };
   }
   get gqlUpdateInputFields() {
