@@ -22,13 +22,13 @@ export const initItems = () => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (server, filter, targets) =>
-    matchFilter(server, filter, '{ name, price }', targets, 'name');
+  const match = (keystone, filter, targets) =>
+    matchFilter(keystone, filter, '{ name, price }', targets, 'name');
 
   test(
     'No filter',
-    withKeystone(({ server: { server } }) =>
-      match(server, undefined, [
+    withKeystone(({ keystone }) =>
+      match(keystone, undefined, [
         { name: 'price1', price: '50.00' },
         { name: 'price2', price: '0.01' },
         { name: 'price3', price: '2000.00' },
@@ -40,8 +40,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Empty filter',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { }', [
         { name: 'price1', price: '50.00' },
         { name: 'price2', price: '0.01' },
         { name: 'price3', price: '2000.00' },
@@ -53,15 +53,15 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: price',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { price: "50.00" }', [{ name: 'price1', price: '50.00' }])
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { price: "50.00" }', [{ name: 'price1', price: '50.00' }])
     )
   );
 
   test(
     'Filter: price_not',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { price_not: "50.00" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { price_not: "50.00" }', [
         { name: 'price2', price: '0.01' },
         { name: 'price3', price: '2000.00' },
         { name: 'price4', price: '40000.00' },
@@ -72,15 +72,15 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: price_lt',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { price_lt: "50.00" }', [{ name: 'price2', price: '0.01' }])
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { price_lt: "50.00" }', [{ name: 'price2', price: '0.01' }])
     )
   );
 
   test(
     'Filter: price_lte',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { price_lte: "2000.00" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { price_lte: "2000.00" }', [
         { name: 'price1', price: '50.00' },
         { name: 'price2', price: '0.01' },
         { name: 'price3', price: '2000.00' },
@@ -90,15 +90,15 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: price_gt',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { price_gt: "2000.00" }', [{ name: 'price4', price: '40000.00' }])
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { price_gt: "2000.00" }', [{ name: 'price4', price: '40000.00' }])
     )
   );
 
   test(
     'Filter: price_gte',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { price_gte: "2000.00" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { price_gte: "2000.00" }', [
         { name: 'price3', price: '2000.00' },
         { name: 'price4', price: '40000.00' },
       ])

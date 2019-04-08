@@ -37,7 +37,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('relationship filtering with access control', () => {
       test(
         'implicitly filters to only the IDs in the database by default',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           // Create all of the posts with the given IDs & random content
           const posts = await Promise.all(
             postNames.map(name => {
@@ -55,8 +55,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const queryUser = await graphqlRequest({
-            server,
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
         query {
           UserToPostLimitedRead(where: { id: "${user.id}" }) {
@@ -70,8 +70,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(queryUser.body).not.toHaveProperty('errors');
-          expect(queryUser.body.data).toMatchObject({
+          expect(errors).toBe(undefined);
+          expect(data).toMatchObject({
             UserToPostLimitedRead: {
               id: expect.any(String),
               username,
@@ -83,7 +83,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'explicitly filters when given a `where` clause',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           // Create all of the posts with the given IDs & random content
           const posts = await Promise.all(
             postNames.map(name => {
@@ -101,8 +101,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const queryUser = await graphqlRequest({
-            server,
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
         query {
           UserToPostLimitedRead(where: { id: "${user.id}" }) {
@@ -118,8 +118,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(queryUser.body).not.toHaveProperty('errors');
-          expect(queryUser.body.data).toMatchObject({
+          expect(errors).toBe(undefined);
+          expect(data).toMatchObject({
             UserToPostLimitedRead: {
               id: expect.any(String),
               username,

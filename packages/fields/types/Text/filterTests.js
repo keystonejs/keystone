@@ -27,14 +27,14 @@ export const initItems = () => {
 // See https://github.com/keystonejs/keystone-5/issues/391
 
 export const filterTests = withKeystone => {
-  const match = (server, gqlArgs, targets) => {
-    return matchFilter(server, gqlArgs, '{ name order }', targets, 'order');
+  const match = (keystone, gqlArgs, targets) => {
+    return matchFilter(keystone, gqlArgs, '{ name order }', targets, 'order');
   };
 
   test(
     `No 'where' argument`,
-    withKeystone(({ server: { server } }) =>
-      match(server, '', [
+    withKeystone(({ keystone }) =>
+      match(keystone, '', [
         { order: 'a', name: '' },
         { order: 'b', name: 'other' },
         { order: 'c', name: 'FOOBAR' },
@@ -47,8 +47,8 @@ export const filterTests = withKeystone => {
   );
   test(
     `Empty 'where' argument'`,
-    withKeystone(({ server: { server } }) =>
-      match(server, '', [
+    withKeystone(({ keystone }) =>
+      match(keystone, '', [
         { order: 'a', name: '' },
         { order: 'b', name: 'other' },
         { order: 'c', name: 'FOOBAR' },
@@ -62,14 +62,14 @@ export const filterTests = withKeystone => {
 
   test(
     `Filter: {key} (case-sensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name: "fooBAR" }', [{ order: 'd', name: 'fooBAR' }])
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name: "fooBAR" }', [{ order: 'd', name: 'fooBAR' }])
     )
   );
   test(
     `Filter: {key}_i (case-insensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_i: "fooBAR" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_i: "fooBAR" }', [
         { order: 'c', name: 'FOOBAR' },
         { order: 'd', name: 'fooBAR' },
         { order: 'e', name: 'foobar' },
@@ -79,8 +79,8 @@ export const filterTests = withKeystone => {
 
   test(
     `Filter: {key}_not (case-sensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_not: "fooBAR" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_not: "fooBAR" }', [
         { order: 'a', name: '' },
         { order: 'b', name: 'other' },
         { order: 'c', name: 'FOOBAR' },
@@ -92,8 +92,8 @@ export const filterTests = withKeystone => {
   );
   test(
     `Filter: {key}_not_i (case-insensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_not_i: "fooBAR" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_not_i: "fooBAR" }', [
         { order: 'a', name: '' },
         { order: 'b', name: 'other' },
         { order: 'f', name: null },
@@ -104,8 +104,8 @@ export const filterTests = withKeystone => {
 
   test(
     `Filter: {key}_contains (case-sensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_contains: "oo" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_contains: "oo" }', [
         { order: 'd', name: 'fooBAR' },
         { order: 'e', name: 'foobar' },
       ])
@@ -113,8 +113,8 @@ export const filterTests = withKeystone => {
   );
   test(
     `Filter: {key}_contains_i (case-insensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_contains_i: "oo" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_contains_i: "oo" }', [
         { order: 'c', name: 'FOOBAR' },
         { order: 'd', name: 'fooBAR' },
         { order: 'e', name: 'foobar' },
@@ -124,8 +124,8 @@ export const filterTests = withKeystone => {
 
   test(
     `Filter: {key}_not_contains (case-sensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_not_contains: "oo" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_not_contains: "oo" }', [
         { order: 'a', name: '' },
         { order: 'b', name: 'other' },
         { order: 'c', name: 'FOOBAR' },
@@ -136,8 +136,8 @@ export const filterTests = withKeystone => {
   );
   test(
     `Filter: {key}_not_contains_i (case-insensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_not_contains_i: "oo" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_not_contains_i: "oo" }', [
         { order: 'a', name: '' },
         { order: 'b', name: 'other' },
         { order: 'f', name: null },
@@ -148,8 +148,8 @@ export const filterTests = withKeystone => {
 
   test(
     `Filter: {key}_starts_with (case-sensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_starts_with: "foo" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_starts_with: "foo" }', [
         { order: 'd', name: 'fooBAR' },
         { order: 'e', name: 'foobar' },
       ])
@@ -157,8 +157,8 @@ export const filterTests = withKeystone => {
   );
   test(
     `Filter: {key}_starts_with_i (case-insensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_starts_with_i: "foo" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_starts_with_i: "foo" }', [
         { order: 'c', name: 'FOOBAR' },
         { order: 'd', name: 'fooBAR' },
         { order: 'e', name: 'foobar' },
@@ -168,8 +168,8 @@ export const filterTests = withKeystone => {
 
   test(
     `Filter: {key}_not_starts_with (case-sensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_not_starts_with: "foo" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_not_starts_with: "foo" }', [
         { order: 'a', name: '' },
         { order: 'b', name: 'other' },
         { order: 'c', name: 'FOOBAR' },
@@ -180,8 +180,8 @@ export const filterTests = withKeystone => {
   );
   test(
     `Filter: {key}_not_starts_with_i (case-insensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_not_starts_with_i: "foo" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_not_starts_with_i: "foo" }', [
         { order: 'a', name: '' },
         { order: 'b', name: 'other' },
         { order: 'f', name: null },
@@ -192,8 +192,8 @@ export const filterTests = withKeystone => {
 
   test(
     `Filter: {key}_ends_with (case-sensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_ends_with: "BAR" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_ends_with: "BAR" }', [
         { order: 'c', name: 'FOOBAR' },
         { order: 'd', name: 'fooBAR' },
       ])
@@ -201,8 +201,8 @@ export const filterTests = withKeystone => {
   );
   test(
     `Filter: {key}_ends_with_i (case-insensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_ends_with_i: "BAR" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_ends_with_i: "BAR" }', [
         { order: 'c', name: 'FOOBAR' },
         { order: 'd', name: 'fooBAR' },
         { order: 'e', name: 'foobar' },
@@ -212,8 +212,8 @@ export const filterTests = withKeystone => {
 
   test(
     `Filter: {key}_not_ends_with (case-sensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_not_ends_with: "BAR" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_not_ends_with: "BAR" }', [
         { order: 'a', name: '' },
         { order: 'b', name: 'other' },
         { order: 'e', name: 'foobar' },
@@ -224,8 +224,8 @@ export const filterTests = withKeystone => {
   );
   test(
     `Filter: {key}_not_ends_with_i (case-insensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_not_ends_with_i: "BAR" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_not_ends_with_i: "BAR" }', [
         { order: 'a', name: '' },
         { order: 'b', name: 'other' },
         { order: 'f', name: null },
@@ -236,12 +236,12 @@ export const filterTests = withKeystone => {
 
   test(
     `Filter: {key}_in (case-sensitive, empty list)`,
-    withKeystone(({ server: { server } }) => match(server, 'where: { name_in: [] }', []))
+    withKeystone(({ keystone }) => match(keystone, 'where: { name_in: [] }', []))
   );
   test(
     `Filter: {key}_in (case-sensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_in: ["", "FOOBAR"] }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_in: ["", "FOOBAR"] }', [
         { order: 'a', name: '' },
         { order: 'c', name: 'FOOBAR' },
       ])
@@ -250,8 +250,8 @@ export const filterTests = withKeystone => {
 
   test(
     `Filter: {key}_not_in (case-sensitive, empty list)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_not_in: [] }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_not_in: [] }', [
         { order: 'a', name: '' },
         { order: 'b', name: 'other' },
         { order: 'c', name: 'FOOBAR' },
@@ -264,8 +264,8 @@ export const filterTests = withKeystone => {
   );
   test(
     `Filter: {key}_not_in (case-sensitive)`,
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { name_not_in: ["", "FOOBAR"] }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { name_not_in: ["", "FOOBAR"] }', [
         { order: 'b', name: 'other' },
         { order: 'd', name: 'fooBAR' },
         { order: 'e', name: 'foobar' },

@@ -21,14 +21,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('DateTime type', () => {
       test(
         'is present in the schema',
-        runner(setupKeystone, async ({ server: { server } }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           // Introspection query
           const {
-            body: {
-              data: { __schema },
-            },
+            data: { __schema },
           } = await graphqlRequest({
-            server,
+            keystone,
             query: `
         query {
           __schema {
@@ -77,14 +75,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'response is serialized as a String',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const postedAt = '2018-08-31T06:49:07.000Z';
 
           const createPost = await create('Post', { postedAt });
 
           // Create an item that does the linking
-          const { body } = await graphqlRequest({
-            server,
+          const { data } = await graphqlRequest({
+            keystone,
             query: `
         query {
           Post(where: { id: "${createPost.id}" }) {
@@ -94,18 +92,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(body).toHaveProperty('data.Post.postedAt', postedAt);
+          expect(data).toHaveProperty('Post.postedAt', postedAt);
         })
       );
 
       test(
         'input type is accepted as a String',
-        runner(setupKeystone, async ({ server: { server } }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const postedAt = '2018-08-31T06:49:07.000Z';
 
           // Create an item that does the linking
-          const { body } = await graphqlRequest({
-            server,
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           createPost(data: { postedAt: "${postedAt}" }) {
@@ -115,22 +113,22 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(body).not.toHaveProperty('errors');
-          expect(body).toHaveProperty('data.createPost.postedAt', postedAt);
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('createPost.postedAt', postedAt);
         })
       );
 
       test(
         'correctly overrides with new value',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const postedAt = '2018-08-31T06:49:07.000Z';
           const updatedPostedAt = '2018-12-07T05:54:00.556Z';
 
           const createPost = await create('Post', { postedAt });
 
           // Create an item that does the linking
-          const { body } = await graphqlRequest({
-            server,
+          const { data } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           updatePost(id: "${createPost.id}", data: { postedAt: "${updatedPostedAt}" }) {
@@ -140,20 +138,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(body).toHaveProperty('data.updatePost.postedAt', updatedPostedAt);
+          expect(data).toHaveProperty('updatePost.postedAt', updatedPostedAt);
         })
       );
 
       test(
         'allows replacing date with null',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const postedAt = '2018-08-31T06:49:07.000Z';
 
           const createPost = await create('Post', { postedAt });
 
           // Create an item that does the linking
-          const { body } = await graphqlRequest({
-            server,
+          const { data } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           updatePost(id: "${createPost.id}", data: { postedAt: null }) {
@@ -163,16 +161,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(body).toHaveProperty('data.updatePost.postedAt', null);
+          expect(data).toHaveProperty('updatePost.postedAt', null);
         })
       );
 
       test(
         'allows initialising to null',
-        runner(setupKeystone, async ({ server: { server } }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           // Create an item that does the linking
-          const { body } = await graphqlRequest({
-            server,
+          const { data } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           createPost(data: { postedAt: null }) {
@@ -182,21 +180,21 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(body).toHaveProperty('data.createPost.postedAt', null);
+          expect(data).toHaveProperty('createPost.postedAt', null);
         })
       );
 
       test(
         'Does not get clobbered when updating unrelated field',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const postedAt = '2018-08-31T06:49:07.000Z';
           const title = 'Hello world';
 
           const createPost = await create('Post', { postedAt, title });
 
           // Create an item that does the linking
-          const { body } = await graphqlRequest({
-            server,
+          const { data } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           updatePost(id: "${createPost.id}", data: { title: "Something else" }) {
@@ -206,7 +204,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(body).toHaveProperty('data.updatePost.postedAt', postedAt);
+          expect(data).toHaveProperty('updatePost.postedAt', postedAt);
         })
       );
     });
