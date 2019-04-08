@@ -1,7 +1,5 @@
-const pluralize = require('pluralize');
-
 const { MongoTextInterface, KnexTextInterface, Text } = require('../Text/Implementation');
-const { flatten } = require('@keystone-alpha/utils');
+const { flatMap } = require('@keystone-alpha/utils');
 
 const GQL_TYPE_PREFIX = '_ContentType';
 
@@ -19,54 +17,34 @@ class Content extends Text {
     // `ContentType`.
     // Including the list name + path to make sure these input types are unique
     // to this list+field and don't collide.
-    const inputType = `${GQL_TYPE_PREFIX}_${itemQueryName}_${this.path}`;
+    const type = `${GQL_TYPE_PREFIX}_${itemQueryName}_${this.path}`;
 
     this.gqlTypes = {
-      create: `${inputType}_CreateInput`,
-      update: `${inputType}_UpdateInput`,
+      create: `${type}_CreateInput`,
+      update: `${type}_UpdateInput`,
+      output: type,
     };
-
-    // Require here to avoid circular dependencies
-    const Relationship = require('../Relationship').implementation;
 
     this.complexBlocks = this.config.blocks
       .map(blockConfig => {
         let Impl = blockConfig;
-        let config = {};
+        let fieldConfig = {};
 
         if (Array.isArray(blockConfig)) {
           Impl = blockConfig[0];
-          config = blockConfig[1];
+          fieldConfig = blockConfig[1];
         }
 
         if (!Impl.isComplexDataType) {
           return null;
         }
 
-        const block = new Impl(config, {
+        return new Impl(fieldConfig, {
           fromList: this.listKey,
           createAuxList: listConfig.createAuxList,
           getListByKey: listConfig.getListByKey,
+          listConfig: this.listConfig,
         });
-
-        let relationship;
-        if (block.auxList && block.auxList.key) {
-          // When content blocks are specified that have complex KS5 datatypes,
-          // the client needs to send them along as graphQL inputs separate to
-          // the `structure`. Those inputs are relationships to our join tables.
-          // Here we create a Relationship field to leverage existing
-          // functionality for generating the graphQL schema.
-          relationship = new Relationship(
-            pluralize.plural(Impl.type),
-            { ref: block.auxList.key, many: true },
-            this.listConfig
-          );
-        }
-
-        return {
-          block,
-          relationship,
-        };
       })
       .filter(block => block);
   }
@@ -120,26 +98,49 @@ class Content extends Text {
       `
       input ${this.gqlTypes.create} {
         ${inputFields}
-        ${flatten(
-          this.complexBlocks.map(({ relationship }) => relationship.gqlCreateInputFields)
+        ${flatMap(this.complexBlocks, block =>
+          flatMap(block.getGqlInputFields(), field => field.gqlCreateInputFields)
         ).join('\n')}
       }
       `,
       `
       input ${this.gqlTypes.update} {
         ${inputFields}
-        ${flatten(
-          this.complexBlocks.map(({ relationship }) => relationship.gqlUpdateInputFields)
+        ${flatMap(this.complexBlocks, block =>
+          flatMap(block.getGqlInputFields(), field => field.gqlUpdateInputFields)
         ).join('\n')}
       }
       `,
-      ...this.complexBlocks.map(({ relationship }) => relationship.getGqlAuxTypes()),
+      ...flatMap(this.complexBlocks, block =>
+        flatMap(block.getGqlInputFields(), field => field.getGqlAuxTypes())
+      ),
+      `
+      type ${this.gqlTypes.output} {
+        structure: String
+        ${flatMap(this.complexBlocks, block =>
+          flatMap(block.getGqlOutputFields(), field => field.gqlOutputFields)
+        ).join('\n')}
+      }
+      `,
     ];
   }
+
+  get gqlAuxFieldResolvers() {
+    return {
+      [this.gqlTypes.output]: item => item,
+    };
+  }
+
+  get gqlOutputFields() {
+    return [`${this.path}: ${this.gqlTypes.output}`];
+  }
+
   get gqlOutputFieldResolvers() {
     // TODO: serialize / etc
     return {
-      [`${this.path}`]: item => item[this.path],
+      [this.path]: item => ({
+        structure: item[this.path],
+      }),
     };
   }
 
