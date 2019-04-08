@@ -48,6 +48,7 @@ module.exports = function({ adminMeta, entry }) {
               '@babel/proposal-class-properties',
               '@babel/proposal-object-rest-spread',
               'emotion',
+              require('@keystone-alpha/build-field-types').devBabelPlugin,
             ],
           },
         },
@@ -114,6 +115,15 @@ module.exports = function({ adminMeta, entry }) {
             // see the comment in the babel-loader exclude option for why this is disabled on heroku
             if (isHerokuEnv) return;
             return require('preconstruct').aliases.webpack(path.join(__dirname, '..', '..', '..'));
+          } catch (e) {}
+        })(),
+        ...(() => {
+          try {
+            // see the comment in the babel-loader exclude option for why this is disabled on heroku
+            if (isHerokuEnv) return;
+            return require('@keystone-alpha/build-field-types').aliases.webpack(
+              path.join(__dirname, '..', '..', '..')
+            );
           } catch (e) {}
         })(),
       },
