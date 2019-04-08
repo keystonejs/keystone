@@ -35,9 +35,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('_FooMeta query for individual list meta data', () => {
       test(
         `'schema' field returns results`,
-        runner(setupKeystone, async ({ server: { server } }) => {
-          const query = await graphqlRequest({
-            server,
+        runner(setupKeystone, async ({ keystone }) => {
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
           query {
             _CompaniesMeta {
@@ -54,9 +54,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(query.body).not.toHaveProperty('errors');
-          expect(query.body).toHaveProperty('data._CompaniesMeta.schema');
-          expect(query.body.data._CompaniesMeta.schema).toMatchObject({
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('_CompaniesMeta.schema');
+          expect(data._CompaniesMeta.schema).toMatchObject({
             type: 'Company',
             queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
             relatedFields: [
@@ -71,9 +71,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         `'schema.relatedFields' returns empty array when none exist`,
-        runner(setupKeystone, async ({ server: { server } }) => {
-          const query = await graphqlRequest({
-            server,
+        runner(setupKeystone, async ({ keystone }) => {
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
           query {
             _PostsMeta {
@@ -90,9 +90,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(query.body).not.toHaveProperty('errors');
-          expect(query.body).toHaveProperty('data._PostsMeta.schema');
-          expect(query.body.data._PostsMeta.schema).toMatchObject({
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('_PostsMeta.schema');
+          expect(data._PostsMeta.schema).toMatchObject({
             type: 'Post',
             queries: ['Post', 'allPosts', '_allPostsMeta'],
             relatedFields: [],
@@ -104,9 +104,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('_ksListsMeta query for all lists meta data', () => {
       test(
         'returns results for all lists',
-        runner(setupKeystone, async ({ server: { server } }) => {
-          const query = await graphqlRequest({
-            server,
+        runner(setupKeystone, async ({ keystone }) => {
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
           query {
             _ksListsMeta {
@@ -124,9 +124,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(query.body).not.toHaveProperty('errors');
-          expect(query.body).toHaveProperty('data._ksListsMeta');
-          expect(query.body.data._ksListsMeta).toMatchObject([
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('_ksListsMeta');
+          expect(data._ksListsMeta).toMatchObject([
             {
               name: 'User',
               schema: {

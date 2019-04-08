@@ -60,15 +60,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('no access control', () => {
       test(
         'link nested from within create mutation',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
           // Create an item to link against
           const createGroup = await create('Group', { name: groupName });
 
           // Create an item that does the linking
-          const { body } = await graphqlRequest({
-            server,
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
           mutation {
             createEvent(data: {
@@ -81,16 +81,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(body.data).toMatchObject({
-            createEvent: { id: expect.any(String) },
-          });
-          expect(body).not.toHaveProperty('errors');
+          expect(data).toMatchObject({ createEvent: { id: expect.any(String) } });
+          expect(errors).toBe(undefined);
         })
       );
 
       test(
         'link nested from within update mutation',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
           // Create an item to link against
@@ -98,17 +96,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // Create an item to update
           const {
-            body: {
-              data: { createEvent },
-            },
+            data: { createEvent },
           } = await graphqlRequest({
-            server,
+            keystone,
             query: 'mutation { createEvent(data: { title: "A thing", }) { id } }',
           });
 
           // Update the item and link the relationship field
-          const { body } = await graphqlRequest({
-            server,
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           updateEvent(
@@ -128,7 +124,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(body.data).toMatchObject({
+          expect(data).toMatchObject({
             updateEvent: {
               id: expect.any(String),
               group: {
@@ -137,7 +133,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               },
             },
           });
-          expect(body).not.toHaveProperty('errors');
+          expect(errors).toBe(undefined);
         })
       );
     });
@@ -145,12 +141,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('non-matching filter', () => {
       test(
         'errors if connecting an item which cannot be found during creating',
-        runner(setupKeystone, async ({ server: { server } }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
 
           // Create an item that does the linking
-          const createEvent = await graphqlRequest({
-            server,
+          const { errors } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           createEvent(data: {
@@ -164,23 +160,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(createEvent.body).toHaveProperty('data.createEvent', null);
-          expect(createEvent.body.errors).toMatchObject([
+          expect(errors).toMatchObject([
             {
-              name: 'NestedError',
-              data: {
-                errors: [
-                  {
-                    message: 'Unable to connect a Event.group<Group>',
-                    path: ['createEvent', 'group'],
-                    name: 'Error',
-                  },
-                  {
-                    name: 'AccessDeniedError',
-                    path: ['createEvent', 'group', 'connect'],
-                  },
-                ],
-              },
+              message: 'Unable to connect a Event.group<Group>',
             },
           ]);
         })
@@ -188,15 +170,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'errors if connecting an item which cannot be found during update',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
 
           // Create an item to link against
           const createEvent = await create('Event', {});
 
           // Create an item that does the linking
-          const updateEvent = await graphqlRequest({
-            server,
+          const { errors } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           updateEvent(
@@ -213,23 +195,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(updateEvent.body).toHaveProperty('data.updateEvent', null);
-          expect(updateEvent.body.errors).toMatchObject([
+          expect(errors).toMatchObject([
             {
-              name: 'NestedError',
-              data: {
-                errors: [
-                  {
-                    message: 'Unable to connect a Event.group<Group>',
-                    path: ['updateEvent', 'group'],
-                    name: 'Error',
-                  },
-                  {
-                    name: 'AccessDeniedError',
-                    path: ['updateEvent', 'group', 'connect'],
-                  },
-                ],
-              },
+              message: 'Unable to connect a Event.group<Group>',
             },
           ]);
         })
@@ -240,7 +208,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'throws error when linking nested within create mutation',
-          runner(setupKeystone, async ({ server: { server }, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
             // Create an item to link against
@@ -249,8 +217,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Create an item that does the linking
-            const { body } = await graphqlRequest({
-              server,
+            const { errors } = await graphqlRequest({
+              keystone,
               query: `
           mutation {
             createEventToGroupNoRead(data: {
@@ -263,23 +231,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(body).toHaveProperty('data.createEventToGroupNoRead', null);
-            expect(body.errors).toMatchObject([
+            expect(errors).toMatchObject([
               {
-                name: 'NestedError',
-                data: {
-                  errors: [
-                    {
-                      message: 'Unable to connect a EventToGroupNoRead.group<GroupNoRead>',
-                      path: ['createEventToGroupNoRead', 'group'],
-                      name: 'Error',
-                    },
-                    {
-                      name: 'AccessDeniedError',
-                      path: ['createEventToGroupNoRead', 'group', 'connect'],
-                    },
-                  ],
-                },
+                message: 'Unable to connect a EventToGroupNoRead.group<GroupNoRead>',
               },
             ]);
           })
@@ -287,7 +241,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'does not throw error when linking nested within update mutation',
-          runner(setupKeystone, async ({ server: { server }, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
             // Create an item to link against
@@ -299,19 +253,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             // Create an item to update
             const {
-              body: {
-                data: { createEventToGroupNoRead },
-              },
+              data: { createEventToGroupNoRead },
             } = await graphqlRequest({
-              server,
+              keystone,
               query: 'mutation { createEventToGroupNoRead(data: { title: "A thing", }) { id } }',
             });
 
             expect(createEventToGroupNoRead.id).toBeTruthy();
 
             // Update the item and link the relationship field
-            const { body } = await graphqlRequest({
-              server,
+            const { errors } = await graphqlRequest({
+              keystone,
               query: `
           mutation {
             updateEventToGroupNoRead(
@@ -327,23 +279,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(body).toHaveProperty('data.updateEventToGroupNoRead', null);
-            expect(body.errors).toMatchObject([
+            expect(errors).toMatchObject([
               {
-                name: 'NestedError',
-                data: {
-                  errors: [
-                    {
-                      message: 'Unable to connect a EventToGroupNoRead.group<GroupNoRead>',
-                      path: ['updateEventToGroupNoRead', 'group'],
-                      name: 'Error',
-                    },
-                    {
-                      name: 'AccessDeniedError',
-                      path: ['updateEventToGroupNoRead', 'group', 'connect'],
-                    },
-                  ],
-                },
+                message: 'Unable to connect a EventToGroupNoRead.group<GroupNoRead>',
               },
             ]);
           })
@@ -353,7 +291,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('create: false on related list', () => {
         test(
           'does not throw error when linking nested within create mutation',
-          runner(setupKeystone, async ({ server: { server }, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
             // Create an item to link against
@@ -361,8 +299,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { id } = await create('GroupNoCreate', { name: groupName });
 
             // Create an item that does the linking
-            const { body } = await graphqlRequest({
-              server,
+            const { data, errors } = await graphqlRequest({
+              keystone,
               query: `
           mutation {
             createEventToGroupNoCreate(data: {
@@ -378,16 +316,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(body.data).toMatchObject({
+            expect(data).toMatchObject({
               createEventToGroupNoCreate: { id: expect.any(String), group: { id } },
             });
-            expect(body).not.toHaveProperty('errors');
+            expect(errors).toBe(undefined);
           })
         );
 
         test(
           'does not throw error when linking nested within update mutation',
-          runner(setupKeystone, async ({ server: { server }, create, findOne, findById }) => {
+          runner(setupKeystone, async ({ keystone, create, findOne, findById }) => {
             const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
             // Create an item to link against
@@ -402,8 +340,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            const { body } = await graphqlRequest({
-              server,
+            const { data, errors } = await graphqlRequest({
+              keystone,
               query: `
           mutation {
             updateEventToGroupNoCreate(
@@ -423,7 +361,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(body.data).toMatchObject({
+            expect(data).toMatchObject({
               updateEventToGroupNoCreate: {
                 id: expect.any(String),
                 group: {
@@ -432,7 +370,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 },
               },
             });
-            expect(body).not.toHaveProperty('errors');
+            expect(errors).toBe(undefined);
 
             // See that it actually stored the group ID on the Event record
             const event = await findOne('EventToGroupNoCreate', { title: 'A thing' });

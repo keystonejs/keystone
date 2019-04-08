@@ -33,10 +33,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('update one to one relationship back reference', () => {
       test(
         'nested create',
-        runner(setupKeystone, async ({ server: { server }, findById }) => {
+        runner(setupKeystone, async ({ keystone, findById }) => {
           const locationName = sampleOne(alphanumGenerator);
-          const queryResult = await graphqlRequest({
-            server,
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           createCompany(data: {
@@ -51,10 +51,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(queryResult.body).not.toHaveProperty('errors');
+          expect(errors).toBe(undefined);
 
-          const companyId = queryResult.body.data.createCompany.id;
-          const locationId = queryResult.body.data.createCompany.location.id;
+          const companyId = data.createCompany.id;
+          const locationId = data.createCompany.location.id;
 
           const location = await findById('Location', locationId);
           const company = await findById('Company', companyId);

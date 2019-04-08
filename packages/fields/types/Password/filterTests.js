@@ -20,9 +20,9 @@ export const initItems = () => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (server, filter, targets) =>
+  const match = (keystone, filter, targets) =>
     matchFilter(
-      server,
+      keystone,
       filter,
       '{ name password_is_set }',
       targets,
@@ -31,8 +31,8 @@ export const filterTests = withKeystone => {
 
   test(
     'No filter',
-    withKeystone(({ server: { server } }) =>
-      match(server, undefined, [
+    withKeystone(({ keystone }) =>
+      match(keystone, undefined, [
         { name: 'person1', password_is_set: true },
         { name: 'person2', password_is_set: false },
         { name: 'person3', password_is_set: true },
@@ -42,8 +42,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Empty filter',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { }', [
         { name: 'person1', password_is_set: true },
         { name: 'person2', password_is_set: false },
         { name: 'person3', password_is_set: true },
@@ -53,8 +53,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: is_set - true',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { password_is_set: true }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { password_is_set: true }', [
         { name: 'person1', password_is_set: true },
         { name: 'person3', password_is_set: true },
       ])
@@ -63,8 +63,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: is_set - false',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { password_is_set: false }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { password_is_set: false }', [
         { name: 'person2', password_is_set: false },
       ])
     )

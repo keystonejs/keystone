@@ -104,9 +104,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('Auth testing', () => {
       test(
         'Gives access denied when not logged in',
-        runner(setupKeystone, async ({ server: { server } }) => {
+        runner(setupKeystone, async ({ keystone, server }) => {
           // seed the db
-          await server.keystone.createItems(initialData);
+          await keystone.createItems(initialData);
           return supertest(server.app)
             .set('Accept', 'application/json')
             .post('/admin/api', { query: '{ allUsers { id } }' })
@@ -122,8 +122,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('logged in', () => {
         test(
           'Allows access with bearer token',
-          runner(setupKeystone, async ({ server: { server } }) => {
-            await server.keystone.createItems(initialData);
+          runner(setupKeystone, async ({ keystone, server }) => {
+            await keystone.createItems(initialData);
             const { success, token } = await login(
               server,
               initialData.User[0].email,
@@ -149,8 +149,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'Allows access with cookie',
-          runner(setupKeystone, async ({ server: { server } }) => {
-            await server.keystone.createItems(initialData);
+          runner(setupKeystone, async ({ keystone, server }) => {
+            await keystone.createItems(initialData);
             const { success, token } = await login(
               server,
               initialData.User[0].email,

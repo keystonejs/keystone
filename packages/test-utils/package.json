@@ -12,9 +12,7 @@
     "@keystone-alpha/adapter-mongoose": "^1.0.4",
     "@keystone-alpha/keystone": "^2.0.0",
     "@keystone-alpha/server": "^3.0.0",
-    "extract-stack": "^1.0.0",
     "mongodb-memory-server": "^3.1.2",
-    "p-finally": "^1.0.0",
-    "supertest-light": "^1.0.2"
+    "p-finally": "^1.0.0"
   }
 }
