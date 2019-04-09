@@ -25,7 +25,7 @@ class Content extends Text {
       output: type,
     };
 
-    this.blocks = Array.isArray(this.blocks) || [];
+    this.blocks = Array.isArray(this.config.blocks) ? this.config.blocks : [];
 
     this.complexBlocks = this.blocks
       .map(blockConfig => {
