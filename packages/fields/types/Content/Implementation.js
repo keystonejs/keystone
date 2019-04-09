@@ -85,7 +85,7 @@ class Content extends Text {
   }
   getGqlAuxTypes() {
     const inputFields = `
-      structure: String
+      document: String
     `;
 
     return [
@@ -93,7 +93,7 @@ class Content extends Text {
       /*
        * For example:
        *
-         structure: String
+         document: String
          cloudinaryImages: _ContentType_cloudinaryImageRelateToManyInput
          relationships_User: _ContentType_relationship_UserRelateToManyInput
        */
@@ -118,7 +118,7 @@ class Content extends Text {
       ),
       `
       type ${this.gqlTypes.output} {
-        structure: String
+        document: String
         ${flatMap(this.complexBlocks, block =>
           flatMap(block.getGqlOutputFields(), field => field.gqlOutputFields)
         ).join('\n')}
@@ -141,13 +141,13 @@ class Content extends Text {
     // TODO: serialize / etc
     return {
       [this.path]: item => ({
-        structure: item[this.path],
+        document: item[this.path],
       }),
     };
   }
 
   async resolveInput({ resolvedData }) {
-    return resolvedData[this.path].structure;
+    return resolvedData[this.path].document;
   }
 }
 

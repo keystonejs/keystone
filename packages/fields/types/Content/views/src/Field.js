@@ -53,11 +53,11 @@ let ContentField = ({ field, value: serverValue, onChange, autoFocus }) => {
   }, [blocksModules]);
 
   let parsedValue;
-  if (serverValue && serverValue.structure) {
+  if (serverValue && serverValue.document) {
     try {
-      parsedValue = JSON.parse(serverValue.structure);
+      parsedValue = JSON.parse(serverValue.document);
     } catch (error) {
-      console.error('Unable to parse Content field structure: ', error);
+      console.error('Unable to parse Content field document: ', error);
       console.error('Received: ' + serverValue.toString().slice(0, 100));
       parsedValue = initialValue;
     }
@@ -73,8 +73,8 @@ let ContentField = ({ field, value: serverValue, onChange, autoFocus }) => {
     <FieldContainer
       onBlur={() => {
         let stringified = JSON.stringify(value.toJS());
-        if (stringified !== serverValue.structure) {
-          onChange({ structure: stringified });
+        if (stringified !== serverValue.document) {
+          onChange({ document: stringified });
         }
       }}
     >
