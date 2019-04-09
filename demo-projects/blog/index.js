@@ -37,6 +37,11 @@ const admin = new AdminUI(keystone, {
       label: 'People',
       children: ['User'],
     },
+    {
+      label: 'About this project',
+      path: 'hello',
+      component: require.resolve('./admin/pages/hello'),
+    },
   ],
 });
 

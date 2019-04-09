@@ -5,6 +5,8 @@ import React from 'react';
 import List from '../classes/List';
 import { views, readViews, preloadViews } from '../FIELD_TYPES';
 
+const { __pages__: pageViews, ...listViews } = views;
+
 // TODO: Pull this off `window.X` to support server side permission queries
 const { lists, ...srcMeta } = KEYSTONE_ADMIN_META;
 
@@ -14,7 +16,7 @@ const listsByPath = {};
 
 let hasInitialisedLists = false;
 
-const _adminMeta = {
+const adminMeta = {
   ...srcMeta,
   listKeys,
   getListByKey(key) {
@@ -23,6 +25,7 @@ const _adminMeta = {
   getListByPath(path) {
     return listsByPath[path];
   },
+  pageViews,
   readViews,
   preloadViews,
 };
@@ -36,7 +39,7 @@ function readAdminMeta() {
   if (!hasInitialisedLists) {
     let allControllers = new Set();
 
-    Object.values(views).forEach(list => {
+    Object.values(listViews).forEach(list => {
       Object.values(list).forEach(({ Controller }) => {
         allControllers.add(Controller);
       });
@@ -45,13 +48,13 @@ function readAdminMeta() {
     // we want to load all of the field controllers upfront so we don't have a waterfall of requests
     readViews([...allControllers]);
     listKeys.forEach(key => {
-      const list = new List(lists[key], _adminMeta, views[key]);
+      const list = new List(lists[key], adminMeta, views[key]);
       listsByKey[key] = list;
       listsByPath[list.path] = list;
     });
     hasInitialisedLists = true;
   }
-  return _adminMeta;
+  return adminMeta;
 }
 
 // Provider
