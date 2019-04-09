@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/cypress-project-twitter-login",
   "description": "A KeystoneJS demo project for integration testing. See @keystone-alpha/keystone for more.",
   "private": true,
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -16,14 +16,14 @@
   "dependencies": {
     "@arch-ui/fields": "^0.0.3",
     "@arch-ui/input": "^0.0.3",
-    "@keystone-alpha/adapter-mongoose": "^1.0.4",
-    "@keystone-alpha/admin-ui": "^3.0.4",
-    "@keystone-alpha/core": "^2.0.2",
-    "@keystone-alpha/fields": "^3.0.2",
-    "@keystone-alpha/file-adapters": "^1.0.1",
-    "@keystone-alpha/keystone": "^2.0.0",
-    "@keystone-alpha/server": "^3.0.0",
-    "@keystone-alpha/session": "^1.0.0",
+    "@keystone-alpha/adapter-mongoose": "^1.0.5",
+    "@keystone-alpha/admin-ui": "^3.0.6",
+    "@keystone-alpha/core": "^2.0.3",
+    "@keystone-alpha/fields": "^4.0.0",
+    "@keystone-alpha/file-adapters": "^1.0.2",
+    "@keystone-alpha/keystone": "^3.0.0",
+    "@keystone-alpha/server": "^4.0.0",
+    "@keystone-alpha/session": "^1.0.2",
     "react": "^16.8.4"
   },
   "devDependencies": {

@@ -1,5 +1,30 @@
 # @keystone-alpha/server
 
+## 4.0.0
+
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+
+  - Update dev devependencies
+
+- [patch][baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
+
+  - Use the updated logger API
+
+- [patch][78266983](https://github.com/keystonejs/keystone-5/commit/78266983):
+
+  - Restructure internal code
+
+- [major][656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+
+  - `WebServer.start()` no longer takes any arguments. Developer must now explicitly call `keystone.connect()` before calling `WebServer.start()`.
+
+- [minor][21be780b](https://github.com/keystonejs/keystone-5/commit/21be780b):
+
+  - Expose `createApolloServer` in the public API
+
+- Updated dependencies [baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
+  - @keystone-alpha/logger@2.0.0
+
 ## 3.0.0
 
 - [patch][022724ab](https://github.com/keystonejs/keystone-5/commit/022724ab):

@@ -1,1 +1,0 @@
-- Explicitly call keystone.connect() before starting the web server.

@@ -1,5 +1,29 @@
 # @keystone-alpha/api-tests
 
+## 1.0.4
+
+- [patch][b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
+
+  - Use named exports from @keystone-alpha/keystone package.
+
+- [patch][302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+
+  - Minor internal code cleanups
+
+- [patch][21be780b](https://github.com/keystonejs/keystone-5/commit/21be780b):
+
+  - Use updated test-utils APIs
+
+- Updated dependencies [37dcee37](https://github.com/keystonejs/keystone-5/commit/37dcee37):
+- Updated dependencies [656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+- Updated dependencies [b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
+- Updated dependencies [21be780b](https://github.com/keystonejs/keystone-5/commit/21be780b):
+  - @keystone-alpha/keystone@3.0.0
+  - @keystone-alpha/fields@4.0.0
+  - @keystone-alpha/adapter-mongoose@1.0.5
+  - @keystone-alpha/test-utils@2.0.0
+  - @keystone-alpha/server@4.0.0
+
 ## 1.0.3
 
 - [patch][5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):

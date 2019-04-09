@@ -1,5 +1,11 @@
 # @keystone-alpha/website
 
+## 1.0.5
+
+- [patch][a76721db](https://github.com/keystonejs/keystone-5/commit/a76721db):
+
+  - Update gatsby dependencies
+
 ## 1.0.4
 
 - [patch][2d704f98](https://github.com/keystonejs/keystone-5/commit/2d704f98):

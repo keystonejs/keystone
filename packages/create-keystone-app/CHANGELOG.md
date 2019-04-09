@@ -1,5 +1,23 @@
 # create-keystone-app
 
+## 0.4.2
+
+- [patch][e3337a7d](https://github.com/keystonejs/keystone-5/commit/e3337a7d):
+
+  - Refactor internal code for future testability
+
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+
+  - Update dev devependencies
+
+- [patch][656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+
+  - Explicitly call keystone.connect() before starting the web server.
+
+- [patch][302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+
+  - Minor internal code cleanups
+
 ## 0.4.1
 
 - [patch][05ee3533](https://github.com/keystonejs/keystone-5/commit/05ee3533):
