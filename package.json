@@ -225,6 +225,7 @@
     "slate-drop-or-paste-images": "^0.9.1",
     "slate-html-serializer": "^0.7.36",
     "slate-react": "^0.21.18",
+    "source-map-support": "^0.5.12",
     "spawndamnit": "^2.0.0",
     "split": "^1.0.1",
     "stack-utils": "^1.0.2",

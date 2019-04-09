@@ -49,6 +49,7 @@
     "rollup-plugin-replace": "^2.0.0",
     "rollup-pluginutils": "^2.6.0",
     "sarcastic": "^1.5.0",
+    "source-map-support": "^0.5.12",
     "terser": "^3.14.1"
   },
   "devDependencies": {
