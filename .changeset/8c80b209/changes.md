@@ -1,0 +1,1 @@
+- Remove erroneous addition of CRUD operations for Auxiliary Lists from GraphQL API
