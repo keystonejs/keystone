@@ -178,7 +178,7 @@
     "react-prop-toggle": "^1.0.2",
     "react-pseudo-state": "^2.2.2",
     "react-radios": "^1.1.0",
-    "react-router-dom": "4.4.0-beta.6",
+    "react-router-dom": "5.0.0",
     "react-scrolllock": "^4.0.1",
     "react-select": "2.3.0",
     "react-toast-notifications": "^1.2.0",
