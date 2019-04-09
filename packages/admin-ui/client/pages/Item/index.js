@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { withToastManager } from 'react-toast-notifications';
+import memoizeOne from 'memoize-one';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
@@ -21,7 +22,7 @@ import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../.
 import { IdCopy } from './IdCopy';
 import { ItemTitle } from './ItemTitle';
 
-import { resolveAllKeys, arrayToObject } from '@keystone-alpha/utils';
+import { resolveAllKeys, arrayToObject, omitBy } from '@keystone-alpha/utils';
 import isEqual from 'lodash.isequal';
 
 let Render = ({ children }) => children();
@@ -32,6 +33,14 @@ const Form = styled.form({
 
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
+const getValues = (fields, item) =>
+  resolveAllKeys(arrayToObject(fields, 'path', field => field.getValue(item)));
+
+// Memoizing allows us to reduce the calls to `.getValue` when data hasn't
+// changed.
+const getInitialValues = memoizeOne(getValues);
+const getCurrentValues = memoizeOne(getValues);
+
 const ItemDetails = withRouter(
   class ItemDetails extends Component {
     state = {
@@ -40,6 +49,7 @@ const ItemDetails = withRouter(
       showCreateModal: false,
       showDeleteModal: false,
     };
+
     componentDidMount() {
       this.mounted = true;
       document.addEventListener('keydown', this.onKeyDown, false);
@@ -102,6 +112,7 @@ const ItemDetails = withRouter(
         />
       );
     }
+
     onSave = () => {
       const { item } = this.state;
       const {
@@ -112,18 +123,15 @@ const ItemDetails = withRouter(
         item: initialData,
       } = this.props;
 
-      resolveAllKeys(
-        // Don't try to update anything that hasn't changed.
-        // This is particularly important for access control where a field
-        // may be `read: true, update: false`, so will appear in the item
-        // details, but is not editable, and would cause an error if a value
-        // was sent as part of the update query.
-        arrayToObject(
-          fields.filter(field => !isEqual(field.getValue(initialData), field.getValue(item))),
-          'path',
-          field => field.getValue(item)
+      Promise.all([getInitialValues(fields, initialData), getCurrentValues(fields, item)])
+        .then(([initialValues, currentValues]) =>
+          // Don't try to update anything that hasn't changed.
+          // This is particularly important for access control where a field
+          // may be `read: true, update: false`, so will appear in the item
+          // details, but is not editable, and would cause an error if a value
+          // was sent as part of the update query.
+          omitBy(currentValues, path => isEqual(initialValues[path], currentValues[path]))
         )
-      )
         .then(data => updateItem({ variables: { id: item.id, data } }))
         .then(() => {
           const toastContent = (
