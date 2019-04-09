@@ -1,5 +1,10 @@
 # @arch-ui/confirm
 
+## 0.0.4
+
+- Updated dependencies [302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+  - @arch-ui/modal-utils@0.0.4
+
 ## 0.0.3
 
 - [patch][d9a1be91](https://github.com/keystonejs/keystone-5/commit/d9a1be91):

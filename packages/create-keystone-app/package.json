@@ -1,7 +1,7 @@
 {
   "name": "create-keystone-app",
   "description": "Create minimal Keystone 5 app",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "bin": {
     "create-keystone-app": "bin/cli.js"
   },

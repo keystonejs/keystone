@@ -1,5 +1,11 @@
 # @arch-ui/modal-utils
 
+## 0.0.4
+
+- [patch][302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+
+  - Minor internal code cleanups
+
 ## 0.0.3
 
 - [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):

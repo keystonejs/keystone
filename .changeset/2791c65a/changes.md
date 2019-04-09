@@ -1,1 +1,0 @@
-- Export { emailSender } as the API, rather than a default export

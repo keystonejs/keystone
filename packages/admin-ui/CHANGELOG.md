@@ -1,5 +1,34 @@
 # @keystone-alpha/admin-ui
 
+## 3.0.6
+
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+
+  - Update dev devependencies
+
+- [patch][7b8d254d](https://github.com/keystonejs/keystone-5/commit/7b8d254d):
+
+  - Update external dependencies
+
+- [patch][24bed583](https://github.com/keystonejs/keystone-5/commit/24bed583):
+
+  - Update react-router-dom dependency to 5.0.0
+
+- [patch][545c9464](https://github.com/keystonejs/keystone-5/commit/545c9464):
+
+  - Add support for mass update
+
+- Updated dependencies [545c9464](https://github.com/keystonejs/keystone-5/commit/545c9464):
+- Updated dependencies [37dcee37](https://github.com/keystonejs/keystone-5/commit/37dcee37):
+- Updated dependencies [302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+  - @keystone-alpha/fields@4.0.0
+  - @arch-ui/drawer@0.0.4
+  - @arch-ui/confirm@0.0.4
+  - @arch-ui/dialog@0.0.4
+  - @arch-ui/dropdown@0.0.4
+  - @arch-ui/popout@0.0.4
+  - @arch-ui/tooltip@0.0.4
+
 ## 3.0.5
 
 - Updated dependencies [4131e232](https://github.com/keystonejs/keystone-5/commit/4131e232):

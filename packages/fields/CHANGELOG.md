@@ -1,5 +1,30 @@
 # @keystone-alpha/fields
 
+## 4.0.0
+
+- [patch][7b8d254d](https://github.com/keystonejs/keystone-5/commit/7b8d254d):
+
+  - Update external dependencies
+
+- [major][37dcee37](https://github.com/keystonejs/keystone-5/commit/37dcee37):
+
+  - Generate cjs and esm bundlers for Controller file
+
+- [patch][302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+
+  - Minor internal code cleanups
+
+- [patch][21be780b](https://github.com/keystonejs/keystone-5/commit/21be780b):
+
+  - Use updated test-utils APIs
+
+- Updated dependencies [545c9464](https://github.com/keystonejs/keystone-5/commit/545c9464):
+- Updated dependencies [24bed583](https://github.com/keystonejs/keystone-5/commit/24bed583):
+- Updated dependencies [21be780b](https://github.com/keystonejs/keystone-5/commit/21be780b):
+  - @arch-ui/drawer@0.0.4
+  - @arch-ui/button@0.0.4
+  - @keystone-alpha/test-utils@2.0.0
+
 ## 3.0.2
 
 - [patch][03ea2b1d](https://github.com/keystonejs/keystone-5/commit/03ea2b1d):
