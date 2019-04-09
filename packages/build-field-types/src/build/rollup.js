@@ -1,6 +1,5 @@
 // @flow
 const resolve = require('rollup-plugin-node-resolve');
-const cjs = require('rollup-plugin-commonjs');
 const resolveFrom = require('resolve-from');
 const chalk = require('chalk');
 import path from 'path';
@@ -177,7 +176,6 @@ export let getRollupConfig = (
         ],
         extensions: EXTENSIONS,
       }),
-      cjs(),
       resolve({
         extensions: EXTENSIONS,
         customResolveOptions: {
