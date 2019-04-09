@@ -54,7 +54,13 @@ let ContentField = ({ field, value: serverValue, onChange, autoFocus }) => {
 
   let parsedValue;
   if (serverValue && serverValue.structure) {
-    parsedValue = JSON.parse(serverValue.structure);
+    try {
+      parsedValue = JSON.parse(serverValue.structure);
+    } catch (error) {
+      console.error('Unable to parse Content field structure: ', error);
+      console.error('Received: ' + serverValue.toString().slice(0, 100));
+      parsedValue = initialValue;
+    }
   } else {
     parsedValue = initialValue;
   }
