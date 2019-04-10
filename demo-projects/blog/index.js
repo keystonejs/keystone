@@ -26,6 +26,11 @@ const admin = new AdminUI(keystone, {
   authStrategy,
   pages: [
     {
+      label: 'About this project',
+      path: 'about',
+      component: require.resolve('./admin/pages/about'),
+    },
+    {
       label: 'Blog',
       children: [
         { listKey: 'Post' },
@@ -36,11 +41,6 @@ const admin = new AdminUI(keystone, {
     {
       label: 'People',
       children: ['User'],
-    },
-    {
-      label: 'About this project',
-      path: 'hello',
-      component: require.resolve('./admin/pages/hello'),
     },
   ],
 });
