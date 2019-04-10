@@ -117,15 +117,6 @@ module.exports = function({ adminMeta, entry }) {
             return require('preconstruct').aliases.webpack(path.join(__dirname, '..', '..', '..'));
           } catch (e) {}
         })(),
-        ...(() => {
-          try {
-            // see the comment in the babel-loader exclude option for why this is disabled on heroku
-            if (isHerokuEnv) return;
-            return require('@keystone-alpha/build-field-types').aliases.webpack(
-              path.join(__dirname, '..', '..', '..')
-            );
-          } catch (e) {}
-        })(),
       },
     },
   };

@@ -11,8 +11,9 @@ import sourceMapSupport from 'source-map-support';
 // how it works is, first we customise the way filenames are resolved
 
 let babelPlugins = [
-  require.resolve('../babel-plugins/ks-field-types-dev'),
+  require.resolve('./babel-plugins/ks-field-types-dev'),
   require.resolve('@babel/plugin-transform-runtime'),
+  require.resolve('@babel/plugin-transform-modules-commonjs'),
 ];
 
 export let hook = (projectDir: string) => {
@@ -57,8 +58,7 @@ export let hook = (projectDir: string) => {
                       'unregisterBuildFieldTypesRequireHook'
                     );
                     path.node.body.unshift(
-                      t.variableDeclaration(
-                        'var',
+                      t.variableDeclaration('var', [
                         t.variableDeclarator(
                           unregisterIdentifier,
                           t.callExpression(
@@ -66,12 +66,12 @@ export let hook = (projectDir: string) => {
                               t.callExpression(t.identifier('require'), [
                                 t.stringLiteral(__filename),
                               ]),
-                              '___internalHook'
+                              t.identifier('___internalHook')
                             ),
                             []
                           )
-                        )
-                      )
+                        ),
+                      ])
                     );
                     path.node.body.push(t.callExpression(t.cloneNode(unregisterIdentifier), []));
                   },
@@ -80,7 +80,7 @@ export let hook = (projectDir: string) => {
             };
           },
         ],
-      });
+      }).code;
     },
     { matcher, exts: EXTENSIONS }
   );
@@ -100,7 +100,7 @@ export let ___internalHook = () => {
         plugins: babelPlugins,
         filename,
         sourceMaps: 'inline',
-      });
+      }).code;
     } finally {
       compiling = false;
     }

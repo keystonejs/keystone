@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@keystone-alpha/access-control": "^1.0.2",
+    "@keystone-alpha/build-field-types": "^0.0.53",
     "@keystone-alpha/core": "^2.0.2",
     "@keystone-alpha/fields": "^3.0.2",
     "@keystone-alpha/logger": "^1.0.2",
