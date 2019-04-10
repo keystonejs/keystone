@@ -1,5 +1,13 @@
-const { Content, MongoContentInterface, KnexContentInterface } = require('./Implementation');
 const path = require('path');
+
+const { Content, MongoContentInterface, KnexContentInterface } = require('./Implementation');
+const blockquote = require('./blocks/blockquote');
+const embed = require('./blocks/embed');
+const heading = require('./blocks/heading');
+const image = require('./blocks/image-container');
+const link = require('./blocks/link');
+const orderedList = require('./blocks/ordered-list');
+const unorderedList = require('./blocks/unordered-list');
 
 module.exports = {
   type: 'Content',
@@ -14,13 +22,13 @@ module.exports = {
     knex: KnexContentInterface,
   },
   blocks: {
-    blockquote: { viewPath: path.join(__dirname, './views/blocks/blockquote') },
-    embed: { viewPath: path.join(__dirname, './views/blocks/embed') },
-    heading: { viewPath: path.join(__dirname, './views/blocks/heading') },
-    image: { viewPath: path.join(__dirname, './views/blocks/image-container') },
-    link: { viewPath: path.join(__dirname, './views/blocks/link') },
-    orderedList: { viewPath: path.join(__dirname, './views/blocks/ordered-list') },
-    unorderedList: { viewPath: path.join(__dirname, './views/blocks/unordered-list') },
+    blockquote,
+    embed,
+    heading,
+    image,
+    link,
+    orderedList,
+    unorderedList,
     // not exposing list-item since it's only used internally by the other blocks
     // not exposing paragraph since it's included by default
   },

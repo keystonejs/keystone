@@ -4,38 +4,27 @@
 // should import from '@keystone-alpha/fields/types/Text/views/Controller'
 import memoizeOne from 'memoize-one';
 import TextController from '../../../Text/views/Controller/Controller';
-import * as paragraph from './editor/blocks/paragraph';
 
-const DEFAULT_BLOCKS = [paragraph];
-
-const flattenBlocks = (inputBlocks, outputObj = {}) =>
+const flattenBlocks = inputBlocks =>
   inputBlocks.reduce((outputBlocks, block) => {
+    // NOTE: It's enough to check just the type here as we've already flattened
+    // and deduped dependencies during build.
     if (outputBlocks[block.type]) {
-      // check the referential equality of a blocks Node since it has to be
-      // defined and if they're equal we know it's the same block
-      if (outputBlocks[block.type].Node !== block.Node) {
-        throw new Error(`There are two different Content blocks with the type '${block.type}'`);
-      } else {
-        // This block (and its dependencies) have already been added
-        return outputBlocks;
-      }
+      throw new Error(
+        `Encountered more than one Content block with type of '${
+          block.type
+        }'. Content blocks must have globally unique types.`
+      );
     }
 
     if (block.Node === undefined) {
-      throw new Error(`Unable to load Content block '${block.type}' - no Node component defined`);
+      throw new Error(`Unable to load Content block '${block.type}': no 'Node' export found.`);
     }
 
-    const { dependencies, ...blockToInsert } = block;
-
-    outputBlocks[block.type] = blockToInsert;
-
-    if (dependencies !== undefined) {
-      // Recurse on the dependencies
-      flattenBlocks(dependencies, outputBlocks);
-    }
+    outputBlocks[block.type] = block;
 
     return outputBlocks;
-  }, outputObj);
+  }, {});
 
 export default class ContentController extends TextController {
   constructor(...args) {
@@ -48,14 +37,20 @@ export default class ContentController extends TextController {
     //    Instead, when requested multiple times, use the previously cached
     //    results.
     this.getBlocks = memoizeOne(() => {
+      // Loads all configured blocks and their dependencies
       const blocksModules = this.adminMeta.readViews(this.views.blocks);
 
-      let customBlocks = blocksModules.map((block, i) => ({
+      const customBlocks = blocksModules.map(block => ({
         ...block,
-        options: this.config.blockOptions[i],
+        options: this.config.blockOptions[block.type],
+        // This block exists because it was passed into the Content field
+        // directly.
+        // Depdencies are not allowed to show UI chrome (toolbar/sidebar) unless
+        // they're also directly passed to the Content Field.
+        withChrome: this.config.blockTypes.includes(block.type),
       }));
 
-      return flattenBlocks([...DEFAULT_BLOCKS, ...customBlocks]);
+      return flattenBlocks(customBlocks);
     });
   }
 

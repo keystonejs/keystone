@@ -1,7 +1,17 @@
 const { MongoTextInterface, KnexTextInterface, Text } = require('../Text/Implementation');
-const { flatMap } = require('@keystone-alpha/utils');
+const { flatMap, unique } = require('@keystone-alpha/utils');
+const paragraph = require('./blocks/paragraph');
 
 const GQL_TYPE_PREFIX = '_ContentType';
+
+const DEFAULT_BLOCKS = [paragraph];
+
+function flattenBlockViews(block) {
+  return [
+    block.viewPath,
+    ...(block.dependencies ? flatMap(block.dependencies, flattenBlockViews) : []),
+  ];
+}
 
 class Content extends Text {
   constructor(path, config, listConfig) {
@@ -27,6 +37,28 @@ class Content extends Text {
 
     this.blocks = Array.isArray(this.config.blocks) ? this.config.blocks : [];
 
+    this.blocks.push(
+      ...DEFAULT_BLOCKS.filter(
+        defaultBlock =>
+          !this.blocks.find(
+            block => (Array.isArray(block) ? block[0] : block).type === defaultBlock.type
+          )
+      )
+    );
+
+    // Checking for duplicate block types
+    for (let currentIndex = 0; currentIndex < this.blocks.length; currentIndex++) {
+      const currentBlock = this.blocks[currentIndex];
+      const currentType = (Array.isArray(currentBlock) ? currentBlock[0] : currentBlock).type;
+      for (let checkIndex = currentIndex + 1; checkIndex < this.blocks.length; checkIndex++) {
+        const checkBlock = this.blocks[checkIndex];
+        const checkType = (Array.isArray(checkBlock) ? checkBlock[0] : checkBlock).type;
+        if (currentType === checkType) {
+          throw new Error(`Encountered duplicate Content block type '${currentType}'.`);
+        }
+      }
+    }
+
     this.complexBlocks = this.blocks
       .map(blockConfig => {
         let Impl = blockConfig;
@@ -50,6 +82,7 @@ class Content extends Text {
       })
       .filter(block => block);
   }
+
   /*
    * Blocks come in 2 halves:
    * 1. The block implementation (eg; ./views/editor/blocks/embed.js)
@@ -65,18 +98,36 @@ class Content extends Text {
   extendAdminMeta(meta) {
     return {
       ...meta,
-      // NOTE: We rely on order, which is why we end up with a sparse array
-      blockOptions: this.blocks.map(block => (Array.isArray(block) ? block[1] : undefined)),
+
+      // These are the blocks which have been directly passed in to the Content
+      // field (ie; it doesn't include dependencies unless they too were passed
+      // in)
+      blockTypes: this.blocks.map(block => (Array.isArray(block) ? block[0] : block).type),
+
+      // Key the block options by type to be serialised and passed to the client
+      blockOptions: this.blocks
+        .filter(block => Array.isArray(block) && !!block[1])
+        .reduce(
+          (options, block) => ({
+            ...options,
+            [block[0].type]: block[1],
+          }),
+          {}
+        ),
     };
   }
+
   // Add the blocks config to the views object for usage in the admin UI
   // (ie; { Cell: , Field: , Filters: , blocks: ...})
   extendViews(views) {
     return {
       ...views,
-      blocks: this.blocks.map(block => (Array.isArray(block) ? block[0] : block).viewPath),
+      blocks: unique(
+        flatMap(this.blocks, block => flattenBlockViews(Array.isArray(block) ? block[0] : block))
+      ),
     };
   }
+
   get gqlUpdateInputFields() {
     return [`${this.path}: ${this.gqlTypes.update}`];
   }

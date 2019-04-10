@@ -19,7 +19,7 @@ function InnerToolbar({ blocks, editor, editorState }) {
   return (
     <div css={{ display: 'flex' }}>
       {Object.keys(blocks)
-        .map(x => blocks[x].Toolbar)
+        .map(x => blocks[x].withChrome && blocks[x].Toolbar)
         .filter(x => x)
         .reduce(
           (children, Toolbar) => {
@@ -58,7 +58,7 @@ function InnerToolbar({ blocks, editor, editorState }) {
 
             {Object.keys(blocks).map(type => {
               let ToolbarElement = blocks[type].ToolbarElement;
-              if (ToolbarElement === undefined) {
+              if (!blocks[type].withChrome || ToolbarElement === undefined) {
                 return null;
               }
               return <ToolbarElement key={type} editor={editor} editorState={editorState} />;
