@@ -24,19 +24,12 @@ import ItemPage from './pages/Item';
 import InvalidRoutePage from './pages/InvalidRoute';
 import StyleGuidePage from './pages/StyleGuide';
 
-let Render = ({ children }) => children();
-
 const findCustomPages = (pages, allPages = []) => {
   pages.forEach(page => {
     if (page.path) allPages.push(page);
     else if (page.children) findCustomPages(page.children, allPages);
   });
   return allPages;
-};
-
-const CustomPage = ({ pageViews, readViews, path }) => {
-  let [Page] = readViews([pageViews[path]]);
-  return <Page />;
 };
 
 const Keystone = () => {
