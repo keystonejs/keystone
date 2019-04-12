@@ -1,7 +1,6 @@
 const every = require('lodash.every');
 const last = require('lodash.last');
 
-
 async function asyncForEach(array, callback) {
   for (let index = 0; index < array.length; index++) {
     await callback(array[index], index, array);
@@ -9,12 +8,14 @@ async function asyncForEach(array, callback) {
 }
 
 async function asyncForEachParallel(array, callback) {
-    const queue = [];
-    for (let index = 0; index < array.length; index++) {
-      queue.push(callback(array[index], index, array));
-    }
-    await asyncForEach(queue, async i => { await i; });
+  const queue = [];
+  for (let index = 0; index < array.length; index++) {
+    queue.push(callback(array[index], index, array));
   }
+  await asyncForEach(queue, async i => {
+    await i;
+  });
+}
 
 /**
  * View Constructor
@@ -26,333 +27,321 @@ async function asyncForEachParallel(array, callback) {
  */
 
 module.exports = class View {
-    // req: Request;
-    // res: Response;
-    // queryQueue: any[];
-    // initQueue: any[];
-    // renderQueue: any[];
-    // actionQueue: any[];
+  // req: Request;
+  // res: Response;
+  // queryQueue: any[];
+  // initQueue: any[];
+  // renderQueue: any[];
+  // actionQueue: any[];
 
-    constructor(keystone, req, res) {
-        if (!req || req.constructor.name !== 'IncomingMessage') {
-            throw new Error('Keystone.View Error: Express request object is required.');
-        }
-        if (!res || res.constructor.name !== 'ServerResponse') {
-            throw new Error('Keystone.View Error: Express response object is required.');
-        }
-
-        this.keystone = keystone;
-        this.req = req;
-        this.res = res;
-
-        this.initQueue = [];	// executed first in series
-        this.actionQueue = [];	// executed second in parallel, if optional conditions are met
-        this.queryQueue = [];	// executed third in parallel
-        this.renderQueue = [];	// executed fourth in parallel
-
+  constructor(keystone, req, res) {
+    if (!req || req.constructor.name !== 'IncomingMessage') {
+      throw new Error('Keystone.View Error: Express request object is required.');
+    }
+    if (!res || res.constructor.name !== 'ServerResponse') {
+      throw new Error('Keystone.View Error: Express response object is required.');
     }
 
-    on(on, condition, cb) {
+    this.keystone = keystone;
+    this.req = req;
+    this.res = res;
 
-        const req = this.req;
-        let callback = condition;
+    this.initQueue = []; // executed first in series
+    this.actionQueue = []; // executed second in parallel, if optional conditions are met
+    this.queryQueue = []; // executed third in parallel
+    this.renderQueue = []; // executed fourth in parallel
+  }
 
-        if (typeof on === 'function') {
+  on(on, condition, cb) {
+    const req = this.req;
+    let callback = condition;
 
-            /* If the first argument is a function that returns truthy then add the second
-             * argument to the action queue
-             *
-             * Example:
-             *
-             *     view.on(function() {
-             *             var thing = true;
-             *             return thing;
-             *         },
-             *         function(next) {
-             *             console.log('thing is true!');
-             *             next();
-             *         }
-             *     );
-             */
+    if (typeof on === 'function') {
+      /* If the first argument is a function that returns truthy then add the second
+       * argument to the action queue
+       *
+       * Example:
+       *
+       *     view.on(function() {
+       *             var thing = true;
+       *             return thing;
+       *         },
+       *         function(next) {
+       *             console.log('thing is true!');
+       *             next();
+       *         }
+       *     );
+       */
 
-            if (on()) {
-                this.actionQueue.push(callback);
-            }
+      if (on()) {
+        this.actionQueue.push(callback);
+      }
+    } else if (typeof on === 'object' && on !== null) {
+      /* Do certain actions depending on information in the response object.
+       *
+       * Example:
+       *
+       *     view.on({ 'user.name.first': 'Admin' }, function(next) {
+       *         console.log('Hello Admin!');
+       *         next();
+       *     });
+       */
 
-        } else if (typeof on === 'object' && on !== null) {
-
-            /* Do certain actions depending on information in the response object.
-             *
-             * Example:
-             *
-             *     view.on({ 'user.name.first': 'Admin' }, function(next) {
-             *         console.log('Hello Admin!');
-             *         next();
-             *     });
-             */
-
-            const check = (value, path) => {
-                let ctx = req;
-                const parts = path.split('.');
-                for (let i = 0; i < parts.length - 1; i++) {
-                    if (!ctx[parts[i]]) {
-                        return false;
-                    }
-                    ctx = ctx[parts[i]];
-                }
-                path = last(parts);
-                return (value === true && path in ctx) ? true : (ctx[path] === value);
-            };
-
-            if (every(on, check)) {
-                this.actionQueue.push(callback);
-            }
-
-        } else if (on === 'get' || on === 'post' || on === 'put' || on === 'delete') {
-
-            /* Handle HTTP verbs
-             *
-             * Example:
-             *     view.on('get', function(next) {
-             *         console.log('GOT!');
-             *         next();
-             *     });
-             */
-            if (req.method !== on.toUpperCase()) {
-                return this;
-            }
-
-            if (arguments.length === 3) {
-
-                /* on a POST and PUT requests search the req.body for a matching value
-                 * on every other request search the query.
-                 *
-                 * Example:
-                 *     view.on('post', { action: 'theAction' }, function(next) {
-                 *         // respond to the action
-                 *         next();
-                 *     });
-                 *
-                 * Example:
-                 *     view.on('get', { page: 2 }, function(next) {
-                 *         // do something specifically on ?page=2
-                 *         next();
-                 *     });
-                 */
-
-                callback = cb;
-
-                let values = {};
-                if (typeof condition === 'string') {
-                    values[condition] = true;
-                } else {
-                    values = condition;
-                }
-
-                const ctx = (on === 'post' || on === 'put') ? req.body : req.query;
-
-                if (!every(values || {}, function (value, path) {
-                    return (value === true && path in ctx) ? true : (ctx[path] === value);
-                })) {
-                    return this;
-                }
-
-            }
-
-            this.actionQueue.push(callback);
-
-        } else if (on === 'init') {
-
-            /* Init events are always fired in series, before any other actions
-             *
-             * Example:
-             *     view.on('init', function (next) {
-             *         // do something before any actions or queries have run
-             *     });
-             */
-
-            this.initQueue.push(callback);
-
-        } else if (on === 'render') {
-
-            /* Render events are always fired last in parallel, after any other actions
-             *
-             * Example:
-             *     view.on('render', function (next) {
-             *         // do something after init, action and query middleware has run
-             *     });
-             */
-
-            this.renderQueue.push(callback);
+      const check = (value, path) => {
+        let ctx = req;
+        const parts = path.split('.');
+        for (let i = 0; i < parts.length - 1; i++) {
+          if (!ctx[parts[i]]) {
+            return false;
+          }
+          ctx = ctx[parts[i]];
         }
+        path = last(parts);
+        return value === true && path in ctx ? true : ctx[path] === value;
+      };
 
-        // TODO: Should throw if we didn't recognise the first argument!
-
+      if (every(on, check)) {
+        this.actionQueue.push(callback);
+      }
+    } else if (on === 'get' || on === 'post' || on === 'put' || on === 'delete') {
+      /* Handle HTTP verbs
+       *
+       * Example:
+       *     view.on('get', function(next) {
+       *         console.log('GOT!');
+       *         next();
+       *     });
+       */
+      if (req.method !== on.toUpperCase()) {
         return this;
+      }
 
+      if (arguments.length === 3) {
+        /* on a POST and PUT requests search the req.body for a matching value
+         * on every other request search the query.
+         *
+         * Example:
+         *     view.on('post', { action: 'theAction' }, function(next) {
+         *         // respond to the action
+         *         next();
+         *     });
+         *
+         * Example:
+         *     view.on('get', { page: 2 }, function(next) {
+         *         // do something specifically on ?page=2
+         *         next();
+         *     });
+         */
+
+        callback = cb;
+
+        let values = {};
+        if (typeof condition === 'string') {
+          values[condition] = true;
+        } else {
+          values = condition;
+        }
+
+        const ctx = on === 'post' || on === 'put' ? req.body : req.query;
+
+        if (
+          !every(values || {}, function(value, path) {
+            return value === true && path in ctx ? true : ctx[path] === value;
+          })
+        ) {
+          return this;
+        }
+      }
+
+      this.actionQueue.push(callback);
+    } else if (on === 'init') {
+      /* Init events are always fired in series, before any other actions
+       *
+       * Example:
+       *     view.on('init', function (next) {
+       *         // do something before any actions or queries have run
+       *     });
+       */
+
+      this.initQueue.push(callback);
+    } else if (on === 'render') {
+      /* Render events are always fired last in parallel, after any other actions
+       *
+       * Example:
+       *     view.on('render', function (next) {
+       *         // do something after init, action and query middleware has run
+       *     });
+       */
+
+      this.renderQueue.push(callback);
     }
 
-    /**
-     * Queues a mongoose query for execution before the view is rendered.
-     * The results of the query are set in `locals[key]`.
-     *
-     * Keys can be nested paths, containing objects will be created as required.
-     *
-     * The third argument `then` can be a method to call after the query is completed
-     * like function(err, results, callback), or a `populatedRelated` definition
-     * (string or array).
-     *
-     * Examples:
-     *
-     * view.query('books', keystone.list('Book').model.find());
-     *
-     *     an array of books from the database will be added to locals.books. You can
-     *     also nest properties on the locals variable.
-     *
-     * view.query(
-     *     'admin.books',
-     *      keystone.list('Book').model.find().where('user', 'Admin')
-     * );
-     *
-     *     locals.admin.books will be the result of the query
-     *     views.query().then is always called if it is available
-     *
-     * view.query('books', keystone.list('Book').model.find())
-     *     .then(function (err, results, next) {
-     *         if (err) return next(err);
-     *         console.log(results);
-     *         next();
-     *     });
-     *
-     * @api public
-     */
+    // TODO: Should throw if we didn't recognise the first argument!
 
-    query(key, listOrKey, query, options) {
-        let list = listOrKey;
-        if( typeof listOrKey === 'string') {
-            list = this.keystone.getListByKey(listOrKey);
-        }
-        let locals = this.res.locals;
-        const parts = key.split('.');
-        const chain = new QueryCallbacks(options);
+    return this;
+  }
 
-        key = parts.pop();
+  /**
+   * Queues a mongoose query for execution before the view is rendered.
+   * The results of the query are set in `locals[key]`.
+   *
+   * Keys can be nested paths, containing objects will be created as required.
+   *
+   * The third argument `then` can be a method to call after the query is completed
+   * like function(err, results, callback), or a `populatedRelated` definition
+   * (string or array).
+   *
+   * Examples:
+   *
+   * view.query('books', keystone.list('Book').model.find());
+   *
+   *     an array of books from the database will be added to locals.books. You can
+   *     also nest properties on the locals variable.
+   *
+   * view.query(
+   *     'admin.books',
+   *      keystone.list('Book').model.find().where('user', 'Admin')
+   * );
+   *
+   *     locals.admin.books will be the result of the query
+   *     views.query().then is always called if it is available
+   *
+   * view.query('books', keystone.list('Book').model.find())
+   *     .then(function (err, results, next) {
+   *         if (err) return next(err);
+   *         console.log(results);
+   *         next();
+   *     });
+   *
+   * @api public
+   */
 
-        for (let i = 0; i < parts.length; i++) {
-            if (!locals[parts[i]]) {
-                locals[parts[i]] = {};
-            }
-            locals = locals[parts[i]];
-        }
+  query(key, listOrKey, query, options) {
+    let list = listOrKey;
+    if (typeof listOrKey === 'string') {
+      list = this.keystone.getListByKey(listOrKey);
+    }
+    let locals = this.res.locals;
+    const parts = key.split('.');
+    const chain = new QueryCallbacks(options);
 
-        this.queryQueue.push(async () => {
-            const callbacks = chain.callbacks;
-            const context = this.keystone.getAccessContext('admin', this.req);
-            try {
-                const results = await list.listQuery(query, context, list.gqlNames.listQueryName);
-                locals[key] = results;
-                if ((!results || (Array.isArray(results) && !results.length)) && 'none' in callbacks) {
-                    /* If there are no results view.query().none will be called
-                     *
-                     * Example:
-                     *     view.query('books', keystone.list('Book').model.find())
-                     *         .none(function (next) {
-                     *             console.log('no results');
-                     *             next();
-                     *         });
-                     */
-                    await callbacks.none();
-                } else if ('then' in callbacks) {
-                    if (typeof callbacks.then === 'function') {
-                        await callbacks.then(results);
-                    } else {
-                        //return keystone.populateRelated(results, callbacks.then, next);
-                        await callbacks.err(new Error('populateRelated is not implemented'));
-                    }
-                }
-            } catch (err) {
-                if ('err' in callbacks) {
-                    /* Will pass errors into the err callback
-                     *
-                     * Example:
-                     *     view.query('books', keystone.list('Book'))
-                     *         .err(function (err, next) {
-                     *             console.log('ERROR: ', err);
-                     *             next();
-                     *         });
-                     */
-                    await callbacks.err(err);
-                }
-            }
-        });
+    key = parts.pop();
 
-        return chain;
+    for (let i = 0; i < parts.length; i++) {
+      if (!locals[parts[i]]) {
+        locals[parts[i]] = {};
+      }
+      locals = locals[parts[i]];
     }
 
-
-    /**
-     * Executes the current queue of init and action methods in series, and
-     * then executes the render function. If renderFn is a string, it is provided
-     * to `res.render`.
-     *
-     * It is expected that *most* init and action stacks require processing in
-     * series.  If there are several init or action methods that should be run in
-     * parallel, queue them as an array, e.g. `view.on('init', [first, second])`.
-     *
-     * @api public
-     */
-    async render(renderFn, locals, callback) {
-        let renderFnLocal = renderFn;
-        const req = this.req;
-        const res = this.res;
-
-        if (typeof renderFn === 'string') {
-            const viewPath = renderFn;
-            renderFnLocal = async () => {
-                if (typeof locals === 'function') {
-                    locals = locals();
-                }
-                this.res.render(viewPath, locals, callback);
-            };
+    this.queryQueue.push(async () => {
+      const callbacks = chain.callbacks;
+      const context = this.keystone.getAccessContext('admin', this.req);
+      try {
+        const results = await list.listQuery(query, context, list.gqlNames.listQueryName);
+        locals[key] = results;
+        if ((!results || (Array.isArray(results) && !results.length)) && 'none' in callbacks) {
+          /* If there are no results view.query().none will be called
+           *
+           * Example:
+           *     view.query('books', keystone.list('Book').model.find())
+           *         .none(function (next) {
+           *             console.log('no results');
+           *             next();
+           *         });
+           */
+          await callbacks.none();
+        } else if ('then' in callbacks) {
+          if (typeof callbacks.then === 'function') {
+            await callbacks.then(results);
+          } else {
+            //return keystone.populateRelated(results, callbacks.then, next);
+            await callbacks.err(new Error('populateRelated is not implemented'));
+          }
         }
-
-        if (typeof renderFnLocal !== 'function') {
-            throw new Error('Keystone.View.render() renderFn must be a templatePath (string) or a function.');
+      } catch (err) {
+        if ('err' in callbacks) {
+          /* Will pass errors into the err callback
+           *
+           * Example:
+           *     view.query('books', keystone.list('Book'))
+           *         .err(function (err, next) {
+           *             console.log('ERROR: ', err);
+           *             next();
+           *         });
+           */
+          await callbacks.err(err);
         }
+      }
+    });
 
-        // Add actions, queries & renderQueue to the end of the initQueue
-        this.initQueue.push(...this.actionQueue);
-        this.initQueue.push(...this.queryQueue);
+    return chain;
+  }
 
-        const preRenderQueue = [];
+  /**
+   * Executes the current queue of init and action methods in series, and
+   * then executes the render function. If renderFn is a string, it is provided
+   * to `res.render`.
+   *
+   * It is expected that *most* init and action stacks require processing in
+   * series.  If there are several init or action methods that should be run in
+   * parallel, queue them as an array, e.g. `view.on('init', [first, second])`.
+   *
+   * @api public
+   */
+  async render(renderFn, locals, callback) {
+    let renderFnLocal = renderFn;
+    const req = this.req;
+    const res = this.res;
 
-        // Add Keystone's global pre('render') queue
-        // keystone.getMiddleware('pre:render').forEach(function (fn) {
-        //     preRenderQueue.push(function (next) {
-        //         fn(req, res, next);
-        //     });
-        // });
-
-        this.initQueue.push(preRenderQueue);
-        this.initQueue.push(this.renderQueue);
-
-        await asyncForEach(this.initQueue, async i => {
-            if (Array.isArray(i)) {
-                // process nested arrays in parallel
-                await asyncForEachParallel(i, _ => _());
-            } else if (typeof i === 'function') {
-                // process single methods in series
-                await i();
-            } else {
-                throw new Error('View.render() events must be functions.');
-            }
-        });
-        // ,  async err => {
-
-        // });
-        await renderFnLocal(null, req, res);
+    if (typeof renderFn === 'string') {
+      const viewPath = renderFn;
+      renderFnLocal = async () => {
+        if (typeof locals === 'function') {
+          locals = locals();
+        }
+        this.res.render(viewPath, locals, callback);
+      };
     }
 
+    if (typeof renderFnLocal !== 'function') {
+      throw new Error(
+        'Keystone.View.render() renderFn must be a templatePath (string) or a function.'
+      );
+    }
+
+    // Add actions, queries & renderQueue to the end of the initQueue
+    this.initQueue.push(...this.actionQueue);
+    this.initQueue.push(...this.queryQueue);
+
+    const preRenderQueue = [];
+
+    // Add Keystone's global pre('render') queue
+    // keystone.getMiddleware('pre:render').forEach(function (fn) {
+    //     preRenderQueue.push(function (next) {
+    //         fn(req, res, next);
+    //     });
+    // });
+
+    this.initQueue.push(preRenderQueue);
+    this.initQueue.push(this.renderQueue);
+
+    await asyncForEach(this.initQueue, async i => {
+      if (Array.isArray(i)) {
+        // process nested arrays in parallel
+        await asyncForEachParallel(i, _ => _());
+      } else if (typeof i === 'function') {
+        // process single methods in series
+        await i();
+      } else {
+        throw new Error('View.render() events must be functions.');
+      }
+    });
+    // ,  async err => {
+
+    // });
+    await renderFnLocal(null, req, res);
+  }
 };
 
 /**
@@ -363,23 +352,32 @@ module.exports = class View {
  */
 
 class QueryCallbacks {
-    constructor(options) {
-        if (typeof options === 'string') {
-            options = { then: options };
-        } else {
-            options = options || {};
-        }
-        this.callbacks = {};
-        if (options.err) this.callbacks.err = options.err;
-        if (options.none) this.callbacks.none = options.none;
-        if (options.then) this.callbacks.then = options.then;
-        return this;
+  constructor(options) {
+    if (typeof options === 'string') {
+      options = { then: options };
+    } else {
+      options = options || {};
     }
+    this.callbacks = {};
+    if (options.err) this.callbacks.err = options.err;
+    if (options.none) this.callbacks.none = options.none;
+    if (options.then) this.callbacks.then = options.then;
+    return this;
+  }
 
-    has(fn) { return (fn in this.callbacks); }
-    err(fn) { this.callbacks.err = fn; return this; }
-    none(fn) { this.callbacks.none = fn; return this; }
-    then(fn) { this.callbacks.then = fn; return this; }
-
+  has(fn) {
+    return fn in this.callbacks;
+  }
+  err(fn) {
+    this.callbacks.err = fn;
+    return this;
+  }
+  none(fn) {
+    this.callbacks.none = fn;
+    return this;
+  }
+  then(fn) {
+    this.callbacks.then = fn;
+    return this;
+  }
 }
-
