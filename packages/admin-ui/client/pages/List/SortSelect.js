@@ -48,7 +48,7 @@ export default function SortPopout({ listKey }: Props) {
       target={handlers => (
         <SortButton {...handlers}>
           {sortValue.field.label}
-          <DisclosureArrow size="0.2em" />
+          <DisclosureArrow />
         </SortButton>
       )}
     >

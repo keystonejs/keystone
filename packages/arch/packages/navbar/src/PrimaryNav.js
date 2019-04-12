@@ -63,9 +63,17 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
   const selectedStyles = isSelected
     ? {
         '&, :hover, :active, :focus': {
-          borderRightColor: colors.primary,
-          backgroundColor: colors.B.A10,
           fontWeight: 500,
+          ':after': {
+            backgroundColor: colors.primary,
+            borderRadius: 2,
+            bottom: 0,
+            content: '" "',
+            position: 'absolute',
+            right: 2,
+            top: 0,
+            width: 4,
+          },
         },
       }
     : {};
@@ -81,11 +89,12 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
     paddingRight: PRIMARY_NAV_GUTTER,
     paddingBottom: gridSize,
     paddingTop: gridSize,
+    position: 'relative',
     textDecoration: 'none',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
 
-    ':hover, :focus': {
+    ':hover': {
       backgroundColor: colors.B.A5,
       textDecoration: 'none',
     },

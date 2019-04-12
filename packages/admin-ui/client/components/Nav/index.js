@@ -54,8 +54,8 @@ const Relative = styled(Col)({
   height: ' 100%',
   position: 'relative',
 });
-const GrabHandle = styled.div({
-  backgroundColor: 'rgba(9, 30, 66, 0.1)',
+const GrabHandle = styled.div(({ isActive }) => ({
+  backgroundColor: isActive ? 'rgba(9, 30, 66, 0.1)' : null,
   bottom: 0,
   cursor: 'col-resize',
   position: 'absolute',
@@ -64,9 +64,12 @@ const GrabHandle = styled.div({
   transition: 'background-color 220ms linear',
   width: 1,
 
-  ':hover, :active': {
-    backgroundColor: colors.primary,
+  ':hover': {
+    backgroundColor: 'rgba(9, 30, 66, 0.2)',
     transitionDelay: '100ms', // avoid inadvertent mouse passes
+  },
+  ':active': {
+    backgroundColor: 'rgba(9, 30, 66, 0.3)',
   },
 
   // increase hit-area
@@ -78,7 +81,7 @@ const GrabHandle = styled.div({
     right: -gridSize,
     top: -gridSize,
   },
-});
+}));
 const CollapseExpand = styled.button(({ isCollapsed }) => {
   const size = 32;
   const offsetTop = 18;
@@ -244,9 +247,10 @@ class Nav extends Component {
   };
   render() {
     const { children } = this.props;
+    const { mouseIsOverNav } = this.state;
 
     return (
-      <ResizeHandler>
+      <ResizeHandler isActive={mouseIsOverNav}>
         {(resizeProps, clickProps, { isCollapsed, isDragging, width }) => {
           const navWidth = isCollapsed ? 0 : width;
           const makeResizeStyles = key => {
@@ -279,7 +283,7 @@ class Nav extends Component {
                 style={makeResizeStyles('width')}
               >
                 <PrimaryNavContent />
-                {isCollapsed ? null : <GrabHandle {...resizeProps} />}
+                {isCollapsed ? null : <GrabHandle isActive={mouseIsOverNav} {...resizeProps} />}
                 <Tooltip
                   content={
                     <TooltipContent kbd={KEYBOARD_SHORTCUT}>

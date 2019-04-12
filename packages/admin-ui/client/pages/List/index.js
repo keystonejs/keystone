@@ -101,7 +101,7 @@ function ListLayout(props: LayoutProps) {
       <div ref={measureElementRef} />
 
       <Container isFullWidth>
-        <h1>{list.plural}</h1>
+        <h1 css={{ marginTop: '0.9rem' }}>{list.plural}</h1>
 
         <FlexGroup>
           <Search list={list} isLoading={query.loading} />

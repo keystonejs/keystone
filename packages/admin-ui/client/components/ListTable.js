@@ -6,10 +6,12 @@ import { Link } from 'react-router-dom';
 
 import { DiffIcon, KebabHorizontalIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
+import { alpha } from '@arch-ui/color-utils';
 import { Button } from '@arch-ui/button';
 import { CheckboxPrimitive } from '@arch-ui/controls';
 import Dropdown from '@arch-ui/dropdown';
 import { A11yText } from '@arch-ui/typography';
+import { Card } from '@arch-ui/card';
 import DeleteItemModal from './DeleteItemModal';
 import { copyToClipboard } from '../util';
 import { useListSort } from '../pages/List/dataHooks';
@@ -26,8 +28,8 @@ const TableRow = styled('tr')(({ isActive }) => ({
   },
 }));
 const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
-  backgroundColor: colors.page,
-  boxShadow: '0 2px 0 rgba(0, 0, 0, 0.1)',
+  backgroundColor: 'white',
+  boxShadow: `0 2px 0 ${alpha(colors.text, 0.1)}`,
   boxSizing: 'border-box',
   color: isSelected ? colors.text : colors.N40,
   cursor: isSortable ? 'pointer' : 'auto',
@@ -317,54 +319,56 @@ export default function ListTable(props) {
   const cypressId = 'ks-list-table';
 
   return (
-    <Table id={cypressId} style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
-      <colgroup>
-        <col width="32" />
-        {fields.map(f => (
-          <col key={f.path} />
-        ))}
-        <col width="32" />
-      </colgroup>
-      <thead>
-        <tr>
-          <HeaderCell>
-            <div css={{ position: 'relative', top: 3 }}>
-              <CheckboxPrimitive
-                checked={items.length === selectedItems.length}
-                onChange={handleSelectAll}
-                tabIndex="0"
+    <Card css={{ marginBottom: '3em' }}>
+      <Table id={cypressId} style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
+        <colgroup>
+          <col width="32" />
+          {fields.map(f => (
+            <col key={f.path} />
+          ))}
+          <col width="32" />
+        </colgroup>
+        <thead>
+          <tr>
+            <HeaderCell>
+              <div css={{ position: 'relative', top: 3 }}>
+                <CheckboxPrimitive
+                  checked={items.length === selectedItems.length}
+                  onChange={handleSelectAll}
+                  tabIndex="0"
+                />
+              </div>
+            </HeaderCell>
+            {fields.map(field => (
+              <SortLink
+                data-field={field.path}
+                key={field.path}
+                sortable={field.path !== '_label_'}
+                field={field}
+                handleSortChange={onSortChange}
+                active={sortBy.field.path === field.path}
+                sortAscending={sortBy.direction === 'ASC'}
               />
-            </div>
-          </HeaderCell>
-          {fields.map(field => (
-            <SortLink
-              data-field={field.path}
-              key={field.path}
-              sortable={field.path !== '_label_'}
-              field={field}
-              handleSortChange={onSortChange}
-              active={sortBy.field.path === field.path}
-              sortAscending={sortBy.direction === 'ASC'}
+            ))}
+            <HeaderCell css={{ padding: 0 }}>{columnControl}</HeaderCell>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item, itemIndex) => (
+            <ListRow
+              fields={fields}
+              isSelected={selectedItems.includes(item.id)}
+              item={item}
+              itemErrors={itemsErrors[itemIndex] || {}}
+              key={item.id}
+              link={({ path, id }) => `${adminPath}/${path}/${id}`}
+              list={list}
+              onDelete={onChange}
+              onSelectChange={onSelectChange}
             />
           ))}
-          <HeaderCell css={{ padding: 0 }}>{columnControl}</HeaderCell>
-        </tr>
-      </thead>
-      <tbody>
-        {items.map((item, itemIndex) => (
-          <ListRow
-            fields={fields}
-            isSelected={selectedItems.includes(item.id)}
-            item={item}
-            itemErrors={itemsErrors[itemIndex] || {}}
-            key={item.id}
-            link={({ path, id }) => `${adminPath}/${path}/${id}`}
-            list={list}
-            onDelete={onChange}
-            onSelectChange={onSelectChange}
-          />
-        ))}
-      </tbody>
-    </Table>
+        </tbody>
+      </Table>
+    </Card>
   );
 }
