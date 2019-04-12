@@ -25,11 +25,12 @@ const TableRow = styled('tr')(({ isActive }) => ({
     backgroundColor: isActive ? 'rgba(0, 0, 0, 0.02)' : null,
   },
 }));
-const HeaderCell = styled('th')({
+const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
   backgroundColor: colors.page,
   boxShadow: '0 2px 0 rgba(0, 0, 0, 0.1)',
   boxSizing: 'border-box',
-  color: '#999',
+  color: isSelected ? colors.text : colors.N40,
+  cursor: isSortable ? 'pointer' : 'auto',
   display: 'table-cell',
   fontWeight: 'normal',
   padding: gridSize,
@@ -39,7 +40,11 @@ const HeaderCell = styled('th')({
   zIndex: 1,
   textAlign: 'left',
   verticalAlign: 'bottom',
-});
+
+  ':hover': {
+    color: isSortable && !isSelected ? colors.N60 : null,
+  },
+}));
 const BodyCell = styled('td')(({ isSelected }) => ({
   backgroundColor: isSelected ? colors.B.L95 : null,
   boxShadow: isSelected
@@ -103,14 +108,14 @@ class SortLink extends React.Component<SortLinkProps> {
   };
 
   render() {
-    const styles = {
-      color: this.props.active ? '#000' : '#999',
-      cursor: this.props.sortable ? 'pointer' : 'auto',
-    };
-
     // TODO: Do we want to make `sortable` a field config option?
     return (
-      <HeaderCell style={styles} onClick={this.onClick} data-field={this.props['data-field']}>
+      <HeaderCell
+        isSortable={this.props.sortable}
+        isSelected={this.props.active}
+        onClick={this.onClick}
+        data-field={this.props['data-field']}
+      >
         {this.props.field.label}
         {this.props.sortable && (
           <SortDirectionArrow
@@ -290,6 +295,7 @@ class ListRow extends Component {
 export default function ListTable(props) {
   const {
     adminPath,
+    columnControl,
     fields,
     isFullWidth,
     items,
@@ -341,7 +347,7 @@ export default function ListTable(props) {
               sortAscending={sortBy.direction === 'ASC'}
             />
           ))}
-          <HeaderCell css={{ padding: 0 }} />
+          <HeaderCell css={{ padding: 0 }}>{columnControl}</HeaderCell>
         </tr>
       </thead>
       <tbody>

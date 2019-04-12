@@ -1,6 +1,9 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
+import { Button } from '@arch-ui/button';
+import { KebabHorizontalIcon } from '@arch-ui/icons';
+import { colors } from '@arch-ui/theme';
 import { OptionPrimitive, CheckMark } from '@arch-ui/options';
 
 import { Popout, POPOUT_GUTTER } from '../../components/Popout';
@@ -17,7 +20,22 @@ export default function ColumnPopout({ listKey }: Props) {
   const cypresId = 'ks-column-select';
 
   return (
-    <Popout buttonLabel="Columns" headerTitle="Columns">
+    <Popout
+      target={handlers => (
+        <Button
+          variant="subtle"
+          css={{
+            background: 0,
+            border: 0,
+            color: colors.N40,
+          }}
+          {...handlers}
+        >
+          <KebabHorizontalIcon />
+        </Button>
+      )}
+      headerTitle="Columns"
+    >
       <div id={cypresId} css={{ padding: POPOUT_GUTTER }}>
         <FieldSelect
           fields={list.fields}

@@ -7,13 +7,14 @@ import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { A11yText } from '@arch-ui/typography';
 import { Alert } from '@arch-ui/alert';
+import { Button } from '@arch-ui/button';
 import { OptionPrimitive } from '@arch-ui/options';
 import Select from '@arch-ui/select';
 import { LoadingSpinner } from '@arch-ui/loading';
 
 import FieldSelect from '../FieldSelect';
 import PopoutForm from './PopoutForm';
-import { POPOUT_GUTTER } from '../../../components/Popout';
+import { DisclosureArrow, POPOUT_GUTTER } from '../../../components/Popout';
 
 const EventCatcher = props => (
   <div
@@ -363,7 +364,17 @@ export default class AddFilterPopout extends Component<Props, State> {
 
     return (
       <PopoutForm
-        buttonLabel="Filters"
+        target={handlers => (
+          <Button
+            variant="subtle"
+            appearance="primary"
+            css={{ marginBottom: gridSize / 2, marginTop: gridSize / 2 }}
+            {...handlers}
+          >
+            Filters
+            <DisclosureArrow />
+          </Button>
+        )}
         headerBefore={back}
         headerTitle={field ? field.label : 'Filter'}
         showFooter={!!field}

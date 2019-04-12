@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
 
 import { gridSize } from '@arch-ui/theme';
-import { buttonAndInputBase } from '@arch-ui/common';
+import { uniformHeight } from '@arch-ui/common';
 import {
   makeSubtleVariant,
   makeNuanceVariant,
@@ -60,7 +60,7 @@ function makeVariant({
   }
 
   return {
-    ...buttonAndInputBase,
+    ...uniformHeight,
     cursor: isDisabled ? 'default' : 'pointer',
     display: isBlock ? 'block' : 'inline-block',
     opacity: isDisabled ? 0.66 : null,

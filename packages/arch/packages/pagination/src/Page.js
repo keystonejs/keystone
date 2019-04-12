@@ -3,6 +3,7 @@ import * as React from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
+import { uniformHeight } from '@arch-ui/common';
 import { borderRadius, colors } from '@arch-ui/theme';
 import type { LabelType, OnChangeType } from './types';
 
@@ -51,7 +52,6 @@ const PageElement = styled(PagePrimitive)(({ isDisabled, isSelected }: PageProps
     ? {
         '&, &:hover, &:focus': {
           backgroundColor: colors.N10,
-          borderColor: 'transparent',
           color: colors.N80,
           cursor: 'default',
         },
@@ -59,15 +59,15 @@ const PageElement = styled(PagePrimitive)(({ isDisabled, isSelected }: PageProps
     : null;
 
   return {
+    ...uniformHeight,
     appearance: 'none',
     background: 'white',
-    border: 0,
-    boxShadow: `0 0 0 1px ${colors.N20}`,
+    borderLeftWidth: 0,
+    borderColor: colors.N20,
+    borderRadius: 0,
     color: colors.N60,
     cursor: 'pointer',
     fontSize: 'inherit',
-    lineHeight: 1.2,
-    padding: '0.4em 0.8em',
     textDecoration: 'none',
 
     '&:hover, &:focus': {
@@ -76,12 +76,18 @@ const PageElement = styled(PagePrimitive)(({ isDisabled, isSelected }: PageProps
     },
 
     ':first-of-type': {
+      borderLeftWidth: 1,
       borderBottomLeftRadius: borderRadius,
       borderTopLeftRadius: borderRadius,
     },
     ':last-of-type': {
       borderBottomRightRadius: borderRadius,
       borderTopRightRadius: borderRadius,
+    },
+
+    // a bit naughty...
+    svg: {
+      height: 15,
     },
 
     ...selectedStyles,

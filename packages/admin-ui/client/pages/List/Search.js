@@ -4,12 +4,14 @@ import { jsx } from '@emotion/core';
 import { useRef, useState } from 'react';
 
 import { SearchIcon, XIcon } from '@arch-ui/icons';
-import { Input } from '@arch-ui/input';
+// import { Input } from '@arch-ui/input';
 import { A11yText } from '@arch-ui/typography';
 import { LoadingSpinner } from '@arch-ui/loading';
 import { colors } from '@arch-ui/theme';
+import { uniformHeight } from '@arch-ui/common';
 
 import { useListSearch } from './dataHooks';
+import { elementOffsetStyles } from './Filters/ActiveFilters';
 
 export default function Search({ isLoading, list }) {
   const { searchValue, onChange, onClear, onSubmit } = useListSearch(list.key);
@@ -37,7 +39,11 @@ export default function Search({ isLoading, list }) {
   // NOTE: `autoComplete="off"` doesn't behave as expected on `<input />` in
   // webkit, so we apply the attribute to a form tag here.
   return (
-    <form css={{ position: 'relative' }} autoComplete="off" onSubmit={onSubmit}>
+    <form
+      css={{ ...elementOffsetStyles, position: 'relative' }}
+      autoComplete="off"
+      onSubmit={onSubmit}
+    >
       <A11yText tag="label" htmlFor={id}>
         Search {list.plural}
       </A11yText>
@@ -81,3 +87,19 @@ export default function Search({ isLoading, list }) {
     </form>
   );
 }
+
+const Input = props => (
+  <input
+    css={{
+      ...uniformHeight,
+      background: colors.N10,
+      border: 0,
+
+      ':focus': {
+        background: colors.N15,
+        outline: 0,
+      },
+    }}
+    {...props}
+  />
+);

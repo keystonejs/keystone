@@ -16,7 +16,6 @@ import PageLoading from '../../components/PageLoading';
 import { deconstructErrorsToDataShape } from '../../util';
 
 import ColumnPopout from './ColumnSelect';
-import AddFilterPopout from './Filters/AddFilterPopout';
 import ActiveFilters from './Filters/ActiveFilters';
 import SortPopout from './SortSelect';
 import Pagination, { getPaginationLabel } from './Pagination';
@@ -42,7 +41,7 @@ function ListLayout(props: LayoutProps) {
   const measureElementRef = useRef();
 
   const { urlState } = useListUrlState(list.key);
-  const { filters, onAdd: handleFilterAdd } = useListFilter(list.key);
+  const { filters } = useListFilter(list.key);
   // const { items, itemCount, itemErrors } = useListItems(list.key);
   const [sortBy, handleSortChange] = useListSort(list.key);
 
@@ -102,28 +101,12 @@ function ListLayout(props: LayoutProps) {
       <div ref={measureElementRef} />
 
       <Container isFullWidth>
-        <FlexGroup align="center" growIndexes={[0]}>
-          <h1>{list.plural}</h1>
-          {list.access.create ? (
-            <IconButton appearance="primary" icon={PlusIcon} onClick={openCreateModal}>
-              Create
-            </IconButton>
-          ) : null}
-        </FlexGroup>
+        <h1>{list.plural}</h1>
 
-        <FlexGroup growIndexes={[0]}>
+        <FlexGroup>
           <Search list={list} isLoading={query.loading} />
-          <AddFilterPopout
-            listKey={list.key}
-            existingFilters={filters}
-            fields={list.fields}
-            onChange={handleFilterAdd}
-          />
-
-          <ColumnPopout listKey={list.key} />
+          <ActiveFilters list={list} />
         </FlexGroup>
-
-        <ActiveFilters listKey={list.key} />
 
         <ManageToolbar isVisible={!!itemCount}>
           {selectedItems.length ? (
@@ -137,7 +120,7 @@ function ListLayout(props: LayoutProps) {
               totalItems={itemCount}
             />
           ) : (
-            <Fragment>
+            <FlexGroup align="center" growIndexes={[0]}>
               <div css={{ color: colors.N60 }}>
                 {getPaginationLabel({
                   currentPage: currentPage,
@@ -149,10 +132,15 @@ function ListLayout(props: LayoutProps) {
                 sorted by
                 <SortPopout listKey={list.key} />
               </div>
-              <div css={{ marginLeft: '1em' }}>
+              <FlexGroup align="center" css={{ marginLeft: '1em' }}>
                 <Pagination listKey={list.key} isLoading={query.loading} />
-              </div>
-            </Fragment>
+                {list.access.create ? (
+                  <IconButton appearance="primary" icon={PlusIcon} onClick={openCreateModal}>
+                    Create
+                  </IconButton>
+                ) : null}
+              </FlexGroup>
+            </FlexGroup>
           )}
         </ManageToolbar>
       </Container>
@@ -170,6 +158,7 @@ function ListLayout(props: LayoutProps) {
             {items.length ? (
               <ListTable
                 adminPath={adminPath}
+                columnControl={<ColumnPopout listKey={list.key} />}
                 fields={fields}
                 handleSortChange={handleSortChange}
                 isFullWidth

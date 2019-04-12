@@ -1,13 +1,16 @@
-import React from 'react';
+/** @jsx jsx */
+
+import { jsx } from '@emotion/core';
 import { FlexGroup } from '@arch-ui/layout';
 import { Pill } from '@arch-ui/pill';
+import { Button } from '@arch-ui/button';
 import { gridSize } from '@arch-ui/theme';
 
-import AnimateHeight from '../../../components/AnimateHeight';
 import EditFilterPopout from './EditFilterPopout';
+import AddFilterPopout from './AddFilterPopout';
 import { useListFilter } from '../dataHooks';
 
-const pillStyle = { marginBottom: gridSize / 2, marginTop: gridSize / 2 };
+export const elementOffsetStyles = { marginBottom: gridSize / 2, marginTop: gridSize / 2 };
 
 export type FilterType = {
   field: { label: string, list: Object, path: string, type: string },
@@ -16,47 +19,64 @@ export type FilterType = {
   value: string,
 };
 type Props = {
-  listKey: string,
+  list: object,
 };
 
-export default function ActiveFilters({ listKey }: Props) {
-  const { filters, onRemove, onRemoveAll, onUpdate } = useListFilter(listKey);
+const Bold = props => <strong css={{ fontWeight: 500 }} {...props} />;
+
+export default function ActiveFilters({ list }: Props) {
+  const { filters, onAdd, onRemove, onRemoveAll, onUpdate } = useListFilter(list.key);
+  const cypressId = 'ks-list-active-filters';
 
   return (
-    <AnimateHeight
-      style={{ paddingTop: gridSize }}
-      render={({ ref }) => (
-        <FlexGroup ref={ref} wrap id="ks-list-active-filters">
-          {filters.length
-            ? filters.map(filter => {
-                const label = filter.field.formatFilter(filter);
-                return (
-                  <EditFilterPopout
-                    key={label}
-                    onChange={onUpdate}
-                    filter={filter}
-                    target={props => (
-                      <Pill
-                        {...props}
-                        appearance="primary"
-                        onRemove={onRemove(filter)}
-                        style={pillStyle}
-                      >
-                        {label}
-                      </Pill>
-                    )}
-                  />
-                );
-              })
-            : null}
+    <FlexGroup wrap id={cypressId}>
+      {filters.length
+        ? filters.map(filter => {
+            const label = filter.field.formatFilter(filter);
 
-          {filters.length > 1 ? (
-            <Pill key="clear" onClick={onRemoveAll} style={pillStyle}>
-              Clear All
-            </Pill>
-          ) : null}
-        </FlexGroup>
-      )}
-    />
+            return (
+              <EditFilterPopout
+                key={label}
+                onChange={onUpdate}
+                filter={filter}
+                target={props => (
+                  <Pill
+                    {...props}
+                    appearance="primary"
+                    onRemove={onRemove(filter)}
+                    css={elementOffsetStyles}
+                  >
+                    <Bold>{filter.field.label}&nbsp;</Bold>
+                    <span>
+                      {label
+                        .split(' ')
+                        .slice(1)
+                        .join(' ')}
+                    </span>
+                  </Pill>
+                )}
+              />
+            );
+          })
+        : null}
+
+      <AddFilterPopout
+        listKey={list.key}
+        existingFilters={filters}
+        fields={list.fields}
+        onChange={onAdd}
+      />
+
+      {filters.length > 1 ? (
+        <Button
+          variant="subtle"
+          appearance="warning"
+          onClick={onRemoveAll}
+          css={elementOffsetStyles}
+        >
+          Clear All
+        </Button>
+      ) : null}
+    </FlexGroup>
   );
 }

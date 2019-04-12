@@ -89,8 +89,8 @@ export const Popout = ({
   target,
   ...props
 }: Props) => {
-  const defaultTarget = props => (
-    <Button variant="link" {...props}>
+  const defaultTarget = handlers => (
+    <Button variant="subtle" appearance="primary" {...handlers}>
       {buttonLabel}
       <DisclosureArrow />
     </Button>

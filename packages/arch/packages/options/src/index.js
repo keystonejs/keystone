@@ -66,18 +66,17 @@ export const OptionPrimitive = ({
       ref={innerRef}
       css={{
         alignItems: 'center',
-        color: isDisabled ? colors.N60 : null,
+        color: isDisabled ? colors.N40 : null,
         cursor: 'pointer',
         display: 'flex',
         fontSize: '0.9em',
         fontWeight: 500,
         justifyContent: 'space-between',
-        opacity: isDisabled ? 0.6 : null,
         outline: 0,
         padding: `${gridSize}px 0`,
         pointerEvents: isDisabled ? 'none' : null,
 
-        '& + &': {
+        '&:not(:first-of-type)': {
           borderTop: `1px solid ${colors.N10}`,
         },
       }}
