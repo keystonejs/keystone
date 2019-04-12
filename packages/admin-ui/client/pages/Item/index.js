@@ -77,7 +77,7 @@ const ItemDetails = withRouter(
           }
           history.push(`${adminPath}/${list.path}`);
 
-          toastItemSuccess(this.props.toast, item, 'Deleted successfully');
+          toastItemSuccess(this.props.toastManager, item, 'Deleted successfully');
         })
         .catch(error => {
           toastError(this.props.toast, error);
