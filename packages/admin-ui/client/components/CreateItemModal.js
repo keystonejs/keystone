@@ -41,8 +41,8 @@ class CreateItemModal extends Component {
     resolveAllKeys(arrayToObject(fields, 'path', field => field.getValue(item)))
       .then(data => createItem({ variables: { data } }))
       .then(data => {
-        this.props.onCreate(data);
         this.setState({ item: this.props.list.getInitialItemData() });
+        this.props.onCreate(data);
       });
   };
   onClose = () => {
