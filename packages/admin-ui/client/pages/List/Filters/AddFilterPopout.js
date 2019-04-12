@@ -27,12 +27,23 @@ const EventCatcher = props => (
 );
 
 export const FieldOption = ({ children, ...props }) => {
-  let iconColor = !props.isFocused && !props.isSelected ? colors.N40 : 'currentColor';
+  let iconColor = colors.N20;
+  if (props.isFocused) iconColor = colors.text;
 
   return (
     <OptionPrimitive {...props}>
       <span>{children}</span>
-      <ChevronRightIcon css={{ color: iconColor }} />
+      <div
+        css={{
+          alignItems: 'center',
+          display: 'flex',
+          height: 24,
+          justifyContent: 'center',
+          width: 24,
+        }}
+      >
+        <ChevronRightIcon css={{ color: iconColor }} />
+      </div>
     </OptionPrimitive>
   );
 };
@@ -232,7 +243,7 @@ export default class AddFilterPopout extends Component<Props, State> {
                 isOptionDisabled={this.doesNotHaveAvailableFilterTypes}
                 innerRef={this.fieldSelectRef}
                 onChange={this.onFieldChange}
-                placeholder="What would you like to filter?"
+                placeholder="Search fields..."
                 components={{ Option: FieldOption }}
                 value={[]}
               />

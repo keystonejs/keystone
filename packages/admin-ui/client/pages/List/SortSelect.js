@@ -1,9 +1,9 @@
 /** @jsx jsx */
+
 import { jsx } from '@emotion/core';
 import { useMemo, useRef } from 'react';
 import styled from '@emotion/styled';
-import { ChevronDownIcon, ChevronUpIcon } from '@arch-ui/icons';
-import { OptionPrimitive, Options } from '@arch-ui/options';
+import { CheckMark, OptionPrimitive, Options } from '@arch-ui/options';
 import { colors } from '@arch-ui/theme';
 import { Kbd } from '@arch-ui/typography';
 
@@ -22,7 +22,6 @@ export default function SortPopout({ listKey }: Props) {
 
   const handleChange = field => {
     const isSelected = field.path === sortValue.field.path;
-    console.log('handleChange', field);
 
     let direction = 'ASC';
     if (isSelected) {
@@ -48,7 +47,7 @@ export default function SortPopout({ listKey }: Props) {
       }
       target={handlers => (
         <SortButton {...handlers}>
-          {sortValue.field.label.toLowerCase()}
+          {sortValue.field.label}
           <DisclosureArrow size="0.2em" />
         </SortButton>
       )}
@@ -59,8 +58,9 @@ export default function SortPopout({ listKey }: Props) {
           isOptionSelected={isOptionSelected}
           onChange={handleChange}
           options={cachedOptions}
-          placeholder="Find a field..."
+          placeholder="Search fields..."
           value={sortValue}
+          altIsDown={altIsDown}
         />
       </div>
     </Popout>
@@ -73,8 +73,8 @@ export default function SortPopout({ listKey }: Props) {
 
 export const SortButton = styled.button(({ isActive }) => {
   const overStyles = {
-    color: colors.primary,
-    borderBottomColor: colors.primary,
+    color: colors.text,
+    borderBottomColor: colors.text,
   };
   const activeStyles = isActive ? overStyles : null;
   return {
@@ -97,14 +97,16 @@ export const SortButton = styled.button(({ isActive }) => {
 });
 
 export const SortOption = ({ children, isFocused, isSelected, ...props }) => {
-  const altIsDown = useKeyDown('Alt');
-  const Icon = isSelected ? ChevronUpIcon : altIsDown ? ChevronUpIcon : ChevronDownIcon;
-  const iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
+  const { altIsDown } = props.selectProps;
+  const direction = isSelected ? '(ASC)' : altIsDown ? '(ASC)' : '(DESC)';
 
   return (
     <OptionPrimitive isFocused={isFocused} isSelected={isSelected} {...props}>
-      <span>{children}</span>
-      <Icon css={{ color: iconColor }} />
+      <span>
+        {children}
+        {direction && <small css={{ color: colors.N40 }}> {direction}</small>}
+      </span>
+      <CheckMark isFocused={isFocused} isSelected={isSelected} />
     </OptionPrimitive>
   );
 };

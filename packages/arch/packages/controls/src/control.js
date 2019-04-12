@@ -58,7 +58,7 @@ type IconProps = {
 };
 const Icon = styled.div(({ checked, isDisabled, isFocus, isActive, isHover }: IconProps) => {
   // background
-  let bg = colors.N05;
+  let bg = colors.N10;
   if (isDisabled && checked) {
     bg = colors.B.D20;
   } else if (isDisabled) {

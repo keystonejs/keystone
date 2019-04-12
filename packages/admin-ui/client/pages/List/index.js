@@ -6,7 +6,7 @@ import { Query } from 'react-apollo';
 import { IconButton } from '@arch-ui/button';
 import { PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
-import { Title } from '@arch-ui/typography';
+import { colors } from '@arch-ui/theme';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
@@ -19,10 +19,9 @@ import ColumnPopout from './ColumnSelect';
 import AddFilterPopout from './Filters/AddFilterPopout';
 import ActiveFilters from './Filters/ActiveFilters';
 import SortPopout from './SortSelect';
-import Pagination from './Pagination';
+import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
-import { MoreDropdown } from './MoreDropdown';
 import { NoResults } from './NoResults';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
 
@@ -39,7 +38,6 @@ type LayoutProps = Props & {
 
 function ListLayout(props: LayoutProps) {
   const { adminMeta, items, itemCount, itemErrors, list, routeProps, query } = props;
-  const [isFullWidth, setFullWidth] = useState(false);
   const [showCreateModal, toggleCreateModal] = useState(false);
   const measureElementRef = useRef();
 
@@ -80,9 +78,6 @@ function ListLayout(props: LayoutProps) {
 
   // Misc.
   // ------------------------------
-  const toggleFullWidth = () => {
-    setFullWidth(!isFullWidth);
-  };
 
   const onDeleteSelectedItems = () => {
     query.refetch();
@@ -106,12 +101,15 @@ function ListLayout(props: LayoutProps) {
     <main>
       <div ref={measureElementRef} />
 
-      <Container isFullWidth={isFullWidth}>
-        <Title as="h1" margin="both">
-          {itemCount > 0 ? list.formatCount(itemCount) : list.plural}
-          <span>, by</span>
-          <SortPopout listKey={list.key} />
-        </Title>
+      <Container isFullWidth>
+        <FlexGroup align="center" growIndexes={[0]}>
+          <h1>{list.plural}</h1>
+          {list.access.create ? (
+            <IconButton appearance="primary" icon={PlusIcon} onClick={openCreateModal}>
+              Create
+            </IconButton>
+          ) : null}
+        </FlexGroup>
 
         <FlexGroup growIndexes={[0]}>
           <Search list={list} isLoading={query.loading} />
@@ -123,18 +121,6 @@ function ListLayout(props: LayoutProps) {
           />
 
           <ColumnPopout listKey={list.key} />
-
-          {list.access.create ? (
-            <IconButton appearance="create" icon={PlusIcon} onClick={openCreateModal}>
-              Create
-            </IconButton>
-          ) : null}
-          <MoreDropdown
-            measureRef={measureElementRef}
-            isFullWidth={isFullWidth}
-            onFullWidthToggle={toggleFullWidth}
-            listKey={list.key}
-          />
         </FlexGroup>
 
         <ActiveFilters listKey={list.key} />
@@ -151,7 +137,22 @@ function ListLayout(props: LayoutProps) {
               totalItems={itemCount}
             />
           ) : (
-            <Pagination listKey={list.key} isLoading={query.loading} />
+            <Fragment>
+              <div css={{ color: colors.N60 }}>
+                {getPaginationLabel({
+                  currentPage: currentPage,
+                  pageSize: pageSize,
+                  plural: list.plural,
+                  singular: list.singular,
+                  total: itemCount,
+                })}{' '}
+                sorted by
+                <SortPopout listKey={list.key} />
+              </div>
+              <div css={{ marginLeft: '1em' }}>
+                <Pagination listKey={list.key} isLoading={query.loading} />
+              </div>
+            </Fragment>
           )}
         </ManageToolbar>
       </Container>
@@ -163,7 +164,7 @@ function ListLayout(props: LayoutProps) {
         onCreate={onCreate}
       />
 
-      <Container isFullWidth={isFullWidth}>
+      <Container isFullWidth>
         {items ? (
           <Suspense fallback={<PageLoading />}>
             {items.length ? (
@@ -171,7 +172,7 @@ function ListLayout(props: LayoutProps) {
                 adminPath={adminPath}
                 fields={fields}
                 handleSortChange={handleSortChange}
-                isFullWidth={isFullWidth}
+                isFullWidth
                 items={items}
                 itemsErrors={itemErrors}
                 list={list}

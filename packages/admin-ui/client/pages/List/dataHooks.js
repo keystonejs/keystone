@@ -492,12 +492,12 @@ export function useKeyDown(targetKey, [keydownHandler, keyupHandler] = []) {
   };
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown, false);
-    document.addEventListener('keyup', handleKeyUp, false);
+    document.addEventListener('keydown', handleKeyDown, { isPassive: true });
+    document.addEventListener('keyup', handleKeyUp, { isPassive: true });
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('keyup', handleKeyUp);
+      document.removeEventListener('keydown', handleKeyDown, { isPassive: true });
+      document.removeEventListener('keyup', handleKeyUp, { isPassive: true });
     };
   });
 

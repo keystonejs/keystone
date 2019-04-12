@@ -3,53 +3,27 @@
 import { jsx } from '@emotion/core';
 import { Component, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-
-import { colors } from '@arch-ui/theme';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ListOrderedIcon,
+  PrimitiveDotIcon,
+} from '@arch-ui/icons';
 import Page from './Page';
 import { LoadingSpinner } from '@arch-ui/loading';
-import type { CountArgs, CountFormat, LabelType, OnChangeType } from './types';
+
+import type { LabelType, OnChangeType } from './types';
 
 function ariaPageLabelFn(page: number) {
   return `Go to page ${page}`;
 }
-function countFormatterFn({ end, pageSize, plural, singular, start, total }: CountArgs) {
-  let count = '';
-
-  if (!total) {
-    count = 'No ' + (plural || 'records');
-  } else if (total > pageSize) {
-    count = `Showing ${start} to ${end} of ${total}`;
-  } else {
-    count = 'Showing ' + total;
-    if (total > 1 && plural) {
-      count += ' ' + plural;
-    } else if (total === 1 && singular) {
-      count += ' ' + singular;
-    }
-  }
-
-  return count;
-}
-function getRange({ currentPage, pageSize, total }) {
-  if (!total) {
-    return {};
-  } else {
-    const start = pageSize * (currentPage - 1) + 1;
-    const end = Math.min(start + pageSize - 1, total);
-    return { start, end };
-  }
-}
 
 export type PaginationProps = {
   ariaPageLabel: LabelType,
-  countFormatter: CountFormat,
   currentPage: number,
-  displayCount: boolean,
   limit?: number,
   onChange: OnChangeType,
   pageSize: number,
-  plural: string,
-  singular: string,
   total: number,
   isLoading: boolean,
 };
@@ -58,13 +32,10 @@ const PaginationElement = styled.nav({
   alignItems: 'center',
   display: 'flex',
 });
-const PageCount = styled.div({
-  color: colors.N60,
-  marginRight: '1em',
-});
 
 const PageChildren = ({ page, isLoading, isSelected }) => {
   const [shouldShowLoading, setShouldShowLoading] = useState(false);
+
   useEffect(() => {
     if (isLoading && isSelected) {
       const id = setTimeout(() => {
@@ -76,6 +47,7 @@ const PageChildren = ({ page, isLoading, isSelected }) => {
       };
     }
   }, [page, isLoading, isSelected]);
+
   return shouldShowLoading ? (
     <div css={{ height: 19 }}>
       <LoadingSpinner />
@@ -88,30 +60,10 @@ const PageChildren = ({ page, isLoading, isSelected }) => {
 class Pagination extends Component<PaginationProps> {
   static defaultProps = {
     ariaPageLabel: ariaPageLabelFn,
-    countFormatter: countFormatterFn,
     currentPage: 1,
     limit: 5,
-    plural: 'Items',
-    singular: 'Item',
   };
-
-  renderCount() {
-    let { countFormatter, displayCount, pageSize, plural, singular, total } = this.props;
-
-    if (!displayCount) return null;
-
-    const { start, end } = getRange(this.props);
-    const count = countFormatter({
-      end,
-      pageSize,
-      plural,
-      singular,
-      start,
-      total,
-    });
-
-    return <PageCount>{count}</PageCount>;
-  }
+  state = { allPagesVisible: false };
 
   renderPages() {
     let { ariaPageLabel, currentPage, limit, pageSize, total } = this.props;
@@ -142,6 +94,7 @@ class Pagination extends Component<PaginationProps> {
 
     const onChange = page => {
       if (this.props.onChange) {
+        this.setState({ allPagesVisible: false });
         this.props.onChange(page, {
           pageSize,
           total,
@@ -190,7 +143,40 @@ class Pagination extends Component<PaginationProps> {
       );
     }
 
-    return pages;
+    // return pages;
+    return [
+      <Page
+        aria-label={ariaPageLabel(1)}
+        key="page_start"
+        onClick={onChange}
+        value={currentPage - 1}
+        isDisabled={currentPage === 1}
+      >
+        <ChevronLeftIcon />
+      </Page>,
+      this.state.allPagesVisible ? (
+        pages
+      ) : (
+        <Page
+          aria-label="Click to show all pages"
+          key="page_dot"
+          onClick={() => {
+            this.setState(state => ({ allPagesVisible: !state.allPagesVisible }));
+          }}
+        >
+          <ListOrderedIcon />
+        </Page>
+      ),
+      <Page
+        aria-label={ariaPageLabel(totalPages)}
+        key="page_end"
+        onClick={onChange}
+        value={currentPage + 1}
+        isDisabled={currentPage === totalPages}
+      >
+        <ChevronRightIcon />
+      </Page>,
+    ];
   }
 
   render() {
@@ -199,18 +185,14 @@ class Pagination extends Component<PaginationProps> {
       ariaPageLabel,
       countFormatter,
       currentPage,
-      displayCount,
       limit,
       onChange,
       pageSize,
-      plural,
-      singular,
       total,
       ...rest
     } = this.props;
     return (
       <PaginationElement aria-label="Pagination" {...rest}>
-        {this.renderCount()}
         {this.renderPages()}
       </PaginationElement>
     );

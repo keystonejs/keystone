@@ -3,7 +3,7 @@ import * as React from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
-import { colors } from '@arch-ui/theme';
+import { borderRadius, colors } from '@arch-ui/theme';
 import type { LabelType, OnChangeType } from './types';
 
 export type PagePrimitiveProps = {
@@ -42,8 +42,9 @@ PagePrimitive.defaultProps = {
 const PageElement = styled(PagePrimitive)(({ isDisabled, isSelected }: PageProps) => {
   const disabledStyles = isDisabled
     ? {
-        color: colors.N40,
+        color: colors.N20,
         cursor: 'default',
+        pointerEvents: 'none',
       }
     : null;
   const selectedStyles = isSelected
@@ -59,21 +60,28 @@ const PageElement = styled(PagePrimitive)(({ isDisabled, isSelected }: PageProps
 
   return {
     appearance: 'none',
-    background: 0,
-    border: '1px solid transparent',
-    borderRadius: 3,
+    background: 'white',
+    border: 0,
+    boxShadow: `0 0 0 1px ${colors.N20}`,
     color: colors.N60,
     cursor: 'pointer',
     fontSize: 'inherit',
-    marginRight: '.1em',
-    padding: '0.25em 0.7em',
+    lineHeight: 1.2,
+    padding: '0.4em 0.8em',
     textDecoration: 'none',
 
     '&:hover, &:focus': {
-      backgroundColor: 'white',
-      borderColor: colors.N20,
       color: colors.N80,
       outline: 'none',
+    },
+
+    ':first-of-type': {
+      borderBottomLeftRadius: borderRadius,
+      borderTopLeftRadius: borderRadius,
+    },
+    ':last-of-type': {
+      borderBottomRightRadius: borderRadius,
+      borderTopRightRadius: borderRadius,
     },
 
     ...selectedStyles,

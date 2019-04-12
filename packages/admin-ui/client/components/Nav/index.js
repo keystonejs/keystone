@@ -7,7 +7,6 @@ import { uid } from 'react-uid';
 import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';
 
-import { ChevronLeftIcon, ChevronRightIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import {
   PrimaryNav,
@@ -56,18 +55,17 @@ const Relative = styled(Col)({
   position: 'relative',
 });
 const GrabHandle = styled.div({
-  backgroundColor: 'rgba(9, 30, 66, 0.2)',
+  backgroundColor: 'rgba(9, 30, 66, 0.1)',
   bottom: 0,
   cursor: 'col-resize',
-  opacity: 0.5,
   position: 'absolute',
   right: 0,
   top: 0,
-  transition: 'opacity 220ms linear',
+  transition: 'background-color 220ms linear',
   width: 1,
 
   ':hover, :active': {
-    opacity: 1,
+    backgroundColor: colors.primary,
     transitionDelay: '100ms', // avoid inadvertent mouse passes
   },
 
@@ -81,50 +79,31 @@ const GrabHandle = styled.div({
     top: -gridSize,
   },
 });
-const CollapseExpand = styled.button(({ isCollapsed, isVisible }) => {
-  const SIZE = isCollapsed ? 48 : 24;
-  const GUTTER = isCollapsed ? 12 : 24;
-  const boxShadow = isCollapsed
-    ? '0 2px 4px 1px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.1)'
-    : '0 1px 3px 1px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.06)';
+const CollapseExpand = styled.button(({ isCollapsed }) => {
+  const size = 32;
+  const offsetTop = 18;
 
   return {
     alignItems: 'center',
-    background: 'white',
+    background: 0,
     border: 0,
     borderRadius: '50%',
-    boxShadow,
-    color: colors.N60,
+    // boxShadow,
+    color: isCollapsed ? colors.N80 : colors.N20,
     cursor: 'pointer',
     display: 'flex',
-    height: SIZE,
+    height: size,
     justifyContent: 'center',
-    right: -SIZE / 2,
-    opacity: isVisible ? 1 : 0,
+    right: -size,
     outline: 0,
     padding: 0,
     position: 'absolute',
-    transition: `
-      opacity ${TRANSITION_DURATION},
-      right ${TRANSITION_DURATION},
-      transform 50ms,
-      visibility ${TRANSITION_DURATION}
-    `,
-    visibility: isVisible ? 'visible' : 'hidden',
-    width: SIZE,
-    top: GUTTER,
-
-    '> svg': {
-      position: 'relative',
-      right: isCollapsed ? -9 : 1,
-      transition: `right ${TRANSITION_DURATION}`,
-    },
+    transition: `color ${TRANSITION_DURATION}`,
+    width: size,
+    top: offsetTop,
 
     ':hover': {
-      transform: 'scale(1.12)',
-    },
-    ':active': {
-      transform: 'scale(1)',
+      color: colors.primary,
     },
   };
 });
@@ -265,7 +244,6 @@ class Nav extends Component {
   };
   render() {
     const { children } = this.props;
-    const { mouseIsOverNav } = this.state;
 
     return (
       <ResizeHandler>
@@ -314,13 +292,16 @@ class Nav extends Component {
                   delay={600}
                 >
                   {ref => (
-                    <CollapseExpand
-                      {...clickProps}
-                      ref={ref}
-                      isCollapsed={isCollapsed}
-                      isVisible={isCollapsed || mouseIsOverNav}
-                    >
-                      {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                    <CollapseExpand isCollapsed={isCollapsed} {...clickProps} ref={ref}>
+                      <svg
+                        fill="currentColor"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M2 12h11a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm0-5h9a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2zm0-5h12a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2z" />
+                      </svg>
                     </CollapseExpand>
                   )}
                 </Tooltip>

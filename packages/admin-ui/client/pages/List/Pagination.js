@@ -1,8 +1,9 @@
 // @flow
+/** @jsx jsx */
 
-import React from 'react';
+import { jsx } from '@emotion/core';
 import { Pagination } from '@arch-ui/pagination';
-import { useList, useListPagination } from './dataHooks';
+import { useListPagination } from './dataHooks';
 
 type Props = {
   isLoading: boolean,
@@ -12,7 +13,6 @@ type Props = {
 const CYPRESS_TEST_ID = 'ks-pagination';
 
 export default function ListPagination({ isLoading, listKey }: Props) {
-  const list = useList(listKey);
   const { data, onChange } = useListPagination(listKey);
 
   return (
@@ -23,9 +23,44 @@ export default function ListPagination({ isLoading, listKey }: Props) {
       onChange={onChange}
       isLoading={isLoading}
       pageSize={data.pageSize}
-      plural={list.plural}
-      single={list.label}
       total={data.itemCount}
     />
   );
+}
+
+// Count Stuff
+
+function getRange({ currentPage, pageSize, total }) {
+  const start = pageSize * (currentPage - 1) + 1;
+  const end = Math.min(start + pageSize - 1, total);
+
+  return { start, end };
+}
+
+export function getPaginationLabel({
+  currentPage,
+  pageSize,
+  plural = 'Items',
+  singular = 'Item',
+  total,
+}) {
+  if (!total) {
+    return `No ${plural}`;
+  }
+
+  let count = '';
+  let { end, start } = getRange({ currentPage, pageSize, total });
+
+  if (total > pageSize) {
+    count = `Showing ${start} to ${end} of ${total}`;
+  } else {
+    count = 'Showing ' + total;
+    if (total > 1 && plural) {
+      count += ' ' + plural;
+    } else if (total === 1 && singular) {
+      count += ' ' + singular;
+    }
+  }
+
+  return count;
 }

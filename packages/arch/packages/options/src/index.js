@@ -3,8 +3,49 @@
 import { jsx } from '@emotion/core';
 import * as React from 'react';
 import { useMemo } from 'react';
+import { CheckIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import ReactSelect, { components as reactSelectComponents } from 'react-select';
+
+export const CheckMark = ({ isDisabled, isFocused, isSelected }) => {
+  let bg;
+  let fg;
+  let border;
+  let size = 24;
+
+  if (isDisabled) {
+    bg = isSelected ? colors.N20 : colors.N10;
+    fg = isSelected ? 'white' : colors.N10;
+    border = isSelected ? colors.N20 : colors.N10;
+  } else if (isSelected) {
+    bg = isFocused ? 'white' : colors.B.base;
+    fg = isFocused ? colors.B.base : 'white';
+    border = colors.B.base;
+  } else {
+    border = isFocused ? colors.N15 : colors.N10;
+    bg = isFocused ? colors.N05 : 'white';
+    fg = isFocused ? colors.N05 : 'white';
+  }
+
+  return (
+    <div
+      css={{
+        alignItems: 'center',
+        backgroundColor: bg,
+        border: `2px solid ${border}`,
+        borderRadius: size,
+        boxSizing: 'border-box',
+        color: fg,
+        display: 'flex',
+        height: size,
+        justifyContent: 'center',
+        width: size,
+      }}
+    >
+      <CheckIcon />
+    </div>
+  );
+};
 
 type OptionPrimitiveProps = {
   children: React.Node,
@@ -17,50 +58,28 @@ type OptionPrimitiveProps = {
 export const OptionPrimitive = ({
   children,
   isDisabled,
-  isFocused,
-  isSelected,
-  innerProps: { innerRef, ...innerProps },
+  innerProps,
+  innerRef,
 }: OptionPrimitiveProps) => {
-  const hoverAndFocusStyles = {
-    backgroundColor: colors.B.L90,
-    color: colors.primary,
-  };
-  const focusedStyles = isFocused && !isDisabled ? hoverAndFocusStyles : null;
-  const selectedStyles =
-    isSelected && !isDisabled
-      ? {
-          '&, &:hover, &:focus, &:active': {
-            backgroundColor: colors.primary,
-            color: 'white',
-          },
-        }
-      : null;
-
   return (
     <div
       ref={innerRef}
       css={{
         alignItems: 'center',
-        backgroundColor: colors.N05,
-        borderRadius: 3,
         color: isDisabled ? colors.N60 : null,
         cursor: 'pointer',
         display: 'flex',
         fontSize: '0.9em',
+        fontWeight: 500,
         justifyContent: 'space-between',
-        marginBottom: 4,
         opacity: isDisabled ? 0.6 : null,
         outline: 0,
-        padding: `${gridSize}px ${gridSize * 1.5}px`,
+        padding: `${gridSize}px 0`,
         pointerEvents: isDisabled ? 'none' : null,
 
-        ':active': {
-          backgroundColor: colors.B.L80,
-          color: colors.primary,
+        '& + &': {
+          borderTop: `1px solid ${colors.N10}`,
         },
-
-        ...focusedStyles,
-        ...selectedStyles,
       }}
       {...innerProps}
     >
@@ -70,8 +89,16 @@ export const OptionPrimitive = ({
 };
 
 const optionRendererStyles = {
+  control: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isFocused ? colors.N10 : colors.N05,
+    border: 0,
+    boxShadow: 'none',
+    minHeight: 36,
+  }),
   menu: () => ({ marginTop: 8 }),
   menuList: provided => ({ ...provided, padding: 0 }),
+  placeholder: provided => ({ ...provided, color: colors.N50 }),
 };
 
 const Control = ({ selectProps, ...props }) => {

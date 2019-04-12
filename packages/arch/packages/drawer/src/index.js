@@ -26,7 +26,7 @@ import {
   type TransitionState,
   generateUEID,
 } from '@arch-ui/modal-utils';
-import { colors, gridSize } from '@arch-ui/theme';
+import { borderRadius, colors, gridSize, shadows } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
 import { A11yText } from '@arch-ui/typography';
 import { useStackIndex } from './stacks';
@@ -46,9 +46,16 @@ const Positioner = ({
 // TODO: different api for transitions
 // could probably just be a function that accepts the transitionState and returns the style
 any) => {
+  const stackTransforms =
+    stackIndex <= 0
+      ? []
+      : [`translate(calc(${stackIndex * 0.3} * -9vw))`, `scale(${1 - stackIndex / 50})`];
+
   return (
     <div
       css={{
+        boxSizing: 'border-box',
+        padding: gridSize,
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
@@ -58,9 +65,7 @@ any) => {
         top: 0,
         width,
         zIndex: 2,
-        transform: `${transform}${
-          stackIndex <= 0 ? '' : `translate(-${stackIndex * 0.3 * width}px)`
-        }`,
+        transform: `${transform}${stackTransforms.join(' ')}`,
         ...style,
       }}
       {...props}
@@ -77,11 +82,13 @@ const Dialog = forwardRef(({ component: Tag, ...props }: DialogElementProps, ref
     ref={ref}
     role="dialog"
     css={{
-      backgroundColor: colors.page,
-      boxShadow: '-2px 0 12px -1px rgba(0,0,0,0.3)',
+      backgroundColor: 'white',
+      boxShadow: shadows[2],
+      borderRadius: borderRadius * 2,
       display: 'flex',
       flex: 1,
       flexDirection: 'column',
+      // margin: gridSize,
       maxHeight: '100%',
     }}
     {...props}

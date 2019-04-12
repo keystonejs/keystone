@@ -11,11 +11,12 @@ export const fontFamily = `
   "Segoe UI Emoji",
   "Segoe UI Symbol"
 `;
-export const borderRadius = 4;
+export const borderRadius = 5;
 export const gridSize = 8;
 export const fontSize = 16;
 
 import colors from './colors';
+export { shadows } from './shadows';
 
 export { colors };
 

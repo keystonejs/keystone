@@ -12,8 +12,10 @@ import UpdateManyItemsModal from '../../components/UpdateManyItemsModal';
 import DeleteManyItemsModal from '../../components/DeleteManyItemsModal';
 
 export const ManageToolbar = styled.div(({ isVisible }) => ({
+  alignItems: 'center',
   display: 'flex',
   height: 35,
+  // justifyContent: 'space-between',
   marginBottom: gridSize * 2,
   marginTop: gridSize,
   visibility: isVisible ? 'visible' : 'hidden',
