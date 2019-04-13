@@ -22,8 +22,6 @@ type Props = {
   list: object,
 };
 
-const Bold = props => <strong css={{ fontWeight: 500 }} {...props} />;
-
 export default function ActiveFilters({ list }: Props) {
   const { filters, onAdd, onRemove, onRemoveAll, onUpdate } = useListFilter(list.key);
   const cypressId = 'ks-list-active-filters';
@@ -46,13 +44,7 @@ export default function ActiveFilters({ list }: Props) {
                     onRemove={onRemove(filter)}
                     css={elementOffsetStyles}
                   >
-                    <Bold>{filter.field.label}&nbsp;</Bold>
-                    <span>
-                      {label
-                        .split(' ')
-                        .slice(1)
-                        .join(' ')}
-                    </span>
+                    {label} {/* TODO: bold the first word; the field label */}
                   </Pill>
                 )}
               />

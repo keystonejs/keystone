@@ -158,6 +158,7 @@ class Pagination extends Component<PaginationProps, State> {
           aria-label="Click to show all pages"
           key="page_dot"
           onClick={this.toggleAllPages}
+          id="ks-pagination-show-pages"
           value={1} // needs value for flow...
         >
           <ListOrderedIcon />

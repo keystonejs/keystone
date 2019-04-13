@@ -112,7 +112,8 @@ function ListLayout(props: LayoutProps) {
             <Search list={list} isLoading={query.loading} />
             <ActiveFilters list={list} />
           </FlexGroup>
-          <ManageToolbar isVisible={!!itemCount}>
+
+          <ManageToolbar isVisible>
             {selectedItems.length ? (
               <Management
                 list={list}

@@ -4,6 +4,10 @@ describe('List view URL state', () => {
   it('Stores currentPage state in the url', () => {
     // Loading at page 3
     cy.visit('/admin/posts?currentPage=3');
+
+    // expand all pages first
+    cy.get('#ks-pagination-show-pages').click();
+
     cy.get('#ks-pagination button:nth-of-type(3)')
       .should('have.attr', 'aria-current', 'page')
       .should('contain', '3');
@@ -32,6 +36,9 @@ describe('List view URL state', () => {
     cy.get('#ks-pagination-count').should('contain', 'Showing 1 to 75 of');
     cy.get('#ks-list-table tbody tr').should('have.lengthOf', 75);
 
+    // expand all pages first
+    cy.get('#ks-pagination-show-pages').click();
+
     // click on a page button - to make sure we do not loose the page size
     cy.get('#ks-pagination button:nth-of-type(2)').click();
     cy.location('search')
@@ -55,7 +62,7 @@ describe('List view URL state', () => {
     // defaultColumns: 'name, status',
     cy.visit('/admin/posts');
     cy.get('#ks-list-table thead th')
-      .should('have.lengthOf', 4)
+      .should('have.lengthOf', 5)
       .should('contain', 'Name')
       .should('contain', 'Status');
 
@@ -66,7 +73,7 @@ describe('List view URL state', () => {
       .clear({ force: true })
       .type(`author{enter}`, { force: true });
     cy.get('#ks-list-table thead th')
-      .should('have.lengthOf', 5)
+      .should('have.lengthOf', 6)
       .should('contain', 'Name')
       .should('contain', 'Status')
       .should('contain', 'Author');
@@ -75,7 +82,7 @@ describe('List view URL state', () => {
     // URL should define the columns
     cy.visit('/admin/posts?fields=name,author,categories');
     cy.get('#ks-list-table thead th')
-      .should('have.lengthOf', 4)
+      .should('have.lengthOf', 5)
       .should('contain', 'Name')
       .should('contain', 'Author')
       .should('contain', 'Categories');
@@ -143,7 +150,9 @@ describe('List view URL state', () => {
     ];
     cy.visit(`/admin/posts?${params.join('&')}`);
 
-    // Shows the currentPage
+    // expand all pages first
+    cy.get('#ks-pagination-show-pages').click();
+
     cy.get('#ks-pagination button:nth-of-type(2)').should('have.attr', 'aria-current', 'page');
     // Has the correct number of items per page (pageSize)
     cy.get('#ks-pagination-count').should('contain', 'Showing 11 to 20 of');
