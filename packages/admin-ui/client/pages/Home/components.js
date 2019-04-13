@@ -5,32 +5,24 @@ import { Link } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
 
 import { PlusIcon } from '@arch-ui/icons';
-import { colors, borderRadius, gridSize } from '@arch-ui/theme';
+import { Card } from '@arch-ui/card';
+import { colors, gridSize } from '@arch-ui/theme';
 import { LoadingIndicator } from '@arch-ui/loading';
 import { A11yText } from '@arch-ui/typography';
 
 const BOX_GUTTER = `${gridSize * 2}px`;
 
-const BoxElement = styled(Link)`
-  background-color: white;
-  border-radius: ${borderRadius}px;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.075), 0 0 0 1px rgba(0, 0, 0, 0.1);
+const BoxElement = styled(Card)`
   color: ${colors.N40};
   display: block;
   line-height: 1.1;
   padding: ${BOX_GUTTER};
   position: relative;
-  transition: box-shadow 80ms linear;
 
   &:hover,
   &:focus {
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.075), 0 0 0 1px ${colors.B.A60};
     outline: 0;
     text-decoration: none;
-  }
-  &:active {
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.075), 0 0 0 1px ${colors.B.A60};
-    bottom: -1px;
   }
 `;
 
@@ -47,7 +39,7 @@ export const BoxComponent = ({
   const { label, singular } = list;
 
   return (
-    <BoxElement title={`Go to ${label}`} {...props}>
+    <BoxElement as={Link} isInteractive title={`Go to ${label}`} {...props}>
       <A11yText>Go to {label}</A11yText>
       <Name
         isHover={isHover || isFocus}
