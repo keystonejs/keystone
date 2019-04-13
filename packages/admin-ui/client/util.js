@@ -36,10 +36,10 @@ export function toastItemSuccess(toast, item, message = 'Success') {
     </div>
   );
 
-  toast.addToast(toastContent, {
+  toast.add(toastContent, {
     autoDismiss: true,
     appearance: 'success',
-  })();
+  });
 }
 
 export function toastError(toast, error) {
@@ -53,9 +53,9 @@ export function toastError(toast, error) {
     error.message
   );
 
-  toast.addToast(toastContent, {
+  toast.add(toastContent, {
     appearance: 'error',
-  })();
+  });
 }
 
 // ==============================
