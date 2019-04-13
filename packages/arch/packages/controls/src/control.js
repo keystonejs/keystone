@@ -61,8 +61,6 @@ const Icon = styled.div(({ checked, isDisabled, isFocus, isActive, isHover }: Ic
   let bg = colors.N10;
   if (isDisabled && checked) {
     bg = colors.B.D20;
-  } else if (isDisabled) {
-    bg = colors.N10;
   } else if (isActive) {
     bg = checked ? colors.B.D10 : colors.N20;
   } else if ((isFocus || isHover) && !checked) {

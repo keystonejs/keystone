@@ -104,7 +104,7 @@ export const SortOption = ({ children, isFocused, isSelected, ...props }) => {
     <OptionPrimitive isFocused={isFocused} isSelected={isSelected} {...props}>
       <span>
         {children}
-        {direction && <small css={{ color: colors.N40 }}> {direction}</small>}
+        <small css={{ color: colors.N40 }}> {direction}</small>
       </span>
       <CheckMark isFocused={isFocused} isSelected={isSelected} />
     </OptionPrimitive>
