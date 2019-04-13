@@ -35,7 +35,7 @@ export let IdCopy = memo(function IdCopy({ id }) {
   }, [isCopied, setIsCopied]);
 
   return (
-    <FlexGroup align="center" isContiguous>
+    <FlexGroup align="center" isContiguous isInline>
       <div
         css={{
           color: colors.N30,

@@ -1,59 +1,47 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { memo } from 'react';
-import { Link } from 'react-router-dom';
+import { Fragment, memo } from 'react';
 
-import { TriangleLeftIcon, PlusIcon } from '@arch-ui/icons';
+import { ArrowLeftIcon, SearchIcon, PlusIcon } from '@arch-ui/icons';
 import { FlexGroup } from '@arch-ui/layout';
-import { Title } from '@arch-ui/typography';
 import { IconButton } from '@arch-ui/button';
+import { A11yText, PageTitle } from '@arch-ui/typography';
 
-const TitleLink = ({ children, ...props }) => (
-  <Link
-    css={{
-      position: 'relative',
-      textDecoration: 'none',
+import { IdCopy } from './IdCopy';
 
-      ':hover': {
-        textDecoration: 'none',
-      },
-
-      '& > svg': {
-        opacity: 0,
-        height: 16,
-        width: 16,
-        position: 'absolute',
-        transitionProperty: 'opacity, transform, visibility',
-        transitionDuration: '300ms',
-        transform: 'translate(-75%, -50%)',
-        top: '50%',
-        visibility: 'hidden',
-      },
-
-      ':hover > svg': {
-        opacity: 0.66,
-        visibility: 'visible',
-        transform: 'translate(-110%, -50%)',
-      },
-    }}
-    {...props}
-  >
-    <TriangleLeftIcon />
-    {children}
-  </Link>
-);
-
-export let ItemTitle = memo(function ItemTitle({ titleText, list, adminPath, onCreateClick }) {
+export let ItemTitle = memo(function ItemTitle({
+  titleText,
+  item,
+  list,
+  adminPath,
+  onCreateClick,
+}) {
   const listHref = `${adminPath}/${list.path}`;
 
   return (
-    <FlexGroup align="center" justify="space-between">
-      <Title as="h1" margin="both">
-        <TitleLink to={listHref}>{list.label}</TitleLink>: {titleText}
-      </Title>
-      <IconButton appearance="create" icon={PlusIcon} onClick={onCreateClick}>
-        Create
-      </IconButton>
-    </FlexGroup>
+    <Fragment>
+      <FlexGroup align="center" justify="space-between" css={{ marginTop: '0.9rem' }}>
+        <div>
+          <IconButton iconSize={24} variant="subtle" icon={ArrowLeftIcon} to={listHref}>
+            <A11yText>{list.label}</A11yText>
+          </IconButton>
+          <IconButton
+            iconSize={24}
+            variant="subtle"
+            icon={SearchIcon}
+            onClick={() => console.log('TODO')}
+          >
+            <A11yText>Search</A11yText>
+          </IconButton>
+          <IdCopy id={item.id} />
+        </div>
+        <div>
+          <IconButton iconSize={24} variant="subtle" icon={PlusIcon} onClick={onCreateClick}>
+            <A11yText>Create</A11yText>
+          </IconButton>
+        </div>
+      </FlexGroup>
+      <PageTitle>{titleText}</PageTitle>
+    </Fragment>
   );
 });

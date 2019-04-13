@@ -8,6 +8,7 @@ import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';
 
 import { colors, gridSize } from '@arch-ui/theme';
+import { alpha } from '@arch-ui/color-utils';
 import {
   PrimaryNav,
   PrimaryNavItem,
@@ -55,7 +56,7 @@ const Relative = styled(Col)({
   position: 'relative',
 });
 const GrabHandle = styled.div(({ isActive }) => ({
-  backgroundColor: isActive ? 'rgba(9, 30, 66, 0.1)' : null,
+  backgroundColor: isActive ? alpha(colors.text, 0.05) : null,
   bottom: 0,
   cursor: 'col-resize',
   position: 'absolute',
@@ -65,11 +66,11 @@ const GrabHandle = styled.div(({ isActive }) => ({
   width: 1,
 
   ':hover': {
-    backgroundColor: 'rgba(9, 30, 66, 0.2)',
     transitionDelay: '100ms', // avoid inadvertent mouse passes
+    backgroundColor: alpha(colors.text, 0.1),
   },
   ':active': {
-    backgroundColor: 'rgba(9, 30, 66, 0.3)',
+    backgroundColor: alpha(colors.text, 0.15),
   },
 
   // increase hit-area

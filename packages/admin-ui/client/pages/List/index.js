@@ -6,7 +6,8 @@ import { Query } from 'react-apollo';
 import { IconButton } from '@arch-ui/button';
 import { PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
-import { colors } from '@arch-ui/theme';
+import { colors, gridSize } from '@arch-ui/theme';
+import { PageTitle } from '@arch-ui/typography';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
@@ -96,53 +97,55 @@ function ListLayout(props: LayoutProps) {
 
   // Success
   // ------------------------------
+  const tableInsetStyles = { paddingLeft: gridSize * 2, paddingRight: gridSize * 2 };
+
   return (
     <main>
       <div ref={measureElementRef} />
 
       <Container isFullWidth>
-        <h1 css={{ marginTop: '0.9rem' }}>{list.plural}</h1>
-
-        <FlexGroup>
-          <Search list={list} isLoading={query.loading} />
-          <ActiveFilters list={list} />
-        </FlexGroup>
-
-        <ManageToolbar isVisible={!!itemCount}>
-          {selectedItems.length ? (
-            <Management
-              list={list}
-              onDeleteMany={onDeleteSelectedItems}
-              onUpdateMany={onUpdateSelectedItems}
-              pageSize={pageSize}
-              selectedItems={selectedItems}
-              onSelectChange={onSelectChange}
-              totalItems={itemCount}
-            />
-          ) : (
-            <FlexGroup align="center" growIndexes={[0]}>
-              <div css={{ color: colors.N60 }}>
-                {getPaginationLabel({
-                  currentPage: currentPage,
-                  pageSize: pageSize,
-                  plural: list.plural,
-                  singular: list.singular,
-                  total: itemCount,
-                })}{' '}
-                sorted by
-                <SortPopout listKey={list.key} />
-              </div>
-              <FlexGroup align="center" css={{ marginLeft: '1em' }}>
-                <Pagination listKey={list.key} isLoading={query.loading} />
-                {list.access.create ? (
-                  <IconButton appearance="primary" icon={PlusIcon} onClick={openCreateModal}>
-                    Create
-                  </IconButton>
-                ) : null}
+        <div css={tableInsetStyles}>
+          <PageTitle>{list.plural}</PageTitle>
+          <FlexGroup>
+            <Search list={list} isLoading={query.loading} />
+            <ActiveFilters list={list} />
+          </FlexGroup>
+          <ManageToolbar isVisible={!!itemCount}>
+            {selectedItems.length ? (
+              <Management
+                list={list}
+                onDeleteMany={onDeleteSelectedItems}
+                onUpdateMany={onUpdateSelectedItems}
+                pageSize={pageSize}
+                selectedItems={selectedItems}
+                onSelectChange={onSelectChange}
+                totalItems={itemCount}
+              />
+            ) : (
+              <FlexGroup align="center" growIndexes={[0]}>
+                <div css={{ color: colors.N60 }}>
+                  {getPaginationLabel({
+                    currentPage: currentPage,
+                    pageSize: pageSize,
+                    plural: list.plural,
+                    singular: list.singular,
+                    total: itemCount,
+                  })}{' '}
+                  sorted by
+                  <SortPopout listKey={list.key} />
+                </div>
+                <FlexGroup align="center" css={{ marginLeft: '1em' }}>
+                  <Pagination listKey={list.key} isLoading={query.loading} />
+                  {list.access.create ? (
+                    <IconButton appearance="primary" icon={PlusIcon} onClick={openCreateModal}>
+                      Create
+                    </IconButton>
+                  ) : null}
+                </FlexGroup>
               </FlexGroup>
-            </FlexGroup>
-          )}
-        </ManageToolbar>
+            )}
+          </ManageToolbar>
+        </div>
       </Container>
 
       <CreateItemModal

@@ -22,6 +22,12 @@ export const H1 = styled.h1({
   fontWeight: 300,
   margin: '24px 0',
 });
+export const PageTitle = styled.h1({
+  fontSize: '2.4rem',
+  fontWeight: 900,
+  marginBottom: '0.66em',
+  marginTop: '0.9rem',
+});
 
 type TruncateProps = {
   as: React.ElementType,

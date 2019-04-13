@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { Query } from 'react-apollo';
 
 import { Container, Grid, Cell } from '@arch-ui/layout';
-import { Title } from '@arch-ui/typography';
+import { PageTitle } from '@arch-ui/typography';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
@@ -34,9 +34,7 @@ class HomePage extends Component {
     return (
       <main>
         <Container>
-          <Title as="h1" margin="both">
-            Dashboard
-          </Title>
+          <PageTitle>Dashboard</PageTitle>
           <ContainerQuery>
             {({ width }) => {
               let cellWidth = 3;

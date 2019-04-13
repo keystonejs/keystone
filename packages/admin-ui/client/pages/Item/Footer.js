@@ -3,20 +3,21 @@ import { jsx } from '@emotion/core';
 import { Fragment, useState, memo, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Button, LoadingButton } from '@arch-ui/button';
-import { gridSize } from '@arch-ui/theme';
+import { colors, gridSize } from '@arch-ui/theme';
+import { alpha } from '@arch-ui/color-utils';
 import ContainerQuery from '../../components/ContainerQuery';
 
 const Placeholder = styled.div({
-  height: 100,
+  // height: 100,
 });
 const Toolbar = styled.div({
-  backgroundColor: 'rgba(250, 251, 252, 0.93)',
+  backgroundColor: alpha('#fff', 0.93),
   bottom: 0,
-  boxShadow: 'rgba(0, 0, 0, 0.1) 0px -2px 0px',
+  boxShadow: `${alpha(colors.text, 0.1)} 0px -2px 0px`,
   display: 'flex',
   justifyContent: 'space-between',
   padding: `${gridSize * 3}px 0`,
-  position: 'fixed',
+  // position: 'fixed',
 });
 
 function useKeyListener(listener, deps) {

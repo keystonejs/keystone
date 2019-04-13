@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { colors, gridSize, shadows } from '@arch-ui/theme';
+import { borderRadius, gridSize, shadows } from '@arch-ui/theme';
 
 // ==============================
 // Card
@@ -19,7 +19,7 @@ export const Card = ({ as: Tag, elevation, isInteractive, isPadded, ...props }: 
     <Tag
       css={{
         background: 'white',
-        borderRadius: 4,
+        borderRadius: borderRadius,
         boxShadow: shadow,
         padding: isPadded ? gridSize * 2 : null,
         transition: `box-shadow 111ms ease-out, transform 111ms ease-out`,
@@ -53,7 +53,7 @@ export const Canvas = ({ as: Tag, isPadded, ...props }: CanvasProps) => {
     <Tag
       css={{
         background: `rgba(9, 30, 66, 0.04)`,
-        borderRadius: 8,
+        borderRadius: borderRadius * 2,
         padding: isPadded ? gridSize : null,
       }}
       {...props}

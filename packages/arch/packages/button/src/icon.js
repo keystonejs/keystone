@@ -10,12 +10,16 @@ type IconProps = ButtonProps & {
 };
 
 export const IconButton = forwardRef<IconProps, Button>(
-  ({ children, icon: Icon, ...props }, ref) => (
+  ({ children, icon: Icon, iconSize, ...props }, ref) => (
     <Button ref={ref} {...props}>
       <span css={{ display: 'flex', alignItems: 'center' }}>
-        <Icon css={children ? { marginRight: '0.5em' } : null} />
+        <Icon css={children ? { height: iconSize, width: iconSize, marginRight: '0.5em' } : null} />
         {children}
       </span>
     </Button>
   )
 );
+
+IconButton.defaultProps = {
+  iconSize: 16,
+};
