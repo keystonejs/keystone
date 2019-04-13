@@ -8,7 +8,7 @@ export const uniformHeight = {
   borderRadius: borderRadius,
   boxSizing: 'border-box',
   fontSize: '0.9rem',
-  lineHeight: '17px',
+  lineHeight: '1.1rem',
   margin: 0,
   minWidth: 1,
   padding: `${gridSize}px ${gridSize * 1.5}px`,

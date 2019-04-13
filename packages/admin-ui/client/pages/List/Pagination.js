@@ -18,7 +18,6 @@ export default function ListPagination({ isLoading, listKey }: Props) {
   return (
     <Pagination
       currentPage={data.currentPage}
-      displayCount
       id={CYPRESS_TEST_ID}
       onChange={onChange}
       isLoading={isLoading}
@@ -43,7 +42,7 @@ export function getPaginationLabel({
   plural = 'Items',
   singular = 'Item',
   total,
-}) {
+}: *) {
   if (!total) {
     return `No ${plural}`;
   }

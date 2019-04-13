@@ -51,6 +51,7 @@ function collapseBorderRadii(index, length) {
 
 type FlexGroupProps = {
   align: 'stretch' | 'center' | 'flex-start' | 'flex-start',
+  as: string,
   children: Array<Node>,
   growIndexes: Array<number>,
   isContiguous?: boolean,
@@ -60,12 +61,12 @@ type FlexGroupProps = {
   wrap?: boolean,
   spacing: number,
   stretch?: boolean,
-  tag: string,
 };
 export const FlexGroup = forwardRef<FlexGroupProps, any>(
   (
     {
       align,
+      as: Tag,
       children,
       growIndexes,
       isContiguous,
@@ -75,7 +76,6 @@ export const FlexGroup = forwardRef<FlexGroupProps, any>(
       wrap,
       spacing,
       stretch,
-      tag: Tag,
       ...props
     }: FlexGroupProps,
     ref
@@ -135,10 +135,10 @@ export const FlexGroup = forwardRef<FlexGroupProps, any>(
 // $FlowFixMe
 FlexGroup.defaultProps = {
   align: 'stretch',
+  as: 'div',
   growIndexes: [],
   justify: 'flex-start',
   spacing: gridSize,
-  tag: 'div',
 };
 
 // ==============================

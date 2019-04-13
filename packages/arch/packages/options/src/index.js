@@ -7,7 +7,13 @@ import { CheckIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import ReactSelect, { components as reactSelectComponents } from 'react-select';
 
-export const CheckMark = ({ isDisabled, isFocused, isSelected }) => {
+type Props = {
+  isDisabled?: boolean,
+  isFocused?: boolean,
+  isSelected?: boolean,
+};
+
+export const CheckMark = ({ isDisabled, isFocused, isSelected }: Props) => {
   let bg;
   let fg;
   let border;
@@ -52,6 +58,7 @@ type OptionPrimitiveProps = {
   isDisabled: boolean,
   isFocused: boolean,
   isSelected: boolean,
+  innerRef: ?React.Ref<*>,
   innerProps: Object,
 };
 

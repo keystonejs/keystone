@@ -1,17 +1,13 @@
 // @flow
 /** @jsx jsx */
+
 import { jsx } from '@emotion/core';
 import { Component, useEffect, useState } from 'react';
-import styled from '@emotion/styled';
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ListOrderedIcon,
-  PrimitiveDotIcon,
-} from '@arch-ui/icons';
-import Page from './Page';
+import { ChevronLeftIcon, ChevronRightIcon, ListOrderedIcon } from '@arch-ui/icons';
+import { FlexGroup } from '@arch-ui/layout';
 import { LoadingSpinner } from '@arch-ui/loading';
 
+import Page from './Page';
 import type { LabelType, OnChangeType } from './types';
 
 function ariaPageLabelFn(page: number) {
@@ -27,11 +23,6 @@ export type PaginationProps = {
   total: number,
   isLoading: boolean,
 };
-
-const PaginationElement = styled.nav({
-  alignItems: 'center',
-  display: 'flex',
-});
 
 const PageChildren = ({ page, isLoading, isSelected }) => {
   const [shouldShowLoading, setShouldShowLoading] = useState(false);
@@ -57,7 +48,9 @@ const PageChildren = ({ page, isLoading, isSelected }) => {
   );
 };
 
-class Pagination extends Component<PaginationProps> {
+type State = { allPagesVisible: boolean };
+
+class Pagination extends Component<PaginationProps, State> {
   static defaultProps = {
     ariaPageLabel: ariaPageLabelFn,
     currentPage: 1,
@@ -65,10 +58,14 @@ class Pagination extends Component<PaginationProps> {
   };
   state = { allPagesVisible: false };
 
+  toggleAllPages = () => {
+    this.setState(state => ({ allPagesVisible: !state.allPagesVisible }));
+  };
+
   renderPages() {
     let { ariaPageLabel, currentPage, limit, pageSize, total } = this.props;
 
-    if (total <= pageSize) return null;
+    if (total <= pageSize) return [];
 
     let pages = [];
     let totalPages = Math.ceil(total / pageSize);
@@ -160,9 +157,8 @@ class Pagination extends Component<PaginationProps> {
         <Page
           aria-label="Click to show all pages"
           key="page_dot"
-          onClick={() => {
-            this.setState(state => ({ allPagesVisible: !state.allPagesVisible }));
-          }}
+          onClick={this.toggleAllPages}
+          value={1} // needs value for flow...
         >
           <ListOrderedIcon />
         </Page>
@@ -183,8 +179,8 @@ class Pagination extends Component<PaginationProps> {
     // strip props to get `rest` attributes; things id, className etc.
     const {
       ariaPageLabel,
-      countFormatter,
       currentPage,
+      isLoading,
       limit,
       onChange,
       pageSize,
@@ -192,9 +188,10 @@ class Pagination extends Component<PaginationProps> {
       ...rest
     } = this.props;
     return (
-      <PaginationElement aria-label="Pagination" {...rest}>
+      // $FlowFixMe flex group doesn't understand default props for some reason, in this instance...
+      <FlexGroup as="nav" align="center" aria-label="Pagination" isContiguous isInline {...rest}>
         {this.renderPages()}
-      </PaginationElement>
+      </FlexGroup>
     );
   }
 }

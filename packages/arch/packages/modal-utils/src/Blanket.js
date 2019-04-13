@@ -6,8 +6,14 @@ import { jsx } from '@emotion/core';
 import { colors } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
 
-export const Blanket = ({ isTinted, isLight, ...props }) => {
+type Props = {
+  isLight?: boolean,
+  isTinted?: boolean,
+};
+
+export const Blanket = ({ isTinted, isLight, ...props }: Props) => {
   let bg = 'transparent';
+
   if (isTinted) {
     bg = isLight ? 'rgba(255, 255, 255, 0.5)' : alpha(colors.N100, 0.2);
   }

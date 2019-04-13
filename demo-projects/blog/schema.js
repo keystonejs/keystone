@@ -63,7 +63,7 @@ exports.Post = {
     image: { type: File, adapter: fileAdapter },
   },
   adminConfig: {
-    defaultPageSize: 20,
+    defaultPageSize: 5,
     defaultColumns: 'title, status',
     defaultSort: 'title',
   },

@@ -212,9 +212,9 @@ const ItemDetails = withRouter(
 
                       let onChange = useCallback(
                         value => {
-                          this.setState(({ item }) => ({
+                          this.setState(({ item: itm }) => ({
                             item: {
-                              ...item,
+                              ...itm,
                               [field.path]: value,
                             },
                             itemHasChanged: true,

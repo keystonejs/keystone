@@ -7,10 +7,11 @@ import { Button, type ButtonProps } from './primitives';
 
 type IconProps = ButtonProps & {
   icon: ComponentType<*>,
+  iconSize: number,
 };
 
 export const IconButton = forwardRef<IconProps, Button>(
-  ({ children, icon: Icon, iconSize, ...props }, ref) => (
+  ({ children, icon: Icon, iconSize = 16, ...props }, ref) => (
     <Button ref={ref} {...props}>
       <span css={{ display: 'flex', alignItems: 'center' }}>
         <Icon css={children ? { height: iconSize, width: iconSize, marginRight: '0.5em' } : null} />
@@ -19,7 +20,3 @@ export const IconButton = forwardRef<IconProps, Button>(
     </Button>
   )
 );
-
-IconButton.defaultProps = {
-  iconSize: 16,
-};

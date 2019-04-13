@@ -1,6 +1,6 @@
 // @flow
 import { colors } from '@arch-ui/theme';
-import { alpha, darken, lighten } from '@arch-ui/color-utils';
+import { alpha, darken } from '@arch-ui/color-utils';
 
 const boldAppearance = {
   default: {
@@ -12,22 +12,22 @@ const boldAppearance = {
   primary: {
     bg: colors.primary,
     border: colors.primary,
-    text: 'white',
+    text: '#fff',
   },
   create: {
     bg: colors.create,
     border: colors.create,
-    text: 'white',
+    text: '#fff',
   },
   danger: {
     bg: colors.danger,
     border: colors.danger,
-    text: 'white',
+    text: '#fff',
   },
   warning: {
     bg: colors.warning,
     border: colors.warning,
-    text: 'white',
+    text: '#fff',
   },
 };
 const ghostAppearance = {
@@ -142,22 +142,18 @@ export function makeBoldVariant({
   isActive,
   isHover,
   isFocus,
+  isSelected,
 }: {
   appearance: $Keys<typeof boldAppearance>,
   isDisabled: boolean,
   isActive: boolean,
   isHover: boolean,
   isFocus: boolean,
+  isSelected?: boolean,
 }) {
   // $FlowFixMe
   const { bg, border, focusRing, text } = boldAppearance[appearance];
-  // const bgTop = lighten(bg, 10);
-  // const bgBottom = darken(bg, 10);
-  // const borderTop = lighten(border, 8);
-  // const borderBottom = darken(border, 16);
-  const activeBg = darken(bg, 12);
-  const textShadow =
-    appearance === 'default' ? '0 1px 0 rgba(255, 255, 255, 0.5)' : '0 -1px 0 rgba(0, 0, 0, 0.25)';
+  const activeBg = appearance === 'default' ? colors.N10 : darken(bg, 12);
 
   const hoverAndFocus =
     isHover || isFocus
@@ -180,22 +176,20 @@ export function makeBoldVariant({
           boxShadow: `0 0 0 3px ${alpha(focusRing || bg, 0.2)}`,
         }
       : null;
-  const activeStyles = isActive
-    ? {
-        background: activeBg,
-        borderColor: border,
-        // boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.12)',
-      }
-    : null;
+  const activeStyles =
+    isActive || isSelected
+      ? {
+          background: activeBg,
+          borderColor: border,
+        }
+      : null;
 
   return {
     backgroundColor: bg,
     backgroundRepeat: 'repeat-x',
-    // background: isDisabled ? null : `linear-gradient(to bottom, ${bgTop} 0%, ${bgBottom} 100%)`,
-    borderColor: isDisabled ? null : border,
+    borderColor: border,
     color: text,
     fontWeight: 500,
-    textShadow,
 
     ...hoverStyles,
     ...focusStyles,

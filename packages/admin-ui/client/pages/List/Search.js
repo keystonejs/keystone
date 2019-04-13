@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { useRef, useState } from 'react';
+import { useRef, forwardRef, useState } from 'react';
 
 import { SearchIcon, XIcon } from '@arch-ui/icons';
 // import { Input } from '@arch-ui/input';
@@ -88,8 +88,9 @@ export default function Search({ isLoading, list }) {
   );
 }
 
-const Input = props => (
+const Input = forwardRef((props, ref) => (
   <input
+    ref={ref}
     css={{
       ...uniformHeight,
       background: colors.N10,
@@ -102,4 +103,4 @@ const Input = props => (
     }}
     {...props}
   />
-);
+));
