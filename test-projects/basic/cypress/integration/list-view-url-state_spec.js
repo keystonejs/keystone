@@ -25,11 +25,11 @@ describe('List view URL state', () => {
     cy.visit('/admin/posts');
 
     // NOTE: Posts in the basic project has defaultPageSize set to 20.
-    cy.get('#ks-pagination > div:first').should('contain', 'Showing 1 to 20 of');
+    cy.get('#ks-pagination-count').should('contain', 'Showing 1 to 20 of');
     cy.get('#ks-list-table tbody tr').should('have.lengthOf', 20);
 
     cy.visit('/admin/posts?pageSize=75');
-    cy.get('#ks-pagination > div:first').should('contain', 'Showing 1 to 75 of');
+    cy.get('#ks-pagination-count').should('contain', 'Showing 1 to 75 of');
     cy.get('#ks-list-table tbody tr').should('have.lengthOf', 75);
 
     // click on a page button - to make sure we do not loose the page size
@@ -60,7 +60,7 @@ describe('List view URL state', () => {
       .should('contain', 'Status');
 
     // UI should update the URL
-    cy.get('button:contains("Columns")').click();
+    cy.get('#ks-column-button').click();
     cy.get('#app ~ div')
       .find('input[id^="react-select-"]')
       .clear({ force: true })
@@ -82,17 +82,17 @@ describe('List view URL state', () => {
   });
   it('Stores sortBy state in the url', () => {
     cy.visit('/admin/posts');
-    cy.get('h1 button').should('contain', 'name');
+    cy.get('#list-page-sort-button').should('contain', 'Name');
 
     cy.visit('/admin/posts?sortBy=status');
-    cy.get('h1 button').should('contain', 'status');
+    cy.get('#list-page-sort-button').should('contain', 'Status');
 
     // Sort DESC
     cy.visit('/admin/posts?sortBy=-name');
-    cy.get('h1 button').should('contain', 'name');
+    cy.get('#list-page-sort-button').should('contain', 'Name');
 
     // UI should update url
-    cy.get('h1 button').click();
+    cy.get('#list-page-sort-button').click();
     cy.get('#app ~ div')
       .find('input[id^="react-select-"]')
       .clear({ force: true })
@@ -146,7 +146,7 @@ describe('List view URL state', () => {
     // Shows the currentPage
     cy.get('#ks-pagination button:nth-of-type(2)').should('have.attr', 'aria-current', 'page');
     // Has the correct number of items per page (pageSize)
-    cy.get('#ks-pagination > div:first').should('contain', 'Showing 11 to 20 of');
+    cy.get('#ks-pagination-count').should('contain', 'Showing 11 to 20 of');
     // Search
     cy.get('#ks-list-search-input').should('have.attr', 'value', 'Why');
     // Has the correct columns (fields)
@@ -155,7 +155,7 @@ describe('List view URL state', () => {
       .should('contain', 'Name')
       .should('contain', 'Views');
     // Is sorted by sortby
-    cy.get('h1 button').should('contain', 'views');
+    cy.get('#list-page-sort-button').should('contain', 'Views');
     // Has the filter
     cy.get('#ks-list-active-filters button:nth-of-type(1)').should(
       'contain',

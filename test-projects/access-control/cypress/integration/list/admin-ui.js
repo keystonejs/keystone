@@ -215,7 +215,7 @@ describe('Access Control Lists > Admin UI', () => {
 
             cy.visit(`admin/${slug}`);
 
-            cy.get('button[appearance="create"]').should('exist');
+            cy.get('#list-page-create-button').should('exist');
           });
 
           it(`shows create option when creatable (item view): ${JSON.stringify(access)}`, () => {
@@ -228,7 +228,7 @@ describe('Access Control Lists > Admin UI', () => {
               .then(({ data }) =>
                 cy
                   .visit(`/admin/${slug}/${data[queryName][0].id}`)
-                  .then(() => cy.get('button[appearance="create"]').should('exist'))
+                  .then(() => cy.get('#list-page-create-button').should('exist'))
               );
           });
         });
@@ -244,7 +244,7 @@ describe('Access Control Lists > Admin UI', () => {
 
             cy.visit(`admin/${slug}`);
 
-            cy.get('button[appearance="create"]').should('not.exist');
+            cy.get('#list-page-create-button').should('not.exist');
           });
 
           it(`does not show create option when not creatable (item view): ${JSON.stringify(
@@ -259,7 +259,7 @@ describe('Access Control Lists > Admin UI', () => {
               .then(({ data }) =>
                 cy
                   .visit(`/admin/${slug}/${data[queryName][0].id}`)
-                  .then(() => cy.get('button[appearance="create"]').should('not.exist'))
+                  .then(() => cy.get('#list-page-create-button').should('not.exist'))
               );
           });
         });
@@ -283,7 +283,7 @@ describe('Access Control Lists > Admin UI', () => {
             // ie; The UI has no way of executing the graphql-side permission
             // query, so must always show the option until the user submits a
             // graphql request.
-            cy.get('button[appearance="create"]').should('exist');
+            cy.get('#list-page-create-button').should('exist');
           });
 
           it(`shows create option when creatable (item view): ${JSON.stringify(access)}`, () => {
@@ -296,7 +296,7 @@ describe('Access Control Lists > Admin UI', () => {
               .then(({ data }) =>
                 cy
                   .visit(`/admin/${slug}/${data[queryName][0].id}`)
-                  .then(() => cy.get('button[appearance="create"]').should('exist'))
+                  .then(() => cy.get('#list-page-create-button').should('exist'))
               );
           });
         });
@@ -320,7 +320,7 @@ describe('Access Control Lists > Admin UI', () => {
             // ie; The UI has no way of executing the graphql-side permission
             // query, so must always show the option until the user submits a
             // graphql request.
-            cy.get('button[appearance="create"]').should('exist');
+            cy.get('#list-page-create-button').should('exist');
           });
 
           it(`shows create option when creatable (item view): ${JSON.stringify(access)}`, () => {
@@ -333,7 +333,7 @@ describe('Access Control Lists > Admin UI', () => {
               .then(({ data }) =>
                 cy
                   .visit(`/admin/${slug}/${data[queryName][0].id}`)
-                  .then(() => cy.get('button[appearance="create"]').should('exist'))
+                  .then(() => cy.get('#list-page-create-button').should('exist'))
               );
           });
         });
@@ -439,7 +439,7 @@ describe('Access Control Lists > Admin UI', () => {
             // ie; The UI has no way of executing the graphql-side permission
             // query, so must always show the option until the user submits a
             // graphql request.
-            cy.get('button[appearance="create"]').should('exist');
+            cy.get('#list-page-create-button').should('exist');
           });
         });
     });
@@ -462,7 +462,7 @@ describe('Access Control Lists > Admin UI', () => {
             // ie; The UI has no way of executing the graphql-side permission
             // query, so must always show the option until the user submits a
             // graphql request.
-            cy.get('button[appearance="create"]').should('exist');
+            cy.get('#list-page-create-button').should('exist');
           });
         });
     });

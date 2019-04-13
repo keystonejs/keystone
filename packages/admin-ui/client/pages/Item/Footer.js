@@ -76,6 +76,7 @@ function Reset({ canReset, onReset }) {
 
 export default memo(function Footer(props) {
   const { onSave, onDelete, canReset, updateInProgress, onReset } = props;
+  const cypressId = 'item-page-save-button';
 
   return (
     <ContainerQuery
@@ -86,6 +87,7 @@ export default memo(function Footer(props) {
             <div css={{ display: 'flex', alignItems: 'center' }}>
               <LoadingButton
                 appearance="primary"
+                id={cypressId}
                 isDisabled={updateInProgress}
                 isLoading={updateInProgress}
                 onClick={onSave}

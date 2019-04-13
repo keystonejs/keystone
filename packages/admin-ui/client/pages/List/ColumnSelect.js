@@ -17,13 +17,15 @@ type Props = {
 export default function ColumnPopout({ listKey }: Props) {
   const list = useList(listKey);
   const [columns, handleColumnChange] = useListColumns(listKey);
-  const cypresId = 'ks-column-select';
+  const cypresButtonId = 'ks-column-button';
+  const cypresSelectId = 'ks-column-select';
 
   return (
     <Popout
       target={handlers => (
         <Button
           variant="subtle"
+          id={cypresButtonId}
           css={{
             background: 0,
             border: 0,
@@ -36,7 +38,7 @@ export default function ColumnPopout({ listKey }: Props) {
       )}
       headerTitle="Columns"
     >
-      <div id={cypresId} css={{ padding: POPOUT_GUTTER }}>
+      <div id={cypresSelectId} css={{ padding: POPOUT_GUTTER }}>
         <FieldSelect
           fields={list.fields}
           onChange={handleColumnChange}

@@ -99,6 +99,8 @@ function ListLayout(props: LayoutProps) {
   // ------------------------------
   const tableInsetStyles = { paddingLeft: gridSize * 2, paddingRight: gridSize * 2 };
 
+  const cypressId = 'list-page-create-button';
+
   return (
     <main>
       <div ref={measureElementRef} />
@@ -124,20 +126,27 @@ function ListLayout(props: LayoutProps) {
             ) : (
               <FlexGroup align="center" growIndexes={[0]}>
                 <div css={{ color: colors.N60 }}>
-                  {getPaginationLabel({
-                    currentPage: currentPage,
-                    pageSize: pageSize,
-                    plural: list.plural,
-                    singular: list.singular,
-                    total: itemCount,
-                  })}{' '}
+                  <span id="ks-pagination-count">
+                    {getPaginationLabel({
+                      currentPage: currentPage,
+                      pageSize: pageSize,
+                      plural: list.plural,
+                      singular: list.singular,
+                      total: itemCount,
+                    })}
+                  </span>{' '}
                   sorted by
                   <SortPopout listKey={list.key} />
                 </div>
                 <FlexGroup align="center" css={{ marginLeft: '1em' }}>
                   <Pagination listKey={list.key} isLoading={query.loading} />
                   {list.access.create ? (
-                    <IconButton appearance="primary" icon={PlusIcon} onClick={openCreateModal}>
+                    <IconButton
+                      appearance="primary"
+                      icon={PlusIcon}
+                      onClick={openCreateModal}
+                      id={cypressId}
+                    >
                       Create
                     </IconButton>
                   ) : null}

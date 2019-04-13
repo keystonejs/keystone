@@ -17,6 +17,7 @@ export let ItemTitle = memo(function ItemTitle({
   onCreateClick,
 }) {
   const listHref = `${adminPath}/${list.path}`;
+  const cypressId = 'item-page-create-button';
 
   return (
     <Fragment>
@@ -36,7 +37,13 @@ export let ItemTitle = memo(function ItemTitle({
           <IdCopy id={item.id} />
         </div>
         <div>
-          <IconButton iconSize={24} variant="subtle" icon={PlusIcon} onClick={onCreateClick}>
+          <IconButton
+            iconSize={24}
+            variant="subtle"
+            icon={PlusIcon}
+            id={cypressId}
+            onClick={onCreateClick}
+          >
             <A11yText>Create</A11yText>
           </IconButton>
         </div>

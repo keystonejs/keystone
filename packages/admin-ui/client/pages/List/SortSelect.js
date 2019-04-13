@@ -36,6 +36,8 @@ export default function SortPopout({ listKey }: Props) {
 
   const cachedOptions = useMemo(() => list.fields.map(({ options, ...field }) => field), [list]);
 
+  const cypressId = 'list-page-sort-button';
+
   return (
     <Popout
       innerRef={popoutRef}
@@ -46,7 +48,7 @@ export default function SortPopout({ listKey }: Props) {
         </Note>
       }
       target={handlers => (
-        <SortButton {...handlers}>
+        <SortButton id={cypressId} {...handlers}>
           {sortValue.field.label}
           <DisclosureArrow />
         </SortButton>

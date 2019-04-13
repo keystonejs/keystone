@@ -71,6 +71,8 @@ class CreateItemModal extends Component {
     // probably be removed in the future because i'm guessing this will make performance _worse_ in concurrent mode
     list.adminMeta.readViews(list.fields.map(({ views }) => views.Field));
 
+    const cypressId = 'create-item-modal-submit-button';
+
     return (
       <Drawer
         closeOnBlanketClick
@@ -82,7 +84,7 @@ class CreateItemModal extends Component {
         slideInFrom="right"
         footer={
           <Fragment>
-            <Button appearance="primary" type="submit">
+            <Button appearance="primary" type="submit" id={cypressId}>
               {isLoading ? 'Loading...' : 'Create'}
             </Button>
             <Button appearance="warning" variant="subtle" onClick={this.onClose}>
