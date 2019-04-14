@@ -13,7 +13,7 @@ import { useListFilter } from '../dataHooks';
 export const elementOffsetStyles = {
   marginBottom: gridSize / 2,
   marginTop: gridSize / 2,
-  marginLeft: gridSize / 2,
+  marginRight: gridSize / 2,
 };
 
 export type FilterType = {

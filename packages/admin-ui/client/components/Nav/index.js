@@ -55,8 +55,8 @@ const Relative = styled(Col)({
   height: ' 100%',
   position: 'relative',
 });
-const GrabHandle = styled.div(({ isActive }) => ({
-  backgroundColor: isActive ? alpha(colors.text, 0.05) : null,
+const GrabHandle = styled.div({
+  backgroundColor: alpha(colors.text, 0.05),
   bottom: 0,
   cursor: 'col-resize',
   position: 'absolute',
@@ -82,7 +82,7 @@ const GrabHandle = styled.div(({ isActive }) => ({
     right: -gridSize,
     top: -gridSize,
   },
-}));
+});
 const CollapseExpand = styled.button(({ isCollapsed }) => {
   const size = 32;
   const offsetTop = 18;

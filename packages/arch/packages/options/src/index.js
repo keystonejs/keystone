@@ -3,9 +3,10 @@
 import { jsx } from '@emotion/core';
 import * as React from 'react';
 import { useMemo } from 'react';
-import { CheckIcon } from '@arch-ui/icons';
-import { colors, gridSize } from '@arch-ui/theme';
 import ReactSelect, { components as reactSelectComponents } from 'react-select';
+import { CheckIcon } from '@arch-ui/icons';
+import { borderRadius, colors, gridSize } from '@arch-ui/theme';
+import { uniformHeight } from '@arch-ui/common';
 
 type Props = {
   isDisabled?: boolean,
@@ -97,10 +98,13 @@ export const OptionPrimitive = ({
 const optionRendererStyles = {
   control: (provided, state) => ({
     ...provided,
-    backgroundColor: state.isFocused ? colors.N10 : colors.N05,
+    ...uniformHeight,
+    background: state.isFocused ? colors.N10 : colors.N05,
     border: 0,
     boxShadow: 'none',
-    minHeight: 36,
+    cursor: 'text',
+    padding: 0,
+    minHeight: 34,
   }),
   menu: () => ({ marginTop: 8 }),
   menuList: provided => ({ ...provided, padding: 0 }),

@@ -49,7 +49,7 @@ export default function SortPopout({ listKey }: Props) {
         </Note>
       }
       target={handlers => (
-        <Button variant="subtle" spacing="cozy" id={cypressId} {...handlers}>
+        <Button variant="subtle" appearance="primary" spacing="cozy" id={cypressId} {...handlers}>
           {sortValue.field.label}
           <DisclosureArrow />
         </Button>

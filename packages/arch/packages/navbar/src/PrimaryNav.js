@@ -17,6 +17,7 @@ export const NavGroupIcons = styled.div({
 });
 
 export const PrimaryNav = styled.nav({
+  backgroundColor: colors.N05,
   boxSizing: 'border-box',
   display: 'flex',
   flexFlow: 'column nowrap',
@@ -67,11 +68,11 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
           ':after': {
             backgroundColor: colors.primary,
             borderRadius: 2,
-            bottom: 0,
+            bottom: 2,
             content: '" "',
             position: 'absolute',
-            right: 4,
-            top: 0,
+            right: 6,
+            top: 2,
             width: 4,
           },
         },

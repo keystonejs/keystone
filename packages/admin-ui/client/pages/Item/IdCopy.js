@@ -9,6 +9,7 @@ import { FlexGroup } from '@arch-ui/layout';
 import { A11yText } from '@arch-ui/typography';
 import { colors } from '@arch-ui/theme';
 import { Button } from '@arch-ui/button';
+import Tooltip from '@arch-ui/tooltip';
 
 let CopyIcon = memo(function CopyIcon({ isCopied }) {
   return isCopied ? (
@@ -22,11 +23,14 @@ let CopyIcon = memo(function CopyIcon({ isCopied }) {
 
 export let IdCopy = memo(function IdCopy({ id }) {
   let [isCopied, setIsCopied] = useState(false);
+  const onSuccess = useCallback(() => {
+    setIsCopied(true);
+  }, []);
 
   useEffect(() => {
     if (isCopied) {
       let timeoutID = setTimeout(() => {
-        isCopied(false);
+        setIsCopied(false);
       }, 500);
       return () => {
         clearTimeout(timeoutID);
@@ -45,18 +49,16 @@ export let IdCopy = memo(function IdCopy({ id }) {
       >
         ID: {id}
       </div>
-      <CopyToClipboard
-        as={Button}
-        text={id}
-        onSuccess={useCallback(() => {
-          setIsCopied(true);
-        }, [])}
-        variant="subtle"
-        title="Copy ID"
-      >
-        <CopyIcon isCopied={isCopied} />
-        <A11yText>Copy ID</A11yText>
-      </CopyToClipboard>
+      <Tooltip content="Copy ID" hideOnMouseDown hideOnKeyDown>
+        {ref => (
+          <CopyToClipboard as={Button} ref={ref} text={id} onSuccess={onSuccess} variant="subtle">
+            <div css={{ width: 16 }}>
+              <CopyIcon isCopied={isCopied} />
+            </div>
+            <A11yText>Copy ID</A11yText>
+          </CopyToClipboard>
+        )}
+      </Tooltip>
     </FlexGroup>
   );
 });

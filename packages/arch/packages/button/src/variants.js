@@ -110,7 +110,7 @@ export function makeNuanceVariant({
 
   return {
     color: text,
-    fontWeight: 500,
+    fontWeight: 'normal',
 
     ':hover, :focus': makeGhostVariant({ appearance, isDisabled }),
   };
@@ -132,7 +132,7 @@ export function makeGhostVariant({
     border: '1px solid',
     borderColor: border,
     color: text,
-    fontWeight: 500,
+    fontWeight: 'normal',
     opacity: isDisabled ? 0.5 : null,
 
     ':hover, :focus': {
@@ -203,7 +203,7 @@ export function makeBoldVariant({
     backgroundRepeat: 'repeat-x',
     borderColor: border,
     color: text,
-    fontWeight: 500,
+    fontWeight: 'bold',
 
     ...hoverStyles,
     ...focusStyles,

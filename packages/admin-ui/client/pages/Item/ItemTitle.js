@@ -2,12 +2,14 @@
 import { jsx } from '@emotion/core';
 import { Fragment, memo } from 'react';
 
-import { ArrowLeftIcon, SearchIcon, PlusIcon } from '@arch-ui/icons';
+import { ChevronLeftIcon, PlusIcon } from '@arch-ui/icons';
 import { FlexGroup } from '@arch-ui/layout';
 import { IconButton } from '@arch-ui/button';
-import { A11yText, PageTitle } from '@arch-ui/typography';
+import { PageTitle } from '@arch-ui/typography';
+import Tooltip from '@arch-ui/tooltip';
 
 import { IdCopy } from './IdCopy';
+import { Search } from './Search';
 
 export let ItemTitle = memo(function ItemTitle({
   titleText,
@@ -21,34 +23,30 @@ export let ItemTitle = memo(function ItemTitle({
 
   return (
     <Fragment>
-      <FlexGroup align="center" justify="space-between" css={{ marginTop: '0.9rem' }}>
+      <PageTitle>{titleText}</PageTitle>
+      <FlexGroup align="center" justify="space-between" css={{ marginBottom: '0.9rem' }}>
         <div>
-          <IconButton iconSize={24} variant="subtle" icon={ArrowLeftIcon} to={listHref}>
-            <A11yText>{list.label}</A11yText>
+          <IconButton iconSize={16} variant="subtle" icon={ChevronLeftIcon} to={listHref}>
+            Back
           </IconButton>
-          <IconButton
-            iconSize={24}
-            variant="subtle"
-            icon={SearchIcon}
-            onClick={() => console.log('TODO')}
-          >
-            <A11yText>Search</A11yText>
-          </IconButton>
-          <IdCopy id={item.id} />
+          <Search list={list} />
         </div>
         <div>
-          <IconButton
-            iconSize={24}
-            variant="subtle"
-            icon={PlusIcon}
-            id={cypressId}
-            onClick={onCreateClick}
-          >
-            <A11yText>Create</A11yText>
-          </IconButton>
+          <IdCopy id={item.id} />
+          <Tooltip content="Create" hideOnMouseDown hideOnKeyDown>
+            {ref => (
+              <IconButton
+                ref={ref}
+                iconSize={16}
+                variant="subtle"
+                icon={PlusIcon}
+                id={cypressId}
+                onClick={onCreateClick}
+              />
+            )}
+          </Tooltip>
         </div>
       </FlexGroup>
-      <PageTitle>{titleText}</PageTitle>
     </Fragment>
   );
 });
