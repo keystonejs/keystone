@@ -3,6 +3,7 @@
 import styled from '@emotion/styled';
 
 import { colors, gridSize } from '@arch-ui/theme';
+import { alpha } from '@arch-ui/color-utils';
 import { ItemElement } from './common';
 
 export const PRIMARY_NAV_GUTTER = gridSize * 2;
@@ -17,7 +18,7 @@ export const NavGroupIcons = styled.div({
 });
 
 export const PrimaryNav = styled.nav({
-  backgroundColor: colors.N05,
+  backgroundColor: alpha(colors.text, 0.02),
   boxSizing: 'border-box',
   display: 'flex',
   flexFlow: 'column nowrap',

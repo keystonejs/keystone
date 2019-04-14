@@ -25,8 +25,8 @@ export const H1 = styled.h1({
 export const PageTitle = styled.h1({
   fontSize: '2.4rem',
   fontWeight: 900,
-  marginBottom: '0.66em',
-  marginTop: '0.9rem',
+  marginBottom: '0.5em',
+  marginTop: '0.8rem',
 });
 
 type TruncateProps = {
