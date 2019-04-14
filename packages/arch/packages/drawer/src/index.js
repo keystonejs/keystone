@@ -83,7 +83,7 @@ const Dialog = forwardRef(({ component: Tag, ...props }: DialogElementProps, ref
     role="dialog"
     css={{
       backgroundColor: 'white',
-      boxShadow: shadows[2],
+      boxShadow: shadows[3],
       borderRadius: borderRadius * 2,
       display: 'flex',
       flex: 1,
@@ -221,7 +221,7 @@ ModalDialog.defaultProps = {
   attachTo: ((document.body: any): HTMLElement),
   closeOnBlanketClick: false,
   component: 'div',
-  width: 560,
+  width: 640,
 };
 
 export default withTransitionState(ModalDialog);

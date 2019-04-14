@@ -98,7 +98,8 @@ function ListLayout(props: LayoutProps) {
   // Success
   // ------------------------------
 
-  const cypressId = 'list-page-create-button';
+  const cypressCreateId = 'list-page-create-button';
+  const cypressFiltersId = 'ks-list-active-filters';
 
   return (
     <main>
@@ -106,10 +107,19 @@ function ListLayout(props: LayoutProps) {
 
       <Container isFullWidth>
         <PageTitle>{list.plural}</PageTitle>
-        <FlexGroup>
+        <div
+          css={{
+            alignItems: 'center',
+            display: 'flex',
+            flexWrap: 'wrap',
+          }}
+          align="center"
+          wrap
+          id={cypressFiltersId}
+        >
           <Search list={list} isLoading={query.loading} />
           <ActiveFilters list={list} />
-        </FlexGroup>
+        </div>
 
         <ManageToolbar isVisible>
           {selectedItems.length ? (
@@ -152,7 +162,7 @@ function ListLayout(props: LayoutProps) {
                     appearance="primary"
                     icon={PlusIcon}
                     onClick={openCreateModal}
-                    id={cypressId}
+                    id={cypressCreateId}
                   >
                     Create
                   </IconButton>

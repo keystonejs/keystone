@@ -5,11 +5,7 @@ import styled from '@emotion/styled';
 import { Button, LoadingButton } from '@arch-ui/button';
 import { colors, gridSize } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
-import ContainerQuery from '../../components/ContainerQuery';
 
-const Placeholder = styled.div({
-  // height: 100,
-});
 const Toolbar = styled.div({
   backgroundColor: alpha('#fff', 0.93),
   bottom: 0,
@@ -80,38 +76,33 @@ export default memo(function Footer(props) {
   const cypressId = 'item-page-save-button';
 
   return (
-    <ContainerQuery
-      render={({ ref, width }) => (
-        <Fragment>
-          <Placeholder ref={ref} />
-          <Toolbar style={{ width }} key="footer">
-            <div css={{ display: 'flex', alignItems: 'center' }}>
-              <LoadingButton
-                appearance="primary"
-                id={cypressId}
-                isDisabled={updateInProgress}
-                isLoading={updateInProgress}
-                onClick={onSave}
-                style={{ marginRight: 8 }}
-                type="submit"
-              >
-                Save Changes
-              </LoadingButton>
-              <Reset canReset={canReset} onReset={onReset} />
-            </div>
-            <div>
-              <Button
-                appearance="danger"
-                isDisabled={updateInProgress}
-                variant="nuance"
-                onClick={onDelete}
-              >
-                Delete
-              </Button>
-            </div>
-          </Toolbar>
-        </Fragment>
-      )}
-    />
+    <Fragment>
+      <Toolbar key="footer">
+        <div css={{ display: 'flex', alignItems: 'center' }}>
+          <LoadingButton
+            appearance="primary"
+            id={cypressId}
+            isDisabled={updateInProgress}
+            isLoading={updateInProgress}
+            onClick={onSave}
+            style={{ marginRight: 8 }}
+            type="submit"
+          >
+            Save Changes
+          </LoadingButton>
+          <Reset canReset={canReset} onReset={onReset} />
+        </div>
+        <div>
+          <Button
+            appearance="danger"
+            isDisabled={updateInProgress}
+            variant="nuance"
+            onClick={onDelete}
+          >
+            Delete
+          </Button>
+        </div>
+      </Toolbar>
+    </Fragment>
   );
 });

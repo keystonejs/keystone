@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
+import { Fragment } from 'react';
 import { jsx } from '@emotion/core';
-import { FlexGroup } from '@arch-ui/layout';
 import { Pill } from '@arch-ui/pill';
 import { Button } from '@arch-ui/button';
 import { gridSize } from '@arch-ui/theme';
@@ -10,7 +10,11 @@ import EditFilterPopout from './EditFilterPopout';
 import AddFilterPopout from './AddFilterPopout';
 import { useListFilter } from '../dataHooks';
 
-export const elementOffsetStyles = { marginBottom: gridSize / 2, marginTop: gridSize / 2 };
+export const elementOffsetStyles = {
+  marginBottom: gridSize / 2,
+  marginTop: gridSize / 2,
+  marginLeft: gridSize / 2,
+};
 
 export type FilterType = {
   field: { label: string, list: Object, path: string, type: string },
@@ -24,10 +28,9 @@ type Props = {
 
 export default function ActiveFilters({ list }: Props) {
   const { filters, onAdd, onRemove, onRemoveAll, onUpdate } = useListFilter(list.key);
-  const cypressId = 'ks-list-active-filters';
 
   return (
-    <FlexGroup align="center" wrap id={cypressId}>
+    <Fragment>
       {filters.length
         ? filters.map(filter => {
             const label = filter.field.formatFilter(filter);
@@ -70,6 +73,6 @@ export default function ActiveFilters({ list }: Props) {
           Clear All
         </Button>
       ) : null}
-    </FlexGroup>
+    </Fragment>
   );
 }

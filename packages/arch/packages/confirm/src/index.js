@@ -43,8 +43,8 @@ const Dialog = forwardRef(({ component: Tag, width, ...props }: DialogElementPro
     role="alertdialog"
     css={{
       backgroundColor: 'white',
-      borderBottomRightRadius: borderRadius,
-      borderBottomLeftRadius: borderRadius,
+      borderBottomRightRadius: borderRadius * 2,
+      borderBottomLeftRadius: borderRadius * 2,
       boxShadow: shadows[2],
       display: 'flex',
       flexDirection: 'column',
