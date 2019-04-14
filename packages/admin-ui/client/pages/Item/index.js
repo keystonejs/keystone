@@ -28,7 +28,7 @@ import { ItemTitle } from './ItemTitle';
 let Render = ({ children }) => children();
 
 const Form = styled.form({
-  margin: '24px 0',
+  marginBottom: gridSize * 3,
 });
 
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
@@ -201,7 +201,7 @@ const ItemDetails = withRouter(
             adminPath={adminPath}
             titleText={savedData._label_}
           />
-          <Card>
+          <Card css={{ marginBottom: '3em', paddingBottom: 0 }}>
             <Form>
               <AutocompleteCaptor />
               {list.fields.map((field, i) => {

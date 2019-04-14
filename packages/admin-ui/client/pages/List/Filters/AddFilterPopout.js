@@ -368,6 +368,7 @@ export default class AddFilterPopout extends Component<Props, State> {
           <Button
             variant="subtle"
             appearance="primary"
+            spacing="cozy"
             css={{ marginBottom: gridSize / 2, marginTop: gridSize / 2 }}
             {...handlers}
           >

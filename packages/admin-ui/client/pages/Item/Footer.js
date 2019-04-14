@@ -16,8 +16,9 @@ const Toolbar = styled.div({
   boxShadow: `${alpha(colors.text, 0.1)} 0px -2px 0px`,
   display: 'flex',
   justifyContent: 'space-between',
-  padding: `${gridSize * 3}px 0`,
-  // position: 'fixed',
+  paddingBottom: gridSize * 2,
+  paddingTop: gridSize * 2,
+  position: 'sticky',
 });
 
 function useKeyListener(listener, deps) {

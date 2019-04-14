@@ -18,7 +18,8 @@ export const ManageToolbar = styled.div(({ isVisible }) => ({
   visibility: isVisible ? 'visible' : 'hidden',
 }));
 const SelectedCount = styled.div({
-  color: colors.N60,
+  color: colors.N40,
+  fontSize: '0.9rem',
   marginRight: gridSize,
 });
 
@@ -58,7 +59,7 @@ export default function ListManage(props: Props) {
               appearance="primary"
               icon={SettingsIcon}
               onClick={() => setUpdateModal(true)}
-              variant="ghost"
+              variant="nuance"
               data-test-name="update"
             >
               Update
@@ -70,7 +71,7 @@ export default function ListManage(props: Props) {
             appearance="danger"
             icon={TrashcanIcon}
             onClick={() => setDeleteModal(true)}
-            variant="ghost"
+            variant="nuance"
             data-test-name="delete"
           >
             Delete

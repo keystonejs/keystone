@@ -27,7 +27,7 @@ export default function ActiveFilters({ list }: Props) {
   const cypressId = 'ks-list-active-filters';
 
   return (
-    <FlexGroup wrap id={cypressId}>
+    <FlexGroup align="center" wrap id={cypressId}>
       {filters.length
         ? filters.map(filter => {
             const label = filter.field.formatFilter(filter);
@@ -65,6 +65,7 @@ export default function ActiveFilters({ list }: Props) {
           appearance="warning"
           onClick={onRemoveAll}
           css={elementOffsetStyles}
+          spacing="cozy"
         >
           Clear All
         </Button>

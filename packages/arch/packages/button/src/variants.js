@@ -70,6 +70,20 @@ const subtleAppearance = {
     textHover: colors.danger,
   },
 };
+const nuanceAppearance = {
+  default: {
+    text: colors.text,
+  },
+  primary: {
+    text: colors.primary,
+  },
+  warning: {
+    text: colors.danger,
+  },
+  danger: {
+    text: colors.danger,
+  },
+};
 
 export function makeSubtleVariant({ appearance }: { appearance: $Keys<typeof subtleAppearance> }) {
   const { text, textHover } = subtleAppearance[appearance];
@@ -89,10 +103,10 @@ export function makeNuanceVariant({
   appearance,
   isDisabled,
 }: {
-  appearance: $Keys<typeof subtleAppearance>,
+  appearance: $Keys<typeof nuanceAppearance>,
   isDisabled: boolean,
 }) {
-  const { text } = subtleAppearance[appearance];
+  const { text } = nuanceAppearance[appearance];
 
   return {
     color: text,

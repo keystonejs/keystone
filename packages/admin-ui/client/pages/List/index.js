@@ -6,7 +6,7 @@ import { Query } from 'react-apollo';
 import { IconButton } from '@arch-ui/button';
 import { PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
-import { colors, gridSize } from '@arch-ui/theme';
+import { colors } from '@arch-ui/theme';
 import { PageTitle } from '@arch-ui/typography';
 
 import CreateItemModal from '../../components/CreateItemModal';
@@ -97,7 +97,6 @@ function ListLayout(props: LayoutProps) {
 
   // Success
   // ------------------------------
-  const tableInsetStyles = { paddingLeft: gridSize * 2, paddingRight: gridSize * 2 };
 
   const cypressId = 'list-page-create-button';
 
@@ -106,56 +105,62 @@ function ListLayout(props: LayoutProps) {
       <div ref={measureElementRef} />
 
       <Container isFullWidth>
-        <div css={tableInsetStyles}>
-          <PageTitle>{list.plural}</PageTitle>
-          <FlexGroup>
-            <Search list={list} isLoading={query.loading} />
-            <ActiveFilters list={list} />
-          </FlexGroup>
+        <PageTitle>{list.plural}</PageTitle>
+        <FlexGroup>
+          <Search list={list} isLoading={query.loading} />
+          <ActiveFilters list={list} />
+        </FlexGroup>
 
-          <ManageToolbar isVisible>
-            {selectedItems.length ? (
-              <Management
-                list={list}
-                onDeleteMany={onDeleteSelectedItems}
-                onUpdateMany={onUpdateSelectedItems}
-                pageSize={pageSize}
-                selectedItems={selectedItems}
-                onSelectChange={onSelectChange}
-                totalItems={itemCount}
-              />
-            ) : (
-              <FlexGroup align="center" growIndexes={[0]}>
-                <div css={{ color: colors.N60 }}>
-                  <span id="ks-pagination-count">
-                    {getPaginationLabel({
-                      currentPage: currentPage,
-                      pageSize: pageSize,
-                      plural: list.plural,
-                      singular: list.singular,
-                      total: itemCount,
-                    })}
-                  </span>{' '}
-                  sorted by
-                  <SortPopout listKey={list.key} />
-                </div>
-                <FlexGroup align="center" css={{ marginLeft: '1em' }}>
-                  <Pagination listKey={list.key} isLoading={query.loading} />
-                  {list.access.create ? (
-                    <IconButton
-                      appearance="primary"
-                      icon={PlusIcon}
-                      onClick={openCreateModal}
-                      id={cypressId}
-                    >
-                      Create
-                    </IconButton>
-                  ) : null}
-                </FlexGroup>
+        <ManageToolbar isVisible>
+          {selectedItems.length ? (
+            <Management
+              list={list}
+              onDeleteMany={onDeleteSelectedItems}
+              onUpdateMany={onUpdateSelectedItems}
+              pageSize={pageSize}
+              selectedItems={selectedItems}
+              onSelectChange={onSelectChange}
+              totalItems={itemCount}
+            />
+          ) : (
+            <FlexGroup align="center" growIndexes={[0]}>
+              <div
+                css={{
+                  alignItems: 'center',
+                  color: colors.N40,
+                  display: 'flex',
+                  fontSize: '0.9rem',
+                }}
+              >
+                <span id="ks-pagination-count">
+                  {getPaginationLabel({
+                    currentPage: currentPage,
+                    pageSize: pageSize,
+                    plural: list.plural,
+                    singular: list.singular,
+                    total: itemCount,
+                  })}
+                  ,
+                </span>
+                <span css={{ paddingLeft: '0.5ex' }}>sorted by</span>
+                <SortPopout listKey={list.key} />
+              </div>
+              <FlexGroup align="center" css={{ marginLeft: '1em' }}>
+                <Pagination listKey={list.key} isLoading={query.loading} />
+                {list.access.create ? (
+                  <IconButton
+                    appearance="primary"
+                    icon={PlusIcon}
+                    onClick={openCreateModal}
+                    id={cypressId}
+                  >
+                    Create
+                  </IconButton>
+                ) : null}
               </FlexGroup>
-            )}
-          </ManageToolbar>
-        </div>
+            </FlexGroup>
+          )}
+        </ManageToolbar>
       </Container>
 
       <CreateItemModal

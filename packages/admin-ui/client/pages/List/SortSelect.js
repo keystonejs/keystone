@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 import { CheckMark, OptionPrimitive, Options } from '@arch-ui/options';
 import { colors } from '@arch-ui/theme';
 import { Kbd } from '@arch-ui/typography';
+import { Button } from '@arch-ui/button';
 
 import { DisclosureArrow, Popout, POPOUT_GUTTER } from '../../components/Popout';
 import { useList, useListSort, useKeyDown } from './dataHooks';
@@ -48,10 +49,10 @@ export default function SortPopout({ listKey }: Props) {
         </Note>
       }
       target={handlers => (
-        <SortButton id={cypressId} {...handlers}>
+        <Button variant="subtle" spacing="cozy" id={cypressId} {...handlers}>
           {sortValue.field.label}
           <DisclosureArrow />
-        </SortButton>
+        </Button>
       )}
     >
       <div css={{ padding: POPOUT_GUTTER }}>
@@ -72,31 +73,6 @@ export default function SortPopout({ listKey }: Props) {
 // ==============================
 // Styled Components
 // ==============================
-
-export const SortButton = styled.button(({ isActive }) => {
-  const overStyles = {
-    color: colors.text,
-    borderBottomColor: colors.text,
-  };
-  const activeStyles = isActive ? overStyles : null;
-  return {
-    background: 0,
-    border: 0,
-    borderBottom: `1px solid ${colors.N20}`,
-    outline: 0,
-    color: 'inherit',
-    cursor: 'pointer',
-    display: 'inline-block',
-    fontSize: 'inherit',
-    fontWeight: 'inherit',
-    marginLeft: '0.5ex',
-    padding: 0,
-    verticalAlign: 'baseline',
-
-    ':hover, :focus': overStyles,
-    ...activeStyles,
-  };
-});
 
 export const SortOption = ({ children, isFocused, isSelected, ...props }) => {
   const { altIsDown } = props.selectProps;
