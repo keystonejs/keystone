@@ -1,5 +1,8 @@
 const passport = require('passport');
 
+const FIELD_SERVICE_NAME = 'service';
+const FIELD_USER_ID = 'serviceUserId';
+const FIELD_USERNAME = 'serviceUsername';
 const FIELD_TOKEN_SECRET = 'tokenSecret';
 const FIELD_ITEM = 'item';
 
@@ -11,11 +14,9 @@ class PassportAuthStrategy {
     this.keystone = keystone;
     this.listKey = listKey;
     this.config = {
-      idField: `${authType}Id`,
-      usernameField: `${authType}Username`,
       tokenSecretField: FIELD_TOKEN_SECRET,
       itemField: FIELD_ITEM,
-      sessionListKey: `${authType}Session`,
+      sessionListKey: `passportSession`,
       useSession: false,
       sessionIdField: 'passport',
       keystoneSessionIdField: 'keystone_passport',
@@ -51,8 +52,9 @@ class PassportAuthStrategy {
       // reasons
       this.keystone.createList(this.config.sessionListKey, {
         fields: {
-          [this.config.idField]: { type: Text },
-          [this.config.usernameField]: { type: Text },
+          [FIELD_SERVICE_NAME]: { type: Text },
+          [FIELD_USER_ID]: { type: Text },
+          [FIELD_USERNAME]: { type: Text },
           [this.config.tokenSecretField]: { type: Text },
           [this.config.itemField]: {
             type: Relationship,
@@ -103,7 +105,8 @@ class PassportAuthStrategy {
       // NOTE: We don't need to filter on verifiedAt as these rows can only
       // possibly exist after we've validated with Passport Service (see above)
       pastSessionItem = await this.getSessionList().adapter.findOne({
-        [this.config.idField]: validatedInfo.id,
+        [FIELD_SERVICE_NAME]: this.authType,
+        [FIELD_USER_ID]: validatedInfo.id,
       });
       // find user item related to past session, join not possible atm
       fieldItemPopulated =
@@ -117,8 +120,9 @@ class PassportAuthStrategy {
 
     const newSessionData = {
       [this.config.tokenSecretField]: accessToken,
-      [this.config.idField]: validatedInfo.id,
-      [this.config.usernameField]: validatedInfo.username,
+      [FIELD_SERVICE_NAME]: this.authType,
+      [FIELD_USER_ID]: validatedInfo.id,
+      [FIELD_USERNAME]: validatedInfo.username,
     };
 
     // Only add a reference to the parent list when we know the link exists
@@ -184,8 +188,8 @@ class PassportAuthStrategy {
       });
 
       await this.getList().adapter.update(item.id, {
-        [this.config.idField]: serviceItem[this.config.idField],
-        [this.config.usernameField]: serviceItem[this.config.usernameField],
+        [FIELD_USER_ID]: serviceItem[FIELD_USER_ID],
+        [FIELD_USERNAME]: serviceItem[FIELD_USERNAME],
       });
     } catch (error) {
       return { success: false, error };
