@@ -55,8 +55,8 @@ const Relative = styled(Col)({
   height: ' 100%',
   position: 'relative',
 });
-const GrabHandle = styled.div({
-  backgroundColor: alpha(colors.text, 0.05),
+const GrabHandle = styled.div(({ isActive }) => ({
+  backgroundColor: isActive ? alpha(colors.text, 0.05) : null,
   bottom: 0,
   cursor: 'col-resize',
   position: 'absolute',
@@ -82,10 +82,10 @@ const GrabHandle = styled.div({
     right: -gridSize,
     top: -gridSize,
   },
-});
-const CollapseExpand = styled.button(({ isCollapsed }) => {
+}));
+const CollapseExpand = styled.button(({ isCollapsed, mouseIsOverNav }) => {
   const size = 32;
-  const offsetTop = 18;
+  const offsetTop = 20;
 
   return {
     alignItems: 'center',
@@ -93,7 +93,7 @@ const CollapseExpand = styled.button(({ isCollapsed }) => {
     border: 0,
     borderRadius: '50%',
     // boxShadow,
-    color: isCollapsed ? colors.N80 : colors.N20,
+    color: mouseIsOverNav || isCollapsed ? colors.text : colors.page,
     cursor: 'pointer',
     display: 'flex',
     height: size,
@@ -284,7 +284,13 @@ class Nav extends Component {
                 style={makeResizeStyles('width')}
               >
                 <PrimaryNavContent />
-                {isCollapsed ? null : <GrabHandle isActive={mouseIsOverNav} {...resizeProps} />}
+                {isCollapsed ? null : (
+                  <GrabHandle
+                    onDoubleClick={clickProps.onClick}
+                    isActive={mouseIsOverNav}
+                    {...resizeProps}
+                  />
+                )}
                 <Tooltip
                   content={
                     <TooltipContent kbd={KEYBOARD_SHORTCUT}>
@@ -297,7 +303,12 @@ class Nav extends Component {
                   delay={600}
                 >
                   {ref => (
-                    <CollapseExpand isCollapsed={isCollapsed} {...clickProps} ref={ref}>
+                    <CollapseExpand
+                      isCollapsed={isCollapsed}
+                      mouseIsOverNav={mouseIsOverNav}
+                      {...clickProps}
+                      ref={ref}
+                    >
                       <svg
                         fill="currentColor"
                         width="16"

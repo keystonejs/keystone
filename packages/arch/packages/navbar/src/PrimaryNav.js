@@ -18,7 +18,6 @@ export const NavGroupIcons = styled.div({
 });
 
 export const PrimaryNav = styled.nav({
-  backgroundColor: alpha(colors.text, 0.02),
   boxSizing: 'border-box',
   display: 'flex',
   flexFlow: 'column nowrap',
@@ -64,17 +63,8 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
   const selectedStyles = isSelected
     ? {
         '&, :hover, :active, :focus': {
-          fontWeight: 500,
-
           ':after': {
             backgroundColor: colors.primary,
-            borderRadius: 2,
-            bottom: 2,
-            content: '" "',
-            position: 'absolute',
-            right: 6,
-            top: 2,
-            width: 4,
           },
         },
       }
@@ -97,11 +87,30 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
     whiteSpace: 'nowrap',
 
     ':hover': {
-      backgroundColor: colors.B.A5,
+      // backgroundColor: colors.N05,
       textDecoration: 'none',
+
+      ':after': {
+        backgroundColor: alpha(colors.text, 0.2),
+      },
     },
     ':active': {
-      backgroundColor: colors.B.A10,
+      // backgroundColor: colors.N10,
+      ':after': {
+        backgroundColor: alpha(colors.text, 0.4),
+      },
+    },
+
+    ':after': {
+      borderRadius: 2,
+      bottom: 2,
+      content: '" "',
+      pointerEvents: 'none',
+      position: 'absolute',
+      right: 6,
+      top: 2,
+      transition: 'background-color 110ms',
+      width: 4,
     },
 
     ...selectedStyles,

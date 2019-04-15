@@ -369,7 +369,7 @@ export function useListSort(listKey) {
 export function useListColumns(listKey) {
   const list = useList(listKey);
   const { urlState } = useListUrlState(listKey);
-  const { fields, sortBy } = urlState;
+  const { fields } = urlState;
   const setSearch = useListModifier(listKey);
 
   const onChange = selectedFields => {
@@ -379,11 +379,7 @@ export function useListColumns(listKey) {
       .concat(list.fields)
       .filter(field => selectedFields.some(selectedField => selectedField.path === field.path));
 
-    // Reset `sortBy` if we were ordering by a field which has been removed.
-    const newSort = newFields.includes(sortBy.field)
-      ? sortBy
-      : { ...sortBy, field: newFields.filter(field => field !== pseudoLabelField)[0] };
-    setSearch({ fields: newFields, sortBy: newSort });
+    setSearch({ fields: newFields });
   };
 
   return [fields, onChange];

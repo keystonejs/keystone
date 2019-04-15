@@ -16,8 +16,6 @@ export const CONTAINER_WIDTH = 1160;
 export const CONTAINER_GUTTER = gridSize * 6;
 
 export const Container = styled.div(({ isFullWidth }) => ({
-  marginLeft: 'auto',
-  marginRight: 'auto',
   maxWidth: isFullWidth ? '100%' : CONTAINER_WIDTH,
   paddingLeft: CONTAINER_GUTTER,
   paddingRight: CONTAINER_GUTTER,

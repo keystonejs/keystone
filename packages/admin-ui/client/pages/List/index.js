@@ -112,7 +112,19 @@ function ListLayout(props: LayoutProps) {
 
       <Container isFullWidth>
         <HeaderInset>
-          <PageTitle>{list.plural}</PageTitle>
+          <FlexGroup align="center" justify="space-between">
+            <PageTitle>{list.plural}</PageTitle>
+            {list.access.create ? (
+              <IconButton
+                appearance="primary"
+                icon={PlusIcon}
+                onClick={openCreateModal}
+                id={cypressCreateId}
+              >
+                Create
+              </IconButton>
+            ) : null}
+          </FlexGroup>
           <div
             css={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap' }}
             id={cypressFiltersId}
@@ -157,16 +169,6 @@ function ListLayout(props: LayoutProps) {
                 </div>
                 <FlexGroup align="center" css={{ marginLeft: '1em' }}>
                   <Pagination listKey={list.key} isLoading={query.loading} />
-                  {list.access.create ? (
-                    <IconButton
-                      appearance="primary"
-                      icon={PlusIcon}
-                      onClick={openCreateModal}
-                      id={cypressCreateId}
-                    >
-                      Create
-                    </IconButton>
-                  ) : null}
                 </FlexGroup>
               </FlexGroup>
             )}
