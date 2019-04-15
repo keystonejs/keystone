@@ -13113,6 +13113,13 @@ magic-string@^0.25.1:
   dependencies:
     sourcemap-codec "^1.4.1"
 
+magic-string@^0.25.2:
+  version "0.25.2"
+  resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.25.2.tgz#139c3a729515ec55e96e69e82a11fe890a293ad9"
+  integrity sha512-iLs9mPjh9IuTtRsqqhNGYcZXGei0Nh/A4xirrsqW7c+QhKVFL2vm7U09ru6cHRD22azaP/wMDgI+HCqbETMTtg==
+  dependencies:
+    sourcemap-codec "^1.4.4"
+
 mailgun-js@^0.18.0:
   version "0.18.1"
   resolved "https://registry.yarnpkg.com/mailgun-js/-/mailgun-js-0.18.1.tgz#ee39aa18d7bb598a5ce9ede84afb681defc8a6b0"
@@ -16329,14 +16336,13 @@ prebuild-install@^5.2.2:
     tunnel-agent "^0.6.0"
     which-pm-runs "^1.0.0"
 
-preconstruct@^0.0.49:
-  version "0.0.49"
-  resolved "https://registry.yarnpkg.com/preconstruct/-/preconstruct-0.0.49.tgz#12cedf86d6dc54fe084dfb0b8f690e5b07b77af3"
-  integrity sha512-YZIoMUbI88/FImjF5slN8TCVjJZpcmap6bqzRNsabh92v8cEQ3piGuAAz/4HKpT00CO4XkfIKdogJiT8C8v3lg==
+preconstruct@0.0.0-symlink-aliases.3:
+  version "0.0.0-symlink-aliases.3"
+  resolved "https://registry.yarnpkg.com/preconstruct/-/preconstruct-0.0.0-symlink-aliases.3.tgz#6f935132b1ae6929446ab6e2e2ef660b692d0ca1"
+  integrity sha512-BsZt8ycAGDqK/OQP+fqEbqK/t82jEyn8W1Sq5NZ77kwlYAnxDzlMSo+6xvXyIYbVU6F9C2ZniN3A2Fs/6wyEgg==
   dependencies:
     "@babel/code-frame" "^7.0.0"
     "@babel/core" "^7.1.2"
-    "@babel/plugin-proposal-class-properties" "^7.3.4"
     "@babel/plugin-transform-runtime" "^7.2.0"
     builtin-modules "^3.0.0"
     chalk "^2.3.2"
@@ -16356,15 +16362,18 @@ preconstruct@^0.0.49:
     meow "^5.0.0"
     ms "^2.1.1"
     p-limit "^2.0.0"
-    prettier "^1.15.3"
+    quick-lru "^4.0.0"
+    resolve "^1.10.0"
     resolve-from "^4.0.0"
     rollup "^1.0.0"
     rollup-plugin-alias "^1.4.0"
-    rollup-plugin-commonjs "^9.1.3"
+    rollup-plugin-commonjs "^9.3.4"
     rollup-plugin-node-resolve "^4.0.0"
     rollup-plugin-replace "^2.0.0"
+    rollup-pluginutils "^2.6.0"
     sarcastic "^1.5.0"
     terser "^3.14.1"
+    xxhash-wasm "^0.3.1"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -16391,7 +16400,7 @@ prettier-bytes@^1.0.3:
   resolved "https://registry.yarnpkg.com/prettier-bytes/-/prettier-bytes-1.0.4.tgz#994b02aa46f699c50b6257b5faaa7fe2557e62d6"
   integrity sha1-mUsCqkb2mcULYle1+qp/4lV+YtY=
 
-prettier@^1.13.0, prettier@^1.14.3, prettier@^1.15.3, prettier@^1.16.0, prettier@^1.16.4:
+prettier@^1.13.0, prettier@^1.14.3, prettier@^1.16.0, prettier@^1.16.4:
   version "1.16.4"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.16.4.tgz#73e37e73e018ad2db9c76742e2647e21790c9717"
   integrity sha512-ZzWuos7TI5CKUeQAtFd6Zhm2s6EpAD/ZLApIhsF9pRvRtM1RFo61dM/4MSRUA0SuLugA/zgrZD8m0BaY46Og7g==
@@ -16798,6 +16807,11 @@ quick-lru@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/quick-lru/-/quick-lru-1.1.0.tgz#4360b17c61136ad38078397ff11416e186dcfbb8"
   integrity sha1-Q2CxfGETatOAeDl/8RQW4Ybc+7g=
+
+quick-lru@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/quick-lru/-/quick-lru-4.0.0.tgz#a44d44010a776d787af65b1226566dd1ae7b9649"
+  integrity sha512-5cS39FEMrySKt/8c66v10HrmoexP2iYOsJBhtbVrlAr6Cbuc6khFMN8CHJG87c+QsdxBABivfVscgk20I/rPDw==
 
 raf-schd@^4.0.0:
   version "4.0.0"
@@ -18218,15 +18232,15 @@ rollup-plugin-alias@^1.4.0:
   dependencies:
     slash "^2.0.0"
 
-rollup-plugin-commonjs@^9.1.3:
-  version "9.2.0"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-commonjs/-/rollup-plugin-commonjs-9.2.0.tgz#4604e25069e0c78a09e08faa95dc32dec27f7c89"
-  integrity sha512-0RM5U4Vd6iHjL6rLvr3lKBwnPsaVml+qxOGaaNUWN1lSq6S33KhITOfHmvxV3z2vy9Mk4t0g4rNlVaJJsNQPWA==
+rollup-plugin-commonjs@^9.3.4:
+  version "9.3.4"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-commonjs/-/rollup-plugin-commonjs-9.3.4.tgz#2b3dddbbbded83d45c36ff101cdd29e924fd23bc"
+  integrity sha512-DTZOvRoiVIHHLFBCL4pFxOaJt8pagxsVldEXBOn6wl3/V21wVaj17HFfyzTsQUuou3sZL3lEJZVWKPFblJfI6w==
   dependencies:
-    estree-walker "^0.5.2"
-    magic-string "^0.25.1"
-    resolve "^1.8.1"
-    rollup-pluginutils "^2.3.3"
+    estree-walker "^0.6.0"
+    magic-string "^0.25.2"
+    resolve "^1.10.0"
+    rollup-pluginutils "^2.6.0"
 
 rollup-plugin-node-resolve@^4.0.0:
   version "4.0.0"
@@ -18246,7 +18260,7 @@ rollup-plugin-replace@^2.0.0:
     minimatch "^3.0.2"
     rollup-pluginutils "^2.0.1"
 
-rollup-pluginutils@^2.0.1, rollup-pluginutils@^2.3.3:
+rollup-pluginutils@^2.0.1:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/rollup-pluginutils/-/rollup-pluginutils-2.3.3.tgz#3aad9b1eb3e7fe8262820818840bf091e5ae6794"
   integrity sha512-2XZwja7b6P5q4RZ5FhyX1+f46xi1Z3qBKigLRZ6VTZjwbN0K1IFGMlwm06Uu0Emcre2Z63l77nq/pzn+KxIEoA==
@@ -19168,7 +19182,7 @@ source-map@~0.1.7:
   dependencies:
     amdefine ">=0.0.4"
 
-sourcemap-codec@^1.4.1:
+sourcemap-codec@^1.4.1, sourcemap-codec@^1.4.4:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/sourcemap-codec/-/sourcemap-codec-1.4.4.tgz#c63ea927c029dd6bd9a2b7fa03b3fec02ad56e9f"
   integrity sha512-CYAPYdBu34781kLHkaW3m6b/uUSyMOC2R61gcYMWooeuaGtjof86ZA/8T+qVPPt7np1085CR9hmMGrySwEc8Xg==
@@ -21667,6 +21681,11 @@ xtraverse@0.1.x:
   integrity sha1-t0G60BjveNip0ug63gB7P3lZxzI=
   dependencies:
     xmldom "0.1.x"
+
+xxhash-wasm@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/xxhash-wasm/-/xxhash-wasm-0.3.1.tgz#2b8a7dbd9647d36a7eba8fd867cef08edab03394"
+  integrity sha512-amhCgCYQfhiQFvYjn6kvk4jmY1NXBn5MKdsS0jvxofmHFo77CBrXuV46NYeXACC3qTleugHYg7kNpeFnIA+R8Q==
 
 y18n@^3.2.1:
   version "3.2.1"

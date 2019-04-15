@@ -37,7 +37,6 @@ x-integration-steps: &integration-steps
         name: Bolt - Install packages
         command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
     - save_cache: *save-cache
-    - run: bolt build
     - run:
         name: E2E Cypress tests
         command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt ws run cypress:run:ci --only-fs $PROJECT_DIRECTORY
@@ -78,7 +77,6 @@ jobs:
       # causing the other job to fail with a "Missing Cypress" error.
       - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ bolt
       - save_cache: *save-cache
-      - run: bolt build
       # run tests!
       - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
       - run: yarn lint:prettier
