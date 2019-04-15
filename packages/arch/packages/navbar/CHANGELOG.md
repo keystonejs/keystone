@@ -1,5 +1,11 @@
 # @arch-ui/navbar
 
+## 0.0.5
+
+- [patch][24bed583](https://github.com/keystonejs/keystone-5/commit/24bed583):
+
+  - Update react-router-dom dependency to 5.0.0
+
 ## 0.0.4
 
 - [patch][85cb44a9](https://github.com/keystonejs/keystone-5/commit/85cb44a9):

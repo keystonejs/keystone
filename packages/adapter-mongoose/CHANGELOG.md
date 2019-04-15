@@ -1,5 +1,35 @@
 # @keystone-alpha/adapter-mongoose
 
+## 1.0.5
+
+- [patch][b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
+
+  - Use named exports from @keystone-alpha/keystone package.
+
+- [patch][baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
+
+  - Use the updated logger API
+
+- [patch][302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+
+  - Minor internal code cleanups
+
+- [patch][2f908f30](https://github.com/keystonejs/keystone-5/commit/2f908f30):
+
+  - Use the updated mongo-join-builder package API.
+
+- [patch][8041c67e](https://github.com/keystonejs/keystone-5/commit/8041c67e):
+
+  - Restructure internal code
+
+- Updated dependencies [baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
+- Updated dependencies [656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+- Updated dependencies [b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
+- Updated dependencies [2f908f30](https://github.com/keystonejs/keystone-5/commit/2f908f30):
+  - @keystone-alpha/keystone@3.0.0
+  - @keystone-alpha/logger@2.0.0
+  - @keystone-alpha/mongo-join-builder@2.0.0
+
 ## 1.0.4
 
 - Updated dependencies [8d385ede](https://github.com/keystonejs/keystone-5/commit/8d385ede):

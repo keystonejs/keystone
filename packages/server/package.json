@@ -1,15 +1,15 @@
 {
   "name": "@keystone-alpha/server",
   "description": "Internal @keystone-alpha API & Admin UI server. For Custom Servers, see: @keystone-alpha/core",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone-alpha/logger": "^1.0.2",
-    "@keystone-alpha/session": "^1.0.0",
+    "@keystone-alpha/logger": "^2.0.0",
+    "@keystone-alpha/session": "^1.0.2",
     "@keystone-alpha/utils": "^2.0.0",
     "apollo-errors": "^1.9.0",
     "apollo-server-express": "^2.4.8",
@@ -28,6 +28,6 @@
     "object-hash": "^1.3.1",
     "serialize-error": "^3.0.0",
     "stack-utils": "^1.0.2",
-    "terminal-link": "^1.2.0"
+    "terminal-link": "^1.3.0"
   }
 }

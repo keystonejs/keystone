@@ -1,5 +1,29 @@
 # @keystone-alpha/cypress-project-basic
 
+## 1.0.6
+
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+
+  - Update dev devependencies
+
+- [patch][656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+
+  - Explicitly call keystone.connect() before starting the web server.
+
+- [patch][302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+
+  - Minor internal code cleanups
+
+- Updated dependencies [37dcee37](https://github.com/keystonejs/keystone-5/commit/37dcee37):
+- Updated dependencies [656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+- Updated dependencies [b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
+  - @keystone-alpha/admin-ui@3.0.6
+  - @keystone-alpha/keystone@3.0.0
+  - @keystone-alpha/fields@4.0.0
+  - @keystone-alpha/adapter-mongoose@1.0.5
+  - @keystone-alpha/core@2.0.3
+  - @keystone-alpha/server@4.0.0
+
 ## 1.0.5
 
 - Updated dependencies [8d385ede](https://github.com/keystonejs/keystone-5/commit/8d385ede):

@@ -15,6 +15,24 @@ class Block {
     }
     return `${this.constructor.type}RelateToManyInput`;
   }
+
+  getGqlAuxTypes() {
+    return [];
+  }
+
+  // To be set by a Block if it requires special input fields (for example; if
+  // it's utilising a join table)
+  // Array of Keystone Field Types (most likely a `Relationship`)
+  getGqlInputFields() {
+    return [];
+  }
+
+  // To be set by a Block if it requires special input fields (for example; if
+  // it's utilising a join table)
+  // Array of Keystone Field Types (most likely a `Relationship`)
+  getGqlOutputFields() {
+    return [];
+  }
 }
 
 module.exports = {

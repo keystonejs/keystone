@@ -22,13 +22,13 @@ export const initItems = () => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (server, filter, targets) =>
-    matchFilter(server, filter, '{ name, birthday }', targets, 'name');
+  const match = (keystone, filter, targets) =>
+    matchFilter(keystone, filter, '{ name, birthday }', targets, 'name');
 
   test(
     'No filter',
-    withKeystone(({ server: { server } }) =>
-      match(server, undefined, [
+    withKeystone(({ keystone }) =>
+      match(keystone, undefined, [
         { name: 'person1', birthday: '1990-12-31' },
         { name: 'person2', birthday: '2000-01-20' },
         { name: 'person3', birthday: '1950-10-01' },
@@ -40,8 +40,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Empty filter',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { }', [
         { name: 'person1', birthday: '1990-12-31' },
         { name: 'person2', birthday: '2000-01-20' },
         { name: 'person3', birthday: '1950-10-01' },
@@ -53,8 +53,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: birthday',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { birthday: "2000-01-20" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { birthday: "2000-01-20" }', [
         { name: 'person2', birthday: '2000-01-20' },
       ])
     )
@@ -62,8 +62,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: birthday_not',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { birthday_not: "2000-01-20" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { birthday_not: "2000-01-20" }', [
         { name: 'person1', birthday: '1990-12-31' },
         { name: 'person3', birthday: '1950-10-01' },
         { name: 'person4', birthday: '1666-04-12' },
@@ -74,8 +74,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: birthday_not null',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { birthday_not: null }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { birthday_not: null }', [
         { name: 'person1', birthday: '1990-12-31' },
         { name: 'person2', birthday: '2000-01-20' },
         { name: 'person3', birthday: '1950-10-01' },
@@ -86,8 +86,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: birthday_lt',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { birthday_lt: "1950-10-01" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { birthday_lt: "1950-10-01" }', [
         { name: 'person4', birthday: '1666-04-12' },
       ])
     )
@@ -95,8 +95,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: birthday_lte',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { birthday_lte: "1950-10-01" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { birthday_lte: "1950-10-01" }', [
         { name: 'person3', birthday: '1950-10-01' },
         { name: 'person4', birthday: '1666-04-12' },
       ])
@@ -105,8 +105,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: birthday_gt',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { birthday_gt: "1950-10-01" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { birthday_gt: "1950-10-01" }', [
         { name: 'person1', birthday: '1990-12-31' },
         { name: 'person2', birthday: '2000-01-20' },
       ])
@@ -115,8 +115,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: birthday_gte',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { birthday_gte: "1950-10-01" }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { birthday_gte: "1950-10-01" }', [
         { name: 'person1', birthday: '1990-12-31' },
         { name: 'person2', birthday: '2000-01-20' },
         { name: 'person3', birthday: '1950-10-01' },
@@ -126,13 +126,13 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: birthday_in (empty list)',
-    withKeystone(({ server: { server } }) => match(server, 'where: { birthday_in: [] }', []))
+    withKeystone(({ keystone }) => match(keystone, 'where: { birthday_in: [] }', []))
   );
 
   test(
     'Filter: birthday_not_in (empty list)',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { birthday_not_in: [] }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { birthday_not_in: [] }', [
         { name: 'person1', birthday: '1990-12-31' },
         { name: 'person2', birthday: '2000-01-20' },
         { name: 'person3', birthday: '1950-10-01' },
@@ -144,8 +144,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: birthday_in',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { birthday_in: ["1990-12-31", "2000-01-20", "1950-10-01"] }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { birthday_in: ["1990-12-31", "2000-01-20", "1950-10-01"] }', [
         { name: 'person1', birthday: '1990-12-31' },
         { name: 'person2', birthday: '2000-01-20' },
         { name: 'person3', birthday: '1950-10-01' },
@@ -155,8 +155,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: birthday_not_in',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { birthday_not_in: ["1990-12-31", "2000-01-20", "1950-10-01"] }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { birthday_not_in: ["1990-12-31", "2000-01-20", "1950-10-01"] }', [
         { name: 'person4', birthday: '1666-04-12' },
         { name: 'person5', birthday: null },
       ])
@@ -165,15 +165,15 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: birthday_in null',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { birthday_in: [null] }', [{ name: 'person5', birthday: null }])
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { birthday_in: [null] }', [{ name: 'person5', birthday: null }])
     )
   );
 
   test(
     'Filter: birthday_not_in null',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { birthday_not_in: [null] }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { birthday_not_in: [null] }', [
         { name: 'person1', birthday: '1990-12-31' },
         { name: 'person2', birthday: '2000-01-20' },
         { name: 'person3', birthday: '1950-10-01' },

@@ -1,5 +1,14 @@
 # @arch-ui/dropdown
 
+## 0.0.4
+
+- [patch][24bed583](https://github.com/keystonejs/keystone-5/commit/24bed583):
+
+  - Update react-router-dom dependency to 5.0.0
+
+- Updated dependencies [302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+  - @arch-ui/modal-utils@0.0.4
+
 ## 0.0.3
 
 - [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):

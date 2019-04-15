@@ -77,7 +77,7 @@ let AddBlock = ({ editorState, editor, blocks }) => {
           <div>
             {Object.keys(blocks).map(key => {
               let { Sidebar } = blocks[key];
-              if (Sidebar === undefined) {
+              if (!blocks[key].withChrome || Sidebar === undefined) {
                 return null;
               }
               return <Sidebar key={key} editor={editor} />;

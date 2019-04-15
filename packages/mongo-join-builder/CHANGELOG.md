@@ -1,5 +1,15 @@
 # @keystone-alpha/mongo-join-builder
 
+## 2.0.0
+
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+
+  - Update dev devependencies
+
+- [major][2f908f30](https://github.com/keystonejs/keystone-5/commit/2f908f30):
+
+  - Export { mongoJoinBuilder } as the API, rather than a default export
+
 ## 1.0.3
 
 - Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):

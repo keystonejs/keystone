@@ -63,7 +63,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('no access control', () => {
       test(
         'removes all items from list',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const noteContent = `foo${sampleOne(alphanumGenerator)}`;
           const noteContent2 = `foo${sampleOne(alphanumGenerator)}`;
 
@@ -78,8 +78,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Update the item and link the relationship field
-          const updateUser = await graphqlRequest({
-            server,
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
           mutation {
             updateUser(
@@ -99,24 +99,22 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(updateUser.body.data).toMatchObject({
+          expect(data).toMatchObject({
             updateUser: {
               id: expect.any(String),
               notes: [],
             },
           });
-          expect(updateUser.body).not.toHaveProperty('errors');
+          expect(errors).toBe(undefined);
         })
       );
 
       test(
         'silently succeeds if used during create',
-        runner(setupKeystone, async ({ server: { server } }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           // Create an item that does the linking
-          const {
-            body: { data },
-          } = await graphqlRequest({
-            server,
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
           mutation {
             createUser(data: {
@@ -133,7 +131,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(data.createUser).not.toHaveProperty('errors');
+          expect(errors).toBe(undefined);
           expect(data.createUser).toMatchObject({
             id: expect.any(String),
             notes: [],
@@ -146,7 +144,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'has no effect when specifying disconnectAll',
-          runner(setupKeystone, async ({ server: { server }, create, findById }) => {
+          runner(setupKeystone, async ({ keystone, create, findById }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
@@ -159,8 +157,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            const { body } = await graphqlRequest({
-              server,
+            const { errors } = await graphqlRequest({
+              keystone,
               query: `
             mutation {
               updateUserToNotesNoRead(
@@ -176,8 +174,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         `,
             });
 
-            expect(body).not.toHaveProperty('data.updateUserToNotesNoRead.errors');
-
+            expect(errors).toBe(undefined);
             const userData = await findById('UserToNotesNoRead', createUser.id);
 
             expect(userData.notes).toHaveLength(0);

@@ -32,11 +32,11 @@ describe('Test CRUD for all fields', () => {
                 };
                 return setupServer({ name, adapterName, createLists });
               },
-              async ({ server, ...rest }) => {
+              async ({ keystone, ...rest }) => {
                 // Populate the database before running the tests
-                await server.keystone.createItems({ [listName]: mod.initItems() });
+                await keystone.createItems({ [listName]: mod.initItems() });
 
-                return testFn({ server, adapterName, ...rest });
+                return testFn({ keystone, adapterName, ...rest });
               }
             );
 

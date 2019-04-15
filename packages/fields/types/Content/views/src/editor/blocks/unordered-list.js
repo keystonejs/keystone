@@ -77,5 +77,3 @@ export const schema = {
     }
   },
 };
-
-export let dependencies = [listItem];

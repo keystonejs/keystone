@@ -33,15 +33,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('relationship filtering', () => {
       test(
         'nested to-single relationships can be filtered within AND clause',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const company = await create('Company', { name: 'Thinkmill' });
           const otherCompany = await create('Company', { name: 'Cete' });
 
           const user = await create('User', { company: company.id });
           await create('User', { company: otherCompany.id });
 
-          const queryUser = await graphqlRequest({
-            server,
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
         query {
           allUsers(where: {
@@ -60,9 +60,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(queryUser.body).not.toHaveProperty('errors');
-          expect(queryUser.body.data.allUsers).toHaveLength(1);
-          expect(queryUser.body.data).toMatchObject({
+          expect(errors).toBe(undefined);
+          expect(data.allUsers).toHaveLength(1);
+          expect(data).toMatchObject({
             allUsers: [
               {
                 id: user.id,
@@ -78,15 +78,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested to-single relationships can be filtered within OR clause',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const company = await create('Company', { name: 'Thinkmill' });
           const otherCompany = await create('Company', { name: 'Cete' });
 
           const user = await create('User', { company: company.id });
           await create('User', { company: otherCompany.id });
 
-          const queryUser = await graphqlRequest({
-            server,
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
           query {
             allUsers(where: {
@@ -105,9 +105,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         `,
           });
 
-          expect(queryUser.body).not.toHaveProperty('errors');
-          expect(queryUser.body.data.allUsers).toHaveLength(1);
-          expect(queryUser.body.data).toMatchObject({
+          expect(errors).toBe(undefined);
+          expect(data.allUsers).toHaveLength(1);
+          expect(data).toMatchObject({
             allUsers: [
               {
                 id: user.id,
@@ -123,7 +123,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested to-many relationships can be filtered within AND clause',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const ids = [];
 
           ids.push((await create('Post', { content: 'Hello world' })).id);
@@ -135,8 +135,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           await create('User', { posts: [] });
 
-          const queryUser = await graphqlRequest({
-            server,
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
         query {
           allUsers(where: {
@@ -155,10 +155,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(queryUser.body).not.toHaveProperty('errors');
-          expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
-          expect(queryUser.body.data.allUsers[0].posts).toHaveLength(3);
-          expect(queryUser.body.data).toMatchObject({
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('allUsers.0.posts');
+          expect(data.allUsers[0].posts).toHaveLength(3);
+          expect(data).toMatchObject({
             allUsers: [
               {
                 id: user.id,
@@ -171,7 +171,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested to-many relationships can be filtered within OR clause',
-        runner(setupKeystone, async ({ server: { server }, create }) => {
+        runner(setupKeystone, async ({ keystone, create }) => {
           const ids = [];
 
           ids.push((await create('Post', { content: 'Hello world' })).id);
@@ -183,8 +183,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           await create('User', { posts: [] });
 
-          const queryUser = await graphqlRequest({
-            server,
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
           query {
             allUsers(where: {
@@ -203,10 +203,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         `,
           });
 
-          expect(queryUser.body).not.toHaveProperty('errors');
-          expect(queryUser.body.data).toHaveProperty('allUsers.0.posts');
-          expect(queryUser.body.data.allUsers[0].posts).toHaveLength(3);
-          expect(queryUser.body.data).toMatchObject({
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('allUsers.0.posts');
+          expect(data.allUsers[0].posts).toHaveLength(3);
+          expect(data).toMatchObject({
             allUsers: [
               {
                 id: user.id,

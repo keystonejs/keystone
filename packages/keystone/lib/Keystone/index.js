@@ -141,6 +141,10 @@ module.exports = class Keystone {
   }
 
   getTypeDefs({ skipAccessControl = false } = {}) {
+    // Aux lists are only there for typing and internal operations, they should
+    // not have any GraphQL operations performed on them
+    const firstClassLists = this.listsArray.filter(list => !list.isAuxList);
+
     // Fields can be represented multiple times within and between lists.
     // If a field defines a `getGqlAuxTypes()` method, it will be
     // duplicated.
@@ -207,14 +211,14 @@ module.exports = class Keystone {
        }`,
       `type Query {
           ${unique(
-            flatten(this.listsArray.map(list => list.getGqlQueries({ skipAccessControl })))
+            flatten(firstClassLists.map(list => list.getGqlQueries({ skipAccessControl })))
           ).join('\n')}
           """ Retrieve the meta-data for all lists. """
           _ksListsMeta: [_ListMeta]
        }`,
       `type Mutation {
           ${unique(
-            flatten(this.listsArray.map(list => list.getGqlMutations({ skipAccessControl })))
+            flatten(firstClassLists.map(list => list.getGqlMutations({ skipAccessControl })))
           ).join('\n')}
        }`,
     ].map(s => print(gql(s)));

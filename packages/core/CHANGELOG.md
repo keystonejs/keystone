@@ -1,5 +1,18 @@
 # @keystone-alpha/core
 
+## 2.0.3
+
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+
+  - Update dev devependencies
+
+- [patch][78d25c40](https://github.com/keystonejs/keystone-5/commit/78d25c40):
+
+  - Restructure internal code
+
+- Updated dependencies [656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+  - @keystone-alpha/server@4.0.0
+
 ## 2.0.2
 
 - Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):

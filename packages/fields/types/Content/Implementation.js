@@ -1,9 +1,17 @@
-const pluralize = require('pluralize');
-
 const { MongoTextInterface, KnexTextInterface, Text } = require('../Text/Implementation');
-const { flatten } = require('@keystone-alpha/utils');
+const { flatMap, unique } = require('@keystone-alpha/utils');
+const paragraph = require('./blocks/paragraph');
 
 const GQL_TYPE_PREFIX = '_ContentType';
+
+const DEFAULT_BLOCKS = [paragraph];
+
+function flattenBlockViews(block) {
+  return [
+    block.viewPath,
+    ...(block.dependencies ? flatMap(block.dependencies, flattenBlockViews) : []),
+  ];
+}
 
 class Content extends Text {
   constructor(path, config, listConfig) {
@@ -19,57 +27,62 @@ class Content extends Text {
     // `ContentType`.
     // Including the list name + path to make sure these input types are unique
     // to this list+field and don't collide.
-    const inputType = `${GQL_TYPE_PREFIX}_${itemQueryName}_${this.path}`;
+    const type = `${GQL_TYPE_PREFIX}_${itemQueryName}_${this.path}`;
 
     this.gqlTypes = {
-      create: `${inputType}_CreateInput`,
-      update: `${inputType}_UpdateInput`,
+      create: `${type}_CreateInput`,
+      update: `${type}_UpdateInput`,
+      output: type,
     };
 
-    // Require here to avoid circular dependencies
-    const Relationship = require('../Relationship').implementation;
+    this.blocks = Array.isArray(this.config.blocks) ? this.config.blocks : [];
 
-    this.complexBlocks = this.config.blocks
+    this.blocks.push(
+      ...DEFAULT_BLOCKS.filter(
+        defaultBlock =>
+          !this.blocks.find(
+            block => (Array.isArray(block) ? block[0] : block).type === defaultBlock.type
+          )
+      )
+    );
+
+    // Checking for duplicate block types
+    for (let currentIndex = 0; currentIndex < this.blocks.length; currentIndex++) {
+      const currentBlock = this.blocks[currentIndex];
+      const currentType = (Array.isArray(currentBlock) ? currentBlock[0] : currentBlock).type;
+      for (let checkIndex = currentIndex + 1; checkIndex < this.blocks.length; checkIndex++) {
+        const checkBlock = this.blocks[checkIndex];
+        const checkType = (Array.isArray(checkBlock) ? checkBlock[0] : checkBlock).type;
+        if (currentType === checkType) {
+          throw new Error(`Encountered duplicate Content block type '${currentType}'.`);
+        }
+      }
+    }
+
+    this.complexBlocks = this.blocks
       .map(blockConfig => {
         let Impl = blockConfig;
-        let config = {};
+        let fieldConfig = {};
 
         if (Array.isArray(blockConfig)) {
           Impl = blockConfig[0];
-          config = blockConfig[1];
+          fieldConfig = blockConfig[1];
         }
 
         if (!Impl.isComplexDataType) {
           return null;
         }
 
-        const block = new Impl(config, {
+        return new Impl(fieldConfig, {
           fromList: this.listKey,
           createAuxList: listConfig.createAuxList,
           getListByKey: listConfig.getListByKey,
+          listConfig: this.listConfig,
         });
-
-        let relationship;
-        if (block.auxList && block.auxList.key) {
-          // When content blocks are specified that have complex KS5 datatypes,
-          // the client needs to send them along as graphQL inputs separate to
-          // the `structure`. Those inputs are relationships to our join tables.
-          // Here we create a Relationship field to leverage existing
-          // functionality for generating the graphQL schema.
-          relationship = new Relationship(
-            pluralize.plural(Impl.type),
-            { ref: block.auxList.key, many: true },
-            this.listConfig
-          );
-        }
-
-        return {
-          block,
-          relationship,
-        };
       })
       .filter(block => block);
   }
+
   /*
    * Blocks come in 2 halves:
    * 1. The block implementation (eg; ./views/editor/blocks/embed.js)
@@ -85,18 +98,36 @@ class Content extends Text {
   extendAdminMeta(meta) {
     return {
       ...meta,
-      // NOTE: We rely on order, which is why we end up with a sparse array
-      blockOptions: this.config.blocks.map(block => (Array.isArray(block) ? block[1] : undefined)),
+
+      // These are the blocks which have been directly passed in to the Content
+      // field (ie; it doesn't include dependencies unless they too were passed
+      // in)
+      blockTypes: this.blocks.map(block => (Array.isArray(block) ? block[0] : block).type),
+
+      // Key the block options by type to be serialised and passed to the client
+      blockOptions: this.blocks
+        .filter(block => Array.isArray(block) && !!block[1])
+        .reduce(
+          (options, block) => ({
+            ...options,
+            [block[0].type]: block[1],
+          }),
+          {}
+        ),
     };
   }
+
   // Add the blocks config to the views object for usage in the admin UI
   // (ie; { Cell: , Field: , Filters: , blocks: ...})
   extendViews(views) {
     return {
       ...views,
-      blocks: this.config.blocks.map(block => (Array.isArray(block) ? block[0] : block).viewPath),
+      blocks: unique(
+        flatMap(this.blocks, block => flattenBlockViews(Array.isArray(block) ? block[0] : block))
+      ),
     };
   }
+
   get gqlUpdateInputFields() {
     return [`${this.path}: ${this.gqlTypes.update}`];
   }
@@ -105,7 +136,7 @@ class Content extends Text {
   }
   getGqlAuxTypes() {
     const inputFields = `
-      structure: String
+      document: String
     `;
 
     return [
@@ -113,38 +144,61 @@ class Content extends Text {
       /*
        * For example:
        *
-         structure: String
+         document: String
          cloudinaryImages: _ContentType_cloudinaryImageRelateToManyInput
          relationships_User: _ContentType_relationship_UserRelateToManyInput
        */
       `
       input ${this.gqlTypes.create} {
         ${inputFields}
-        ${flatten(
-          this.complexBlocks.map(({ relationship }) => relationship.gqlCreateInputFields)
+        ${flatMap(this.complexBlocks, block =>
+          flatMap(block.getGqlInputFields(), field => field.gqlCreateInputFields)
         ).join('\n')}
       }
       `,
       `
       input ${this.gqlTypes.update} {
         ${inputFields}
-        ${flatten(
-          this.complexBlocks.map(({ relationship }) => relationship.gqlUpdateInputFields)
+        ${flatMap(this.complexBlocks, block =>
+          flatMap(block.getGqlInputFields(), field => field.gqlUpdateInputFields)
         ).join('\n')}
       }
       `,
-      ...this.complexBlocks.map(({ relationship }) => relationship.getGqlAuxTypes()),
+      ...flatMap(this.complexBlocks, block =>
+        flatMap(block.getGqlInputFields(), field => field.getGqlAuxTypes())
+      ),
+      `
+      type ${this.gqlTypes.output} {
+        document: String
+        ${flatMap(this.complexBlocks, block =>
+          flatMap(block.getGqlOutputFields(), field => field.gqlOutputFields)
+        ).join('\n')}
+      }
+      `,
     ];
   }
+
+  get gqlAuxFieldResolvers() {
+    return {
+      [this.gqlTypes.output]: item => item,
+    };
+  }
+
+  get gqlOutputFields() {
+    return [`${this.path}: ${this.gqlTypes.output}`];
+  }
+
   get gqlOutputFieldResolvers() {
     // TODO: serialize / etc
     return {
-      [`${this.path}`]: item => item[this.path],
+      [this.path]: item => ({
+        document: item[this.path],
+      }),
     };
   }
 
   async resolveInput({ resolvedData }) {
-    return resolvedData[this.path].structure;
+    return resolvedData[this.path].document;
   }
 }
 
