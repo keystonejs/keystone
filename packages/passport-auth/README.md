@@ -23,8 +23,6 @@ const twitterAuth = keystone.createAuthStrategy({
     consumerKey: process.env.TWITTER_APP_KEY,
     consumerSecret: process.env.TWITTER_APP_SECRET,
     callbackURL: `http://localhost:${PORT}/auth/twitter/callback`,
-    idField: 'twitterId',
-    usernameField: 'twitterUsername',
     server,
   },
 });
@@ -91,8 +89,6 @@ const twitterAuth = keystone.createAuthStrategy({
     consumerKey: process.env.TWITTER_APP_KEY,
     consumerSecret: process.env.TWITTER_APP_SECRET,
     callbackURL: `http://localhost:${PORT}/auth/twitter/callback`,
-    idField: 'twitterId',
-    usernameField: 'twitterUsername',
     server,
   },
 });
@@ -216,8 +212,6 @@ const wpAuth = keystone.createAuthStrategy({
     consumerKey: process.env.WP_APP_KEY,
     consumerSecret: process.env.WP_APP_SECRET,
     callbackURL: `http://localhost:${PORT}/auth/wordpress/callback`,
-    idField: 'wordpressId',
-    usernameField: 'wordpressUsername',
     server,
   },
 });
