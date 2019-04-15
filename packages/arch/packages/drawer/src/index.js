@@ -28,7 +28,7 @@ import {
 } from '@arch-ui/modal-utils';
 import { borderRadius, colors, gridSize, shadows } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
-import { A11yText } from '@arch-ui/typography';
+import { A11yText, Title } from '@arch-ui/typography';
 import { useStackIndex } from './stacks';
 
 const innerGutter = gridSize * 2;
@@ -112,11 +112,6 @@ const Header = styled(HeadFoot)({
 });
 const Footer = styled(HeadFoot)({
   boxShadow: `0 -2px 0 ${alpha(colors.text, 0.12)}`,
-});
-const Title = styled.h3({
-  fontSize: 18,
-  fontWeight: 500,
-  margin: 0,
 });
 const Body = styled.div({
   lineHeight: 1.4,

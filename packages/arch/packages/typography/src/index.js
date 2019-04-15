@@ -60,7 +60,7 @@ export const Title = ({ as: Tag, crop, margin, ...props }: TitleProps) => {
     <Tag
       css={{
         fontSize: 18,
-        fontWeight: 500,
+        fontWeight: 600,
         whiteSpace: 'nowrap',
         ...cropStyles,
         ...offset,

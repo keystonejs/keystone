@@ -7,6 +7,7 @@ export const uniformHeight = {
   border: '1px solid transparent',
   borderRadius: borderRadius,
   boxSizing: 'border-box',
+  fontFamily: 'inherit',
   fontSize: '0.9rem',
   lineHeight: '1.1rem',
   margin: 0,

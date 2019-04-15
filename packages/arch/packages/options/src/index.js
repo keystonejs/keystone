@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useMemo } from 'react';
 import ReactSelect, { components as reactSelectComponents } from 'react-select';
 import { CheckIcon } from '@arch-ui/icons';
-import { borderRadius, colors, gridSize } from '@arch-ui/theme';
+import { colors, gridSize } from '@arch-ui/theme';
 import { uniformHeight } from '@arch-ui/common';
 
 type Props = {
