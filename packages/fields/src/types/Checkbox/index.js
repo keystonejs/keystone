@@ -1,5 +1,5 @@
-const { Checkbox, MongoCheckboxInterface, KnexCheckboxInterface } = require('./Implementation');
-const path = require('path');
+import { Checkbox, MongoCheckboxInterface, KnexCheckboxInterface } from './Implementation';
+import path from 'path';
 
 module.exports = {
   type: 'Checkbox',

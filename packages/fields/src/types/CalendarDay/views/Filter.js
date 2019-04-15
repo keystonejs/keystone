@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 // @flow
 
 import React, { Component, type Ref } from 'react';

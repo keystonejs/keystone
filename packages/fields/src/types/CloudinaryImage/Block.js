@@ -1,5 +1,5 @@
-const { Block } = require('../../Block');
-const path = require('path');
+import { Block } from '../../Block';
+import path from 'path';
 
 class CloudinaryBlock extends Block {
   constructor({ adapter }, { fromList, createAuxList, getListByKey }) {

@@ -1,6 +1,6 @@
-const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { KnexFieldAdapter } = require('@keystone-alpha/adapter-knex');
+import { Implementation } from '../../Implementation';
+import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 
 class Integer extends Implementation {
   constructor() {

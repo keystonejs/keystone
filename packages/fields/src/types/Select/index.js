@@ -1,5 +1,5 @@
-const { Select, MongoSelectInterface, KnexSelectInterface } = require('./Implementation');
-const path = require('path');
+import { Select, MongoSelectInterface, KnexSelectInterface } from './Implementation';
+import path from 'path';
 
 module.exports = {
   type: 'Select',

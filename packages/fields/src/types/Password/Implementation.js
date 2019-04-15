@@ -1,9 +1,8 @@
-const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { KnexFieldAdapter } = require('@keystone-alpha/adapter-knex');
-
-const bcrypt = require('bcrypt');
-const dumbPasswords = require('dumb-passwords');
+import { Implementation } from '../../Implementation';
+import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import bcrypt from 'bcrypt';
+import dumbPasswords from 'dumb-passwords';
 
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 

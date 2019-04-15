@@ -1,5 +1,5 @@
-const { Integer, MongoIntegerInterface, KnexIntegerInterface } = require('./Implementation');
-const path = require('path');
+import { Integer, MongoIntegerInterface, KnexIntegerInterface } from './Implementation';
+import path from 'path';
 
 module.exports = {
   type: 'Integer',

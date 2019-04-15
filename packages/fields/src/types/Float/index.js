@@ -1,5 +1,5 @@
-const { Float, MongoFloatInterface, KnexFloatInterface } = require('./Implementation');
-const path = require('path');
+import { Float, MongoFloatInterface, KnexFloatInterface } from './Implementation';
+import path from 'path';
 
 module.exports = {
   type: 'Float',

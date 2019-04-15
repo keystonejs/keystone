@@ -1,4 +1,4 @@
-const gql = require('graphql-tag');
+import gql from 'graphql-tag';
 const Relationship = require('../').implementation;
 
 class MockFieldAdapter {}

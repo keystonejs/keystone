@@ -1,4 +1,4 @@
-const { createError } = require('apollo-errors');
+import { createError } from 'apollo-errors';
 
 module.exports = {
   ParameterError: createError('ParameterError', {

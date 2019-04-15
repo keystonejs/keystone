@@ -1,5 +1,5 @@
-const { Password, MongoPasswordInterface, KnexPasswordInterface } = require('./Implementation');
-const path = require('path');
+import { Password, MongoPasswordInterface, KnexPasswordInterface } from './Implementation';
+import path from 'path';
 
 module.exports = {
   type: 'Password',

@@ -1,7 +1,7 @@
-const { Implementation } = require('../../Implementation');
-const { MongooseFieldAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { KnexFieldAdapter } = require('@keystone-alpha/adapter-knex');
-const mongoose = require('mongoose');
+import { Implementation } from '../../Implementation';
+import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import mongoose from 'mongoose';
 
 // Disabling the getter of mongoose >= 5.1.0
 // https://github.com/Automattic/mongoose/blob/master/migrating_to_5.md#checking-if-a-path-is-populated

@@ -1,5 +1,5 @@
-const { File, MongoFileInterface, KnexFileInterface } = require('./Implementation');
-const path = require('path');
+import { File, MongoFileInterface, KnexFileInterface } from './Implementation';
+import path from 'path';
 
 module.exports = {
   type: 'File',

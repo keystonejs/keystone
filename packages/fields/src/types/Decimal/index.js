@@ -1,5 +1,5 @@
-const { Decimal, MongoDecimalInterface, KnexDecimalInterface } = require('./Implementation');
-const path = require('path');
+import { Decimal, MongoDecimalInterface, KnexDecimalInterface } from './Implementation';
+import path from 'path';
 
 module.exports = {
   type: 'Decimal',

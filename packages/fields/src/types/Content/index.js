@@ -1,5 +1,5 @@
-const { Content, MongoContentInterface, KnexContentInterface } = require('./Implementation');
-const path = require('path');
+import { Content, MongoContentInterface, KnexContentInterface } from './Implementation';
+import path from 'path';
 
 module.exports = {
   type: 'Content',

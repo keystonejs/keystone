@@ -1,5 +1,5 @@
-const { DateTime, MongoDateTimeInterface, KnexDateTimeInterface } = require('./Implementation');
-const path = require('path');
+import { DateTime, MongoDateTimeInterface, KnexDateTimeInterface } from './Implementation';
+import path from 'path';
 
 module.exports = {
   type: 'DateTime',

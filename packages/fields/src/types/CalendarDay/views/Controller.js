@@ -1,6 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
-
-import FieldController from '../../../../Controller/src';
+import FieldController from '../../../Controller';
 
 export default class CalendarDayController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {

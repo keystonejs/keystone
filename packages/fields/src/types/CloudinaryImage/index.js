@@ -1,10 +1,11 @@
-const {
+import {
   CloudinaryImage,
   MongoCloudinaryImageInterface,
   KnexCloudinaryImageInterface,
-} = require('./Implementation');
-const { CloudinaryBlock } = require('./Block');
-const path = require('path');
+} from './Implementation';
+
+import { CloudinaryBlock } from './Block';
+import path from 'path';
 
 module.exports = {
   type: 'CloudinaryImage',

@@ -1,10 +1,10 @@
-const {
+import {
   Relationship,
   MongoRelationshipInterface,
   KnexRelationshipInterface,
-} = require('./Implementation');
-const { resolveBacklinks } = require('./backlinks');
-const path = require('path');
+} from './Implementation';
+import { resolveBacklinks } from './backlinks';
+import path from 'path';
 
 module.exports = {
   type: 'Relationship',

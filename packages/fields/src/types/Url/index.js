@@ -1,5 +1,5 @@
-const { Text, MongoTextInterface, KnexTextInterface } = require('../Text/Implementation');
-const path = require('path');
+import { Text, MongoTextInterface, KnexTextInterface } from '../Text/Implementation';
+import path from 'path';
 
 module.exports = {
   type: 'Url',
