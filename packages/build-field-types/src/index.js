@@ -55,5 +55,3 @@ export let aliases = {
 };
 
 export let devBabelPlugin = require.resolve('./babel-plugins/ks-field-types-dev');
-
-export { hook } from './hook';

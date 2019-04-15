@@ -97,6 +97,12 @@ export class StrictEntrypoint extends Entrypoint {
   set main(path: string) {
     this.json.main = path;
   }
+  get module(): string {
+    return is(this.json.module, is.string);
+  }
+  set module(path: string) {
+    this.json.module = path;
+  }
   updater(json: Object) {
     super.updater(json);
     validateEntrypoint(this, false);

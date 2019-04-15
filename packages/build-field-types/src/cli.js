@@ -5,6 +5,7 @@ import validate from './validate';
 import build from './build';
 import watch from './build/watch';
 import fix from './fix';
+import dev from './dev';
 import { error, info } from './logger';
 import { FatalError, FixableError } from './errors';
 
@@ -47,6 +48,10 @@ class CommandNotFoundError extends Error {}
       }
       case 'fix': {
         await fix(process.cwd());
+        return;
+      }
+      case 'dev': {
+        await dev(process.cwd());
         return;
       }
       default: {

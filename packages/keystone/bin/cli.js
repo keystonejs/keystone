@@ -3,9 +3,6 @@
 const arg = require('arg');
 const path = require('path');
 const globby = require('globby');
-try {
-  require('@keystone-alpha/build-field-types').hook(path.join(__dirname, '..', '..', '..'));
-} catch (e) {}
 const commandRunner = require('./command-runner');
 
 const commandDir = path.join(__dirname, 'commands');
