@@ -25,11 +25,6 @@
     "graphql-tag": "^2.10.1",
     "graphql-type-json": "^0.2.1",
     "p-waterfall": "^1.0.0",
-    "passport": "^0.4.0",
-    "passport-facebook": "^3.0.0",
-    "passport-github": "^1.1.0",
-    "passport-google-oauth20": "^2.0.0",
-    "passport-twitter": "^1.0.4",
     "pluralize": "^7.0.0"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-const { TwitterAuthStrategy } = require('@keystone-alpha/keystone');
+const { TwitterAuthStrategy } = require('@keystone-alpha/passport-auth');
 const { startAuthedSession, endAuthedSession } = require('@keystone-alpha/session');
 const { appURL, twitterAppKey, twitterAppSecret } = require('./config');
 

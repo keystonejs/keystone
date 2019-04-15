@@ -1,4 +1,4 @@
-const { FacebookAuthStrategy } = require('@keystone-alpha/keystone');
+const { FacebookAuthStrategy } = require('@keystone-alpha/passport-auth');
 const { appURL, facebookAppKey, facebookAppSecret } = require('./config');
 const setupAuthRoutes = require('./setupAuthRoutes');
 

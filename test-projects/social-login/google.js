@@ -1,4 +1,4 @@
-const { GoogleAuthStrategy } = require('@keystone-alpha/keystone');
+const { GoogleAuthStrategy } = require('@keystone-alpha/passport-auth');
 const { appURL, googleAppKey, googleAppSecret } = require('./config');
 const setupAuthRoutes = require('./setupAuthRoutes');
 

@@ -1,0 +1,5 @@
+- First release of @keystone-alpha/passport-auth. 
+- Refactored Passport Strategies into this package. 
+- Created base strategy for PassportAuthStrategy. 
+- Refactored  Twitter and Facebook to use base Passport Strategy. 
+- Added Google and GitHub Auth Strategy. 

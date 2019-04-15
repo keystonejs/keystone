@@ -1,0 +1,15 @@
+{
+  "releases": [{ "name": "@keystone-alpha/passport-auth", "type": "major" }],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/cypress-project-social-login",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/passport-auth"]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-twitter-login",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/passport-auth"]
+    }
+  ]
+}
