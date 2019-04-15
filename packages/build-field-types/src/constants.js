@@ -1,5 +1,5 @@
 // @flow
 
-export let EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx'];
+exports.EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx'];
 
-export let PKG_JSON_CONFIG_FIELD = 'field-types';
+exports.PKG_JSON_CONFIG_FIELD = 'field-types';

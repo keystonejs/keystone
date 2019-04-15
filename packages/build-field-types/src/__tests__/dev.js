@@ -30,11 +30,11 @@ test('dev command works in node', async () => {
     '',
   ]);
   expect(stdout.toString()).toMatchInlineSnapshot(`
-"message from package two
-message from package one
-message from package two but logged by package one
-"
-`);
+  "message from package two
+  message from package one
+  message from package two but logged by package one
+  "
+  `);
   expect(stderr.toString()).toBe('');
 });
 

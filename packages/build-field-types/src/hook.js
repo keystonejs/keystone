@@ -1,8 +1,8 @@
 // @flow
-import { EXTENSIONS } from './constants';
-import { addHook } from 'pirates';
-import * as babel from '@babel/core';
-import sourceMapSupport from 'source-map-support';
+const { EXTENSIONS } = require('./constants');
+const { addHook } = require('pirates');
+const babel = require('@babel/core');
+const sourceMapSupport = require('source-map-support');
 
 // this is a require hook for dev
 // how it works is, first we customise the way filenames are resolved
@@ -13,7 +13,7 @@ let babelPlugins = [
   require.resolve('@babel/plugin-transform-modules-commonjs'),
 ];
 
-export let ___internalHook = () => {
+exports.___internalHook = () => {
   let compiling = false;
 
   function compileHook(code, filename) {
