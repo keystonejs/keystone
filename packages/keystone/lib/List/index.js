@@ -938,6 +938,7 @@ module.exports = class List {
     const args = {
       resolvedData,
       existingItem,
+      context,
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
@@ -964,6 +965,7 @@ module.exports = class List {
     const args = {
       resolvedData,
       existingItem,
+      context,
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
@@ -974,6 +976,7 @@ module.exports = class List {
   async _validateDelete(existingItem, context, operation) {
     const args = {
       existingItem,
+      context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
     const fields = this.fields;
@@ -1011,6 +1014,7 @@ module.exports = class List {
     const args = {
       resolvedData,
       existingItem,
+      context,
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
@@ -1020,6 +1024,7 @@ module.exports = class List {
   async _beforeDelete(existingItem, context) {
     const args = {
       existingItem,
+      context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
     await this._runHook(args, existingItem, 'beforeDelete');
@@ -1030,6 +1035,7 @@ module.exports = class List {
       updatedItem,
       originalInput,
       existingItem,
+      context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
     await this._runHook(args, updatedItem, 'afterChange');
@@ -1038,6 +1044,7 @@ module.exports = class List {
   async _afterDelete(existingItem, context) {
     const args = {
       existingItem,
+      context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
     await this._runHook(args, existingItem, 'afterDelete');
@@ -1075,7 +1082,7 @@ module.exports = class List {
     const { afterChangeStack } = mutationState;
     afterChangeStack.push(afterHook);
     if (isRootMutation) {
-      // TODO: Close transation
+      // TODO: Close transaction
 
       // Execute post-hook stack
       while (afterChangeStack.length) {
