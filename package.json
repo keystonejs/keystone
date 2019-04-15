@@ -261,13 +261,13 @@
     "packages": [
       "packages/arch/packages/*",
       "packages/apollo-helpers",
-      "packages/fields",
       "packages/utils"
     ]
   },
   "field-types": {
     "packages": [
-      "packages/fields-wysiwyg-tinymce"
+      "packages/fields-wysiwyg-tinymce",
+      "packages/fields"
     ]
   },
   "jest": {
