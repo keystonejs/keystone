@@ -14,6 +14,7 @@
     "build": "gatsby build"
   },
   "dependencies": {
+    "@arch-ui/icons": "^0.0.3",
     "@arch-ui/input": "^0.0.3",
     "@arch-ui/select": "^0.0.3",
     "@arch-ui/theme": "^0.0.2",
