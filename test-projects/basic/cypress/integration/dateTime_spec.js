@@ -1,20 +1,5 @@
-import {
-  format,
-  subMonths,
-  setMonth,
-  setMinutes,
-  setHours,
-  setYear,
-  getMonth,
-  getHours,
-  addMinutes,
-  subMinutes,
-  getYear,
-  addDays,
-} from 'date-fns';
-import moment from 'moment';
+import { format } from 'date-fns';
 
-const today = setMinutes(new Date(), 0);
 const path = '/admin/users?fields=_label_%2Cdob%2ClastOnline';
 const lastOnline = '2018-08-16T11:08:18.886+10:00';
 

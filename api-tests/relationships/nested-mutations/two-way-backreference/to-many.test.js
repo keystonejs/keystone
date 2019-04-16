@@ -38,9 +38,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('nested connect', () => {
         test(
           'during create mutation',
-          runner(setupKeystone, async ({ server: { server }, create, findById }) => {
-            console.log('connected');
-
+          runner(setupKeystone, async ({ keystone, create, findById }) => {
             // Manually setup a connected Student <-> Teacher
             let teacher1 = await create('Teacher', {});
             await new Promise(resolve => process.nextTick(resolve));
@@ -61,8 +59,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(toStr(teacher2.students)).toHaveLength(0);
 
             // Run the query to disconnect the teacher from student
-            const queryResult = await graphqlRequest({
-              server,
+            const { data, errors } = await graphqlRequest({
+              keystone,
               query: `
           mutation {
             createStudent(
@@ -79,9 +77,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         `,
             });
 
-            expect(queryResult.body).not.toHaveProperty('errors');
+            expect(errors).toBe(undefined);
 
-            let newStudent = queryResult.body.data.createStudent;
+            let newStudent = data.createStudent;
 
             // Check the link has been broken
             teacher1 = await findById('Teacher', teacher1.id);
@@ -101,7 +99,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'during update mutation',
-          runner(setupKeystone, async ({ server: { server }, create, findById }) => {
+          runner(setupKeystone, async ({ keystone, create, findById }) => {
             // Manually setup a connected Student <-> Teacher
             let teacher1 = await create('Teacher', {});
             let teacher2 = await create('Teacher', {});
@@ -122,8 +120,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(toStr(teacher2.students)).toHaveLength(0);
 
             // Run the query to disconnect the teacher from student
-            const queryResult = await graphqlRequest({
-              server,
+            const { errors } = await graphqlRequest({
+              keystone,
               query: `
           mutation {
             updateStudent(
@@ -141,7 +139,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryResult.body).not.toHaveProperty('errors');
+            expect(errors).toBe(undefined);
 
             // Check the link has been broken
             teacher1 = await findById('Teacher', teacher1.id);
@@ -164,13 +162,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('nested create', () => {
         test(
           'during create mutation',
-          runner(setupKeystone, async ({ server: { server }, findById }) => {
+          runner(setupKeystone, async ({ keystone, findById }) => {
             const teacherName1 = sampleOne(alphanumGenerator);
             const teacherName2 = sampleOne(alphanumGenerator);
 
             // Run the query to disconnect the teacher from student
-            const queryResult = await graphqlRequest({
-              server,
+            const { data, errors } = await graphqlRequest({
+              keystone,
               query: `
           mutation {
             createStudent(
@@ -187,10 +185,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryResult.body).not.toHaveProperty('errors');
+            expect(errors).toBe(undefined);
 
-            let newStudent = queryResult.body.data.createStudent;
-            let newTeachers = queryResult.body.data.createStudent.teachers;
+            let newStudent = data.createStudent;
+            let newTeachers = data.createStudent.teachers;
 
             // Check the link has been broken
             const teacher1 = await findById('Teacher', newTeachers[0].id);
@@ -208,14 +206,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'during update mutation',
-          runner(setupKeystone, async ({ server: { server }, create, findById }) => {
+          runner(setupKeystone, async ({ keystone, create, findById }) => {
             let student = await create('Student', {});
             const teacherName1 = sampleOne(alphanumGenerator);
             const teacherName2 = sampleOne(alphanumGenerator);
 
             // Run the query to disconnect the teacher from student
-            const queryResult = await graphqlRequest({
-              server,
+            const { data, errors } = await graphqlRequest({
+              keystone,
               query: `
           mutation {
             updateStudent(
@@ -233,9 +231,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(queryResult.body).not.toHaveProperty('errors');
+            expect(errors).toBe(undefined);
 
-            let newTeachers = queryResult.body.data.updateStudent.teachers;
+            let newTeachers = data.updateStudent.teachers;
 
             // Check the link has been broken
             const teacher1 = await findById('Teacher', newTeachers[0].id);
@@ -254,7 +252,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested disconnect during update mutation',
-        runner(setupKeystone, async ({ server: { server }, create, update, findById }) => {
+        runner(setupKeystone, async ({ keystone, create, update, findById }) => {
           // Manually setup a connected Student <-> Teacher
           let teacher1 = await create('Teacher', {});
           let teacher2 = await create('Teacher', {});
@@ -288,8 +286,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           ]);
 
           // Run the query to disconnect the teacher from student
-          const queryResult = await graphqlRequest({
-            server,
+          const { errors } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           updateStudent(
@@ -307,7 +305,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(queryResult.body).not.toHaveProperty('errors');
+          expect(errors).toBe(undefined);
 
           // Check the link has been broken
           teacher1 = await findById('Teacher', teacher1.id);
@@ -331,7 +329,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested disconnectAll during update mutation',
-        runner(setupKeystone, async ({ server: { server }, create, update, findById }) => {
+        runner(setupKeystone, async ({ keystone, create, update, findById }) => {
           // Manually setup a connected Student <-> Teacher
           let teacher1 = await create('Teacher', {});
           let teacher2 = await create('Teacher', {});
@@ -365,8 +363,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           ]);
 
           // Run the query to disconnect the teacher from student
-          const queryResult = await graphqlRequest({
-            server,
+          const { errors } = await graphqlRequest({
+            keystone,
             query: `
         mutation {
           updateStudent(
@@ -384,7 +382,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     `,
           });
 
-          expect(queryResult.body).not.toHaveProperty('errors');
+          expect(errors).toBe(undefined);
 
           // Check the link has been broken
           teacher1 = await findById('Teacher', teacher1.id);
@@ -406,7 +404,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
     test(
       'delete mutation updates back references in to-many relationship',
-      runner(setupKeystone, async ({ server: { server }, create, update, findById }) => {
+      runner(setupKeystone, async ({ keystone, create, update, findById }) => {
         // Manually setup a connected Student <-> Teacher
         let teacher1 = await create('Teacher', {});
         let teacher2 = await create('Teacher', {});
@@ -440,8 +438,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         ]);
 
         // Run the query to delete the student
-        const queryResult = await graphqlRequest({
-          server,
+        const { errors } = await graphqlRequest({
+          keystone,
           query: `
       mutation {
         deleteStudent(id: "${student1.id}") {
@@ -451,7 +449,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
   `,
         });
 
-        expect(queryResult.body).not.toHaveProperty('errors');
+        expect(errors).toBe(undefined);
 
         teacher1 = await findById('Teacher', teacher1.id);
         teacher2 = await findById('Teacher', teacher2.id);

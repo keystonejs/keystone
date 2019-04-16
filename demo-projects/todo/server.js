@@ -7,9 +7,11 @@ keystone
     entryFile: 'index.js',
     port: PORT,
   })
-  .then(({ server }) => {
+  .then(async ({ server, keystone: keystoneApp }) => {
+    await keystoneApp.connect(process.env.MONGODB_URI);
+
     server.app.use(server.express.static(path.join(__dirname, 'public')));
-    return server.start(process.env.MONGODB_URI);
+    return server.start();
   })
   .then(({ port }) => {
     console.log(`Listening on port ${port}`);

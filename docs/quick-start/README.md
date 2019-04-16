@@ -9,6 +9,8 @@ title: Introduction
 
 This quick start guide will get you up and running with a fresh new Keystone application in just a few easy commands.
 
+With just _5 minutes_, this is what you're going to build:
+
 [![Screenshot of the final Todo app](./img/todo-thumb.png)](https://raw.githubusercontent.com/keystonejs/keystone-5/master/docs/quick-start/img/todo.png)
 
 [![Screenshot of KeystoneJS Admin Dashboard](./img/admin-dashboard-thumb.png)](https://raw.githubusercontent.com/keystonejs/keystone-5/master/docs/quick-start/img/admin-dashboard.png)
@@ -32,7 +34,7 @@ cd my-app
 npm start
 ```
 
-Congratulation, you are now running your very own Keystone application!
+Congratulations, you are now running your very own Keystone application!
 To visit your running application (a simple todo list), visit
 
 <pre>

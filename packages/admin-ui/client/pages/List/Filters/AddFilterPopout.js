@@ -7,13 +7,14 @@ import { ChevronLeftIcon, ChevronRightIcon, AlertIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { A11yText } from '@arch-ui/typography';
 import { Alert } from '@arch-ui/alert';
+import { Button } from '@arch-ui/button';
 import { OptionPrimitive } from '@arch-ui/options';
 import Select from '@arch-ui/select';
 import { LoadingSpinner } from '@arch-ui/loading';
 
 import FieldSelect from '../FieldSelect';
 import PopoutForm from './PopoutForm';
-import { POPOUT_GUTTER } from '../../../components/Popout';
+import { DisclosureArrow, POPOUT_GUTTER } from '../../../components/Popout';
 
 const EventCatcher = props => (
   <div
@@ -27,12 +28,23 @@ const EventCatcher = props => (
 );
 
 export const FieldOption = ({ children, ...props }) => {
-  let iconColor = !props.isFocused && !props.isSelected ? colors.N40 : 'currentColor';
+  let iconColor = colors.N20;
+  if (props.isFocused) iconColor = colors.text;
 
   return (
     <OptionPrimitive {...props}>
       <span>{children}</span>
-      <ChevronRightIcon css={{ color: iconColor }} />
+      <div
+        css={{
+          alignItems: 'center',
+          display: 'flex',
+          height: 24,
+          justifyContent: 'center',
+          width: 24,
+        }}
+      >
+        <ChevronRightIcon css={{ color: iconColor }} />
+      </div>
     </OptionPrimitive>
   );
 };
@@ -232,7 +244,7 @@ export default class AddFilterPopout extends Component<Props, State> {
                 isOptionDisabled={this.doesNotHaveAvailableFilterTypes}
                 innerRef={this.fieldSelectRef}
                 onChange={this.onFieldChange}
-                placeholder="What would you like to filter?"
+                placeholder="Search fields..."
                 components={{ Option: FieldOption }}
                 value={[]}
               />
@@ -352,7 +364,18 @@ export default class AddFilterPopout extends Component<Props, State> {
 
     return (
       <PopoutForm
-        buttonLabel="Filters"
+        target={handlers => (
+          <Button
+            variant="subtle"
+            appearance="primary"
+            spacing="cozy"
+            css={{ marginBottom: gridSize / 2, marginTop: gridSize / 2 }}
+            {...handlers}
+          >
+            Filters
+            <DisclosureArrow />
+          </Button>
+        )}
         headerBefore={back}
         headerTitle={field ? field.label : 'Filter'}
         showFooter={!!field}

@@ -1,5 +1,5 @@
 const { AdminUI } = require('@keystone-alpha/admin-ui');
-const { Keystone } = require('@keystone-alpha/keystone');
+const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const {
   File,
   Text,
@@ -9,7 +9,6 @@ const {
   Password,
   CloudinaryImage,
 } = require('@keystone-alpha/fields');
-const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
 
 const { staticRoute, staticPath, cloudinary } = require('./config');

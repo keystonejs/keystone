@@ -11,7 +11,9 @@ keystone
   })
   // 'server' is an express instance, to which you can attach your own routes,
   // middlewares, etc.
-  .then(({ server }) => {
+  .then(async ({ server, keystone: keystoneApp }) => {
+    await keystoneApp.connect();
+
     // In this project, we attach a single route handler for `/public` to serve
     // our app
     server.app.use(server.express.static(path.join(__dirname, 'public')));

@@ -1,0 +1,93 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/demo-project-blog", "type": "patch" },
+    { "name": "@keystone-alpha/admin-ui", "type": "minor" },
+    { "name": "@arch-ui/button", "type": "patch" },
+    { "name": "@arch-ui/card", "type": "patch" },
+    { "name": "@arch-ui/common", "type": "patch" },
+    { "name": "@arch-ui/confirm", "type": "patch" },
+    { "name": "@arch-ui/controls", "type": "patch" },
+    { "name": "@arch-ui/drawer", "type": "patch" },
+    { "name": "@arch-ui/dropdown", "type": "patch" },
+    { "name": "@arch-ui/fields", "type": "patch" },
+    { "name": "@arch-ui/input", "type": "patch" },
+    { "name": "@arch-ui/layout", "type": "minor" },
+    { "name": "@arch-ui/modal-utils", "type": "patch" },
+    { "name": "@arch-ui/navbar", "type": "patch" },
+    { "name": "@arch-ui/options", "type": "patch" },
+    { "name": "@arch-ui/pagination", "type": "patch" },
+    { "name": "@arch-ui/pill", "type": "patch" },
+    { "name": "@arch-ui/popout", "type": "patch" },
+    { "name": "@arch-ui/theme", "type": "patch" },
+    { "name": "@arch-ui/typography", "type": "patch" },
+    { "name": "@keystone-alpha/fields", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-access-control", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-basic", "type": "patch" }
+  ],
+  "dependents": [
+    {
+      "name": "@arch-ui/filters",
+      "type": "patch",
+      "dependencies": ["@arch-ui/controls", "@arch-ui/layout", "@arch-ui/theme"]
+    },
+    {
+      "name": "@keystone-alpha/fields-wysiwyg-tinymce",
+      "type": "patch",
+      "dependencies": [
+        "@arch-ui/fields",
+        "@arch-ui/input",
+        "@arch-ui/theme",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-facebook-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/admin-ui",
+        "@arch-ui/fields",
+        "@arch-ui/input",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-twitter-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/admin-ui",
+        "@arch-ui/fields",
+        "@arch-ui/input",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@arch-ui/day-picker",
+      "type": "patch",
+      "dependencies": ["@arch-ui/select", "@arch-ui/input", "@arch-ui/theme", "@arch-ui/typography"]
+    },
+    {
+      "name": "@keystone-alpha/website",
+      "type": "patch",
+      "dependencies": ["@arch-ui/select", "@arch-ui/input", "@arch-ui/theme"]
+    },
+    {
+      "name": "@arch-ui/dialog",
+      "type": "patch",
+      "dependencies": ["@arch-ui/modal-utils", "@arch-ui/theme", "@arch-ui/typography"]
+    },
+    {
+      "name": "@arch-ui/tooltip",
+      "type": "patch",
+      "dependencies": ["@arch-ui/modal-utils", "@arch-ui/theme"]
+    },
+    { "name": "@arch-ui/alert", "type": "patch", "dependencies": ["@arch-ui/theme"] },
+    { "name": "@arch-ui/badge", "type": "patch", "dependencies": ["@arch-ui/theme"] },
+    {
+      "name": "@arch-ui/loading",
+      "type": "patch",
+      "dependencies": ["@arch-ui/theme", "@arch-ui/typography"]
+    },
+    { "name": "@arch-ui/lozenge", "type": "patch", "dependencies": ["@arch-ui/theme"] },
+    { "name": "@arch-ui/select", "type": "patch", "dependencies": ["@arch-ui/theme"] }
+  ]
+}

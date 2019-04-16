@@ -1,7 +1,6 @@
 //imports for Keystone app core
 const { AdminUI } = require('@keystone-alpha/admin-ui');
-const { Keystone } = require('@keystone-alpha/keystone');
-const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
+const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const { staticRoute, staticPath } = require('./config');

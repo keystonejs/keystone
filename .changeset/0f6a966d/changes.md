@@ -1,0 +1,1 @@
+- Content Field no longer throws when no blocks specified or server data is corrupt

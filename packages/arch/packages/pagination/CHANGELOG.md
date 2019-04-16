@@ -1,5 +1,11 @@
 # @arch-ui/pagination
 
+## 0.0.4
+
+- [patch][24bed583](https://github.com/keystonejs/keystone-5/commit/24bed583):
+
+  - Update react-router-dom dependency to 5.0.0
+
 ## 0.0.3
 
 - [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):

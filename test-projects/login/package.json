@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/cypress-project-login",
   "description": "A KeystoneJS demo project for integration testing. See @keystone-alpha/keystone for more.",
   "private": true,
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -18,13 +18,13 @@
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a test-projects/login/.env file.\nSee test-projects/login/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@keystone-alpha/adapter-mongoose": "^1.0.4",
-    "@keystone-alpha/admin-ui": "^3.0.4",
-    "@keystone-alpha/core": "^2.0.2",
-    "@keystone-alpha/fields": "^3.0.2",
-    "@keystone-alpha/keystone": "^2.0.0",
-    "@keystone-alpha/server": "^3.0.0",
-    "@keystone-alpha/session": "^1.0.0",
+    "@keystone-alpha/adapter-mongoose": "^1.0.5",
+    "@keystone-alpha/admin-ui": "^3.0.6",
+    "@keystone-alpha/core": "^2.0.3",
+    "@keystone-alpha/fields": "^4.0.0",
+    "@keystone-alpha/keystone": "^3.0.0",
+    "@keystone-alpha/server": "^4.0.0",
+    "@keystone-alpha/session": "^1.0.2",
     "body-parser": "^1.18.2"
   },
   "devDependencies": {
@@ -32,9 +32,9 @@
     "dotenv-safe": "^6.0.0",
     "execa": "1.0.0",
     "mocha": "^5.2.0",
-    "mocha-junit-reporter": "^1.18.0",
+    "mocha-junit-reporter": "^1.21.0",
     "mocha-multi-reporters": "^1.1.7",
     "pino-colada": "^1.4.4",
-    "start-server-and-test": "^1.7.11"
+    "start-server-and-test": "^1.7.13"
   }
 }

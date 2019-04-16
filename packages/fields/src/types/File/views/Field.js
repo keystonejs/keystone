@@ -251,7 +251,7 @@ export default class FileField extends Component {
                 </FlexGroup>
                 {errorMessage ? (
                   <ErrorInfo>{errorMessage}</ErrorInfo>
-                ) : file ? (
+                ) : (
                   <FlexGroup isInline growIndexes={[0]}>
                     <MetaInfo href={file.publicUrl}>{file.filename || file.name}</MetaInfo>
                     {showStatusMessage ? (
@@ -260,7 +260,7 @@ export default class FileField extends Component {
                       </ChangeInfo>
                     ) : null}
                   </FlexGroup>
-                ) : null}
+                )}
               </Content>
             </Wrapper>
           ) : (

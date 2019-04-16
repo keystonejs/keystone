@@ -258,18 +258,17 @@ Admin UI at the same time as deploying the API to avoid any inconsistencies.
 
 ### Adding Authentication
 
-_See [Authentication docs]()._
+_See [Authentication docs](https://v5.keystonejs.com/discussions/authentication)._
 
 To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`:
 
 <!-- prettier-ignore -->
 ```javascript
-const { Keystone }        = require('@keystone-alpha/keystone');
+const { Keystone, PasswordAuth } = require('@keystone-alpha/keystone');
 const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text, Password }  = require('@keystone-alpha/fields');
-const PasswordAuth        = require('@keystone-alpha/keystone/auth/Password');
 
 const keystone = new Keystone({
   name: 'Keystone With Auth',

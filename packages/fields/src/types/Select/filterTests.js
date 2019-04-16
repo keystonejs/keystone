@@ -29,9 +29,9 @@ export const initItems = () => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (server, filter, targets) =>
+  const match = (keystone, filter, targets) =>
     matchFilter(
-      server,
+      keystone,
       filter,
       '{ company name }',
       targets,
@@ -40,8 +40,8 @@ export const filterTests = withKeystone => {
 
   test(
     'No filter',
-    withKeystone(({ server: { server } }) =>
-      match(server, undefined, [
+    withKeystone(({ keystone }) =>
+      match(keystone, undefined, [
         { company: 'thinkmill', name: 'a' },
         { company: 'atlassian', name: 'b' },
         { company: 'gelato', name: 'c' },
@@ -52,15 +52,15 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: company',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { company: thinkmill }', [{ company: 'thinkmill', name: 'a' }])
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { company: thinkmill }', [{ company: 'thinkmill', name: 'a' }])
     )
   );
 
   test(
     'Filter: company_not',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { company_not: thinkmill }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { company_not: thinkmill }', [
         { company: 'atlassian', name: 'b' },
         { company: 'gelato', name: 'c' },
         { company: 'cete', name: 'd' },
@@ -70,8 +70,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: company_in',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { company_in: [ atlassian, gelato ] }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { company_in: [ atlassian, gelato ] }', [
         { company: 'atlassian', name: 'b' },
         { company: 'gelato', name: 'c' },
       ])
@@ -80,8 +80,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: company_not_in',
-    withKeystone(({ server: { server } }) =>
-      match(server, 'where: { company_not_in: [ atlassian, gelato ] }', [
+    withKeystone(({ keystone }) =>
+      match(keystone, 'where: { company_not_in: [ atlassian, gelato ] }', [
         { company: 'thinkmill', name: 'a' },
         { company: 'cete', name: 'd' },
       ])

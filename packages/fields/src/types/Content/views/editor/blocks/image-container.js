@@ -173,5 +173,3 @@ export let plugins = [
     },
   },
 ];
-
-export let dependencies = [image, caption];

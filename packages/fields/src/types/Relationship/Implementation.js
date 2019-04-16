@@ -115,9 +115,8 @@ export class Relationship extends Implementation {
     if (!many) {
       return {
         [this.path]: (item, _, context) => {
-          // The field may have already been filled in during an early DB lookup
-          // (ie; joining when doing a filter)
-          if (item[this.path] === null) {
+          // No ID set, so we return null for the value
+          if (!item[this.path]) {
             return null;
           }
           const filteredQueryArgs = { where: { id: item[this.path].toString() } };

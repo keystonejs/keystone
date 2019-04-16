@@ -42,18 +42,20 @@ export default class SelectField extends Component {
           ) : null}
         </FieldLabel>
         <FieldInput>
-          <Select
-            autoFocus={autoFocus}
-            value={canRead ? value : undefined}
-            placeholder={canRead ? undefined : error.message}
-            options={field.options}
-            onChange={this.onChange}
-            isClearable
-            id={`react-select-${htmlID}`}
-            inputId={htmlID}
-            instanceId={htmlID}
-            {...selectProps}
-          />
+          <div css={{ flex: 1 }}>
+            <Select
+              autoFocus={autoFocus}
+              value={canRead ? value : undefined}
+              placeholder={canRead ? undefined : error.message}
+              options={field.options}
+              onChange={this.onChange}
+              isClearable
+              id={`react-select-${htmlID}`}
+              inputId={htmlID}
+              instanceId={htmlID}
+              {...selectProps}
+            />
+          </div>
         </FieldInput>
       </FieldContainer>
     );

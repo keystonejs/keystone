@@ -1,9 +1,9 @@
 const omitBy = require('lodash.omitby');
 
-const joinBuilder = require('../../');
+const { mongoJoinBuilder } = require('../../');
 const getDatabase = require('../database');
 
-const builder = joinBuilder({
+const builder = mongoJoinBuilder({
   tokenizer: {
     // executed for simple query components (eg; 'fulfilled: false' / name: 'a')
     simple: (query, key, path) => {

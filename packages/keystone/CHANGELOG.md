@@ -1,5 +1,36 @@
 # @keystone-alpha/keystone
 
+## 3.0.0
+
+- [patch][b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
+
+  - Use named exports from @keystone-alpha/keystone package.
+
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+
+  - Update dev devependencies
+
+- [patch][baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
+
+  - Use the updated logger API
+
+- [patch][302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+
+  - Minor internal code cleanups
+
+- [major][656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+
+  - `WebServer.start()` no longer takes any arguments. Developer must now explicitly call `keystone.connect()` before calling `WebServer.start()`.
+
+- [major][b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
+
+  - Make all parts of the API available as named exports.
+
+- Updated dependencies [baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
+- Updated dependencies [37dcee37](https://github.com/keystonejs/keystone-5/commit/37dcee37):
+  - @keystone-alpha/logger@2.0.0
+  - @keystone-alpha/fields@4.0.0
+
 ## 2.0.0
 
 - [major][8d385ede](https://github.com/keystonejs/keystone-5/commit/8d385ede):

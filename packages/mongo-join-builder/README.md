@@ -157,7 +157,7 @@ _NOTE: This example is incomplete, and only for documentation purposes. See
 [`examples/`](./examples) for complete examples._
 
 ```javascript
-const joinBuilder = require('@keystone-alpha/mongo-join-builder');
+const { mongoJoinBuilder } = require('@keystone-alpha/mongo-join-builder');
 const database = require('./my-mongodb-connection');
 
 const builder = mongoJoinBuilder({

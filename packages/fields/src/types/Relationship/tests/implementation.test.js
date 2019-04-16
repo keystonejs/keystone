@@ -23,28 +23,28 @@ const mockFilterAST = [
   },
 ];
 
-function createRelationship({ path, config = {}, getListByKey = () => new MockList(config.ref) }) {
-  class MockList {
-    constructor(ref) {
-      this.gqlNames = {
-        outputTypeName: ref,
-        createInputName: `${ref}CreateInput`,
-        whereUniqueInputName: `${ref}WhereUniqueInput`,
-        relateToManyInputName: `${ref}RelateToManyInput`,
-        relateToOneInputName: `${ref}RelateToOneInput`,
-      };
-      this.access = {
-        create: true,
-        read: true,
-        update: true,
-        delete: true,
-      };
-    }
-    // The actual implementation in `@keystone-alpha/keystone/List/index.js` returns
-    // more, but we only want to test that this codepath is called
-    getGraphqlFilterFragment = () => mockFilterFragment;
+class MockList {
+  constructor(ref) {
+    this.gqlNames = {
+      outputTypeName: ref,
+      createInputName: `${ref}CreateInput`,
+      whereUniqueInputName: `${ref}WhereUniqueInput`,
+      relateToManyInputName: `${ref}RelateToManyInput`,
+      relateToOneInputName: `${ref}RelateToOneInput`,
+    };
+    this.access = {
+      create: true,
+      read: true,
+      update: true,
+      delete: true,
+    };
   }
+  // The actual implementation in `@keystone-alpha/keystone/List/index.js` returns
+  // more, but we only want to test that this codepath is called
+  getGraphqlFilterFragment = () => mockFilterFragment;
+}
 
+function createRelationship({ path, config = {}, getListByKey = () => new MockList(config.ref) }) {
   return new Relationship(path, config, {
     getListByKey,
     listKey: 'FakeList',
