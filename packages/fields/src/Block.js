@@ -1,4 +1,4 @@
-class Block {
+export class Block {
   constructor() {
     // To be set by a Block if it creates a join table.
     // Instance of @keystone/core#List
@@ -16,7 +16,3 @@ class Block {
     return `${this.constructor.type}RelateToManyInput`;
   }
 }
-
-module.exports = {
-  Block,
-};

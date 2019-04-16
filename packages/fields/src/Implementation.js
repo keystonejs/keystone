@@ -176,6 +176,4 @@ class Field {
   }
 }
 
-module.exports = {
-  Implementation: Field,
-};
+export { Field as Implementation };

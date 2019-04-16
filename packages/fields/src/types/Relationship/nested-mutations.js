@@ -1,7 +1,7 @@
-const groupBy = require('lodash.groupby');
-const pSettle = require('p-settle');
-const { intersection, pick } = require('@keystone-alpha/utils');
-const { ParameterError } = require('./graphqlErrors');
+import groupBy from 'lodash.groupby';
+import pSettle from 'p-settle';
+import { intersection, pick } from '@keystone-alpha/utils';
+import { ParameterError } from './graphqlErrors';
 
 const NESTED_MUTATIONS = ['create', 'connect', 'disconnect', 'disconnectAll'];
 
@@ -212,7 +212,14 @@ async function resolveNestedSingle({
  *
  * Returns: { connect: [id], disconnect: [id]}
  */
-async function resolveNested({ input, currentValue, many, listInfo, context, mutationState }) {
+export async function resolveNested({
+  input,
+  currentValue,
+  many,
+  listInfo,
+  context,
+  mutationState,
+}) {
   const localList = listInfo.local.list;
   const localField = listInfo.local.field;
   const refList = listInfo.foreign.list;
@@ -228,7 +235,3 @@ async function resolveNested({ input, currentValue, many, listInfo, context, mut
   };
   return await (many ? resolveNestedMany(args) : resolveNestedSingle(args));
 }
-
-module.exports = {
-  resolveNested,
-};

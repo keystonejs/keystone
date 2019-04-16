@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
-const omitBy = require('lodash.omitby');
-const { mergeWhereClause } = require('@keystone-alpha/utils');
-const { MongooseFieldAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { KnexFieldAdapter } = require('@keystone-alpha/adapter-knex');
+import mongoose from 'mongoose';
+import omitBy from 'lodash.omitby';
+import { mergeWhereClause } from '@keystone-alpha/utils';
+import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
+import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 
 const {
   Schema: {
@@ -10,11 +10,11 @@ const {
   },
 } = mongoose;
 
-const { Implementation } = require('../../Implementation');
-const { resolveNested } = require('./nested-mutations');
-const { enqueueBacklinkOperations } = require('./backlinks');
+import { Implementation } from '../../Implementation';
+import { resolveNested } from './nested-mutations';
+import { enqueueBacklinkOperations } from './backlinks';
 
-class Relationship extends Implementation {
+export class Relationship extends Implementation {
   constructor() {
     super(...arguments);
     const [refListKey, refFieldPath] = this.config.ref.split('.');
@@ -320,7 +320,7 @@ class Relationship extends Implementation {
   }
 }
 
-class MongoRelationshipInterface extends MongooseFieldAdapter {
+export class MongoRelationshipInterface extends MongooseFieldAdapter {
   constructor(...args) {
     super(...args);
     const [refListKey, refFieldPath] = this.config.ref.split('.');
@@ -403,7 +403,7 @@ class MongoRelationshipInterface extends MongooseFieldAdapter {
   }
 }
 
-class KnexRelationshipInterface extends KnexFieldAdapter {
+export class KnexRelationshipInterface extends KnexFieldAdapter {
   constructor(...args) {
     super(...args);
     const [refListKey, refFieldPath] = this.config.ref.split('.');
@@ -440,9 +440,3 @@ class KnexRelationshipInterface extends KnexFieldAdapter {
     );
   }
 }
-
-module.exports = {
-  Relationship,
-  MongoRelationshipInterface,
-  KnexRelationshipInterface,
-};

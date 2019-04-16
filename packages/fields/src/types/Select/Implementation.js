@@ -12,7 +12,7 @@ function initOptions(options) {
   });
 }
 
-class Select extends Implementation {
+export class Select extends Implementation {
   constructor(path, config) {
     super(...arguments);
     this.options = initOptions(config.options);
@@ -67,20 +67,14 @@ const CommonSelectInterface = superclass =>
     }
   };
 
-class MongoSelectInterface extends CommonSelectInterface(MongooseFieldAdapter) {
+export class MongoSelectInterface extends CommonSelectInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
   }
 }
 
-class KnexSelectInterface extends CommonSelectInterface(KnexFieldAdapter) {
+export class KnexSelectInterface extends CommonSelectInterface(KnexFieldAdapter) {
   createColumn(table) {
     return table.enu(this.path, this.config.options.map(({ value }) => value));
   }
 }
-
-module.exports = {
-  Select,
-  MongoSelectInterface,
-  KnexSelectInterface,
-};

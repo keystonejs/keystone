@@ -1,7 +1,7 @@
 import { Block } from '../../Block';
-import path from 'path';
+import { importView } from '@keystone-alpha/build-field-types';
 
-class CloudinaryBlock extends Block {
+export class CloudinaryBlock extends Block {
   constructor({ adapter }, { fromList, createAuxList, getListByKey }) {
     super();
 
@@ -36,7 +36,3 @@ class CloudinaryBlock extends Block {
     return importView('../Content/views/blocks/image-container');
   }
 }
-
-module.exports = {
-  CloudinaryBlock,
-};

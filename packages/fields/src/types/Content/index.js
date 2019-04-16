@@ -1,7 +1,7 @@
 import { Content, MongoContentInterface, KnexContentInterface } from './Implementation';
-import path from 'path';
+import { importView } from '@keystone-alpha/build-field-types';
 
-module.exports = {
+export const Content = {
   type: 'Content',
   implementation: Content,
   views: {
