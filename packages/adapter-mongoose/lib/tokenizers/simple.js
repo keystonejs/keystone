@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { objMerge } = require('@keystone-alpha/utils');
 
-module.exports = ({ getRelatedListAdapterFromQueryPath, modifierConditions = {} } = {}) => (
+module.exports = ({ getRelatedListAdapterFromQueryPath, modifierConditions }) => (
   query,
   queryKey,
   path
