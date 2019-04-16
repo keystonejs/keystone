@@ -1,8 +1,8 @@
-import path from 'path';
+import { importView } from '@keystone-alpha/build-field-types';
 import listItem from './list-item';
 
 export default {
   type: 'ordered-list',
-  viewPath: path.join(__dirname, '../views/blocks/ordered-list'),
+  viewPath: importView('../views/editor/blocks/ordered-list'),
   dependencies: [listItem],
 };

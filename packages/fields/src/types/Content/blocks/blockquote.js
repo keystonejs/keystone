@@ -1,6 +1,6 @@
-import path from 'path';
+import { importView } from '@keystone-alpha/build-field-types';
 
 export default {
   type: 'blockquote',
-  viewPath: path.join(__dirname, '../views/blocks/blockquote'),
+  viewPath: importView('../views/editor/blocks/blockquote'),
 };

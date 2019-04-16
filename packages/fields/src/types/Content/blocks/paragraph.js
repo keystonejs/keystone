@@ -1,6 +1,6 @@
-import path from 'path';
+import { importView } from '@keystone-alpha/build-field-types';
 
 export default {
   type: 'paragraph',
-  viewPath: path.join(__dirname, '../views/blocks/paragraph'),
+  viewPath: importView('../views/editor/blocks/paragraph'),
 };

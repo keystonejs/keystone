@@ -2,6 +2,7 @@ import pluralize from 'pluralize';
 import { Block } from '../../Block';
 import RelationshipFieldType from '../Relationship';
 import CloudinaryImage from './';
+import Text from '../Text';
 import { importView } from '@keystone-alpha/build-field-types';
 
 export class CloudinaryBlock extends Block {
@@ -14,7 +15,7 @@ export class CloudinaryBlock extends Block {
   }
 
   static get viewPath() {
-    return require.resolve('../Content/views/editor/blocks/image-container');
+    return importView('../Content/views/editor/blocks/image-container');
   }
 
   constructor({ adapter }, { fromList, createAuxList, getListByKey, listConfig }) {
@@ -30,7 +31,7 @@ export class CloudinaryBlock extends Block {
         fields: {
           // We perform the requires here to avoid circular dependencies
           image: { type: CloudinaryImage, isRequired: true, adapter },
-          from: { type: Relationship, isRequired: true, ref: fromList },
+          from: { type: RelationshipFieldType, isRequired: true, ref: fromList },
           field: { type: Text, isRequired: true },
         },
       });
@@ -58,10 +59,6 @@ export class CloudinaryBlock extends Block {
 
   getGqlInputFields() {
     return this._inputFields;
-  }
-
-  static get viewPath() {
-    return importView('../Content/views/editor/blocks/image-container');
   }
 
   getGqlOutputFields() {

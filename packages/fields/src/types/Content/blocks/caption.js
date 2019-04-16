@@ -1,6 +1,6 @@
-import path from 'path';
+import { importView } from '@keystone-alpha/build-field-types';
 
 export default {
   type: 'caption',
-  viewPath: path.join(__dirname, '../views/blocks/caption'),
+  viewPath: importView('../views/editor/blocks/caption'),
 };
