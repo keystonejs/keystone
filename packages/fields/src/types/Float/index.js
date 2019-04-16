@@ -1,7 +1,7 @@
 import { Float, MongoFloatInterface, KnexFloatInterface } from './Implementation';
-import path from 'path';
+import { importView } from '@keystone-alpha/build-field-types';
 
-module.exports = {
+export const Float = {
   type: 'Float',
   implementation: Float,
   views: {

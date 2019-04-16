@@ -4,9 +4,9 @@ import {
   KnexRelationshipInterface,
 } from './Implementation';
 import { resolveBacklinks } from './backlinks';
-import path from 'path';
+import { importView } from '@keystone-alpha/build-field-types';
 
-module.exports = {
+export const Relationship = {
   type: 'Relationship',
   isRelationship: true, // Used internally for this special case
   implementation: Relationship,

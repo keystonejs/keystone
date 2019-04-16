@@ -1,7 +1,7 @@
 import { Text, MongoTextInterface, KnexTextInterface } from './Implementation';
-import path from 'path';
+import { importView } from '@keystone-alpha/build-field-types';
 
-module.exports = {
+export const Text = {
   type: 'Text',
   implementation: Text,
   views: {

@@ -1,7 +1,7 @@
 import { Password, MongoPasswordInterface, KnexPasswordInterface } from './Implementation';
-import path from 'path';
+import { importView } from '@keystone-alpha/build-field-types';
 
-module.exports = {
+export const Password = {
   type: 'Password',
   implementation: Password,
   views: {

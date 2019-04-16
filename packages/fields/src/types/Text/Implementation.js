@@ -2,7 +2,7 @@ import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 
-class Text extends Implementation {
+export class Text extends Implementation {
   constructor() {
     super(...arguments);
   }
@@ -45,20 +45,14 @@ const CommonTextInterface = superclass =>
     }
   };
 
-class MongoTextInterface extends CommonTextInterface(MongooseFieldAdapter) {
+export class MongoTextInterface extends CommonTextInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
   }
 }
 
-class KnexTextInterface extends CommonTextInterface(KnexFieldAdapter) {
+export class KnexTextInterface extends CommonTextInterface(KnexFieldAdapter) {
   createColumn(table) {
     return table.text(this.path);
   }
 }
-
-module.exports = {
-  Text,
-  MongoTextInterface,
-  KnexTextInterface,
-};

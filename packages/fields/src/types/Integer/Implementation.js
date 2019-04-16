@@ -2,7 +2,7 @@ import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 
-class Integer extends Implementation {
+export class Integer extends Implementation {
   constructor() {
     super(...arguments);
   }
@@ -40,7 +40,7 @@ const CommonIntegerInterface = superclass =>
     }
   };
 
-class MongoIntegerInterface extends CommonIntegerInterface(MongooseFieldAdapter) {
+export class MongoIntegerInterface extends CommonIntegerInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     const { mongooseOptions = {} } = this.config;
     const { isRequired } = mongooseOptions;
@@ -59,14 +59,8 @@ class MongoIntegerInterface extends CommonIntegerInterface(MongooseFieldAdapter)
   }
 }
 
-class KnexIntegerInterface extends CommonIntegerInterface(KnexFieldAdapter) {
+export class KnexIntegerInterface extends CommonIntegerInterface(KnexFieldAdapter) {
   createColumn(table) {
     return table.integer(this.path);
   }
 }
-
-module.exports = {
-  Integer,
-  MongoIntegerInterface,
-  KnexIntegerInterface,
-};

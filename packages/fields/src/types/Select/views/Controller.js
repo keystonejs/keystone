@@ -1,4 +1,4 @@
-import FieldController from '../../../../Controller/src';
+import FieldController from '../../../Controller';
 
 export default class SelectController extends FieldController {
   constructor(...args) {
