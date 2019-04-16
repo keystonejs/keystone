@@ -33,7 +33,7 @@ class CloudinaryBlock extends Block {
   }
 
   static get viewPath() {
-    return path.join(__dirname, '../Content/views/blocks/image-container');
+    return importView('../Content/views/blocks/image-container');
   }
 }
 

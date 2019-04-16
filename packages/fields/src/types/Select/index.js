@@ -5,10 +5,10 @@ module.exports = {
   type: 'Select',
   implementation: Select,
   views: {
-    Controller: path.join(__dirname, './views/Controller'),
-    Field: path.join(__dirname, './views/Field'),
-    Filter: path.join(__dirname, './views/Filter'),
-    Cell: path.join(__dirname, './views/Cell'),
+    Controller: importView('./views/Controller'),
+    Field: importView('./views/Field'),
+    Filter: importView('./views/Filter'),
+    Cell: importView('./views/Cell'),
   },
   adapters: {
     mongoose: MongoSelectInterface,

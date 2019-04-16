@@ -1,4 +1,4 @@
-import FieldController from '../../../../Controller/src';
+import FieldController from '../../../Controller';
 
 export default class FileController extends FieldController {
   getValue = data => {

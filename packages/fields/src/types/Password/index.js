@@ -5,9 +5,9 @@ module.exports = {
   type: 'Password',
   implementation: Password,
   views: {
-    Controller: path.join(__dirname, './views/Controller'),
-    Field: path.join(__dirname, './views/Field'),
-    Filter: path.join(__dirname, './views/Filter'),
+    Controller: importView('./views/Controller'),
+    Field: importView('./views/Field'),
+    Filter: importView('./views/Filter'),
   },
   adapters: {
     mongoose: MongoPasswordInterface,

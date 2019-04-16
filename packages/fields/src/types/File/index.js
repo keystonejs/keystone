@@ -1,13 +1,13 @@
 import { File, MongoFileInterface, KnexFileInterface } from './Implementation';
-import path from 'path';
+import { importView } from '@keystone-alpha/build-field-types';
 
-module.exports = {
+export let File = {
   type: 'File',
   implementation: File,
   views: {
-    Controller: path.join(__dirname, './views/Controller'),
-    Field: path.join(__dirname, './views/Field'),
-    Cell: path.join(__dirname, './views/Cell'),
+    Controller: importView('./views/Controller'),
+    Field: importView('./views/Field'),
+    Cell: importView('./views/Cell'),
   },
   adapters: {
     mongoose: MongoFileInterface,

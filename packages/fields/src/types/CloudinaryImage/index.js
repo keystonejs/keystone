@@ -11,9 +11,9 @@ module.exports = {
   type: 'CloudinaryImage',
   implementation: CloudinaryImage,
   views: {
-    Controller: path.join(__dirname, './views/Controller'),
-    Field: path.join(__dirname, './views/Field'),
-    Cell: path.join(__dirname, './views/Cell'),
+    Controller: importView('./views/Controller'),
+    Field: importView('./views/Field'),
+    Cell: importView('./views/Cell'),
   },
   adapters: {
     mongoose: MongoCloudinaryImageInterface,
