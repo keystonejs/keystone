@@ -1,6 +1,6 @@
 // @flow
 
-import type { CellProps } from '../../../../types';
+import type { CellProps } from '../../../types';
 import * as React from 'react';
 
 const stripHttpPattern = /^https?\:\/\//i;

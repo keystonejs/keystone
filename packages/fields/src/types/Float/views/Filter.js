@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { Input } from '@arch-ui/input';
-import type { FilterProps } from '../../../../types';
+import type { FilterProps } from '../../../types';
 
 type Props = FilterProps<string>;
 

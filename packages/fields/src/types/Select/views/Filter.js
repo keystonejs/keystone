@@ -7,7 +7,7 @@ import Select from '@arch-ui/select';
 import { Options } from '@arch-ui/options';
 import { Radio, RadioGroup } from '@arch-ui/filters';
 import { gridSize } from '@arch-ui/theme';
-import type { FilterProps } from '../../../../types';
+import type { FilterProps } from '../../../types';
 
 const EventCatcher = props => (
   <div

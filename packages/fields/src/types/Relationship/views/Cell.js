@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Fragment } from 'react';
-import type { CellProps } from '../../../../types';
+import type { CellProps } from '../../../types';
 
 type Relationship = {
   id: string,
