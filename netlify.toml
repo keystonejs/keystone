@@ -1,0 +1,3 @@
+[build]
+  command = "yarn bolt && yarn website:build"
+  publish = "site/public"
