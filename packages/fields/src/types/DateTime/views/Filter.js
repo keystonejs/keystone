@@ -3,8 +3,8 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { DayTimePicker } from '@arch-ui/day-picker';
-import type { FilterProps } from '../../../../types';
-import { stringifyDate, parseDate } from '../utils';
+import type { FilterProps } from '../../../types';
+import { stringifyDate, parseDate } from './utils';
 
 type Props = FilterProps<string>;
 

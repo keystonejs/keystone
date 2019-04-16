@@ -143,7 +143,7 @@ const CommonDateTimeInterface = superclass =>
     }
   };
 
-class MongoDateTimeInterface extends CommonDateTimeInterface(MongooseFieldAdapter) {
+export class MongoDateTimeInterface extends CommonDateTimeInterface(MongooseFieldAdapter) {
   constructor() {
     super(...arguments);
     this.dbPath = `${this.path}_utc`;
@@ -169,7 +169,7 @@ class MongoDateTimeInterface extends CommonDateTimeInterface(MongooseFieldAdapte
   }
 }
 
-class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdapter) {
+export class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdapter) {
   constructor() {
     super(...arguments);
     const field_path = this.path;
@@ -190,8 +190,4 @@ class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdapter) {
   }
 }
 
-module.exports = {
-  DateTime: _DateTime,
-  MongoDateTimeInterface,
-  KnexDateTimeInterface,
-};
+export { _DateTime as DateTime };

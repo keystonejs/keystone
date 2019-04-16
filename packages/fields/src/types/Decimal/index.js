@@ -1,13 +1,13 @@
 import { Decimal, MongoDecimalInterface, KnexDecimalInterface } from './Implementation';
-import path from 'path';
+import { importView } from '@keystone-alpha/build-field-types';
 
-module.exports = {
+export let Decimal = {
   type: 'Decimal',
   implementation: Decimal,
   views: {
-    Controller: path.join(__dirname, './views/Controller'),
-    Field: path.join(__dirname, './views/Field'),
-    Filter: path.join(__dirname, './views/Filter'),
+    Controller: importView('./views/Controller'),
+    Field: importView('./views/Field'),
+    Filter: importView('./views/Filter'),
   },
   adapters: {
     mongoose: MongoDecimalInterface,

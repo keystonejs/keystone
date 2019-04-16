@@ -1,7 +1,7 @@
 // @flow
 
 import { format } from 'date-fns';
-import type { CellProps } from '../../../../types';
+import type { CellProps } from '../../../types';
 
 type Props = CellProps<string>;
 

@@ -73,5 +73,11 @@ module.exports = {
         'no-undef': 'off',
       },
     },
+    {
+      files: ['packages/fields/src/**/*.js'],
+      rules: {
+        'import/no-commonjs': 'error',
+      },
+    },
   ],
 };

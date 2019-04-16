@@ -1,6 +1,6 @@
-import FieldController from '../../../../Controller/src';
+import FieldController from '../../../Controller';
 
-export default class DateTimeController extends FieldController {
+export default class TextController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;
     return `${key}: "${value}"`;
@@ -12,11 +12,16 @@ export default class DateTimeController extends FieldController {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
   getValue = data => {
-    let value = data[this.config.path];
-    if (typeof value !== 'string') {
-      return null;
+    const value = data[this.config.path];
+    // Make the value a string to prevent loss of accuracy and precision.
+    if (typeof value === 'string') {
+      return value;
+    } else if (typeof value === 'number') {
+      return String(value);
+    } else {
+      // If it is neither string nor number then it must be empty.
+      return '';
     }
-    return value.trim() || null;
   };
   getFilterTypes = () => [
     {
@@ -31,25 +36,23 @@ export default class DateTimeController extends FieldController {
     },
     {
       type: 'gt',
-      label: 'Is after',
+      label: 'Is greater than',
       getInitialValue: () => '',
     },
     {
       type: 'lt',
-      label: 'Is before',
+      label: 'Is less than',
       getInitialValue: () => '',
     },
     {
       type: 'gte',
-      label: 'Is after or equal to',
+      label: 'Is greater than or equal to',
       getInitialValue: () => '',
     },
     {
       type: 'lte',
-      label: 'Is before or equal to',
+      label: 'Is less than or equal to',
       getInitialValue: () => '',
     },
-    // QUESTION: should we support "in" and "not_in" filters for DateTime?
-    // What does the UI look like for that.
   ];
 }

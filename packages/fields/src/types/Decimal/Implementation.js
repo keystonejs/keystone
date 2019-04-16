@@ -3,7 +3,7 @@ import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 
-class Decimal extends Implementation {
+export class Decimal extends Implementation {
   constructor() {
     super(...arguments);
   }
@@ -36,7 +36,7 @@ class Decimal extends Implementation {
   }
 }
 
-class MongoDecimalInterface extends MongooseFieldAdapter {
+export class MongoDecimalInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
     const { mongooseOptions = {} } = this.config;
     const { isRequired } = mongooseOptions;
@@ -80,7 +80,7 @@ class MongoDecimalInterface extends MongooseFieldAdapter {
   }
 }
 
-class KnexDecimalInterface extends KnexFieldAdapter {
+export class KnexDecimalInterface extends KnexFieldAdapter {
   createColumn(table) {
     return table.decimal(this.path);
   }
@@ -92,9 +92,3 @@ class KnexDecimalInterface extends KnexFieldAdapter {
     };
   }
 }
-
-module.exports = {
-  Decimal,
-  MongoDecimalInterface,
-  KnexDecimalInterface,
-};
