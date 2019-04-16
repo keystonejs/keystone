@@ -5,7 +5,8 @@ import styled from '@emotion/styled';
 
 import { Button } from '@arch-ui/button';
 import PopoutModal from '@arch-ui/popout';
-import { gridSize } from '@arch-ui/theme';
+import { colors, gridSize } from '@arch-ui/theme';
+import { alpha } from '@arch-ui/color-utils';
 
 export const POPOUT_GUTTER = gridSize * 2;
 
@@ -20,7 +21,7 @@ const Bar = styled.div({
 });
 const Header = styled(Bar)({
   alignItems: 'center',
-  boxShadow: '0 2px 0 rgba(0,0,0,0.1)',
+  boxShadow: `0 2px 0 ${alpha(colors.text, 0.1)}`,
   display: 'flex',
   justifyContent: 'center',
   textAlign: 'center',
@@ -45,7 +46,7 @@ const Body = styled.div({
 });
 const Footer = styled(Bar)({
   alignItems: 'center',
-  boxShadow: '0 -2px 0 rgba(0,0,0,0.1)',
+  boxShadow: `0 -2px 0 ${alpha(colors.text, 0.1)}`,
   display: 'flex',
   justifyContent: 'space-between',
 });
@@ -89,8 +90,8 @@ export const Popout = ({
   target,
   ...props
 }: Props) => {
-  const defaultTarget = props => (
-    <Button {...props}>
+  const defaultTarget = handlers => (
+    <Button variant="subtle" appearance="primary" {...handlers}>
       {buttonLabel}
       <DisclosureArrow />
     </Button>

@@ -52,7 +52,7 @@ describe('Home page', () => {
     cy.visit('/admin/users');
 
     cy.get('a[href^="/admin/users/"]:first').click();
-    cy.get('button[appearance="create"]').click();
+    cy.get('#item-page-create-button').click();
 
     [
       {

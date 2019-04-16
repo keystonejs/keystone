@@ -22,6 +22,12 @@ export const H1 = styled.h1({
   fontWeight: 300,
   margin: '24px 0',
 });
+export const PageTitle = styled.h1({
+  fontSize: '2.4rem',
+  fontWeight: 900,
+  marginBottom: '0.5em',
+  marginTop: '0.8rem',
+});
 
 type TruncateProps = {
   as: React.ElementType,
@@ -54,7 +60,7 @@ export const Title = ({ as: Tag, crop, margin, ...props }: TitleProps) => {
     <Tag
       css={{
         fontSize: 18,
-        fontWeight: 500,
+        fontWeight: 600,
         whiteSpace: 'nowrap',
         ...cropStyles,
         ...offset,

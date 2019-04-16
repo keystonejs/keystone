@@ -1,50 +1,58 @@
 /** @jsx jsx */
 
-import { jsx } from '@emotion/core';
-import { useRef, forwardRef, useState } from 'react';
-import debounce from 'lodash.debounce';
+import { jsx, keyframes } from '@emotion/core';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 
 import { SearchIcon, XIcon } from '@arch-ui/icons';
-// import { Input } from '@arch-ui/input';
+import { IconButton } from '@arch-ui/button';
 import { A11yText } from '@arch-ui/typography';
-import { LoadingSpinner } from '@arch-ui/loading';
 import { colors } from '@arch-ui/theme';
 import { uniformHeight } from '@arch-ui/common';
+import Tooltip from '@arch-ui/tooltip';
 
-import { useListSearch } from './dataHooks';
-import { elementOffsetStyles } from './Filters/ActiveFilters';
+import { useAdminMeta } from '../../providers/AdminMeta';
+import { useRouter } from '../List/dataHooks';
 
-export default function Search({ isLoading, list }) {
-  const { searchValue, onChange, onClear, onSubmit } = useListSearch(list.key);
-  const [value, setValue] = useState(searchValue);
-  const inputRef = useRef();
-  const debouncedOnChange = debounce(onChange, 200);
+export function Search({ list }) {
+  // const { urlState } = useListUrlState(list.key);
+  const [value, setValue] = useState('');
+  const [formIsVisible, setFormVisible] = useState(false);
+  const inputRef = useRef(null);
+  const { history } = useRouter();
+  const { adminPath } = useAdminMeta();
 
-  const hasValue = searchValue && searchValue.length;
-  const Icon = hasValue ? XIcon : SearchIcon;
-  const isFetching = hasValue && isLoading;
+  const showForm = () => {
+    setFormVisible(true);
+  };
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus();
+  }, [formIsVisible]);
 
   const handleChange = event => {
     setValue(event.target.value);
-    debouncedOnChange(event.target.value);
   };
   const handleClear = () => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+    if (inputRef.current) inputRef.current.focus();
     setValue('');
-    onClear();
   };
+
+  const handleSubmit = event => {
+    if (event) event.preventDefault();
+    history.push(`${adminPath}/${list.path}/?search=${value}`);
+  };
+
+  const hasValue = value && value.length;
+  const Icon = value ? XIcon : SearchIcon;
 
   const id = 'ks-list-search-input';
 
   // NOTE: `autoComplete="off"` doesn't behave as expected on `<input />` in
   // webkit, so we apply the attribute to a form tag here.
-  return (
+  return formIsVisible ? (
     <form
-      css={{ ...elementOffsetStyles, position: 'relative' }}
+      css={{ display: 'inline-block', position: 'relative' }}
       autoComplete="off"
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
     >
       <A11yText tag="label" htmlFor={id}>
         Search {list.plural}
@@ -80,21 +88,32 @@ export default function Search({ isLoading, list }) {
           },
         }}
       >
-        {isFetching ? (
-          <LoadingSpinner size={16} />
-        ) : (
-          <Icon onClick={hasValue ? handleClear : null} />
-        )}
+        <Icon onClick={hasValue ? handleClear : null} />
       </div>
     </form>
+  ) : (
+    <Tooltip content="Search" hideOnMouseDown hideOnKeyDown>
+      {ref => (
+        <IconButton ref={ref} iconSize={16} variant="subtle" icon={SearchIcon} onClick={showForm} />
+      )}
+    </Tooltip>
   );
 }
 
+const slideOpen = keyframes`
+  from {
+    width: 42px;
+  }
+  to {
+    width: 160px;
+  }
+`;
 const Input = forwardRef((props, ref) => (
   <input
     ref={ref}
     css={{
       ...uniformHeight,
+      animation: `${slideOpen} 180ms cubic-bezier(0.2, 0, 0, 1)`,
       background: colors.N10,
       border: 0,
 

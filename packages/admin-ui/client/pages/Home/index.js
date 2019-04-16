@@ -3,12 +3,12 @@ import { withRouter } from 'react-router-dom';
 import { Query } from 'react-apollo';
 
 import { Container, Grid, Cell } from '@arch-ui/layout';
-import { Title } from '@arch-ui/typography';
+import { PageTitle } from '@arch-ui/typography';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
-import { Box } from './components';
+import { Box, HeaderInset } from './components';
 import ContainerQuery from '../../components/ContainerQuery';
 import { gqlCountQueries } from '../../classes/List';
 
@@ -34,9 +34,9 @@ class HomePage extends Component {
     return (
       <main>
         <Container>
-          <Title as="h1" margin="both">
-            Dashboard
-          </Title>
+          <HeaderInset>
+            <PageTitle>Dashboard</PageTitle>
+          </HeaderInset>
           <ContainerQuery>
             {({ width }) => {
               let cellWidth = 3;
