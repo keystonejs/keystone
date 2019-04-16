@@ -1,33 +1,33 @@
 // @flow
 import { colors } from '@arch-ui/theme';
-import { alpha, darken, lighten } from '@arch-ui/color-utils';
+import { alpha, darken } from '@arch-ui/color-utils';
 
 const boldAppearance = {
   default: {
-    bg: colors.N05,
+    bg: '#fff',
     border: colors.N20,
     focusRing: colors.primary,
     text: colors.text,
   },
   primary: {
     bg: colors.primary,
-    border: darken(colors.primary, 16),
-    text: 'white',
+    border: colors.primary,
+    text: '#fff',
   },
   create: {
     bg: colors.create,
-    border: darken(colors.create, 16),
-    text: 'white',
+    border: colors.create,
+    text: '#fff',
   },
   danger: {
     bg: colors.danger,
-    border: darken(colors.danger, 8),
-    text: 'white',
+    border: colors.danger,
+    text: '#fff',
   },
   warning: {
     bg: colors.warning,
-    border: darken(colors.warning, 12),
-    text: 'white',
+    border: colors.warning,
+    text: '#fff',
   },
 };
 const ghostAppearance = {
@@ -70,6 +70,20 @@ const subtleAppearance = {
     textHover: colors.danger,
   },
 };
+const nuanceAppearance = {
+  default: {
+    text: colors.text,
+  },
+  primary: {
+    text: colors.primary,
+  },
+  warning: {
+    text: colors.danger,
+  },
+  danger: {
+    text: colors.danger,
+  },
+};
 
 export function makeSubtleVariant({ appearance }: { appearance: $Keys<typeof subtleAppearance> }) {
   const { text, textHover } = subtleAppearance[appearance];
@@ -89,14 +103,14 @@ export function makeNuanceVariant({
   appearance,
   isDisabled,
 }: {
-  appearance: $Keys<typeof subtleAppearance>,
+  appearance: $Keys<typeof nuanceAppearance>,
   isDisabled: boolean,
 }) {
-  const { text } = subtleAppearance[appearance];
+  const { text } = nuanceAppearance[appearance];
 
   return {
     color: text,
-    fontWeight: 500,
+    fontWeight: 'normal',
 
     ':hover, :focus': makeGhostVariant({ appearance, isDisabled }),
   };
@@ -118,7 +132,7 @@ export function makeGhostVariant({
     border: '1px solid',
     borderColor: border,
     color: text,
-    fontWeight: 500,
+    fontWeight: 'normal',
     opacity: isDisabled ? 0.5 : null,
 
     ':hover, :focus': {
@@ -142,37 +156,30 @@ export function makeBoldVariant({
   isActive,
   isHover,
   isFocus,
+  isSelected,
 }: {
   appearance: $Keys<typeof boldAppearance>,
   isDisabled: boolean,
   isActive: boolean,
   isHover: boolean,
   isFocus: boolean,
+  isSelected?: boolean,
 }) {
   // $FlowFixMe
   const { bg, border, focusRing, text } = boldAppearance[appearance];
-  const bgTop = lighten(bg, 10);
-  const bgBottom = darken(bg, 10);
-  const borderTop = lighten(border, 8);
-  const borderBottom = darken(border, 16);
-  const activeBg = darken(bg, 12);
-  const textShadow =
-    appearance === 'default' ? '0 1px 0 rgba(255, 255, 255, 0.5)' : '0 -1px 0 rgba(0, 0, 0, 0.25)';
+  const activeBg = appearance === 'default' ? colors.N10 : darken(bg, 12);
 
   const hoverAndFocus =
     isHover || isFocus
       ? {
-          borderColor: `${darken(borderTop, 8)} ${darken(border, 8)} ${darken(borderBottom, 8)}`,
-          background: `linear-gradient(to bottom, ${lighten(bgTop, 10)} 0%, ${lighten(
-            bgBottom,
-            8
-          )} 100%)`,
+          borderColor: border,
+          background: bg,
         }
       : null;
   const hoverStyles = isHover
     ? {
         ...hoverAndFocus,
-        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.12)',
       }
     : null;
   const focusStyles =
@@ -183,22 +190,20 @@ export function makeBoldVariant({
           boxShadow: `0 0 0 3px ${alpha(focusRing || bg, 0.2)}`,
         }
       : null;
-  const activeStyles = isActive
-    ? {
-        background: activeBg,
-        borderColor: `${darken(border, 24)} ${darken(border, 16)} ${darken(border, 12)}`,
-        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.12)',
-      }
-    : null;
+  const activeStyles =
+    isActive || isSelected
+      ? {
+          background: activeBg,
+          borderColor: border,
+        }
+      : null;
 
   return {
-    backgroundColor: bgBottom,
+    backgroundColor: bg,
     backgroundRepeat: 'repeat-x',
-    background: isDisabled ? null : `linear-gradient(to bottom, ${bgTop} 0%, ${bgBottom} 100%)`,
-    borderColor: isDisabled ? null : `${borderTop} ${border} ${borderBottom}`,
+    borderColor: border,
     color: text,
-    fontWeight: 500,
-    textShadow,
+    fontWeight: 'bold',
 
     ...hoverStyles,
     ...focusStyles,

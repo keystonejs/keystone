@@ -1,4 +1,5 @@
 /** @jsx jsx */
+
 import { jsx } from '@emotion/core';
 import { Fragment, Suspense, useEffect, useRef, useState } from 'react';
 import { Query } from 'react-apollo';
@@ -6,25 +7,31 @@ import { Query } from 'react-apollo';
 import { IconButton } from '@arch-ui/button';
 import { PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
-import { Title } from '@arch-ui/typography';
+import { colors, gridSize } from '@arch-ui/theme';
+import { PageTitle } from '@arch-ui/typography';
+import { Button } from '@arch-ui/button';
+import { KebabHorizontalIcon } from '@arch-ui/icons';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
 import ListTable from '../../components/ListTable';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
+import { DisclosureArrow } from '../../components/Popout';
 import { deconstructErrorsToDataShape } from '../../util';
 
 import ColumnPopout from './ColumnSelect';
-import AddFilterPopout from './Filters/AddFilterPopout';
 import ActiveFilters from './Filters/ActiveFilters';
 import SortPopout from './SortSelect';
-import Pagination from './Pagination';
+import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
-import { MoreDropdown } from './MoreDropdown';
 import { NoResults } from './NoResults';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
+
+const HeaderInset = props => (
+  <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
+);
 
 type Props = {
   adminMeta: Object,
@@ -39,12 +46,11 @@ type LayoutProps = Props & {
 
 function ListLayout(props: LayoutProps) {
   const { adminMeta, items, itemCount, itemErrors, list, routeProps, query } = props;
-  const [isFullWidth, setFullWidth] = useState(false);
   const [showCreateModal, toggleCreateModal] = useState(false);
   const measureElementRef = useRef();
 
   const { urlState } = useListUrlState(list.key);
-  const { filters, onAdd: handleFilterAdd } = useListFilter(list.key);
+  const { filters } = useListFilter(list.key);
   // const { items, itemCount, itemErrors } = useListItems(list.key);
   const [sortBy, handleSortChange] = useListSort(list.key);
 
@@ -80,9 +86,6 @@ function ListLayout(props: LayoutProps) {
 
   // Misc.
   // ------------------------------
-  const toggleFullWidth = () => {
-    setFullWidth(!isFullWidth);
-  };
 
   const onDeleteSelectedItems = () => {
     query.refetch();
@@ -102,58 +105,94 @@ function ListLayout(props: LayoutProps) {
 
   // Success
   // ------------------------------
+
+  const cypressCreateId = 'list-page-create-button';
+  const cypressFiltersId = 'ks-list-active-filters';
+
   return (
     <main>
       <div ref={measureElementRef} />
 
-      <Container isFullWidth={isFullWidth}>
-        <Title as="h1" margin="both">
-          {itemCount > 0 ? list.formatCount(itemCount) : list.plural}
-          <span>, by</span>
-          <SortPopout listKey={list.key} />
-        </Title>
+      <Container isFullWidth>
+        <HeaderInset>
+          <FlexGroup align="center" justify="space-between">
+            <PageTitle>{list.plural}</PageTitle>
+            {list.access.create ? (
+              <IconButton
+                appearance="primary"
+                icon={PlusIcon}
+                onClick={openCreateModal}
+                id={cypressCreateId}
+              >
+                Create
+              </IconButton>
+            ) : null}
+          </FlexGroup>
+          <div
+            css={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap' }}
+            id={cypressFiltersId}
+          >
+            <Search list={list} isLoading={query.loading} />
+            <ActiveFilters list={list} />
+          </div>
 
-        <FlexGroup growIndexes={[0]}>
-          <Search list={list} isLoading={query.loading} />
-          <AddFilterPopout
-            listKey={list.key}
-            existingFilters={filters}
-            fields={list.fields}
-            onChange={handleFilterAdd}
-          />
-
-          <ColumnPopout listKey={list.key} />
-
-          {list.access.create ? (
-            <IconButton appearance="create" icon={PlusIcon} onClick={openCreateModal}>
-              Create
-            </IconButton>
-          ) : null}
-          <MoreDropdown
-            measureRef={measureElementRef}
-            isFullWidth={isFullWidth}
-            onFullWidthToggle={toggleFullWidth}
-            listKey={list.key}
-          />
-        </FlexGroup>
-
-        <ActiveFilters listKey={list.key} />
-
-        <ManageToolbar isVisible={!!itemCount}>
-          {selectedItems.length ? (
-            <Management
-              list={list}
-              onDeleteMany={onDeleteSelectedItems}
-              onUpdateMany={onUpdateSelectedItems}
-              pageSize={pageSize}
-              selectedItems={selectedItems}
-              onSelectChange={onSelectChange}
-              totalItems={itemCount}
-            />
-          ) : (
-            <Pagination listKey={list.key} isLoading={query.loading} />
-          )}
-        </ManageToolbar>
+          <ManageToolbar isVisible>
+            {selectedItems.length ? (
+              <Management
+                list={list}
+                onDeleteMany={onDeleteSelectedItems}
+                onUpdateMany={onUpdateSelectedItems}
+                pageSize={pageSize}
+                selectedItems={selectedItems}
+                onSelectChange={onSelectChange}
+                totalItems={itemCount}
+              />
+            ) : items && items.length ? (
+              <FlexGroup align="center" growIndexes={[0]}>
+                <div
+                  css={{
+                    alignItems: 'center',
+                    color: colors.N40,
+                    display: 'flex',
+                    fontSize: '0.9rem',
+                  }}
+                >
+                  <span id="ks-pagination-count">
+                    {getPaginationLabel({
+                      currentPage: currentPage,
+                      pageSize: pageSize,
+                      plural: list.plural,
+                      singular: list.singular,
+                      total: itemCount,
+                    })}
+                    ,
+                  </span>
+                  <span css={{ paddingLeft: '0.5ex' }}>sorted by</span>
+                  <SortPopout listKey={list.key} />
+                  <span css={{ paddingLeft: '0.5ex' }}>with</span>
+                  <ColumnPopout
+                    listKey={list.key}
+                    target={handlers => (
+                      <Button
+                        variant="subtle"
+                        appearance="primary"
+                        spacing="cozy"
+                        id="ks-column-button"
+                        {...handlers}
+                      >
+                        {fields.length} Columns
+                        <DisclosureArrow />
+                      </Button>
+                    )}
+                  />
+                </div>
+                <FlexGroup align="center" css={{ marginLeft: '1em' }}>
+                  <Pagination listKey={list.key} isLoading={query.loading} />
+                </FlexGroup>
+              </FlexGroup>
+            ) : null}
+          </ManageToolbar>
+        </HeaderInset>
       </Container>
 
       <CreateItemModal
@@ -163,15 +202,33 @@ function ListLayout(props: LayoutProps) {
         onCreate={onCreate}
       />
 
-      <Container isFullWidth={isFullWidth}>
+      <Container isFullWidth>
         {items ? (
           <Suspense fallback={<PageLoading />}>
             {items.length ? (
               <ListTable
                 adminPath={adminPath}
+                columnControl={
+                  <ColumnPopout
+                    listKey={list.key}
+                    target={handlers => (
+                      <Button
+                        variant="subtle"
+                        css={{
+                          background: 0,
+                          border: 0,
+                          color: colors.N40,
+                        }}
+                        {...handlers}
+                      >
+                        <KebabHorizontalIcon />
+                      </Button>
+                    )}
+                  />
+                }
                 fields={fields}
                 handleSortChange={handleSortChange}
-                isFullWidth={isFullWidth}
+                isFullWidth
                 items={items}
                 itemsErrors={itemErrors}
                 list={list}

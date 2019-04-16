@@ -1,11 +1,12 @@
 /** @jsx jsx */
+
 import { jsx } from '@emotion/core';
 import { useMemo, useRef } from 'react';
 import styled from '@emotion/styled';
-import { ChevronDownIcon, ChevronUpIcon } from '@arch-ui/icons';
-import { OptionPrimitive, Options } from '@arch-ui/options';
+import { CheckMark, OptionPrimitive, Options } from '@arch-ui/options';
 import { colors } from '@arch-ui/theme';
 import { Kbd } from '@arch-ui/typography';
+import { Button } from '@arch-ui/button';
 
 import { DisclosureArrow, Popout, POPOUT_GUTTER } from '../../components/Popout';
 import { useList, useListSort, useKeyDown } from './dataHooks';
@@ -22,7 +23,6 @@ export default function SortPopout({ listKey }: Props) {
 
   const handleChange = field => {
     const isSelected = field.path === sortValue.field.path;
-    console.log('handleChange', field);
 
     let direction = 'ASC';
     if (isSelected) {
@@ -37,6 +37,8 @@ export default function SortPopout({ listKey }: Props) {
 
   const cachedOptions = useMemo(() => list.fields.map(({ options, ...field }) => field), [list]);
 
+  const cypressId = 'list-page-sort-button';
+
   return (
     <Popout
       innerRef={popoutRef}
@@ -47,10 +49,10 @@ export default function SortPopout({ listKey }: Props) {
         </Note>
       }
       target={handlers => (
-        <SortButton {...handlers}>
-          {sortValue.field.label.toLowerCase()}
-          <DisclosureArrow size="0.2em" />
-        </SortButton>
+        <Button variant="subtle" appearance="primary" spacing="cozy" id={cypressId} {...handlers}>
+          {sortValue.field.label}
+          <DisclosureArrow />
+        </Button>
       )}
     >
       <div css={{ padding: POPOUT_GUTTER }}>
@@ -59,8 +61,9 @@ export default function SortPopout({ listKey }: Props) {
           isOptionSelected={isOptionSelected}
           onChange={handleChange}
           options={cachedOptions}
-          placeholder="Find a field..."
+          placeholder="Search fields..."
           value={sortValue}
+          altIsDown={altIsDown}
         />
       </div>
     </Popout>
@@ -71,40 +74,17 @@ export default function SortPopout({ listKey }: Props) {
 // Styled Components
 // ==============================
 
-export const SortButton = styled.button(({ isActive }) => {
-  const overStyles = {
-    color: colors.primary,
-    borderBottomColor: colors.primary,
-  };
-  const activeStyles = isActive ? overStyles : null;
-  return {
-    background: 0,
-    border: 0,
-    borderBottom: `1px solid ${colors.N20}`,
-    outline: 0,
-    color: 'inherit',
-    cursor: 'pointer',
-    display: 'inline-block',
-    fontSize: 'inherit',
-    fontWeight: 'inherit',
-    marginLeft: '0.5ex',
-    padding: 0,
-    verticalAlign: 'baseline',
-
-    ':hover, :focus': overStyles,
-    ...activeStyles,
-  };
-});
-
 export const SortOption = ({ children, isFocused, isSelected, ...props }) => {
-  const altIsDown = useKeyDown('Alt');
-  const Icon = isSelected ? ChevronUpIcon : altIsDown ? ChevronUpIcon : ChevronDownIcon;
-  const iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
+  const { altIsDown } = props.selectProps;
+  const direction = isSelected ? '(ASC)' : altIsDown ? '(ASC)' : '(DESC)';
 
   return (
     <OptionPrimitive isFocused={isFocused} isSelected={isSelected} {...props}>
-      <span>{children}</span>
-      <Icon css={{ color: iconColor }} />
+      <span>
+        {children}
+        <small css={{ color: colors.N40 }}> {direction}</small>
+      </span>
+      <CheckMark isFocused={isFocused} isSelected={isSelected} />
     </OptionPrimitive>
   );
 };
