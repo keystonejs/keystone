@@ -1,6 +1,6 @@
-const path = require('path');
+import path from 'path';
 
-module.exports = {
+export default {
   type: 'paragraph',
   viewPath: path.join(__dirname, '../views/blocks/paragraph'),
 };

@@ -1,9 +1,10 @@
-import pluralize from "pluralize";
-import { Block } from "../../Block";
-import RelationshipFieldType from '../Relationship'
-import path from "path";
+import pluralize from 'pluralize';
+import { Block } from '../../Block';
+import RelationshipFieldType from '../Relationship';
+import CloudinaryImage from './';
+import { importView } from '@keystone-alpha/build-field-types';
 
-class CloudinaryBlock extends Block {
+export class CloudinaryBlock extends Block {
   static get type() {
     return 'cloudinaryImage';
   }

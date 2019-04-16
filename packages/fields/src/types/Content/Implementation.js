@@ -1,6 +1,6 @@
-import { MongoTextInterface, KnexTextInterface, Text } from "../Text/Implementation";
-import { flatMap, unique } from "@keystone-alpha/utils";
-import paragraph from "./blocks/paragraph";
+import { MongoTextInterface, KnexTextInterface, Text } from '../Text/Implementation';
+import { flatMap, unique } from '@keystone-alpha/utils';
+import paragraph from './blocks/paragraph';
 
 const GQL_TYPE_PREFIX = '_ContentType';
 
@@ -13,7 +13,7 @@ function flattenBlockViews(block) {
   ];
 }
 
-class Content extends Text {
+export class Content extends Text {
   constructor(path, config, listConfig) {
     super(...arguments);
 

@@ -1,6 +1,19 @@
 module.exports = {
   presets: [
-    ['@babel/env', { exclude: ['transform-regenerator', 'transform-async-to-generator'] }],
+    [
+      '@babel/env',
+      {
+        targets: {
+          node: 10,
+          browsers: [
+            'last 2 chrome versions',
+            'last 2 firefox versions',
+            'last 2 safari versions',
+            'last 2 edge versions',
+          ],
+        },
+      },
+    ],
     '@babel/react',
     '@babel/preset-flow',
   ],

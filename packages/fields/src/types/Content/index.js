@@ -1,4 +1,11 @@
 import { Content, MongoContentInterface, KnexContentInterface } from './Implementation';
+import blockquote from './blocks/blockquote';
+import embed from './blocks/embed';
+import heading from './blocks/heading';
+import image from './blocks/image-container';
+import link from './blocks/link';
+import orderedList from './blocks/ordered-list';
+import unorderedList from './blocks/unordered-list';
 import { importView } from '@keystone-alpha/build-field-types';
 
 export default {
@@ -14,13 +21,13 @@ export default {
     knex: KnexContentInterface,
   },
   blocks: {
-    blockquote: { viewPath: importView('./views/editor/blocks/blockquote') },
-    embed: { viewPath: importView('./views/editor/blocks/embed') },
-    heading: { viewPath: importView('./views/editor/blocks/heading') },
-    image: { viewPath: importView('./views/editor/blocks/image-container') },
-    link: { viewPath: importView('./views/editor/blocks/link') },
-    orderedList: { viewPath: importView('./views/editor/blocks/ordered-list') },
-    unorderedList: { viewPath: importView('./views/editor/blocks/unordered-list') },
+    blockquote,
+    embed,
+    heading,
+    image,
+    link,
+    orderedList,
+    unorderedList,
     // not exposing list-item since it's only used internally by the other blocks
     // not exposing paragraph since it's included by default
   },

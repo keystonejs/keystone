@@ -1,8 +1,8 @@
-const path = require('path');
-const image = require('./image');
-const caption = require('./caption');
+import path from 'path';
+import image from './image';
+import caption from './caption';
 
-module.exports = {
+export default {
   type: 'image-container',
   viewPath: path.join(__dirname, '../views/blocks/image-container'),
   dependencies: [image, caption],

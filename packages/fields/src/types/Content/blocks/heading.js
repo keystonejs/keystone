@@ -1,7 +1,7 @@
-const path = require('path');
-const paragraph = require('./paragraph');
+import path from 'path';
+import paragraph from './paragraph';
 
-module.exports = {
+export default {
   type: 'heading',
   viewPath: path.join(__dirname, '../views/blocks/heading'),
   dependencies: [paragraph],

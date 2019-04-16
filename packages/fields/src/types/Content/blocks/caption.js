@@ -1,6 +1,6 @@
-const path = require('path');
+import path from 'path';
 
-module.exports = {
+export default {
   type: 'caption',
   viewPath: path.join(__dirname, '../views/blocks/caption'),
 };

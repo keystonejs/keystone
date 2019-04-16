@@ -1,7 +1,7 @@
-const path = require('path');
-const listItem = require('./list-item');
+import path from 'path';
+import listItem from './list-item';
 
-module.exports = {
+export default {
   type: 'unordered-list',
   viewPath: path.join(__dirname, '../views/blocks/unordered-list'),
   dependencies: [listItem],
