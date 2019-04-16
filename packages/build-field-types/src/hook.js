@@ -4,9 +4,6 @@ let { addHook } = require('pirates');
 let babel = require('@babel/core');
 let sourceMapSupport = require('source-map-support');
 
-// this is a require hook for dev
-// how it works is, first we customise the way filenames are resolved
-
 let babelPlugins = [
   require.resolve('./babel-plugins/ks-field-types-dev'),
   require.resolve('@babel/plugin-transform-runtime'),
