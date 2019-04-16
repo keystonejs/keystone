@@ -4,7 +4,7 @@ import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 
-class CalendarDay extends Implementation {
+export class CalendarDay extends Implementation {
   constructor() {
     super(...arguments);
   }
@@ -47,7 +47,7 @@ const CommonCalendarInterface = superclass =>
     }
   };
 
-class MongoCalendarDayInterface extends CommonCalendarInterface(MongooseFieldAdapter) {
+export class MongoCalendarDayInterface extends CommonCalendarInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     const { mongooseOptions = {} } = this.config;
     const { isRequired } = mongooseOptions;
@@ -64,7 +64,7 @@ class MongoCalendarDayInterface extends CommonCalendarInterface(MongooseFieldAda
   }
 }
 
-class KnexCalendarDayInterface extends CommonCalendarInterface(KnexFieldAdapter) {
+export class KnexCalendarDayInterface extends CommonCalendarInterface(KnexFieldAdapter) {
   createColumn(table) {
     return table.date(this.path);
   }
@@ -78,9 +78,3 @@ class KnexCalendarDayInterface extends CommonCalendarInterface(KnexFieldAdapter)
     });
   }
 }
-
-module.exports = {
-  CalendarDay,
-  MongoCalendarDayInterface,
-  KnexCalendarDayInterface,
-};
