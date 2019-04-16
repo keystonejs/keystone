@@ -3,7 +3,6 @@
 import styled from '@emotion/styled';
 
 import { colors, gridSize } from '@arch-ui/theme';
-import { alpha } from '@arch-ui/color-utils';
 import { ItemElement } from './common';
 
 export const PRIMARY_NAV_GUTTER = gridSize * 2;

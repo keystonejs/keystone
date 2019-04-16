@@ -8,18 +8,21 @@ describe('List view URL state', () => {
     // expand all pages first
     cy.get('#ks-pagination-show-pages').click();
 
-    cy.get('#ks-pagination button:nth-of-type(3)')
+    cy.get('[aria-label="Go to page 3"]')
       .should('have.attr', 'aria-current', 'page')
       .should('contain', '3');
 
     // Navigate to page 2
-    cy.get('#ks-pagination button:nth-of-type(2)')
+    cy.get('[aria-label="Go to page 2"]')
       .should('contain', '2')
       .click();
     cy.location('search').should('eq', '?currentPage=2');
 
+    // expand all pages first
+    cy.get('#ks-pagination-show-pages').click();
+
     // Navigate to page 1 - this is the default so it should remove the search string
-    cy.get('#ks-pagination button:first')
+    cy.get('[aria-label="Go to page 1"]')
       .should('contain', '1')
       .click();
 
@@ -40,7 +43,7 @@ describe('List view URL state', () => {
     cy.get('#ks-pagination-show-pages').click();
 
     // click on a page button - to make sure we do not loose the page size
-    cy.get('#ks-pagination button:nth-of-type(2)').click();
+    cy.get('[aria-label="Go to page 2"]').click();
     cy.location('search')
       .should('contain', 'currentPage=2')
       .should('contain', 'pageSize=75');
@@ -63,6 +66,7 @@ describe('List view URL state', () => {
     cy.visit('/admin/posts');
     cy.get('#ks-list-table thead th')
       .should('have.lengthOf', 5)
+      .should('contain', 'Label')
       .should('contain', 'Name')
       .should('contain', 'Status');
 
@@ -153,14 +157,14 @@ describe('List view URL state', () => {
     // expand all pages first
     cy.get('#ks-pagination-show-pages').click();
 
-    cy.get('#ks-pagination button:nth-of-type(2)').should('have.attr', 'aria-current', 'page');
+    cy.get('[aria-label="Go to page 2"]').should('have.attr', 'aria-current', 'page');
     // Has the correct number of items per page (pageSize)
     cy.get('#ks-pagination-count').should('contain', 'Showing 11 to 20 of');
     // Search
     cy.get('#ks-list-search-input').should('have.attr', 'value', 'Why');
     // Has the correct columns (fields)
     cy.get('#ks-list-table thead th')
-      .should('have.lengthOf', 3)
+      .should('have.lengthOf', 4)
       .should('contain', 'Name')
       .should('contain', 'Views');
     // Is sorted by sortby
@@ -175,7 +179,7 @@ describe('List view URL state', () => {
     // ---------------------------------
 
     // Go to page 1
-    cy.get('#ks-pagination button:nth-of-type(1)').click();
+    cy.get('[aria-label="Go to page 1"]').click();
 
     cy.location('search')
       .should('not.contain', 'currentPage')

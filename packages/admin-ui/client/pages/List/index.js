@@ -177,7 +177,7 @@ function ListLayout(props: LayoutProps) {
                         variant="subtle"
                         appearance="primary"
                         spacing="cozy"
-                        id="ks-column-Button"
+                        id="ks-column-button"
                         {...handlers}
                       >
                         {fields.length} Columns

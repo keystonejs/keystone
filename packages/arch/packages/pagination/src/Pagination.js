@@ -116,6 +116,7 @@ class Pagination extends Component<PaginationProps, State> {
       pages.push(
         <Page
           aria-label={ariaPageLabel(page)}
+          aria-current={isSelected ? 'page' : null}
           key={`page_${page}`}
           isSelected={isSelected}
           onClick={onChange}
@@ -143,8 +144,8 @@ class Pagination extends Component<PaginationProps, State> {
     // return pages;
     return [
       <Page
-        aria-label={ariaPageLabel(1)}
-        key="page_start"
+        aria-label="Go to previous page"
+        key="page_prev"
         onClick={onChange}
         value={currentPage - 1}
         isDisabled={currentPage === 1}
@@ -165,8 +166,8 @@ class Pagination extends Component<PaginationProps, State> {
         </Page>
       ),
       <Page
-        aria-label={ariaPageLabel(totalPages)}
-        key="page_end"
+        aria-label="Go to next page"
+        key="page_next"
         onClick={onChange}
         value={currentPage + 1}
         isDisabled={currentPage === totalPages}
