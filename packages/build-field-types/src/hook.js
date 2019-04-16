@@ -1,8 +1,8 @@
 // @flow
-const { EXTENSIONS } = require('./constants');
-const { addHook } = require('pirates');
-const babel = require('@babel/core');
-const sourceMapSupport = require('source-map-support');
+let { EXTENSIONS } = require('./constants');
+let { addHook } = require('pirates');
+let babel = require('@babel/core');
+let sourceMapSupport = require('source-map-support');
 
 // this is a require hook for dev
 // how it works is, first we customise the way filenames are resolved
@@ -15,22 +15,38 @@ let babelPlugins = [
 
 exports.___internalHook = () => {
   let compiling = false;
-
+  let sourceMaps = {};
   function compileHook(code, filename) {
     if (compiling) return code;
 
     try {
       compiling = true;
-      return babel.transformSync(code, {
+      let output = babel.transformSync(code, {
         plugins: babelPlugins,
         filename,
-        sourceMaps: 'inline',
-      }).code;
+        sourceMaps: 'both',
+      });
+      sourceMaps[filename] = output.map;
+      return output.code;
     } finally {
       compiling = false;
     }
   }
-  sourceMapSupport.install({ environment: 'node', hookRequire: true });
+  sourceMapSupport.install({
+    environment: 'node',
+    handleUncaughtExceptions: false,
+    retrieveSourceMap(source) {
+      let map = sourceMaps[source];
+      if (map !== undefined) {
+        return {
+          url: source,
+          map,
+        };
+      } else {
+        return null;
+      }
+    },
+  });
 
   return addHook(compileHook, {
     exts: EXTENSIONS,
