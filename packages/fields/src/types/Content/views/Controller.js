@@ -2,7 +2,7 @@
 // out into its own package. But the build process doesn't understand
 // how to traverse preconstruct's src pointers yet, when it does this
 // should import from '@keystone-alpha/fields/types/Text/views/Controller'
-import TextController from '../../../Text/views/Controller/Controller';
+import TextController from '../../Text/views/Controller';
 
 export default class ContentController extends TextController {
   getValue = data => {

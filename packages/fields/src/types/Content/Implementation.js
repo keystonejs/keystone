@@ -1,11 +1,10 @@
-const pluralize = require('pluralize');
-
-const { MongoTextInterface, KnexTextInterface, Text } = require('../Text/Implementation');
-const { flatten } = require('@keystone-alpha/utils');
+import pluralize from 'pluralize';
+import { MongoTextInterface, KnexTextInterface, Text } from '../Text/Implementation';
+import { flatten } from '@keystone-alpha/utils';
 
 const GQL_TYPE_PREFIX = '_ContentType';
 
-class Content extends Text {
+export class Content extends Text {
   constructor(path, config, listConfig) {
     super(...arguments);
 
@@ -148,12 +147,6 @@ class Content extends Text {
   }
 }
 
-class MongoContentInterface extends MongoTextInterface {}
+export class MongoContentInterface extends MongoTextInterface {}
 
-class KnexContentInterface extends KnexTextInterface {}
-
-module.exports = {
-  Content,
-  MongoContentInterface,
-  KnexContentInterface,
-};
+export class KnexContentInterface extends KnexTextInterface {}
