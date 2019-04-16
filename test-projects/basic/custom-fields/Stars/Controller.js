@@ -1,1 +1,3 @@
-export { default } from '@keystone-alpha/fields/types/Integer/views/Controller';
+import { Integer } from '@keystone-alpha/fields';
+
+export default Integer.views.Controller;
