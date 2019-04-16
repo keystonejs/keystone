@@ -4,6 +4,7 @@ import {
   validateListAccessControl,
   validateFieldAccessControl,
 } from '../';
+
 describe('Access control package tests', () => {
   test('parseListAccess', () => {
     const statics = [true, false]; // type StaticAccess = boolean;
