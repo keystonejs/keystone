@@ -17,8 +17,9 @@ const {
   arrayToObject,
   flatten,
   flatMap,
+  zipObj,
   ...utils
-} = require('../');
+} = require('../src');
 
 describe('utils', () => {
   test('camelize', () => {
@@ -253,6 +254,11 @@ describe('utils', () => {
       const input = { bar: 'zip' };
       expect(utils[fnName](input)).toEqual(input);
     });
+  });
+
+  test('zipObj', () => {
+    const obj = { foo: [1, 2, 3], bar: [4, 5, 6] };
+    expect(zipObj(obj)).toEqual([{ foo: 1, bar: 4 }, { foo: 2, bar: 5 }, { foo: 3, bar: 6 }]);
   });
 
   test('mergeWhereClause', () => {
