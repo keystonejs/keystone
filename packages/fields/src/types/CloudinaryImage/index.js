@@ -7,7 +7,7 @@ import {
 import { CloudinaryBlock } from './Block';
 import { importView } from '@keystone-alpha/build-field-types';
 
-export let CloudinaryImage = {
+export default {
   type: 'CloudinaryImage',
   implementation: CloudinaryImage,
   views: {

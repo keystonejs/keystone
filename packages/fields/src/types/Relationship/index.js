@@ -6,7 +6,7 @@ import {
 import { resolveBacklinks } from './backlinks';
 import { importView } from '@keystone-alpha/build-field-types';
 
-export const Relationship = {
+export default {
   type: 'Relationship',
   isRelationship: true, // Used internally for this special case
   implementation: Relationship,

@@ -1,7 +1,7 @@
 import { Integer, MongoIntegerInterface, KnexIntegerInterface } from './Implementation';
 import { importView } from '@keystone-alpha/build-field-types';
 
-export const Integer = {
+export default {
   type: 'Integer',
   implementation: Integer,
   views: {

@@ -1,7 +1,7 @@
 import { importView } from '@keystone-alpha/build-field-types';
 import { CalendarDay, MongoCalendarDayInterface, KnexCalendarDayInterface } from './Implementation';
 
-export const CalendarDay = {
+export default {
   type: 'CalendarDay',
   implementation: CalendarDay,
   views: {

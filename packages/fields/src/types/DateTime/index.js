@@ -1,7 +1,7 @@
 import { DateTime, MongoDateTimeInterface, KnexDateTimeInterface } from './Implementation';
 import { importView } from '@keystone-alpha/build-field-types';
 
-export let DateTime = {
+export default {
   type: 'DateTime',
   implementation: DateTime,
   views: {

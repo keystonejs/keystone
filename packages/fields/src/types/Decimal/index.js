@@ -1,7 +1,7 @@
 import { Decimal, MongoDecimalInterface, KnexDecimalInterface } from './Implementation';
 import { importView } from '@keystone-alpha/build-field-types';
 
-export let Decimal = {
+export default {
   type: 'Decimal',
   implementation: Decimal,
   views: {

@@ -1,7 +1,7 @@
 import { Text, MongoTextInterface, KnexTextInterface } from '../Text/Implementation';
 import { importView } from '@keystone-alpha/build-field-types';
 
-export const Url = {
+export default {
   type: 'Url',
   implementation: Text,
   views: {

@@ -1,7 +1,7 @@
 import { Select, MongoSelectInterface, KnexSelectInterface } from './Implementation';
 import { importView } from '@keystone-alpha/build-field-types';
 
-export const Select = {
+export default {
   type: 'Select',
   implementation: Select,
   views: {

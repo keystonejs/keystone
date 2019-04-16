@@ -1,7 +1,7 @@
 import { importView } from '@keystone-alpha/build-field-types';
 import { Checkbox, MongoCheckboxInterface, KnexCheckboxInterface } from './Implementation';
 
-export const Checkbox = {
+export default {
   type: 'Checkbox',
   implementation: Checkbox,
   views: {
