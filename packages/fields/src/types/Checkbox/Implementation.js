@@ -2,7 +2,7 @@ import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 
-class Checkbox extends Implementation {
+export class Checkbox extends Implementation {
   constructor() {
     super(...arguments);
   }
@@ -32,20 +32,14 @@ const CommonCheckboxInterface = superclass =>
     }
   };
 
-class MongoCheckboxInterface extends CommonCheckboxInterface(MongooseFieldAdapter) {
+export class MongoCheckboxInterface extends CommonCheckboxInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: Boolean }, this.config) });
   }
 }
 
-class KnexCheckboxInterface extends CommonCheckboxInterface(KnexFieldAdapter) {
+export class KnexCheckboxInterface extends CommonCheckboxInterface(KnexFieldAdapter) {
   createColumn(table) {
     return table.boolean(this.path);
   }
 }
-
-module.exports = {
-  Checkbox,
-  MongoCheckboxInterface,
-  KnexCheckboxInterface,
-};
