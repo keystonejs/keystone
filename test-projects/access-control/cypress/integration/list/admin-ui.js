@@ -228,7 +228,7 @@ describe('Access Control Lists > Admin UI', () => {
               .then(({ data }) =>
                 cy
                   .visit(`/admin/${slug}/${data[queryName][0].id}`)
-                  .then(() => cy.get('#list-page-create-button').should('exist'))
+                  .then(() => cy.get('#item-page-create-button').should('exist'))
               );
           });
         });
@@ -259,7 +259,7 @@ describe('Access Control Lists > Admin UI', () => {
               .then(({ data }) =>
                 cy
                   .visit(`/admin/${slug}/${data[queryName][0].id}`)
-                  .then(() => cy.get('#list-page-create-button').should('not.exist'))
+                  .then(() => cy.get('#item-page-create-button').should('not.exist'))
               );
           });
         });
@@ -296,7 +296,7 @@ describe('Access Control Lists > Admin UI', () => {
               .then(({ data }) =>
                 cy
                   .visit(`/admin/${slug}/${data[queryName][0].id}`)
-                  .then(() => cy.get('#list-page-create-button').should('exist'))
+                  .then(() => cy.get('#item-page-create-button').should('exist'))
               );
           });
         });
@@ -333,7 +333,7 @@ describe('Access Control Lists > Admin UI', () => {
               .then(({ data }) =>
                 cy
                   .visit(`/admin/${slug}/${data[queryName][0].id}`)
-                  .then(() => cy.get('#list-page-create-button').should('exist'))
+                  .then(() => cy.get('#item-page-create-button').should('exist'))
               );
           });
         });

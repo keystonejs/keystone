@@ -43,18 +43,20 @@ export let ItemTitle = memo(function ItemTitle({
         </div>
         <div>
           <IdCopy id={item.id} />
-          <Tooltip content="Create" hideOnMouseDown hideOnKeyDown>
-            {ref => (
-              <IconButton
-                ref={ref}
-                css={{ marginRight: -12 }}
-                variant="subtle"
-                icon={PlusIcon}
-                id={cypressId}
-                onClick={onCreateClick}
-              />
-            )}
-          </Tooltip>
+          {list.access.create ? (
+            <Tooltip content="Create" hideOnMouseDown hideOnKeyDown>
+              {ref => (
+                <IconButton
+                  ref={ref}
+                  css={{ marginRight: -12 }}
+                  variant="subtle"
+                  icon={PlusIcon}
+                  id={cypressId}
+                  onClick={onCreateClick}
+                />
+              )}
+            </Tooltip>
+          ) : null}
         </div>
       </FlexGroup>
     </HeaderInset>
