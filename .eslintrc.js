@@ -79,5 +79,11 @@ module.exports = {
         'import/no-commonjs': 'error',
       },
     },
+    {
+      files: ['packages/build-field-types/__fixtures__/**/*.js'],
+      rules: {
+        'import/no-unresolved': 'off',
+      },
+    },
   ],
 };
