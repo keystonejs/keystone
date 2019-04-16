@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/cypress-project-social-login",
   "description": "A KeystoneJS demo project for integration testing. See @keystone-alpha/keystone for more.",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -22,7 +22,7 @@
     "@keystone-alpha/fields": "^4.0.0",
     "@keystone-alpha/file-adapters": "^1.0.2",
     "@keystone-alpha/keystone": "^3.0.0",
-    "@keystone-alpha/passport-auth": "^1.0.0",
+    "@keystone-alpha/passport-auth": "^0.0.0",
     "@keystone-alpha/server": "^4.0.0",
     "@keystone-alpha/session": "^1.0.2",
     "passport-wordpress": "^0.0.4",

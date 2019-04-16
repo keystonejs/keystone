@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/passport-auth",
-  "description": "Provides Authentication Strategies based on PassportJS.",
-  "version": "1.0.0",
+  "description": "Provides Social Authentication Strategies based on PassportJS.",
+  "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
