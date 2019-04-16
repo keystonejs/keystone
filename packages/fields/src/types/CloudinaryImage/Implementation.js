@@ -84,8 +84,8 @@ class CloudinaryImage extends File {
   }
 }
 
-module.exports = {
+export {
   CloudinaryImage,
-  MongoCloudinaryImageInterface: MongoFileInterface,
-  KnexCloudinaryImageInterface: KnexFileInterface,
+  MongoFileInterface as MongoCloudinaryImageInterface,
+  KnexFileInterface as KnexCloudinaryImageInterface,
 };
