@@ -1,1 +1,1 @@
-{ "releases": [{ "name": "@keystone-alpha/fields", "type": "patch" }], "dependents": [] }
+{ "releases": [{ "name": "@keystone-alpha/fields", "type": "major" }], "dependents": [] }

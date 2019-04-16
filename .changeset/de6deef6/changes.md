@@ -1,0 +1,1 @@
+- Don't exclude aux field resolvers from GraphQL schema 

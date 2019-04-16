@@ -1,0 +1,1 @@
+- Don't create graphiql shortlinks for multipart forms
