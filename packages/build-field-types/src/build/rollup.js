@@ -116,6 +116,7 @@ export let getRollupConfig = (
     external: makeExternalPredicate(external),
     onwarn: (warning: *) => {
       switch (warning.code) {
+        case 'CIRCULAR_DEPENDENCY':
         case 'UNUSED_EXTERNAL_IMPORT': {
           break;
         }

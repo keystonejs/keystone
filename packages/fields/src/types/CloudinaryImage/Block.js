@@ -1,5 +1,8 @@
 import { Block } from '../../Block';
 import { importView } from '@keystone-alpha/build-field-types';
+import CloudinaryImage from './';
+import Relationship from '../Relationship';
+import Text from '../Text';
 
 export class CloudinaryBlock extends Block {
   constructor({ adapter }, { fromList, createAuxList, getListByKey }) {
@@ -14,9 +17,9 @@ export class CloudinaryBlock extends Block {
       auxList = createAuxList(auxListKey, {
         fields: {
           // We perform the requires here to avoid circular dependencies
-          image: { type: require('./'), isRequired: true, adapter },
-          from: { type: require('../Relationship'), isRequired: true, ref: fromList },
-          field: { type: require('../Text'), isRequired: true },
+          image: { type: CloudinaryImage, isRequired: true, adapter },
+          from: { type: Relationship, isRequired: true, ref: fromList },
+          field: { type: Text, isRequired: true },
         },
       });
     }

@@ -1,6 +1,7 @@
 import pluralize from 'pluralize';
 import { MongoTextInterface, KnexTextInterface, Text } from '../Text/Implementation';
 import { flatten } from '@keystone-alpha/utils';
+import RelationshipFieldType from '../Relationship';
 
 const GQL_TYPE_PREFIX = '_ContentType';
 
@@ -26,7 +27,7 @@ export class Content extends Text {
     };
 
     // Require here to avoid circular dependencies
-    const Relationship = require('../Relationship').implementation;
+    const Relationship = RelationshipFieldType.implementation;
 
     this.complexBlocks = this.config.blocks
       .map(blockConfig => {
