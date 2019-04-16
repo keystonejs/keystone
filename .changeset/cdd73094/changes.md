@@ -1,0 +1,1 @@
+- Ensure Content Block views are always loaded even when not imported
