@@ -1,5 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-
 import FieldController from '../../../File/views/Controller/Controller';
 
 export default class FileController extends FieldController {

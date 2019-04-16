@@ -1,6 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
-
-import FieldController from '../../../../Controller/src';
+import FieldController from '../../../Controller';
 
 export default class CheckboxController extends FieldController {
   getValue = data => data[this.config.path] || false;

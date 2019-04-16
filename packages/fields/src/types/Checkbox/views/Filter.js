@@ -1,8 +1,7 @@
-/* eslint-disable import/no-extraneous-dependencies */
 // @flow
 
 import React, { Component } from 'react';
-import type { FilterProps } from '../../../../types';
+import type { FilterProps } from '../../../types';
 
 type Props = FilterProps<'true' | 'false' | 'null'>;
 

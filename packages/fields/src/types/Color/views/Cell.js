@@ -1,10 +1,9 @@
-/* eslint-disable import/no-extraneous-dependencies */
 // @flow
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
 import * as React from 'react';
-import type { CellProps } from '../../../../types';
+import type { CellProps } from '../../../types';
 
 type Props = CellProps<string>;
 

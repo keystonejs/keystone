@@ -1,8 +1,7 @@
-/* eslint-disable import/no-extraneous-dependencies */
 // @flow
 
 import React, { Component } from 'react';
-import type { CellProps } from '../../../../types';
+import type { CellProps } from '../../../types';
 
 type Props = CellProps<boolean>;
 

@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';

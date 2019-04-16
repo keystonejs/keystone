@@ -1,5 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-
 import { format } from 'date-fns';
 
 const CalendarDayCell = props => {

@@ -1,14 +1,14 @@
 import { Text, MongoTextInterface, KnexTextInterface } from '../Text/Implementation';
-import path from 'path';
+import { importView } from '@keystone-alpha/build-field-types';
 
-module.exports = {
+export const Color = {
   type: 'Color',
   implementation: Text,
   views: {
-    Controller: path.join(__dirname, '../Text/views/Controller'),
-    Field: path.join(__dirname, './views/Field'),
-    Cell: path.join(__dirname, './views/Cell'),
-    Filter: path.join(__dirname, '../Text/views/Filter'),
+    Controller: importView('../Text/views/Controller'),
+    Field: importView('./views/Field'),
+    Cell: importView('./views/Cell'),
+    Filter: importView('../Text/views/Filter'),
   },
   adapters: {
     mongoose: MongoTextInterface,

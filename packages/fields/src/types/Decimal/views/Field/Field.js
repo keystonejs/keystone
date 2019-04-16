@@ -1,5 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-
 import React, { Component } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput, Currency } from '@arch-ui/fields';

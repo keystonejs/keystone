@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 // @flow
 
 import type { CellProps } from '../../../../types';
