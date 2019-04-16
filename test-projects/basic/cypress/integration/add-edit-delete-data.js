@@ -24,13 +24,13 @@ describe('Adding data', () => {
   ].forEach(({ url, data }) => {
     it(`Adding data to ${url}`, () => {
       cy.visit(url);
-      cy.get('button[appearance="create"]').click();
+      cy.get('#list-page-create-button').click();
 
       Object.keys(data).forEach(item => {
         cy.get(`#${item}`).type(data[item]);
       });
 
-      cy.get('form[role="dialog"] button[appearance="create"]').click();
+      cy.get('#create-item-modal-submit-button').click();
 
       cy.location('pathname').should('match', new RegExp(`${url}/.+`));
 
@@ -47,7 +47,7 @@ describe('Adding data', () => {
     cy.server();
     cy.route('/admin/posts/*').as('newPost');
 
-    cy.get('button[appearance="create"]').click();
+    cy.get('#list-page-create-button').click();
 
     cy.get('#ks-input-name').type('My post');
     cy.get('#ks-input-slug').type('mypost');
@@ -56,7 +56,7 @@ describe('Adding data', () => {
       force: true,
     });
 
-    cy.get('form[role="dialog"] button[appearance="create"]').click();
+    cy.get('#create-item-modal-submit-button').click();
 
     cy.location('pathname').should('match', new RegExp(`${url}/.+`));
 
@@ -103,7 +103,7 @@ describe('Editing data', () => {
       cy.get(field.id)
         .clear()
         .type(field.newValue);
-      cy.get('button[type="submit"][appearance="primary"]').click();
+      cy.get('#item-page-save-button').click();
       cy.get(`nav a:contains("${section}")`).click();
       cy.get('body').should('contain', field.newValue);
     });
@@ -125,7 +125,7 @@ describe('Editing data', () => {
       cy.get('#ks-input-author').type('{backspace}{esc}', { force: true });
 
       // save
-      cy.get('button[type="submit"][appearance="primary"]').click();
+      cy.get('#item-page-save-button').click();
 
       // Then reload the page
       cy.visit(path);
@@ -140,7 +140,7 @@ describe('Editing data', () => {
         const userText = authorInput.textContent.replace(/.*option (.*), selected.*/, '$1');
 
         // save
-        cy.get('button[type="submit"][appearance="primary"]').click();
+        cy.get('#item-page-save-button').click();
 
         // Then reload the page
         cy.visit(path);

@@ -1,59 +1,64 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { memo } from 'react';
-import { Link } from 'react-router-dom';
 
-import { TriangleLeftIcon, PlusIcon } from '@arch-ui/icons';
+import { ChevronLeftIcon, PlusIcon } from '@arch-ui/icons';
 import { FlexGroup } from '@arch-ui/layout';
-import { Title } from '@arch-ui/typography';
 import { IconButton } from '@arch-ui/button';
+import { PageTitle } from '@arch-ui/typography';
+import Tooltip from '@arch-ui/tooltip';
+import { gridSize } from '@arch-ui/theme';
 
-const TitleLink = ({ children, ...props }) => (
-  <Link
-    css={{
-      position: 'relative',
-      textDecoration: 'none',
+import { IdCopy } from './IdCopy';
+import { Search } from './Search';
 
-      ':hover': {
-        textDecoration: 'none',
-      },
-
-      '& > svg': {
-        opacity: 0,
-        height: 16,
-        width: 16,
-        position: 'absolute',
-        transitionProperty: 'opacity, transform, visibility',
-        transitionDuration: '300ms',
-        transform: 'translate(-75%, -50%)',
-        top: '50%',
-        visibility: 'hidden',
-      },
-
-      ':hover > svg': {
-        opacity: 0.66,
-        visibility: 'visible',
-        transform: 'translate(-110%, -50%)',
-      },
-    }}
-    {...props}
-  >
-    <TriangleLeftIcon />
-    {children}
-  </Link>
+const HeaderInset = props => (
+  <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
 );
 
-export let ItemTitle = memo(function ItemTitle({ titleText, list, adminPath, onCreateClick }) {
+export let ItemTitle = memo(function ItemTitle({
+  titleText,
+  item,
+  list,
+  adminPath,
+  onCreateClick,
+}) {
   const listHref = `${adminPath}/${list.path}`;
+  const cypressId = 'item-page-create-button';
 
   return (
-    <FlexGroup align="center" justify="space-between">
-      <Title as="h1" margin="both">
-        <TitleLink to={listHref}>{list.label}</TitleLink>: {titleText}
-      </Title>
-      <IconButton appearance="create" icon={PlusIcon} onClick={onCreateClick}>
-        Create
-      </IconButton>
-    </FlexGroup>
+    <HeaderInset>
+      <PageTitle>{titleText}</PageTitle>
+      <FlexGroup align="center" justify="space-between" css={{ marginBottom: '0.9rem' }}>
+        <div>
+          <IconButton
+            variant="subtle"
+            icon={ChevronLeftIcon}
+            to={listHref}
+            css={{ marginLeft: -12 }}
+          >
+            Back
+          </IconButton>
+          <Search list={list} />
+        </div>
+        <div>
+          <IdCopy id={item.id} />
+          {list.access.create ? (
+            <Tooltip content="Create" hideOnMouseDown hideOnKeyDown>
+              {ref => (
+                <IconButton
+                  ref={ref}
+                  css={{ marginRight: -12 }}
+                  variant="subtle"
+                  icon={PlusIcon}
+                  id={cypressId}
+                  onClick={onCreateClick}
+                />
+              )}
+            </Tooltip>
+          ) : null}
+        </div>
+      </FlexGroup>
+    </HeaderInset>
   );
 });

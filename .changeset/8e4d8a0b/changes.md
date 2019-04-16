@@ -1,0 +1,1 @@
+- Expose GraphQL `context` object to hooks for advanced use cases.

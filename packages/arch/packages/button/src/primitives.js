@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
 
 import { gridSize } from '@arch-ui/theme';
-import { buttonAndInputBase } from '@arch-ui/common';
+import { uniformHeight } from '@arch-ui/common';
 import {
   makeSubtleVariant,
   makeNuanceVariant,
@@ -30,6 +30,7 @@ export type ButtonProps = {
   isActive: boolean,
   isHover: boolean,
   isFocus: boolean,
+  isSelected?: boolean,
   focusOrigin: 'mouse' | 'keyboard',
   spacing: 'comfortable' | 'cozy' | 'cramped',
   to?: string,
@@ -43,11 +44,12 @@ function makeVariant({
   isHover,
   isFocus,
   isDisabled,
+  isSelected,
   variant,
   spacing,
 }) {
   let variantStyles;
-  const config = { appearance, isDisabled, isActive, isHover, isFocus };
+  const config = { appearance, isDisabled, isActive, isHover, isFocus, isSelected };
   if (variant === 'subtle') {
     variantStyles = makeSubtleVariant(config);
   } else if (variant === 'nuance') {
@@ -60,7 +62,7 @@ function makeVariant({
   }
 
   return {
-    ...buttonAndInputBase,
+    ...uniformHeight,
     cursor: isDisabled ? 'default' : 'pointer',
     display: isBlock ? 'block' : 'inline-block',
     opacity: isDisabled ? 0.66 : null,
@@ -85,9 +87,12 @@ function makeVariant({
 // remove props that will create react DOM warnings
 const ButtonElement = forwardRef<ButtonProps, HTMLAnchorElement | HTMLButtonElement>(
   (props, ref) => {
-    const { isDisabled, isActive, isFocus, isHover, focusOrigin, ...rest } = props;
+    const { isDisabled, isActive, isFocus, isHover, isSelected, focusOrigin, ...rest } = props;
     const variant = makeVariant(props);
-    if (rest.to) return <Link innerRef={ref} css={variant} {...rest} />;
+
+    if (rest.to) {
+      return <Link innerRef={ref} css={variant} {...rest} />;
+    }
 
     if (rest.href) {
       return (

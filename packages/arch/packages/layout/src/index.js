@@ -16,8 +16,6 @@ export const CONTAINER_WIDTH = 1160;
 export const CONTAINER_GUTTER = gridSize * 6;
 
 export const Container = styled.div(({ isFullWidth }) => ({
-  marginLeft: 'auto',
-  marginRight: 'auto',
   maxWidth: isFullWidth ? '100%' : CONTAINER_WIDTH,
   paddingLeft: CONTAINER_GUTTER,
   paddingRight: CONTAINER_GUTTER,
@@ -51,6 +49,7 @@ function collapseBorderRadii(index, length) {
 
 type FlexGroupProps = {
   align: 'stretch' | 'center' | 'flex-start' | 'flex-start',
+  as: string,
   children: Array<Node>,
   growIndexes: Array<number>,
   isContiguous?: boolean,
@@ -60,12 +59,12 @@ type FlexGroupProps = {
   wrap?: boolean,
   spacing: number,
   stretch?: boolean,
-  tag: string,
 };
 export const FlexGroup = forwardRef<FlexGroupProps, any>(
   (
     {
       align,
+      as: Tag,
       children,
       growIndexes,
       isContiguous,
@@ -75,7 +74,6 @@ export const FlexGroup = forwardRef<FlexGroupProps, any>(
       wrap,
       spacing,
       stretch,
-      tag: Tag,
       ...props
     }: FlexGroupProps,
     ref
@@ -135,10 +133,10 @@ export const FlexGroup = forwardRef<FlexGroupProps, any>(
 // $FlowFixMe
 FlexGroup.defaultProps = {
   align: 'stretch',
+  as: 'div',
   growIndexes: [],
   justify: 'flex-start',
   spacing: gridSize,
-  tag: 'div',
 };
 
 // ==============================

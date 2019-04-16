@@ -1,15 +1,17 @@
 // @flow
 import { borderRadius, gridSize } from '@arch-ui/theme';
 
-export const buttonAndInputBase = {
+export const uniformHeight = {
   appearance: 'none',
   background: 'none',
   border: '1px solid transparent',
   borderRadius: borderRadius,
   boxSizing: 'border-box',
+  fontFamily: 'inherit',
   fontSize: '0.9rem',
-  lineHeight: '17px',
+  lineHeight: '1.1rem',
   margin: 0,
+  minWidth: 1,
   padding: `${gridSize}px ${gridSize * 1.5}px`,
   transition: 'box-shadow 100ms linear',
   verticalAlign: 'middle',

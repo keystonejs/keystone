@@ -4,18 +4,25 @@ describe('List view URL state', () => {
   it('Stores currentPage state in the url', () => {
     // Loading at page 3
     cy.visit('/admin/posts?currentPage=3');
-    cy.get('#ks-pagination button:nth-of-type(3)')
+
+    // expand all pages first
+    cy.get('#ks-pagination-show-pages').click();
+
+    cy.get('[aria-label="Go to page 3"]')
       .should('have.attr', 'aria-current', 'page')
       .should('contain', '3');
 
     // Navigate to page 2
-    cy.get('#ks-pagination button:nth-of-type(2)')
+    cy.get('[aria-label="Go to page 2"]')
       .should('contain', '2')
       .click();
     cy.location('search').should('eq', '?currentPage=2');
 
+    // expand all pages first
+    cy.get('#ks-pagination-show-pages').click();
+
     // Navigate to page 1 - this is the default so it should remove the search string
-    cy.get('#ks-pagination button:first')
+    cy.get('[aria-label="Go to page 1"]')
       .should('contain', '1')
       .click();
 
@@ -25,15 +32,18 @@ describe('List view URL state', () => {
     cy.visit('/admin/posts');
 
     // NOTE: Posts in the basic project has defaultPageSize set to 20.
-    cy.get('#ks-pagination > div:first').should('contain', 'Showing 1 to 20 of');
+    cy.get('#ks-pagination-count').should('contain', 'Showing 1 to 20 of');
     cy.get('#ks-list-table tbody tr').should('have.lengthOf', 20);
 
     cy.visit('/admin/posts?pageSize=75');
-    cy.get('#ks-pagination > div:first').should('contain', 'Showing 1 to 75 of');
+    cy.get('#ks-pagination-count').should('contain', 'Showing 1 to 75 of');
     cy.get('#ks-list-table tbody tr').should('have.lengthOf', 75);
 
+    // expand all pages first
+    cy.get('#ks-pagination-show-pages').click();
+
     // click on a page button - to make sure we do not loose the page size
-    cy.get('#ks-pagination button:nth-of-type(2)').click();
+    cy.get('[aria-label="Go to page 2"]').click();
     cy.location('search')
       .should('contain', 'currentPage=2')
       .should('contain', 'pageSize=75');
@@ -55,18 +65,19 @@ describe('List view URL state', () => {
     // defaultColumns: 'name, status',
     cy.visit('/admin/posts');
     cy.get('#ks-list-table thead th')
-      .should('have.lengthOf', 4)
+      .should('have.lengthOf', 5)
+      .should('contain', 'Label')
       .should('contain', 'Name')
       .should('contain', 'Status');
 
     // UI should update the URL
-    cy.get('button:contains("Columns")').click();
+    cy.get('#ks-column-button').click();
     cy.get('#app ~ div')
       .find('input[id^="react-select-"]')
       .clear({ force: true })
       .type(`author{enter}`, { force: true });
     cy.get('#ks-list-table thead th')
-      .should('have.lengthOf', 5)
+      .should('have.lengthOf', 6)
       .should('contain', 'Name')
       .should('contain', 'Status')
       .should('contain', 'Author');
@@ -75,24 +86,24 @@ describe('List view URL state', () => {
     // URL should define the columns
     cy.visit('/admin/posts?fields=name,author,categories');
     cy.get('#ks-list-table thead th')
-      .should('have.lengthOf', 4)
+      .should('have.lengthOf', 5)
       .should('contain', 'Name')
       .should('contain', 'Author')
       .should('contain', 'Categories');
   });
   it('Stores sortBy state in the url', () => {
     cy.visit('/admin/posts');
-    cy.get('h1 button').should('contain', 'name');
+    cy.get('#list-page-sort-button').should('contain', 'Name');
 
     cy.visit('/admin/posts?sortBy=status');
-    cy.get('h1 button').should('contain', 'status');
+    cy.get('#list-page-sort-button').should('contain', 'Status');
 
     // Sort DESC
     cy.visit('/admin/posts?sortBy=-name');
-    cy.get('h1 button').should('contain', 'name');
+    cy.get('#list-page-sort-button').should('contain', 'Name');
 
     // UI should update url
-    cy.get('h1 button').click();
+    cy.get('#list-page-sort-button').click();
     cy.get('#app ~ div')
       .find('input[id^="react-select-"]')
       .clear({ force: true })
@@ -143,19 +154,21 @@ describe('List view URL state', () => {
     ];
     cy.visit(`/admin/posts?${params.join('&')}`);
 
-    // Shows the currentPage
-    cy.get('#ks-pagination button:nth-of-type(2)').should('have.attr', 'aria-current', 'page');
+    // expand all pages first
+    cy.get('#ks-pagination-show-pages').click();
+
+    cy.get('[aria-label="Go to page 2"]').should('have.attr', 'aria-current', 'page');
     // Has the correct number of items per page (pageSize)
-    cy.get('#ks-pagination > div:first').should('contain', 'Showing 11 to 20 of');
+    cy.get('#ks-pagination-count').should('contain', 'Showing 11 to 20 of');
     // Search
     cy.get('#ks-list-search-input').should('have.attr', 'value', 'Why');
     // Has the correct columns (fields)
     cy.get('#ks-list-table thead th')
-      .should('have.lengthOf', 3)
+      .should('have.lengthOf', 4)
       .should('contain', 'Name')
       .should('contain', 'Views');
     // Is sorted by sortby
-    cy.get('h1 button').should('contain', 'views');
+    cy.get('#list-page-sort-button').should('contain', 'Views');
     // Has the filter
     cy.get('#ks-list-active-filters button:nth-of-type(1)').should(
       'contain',
@@ -166,7 +179,7 @@ describe('List view URL state', () => {
     // ---------------------------------
 
     // Go to page 1
-    cy.get('#ks-pagination button:nth-of-type(1)').click();
+    cy.get('[aria-label="Go to page 1"]').click();
 
     cy.location('search')
       .should('not.contain', 'currentPage')

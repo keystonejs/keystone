@@ -293,8 +293,8 @@ module.exports = class Keystone {
     const resolvers = {
       // Order of spreading is important here - we don't want user-defined types
       // to accidentally override important things like `Query`.
-      ...objMerge(firstClassLists.map(list => list.gqlAuxFieldResolvers)),
-      ...objMerge(firstClassLists.map(list => list.gqlFieldResolvers)),
+      ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers)),
+      ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers)),
 
       JSON: GraphQLJSON,
 

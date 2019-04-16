@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
+import { format } from 'date-fns';
 import FieldController from '../../../../Controller/src';
 
 export default class DateTimeController extends FieldController {
@@ -11,7 +12,14 @@ export default class DateTimeController extends FieldController {
     return `${this.label} ${label.toLowerCase()}`;
   };
   formatFilter = ({ label, value }) => {
-    return `${this.getFilterLabel({ label })}: "${value}"`;
+    const formatConfig = this.config.format;
+    let formattedValue = value;
+
+    if (formatConfig) {
+      formattedValue = format(value, formatConfig);
+    }
+
+    return `${this.getFilterLabel({ label })}: "${formattedValue}"`;
   };
   getValue = data => {
     let value = data[this.config.path];

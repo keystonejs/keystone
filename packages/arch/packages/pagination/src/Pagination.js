@@ -1,70 +1,32 @@
 // @flow
 /** @jsx jsx */
+
 import { jsx } from '@emotion/core';
 import { Component, useEffect, useState } from 'react';
-import styled from '@emotion/styled';
-
-import { colors } from '@arch-ui/theme';
-import Page from './Page';
+import { ChevronLeftIcon, ChevronRightIcon, ListOrderedIcon } from '@arch-ui/icons';
+import { FlexGroup } from '@arch-ui/layout';
 import { LoadingSpinner } from '@arch-ui/loading';
-import type { CountArgs, CountFormat, LabelType, OnChangeType } from './types';
+
+import Page from './Page';
+import type { LabelType, OnChangeType } from './types';
 
 function ariaPageLabelFn(page: number) {
   return `Go to page ${page}`;
 }
-function countFormatterFn({ end, pageSize, plural, singular, start, total }: CountArgs) {
-  let count = '';
-
-  if (!total) {
-    count = 'No ' + (plural || 'records');
-  } else if (total > pageSize) {
-    count = `Showing ${start} to ${end} of ${total}`;
-  } else {
-    count = 'Showing ' + total;
-    if (total > 1 && plural) {
-      count += ' ' + plural;
-    } else if (total === 1 && singular) {
-      count += ' ' + singular;
-    }
-  }
-
-  return count;
-}
-function getRange({ currentPage, pageSize, total }) {
-  if (!total) {
-    return {};
-  } else {
-    const start = pageSize * (currentPage - 1) + 1;
-    const end = Math.min(start + pageSize - 1, total);
-    return { start, end };
-  }
-}
 
 export type PaginationProps = {
   ariaPageLabel: LabelType,
-  countFormatter: CountFormat,
   currentPage: number,
-  displayCount: boolean,
   limit?: number,
   onChange: OnChangeType,
   pageSize: number,
-  plural: string,
-  singular: string,
   total: number,
   isLoading: boolean,
 };
 
-const PaginationElement = styled.nav({
-  alignItems: 'center',
-  display: 'flex',
-});
-const PageCount = styled.div({
-  color: colors.N60,
-  marginRight: '1em',
-});
-
 const PageChildren = ({ page, isLoading, isSelected }) => {
   const [shouldShowLoading, setShouldShowLoading] = useState(false);
+
   useEffect(() => {
     if (isLoading && isSelected) {
       const id = setTimeout(() => {
@@ -76,6 +38,7 @@ const PageChildren = ({ page, isLoading, isSelected }) => {
       };
     }
   }, [page, isLoading, isSelected]);
+
   return shouldShowLoading ? (
     <div css={{ height: 19 }}>
       <LoadingSpinner />
@@ -85,38 +48,24 @@ const PageChildren = ({ page, isLoading, isSelected }) => {
   );
 };
 
-class Pagination extends Component<PaginationProps> {
+type State = { allPagesVisible: boolean };
+
+class Pagination extends Component<PaginationProps, State> {
   static defaultProps = {
     ariaPageLabel: ariaPageLabelFn,
-    countFormatter: countFormatterFn,
     currentPage: 1,
     limit: 5,
-    plural: 'Items',
-    singular: 'Item',
   };
+  state = { allPagesVisible: false };
 
-  renderCount() {
-    let { countFormatter, displayCount, pageSize, plural, singular, total } = this.props;
-
-    if (!displayCount) return null;
-
-    const { start, end } = getRange(this.props);
-    const count = countFormatter({
-      end,
-      pageSize,
-      plural,
-      singular,
-      start,
-      total,
-    });
-
-    return <PageCount>{count}</PageCount>;
-  }
+  toggleAllPages = () => {
+    this.setState(state => ({ allPagesVisible: !state.allPagesVisible }));
+  };
 
   renderPages() {
     let { ariaPageLabel, currentPage, limit, pageSize, total } = this.props;
 
-    if (total <= pageSize) return null;
+    if (total <= pageSize) return [];
 
     let pages = [];
     let totalPages = Math.ceil(total / pageSize);
@@ -142,6 +91,7 @@ class Pagination extends Component<PaginationProps> {
 
     const onChange = page => {
       if (this.props.onChange) {
+        this.setState({ allPagesVisible: false });
         this.props.onChange(page, {
           pageSize,
           total,
@@ -166,6 +116,7 @@ class Pagination extends Component<PaginationProps> {
       pages.push(
         <Page
           aria-label={ariaPageLabel(page)}
+          aria-current={isSelected ? 'page' : null}
           key={`page_${page}`}
           isSelected={isSelected}
           onClick={onChange}
@@ -190,29 +141,59 @@ class Pagination extends Component<PaginationProps> {
       );
     }
 
-    return pages;
+    // return pages;
+    return [
+      <Page
+        aria-label="Go to previous page"
+        key="page_prev"
+        onClick={onChange}
+        value={currentPage - 1}
+        isDisabled={currentPage === 1}
+      >
+        <ChevronLeftIcon />
+      </Page>,
+      this.state.allPagesVisible ? (
+        pages
+      ) : (
+        <Page
+          aria-label="Click to show all pages"
+          key="page_dot"
+          onClick={this.toggleAllPages}
+          id="ks-pagination-show-pages"
+          value={1} // needs value for flow...
+        >
+          <ListOrderedIcon />
+        </Page>
+      ),
+      <Page
+        aria-label="Go to next page"
+        key="page_next"
+        onClick={onChange}
+        value={currentPage + 1}
+        isDisabled={currentPage === totalPages}
+      >
+        <ChevronRightIcon />
+      </Page>,
+    ];
   }
 
   render() {
     // strip props to get `rest` attributes; things id, className etc.
     const {
       ariaPageLabel,
-      countFormatter,
       currentPage,
-      displayCount,
+      isLoading,
       limit,
       onChange,
       pageSize,
-      plural,
-      singular,
       total,
       ...rest
     } = this.props;
     return (
-      <PaginationElement aria-label="Pagination" {...rest}>
-        {this.renderCount()}
+      // $FlowFixMe flex group doesn't understand default props for some reason, in this instance...
+      <FlexGroup as="nav" align="center" aria-label="Pagination" isContiguous isInline {...rest}>
         {this.renderPages()}
-      </PaginationElement>
+      </FlexGroup>
     );
   }
 }

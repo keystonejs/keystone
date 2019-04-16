@@ -3,19 +3,19 @@ describe('Testing re-hydration', () => {
 
   it('Our new category should appear after we add it', () => {
     cy.visit('/admin/posts');
-    cy.get('button[appearance="create"]').click();
+    cy.get('#list-page-create-button').click();
     cy.wait(150);
     cy.get('#react-select-ks-input-categories div[aria-hidden="true"]').click();
     cy.get('div[role="option"]').should('not.contain', 'New Category');
 
     cy.visit('/admin/post-categories');
-    cy.get('button[appearance="create"]').click();
+    cy.get('#list-page-create-button').click();
     cy.get('#ks-input-name').type('New Category');
-    cy.get('form[role="dialog"] button[appearance="create"]').click();
+    cy.get('#create-item-modal-submit-button').click();
     cy.get('body').should('contain', 'New Category');
 
     cy.get('nav a:contains("Posts")').click();
-    cy.get('button[appearance="create"]').click();
+    cy.get('#list-page-create-button').click();
     cy.wait(150);
     cy.get('#react-select-ks-input-categories div[aria-hidden="true"]').click();
     cy.get('div[role="option"]').should('contain', 'New Category');
