@@ -11,8 +11,8 @@ import { colors, gridSize } from '@arch-ui/theme';
 import { IconButton } from '@arch-ui/button';
 import Tooltip from '@arch-ui/tooltip';
 
-import CreateItemModal from '../CreateItemModal';
-import RelationshipSelect from '../RelationshipSelect';
+import CreateItemModal from './CreateItemModal';
+import RelationshipSelect from './RelationshipSelect';
 
 function SetAsCurrentUser({ listKey, value, onAddUser, many }) {
   let path = 'authenticated' + listKey;

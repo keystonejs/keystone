@@ -11,7 +11,7 @@ const {
   Types: { ObjectId },
 } = mongoose;
 
-class File extends Implementation {
+export class File extends Implementation {
   constructor() {
     super(...arguments);
     this.graphQLOutputType = 'File';
@@ -122,7 +122,7 @@ const CommonFileInterface = superclass =>
     }
   };
 
-class MongoFileInterface extends CommonFileInterface(MongooseFieldAdapter) {
+export class MongoFileInterface extends CommonFileInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     const schemaOptions = {
       type: {
@@ -137,14 +137,8 @@ class MongoFileInterface extends CommonFileInterface(MongooseFieldAdapter) {
   }
 }
 
-class KnexFileInterface extends CommonFileInterface(KnexFieldAdapter) {
+export class KnexFileInterface extends CommonFileInterface(KnexFieldAdapter) {
   createColumn(table) {
     return table.json(this.path);
   }
 }
-
-module.exports = {
-  File,
-  MongoFileInterface,
-  KnexFileInterface,
-};

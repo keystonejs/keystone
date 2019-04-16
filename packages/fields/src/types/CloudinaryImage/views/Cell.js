@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import type { CellProps } from '../../../../types';
+import type { CellProps } from '../../../types';
 
 type Props = CellProps<{
   id: string,

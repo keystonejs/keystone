@@ -75,8 +75,7 @@
   "field-types": {
     "entrypoints": [
       ".",
-      "Controller",
-      "Implementation"
+      "Controller"
     ]
   }
 }

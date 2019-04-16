@@ -6,7 +6,7 @@ import dumbPasswords from 'dumb-passwords';
 
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 
-class Password extends Implementation {
+export class Password extends Implementation {
   constructor(path, config) {
     super(...arguments);
 
@@ -107,7 +107,7 @@ const CommonPasswordInterface = superclass =>
     }
   };
 
-class MongoPasswordInterface extends CommonPasswordInterface(MongooseFieldAdapter) {
+export class MongoPasswordInterface extends CommonPasswordInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
   }
@@ -121,7 +121,7 @@ class MongoPasswordInterface extends CommonPasswordInterface(MongooseFieldAdapte
   }
 }
 
-class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdapter) {
+export class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdapter) {
   createColumn(table) {
     return table.text(this.path);
   }
@@ -135,9 +135,3 @@ class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdapter) {
     };
   }
 }
-
-module.exports = {
-  Password,
-  MongoPasswordInterface,
-  KnexPasswordInterface,
-};

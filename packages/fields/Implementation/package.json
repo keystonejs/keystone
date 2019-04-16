@@ -1,7 +1,0 @@
-{
-  "main": "dist/fields.cjs.js",
-  "module": "dist/fields.esm.js",
-  "field-types": {
-    "source": "../src/Implementation"
-  }
-}

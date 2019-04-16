@@ -1,18 +1,16 @@
-module.exports = {
-  Implementation: require('./Implementation'),
-  Integer: require('./types/Integer'),
-  Password: require('./types/Password'),
-  Text: require('./types/Text'),
-  Float: require('./types/Float'),
-  Checkbox: require('./types/Checkbox'),
-  Select: require('./types/Select'),
-  Relationship: require('./types/Relationship'),
-  File: require('./types/File'),
-  CloudinaryImage: require('./types/CloudinaryImage'),
-  CalendarDay: require('./types/CalendarDay'),
-  DateTime: require('./types/DateTime'),
-  Decimal: require('./types/Decimal'),
-  Color: require('./types/Color'),
-  Url: require('./types/Url'),
-  Content: require('./types/Content'),
-};
+export { Implementation } from './Implementation';
+export { default as Integer } from './types/Integer';
+export { default as Password } from './types/Password';
+export { default as Text } from './types/Text';
+export { default as Float } from './types/Float';
+export { default as Checkbox } from './types/Checkbox';
+export { default as Select } from './types/Select';
+export { default as Relationship } from './types/Relationship';
+export { default as File } from './types/File';
+export { default as CloudinaryImage } from './types/CloudinaryImage';
+export { default as CalendarDay } from './types/CalendarDay';
+export { default as DateTime } from './types/DateTime';
+export { default as Decimal } from './types/Decimal';
+export { default as Color } from './types/Color';
+export { default as Url } from './types/Url';
+export { default as Content } from './types/Content';

@@ -1,4 +1,4 @@
-import FieldController from '../../../File/views/Controller/Controller';
+import FieldController from '../../File/views/Controller';
 
 export default class FileController extends FieldController {
   getQueryFragment = () => `

@@ -9,7 +9,7 @@ function _queueIdForOperation({ queue, foreign, local, done }) {
   }
 }
 
-function enqueueBacklinkOperations(operations, queues, getItem, local, foreign) {
+export function enqueueBacklinkOperations(operations, queues, getItem, local, foreign) {
   Object.entries(operations).forEach(([operation, idsToOperateOn = []]) => {
     queues[operation] = queues[operation] || new Map();
     const queue = queues[operation];
@@ -31,7 +31,7 @@ function enqueueBacklinkOperations(operations, queues, getItem, local, foreign) 
   });
 }
 
-async function resolveBacklinks(context, mutationState) {
+export async function resolveBacklinks(context, mutationState) {
   await Promise.all(
     Object.entries(mutationState.queues).map(async ([operation, queue]) => {
       for (let queuedWork of queue.values()) {
@@ -54,8 +54,3 @@ async function resolveBacklinks(context, mutationState) {
     })
   );
 }
-
-module.exports = {
-  enqueueBacklinkOperations,
-  resolveBacklinks,
-};
