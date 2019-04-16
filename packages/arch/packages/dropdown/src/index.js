@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom';
 import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';
 
-import { borderRadius, colors, gridSize } from '@arch-ui/theme';
+import { borderRadius, colors, gridSize, shadows } from '@arch-ui/theme';
 import { FocusTrap } from 'react-focus-marshal';
 import { withModalHandlers, SlideDown, type ModalHandlerProps } from '@arch-ui/modal-utils';
 
@@ -68,7 +68,7 @@ const Menu = styled.div(({ left, top }) => {
   return {
     backgroundColor: 'white',
     borderRadius: borderRadius,
-    boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.175), 0 3px 8px rgba(0, 0, 0, 0.175)',
+    boxShadow: shadows[2],
     marginTop: gridSize,
     minWidth: 160,
     paddingBottom: gridSize / 2,

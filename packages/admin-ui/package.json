@@ -11,6 +11,7 @@
     "@arch-ui/alert": "^0.0.3",
     "@arch-ui/badge": "^0.0.3",
     "@arch-ui/button": "^0.0.4",
+    "@arch-ui/color-utils": "^0.0.1",
     "@arch-ui/confirm": "^0.0.4",
     "@arch-ui/controls": "^0.0.3",
     "@arch-ui/dialog": "^0.0.4",

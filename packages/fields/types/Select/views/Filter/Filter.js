@@ -5,7 +5,7 @@
 import { jsx } from '@emotion/core';
 import { Component, Fragment } from 'react';
 import Select from '@arch-ui/select';
-import { Options } from '@arch-ui/options';
+import { CheckMark, Options, OptionPrimitive } from '@arch-ui/options';
 import { Radio, RadioGroup } from '@arch-ui/filters';
 import { gridSize } from '@arch-ui/theme';
 import type { FilterProps } from '../../../../types';
@@ -43,6 +43,7 @@ export default class SelectFilterView extends Component<Props, State> {
 
     const radioValue = value.inverted ? 'does_not_match' : 'does_match';
     const selectProps = {
+      components: { Option: CheckMarkOption },
       innerRef: innerRef,
       onChange: this.handleSelectChange,
       options: field.options,
@@ -69,3 +70,10 @@ export default class SelectFilterView extends Component<Props, State> {
     );
   }
 }
+
+const CheckMarkOption = ({ children, ...props }) => (
+  <OptionPrimitive {...props}>
+    <span>{children}</span>
+    <CheckMark isFocused={props.isFocused} isSelected={props.isSelected} />
+  </OptionPrimitive>
+);

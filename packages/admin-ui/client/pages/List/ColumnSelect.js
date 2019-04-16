@@ -1,8 +1,7 @@
 /** @jsx jsx */
+
 import { jsx } from '@emotion/core';
-import { CheckIcon, DashIcon, XIcon } from '@arch-ui/icons';
-import { colors } from '@arch-ui/theme';
-import { OptionPrimitive } from '@arch-ui/options';
+import { OptionPrimitive, CheckMark } from '@arch-ui/options';
 
 import { Popout, POPOUT_GUTTER } from '../../components/Popout';
 import { useList, useListColumns } from './dataHooks';
@@ -12,14 +11,14 @@ type Props = {
   listKey: string,
 };
 
-export default function ColumnPopout({ listKey }: Props) {
+export default function ColumnPopout({ listKey, target }: Props) {
   const list = useList(listKey);
   const [columns, handleColumnChange] = useListColumns(listKey);
-  const cypresId = 'ks-column-select';
+  const cypresSelectId = 'ks-column-select';
 
   return (
-    <Popout buttonLabel="Columns" headerTitle="Columns">
-      <div id={cypresId} css={{ padding: POPOUT_GUTTER }}>
+    <Popout target={target} headerTitle="Columns">
+      <div id={cypresSelectId} css={{ padding: POPOUT_GUTTER }}>
         <FieldSelect
           fields={list.fields}
           onChange={handleColumnChange}
@@ -42,18 +41,14 @@ export default function ColumnPopout({ listKey }: Props) {
 export const ColumnOption = ({ children, isFocused, isSelected, selectProps, ...props }) => {
   const { removeIsAllowed } = selectProps;
 
-  let Icon;
-  let iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
-  if (isSelected) {
-    Icon = isFocused ? XIcon : CheckIcon;
-  } else {
-    Icon = isFocused ? CheckIcon : DashIcon;
-  }
-
   return (
     <OptionPrimitive isFocused={isFocused} isSelected={isSelected} {...props}>
       <span>{children}</span>
-      {isSelected && !removeIsAllowed ? null : <Icon css={{ color: iconColor }} />}
+      <CheckMark
+        isDisabled={isSelected && !removeIsAllowed}
+        isFocused={isFocused}
+        isSelected={isSelected}
+      />
     </OptionPrimitive>
   );
 };

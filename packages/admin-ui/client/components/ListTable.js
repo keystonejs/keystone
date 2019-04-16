@@ -4,11 +4,14 @@ import React, { Component } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
-import { DiffIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
+import { DiffIcon, KebabHorizontalIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
+import { alpha } from '@arch-ui/color-utils';
+import { Button } from '@arch-ui/button';
 import { CheckboxPrimitive } from '@arch-ui/controls';
 import Dropdown from '@arch-ui/dropdown';
 import { A11yText } from '@arch-ui/typography';
+import { Card } from '@arch-ui/card';
 import DeleteItemModal from './DeleteItemModal';
 import { copyToClipboard } from '../util';
 import { useListSort } from '../pages/List/dataHooks';
@@ -17,7 +20,6 @@ import { useListSort } from '../pages/List/dataHooks';
 const Table = styled('table')({
   borderCollapse: 'collapse',
   borderSpacing: 0,
-  marginBottom: gridSize * 4,
   width: '100%',
 });
 const TableRow = styled('tr')(({ isActive }) => ({
@@ -25,11 +27,12 @@ const TableRow = styled('tr')(({ isActive }) => ({
     backgroundColor: isActive ? 'rgba(0, 0, 0, 0.02)' : null,
   },
 }));
-const HeaderCell = styled('th')({
-  backgroundColor: colors.page,
-  boxShadow: '0 2px 0 rgba(0, 0, 0, 0.1)',
+const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
+  backgroundColor: 'white',
+  boxShadow: `0 2px 0 ${alpha(colors.text, 0.1)}`,
   boxSizing: 'border-box',
-  color: '#999',
+  color: isSelected ? colors.text : colors.N40,
+  cursor: isSortable ? 'pointer' : 'auto',
   display: 'table-cell',
   fontWeight: 'normal',
   padding: gridSize,
@@ -39,16 +42,20 @@ const HeaderCell = styled('th')({
   zIndex: 1,
   textAlign: 'left',
   verticalAlign: 'bottom',
-});
+
+  ':hover': {
+    color: isSortable && !isSelected ? colors.N60 : null,
+  },
+}));
 const BodyCell = styled('td')(({ isSelected }) => ({
-  backgroundColor: isSelected ? colors.B.L90 : null,
+  backgroundColor: isSelected ? colors.B.L95 : null,
   boxShadow: isSelected
-    ? `0 1px 0 ${colors.B.L75}, 0 -1px 0 ${colors.B.L75}`
+    ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`
     : `0 -1px 0 ${colors.N10}`,
   boxSizing: 'border-box',
   padding: gridSize,
   position: 'relative',
-  fontSize: 15,
+  fontSize: '0.9rem',
 }));
 const ItemLink = styled(Link)`
   color: ${colors.text};
@@ -65,7 +72,7 @@ const ItemLink = styled(Link)`
 `;
 
 const BodyCellTruncated = styled(BodyCell)`
-  max-width: 100%;
+  max-width: 10rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -103,14 +110,14 @@ class SortLink extends React.Component<SortLinkProps> {
   };
 
   render() {
-    const styles = {
-      color: this.props.active ? '#000' : '#999',
-      cursor: this.props.sortable ? 'pointer' : 'auto',
-    };
-
     // TODO: Do we want to make `sortable` a field config option?
     return (
-      <HeaderCell style={styles} onClick={this.onClick} data-field={this.props['data-field']}>
+      <HeaderCell
+        isSortable={this.props.sortable}
+        isSelected={this.props.active}
+        onClick={this.onClick}
+        data-field={this.props['data-field']}
+      >
         {this.props.field.label}
         {this.props.sortable && (
           <SortDirectionArrow
@@ -172,6 +179,25 @@ class ListRow extends Component {
   }
   render() {
     const { list, link, isSelected, item, itemErrors, fields } = this.props;
+    const copyText = window.location.origin + link({ path: list.path, id: item.id });
+    const items = [
+      {
+        content: 'Duplicate',
+        icon: <DiffIcon />,
+        isDisabled: true, // TODO: implement duplicate
+        onClick: () => console.log('TODO'),
+      },
+      {
+        content: 'Copy Link',
+        icon: <LinkIcon />,
+        onClick: () => copyToClipboard(copyText),
+      },
+      {
+        content: 'Delete',
+        icon: <TrashcanIcon />,
+        onClick: this.showDeleteModal,
+      },
+    ];
 
     const row = props => (
       <TableRow {...props}>
@@ -242,27 +268,27 @@ class ListRow extends Component {
             </BodyCellTruncated>
           );
         })}
+        <BodyCell isSelected={isSelected} css={{ padding: 0 }}>
+          <Dropdown
+            align="right"
+            target={handlers => (
+              <Button
+                variant="subtle"
+                css={{
+                  opacity: 0,
+                  transition: 'opacity 150ms',
+                  'tr:hover > td > &': { opacity: 1 },
+                }}
+                {...handlers}
+              >
+                <KebabHorizontalIcon />
+              </Button>
+            )}
+            items={items}
+          />
+        </BodyCell>
       </TableRow>
     );
-    const copyText = window.location.origin + link({ path: list.path, id: item.id });
-    const items = [
-      {
-        content: 'Duplicate',
-        icon: <DiffIcon />,
-        isDisabled: true, // TODO: implement duplicate
-        onClick: () => console.log('TODO'),
-      },
-      {
-        content: 'Copy Link',
-        icon: <LinkIcon />,
-        onClick: () => copyToClipboard(copyText),
-      },
-      {
-        content: 'Delete',
-        icon: <TrashcanIcon />,
-        onClick: this.showDeleteModal,
-      },
-    ];
 
     return <Dropdown mode="contextmenu" target={row} items={items} />;
   }
@@ -271,6 +297,7 @@ class ListRow extends Component {
 export default function ListTable(props) {
   const {
     adminPath,
+    columnControl,
     fields,
     isFullWidth,
     items,
@@ -292,49 +319,56 @@ export default function ListTable(props) {
   const cypressId = 'ks-list-table';
 
   return (
-    <Table id={cypressId} style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
-      <colgroup>
-        <col width="32" />
-      </colgroup>
-      <thead>
-        <tr>
-          <HeaderCell>
-            <div css={{ position: 'relative', top: 3 }}>
-              <CheckboxPrimitive
-                checked={items.length === selectedItems.length}
-                onChange={handleSelectAll}
-                tabIndex="0"
+    <Card css={{ marginBottom: '3em' }}>
+      <Table id={cypressId} style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
+        <colgroup>
+          <col width="32" />
+          {fields.map(f => (
+            <col key={f.path} />
+          ))}
+          <col width="32" />
+        </colgroup>
+        <thead>
+          <tr>
+            <HeaderCell>
+              <div css={{ position: 'relative', top: 3 }}>
+                <CheckboxPrimitive
+                  checked={items.length === selectedItems.length}
+                  onChange={handleSelectAll}
+                  tabIndex="0"
+                />
+              </div>
+            </HeaderCell>
+            {fields.map(field => (
+              <SortLink
+                data-field={field.path}
+                key={field.path}
+                sortable={field.path !== '_label_'}
+                field={field}
+                handleSortChange={onSortChange}
+                active={sortBy.field.path === field.path}
+                sortAscending={sortBy.direction === 'ASC'}
               />
-            </div>
-          </HeaderCell>
-          {fields.map(field => (
-            <SortLink
-              data-field={field.path}
-              key={field.path}
-              sortable={field.path !== '_label_'}
-              field={field}
-              handleSortChange={onSortChange}
-              active={sortBy.field.path === field.path}
-              sortAscending={sortBy.direction === 'ASC'}
+            ))}
+            <HeaderCell css={{ padding: 0 }}>{columnControl}</HeaderCell>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item, itemIndex) => (
+            <ListRow
+              fields={fields}
+              isSelected={selectedItems.includes(item.id)}
+              item={item}
+              itemErrors={itemsErrors[itemIndex] || {}}
+              key={item.id}
+              link={({ path, id }) => `${adminPath}/${path}/${id}`}
+              list={list}
+              onDelete={onChange}
+              onSelectChange={onSelectChange}
             />
           ))}
-        </tr>
-      </thead>
-      <tbody>
-        {items.map((item, itemIndex) => (
-          <ListRow
-            fields={fields}
-            isSelected={selectedItems.includes(item.id)}
-            item={item}
-            itemErrors={itemsErrors[itemIndex] || {}}
-            key={item.id}
-            link={({ path, id }) => `${adminPath}/${path}/${id}`}
-            list={list}
-            onDelete={onChange}
-            onSelectChange={onSelectChange}
-          />
-        ))}
-      </tbody>
-    </Table>
+        </tbody>
+      </Table>
+    </Card>
   );
 }

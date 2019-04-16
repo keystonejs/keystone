@@ -1,4 +1,7 @@
-import React, { Component } from 'react';
+/** @jsx jsx */
+
+import { Component } from 'react';
+import { jsx } from '@emotion/core';
 import { Options } from '@arch-ui/options';
 import { arrayToObject } from '@keystone-alpha/utils';
 
@@ -32,14 +35,17 @@ export type FieldSelectProps = {
 export const pseudoLabelField = { label: 'Label', path: '_label_' };
 
 export default class FieldSelect extends Component<FieldSelectProps> {
-  getSanitizedOptions = () => {
-    const { fields, includeLabelField } = this.props;
+  constructor(props) {
+    super(props);
+    const { fields, includeLabelField } = props;
     const sanitizedOptions = fields.map(({ options, ...field }) => field);
     if (includeLabelField) {
       sanitizedOptions.unshift(pseudoLabelField);
     }
-    return sanitizedOptions;
-  };
+
+    this.options = sanitizedOptions;
+  }
+  options = [];
   onChange = selected => {
     const { fields: listFields, isMulti, onChange } = this.props;
     const arr = Array.isArray(selected) ? selected : [selected];
@@ -56,7 +62,7 @@ export default class FieldSelect extends Component<FieldSelectProps> {
         isOptionSelected={isOptionSelected}
         getOptionValue={getOptionValue}
         {...this.props}
-        options={this.getSanitizedOptions()}
+        options={this.options}
         onChange={this.onChange}
       />
     );
