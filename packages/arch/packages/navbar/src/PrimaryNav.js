@@ -87,18 +87,11 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
     whiteSpace: 'nowrap',
 
     ':hover': {
-      // backgroundColor: colors.N05,
+      backgroundColor: colors.N05,
       textDecoration: 'none',
-
-      ':after': {
-        backgroundColor: alpha(colors.text, 0.2),
-      },
     },
     ':active': {
-      // backgroundColor: colors.N10,
-      ':after': {
-        backgroundColor: alpha(colors.text, 0.4),
-      },
+      backgroundColor: colors.N10,
     },
 
     ':after': {

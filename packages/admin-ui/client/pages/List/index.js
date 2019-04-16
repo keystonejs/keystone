@@ -9,12 +9,15 @@ import { PlusIcon } from '@arch-ui/icons';
 import { Container, FlexGroup } from '@arch-ui/layout';
 import { colors, gridSize } from '@arch-ui/theme';
 import { PageTitle } from '@arch-ui/typography';
+import { Button } from '@arch-ui/button';
+import { KebabHorizontalIcon } from '@arch-ui/icons';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
 import ListTable from '../../components/ListTable';
 import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
+import { DisclosureArrow } from '../../components/Popout';
 import { deconstructErrorsToDataShape } from '../../util';
 
 import ColumnPopout from './ColumnSelect';
@@ -144,7 +147,7 @@ function ListLayout(props: LayoutProps) {
                 onSelectChange={onSelectChange}
                 totalItems={itemCount}
               />
-            ) : (
+            ) : items && items.length ? (
               <FlexGroup align="center" growIndexes={[0]}>
                 <div
                   css={{
@@ -166,12 +169,28 @@ function ListLayout(props: LayoutProps) {
                   </span>
                   <span css={{ paddingLeft: '0.5ex' }}>sorted by</span>
                   <SortPopout listKey={list.key} />
+                  <span css={{ paddingLeft: '0.5ex' }}>with</span>
+                  <ColumnPopout
+                    listKey={list.key}
+                    target={handlers => (
+                      <Button
+                        variant="subtle"
+                        appearance="primary"
+                        spacing="cozy"
+                        id="ks-column-Button"
+                        {...handlers}
+                      >
+                        {fields.length} Columns
+                        <DisclosureArrow />
+                      </Button>
+                    )}
+                  />
                 </div>
                 <FlexGroup align="center" css={{ marginLeft: '1em' }}>
                   <Pagination listKey={list.key} isLoading={query.loading} />
                 </FlexGroup>
               </FlexGroup>
-            )}
+            ) : null}
           </ManageToolbar>
         </HeaderInset>
       </Container>
@@ -189,7 +208,24 @@ function ListLayout(props: LayoutProps) {
             {items.length ? (
               <ListTable
                 adminPath={adminPath}
-                columnControl={<ColumnPopout listKey={list.key} />}
+                columnControl={
+                  <ColumnPopout
+                    listKey={list.key}
+                    target={handlers => (
+                      <Button
+                        variant="subtle"
+                        css={{
+                          background: 0,
+                          border: 0,
+                          color: colors.N40,
+                        }}
+                        {...handlers}
+                      >
+                        <KebabHorizontalIcon />
+                      </Button>
+                    )}
+                  />
+                }
                 fields={fields}
                 handleSortChange={handleSortChange}
                 isFullWidth

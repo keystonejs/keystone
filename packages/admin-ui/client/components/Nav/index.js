@@ -26,6 +26,7 @@ import { NavIcons } from './NavIcons';
 import ScrollQuery from '../ScrollQuery';
 
 const TRANSITION_DURATION = '220ms';
+const TRANSITION_EASING = 'cubic-bezier(0.2, 0, 0, 1)';
 
 function camelToKebab(string) {
   return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
@@ -56,21 +57,21 @@ const Relative = styled(Col)({
   position: 'relative',
 });
 const GrabHandle = styled.div(({ isActive }) => ({
-  backgroundColor: isActive ? alpha(colors.text, 0.05) : null,
-  bottom: 0,
+  backgroundColor: alpha(colors.text, 0.06),
+  height: isActive ? '100%' : 0,
   cursor: 'col-resize',
   position: 'absolute',
   right: 0,
   top: 0,
-  transition: 'background-color 220ms linear',
+  transition: `background-color ${TRANSITION_DURATION} linear, height ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
   width: 1,
 
   ':hover': {
     transitionDelay: '100ms', // avoid inadvertent mouse passes
-    backgroundColor: alpha(colors.text, 0.1),
+    backgroundColor: alpha(colors.text, 0.12),
   },
   ':active': {
-    backgroundColor: alpha(colors.text, 0.15),
+    backgroundColor: alpha(colors.text, 0.24),
   },
 
   // increase hit-area
@@ -86,6 +87,7 @@ const GrabHandle = styled.div(({ isActive }) => ({
 const CollapseExpand = styled.button(({ isCollapsed, mouseIsOverNav }) => {
   const size = 32;
   const offsetTop = 20;
+  const isActive = isCollapsed || mouseIsOverNav;
 
   return {
     alignItems: 'center',
@@ -93,16 +95,17 @@ const CollapseExpand = styled.button(({ isCollapsed, mouseIsOverNav }) => {
     border: 0,
     borderRadius: '50%',
     // boxShadow,
-    color: mouseIsOverNav || isCollapsed ? colors.text : colors.page,
+    color: isActive ? colors.text : 'transparent',
     cursor: 'pointer',
     display: 'flex',
     height: size,
     justifyContent: 'center',
     right: -size,
+    transform: isActive ? `translateX(0)` : `translateX(-10px)`,
     outline: 0,
     padding: 0,
     position: 'absolute',
-    transition: `color ${TRANSITION_DURATION}`,
+    transition: `color ${TRANSITION_DURATION}, transform ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
     width: size,
     top: offsetTop,
 
@@ -259,9 +262,7 @@ class Nav extends Component {
             const transitions = isDragging
               ? null
               : {
-                  transition: `${camelToKebab(
-                    key
-                  )} ${TRANSITION_DURATION} cubic-bezier(0.25, 0, 0, 1)`,
+                  transition: `${camelToKebab(key)} ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
                 };
             return { [key]: navWidth, ...pointers, ...transitions };
           };
@@ -287,7 +288,7 @@ class Nav extends Component {
                 {isCollapsed ? null : (
                   <GrabHandle
                     onDoubleClick={clickProps.onClick}
-                    isActive={mouseIsOverNav}
+                    isActive={mouseIsOverNav || isDragging}
                     {...resizeProps}
                   />
                 )}

@@ -8,7 +8,7 @@ import { PageTitle } from '@arch-ui/typography';
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
-import { Box } from './components';
+import { Box, HeaderInset } from './components';
 import ContainerQuery from '../../components/ContainerQuery';
 import { gqlCountQueries } from '../../classes/List';
 
@@ -34,7 +34,9 @@ class HomePage extends Component {
     return (
       <main>
         <Container>
-          <PageTitle>Dashboard</PageTitle>
+          <HeaderInset>
+            <PageTitle>Dashboard</PageTitle>
+          </HeaderInset>
           <ContainerQuery>
             {({ width }) => {
               let cellWidth = 3;

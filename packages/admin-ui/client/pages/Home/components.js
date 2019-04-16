@@ -10,6 +10,10 @@ import { colors, gridSize } from '@arch-ui/theme';
 import { LoadingIndicator } from '@arch-ui/loading';
 import { A11yText } from '@arch-ui/typography';
 
+export const HeaderInset = props => (
+  <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />
+);
+
 const BOX_GUTTER = `${gridSize * 2}px`;
 
 const BoxElement = styled(Card)`
