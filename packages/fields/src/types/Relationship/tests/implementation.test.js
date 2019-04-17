@@ -1,5 +1,7 @@
 import gql from 'graphql-tag';
-const Relationship = require('../').implementation;
+import RelationshipFieldType from '..';
+
+let Relationship = RelationshipFieldType.implementation;
 
 class MockFieldAdapter {}
 
