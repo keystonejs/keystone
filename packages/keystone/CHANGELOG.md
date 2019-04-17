@@ -1,5 +1,22 @@
 # @keystone-alpha/keystone
 
+## 3.1.0
+
+- [patch][5180d2fb](https://github.com/keystonejs/keystone-5/commit/5180d2fb):
+
+  - Remove erroneous addition of CRUD operations for Auxiliary Lists from GraphQL API
+
+- [minor][cbe80e61](https://github.com/keystonejs/keystone-5/commit/cbe80e61):
+
+  - Expose GraphQL `context` object to hooks for advanced use cases.
+
+- [patch][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):
+
+  - Don't exclude aux field resolvers from GraphQL schema
+
+- Updated dependencies [85b74a2c](https://github.com/keystonejs/keystone-5/commit/85b74a2c):
+  - @keystone-alpha/fields@5.0.0
+
 ## 3.0.0
 
 - [patch][b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
