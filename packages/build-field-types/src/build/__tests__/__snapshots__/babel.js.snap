@@ -70,20 +70,19 @@ export { Foo };
 `;
 
 exports[`needs @babel/runtime allow install: package.json 1`] = `
-"{
-  \\"name\\": \\"use-babel-runtime\\",
-  \\"version\\": \\"1.0.0\\",
-  \\"main\\": \\"dist/use-babel-runtime.cjs.js\\",
-  \\"module\\": \\"dist/use-babel-runtime.esm.js\\",
-  \\"license\\": \\"MIT\\",
-  \\"private\\": true,
-  \\"dependencies\\": {
-    \\"@babel/core\\": \\"^7.4.3\\",
-    \\"@babel/preset-env\\": \\"^7.4.3\\",
-    \\"@babel/runtime\\": \\"^7.4.3\\"
-  }
+Object {
+  "dependencies": Object {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/runtime": "^7.4.3",
+  },
+  "license": "MIT",
+  "main": "dist/use-babel-runtime.cjs.js",
+  "module": "dist/use-babel-runtime.esm.js",
+  "name": "use-babel-runtime",
+  "private": true,
+  "version": "1.0.0",
 }
-"
 `;
 
 exports[`needs @babel/runtime allow install: src/index.js 1`] = `
