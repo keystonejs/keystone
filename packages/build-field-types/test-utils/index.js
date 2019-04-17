@@ -120,7 +120,12 @@ export async function snapshotDirectory(tmpPath: string, files: 'all' | 'js' = '
 
   await Promise.all(
     paths.map(async x => {
-      expect(await fs.readFile(path.join(tmpPath, x), 'utf-8')).toMatchSnapshot(x);
+      let content = await fs.readFile(path.join(tmpPath, x), 'utf-8');
+      if (x.endsWith('.json')) {
+        expect(JSON.parse(content)).toMatchSnapshot(x);
+      } else {
+        expect(content).toMatchSnapshot(x);
+      }
     })
   );
 }
