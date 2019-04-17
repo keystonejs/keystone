@@ -1,1 +1,1 @@
-- Internal changes only. Fixes bugs with toast notifications on item deletion.
+- Fix bugs with toast notifications on item deletion.
