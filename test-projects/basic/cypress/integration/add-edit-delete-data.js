@@ -109,7 +109,7 @@ describe('Editing data', () => {
     });
   });
 
-// FIXME: this test is very flakey so we're skipping it for now
+  // FIXME: this test is very flakey so we're skipping it for now
   it.skip(`Updates relationship items`, () => {
     const url = '/admin/posts';
     cy.visit(url);
