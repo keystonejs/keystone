@@ -36,6 +36,7 @@ export const inputStyles = (props: InputProps = {}) => ({
     ? {
         lineHeight: 'inherit',
         height: 100,
+        resize: 'vertical',
       }
     : undefined),
 });
