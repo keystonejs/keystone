@@ -1,1 +1,0 @@
-- Fix bug in _some, _none, _every queries

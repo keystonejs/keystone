@@ -1,5 +1,11 @@
 # @arch-ui/pagination
 
+## 0.0.5
+
+- [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+
+  - admin revamp
+
 ## 0.0.4
 
 - [patch][24bed583](https://github.com/keystonejs/keystone-5/commit/24bed583):

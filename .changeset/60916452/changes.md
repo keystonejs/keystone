@@ -1,1 +1,0 @@
-- Expose result of running relationship operations (create/connect/disconnect)
