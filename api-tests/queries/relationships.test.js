@@ -249,6 +249,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }),
             create('User', { feed: [posts[0].id], name: sampleOne(alphanumGenerator) }),
             create('User', { feed: [], name: sampleOne(alphanumGenerator) }),
+            create('User', { name: sampleOne(alphanumGenerator) }),
           ]);
 
           return { posts, users };
@@ -268,7 +269,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               feed_every: { title_contains: "J" }
             }) {
               id
-              name
               feed {
                 id
                 title
@@ -277,8 +277,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
             });
-
-            expect(data).toMatchObject({ allUsers: [{ id: users[2].id, feed: [] }] });
+            expect(data.allUsers).toHaveLength(2);
+            expect(data.allUsers).toContainEqual({ id: users[2].id, feed: [] });
+            expect(data.allUsers).toContainEqual({ id: users[3].id, feed: [] });
             expect(errors).toBe(undefined);
           })
         );
@@ -341,13 +342,126 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             expect(errors).toBe(undefined);
             expect(data).toHaveProperty('allUsers');
-            expect(data.allUsers).toHaveLength(2);
+            expect(data.allUsers).toHaveLength(3);
 
             const { allUsers } = data;
 
             // We don't know the order, so we have to check individually
             expect(allUsers).toContainEqual({ id: users[1].id, feed: [{ title: 'Hello' }] });
             expect(allUsers).toContainEqual({ id: users[2].id, feed: [] });
+            expect(allUsers).toContainEqual({ id: users[3].id, feed: [] });
+          })
+        );
+      });
+
+      describe('to-many with empty related list', () => {
+        const setup = async create => {
+          const users = await Promise.all([
+            create('User', { feed: [], name: sampleOne(alphanumGenerator) }),
+            create('User', { feed: [], name: sampleOne(alphanumGenerator) }),
+            create('User', { feed: [], name: sampleOne(alphanumGenerator) }),
+            create('User', { name: sampleOne(alphanumGenerator) }),
+          ]);
+
+          return { users };
+        };
+
+        test(
+          '_every condition',
+          runner(setupKeystone, async ({ keystone, create }) => {
+            const { users } = await setup(create);
+
+            // EVERY
+            const { data, errors } = await graphqlRequest({
+              keystone,
+              query: `
+          query {
+            allUsers(where: {
+              feed_every: { title_contains: "J" }
+            }) {
+              id
+              feed {
+                id
+                title
+              }
+            }
+          }
+      `,
+            });
+            const { allUsers } = data;
+            expect(allUsers).toHaveLength(4);
+
+            // We don't know the order, so we have to check individually
+            expect(allUsers).toContainEqual({ id: users[0].id, feed: [] });
+            expect(allUsers).toContainEqual({ id: users[1].id, feed: [] });
+            expect(allUsers).toContainEqual({ id: users[2].id, feed: [] });
+            expect(allUsers).toContainEqual({ id: users[3].id, feed: [] });
+            expect(errors).toBe(undefined);
+          })
+        );
+
+        test(
+          '_some condition',
+          runner(setupKeystone, async ({ keystone, create }) => {
+            const { users } = await setup(create);
+
+            // SOME
+            const { data, errors } = await graphqlRequest({
+              keystone,
+              query: `
+          query {
+            allUsers(where: {
+              feed_some: { author: { id: "${users[0].id}"} }
+            }) {
+              id
+              name
+              feed {
+                id
+                title
+              }
+            }
+          }
+      `,
+            });
+            expect(data).toMatchObject({ allUsers: [] });
+            expect(data.allUsers).toHaveLength(0);
+            expect(errors).toBe(undefined);
+          })
+        );
+
+        test(
+          '_none condition',
+          runner(setupKeystone, async ({ keystone, create }) => {
+            const { users } = await setup(create);
+
+            // NONE
+            const { data, errors } = await graphqlRequest({
+              keystone,
+              query: `
+          query {
+            allUsers(where: {
+              feed_none: { title_contains: "J" }
+            }) {
+              id
+              feed {
+                title
+              }
+            }
+          }
+      `,
+            });
+
+            expect(errors).toBe(undefined);
+            expect(data).toHaveProperty('allUsers');
+            expect(data.allUsers).toHaveLength(4);
+
+            const { allUsers } = data;
+
+            // We don't know the order, so we have to check individually
+            expect(allUsers).toContainEqual({ id: users[0].id, feed: [] });
+            expect(allUsers).toContainEqual({ id: users[1].id, feed: [] });
+            expect(allUsers).toContainEqual({ id: users[2].id, feed: [] });
+            expect(allUsers).toContainEqual({ id: users[3].id, feed: [] });
           })
         );
       });

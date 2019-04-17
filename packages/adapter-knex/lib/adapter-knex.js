@@ -450,7 +450,7 @@ class KnexListAdapter extends BaseListAdapter {
     // Identify all the IDs in this table which meet the every/some/none criteria
     const validIDs = (await this._query()
       .select('id')
-      .from(tableName))
+      .from(this.key))
       .map(({ id }) => ({ id, count: matchingCountById[id] || 0 }))
       .filter(
         ({ id, count }) =>
