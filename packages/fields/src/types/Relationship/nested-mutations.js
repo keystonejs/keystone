@@ -110,7 +110,8 @@ async function resolveNestedMany({
   }
 
   // Connections
-  let allConnectedIds = [];
+  let connectedIds = [];
+  let createdIds = [];
   if (input.connect || input.create) {
     // This will resolve access control, etc for us.
     // In the future, when WhereUniqueInput accepts more than just an id,
@@ -130,21 +131,30 @@ async function resolveNestedMany({
       ['create']
     );
 
-    // Combine and map the data in the format we actually need
-    // Created items now get connected too, so they're coming along for the ride!
-    allConnectedIds = [...connectedItems, ...createdItems]
-      // Possible to get null results when the id doesn't exist, or read access is denied
-      .filter(itemConnected => itemConnected)
-      .map(({ id }) => id);
-
     const allErrors = [...connectErrors, ...createErrors];
     if (allErrors.length) {
       const message = `Unable to create and/or connect ${allErrors.length} ${target}`;
       throwWithErrors(message, { errors: allErrors, path: [localField.path] });
     }
+
+    connectedIds = connectedItems.map(item => {
+      if (item && item.id) {
+        return item.id;
+      }
+      // Possible to get null results when the id doesn't exist, or read access is denied
+      return null;
+    });
+
+    createdIds = createdItems.map(item => {
+      if (item && item.id) {
+        return item.id;
+      }
+      // Possible to get null results when the id doesn't exist, or read access is denied
+      return null;
+    });
   }
 
-  return { disconnect: disconnectIds, connect: allConnectedIds };
+  return { disconnect: disconnectIds, connect: connectedIds, create: createdIds };
 }
 
 async function resolveNestedSingle({
@@ -184,16 +194,25 @@ async function resolveNestedSingle({
     }
   }
 
-  if (input.connect || input.create) {
+  let operation;
+  let method;
+
+  if (input.connect) {
+    operation = 'connect';
+    method = () =>
+      refList.itemQuery({ where: input.connect }, context, refList.gqlNames.itemQueryName);
+  } else if (input.create) {
+    operation = 'create';
+    method = () => refList.createMutation(input.create, context, mutationState);
+  }
+
+  if (operation) {
     // override result with the connected/created value
     // input is of type *RelateToOneInput
     let item;
     try {
-      item = await (input.connect
-        ? refList.itemQuery({ where: input.connect }, context, refList.gqlNames.itemQueryName)
-        : refList.createMutation(input.create, context, mutationState));
+      item = await method();
     } catch (error) {
-      const operation = input.connect ? 'connect' : 'create';
       const message = `Unable to ${operation} a ${target}`;
       error.path = [operation];
       throwWithErrors(message, { errors: [error], path: [localField.path] });
@@ -201,7 +220,7 @@ async function resolveNestedSingle({
 
     // Might not exist if the input id doesn't exist / the user doesn't have read access
     if (item) {
-      result_.connect = [item.id];
+      result_[operation] = [item.id];
     }
   }
   return result_;

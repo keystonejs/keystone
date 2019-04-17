@@ -161,7 +161,35 @@ export class Relationship extends Implementation {
     };
   }
 
-  async resolveRelationship(input, item, context, getItem, mutationState) {
+  /**
+   * @param operations {Object}
+   * {
+   *   disconnectAll?: Boolean, (default: false),
+   *   disconnect?: Array<where>, (default: []),
+   *   connect?: Array<where>, (default: []),
+   *   create?: Array<data>, (default: []),
+   * }
+   * NOTE: If `disconnectAll` is `true`, `disconnect` is ignored.
+   * `where` is a WhereUniqueInput (eg; { id: "abc123" })
+   * `data` is an input of the type expected for the ref list (eg; { data: { name: "Sarah" } })
+   *
+   * @return {Object}
+   * {
+   *   disconnect: Array<ID>,
+   *   connect: Array<ID>,
+   *   create: Array<ID>,
+   * }
+   * The indexes within the return arrays are guaranteed to match the indexes as
+   * passed in `operations`.
+   * Due to Access Control, it is possible thata some operations result in a
+   * value of `null`. Be sure to guard against this in your code (or use the
+   * .convertResolvedOperationsToFieldValue() method which handles this for
+   * you).
+   * NOTE: If `disconnectAll` is true, `disconnect` will be an array of all
+   * previous stored values, which means indecies may not match those passed in
+   * `operations`.
+   */
+  async resolveNestedOperations(operations, item, context, getItem, mutationState) {
     const { many, isRequired } = this.config;
 
     const { refList, refField } = this.tryResolveRefList();
@@ -173,7 +201,7 @@ export class Relationship extends Implementation {
     // Possible early out for null'd field
     // prettier-ignore
     if (
-      !input
+      !operations
       && (
         // If the field is not required, and the value is `null`, we can ignore
         // it and move on.
@@ -184,7 +212,12 @@ export class Relationship extends Implementation {
         || (refField && this.getListByKey(refField.refListKey) === listInfo.local.list)
       )
     ) {
-      return input;
+      // Don't release the zalgo; always return a promise.
+      return Promise.resolve({
+        create: [],
+        connect: [],
+        disconnect: [],
+      });
     }
 
     let currentValue = item && item[this.path];
@@ -196,8 +229,8 @@ export class Relationship extends Implementation {
 
     // Collect the IDs to be connected and disconnected. This step may trigger
     // createMutation calls in order to obtain these IDs if required.
-    const { connect, disconnect } = await resolveNested({
-      input,
+    const { create = [], connect = [], disconnect = [] } = await resolveNested({
+      input: operations,
       currentValue,
       listInfo,
       many,
@@ -208,7 +241,7 @@ export class Relationship extends Implementation {
     // Enqueue backlink operations for the connections and disconnections
     if (refField) {
       enqueueBacklinkOperations(
-        { connect, disconnect },
+        { connect: [...create, ...connect], disconnect },
         mutationState.queues,
         getItem || Promise.resolve(item),
         listInfo.local,
@@ -216,11 +249,29 @@ export class Relationship extends Implementation {
       );
     }
 
-    // Resolve the connections and disconnections into a final id/list of ids.
-    if (many) {
-      return [...currentValue.filter(id => !disconnect.includes(id)), ...connect];
+    return { create, connect, disconnect };
+  }
+
+  // This function codifies the order of operations for nested mutations:
+  // 1. disconnectAll
+  // 2. disconnect
+  // 3. create
+  // 4. connect
+  convertResolvedOperationsToFieldValue({ create, connect, disconnect }, item) {
+    if (this.config.many) {
+      const currentValue = ((item && item[this.path]) || []).map(id => id.toString());
+      return [...currentValue.filter(id => !disconnect.includes(id)), ...connect, ...create].filter(
+        id => !!id
+      );
     } else {
-      return connect ? connect[0] : disconnect ? null : currentValue;
+      const currentValue = (item && item[this.path] && item[this.path].toString()) || null;
+      return create && create[0]
+        ? create[0]
+        : connect && connect[0]
+        ? connect[0]
+        : disconnect && disconnect[0]
+        ? null
+        : currentValue;
     }
   }
 

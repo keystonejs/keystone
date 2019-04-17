@@ -910,11 +910,20 @@ module.exports = class List {
 
   async _resolveRelationship(data, existingItem, context, getItem, mutationState) {
     const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
+    const resolvedRelationships = await this._mapToFields(fields, async field => {
+      const operations = await field.resolveNestedOperations(
+        data[field.path],
+        existingItem,
+        context,
+        getItem,
+        mutationState
+      );
+      return field.convertResolvedOperationsToFieldValue(operations, existingItem);
+    });
+
     return {
       ...data,
-      ...(await this._mapToFields(fields, async field =>
-        field.resolveRelationship(data[field.path], existingItem, context, getItem, mutationState)
-      )),
+      ...resolvedRelationships,
     };
   }
 

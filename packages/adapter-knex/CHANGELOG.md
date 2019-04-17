@@ -1,5 +1,11 @@
 # @keystone-alpha/adapter-knex
 
+## 1.0.6
+
+- [patch][4eb2dcd0](https://github.com/keystonejs/keystone-5/commit/4eb2dcd0):
+
+  - Fix bug in \_some, \_none, \_every queries
+
 ## 1.0.5
 
 - [patch][b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
