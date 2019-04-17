@@ -1,5 +1,11 @@
 # @keystone-alpha/server
 
+## 4.0.1
+
+- [patch][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):
+
+  - Don't create graphiql shortlinks for multipart forms
+
 ## 4.0.0
 
 - [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
