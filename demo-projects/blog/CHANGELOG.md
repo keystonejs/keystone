@@ -1,5 +1,17 @@
 # keystone_demo_blog
 
+## 1.0.7
+
+- [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+
+  - admin revamp
+
+- Updated dependencies [85b74a2c](https://github.com/keystonejs/keystone-5/commit/85b74a2c):
+  - @keystone-alpha/admin-ui@3.1.0
+  - @keystone-alpha/fields-wysiwyg-tinymce@1.0.2
+  - @keystone-alpha/keystone@3.1.0
+  - @keystone-alpha/fields@5.0.0
+
 ## 1.0.6
 
 - [patch][b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):

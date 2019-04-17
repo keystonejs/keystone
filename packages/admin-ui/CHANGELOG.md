@@ -1,5 +1,22 @@
 # @keystone-alpha/admin-ui
 
+## 3.1.0
+
+- [patch][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):
+
+  - Add missing arch-ui deps to admin-ui
+
+- [patch][2e227a73](https://github.com/keystonejs/keystone-5/commit/2e227a73):
+
+  - Correctly handle async .getValue() calls when saving
+
+- [minor][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+
+  - admin revamp
+
+- Updated dependencies [85b74a2c](https://github.com/keystonejs/keystone-5/commit/85b74a2c):
+  - @keystone-alpha/fields@5.0.0
+
 ## 3.0.6
 
 - [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):

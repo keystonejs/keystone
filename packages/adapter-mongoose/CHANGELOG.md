@@ -1,5 +1,11 @@
 # @keystone-alpha/adapter-mongoose
 
+## 1.0.6
+
+- [patch][06464afb](https://github.com/keystonejs/keystone-5/commit/06464afb):
+
+  - Simplify internal APIs
+
 ## 1.0.5
 
 - [patch][b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):

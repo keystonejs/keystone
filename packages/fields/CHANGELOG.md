@@ -1,5 +1,35 @@
 # @keystone-alpha/fields
 
+## 5.0.0
+
+- [patch][5c36ea0b](https://github.com/keystonejs/keystone-5/commit/5c36ea0b):
+
+  - Content Field no longer throws when no blocks specified or server data is corrupt
+
+- [patch][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):
+
+  - Initialise Block Constructors inside Field Controller
+
+- [major][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):
+
+  - Rename Content Editor field to document for slate.js consistency
+
+- [major][85b74a2c](https://github.com/keystonejs/keystone-5/commit/85b74a2c):
+
+  - Expose result of running relationship operations (create/connect/disconnect)
+
+- [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+
+  - admin revamp
+
+- [patch][d145fcb9](https://github.com/keystonejs/keystone-5/commit/d145fcb9):
+
+  - Correctly return null to the Admin UI for to-single relationship fields which don't have any ID set
+
+- [patch][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):
+
+  - Ensure Content Block views are always loaded even when not imported
+
 ## 4.0.0
 
 - [patch][7b8d254d](https://github.com/keystonejs/keystone-5/commit/7b8d254d):
