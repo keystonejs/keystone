@@ -79,7 +79,6 @@ export const DayTimePicker = (props: Props) => {
         value={time}
         onChange={handleTimeChange}
         disabled={isDisabled || false}
-        isMultiline={false}
         id={`${htmlID}-time`}
       />
       <Select

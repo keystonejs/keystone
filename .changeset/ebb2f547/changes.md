@@ -1,1 +1,0 @@
-- Add more relationship query tests to exercise knex adapter bug

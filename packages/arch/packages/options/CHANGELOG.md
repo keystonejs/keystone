@@ -1,5 +1,11 @@
 # @arch-ui/options
 
+## 0.0.4
+
+- [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+
+  - admin revamp
+
 ## 0.0.3
 
 - [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):

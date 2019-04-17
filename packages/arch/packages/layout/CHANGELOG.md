@@ -1,5 +1,11 @@
 # @arch-ui/layout
 
+## 0.2.0
+
+- [minor][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+
+  - admin revamp
+
 ## 0.1.0
 
 - [minor][3f075eb5](https://github.com/keystonejs/keystone-5/commit/3f075eb5):
