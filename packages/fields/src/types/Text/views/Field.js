@@ -14,6 +14,7 @@ export default class TextField extends Component {
   };
   render() {
     const { autoFocus, field, error, value: serverValue } = this.props;
+    const { isMultiline } = field.config;
     const value = serverValue || '';
     const htmlID = `ks-input-${field.path}`;
     const canRead = !(error instanceof Error && error.name === 'AccessDeniedError');
@@ -42,6 +43,7 @@ export default class TextField extends Component {
             placeholder={canRead ? undefined : error.message}
             onChange={this.onChange}
             id={htmlID}
+            isMultiline={isMultiline}
           />
         </FieldInput>
       </FieldContainer>

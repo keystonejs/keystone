@@ -111,7 +111,6 @@ class Field {
   get gqlQueryInputFields() {
     return [];
   }
-
   equalityInputFields(type) {
     return [`${this.path}: ${type}`, `${this.path}_not: ${type}`];
   }
@@ -149,14 +148,12 @@ class Field {
       `${this.path}_not_ends_with_i: ${type}`,
     ];
   }
-
   get gqlCreateInputFields() {
     return [];
   }
   get gqlUpdateInputFields() {
     return [];
   }
-
   getAdminMeta() {
     return this.extendAdminMeta({
       label: this.label,

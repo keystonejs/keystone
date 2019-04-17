@@ -35,13 +35,15 @@ export const inputStyles = (props: InputProps = {}) => ({
   ...(props.isMultiline
     ? {
         lineHeight: 'inherit',
-        height: 'auto',
+        height: 100,
+        resize: 'vertical',
       }
     : undefined),
 });
 
 type InputProps = { isMultiline?: boolean, disabled?: boolean };
 export const Input = forwardRef<InputProps, any>((props: InputProps, ref) => {
-  const Component = props.isMultiline ? 'textarea' : 'input';
-  return <Component ref={ref} css={inputStyles(props)} {...props} />;
+  const { isMultiline, ...inputProps } = props;
+  const Component = isMultiline ? 'textarea' : 'input';
+  return <Component ref={ref} css={inputStyles(props)} {...inputProps} />;
 });
