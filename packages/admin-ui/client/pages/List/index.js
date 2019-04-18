@@ -11,6 +11,8 @@ import { colors, gridSize } from '@arch-ui/theme';
 import { PageTitle } from '@arch-ui/typography';
 import { Button } from '@arch-ui/button';
 import { KebabHorizontalIcon } from '@arch-ui/icons';
+import Tooltip from '@arch-ui/tooltip';
+import { applyRefs } from 'apply-ref';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
@@ -212,17 +214,22 @@ function ListLayout(props: LayoutProps) {
                   <ColumnPopout
                     listKey={list.key}
                     target={handlers => (
-                      <Button
-                        variant="subtle"
-                        css={{
-                          background: 0,
-                          border: 0,
-                          color: colors.N40,
-                        }}
-                        {...handlers}
-                      >
-                        <KebabHorizontalIcon />
-                      </Button>
+                      <Tooltip placement="top" content="Columns">
+                        {ref => (
+                          <Button
+                            variant="subtle"
+                            css={{
+                              background: 0,
+                              border: 0,
+                              color: colors.N40,
+                            }}
+                            {...handlers}
+                            ref={applyRefs(handlers.ref, ref)}
+                          >
+                            <KebabHorizontalIcon />
+                          </Button>
+                        )}
+                      </Tooltip>
                     )}
                   />
                 }
