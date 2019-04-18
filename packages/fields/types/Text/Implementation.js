@@ -6,14 +6,12 @@ class Text extends Implementation {
   constructor() {
     super(...arguments);
   }
-
   get gqlOutputFields() {
     return [`${this.path}: String`];
   }
   get gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
   }
-
   get gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
@@ -28,6 +26,10 @@ class Text extends Implementation {
   }
   get gqlCreateInputFields() {
     return [`${this.path}: String`];
+  }
+  extendAdminMeta(meta) {
+    const { isMultiline } = this.config;
+    return { isMultiline, ...meta };
   }
 }
 
