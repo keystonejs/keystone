@@ -1,1 +1,1 @@
-- Remove custom context menu
+- Remove custom context menu on list page
