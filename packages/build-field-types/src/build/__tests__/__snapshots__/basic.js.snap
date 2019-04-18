@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`basic: valid-package.cjs.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var index = 'something';
+exports.default = index;
+"
+`;
+
+exports[`basic: valid-package.esm.js 1`] = `
+"var index = 'something';
+export default index;
+"
+`;

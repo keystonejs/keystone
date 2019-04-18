@@ -1,0 +1,76 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@babel/runtime installed: babel-runtime-installed.cjs.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+class Bar {}
+
+class Foo extends Bar {}
+
+exports.Foo = Foo;
+"
+`;
+
+exports[`@babel/runtime installed: babel-runtime-installed.esm.js 1`] = `
+"class Bar {}
+
+class Foo extends Bar {}
+
+export { Foo };
+"
+`;
+
+exports[`monorepo single package: package-two-single-package.cjs.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var index = 2;
+exports.default = index;
+"
+`;
+
+exports[`monorepo single package: package-two-single-package.esm.js 1`] = `
+"var index = 2;
+export default index;
+"
+`;
+
+exports[`monorepo: package-one.cjs.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var index = 1;
+exports.default = index;
+"
+`;
+
+exports[`monorepo: package-one.esm.js 1`] = `
+"var index = 1;
+export default index;
+"
+`;
+
+exports[`monorepo: package-two.cjs.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var index = 2;
+exports.default = index;
+"
+`;
+
+exports[`monorepo: package-two.esm.js 1`] = `
+"var index = 2;
+export default index;
+"
+`;

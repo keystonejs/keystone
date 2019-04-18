@@ -1,0 +1,12 @@
+{
+  "name": "typescript",
+  "version": "1.0.0",
+  "main": "dist/typescript.cjs.js",
+  "license": "MIT",
+  "private": true,
+  "module": "dist/typescript.esm.js",
+  "dependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-typescript": "^7.3.3"
+  }
+}
