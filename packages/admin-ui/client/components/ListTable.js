@@ -199,8 +199,8 @@ class ListRow extends Component {
       },
     ];
 
-    const row = props => (
-      <TableRow {...props}>
+    return (
+      <TableRow>
         <BodyCell isSelected={isSelected} key="checkbox">
           <CheckboxPrimitive
             checked={isSelected}
@@ -289,8 +289,6 @@ class ListRow extends Component {
         </BodyCell>
       </TableRow>
     );
-
-    return <Dropdown mode="contextmenu" target={row} items={items} />;
   }
 }
 
