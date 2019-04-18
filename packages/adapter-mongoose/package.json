@@ -13,7 +13,7 @@
     "@keystone-alpha/mongo-join-builder": "^2.0.0",
     "@keystone-alpha/utils": "^2.0.0",
     "inflection": "^1.12.0",
-    "mongoose": "^5.4.19",
-    "p-settle": "^2.1.0"
+    "mongoose": "^5.5.2",
+    "p-settle": "^3.1.0"
   }
 }
