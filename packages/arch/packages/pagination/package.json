@@ -6,10 +6,10 @@
   "license": "MIT",
   "main": "dist/pagination.cjs.js",
   "peerDependencies": {
-    "react": "^16.8.4"
+    "react": "^16.8.6"
   },
   "devDependencies": {
-    "react": "^16.8.4"
+    "react": "^16.8.6"
   },
   "dependencies": {
     "@arch-ui/button": "^0.0.5",
@@ -17,9 +17,9 @@
     "@arch-ui/layout": "^0.2.0",
     "@arch-ui/loading": "^0.0.4",
     "@arch-ui/theme": "^0.0.3",
-    "@babel/runtime": "^7.3.4",
-    "@emotion/core": "^10.0.9",
-    "@emotion/styled": "^10.0.9",
+    "@babel/runtime": "^7.4.3",
+    "@emotion/core": "^10.0.10",
+    "@emotion/styled": "^10.0.10",
     "react-router-dom": "5.0.0"
   },
   "module": "dist/pagination.esm.js"

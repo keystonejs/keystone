@@ -6,10 +6,10 @@
   "license": "MIT",
   "main": "dist/day-picker.cjs.js",
   "peerDependencies": {
-    "react": "^16.8.4"
+    "react": "^16.8.6"
   },
   "devDependencies": {
-    "react": "^16.8.4"
+    "react": "^16.8.6"
   },
   "dependencies": {
     "@arch-ui/icons": "^0.0.3",
@@ -17,9 +17,9 @@
     "@arch-ui/select": "^0.0.4",
     "@arch-ui/theme": "^0.0.3",
     "@arch-ui/typography": "^0.0.4",
-    "@babel/runtime": "^7.3.4",
-    "@emotion/core": "^10.0.9",
-    "@emotion/styled": "^10.0.9",
+    "@babel/runtime": "^7.4.3",
+    "@emotion/core": "^10.0.10",
+    "@emotion/styled": "^10.0.10",
     "chrono-node": "^1.3.5",
     "date-fns": "^1.30.1",
     "intersection-observer": "^0.5.1",
