@@ -2,6 +2,8 @@
   "name": "@keystone-alpha/fields",
   "description": "KeystoneJS Field Types including Text, Password, DateTime, Integer, and more.",
   "version": "5.0.0",
+  "main": "dist/fields.cjs.js",
+  "module": "dist/fields.esm.js",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -32,6 +34,7 @@
     "@keystone-alpha/access-control": "^1.0.3",
     "@keystone-alpha/adapter-knex": "^1.0.6",
     "@keystone-alpha/adapter-mongoose": "^1.0.6",
+    "@keystone-alpha/build-field-types": "^0.0.53",
     "@keystone-alpha/utils": "^2.0.0",
     "apollo-errors": "^1.9.0",
     "apply-ref": "^0.1.1",
@@ -70,13 +73,9 @@
     "@keystone-alpha/test-utils": "^2.0.0",
     "cuid": "^2.1.6"
   },
-  "preconstruct": {
+  "field-types": {
     "entrypoints": [
-      "types/*/views/Cell",
-      "types/*/views/Field",
-      "types/*/views/Filter",
-      "types/*/views/Controller",
-      "types/Content/views/blocks/*",
+      ".",
       "Controller"
     ]
   }

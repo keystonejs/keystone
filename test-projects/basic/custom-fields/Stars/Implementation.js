@@ -1,10 +1,6 @@
-const {
-  Integer,
-  MongoIntegerInterface,
-  KnexIntegerInterface,
-} = require('@keystone-alpha/fields/types/Integer/Implementation');
+const { Integer } = require('@keystone-alpha/fields');
 
-class Stars extends Integer {
+class Stars extends Integer.implementation {
   extendAdminMeta(meta) {
     return { ...meta, starCount: this.config.starCount || 5 };
   }
@@ -12,6 +8,6 @@ class Stars extends Integer {
 
 module.exports = {
   Stars,
-  MongoIntegerInterface,
-  KnexIntegerInterface,
+  MongoIntegerInterface: Integer.adapters.mongoose,
+  KnexIntegerInterface: Integer.adapters.knex,
 };

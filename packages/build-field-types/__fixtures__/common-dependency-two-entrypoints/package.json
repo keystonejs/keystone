@@ -1,0 +1,15 @@
+{
+  "name": "common-dependency-two-entrypoints",
+  "version": "1.0.0",
+  "main": "dist/common-dependency-two-entrypoints.cjs.js",
+  "license": "MIT",
+  "private": true,
+  "module": "dist/common-dependency-two-entrypoints.esm.js",
+  "field-types": {
+    "source": "src/sum",
+    "entrypoints": [
+      ".",
+      "multiply"
+    ]
+  }
+}

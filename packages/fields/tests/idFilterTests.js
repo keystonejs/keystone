@@ -1,5 +1,5 @@
 import { matchFilter } from '@keystone-alpha/test-utils';
-import Text from '../types/Text';
+import Text from '../src/types/Text';
 // import Checkbox from './';
 
 export const name = 'ID';

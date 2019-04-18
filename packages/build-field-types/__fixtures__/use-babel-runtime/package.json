@@ -1,0 +1,12 @@
+{
+  "name": "use-babel-runtime",
+  "version": "1.0.0",
+  "main": "dist/use-babel-runtime.cjs.js",
+  "module": "dist/use-babel-runtime.esm.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3"
+  }
+}

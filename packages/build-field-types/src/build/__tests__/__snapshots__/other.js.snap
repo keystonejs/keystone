@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`typescript: dist/typescript.cjs.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+let thing = \\"something\\";
+exports.default = thing;
+"
+`;
+
+exports[`typescript: dist/typescript.esm.js 1`] = `
+"let thing = \\"something\\";
+export default thing;
+"
+`;
+
+exports[`typescript: package.json 1`] = `
+Object {
+  "dependencies": Object {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-typescript": "^7.3.3",
+  },
+  "license": "MIT",
+  "main": "dist/typescript.cjs.js",
+  "module": "dist/typescript.esm.js",
+  "name": "typescript",
+  "private": true,
+  "version": "1.0.0",
+}
+`;
+
+exports[`typescript: src/index.ts 1`] = `
+"let thing: string = \\"something\\";
+
+export default thing;
+"
+`;

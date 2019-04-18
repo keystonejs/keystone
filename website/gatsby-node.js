@@ -78,17 +78,6 @@ exports.onCreateBabelConfig = ({ actions, stage }) => {
   });
 };
 
-exports.onCreateWebpackConfig = ({ actions }) => {
-  // we need these aliases so that we use the src version of the packages that require builds
-  let preconstructAliases = require('preconstruct').aliases.webpack(path.join(__dirname, '..'));
-
-  actions.setWebpackConfig({
-    resolve: {
-      alias: preconstructAliases,
-    },
-  });
-};
-
 const getEditUrl = absPath =>
   `https://github.com/keystonejs/keystone-5/edit/master/${path.relative(PROJECT_ROOT, absPath)}`;
 

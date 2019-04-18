@@ -1,12 +1,14 @@
 const { Stars, MongoIntegerInterface, KnexIntegerInterface } = require('./Implementation');
 
+const { Integer } = require('@keystone-alpha/fields');
+
 module.exports = {
   type: 'Stars',
   implementation: Stars,
   views: {
-    Controller: require.resolve('./Controller'),
+    Controller: Integer.views.Controller,
     Field: require.resolve('./views/Field'),
-    Filter: require.resolve('./views/Filter'),
+    Filter: Integer.views.Filter,
     Cell: require.resolve('./views/Cell'),
   },
   adapters: {
