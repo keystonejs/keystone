@@ -1,4 +1,4 @@
-const { Implementation: Field } = require('../Implementation');
+const { Implementation: Field } = require('../');
 
 const config = {
   label: 'config label',
