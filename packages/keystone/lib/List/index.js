@@ -910,11 +910,20 @@ module.exports = class List {
 
   async _resolveRelationship(data, existingItem, context, getItem, mutationState) {
     const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
+    const resolvedRelationships = await this._mapToFields(fields, async field => {
+      const operations = await field.resolveNestedOperations(
+        data[field.path],
+        existingItem,
+        context,
+        getItem,
+        mutationState
+      );
+      return field.convertResolvedOperationsToFieldValue(operations, existingItem);
+    });
+
     return {
       ...data,
-      ...(await this._mapToFields(fields, async field =>
-        field.resolveRelationship(data[field.path], existingItem, context, getItem, mutationState)
-      )),
+      ...resolvedRelationships,
     };
   }
 
@@ -938,6 +947,7 @@ module.exports = class List {
     const args = {
       resolvedData,
       existingItem,
+      context,
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
@@ -964,6 +974,7 @@ module.exports = class List {
     const args = {
       resolvedData,
       existingItem,
+      context,
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
@@ -974,6 +985,7 @@ module.exports = class List {
   async _validateDelete(existingItem, context, operation) {
     const args = {
       existingItem,
+      context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
     const fields = this.fields;
@@ -1011,6 +1023,7 @@ module.exports = class List {
     const args = {
       resolvedData,
       existingItem,
+      context,
       originalInput,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
@@ -1020,6 +1033,7 @@ module.exports = class List {
   async _beforeDelete(existingItem, context) {
     const args = {
       existingItem,
+      context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
     await this._runHook(args, existingItem, 'beforeDelete');
@@ -1030,6 +1044,7 @@ module.exports = class List {
       updatedItem,
       originalInput,
       existingItem,
+      context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
     await this._runHook(args, updatedItem, 'afterChange');
@@ -1038,6 +1053,7 @@ module.exports = class List {
   async _afterDelete(existingItem, context) {
     const args = {
       existingItem,
+      context,
       actions: mapKeys(this.hooksActions, hook => hook(context)),
     };
     await this._runHook(args, existingItem, 'afterDelete');
@@ -1075,7 +1091,7 @@ module.exports = class List {
     const { afterChangeStack } = mutationState;
     afterChangeStack.push(afterHook);
     if (isRootMutation) {
-      // TODO: Close transation
+      // TODO: Close transaction
 
       // Execute post-hook stack
       while (afterChangeStack.length) {

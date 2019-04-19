@@ -197,3 +197,39 @@ export const ZoomInDown = (props: TransitionProps) => {
     />
   );
 };
+
+// Spring Down
+// ------------------------------
+
+export const SpringDown = (props: TransitionProps) => {
+  const base = {
+    transformOrigin: 'top',
+    transitionProperty: 'opacity, transform',
+    transitionDuration,
+    transitionTimingFunction: 'cubic-bezier(0.2, 0, 0.16, 1.6)',
+  };
+  return (
+    <TransitionReducer
+      constant={base}
+      dynamic={{
+        entering: {
+          opacity: 1,
+          transform: 'translate3d(0, 0, 0)',
+        },
+        entered: {
+          opacity: 1,
+          transform: 'translate3d(0, 0, 0)',
+        },
+        exiting: {
+          opacity: 0,
+          transform: 'scale(0.93) translate3d(0, -12px, 0)',
+        },
+        exited: {
+          opacity: 0,
+          transform: 'scale(0.93) translate3d(0, -12px, 0)',
+        },
+      }}
+      {...props}
+    />
+  );
+};

@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/cypress-project-facebook-login",
   "description": "A KeystoneJS demo project for integration testing. See @keystone-alpha/keystone for more.",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -14,17 +14,17 @@
     "cypress:run": "exit 0"
   },
   "dependencies": {
-    "@arch-ui/fields": "^0.0.3",
-    "@arch-ui/input": "^0.0.3",
-    "@keystone-alpha/adapter-mongoose": "^1.0.5",
-    "@keystone-alpha/admin-ui": "^3.0.6",
+    "@arch-ui/fields": "^0.0.4",
+    "@arch-ui/input": "^0.0.4",
+    "@keystone-alpha/adapter-mongoose": "^1.0.6",
+    "@keystone-alpha/admin-ui": "^3.1.0",
     "@keystone-alpha/core": "^2.0.3",
-    "@keystone-alpha/fields": "^4.0.0",
+    "@keystone-alpha/fields": "^5.0.0",
     "@keystone-alpha/file-adapters": "^1.0.2",
-    "@keystone-alpha/keystone": "^3.0.0",
-    "@keystone-alpha/server": "^4.0.0",
+    "@keystone-alpha/keystone": "^3.1.0",
+    "@keystone-alpha/server": "^4.0.1",
     "@keystone-alpha/session": "^1.0.2",
-    "react": "^16.8.4"
+    "react": "^16.8.6"
   },
   "devDependencies": {
     "dotenv-safe": "^6.0.0",

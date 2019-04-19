@@ -1,5 +1,12 @@
 # @keystone-alpha/website
 
+## 1.0.6
+
+- Updated dependencies [e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+  - @arch-ui/select@0.0.4
+  - @arch-ui/input@0.0.4
+  - @arch-ui/theme@0.0.3
+
 ## 1.0.5
 
 - [patch][a76721db](https://github.com/keystonejs/keystone-5/commit/a76721db):

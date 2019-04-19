@@ -1,21 +1,35 @@
 // @flow
-import styled from '@emotion/styled';
+/** @jsx jsx */
+
+import { jsx } from '@emotion/core';
 
 import { colors } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
 
-export const Blanket = styled.div(({ isTinted, isLight }) => {
+type Props = {
+  isLight?: boolean,
+  isTinted?: boolean,
+};
+
+export const Blanket = ({ isTinted, isLight, ...props }: Props) => {
   let bg = 'transparent';
+
   if (isTinted) {
-    bg = isLight ? 'rgba(250, 251, 252, 0.66)' : alpha(colors.N90, 0.66);
+    bg = isLight ? 'rgba(255, 255, 255, 0.5)' : alpha(colors.N100, 0.2);
   }
-  return {
-    backgroundColor: bg,
-    bottom: 0,
-    left: 0,
-    position: 'fixed',
-    right: 0,
-    top: 0,
-    zIndex: 2,
-  };
-});
+
+  return (
+    <div
+      css={{
+        backgroundColor: bg,
+        bottom: 0,
+        left: 0,
+        position: 'fixed',
+        right: 0,
+        top: 0,
+        zIndex: 2,
+      }}
+      {...props}
+    />
+  );
+};

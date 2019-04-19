@@ -1,5 +1,11 @@
 # @arch-ui/drawer
 
+## 0.0.5
+
+- [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+
+  - admin revamp
+
 ## 0.0.4
 
 - [patch][545c9464](https://github.com/keystonejs/keystone-5/commit/545c9464):

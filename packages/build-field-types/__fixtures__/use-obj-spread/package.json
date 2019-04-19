@@ -1,0 +1,7 @@
+{
+  "name": "use-object-spread",
+  "version": "1.0.0",
+  "main": "dist/use-object-spread.cjs.js",
+  "license": "MIT",
+  "private": true
+}

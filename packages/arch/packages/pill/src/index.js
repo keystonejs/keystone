@@ -7,6 +7,7 @@ import { forwardRef, type Node } from 'react';
 
 import { XIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
+import { uniformHeight } from '@arch-ui/common';
 
 const boldBackgroundColor = {
   default: { default: colors.N60, hover: colors.N50, active: colors.N70 },
@@ -64,11 +65,12 @@ type Props = ButtonProps & {
 const PillWrapper = styled.div({ display: 'inline-flex' });
 const PillButton = styled.button(
   ({ appearance, variant }: { appearance: Appearance, variant: Variant }) => {
-    const fontSizeNumeric = 0.75;
-    const fontSize = `${fontSizeNumeric}em`;
-    const borderRadius = `${fontSizeNumeric * 2}em`;
+    const fontSizeNumeric = 0.85;
+    const fontSize = `${fontSizeNumeric}rem`;
+    const borderRadius = `${fontSizeNumeric * 2}rem`;
 
     return {
+      ...uniformHeight,
       backgroundColor:
         variant === 'bold'
           ? boldBackgroundColor[appearance].default
@@ -79,13 +81,10 @@ const PillButton = styled.button(
       cursor: 'pointer',
       display: 'flex',
       fontSize: fontSize,
-      fontWeight: 500,
-      lineHeight: '1.8em',
       justifyContent: 'center',
       maxWidth: '100%',
       minWidth: 1,
       outline: 0,
-      whiteSpace: 'nowrap',
 
       ':hover,:focus': {
         backgroundColor:

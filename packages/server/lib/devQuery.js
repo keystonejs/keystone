@@ -21,8 +21,12 @@ const graphiqlDevQueryMiddleware = (graphiqlPath, devQueryPath, devQueryLog) => 
   res,
   next
 ) => {
-  // Skip requests from graphiql itself
-  if (req.headers.referer && req.headers.referer.includes(graphiqlPath)) {
+  if (
+    // Skip requests from graphiql itself
+    (req.headers.referer && req.headers.referer.includes(graphiqlPath)) ||
+    // Skip multipart form requests (ie; when using the Upload type)
+    !req.body.query
+  ) {
     return next();
   }
 

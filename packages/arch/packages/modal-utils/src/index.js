@@ -4,6 +4,7 @@ export {
   SlideUp,
   SlideDown,
   SlideInHorizontal,
+  SpringDown,
   ZoomInDown,
   TransitionProvider,
   withTransitionState,

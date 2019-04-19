@@ -7,7 +7,7 @@ import ScrollLock from 'react-scrolllock';
 import { jsx } from '@emotion/core';
 import styled from '@emotion/styled';
 
-import { borderRadius } from '@arch-ui/theme';
+import { borderRadius, shadows } from '@arch-ui/theme';
 import { FocusTrap } from 'react-focus-marshal';
 import {
   Fade,
@@ -43,9 +43,9 @@ const Dialog = forwardRef(({ component: Tag, width, ...props }: DialogElementPro
     role="alertdialog"
     css={{
       backgroundColor: 'white',
-      borderBottomRightRadius: borderRadius,
-      borderBottomLeftRadius: borderRadius,
-      boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.175), 0 3px 8px rgba(0, 0, 0, 0.175)',
+      borderBottomRightRadius: borderRadius * 2,
+      borderBottomLeftRadius: borderRadius * 2,
+      boxShadow: shadows[2],
       display: 'flex',
       flexDirection: 'column',
       maxHeight: '100%',

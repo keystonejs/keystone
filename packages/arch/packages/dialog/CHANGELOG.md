@@ -1,5 +1,12 @@
 # @arch-ui/dialog
 
+## 0.0.5
+
+- Updated dependencies [e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+  - @arch-ui/modal-utils@0.0.5
+  - @arch-ui/theme@0.0.3
+  - @arch-ui/typography@0.0.4
+
 ## 0.0.4
 
 - Updated dependencies [302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):

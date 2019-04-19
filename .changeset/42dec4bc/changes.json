@@ -1,0 +1,31 @@
+{
+  "releases": [
+    { "name": "@arch-ui/modal-utils", "type": "patch" },
+    { "name": "@arch-ui/popout", "type": "patch" }
+  ],
+  "dependents": [
+    { "name": "@arch-ui/confirm", "type": "patch", "dependencies": ["@arch-ui/modal-utils"] },
+    { "name": "@arch-ui/dialog", "type": "patch", "dependencies": ["@arch-ui/modal-utils"] },
+    { "name": "@arch-ui/drawer", "type": "patch", "dependencies": ["@arch-ui/modal-utils"] },
+    { "name": "@arch-ui/dropdown", "type": "patch", "dependencies": ["@arch-ui/modal-utils"] },
+    { "name": "@arch-ui/tooltip", "type": "patch", "dependencies": ["@arch-ui/modal-utils"] },
+    {
+      "name": "@keystone-alpha/admin-ui",
+      "type": "patch",
+      "dependencies": [
+        "@arch-ui/confirm",
+        "@arch-ui/dialog",
+        "@arch-ui/drawer",
+        "@arch-ui/dropdown",
+        "@arch-ui/tooltip",
+        "@keystone-alpha/fields",
+        "@arch-ui/popout"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/fields",
+      "type": "patch",
+      "dependencies": ["@arch-ui/drawer", "@arch-ui/tooltip", "@arch-ui/popout"]
+    }
+  ]
+}

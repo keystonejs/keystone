@@ -1,5 +1,15 @@
 # @keystone-alpha/api-tests
 
+## 1.0.5
+
+- [patch][85b74a2c](https://github.com/keystonejs/keystone-5/commit/85b74a2c):
+
+  - Expose result of running relationship operations (create/connect/disconnect)
+
+- [patch][4eb2dcd0](https://github.com/keystonejs/keystone-5/commit/4eb2dcd0):
+
+  - Add more relationship query tests to exercise knex adapter bug
+
 ## 1.0.4
 
 - [patch][b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):

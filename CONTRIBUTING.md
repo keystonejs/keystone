@@ -132,6 +132,7 @@ git pull
 bolt
 bolt publish-changed
 git push --tags
+bolt
 ```
 
 **Note**: if you have two-factor authentication enabled for npm, you'll need to provide your 2FA code to the `publish-changed` task, like this:
