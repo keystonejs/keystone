@@ -11,7 +11,7 @@
     "build": "echo 'noop - see the Keystone package.json#build script'"
   },
   "dependencies": {
-    "@babel/runtime": "^7.3.4",
+    "@babel/runtime": "^7.4.3",
     "@jesstelford/apollo-cache-invalidation": "^0.0.3-gh3-gh5",
     "graphql-tag": "^2.10.1",
     "hoist-non-react-statics": "^3.0.1",
@@ -21,10 +21,10 @@
     "react-apollo": "2.4.0"
   },
   "peerDependencies": {
-    "react": "^16.8.4"
+    "react": "^16.8.6"
   },
   "devDependencies": {
-    "react": "^16.8.4"
+    "react": "^16.8.6"
   },
   "main": "dist/apollo-helpers.cjs.js",
   "module": "dist/apollo-helpers.esm.js"

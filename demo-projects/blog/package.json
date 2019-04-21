@@ -13,8 +13,8 @@
     "build": "next build"
   },
   "dependencies": {
-    "@emotion/core": "^10.0.9",
-    "@emotion/styled": "^10.0.9",
+    "@emotion/core": "^10.0.10",
+    "@emotion/styled": "^10.0.10",
     "@keystone-alpha/adapter-mongoose": "^1.0.6",
     "@keystone-alpha/admin-ui": "^3.1.0",
     "@keystone-alpha/core": "^2.0.3",
@@ -32,7 +32,7 @@
     "next": "^8.0.3",
     "next-apollo": "^2.0.9",
     "node-fetch": "^2.3.0",
-    "react": "^16.8.4",
+    "react": "^16.8.6",
     "react-apollo": "2.4.0"
   }
 }
