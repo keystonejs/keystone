@@ -6,17 +6,17 @@
   "license": "MIT",
   "main": "dist/controls.cjs.js",
   "peerDependencies": {
-    "react": "^16.8.4"
+    "react": "^16.8.6"
   },
   "devDependencies": {
-    "react": "^16.8.4"
+    "react": "^16.8.6"
   },
   "dependencies": {
     "@arch-ui/input": "^0.0.4",
     "@arch-ui/theme": "^0.0.3",
-    "@babel/runtime": "^7.3.4",
-    "@emotion/core": "^10.0.9",
-    "@emotion/styled": "^10.0.9",
+    "@babel/runtime": "^7.4.3",
+    "@emotion/core": "^10.0.10",
+    "@emotion/styled": "^10.0.10",
     "memoize-one": "^4.0.2",
     "react-pseudo-state": "^2.2.2",
     "react-radios": "^1.1.0"
