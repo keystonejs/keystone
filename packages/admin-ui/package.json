@@ -55,6 +55,7 @@
     "apollo-link-error": "^1.1.8",
     "apollo-link-state": "^0.4.2",
     "apollo-upload-client": "^10.0.0",
+    "apply-ref": "^0.2.0",
     "babel-loader": "^8.0.5",
     "babel-plugin-emotion": "^10.0.9",
     "chalk": "^2.4.2",
