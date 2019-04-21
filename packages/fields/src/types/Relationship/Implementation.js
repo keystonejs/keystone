@@ -362,22 +362,20 @@ export class Relationship extends Implementation {
 }
 
 export class MongoRelationshipInterface extends MongooseFieldAdapter {
-  constructor(...args) {
-    super(...args);
-    const [refListKey, refFieldPath] = this.config.ref.split('.');
+  constructor(fieldName, path, listAdapter, getListByKey, { ref, many }) {
+    super(...arguments);
+    const [refListKey, refFieldPath] = ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
     this.isRelationship = true;
+    this.many = many;
   }
 
   addToMongooseSchema(schema) {
-    const {
-      refListKey: ref,
-      config: { many },
-    } = this;
+    const { refListKey: ref, many } = this;
     const type = many ? [ObjectId] : ObjectId;
     const schemaOptions = { type, ref };
-    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
+    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions) });
   }
 
   getRefListAdapter() {
@@ -433,7 +431,7 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
       //    the query
       matchTerm: { [`${uid}_${this.path}_${filterType}`]: true },
       // Flag this is a to-many relationship
-      many: this.config.many,
+      many: this.many,
     };
   }
 
@@ -445,13 +443,14 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
 }
 
 export class KnexRelationshipInterface extends KnexFieldAdapter {
-  constructor(...args) {
-    super(...args);
-    const [refListKey, refFieldPath] = this.config.ref.split('.');
+  constructor(fieldName, path, listAdapter, getListByKey, { ref, many }) {
+    super(...arguments);
+    const [refListKey, refFieldPath] = ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
     this.refListId = `${refListKey}_id`;
     this.isRelationship = true;
+    this.many = many;
   }
 
   getRefListAdapter() {

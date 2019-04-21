@@ -4,12 +4,23 @@ import { parseFieldAccess } from '@keystone-alpha/access-control';
 class Field {
   constructor(
     path,
-    { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, ...config },
+    {
+      hooks = {},
+      isRequired,
+      defaultValue,
+      access,
+      label,
+      schemaDoc,
+      isUnique,
+      many,
+      ref,
+      options,
+      mongooseOptions,
+    },
     { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess }
   ) {
     this.path = path;
     this.schemaDoc = schemaDoc;
-    this.config = config;
     this.isRequired = isRequired;
     this.defaultValue = defaultValue;
     this.hooks = hooks;
@@ -21,7 +32,14 @@ class Field {
       this.constructor.name,
       path,
       getListByKey,
-      { isRequired, ...config }
+      {
+        isRequired,
+        isUnique,
+        many,
+        ref,
+        options,
+        mongooseOptions,
+      }
     );
 
     // Should be overwritten by types that implement a Relationship interface

@@ -154,7 +154,7 @@ export class MongoDateTimeInterface extends CommonDateTimeInterface(MongooseFiel
   }
 
   addToMongooseSchema(schema) {
-    const { mongooseOptions } = this.config;
+    const { mongooseOptions } = this;
     const field_path = this.path;
     const utc_field = `${field_path}_utc`;
     const offset_field = `${field_path}_offset`;

@@ -1,0 +1,1 @@
+Remove the `.config` property from field adapters.

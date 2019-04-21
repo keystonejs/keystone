@@ -109,7 +109,7 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   prepareFieldAdapter(fieldAdapter) {
-    if (!(fieldAdapter.isRelationship && fieldAdapter.config.many)) {
+    if (!(fieldAdapter.isRelationship && fieldAdapter.many)) {
       this.realKeys.push(...(fieldAdapter.realKeys ? fieldAdapter.realKeys : [fieldAdapter.path]));
     }
   }
@@ -132,7 +132,7 @@ class KnexListAdapter extends BaseListAdapter {
       table.increments('id');
       // Create the required columns for each field;
       this.fieldAdapters.forEach(adapter => {
-        if (!(adapter.isRelationship && adapter.config.many)) {
+        if (!(adapter.isRelationship && adapter.many)) {
           const column = adapter.createColumn(table);
           if (adapter.isUnique) {
             column.unique();
@@ -151,14 +151,14 @@ class KnexListAdapter extends BaseListAdapter {
     // Add foreign key constraints on this table
     await this._schema().table(this.key, table => {
       relationshipAdapters
-        .filter(adapter => !adapter.config.many)
+        .filter(adapter => !adapter.many)
         .forEach(adapter => adapter.createForiegnKey(table, this.parentAdapter.schemaName));
     });
 
     // Create adjacency tables for the 'many' relationships
     await Promise.all(
       relationshipAdapters
-        .filter(adapter => adapter.config.many)
+        .filter(adapter => adapter.many)
         .map(async adapter => {
           const tableName = this._manyTable(adapter.path);
           try {
@@ -201,7 +201,7 @@ class KnexListAdapter extends BaseListAdapter {
         this.fieldAdapters.filter(
           fieldAdapter =>
             fieldAdapter.isRelationship &&
-            fieldAdapter.config.many &&
+            fieldAdapter.many &&
             data[fieldAdapter.path] &&
             data[fieldAdapter.path].length
         ),
@@ -230,7 +230,7 @@ class KnexListAdapter extends BaseListAdapter {
           adapter.fieldAdapters
             .filter(a => a.isRelationship && a.refListKey === this.key)
             .map(a =>
-              a.config.many
+              a.many
                 ? adapter
                     ._query()
                     .table(adapter._manyTable(a.path))
@@ -258,15 +258,12 @@ class KnexListAdapter extends BaseListAdapter {
     return {
       ...result,
       ...(await resolveAllKeys(
-        arrayToObject(
-          this.fieldAdapters.filter(a => a.isRelationship && a.config.many),
-          'path',
-          async a =>
-            (await this._query()
-              .select(a.refListId)
-              .from(this._manyTable(a.path))
-              .where(`${this.key}_id`, result.id)
-              .returning(a.refListId)).map(x => x[a.refListId])
+        arrayToObject(this.fieldAdapters.filter(a => a.isRelationship && a.many), 'path', async a =>
+          (await this._query()
+            .select(a.refListId)
+            .from(this._manyTable(a.path))
+            .where(`${this.key}_id`, result.id)
+            .returning(a.refListId)).map(x => x[a.refListId])
         )
       )),
     };

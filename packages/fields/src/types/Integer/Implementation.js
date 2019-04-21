@@ -49,7 +49,7 @@ export class MongoIntegerInterface extends CommonIntegerInterface(MongooseFieldA
         message: '{VALUE} is not an integer value',
       },
     };
-    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
+    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions) });
   }
 }
 

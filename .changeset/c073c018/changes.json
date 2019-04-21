@@ -1,0 +1,100 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/adapter-knex", "type": "major" },
+    { "name": "@keystone-alpha/adapter-mongoose", "type": "major" },
+    { "name": "@keystone-alpha/keystone", "type": "major" }
+  ],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/fields",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/test-utils",
+        "@keystone-alpha/adapter-knex",
+        "@keystone-alpha/adapter-mongoose"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/test-utils",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/adapter-knex",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-blog",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/fields",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-meetup",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/fields",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-todo",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/fields",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-access-control",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/fields",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-basic",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/fields",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/fields",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-social-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/fields",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/api-tests",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/fields",
+        "@keystone-alpha/test-utils",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/keystone"
+      ]
+    }
+  ]
+}

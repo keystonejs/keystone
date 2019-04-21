@@ -136,7 +136,7 @@ export class MongoFileInterface extends CommonFileInterface(MongooseFieldAdapter
         _meta: Object,
       },
     };
-    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
+    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions) });
   }
 }
 

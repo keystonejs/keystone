@@ -42,7 +42,7 @@ const CommonFloatInterface = superclass =>
 
 export class MongoFloatInterface extends CommonFloatInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
-    schema.add({ [this.path]: this.mergeSchemaOptions({ type: Number }, this.config) });
+    schema.add({ [this.path]: this.mergeSchemaOptions({ type: Number }) });
   }
 }
 

@@ -61,7 +61,7 @@ export class MongoCalendarDayInterface extends CommonCalendarInterface(MongooseF
         message: '{VALUE} is not an ISO8601 date string (YYYY-MM-DD)',
       },
     };
-    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
+    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions) });
   }
 }
 

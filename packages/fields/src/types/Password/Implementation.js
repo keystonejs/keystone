@@ -114,7 +114,7 @@ const CommonPasswordInterface = superclass =>
 
 export class MongoPasswordInterface extends CommonPasswordInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
-    schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
+    schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }) });
   }
 
   getQueryConditions(dbPath) {

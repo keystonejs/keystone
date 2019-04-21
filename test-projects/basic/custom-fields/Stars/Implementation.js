@@ -1,8 +1,13 @@
 const { Integer } = require('@keystone-alpha/fields');
 
 class Stars extends Integer.implementation {
+  constructor(path, { starCount = 5 }) {
+    super(...arguments);
+    this.starCount = starCount;
+  }
+
   extendAdminMeta(meta) {
-    return { ...meta, starCount: this.config.starCount || 5 };
+    return { ...meta, starCount: this.starCount };
   }
 }
 

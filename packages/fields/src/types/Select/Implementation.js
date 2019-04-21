@@ -69,12 +69,17 @@ const CommonSelectInterface = superclass =>
 
 export class MongoSelectInterface extends CommonSelectInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
-    schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
+    schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }) });
   }
 }
 
 export class KnexSelectInterface extends CommonSelectInterface(KnexFieldAdapter) {
+  constructor(fieldName, path, listAdapter, getListByKey, { options }) {
+    super(...arguments);
+    this.options = options;
+  }
+
   createColumn(table) {
-    return table.enu(this.path, this.config.options.map(({ value }) => value));
+    return table.enu(this.path, this.options.map(({ value }) => value));
   }
 }

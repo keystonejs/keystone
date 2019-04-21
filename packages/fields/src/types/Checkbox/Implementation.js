@@ -34,7 +34,7 @@ const CommonCheckboxInterface = superclass =>
 
 export class MongoCheckboxInterface extends CommonCheckboxInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
-    schema.add({ [this.path]: this.mergeSchemaOptions({ type: Boolean }, this.config) });
+    schema.add({ [this.path]: this.mergeSchemaOptions({ type: Boolean }) });
   }
 }
 
