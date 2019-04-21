@@ -178,7 +178,7 @@ describe('@keystone-alpha/core/index.js', () => {
         );
 
         const serverConfig = {
-          'cookie secret': 'abc',
+          cookieSecret: 'abc',
           sessionStore: {},
           pinoOptions: {},
           cors: {},

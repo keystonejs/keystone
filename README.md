@@ -141,7 +141,7 @@ module.exports = {
   keystone,
   admin,
   serverConfig: {
-    'cookie secret': 'qwerty',
+    cookieSecret: 'qwerty',
     apiPath: '/admin/api',
     graphiqlPath: '/admin/graphiql',
   },
