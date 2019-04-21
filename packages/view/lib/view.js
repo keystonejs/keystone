@@ -34,7 +34,7 @@ module.exports = class View {
   // renderQueue: any[];
   // actionQueue: any[];
 
-  constructor(keystone, req, res) {
+  constructor(keystone, req, res, { schemaName = 'admin', populateRelated = null }) {
     if (!req || req.constructor.name !== 'IncomingMessage') {
       throw new Error('Keystone.View Error: Express request object is required.');
     }
@@ -45,6 +45,8 @@ module.exports = class View {
     this.keystone = keystone;
     this.req = req;
     this.res = res;
+    this.schemaName = schemaName;
+    this.populateRelated = populateRelated;
 
     this.initQueue = []; // executed first in series
     this.actionQueue = []; // executed second in parallel, if optional conditions are met
@@ -215,12 +217,99 @@ module.exports = class View {
    *
    * @api public
    */
-
-  query(key, listOrKey, query, options) {
-    let list = listOrKey;
-    if (typeof listOrKey === 'string') {
-      list = this.keystone.getListByKey(listOrKey);
+  query(key, query, options) {
+    if (typeof query === 'string') {
+      return this._queryGql(key, query, options);
     }
+    return this._queryLegacy(key, query, options);
+  }
+
+  _queryGql(key, query, { unwrap = true, ...options } = {}) {
+    let locals = this.res.locals;
+    const parts = key.split('.');
+    const chain = new QueryCallbacks(typeof options === 'string' ? null : options);
+
+    key = parts.pop();
+
+    for (let i = 0; i < parts.length; i++) {
+      if (!locals[parts[i]]) {
+        locals[parts[i]] = {};
+      }
+      locals = locals[parts[i]];
+    }
+
+    this.queryQueue.push(async () => {
+      const callbacks = chain.callbacks;
+      const queryFn = this.keystone._graphQLQuery[this.schemaName];
+      const context = this.keystone.getAccessContext(this.schemaName, this.req);
+      try {
+        const { data, errors } = await queryFn(query, context);
+        locals[key] = data;
+        const resultKeys = Object.keys(data);
+        if (unwrap && resultKeys.length === 1) {
+          locals[key] = data[resultKeys[0]];
+        }
+        if (
+          'none' in callbacks &&
+          every(data, value => !value || (Array.isArray(value) && !value.length))
+        ) {
+          /* If there are no results view.query().none will be called
+           *
+           * Example:
+           *     view.query('books', keystone.list('Book').model.find())
+           *         .none(function (next) {
+           *             console.log('no results');
+           *             next();
+           *         });
+           */
+          await callbacks.none();
+        } else if ('then' in callbacks) {
+          if (typeof callbacks.then === 'function') {
+            await callbacks.then(null, data);
+          } else {
+            //return keystone.populateRelated(results, callbacks.then, next);
+            // should not reach here anyways
+            await callbacks.err(new Error('populateRelated is not implemented'));
+          }
+        }
+
+        // there could be errors in graphql operation which is returned above
+        if (errors && 'err' in callbacks) {
+          /* Will pass errors into the err callback
+           *
+           * Example:
+           *     view.query('books', keystone.list('Book'))
+           *         .err(function (err, next) {
+           *             console.log('ERROR: ', err);
+           *             next();
+           *         });
+           */
+          await callbacks.err(errors);
+        }
+      } catch (err) {
+        if ('err' in callbacks) {
+          /* Will pass errors into the err callback
+           *
+           * Example:
+           *     view.query('books', keystone.list('Book'))
+           *         .err(function (err, next) {
+           *             console.log('ERROR: ', err);
+           *             next();
+           *         });
+           */
+          await callbacks.err(err);
+        } else if ('then' in callbacks) {
+          if (typeof callbacks.then === 'function') {
+            await callbacks.then(err);
+          }
+        }
+      }
+    });
+
+    return chain;
+  }
+
+  _queryLegacy(key, query, options) {
     let locals = this.res.locals;
     const parts = key.split('.');
     const chain = new QueryCallbacks(options);
@@ -236,10 +325,10 @@ module.exports = class View {
 
     this.queryQueue.push(async () => {
       const callbacks = chain.callbacks;
-      const context = this.keystone.getAccessContext('admin', this.req);
       try {
-        const results = await list.listQuery(query, context, list.gqlNames.listQueryName);
+        const results = await query.exec();
         locals[key] = results;
+
         if ((!results || (Array.isArray(results) && !results.length)) && 'none' in callbacks) {
           /* If there are no results view.query().none will be called
            *
@@ -253,10 +342,9 @@ module.exports = class View {
           await callbacks.none();
         } else if ('then' in callbacks) {
           if (typeof callbacks.then === 'function') {
-            await callbacks.then(results);
-          } else {
-            //return keystone.populateRelated(results, callbacks.then, next);
-            await callbacks.err(new Error('populateRelated is not implemented'));
+            await callbacks.then(null, results);
+          } else if (typeof this.populateRelated === 'function') {
+            await this.populateRelated(results, callbacks.then);
           }
         }
       } catch (err) {
@@ -271,6 +359,10 @@ module.exports = class View {
            *         });
            */
           await callbacks.err(err);
+        } else if ('then' in callbacks) {
+          if (typeof callbacks.then === 'function') {
+            await callbacks.then(err);
+          }
         }
       }
     });

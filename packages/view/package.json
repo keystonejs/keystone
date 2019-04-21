@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/view",
   "description": "Provides functionality similar to Keystone 4 views.",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
