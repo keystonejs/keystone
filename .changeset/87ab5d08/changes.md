@@ -1,0 +1,1 @@
+- Remove `.config` property from `WebServer`. No longer allow `admin ui` or `cookie secret` as config fields. User must use `adminUI` and `cookieSecret` respectively.

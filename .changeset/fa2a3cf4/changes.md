@@ -1,0 +1,1 @@
+- Remove `checkRequiredConfig`, `fixConfigKeys` and `camelize`.
