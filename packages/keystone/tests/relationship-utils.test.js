@@ -132,20 +132,16 @@ describe('unmergeRelationships', () => {
   const lists = {
     User: {
       key: 'User',
-      config: {
-        fields: {
-          name: { type: Text },
-          posts: { type: Relationship, many: true, ref: 'Post' },
-        },
+      _fields: {
+        name: { type: Text },
+        posts: { type: Relationship, many: true, ref: 'Post' },
       },
     },
     Post: {
       key: 'Post',
-      config: {
-        fields: {
-          title: { type: Text },
-          author: { type: Relationship, ref: 'User' },
-        },
+      _fields: {
+        title: { type: Text },
+        author: { type: Relationship, ref: 'User' },
       },
     },
   };
@@ -300,11 +296,9 @@ describe('createRelationships', () => {
   const lists = {
     User: {
       key: 'User',
-      config: {
-        fields: {
-          name: { type: Text },
-          posts: { type: Relationship, ref: 'Post', many: true },
-        },
+      _fields: {
+        name: { type: Text },
+        posts: { type: Relationship, ref: 'Post', many: true },
       },
       adapter: {
         itemsQuery: jest.fn(),
@@ -313,11 +307,9 @@ describe('createRelationships', () => {
     },
     Post: {
       key: 'Post',
-      config: {
-        fields: {
-          title: { type: Text },
-          author: { type: Relationship, ref: 'User' },
-        },
+      _fields: {
+        title: { type: Text },
+        author: { type: Relationship, ref: 'User' },
       },
       adapter: {
         itemsQuery: jest.fn(),
