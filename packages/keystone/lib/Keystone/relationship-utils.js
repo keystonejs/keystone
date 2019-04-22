@@ -1,11 +1,11 @@
 const { resolveAllKeys, mapKeys } = require('@keystone-alpha/utils');
 
 function isRelationshipField({ list, fieldKey }) {
-  return !!list.config.fields[fieldKey].type.isRelationship;
+  return !!list._fields[fieldKey].type.isRelationship;
 }
 
 function isManyRelationship({ list, fieldKey }) {
-  const field = list.config.fields[fieldKey];
+  const field = list._fields[fieldKey];
   return !!field.type.isRelationship && field.many;
 }
 
@@ -190,7 +190,7 @@ const relateToManyItems = async ({ relatedTo, relatedFrom }) => {
 const createRelationships = (lists, relationships, createdItems) => {
   return resolveAllKeys(
     mapKeys(relationships, (relationList, listKey) => {
-      const listFieldsConfig = lists[listKey].config.fields;
+      const listFieldsConfig = lists[listKey]._fields;
 
       return resolveAllKeys(
         // NOTE: Sparse array / indexes match the indexes from the `createdItems`

@@ -1,0 +1,1 @@
+- Remove `.config` property from `Keystone` and `List` classes
