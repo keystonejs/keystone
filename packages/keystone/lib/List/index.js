@@ -120,7 +120,7 @@ module.exports = class List {
       singular,
       plural,
       path,
-      ...adapterConfig
+      adapterConfig = {},
     },
     { getListByKey, getGraphQLQuery, adapter, defaultAccess, getAuth, createAuxList, isAuxList }
   ) {
