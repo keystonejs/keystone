@@ -42,15 +42,12 @@ const CommonIntegerInterface = superclass =>
 
 export class MongoIntegerInterface extends CommonIntegerInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
-    const { mongooseOptions = {} } = this.config;
-    const { isRequired } = mongooseOptions;
-
     const schemaOptions = {
       type: Number,
       validate: {
         validator: this.buildValidator(
           a => typeof a === 'number' && Number.isInteger(a),
-          isRequired
+          this.isRequired
         ),
         message: '{VALUE} is not an integer value',
       },

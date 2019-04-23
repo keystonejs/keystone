@@ -49,14 +49,11 @@ const CommonCalendarInterface = superclass =>
 
 export class MongoCalendarDayInterface extends CommonCalendarInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
-    const { mongooseOptions = {} } = this.config;
-    const { isRequired } = mongooseOptions;
-
     const validator = a => typeof a === 'string' && format(parse(a), 'YYYY-MM-DD') === a;
     const schemaOptions = {
       type: String,
       validate: {
-        validator: this.buildValidator(validator, isRequired),
+        validator: this.buildValidator(validator, this.isRequired),
         message: '{VALUE} is not an ISO8601 date string (YYYY-MM-DD)',
       },
     };
