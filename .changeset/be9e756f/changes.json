@@ -1,0 +1,89 @@
+{
+  "releases": [{ "name": "@keystone-alpha/fields", "type": "major" }],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/admin-ui",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/fields-wysiwyg-tinymce",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/keystone",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/fields"]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-blog",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/admin-ui",
+        "@keystone-alpha/fields-wysiwyg-tinymce",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-todo",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/admin-ui",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-access-control",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/admin-ui",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-basic",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/admin-ui",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-facebook-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/admin-ui",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/admin-ui",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-twitter-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/admin-ui",
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/api-tests",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/keystone", "@keystone-alpha/fields"]
+    }
+  ]
+}

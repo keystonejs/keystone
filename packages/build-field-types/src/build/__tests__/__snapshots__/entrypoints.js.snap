@@ -1,0 +1,151 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`multiple entrypoints: dist/multiple-entrypoints.cjs.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+let sum = (a, b) => a + b;
+
+exports.sum = sum;
+"
+`;
+
+exports[`multiple entrypoints: dist/multiple-entrypoints.esm.js 1`] = `
+"let sum = (a, b) => a + b;
+
+export { sum };
+"
+`;
+
+exports[`multiple entrypoints: multiply/dist/multiple-entrypoints.cjs.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+let multiply = (a, b) => a * b;
+
+exports.multiply = multiply;
+"
+`;
+
+exports[`multiple entrypoints: multiply/dist/multiple-entrypoints.esm.js 1`] = `
+"let multiply = (a, b) => a * b;
+
+export { multiply };
+"
+`;
+
+exports[`multiple entrypoints: src/multiply.js 1`] = `
+"export let multiply = (a, b) => a * b;
+"
+`;
+
+exports[`multiple entrypoints: src/sum.js 1`] = `
+"export let sum = (a, b) => a + b;
+"
+`;
+
+exports[`source entrypoint option: source-entrypoint-option.cjs.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+let something = '';
+exports.something = something;
+"
+`;
+
+exports[`source entrypoint option: source-entrypoint-option.esm.js 1`] = `
+"let something = '';
+export { something };
+"
+`;
+
+exports[`two entrypoints with a common dependency: dist/chunk-056d83ff.esm.js 1`] = `
+"let identity = x => x;
+
+export { identity as a };
+"
+`;
+
+exports[`two entrypoints with a common dependency: dist/chunk-770164e0.cjs.js 1`] = `
+"'use strict';
+
+let identity = x => x;
+
+exports.identity = identity;
+"
+`;
+
+exports[`two entrypoints with a common dependency: dist/common-dependency-two-entrypoints.cjs.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var __chunk_1 = require('./chunk-770164e0.cjs.js');
+
+let sum = (a, b) => __chunk_1.identity(a + b);
+
+exports.sum = sum;
+"
+`;
+
+exports[`two entrypoints with a common dependency: dist/common-dependency-two-entrypoints.esm.js 1`] = `
+"import { a as identity } from './chunk-056d83ff.esm.js';
+
+let sum = (a, b) => identity(a + b);
+
+export { sum };
+"
+`;
+
+exports[`two entrypoints with a common dependency: multiply/dist/common-dependency-two-entrypoints.cjs.js 1`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var __chunk_1 = require('../../dist/chunk-770164e0.cjs.js');
+
+let multiply = (a, b) => __chunk_1.identity(a * b);
+
+exports.multiply = multiply;
+"
+`;
+
+exports[`two entrypoints with a common dependency: multiply/dist/common-dependency-two-entrypoints.esm.js 1`] = `
+"import { a as identity } from '../../dist/chunk-056d83ff.esm.js';
+
+let multiply = (a, b) => identity(a * b);
+
+export { multiply };
+"
+`;
+
+exports[`two entrypoints with a common dependency: src/identity.js 1`] = `
+"export let identity = x => x;
+"
+`;
+
+exports[`two entrypoints with a common dependency: src/multiply.js 1`] = `
+"import { identity } from './identity';
+
+export let multiply = (a, b) => identity(a * b);
+"
+`;
+
+exports[`two entrypoints with a common dependency: src/sum.js 1`] = `
+"import { identity } from './identity';
+
+export let sum = (a, b) => identity(a + b);
+"
+`;

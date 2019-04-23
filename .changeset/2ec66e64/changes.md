@@ -1,1 +1,0 @@
-- Rename Content Editor field to document for slate.js consistency

@@ -1,0 +1,1 @@
+- Remove custom context menu on list page

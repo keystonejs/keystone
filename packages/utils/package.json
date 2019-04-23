@@ -10,8 +10,8 @@
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.3.4",
-    "p-lazy": "^1.0.0",
-    "p-reflect": "^1.0.0"
+    "@babel/runtime": "^7.4.3",
+    "p-lazy": "^3.0.0",
+    "p-reflect": "^2.1.0"
   }
 }

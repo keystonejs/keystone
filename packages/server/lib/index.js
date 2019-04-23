@@ -1,27 +1,37 @@
 const express = require('express');
-const cors = require('cors');
+const corsMiddleware = require('cors');
 const path = require('path');
 const falsey = require('falsey');
 const { commonSessionMiddleware } = require('@keystone-alpha/session');
 const createGraphQLMiddleware = require('./graphql');
-const initConfig = require('./initConfig');
 const { createApolloServer } = require('./apolloServer');
 
 module.exports = class WebServer {
-  constructor(keystone, config) {
+  constructor(
+    keystone,
+    {
+      port,
+      adminUI,
+      cors = { origin: true, credentials: true },
+      apollo,
+      sessionStore,
+      cookieSecret = 'qwerty',
+      apiPath = '/admin/api',
+      graphiqlPath = '/admin/graphiql',
+      pinoOptions,
+    }
+  ) {
     this.keystone = keystone;
-    this.config = initConfig(config);
     this.express = express;
+    this.port = port || process.env.PORT || 3000;
     this.app = express();
 
-    const { adminUI, cookieSecret, sessionStore } = this.config;
-
     if (falsey(process.env.DISABLE_LOGGING)) {
-      this.app.use(require('express-pino-logger')(this.config.pinoOptions));
+      this.app.use(require('express-pino-logger')(pinoOptions));
     }
 
-    if (this.config.cors) {
-      this.app.use(cors(this.config.cors));
+    if (cors) {
+      this.app.use(corsMiddleware(cors));
     }
 
     if (Object.keys(keystone.auth).length > 0) {
@@ -34,11 +44,9 @@ module.exports = class WebServer {
       this.app.use(adminUI.createSessionMiddleware());
     }
 
-    const { apollo } = this.config;
     const server = createApolloServer(keystone, apollo, 'admin');
 
     // GraphQL API always exists independent of any adminUI or Session settings
-    const { apiPath, graphiqlPath, port } = this.config;
     // We currently make the admin UI public. In the future we want to be able
     // to restrict this to a limited audience, while setting up a separate
     // public API with much stricter access control.
@@ -54,10 +62,7 @@ module.exports = class WebServer {
   }
 
   async start() {
-    const {
-      app,
-      config: { port },
-    } = this;
+    const { app, port } = this;
 
     return new Promise((resolve, reject) => {
       app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './default.html')));

@@ -1,5 +1,11 @@
 # @arch-ui/input
 
+## 0.0.4
+
+- [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+
+  - admin revamp
+
 ## 0.0.3
 
 - [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):

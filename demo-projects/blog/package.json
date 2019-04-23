@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/demo-project-blog",
   "description": "An example KeystoneJS project showcasing a Blogging Site.",
   "private": true,
-  "version": "1.0.6",
+  "version": "1.0.7",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -15,16 +15,16 @@
   "dependencies": {
     "@arch-ui/layout": "^0.1.0",
     "@arch-ui/typography": "^0.0.3",
-    "@emotion/core": "^10.0.9",
-    "@emotion/styled": "^10.0.9",
-    "@keystone-alpha/adapter-mongoose": "^1.0.5",
-    "@keystone-alpha/admin-ui": "^3.0.6",
+    "@emotion/core": "^10.0.10",
+    "@emotion/styled": "^10.0.10",
+    "@keystone-alpha/adapter-mongoose": "^1.0.6",
+    "@keystone-alpha/admin-ui": "^3.1.0",
     "@keystone-alpha/core": "^2.0.3",
-    "@keystone-alpha/fields": "^4.0.0",
-    "@keystone-alpha/fields-wysiwyg-tinymce": "^1.0.1",
+    "@keystone-alpha/fields": "^5.0.0",
+    "@keystone-alpha/fields-wysiwyg-tinymce": "^1.0.2",
     "@keystone-alpha/file-adapters": "^1.0.2",
-    "@keystone-alpha/keystone": "^3.0.0",
-    "@keystone-alpha/server": "^4.0.0",
+    "@keystone-alpha/keystone": "^3.1.0",
+    "@keystone-alpha/server": "^4.0.1",
     "apollo-boost": "^0.3.1",
     "apollo-client": "^2.5.1",
     "apollo-upload-client": "^10.0.0",
@@ -34,7 +34,7 @@
     "next": "^8.0.3",
     "next-apollo": "^2.0.9",
     "node-fetch": "^2.3.0",
-    "react": "^16.8.4",
+    "react": "^16.8.6",
     "react-apollo": "2.4.0"
   }
 }

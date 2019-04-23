@@ -316,8 +316,8 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
     return isRequired ? validator : a => validator(a) || typeof a === 'undefined' || a === null;
   }
 
-  mergeSchemaOptions(schemaOptions, { isUnique, mongooseOptions }) {
-    if (isUnique) {
+  mergeSchemaOptions(schemaOptions, { mongooseOptions }) {
+    if (this.isUnique) {
       // A value of anything other than `true` causes errors with Mongoose
       // constantly recreating indexes. Ie; if we just splat `unique` onto the
       // options object, it would be `undefined`, which would cause Mongoose to

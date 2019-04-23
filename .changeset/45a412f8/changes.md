@@ -1,1 +1,0 @@
-- Correctly handle async .getValue() calls when saving

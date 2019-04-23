@@ -141,7 +141,7 @@ module.exports = {
   keystone,
   admin,
   serverConfig: {
-    'cookie secret': 'qwerty',
+    cookieSecret: 'qwerty',
     apiPath: '/admin/api',
     graphiqlPath: '/admin/graphiql',
   },
@@ -258,7 +258,7 @@ Admin UI at the same time as deploying the API to avoid any inconsistencies.
 
 ### Adding Authentication
 
-_See [Authentication docs]()._
+_See [Authentication docs](https://v5.keystonejs.com/discussions/authentication)._
 
 To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`:

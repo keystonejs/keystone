@@ -14,7 +14,7 @@ const path = require('path');
 
 let fieldsPackagePath = path.dirname(require.resolve('@keystone-alpha/fields/package.json'));
 function resolveViewPath(viewPath) {
-  return path.join(fieldsPackagePath, 'types', viewPath);
+  return path.join(fieldsPackagePath, 'src', 'types', viewPath);
 }
 
 class MockFieldAdapter {}
@@ -141,9 +141,9 @@ describe('new List()', () => {
 
   test('new List() - config', () => {
     const list = setup();
-    expect(list.config.labelResolver).toBeInstanceOf(Function);
-    expect(list.config.fields).toBeInstanceOf(Object);
-    expect(list.config.adminConfig).toEqual({
+    expect(list.labelResolver).toBeInstanceOf(Function);
+    expect(list.fields).toBeInstanceOf(Object);
+    expect(list.adminConfig).toEqual({
       defaultColumns: 'name,email',
       defaultPageSize: 50,
       defaultSort: 'name',
@@ -258,7 +258,7 @@ describe('new List()', () => {
 test('labelResolver', () => {
   // Default: Use name
   const list = setup();
-  expect(list.config.labelResolver({ name: 'a', email: 'a@example.com', id: '1' })).toEqual('a');
+  expect(list.labelResolver({ name: 'a', email: 'a@example.com', id: '1' })).toEqual('a');
 
   // Use config.labelField if supplied
   const list2 = new List(
@@ -272,11 +272,11 @@ test('labelResolver', () => {
     },
     listExtras()
   );
-  expect(list2.config.labelResolver({ name: 'a', email: 'a@example.com', id: '2' })).toEqual(
+  expect(list2.labelResolver({ name: 'a', email: 'a@example.com', id: '2' })).toEqual(
     'a@example.com'
   );
 
-  // Use config.labelResolver if supplied (over-rides labelField)
+  // Use labelResolver if supplied (over-rides labelField)
   const list3 = new List(
     'List3',
     {
@@ -289,7 +289,7 @@ test('labelResolver', () => {
     },
     listExtras()
   );
-  expect(list3.config.labelResolver({ name: 'a', email: 'a@example.com', id: '3' })).toEqual(
+  expect(list3.labelResolver({ name: 'a', email: 'a@example.com', id: '3' })).toEqual(
     'a - a@example.com'
   );
 
@@ -303,7 +303,7 @@ test('labelResolver', () => {
     },
     listExtras()
   );
-  expect(list4.config.labelResolver({ email: 'a@example.com', id: '4' })).toEqual('4');
+  expect(list4.labelResolver({ email: 'a@example.com', id: '4' })).toEqual('4');
 });
 
 describe('getAdminMeta()', () => {

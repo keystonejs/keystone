@@ -14,8 +14,8 @@ const {
   Color,
   Url,
   Content,
+  Decimal,
 } = require('@keystone-alpha/fields');
-const Decimal = require('../../packages/fields/types/Decimal');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
 
 const { staticRoute, staticPath, cloudinary } = require('./config');
@@ -124,6 +124,7 @@ keystone.createList('Post', {
       blocks: [
         [CloudinaryImage.block, { adapter: cloudinaryAdapter }],
         Content.blocks.blockquote,
+        Content.blocks.image,
         Content.blocks.orderedList,
         Content.blocks.unorderedList,
         [Content.blocks.embed, { apiKey: process.env.EMBEDLY_API_KEY }],

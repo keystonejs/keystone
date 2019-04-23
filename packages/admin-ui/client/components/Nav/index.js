@@ -7,8 +7,8 @@ import { uid } from 'react-uid';
 import styled from '@emotion/styled';
 import { jsx } from '@emotion/core';
 
-import { ChevronLeftIcon, ChevronRightIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
+import { alpha } from '@arch-ui/color-utils';
 import {
   PrimaryNav,
   PrimaryNavItem,
@@ -26,6 +26,7 @@ import { NavIcons } from './NavIcons';
 import ScrollQuery from '../ScrollQuery';
 
 const TRANSITION_DURATION = '220ms';
+const TRANSITION_EASING = 'cubic-bezier(0.2, 0, 0, 1)';
 
 function camelToKebab(string) {
   return string.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
@@ -55,20 +56,22 @@ const Relative = styled(Col)({
   height: ' 100%',
   position: 'relative',
 });
-const GrabHandle = styled.div({
-  backgroundColor: 'rgba(9, 30, 66, 0.2)',
-  bottom: 0,
+const GrabHandle = styled.div(({ isActive }) => ({
+  backgroundColor: alpha(colors.text, 0.06),
+  height: isActive ? '100%' : 0,
   cursor: 'col-resize',
-  opacity: 0.5,
   position: 'absolute',
   right: 0,
   top: 0,
-  transition: 'opacity 220ms linear',
+  transition: `background-color ${TRANSITION_DURATION} linear, height ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
   width: 1,
 
-  ':hover, :active': {
-    opacity: 1,
+  ':hover': {
     transitionDelay: '100ms', // avoid inadvertent mouse passes
+    backgroundColor: alpha(colors.text, 0.12),
+  },
+  ':active': {
+    backgroundColor: alpha(colors.text, 0.24),
   },
 
   // increase hit-area
@@ -80,51 +83,34 @@ const GrabHandle = styled.div({
     right: -gridSize,
     top: -gridSize,
   },
-});
-const CollapseExpand = styled.button(({ isCollapsed, isVisible }) => {
-  const SIZE = isCollapsed ? 48 : 24;
-  const GUTTER = isCollapsed ? 12 : 24;
-  const boxShadow = isCollapsed
-    ? '0 2px 4px 1px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.1)'
-    : '0 1px 3px 1px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.06)';
+}));
+const CollapseExpand = styled.button(({ isCollapsed, mouseIsOverNav }) => {
+  const size = 32;
+  const offsetTop = 20;
+  const isActive = isCollapsed || mouseIsOverNav;
 
   return {
     alignItems: 'center',
-    background: 'white',
+    background: 0,
     border: 0,
     borderRadius: '50%',
-    boxShadow,
-    color: colors.N60,
+    // boxShadow,
+    color: isActive ? colors.text : 'transparent',
     cursor: 'pointer',
     display: 'flex',
-    height: SIZE,
+    height: size,
     justifyContent: 'center',
-    right: -SIZE / 2,
-    opacity: isVisible ? 1 : 0,
+    right: -size,
+    transform: isActive ? `translateX(0)` : `translateX(-10px)`,
     outline: 0,
     padding: 0,
     position: 'absolute',
-    transition: `
-      opacity ${TRANSITION_DURATION},
-      right ${TRANSITION_DURATION},
-      transform 50ms,
-      visibility ${TRANSITION_DURATION}
-    `,
-    visibility: isVisible ? 'visible' : 'hidden',
-    width: SIZE,
-    top: GUTTER,
-
-    '> svg': {
-      position: 'relative',
-      right: isCollapsed ? -9 : 1,
-      transition: `right ${TRANSITION_DURATION}`,
-    },
+    transition: `color ${TRANSITION_DURATION}, transform ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
+    width: size,
+    top: offsetTop,
 
     ':hover': {
-      transform: 'scale(1.12)',
-    },
-    ':active': {
-      transform: 'scale(1)',
+      color: colors.primary,
     },
   };
 });
@@ -279,7 +265,7 @@ class Nav extends Component {
     const { mouseIsOverNav } = this.state;
 
     return (
-      <ResizeHandler>
+      <ResizeHandler isActive={mouseIsOverNav}>
         {(resizeProps, clickProps, { isCollapsed, isDragging, width }) => {
           const navWidth = isCollapsed ? 0 : width;
           const makeResizeStyles = key => {
@@ -287,9 +273,7 @@ class Nav extends Component {
             const transitions = isDragging
               ? null
               : {
-                  transition: `${camelToKebab(
-                    key
-                  )} ${TRANSITION_DURATION} cubic-bezier(0.25, 0, 0, 1)`,
+                  transition: `${camelToKebab(key)} ${TRANSITION_DURATION} ${TRANSITION_EASING}`,
                 };
             return { [key]: navWidth, ...pointers, ...transitions };
           };
@@ -312,7 +296,13 @@ class Nav extends Component {
                 style={makeResizeStyles('width')}
               >
                 <PrimaryNavContent />
-                {isCollapsed ? null : <GrabHandle {...resizeProps} />}
+                {isCollapsed ? null : (
+                  <GrabHandle
+                    onDoubleClick={clickProps.onClick}
+                    isActive={mouseIsOverNav || isDragging}
+                    {...resizeProps}
+                  />
+                )}
                 <Tooltip
                   content={
                     <TooltipContent kbd={KEYBOARD_SHORTCUT}>
@@ -326,12 +316,20 @@ class Nav extends Component {
                 >
                   {ref => (
                     <CollapseExpand
+                      isCollapsed={isCollapsed}
+                      mouseIsOverNav={mouseIsOverNav}
                       {...clickProps}
                       ref={ref}
-                      isCollapsed={isCollapsed}
-                      isVisible={isCollapsed || mouseIsOverNav}
                     >
-                      {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                      <svg
+                        fill="currentColor"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M2 12h11a1 1 0 0 1 0 2H2a1 1 0 0 1 0-2zm0-5h9a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2zm0-5h12a1 1 0 0 1 0 2H2a1 1 0 1 1 0-2z" />
+                      </svg>
                     </CollapseExpand>
                   )}
                 </Tooltip>

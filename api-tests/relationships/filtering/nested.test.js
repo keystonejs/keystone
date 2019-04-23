@@ -235,6 +235,28 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(data.allUsers[0].posts).toHaveLength(2);
         })
       );
+
+      test(
+        'Filtering out all items by nested field should return []',
+        runner(setupKeystone, async ({ keystone, create }) => {
+          await create('User', {});
+
+          const result = await graphqlRequest({
+            keystone,
+            query: `
+              query {
+                allUsers(where: { posts_some: { content_contains: "foo" } }) {
+                  posts { id }
+                }
+              }
+            `,
+          });
+          expect(result.errors).toBe(undefined);
+
+          expect(Array.isArray(result.data.allUsers)).toBeTruthy();
+          expect(result.data.allUsers).toHaveLength(0);
+        })
+      );
     });
 
     describe('relationship meta filtering', () => {
