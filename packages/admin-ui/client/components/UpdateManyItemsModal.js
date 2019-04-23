@@ -4,7 +4,7 @@ import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
-import { omit, arrayToObject, resolveAllKeys } from '@keystone-alpha/utils';
+import { omit, arrayToObject } from '@keystone-alpha/utils';
 
 let Render = ({ children }) => children();
 
@@ -21,18 +21,16 @@ class UpdateManyModal extends Component {
     const { item, selectedFields } = this.state;
     if (isLoading) return;
 
-    resolveAllKeys(arrayToObject(selectedFields, 'path', field => field.getValue(item)))
-      .then(data => {
-        updateItem({
-          variables: {
-            data: items.map(id => ({ id, data })),
-          },
-        });
-      })
-      .then(() => {
-        this.props.onUpdate();
-        this.resetState();
-      });
+    const data = arrayToObject(selectedFields, 'path', field => field.serialize(item));
+
+    updateItem({
+      variables: {
+        data: items.map(id => ({ id, data })),
+      },
+    }).then(() => {
+      this.props.onUpdate();
+      this.resetState();
+    });
   };
 
   resetState = () => {

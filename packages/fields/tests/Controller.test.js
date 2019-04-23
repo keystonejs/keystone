@@ -29,30 +29,44 @@ test('getQueryFragment()', () => {
   expect(value).toEqual('path');
 });
 
-describe('getValue()', () => {
-  test('getValue() - path exists', () => {
+describe('serialize()', () => {
+  test('serialize() - path exists', () => {
     const controller = new FieldController(config, 'list', 'adminMeta');
-    let value = controller.getValue({ path: 'some_value' });
+    let value = controller.serialize({ path: 'some_value' });
     expect(value).toEqual('some_value');
   });
 
-  test('getValue() - path does not exist', () => {
+  test('serialize() - path does not exist', () => {
     const controller = new FieldController(config, 'list', 'adminMeta');
-    const value = controller.getValue({});
-    expect(value).toEqual('');
+    const value = controller.serialize({});
+    expect(value).toEqual(null);
   });
 });
 
-describe('getInitialData()', () => {
-  test('getInitialData() - Default defined', () => {
+describe('deserialize()', () => {
+  test('deserialize() - path exists', () => {
     const controller = new FieldController(config, 'list', 'adminMeta');
-    const value = controller.getInitialData();
+    let value = controller.deserialize({ path: 'some_value' });
+    expect(value).toEqual('some_value');
+  });
+
+  test('deserialize() - path does not exist', () => {
+    const controller = new FieldController(config, 'list', 'adminMeta');
+    const value = controller.deserialize({});
+    expect(value).toEqual(undefined);
+  });
+});
+
+describe('getDefaultValue()', () => {
+  test('getDefaultValue() - Default defined', () => {
+    const controller = new FieldController(config, 'list', 'adminMeta');
+    const value = controller.getDefaultValue();
     expect(value).toEqual('default');
   });
 
-  test('getInitialData() - No default', () => {
+  test('getDefaultValue() - No default', () => {
     const controller = new FieldController({}, 'list', 'adminMeta');
-    const value = controller.getInitialData();
+    const value = controller.getDefaultValue();
     expect(value).toEqual('');
   });
 });

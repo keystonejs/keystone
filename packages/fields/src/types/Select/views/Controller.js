@@ -5,11 +5,7 @@ export default class SelectController extends FieldController {
     super(...args);
     this.options = this.config.options;
   }
-  getValue = data => {
-    const { path } = this.config;
-    return data[path] ? data[path] : null;
-  };
-  getInitialData = () => {
+  getDefaultValue = () => {
     return this.config.defaultValue || null;
   };
   getFilterGraphQL = ({ value: { inverted, options } }) => {

@@ -68,7 +68,6 @@
     "graphql-tag": "^2.10.1",
     "html-webpack-plugin": "^3.2.0",
     "lodash.debounce": "^4.0.8",
-    "lodash.isequal": "^4.5.0",
     "lodash.set": "^4.3.2",
     "memoize-one": "^4.0.2",
     "preconstruct": "0.0.60",

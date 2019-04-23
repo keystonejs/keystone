@@ -54,14 +54,16 @@ export default class ContentController extends TextController {
     });
   }
 
-  getValue = data => {
+  serialize = data => {
     const { path } = this.config;
-    if (!data || !data[path] || !data[path].document) {
+    if (!data[path] || !data[path].document) {
       // Forcibly return null if empty string
       return { document: null };
     }
     return { document: data[path].document };
   };
+
+  deserialize = data => (data[this.config.path] ? data[this.config.path] : { document: {} });
 
   getQueryFragment = () => {
     return `
