@@ -5,7 +5,7 @@ import { Mutation } from 'react-apollo';
 
 import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
-import { resolveAllKeys, arrayToObject } from '@keystone-alpha/utils';
+import { arrayToObject } from '@keystone-alpha/utils';
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 
@@ -38,12 +38,14 @@ class CreateItemModal extends Component {
     if (isLoading) return;
     const { item } = this.state;
 
-    resolveAllKeys(arrayToObject(fields, 'path', field => field.getValue(item)))
-      .then(data => createItem({ variables: { data } }))
-      .then(data => {
-        this.props.onCreate(data);
-        this.setState({ item: this.props.list.getInitialItemData() });
-      });
+    createItem({
+      variables: {
+        data: arrayToObject(fields, 'path', field => field.serialize(item)),
+      },
+    }).then(data => {
+      this.props.onCreate(data);
+      this.setState({ item: this.props.list.getInitialItemData() });
+    });
   };
   onClose = () => {
     const { isLoading } = this.props;

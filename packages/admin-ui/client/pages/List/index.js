@@ -53,7 +53,6 @@ function ListLayout(props: LayoutProps) {
 
   const { urlState } = useListUrlState(list.key);
   const { filters } = useListFilter(list.key);
-  // const { items, itemCount, itemErrors } = useListItems(list.key);
   const [sortBy, handleSortChange] = useListSort(list.key);
 
   const { adminPath } = adminMeta;
@@ -271,7 +270,7 @@ function List(props: Props) {
   let itemCount;
   let itemErrors;
   if (query.data && query.data[list.gqlNames.listQueryName]) {
-    items = query.data[list.gqlNames.listQueryName];
+    items = query.data[list.gqlNames.listQueryName].map(item => list.deserializeItemData(item));
     itemErrors = deconstructErrorsToDataShape(query.data.error)[list.gqlNames.listQueryName];
   }
   if (query.data && query.data[list.gqlNames.listQueryMetaName]) {

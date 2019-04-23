@@ -166,7 +166,7 @@ export function useListItems(listKey) {
 
   useEffect(() => {
     if (data[list.gqlNames.listQueryName]) {
-      setItems(data[list.gqlNames.listQueryName]);
+      setItems(data[list.gqlNames.listQueryName].map(item => list.deserializeItemData(item)));
       setErrors(deconstructErrorsToDataShape(data.error)[list.gqlNames.listQueryName]);
     }
     if (data[list.gqlNames.listQueryMetaName]) {

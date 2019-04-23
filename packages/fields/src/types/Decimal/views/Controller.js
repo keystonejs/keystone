@@ -11,7 +11,7 @@ export default class TextController extends FieldController {
   formatFilter = ({ label, value }) => {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
-  getValue = data => {
+  serialize = data => {
     const value = data[this.config.path];
     // Make the value a string to prevent loss of accuracy and precision.
     if (typeof value === 'string') {
