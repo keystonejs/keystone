@@ -25,6 +25,7 @@ function serialize(value, allPaths) {
 }
 
 function findPageComponents(pages, pageComponents = {}) {
+  if (!Array.isArray(pages)) return pageComponents;
   pages.forEach(page => {
     if (page.component) pageComponents[page.path] = page.component;
     else if (page.children) {
