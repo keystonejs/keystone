@@ -1,0 +1,1 @@
+- `{ mongooseOptions: { isRequired: true } }` should be replaced by `{ isRequired: true }`

@@ -148,13 +148,15 @@ class BaseListAdapter {
 }
 
 class BaseFieldAdapter {
-  constructor(fieldName, path, listAdapter, getListByKey, config) {
+  constructor(fieldName, path, listAdapter, getListByKey, { isRequired, isUnique, ...config }) {
     this.fieldName = fieldName;
     this.path = path;
     this.listAdapter = listAdapter;
     this.config = config;
     this.getListByKey = getListByKey;
     this.dbPath = path;
+    this.isRequired = isRequired;
+    this.isUnique = isUnique;
   }
 
   setupHooks() {}

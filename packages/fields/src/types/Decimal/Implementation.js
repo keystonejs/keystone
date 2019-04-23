@@ -38,14 +38,11 @@ export class Decimal extends Implementation {
 
 export class MongoDecimalInterface extends MongooseFieldAdapter {
   addToMongooseSchema(schema) {
-    const { mongooseOptions = {} } = this.config;
-    const { isRequired } = mongooseOptions;
-
     const validator = a => typeof a === 'object' && /^-?\d*\.?\d*$/.test(a);
     const schemaOptions = {
       type: mongoose.Decimal128,
       validate: {
-        validator: this.buildValidator(validator, isRequired),
+        validator: this.buildValidator(validator, this.isRequired),
         message: '{VALUE} is not a Decimal value',
       },
     };
