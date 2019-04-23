@@ -1,0 +1,1 @@
+- List adapter config must now be specified within the `adapterConfig` field, rather than directly on the `config` object.
