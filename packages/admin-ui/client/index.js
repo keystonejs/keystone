@@ -25,6 +25,7 @@ import InvalidRoutePage from './pages/InvalidRoute';
 import StyleGuidePage from './pages/StyleGuide';
 
 const findCustomPages = (pages, allPages = []) => {
+  if (!Array.isArray(pages)) return allPages;
   pages.forEach(page => {
     if (page.path) allPages.push(page);
     else if (page.children) findCustomPages(page.children, allPages);
