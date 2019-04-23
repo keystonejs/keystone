@@ -13,8 +13,8 @@
     "build": "next build"
   },
   "dependencies": {
-    "@arch-ui/layout": "^0.1.0",
-    "@arch-ui/typography": "^0.0.3",
+    "@arch-ui/layout": "^0.2.0",
+    "@arch-ui/typography": "^0.0.4",
     "@emotion/core": "^10.0.10",
     "@emotion/styled": "^10.0.10",
     "@keystone-alpha/adapter-mongoose": "^1.0.6",
