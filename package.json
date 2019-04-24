@@ -9,13 +9,14 @@
     "coverage": "DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
     "cypress:run": "status=0; bolt w @keystone-alpha/cypress-project-basic run cypress:run || status=$?; bolt w @keystone-alpha/cypress-project-login run cypress:run || status=$?; bolt w @keystone-alpha/cypress-project-twitter-login run cypress:run || status=$?; bolt w @keystone-alpha/cypress-project-access-control run cypress:run || status=$?; exit $status",
     "format:file": "prettier --write",
-    "format": "prettier --write \"**/*.js{,on}\" \"**/*.md\"",
+    "format": "prettier --write \"**/*.js{,on}\" \"**/*.md\" && remark . --output",
     "fresh": "yarn clean && bolt",
     "clean": "bolt ws exec -- rm -rf node_modules && rm -rf node_modules && rm -rf website/.cache",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --list-different \"**/*.js\"",
     "lint:flow": "flow check",
-    "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:flow",
+    "lint:markdown": "remark . --frail",
+    "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:flow && yarn lint:markdown",
     "start": "yarn start:demo",
     "start:demo": "/bin/sh -c 'cd demo-projects/${1:-$0} && yarn start' todo",
     "start:test": "/bin/sh -c 'cd test-projects/${1:-$0} && yarn start' basic",
@@ -244,6 +245,17 @@
     "trailingComma": "es5",
     "printWidth": 100
   },
+  "remarkConfig": {
+    "settings": {
+      "commonmark": true,
+      "fences": true,
+      "listItemIndent": "1",
+      "rule": "-",
+      "ruleSpaces": false
+    },
+    "plugins": [
+    ]
+  },
   "bolt": {
     "workspaces": [
       "packages/*",
@@ -324,6 +336,7 @@
     "p-is-promise": "^2.1.0",
     "pino-colada": "^1.4.4",
     "prettier": "^1.17.0",
+    "remark-cli": "^6.0.1",
     "start-server-and-test": "^1.7.13",
     "supertest-light": "^1.0.2",
     "terminal-link": "^1.3.0",
