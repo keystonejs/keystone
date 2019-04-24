@@ -227,7 +227,7 @@ module.exports = class View {
   _queryGql(key, query, { unwrap = true, ...options } = {}) {
     let locals = this.res.locals;
     const parts = key.split('.');
-    const chain = new QueryCallbacks(typeof options === 'string' ? null : options);
+    const chain = new QueryCallbacks(options);
 
     key = parts.pop();
 
