@@ -1,8 +1,5 @@
 const {
-  camelize,
   getType,
-  fixConfigKeys,
-  checkRequiredConfig,
   escapeRegExp,
   mapKeys,
   mapKeyNames,
@@ -22,21 +19,6 @@ const {
 } = require('../src');
 
 describe('utils', () => {
-  test('camelize', () => {
-    expect(camelize('')).toEqual('');
-    expect(camelize('a')).toEqual('a');
-    expect(camelize('A')).toEqual('a');
-    expect(camelize('a b')).toEqual('aB');
-    expect(camelize('a B')).toEqual('aB');
-    expect(camelize('A B')).toEqual('aB');
-    expect(camelize('A b')).toEqual('aB');
-    expect(camelize('foo bar baz')).toEqual('fooBarBaz');
-    expect(camelize('Foo Bar Baz')).toEqual('fooBarBaz');
-    expect(camelize('FOO BAR BAZ')).toEqual('fooBARBAZ');
-    expect(camelize('HTTP request handler')).toEqual('httpRequestHandler');
-    expect(camelize('URL parser')).toEqual('urlParser');
-  });
-
   test('getType', () => {
     expect(getType(undefined)).toEqual('Undefined');
     expect(getType(null)).toEqual('Null');
@@ -45,29 +27,6 @@ describe('utils', () => {
     expect(getType({})).toEqual('Object');
     expect(getType([])).toEqual('Array');
     expect(getType(() => {})).toEqual('Function');
-  });
-
-  test('fixConfigKeys', () => {
-    const config = {
-      a: 1,
-      foo: 2,
-      FooBar: 3,
-    };
-    expect(fixConfigKeys(config)).toEqual({ a: 1, foo: 2, fooBar: 3 });
-    expect(fixConfigKeys(config, {})).toEqual({ a: 1, foo: 2, fooBar: 3 });
-    expect(fixConfigKeys(config, { foo: 'bar' })).toEqual({ a: 1, bar: 2, fooBar: 3 });
-  });
-
-  test('checkRequiredConfig', () => {
-    const config = {
-      a: 1,
-      b: 2,
-      c: 3,
-    };
-    expect(checkRequiredConfig(config)).toBe(undefined);
-    expect(checkRequiredConfig(config, [])).toBe(undefined);
-    expect(checkRequiredConfig(config, ['a', 'c'])).toBe(undefined);
-    expect(() => checkRequiredConfig(config, ['a', 'c', 'd'])).toThrow(Error);
   });
 
   test('escapeRegExp', () => {

@@ -32,7 +32,7 @@ export default class RelationshipController extends FieldController {
   buildRelateToOneInput = ({ id }) => ({ connect: { id } });
   buildRelateToManyInput = data => ({ connect: data.map(({ id }) => ({ id })) });
 
-  getValue = data => {
+  serialize = data => {
     const { many, path } = this.config;
 
     if (!data[path]) {
@@ -48,7 +48,7 @@ export default class RelationshipController extends FieldController {
 
     return this.buildRelateToOneInput(data[path], path);
   };
-  getInitialData = () => {
+  getDefaultValue = () => {
     const { defaultValue, many } = this.config;
     return many ? defaultValue || [] : defaultValue || null;
   };

@@ -9,7 +9,7 @@ const DEFAULT_SERVER = 'server.js';
 
 function cleanServerConfig(config) {
   return pick(config, [
-    'cookie secret',
+    'cookieSecret',
     'sessionStore',
     'pinoOptions',
     'cors',

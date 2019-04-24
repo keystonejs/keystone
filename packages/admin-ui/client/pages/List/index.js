@@ -11,6 +11,8 @@ import { colors, gridSize } from '@arch-ui/theme';
 import { PageTitle } from '@arch-ui/typography';
 import { Button } from '@arch-ui/button';
 import { KebabHorizontalIcon } from '@arch-ui/icons';
+import Tooltip from '@arch-ui/tooltip';
+import { applyRefs } from 'apply-ref';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
@@ -51,7 +53,6 @@ function ListLayout(props: LayoutProps) {
 
   const { urlState } = useListUrlState(list.key);
   const { filters } = useListFilter(list.key);
-  // const { items, itemCount, itemErrors } = useListItems(list.key);
   const [sortBy, handleSortChange] = useListSort(list.key);
 
   const { adminPath } = adminMeta;
@@ -212,17 +213,22 @@ function ListLayout(props: LayoutProps) {
                   <ColumnPopout
                     listKey={list.key}
                     target={handlers => (
-                      <Button
-                        variant="subtle"
-                        css={{
-                          background: 0,
-                          border: 0,
-                          color: colors.N40,
-                        }}
-                        {...handlers}
-                      >
-                        <KebabHorizontalIcon />
-                      </Button>
+                      <Tooltip placement="top" content="Columns">
+                        {ref => (
+                          <Button
+                            variant="subtle"
+                            css={{
+                              background: 0,
+                              border: 0,
+                              color: colors.N40,
+                            }}
+                            {...handlers}
+                            ref={applyRefs(handlers.ref, ref)}
+                          >
+                            <KebabHorizontalIcon />
+                          </Button>
+                        )}
+                      </Tooltip>
                     )}
                   />
                 }
@@ -264,7 +270,7 @@ function List(props: Props) {
   let itemCount;
   let itemErrors;
   if (query.data && query.data[list.gqlNames.listQueryName]) {
-    items = query.data[list.gqlNames.listQueryName];
+    items = query.data[list.gqlNames.listQueryName].map(item => list.deserializeItemData(item));
     itemErrors = deconstructErrorsToDataShape(query.data.error)[list.gqlNames.listQueryName];
   }
   if (query.data && query.data[list.gqlNames.listQueryMetaName]) {

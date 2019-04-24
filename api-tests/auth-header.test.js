@@ -49,7 +49,7 @@ function setupKeystone() {
   });
 
   const server = new WebServer(keystone, {
-    'cookie secret': COOKIE_SECRET,
+    cookieSecret: COOKIE_SECRET,
     apiPath: '/admin/api',
     graphiqlPath: '/admin/graphiql',
   });

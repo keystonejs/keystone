@@ -105,82 +105,96 @@ const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
 module.exports = class List {
   constructor(
     key,
-    config,
+    {
+      fields,
+      hooks = {},
+      mutations = [],
+      schemaDoc,
+      labelResolver,
+      labelField,
+      access,
+      adminConfig = {},
+      itemQueryName,
+      listQueryName,
+      label,
+      singular,
+      plural,
+      path,
+      adapterConfig = {},
+    },
     { getListByKey, getGraphQLQuery, adapter, defaultAccess, getAuth, createAuxList, isAuxList }
   ) {
     this.key = key;
-
+    this._fields = fields;
+    this.hooks = hooks;
+    this.mutations = mutations;
+    this.schemaDoc = schemaDoc;
     // 180814 JM TODO: Since there's no access control specified, this implicitly makes name, id or {labelField} readable by all (probably bad?)
-    config.adminConfig = {
+    this.adminConfig = {
       defaultPageSize: 50,
-      defaultColumns: Object.keys(config.fields)
+      defaultColumns: Object.keys(fields)
         .slice(0, 2)
         .join(','),
-      defaultSort: Object.keys(config.fields)[0],
+      defaultSort: Object.keys(fields)[0],
       maximumPageSize: 1000,
-      ...(config.adminConfig || {}),
+      ...adminConfig,
     };
-    this.config = {
-      labelResolver: item => item[config.labelField || 'name'] || item.id,
-      hooks: {},
-      ...config,
-    };
-
+    this.labelResolver = labelResolver || (item => item[labelField || 'name'] || item.id);
     this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
     this.getAuth = getAuth;
     this.createAuxList = createAuxList;
 
-    const label = keyToLabel(key);
-    const singular = pluralize.singular(label);
-    const plural = pluralize.plural(label);
+    const _label = keyToLabel(key);
+    const _singular = pluralize.singular(_label);
+    const _plural = pluralize.plural(_label);
 
-    if (plural === label) {
+    if (_plural === _label) {
       throw new Error(
-        `Unable to use ${label} as a List name - it has an ambiguous plural (${plural}). Please choose another name for your list.`
+        `Unable to use ${_label} as a List name - it has an ambiguous plural (${_plural}). Please choose another name for your list.`
       );
     }
 
     this.adminUILabels = {
-      label: config.label || plural,
-      singular: config.singular || singular,
-      plural: config.plural || plural,
-      path: config.path || labelToPath(plural),
+      label: label || _plural,
+      singular: singular || _singular,
+      plural: plural || _plural,
+      path: path || labelToPath(_plural),
     };
 
-    const itemQueryName = config.itemQueryName || labelToClass(singular);
-    const listQueryName = config.listQueryName || labelToClass(plural);
+    const _itemQueryName = itemQueryName || labelToClass(_singular);
+    const _listQueryName = listQueryName || labelToClass(_plural);
 
     this.gqlNames = {
       outputTypeName: this.key,
-      itemQueryName: itemQueryName,
-      listQueryName: `all${listQueryName}`,
-      listQueryMetaName: `_all${listQueryName}Meta`,
-      listMetaName: preventInvalidUnderscorePrefix(`_${listQueryName}Meta`),
-      authenticatedQueryName: `authenticated${itemQueryName}`,
-      deleteMutationName: `delete${itemQueryName}`,
-      updateMutationName: `update${itemQueryName}`,
-      createMutationName: `create${itemQueryName}`,
-      deleteManyMutationName: `delete${listQueryName}`,
-      updateManyMutationName: `update${listQueryName}`,
-      createManyMutationName: `create${listQueryName}`,
-      whereInputName: `${itemQueryName}WhereInput`,
-      whereUniqueInputName: `${itemQueryName}WhereUniqueInput`,
-      updateInputName: `${itemQueryName}UpdateInput`,
-      createInputName: `${itemQueryName}CreateInput`,
-      updateManyInputName: `${listQueryName}UpdateInput`,
-      createManyInputName: `${listQueryName}CreateInput`,
-      relateToManyInputName: `${itemQueryName}RelateToManyInput`,
-      relateToOneInputName: `${itemQueryName}RelateToOneInput`,
+      itemQueryName: _itemQueryName,
+      listQueryName: `all${_listQueryName}`,
+      listQueryMetaName: `_all${_listQueryName}Meta`,
+      listMetaName: preventInvalidUnderscorePrefix(`_${_listQueryName}Meta`),
+      authenticatedQueryName: `authenticated${_itemQueryName}`,
+      deleteMutationName: `delete${_itemQueryName}`,
+      updateMutationName: `update${_itemQueryName}`,
+      createMutationName: `create${_itemQueryName}`,
+      deleteManyMutationName: `delete${_listQueryName}`,
+      updateManyMutationName: `update${_listQueryName}`,
+      createManyMutationName: `create${_listQueryName}`,
+      whereInputName: `${_itemQueryName}WhereInput`,
+      whereUniqueInputName: `${_itemQueryName}WhereUniqueInput`,
+      updateInputName: `${_itemQueryName}UpdateInput`,
+      createInputName: `${_itemQueryName}CreateInput`,
+      updateManyInputName: `${_listQueryName}UpdateInput`,
+      createManyInputName: `${_listQueryName}CreateInput`,
+      relateToManyInputName: `${_itemQueryName}RelateToManyInput`,
+      relateToOneInputName: `${_itemQueryName}RelateToOneInput`,
     };
 
     this.adapterName = adapter.name;
-    this.adapter = adapter.newListAdapter(this.key, this.config);
+    this.adapter = adapter.newListAdapter(this.key, adapterConfig);
 
     this.access = parseListAccess({
       listKey: key,
-      access: config.access,
+      access,
       defaultAccess: this.defaultAccess.list,
     });
 
@@ -226,7 +240,7 @@ module.exports = class List {
 
     this.fieldsInitialised = true;
 
-    const sanitisedFieldsConfig = mapKeys(this.config.fields, (fieldConfig, path) => ({
+    const sanitisedFieldsConfig = mapKeys(this._fields, (fieldConfig, path) => ({
       ...fieldConfig,
       type: mapNativeTypeToKeystoneType(fieldConfig.type, this.key, path),
     }));
@@ -268,12 +282,12 @@ module.exports = class List {
       fields: this.fields.filter(field => field.access.read).map(field => field.getAdminMeta()),
       views: this.views,
       adminConfig: {
-        defaultPageSize: this.config.adminConfig.defaultPageSize,
-        defaultColumns: this.config.adminConfig.defaultColumns.replace(/\s/g, ''), // remove all whitespace
-        defaultSort: this.config.adminConfig.defaultSort,
+        defaultPageSize: this.adminConfig.defaultPageSize,
+        defaultColumns: this.adminConfig.defaultColumns.replace(/\s/g, ''), // remove all whitespace
+        defaultSort: this.adminConfig.defaultSort,
         maximumPageSize: Math.max(
-          this.config.adminConfig.defaultPageSize,
-          this.config.adminConfig.maximumPageSize
+          this.adminConfig.defaultPageSize,
+          this.adminConfig.maximumPageSize
         ),
       },
     };
@@ -292,7 +306,7 @@ module.exports = class List {
       types.push(
         ...flatten(this.fields.map(field => field.getGqlAuxTypes({ skipAccessControl }))),
         `
-        """ ${this.config.schemaDoc || 'A keystone list'} """
+        """ ${this.schemaDoc || 'A keystone list'} """
         type ${this.gqlNames.outputTypeName} {
           id: ID
           """
@@ -475,7 +489,7 @@ module.exports = class List {
     }
     const fieldResolvers = {
       // TODO: The `_label_` output field currently circumvents access control
-      _label_: this.config.labelResolver,
+      _label_: this.labelResolver,
       ...objMerge(
         this.fields
           .filter(field => field.access.read)
@@ -503,7 +517,7 @@ module.exports = class List {
   get gqlAuxMutationResolvers() {
     // TODO: Obey the same ACL rules based on parent type
     return objMerge([
-      ...(this.config.mutations || []).map(({ schema, resolver }) => {
+      ...this.mutations.map(({ schema, resolver }) => {
         const mutationName = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
         return {
           [mutationName]: (obj, args, context, info) =>
@@ -518,9 +532,7 @@ module.exports = class List {
     const mutations = flatten(
       this.fields.map(field => field.getGqlAuxMutations({ skipAccessControl }))
     );
-    if (this.config.mutations) {
-      mutations.push(...this.config.mutations.map(({ schema }) => schema));
-    }
+    mutations.push(...this.mutations.map(({ schema }) => schema));
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
@@ -963,8 +975,8 @@ module.exports = class List {
       )),
     };
 
-    if (this.config.hooks.resolveInput) {
-      resolvedData = await this.config.hooks.resolveInput({ resolvedData, ...args });
+    if (this.hooks.resolveInput) {
+      resolvedData = await this.hooks.resolveInput({ resolvedData, ...args });
     }
 
     return resolvedData;
@@ -1006,9 +1018,9 @@ module.exports = class List {
       this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
     }
 
-    if (this.config.hooks[hookName]) {
+    if (this.hooks[hookName]) {
       const listValidationErrors = [];
-      await this.config.hooks[hookName]({
+      await this.hooks[hookName]({
         ...args,
         addValidationError: (msg, _data = {}, internalData = {}) =>
           listValidationErrors.push({ msg, data: _data, internalData }),
@@ -1066,7 +1078,7 @@ module.exports = class List {
       field.config.hooks[hookName](args)
     );
 
-    if (this.config.hooks[hookName]) await this.config.hooks[hookName](args);
+    if (this.hooks[hookName]) await this.hooks[hookName](args);
   }
 
   async _nestedMutation(mutationState, context, mutation) {

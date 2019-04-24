@@ -19,7 +19,7 @@ export default class DateTimeController extends FieldController {
 
     return `${this.getFilterLabel({ label })}: "${formattedValue}"`;
   };
-  getValue = data => {
+  serialize = data => {
     let value = data[this.config.path];
     if (typeof value !== 'string') {
       return null;
