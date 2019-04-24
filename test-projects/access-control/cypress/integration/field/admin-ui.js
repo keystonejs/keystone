@@ -37,7 +37,7 @@ describe('Access Control Fields > Admin UI', () => {
 
       before(() => {
         cy.visit(`/admin/${slug}`);
-        cy.get('button[appearance="create"]').click();
+        cy.get('#list-page-create-button').click();
         cy.get('form[role="dialog"]').should('exist');
       });
 

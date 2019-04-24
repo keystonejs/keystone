@@ -1,0 +1,13 @@
+{
+  "name": "uses-babel-and-throws-error",
+  "version": "1.0.0",
+  "main": "dist/uses-babel-and-throws-error.cjs.js",
+  "module": "dist/uses-babel-and-throws-error.esm.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/runtime": "^7.4.3"
+  }
+}

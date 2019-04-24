@@ -28,23 +28,31 @@ const unique = arr => [...new Set(arr)];
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
 
 module.exports = class Keystone {
-  constructor(config) {
-    this.config = {
-      ...config,
-    };
-    this.defaultAccess = { list: true, field: true, ...config.defaultAccess };
+  constructor({
+    defaultAccess,
+    adapters,
+    adapter,
+    defaultAdapter,
+    name,
+    dbName,
+    adapterConnectOptions = {},
+  }) {
+    this.name = name;
+    this.dbName = dbName;
+    this.adapterConnectOptions = adapterConnectOptions;
+    this.defaultAccess = { list: true, field: true, ...defaultAccess };
     this.auth = {};
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
     this._graphQLQuery = {};
 
-    if (config.adapters) {
-      this.adapters = config.adapters;
-      this.defaultAdapter = config.defaultAdapter;
-    } else if (config.adapter) {
-      this.adapters = { [config.adapter.constructor.name]: config.adapter };
-      this.defaultAdapter = config.adapter.constructor.name;
+    if (adapters) {
+      this.adapters = adapters;
+      this.defaultAdapter = defaultAdapter;
+    } else if (adapter) {
+      this.adapters = { [adapter.constructor.name]: adapter };
+      this.defaultAdapter = adapter.constructor.name;
     } else {
       throw new Error('Need an adapter, yo');
     }
@@ -90,11 +98,7 @@ module.exports = class Keystone {
    * @return Promise<null>
    */
   connect(to, options) {
-    const {
-      adapters,
-      config: { name, dbName, adapterConnectOptions },
-    } = this;
-
+    const { adapters, name, dbName, adapterConnectOptions } = this;
     return resolveAllKeys(
       mapKeys(adapters, adapter =>
         adapter.connect(to, {
@@ -119,7 +123,6 @@ module.exports = class Keystone {
   }
 
   getAdminMeta() {
-    const { name } = this.config;
     // We've consciously made a design choice that the `read` permission on a
     // list is a master switch in the Admin UI (not the GraphQL API).
     // Justification: If you want to Create without the Read permission, you
@@ -137,7 +140,7 @@ module.exports = class Keystone {
       list => list.getAdminMeta()
     );
 
-    return { lists, name };
+    return { lists, name: this.name };
   }
 
   getTypeDefs({ skipAccessControl = false } = {}) {
@@ -293,8 +296,8 @@ module.exports = class Keystone {
     const resolvers = {
       // Order of spreading is important here - we don't want user-defined types
       // to accidentally override important things like `Query`.
-      ...objMerge(firstClassLists.map(list => list.gqlAuxFieldResolvers)),
-      ...objMerge(firstClassLists.map(list => list.gqlFieldResolvers)),
+      ...objMerge(this.listsArray.map(list => list.gqlAuxFieldResolvers)),
+      ...objMerge(this.listsArray.map(list => list.gqlFieldResolvers)),
 
       JSON: GraphQLJSON,
 

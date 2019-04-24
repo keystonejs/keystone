@@ -1,43 +1,10 @@
 import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
 
-export const camelize = str =>
-  // split the string into words, lowercase the leading character of the first word,
-  // uppercase the leading character of all other words, then join together.
-  // If the first word is all uppercase, lowercase the whole thing.
-  str
-    .split(' ')
-    .filter(w => w)
-    .map((w, i) =>
-      i === 0
-        ? w === w.toUpperCase()
-          ? w.toLowerCase()
-          : w.replace(/\S/, c => c.toLowerCase())
-        : w.replace(/\S/, c => c.toUpperCase())
-    )
-    .join('');
-
 export const noop = x => x;
 export const identity = noop;
 export const getType = thing =>
   Object.prototype.toString.call(thing).replace(/\[object (.*)\]/, '$1');
-
-export const fixConfigKeys = (config, remapKeys = {}) => {
-  const rtn = {};
-  Object.keys(config).forEach(key => {
-    if (remapKeys[key]) rtn[remapKeys[key]] = config[key];
-    else rtn[camelize(key)] = config[key];
-  });
-  return rtn;
-};
-
-export const checkRequiredConfig = (config, requiredKeys = []) => {
-  requiredKeys.forEach(key => {
-    if (config[key] === undefined) {
-      throw new Error(`Required key ${key} is not defined in the config`);
-    }
-  });
-};
 
 export const escapeRegExp = str =>
   (str || '').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
@@ -121,7 +88,7 @@ export const flatten = arr => Array.prototype.concat(...arr);
 // flatMap([{ vals: [2, 2] }, { vals: [3] }], x => x.vals) => [2, 2, 3]
 export const flatMap = (arr, fn = identity) => flatten(arr.map(fn));
 
-// { foo: [1, 2, 3], bar: [4, 5, 6]} => [{ foo: 1, bar; 4}, { foo: 2, bar: 5}, { foo: 3, bar: 6 }]
+// { foo: [1, 2, 3], bar: [4, 5, 6]} => [{ foo: 1, bar: 4}, { foo: 2, bar: 5}, { foo: 3, bar: 6 }]
 export const zipObj = obj =>
   Object.values(obj)[0].map((_, i) =>
     Object.keys(obj).reduce((acc, k) => ({ ...acc, [k]: obj[k][i] }), {})

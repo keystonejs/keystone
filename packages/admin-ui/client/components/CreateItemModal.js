@@ -5,7 +5,7 @@ import { Mutation } from 'react-apollo';
 
 import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
-import { resolveAllKeys, arrayToObject } from '@keystone-alpha/utils';
+import { arrayToObject } from '@keystone-alpha/utils';
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 
@@ -38,12 +38,12 @@ class CreateItemModal extends Component {
     if (isLoading) return;
     const { item } = this.state;
 
-    resolveAllKeys(arrayToObject(fields, 'path', field => field.getValue(item)))
-      .then(data => createItem({ variables: { data } }))
-      .then(data => {
-        this.props.onCreate(data);
-        this.setState({ item: this.props.list.getInitialItemData() });
-      });
+    createItem({
+      variables: { data: arrayToObject(fields, 'path', field => field.serialize(item)) },
+    }).then(data => {
+      this.props.onCreate(data);
+      this.setState({ item: this.props.list.getInitialItemData() });
+    });
   };
   onClose = () => {
     const { isLoading } = this.props;
@@ -71,6 +71,8 @@ class CreateItemModal extends Component {
     // probably be removed in the future because i'm guessing this will make performance _worse_ in concurrent mode
     list.adminMeta.readViews(list.fields.map(({ views }) => views.Field));
 
+    const cypressId = 'create-item-modal-submit-button';
+
     return (
       <Drawer
         closeOnBlanketClick
@@ -82,7 +84,7 @@ class CreateItemModal extends Component {
         slideInFrom="right"
         footer={
           <Fragment>
-            <Button appearance="create" type="submit">
+            <Button appearance="primary" type="submit" id={cypressId}>
               {isLoading ? 'Loading...' : 'Create'}
             </Button>
             <Button appearance="warning" variant="subtle" onClick={this.onClose}>

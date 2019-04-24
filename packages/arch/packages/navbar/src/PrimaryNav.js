@@ -17,18 +17,17 @@ export const NavGroupIcons = styled.div({
 });
 
 export const PrimaryNav = styled.nav({
-  backgroundColor: 'rgba(9, 30, 66, 0.02)',
   boxSizing: 'border-box',
   display: 'flex',
   flexFlow: 'column nowrap',
-  fontSize: 15,
+  fontSize: '0.9rem',
   height: '100vh',
   position: 'fixed',
   zIndex: 2,
 });
 export const PrimaryNavScrollArea = styled.div(({ hasScroll, isBottom, isScrollable }) => {
   const divider = {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'rgba(9, 30, 66, 0.1)',
     content: '" "',
     height: 2,
     left: PRIMARY_NAV_GUTTER,
@@ -63,16 +62,16 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
   const selectedStyles = isSelected
     ? {
         '&, :hover, :active, :focus': {
-          borderLeftColor: colors.B.base,
-          backgroundColor: colors.B.A10,
-          fontWeight: 500,
+          ':after': {
+            backgroundColor: colors.primary,
+          },
         },
       }
     : {};
 
   return {
     border: 0,
-    borderLeft: '3px solid transparent',
+    borderRight: '1px solid transparent',
     color: colors.N90,
     display: 'block',
     marginBottom: 2,
@@ -81,17 +80,29 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
     paddingRight: PRIMARY_NAV_GUTTER,
     paddingBottom: gridSize,
     paddingTop: gridSize,
+    position: 'relative',
     textDecoration: 'none',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
 
-    ':hover, :focus': {
-      backgroundColor: colors.B.A5,
-      color: colors.N100,
+    ':hover': {
+      backgroundColor: colors.N05,
       textDecoration: 'none',
     },
     ':active': {
-      backgroundColor: colors.B.A10,
+      backgroundColor: colors.N10,
+    },
+
+    ':after': {
+      borderRadius: 2,
+      bottom: 2,
+      content: '" "',
+      pointerEvents: 'none',
+      position: 'absolute',
+      right: 6,
+      top: 2,
+      transition: 'background-color 110ms',
+      width: 4,
     },
 
     ...selectedStyles,

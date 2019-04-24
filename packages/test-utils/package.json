@@ -12,7 +12,7 @@
     "@keystone-alpha/adapter-mongoose": "^1.0.5",
     "@keystone-alpha/keystone": "^3.0.0",
     "@keystone-alpha/server": "^4.0.0",
-    "mongodb-memory-server": "^3.1.2",
+    "mongodb-memory-server": "^5.0.4",
     "p-finally": "^1.0.0"
   }
 }

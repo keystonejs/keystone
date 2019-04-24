@@ -8,6 +8,12 @@ describe('query parser', () => {
     expect(() => queryParser({ tokenizer: 10 }, { name: 'foobar' })).toThrow(Error);
   });
 
+  test('requires an object for the query', () => {
+    expect(() => {
+      queryParser({ tokenizer: { simple: () => undefined } }, 'foobar');
+    }).toThrow(Error);
+  });
+
   describe('throws if tokenising function returns non-Object or non-Array', () => {
     test('simple', () => {
       expect(() => {
