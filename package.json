@@ -254,6 +254,7 @@
       "ruleSpaces": false
     },
     "plugins": [
+      "remark-frontmatter"
     ]
   },
   "bolt": {
@@ -337,6 +338,7 @@
     "pino-colada": "^1.4.4",
     "prettier": "^1.17.0",
     "remark-cli": "^6.0.1",
+    "remark-frontmatter": "^1.3.1",
     "start-server-and-test": "^1.7.13",
     "supertest-light": "^1.0.2",
     "terminal-link": "^1.3.0",
