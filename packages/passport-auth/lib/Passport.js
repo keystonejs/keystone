@@ -27,17 +27,8 @@ class PassportAuthStrategy {
 
     this.createSessionList();
 
-    PassportAuthStrategy.initializePassport(this.config.server);
-
     this.passportStrategy = this.getPassportStrategy();
     passport.use(this.passportStrategy);
-  }
-
-  static initializePassport(server) {
-    if (!isInitialized) {
-      server.app.use(passport.initialize());
-    }
-    isInitialized = true;
   }
 
   createSessionList() {
@@ -302,5 +293,12 @@ class PassportAuthStrategy {
 }
 
 PassportAuthStrategy.authType = 'base-abstract';
+
+PassportAuthStrategy.InitializePassportAuthStrategies = app => {
+  if (!isInitialized) {
+    app.use(passport.initialize());
+  }
+  isInitialized = true;
+};
 
 module.exports = PassportAuthStrategy;

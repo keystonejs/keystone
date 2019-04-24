@@ -5,6 +5,27 @@ title: Passport Auth Strategy
 
 # Passport Auth Strategy
 
+This package adds Auth Strategies based on popular social login service (Twitter/Facebook/Google and Github) for KeystoneJs. You can setup and enable social authentication in your Keystone app as explained here. It also enables you to easily extend base `PassportAuthStrategy` to add your own Auth Strategy based on PassportJs with minimal effort.
+
+### Important
+
+To be flexible in use of middleware and how they are arranged in stack, we do not bind `passport` middleware in express server. You must add following line or use one of the helper function we provide out of the box to enable use of PassportJs based auth strategy. This must be added after call to `keystone.connect()` see `social-login` test project for more details.
+
+> Remember to organize the code in such a way that you call `keystone.conenct()` between `keystone.createAuthStrategy({...})` and mounting of routes/middleware.
+
+your own instance of express `app`
+
+```js
+app.use(passport.initialize());
+```
+
+or the helper function
+
+```js
+const { InitializePassportAuthStrategies } = require('@keystone-alpha/passport-auth');
+InitializePassportAuthStrategies(app); // you can use server.app
+```
+
 ## Twitter
 
 ### Usage
@@ -14,8 +35,6 @@ title: Passport Auth Strategy
 ```javascript
 const { TwitterAuthStrategy } = require('@keystone-alpha/passport-auth');
 
-// before keystone.conenct()
-
 const twitterAuth = keystone.createAuthStrategy({
   type: TwitterAuthStrategy,
   list: 'User',
@@ -23,9 +42,12 @@ const twitterAuth = keystone.createAuthStrategy({
     consumerKey: process.env.TWITTER_APP_KEY,
     consumerSecret: process.env.TWITTER_APP_SECRET,
     callbackURL: `http://localhost:${PORT}/auth/twitter/callback`,
-    server,
   },
 });
+
+// ......
+// keystone.conenct() // called here.
+// .......
 
 // Hit this route to start the twitter auth process
 server.app.get(
@@ -80,8 +102,6 @@ bank's password over multiple server requests / page refreshes:
 ```javascript
 const { TwitterAuthStrategy } = require('@keystone-alpha/passport-auth');
 
-// before keystone.connect()
-
 const twitterAuth = keystone.createAuthStrategy({
   type: TwitterAuthStrategy,
   list: 'User',
@@ -89,9 +109,12 @@ const twitterAuth = keystone.createAuthStrategy({
     consumerKey: process.env.TWITTER_APP_KEY,
     consumerSecret: process.env.TWITTER_APP_SECRET,
     callbackURL: `http://localhost:${PORT}/auth/twitter/callback`,
-    server,
   },
 });
+
+// ......
+// keystone.conenct() // called here.
+// .......
 
 // Hit this route to start the twitter auth process
 server.app.get(
@@ -165,13 +188,14 @@ server.app.post('/auth/twitter/complete', async (req, res, next) => {
 ```
 
 ## Facebook, Google, GitHub
+
 #### See Twitter Example
 
 ## Using other PassportJs Strategy
 
 ### Inherit from Keystone PassportAuthStrategy
 
-For Example, we will implement WordPress auth. 
+For Example, we will implement WordPress auth.
 First you need to register a WordPress dev account and create and app there. Make note of App Key and App Secret
 
 ```js
@@ -200,11 +224,10 @@ module.exports = WordPressAuthStrategy;
 ```
 
 ### Usage
+
 Configure similar to Twitter Strategy
 
 ```js
-// before keystone.prepare()
-
 const wpAuth = keystone.createAuthStrategy({
   type: WordPressAuthStrategy,
   list: 'User',
@@ -212,8 +235,12 @@ const wpAuth = keystone.createAuthStrategy({
     consumerKey: process.env.WP_APP_KEY,
     consumerSecret: process.env.WP_APP_SECRET,
     callbackURL: `http://localhost:${PORT}/auth/wordpress/callback`,
-    server,
   },
 });
+
+// ......
+// keystone.conenct()
+// .......
+
 // rest of the code for configuring routes, similar to Twitter
 ```

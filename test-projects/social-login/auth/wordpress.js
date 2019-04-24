@@ -1,9 +1,8 @@
 const WordPressAuthStrategy = require('./WordPressAuthStrategy');
-const { appURL, wpAppKey, wpAppSecret } = require('./config');
-const setupAuthRoutes = require('./setupAuthRoutes');
+const { appURL, wpAppKey, wpAppSecret } = require('../config');
 
-exports.configureWPAuth = function(keystone, server) {
-  const strategy = keystone.createAuthStrategy({
+exports.configureWPAuth = function(keystone) {
+  return keystone.createAuthStrategy({
     type: WordPressAuthStrategy,
     list: 'User',
     config: {
@@ -12,8 +11,6 @@ exports.configureWPAuth = function(keystone, server) {
       callbackURL: `${appURL}/auth/wordpress/callback`,
       idField: 'wordpressId', //default value
       usernameField: 'wordpressUsername', //default value
-      server,
     },
   });
-  setupAuthRoutes({ strategy });
 };

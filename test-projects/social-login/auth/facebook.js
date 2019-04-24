@@ -1,9 +1,8 @@
 const { FacebookAuthStrategy } = require('@keystone-alpha/passport-auth');
-const { appURL, facebookAppKey, facebookAppSecret } = require('./config');
-const setupAuthRoutes = require('./setupAuthRoutes');
+const { appURL, facebookAppKey, facebookAppSecret } = require('../config');
 
-exports.configureFacebookAuth = function(keystone, server) {
-  const strategy = keystone.createAuthStrategy({
+exports.configureFacebookAuth = function(keystone) {
+  return keystone.createAuthStrategy({
     type: FacebookAuthStrategy,
     list: 'User',
     config: {
@@ -12,8 +11,6 @@ exports.configureFacebookAuth = function(keystone, server) {
       callbackURL: `${appURL}/auth/facebook/callback`,
       idField: 'facebookId',
       usernameField: 'facebookUsername',
-      server,
     },
   });
-  setupAuthRoutes({ strategy });
 };

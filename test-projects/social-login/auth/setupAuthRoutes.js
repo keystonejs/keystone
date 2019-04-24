@@ -2,13 +2,15 @@ const { startAuthedSession } = require('@keystone-alpha/session');
 
 module.exports = ({
   strategy,
+  server,
   authRoot = '/auth',
   successRedirect = '/api/session',
   failureRedirect = '/',
 }) => {
+  const basePath = `${authRoot}/${strategy.authType}`;
   // Hit this route to start the auth process for service
-  strategy.config.server.app.get(
-    `${authRoot}/${strategy.authType}`,
+  server.app.get(
+    basePath,
     strategy.loginMiddleware({
       // If not set, will just call `next()`
       sessionExists: (itemId, req, res) => {
@@ -20,8 +22,8 @@ module.exports = ({
   );
 
   // oAuth service will redirect the user to this URL after approval.
-  strategy.config.server.app.get(
-    `${authRoot}/${strategy.authType}/callback`,
+  server.app.get(
+    `${basePath}/callback`,
     strategy.authenticateMiddleware({
       verified: async (item, { list }, req, res) => {
         // You could try and find user by email address here to match users
@@ -33,7 +35,7 @@ module.exports = ({
         // If we don't have a matching user in our system, force redirect to
         // the create step
         if (!item) {
-          return res.redirect(`${authRoot}/${strategy.authType}/create`);
+          return res.redirect(`${basePath}/create`);
         }
 
         // Otherwise create a session based on the user we have already
@@ -50,7 +52,7 @@ module.exports = ({
 
   // Sample page to collect a name, submits to the completion step which will
   // create a user
-  strategy.config.server.app.get(`${authRoot}/${strategy.authType}/create`, (req, res) => {
+  server.app.get(`${basePath}/create`, (req, res) => {
     // Redirect if we're already signed in
     if (req.user) {
       return res.redirect(successRedirect);
@@ -58,11 +60,11 @@ module.exports = ({
     // If we don't have a keystone[serviceName]SessionId (strategy.config.keystoneSessionIdField) at this point, the form
     // submission will fail, so fail out to the first step
     if (!req.session[strategy.config.keystoneSessionIdField]) {
-      return res.redirect(`${authRoot}/${strategy.authType}`);
+      return res.redirect(basePath);
     }
 
     res.send(`
-      <form action="${authRoot}/${strategy.authType}/complete" method="post">
+      <form action="${basePath}/complete" method="post">
         <input type="text" placeholder="name" name="name" />
         <button type="submit">Submit</button>
       </form>
@@ -70,9 +72,9 @@ module.exports = ({
   });
 
   // Gets the name and creates a new User
-  strategy.config.server.app.post(
-    `${authRoot}/${strategy.authType}/complete`,
-    strategy.config.server.express.urlencoded({ extended: true }),
+  server.app.post(
+    `${basePath}/complete`,
+    server.express.urlencoded({ extended: true }),
     async (req, res, next) => {
       // Redirect if we're already signed in
       if (req.user) {

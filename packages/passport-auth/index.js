@@ -10,4 +10,5 @@ module.exports = {
   FacebookAuthStrategy,
   GoogleAuthStrategy,
   GitHubAuthStrategy,
+  InitializePassportAuthStrategies: PassportAuthStrategy.InitializePassportAuthStrategies,
 };

@@ -1,9 +1,8 @@
 const { GoogleAuthStrategy } = require('@keystone-alpha/passport-auth');
-const { appURL, googleAppKey, googleAppSecret } = require('./config');
-const setupAuthRoutes = require('./setupAuthRoutes');
+const { appURL, googleAppKey, googleAppSecret } = require('../config');
 
-exports.configureGoogleAuth = function(keystone, server) {
-  const strategy = keystone.createAuthStrategy({
+exports.configureGoogleAuth = function(keystone) {
+  return keystone.createAuthStrategy({
     type: GoogleAuthStrategy,
     list: 'User',
     config: {
@@ -12,8 +11,6 @@ exports.configureGoogleAuth = function(keystone, server) {
       callbackURL: `${appURL}/auth/google/callback`,
       idField: 'googleId', // default value
       usernameField: 'googleUsername', // default value
-      server,
     },
   });
-  setupAuthRoutes({ strategy });
 };

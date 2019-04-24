@@ -10,38 +10,54 @@ const {
   staticRoute,
   staticPath,
 } = require('./config');
-const { configureFacebookAuth } = require('./facebook');
-const { configureGitHubAuth } = require('./github');
-const { configureTwitterAuth } = require('./twitter');
-const { configureGoogleAuth } = require('./google');
-const { configureWPAuth } = require('./wordpress');
+const {
+  configureFacebookAuth,
+  configureGitHubAuth,
+  configureGoogleAuth,
+  configureTwitterAuth,
+  configureWPAuth,
+  setupAuthRoutes,
+  InitializePassportAuthStrategies,
+} = require('./auth');
 
 const initialData = require('./data');
-
 keystone
   .prepare({ port })
   .then(async ({ server, keystone: keystoneApp }) => {
+    const socialLogins = [];
     if (facebookAuthEnabled) {
-      configureFacebookAuth(keystoneApp, server);
+      socialLogins.push(configureFacebookAuth(keystoneApp));
     }
 
     if (githubAuthEnabled) {
-      configureGitHubAuth(keystoneApp, server);
+      socialLogins.push(configureGitHubAuth(keystoneApp));
     }
 
     if (twitterAuthEnabled) {
-      configureTwitterAuth(keystoneApp, server);
+      socialLogins.push(configureTwitterAuth(keystoneApp));
     }
 
     if (googleAuthEnabled) {
-      configureGoogleAuth(keystoneApp, server);
+      socialLogins.push(configureGoogleAuth(keystoneApp));
     }
 
     if (wpAuthEnabled) {
-      configureWPAuth(keystoneApp, server);
+      socialLogins.push(configureWPAuth(keystoneApp));
     }
 
     await keystoneApp.connect();
+
+    socialLogins.forEach(strategy => setupAuthRoutes({ strategy, server }));
+
+    if (
+      facebookAuthEnabled ||
+      githubAuthEnabled ||
+      googleAuthEnabled ||
+      twitterAuthEnabled ||
+      wpAuthEnabled
+    ) {
+      InitializePassportAuthStrategies(server.app);
+    }
 
     // Initialise some data.
     // NOTE: This is only for test purposes and should not be used in production

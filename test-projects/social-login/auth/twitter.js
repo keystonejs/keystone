@@ -1,9 +1,8 @@
 const { TwitterAuthStrategy } = require('@keystone-alpha/passport-auth');
-const { appURL, twitterAppKey, twitterAppSecret } = require('./config');
-const setupAuthRoutes = require('./setupAuthRoutes');
+const { appURL, twitterAppKey, twitterAppSecret } = require('../config');
 
-exports.configureTwitterAuth = function(keystone, server) {
-  const strategy = keystone.createAuthStrategy({
+exports.configureTwitterAuth = function(keystone) {
+  return keystone.createAuthStrategy({
     type: TwitterAuthStrategy,
     list: 'User',
     config: {
@@ -12,8 +11,6 @@ exports.configureTwitterAuth = function(keystone, server) {
       callbackURL: `${appURL}/auth/twitter/callback`,
       idField: 'twitterId', //default value
       usernameField: 'twitterUsername', //default value
-      server,
     },
   });
-  setupAuthRoutes({ strategy });
 };
