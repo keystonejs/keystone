@@ -46,6 +46,7 @@ keystone.createList('User', {
 Example:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const resolveInput = ({
   resolvedData,
@@ -164,6 +165,7 @@ order](../hooks.md#hook-excecution-order) as the input data.
 Example:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const validateInput = ({
   resolvedData,
@@ -201,6 +203,7 @@ TODO
 Example:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const validateDelete = ({
   existingItem,
@@ -234,6 +237,7 @@ TODO
 Example:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const beforeChange = ({
   resolvedData,
@@ -269,6 +273,7 @@ TODO
 Example:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const afterChange = ({
   updatedItem,
@@ -304,6 +309,7 @@ TODO
 Example:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const beforeDelete = ({
   existingItem,
@@ -335,6 +341,7 @@ TODO
 Example:
 
 <!-- prettier-ignore -->
+
 ```javascript
 const afterDelete = ({
   existingItem,

@@ -49,9 +49,9 @@ The available nested mutations:
 Nested mutations are executed in the following order:
 
 1. `disconnectAll`
-1. `disconnect`
-1. `create`
-1. `connect`
+2. `disconnect`
+3. `create`
+4. `connect`
 
 ### Examples
 
@@ -61,6 +61,7 @@ Use the `create` nested mutation to create and append an item to a to-many
 relationship:
 
 <!-- prettier-ignore -->
+
 ```graphql
 # Replace the company of a given User
 query replaceAllPosts {
@@ -86,6 +87,7 @@ Use the `connect` nested mutation to append an existing item to a to-many
 relationship:
 
 <!-- prettier-ignore -->
+
 ```graphql
 # Replace the company of a given User
 query replaceAllPosts {
@@ -112,6 +114,7 @@ the value of a to-single relationship (it's not necessary to use `disconnectAll`
 as is the case for [to-many relationships](#overriding-a-to-many-relationship)):
 
 <!-- prettier-ignore -->
+
 ```graphql
 # Replace the company of a given User
 query replaceAllPosts {
@@ -138,6 +141,7 @@ To completely replace the related items in a to-many list, you can perform a
 mutation (thanks to the [order of execution](#order-of-execution)):
 
 <!-- prettier-ignore -->
+
 ```graphql
 # Replace all posts related to a given User
 query replaceAllPosts {
@@ -156,5 +160,4 @@ query replaceAllPosts {
     }
   }
 }
-
 ```
