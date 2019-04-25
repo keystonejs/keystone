@@ -13,26 +13,56 @@ see the [Access Control Guide](../../guides/access-control.md) or the
 
 ## Table of Contents
 
-<!-- TODO auto-generated TOC -->
+- - [GraphQL Access Control](#graphql-access-control)
 
-- [GraphQL access control](#graph-ql-access-control)
-  - [Defaults](#defaults)
-  - [List level access control](#list-level-access-control)
-    - [`access` API](#access-api)
-      - [Booleans](#booleans)
-        - [Shorthand static Boolean](#shorthand-static-boolean)
-        - [Granular static Booleans](#granular-static-booleans)
-        - [Shorthand Imperative Boolean](#shorthand-imperative-boolean)
-        - [Granular functions returning Boolean](#granular-functions-returning-boolean)
-      - [`GraphQLWhere`s](#graph-ql-wheres)
-        - [Granular static `GraphQLWhere`s](#granular-static-graph-ql-wheres)
-        - [Granular functions returning `GraphQLWhere`](#granular-functions-returning-graph-ql-where)
-  - [Field level access control](#field-level-access-control)
-    - [`access` API](#access-api-1)
-      - [Shorthand static Boolean](#shorthand-static-boolean-1)
-      - [Granular static Booleans](#granular-static-booleans-1)
-      - [Shorthand Imperative Boolean](#shorthand-imperative-boolean-1)
-      - [Granular functions returning Boolean](#granular-functions-returning-boolean-1)
+    - [Defaults](#defaults)
+
+    - [List level access control](#list-level-access-control)
+
+      - [access API](#access-api)
+
+        - [Booleans](#booleans)
+
+          - [Shorthand static Boolean](#shorthand-static-boolean)
+          - [Granular static Booleans](#granular-static-booleans)
+          - [Shorthand Imperative Boolean](#shorthand-imperative-boolean)
+          - [Granular functions returning Boolean](#granular-functions-returning-boolean)
+
+        - [GraphQLWheres](#graphqlwheres)
+
+          - [Granular static GraphQLWheres](#granular-static-graphqlwheres)
+          - [Granular functions returning GraphQLWhere](#granular-functions-returning-graphqlwhere)
+
+    - [Field level access control](#field-level-access-control)
+
+      - [access API](#access-api-1)
+
+        - [Shorthand static Boolean](#shorthand-static-boolean-1)
+        - [Granular static Booleans](#granular-static-booleans-1)
+        - [Shorthand Imperative Boolean](#shorthand-imperative-boolean-1)
+        - [Granular functions returning Boolean](#granular-functions-returning-boolean-1)
+
+- [Roadmap](#roadmap)
+
+  - [Admin UI authentication](#admin-ui-authentication)
+
+  - [Admin UI display & forms](#admin-ui-display--forms)
+
+    - [true/false](#truefalse)
+    - [Array of field names to allow access to](#array-of-field-names-to-allow-access-to)
+    - [A function which receives an auth object and returns either 1. or 2.](#a-function-which-receives-an-auth-object-and-returns-either-1-or-2)
+
+  - [GraphQL access control](#graphql-access-control-1)
+
+  - [Access Control Queries](#access-control-queries)
+
+  - [Schema isolation](#schema-isolation)
+
+    - [createGraphQLMiddleware(config) => function(req, res, next)](#creategraphqlmiddlewareconfig--functionreq-res-next)
+
+    - [Schema Isolation Examples](#schema-isolation-examples)
+
+      - [Role based schemas](#role-based-schemas)
 
 ## GraphQL Access Control
 

@@ -7,21 +7,29 @@ title: Mutation Lifecycle
 
 ## Table of Contents
 
+- [Introduction](#introduction)
+
 - [Mutation Phases](#mutation-phases)
+
   - [Access Control Phase](#access-control-phase)
-    - [1. Check list access \[create/update/delete\]](#1-check-list-access-createupdatedelete)
-    - [2. Get item(s) \[update/delete\]](#2-get-items-updatedelete)
-    - [3. Check field access \[create/update\]](#3-check-field-access-createupdate)
+
+    - [1. Check list access (create/update/delete)](#1-check-list-access-createupdatedelete)
+    - [2. Get item(s) (update/delete)](#2-get-items-updatedelete)
+    - [3. Check field access (create/update)](#3-check-field-access-createupdate)
+
   - [Operational Phase](#operational-phase)
-    - [1. Resolve defaults \[create\]](#1-resolve-defaults-create)
-    - [2a. Resolve relationship \[create/update\]](#2a-resolve-relationship-createupdate)
-    - [2b. Register backlinks \[delete\]](#2b-register-backlinks-delete)
-    - [3. Resolve input \[create/update\]](#3-resolve-input-createupdate)
-    - [3. Validate input/delete \[create/update/delete\]](#3-validate-inputdelete-createupdatedelete)
-    - [4. Before change/delete \[create/update/delete\]](#4-before-changedelete-createupdatedelete)
-    - [5. Database operation \[create/update/delete\]](#5-database-operation-createupdatedelete)
-    - [6. Resolve backlinks \[create/update/delete\]](#6-resolve-backlinks-createupdatedelete)
-    - [7. After change \[create/update/delete\]](#7-after-change-createupdatedelete)
+
+    - [1. Resolve defaults (create)](#1-resolve-defaults-create)
+    - [2a. Resolve relationship (create/update)](#2a-resolve-relationship-createupdate)
+    - [2b. Register backlinks (delete)](#2b-register-backlinks-delete)
+    - [3. Resolve input (create/update)](#3-resolve-input-createupdate)
+    - [3. Validate input/delete (create/update/delete)](#3-validate-inputdelete-createupdatedelete)
+    - [4. Before change/delete (create/update/delete)](#4-before-changedelete-createupdatedelete)
+    - [5. Database operation (create/update/delete)](#5-database-operation-createupdatedelete)
+    - [6. Resolve backlinks (create/update/delete)](#6-resolve-backlinks-createupdatedelete)
+    - [7. After change (create/update/delete)](#7-after-change-createupdatedelete)
+
+- [Summary](#summary)
 
 ## Introduction
 
