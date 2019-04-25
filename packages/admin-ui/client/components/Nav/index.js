@@ -155,6 +155,17 @@ function renderChildren(node, getListByKey, adminPath, depth) {
     );
   }
 
+  if (node.path) {
+    const { path, label } = node;
+    const href = `${adminPath}/${path}`;
+    const isSelected = href === location.pathname;
+    return (
+      <PrimaryNavItem key={path} depth={depth} isSelected={isSelected} to={href}>
+        {label}
+      </PrimaryNavItem>
+    );
+  }
+
   const key = typeof node === 'string' ? node : node.listKey;
   const list = getListByKey(key);
 

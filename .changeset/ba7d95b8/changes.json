@@ -1,0 +1,8 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/demo-project-blog", "type": "minor" },
+    { "name": "@keystone-alpha/admin-ui", "type": "minor" },
+    { "name": "@keystone-alpha/field-views-loader", "type": "minor" }
+  ],
+  "dependents": []
+}
