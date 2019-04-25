@@ -24,9 +24,18 @@ import ItemPage from './pages/Item';
 import InvalidRoutePage from './pages/InvalidRoute';
 import StyleGuidePage from './pages/StyleGuide';
 
+const findCustomPages = (pages, allPages = []) => {
+  if (!Array.isArray(pages)) return allPages;
+  pages.forEach(page => {
+    if (page.path) allPages.push(page);
+    else if (page.children) findCustomPages(page.children, allPages);
+  });
+  return allPages;
+};
+
 const Keystone = () => {
   let adminMeta = useAdminMeta();
-  let { adminPath, apiPath } = adminMeta;
+  let { adminPath, apiPath, pages, pageViews, readViews } = adminMeta;
   const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
 
   return (
@@ -50,6 +59,17 @@ const Keystone = () => {
                         path={`${adminPath}`}
                         render={() => <HomePage {...adminMeta} />}
                       />
+                      {findCustomPages(pages).map(page => (
+                        <Route
+                          exact
+                          key={page.path}
+                          path={`${adminPath}/${page.path}`}
+                          render={() => {
+                            const [Page] = readViews([pageViews[page.path]]);
+                            return <Page />;
+                          }}
+                        />
+                      ))}
                       <Route
                         path={`${adminPath}/:listKey`}
                         render={({
