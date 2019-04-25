@@ -5,7 +5,7 @@ title: Mutation Lifecycle
 
 # Mutation Lifecycle
 
-<!-- TODO auto-generated TOC -->
+## Table of Contents
 
 - [Mutation Phases](#mutation-phases)
   - [Access Control Phase](#access-control-phase)
@@ -22,6 +22,8 @@ title: Mutation Lifecycle
     - [5. Database operation \[create/update/delete\]](#5-database-operation-createupdatedelete)
     - [6. Resolve backlinks \[create/update/delete\]](#6-resolve-backlinks-createupdatedelete)
     - [7. After change \[create/update/delete\]](#7-after-change-createupdatedelete)
+
+## Introduction
 
 The Keystone GraphQL API implements a CRUD API with `create`, `update` and `delete` mutations for each `List`.
 Each of these mutations can be applied to either a single item or many items at once.
