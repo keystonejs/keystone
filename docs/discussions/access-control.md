@@ -11,8 +11,8 @@ title: Access Control
 
 There are 2 ways of effecting the available actions of a user in Keystone:
 
-1.  Admin UI authentication
-2.  GraphQL access control
+1. Admin UI authentication
+2. GraphQL access control
 
 Note on Terminology:
 
@@ -34,15 +34,15 @@ access level of the currently authenticated (or anonymous) user.
 
 For example, the below access control states:
 
-1.  Only admins can read deactivated user accounts.
-2.  Only authenticated users can read/update their own email, not any other
-    user's. Admins can read/update anyone's email.
-3.  Only admins can see if a password is set. No-one can read their own or other
-    user's passwords.
-    - _NOTE: It is **never** possible in Keystone to read a password via the
-      Admin UI or the API)_
-4.  Only authenticated users can update their own password. Admins can update
-    anyone's password.
+1. Only admins can read deactivated user accounts.
+2. Only authenticated users can read/update their own email, not any other
+   user's. Admins can read/update anyone's email.
+3. Only admins can see if a password is set. No-one can read their own or other
+   user's passwords.
+   - _NOTE: It is **never** possible in Keystone to read a password via the
+     Admin UI or the API)_
+4. Only authenticated users can update their own password. Admins can update
+   anyone's password.
 
 _NOTE: The code below depends on having a correct [authentication setup](../authentication.md)._
 

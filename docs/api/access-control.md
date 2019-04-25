@@ -38,8 +38,8 @@ see the [Access Control Guide](../../guides/access-control.md) or the
 
 There are two ways of specifying Access Control:
 
-1.  List level
-1.  Field level
+1. List level
+2. Field level
 
 ### Defaults
 
@@ -69,9 +69,9 @@ covering all CRUD operations, or as an object keyed by CRUD operation names.
 
 There are 3 ways to define the values of `access`, in order of flexibility:
 
-1.  Static
-2.  Imperative
-3.  Declarative
+1. Static
+2. Imperative
+3. Declarative
 
 Described as a Flow type, it looks like this:
 
@@ -224,12 +224,12 @@ In the examples below, the `name_contains: 'k'` syntax matches the `UserWhereInp
 
 _NOTES:_
 
-1.  For singular `read`/`update`/`delete` operations, when the `GraphQLWhere`
-    clause results in 0 items, an `AccessDeniedError` is returned.
-2.  For batch `read` operations (eg; `query { allUsers }`), when the
-    `GraphQLWhere` clause results in 0 items returned, no error is returned.
-3.  For `create` operations, an `AccessDeniedError` is returned if the operation
-    is set to / returns `false`
+1. For singular `read`/`update`/`delete` operations, when the `GraphQLWhere`
+   clause results in 0 items, an `AccessDeniedError` is returned.
+2. For batch `read` operations (eg; `query { allUsers }`), when the
+   `GraphQLWhere` clause results in 0 items returned, no error is returned.
+3. For `create` operations, an `AccessDeniedError` is returned if the operation
+   is set to / returns `false`
 
 ###### Granular static `GraphQLWhere`s
 
@@ -292,8 +292,8 @@ covering all CRU operations, or as an object keyed by CRU operation names.
 
 There are 2 ways to define the values of `access`, in order of flexibility:
 
-1.  Static
-2.  Imperative
+1. Static
+2. Imperative
 
 Described as a Flow type, it looks like this:
 
@@ -451,10 +451,10 @@ Eg, setting `update: () => false` in the example above will still include the
 
 2 additional ways of effecting the available actions of a user in Keystone:
 
-1.  Admin UI authentication
-2.  _New:_ Admin UI display & forms
-3.  GraphQL access control
-4.  _New:_ Schema isolation
+1. Admin UI authentication
+2. _New:_ Admin UI display & forms
+3. GraphQL access control
+4. _New:_ Schema isolation
 
 ## Admin UI authentication
 
@@ -504,9 +504,9 @@ keystone.createList('User', {
 
 There are 3 ways to define the fields, in increasing levels of verbosity:
 
-1.  `true` for 'all access allowed' / `false` for 'no access allowed'
-2.  An array of field names to allow access to
-3.  A function which receives an `auth` object and returns either 1. or 2.
+1. `true` for 'all access allowed' / `false` for 'no access allowed'
+2. An array of field names to allow access to
+3. A function which receives an `auth` object and returns either 1. or 2.
 
 NOTE: When creating a list item, any fields not specified in `createFields` will
 use the field's default value. If no default value is set, an error will be thrown.
