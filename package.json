@@ -255,7 +255,8 @@
     },
     "plugins": [
       "remark-frontmatter",
-      "remark-toc"
+      "remark-toc",
+      "remark-validate-links"
     ]
   },
   "bolt": {
@@ -341,6 +342,7 @@
     "remark-cli": "^6.0.1",
     "remark-frontmatter": "^1.3.1",
     "remark-toc": "^5.1.1",
+    "remark-validate-links": "^8.0.2",
     "start-server-and-test": "^1.7.13",
     "supertest-light": "^1.0.2",
     "terminal-link": "^1.3.0",
