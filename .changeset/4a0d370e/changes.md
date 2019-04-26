@@ -1,0 +1,1 @@
+- Change transition API from a component which uses cloneElement to a function that accepts a transitionState and returns a style object
