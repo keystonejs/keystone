@@ -1,11 +1,11 @@
 // @flow
 export {
-  Fade,
-  SlideUp,
-  SlideDown,
-  SlideInHorizontal,
-  SpringDown,
-  ZoomInDown,
+  fade,
+  slideUp,
+  slideDown,
+  slideInHorizontal,
+  springDown,
+  zoomInDown,
   TransitionProvider,
   withTransitionState,
 } from './transitions';

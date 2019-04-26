@@ -6,8 +6,8 @@ import ScrollLock from 'react-scrolllock';
 import { FocusTrap, type FocusTarget } from 'react-focus-marshal';
 
 import {
-  Fade,
-  SlideUp,
+  fade,
+  slideUp,
   withTransitionState,
   Blanket,
   generateUEID,
@@ -61,36 +61,36 @@ class ModalDialog extends PureComponent<Props> {
       initialFocus,
       onClose,
       width,
-      ...transitionProps
+      transitionState,
     } = this.props;
     const dialogTitleId = generateUEID();
 
     return createPortal(
       <Fragment>
-        <Fade {...transitionProps}>
-          <Blanket onClick={closeOnBlanketClick ? onClose : undefined} isTinted />
-        </Fade>
-        <SlideUp {...transitionProps}>
-          <Positioner width={width}>
-            <FocusTrap
-              options={{
-                initialFocus,
-                clickOutsideDeactivates: closeOnBlanketClick,
-              }}
-            >
-              <Dialog component={component} aria-labelledby={dialogTitleId}>
-                <A11yText id={dialogTitleId}>{heading} Dialog</A11yText>
-                {heading ? (
-                  <Header>
-                    <Title>{heading}</Title>
-                  </Header>
-                ) : null}
-                <Body>{children}</Body>
-                {footer ? <Footer>{footer}</Footer> : null}
-              </Dialog>
-            </FocusTrap>
-          </Positioner>
-        </SlideUp>
+        <Blanket
+          style={fade(transitionState)}
+          onClick={closeOnBlanketClick ? onClose : undefined}
+          isTinted
+        />
+        <Positioner style={slideUp(transitionState)} width={width}>
+          <FocusTrap
+            options={{
+              initialFocus,
+              clickOutsideDeactivates: closeOnBlanketClick,
+            }}
+          >
+            <Dialog component={component} aria-labelledby={dialogTitleId}>
+              <A11yText id={dialogTitleId}>{heading} Dialog</A11yText>
+              {heading ? (
+                <Header>
+                  <Title>{heading}</Title>
+                </Header>
+              ) : null}
+              <Body>{children}</Body>
+              {footer ? <Footer>{footer}</Footer> : null}
+            </Dialog>
+          </FocusTrap>
+        </Positioner>
         <ScrollLock />
       </Fragment>,
       attachTo

@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom';
 
 import { borderRadius, colors, gridSize, shadows } from '@arch-ui/theme';
 import { FocusTrap } from 'react-focus-marshal';
-import { withModalHandlers, type ModalHandlerProps, SpringDown } from '@arch-ui/modal-utils';
+import { withModalHandlers, type ModalHandlerProps, springDown } from '@arch-ui/modal-utils';
 
 const ARROW_WIDTH = 30;
 const CHROME_GUTTER = 30;
@@ -157,4 +157,4 @@ class Popout extends Component<Props, State> {
   }
 }
 
-export default withModalHandlers(Popout, { Transition: SpringDown });
+export default withModalHandlers(Popout, { transition: springDown });
