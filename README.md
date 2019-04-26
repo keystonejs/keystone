@@ -248,7 +248,7 @@ the keystone instance, and a server to run the API.
 
 This folder contains an `index.js` file which when run via node
 (`node dist/api/index.js`) will serve the API. In this manner, it is possible to
-deploy the API independently of the [admin UI](#dist-admin) by deploying the
+deploy the API independently of the [admin UI](#distadmin) by deploying the
 contents of the `dist/api/` folder only.
 
 ##### `dist/admin/`

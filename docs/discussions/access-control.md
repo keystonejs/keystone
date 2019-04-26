@@ -19,13 +19,13 @@ Note on Terminology:
 - _Authentication_ refers to a user identifying themselves.
   The specifics of how this is done is outside the scope of this document.
   Within this document, we abbreviate _Authentication_ to _Auth_.
-  See [Authentication](../authentication.md) for more.
+  See [Authentication](./authentication.md) for more.
 - _Access Control_ refers to the specific actions an authenticated or anonymous
   user can take. Often referred to as _authorization_ elsewhere.
 
 ## Admin UI Authentication
 
-See [Authentication](../authentication.md).
+See [Authentication](./authentication.md).
 
 ## GraphQL Access Control
 

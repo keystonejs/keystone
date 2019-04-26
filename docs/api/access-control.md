@@ -624,7 +624,7 @@ keystone.createList('User', {
 
 ## GraphQL access control
 
-When combined with [Admin UI display & forms](#admin-ui-display-forms), it is
+When combined with [Admin UI display & forms](#admin-ui-display--forms), it is
 possible to display fields, while limiting the data.
 
 For example, the below access control states:
