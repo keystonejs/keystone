@@ -47,17 +47,11 @@ keystone
 
     await keystoneApp.connect();
 
-    socialLogins.forEach(strategy => setupAuthRoutes({ strategy, server }));
-
-    if (
-      facebookAuthEnabled ||
-      githubAuthEnabled ||
-      googleAuthEnabled ||
-      twitterAuthEnabled ||
-      wpAuthEnabled
-    ) {
+    if (socialLogins.length > 0) {
       InitializePassportAuthStrategies(server.app);
     }
+
+    socialLogins.forEach(strategy => setupAuthRoutes({ strategy, server }));
 
     // Initialise some data.
     // NOTE: This is only for test purposes and should not be used in production

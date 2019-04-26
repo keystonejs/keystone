@@ -1,9 +1,11 @@
 const { InitializePassportAuthStrategies } = require('@keystone-alpha/passport-auth');
-const { configureFacebookAuth } = require('./facebook');
-const { configureGitHubAuth } = require('./github');
-const { configureTwitterAuth } = require('./twitter');
-const { configureGoogleAuth } = require('./google');
-const { configureWPAuth } = require('./wordpress');
+const {
+  configureFacebookAuth,
+  configureGitHubAuth,
+  configureGoogleAuth,
+  configureTwitterAuth,
+  configureWPAuth,
+} = require('./strategies');
 const setupAuthRoutes = require('./setupAuthRoutes');
 
 module.exports = {
