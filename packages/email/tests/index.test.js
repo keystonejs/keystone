@@ -11,11 +11,11 @@ describe('email senders', () => {
     expect(html).toEqual('<!DOCTYPE html><html><body><div>Hello Foo</div></body></html>');
   });
 
-  test('jade', async () => {
+  test('pug', async () => {
     const { emailSender } = require('../');
 
-    const jadeEmailSender = emailSender.jade({ root: `${__dirname}/jade-views` });
-    const { html, text } = await jadeEmailSender('view.jade').render({ name: 'Foo' });
+    const pugEmailSender = emailSender.pug({ root: `${__dirname}/pug-views` });
+    const { html, text } = await pugEmailSender('view.pug').render({ name: 'Foo' });
 
     expect(text).toEqual('Foo is Awesome');
     expect(html).toEqual('<!DOCTYPE html><html><body><div>Foo is Awesome</div></body></html>');
