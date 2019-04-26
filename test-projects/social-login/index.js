@@ -1,5 +1,5 @@
 const { AdminUI } = require('@keystone-alpha/admin-ui');
-const { Keystone } = require('@keystone-alpha/keystone');
+const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const {
   File,
   Text,
@@ -9,7 +9,6 @@ const {
   Password,
   CloudinaryImage,
 } = require('@keystone-alpha/fields');
-const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
 
 const { staticRoute, staticPath, cloudinary } = require('./config');
@@ -21,7 +20,7 @@ const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const keystone = new Keystone({
-  name: 'Cypress Test for Facebook Login',
+  name: 'Cypress Test for Social Login',
   adapter: new MongooseAdapter(),
 });
 
@@ -76,6 +75,22 @@ keystone.createList('User', {
     // TODO: Create a Facebook field type to encapsulate these
     facebookId: { type: Text },
     facebookUsername: { type: Text },
+    // TODO: Create a GitHub field type to encapsulate these
+    githubId: { type: Text },
+    githubUsername: { type: Text },
+
+    // TODO: Create a Twitter field type to encapsulate these
+    twitterId: { type: Text },
+    twitterUsername: { type: Text },
+
+    // TODO: Create a Google field type to encapsulate these
+    googleId: { type: Text },
+    googleUsername: { type: Text },
+
+    // TODO: Create a WordPress field type to encapsulate these
+    wordpressId: { type: Text },
+    wordpressUsername: { type: Text },
+
     isAdmin: { type: Checkbox },
     company: {
       type: Select,

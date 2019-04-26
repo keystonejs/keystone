@@ -268,7 +268,7 @@ list used for authentication in `index.js`:
 <!-- prettier-ignore -->
 
 ```javascript
-const { Keystone, PasswordAuth } = require('@keystone-alpha/keystone');
+const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text, Password }  = require('@keystone-alpha/fields');
@@ -286,7 +286,7 @@ keystone.createList('User', {
 });
 
 const authStrategy = keystone.createAuthStrategy({
-  type: PasswordAuth,
+  type: PasswordAuthStrategy,
   list: 'User',
   config: {
     identityField: 'username', // default: 'email'
