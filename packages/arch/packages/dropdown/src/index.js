@@ -9,7 +9,7 @@ import { jsx } from '@emotion/core';
 
 import { borderRadius, colors, gridSize, shadows } from '@arch-ui/theme';
 import { FocusTrap } from 'react-focus-marshal';
-import { withModalHandlers, SlideDown, type ModalHandlerProps } from '@arch-ui/modal-utils';
+import { withModalHandlers, slideDown, type ModalHandlerProps } from '@arch-ui/modal-utils';
 
 const ItemElement = props => {
   if (props.to) return <Link {...props} />;
@@ -268,4 +268,4 @@ class Dropdown extends Component<Props, State> {
   }
 }
 
-export default withModalHandlers(Dropdown, { Transition: SlideDown });
+export default withModalHandlers(Dropdown, { transition: slideDown });
