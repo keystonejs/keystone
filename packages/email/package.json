@@ -20,7 +20,7 @@
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
-    "jade": "^1.11.0",
+    "pug": "2.0.3",
     "mjml-react": "^1.0.52",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
