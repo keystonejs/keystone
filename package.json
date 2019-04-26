@@ -15,7 +15,7 @@
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --list-different \"**/*.js\"",
     "lint:flow": "flow check",
-    "lint:markdown": "remark . --frail",
+    "lint:markdown": "remark . --frail --quiet",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:flow && yarn lint:markdown",
     "start": "yarn start:demo",
     "start:demo": "/bin/sh -c 'cd demo-projects/${1:-$0} && yarn start' todo",
