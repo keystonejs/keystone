@@ -142,10 +142,14 @@ An alert that is full width; removes border and border radius.
 
 ## License
 
-[MIT](./LICENSE) &copy; [Thinkmill](https://www.thinkmill.com.au/)
+[MIT](./LICENSE) © [Thinkmill](https://www.thinkmill.com.au/)
 
 [source]: https://github.com/keystonejs/arch
+
 [docs]: http://arch.keystonejs.com/
+
 [npm]: https://www.npmjs.com/
+
 [install-npm]: https://docs.npmjs.com/getting-started/installing-node
+
 [theme]: http://npmjs.com/package/@arch-ui/theme

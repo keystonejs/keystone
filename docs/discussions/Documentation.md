@@ -79,8 +79,8 @@ PRs which contribute new content, or which improve the existing content by editi
 
 This model of documentation is borrowed directly from a talk given by Daniele Procida at Pycon Australia 2017, and all credit for these ideas belong to him.
 
-https://www.youtube.com/watch?v=t4vKPhjcMZg
+<https://www.youtube.com/watch?v=t4vKPhjcMZg>
 
 He has written a comprehensive blog post on the topic, which is well worth the read.
 
-https://www.divio.com/blog/documentation/
+<https://www.divio.com/blog/documentation/>

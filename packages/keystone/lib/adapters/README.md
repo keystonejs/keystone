@@ -90,7 +90,7 @@ Keystone    .adapters  ->   KeystoneAdapter   (.listAdapters)
               1:1
 ```
 
-### The Field Type <- FieldAdapter Relationship
+### The Field Type \<- FieldAdapter Relationship
 
 Each field type definition contains a mapping from `KeystoneAdapter` to `FieldAdapter` class in `.adapters`.
 The key to this mapping is the `KeystoneAdapter` intance's `.name` property.

@@ -70,7 +70,7 @@ the `new AdminUI()` call:
 + const admin = new AdminUI(keystone, { });
 ```
 
-Restart your Keystone App, and visit [http://localhost:3000/users](http://localhost:3000/users) - you should now be able to access the Admin UI without logging in.
+Restart your Keystone App, and visit <http://localhost:3000/users> - you should now be able to access the Admin UI without logging in.
 
 Next, create a User (be sure to set both a username and password).
 
@@ -81,7 +81,7 @@ Add the `authStrategy` config back to the `new AdminUI()` call
 + const admin = new AdminUI(keystone, { authStrategy });
 ```
 
-Restart your Keystone App once more, and try to visit [http://localhost:3000/users](http://localhost:3000/users); you will be presented with the login screen.
+Restart your Keystone App once more, and try to visit <http://localhost:3000/users>; you will be presented with the login screen.
 
 Finally; login with the newly created `User`'s credentials.
 
