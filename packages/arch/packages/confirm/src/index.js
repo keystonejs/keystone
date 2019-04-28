@@ -10,8 +10,8 @@ import styled from '@emotion/styled';
 import { borderRadius, shadows } from '@arch-ui/theme';
 import { FocusTrap } from 'react-focus-marshal';
 import {
-  Fade,
-  ZoomInDown,
+  fade,
+  zoomInDown,
   withTransitionState,
   type TransitionState,
   Blanket,
@@ -91,23 +91,19 @@ class ModalConfirm extends PureComponent<Props> {
     if (this.props.onKeyDown) this.props.onKeyDown(e);
   };
   render() {
-    const { attachTo, children, component, onClose, width, ...transitionProps } = this.props;
+    const { attachTo, children, component, width, transitionState } = this.props;
 
     return createPortal(
       <Fragment>
-        <Fade {...transitionProps}>
-          <Blanket isTinted isLight />
-        </Fade>
-        <ZoomInDown {...transitionProps}>
-          <Positioner>
-            <FocusTrap>
-              <Dialog component={component} width={width}>
-                <Body>{children}</Body>
-              </Dialog>
-            </FocusTrap>
-            <ScrollLock />
-          </Positioner>
-        </ZoomInDown>
+        <Blanket style={fade(transitionState)} isTinted isLight />
+        <Positioner style={zoomInDown(transitionState)}>
+          <FocusTrap>
+            <Dialog component={component} width={width}>
+              <Body>{children}</Body>
+            </Dialog>
+          </FocusTrap>
+          <ScrollLock />
+        </Positioner>
       </Fragment>,
       attachTo
     );

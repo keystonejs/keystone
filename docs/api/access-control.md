@@ -13,33 +13,63 @@ see the [Access Control Guide](../../guides/access-control.md) or the
 
 ## Table of Contents
 
-<!-- TODO auto-generated TOC -->
+- - [GraphQL Access Control](#graphql-access-control)
 
-- [GraphQL access control](#graph-ql-access-control)
-  - [Defaults](#defaults)
-  - [List level access control](#list-level-access-control)
-    - [`access` API](#access-api)
-      - [Booleans](#booleans)
-        - [Shorthand static Boolean](#shorthand-static-boolean)
-        - [Granular static Booleans](#granular-static-booleans)
-        - [Shorthand Imperative Boolean](#shorthand-imperative-boolean)
-        - [Granular functions returning Boolean](#granular-functions-returning-boolean)
-      - [`GraphQLWhere`s](#graph-ql-wheres)
-        - [Granular static `GraphQLWhere`s](#granular-static-graph-ql-wheres)
-        - [Granular functions returning `GraphQLWhere`](#granular-functions-returning-graph-ql-where)
-  - [Field level access control](#field-level-access-control)
-    - [`access` API](#access-api-1)
-      - [Shorthand static Boolean](#shorthand-static-boolean-1)
-      - [Granular static Booleans](#granular-static-booleans-1)
-      - [Shorthand Imperative Boolean](#shorthand-imperative-boolean-1)
-      - [Granular functions returning Boolean](#granular-functions-returning-boolean-1)
+    - [Defaults](#defaults)
+
+    - [List level access control](#list-level-access-control)
+
+      - [access API](#access-api)
+
+        - [Booleans](#booleans)
+
+          - [Shorthand static Boolean](#shorthand-static-boolean)
+          - [Granular static Booleans](#granular-static-booleans)
+          - [Shorthand Imperative Boolean](#shorthand-imperative-boolean)
+          - [Granular functions returning Boolean](#granular-functions-returning-boolean)
+
+        - [GraphQLWheres](#graphqlwheres)
+
+          - [Granular static GraphQLWheres](#granular-static-graphqlwheres)
+          - [Granular functions returning GraphQLWhere](#granular-functions-returning-graphqlwhere)
+
+    - [Field level access control](#field-level-access-control)
+
+      - [access API](#access-api-1)
+
+        - [Shorthand static Boolean](#shorthand-static-boolean-1)
+        - [Granular static Booleans](#granular-static-booleans-1)
+        - [Shorthand Imperative Boolean](#shorthand-imperative-boolean-1)
+        - [Granular functions returning Boolean](#granular-functions-returning-boolean-1)
+
+- [Roadmap](#roadmap)
+
+  - [Admin UI authentication](#admin-ui-authentication)
+
+  - [Admin UI display & forms](#admin-ui-display--forms)
+
+    - [true/false](#truefalse)
+    - [Array of field names to allow access to](#array-of-field-names-to-allow-access-to)
+    - [A function which receives an auth object and returns either 1. or 2.](#a-function-which-receives-an-auth-object-and-returns-either-1-or-2)
+
+  - [GraphQL access control](#graphql-access-control-1)
+
+  - [Access Control Queries](#access-control-queries)
+
+  - [Schema isolation](#schema-isolation)
+
+    - [createGraphQLMiddleware(config) => function(req, res, next)](#creategraphqlmiddlewareconfig--functionreq-res-next)
+
+    - [Schema Isolation Examples](#schema-isolation-examples)
+
+      - [Role based schemas](#role-based-schemas)
 
 ## GraphQL Access Control
 
 There are two ways of specifying Access Control:
 
-1.  List level
-1.  Field level
+1. List level
+2. Field level
 
 ### Defaults
 
@@ -69,9 +99,9 @@ covering all CRUD operations, or as an object keyed by CRUD operation names.
 
 There are 3 ways to define the values of `access`, in order of flexibility:
 
-1.  Static
-2.  Imperative
-3.  Declarative
+1. Static
+2. Imperative
+3. Declarative
 
 Described as a Flow type, it looks like this:
 
@@ -224,12 +254,12 @@ In the examples below, the `name_contains: 'k'` syntax matches the `UserWhereInp
 
 _NOTES:_
 
-1.  For singular `read`/`update`/`delete` operations, when the `GraphQLWhere`
-    clause results in 0 items, an `AccessDeniedError` is returned.
-2.  For batch `read` operations (eg; `query { allUsers }`), when the
-    `GraphQLWhere` clause results in 0 items returned, no error is returned.
-3.  For `create` operations, an `AccessDeniedError` is returned if the operation
-    is set to / returns `false`
+1. For singular `read`/`update`/`delete` operations, when the `GraphQLWhere`
+   clause results in 0 items, an `AccessDeniedError` is returned.
+2. For batch `read` operations (eg; `query { allUsers }`), when the
+   `GraphQLWhere` clause results in 0 items returned, no error is returned.
+3. For `create` operations, an `AccessDeniedError` is returned if the operation
+   is set to / returns `false`
 
 ###### Granular static `GraphQLWhere`s
 
@@ -292,8 +322,8 @@ covering all CRU operations, or as an object keyed by CRU operation names.
 
 There are 2 ways to define the values of `access`, in order of flexibility:
 
-1.  Static
-2.  Imperative
+1. Static
+2. Imperative
 
 Described as a Flow type, it looks like this:
 
@@ -451,10 +481,10 @@ Eg, setting `update: () => false` in the example above will still include the
 
 2 additional ways of effecting the available actions of a user in Keystone:
 
-1.  Admin UI authentication
-2.  _New:_ Admin UI display & forms
-3.  GraphQL access control
-4.  _New:_ Schema isolation
+1. Admin UI authentication
+2. _New:_ Admin UI display & forms
+3. GraphQL access control
+4. _New:_ Schema isolation
 
 ## Admin UI authentication
 
@@ -504,9 +534,9 @@ keystone.createList('User', {
 
 There are 3 ways to define the fields, in increasing levels of verbosity:
 
-1.  `true` for 'all access allowed' / `false` for 'no access allowed'
-2.  An array of field names to allow access to
-3.  A function which receives an `auth` object and returns either 1. or 2.
+1. `true` for 'all access allowed' / `false` for 'no access allowed'
+2. An array of field names to allow access to
+3. A function which receives an `auth` object and returns either 1. or 2.
 
 NOTE: When creating a list item, any fields not specified in `createFields` will
 use the field's default value. If no default value is set, an error will be thrown.

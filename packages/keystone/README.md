@@ -79,11 +79,11 @@ keystone.createList('User', {
 
 There is 2 ways to write the relationship query:
 
-1.  _Single Relation syntax_, using the same query as a Single Relationship, but
-    instead of picking only the first item found, it will pick _all_ the items
-    found to match the query. ie; 0, 1, or _n_ items.
-2.  _Array Relation syntax_, allowing to explicitly set the exact items related
-    to. ie; The exact length and items in the collection.
+1. _Single Relation syntax_, using the same query as a Single Relationship, but
+   instead of picking only the first item found, it will pick _all_ the items
+   found to match the query. ie; 0, 1, or _n_ items.
+2. _Array Relation syntax_, allowing to explicitly set the exact items related
+   to. ie; The exact length and items in the collection.
 
 **Single Relation syntax** example
 
