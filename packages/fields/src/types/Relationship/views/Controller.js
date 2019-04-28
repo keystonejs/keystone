@@ -33,7 +33,8 @@ export default class RelationshipController extends FieldController {
   buildRelateToManyInput = data => ({ connect: data.map(({ id }) => ({ id })) });
 
   serialize = data => {
-    const { many, path } = this.config;
+    const { path } = this;
+    const { many } = this.config;
 
     if (!data[path]) {
       return many ? { disconnectAll: true } : null;
