@@ -55,7 +55,7 @@ export default class ContentController extends TextController {
   }
 
   serialize = data => {
-    const { path } = this.config;
+    const { path } = this;
     if (!data[path] || !data[path].document) {
       // Forcibly return null if empty string
       return { document: null };
@@ -63,7 +63,7 @@ export default class ContentController extends TextController {
     return { document: data[path].document };
   };
 
-  deserialize = data => (data[this.config.path] ? data[this.config.path] : { document: {} });
+  deserialize = data => (data[this.path] ? data[this.path] : { document: {} });
 
   getQueryFragment = () => {
     return `

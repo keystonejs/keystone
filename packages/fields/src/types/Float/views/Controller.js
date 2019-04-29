@@ -12,7 +12,7 @@ export default class TextController extends FieldController {
     return `${this.getFilterLabel({ label })}: "${value}"`;
   };
   serialize = data => {
-    const value = data[this.config.path];
+    const value = data[this.path];
     if (typeof value === 'number') {
       return value;
     } else if (typeof value === 'string' && value.length > 0) {
