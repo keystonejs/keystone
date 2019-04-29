@@ -14,6 +14,7 @@ exports.User = {
     email: { type: Text, isUnique: true },
     password: { type: Password },
     isAdmin: { type: Checkbox },
+    talks: { type: Relationship, ref: 'Talk' },
   },
 };
 
@@ -23,6 +24,7 @@ exports.Meetup = {
     status: { type: Select, options: 'draft, active' },
     day: { type: CalendarDay },
     description: { type: Wysiwyg },
+    talks: { type: Relationship, ref: 'Talk' },
   },
 };
 
