@@ -60,27 +60,18 @@ export class Content extends Text {
     }
 
     this.complexBlocks = this.blocks
-      .map(blockConfig => {
-        let Impl = blockConfig;
-        let fieldConfig = {};
-
-        if (Array.isArray(blockConfig)) {
-          Impl = blockConfig[0];
-          fieldConfig = blockConfig[1];
-        }
-
-        if (!Impl.isComplexDataType) {
-          return null;
-        }
-
-        return new Impl(fieldConfig, {
-          fromList: this.listKey,
-          createAuxList: listConfig.createAuxList,
-          getListByKey: listConfig.getListByKey,
-          listConfig: this.listConfig,
-        });
-      })
-      .filter(block => block);
+      .map(block => (Array.isArray(block) ? block : [block, {}]))
+      .filter(([block]) => block.implementation)
+      .map(
+        ([block, blockConfig]) =>
+          new block.implementation(blockConfig, {
+            type: block.type,
+            fromList: this.listKey,
+            createAuxList: listConfig.createAuxList,
+            getListByKey: listConfig.getListByKey,
+            listConfig: this.listConfig,
+          })
+      );
   }
 
   /*

@@ -2,28 +2,17 @@ import pluralize from 'pluralize';
 import { Block } from '../../Block';
 import RelationshipFieldType from '../Relationship';
 import CloudinaryImage from './';
-import Text from '../Text';
-import { importView } from '@keystone-alpha/build-field-types';
 
-export class CloudinaryBlock extends Block {
-  static get type() {
-    return 'cloudinaryImage';
-  }
-
-  static get isComplexDataType() {
-    return true;
-  }
-
-  static get viewPath() {
-    return importView('../Content/views/editor/blocks/image-container');
-  }
-
-  constructor({ adapter }, { fromList, createAuxList, getListByKey, listConfig }) {
+export class ImageBlock extends Block {
+  constructor({ adapter }, { type, fromList, createAuxList, getListByKey, listConfig }) {
     super();
 
     this.fromList = fromList;
+    this.type = type;
 
-    const auxListKey = `_Block_${fromList}_${CloudinaryBlock.type}`;
+    const auxListKey = `_Block_${fromList}_${this.type}`;
+
+    // Ensure the list is only instantiated once per server instance.
     let auxList = getListByKey(auxListKey);
 
     if (!auxList) {
@@ -31,8 +20,6 @@ export class CloudinaryBlock extends Block {
         fields: {
           // We perform the requires here to avoid circular dependencies
           image: { type: CloudinaryImage, isRequired: true, adapter },
-          from: { type: RelationshipFieldType, isRequired: true, ref: fromList },
-          field: { type: Text, isRequired: true },
         },
       });
     }
@@ -47,14 +34,17 @@ export class CloudinaryBlock extends Block {
     // `document`. Those inputs are relationships to our join tables.  Here we
     // create a Relationship field to leverage existing functionality for
     // generating the graphQL schema.
-    const fieldName = pluralize.plural(CloudinaryBlock.type);
     this._inputFields = [
-      new Relationship(fieldName, { ref: auxListKey, many: true, withMeta: false }, listConfig),
+      new Relationship(this.path, { ref: auxListKey, many: true, withMeta: false }, listConfig),
     ];
 
     this._outputFields = [
-      new Relationship(fieldName, { ref: auxListKey, many: true, withMeta: false }, listConfig),
+      new Relationship(this.path, { ref: auxListKey, many: true, withMeta: false }, listConfig),
     ];
+  }
+
+  get path() {
+    return pluralize.plural(this.type);
   }
 
   getGqlInputFields() {
