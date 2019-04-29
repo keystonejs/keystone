@@ -34,7 +34,7 @@ module.exports = class View {
   // renderQueue: any[];
   // actionQueue: any[];
 
-  constructor(keystone, req, res, { schemaName = 'admin', populateRelated = null }) {
+  constructor(keystone, req, res, { schemaName = 'admin', populateRelated = null, allowQueryFromAction = true } = {}) {
     if (!req || req.constructor.name !== 'IncomingMessage') {
       throw new Error('Keystone.View Error: Express request object is required.');
     }
@@ -47,6 +47,7 @@ module.exports = class View {
     this.res = res;
     this.schemaName = schemaName;
     this.populateRelated = populateRelated;
+    this.allowQueryFromAction = allowQueryFromAction;
 
     this.initQueue = []; // executed first in series
     this.actionQueue = []; // executed second in parallel, if optional conditions are met
@@ -385,6 +386,7 @@ module.exports = class View {
     let renderFnLocal = renderFn;
     const req = this.req;
     const res = this.res;
+    let queryQueue = [...this.queryQueue];
 
     if (typeof renderFn === 'string') {
       const viewPath = renderFn;
@@ -404,10 +406,10 @@ module.exports = class View {
 
     // Add actions, queries & renderQueue to the end of the initQueue
     this.initQueue.push(...this.actionQueue);
-    this.initQueue.push(...this.queryQueue);
 
     const preRenderQueue = [];
 
+    // TODO: global pre:render queue
     // Add Keystone's global pre('render') queue
     // keystone.getMiddleware('pre:render').forEach(function (fn) {
     //     preRenderQueue.push(function (next) {
@@ -415,10 +417,8 @@ module.exports = class View {
     //     });
     // });
 
-    this.initQueue.push(preRenderQueue);
-    this.initQueue.push(this.renderQueue);
-
-    await asyncForEach(this.initQueue, async i => {
+    // process init queue and action queue, this allows more query to be queued during init queue and action que conditionally
+    await asyncForEach([...this.initQueue, ...this.actionQueue], async i => {
       if (Array.isArray(i)) {
         // process nested arrays in parallel
         await asyncForEachParallel(i, _ => _());
@@ -432,6 +432,24 @@ module.exports = class View {
     // ,  async err => {
 
     // });
+
+    if(this.allowQueryFromAction) {
+      // refresh query queue from changes made in execution of the init and action queue
+      queryQueue = [...this.queryQueue];
+    }
+
+    await asyncForEach([...queryQueue, preRenderQueue, this.renderQueue], async i => {
+      if (Array.isArray(i)) {
+        // process nested arrays in parallel
+        await asyncForEachParallel(i, _ => _());
+      } else if (typeof i === 'function') {
+        // process single methods in series
+        await i();
+      } else {
+        throw new Error('View.render() events must be functions.');
+      }
+    });
+
     await renderFnLocal(null, req, res);
   }
 };
