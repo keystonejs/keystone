@@ -19,13 +19,13 @@ export default class FieldController {
   // mutation. It must be serialized into the format expected within the field's
   // Implementation#gqlCreateInputFields()/Implementation#gqlUpdateInputFields()
   // NOTE: This function is run synchronously
-  serialize = data => data[this.config.path] || null;
+  serialize = data => data[this.path] || null;
 
   // When receiving data from the server, it needs to be processed into a
   // format ready for display. The format received will be the same as specified
   // in the field's Implementation#gqlOutputFields()
   // NOTE: This function is run synchronously
-  deserialize = data => data[this.config.path];
+  deserialize = data => data[this.path];
 
   /**
    * @description Before sending data to the GraphQL server, this check is run to exclude
@@ -41,7 +41,7 @@ export default class FieldController {
    * @return boolean
    */
   hasChanged = async (initialData, currentData) =>
-    isEqual(initialData[this.config.path], currentData[this.config.path]);
+    isEqual(initialData[this.path], currentData[this.path]);
 
   // eslint-disable-next-line no-unused-vars
   getDefaultValue = data => this.config.defaultValue || '';
