@@ -1,4 +1,3 @@
-/* eslint-disable no-shadow */
 const pluralize = require('pluralize');
 
 const {
