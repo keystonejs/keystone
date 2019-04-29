@@ -1,0 +1,24 @@
+{
+  "name": "@keystone-alpha/demo-project-meetup",
+  "description": "An example KeystoneJS project showcasing a Meetup Site.",
+  "private": true,
+  "version": "0.0.0",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "scripts": {
+    "start": "DISABLE_LOGGING=true keystone",
+    "build": "next build"
+  },
+  "dependencies": {
+    "@keystone-alpha/adapter-mongoose": "^1.0.6",
+    "@keystone-alpha/admin-ui": "^3.1.0",
+    "@keystone-alpha/core": "^2.0.3",
+    "@keystone-alpha/fields": "^5.0.0",
+    "@keystone-alpha/fields-wysiwyg-tinymce": "^1.0.2",
+    "@keystone-alpha/keystone": "^3.1.0",
+    "@keystone-alpha/server": "^4.0.1"
+  }
+}
