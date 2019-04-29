@@ -49,9 +49,9 @@ module.exports = function createGraphQLMiddleware(
         addDevQueryMiddlewares(app, apiPath, graphiqlPath, devQueryPath);
       }
     }
+
     ttyLink('GraphQL Playground:', graphiqlPath, port, playgroundPkg.version);
-    app.use(graphiqlPath, restrict);
-    app.use(graphiqlPath, graphiqlMiddleware(apiPath));
+    app.get(graphiqlPath, [restrict, graphiqlMiddleware(apiPath)]);
   }
 
   ttyLink('GraphQL API:', apiPath, port);
