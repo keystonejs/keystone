@@ -74,7 +74,7 @@ Object {
   "dependencies": Object {
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
-    "@babel/runtime": "^7.4.3",
+    "@babel/runtime": "^7.4.4",
   },
   "license": "MIT",
   "main": "dist/use-babel-runtime.cjs.js",
