@@ -1,11 +1,12 @@
+import { importView } from '@keystone-alpha/build-field-types';
+
 import {
   CloudinaryImage,
   MongoCloudinaryImageInterface,
   KnexCloudinaryImageInterface,
 } from './Implementation';
-
-import { CloudinaryBlock } from './Block';
-import { importView } from '@keystone-alpha/build-field-types';
+import { ImageBlock } from './ImageBlock';
+import imageContainer from '../Content/blocks/image-container';
 
 export default {
   type: 'CloudinaryImage',
@@ -19,5 +20,11 @@ export default {
     mongoose: MongoCloudinaryImageInterface,
     knex: KnexCloudinaryImageInterface,
   },
-  block: CloudinaryBlock,
+  blocks: {
+    image: {
+      type: 'cloudinaryImage',
+      viewPath: imageContainer.viewPath,
+      implementation: ImageBlock,
+    },
+  },
 };
