@@ -113,4 +113,4 @@ Notice Jess can only read his own email, and cannot read any passwords.
 
 ---
 
-Read more in the [Access Control API docs](../../guides/access-control.md).
+Read more in the [Access Control API docs](../api/access-control.md).

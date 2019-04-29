@@ -34,7 +34,7 @@ On the second step, you will see a screen such as:
 
 Ignore the `npx apollo service:push` command for now,
 we'll need to upload the schema a slightly different way to account for any
-[Access Control](../access-control.md) you may have setup.
+[Access Control](./access-control.md) you may have setup.
 
 #### Config
 
