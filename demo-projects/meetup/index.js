@@ -3,7 +3,7 @@ const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
-const { Meetup, Talk, User } = require('./schema');
+const { Meetup, Talk, User, Rsvp } = require('./schema');
 
 const keystone = new Keystone({
   name: 'Keystone Meetup',
@@ -18,6 +18,7 @@ const authStrategy = keystone.createAuthStrategy({
 keystone.createList('Meetup', Meetup);
 keystone.createList('Talk', Talk);
 keystone.createList('User', User);
+keystone.createList('Rsvp', Rsvp);
 
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
