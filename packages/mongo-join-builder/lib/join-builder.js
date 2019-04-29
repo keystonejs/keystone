@@ -87,7 +87,6 @@ const compose = fns => o => fns.reduce((acc, fn) => fn(acc), o);
 function mutationBuilder(relationships, path = []) {
   return compose(
     Object.entries(relationships).map(
-      // eslint-disable-next-line no-shadow
       ([uid, { postQueryMutation, field, relationships }]) => {
         const uniqueField = `${uid}_${field}`;
         const postQueryMutations = mutationBuilder(relationships, [...path, uniqueField]);
