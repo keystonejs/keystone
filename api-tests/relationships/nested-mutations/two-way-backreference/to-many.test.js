@@ -46,10 +46,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             // canaryStudent is used as a canary to make sure nothing crosses over
             let canaryStudent = await create('Student', {});
-            debugger;
 
             teacher1 = await findById('Teacher', teacher1.id);
-            debugger;
             teacher2 = await findById('Teacher', teacher2.id);
             canaryStudent = await findById('Student', canaryStudent.id);
 

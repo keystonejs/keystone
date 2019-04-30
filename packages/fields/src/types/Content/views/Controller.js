@@ -3,7 +3,9 @@
 // how to traverse preconstruct's src pointers yet, when it does this
 // should import from '@keystone-alpha/fields/types/Text/views/Controller'
 import memoizeOne from 'memoize-one';
+import { Value } from 'slate';
 import TextController from '../../Text/views/Controller';
+import { initialValue } from './editor/constants';
 
 const flattenBlocks = inputBlocks =>
   inputBlocks.reduce((outputBlocks, block) => {
@@ -60,10 +62,22 @@ export default class ContentController extends TextController {
       // Forcibly return null if empty string
       return { document: null };
     }
-    return { document: data[path].document };
+    return { document: JSON.stringify(data[path].document) };
   };
 
-  deserialize = data => (data[this.path] ? data[this.path] : { document: {} });
+  deserialize = data => {
+    let value;
+    if (data[this.path] && data[this.path].document) {
+      value = {
+        document: JSON.parse(data[this.path].document),
+      };
+    } else {
+      value = initialValue;
+    }
+    return Value.fromJSON(value);
+  };
+
+  getDefaultValue = () => Value.fromJSON(initialValue);
 
   getQueryFragment = () => {
     return `

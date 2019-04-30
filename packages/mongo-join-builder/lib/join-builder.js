@@ -86,17 +86,14 @@ const compose = fns => o => fns.reduce((acc, fn) => fn(acc), o);
 
 function mutationBuilder(relationships, path = []) {
   return compose(
-    Object.entries(relationships).map(
-      // eslint-disable-next-line no-shadow
-      ([uid, { postQueryMutation, field, relationships }]) => {
-        const uniqueField = `${uid}_${field}`;
-        const postQueryMutations = mutationBuilder(relationships, [...path, uniqueField]);
-        // NOTE: Order is important. We want depth first, so we perform the related mutators first.
-        return postQueryMutation
-          ? compose([postQueryMutations, mutation(postQueryMutation, [...path, uniqueField])])
-          : postQueryMutations;
-      }
-    )
+    Object.entries(relationships).map(([uid, { postQueryMutation, field, relationships }]) => {
+      const uniqueField = `${uid}_${field}`;
+      const postQueryMutations = mutationBuilder(relationships, [...path, uniqueField]);
+      // NOTE: Order is important. We want depth first, so we perform the related mutators first.
+      return postQueryMutation
+        ? compose([postQueryMutations, mutation(postQueryMutation, [...path, uniqueField])])
+        : postQueryMutations;
+    })
   );
 }
 
