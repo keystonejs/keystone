@@ -20,7 +20,7 @@ exports.User = {
   },
 };
 
-exports.Meetup = {
+exports.Event = {
   fields: {
     name: { type: Text },
     status: { type: Select, options: 'draft, active' },
@@ -35,7 +35,7 @@ exports.Meetup = {
 exports.Talk = {
   fields: {
     name: { type: Text },
-    meetup: { type: Relationship, ref: 'Meetup' },
+    event: { type: Relationship, ref: 'Event' },
     speaker: { type: Relationship, ref: 'User' },
     isLightningTalk: { type: Checkbox },
     description: { type: Wysiwyg },
@@ -44,7 +44,7 @@ exports.Talk = {
 
 exports.Rsvp = {
   fields: {
-    meetup: { type: Relationship, ref: 'Meetup' },
+    event: { type: Relationship, ref: 'Event' },
     user: { type: Relationship, ref: 'User' },
     status: { type: Select, options: 'yes, no' },
   },
