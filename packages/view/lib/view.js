@@ -246,7 +246,7 @@ module.exports = class View {
       try {
         const { data, errors } = await queryFn(query, context);
         locals[key] = data;
-        const resultKeys = Object.keys(data);
+        const resultKeys = Object.keys(data || {});
         if (unwrap && resultKeys.length === 1) {
           locals[key] = data[resultKeys[0]];
         }
@@ -387,6 +387,8 @@ module.exports = class View {
     const req = this.req;
     const res = this.res;
     let queryQueue = [...this.queryQueue];
+    // clear queryQueue to capture new query que and place them on front
+    this.queryQueue = [];
 
     if (typeof renderFn === 'string') {
       const viewPath = renderFn;
@@ -403,19 +405,6 @@ module.exports = class View {
         'Keystone.View.render() renderFn must be a templatePath (string) or a function.'
       );
     }
-
-    // Add actions, queries & renderQueue to the end of the initQueue
-    this.initQueue.push(...this.actionQueue);
-
-    const preRenderQueue = [];
-
-    // TODO: global pre:render queue
-    // Add Keystone's global pre('render') queue
-    // keystone.getMiddleware('pre:render').forEach(function (fn) {
-    //     preRenderQueue.push(function (next) {
-    //         fn(req, res, next);
-    //     });
-    // });
 
     // process init queue and action queue, this allows more query to be queued during init queue and action que conditionally
     await asyncForEach([...this.initQueue, ...this.actionQueue], async i => {
@@ -434,10 +423,21 @@ module.exports = class View {
     // });
 
     if(this.allowQueryFromAction) {
-      // refresh query queue from changes made in execution of the init and action queue
-      queryQueue = [...this.queryQueue];
+      // refresh query queue from changes made in execution of the init and action queue. place queries from action queue at front.
+      queryQueue = [...this.queryQueue, ...queryQueue];
     }
 
+    const preRenderQueue = [];
+
+    // TODO: enable global pre:render queue on keystone or on view.
+    // Add Keystone's global pre('render') queue
+    // keystone.getMiddleware('pre:render').forEach(function (fn) {
+    //     preRenderQueue.push(function (next) {
+    //         fn(req, res, next);
+    //     });
+    // });
+
+    // process queries & renderQueue
     await asyncForEach([...queryQueue, preRenderQueue, this.renderQueue], async i => {
       if (Array.isArray(i)) {
         // process nested arrays in parallel
