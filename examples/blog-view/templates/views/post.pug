@@ -1,0 +1,25 @@
+extends ../layouts/default
+
+block content
+  div.content
+    a.back-link(href='/') &lt; Go Back
+
+    +post-detail(post.Post)
+
+    div
+      h2 Comments
+      each comment in post.allComments
+        .post-comment
+          img.post-comment-avatar(src= comment.author && comment.author.avatar ? comment.author.avatar.publicUrl : imagePlaceholder(comment.author ? comment.author.name : 'anonymous') )
+          .post-comment-content
+            p.post-comment-header= `${comment.author ? comment.author.name : 'someone'} on ${format(comment.posted, 'DD MMM YYYY')}`
+            p.post-comment-body= comment.body
+      else 
+        | No comments yet
+        
+    div
+      h2 Add new Comment
+      form(method='post')
+        input(type='hidden', name='author' value= user || demoUser[0].id)
+        textarea.new-comment-text(type='text', placeholder='Write a comment', name='comment')
+        input.new-comment-submit(type='submit', value='Submit')

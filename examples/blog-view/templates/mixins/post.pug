@@ -1,0 +1,22 @@
+mixin post(post)
+  .home-post-item(onclick=`location.href='/post?id=${post.id}'`)
+    if post.image
+      img(src=post.image.publicUrl, style='width: 100%;')
+    .post-content
+      h3.post-head= post.title
+      p !{post.body}
+      .post-footer
+        //- - console.log(post.posted)
+        - var posted = format(post.posted, 'DD/MM/YYYY')
+        p.post-footer-content= `Posted by ${post.author ? post.author.name : 'someone'} on ${posted}`
+
+mixin post-detail(post)
+  .post-detail-post
+    if post.image
+      img(src=post.image.publicUrl, style='width: auto;')
+    .post-content
+      h1.post-head= post.title
+      p !{post.body}
+      .post-footer
+        - var posted = format(post.posted, 'DD/MM/YYYY')
+        p.post-footer-content= `Posted by ${post.author ? post.author.name : 'someone'} on ${posted}`

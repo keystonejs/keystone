@@ -1,0 +1,18 @@
+include ../mixins/post.pug
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    meta(http-equiv='X-UA-Compatible', content='ie=edge')
+    title Keystone Blog
+    link(href='https://fonts.googleapis.com/css?family=Rubik', rel='stylesheet')
+    link(href='public/css/site.css', rel='stylesheet')  
+
+  body
+    .body
+      div.page-layout
+        block content
+      footer.page-footer
+        | Built with KeystoneJS. 
+        a.footer-link(href='/admin') Go to Admin Console.

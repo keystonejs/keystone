@@ -1,0 +1,31 @@
+extends ../layouts/default-minimal
+
+block content
+  div.content
+    a.back-link(href='/') &lt; Go Back
+    h1 New Post 
+  
+    if created
+      .new-post-success
+        span
+          strong Success! Post has been created. 
+          a.new-post-success-link(href=`/post?id=${created.id}`) Check it out
+    if err
+      .new-post-error
+        span= err
+    form(method='post')
+      .new-post-form-group
+        label.new-post-form-label(for='title') Title:
+        input.new-post-form-input(type='text', name='title', value='')
+      .new-post-form-group
+        label.new-post-form-label(for='body') Body:
+        textarea.new-post-form-textarea(name='body')
+      .new-post-form-group
+        label.new-post-form-label(for='image') Image URL:
+        input.new-post-form-input(type='file', name='image', enctype='multipart/form-data' disabled)
+      .new-post-form-group
+        label.new-post-form-label(for='admin') Post as:
+        select.new-post-form-select(name='admin')
+          each user in allUsers
+            option(value=user.id)= `${user.name} <${user.email}>`
+      input(type='submit', value='submit')
