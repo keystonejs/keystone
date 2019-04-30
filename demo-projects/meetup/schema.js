@@ -15,8 +15,7 @@ exports.User = {
     email: { type: Text, isUnique: true },
     password: { type: Password },
     isAdmin: { type: Checkbox },
-    talks: { type: Relationship, ref: 'Talk', many: true },
-    rsvps: { type: Relationship, ref: 'Rsvp', many: true },
+    talks: { type: Relationship, ref: 'Talk.speakers', many: true },
   },
 };
 
@@ -27,7 +26,7 @@ exports.Event = {
     startDate: { type: DateTime },
     durationMins: { type: Integer },
     description: { type: Wysiwyg },
-    talks: { type: Relationship, ref: 'Talk', many: true },
+    talks: { type: Relationship, ref: 'Talk.event', many: true },
     maxRSVPs: { type: Integer },
   },
 };
@@ -35,8 +34,8 @@ exports.Event = {
 exports.Talk = {
   fields: {
     name: { type: Text },
-    event: { type: Relationship, ref: 'Event' },
-    speaker: { type: Relationship, ref: 'User' },
+    event: { type: Relationship, ref: 'Event.talks' },
+    speakers: { type: Relationship, ref: 'User.talks', many: true },
     isLightningTalk: { type: Checkbox },
     description: { type: Wysiwyg },
   },
