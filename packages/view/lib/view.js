@@ -34,7 +34,12 @@ module.exports = class View {
   // renderQueue: any[];
   // actionQueue: any[];
 
-  constructor(keystone, req, res, { schemaName = 'admin', populateRelated = null, allowQueryFromAction = true } = {}) {
+  constructor(
+    keystone,
+    req,
+    res,
+    { schemaName = 'admin', populateRelated = null, allowQueryFromAction = true } = {}
+  ) {
     if (!req || req.constructor.name !== 'IncomingMessage') {
       throw new Error('Keystone.View Error: Express request object is required.');
     }
@@ -422,7 +427,7 @@ module.exports = class View {
 
     // });
 
-    if(this.allowQueryFromAction) {
+    if (this.allowQueryFromAction) {
       // refresh query queue from changes made in execution of the init and action queue. place queries from action queue at front.
       queryQueue = [...this.queryQueue, ...queryQueue];
     }

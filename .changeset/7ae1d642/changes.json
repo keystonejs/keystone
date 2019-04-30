@@ -1,0 +1,7 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/example-blog-view", "type": "major" },
+    { "name": "@keystone-alpha/view", "type": "major" }
+  ],
+  "dependents": []
+}
