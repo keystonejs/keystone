@@ -15,7 +15,7 @@ export default () => {
             description
             talks {
               name
-              speaker {
+              speakers {
                 name
               }
             }
