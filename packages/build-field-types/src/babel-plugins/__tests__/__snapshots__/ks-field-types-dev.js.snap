@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`ks-field-types-dev babel plugin 1`] = `
-"import { join as _join } from \\"path\\";
-
-_join(__dirname, './some-view');"
-`;
