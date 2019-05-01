@@ -61,7 +61,7 @@ Each of these mutations is implemented within Keystone by a corresponding resolv
 Please refer to the [API documentation](LINK_TODO)) for full details on how to call these mutations either from [GraphQL](LINK_TODO)) or directly from [Keystone](LINK_TODO)).
 -->
 
-Keystone provides [access control](../access-control.md)) mechanisms and a [hook system](../hooks.md)) which allows the developer to customise the behaviour of each of these mutations.
+Keystone provides [access control](./access-control.md)) mechanisms and a [hook system](./hooks.md)) which allows the developer to customise the behaviour of each of these mutations.
 
 This document details the lifecycle of each mutation, and how the different access control mechanisms and hooks interact.
 
@@ -102,7 +102,7 @@ The first step in all mutations is to check that the user has access to perform 
 
 If access control has been defined statically or imperatively this check can be performed here. An `AccessDeniedError` is returned if the access control failed. If the access control mechanism for this list is defined declaratively (i.e using a GraphQL `where` statement), this check is deferred until the next step.
 
-For more information on how to define access control, please consult the [access control documentation](../access-control.md)).
+For more information on how to define access control, please consult the [access control documentation](./access-control.md)).
 
 #### 2. Get item(s) (`update/delete`)
 

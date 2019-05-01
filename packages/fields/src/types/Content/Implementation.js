@@ -1,6 +1,8 @@
+import getByPath from 'lodash.get';
 import { MongoTextInterface, KnexTextInterface, Text } from '../Text/Implementation';
-import { flatMap, unique } from '@keystone-alpha/utils';
+import { flatMap, unique, resolveAllKeys, mapKeys } from '@keystone-alpha/utils';
 import paragraph from './blocks/paragraph';
+import { walkSlateNode } from './slate-walker';
 
 const GQL_TYPE_PREFIX = '_ContentType';
 
@@ -11,6 +13,92 @@ function flattenBlockViews(block) {
     block.viewPath,
     ...(block.dependencies ? flatMap(block.dependencies, flattenBlockViews) : []),
   ];
+}
+
+/**
+ * @param data Object For example:
+ * {
+ *   document: [
+ *     { object: 'block', type: 'cloudinaryImage', data: { _mutationPath: 'cloudinaryImages.create[0]' },
+ *     { object: 'block', type: 'cloudinaryImage', data: { _mutationPath: 'cloudinaryImages.create[1]' },
+ *     { object: 'block', type: 'relationshipUser', data: { _mutationPath: 'relationshipUsers.create[0]' } }
+ *     { object: 'block', type: 'relationshipUser', data: { _mutationPath: 'relationshipUsers.connect[0]' } }
+ *   ],
+ *   cloudinaryImages: {
+ *     create: [
+ *       { data: { image: <FileObject>, align: 'center' } },
+ *       { data: { image: <FileObject>, align: 'center' } }
+ *     ]
+ *   },
+ *   relationshipUsers: {
+ *     create: [{ data: { id: 'abc123' } }],
+ *     connect: [{ id: 'xyz789' }],
+ *   },
+ * }
+ */
+async function processSerialised({ document, ...nestedMutations }, blocks, graphQlArgs) {
+  // TODO: Remove this once we use a JSON input type for the value
+  const inputDocument = JSON.parse(document);
+
+  // Each block executes its mutations
+  const resolvedMutations = await resolveAllKeys(
+    mapKeys(nestedMutations, (mutations, path) => {
+      const block = blocks.find(aBlock => aBlock.path === path);
+
+      if (!block) {
+        throw new Error(
+          `Unable to perform '${path}' mutations: No known block can handle this path.`
+        );
+      }
+
+      return block.processMutations(mutations, graphQlArgs);
+    })
+  );
+
+  const result = {
+    document: walkSlateNode(inputDocument, {
+      visitBlock(node) {
+        const block = blocks.find(({ type }) => type === node.type);
+
+        if (!block) {
+          if (node.data && node.data._mutationPath) {
+            throw new Error(
+              `Received mutation for ${node.type}, but no block types can handle it.`
+            );
+          }
+
+          // A regular slate.js node - pass it through
+          return node;
+        }
+
+        const _joinIds = node.data._mutationPaths.map(mutationPath => {
+          const joinId = getByPath(resolvedMutations, mutationPath);
+          if (!joinId) {
+            throw new Error(`Slate document refers to unknown mutation '${mutationPath}'.`);
+          }
+          return joinId;
+        });
+
+        // NOTE: We don't recurse on the children; we only process the outer
+        // most block, any child blocks are left as-is.
+        return {
+          ...node,
+          data: { _joinIds },
+        };
+      },
+
+      defaultVisitor(node, visitNode) {
+        if (node.nodes) {
+          // Recurse into the child nodes array
+          node.nodes = node.nodes.map(childNode => visitNode(childNode));
+        }
+
+        return node;
+      },
+    }),
+  };
+
+  return result;
 }
 
 export class Content extends Text {
@@ -188,8 +276,10 @@ export class Content extends Text {
     };
   }
 
-  async resolveInput({ resolvedData }) {
-    return resolvedData[this.path].document;
+  async resolveInput({ resolvedData, ...args }) {
+    const { document } = await processSerialised(resolvedData[this.path], this.complexBlocks, args);
+    // TODO: FIXME: Use a JSON type
+    return JSON.stringify(document);
   }
 }
 

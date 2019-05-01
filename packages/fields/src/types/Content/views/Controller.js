@@ -3,8 +3,12 @@
 // how to traverse preconstruct's src pointers yet, when it does this
 // should import from '@keystone-alpha/fields/types/Text/views/Controller'
 import memoizeOne from 'memoize-one';
+import isPromise from 'p-is-promise';
+import { omitBy } from '@keystone-alpha/utils';
 import { Value } from 'slate';
+
 import TextController from '../../Text/views/Controller';
+import { serialiseSlateValue } from '../serialiser';
 import { initialValue } from './editor/constants';
 
 const flattenBlocks = inputBlocks =>
@@ -38,6 +42,8 @@ export default class ContentController extends TextController {
     // 2. Avoid recalculating everything on each request for the Blocks.
     //    Instead, when requested multiple times, use the previously cached
     //    results.
+    // NOTE: This function is designed to work with React Suspense, so may throw
+    // a Promise the first time it is called.
     this.getBlocks = memoizeOne(() => {
       // Loads all configured blocks and their dependencies
       const blocksModules = this.adminMeta.readViews(this.views.blocks);
@@ -62,7 +68,39 @@ export default class ContentController extends TextController {
       // Forcibly return null if empty string
       return { document: null };
     }
-    return { document: JSON.stringify(data[path].document) };
+
+    let blocks;
+    // May return synchronously, or may throw with either an actual error or a
+    // loading promise. We should never see a Promise thrown as .serialize()
+    // only gets called during event handlers on the client _after_ all the
+    // React Suspense calls are fully resolved. We want the
+    // returns-synchronously case. Otherwise, we want to either rethrow any
+    // error thrown, or throw a new error indicating an unexpected Promise was
+    // thrown.
+    try {
+      blocks = this.getBlocks();
+    } catch (loadingPromiseOrError) {
+      if (isPromise(loadingPromiseOrError)) {
+        // `.getBlocks()` thinks it's in React Suspense mode, which we can't
+        // handle here, so we throw a new error.
+        throw new Error(
+          '`Content#getBlocks()` threw a Promise. This may occur when calling `Content#serialize()` before blocks have had a chance to fully load.'
+        );
+      }
+
+      // An actual error occured
+      throw loadingPromiseOrError;
+    }
+
+    const serialisedDocument = serialiseSlateValue(
+      data[path],
+      omitBy(blocks, type => !blocks[type].serialize)
+    );
+
+    // TODO: Make this a JSON type in GraphQL so we don't have to stringify it.
+    serialisedDocument.document = JSON.stringify(serialisedDocument.document);
+
+    return serialisedDocument;
   };
 
   deserialize = data => {
