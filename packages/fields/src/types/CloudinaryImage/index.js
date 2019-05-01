@@ -6,7 +6,8 @@ import {
   KnexCloudinaryImageInterface,
 } from './Implementation';
 import { ImageBlock } from './ImageBlock';
-import imageContainer from '../Content/blocks/image-container';
+import image from '../Content/blocks/image';
+import caption from '../Content/blocks/caption';
 
 export default {
   type: 'CloudinaryImage',
@@ -23,8 +24,12 @@ export default {
   blocks: {
     image: {
       type: 'cloudinaryImage',
-      viewPath: imageContainer.viewPath,
+      viewPath: importView('./views/blocks/single-image'),
       implementation: ImageBlock,
+      dependencies: [image, caption],
     },
+    // gallery: {
+    //   type: 'cloudinaryGallery',
+    // },
   },
 };
