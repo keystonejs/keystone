@@ -1,14 +1,19 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { useMemo } from 'react';
-import * as image from './image';
-import * as caption from './caption';
+import * as image from '../../../Content/views/editor/blocks/image';
+import * as caption from '../../../Content/views/editor/blocks/caption';
 import insertImages from 'slate-drop-or-paste-images';
 import imageExtensions from 'image-extensions';
 import { findNode } from 'slate-react';
 import { Block } from 'slate';
+import pluralize from 'pluralize';
 
-export let type = 'image-container';
+export const type = 'cloudinaryImage';
+
+// TODO: Receive this value from the server somehow. 'pluralize' is a fairly
+// large lib.
+export const path = pluralize.plural(type);
 
 let getFiles = () =>
   new Promise(resolve => {
@@ -173,3 +178,36 @@ export let plugins = [
     },
   },
 ];
+
+export function serialize({ node }) {
+  // Find the 'image' child node
+  const imageNode = node.findDescendant(
+    child => child.object === 'block' && child.type === image.type
+  );
+
+  if (!imageNode) {
+    console.error('No image found in a cloudinaryImage block');
+    return;
+  }
+
+  const alignment = node.data.get('alignment');
+  const file = imageNode.data.get('file');
+
+  // zero out the data field to ensure we don't accidentally store the `file` as
+  // a JSON blob
+  const newNode = node.setNode(node.getPath(imageNode.key), { data: {} });
+
+  return {
+    mutations: {
+      create: {
+        image: file,
+      },
+    },
+    node: {
+      ...newNode.toJSON(),
+      data: {
+        align: alignment,
+      },
+    },
+  };
+}
