@@ -2,11 +2,11 @@
   "name": "@keystone-alpha/build-field-types",
   "version": "0.0.53",
   "description": "A build tool for KeystoneJS 5 Field Types",
+  "main": "dist/index.js",
   "files": [
     "src",
     "bin.js",
-    "dist",
-    "index.js"
+    "dist"
   ],
   "bin": {
     "build-field-types": "./bin.js"
@@ -42,6 +42,7 @@
     "meow": "^5.0.0",
     "ms": "^2.1.1",
     "p-limit": "^2.2.0",
+    "parent-module": "^2.0.0",
     "pirates": "^4.0.1",
     "resolve": "^1.10.0",
     "resolve-from": "^4.0.0",
