@@ -6,14 +6,13 @@ import { Mutation, Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { withToastManager } from 'react-toast-notifications';
 import memoizeOne from 'memoize-one';
-import isPromise from 'p-is-promise';
 
 import { Container } from '@arch-ui/layout';
 import { Button } from '@arch-ui/button';
 import { AutocompleteCaptor } from '@arch-ui/input';
 import { Card } from '@arch-ui/card';
 import { gridSize } from '@arch-ui/theme';
-import { mapKeys, arrayToObject, omitBy } from '@keystone-alpha/utils';
+import { mapKeys, arrayToObject, omitBy, captureSuspensePromises } from '@keystone-alpha/utils';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
@@ -186,15 +185,6 @@ const ItemDetails = withRouter(
     render() {
       const { adminPath, list, updateInProgress, itemErrors, item: savedData } = this.props;
       const { item, itemHasChanged } = this.state;
-      // we want to read all of the fields before reading the views individually
-      // note we want to _read_ before not just preload because the important thing
-      // isn't doing all the requests in parallel, that already happens
-      // what we're doing here is making sure there aren't a bunch of rerenders as
-      // each of the promises resolve
-      // this probably won't be necessary with concurrent mode/maybe just other react changes
-      // also, note that this is just an optimisation, it's not strictly necessary and it should
-      // probably be removed in the future because i'm guessing this will make performance _worse_ in concurrent mode
-      list.adminMeta.readViews(list.fields.map(({ views }) => views.Field));
 
       return (
         <Fragment>
@@ -209,41 +199,39 @@ const ItemDetails = withRouter(
           <Card css={{ marginBottom: '3em', paddingBottom: 0 }}>
             <Form>
               <AutocompleteCaptor />
-              {list.fields.map((field, i) => {
-                return (
-                  <Render key={field.path}>
-                    {() => {
-                      let [Field] = field.adminMeta.readViews([field.views.Field]);
+              {list.fields.map((field, i) => (
+                <Render key={field.path}>
+                  {() => {
+                    const [Field] = field.adminMeta.readViews([field.views.Field]);
 
-                      let onChange = useCallback(
-                        value => {
-                          this.setState(({ item: itm }) => ({
-                            item: {
-                              ...itm,
-                              [field.path]: value,
-                            },
-                            itemHasChanged: true,
-                          }));
-                        },
-                        [field]
-                      );
-                      return useMemo(
-                        () => (
-                          <Field
-                            autoFocus={!i}
-                            field={field}
-                            error={itemErrors[field.path]}
-                            value={item[field.path]}
-                            onChange={onChange}
-                            renderContext="page"
-                          />
-                        ),
-                        [i, field, itemErrors[field.path], item[field.path]]
-                      );
-                    }}
-                  </Render>
-                );
-              })}
+                    let onChange = useCallback(
+                      value => {
+                        this.setState(({ item: itm }) => ({
+                          item: {
+                            ...itm,
+                            [field.path]: value,
+                          },
+                          itemHasChanged: true,
+                        }));
+                      },
+                      [field]
+                    );
+                    return useMemo(
+                      () => (
+                        <Field
+                          autoFocus={!i}
+                          field={field}
+                          error={itemErrors[field.path]}
+                          value={item[field.path]}
+                          onChange={onChange}
+                          renderContext="page"
+                        />
+                      ),
+                      [i, field, itemErrors[field.path], item[field.path]]
+                    );
+                  }}
+                </Render>
+              ))}
             </Form>
             <Footer
               onSave={this.onSave}
@@ -275,121 +263,92 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
   </PageError>
 );
 
-const PreLoadFields = ({ children, list, loadField }) => (
-  <Suspense fallback={<PageLoading />}>
-    <Render>
-      {() => {
-        const initialisationPromises = list.fields
-          .map((item, index) => {
-            try {
-              loadField(item, index, list);
-            } catch (loadingPromiseOrError) {
-              // An actual error was thrown, so we want to bubble that up
-              if (!isPromise(loadingPromiseOrError)) {
-                throw loadingPromiseOrError;
-              }
-              // Return a Suspense promise
-              return loadingPromiseOrError;
-            }
-          })
-          .filter(Boolean);
-
-        if (initialisationPromises.length) {
-          // Trigger the suspense boundary and wait for all fields in
-          // parallel.
-          throw Promise.all(initialisationPromises);
-        }
-
-        return children();
-      }}
-    </Render>
-  </Suspense>
-);
-
 const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
   const itemQuery = list.getItemQuery(itemId);
   return (
-    <Fragment>
+    <Suspense fallback={<PageLoading />}>
       {/* network-only because the data we mutate with is important for display
           in the UI, and may be different than what's in the cache */}
       <Query query={itemQuery} fetchPolicy="network-only" errorPolicy="all">
-        {({ loading, error, data, refetch }) => (
-          <PreLoadFields list={list} loadField={field => field.initFieldView()}>
-            {() => {
-              if (loading) return <PageLoading />;
+        {({ loading, error, data, refetch }) => {
+          // Now that the network request for data has been triggered, we
+          // try to initialise the fields. They are Suspense capable, so may
+          // throw Promises which will be caught by the above <Suspense>
+          captureSuspensePromises(list.fields.map(field => () => field.initFieldView()));
 
-              // Only show error page if there is no data
-              // (ie; there could be partial data + partial errors)
-              if (
-                error &&
-                (!data ||
-                  !data[list.gqlNames.itemQueryName] ||
-                  !Object.keys(data[list.gqlNames.itemQueryName]).length)
-              ) {
-                return (
-                  <Fragment>
-                    <DocTitle>{list.singular} not found</DocTitle>
-                    <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
-                  </Fragment>
-                );
-              }
+          // If the views load before the API request comes back, keep showing
+          // the loading component
+          if (loading) return <PageLoading />;
 
-              const item = list.deserializeItemData(data[list.gqlNames.itemQueryName]);
-              const itemErrors =
-                deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
+          // Only show error page if there is no data
+          // (ie; there could be partial data + partial errors)
+          if (
+            error &&
+            (!data ||
+              !data[list.gqlNames.itemQueryName] ||
+              !Object.keys(data[list.gqlNames.itemQueryName]).length)
+          ) {
+            return (
+              <Fragment>
+                <DocTitle>{list.singular} not found</DocTitle>
+                <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
+              </Fragment>
+            );
+          }
 
-              return item ? (
-                <main>
-                  <DocTitle>
-                    {item._label_} - {list.singular}
-                  </DocTitle>
-                  <Container id="toast-boundary">
-                    <Mutation
-                      mutation={list.updateMutation}
-                      onError={updateError => {
-                        const [title, ...rest] = updateError.message.split(/\:/);
-                        const toastContent = rest.length ? (
-                          <div>
-                            <strong>{title.trim()}</strong>
-                            <div>{rest.join('').trim()}</div>
-                          </div>
-                        ) : (
-                          updateError.message
-                        );
+          const item = list.deserializeItemData(data[list.gqlNames.itemQueryName]);
+          const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
 
-                        toastManager.add(toastContent, {
-                          appearance: 'error',
-                        });
-                      }}
-                    >
-                      {(updateItem, { loading: updateInProgress, error: updateError }) => {
-                        return (
-                          <ItemDetails
-                            adminPath={adminPath}
-                            item={item}
-                            itemErrors={itemErrors}
-                            key={itemId}
-                            list={list}
-                            getListByKey={getListByKey}
-                            onUpdate={refetch}
-                            toastManager={toastManager}
-                            updateInProgress={updateInProgress}
-                            updateErrorMessage={updateError && updateError.message}
-                            updateItem={updateItem}
-                          />
-                        );
-                      }}
-                    </Mutation>
-                  </Container>
-                </main>
-              ) : (
-                <ItemNotFound adminPath={adminPath} list={list} />
-              );
-            }}
-          </PreLoadFields>
-        )}
+          return item ? (
+            <main>
+              <DocTitle>
+                {item._label_} - {list.singular}
+              </DocTitle>
+              <Container id="toast-boundary">
+                <Mutation
+                  mutation={list.updateMutation}
+                  onError={updateError => {
+                    const [title, ...rest] = updateError.message.split(/\:/);
+                    const toastContent = rest.length ? (
+                      <div>
+                        <strong>{title.trim()}</strong>
+                        <div>{rest.join('').trim()}</div>
+                      </div>
+                    ) : (
+                      updateError.message
+                    );
+
+                    toastManager.add(toastContent, {
+                      appearance: 'error',
+                    });
+                  }}
+                >
+                  {(updateItem, { loading: updateInProgress, error: updateError }) => {
+                    return (
+                      <ItemDetails
+                        adminPath={adminPath}
+                        item={item}
+                        itemErrors={itemErrors}
+                        key={itemId}
+                        list={list}
+                        getListByKey={getListByKey}
+                        onUpdate={refetch}
+                        toastManager={toastManager}
+                        updateInProgress={updateInProgress}
+                        updateErrorMessage={updateError && updateError.message}
+                        updateItem={updateItem}
+                      />
+                    );
+                  }}
+                </Mutation>
+              </Container>
+            </main>
+          ) : (
+            <ItemNotFound adminPath={adminPath} list={list} />
+          );
+        }}
       </Query>
-    </Fragment>
+    </Suspense>
   );
 };
 
