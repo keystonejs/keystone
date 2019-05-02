@@ -46,7 +46,27 @@ export default class FieldController {
   // eslint-disable-next-line no-unused-vars
   getDefaultValue = data => this.config.defaultValue || '';
 
-  initCellView = () => {};
-  initFieldView = () => {};
-  initFilterView = () => {};
+  initCellView = () => {
+    const { Cell } = this.views;
+    if (!Cell) {
+      return;
+    }
+    this.adminMeta.readViews([Cell]);
+  };
+
+  initFieldView = () => {
+    const { Field } = this.views;
+    if (!Field) {
+      return;
+    }
+    this.adminMeta.readViews([Field]);
+  };
+
+  initFilterView = () => {
+    const { Filter } = this.views;
+    if (!Filter) {
+      return;
+    }
+    this.adminMeta.readViews([Filter]);
+  };
 }
