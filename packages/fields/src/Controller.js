@@ -45,4 +45,8 @@ export default class FieldController {
 
   // eslint-disable-next-line no-unused-vars
   getDefaultValue = data => this.config.defaultValue || '';
+
+  initCellView = () => {};
+  initFieldView = () => {};
+  initFilterView = () => {};
 }

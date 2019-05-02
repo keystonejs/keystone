@@ -124,4 +124,6 @@ export default class ContentController extends TextController {
       }
     `;
   };
+
+  initFieldView = () => this.getBlocks();
 }
