@@ -70,6 +70,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.set": "^4.3.2",
     "memoize-one": "^4.0.2",
+    "p-is-promise": "^2.1.0",
     "preconstruct": "0.0.60",
     "prop-types": "^15.7.2",
     "raf-schd": "^4.0.0",

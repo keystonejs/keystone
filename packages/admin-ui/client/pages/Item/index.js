@@ -1,11 +1,12 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useMemo, useCallback } from 'react';
+import { Component, Fragment, Suspense, useMemo, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { withToastManager } from 'react-toast-notifications';
 import memoizeOne from 'memoize-one';
+import isPromise from 'p-is-promise';
 
 import { Container } from '@arch-ui/layout';
 import { Button } from '@arch-ui/button';
@@ -274,6 +275,37 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
   </PageError>
 );
 
+const PreLoadFields = ({ children, list, loadField }) => (
+  <Suspense fallback={<PageLoading />}>
+    <Render>
+      {() => {
+        const initialisationPromises = list.fields
+          .map((item, index) => {
+            try {
+              loadField(item, index, list);
+            } catch (loadingPromiseOrError) {
+              // An actual error was thrown, so we want to bubble that up
+              if (!isPromise(loadingPromiseOrError)) {
+                throw loadingPromiseOrError;
+              }
+              // Return a Suspense promise
+              return loadingPromiseOrError;
+            }
+          })
+          .filter(Boolean);
+
+        if (initialisationPromises.length) {
+          // Trigger the suspense boundary and wait for all fields in
+          // parallel.
+          throw Promise.all(initialisationPromises);
+        }
+
+        return children();
+      }}
+    </Render>
+  </Suspense>
+);
+
 const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
   const itemQuery = list.getItemQuery(itemId);
   return (
@@ -281,76 +313,81 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
       {/* network-only because the data we mutate with is important for display
           in the UI, and may be different than what's in the cache */}
       <Query query={itemQuery} fetchPolicy="network-only" errorPolicy="all">
-        {({ loading, error, data, refetch }) => {
-          if (loading) return <PageLoading />;
+        {({ loading, error, data, refetch }) => (
+          <PreLoadFields list={list} loadField={field => field.initFieldView()}>
+            {() => {
+              if (loading) return <PageLoading />;
 
-          // Only show error page if there is no data
-          // (ie; there could be partial data + partial errors)
-          if (
-            error &&
-            (!data ||
-              !data[list.gqlNames.itemQueryName] ||
-              !Object.keys(data[list.gqlNames.itemQueryName]).length)
-          ) {
-            return (
-              <Fragment>
-                <DocTitle>{list.singular} not found</DocTitle>
-                <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
-              </Fragment>
-            );
-          }
+              // Only show error page if there is no data
+              // (ie; there could be partial data + partial errors)
+              if (
+                error &&
+                (!data ||
+                  !data[list.gqlNames.itemQueryName] ||
+                  !Object.keys(data[list.gqlNames.itemQueryName]).length)
+              ) {
+                return (
+                  <Fragment>
+                    <DocTitle>{list.singular} not found</DocTitle>
+                    <ItemNotFound adminPath={adminPath} errorMessage={error.message} list={list} />
+                  </Fragment>
+                );
+              }
 
-          const item = list.deserializeItemData(data[list.gqlNames.itemQueryName]);
-          const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
+              const item = list.deserializeItemData(data[list.gqlNames.itemQueryName]);
+              const itemErrors =
+                deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
 
-          return item ? (
-            <main>
-              <DocTitle>
-                {item._label_} - {list.singular}
-              </DocTitle>
-              <Container id="toast-boundary">
-                <Mutation
-                  mutation={list.updateMutation}
-                  onError={updateError => {
-                    const [title, ...rest] = updateError.message.split(/\:/);
-                    const toastContent = rest.length ? (
-                      <div>
-                        <strong>{title.trim()}</strong>
-                        <div>{rest.join('').trim()}</div>
-                      </div>
-                    ) : (
-                      updateError.message
-                    );
+              return item ? (
+                <main>
+                  <DocTitle>
+                    {item._label_} - {list.singular}
+                  </DocTitle>
+                  <Container id="toast-boundary">
+                    <Mutation
+                      mutation={list.updateMutation}
+                      onError={updateError => {
+                        const [title, ...rest] = updateError.message.split(/\:/);
+                        const toastContent = rest.length ? (
+                          <div>
+                            <strong>{title.trim()}</strong>
+                            <div>{rest.join('').trim()}</div>
+                          </div>
+                        ) : (
+                          updateError.message
+                        );
 
-                    toastManager.add(toastContent, {
-                      appearance: 'error',
-                    });
-                  }}
-                >
-                  {(updateItem, { loading: updateInProgress, error: updateError }) => {
-                    return (
-                      <ItemDetails
-                        adminPath={adminPath}
-                        item={item}
-                        itemErrors={itemErrors}
-                        key={itemId}
-                        list={list}
-                        getListByKey={getListByKey}
-                        onUpdate={refetch}
-                        toastManager={toastManager}
-                        updateInProgress={updateInProgress}
-                        updateErrorMessage={updateError && updateError.message}
-                        updateItem={updateItem}
-                      />
-                    );
-                  }}
-                </Mutation>
-              </Container>
-            </main>
-          ) : (
-            <ItemNotFound adminPath={adminPath} list={list} />
-          );
-        }}
+                        toastManager.add(toastContent, {
+                          appearance: 'error',
+                        });
+                      }}
+                    >
+                      {(updateItem, { loading: updateInProgress, error: updateError }) => {
+                        return (
+                          <ItemDetails
+                            adminPath={adminPath}
+                            item={item}
+                            itemErrors={itemErrors}
+                            key={itemId}
+                            list={list}
+                            getListByKey={getListByKey}
+                            onUpdate={refetch}
+                            toastManager={toastManager}
+                            updateInProgress={updateInProgress}
+                            updateErrorMessage={updateError && updateError.message}
+                            updateItem={updateItem}
+                          />
+                        );
+                      }}
+                    </Mutation>
+                  </Container>
+                </main>
+              ) : (
+                <ItemNotFound adminPath={adminPath} list={list} />
+              );
+            }}
+          </PreLoadFields>
+        )}
       </Query>
     </Fragment>
   );
