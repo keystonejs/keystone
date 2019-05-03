@@ -304,7 +304,7 @@ export default function ListTable(props) {
     fields,
     isFullWidth,
     items,
-    itemsErrors = [],
+    queryErrors = [],
     list,
     onChange,
     onSelectChange,
@@ -420,19 +420,21 @@ export default function ListTable(props) {
 
               return (
                 <TableContents>
-                  {items.map((item, itemIndex) => (
-                    <ListRow
-                      fields={fields}
-                      isSelected={selectedItems.includes(item.id)}
-                      item={item}
-                      itemErrors={itemsErrors[itemIndex] || {}}
-                      key={item.id}
-                      link={({ path, id }) => `${adminPath}/${path}/${id}`}
-                      list={list}
-                      onDelete={onChange}
-                      onSelectChange={onSelectChange}
-                    />
-                  ))}
+                  {items
+                    .map(item => list.deserializeItemData(item))
+                    .map((item, itemIndex) => (
+                      <ListRow
+                        fields={fields}
+                        isSelected={selectedItems.includes(item.id)}
+                        item={item}
+                        itemErrors={queryErrors[itemIndex] || {}}
+                        key={item.id}
+                        link={({ path, id }) => `${adminPath}/${path}/${id}`}
+                        list={list}
+                        onDelete={onChange}
+                        onSelectChange={onSelectChange}
+                      />
+                    ))}
                 </TableContents>
               );
             }}

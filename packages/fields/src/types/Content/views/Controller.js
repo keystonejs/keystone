@@ -8,7 +8,7 @@ import { omitBy, captureSuspensePromises } from '@keystone-alpha/utils';
 import { Value } from 'slate';
 
 import TextController from '../../Text/views/Controller';
-import { serialiseSlateValue } from '../serialiser';
+import { serialiseSlateValue, deserialiseToSlateValue } from '../serialiser';
 import { initialValue } from './editor/constants';
 
 const flattenBlocks = inputBlocks =>
@@ -60,18 +60,9 @@ export default class ContentController extends TextController {
 
       return flattenBlocks(customBlocks);
     });
-
-    this.initFieldView = this.initFieldView.bind(this);
   }
 
-  serialize = data => {
-    const { path } = this;
-    if (!data[path] || !data[path].document) {
-      // Forcibly return null if empty string
-      return { document: null };
-    }
-
-    let blocks;
+  getBlocksSync = () => {
     // May return synchronously, or may throw with either an actual error or a
     // loading promise. We should never see a Promise thrown as .serialize()
     // only gets called during event handlers on the client _after_ all the
@@ -80,19 +71,29 @@ export default class ContentController extends TextController {
     // error thrown, or throw a new error indicating an unexpected Promise was
     // thrown.
     try {
-      blocks = this.getBlocks();
+      return this.getBlocks();
     } catch (loadingPromiseOrError) {
       if (isPromise(loadingPromiseOrError)) {
         // `.getBlocks()` thinks it's in React Suspense mode, which we can't
         // handle here, so we throw a new error.
         throw new Error(
-          '`Content#getBlocks()` threw a Promise. This may occur when calling `Content#serialize()` before blocks have had a chance to fully load.'
+          '`Content#getBlocks()` threw a Promise. This may occur when calling `Content#(de)serialize()` before blocks have had a chance to fully load.'
         );
       }
 
       // An actual error occured
       throw loadingPromiseOrError;
     }
+  };
+
+  serialize = data => {
+    const { path } = this;
+    if (!data[path] || !data[path].document) {
+      // Forcibly return null if empty string
+      return { document: null };
+    }
+
+    const blocks = this.getBlocksSync();
 
     const serialisedDocument = serialiseSlateValue(
       data[path],
@@ -109,31 +110,49 @@ export default class ContentController extends TextController {
   };
 
   deserialize = data => {
-    let value;
-    if (data[this.path] && data[this.path].document) {
-      value = {
-        document: JSON.parse(data[this.path].document),
-      };
-    } else {
-      value = initialValue;
+    const { path } = this;
+    if (!data[path] || !data[path].document) {
+      // Forcibly return a default value if nothing set
+      return Value.fromJSON(initialValue);
     }
-    return Value.fromJSON(value);
+
+    const blocks = this.getBlocksSync();
+
+    // TODO: Make the .document a JSON type in GraphQL so we dont have to parse
+    // it
+    const parsedData = {
+      ...data[path],
+      document: JSON.parse(data[path].document),
+    };
+
+    return deserialiseToSlateValue(parsedData, omitBy(blocks, type => !blocks[type].deserialize));
   };
 
   getDefaultValue = () => Value.fromJSON(initialValue);
 
-  getQueryFragment = () => {
-    return `
-      ${this.path} {
-        document
-      }
-    `;
-  };
+  getQueryFragment = () => `
+    ${this.path} {
+      document
+      ${Object.values(this.config.blockOptions)
+        .map(({ query }) => query)
+        .filter(Boolean)
+        .join('\n')}
+    }
+  `;
 
-  // NOTE: To use `super` below, this must be a method which is bound to `this`
-  // within the constructor. This is due to the way Babel does magic compilation
-  // of classes.
-  initFieldView() {
-    captureSuspensePromises([() => super.initFieldView(), () => this.getBlocks()]);
-  }
+  // NOTE: We can't use `super()` below because of some weirdness that Babel is
+  // introducing (a bug perhaps?). Instead, I had to copy+pasta the base
+  // implementation here.
+  initFieldView = () => {
+    captureSuspensePromises([
+      () => {
+        const { Field } = this.views;
+        if (!Field) {
+          return;
+        }
+        this.adminMeta.readViews([Field]);
+      },
+      () => this.getBlocks(),
+    ]);
+  };
 }

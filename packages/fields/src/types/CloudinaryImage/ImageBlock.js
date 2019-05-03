@@ -80,4 +80,19 @@ export class ImageBlock extends Block {
       [this.path]: context._blockMeta[this.joinList][this.path],
     };
   }
+
+  extendAdminMeta(meta) {
+    return {
+      query: `
+        cloudinaryImages {
+          id
+          image {
+            publicUrl
+          }
+          align
+        }
+      `,
+      ...meta,
+    };
+  }
 }

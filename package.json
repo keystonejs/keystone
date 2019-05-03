@@ -168,6 +168,7 @@
     "mongodb-memory-server": "^5.0.4",
     "mongoose": "^5.5.2",
     "ms": "^2.1.1",
+    "nanoassert": "^2.0.0",
     "next": "^8.0.3",
     "next-apollo": "^2.0.9",
     "next-routes": "^1.4.2",
