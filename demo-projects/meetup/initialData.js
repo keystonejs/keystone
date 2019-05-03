@@ -7,4 +7,14 @@ module.exports = {
       password: 'password',
     },
   ],
+  Event: [
+    {
+      name: 'Keystone Launch',
+    },
+  ],
+  Talk: [
+    {
+      name: 'Introducing Keystone 5 🎉',
+    },
+  ],
 };

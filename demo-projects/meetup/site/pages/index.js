@@ -8,14 +8,14 @@ export default () => {
     <Query
       query={gql`
         {
-          allMeetups {
+          allEvents {
             id
             name
-            day
+            startDate
             description
             talks {
               name
-              speaker {
+              speakers {
                 name
               }
             }
@@ -31,8 +31,8 @@ export default () => {
         }
         return (
           <ul>
-            {data.allMeetups.map(meetup => (
-              <li key={meetup.id}>{meetup.name}</li>
+            {data.allEvents.map(event => (
+              <li key={event.id}>{event.name}</li>
             ))}
           </ul>
         );

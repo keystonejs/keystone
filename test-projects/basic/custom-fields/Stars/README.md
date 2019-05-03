@@ -63,7 +63,7 @@ This is where we will spend most of our time in this tutorial.
 
 ## Defining The Field Type
 
-Field Types should have an `index.js` file which exports the Field Type definition. Explanations on what each thing does can be found [here](/packages/fields/README/index.md).
+Field Types should have an `index.js` file which exports the Field Type definition. Explanations on what each thing does can be found [here](../../../../packages/fields/README.md).
 
 ```jsx
 const { Stars, MongoIntegerInterface } = require('./Implementation');
