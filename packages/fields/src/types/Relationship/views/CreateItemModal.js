@@ -5,9 +5,24 @@ import { Mutation } from 'react-apollo';
 
 import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
-import { arrayToObject } from '@keystone-alpha/utils';
+import { arrayToObject, captureSuspensePromises } from '@keystone-alpha/utils';
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
+import { LoadingIndicator } from '@arch-ui/loading';
+
+const PageLoading = () => (
+  <div
+    css={{
+      height: 200,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
+    }}
+  >
+    <LoadingIndicator size={12} />
+  </div>
+);
 
 let Render = ({ children }) => children();
 
@@ -89,38 +104,45 @@ class CreateItemModal extends Component {
             marginTop: gridSize,
           }}
         >
-          <AutocompleteCaptor />
-          {list.fields.map((field, i) => {
-            return (
-              <Render key={field.path}>
-                {() => {
-                  let [Field] = field.adminMeta.readViews([field.views.Field]);
-                  let onChange = useCallback(value => {
-                    this.setState(({ item }) => ({
-                      item: {
-                        ...item,
-                        [field.path]: value,
-                      },
-                    }));
-                  }, []);
-                  return useMemo(
-                    () => (
-                      <Field
-                        autoFocus={!i}
-                        value={item[field.path]}
-                        field={field}
-                        /* TODO: Permission query results */
-                        // error={}
-                        onChange={onChange}
-                        renderContext="dialog"
-                      />
-                    ),
-                    [i, item[field.path], field, onChange]
+          <Suspense fallback={<PageLoading />}>
+            <AutocompleteCaptor />
+            <Render>
+              {() => {
+                captureSuspensePromises(list.fields.map(field => () => field.initFieldView()));
+                return list.fields.map((field, i) => {
+                  return (
+                    <Render key={field.path}>
+                      {() => {
+                        let [Field] = field.adminMeta.readViews([field.views.Field]);
+                        let onChange = useCallback(value => {
+                          this.setState(({ item }) => ({
+                            item: {
+                              ...item,
+                              [field.path]: value,
+                            },
+                          }));
+                        }, []);
+                        return useMemo(
+                          () => (
+                            <Field
+                              autoFocus={!i}
+                              value={item[field.path]}
+                              field={field}
+                              /* TODO: Permission query results */
+                              // error={}
+                              onChange={onChange}
+                              renderContext="dialog"
+                            />
+                          ),
+                          [i, item[field.path], field, onChange]
+                        );
+                      }}
+                    </Render>
                   );
-                }}
-              </Render>
-            );
-          })}
+                });
+              }}
+            </Render>
+          </Suspense>
         </div>
       </Drawer>
     );
@@ -131,13 +153,11 @@ export default class CreateItemModalWithMutation extends Component {
   render() {
     const { list } = this.props;
     return (
-      <Suspense fallback={null}>
-        <Mutation mutation={list.createMutation}>
-          {(createItem, { loading }) => (
-            <CreateItemModal createItem={createItem} isLoading={loading} {...this.props} />
-          )}
-        </Mutation>
-      </Suspense>
+      <Mutation mutation={list.createMutation}>
+        {(createItem, { loading }) => (
+          <CreateItemModal createItem={createItem} isLoading={loading} {...this.props} />
+        )}
+      </Mutation>
     );
   }
 }

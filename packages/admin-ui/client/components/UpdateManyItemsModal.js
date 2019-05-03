@@ -1,10 +1,13 @@
-import React, { Component, Fragment, useMemo, useCallback, Suspense } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, Fragment, useMemo, useCallback, Suspense } from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
 import { omit, arrayToObject } from '@keystone-alpha/utils';
+import { LoadingIndicator } from '@arch-ui/loading';
 
 let Render = ({ children }) => children();
 
@@ -93,26 +96,29 @@ class UpdateManyModal extends Component {
           </Fragment>
         }
       >
-        <Fragment>
-          <FieldContainer>
-            <FieldLabel>Fields</FieldLabel>
-            <FieldInput>
-              <Select
-                autoFocus
-                isMulti
-                menuPosition="fixed"
-                onChange={this.handleSelect}
-                options={options}
-                tabSelectsValue={false}
-                value={selectedFields}
-                getOptionValue={this.getOptionValue}
-                filterOption={this.filterOption}
-              />
-            </FieldInput>
-          </FieldContainer>
-          {selectedFields.map((field, i) => {
-            return (
-              <Render key={field.path}>
+        <FieldContainer>
+          <FieldLabel>Fields</FieldLabel>
+          <FieldInput>
+            <Select
+              autoFocus
+              isMulti
+              menuPosition="fixed"
+              onChange={this.handleSelect}
+              options={options}
+              tabSelectsValue={false}
+              value={selectedFields}
+              getOptionValue={this.getOptionValue}
+              filterOption={this.filterOption}
+            />
+          </FieldInput>
+        </FieldContainer>
+        {selectedFields.map((field, i) => {
+          return (
+            <Suspense
+              fallback={<LoadingIndicator css={{ height: '3em' }} size={12} />}
+              key={field.path}
+            >
+              <Render>
                 {() => {
                   let [Field] = field.adminMeta.readViews([field.views.Field]);
                   let onChange = useCallback(value => {
@@ -137,9 +143,9 @@ class UpdateManyModal extends Component {
                   );
                 }}
               </Render>
-            );
-          })}
-        </Fragment>
+            </Suspense>
+          );
+        })}
       </Drawer>
     );
   }
@@ -149,13 +155,11 @@ export default class UpdateManyModalWithMutation extends Component {
   render() {
     const { list } = this.props;
     return (
-      <Suspense fallback={null}>
-        <Mutation mutation={list.updateManyMutation}>
-          {(updateItem, { loading }) => (
-            <UpdateManyModal updateItem={updateItem} isLoading={loading} {...this.props} />
-          )}
-        </Mutation>
-      </Suspense>
+      <Mutation mutation={list.updateManyMutation}>
+        {(updateItem, { loading }) => (
+          <UpdateManyModal updateItem={updateItem} isLoading={loading} {...this.props} />
+        )}
+      </Mutation>
     );
   }
 }

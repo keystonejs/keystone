@@ -138,12 +138,10 @@ class CreateItemModal extends Component {
 export default function CreateItemModalWithMutation(props) {
   const { list } = props;
   return (
-    <Suspense fallback={null}>
-      <Mutation mutation={list.createMutation}>
-        {(createItem, { loading }) => (
-          <CreateItemModal createItem={createItem} isLoading={loading} {...props} />
-        )}
-      </Mutation>
-    </Suspense>
+    <Mutation mutation={list.createMutation}>
+      {(createItem, { loading }) => (
+        <CreateItemModal createItem={createItem} isLoading={loading} {...props} />
+      )}
+    </Mutation>
   );
 }
