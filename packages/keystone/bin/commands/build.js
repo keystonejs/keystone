@@ -31,6 +31,7 @@ module.exports = {
       --out, -o   Directory to save build [dist]
   `,
   exec: async (args, { exeName, _cwd = process.cwd() } = {}) => {
+    process.env.NODE_ENV = 'production';
     let serverFile = await getEntryFileFullPath(args, { exeName, _cwd });
     let { admin } = require(serverFile);
     if (admin) {
