@@ -1,1 +1,1 @@
-web: bolt && yarn bolt w @keystone-alpha/demo-project-blog start
+web: cd demo-projects/blog && node node_modules/@keystone-alpha/keystone/bin/cli
