@@ -105,6 +105,7 @@ module.exports = function() {
     .join(',\n')}\n}`;
 
   const source = endent`
+    import { captureSuspensePromises } from '@keystone-alpha/utils';
     let promiseCache = new Map();
     let valueCache = new Map();
 
@@ -124,19 +125,15 @@ module.exports = function() {
     }
 
     export function readViews(views) {
-      let promises = [];
-      let values = [];
-      views.forEach(view => {
-        if (valueCache.has(view)) {
-          values.push(valueCache.get(view));
-        } else {
-          promises.push(loadView(view));
-        }
-      });
-      if (promises.length) {
-        throw Promise.all(promises);
-      }
-      return values;
+      return captureSuspensePromises(
+        views.map(view => () => {
+          if (valueCache.has(view)) {
+            return valueCache.get(view);
+          } else {
+            throw loadView(view);
+          }
+        })
+      );
     }
 
     function interopDefault(mod) {

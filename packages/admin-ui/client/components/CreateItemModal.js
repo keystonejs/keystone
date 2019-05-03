@@ -5,9 +5,11 @@ import { Mutation } from 'react-apollo';
 
 import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
-import { arrayToObject } from '@keystone-alpha/utils';
+import { arrayToObject, captureSuspensePromises } from '@keystone-alpha/utils';
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
+
+import PageLoading from './PageLoading';
 
 let Render = ({ children }) => children();
 
@@ -61,15 +63,6 @@ class CreateItemModal extends Component {
   render() {
     const { isLoading, isOpen, list } = this.props;
     const { item } = this.state;
-    // we want to read all of the fields before reading the views individually
-    // note we want to _read_ before not just preload because the important thing
-    // isn't doing all the requests in parallel, that already happens
-    // what we're doing here is making sure there aren't a bunch of rerenders as
-    // each of the promises resolve
-    // this probably won't be necessary with concurrent mode/maybe just other react changes
-    // also, note that this is just an optimisation, it's not strictly necessary and it should
-    // probably be removed in the future because i'm guessing this will make performance _worse_ in concurrent mode
-    list.adminMeta.readViews(list.fields.map(({ views }) => views.Field));
 
     const cypressId = 'create-item-modal-submit-button';
 
@@ -99,38 +92,43 @@ class CreateItemModal extends Component {
             marginTop: gridSize,
           }}
         >
-          <AutocompleteCaptor />
-          {list.fields.map((field, i) => {
-            return (
-              <Render key={field.path}>
-                {() => {
-                  let [Field] = field.adminMeta.readViews([field.views.Field]);
-                  let onChange = useCallback(value => {
-                    this.setState(({ item }) => ({
-                      item: {
-                        ...item,
-                        [field.path]: value,
-                      },
-                    }));
-                  }, []);
-                  return useMemo(
-                    () => (
-                      <Field
-                        autoFocus={!i}
-                        value={item[field.path]}
-                        field={field}
-                        /* TODO: Permission query results */
-                        // error={}
-                        onChange={onChange}
-                        renderContext="dialog"
-                      />
-                    ),
-                    [i, item[field.path], field, onChange]
-                  );
-                }}
-              </Render>
-            );
-          })}
+          <Suspense fallback={<PageLoading />}>
+            <AutocompleteCaptor />
+            <Render>
+              {() => {
+                captureSuspensePromises(list.fields.map(field => () => field.initFieldView()));
+                return list.fields.map((field, i) => (
+                  <Render key={field.path}>
+                    {() => {
+                      let [Field] = field.adminMeta.readViews([field.views.Field]);
+                      let onChange = useCallback(value => {
+                        this.setState(({ item }) => ({
+                          item: {
+                            ...item,
+                            [field.path]: value,
+                          },
+                        }));
+                      }, []);
+                      return useMemo(
+                        () => (
+                          <Field
+                            autoFocus={!i}
+                            value={item[field.path]}
+                            field={field}
+                            /* TODO: Permission query results */
+                            // error={}
+                            onChange={onChange}
+                            renderContext="dialog"
+                          />
+                        ),
+                        [i, item[field.path], field, onChange]
+                      );
+                    }}
+                  </Render>
+                ));
+              }}
+            </Render>
+          </Suspense>
         </div>
       </Drawer>
     );

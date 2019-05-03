@@ -1,5 +1,6 @@
 import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
+import isPromise from 'p-is-promise';
 
 export const noop = x => x;
 export const identity = noop;
@@ -152,4 +153,35 @@ export const createLazyDeferred = () => {
       }
     },
   };
+};
+
+/**
+ * Given an array of functions which may throw a Promise when executed, we want
+ * to ensure all functions are executed, reducing any thrown Promises to a
+ * single Promise, which is itself rethrown.
+ * If no Promises are thrown, this is the equivalent of a .map
+ */
+export const captureSuspensePromises = executors => {
+  const values = [];
+  const promises = executors
+    .map(executor => {
+      try {
+        values.push(executor());
+      } catch (loadingPromiseOrError) {
+        // An actual error was thrown, so we want to bubble that up
+        if (!isPromise(loadingPromiseOrError)) {
+          throw loadingPromiseOrError;
+        }
+        // Return a Suspense promise
+        return loadingPromiseOrError;
+      }
+    })
+    .filter(Boolean);
+
+  if (promises.length) {
+    // All the suspense promises are reduced to a single promise then rethrown
+    throw Promise.all(promises);
+  }
+
+  return values;
 };

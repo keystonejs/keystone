@@ -4,7 +4,7 @@
 // should import from '@keystone-alpha/fields/types/Text/views/Controller'
 import memoizeOne from 'memoize-one';
 import isPromise from 'p-is-promise';
-import { omitBy } from '@keystone-alpha/utils';
+import { omitBy, captureSuspensePromises } from '@keystone-alpha/utils';
 import { Value } from 'slate';
 
 import TextController from '../../Text/views/Controller';
@@ -60,6 +60,8 @@ export default class ContentController extends TextController {
 
       return flattenBlocks(customBlocks);
     });
+
+    this.initFieldView = this.initFieldView.bind(this);
   }
 
   serialize = data => {
@@ -124,4 +126,11 @@ export default class ContentController extends TextController {
       }
     `;
   };
+
+  // NOTE: To use `super` below, this must be a method which is bound to `this`
+  // within the constructor. This is due to the way Babel does magic compilation
+  // of classes.
+  initFieldView() {
+    captureSuspensePromises([() => super.initFieldView(), () => this.getBlocks()]);
+  }
 }
