@@ -1,4 +1,4 @@
-const { queryParser } = require('../query-parser');
+const { queryParser } = require('../lib/query-parser');
 
 describe('query parser', () => {
   test('requires a tokenizer option', () => {
@@ -6,6 +6,12 @@ describe('query parser', () => {
     expect(() => queryParser({}, { name: 'foobar' })).toThrow(Error);
     expect(() => queryParser({ tokenizer: 'hello' }, { name: 'foobar' })).toThrow(Error);
     expect(() => queryParser({ tokenizer: 10 }, { name: 'foobar' })).toThrow(Error);
+  });
+
+  test('requires an object for the query', () => {
+    expect(() => {
+      queryParser({ tokenizer: { simple: () => undefined } }, 'foobar');
+    }).toThrow(Error);
   });
 
   describe('throws if tokenising function returns non-Object or non-Array', () => {

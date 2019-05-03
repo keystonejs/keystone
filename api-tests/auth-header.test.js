@@ -1,12 +1,12 @@
 const supertest = require('supertest-light');
-const { Keystone } = require('@keystone-alpha/keystone');
+const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { Text, Password } = require('@keystone-alpha/fields');
 const { WebServer } = require('@keystone-alpha/server');
-const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
 const bodyParser = require('body-parser');
 const cookieSignature = require('cookie-signature');
 const { multiAdapterRunners } = require('@keystone-alpha/test-utils');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { startAuthedSession, endAuthedSession } = require('@keystone-alpha/session');
 const cuid = require('cuid');
 
 const initialData = {
@@ -43,14 +43,13 @@ function setupKeystone() {
     },
   });
 
-  const authStrategy = keystone.createAuthStrategy({
+  keystone.createAuthStrategy({
     type: PasswordAuthStrategy,
     list: 'User',
   });
 
   const server = new WebServer(keystone, {
-    'cookie secret': COOKIE_SECRET,
-    authStrategy: authStrategy,
+    cookieSecret: COOKIE_SECRET,
     apiPath: '/admin/api',
     graphiqlPath: '/admin/graphiql',
   });
@@ -61,7 +60,7 @@ function setupKeystone() {
     bodyParser.urlencoded({ extended: true }),
     async (req, res, next) => {
       // Cleanup any previous session
-      await keystone.sessionManager.endAuthedSession(req);
+      await endAuthedSession(req);
 
       try {
         const result = await keystone.auth.User.password.validate({
@@ -73,7 +72,7 @@ function setupKeystone() {
             success: false,
           });
         }
-        await keystone.sessionManager.startAuthedSession(req, result);
+        await startAuthedSession(req, result);
         res.json({
           success: true,
           token: req.sessionID,
@@ -105,9 +104,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('Auth testing', () => {
       test(
         'Gives access denied when not logged in',
-        runner(setupKeystone, async ({ server: { server } }) => {
+        runner(setupKeystone, async ({ keystone, server }) => {
           // seed the db
-          await server.keystone.createItems(initialData);
+          await keystone.createItems(initialData);
           return supertest(server.app)
             .set('Accept', 'application/json')
             .post('/admin/api', { query: '{ allUsers { id } }' })
@@ -123,8 +122,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('logged in', () => {
         test(
           'Allows access with bearer token',
-          runner(setupKeystone, async ({ server: { server } }) => {
-            await server.keystone.createItems(initialData);
+          runner(setupKeystone, async ({ keystone, server }) => {
+            await keystone.createItems(initialData);
             const { success, token } = await login(
               server,
               initialData.User[0].email,
@@ -150,8 +149,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'Allows access with cookie',
-          runner(setupKeystone, async ({ server: { server } }) => {
-            await server.keystone.createItems(initialData);
+          runner(setupKeystone, async ({ keystone, server }) => {
+            await keystone.createItems(initialData);
             const { success, token } = await login(
               server,
               initialData.User[0].email,

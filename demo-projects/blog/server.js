@@ -1,26 +1,9 @@
 const keystone = require('@keystone-alpha/core');
+const { Wysiwyg } = require('@keystone-alpha/fields-wysiwyg-tinymce');
 const next = require('next');
 
-const { staticRoute, staticPath } = require('./index');
-
-const initialData = {
-  User: [
-    {
-      name: 'Administrator',
-      email: 'admin@keystone.project',
-      isAdmin: true,
-      dob: '1990-01-01',
-      password: 'password',
-    },
-    {
-      name: 'Demo User',
-      email: 'a@demo.user',
-      isAdmin: false,
-      dob: '1995-06-09',
-      password: 'password',
-    },
-  ],
-};
+const { port, staticRoute, staticPath } = require('./config');
+const initialData = require('./initialData');
 
 const nextApp = next({
   dir: 'app',
@@ -28,14 +11,9 @@ const nextApp = next({
   dev: process.env.NODE_ENV !== 'production',
 });
 
-Promise.all([keystone.prepare({ port: 3000 }), nextApp.prepare()])
+Promise.all([keystone.prepare({ port }), nextApp.prepare()])
   .then(async ([{ server, keystone: keystoneApp }]) => {
-    server.app.use(staticRoute, server.express.static(staticPath));
-
-    server.app.use(nextApp.getRequestHandler());
-
-    const { port } = await server.start();
-
+    await keystoneApp.connect();
     // Initialise some data.
     // NOTE: This is only for demo purposes and should not be used in production
     const users = await keystoneApp.lists.User.adapter.findAll();
@@ -43,7 +21,10 @@ Promise.all([keystone.prepare({ port: 3000 }), nextApp.prepare()])
       await keystoneApp.createItems(initialData);
     }
 
-    console.log(`Listening on port ${port}`);
+    Wysiwyg.bindStaticMiddleware(server);
+    server.app.use(staticRoute, server.express.static(staticPath));
+    server.app.use(nextApp.getRequestHandler());
+    await server.start();
   })
   .catch(error => {
     console.error(error);

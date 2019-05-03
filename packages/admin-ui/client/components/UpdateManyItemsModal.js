@@ -1,12 +1,13 @@
-import React, { Component, Fragment, useMemo, useCallback } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component, Fragment, useMemo, useCallback, Suspense } from 'react';
 import { Mutation } from 'react-apollo';
 import { Button } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import Select from '@arch-ui/select';
-import { omit } from '@keystone-alpha/utils';
-
-import FieldTypes from '../FIELD_TYPES';
+import { omit, arrayToObject } from '@keystone-alpha/utils';
+import { LoadingIndicator } from '@arch-ui/loading';
 
 let Render = ({ children }) => children();
 
@@ -19,18 +20,29 @@ class UpdateManyModal extends Component {
     this.state = { item, selectedFields };
   }
   onUpdate = () => {
-    const { updateItem, isLoading } = this.props;
-    console.log('onUpdate called');
-    return;
+    const { updateItem, isLoading, items } = this.props;
+    const { item, selectedFields } = this.state;
     if (isLoading) return;
-    const { item } = this.state;
+
+    const data = arrayToObject(selectedFields, 'path', field => field.serialize(item));
+
     updateItem({
-      variables: { data: item },
-    }).then(this.props.onUpdate);
+      variables: {
+        data: items.map(id => ({ id, data })),
+      },
+    }).then(() => {
+      this.props.onUpdate();
+      this.resetState();
+    });
+  };
+
+  resetState = () => {
+    this.setState({ item: this.props.list.getInitialItemData(), selectedFields: [] });
   };
   onClose = () => {
     const { isLoading } = this.props;
     if (isLoading) return;
+    this.resetState();
     this.props.onClose();
   };
   onKeyDown = event => {
@@ -69,6 +81,7 @@ class UpdateManyModal extends Component {
       <Drawer
         isOpen={isOpen}
         onClose={this.onClose}
+        closeOnBlanketClick
         heading={`Update ${list.formatCount(items)}`}
         onKeyDown={this.onKeyDown}
         slideInFrom="left"
@@ -83,28 +96,31 @@ class UpdateManyModal extends Component {
           </Fragment>
         }
       >
-        <Fragment>
-          <FieldContainer>
-            <FieldLabel>Fields</FieldLabel>
-            <FieldInput>
-              <Select
-                autoFocus
-                isMulti
-                menuPosition="fixed"
-                onChange={this.handleSelect}
-                options={options}
-                tabSelectsValue={false}
-                value={selectedFields}
-                getOptionValue={this.getOptionValue}
-                filterOption={this.filterOption}
-              />
-            </FieldInput>
-          </FieldContainer>
-          {selectedFields.map((field, i) => {
-            const { Field } = FieldTypes[list.key][field.path];
-            return (
-              <Render key={field.path}>
+        <FieldContainer>
+          <FieldLabel>Fields</FieldLabel>
+          <FieldInput>
+            <Select
+              autoFocus
+              isMulti
+              menuPosition="fixed"
+              onChange={this.handleSelect}
+              options={options}
+              tabSelectsValue={false}
+              value={selectedFields}
+              getOptionValue={this.getOptionValue}
+              filterOption={this.filterOption}
+            />
+          </FieldInput>
+        </FieldContainer>
+        {selectedFields.map((field, i) => {
+          return (
+            <Suspense
+              fallback={<LoadingIndicator css={{ height: '3em' }} size={12} />}
+              key={field.path}
+            >
+              <Render>
                 {() => {
+                  let [Field] = field.adminMeta.readViews([field.views.Field]);
                   let onChange = useCallback(value => {
                     this.setState(({ item }) => ({
                       item: {
@@ -127,9 +143,9 @@ class UpdateManyModal extends Component {
                   );
                 }}
               </Render>
-            );
-          })}
-        </Fragment>
+            </Suspense>
+          );
+        })}
       </Drawer>
     );
   }
@@ -138,11 +154,8 @@ class UpdateManyModal extends Component {
 export default class UpdateManyModalWithMutation extends Component {
   render() {
     const { list } = this.props;
-    // FIXME: updateMutation is the wrong thing to do here! We need to work out how
-    // to update many things all at once. This doesn't appear to be common pattern
-    // across the board.
     return (
-      <Mutation mutation={list.updateMutation}>
+      <Mutation mutation={list.updateManyMutation}>
         {(updateItem, { loading }) => (
           <UpdateManyModal updateItem={updateItem} isLoading={loading} {...this.props} />
         )}

@@ -1,10 +1,18 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useMemo, useCallback } from 'react';
+import { Component, Fragment, Suspense, useMemo, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { withToastManager } from 'react-toast-notifications';
+import memoizeOne from 'memoize-one';
+
+import { Container } from '@arch-ui/layout';
+import { Button } from '@arch-ui/button';
+import { AutocompleteCaptor } from '@arch-ui/input';
+import { Card } from '@arch-ui/card';
+import { gridSize } from '@arch-ui/theme';
+import { mapKeys, arrayToObject, omitBy, captureSuspensePromises } from '@keystone-alpha/utils';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
@@ -13,37 +21,39 @@ import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
 import Footer from './Footer';
-import { Container } from '@arch-ui/layout';
-import { Button } from '@arch-ui/button';
-import { AutocompleteCaptor } from '@arch-ui/input';
-import { gridSize } from '@arch-ui/theme';
 import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
-import { IdCopy } from './IdCopy';
 import { ItemTitle } from './ItemTitle';
-
-import { resolveAllKeys, arrayToObject } from '@keystone-alpha/utils';
-import isEqual from 'lodash.isequal';
-
-// This import is loaded by the @keystone-alpha/field-views-loader loader.
-// It imports all the views required for a keystone app by looking at the adminMetaData
-import FieldTypes from '../../FIELD_TYPES';
 
 let Render = ({ children }) => children();
 
 const Form = styled.form({
-  margin: '24px 0',
+  marginBottom: gridSize * 3,
 });
 
 // TODO: show updateInProgress and updateSuccessful / updateFailed UI
 
+const getValues = (fieldsObject, item) => mapKeys(fieldsObject, field => field.serialize(item));
+
+// Memoizing allows us to reduce the calls to `.serialize` when data hasn't
+// changed.
+const getInitialValues = memoizeOne(getValues);
+const getCurrentValues = memoizeOne(getValues);
+
 const ItemDetails = withRouter(
   class ItemDetails extends Component {
+    constructor(props) {
+      super(props);
+      // memoized function so we can call it multiple times _per component_
+      this.getFieldsObject = memoizeOne(() => arrayToObject(props.list.fields, 'path'));
+    }
+
     state = {
       item: this.props.item,
       itemHasChanged: false,
       showCreateModal: false,
       showDeleteModal: false,
     };
+
     componentDidMount() {
       this.mounted = true;
       document.addEventListener('keydown', this.onKeyDown, false);
@@ -106,29 +116,27 @@ const ItemDetails = withRouter(
         />
       );
     }
+
     onSave = () => {
       const { item } = this.state;
-      const {
-        list: { fields },
-        onUpdate,
-        toastManager,
-        updateItem,
-        item: initialData,
-      } = this.props;
+      const { onUpdate, toastManager, updateItem, item: initialData } = this.props;
 
-      resolveAllKeys(
-        // Don't try to update anything that hasn't changed.
-        // This is particularly important for access control where a field
-        // may be `read: true, update: false`, so will appear in the item
-        // details, but is not editable, and would cause an error if a value
-        // was sent as part of the update query.
-        arrayToObject(
-          fields.filter(field => !isEqual(field.getValue(initialData), field.getValue(item))),
-          'path',
-          field => field.getValue(item)
-        )
-      )
-        .then(data => updateItem({ variables: { id: item.id, data } }))
+      const fieldsObject = this.getFieldsObject();
+
+      const initialValues = getInitialValues(fieldsObject, initialData);
+      const currentValues = getCurrentValues(fieldsObject, item);
+
+      // Don't try to update anything that hasn't changed.
+      // This is particularly important for access control where a field
+      // may be `read: true, update: false`, so will appear in the item
+      // details, but is not editable, and would cause an error if a value
+      // was sent as part of the update query.
+      const data = omitBy(
+        currentValues,
+        path => !fieldsObject[path].hasChanged(initialValues, currentValues)
+      );
+
+      updateItem({ variables: { id: item.id, data } })
         .then(() => {
           const toastContent = (
             <div>
@@ -177,28 +185,30 @@ const ItemDetails = withRouter(
     render() {
       const { adminPath, list, updateInProgress, itemErrors, item: savedData } = this.props;
       const { item, itemHasChanged } = this.state;
+
       return (
         <Fragment>
           {itemHasChanged && <PreventNavigation />}
           <ItemTitle
             onCreateClick={this.openCreateModal}
+            item={item}
             list={list}
             adminPath={adminPath}
             titleText={savedData._label_}
           />
-          <IdCopy id={item.id} />
-          <Form>
-            <AutocompleteCaptor />
-            {list.fields.map((field, i) => {
-              const { Field } = FieldTypes[list.key][field.path];
-              return (
+          <Card css={{ marginBottom: '3em', paddingBottom: 0 }}>
+            <Form>
+              <AutocompleteCaptor />
+              {list.fields.map((field, i) => (
                 <Render key={field.path}>
                   {() => {
+                    const [Field] = field.adminMeta.readViews([field.views.Field]);
+
                     let onChange = useCallback(
                       value => {
-                        this.setState(({ item }) => ({
+                        this.setState(({ item: itm }) => ({
                           item: {
-                            ...item,
+                            ...itm,
                             [field.path]: value,
                           },
                           itemHasChanged: true,
@@ -221,17 +231,17 @@ const ItemDetails = withRouter(
                     );
                   }}
                 </Render>
-              );
-            })}
-          </Form>
+              ))}
+            </Form>
+            <Footer
+              onSave={this.onSave}
+              onDelete={this.openDeleteModal}
+              canReset={itemHasChanged && !updateInProgress}
+              onReset={this.onReset}
+              updateInProgress={updateInProgress}
+            />
+          </Card>
 
-          <Footer
-            onSave={this.onSave}
-            onDelete={this.openDeleteModal}
-            canReset={itemHasChanged && !updateInProgress}
-            onReset={this.onReset}
-            updateInProgress={updateInProgress}
-          />
           {this.renderCreateModal()}
           {this.renderDeleteModal()}
         </Fragment>
@@ -256,11 +266,18 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
 const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
   const itemQuery = list.getItemQuery(itemId);
   return (
-    <Fragment>
+    <Suspense fallback={<PageLoading />}>
       {/* network-only because the data we mutate with is important for display
           in the UI, and may be different than what's in the cache */}
       <Query query={itemQuery} fetchPolicy="network-only" errorPolicy="all">
         {({ loading, error, data, refetch }) => {
+          // Now that the network request for data has been triggered, we
+          // try to initialise the fields. They are Suspense capable, so may
+          // throw Promises which will be caught by the above <Suspense>
+          captureSuspensePromises(list.fields.map(field => () => field.initFieldView()));
+
+          // If the views load before the API request comes back, keep showing
+          // the loading component
           if (loading) return <PageLoading />;
 
           // Only show error page if there is no data
@@ -279,7 +296,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
             );
           }
 
-          const item = data[list.gqlNames.itemQueryName];
+          const item = list.deserializeItemData(data[list.gqlNames.itemQueryName]);
           const itemErrors = deconstructErrorsToDataShape(error)[list.gqlNames.itemQueryName] || {};
 
           return item ? (
@@ -331,7 +348,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
           );
         }}
       </Query>
-    </Fragment>
+    </Suspense>
   );
 };
 

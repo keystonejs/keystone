@@ -1,4 +1,9 @@
-# Email Sending in keystone-alpha
+---
+section: packages
+title: Email Sending
+---
+
+# Email Sending
 
 Send emails via various transports, rendered with Express-compatible
 renderers.
@@ -24,7 +29,7 @@ Usage:
 `index.js`
 
 ```javascript
-const emailSender = require('@keystone-alpha/email');
+const { emailSender } = require('@keystone-alpha/email');
 
 const jsxEmailSender = emailSender.jsx({
   // The directory containing the email templates
@@ -57,7 +62,7 @@ module.exports = class extends React.Component {
 };
 ```
 
-_NOTE: The `jsx` renderer has a peer dependency on `react` & `react-dom`_.
+> NOTE: The `jsx` renderer has a peer dependency on `react` and `react-dom`
 
 ### mjml
 
@@ -69,7 +74,7 @@ Usage:
 `index.js`
 
 ```javascript
-const emailSender = require('@keystone-alpha/email');
+const { emailSender } = require('@keystone-alpha/email');
 
 const mjmlEmailSender = emailSender.mjml({
   // The directory containing the email templates
@@ -108,23 +113,23 @@ module.exports = class extends React.Component {
 };
 ```
 
-_NOTE: The `mjml` renderer has a peer dependency on `react`, `react-dom`, & `mjml-react`_.
+> NOTE: The `mjml` renderer has a peer dependency on `react`, `react-dom`, and `mjml-react`
 
-### Jade
+### Pug (previously Jade)
 
 Usage:
 
 ```javascript
-const emailSender = require('@keystone-alpha/email');
+const { emailSender } = require('@keystone-alpha/email');
 
-const jadeEmailSender = emailSender.jade({
+const pugEmailSender = emailSender.pug({
   // The directory containing the email templates
   root: `${__dirname}/emails`,
   // The transport to send the emails (see `keystone-email` docs)
   transport: 'mailgun'
 });
 
-await jadeEmailSender('new-user.jade').send(
+await pugEmailSender('new-user.pug').send(
   { ... }, // renderer props
   { ... }, // transport options (api keys, to/from, etc). See `keystone-email` docs
 );
@@ -132,12 +137,12 @@ await jadeEmailSender('new-user.jade').send(
 
 ### Other renderers
 
-Above are examples of using 2 renderers, `jsx`, and `jade`.
+Above are examples of using 2 renderers, `jsx`, and `pug`.
 
 In general, renderers are available directly on the exported object:
 
 ```javascript
-const emailSender = require('@keystone-alpha/email');
+const { emailSender } = require('@keystone-alpha/email');
 
 emailSender.<renderer>(...);
 ```

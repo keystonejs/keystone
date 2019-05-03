@@ -1,3 +1,10 @@
+---
+section: packages
+title: Mongo Join Builder
+---
+
+# Mongo Join Builder
+
 Perform JOINs in Mongo with a simplified query syntax.
 
 ## Examples
@@ -14,11 +21,11 @@ db.items.insert([
 // Only item 2 & 3 have stock. Item 2 only has stock in warehouse A.Item 3 used
 // to have stock in warehouse B, but now only has stock in warehouse A.
 db.warehouses.insert([
-  { _id: 1, item: 1, warehouse: 'A', instock: 0 },
-  { _id: 2, item: 2, warehouse: 'A', instock: 80 },
-  { _id: 3, item: 1, warehouse: 'B', instock: 0 },
-  { _id: 4, item: 3, warehouse: 'B', instock: 0 },
-  { _id: 5, item: 3, warehouse: 'A', instock: 40 },
+  { _id: 1, item: 1, warehouse: 'A', stock: 0 },
+  { _id: 2, item: 2, warehouse: 'A', stock: 80 },
+  { _id: 3, item: 1, warehouse: 'B', stock: 0 },
+  { _id: 4, item: 3, warehouse: 'B', stock: 0 },
+  { _id: 5, item: 3, warehouse: 'A', stock: 40 },
 ]);
 
 db.orders.insert([
@@ -42,7 +49,7 @@ We can write this query like so:
 }
 ```
 
-Can also be written with an explicit _`AND`_:
+Can also be written with an explicit `AND`:
 
 ```javascript
 {
@@ -67,7 +74,7 @@ We'd expect the following results:
       {
         id: 1,
         name: 'almonds',
-        stock: [{ id: 1, warehouse: 'A', instock: 0 }, { id: 3, warehouse: 'B', instock: 0 }],
+        stock: [{ id: 1, warehouse: 'A', stock: 0 }, { id: 3, warehouse: 'B', stock: 0 }],
       },
     ],
   },
@@ -76,18 +83,18 @@ We'd expect the following results:
     items: [
       {
         id: 2,
-        name: 'peacans',
-        stock: [{ id: 2, warehouse: 'A', instock: 80 }],
+        name: 'pecans',
+        stock: [{ id: 2, warehouse: 'A', stock: 80 }],
       },
     ],
   },
 ];
 ```
 
-The raw mongodb query to do this is complex; aint nobody got time for that!
+The raw MongoDB query to do this is complex.
 
 <details>
-<summary>See the mongodb query</summary>
+<summary>See the MongoDB query</summary>
 
 ```js
 db.orders.aggregate([
@@ -150,7 +157,7 @@ _NOTE: This example is incomplete, and only for documentation purposes. See
 [`examples/`](./examples) for complete examples._
 
 ```javascript
-const joinBuilder = require('@keystone-alpha/mongo-join-builder');
+const { mongoJoinBuilder } = require('@keystone-alpha/mongo-join-builder');
 const database = require('./my-mongodb-connection');
 
 const builder = mongoJoinBuilder({
@@ -206,6 +213,5 @@ const result = await builder(query, database, 'orders');
 
 ## Limitations
 
-Due to [a limitation in
-`mongo@<4.x`](https://jira.mongodb.org/browse/SERVER-22781), relationship
+Due to [a limitation in `mongo@<4.x`](https://jira.mongodb.org/browse/SERVER-22781), relationship
 queries will fail silently with 0 results unless IDs are stored as `ObjectId`s.

@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useMemo, Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks'; // FIXME: Use the provided API when hooks ready
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ToastProvider } from 'react-toast-notifications';
 import { Global } from '@emotion/core';
 
 import { globalStyles } from '@arch-ui/theme';
 
-import apolloClient from './apolloClient';
+import ApolloClient from './apolloClient';
 
 import ConnectivityListener from './components/ConnectivityListener';
-import { AdminMetaProvider } from './providers/AdminMeta';
+import { useAdminMeta } from './providers/AdminMeta';
 
 import InvalidRoutePage from './pages/InvalidRoute';
 import SignoutPage from './pages/Signout';
@@ -23,14 +24,19 @@ import SigninPage from './pages/Signin';
   actually do that, so we don't guard against it (yet).
 */
 
-const Keystone = () => (
-  <ApolloProvider client={apolloClient}>
-    <ToastProvider>
-      <ConnectivityListener />
-      <Global styles={globalStyles} />
-      <AdminMetaProvider>
-        {adminMeta =>
-          adminMeta.withAuth ? (
+const Keystone = () => {
+  let adminMeta = useAdminMeta();
+  let { apiPath } = adminMeta;
+  const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
+
+  return (
+    <ApolloProvider client={apolloClient}>
+      <ApolloHooksProvider client={apolloClient}>
+        <ToastProvider>
+          <ConnectivityListener />
+          <Global styles={globalStyles} />
+
+          {adminMeta.withAuth ? (
             <BrowserRouter>
               <Switch>
                 <Route
@@ -43,11 +49,16 @@ const Keystone = () => (
             </BrowserRouter>
           ) : (
             <InvalidRoutePage {...adminMeta} />
-          )
-        }
-      </AdminMetaProvider>
-    </ToastProvider>
-  </ApolloProvider>
-);
+          )}
+        </ToastProvider>
+      </ApolloHooksProvider>
+    </ApolloProvider>
+  );
+};
 
-ReactDOM.render(<Keystone />, document.getElementById('app'));
+ReactDOM.render(
+  <Suspense fallback={null}>
+    <Keystone />
+  </Suspense>,
+  document.getElementById('app')
+);

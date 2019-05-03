@@ -1,4 +1,4 @@
-const joinBuilder = require('../join-builder');
+const joinBuilder = require('../lib/join-builder');
 
 describe('join builder', () => {
   test('correctly generates joins for simple queries', () => {

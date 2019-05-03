@@ -1,5 +1,16 @@
 # @keystone-alpha/access-control
 
+## 1.0.3
+
+- [patch][10d96db2](https://github.com/keystonejs/keystone-5/commit/10d96db2):
+
+  - Restructure internal code
+
+## 1.0.2
+
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+  - @keystone-alpha/utils@2.0.0
+
 ## 1.0.1
 
 - [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):

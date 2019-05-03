@@ -1,11 +1,11 @@
-# Custom fields in Keystone 5
+# Custom Field: `Stars`
 
 One Keystone feature request that has been around for a very long time is Custom Fields.
 Finally this is available in Keystone 5 🎉.
 
 In this post we will be creating a simple custom Field Type for star ratings ⭐️ ⭐️ ⭐️ ⭐️ ⭐️!
 
-![Screenshot of the Stars input field in Keystone Admin UI]()
+![Screenshot of the Stars input field in Keystone Admin UI](<>)
 
 For this component, our data requirements are simple. We need to store an Integer in the database
 to represent the number of stars on a blog post. This makes things easy because Integer is a built
@@ -63,7 +63,7 @@ This is where we will spend most of our time in this tutorial.
 
 ## Defining The Field Type
 
-Field Types should have an `index.js` file which exports the Field Type definition. Explanations on what each thing does can be found [here](/packages/fields/README/index.md).
+Field Types should have an `index.js` file which exports the Field Type definition. Explanations on what each thing does can be found [here](../../../../packages/fields/README.md).
 
 ```jsx
 const { Stars, MongoIntegerInterface } = require('./Implementation');

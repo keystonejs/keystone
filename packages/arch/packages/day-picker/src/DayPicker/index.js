@@ -129,68 +129,56 @@ export const DayPicker = ({
     [shouldChangeScrollPositionRef, setDate]
   );
 
-  useLayoutEffect(
-    () => {
-      if (shouldChangeScrollPositionRef.current) {
-        scrollToDate(date, yearRangeFrom, yearRangeTo, listRef.current);
-        shouldChangeScrollPositionRef.current = false;
-      }
-    },
-    [date, yearRangeFrom, yearRangeTo, listRef]
-  );
+  useLayoutEffect(() => {
+    if (shouldChangeScrollPositionRef.current) {
+      scrollToDate(date, yearRangeFrom, yearRangeTo, listRef.current);
+      shouldChangeScrollPositionRef.current = false;
+    }
+  }, [date, yearRangeFrom, yearRangeTo, listRef]);
 
-  const years = useMemo(
-    () => {
-      return yearRange(yearRangeFrom, yearRangeTo);
-    },
-    [yearRangeFrom, yearRangeTo]
-  );
+  const years = useMemo(() => {
+    return yearRange(yearRangeFrom, yearRangeTo);
+  }, [yearRangeFrom, yearRangeTo]);
 
-  const items = useMemo(
-    () => {
-      const _items: Array<{ year: number, month: number, weeks: Weeks }> = [];
+  const items = useMemo(() => {
+    const _items: Array<{ year: number, month: number, weeks: Weeks }> = [];
 
-      years.forEach(year => {
-        months.forEach(month => {
-          _items.push({
-            year,
-            month,
-            weeks: getWeeksInMonth(new Date(year, month, 1)),
-          });
+    years.forEach(year => {
+      months.forEach(month => {
+        _items.push({
+          year,
+          month,
+          weeks: getWeeksInMonth(new Date(year, month, 1)),
         });
       });
-      return _items;
-    },
-    [years]
-  );
+    });
+    return _items;
+  }, [years]);
   const currentIndex = (date.getFullYear() - yearRangeFrom) * 12 + date.getMonth();
 
   const canGoNextMonth = currentIndex < items.length - 1;
   const canGoPreviousMonth = currentIndex > 0;
 
-  const observer = useMemo(
-    () => {
-      return new IntersectionObserver(
-        entries => {
-          const filteredEntries = entries
-            .filter(value => value.isIntersecting)
-            .sort((a, b) => {
-              if (a.intersectionRatio > b.intersectionRatio) {
-                return -1;
-              }
-              return 1;
-            });
-          if (filteredEntries.length !== 0) {
-            let index = Number(filteredEntries[0].target.getAttribute('data-index'));
-            let item = items[index];
-            setDate(new Date(item.year, item.month, 1));
-          }
-        },
-        { threshold: 0.6 }
-      );
-    },
-    [items]
-  );
+  const observer = useMemo(() => {
+    return new IntersectionObserver(
+      entries => {
+        const filteredEntries = entries
+          .filter(value => value.isIntersecting)
+          .sort((a, b) => {
+            if (a.intersectionRatio > b.intersectionRatio) {
+              return -1;
+            }
+            return 1;
+          });
+        if (filteredEntries.length !== 0) {
+          let index = Number(filteredEntries[0].target.getAttribute('data-index'));
+          let item = items[index];
+          setDate(new Date(item.year, item.month, 1));
+        }
+      },
+      { threshold: 0.6 }
+    );
+  }, [items]);
 
   return (
     <Wrapper>

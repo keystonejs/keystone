@@ -14,8 +14,8 @@ const {
   Color,
   Url,
   Content,
+  Decimal,
 } = require('@keystone-alpha/fields');
-const Decimal = require('../../packages/fields/types/Decimal');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
 
 const { staticRoute, staticPath, cloudinary } = require('./config');
@@ -122,7 +122,7 @@ keystone.createList('Post', {
     value: {
       type: Content,
       blocks: [
-        [CloudinaryImage.block, { adapter: cloudinaryAdapter }],
+        [CloudinaryImage.blocks.image, { adapter: cloudinaryAdapter }],
         Content.blocks.blockquote,
         Content.blocks.orderedList,
         Content.blocks.unorderedList,
@@ -153,10 +153,7 @@ keystone.createList('SomeLongNamedList', {
   },
 });
 
-const admin = new AdminUI(keystone, {
-  adminPath: '/admin',
-  sortListsAlphabetically: true,
-});
+const admin = new AdminUI(keystone);
 
 module.exports = {
   keystone,

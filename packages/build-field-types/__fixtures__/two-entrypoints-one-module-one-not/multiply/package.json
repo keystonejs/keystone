@@ -1,0 +1,6 @@
+{
+  "main": "dist/two-entrypoints-one-module-one-not.cjs.js",
+  "field-types": {
+    "source": "../src/multiply"
+  }
+}

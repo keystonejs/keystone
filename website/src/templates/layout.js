@@ -1,102 +1,83 @@
-import React from 'react'; // eslint-disable-line no-unused-vars
-import { jsx, Global } from '@emotion/core';
-
 /** @jsx jsx */
 
-import { colors } from '@arch-ui/theme';
+import React, { useState } from 'react'; // eslint-disable-line no-unused-vars
+import { jsx, Global } from '@emotion/core';
+import { colors, globalStyles } from '@arch-ui/theme';
+import { SkipNavLink } from '@reach/skip-nav';
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import Sidebar from '../components/Sidebar';
+import { Header, SiteMeta } from '../components';
+import { media, mediaMax } from '../utils/media';
+import { useDimensions } from '../utils/hooks';
 
-const Layout = ({ children }) => (
-  <>
-    <Global
-      styles={{
-        body: {
-          margin: 0,
-          color: colors.B.D70,
-          fontFamily: 'system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,sans-serif',
-          lineHeight: '1.5em',
-        },
+const Layout = ({ children }) => {
+  const [isVisible, setVisible] = useState(false);
+  const toggleMenu = bool => () => setVisible(bool);
+  const [headerRef, headerDimensions] = useDimensions();
 
-        a: {
-          color: colors.B.base,
-        },
+  return (
+    <>
+      <Global
+        styles={{
+          ...globalStyles,
 
-        img: {
-          maxWidth: '100%',
-        },
+          // Accessibility
+          // ------------------------------
 
-        'pre[class*="language-"]': {
-          padding: 16,
-          width: '100%',
-          boxSizing: 'border-box',
-        },
+          '.js-focus-visible :focus:not(.focus-visible)': {
+            outline: 'none',
+          },
+          '.js-focus-visible .focus-visible': {
+            outline: `2px dashed ${colors.B.A60}`,
+            outlineOffset: 2,
+          },
 
-        ':not(pre) > code[class*="language-"]': {
-          background: 'white',
-          padding: '2px 4px',
-          fontSize: '0.9em',
-          overflow: 'scroll',
-        },
-      }}
-    />
+          '[data-reach-skip-link]': {
+            borderColor: 'initial',
+            borderImage: 'initial',
+            borderStyle: 'initial',
+            borderWidth: '0px',
+            clip: 'rect(0px, 0px, 0px, 0px)',
+            color: colors.primary,
+            fontSize: '0.875rem',
+            height: '1px',
+            margin: '-1px',
+            overflow: 'hidden',
+            padding: '0px',
+            position: 'absolute',
+            width: '1px',
+            zIndex: '100',
+          },
+          '[data-reach-skip-link]:focus': {
+            background: 'rgb(255, 255, 255)',
+            clip: 'auto',
+            height: 'auto',
+            left: '1.5rem',
+            padding: '1rem',
+            position: 'fixed',
+            textDecoration: 'none',
+            top: '1.5rem',
+            width: 'auto',
+          },
 
-    <div
-      css={{
-        display: 'grid',
-        gridTemplateColumns: 'minmax(252px,calc((100% - 972px) / 2 + 226px)) 880px 1fr',
-        gridTemplateRows: '66px auto',
-      }}
-    >
-      <div
-        css={{
-          gridRowStart: 1,
-          gridRowEnd: 1,
-          gridColumnStart: 1,
-          gridColumnEnd: 4,
+          // Device Tweaks
+          // ------------------------------
+
+          [mediaMax.sm]: {
+            body: { fontSize: 'inherit' },
+            html: { fontSize: 14 },
+          },
+          [media.sm]: {
+            body: { fontSize: 'inherit' },
+            html: { fontSize: 16 },
+          },
         }}
-      >
-        <Header />
-      </div>
-
-      <aside
-        css={{
-          background: colors.B.A5,
-          height: 'calc(100vh - 66px)',
-          overflow: 'scroll',
-          padding: 16,
-          boxSizing: 'border-box',
-          borderRight: `1px solid ${colors.B.A20}`,
-          gridRowStart: 2,
-          gridRowEnd: 2,
-          gridColumnStart: 1,
-          gridColumnEnd: 1,
-          display: 'flex',
-          justifyContent: 'flex-end',
-        }}
-      >
-        <Sidebar />
-      </aside>
-      <main
-        css={{
-          height: 'calc(100vh - 66px)',
-          overflow: 'scroll',
-          background: 'white',
-          gridRowStart: 2,
-          gridRowEnd: 2,
-          gridColumnStart: 2,
-          gridColumnEnd: 2,
-        }}
-      >
-        <div>
-          <div css={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>{children}</div>
-        </div>
-        <Footer />
-      </main>
-    </div>
-  </>
-);
+      />
+      <SkipNavLink />
+      <SiteMeta pathname="/" />
+      <Header key="global-header" ref={headerRef} toggleMenu={toggleMenu(!isVisible)} />
+      {children({ sidebarOffset: headerDimensions.height, sidebarIsVisible: isVisible })}
+    </>
+  );
+};
 
 export default Layout;

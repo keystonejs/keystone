@@ -1,13 +1,17 @@
-# Keystone Core
+---
+section: packages
+title: Keystone
+---
+
+# Keystone
 
 ## `Keystone` class
 
 ### `Keystone::createItems(<items>)`
 
-Allows progromatically creating a batch of items described as JSON objects.
+Allows programatically creating a batch of items described as JSON objects.
 
-This method's primary use is indended for migration scripts, or initial seeding
-of databases.
+This method's primary use is intended for migration scripts, or initial seeding of databases.
 
 #### `items`
 
@@ -22,7 +26,7 @@ keystone.createItems({
 ```
 
 > The format of the data must match the schema setup with calls to
-> `keyston.createList()`.
+> `keystone.createList()`.
 
 #### Relationships
 
@@ -75,11 +79,11 @@ keystone.createList('User', {
 
 There is 2 ways to write the relationship query:
 
-1.  _Single Relation syntax_, using the same query as a Single Relationship, but
-    instead of picking only the first item found, it will pick _all_ the items
-    found to match the query. ie; 0, 1, or _n_ items.
-2.  _Array Relation syntax_, allowing to explicitly set the exact items related
-    to. ie; The exact length and items in the collection.
+1. _Single Relation syntax_, using the same query as a Single Relationship, but
+   instead of picking only the first item found, it will pick _all_ the items
+   found to match the query. ie; 0, 1, or _n_ items.
+2. _Array Relation syntax_, allowing to explicitly set the exact items related
+   to. ie; The exact length and items in the collection.
 
 **Single Relation syntax** example
 
@@ -151,7 +155,7 @@ keystone.createItems({
 });
 ```
 
-Will match all users whos name starts with `'J'`, skipping the first two matches,
+Will match all users whose name starts with `'J'`, skipping the first two matches,
 ultimately matching against `'John'`.
 
 #### Errors
@@ -180,3 +184,11 @@ Limitations include:
 
 When these limitations apply to your task at hand, we recommend using the
 GraphQL API instead. It is more verbose, but much more powerful.
+
+<!--
+The linked page seems to be skipped by Gatsby. Will re-add this section once
+fixed.
+## Auth Strategies
+
+For more info on Auth strategies, see [the Authentication Strategies documentation](../../packages/keystone/auth/README.md).
+-->

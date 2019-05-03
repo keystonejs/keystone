@@ -2,19 +2,19 @@ const gql = require('graphql-tag');
 const { print } = require('graphql/language/printer');
 
 // We don't want to actually log, so we mock it before we require the class
-jest.doMock('@keystone-alpha/logger', () => {
-  return jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} }));
-});
+jest.doMock('@keystone-alpha/logger', () => ({
+  logger: jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} })),
+}));
 
-const List = require('../List');
-const { AccessDeniedError } = require('../List/graphqlErrors');
+const List = require('../lib/List');
+const { AccessDeniedError } = require('../lib/List/graphqlErrors');
 const { Text, Checkbox, Float, Relationship } = require('@keystone-alpha/fields');
 const { getType } = require('@keystone-alpha/utils');
 const path = require('path');
 
 let fieldsPackagePath = path.dirname(require.resolve('@keystone-alpha/fields/package.json'));
 function resolveViewPath(viewPath) {
-  return path.join(fieldsPackagePath, 'types', viewPath);
+  return path.join(fieldsPackagePath, 'src', 'types', viewPath);
 }
 
 class MockFieldAdapter {}
@@ -141,9 +141,9 @@ describe('new List()', () => {
 
   test('new List() - config', () => {
     const list = setup();
-    expect(list.config.labelResolver).toBeInstanceOf(Function);
-    expect(list.config.fields).toBeInstanceOf(Object);
-    expect(list.config.adminConfig).toEqual({
+    expect(list.labelResolver).toBeInstanceOf(Function);
+    expect(list.fields).toBeInstanceOf(Object);
+    expect(list.adminConfig).toEqual({
       defaultColumns: 'name,email',
       defaultPageSize: 50,
       defaultSort: 'name',
@@ -221,28 +221,28 @@ describe('new List()', () => {
     const list = setup();
     expect(list.views).toEqual({
       name: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },
       email: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },
       other: {
-        Controller: resolveViewPath('Relationship/Controller'),
+        Controller: resolveViewPath('Relationship/views/Controller'),
         Field: resolveViewPath('Relationship/views/Field'),
         Filter: resolveViewPath('Relationship/views/Filter'),
         Cell: resolveViewPath('Relationship/views/Cell'),
       },
       hidden: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },
       writeOnce: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },
@@ -258,7 +258,7 @@ describe('new List()', () => {
 test('labelResolver', () => {
   // Default: Use name
   const list = setup();
-  expect(list.config.labelResolver({ name: 'a', email: 'a@example.com', id: '1' })).toEqual('a');
+  expect(list.labelResolver({ name: 'a', email: 'a@example.com', id: '1' })).toEqual('a');
 
   // Use config.labelField if supplied
   const list2 = new List(
@@ -272,11 +272,11 @@ test('labelResolver', () => {
     },
     listExtras()
   );
-  expect(list2.config.labelResolver({ name: 'a', email: 'a@example.com', id: '2' })).toEqual(
+  expect(list2.labelResolver({ name: 'a', email: 'a@example.com', id: '2' })).toEqual(
     'a@example.com'
   );
 
-  // Use config.labelResolver if supplied (over-rides labelField)
+  // Use labelResolver if supplied (over-rides labelField)
   const list3 = new List(
     'List3',
     {
@@ -289,7 +289,7 @@ test('labelResolver', () => {
     },
     listExtras()
   );
-  expect(list3.config.labelResolver({ name: 'a', email: 'a@example.com', id: '3' })).toEqual(
+  expect(list3.labelResolver({ name: 'a', email: 'a@example.com', id: '3' })).toEqual(
     'a - a@example.com'
   );
 
@@ -303,7 +303,7 @@ test('labelResolver', () => {
     },
     listExtras()
   );
-  expect(list4.config.labelResolver({ email: 'a@example.com', id: '4' })).toEqual('4');
+  expect(list4.labelResolver({ email: 'a@example.com', id: '4' })).toEqual('4');
 });
 
 describe('getAdminMeta()', () => {
@@ -375,28 +375,28 @@ describe('getAdminMeta()', () => {
 
     expect(adminMeta.views).toEqual({
       name: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },
       email: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },
       other: {
-        Controller: resolveViewPath('Relationship/Controller'),
+        Controller: resolveViewPath('Relationship/views/Controller'),
         Field: resolveViewPath('Relationship/views/Field'),
         Filter: resolveViewPath('Relationship/views/Filter'),
         Cell: resolveViewPath('Relationship/views/Cell'),
       },
       hidden: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },
       writeOnce: {
-        Controller: resolveViewPath('Text/Controller'),
+        Controller: resolveViewPath('Text/views/Controller'),
         Field: resolveViewPath('Text/views/Field'),
         Filter: resolveViewPath('Text/views/Filter'),
       },

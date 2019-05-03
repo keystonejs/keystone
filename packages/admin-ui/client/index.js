@@ -1,19 +1,21 @@
-import React from 'react';
+import React, { Suspense, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks'; // FIXME: Use the provided API when hooks ready
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ToastProvider } from 'react-toast-notifications';
 import { Global } from '@emotion/core';
 
 import { globalStyles } from '@arch-ui/theme';
 
-import apolloClient from './apolloClient';
+import ApolloClient from './apolloClient';
 
 import Nav from './components/Nav';
 import ScrollToTop from './components/ScrollToTop';
 import ConnectivityListener from './components/ConnectivityListener';
 import KeyboardShortcuts from './components/KeyboardShortcuts';
-import { AdminMetaProvider } from './providers/AdminMeta';
+import PageLoading from './components/PageLoading';
+import { useAdminMeta } from './providers/AdminMeta';
 
 import HomePage from './pages/Home';
 import ListPage from './pages/List';
@@ -22,19 +24,31 @@ import ItemPage from './pages/Item';
 import InvalidRoutePage from './pages/InvalidRoute';
 import StyleGuidePage from './pages/StyleGuide';
 
-const Keystone = () => (
-  <ApolloProvider client={apolloClient}>
-    <KeyboardShortcuts>
-      <ToastProvider>
-        <ConnectivityListener />
-        <Global styles={globalStyles} />
-        <AdminMetaProvider>
-          {adminMeta => {
-            const { adminPath } = adminMeta;
-            return (
-              <BrowserRouter>
-                <ScrollToTop>
-                  <Nav>
+const findCustomPages = (pages, allPages = []) => {
+  if (!Array.isArray(pages)) return allPages;
+  pages.forEach(page => {
+    if (page.path) allPages.push(page);
+    else if (page.children) findCustomPages(page.children, allPages);
+  });
+  return allPages;
+};
+
+const Keystone = () => {
+  let adminMeta = useAdminMeta();
+  let { adminPath, apiPath, pages, pageViews, readViews } = adminMeta;
+  const apolloClient = useMemo(() => new ApolloClient({ uri: apiPath }), [apiPath]);
+
+  return (
+    <ApolloProvider client={apolloClient}>
+      <ApolloHooksProvider client={apolloClient}>
+        <KeyboardShortcuts>
+          <ToastProvider>
+            <ConnectivityListener />
+            <Global styles={globalStyles} />
+            <BrowserRouter>
+              <ScrollToTop>
+                <Nav>
+                  <Suspense fallback={<PageLoading />}>
                     <Switch>
                       <Route
                         path={`${adminPath}/style-guide/:page?`}
@@ -45,6 +59,17 @@ const Keystone = () => (
                         path={`${adminPath}`}
                         render={() => <HomePage {...adminMeta} />}
                       />
+                      {findCustomPages(pages).map(page => (
+                        <Route
+                          exact
+                          key={page.path}
+                          path={`${adminPath}/${page.path}`}
+                          render={() => {
+                            const [Page] = readViews([pageViews[page.path]]);
+                            return <Page />;
+                          }}
+                        />
+                      ))}
                       <Route
                         path={`${adminPath}/:listKey`}
                         render={({
@@ -60,7 +85,14 @@ const Keystone = () => (
                               <Route
                                 exact
                                 path={`${adminPath}/:list`}
-                                render={() => <ListPage key={listKey} list={list} {...adminMeta} />}
+                                render={routeProps => (
+                                  <ListPage
+                                    key={listKey}
+                                    list={list}
+                                    adminMeta={adminMeta}
+                                    routeProps={routeProps}
+                                  />
+                                )}
                               />
                               <Route
                                 exact
@@ -86,15 +118,20 @@ const Keystone = () => (
                         }}
                       />
                     </Switch>
-                  </Nav>
-                </ScrollToTop>
-              </BrowserRouter>
-            );
-          }}
-        </AdminMetaProvider>
-      </ToastProvider>
-    </KeyboardShortcuts>
-  </ApolloProvider>
-);
+                  </Suspense>
+                </Nav>
+              </ScrollToTop>
+            </BrowserRouter>
+          </ToastProvider>
+        </KeyboardShortcuts>
+      </ApolloHooksProvider>
+    </ApolloProvider>
+  );
+};
 
-ReactDOM.render(<Keystone />, document.getElementById('app'));
+ReactDOM.render(
+  <Suspense fallback={null}>
+    <Keystone />
+  </Suspense>,
+  document.getElementById('app')
+);

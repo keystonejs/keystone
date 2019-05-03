@@ -1,5 +1,145 @@
 # @keystone-alpha/admin-ui
 
+## 3.1.0
+
+- [patch][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):
+
+  - Add missing arch-ui deps to admin-ui
+
+- [patch][2e227a73](https://github.com/keystonejs/keystone-5/commit/2e227a73):
+
+  - Correctly handle async .getValue() calls when saving
+
+- [minor][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+
+  - admin revamp
+
+- Updated dependencies [85b74a2c](https://github.com/keystonejs/keystone-5/commit/85b74a2c):
+  - @keystone-alpha/fields@5.0.0
+
+## 3.0.6
+
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+
+  - Update dev devependencies
+
+- [patch][7b8d254d](https://github.com/keystonejs/keystone-5/commit/7b8d254d):
+
+  - Update external dependencies
+
+- [patch][24bed583](https://github.com/keystonejs/keystone-5/commit/24bed583):
+
+  - Update react-router-dom dependency to 5.0.0
+
+- [patch][545c9464](https://github.com/keystonejs/keystone-5/commit/545c9464):
+
+  - Add support for mass update
+
+- Updated dependencies [545c9464](https://github.com/keystonejs/keystone-5/commit/545c9464):
+- Updated dependencies [37dcee37](https://github.com/keystonejs/keystone-5/commit/37dcee37):
+- Updated dependencies [302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+  - @keystone-alpha/fields@4.0.0
+  - @arch-ui/drawer@0.0.4
+  - @arch-ui/confirm@0.0.4
+  - @arch-ui/dialog@0.0.4
+  - @arch-ui/dropdown@0.0.4
+  - @arch-ui/popout@0.0.4
+  - @arch-ui/tooltip@0.0.4
+
+## 3.0.5
+
+- Updated dependencies [4131e232](https://github.com/keystonejs/keystone-5/commit/4131e232):
+  - @keystone-alpha/field-views-loader@2.0.0
+
+## 3.0.4
+
+- [patch][d718c016](https://github.com/keystonejs/keystone-5/commit/d718c016):
+
+  - Add the `admin` audience when signing in via the admin UI session middleware.
+
+- [patch][5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+
+  - Use the new @keystone-alpha/session package
+
+- Updated dependencies [d718c016](https://github.com/keystonejs/keystone-5/commit/d718c016):
+- Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+  - @keystone-alpha/session@1.0.0
+
+## 3.0.3
+
+- [patch][85cb44a9](https://github.com/keystonejs/keystone-5/commit/85cb44a9):
+
+  - Introduce `pages` config option
+  - Remove `sortListsAlphabetically`
+
+- Updated dependencies [85cb44a9](https://github.com/keystonejs/keystone-5/commit/85cb44a9):
+  - @arch-ui/navbar@0.0.4
+
+## 3.0.2
+
+- [patch][5ddb2ed6](https://github.com/keystonejs/keystone-5/commit/5ddb2ed6):
+
+  - Always display clickable links when starting a server in dev mode
+
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+  - @keystone-alpha/fields@3.0.1
+  - @keystone-alpha/utils@2.0.0
+
+## 3.0.1
+
+- [patch][f12a2a80](https://github.com/keystonejs/keystone-5/commit/f12a2a80):
+
+  - Fix running Babel on Admin UI src when on npm
+
+## 3.0.0
+
+- [major][9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):
+
+  - Build field type views before publishing to npm and stop running Babel on Keystone packages in node_modules in the Admin UI
+
+- [major][de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+
+  - Update authStrategy APIs
+    - Removes `authStrategy` from the `config` API of `Webserver`.
+    - Removes `authStrategy` from the `serverConfig` of the core `keystone` system builder.
+    - Removes the `setAuthStrategy` method from `AdminUI`.
+    - Adds `authStrategy` to the `config` API of `AdminUI`.
+    - `Webserver` checks `keystone.auth` to determine whether to set up auth session middlewares.
+
+- [major][4ed35dfd](https://github.com/keystonejs/keystone-5/commit/4ed35dfd):
+
+  - Remove methods from `AdminUI` class:
+    - `redirectSuccessfulSignin`
+    - `signin`
+    - `signout`
+    - `session`
+
+## 2.0.0
+
+- [major][dcb93771](https://github.com/keystonejs/keystone-5/commit/dcb93771):
+
+  - Put field type views onto field controllers
+
+- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+
+  - Update minor-level dependencies
+
+- [patch][3a775092](https://github.com/keystonejs/keystone-5/commit/3a775092):
+
+  - Update dependencies
+
+- [patch][619b17c2](https://github.com/keystonejs/keystone-5/commit/619b17c2):
+
+  - Reformat code using latest version of Prettier (1.16.4)
+
+- [patch][d9a1be91](https://github.com/keystonejs/keystone-5/commit/d9a1be91):
+
+  - Update dependencies
+
+- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+
+  - Update patch-level dependencies
+
 ## 1.1.0
 
 - [minor][91557b24](https://github.com/keystonejs/keystone-5/commit/91557b24):

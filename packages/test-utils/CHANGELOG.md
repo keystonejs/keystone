@@ -1,5 +1,54 @@
 # @keystone-alpha/test-utils
 
+## 2.0.0
+
+- [patch][7b8d254d](https://github.com/keystonejs/keystone-5/commit/7b8d254d):
+
+  - Update external dependencies
+
+- [patch][88e6224f](https://github.com/keystonejs/keystone-5/commit/88e6224f):
+
+  - Restructure internal code
+
+- [major][21be780b](https://github.com/keystonejs/keystone-5/commit/21be780b):
+
+  - Remove `runQuery` from API.
+  - `matchFilter` takes `keystone` as the first parameter, rather than `server`.
+  - `graphqlRequest` takes a `keystone` parameter, and no longer takes `server`.
+
+- Updated dependencies [656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+- Updated dependencies [b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
+  - @keystone-alpha/adapter-knex@1.0.5
+  - @keystone-alpha/adapter-mongoose@1.0.5
+  - @keystone-alpha/keystone@3.0.0
+  - @keystone-alpha/server@4.0.0
+
+## 1.1.3
+
+- Updated dependencies [8d385ede](https://github.com/keystonejs/keystone-5/commit/8d385ede):
+- Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+- Updated dependencies [52f1c47b](https://github.com/keystonejs/keystone-5/commit/52f1c47b):
+  - @keystone-alpha/adapter-knex@1.0.4
+  - @keystone-alpha/adapter-mongoose@1.0.4
+  - @keystone-alpha/keystone@2.0.0
+  - @keystone-alpha/server@3.0.0
+
+## 1.1.2
+
+- Updated dependencies [de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+  - @keystone-alpha/keystone@1.0.3
+  - @keystone-alpha/server@2.0.0
+
+## 1.1.1
+
+- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+
+  - Update minor-level dependencies
+
+- [patch][619b17c2](https://github.com/keystonejs/keystone-5/commit/619b17c2):
+
+  - Reformat code using latest version of Prettier (1.16.4)
+
 ## 1.1.0
 
 - [minor][c0e64c01](https://github.com/keystonejs/keystone-5/commit/c0e64c01):

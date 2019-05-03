@@ -1,49 +1,102 @@
 /** @jsx jsx */
+
 import { jsx } from '@emotion/core';
-import { Component } from 'react';
+import { useMemo, useRef } from 'react';
 import styled from '@emotion/styled';
-import { ChevronDownIcon, ChevronUpIcon } from '@arch-ui/icons';
-import { OptionPrimitive, Options } from '@arch-ui/options';
+import { CheckMark, OptionPrimitive, Options } from '@arch-ui/options';
 import { colors } from '@arch-ui/theme';
+import { Kbd } from '@arch-ui/typography';
+import { Button } from '@arch-ui/button';
 
-import { POPOUT_GUTTER } from '../../components/Popout';
+import { DisclosureArrow, Popout, POPOUT_GUTTER } from '../../components/Popout';
+import { useList, useListSort, useKeyDown } from './dataHooks';
 
-export const SortButton = styled.button(({ isActive }) => {
-  const overStyles = {
-    color: colors.primary,
-    borderBottomColor: colors.primary,
+type Props = {
+  listKey: string,
+};
+
+export default function SortPopout({ listKey }: Props) {
+  const list = useList(listKey);
+  const [sortValue, handleSortChange] = useListSort(listKey);
+  const altIsDown = useKeyDown('Alt');
+  const popoutRef = useRef();
+
+  const handleChange = field => {
+    const isSelected = field.path === sortValue.field.path;
+
+    let direction = 'ASC';
+    if (isSelected) {
+      direction = invertDirection(sortValue.direction);
+    } else if (altIsDown) {
+      direction = 'DESC';
+    }
+
+    handleSortChange({ field, direction });
+    popoutRef.current.close();
   };
-  const activeStyles = isActive ? overStyles : null;
-  return {
-    background: 0,
-    border: 0,
-    borderBottom: `1px solid ${colors.N20}`,
-    outline: 0,
-    color: 'inherit',
-    cursor: 'pointer',
-    display: 'inline-block',
-    fontSize: 'inherit',
-    fontWeight: 'inherit',
-    marginLeft: '0.5ex',
-    padding: 0,
-    verticalAlign: 'baseline',
 
-    ':hover, :focus': overStyles,
-    ...activeStyles,
-  };
-});
+  const cachedOptions = useMemo(() => list.fields.map(({ options, ...field }) => field), [list]);
 
-export const SortOption = ({ altIsDown, children, isFocused, isSelected, ...props }) => {
-  const Icon = isSelected ? ChevronUpIcon : altIsDown ? ChevronUpIcon : ChevronDownIcon;
-  const iconColor = !isFocused && !isSelected ? colors.N40 : 'currentColor';
+  const cypressId = 'list-page-sort-button';
+
+  return (
+    <Popout
+      innerRef={popoutRef}
+      headerTitle="Sort"
+      footerContent={
+        <Note>
+          Hold <Kbd>alt</Kbd> to toggle ascending/descending
+        </Note>
+      }
+      target={handlers => (
+        <Button variant="subtle" appearance="primary" spacing="cozy" id={cypressId} {...handlers}>
+          {sortValue.field.label}
+          <DisclosureArrow />
+        </Button>
+      )}
+    >
+      <div css={{ padding: POPOUT_GUTTER }}>
+        <Options
+          components={{ Option: SortOption }}
+          isOptionSelected={isOptionSelected}
+          onChange={handleChange}
+          options={cachedOptions}
+          placeholder="Search fields..."
+          value={sortValue}
+          altIsDown={altIsDown}
+        />
+      </div>
+    </Popout>
+  );
+}
+
+// ==============================
+// Styled Components
+// ==============================
+
+export const SortOption = ({ children, isFocused, isSelected, ...props }) => {
+  const { altIsDown } = props.selectProps;
+  const direction = isSelected ? '(ASC)' : altIsDown ? '(ASC)' : '(DESC)';
 
   return (
     <OptionPrimitive isFocused={isFocused} isSelected={isSelected} {...props}>
-      <span>{children}</span>
-      <Icon css={{ color: iconColor }} />
+      <span>
+        {children}
+        <small css={{ color: colors.N40 }}> {direction}</small>
+      </span>
+      <CheckMark isFocused={isFocused} isSelected={isSelected} />
     </OptionPrimitive>
   );
 };
+
+const Note = styled.div({
+  color: colors.N60,
+  fontSize: '0.85em',
+});
+
+// ==============================
+// Utilities
+// ==============================
 
 function invertDirection(direction) {
   const inverted = { ASC: 'DESC', DESC: 'ASC' };
@@ -51,69 +104,4 @@ function invertDirection(direction) {
 }
 function isOptionSelected(opt, selected) {
   return opt.path === selected[0].field.path;
-}
-
-type FieldType = Object;
-type Props = {
-  fields: Array<FieldType>,
-  onChange: FieldType => void,
-  value: FieldType,
-};
-type State = { altIsDown: boolean };
-
-export default class SortSelect extends Component<Props, State> {
-  state = { altIsDown: false };
-  componentDidMount() {
-    document.body.addEventListener('keydown', this.handleKeyDown, false);
-    document.body.addEventListener('keyup', this.handleKeyUp, false);
-  }
-  componentWillUnmount() {
-    document.body.removeEventListener('keydown', this.handleKeyDown);
-    document.body.removeEventListener('keyup', this.handleKeyUp);
-  }
-  handleKeyDown = e => {
-    if (e.key !== 'Alt') return;
-    this.setState({ altIsDown: true });
-  };
-  handleKeyUp = e => {
-    if (e.key !== 'Alt') return;
-    this.setState({ altIsDown: false });
-  };
-  handleChange = field => {
-    const { onChange, popoutRef, value } = this.props;
-    const { altIsDown } = this.state;
-    const isSelected = field.path === value.field.path;
-
-    let direction = 'ASC';
-    if (isSelected) {
-      direction = invertDirection(value.direction);
-    } else if (altIsDown) {
-      direction = 'DESC';
-    }
-
-    onChange({ field, direction });
-    popoutRef.current.close();
-  };
-  enhancedOption = props => <SortOption altIsDown={this.state.altIsDown} {...props} />;
-  getOptions = () => {
-    const { fields } = this.props;
-    return fields.map(({ options, ...field }) => field);
-  };
-
-  render() {
-    const { value } = this.props;
-
-    return (
-      <div css={{ padding: POPOUT_GUTTER }}>
-        <Options
-          components={{ Option: this.enhancedOption }}
-          isOptionSelected={isOptionSelected}
-          onChange={this.handleChange}
-          options={this.getOptions()}
-          placeholder="Find a field..."
-          value={value}
-        />
-      </div>
-    );
-  }
 }

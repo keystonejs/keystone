@@ -1,5 +1,40 @@
 # @keystone-alpha/core
 
+## 2.0.3
+
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+
+  - Update dev devependencies
+
+- [patch][78d25c40](https://github.com/keystonejs/keystone-5/commit/78d25c40):
+
+  - Restructure internal code
+
+- Updated dependencies [656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+  - @keystone-alpha/server@4.0.0
+
+## 2.0.2
+
+- Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+  - @keystone-alpha/server@3.0.0
+
+## 2.0.1
+
+- [patch][5ddb2ed6](https://github.com/keystonejs/keystone-5/commit/5ddb2ed6):
+
+  - Always display clickable links when starting a server in dev mode
+
+## 2.0.0
+
+- [major][de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+
+  - Update authStrategy APIs
+    - Removes `authStrategy` from the `config` API of `Webserver`.
+    - Removes `authStrategy` from the `serverConfig` of the core `keystone` system builder.
+    - Removes the `setAuthStrategy` method from `AdminUI`.
+    - Adds `authStrategy` to the `config` API of `AdminUI`.
+    - `Webserver` checks `keystone.auth` to determine whether to set up auth session middlewares.
+
 ## 1.0.1
 
 - [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):

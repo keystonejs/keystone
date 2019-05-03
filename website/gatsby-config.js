@@ -1,9 +1,5 @@
 const bolt = require('bolt');
 const fs = require('fs');
-const mdx = require('@mdx-js/mdx');
-const compiler = mdx.createMdxAstCompiler({ mdPlugins: [] });
-const prune = require('underscore.string/prune');
-const visit = require('unist-util-visit');
 
 async function getPackagePlugins() {
   const { dir: rootDir } = await bolt.getProject({ cwd: '../' });
@@ -11,37 +7,20 @@ async function getPackagePlugins() {
   const workspaces = await bolt.getWorkspaces({ cwd: rootDir });
 
   return [
-    {
+    ...['quick-start', 'tutorials', 'guides', 'api', 'discussions'].map(name => ({
       resolve: 'gatsby-source-filesystem',
-      options: {
-        name: 'quick-start',
-        path: `${rootDir}/docs/quick-start/`,
-      },
-    },
-    {
-      resolve: 'gatsby-source-filesystem',
-      options: {
-        name: 'tutorials',
-        path: `${rootDir}/docs/tutorials/`,
-      },
-    },
-    {
-      resolve: 'gatsby-source-filesystem',
-      options: {
-        name: 'guides',
-        path: `${rootDir}/docs/guides`,
-      },
-    },
+      options: { name, path: `${rootDir}/docs/${name}/` },
+    })),
     ...workspaces
-      .map(({ dir, config }) => ({ dir, name: config.name }))
+      .filter(({ config }) => !config.private)
       .filter(({ dir }) => fs.existsSync(dir))
-      .filter(({ dir }) => !dir.includes('website') && !dir.includes('arch'))
-      .map(({ name, dir }) => ({
+      .filter(({ dir }) => !dir.includes('arch'))
+      .map(({ dir, config }) => ({
         resolve: 'gatsby-source-filesystem',
         options: {
           // This `name` will show up as `sourceInstanceName` on a node's "parent"
           // See `gatsby-node.js` for where it's used.
-          name: `api/${name}`,
+          name: config.name,
           path: `${dir}`,
           ignore: [`**/**/CHANGELOG.md`],
         },
@@ -52,9 +31,38 @@ async function getPackagePlugins() {
 async function getGatsbyConfig() {
   const packageFilesPlugins = await getPackagePlugins();
   return {
+    siteMetadata: {
+      title: `KeystoneJS`,
+      siteUrl: `https://v5.keystonejs.com`,
+      description: `A scalable platform and CMS to build Node.js applications.`,
+      twitter: `@keystonejs`,
+    },
     plugins: [
       ...packageFilesPlugins,
-      `gatsby-plugin-sharp`,
+      `gatsby-plugin-sharp`, // image processing
+      `gatsby-plugin-react-helmet`,
+      {
+        resolve: `gatsby-plugin-manifest`,
+        options: {
+          name: 'KeystoneJS Docs',
+          short_name: 'Docs',
+          icons: [
+            {
+              src: '/android-chrome-192x192.png',
+              sizes: '192x192',
+              type: 'image/png',
+            },
+            {
+              src: '/android-chrome-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+            },
+          ],
+          theme_color: '#ffffff',
+          background_color: '#ffffff',
+          display: 'standalone',
+        },
+      },
       {
         resolve: `gatsby-mdx`,
         options: {
@@ -71,7 +79,7 @@ async function getGatsbyConfig() {
             {
               resolve: 'gatsby-remark-images',
               options: {
-                maxWidth: 1035,
+                maxWidth: 848, // TODO: remove magic number -- width of main col
                 sizeByPixelDensity: true,
               },
             },
@@ -88,34 +96,18 @@ async function getGatsbyConfig() {
           // Attributes for custom indexing logic. See https://lunrjs.com/docs/lunr.Builder.html for details
           fields: [
             { name: 'content' },
-            { name: 'preview', store: true },
-            { name: 'slug', store: true },
             { name: 'navGroup', store: true },
-            { name: 'heading', store: true, attributes: { boost: 20 } },
+            { name: 'slug', store: true },
+            { name: 'title', store: true, attributes: { boost: 20 } },
           ],
           // How to resolve each field's value for a supported node type
           resolvers: {
             // For any node of type mdx, list how to resolve the fields' values
             Mdx: {
               content: node => node.rawBody,
-              preview: node => {
-                // gatsby-plugin-lunr doesn't fetch stuff with gql, it just reads from the node
-                // and excerpt is implemented as a resolver so we can't call it
-                // we'll probably switch to algolia when this is public so we can remove this
-                // https://github.com/ChristopherBiscardi/gatsby-mdx/blob/46aad4a35ad287b28f02c5191b440335986fbfc3/packages/gatsby-mdx/gatsby/extend-node-type.js#L141-L156
-                const ast = compiler.parse(node.rawBody);
-                const excerptNodes = [];
-                visit(ast, mdNode => {
-                  if (mdNode.type === 'text' || mdNode.type === 'inlineCode') {
-                    excerptNodes.push(mdNode.value);
-                  }
-                });
-
-                return prune(excerptNodes.join(' '), 280, '…');
-              },
-              slug: node => node.fields.slug,
               navGroup: node => node.fields.navGroup,
-              heading: node => node.fields.heading,
+              slug: node => node.fields.slug,
+              title: node => node.fields.pageTitle,
             },
           },
           //custom index file name, default is search_index.json
@@ -125,7 +117,7 @@ async function getGatsbyConfig() {
       {
         resolve: `gatsby-plugin-google-analytics`,
         options: {
-          trackingId: 'UA-43970386-1',
+          trackingId: 'UA-43970386-3',
           head: true,
         },
       },

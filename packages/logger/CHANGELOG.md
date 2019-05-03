@@ -1,5 +1,21 @@
 # @keystone-alpha/logger
 
+## 2.0.0
+
+- [major][baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
+
+  - Export { logger } as the API, rather than a default export
+
+## 1.0.2
+
+- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+
+  - Update minor-level dependencies
+
+- [patch][3a775092](https://github.com/keystonejs/keystone-5/commit/3a775092):
+
+  - Update dependencies
+
 ## 1.0.1
 
 - [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):

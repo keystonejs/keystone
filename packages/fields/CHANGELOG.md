@@ -1,5 +1,113 @@
 # @keystone-alpha/fields
 
+## 5.0.0
+
+- [patch][5c36ea0b](https://github.com/keystonejs/keystone-5/commit/5c36ea0b):
+
+  - Content Field no longer throws when no blocks specified or server data is corrupt
+
+- [patch][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):
+
+  - Initialise Block Constructors inside Field Controller
+
+- [major][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):
+
+  - Rename Content Editor field to document for slate.js consistency
+
+- [major][85b74a2c](https://github.com/keystonejs/keystone-5/commit/85b74a2c):
+
+  - Expose result of running relationship operations (create/connect/disconnect)
+
+- [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
+
+  - admin revamp
+
+- [patch][d145fcb9](https://github.com/keystonejs/keystone-5/commit/d145fcb9):
+
+  - Correctly return null to the Admin UI for to-single relationship fields which don't have any ID set
+
+- [patch][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):
+
+  - Ensure Content Block views are always loaded even when not imported
+
+## 4.0.0
+
+- [patch][7b8d254d](https://github.com/keystonejs/keystone-5/commit/7b8d254d):
+
+  - Update external dependencies
+
+- [major][37dcee37](https://github.com/keystonejs/keystone-5/commit/37dcee37):
+
+  - Generate cjs and esm bundlers for Controller file
+
+- [patch][302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+
+  - Minor internal code cleanups
+
+- [patch][21be780b](https://github.com/keystonejs/keystone-5/commit/21be780b):
+
+  - Use updated test-utils APIs
+
+- Updated dependencies [545c9464](https://github.com/keystonejs/keystone-5/commit/545c9464):
+- Updated dependencies [24bed583](https://github.com/keystonejs/keystone-5/commit/24bed583):
+- Updated dependencies [21be780b](https://github.com/keystonejs/keystone-5/commit/21be780b):
+  - @arch-ui/drawer@0.0.4
+  - @arch-ui/button@0.0.4
+  - @keystone-alpha/test-utils@2.0.0
+
+## 3.0.2
+
+- [patch][03ea2b1d](https://github.com/keystonejs/keystone-5/commit/03ea2b1d):
+
+  - Bump version of @arch-ui/layout
+
+## 3.0.1
+
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+  - @keystone-alpha/access-control@1.0.2
+  - @keystone-alpha/adapter-knex@1.0.3
+  - @keystone-alpha/adapter-mongoose@1.0.3
+  - @keystone-alpha/utils@2.0.0
+
+## 3.0.0
+
+- [patch][39067f44](https://github.com/keystonejs/keystone-5/commit/39067f44):
+
+  - Add text date and time pickers
+
+- [major][9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):
+
+  - Build field type views before publishing to npm and stop running Babel on Keystone packages in node_modules in the Admin UI
+
+## 2.0.0
+
+- [major][dcb93771](https://github.com/keystonejs/keystone-5/commit/dcb93771):
+
+  - Put field type views onto field controllers
+
+- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+
+  - Update minor-level dependencies
+
+- [patch][3a775092](https://github.com/keystonejs/keystone-5/commit/3a775092):
+
+  - Update dependencies
+
+- [patch][619b17c2](https://github.com/keystonejs/keystone-5/commit/619b17c2):
+
+  - Reformat code using latest version of Prettier (1.16.4)
+
+- [patch][d9a1be91](https://github.com/keystonejs/keystone-5/commit/d9a1be91):
+
+  - Update dependencies
+
+- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+
+  - Update patch-level dependencies
+
+- Updated dependencies [96015257](https://github.com/keystonejs/keystone-5/commit/96015257):
+  - @arch-ui/day-picker@0.0.3
+
 ## 1.0.1
 
 - [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):

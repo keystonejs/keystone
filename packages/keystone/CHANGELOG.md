@@ -1,5 +1,94 @@
 # @keystone-alpha/keystone
 
+## 3.1.0
+
+- [patch][5180d2fb](https://github.com/keystonejs/keystone-5/commit/5180d2fb):
+
+  - Remove erroneous addition of CRUD operations for Auxiliary Lists from GraphQL API
+
+- [minor][cbe80e61](https://github.com/keystonejs/keystone-5/commit/cbe80e61):
+
+  - Expose GraphQL `context` object to hooks for advanced use cases.
+
+- [patch][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):
+
+  - Don't exclude aux field resolvers from GraphQL schema
+
+- Updated dependencies [85b74a2c](https://github.com/keystonejs/keystone-5/commit/85b74a2c):
+  - @keystone-alpha/fields@5.0.0
+
+## 3.0.0
+
+- [patch][b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
+
+  - Use named exports from @keystone-alpha/keystone package.
+
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+
+  - Update dev devependencies
+
+- [patch][baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
+
+  - Use the updated logger API
+
+- [patch][302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+
+  - Minor internal code cleanups
+
+- [major][656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+
+  - `WebServer.start()` no longer takes any arguments. Developer must now explicitly call `keystone.connect()` before calling `WebServer.start()`.
+
+- [major][b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
+
+  - Make all parts of the API available as named exports.
+
+- Updated dependencies [baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
+- Updated dependencies [37dcee37](https://github.com/keystonejs/keystone-5/commit/37dcee37):
+  - @keystone-alpha/logger@2.0.0
+  - @keystone-alpha/fields@4.0.0
+
+## 2.0.0
+
+- [major][8d385ede](https://github.com/keystonejs/keystone-5/commit/8d385ede):
+
+  - Remove keystone.getAuxQueryResolvers method
+
+- [major][52f1c47b](https://github.com/keystonejs/keystone-5/commit/52f1c47b):
+
+  - Replace `Keystone.registerGraphQLQueryMethod` with `Keystone.registerSchema`. Add `schemaName` parameter to `getAccessContext`. The `getGraphQLQuery` parameter to `List` now takes a `schemaName` argument. These changes allow us to register more than one ApolloServer instance in our Keystone system.
+
+## 1.0.4
+
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+  - @keystone-alpha/access-control@1.0.2
+  - @keystone-alpha/fields@3.0.1
+  - @keystone-alpha/utils@2.0.0
+
+## 1.0.3
+
+- Updated dependencies [9a9f214a](https://github.com/keystonejs/keystone-5/commit/9a9f214a):
+- Updated dependencies [de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+  - @keystone-alpha/fields@3.0.0
+  - @keystone-alpha/core@2.0.0
+
+## 1.0.2
+
+- [patch][11c372fa](https://github.com/keystonejs/keystone-5/commit/11c372fa):
+
+  - Update minor-level dependencies
+
+- [patch][619b17c2](https://github.com/keystonejs/keystone-5/commit/619b17c2):
+
+  - Reformat code using latest version of Prettier (1.16.4)
+
+- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+
+  - Update patch-level dependencies
+
+- Updated dependencies [dcb93771](https://github.com/keystonejs/keystone-5/commit/dcb93771):
+  - @keystone-alpha/fields@2.0.0
+
 ## 1.0.1
 
 - [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):

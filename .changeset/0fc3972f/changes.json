@@ -1,0 +1,8 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/keystone", "type": "patch" },
+    { "name": "@keystone-alpha/adapter-knex", "type": "patch" },
+    { "name": "@keystone-alpha/adapter-mongoose", "type": "patch" }
+  ],
+  "dependents": []
+}

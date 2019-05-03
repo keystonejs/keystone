@@ -1,3 +1,0 @@
-# KeystonJS
-
-Oh hi!

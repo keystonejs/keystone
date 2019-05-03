@@ -1,0 +1,17 @@
+{
+  "name": "@keystone-alpha/session",
+  "description": "Tools to assist with setting up session management in your Keystone system.",
+  "version": "1.0.2",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cookie": "^0.3.1",
+    "cookie-signature": "^1.1.0",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6"
+  }
+}

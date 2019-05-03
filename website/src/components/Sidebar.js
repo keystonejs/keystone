@@ -1,37 +1,25 @@
-import React from 'react'; // eslint-disable-line no-unused-vars
-import { StaticQuery, graphql, Link } from 'gatsby';
-
-import { colors } from '@arch-ui/theme';
-import { jsx } from '@emotion/core';
-
 /** @jsx jsx */
 
-const prettyName = (node, category) => {
-  const cat = category.replace('@', '');
+import React from 'react'; // eslint-disable-line no-unused-vars
+import { StaticQuery, graphql, Link } from 'gatsby';
+import { colors, gridSize } from '@arch-ui/theme';
+import { jsx } from '@emotion/core';
 
-  let pretty = node.path
-    .replace('/api', '')
-    .replace(cat, '')
-    .replace(new RegExp(/(\/\/)/g), '')
-    .replace(new RegExp(/\/$/g), '')
-    .replace(new RegExp(/^\//g), '')
-    .replace('-', ' ')
-    .trim();
-
-  return pretty === '' ? 'index' : pretty;
-};
-
-export default () => (
+export const Sidebar = () => (
   <StaticQuery
     query={graphql`
       query HeadingQuery {
-        allSitePage(filter: { path: { ne: "/dev-404-page/" } }, sort: { fields: [path] }) {
-          totalCount
+        allSitePage(
+          filter: { path: { ne: "/dev-404-page/" } }
+          sort: { fields: [context___sortOrder, context___pageTitle] }
+        ) {
           edges {
             node {
               path
               context {
                 navGroup
+                isPackageIndex
+                pageTitle
               }
             }
           }
@@ -41,84 +29,95 @@ export default () => (
     render={data => {
       const navData = data.allSitePage.edges.reduce((pageList, { node }) => {
         // finding out what directory the file is in (eg '/keystone-alpha')
-
         if (node.context.navGroup !== null) {
-          let dir;
-
-          if (node.context.navGroup.includes('api')) {
-            dir = node.context.navGroup.match('api/@?([a-z]|_|-)+/?')[0].replace('api/', '');
-          } else {
-            dir = node.context.navGroup;
-          }
-
-          if (!pageList[dir]) {
-            pageList[dir] = [];
-          }
-          pageList[dir].push(node);
+          pageList[node.context.navGroup] = pageList[node.context.navGroup] || [];
+          pageList[node.context.navGroup].push(node);
         }
 
         return pageList;
       }, {});
 
-      console.log(navData);
-
-      const categories = Object.keys(navData).sort(x => {
-        return x.startsWith('@') ? 0 : -1;
-      });
+      const navGroups = Object.keys(navData);
 
       return (
-        <div>
-          {categories.map(category => {
+        <nav aria-label="Documentation Menu">
+          {navGroups.map(navGroup => {
+            const intro = navData[navGroup].find(node => node.context.pageTitle === 'Introduction');
+            const sectionId = `docs-menu-${navGroup}`;
             return (
-              <div key={category}>
-                <span
-                  css={{
-                    fontSize: '1.25em',
-                    fontWeight: 700,
-                    textTransform: 'capitalize',
-                  }}
-                >
-                  {category}
-                </span>
-                <ul
-                  css={{
-                    listStyle: 'none',
-                    padding: 0,
-                    margin: '0 0 32px 0',
-                  }}
-                >
-                  {navData[category].map(node => {
-                    return (
-                      <li key={node.path} css={{}}>
-                        <Link
-                          css={{
-                            textDecoration: 'none',
-                            color: colors.B.D50,
-                            textTransform: 'capitalize',
-                            marginLeft: 4,
-
-                            '&:hover': {
-                              color: colors.B.base,
-                            },
-
-                            '&[aria-current="page"]': {
-                              color: colors.B.base,
-                              textDecoration: 'underline',
-                            },
-                          }}
-                          to={node.path}
-                        >
-                          {prettyName(node, category)}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
+              <div key={navGroup}>
+                <GroupHeading id={sectionId}>{navGroup.replace('-', ' ')}</GroupHeading>
+                <List aria-labelledby={sectionId}>
+                  {intro && (
+                    <ListItem key={intro.path} to={intro.path}>
+                      Introduction
+                    </ListItem>
+                  )}
+                  {navData[navGroup]
+                    .filter(node => node.context.pageTitle !== 'Introduction')
+                    .filter(node => navGroup !== 'packages' || node.context.isPackageIndex)
+                    .map(node => {
+                      return (
+                        <ListItem key={node.path} to={node.path}>
+                          {node.context.pageTitle}
+                        </ListItem>
+                      );
+                    })}
+                </List>
               </div>
             );
           })}
-        </div>
+        </nav>
       );
     }}
   />
+);
+
+const GroupHeading = props => (
+  <h3
+    css={{
+      color: colors.N80,
+      fontSize: '0.9rem',
+      fontWeight: 700,
+      marginTop: '2.4em',
+      textTransform: 'uppercase',
+    }}
+    {...props}
+  />
+);
+const List = props => (
+  <ul css={{ listStyle: 'none', fontSize: '0.9rem', padding: 0, margin: 0 }} {...props} />
+);
+const ListItem = props => (
+  <li>
+    <Link
+      css={{
+        color: colors.N80,
+        borderRadius: 3,
+        display: 'block',
+        overflow: 'hidden',
+        marginBottom: 1,
+        outline: 0,
+        padding: `${gridSize * 0.75}px ${gridSize * 1.5}px`,
+        textDecoration: 'none',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+
+        ':hover, :focus': {
+          backgroundColor: colors.B.A5,
+          color: colors.N100,
+          textDecoration: 'none',
+        },
+        ':active': {
+          backgroundColor: colors.B.A10,
+        },
+
+        '&[aria-current="page"]': {
+          backgroundColor: colors.B.A10,
+          fontWeight: 500,
+        },
+      }}
+      {...props}
+    />
+  </li>
 );

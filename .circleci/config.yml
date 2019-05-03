@@ -81,6 +81,7 @@ jobs:
       - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
       - run: yarn lint:prettier
       - run: yarn lint:flow
+      - run: yarn lint:markdown
       - run:
           name: Unit tests
           command: yarn jest --ci --testResultsProcessor="jest-junit" --maxWorkers=1

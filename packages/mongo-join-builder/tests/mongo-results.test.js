@@ -1,4 +1,4 @@
-const mongoJoinBuilder = require('../');
+const { mongoJoinBuilder } = require('../');
 
 const { MongoClient } = require('mongodb');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
@@ -27,10 +27,7 @@ jest.setTimeout(60000);
 beforeAll(async () => {
   mongoServer = new MongoDBMemoryServer();
   const mongoUri = await mongoServer.getConnectionString();
-  mongoConnection = await MongoClient.connect(
-    mongoUri,
-    { useNewUrlParser: true }
-  );
+  mongoConnection = await MongoClient.connect(mongoUri, { useNewUrlParser: true });
   mongoDb = mongoConnection.db(await mongoServer.getDbName());
 });
 

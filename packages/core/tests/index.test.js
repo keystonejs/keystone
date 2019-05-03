@@ -122,7 +122,7 @@ describe('@keystone-alpha/core/index.js', () => {
         }));
 
         const entryFileObj = tmp.fileSync({ postfix: '.js' });
-        fs.writeFileSync(entryFileObj.fd, `module.exports = { keystone: {} }`);
+        fs.writeFileSync(entryFileObj.fd, `module.exports = { keystone: { auth: {} } }`);
 
         const localCore = require('../');
         await localCore.prepare({ entryFile: entryFileObj.name });
@@ -141,7 +141,7 @@ describe('@keystone-alpha/core/index.js', () => {
         }));
 
         const entryFileObj = tmp.fileSync({ postfix: '.js' });
-        fs.writeFileSync(entryFileObj.fd, `module.exports = { keystone: {} }`);
+        fs.writeFileSync(entryFileObj.fd, `module.exports = { keystone: { auth: {} } }`);
 
         const localCore = require('../');
         await localCore.prepare({ entryFile: entryFileObj.name });
@@ -171,18 +171,17 @@ describe('@keystone-alpha/core/index.js', () => {
           entryFileObj.fd,
           endent`
         module.exports = {
-          keystone: {},
+          keystone: { auth: {} },
           admin: {},
         };
       `
         );
 
         const serverConfig = {
-          'cookie secret': 'abc',
+          cookieSecret: 'abc',
           sessionStore: {},
           pinoOptions: {},
           cors: {},
-          authStrategy: {},
           apiPath: 'def',
           graphiqlPath: 'xyz',
           apollo: {},
@@ -207,40 +206,6 @@ describe('@keystone-alpha/core/index.js', () => {
         );
       });
 
-      test('constructs server with default cookie secret if authStrategy set', async () => {
-        // Called internally within the .prepare() function, so we mock it out
-        // here, and replace the implementation on a per-test basis
-        const mockServerClass = jest.fn(() => {});
-        jest.resetModules();
-        jest.doMock('@keystone-alpha/server', () => ({
-          // Mock the class to do nothing
-          WebServer: mockServerClass,
-        }));
-
-        const entryFileObj = tmp.fileSync({ postfix: '.js' });
-        fs.writeFileSync(entryFileObj.fd, `module.exports = { keystone: {} }`);
-
-        const serverConfig = {
-          authStrategy: {},
-        };
-
-        const localCore = require('../');
-        await localCore.prepare({
-          entryFile: entryFileObj.name,
-          serverConfig,
-        });
-
-        expect(mockServerClass).toHaveBeenCalledWith(
-          // The keystone object
-          expect.anything(),
-          // The config object
-          expect.objectContaining({
-            ...serverConfig,
-            'cookie secret': 'qwerty',
-          })
-        );
-      });
-
       test('returns the server instance', async () => {
         // Called internally within the .prepare() function, so we mock it out
         // here, and replace the implementation on a per-test basis
@@ -253,7 +218,7 @@ describe('@keystone-alpha/core/index.js', () => {
         }));
 
         const entryFileObj = tmp.fileSync({ postfix: '.js' });
-        fs.writeFileSync(entryFileObj.fd, `module.exports = { keystone: {} }`);
+        fs.writeFileSync(entryFileObj.fd, `module.exports = { keystone: { auth: {} } }`);
 
         const localCore = require('../');
         const { server } = await localCore.prepare({ entryFile: entryFileObj.name });
@@ -273,7 +238,7 @@ describe('@keystone-alpha/core/index.js', () => {
         }));
 
         const entryFileObj = tmp.fileSync({ postfix: '.js' });
-        fs.writeFileSync(entryFileObj.fd, `module.exports = { keystone: { hi: 'bye' } }`);
+        fs.writeFileSync(entryFileObj.fd, `module.exports = { keystone: { auth: {}, hi: 'bye' } }`);
 
         const localCore = require('../');
         const { keystone } = await localCore.prepare({ entryFile: entryFileObj.name });

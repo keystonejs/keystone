@@ -11,7 +11,6 @@ module.exports = {
   rules: {
     curly: ['error', 'multi-line'],
     'jsx-quotes': 'error',
-    'no-shadow': 'warn',
     'no-trailing-spaces': 'error',
     'no-undef': 'error',
     'no-unused-expressions': 'error',
@@ -28,13 +27,16 @@ module.exports = {
       'error',
       {
         devDependencies: [
+          '**/__tests__/**/*.js',
           '**/*test.js',
           '**/tests/**/*.js',
           '**/examples/**/*.js',
           '**/build/**/*.js',
+          `packages/fields/src/**/filterTests.js`,
         ],
       },
     ],
+    'import/no-unresolved': 'error',
     'object-curly-spacing': ['error', 'always'],
     quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
     'react/jsx-boolean-value': 'warn',
@@ -68,6 +70,18 @@ module.exports = {
       rules: {
         'no-unused-vars': 'off',
         'no-undef': 'off',
+      },
+    },
+    {
+      files: ['packages/fields/src/**/*.js'],
+      rules: {
+        'import/no-commonjs': 'error',
+      },
+    },
+    {
+      files: ['packages/build-field-types/__fixtures__/**/*.js'],
+      rules: {
+        'import/no-unresolved': 'off',
       },
     },
   ],

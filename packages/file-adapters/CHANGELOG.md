@@ -1,5 +1,15 @@
 # @keystone-alpha/file-adapters
 
+## 1.0.2
+
+- [patch][302930a4](https://github.com/keystonejs/keystone-5/commit/302930a4):
+
+  - Minor internal code cleanups
+
+- [patch][a62b869d](https://github.com/keystonejs/keystone-5/commit/a62b869d):
+
+  - Restructure internal code
+
 ## 1.0.1
 
 - [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):

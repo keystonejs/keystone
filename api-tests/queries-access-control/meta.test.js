@@ -39,9 +39,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('_FooMeta query for individual list meta data', () => {
       test(
         `'access' field returns results`,
-        runner(setupKeystone, async ({ server: { server } }) => {
-          const query = await graphqlRequest({
-            server,
+        runner(setupKeystone, async ({ keystone }) => {
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
           query {
             _CompaniesMeta {
@@ -56,9 +56,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(query.body).not.toHaveProperty('errors');
-          expect(query.body).toHaveProperty('data._CompaniesMeta.access');
-          expect(query.body.data._CompaniesMeta.access).toMatchObject({
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('_CompaniesMeta.access');
+          expect(data._CompaniesMeta.access).toMatchObject({
             create: true,
             read: true,
             update: true,
@@ -69,9 +69,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         `'schema' field returns results`,
-        runner(setupKeystone, async ({ server: { server } }) => {
-          const query = await graphqlRequest({
-            server,
+        runner(setupKeystone, async ({ keystone }) => {
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
           query {
             _CompaniesMeta {
@@ -88,9 +88,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(query.body).not.toHaveProperty('errors');
-          expect(query.body).toHaveProperty('data._CompaniesMeta.schema');
-          expect(query.body.data._CompaniesMeta.schema).toMatchObject({
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('_CompaniesMeta.schema');
+          expect(data._CompaniesMeta.schema).toMatchObject({
             type: 'Company',
             queries: ['Company', 'allCompanies', '_allCompaniesMeta'],
             relatedFields: [
@@ -108,9 +108,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('_ksListsMeta query for all lists meta data', () => {
       test(
         `'access' field returns results`,
-        runner(setupKeystone, async ({ server: { server } }) => {
-          const query = await graphqlRequest({
-            server,
+        runner(setupKeystone, async ({ keystone }) => {
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
           query {
             _ksListsMeta {
@@ -126,9 +126,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(query.body).not.toHaveProperty('errors');
-          expect(query.body).toHaveProperty('data._ksListsMeta');
-          expect(query.body.data._ksListsMeta).toMatchObject([
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('_ksListsMeta');
+          expect(data._ksListsMeta).toMatchObject([
             {
               name: 'User',
               access: {
@@ -153,9 +153,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'returns results for all visible lists',
-        runner(setupKeystone, async ({ server: { server } }) => {
-          const query = await graphqlRequest({
-            server,
+        runner(setupKeystone, async ({ keystone }) => {
+          const { data, errors } = await graphqlRequest({
+            keystone,
             query: `
           query {
             _ksListsMeta {
@@ -173,9 +173,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(query.body).not.toHaveProperty('errors');
-          expect(query.body).toHaveProperty('data._ksListsMeta');
-          expect(query.body.data._ksListsMeta).toMatchObject([
+          expect(errors).toBe(undefined);
+          expect(data).toHaveProperty('_ksListsMeta');
+          expect(data._ksListsMeta).toMatchObject([
             {
               name: 'User',
               schema: {

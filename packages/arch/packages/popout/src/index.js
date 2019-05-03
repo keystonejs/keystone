@@ -1,62 +1,68 @@
 // @flow
+/** @jsx jsx */
 
-import React, { Component, type Element } from 'react';
-import styled from '@emotion/styled';
+import { jsx } from '@emotion/core';
+import { Component, forwardRef, type Element } from 'react';
 import { createPortal } from 'react-dom';
 
-import { borderRadius, gridSize } from '@arch-ui/theme';
+import { borderRadius, colors, gridSize, shadows } from '@arch-ui/theme';
 import { FocusTrap } from 'react-focus-marshal';
-import { withModalHandlers, type ModalHandlerProps, SlideDown } from '@arch-ui/modal-utils';
+import { withModalHandlers, type ModalHandlerProps, springDown } from '@arch-ui/modal-utils';
 
-const ARROW_WIDTH = 8;
+const ARROW_WIDTH = 30;
 const CHROME_GUTTER = 30;
 
-const Wrapper = styled.div(({ left, top, width }) => {
+const Wrapper = forwardRef(({ left, top, width, ...props }, ref) => {
   const placementStyles = { left, top, width };
 
-  return {
-    backgroundColor: 'white',
-    borderRadius: borderRadius,
-    boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.175), 0 3px 8px rgba(0, 0, 0, 0.175)',
-    marginTop: gridSize * 2,
-    maxHeight: '100%',
-    position: 'absolute',
-    zIndex: 2,
-    ...placementStyles,
-  };
+  return (
+    <div
+      ref={ref}
+      css={{
+        backgroundColor: 'white',
+        borderRadius: borderRadius * 2,
+        boxShadow: shadows[2],
+        marginTop: gridSize * 2,
+        maxHeight: '100%',
+        position: 'absolute',
+        zIndex: 2,
+        ...placementStyles,
+      }}
+      {...props}
+    />
+  );
 });
-const WrapperInner = styled.div({
-  position: 'relative',
-});
-const Arrow = styled.div`
-  left: ${p => p.left};
-  margin-left: -${ARROW_WIDTH}px;
-  margin-top: -${ARROW_WIDTH}px;
-  position: absolute;
 
-  &::before,
-  &::after {
-    border-left: ${ARROW_WIDTH}px solid transparent;
-    border-right: ${ARROW_WIDTH}px solid transparent;
-    border-bottom: ${ARROW_WIDTH}px dashed;
-    content: '';
-    display: inline-block;
-    height: 0;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 0;
-  }
+const WrapperInner = props => <div css={{ position: 'relative' }} {...props} />;
 
-  &::before {
-    border-bottom-color: rgba(0, 0, 0, 0.2);
-    top: -1px;
-  }
-
-  &::after {
-    border-bottom-color: white;
-  }
-`;
+const Arrow = ({ left }) => (
+  <div
+    css={{
+      height: ARROW_WIDTH,
+      left: left,
+      marginLeft: -ARROW_WIDTH / 2,
+      marginTop: -11,
+      position: 'absolute',
+      width: ARROW_WIDTH,
+    }}
+  >
+    <svg
+      viewBox="0 0 30 30"
+      style={{ transform: 'rotate(90deg)' }}
+      focusable="false"
+      role="presentation"
+    >
+      <path
+        css={{ fill: colors.text, fillOpacity: 0.1 }}
+        d="M8.11 6.302c1.015-.936 1.887-2.922 1.887-4.297v26c0-1.378-.868-3.357-1.888-4.297L.925 17.09c-1.237-1.14-1.233-3.034 0-4.17L8.11 6.302z"
+      />
+      <path
+        css={{ fill: 'white' }}
+        d="M8.787 7.036c1.22-1.125 2.21-3.376 2.21-5.03V0v30-2.005c0-1.654-.983-3.9-2.21-5.03l-7.183-6.616c-.81-.746-.802-1.96 0-2.7l7.183-6.614z"
+      />
+    </svg>
+  </div>
+);
 
 type Props = ModalHandlerProps & {
   children: Element<*>,
@@ -127,8 +133,9 @@ class Popout extends Component<Props, State> {
   render() {
     const { children, getModalRef, style, width } = this.props;
     let { leftOffset, topOffset, arrowLeftOffset } = this.state;
+    const attachTo = ((document.body: any): HTMLElement); // NOTE: flow junk
 
-    return document.body
+    return attachTo
       ? createPortal(
           <Wrapper
             ref={getModalRef}
@@ -144,10 +151,10 @@ class Popout extends Component<Props, State> {
               </WrapperInner>
             </FocusTrap>
           </Wrapper>,
-          document.body
+          attachTo
         )
       : null;
   }
 }
 
-export default withModalHandlers(Popout, { Transition: SlideDown });
+export default withModalHandlers(Popout, { transition: springDown });

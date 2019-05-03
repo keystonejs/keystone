@@ -4,6 +4,8 @@ const path = require('path');
 
 const { enableDevFeatures, mode } = require('./env');
 
+const isHerokuEnv = process.env.HEROKU === 'true';
+
 module.exports = function({ adminMeta, entry, outputPath }) {
   const templatePlugin = new HtmlWebpackPlugin({
     title: 'KeystoneJS',
@@ -18,7 +20,15 @@ module.exports = function({ adminMeta, entry, outputPath }) {
   const rules = [
     {
       test: /\.js$/,
-      exclude: [/node_modules(?!\/@(keystone-alpha|arch-ui)\/)/],
+      exclude: [
+        /node_modules(?!\/@keystone-alpha\/admin-ui)/,
+        // this only affects things while developing in the monorepo
+        // we do this so we can use less memory on heroku, this uses less memory
+        // since it doesn't have to compile these things with babel
+        // note that the preconstruct aliases are also disabled on heroku to enable this
+        // when we have static builds for the admin ui, we can remove this
+        ...(isHerokuEnv ? [/@keystone-alpha\/field/, /@arch-ui/] : []),
+      ],
       use: [
         {
           loader: 'babel-loader',
@@ -100,11 +110,6 @@ module.exports = function({ adminMeta, entry, outputPath }) {
         // which depends on the version of react that keystone uses
         react$: require.resolve('react'),
         'react-dom$': require.resolve('react-dom'),
-        ...(() => {
-          try {
-            return require('preconstruct').aliases.webpack(path.join(__dirname, '..', '..', '..'));
-          } catch (e) {}
-        })(),
       },
     },
   };

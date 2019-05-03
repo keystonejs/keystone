@@ -1,4 +1,5 @@
 const keystone = require('@keystone-alpha/core');
+const { startAuthedSession, endAuthedSession } = require('@keystone-alpha/session');
 const bodyParser = require('body-parser');
 
 const { port, staticRoute, staticPath } = require('./config');
@@ -8,6 +9,18 @@ const initialData = require('./data');
 keystone
   .prepare({ port })
   .then(async ({ server, keystone: keystoneApp }) => {
+    await keystoneApp.connect();
+
+    // Initialise some data.
+    // NOTE: This is only for test purposes and should not be used in production
+    const users = await keystoneApp.lists.User.adapter.findAll();
+    if (!users.length) {
+      Object.values(keystoneApp.adapters).forEach(async adapter => {
+        await adapter.dropDatabase();
+      });
+      await keystoneApp.createItems(initialData);
+    }
+
     server.app.get('/reset-db', async (req, res) => {
       Object.values(keystoneApp.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
@@ -33,7 +46,7 @@ keystone
       bodyParser.urlencoded({ extended: true }),
       async (req, res, next) => {
         // Cleanup any previous session
-        await keystoneApp.sessionManager.endAuthedSession(req);
+        await endAuthedSession(req);
 
         try {
           const result = await keystoneApp.auth.User.password.validate({
@@ -45,7 +58,7 @@ keystone
               success: false,
             });
           }
-          await keystoneApp.sessionManager.startAuthedSession(req, result);
+          await startAuthedSession(req, result);
           res.json({
             success: true,
             itemId: result.item.id,
@@ -59,7 +72,7 @@ keystone
 
     server.app.get('/signout', async (req, res, next) => {
       try {
-        await keystoneApp.sessionManager.endAuthedSession(req);
+        await endAuthedSession(req);
         res.json({
           success: true,
         });
@@ -71,18 +84,6 @@ keystone
     server.app.use(staticRoute, server.express.static(staticPath));
 
     await server.start();
-
-    // Initialise some data.
-    // NOTE: This is only for test purposes and should not be used in production
-    const users = await keystoneApp.lists.User.adapter.findAll();
-    if (!users.length) {
-      Object.values(keystoneApp.adapters).forEach(async adapter => {
-        await adapter.dropDatabase();
-      });
-      await keystoneApp.createItems(initialData);
-    }
-
-    console.log(`Listening on port ${port}`);
   })
   .catch(error => {
     console.error(error);

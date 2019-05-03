@@ -1,5 +1,47 @@
 # @keystone-alpha/adapter-knex
 
+## 1.0.6
+
+- [patch][4eb2dcd0](https://github.com/keystonejs/keystone-5/commit/4eb2dcd0):
+
+  - Fix bug in \_some, \_none, \_every queries
+
+## 1.0.5
+
+- [patch][b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
+
+  - Use named exports from @keystone-alpha/keystone package.
+
+- [patch][3e3738dd](https://github.com/keystonejs/keystone-5/commit/3e3738dd):
+
+  - Restructure internal code
+
+- Updated dependencies [656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+- Updated dependencies [b4dcf44b](https://github.com/keystonejs/keystone-5/commit/b4dcf44b):
+  - @keystone-alpha/keystone@3.0.0
+
+## 1.0.4
+
+- Updated dependencies [8d385ede](https://github.com/keystonejs/keystone-5/commit/8d385ede):
+- Updated dependencies [52f1c47b](https://github.com/keystonejs/keystone-5/commit/52f1c47b):
+  - @keystone-alpha/keystone@2.0.0
+
+## 1.0.3
+
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+  - @keystone-alpha/keystone@1.0.4
+  - @keystone-alpha/utils@2.0.0
+
+## 1.0.2
+
+- [patch][3a775092](https://github.com/keystonejs/keystone-5/commit/3a775092):
+
+  - Update dependencies
+
+- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+
+  - Update patch-level dependencies
+
 ## 1.0.1
 
 - [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):

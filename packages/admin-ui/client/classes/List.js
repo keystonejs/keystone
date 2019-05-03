@@ -1,23 +1,25 @@
 import gql from 'graphql-tag';
 
-import FieldTypes from '../FIELD_TYPES';
-import { arrayToObject } from '@keystone-alpha/utils';
+import { arrayToObject, mapKeys, omit } from '@keystone-alpha/utils';
 
 export const gqlCountQueries = lists => gql`{
   ${lists.map(list => list.countQuery()).join('\n')}
 }`;
 
 export default class List {
-  constructor(config, adminMeta) {
+  constructor(config, adminMeta, views) {
     this.config = config;
+    this.adminMeta = adminMeta;
 
     // TODO: undo this
     Object.assign(this, config);
 
     this.fields = config.fields.map(fieldConfig => {
-      const { Controller } = FieldTypes[config.key][fieldConfig.path];
-      return new Controller(fieldConfig, this, adminMeta);
+      const [Controller] = adminMeta.readViews([views[fieldConfig.path].Controller]);
+      return new Controller(fieldConfig, this, adminMeta, views[fieldConfig.path]);
     });
+
+    this.fieldsByPath = arrayToObject(this.fields, 'path');
 
     this.createMutation = gql`
       mutation create($data: ${this.gqlNames.createInputName}!) {
@@ -47,7 +49,7 @@ export default class List {
     this.updateManyMutation = gql`
       mutation updateMany($data: [${this.gqlNames.updateManyInputName}])
       {
-        ${this.gqlNames.updateMutationName}(data: $data) {
+        ${this.gqlNames.updateManyMutationName}(data: $data) {
           id
         }
       }
@@ -107,20 +109,22 @@ export default class List {
     }`;
   }
 
-  getBasicQuery() {
-    // TODO: How can we replace this with field.Controller.getQueryFragment()?
-    return gql`{
-      ${this.buildQuery(this.gqlNames.listQueryName)}
-    }`;
-  }
-
   countQuery(metaQueryArgs = '') {
     return `${this.gqlNames.listQueryMetaName}${metaQueryArgs} { count }`;
   }
 
   getInitialItemData() {
-    return arrayToObject(this.fields, 'path', field => field.getInitialData());
+    return mapKeys(this.fieldsByPath, field => field.getDefaultValue());
   }
+
+  deserializeItemData(item) {
+    return {
+      ...mapKeys(this.fieldsByPath, field => field.deserialize(item)),
+      // Handle the special case of `_label_` (and potentially others)
+      ...omit(item, Object.keys(this.fieldsByPath)),
+    };
+  }
+
   formatCount(items) {
     const count = Array.isArray(items) ? items.length : items;
     return count === 1 ? `1 ${this.singular}` : `${count} ${this.plural}`;

@@ -1,7 +1,6 @@
 const { AdminUI } = require('@keystone-alpha/admin-ui');
-const { Keystone } = require('@keystone-alpha/keystone');
+const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { Text, Password, Select } = require('@keystone-alpha/fields');
-const PasswordAuthStrategy = require('@keystone-alpha/keystone/auth/Password');
 const { objMerge } = require('@keystone-alpha/utils');
 const {
   getStaticListName,
@@ -141,12 +140,10 @@ listAccessVariations.forEach(createListWithDeclarativeAccess);
 
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',
+  authStrategy,
 });
 
 module.exports = {
   keystone,
   admin,
-  serverConfig: {
-    authStrategy,
-  },
 };

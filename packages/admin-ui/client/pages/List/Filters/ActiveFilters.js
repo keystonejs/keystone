@@ -1,12 +1,20 @@
-import React from 'react';
-import { FlexGroup } from '@arch-ui/layout';
+/** @jsx jsx */
+
+import { Fragment } from 'react';
+import { jsx } from '@emotion/core';
 import { Pill } from '@arch-ui/pill';
+import { Button } from '@arch-ui/button';
 import { gridSize } from '@arch-ui/theme';
 
-import AnimateHeight from '../../../components/AnimateHeight';
 import EditFilterPopout from './EditFilterPopout';
+import AddFilterPopout from './AddFilterPopout';
+import { useListFilter } from '../dataHooks';
 
-const pillStyle = { marginBottom: gridSize / 2, marginTop: gridSize / 2 };
+export const elementOffsetStyles = {
+  marginBottom: gridSize / 2,
+  marginTop: gridSize / 2,
+  marginRight: gridSize / 2,
+};
 
 export type FilterType = {
   field: { label: string, list: Object, path: string, type: string },
@@ -15,45 +23,56 @@ export type FilterType = {
   value: string,
 };
 type Props = {
-  filterList: Array<FilterType>,
-  onClear: FilterType => void,
-  onRemove: FilterType => void,
-  onUpdate: FilterType => void,
+  list: object,
 };
 
-export default function ActiveFilters({ filterList, onClear, onRemove, onUpdate }: Props) {
-  return (
-    <AnimateHeight style={{ paddingTop: gridSize }}>
-      <FlexGroup wrap id="ks-list-active-filters">
-        {filterList.length
-          ? filterList.map(filter => {
-              const label = filter.field.formatFilter(filter);
-              return (
-                <EditFilterPopout
-                  key={label}
-                  onChange={onUpdate}
-                  filter={filter}
-                  target={props => (
-                    <Pill
-                      {...props}
-                      appearance="primary"
-                      onRemove={onRemove(filter)}
-                      style={pillStyle}
-                    >
-                      {label}
-                    </Pill>
-                  )}
-                />
-              );
-            })
-          : null}
+export default function ActiveFilters({ list }: Props) {
+  const { filters, onAdd, onRemove, onRemoveAll, onUpdate } = useListFilter(list.key);
 
-        {filterList.length > 1 ? (
-          <Pill key="clear" onClick={onClear} style={pillStyle}>
-            Clear All
-          </Pill>
-        ) : null}
-      </FlexGroup>
-    </AnimateHeight>
+  return (
+    <Fragment>
+      {filters.length
+        ? filters.map(filter => {
+            const label = filter.field.formatFilter(filter);
+
+            return (
+              <EditFilterPopout
+                key={label}
+                onChange={onUpdate}
+                filter={filter}
+                target={props => (
+                  <Pill
+                    {...props}
+                    appearance="primary"
+                    onRemove={onRemove(filter)}
+                    css={elementOffsetStyles}
+                  >
+                    {label} {/* TODO: bold the first word; the field label */}
+                  </Pill>
+                )}
+              />
+            );
+          })
+        : null}
+
+      <AddFilterPopout
+        listKey={list.key}
+        existingFilters={filters}
+        fields={list.fields}
+        onChange={onAdd}
+      />
+
+      {filters.length > 1 ? (
+        <Button
+          variant="subtle"
+          appearance="warning"
+          onClick={onRemoveAll}
+          css={elementOffsetStyles}
+          spacing="cozy"
+        >
+          Clear All
+        </Button>
+      ) : null}
+    </Fragment>
   );
 }

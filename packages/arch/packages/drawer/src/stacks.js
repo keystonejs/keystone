@@ -6,10 +6,14 @@ import { useLayoutEffect, useState } from 'react';
 
 // This is the source of truth for open modals
 // TODO: investigate if this will cause problems with concurrent mode
-let stackConsumers = [];
 
-let updateStackConsumers = () => {
-  stackConsumers.forEach(update => {
+let allStackConsumers = {
+  left: [],
+  right: [],
+};
+
+let updateStackConsumers = slideInFrom => {
+  allStackConsumers[slideInFrom].forEach(update => {
     update();
   });
 };
@@ -20,25 +24,22 @@ let updateStackConsumers = () => {
 // - When a modal mounts, all other modals have to adjust their position
 // - When a modal unmounts, all other modals have to adjust their position
 
-export function useStackIndex(isOpen: boolean): number {
+export function useStackIndex(isOpen: boolean, slideInFrom: 'left' | 'right'): number {
   let [stackIndex, setStackIndex] = useState(isOpen ? 0 : -1);
-  useLayoutEffect(
-    () => {
-      if (isOpen) {
-        let update = () => {
-          setStackIndex(stackConsumers.indexOf(update));
-        };
-        stackConsumers.unshift(update);
-        updateStackConsumers();
-        return () => {
-          stackConsumers = stackConsumers.filter(x => x !== update);
-          updateStackConsumers();
-        };
-      } else {
-        setStackIndex(-1);
-      }
-    },
-    [isOpen]
-  );
+  useLayoutEffect(() => {
+    if (isOpen) {
+      let update = () => {
+        setStackIndex(allStackConsumers[slideInFrom].indexOf(update));
+      };
+      allStackConsumers[slideInFrom].unshift(update);
+      updateStackConsumers(slideInFrom);
+      return () => {
+        allStackConsumers[slideInFrom] = allStackConsumers[slideInFrom].filter(x => x !== update);
+        updateStackConsumers(slideInFrom);
+      };
+    } else {
+      setStackIndex(-1);
+    }
+  }, [isOpen, slideInFrom]);
   return stackIndex;
 }

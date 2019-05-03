@@ -1,17 +1,25 @@
 const keystone = require('@keystone-alpha/core');
-const express = require('express');
 const path = require('path');
+const PORT = process.env.PORT || 3000;
 
+// Keystone will prepare the Admin UI (if configured in index.js) and GraphQL
+// APIs here.
 keystone
   .prepare({
-    port: 3000,
+    entryFile: 'index.js',
+    port: PORT,
   })
-  .then(({ server }) => {
-    server.app.use(express.static(path.join(__dirname, 'public')));
+  // 'server' is an express instance, to which you can attach your own routes,
+  // middlewares, etc.
+  .then(async ({ server, keystone: keystoneApp }) => {
+    await keystoneApp.connect();
+
+    // In this project, we attach a single route handler for `/public` to serve
+    // our app
+    server.app.use(server.express.static(path.join(__dirname, 'public')));
+    // Finally, we must start the server so we can access the Admin UI and
+    // GraphQL API
     return server.start();
-  })
-  .then(({ port }) => {
-    console.log(`Listening on port ${port}`);
   })
   .catch(error => {
     console.error(error);

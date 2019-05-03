@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/logger",
   "description": "Common logging functionality used within @keystone-alpha/* packages.",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -10,6 +10,6 @@
   "dependencies": {
     "falsey": "^1.0.0",
     "fast-memoize": "^2.4.0",
-    "pino": "5.0.0-rc.4"
+    "pino": "5.11.1"
   }
 }

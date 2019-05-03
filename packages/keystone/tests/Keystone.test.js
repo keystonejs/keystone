@@ -1,5 +1,5 @@
-const Keystone = require('../Keystone');
-const List = require('../List');
+const Keystone = require('../lib/Keystone');
+const List = require('../lib/List');
 const { Text, Relationship } = require('@keystone-alpha/fields');
 
 class MockType {
@@ -29,7 +29,7 @@ test('new Keystone()', () => {
     adapter: new MockAdapter(),
   };
   const keystone = new Keystone(config);
-  expect(keystone.config).toEqual(config);
+  expect(keystone.name).toEqual(config.name);
 });
 
 test('unique typeDefs', () => {
@@ -164,11 +164,9 @@ describe('Keystone.createItems()', () => {
   const lists = {
     User: {
       key: 'User',
-      config: {
-        fields: {
-          name: { type: Text },
-          posts: { type: Relationship, many: true, ref: 'Post' },
-        },
+      _fields: {
+        name: { type: Text },
+        posts: { type: Relationship, many: true, ref: 'Post' },
       },
       adapter: {
         create: jest.fn(),
@@ -179,11 +177,9 @@ describe('Keystone.createItems()', () => {
     },
     Post: {
       key: 'Post',
-      config: {
-        fields: {
-          title: { type: Text },
-          author: { type: Relationship, ref: 'User' },
-        },
+      _fields: {
+        title: { type: Text },
+        author: { type: Relationship, ref: 'User' },
       },
       adapter: {
         create: jest.fn(),
@@ -241,7 +237,7 @@ describe('Keystone.createItems()', () => {
     // mock the lists
     keystone.lists = lists;
 
-    setupMocks(keystone);
+    setupMocks();
 
     await keystone.createItems({
       User: [{ name: 'Jess' }, { name: 'Lauren' }],

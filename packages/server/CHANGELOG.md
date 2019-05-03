@@ -1,5 +1,102 @@
 # @keystone-alpha/server
 
+## 4.0.1
+
+- [patch][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):
+
+  - Don't create graphiql shortlinks for multipart forms
+
+## 4.0.0
+
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+
+  - Update dev devependencies
+
+- [patch][baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
+
+  - Use the updated logger API
+
+- [patch][78266983](https://github.com/keystonejs/keystone-5/commit/78266983):
+
+  - Restructure internal code
+
+- [major][656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+
+  - `WebServer.start()` no longer takes any arguments. Developer must now explicitly call `keystone.connect()` before calling `WebServer.start()`.
+
+- [minor][21be780b](https://github.com/keystonejs/keystone-5/commit/21be780b):
+
+  - Expose `createApolloServer` in the public API
+
+- Updated dependencies [baff3c89](https://github.com/keystonejs/keystone-5/commit/baff3c89):
+  - @keystone-alpha/logger@2.0.0
+
+## 3.0.0
+
+- [patch][022724ab](https://github.com/keystonejs/keystone-5/commit/022724ab):
+
+  - Factor out a `createApolloServer` function.
+
+- [patch][289123a6](https://github.com/keystonejs/keystone-5/commit/289123a6):
+
+  - Decouple creation of ApolloServer from setting up of middleware
+
+- [patch][52f1c47b](https://github.com/keystonejs/keystone-5/commit/52f1c47b):
+
+  - Use the new Keystone.registerSchema interface.
+
+- [major][5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+
+  - Remove the .sessionManager property from the Keystone class
+
+- [patch][5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+
+  - Use the new @keystone-alpha/session package
+
+- Updated dependencies [d718c016](https://github.com/keystonejs/keystone-5/commit/d718c016):
+- Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+  - @keystone-alpha/session@1.0.0
+
+## 2.0.2
+
+- [patch][5ddb2ed6](https://github.com/keystonejs/keystone-5/commit/5ddb2ed6):
+
+  - Always display clickable links when starting a server in dev mode
+
+- Updated dependencies [98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):
+  - @keystone-alpha/utils@2.0.0
+
+## 2.0.1
+
+- [patch][0c754410](https://github.com/keystonejs/keystone-5/commit/0c754410):
+
+  - Fix the graphql dev query links
+
+## 2.0.0
+
+- [patch][1f2ebc81](https://github.com/keystonejs/keystone-5/commit/1f2ebc81):
+
+  - Internal refactoring
+
+- [major][de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+
+  - Update authStrategy APIs
+    - Removes `authStrategy` from the `config` API of `Webserver`.
+    - Removes `authStrategy` from the `serverConfig` of the core `keystone` system builder.
+    - Removes the `setAuthStrategy` method from `AdminUI`.
+    - Adds `authStrategy` to the `config` API of `AdminUI`.
+    - `Webserver` checks `keystone.auth` to determine whether to set up auth session middlewares.
+
+## 1.2.0
+
+- [minor][74e0363](https://github.com/keystonejs/keystone-5/commit/74e0363):
+
+  - Reinstate ability to pass args to keystone.connect
+
+- [patch][7417ea3a](https://github.com/keystonejs/keystone-5/commit/7417ea3a):
+
+  - Update patch-level dependencies
+
 ## 1.1.0
 
 - [minor][91557b24](https://github.com/keystonejs/keystone-5/commit/91557b24):

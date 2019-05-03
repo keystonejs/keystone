@@ -2,7 +2,7 @@
 
 import styled from '@emotion/styled';
 
-import { borderRadius, colors, gridSize } from '@arch-ui/theme';
+import { colors, gridSize } from '@arch-ui/theme';
 import { ItemElement } from './common';
 
 export const PRIMARY_NAV_GUTTER = gridSize * 2;
@@ -17,19 +17,17 @@ export const NavGroupIcons = styled.div({
 });
 
 export const PrimaryNav = styled.nav({
-  backgroundColor: colors.N10,
   boxSizing: 'border-box',
   display: 'flex',
   flexFlow: 'column nowrap',
   fontSize: '0.9rem',
-  fontWeight: 500,
   height: '100vh',
   position: 'fixed',
   zIndex: 2,
 });
 export const PrimaryNavScrollArea = styled.div(({ hasScroll, isBottom, isScrollable }) => {
   const divider = {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'rgba(9, 30, 66, 0.1)',
     content: '" "',
     height: 2,
     left: PRIMARY_NAV_GUTTER,
@@ -46,8 +44,6 @@ export const PrimaryNavScrollArea = styled.div(({ hasScroll, isBottom, isScrolla
     overflowX: 'hidden',
     minWidth: 140,
     paddingBottom: PRIMARY_NAV_GUTTER,
-    paddingLeft: PRIMARY_NAV_GUTTER,
-    paddingRight: PRIMARY_NAV_GUTTER,
     width: '100%',
 
     ':before': before,
@@ -62,41 +58,62 @@ export const BrandItem = styled.h2({
   paddingBottom: PRIMARY_NAV_GUTTER,
 });
 
-export const PrimaryNavItem = styled(ItemElement)(({ isSelected }) => {
+export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
   const selectedStyles = isSelected
     ? {
         '&, :hover, :active, :focus': {
-          backgroundColor: colors.N80,
-          color: 'white',
+          ':after': {
+            backgroundColor: colors.primary,
+          },
         },
       }
     : {};
 
   return {
     border: 0,
-    borderRadius,
+    borderRight: '1px solid transparent',
     color: colors.N90,
     display: 'block',
     marginBottom: 2,
     overflow: 'hidden',
-    paddingLeft: PRIMARY_NAV_GUTTER,
+    paddingLeft: depth ? PRIMARY_NAV_GUTTER * depth : PRIMARY_NAV_GUTTER,
     paddingRight: PRIMARY_NAV_GUTTER,
     paddingBottom: gridSize,
     paddingTop: gridSize,
+    position: 'relative',
     textDecoration: 'none',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
 
-    ':hover, :focus': {
-      backgroundColor: colors.B.L80,
-      color: colors.B.D20,
-      outline: 0,
+    ':hover': {
+      backgroundColor: colors.N05,
       textDecoration: 'none',
     },
     ':active': {
-      backgroundColor: colors.B.L70,
+      backgroundColor: colors.N10,
+    },
+
+    ':after': {
+      borderRadius: 2,
+      bottom: 2,
+      content: '" "',
+      pointerEvents: 'none',
+      position: 'absolute',
+      right: 6,
+      top: 2,
+      transition: 'background-color 110ms',
+      width: 4,
     },
 
     ...selectedStyles,
   };
 });
+export const PrimaryNavHeading = styled.h3(({ depth }) => ({
+  color: colors.N40,
+  fontSize: '0.85em',
+  fontWeight: 'bold',
+  marginTop: '2em',
+  paddingLeft: depth ? PRIMARY_NAV_GUTTER * depth : PRIMARY_NAV_GUTTER,
+  paddingRight: PRIMARY_NAV_GUTTER,
+  textTransform: 'uppercase',
+}));

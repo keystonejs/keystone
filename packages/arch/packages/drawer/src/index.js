@@ -20,15 +20,15 @@ import ScrollLock from 'react-scrolllock';
 import { FocusTrap, type FocusTarget } from 'react-focus-marshal';
 import {
   Blanket,
-  Fade,
-  SlideInHorizontal,
+  fade,
+  slideInHorizontal,
   withTransitionState,
   type TransitionState,
   generateUEID,
 } from '@arch-ui/modal-utils';
-import { colors, gridSize } from '@arch-ui/theme';
+import { borderRadius, colors, gridSize, shadows } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
-import { A11yText } from '@arch-ui/typography';
+import { A11yText, Title } from '@arch-ui/typography';
 import { useStackIndex } from './stacks';
 
 const innerGutter = gridSize * 2;
@@ -46,9 +46,16 @@ const Positioner = ({
 // TODO: different api for transitions
 // could probably just be a function that accepts the transitionState and returns the style
 any) => {
+  const stackTransforms =
+    stackIndex <= 0
+      ? []
+      : [`translate(calc(${stackIndex * 0.3} * -9vw))`, `scale(${1 - stackIndex / 50})`];
+
   return (
     <div
       css={{
+        boxSizing: 'border-box',
+        padding: gridSize,
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
@@ -58,9 +65,7 @@ any) => {
         top: 0,
         width,
         zIndex: 2,
-        transform: `${transform}${
-          stackIndex <= 0 ? '' : `translate(-${stackIndex * 0.3 * width}px)`
-        }`,
+        transform: `${transform}${stackTransforms.join(' ')}`,
         ...style,
       }}
       {...props}
@@ -77,11 +82,13 @@ const Dialog = forwardRef(({ component: Tag, ...props }: DialogElementProps, ref
     ref={ref}
     role="dialog"
     css={{
-      backgroundColor: colors.page,
-      boxShadow: '-2px 0 12px -1px rgba(0,0,0,0.3)',
+      backgroundColor: 'white',
+      boxShadow: shadows[3],
+      borderRadius: borderRadius * 2,
       display: 'flex',
       flex: 1,
       flexDirection: 'column',
+      // margin: gridSize,
       maxHeight: '100%',
     }}
     {...props}
@@ -105,11 +112,6 @@ const Header = styled(HeadFoot)({
 });
 const Footer = styled(HeadFoot)({
   boxShadow: `0 -2px 0 ${alpha(colors.text, 0.12)}`,
-});
-const Title = styled.h3({
-  fontSize: 18,
-  fontWeight: 500,
-  margin: 0,
 });
 const Body = styled.div({
   lineHeight: 1.4,
@@ -164,10 +166,11 @@ let ModalDialog = memo<Props>(function ModalDialog({
   slideInFrom,
   width,
   onKeyDown,
-  ...transitionProps
+  transitionState,
 }) {
   let stackIndex = useStackIndex(
-    transitionProps.transitionState === 'entered' || transitionProps.transitionState === 'entering'
+    transitionState === 'entered' || transitionState === 'entering',
+    slideInFrom
   );
   useKeydownHandler(event => {
     if (onKeyDown && stackIndex === 0) {
@@ -178,30 +181,35 @@ let ModalDialog = memo<Props>(function ModalDialog({
 
   return createPortal(
     <Fragment>
-      <Fade {...transitionProps}>
-        <Blanket onClick={closeOnBlanketClick ? onClose : undefined} isTinted />
-      </Fade>
-      <SlideInHorizontal slideInFrom={slideInFrom} {...transitionProps}>
-        <Positioner slideInFrom={slideInFrom} width={width} stackIndex={stackIndex}>
-          <FocusTrap
-            options={{
-              initialFocus,
-              clickOutsideDeactivates: closeOnBlanketClick,
-            }}
-          >
-            <Dialog component={component} aria-labelledby={dialogTitleId}>
-              <A11yText id={dialogTitleId}>{heading} Dialog</A11yText>
-              {heading ? (
-                <Header>
-                  <Title>{heading}</Title>
-                </Header>
-              ) : null}
-              <Body>{children}</Body>
-              {footer ? <Footer>{footer}</Footer> : null}
-            </Dialog>
-          </FocusTrap>
-        </Positioner>
-      </SlideInHorizontal>
+      <Blanket
+        style={fade(transitionState)}
+        onClick={closeOnBlanketClick ? onClose : undefined}
+        isTinted
+      />
+      <Positioner
+        style={slideInHorizontal(transitionState, { slideInFrom })}
+        slideInFrom={slideInFrom}
+        width={width}
+        stackIndex={stackIndex}
+      >
+        <FocusTrap
+          options={{
+            initialFocus,
+            clickOutsideDeactivates: closeOnBlanketClick,
+          }}
+        >
+          <Dialog component={component} aria-labelledby={dialogTitleId}>
+            <A11yText id={dialogTitleId}>{heading} Dialog</A11yText>
+            {heading ? (
+              <Header>
+                <Title>{heading}</Title>
+              </Header>
+            ) : null}
+            <Body>{children}</Body>
+            {footer ? <Footer>{footer}</Footer> : null}
+          </Dialog>
+        </FocusTrap>
+      </Positioner>
       <ScrollLock />
     </Fragment>,
     attachTo
@@ -213,7 +221,7 @@ ModalDialog.defaultProps = {
   attachTo: ((document.body: any): HTMLElement),
   closeOnBlanketClick: false,
   component: 'div',
-  width: 560,
+  width: 640,
 };
 
 export default withTransitionState(ModalDialog);

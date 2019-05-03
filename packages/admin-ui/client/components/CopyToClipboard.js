@@ -1,33 +1,30 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { copyToClipboard as copy } from '../util';
 
-export default class CopyToClipboard extends React.PureComponent {
-  static propTypes = {
-    onError: PropTypes.func,
-    onSuccess: PropTypes.func,
-    text: PropTypes.string.isRequired,
-  };
+const CopyToClipboard = forwardRef(
+  ({ as: Tag, onClick, onError, onSuccess, text, ...rest }, ref) => {
+    const handleClick = event => {
+      // Attempt copy to clipboard
+      copy(text, onSuccess, onError);
 
-  static defaultProps = {
-    as: 'div',
-  };
+      // Maintain consumer on `onClick` if it exists
+      if (onClick) {
+        onClick(event);
+      }
+    };
 
-  onClick = event => {
-    const { onError, onSuccess, text } = this.props;
-
-    // Attempt copy to clipboard
-    copy(text, onSuccess, onError);
-
-    // Maintain consumer on `onClick` if it exists
-    if (this.props.onClick) {
-      this.props.onClick(event);
-    }
-  };
-
-  render() {
-    const { as: Tag, onError, onSuccess, text, ...props } = this.props;
-
-    return <Tag onClick={this.onClick} {...props} />;
+    return <Tag ref={ref} onClick={handleClick} {...rest} />;
   }
-}
+);
+
+CopyToClipboard.propTypes = {
+  onError: PropTypes.func,
+  onSuccess: PropTypes.func,
+  text: PropTypes.string.isRequired,
+};
+CopyToClipboard.defaultProps = {
+  as: 'div',
+};
+
+export default CopyToClipboard;
