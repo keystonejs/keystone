@@ -59,7 +59,7 @@ module.exports = class WebServer {
       if (process.env.NODE_ENV === 'production') {
         const builtAdminRoot = path.join(process.cwd(), 'dist', 'admin');
         this.app.use('/admin', express.static(builtAdminRoot));
-        // this.app.use('/admin', fallback('index.html', { root: builtAdminRoot }));
+        this.app.use('/admin', fallback('index.html', { root: builtAdminRoot }));
       } else {
         // This must be last as it's the "catch all" which falls into Webpack to
         // serve the Admin UI.
