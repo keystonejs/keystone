@@ -1,5 +1,6 @@
 const path = require('path');
 const endent = require('endent');
+const fs = require('fs-extra');
 const keystone = require('@keystone-alpha/core');
 
 function getEntryFileFullPath(args, { exeName, _cwd }) {
@@ -29,17 +30,19 @@ module.exports = {
     Options
       --out, -o   Directory to save build [dist]
   `,
-  exec: (args, { exeName, _cwd = process.cwd() } = {}) => {
-    return getEntryFileFullPath(args, { exeName, _cwd }).then(serverFile => {
-      let { admin } = require(serverFile);
-      if (admin) {
-        return admin.staticBuild({
-          apiPath: '/admin/api',
-          outputPath: path.join(_cwd, 'build', 'admin'),
-          graphiqlPath: '/admin/graphiql',
-        });
-      }
-    });
+  exec: async (args, { exeName, _cwd = process.cwd() } = {}) => {
+    let serverFile = await getEntryFileFullPath(args, { exeName, _cwd });
+    let { admin } = require(serverFile);
+    if (admin) {
+      let adminOutputPath = path.join(_cwd, 'dist', 'admin');
+      await fs.remove(adminOutputPath);
+      return admin.staticBuild({
+        apiPath: '/admin/api',
+        outputPath: adminOutputPath,
+        graphiqlPath: '/admin/graphiql',
+      });
+    }
+
     // if (args['--out']) {
     //   console.log('--out', args['--out']);
     // }

@@ -2,6 +2,7 @@ const express = require('express');
 const corsMiddleware = require('cors');
 const path = require('path');
 const falsey = require('falsey');
+const fallback = require('express-history-api-fallback');
 const { commonSessionMiddleware } = require('@keystone-alpha/session');
 const createGraphQLMiddleware = require('./graphql');
 const { createApolloServer } = require('./apolloServer');
@@ -55,9 +56,15 @@ module.exports = class WebServer {
     );
 
     if (adminUI) {
-      // This must be last as it's the "catch all" which falls into Webpack to
-      // serve the Admin UI.
-      this.app.use(adminUI.createDevMiddleware({ apiPath, graphiqlPath, port }));
+      if (process.env.NODE_ENV === 'production') {
+        const builtAdminRoot = path.join(process.cwd(), 'build', 'admin');
+        this.app.use('/admin', express.static(builtAdminRoot));
+        // this.app.use('/admin', fallback('index.html', { root: builtAdminRoot }));
+      } else {
+        // This must be last as it's the "catch all" which falls into Webpack to
+        // serve the Admin UI.
+        this.app.use(adminUI.createDevMiddleware({ apiPath, graphiqlPath, port }));
+      }
     }
   }
 
