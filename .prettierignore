@@ -10,3 +10,4 @@ demo-projects/blog/app/.next
 packages/arch/www/public/**/*
 .changeset/**/*
 **/dist
+**/.next
