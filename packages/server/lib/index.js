@@ -57,7 +57,7 @@ module.exports = class WebServer {
 
     if (adminUI) {
       if (process.env.NODE_ENV === 'production') {
-        const builtAdminRoot = path.join(process.cwd(), 'build', 'admin');
+        const builtAdminRoot = path.join(process.cwd(), 'dist', 'admin');
         this.app.use('/admin', express.static(builtAdminRoot));
         // this.app.use('/admin', fallback('index.html', { root: builtAdminRoot }));
       } else {
