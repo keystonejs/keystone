@@ -2,7 +2,6 @@ const express = require('express');
 const corsMiddleware = require('cors');
 const path = require('path');
 const falsey = require('falsey');
-const fallback = require('express-history-api-fallback');
 const { commonSessionMiddleware } = require('@keystone-alpha/session');
 const createGraphQLMiddleware = require('./graphql');
 const { createApolloServer } = require('./apolloServer');
@@ -57,9 +56,7 @@ module.exports = class WebServer {
 
     if (adminUI) {
       if (process.env.NODE_ENV === 'production') {
-        const builtAdminRoot = path.join(process.cwd(), 'dist', 'admin');
-        this.app.use('/admin', express.static(builtAdminRoot));
-        this.app.use('/admin', fallback('index.html', { root: builtAdminRoot }));
+        this.app.use(adminUI.createProdMiddleware({ apiPath, graphiqlPath, port }));
       } else {
         // This must be last as it's the "catch all" which falls into Webpack to
         // serve the Admin UI.
