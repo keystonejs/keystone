@@ -1,5 +1,5 @@
 const {
-	CloudinaryImage,
+  CloudinaryImage,
   Checkbox,
   DateTime,
   Integer,
@@ -12,9 +12,9 @@ const { CloudinaryAdapter } = require('@keystone-alpha/file-adapters');
 const { Wysiwyg } = require('@keystone-alpha/fields-wysiwyg-tinymce');
 
 const cloudinaryAdapter = new CloudinaryAdapter({
-	cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-	apiKey: process.env.CLOUDINARY_KEY,
-	apiSecret: process.env.CLOUDINARY_SECRET,
+  cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+  apiKey: process.env.CLOUDINARY_KEY,
+  apiSecret: process.env.CLOUDINARY_SECRET,
 });
 
 exports.User = {
