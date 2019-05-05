@@ -37,11 +37,13 @@ module.exports = {
     if (admin) {
       let adminOutputPath = path.join(_cwd, 'dist', 'admin');
       await fs.remove(adminOutputPath);
-      return admin.staticBuild({
+      console.log('Building Admin UI!');
+      await admin.staticBuild({
         apiPath: '/admin/api',
         outputPath: adminOutputPath,
         graphiqlPath: '/admin/graphiql',
       });
+      console.log('Built Admin UI!');
     }
 
     // if (args['--out']) {

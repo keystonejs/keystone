@@ -17,7 +17,7 @@ module.exports = {
   },
   help: ({ exeName }) => `
     Usage
-      $ ${exeName} dev --port=3000
+      $ ${exeName} start --port=3000
 
     Options
       --port, -p  Port to start on [${keystone.DEFAULT_PORT}]
@@ -25,6 +25,7 @@ module.exports = {
       --server    Custom server file [${keystone.DEFAULT_SERVER}]
   `,
   exec: (args, { exeName, _cwd = process.cwd() } = {}) => {
+    process.env.NODE_ENV = 'production';
     return getCustomServerFullPath(args, { exeName, _cwd }).then(serverFile => {
       if (serverFile) {
         warnInvalidCustomServerArgs(args, { exeName });
