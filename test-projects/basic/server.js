@@ -2,7 +2,20 @@ const express = require('express');
 
 const { keystone, apps } = require('./index');
 const { port } = require('./config');
-const initialData = require('./data');
+const { initialData, initialPosts } = require('./data');
+
+const initialiseLists = (keystone, initialData) => {
+  return Promise.all(
+    Object.entries(initialData).map(([listName, items]) => {
+      const list = keystone.lists[listName];
+      return keystone.executeQuery({
+        query: `mutation ($items: [${list.gqlNames.createManyInputName}]) { ${list.gqlNames.createManyMutationName}(data: $items) { id } }`,
+        schemaName: 'admin',
+        variables: { items: items.map(d => ({ data: d })) },
+      });
+    })
+  );
+};
 
 keystone
   .prepare({
@@ -19,7 +32,8 @@ keystone
       Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      await keystone.createItems(initialData);
+      await initialiseLists(keystone, initialData);
+      await initialiseLists(keystone, initialPosts);
     }
 
     const app = express();
@@ -28,7 +42,8 @@ keystone
       Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      await keystone.createItems(initialData);
+      await initialiseLists(keystone, initialData);
+      await initialiseLists(keystone, initialPosts);
       res.redirect('/admin');
     });
 

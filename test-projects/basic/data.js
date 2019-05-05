@@ -52,60 +52,47 @@ const users = [
   },
 ];
 
-const createPost = (v, i) => {
-  const user = users[i % users.length];
-  return {
-    name: `Why ${i} is better than ${i - 1}`,
-    author: { where: { email: user.email } },
-    categories: { where: { name: 'Number comparison' } },
-    views: i,
-  };
-};
-
 module.exports = {
-  Post: [
-    {
-      name: 'Lets talk React Router',
-      author: { where: { email: 'ben@keystone-alpha.com' } },
-      categories: { where: { name_starts_with: 'React' } },
-    },
-    {
-      name: 'Hello Things',
-    },
-    {
-      name: 'How we built Keystone 5',
-      author: { where: { email: 'jared@keystone-alpha.com' } },
-      categories: [
-        { where: { name: 'React' } },
-        { where: { name: 'Keystone' } },
-        { where: { name: 'GraphQL' } },
-        { where: { name: 'Node' } },
-      ],
-    },
-  ].concat(
-    Array(120)
-      .fill(true)
-      .map(createPost)
-  ),
-  PostCategory: [
-    {
-      name: 'GraphQL',
-    },
-    {
-      name: 'Keystone',
-    },
-    {
-      name: 'Node',
-    },
-    {
-      name: 'React',
-    },
-    {
-      name: 'React Router',
-    },
-    {
-      name: 'Number comparison',
-    },
-  ],
-  User: users.map(user => ({ ...user, password: 'password' })),
+  initialPosts: {
+    Post: [
+      {
+        name: 'Lets talk React Router',
+        author: { where: { email: 'ben@keystone-alpha.com' } },
+        categories: { where: { name_starts_with: 'React' } },
+      },
+      {
+        name: 'Hello Things',
+      },
+      {
+        name: 'How we built Keystone 5',
+        author: { where: { email: 'jared@keystone-alpha.com' } },
+        categories: [
+          { where: { name: 'React' } },
+          { where: { name: 'Keystone' } },
+          { where: { name: 'GraphQL' } },
+          { where: { name: 'Node' } },
+        ],
+      },
+    ].concat(
+      Array(120)
+        .fill(true)
+        .map((v, i) => ({
+          name: `Why ${i} is better than ${i - 1}`,
+          author: { where: { email: users[i % users.length].email } },
+          categories: { where: { name: 'Number comparison' } },
+          views: i,
+        }))
+    ),
+  },
+  initialData: {
+    PostCategory: [
+      { name: 'GraphQL' },
+      { name: 'Keystone' },
+      { name: 'Node' },
+      { name: 'React' },
+      { name: 'React Router' },
+      { name: 'Number comparison' },
+    ],
+    User: users.map(user => ({ ...user, password: 'password' })),
+  },
 };

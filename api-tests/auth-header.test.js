@@ -7,20 +7,24 @@ const { multiAdapterRunners } = require('@keystone-alpha/test-utils');
 const { setupServer } = require('@keystone-alpha/test-utils');
 const cuid = require('cuid');
 
-const initialData = {
-  User: [
-    {
+const initialData = [
+  {
+    data: {
       name: 'Boris Bozic',
       email: 'boris@keystone-alpha.com',
       password: 'correctbattery',
     },
-    {
+  },
+  {
+    data: {
       name: 'Jed Watson',
       email: 'jed@keystone-alpha.com',
       password: 'horsestaple',
     },
-  ],
-};
+  },
+];
+
+const initialDataQuery = `mutation ($users: [UsersCreateInput]) { createUsers(data: $users) { id } }`;
 
 const COOKIE_SECRET = 'qwerty';
 
@@ -96,7 +100,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'Gives access denied when not logged in',
         runner(setupKeystone, async ({ keystone, app }) => {
           // seed the db
-          await keystone.createItems(initialData);
+          await keystone.executeQuery({
+            query: initialDataQuery,
+            schemaName: 'admin',
+            variables: { users: initialData },
+          });
           return supertest(app)
             .set('Accept', 'application/json')
             .post('/admin/api', { query: '{ allUsers { id } }' })
@@ -113,11 +121,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         test(
           'Allows access with bearer token',
           runner(setupKeystone, async ({ keystone, app }) => {
-            await keystone.createItems(initialData);
+            await keystone.executeQuery({
+              query: initialDataQuery,
+              schemaName: 'admin',
+              variables: { users: initialData },
+            });
             const { token } = await login(
               app,
-              initialData.User[0].email,
-              initialData.User[0].password
+              initialData[0].data.email,
+              initialData[0].data.password
             );
 
             expect(token).toBeTruthy();
@@ -130,7 +142,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(res.statusCode).toBe(200);
                 res.body = JSON.parse(res.text);
                 expect(res.body.data).toHaveProperty('allUsers');
-                expect(res.body.data.allUsers).toHaveLength(initialData.User.length);
+                expect(res.body.data.allUsers).toHaveLength(initialData.length);
                 expect(res.body).not.toHaveProperty('errors');
               });
           })
@@ -139,11 +151,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         test(
           'Allows access with cookie',
           runner(setupKeystone, async ({ keystone, app }) => {
-            await keystone.createItems(initialData);
+            await keystone.executeQuery({
+              query: initialDataQuery,
+              schemaName: 'admin',
+              variables: { users: initialData },
+            });
             const { token } = await login(
               app,
-              initialData.User[0].email,
-              initialData.User[0].password
+              initialData[0].data.email,
+              initialData[0].data.password
             );
 
             expect(token).toBeTruthy();
@@ -156,7 +172,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(res.statusCode).toBe(200);
                 res.body = JSON.parse(res.text);
                 expect(res.body.data).toHaveProperty('allUsers');
-                expect(res.body.data.allUsers).toHaveLength(initialData.User.length);
+                expect(res.body.data.allUsers).toHaveLength(initialData.length);
                 expect(res.body).not.toHaveProperty('errors');
               });
           })
