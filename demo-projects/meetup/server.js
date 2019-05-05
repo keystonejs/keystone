@@ -1,7 +1,7 @@
 const keystone = require('@keystone-alpha/core');
 const { Wysiwyg } = require('@keystone-alpha/fields-wysiwyg-tinymce');
 const next = require('next');
-
+const createAuthRoutes = require('./auth');
 const initialData = require('./initialData');
 
 const port = process.env.PORT || 3000;
@@ -15,6 +15,9 @@ const nextApp = next({
 Promise.all([keystone.prepare({ port }), nextApp.prepare()])
   .then(async ([{ server, keystone: keystoneApp }]) => {
     await keystoneApp.connect();
+
+    // Attach the auth routes
+    server.app.use('/', createAuthRoutes(keystone));
 
     // Initialise some data.
     // NOTE: This is only for demo purposes and should not be used in production
