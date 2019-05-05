@@ -18,13 +18,18 @@
     "@keystone-alpha/core": "^2.0.3",
     "@keystone-alpha/fields": "^5.0.0",
     "@keystone-alpha/fields-wysiwyg-tinymce": "^1.0.2",
+    "@keystone-alpha/file-adapters": "^1.0.2",
     "@keystone-alpha/keystone": "^3.1.0",
     "@keystone-alpha/server": "^4.0.1",
     "@keystone-alpha/session": "^1.0.2",
     "apollo-boost": "^0.3.1",
     "apollo-client": "^2.5.1",
+<<<<<<< HEAD
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
+=======
+    "dotenv": "^8.0.0",
+>>>>>>> master
     "graphql-tag": "^2.10.1",
     "isomorphic-unfetch": "^3.0.0",
     "next": "^8.0.3",
