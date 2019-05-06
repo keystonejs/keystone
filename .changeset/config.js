@@ -26,15 +26,12 @@ const changesetOptions = {
 */
 
 const getReleaseLine = async (changeset, versionType) => {
-  const [firstLine, ...futureLines] = changeset.summary
-    .split("\n")
-    .map(l => l.trimRight());
+  const indentedSummary = changeset.summary
+    .split('\n')
+    .map(l => `  ${l}`.trimRight())
+    .join('\n');
 
-    const joinedFutureLines = futureLines
-    .map(l => `  ${l}`)
-    .join("\n")
-
-  return `- [${changeset.commit}](https://github.com/keystonejs/keystone-5/commit/${changeset.commit}):\n\n${firstLine}\n${joinedFutureLines}\n`;
+  return `- [${changeset.commit}](https://github.com/keystonejs/keystone-5/commit/${changeset.commit}):\n\n${indentedSummary}`;
 };
 
 // This function takes information about what dependencies we are updating in the package.
