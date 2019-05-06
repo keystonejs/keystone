@@ -34,7 +34,7 @@ const getReleaseLine = async (changeset, versionType) => {
     .map(l => `  ${l}`)
     .join("\n")
 
-  return `- [${changeset.commit}](https://github.com/keystonejs/keystone-5/commit/${changeset.commit}):\n\n${firstLine}\n${joinedFutureLines}`;
+  return `- [${changeset.commit}](https://github.com/keystonejs/keystone-5/commit/${changeset.commit}):\n\n${firstLine}\n${joinedFutureLines}\n`;
 };
 
 // This function takes information about what dependencies we are updating in the package.
