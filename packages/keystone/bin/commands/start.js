@@ -14,6 +14,8 @@ module.exports = {
     '-p':       '--port',
     '--entry':  String,
     '--server': String,
+    '--out':    String,
+    '-o':       '--out',
   },
   help: ({ exeName }) => `
     Usage
@@ -23,6 +25,7 @@ module.exports = {
       --port, -p  Port to start on [${keystone.DEFAULT_PORT}]
       --entry     Entry file exporting keystone instance [${keystone.DEFAULT_ENTRY}]
       --server    Custom server file [${keystone.DEFAULT_SERVER}]
+      --out, -o   Directory where build was saved [dist]
   `,
   exec: (args, { exeName, _cwd = process.cwd() } = {}) => {
     process.env.NODE_ENV = 'production';

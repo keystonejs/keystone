@@ -37,6 +37,14 @@ function warnInvalidCustomServerArgs(args, { exeName }) {
         > keystone.prepare({ entryFile: 'index.js' })
       `);
   }
+
+  if (args['--out']) {
+    console.warn(endent`
+        The ${exeName} --out CLI option does not work with a custom server.
+        To set the dist directory, pass it to keystone from within your custom server:
+        > keystone.prepare({ distDir: 'index.js' })
+      `);
+  }
 }
 
 function executeCustomServer(serverFileFullPath) {
@@ -69,7 +77,7 @@ function executeDefaultServer(args, entryFile) {
   const port = args['--port'] ? args['--port'] : keystone.DEFAULT_PORT;
 
   return keystone
-    .prepare({ entryFile, port })
+    .prepare({ entryFile, port, distDir: require(entryFile).distDir || args['--out'] || 'dist' })
     .then(async ({ server, keystone: keystoneApp }) => {
       await keystoneApp.connect();
 
