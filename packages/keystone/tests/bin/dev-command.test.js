@@ -13,49 +13,6 @@ describe('dev command', () => {
     expect(typeof devCommand.help({ exeName: '' })).toBe('string');
   });
 
-  describe('--server arg', () => {
-    test('rejects when file not found', () => {
-      expect(devCommand.exec({ '--server': 'foo.js', _cwd: __dirname })).rejects.toThrow(
-        /--server=.*was passed.*but.*couldn't be found/
-      );
-    });
-
-    test('requires custom server', async () => {
-      jest.resetModules();
-      const serverFileObj = tmp.fileSync({ postfix: '.js' });
-      let wasRequired = false;
-      jest.doMock(serverFileObj.name, () => {
-        wasRequired = true;
-      });
-      await devCommand.exec({ '--server': serverFileObj.name });
-      expect(wasRequired).toBeTruthy();
-    });
-
-    describe('warnings', () => {
-      afterEach(() => {
-        jest.restoreAllMocks();
-      });
-
-      test('warns when --port also set', async () => {
-        const mockWarn = jest.spyOn(global.console, 'warn').mockImplementation(jest.fn());
-        const serverFileObj = tmp.fileSync({ postfix: '.js' });
-        await devCommand.exec({ '--server': serverFileObj.name, '--port': 5000 });
-        expect(mockWarn).toHaveBeenLastCalledWith(
-          expect.stringContaining('--port CLI option does not work with a custom server')
-        );
-      });
-
-      test('warns when --entry also set', async () => {
-        const mockWarn = jest.spyOn(global.console, 'warn').mockImplementation(jest.fn());
-        const serverFileObj = tmp.fileSync({ postfix: '.js' });
-        await devCommand.exec({ '--server': serverFileObj.name, '--entry': 'foo.js' });
-        expect(mockWarn).toHaveBeenLastCalledWith(
-          expect.stringContaining('--entry CLI option does not work with a custom server')
-        );
-      });
-    });
-  });
-
   describe('--entry arg', () => {
     afterEach(() => {
       jest.restoreAllMocks();
