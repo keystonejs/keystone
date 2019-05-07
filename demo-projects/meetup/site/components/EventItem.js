@@ -60,7 +60,7 @@ const EventItem = ({ id, name, startDate, talks }) => {
       <p>{startDate}</p>
       {isAuthenticated ?
         <Query query={GET_EVENT_RSVPS} variables={{ event: id, user: user.id }}>
-          {({ data, loading, error, refetch }) => {
+          {({ data, loading, error }) => {
             if (loading) return <p>loading...</p>;
             if (error) {
               console.log(error);
@@ -98,12 +98,12 @@ const EventItem = ({ id, name, startDate, talks }) => {
         <p>please login to RSVP</p>
       }
       <h2>Talks</h2>
-      {talks.map((talk, i) => (
-        <div key={i}>
+      {talks.map(talk => (
+        <div key={talk.id}>
           <h3>{talk.name}</h3>
           <h3>Speakers</h3>
-          {talk.speakers.map((speaker, j) => (
-            <p key={`speaker-${j}`}>{speaker.name}</p>
+          {talk.speakers.map(speaker => (
+            <p key={speaker.id}>{speaker.name}</p>
           ))}
         </div>
       ))}              
