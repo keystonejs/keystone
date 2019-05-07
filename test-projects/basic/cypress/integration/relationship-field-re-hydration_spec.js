@@ -11,7 +11,11 @@ describe('Testing re-hydration', () => {
       // And now select and click the actually rendered element.
       cy.get('#react-select-ks-input-categories div[aria-hidden="true"]')
         .first()
-        .click();
+        // It's there, it's visible in the recordings, but Cypress _sometimes_
+        // refuses to click it.
+        // See an image of it incorrectly failing here:
+        // https://17680-128193054-gh.circle-artifacts.com/0/tmp/screenshots/relationship-field-re-hydration_spec.js/Testing%20re-hydration%20--%20Our%20new%20category%20should%20appear%20after%20we%20add%20it%20%28failed%29.png
+        .click({ force: true });
     }
 
     cy.visit('/admin/posts');

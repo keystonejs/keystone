@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Fragment, Suspense, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { Query } from 'react-apollo';
 
 import { IconButton } from '@arch-ui/button';
@@ -18,7 +18,6 @@ import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
 import ListTable from '../../components/ListTable';
 import PageError from '../../components/PageError';
-import PageLoading from '../../components/PageLoading';
 import { DisclosureArrow } from '../../components/Popout';
 import { deconstructErrorsToDataShape } from '../../util';
 
@@ -28,7 +27,6 @@ import SortPopout from './SortSelect';
 import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
-import { NoResults } from './NoResults';
 import { useListFilter, useListSelect, useListSort, useListUrlState } from './dataHooks';
 
 const HeaderInset = props => (
@@ -204,66 +202,52 @@ function ListLayout(props: LayoutProps) {
       />
 
       <Container isFullWidth>
-        {items ? (
-          <Suspense fallback={<PageLoading />}>
-            {items.length ? (
-              <ListTable
-                adminPath={adminPath}
-                columnControl={
-                  <ColumnPopout
-                    listKey={list.key}
-                    target={handlers => (
-                      <Tooltip placement="top" content="Columns">
-                        {ref => (
-                          <Button
-                            variant="subtle"
-                            css={{
-                              background: 0,
-                              border: 0,
-                              color: colors.N40,
-                            }}
-                            {...handlers}
-                            ref={applyRefs(handlers.ref, ref)}
-                          >
-                            <KebabHorizontalIcon />
-                          </Button>
-                        )}
-                      </Tooltip>
-                    )}
-                  />
-                }
-                fields={fields}
-                handleSortChange={handleSortChange}
-                isFullWidth
-                items={items}
-                itemsErrors={itemErrors}
-                list={list}
-                onChange={onDeleteItem}
-                onSelectChange={onSelectChange}
-                selectedItems={selectedItems}
-                sortBy={sortBy}
-              />
-            ) : (
-              <NoResults
-                currentPage={currentPage}
-                filters={filters}
-                itemCount={itemCount}
-                list={list}
-                search={search}
-              />
-            )}
-          </Suspense>
-        ) : (
-          <PageLoading />
-        )}
+        <ListTable
+          adminPath={adminPath}
+          columnControl={
+            <ColumnPopout
+              listKey={list.key}
+              target={handlers => (
+                <Tooltip placement="top" content="Columns">
+                  {ref => (
+                    <Button
+                      variant="subtle"
+                      css={{
+                        background: 0,
+                        border: 0,
+                        color: colors.N40,
+                      }}
+                      {...handlers}
+                      ref={applyRefs(handlers.ref, ref)}
+                    >
+                      <KebabHorizontalIcon />
+                    </Button>
+                  )}
+                </Tooltip>
+              )}
+            />
+          }
+          fields={fields}
+          handleSortChange={handleSortChange}
+          isFullWidth
+          items={items}
+          itemsErrors={itemErrors}
+          list={list}
+          onChange={onDeleteItem}
+          onSelectChange={onSelectChange}
+          selectedItems={selectedItems}
+          sortBy={sortBy}
+          currentPage={currentPage}
+          filters={filters}
+          search={search}
+        />
       </Container>
     </main>
   );
 }
 
 function List(props: Props) {
-  const { adminMeta, list, query, routeProps } = props;
-  const { urlState } = useListUrlState(list.key);
+  const { list, query, routeProps } = props;
 
   // get item data
   let items;
@@ -295,11 +279,6 @@ function List(props: Props) {
       });
     }
   }, []);
-
-  // TODO: put this in some effect to limit calls
-  // we want to preload the Field components
-  // so that we don't have a waterfall after the data loads
-  adminMeta.preloadViews(urlState.fields.map(({ views }) => views && views.Cell).filter(x => x));
 
   // Error
   // ------------------------------
