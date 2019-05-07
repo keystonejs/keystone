@@ -33,4 +33,8 @@ export class Block {
   get path() {
     throw new Error(`${this.constructor.name} must have a 'path' getter`);
   }
+
+  get fieldDefinitions() {
+    return {};
+  }
 }
