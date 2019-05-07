@@ -1131,7 +1131,10 @@ test('createMutation', async () => {
 test('createManyMutation', async () => {
   const list = setup();
   const result = await list.createManyMutation(
-    [{ name: 'test1', email: 'test1@example.com' }, { name: 'test2', email: 'test2@example.com' }],
+    [
+      { data: { name: 'test1', email: 'test1@example.com' } },
+      { data: { name: 'test2', email: 'test2@example.com' } },
+    ],
     context
   );
   expect(result).toEqual([
