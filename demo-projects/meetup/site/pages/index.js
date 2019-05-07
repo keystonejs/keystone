@@ -10,6 +10,7 @@ export default function Home() {
   return (
     <div>
       <h1>Welcome {isAuthenticated ? user.name : ''} </h1>
+      <a href="/signin">Sign In</a>
       <Query
         query={gql`
           {
