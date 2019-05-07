@@ -102,7 +102,10 @@ export default class ContentController extends TextController {
     // TODO: Make this a JSON type in GraphQL so we don't have to stringify it.
     serialisedDocument.document = JSON.stringify(serialisedDocument.document);
 
-    return serialisedDocument;
+    return {
+      disconnectAll: true,
+      create: serialisedDocument,
+    };
   };
 
   deserialize = data => {
