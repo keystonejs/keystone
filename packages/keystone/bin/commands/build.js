@@ -39,7 +39,12 @@ module.exports = {
       console.log('Built Admin UI!');
     } else {
       console.log('Nothing to build.');
-      console.log(`To create an Admin UI build, make sure you export 'admin' from ${path.relative(_cwd, entryFile)}`);
+      console.log(
+        `To create an Admin UI build, make sure you export 'admin' from ${path.relative(
+          _cwd,
+          entryFile
+        )}`
+      );
     }
   },
 };
