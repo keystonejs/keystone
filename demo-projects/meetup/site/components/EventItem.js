@@ -15,7 +15,7 @@ const ADD_RSVP = gql`
       id
       event {
       	id
-    	} 
+    	}
       status
     }
   }
@@ -32,7 +32,7 @@ const UPDATE_RSVP = gql`
       id
       event {
         id
-      } 
+      }
       status
     }
   }
@@ -41,7 +41,7 @@ const UPDATE_RSVP = gql`
 const GET_EVENT_RSVPS = gql`
   query GetEventRsvps($event: ID!, $user: ID!) {
     allRsvps(
-      where: { 
+      where: {
         event: { id: $event },
         user: { id: $user }
       }
@@ -56,7 +56,7 @@ const EventItem = ({ id, name, startDate, talks }) => {
 
   return (
     <li>
-      <h2>{name}</h2>                
+      <h2>{name}</h2>
       <p>{startDate}</p>
       {isAuthenticated ?
         <Query query={GET_EVENT_RSVPS} variables={{ event: id, user: user.id }}>
@@ -68,7 +68,7 @@ const EventItem = ({ id, name, startDate, talks }) => {
             }
 
             return (
-              <Mutation 
+              <Mutation
                 mutation={data.allRsvps[0] ? UPDATE_RSVP : ADD_RSVP}
                 refetchQueries={() => [{
                   query: GET_EVENT_RSVPS,
@@ -78,8 +78,8 @@ const EventItem = ({ id, name, startDate, talks }) => {
                 {updateRsvp => {
                   let variables = {
                     rsvp: data.allRsvps[0] ? data.allRsvps[0].id : null,
-                    event: id, 
-                    user: user.id, 
+                    event: id,
+                    user: user.id,
                   }
 
                   return (
@@ -93,8 +93,8 @@ const EventItem = ({ id, name, startDate, talks }) => {
               </Mutation>
             )
           }}
-        </Query>   
-      : 
+        </Query>
+      :
         <p>please login to RSVP</p>
       }
       <h2>Talks</h2>
@@ -106,7 +106,7 @@ const EventItem = ({ id, name, startDate, talks }) => {
             <p key={speaker.id}>{speaker.name}</p>
           ))}
         </div>
-      ))}              
+      ))}
     </li>
   );
 }
