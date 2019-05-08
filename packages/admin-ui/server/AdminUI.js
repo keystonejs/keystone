@@ -117,7 +117,7 @@ module.exports = class AdminUI {
   }
 
   createProdMiddleware() {
-    const app = express();
+    const app = express.Router();
 
     app.use(compression());
 
