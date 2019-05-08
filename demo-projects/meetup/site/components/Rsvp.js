@@ -42,7 +42,11 @@ const GET_EVENT_RSVPS = gql`
 `;
 
 const Rsvp = ({ id }) => {
-  const { user } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+
+  if(!isAuthenticated) {
+    return ( <p>please login to RSVP</p> );
+  }
 
   return (
     <Query query={GET_EVENT_RSVPS} variables={{ event: id, user: user.id }}>
