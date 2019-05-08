@@ -155,7 +155,7 @@ module.exports = class AdminUI {
       app.use(secureFallbackMiddleware);
     }
 
-    const _app = express().Router();
+    const _app = express.Router();
     _app.use('/admin', app);
     return _app;
   }
