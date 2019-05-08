@@ -13,7 +13,7 @@ const nextApp = next({
 
 Promise.all([keystone.prepare({ port }), nextApp.prepare()])
   .then(async ([{ server, keystone: keystoneApp }]) => {
-    await keystoneApp.connect();
+    await keystoneApp.connect(process.env.MONGODB_URI);
     // Initialise some data.
     // NOTE: This is only for demo purposes and should not be used in production
     const users = await keystoneApp.lists.User.adapter.findAll();

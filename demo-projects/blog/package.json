@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "DISABLE_LOGGING=true node server.js",
-    "build": "next build"
+    "build": "next build app && keystone build"
   },
   "dependencies": {
     "@arch-ui/layout": "^0.2.0",

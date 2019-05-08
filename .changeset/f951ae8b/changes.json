@@ -1,0 +1,10 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/admin-ui", "type": "minor" },
+    { "name": "@keystone-alpha/keystone", "type": "minor" },
+    { "name": "@keystone-alpha/server", "type": "minor" },
+    { "name": "@keystone-alpha/demo-project-blog", "type": "patch" },
+    { "name": "@keystone-alpha/demo-project-meetup", "type": "patch" }
+  ],
+  "dependents": []
+}
