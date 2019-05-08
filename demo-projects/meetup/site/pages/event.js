@@ -5,7 +5,7 @@ import { Query } from 'react-apollo';
 import Rsvp from '../components/Rsvp';
 
 const GET_EVENT_DETAILS = gql`
-  query GetEventDetails( $event: ID! ) {
+  query GetEventDetails($event: ID!) {
     Event(where: { id: $event }) {
       id
       name
@@ -25,8 +25,8 @@ const GET_EVENT_DETAILS = gql`
 
 export default class Event extends Component {
   static async getInitialProps({ query }) {
-		const { id } = query;
-		return { id };
+    const { id } = query;
+    return { id };
   }
 
   render() {
@@ -40,8 +40,8 @@ export default class Event extends Component {
             console.log(error);
             return <p>Error!</p>;
           }
-          if(!data.Event) {
-            return ( <p>Event not found</p> );
+          if (!data.Event) {
+            return <p>Event not found</p>;
           }
 
           const { name, startDate, talks } = data.Event;
@@ -50,7 +50,7 @@ export default class Event extends Component {
             <div>
               <h2>{name}</h2>
               <p>{startDate}</p>
-              <Rsvp id={id}/>
+              <Rsvp id={id} />
               <h2>Talks</h2>
               {talks.map(talk => (
                 <div key={talk.id}>

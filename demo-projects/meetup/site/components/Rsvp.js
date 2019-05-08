@@ -44,8 +44,8 @@ const GET_EVENT_RSVPS = gql`
 const Rsvp = ({ id }) => {
   const { isAuthenticated, user } = useAuth();
 
-  if(!isAuthenticated) {
-    return ( <p>please login to RSVP</p> );
+  if (!isAuthenticated) {
+    return <p>please login to RSVP</p>;
   }
 
   return (

@@ -7,7 +7,7 @@ const EventItem = ({ id, name, startDate, talks }) => (
   <li>
     <h2>{name}</h2>
     <p>{startDate}</p>
-    <Rsvp id={id}/>
+    <Rsvp id={id} />
     <h2>Talks</h2>
     {talks.map(talk => (
       <div key={talk.id}>
@@ -18,10 +18,7 @@ const EventItem = ({ id, name, startDate, talks }) => (
         ))}
       </div>
     ))}
-    <Link
-      to={`/event?id=${id}`}
-      as={`/event/${id}`}
-    >
+    <Link to={`/event?id=${id}`} as={`/event/${id}`}>
       Find out more
     </Link>
   </li>
