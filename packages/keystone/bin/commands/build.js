@@ -27,13 +27,13 @@ module.exports = {
       distDir = args['--out'];
     }
     let resolvedDistDir = path.resolve(_cwd, distDir);
+    await fs.remove(resolvedDistDir);
+
     if (admin) {
-      let adminOutputPath = path.join(resolvedDistDir, 'admin');
-      await fs.remove(adminOutputPath);
       console.log('Building Admin UI!');
       await admin.staticBuild({
         apiPath: '/admin/api',
-        outputPath: adminOutputPath,
+        distDir: resolvedDistDir,
         graphiqlPath: '/admin/graphiql',
       });
       console.log('Built Admin UI!');

@@ -62,7 +62,9 @@ module.exports = class AdminUI {
     );
   }
 
-  staticBuild({ outputPath, apiPath, graphiqlPath }) {
+  staticBuild({ distDir, apiPath, graphiqlPath }) {
+    const builtAdminRoot = path.join(distDir, 'admin');
+
     const adminMeta = this.getAdminUIMeta({ apiPath, graphiqlPath });
 
     const compilers = [];
@@ -71,7 +73,7 @@ module.exports = class AdminUI {
       getWebpackConfig({
         adminMeta,
         entry: 'index',
-        outputPath: path.join(outputPath, 'secure'),
+        outputPath: path.join(builtAdminRoot, 'secure'),
       })
     );
     compilers.push(secureCompiler);
@@ -82,7 +84,7 @@ module.exports = class AdminUI {
           // override lists so that schema and field views are excluded
           adminMeta: { ...adminMeta, lists: {} },
           entry: 'public',
-          outputPath: path.join(outputPath, 'public'),
+          outputPath: path.join(builtAdminRoot, 'public'),
         })
       );
       compilers.push(publicCompiler);
@@ -116,12 +118,12 @@ module.exports = class AdminUI {
     };
   }
 
-  createProdMiddleware() {
+  createProdMiddleware({ distDir }) {
     const app = express.Router();
 
     app.use(compression());
 
-    const builtAdminRoot = path.join(process.cwd(), 'dist', 'admin');
+    const builtAdminRoot = path.join(distDir, 'admin');
     if (!fs.existsSync(builtAdminRoot)) {
       throw new Error(
         'There are no Admin UI build artifacts. Please run `keystone build` before running `keystone start`'
