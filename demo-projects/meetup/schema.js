@@ -37,7 +37,7 @@ exports.Event = {
     durationMins: { type: Integer },
     description: { type: Wysiwyg },
     talks: { type: Relationship, ref: 'Talk.event', many: true },
-    maxRSVPs: { type: Integer },
+    maxRsvps: { type: Integer },
   },
 };
 
