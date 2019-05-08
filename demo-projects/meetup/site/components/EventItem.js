@@ -85,8 +85,8 @@ const EventItem = ({ id, name, startDate, talks }) => {
                   return (
                     <div>
                       <h3>RSVP?</h3>
-                      <a onClick={() => updateRsvp({ variables: { ...variables, status: "yes" }})}>Yes </a>
-                      <a onClick={() => updateRsvp({ variables: { ...variables, status: "no" }})}>No</a>
+                      <a onClick={() => updateRsvp({ variables: { ...variables, status: 'yes' } })}>Yes </a>
+                      <a onClick={() => updateRsvp({ variables: { ...variables, status: 'no' } })}>No</a>
                     </div>
                   )
                 }}
@@ -109,6 +109,6 @@ const EventItem = ({ id, name, startDate, talks }) => {
       ))}
     </li>
   );
-}
+};
 
 export default EventItem;
