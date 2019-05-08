@@ -203,35 +203,34 @@ For available options, see [Server Configuration](#server-configuration).
 When getting ready to deploy your app to production, there are performance
 optimisations which Keystone can prepare for you.
 
-Add this script to your `package.json`:
+Add these scripts to your `package.json`:
 
 ```json
 {
   "scripts": {
-    "build": "keystone build"
+    "build": "keystone build",
+    "start": "keystone start"
   }
 }
 ```
 
-Run `npm run build` to generate the following outputs:
+Run `npm run build` to generate the following outputs(this output could change in the future):
 
 ```
 .
 └── dist/
-    ├── api/
-    ├── admin/
-    └── index.js
+    └── admin/
 ```
 
-To run your keystone instance, execute the `index.js` file:
+To run your keystone instance, run the start script.
 
 ```
-cd dist
-node index.js
+npm run start
 ```
 
 #### Production Build Artifacts
 
+<!--
 ##### `dist/index.js`
 
 An all-in-one server which will start your Keystone API and Admin UI running on
@@ -248,14 +247,15 @@ the keystone instance, and a server to run the API.
 This folder contains an `index.js` file which when run via node
 (`node dist/api/index.js`) will serve the API. In this manner, it is possible to
 deploy the API independently of the [admin UI](#distadmin) by deploying the
-contents of the `dist/api/` folder only.
+contents of the `dist/api/` folder only. -->
 
 ##### `dist/admin/`
 
 A static export of the Admin UI lives here. Built from your code setting up the
 keystone instance, this export contains _list_ and _field_ config information
-tightly coupled to the API. It is therefore recommended to always deploy the
-Admin UI at the same time as deploying the API to avoid any inconsistencies.
+tightly coupled to the API.
+
+<!-- commented out for now because you currently have to deploy them at the same time right now: It is therefore recommended to always deploy the Admin UI at the same time as deploying the API to avoid any inconsistencies. -->
 
 ### Adding Authentication
 
