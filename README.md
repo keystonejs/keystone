@@ -93,7 +93,6 @@ Add a script to your `package.json`:
 Create a file `index.js`:
 
 <!-- prettier-ignore -->
-
 ```javascript
 const { Keystone }        = require('@keystone-alpha/keystone');
 const { AdminUI }         = require('@keystone-alpha/admin-ui');
@@ -162,7 +161,6 @@ must handle executing the different parts of Keystone.
 Create the `server.js` file:
 
 <!-- prettier-ignore -->
-
 ```javascript
 const keystoneServer = require('@keystone-alpha/core');
 
@@ -178,10 +176,11 @@ keystoneServer.prepare({ port: 3000 })
   });
 ```
 
-Run keystone as you normally would:
+You'll need to change the `dev` script in your `package.json` to run the server file with node like this.
 
-```
-npm run dev
+```diff
+- "dev": "keystone"
++ "dev": "node server.js"
 ```
 
 #### Custom Server Configuration
@@ -266,7 +265,6 @@ To setup authentication, you must instantiate an _Auth Strategy_, and create a
 list used for authentication in `index.js`:
 
 <!-- prettier-ignore -->
-
 ```javascript
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { AdminUI } = require('@keystone-alpha/admin-ui');

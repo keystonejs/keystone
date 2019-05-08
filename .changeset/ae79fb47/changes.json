@@ -1,0 +1,42 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/demo-project-blog", "type": "patch" },
+    { "name": "@keystone-alpha/demo-project-meetup", "type": "patch" },
+    { "name": "@keystone-alpha/demo-project-todo", "type": "patch" },
+    { "name": "@keystone-alpha/keystone", "type": "major" },
+    { "name": "@keystone-alpha/cypress-project-access-control", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-basic", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-login", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-social-login", "type": "patch" }
+  ],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/adapter-knex",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/keystone"]
+    },
+    {
+      "name": "@keystone-alpha/adapter-mongoose",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/keystone"]
+    },
+    {
+      "name": "@keystone-alpha/test-utils",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/adapter-knex",
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/keystone"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/api-tests",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/adapter-mongoose",
+        "@keystone-alpha/test-utils",
+        "@keystone-alpha/keystone"
+      ]
+    }
+  ]
+}

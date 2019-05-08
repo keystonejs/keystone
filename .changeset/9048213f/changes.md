@@ -1,0 +1,1 @@
+- Refactor Content Type to extend Relationship Type to simplify implementation and enable future enhancements

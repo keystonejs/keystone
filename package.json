@@ -25,9 +25,9 @@
     "test": "yarn lint && yarn test:unit && yarn cypress:run",
     "test:unit": "DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1",
     "test:unit:debug": "NODE_ENV=test node --inspect-brk `which jest` --runInBand",
-    "changeset": "build-releases changeset",
-    "version-packages": "build-releases version",
-    "publish-changed": "yarn build && build-releases publish --public",
+    "changeset": "changeset",
+    "version-packages": "changeset bump",
+    "publish-changed": "yarn build && changeset release --public",
     "build:build-field-types": "rimraf packages/build-field-types/lib && babel packages/build-field-types/src --out-dir packages/build-field-types/dist --ignore '**/__tests__/**/*','**/__mocks__/**/*'",
     "build": "preconstruct build && bolt w @keystone-alpha/build-field-types build && node ./packages/build-field-types/bin.js build",
     "prepare": "yarn build:build-field-types && preconstruct dev && node ./packages/build-field-types/bin.js dev  && yarn run --silent contributing-guide",
@@ -50,6 +50,7 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.4.3",
+    "@changesets/cli": "^1.0.1",
     "@emotion/core": "^10.0.10",
     "@emotion/hash": "^0.7.1",
     "@emotion/styled": "^10.0.10",
@@ -314,7 +315,6 @@
     ]
   },
   "devDependencies": {
-    "@atlaskit/build-releases": "^3.0.3",
     "all-contributors-cli": "^6.2.0",
     "babel-eslint": "^10.0.1",
     "bolt": "^0.22.6",
