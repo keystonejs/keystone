@@ -80,7 +80,7 @@ const EventItem = ({ id, name, startDate, talks }) => {
                     rsvp: data.allRsvps[0] ? data.allRsvps[0].id : null,
                     event: id,
                     user: user.id,
-                  }
+                  };
 
                   return (
                     <div>
@@ -88,10 +88,10 @@ const EventItem = ({ id, name, startDate, talks }) => {
                       <a onClick={() => updateRsvp({ variables: { ...variables, status: 'yes' } })}>Yes </a>
                       <a onClick={() => updateRsvp({ variables: { ...variables, status: 'no' } })}>No</a>
                     </div>
-                  )
+                  );
                 }}
               </Mutation>
-            )
+            );
           }}
         </Query>
       :
