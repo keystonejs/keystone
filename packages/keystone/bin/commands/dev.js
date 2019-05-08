@@ -17,7 +17,6 @@ module.exports = {
       --entry     Entry file exporting keystone instance [${keystone.DEFAULT_ENTRY}]
   `,
   exec: (args, { exeName, _cwd = process.cwd() } = {}) => {
-    console.log(args._);
     return getEntryFileFullPath(args, { exeName, _cwd }).then(entryFile =>
       executeDefaultServer(args, entryFile)
     );
