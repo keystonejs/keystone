@@ -40,7 +40,9 @@ export default function Home() {
           }
           return (
             <ul>
-              {data.allEvents.map(event => <EventItem key={event.id} {...event} />)}
+              {data.allEvents.map(event => (
+                <EventItem key={event.id} {...event} />
+              ))}
             </ul>
           );
         }}

@@ -7,25 +7,8 @@ const ADD_RSVP = gql`
   mutation AddRsvp($event: ID!, $user: ID!, $status: RsvpStatusType!) {
     createRsvp(
       data: {
-        event: { connect: { id: $event }}
-        user: { connect: { id: $user }}
-        status: $status
-      }
-    ) {
-      id
-      event {
-      	id
-    	}
-      status
-    }
-  }
-`;
-
-const UPDATE_RSVP = gql`
-  mutation UpdateRSVP($rsvp:ID!, $status: RsvpStatusType!) {
-    updateRsvp(
-      id: $rsvp
-      data: {
+        event: { connect: { id: $event } }
+        user: { connect: { id: $user } }
         status: $status
       }
     ) {
@@ -38,14 +21,21 @@ const UPDATE_RSVP = gql`
   }
 `;
 
+const UPDATE_RSVP = gql`
+  mutation UpdateRSVP($rsvp: ID!, $status: RsvpStatusType!) {
+    updateRsvp(id: $rsvp, data: { status: $status }) {
+      id
+      event {
+        id
+      }
+      status
+    }
+  }
+`;
+
 const GET_EVENT_RSVPS = gql`
   query GetEventRsvps($event: ID!, $user: ID!) {
-    allRsvps(
-      where: {
-        event: { id: $event },
-        user: { id: $user }
-      }
-    ) {
+    allRsvps(where: { event: { id: $event }, user: { id: $user } }) {
       id
     }
   }
@@ -58,7 +48,7 @@ const EventItem = ({ id, name, startDate, talks }) => {
     <li>
       <h2>{name}</h2>
       <p>{startDate}</p>
-      {isAuthenticated ?
+      {isAuthenticated ? (
         <Query query={GET_EVENT_RSVPS} variables={{ event: id, user: user.id }}>
           {({ data, loading, error }) => {
             if (loading) return <p>loading...</p>;
@@ -70,10 +60,12 @@ const EventItem = ({ id, name, startDate, talks }) => {
             return (
               <Mutation
                 mutation={data.allRsvps[0] ? UPDATE_RSVP : ADD_RSVP}
-                refetchQueries={() => [{
-                  query: GET_EVENT_RSVPS,
-                  variables: { event: id, user: user.id }
-                }]}
+                refetchQueries={() => [
+                  {
+                    query: GET_EVENT_RSVPS,
+                    variables: { event: id, user: user.id },
+                  },
+                ]}
               >
                 {updateRsvp => {
                   let variables = {
@@ -85,8 +77,12 @@ const EventItem = ({ id, name, startDate, talks }) => {
                   return (
                     <div>
                       <h3>RSVP?</h3>
-                      <a onClick={() => updateRsvp({ variables: { ...variables, status: 'yes' } })}>Yes </a>
-                      <a onClick={() => updateRsvp({ variables: { ...variables, status: 'no' } })}>No</a>
+                      <a onClick={() => updateRsvp({ variables: { ...variables, status: 'yes' } })}>
+                        Yes{' '}
+                      </a>
+                      <a onClick={() => updateRsvp({ variables: { ...variables, status: 'no' } })}>
+                        No
+                      </a>
                     </div>
                   );
                 }}
@@ -94,9 +90,9 @@ const EventItem = ({ id, name, startDate, talks }) => {
             );
           }}
         </Query>
-      :
+      ) : (
         <p>please login to RSVP</p>
-      }
+      )}
       <h2>Talks</h2>
       {talks.map(talk => (
         <div key={talk.id}>
