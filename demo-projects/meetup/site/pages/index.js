@@ -3,6 +3,26 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
 import { useAuth } from '../lib/authetication';
+import EventItem from '../components/EventItem';
+
+const GET_ALL_EVENTS = gql`
+  {
+    allEvents {
+      id
+      name
+      startDate
+      description
+      talks {
+        id
+        name
+        speakers {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
 
 export default function Home() {
   const { isAuthenticated, user } = useAuth();
@@ -11,24 +31,7 @@ export default function Home() {
     <div>
       <h1>Welcome {isAuthenticated ? user.name : ''} </h1>
       <a href="/signin">Sign In</a>
-      <Query
-        query={gql`
-          {
-            allEvents {
-              id
-              name
-              startDate
-              description
-              talks {
-                name
-                speakers {
-                  name
-                }
-              }
-            }
-          }
-        `}
-      >
+      <Query query={GET_ALL_EVENTS}>
         {({ data, loading, error }) => {
           if (loading) return <p>loading...</p>;
           if (error) {
@@ -38,7 +41,7 @@ export default function Home() {
           return (
             <ul>
               {data.allEvents.map(event => (
-                <li key={event.id}>{event.name}</li>
+                <EventItem key={event.id} {...event} />
               ))}
             </ul>
           );
