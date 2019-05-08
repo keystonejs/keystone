@@ -10,7 +10,7 @@ module.exports = {
   },
   help: ({ exeName }) => `
     Usage
-      $ ${exeName} dev <dist> --port=3000
+      $ ${exeName} dev --port=3000
 
     Options
       --port, -p  Port to start on [${keystone.DEFAULT_PORT}]
