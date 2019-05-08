@@ -21,7 +21,7 @@ module.exports = {
   exec: async (args, { exeName, _cwd = process.cwd() } = {}) => {
     process.env.NODE_ENV = 'production';
     let entryFile = await getEntryFileFullPath(args, { exeName, _cwd });
-    let { admin, distDir = 'dist' } = require(entryFile);
+    let { admin, distDir = keystone.DEFAULT_DIST_DIR } = require(entryFile);
 
     if (args['--out']) {
       distDir = args['--out'];
