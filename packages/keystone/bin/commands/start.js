@@ -1,11 +1,5 @@
 const keystone = require('@keystone-alpha/core');
-const {
-  getCustomServerFullPath,
-  warnInvalidCustomServerArgs,
-  executeDefaultServer,
-  executeCustomServer,
-  getEntryFileFullPath,
-} = require('../utils');
+const { executeDefaultServer, getEntryFileFullPath } = require('../utils');
 
 module.exports = {
   // prettier-ignore
@@ -13,7 +7,6 @@ module.exports = {
     '--port':   Number,
     '-p':       '--port',
     '--entry':  String,
-    '--server': String,
     '--out':    String,
     '-o':       '--out',
   },
@@ -24,20 +17,12 @@ module.exports = {
     Options
       --port, -p  Port to start on [${keystone.DEFAULT_PORT}]
       --entry     Entry file exporting keystone instance [${keystone.DEFAULT_ENTRY}]
-      --server    Custom server file [${keystone.DEFAULT_SERVER}]
       --out, -o   Directory where build was saved [dist]
   `,
   exec: (args, { exeName, _cwd = process.cwd() } = {}) => {
     process.env.NODE_ENV = 'production';
-    return getCustomServerFullPath(args, { exeName, _cwd }).then(serverFile => {
-      if (serverFile) {
-        warnInvalidCustomServerArgs(args, { exeName });
-        return executeCustomServer(serverFile);
-      }
-
-      return getEntryFileFullPath(args, { exeName, _cwd }).then(entryFile =>
-        executeDefaultServer(args, entryFile)
-      );
-    });
+    return getEntryFileFullPath(args, { exeName, _cwd }).then(entryFile =>
+      executeDefaultServer(args, entryFile)
+    );
   },
 };

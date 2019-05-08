@@ -1,9 +1,10 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import React, { Component } from 'react';
+import React, { Component, Suspense, Fragment } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 
+import { captureSuspensePromises, noop } from '@keystone-alpha/utils';
 import { DiffIcon, KebabHorizontalIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@arch-ui/icons';
 import { colors, gridSize } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';
@@ -15,6 +16,10 @@ import { Card } from '@arch-ui/card';
 import DeleteItemModal from './DeleteItemModal';
 import { copyToClipboard } from '../util';
 import { useListSort } from '../pages/List/dataHooks';
+import PageLoading from './PageLoading';
+import { NoResults } from './NoResults';
+
+const Render = ({ children }) => children();
 
 // Styled Components
 const Table = styled('table')({
@@ -214,12 +219,6 @@ class ListRow extends Component {
         {fields.map(field => {
           const { path } = field;
 
-          const isLoading = !item.hasOwnProperty(path);
-
-          if (isLoading) {
-            return <BodyCell key={path} />; // TODO: Better loading state?
-          }
-
           if (itemErrors[path] instanceof Error && itemErrors[path].name === 'AccessDeniedError') {
             return (
               <BodyCell key={path}>
@@ -292,6 +291,12 @@ class ListRow extends Component {
   }
 }
 
+const SingleCell = ({ columns, children }) => (
+  <tr>
+    <td colSpan={columns}>{children}</td>
+  </tr>
+);
+
 export default function ListTable(props) {
   const {
     adminPath,
@@ -304,68 +309,135 @@ export default function ListTable(props) {
     onChange,
     onSelectChange,
     selectedItems,
+    currentPage,
+    filters,
+    search,
   } = props;
 
   const [sortBy, onSortChange] = useListSort(list.key);
 
   const handleSelectAll = () => {
-    const allSelected = items.length === selectedItems.length;
+    const allSelected = items && items.length === selectedItems.length;
     const value = allSelected ? [] : items.map(i => i.id);
     onSelectChange(value);
   };
 
   const cypressId = 'ks-list-table';
 
+  // +2 because of check-boxes on left, and overflow menu on right
+  const columns = fields.length + 2;
+
+  const TableContents = ({ isLoading, children }) => (
+    <Fragment>
+      <colgroup>
+        <col width="32" />
+        {fields.map(f => (
+          <col key={f.path} />
+        ))}
+        <col width="32" />
+      </colgroup>
+      <thead>
+        <tr>
+          <HeaderCell>
+            <div css={{ position: 'relative', top: 3 }}>
+              <CheckboxPrimitive
+                checked={items && items.length === selectedItems.length}
+                onChange={isLoading ? noop : handleSelectAll}
+                tabIndex="0"
+                isDisabled={isLoading}
+              />
+            </div>
+          </HeaderCell>
+          {fields.map(field => (
+            <SortLink
+              data-field={field.path}
+              key={field.path}
+              sortable={field.path !== '_label_'}
+              field={field}
+              handleSortChange={onSortChange}
+              active={sortBy.field.path === field.path}
+              sortAscending={sortBy.direction === 'ASC'}
+            />
+          ))}
+          <HeaderCell css={{ padding: 0 }}>{columnControl}</HeaderCell>
+        </tr>
+      </thead>
+      <tbody data-test-table-loaded={!isLoading}>{children}</tbody>
+    </Fragment>
+  );
+
   return (
     <Card css={{ marginBottom: '3em' }}>
       <Table id={cypressId} style={{ tableLayout: isFullWidth ? null : 'fixed' }}>
-        <colgroup>
-          <col width="32" />
-          {fields.map(f => (
-            <col key={f.path} />
-          ))}
-          <col width="32" />
-        </colgroup>
-        <thead>
-          <tr>
-            <HeaderCell>
-              <div css={{ position: 'relative', top: 3 }}>
-                <CheckboxPrimitive
-                  checked={items.length === selectedItems.length}
-                  onChange={handleSelectAll}
-                  tabIndex="0"
-                />
-              </div>
-            </HeaderCell>
-            {fields.map(field => (
-              <SortLink
-                data-field={field.path}
-                key={field.path}
-                sortable={field.path !== '_label_'}
-                field={field}
-                handleSortChange={onSortChange}
-                active={sortBy.field.path === field.path}
-                sortAscending={sortBy.direction === 'ASC'}
-              />
-            ))}
-            <HeaderCell css={{ padding: 0 }}>{columnControl}</HeaderCell>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item, itemIndex) => (
-            <ListRow
-              fields={fields}
-              isSelected={selectedItems.includes(item.id)}
-              item={item}
-              itemErrors={itemsErrors[itemIndex] || {}}
-              key={item.id}
-              link={({ path, id }) => `${adminPath}/${path}/${id}`}
-              list={list}
-              onDelete={onChange}
-              onSelectChange={onSelectChange}
-            />
-          ))}
-        </tbody>
+        <Suspense
+          fallback={
+            <TableContents isLoading>
+              <SingleCell columns={columns}>
+                <PageLoading />
+              </SingleCell>
+            </TableContents>
+          }
+        >
+          <Render>
+            {() => {
+              // Now that the network request for data has been triggered, we
+              // try to initialise the fields. They are Suspense capable, so may
+              // throw Promises which will be caught by the above <Suspense>
+              captureSuspensePromises(
+                fields
+                  .filter(field => field.path !== '_label_')
+                  .map(field => () => field.initCellView())
+              );
+
+              // NOTE: We don't check for isLoading here because we want to
+              // avoid showing the <PageLoading /> component when we already
+              // have (possibly stale) data to show.
+              // Instead, we show the loader when there's _no data at all_.
+              if (!items) {
+                return (
+                  <TableContents isLoading>
+                    <SingleCell columns={columns}>
+                      <PageLoading />
+                    </SingleCell>
+                  </TableContents>
+                );
+              }
+
+              if (!items.length) {
+                return (
+                  <TableContents>
+                    <SingleCell columns={columns}>
+                      <NoResults
+                        currentPage={currentPage}
+                        filters={filters}
+                        list={list}
+                        search={search}
+                      />
+                    </SingleCell>
+                  </TableContents>
+                );
+              }
+
+              return (
+                <TableContents>
+                  {items.map((item, itemIndex) => (
+                    <ListRow
+                      fields={fields}
+                      isSelected={selectedItems.includes(item.id)}
+                      item={item}
+                      itemErrors={itemsErrors[itemIndex] || {}}
+                      key={item.id}
+                      link={({ path, id }) => `${adminPath}/${path}/${id}`}
+                      list={list}
+                      onDelete={onChange}
+                      onSelectChange={onSelectChange}
+                    />
+                  ))}
+                </TableContents>
+              );
+            }}
+          </Render>
+        </Suspense>
       </Table>
     </Card>
   );

@@ -4,12 +4,25 @@ import CloudinaryImage from './';
 import SelectType from '../Select';
 import RelationshipType from '../Relationship';
 
+const RelationshipWrapper = {
+  ...RelationshipType,
+  implementation: class extends RelationshipType.implementation {
+    async resolveNestedOperations(operations, item, context, ...args) {
+      const result = await super.resolveNestedOperations(operations, item, context, ...args);
+      context._blockMeta = context._blockMeta || {};
+      context._blockMeta[this.listKey] = context._blockMeta[this.listKey] || {};
+      context._blockMeta[this.listKey][this.path] = result;
+      return result;
+    }
+  },
+};
+
 export class ImageBlock extends Block {
-  constructor({ adapter }, { type, fromList, createAuxList, getListByKey, listConfig }) {
+  constructor({ adapter }, { type, fromList, joinList, createAuxList, getListByKey }) {
     super();
 
-    this.fromList = fromList;
     this.type = type;
+    this.joinList = joinList;
 
     const auxListKey = `_Block_${fromList}_${this.type}`;
 
@@ -19,72 +32,53 @@ export class ImageBlock extends Block {
     if (!auxList) {
       auxList = createAuxList(auxListKey, {
         fields: {
-          image: { type: CloudinaryImage, isRequired: true, adapter },
+          image: {
+            type: CloudinaryImage,
+            isRequired: true,
+            adapter,
+            schemaDoc: 'Cloudinary Image data returned from the Cloudinary API',
+          },
           align: {
             type: SelectType,
             defaultValue: 'center',
             options: ['left', 'center', 'right'],
+            schemaDoc: 'Set the image alignment',
           },
-          // TODO: Inject the back reference to the item & field which created
-          // this entry in the aux list
-          //from: { type: RelationshipType, isRequired: true, ref: fromList },
-          //field: { type: TextType, isRequired: true },
+          // Useful for doing reverse lookups such as:
+          // - "Get all images in this post"
+          // - "List all users mentioned in comment"
+          from: {
+            type: RelationshipType,
+            isRequired: true,
+            ref: `${joinList}.${this.path}`,
+            schemaDoc:
+              'A reference back to the Slate.js Serialised Document this image is embedded within',
+          },
         },
       });
     }
 
     this.auxList = auxList;
-
-    // When content blocks are specified that have complex KS5 datatypes, the
-    // client needs to send them along as graphQL inputs separate to the
-    // `document`. Those inputs are relationships to our join tables.  Here we
-    // create a Relationship field to leverage existing functionality for
-    // generating the graphQL schema.
-    this._inputFields = [
-      new RelationshipType.implementation(
-        this.path,
-        { ref: auxListKey, many: true, withMeta: false },
-        listConfig
-      ),
-    ];
-
-    this._outputFields = [
-      new RelationshipType.implementation(
-        this.path,
-        { ref: auxListKey, many: true, withMeta: false },
-        listConfig
-      ),
-    ];
   }
 
   get path() {
     return pluralize.plural(this.type);
   }
 
-  getGqlInputFields() {
-    return this._inputFields;
-  }
-
-  getGqlOutputFields() {
-    return this._outputFields;
-  }
-
-  async processMutations(input, { existingItem, context }) {
-    const mutationState = {
-      afterChangeStack: [], // post-hook stack
-      queues: {}, // backlink queues
-      transaction: {}, // transaction
+  get fieldDefinitions() {
+    return {
+      [this.path]: {
+        type: RelationshipWrapper,
+        ref: this.auxList.key,
+        many: true,
+        schemaDoc: 'Images which have been added to the Content field',
+      },
     };
-    // TODO: Inject the back reference into `input` once we have the `from`
-    // field setup on the aux list.
-    const operations = await this._inputFields[0].resolveNestedOperations(
-      input,
-      existingItem,
-      context,
-      undefined,
-      mutationState
-    );
+  }
 
-    return operations;
+  getMutationOperationResults({ context }) {
+    return {
+      [this.path]: context._blockMeta[this.joinList][this.path],
+    };
   }
 }

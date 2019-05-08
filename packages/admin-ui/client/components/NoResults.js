@@ -6,7 +6,7 @@ import { Button } from '@arch-ui/button';
 import { InfoIcon } from '@arch-ui/icons';
 import { colors } from '@arch-ui/theme';
 
-import { useListPagination } from './dataHooks';
+import { useListPagination } from '../pages/List/dataHooks';
 
 const NoResultsWrapper = ({ children, ...props }) => (
   <div
@@ -27,7 +27,7 @@ const NoResultsWrapper = ({ children, ...props }) => (
   </div>
 );
 
-export const NoResults = ({ currentPage, filters, itemCount, list, search }) => {
+export const NoResults = ({ currentPage, filters, list, search }) => {
   const { onChange } = useListPagination(list.key);
   const onResetPage = () => onChange(1);
 
@@ -64,9 +64,5 @@ export const NoResults = ({ currentPage, filters, itemCount, list, search }) => 
     );
   }
 
-  if (itemCount === 0) {
-    return <NoResultsWrapper>No {list.plural.toLowerCase()} to display yet...</NoResultsWrapper>;
-  }
-
-  return null;
+  return <NoResultsWrapper>No {list.plural.toLowerCase()} to display yet...</NoResultsWrapper>;
 };

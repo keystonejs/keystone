@@ -363,11 +363,17 @@ describe('Access Control Lists > Admin UI', () => {
 
             cy.visit(`admin/${slug}`);
 
+            cy.get('#ks-list-table > [data-test-table-loaded=true]');
+
             // The first label inside thead wraps a visibly-hidden checkbox which
             // cypress can't find
             cy.get('#ks-list-table > thead label')
               .first()
-              .click();
+              // It's there, it's visible in the recordings, but Cypress
+              // _sometimes_ refuses to click it.
+              // See an image of it incorrectly failing here:
+              // https://17679-128193054-gh.circle-artifacts.com/0/tmp/screenshots/list/admin-ui.js/Access%20Control%20Lists%20%20Admin%20UI%20--%20updating%20--%20static%20--%20does%20not%20show%20update%20option%20when%20not%20updatable%20%28list%20view%29%20%7Bcreatefalse%2Creadtrue%2Cupdatefalse%2Cdeletefalse%7D%20%28failed%29.png
+              .click({ force: true });
             cy.get('button[data-test-name="update"]').should('exist');
           });
 
@@ -396,11 +402,17 @@ describe('Access Control Lists > Admin UI', () => {
 
             cy.visit(`admin/${slug}`);
 
+            cy.get('#ks-list-table > [data-test-table-loaded=true]');
+
             // The first label inside thead wraps a visibly-hidden checkbox which
             // cypress can't find
             cy.get('#ks-list-table > thead label')
               .first()
-              .click();
+              // It's there, it's visible in the recordings, but Cypress
+              // _sometimes_ refuses to click it.
+              // See an image of it incorrectly failing here:
+              // https://17679-128193054-gh.circle-artifacts.com/0/tmp/screenshots/list/admin-ui.js/Access%20Control%20Lists%20%20Admin%20UI%20--%20updating%20--%20static%20--%20does%20not%20show%20update%20option%20when%20not%20updatable%20%28list%20view%29%20%7Bcreatefalse%2Creadtrue%2Cupdatefalse%2Cdeletefalse%7D%20%28failed%29.png
+              .click({ force: true });
             cy.get('button[data-test-name="update"]').should('not.exist');
           });
 
