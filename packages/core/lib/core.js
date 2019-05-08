@@ -27,7 +27,7 @@ module.exports = {
     port = DEFAULT_PORT,
     entryFile = DEFAULT_ENTRY,
     serverConfig,
-    distDir = 'dist',
+    distDir,
     _cwd = process.cwd(),
   } = {}) =>
     new Promise((resolve, reject) => {
@@ -74,7 +74,7 @@ module.exports = {
         // Force the admin & port
         ...(appEntry.admin ? { adminUI: appEntry.admin } : {}),
         port,
-        distDir,
+        distDir: distDir || appEntry.distDir || 'dist',
       });
 
       return resolve({ server, keystone: appEntry.keystone });

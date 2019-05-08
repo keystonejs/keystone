@@ -19,7 +19,7 @@ module.exports = class WebServer {
       apiPath = '/admin/api',
       graphiqlPath = '/admin/graphiql',
       pinoOptions,
-      outputPath,
+      distDir,
     }
   ) {
     this.keystone = keystone;
@@ -57,7 +57,7 @@ module.exports = class WebServer {
 
     if (adminUI) {
       if (process.env.NODE_ENV === 'production') {
-        this.app.use(adminUI.createProdMiddleware({ apiPath, graphiqlPath, port, outputPath }));
+        this.app.use(adminUI.createProdMiddleware({ apiPath, graphiqlPath, port, distDir }));
       } else {
         // This must be last as it's the "catch all" which falls into Webpack to
         // serve the Admin UI.

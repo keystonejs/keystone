@@ -16,11 +16,11 @@ function getEntryFileFullPath(args, { exeName, _cwd }) {
   }
 }
 
-function executeDefaultServer(args, entryFile) {
+function executeDefaultServer(args, entryFile, distDir) {
   const port = args['--port'] ? args['--port'] : keystone.DEFAULT_PORT;
 
   return keystone
-    .prepare({ entryFile, port })
+    .prepare({ entryFile, port, distDir })
     .then(async ({ server, keystone: keystoneApp }) => {
       await keystoneApp.connect();
 

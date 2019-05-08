@@ -20,10 +20,11 @@ module.exports = {
   `,
   exec: (args, { exeName, _cwd = process.cwd() } = {}) => {
     process.env.NODE_ENV = 'production';
-    console.log(args._);
+
+    const distDir = args._[1];
 
     return getEntryFileFullPath(args, { exeName, _cwd }).then(entryFile =>
-      executeDefaultServer(args, entryFile)
+      executeDefaultServer(args, entryFile, distDir)
     );
   },
 };
