@@ -8,7 +8,7 @@ const { multiAdapterRunners, setupServer } = require('@keystone-alpha/test-utils
 jest.setTimeout(60000);
 
 describe('Test CRUD for all fields', () => {
-  const typesLoc = path.resolve('packages/fields/types');
+  const typesLoc = path.resolve('packages/fields/src/types');
   const testModules = fs
     .readdirSync(typesLoc)
     .map(name => `${typesLoc}/${name}/filterTests.js`)
