@@ -16,48 +16,66 @@ module.exports = (keystone, app) => {
 
     view.on('post', async () => {
       const { author, comment } = req.body;
-      view.query('c1', `
-      mutation {
-          createComment(data: {originalPost: { connect: {id: "${locals.post}"}}, body: "${comment}", author: {connect: { id: "${author}"}} , posted: "${new Date().toISOString()}"}) {
-            id
-          }
-      }`).err(console.log);
+      view
+        .query(
+          'c1',
+          `mutation {
+            createComment(data: {originalPost: { 
+                connect: {id: "${locals.post}"}
+              }, 
+              body: "${comment}", 
+              author: {connect: { id: "${author}"}} , 
+              posted: "${new Date().toISOString()}"}
+            ) {
+              id
+            }
+          }`
+        )
+        .err(console.log);
     });
 
-    view.query('post', `{
-      Post(where: { id: "${req.query.id}" }) {
-        title
-        body
-        posted
-        id
-        image {
-          publicUrl
-        }
-        author {
-          name
-        }
-      }
-  
-      allComments(where: { originalPost: { id: "${req.query.id}"  } }) {
-        id
-        body
-        author {
-          name
-          avatar {
-            publicUrl
+    view.query(
+      'post',
+      `{
+          Post(where: { id: "${req.query.id}" }) {
+            title
+            body
+            posted
+            id
+            image {
+              publicUrl
+            }
+            author {
+              name
+            }
           }
-        }
-        posted
-      }
-    }`);
+    
+          allComments(where: { 
+              originalPost: { id: "${req.query.id}"  } 
+          }) {
+            id
+            body
+            author {
+              name
+              avatar {
+                publicUrl
+              }
+            }
+            posted
+          }
+      }`
+    );
 
-    view.query('demoUser', `{
-      allUsers(where: { email: "a@demo.user" }) {
-        name
-        email
-        id
-      }
-    }`);
+    view.query(
+      'demoUser',
+      `{ 
+          allUsers(where: { email: "a@demo.user" }) {
+            name
+            email
+            id
+          }
+      }`
+    );
 
     view.render('views/post', locals);
   });

@@ -4,8 +4,7 @@ const multer = require('multer');
 const { Readable } = require('stream');
 
 const storage = multer.memoryStorage();
-const upload =  multer({ storage }).single('image');
-
+const upload = multer({ storage }).single('image');
 
 function bufferToStream(buffer) {
   const newStream = new Readable();
@@ -13,7 +12,6 @@ function bufferToStream(buffer) {
   newStream.push(null);
   return newStream;
 }
-
 
 module.exports = (keystone, app) => {
   app.use('/new', upload, async (req, res) => {
@@ -28,27 +26,34 @@ module.exports = (keystone, app) => {
     view.on('post', async () => {
       const { title, body, admin } = req.body;
       const input = { title, body, author: { connect: { id: admin } } };
-      if(req.file) {
-        const { buffer, originalname: filename,  mimetype, encoding } = req.file;
-        input['image'] = { stream: bufferToStream(buffer), filename,  mimetype, encoding };
+      if (req.file) {
+        const { buffer, originalname: filename, mimetype, encoding } = req.file;
+        input['image'] = { stream: bufferToStream(buffer), filename, mimetype, encoding };
       }
-      view.query('created', `
-      mutation createPost($input: PostCreateInput){
-        createPost(data: $input) {id}
-      }`, { variables: { input }
-    }).err(err => {
-        console.log(err);
-        locals.err = err;
-      });
+      view
+        .query(
+          'created',
+          `mutation createPost($input: PostCreateInput){
+            createPost(data: $input) {id}
+          }`,
+          { variables: { input } }
+        )
+        .err(err => {
+          console.log(err);
+          locals.err = err;
+        });
     });
 
-    view.query('allUsers', `{
-      allUsers(where: { isAdmin: true }) {
-        name
-        email
-        id
-      }
-    }`);
+    view.query(
+      'allUsers',
+      `{
+        allUsers(where: { isAdmin: true }) {
+          name
+          email
+          id
+        }
+      }`
+    );
 
     view.render('views/new-post', locals);
   });
