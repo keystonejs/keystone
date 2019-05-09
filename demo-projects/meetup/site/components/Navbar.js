@@ -1,11 +1,17 @@
 import React from 'react';
-import Link from './Link';
+import { Link } from '../../routes';
 
 const navbar = () => (
   <header>
-    <Link to="/">Home</Link>
-    <Link to="/about">About</Link>
-    <Link to="/events">Events</Link>
+    <Link route="/">
+      <a>Home</a>
+    </Link>
+    <Link route="about">
+      <a>About</a>
+    </Link>
+    <Link route="events">
+      <a>Events</a>
+    </Link>
   </header>
 );
 

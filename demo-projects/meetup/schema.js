@@ -20,7 +20,7 @@ const cloudinaryAdapter = new CloudinaryAdapter({
 
 exports.Organiser = {
   fields: {
-    user: { type: Relationship, ref: 'User.organiser', many: false },
+    user: { type: Relationship, ref: 'User.organiser' },
     order: { type: Number },
     isOrganiser: { type: Checkbox },
     role: { type: Text },
@@ -36,7 +36,7 @@ exports.User = {
     twitterHandle: { type: Text },
     image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
     talks: { type: Relationship, ref: 'Talk.speakers', many: true },
-    organiser: { type: Relationship, ref: 'Organiser.user', many: false },
+    organiser: { type: Relationship, ref: 'Organiser.user' },
   },
 };
 
