@@ -269,7 +269,6 @@
       "!packages/arch",
       "packages/arch/packages/*",
       "demo-projects/*",
-      "examples/*",
       "test-projects/*",
       "api-tests",
       "website"
