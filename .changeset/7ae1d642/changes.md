@@ -1,2 +1,3 @@
 - Added `@keystone-alpha/view` package which is ported form v4. This helps in using `ExpressJs` views like `pug`. 
-- Ported Blog demo project to `examples/blog-view` which is now using `pug` template/view engine and newly created `@keystone-alpha/view` package
+- `@keystone-alpha/view` package uses similar features of v4 View using graphql queries instead of Mongoose queries. `populateRelated` is in built when using GraphQl queries. for Legacy view features using Mongoose model, it will  not populate the additional requested field.
+- Ported Blog demo project to `demo-projects/blog-view` which is now using `pug` template/view engine and newly created `@keystone-alpha/view` package
