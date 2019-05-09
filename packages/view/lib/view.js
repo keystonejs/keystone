@@ -230,7 +230,7 @@ module.exports = class View {
     return this._queryLegacy(key, query, options);
   }
 
-  _queryGql(key, query, { variables= null, unwrap = true, ...options } = {}) {
+  _queryGql(key, query, { variables = null, unwrap = true, ...options } = {}) {
     let locals = this.res.locals;
     const parts = key.split('.');
     const chain = new QueryCallbacks(options);
