@@ -24,6 +24,8 @@ exports.User = {
     email: { type: Text, isUnique: true },
     password: { type: Password },
     isAdmin: { type: Checkbox },
+    role: { type: Text },
+    twitterHandle: { type: Text },
     image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
     talks: { type: Relationship, ref: 'Talk.speakers', many: true },
   },

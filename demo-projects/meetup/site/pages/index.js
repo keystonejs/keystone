@@ -8,7 +8,7 @@ import { EVENT_DATA } from './events';
 
 export const GET_ALL_EVENTS = gql`
   query GetUpcomingEvents($date: DateTime!) {
-    allEvents(where:{startDate_gte: $date}) {
+    allEvents(where: { startDate_gte: $date }) {
       ...EventData
     }
   }
@@ -23,7 +23,7 @@ export default function Home() {
       <h1>Welcome {isAuthenticated ? user.name : ''} </h1>
       <a href="/signin">Sign In</a>
       <h2>Upcoming Events</h2>
-      <Query query={GET_ALL_EVENTS} variables={{ date: (new Date()).toLocaleDateString() }}>
+      <Query query={GET_ALL_EVENTS} variables={{ date: new Date().toLocaleDateString() }}>
         {({ data, loading, error }) => {
           if (loading) return <p>loading...</p>;
           if (error) {
