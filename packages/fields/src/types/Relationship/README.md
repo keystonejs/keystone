@@ -63,7 +63,7 @@ relationship:
 <!-- prettier-ignore -->
 
 ```graphql
-# Replace the company of a given User
+# Replace all posts of a given User
 query replaceAllPosts {
   updateUser(
     where: { id: "abc123" },

@@ -28,4 +28,4 @@ The one 'extra' that this project includes is an example React App that consumes
 
 ## Custom Server
 
-This project includes a _Custom Server_ in `server.js`. It is used to serve the react app only. If you wish to run Keystone as an API & AdminUI only, you can safely delete `server.js` (and the `/public` directory).
+This project includes a _Custom Server_ in `server.js`. It is used to serve the react app only. If you wish to run Keystone as an API & AdminUI only, you can delete `server.js`, the `/public` directory and change the `start` script from running `node server.js` to running `keystone`

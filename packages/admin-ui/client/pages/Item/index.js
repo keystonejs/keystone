@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { Component, Fragment, useMemo, useCallback } from 'react';
+import { Component, Fragment, Suspense, useMemo, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Mutation, Query } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
@@ -12,7 +12,7 @@ import { Button } from '@arch-ui/button';
 import { AutocompleteCaptor } from '@arch-ui/input';
 import { Card } from '@arch-ui/card';
 import { gridSize } from '@arch-ui/theme';
-import { mapKeys, arrayToObject, omitBy } from '@keystone-alpha/utils';
+import { mapKeys, arrayToObject, omitBy, captureSuspensePromises } from '@keystone-alpha/utils';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
@@ -185,15 +185,6 @@ const ItemDetails = withRouter(
     render() {
       const { adminPath, list, updateInProgress, itemErrors, item: savedData } = this.props;
       const { item, itemHasChanged } = this.state;
-      // we want to read all of the fields before reading the views individually
-      // note we want to _read_ before not just preload because the important thing
-      // isn't doing all the requests in parallel, that already happens
-      // what we're doing here is making sure there aren't a bunch of rerenders as
-      // each of the promises resolve
-      // this probably won't be necessary with concurrent mode/maybe just other react changes
-      // also, note that this is just an optimisation, it's not strictly necessary and it should
-      // probably be removed in the future because i'm guessing this will make performance _worse_ in concurrent mode
-      list.adminMeta.readViews(list.fields.map(({ views }) => views.Field));
 
       return (
         <Fragment>
@@ -208,41 +199,39 @@ const ItemDetails = withRouter(
           <Card css={{ marginBottom: '3em', paddingBottom: 0 }}>
             <Form>
               <AutocompleteCaptor />
-              {list.fields.map((field, i) => {
-                return (
-                  <Render key={field.path}>
-                    {() => {
-                      let [Field] = field.adminMeta.readViews([field.views.Field]);
+              {list.fields.map((field, i) => (
+                <Render key={field.path}>
+                  {() => {
+                    const [Field] = field.adminMeta.readViews([field.views.Field]);
 
-                      let onChange = useCallback(
-                        value => {
-                          this.setState(({ item: itm }) => ({
-                            item: {
-                              ...itm,
-                              [field.path]: value,
-                            },
-                            itemHasChanged: true,
-                          }));
-                        },
-                        [field]
-                      );
-                      return useMemo(
-                        () => (
-                          <Field
-                            autoFocus={!i}
-                            field={field}
-                            error={itemErrors[field.path]}
-                            value={item[field.path]}
-                            onChange={onChange}
-                            renderContext="page"
-                          />
-                        ),
-                        [i, field, itemErrors[field.path], item[field.path]]
-                      );
-                    }}
-                  </Render>
-                );
-              })}
+                    let onChange = useCallback(
+                      value => {
+                        this.setState(({ item: itm }) => ({
+                          item: {
+                            ...itm,
+                            [field.path]: value,
+                          },
+                          itemHasChanged: true,
+                        }));
+                      },
+                      [field]
+                    );
+                    return useMemo(
+                      () => (
+                        <Field
+                          autoFocus={!i}
+                          field={field}
+                          error={itemErrors[field.path]}
+                          value={item[field.path]}
+                          onChange={onChange}
+                          renderContext="page"
+                        />
+                      ),
+                      [i, field, itemErrors[field.path], item[field.path]]
+                    );
+                  }}
+                </Render>
+              ))}
             </Form>
             <Footer
               onSave={this.onSave}
@@ -277,11 +266,18 @@ const ItemNotFound = ({ adminPath, errorMessage, list }) => (
 const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
   const itemQuery = list.getItemQuery(itemId);
   return (
-    <Fragment>
+    <Suspense fallback={<PageLoading />}>
       {/* network-only because the data we mutate with is important for display
           in the UI, and may be different than what's in the cache */}
       <Query query={itemQuery} fetchPolicy="network-only" errorPolicy="all">
         {({ loading, error, data, refetch }) => {
+          // Now that the network request for data has been triggered, we
+          // try to initialise the fields. They are Suspense capable, so may
+          // throw Promises which will be caught by the above <Suspense>
+          captureSuspensePromises(list.fields.map(field => () => field.initFieldView()));
+
+          // If the views load before the API request comes back, keep showing
+          // the loading component
           if (loading) return <PageLoading />;
 
           // Only show error page if there is no data
@@ -352,7 +348,7 @@ const ItemPage = ({ list, itemId, adminPath, getListByKey, toastManager }) => {
           );
         }}
       </Query>
-    </Fragment>
+    </Suspense>
   );
 };
 

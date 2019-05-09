@@ -125,4 +125,5 @@ Efforts are also taken to protect against timing attacks.
 The time spend verifying an actors credentials should be constant-time regardless of the reason for failure.
 
 ## Social Login Strategies (Twitter, Facebook, Google, GitHub)
+
 See [`@keystone-alpha/passport-auth`](../../../passport-auth/README.md) for social logins using PassportJs based Auth Strategies

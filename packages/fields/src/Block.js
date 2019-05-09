@@ -5,10 +5,6 @@ export class Block {
     this.auxList = undefined;
   }
 
-  static get isComplexDataType() {
-    return false;
-  }
-
   getGqlInputType() {
     if (!this.constructor.type) {
       throw new Error(`${this.constructor.name} must have a static 'type' property`);
@@ -32,5 +28,13 @@ export class Block {
   // Array of Keystone Field Types (most likely a `Relationship`)
   getGqlOutputFields() {
     return [];
+  }
+
+  get path() {
+    throw new Error(`${this.constructor.name} must have a 'path' getter`);
+  }
+
+  get fieldDefinitions() {
+    return {};
   }
 }

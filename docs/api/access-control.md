@@ -8,8 +8,8 @@ title: Access Control
 Control who can do what with your GraphQL API.
 
 _Note: This is the API documentation for Access Control. For getting started,
-see the [Access Control Guide](../../guides/access-control.md) or the
-[Authentication Guide](../../guides/authentication.md)._
+see the [Access Control Guide](../discussions/access-control.md) or the
+[Authentication Guide](../discussions/authentication.md)._
 
 ## Table of Contents
 
@@ -624,7 +624,7 @@ keystone.createList('User', {
 
 ## GraphQL access control
 
-When combined with [Admin UI display & forms](#admin-ui-display-forms), it is
+When combined with [Admin UI display & forms](#admin-ui-display--forms), it is
 possible to display fields, while limiting the data.
 
 For example, the below access control states:

@@ -21,8 +21,5 @@ module.exports = {
     '@babel/plugin-proposal-class-properties',
     '@babel/proposal-object-rest-spread',
     '@babel/plugin-syntax-dynamic-import',
-    ...(process.env.NODE_ENV === 'test'
-      ? [require('./packages/build-field-types').devBabelPlugin]
-      : []),
   ],
 };

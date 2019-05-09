@@ -1,8 +1,8 @@
 import FieldController from '../../../Controller';
 
 export default class CheckboxController extends FieldController {
-  serialize = data => !!data[this.config.path];
-  deserialize = data => data[this.config.path] || this.getDefaultValue();
+  serialize = data => !!data[this.path];
+  deserialize = data => data[this.path] || this.getDefaultValue();
   getDefaultValue = () => this.config.defaultValue || false;
   getFilterGraphQL = ({ type, value }) => {
     const key = type === 'is' ? `${this.path}` : `${this.path}_${type}`;

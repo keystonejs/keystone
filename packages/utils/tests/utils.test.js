@@ -1,3 +1,4 @@
+const isPromise = require('p-is-promise');
 const {
   getType,
   escapeRegExp,
@@ -15,6 +16,7 @@ const {
   flatten,
   flatMap,
   zipObj,
+  captureSuspensePromises,
   ...utils
 } = require('../src');
 
@@ -256,6 +258,128 @@ describe('utils', () => {
     expect(mergeWhereClause(args, where)).toEqual({
       a: 1,
       where: { AND: [{ b: 2, c: ['1', '2'] }, { d: 20, c: ['3', '4'] }] },
+    });
+  });
+
+  describe('captureSuspensePromises', () => {
+    test('executes all fns sync when no Promises thrown', () => {
+      const funcs = [jest.fn(), jest.fn()];
+
+      try {
+        captureSuspensePromises(funcs);
+      } catch (e) {}
+
+      expect(funcs[0]).toHaveBeenCalledTimes(1);
+      expect(funcs[1]).toHaveBeenCalledTimes(1);
+    });
+
+    test('does not throw when no executors throw', () => {
+      const funcs = [jest.fn(), jest.fn()];
+
+      try {
+        captureSuspensePromises(funcs);
+      } catch (e) {
+        expect(true).toBeFalsey();
+      }
+
+      expect(funcs[0]).toHaveBeenCalledTimes(1);
+      expect(funcs[1]).toHaveBeenCalledTimes(1);
+    });
+
+    test('executes all fns sync when a Promise is thrown', () => {
+      const funcs = [
+        jest.fn(),
+        jest.fn(() => {
+          throw Promise.resolve();
+        }),
+        jest.fn(),
+      ];
+
+      try {
+        captureSuspensePromises(funcs);
+      } catch (e) {}
+
+      expect(funcs[0]).toHaveBeenCalledTimes(1);
+      expect(funcs[1]).toHaveBeenCalledTimes(1);
+      expect(funcs[2]).toHaveBeenCalledTimes(1);
+    });
+
+    test('throws a Promise when executor throws a Promise', () => {
+      const funcs = [
+        jest.fn(),
+        jest.fn(() => {
+          throw Promise.resolve();
+        }),
+        jest.fn(),
+      ];
+
+      try {
+        captureSuspensePromises(funcs);
+        expect(true).toBeFalsey();
+      } catch (maybePromise) {
+        expect(isPromise(maybePromise)).toBeTruthy();
+      }
+    });
+
+    test('thrown Promise resolves all thrown Promises', () => {
+      const resolvers = [jest.fn(), jest.fn(), jest.fn()];
+
+      const funcs = [
+        jest.fn(() => {
+          throw new Promise(resolve => {
+            // Artificially delay this promise's resolution to the next tick
+            // which will ensure the microtask (aka: Promise) queue is fully
+            // flushed
+            process.nextTick(() => {
+              resolvers[0]();
+              resolve();
+            });
+          });
+        }),
+        jest.fn(() => {
+          throw Promise.resolve().then(resolvers[1]);
+        }),
+        jest.fn(() => {
+          throw Promise.resolve().then(resolvers[2]);
+        }),
+      ];
+
+      try {
+        captureSuspensePromises(funcs);
+      } catch (thrownPromise) {
+        return thrownPromise.then(() => {
+          expect(resolvers[0]).toHaveBeenCalledTimes(1);
+          expect(resolvers[1]).toHaveBeenCalledTimes(1);
+          expect(resolvers[2]).toHaveBeenCalledTimes(1);
+        });
+      }
+
+      expect(true).toBeFalsey();
+    });
+
+    test('throws a Error when executor throws a Error', () => {
+      const funcs = [
+        jest.fn(),
+        jest.fn(() => {
+          throw new Error();
+        }),
+        jest.fn(),
+      ];
+
+      try {
+        captureSuspensePromises(funcs);
+        expect(true).toBeFalsey();
+      } catch (maybePromise) {
+        expect(!isPromise(maybePromise)).toBeTruthy();
+      }
+    });
+
+    test('acts like .map when no promises thrown', () => {
+      const funcs = [jest.fn(() => 'foo'), jest.fn(() => 'bar')];
+
+      const result = captureSuspensePromises(funcs);
+
+      expect(result).toMatchObject(['foo', 'bar']);
     });
   });
 });

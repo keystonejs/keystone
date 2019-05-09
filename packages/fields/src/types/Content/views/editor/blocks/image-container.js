@@ -20,17 +20,17 @@ let getFiles = () =>
 
 const insertImageBlockFromFile = (editor, file) => {
   const reader = new FileReader();
-  reader.onload = event => insertImageBlock(editor, event.target.result);
+  reader.onload = event => insertImageBlock(editor, file, event.target.result);
   reader.readAsDataURL(file);
 };
 
-const insertImageBlock = (editor, src) => {
+const insertImageBlock = (editor, file, src) => {
   editor.insertBlock({
     type,
     nodes: [
       Block.create({
         type: image.type,
-        data: { src },
+        data: { file, src },
       }),
     ],
   });

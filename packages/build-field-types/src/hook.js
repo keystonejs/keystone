@@ -5,7 +5,6 @@ let babel = require('@babel/core');
 let sourceMapSupport = require('source-map-support');
 
 let babelPlugins = [
-  require.resolve('./babel-plugins/ks-field-types-dev'),
   require.resolve('@babel/plugin-transform-runtime'),
   require.resolve('@babel/plugin-transform-modules-commonjs'),
 ];

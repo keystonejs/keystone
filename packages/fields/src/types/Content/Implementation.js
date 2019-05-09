@@ -1,6 +1,14 @@
-import { MongoTextInterface, KnexTextInterface, Text } from '../Text/Implementation';
-import { flatMap, unique } from '@keystone-alpha/utils';
+import getByPath from 'lodash.get';
+import {
+  MongoRelationshipInterface,
+  KnexRelationshipInterface,
+  Relationship,
+} from '../Relationship/Implementation';
+import { flatMap, unique, objMerge } from '@keystone-alpha/utils';
 import paragraph from './blocks/paragraph';
+import { walkSlateNode } from './slate-walker';
+import RelationshipType from '../Relationship';
+import TextType from '../Text';
 
 const GQL_TYPE_PREFIX = '_ContentType';
 
@@ -13,45 +21,112 @@ function flattenBlockViews(block) {
   ];
 }
 
-export class Content extends Text {
-  constructor(path, config, listConfig) {
-    super(...arguments);
+/**
+ * @param data Object For example:
+ * {
+ *   document: [
+ *     { object: 'block', type: 'cloudinaryImage', data: { _mutationPath: 'cloudinaryImages.create[0]' },
+ *     { object: 'block', type: 'cloudinaryImage', data: { _mutationPath: 'cloudinaryImages.create[1]' },
+ *     { object: 'block', type: 'relationshipUser', data: { _mutationPath: 'relationshipUsers.create[0]' } }
+ *     { object: 'block', type: 'relationshipUser', data: { _mutationPath: 'relationshipUsers.connect[0]' } }
+ *   ],
+ *   cloudinaryImages: {
+ *     create: [
+ *       { data: { image: <FileObject>, align: 'center' } },
+ *       { data: { image: <FileObject>, align: 'center' } }
+ *     ]
+ *   },
+ *   relationshipUsers: {
+ *     create: [{ data: { id: 'abc123' } }],
+ *     connect: [{ id: 'xyz789' }],
+ *   },
+ * }
+ */
+async function processSerialised(document, blocks, graphQlArgs) {
+  // Each block retreives its mutations
+  const resolvedMutations = blocks.reduce(
+    (mutations, block) => ({
+      ...mutations,
+      ...block.getMutationOperationResults(graphQlArgs),
+    }),
+    {}
+  );
 
-    this.listConfig = listConfig;
+  const result = {
+    document: walkSlateNode(document, {
+      visitBlock(node) {
+        const block = blocks.find(({ type }) => type === node.type);
 
+        if (!block) {
+          if (node.data && node.data._mutationPath) {
+            throw new Error(
+              `Received mutation for ${node.type}, but no block types can handle it.`
+            );
+          }
+
+          // A regular slate.js node - pass it through
+          return node;
+        }
+
+        const _joinIds = node.data._mutationPaths.map(mutationPath => {
+          const joinId = getByPath(resolvedMutations, mutationPath);
+          if (!joinId) {
+            throw new Error(`Slate document refers to unknown mutation '${mutationPath}'.`);
+          }
+          return joinId;
+        });
+
+        // NOTE: We don't recurse on the children; we only process the outer
+        // most block, any child blocks are left as-is.
+        return {
+          ...node,
+          data: { _joinIds },
+        };
+      },
+
+      defaultVisitor(node, visitNode) {
+        if (node.nodes) {
+          // Recurse into the child nodes array
+          node.nodes = node.nodes.map(childNode => visitNode(childNode));
+        }
+
+        return node;
+      },
+    }),
+  };
+
+  return result;
+}
+
+export class Content extends Relationship {
+  constructor(path, fieldConfig, listConfig) {
     // To maintain consistency with other types, we grab the sanitised name
     // directly from the list.
-    const { itemQueryName } = this.getListByKey(this.listKey).gqlNames;
+    const { itemQueryName } = listConfig.getListByKey(listConfig.listKey).gqlNames;
 
     // We prefix with `_` here to avoid any possible conflict with a list called
     // `ContentType`.
     // Including the list name + path to make sure these input types are unique
     // to this list+field and don't collide.
-    const type = `${GQL_TYPE_PREFIX}_${itemQueryName}_${this.path}`;
+    const type = `${GQL_TYPE_PREFIX}_${itemQueryName}_${path}`;
 
-    this.gqlTypes = {
-      create: `${type}_CreateInput`,
-      update: `${type}_UpdateInput`,
-      output: type,
-    };
+    const blocks = Array.isArray(fieldConfig.blocks) ? fieldConfig.blocks : [];
 
-    this.blocks = Array.isArray(this.config.blocks) ? this.config.blocks : [];
-
-    this.blocks.push(
+    blocks.push(
       ...DEFAULT_BLOCKS.filter(
         defaultBlock =>
-          !this.blocks.find(
+          !blocks.find(
             block => (Array.isArray(block) ? block[0] : block).type === defaultBlock.type
           )
       )
     );
 
     // Checking for duplicate block types
-    for (let currentIndex = 0; currentIndex < this.blocks.length; currentIndex++) {
-      const currentBlock = this.blocks[currentIndex];
+    for (let currentIndex = 0; currentIndex < blocks.length; currentIndex++) {
+      const currentBlock = blocks[currentIndex];
       const currentType = (Array.isArray(currentBlock) ? currentBlock[0] : currentBlock).type;
-      for (let checkIndex = currentIndex + 1; checkIndex < this.blocks.length; checkIndex++) {
-        const checkBlock = this.blocks[checkIndex];
+      for (let checkIndex = currentIndex + 1; checkIndex < blocks.length; checkIndex++) {
+        const checkBlock = blocks[checkIndex];
         const checkType = (Array.isArray(checkBlock) ? checkBlock[0] : checkBlock).type;
         if (currentType === checkType) {
           throw new Error(`Encountered duplicate Content block type '${currentType}'.`);
@@ -59,28 +134,80 @@ export class Content extends Text {
       }
     }
 
-    this.complexBlocks = this.blocks
-      .map(blockConfig => {
-        let Impl = blockConfig;
-        let fieldConfig = {};
+    const complexBlocks = blocks
+      .map(block => (Array.isArray(block) ? block : [block, {}]))
+      .filter(([block]) => block.implementation)
+      .map(
+        ([block, blockConfig]) =>
+          new block.implementation(blockConfig, {
+            type: block.type,
+            fromList: listConfig.listKey,
+            joinList: type,
+            createAuxList: listConfig.createAuxList,
+            getListByKey: listConfig.getListByKey,
+            listConfig,
+          })
+      );
 
-        if (Array.isArray(blockConfig)) {
-          Impl = blockConfig[0];
-          fieldConfig = blockConfig[1];
-        }
+    // Ensure the list is only instantiated once per server instance.
+    let auxList = listConfig.getListByKey(type);
 
-        if (!Impl.isComplexDataType) {
-          return null;
-        }
+    if (!auxList) {
+      auxList = listConfig.createAuxList(type, {
+        fields: {
+          // TODO: Change to a native JSON type
+          document: {
+            type: TextType,
+            isRequired: true,
+            schemaDoc: 'The serialized Slate.js Document structure',
+          },
 
-        return new Impl(fieldConfig, {
-          fromList: this.listKey,
-          createAuxList: listConfig.createAuxList,
-          getListByKey: listConfig.getListByKey,
-          listConfig: this.listConfig,
-        });
-      })
-      .filter(block => block);
+          // Used to do reverse lookups of Document -> Original Item
+          from: {
+            type: RelationshipType,
+            ref: `${listConfig.listKey}.${path}`,
+            schemaDoc: 'A reference back to the item this document belongs to',
+          },
+
+          // Gather up all the fields which blocks want to specify
+          // (note: They may be Relationships to Aux Lists themselves!)
+          ...objMerge(complexBlocks.map(block => block.fieldDefinitions)),
+        },
+        hooks: {
+          async resolveInput({ resolvedData, ...args }) {
+            // This method will get called twice;
+            // 1. The incoming graphql request data
+            // 2. Registering the back link in the `from` field
+            // We only want to handle the first case, so we bail early otherwise
+            if (!resolvedData.document) {
+              return resolvedData;
+            }
+
+            // TODO: Remove JSON.parse once using native JSON type
+            const documentObj = JSON.parse(resolvedData.document);
+            const { document } = await processSerialised(documentObj, complexBlocks, args);
+            return {
+              ...resolvedData,
+              // TODO: FIXME: Use a JSON type
+              document: JSON.stringify(document),
+            };
+          },
+        },
+      });
+    }
+
+    const config = {
+      ...fieldConfig,
+      many: false,
+      // Link up the back reference to keep things in sync
+      ref: `${type}.from`,
+    };
+
+    super(path, config, listConfig);
+
+    this.auxList = auxList;
+    this.listConfig = listConfig;
+    this.blocks = blocks;
   }
 
   /*
@@ -128,80 +255,15 @@ export class Content extends Text {
     };
   }
 
-  get gqlUpdateInputFields() {
-    return [`${this.path}: ${this.gqlTypes.update}`];
-  }
-  get gqlCreateInputFields() {
-    return [`${this.path}: ${this.gqlTypes.create}`];
-  }
-  getGqlAuxTypes() {
-    const inputFields = `
-      document: String
-    `;
-
-    return [
-      ...super.getGqlAuxTypes(),
-      /*
-       * For example:
-       *
-         document: String
-         cloudinaryImages: _ContentType_cloudinaryImageRelateToManyInput
-         relationships_User: _ContentType_relationship_UserRelateToManyInput
-       */
-      `
-      input ${this.gqlTypes.create} {
-        ${inputFields}
-        ${flatMap(this.complexBlocks, block =>
-          flatMap(block.getGqlInputFields(), field => field.gqlCreateInputFields)
-        ).join('\n')}
-      }
-      `,
-      `
-      input ${this.gqlTypes.update} {
-        ${inputFields}
-        ${flatMap(this.complexBlocks, block =>
-          flatMap(block.getGqlInputFields(), field => field.gqlUpdateInputFields)
-        ).join('\n')}
-      }
-      `,
-      ...flatMap(this.complexBlocks, block =>
-        flatMap(block.getGqlInputFields(), field => field.getGqlAuxTypes())
-      ),
-      `
-      type ${this.gqlTypes.output} {
-        document: String
-        ${flatMap(this.complexBlocks, block =>
-          flatMap(block.getGqlOutputFields(), field => field.gqlOutputFields)
-        ).join('\n')}
-      }
-      `,
-    ];
+  getGqlAuxTypes(...args) {
+    return [...super.getGqlAuxTypes(...args), ...this.auxList.getGqlTypes(...args)];
   }
 
   get gqlAuxFieldResolvers() {
-    return {
-      [this.gqlTypes.output]: item => item,
-    };
-  }
-
-  get gqlOutputFields() {
-    return [`${this.path}: ${this.gqlTypes.output}`];
-  }
-
-  get gqlOutputFieldResolvers() {
-    // TODO: serialize / etc
-    return {
-      [this.path]: item => ({
-        document: item[this.path],
-      }),
-    };
-  }
-
-  async resolveInput({ resolvedData }) {
-    return resolvedData[this.path].document;
+    return this.auxList.gqlFieldResolvers;
   }
 }
 
-export class MongoContentInterface extends MongoTextInterface {}
+export class MongoContentInterface extends MongoRelationshipInterface {}
 
-export class KnexContentInterface extends KnexTextInterface {}
+export class KnexContentInterface extends KnexRelationshipInterface {}

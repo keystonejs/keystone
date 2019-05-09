@@ -1,0 +1,1 @@
+Update template to account for the removal of custom server execution in the Keystone CLI

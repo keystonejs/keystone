@@ -73,7 +73,7 @@ class TodoList extends React.Component {
 
 > Note:
 >
-> You must provide [the `key` attribute](/docs/lists-and-keys.html#keys) for all children of `ReactCSSTransitionGroup`, even when only rendering a single item. This is how React will determine which children have entered, left, or stayed.
+> You must provide the `key` attribute for all children of `ReactCSSTransitionGroup`, even when only rendering a single item. This is how React will determine which children have entered, left, or stayed.
 
 In this component, when a new item is added to `ReactCSSTransitionGroup` it will get the `example-enter` CSS class and the `example-enter-active` CSS class added in the next tick. This is a convention based on the `transitionName` prop.
 
@@ -174,7 +174,7 @@ It is also possible to use custom class names for each of the steps in your tran
 
 In order for it to apply transitions to its children, the `ReactCSSTransitionGroup` must already be mounted in the DOM or the prop `transitionAppear` must be set to `true`.
 
-The example below would **not** work, because the `ReactCSSTransitionGroup` is being mounted along with the new item, instead of the new item being mounted within it. Compare this to the [Getting Started](#getting-started) section above to see the difference.
+The example below would **not** work, because the `ReactCSSTransitionGroup` is being mounted along with the new item, instead of the new item being mounted within it. Compare this to the Getting Started section above to see the difference.
 
 ```javascript{4,6,13}
 render() {
@@ -236,7 +236,7 @@ import ReactTransitionGroup from 'react-addons-transition-group'; // ES6
 var ReactTransitionGroup = require('react-addons-transition-group'); // ES5 with npm
 ```
 
-`ReactTransitionGroup` is the basis for animations. When children are declaratively added or removed from it (as in the [example above](#getting-started)), special lifecycle hooks are called on them.
+`ReactTransitionGroup` is the basis for animations. When children are declaratively added or removed from it (as in the example above), special lifecycle hooks are called on them.
 
 - [`componentWillAppear()`](#componentwillappear)
 - [`componentDidAppear()`](#componentdidappear)

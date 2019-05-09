@@ -19,13 +19,13 @@ Note on Terminology:
 - _Authentication_ refers to a user identifying themselves.
   The specifics of how this is done is outside the scope of this document.
   Within this document, we abbreviate _Authentication_ to _Auth_.
-  See [Authentication](../authentication.md) for more.
+  See [Authentication](./authentication.md) for more.
 - _Access Control_ refers to the specific actions an authenticated or anonymous
   user can take. Often referred to as _authorization_ elsewhere.
 
 ## Admin UI Authentication
 
-See [Authentication](../authentication.md).
+See [Authentication](./authentication.md).
 
 ## GraphQL Access Control
 
@@ -44,7 +44,7 @@ For example, the below access control states:
 4. Only authenticated users can update their own password. Admins can update
    anyone's password.
 
-_NOTE: The code below depends on having a correct [authentication setup](../authentication.md)._
+_NOTE: The code below depends on having a correct [authentication setup](./authentication.md)._
 
 ```javascript
 const { Text, Select, Checkbox, Password } = require('@keystone-alpha/fields');
@@ -113,4 +113,4 @@ Notice Jess can only read his own email, and cannot read any passwords.
 
 ---
 
-Read more in the [Access Control API docs](../../guides/access-control.md).
+Read more in the [Access Control API docs](../api/access-control.md).
