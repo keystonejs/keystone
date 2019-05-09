@@ -39,12 +39,6 @@ module.exports = class WebServer {
       this.app.use(commonSessionMiddleware(keystone, cookieSecret, sessionStore));
     }
 
-    if (adminUI && adminUI.authStrategy) {
-      // Inject the Admin specific session routes.
-      // ie; this includes the signin/signout UI
-      this.app.use(adminUI.createSessionMiddleware());
-    }
-
     const server = createApolloServer(keystone, apollo, 'admin');
 
     // GraphQL API always exists independent of any adminUI or Session settings
