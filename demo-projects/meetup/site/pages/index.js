@@ -4,6 +4,7 @@ import { Query } from 'react-apollo';
 
 import { useAuth } from '../lib/authetication';
 import EventItem from '../components/EventItem';
+import { Link } from '../../routes';
 import { EVENT_DATA } from './events';
 
 export const GET_ALL_EVENTS = gql`
@@ -21,7 +22,9 @@ export default function Home() {
   return (
     <div>
       <h1>Welcome {isAuthenticated ? user.name : ''} </h1>
-      <a href="/signin">Sign In</a>
+      <Link route="signin">
+        <a>Sign In</a>
+      </Link>
       <h2>Upcoming Events</h2>
       <Query query={GET_ALL_EVENTS} variables={{ date: new Date().toLocaleDateString() }}>
         {({ data, loading, error }) => {
