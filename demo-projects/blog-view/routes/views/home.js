@@ -6,8 +6,6 @@ module.exports = (keystone, app) => {
     const locals = res.locals || {};
     locals.format = format;
     const view = new View(keystone, req, res);
-    // const Post = keystone.getListByKey('Post').adapter;
-    // view.query('posts', Post.model.find());
     view.query(
       'posts',
       `{ 
