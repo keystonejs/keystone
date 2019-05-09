@@ -18,16 +18,25 @@ const cloudinaryAdapter = new CloudinaryAdapter({
   apiSecret: process.env.CLOUDINARY_SECRET,
 });
 
+exports.Organiser = {
+  fields: {
+    user: { type: Relationship, ref: 'User.organiser', many: false },
+    order: { type: Number },
+    isOrganiser: { type: Checkbox },
+    role: { type: Text },
+  },
+};
+
 exports.User = {
   fields: {
     name: { type: Text },
     email: { type: Text, isUnique: true },
     password: { type: Password },
     isAdmin: { type: Checkbox },
-    role: { type: Text },
     twitterHandle: { type: Text },
     image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
     talks: { type: Relationship, ref: 'Talk.speakers', many: true },
+    organiser: { type: Relationship, ref: 'Organiser.user', many: false },
   },
 };
 
