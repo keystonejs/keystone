@@ -1,6 +1,6 @@
 import React, { Component, createContext, useContext } from 'react';
 
-const apiEndpoint = 'http://localhost:3000/admin';
+const apiEndpoint = 'http://localhost:3000/auth';
 
 /**
  * AuthContext
@@ -49,13 +49,15 @@ export class AuthProvider extends Component {
 
   signin = async ({ email, password }) => {
     await this.setState({ isLoading: true });
-    const res = await signin({ email, password });
+    const res = await signInWithEmail({ email, password });
+    console.log('res', res);
     if (!res.success) {
       await this.setState({ isLoading: false });
       return res;
     }
 
     const { authenticated } = await this.checkSession();
+    console.log('authenticated', authenticated);
     if (authenticated) {
       return { success: true };
     } else {
@@ -99,9 +101,9 @@ export class AuthProvider extends Component {
   }
 }
 
-const signin = async ({ email, password }) => {
+const signInWithEmail = async ({ email, password }) => {
   try {
-    const res = await fetch(`${apiEndpoint}/signin`, {
+    const res = await fetch(`${apiEndpoint}/email/signin`, {
       method: 'POST',
       credential: 'same-origin',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },

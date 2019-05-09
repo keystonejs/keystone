@@ -17,7 +17,7 @@ Promise.all([keystone.prepare({ port }), nextApp.prepare()])
     await keystoneApp.connect();
 
     // Attach the auth routes
-    server.app.use('/', createAuthRoutes(keystone));
+    server.app.use('/auth', createAuthRoutes(keystone));
 
     server.app.get('/event/:id', (req, res) => {
       const { id } = req.params;

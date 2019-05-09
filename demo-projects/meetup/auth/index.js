@@ -27,5 +27,7 @@ module.exports = function createAuthRoutes(keystone) {
   // Email/Password auth
   authRouter.use('/email', createEmailAuthRoutes(keystone));
 
+  // Social auth (Facebook, Github, Twitter, etc)
+
   return authRouter;
 };

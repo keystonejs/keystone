@@ -36,7 +36,7 @@ export default () => {
           />
         </div>
         <div>
-          <label htmlFor="password">Passwor</label>
+          <label htmlFor="password">Password</label>
           <input
             required
             type="password"
