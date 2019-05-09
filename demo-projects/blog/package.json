@@ -9,8 +9,8 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "DISABLE_LOGGING=true keystone",
-    "build": "next build"
+    "start": "DISABLE_LOGGING=true node server.js",
+    "build": "next build app && keystone build"
   },
   "dependencies": {
     "@arch-ui/layout": "^0.2.0",

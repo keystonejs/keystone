@@ -19,6 +19,11 @@ Promise.all([keystone.prepare({ port }), nextApp.prepare()])
     // Attach the auth routes
     server.app.use('/', createAuthRoutes(keystone));
 
+    server.app.get('/event/:id', (req, res) => {
+      const { id } = req.params;
+      nextApp.render(req, res, '/event', { id, ...req.query });
+    });
+
     // Initialise some data.
     // NOTE: This is only for demo purposes and should not be used in production
     const users = await keystoneApp.lists.User.adapter.findAll();

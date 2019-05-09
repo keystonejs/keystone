@@ -25,16 +25,16 @@
     "test": "yarn lint && yarn test:unit && yarn cypress:run",
     "test:unit": "DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1",
     "test:unit:debug": "NODE_ENV=test node --inspect-brk `which jest` --runInBand",
-    "changeset": "build-releases changeset",
-    "version-packages": "build-releases version",
-    "publish-changed": "yarn build && build-releases publish --public",
+    "changeset": "changeset",
+    "version-packages": "changeset bump",
+    "publish-changed": "yarn build && changeset release --public",
     "build:build-field-types": "rimraf packages/build-field-types/lib && babel packages/build-field-types/src --out-dir packages/build-field-types/dist --ignore '**/__tests__/**/*','**/__mocks__/**/*'",
     "build": "preconstruct build && bolt w @keystone-alpha/build-field-types build && node ./packages/build-field-types/bin.js build",
     "prepare": "yarn build:build-field-types && preconstruct dev && node ./packages/build-field-types/bin.js dev  && yarn run --silent contributing-guide",
     "contributing-guide": "is-ci && exit 0 || chalk -t \"\n\n{bold 📝 Contributing to KeystoneJS?}\n\" && link '🔗 Read the full Contributing Guide' 'https://github.com/keystonejs/keystone-5/blob/master/CONTRIBUTING.md' && echo \"\n\"",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "heroku-postbuild": "bolt && yarn build"
+    "heroku-postbuild": "bolt && yarn build && bolt w @keystone-alpha/demo-project-blog build"
   },
   "dependencies": {
     "@babel/cli": "^7.1.2",
@@ -50,6 +50,7 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.4.3",
+    "@changesets/cli": "^1.0.1",
     "@emotion/core": "^10.0.10",
     "@emotion/hash": "^0.7.1",
     "@emotion/styled": "^10.0.10",
@@ -98,6 +99,7 @@
     "endent": "^1.3.0",
     "ensure-error": "^1.0.0",
     "express": "^4.16.3",
+    "express-history-api-fallback": "^2.2.1",
     "express-pino-logger": "^4.0.0",
     "express-react-views": "^0.11.0",
     "express-session": "^1.15.6",
@@ -315,7 +317,6 @@
     ]
   },
   "devDependencies": {
-    "@atlaskit/build-releases": "^3.0.3",
     "all-contributors-cli": "^6.2.0",
     "babel-eslint": "^10.0.1",
     "bolt": "^0.22.6",

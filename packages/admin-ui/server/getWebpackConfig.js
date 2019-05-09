@@ -6,7 +6,7 @@ const { enableDevFeatures, mode } = require('./env');
 
 const isHerokuEnv = process.env.HEROKU === 'true';
 
-module.exports = function({ adminMeta, entry }) {
+module.exports = function({ adminMeta, entry, outputPath }) {
   const templatePlugin = new HtmlWebpackPlugin({
     title: 'KeystoneJS',
     template: 'index.html',
@@ -87,8 +87,9 @@ module.exports = function({ adminMeta, entry }) {
     entry:
       mode === 'production' ? entryPath : [entryPath, 'webpack-hot-middleware/client?reload=true'],
     output: {
-      filename: `${entry}.js`,
-      publicPath: adminMeta.adminPath,
+      path: outputPath,
+      filename: 'js/[name].[hash].bundle.js',
+      publicPath: adminMeta.adminPath + '/',
     },
     // TODO: We should pay attention to our bundle size at some point, but
     // right now this is just noise

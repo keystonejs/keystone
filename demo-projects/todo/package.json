@@ -9,7 +9,7 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "DISABLE_LOGGING=true keystone"
+    "start": "DISABLE_LOGGING=true node server.js"
   },
   "dependencies": {
     "@keystone-alpha/adapter-mongoose": "^1.0.6",

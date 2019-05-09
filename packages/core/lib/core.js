@@ -6,6 +6,7 @@ const path = require('path');
 const DEFAULT_PORT = 3000;
 const DEFAULT_ENTRY = 'index.js';
 const DEFAULT_SERVER = 'server.js';
+const DEFAULT_DIST_DIR = 'dist';
 
 function cleanServerConfig(config) {
   return pick(config, [
@@ -23,10 +24,12 @@ module.exports = {
   DEFAULT_PORT,
   DEFAULT_ENTRY,
   DEFAULT_SERVER,
+  DEFAULT_DIST_DIR,
   prepare: ({
     port = DEFAULT_PORT,
     entryFile = DEFAULT_ENTRY,
     serverConfig,
+    distDir,
     _cwd = process.cwd(),
   } = {}) =>
     new Promise((resolve, reject) => {
@@ -73,6 +76,7 @@ module.exports = {
         // Force the admin & port
         ...(appEntry.admin ? { adminUI: appEntry.admin } : {}),
         port,
+        distDir: distDir || appEntry.distDir || DEFAULT_DIST_DIR,
       });
 
       return resolve({ server, keystone: appEntry.keystone });
