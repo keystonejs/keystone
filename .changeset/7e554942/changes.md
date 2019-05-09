@@ -1,0 +1,1 @@
+Move Admin UI session middleware registration to Admin UI internals
