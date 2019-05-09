@@ -53,11 +53,12 @@ module.exports = (keystone, app) => {
   });
 };
 ```
-import this route and initialize inside the keystone prepare thenable
+
+Initialize this route after `keystone.prepare`
+
 ```js
 const homeRoute = require('../routes/view/home');
 homeRoute(keystoneApp, server.app)
-
 ```
 > if there are multiple objects returned in GraphQl queries then both of them are attached to the `path` parameter in `view.query`
 
