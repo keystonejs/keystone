@@ -1,7 +1,22 @@
 const View = require('@keystone-alpha/view');
 const { format } = require('date-fns');
+const multer = require('multer');
+const { Readable } = require('stream');
+
+const storage = multer.memoryStorage();
+const upload =  multer({ storage }).single('image');
+
+
+function bufferToStream(buffer) {
+  const newStream = new Readable();
+  newStream.push(buffer);
+  newStream.push(null);
+  return newStream;
+}
+
+
 module.exports = (keystone, app) => {
-  app.use('/new', async (req, res) => {
+  app.use('/new', upload, async (req, res) => {
     const locals = res.locals || {};
     locals.format = format;
     locals.imagePlaceholder = name => `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width="100" height="100">
@@ -12,11 +27,16 @@ module.exports = (keystone, app) => {
 
     view.on('post', async () => {
       const { title, body, admin } = req.body;
-      console.log({ title, body, admin });
+      const input = { title, body, author: { connect: { id: admin } } };
+      if(req.file) {
+        const { buffer, originalname: filename,  mimetype, encoding } = req.file;
+        input['image'] = { stream: bufferToStream(buffer), filename,  mimetype, encoding };
+      }
       view.query('created', `
-      mutation {
-        createPost(data: {title: "${title}", posted: "${new Date().toISOString()}" body: "${body}", author: {connect: {id: "${admin}"}}}) {id}
-      }`).err(err => {
+      mutation createPost($input: PostCreateInput){
+        createPost(data: $input) {id}
+      }`, { variables: { input }
+    }).err(err => {
         console.log(err);
         locals.err = err;
       });

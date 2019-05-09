@@ -230,7 +230,7 @@ module.exports = class View {
     return this._queryLegacy(key, query, options);
   }
 
-  _queryGql(key, query, { unwrap = true, ...options } = {}) {
+  _queryGql(key, query, { variables= null, unwrap = true, ...options } = {}) {
     let locals = this.res.locals;
     const parts = key.split('.');
     const chain = new QueryCallbacks(options);
@@ -249,7 +249,7 @@ module.exports = class View {
       const queryFn = this.keystone._graphQLQuery[this.schemaName];
       const context = this.keystone.getAccessContext(this.schemaName, this.req);
       try {
-        const { data, errors } = await queryFn(query, context);
+        const { data, errors } = await queryFn(query, context, variables);
         locals[key] = data;
         const resultKeys = Object.keys(data || {});
         if (unwrap && resultKeys.length === 1) {

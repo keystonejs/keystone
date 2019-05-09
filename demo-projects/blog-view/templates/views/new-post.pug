@@ -13,7 +13,7 @@ block content
     if err
       .new-post-error
         span= err
-    form(method='post')
+    form(method='post' enctype='multipart/form-data' )
       .new-post-form-group
         label.new-post-form-label(for='title') Title:
         input.new-post-form-input(type='text', name='title', value='')
@@ -22,7 +22,7 @@ block content
         textarea.new-post-form-textarea(name='body')
       .new-post-form-group
         label.new-post-form-label(for='image') Image URL:
-        input.new-post-form-input(type='file', name='image', enctype='multipart/form-data' disabled)
+        input.new-post-form-input(type='file', name='image')
       .new-post-form-group
         label.new-post-form-label(for='admin') Post as:
         select.new-post-form-select(name='admin')
