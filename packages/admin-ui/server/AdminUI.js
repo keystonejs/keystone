@@ -156,22 +156,27 @@ module.exports = class AdminUI {
     }
 
     const _app = express.Router();
+    if (this.authStrategy) {
+      _app.use(this.createSessionMiddleware());
+    }
     _app.use(this.adminPath, app);
     return _app;
   }
 
   createDevMiddleware({ apiPath, graphiqlPath, port }) {
     const app = express();
+
     const { adminPath } = this;
+    if (this.authStrategy) {
+      app.use(this.createSessionMiddleware());
+    }
 
     // ensure any non-resource requests are rewritten for history api fallback
-    if (process.env.NODE_ENV !== 'production') {
-      const url = `http://localhost:${port}${adminPath}`;
-      const prettyUrl = chalk.blue(`${url}(/.*)?`);
-      const clickableUrl = terminalLink(prettyUrl, url, { fallback: () => prettyUrl });
+    const url = `http://localhost:${port}${adminPath}`;
+    const prettyUrl = chalk.blue(`${url}(/.*)?`);
+    const clickableUrl = terminalLink(prettyUrl, url, { fallback: () => prettyUrl });
 
-      console.log(`🔗 ${chalk.green('Keystone Admin UI:')} ${clickableUrl} (v${pkgInfo.version})`);
-    }
+    console.log(`🔗 ${chalk.green('Keystone Admin UI:')} ${clickableUrl} (v${pkgInfo.version})`);
 
     app.use(adminPath, (req, res, next) => {
       // TODO: make sure that this change is OK. (regex was testing on url, not path)
