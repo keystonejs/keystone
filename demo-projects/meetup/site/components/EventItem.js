@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Rsvp from './Rsvp';
-import Link from './Link';
+import { Link } from '../../routes';
 
 const EventItem = ({ id, name, startDate, talks }) => (
   <li>
@@ -18,7 +18,7 @@ const EventItem = ({ id, name, startDate, talks }) => (
         ))}
       </div>
     ))}
-    <Link to={`/event?id=${id}`} as={`/event/${id}`}>
+    <Link route="event" params={{ id }}>
       Find out more
     </Link>
   </li>

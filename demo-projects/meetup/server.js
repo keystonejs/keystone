@@ -3,6 +3,7 @@ const { Wysiwyg } = require('@keystone-alpha/fields-wysiwyg-tinymce');
 const next = require('next');
 const createAuthRoutes = require('./auth');
 const initialData = require('./initialData');
+const routes = require('./routes');
 
 const port = process.env.PORT || 3000;
 
@@ -11,6 +12,7 @@ const nextApp = next({
   distDir: 'build',
   dev: process.env.NODE_ENV !== 'production',
 });
+const handler = routes.getRequestHandler(nextApp);
 
 Promise.all([keystone.prepare({ port }), nextApp.prepare()])
   .then(async ([{ server, keystone: keystoneApp }]) => {
@@ -18,11 +20,6 @@ Promise.all([keystone.prepare({ port }), nextApp.prepare()])
 
     // Attach the auth routes
     server.app.use('/auth', createAuthRoutes(keystoneApp));
-
-    server.app.get('/event/:id', (req, res) => {
-      const { id } = req.params;
-      nextApp.render(req, res, '/event', { id, ...req.query });
-    });
 
     // Initialise some data.
     // NOTE: This is only for demo purposes and should not be used in production
@@ -32,7 +29,7 @@ Promise.all([keystone.prepare({ port }), nextApp.prepare()])
     }
 
     Wysiwyg.bindStaticMiddleware(server);
-    server.app.use(nextApp.getRequestHandler());
+    server.app.use(handler);
     await server.start();
   })
   .catch(error => {
