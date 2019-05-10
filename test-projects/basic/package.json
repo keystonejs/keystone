@@ -25,7 +25,9 @@
     "@keystone-alpha/fields": "^6.1.1",
     "@keystone-alpha/file-adapters": "^1.0.2",
     "@keystone-alpha/keystone": "^4.0.0",
+    "@keystone-alpha/server-static": "^0.0.0",
     "date-fns": "^1.30.1",
+    "express": "^4.16.3",
     "react": "^16.8.6"
   },
   "devDependencies": {

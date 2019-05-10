@@ -1,8 +1,8 @@
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
 const pFinally = require('p-finally');
 const url = require('url');
-const { createApolloServer } = require('@keystone-alpha/server');
 const { Keystone } = require('@keystone-alpha/keystone');
+const GraphQLServer = require('@keystone-alpha/server-graphql');
 const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
@@ -18,7 +18,8 @@ function setupServer({ name, adapterName, createLists = () => {} }) {
 
   createLists(keystone);
 
-  createApolloServer(keystone, {}, SCHEMA_NAME);
+  // Has the side-effect of registering the schema with the keystone object
+  new GraphQLServer({ schemaName: SCHEMA_NAME }).prepareMiddleware({ keystone, dev: true });
 
   return { keystone };
 }
@@ -82,7 +83,7 @@ function getUpdate(keystone) {
 
 function keystoneMongoTest(setupKeystoneFn, testFn) {
   return async function() {
-    const setup = setupKeystoneFn('mongoose');
+    const setup = await setupKeystoneFn('mongoose');
     const { keystone } = setup;
 
     const { mongoUri, dbName } = await getMongoMemoryServerConfig();
@@ -104,7 +105,7 @@ function keystoneMongoTest(setupKeystoneFn, testFn) {
 
 function keystoneKnexTest(setupKeystoneFn, testFn) {
   return async function() {
-    const setup = setupKeystoneFn('knex');
+    const setup = await setupKeystoneFn('knex');
     const { keystone } = setup;
 
     await keystone.connect();

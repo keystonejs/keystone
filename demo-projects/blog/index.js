@@ -2,6 +2,8 @@
 const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const NextServer = require('@keystone-alpha/server-next');
+const StaticServer = require('@keystone-alpha/server-static');
 
 const { staticRoute, staticPath } = require('./config');
 const { User, Post, PostCategory, Comment } = require('./schema');
@@ -43,11 +45,14 @@ const admin = new AdminUI(keystone, {
       children: ['User'],
     },
   ],
+  disableDefaultRoute: true,
 });
 
 module.exports = {
-  staticRoute,
-  staticPath,
   keystone,
-  admin,
+  servers: [
+    admin,
+    new StaticServer({ route: staticRoute, path: staticPath }),
+    new NextServer({ dir: 'app' }),
+  ],
 };

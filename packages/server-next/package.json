@@ -1,0 +1,13 @@
+{
+  "name": "@keystone-alpha/server-next",
+  "description": "KeystoneJS Next.js Server. For more Custom Servers, see: @keystone-alpha/core",
+  "version": "0.0.0",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "dependencies": {
+    "next": "^8.0.3"
+  }
+}

@@ -1,23 +1,15 @@
 require('dotenv').config();
 
 const keystone = require('@keystone-alpha/core');
-const { Wysiwyg } = require('@keystone-alpha/fields-wysiwyg-tinymce');
-const next = require('next');
+const express = require('express');
 const initialData = require('./initialData');
-const routes = require('./routes');
 
 const port = process.env.PORT || 3000;
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/keystonejs-meetup';
 
-const nextApp = next({
-  dir: 'site',
-  distDir: 'build',
-  dev: process.env.NODE_ENV !== 'production',
-});
-const handler = routes.getRequestHandler(nextApp);
-
-Promise.all([keystone.prepare({ port }), nextApp.prepare()])
-  .then(async ([{ server, keystone: keystoneApp }]) => {
+keystone
+  .prepare({ port, dev: process.env.NODE_ENV !== 'production' })
+  .then(async ({ middlewares, keystone: keystoneApp }) => {
     await keystoneApp.connect(mongoUri);
 
     // Initialise some data.
@@ -30,9 +22,13 @@ Promise.all([keystone.prepare({ port }), nextApp.prepare()])
       await keystoneApp.createItems(initialData);
     }
 
-    Wysiwyg.bindStaticMiddleware(server);
-    server.app.use(handler);
-    await server.start();
+    const app = express();
+
+    app.use(middlewares);
+
+    app.listen(port, error => {
+      if (error) throw error;
+    });
   })
   .catch(error => {
     console.error(error);

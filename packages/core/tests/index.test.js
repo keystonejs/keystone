@@ -78,7 +78,7 @@ describe('@keystone-alpha/core/index.js', () => {
         jest.restoreAllMocks();
         // See: https://twitter.com/JessTelford/status/1102801062489018369
         jest.resetModules();
-        jest.dontMock('@keystone-alpha/server');
+        jest.dontMock('@keystone-alpha/server-graphql');
       });
 
       test('Cannot pass both entryFile#serverConfig and .serverConfig', () => {
@@ -116,9 +116,9 @@ describe('@keystone-alpha/core/index.js', () => {
         // here, and replace the implementation on a per-test basis
         const mockServerClass = jest.fn(() => {});
         jest.resetModules();
-        jest.doMock('@keystone-alpha/server', () => ({
+        jest.doMock('@keystone-alpha/server-graphql', () => ({
           // Mock the class to do nothing
-          WebServer: mockServerClass,
+          GraphQLServer: mockServerClass,
         }));
 
         const entryFileObj = tmp.fileSync({ postfix: '.js' });
@@ -135,9 +135,9 @@ describe('@keystone-alpha/core/index.js', () => {
         // here, and replace the implementation on a per-test basis
         const mockServerClass = jest.fn(() => {});
         jest.resetModules();
-        jest.doMock('@keystone-alpha/server', () => ({
+        jest.doMock('@keystone-alpha/server-graphql', () => ({
           // Mock the class to do nothing
-          WebServer: mockServerClass,
+          GraphQLServer: mockServerClass,
         }));
 
         const entryFileObj = tmp.fileSync({ postfix: '.js' });
@@ -161,19 +161,19 @@ describe('@keystone-alpha/core/index.js', () => {
         // here, and replace the implementation on a per-test basis
         const mockServerClass = jest.fn(() => {});
         jest.resetModules();
-        jest.doMock('@keystone-alpha/server', () => ({
+        jest.doMock('@keystone-alpha/server-graphql', () => ({
           // Mock the class to do nothing
-          WebServer: mockServerClass,
+          GraphQLServer: mockServerClass,
         }));
 
         const entryFileObj = tmp.fileSync({ postfix: '.js' });
         fs.writeFileSync(
           entryFileObj.fd,
           endent`
-        module.exports = {
-          keystone: { auth: {} },
-          admin: {},
-        };
+            module.exports = {
+              keystone: { auth: {} },
+              admin: {},
+            };
       `
         );
 
@@ -212,9 +212,9 @@ describe('@keystone-alpha/core/index.js', () => {
         const mockServerResult = {};
         const mockServerClass = jest.fn(() => mockServerResult);
         jest.resetModules();
-        jest.doMock('@keystone-alpha/server', () => ({
+        jest.doMock('@keystone-alpha/server-graphql', () => ({
           // Mock the class to do nothing
-          WebServer: mockServerClass,
+          GraphQLServer: mockServerClass,
         }));
 
         const entryFileObj = tmp.fileSync({ postfix: '.js' });
@@ -232,16 +232,16 @@ describe('@keystone-alpha/core/index.js', () => {
         const mockServerResult = {};
         const mockServerClass = jest.fn(() => mockServerResult);
         jest.resetModules();
-        jest.doMock('@keystone-alpha/server', () => ({
+        jest.doMock('@keystone-alpha/server-graphql', () => ({
           // Mock the class to do nothing
-          WebServer: mockServerClass,
+          GraphQLServer: mockServerClass,
         }));
 
         const entryFileObj = tmp.fileSync({ postfix: '.js' });
         fs.writeFileSync(entryFileObj.fd, `module.exports = { keystone: { auth: {}, hi: 'bye' } }`);
 
         const localCore = require('../');
-        const { keystone } = await localCore.prepare({ entryFile: entryFileObj.name });
+        const { keystone } = await localCore.prepare({ entryFile: entryFileObj.name, dev: true });
 
         expect(keystone).toEqual(
           expect.objectContaining({

@@ -1,4 +1,5 @@
 const keystone = require('@keystone-alpha/core');
+const express = require('express');
 const endent = require('endent');
 const path = require('path');
 
@@ -19,12 +20,18 @@ function getEntryFileFullPath(args, { exeName, _cwd }) {
 function executeDefaultServer(args, entryFile, distDir) {
   const port = args['--port'] ? args['--port'] : keystone.DEFAULT_PORT;
 
+  const app = express();
+
   return keystone
-    .prepare({ entryFile, port, distDir })
-    .then(async ({ server, keystone: keystoneApp }) => {
+    .prepare({ entryFile, port, distDir, dev: process.env.NODE_ENV !== 'production' })
+    .then(async ({ middlewares, keystone: keystoneApp }) => {
       await keystoneApp.connect();
 
-      return server.start();
+      middlewares.forEach(middleware => app.use(middleware));
+
+      return new Promise((resolve, reject) => {
+        app.listen(port, error => (error ? reject(error) : resolve({ port })));
+      });
     })
     .then(() => {
       console.log(`KeystoneJS ready on port ${port}`);

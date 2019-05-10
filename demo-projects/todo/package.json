@@ -9,13 +9,14 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "DISABLE_LOGGING=true node server.js"
+    "start": "NODE_ENV=development DISABLE_LOGGING=true keystone"
   },
   "dependencies": {
     "@keystone-alpha/adapter-mongoose": "^2.0.0",
     "@keystone-alpha/admin-ui": "^3.2.1",
     "@keystone-alpha/core": "^2.0.4",
     "@keystone-alpha/fields": "^6.1.1",
-    "@keystone-alpha/keystone": "^4.0.0"
+    "@keystone-alpha/keystone": "^4.0.0",
+    "@keystone-alpha/server-static": "^0.0.0"
   }
 }

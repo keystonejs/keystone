@@ -1,12 +1,13 @@
+const express = require('express');
 const keystone = require('@keystone-alpha/core');
 
-const { port, staticRoute, staticPath } = require('./config');
+const { port } = require('./config');
 
 const initialData = require('./data');
 
 keystone
-  .prepare({ port })
-  .then(async ({ server, keystone: keystoneApp }) => {
+  .prepare({ port, dev: process.env.NODE_ENV !== 'production' })
+  .then(async ({ middlewares, keystone: keystoneApp }) => {
     await keystoneApp.connect(process.env.MONGODB_URI);
 
     // Initialise some data.
@@ -19,15 +20,21 @@ keystone
       await keystoneApp.createItems(initialData);
     }
 
-    server.app.get('/reset-db', async (req, res) => {
+    const app = express();
+
+    app.get('/reset-db', async (req, res) => {
       Object.values(keystoneApp.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
       await keystoneApp.createItems(initialData);
       res.redirect('/admin');
     });
-    server.app.use(staticRoute, server.express.static(staticPath));
-    await server.start();
+
+    app.use(middlewares);
+
+    app.listen(port, error => {
+      if (error) throw error;
+    });
   })
   .catch(error => {
     console.error(error);

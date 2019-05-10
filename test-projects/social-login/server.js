@@ -1,3 +1,4 @@
+const express = require('express');
 const keystone = require('@keystone-alpha/core');
 const { endAuthedSession } = require('@keystone-alpha/session');
 const {
@@ -7,8 +8,6 @@ const {
   googleAuthEnabled,
   wpAuthEnabled,
   port,
-  staticRoute,
-  staticPath,
 } = require('./config');
 const {
   configureFacebookAuth,
@@ -22,8 +21,8 @@ const {
 
 const initialData = require('./data');
 keystone
-  .prepare({ port })
-  .then(async ({ server, keystone: keystoneApp }) => {
+  .prepare({ port, dev: process.env.NODE_ENV !== 'production' })
+  .then(async ({ middlewares, keystone: keystoneApp }) => {
     const socialLogins = [];
     if (facebookAuthEnabled) {
       socialLogins.push(configureFacebookAuth(keystoneApp));
@@ -47,11 +46,13 @@ keystone
 
     await keystoneApp.connect();
 
+    const app = express();
+
     if (socialLogins.length > 0) {
-      InitializePassportAuthStrategies(server.app);
+      InitializePassportAuthStrategies(app);
     }
 
-    socialLogins.forEach(strategy => setupAuthRoutes({ strategy, server }));
+    socialLogins.forEach(strategy => setupAuthRoutes({ strategy, app }));
 
     // Initialise some data.
     // NOTE: This is only for test purposes and should not be used in production
@@ -63,7 +64,7 @@ keystone
       await keystoneApp.createItems(initialData);
     }
 
-    server.app.get('/reset-db', async (req, res) => {
+    app.get('/reset-db', async (req, res) => {
       Object.values(keystoneApp.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
@@ -71,7 +72,7 @@ keystone
       res.redirect('/admin');
     });
 
-    server.app.get('/api/session', (req, res) => {
+    app.get('/api/session', (req, res) => {
       res.json({
         signedIn: !!req.session.keystoneItemId,
         userId: req.session.keystoneItemId,
@@ -79,7 +80,7 @@ keystone
       });
     });
 
-    server.app.get('/api/signout', async (req, res, next) => {
+    app.get('/api/signout', async (req, res, next) => {
       try {
         await endAuthedSession(req);
         res.json({
@@ -90,8 +91,11 @@ keystone
       }
     });
 
-    server.app.use(staticRoute, server.express.static(staticPath));
-    await server.start();
+    app.use(middlewares);
+
+    app.listen(port, error => {
+      if (error) throw error;
+    });
   })
   .catch(error => {
     console.error(error);

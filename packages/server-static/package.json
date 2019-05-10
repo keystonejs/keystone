@@ -1,0 +1,16 @@
+{
+  "name": "@keystone-alpha/server-static",
+  "description": "KeystoneJS Static File Server. For more Custom Servers, see: @keystone-alpha/core",
+  "version": "0.0.0",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "peerDependencies": {
+    "express": "^4.16.3"
+  },
+  "dependencies": {
+    "cpy": "^7.2.0"
+  }
+}

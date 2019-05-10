@@ -23,7 +23,8 @@
     "@keystone-alpha/core": "^2.0.4",
     "@keystone-alpha/fields": "^6.1.1",
     "@keystone-alpha/keystone": "^4.0.0",
-    "@keystone-alpha/utils": "^3.0.0"
+    "@keystone-alpha/utils": "^3.0.0",
+    "express": "^4.16.3"
   },
   "devDependencies": {
     "cypress": "^3.2.0",

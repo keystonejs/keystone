@@ -2,6 +2,8 @@
 const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const NextServer = require('@keystone-alpha/server-next');
+const routes = require('./routes');
 
 const { Event, Talk, User, Rsvp, Organiser, Sponsor } = require('./schema');
 
@@ -37,9 +39,10 @@ const admin = new AdminUI(keystone, {
       children: ['User', 'Rsvp'],
     },
   ],
+  disableDefaultRoute: true,
 });
 
 module.exports = {
   keystone,
-  admin,
+  servers: [admin, new NextServer({ dir: 'site', nextRoutes: routes })],
 };

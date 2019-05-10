@@ -117,6 +117,7 @@ const listExtras = (getAuth = () => true, queryMethod = undefined) => ({
   getAuth,
   defaultAccess: { list: true, field: true },
   getGraphQLQuery: () => queryMethod,
+  registerType: () => {},
 });
 
 const setup = (extraConfig, getAuth, queryMethod) => {
@@ -1326,6 +1327,7 @@ describe('Maps from Native JS types to Keystone types', () => {
           adapter,
           getAuth: () => {},
           defaultAccess: { list: true, field: true },
+          registerType: () => {},
         }
       );
       list.initFields();

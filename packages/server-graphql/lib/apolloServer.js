@@ -139,7 +139,7 @@ const _formatError = error => {
   }
 };
 
-function createApolloServer(keystone, apolloConfig, schemaName) {
+function createApolloServer(keystone, apolloConfig, schemaName, dev) {
   // add the Admin GraphQL API
   const server = new ApolloServer({
     maxFileSize: 200 * 1024 * 1024,
@@ -154,7 +154,10 @@ function createApolloServer(keystone, apolloConfig, schemaName) {
         }
       : {
           engine: false,
-          tracing: process.env.NODE_ENV !== 'production',
+          // Only enable tracing in dev mode so we can get local debug info, but
+          // don't bother returning that info on prod when the `engine` is
+          // disabled.
+          tracing: dev,
         }),
     formatError: _formatError,
   });

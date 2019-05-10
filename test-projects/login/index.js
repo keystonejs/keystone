@@ -1,8 +1,9 @@
 const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { Text, Password, Relationship } = require('@keystone-alpha/fields');
-
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const StaticServer = require('@keystone-alpha/server-static');
+const { staticRoute, staticPath } = require('./config');
 
 const keystone = new Keystone({
   name: 'Cypress Test Project For Login',
@@ -43,5 +44,5 @@ const admin = new AdminUI(keystone, {
 
 module.exports = {
   keystone,
-  admin,
+  servers: [admin, new StaticServer({ route: staticRoute, path: staticPath })],
 };

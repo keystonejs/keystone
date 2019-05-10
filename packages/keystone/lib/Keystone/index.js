@@ -43,6 +43,7 @@ module.exports = class Keystone {
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
     this._graphQLQuery = {};
+    this.registeredTypes = new Set();
 
     if (adapters) {
       this.adapters = adapters;
@@ -75,6 +76,7 @@ module.exports = class Keystone {
       adapter: adapters[adapterName],
       defaultAccess: this.defaultAccess,
       getAuth: () => this.auth[key],
+      registerType: type => this.registeredTypes.add(type),
       isAuxList,
       createAuxList: (auxKey, auxConfig) => {
         if (isAuxList) {

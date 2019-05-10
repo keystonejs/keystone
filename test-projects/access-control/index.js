@@ -145,5 +145,5 @@ const admin = new AdminUI(keystone, {
 
 module.exports = {
   keystone,
-  admin,
+  servers: [admin],
 };
