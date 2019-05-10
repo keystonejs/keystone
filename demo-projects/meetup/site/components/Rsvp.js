@@ -33,10 +33,20 @@ const UPDATE_RSVP = gql`
   }
 `;
 
-const GET_EVENT_RSVPS = gql`
-  query GetEventRsvps($event: ID!, $user: ID!) {
-    allRsvps(where: { event: { id: $event }, user: { id: $user } }) {
+const GET_RSVPS = gql`
+  query GetRsvps($event: ID!, $user: ID!) {
+    eventRsvps: allRsvps(where: { event: { id: $event } status: yes }) {
       id
+    }
+    userRsvps: allRsvps(where: { event: { id: $event } user: { id: $user } }) {
+      id
+      status
+    }
+    Event(where: { id: $event }) {
+      id
+      startDate
+      durationMins
+      maxRsvps
     }
   }
 `;
@@ -49,7 +59,7 @@ const Rsvp = ({ id }) => {
   }
 
   return (
-    <Query query={GET_EVENT_RSVPS} variables={{ event: id, user: user.id }}>
+    <Query query={GET_RSVPS} variables={{ event: id, user: user.id }}>
       {({ data, loading, error }) => {
         if (loading) return <p>loading...</p>;
         if (error) {
@@ -57,32 +67,51 @@ const Rsvp = ({ id }) => {
           return <p>Error!</p>;
         }
 
+        const { userRsvps, eventRsvps, Event } = data;
+
         return (
           <Mutation
-            mutation={data.allRsvps[0] ? UPDATE_RSVP : ADD_RSVP}
+            mutation={userRsvps[0] ? UPDATE_RSVP : ADD_RSVP}
             refetchQueries={() => [
               {
-                query: GET_EVENT_RSVPS,
+                query: GET_RSVPS,
                 variables: { event: id, user: user.id },
               },
             ]}
           >
-            {updateRsvp => {
+            {(updateRsvp, { error: mutationError }) => {
+
+              if(Event.maxRsvps !== null && eventRsvps.length >= Event.maxRsvps && !userRsvps.length) {
+                return <p>You can no longer rsvp to this event</p>;
+              }
+
               let variables = {
-                rsvp: data.allRsvps[0] ? data.allRsvps[0].id : null,
+                rsvp: userRsvps[0] ? userRsvps[0].id : null,
                 event: id,
                 user: user.id,
               };
 
+              let status = userRsvps[0] ? userRsvps[0].status: null;
+
               return (
                 <div>
                   <h3>RSVP?</h3>
-                  <a onClick={() => updateRsvp({ variables: { ...variables, status: 'yes' } })}>
-                    Yes{' '}
-                  </a>
-                  <a onClick={() => updateRsvp({ variables: { ...variables, status: 'no' } })}>
+                  <button
+                    disabled={status === 'yes' || eventRsvps.length >= Event.maxRsvps}
+                    style={{ color: status === 'yes' ? 'blue' : 'black' }}
+                    onClick={() => updateRsvp({ variables: { ...variables, status: 'yes' } })}
+                  >
+                    Yes
+                  </button>
+                  <button
+                    disabled={status === 'no'}
+                    style={{ color: status === 'no' ? 'blue' : 'black' }}
+                    onClick={() => updateRsvp({ variables: { ...variables, status: 'no' } })}
+                  >
                     No
-                  </a>
+                  </button>
+                  {eventRsvps.length >= Event.maxRsvps ? <p>You can no longer rsvp to this event</p> : null}
+                  {mutationError ? <p style={{ color: 'red' }}>Error rsvping to event</p> : null }
                 </div>
               );
             }}
