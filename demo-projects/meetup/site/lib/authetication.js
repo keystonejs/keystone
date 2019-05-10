@@ -44,20 +44,20 @@ export class AuthProvider extends Component {
       user: user,
       isLoading: false,
     });
+
     return { authenticated };
   };
 
   signin = async ({ email, password }) => {
     await this.setState({ isLoading: true });
     const res = await signInWithEmail({ email, password });
-    console.log('res', res);
+
     if (!res.success) {
       await this.setState({ isLoading: false });
       return res;
     }
 
     const { authenticated } = await this.checkSession();
-    console.log('authenticated', authenticated);
     if (authenticated) {
       return { success: true };
     } else {
@@ -88,7 +88,7 @@ export class AuthProvider extends Component {
     return (
       <AuthContext.Provider
         value={{
-          isAuthenticated: user && user.id,
+          isAuthenticated: user,
           isLoading,
           signin: this.signin,
           signout: this.signout,
@@ -105,10 +105,10 @@ const signInWithEmail = async ({ email, password }) => {
   try {
     const res = await fetch(`${apiEndpoint}/email/signin`, {
       method: 'POST',
-      credential: 'same-origin',
+      credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify({ email, password }),
-    }).then(r => r.json());
+    }).then(r =>  r.json());
 
     if (res.success) {
       return { success: true };
@@ -146,7 +146,7 @@ const checkSession = async () => {
     if (res.signedIn) {
       return {
         authenticated: true,
-        user: res.user,
+        user: res.userId,
       };
     } else {
       return { authenticated: false };

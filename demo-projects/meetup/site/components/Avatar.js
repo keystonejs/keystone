@@ -1,14 +1,14 @@
-import React, { Children } from 'react';
+/** @jsx jsx */
+import { Children } from 'react';
+import { jsx } from '@emotion/core';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
-
-import theme from '../theme';
 
 export const Avatar = ({ alt, margin, size, shape, image, src, ...props }) => {
 	const pixelSize = sizeMap[size];
 	const offset = marginMap[margin];
 	const styles = {
-		backgroundColor: theme.color.gray05,
+		backgroundColor: '#F2F2F2',
 		borderRadius: shapeMap[shape],
 		display: 'block',
 		height: pixelSize,
@@ -26,9 +26,9 @@ export const Avatar = ({ alt, margin, size, shape, image, src, ...props }) => {
 		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center',
-		color: theme.color.gray30,
+		color: '#B3B3B3',
 		border: '2px solid white',
-		fontWeight: theme.font.weight.bold,
+		fontWeight: 600,
 		fontSize: fontSizeMap[size],
 	};
 
@@ -64,7 +64,7 @@ Avatar.defaultProps = {
 	size: 'medium',
 };
 
-const textGutter = theme.dynamicSpacing.small;
+const textGutter = '1em';
 const marginMap = {
 	none: { margin: 0 },
 	both: { marginBottom: textGutter, marginTop: textGutter },
@@ -86,12 +86,12 @@ const shapeMap = {
 };
 
 const fontSizeMap = {
-	xsmall: theme.font.size.xxsmall,
-	small: theme.font.size.xsmall,
-	medium: theme.font.size.small,
-	large: theme.font.size.medium,
-	xlarge: theme.font.size.large,
-	xxlarge: theme.font.size.large,
+	xsmall: '0.75rem',
+	small: '0.88rem',
+	medium: '1.2rem',
+	large: '1.6rem',
+	xlarge: '2.4rem',
+	xxlarge: '3.2rem',
 };
 
 const makeImageFragment = (name, size) => gql`
@@ -144,5 +144,5 @@ AvatarLayout.propTypes = {
 AvatarLayout.defaultProps = {
 	as: 'div',
 	margin: 'none',
-	spacing: theme.dynamicSpacing.small,
+	spacing: '1em',
 };

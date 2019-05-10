@@ -12,16 +12,16 @@ export default () => {
     signin({ email, password });
   };
 
-  // if login success - redirect to homepage
+  // if login success - redirect to profile
   useEffect(() => {
     if (isAuthenticated) {
-      Router.push('/');
+      Router.push('/profile');
     }
   });
 
   return (
     <>
-      <p>Sign in to continue to create, collaborate, and discover.</p>
+      <p>Sign into SydJS</p>
 
       <form noValidate onSubmit={handleSubmit}>
         <div>
@@ -48,12 +48,14 @@ export default () => {
             onChange={e => setPassword(e.target.value)}
           />
         </div>
-        {/* <a href="/forgot">Forgot password?</a> */}
         {isLoading ? (
-          <button disabled>Signing in...</button>
-        ) : (
-          <button type="submit">Sign in</button>
-        )}
+            <button disabled>Signing in...</button>
+          ) : (
+            <button type="submit">Sign in</button>
+          )}
+        <p>Don't have an account? <a href="/signup">Join SydJS</a></p>
+        <br />
+        <a href="/forgot">Forgot password?</a>
       </form>
     </>
   );

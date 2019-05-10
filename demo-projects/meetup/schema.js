@@ -31,7 +31,7 @@ exports.User = {
   fields: {
     name: { type: Text },
     email: { type: Text, isUnique: true },
-    password: { type: Password },
+    password: { type: Password, isRequired: true },
     isAdmin: { type: Checkbox },
     twitterHandle: { type: Text },
     image: { type: CloudinaryImage, adapter: cloudinaryAdapter },

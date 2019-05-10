@@ -13,6 +13,7 @@
     "build": "next build"
   },
   "dependencies": {
+    "@emotion/core": "^10.0.10",
     "@keystone-alpha/adapter-mongoose": "^1.0.6",
     "@keystone-alpha/admin-ui": "^3.1.0",
     "@keystone-alpha/core": "^2.0.3",
@@ -25,14 +26,16 @@
     "apollo-boost": "^0.3.1",
     "apollo-client": "^2.5.1",
     "body-parser": "^1.18.2",
-    "express": "^4.16.3",
     "dotenv": "^8.0.0",
+    "eslint-plugin-emotion": "^10.0.7",
+    "express": "^4.16.3",
     "graphql-tag": "^2.10.1",
     "isomorphic-unfetch": "^3.0.0",
     "next": "^8.0.3",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-apollo": "2.4.0",
+    "react-apollo-hooks": "^0.4.4",
     "react-toast-notifications": "^1.2.0",
     "react-use-form-state": "^0.10.0"
   }
