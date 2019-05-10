@@ -38,7 +38,7 @@ export default function Home() {
         <a>Sign In</a>
       </Link>
       <h2>Upcoming Events</h2>
-      <Query query={GET_ALL_EVENTS} variables={{ date: new Date().toLocaleDateString() }}>
+      <Query query={GET_ALL_EVENTS} variables={{ date: new Date().toISOString() }}>
         {({ data, loading, error }) => {
           if (loading) return <p>loading...</p>;
           if (error) {

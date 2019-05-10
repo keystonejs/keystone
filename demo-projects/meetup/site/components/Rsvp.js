@@ -35,17 +35,16 @@ const UPDATE_RSVP = gql`
 
 const GET_RSVPS = gql`
   query GetRsvps($event: ID!, $user: ID!) {
-    eventRsvps: allRsvps(where: { event: { id: $event } status: yes }) {
+    eventRsvps: allRsvps(where: { event: { id: $event }, status: yes }) {
       id
     }
-    userRsvps: allRsvps(where: { event: { id: $event } user: { id: $user } }) {
+    userRsvps: allRsvps(where: { event: { id: $event }, user: { id: $user } }) {
       id
       status
     }
-    Event(where: { id: $event }) {
+    event: Event(where: { id: $event }) {
       id
       startDate
-      durationMins
       maxRsvps
     }
   }
@@ -67,7 +66,7 @@ const Rsvp = ({ id }) => {
           return <p>Error!</p>;
         }
 
-        const { userRsvps, eventRsvps, Event } = data;
+        const { userRsvps, eventRsvps, event } = data;
 
         return (
           <Mutation
@@ -80,8 +79,15 @@ const Rsvp = ({ id }) => {
             ]}
           >
             {(updateRsvp, { error: mutationError }) => {
+              if (new Date() > new Date(event.startDate)) {
+                return <p>You can no longer rsvp to this event</p>;
+              }
 
-              if(Event.maxRsvps !== null && eventRsvps.length >= Event.maxRsvps && !userRsvps.length) {
+              if (
+                event.maxRsvps !== null &&
+                eventRsvps.length >= event.maxRsvps &&
+                !userRsvps.length
+              ) {
                 return <p>You can no longer rsvp to this event</p>;
               }
 
@@ -91,13 +97,13 @@ const Rsvp = ({ id }) => {
                 user: user.id,
               };
 
-              let status = userRsvps[0] ? userRsvps[0].status: null;
+              let status = userRsvps[0] ? userRsvps[0].status : null;
 
               return (
                 <div>
                   <h3>RSVP?</h3>
                   <button
-                    disabled={status === 'yes' || eventRsvps.length >= Event.maxRsvps}
+                    disabled={status === 'yes' || eventRsvps.length >= event.maxRsvps}
                     style={{ color: status === 'yes' ? 'blue' : 'black' }}
                     onClick={() => updateRsvp({ variables: { ...variables, status: 'yes' } })}
                   >
@@ -110,8 +116,10 @@ const Rsvp = ({ id }) => {
                   >
                     No
                   </button>
-                  {eventRsvps.length >= Event.maxRsvps ? <p>You can no longer rsvp to this event</p> : null}
-                  {mutationError ? <p style={{ color: 'red' }}>Error rsvping to event</p> : null }
+                  {eventRsvps.length >= event.maxRsvps ? (
+                    <p>You can no longer rsvp to this event</p>
+                  ) : null}
+                  {mutationError ? <p style={{ color: 'red' }}>Error rsvping to event</p> : null}
                 </div>
               );
             }}
