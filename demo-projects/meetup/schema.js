@@ -21,6 +21,7 @@ const cloudinaryAdapter = new CloudinaryAdapter({
 exports.Sponsor = {
   fields: {
     name: { type: Text },
+    website: { type: Text },
     logo: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
 };
