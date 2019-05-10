@@ -49,11 +49,13 @@ export default () => {
           />
         </div>
         {isLoading ? (
-            <button disabled>Signing in...</button>
-          ) : (
-            <button type="submit">Sign in</button>
-          )}
-        <p>Don't have an account? <a href="/signup">Join SydJS</a></p>
+          <button disabled>Signing in...</button>
+        ) : (
+          <button type="submit">Sign in</button>
+        )}
+        <p>
+          Don't have an account? <a href="/signup">Join SydJS</a>
+        </p>
         <br />
         <a href="/forgot">Forgot password?</a>
       </form>

@@ -28,9 +28,9 @@ export default App => {
       }
 
       if (res && res.finished) {
-				// When redirecting, the response is finished.
-				// No point in continuing to render
-				return {};
+        // When redirecting, the response is finished.
+        // No point in continuing to render
+        return {};
       }
 
       if (!process.browser) {

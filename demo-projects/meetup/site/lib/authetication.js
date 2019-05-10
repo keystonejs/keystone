@@ -108,7 +108,7 @@ const signInWithEmail = async ({ email, password }) => {
       credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify({ email, password }),
-    }).then(r =>  r.json());
+    }).then(r => r.json());
 
     if (res.success) {
       return { success: true };
