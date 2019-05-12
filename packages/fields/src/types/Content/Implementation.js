@@ -99,7 +99,7 @@ async function processSerialised(document, blocks, graphQlArgs) {
 }
 
 export class Content extends Relationship {
-  constructor(path, { blocks, ...fieldConfig }, listConfig) {
+  constructor(path, { blocks: inputBlocks, ...fieldConfig }, listConfig) {
     // To maintain consistency with other types, we grab the sanitised name
     // directly from the list.
     const { itemQueryName } = listConfig.getListByKey(listConfig.listKey).gqlNames;
@@ -110,19 +110,19 @@ export class Content extends Relationship {
     // to this list+field and don't collide.
     const type = `${GQL_TYPE_PREFIX}_${itemQueryName}_${path}`;
 
-    const _blocks = Array.isArray(blocks) ? blocks : [];
+    const blocks = Array.isArray(inputBlocks) ? inputBlocks : [];
 
-    _blocks.push(
+    blocks.push(
       ...DEFAULT_BLOCKS.filter(
         defaultBlock =>
-          !_blocks.find(
+          !blocks.find(
             block => (Array.isArray(block) ? block[0] : block).type === defaultBlock.type
           )
       )
     );
 
     // Checking for duplicate block types
-    for (let currentIndex = 0; currentIndex < _blocks.length; currentIndex++) {
+    for (let currentIndex = 0; currentIndex < blocks.length; currentIndex++) {
       const currentBlock = blocks[currentIndex];
       const currentType = (Array.isArray(currentBlock) ? currentBlock[0] : currentBlock).type;
       for (let checkIndex = currentIndex + 1; checkIndex < blocks.length; checkIndex++) {
@@ -134,7 +134,7 @@ export class Content extends Relationship {
       }
     }
 
-    const complexBlocks = _blocks
+    const complexBlocks = blocks
       .map(block => (Array.isArray(block) ? block : [block, {}]))
       .filter(([block]) => block.implementation)
       .map(
@@ -202,7 +202,7 @@ export class Content extends Relationship {
 
     this.auxList = auxList;
     this.listConfig = listConfig;
-    this.blocks = _blocks;
+    this.blocks = blocks;
   }
 
   /*
