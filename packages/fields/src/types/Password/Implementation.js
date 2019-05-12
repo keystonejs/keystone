@@ -7,14 +7,14 @@ import dumbPasswords from 'dumb-passwords';
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 
 export class Password extends Implementation {
-  constructor(path, config) {
+  constructor(path, { rejectCommon, minLength, workFactor }) {
     super(...arguments);
 
     // Sanitise field specific config
-    this.rejectCommon = !!config.rejectCommon;
-    this.minLength = Math.max(Number.parseInt(config.minLength) || 8, 1);
+    this.rejectCommon = !!rejectCommon;
+    this.minLength = Math.max(Number.parseInt(minLength) || 8, 1);
     // Min 4, max: 31, default: 10
-    this.workFactor = Math.min(Math.max(Number.parseInt(config.workFactor) || 10, 4), 31);
+    this.workFactor = Math.min(Math.max(Number.parseInt(workFactor) || 10, 4), 31);
 
     if (this.workFactor < 6) {
       console.warn(
