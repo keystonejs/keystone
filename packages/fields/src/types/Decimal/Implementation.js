@@ -4,8 +4,9 @@ import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 
 export class Decimal extends Implementation {
-  constructor() {
+  constructor(path, { symbol }) {
     super(...arguments);
+    this.symbol = symbol;
   }
 
   get gqlOutputFields() {
@@ -31,7 +32,7 @@ export class Decimal extends Implementation {
   extendAdminMeta(meta) {
     return {
       ...meta,
-      symbol: this.config.symbol,
+      symbol: this.symbol,
     };
   }
 }

@@ -15,13 +15,14 @@ import { resolveNested } from './nested-mutations';
 import { enqueueBacklinkOperations } from './backlinks';
 
 export class Relationship extends Implementation {
-  constructor() {
+  constructor(path, { ref, many, withMeta }) {
     super(...arguments);
-    const [refListKey, refFieldPath] = this.config.ref.split('.');
+    const [refListKey, refFieldPath] = ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
     this.isRelationship = true;
-    this.withMeta = typeof this.config.withMeta !== 'undefined' ? this.config.withMeta : true;
+    this.many = many;
+    this.withMeta = typeof withMeta !== 'undefined' ? withMeta : true;
   }
 
   tryResolveRefList() {
@@ -48,8 +49,6 @@ export class Relationship extends Implementation {
   }
 
   get gqlOutputFields() {
-    const { many } = this.config;
-
     const { refList } = this.tryResolveRefList();
 
     if (!refList.access.read) {
@@ -57,7 +56,7 @@ export class Relationship extends Implementation {
       return [];
     }
 
-    if (many) {
+    if (this.many) {
       const filterArgs = refList.getGraphqlFilterFragment().join('\n');
       return [
         `${this.path}(${filterArgs}): [${refList.gqlNames.outputTypeName}]`,
@@ -69,16 +68,11 @@ export class Relationship extends Implementation {
   }
 
   extendAdminMeta(meta) {
-    const {
-      refListKey: ref,
-      refFieldPath,
-      config: { many },
-    } = this;
+    const { refListKey: ref, refFieldPath, many } = this;
     return { ...meta, ref, refFieldPath, many };
   }
 
   get gqlQueryInputFields() {
-    const { many } = this.config;
     const { refList } = this.tryResolveRefList();
 
     if (!refList.access.read) {
@@ -86,7 +80,7 @@ export class Relationship extends Implementation {
       return [];
     }
 
-    if (many) {
+    if (this.many) {
       return [
         `""" condition must be true for all nodes """
         ${this.path}_every: ${refList.gqlNames.whereInputName}`,
@@ -103,7 +97,6 @@ export class Relationship extends Implementation {
   }
 
   get gqlOutputFieldResolvers() {
-    const { many } = this.config;
     const { refList } = this.tryResolveRefList();
 
     if (!refList.access.read) {
@@ -112,7 +105,7 @@ export class Relationship extends Implementation {
     }
 
     // to-one relationships are much easier to deal with.
-    if (!many) {
+    if (!this.many) {
       return {
         [this.path]: (item, _, context) => {
           // No ID set, so we return null for the value
@@ -190,8 +183,6 @@ export class Relationship extends Implementation {
    * `operations`.
    */
   async resolveNestedOperations(operations, item, context, getItem, mutationState) {
-    const { many, isRequired } = this.config;
-
     const { refList, refField } = this.tryResolveRefList();
     const listInfo = {
       local: { list: this.getListByKey(this.listKey), field: this },
@@ -205,7 +196,7 @@ export class Relationship extends Implementation {
       && (
         // If the field is not required, and the value is `null`, we can ignore
         // it and move on.
-        !isRequired
+        !this.isRequired
         // This field will be backlinked to this field's containing item, so we
         // can safely ignore it now expecing the backlinking process in the
         // calling code to take care of it.
@@ -221,7 +212,7 @@ export class Relationship extends Implementation {
     }
 
     let currentValue = item && item[this.path];
-    if (many) {
+    if (this.many) {
       currentValue = (currentValue || []).map(id => id.toString());
     } else {
       currentValue = currentValue && currentValue.toString();
@@ -233,7 +224,7 @@ export class Relationship extends Implementation {
       input: operations,
       currentValue,
       listInfo,
-      many,
+      many: this.many,
       context,
       mutationState,
     });
@@ -258,7 +249,7 @@ export class Relationship extends Implementation {
   // 3. create
   // 4. connect
   convertResolvedOperationsToFieldValue({ create, connect, disconnect }, item) {
-    if (this.config.many) {
+    if (this.many) {
       const currentValue = ((item && item[this.path]) || []).map(id => id.toString());
       return [...currentValue.filter(id => !disconnect.includes(id)), ...connect, ...create].filter(
         id => !!id
@@ -284,7 +275,7 @@ export class Relationship extends Implementation {
     const { refList, refField } = this.tryResolveRefList();
     if (refField) {
       enqueueBacklinkOperations(
-        { disconnect: this.config.many ? data : [data] },
+        { disconnect: this.many ? data : [data] },
         mutationState.queues,
         Promise.resolve(item),
         { list: this.getListByKey(this.listKey), field: this },
@@ -316,7 +307,7 @@ export class Relationship extends Implementation {
     // mutation createPost() {
     //   author: { connect: { id: 'abc123' } }
     // }
-    if (this.config.many) {
+    if (this.many) {
       return [
         `
         input ${refList.gqlNames.relateToManyInputName} {
@@ -356,7 +347,7 @@ export class Relationship extends Implementation {
   }
   get gqlUpdateInputFields() {
     const { refList } = this.tryResolveRefList();
-    if (this.config.many) {
+    if (this.many) {
       return [`${this.path}: ${refList.gqlNames.relateToManyInputName}`];
     }
 
