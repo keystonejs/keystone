@@ -13,9 +13,9 @@ function initOptions(options) {
 }
 
 export class Select extends Implementation {
-  constructor(path, config) {
+  constructor(path, { options }) {
     super(...arguments);
-    this.options = initOptions(config.options);
+    this.options = initOptions(options);
   }
   get gqlOutputFields() {
     return [`${this.path}: ${this.getTypeName()}`];

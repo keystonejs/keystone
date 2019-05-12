@@ -47,8 +47,8 @@ export async function resolveBacklinks(context, mutationState) {
         // Run update of local.path <operation>>> foreign.id
         // NOTE: This relies on the user having `update` permissions on the local list.
         const { local, foreign } = queuedWork;
-        const { path, config } = local.field;
-        const clause = { [path]: { [operation]: config.many ? [foreign] : foreign } };
+        const { path, many } = local.field;
+        const clause = { [path]: { [operation]: many ? [foreign] : foreign } };
         await local.list.updateMutation(local.id, clause, context, mutationState);
       }
     })

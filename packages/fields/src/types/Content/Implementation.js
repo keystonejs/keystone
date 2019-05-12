@@ -99,7 +99,7 @@ async function processSerialised(document, blocks, graphQlArgs) {
 }
 
 export class Content extends Relationship {
-  constructor(path, fieldConfig, listConfig) {
+  constructor(path, { blocks, ...fieldConfig }, listConfig) {
     // To maintain consistency with other types, we grab the sanitised name
     // directly from the list.
     const { itemQueryName } = listConfig.getListByKey(listConfig.listKey).gqlNames;
@@ -110,19 +110,19 @@ export class Content extends Relationship {
     // to this list+field and don't collide.
     const type = `${GQL_TYPE_PREFIX}_${itemQueryName}_${path}`;
 
-    const blocks = Array.isArray(fieldConfig.blocks) ? fieldConfig.blocks : [];
+    const _blocks = Array.isArray(blocks) ? blocks : [];
 
-    blocks.push(
+    _blocks.push(
       ...DEFAULT_BLOCKS.filter(
         defaultBlock =>
-          !blocks.find(
+          !_blocks.find(
             block => (Array.isArray(block) ? block[0] : block).type === defaultBlock.type
           )
       )
     );
 
     // Checking for duplicate block types
-    for (let currentIndex = 0; currentIndex < blocks.length; currentIndex++) {
+    for (let currentIndex = 0; currentIndex < _blocks.length; currentIndex++) {
       const currentBlock = blocks[currentIndex];
       const currentType = (Array.isArray(currentBlock) ? currentBlock[0] : currentBlock).type;
       for (let checkIndex = currentIndex + 1; checkIndex < blocks.length; checkIndex++) {
@@ -134,7 +134,7 @@ export class Content extends Relationship {
       }
     }
 
-    const complexBlocks = blocks
+    const complexBlocks = _blocks
       .map(block => (Array.isArray(block) ? block : [block, {}]))
       .filter(([block]) => block.implementation)
       .map(
@@ -196,18 +196,13 @@ export class Content extends Relationship {
       });
     }
 
-    const config = {
-      ...fieldConfig,
-      many: false,
-      // Link up the back reference to keep things in sync
-      ref: `${type}.from`,
-    };
-
+    // Link up the back reference to keep things in sync
+    const config = { ...fieldConfig, many: false, ref: `${type}.from` };
     super(path, config, listConfig);
 
     this.auxList = auxList;
     this.listConfig = listConfig;
-    this.blocks = blocks;
+    this.blocks = _blocks;
   }
 
   /*
