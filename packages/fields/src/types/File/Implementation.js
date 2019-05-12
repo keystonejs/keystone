@@ -12,9 +12,12 @@ const {
 } = mongoose;
 
 export class File extends Implementation {
-  constructor() {
+  constructor(path, { directory, route, adapter }) {
     super(...arguments);
     this.graphQLOutputType = 'File';
+    this.directory = directory;
+    this.route = route;
+    this.fileAdapter = adapter;
   }
 
   get gqlOutputFields() {
@@ -23,8 +26,8 @@ export class File extends Implementation {
   extendAdminMeta(meta) {
     return {
       ...meta,
-      directory: this.config.directory,
-      route: this.config.route,
+      directory: this.directory,
+      route: this.route,
     };
   }
   get gqlQueryInputFields() {
@@ -65,7 +68,7 @@ export class File extends Implementation {
         if (itemValues.id) itemValues.id = itemValues.id.toString();
 
         return {
-          publicUrl: this.config.adapter.publicUrl(itemValues),
+          publicUrl: this.fileAdapter.publicUrl(itemValues),
           ...itemValues,
         };
       },
@@ -92,7 +95,7 @@ export class File extends Implementation {
 
     const newId = new ObjectId();
 
-    const { id, filename, _meta } = await this.config.adapter.save({
+    const { id, filename, _meta } = await this.fileAdapter.save({
       stream,
       filename: originalFilename,
       mimetype,

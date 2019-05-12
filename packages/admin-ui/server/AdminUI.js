@@ -156,7 +156,7 @@ module.exports = class AdminUI {
     }
 
     const _app = express.Router();
-    _app.use('/admin', app);
+    _app.use(this.adminPath, app);
     return _app;
   }
 

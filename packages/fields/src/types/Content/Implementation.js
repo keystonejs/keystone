@@ -99,7 +99,7 @@ async function processSerialised(document, blocks, graphQlArgs) {
 }
 
 export class Content extends Relationship {
-  constructor(path, fieldConfig, listConfig) {
+  constructor(path, { blocks: inputBlocks, ...fieldConfig }, listConfig) {
     // To maintain consistency with other types, we grab the sanitised name
     // directly from the list.
     const { itemQueryName } = listConfig.getListByKey(listConfig.listKey).gqlNames;
@@ -110,7 +110,7 @@ export class Content extends Relationship {
     // to this list+field and don't collide.
     const type = `${GQL_TYPE_PREFIX}_${itemQueryName}_${path}`;
 
-    const blocks = Array.isArray(fieldConfig.blocks) ? fieldConfig.blocks : [];
+    const blocks = Array.isArray(inputBlocks) ? inputBlocks : [];
 
     blocks.push(
       ...DEFAULT_BLOCKS.filter(
@@ -196,13 +196,8 @@ export class Content extends Relationship {
       });
     }
 
-    const config = {
-      ...fieldConfig,
-      many: false,
-      // Link up the back reference to keep things in sync
-      ref: `${type}.from`,
-    };
-
+    // Link up the back reference to keep things in sync
+    const config = { ...fieldConfig, many: false, ref: `${type}.from` };
     super(path, config, listConfig);
 
     this.auxList = auxList;
