@@ -1,0 +1,1 @@
+Put the admin UI at `adminPath` rather than `/admin` with prod middleware.
