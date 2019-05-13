@@ -18,6 +18,14 @@ const cloudinaryAdapter = new CloudinaryAdapter({
   apiSecret: process.env.CLOUDINARY_SECRET,
 });
 
+exports.Sponsor = {
+  fields: {
+    name: { type: Text },
+    website: { type: Text },
+    logo: { type: CloudinaryImage, adapter: cloudinaryAdapter },
+  },
+};
+
 exports.Organiser = {
   fields: {
     user: { type: Relationship, ref: 'User.organiser' },
