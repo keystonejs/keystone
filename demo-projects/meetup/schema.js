@@ -52,7 +52,7 @@ exports.Event = {
   fields: {
     name: { type: Text },
     status: { type: Select, options: 'draft, active' },
-    startDate: { type: DateTime },
+    startTime: { type: DateTime },
     durationMins: { type: Integer },
     description: { type: Wysiwyg },
     talks: { type: Relationship, ref: 'Talk.event', many: true },
