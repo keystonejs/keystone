@@ -18,10 +18,9 @@ const RelationshipWrapper = {
 };
 
 export class ImageBlock extends Block {
-  constructor({ adapter }, { type, fromList, joinList, createAuxList, getListByKey }) {
-    super();
+  constructor({ adapter }, { fromList, joinList, createAuxList, getListByKey }) {
+    super(...arguments);
 
-    this.type = type;
     this.joinList = joinList;
 
     const auxListKey = `_Block_${fromList}_${this.type}`;
