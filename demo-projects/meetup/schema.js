@@ -19,15 +19,49 @@ const cloudinaryAdapter = new CloudinaryAdapter({
   apiSecret: process.env.CLOUDINARY_SECRET,
 });
 
-exports.Sponsor = {
+const access = {
+  userIsAdmin: ({ authentication: { item: user } }) => user && user.isAdmin,
+  userIsAdminOrPath: path => ({ existingItem: item, authentication: { item: user } }) => {
+    if (!user) return false;
+    return user.isAdmin || user.id === item[path];
+  },
+};
+
+access.readPublicWriteAdmin = {
+  create: access.userIsAdmin,
+  read: true,
+  update: access.userIsAdmin,
+  delete: access.userIsAdmin,
+};
+
+// TODO: We can't access the existing item at the list update level yet,
+// so this kludge will allow the access control to work for now by
+// locking down the API to admins.
+access.userIsAdminOrPath = () => access.userIsAdmin;
+
+exports.User = {
+  access: {
+    update: access.userIsAdminOrPath('id'),
+    delete: access.userIsAdmin,
+  },
   fields: {
     name: { type: Text },
-    website: { type: Text },
-    logo: { type: CloudinaryImage, adapter: cloudinaryAdapter },
+    email: { type: Text, isUnique: true, access: { read: access.userIsAdminOrPath('id') } },
+    password: { type: Password },
+    isAdmin: { type: Checkbox, access: { update: access.userIsAdmin } },
+    twitterHandle: { type: Text },
+    image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
+    talks: {
+      type: Relationship,
+      ref: 'Talk.speakers',
+      many: true,
+      access: { update: access.userIsAdmin },
+    },
   },
 };
 
 exports.Organiser = {
+  access: access.readPublicWriteAdmin,
   fields: {
     user: { type: Relationship, ref: 'User' },
     order: { type: Number },
@@ -35,19 +69,8 @@ exports.Organiser = {
   },
 };
 
-exports.User = {
-  fields: {
-    name: { type: Text },
-    email: { type: Text, isUnique: true },
-    password: { type: Password },
-    isAdmin: { type: Checkbox },
-    twitterHandle: { type: Text },
-    image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
-    talks: { type: Relationship, ref: 'Talk.speakers', many: true },
-  },
-};
-
 exports.Event = {
+  access: access.readPublicWriteAdmin,
   fields: {
     name: { type: Text },
     status: { type: Select, options: 'draft, active' },
@@ -64,6 +87,7 @@ exports.Event = {
 };
 
 exports.Talk = {
+  access: access.readPublicWriteAdmin,
   fields: {
     name: { type: Text },
     event: { type: Relationship, ref: 'Event.talks' },
@@ -74,9 +98,24 @@ exports.Talk = {
 };
 
 exports.Rsvp = {
+  access: {
+    create: true,
+    read: true,
+    update: access.userIsAdminOrPath('user'),
+    delete: access.userIsAdmin,
+  },
   fields: {
     event: { type: Relationship, ref: 'Event' },
     user: { type: Relationship, ref: 'User' },
     status: { type: Select, options: 'yes, no' },
+  },
+};
+
+exports.Sponsor = {
+  access: access.readPublicWriteAdmin,
+  fields: {
+    name: { type: Text },
+    website: { type: Text },
+    logo: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
 };
