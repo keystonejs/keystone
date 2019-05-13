@@ -5,8 +5,10 @@ const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const { Event, Talk, User, Rsvp, Organiser, Sponsor } = require('./schema');
 
+const MEETUP = require('./meetupConfig');
+
 const keystone = new Keystone({
-  name: 'Keystone Meetup',
+  name: MEETUP.name,
   adapter: new MongooseAdapter(),
 });
 
