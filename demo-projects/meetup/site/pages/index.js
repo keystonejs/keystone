@@ -1,15 +1,18 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
+import getConfig from 'next/config';
 
 import { useAuth } from '../lib/authetication';
 import EventItem from '../components/EventItem';
 import { Link } from '../../routes';
 import { EVENT_DATA } from './events';
 
+const { publicRuntimeConfig } = getConfig();
+
 export const GET_ALL_EVENTS = gql`
   query GetUpcomingEvents($date: DateTime!) {
-    allEvents(where: { startDate_gte: $date }) {
+    allEvents(where: { startTime_gte: $date }) {
       ...EventData
     }
   }
@@ -29,11 +32,13 @@ export const GET_ALL_SPONSORS = gql`
 `;
 
 export default function Home() {
+  const { meetup } = publicRuntimeConfig;
   const { isAuthenticated, user } = useAuth();
 
   return (
     <div>
-      <h1>Welcome {isAuthenticated ? user.name : ''} </h1>
+      <h1>{meetup.name}</h1>
+      <h2>Welcome {isAuthenticated ? user.name : ''} </h2>
       <Link route="signin">
         <a>Sign In</a>
       </Link>
