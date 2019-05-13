@@ -1,0 +1,1 @@
+Allow Content Blocks to specify default config which is deeply merged into user-supplied config

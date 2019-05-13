@@ -5,6 +5,7 @@ import {
   Relationship,
 } from '../Relationship/Implementation';
 import { flatMap, unique, objMerge } from '@keystone-alpha/utils';
+import defaultsDeep from 'lodash.defaultsdeep';
 import paragraph from './blocks/paragraph';
 import { walkSlateNode } from './slate-walker';
 import RelationshipType from '../Relationship';
@@ -139,7 +140,7 @@ export class Content extends Relationship {
       .filter(([block]) => block.implementation)
       .map(
         ([block, blockConfig]) =>
-          new block.implementation(blockConfig, {
+          new block.implementation(defaultsDeep({}, blockConfig, block.defaultConfig), {
             type: block.type,
             fromList: listConfig.listKey,
             joinList: type,
@@ -228,7 +229,12 @@ export class Content extends Relationship {
 
       // Key the block options by type to be serialised and passed to the client
       blockOptions: this.blocks
-        .filter(block => Array.isArray(block) && !!block[1])
+        .map(block =>
+          Array.isArray(block)
+            ? [block[0], defaultsDeep({}, block[1], block[0].defaultConfig)]
+            : [block, block.defaultConfig]
+        )
+        .filter(([, blockConfig]) => blockConfig && Object.keys(blockConfig).length)
         .reduce(
           (options, block) => ({
             ...options,
