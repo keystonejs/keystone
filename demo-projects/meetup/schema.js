@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const {
   CloudinaryImage,
   Checkbox,
@@ -28,7 +29,7 @@ exports.Sponsor = {
 
 exports.Organiser = {
   fields: {
-    user: { type: Relationship, ref: 'User.organiser' },
+    user: { type: Relationship, ref: 'User' },
     order: { type: Number },
     role: { type: Text },
   },
@@ -43,7 +44,6 @@ exports.User = {
     twitterHandle: { type: Text },
     image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
     talks: { type: Relationship, ref: 'Talk.speakers', many: true },
-    organiser: { type: Relationship, ref: 'Organiser.user' },
   },
 };
 
@@ -51,11 +51,15 @@ exports.Event = {
   fields: {
     name: { type: Text },
     status: { type: Select, options: 'draft, active' },
+    themeColor: { type: Text },
     startTime: { type: DateTime },
     durationMins: { type: Integer },
     description: { type: Wysiwyg },
     talks: { type: Relationship, ref: 'Talk.event', many: true },
+    locationAddress: { type: Text },
+    locationDescription: { type: Text },
     maxRsvps: { type: Integer },
+    isRsvpAvailable: { type: Checkbox },
   },
 };
 
