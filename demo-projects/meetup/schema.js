@@ -76,4 +76,16 @@ exports.Rsvp = {
     user: { type: Relationship, ref: 'User' },
     status: { type: Select, options: 'yes, no' },
   },
+  // hooks: {
+  //   validateInput: async ({ resolvedData, actions, addFieldValidationError }) => {
+  //     const { task, data } = resolvedData;
+  //     const x = await actions.query(`query {
+  //       Task(where: { id: "${task}" }) {
+  //         id
+  //         taskDef { answerSchema }
+  //       }
+  //     }`);
+
+  //   }
+  // }
 };

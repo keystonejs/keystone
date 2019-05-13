@@ -30,6 +30,8 @@ export const GET_ALL_SPONSORS = gql`
 
 export default function Home() {
   const { isAuthenticated, user } = useAuth();
+  let date = new Date();
+  date.setSeconds(0,0);
 
   return (
     <div>
@@ -38,13 +40,14 @@ export default function Home() {
         <a>Sign In</a>
       </Link>
       <h2>Upcoming Events</h2>
-      <Query query={GET_ALL_EVENTS} variables={{ date: new Date().toISOString() }}>
+      <Query query={GET_ALL_EVENTS} variables={{ date: date.toISOString() }}>
         {({ data, loading, error }) => {
           if (loading) return <p>loading...</p>;
           if (error) {
             console.log(error);
             return <p>Error!</p>;
           }
+
           return (
             <ul>
               {data.allEvents.map(event => (
