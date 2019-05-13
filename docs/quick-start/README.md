@@ -62,5 +62,6 @@ KeystoneJS provides a web interface for this API at
 
 ## Up Next
 
+- [Schema - Lists & Fields](../discussions/schema.md)
 - [Using the KeystoneJS Admin UI](../tutorials/admin-ui.md)
 - [Introduction To KeystoneJS's GraphQL API](../tutorials/intro-to-graphql.md)

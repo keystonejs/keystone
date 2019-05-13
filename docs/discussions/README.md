@@ -7,6 +7,7 @@ title: Introduction
 
 Some discussion papers to help you perform various tasks in the KeystoneJS ecosystem.
 
+- [Schema - Lists & Fields](./schema.md)
 - [Access Control](./access-control.md)
 - [Hooks](./hooks.md)
 - [Mutation Lifecycle](./mutation-lifecycle.md)
