@@ -113,6 +113,7 @@ git checkout master
 git pull
 git branch -D temp-release-branch
 git checkout -b temp-release-branch
+bolt fresh
 bolt version-packages
 bolt format
 git add .

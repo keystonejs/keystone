@@ -1,13 +1,13 @@
 {
   "name": "@keystone-alpha/access-control",
   "description": "KeystoneJS Access Control parsing and validating utilities.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone-alpha/utils": "^2.0.0"
+    "@keystone-alpha/utils": "^3.0.0"
   }
 }

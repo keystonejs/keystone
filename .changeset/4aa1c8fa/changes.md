@@ -1,1 +1,0 @@
-- GraphiQL playground now only accepts GET requests (not POST)

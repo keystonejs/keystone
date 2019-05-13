@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/server",
   "description": "Internal @keystone-alpha API & Admin UI server. For Custom Servers, see: @keystone-alpha/core",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -10,7 +10,7 @@
   "dependencies": {
     "@keystone-alpha/logger": "^2.0.0",
     "@keystone-alpha/session": "^1.0.2",
-    "@keystone-alpha/utils": "^2.0.0",
+    "@keystone-alpha/utils": "^3.0.0",
     "apollo-errors": "^1.9.0",
     "apollo-server-express": "^2.4.8",
     "body-parser": "^1.18.2",

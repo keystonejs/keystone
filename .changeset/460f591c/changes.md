@@ -1,1 +1,0 @@
-- Add tooltip to columns button in list table

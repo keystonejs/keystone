@@ -1,5 +1,19 @@
 # @keystone-alpha/email
 
+## 3.0.0
+
+### Major Changes
+
+- [2164a779](https://github.com/keystonejs/keystone-5/commit/2164a779):
+
+  - Replace jade with pug because Jade was renamed to Pug, and `jade` package is outdated
+
+### Patch Changes
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
 ## 2.0.0
 
 - [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):

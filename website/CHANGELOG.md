@@ -1,5 +1,24 @@
 # @keystone-alpha/website
 
+## 1.0.7
+
+### Patch Changes
+
+- [2e59d131](https://github.com/keystonejs/keystone-5/commit/2e59d131):
+
+  [docs] Add discussions on Schemas and Relationships
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
+- [94ed17bd](https://github.com/keystonejs/keystone-5/commit/94ed17bd):
+
+  [docs] Clearer path to follow immediately following the Quick Start tutorial
+
+* Updated dependencies [81b481d0](https://github.com/keystonejs/keystone-5/commit/81b481d0):
+  - @arch-ui/input@0.0.5
+
 ## 1.0.6
 
 - Updated dependencies [e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):

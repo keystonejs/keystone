@@ -1,5 +1,44 @@
 # @keystone-alpha/cypress-project-basic
 
+## 1.0.8
+
+### Patch Changes
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
+- [b22d6c16](https://github.com/keystonejs/keystone-5/commit/b22d6c16):
+
+  Remove custom server execution from the CLI.
+
+  The Keystone CLI does not execute custom servers anymore, instead of running `keystone` to start a Keystone instance that has a custom server, run the server file directly with `node`.
+
+  ```diff
+  - "start": "keystone",
+  + "start": "node server.js"
+  ```
+
+- [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+
+  - Update deps in test project
+
+* Updated dependencies [24cd26ee](https://github.com/keystonejs/keystone-5/commit/24cd26ee):
+* Updated dependencies [9dbed649](https://github.com/keystonejs/keystone-5/commit/9dbed649):
+* Updated dependencies [2ef2658f](https://github.com/keystonejs/keystone-5/commit/2ef2658f):
+* Updated dependencies [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+* Updated dependencies [ae5cf6cc](https://github.com/keystonejs/keystone-5/commit/ae5cf6cc):
+* Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+* Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+* Updated dependencies [bd0ea21f](https://github.com/keystonejs/keystone-5/commit/bd0ea21f):
+* Updated dependencies [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+  - @keystone-alpha/adapter-mongoose@1.0.7
+  - @keystone-alpha/keystone@4.0.0
+  - @keystone-alpha/admin-ui@3.2.0
+  - @keystone-alpha/fields@6.0.0
+  - @keystone-alpha/core@2.0.4
+  - @keystone-alpha/server@5.0.0
+
 ## 1.0.7
 
 - [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):

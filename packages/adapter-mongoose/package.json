@@ -1,17 +1,17 @@
 {
   "name": "@keystone-alpha/adapter-mongoose",
   "description": "KeystoneJS Mongoose Database adapter.",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=8.4.0"
   },
   "dependencies": {
-    "@keystone-alpha/keystone": "^3.1.0",
+    "@keystone-alpha/keystone": "^4.0.0",
     "@keystone-alpha/logger": "^2.0.0",
-    "@keystone-alpha/mongo-join-builder": "^2.0.0",
-    "@keystone-alpha/utils": "^2.0.0",
+    "@keystone-alpha/mongo-join-builder": "^2.0.1",
+    "@keystone-alpha/utils": "^3.0.0",
     "inflection": "^1.12.0",
     "mongoose": "^5.5.2",
     "p-settle": "^3.1.0"
