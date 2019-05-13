@@ -30,7 +30,6 @@ exports.Organiser = {
   fields: {
     user: { type: Relationship, ref: 'User.organiser' },
     order: { type: Number },
-    isOrganiser: { type: Checkbox },
     role: { type: Text },
   },
 };
