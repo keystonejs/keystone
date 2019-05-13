@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/tooltip",
   "description": "Tooltip UI as used in @keystone-alpha Admin UI.",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/tooltip.cjs.js",
@@ -14,8 +14,8 @@
     "react-dom": "^16.8.6"
   },
   "dependencies": {
-    "@arch-ui/modal-utils": "^0.0.5",
-    "@arch-ui/theme": "^0.0.3",
+    "@arch-ui/modal-utils": "^1.0.0",
+    "@arch-ui/theme": "^0.0.4",
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.10",
     "@emotion/styled": "^10.0.10",

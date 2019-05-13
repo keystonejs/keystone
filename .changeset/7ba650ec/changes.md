@@ -1,1 +1,0 @@
-- Use `.path` rather than `.config.path` in Controllers

@@ -1,1 +1,0 @@
-Fix a bug with admin UI serving in production

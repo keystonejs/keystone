@@ -1,5 +1,25 @@
 # @keystone-alpha/adapter-knex
 
+## 1.0.7
+
+### Patch Changes
+
+- [bd0ea21f](https://github.com/keystonejs/keystone-5/commit/bd0ea21f):
+
+  - Add .isRequired and .isUnique properties to field adapters
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
+* Updated dependencies [24cd26ee](https://github.com/keystonejs/keystone-5/commit/24cd26ee):
+* Updated dependencies [2ef2658f](https://github.com/keystonejs/keystone-5/commit/2ef2658f):
+* Updated dependencies [ae5cf6cc](https://github.com/keystonejs/keystone-5/commit/ae5cf6cc):
+* Updated dependencies [b22d6c16](https://github.com/keystonejs/keystone-5/commit/b22d6c16):
+* Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+  - @keystone-alpha/keystone@4.0.0
+  - @keystone-alpha/utils@3.0.0
+
 ## 1.0.6
 
 - [patch][4eb2dcd0](https://github.com/keystonejs/keystone-5/commit/4eb2dcd0):

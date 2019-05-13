@@ -1,1 +1,0 @@
-- Use named export from @keystone-alpha/fields-wysiwyg-tinymce

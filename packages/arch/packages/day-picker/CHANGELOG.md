@@ -1,5 +1,17 @@
 # @arch-ui/day-picker
 
+## 0.0.6
+
+### Patch Changes
+
+- [81b481d0](https://github.com/keystonejs/keystone-5/commit/81b481d0):
+
+  - Added support for isMultiline to Text field type
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
 ## 0.0.5
 
 - Updated dependencies [e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):

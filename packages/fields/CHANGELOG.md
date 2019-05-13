@@ -1,5 +1,76 @@
 # @keystone-alpha/fields
 
+## 6.0.0
+
+### Major Changes
+
+- [9dbed649](https://github.com/keystonejs/keystone-5/commit/9dbed649):
+
+  Explicit field config options are no longer available on `field.config` for field Implementaiton objects.
+
+- [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+
+  - Field view Controllers: Rename `.getValue()` to `.serialize()` and add `.deserialize()` to enable handling pre-save to server & post-read from server respectively.
+
+- [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+
+  - Use build-field-types
+
+- [bd0ea21f](https://github.com/keystonejs/keystone-5/commit/bd0ea21f):
+
+  - `{ mongooseOptions: { isRequired: true } }` should be replaced by `{ isRequired: true }`
+
+- [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+
+  - Field view Controllers: Rename `.getIntialData()` to `.getDefaultValue()` to better reflect the purpose of the function.
+
+### Minor Changes
+
+- [81b481d0](https://github.com/keystonejs/keystone-5/commit/81b481d0):
+
+  - Added support for isMultiline to Text field type
+
+- [c9102446](https://github.com/keystonejs/keystone-5/commit/c9102446):
+
+  - Add a mechanism for loading multiple Suspense-aware components in parallel
+
+### Patch Changes
+
+- [ebb858a5](https://github.com/keystonejs/keystone-5/commit/ebb858a5):
+
+  - Optimistically open Nested Create Item Modal and show loading spinner
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
+- [a4c66012](https://github.com/keystonejs/keystone-5/commit/a4c66012):
+
+  - Use `.path` rather than `.config.path` in Controllers
+
+- [3aeabc5e](https://github.com/keystonejs/keystone-5/commit/3aeabc5e):
+
+  - Refactor Content Type to extend Relationship Type to simplify implementation and enable future enhancements
+
+- [b8fc0a22](https://github.com/keystonejs/keystone-5/commit/b8fc0a22):
+
+  - Update dependency
+
+* Updated dependencies [e6e95173](https://github.com/keystonejs/keystone-5/commit/e6e95173):
+* Updated dependencies [a03fd601](https://github.com/keystonejs/keystone-5/commit/a03fd601):
+* Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+* Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+* Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+* Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+  - @keystone-alpha/build-field-types@1.0.0
+  - @arch-ui/drawer@0.0.6
+  - @arch-ui/tooltip@0.0.6
+  - @arch-ui/popout@0.0.6
+  - @keystone-alpha/access-control@1.0.4
+  - @keystone-alpha/adapter-knex@1.0.7
+  - @keystone-alpha/adapter-mongoose@1.0.7
+  - @keystone-alpha/utils@3.0.0
+
 ## 5.0.0
 
 - [patch][5c36ea0b](https://github.com/keystonejs/keystone-5/commit/5c36ea0b):

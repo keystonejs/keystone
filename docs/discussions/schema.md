@@ -14,12 +14,14 @@ KeystoneJS is comprised of 3 distinct pieces, which can be described as:
 </pre>
 
 A **Schema Definition** (_often abbreviated to 'Schema'_) is defined by
+
 - a set of **Lists**
 - containing one or more **Fields**
 - which each have a **Type**.
-<!-- TODO: Link to glossary -->
+  <!-- TODO: Link to glossary -->
 
 <!-- TODO: Make this a component that can be imported somehow -->
+
 <div style={{
   backgroundColor: '#f3f5f7',
   padding: '1rem 2rem',
@@ -27,13 +29,13 @@ A **Schema Definition** (_often abbreviated to 'Schema'_) is defined by
 }}>
   <center><strong>Minimal Schema Example</strong></center>
 
-  ```javascript
-  keystone.createList('Todo', {
-    fields: {
-      task: { type: Text }
-    }
-  });
-  ```
+```javascript
+keystone.createList('Todo', {
+  fields: {
+    task: { type: Text },
+  },
+});
+```
 
   <center>
     <em>
@@ -49,15 +51,15 @@ You can create as many lists as your project needs:
 ```javascript
 keystone.createList('Todo', {
   fields: {
-    task: { type: Text }
-  }
+    task: { type: Text },
+  },
 });
 
 keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-  }
+  },
 });
 ```
 
@@ -98,18 +100,18 @@ type User {
 _(NOTE: Only a subset of all the generated types/mutations/queries are shown
 here. To see a more complete example [follow the Quick Start](../quick-start).)_
 
-### Customizing Lists &amp; Fields
+### Customizing Lists & Fields
 
 Both lists and fields can accept further options:
 
 ```javascript
 keystone.createList('Todo', {
   fields: {
-    task: { type: Text, isRequired: true }
+    task: { type: Text, isRequired: true },
   },
   adminConfig: {
     defaultPageSize: 20,
-  }
+  },
 });
 ```
 
@@ -123,7 +125,7 @@ is thrown if a `task` value is not provided when creating/updating items.
 _For more List options, see the [`createList()` API
 docs](../api/create-list.md)._
 
-_[There are many different field types available](../../keystone-alpha/fields/),
+_[There are many different field types available](../keystone-alpha/fields/),
 each specifying their own options._
 
 ### Related Lists
@@ -159,8 +161,8 @@ Let's imagine we have a single item in our `Todo` list:
 <code><strong>Todo</strong></code>
 
 | `id` | `task`       | `createdBy` |
-|------|--------------|--------|
-| 1    | Use Keystone | Tici   |
+| ---- | ------------ | ----------- |
+| 1    | Use Keystone | Tici        |
 
 </div>
 
@@ -188,9 +190,9 @@ Everything looks great so far. Now, let's add another task:
 <code><strong>Todo</strong></code>
 
 | `id` | `task`       | `createdBy` |
-|------|--------------|--------|
-| 1    | Use Keystone | Tici   |
-| 2    | Setup linter | Tici   |
+| ---- | ------------ | ----------- |
+| 1    | Use Keystone | Tici        |
+| 2    | Setup linter | Tici        |
 
 </div>
 
@@ -215,7 +217,6 @@ Still ok.
 
 What if we add a new field:
 
-
 ```javascript
 keystone.createList('Todo', {
   fields: {
@@ -230,9 +231,9 @@ keystone.createList('Todo', {
 <code><strong>Todo</strong></code>
 
 | `id` | `task`       | `createdBy` | `email`          |
-|------|--------------|--------|------------------|
-| 1    | Use Keystone | Tici   | tici@example.com |
-| 2    | Setup Linter | Tici   | tici@example.com |
+| ---- | ------------ | ----------- | ---------------- |
+| 1    | Use Keystone | Tici        | tici@example.com |
+| 2    | Setup Linter | Tici        | tici@example.com |
 
 </div>
 
@@ -265,16 +266,16 @@ We can avoid the duplicate data by moving it out into its own `User` list:
 <code><strong>Todo</strong></code>
 
 | `id` | `task`       | `createdBy` |
-|------|--------------|--------|
-| 1    | Use Keystone | 1      |
-| 2    | Setup Linter | 1      |
+| ---- | ------------ | ----------- |
+| 1    | Use Keystone | 1           |
+| 2    | Setup Linter | 1           |
 
 </div>
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
 | `id` | `name` | `email`          |
-|------|--------|------------------|
+| ---- | ------ | ---------------- |
 | 1    | Tici   | tici@example.com |
 
 </div>
@@ -326,7 +327,6 @@ Which we'd have to execute once for every `User` that was referenced by a
 
 Using **Relationships** makes this a lot easier.
 
-
 #### Defining Relationships
 
 Relationships are defined using the `Relationship` field type, and require at
@@ -339,14 +339,14 @@ keystone.createList('Todo', {
   fields: {
     task: { type: Text },
     createdBy: { type: Relationship, ref: 'User' },
-  }
+  },
 });
 
 keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-  }
+  },
 });
 ```
 
@@ -393,14 +393,14 @@ keystone.createList('Todo', {
   fields: {
     task: { type: Text },
     createdBy: { type: Relationship, ref: 'User' },
-  }
+  },
 });
 
 keystone.createList('User', {
   fields: {
     name: { type: Text },
     email: { type: Text },
-  }
+  },
 });
 ```
 
@@ -434,7 +434,7 @@ The data stored in the database for the `createdBy` field will be a single ID:
 <code><strong>Todo</strong></code>
 
 | `id` | `task`       | `createdBy` |
-|------|--------------|-------------|
+| ---- | ------------ | ----------- |
 | 1    | Use Keystone | 1           |
 | 2    | Setup Linter | 1           |
 
@@ -444,7 +444,7 @@ The data stored in the database for the `createdBy` field will be a single ID:
 <code><strong>User</strong></code>
 
 | `id` | `name` | `email`          |
-|------|--------|------------------|
+| ---- | ------ | ---------------- |
 | 1    | Tici   | tici@example.com |
 
 </div>
@@ -501,7 +501,7 @@ IDs:
 <code><strong>Todo</strong></code>
 
 | `id` | `task`       |
-|------|--------------|
+| ---- | ------------ |
 | 1    | Use Keystone |
 | 2    | Setup Linter |
 | 3    | Be Awesome   |
@@ -513,10 +513,10 @@ IDs:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
-| `id` | `name` | `email`          | `todolist` | 
-|------|--------|------------------|------------| 
-| 1    | Tici   | tici@example.com | [1, 2]     | 
-| 2    | Jess   | jess@example.com | [3, 4, 5]  | 
+| `id` | `name` | `email`          | `todolist` |
+| ---- | ------ | ---------------- | ---------- |
+| 1    | Tici   | tici@example.com | [1, 2]     |
+| 2    | Jess   | jess@example.com | [3, 4, 5]  |
 
 </div>
 
@@ -550,6 +550,7 @@ keystone.createList('User', {
 ```
 
 Here we have two relationships:
+
 - A _to-single_ `createdBy` field on the `Todo` list, and
 - A _to-many_ `totolist` field on the `User` list.
 
@@ -591,7 +592,7 @@ The database would look like:
 <code><strong>Todo</strong></code>
 
 | `id` | `task`       | `createdBy` |
-|------|--------------|-------------|
+| ---- | ------------ | ----------- |
 | 1    | Use Keystone | 1           |
 | 2    | Setup Linter | 1           |
 | 3    | Be Awesome   | 2           |
@@ -603,10 +604,10 @@ The database would look like:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>User</strong></code>
 
-| `id` | `name` | `email`          | `todolist` | 
-|------|--------|------------------|------------| 
-| 1    | Tici   | tici@example.com | [1, 2]     | 
-| 2    | Jess   | jess@example.com | [3, 4, 5]  | 
+| `id` | `name` | `email`          | `todolist` |
+| ---- | ------ | ---------------- | ---------- |
+| 1    | Tici   | tici@example.com | [1, 2]     |
+| 2    | Jess   | jess@example.com | [3, 4, 5]  |
 
 </div>
 
@@ -660,9 +661,9 @@ If this was the first `Todo` item created, the database would now look like:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
-| `id` | `task`       | `createdBy` |
-|------|--------------|-------------|
-| 1    | Learn Node   | 1           |
+| `id` | `task`     | `createdBy` |
+| ---- | ---------- | ----------- |
+| 1    | Learn Node | 1           |
 
 </div>
 
@@ -670,8 +671,8 @@ If this was the first `Todo` item created, the database would now look like:
 <code><strong>User</strong></code>
 
 | `id` | `name` | `email`          | `todolist` |
-|------|--------|------------------|------------|
-| 1    | Tici   | tici@example.com | []         |
+| ---- | ------ | ---------------- | ---------- |
+| 1    | Tici   | tici@example.com | \[]        |
 
 </div>
 
@@ -752,9 +753,9 @@ Our database would like:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
-| `id` | `task`       | `createdBy` |
-|------|--------------|-------------|
-| 1    | Learn Node   | 1           |
+| `id` | `task`     | `createdBy` |
+| ---- | ---------- | ----------- |
+| 1    | Learn Node | 1           |
 
 </div>
 
@@ -762,8 +763,8 @@ Our database would like:
 <code><strong>User</strong></code>
 
 | `id` | `name` | `email`          | `todolist` |
-|------|--------|------------------|------------|
-| 1    | Tici   | tici@example.com | [1]         |
+| ---- | ------ | ---------------- | ---------- |
+| 1    | Tici   | tici@example.com | [1]        |
 
 </div>
 
@@ -837,9 +838,9 @@ The data would finally look like:
 <div style={{ border: '1px solid lightgray', padding: '1rem' }}>
 <code><strong>Todo</strong></code>
 
-| `id` | `task`       | `createdBy` |
-|------|--------------|-------------|
-| 1    | Learn Node   | 1           |
+| `id` | `task`     | `createdBy` |
+| ---- | ---------- | ----------- |
+| 1    | Learn Node | 1           |
 
 </div>
 
@@ -847,7 +848,7 @@ The data would finally look like:
 <code><strong>User</strong></code>
 
 | `id` | `name` | `email`          | `todolist` |
-|------|--------|------------------|------------|
-| 1    | Tici   | tici@example.com | [1]         |
+| ---- | ------ | ---------------- | ---------- |
+| 1    | Tici   | tici@example.com | [1]        |
 
 </div>
