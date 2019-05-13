@@ -1,27 +1,23 @@
 ---
-section: discussions
-title: Lists
+section: api
+title: keystone.createList() API
 ---
 
-# Lists Guide
+# `keystone.createList()` API
 
-```DOCS_TODO
-TODO
+## Usage
+
+```javascript
+keystone.createList('Post', {
+  /* ... */
+});
 ```
 
-## Creating Lists
+## API
 
-### `config`
-
-```DOCS_TODO
-TODO
-```
+### `options`
 
 #### `fields`
-
-```DOCS_TODO
-TODO
-```
 
 ##### `defaultValue`
 
