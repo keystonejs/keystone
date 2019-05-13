@@ -12,7 +12,7 @@ const { publicRuntimeConfig } = getConfig();
 
 export const GET_ALL_EVENTS = gql`
   query GetUpcomingEvents($date: DateTime!) {
-    allEvents(where: { startDate_gte: $date }) {
+    allEvents(where: { startTime_gte: $date }) {
       ...EventData
     }
   }
