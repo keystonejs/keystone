@@ -19,22 +19,6 @@ const cloudinaryAdapter = new CloudinaryAdapter({
   apiSecret: process.env.CLOUDINARY_SECRET,
 });
 
-exports.Sponsor = {
-  fields: {
-    name: { type: Text },
-    website: { type: Text },
-    logo: { type: CloudinaryImage, adapter: cloudinaryAdapter },
-  },
-};
-
-exports.Organiser = {
-  fields: {
-    user: { type: Relationship, ref: 'User' },
-    order: { type: Number },
-    role: { type: Text },
-  },
-};
-
 exports.User = {
   fields: {
     name: { type: Text },
@@ -44,6 +28,14 @@ exports.User = {
     twitterHandle: { type: Text },
     image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
     talks: { type: Relationship, ref: 'Talk.speakers', many: true },
+  },
+};
+
+exports.Organiser = {
+  fields: {
+    user: { type: Relationship, ref: 'User' },
+    order: { type: Number },
+    role: { type: Text },
   },
 };
 
@@ -78,5 +70,13 @@ exports.Rsvp = {
     event: { type: Relationship, ref: 'Event' },
     user: { type: Relationship, ref: 'User' },
     status: { type: Select, options: 'yes, no' },
+  },
+};
+
+exports.Sponsor = {
+  fields: {
+    name: { type: Text },
+    website: { type: Text },
+    logo: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
 };
