@@ -234,11 +234,11 @@ export class Content extends Relationship {
             ? [block[0], defaultsDeep({}, block[1], block[0].defaultConfig)]
             : [block, block.defaultConfig]
         )
-        .filter(([, blockConfig]) => blockConfig && Object.keys(blockConfig).length)
+        .filter(([, blockConfig]) => blockConfig && blockConfig.adminConfig)
         .reduce(
           (options, block) => ({
             ...options,
-            [block[0].type]: block[1],
+            [block[0].type]: block[1].adminConfig,
           }),
           {}
         ),

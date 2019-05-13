@@ -126,7 +126,7 @@ keystone.createList('Post', {
         Content.blocks.blockquote,
         Content.blocks.orderedList,
         Content.blocks.unorderedList,
-        [Content.blocks.embed, { apiKey: process.env.EMBEDLY_API_KEY }],
+        [Content.blocks.embed, { adminConfig: { apiKey: process.env.EMBEDLY_API_KEY } }],
         Content.blocks.link,
         Content.blocks.heading,
       ],
