@@ -46,7 +46,7 @@ exports.User = {
   },
   fields: {
     name: { type: Text },
-    email: { type: Text, isUnique: true },
+    email: { type: Text, isUnique: true, access: { read: access.userIsAdminOrPath('id') } },
     password: { type: Password },
     isAdmin: { type: Checkbox, access: { update: access.userIsAdmin } },
     twitterHandle: { type: Text },
