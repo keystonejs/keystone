@@ -1,1 +1,0 @@
-- Added support for isMultiline to Text field type

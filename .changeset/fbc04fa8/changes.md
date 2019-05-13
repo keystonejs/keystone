@@ -1,1 +1,0 @@
-- `mergeSchemaOptions` now uses `this.isUnique` rather than taking it as a config paramter

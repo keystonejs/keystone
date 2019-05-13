@@ -1,1 +1,0 @@
-Use explicit field properties rather than field.config.

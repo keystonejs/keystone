@@ -9,7 +9,7 @@ const GET_EVENT_DETAILS = gql`
     Event(where: { id: $event }) {
       id
       name
-      startDate
+      startTime
       description
       talks {
         id
@@ -44,12 +44,12 @@ export default class Event extends Component {
             return <p>Event not found</p>;
           }
 
-          const { name, startDate, talks } = data.Event;
+          const { name, startTime, talks } = data.Event;
 
           return (
             <div>
               <h2>{name}</h2>
-              <p>{startDate}</p>
+              <p>{startTime}</p>
               <Rsvp id={id} />
               <h2>Talks</h2>
               {talks.map(talk => (

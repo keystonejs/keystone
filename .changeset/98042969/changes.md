@@ -1,1 +1,0 @@
-- Add a mechanism for loading multiple Suspense-aware components in parallel

@@ -1,5 +1,13 @@
 # create-keystone-app
 
+## 0.5.0
+
+### Minor Changes
+
+- [b22d6c16](https://github.com/keystonejs/keystone-5/commit/b22d6c16):
+
+  Update template to account for the removal of custom server execution in the Keystone CLI
+
 ## 0.4.2
 
 - [patch][e3337a7d](https://github.com/keystonejs/keystone-5/commit/e3337a7d):

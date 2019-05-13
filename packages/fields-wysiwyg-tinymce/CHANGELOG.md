@@ -1,5 +1,30 @@
 # @keystone-alpha/fields-wysiwyg-tinymce
 
+## 2.0.0
+
+### Major Changes
+
+- [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+
+  - Use build-field-types
+
+### Patch Changes
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
+* Updated dependencies [e6e95173](https://github.com/keystonejs/keystone-5/commit/e6e95173):
+* Updated dependencies [9dbed649](https://github.com/keystonejs/keystone-5/commit/9dbed649):
+* Updated dependencies [81b481d0](https://github.com/keystonejs/keystone-5/commit/81b481d0):
+* Updated dependencies [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+* Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+* Updated dependencies [bd0ea21f](https://github.com/keystonejs/keystone-5/commit/bd0ea21f):
+* Updated dependencies [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+  - @keystone-alpha/fields@6.0.0
+  - @keystone-alpha/build-field-types@1.0.0
+  - @arch-ui/input@0.0.5
+
 ## 1.0.2
 
 - Updated dependencies [85b74a2c](https://github.com/keystonejs/keystone-5/commit/85b74a2c):

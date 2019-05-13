@@ -1,2 +1,0 @@
-- Remove `devBabelPlugin` export which is unnecessary now because there is now a runtime implementation of `importView` for dev
-- Remove `aliases` export which is superseded by the `dev` command

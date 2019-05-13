@@ -1,7 +1,7 @@
 {
   "name": "@keystone-alpha/email",
   "description": "Easily send emails from a KeystoneJS application",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {

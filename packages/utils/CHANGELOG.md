@@ -1,5 +1,25 @@
 # @keystone-alpha/utils
 
+## 3.0.0
+
+### Major Changes
+
+- [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+
+  - Remove `checkRequiredConfig`, `fixConfigKeys` and `camelize`.
+
+### Minor Changes
+
+- [c9102446](https://github.com/keystonejs/keystone-5/commit/c9102446):
+
+  - Add a mechanism for loading multiple Suspense-aware components in parallel
+
+### Patch Changes
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
 ## 2.0.0
 
 - [major][98c02a46](https://github.com/keystonejs/keystone-5/commit/98c02a46):

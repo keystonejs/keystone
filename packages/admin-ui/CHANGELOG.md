@@ -1,5 +1,89 @@
 # @keystone-alpha/admin-ui
 
+## 3.2.0
+
+### Minor Changes
+
+- [22ec53a8](https://github.com/keystonejs/keystone-5/commit/22ec53a8):
+
+  - Adding support for custom pages in Admin UI
+
+- [6f598e83](https://github.com/keystonejs/keystone-5/commit/6f598e83):
+
+  - Add Admin UI static building
+
+### Patch Changes
+
+- [18b88df0](https://github.com/keystonejs/keystone-5/commit/18b88df0):
+
+  Fix a bug with admin UI serving in production
+
+- [ebb858a5](https://github.com/keystonejs/keystone-5/commit/ebb858a5):
+
+  - Optimistically open Nested Create Item Modal and show loading spinner
+
+- [b8fc0a22](https://github.com/keystonejs/keystone-5/commit/b8fc0a22):
+
+  - Add tooltip to columns button in list table
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
+- [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+
+  - Field view Controllers: Rename `.getValue()` to `.serialize()` and add `.deserialize()` to enable handling pre-save to server & post-read from server respectively.
+
+- [5e7d1940](https://github.com/keystonejs/keystone-5/commit/5e7d1940):
+
+  - Remove custom context menu on list page
+
+- [c79cd7eb](https://github.com/keystonejs/keystone-5/commit/c79cd7eb):
+
+  - Update Many modal shows spinner while loading fields
+
+- [51a0d853](https://github.com/keystonejs/keystone-5/commit/51a0d853):
+
+  Put the admin UI at `adminPath` rather than `/admin` with prod middleware.
+
+- [c9102446](https://github.com/keystonejs/keystone-5/commit/c9102446):
+
+  - Add a mechanism for loading multiple Suspense-aware components in parallel
+
+- [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+
+  - Field view Controllers: Rename `.getIntialData()` to `.getDefaultValue()` to better reflect the purpose of the function.
+
+* [5637518f](https://github.com/keystonejs/keystone-5/commit/5637518f):
+
+  - Show loading spinner while loading views in List Table
+
+* [997c0b9c](https://github.com/keystonejs/keystone-5/commit/997c0b9c):
+
+  - DX: Open Create Modal optimistically and display loading state
+
+- Updated dependencies [e6e95173](https://github.com/keystonejs/keystone-5/commit/e6e95173):
+- Updated dependencies [9dbed649](https://github.com/keystonejs/keystone-5/commit/9dbed649):
+- Updated dependencies [81b481d0](https://github.com/keystonejs/keystone-5/commit/81b481d0):
+- Updated dependencies [a03fd601](https://github.com/keystonejs/keystone-5/commit/a03fd601):
+- Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+- Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+- Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+- Updated dependencies [bd0ea21f](https://github.com/keystonejs/keystone-5/commit/bd0ea21f):
+- Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+- Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+  - @keystone-alpha/fields@6.0.0
+  - @keystone-alpha/build-field-types@1.0.0
+  - @arch-ui/controls@0.0.5
+  - @arch-ui/input@0.0.5
+  - @arch-ui/confirm@0.0.6
+  - @arch-ui/dialog@0.0.6
+  - @arch-ui/drawer@0.0.6
+  - @arch-ui/dropdown@0.0.6
+  - @arch-ui/tooltip@0.0.6
+  - @arch-ui/popout@0.0.6
+  - @keystone-alpha/utils@3.0.0
+
 ## 3.1.0
 
 - [patch][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):

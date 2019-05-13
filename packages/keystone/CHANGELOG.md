@@ -1,5 +1,83 @@
 # @keystone-alpha/keystone
 
+## 4.0.0
+
+### Major Changes
+
+- [24cd26ee](https://github.com/keystonejs/keystone-5/commit/24cd26ee):
+
+  - Remove `.config` property from `Keystone` and `List` classes
+
+- [2ef2658f](https://github.com/keystonejs/keystone-5/commit/2ef2658f):
+
+  - Moved Social Login Strategies into its own package `@keystone-alpha/passport-auth`.
+  - Created base strategy `PassportAuthStrategy`. This enables quick addition of new Social Login Strategy based on PassportJs.
+  - Refactored Twitter and Facebook to extend base `PassportAuthStrategy`.
+  - Added Google and GitHub Auth Strategy by extending base `PassportAuthStrategy`.
+  - Removed `passport` and related dependencies from `@keystone-alpha/keystone`.
+  - `test-projects/facebook-login` project is renamed into `test-projects/social-login`
+  - `social-login` project now support for social login with Twitter, Facebook, Google and GitHub inbuilt strategies from `@keystone-alpha/passport-auth` along with an example of how to implement your own PassportJs strategy for WordPress in `WordPressAuthStrategy.js`
+
+- [ae5cf6cc](https://github.com/keystonejs/keystone-5/commit/ae5cf6cc):
+
+  - List adapter config must now be specified within the `adapterConfig` field, rather than directly on the `config` object.
+
+- [b22d6c16](https://github.com/keystonejs/keystone-5/commit/b22d6c16):
+
+  Remove custom server execution from the CLI.
+
+  The Keystone CLI does not execute custom servers anymore, instead of running `keystone` to start a Keystone instance that has a custom server, run the server file directly with `node`.
+
+  ```diff
+  - "start": "keystone",
+  + "start": "node server.js"
+  ```
+
+### Minor Changes
+
+- [6f598e83](https://github.com/keystonejs/keystone-5/commit/6f598e83):
+
+  - Add `build` and `start` commands
+
+- [6f598e83](https://github.com/keystonejs/keystone-5/commit/6f598e83):
+
+  - Add Admin UI static building
+
+### Patch Changes
+
+- [211b71c1](https://github.com/keystonejs/keystone-5/commit/211b71c1):
+
+  - Fix bug in resolver for createMany mutations
+
+- [bd0ea21f](https://github.com/keystonejs/keystone-5/commit/bd0ea21f):
+
+  - Add .isRequired and .isUnique properties to field adapters
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
+- [60181234](https://github.com/keystonejs/keystone-5/commit/60181234):
+
+  Use `unique()` from `@keystone-alpha/utils`
+
+- [9dbed649](https://github.com/keystonejs/keystone-5/commit/9dbed649):
+
+  Use explicit field properties rather than field.config.
+
+* Updated dependencies [e6e95173](https://github.com/keystonejs/keystone-5/commit/e6e95173):
+* Updated dependencies [9dbed649](https://github.com/keystonejs/keystone-5/commit/9dbed649):
+* Updated dependencies [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+* Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+* Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+* Updated dependencies [bd0ea21f](https://github.com/keystonejs/keystone-5/commit/bd0ea21f):
+* Updated dependencies [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+* Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+  - @keystone-alpha/fields@6.0.0
+  - @keystone-alpha/build-field-types@1.0.0
+  - @keystone-alpha/access-control@1.0.4
+  - @keystone-alpha/utils@3.0.0
+
 ## 3.1.0
 
 - [patch][5180d2fb](https://github.com/keystonejs/keystone-5/commit/5180d2fb):
