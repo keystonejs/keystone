@@ -1,6 +1,6 @@
 import React, { Component, createContext, useContext } from 'react';
 
-const apiEndpoint = 'http://localhost:3000/auth';
+const apiEndpoint = 'http://localhost:3000/api';
 
 /**
  * AuthContext
