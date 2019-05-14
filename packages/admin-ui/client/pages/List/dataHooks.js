@@ -172,7 +172,7 @@ export function useListItems(listKey) {
     if (data[list.gqlNames.listQueryMetaName]) {
       setCount(data[list.gqlNames.listQueryMetaName].count);
     }
-  }); // FIXME this gets called SO OFTEN. needs deps e.g. `listKey`, but then we don't get data in time...
+  }, [data, list]);
 
   return { items, itemCount, itemErrors };
 }
