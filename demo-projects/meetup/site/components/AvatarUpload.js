@@ -15,6 +15,7 @@ export const AvatarUpload = ({ userId, size, toastManager }) => {
   if (loading) return null;
 
   const user = data.User;
+  if (!user) return null;
 
   const handleImageChange = files => {
     const file = files ? files[0] : false;
@@ -78,7 +79,7 @@ export const AvatarUpload = ({ userId, size, toastManager }) => {
           css={{ margin: '0 auto', border: '2px solid white' }}
           alt={user.name}
           size={size}
-          src={user && user.image ? user.image.xxlarge : null}
+          src={user.image ? user.image.xxlarge : null}
         />
       )}
       <div
@@ -88,7 +89,7 @@ export const AvatarUpload = ({ userId, size, toastManager }) => {
           marginTop: '1em',
         }}
       >
-        {user && user.image ? 'Change profile image' : 'Add profile image'}
+        {user.image ? 'Change profile image' : 'Add profile image'}
       </div>
       <input
         accept={validImageTypes}

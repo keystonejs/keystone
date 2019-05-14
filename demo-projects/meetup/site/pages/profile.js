@@ -47,8 +47,8 @@ const Profile = withToastManager(props => {
 
   const submitDisabled =
     updatingUser ||
-    (formState.touched.email === true && formState.validity.email === false) ||
-    (formState.touched.password === true && formState.validity.password === false) ||
+    (formState.touched.email && !formState.validity.email) ||
+    (formState.touched.password && !formState.validity.password) ||
     (!formState.values.password || !formState.values.confirmPassword);
 
   const handleSubmit = useCallback(
@@ -100,7 +100,7 @@ const Profile = withToastManager(props => {
         <label htmlFor="email">
           Email
           <input required {...email('email')} autoComplete="email" disabled={updatingUser} />
-          {formState.validity.email === false && <span>Please enter a valid email address.</span>}
+          {!formState.validity.email && <span>Please enter a valid email address.</span>}
         </label>
         <br />
         <label htmlFor="twitterHandle">
@@ -119,7 +119,7 @@ const Profile = withToastManager(props => {
             onFocus={() => setValidationErrors({ password: '' })}
           />
           <br />
-          {formState.touched.password === true && formState.validity.password === false && (
+          {formState.touched.password && !formState.validity.password && (
             <span>Your password must be at least 8 characters long.</span>
           )}
           {validationErrors && validationErrors.password && (
