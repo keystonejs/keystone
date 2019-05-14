@@ -1,5 +1,13 @@
 # @keystone-alpha/build-field-types
 
+## 1.0.1
+
+### Patch Changes
+
+- [e502af66](https://github.com/keystonejs/keystone-5/commit/e502af66):
+
+  Fix dist directories not being cleared before builds causing broken builds with build-field-types
+
 ## 1.0.0
 
 ### Major Changes
