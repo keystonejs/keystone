@@ -25,6 +25,9 @@ Promise.all([keystone.prepare({ port }), nextApp.prepare()])
     // NOTE: This is only for demo purposes and should not be used in production
     const users = await keystoneApp.lists.User.adapter.findAll();
     if (!users.length) {
+      Object.values(keystoneApp.adapters).forEach(async adapter => {
+        await adapter.dropDatabase();
+      });
       await keystoneApp.createItems(initialData);
     }
 
