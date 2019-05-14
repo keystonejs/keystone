@@ -10,7 +10,7 @@ import { AuthProvider } from '../lib/authetication';
 import Navbar from '../components/Navbar';
 import StylesBase from '../primitives/StylesBase';
 
-const apiEndpoint = 'http://localhost:3000/admin';
+const apiEndpoint = 'http://localhost:3000/api';
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {

@@ -38,22 +38,22 @@ export class AuthProvider extends Component {
   }
 
   checkSession = async () => {
-    await this.setState({ isLoading: true });
-    const { user, authenticated } = await checkSession();
-    await this.setState({
+    if (!this.state.isLoading) {
+      this.setState({ isLoading: true });
+    }
+    const { user } = await checkSession();
+    this.setState({
       user: user,
       isLoading: false,
     });
-
-    return { authenticated };
   };
 
   signin = async ({ email, password }) => {
-    await this.setState({ isLoading: true });
+    this.setState({ isLoading: true });
     const res = await signInWithEmail({ email, password });
 
     if (!res.success) {
-      await this.setState({ isLoading: false });
+      this.setState({ isLoading: false });
       return res;
     }
 
@@ -62,15 +62,12 @@ export class AuthProvider extends Component {
       return { success: true };
     } else {
       // This could be a cookie related error, or some other blocker.
-      return {
-        success: false,
-        message: 'There was a problem signing you in. Please try again later.',
-      };
+      return { success: false };
     }
   };
 
   signout = async () => {
-    await this.setState({ isLoading: true });
+    this.setState({ isLoading: true });
     const res = await signout();
     if (res.success) {
       this.setState({
@@ -88,7 +85,7 @@ export class AuthProvider extends Component {
     return (
       <AuthContext.Provider
         value={{
-          isAuthenticated: user,
+          isAuthenticated: !!user,
           isLoading,
           signin: this.signin,
           signout: this.signout,
@@ -116,7 +113,7 @@ const signInWithEmail = async ({ email, password }) => {
       return { success: false, message: res.message };
     }
   } catch (error) {
-    console.error(error);
+    console.error('Error signing in:', error);
     return { success: false };
   }
 };
@@ -131,7 +128,7 @@ const signout = async () => {
       success: res.success === true,
     };
   } catch (error) {
-    console.error(error);
+    console.error('Error signing out:', error);
     return { success: false };
   }
 };
@@ -143,16 +140,18 @@ const checkSession = async () => {
       credentials: 'same-origin',
     }).then(r => r.json());
 
-    if (res.signedIn) {
+    console.log(res);
+
+    if (res.isSignedIn) {
       return {
-        authenticated: true,
-        user: res.userId,
+        isSignedIn: true,
+        user: res.user,
       };
     } else {
-      return { authenticated: false };
+      return { isSignedIn: false };
     }
   } catch (error) {
-    console.error(error);
+    console.error('Error checking session:', error);
     return { success: false, error: error.message };
   }
 };
