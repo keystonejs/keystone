@@ -46,6 +46,7 @@ const GET_RSVPS = gql`
       id
       startTime
       maxRsvps
+      isRsvpAvailable
     }
   }
 `;
@@ -79,6 +80,10 @@ const Rsvp = ({ id }) => {
             ]}
           >
             {(updateRsvp, { error: mutationError }) => {
+              if (!event.isRsvpAvailable) {
+                return <p>Rsvp is not available</p>;
+              }
+
               if (new Date() > new Date(event.startTime)) {
                 return <p>You can no longer rsvp to this event</p>;
               }
