@@ -203,6 +203,7 @@ export class Content extends Relationship {
     this.auxList = auxList;
     this.listConfig = listConfig;
     this.blocks = blocks;
+    this.complexBlocks = complexBlocks;
   }
 
   /*
@@ -226,9 +227,22 @@ export class Content extends Relationship {
       // in)
       blockTypes: this.blocks.map(block => (Array.isArray(block) ? block[0] : block).type),
 
-      // Key the block options by type to be serialised and passed to the client
       blockOptions: this.blocks
-        .filter(block => Array.isArray(block) && !!block[1])
+        // Normalise the input config so everything is an array
+        .map(block => (Array.isArray(block) ? [block[0], block[1]] : [block, {}]))
+        // Give complex blocks the opportunity to set default values
+        .map(([block, blockConfig]) => {
+          const complexBlockInstance = this.complexBlocks.find(({ type }) => type === block.type);
+
+          return [
+            block,
+            complexBlockInstance ? complexBlockInstance.extendAdminMeta(blockConfig) : blockConfig,
+          ];
+        })
+        // Don't bother sending any configs that are empty
+        .filter(([, blockConfig]) => blockConfig && Object.keys(blockConfig).length)
+        // Key the block options by type to be serialised and passed to the
+        // client
         .reduce(
           (options, block) => ({
             ...options,

@@ -6,25 +6,21 @@ import { jsx } from '@emotion/core';
 
 import { useAuth } from '../lib/authetication';
 import EventItem from '../components/EventItem';
+import CallToAction from '@components/CallToAction';
 import { Link } from '../../routes';
 import { EVENT_DATA } from './events';
 
-import { Section, Container, Separator } from '@primitives';
+import { Section, Container, Separator, Button } from '@primitives';
+import { H1, H2, H3, Headline } from '@primitives/Typography';
 import { colors, fontSizes } from '@root/theme';
 
 const { publicRuntimeConfig } = getConfig();
 
-export const GET_ALL_EVENTS = gql`
-  query GetUpcomingEvents($date: DateTime!) {
-    allEvents(where: { startTime_gte: $date }) {
+export const GET_EVENTS_AND_SPONSORS = gql`
+  query {
+    allEvents(where: { startTime_not: null }, orderBy: "startTime") {
       ...EventData
     }
-  }
-  ${EVENT_DATA}
-`;
-
-export const GET_ALL_SPONSORS = gql`
-  {
     allSponsors {
       id
       name
@@ -33,6 +29,7 @@ export const GET_ALL_SPONSORS = gql`
       }
     }
   }
+  ${EVENT_DATA}
 `;
 
 function Hero({ meetup }) {
@@ -48,8 +45,8 @@ function Hero({ meetup }) {
           color: 'white',
         }}
       >
-        <h1 css={{ fontSize: fontSizes.xxl, marginBottom: 20 }}>{meetup.name}</h1>
-        <p css={{ fontSize: fontSizes.md, maxWidth: 720, margin: '0 auto' }}>{meetup.intro}</p>
+        <H1>{meetup.name}</H1>
+        <p css={{ fontSize: fontSizes.md, maxWidth: 720, margin: '30px auto 0' }}>{meetup.intro}</p>
         <h2>Welcome {isAuthenticated ? user.name : ''} </h2>
         <Link route="signin">
           <a>Sign In</a>
@@ -61,25 +58,33 @@ function Hero({ meetup }) {
 
 function Slant() {
   return (
-    <div css={{ position: 'relative', height: 300 }}>
-      <svg viewBox="0 0 100 100" css={{ width: 10, height: 300, position: 'absolute', bottom: 0 }}>
-        <polygon id="e1_polygon" points="0 0, 0 100, 100 0" fill={colors.greyDark} />
-      </svg>
-    </div>
+    <svg
+      css={{ height: '5vw', width: '100vw' }}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+    >
+      <polygon fill={colors.greyDark} points="0, 100 0, 0 100, 0" />
+    </svg>
   );
 }
 
 function FeaturedEvent() {
   return (
-    <Container css={{ margin: '-40px auto 0' }}>
+    <Container css={{ margin: '-7rem auto 0', position: 'relative' }}>
       <div css={{ boxShadow: '0px 4px 94px rgba(0, 0, 0, 0.15)' }}>
         <div css={{ backgroundColor: colors.purple, color: 'white', padding: '2rem' }}>
           <div css={{ display: 'flex' }}>
             <div css={{ flex: 1 }}>
-              <h2 css={{ fontSize: fontSizes.lg }}>Community Sourced Scripting!</h2>
+              <H3>Community Sourced Scripting!</H3>
             </div>
             <div css={{ flex: 1, padding: '0 2rem' }}>
-              <p css={{ lineHeight: 1.5 }}>
+              <p>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. At laborum libero
+                repudiandae odit magnam consequuntur possimus quae id necessitatibus, corporis nobis
+                molestiae rerum mollitia placeat vel iure magni ducimus quo?
+              </p>
+              <p>
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit. At laborum libero
                 repudiandae odit magnam consequuntur possimus quae id necessitatibus, corporis nobis
                 molestiae rerum mollitia placeat vel iure magni ducimus quo?
@@ -87,12 +92,18 @@ function FeaturedEvent() {
             </div>
           </div>
         </div>
-        <div css={{ padding: '1rem' }}>
-          <div css={{ display: 'flex', justifyContent: 'space-between' }}>
-            <div css={{ display: 'flex', flex: 1, justifyContent: 'flex-start' }}>
+        <div css={{ padding: '1.5rem', background: 'white' }}>
+          <div css={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div
+              css={{ display: 'flex', flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}
+            >
               <span css={{ padding: '0 1rem' }}>Will you be attending?</span>
-              <button css={{ marginLeft: '.5rem' }}>yes</button>
-              <button css={{ marginLeft: '.5rem' }}>no</button>
+              <Button color={colors.purple} css={{ marginLeft: '.5rem' }}>
+                yes
+              </Button>
+              <Button color={colors.purple} css={{ marginLeft: '.5rem' }}>
+                no
+              </Button>
             </div>
             <div css={{ display: 'flex', flex: 1, justifyContent: 'flex-end' }}>
               <span css={{ padding: '0 1rem' }}>2 talks</span>
@@ -155,7 +166,7 @@ function Talk({ title, author, children }) {
 
 function EventsList({ ...props }) {
   return (
-    <Query query={GET_ALL_EVENTS} variables={{ date: new Date().toLocaleDateString() }}>
+    <Query query={GET_EVENTS_AND_SPONSORS} variables={{ date: new Date().toLocaleDateString() }}>
       {({ data, loading, error }) => {
         if (loading) return <p>loading...</p>;
         if (error) {
@@ -194,7 +205,7 @@ export default function Home() {
   return (
     <div>
       <Hero meetup={meetup} />
-      {/*<Slant /> */}
+      <Slant />
       <FeaturedEvent />
       <Talks />
 
@@ -208,30 +219,56 @@ export default function Home() {
       {/* More events */}
       <Section css={{ backgroundColor: colors.greyLight, padding: '5rem 0' }}>
         <Container>
-          <h2>More Meetup events</h2>
-          <Separator />
+          <H2>More Meetup events</H2>
+          <Separator css={{ marginTop: 30 }} />
           <EventsList css={{ marginTop: '3rem' }} />
         </Container>
       </Section>
 
-      <Container>
-        <h2>Upcoming Events</h2>
+      <Section css={{ margin: '5rem 0' }}>
+        <CallToAction />
+      </Section>
 
-        <h2>Sponsors</h2>
-      </Container>
-      <Query query={GET_ALL_SPONSORS}>
+      <Section css={{ margin: '5rem 0' }}>
+        <Container>
+          <h2>Below is // TODO:</h2>
+        </Container>
+      </Section>
+      <Query query={GET_EVENTS_AND_SPONSORS}>
         {({ data, loading, error }) => {
           if (loading) return <p>loading...</p>;
           if (error) {
             console.log(error);
             return <p>Error!</p>;
           }
+          const { allEvents, allSponsors } = data;
+          const now = Date.now();
+
+          let eventItem = null;
+          if (allEvents.length) {
+            if (allEvents.length === 1 || new Date(allEvents[0].startTime) < now) {
+              eventItem = <EventItem {...allEvents[0]} />;
+            } else {
+              for (let i = 0; i < allEvents.length; i++) {
+                if (i === allEvents.length - 1 || new Date(allEvents[i].startTime) < now) {
+                  eventItem = <EventItem {...allEvents[i - 1]} />;
+                  break;
+                }
+              }
+            }
+          }
+
           return (
-            <ul>
-              {data.allSponsors.map(sponsor => (
-                <li key={sponsor.id}>{sponsor.name}</li>
-              ))}
-            </ul>
+            <>
+              <ul>{eventItem}</ul>
+
+              <h2>Sponsors</h2>
+              <ul>
+                {allSponsors.map(sponsor => (
+                  <li key={sponsor.id}>{sponsor.name}</li>
+                ))}
+              </ul>
+            </>
           );
         }}
       </Query>

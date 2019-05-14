@@ -2,7 +2,12 @@
 import { jsx } from '@emotion/core';
 import { colors } from '@root/theme';
 
-export default function Separator({ color = colors.greyDark, width = 50, align = 'left' }) {
+export default function Separator({
+  color = colors.greyDark,
+  width = 50,
+  align = 'left',
+  ...props
+}) {
   return (
     <hr
       css={{
@@ -13,6 +18,7 @@ export default function Separator({ color = colors.greyDark, width = 50, align =
         marginRight: align === 'right' ? 0 : 'auto',
         backgroundColor: color,
       }}
+      {...props}
     />
   );
 }
