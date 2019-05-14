@@ -56,7 +56,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
   if (error) {
     return <p>special featured events error</p>;
   }
-  if (!isLoading && !error && !event) {
+  if (!isLoading && !event) {
     return <p>No events to show.</p>;
   }
 
@@ -143,7 +143,9 @@ const Talk = ({ title, description, speakers }) => {
       <p dangerouslySetInnerHTML={{ __html: description }} />
       <p>
         {speakers.map(speaker => (
-          <span css={{ fontWeight: 600 }}>{speaker.author}</span>
+          <span key={speaker.id} css={{ fontWeight: 600 }}>
+            {speaker.author}
+          </span>
         ))}
       </p>
     </div>
