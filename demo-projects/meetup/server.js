@@ -19,7 +19,7 @@ Promise.all([keystone.prepare({ port }), nextApp.prepare()])
     await keystoneApp.connect();
 
     // Attach the auth routes
-    server.app.use('/', createAuthRoutes(keystone));
+    server.app.use('/api', createAuthRoutes(keystoneApp));
 
     // Initialise some data.
     // NOTE: This is only for demo purposes and should not be used in production
