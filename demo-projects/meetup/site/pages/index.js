@@ -10,17 +10,11 @@ import { EVENT_DATA } from './events';
 
 const { publicRuntimeConfig } = getConfig();
 
-export const GET_ALL_EVENTS = gql`
-  query GetUpcomingEvents($date: DateTime!) {
-    allEvents(where: { startTime_gte: $date }) {
+export const GET_EVENTS_AND_SPONSORS = gql`
+  query {
+    allEvents(where: { startTime_not: null }, orderBy: "startTime") {
       ...EventData
     }
-  }
-  ${EVENT_DATA}
-`;
-
-export const GET_ALL_SPONSORS = gql`
-  {
     allSponsors {
       id
       name
@@ -29,13 +23,12 @@ export const GET_ALL_SPONSORS = gql`
       }
     }
   }
+  ${EVENT_DATA}
 `;
 
 export default function Home() {
   const { meetup } = publicRuntimeConfig;
   const { isAuthenticated, user } = useAuth();
-  let date = new Date();
-  date.setSeconds(0, 0);
 
   return (
     <div>
@@ -45,37 +38,41 @@ export default function Home() {
         <a>Sign In</a>
       </Link>
       <h2>Upcoming Events</h2>
-      <Query query={GET_ALL_EVENTS} variables={{ date: date.toISOString() }}>
+      <Query query={GET_EVENTS_AND_SPONSORS}>
         {({ data, loading, error }) => {
           if (loading) return <p>loading...</p>;
           if (error) {
             console.log(error);
             return <p>Error!</p>;
+          }
+          const { allEvents, allSponsors } = data;
+          const now = Date.now();
+
+          let eventItem = null;
+          if (allEvents.length) {
+            if (allEvents.length === 1 || new Date(allEvents[0].startTime) < now) {
+              eventItem = <EventItem {...allEvents[0]} />;
+            } else {
+              for (let i = 0; i < allEvents.length; i++) {
+                if (i === allEvents.length - 1 || new Date(allEvents[i].startTime) < now) {
+                  eventItem = <EventItem {...allEvents[i - 1]} />;
+                  break;
+                }
+              }
+            }
           }
 
           return (
-            <ul>
-              {data.allEvents.map(event => (
-                <EventItem key={event.id} {...event} />
-              ))}
-            </ul>
-          );
-        }}
-      </Query>
-      <h2>Sponsors</h2>
-      <Query query={GET_ALL_SPONSORS}>
-        {({ data, loading, error }) => {
-          if (loading) return <p>loading...</p>;
-          if (error) {
-            console.log(error);
-            return <p>Error!</p>;
-          }
-          return (
-            <ul>
-              {data.allSponsors.map(sponsor => (
-                <li key={sponsor.id}>{sponsor.name}</li>
-              ))}
-            </ul>
+            <>
+              <ul>{eventItem}</ul>
+
+              <h2>Sponsors</h2>
+              <ul>
+                {allSponsors.map(sponsor => (
+                  <li key={sponsor.id}>{sponsor.name}</li>
+                ))}
+              </ul>
+            </>
           );
         }}
       </Query>
