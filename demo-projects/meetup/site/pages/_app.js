@@ -7,7 +7,6 @@ import { ToastProvider } from 'react-toast-notifications';
 
 import withApollo from '../lib/withApollo';
 import { AuthProvider } from '../lib/authetication';
-import Navbar from '../components/Navbar';
 import StylesBase from '../primitives/StylesBase';
 
 const apiEndpoint = 'http://localhost:3000/api';
@@ -37,7 +36,6 @@ class MyApp extends App {
             <ApolloProvider client={apolloClient}>
               <ApolloHooksProvider client={apolloClient}>
                 <StylesBase />
-                <Navbar />
                 <Component {...pageProps} />
               </ApolloHooksProvider>
             </ApolloProvider>

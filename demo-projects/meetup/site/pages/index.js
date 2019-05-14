@@ -4,7 +4,8 @@ import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
 import EventItem from '../components/EventItem';
-import CallToAction from '../components/CallToAction';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { GET_CURRENT_EVENTS } from '../graphql/events';
 import { GET_SPONSORS } from '../graphql/sponsors';
 
@@ -115,7 +116,7 @@ const Talks = ({ talks }) => {
 const Sponsors = () => {
   return (
     <Container>
-      <h3>Our sponsors</h3>
+      <H3>Our sponsors</H3>
       <Query query={GET_SPONSORS}>
         {({ data, loading, error }) => {
           if (loading) return <Loading />;
@@ -138,7 +139,7 @@ const Sponsors = () => {
 const Talk = ({ title, description, speakers }) => {
   return (
     <div css={{ padding: '0 1.5rem' }}>
-      <h3>{title}</h3>
+      <H3 size={5}>{title}</H3>
       <p dangerouslySetInnerHTML={{ __html: description }} />
       <p>
         {speakers.map(speaker => (
@@ -165,7 +166,7 @@ const EventsList = ({ events, ...props }) => {
         <EventItem
           key={event.id}
           {...event}
-          css={{ width: `${100 / events.length}%`, marginTop: index * 80 }}
+          css={{ width: `${100 / 3}%`, marginTop: index * 80 }}
         />
       ))}
     </ul>
@@ -216,6 +217,7 @@ export default class Home extends Component {
           console.log(eventsData, eventsLoading, eventsError);
           return (
             <div>
+              <Navbar />
               <Hero />
               <Slant />
               <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />;
@@ -234,9 +236,7 @@ export default class Home extends Component {
                   </Container>
                 </Section>
               ) : null}
-              <Section css={{ margin: '5rem 0' }}>
-                <CallToAction />
-              </Section>
+              <Footer />
             </div>
           );
         }}
