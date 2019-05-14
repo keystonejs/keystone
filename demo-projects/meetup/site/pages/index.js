@@ -216,7 +216,6 @@ export default class Home extends Component {
       <Query query={GET_CURRENT_EVENTS} variables={{ now }}>
         {({ data: eventsData, loading: eventsLoading, error: eventsError }) => {
           const { featuredEvent, moreEvents } = processEventsData(eventsData);
-          console.log(eventsData, eventsLoading, eventsError);
           return (
             <div>
               <Navbar />

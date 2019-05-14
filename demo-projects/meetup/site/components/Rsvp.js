@@ -1,55 +1,9 @@
 import React from 'react';
-import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
+
+import { Loading, Error } from '../primitives';
 import { useAuth } from '../lib/authetication';
-
-const ADD_RSVP = gql`
-  mutation AddRsvp($event: ID!, $user: ID!, $status: RsvpStatusType!) {
-    createRsvp(
-      data: {
-        event: { connect: { id: $event } }
-        user: { connect: { id: $user } }
-        status: $status
-      }
-    ) {
-      id
-      event {
-        id
-      }
-      status
-    }
-  }
-`;
-
-const UPDATE_RSVP = gql`
-  mutation UpdateRSVP($rsvp: ID!, $status: RsvpStatusType!) {
-    updateRsvp(id: $rsvp, data: { status: $status }) {
-      id
-      event {
-        id
-      }
-      status
-    }
-  }
-`;
-
-const GET_RSVPS = gql`
-  query GetRsvps($event: ID!, $user: ID!) {
-    eventRsvps: allRsvps(where: { event: { id: $event }, status: yes }) {
-      id
-    }
-    userRsvps: allRsvps(where: { event: { id: $event }, user: { id: $user } }) {
-      id
-      status
-    }
-    event: Event(where: { id: $event }) {
-      id
-      startTime
-      maxRsvps
-      isRsvpAvailable
-    }
-  }
-`;
+import { GET_RSVPS, UPDATE_RSVP, ADD_RSVP } from '../graphql/rsvps';
 
 const Rsvp = ({ id }) => {
   const { isAuthenticated, user } = useAuth();
@@ -61,11 +15,8 @@ const Rsvp = ({ id }) => {
   return (
     <Query query={GET_RSVPS} variables={{ event: id, user: user.id }}>
       {({ data, loading, error }) => {
-        if (loading) return <p>loading...</p>;
-        if (error) {
-          console.log(error);
-          return <p>Error!</p>;
-        }
+        if (loading && !data) return <Loading />;
+        if (error) return <Error error={error} />;
 
         const { userRsvps, eventRsvps, event } = data;
 

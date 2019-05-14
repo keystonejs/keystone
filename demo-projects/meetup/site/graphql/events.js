@@ -21,13 +21,13 @@ export const EVENT_DATA = gql`
 export const GET_CURRENT_EVENTS = gql`
   query GetCurrentEvents($now: DateTime!) {
     upcomingEvents: allEvents(
-      where: { startTime_not: null, startTime_gte: $now }
+      where: { startTime_not: null, status: active, startTime_gte: $now }
       orderBy: "startTime_DESC"
     ) {
       ...EventData
     }
     previousEvents: allEvents(
-      where: { startTime_not: null, startTime_lte: $now }
+      where: { startTime_not: null, status: active, startTime_lte: $now }
       orderBy: "startTime_ASC"
     ) {
       ...EventData
@@ -38,7 +38,7 @@ export const GET_CURRENT_EVENTS = gql`
 
 export const GET_ALL_EVENTS = gql`
   {
-    allEvents {
+    allEvents(where: { startTime_not: null, status: active }, orderBy: "startTime_DESC") {
       ...EventData
     }
   }
