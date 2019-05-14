@@ -123,6 +123,7 @@ exports.Rsvp = {
           id
           startTime
           maxRsvps
+          isRsvpAvailable
         }
         allRsvps(where: { event: { id: "${eventId}" }}) {
           id
@@ -133,8 +134,9 @@ exports.Rsvp = {
 
       if (
         !event ||
+        !event.isRsvpAvailable ||
         !event.startTime ||
-        new Date() > event.startTime ||
+        new Date() > new Date(event.startTime) ||
         allRsvps.length >= event.maxRsvps
       ) {
         throw 'Error rsvping to event';
