@@ -1,27 +1,8 @@
 import React, { Component } from 'react';
-import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
 import Rsvp from '../components/Rsvp';
-
-const GET_EVENT_DETAILS = gql`
-  query GetEventDetails($event: ID!) {
-    Event(where: { id: $event }) {
-      id
-      name
-      startTime
-      description
-      talks {
-        id
-        name
-        speakers {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
+import { GET_EVENT_DETAILS } from '../graphql/events';
 
 export default class Event extends Component {
   static async getInitialProps({ query }) {
