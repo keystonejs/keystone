@@ -1,64 +1,91 @@
-import React, { useState, useEffect } from 'react';
+/** @jsx jsx */
+
+import { useState, useEffect } from 'react';
 import Router from 'next/router';
+import { jsx } from '@emotion/core';
+
 import { useAuth } from '../lib/authetication';
+import { Container, H2 } from '../primitives';
+import { Button, Field, Label, Input } from '../primitives/forms';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import { gridSize, colors } from '../theme';
 
 export default () => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const { isAuthenticated, isLoading, signin } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorState, setErrorState] = useState(false);
+  const { isAuthenticated, signin } = useAuth();
 
-  const handleSubmit = () => {
+  const handleSubmit = async event => {
     event.preventDefault();
-    signin({ email, password });
+    setIsLoading(true);
+    const result = await signin({ email, password });
+    setIsLoading(false);
+    if (!result.success) {
+      setErrorState(true);
+    } else {
+      setErrorState(false);
+    }
   };
 
-  // if login success - redirect to profile
+  // if the user is logged in, redirect to the homepage
   useEffect(() => {
     if (isAuthenticated) {
-      Router.push('/profile');
+      Router.push('/');
     }
-  });
+  }, [isAuthenticated]);
 
   return (
     <>
-      <p>Sign into SydJS</p>
+      <Navbar background="white" foreground={colors.greyDark} />
+      <Container css={{ marginTop: gridSize * 3 }}>
+        <H2>Sign in</H2>
 
-      <form noValidate onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            required
-            type="text"
-            autoComplete="email"
-            placeholder="you@awesome.com"
-            disabled={isLoading}
-            onChange={e => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            required
-            type="password"
-            id="password"
-            minLength="8"
-            placeholder="supersecret"
-            autoComplete="new-password"
-            disabled={isLoading}
-            onChange={e => setPassword(e.target.value)}
-          />
-        </div>
-        {isLoading ? (
-          <button disabled>Signing in...</button>
-        ) : (
-          <button type="submit">Sign in</button>
+        {errorState && (
+          <>
+            <p>An error occurred signing you in.</p>
+            <p>Please check your email and password then try again.</p>
+          </>
         )}
-        <p>
-          Don't have an account? <a href="/signup">Join SydJS</a>
-        </p>
-        <br />
-        <a href="/forgot">Forgot password?</a>
-      </form>
+
+        <form css={{ marginTop: gridSize * 3 }} noValidate onSubmit={handleSubmit}>
+          <Field>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              required
+              type="text"
+              autoFocus
+              autoComplete="email"
+              placeholder="you@awesome.com"
+              disabled={isLoading || isAuthenticated}
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
+          </Field>
+          <Field>
+            <Label htmlFor="password">Password</Label>
+            <Input
+              required
+              type="password"
+              id="password"
+              minLength="8"
+              placeholder="supersecret"
+              autoComplete="password"
+              disabled={isLoading || isAuthenticated}
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+          </Field>
+          {isLoading ? (
+            <Button disabled>Signing in...</Button>
+          ) : (
+            <Button type="submit">Sign in</Button>
+          )}
+        </form>
+      </Container>
+      <Footer callToAction={false} />
     </>
   );
 };
