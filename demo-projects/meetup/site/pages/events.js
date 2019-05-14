@@ -3,23 +3,7 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import EventItem from '../components/EventItem';
 
-export const EVENT_DATA = gql`
-  fragment EventData on Event {
-    id
-    name
-    startTime
-    description
-    themeColor
-    talks {
-      id
-      name
-      speakers {
-        id
-        name
-      }
-    }
-  }
-`;
+import { EVENT_DATA } from '../graphql/events';
 
 const GET_ALL_EVENTS = gql`
   {

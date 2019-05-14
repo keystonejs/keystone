@@ -4,23 +4,27 @@ import { Query } from 'react-apollo';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
-import { useAuth } from '../lib/authetication';
 import EventItem from '../components/EventItem';
 import CallToAction from '../components/CallToAction';
-import { Link } from '../../routes';
-import { EVENT_DATA } from './events';
+import { EVENT_DATA } from '../graphql/events';
 
-import { Section, Container, Separator, Button } from '../primitives';
+import { Section, Container, Separator, Button, Loading, Error } from '../primitives';
 import { H1, H2, H3 } from '../primitives/Typography';
 import { colors, fontSizes } from '../theme';
 
 const { publicRuntimeConfig } = getConfig();
 
-export const GET_EVENTS_AND_SPONSORS = gql`
+export const GET_EVENTS = gql`
   query {
     allEvents(where: { startTime_not: null }, orderBy: "startTime") {
       ...EventData
     }
+  }
+  ${EVENT_DATA}
+`;
+
+const GET_SPONSORS = gql`
+  query {
     allSponsors {
       id
       name
@@ -29,11 +33,10 @@ export const GET_EVENTS_AND_SPONSORS = gql`
       }
     }
   }
-  ${EVENT_DATA}
 `;
 
-function Hero({ meetup }) {
-  const { isAuthenticated, user } = useAuth();
+function Hero() {
+  const { meetup } = publicRuntimeConfig;
 
   return (
     <div>
@@ -47,10 +50,6 @@ function Hero({ meetup }) {
       >
         <H1>{meetup.name}</H1>
         <p css={{ fontSize: fontSizes.md, maxWidth: 720, margin: '30px auto 0' }}>{meetup.intro}</p>
-        <h2>Welcome {isAuthenticated ? user.name : ''} </h2>
-        <Link route="signin">
-          <a>Sign In</a>
-        </Link>
       </div>
     </div>
   );
@@ -142,12 +141,21 @@ function Sponsors() {
   return (
     <Container>
       <h3>Our sponsors</h3>
-      <ul>
-        <li>Atlassian</li>
-        <li>Thinkmill</li>
-        <li>Lookahead</li>
-        <li>Atlassian</li>
-      </ul>
+      <Query query={GET_SPONSORS}>
+        {({ data, loading, error }) => {
+          if (loading) return <Loading />;
+          if (error) return <Error error={error} />;
+
+          const { allSponsors } = data;
+          return (
+            <ul>
+              {allSponsors.map(sponsor => (
+                <li key={sponsor.id}>{sponsor.name}</li>
+              ))}
+            </ul>
+          );
+        }}
+      </Query>
     </Container>
   );
 }
@@ -166,7 +174,7 @@ function Talk({ title, author, children }) {
 
 function EventsList({ ...props }) {
   return (
-    <Query query={GET_EVENTS_AND_SPONSORS} variables={{ date: new Date().toLocaleDateString() }}>
+    <Query query={GET_EVENTS} variables={{ date: new Date().toLocaleDateString() }}>
       {({ data, loading, error }) => {
         if (loading) return <p>loading...</p>;
         if (error) {
@@ -200,11 +208,9 @@ function EventsList({ ...props }) {
 }
 
 export default function Home() {
-  const { meetup } = publicRuntimeConfig;
-
   return (
     <div>
-      <Hero meetup={meetup} />
+      <Hero />
       <Slant />
       <FeaturedEvent />
       <Talks />
@@ -234,14 +240,14 @@ export default function Home() {
           <h2>Below is // TODO:</h2>
         </Container>
       </Section>
-      <Query query={GET_EVENTS_AND_SPONSORS}>
+      <Query query={GET_EVENTS}>
         {({ data, loading, error }) => {
           if (loading) return <p>loading...</p>;
           if (error) {
             console.log(error);
             return <p>Error!</p>;
           }
-          const { allEvents, allSponsors } = data;
+          const { allEvents } = data;
           const now = Date.now();
 
           let eventItem = null;
@@ -258,18 +264,7 @@ export default function Home() {
             }
           }
 
-          return (
-            <>
-              <ul>{eventItem}</ul>
-
-              <h2>Sponsors</h2>
-              <ul>
-                {allSponsors.map(sponsor => (
-                  <li key={sponsor.id}>{sponsor.name}</li>
-                ))}
-              </ul>
-            </>
-          );
+          return <ul>{eventItem}</ul>;
         }}
       </Query>
     </div>
