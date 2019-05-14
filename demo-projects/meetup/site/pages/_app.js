@@ -33,7 +33,7 @@ class MyApp extends App {
     return (
       <ToastProvider>
         <Container>
-          <AuthProvider intitialUserValue={user}>
+          <AuthProvider initialUserValue={user}>
             <ApolloProvider client={apolloClient}>
               <ApolloHooksProvider client={apolloClient}>
                 <StylesBase />
