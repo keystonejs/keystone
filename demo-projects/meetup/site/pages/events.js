@@ -9,6 +9,7 @@ export const EVENT_DATA = gql`
     name
     startTime
     description
+    themeColor
     talks {
       id
       name

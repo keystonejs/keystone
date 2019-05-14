@@ -13,6 +13,7 @@
     "build": "next build"
   },
   "dependencies": {
+    "@emotion/core": "^10.0.10",
     "@keystone-alpha/adapter-mongoose": "^1.0.7",
     "@keystone-alpha/admin-ui": "^3.2.0",
     "@keystone-alpha/core": "^2.0.4",

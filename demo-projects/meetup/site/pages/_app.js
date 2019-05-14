@@ -5,7 +5,8 @@ import { ApolloProvider } from 'react-apollo';
 
 import withApollo from '../lib/withApollo';
 import { AuthProvider } from '../lib/authetication';
-import Navbar from '../components/Navbar';
+import Navbar from '@components/Navbar';
+import StylesBase from '@primitives/StylesBase';
 
 const apiEndpoint = 'http://localhost:3000/admin';
 
@@ -31,6 +32,7 @@ class MyApp extends App {
       <Container>
         <AuthProvider intitialUserValue={user}>
           <ApolloProvider client={apolloClient}>
+            <StylesBase />
             <Navbar />
             <Component {...pageProps} />
           </ApolloProvider>
