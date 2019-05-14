@@ -11,7 +11,12 @@ import { createWorker, destroyWorker } from '../worker-client';
 
 async function buildPackage(pkg: Package, aliases: Aliases) {
   let configs = getRollupConfigs(pkg, aliases);
-  await fs.remove(path.join(pkg.directory, 'dist'));
+  await Promise.all([
+    fs.remove(path.join(pkg.directory, 'dist')),
+    ...pkg.entrypoints.map(entrypoint => {
+      return fs.remove(path.join(entrypoint.directory, 'dist'));
+    }),
+  ]);
 
   await Promise.all(
     configs.map(async ({ config, outputs }) => {
