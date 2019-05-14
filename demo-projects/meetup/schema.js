@@ -134,7 +134,7 @@ exports.Rsvp = {
       if (
         !event ||
         !event.startTime ||
-        new Date() > event.startTime ||
+        new Date() > new Date(event.startTime) ||
         allRsvps.length >= event.maxRsvps
       ) {
         throw 'Error rsvping to event';
