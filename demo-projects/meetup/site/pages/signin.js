@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Router from 'next/router';
+
 import { useAuth } from '../lib/authetication';
+import { Container } from '../primitives';
 
 export default () => {
   const [email, setEmail] = useState();
@@ -20,7 +22,7 @@ export default () => {
   });
 
   return (
-    <>
+    <Container>
       <p>Sign in to continue to create, collaborate, and discover.</p>
 
       <form noValidate onSubmit={handleSubmit}>
@@ -36,7 +38,7 @@ export default () => {
           />
         </div>
         <div>
-          <label htmlFor="password">Passwor</label>
+          <label htmlFor="password">Password</label>
           <input
             required
             type="password"
@@ -55,6 +57,6 @@ export default () => {
           <button type="submit">Sign in</button>
         )}
       </form>
-    </>
+    </Container>
   );
 };
