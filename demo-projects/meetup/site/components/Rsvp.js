@@ -44,7 +44,7 @@ const GET_RSVPS = gql`
     }
     event: Event(where: { id: $event }) {
       id
-      startDate
+      startTime
       maxRsvps
     }
   }
@@ -79,7 +79,7 @@ const Rsvp = ({ id }) => {
             ]}
           >
             {(updateRsvp, { error: mutationError }) => {
-              if (new Date() > new Date(event.startDate)) {
+              if (new Date() > new Date(event.startTime)) {
                 return <p>You can no longer rsvp to this event</p>;
               }
 
