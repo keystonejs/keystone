@@ -5,7 +5,7 @@ import { jsx } from '@emotion/core';
 
 import { Link } from '../../routes';
 import { useAuth } from '../lib/authetication';
-import { colors, gridSize } from '../theme';
+import { colors, fontSizes, gridSize } from '../theme';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -68,9 +68,7 @@ const UserActions = ({ user }) => (
 const AnonActions = ({ foreground }) => (
   <div>
     <Link route="signin" passHref>
-      <NavLink foreground={foreground}>
-        Sign in
-      </NavLink>
+      <NavLink foreground={foreground}>Sign in</NavLink>
     </Link>
     <NavLink
       href="/"
