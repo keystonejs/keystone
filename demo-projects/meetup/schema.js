@@ -114,7 +114,9 @@ exports.Rsvp = {
       const { status } = resolvedData;
       const { event: eventId } = existingItem ? existingItem : resolvedData;
 
-      if(status === 'no') { return; }
+      if (status === 'no') {
+        return;
+      }
 
       const { data } = await actions.query(`query {
         event: Event(where: { id: "${eventId}" }) {
@@ -129,11 +131,16 @@ exports.Rsvp = {
 
       const { event, allRsvps } = data;
 
-      if(!event || !event.startTime || new Date() > event.startTime || allRsvps.length >= event.maxRsvps) {
+      if (
+        !event ||
+        !event.startTime ||
+        new Date() > event.startTime ||
+        allRsvps.length >= event.maxRsvps
+      ) {
         throw 'Error rsvping to event';
       }
-    }
-  }
+    },
+  },
 };
 
 exports.Sponsor = {

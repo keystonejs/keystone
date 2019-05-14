@@ -35,7 +35,7 @@ export default function Home() {
   const { meetup } = publicRuntimeConfig;
   const { isAuthenticated, user } = useAuth();
   let date = new Date();
-  date.setSeconds(0,0);
+  date.setSeconds(0, 0);
 
   return (
     <div>
