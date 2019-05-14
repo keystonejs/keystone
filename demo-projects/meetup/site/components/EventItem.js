@@ -19,7 +19,7 @@ const EventItem = ({ id, name, startTime, talks }) => (
       </div>
     ))}
     <Link route="event" params={{ id }}>
-      Find out more
+      <a>Find out more</a>
     </Link>
   </li>
 );

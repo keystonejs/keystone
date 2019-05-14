@@ -1,5 +1,7 @@
 export class Block {
-  constructor() {
+  constructor(_, { type }) {
+    this.type = type;
+
     // To be set by a Block if it creates a join table.
     // Instance of @keystone/core#List
     this.auxList = undefined;
@@ -36,5 +38,9 @@ export class Block {
 
   get fieldDefinitions() {
     return {};
+  }
+
+  extendAdminMeta(meta) {
+    return meta;
   }
 }

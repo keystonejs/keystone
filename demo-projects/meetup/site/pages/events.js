@@ -22,7 +22,7 @@ export const EVENT_DATA = gql`
 
 const GET_ALL_EVENTS = gql`
   {
-    allEvents {
+    allEvents(first: 2) {
       ...EventData
     }
   }
