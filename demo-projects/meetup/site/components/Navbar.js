@@ -18,7 +18,7 @@ const NavLink = props => {
     <a
       css={{
         color: foreground,
-        fontSize: fontSizes.md,
+        fontSize: fontSizes.sm,
         margin: gridSize * 3,
         textDecoration: 'none',
 
