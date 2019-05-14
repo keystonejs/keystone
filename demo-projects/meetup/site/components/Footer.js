@@ -18,13 +18,14 @@ const Slant = () => (
   </svg>
 );
 
-const Footer = () => {
+const Footer = ({ callToAction = true }) => {
   const { meetup } = publicRuntimeConfig;
+  const margin = callToAction ? 16 : 32;
 
   return (
-    <div css={{ marginTop: `${gridSize * 16}px` }}>
+    <div css={{ marginTop: `${margin}px` }}>
       <div css={{ position: 'relative' }}>
-        <CallToAction />
+        {callToAction && <CallToAction />}
         <Slant />
       </div>
       <section

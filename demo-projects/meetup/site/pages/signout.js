@@ -6,6 +6,9 @@ import { jsx } from '@emotion/core';
 
 import { useAuth } from '../lib/authetication';
 import { Container } from '../primitives';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import { colors } from '../theme';
 
 export default () => {
   const { isAuthenticated, signout } = useAuth();
@@ -19,8 +22,12 @@ export default () => {
   }, [isAuthenticated]);
 
   return (
-    <Container>
-      <p css={{ margin: '100px', textAlign: 'center' }}>Signing you out...</p>
-    </Container>
+    <>
+      <Navbar background="white" foreground={colors.greyDark} />
+      <Container>
+        <p css={{ margin: '100px', textAlign: 'center' }}>Signing you out...</p>
+      </Container>
+      <Footer callToAction={false} />
+    </>
   );
 };

@@ -16,7 +16,7 @@ Add your Code of Conduct here.
 `,
   footer: {
     copyrightText: `
-<p>Copyright &copy; KeystoneJS, powered by <a href="https://v5.keystonejs.com">KeystoneJS</a>.</p>
+<p>Copyright &copy; Thinkmill Pty Ltd, powered by <a href="https://v5.keystonejs.com">KeystoneJS</a>.</p>
 <p>If you run a meetup, please feel free to clone our site and make your own! <a href="#">You can find it on GitHub</a>.</p>
 `,
   },

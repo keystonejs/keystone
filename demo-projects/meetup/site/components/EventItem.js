@@ -27,6 +27,7 @@ const EventItem = ({
         margin: '1rem',
         boxShadow: '0px 4px 94px rgba(0, 0, 0, 0.15)',
         borderTop: `solid 8px ${themeColor}`,
+        listStyle: 'none',
       }}
       {...props}
     >

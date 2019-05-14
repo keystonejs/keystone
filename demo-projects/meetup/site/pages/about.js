@@ -1,12 +1,20 @@
-import React from 'react';
+/** @jsx jsx */
+
+import { jsx } from '@emotion/core';
+
+import { Container, H2 } from '../primitives';
 import Navbar from '../components/Navbar';
-import { colors } from '../theme';
+import Footer from '../components/Footer';
+import { colors, gridSize } from '../theme';
 
 export default function About() {
   return (
-    <div>
+    <>
       <Navbar background="white" foreground={colors.greyDark} />
-      <h1>About Page</h1>
-    </div>
+      <Container css={{ marginTop: gridSize * 3 }}>
+        <H2>About Page</H2>
+      </Container>
+      <Footer />
+    </>
   );
 }
