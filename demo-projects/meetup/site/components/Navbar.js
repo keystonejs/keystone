@@ -13,12 +13,24 @@ const NavLink = props => (
   <a
     css={{
       color: props.foreground,
-      margin: gridSize * 2,
+      fontSize: fontSizes.md,
+      margin: gridSize * 3,
       textDecoration: 'none',
 
       ':hover': {
         textDecoration: 'underline',
       },
+    }}
+    {...props}
+  />
+);
+
+const NavText = props => (
+  <a
+    css={{
+      color: colors.greyLight,
+      fontSize: fontSizes.md,
+      margin: gridSize * 3,
     }}
     {...props}
   />
@@ -38,18 +50,30 @@ const Header = props => (
 
 // TODO: Implement log out
 const UserActions = ({ user }) => (
-  <div css={{ color: colors.greyLight }}>
-    Logged in as <strong css={{ color: 'white' }}>{user.name}</strong>
+  <div>
+    <NavText>
+      Logged in as <strong css={{ color: 'white' }}>{user.name}</strong>
+    </NavText>
+    {user.isAdmin && (
+      <NavLink href="/admin" target="_blank">
+        Open the Admin UI
+      </NavLink>
+    )}
+    <Link route="signout" passHref>
+      <NavLink>Sign Out</NavLink>
+    </Link>
   </div>
 );
-// TODO: Implement log in
+
 const AnonActions = ({ foreground }) => (
   <div>
-    <NavLink foreground={foreground} href="/admin">
-      Sign in
-    </NavLink>
+    <Link route="signin" passHref>
+      <NavLink foreground={foreground}>
+        Sign in
+      </NavLink>
+    </Link>
     <NavLink
-      href="/admin"
+      href="/"
       css={{
         borderRadius: 40,
         border: 'none',

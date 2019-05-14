@@ -5,15 +5,36 @@ const authRouter = express.Router();
 const createEmailAuthRoutes = require('./emailAuth');
 
 module.exports = function createAuthRoutes(keystone) {
-  authRouter.get('/session', (req, res) => {
-    const data = {
-      signedIn: !!req.session.keystoneItemId,
-      userId: req.session.keystoneItemId,
-    };
-    res.json(data);
+  authRouter.get('/session', async (req, res) => {
+    const id = req.session.keystoneItemId;
+    if (!id) {
+      return res.json({
+        isSignedIn: false,
+        user: null,
+      });
+    }
+    try {
+      const user = await keystone.lists.User.adapter.model.findById(id);
+      if (!user) {
+        return res.json({
+          isSignedIn: false,
+          user: null,
+        });
+      }
+      const { name, isAdmin } = user;
+      res.json({
+        isSignedIn: true,
+        user: { id, name, isAdmin },
+      });
+    } catch (e) {
+      console.error('An error occurred fetching the current session:', e);
+      res.json({
+        isSignedIn: false,
+      });
+    }
   });
 
-  authRouter.get('/signout', async (req, res, next) => {
+  authRouter.post('/signout', async (req, res, next) => {
     try {
       await endAuthedSession(req);
       res.json({

@@ -9,7 +9,7 @@ import withApollo from '../lib/withApollo';
 import { AuthProvider } from '../lib/authetication';
 import StylesBase from '../primitives/StylesBase';
 
-const apiEndpoint = 'http://localhost:3000/admin';
+const apiEndpoint = 'http://localhost:3000/api';
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
@@ -32,7 +32,7 @@ class MyApp extends App {
     return (
       <ToastProvider>
         <Container>
-          <AuthProvider intitialUserValue={user}>
+          <AuthProvider initialUserValue={user}>
             <ApolloProvider client={apolloClient}>
               <ApolloHooksProvider client={apolloClient}>
                 <StylesBase />

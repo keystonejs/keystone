@@ -57,7 +57,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
     return <p>special featured events error</p>;
   }
   if (!isLoading && !error && !event) {
-    return <p>Error loading featured event</p>;
+    return <p>No events to show.</p>;
   }
 
   return (
@@ -174,7 +174,7 @@ const EventsList = ({ events, ...props }) => {
 };
 
 function processEventsData(data) {
-  if (!data) {
+  if (!data || !data.upcomingEvents || !data.previousEvents) {
     return {
       featuredEvent: null,
       moreEvents: [],
@@ -214,6 +214,7 @@ export default class Home extends Component {
       <Query query={GET_CURRENT_EVENTS} variables={{ now }}>
         {({ data: eventsData, loading: eventsLoading, error: eventsError }) => {
           const { featuredEvent, moreEvents } = processEventsData(eventsData);
+          console.log(eventsData, eventsLoading, eventsError);
           return (
             <div>
               <Navbar />

@@ -1,65 +1,84 @@
-import React, { useState, useEffect } from 'react';
+/** @jsx jsx */
+
+import { useState, useEffect } from 'react';
 import Router from 'next/router';
+import { jsx } from '@emotion/core';
 
 import { useAuth } from '../lib/authetication';
-import { Container } from '../primitives';
+import { Container, H2 } from '../primitives';
+import { Button, Field, Label, Input } from '../primitives/forms';
+import { gridSize } from '../theme';
 
 export default () => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const { isAuthenticated, isLoading, signin } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorState, setErrorState] = useState(false);
+  const { isAuthenticated, signin } = useAuth();
 
-  const handleSubmit = () => {
+  const handleSubmit = async event => {
     event.preventDefault();
-    signin({ email, password });
+    setIsLoading(true);
+    const result = await signin({ email, password });
+    setIsLoading(false);
+    if (!result.success) {
+      setErrorState(true);
+    } else {
+      setErrorState(false);
+    }
   };
 
-  // if login success - redirect to profile
+  // if the user is logged in, redirect to the homepage
   useEffect(() => {
     if (isAuthenticated) {
-      Router.push('/profile');
+      Router.push('/');
     }
-  });
+  }, [isAuthenticated]);
 
   return (
-    <Container>
-      <p>Sign in</p>
+    <Container css={{ marginTop: gridSize * 3 }}>
+      <H2>Sign in</H2>
 
-      <form noValidate onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
+      {errorState && (
+        <>
+          <p>An error occurred signing you in.</p>
+          <p>Please check your email and password then try again.</p>
+        </>
+      )}
+
+      <form css={{ marginTop: gridSize * 3 }} noValidate onSubmit={handleSubmit}>
+        <Field>
+          <Label htmlFor="email">Email</Label>
+          <Input
             required
             type="text"
+            autoFocus
             autoComplete="email"
             placeholder="you@awesome.com"
-            disabled={isLoading}
+            disabled={isLoading || isAuthenticated}
+            value={email}
             onChange={e => setEmail(e.target.value)}
           />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
+        </Field>
+        <Field>
+          <Label htmlFor="password">Password</Label>
+          <Input
             required
             type="password"
             id="password"
             minLength="8"
             placeholder="supersecret"
-            autoComplete="new-password"
-            disabled={isLoading}
+            autoComplete="password"
+            disabled={isLoading || isAuthenticated}
+            value={password}
             onChange={e => setPassword(e.target.value)}
           />
-        </div>
+        </Field>
         {isLoading ? (
-          <button disabled>Signing in...</button>
+          <Button disabled>Signing in...</Button>
         ) : (
-          <button type="submit">Sign in</button>
+          <Button type="submit">Sign in</Button>
         )}
-        <p>
-          Don't have an account? <a href="/signup">Join SydJS</a>
-        </p>
-        <br />
-        <a href="/forgot">Forgot password?</a>
       </form>
     </Container>
   );

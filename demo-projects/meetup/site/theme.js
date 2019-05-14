@@ -23,3 +23,4 @@ export const shadows = {
 };
 
 export const gridSize = 8;
+export const borderRadius = 4;
