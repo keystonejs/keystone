@@ -1,0 +1,66 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/admin-ui", "type": "patch" },
+    { "name": "@arch-ui/common", "type": "patch" },
+    { "name": "@arch-ui/navbar", "type": "patch" },
+    { "name": "@arch-ui/select", "type": "patch" },
+    { "name": "@arch-ui/typography", "type": "patch" },
+    { "name": "@keystone-alpha/fields", "type": "patch" }
+  ],
+  "dependents": [
+    {
+      "name": "@arch-ui/button",
+      "type": "patch",
+      "dependencies": ["@arch-ui/loading", "@arch-ui/common"]
+    },
+    { "name": "@arch-ui/input", "type": "patch", "dependencies": ["@arch-ui/common"] },
+    { "name": "@arch-ui/layout", "type": "patch", "dependencies": ["@arch-ui/common"] },
+    { "name": "@arch-ui/options", "type": "patch", "dependencies": ["@arch-ui/common"] },
+    { "name": "@arch-ui/pill", "type": "patch", "dependencies": ["@arch-ui/common"] },
+    {
+      "name": "@arch-ui/day-picker",
+      "type": "patch",
+      "dependencies": ["@arch-ui/input", "@arch-ui/select", "@arch-ui/typography"]
+    },
+    {
+      "name": "@keystone-alpha/website",
+      "type": "patch",
+      "dependencies": ["@arch-ui/input", "@arch-ui/select"]
+    },
+    { "name": "@arch-ui/dialog", "type": "patch", "dependencies": ["@arch-ui/typography"] },
+    { "name": "@arch-ui/drawer", "type": "patch", "dependencies": ["@arch-ui/typography"] },
+    { "name": "@arch-ui/loading", "type": "patch", "dependencies": ["@arch-ui/typography"] },
+    {
+      "name": "@keystone-alpha/demo-project-blog",
+      "type": "patch",
+      "dependencies": [
+        "@arch-ui/layout",
+        "@keystone-alpha/fields-wysiwyg-tinymce",
+        "@keystone-alpha/admin-ui",
+        "@arch-ui/typography",
+        "@keystone-alpha/fields"
+      ]
+    },
+    {
+      "name": "@arch-ui/pagination",
+      "type": "patch",
+      "dependencies": ["@arch-ui/button", "@arch-ui/layout", "@arch-ui/loading"]
+    },
+    {
+      "name": "@keystone-alpha/fields-wysiwyg-tinymce",
+      "type": "patch",
+      "dependencies": ["@arch-ui/input", "@keystone-alpha/fields"]
+    },
+    { "name": "@arch-ui/controls", "type": "patch", "dependencies": ["@arch-ui/input"] },
+    {
+      "name": "@keystone-alpha/cypress-project-social-login",
+      "type": "patch",
+      "dependencies": ["@arch-ui/input", "@keystone-alpha/admin-ui", "@keystone-alpha/fields"]
+    },
+    {
+      "name": "@arch-ui/filters",
+      "type": "patch",
+      "dependencies": ["@arch-ui/layout", "@arch-ui/controls"]
+    }
+  ]
+}
