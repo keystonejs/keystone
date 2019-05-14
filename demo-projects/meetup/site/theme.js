@@ -13,8 +13,9 @@ export const fontSizes = {
   xxl: 50,
   xl: 42,
   lg: 30,
-  md: 18,
+  md: 24,
   sm: 15,
+  xs: 13,
 };
 
 export const shadows = {

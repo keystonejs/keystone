@@ -5,15 +5,14 @@ import { jsx } from '@emotion/core';
 
 import { Link } from '../../routes';
 import { useAuth } from '../lib/authetication';
-import { colors, fontSizes, gridSize } from '../theme';
+import { colors, gridSize } from '../theme';
 
 const { publicRuntimeConfig } = getConfig();
 
 const NavLink = props => (
   <a
     css={{
-      color: 'white',
-      fontSize: fontSizes.md,
+      color: props.foreground,
       margin: gridSize * 2,
       textDecoration: 'none',
 
@@ -28,7 +27,7 @@ const NavLink = props => (
 const Header = props => (
   <header
     css={{
-      background: colors.greyDark,
+      background: props.background,
       display: 'flex',
       alignItems: 'center',
       padding: `0 ${gridSize * 6}px`,
@@ -44,14 +43,34 @@ const UserActions = ({ user }) => (
   </div>
 );
 // TODO: Implement log in
-const AnonActions = () => <NavLink href="/admin">Sign In</NavLink>;
+const AnonActions = ({ foreground }) => (
+  <div>
+    <NavLink foreground={foreground} href="/admin">
+      Sign in
+    </NavLink>
+    <NavLink
+      href="/admin"
+      css={{
+        borderRadius: 40,
+        border: 'none',
+        fontWeight: 600,
+        padding: '.9rem 2rem',
+        backgroundColor: colors.yellow,
+        color: colors.greyDark,
+        lineHeight: 1,
+      }}
+    >
+      Join
+    </NavLink>
+  </div>
+);
 
-const Navbar = () => {
+const Navbar = ({ foreground = 'white', background = colors.greyDark, ...props }) => {
   const { meetup } = publicRuntimeConfig;
   const { isAuthenticated, user } = useAuth();
 
   return (
-    <Header>
+    <Header background={background} {...props}>
       <img
         src={meetup.logo.src}
         width={meetup.logo.width}
@@ -61,16 +80,16 @@ const Navbar = () => {
       />
       <div css={{ flex: 1 }}>
         <Link route="/" passHref>
-          <NavLink>Home</NavLink>
+          <NavLink foreground={foreground}>Home</NavLink>
         </Link>
         <Link route="about" passHref>
-          <NavLink>About</NavLink>
+          <NavLink foreground={foreground}>About</NavLink>
         </Link>
         <Link route="events" passHref>
-          <NavLink>Events</NavLink>
+          <NavLink foreground={foreground}>Events</NavLink>
         </Link>
       </div>
-      {isAuthenticated ? <UserActions user={user} /> : <AnonActions />}
+      {isAuthenticated ? <UserActions user={user} /> : <AnonActions foreground={foreground} />}
     </Header>
   );
 };

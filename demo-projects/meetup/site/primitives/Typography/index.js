@@ -18,7 +18,7 @@ export const Headline = ({ as = 'h2', size, ...props }) => {
     },
     h3: {
       fontSize: fontSizes.xl,
-      lineHeight: 1.25,
+      lineHeight: 1.15,
     },
     h4: {
       fontSize: fontSizes.lg,

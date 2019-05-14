@@ -4,8 +4,9 @@ import { Query } from 'react-apollo';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
+import Navbar from '../components/Navbar';
 import EventItem from '../components/EventItem';
-import CallToAction from '../components/CallToAction';
+import Footer from '../components/Footer';
 import { EVENT_DATA } from '../graphql/events';
 
 import { Section, Container, Separator, Button, Loading, Error } from '../primitives';
@@ -58,7 +59,7 @@ function Hero() {
 function Slant() {
   return (
     <svg
-      css={{ height: '5vw', width: '100vw' }}
+      css={{ height: '5vw', width: '100vw', display: 'block' }}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 100 100"
       preserveAspectRatio="none"
@@ -163,7 +164,7 @@ function Sponsors() {
 function Talk({ title, author, children }) {
   return (
     <div css={{ padding: '0 1.5rem' }}>
-      <h3>{title}</h3>
+      <H3 size={5}>{title}</H3>
       <p>{children}</p>
       <p>
         by <span css={{ fontWeight: 600 }}>{author}</span>
@@ -181,7 +182,7 @@ function EventsList({ ...props }) {
           console.log(error);
           return <p>Error!</p>;
         }
-
+        console.log('data', data);
         return (
           <ul
             css={{
@@ -197,7 +198,7 @@ function EventsList({ ...props }) {
               <EventItem
                 key={event.id}
                 {...event}
-                css={{ width: `${100 / data.allEvents.length}%`, marginTop: index * 80 }}
+                css={{ width: `${100 / 3}%`, marginTop: index * 80 }}
               />
             ))}
           </ul>
@@ -210,6 +211,7 @@ function EventsList({ ...props }) {
 export default function Home() {
   return (
     <div>
+      <Navbar />
       <Hero />
       <Slant />
       <FeaturedEvent />
@@ -231,10 +233,7 @@ export default function Home() {
         </Container>
       </Section>
 
-      <Section css={{ margin: '5rem 0' }}>
-        <CallToAction />
-      </Section>
-
+      {/*
       <Section css={{ margin: '5rem 0' }}>
         <Container>
           <h2>Below is // TODO:</h2>
@@ -267,6 +266,9 @@ export default function Home() {
           return <ul>{eventItem}</ul>;
         }}
       </Query>
+
+      */}
+      <Footer />
     </div>
   );
 }
