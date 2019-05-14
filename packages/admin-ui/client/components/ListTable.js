@@ -341,7 +341,7 @@ export default function ListTable(props) {
           <HeaderCell>
             <div css={{ position: 'relative', top: 3 }}>
               <CheckboxPrimitive
-                checked={items && items.length === selectedItems.length}
+                checked={items && items.length && items.length === selectedItems.length}
                 onChange={isLoading ? noop : handleSelectAll}
                 tabIndex="0"
                 isDisabled={isLoading}
