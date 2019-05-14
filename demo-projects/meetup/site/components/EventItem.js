@@ -1,10 +1,10 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { format, isFuture } from 'date-fns';
 
 import { Link } from '../../routes';
 import { H2 } from '../primitives/Typography';
 import { colors } from '../theme';
+import { isInFuture, formatPastDate, formatFutureDate } from '../helpers';
 
 const EventItem = ({
   id,
@@ -15,10 +15,9 @@ const EventItem = ({
   themeColor = colors.red,
   ...props
 }) => {
-  const inFuture = isFuture(startTime);
-  const prettyDate = inFuture
-    ? format(startTime, 'ddd D MMM, HH:mm A')
-    : format(startTime, 'MMM YYYY');
+  const prettyDate = isInFuture(startTime)
+    ? formatFutureDate(startTime)
+    : formatPastDate(startTime);
   return (
     <li
       css={{
@@ -31,11 +30,25 @@ const EventItem = ({
       }}
       {...props}
     >
-      <Link route="event" params={{ id }}>
-        <a css={{ color: 'inherit', textDecoration: 'none', ':hover': { cursor: 'pointer' } }}>
+      <Link
+        css={{
+          '&:hover': {
+            transform: 'translateY(3px)',
+          },
+        }}
+        route="event"
+        params={{ id }}
+      >
+        <a
+          css={{
+            color: 'inherit',
+            textDecoration: 'none',
+            ':hover': { cursor: 'pointer' },
+          }}
+        >
           <div
             css={{
-              opacity: inFuture ? 1 : 0.5,
+              opacity: isInFuture(startTime) ? 1 : 0.5,
             }}
           >
             <span css={{ textTransform: 'uppercase', fontWeight: 600 }}>{prettyDate}</span>
@@ -53,11 +66,10 @@ const EventItem = ({
           ))}
           </div>
         ))}*/}
-          <Link route="event" params={{ id }}>
-            <a css={{ color: 'inherit', fontWeight: 600, textDecoration: 'underline' }}>
-              Find out more
-            </a>
-          </Link>
+
+          <p css={{ color: 'inherit', fontWeight: 600, textDecoration: 'underline' }}>
+            Find out more
+          </p>
         </a>
       </Link>
     </li>

@@ -7,9 +7,15 @@ import { gridSize, colors } from '../theme';
 
 const { publicRuntimeConfig } = getConfig();
 
-const Slant = () => (
+const Slant = ({ height }) => (
   <svg
-    css={{ height: '15vw', width: '100vw', display: 'block', position: 'absolute', bottom: 0 }}
+    css={{
+      height: `${height}vw`,
+      width: '100vw',
+      display: 'block',
+      position: 'absolute',
+      bottom: 0,
+    }}
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 100 100"
     preserveAspectRatio="none"
@@ -20,13 +26,14 @@ const Slant = () => (
 
 const Footer = ({ callToAction = true }) => {
   const { meetup } = publicRuntimeConfig;
-  const margin = callToAction ? 16 : 32;
+  const margin = (callToAction ? 16 : 32) * gridSize;
+  const slantHeight = callToAction ? 15 : 5;
 
   return (
     <div css={{ marginTop: `${margin}px` }}>
       <div css={{ position: 'relative' }}>
         {callToAction && <CallToAction />}
-        <Slant />
+        <Slant height={slantHeight} />
       </div>
       <section
         css={{

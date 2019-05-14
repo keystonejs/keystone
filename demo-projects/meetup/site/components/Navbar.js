@@ -1,5 +1,6 @@
 /** @jsx jsx */
 
+import { useContext, createContext } from 'react';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
@@ -7,52 +8,63 @@ import { Link } from '../../routes';
 import { useAuth } from '../lib/authetication';
 import { colors, fontSizes, gridSize } from '../theme';
 
+const ThemeContext = createContext();
+
 const { publicRuntimeConfig } = getConfig();
 
-const NavLink = props => (
-  <a
-    css={{
-      color: props.foreground,
-      fontSize: fontSizes.md,
-      margin: gridSize * 3,
-      textDecoration: 'none',
+const NavLink = props => {
+  const { foreground } = useContext(ThemeContext);
+  return (
+    <a
+      css={{
+        color: foreground,
+        fontSize: fontSizes.sm,
+        margin: gridSize * 3,
+        textDecoration: 'none',
 
-      ':hover': {
-        textDecoration: 'underline',
-      },
-    }}
-    {...props}
-  />
-);
+        ':hover': {
+          textDecoration: 'underline',
+        },
+      }}
+      {...props}
+    />
+  );
+};
 
-const NavText = props => (
-  <a
-    css={{
-      color: colors.greyLight,
-      fontSize: fontSizes.md,
-      margin: gridSize * 3,
-    }}
-    {...props}
-  />
-);
+const NavText = props => {
+  const { foreground } = useContext(ThemeContext);
+  return (
+    <a
+      css={{
+        color: foreground,
+        fontSize: fontSizes.md,
+        margin: gridSize * 3,
+      }}
+      {...props}
+    />
+  );
+};
 
-const Header = props => (
-  <header
-    css={{
-      background: props.background,
-      display: 'flex',
-      alignItems: 'center',
-      padding: `0 ${gridSize * 6}px`,
-    }}
-    {...props}
-  />
-);
+const Header = props => {
+  const { background } = useContext(ThemeContext);
+  return (
+    <header
+      css={{
+        background: background,
+        display: 'flex',
+        alignItems: 'center',
+        padding: `0 ${gridSize * 6}px`,
+      }}
+      {...props}
+    />
+  );
+};
 
 // TODO: Implement log out
 const UserActions = ({ user }) => (
   <div>
     <NavText>
-      Logged in as <strong css={{ color: 'white' }}>{user.name}</strong>
+      Logged in as <strong>{user.name}</strong>
     </NavText>
     {user.isAdmin && (
       <NavLink href="/admin" target="_blank">
@@ -65,10 +77,10 @@ const UserActions = ({ user }) => (
   </div>
 );
 
-const AnonActions = ({ foreground }) => (
+const AnonActions = () => (
   <div>
     <Link route="signin" passHref>
-      <NavLink foreground={foreground}>Sign in</NavLink>
+      <NavLink>Sign in</NavLink>
     </Link>
     <NavLink
       href="/"
@@ -87,32 +99,34 @@ const AnonActions = ({ foreground }) => (
   </div>
 );
 
-const Navbar = ({ foreground = 'white', background = colors.greyDark, ...props }) => {
+const Navbar = ({ foreground = colors.greyDark, background = 'white', ...props }) => {
   const { meetup } = publicRuntimeConfig;
   const { isAuthenticated, user } = useAuth();
 
   return (
-    <Header background={background} {...props}>
-      <img
-        src={meetup.logo.src}
-        width={meetup.logo.width}
-        height={meetup.logo.height}
-        alt={meetup.name}
-        css={{ marginRight: gridSize * 2 }}
-      />
-      <div css={{ flex: 1 }}>
-        <Link route="/" passHref>
-          <NavLink foreground={foreground}>Home</NavLink>
-        </Link>
-        <Link route="about" passHref>
-          <NavLink foreground={foreground}>About</NavLink>
-        </Link>
-        <Link route="events" passHref>
-          <NavLink foreground={foreground}>Events</NavLink>
-        </Link>
-      </div>
-      {isAuthenticated ? <UserActions user={user} /> : <AnonActions foreground={foreground} />}
-    </Header>
+    <ThemeContext.Provider value={{ background, foreground }}>
+      <Header {...props}>
+        <img
+          src={meetup.logo.src}
+          width={meetup.logo.width}
+          height={meetup.logo.height}
+          alt={meetup.name}
+          css={{ marginRight: gridSize * 2 }}
+        />
+        <div css={{ flex: 1 }}>
+          <Link route="/" passHref>
+            <NavLink>Home</NavLink>
+          </Link>
+          <Link route="about" passHref>
+            <NavLink>About</NavLink>
+          </Link>
+          <Link route="events" passHref>
+            <NavLink>Events</NavLink>
+          </Link>
+        </div>
+        {isAuthenticated ? <UserActions user={user} /> : <AnonActions />}
+      </Header>
+    </ThemeContext.Provider>
   );
 };
 

@@ -3,7 +3,7 @@ import { Query } from 'react-apollo';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
-import EventItem from '../components/EventItem';
+import EventItems from '../components/EventItems';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { GET_CURRENT_EVENTS } from '../graphql/events';
@@ -11,7 +11,8 @@ import { GET_SPONSORS } from '../graphql/sponsors';
 
 import { Section, Container, Separator, Button, Loading, Error } from '../primitives';
 import { H1, H2, H3 } from '../primitives/Typography';
-import { colors, fontSizes } from '../theme';
+import { colors, fontSizes, gridSize } from '../theme';
+import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
 import { Component } from 'react';
 
 const { publicRuntimeConfig } = getConfig();
@@ -49,6 +50,9 @@ const Slant = () => {
   );
 };
 
+/**
+ * Featured Event
+ * */
 const FeaturedEvent = ({ isLoading, error, event }) => {
   if (isLoading && !event) {
     return <p>Special loading message for featured event</p>;
@@ -60,12 +64,26 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
     return <p>No events to show.</p>;
   }
 
+  const { startTime } = event;
+  const prettyDate = isInFuture(startTime)
+    ? formatFutureDate(startTime)
+    : formatPastDate(startTime);
   return (
     <Container css={{ margin: '-7rem auto 0', position: 'relative' }}>
       <div css={{ boxShadow: '0px 4px 94px rgba(0, 0, 0, 0.15)' }}>
         <div css={{ backgroundColor: colors.purple, color: 'white', padding: '2rem' }}>
           <div css={{ display: 'flex' }}>
             <div css={{ flex: 1 }}>
+              <p
+                css={{
+                  textTransform: 'uppercase',
+                  marginTop: 0,
+                  fontWeight: 500,
+                  marginBottom: gridSize,
+                }}
+              >
+                {prettyDate}
+              </p>
               <H3>{event.name}</H3>
             </div>
             <div
@@ -153,26 +171,7 @@ const Talk = ({ title, description, speakers }) => {
 };
 
 const EventsList = ({ events, ...props }) => {
-  return (
-    <ul
-      css={{
-        listStyle: 'none',
-        margin: '0 -1rem',
-        padding: 0,
-        display: `flex`,
-        alignItems: 'flex-start',
-      }}
-      {...props}
-    >
-      {events.map((event, index) => (
-        <EventItem
-          key={event.id}
-          {...event}
-          css={{ width: `${100 / 3}%`, marginTop: index * 80 }}
-        />
-      ))}
-    </ul>
-  );
+  return <EventItems events={events} {...props} />;
 };
 
 function processEventsData(data) {
@@ -218,7 +217,7 @@ export default class Home extends Component {
           const { featuredEvent, moreEvents } = processEventsData(eventsData);
           return (
             <div>
-              <Navbar />
+              <Navbar foreground="white" background={colors.greyDark} />
               <Hero />
               <Slant />
               <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />;
