@@ -12,7 +12,7 @@ const { publicRuntimeConfig } = getConfig();
 
 export const GET_EVENTS_AND_SPONSORS = gql`
   query {
-    allEvents(where:{ startTime_not: null }, orderBy: "startTime") {
+    allEvents(where: { startTime_not: null }, orderBy: "startTime") {
       ...EventData
     }
     allSponsors {
@@ -48,15 +48,13 @@ export default function Home() {
           const { allEvents, allSponsors } = data;
           const now = Date.now();
 
-
-
           let eventItem = null;
-          if(allEvents.length) {
-            if(allEvents.length === 1 || new Date(allEvents[0].startTime) < now) {
+          if (allEvents.length) {
+            if (allEvents.length === 1 || new Date(allEvents[0].startTime) < now) {
               eventItem = <EventItem {...allEvents[0]} />;
             } else {
-              for(let i = 0; i < allEvents.length; i++) {
-                if(i === allEvents.length - 1 || new Date(allEvents[i].startTime) < now) {
+              for (let i = 0; i < allEvents.length; i++) {
+                if (i === allEvents.length - 1 || new Date(allEvents[i].startTime) < now) {
                   eventItem = <EventItem {...allEvents[i - 1]} />;
                   break;
                 }
@@ -66,9 +64,7 @@ export default function Home() {
 
           return (
             <>
-              <ul>
-                {eventItem}
-              </ul>
+              <ul>{eventItem}</ul>
 
               <h2>Sponsors</h2>
               <ul>
