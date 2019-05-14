@@ -3,7 +3,7 @@ import { Query } from 'react-apollo';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
-import EventItem from '../components/EventItem';
+import EventItems from '../components/EventItems';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { GET_CURRENT_EVENTS } from '../graphql/events';
@@ -171,26 +171,7 @@ const Talk = ({ title, description, speakers }) => {
 };
 
 const EventsList = ({ events, ...props }) => {
-  return (
-    <ul
-      css={{
-        listStyle: 'none',
-        margin: '0 -1rem',
-        padding: 0,
-        display: `flex`,
-        alignItems: 'flex-start',
-      }}
-      {...props}
-    >
-      {events.map((event, index) => (
-        <EventItem
-          key={event.id}
-          {...event}
-          css={{ width: `${100 / 3}%`, marginTop: index * 80 }}
-        />
-      ))}
-    </ul>
-  );
+  return <EventItems events={events} {...props} />;
 };
 
 function processEventsData(data) {

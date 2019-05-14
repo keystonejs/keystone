@@ -20,6 +20,7 @@ export const fontSizes = {
 
 export const shadows = {
   lg: '0px 4px 94px rgba(0, 0, 0, 0.15);',
+  sm: '0px 4px 10px rgba(0, 0, 0, 0.1);',
 };
 
 export const gridSize = 8;

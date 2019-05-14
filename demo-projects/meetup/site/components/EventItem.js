@@ -30,8 +30,22 @@ const EventItem = ({
       }}
       {...props}
     >
-      <Link route="event" params={{ id }}>
-        <a css={{ color: 'inherit', textDecoration: 'none', ':hover': { cursor: 'pointer' } }}>
+      <Link
+        css={{
+          '&:hover': {
+            transform: 'translateY(3px)',
+          },
+        }}
+        route="event"
+        params={{ id }}
+      >
+        <a
+          css={{
+            color: 'inherit',
+            textDecoration: 'none',
+            ':hover': { cursor: 'pointer' },
+          }}
+        >
           <div
             css={{
               opacity: isInFuture(startTime) ? 1 : 0.5,
@@ -52,11 +66,10 @@ const EventItem = ({
           ))}
           </div>
         ))}*/}
-          <Link route="event" params={{ id }}>
-            <a css={{ color: 'inherit', fontWeight: 600, textDecoration: 'underline' }}>
-              Find out more
-            </a>
-          </Link>
+
+          <p css={{ color: 'inherit', fontWeight: 600, textDecoration: 'underline' }}>
+            Find out more
+          </p>
         </a>
       </Link>
     </li>
