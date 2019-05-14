@@ -5,8 +5,8 @@ import { ApolloProvider } from 'react-apollo';
 
 import withApollo from '../lib/withApollo';
 import { AuthProvider } from '../lib/authetication';
-import Navbar from '@components/Navbar';
-import StylesBase from '@primitives/StylesBase';
+import Navbar from '../components/Navbar';
+import StylesBase from '../primitives/StylesBase';
 
 const apiEndpoint = 'http://localhost:3000/admin';
 

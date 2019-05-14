@@ -6,13 +6,13 @@ import { jsx } from '@emotion/core';
 
 import { useAuth } from '../lib/authetication';
 import EventItem from '../components/EventItem';
-import CallToAction from '@components/CallToAction';
+import CallToAction from '../components/CallToAction';
 import { Link } from '../../routes';
 import { EVENT_DATA } from './events';
 
-import { Section, Container, Separator, Button } from '@primitives';
-import { H1, H2, H3, Headline } from '@primitives/Typography';
-import { colors, fontSizes } from '@root/theme';
+import { Section, Container, Separator, Button } from '../primitives';
+import { H1, H2, H3 } from '../primitives/Typography';
+import { colors, fontSizes } from '../theme';
 
 const { publicRuntimeConfig } = getConfig();
 

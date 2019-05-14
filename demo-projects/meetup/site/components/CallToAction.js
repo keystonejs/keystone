@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { shadows } from '@root/theme';
+import { shadows } from '../theme';
 
-import { Button } from '@primitives';
+import { Button } from '../primitives';
 
 export default function CallToAction() {
   return (
