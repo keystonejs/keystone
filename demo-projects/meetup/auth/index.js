@@ -34,7 +34,7 @@ module.exports = function createAuthRoutes(keystone) {
     }
   });
 
-  authRouter.get('/signout', async (req, res, next) => {
+  authRouter.post('/signout', async (req, res, next) => {
     try {
       await endAuthedSession(req);
       res.json({

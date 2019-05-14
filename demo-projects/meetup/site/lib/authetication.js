@@ -41,35 +41,32 @@ export class AuthProvider extends Component {
     if (!this.state.isLoading) {
       this.setState({ isLoading: true });
     }
-    const { user } = await checkSession();
+    const result = await checkSession();
+    const { user, isSignedIn } = result;
     this.setState({
-      user: user,
+      user,
+      isSignedIn,
       isLoading: false,
     });
+    return result;
   };
 
   signin = async ({ email, password }) => {
     this.setState({ isLoading: true });
-    const res = await signInWithEmail({ email, password });
+    const result = await signInWithEmail({ email, password });
 
-    if (!res.success) {
+    if (!result.success) {
       this.setState({ isLoading: false });
-      return res;
-    }
-
-    const { authenticated } = await this.checkSession();
-    if (authenticated) {
-      return { success: true };
-    } else {
-      // This could be a cookie related error, or some other blocker.
       return { success: false };
     }
+
+    return this.checkSession();
   };
 
   signout = async () => {
     this.setState({ isLoading: true });
-    const res = await signout();
-    if (res.success) {
+    const result = await signout();
+    if (result.success) {
       this.setState({
         user: undefined,
         isLoading: false,
@@ -124,6 +121,7 @@ const signout = async () => {
       method: 'POST',
       credentials: 'same-origin',
     }).then(r => r.json());
+
     return {
       success: res.success === true,
     };
@@ -140,15 +138,10 @@ const checkSession = async () => {
       credentials: 'same-origin',
     }).then(r => r.json());
 
-    console.log(res);
-
     if (res.isSignedIn) {
-      return {
-        isSignedIn: true,
-        user: res.user,
-      };
+      return { success: true, isSignedIn: true, user: res.user };
     } else {
-      return { isSignedIn: false };
+      return { success: true, isSignedIn: false };
     }
   } catch (error) {
     console.error('Error checking session:', error);

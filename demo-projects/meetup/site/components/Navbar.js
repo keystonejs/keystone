@@ -59,11 +59,13 @@ const UserActions = ({ user }) => (
         Open the Admin UI
       </NavLink>
     )}
-    <NavLink route="/signout">Sign Out</NavLink>
+    <Link route="signout" passHref>
+      <NavLink>Sign Out</NavLink>
+    </Link>
   </div>
 );
 // TODO: Implement log in
-const AnonActions = () => <NavLink href="/admin">Sign In</NavLink>;
+const AnonActions = () => <NavLink href="/signin">Sign In</NavLink>;
 
 const Navbar = () => {
   const { meetup } = publicRuntimeConfig;
