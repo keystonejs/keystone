@@ -23,7 +23,7 @@ export default function CallToAction() {
         In Sydney and into JavaScript? <br />
         You need to join our meetup!
       </H2>
-      <p css={{ maxWidth: 550, margin: '0 auto', margin: `${gridSize * 3}px auto` }}>
+      <p css={{ maxWidth: 550, margin: `${gridSize * 3}px auto` }}>
         Every <strong>3rd Wednesday of the month</strong> you'll find us talking about what we're
         doing and what's happening around us in the world of JavaScript.
       </p>
