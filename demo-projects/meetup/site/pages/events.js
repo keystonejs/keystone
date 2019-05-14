@@ -1,18 +1,8 @@
 import React from 'react';
-import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import EventItem from '../components/EventItem';
 
-import { EVENT_DATA } from '../graphql/events';
-
-const GET_ALL_EVENTS = gql`
-  {
-    allEvents(first: 2) {
-      ...EventData
-    }
-  }
-  ${EVENT_DATA}
-`;
+import { GET_ALL_EVENTS } from '../graphql/events';
 
 export default function Events() {
   return (
