@@ -64,11 +64,10 @@ const EventItem = ({ id, name, startTime, description, talks, themeColor, ...pro
           ))}
           </div>
         ))}*/}
-            <Link route="event" params={{ id }}>
-              <a css={{ color: 'inherit', fontWeight: 600, textDecoration: 'underline' }}>
-                Find out more
-              </a>
-            </Link>
+
+            <span css={{ color: 'inherit', fontWeight: 600, textDecoration: 'underline' }}>
+              Find out more
+            </span>
           </a>
         </Link>
       </div>
