@@ -4,7 +4,7 @@ import { jsx } from '@emotion/core';
 import Rsvp from './Rsvp';
 import { Link } from '../../routes';
 
-import { colors } from '@root/theme';
+import { colors } from '../theme';
 
 const EventItem = ({
   id,

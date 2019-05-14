@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { colors } from '@root/theme';
+import { colors } from '../../theme';
 
 export default function Separator({
   color = colors.greyDark,

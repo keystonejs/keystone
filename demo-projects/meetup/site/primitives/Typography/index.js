@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { colors, fontSizes } from '@root/theme';
+import { fontSizes } from '../../theme';
 
 export function H1({ children, ...props }) {
   return (
