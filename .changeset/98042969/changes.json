@@ -1,9 +1,0 @@
-{
-  "releases": [
-    { "name": "@keystone-alpha/admin-ui", "type": "patch" },
-    { "name": "@keystone-alpha/field-views-loader", "type": "patch" },
-    { "name": "@keystone-alpha/fields", "type": "minor" },
-    { "name": "@keystone-alpha/utils", "type": "minor" }
-  ],
-  "dependents": []
-}

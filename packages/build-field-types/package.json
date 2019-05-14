@@ -1,6 +1,6 @@
 {
   "name": "@keystone-alpha/build-field-types",
-  "version": "0.0.53",
+  "version": "1.0.0",
   "description": "A build tool for KeystoneJS 5 Field Types",
   "main": "dist/index.js",
   "files": [

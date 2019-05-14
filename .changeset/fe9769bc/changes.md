@@ -1,0 +1,1 @@
+Allow blocks to pick data sent to the adminUI via extendAdminMeta()

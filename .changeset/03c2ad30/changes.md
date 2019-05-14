@@ -1,1 +1,0 @@
-- Fix bug in resolver for createMany mutations

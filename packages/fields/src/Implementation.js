@@ -4,23 +4,24 @@ import { parseFieldAccess } from '@keystone-alpha/access-control';
 class Field {
   constructor(
     path,
-    config,
+    { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, ...config },
     { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess }
   ) {
     this.path = path;
-    this.config = {
-      hooks: {},
-      ...config,
-    };
+    this.schemaDoc = schemaDoc;
+    this.config = config;
+    this.isRequired = isRequired;
+    this.defaultValue = defaultValue;
+    this.hooks = hooks;
     this.getListByKey = getListByKey;
     this.listKey = listKey;
-    this.label = config.label || inflection.humanize(inflection.underscore(path));
+    this.label = label || inflection.humanize(inflection.underscore(path));
     this.adapter = listAdapter.newFieldAdapter(
       fieldAdapterClass,
       this.constructor.name,
       path,
       getListByKey,
-      config
+      { isRequired, ...config }
     );
 
     // Should be overwritten by types that implement a Relationship interface
@@ -30,7 +31,7 @@ class Field {
       listKey,
       fieldKey: path,
       defaultAccess,
-      access: config.access,
+      access: access,
     });
   }
 
@@ -169,7 +170,7 @@ class Field {
     return views;
   }
   getDefaultValue() {
-    return this.config.defaultValue;
+    return this.defaultValue;
   }
 }
 

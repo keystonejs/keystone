@@ -1,5 +1,28 @@
 # @keystone-alpha/server
 
+## 5.0.0
+
+### Major Changes
+
+- [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+
+  - Remove `.config` property from `WebServer`. No longer allow `admin ui` or `cookie secret` as config fields. User must use `adminUI` and `cookieSecret` respectively.
+
+### Minor Changes
+
+- [6f598e83](https://github.com/keystonejs/keystone-5/commit/6f598e83):
+
+  - Add Admin UI static building
+
+### Patch Changes
+
+- [fdc5fe3a](https://github.com/keystonejs/keystone-5/commit/fdc5fe3a):
+
+  - GraphiQL playground now only accepts GET requests (not POST)
+
+* Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+  - @keystone-alpha/utils@3.0.0
+
 ## 4.0.1
 
 - [patch][ec76b500](https://github.com/keystonejs/keystone-5/commit/ec76b500):

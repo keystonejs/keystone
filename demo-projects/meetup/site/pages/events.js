@@ -7,7 +7,7 @@ export const EVENT_DATA = gql`
   fragment EventData on Event {
     id
     name
-    startDate
+    startTime
     description
     talks {
       id
@@ -22,7 +22,7 @@ export const EVENT_DATA = gql`
 
 const GET_ALL_EVENTS = gql`
   {
-    allEvents {
+    allEvents(first: 2) {
       ...EventData
     }
   }

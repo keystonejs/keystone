@@ -30,7 +30,6 @@ describe('new Implementation()', () => {
     );
     expect(impl).not.toBeNull();
     expect(impl.path).toEqual('path');
-    expect(impl.config).toEqual({ hooks: {} });
     expect(impl.getListByKey).toEqual({});
     expect(impl.listKey).toEqual({});
     expect(impl.label).toEqual('Path');

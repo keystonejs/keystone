@@ -1,5 +1,38 @@
 # @keystone-alpha/cypress-project-facebook-login
 
+## 1.1.0
+
+### Minor Changes
+
+- [2ef2658f](https://github.com/keystonejs/keystone-5/commit/2ef2658f):
+
+  - Moved Social Login Strategies into its own package `@keystone-alpha/passport-auth`.
+  - Created base strategy `PassportAuthStrategy`. This enables quick addition of new Social Login Strategy based on PassportJs.
+  - Refactored Twitter and Facebook to extend base `PassportAuthStrategy`.
+  - Added Google and GitHub Auth Strategy by extending base `PassportAuthStrategy`.
+  - Removed `passport` and related dependencies from `@keystone-alpha/keystone`.
+  - `test-projects/facebook-login` project is renamed into `test-projects/social-login`
+  - `social-login` project now support for social login with Twitter, Facebook, Google and GitHub inbuilt strategies from `@keystone-alpha/passport-auth` along with an example of how to implement your own PassportJs strategy for WordPress in `WordPressAuthStrategy.js`
+
+### Patch Changes
+
+- [b22d6c16](https://github.com/keystonejs/keystone-5/commit/b22d6c16):
+
+  Remove custom server execution from the CLI.
+
+  The Keystone CLI does not execute custom servers anymore, instead of running `keystone` to start a Keystone instance that has a custom server, run the server file directly with `node`.
+
+  ```diff
+  - "start": "keystone",
+  + "start": "node server.js"
+  ```
+
+* Updated dependencies [9dbed649](https://github.com/keystonejs/keystone-5/commit/9dbed649):
+  - @keystone-alpha/admin-ui@3.2.0
+  - @keystone-alpha/keystone@4.0.0
+  - @keystone-alpha/passport-auth@1.0.0
+  - @keystone-alpha/fields@6.0.0
+
 ## 1.0.2
 
 - Updated dependencies [85b74a2c](https://github.com/keystonejs/keystone-5/commit/85b74a2c):

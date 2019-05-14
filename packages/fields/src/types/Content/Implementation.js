@@ -99,7 +99,7 @@ async function processSerialised(document, blocks, graphQlArgs) {
 }
 
 export class Content extends Relationship {
-  constructor(path, fieldConfig, listConfig) {
+  constructor(path, { blocks: inputBlocks, ...fieldConfig }, listConfig) {
     // To maintain consistency with other types, we grab the sanitised name
     // directly from the list.
     const { itemQueryName } = listConfig.getListByKey(listConfig.listKey).gqlNames;
@@ -110,7 +110,7 @@ export class Content extends Relationship {
     // to this list+field and don't collide.
     const type = `${GQL_TYPE_PREFIX}_${itemQueryName}_${path}`;
 
-    const blocks = Array.isArray(fieldConfig.blocks) ? fieldConfig.blocks : [];
+    const blocks = Array.isArray(inputBlocks) ? inputBlocks : [];
 
     blocks.push(
       ...DEFAULT_BLOCKS.filter(
@@ -196,18 +196,14 @@ export class Content extends Relationship {
       });
     }
 
-    const config = {
-      ...fieldConfig,
-      many: false,
-      // Link up the back reference to keep things in sync
-      ref: `${type}.from`,
-    };
-
+    // Link up the back reference to keep things in sync
+    const config = { ...fieldConfig, many: false, ref: `${type}.from` };
     super(path, config, listConfig);
 
     this.auxList = auxList;
     this.listConfig = listConfig;
     this.blocks = blocks;
+    this.complexBlocks = complexBlocks;
   }
 
   /*
@@ -231,9 +227,22 @@ export class Content extends Relationship {
       // in)
       blockTypes: this.blocks.map(block => (Array.isArray(block) ? block[0] : block).type),
 
-      // Key the block options by type to be serialised and passed to the client
       blockOptions: this.blocks
-        .filter(block => Array.isArray(block) && !!block[1])
+        // Normalise the input config so everything is an array
+        .map(block => (Array.isArray(block) ? [block[0], block[1]] : [block, {}]))
+        // Give complex blocks the opportunity to set default values
+        .map(([block, blockConfig]) => {
+          const complexBlockInstance = this.complexBlocks.find(({ type }) => type === block.type);
+
+          return [
+            block,
+            complexBlockInstance ? complexBlockInstance.extendAdminMeta(blockConfig) : blockConfig,
+          ];
+        })
+        // Don't bother sending any configs that are empty
+        .filter(([, blockConfig]) => blockConfig && Object.keys(blockConfig).length)
+        // Key the block options by type to be serialised and passed to the
+        // client
         .reduce(
           (options, block) => ({
             ...options,

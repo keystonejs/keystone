@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const {
   CloudinaryImage,
   Checkbox,
@@ -18,41 +19,75 @@ const cloudinaryAdapter = new CloudinaryAdapter({
   apiSecret: process.env.CLOUDINARY_SECRET,
 });
 
-exports.Organiser = {
+const access = {
+  userIsAdmin: ({ authentication: { item: user } }) => user && !!user.isAdmin,
+  userIsAdminOrPath: path => ({ existingItem: item, authentication: { item: user } }) => {
+    if (!user) return false;
+    return user.isAdmin || user.id === item[path];
+  },
+};
+
+access.readPublicWriteAdmin = {
+  create: access.userIsAdmin,
+  read: true,
+  update: access.userIsAdmin,
+  delete: access.userIsAdmin,
+};
+
+// TODO: We can't access the existing item at the list update level yet,
+// so this kludge will allow the access control to work for now by
+// locking down the API to admins.
+access.userIsAdminOrPath = () => access.userIsAdmin;
+
+exports.User = {
+  access: {
+    update: access.userIsAdminOrPath('id'),
+    delete: access.userIsAdmin,
+  },
   fields: {
-    user: { type: Relationship, ref: 'User.organiser' },
+    name: { type: Text },
+    email: { type: Text, isUnique: true, access: { read: access.userIsAdminOrPath('id') } },
+    password: { type: Password, isRequired: true },
+    isAdmin: { type: Checkbox, access: { update: access.userIsAdmin } },
+    twitterHandle: { type: Text },
+    image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
+    talks: {
+      type: Relationship,
+      ref: 'Talk.speakers',
+      many: true,
+      access: { update: access.userIsAdmin },
+    },
+  },
+};
+
+exports.Organiser = {
+  access: access.readPublicWriteAdmin,
+  fields: {
+    user: { type: Relationship, ref: 'User' },
     order: { type: Number },
-    isOrganiser: { type: Checkbox },
     role: { type: Text },
   },
 };
 
-exports.User = {
-  fields: {
-    name: { type: Text },
-    email: { type: Text, isUnique: true },
-    password: { type: Password, isRequired: true },
-    isAdmin: { type: Checkbox },
-    twitterHandle: { type: Text },
-    image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
-    talks: { type: Relationship, ref: 'Talk.speakers', many: true },
-    organiser: { type: Relationship, ref: 'Organiser.user' },
-  },
-};
-
 exports.Event = {
+  access: access.readPublicWriteAdmin,
   fields: {
     name: { type: Text },
     status: { type: Select, options: 'draft, active' },
-    startDate: { type: DateTime },
+    themeColor: { type: Text },
+    startTime: { type: DateTime },
     durationMins: { type: Integer },
     description: { type: Wysiwyg },
     talks: { type: Relationship, ref: 'Talk.event', many: true },
+    locationAddress: { type: Text },
+    locationDescription: { type: Text },
     maxRsvps: { type: Integer },
+    isRsvpAvailable: { type: Checkbox },
   },
 };
 
 exports.Talk = {
+  access: access.readPublicWriteAdmin,
   fields: {
     name: { type: Text },
     event: { type: Relationship, ref: 'Event.talks' },
@@ -63,9 +98,58 @@ exports.Talk = {
 };
 
 exports.Rsvp = {
+  access: {
+    create: true,
+    read: true,
+    update: access.userIsAdminOrPath('user'),
+    delete: access.userIsAdmin,
+  },
   fields: {
     event: { type: Relationship, ref: 'Event' },
     user: { type: Relationship, ref: 'User' },
     status: { type: Select, options: 'yes, no' },
+  },
+  hooks: {
+    validateInput: async ({ resolvedData, existingItem, actions }) => {
+      const { status } = resolvedData;
+      const { event: eventId } = existingItem ? existingItem : resolvedData;
+
+      if (status === 'no') {
+        return;
+      }
+
+      const { data } = await actions.query(`query {
+        event: Event(where: { id: "${eventId}" }) {
+          id
+          startTime
+          maxRsvps
+          isRsvpAvailable
+        }
+        allRsvps(where: { event: { id: "${eventId}" }}) {
+          id
+        }
+      }`);
+
+      const { event, allRsvps } = data;
+
+      if (
+        !event ||
+        !event.isRsvpAvailable ||
+        !event.startTime ||
+        new Date() > new Date(event.startTime) ||
+        allRsvps.length >= event.maxRsvps
+      ) {
+        throw 'Error rsvping to event';
+      }
+    },
+  },
+};
+
+exports.Sponsor = {
+  access: access.readPublicWriteAdmin,
+  fields: {
+    name: { type: Text },
+    website: { type: Text },
+    logo: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
 };

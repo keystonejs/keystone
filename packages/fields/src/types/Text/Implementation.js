@@ -3,8 +3,9 @@ import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 
 export class Text extends Implementation {
-  constructor() {
+  constructor(path, { isMultiline }) {
     super(...arguments);
+    this.isMultiline = isMultiline;
   }
   get gqlOutputFields() {
     return [`${this.path}: String`];
@@ -28,7 +29,7 @@ export class Text extends Implementation {
     return [`${this.path}: String`];
   }
   extendAdminMeta(meta) {
-    const { isMultiline } = this.config;
+    const { isMultiline } = this;
     return { isMultiline, ...meta };
   }
 }

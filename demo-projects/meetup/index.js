@@ -3,10 +3,12 @@ const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
-const { Event, Talk, User, Rsvp, Organiser } = require('./schema');
+const { Event, Talk, User, Rsvp, Organiser, Sponsor } = require('./schema');
+
+const MEETUP = require('./meetupConfig');
 
 const keystone = new Keystone({
-  name: 'Keystone Meetup',
+  name: MEETUP.name,
   adapter: new MongooseAdapter(),
 });
 
@@ -20,6 +22,7 @@ keystone.createList('Rsvp', Rsvp);
 keystone.createList('Talk', Talk);
 keystone.createList('User', User);
 keystone.createList('Organiser', Organiser);
+keystone.createList('Sponsor', Sponsor);
 
 const admin = new AdminUI(keystone, {
   adminPath: '/admin',

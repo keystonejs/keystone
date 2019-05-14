@@ -3,10 +3,10 @@ import React from 'react';
 import Rsvp from './Rsvp';
 import { Link } from '../../routes';
 
-const EventItem = ({ id, name, startDate, talks }) => (
+const EventItem = ({ id, name, startTime, talks }) => (
   <li>
     <h2>{name}</h2>
-    <p>{startDate}</p>
+    <p>{startTime}</p>
     <Rsvp id={id} />
     <h2>Talks</h2>
     {talks.map(talk => (
@@ -19,7 +19,7 @@ const EventItem = ({ id, name, startDate, talks }) => (
       </div>
     ))}
     <Link route="event" params={{ id }}>
-      Find out more
+      <a>Find out more</a>
     </Link>
   </li>
 );

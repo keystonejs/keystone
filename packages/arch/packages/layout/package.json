@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/layout",
   "description": "Layout component as used in @keystone-alpha Admin UI.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/layout.cjs.js",
@@ -12,8 +12,8 @@
     "react": "^16.8.6"
   },
   "dependencies": {
-    "@arch-ui/common": "0.0.3",
-    "@arch-ui/theme": "0.0.3",
+    "@arch-ui/common": "0.0.4",
+    "@arch-ui/theme": "0.0.4",
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.10",
     "@emotion/styled": "^10.0.10"

@@ -10,6 +10,7 @@ const {
   mapKeys,
   objMerge,
   flatten,
+  unique,
 } = require('@keystone-alpha/utils');
 const {
   validateFieldAccessControl,
@@ -22,8 +23,6 @@ const {
   mergeRelationships,
 } = require('./relationship-utils');
 const List = require('../List');
-
-const unique = arr => [...new Set(arr)];
 
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
 
