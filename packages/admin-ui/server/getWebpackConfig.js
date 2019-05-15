@@ -20,11 +20,6 @@ module.exports = function({ adminMeta, entry, outputPath }) {
       test: /\.js$/,
       exclude: [
         /node_modules(?!\/@keystone-alpha\/admin-ui)/,
-        // this only affects things while developing in the monorepo
-        // we do this so we can use less memory on heroku, this uses less memory
-        // since it doesn't have to compile these things with babel
-        // note that the preconstruct aliases are also disabled on heroku to enable this
-        // when we have static builds for the admin ui, we can remove this
       ],
       use: [
         {
