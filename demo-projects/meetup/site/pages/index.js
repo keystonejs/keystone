@@ -18,7 +18,6 @@ import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
 import { Component } from 'react';
 
 const { publicRuntimeConfig } = getConfig();
-const mq = getBreakpoints();
 /**
  * Featured Event
  * */

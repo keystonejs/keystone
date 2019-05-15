@@ -3,9 +3,7 @@
 import PropTypes from 'prop-types';
 import { jsx } from '@emotion/core';
 import { fontSizes } from '../../theme';
-import { getBreakpoints } from '../../helpers';
 
-const mq = getBreakpoints();
 const baseStyles = { margin: 0, fontWeight: 600 };
 const sizeMap = [
   {
