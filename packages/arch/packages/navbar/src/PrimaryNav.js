@@ -20,7 +20,6 @@ export const PrimaryNav = styled.nav({
   boxSizing: 'border-box',
   display: 'flex',
   flexFlow: 'column nowrap',
-  fontSize: '0.9rem',
   height: '100vh',
   position: 'fixed',
   zIndex: 2,
@@ -58,7 +57,7 @@ export const BrandItem = styled.h2({
   paddingBottom: PRIMARY_NAV_GUTTER,
 });
 
-export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
+export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected, mouseIsOverNav }) => {
   const selectedStyles = isSelected
     ? {
         '&, :hover, :active, :focus': {
@@ -72,7 +71,7 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
   return {
     border: 0,
     borderRight: '1px solid transparent',
-    color: colors.N90,
+    color: isSelected ? colors.N90 : mouseIsOverNav ? colors.N70 : colors.N40,
     display: 'block',
     marginBottom: 2,
     overflow: 'hidden',
@@ -84,9 +83,10 @@ export const PrimaryNavItem = styled(ItemElement)(({ depth, isSelected }) => {
     textDecoration: 'none',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
+    transition: 'color 110ms',
 
     ':hover': {
-      backgroundColor: colors.N05,
+      backgroundColor: colors.N10,
       textDecoration: 'none',
     },
     ':active': {

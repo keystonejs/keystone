@@ -23,7 +23,6 @@
     "@keystone-alpha/core": "^2.0.4",
     "@keystone-alpha/fields": "^6.0.0",
     "@keystone-alpha/keystone": "^4.0.0",
-    "@keystone-alpha/server": "^5.0.0",
     "@keystone-alpha/session": "^1.0.2",
     "body-parser": "^1.18.2"
   },

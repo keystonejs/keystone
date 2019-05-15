@@ -142,7 +142,7 @@ function getPath(str) {
   return `/${arr[1]}/${arr[2]}`;
 }
 
-function renderChildren(node, getListByKey, adminPath, depth) {
+function renderChildren(node, mouseIsOverNav, getListByKey, adminPath, depth) {
   if (node.children) {
     const groupKey = uid(node.children);
     depth += 1;
@@ -150,7 +150,9 @@ function renderChildren(node, getListByKey, adminPath, depth) {
     return (
       <React.Fragment key={groupKey}>
         {node.label && <PrimaryNavHeading depth={depth}>{node.label}</PrimaryNavHeading>}
-        {node.children.map(child => renderChildren(child, getListByKey, adminPath, depth))}
+        {node.children.map(child =>
+          renderChildren(child, mouseIsOverNav, getListByKey, adminPath, depth)
+        )}
       </React.Fragment>
     );
   }
@@ -160,7 +162,13 @@ function renderChildren(node, getListByKey, adminPath, depth) {
     const href = `${adminPath}/${path}`;
     const isSelected = href === location.pathname;
     return (
-      <PrimaryNavItem key={path} depth={depth} isSelected={isSelected} to={href}>
+      <PrimaryNavItem
+        key={path}
+        depth={depth}
+        isSelected={isSelected}
+        mouseIsOverNav={mouseIsOverNav}
+        to={href}
+      >
         {label}
       </PrimaryNavItem>
     );
@@ -187,13 +195,14 @@ function renderChildren(node, getListByKey, adminPath, depth) {
       id={id}
       isSelected={isSelected}
       to={`${href}${maybeSearchParam}`}
+      mouseIsOverNav={mouseIsOverNav}
     >
       {label}
     </PrimaryNavItem>
   );
 }
 
-function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys }) {
+function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys, mouseIsOverNav }) {
   return (
     <Relative>
       <Route>
@@ -201,13 +210,21 @@ function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys }) {
           <ScrollQuery isPassive={false}>
             {(ref, snapshot) => (
               <PrimaryNavScrollArea ref={ref} {...snapshot}>
-                <PrimaryNavItem to={adminPath} isSelected={location.pathname === adminPath}>
+                <PrimaryNavItem
+                  to={adminPath}
+                  isSelected={location.pathname === adminPath}
+                  mouseIsOverNav={mouseIsOverNav}
+                >
                   Dashboard
                 </PrimaryNavItem>
 
                 {pages && pages.length
-                  ? pages.map(node => renderChildren(node, getListByKey, adminPath, 0))
-                  : listKeys.map(key => renderChildren(key, getListByKey, adminPath))}
+                  ? pages.map(node =>
+                      renderChildren(node, mouseIsOverNav, getListByKey, adminPath, 0)
+                    )
+                  : listKeys.map(key =>
+                      renderChildren(key, mouseIsOverNav, getListByKey, adminPath)
+                    )}
               </PrimaryNavScrollArea>
             )}
           </ScrollQuery>
@@ -217,39 +234,37 @@ function PrimaryNavItems({ adminPath, getListByKey, pages, listKeys }) {
   );
 }
 
-let PrimaryNavContent = memo(
-  function PrimaryContent() {
-    let { adminPath, getListByKey, listKeys, name, pages } = useAdminMeta();
+let PrimaryNavContent = ({ mouseIsOverNav }) => {
+  let { adminPath, getListByKey, listKeys, name, pages } = useAdminMeta();
 
-    return (
-      <Inner>
-        <Title
-          as={Link}
-          to={adminPath}
-          margin="both"
-          crop
-          css={{
-            color: colors.N90,
-            textDecoration: 'none',
-            alignSelf: 'stretch',
-            marginLeft: PRIMARY_NAV_GUTTER,
-            marginRight: PRIMARY_NAV_GUTTER,
-          }}
-        >
-          {name}
-        </Title>
-        <PrimaryNavItems
-          adminPath={adminPath}
-          getListByKey={getListByKey}
-          listKeys={listKeys.sort()}
-          pages={pages}
-        />
-        <NavIcons />
-      </Inner>
-    );
-  },
-  () => true
-);
+  return (
+    <Inner>
+      <Title
+        as={Link}
+        to={adminPath}
+        margin="both"
+        crop
+        css={{
+          color: colors.N90,
+          textDecoration: 'none',
+          alignSelf: 'stretch',
+          marginLeft: PRIMARY_NAV_GUTTER,
+          marginRight: PRIMARY_NAV_GUTTER,
+        }}
+      >
+        {name}
+      </Title>
+      <PrimaryNavItems
+        adminPath={adminPath}
+        getListByKey={getListByKey}
+        listKeys={listKeys.sort()}
+        pages={pages}
+        mouseIsOverNav={mouseIsOverNav}
+      />
+      <NavIcons />
+    </Inner>
+  );
+};
 
 class Nav extends Component {
   state = { mouseIsOverNav: false };
@@ -295,7 +310,7 @@ class Nav extends Component {
                 onMouseLeave={this.handleMouseLeave}
                 style={makeResizeStyles('width')}
               >
-                <PrimaryNavContent />
+                <PrimaryNavContent mouseIsOverNav={mouseIsOverNav} />
                 {isCollapsed ? null : (
                   <GrabHandle
                     onDoubleClick={clickProps.onClick}
