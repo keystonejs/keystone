@@ -40,7 +40,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
   return (
     <Container css={{ margin: '-7rem auto 0', position: 'relative' }}>
       <div css={{ boxShadow: '0px 4px 94px rgba(0, 0, 0, 0.15)' }}>
-        <div css={{ backgroundColor: colors.purple, color: 'white', padding: '2rem' }}>
+        <div css={{ backgroundColor: event.themeColor, color: 'white', padding: '2rem' }}>
           <div css={{ display: 'flex' }}>
             <div css={{ flex: 1 }}>
               <p

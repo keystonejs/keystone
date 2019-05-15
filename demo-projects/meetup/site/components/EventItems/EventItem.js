@@ -34,7 +34,7 @@ const EventItem = ({ id, name, startTime, description, talks, themeColor, ...pro
           padding: gridSize * 3,
           backgroundColor: 'white',
           borderTop: `solid 8px ${themeColor || colors.greyLight}`,
-          boxShadow: shadows.lg,
+          boxShadow: shadows.md,
           transition: 'all 0.1s',
           '&:hover': {
             boxShadow: shadows.sm,
