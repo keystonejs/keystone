@@ -8,6 +8,8 @@ export default function StylesBase() {
         ${normalize};
         ${fonts};
         body {
+          max-width: 100%;
+          overflow-x: hidden;
           font-family: 'NeueHass', -apple-system, BlinkMacSystemFont, Helvetica, sans-serif;
           line-height: 1.5;
         }
