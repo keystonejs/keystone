@@ -216,7 +216,7 @@ export default class Home extends Component {
               <Navbar foreground="white" background={colors.greyDark} />
               <Hero />
               <Slant />
-              <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />;
+              <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />
               {featuredEvent && featuredEvent.talks ? <Talks talks={featuredEvent.talks} /> : null}
               <Section css={{ padding: '3rem 0' }}>
                 <Container>
