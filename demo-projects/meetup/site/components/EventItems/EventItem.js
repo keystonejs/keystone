@@ -2,6 +2,7 @@
 import { jsx } from '@emotion/core';
 
 import { Link } from '../../../routes';
+import { Html } from '../../primitives';
 import { H2 } from '../../primitives/Typography';
 import { colors, gridSize, shadows, breakpoints } from '../../theme';
 import { isInFuture, formatPastDate, formatFutureDate } from '../../helpers';
@@ -52,7 +53,7 @@ const EventItem = ({ id, name, startTime, description, talks, themeColor, ...pro
               <span css={{ textTransform: 'uppercase', fontWeight: 600 }}>{prettyDate}</span>
               <H2 size={4}>{name}</H2>
             </div>
-            <div dangerouslySetInnerHTML={{ __html: description }} />
+            <Html markup={description} />
             {/*<Rsvp id={id} />
       <h2>Talks</h2>
       {talks.map(talk => (
