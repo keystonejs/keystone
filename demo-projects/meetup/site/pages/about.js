@@ -4,15 +4,7 @@ import { Query } from 'react-apollo';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
-import {
-  Avatar,
-  Container,
-  Error,
-  H1,
-  H2,
-  Html,
-  Loading,
-} from '../primitives';
+import { Avatar, Container, Error, H1, H2, Html, Loading } from '../primitives';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { borderRadius, colors, gridSize } from '../theme';
@@ -60,15 +52,18 @@ export default function About() {
 const twitterLink = handle => `https://twitter.com/${handle.slice(1)}`;
 
 const OrganiserList = props => (
-  <ul css={{
-    backgroundColor: colors.greyLight,
-    borderRadius,
-    display: 'flex',
-    justifyContent: 'space-between',
-    listStyle: 'none',
-    margin: 0,
-    padding: '1.5rem',
-  }} {...props} />
+  <ul
+    css={{
+      backgroundColor: colors.greyLight,
+      borderRadius,
+      display: 'flex',
+      justifyContent: 'space-between',
+      listStyle: 'none',
+      margin: 0,
+      padding: '1.5rem',
+    }}
+    {...props}
+  />
 );
 const Organiser = ({ organiser }) => (
   <li
@@ -81,10 +76,7 @@ const Organiser = ({ organiser }) => (
     }}
     key={organiser.id}
   >
-    <Avatar
-      name={organiser.name}
-      src={organiser.image && organiser.image.small}
-    />
+    <Avatar name={organiser.name} src={organiser.image && organiser.image.small} />
     <div css={{ marginLeft: '1em' }}>
       <div css={{ fontWeight: 'bold' }}>{organiser.name}</div>
       {organiser.twitterHandle && (
