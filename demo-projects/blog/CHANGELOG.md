@@ -1,5 +1,22 @@
 # keystone_demo_blog
 
+## 1.1.1
+
+### Patch Changes
+
+- [9b6fec3e](https://github.com/keystonejs/keystone-5/commit/9b6fec3e):
+
+  Remove unnecessary dependency from packages
+
+* Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+* Updated dependencies [9a0456ff](https://github.com/keystonejs/keystone-5/commit/9a0456ff):
+  - @arch-ui/layout@0.2.2
+  - @keystone-alpha/fields-wysiwyg-tinymce@2.0.1
+  - @keystone-alpha/admin-ui@3.2.1
+  - @arch-ui/typography@0.0.6
+  - @keystone-alpha/fields@6.1.1
+  - @keystone-alpha/adapter-mongoose@2.0.0
+
 ## 1.1.0
 
 ### Minor Changes

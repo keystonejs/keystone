@@ -1,5 +1,13 @@
 # @arch-ui/navbar
 
+## 0.0.8
+
+### Patch Changes
+
+- [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+
+  Minor Admin UI Tweaks
+
 ## 0.0.7
 
 ### Patch Changes

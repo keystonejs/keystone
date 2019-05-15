@@ -1,5 +1,10 @@
 # @arch-ui/dialog
 
+## 0.0.7
+
+- Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+  - @arch-ui/typography@0.0.6
+
 ## 0.0.6
 
 ### Patch Changes
