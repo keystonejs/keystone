@@ -6,8 +6,10 @@ import { jsx } from '@emotion/core';
 
 import { Link } from '../../routes';
 import { useAuth } from '../lib/authetication';
+import { getBreakpoints } from '../helpers';
 import { colors, fontSizes, gridSize } from '../theme';
 
+const mq = getBreakpoints();
 const ThemeContext = createContext();
 
 const { publicRuntimeConfig } = getConfig();
@@ -19,7 +21,10 @@ const NavLink = props => {
       css={{
         color: foreground,
         fontSize: fontSizes.sm,
-        margin: gridSize * 3,
+        margin: gridSize,
+        [mq[0]]: {
+          margin: gridSize * 3,
+        },
         textDecoration: 'none',
 
         ':hover': {
@@ -53,21 +58,31 @@ const Header = props => {
         background: background,
         display: 'flex',
         alignItems: 'center',
-        padding: `0 ${gridSize * 6}px`,
+        padding: `0 ${gridSize * 2}px`,
+        [mq[0]]: {
+          padding: `0 ${gridSize * 6}px`,
+        },
       }}
       {...props}
     />
   );
 };
 
+const hideOnMobile = {
+  display: 'none',
+  [mq[2]]: {
+    display: 'initial',
+  },
+};
+
 // TODO: Implement log out
 const UserActions = ({ user }) => (
   <div>
-    <NavText>
+    <NavText css={hideOnMobile}>
       Logged in as <strong>{user.name}</strong>
     </NavText>
     {user.isAdmin && (
-      <NavLink href="/admin" target="_blank">
+      <NavLink css={hideOnMobile} href="/admin" target="_blank">
         Open the Admin UI
       </NavLink>
     )}
@@ -111,7 +126,16 @@ const Navbar = ({ foreground = colors.greyDark, background = 'white', ...props }
           width={meetup.logo.width}
           height={meetup.logo.height}
           alt={meetup.name}
-          css={{ marginRight: gridSize * 2 }}
+          css={{
+            marginRight: gridSize,
+            width: meetup.logo.width / 1.5,
+            height: meetup.logo.height / 1.5,
+            [mq[0]]: {
+              marginRight: gridSize * 2,
+              width: meetup.logo.width,
+              height: meetup.logo.height,
+            },
+          }}
         />
         <div css={{ flex: 1 }}>
           <Link route="/" passHref>

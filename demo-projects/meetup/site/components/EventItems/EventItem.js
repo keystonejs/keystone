@@ -3,17 +3,15 @@ import { jsx } from '@emotion/core';
 
 import { Link } from '../../../routes';
 import { H2 } from '../../primitives/Typography';
-import { colors, gridSize, shadows, breakpoints } from '../../theme';
-import { isInFuture, formatPastDate, formatFutureDate } from '../../helpers';
+import { colors, gridSize, shadows } from '../../theme';
+import { isInFuture, formatPastDate, formatFutureDate, getBreakpoints } from '../../helpers';
+
+const mq = getBreakpoints();
 
 const EventItem = ({ id, name, startTime, description, talks, themeColor, ...props }) => {
   const prettyDate = isInFuture(startTime)
     ? formatFutureDate(startTime)
     : formatPastDate(startTime);
-
-  // Breakpoints for the events grid
-  const screenSizes = Object.values(breakpoints);
-  const mq = screenSizes.map(bp => `@media (min-width: ${bp}px)`);
 
   return (
     <li
