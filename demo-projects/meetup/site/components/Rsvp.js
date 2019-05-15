@@ -39,7 +39,7 @@ const Rsvp = ({ eventId }) => {
         const errorMessage = validateRsvp({ userRsvps, eventRsvps, event });
 
         if (errorMessage) {
-          return <p>{errorMessage}</p>;
+          return <p css={{ color: colors.greyMedium, margin: 0 }}>{errorMessage}</p>;
         }
 
         return (
@@ -69,19 +69,23 @@ const Rsvp = ({ eventId }) => {
 
               const status = userRsvps[0] ? userRsvps[0].status : null;
 
+              const isGoing = status === 'yes' ? true : false;
               return (
                 <div>
+                  <span css={{ padding: '0 1rem' }}>Will you be attending?</span>
                   <Button
-                    disabled={status === 'yes' || eventRsvps.length >= event.maxRsvps}
-                    color={status === 'yes' ? colors.purple : colors.greyLight}
-                    css={{ marginLeft: '.5rem', color: status === 'yes' ? 'blue' : 'black' }}
+                    disabled={isGoing || eventRsvps.length >= event.maxRsvps}
+                    background={isGoing ? colors.purple : colors.greyLight}
+                    foreground={isGoing ? 'white' : colors.greyDark}
+                    css={{ marginLeft: '.5rem' }}
                     onClick={() => updateRsvp({ variables: { ...variables, status: 'yes' } })}
                   >
                     yes
                   </Button>
                   <Button
-                    disabled={status === 'no'}
-                    color={status === 'no' ? colors.purple : colors.greyLight}
+                    disabled={!isGoing}
+                    background={!isGoing ? colors.purple : colors.greyLight}
+                    foreground={!isGoing ? 'white' : colors.greyDark}
                     css={{ marginLeft: '.5rem' }}
                     onClick={() => updateRsvp({ variables: { ...variables, status: 'no' } })}
                   >

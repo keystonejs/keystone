@@ -98,7 +98,6 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
             <div
               css={{ display: 'flex', flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}
             >
-              <span css={{ padding: '0 1rem' }}>Will you be attending?</span>
               <Rsvp eventId={id} />
             </div>
             <div css={{ display: 'flex', flex: 1, justifyContent: 'flex-end' }}>

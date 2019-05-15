@@ -1,5 +1,6 @@
 export const colors = {
   greyDark: '#182126',
+  greyMedium: '#8c8c8c',
   greyLight: '#EEF3F5',
   purple: '#A03FFF',
   red: '#EB5757',
