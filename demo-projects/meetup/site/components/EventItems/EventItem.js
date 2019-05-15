@@ -29,6 +29,7 @@ const EventItem = ({ id, name, startTime, description, talks, themeColor, ...pro
     >
       <div
         css={{
+          position: 'relative',
           margin: gridSize,
           padding: gridSize * 3,
           backgroundColor: 'white',
@@ -41,6 +42,16 @@ const EventItem = ({ id, name, startTime, description, talks, themeColor, ...pro
           },
         }}
       >
+        <div
+          css={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            background: 'linear-gradient( rgba(255, 255, 255, 0), 3%, white, 80%, white)',
+            width: '100%',
+            height: gridSize * 16,
+          }}
+        />
         <Link route="event" params={{ id }}>
           <a css={{ color: 'inherit', textDecoration: 'none', ':hover': { cursor: 'pointer' } }}>
             <div
@@ -49,9 +60,21 @@ const EventItem = ({ id, name, startTime, description, talks, themeColor, ...pro
               }}
             >
               <span css={{ textTransform: 'uppercase', fontWeight: 600 }}>{prettyDate}</span>
-              <H2 size={4}>{name}</H2>
+              <H2
+                size={4}
+                css={{ wordWrap: 'break-word', lineHeight: '1.25', marginBottom: gridSize }}
+              >
+                {name}
+              </H2>
             </div>
-            <Html markup={description} />
+            <div
+              css={{
+                maxHeight: '270px',
+                overflow: 'hidden',
+              }}
+            >
+              <Html markup={description} />
+            </div>
             {/*<Rsvp id={id} />
       <h2>Talks</h2>
       {talks.map(talk => (
@@ -64,7 +87,14 @@ const EventItem = ({ id, name, startTime, description, talks, themeColor, ...pro
           </div>
         ))}*/}
 
-            <span css={{ color: 'inherit', fontWeight: 600, textDecoration: 'underline' }}>
+            <span
+              css={{
+                color: 'inherit',
+                fontWeight: 600,
+                textDecoration: 'underline',
+                position: 'relative',
+              }}
+            >
               Find out more
             </span>
           </a>
