@@ -178,11 +178,7 @@ export default class Home extends Component {
               </Head>
               <Navbar foreground="white" background={colors.greyDark} />
               <Hero title={meetup.name}>{meetup.intro}</Hero>
-              <FeaturedEvent
-                isLoading={eventsLoading}
-                error={eventsError}
-                event={featuredEvent}
-              />
+              <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />
               <Container css={{ marginTop: '3rem' }}>
                 {featuredEvent && featuredEvent.talks ? (
                   <Talks talks={featuredEvent.talks} />
