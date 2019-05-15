@@ -1,5 +1,11 @@
 # @arch-ui/button
 
+## 0.0.7
+
+- Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+  - @arch-ui/loading@0.0.6
+  - @arch-ui/common@0.0.5
+
 ## 0.0.6
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @keystone-alpha/demo-project-meetup
 
+## 0.0.2
+
+### Patch Changes
+
+- [9b6fec3e](https://github.com/keystonejs/keystone-5/commit/9b6fec3e):
+
+  Remove unnecessary dependency from packages
+
+* Updated dependencies [9a0456ff](https://github.com/keystonejs/keystone-5/commit/9a0456ff):
+  - @keystone-alpha/fields@6.1.1
+  - @keystone-alpha/adapter-mongoose@2.0.0
+
 ## 0.0.1
 
 ### Patch Changes

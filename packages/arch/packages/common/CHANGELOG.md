@@ -1,5 +1,13 @@
 # @arch-ui/common
 
+## 0.0.5
+
+### Patch Changes
+
+- [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+
+  Minor Admin UI Tweaks
+
 ## 0.0.4
 
 - Updated dependencies [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
