@@ -36,7 +36,9 @@ Promise.all([keystone.prepare({ port }), nextApp.prepare()])
 
     Wysiwyg.bindStaticMiddleware(server);
     server.app.use(handler);
-    await server.start();
+    await server.start().then(({ port: listeningOn }) => {
+      console.log(`Server started on port ${listeningOn}`);
+    });
   })
   .catch(error => {
     console.error(error);

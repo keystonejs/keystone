@@ -1,6 +1,7 @@
 import React, { Component, createContext, useContext } from 'react';
+import getConfig from 'next/config';
 
-const apiEndpoint = 'http://localhost:3000/api';
+const { publicRuntimeConfig: { serverUrl } } = getConfig();
 
 /**
  * AuthContext
@@ -97,7 +98,7 @@ export class AuthProvider extends Component {
 
 const signInWithEmail = async ({ email, password }) => {
   try {
-    const res = await fetch(`${apiEndpoint}/email/signin`, {
+    const res = await fetch(`${serverUrl}/api/email/signin`, {
       method: 'POST',
       credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
@@ -117,7 +118,7 @@ const signInWithEmail = async ({ email, password }) => {
 
 const signout = async () => {
   try {
-    const res = await fetch(`${apiEndpoint}/signout`, {
+    const res = await fetch(`${serverUrl}/api/signout`, {
       method: 'POST',
       credentials: 'same-origin',
     }).then(r => r.json());
@@ -133,7 +134,7 @@ const signout = async () => {
 
 const checkSession = async () => {
   try {
-    const res = await fetch(`${apiEndpoint}/session`, {
+    const res = await fetch(`${serverUrl}/api/session`, {
       method: 'GET',
       credentials: 'same-origin',
     }).then(r => r.json());

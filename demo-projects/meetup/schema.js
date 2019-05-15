@@ -64,7 +64,7 @@ exports.Organiser = {
   access: access.readPublicWriteAdmin,
   fields: {
     user: { type: Relationship, ref: 'User' },
-    order: { type: Number },
+    order: { type: Integer },
     role: { type: Text },
   },
 };

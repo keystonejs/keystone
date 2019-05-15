@@ -1,5 +1,8 @@
-import { ApolloClient, InMemoryCache, HttpLink } from 'apollo-boost';
 import fetch from 'isomorphic-unfetch';
+import getConfig from 'next/config';
+import { ApolloClient, InMemoryCache, HttpLink } from 'apollo-boost';
+
+const { publicRuntimeConfig: { serverUrl } } = getConfig();
 
 let apolloClient = null;
 
@@ -9,7 +12,7 @@ function create(initialState) {
     connectToDevTools: process.browser,
     ssrMode: !process.browser, // Disables forceFetch on the server (so queries are only run once)
     link: new HttpLink({
-      uri: 'http://localhost:3000/admin/api', // Server URL (must be absolute)
+      uri: `${serverUrl}/admin/api`, // Server URL (must be absolute)
       credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
       // Use fetch() polyfill on the server
       fetch: !process.browser && fetch,
