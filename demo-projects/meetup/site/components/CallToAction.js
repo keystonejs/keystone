@@ -4,6 +4,7 @@ import { shadows, gridSize } from '../theme';
 
 import { Button } from '../primitives';
 import { H2 } from '../primitives/Typography';
+import { colors } from '../theme';
 
 export default function CallToAction() {
   return (
@@ -27,7 +28,9 @@ export default function CallToAction() {
         Every <strong>3rd Wednesday of the month</strong> you'll find us talking about what we're
         doing and what's happening around us in the world of JavaScript.
       </p>
-      <Button>Join us now</Button>
+      <Button background={colors.yellow} foreground={colors.greyDark}>
+        Join us now
+      </Button>
     </div>
   );
 }
