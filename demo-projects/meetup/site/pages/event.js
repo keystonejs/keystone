@@ -2,6 +2,8 @@
 import { jsx } from '@emotion/core';
 import { Component } from 'react';
 import { Query } from 'react-apollo';
+import Head from 'next/head';
+import getConfig from 'next/config';
 
 import { Avatar, Container, Hero, H1, H2, Html } from '../primitives';
 import Talks from '../components/Talks';
@@ -11,6 +13,8 @@ import { colors, fontSizes, gridSize } from '../theme';
 import { GET_EVENT_DETAILS } from '../graphql/events';
 import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
 
+const { publicRuntimeConfig } = getConfig();
+
 export default class Event extends Component {
   static async getInitialProps({ query }) {
     const { id } = query;
@@ -18,6 +22,7 @@ export default class Event extends Component {
   }
 
   render() {
+    const { meetup } = publicRuntimeConfig;
     const { id } = this.props;
 
     return (
@@ -40,6 +45,11 @@ export default class Event extends Component {
 
           return (
             <>
+              <Head>
+                <title>
+                  {name} | {meetup.name}
+                </title>
+              </Head>
               <Navbar foreground="white" background={colors.purple} />
               <Hero
                 align="left"

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Router from 'next/router';
+import Head from 'next/head';
+import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
 import { useAuth } from '../lib/authetication';
@@ -11,12 +13,15 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { gridSize, colors } from '../theme';
 
+const { publicRuntimeConfig } = getConfig();
+
 export default () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorState, setErrorState] = useState(false);
   const { isAuthenticated, signin } = useAuth();
+  const { meetup } = publicRuntimeConfig;
 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -39,6 +44,9 @@ export default () => {
 
   return (
     <>
+      <Head>
+        <title>Sign in | {meetup.name}</title>
+      </Head>
       <Navbar background="white" foreground={colors.greyDark} />
       <Container css={{ marginTop: gridSize * 3 }}>
         <H2>Sign in</H2>

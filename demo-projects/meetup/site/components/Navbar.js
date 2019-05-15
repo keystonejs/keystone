@@ -121,22 +121,26 @@ const Navbar = ({ foreground = colors.greyDark, background = 'white', ...props }
   return (
     <ThemeContext.Provider value={{ background, foreground }}>
       <Header {...props}>
-        <img
-          src={meetup.logo.src}
-          width={meetup.logo.width}
-          height={meetup.logo.height}
-          alt={meetup.name}
-          css={{
-            marginRight: gridSize,
-            width: meetup.logo.width / 1.5,
-            height: meetup.logo.height / 1.5,
-            [mq[0]]: {
-              marginRight: gridSize * 2,
-              width: meetup.logo.width,
-              height: meetup.logo.height,
-            },
-          }}
-        />
+        <Link route="/" passHref>
+          <a>
+            <img
+              src={meetup.logo.src}
+              width={meetup.logo.width}
+              height={meetup.logo.height}
+              alt={meetup.name}
+              css={{
+                marginRight: gridSize,
+                width: meetup.logo.width / 1.5,
+                height: meetup.logo.height / 1.5,
+                [mq[0]]: {
+                  marginRight: gridSize * 2,
+                  width: meetup.logo.width,
+                  height: meetup.logo.height,
+                },
+              }}
+            />
+          </a>
+        </Link>
         <div css={{ flex: 1 }}>
           <Link route="/" passHref>
             <NavLink>Home</NavLink>
