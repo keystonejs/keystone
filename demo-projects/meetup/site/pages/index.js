@@ -13,10 +13,11 @@ import Rsvp from '../components/Rsvp';
 import { Section, Container, Separator, Loading, Error } from '../primitives';
 import { H1, H2, H3 } from '../primitives/Typography';
 import { colors, fontSizes, gridSize } from '../theme';
-import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
+import { isInFuture, formatFutureDate, formatPastDate, getBreakpoints } from '../helpers';
 import { Component } from 'react';
 
 const { publicRuntimeConfig } = getConfig();
+const mq = getBreakpoints();
 
 const Hero = () => {
   const { meetup } = publicRuntimeConfig;
@@ -26,13 +27,25 @@ const Hero = () => {
       <div
         css={{
           backgroundColor: colors.greyDark,
-          padding: '7rem 0',
+          padding: '5rem 1.5rem 7rem',
+          [mq[0]]: {
+            padding: '7rem 2rem',
+          },
           textAlign: 'center',
           color: 'white',
         }}
       >
         <H1>{meetup.name}</H1>
-        <p css={{ fontSize: fontSizes.md, maxWidth: 720, margin: '30px auto 0' }}>{meetup.intro}</p>
+        <p
+          css={{
+            fontSize: fontSizes.sm * 1.2, // lol
+            [mq[0]]: { fontSize: fontSizes.md },
+            maxWidth: 720,
+            margin: '30px auto 0',
+          }}
+        >
+          {meetup.intro}
+        </p>
       </div>
     </div>
   );

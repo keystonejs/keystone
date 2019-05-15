@@ -2,6 +2,9 @@
 
 import { jsx } from '@emotion/core';
 import { fontSizes } from '../../theme';
+import { getBreakpoints } from '../../helpers';
+
+const mq = getBreakpoints();
 
 export const Headline = ({ as = 'h2', size, ...props }) => {
   const TagName = as;
@@ -9,15 +12,18 @@ export const Headline = ({ as = 'h2', size, ...props }) => {
   const baseStyles = { margin: 0, fontWeight: 600 };
   const fontStyles = {
     h1: {
-      fontSize: fontSizes.xxxl,
-      lineHeight: 1,
+      fontSize: fontSizes.xxl,
+      [mq[1]]: { fontSize: fontSizes.xxxl, lineHeight: 1 },
+      lineHeight: 1.15,
     },
     h2: {
-      fontSize: fontSizes.xxl,
+      fontSize: fontSizes.xl,
+      [mq[1]]: { fontSize: fontSizes.xxl },
       lineHeight: 1.15,
     },
     h3: {
-      fontSize: fontSizes.xl,
+      fontSize: fontSizes.lg,
+      [mq[1]]: { fontSize: fontSizes.xl },
       lineHeight: 1.15,
     },
     h4: {
