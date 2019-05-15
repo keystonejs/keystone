@@ -65,17 +65,17 @@ const Relationship = forwardRef(
         : [];
 
     let currentValue = null;
+
+    const getOption = value =>
+      typeof value === 'string'
+        ? options.find(opt => opt.value.id === value) || { label: value, value: value }
+        : { label: value._label_, value: value };
+
     if (value !== null && canRead) {
       if (isMulti) {
-        currentValue = (Array.isArray(value) ? value : []).map(val => ({
-          label: val._label_,
-          value: val,
-        }));
+        currentValue = (Array.isArray(value) ? value : []).map(getOption);
       } else if (value) {
-        currentValue = {
-          label: value._label_,
-          value: value,
-        };
+        currentValue = getOption(value);
       }
     }
 
