@@ -10,7 +10,6 @@ export default function Button({ children, onClick, background, foreground, outl
       css={{
         borderRadius: 40,
         cursor: 'pointer',
-        border: 'none',
         fontWeight: 600,
         padding: '.9rem 2rem',
         background: outline ? 'transparent' : background,
