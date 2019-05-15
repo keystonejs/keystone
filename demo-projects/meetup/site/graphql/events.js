@@ -13,6 +13,9 @@ export const EVENT_DATA = gql`
       speakers {
         id
         name
+        image {
+          publicUrl
+        }
       }
     }
   }
