@@ -115,7 +115,7 @@ const Talks = ({ talks }) => {
 
 const Sponsors = () => {
   return (
-    <Container>
+    <Container css={{ textAlign: 'center' }}>
       <H3>Our sponsors</H3>
       <Query query={GET_SPONSORS}>
         {({ data, loading, error }) => {
@@ -124,9 +124,29 @@ const Sponsors = () => {
 
           const { allSponsors } = data;
           return (
-            <ul>
+            <ul
+              css={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                listStyle: 'none',
+                padding: 0,
+              }}
+            >
               {allSponsors.map(sponsor => (
-                <li key={sponsor.id}>{sponsor.name}</li>
+                <li key={sponsor.id} css={{ flex: 1, margin: 12 }}>
+                  <a href={sponsor.website} target="_blank">
+                    {sponsor.logo ? (
+                      <img
+                        alt={sponsor.name}
+                        css={{ maxWidth: '100%', maxHeight: 140 }}
+                        src={sponsor.logo.publicUrl}
+                      />
+                    ) : (
+                      sponsor.name
+                    )}
+                  </a>
+                </li>
               ))}
             </ul>
           );
