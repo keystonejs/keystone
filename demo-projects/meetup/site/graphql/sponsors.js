@@ -5,6 +5,7 @@ export const GET_SPONSORS = gql`
     allSponsors {
       id
       name
+      website
       logo {
         publicUrl
       }

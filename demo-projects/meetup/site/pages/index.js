@@ -9,7 +9,8 @@ import Footer from '../components/Footer';
 import { GET_CURRENT_EVENTS } from '../graphql/events';
 import { GET_SPONSORS } from '../graphql/sponsors';
 
-import { Section, Container, Separator, Button, Loading, Error } from '../primitives';
+import Rsvp from '../components/Rsvp';
+import { Section, Container, Separator, Loading, Error } from '../primitives';
 import { H1, H2, H3 } from '../primitives/Typography';
 import { colors, fontSizes, gridSize } from '../theme';
 import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
@@ -64,7 +65,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
     return <p>No events to show.</p>;
   }
 
-  const { startTime } = event;
+  const { startTime, id } = event;
   const prettyDate = isInFuture(startTime)
     ? formatFutureDate(startTime)
     : formatPastDate(startTime);
@@ -97,13 +98,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
             <div
               css={{ display: 'flex', flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}
             >
-              <span css={{ padding: '0 1rem' }}>Will you be attending?</span>
-              <Button color={colors.purple} css={{ marginLeft: '.5rem' }}>
-                yes
-              </Button>
-              <Button color={colors.purple} css={{ marginLeft: '.5rem' }}>
-                no
-              </Button>
+              <Rsvp eventId={id} />
             </div>
             <div css={{ display: 'flex', flex: 1, justifyContent: 'flex-end' }}>
               <span css={{ padding: '0 1rem' }}>{event.talks.length} talks</span>
@@ -133,7 +128,7 @@ const Talks = ({ talks }) => {
 
 const Sponsors = () => {
   return (
-    <Container>
+    <Container css={{ textAlign: 'center' }}>
       <H3>Our sponsors</H3>
       <Query query={GET_SPONSORS}>
         {({ data, loading, error }) => {
@@ -142,9 +137,29 @@ const Sponsors = () => {
 
           const { allSponsors } = data;
           return (
-            <ul>
+            <ul
+              css={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                listStyle: 'none',
+                padding: 0,
+              }}
+            >
               {allSponsors.map(sponsor => (
-                <li key={sponsor.id}>{sponsor.name}</li>
+                <li key={sponsor.id} css={{ flex: 1, margin: 12 }}>
+                  <a href={sponsor.website} target="_blank">
+                    {sponsor.logo ? (
+                      <img
+                        alt={sponsor.name}
+                        css={{ maxWidth: '100%', maxHeight: 140 }}
+                        src={sponsor.logo.publicUrl}
+                      />
+                    ) : (
+                      sponsor.name
+                    )}
+                  </a>
+                </li>
               ))}
             </ul>
           );
@@ -162,7 +177,8 @@ const Talk = ({ title, description, speakers, ...props }) => {
       <p>
         {speakers.map(speaker => (
           <span key={speaker.id} css={{ fontWeight: 600 }}>
-            {speaker.author}
+            <img alt={speaker.name} src={speaker.image.publicUrl} />
+            {speaker.name}
           </span>
         ))}
       </p>
@@ -220,7 +236,7 @@ export default class Home extends Component {
               <Navbar foreground="white" background={colors.greyDark} />
               <Hero />
               <Slant />
-              <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />;
+              <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />
               {featuredEvent && featuredEvent.talks ? <Talks talks={featuredEvent.talks} /> : null}
               <Section css={{ padding: '3rem 0' }}>
                 <Container>

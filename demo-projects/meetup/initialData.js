@@ -73,5 +73,5 @@ module.exports = {
   ],
   Talk: [{ name: 'Introducing Keystone 5 🎉' }, { name: 'Keystone 5 - Under the hood' }],
   Rsvp: [],
-  Sponsor: [{ name: 'Thinkmill', website: 'www.thinkmill.com.au' }],
+  Sponsor: [{ name: 'Thinkmill', website: 'https://www.thinkmill.com.au' }],
 };
