@@ -84,7 +84,6 @@ class MongooseAdapter extends BaseKeystoneAdapter {
   }
 
   async _connect(to, config = {}) {
-
     // NOTE: We pull out `name` here, but don't use it, so it
     // doesn't conflict with the options the user wants passed to mongodb.
     const { name: _, ...adapterConnectOptions } = config;
@@ -97,10 +96,11 @@ class MongooseAdapter extends BaseKeystoneAdapter {
       logger.warn(`No MongoDB connection URI specified. Defaulting to '${uri}'`);
     }
 
-    await this.mongoose.connect(
-      uri,
-      { useNewUrlParser: true, useFindAndModify: false, ...adapterConnectOptions }
-    );
+    await this.mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useFindAndModify: false,
+      ...adapterConnectOptions,
+    });
   }
   async postConnect() {
     return await pSettle(
@@ -285,19 +285,19 @@ class MongooseListAdapter extends BaseListAdapter {
       query.$count = 'count';
     }
 
-    return this.queryBuilder(query, pipeline => this.model.aggregate(pipeline).exec()).then(
-      foundItems => {
-        if (meta) {
-          // When there are no items, we get undefined back, so we simulate the
-          // normal result of 0 items.
-          if (!foundItems[0]) {
-            return { count: 0 };
-          }
-          return foundItems[0];
+    return this.queryBuilder(query, pipeline =>
+      this.model.aggregate(pipeline).exec()
+    ).then(foundItems => {
+      if (meta) {
+        // When there are no items, we get undefined back, so we simulate the
+        // normal result of 0 items.
+        if (!foundItems[0]) {
+          return { count: 0 };
         }
-        return foundItems;
+        return foundItems[0];
       }
-    );
+      return foundItems;
+    });
   }
 }
 
