@@ -37,7 +37,7 @@ const NavText = props => {
     <a
       css={{
         color: foreground,
-        fontSize: fontSizes.md,
+        fontSize: fontSizes.sm,
         margin: gridSize * 3,
       }}
       {...props}
