@@ -31,7 +31,9 @@ Welcome to the KeystoneJS Meetup!  Donec nec justo eget felis facilisis fermentu
   footer: {
     copyrightText: `
 <p>Copyright &copy; Thinkmill Pty Ltd, powered by <a href="https://v5.keystonejs.com">KeystoneJS</a>.</p>
-<p>If you run a meetup, please feel free to clone our site and make your own! <a href="#">You can find it on GitHub</a>.</p>
+<p>If you run a meetup, please feel free to clone our site and make your own!
+  <a href="https://github.com/keystonejs/keystone-5/tree/master/demo-projects/meetup">You can find it on GitHub</a>.
+</p>
 `,
   },
   aboutIntro: `<p>Every 3rd Wednesday of the month you'll find us talking about what we're doing and what's happening around us in the world of lorem ipsum.</p>`,
