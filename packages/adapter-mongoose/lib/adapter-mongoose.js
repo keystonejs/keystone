@@ -84,28 +84,22 @@ class MongooseAdapter extends BaseKeystoneAdapter {
   }
 
   async _connect(to, config = {}) {
-    const dbName = config.dbName || inflection.dasherize(config.name).toLowerCase();
+
     // NOTE: We pull out `name` here, but don't use it, so it
     // doesn't conflict with the options the user wants passed to mongodb.
     const { name: _, ...adapterConnectOptions } = config;
 
+    // Default to the localhost instance
     let uri = to;
     if (!uri) {
-      logger.warn('No MongoDB connection specified. Falling back to local instance on port 27017');
-      // Default to the localhost instance
-      uri = 'mongodb://localhost:27017/';
+      const defaultDbName = inflection.dasherize(config.name).toLowerCase() || 'keystone';
+      uri = `mongodb://localhost:27017/${defaultDbName}`;
+      logger.warn(`No MongoDB connection URI specified. Defaulting to '${uri}'`);
     }
+
     await this.mongoose.connect(
       uri,
-      // NOTE: We still pass in the dbName for the case where `to` is set, but
-      // doesn't have a name in the uri.
-      // For the case where `to` does not have a name, and `dbName` is set, the
-      // expected behaviour is for the name to be set to `dbName`.
-      // For the case where `to` has a name, and `dbName` is not set, we are
-      // forcing the name to be the dasherized of the Keystone name.
-      // For the case where both are set, the expected behaviour is for it to be
-      // overwritten.
-      { useNewUrlParser: true, useFindAndModify: false, ...adapterConnectOptions, dbName }
+      { useNewUrlParser: true, useFindAndModify: false, ...adapterConnectOptions }
     );
   }
   async postConnect() {

@@ -1,9 +1,10 @@
-const pFinally = require('p-finally');
-const { Keystone } = require('@keystone-alpha/keystone');
-const { createApolloServer } = require('@keystone-alpha/server');
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
+const pFinally = require('p-finally');
+const url = require('url');
+const { createApolloServer } = require('@keystone-alpha/server');
+const { Keystone } = require('@keystone-alpha/keystone');
+const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const SCHEMA_NAME = 'testing';
 
@@ -36,8 +37,8 @@ async function getMongoMemoryServerConfig() {
   mongoServerReferences++;
   // Passing `true` here generates a new, random DB name for us
   const mongoUri = await mongoServer.getConnectionString(true);
-  // The dbName is the last part of the URI path
-  const dbName = mongoUri.split('/').pop();
+  // In theory the dbName can contain query params so lets parse it then extract the db name
+  const dbName = url.parse(mongoUri).pathname.split('/').pop();
 
   return { mongoUri, dbName };
 }
