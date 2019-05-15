@@ -70,15 +70,17 @@ export default class Event extends Component {
                       marginTop: '3em',
                     }}
                   >
-                    {allRsvps.map(rsvp => (
-                      <div key={rsvp.id} css={{ marginLeft: '0.25em', marginRight: '0.25em' }}>
-                        <Avatar
-                          alt={`${rsvp.user.name} Avatar`}
-                          name={rsvp.user.name}
-                          src={rsvp.user.image && rsvp.user.image.small}
-                        />
-                      </div>
-                    ))}
+                    {allRsvps
+                      .filter(rsvp => rsvp.user)
+                      .map(rsvp => (
+                        <div key={rsvp.id} css={{ marginLeft: '0.25em', marginRight: '0.25em' }}>
+                          <Avatar
+                            alt={`${rsvp.user.name} Avatar`}
+                            name={rsvp.user.name}
+                            src={rsvp.user.image && rsvp.user.image.small}
+                          />
+                        </div>
+                      ))}
                   </div>
                 </div>
               </Container>

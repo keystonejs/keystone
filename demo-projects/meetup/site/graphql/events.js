@@ -55,7 +55,7 @@ export const GET_EVENT_DETAILS = gql`
     Event(where: { id: $event }) {
       ...EventData
     }
-    allRsvps(where: { event: { id: $event } }) {
+    allRsvps(where: { event: { id: $event }, user_is_null: false }) {
       id
       user {
         name
