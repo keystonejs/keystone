@@ -8,7 +8,7 @@ import { useAuth } from '../lib/authetication';
 import { GET_RSVPS, UPDATE_RSVP, ADD_RSVP } from '../graphql/rsvps';
 
 function validateRsvp({ userRsvps, eventRsvps, event }) {
-  if (!event.isRsvpAvailable) {
+  if (!event || !event.isRsvpAvailable) {
     return 'Rsvp is not available';
   }
 
@@ -21,7 +21,7 @@ function validateRsvp({ userRsvps, eventRsvps, event }) {
   }
 }
 
-const Rsvp = ({ id }) => {
+const Rsvp = ({ eventId }) => {
   const { isAuthenticated, user } = useAuth();
 
   if (!isAuthenticated) {
@@ -29,12 +29,19 @@ const Rsvp = ({ id }) => {
   }
 
   return (
-    <Query query={GET_RSVPS} variables={{ event: id, user: user.id }}>
+    <Query query={GET_RSVPS} variables={{ event: eventId, user: user.id }}>
       {({ data, loading, error }) => {
+        console.log(data, loading, error);
         if (loading && !data) return <Loading />;
         if (error) return <Error error={error} />;
 
         const { userRsvps, eventRsvps, event } = data;
+
+        const errorMessage = validateRsvp({ userRsvps, eventRsvps, event });
+
+        if (errorMessage) {
+          return <p>{errorMessage}</p>;
+        }
 
         return (
           <Mutation
@@ -42,7 +49,7 @@ const Rsvp = ({ id }) => {
             refetchQueries={() => [
               {
                 query: GET_RSVPS,
-                variables: { event: id, user: user.id },
+                variables: { event: eventId, user: user.id },
               },
             ]}
           >
@@ -51,15 +58,9 @@ const Rsvp = ({ id }) => {
                 return <Error error={mutationError} />;
               }
 
-              const errorMessage = validateRsvp({ userRsvps, eventRsvps, event });
-
-              if (errorMessage) {
-                return <Error error={errorMessage} />;
-              }
-
               const variables = {
                 rsvp: userRsvps[0] ? userRsvps[0].id : null,
-                event: id,
+                event: eventId,
                 user: user.id,
               };
 

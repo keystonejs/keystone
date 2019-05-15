@@ -9,7 +9,8 @@ import Footer from '../components/Footer';
 import { GET_CURRENT_EVENTS } from '../graphql/events';
 import { GET_SPONSORS } from '../graphql/sponsors';
 
-import { Section, Container, Separator, Button, Loading, Error } from '../primitives';
+import Rsvp from '../components/Rsvp';
+import { Section, Container, Separator, Loading, Error } from '../primitives';
 import { H1, H2, H3 } from '../primitives/Typography';
 import { colors, fontSizes, gridSize } from '../theme';
 import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
@@ -64,7 +65,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
     return <p>No events to show.</p>;
   }
 
-  const { startTime } = event;
+  const { startTime, id } = event;
   const prettyDate = isInFuture(startTime)
     ? formatFutureDate(startTime)
     : formatPastDate(startTime);
@@ -98,12 +99,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
               css={{ display: 'flex', flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}
             >
               <span css={{ padding: '0 1rem' }}>Will you be attending?</span>
-              <Button color={colors.purple} css={{ marginLeft: '.5rem' }}>
-                yes
-              </Button>
-              <Button color={colors.purple} css={{ marginLeft: '.5rem' }}>
-                no
-              </Button>
+              <Rsvp eventId={id} />
             </div>
             <div css={{ display: 'flex', flex: 1, justifyContent: 'flex-end' }}>
               <span css={{ padding: '0 1rem' }}>{event.talks.length} talks</span>
