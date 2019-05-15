@@ -1,5 +1,13 @@
 # @keystone-alpha/adapter-mongoose
 
+## 2.0.0
+
+### Major Changes
+
+- [9a0456ff](https://github.com/keystonejs/keystone-5/commit/9a0456ff):
+
+  Removing 'dbName' config option
+
 ## 1.0.7
 
 ### Patch Changes

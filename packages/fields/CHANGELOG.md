@@ -1,5 +1,19 @@
 # @keystone-alpha/fields
 
+## 6.1.1
+
+### Patch Changes
+
+- [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+
+  Minor Admin UI Tweaks
+
+* Updated dependencies [71766bd8](https://github.com/keystonejs/keystone-5/commit/71766bd8):
+* Updated dependencies [9a0456ff](https://github.com/keystonejs/keystone-5/commit/9a0456ff):
+  - @arch-ui/day-picker@0.0.7
+  - @keystone-alpha/test-utils@2.0.2
+  - @keystone-alpha/adapter-mongoose@2.0.0
+
 ## 6.1.0
 
 ### Minor Changes

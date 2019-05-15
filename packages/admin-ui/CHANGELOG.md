@@ -1,5 +1,21 @@
 # @keystone-alpha/admin-ui
 
+## 3.2.1
+
+### Patch Changes
+
+- [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+
+  Minor Admin UI Tweaks
+
+- [adec8047](https://github.com/keystonejs/keystone-5/commit/adec8047):
+
+  Use babel-preset-react-app in the Admin UI
+
+- [7a513e8f](https://github.com/keystonejs/keystone-5/commit/7a513e8f):
+
+  Fix non-stop renders on list pages
+
 ## 3.2.0
 
 ### Minor Changes
