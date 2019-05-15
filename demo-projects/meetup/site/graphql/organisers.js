@@ -1,24 +1,13 @@
 import gql from 'graphql-tag';
-
-const size = 70;
+import { UserImage } from './fragments';
 
 export const GET_ORGANISERS = gql`
+  ${UserImage}
   query {
-    allOrganisers{
+    allOrganisers {
       user {
+        ...UserImage
         id
-        image {
-          small: publicUrlTransformed(
-            transformation: {
-              crop: "thumb"
-              gravity: "face"
-              quality: "auto:best"
-              # Double size so that we get nice images on hi-dpi screens
-              width: "${size * 2}"
-              height: "${size * 2}"
-            }
-          )
-        }
         name
         twitterHandle
       }

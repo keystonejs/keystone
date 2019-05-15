@@ -3,8 +3,13 @@ import { jsx } from '@emotion/core';
 import { Component } from 'react';
 import { Query } from 'react-apollo';
 
-import Rsvp from '../components/Rsvp';
+import { Avatar, Container, Hero, H1, H2, Html } from '../primitives';
+import Talks from '../components/Talks';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import { colors, fontSizes, gridSize } from '../theme';
 import { GET_EVENT_DETAILS } from '../graphql/events';
+import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
 
 export default class Event extends Component {
   static async getInitialProps({ query }) {
@@ -20,48 +25,65 @@ export default class Event extends Component {
         {({ data, loading, error }) => {
           if (loading) return <p>loading...</p>;
           if (error) {
-            console.log(error);
             return <p>Error!</p>;
           }
           if (!data.Event) {
             return <p>Event not found</p>;
           }
 
-          const { name, startTime, talks } = data.Event;
+          const { description, name, startTime, talks } = data.Event;
           const { allRsvps } = data;
 
+          const prettyDate = isInFuture(startTime)
+            ? formatFutureDate(startTime)
+            : formatPastDate(startTime);
+
           return (
-            <div>
-              <h2>{name}</h2>
-              <p>{startTime}</p>
-              <Rsvp id={id} />
-              <h2>Talks</h2>
-              {talks.map(talk => (
-                <div key={talk.id}>
-                  <h3>{talk.name}</h3>
-                  <h3>Speakers</h3>
-                  {talk.speakers.map(speaker =>
-                    speaker ? (
-                      <div key={speaker.id}>
-                        <img alt={speaker.name} src={speaker.image.publicUrl} />
-                        <p>{speaker.name}</p>
+            <>
+              <Navbar foreground="white" background={colors.purple} />
+              <Hero
+                align="left"
+                backgroundColor={colors.purple}
+                superTitle={prettyDate}
+                title={name}
+              >
+                <Html markup={description} />
+              </Hero>
+
+              <Container css={{ marginTop: gridSize * 3 }}>
+                <H2>Talks</H2>
+                <Talks talks={talks} />
+
+                <div css={{ textAlign: 'center', marginTop: '3em' }}>
+                  <H1 as="h3">{allRsvps.length}</H1>
+                  <div css={{ fontSize: fontSizes.md }}>
+                    {isInFuture(startTime)
+                      ? 'People are attending this meetup'
+                      : 'People attended this meetup'}
+                  </div>
+
+                  <div
+                    css={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      justifyContent: 'center',
+                      marginTop: '3em',
+                    }}
+                  >
+                    {allRsvps.map(rsvp => (
+                      <div key={rsvp.id} css={{ marginLeft: '0.25em', marginRight: '0.25em' }}>
+                        <Avatar
+                          alt={`${rsvp.user.name} Avatar`}
+                          name={rsvp.user.name}
+                          src={rsvp.user.image && rsvp.user.image.small}
+                        />
                       </div>
-                    ) : null
-                  )}
+                    ))}
+                  </div>
                 </div>
-              ))}
-              <h2>People who attended this meetup</h2>
-              {allRsvps
-                .filter(rsvp => rsvp.user && rsvp.user.image && rsvp.user.image.publicUrl)
-                .map(rsvp => (
-                  <img
-                    css={{ width: '200px', height: '200px' }}
-                    key={rsvp.id}
-                    alt={rsvp.user.name}
-                    src={rsvp.user.image.publicUrl}
-                  />
-                ))}
-            </div>
+              </Container>
+              <Footer />
+            </>
           );
         }}
       </Query>
