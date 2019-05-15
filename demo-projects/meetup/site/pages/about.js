@@ -2,6 +2,7 @@
 
 import { Query } from 'react-apollo';
 import getConfig from 'next/config';
+import Head from 'next/head';
 import { jsx } from '@emotion/core';
 
 import { Avatar, Container, Error, H1, H2, Html, Loading } from '../primitives';
@@ -14,8 +15,13 @@ const { publicRuntimeConfig } = getConfig();
 
 export default function About() {
   const { meetup } = publicRuntimeConfig;
+
   return (
     <>
+      <Head>
+        <title>About | {meetup.name}</title>
+        <meta name="description" content={meetup.aboutIntro} />
+      </Head>
       <Navbar background="white" foreground={colors.greyDark} />
       <Container css={{ marginTop: gridSize * 3 }}>
         <H1>About</H1>

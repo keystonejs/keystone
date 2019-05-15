@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { Query } from 'react-apollo';
 import getConfig from 'next/config';
+import Head from 'next/head';
 import { jsx } from '@emotion/core';
 
 import EventItems from '../components/EventItems';
@@ -171,9 +172,17 @@ export default class Home extends Component {
           const { featuredEvent, moreEvents } = processEventsData(eventsData);
           return (
             <div>
+              <Head>
+                <title>{meetup.name}</title>
+                <meta name="description" content={meetup.intro} />
+              </Head>
               <Navbar foreground="white" background={colors.greyDark} />
               <Hero title={meetup.name}>{meetup.intro}</Hero>
-              <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />
+              <FeaturedEvent
+                isLoading={eventsLoading}
+                error={eventsError}
+                event={featuredEvent}
+              />
               <Container css={{ marginTop: '3rem' }}>
                 {featuredEvent && featuredEvent.talks ? (
                   <Talks talks={featuredEvent.talks} />
