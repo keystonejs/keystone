@@ -31,7 +31,6 @@ const Rsvp = ({ eventId }) => {
   return (
     <Query query={GET_RSVPS} variables={{ event: eventId, user: user.id }}>
       {({ data, loading, error }) => {
-        console.log(data, loading, error);
         if (loading && !data) return <Loading />;
         if (error) return <Error error={error} />;
 
@@ -46,12 +45,16 @@ const Rsvp = ({ eventId }) => {
         return (
           <Mutation
             mutation={userRsvps[0] ? UPDATE_RSVP : ADD_RSVP}
-            refetchQueries={() => [
-              {
-                query: GET_RSVPS,
-                variables: { event: eventId, user: user.id },
-              },
-            ]}
+            refetchQueries={({ data }) =>
+              data.updateRsvp
+                ? []
+                : [
+                    {
+                      query: GET_RSVPS,
+                      variables: { event: eventId, user: user.id },
+                    },
+                  ]
+            }
           >
             {(updateRsvp, { error: mutationError }) => {
               if (mutationError) {
