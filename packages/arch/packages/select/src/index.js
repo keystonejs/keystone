@@ -37,7 +37,7 @@ const selectStyles = {
       ...provided,
       backgroundColor: 'white',
       borderColor: colors.N20,
-      fontSize: '0.9em',
+      fontSize: '1rem',
       minHeight: 35,
       minWidth: '200px',
       ':hover': { borderColor: colors.N30 },
@@ -46,8 +46,8 @@ const selectStyles = {
   },
   clearIndicator: indicatorStyles,
   dropdownIndicator: indicatorStyles,
-  menu: p => ({ ...p, fontSize: '0.9em' }),
-  option: (p, { isDisabled, isFocused, isSelected }) => {
+  menu: provided => ({ ...provided, fontSize: '0.9em' }),
+  option: (provided, { isDisabled, isFocused, isSelected }) => {
     let bg = 'inherit';
     if (isFocused) bg = colors.B.L90;
     if (isSelected) bg = colors.primary;
@@ -66,14 +66,15 @@ const selectStyles = {
         : {};
 
     return {
-      ...p,
+      ...provided,
+      fontSize: '1rem',
       backgroundColor: bg,
       color: txt,
 
       ':active': cssPseudoActive,
     };
   },
-  menuPortal: p => ({ ...p, zIndex: 3 }),
+  menuPortal: provided => ({ ...provided, zIndex: 3 }),
 };
 const Select = ({ innerRef, styles, ...props }: { innerRef?: React.Ref<*>, styles?: Object }) => (
   <ReactSelect

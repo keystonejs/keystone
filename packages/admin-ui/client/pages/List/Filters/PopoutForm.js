@@ -15,7 +15,7 @@ const FooterButton = ({ isPrimary, ...props }) => (
       border: 0,
       cursor: 'pointer',
       color: isPrimary ? colors.primary : colors.N40,
-      fontSize: '0.85em',
+      fontSize: '1rem',
       fontWeight: isPrimary ? 'bold' : null,
       margin: -gridSize,
       padding: gridSize,

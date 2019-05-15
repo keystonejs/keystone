@@ -47,6 +47,7 @@ const HeaderCell = styled('th')(({ isSelected, isSortable }) => ({
   zIndex: 1,
   textAlign: 'left',
   verticalAlign: 'bottom',
+  fontSize: '1.1rem',
 
   ':hover': {
     color: isSortable && !isSelected ? colors.N60 : null,
@@ -58,9 +59,8 @@ const BodyCell = styled('td')(({ isSelected }) => ({
     ? `0 1px 0 ${colors.B.L85}, 0 -1px 0 ${colors.B.L85}`
     : `0 -1px 0 ${colors.N10}`,
   boxSizing: 'border-box',
-  padding: gridSize,
+  padding: `${gridSize + 2}px ${gridSize}px`,
   position: 'relative',
-  fontSize: '0.9rem',
 }));
 const ItemLink = styled(Link)`
   color: ${colors.text};
@@ -341,7 +341,7 @@ export default function ListTable(props) {
           <HeaderCell>
             <div css={{ position: 'relative', top: 3 }}>
               <CheckboxPrimitive
-                checked={items && items.length === selectedItems.length}
+                checked={items && items.length && items.length === selectedItems.length}
                 onChange={isLoading ? noop : handleSelectAll}
                 tabIndex="0"
                 isDisabled={isLoading}
