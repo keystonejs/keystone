@@ -124,7 +124,7 @@ const Talks = ({ talks }) => {
         css={{ display: 'flex', marginTop: '3rem', marginLeft: '-1.5rem', marginRight: '-1.5rem' }}
       >
         {talks.map(talk => (
-          <Talk {...talk} />
+          <Talk {...talk} key={talk.id} />
         ))}
       </div>
     </Container>
@@ -154,9 +154,9 @@ const Sponsors = () => {
   );
 };
 
-const Talk = ({ title, description, speakers }) => {
+const Talk = ({ title, description, speakers, ...props }) => {
   return (
-    <div css={{ padding: '0 1.5rem' }}>
+    <div css={{ padding: '0 1.5rem' }} {...props}>
       <H3 size={5}>{title}</H3>
       <p dangerouslySetInnerHTML={{ __html: description }} />
       <p>
