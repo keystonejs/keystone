@@ -1,5 +1,19 @@
 # @keystone-alpha/fields
 
+## 6.1.0
+
+### Minor Changes
+
+- [29728d5e](https://github.com/keystonejs/keystone-5/commit/29728d5e):
+
+  Allow blocks to pick data sent to the adminUI via extendAdminMeta()
+
+### Patch Changes
+
+- [e502af66](https://github.com/keystonejs/keystone-5/commit/e502af66):
+
+  Fix dist directories not being cleared before builds causing broken builds with build-field-types
+
 ## 6.0.0
 
 ### Major Changes

@@ -30,11 +30,11 @@ const admin = new AdminUI(keystone, {
   pages: [
     {
       label: 'Meetup',
-      children: ['Event', 'Talk'],
+      children: ['Event', 'Talk', 'Organiser', 'Sponsor'],
     },
     {
       label: 'People',
-      children: ['User'],
+      children: ['User', 'Rsvp'],
     },
   ],
 });

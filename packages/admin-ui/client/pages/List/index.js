@@ -134,7 +134,7 @@ function ListLayout(props: LayoutProps) {
             <ActiveFilters list={list} />
           </div>
 
-          <ManageToolbar isVisible>
+          <ManageToolbar isVisible css={{ marginLeft: 2 }}>
             {selectedItems.length ? (
               <Management
                 list={list}
@@ -152,7 +152,7 @@ function ListLayout(props: LayoutProps) {
                     alignItems: 'center',
                     color: colors.N40,
                     display: 'flex',
-                    fontSize: '0.9rem',
+                    marginTop: gridSize - 2,
                   }}
                 >
                   <span id="ks-pagination-count">

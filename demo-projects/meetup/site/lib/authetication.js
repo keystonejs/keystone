@@ -1,6 +1,6 @@
 import React, { Component, createContext, useContext } from 'react';
 
-const apiEndpoint = 'http://localhost:3000/admin';
+const apiEndpoint = 'http://localhost:3000/api';
 
 /**
  * AuthContext
@@ -38,39 +38,35 @@ export class AuthProvider extends Component {
   }
 
   checkSession = async () => {
-    await this.setState({ isLoading: true });
-    const { user, authenticated } = await checkSession();
-    await this.setState({
-      user: user,
+    if (!this.state.isLoading) {
+      this.setState({ isLoading: true });
+    }
+    const result = await checkSession();
+    const { user, isSignedIn } = result;
+    this.setState({
+      user,
+      isSignedIn,
       isLoading: false,
     });
-    return { authenticated };
+    return result;
   };
 
   signin = async ({ email, password }) => {
-    await this.setState({ isLoading: true });
-    const res = await signin({ email, password });
-    if (!res.success) {
-      await this.setState({ isLoading: false });
-      return res;
+    this.setState({ isLoading: true });
+    const result = await signInWithEmail({ email, password });
+
+    if (!result.success) {
+      this.setState({ isLoading: false });
+      return { success: false };
     }
 
-    const { authenticated } = await this.checkSession();
-    if (authenticated) {
-      return { success: true };
-    } else {
-      // This could be a cookie related error, or some other blocker.
-      return {
-        success: false,
-        message: 'There was a problem signing you in. Please try again later.',
-      };
-    }
+    return this.checkSession();
   };
 
   signout = async () => {
-    await this.setState({ isLoading: true });
-    const res = await signout();
-    if (res.success) {
+    this.setState({ isLoading: true });
+    const result = await signout();
+    if (result.success) {
       this.setState({
         user: undefined,
         isLoading: false,
@@ -86,7 +82,7 @@ export class AuthProvider extends Component {
     return (
       <AuthContext.Provider
         value={{
-          isAuthenticated: user && user.id,
+          isAuthenticated: !!user,
           isLoading,
           signin: this.signin,
           signout: this.signout,
@@ -99,11 +95,11 @@ export class AuthProvider extends Component {
   }
 }
 
-const signin = async ({ email, password }) => {
+const signInWithEmail = async ({ email, password }) => {
   try {
-    const res = await fetch(`${apiEndpoint}/signin`, {
+    const res = await fetch(`${apiEndpoint}/email/signin`, {
       method: 'POST',
-      credential: 'same-origin',
+      credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify({ email, password }),
     }).then(r => r.json());
@@ -114,7 +110,7 @@ const signin = async ({ email, password }) => {
       return { success: false, message: res.message };
     }
   } catch (error) {
-    console.error(error);
+    console.error('Error signing in:', error);
     return { success: false };
   }
 };
@@ -125,11 +121,12 @@ const signout = async () => {
       method: 'POST',
       credentials: 'same-origin',
     }).then(r => r.json());
+
     return {
       success: res.success === true,
     };
   } catch (error) {
-    console.error(error);
+    console.error('Error signing out:', error);
     return { success: false };
   }
 };
@@ -141,16 +138,13 @@ const checkSession = async () => {
       credentials: 'same-origin',
     }).then(r => r.json());
 
-    if (res.signedIn) {
-      return {
-        authenticated: true,
-        user: res.user,
-      };
+    if (res.isSignedIn) {
+      return { success: true, isSignedIn: true, user: res.user };
     } else {
-      return { authenticated: false };
+      return { success: true, isSignedIn: false };
     }
   } catch (error) {
-    console.error(error);
+    console.error('Error checking session:', error);
     return { success: false, error: error.message };
   }
 };

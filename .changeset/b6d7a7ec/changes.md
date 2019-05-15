@@ -1,0 +1,1 @@
+Removing 'dbName' config option

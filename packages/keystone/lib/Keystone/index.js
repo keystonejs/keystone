@@ -33,11 +33,9 @@ module.exports = class Keystone {
     adapter,
     defaultAdapter,
     name,
-    dbName,
     adapterConnectOptions = {},
   }) {
     this.name = name;
-    this.dbName = dbName;
     this.adapterConnectOptions = adapterConnectOptions;
     this.defaultAccess = { list: true, field: true, ...defaultAccess };
     this.auth = {};
@@ -97,12 +95,11 @@ module.exports = class Keystone {
    * @return Promise<null>
    */
   connect(to, options) {
-    const { adapters, name, dbName, adapterConnectOptions } = this;
+    const { adapters, name, adapterConnectOptions } = this;
     return resolveAllKeys(
       mapKeys(adapters, adapter =>
         adapter.connect(to, {
           name,
-          dbName,
           ...adapterConnectOptions,
           ...options,
         })

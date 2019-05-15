@@ -19,7 +19,6 @@ export const ManageToolbar = styled.div(({ isVisible }) => ({
 }));
 const SelectedCount = styled.div({
   color: colors.N40,
-  fontSize: '0.9rem',
   marginRight: gridSize,
 });
 

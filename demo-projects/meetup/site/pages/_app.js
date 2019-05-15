@@ -2,12 +2,14 @@ import App, { Container } from 'next/app';
 import fetch from 'isomorphic-unfetch';
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
+import { ToastProvider } from 'react-toast-notifications';
 
 import withApollo from '../lib/withApollo';
 import { AuthProvider } from '../lib/authetication';
-import Navbar from '../components/Navbar';
+import StylesBase from '../primitives/StylesBase';
 
-const apiEndpoint = 'http://localhost:3000/admin';
+const apiEndpoint = 'http://localhost:3000/api';
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
@@ -28,14 +30,18 @@ class MyApp extends App {
   render() {
     const { Component, pageProps, apolloClient, user } = this.props;
     return (
-      <Container>
-        <AuthProvider intitialUserValue={user}>
-          <ApolloProvider client={apolloClient}>
-            <Navbar />
-            <Component {...pageProps} />
-          </ApolloProvider>
-        </AuthProvider>
-      </Container>
+      <ToastProvider>
+        <Container>
+          <AuthProvider initialUserValue={user}>
+            <ApolloProvider client={apolloClient}>
+              <ApolloHooksProvider client={apolloClient}>
+                <StylesBase />
+                <Component {...pageProps} />
+              </ApolloHooksProvider>
+            </ApolloProvider>
+          </AuthProvider>
+        </Container>
+      </ToastProvider>
     );
   }
 }

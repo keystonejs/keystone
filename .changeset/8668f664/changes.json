@@ -1,0 +1,6 @@
+{
+  "releases": [{ "name": "@arch-ui/day-picker", "type": "patch" }],
+  "dependents": [
+    { "name": "@keystone-alpha/fields", "type": "patch", "dependencies": ["@arch-ui/day-picker"] }
+  ]
+}
