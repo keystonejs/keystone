@@ -8,6 +8,13 @@ export const colors = {
   yellow: '#FFE221',
 };
 
+export const breakpoints = {
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+};
+
 export const fontSizes = {
   xxxl: 72,
   xxl: 50,

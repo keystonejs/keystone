@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 
 import { Link } from '../../../routes';
 import { H2 } from '../../primitives/Typography';
-import { colors, gridSize, shadows } from '../../theme';
+import { colors, gridSize, shadows, breakpoints } from '../../theme';
 import { isInFuture, formatPastDate, formatFutureDate } from '../../helpers';
 
 const EventItem = ({ id, name, startTime, description, talks, themeColor, ...props }) => {
@@ -12,8 +12,8 @@ const EventItem = ({ id, name, startTime, description, talks, themeColor, ...pro
     : formatPastDate(startTime);
 
   // Breakpoints for the events grid
-  const breakpoints = [670, 890];
-  const mq = breakpoints.map(bp => `@media (min-width: ${bp}px)`);
+  const screenSizes = Object.values(breakpoints);
+  const mq = screenSizes.map(bp => `@media (min-width: ${bp}px)`);
 
   return (
     <li
@@ -22,7 +22,7 @@ const EventItem = ({ id, name, startTime, description, talks, themeColor, ...pro
         [mq[0]]: {
           width: '50%',
         },
-        [mq[1]]: {
+        [mq[2]]: {
           width: `${100 / 3}%`,
         },
       }}
