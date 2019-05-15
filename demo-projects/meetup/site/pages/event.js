@@ -41,7 +41,12 @@ export default class Event extends Component {
           return (
             <>
               <Navbar foreground="white" background={colors.purple} />
-              <Hero align="left" backgroundColor={colors.purple} superTitle={prettyDate} title={name}>
+              <Hero
+                align="left"
+                backgroundColor={colors.purple}
+                superTitle={prettyDate}
+                title={name}
+              >
                 <Html markup={description} />
               </Hero>
 
@@ -51,23 +56,31 @@ export default class Event extends Component {
 
                 <div css={{ textAlign: 'center', marginTop: '3em' }}>
                   <H1 as="h3">{allRsvps.length}</H1>
-                  <div css={{ fontSize:fontSizes.md }}>
-                    {isInFuture(startTime) ? 'People are attending this meetup' : 'People attended this meetup'}
+                  <div css={{ fontSize: fontSizes.md }}>
+                    {isInFuture(startTime)
+                      ? 'People are attending this meetup'
+                      : 'People attended this meetup'}
                   </div>
 
-                  <div css={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: '3em' }}>
-                    {allRsvps
-                      .map(rsvp => (
-                        <div key={rsvp.id} css={{ marginLeft: '0.25em', marginRight: '0.25em' }}>
-                          <Avatar
-                            alt={`${rsvp.user.name} Avatar`}
-                            name={rsvp.user.name}
-                            src={rsvp.user.image && rsvp.user.image.small}
-                          />
-                        </div>
-                      ))}
-                    </div>
+                  <div
+                    css={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      justifyContent: 'center',
+                      marginTop: '3em',
+                    }}
+                  >
+                    {allRsvps.map(rsvp => (
+                      <div key={rsvp.id} css={{ marginLeft: '0.25em', marginRight: '0.25em' }}>
+                        <Avatar
+                          alt={`${rsvp.user.name} Avatar`}
+                          name={rsvp.user.name}
+                          src={rsvp.user.image && rsvp.user.image.small}
+                        />
+                      </div>
+                    ))}
                   </div>
+                </div>
               </Container>
               <Footer />
             </>

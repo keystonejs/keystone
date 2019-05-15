@@ -29,31 +29,40 @@ export default Talks;
 // styled components
 
 const Wrapper = props => (
-	<div css={mq({
-		display: ['block', 'flex'],
-		flexWrap: 'wrap',
-		marginLeft: '-1em',
-		marginRight: '-1em',
-	})} {...props} />
+  <div
+    css={mq({
+      display: ['block', 'flex'],
+      flexWrap: 'wrap',
+      marginLeft: '-1em',
+      marginRight: '-1em',
+    })}
+    {...props}
+  />
 );
 
 const Talk = props => (
-	<div css={{
-    flex: 1,
-    display: 'flex',
-    marginTop: '1em',
-		marginLeft: '1em',
-		marginRight: '1em',
-	}} {...props} />
+  <div
+    css={{
+      flex: 1,
+      display: 'flex',
+      marginTop: '1em',
+      marginLeft: '1em',
+      marginRight: '1em',
+    }}
+    {...props}
+  />
 );
 const Content = props => (
-	<div css={{
-    marginLeft: '1em',
-    flex: 1,
-	}} {...props} />
+  <div
+    css={{
+      marginLeft: '1em',
+      flex: 1,
+    }}
+    {...props}
+  />
 );
 const SpeakerStack = ({ speakers, ...props }) => (
-	<div css={{ position: 'relative', width: 70, height: 70 }} {...props}>
+  <div css={{ position: 'relative', width: 70, height: 70 }} {...props}>
     {speakers.map((speaker, idx) => (
       <Avatar
         key={speaker.id}
@@ -71,7 +80,7 @@ const SpeakerStack = ({ speakers, ...props }) => (
   </div>
 );
 const Byline = ({ speakers, ...props }) => (
-	<div {...props}>
+  <div {...props}>
     by{' '}
     {speakers.map((speaker, idx) => {
       let separator;
@@ -79,7 +88,10 @@ const Byline = ({ speakers, ...props }) => (
       if (idx + 1 === speakers.length && speakers.length !== 1) separator = ' and ';
 
       return (
-        <span key={speaker.id}>{separator}{speaker.name}</span>
+        <span key={speaker.id}>
+          {separator}
+          {speaker.name}
+        </span>
       );
     })}
   </div>

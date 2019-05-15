@@ -27,9 +27,7 @@ const sizeMap = [
 ];
 
 export const Headline = ({ as: Tag, size, ...props }) => {
-  const fontStyle = sizeMap[size - 1]
-    ? sizeMap[size - 1]
-    : sizeMap[1];
+  const fontStyle = sizeMap[size - 1] ? sizeMap[size - 1] : sizeMap[1];
 
   return <Tag css={[baseStyles, fontStyle]} {...props} />;
 };

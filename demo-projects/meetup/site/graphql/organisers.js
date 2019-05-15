@@ -4,7 +4,7 @@ import { UserImage } from './fragments';
 export const GET_ORGANISERS = gql`
   ${UserImage}
   query {
-    allOrganisers{
+    allOrganisers {
       user {
         ...UserImage
         id

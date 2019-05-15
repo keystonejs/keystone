@@ -104,23 +104,6 @@ const Sponsors = () => {
   );
 };
 
-const Talk = ({ title, description, speakers, ...props }) => {
-  return (
-    <div css={{ padding: '0 1.5rem' }} {...props}>
-      <H3 size={5}>{title}</H3>
-      <p dangerouslySetInnerHTML={{ __html: description }} />
-      <p>
-        {speakers.map(speaker => (
-          <span key={speaker.id} css={{ fontWeight: 600 }}>
-            <img alt={speaker.name} src={speaker.image && speaker.image.publicUrl} />
-            {speaker.name}
-          </span>
-        ))}
-      </p>
-    </div>
-  );
-};
-
 const EventsList = ({ events, ...props }) => {
   return <EventItems events={events} {...props} />;
 };
@@ -174,7 +157,9 @@ export default class Home extends Component {
               <Hero title={meetup.name}>{meetup.intro}</Hero>
               <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />
               <Container css={{ marginTop: '3rem' }}>
-                {featuredEvent && featuredEvent.talks ? <Talks talks={featuredEvent.talks} /> : null}
+                {featuredEvent && featuredEvent.talks ? (
+                  <Talks talks={featuredEvent.talks} />
+                ) : null}
               </Container>
               <Section css={{ padding: '3rem 0' }}>
                 <Container>

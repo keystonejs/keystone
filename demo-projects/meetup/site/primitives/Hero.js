@@ -7,7 +7,15 @@ import { Container } from '../primitives';
 import { H1 } from '../primitives/Typography';
 import { colors, fontSizes } from '../theme';
 
-export const Hero = ({ align, backgroundColor, children, subTitle, superTitle, title, ...props }) => {
+export const Hero = ({
+  align,
+  backgroundColor,
+  children,
+  subTitle,
+  superTitle,
+  title,
+  ...props
+}) => {
   const horizontalMargin = align === 'center' ? 'auto' : null;
   return (
     <>
@@ -16,9 +24,7 @@ export const Hero = ({ align, backgroundColor, children, subTitle, superTitle, t
           {superTitle && <Subtitle>{superTitle}</Subtitle>}
           <H1>{title}</H1>
           {subTitle && <Subtitle>{subTitle}</Subtitle>}
-          <Content horizontalMargin={horizontalMargin}>
-            {children}
-          </Content>
+          <Content horizontalMargin={horizontalMargin}>{children}</Content>
         </Container>
       </Wrapper>
       <svg
@@ -48,26 +54,38 @@ Hero.defaultProps = {
 
 // styled components
 
-const Wrapper = ({ align, backgroundColor, ...props }) => (<div
-  css={{
-    backgroundColor: backgroundColor,
-    color: 'white',
-    padding: '7rem 0',
-    textAlign: align,
-  }} {...props} />);
+const Wrapper = ({ align, backgroundColor, ...props }) => (
+  <div
+    css={{
+      backgroundColor: backgroundColor,
+      color: 'white',
+      padding: '7rem 0',
+      textAlign: align,
+    }}
+    {...props}
+  />
+);
 
-const Content = ({ horizontalMargin, ...props }) => (<div
-  css={{
-    fontSize: fontSizes.md,
-    marginLeft: horizontalMargin,
-    marginRight: horizontalMargin,
-    marginTop: 30,
-    maxWidth: 720,
-  }} {...props} />);
+const Content = ({ horizontalMargin, ...props }) => (
+  <div
+    css={{
+      fontSize: fontSizes.md,
+      marginLeft: horizontalMargin,
+      marginRight: horizontalMargin,
+      marginTop: 30,
+      maxWidth: 720,
+    }}
+    {...props}
+  />
+);
 
-const Subtitle = ({ horizontalMargin, ...props }) => (<div
-  css={{
-    fontSize: fontSizes.md,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-  }} {...props} />);
+const Subtitle = ({ horizontalMargin, ...props }) => (
+  <div
+    css={{
+      fontSize: fontSizes.md,
+      fontWeight: 'bold',
+      textTransform: 'uppercase',
+    }}
+    {...props}
+  />
+);
