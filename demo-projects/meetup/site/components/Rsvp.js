@@ -1,57 +1,27 @@
-import React from 'react';
-import gql from 'graphql-tag';
+/** @jsx jsx */
 import { Mutation, Query } from 'react-apollo';
+import { jsx } from '@emotion/core';
+
+import { Button, Loading, Error } from '../primitives';
+import { colors } from '../theme';
 import { useAuth } from '../lib/authetication';
+import { GET_RSVPS, UPDATE_RSVP, ADD_RSVP } from '../graphql/rsvps';
 
-const ADD_RSVP = gql`
-  mutation AddRsvp($event: ID!, $user: ID!, $status: RsvpStatusType!) {
-    createRsvp(
-      data: {
-        event: { connect: { id: $event } }
-        user: { connect: { id: $user } }
-        status: $status
-      }
-    ) {
-      id
-      event {
-        id
-      }
-      status
-    }
+function validateRsvp({ userRsvps, eventRsvps, event }) {
+  if (!event || !event.isRsvpAvailable) {
+    return 'Rsvp is not available';
   }
-`;
 
-const UPDATE_RSVP = gql`
-  mutation UpdateRSVP($rsvp: ID!, $status: RsvpStatusType!) {
-    updateRsvp(id: $rsvp, data: { status: $status }) {
-      id
-      event {
-        id
-      }
-      status
-    }
+  if (new Date() > new Date(event.startTime)) {
+    return 'You can no longer rsvp to this event';
   }
-`;
 
-const GET_RSVPS = gql`
-  query GetRsvps($event: ID!, $user: ID!) {
-    eventRsvps: allRsvps(where: { event: { id: $event }, status: yes }) {
-      id
-    }
-    userRsvps: allRsvps(where: { event: { id: $event }, user: { id: $user } }) {
-      id
-      status
-    }
-    event: Event(where: { id: $event }) {
-      id
-      startTime
-      maxRsvps
-      isRsvpAvailable
-    }
+  if (event.maxRsvps !== null && eventRsvps.length >= event.maxRsvps && !userRsvps.length) {
+    return 'You can no longer rsvp to this event';
   }
-`;
+}
 
-const Rsvp = ({ id }) => {
+const Rsvp = ({ eventId }) => {
   const { isAuthenticated, user } = useAuth();
 
   if (!isAuthenticated) {
@@ -59,72 +29,64 @@ const Rsvp = ({ id }) => {
   }
 
   return (
-    <Query query={GET_RSVPS} variables={{ event: id, user: user.id }}>
+    <Query query={GET_RSVPS} variables={{ event: eventId, user: user.id }}>
       {({ data, loading, error }) => {
-        if (loading) return <p>loading...</p>;
-        if (error) {
-          console.log(error);
-          return <p>Error!</p>;
-        }
+        if (loading && !data) return <Loading />;
+        if (error) return <Error error={error} />;
 
         const { userRsvps, eventRsvps, event } = data;
+
+        const errorMessage = validateRsvp({ userRsvps, eventRsvps, event });
+
+        if (errorMessage) {
+          return <p>{errorMessage}</p>;
+        }
 
         return (
           <Mutation
             mutation={userRsvps[0] ? UPDATE_RSVP : ADD_RSVP}
-            refetchQueries={() => [
-              {
-                query: GET_RSVPS,
-                variables: { event: id, user: user.id },
-              },
-            ]}
+            refetchQueries={({ data }) =>
+              data.updateRsvp
+                ? []
+                : [
+                    {
+                      query: GET_RSVPS,
+                      variables: { event: eventId, user: user.id },
+                    },
+                  ]
+            }
           >
             {(updateRsvp, { error: mutationError }) => {
-              if (!event.isRsvpAvailable) {
-                return <p>Rsvp is not available</p>;
+              if (mutationError) {
+                return <Error error={mutationError} />;
               }
 
-              if (new Date() > new Date(event.startTime)) {
-                return <p>You can no longer rsvp to this event</p>;
-              }
-
-              if (
-                event.maxRsvps !== null &&
-                eventRsvps.length >= event.maxRsvps &&
-                !userRsvps.length
-              ) {
-                return <p>You can no longer rsvp to this event</p>;
-              }
-
-              let variables = {
+              const variables = {
                 rsvp: userRsvps[0] ? userRsvps[0].id : null,
-                event: id,
+                event: eventId,
                 user: user.id,
               };
 
-              let status = userRsvps[0] ? userRsvps[0].status : null;
+              const status = userRsvps[0] ? userRsvps[0].status : null;
 
               return (
                 <div>
-                  <h3>RSVP?</h3>
-                  <button
+                  <Button
                     disabled={status === 'yes' || eventRsvps.length >= event.maxRsvps}
-                    style={{ color: status === 'yes' ? 'blue' : 'black' }}
+                    color={status === 'yes' ? colors.purple : colors.greyLight}
+                    css={{ marginLeft: '.5rem', color: status === 'yes' ? 'blue' : 'black' }}
                     onClick={() => updateRsvp({ variables: { ...variables, status: 'yes' } })}
                   >
-                    Yes
-                  </button>
-                  <button
+                    yes
+                  </Button>
+                  <Button
                     disabled={status === 'no'}
-                    style={{ color: status === 'no' ? 'blue' : 'black' }}
+                    color={status === 'no' ? colors.purple : colors.greyLight}
+                    css={{ marginLeft: '.5rem' }}
                     onClick={() => updateRsvp({ variables: { ...variables, status: 'no' } })}
                   >
-                    No
-                  </button>
-                  {eventRsvps.length >= event.maxRsvps ? (
-                    <p>You can no longer rsvp to this event</p>
-                  ) : null}
-                  {mutationError ? <p style={{ color: 'red' }}>Error rsvping to event</p> : null}
+                    no
+                  </Button>
                 </div>
               );
             }}
