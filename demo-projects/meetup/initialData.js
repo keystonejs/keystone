@@ -2,64 +2,64 @@ module.exports = {
   User: [
     { name: 'Admin User', email: 'admin@keystonejs.com', isAdmin: true, password: 'password' },
     {
-      name: 'Organiser 1',
+      name: 'Jed Watson',
       email: 'organiser1@keystonejs.com',
-      twitterHandle: '@organiser1',
+      twitterHandle: '@JedWatson',
       password: 'passwordorganiser1',
     },
     {
-      name: 'Organiser 2',
+      name: 'Jess Telford',
       email: 'organiser2@keystonejs.com',
-      twitterHandle: '@organiser2',
+      twitterHandle: '@JessTelford',
       password: 'passwordorganiser2',
     },
     {
-      name: 'Organiser 3',
+      name: 'John Molomby',
       email: 'organiser3@keystonejs.com',
-      twitterHandle: '@organiser3',
+      twitterHandle: '@thethinkmill',
       password: 'passwordorganiser3',
     },
     {
-      name: 'Speaker 1',
+      name: 'Tim Leslie',
       email: 'speaker1@keystonejs.com',
-      twitterHandle: '@speaker1',
+      twitterHandle: '@timl',
       password: 'passwordspeaker1',
     },
     {
-      name: 'Speaker 2',
+      name: 'Mitchell Hamilton',
       email: 'speaker2@keystonejs.com',
-      twitterHandle: '@speaker2',
+      twitterHandle: '@mitchellhamiltn',
       password: 'passwordspeaker2',
     },
     {
-      name: 'Speaker 3',
+      name: 'Nathan Simpson',
       email: 'speaker3@keystonejs.com',
-      twitterHandle: '@speaker3',
+      twitterHandle: '@nathansimpson95',
       password: 'passwordspeaker3',
     },
     {
-      name: 'Attendee 1',
+      name: 'Joss Mackison',
       email: 'attendee1@keystonejs.com',
-      twitterHandle: `@attendee1`,
+      twitterHandle: `@JossMackison`,
       password: 'passwordattendee1',
     },
     {
-      name: 'Attendee 2',
+      name: 'Simon Vrachliotis',
       email: 'attendee2@keystonejs.com',
-      twitterHandle: `@attendee2`,
+      twitterHandle: `@simonswiss`,
       password: 'passwordattendee2',
     },
     {
-      name: 'Attendee 3',
+      name: 'Tuan Hoang',
       email: 'attendee3@keystonejs.com',
-      twitterHandle: `@attendee3`,
+      twitterHandle: `@thethinkmill`,
       password: 'passwordattendee3',
     },
   ],
   Organiser: [
-    { user: { where: { name: 'Organiser 1' } }, order: 1, role: 'Organiser' },
-    { user: { where: { name: 'Organiser 2' } }, order: 2, role: 'Organiser' },
-    { user: { where: { name: 'Organiser 3' } }, order: 3, role: 'Organiser' },
+    { user: { where: { name: 'Jed Watson' } }, order: 1, role: 'Organiser' },
+    { user: { where: { name: 'Jess Telford' } }, order: 2, role: 'Organiser' },
+    { user: { where: { name: 'John Molomby' } }, order: 3, role: 'Organiser' },
   ],
   Event: [
     {
@@ -67,11 +67,44 @@ module.exports = {
       status: 'active',
       themeColor: '#334455',
       startTime: '2019-05-15T18:00:00+11:00',
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat, est et porttitor ultricies, odio nisi consequat arcu, eget ultrices nulla elit in augue. Fusce accumsan mattis felis eget lacinia. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Praesent commodo velit id cursus bibendum. Vivamus pellentesque, velit semper ullamcorper ullamcorper, massa mauris laoreet odio, vitae hendrerit orci lacus sit amet augue.',
+      durationMins: 150,
+      maxRsvps: 120,
+    },
+    {
+      name: 'Keystone Beta Launch',
+      status: 'active',
+      themeColor: '#334455',
+      startTime: '2018-12-11T18:00:00+11:00',
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat, est et porttitor ultricies, odio nisi consequat arcu, eget ultrices nulla elit in augue. Fusce accumsan mattis felis eget lacinia. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Praesent commodo velit id cursus bibendum. Vivamus pellentesque, velit semper ullamcorper ullamcorper, massa mauris laoreet odio, vitae hendrerit orci lacus sit amet augue.',
+      durationMins: 150,
+      maxRsvps: 120,
+    },
+    {
+      name: 'Keystone Alpha Launch',
+      status: 'active',
+      themeColor: '#334455',
+      startTime: '2018-10-09T18:00:00+11:00',
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat, est et porttitor ultricies, odio nisi consequat arcu, eget ultrices nulla elit in augue. Fusce accumsan mattis felis eget lacinia. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Praesent commodo velit id cursus bibendum. Vivamus pellentesque, velit semper ullamcorper ullamcorper, massa mauris laoreet odio, vitae hendrerit orci lacus sit amet augue.',
       durationMins: 150,
       maxRsvps: 120,
     },
   ],
-  Talk: [{ name: 'Introducing Keystone 5 🎉' }, { name: 'Keystone 5 - Under the hood' }],
+  Talk: [
+    {
+      name: 'Introducing Keystone 5 🎉',
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat, est et porttitor ultricies, odio nisi consequat arcu, eget ultrices nulla elit in augue. Fusce accumsan mattis felis eget lacinia. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Praesent commodo velit id cursus bibendum. Vivamus pellentesque, velit semper ullamcorper ullamcorper, massa mauris laoreet odio, vitae hendrerit orci lacus sit amet augue.',
+    },
+    {
+      name: 'Keystone 5 - Under the hood',
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat, est et porttitor ultricies, odio nisi consequat arcu, eget ultrices nulla elit in augue. Fusce accumsan mattis felis eget lacinia. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Praesent commodo velit id cursus bibendum. Vivamus pellentesque, velit semper ullamcorper ullamcorper, massa mauris laoreet odio, vitae hendrerit orci lacus sit amet augue.',
+    },
+  ],
   Rsvp: [],
   Sponsor: [{ name: 'Thinkmill', website: 'https://www.thinkmill.com.au' }],
 };
