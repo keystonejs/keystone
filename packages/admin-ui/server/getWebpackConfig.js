@@ -4,8 +4,6 @@ const path = require('path');
 
 const { enableDevFeatures, mode } = require('./env');
 
-const isHerokuEnv = process.env.HEROKU === 'true';
-
 module.exports = function({ adminMeta, entry, outputPath }) {
   const templatePlugin = new HtmlWebpackPlugin({
     title: 'KeystoneJS',
@@ -27,7 +25,6 @@ module.exports = function({ adminMeta, entry, outputPath }) {
         // since it doesn't have to compile these things with babel
         // note that the preconstruct aliases are also disabled on heroku to enable this
         // when we have static builds for the admin ui, we can remove this
-        ...(isHerokuEnv ? [/@keystone-alpha\/field/, /@arch-ui/] : []),
       ],
       use: [
         {
@@ -36,19 +33,11 @@ module.exports = function({ adminMeta, entry, outputPath }) {
             configFile: false,
             babelrc: false,
             presets: [
-              [
-                '@babel/env',
-                { exclude: ['transform-regenerator', 'transform-async-to-generator'] },
-              ],
-              ['@babel/react', { development: enableDevFeatures }],
-              '@babel/flow',
+              mode === 'production'
+                ? require.resolve('babel-preset-react-app/prod')
+                : require.resolve('babel-preset-react-app/dev'),
             ],
-            plugins: [
-              '@babel/plugin-syntax-dynamic-import',
-              '@babel/proposal-class-properties',
-              '@babel/proposal-object-rest-spread',
-              'emotion',
-            ],
+            plugins: [require.resolve('babel-plugin-emotion')],
           },
         },
       ],

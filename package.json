@@ -76,6 +76,7 @@
     "babel-loader": "^8.0.5",
     "babel-plugin-emotion": "^10.0.9",
     "babel-plugin-extract-react-types": "^0.1.0",
+    "babel-preset-react-app": "^9.0.0",
     "bcrypt": "^3.0.4",
     "body-parser": "^1.18.2",
     "builtin-modules": "^3.0.0",
