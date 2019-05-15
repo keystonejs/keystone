@@ -3,7 +3,7 @@ import { Query } from 'react-apollo';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
-import EventItem from '../components/EventItem';
+import EventItems from '../components/EventItems';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { GET_CURRENT_EVENTS } from '../graphql/events';
@@ -124,7 +124,7 @@ const Talks = ({ talks }) => {
         css={{ display: 'flex', marginTop: '3rem', marginLeft: '-1.5rem', marginRight: '-1.5rem' }}
       >
         {talks.map(talk => (
-          <Talk {...talk} />
+          <Talk {...talk} key={talk.id} />
         ))}
       </div>
     </Container>
@@ -154,9 +154,9 @@ const Sponsors = () => {
   );
 };
 
-const Talk = ({ title, description, speakers }) => {
+const Talk = ({ title, description, speakers, ...props }) => {
   return (
-    <div css={{ padding: '0 1.5rem' }}>
+    <div css={{ padding: '0 1.5rem' }} {...props}>
       <H3 size={5}>{title}</H3>
       <p dangerouslySetInnerHTML={{ __html: description }} />
       <p>
@@ -171,26 +171,7 @@ const Talk = ({ title, description, speakers }) => {
 };
 
 const EventsList = ({ events, ...props }) => {
-  return (
-    <ul
-      css={{
-        listStyle: 'none',
-        margin: '0 -1rem',
-        padding: 0,
-        display: `flex`,
-        alignItems: 'flex-start',
-      }}
-      {...props}
-    >
-      {events.map((event, index) => (
-        <EventItem
-          key={event.id}
-          {...event}
-          css={{ width: `${100 / 3}%`, marginTop: index * 80 }}
-        />
-      ))}
-    </ul>
-  );
+  return <EventItems events={events} {...props} />;
 };
 
 function processEventsData(data) {

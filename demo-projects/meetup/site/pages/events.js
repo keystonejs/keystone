@@ -4,7 +4,7 @@ import { jsx } from '@emotion/core';
 import { Query } from 'react-apollo';
 
 import { Container, H2 } from '../primitives';
-import EventItem from '../components/EventItem';
+import EventItems from '../components/EventItems';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { colors, gridSize } from '../theme';
@@ -24,13 +24,8 @@ export default function Events() {
               console.log(error);
               return <p>Error!</p>;
             }
-            return (
-              <ul css={{ margin: `${gridSize * 6}px 0`, padding: 0 }}>
-                {data.allEvents.map(event => (
-                  <EventItem key={event.id} {...event} />
-                ))}
-              </ul>
-            );
+            const { allEvents } = data;
+            return <EventItems events={allEvents} />;
           }}
         </Query>
       </Container>
