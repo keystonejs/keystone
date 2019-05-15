@@ -13,6 +13,9 @@ export const EVENT_DATA = gql`
       speakers {
         id
         name
+        image {
+          publicUrl
+        }
       }
     }
   }
@@ -49,6 +52,15 @@ export const GET_EVENT_DETAILS = gql`
   query GetEventDetails($event: ID!) {
     Event(where: { id: $event }) {
       ...EventData
+    }
+    allRsvps(where: { event: { id: $event } }) {
+      id
+      user {
+        name
+        image {
+          publicUrl
+        }
+      }
     }
   }
   ${EVENT_DATA}
