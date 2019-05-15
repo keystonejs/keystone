@@ -285,19 +285,19 @@ class MongooseListAdapter extends BaseListAdapter {
       query.$count = 'count';
     }
 
-    return this.queryBuilder(query, pipeline =>
-      this.model.aggregate(pipeline).exec()
-    ).then(foundItems => {
-      if (meta) {
-        // When there are no items, we get undefined back, so we simulate the
-        // normal result of 0 items.
-        if (!foundItems[0]) {
-          return { count: 0 };
+    return this.queryBuilder(query, pipeline => this.model.aggregate(pipeline).exec()).then(
+      foundItems => {
+        if (meta) {
+          // When there are no items, we get undefined back, so we simulate the
+          // normal result of 0 items.
+          if (!foundItems[0]) {
+            return { count: 0 };
+          }
+          return foundItems[0];
         }
-        return foundItems[0];
+        return foundItems;
       }
-      return foundItems;
-    });
+    );
   }
 }
 
