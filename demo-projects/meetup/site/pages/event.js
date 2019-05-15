@@ -42,10 +42,10 @@ export default class Event extends Component {
                   <h3>Speakers</h3>
                   {talk.speakers.map(speaker =>
                     speaker ? (
-                      <>
+                      <div key={speaker.id}>
                         <img alt={speaker.name} src={speaker.image.publicUrl} />
-                        <p key={speaker.id}>{speaker.name}</p>
-                      </>
+                        <p>{speaker.name}</p>
+                      </div>
                     ) : null
                   )}
                 </div>
