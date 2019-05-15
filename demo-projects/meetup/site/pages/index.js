@@ -9,47 +9,15 @@ import Footer from '../components/Footer';
 import { GET_CURRENT_EVENTS } from '../graphql/events';
 import { GET_SPONSORS } from '../graphql/sponsors';
 
+import Talks from '../components/Talks';
 import Rsvp from '../components/Rsvp';
-import { Section, Container, Separator, Loading, Error } from '../primitives';
-import { H1, H2, H3 } from '../primitives/Typography';
-import { colors, fontSizes, gridSize } from '../theme';
+import { Hero, Section, Container, Separator, Loading, Error } from '../primitives';
+import { H2, H3 } from '../primitives/Typography';
+import { colors, gridSize } from '../theme';
 import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
 import { Component } from 'react';
 
 const { publicRuntimeConfig } = getConfig();
-
-const Hero = () => {
-  const { meetup } = publicRuntimeConfig;
-
-  return (
-    <div>
-      <div
-        css={{
-          backgroundColor: colors.greyDark,
-          padding: '7rem 0',
-          textAlign: 'center',
-          color: 'white',
-        }}
-      >
-        <H1>{meetup.name}</H1>
-        <p css={{ fontSize: fontSizes.md, maxWidth: 720, margin: '30px auto 0' }}>{meetup.intro}</p>
-      </div>
-    </div>
-  );
-};
-
-const Slant = () => {
-  return (
-    <svg
-      css={{ height: '5vw', width: '100vw' }}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-    >
-      <polygon fill={colors.greyDark} points="0, 100 0, 0 100, 0" />
-    </svg>
-  );
-};
 
 /**
  * Featured Event
@@ -113,20 +81,6 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
   );
 };
 
-const Talks = ({ talks }) => {
-  return (
-    <Container>
-      <div
-        css={{ display: 'flex', marginTop: '3rem', marginLeft: '-1.5rem', marginRight: '-1.5rem' }}
-      >
-        {talks.map(talk => (
-          <Talk {...talk} key={talk.id} />
-        ))}
-      </div>
-    </Container>
-  );
-};
-
 const Sponsors = () => {
   return (
     <Container>
@@ -158,7 +112,7 @@ const Talk = ({ title, description, speakers, ...props }) => {
       <p>
         {speakers.map(speaker => (
           <span key={speaker.id} css={{ fontWeight: 600 }}>
-            <img alt={speaker.name} src={speaker.image.publicUrl} />
+            <img alt={speaker.name} src={speaker.image && speaker.image.publicUrl} />
             {speaker.name}
           </span>
         ))}
@@ -208,6 +162,8 @@ export default class Home extends Component {
 
   render() {
     const now = this.props.now;
+    const { meetup } = publicRuntimeConfig;
+
     return (
       <Query query={GET_CURRENT_EVENTS} variables={{ now }}>
         {({ data: eventsData, loading: eventsLoading, error: eventsError }) => {
@@ -215,10 +171,11 @@ export default class Home extends Component {
           return (
             <div>
               <Navbar foreground="white" background={colors.greyDark} />
-              <Hero />
-              <Slant />
+              <Hero title={meetup.name}>{meetup.intro}</Hero>
               <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />
-              {featuredEvent && featuredEvent.talks ? <Talks talks={featuredEvent.talks} /> : null}
+              <Container css={{ marginTop: '3rem' }}>
+                {featuredEvent && featuredEvent.talks ? <Talks talks={featuredEvent.talks} /> : null}
+              </Container>
               <Section css={{ padding: '3rem 0' }}>
                 <Container>
                   <Sponsors />

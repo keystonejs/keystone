@@ -27,9 +27,9 @@ const AvatarText = ({ initials, ...props }) => (
   <AvatarBase
     css={{
       alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+      backgroundColor: '#D8D8D8',
       color: 'rgba(0, 0, 0, 0.25)',
-      display: 'flex',
+      display: 'inline-flex',
       fontSize: '2rem',
       fontWeight: 'bold',
       justifyContent: 'center',
@@ -41,9 +41,9 @@ const AvatarText = ({ initials, ...props }) => (
 );
 const AvatarImage = props => <AvatarBase as="img" {...props} />;
 
-export const Avatar = ({ name, src, ...props }) =>
+export const Avatar = ({ alt, name, src, ...props }) =>
   src ? (
-    <AvatarImage src={src} {...props} />
+    <AvatarImage alt={alt} src={src} {...props} />
   ) : (
     <AvatarText initials={firstLetter(name)} {...props} />
   );
