@@ -159,7 +159,7 @@ const Talk = ({ title, description, speakers, ...props }) => {
         {speakers.map(speaker => (
           <span key={speaker.id} css={{ fontWeight: 600 }}>
             <img alt={speaker.name} src={speaker.image.publicUrl} />
-            {speaker.author}
+            {speaker.name}
           </span>
         ))}
       </p>

@@ -53,6 +53,15 @@ export const GET_EVENT_DETAILS = gql`
     Event(where: { id: $event }) {
       ...EventData
     }
+    allRsvps(where: { event: { id: $event } }) {
+      id
+      user {
+        name
+        image {
+          publicUrl
+        }
+      }
+    }
   }
   ${EVENT_DATA}
 `;

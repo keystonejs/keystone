@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/core';
+import { Component } from 'react';
 import { Query } from 'react-apollo';
 
 import Rsvp from '../components/Rsvp';
@@ -26,6 +28,7 @@ export default class Event extends Component {
           }
 
           const { name, startTime, talks } = data.Event;
+          const { allRsvps } = data;
 
           return (
             <div>
@@ -37,11 +40,27 @@ export default class Event extends Component {
                 <div key={talk.id}>
                   <h3>{talk.name}</h3>
                   <h3>Speakers</h3>
-                  {talk.speakers.map(speaker => (
-                    <p key={speaker.id}>{speaker.name}</p>
-                  ))}
+                  {talk.speakers.map(speaker =>
+                    speaker ? (
+                      <>
+                        <img alt={speaker.name} src={speaker.image.publicUrl} />
+                        <p key={speaker.id}>{speaker.name}</p>
+                      </>
+                    ) : null
+                  )}
                 </div>
               ))}
+              <h2>People who attended this meetup</h2>
+              {allRsvps
+                .filter(rsvp => rsvp.user && rsvp.user.image && rsvp.user.image.publicUrl)
+                .map(rsvp => (
+                  <img
+                    css={{ width: '200px', height: '200px' }}
+                    key={rsvp.id}
+                    alt={rsvp.user.name}
+                    src={rsvp.user.image.publicUrl}
+                  />
+                ))}
             </div>
           );
         }}
