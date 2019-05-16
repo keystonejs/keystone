@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const keystone = require('@keystone-alpha/core');
+const keystone = require('@keystone-alpha/keystone');
 const express = require('express');
 const initialData = require('./initialData');
 

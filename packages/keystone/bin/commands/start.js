@@ -1,5 +1,5 @@
-const keystone = require('@keystone-alpha/core');
 const { executeDefaultServer, getEntryFileFullPath } = require('../utils');
+const { DEFAULT_PORT, DEFAULT_ENTRY } = require('../../constants');
 
 module.exports = {
   // prettier-ignore
@@ -15,8 +15,8 @@ module.exports = {
       $ ${exeName} start <dist> --port=3000
 
     Options
-      --port, -p  Port to start on [${keystone.DEFAULT_PORT}]
-      --entry     Entry file exporting keystone instance [${keystone.DEFAULT_ENTRY}]
+      --port, -p  Port to start on [${DEFAULT_PORT}]
+      --entry     Entry file exporting keystone instance [${DEFAULT_ENTRY}]
   `,
   exec: (args, { exeName, _cwd = process.cwd() } = {}) => {
     process.env.NODE_ENV = 'production';

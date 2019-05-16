@@ -1,10 +1,12 @@
-const keystone = require('@keystone-alpha/core');
+const prepare = require('../lib/prepare');
 const express = require('express');
 const endent = require('endent');
 const path = require('path');
 
+const { DEFAULT_ENTRY, DEFAULT_PORT } = require('../constants');
+
 function getEntryFileFullPath(args, { exeName, _cwd }) {
-  const entryFile = args['--entry'] ? args['--entry'] : keystone.DEFAULT_ENTRY;
+  const entryFile = args['--entry'] ? args['--entry'] : DEFAULT_ENTRY;
   try {
     return Promise.resolve(require.resolve(path.resolve(_cwd, entryFile)));
   } catch (error) {
@@ -18,24 +20,27 @@ function getEntryFileFullPath(args, { exeName, _cwd }) {
 }
 
 function executeDefaultServer(args, entryFile, distDir) {
-  const port = args['--port'] ? args['--port'] : keystone.DEFAULT_PORT;
+  const port = args['--port'] ? args['--port'] : DEFAULT_PORT;
 
   const app = express();
 
-  return keystone
-    .prepare({ entryFile, port, distDir, dev: process.env.NODE_ENV !== 'production' })
-    .then(async ({ middlewares, keystone: keystoneApp }) => {
+  return prepare({ entryFile, port, distDir, dev: process.env.NODE_ENV !== 'production' }).then(
+    async ({ middlewares, keystone: keystoneApp }) => {
       await keystoneApp.connect();
 
-      middlewares.forEach(middleware => app.use(middleware));
+      app.use(middlewares);
 
       return new Promise((resolve, reject) => {
-        app.listen(port, error => (error ? reject(error) : resolve({ port })));
+        const server = app.listen(port, error => {
+          if (error) {
+            return reject(error);
+          }
+          console.log(`KeystoneJS ready on port ${port}`);
+          return resolve({ port, server });
+        });
       });
-    })
-    .then(() => {
-      console.log(`KeystoneJS ready on port ${port}`);
-    });
+    }
+  );
 }
 
 module.exports = {

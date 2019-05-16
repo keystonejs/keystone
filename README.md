@@ -164,14 +164,17 @@ Create the `server.js` file:
 <!-- prettier-ignore -->
 
 ```javascript
-const keystoneServer = require('@keystone-alpha/core');
+const keystoneServer = require('@keystone-alpha/keystone');
+const express = require('express');
 
 keystoneServer.prepare({ port: 3000 })
-  .then(({ server, keystone }) => {
-    server.app.get('/', (req, res) => {
+  .then(({ middlewares, keystone }) => {
+    const app = express();
+    app.get('/', (req, res) => {
       res.end('Hello world');
     });
-    return server.start();
+    app.use(middlewares);
+    app.listen(3000);
   })
   .catch(error => {
     console.error(error);

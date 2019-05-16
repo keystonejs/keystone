@@ -1,6 +1,6 @@
 {
   "name": "@keystone-alpha/server-static",
-  "description": "KeystoneJS Static File Server. For more Custom Servers, see: @keystone-alpha/core",
+  "description": "KeystoneJS Static File Server.",
   "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",

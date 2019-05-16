@@ -150,6 +150,7 @@
     "listr": "^0.14.3",
     "loader-utils": "^1.2.3",
     "lodash.debounce": "^4.0.8",
+    "lodash.flattendeep": "^4.4.0",
     "lodash.get": "^4.4.2",
     "lodash.groupby": "^4.6.0",
     "lodash.isempty": "^4.4.0",

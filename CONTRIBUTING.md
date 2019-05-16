@@ -32,13 +32,13 @@ Here is what a `changeset.json` looks like:
 {
   "releases": [
     { "name": "@keystone-alpha/adapter-mongoose", "type": "patch" },
-    { "name": "@keystone-alpha/core", "type": "minor" }
+    { "name": "@keystone-alpha/keystone", "type": "minor" }
   ],
   "dependents": []
 }
 ```
 
-An example, if you generate a changeset that includes `adapter-mongoose` as a patch, and `core` as a minor, you can merge your PR, and the next time the `version-packages` command is run, these will both be updated.
+An example, if you generate a changeset that includes `adapter-mongoose` as a patch, and `keystone` as a minor, you can merge your PR, and the next time the `version-packages` command is run, these will both be updated.
 
 You can have multiple changesets in a single PR. This will give you more granular changelogs, and is encouraged.
 

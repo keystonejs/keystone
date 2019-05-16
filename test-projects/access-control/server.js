@@ -1,5 +1,5 @@
 const express = require('express');
-const keystone = require('@keystone-alpha/core');
+const keystone = require('@keystone-alpha/keystone');
 
 const { port } = require('./config');
 const initialData = require('./data');

@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs-extra');
-const keystone = require('@keystone-alpha/core');
 const { getEntryFileFullPath } = require('../utils');
+const { DEFAULT_ENTRY, DEFAULT_DIST_DIR } = require('../../constants');
 
 module.exports = {
   // prettier-ignore
@@ -16,12 +16,12 @@ module.exports = {
 
     Options
       --out, -o   Directory to save build [dist]
-      --entry     Entry file exporting keystone instance [${keystone.DEFAULT_ENTRY}]
+      --entry     Entry file exporting keystone instance [${DEFAULT_ENTRY}]
   `,
   exec: async (args, { exeName, _cwd = process.cwd() } = {}) => {
     process.env.NODE_ENV = 'production';
     let entryFile = await getEntryFileFullPath(args, { exeName, _cwd });
-    let { servers, distDir = keystone.DEFAULT_DIST_DIR } = require(entryFile);
+    let { servers, distDir = DEFAULT_DIST_DIR } = require(entryFile);
 
     if (args['--out']) {
       distDir = args['--out'];

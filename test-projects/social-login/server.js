@@ -1,5 +1,5 @@
 const express = require('express');
-const keystone = require('@keystone-alpha/core');
+const keystone = require('@keystone-alpha/keystone');
 const { endAuthedSession } = require('@keystone-alpha/session');
 const {
   facebookAuthEnabled,
