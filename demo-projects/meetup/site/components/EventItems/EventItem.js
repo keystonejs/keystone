@@ -10,7 +10,17 @@ import { isInFuture, formatPastDate, formatFutureDate, getBreakpoints } from '..
 
 const mq = getBreakpoints();
 
-const EventItem = ({ id, name, startTime, description, talks, themeColor, ...props }) => {
+const EventItem = ({
+  id,
+  name,
+  startTime,
+  description,
+  talks,
+  themeColor,
+  locationAddress,
+  maxRsvps,
+  ...props
+}) => {
   const prettyDate = isInFuture(startTime)
     ? formatFutureDate(startTime)
     : formatPastDate(startTime);
@@ -43,18 +53,18 @@ const EventItem = ({ id, name, startTime, description, talks, themeColor, ...pro
           },
         }}
       >
-        <div
-          css={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            background: 'linear-gradient( rgba(255, 255, 255, 0), 3%, white, 80%, white)',
-            width: '100%',
-            height: gridSize * (isInFuture(startTime) ? 24 : 16),
-          }}
-        />
         <Link route="event" params={{ id }}>
           <a css={{ color: 'inherit', textDecoration: 'none', ':hover': { cursor: 'pointer' } }}>
+            <div
+              css={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                background: 'linear-gradient( rgba(255, 255, 255, 0), 3%, white, 80%, white)',
+                width: '100%',
+                height: gridSize * 16,
+              }}
+            />
             <div
               css={{
                 opacity: isInFuture(startTime) ? 1 : 0.5,

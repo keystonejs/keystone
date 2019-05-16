@@ -2,8 +2,12 @@ require('dotenv').config();
 
 // Lets not hardcode password, even for test data
 const password = process.env.INITIAL_DATA_PASSWORD;
-if (!password || password.length < 10) {
+if (!password) {
   throw new Error(`To seed initial data, set the 'INITIAL_DATA_PASSWORD' environment variable`);
+} else if (password.length < 10) {
+  throw new Error(
+    `To seed initial data, the 'INITIAL_DATA_PASSWORD' must be at least 10 characters`
+  );
 }
 
 module.exports = {

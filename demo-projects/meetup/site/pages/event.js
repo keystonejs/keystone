@@ -37,7 +37,7 @@ export default class Event extends Component {
             return <p>Event not found</p>;
           }
 
-          const { description, name, startTime, themeColor, talks } = data.Event;
+          const { description, name, startTime, locationAddress, themeColor, talks } = data.Event;
           const { allRsvps } = data;
 
           const prettyDate = isInFuture(startTime)
@@ -53,6 +53,7 @@ export default class Event extends Component {
               </Head>
               <Navbar foreground="white" background={themeColor} />
               <Hero align="left" backgroundColor={themeColor} superTitle={prettyDate} title={name}>
+                <p css={{ fontWeight: 100 }}>{locationAddress}</p>
                 <Html markup={description} />
                 <Rsvp eventId={id}>
                   {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
