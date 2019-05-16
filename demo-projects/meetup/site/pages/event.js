@@ -5,7 +5,8 @@ import { Query } from 'react-apollo';
 import Head from 'next/head';
 import getConfig from 'next/config';
 
-import { Avatar, Container, Hero, H1, H2, Html } from '../primitives';
+import Rsvp from '../components/Rsvp';
+import { Avatar, Container, Hero, H1, H2, Html, Button, Loading } from '../primitives';
 import Talks from '../components/Talks';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -36,7 +37,7 @@ export default class Event extends Component {
             return <p>Event not found</p>;
           }
 
-          const { description, name, startTime, talks } = data.Event;
+          const { description, name, startTime, themeColor, talks } = data.Event;
           const { allRsvps } = data;
 
           const prettyDate = isInFuture(startTime)
@@ -50,14 +51,40 @@ export default class Event extends Component {
                   {name} | {meetup.name}
                 </title>
               </Head>
-              <Navbar foreground="white" background={colors.purple} />
-              <Hero
-                align="left"
-                backgroundColor={colors.purple}
-                superTitle={prettyDate}
-                title={name}
-              >
+              <Navbar foreground="white" background={themeColor} />
+              <Hero align="left" backgroundColor={themeColor} superTitle={prettyDate} title={name}>
                 <Html markup={description} />
+                <Rsvp eventId={id}>
+                  {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
+                    if (loading) return <Loading />;
+                    if (error) return <p css={{ color: 'white', margin: 0 }}>{error}</p>;
+                    return (
+                      <div css={{ display: 'flex', alignItems: 'center' }}>
+                        <span css={{ padding: '0' }}>Will you be attending?</span>
+                        <Button
+                          disabled={isGoing || !canRsvp}
+                          outline={isGoing}
+                          background={isGoing ? themeColor : colors.greyLight}
+                          foreground={isGoing ? 'white' : colors.greyDark}
+                          css={{ marginLeft: '.5rem', color: isGoing ? 'white' : colors.greyDark }}
+                          onClick={() => rsvpToEvent('yes')}
+                        >
+                          yes
+                        </Button>
+                        <Button
+                          disabled={!isGoing}
+                          outline={!isGoing}
+                          background={!isGoing ? themeColor : colors.greyLight}
+                          foreground={!isGoing ? 'white' : colors.greyDark}
+                          css={{ marginLeft: '.5rem', color: !isGoing ? 'white' : colors.greyDark }}
+                          onClick={() => rsvpToEvent('no')}
+                        >
+                          no
+                        </Button>
+                      </div>
+                    );
+                  }}
+                </Rsvp>
               </Hero>
 
               <Container css={{ marginTop: gridSize * 3 }}>
