@@ -85,7 +85,9 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
             >
               <Rsvp eventId={id} />
             </div>
-            <div css={{ display: 'flex', flex: 1, justifyContent: 'flex-end' }}>
+            <div
+              css={{ display: 'flex', flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}
+            >
               <span css={{ padding: '0 1rem' }}>{talks.length} talks</span>
               <Query query={GET_EVENT_RSVPS} variables={{ event: id }}>
                 {({ data, loading, error }) => {

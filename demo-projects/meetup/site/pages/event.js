@@ -36,7 +36,7 @@ export default class Event extends Component {
             return <p>Event not found</p>;
           }
 
-          const { description, name, startTime, talks } = data.Event;
+          const { description, name, startTime, talks, locationAddress } = data.Event;
           const { allRsvps } = data;
 
           const prettyDate = isInFuture(startTime)
@@ -58,6 +58,7 @@ export default class Event extends Component {
                 title={name}
               >
                 <Html markup={description} />
+                <p css={{ fontWeight: 100 }}>{locationAddress}</p>
               </Hero>
 
               <Container css={{ marginTop: gridSize * 3 }}>
