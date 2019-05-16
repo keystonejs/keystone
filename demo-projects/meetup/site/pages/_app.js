@@ -10,7 +10,9 @@ import withApollo from '../lib/withApollo';
 import { AuthProvider } from '../lib/authetication';
 import StylesBase from '../primitives/StylesBase';
 
-const { publicRuntimeConfig: { serverUrl } } = getConfig();
+const {
+  publicRuntimeConfig: { serverUrl },
+} = getConfig();
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {

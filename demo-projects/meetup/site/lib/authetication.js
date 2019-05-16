@@ -1,7 +1,9 @@
 import React, { Component, createContext, useContext } from 'react';
 import getConfig from 'next/config';
 
-const { publicRuntimeConfig: { serverUrl } } = getConfig();
+const {
+  publicRuntimeConfig: { serverUrl },
+} = getConfig();
 
 /**
  * AuthContext
