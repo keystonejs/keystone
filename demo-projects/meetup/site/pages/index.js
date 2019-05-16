@@ -20,6 +20,7 @@ import { H2, H3 } from '../primitives/Typography';
 import { colors, gridSize } from '../theme';
 import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
 import { Component } from 'react';
+import { all } from 'any-promise';
 
 const { publicRuntimeConfig } = getConfig();
 /**
@@ -95,9 +96,11 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                   if (error) return <Error error={error} />;
 
                   const { allRsvps } = data;
+                  if (!allRsvps) return null;
+
                   return (
                     <>
-                      {!allRsvps ? null : maxRsvps ? (
+                      {maxRsvps ? (
                         <span css={{ padding: '0 1rem' }}>
                           {allRsvps.length}/{maxRsvps} attending
                         </span>
