@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { USER_IMAGE } from './fragments';
 
 export const ADD_RSVP = gql`
   mutation AddRsvp($event: ID!, $user: ID!, $status: RsvpStatusType!) {
@@ -28,6 +29,21 @@ export const UPDATE_RSVP = gql`
       status
     }
   }
+`;
+
+export const GET_EVENT_RSVPS = gql`
+  query GetEventRsvps($event: ID!) {
+    allRsvps(where: { event: { id: $event }, status: yes, user_is_null: false }) {
+      id
+      status
+      user {
+        id
+        name
+        ...UserImage
+      }
+    }
+  }
+  ${USER_IMAGE}
 `;
 
 export const GET_RSVPS = gql`

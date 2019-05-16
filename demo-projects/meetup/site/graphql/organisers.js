@@ -1,8 +1,7 @@
 import gql from 'graphql-tag';
-import { UserImage } from './fragments';
+import { USER_IMAGE } from './fragments';
 
 export const GET_ORGANISERS = gql`
-  ${UserImage}
   query {
     allOrganisers {
       user {
@@ -13,4 +12,5 @@ export const GET_ORGANISERS = gql`
       }
     }
   }
+  ${USER_IMAGE}
 `;

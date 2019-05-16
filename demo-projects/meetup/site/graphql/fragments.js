@@ -2,7 +2,7 @@
 
 const size = 70;
 
-export const UserImage = `
+export const USER_IMAGE = `
   fragment UserImage on User {
     image {
       small: publicUrlTransformed(

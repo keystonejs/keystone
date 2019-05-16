@@ -9,7 +9,17 @@ import { isInFuture, formatPastDate, formatFutureDate, getBreakpoints } from '..
 
 const mq = getBreakpoints();
 
-const EventItem = ({ id, name, startTime, description, talks, themeColor, ...props }) => {
+const EventItem = ({
+  id,
+  name,
+  startTime,
+  description,
+  talks,
+  themeColor,
+  locationAddress,
+  maxRsvps,
+  ...props
+}) => {
   const prettyDate = isInFuture(startTime)
     ? formatFutureDate(startTime)
     : formatPastDate(startTime);

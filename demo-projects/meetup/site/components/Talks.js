@@ -1,7 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 
-import { Avatar, H5, Html } from '../primitives';
+import { H5, Html } from '../primitives';
+import { AvatarStack } from '../primitives/Avatar';
 import { mq } from '../helpers/media';
 
 const Talks = ({ talks }) => {
@@ -9,13 +10,13 @@ const Talks = ({ talks }) => {
     <Wrapper>
       {talks.map(talk => (
         <Talk key={talk.id}>
-          <SpeakerStack speakers={talk.speakers} />
+          <AvatarStack users={talk.speakers} />
           <Content>
             <H5 as="h3">
               {talk.isLightningTalk && '⚡️ '}
               {talk.name}
             </H5>
-            <Html markup={talk.description} />
+            {talks.description ? <Html markup={talk.description} /> : null}
             <Byline speakers={talk.speakers} />
           </Content>
         </Talk>
@@ -60,24 +61,6 @@ const Content = props => (
     }}
     {...props}
   />
-);
-const SpeakerStack = ({ speakers, ...props }) => (
-  <div css={{ position: 'relative', width: 70, height: 70 }} {...props}>
-    {speakers.map((speaker, idx) => (
-      <Avatar
-        key={speaker.id}
-        alt={`${speaker.name} Avatar`}
-        name={speaker.name}
-        src={speaker.image && speaker.image.small}
-        css={{
-          boxShadow: `0 0 0 4px white`,
-          marginLeft: -idx * 10,
-          position: 'absolute',
-          zIndex: -idx,
-        }}
-      />
-    ))}
-  </div>
 );
 const Byline = ({ speakers, ...props }) => (
   <div {...props}>
