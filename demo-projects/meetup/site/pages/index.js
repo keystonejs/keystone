@@ -4,15 +4,18 @@ import getConfig from 'next/config';
 import Head from 'next/head';
 import { jsx } from '@emotion/core';
 
+import { Link } from '../../routes';
 import EventItems from '../components/EventItems';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { GET_CURRENT_EVENTS } from '../graphql/events';
+import { GET_EVENT_RSVPS } from '../graphql/rsvps';
 import { GET_SPONSORS } from '../graphql/sponsors';
 
 import Talks from '../components/Talks';
 import Rsvp from '../components/Rsvp';
 import { Hero, Section, Container, Separator, Loading, Error } from '../primitives';
+import { AvatarStack } from '../primitives/Avatar';
 import { H2, H3 } from '../primitives/Typography';
 import { colors, gridSize } from '../theme';
 import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
@@ -33,14 +36,14 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
     return <p>No events to show.</p>;
   }
 
-  const { startTime, id } = event;
+  const { id, startTime, name, maxRsvps, locationAddress, description, talks, themeColor } = event;
   const prettyDate = isInFuture(startTime)
     ? formatFutureDate(startTime)
     : formatPastDate(startTime);
   return (
     <Container css={{ margin: '-7rem auto 0', position: 'relative' }}>
       <div css={{ boxShadow: '0px 4px 94px rgba(0, 0, 0, 0.15)' }}>
-        <div css={{ backgroundColor: event.themeColor, color: 'white', padding: '2rem' }}>
+        <div css={{ backgroundColor: themeColor, color: 'white', padding: '2rem' }}>
           <div css={{ display: 'flex' }}>
             <div css={{ flex: 1 }}>
               <p
@@ -53,12 +56,26 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
               >
                 {prettyDate}
               </p>
-              <H3>{event.name}</H3>
+              <H3>{name}</H3>
+              <p css={{ fontWeight: 100 }}>{locationAddress}</p>
             </div>
-            <div
-              css={{ flex: 1, padding: '0 2rem' }}
-              dangerouslySetInnerHTML={{ __html: event.description }}
-            />
+            <div css={{ flex: 1, padding: '0 2rem' }}>
+              <div dangerouslySetInnerHTML={{ __html: description }} />
+              <Link route="event" params={{ id }}>
+                <a>
+                  <span
+                    css={{
+                      color: 'white',
+                      fontWeight: 600,
+                      textDecoration: 'underline',
+                      position: 'relative',
+                    }}
+                  >
+                    Find out more
+                  </span>
+                </a>
+              </Link>
+            </div>
           </div>
         </div>
         <div css={{ padding: '1.5rem', background: 'white' }}>
@@ -68,10 +85,35 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
             >
               <Rsvp eventId={id} />
             </div>
-            <div css={{ display: 'flex', flex: 1, justifyContent: 'flex-end' }}>
-              <span css={{ padding: '0 1rem' }}>{event.talks.length} talks</span>
-              <span css={{ padding: '0 1rem' }}>84 attending</span>
-              <span css={{ padding: '0 1rem' }}>avatars</span>
+            <div
+              css={{ display: 'flex', flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}
+            >
+              <span css={{ padding: '0 1rem' }}>{talks.length} talks</span>
+              <Query query={GET_EVENT_RSVPS} variables={{ event: id }}>
+                {({ data, loading, error }) => {
+                  if (loading && !data) return <Loading />;
+                  if (error) return <Error error={error} />;
+
+                  const { allRsvps } = data;
+                  if (!allRsvps) return null;
+
+                  return (
+                    <>
+                      {maxRsvps ? (
+                        <span css={{ padding: '0 1rem' }}>
+                          {allRsvps.length}/{maxRsvps} attending
+                        </span>
+                      ) : (
+                        <span css={{ padding: '0 1rem' }}>{allRsvps.length} attending</span>
+                      )}
+                      <AvatarStack
+                        users={allRsvps.map(rsvp => rsvp.user)}
+                        css={{ width: 50, height: 50 }}
+                      />
+                    </>
+                  );
+                }}
+              </Query>
             </div>
           </div>
         </div>

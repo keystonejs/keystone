@@ -1,13 +1,15 @@
 import gql from 'graphql-tag';
-import { UserImage } from './fragments';
+import { USER_IMAGE } from './fragments';
 
 export const EVENT_DATA = gql`
   fragment EventData on Event {
     id
     name
     startTime
+    locationAddress
     description
     themeColor
+    maxRsvps
     talks {
       id
       isLightningTalk
@@ -20,7 +22,7 @@ export const EVENT_DATA = gql`
       }
     }
   }
-  ${UserImage}
+  ${USER_IMAGE}
 `;
 
 export const GET_CURRENT_EVENTS = gql`
@@ -64,5 +66,5 @@ export const GET_EVENT_DETAILS = gql`
     }
   }
   ${EVENT_DATA}
-  ${UserImage}
+  ${USER_IMAGE}
 `;

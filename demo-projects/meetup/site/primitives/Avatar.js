@@ -41,6 +41,26 @@ const AvatarText = ({ initials, ...props }) => (
 );
 const AvatarImage = props => <AvatarBase as="img" {...props} />;
 
+export const AvatarStack = ({ users, ...props }) => (
+  <div css={{ position: 'relative', width: 70, height: 70 }} {...props}>
+    {users.map((user, idx) => (
+      <Avatar
+        key={user.id}
+        alt={`${user.name} Avatar`}
+        name={user.name}
+        src={user.image && user.image.small}
+        css={{
+          boxShadow: `0 0 0 4px white`,
+          marginLeft: -idx * 10,
+          position: 'absolute',
+          zIndex: -idx,
+        }}
+        {...props}
+      />
+    ))}
+  </div>
+);
+
 export const Avatar = ({ alt, name, src, ...props }) =>
   src ? (
     <AvatarImage alt={alt} src={src} {...props} />
