@@ -95,7 +95,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                   const { allRsvps } = data;
                   return (
                     <>
-                      {maxRsvps ? (
+                      {!allRsvps ? null : maxRsvps ? (
                         <span css={{ padding: '0 1rem' }}>
                           {allRsvps.length}/{maxRsvps} attending
                         </span>
