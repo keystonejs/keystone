@@ -31,12 +31,12 @@ export default function About() {
             if (loading) return <Loading />;
             if (error) return <Error error={error} />;
 
-            const allOrganisers = data.allOrganisers.map(o => o.user);
+            const allOrganisers = data.allOrganisers.filter(o => o.user).map(o => o.user);
 
             return (
               <OrganiserList>
                 {allOrganisers.map(organiser => {
-                  return <Organiser organiser={organiser} />;
+                  return <Organiser key={organiser.id} organiser={organiser} />;
                 })}
               </OrganiserList>
             );
@@ -80,7 +80,6 @@ const Organiser = ({ organiser }) => (
       margin: 0,
       padding: 0,
     }}
-    key={organiser.id}
   >
     <Avatar name={organiser.name} src={organiser.image && organiser.image.small} />
     <div css={{ marginLeft: '1em' }}>
