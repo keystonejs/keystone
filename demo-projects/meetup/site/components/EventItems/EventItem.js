@@ -2,7 +2,8 @@
 import { jsx } from '@emotion/core';
 
 import { Link } from '../../../routes';
-import { Html } from '../../primitives';
+import Rsvp from '../../components/Rsvp';
+import { Html, Button, Loading } from '../../primitives';
 import { H2 } from '../../primitives/Typography';
 import { colors, gridSize, shadows } from '../../theme';
 import { isInFuture, formatPastDate, formatFutureDate, getBreakpoints } from '../../helpers';
@@ -49,7 +50,7 @@ const EventItem = ({ id, name, startTime, description, talks, themeColor, ...pro
             left: 0,
             background: 'linear-gradient( rgba(255, 255, 255, 0), 3%, white, 80%, white)',
             width: '100%',
-            height: gridSize * 16,
+            height: gridSize * (isInFuture(startTime) ? 24 : 16),
           }}
         />
         <Link route="event" params={{ id }}>
@@ -75,18 +76,6 @@ const EventItem = ({ id, name, startTime, description, talks, themeColor, ...pro
             >
               <Html markup={description} />
             </div>
-            {/*<Rsvp id={id} />
-      <h2>Talks</h2>
-      {talks.map(talk => (
-        <div key={talk.id}>
-        <h3>{talk.name}</h3>
-        <h3>Speakers</h3>
-        {talk.speakers.map(speaker => (
-          <p key={speaker.id}>{speaker.name}</p>
-          ))}
-          </div>
-        ))}*/}
-
             <span
               css={{
                 color: 'inherit',
@@ -99,6 +88,35 @@ const EventItem = ({ id, name, startTime, description, talks, themeColor, ...pro
             </span>
           </a>
         </Link>
+        <Rsvp eventId={id}>
+          {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
+            if (loading) return <Loading css={{ position: 'relative', zIndex: 2 }} />;
+            if (error) return null;
+            return (
+              <div css={{ position: 'relative', zIndex: 20, margin: '1rem 0 0 0' }}>
+                <span css={{ padding: '0 1rem' }}>Attending?</span>
+                <Button
+                  disabled={isGoing || !canRsvp}
+                  background={isGoing ? themeColor : colors.greyLight}
+                  foreground={isGoing ? 'white' : colors.greyDark}
+                  css={{ marginLeft: '.5rem', padding: '.6rem 1.33rem' }}
+                  onClick={() => rsvpToEvent('yes')}
+                >
+                  yes
+                </Button>
+                <Button
+                  disabled={!isGoing}
+                  background={!isGoing ? themeColor : colors.greyLight}
+                  foreground={!isGoing ? 'white' : colors.greyDark}
+                  css={{ marginLeft: '.5rem', padding: '.6rem 1.33rem' }}
+                  onClick={() => rsvpToEvent('no')}
+                >
+                  no
+                </Button>
+              </div>
+            );
+          }}
+        </Rsvp>
       </div>
     </li>
   );

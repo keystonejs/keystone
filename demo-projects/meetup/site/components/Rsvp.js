@@ -23,7 +23,7 @@ const Rsvp = ({ eventId, children }) => {
   const { isAuthenticated, user } = useAuth();
 
   if (!isAuthenticated) {
-    return <p>please login to RSVP</p>;
+    return children({ error: 'Please login to RSVP' });
   }
 
   return (
