@@ -20,7 +20,6 @@ import { H2, H3 } from '../primitives/Typography';
 import { colors, gridSize } from '../theme';
 import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
 import { Component } from 'react';
-import { all } from 'any-promise';
 
 const { publicRuntimeConfig } = getConfig();
 /**
