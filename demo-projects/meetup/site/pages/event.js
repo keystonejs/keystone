@@ -57,8 +57,8 @@ export default class Event extends Component {
                 superTitle={prettyDate}
                 title={name}
               >
-                <Html markup={description} />
                 <p css={{ fontWeight: 100 }}>{locationAddress}</p>
+                <Html markup={description} />
               </Hero>
 
               <Container css={{ marginTop: gridSize * 3 }}>
