@@ -1,5 +1,5 @@
 const MEETUP = {
-  name: 'KeystoneJS Meetup',
+  name: 'KeystoneJS',
   twitterHandle: '@keystonejs',
   themeColor: '#2377E7',
   logo: {
@@ -7,8 +7,8 @@ const MEETUP = {
     width: 96,
     height: 96,
   },
-  intro: `
-Welcome to the KeystoneJS Meetup!  Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean dignissim pellentesque felis.
+  homeIntro: `
+<p>Welcome to the KeystoneJS Meetup!  Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean dignissim pellentesque felis.</p>
 `,
   colorPalette: [],
   codeOfConduct: `

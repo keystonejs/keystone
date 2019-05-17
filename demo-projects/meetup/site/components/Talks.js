@@ -8,26 +8,40 @@ import { mq } from '../helpers/media';
 const Talks = ({ talks }) => {
   return (
     <Wrapper>
-      {talks.map(talk => (
-        <Talk key={talk.id}>
-          <AvatarStack users={talk.speakers} />
-          <Content>
-            <H5 as="h3">
-              {talk.isLightningTalk && '⚡️ '}
-              {talk.name}
-            </H5>
-            {talks.description ? <Html markup={talk.description} /> : null}
-            <Byline speakers={talk.speakers} />
-          </Content>
-        </Talk>
-      ))}
+      {talks.map(talk => {
+        const hasSpeakers = Boolean(talk.speakers && talk.speakers.length);
+
+        return (
+          <Talk key={talk.id}>
+            {hasSpeakers && (
+              <AvatarStack
+                users={talk.speakers}
+                size="large"
+                css={{
+                  marginRight: CONTENT_GUTTER,
+                }}
+              />
+            )}
+            <Content>
+              {talk.isLightningTalk && <Bolt />}
+              <H5 as="h3">{talk.name}</H5>
+              {talks.description ? <Html markup={talk.description} /> : null}
+              {hasSpeakers && <Byline speakers={talk.speakers} />}
+            </Content>
+          </Talk>
+        );
+      })}
     </Wrapper>
   );
 };
 
 export default Talks;
 
-// styled components
+// ==============================
+// Styled Components
+// ==============================
+
+const CONTENT_GUTTER = 16;
 
 const Wrapper = props => (
   <div
@@ -40,7 +54,6 @@ const Wrapper = props => (
     {...props}
   />
 );
-
 const Talk = props => (
   <div
     css={{
@@ -49,6 +62,7 @@ const Talk = props => (
       marginTop: '1em',
       marginLeft: '1em',
       marginRight: '1em',
+      minWidth: 300,
     }}
     {...props}
   />
@@ -56,12 +70,36 @@ const Talk = props => (
 const Content = props => (
   <div
     css={{
-      marginLeft: '1em',
       flex: 1,
+      position: 'relative',
     }}
     {...props}
   />
 );
+const Bolt = props => {
+  const size = 32;
+  const offset = size / 4;
+
+  return (
+    <div
+      css={{
+        alignItems: 'center',
+        backgroundColor: 'white',
+        borderRadius: size,
+        display: 'flex',
+        height: size,
+        justifyContent: 'center',
+        left: -(CONTENT_GUTTER + size - offset),
+        position: 'absolute',
+        top: -offset,
+        width: size,
+      }}
+      {...props}
+    >
+      ⚡️
+    </div>
+  );
+};
 const Byline = ({ speakers, ...props }) => (
   <div {...props}>
     by{' '}

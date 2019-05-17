@@ -5,7 +5,7 @@ import Head from 'next/head';
 import getConfig from 'next/config';
 import { Query } from 'react-apollo';
 
-import { Container, H2 } from '../primitives';
+import { Container, Loading, H2 } from '../primitives';
 import EventItems from '../components/EventItems';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -28,11 +28,15 @@ export default function Events() {
         <H2>Events</H2>
         <Query query={GET_ALL_EVENTS}>
           {({ data, loading, error }) => {
-            if (loading) return <p>loading...</p>;
-            if (error) {
-              console.log(error);
-              return <p>Error!</p>;
+            if (loading) {
+              return <Loading isCentered size="xlarge" />;
             }
+
+            if (error) {
+              console.error('Failed to load events', error);
+              return <p>Something went wrong. Please try again.</p>;
+            }
+
             const { allEvents } = data;
             return <EventItems events={allEvents} />;
           }}

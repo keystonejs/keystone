@@ -4,32 +4,19 @@ import PropTypes from 'prop-types';
 import { jsx } from '@emotion/core';
 import { fontSizes } from '../../theme';
 
-const baseStyles = { margin: 0, fontWeight: 600 };
-const sizeMap = [
-  {
-    fontSize: fontSizes.xxxl,
-    lineHeight: 1,
-  },
-  {
-    fontSize: fontSizes.xxl,
-    lineHeight: 1.15,
-  },
-  {
-    fontSize: fontSizes.xl,
-    lineHeight: 1.15,
-  },
-  {
-    fontSize: fontSizes.lg,
-  },
-  {
-    fontSize: fontSizes.md,
-  },
-];
+const SIZE_MAP = [fontSizes.xxxl, fontSizes.xxl, fontSizes.xl, fontSizes.lg, fontSizes.md];
+const baseStyles = {
+  fontWeight: 600,
+  lineHeight: 1.15,
+  margin: 0,
+};
 
-export const Headline = ({ as: Tag, size, ...props }) => {
-  const fontStyle = sizeMap[size - 1] ? sizeMap[size - 1] : sizeMap[1];
+export const Headline = ({ as: Tag, hasSeparator, size, ...props }) => {
+  const fontSize = SIZE_MAP[size - 1] ? SIZE_MAP[size - 1] : SIZE_MAP[1];
+  const fontStyle = { fontSize };
+  const separatorStyles = hasSeparator ? getSeparatorStyles(fontSize / 2) : null;
 
-  return <Tag css={[baseStyles, fontStyle]} {...props} />;
+  return <Tag css={[baseStyles, fontStyle, separatorStyles]} {...props} />;
 };
 
 export const H1 = props => <Headline as="h1" size={1} {...props} />;
@@ -40,8 +27,20 @@ export const H5 = props => <Headline as="h5" size={5} {...props} />;
 
 Headline.propTypes = {
   as: PropTypes.string.isRequired,
+  hasSeparator: PropTypes.bool,
   size: PropTypes.number.isRequired,
 };
 Headline.defaultProps = {
   as: 'h2',
 };
+
+const getSeparatorStyles = gutter => ({
+  '&:after': {
+    backgroundColor: 'currentColor',
+    content: '" "',
+    display: 'block',
+    height: 6,
+    marginTop: gutter,
+    width: 50,
+  },
+});
