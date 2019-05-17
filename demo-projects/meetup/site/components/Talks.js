@@ -12,17 +12,25 @@ const Talks = ({ talks }) => {
         const hasSpeakers = Boolean(talk.speakers && talk.speakers.length);
 
         return (
-        <Talk key={talk.id}>
-          {hasSpeakers && <AvatarStack users={talk.speakers} size="large" css={{
-          marginRight: CONTENT_GUTTER, }} />}
-          <Content>
-            {talk.isLightningTalk && <Bolt />}
-            <H5 as="h3">{talk.name}</H5>
-            {talks.description ? <Html markup={talk.description} /> : null}
-            {hasSpeakers && <Byline speakers={talk.speakers} />}
-          </Content>
-        </Talk>
-      );})}
+          <Talk key={talk.id}>
+            {hasSpeakers && (
+              <AvatarStack
+                users={talk.speakers}
+                size="large"
+                css={{
+                  marginRight: CONTENT_GUTTER,
+                }}
+              />
+            )}
+            <Content>
+              {talk.isLightningTalk && <Bolt />}
+              <H5 as="h3">{talk.name}</H5>
+              {talks.description ? <Html markup={talk.description} /> : null}
+              {hasSpeakers && <Byline speakers={talk.speakers} />}
+            </Content>
+          </Talk>
+        );
+      })}
     </Wrapper>
   );
 };
@@ -32,7 +40,6 @@ export default Talks;
 // ==============================
 // Styled Components
 // ==============================
-
 
 const CONTENT_GUTTER = 16;
 
@@ -88,7 +95,9 @@ const Bolt = props => {
         width: size,
       }}
       {...props}
-    >⚡️</div>
+    >
+      ⚡️
+    </div>
   );
 };
 const Byline = ({ speakers, ...props }) => (

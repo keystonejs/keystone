@@ -22,7 +22,6 @@ import {
   Html,
   Loading,
   Section,
-
   MicrophoneIcon,
   PinIcon,
   UserIcon,
@@ -56,25 +55,40 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
   return (
     <Container css={{ margin: '-7rem auto 0', position: 'relative' }}>
       <div css={{ boxShadow: '0px 4px 94px rgba(0, 0, 0, 0.15)' }}>
-        <div css={{ backgroundColor: themeColor, color: 'white', display: 'block', padding: '2rem' }}>
+        <div
+          css={{ backgroundColor: themeColor, color: 'white', display: 'block', padding: '2rem' }}
+        >
           <div css={{ display: 'flex' }}>
-            <div css={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <div>
-              <p
-                css={{
-                  textTransform: 'uppercase',
-                  marginTop: 0,
-                  fontWeight: 500,
-                  marginBottom: gridSize,
-                }}
-              >
-                {prettyDate}
-              </p>
-              <Link route="event" params={{ id }} passHref>
-                <a css={{ color: 'inherit', textDecoration: 'none', ':hover': { textDecoration: 'underline' } }}>
-                  <H3>{name}</H3>
-                </a>
-              </Link>
+            <div
+              css={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div>
+                <p
+                  css={{
+                    textTransform: 'uppercase',
+                    marginTop: 0,
+                    fontWeight: 500,
+                    marginBottom: gridSize,
+                  }}
+                >
+                  {prettyDate}
+                </p>
+                <Link route="event" params={{ id }} passHref>
+                  <a
+                    css={{
+                      color: 'inherit',
+                      textDecoration: 'none',
+                      ':hover': { textDecoration: 'underline' },
+                    }}
+                  >
+                    <H3>{name}</H3>
+                  </a>
+                </Link>
               </div>
               <p css={{ alignItems: 'center', display: 'flex', fontWeight: 300 }}>
                 <PinIcon css={{ marginRight: '0.5em' }} />
@@ -90,8 +104,9 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                 p: {
                   '&:first-of-type': { marginTop: 0 },
                   '&:last-of-type': { marginBottom: 0 },
-                }
-              }} />
+                },
+              }}
+            />
           </div>
         </div>
         <div css={{ padding: '1.5rem', background: 'white' }}>
@@ -129,13 +144,17 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                 }}
               </Rsvp>
             </div>
-            <div css={{
-              alignItems: 'center',
-              display: 'flex',
-              flex: 1,
-              justifyContent: 'flex-end',
-            }}>
-              <div css={{ alignItems: 'center', display: 'flex', fontWeight: 300, padding: '0 1rem' }}>
+            <div
+              css={{
+                alignItems: 'center',
+                display: 'flex',
+                flex: 1,
+                justifyContent: 'flex-end',
+              }}
+            >
+              <div
+                css={{ alignItems: 'center', display: 'flex', fontWeight: 300, padding: '0 1rem' }}
+              >
                 <MicrophoneIcon color="#ccc" css={{ marginRight: '0.5em' }} />
                 {pluralLabel(talks.length, 'talk', 'talks')}
               </div>
@@ -152,9 +171,16 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
 
                   return (
                     <>
-                      <div css={{ alignItems: 'center', display: 'flex', fontWeight: 300, padding: '0 1rem' }}>
+                      <div
+                        css={{
+                          alignItems: 'center',
+                          display: 'flex',
+                          fontWeight: 300,
+                          padding: '0 1rem',
+                        }}
+                      >
                         <UserIcon color="#ccc" css={{ marginRight: '0.5em' }} />
-                          {attending} attending
+                        {attending} attending
                       </div>
                       <AvatarStack
                         users={allRsvps.map(rsvp => rsvp.user)}

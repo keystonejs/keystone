@@ -5,7 +5,11 @@ import { jsx } from '@emotion/core';
 
 function getInitials(str) {
   if (str == null) return '';
-  return str.split(' ').map(s => s.slice(0, 1)).join('').toUpperCase();
+  return str
+    .split(' ')
+    .map(s => s.slice(0, 1))
+    .join('')
+    .toUpperCase();
 }
 
 const SIZE_MAP = {

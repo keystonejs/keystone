@@ -61,14 +61,16 @@ const EventItem = ({
         }}
       >
         <Link route="event" params={{ id, hex }} passHref>
-          <a css={{
-            color: 'inherit',
-            textDecoration: 'none',
+          <a
+            css={{
+              color: 'inherit',
+              textDecoration: 'none',
 
-            ':hover h3': {
-              textDecoration: 'underline'
-            }
-          }}>
+              ':hover h3': {
+                textDecoration: 'underline',
+              },
+            }}
+          >
             <Mask />
             <div css={{ maxHeight: 320, overflow: 'hidden' }}>
               <span css={{ textTransform: 'uppercase', fontWeight: 600 }}>{prettyDate}</span>
@@ -78,11 +80,16 @@ const EventItem = ({
               >
                 {name}
               </H3>
-              <Html markup={description} css={{ a: {
-                color: 'inherit',
-                pointerEvents: 'none',
-                textDecoration: 'none'
-              } }} />
+              <Html
+                markup={description}
+                css={{
+                  a: {
+                    color: 'inherit',
+                    pointerEvents: 'none',
+                    textDecoration: 'none',
+                  },
+                }}
+              />
             </div>
           </a>
         </Link>
@@ -133,16 +140,18 @@ const EventItem = ({
 // Styled Components
 // ------------------------------
 
-const Mask=  props => (<div
-  css={{
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    background: 'linear-gradient(rgba(255, 255, 255, 0), white 80%)',
-    width: '100%',
-    height: 100,
-  }}
-  {...props}
-/>);
+const Mask = props => (
+  <div
+    css={{
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      background: 'linear-gradient(rgba(255, 255, 255, 0), white 80%)',
+      width: '100%',
+      height: 100,
+    }}
+    {...props}
+  />
+);
 
 export default EventItem;

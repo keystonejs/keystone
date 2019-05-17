@@ -4,13 +4,7 @@ import PropTypes from 'prop-types';
 import { jsx } from '@emotion/core';
 import { fontSizes } from '../../theme';
 
-const SIZE_MAP = [
-  fontSizes.xxxl,
-  fontSizes.xxl,
-  fontSizes.xl,
-  fontSizes.lg,
-  fontSizes.md,
-];
+const SIZE_MAP = [fontSizes.xxxl, fontSizes.xxl, fontSizes.xl, fontSizes.lg, fontSizes.md];
 const baseStyles = {
   fontWeight: 600,
   lineHeight: 1.15,
@@ -48,5 +42,5 @@ const getSeparatorStyles = gutter => ({
     height: 6,
     marginTop: gutter,
     width: 50,
-  }
+  },
 });

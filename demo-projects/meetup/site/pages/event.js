@@ -26,8 +26,6 @@ export default class Event extends Component {
     const { meetup } = publicRuntimeConfig;
     const { id, loadingColor } = this.props;
 
-    console.log('loadingColor',loadingColor);
-
     return (
       <Query query={GET_EVENT_DETAILS} variables={{ event: id }}>
         {({ data, loading, error }) => {

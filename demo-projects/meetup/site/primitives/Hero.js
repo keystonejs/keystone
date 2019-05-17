@@ -76,8 +76,8 @@ const Content = ({ horizontalMargin, ...props }) => (
       maxWidth: 720,
 
       a: {
-        color: 'inherit'
-      }
+        color: 'inherit',
+      },
     }}
     {...props}
   />

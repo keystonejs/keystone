@@ -16,7 +16,7 @@ export default function StylesBase() {
           text-decoration-skip: ink;
           text-rendering: optimizeLegibility;
           -ms-overflow-style: -ms-autohiding-scrollbar;
-          -moz-font-feature-settings: "liga on";
+          -moz-font-feature-settings: 'liga on';
           -moz-osx-font-smoothing: grayscale;
           -webkit-font-smoothing: antialiased;
         }

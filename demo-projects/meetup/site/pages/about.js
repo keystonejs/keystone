@@ -25,8 +25,14 @@ export default function About() {
       </Head>
       <Navbar background="white" foreground={colors.greyDark} />
       <Container css={{ marginTop: gridSize * 3 }}>
-        <H1 hasSeparator css={{ marginBottom: '0.66em' }}>About</H1>
-        {meetup.aboutIntro && <Content><Html markup={meetup.aboutIntro} /></Content>}
+        <H1 hasSeparator css={{ marginBottom: '0.66em' }}>
+          About
+        </H1>
+        {meetup.aboutIntro && (
+          <Content>
+            <Html markup={meetup.aboutIntro} />
+          </Content>
+        )}
         <Query query={GET_ORGANISERS}>
           {({ data, loading, error }) => {
             if (loading) return <Loading />;
@@ -41,7 +47,13 @@ export default function About() {
             const allOrganisers = data.allOrganisers.filter(o => o.user).map(o => o.user);
 
             return (
-              <OrganiserList title={<H3 size={5} css={{ marginBottom: '0.66em' }}>Organisers</H3>}>
+              <OrganiserList
+                title={
+                  <H3 size={5} css={{ marginBottom: '0.66em' }}>
+                    Organisers
+                  </H3>
+                }
+              >
                 {allOrganisers.map(organiser => {
                   return <Organiser key={organiser.id} organiser={organiser} />;
                 })}
@@ -52,7 +64,9 @@ export default function About() {
 
         {meetup.codeOfConduct ? (
           <Content>
-            <H2 hasSeparator css={{ marginBottom: '0.66em', marginTop: '1.22em' }}>Code of Conduct</H2>
+            <H2 hasSeparator css={{ marginBottom: '0.66em', marginTop: '1.22em' }}>
+              Code of Conduct
+            </H2>
             <Html markup={meetup.codeOfConduct} />
           </Content>
         ) : null}
@@ -65,10 +79,12 @@ export default function About() {
 const twitterLink = handle => `https://twitter.com/${handle.slice(1)}`;
 
 const OrganiserList = ({ title, ...props }) => (
-  <div css={mq({
-    backgroundColor: colors.greyLight,
-    padding: '1.5rem',
-  })}>
+  <div
+    css={mq({
+      backgroundColor: colors.greyLight,
+      padding: '1.5rem',
+    })}
+  >
     {title}
     <ul
       css={mq({
@@ -93,7 +109,7 @@ const Organiser = ({ organiser }) => (
 
       ':not(:first-of-type)': {
         marginTop: ['1em', 0],
-      }
+      },
     })}
   >
     <Avatar name={organiser.name} src={organiser.image && organiser.image.small} />
