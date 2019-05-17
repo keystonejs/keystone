@@ -77,7 +77,7 @@ module.exports = class AdminUI {
 
     const builtAdminRoot = path.join(distDir, 'admin');
 
-    const adminMeta = this.getAdminUIMeta();
+    const adminMeta = this.getAdminUIMeta(this.keystone);
 
     const compilers = [];
 
@@ -118,7 +118,7 @@ module.exports = class AdminUI {
     );
   }
 
-  getAdminUIMeta() {
+  getAdminUIMeta(keystone) {
     const { adminPath } = this;
 
     return {
@@ -126,7 +126,7 @@ module.exports = class AdminUI {
       apiPath: this.apiPath,
       graphiqlPath: this.graphiqlPath,
       ...this.getAdminMeta(),
-      ...this.keystone.getAdminMeta(),
+      ...keystone.getAdminMeta(),
     };
   }
 
@@ -217,7 +217,7 @@ module.exports = class AdminUI {
 
     // add the webpack dev middleware
 
-    let adminMeta = this.getAdminUIMeta();
+    let adminMeta = this.getAdminUIMeta(this.keystone);
 
     const webpackMiddlewareConfig = {
       publicPath: adminPath,
