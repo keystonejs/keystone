@@ -324,7 +324,7 @@ export default class Home extends Component {
                         }}
                       >
                         View all{' '}
-                        <span css={{ textDecoration: 'underline', fontWeight: 600 }}>
+                        <span css={{ ':hover': { textDecoration: 'underline' }, fontWeight: 600 }}>
                           our events
                         </span>
                       </a>

@@ -117,6 +117,7 @@ const EventItem = ({
                     position: 'relative',
                     zIndex: 20,
                     margin: '1rem 0 0 0',
+                    paddingBottom: '1rem',
                     display: 'flex',
                     alignItems: 'center',
                   }}

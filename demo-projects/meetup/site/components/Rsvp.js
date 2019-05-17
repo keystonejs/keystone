@@ -43,18 +43,12 @@ const Rsvp = ({ eventId, children }) => {
         return (
           <Mutation
             mutation={userRsvps[0] ? UPDATE_RSVP : ADD_RSVP}
-            refetchQueries={({ data }) => {
-              if (!data.updateRsvp) {
-                return [
-                  {
-                    query: GET_RSVPS,
-                    variables: { event: eventId, user: user.id },
-                  },
-                ];
-              } else {
-                return [];
-              }
-            }}
+            refetchQueries={() => [
+              {
+                query: GET_RSVPS,
+                variables: { event: eventId, user: user.id },
+              },
+            ]}
           >
             {(updateRsvp, { error: mutationError }) => {
               if (mutationError) {
