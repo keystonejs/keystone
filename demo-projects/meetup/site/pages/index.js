@@ -56,44 +56,44 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
   return (
     <Container css={{ margin: '-7rem auto 0', position: 'relative' }}>
       <div css={{ boxShadow: '0px 4px 94px rgba(0, 0, 0, 0.15)' }}>
-        <div css={{ backgroundColor: themeColor, color: 'white', padding: '2rem' }}>
-          <div css={{ display: 'flex' }}>
-            <div css={{ flex: 1 }}>
-              <p
+          <div css={{ backgroundColor: themeColor, color: 'white', display: 'block', padding: '2rem' }}>
+            <div css={{ display: 'flex' }}>
+              <div css={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <p
+                  css={{
+                    textTransform: 'uppercase',
+                    marginTop: 0,
+                    fontWeight: 500,
+                    marginBottom: gridSize,
+                  }}
+                >
+                  {prettyDate}
+                </p>
+                <Link route="event" params={{ id }} passHref>
+                  <a css={{ color: 'inherit', textDecoration: 'none', ':hover': { textDecoration: 'underline' } }}>
+                    <H3>{name}</H3>
+                  </a>
+                </Link>
+                </div>
+                <p css={{ alignItems: 'center', display: 'flex', fontWeight: 300 }}>
+                  <PinIcon css={{ marginRight: '0.5em' }} />
+                  {locationAddress}
+                </p>
+              </div>
+              <Html
+                markup={description}
                 css={{
-                  textTransform: 'uppercase',
-                  marginTop: 0,
-                  fontWeight: 500,
-                  marginBottom: gridSize,
-                }}
-              >
-                {prettyDate}
-              </p>
-              <H3>{name}</H3>
-              <p css={{ alignItems: 'center', display: 'flex', fontWeight: 300 }}>
-                <PinIcon css={{ marginRight: '0.5em' }} />
-                {locationAddress}
-              </p>
-            </div>
-            <div css={{ flex: 1, padding: '0 2rem' }}>
-              <Html markup={description} />
-              <Link route="event" params={{ id }}>
-                <a>
-                  <span
-                    css={{
-                      color: 'white',
-                      fontWeight: 600,
-                      textDecoration: 'underline',
-                      position: 'relative',
-                    }}
-                  >
-                    Find out more
-                  </span>
-                </a>
-              </Link>
+                  flex: 1,
+                  padding: '0 2rem',
+
+                  p: {
+                    '&:first-of-type': { marginTop: 0 },
+                    '&:last-of-type': { marginBottom: 0 },
+                  }
+                }} />
             </div>
           </div>
-        </div>
         <div css={{ padding: '1.5rem', background: 'white' }}>
           <div css={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div
