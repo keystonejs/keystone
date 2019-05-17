@@ -24,7 +24,7 @@ const Talks = ({ talks }) => {
                 />
               )}
               {talk.isLightningTalk && <Bolt />}
-              <H5 as="h3" css={{ marginLeft: talk.speakers.length ? '1rem' : '0' }}>
+              <H5 as="h3" css={{ marginLeft: hasSpeakers ? '1rem' : '0' }}>
                 {talk.name}
               </H5>
             </div>
