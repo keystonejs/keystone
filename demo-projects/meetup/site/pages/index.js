@@ -269,7 +269,9 @@ export default class Home extends Component {
                 <meta name="description" content={meetup.intro} />
               </Head>
               <Navbar foreground="white" background={colors.greyDark} />
-              <Hero title={meetup.name}>{meetup.intro}</Hero>
+              <Hero title={meetup.name}>
+                <Html markup={meetup.homeIntro} />
+              </Hero>
               <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />
               <Container css={{ marginTop: '3rem' }}>
                 {featuredEvent && featuredEvent.talks ? (
