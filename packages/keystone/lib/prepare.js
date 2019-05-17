@@ -1,4 +1,4 @@
-const GraphQLServer = require('@keystone-alpha/server-graphql');
+const GraphQLApp = require('@keystone-alpha/app-graphql');
 const flattenDeep = require('lodash.flattendeep');
 const path = require('path');
 const { DEFAULT_PORT, DEFAULT_ENTRY, DEFAULT_DIST_DIR } = require('../constants');
@@ -16,11 +16,11 @@ module.exports = async ({
     throw new Error(`No 'keystone' export found in ${entryFile}`);
   }
 
-  const servers = appEntry.servers || [];
+  const apps = appEntry.apps || [];
 
-  // Inject graphQL server if the user hasn't specified it
-  if (!servers.find(server => server.constructor.name === GraphQLServer.name)) {
-    servers.unshift(new GraphQLServer());
+  // Inject graphQL app if the user hasn't specified it
+  if (!apps.find(app => app.constructor.name === GraphQLApp.name)) {
+    apps.unshift(new GraphQLApp());
   }
 
   const middlewares = flattenDeep(
@@ -30,11 +30,11 @@ module.exports = async ({
         // We do this first to avoid it conflicting with any catch-all routes the
         // user may have specified
         ...(appEntry.keystone.registeredTypes || []),
-        ...servers,
+        ...apps,
       ]
         .filter(({ prepareMiddleware } = {}) => !!prepareMiddleware)
-        .map(server =>
-          server.prepareMiddleware({
+        .map(app =>
+          app.prepareMiddleware({
             keystone: appEntry.keystone,
             port,
             dev,

@@ -1,9 +1,9 @@
 ---
 section: packages
-title: Server
+title: GraphQL App
 ---
 
-# Server
+# GraphQL App
 
 ```DOCS_TODO
 TODO

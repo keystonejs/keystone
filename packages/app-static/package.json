@@ -1,6 +1,6 @@
 {
-  "name": "@keystone-alpha/server-static",
-  "description": "KeystoneJS Static File Server.",
+  "name": "@keystone-alpha/app-static",
+  "description": "KeystoneJS Static File App.",
   "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",

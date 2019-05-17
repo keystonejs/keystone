@@ -1,6 +1,6 @@
-const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { Text, Password, Select } = require('@keystone-alpha/fields');
+const AdminUI = require('@keystone-alpha/app-admin');
 const { objMerge } = require('@keystone-alpha/utils');
 const {
   getStaticListName,
@@ -145,5 +145,5 @@ const admin = new AdminUI(keystone, {
 
 module.exports = {
   keystone,
-  servers: [admin],
+  apps: [admin],
 };

@@ -29,9 +29,9 @@ list used for authentication in `index.js`:
 Here, we will setup a `PasswordAuthStrategy` instance:
 
 ```javascript
-const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { Text, Password } = require('@keystone-alpha/fields');
 const { PasswordAuthStrategy } = require('@keystone-alpha/keystone');
+const AdminUI = require('@keystone-alpha/app-admin');
 
 const keystone = keystone.createList('User', {
   // ...

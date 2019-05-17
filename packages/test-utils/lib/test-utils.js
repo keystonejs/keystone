@@ -2,7 +2,7 @@ const MongoDBMemoryServer = require('mongodb-memory-server').default;
 const pFinally = require('p-finally');
 const url = require('url');
 const { Keystone } = require('@keystone-alpha/keystone');
-const GraphQLServer = require('@keystone-alpha/server-graphql');
+const GraphQLApp = require('@keystone-alpha/app-graphql');
 const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
@@ -19,7 +19,7 @@ function setupServer({ name, adapterName, createLists = () => {} }) {
   createLists(keystone);
 
   // Has the side-effect of registering the schema with the keystone object
-  new GraphQLServer({ schemaName: SCHEMA_NAME }).prepareMiddleware({ keystone, dev: true });
+  new GraphQLApp({ schemaName: SCHEMA_NAME }).prepareMiddleware({ keystone, dev: true });
 
   return { keystone };
 }

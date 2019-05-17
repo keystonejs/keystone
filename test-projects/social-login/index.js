@@ -1,4 +1,3 @@
-const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const {
   File,
@@ -10,7 +9,8 @@ const {
   CloudinaryImage,
 } = require('@keystone-alpha/fields');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
-const StaticServer = require('@keystone-alpha/server-static');
+const AdminUI = require('@keystone-alpha/app-admin');
+const StaticApp = require('@keystone-alpha/app-static');
 
 const { staticRoute, staticPath, cloudinary } = require('./config');
 
@@ -156,5 +156,5 @@ const admin = new AdminUI(keystone, { authStrategy: DISABLE_AUTH ? undefined : a
 
 module.exports = {
   keystone,
-  servers: [admin, new StaticServer({ route: staticRoute, path: staticPath })],
+  apps: [admin, new StaticApp({ route: staticRoute, path: staticPath })],
 };

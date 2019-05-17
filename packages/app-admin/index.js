@@ -10,9 +10,9 @@ const path = require('path');
 const fs = require('fs');
 const fallback = require('express-history-api-fallback');
 
-const pkgInfo = require('../package.json');
+const pkgInfo = require('./package.json');
 
-const getWebpackConfig = require('./getWebpackConfig');
+const getWebpackConfig = require('./server/getWebpackConfig');
 
 module.exports = class AdminUI {
   constructor(

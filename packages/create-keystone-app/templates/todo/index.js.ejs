@@ -1,8 +1,8 @@
 const { Keystone } = require('@keystone-alpha/keystone');
-const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text } = require('@keystone-alpha/fields');
-const StaticServer = require('@keystone-alpha/server-static');
+const AdminUI = require('@keystone-alpha/app-admin');
+const StaticApp = require('@keystone-alpha/app-static');
 
 // The core `keystone` instance is always required.
 // Here you can setup the database adapter, set the name used throughout the
@@ -40,11 +40,11 @@ module.exports = {
 
   // A running instance of KeystoneJS is comprised of a series of server
   // middlewares.
-  // Using the `servers` export, we can inject our own middlewares into the
+  // Using the `apps` export, we can inject our own middlewares into the
   // default express app.
-  servers: [
+  apps: [
     // Serve our website from the root route.
-    new StaticServer({ route: '/', path: 'public' }),
+    new StaticApp({ route: '/', path: 'public' }),
 
     // Optionally export the 'admin' instance.
     // If no admin is exported, you will still have a fully functioning GraphQL

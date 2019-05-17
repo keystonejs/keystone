@@ -21,7 +21,7 @@ module.exports = {
   exec: async (args, { exeName, _cwd = process.cwd() } = {}) => {
     process.env.NODE_ENV = 'production';
     let entryFile = await getEntryFileFullPath(args, { exeName, _cwd });
-    let { servers, distDir = DEFAULT_DIST_DIR } = require(entryFile);
+    let { apps, distDir = DEFAULT_DIST_DIR } = require(entryFile);
 
     if (args['--out']) {
       distDir = args['--out'];
@@ -29,10 +29,10 @@ module.exports = {
     let resolvedDistDir = path.resolve(_cwd, distDir);
     await fs.remove(resolvedDistDir);
 
-    if (servers) {
+    if (apps) {
       await Promise.all(
-        servers.map(server => {
-          return server.build({
+        apps.map(app => {
+          return app.build({
             apiPath: '/admin/api',
             distDir: resolvedDistDir,
             graphiqlPath: '/admin/graphiql',

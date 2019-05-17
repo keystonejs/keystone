@@ -1,8 +1,9 @@
-const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { Text, Password, Relationship } = require('@keystone-alpha/fields');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const StaticServer = require('@keystone-alpha/server-static');
+const AdminUI = require('@keystone-alpha/app-admin');
+const StaticApp = require('@keystone-alpha/app-static');
+
 const { staticRoute, staticPath } = require('./config');
 
 const keystone = new Keystone({
@@ -44,5 +45,5 @@ const admin = new AdminUI(keystone, {
 
 module.exports = {
   keystone,
-  servers: [admin, new StaticServer({ route: staticRoute, path: staticPath })],
+  apps: [admin, new StaticApp({ route: staticRoute, path: staticPath })],
 };

@@ -309,8 +309,8 @@
     "collectCoverageFrom": [
       "packages/**/*.js",
       "!packages/**/dist/**",
-      "!packages/admin-ui/client/**",
       "!packages/apollo-helpers/**",
+      "!packages/app-admin/client/**",
       "!packages/arch/**",
       "!packages/create-keystone-app/templates/**",
       "!packages/core/tests/default-entry/index.js",

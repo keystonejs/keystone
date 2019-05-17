@@ -12,7 +12,7 @@
     "@keystone-alpha/adapter-mongoose": "^2.0.0",
     "@keystone-alpha/fields": "^6.1.1",
     "@keystone-alpha/keystone": "^4.0.0",
-    "@keystone-alpha/server-graphql": "^5.0.0",
+    "@keystone-alpha/app-graphql": "^5.0.0",
     "@keystone-alpha/session": "^1.0.2",
     "@keystone-alpha/test-utils": "^2.0.2",
     "body-parser": "^1.18.2",

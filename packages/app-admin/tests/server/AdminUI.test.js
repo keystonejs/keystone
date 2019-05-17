@@ -18,7 +18,7 @@ jest.doMock('html-webpack-plugin', () => {
   return jest.fn(() => {});
 });
 
-const { AdminUI } = require('../../');
+const AdminUI = require('../../');
 
 const keystone = {
   getAdminSchema: jest.fn(),

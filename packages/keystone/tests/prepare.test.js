@@ -49,8 +49,8 @@ describe('prepare()', () => {
       test.todo('filters out empty middleware results');
       test.todo('flattens nested middlewares');
       test.todo('injects a default GraphQLServer if not found');
-      test.todo('handles servers:undefined and servers:[]');
-      test.todo('Handles servers without a `prepareMiddleware`');
+      test.todo('handles apps:undefined and apps:[]');
+      test.todo('Handles apps without a `prepareMiddleware`');
       test.todo('calls prepareMiddleware with correct params');
     });
 
@@ -59,14 +59,14 @@ describe('prepare()', () => {
         jest.restoreAllMocks();
         // See: https://twitter.com/JessTelford/status/1102801062489018369
         jest.resetModules();
-        jest.dontMock('@keystone-alpha/server-graphql');
+        jest.dontMock('@keystone-alpha/app-graphql');
       });
 
-      test('constructs a new server', async () => {
+      test('constructs a new graphql app', async () => {
         // Called internally within the .prepare() function, so we mock it out
         // here, and replace the implementation on a per-test basis
         jest.resetModules();
-        jest.doMock('@keystone-alpha/server-graphql');
+        jest.doMock('@keystone-alpha/app-graphql');
 
         const entryFileObj = tmp.fileSync({ postfix: '.js' });
         fs.writeFileSync(entryFileObj.fd, `module.exports = { keystone: { auth: {} } }`);
@@ -74,14 +74,14 @@ describe('prepare()', () => {
         const localPrepare = require('../lib/prepare');
         await localPrepare({ entryFile: entryFileObj.name });
 
-        expect(require('@keystone-alpha/server-graphql')).toHaveBeenCalled();
+        expect(require('@keystone-alpha/app-graphql')).toHaveBeenCalled();
       });
 
       test('returns the middlewares array', async () => {
         // Called internally within the .prepare() function, so we mock it out
         // here, and replace the implementation on a per-test basis
         jest.resetModules();
-        jest.doMock('@keystone-alpha/server-graphql');
+        jest.doMock('@keystone-alpha/app-graphql');
 
         const entryFileObj = tmp.fileSync({ postfix: '.js' });
         fs.writeFileSync(entryFileObj.fd, `module.exports = { keystone: { auth: {} } }`);
@@ -96,7 +96,7 @@ describe('prepare()', () => {
         // Called internally within the .prepare() function, so we mock it out
         // here, and replace the implementation on a per-test basis
         jest.resetModules();
-        jest.doMock('@keystone-alpha/server-graphql');
+        jest.doMock('@keystone-alpha/app-graphql');
 
         const entryFileObj = tmp.fileSync({ postfix: '.js' });
         fs.writeFileSync(entryFileObj.fd, `module.exports = { keystone: { auth: {}, hi: 'bye' } }`);

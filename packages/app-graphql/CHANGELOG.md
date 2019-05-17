@@ -1,4 +1,4 @@
-# @keystone-alpha/server-graphql
+# @keystone-alpha/app-graphql
 
 # @keystone-alpha/server
 

@@ -1,8 +1,8 @@
 const { Keystone } = require('@keystone-alpha/keystone');
-const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text } = require('@keystone-alpha/fields');
-const StaticServer = require('@keystone-alpha/server-static');
+const AdminUI = require('@keystone-alpha/app-admin');
+const StaticApp = require('@keystone-alpha/app-static');
 
 const keystone = new Keystone({
   name: 'Keystone To-Do List',
@@ -21,5 +21,5 @@ const admin = new AdminUI(keystone);
 
 module.exports = {
   keystone,
-  servers: [new StaticServer({ route: '/', path: 'public' }), admin],
+  apps: [new StaticApp({ route: '/', path: 'public' }), admin],
 };

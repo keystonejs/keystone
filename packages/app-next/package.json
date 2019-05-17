@@ -1,6 +1,6 @@
 {
-  "name": "@keystone-alpha/server-next",
-  "description": "KeystoneJS Next.js Server.",
+  "name": "@keystone-alpha/app-next",
+  "description": "KeystoneJS Next.js App.",
   "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",

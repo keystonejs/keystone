@@ -77,8 +77,7 @@ yarn start
 ### Setup
 
 ```
-npm install --save @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/admin-ui
-```
+npm install --save @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/app-admin`
 
 Add a script to your `package.json`:
 
@@ -96,9 +95,9 @@ Create a file `index.js`:
 
 ```javascript
 const { Keystone }        = require('@keystone-alpha/keystone');
-const { AdminUI }         = require('@keystone-alpha/admin-ui');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text }            = require('@keystone-alpha/fields');
+const AdminUI             = require('@keystone-alpha/app-admin');
 
 const keystone = new Keystone({
   name: 'Keystone To-Do List',
@@ -273,9 +272,9 @@ list used for authentication in `index.js`:
 
 ```javascript
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
-const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text, Password }  = require('@keystone-alpha/fields');
+const AdminUI = require('@keystone-alpha/app-admin');
 
 const keystone = new Keystone({
   name: 'Keystone With Auth',

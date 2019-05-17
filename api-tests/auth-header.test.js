@@ -1,7 +1,7 @@
 const supertest = require('supertest-light');
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { Text, Password } = require('@keystone-alpha/fields');
-const GraphQLServer = require('@keystone-alpha/server-graphql');
+const GraphQLApp = require('@keystone-alpha/app-graphql');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieSignature = require('cookie-signature');
@@ -51,13 +51,13 @@ async function setupKeystone() {
 
   const app = express();
 
-  const graphQLServer = new GraphQLServer(keystone, {
+  const graphQLApp = new GraphQLApp(keystone, {
     cookieSecret: COOKIE_SECRET,
     apiPath: '/admin/api',
     graphiqlPath: '/admin/graphiql',
   });
 
-  app.use(await graphQLServer.prepareMiddleware({ keystone, dev: true }));
+  app.use(await graphQLApp.prepareMiddleware({ keystone, dev: true }));
 
   app.post(
     '/signin',

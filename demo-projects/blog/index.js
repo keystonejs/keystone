@@ -1,9 +1,9 @@
 //imports for Keystone app core
-const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const NextServer = require('@keystone-alpha/server-next');
-const StaticServer = require('@keystone-alpha/server-static');
+const AdminUI = require('@keystone-alpha/app-admin');
+const NextApp = require('@keystone-alpha/app-next');
+const StaticApp = require('@keystone-alpha/app-static');
 
 const { staticRoute, staticPath } = require('./config');
 const { User, Post, PostCategory, Comment } = require('./schema');
@@ -50,9 +50,9 @@ const admin = new AdminUI(keystone, {
 
 module.exports = {
   keystone,
-  servers: [
+  apps: [
     admin,
-    new StaticServer({ route: staticRoute, path: staticPath }),
-    new NextServer({ dir: 'app' }),
+    new StaticApp({ route: staticRoute, path: staticPath }),
+    new NextApp({ dir: 'app' }),
   ],
 };

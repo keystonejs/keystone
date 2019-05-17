@@ -19,10 +19,10 @@
   },
   "dependencies": {
     "@keystone-alpha/adapter-mongoose": "^2.0.0",
-    "@keystone-alpha/admin-ui": "^3.2.1",
+    "@keystone-alpha/app-admin": "^3.2.1",
     "@keystone-alpha/fields": "^6.1.1",
     "@keystone-alpha/keystone": "^4.0.0",
-    "@keystone-alpha/server-static": "^0.0.0",
+    "@keystone-alpha/app-static": "^0.0.0",
     "@keystone-alpha/session": "^1.0.2",
     "body-parser": "^1.18.2",
     "express": "^4.16.3"

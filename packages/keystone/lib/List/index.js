@@ -233,7 +233,7 @@ module.exports = class List {
         if (!graphQLQuery) {
           return Promise.reject(
             new Error(
-              'No executable schema is available. Have you setup `@keystone-alpha/server-graphql`?'
+              'No executable schema is available. Have you setup `@keystone-alpha/app-graphql`?'
             )
           );
         }
