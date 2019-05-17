@@ -7,6 +7,7 @@ export const EVENT_DATA = gql`
     name
     startTime
     locationAddress
+    locationDescription
     description
     themeColor
     maxRsvps

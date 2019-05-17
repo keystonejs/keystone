@@ -18,6 +18,7 @@ const EventItem = ({
   talks,
   themeColor,
   locationAddress,
+  locationDescription,
   maxRsvps,
   ...props
 }) => {
@@ -84,6 +85,11 @@ const EventItem = ({
                 overflow: 'hidden',
               }}
             >
+              {locationDescription ? (
+                <p css={{ margin: 0, opacity: isInFuture(startTime) ? 1 : 0.5 }}>
+                  {locationDescription}
+                </p>
+              ) : null}
               <Html markup={description} />
             </div>
             <span
