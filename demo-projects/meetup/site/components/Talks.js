@@ -10,14 +10,16 @@ const Talks = ({ talks }) => {
     <Wrapper>
       {talks.map(talk => (
         <Talk key={talk.id}>
-          <AvatarStack users={talk.speakers} />
-          <Content>
-            <H5 as="h3">
+          <div css={{ display: 'flex', alignItems: 'center' }}>
+            {talk.speakers.length ? <AvatarStack users={talk.speakers} /> : null}
+            <H5 as="h3" css={{ marginLeft: talk.speakers.length ? '1rem' : '0' }}>
               {talk.isLightningTalk && '⚡️ '}
               {talk.name}
             </H5>
-            {talks.description ? <Html markup={talk.description} /> : null}
-            <Byline speakers={talk.speakers} />
+          </div>
+          <Content>
+            {talk.description ? <Html markup={talk.description} /> : null}
+            {talk.speakers.length ? <Byline speakers={talk.speakers} /> : null}
           </Content>
         </Talk>
       ))}
@@ -49,6 +51,7 @@ const Talk = props => (
       marginTop: '1em',
       marginLeft: '1em',
       marginRight: '1em',
+      flexDirection: 'column',
     }}
     {...props}
   />
@@ -56,7 +59,6 @@ const Talk = props => (
 const Content = props => (
   <div
     css={{
-      marginLeft: '1em',
       flex: 1,
     }}
     {...props}
