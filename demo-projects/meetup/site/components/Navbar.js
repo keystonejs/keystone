@@ -2,6 +2,7 @@
 
 import { useContext, createContext } from 'react';
 import getConfig from 'next/config';
+import contrast from 'get-contrast';
 import { jsx } from '@emotion/core';
 
 import { Link } from '../../routes';
@@ -92,27 +93,34 @@ const UserActions = ({ user }) => (
   </div>
 );
 
-const AnonActions = () => (
-  <div>
-    <Link route="signin" passHref>
-      <NavLink>Sign in</NavLink>
-    </Link>
-    <NavLink
-      href="/"
-      css={{
-        borderRadius: 40,
-        border: 'none',
-        fontWeight: 600,
-        padding: '.9rem 2rem',
-        backgroundColor: colors.yellow,
-        color: colors.greyDark,
-        lineHeight: 1,
-      }}
-    >
-      Join
-    </NavLink>
-  </div>
-);
+const AnonActions = () => {
+  const { meetup } = publicRuntimeConfig;
+  return (
+    <div>
+      <Link route="signin" passHref>
+        <NavLink>Sign in</NavLink>
+      </Link>
+      <NavLink
+        href="/"
+        css={{
+          borderRadius: 40,
+          border: 'none',
+          fontWeight: 600,
+          padding: '.9rem 2rem',
+          backgroundColor: meetup.themeColor,
+          color:
+            contrast.ratio(colors.greyDark, meetup.themeColor) >
+            contrast.ratio(colors.greyLight, meetup.themeColor)
+              ? colors.greyDark
+              : 'white',
+          lineHeight: 1,
+        }}
+      >
+        Join
+      </NavLink>
+    </div>
+  );
+};
 
 const Navbar = ({ foreground = colors.greyDark, background = 'white', ...props }) => {
   const { meetup } = publicRuntimeConfig;
