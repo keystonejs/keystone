@@ -38,7 +38,7 @@ const { publicRuntimeConfig } = getConfig();
 // Featured Event
 const FeaturedEvent = ({ isLoading, error, event }) => {
   if (isLoading && !event) {
-    return <p>Special loading message for featured event</p>;
+    return <Loading isCentered />;
   }
   if (error) {
     console.error('Failed to render the featured event', error);

@@ -18,20 +18,24 @@ const { publicRuntimeConfig } = getConfig();
 
 export default class Event extends Component {
   static async getInitialProps({ query }) {
-    const { id } = query;
-    return { id };
+    const { id, hex } = query;
+    return { id, loadingColor: hex ? `#${hex}` : 'currentColor' };
   }
 
   render() {
     const { meetup } = publicRuntimeConfig;
-    const { id } = this.props;
+    const { id, loadingColor } = this.props;
+
+    console.log('loadingColor',loadingColor);
 
     return (
       <Query query={GET_EVENT_DETAILS} variables={{ event: id }}>
         {({ data, loading, error }) => {
-          if (loading) return <p>loading...</p>;
+          if (loading) return <Loading isCentered color={loadingColor} size="xlarge" />;
+
           if (error) {
-            return <p>Error!</p>;
+            console.error('Failed to load event', id);
+            return <p>Something went wrong. Please try again.</p>;
           }
           if (!data.Event) {
             return <p>Event not found</p>;

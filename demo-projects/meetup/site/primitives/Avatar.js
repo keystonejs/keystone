@@ -78,7 +78,7 @@ Avatar.defaultProps = {
 
 // Stack
 
-export const AvatarStack = ({ size, users, ...props }) => console.log('props',props)||(
+export const AvatarStack = ({ size, users, ...props }) => (
   <div css={{ position: 'relative', width: 70, height: 70 }} {...props}>
     {users.map((user, idx) => (
       <Avatar

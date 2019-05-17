@@ -25,6 +25,8 @@ const EventItem = ({
     ? formatFutureDate(startTime)
     : formatPastDate(startTime);
 
+  const hex = themeColor && themeColor.slice(1);
+
   return (
     <li
       css={{
@@ -58,7 +60,7 @@ const EventItem = ({
           },
         }}
       >
-        <Link route="event" params={{ id }} passHref>
+        <Link route="event" params={{ id, hex }} passHref>
           <a css={{
             color: 'inherit',
             textDecoration: 'none',
