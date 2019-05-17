@@ -14,68 +14,99 @@ import { GET_SPONSORS } from '../graphql/sponsors';
 
 import Talks from '../components/Talks';
 import Rsvp from '../components/Rsvp';
-import { Hero, Section, Container, Separator, Button, Loading, Error } from '../primitives';
+import {
+  Button,
+  Container,
+  Error,
+  Hero,
+  Html,
+  Loading,
+  Section,
+  MicrophoneIcon,
+  PinIcon,
+  UserIcon,
+} from '../primitives';
 import { AvatarStack } from '../primitives/Avatar';
 import { H2, H3 } from '../primitives/Typography';
 import { colors, gridSize, fontSizes } from '../theme';
-import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
+import { isInFuture, formatFutureDate, formatPastDate, pluralLabel } from '../helpers';
 import { Component } from 'react';
 
 const { publicRuntimeConfig } = getConfig();
-/**
- * Featured Event
- * */
+
+// Featured Event
 const FeaturedEvent = ({ isLoading, error, event }) => {
   if (isLoading && !event) {
-    return <p>Special loading message for featured event</p>;
+    return <Loading isCentered />;
   }
   if (error) {
-    return <p>special featured events error</p>;
+    console.error('Failed to render the featured event', error);
+    return null;
   }
   if (!isLoading && !event) {
-    return <p>No events to show.</p>;
+    return null;
   }
 
-  const { id, startTime, name, maxRsvps, locationAddress, description, talks, themeColor } = event;
+  const { description, id, locationAddress, maxRsvps, name, startTime, talks, themeColor } = event;
   const prettyDate = isInFuture(startTime)
     ? formatFutureDate(startTime)
     : formatPastDate(startTime);
+
   return (
     <Container css={{ margin: '-7rem auto 0', position: 'relative' }}>
       <div css={{ boxShadow: '0px 4px 94px rgba(0, 0, 0, 0.15)' }}>
-        <div css={{ backgroundColor: themeColor, color: 'white', padding: '2rem' }}>
+        <div
+          css={{ backgroundColor: themeColor, color: 'white', display: 'block', padding: '2rem' }}
+        >
           <div css={{ display: 'flex' }}>
-            <div css={{ flex: 1 }}>
-              <p
-                css={{
-                  textTransform: 'uppercase',
-                  marginTop: 0,
-                  fontWeight: 500,
-                  marginBottom: gridSize,
-                }}
-              >
-                {prettyDate}
-              </p>
-              <H3>{name}</H3>
-              <p css={{ fontWeight: 100 }}>{locationAddress}</p>
-            </div>
-            <div css={{ flex: 1, padding: '0 2rem' }}>
-              <div dangerouslySetInnerHTML={{ __html: description }} />
-              <Link route="event" params={{ id }}>
-                <a>
-                  <span
+            <div
+              css={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div>
+                <p
+                  css={{
+                    textTransform: 'uppercase',
+                    marginTop: 0,
+                    fontWeight: 500,
+                    marginBottom: gridSize,
+                  }}
+                >
+                  {prettyDate}
+                </p>
+                <Link route="event" params={{ id }} passHref>
+                  <a
                     css={{
-                      color: 'white',
-                      fontWeight: 600,
-                      textDecoration: 'underline',
-                      position: 'relative',
+                      color: 'inherit',
+                      textDecoration: 'none',
+                      ':hover': { textDecoration: 'underline' },
                     }}
                   >
-                    Find out more
-                  </span>
-                </a>
-              </Link>
+                    <H3>{name}</H3>
+                  </a>
+                </Link>
+              </div>
+              <p css={{ alignItems: 'center', display: 'flex', fontWeight: 300 }}>
+                <PinIcon css={{ marginRight: '0.5em' }} />
+                {locationAddress}
+              </p>
             </div>
+            <Html
+              markup={description}
+              css={{
+                flex: 1,
+                padding: '0 2rem',
+
+                p: {
+                  '&:first-of-type': { marginTop: 0 },
+                  '&:last-of-type': { marginBottom: 0 },
+                },
+              }}
+            />
           </div>
         </div>
         <div css={{ padding: '1.5rem', background: 'white' }}>
@@ -97,7 +128,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                         css={{ marginLeft: '.5rem' }}
                         onClick={() => rsvpToEvent('yes')}
                       >
-                        yes
+                        Yes
                       </Button>
                       <Button
                         disabled={!isGoing}
@@ -106,7 +137,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                         css={{ marginLeft: '.5rem' }}
                         onClick={() => rsvpToEvent('no')}
                       >
-                        no
+                        No
                       </Button>
                     </div>
                   );
@@ -114,26 +145,43 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
               </Rsvp>
             </div>
             <div
-              css={{ display: 'flex', flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}
+              css={{
+                alignItems: 'center',
+                display: 'flex',
+                flex: 1,
+                justifyContent: 'flex-end',
+              }}
             >
-              <span css={{ padding: '0 1rem' }}>{talks.length} talks</span>
+              <div
+                css={{ alignItems: 'center', display: 'flex', fontWeight: 300, padding: '0 1rem' }}
+              >
+                <MicrophoneIcon color="#ccc" css={{ marginRight: '0.5em' }} />
+                {pluralLabel(talks.length, 'talk', 'talks')}
+              </div>
               <Query query={GET_EVENT_RSVPS} variables={{ event: id }}>
                 {({ data, loading, error }) => {
                   if (loading && !data) return <Loading />;
                   if (error) return <Error error={error} />;
 
                   const { allRsvps } = data;
+
                   if (!allRsvps) return null;
+
+                  const attending = `${allRsvps.length}${maxRsvps ? `/${maxRsvps}` : ''}`;
 
                   return (
                     <>
-                      {maxRsvps ? (
-                        <span css={{ padding: '0 1rem' }}>
-                          {allRsvps.length}/{maxRsvps} attending
-                        </span>
-                      ) : (
-                        <span css={{ padding: '0 1rem' }}>{allRsvps.length} attending</span>
-                      )}
+                      <div
+                        css={{
+                          alignItems: 'center',
+                          display: 'flex',
+                          fontWeight: 300,
+                          padding: '0 1rem',
+                        }}
+                      >
+                        <UserIcon color="#ccc" css={{ marginRight: '0.5em' }} />
+                        {attending} attending
+                      </div>
                       <AvatarStack
                         users={allRsvps.map(rsvp => rsvp.user)}
                         css={{ width: 50, height: 50 }}
@@ -247,7 +295,9 @@ export default class Home extends Component {
                 <meta name="description" content={meetup.intro} />
               </Head>
               <Navbar foreground="white" background={colors.greyDark} />
-              <Hero title={meetup.name}>{meetup.intro}</Hero>
+              <Hero title={meetup.name}>
+                <Html markup={meetup.homeIntro} />
+              </Hero>
               <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />
               <Container css={{ marginTop: '3rem' }}>
                 {featuredEvent && featuredEvent.talks ? (
@@ -262,8 +312,7 @@ export default class Home extends Component {
               {moreEvents.length ? (
                 <Section css={{ backgroundColor: colors.greyLight, padding: '5rem 0' }}>
                   <Container>
-                    <H2>More Meetup events</H2>
-                    <Separator css={{ marginTop: 30 }} />
+                    <H2 hasSeparator>More Meetups</H2>
                     <EventsList events={moreEvents} css={{ marginTop: '3rem' }} />
                     <Link route="events">
                       <a

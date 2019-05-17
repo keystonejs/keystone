@@ -12,6 +12,13 @@ export default function StylesBase() {
           overflow-x: hidden;
           font-family: 'NeueHass', -apple-system, BlinkMacSystemFont, Helvetica, sans-serif;
           line-height: 1.5;
+
+          text-decoration-skip: ink;
+          text-rendering: optimizeLegibility;
+          -ms-overflow-style: -ms-autohiding-scrollbar;
+          -moz-font-feature-settings: 'liga on';
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
         }
       `}
     />

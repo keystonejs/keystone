@@ -74,6 +74,10 @@ const Content = ({ horizontalMargin, ...props }) => (
       marginRight: horizontalMargin,
       marginTop: 30,
       maxWidth: 720,
+
+      a: {
+        color: 'inherit',
+      },
     }}
     {...props}
   />

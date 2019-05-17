@@ -8,28 +8,44 @@ import { mq } from '../helpers/media';
 const Talks = ({ talks }) => {
   return (
     <Wrapper>
-      {talks.map(talk => (
-        <Talk key={talk.id}>
-          <div css={{ display: 'flex', alignItems: 'center' }}>
-            {talk.speakers.length ? <AvatarStack users={talk.speakers} /> : null}
-            <H5 as="h3" css={{ marginLeft: talk.speakers.length ? '1rem' : '0' }}>
-              {talk.isLightningTalk && '⚡️ '}
-              {talk.name}
-            </H5>
-          </div>
-          <Content>
-            {talk.description ? <Html markup={talk.description} /> : null}
-            {talk.speakers.length ? <Byline speakers={talk.speakers} /> : null}
-          </Content>
-        </Talk>
-      ))}
+      {talks.map(talk => {
+        const hasSpeakers = Boolean(talk.speakers && talk.speakers.length);
+
+        return (
+          <Talk key={talk.id}>
+            <div css={{ display: 'flex', alignItems: 'center' }}>
+              {hasSpeakers && (
+                <AvatarStack
+                  users={talk.speakers}
+                  size="large"
+                  css={{
+                    marginRight: CONTENT_GUTTER,
+                  }}
+                />
+              )}
+              {talk.isLightningTalk && <Bolt />}
+              <H5 as="h3" css={{ marginLeft: talk.speakers.length ? '1rem' : '0' }}>
+                {talk.name}
+              </H5>
+            </div>
+            <Content>
+              {talk.description ? <Html markup={talk.description} /> : null}
+              {hasSpeakers && <Byline speakers={talk.speakers} />}
+            </Content>
+          </Talk>
+        );
+      })}
     </Wrapper>
   );
 };
 
 export default Talks;
 
-// styled components
+// ==============================
+// Styled Components
+// ==============================
+
+const CONTENT_GUTTER = 16;
 
 const Wrapper = props => (
   <div
@@ -42,7 +58,6 @@ const Wrapper = props => (
     {...props}
   />
 );
-
 const Talk = props => (
   <div
     css={{
@@ -52,6 +67,7 @@ const Talk = props => (
       marginLeft: '1em',
       marginRight: '1em',
       flexDirection: 'column',
+      minWidth: 300,
     }}
     {...props}
   />
@@ -60,10 +76,35 @@ const Content = props => (
   <div
     css={{
       flex: 1,
+      position: 'relative',
     }}
     {...props}
   />
 );
+const Bolt = props => {
+  const size = 32;
+  const offset = size / 4;
+
+  return (
+    <div
+      css={{
+        alignItems: 'center',
+        backgroundColor: 'white',
+        borderRadius: size,
+        display: 'flex',
+        height: size,
+        justifyContent: 'center',
+        left: -(CONTENT_GUTTER + size - offset),
+        position: 'absolute',
+        top: -offset,
+        width: size,
+      }}
+      {...props}
+    >
+      ⚡️
+    </div>
+  );
+};
 const Byline = ({ speakers, ...props }) => (
   <div {...props}>
     by{' '}
