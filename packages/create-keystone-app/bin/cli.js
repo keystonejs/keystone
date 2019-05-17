@@ -116,7 +116,7 @@ function main() {
     process.exit(0);
   }
 
-  console.log(`${title}\n`);
+  console.log(`\n${title}\n`);
 
   // Everything else is assumed to be a command we want to execute - more options added
   exec(name, args['--no-deps'])
