@@ -14,17 +14,29 @@ import { GET_SPONSORS } from '../graphql/sponsors';
 
 import Talks from '../components/Talks';
 import Rsvp from '../components/Rsvp';
-import { Hero, Section, Container, Separator, Button, Loading, Error } from '../primitives';
+import {
+  Button,
+  Container,
+  Error,
+  Hero,
+  Html,
+  Loading,
+  Section,
+  Separator,
+
+  MicrophoneIcon,
+  PinIcon,
+  UserIcon,
+} from '../primitives';
 import { AvatarStack } from '../primitives/Avatar';
 import { H2, H3 } from '../primitives/Typography';
 import { colors, gridSize } from '../theme';
-import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
+import { isInFuture, formatFutureDate, formatPastDate, pluralLabel } from '../helpers';
 import { Component } from 'react';
 
 const { publicRuntimeConfig } = getConfig();
-/**
- * Featured Event
- * */
+
+// Featured Event
 const FeaturedEvent = ({ isLoading, error, event }) => {
   if (isLoading && !event) {
     return <p>Special loading message for featured event</p>;
@@ -40,6 +52,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
   const prettyDate = isInFuture(startTime)
     ? formatFutureDate(startTime)
     : formatPastDate(startTime);
+
   return (
     <Container css={{ margin: '-7rem auto 0', position: 'relative' }}>
       <div css={{ boxShadow: '0px 4px 94px rgba(0, 0, 0, 0.15)' }}>
@@ -57,10 +70,13 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                 {prettyDate}
               </p>
               <H3>{name}</H3>
-              <p css={{ fontWeight: 100 }}>{locationAddress}</p>
+              <p css={{ alignItems: 'center', display: 'flex', fontWeight: 300 }}>
+                <PinIcon css={{ marginRight: '0.5em' }} />
+                {locationAddress}
+              </p>
             </div>
             <div css={{ flex: 1, padding: '0 2rem' }}>
-              <div dangerouslySetInnerHTML={{ __html: description }} />
+              <Html markup={description} />
               <Link route="event" params={{ id }}>
                 <a>
                   <span
@@ -97,7 +113,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                         css={{ marginLeft: '.5rem' }}
                         onClick={() => rsvpToEvent('yes')}
                       >
-                        yes
+                        Yes
                       </Button>
                       <Button
                         disabled={!isGoing}
@@ -106,34 +122,40 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                         css={{ marginLeft: '.5rem' }}
                         onClick={() => rsvpToEvent('no')}
                       >
-                        no
+                        No
                       </Button>
                     </div>
                   );
                 }}
               </Rsvp>
             </div>
-            <div
-              css={{ display: 'flex', flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}
-            >
-              <span css={{ padding: '0 1rem' }}>{talks.length} talks</span>
+            <div css={{
+              alignItems: 'center',
+              display: 'flex',
+              flex: 1,
+              justifyContent: 'flex-end',
+            }}>
+              <div css={{ alignItems: 'center', display: 'flex', fontWeight: 300, padding: '0 1rem' }}>
+                <MicrophoneIcon color="#ccc" css={{ marginRight: '0.5em' }} />
+                {pluralLabel(talks.length, 'talk', 'talks')}
+              </div>
               <Query query={GET_EVENT_RSVPS} variables={{ event: id }}>
                 {({ data, loading, error }) => {
                   if (loading && !data) return <Loading />;
                   if (error) return <Error error={error} />;
 
                   const { allRsvps } = data;
+
                   if (!allRsvps) return null;
+
+                  const attending = `${allRsvps.length}${maxRsvps ? `/${maxRsvps}` : ''}`;
 
                   return (
                     <>
-                      {maxRsvps ? (
-                        <span css={{ padding: '0 1rem' }}>
-                          {allRsvps.length}/{maxRsvps} attending
-                        </span>
-                      ) : (
-                        <span css={{ padding: '0 1rem' }}>{allRsvps.length} attending</span>
-                      )}
+                      <div css={{ alignItems: 'center', display: 'flex', fontWeight: 300, padding: '0 1rem' }}>
+                        <UserIcon color="#ccc" css={{ marginRight: '0.5em' }} />
+                          {attending} attending
+                      </div>
                       <AvatarStack
                         users={allRsvps.map(rsvp => rsvp.user)}
                         css={{ width: 50, height: 50 }}
