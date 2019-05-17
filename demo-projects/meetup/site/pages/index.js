@@ -22,7 +22,6 @@ import {
   Html,
   Loading,
   Section,
-  Separator,
 
   MicrophoneIcon,
   PinIcon,
@@ -42,13 +41,14 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
     return <p>Special loading message for featured event</p>;
   }
   if (error) {
-    return <p>special featured events error</p>;
+    console.error('Failed to render the featured event', error);
+    return null;
   }
   if (!isLoading && !event) {
-    return <p>No events to show.</p>;
+    return null;
   }
 
-  const { id, startTime, name, maxRsvps, locationAddress, description, talks, themeColor } = event;
+  const { description, id, locationAddress, maxRsvps, name, startTime, talks, themeColor } = event;
   const prettyDate = isInFuture(startTime)
     ? formatFutureDate(startTime)
     : formatPastDate(startTime);
@@ -56,44 +56,44 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
   return (
     <Container css={{ margin: '-7rem auto 0', position: 'relative' }}>
       <div css={{ boxShadow: '0px 4px 94px rgba(0, 0, 0, 0.15)' }}>
-          <div css={{ backgroundColor: themeColor, color: 'white', display: 'block', padding: '2rem' }}>
-            <div css={{ display: 'flex' }}>
-              <div css={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <div>
-                <p
-                  css={{
-                    textTransform: 'uppercase',
-                    marginTop: 0,
-                    fontWeight: 500,
-                    marginBottom: gridSize,
-                  }}
-                >
-                  {prettyDate}
-                </p>
-                <Link route="event" params={{ id }} passHref>
-                  <a css={{ color: 'inherit', textDecoration: 'none', ':hover': { textDecoration: 'underline' } }}>
-                    <H3>{name}</H3>
-                  </a>
-                </Link>
-                </div>
-                <p css={{ alignItems: 'center', display: 'flex', fontWeight: 300 }}>
-                  <PinIcon css={{ marginRight: '0.5em' }} />
-                  {locationAddress}
-                </p>
-              </div>
-              <Html
-                markup={description}
+        <div css={{ backgroundColor: themeColor, color: 'white', display: 'block', padding: '2rem' }}>
+          <div css={{ display: 'flex' }}>
+            <div css={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <p
                 css={{
-                  flex: 1,
-                  padding: '0 2rem',
-
-                  p: {
-                    '&:first-of-type': { marginTop: 0 },
-                    '&:last-of-type': { marginBottom: 0 },
-                  }
-                }} />
+                  textTransform: 'uppercase',
+                  marginTop: 0,
+                  fontWeight: 500,
+                  marginBottom: gridSize,
+                }}
+              >
+                {prettyDate}
+              </p>
+              <Link route="event" params={{ id }} passHref>
+                <a css={{ color: 'inherit', textDecoration: 'none', ':hover': { textDecoration: 'underline' } }}>
+                  <H3>{name}</H3>
+                </a>
+              </Link>
+              </div>
+              <p css={{ alignItems: 'center', display: 'flex', fontWeight: 300 }}>
+                <PinIcon css={{ marginRight: '0.5em' }} />
+                {locationAddress}
+              </p>
             </div>
+            <Html
+              markup={description}
+              css={{
+                flex: 1,
+                padding: '0 2rem',
+
+                p: {
+                  '&:first-of-type': { marginTop: 0 },
+                  '&:last-of-type': { marginBottom: 0 },
+                }
+              }} />
           </div>
+        </div>
         <div css={{ padding: '1.5rem', background: 'white' }}>
           <div css={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div
@@ -286,8 +286,7 @@ export default class Home extends Component {
               {moreEvents.length ? (
                 <Section css={{ backgroundColor: colors.greyLight, padding: '5rem 0' }}>
                   <Container>
-                    <H2>More Meetup events</H2>
-                    <Separator css={{ marginTop: 30 }} />
+                    <H2 hasSeparator>More Meetups</H2>
                     <EventsList events={moreEvents} css={{ marginTop: '3rem' }} />
                   </Container>
                 </Section>

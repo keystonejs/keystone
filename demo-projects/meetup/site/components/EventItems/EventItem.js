@@ -4,7 +4,7 @@ import { jsx } from '@emotion/core';
 import { Link } from '../../../routes';
 import Rsvp from '../../components/Rsvp';
 import { Html, Button, Loading } from '../../primitives';
-import { H2 } from '../../primitives/Typography';
+import { H3 } from '../../primitives/Typography';
 import { colors, gridSize, shadows } from '../../theme';
 import { isInFuture, formatPastDate, formatFutureDate, getBreakpoints } from '../../helpers';
 
@@ -40,62 +40,48 @@ const EventItem = ({
     >
       <div
         css={{
-          position: 'relative',
-          margin: gridSize,
-          padding: gridSize * 3,
           backgroundColor: 'white',
           borderTop: `solid 8px ${themeColor || colors.greyLight}`,
-          boxShadow: shadows.md,
+          boxShadow: shadows.sm,
+          margin: gridSize,
+          padding: `${gridSize * 3}px ${gridSize * 3}px 0`,
+          position: 'relative',
           transition: 'all 0.1s',
+
           '&:hover': {
+            boxShadow: shadows.md,
+            transform: 'translateY(-2px)',
+          },
+          '&:active': {
             boxShadow: shadows.sm,
-            transform: 'translateY(2px)',
+            transform: 'none',
           },
         }}
       >
-        <Link route="event" params={{ id }}>
-          <a css={{ color: 'inherit', textDecoration: 'none', ':hover': { cursor: 'pointer' } }}>
-            <div
-              css={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                background: 'linear-gradient( rgba(255, 255, 255, 0), 3%, white, 80%, white)',
-                width: '100%',
-                height: gridSize * 16,
-              }}
-            />
-            <div
-              css={{
-                opacity: isInFuture(startTime) ? 1 : 0.5,
-              }}
-            >
+        <Link route="event" params={{ id }} passHref>
+          <a css={{
+            color: 'inherit',
+            textDecoration: 'none',
+
+            ':hover h3': {
+              textDecoration: 'underline'
+            }
+          }}>
+            <Mask />
+            <div css={{ maxHeight: 320, overflow: 'hidden' }}>
               <span css={{ textTransform: 'uppercase', fontWeight: 600 }}>{prettyDate}</span>
-              <H2
+              <H3
                 size={4}
                 css={{ wordWrap: 'break-word', lineHeight: '1.25', marginBottom: gridSize }}
               >
                 {name}
-              </H2>
-            </div>
-            <div
-              css={{
-                maxHeight: '270px',
-                overflow: 'hidden',
-              }}
-            >
-              <Html markup={description} />
-            </div>
-            <span
-              css={{
+              </H3>
+              <Html markup={description} css={{ a: {
                 color: 'inherit',
-                fontWeight: 600,
-                textDecoration: 'underline',
-                position: 'relative',
-              }}
-            >
-              Find out more
-            </span>
+                pointerEvents: 'none',
+                textDecoration: 'none'
+              } }} />
+            </div>
           </a>
         </Link>
         {isInFuture(startTime) ? (
@@ -141,5 +127,20 @@ const EventItem = ({
     </li>
   );
 };
+
+// Styled Components
+// ------------------------------
+
+const Mask=  props => (<div
+  css={{
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    background: 'linear-gradient(rgba(255, 255, 255, 0), white 80%)',
+    width: '100%',
+    height: 100,
+  }}
+  {...props}
+/>);
 
 export default EventItem;
