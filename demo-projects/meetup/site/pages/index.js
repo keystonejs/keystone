@@ -14,7 +14,7 @@ import { GET_SPONSORS } from '../graphql/sponsors';
 
 import Talks from '../components/Talks';
 import Rsvp from '../components/Rsvp';
-import { Hero, Section, Container, Separator, Loading, Error } from '../primitives';
+import { Hero, Section, Container, Separator, Button, Loading, Error } from '../primitives';
 import { AvatarStack } from '../primitives/Avatar';
 import { H2, H3 } from '../primitives/Typography';
 import { colors, gridSize } from '../theme';
@@ -83,7 +83,35 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
             <div
               css={{ display: 'flex', flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}
             >
-              <Rsvp eventId={id} />
+              <Rsvp eventId={id}>
+                {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
+                  if (loading) return <Loading />;
+                  if (error) return <p css={{ color: colors.greyMedium, margin: 0 }}>{error}</p>;
+                  return (
+                    <div>
+                      <span css={{ padding: '0 1rem' }}>Will you be attending?</span>
+                      <Button
+                        disabled={isGoing || !canRsvp}
+                        background={isGoing ? event.themeColor : colors.greyLight}
+                        foreground={isGoing ? 'white' : colors.greyDark}
+                        css={{ marginLeft: '.5rem' }}
+                        onClick={() => rsvpToEvent('yes')}
+                      >
+                        yes
+                      </Button>
+                      <Button
+                        disabled={!isGoing}
+                        background={!isGoing ? event.themeColor : colors.greyLight}
+                        foreground={!isGoing ? 'white' : colors.greyDark}
+                        css={{ marginLeft: '.5rem' }}
+                        onClick={() => rsvpToEvent('no')}
+                      >
+                        no
+                      </Button>
+                    </div>
+                  );
+                }}
+              </Rsvp>
             </div>
             <div
               css={{ display: 'flex', flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}
