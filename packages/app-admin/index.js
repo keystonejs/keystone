@@ -186,7 +186,7 @@ module.exports = class AdminUI {
     if (!this.disableDefaultRoute) {
       // Attach this last onto the root so the `this.adminPath` can overwrite it
       // if necessary
-      _app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './default.html')));
+      _app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './server/default.html')));
     }
 
     return _app;
@@ -264,7 +264,7 @@ module.exports = class AdminUI {
     if (!this.disableDefaultRoute) {
       // Attach this last onto the root so the `adminPath` can overwrite it if
       // necessary
-      app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './default.html')));
+      app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './server/default.html')));
     }
 
     // handle errors

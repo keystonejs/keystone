@@ -16,6 +16,7 @@ const {
   Decimal,
 } = require('@keystone-alpha/fields');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
+const GraphQLApi = require('@keystone-alpha/app-graphql');
 const AdminUI = require('@keystone-alpha/app-admin');
 const StaticApp = require('@keystone-alpha/app-static');
 
@@ -158,5 +159,5 @@ const admin = new AdminUI(keystone);
 
 module.exports = {
   keystone,
-  apps: [admin, new StaticApp({ route: staticRoute, path: staticPath })],
+  apps: [new GraphQLApi(), admin, new StaticApp({ route: staticRoute, path: staticPath })],
 };

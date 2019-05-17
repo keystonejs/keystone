@@ -46,7 +46,6 @@ You can have multiple changesets in a single PR. This will give you more granula
 
 ## Publishing
 
-
 ### How to do a release
 
 > This should only ever be done by a very short list of core contributors

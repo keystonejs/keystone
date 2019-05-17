@@ -38,76 +38,65 @@ describe('dev command', () => {
     expect(typeof devCommand.help({ exeName: '' })).toBe('string');
   });
 
-  describe('--entry arg', () => {
-    afterEach(() => {
-      jest.restoreAllMocks();
-      // See: https://twitter.com/JessTelford/status/1102801062489018369
-      jest.resetModules();
-      jest.dontMock('../../lib/prepare');
-    });
-
-    test('rejects when file not found', () => {
-      expect(devCommand.exec({ '--entry': 'foo.js', _cwd: __dirname })).rejects.toThrow(
-        /--entry=.*was passed.*but.*couldn't be found/
-      );
-    });
-
-    test('is setup with a default server on default port', async () => {
-      const mockPrepare = jest.fn(() =>
-        Promise.resolve({
-          middlewares: [express().get('/', (req, res) => res.status(200).end())],
-          keystone: { connect: jest.fn() },
-        })
-      );
-
-      // clear the module from the cache so we can mock it
-      jest.resetModules();
-      jest.doMock('../../lib/prepare', () => mockPrepare);
-
-      const localDevCommand = require('../../bin/commands/dev');
-      const serverFileObj = tmp.fileSync({ postfix: '.js' });
-      fs.writeFileSync(serverFileObj.fd, `module.exports = { keystone: { auth: {} } }`);
-
-      const { server } = await localDevCommand.exec({ '--entry': serverFileObj.name });
-
-      await expectServerResponds({ port: constants.DEFAULT_PORT });
-      return cleanupServer(server);
-    });
+  test('rejects when --entry file not found', () => {
+    expect(devCommand.exec({ '--entry': 'foo.js', _cwd: __dirname })).rejects.toThrow(
+      /--entry=.*was passed.*but.*couldn't be found/
+    );
   });
 
-  describe('--port arg', () => {
-    afterEach(() => {
-      jest.restoreAllMocks();
-      // See: https://twitter.com/JessTelford/status/1102801062489018369
-      jest.resetModules();
-      jest.dontMock('../../lib/prepare');
+  test('is setup with a default server on default port', async () => {
+    const mockPrepare = jest.fn(() =>
+      Promise.resolve({
+        middlewares: [express().get('/', (req, res) => res.status(200).end())],
+        keystone: { connect: jest.fn() },
+      })
+    );
+
+    const localDevCommand = require('../../bin/commands/dev');
+    const serverFileObj = tmp.fileSync({ postfix: '.js' });
+    fs.writeFileSync(
+      serverFileObj.fd,
+      `
+      module.exports = {
+        // A mock keystone instance
+        keystone: {
+          auth: {},
+          prepare: () => Promise.resolve({ middlewares: (req, res, next) => res.send(200) }),
+          connect: () => Promise.resolve(),
+        }
+      }`
+    );
+
+    const { server } = await localDevCommand.exec({ '--entry': serverFileObj.name });
+
+    await expectServerResponds({ port: constants.DEFAULT_PORT });
+    return cleanupServer(server);
+  });
+
+  test('prepare server with port from --port arg', async () => {
+    const localDevCommand = require('../../bin/commands/dev');
+    const serverFileObj = tmp.fileSync({ postfix: '.js' });
+    fs.writeFileSync(
+      serverFileObj.fd,
+      `
+      module.exports = {
+        // A mock keystone instance
+        keystone: {
+          auth: {},
+          prepare: () => Promise.resolve({ middlewares: (req, res, next) => res.send(200) }),
+          connect: () => Promise.resolve(),
+        }
+      }`
+    );
+
+    const port = 5000;
+
+    const { server } = await localDevCommand.exec({
+      '--entry': serverFileObj.name,
+      '--port': port,
     });
 
-    test('prepare server with passed in port', async () => {
-      const mockPrepare = jest.fn(() =>
-        Promise.resolve({
-          middlewares: [express().get('/', (req, res) => res.status(200).end())],
-          keystone: { connect: jest.fn() },
-        })
-      );
-
-      // clear the module from the cache so we can mock it
-      jest.resetModules();
-      jest.doMock('../../lib/prepare', () => mockPrepare);
-
-      const localDevCommand = require('../../bin/commands/dev');
-      const serverFileObj = tmp.fileSync({ postfix: '.js' });
-      fs.writeFileSync(serverFileObj.fd, `module.exports = { keystone: { auth: {} } }`);
-
-      const port = 5000;
-
-      const { server } = await localDevCommand.exec({
-        '--entry': serverFileObj.name,
-        '--port': port,
-      });
-
-      await expectServerResponds({ port });
-      return cleanupServer(server);
-    });
+    await expectServerResponds({ port });
+    return cleanupServer(server);
   });
 });

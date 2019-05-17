@@ -1,6 +1,7 @@
 //imports for Keystone app core
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const GraphQLApi = require('@keystone-alpha/app-graphql');
 const AdminUI = require('@keystone-alpha/app-admin');
 const NextApp = require('@keystone-alpha/app-next');
 const StaticApp = require('@keystone-alpha/app-static');
@@ -51,6 +52,7 @@ const admin = new AdminUI(keystone, {
 module.exports = {
   keystone,
   apps: [
+    new GraphQLApi(),
     admin,
     new StaticApp({ route: staticRoute, path: staticPath }),
     new NextApp({ dir: 'app' }),

@@ -74,10 +74,11 @@ cd my-app
 yarn start
 ```
 
-### Setup
+### Manual Setup
 
+```bash
+npm install --save @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/app-graphql @keystone-alpha/app-admin`
 ```
-npm install --save @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/app-admin`
 
 Add a script to your `package.json`:
 
@@ -97,6 +98,7 @@ Create a file `index.js`:
 const { Keystone }        = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text }            = require('@keystone-alpha/fields');
+const GraphQLApi          = require('@keystone-alpha/app-graphql');
 const AdminUI             = require('@keystone-alpha/app-admin');
 
 const keystone = new Keystone({
@@ -115,7 +117,10 @@ const admin = new AdminUI(keystone);
 
 module.exports = {
   keystone,
-  admin,
+  apps: [
+    new GraphQLApi(),
+    admin,
+  ],
 };
 ```
 
@@ -131,24 +136,6 @@ Keystone will automatically detect your `index.js` and start the server for you:
 - `http://localhost:3000/admin/api`: generated GraphQL API
 - `http://localhost:3000/admin/graphiql`: GraphQL Playground UI
 
-#### Server Configuration
-
-Extra config can be set with the `serverConfig` export in `index.js`:
-
-```javascript
-// ...
-module.exports = {
-  keystone,
-  admin,
-  serverConfig: {
-    cookieSecret: 'qwerty',
-    apiPath: '/admin/api',
-    graphiqlPath: '/admin/graphiql',
-  },
-};
-// TODO: Document _all_ the options
-```
-
 ### Custom Server
 
 In some circumstances, you may want to do custom processing, or add extra routes
@@ -163,11 +150,12 @@ Create the `server.js` file:
 <!-- prettier-ignore -->
 
 ```javascript
-const keystoneServer = require('@keystone-alpha/keystone');
 const express = require('express');
+const { keystone, apps } = require('./index');
 
-keystoneServer.prepare({ port: 3000 })
-  .then(({ middlewares, keystone }) => {
+keystone.prepare({ apps, port: 3000 })
+  .then(({ middlewares }) => {
+    keystone.connect();
     const app = express();
     app.get('/', (req, res) => {
       res.end('Hello world');
@@ -187,20 +175,8 @@ You'll need to change the `dev` script in your `package.json` to run the server 
 + "dev": "node server.js"
 ```
 
-#### Custom Server Configuration
-
-When using a custom server, you should pass the `serverConfig` object to the
-`prepare()` method:
-
-```javascript
-keystone.prepare({
-  serverConfig: {
-    /* ... */
-  },
-});
-```
-
-For available options, see [Server Configuration](#server-configuration).
+Note that when using a custom server, you will no longer get the formatted
+console output when starting a server.
 
 ### Production Build
 

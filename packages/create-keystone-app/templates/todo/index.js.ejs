@@ -1,6 +1,7 @@
 const { Keystone } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text } = require('@keystone-alpha/fields');
+const GraphQLApi = require('@keystone-alpha/app-graphql');
 const AdminUI = require('@keystone-alpha/app-admin');
 const StaticApp = require('@keystone-alpha/app-static');
 
@@ -40,9 +41,12 @@ module.exports = {
 
   // A running instance of KeystoneJS is comprised of a series of server
   // middlewares.
-  // Using the `apps` export, we can inject our own middlewares into the
-  // default express app.
+  // Using the `apps` export, we specify the order and composition of the
+  // express middlewares executed per request.
   apps: [
+    // The (required) GraphQL API instance from which all our data is served
+    new GraphQLApi(),
+
     // Serve our website from the root route.
     new StaticApp({ route: '/', path: 'public' }),
 

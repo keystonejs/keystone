@@ -1,6 +1,7 @@
 const express = require('express');
-const keystone = require('@keystone-alpha/keystone');
 const { endAuthedSession } = require('@keystone-alpha/session');
+
+const { keystone, apps } = require('./index');
 const {
   facebookAuthEnabled,
   githubAuthEnabled,
@@ -18,33 +19,33 @@ const {
   setupAuthRoutes,
   InitializePassportAuthStrategies,
 } = require('./auth');
-
 const initialData = require('./data');
+
 keystone
-  .prepare({ port, dev: process.env.NODE_ENV !== 'production' })
-  .then(async ({ middlewares, keystone: keystoneApp }) => {
+  .prepare({ apps, port, dev: process.env.NODE_ENV !== 'production' })
+  .then(async ({ middlewares }) => {
     const socialLogins = [];
     if (facebookAuthEnabled) {
-      socialLogins.push(configureFacebookAuth(keystoneApp));
+      socialLogins.push(configureFacebookAuth(keystone));
     }
 
     if (githubAuthEnabled) {
-      socialLogins.push(configureGitHubAuth(keystoneApp));
+      socialLogins.push(configureGitHubAuth(keystone));
     }
 
     if (twitterAuthEnabled) {
-      socialLogins.push(configureTwitterAuth(keystoneApp));
+      socialLogins.push(configureTwitterAuth(keystone));
     }
 
     if (googleAuthEnabled) {
-      socialLogins.push(configureGoogleAuth(keystoneApp));
+      socialLogins.push(configureGoogleAuth(keystone));
     }
 
     if (wpAuthEnabled) {
-      socialLogins.push(configureWPAuth(keystoneApp));
+      socialLogins.push(configureWPAuth(keystone));
     }
 
-    await keystoneApp.connect();
+    await keystone.connect();
 
     const app = express();
 
@@ -56,19 +57,19 @@ keystone
 
     // Initialise some data.
     // NOTE: This is only for test purposes and should not be used in production
-    const users = await keystoneApp.lists.User.adapter.findAll();
+    const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
-      Object.values(keystoneApp.adapters).forEach(async adapter => {
+      Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      await keystoneApp.createItems(initialData);
+      await keystone.createItems(initialData);
     }
 
     app.get('/reset-db', async (req, res) => {
-      Object.values(keystoneApp.adapters).forEach(async adapter => {
+      Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      await keystoneApp.createItems(initialData);
+      await keystone.createItems(initialData);
       res.redirect('/admin');
     });
 

@@ -1,25 +1,26 @@
 require('dotenv').config();
 
-const keystone = require('@keystone-alpha/keystone');
 const express = require('express');
+
+const { keystone, apps } = require('./index');
 const initialData = require('./initialData');
 
 const port = process.env.PORT || 3000;
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/keystonejs-meetup';
 
 keystone
-  .prepare({ port, dev: process.env.NODE_ENV !== 'production' })
-  .then(async ({ middlewares, keystone: keystoneApp }) => {
-    await keystoneApp.connect(mongoUri);
+  .prepare({ apps, port, dev: process.env.NODE_ENV !== 'production' })
+  .then(async ({ middlewares }) => {
+    await keystone.connect(mongoUri);
 
     // Initialise some data.
     // NOTE: This is only for demo purposes and should not be used in production
-    const users = await keystoneApp.lists.User.adapter.findAll();
+    const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
-      Object.values(keystoneApp.adapters).forEach(async adapter => {
+      Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      await keystoneApp.createItems(initialData);
+      await keystone.createItems(initialData);
     }
 
     const app = express();

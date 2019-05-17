@@ -1,6 +1,7 @@
 const { Keystone } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text } = require('@keystone-alpha/fields');
+const GraphQLApi = require('@keystone-alpha/app-graphql');
 const AdminUI = require('@keystone-alpha/app-admin');
 const StaticApp = require('@keystone-alpha/app-static');
 
@@ -21,5 +22,5 @@ const admin = new AdminUI(keystone);
 
 module.exports = {
   keystone,
-  apps: [new StaticApp({ route: '/', path: 'public' }), admin],
+  apps: [new GraphQLApi(), new StaticApp({ route: '/', path: 'public' }), admin],
 };

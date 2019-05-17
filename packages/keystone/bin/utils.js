@@ -1,4 +1,3 @@
-const prepare = require('../lib/prepare');
 const express = require('express');
 const endent = require('endent');
 const path = require('path');
@@ -22,11 +21,14 @@ function getEntryFileFullPath(args, { exeName, _cwd }) {
 function executeDefaultServer(args, entryFile, distDir) {
   const port = args['--port'] ? args['--port'] : DEFAULT_PORT;
 
+  const { keystone, apps } = require(path.resolve(entryFile));
+
   const app = express();
 
-  return prepare({ entryFile, port, distDir, dev: process.env.NODE_ENV !== 'production' }).then(
-    async ({ middlewares, keystone: keystoneApp }) => {
-      await keystoneApp.connect();
+  return keystone
+    .prepare({ apps, port, distDir, dev: process.env.NODE_ENV !== 'production' })
+    .then(async ({ middlewares }) => {
+      await keystone.connect();
 
       app.use(middlewares);
 
@@ -39,8 +41,7 @@ function executeDefaultServer(args, entryFile, distDir) {
           return resolve({ port, server });
         });
       });
-    }
-  );
+    });
 }
 
 module.exports = {
