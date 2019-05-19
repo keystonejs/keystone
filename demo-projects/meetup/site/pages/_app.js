@@ -9,6 +9,7 @@ import { ToastProvider } from 'react-toast-notifications';
 import withApollo from '../lib/withApollo';
 import { AuthProvider } from '../lib/authetication';
 import StylesBase from '../primitives/StylesBase';
+import GoogleAnalytics from '../components/GoogleAnalytics';
 
 const {
   publicRuntimeConfig: { serverUrl },
@@ -44,6 +45,7 @@ class MyApp extends App {
             </ApolloProvider>
           </AuthProvider>
         </Container>
+        <GoogleAnalytics />
       </ToastProvider>
     );
   }
