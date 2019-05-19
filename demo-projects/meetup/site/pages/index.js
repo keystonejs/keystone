@@ -28,7 +28,7 @@ import {
 } from '../primitives';
 import { AvatarStack } from '../primitives/Avatar';
 import { H2, H3 } from '../primitives/Typography';
-import { colors, gridSize } from '../theme';
+import { colors, gridSize, fontSizes } from '../theme';
 import { isInFuture, formatFutureDate, formatPastDate, pluralLabel } from '../helpers';
 import { Component } from 'react';
 
@@ -314,6 +314,21 @@ export default class Home extends Component {
                   <Container>
                     <H2 hasSeparator>More Meetups</H2>
                     <EventsList events={moreEvents} css={{ marginTop: '3rem' }} />
+                    <Link route="events">
+                      <a
+                        css={{
+                          color: 'black',
+                          cursor: 'pointer',
+                          fontSize: fontSizes.md,
+                          marginTop: '1rem',
+                        }}
+                      >
+                        View all{' '}
+                        <span css={{ ':hover': { textDecoration: 'underline' }, fontWeight: 600 }}>
+                          our events
+                        </span>
+                      </a>
+                    </Link>
                   </Container>
                 </Section>
               ) : null}

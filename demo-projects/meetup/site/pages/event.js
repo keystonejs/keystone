@@ -32,7 +32,7 @@ export default class Event extends Component {
           if (loading) return <Loading isCentered color={loadingColor} size="xlarge" />;
 
           if (error) {
-            console.error('Failed to load event', id);
+            console.error('Failed to load event', id, error);
             return <p>Something went wrong. Please try again.</p>;
           }
           if (!data.Event) {

@@ -13,19 +13,23 @@ const Talks = ({ talks }) => {
 
         return (
           <Talk key={talk.id}>
-            {hasSpeakers && (
-              <AvatarStack
-                users={talk.speakers}
-                size="large"
-                css={{
-                  marginRight: CONTENT_GUTTER,
-                }}
-              />
-            )}
-            <Content>
+            <div css={{ display: 'flex', alignItems: 'center' }}>
+              {hasSpeakers && (
+                <AvatarStack
+                  users={talk.speakers}
+                  size="large"
+                  css={{
+                    marginRight: CONTENT_GUTTER,
+                  }}
+                />
+              )}
               {talk.isLightningTalk && <Bolt />}
-              <H5 as="h3">{talk.name}</H5>
-              {talks.description ? <Html markup={talk.description} /> : null}
+              <H5 as="h3" css={{ marginLeft: hasSpeakers ? '1rem' : '0' }}>
+                {talk.name}
+              </H5>
+            </div>
+            <Content>
+              {talk.description ? <Html markup={talk.description} /> : null}
               {hasSpeakers && <Byline speakers={talk.speakers} />}
             </Content>
           </Talk>
@@ -62,6 +66,7 @@ const Talk = props => (
       marginTop: '1em',
       marginLeft: '1em',
       marginRight: '1em',
+      flexDirection: 'column',
       minWidth: 300,
     }}
     {...props}
