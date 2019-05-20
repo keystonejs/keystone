@@ -1,7 +1,6 @@
 const fs = require('fs');
 const tmp = require('tmp');
 const http = require('http');
-const express = require('express');
 const devCommand = require('../../bin/commands/dev');
 const constants = require('../../constants');
 
@@ -45,13 +44,6 @@ describe('dev command', () => {
   });
 
   test('is setup with a default server on default port', async () => {
-    const mockPrepare = jest.fn(() =>
-      Promise.resolve({
-        middlewares: [express().get('/', (req, res) => res.status(200).end())],
-        keystone: { connect: jest.fn() },
-      })
-    );
-
     const localDevCommand = require('../../bin/commands/dev');
     const serverFileObj = tmp.fileSync({ postfix: '.js' });
     fs.writeFileSync(

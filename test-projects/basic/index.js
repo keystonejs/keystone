@@ -158,8 +158,8 @@ keystone.createList('SomeLongNamedList', {
 module.exports = {
   keystone,
   apps: [
-    new GraphQLApp({ apiPath: '/foo' }),
+    new GraphQLApp(),
     new StaticApp({ path: staticRoute, src: staticPath }),
-    new AdminUIApp(keystone, { apiPath: '/foo', enableDefaultRoute: true }),
+    new AdminUIApp(keystone, { enableDefaultRoute: true }),
   ],
 };
