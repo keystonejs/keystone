@@ -1,4 +1,3 @@
-const { AdminUI } = require('@keystone-alpha/admin-ui');
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const {
   File,
@@ -10,6 +9,9 @@ const {
   CloudinaryImage,
 } = require('@keystone-alpha/fields');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
+const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { StaticApp } = require('@keystone-alpha/app-static');
 
 const { staticRoute, staticPath, cloudinary } = require('./config');
 
@@ -151,9 +153,11 @@ keystone.createList('PostCategory', {
   },
 });
 
-const admin = new AdminUI(keystone, { authStrategy: DISABLE_AUTH ? undefined : authStrategy });
-
 module.exports = {
   keystone,
-  admin,
+  apps: [
+    new GraphQLApp(),
+    new StaticApp({ path: staticRoute, src: staticPath }),
+    new AdminUIApp(keystone, { authStrategy: DISABLE_AUTH ? undefined : authStrategy }),
+  ],
 };

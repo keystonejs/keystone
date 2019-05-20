@@ -1,0 +1,33 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/api-tests", "type": "patch" },
+    { "name": "@keystone-alpha/demo-project-blog", "type": "minor" },
+    { "name": "@keystone-alpha/demo-project-meetup", "type": "minor" },
+    { "name": "@keystone-alpha/demo-project-todo", "type": "minor" },
+    { "name": "@keystone-alpha/admin-ui", "type": "major" },
+    { "name": "@keystone-alpha/core", "type": "major" },
+    { "name": "create-keystone-app", "type": "minor" },
+    { "name": "@keystone-alpha/fields-wysiwyg-tinymce", "type": "major" },
+    { "name": "@keystone-alpha/keystone", "type": "major" },
+    { "name": "@keystone-alpha/server-graphql", "type": "major" },
+    { "name": "@keystone-alpha/server-next", "type": "major" },
+    { "name": "@keystone-alpha/server-static", "type": "major" },
+    { "name": "@keystone-alpha/test-utils", "type": "patch" },
+    { "name": "@keystone-alpha/cypress-project-access-control", "type": "minor" },
+    { "name": "@keystone-alpha/cypress-project-basic", "type": "minor" },
+    { "name": "@keystone-alpha/cypress-project-login", "type": "minor" },
+    { "name": "@keystone-alpha/cypress-project-social-login", "type": "minor" }
+  ],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/adapter-knex",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/keystone"]
+    },
+    {
+      "name": "@keystone-alpha/adapter-mongoose",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/keystone"]
+    }
+  ]
+}

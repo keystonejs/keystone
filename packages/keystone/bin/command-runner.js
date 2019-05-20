@@ -4,8 +4,7 @@ const info = {
   exeName: Object.keys(pkgInfo.bin)[0],
   version: pkgInfo.version,
 };
-
-const DEFAULT_COMMAND = 'dev';
+const { DEFAULT_COMMAND } = require('../constants');
 
 module.exports = {
   DEFAULT_COMMAND,

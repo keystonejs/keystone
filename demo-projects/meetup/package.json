@@ -9,18 +9,19 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "DISABLE_LOGGING=true node server.js",
-    "build": "next build"
+    "start": "NODE_ENV=development DISABLE_LOGGING=true node server.js",
+    "build": "NODE_ENV=production next build"
   },
   "dependencies": {
     "@emotion/core": "^10.0.10",
     "@keystone-alpha/adapter-mongoose": "^2.0.0",
-    "@keystone-alpha/admin-ui": "^3.2.1",
-    "@keystone-alpha/core": "^2.0.4",
+    "@keystone-alpha/app-admin-ui": "^3.2.1",
+    "@keystone-alpha/app-graphql": "^5.0.0",
     "@keystone-alpha/fields": "^6.1.1",
     "@keystone-alpha/fields-wysiwyg-tinymce": "^2.0.1",
     "@keystone-alpha/file-adapters": "^1.0.2",
     "@keystone-alpha/keystone": "^4.0.0",
+    "@keystone-alpha/app-next": "^0.0.0",
     "@keystone-alpha/session": "^1.0.2",
     "apollo-boost": "^0.3.1",
     "apollo-client": "^2.5.1",
@@ -32,8 +33,8 @@
     "graphql-tag": "^2.10.1",
     "isomorphic-unfetch": "^3.0.0",
     "next": "^8.0.3",
-    "prop-types": "^15.7.2",
     "next-routes": "^1.4.2",
+    "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-apollo": "2.4.0",
     "react-apollo-hooks": "^0.4.4",

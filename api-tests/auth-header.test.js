@@ -1,7 +1,8 @@
 const supertest = require('supertest-light');
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { Text, Password } = require('@keystone-alpha/fields');
-const { WebServer } = require('@keystone-alpha/server');
+const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const express = require('express');
 const bodyParser = require('body-parser');
 const cookieSignature = require('cookie-signature');
 const { multiAdapterRunners } = require('@keystone-alpha/test-utils');
@@ -26,7 +27,7 @@ const initialData = {
 
 const COOKIE_SECRET = 'qwerty';
 
-function setupKeystone() {
+async function setupKeystone() {
   const keystone = new Keystone({
     name: `Jest Test Project For Login Auth ${cuid()}`,
     adapter: new MongooseAdapter(),
@@ -48,13 +49,17 @@ function setupKeystone() {
     list: 'User',
   });
 
-  const server = new WebServer(keystone, {
+  const app = express();
+
+  const graphQLApp = new GraphQLApp(keystone, {
     cookieSecret: COOKIE_SECRET,
     apiPath: '/admin/api',
     graphiqlPath: '/admin/graphiql',
   });
 
-  server.app.post(
+  app.use(await graphQLApp.prepareMiddleware({ keystone, dev: true }));
+
+  app.post(
     '/signin',
     bodyParser.json(),
     bodyParser.urlencoded({ extended: true }),
@@ -83,11 +88,11 @@ function setupKeystone() {
     }
   );
 
-  return { keystone, server };
+  return { keystone, app };
 }
 
-function login(server, username, password) {
-  return supertest(server.app)
+function login(app, username, password) {
+  return supertest(app)
     .set('Accept', 'application/json')
     .post('/signin', { username, password })
     .then(res => {
@@ -104,10 +109,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('Auth testing', () => {
       test(
         'Gives access denied when not logged in',
-        runner(setupKeystone, async ({ keystone, server }) => {
+        runner(setupKeystone, async ({ keystone, app }) => {
           // seed the db
           await keystone.createItems(initialData);
-          return supertest(server.app)
+          return supertest(app)
             .set('Accept', 'application/json')
             .post('/admin/api', { query: '{ allUsers { id } }' })
             .then(function(res) {
@@ -122,10 +127,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('logged in', () => {
         test(
           'Allows access with bearer token',
-          runner(setupKeystone, async ({ keystone, server }) => {
+          runner(setupKeystone, async ({ keystone, app }) => {
             await keystone.createItems(initialData);
             const { success, token } = await login(
-              server,
+              app,
               initialData.User[0].email,
               initialData.User[0].password
             );
@@ -133,7 +138,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(success).toBe(true);
             expect(token).toBeTruthy();
 
-            return supertest(server.app)
+            return supertest(app)
               .set('Authorization', `Bearer ${token}`)
               .set('Accept', 'application/json')
               .post('/admin/api', { query: '{ allUsers { id } }' })
@@ -149,10 +154,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'Allows access with cookie',
-          runner(setupKeystone, async ({ keystone, server }) => {
+          runner(setupKeystone, async ({ keystone, app }) => {
             await keystone.createItems(initialData);
             const { success, token } = await login(
-              server,
+              app,
               initialData.User[0].email,
               initialData.User[0].password
             );
@@ -160,7 +165,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(success).toBe(true);
             expect(token).toBeTruthy();
 
-            return supertest(server.app)
+            return supertest(app)
               .set('Cookie', `keystone.sid=${signCookie(token)}`)
               .set('Accept', 'application/json')
               .post('/admin/api', { query: '{ allUsers { id } }' })
