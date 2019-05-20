@@ -1,10 +1,9 @@
 const loaderUtils = require('loader-utils');
-const endent = require('endent');
 
 function serialize(value, allPaths) {
   if (typeof value === 'string') {
     allPaths.add(value);
-    return `loaders['${value}']`;
+    return `loaders[${JSON.stringify(value)}]`;
   }
   if (Array.isArray(value)) {
     return `[${value.map(val => serialize(val, allPaths)).join(', ')}]`;
@@ -15,7 +14,7 @@ function serialize(value, allPaths) {
       Object.keys(value)
         .map(key => {
           // we need to use getters so circular dependencies work
-          return `"${key}": ${serialize(value[key], allPaths)}`;
+          return `${JSON.stringify(key)}: ${serialize(value[key], allPaths)}`;
         })
         .join(',\n') +
       '}'
@@ -100,11 +99,11 @@ module.exports = function() {
 
   let loaders = `{\n${[...allPaths]
     .map(path => {
-      return `'${path}': () => import('${path}').then(interopDefault)`;
+      return `${JSON.stringify(path)}: () => import(${JSON.stringify(path)}).then(interopDefault)`;
     })
     .join(',\n')}\n}`;
 
-  const source = endent`
+  const source = `
     import { captureSuspensePromises } from '@keystone-alpha/utils';
     let promiseCache = new Map();
     let valueCache = new Map();
