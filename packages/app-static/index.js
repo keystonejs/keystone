@@ -3,24 +3,24 @@ const pathModule = require('path');
 const cpy = require('cpy');
 
 module.exports = class StaticServer {
-  constructor({ route, path }) {
-    this._route = route;
+  constructor({ path, src }) {
     this._path = path;
+    this._src = src;
   }
 
   prepareMiddleware({ dev, distDir = '.' } = {}) {
     const app = express();
-    let path = this._path;
+    let src = this._src;
     if (!dev) {
-      path = pathModule.join(distDir, this._path);
+      src = pathModule.join(distDir, this._src);
     }
-    app.use(this._route, express.static(pathModule.resolve(path)));
+    app.use(this._path, express.static(pathModule.resolve(src)));
     return app;
   }
 
   build({ distDir }) {
-    const source = pathModule.resolve(this._path);
-    const destination = pathModule.resolve(pathModule.join(distDir, this._path));
+    const source = pathModule.resolve(this._src);
+    const destination = pathModule.resolve(pathModule.join(distDir, this._src));
     return cpy(source, destination);
   }
 };

@@ -48,7 +48,7 @@ module.exports = {
     new GraphQLApi(),
 
     // Serve our website from the root route.
-    new StaticApp({ route: '/', path: 'public' }),
+    new StaticApp({ path: '/', src: 'public' }),
 
     // Optionally export the 'admin' instance.
     // If no admin is exported, you will still have a fully functioning GraphQL

@@ -155,9 +155,9 @@ keystone.createList('SomeLongNamedList', {
   },
 });
 
-const admin = new AdminUI(keystone);
+const admin = new AdminUI(keystone, { apiPath: '/foo' });
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApi(), admin, new StaticApp({ route: staticRoute, path: staticPath })],
+  apps: [new GraphQLApi({ apiPath: '/foo' }), admin, new StaticApp({ path: staticRoute, src: staticPath })],
 };

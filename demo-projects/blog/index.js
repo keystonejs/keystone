@@ -54,7 +54,7 @@ module.exports = {
   apps: [
     new GraphQLApi(),
     admin,
-    new StaticApp({ route: staticRoute, path: staticPath }),
+    new StaticApp({ path: staticRoute, src: staticPath }),
     new NextApp({ dir: 'app' }),
   ],
 };

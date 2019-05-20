@@ -22,5 +22,5 @@ const admin = new AdminUI(keystone);
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApi(), new StaticApp({ route: '/', path: 'public' }), admin],
+  apps: [new GraphQLApi(), new StaticApp({ path: '/', src: 'public' }), admin],
 };

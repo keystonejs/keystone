@@ -46,5 +46,5 @@ const admin = new AdminUI(keystone, {
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApi(), admin, new StaticApp({ route: staticRoute, path: staticPath })],
+  apps: [new GraphQLApi(), admin, new StaticApp({ path: staticRoute, src: staticPath })],
 };
