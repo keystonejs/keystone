@@ -27,16 +27,14 @@ const keystone = {
 const adminPath = 'admin_path';
 
 test('new AdminUIApp() - smoke test', () => {
-  const adminUI = new AdminUIApp(keystone, { adminPath });
+  const adminUI = new AdminUIApp({ adminPath });
   expect(adminUI).not.toBe(null);
-
-  expect(adminUI.keystone).toEqual(keystone);
   expect(adminUI.adminPath).toEqual(adminPath);
 });
 
 describe('Add Middleware', () => {
   test('Smoke test', () => {
-    const adminUI = new AdminUIApp(keystone, {
+    const adminUI = new AdminUIApp({
       adminPath,
       signinPath: '/signin',
       signoutPath: '/signout',
@@ -46,6 +44,7 @@ describe('Add Middleware', () => {
     //expect(adminUI.createSessionMiddleware()).not.toBe(null);
     expect(
       adminUI.createDevMiddleware({
+        keystone,
         apiPath: adminPath,
         graphiqlPath: `${adminPath}/graphiql`,
       })
