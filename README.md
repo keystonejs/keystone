@@ -117,7 +117,7 @@ module.exports = {
   apps: [
     new GraphQLApi(),
     // Setup the optional Admin UI
-    new AdminUIApp(keystone),
+    new AdminUIApp(),
   ],
 };
 ```
@@ -274,7 +274,7 @@ const authStrategy = keystone.createAuthStrategy({
 module.exports = {
   keystone,
   apps: [
-    new AdminUIApp(keystone, { adminPath: '/admin', authStrategy })
+    new AdminUIApp({ adminPath: '/admin', authStrategy })
   ],
 };
 ```

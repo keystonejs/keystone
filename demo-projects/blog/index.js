@@ -24,7 +24,7 @@ keystone.createList('Post', Post);
 keystone.createList('PostCategory', PostCategory);
 keystone.createList('Comment', Comment);
 
-const adminApp = new AdminUIApp(keystone, {
+const adminApp = new AdminUIApp({
   adminPath: '/admin',
   authStrategy,
   pages: [
