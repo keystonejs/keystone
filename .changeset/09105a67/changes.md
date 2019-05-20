@@ -1,1 +1,1 @@
-Add support for an `onConnect` function to be passed to the Keystone constructor, which is called when all adapters have connected.
+Add support for setting PORT and CONNECT_TO environment variables
