@@ -1,8 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 
-import { H5, Html } from '../primitives';
-import { AvatarStack } from '../primitives/Avatar';
+import { H5, Html, AvatarStack } from '../primitives';
 import { mq } from '../helpers/media';
 
 const Talks = ({ talks }) => {
