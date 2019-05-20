@@ -3,7 +3,6 @@ require('dotenv').config();
 const express = require('express');
 
 const { keystone, apps } = require('./index');
-const initialData = require('./initialData');
 
 const port = process.env.PORT || 3000;
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/keystonejs-meetup';
@@ -17,6 +16,7 @@ keystone
     // NOTE: This is only for demo purposes and should not be used in production
     const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
+      const initialData = require('./initialData');
       Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
