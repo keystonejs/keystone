@@ -1,0 +1,7 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/demo-project-meetup", "type": "patch" },
+    { "name": "@keystone-alpha/keystone", "type": "minor" }
+  ],
+  "dependents": []
+}
