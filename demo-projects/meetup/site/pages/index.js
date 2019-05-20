@@ -1,113 +1,219 @@
 /** @jsx jsx */
 import { Query } from 'react-apollo';
 import getConfig from 'next/config';
+import Head from 'next/head';
 import { jsx } from '@emotion/core';
 
-import EventItem from '../components/EventItem';
+import { Link } from '../../routes';
+import EventItems from '../components/EventItems';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { GET_CURRENT_EVENTS } from '../graphql/events';
+import { GET_EVENT_RSVPS } from '../graphql/rsvps';
 import { GET_SPONSORS } from '../graphql/sponsors';
 
-import { Section, Container, Separator, Button, Loading, Error } from '../primitives';
-import { H1, H2, H3 } from '../primitives/Typography';
-import { colors, fontSizes } from '../theme';
+import Talks from '../components/Talks';
+import Rsvp from '../components/Rsvp';
+import {
+  Button,
+  Container,
+  Error,
+  Hero,
+  Html,
+  Loading,
+  MicrophoneIcon,
+  PinIcon,
+  UserIcon,
+} from '../primitives';
+import { AvatarStack } from '../primitives/Avatar';
+import { H2, H3 } from '../primitives/Typography';
+import { colors, gridSize, fontSizes } from '../theme';
+import {
+  isInFuture,
+  formatFutureDate,
+  formatPastDate,
+  getForegroundColor,
+  pluralLabel,
+} from '../helpers';
+import { mq } from '../helpers/media';
 import { Component } from 'react';
 
 const { publicRuntimeConfig } = getConfig();
 
-const Hero = () => {
-  const { meetup } = publicRuntimeConfig;
-
-  return (
-    <div>
-      <div
-        css={{
-          backgroundColor: colors.greyDark,
-          padding: '7rem 0',
-          textAlign: 'center',
-          color: 'white',
-        }}
-      >
-        <H1>{meetup.name}</H1>
-        <p css={{ fontSize: fontSizes.md, maxWidth: 720, margin: '30px auto 0' }}>{meetup.intro}</p>
-      </div>
-    </div>
-  );
-};
-
-const Slant = () => {
-  return (
-    <svg
-      css={{ height: '5vw', width: '100vw' }}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-    >
-      <polygon fill={colors.greyDark} points="0, 100 0, 0 100, 0" />
-    </svg>
-  );
-};
-
+// Featured Event
 const FeaturedEvent = ({ isLoading, error, event }) => {
   if (isLoading && !event) {
-    return <p>Special loading message for featured event</p>;
+    return <Loading isCentered />;
   }
   if (error) {
-    return <p>special featured events error</p>;
+    console.error('Failed to render the featured event', error);
+    return null;
   }
   if (!isLoading && !event) {
-    return <p>No events to show.</p>;
+    return null;
   }
+
+  const { description, id, locationAddress, maxRsvps, name, startTime, talks, themeColor } = event;
+  const prettyDate = isInFuture(startTime)
+    ? formatFutureDate(startTime)
+    : formatPastDate(startTime);
+
+  const hex = themeColor ? themeColor.slice(1) : null;
 
   return (
     <Container css={{ margin: '-7rem auto 0', position: 'relative' }}>
       <div css={{ boxShadow: '0px 4px 94px rgba(0, 0, 0, 0.15)' }}>
-        <div css={{ backgroundColor: colors.purple, color: 'white', padding: '2rem' }}>
-          <div css={{ display: 'flex' }}>
-            <div css={{ flex: 1 }}>
-              <H3>{event.name}</H3>
-            </div>
+        <div
+          css={{
+            backgroundColor: themeColor,
+            color: getForegroundColor(themeColor),
+            display: 'block',
+            padding: '2rem',
+          }}
+        >
+          <div css={mq({ display: 'flex', flexDirection: ['column', 'row'] })}>
             <div
-              css={{ flex: 1, padding: '0 2rem' }}
-              dangerouslySetInnerHTML={{ __html: event.description }}
+              css={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div>
+                <p
+                  css={{
+                    textTransform: 'uppercase',
+                    marginTop: 0,
+                    fontWeight: 500,
+                    marginBottom: gridSize,
+                  }}
+                >
+                  {prettyDate}
+                </p>
+                <Link route="event" params={{ id, hex }} passHref>
+                  <a
+                    css={{
+                      color: 'inherit',
+                      textDecoration: 'none',
+                      ':hover': { textDecoration: 'underline' },
+                    }}
+                  >
+                    <H3>{name}</H3>
+                  </a>
+                </Link>
+              </div>
+              <p css={{ alignItems: 'center', display: 'flex', fontWeight: 300 }}>
+                <PinIcon css={{ marginRight: '0.5em' }} />
+                {locationAddress}
+              </p>
+            </div>
+            <Html
+              markup={description}
+              css={mq({
+                flex: 1,
+                padding: [0, '0 2rem'],
+
+                p: {
+                  '&:first-of-type': { marginTop: 0 },
+                  '&:last-of-type': { marginBottom: 0 },
+                },
+              })}
             />
           </div>
         </div>
         <div css={{ padding: '1.5rem', background: 'white' }}>
-          <div css={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div
+            css={mq({
+              display: 'flex',
+              flexDirection: ['column', 'row'],
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            })}
+          >
             <div
               css={{ display: 'flex', flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}
             >
-              <span css={{ padding: '0 1rem' }}>Will you be attending?</span>
-              <Button color={colors.purple} css={{ marginLeft: '.5rem' }}>
-                yes
-              </Button>
-              <Button color={colors.purple} css={{ marginLeft: '.5rem' }}>
-                no
-              </Button>
+              <Rsvp eventId={id}>
+                {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
+                  if (loading) return <Loading />;
+                  if (error) return <p css={{ color: colors.greyMedium, margin: 0 }}>{error}</p>;
+
+                  return (
+                    <div>
+                      <span css={{ padding: '0 1rem' }}>Will you be attending?</span>
+                      <Button
+                        disabled={isGoing || !canRsvp}
+                        background={isGoing ? event.themeColor : colors.greyLight}
+                        foreground={isGoing ? 'white' : colors.greyDark}
+                        css={{ marginLeft: '.5rem' }}
+                        onClick={() => rsvpToEvent('yes')}
+                      >
+                        Yes
+                      </Button>
+                      <Button
+                        disabled={!isGoing}
+                        background={!isGoing ? event.themeColor : colors.greyLight}
+                        foreground={!isGoing ? 'white' : colors.greyDark}
+                        css={{ marginLeft: '.5rem' }}
+                        onClick={() => rsvpToEvent('no')}
+                      >
+                        No
+                      </Button>
+                    </div>
+                  );
+                }}
+              </Rsvp>
             </div>
-            <div css={{ display: 'flex', flex: 1, justifyContent: 'flex-end' }}>
-              <span css={{ padding: '0 1rem' }}>{event.talks.length} talks</span>
-              <span css={{ padding: '0 1rem' }}>84 attending</span>
-              <span css={{ padding: '0 1rem' }}>avatars</span>
+            <div
+              css={{
+                alignItems: 'center',
+                display: 'flex',
+                flex: 1,
+                justifyContent: 'flex-end',
+              }}
+            >
+              <div
+                css={{ alignItems: 'center', display: 'flex', fontWeight: 300, padding: '0 1rem' }}
+              >
+                <MicrophoneIcon color="#ccc" css={{ marginRight: '0.5em' }} />
+                {pluralLabel(talks.length, 'talk', 'talks')}
+              </div>
+              <Query query={GET_EVENT_RSVPS} variables={{ event: id }}>
+                {({ data, loading, error }) => {
+                  if (loading && !data) return <Loading />;
+                  if (error) return <Error error={error} />;
+
+                  const { allRsvps } = data;
+
+                  if (!allRsvps) return null;
+
+                  const attending = `${allRsvps.length}${maxRsvps ? `/${maxRsvps}` : ''}`;
+
+                  return (
+                    <>
+                      <div
+                        css={{
+                          alignItems: 'center',
+                          display: 'flex',
+                          fontWeight: 300,
+                          padding: '0 1rem',
+                        }}
+                      >
+                        <UserIcon color="#ccc" css={{ marginRight: '0.5em' }} />
+                        {attending} {isInFuture(startTime) ? 'attending' : 'attended'}
+                      </div>
+                      <AvatarStack
+                        users={allRsvps.map(rsvp => rsvp.user)}
+                        css={{ width: 50, height: 50 }}
+                      />
+                    </>
+                  );
+                }}
+              </Query>
             </div>
           </div>
         </div>
-      </div>
-    </Container>
-  );
-};
-
-const Talks = ({ talks }) => {
-  return (
-    <Container>
-      <div
-        css={{ display: 'flex', marginTop: '3rem', marginLeft: '-1.5rem', marginRight: '-1.5rem' }}
-      >
-        {talks.map(talk => (
-          <Talk {...talk} />
-        ))}
       </div>
     </Container>
   );
@@ -115,7 +221,7 @@ const Talks = ({ talks }) => {
 
 const Sponsors = () => {
   return (
-    <Container>
+    <Container css={{ textAlign: 'center' }}>
       <H3>Our sponsors</H3>
       <Query query={GET_SPONSORS}>
         {({ data, loading, error }) => {
@@ -124,54 +230,35 @@ const Sponsors = () => {
 
           const { allSponsors } = data;
           return (
-            <ul>
+            <ul
+              css={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                listStyle: 'none',
+                padding: 0,
+              }}
+            >
               {allSponsors.map(sponsor => (
-                <li key={sponsor.id}>{sponsor.name}</li>
+                <li key={sponsor.id} css={{ flex: 1, margin: 12 }}>
+                  <a href={sponsor.website} target="_blank">
+                    {sponsor.logo ? (
+                      <img
+                        alt={sponsor.name}
+                        css={{ maxWidth: '100%', maxHeight: 140 }}
+                        src={sponsor.logo.publicUrl}
+                      />
+                    ) : (
+                      sponsor.name
+                    )}
+                  </a>
+                </li>
               ))}
             </ul>
           );
         }}
       </Query>
     </Container>
-  );
-};
-
-const Talk = ({ title, description, speakers }) => {
-  return (
-    <div css={{ padding: '0 1.5rem' }}>
-      <H3 size={5}>{title}</H3>
-      <p dangerouslySetInnerHTML={{ __html: description }} />
-      <p>
-        {speakers.map(speaker => (
-          <span key={speaker.id} css={{ fontWeight: 600 }}>
-            {speaker.author}
-          </span>
-        ))}
-      </p>
-    </div>
-  );
-};
-
-const EventsList = ({ events, ...props }) => {
-  return (
-    <ul
-      css={{
-        listStyle: 'none',
-        margin: '0 -1rem',
-        padding: 0,
-        display: `flex`,
-        alignItems: 'flex-start',
-      }}
-      {...props}
-    >
-      {events.map((event, index) => (
-        <EventItem
-          key={event.id}
-          {...event}
-          css={{ width: `${100 / 3}%`, marginTop: index * 80 }}
-        />
-      ))}
-    </ul>
   );
 };
 
@@ -212,30 +299,66 @@ export default class Home extends Component {
 
   render() {
     const now = this.props.now;
+    const { meetup } = publicRuntimeConfig;
+
     return (
       <Query query={GET_CURRENT_EVENTS} variables={{ now }}>
         {({ data: eventsData, loading: eventsLoading, error: eventsError }) => {
           const { featuredEvent, moreEvents } = processEventsData(eventsData);
           return (
             <div>
+              <Head>
+                <title>{meetup.name}</title>
+                <meta name="description" content={meetup.intro} />
+              </Head>
               <Navbar foreground="white" background={colors.greyDark} />
-              <Hero />
-              <Slant />
-              <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />;
-              {featuredEvent && featuredEvent.talks ? <Talks talks={featuredEvent.talks} /> : null}
+              <Hero title={meetup.name}>
+                <Html markup={meetup.homeIntro} />
+              </Hero>
+              <FeaturedEvent isLoading={eventsLoading} error={eventsError} event={featuredEvent} />
+              <Container css={{ marginTop: '3rem' }}>
+                {featuredEvent && featuredEvent.talks ? (
+                  <Talks talks={featuredEvent.talks} />
+                ) : null}
+              </Container>
               <Section css={{ padding: '3rem 0' }}>
                 <Container>
                   <Sponsors />
                 </Container>
               </Section>
               {moreEvents.length ? (
-                <Section css={{ backgroundColor: colors.greyLight, padding: '5rem 0' }}>
-                  <Container>
-                    <H2>More Meetup events</H2>
-                    <Separator css={{ marginTop: 30 }} />
-                    <EventsList events={moreEvents} css={{ marginTop: '3rem' }} />
-                  </Container>
-                </Section>
+                <>
+                  <Section
+                    css={{
+                      backgroundColor: colors.greyLight,
+                      margin: '5rem 0',
+                      paddingTop: '5rem',
+                    }}
+                  >
+                    <Slant placement="top" fill={colors.greyLight} />
+                    <Container>
+                      <H2 hasSeparator>More Meetups</H2>
+                      <EventItems events={moreEvents} offsetTop css={{ marginTop: '3rem' }} />
+                      <Link route="events">
+                        <a
+                          css={{
+                            color: 'black',
+                            cursor: 'pointer',
+                            fontSize: fontSizes.md,
+                            marginTop: '1rem',
+
+                            ':hover > span': {
+                              textDecoration: 'underline',
+                            },
+                          }}
+                        >
+                          <span>View all</span> &rarr;
+                        </a>
+                      </Link>
+                    </Container>
+                    <Slant placement="bottom" fill={colors.greyLight} />
+                  </Section>
+                </>
               ) : null}
               <Footer />
             </div>
@@ -245,3 +368,34 @@ export default class Home extends Component {
     );
   }
 }
+
+// styled components
+
+const Section = props => (
+  <section
+    css={{
+      position: 'relative',
+    }}
+    {...props}
+  />
+);
+const Slant = ({ fill, height = 5, placement }) => {
+  const points = placement === 'bottom' ? '0, 100 0, 0 100, 0' : '0 100, 100 0, 100, 100';
+
+  return (
+    <svg
+      css={{
+        height: `${height}vw`,
+        width: '100vw',
+        display: 'block',
+        position: 'absolute',
+        [placement]: `-${height}vw`,
+      }}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+    >
+      <polygon fill={fill} points={points} />
+    </svg>
+  );
+};

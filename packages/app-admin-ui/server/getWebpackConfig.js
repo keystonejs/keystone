@@ -92,6 +92,13 @@ module.exports = function({ adminMeta, entry, outputPath }) {
         // which depends on the version of react that keystone uses
         react$: require.resolve('react'),
         'react-dom$': require.resolve('react-dom'),
+        // we also only want a single version of react-router-dom so that all usages of it are using the same context object
+        // why is this using path.dirname(require.resolve('react-router-dom/package.json')) over require.resolve('react-router-dom')?
+        // because react-router-dom has module builds which are better for bundlers
+        // and if we did require.resolve('react-router-dom'), we would get the cjs build
+        // why isn't that used for react and react-dom?
+        // they don't have module builds
+        'react-router-dom$': path.dirname(require.resolve('react-router-dom/package.json')),
       },
     },
   };

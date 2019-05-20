@@ -1,33 +1,41 @@
 import gql from 'graphql-tag';
+import { USER_IMAGE } from './fragments';
 
 export const EVENT_DATA = gql`
   fragment EventData on Event {
     id
     name
     startTime
+    locationAddress
+    locationDescription
     description
     themeColor
+    maxRsvps
     talks {
       id
+      isLightningTalk
       name
+      description
       speakers {
         id
         name
+        ...UserImage
       }
     }
   }
+  ${USER_IMAGE}
 `;
 
 export const GET_CURRENT_EVENTS = gql`
   query GetCurrentEvents($now: DateTime!) {
     upcomingEvents: allEvents(
-      where: { startTime_not: null, startTime_gte: $now }
+      where: { startTime_not: null, status: active, startTime_gte: $now }
       orderBy: "startTime_DESC"
     ) {
       ...EventData
     }
     previousEvents: allEvents(
-      where: { startTime_not: null, startTime_lte: $now }
+      where: { startTime_not: null, status: active, startTime_lte: $now }
       orderBy: "startTime_ASC"
     ) {
       ...EventData
@@ -38,7 +46,7 @@ export const GET_CURRENT_EVENTS = gql`
 
 export const GET_ALL_EVENTS = gql`
   {
-    allEvents {
+    allEvents(where: { startTime_not: null, status: active }, orderBy: "startTime_DESC") {
       ...EventData
     }
   }
@@ -50,6 +58,14 @@ export const GET_EVENT_DETAILS = gql`
     Event(where: { id: $event }) {
       ...EventData
     }
+    allRsvps(where: { event: { id: $event }, user_is_null: false }) {
+      id
+      user {
+        name
+        ...UserImage
+      }
+    }
   }
   ${EVENT_DATA}
+  ${USER_IMAGE}
 `;

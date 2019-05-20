@@ -2,14 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import Router from 'next/router';
+import Head from 'next/head';
+import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
 import { useAuth } from '../lib/authetication';
-import { Container, H2 } from '../primitives';
+import { Container, H1 } from '../primitives';
 import { Button, Field, Label, Input } from '../primitives/forms';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { gridSize, colors } from '../theme';
+
+const { publicRuntimeConfig } = getConfig();
 
 export default () => {
   const [email, setEmail] = useState('');
@@ -17,6 +21,7 @@ export default () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorState, setErrorState] = useState(false);
   const { isAuthenticated, signin } = useAuth();
+  const { meetup } = publicRuntimeConfig;
 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -39,15 +44,15 @@ export default () => {
 
   return (
     <>
+      <Head>
+        <title>Sign in | {meetup.name}</title>
+      </Head>
       <Navbar background="white" foreground={colors.greyDark} />
       <Container css={{ marginTop: gridSize * 3 }}>
-        <H2>Sign in</H2>
+        <H1>Sign in</H1>
 
         {errorState && (
-          <>
-            <p>An error occurred signing you in.</p>
-            <p>Please check your email and password then try again.</p>
-          </>
+          <p css={{ color: colors.red }}>Please check your email and password then try again.</p>
         )}
 
         <form css={{ marginTop: gridSize * 3 }} noValidate onSubmit={handleSubmit}>

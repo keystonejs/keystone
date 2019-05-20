@@ -160,6 +160,6 @@ module.exports = {
   apps: [
     new GraphQLApp(),
     new StaticApp({ path: staticRoute, src: staticPath }),
-    new AdminUIApp(keystone, { enableDefaultRoute: true }),
+    new AdminUIApp({ enableDefaultRoute: true }),
   ],
 };

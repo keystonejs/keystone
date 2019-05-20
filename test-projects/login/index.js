@@ -44,6 +44,6 @@ module.exports = {
   apps: [
     new GraphQLApp(),
     new StaticApp({ path: staticRoute, src: staticPath }),
-    new AdminUIApp(keystone, { adminPath: '/admin', authStrategy }),
+    new AdminUIApp({ adminPath: '/admin', authStrategy }),
   ],
 };

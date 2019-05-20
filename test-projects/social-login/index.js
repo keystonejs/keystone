@@ -158,6 +158,6 @@ module.exports = {
   apps: [
     new GraphQLApp(),
     new StaticApp({ path: staticRoute, src: staticPath }),
-    new AdminUIApp(keystone, { authStrategy: DISABLE_AUTH ? undefined : authStrategy }),
+    new AdminUIApp({ authStrategy: DISABLE_AUTH ? undefined : authStrategy }),
   ],
 };

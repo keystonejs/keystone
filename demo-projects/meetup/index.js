@@ -27,7 +27,7 @@ keystone.createList('User', User);
 keystone.createList('Organiser', Organiser);
 keystone.createList('Sponsor', Sponsor);
 
-const adminApp = new AdminUIApp(keystone, {
+const adminApp = new AdminUIApp({
   adminPath: '/admin',
   authStrategy,
   pages: [
