@@ -13,7 +13,7 @@ const MEETUP = require('./meetupConfig');
 const initialiseData = require('./initialData');
 
 const keystone = new Keystone({
-  name: MEETUP.name + ' test',
+  name: MEETUP.name,
   adapter: new MongooseAdapter(),
   onConnect: initialiseData,
 });
