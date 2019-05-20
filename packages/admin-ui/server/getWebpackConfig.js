@@ -18,7 +18,7 @@ module.exports = function({ adminMeta, entry, outputPath }) {
   const rules = [
     {
       test: /\.js$/,
-      exclude: [/node_modules(?!\/@keystone-alpha\/admin-ui)/],
+      exclude: [/node_modules(?!(?:\/|\\)@keystone-alpha(?:\/|\\)admin-ui)/],
       use: [
         {
           loader: 'babel-loader',
