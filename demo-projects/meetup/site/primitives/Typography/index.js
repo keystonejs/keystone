@@ -3,6 +3,7 @@
 import PropTypes from 'prop-types';
 import { jsx } from '@emotion/core';
 import { fontSizes } from '../../theme';
+import { mq } from '../../helpers/media';
 
 const SIZE_MAP = [fontSizes.xxxl, fontSizes.xxl, fontSizes.xl, fontSizes.lg, fontSizes.md];
 const baseStyles = {
@@ -13,7 +14,7 @@ const baseStyles = {
 
 export const Headline = ({ as: Tag, hasSeparator, size, ...props }) => {
   const fontSize = SIZE_MAP[size - 1] ? SIZE_MAP[size - 1] : SIZE_MAP[1];
-  const fontStyle = { fontSize };
+  const fontStyle = mq({ fontSize: [fontSize / 1.5, fontSize] });
   const separatorStyles = hasSeparator ? getSeparatorStyles(fontSize / 2) : null;
 
   return <Tag css={[baseStyles, fontStyle, separatorStyles]} {...props} />;
