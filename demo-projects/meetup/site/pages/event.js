@@ -56,7 +56,7 @@ export default class Event extends Component {
               <Navbar foreground="white" background={themeColor} />
               <Hero align="left" backgroundColor={themeColor} superTitle={prettyDate} title={name}>
                 <p css={{ fontWeight: 100 }}>{locationAddress}</p>
-                <Html markup={description} />
+                {description ? <Html markup={description.replace(/style=".*?"/g, '')} /> : null}
                 <Rsvp eventId={id}>
                   {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
                     if (loading) return <Loading />;
