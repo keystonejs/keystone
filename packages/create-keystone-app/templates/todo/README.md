@@ -16,16 +16,6 @@ Then visit:
 - The KeystoneJS Admin UI at [`http://localhost:3000/admin`](http://localhost:3000/admin)
 - The GraphQL Playground at [`http://localhost:3000/admin/graphiql`](http://localhost:3000/admin/graphiql)
 
-Set the port with:
-
-```sh
-PORT=5000 yarn start
-```
-
 ## React App
 
 The one 'extra' that this project includes is an example React App that consumes the data from Keystone via GraphQl. The app uses React's UMD build and is housed within the `/public` directory. It allows you to see how easy it is to create an app that can use Keystone's GraphQL APIs.
-
-## Custom Server
-
-This project includes a _Custom Server_ in `server.js`. It is used to serve the react app only. If you wish to run Keystone as an API & AdminUI only, you can delete `server.js`, the `/public` directory and change the `start` script from running `node server.js` to running `keystone`

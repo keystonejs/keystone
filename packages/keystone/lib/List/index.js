@@ -121,7 +121,16 @@ module.exports = class List {
       path,
       adapterConfig = {},
     },
-    { getListByKey, getGraphQLQuery, adapter, defaultAccess, getAuth, createAuxList, isAuxList }
+    {
+      getListByKey,
+      getGraphQLQuery,
+      adapter,
+      defaultAccess,
+      getAuth,
+      registerType,
+      createAuxList,
+      isAuxList,
+    }
   ) {
     this.key = key;
     this._fields = fields;
@@ -223,13 +232,18 @@ module.exports = class List {
 
         if (!graphQLQuery) {
           return Promise.reject(
-            new Error('No executable schema is available. Have you setup `@keystone-alpha/server`?')
+            new Error(
+              'No executable schema is available. Have you setup `@keystone-alpha/app-graphql`?'
+            )
           );
         }
 
         return graphQLQuery(queryString, passThroughContext, variables);
       },
     };
+
+    // Tell Keystone about all the types we've seen
+    Object.values(fields).forEach(({ type }) => registerType(type));
   }
 
   initFields() {

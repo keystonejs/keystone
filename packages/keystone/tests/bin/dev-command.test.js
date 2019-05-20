@@ -1,6 +1,30 @@
+const fs = require('fs');
 const tmp = require('tmp');
-const path = require('path');
+const http = require('http');
 const devCommand = require('../../bin/commands/dev');
+const constants = require('../../constants');
+
+async function expectServerResponds({ port, host = 'localhost', path = '/' }) {
+  // A quick and dirty request for response code + headers (but no body)
+  const { statusCode } = await new Promise((resolve, reject) => {
+    const req = http.get({ host, port, path }, resolve);
+    req.on('error', error => reject(error));
+  });
+
+  expect(statusCode).toBe(200);
+}
+
+function cleanupServer(server) {
+  // Cleanup
+  return new Promise((resolve, reject) => {
+    server.close(error => {
+      if (error) {
+        return reject(error);
+      }
+      return resolve();
+    });
+  });
+}
 
 describe('dev command', () => {
   test('exports', () => {
@@ -13,140 +37,58 @@ describe('dev command', () => {
     expect(typeof devCommand.help({ exeName: '' })).toBe('string');
   });
 
-  describe('--entry arg', () => {
-    afterEach(() => {
-      jest.restoreAllMocks();
-      // See: https://twitter.com/JessTelford/status/1102801062489018369
-      jest.resetModules();
-      jest.dontMock('@keystone-alpha/core');
-    });
-
-    test('rejects when file not found', () => {
-      expect(devCommand.exec({ '--entry': 'foo.js', _cwd: __dirname })).rejects.toThrow(
-        /--entry=.*was passed.*but.*couldn't be found/
-      );
-    });
-
-    test('is setup with a default server', async () => {
-      const coreModule = require('@keystone-alpha/core');
-
-      const mockLog = jest.spyOn(global.console, 'log').mockImplementation(jest.fn());
-      const mockServerStart = jest.fn();
-      const mockPrepare = jest.fn(() =>
-        Promise.resolve({
-          server: { start: mockServerStart },
-          keystone: { connect: jest.fn() },
-        })
-      );
-
-      // clear the core module from the cache so we can mock it
-      jest.resetModules();
-      jest.doMock('@keystone-alpha/core', () => ({
-        ...coreModule,
-        prepare: mockPrepare,
-      }));
-      const localDevCommand = require('../../bin/commands/dev');
-      const serverFileObj = tmp.fileSync({ postfix: '.js' });
-
-      await localDevCommand.exec({ '--entry': serverFileObj.name });
-
-      expect(mockPrepare).toHaveBeenCalledWith(
-        expect.objectContaining({
-          // On Mac OSX, require.resolve prefixes an extra `/private`, so we have
-          // to add it here to mimic the internal behaviour of this method
-          entryFile: require.resolve(path.resolve(serverFileObj.name)),
-        })
-      );
-
-      expect(mockServerStart).toHaveBeenCalled();
-
-      expect(mockLog).toHaveBeenLastCalledWith(expect.stringContaining(`KeystoneJS ready on port`));
-    });
+  test('rejects when --entry file not found', () => {
+    expect(devCommand.exec({ '--entry': 'foo.js', _cwd: __dirname })).rejects.toThrow(
+      /--entry=.*was passed.*but.*couldn't be found/
+    );
   });
 
-  describe('--port arg', () => {
-    afterEach(() => {
-      jest.restoreAllMocks();
-      // See: https://twitter.com/JessTelford/status/1102801062489018369
-      jest.resetModules();
-      jest.dontMock('@keystone-alpha/core');
+  test('is setup with a default server on default port', async () => {
+    const localDevCommand = require('../../bin/commands/dev');
+    const serverFileObj = tmp.fileSync({ postfix: '.js' });
+    fs.writeFileSync(
+      serverFileObj.fd,
+      `
+      module.exports = {
+        // A mock keystone instance
+        keystone: {
+          auth: {},
+          prepare: () => Promise.resolve({ middlewares: (req, res, next) => res.send(200) }),
+          connect: () => Promise.resolve(),
+        }
+      }`
+    );
+
+    const { server } = await localDevCommand.exec({ '--entry': serverFileObj.name });
+
+    await expectServerResponds({ port: constants.DEFAULT_PORT });
+    return cleanupServer(server);
+  });
+
+  test('prepare server with port from --port arg', async () => {
+    const localDevCommand = require('../../bin/commands/dev');
+    const serverFileObj = tmp.fileSync({ postfix: '.js' });
+    fs.writeFileSync(
+      serverFileObj.fd,
+      `
+      module.exports = {
+        // A mock keystone instance
+        keystone: {
+          auth: {},
+          prepare: () => Promise.resolve({ middlewares: (req, res, next) => res.send(200) }),
+          connect: () => Promise.resolve(),
+        }
+      }`
+    );
+
+    const port = 5000;
+
+    const { server } = await localDevCommand.exec({
+      '--entry': serverFileObj.name,
+      '--port': port,
     });
 
-    test('prepares server with default port', async () => {
-      // Load up a fresh copy of the core module for use within our mock below
-      jest.resetModules();
-      const coreModule = require('@keystone-alpha/core');
-
-      const mockLog = jest.spyOn(global.console, 'log').mockImplementation(jest.fn());
-      const mockPrepare = jest.fn(() =>
-        Promise.resolve({
-          server: { start: jest.fn() },
-          keystone: { connect: jest.fn() },
-        })
-      );
-
-      // clear the core module from the cache so we can mock it
-      jest.resetModules();
-      jest.doMock('@keystone-alpha/core', () => ({
-        ...coreModule,
-        prepare: mockPrepare,
-      }));
-      const localDevCommand = require('../../bin/commands/dev');
-      const serverFileObj = tmp.fileSync({ postfix: '.js' });
-
-      await localDevCommand.exec({ '--entry': serverFileObj.name });
-
-      expect(mockPrepare).toHaveBeenCalledWith(
-        expect.objectContaining({
-          // On Mac OSX, require.resolve prefixes an extra `/private`, so we have
-          // to add it here to mimic the internal behaviour of this method
-          entryFile: require.resolve(path.resolve(serverFileObj.name)),
-          port: coreModule.DEFAULT_PORT,
-        })
-      );
-
-      expect(mockLog).toHaveBeenLastCalledWith(
-        expect.stringContaining(`KeystoneJS ready on port ${coreModule.DEFAULT_PORT}`)
-      );
-    });
-
-    test('prepare server with passed in port', async () => {
-      // Load up a fresh copy of the core module for use within our mock below
-      jest.resetModules();
-      const coreModule = require('@keystone-alpha/core');
-
-      const mockLog = jest.spyOn(global.console, 'log').mockImplementation(jest.fn());
-      const mockPrepare = jest.fn(() =>
-        Promise.resolve({
-          server: { start: jest.fn() },
-          keystone: { connect: jest.fn() },
-        })
-      );
-
-      // clear the core module from the cache so we can mock it
-      jest.resetModules();
-      jest.doMock('@keystone-alpha/core', () => ({
-        ...coreModule,
-        prepare: mockPrepare,
-      }));
-      const localDevCommand = require('../../bin/commands/dev');
-      const serverFileObj = tmp.fileSync({ postfix: '.js' });
-      const port = 5000;
-
-      await localDevCommand.exec({ '--entry': serverFileObj.name, '--port': port });
-
-      expect(mockPrepare).toHaveBeenCalledWith(
-        expect.objectContaining({
-          // On Mac OSX, require.resolve prefixes an extra `/private`, so we have
-          // to add it here to mimic the internal behaviour of this method
-          entryFile: require.resolve(path.resolve(serverFileObj.name)),
-          port,
-        })
-      );
-
-      expect(mockLog).toHaveBeenLastCalledWith(
-        expect.stringContaining(`KeystoneJS ready on port ${port}`)
-      );
-    });
+    await expectServerResponds({ port });
+    return cleanupServer(server);
   });
 });

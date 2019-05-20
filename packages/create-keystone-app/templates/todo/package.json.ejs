@@ -2,14 +2,15 @@
   "name": "<%= appName%>",
   "version": "0.0.0",
   "scripts": {
-    "start": "DISABLE_LOGGING=true node server.js"
+    "start": "NODE_ENV=development DISABLE_LOGGING=true keystone"
   },
   "private": true,
   "dependencies": {
     "@keystone-alpha/adapter-mongoose": "latest",
-    "@keystone-alpha/admin-ui": "latest",
-    "@keystone-alpha/core": "latest",
+    "@keystone-alpha/app-admin-ui": "latest",
+    "@keystone-alpha/app-graphql": "latest",
     "@keystone-alpha/fields": "latest",
-    "@keystone-alpha/keystone": "latest"
+    "@keystone-alpha/keystone": "latest",
+    "@keystone-alpha/app-static": "latest"
   }
 }

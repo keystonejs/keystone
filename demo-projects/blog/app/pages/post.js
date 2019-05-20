@@ -235,9 +235,9 @@ class PostPage extends React.Component {
                       <title>{post.title}</title>
                     </Head>
                     {post.image ? <img src={post.image.publicUrl} css={{ width: '100%' }} /> : null}
-                    <div css={{ padding: '1em' }}>
+                    <article css={{ padding: '1em' }}>
                       <h1 css={{ marginTop: 0 }}>{post.title}</h1>
-                      <p>{post.body}</p>
+                      <section dangerouslySetInnerHTML={{ __html: post.body }} />
                       <div css={{ marginTop: '1em', borderTop: '1px solid hsl(200, 20%, 80%)' }}>
                         <p
                           css={{ fontSize: '0.8em', marginBottom: 0, color: 'hsl(200, 20%, 50%)' }}
@@ -246,7 +246,7 @@ class PostPage extends React.Component {
                           {format(post.posted, 'DD/MM/YYYY')}
                         </p>
                       </div>
-                    </div>
+                    </article>
                   </div>
 
                   <Comments data={data} id={id} />
