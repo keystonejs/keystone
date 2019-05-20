@@ -27,8 +27,8 @@ export const Input = props => (
       ':focus': {
         backgroundColor: 'white',
         boxShadow: `inset 0 1px 2px rgba(0, 0, 0, 0.1)`,
-        borderColor: 'rgba(0, 0, 0, 0.2)'
-      }
+        borderColor: 'rgba(0, 0, 0, 0.2)',
+      },
     }}
     {...props}
   />
