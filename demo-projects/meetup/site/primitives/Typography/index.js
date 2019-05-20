@@ -8,7 +8,7 @@ import { mq } from '../../helpers/media';
 const SIZE_MAP = [fontSizes.xxxl, fontSizes.xxl, fontSizes.xl, fontSizes.lg, fontSizes.md];
 const baseStyles = {
   fontWeight: 600,
-  lineHeight: 1.15,
+  lineHeight: 1.05,
   margin: 0,
 };
 

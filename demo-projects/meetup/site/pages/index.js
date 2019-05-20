@@ -21,7 +21,6 @@ import {
   Hero,
   Html,
   Loading,
-  Section,
   MicrophoneIcon,
   PinIcon,
   UserIcon,
@@ -263,10 +262,6 @@ const Sponsors = () => {
   );
 };
 
-const EventsList = ({ events, ...props }) => {
-  return <EventItems events={events} {...props} />;
-};
-
 function processEventsData(data) {
   if (!data || !data.upcomingEvents || !data.previousEvents) {
     return {
@@ -332,28 +327,38 @@ export default class Home extends Component {
                 </Container>
               </Section>
               {moreEvents.length ? (
-                <Section css={{ backgroundColor: colors.greyLight, padding: '5rem 0' }}>
-                  <Container>
-                    <H2 hasSeparator>More Meetups</H2>
-                    <EventsList events={moreEvents} css={{ marginTop: '3rem' }} />
-                    <Link route="events">
-                      <a
-                        css={{
-                          color: 'black',
-                          cursor: 'pointer',
-                          fontSize: fontSizes.md,
-                          marginTop: '1rem',
+                <>
+                  <Section
+                    css={{
+                      backgroundColor: colors.greyLight,
+                      margin: '5rem 0',
+                      paddingTop: '5rem',
+                    }}
+                  >
+                    <Slant placement="top" fill={colors.greyLight} />
+                    <Container>
+                      <H2 hasSeparator>More Meetups</H2>
+                      <EventItems events={moreEvents} offsetTop css={{ marginTop: '3rem' }} />
+                      <Link route="events">
+                        <a
+                          css={{
+                            color: 'black',
+                            cursor: 'pointer',
+                            fontSize: fontSizes.md,
+                            marginTop: '1rem',
 
-                          ':hover > span': {
-                            textDecoration: 'underline',
-                          },
-                        }}
-                      >
-                        <span>View all</span> &rarr;
-                      </a>
-                    </Link>
-                  </Container>
-                </Section>
+                            ':hover > span': {
+                              textDecoration: 'underline',
+                            },
+                          }}
+                        >
+                          <span>View all</span> &rarr;
+                        </a>
+                      </Link>
+                    </Container>
+                    <Slant placement="bottom" fill={colors.greyLight} />
+                  </Section>
+                </>
               ) : null}
               <Footer />
             </div>
@@ -363,3 +368,34 @@ export default class Home extends Component {
     );
   }
 }
+
+// styled components
+
+const Section = props => (
+  <section
+    css={{
+      position: 'relative',
+    }}
+    {...props}
+  />
+);
+const Slant = ({ fill, height = 5, placement }) => {
+  const points = placement === 'bottom' ? '0, 100 0, 0 100, 0' : '0 100, 100 0, 100, 100';
+
+  return (
+    <svg
+      css={{
+        height: `${height}vw`,
+        width: '100vw',
+        display: 'block',
+        position: 'absolute',
+        [placement]: `-${height}vw`,
+      }}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+    >
+      <polygon fill={fill} points={points} />
+    </svg>
+  );
+};
