@@ -6,13 +6,13 @@ import Head from 'next/head';
 import getConfig from 'next/config';
 
 import Rsvp from '../components/Rsvp';
-import { Avatar, Container, Hero, H1, H2, Html, Button, Loading } from '../primitives';
+import { Avatar, Container, Error, Hero, H1, H2, Html, Button, Loading } from '../primitives';
 import Talks from '../components/Talks';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { colors, fontSizes, gridSize } from '../theme';
 import { GET_EVENT_DETAILS } from '../graphql/events';
-import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
+import { isInFuture, formatFutureDate, formatPastDate, getForegroundColor } from '../helpers';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -33,7 +33,9 @@ export default class Event extends Component {
 
           if (error) {
             console.error('Failed to load event', id, error);
-            return <p>Something went wrong. Please try again.</p>;
+            return (
+              <Error message="Something went wrong. Please try again later." />
+            );
           }
           if (!data.Event) {
             return <p>Event not found</p>;
@@ -53,14 +55,25 @@ export default class Event extends Component {
                   {name} | {meetup.name}
                 </title>
               </Head>
-              <Navbar foreground="white" background={themeColor} />
-              <Hero align="left" backgroundColor={themeColor} superTitle={prettyDate} title={name}>
+              <Navbar foreground={getForegroundColor(themeColor)} background={themeColor} />
+              <Hero
+                align="left"
+                backgroundColor={themeColor}
+                foregroundColor={getForegroundColor(themeColor)}
+                superTitle={prettyDate}
+                title={name}
+              >
                 <p css={{ fontWeight: 100 }}>{locationAddress}</p>
                 <Html markup={description} />
                 <Rsvp eventId={id}>
                   {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
                     if (loading) return <Loading />;
-                    if (error) return <p css={{ color: 'white', margin: 0 }}>{error}</p>;
+                    if (error) {
+                      return (
+                        <p css={{ fontSize: '0.85rem', margin: 0 }}>{error}</p>
+                      );
+                    }
+
                     return (
                       <div css={{ display: 'flex', alignItems: 'center' }}>
                         <span css={{ padding: '0' }}>Will you be attending?</span>

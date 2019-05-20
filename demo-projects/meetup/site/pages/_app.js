@@ -1,5 +1,6 @@
 import App, { Container } from 'next/app';
 import getConfig from 'next/config';
+import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
@@ -39,6 +40,17 @@ class MyApp extends App {
           <AuthProvider initialUserValue={user}>
             <ApolloProvider client={apolloClient}>
               <ApolloHooksProvider client={apolloClient}>
+                <Head>
+                  <link
+                    rel="shortcut icon"
+                    href="/favicon.ico"
+                    type="image/x-icon"
+                  />
+                  <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
+                  />
+                </Head>
                 <StylesBase />
                 <Component {...pageProps} />
               </ApolloHooksProvider>

@@ -29,7 +29,8 @@ import {
 import { AvatarStack } from '../primitives/Avatar';
 import { H2, H3 } from '../primitives/Typography';
 import { colors, gridSize, fontSizes } from '../theme';
-import { isInFuture, formatFutureDate, formatPastDate, pluralLabel } from '../helpers';
+import { isInFuture, formatFutureDate, formatPastDate, getForegroundColor, pluralLabel } from '../helpers';
+import { mq } from '../helpers/media';
 import { Component } from 'react';
 
 const { publicRuntimeConfig } = getConfig();
@@ -52,13 +53,15 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
     ? formatFutureDate(startTime)
     : formatPastDate(startTime);
 
+  const hex = themeColor ? themeColor.slice(1) : null;
+
   return (
     <Container css={{ margin: '-7rem auto 0', position: 'relative' }}>
       <div css={{ boxShadow: '0px 4px 94px rgba(0, 0, 0, 0.15)' }}>
         <div
-          css={{ backgroundColor: themeColor, color: 'white', display: 'block', padding: '2rem' }}
+          css={{ backgroundColor: themeColor, color: getForegroundColor(themeColor), display: 'block', padding: '2rem' }}
         >
-          <div css={{ display: 'flex' }}>
+          <div css={mq({ display: 'flex', flexDirection: ['column', 'row'] })}>
             <div
               css={{
                 flex: 1,
@@ -78,7 +81,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                 >
                   {prettyDate}
                 </p>
-                <Link route="event" params={{ id }} passHref>
+                <Link route="event" params={{ id, hex }} passHref>
                   <a
                     css={{
                       color: 'inherit',
@@ -97,20 +100,20 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
             </div>
             <Html
               markup={description}
-              css={{
+              css={mq({
                 flex: 1,
-                padding: '0 2rem',
+                padding: [0, '0 2rem'],
 
                 p: {
                   '&:first-of-type': { marginTop: 0 },
                   '&:last-of-type': { marginBottom: 0 },
                 },
-              }}
+              })}
             />
           </div>
         </div>
         <div css={{ padding: '1.5rem', background: 'white' }}>
-          <div css={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div css={mq({ display: 'flex', flexDirection: ['column', 'row'], justifyContent: 'space-between', alignItems: 'center' })}>
             <div
               css={{ display: 'flex', flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}
             >
@@ -118,6 +121,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                 {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
                   if (loading) return <Loading />;
                   if (error) return <p css={{ color: colors.greyMedium, margin: 0 }}>{error}</p>;
+
                   return (
                     <div>
                       <span css={{ padding: '0 1rem' }}>Will you be attending?</span>
@@ -180,7 +184,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                         }}
                       >
                         <UserIcon color="#ccc" css={{ marginRight: '0.5em' }} />
-                        {attending} attending
+                        {attending} {isInFuture(startTime) ? 'attending' : 'attended'}
                       </div>
                       <AvatarStack
                         users={allRsvps.map(rsvp => rsvp.user)}
@@ -321,12 +325,13 @@ export default class Home extends Component {
                           cursor: 'pointer',
                           fontSize: fontSizes.md,
                           marginTop: '1rem',
+
+                          ':hover > span': {
+                            textDecoration: 'underline'
+                          }
                         }}
                       >
-                        View all{' '}
-                        <span css={{ ':hover': { textDecoration: 'underline' }, fontWeight: 600 }}>
-                          our events
-                        </span>
+                        <span>View all</span> &rarr;
                       </a>
                     </Link>
                   </Container>

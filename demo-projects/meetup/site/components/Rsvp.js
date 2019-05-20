@@ -7,15 +7,15 @@ import { GET_RSVPS, UPDATE_RSVP, ADD_RSVP } from '../graphql/rsvps';
 
 function validateRsvp({ userRsvps, eventRsvps, event }) {
   if (!event || !event.isRsvpAvailable) {
-    return 'Rsvp is not available';
+    return 'RSVP is not available';
   }
 
   if (new Date() > new Date(event.startTime)) {
-    return 'You can no longer rsvp to this event';
+    return 'You can no longer RSVP to this event';
   }
 
   if (event.maxRsvps !== null && eventRsvps.length >= event.maxRsvps && !userRsvps.length) {
-    return 'You can no longer rsvp to this event';
+    return 'You can no longer RSVP to this event';
   }
 }
 

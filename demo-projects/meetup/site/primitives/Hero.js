@@ -10,6 +10,7 @@ import { colors, fontSizes } from '../theme';
 export const Hero = ({
   align,
   backgroundColor,
+  foregroundColor,
   children,
   subTitle,
   superTitle,
@@ -19,7 +20,7 @@ export const Hero = ({
   const horizontalMargin = align === 'center' ? 'auto' : null;
   return (
     <>
-      <Wrapper align={align} backgroundColor={backgroundColor} {...props}>
+      <Wrapper align={align} backgroundColor={backgroundColor} foregroundColor={foregroundColor} {...props}>
         <Container>
           {superTitle && <Subtitle>{superTitle}</Subtitle>}
           <H1>{title}</H1>
@@ -41,8 +42,9 @@ export const Hero = ({
 
 Hero.propTypes = {
   align: PropTypes.oneOf(['left', 'center', 'right']),
-  backgroundColor: PropTypes.string,
+  backgroundColor: PropTypes.string.isRequired,
   children: PropTypes.node,
+  foregroundColor: PropTypes.string.isRequired,
   subTitle: PropTypes.string,
   superTitle: PropTypes.string,
   title: PropTypes.string.isRequired,
@@ -50,15 +52,16 @@ Hero.propTypes = {
 Hero.defaultProps = {
   align: 'center',
   backgroundColor: colors.greyDark,
+  foregroundColor: 'white',
 };
 
 // styled components
 
-const Wrapper = ({ align, backgroundColor, ...props }) => (
+const Wrapper = ({ align, backgroundColor, foregroundColor, ...props }) => (
   <div
     css={{
       backgroundColor: backgroundColor,
-      color: 'white',
+      color: foregroundColor,
       padding: '7rem 0',
       textAlign: align,
     }}
@@ -69,7 +72,7 @@ const Wrapper = ({ align, backgroundColor, ...props }) => (
 const Content = ({ horizontalMargin, ...props }) => (
   <div
     css={{
-      fontSize: fontSizes.md,
+      fontSize: [fontSizes.sm, fontSizes.md],
       marginLeft: horizontalMargin,
       marginRight: horizontalMargin,
       marginTop: 30,
