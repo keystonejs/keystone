@@ -21,7 +21,7 @@ module.exports = {
   exec: async (args, { exeName, _cwd = process.cwd() } = {}) => {
     process.env.NODE_ENV = 'production';
     let entryFile = await getEntryFileFullPath(args, { exeName, _cwd });
-    let { apps, distDir = DEFAULT_DIST_DIR } = require(entryFile);
+    let { keystone, apps, distDir = DEFAULT_DIST_DIR } = require(entryFile);
 
     if (args['--out']) {
       distDir = args['--out'];
@@ -36,6 +36,7 @@ module.exports = {
             apiPath: '/admin/api',
             distDir: resolvedDistDir,
             graphiqlPath: '/admin/graphiql',
+            keystone,
           });
         })
       );

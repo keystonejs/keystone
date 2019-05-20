@@ -15,17 +15,14 @@ const pkgInfo = require('./package.json');
 const getWebpackConfig = require('./server/getWebpackConfig');
 
 class AdminUIApp {
-  constructor(
-    keystone,
-    {
-      adminPath = '/admin',
-      apiPath = '/admin/api',
-      graphiqlPath = '/admin/graphiql',
-      authStrategy,
-      pages,
-      enableDefaultRoute = false,
-    } = {}
-  ) {
+  constructor({
+    adminPath = '/admin',
+    apiPath = '/admin/api',
+    graphiqlPath = '/admin/graphiql',
+    authStrategy,
+    pages,
+    enableDefaultRoute = false,
+  } = {}) {
     if (adminPath === '/') {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
     }
@@ -34,7 +31,6 @@ class AdminUIApp {
       throw new Error('Keystone 5 Admin currently only supports the `PasswordAuthStrategy`');
     }
 
-    this.keystone = keystone;
     this.adminPath = adminPath;
     this.authStrategy = authStrategy;
     this.pages = pages;
@@ -72,12 +68,12 @@ class AdminUIApp {
     );
   }
 
-  build({ distDir }) {
+  build({ keystone, distDir }) {
     console.log('Building Admin UI!');
 
     const builtAdminRoot = path.join(distDir, 'admin');
 
-    const adminMeta = this.getAdminUIMeta(this.keystone);
+    const adminMeta = this.getAdminUIMeta(keystone);
 
     const compilers = [];
 
@@ -130,11 +126,11 @@ class AdminUIApp {
     };
   }
 
-  prepareMiddleware({ port, distDir, dev }) {
+  prepareMiddleware({ keystone, port, distDir, dev }) {
     if (dev) {
-      return this.createDevMiddleware({ distDir, port });
+      return this.createDevMiddleware({ keystone, port });
     } else {
-      return this.createProdMiddleware({ distDir });
+      return this.createProdMiddleware({ keystone, distDir });
     }
   }
 
@@ -192,7 +188,7 @@ class AdminUIApp {
     return _app;
   }
 
-  createDevMiddleware({ port }) {
+  createDevMiddleware({ keystone, port }) {
     const app = express();
 
     const { adminPath } = this;
@@ -217,7 +213,7 @@ class AdminUIApp {
 
     // add the webpack dev middleware
 
-    let adminMeta = this.getAdminUIMeta(this.keystone);
+    let adminMeta = this.getAdminUIMeta(keystone);
 
     const webpackMiddlewareConfig = {
       publicPath: adminPath,
