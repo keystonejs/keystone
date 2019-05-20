@@ -1,0 +1,2 @@
+- CloudinaryImage single image block correctly loads and displays saved image
+- AdminUI deserialises fields JIT before rendering

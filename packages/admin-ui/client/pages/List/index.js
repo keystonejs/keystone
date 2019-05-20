@@ -19,7 +19,6 @@ import DocTitle from '../../components/DocTitle';
 import ListTable from '../../components/ListTable';
 import PageError from '../../components/PageError';
 import { DisclosureArrow } from '../../components/Popout';
-import { deconstructErrorsToDataShape } from '../../util';
 
 import ColumnPopout from './ColumnSelect';
 import ActiveFilters from './Filters/ActiveFilters';
@@ -41,11 +40,11 @@ type Props = {
 type LayoutProps = Props & {
   items: Array<Object>,
   itemCount: number,
-  itemErrors: Array<Object>,
+  queryErrors: Array<Object>,
 };
 
 function ListLayout(props: LayoutProps) {
-  const { adminMeta, items, itemCount, itemErrors, list, routeProps, query } = props;
+  const { adminMeta, items, itemCount, queryErrors, list, routeProps, query } = props;
   const [showCreateModal, toggleCreateModal] = useState(false);
   const measureElementRef = useRef();
 
@@ -231,7 +230,7 @@ function ListLayout(props: LayoutProps) {
           handleSortChange={handleSortChange}
           isFullWidth
           items={items}
-          itemsErrors={itemErrors}
+          queryErrors={queryErrors}
           list={list}
           onChange={onDeleteItem}
           onSelectChange={onSelectChange}
@@ -250,13 +249,9 @@ function List(props: Props) {
   const { list, query, routeProps } = props;
 
   // get item data
-  let items;
+  const items = query.data && query.data[list.gqlNames.listQueryName];
+  const queryErrors = query.data && query.data.error;
   let itemCount;
-  let itemErrors;
-  if (query.data && query.data[list.gqlNames.listQueryName]) {
-    items = query.data[list.gqlNames.listQueryName].map(item => list.deserializeItemData(item));
-    itemErrors = deconstructErrorsToDataShape(query.data.error)[list.gqlNames.listQueryName];
-  }
   if (query.data && query.data[list.gqlNames.listQueryMetaName]) {
     itemCount = query.data[list.gqlNames.listQueryMetaName].count;
   }
@@ -325,8 +320,8 @@ function List(props: Props) {
         {...props}
         items={items}
         itemCount={itemCount}
-        itemErrors={itemErrors}
         query={query}
+        queryErrors={queryErrors}
       />
     </Fragment>
   );
