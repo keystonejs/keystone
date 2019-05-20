@@ -11,7 +11,7 @@
     "@keystone-alpha/adapter-knex": "^1.0.7",
     "@keystone-alpha/adapter-mongoose": "^2.0.0",
     "@keystone-alpha/keystone": "^4.0.0",
-    "@keystone-alpha/server": "^5.0.0",
+    "@keystone-alpha/app-graphql": "^5.0.0",
     "mongodb-memory-server": "^5.0.4",
     "p-finally": "^1.0.0"
   }

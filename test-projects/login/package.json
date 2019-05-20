@@ -19,11 +19,14 @@
   },
   "dependencies": {
     "@keystone-alpha/adapter-mongoose": "^2.0.0",
-    "@keystone-alpha/admin-ui": "^3.2.1",
-    "@keystone-alpha/core": "^2.0.4",
+    "@keystone-alpha/app-admin-ui": "^3.2.1",
+    "@keystone-alpha/app-graphql": "^5.0.0",
     "@keystone-alpha/fields": "^6.1.1",
     "@keystone-alpha/keystone": "^4.0.0",
-    "body-parser": "^1.18.2"
+    "@keystone-alpha/app-static": "^0.0.0",
+    "@keystone-alpha/session": "^1.0.2",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3"
   },
   "devDependencies": {
     "cypress": "^3.2.0",

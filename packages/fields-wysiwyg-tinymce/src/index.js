@@ -1,10 +1,13 @@
+import express from 'express';
 import { Text } from '@keystone-alpha/fields';
 import { importView } from '@keystone-alpha/build-field-types';
 
-function bindStaticMiddleware(server) {
+function prepareMiddleware() {
   const tinymce = require.resolve('tinymce');
   const tinymcePath = tinymce.substr(0, tinymce.lastIndexOf('/'));
-  server.app.use('/tinymce-assets', server.express.static(tinymcePath));
+  const app = express();
+  app.use('/tinymce-assets', express.static(tinymcePath));
+  return app;
 }
 
 export let Wysiwyg = {
@@ -16,5 +19,5 @@ export let Wysiwyg = {
     Filter: Text.views.Filter,
   },
   adapters: Text.adapters,
-  bindStaticMiddleware,
+  prepareMiddleware,
 };
