@@ -1,12 +1,11 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import contrast from 'get-contrast';
 import getConfig from 'next/config';
 import { shadows, gridSize } from '../theme';
 
 import { Button } from '../primitives';
+import { getForegroundColor } from '../helpers';
 import { H2 } from '../primitives/Typography';
-import { colors } from '../theme';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -33,15 +32,7 @@ export default function CallToAction() {
         Every <strong>3rd Wednesday of the month</strong> you'll find us talking about what we're
         doing and what's happening around us in the world of JavaScript.
       </p>
-      <Button
-        background={meetup.themeColor}
-        foreground={
-          contrast.ratio(colors.greyDark, meetup.themeColor) >
-          contrast.ratio(colors.greyLight, meetup.themeColor)
-            ? colors.greyDark
-            : 'white'
-        }
-      >
+      <Button background={meetup.themeColor} foreground={getForegroundColor(meetup.themeColor)}>
         Join us now
       </Button>
     </div>

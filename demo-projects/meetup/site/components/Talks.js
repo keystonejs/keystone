@@ -19,14 +19,13 @@ const Talks = ({ talks }) => {
                   users={talk.speakers}
                   size="large"
                   css={{
+                    flexShrink: 0,
                     marginRight: CONTENT_GUTTER,
                   }}
                 />
               )}
               {talk.isLightningTalk && <Bolt />}
-              <H5 as="h3" css={{ marginLeft: hasSpeakers ? '1rem' : '0' }}>
-                {talk.name}
-              </H5>
+              <H5 as="h3">{talk.name}</H5>
             </div>
             <Content>
               {talk.description ? (
@@ -47,7 +46,7 @@ export default Talks;
 // Styled Components
 // ==============================
 
-const CONTENT_GUTTER = 16;
+const CONTENT_GUTTER = 12;
 
 const Wrapper = props => (
   <div
@@ -69,7 +68,7 @@ const Talk = props => (
       marginLeft: '1em',
       marginRight: '1em',
       flexDirection: 'column',
-      minWidth: 300,
+      minWidth: 320,
     }}
     {...props}
   />

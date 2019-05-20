@@ -6,9 +6,8 @@ import Rsvp from '../../components/Rsvp';
 import { Html, Button, Loading } from '../../primitives';
 import { H3 } from '../../primitives/Typography';
 import { colors, gridSize, shadows } from '../../theme';
-import { isInFuture, formatPastDate, formatFutureDate, getBreakpoints } from '../../helpers';
-
-const mq = getBreakpoints();
+import { isInFuture, formatPastDate, formatFutureDate } from '../../helpers';
+import { mq } from '../../helpers/media';
 
 const EventItem = ({
   id,
@@ -29,18 +28,7 @@ const EventItem = ({
   const hex = themeColor && themeColor.slice(1);
 
   return (
-    <li
-      css={{
-        width: '100%',
-        [mq[0]]: {
-          width: '50%',
-        },
-        [mq[2]]: {
-          width: `${100 / 3}%`,
-        },
-      }}
-      {...props}
-    >
+    <li css={mq({ width: ['100%', '50%', '50%', '33.33%'] })} {...props}>
       <div
         css={{
           backgroundColor: 'white',
