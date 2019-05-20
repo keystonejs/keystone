@@ -20,7 +20,12 @@ export const Hero = ({
   const horizontalMargin = align === 'center' ? 'auto' : null;
   return (
     <>
-      <Wrapper align={align} backgroundColor={backgroundColor} foregroundColor={foregroundColor} {...props}>
+      <Wrapper
+        align={align}
+        backgroundColor={backgroundColor}
+        foregroundColor={foregroundColor}
+        {...props}
+      >
         <Container>
           {superTitle && <Subtitle>{superTitle}</Subtitle>}
           <H1>{title}</H1>

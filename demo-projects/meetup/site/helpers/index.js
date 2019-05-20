@@ -15,9 +15,9 @@ export const pluralLabel = (num, single, plural) => {
 };
 
 // Get A11Y contrast-compliant foreground color from background color
-export const getForegroundColor = (backgroundColor) => {
+export const getForegroundColor = backgroundColor => {
   const darkFgScore = contrast.ratio(colors.greyDark, backgroundColor);
   const lightFgScore = contrast.ratio('white', backgroundColor);
 
-  return (darkFgScore - lightFgScore) > 1 ? colors.greyDark : 'white';
+  return darkFgScore - lightFgScore > 1 ? colors.greyDark : 'white';
 };

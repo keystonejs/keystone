@@ -87,9 +87,7 @@ const UserActions = ({ user }) => (
         Open the Admin UI
       </NavAnchor>
     )}
-    <NavLink route="signout">
-      Sign Out
-    </NavLink>
+    <NavLink route="signout">Sign Out</NavLink>
   </div>
 );
 
@@ -97,9 +95,7 @@ const AnonActions = () => {
   const { meetup } = publicRuntimeConfig;
   return (
     <div>
-      <NavLink route="signin">
-        Sign in
-      </NavLink>
+      <NavLink route="signin">Sign in</NavLink>
       <NavAnchor
         href="/"
         css={{
@@ -141,15 +137,9 @@ const Navbar = ({ foreground = colors.greyDark, background = 'white', ...props }
           </a>
         </Link>
         <div css={{ flex: 1 }}>
-          <NavLink route="/">
-            Home
-          </NavLink>
-          <NavLink route="about">
-            About
-          </NavLink>
-          <NavLink route="events">
-            Events
-          </NavLink>
+          <NavLink route="/">Home</NavLink>
+          <NavLink route="about">About</NavLink>
+          <NavLink route="events">Events</NavLink>
         </div>
         {isAuthenticated ? <UserActions user={user} /> : <AnonActions />}
       </Header>

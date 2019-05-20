@@ -29,7 +29,13 @@ import {
 import { AvatarStack } from '../primitives/Avatar';
 import { H2, H3 } from '../primitives/Typography';
 import { colors, gridSize, fontSizes } from '../theme';
-import { isInFuture, formatFutureDate, formatPastDate, getForegroundColor, pluralLabel } from '../helpers';
+import {
+  isInFuture,
+  formatFutureDate,
+  formatPastDate,
+  getForegroundColor,
+  pluralLabel,
+} from '../helpers';
 import { mq } from '../helpers/media';
 import { Component } from 'react';
 
@@ -59,7 +65,12 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
     <Container css={{ margin: '-7rem auto 0', position: 'relative' }}>
       <div css={{ boxShadow: '0px 4px 94px rgba(0, 0, 0, 0.15)' }}>
         <div
-          css={{ backgroundColor: themeColor, color: getForegroundColor(themeColor), display: 'block', padding: '2rem' }}
+          css={{
+            backgroundColor: themeColor,
+            color: getForegroundColor(themeColor),
+            display: 'block',
+            padding: '2rem',
+          }}
         >
           <div css={mq({ display: 'flex', flexDirection: ['column', 'row'] })}>
             <div
@@ -113,7 +124,14 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
           </div>
         </div>
         <div css={{ padding: '1.5rem', background: 'white' }}>
-          <div css={mq({ display: 'flex', flexDirection: ['column', 'row'], justifyContent: 'space-between', alignItems: 'center' })}>
+          <div
+            css={mq({
+              display: 'flex',
+              flexDirection: ['column', 'row'],
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            })}
+          >
             <div
               css={{ display: 'flex', flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}
             >
@@ -327,8 +345,8 @@ export default class Home extends Component {
                           marginTop: '1rem',
 
                           ':hover > span': {
-                            textDecoration: 'underline'
-                          }
+                            textDecoration: 'underline',
+                          },
                         }}
                       >
                         <span>View all</span> &rarr;

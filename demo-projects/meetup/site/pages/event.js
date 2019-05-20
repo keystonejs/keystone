@@ -33,9 +33,7 @@ export default class Event extends Component {
 
           if (error) {
             console.error('Failed to load event', id, error);
-            return (
-              <Error message="Something went wrong. Please try again later." />
-            );
+            return <Error message="Something went wrong. Please try again later." />;
           }
           if (!data.Event) {
             return <p>Event not found</p>;
@@ -69,9 +67,7 @@ export default class Event extends Component {
                   {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
                     if (loading) return <Loading />;
                     if (error) {
-                      return (
-                        <p css={{ fontSize: '0.85rem', margin: 0 }}>{error}</p>
-                      );
+                      return <p css={{ fontSize: '0.85rem', margin: 0 }}>{error}</p>;
                     }
 
                     return (

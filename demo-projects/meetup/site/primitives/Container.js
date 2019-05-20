@@ -13,7 +13,7 @@ export default function Container(props) {
         marginRight: 'auto',
         paddingLeft: paddingHorizontal,
         paddingRight: paddingHorizontal,
-        maxWidth: 1000
+        maxWidth: 1000,
       })}
       {...props}
     />
