@@ -2,7 +2,7 @@ const express = require('express');
 const endent = require('endent');
 const path = require('path');
 
-const { DEFAULT_ENTRY, DEFAULT_PORT } = require('../constants');
+const { DEFAULT_CONNECT_TO, DEFAULT_ENTRY, DEFAULT_PORT } = require('../constants');
 
 function getEntryFileFullPath(args, { exeName, _cwd }) {
   const entryFile = args['--entry'] ? args['--entry'] : DEFAULT_ENTRY;
@@ -20,6 +20,7 @@ function getEntryFileFullPath(args, { exeName, _cwd }) {
 
 function executeDefaultServer(args, entryFile, distDir) {
   const port = args['--port'] ? args['--port'] : DEFAULT_PORT;
+  const connectTo = args['--connect-to'] ? args['--connect-to'] : DEFAULT_CONNECT_TO;
 
   const { keystone, apps } = require(path.resolve(entryFile));
 
@@ -28,7 +29,7 @@ function executeDefaultServer(args, entryFile, distDir) {
   return keystone
     .prepare({ apps, port, distDir, dev: process.env.NODE_ENV !== 'production' })
     .then(async ({ middlewares }) => {
-      await keystone.connect();
+      await keystone.connect(connectTo);
 
       app.use(middlewares);
 
