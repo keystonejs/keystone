@@ -1,9 +1,9 @@
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { Text, Password, Relationship } = require('@keystone-alpha/fields');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const GraphQLApi = require('@keystone-alpha/app-graphql');
-const AdminUI = require('@keystone-alpha/app-admin');
-const StaticApp = require('@keystone-alpha/app-static');
+const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { StaticApp } = require('@keystone-alpha/app-static');
 
 const { staticRoute, staticPath } = require('./config');
 
@@ -39,12 +39,11 @@ keystone.createList('Post', {
   },
 });
 
-const admin = new AdminUI(keystone, {
-  adminPath: '/admin',
-  authStrategy,
-});
-
 module.exports = {
   keystone,
-  apps: [new GraphQLApi(), admin, new StaticApp({ path: staticRoute, src: staticPath })],
+  apps: [
+    new GraphQLApp(),
+    new StaticApp({ path: staticRoute, src: staticPath }),
+    new AdminUIApp(keystone, { adminPath: '/admin', authStrategy }),
+  ],
 };

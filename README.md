@@ -77,7 +77,7 @@ yarn start
 ### Manual Setup
 
 ```bash
-npm install --save @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/app-graphql @keystone-alpha/app-admin`
+npm install --save @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/app-graphql @keystone-alpha/app-admin-ui`
 ```
 
 Add a script to your `package.json`:
@@ -98,8 +98,8 @@ Create a file `index.js`:
 const { Keystone }        = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text }            = require('@keystone-alpha/fields');
-const GraphQLApi          = require('@keystone-alpha/app-graphql');
-const AdminUI             = require('@keystone-alpha/app-admin');
+const { GraphQLApp }      = require('@keystone-alpha/app-graphql');
+const { AdminUIApp }      = require('@keystone-alpha/app-admin-ui');
 
 const keystone = new Keystone({
   name: 'Keystone To-Do List',
@@ -112,14 +112,12 @@ keystone.createList('Todo', {
   },
 });
 
-// Setup the optional Admin UI
-const admin = new AdminUI(keystone);
-
 module.exports = {
   keystone,
   apps: [
     new GraphQLApi(),
-    admin,
+    // Setup the optional Admin UI
+    new AdminUIApp(keystone),
   ],
 };
 ```
@@ -250,7 +248,7 @@ list used for authentication in `index.js`:
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text, Password }  = require('@keystone-alpha/fields');
-const AdminUI = require('@keystone-alpha/app-admin');
+const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 
 const keystone = new Keystone({
   name: 'Keystone With Auth',
@@ -273,14 +271,11 @@ const authStrategy = keystone.createAuthStrategy({
   }
 });
 
-const admin = new AdminUI(keystone, {
-  adminPath: '/admin',
-  authStrategy,
-});
-
 module.exports = {
   keystone,
-  admin,
+  apps: [
+    new AdminUIApp(keystone, { adminPath: '/admin', authStrategy })
+  ],
 };
 ```
 

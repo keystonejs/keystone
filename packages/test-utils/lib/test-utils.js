@@ -2,7 +2,7 @@ const MongoDBMemoryServer = require('mongodb-memory-server').default;
 const pFinally = require('p-finally');
 const url = require('url');
 const { Keystone } = require('@keystone-alpha/keystone');
-const GraphQLApp = require('@keystone-alpha/app-graphql');
+const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 

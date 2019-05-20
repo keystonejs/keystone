@@ -14,7 +14,7 @@ const pkgInfo = require('./package.json');
 
 const getWebpackConfig = require('./server/getWebpackConfig');
 
-module.exports = class AdminUI {
+class AdminUIApp {
   constructor(
     keystone,
     {
@@ -276,4 +276,8 @@ module.exports = class AdminUI {
 
     return app;
   }
+}
+
+module.exports = {
+  AdminUIApp,
 };

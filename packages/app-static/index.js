@@ -2,7 +2,7 @@ const express = require('express');
 const pathModule = require('path');
 const cpy = require('cpy');
 
-module.exports = class StaticServer {
+class StaticApp {
   constructor({ path, src }) {
     this._path = path;
     this._src = src;
@@ -23,4 +23,8 @@ module.exports = class StaticServer {
     const destination = pathModule.resolve(pathModule.join(distDir, this._src));
     return cpy(source, destination);
   }
+}
+
+module.exports = {
+  StaticApp,
 };

@@ -1,9 +1,9 @@
 //imports for Keystone app core
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const GraphQLApi = require('@keystone-alpha/app-graphql');
-const AdminUI = require('@keystone-alpha/app-admin');
-const NextApp = require('@keystone-alpha/app-next');
+const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { NextApp } = require('@keystone-alpha/app-next');
 const routes = require('./routes');
 
 const { Event, Talk, User, Rsvp, Organiser, Sponsor } = require('./schema');
@@ -27,7 +27,7 @@ keystone.createList('User', User);
 keystone.createList('Organiser', Organiser);
 keystone.createList('Sponsor', Sponsor);
 
-const admin = new AdminUI(keystone, {
+const adminApp = new AdminUIApp(keystone, {
   adminPath: '/admin',
   authStrategy,
   pages: [
@@ -45,5 +45,5 @@ const admin = new AdminUI(keystone, {
 
 module.exports = {
   keystone,
-  apps: [new GraphQLApi(), admin, new NextApp({ dir: 'site', nextRoutes: routes })],
+  apps: [new GraphQLApp(), adminApp, new NextApp({ dir: 'site', nextRoutes: routes })],
 };

@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@keystone-alpha/adapter-mongoose": "^2.0.0",
-    "@keystone-alpha/app-admin": "^3.2.1",
+    "@keystone-alpha/app-admin-ui": "^3.2.1",
     "@keystone-alpha/app-graphql": "^5.0.0",
     "@keystone-alpha/fields": "^6.1.1",
     "@keystone-alpha/keystone": "^4.0.0",

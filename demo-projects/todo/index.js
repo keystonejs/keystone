@@ -1,9 +1,9 @@
 const { Keystone } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { Text } = require('@keystone-alpha/fields');
-const GraphQLApi = require('@keystone-alpha/app-graphql');
-const AdminUI = require('@keystone-alpha/app-admin');
-const StaticApp = require('@keystone-alpha/app-static');
+const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { StaticApp } = require('@keystone-alpha/app-static');
 
 const keystone = new Keystone({
   name: 'Keystone To-Do List',
@@ -17,10 +17,12 @@ keystone.createList('Todo', {
   },
 });
 
-// Setup the optional Admin UI
-const admin = new AdminUI(keystone);
-
 module.exports = {
   keystone,
-  apps: [new GraphQLApi(), new StaticApp({ path: '/', src: 'public' }), admin],
+  apps: [
+    new GraphQLApp(),
+    new StaticApp({ path: '/', src: 'public' }),
+    // Setup the optional Admin UI
+    new AdminUIApp(keystone),
+  ],
 };

@@ -18,7 +18,7 @@ jest.doMock('html-webpack-plugin', () => {
   return jest.fn(() => {});
 });
 
-const AdminUI = require('../../');
+const { AdminUIApp } = require('../../');
 
 const keystone = {
   getAdminSchema: jest.fn(),
@@ -26,8 +26,8 @@ const keystone = {
 };
 const adminPath = 'admin_path';
 
-test('new AdminUI() - smoke test', () => {
-  const adminUI = new AdminUI(keystone, { adminPath });
+test('new AdminUIApp() - smoke test', () => {
+  const adminUI = new AdminUIApp(keystone, { adminPath });
   expect(adminUI).not.toBe(null);
 
   expect(adminUI.keystone).toEqual(keystone);
@@ -36,7 +36,7 @@ test('new AdminUI() - smoke test', () => {
 
 describe('Add Middleware', () => {
   test('Smoke test', () => {
-    const adminUI = new AdminUI(keystone, {
+    const adminUI = new AdminUIApp(keystone, {
       adminPath,
       signinPath: '/signin',
       signoutPath: '/signout',

@@ -310,7 +310,7 @@
       "packages/**/*.js",
       "!packages/**/dist/**",
       "!packages/apollo-helpers/**",
-      "!packages/app-admin/client/**",
+      "!packages/app-admin-ui/client/**",
       "!packages/arch/**",
       "!packages/create-keystone-app/templates/**",
       "!packages/core/tests/default-entry/index.js",

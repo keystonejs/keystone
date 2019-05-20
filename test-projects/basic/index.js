@@ -16,9 +16,9 @@ const {
   Decimal,
 } = require('@keystone-alpha/fields');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-alpha/file-adapters');
-const GraphQLApi = require('@keystone-alpha/app-graphql');
-const AdminUI = require('@keystone-alpha/app-admin');
-const StaticApp = require('@keystone-alpha/app-static');
+const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { StaticApp } = require('@keystone-alpha/app-static');
 
 const { staticRoute, staticPath, cloudinary } = require('./config');
 
@@ -155,9 +155,11 @@ keystone.createList('SomeLongNamedList', {
   },
 });
 
-const admin = new AdminUI(keystone, { apiPath: '/foo' });
-
 module.exports = {
   keystone,
-  apps: [new GraphQLApi({ apiPath: '/foo' }), admin, new StaticApp({ path: staticRoute, src: staticPath })],
+  apps: [
+    new GraphQLApp({ apiPath: '/foo' }),
+    new StaticApp({ path: staticRoute, src: staticPath }),
+    new AdminUIApp(keystone, { apiPath: '/foo' }),
+  ],
 };

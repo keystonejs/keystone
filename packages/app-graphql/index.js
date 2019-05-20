@@ -4,7 +4,7 @@ const { commonSessionMiddleware } = require('@keystone-alpha/session');
 const createGraphQLMiddleware = require('./lib/graphql');
 const { createApolloServer } = require('./lib/apolloServer');
 
-module.exports = class KeystoneGraphQLServer {
+class GraphQLApp {
   constructor({
     cors = { origin: true, credentials: true },
     cookieSecret = 'qwerty',
@@ -63,4 +63,8 @@ module.exports = class KeystoneGraphQLServer {
    * @param Options { distDir }
    */
   build() {}
+}
+
+module.exports = {
+  GraphQLApp,
 };

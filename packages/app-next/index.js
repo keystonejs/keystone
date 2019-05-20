@@ -1,7 +1,7 @@
 const next = require('next');
 const build = require('next/dist/build');
 
-module.exports = class NextServer {
+class NextApp {
   constructor({ dir, nextRoutes }) {
     this._dir = dir;
     this._nextRoutes = nextRoutes;
@@ -21,4 +21,8 @@ module.exports = class NextServer {
   async build() {
     return build(this._dir);
   }
+}
+
+module.exports = {
+  NextApp,
 };
