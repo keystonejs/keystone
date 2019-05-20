@@ -40,7 +40,6 @@ const adminApp = new AdminUIApp(keystone, {
       children: ['User', 'Rsvp'],
     },
   ],
-  disableDefaultRoute: true,
 });
 
 module.exports = {

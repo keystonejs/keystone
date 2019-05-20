@@ -46,7 +46,6 @@ const adminApp = new AdminUIApp(keystone, {
       children: ['User'],
     },
   ],
-  disableDefaultRoute: true,
 });
 
 module.exports = {

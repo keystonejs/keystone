@@ -23,7 +23,7 @@ class AdminUIApp {
       graphiqlPath = '/admin/graphiql',
       authStrategy,
       pages,
-      disableDefaultRoute = false,
+      enableDefaultRoute = false,
     } = {}
   ) {
     if (adminPath === '/') {
@@ -40,7 +40,7 @@ class AdminUIApp {
     this.pages = pages;
     this.apiPath = apiPath;
     this.graphiqlPath = graphiqlPath;
-    this.disableDefaultRoute = disableDefaultRoute;
+    this.enableDefaultRoute = enableDefaultRoute;
 
     this.routes = {
       signinPath: `${this.adminPath}/signin`,
@@ -183,7 +183,7 @@ class AdminUIApp {
 
     _app.use(this.adminPath, app);
 
-    if (!this.disableDefaultRoute) {
+    if (this.enableDefaultRoute) {
       // Attach this last onto the root so the `this.adminPath` can overwrite it
       // if necessary
       _app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './server/default.html')));
@@ -261,7 +261,7 @@ class AdminUIApp {
       app.use(secureHotMiddleware);
     }
 
-    if (!this.disableDefaultRoute) {
+    if (this.enableDefaultRoute) {
       // Attach this last onto the root so the `adminPath` can overwrite it if
       // necessary
       app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, './server/default.html')));
