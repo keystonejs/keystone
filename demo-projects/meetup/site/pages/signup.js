@@ -45,11 +45,11 @@ export default () => {
   return (
     <>
       <Head>
-        <title>Sign in | {meetup.name}</title>
+        <title>Join | {meetup.name}</title>
       </Head>
       <Navbar background="white" foreground={colors.greyDark} />
       <Container css={{ marginTop: gridSize * 3 }}>
-        <H1>Sign in</H1>
+        <H1>Join</H1>
 
         {errorState && (
           <p css={{ color: colors.red }}>Please check your email and password then try again.</p>
@@ -84,9 +84,9 @@ export default () => {
             />
           </Field>
           {isLoading ? (
-            <Button disabled>Signing in...</Button>
+            <Button disabled>Creating account...</Button>
           ) : (
-            <Button type="submit">Sign in</Button>
+            <Button type="submit">Sign up</Button>
           )}
         </form>
       </Container>

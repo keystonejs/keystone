@@ -96,20 +96,21 @@ const AnonActions = () => {
   return (
     <div>
       <NavLink route="signin">Sign in</NavLink>
-      <NavAnchor
-        href="/"
-        css={{
-          borderRadius: 40,
-          border: 'none',
-          fontWeight: 600,
-          padding: '.9rem 2rem',
+      <NavLink
+        route="signup"
+        css={mq({
           backgroundColor: meetup.themeColor,
+          border: 'none',
+          borderRadius: 40,
           color: getForegroundColor(meetup.themeColor),
+          fontWeight: 600,
           lineHeight: 1,
-        }}
+          marginRight: [0, 0],
+          padding: '.9rem 2rem',
+        })}
       >
         Join
-      </NavAnchor>
+      </NavLink>
     </div>
   );
 };

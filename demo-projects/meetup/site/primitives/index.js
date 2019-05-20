@@ -6,5 +6,5 @@ export { default as Error } from './Error';
 export { Avatar } from './Avatar';
 export { Html } from './Html';
 export { Hero } from './Hero';
-export { AlertIcon, MicrophoneIcon, PinIcon, UserIcon } from './Icon';
+export { AlertIcon, CheckmarkIcon, MicrophoneIcon, PinIcon, UserIcon } from './Icon';
 export * from './Typography';
