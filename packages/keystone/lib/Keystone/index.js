@@ -36,6 +36,7 @@ module.exports = class Keystone {
     defaultAdapter,
     name,
     adapterConnectOptions = {},
+    onConnect,
   }) {
     this.name = name;
     this.adapterConnectOptions = adapterConnectOptions;
@@ -46,6 +47,7 @@ module.exports = class Keystone {
     this.getListByKey = key => this.lists[key];
     this._graphQLQuery = {};
     this.registeredTypes = new Set();
+    this.eventHandlers = { onConnect };
 
     if (adapters) {
       this.adapters = adapters;
@@ -108,8 +110,9 @@ module.exports = class Keystone {
           ...options,
         })
       )
-      // Don't unnecessarily leak any connection info
-    ).then(() => {});
+    ).then(() => {
+      if (this.eventHandlers.onConnect) this.eventHandlers.onConnect(this);
+    });
   }
 
   /**
@@ -118,7 +121,8 @@ module.exports = class Keystone {
   disconnect() {
     return resolveAllKeys(
       mapKeys(this.adapters, adapter => adapter.disconnect())
-      // Don't unnecessarily leak any connection info
+      // Chain an empty function so that the result of this promise
+      // isn't unintentionally leaked to the caller
     ).then(() => {});
   }
 
