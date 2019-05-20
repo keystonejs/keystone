@@ -1,5 +1,13 @@
 # @arch-ui/select
 
+## 0.0.6
+
+### Patch Changes
+
+- [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+
+  Minor Admin UI Tweaks
+
 ## 0.0.5
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # create-keystone-app
 
+## 0.5.1
+
+### Patch Changes
+
+- [9b6fec3e](https://github.com/keystonejs/keystone-5/commit/9b6fec3e):
+
+  Remove unnecessary dependency from packages
+
 ## 0.5.0
 
 ### Minor Changes

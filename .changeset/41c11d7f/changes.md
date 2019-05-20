@@ -1,1 +1,0 @@
-Use babel-preset-react-app in the Admin UI

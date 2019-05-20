@@ -1,6 +1,6 @@
 import App, { Container } from 'next/app';
-import fetch from 'isomorphic-unfetch';
 import React from 'react';
+import gql from 'graphql-tag';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
 import { ToastProvider } from 'react-toast-notifications';
@@ -9,22 +9,28 @@ import withApollo from '../lib/withApollo';
 import { AuthProvider } from '../lib/authetication';
 import StylesBase from '../primitives/StylesBase';
 
-const apiEndpoint = 'http://localhost:3000/api';
-
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
     let pageProps = {};
 
-    // We need to forward the request headers on the server.
-    const url = `${apiEndpoint}/session`;
-    const headers = ctx.req ? { cookie: ctx.req.headers.cookie } : undefined;
-
-    const { user } = await fetch(url, { headers }).then(res => res.json());
+    const data = await ctx.apolloClient.query({
+      query: gql`
+        query {
+          authenticatedUser {
+            id
+            name
+            isAdmin
+          }
+        }
+      `,
+      fetchPolicy: 'network-only',
+    });
 
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx);
     }
-    return { pageProps, user };
+
+    return { pageProps, user: data.data ? data.data.authenticatedUser : undefined };
   }
 
   render() {
@@ -32,14 +38,14 @@ class MyApp extends App {
     return (
       <ToastProvider>
         <Container>
-          <AuthProvider initialUserValue={user}>
-            <ApolloProvider client={apolloClient}>
+          <ApolloProvider client={apolloClient}>
+            <AuthProvider initialUserValue={user}>
               <ApolloHooksProvider client={apolloClient}>
                 <StylesBase />
                 <Component {...pageProps} />
               </ApolloHooksProvider>
-            </ApolloProvider>
-          </AuthProvider>
+            </AuthProvider>
+          </ApolloProvider>
         </Container>
       </ToastProvider>
     );
