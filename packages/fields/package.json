@@ -57,6 +57,7 @@
     "luxon": "^1.11.4",
     "memoize-one": "^4.0.2",
     "mongoose": "^5.5.2",
+    "nanoassert": "^2.0.0",
     "p-is-promise": "^2.1.0",
     "p-settle": "^3.1.0",
     "pluralize": "^7.0.0",

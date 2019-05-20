@@ -1,6 +1,7 @@
 const GraphQLJSON = require('graphql-type-json');
 const fs = require('fs');
 const gql = require('graphql-tag');
+const flattenDeep = require('lodash.flattendeep');
 const fastMemoize = require('fast-memoize');
 const { print } = require('graphql/language/printer');
 const { graphql } = require('graphql');
@@ -23,6 +24,7 @@ const {
   mergeRelationships,
 } = require('./relationship-utils');
 const List = require('../List');
+const { DEFAULT_PORT, DEFAULT_DIST_DIR } = require('../../constants');
 
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
 
@@ -43,6 +45,7 @@ module.exports = class Keystone {
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
     this._graphQLQuery = {};
+    this.registeredTypes = new Set();
 
     if (adapters) {
       this.adapters = adapters;
@@ -75,6 +78,7 @@ module.exports = class Keystone {
       adapter: adapters[adapterName],
       defaultAccess: this.defaultAccess,
       getAuth: () => this.auth[key],
+      registerType: type => this.registeredTypes.add(type),
       isAuxList,
       createAuxList: (auxKey, auxConfig) => {
         if (isAuxList) {
@@ -407,5 +411,30 @@ module.exports = class Keystone {
 
     // 4. Merge the data back together again
     return mergeRelationships(createdItems, createdRelationships);
+  }
+
+  async prepare({ port = DEFAULT_PORT, dev = false, apps = [], distDir } = {}) {
+    const middlewares = flattenDeep(
+      await Promise.all(
+        [
+          // Inject any field middlewares (eg; WYSIWIG's static assets)
+          // We do this first to avoid it conflicting with any catch-all routes the
+          // user may have specified
+          ...this.registeredTypes,
+          ...apps,
+        ]
+          .filter(({ prepareMiddleware } = {}) => !!prepareMiddleware)
+          .map(app =>
+            app.prepareMiddleware({
+              keystone: this,
+              port,
+              dev,
+              distDir: distDir || DEFAULT_DIST_DIR,
+            })
+          )
+      )
+    ).filter(middleware => !!middleware);
+
+    return { middlewares };
   }
 };

@@ -28,7 +28,7 @@ const EventItem = ({
   const hex = themeColor && themeColor.slice(1);
 
   return (
-    <li css={mq({ width: ['100%', '50%', '50%', '33.33%'] })} {...props}>
+    <li {...props} css={mq({ width: ['100%', '50%', '50%', '33.33%'] })}>
       <div
         css={{
           backgroundColor: 'white',
@@ -49,19 +49,19 @@ const EventItem = ({
           },
         }}
       >
-        <Link route="event" params={{ id, hex }} passHref>
-          <a
-            css={{
-              color: 'inherit',
-              textDecoration: 'none',
+        <div css={{ maxHeight: 400, overflow: 'hidden' }}>
+          <Link route="event" params={{ id, hex }} passHref>
+            <a
+              css={{
+                color: 'inherit',
+                textDecoration: 'none',
 
-              ':hover h3': {
-                textDecoration: 'underline',
-              },
-            }}
-          >
-            <Mask />
-            <div css={{ maxHeight: 320, overflow: 'hidden' }}>
+                ':hover h3': {
+                  textDecoration: 'underline',
+                },
+              }}
+            >
+              <Mask />
               <span css={{ textTransform: 'uppercase', fontWeight: 600 }}>{prettyDate}</span>
               <H3
                 size={4}
@@ -69,13 +69,6 @@ const EventItem = ({
               >
                 {name}
               </H3>
-            </div>
-            <div
-              css={{
-                maxHeight: '270px',
-                overflow: 'hidden',
-              }}
-            >
               {locationDescription ? (
                 <p css={{ margin: 0, opacity: isInFuture(startTime) ? 1 : 0.5 }}>
                   {locationDescription}
@@ -91,49 +84,53 @@ const EventItem = ({
                   },
                 }}
               />
-            </div>
-          </a>
-        </Link>
-        {isInFuture(startTime) ? (
-          <Rsvp eventId={id}>
-            {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
-              if (loading) return <Loading css={{ position: 'relative', zIndex: 2 }} />;
-              if (error) return null;
-              return (
-                <div
-                  css={{
-                    position: 'relative',
-                    zIndex: 20,
-                    margin: '1rem 0 0 0',
-                    paddingBottom: '1rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <span css={{ padding: '0', flex: 1 }}>Attending?</span>
-                  <Button
-                    disabled={isGoing || !canRsvp}
-                    background={isGoing ? themeColor : colors.greyLight}
-                    foreground={isGoing ? 'white' : colors.greyDark}
-                    css={{ marginLeft: '.5rem', padding: '.6rem 1.33rem' }}
-                    onClick={() => rsvpToEvent('yes')}
+            </a>
+          </Link>
+          {isInFuture(startTime) ? (
+            <Rsvp eventId={id}>
+              {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
+                if (loading) return <Loading css={{ position: 'relative', zIndex: 2 }} />;
+                if (error) return null;
+                return (
+                  <div
+                    css={{
+                      alignItems: 'center',
+                      background: 'linear-gradient(rgba(255, 255, 255, 0), white 66%)',
+                      bottom: 0,
+                      boxSizing: 'border-box',
+                      display: 'flex',
+                      left: 0,
+                      padding: gridSize * 3,
+                      position: 'absolute',
+                      right: 0,
+                      zIndex: 20,
+                    }}
                   >
-                    yes
-                  </Button>
-                  <Button
-                    disabled={!isGoing}
-                    background={!isGoing ? themeColor : colors.greyLight}
-                    foreground={!isGoing ? 'white' : colors.greyDark}
-                    css={{ marginLeft: '.5rem', padding: '.6rem 1.33rem' }}
-                    onClick={() => rsvpToEvent('no')}
-                  >
-                    no
-                  </Button>
-                </div>
-              );
-            }}
-          </Rsvp>
-        ) : null}
+                    <span css={{ padding: '0', flex: 1 }}>Attending?</span>
+                    <Button
+                      disabled={isGoing || !canRsvp}
+                      background={isGoing ? themeColor : colors.greyLight}
+                      foreground={isGoing ? 'white' : colors.greyDark}
+                      css={{ marginLeft: '.5rem', padding: '.6rem 1.33rem' }}
+                      onClick={() => rsvpToEvent('yes')}
+                    >
+                      yes
+                    </Button>
+                    <Button
+                      disabled={!isGoing}
+                      background={!isGoing ? themeColor : colors.greyLight}
+                      foreground={!isGoing ? 'white' : colors.greyDark}
+                      css={{ marginLeft: '.5rem', padding: '.6rem 1.33rem' }}
+                      onClick={() => rsvpToEvent('no')}
+                    >
+                      no
+                    </Button>
+                  </div>
+                );
+              }}
+            </Rsvp>
+          ) : null}
+        </div>
       </div>
     </li>
   );
@@ -148,7 +145,7 @@ const Mask = props => (
       position: 'absolute',
       bottom: 0,
       left: 0,
-      background: 'linear-gradient(rgba(255, 255, 255, 0), white 80%)',
+      background: 'linear-gradient(rgba(255, 255, 255, 0), white 66%)',
       width: '100%',
       height: 100,
     }}

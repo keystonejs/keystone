@@ -1,15 +1,16 @@
 const { startAuthedSession } = require('@keystone-alpha/session');
+const express = require('express');
 
 module.exports = ({
   strategy,
-  server,
+  app,
   authRoot = '/auth',
   successRedirect = '/api/session',
   failureRedirect = '/',
 }) => {
   const basePath = `${authRoot}/${strategy.authType}`;
   // Hit this route to start the auth process for service
-  server.app.get(
+  app.get(
     basePath,
     strategy.loginMiddleware({
       // If not set, will just call `next()`
@@ -22,7 +23,7 @@ module.exports = ({
   );
 
   // oAuth service will redirect the user to this URL after approval.
-  server.app.get(
+  app.get(
     `${basePath}/callback`,
     strategy.authenticateMiddleware({
       verified: async (item, { list }, req, res) => {
@@ -52,7 +53,7 @@ module.exports = ({
 
   // Sample page to collect a name, submits to the completion step which will
   // create a user
-  server.app.get(`${basePath}/create`, (req, res) => {
+  app.get(`${basePath}/create`, (req, res) => {
     // Redirect if we're already signed in
     if (req.user) {
       return res.redirect(successRedirect);
@@ -72,9 +73,9 @@ module.exports = ({
   });
 
   // Gets the name and creates a new User
-  server.app.post(
+  app.post(
     `${basePath}/complete`,
-    server.express.urlencoded({ extended: true }),
+    express.urlencoded({ extended: true }),
     async (req, res, next) => {
       // Redirect if we're already signed in
       if (req.user) {

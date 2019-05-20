@@ -3,8 +3,9 @@ import { jsx } from '@emotion/core';
 
 import EventItem from './EventItem';
 import { gridSize } from '../../theme';
+import { media } from '../../helpers/media';
 
-const EventItems = ({ events, ...props }) => {
+const EventItems = ({ events, offsetTop, ...props }) => {
   return (
     <ul
       css={{
@@ -18,8 +19,20 @@ const EventItems = ({ events, ...props }) => {
       }}
       {...props}
     >
-      {events.map(event => (
-        <EventItem key={event.id} {...event} />
+      {events.map((event, idx) => (
+        <EventItem
+          key={event.id}
+          css={
+            offsetTop
+              ? {
+                  [media.lg]: {
+                    marginTop: `${idx * 10}vh`,
+                  },
+                }
+              : null
+          }
+          {...event}
+        />
       ))}
     </ul>
   );

@@ -1,0 +1,1 @@
+Fix react-router-dom error when installed through npm

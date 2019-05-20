@@ -1,0 +1,1 @@
+Remove copy of preconstruct's require hook and use @preconstruct/hook instead

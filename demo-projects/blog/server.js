@@ -1,30 +1,28 @@
-const keystone = require('@keystone-alpha/core');
-const { Wysiwyg } = require('@keystone-alpha/fields-wysiwyg-tinymce');
-const next = require('next');
+const express = require('express');
 
-const { port, staticRoute, staticPath } = require('./config');
+const { keystone, apps } = require('./index');
+const { port } = require('./config');
 const initialData = require('./initialData');
 
-const nextApp = next({
-  dir: 'app',
-  distDir: 'build',
-  dev: process.env.NODE_ENV !== 'production',
-});
+keystone
+  .prepare({ apps, port, dev: process.env.NODE_ENV !== 'production' })
+  .then(async ({ middlewares }) => {
+    await keystone.connect(process.env.MONGODB_URI);
 
-Promise.all([keystone.prepare({ port }), nextApp.prepare()])
-  .then(async ([{ server, keystone: keystoneApp }]) => {
-    await keystoneApp.connect(process.env.MONGODB_URI);
     // Initialise some data.
     // NOTE: This is only for demo purposes and should not be used in production
-    const users = await keystoneApp.lists.User.adapter.findAll();
+    const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
-      await keystoneApp.createItems(initialData);
+      await keystone.createItems(initialData);
     }
 
-    Wysiwyg.bindStaticMiddleware(server);
-    server.app.use(staticRoute, server.express.static(staticPath));
-    server.app.use(nextApp.getRequestHandler());
-    await server.start();
+    const app = express();
+
+    app.use(middlewares);
+
+    app.listen(port, error => {
+      if (error) throw error;
+    });
   })
   .catch(error => {
     console.error(error);

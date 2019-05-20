@@ -25,6 +25,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.4.3",
     "@babel/plugin-transform-runtime": "^7.4.3",
     "@emotion/hash": "^0.7.1",
+    "@preconstruct/hook": "0.0.1",
     "builtin-modules": "^3.0.0",
     "chalk": "^2.4.2",
     "dataloader": "^1.4.0",

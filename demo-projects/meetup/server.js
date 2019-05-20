@@ -1,43 +1,34 @@
 require('dotenv').config();
 
-const keystone = require('@keystone-alpha/core');
-const { Wysiwyg } = require('@keystone-alpha/fields-wysiwyg-tinymce');
-const next = require('next');
-const createAuthRoutes = require('./auth');
-const initialData = require('./initialData');
-const routes = require('./routes');
+const express = require('express');
+
+const { keystone, apps } = require('./index');
 
 const port = process.env.PORT || 3000;
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/keystonejs-meetup';
 
-const nextApp = next({
-  dir: 'site',
-  distDir: 'build',
-  dev: process.env.NODE_ENV !== 'production',
-});
-const handler = routes.getRequestHandler(nextApp);
-
-Promise.all([keystone.prepare({ port }), nextApp.prepare()])
-  .then(async ([{ server, keystone: keystoneApp }]) => {
-    await keystoneApp.connect(mongoUri);
-
-    // Attach the auth routes
-    server.app.use('/api', createAuthRoutes(keystoneApp));
+keystone
+  .prepare({ apps, port, dev: process.env.NODE_ENV !== 'production' })
+  .then(async ({ middlewares }) => {
+    await keystone.connect(mongoUri);
 
     // Initialise some data.
     // NOTE: This is only for demo purposes and should not be used in production
-    const users = await keystoneApp.lists.User.adapter.findAll();
+    const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
-      Object.values(keystoneApp.adapters).forEach(async adapter => {
+      const initialData = require('./initialData');
+      Object.values(keystone.adapters).forEach(async adapter => {
         await adapter.dropDatabase();
       });
-      await keystoneApp.createItems(initialData);
+      await keystone.createItems(initialData);
     }
 
-    Wysiwyg.bindStaticMiddleware(server);
-    server.app.use(handler);
-    await server.start().then(({ port: listeningOn }) => {
-      console.log(`Server started on port ${listeningOn}`);
+    const app = express();
+
+    app.use(middlewares);
+
+    app.listen(port, error => {
+      if (error) throw error;
     });
   })
   .catch(error => {
