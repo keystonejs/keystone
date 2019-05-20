@@ -205,7 +205,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                         {attending} {isInFuture(startTime) ? 'attending' : 'attended'}
                       </div>
                       <AvatarStack
-                        users={allRsvps.map(rsvp => rsvp.user)}
+                        users={allRsvps.filter(rsvp => rsvp.user).map(rsvp => rsvp.user)}
                         css={{ width: 50, height: 50 }}
                       />
                     </>
