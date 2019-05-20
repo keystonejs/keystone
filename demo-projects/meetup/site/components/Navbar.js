@@ -6,6 +6,7 @@ import { jsx } from '@emotion/core';
 
 import { Link } from '../../routes';
 import { useAuth } from '../lib/authetication';
+import { SignoutIcon } from '../primitives';
 import { getForegroundColor } from '../helpers';
 import { mq } from '../helpers/media';
 import { colors, fontSizes, gridSize } from '../theme';
@@ -17,13 +18,19 @@ const { publicRuntimeConfig } = getConfig();
 
 const NavAnchor = props => {
   const { foreground } = useTheme();
+  const paddingHorizontal = [gridSize, gridSize, gridSize * 3];
+  const paddingVertical = [gridSize, gridSize * 3];
 
   return (
     <a
       css={mq({
         color: foreground,
+        display: 'inline-block',
         fontSize: fontSizes.sm,
-        margin: [gridSize, gridSize * 3],
+        paddingLeft: paddingHorizontal,
+        paddingRight: paddingHorizontal,
+        paddingBottom: paddingVertical,
+        paddingTop: paddingVertical,
         textDecoration: 'none',
 
         ':hover': {
@@ -42,16 +49,7 @@ const NavLink = ({ route, ...props }) => (
 
 const NavText = props => {
   const { foreground } = useTheme();
-  return (
-    <a
-      css={{
-        color: foreground,
-        fontSize: fontSizes.sm,
-        margin: gridSize * 3,
-      }}
-      {...props}
-    />
-  );
+  return <span css={{ color: foreground, fontSize: fontSizes.sm }} {...props} />;
 };
 
 const Header = props => {
@@ -61,9 +59,9 @@ const Header = props => {
   return (
     <header
       css={mq({
+        alignItems: 'center',
         background: background,
         display: 'flex',
-        alignItems: 'center',
         paddingLeft: paddingHorizontal,
         paddingRight: paddingHorizontal,
       })}
@@ -79,15 +77,19 @@ const hideOnMobile = mq({
 // TODO: Implement log out
 const UserActions = ({ user }) => (
   <div>
-    <NavText css={hideOnMobile}>
-      Logged in as <strong>{user.name}</strong>
-    </NavText>
     {user.isAdmin && (
       <NavAnchor css={hideOnMobile} href="/admin" target="_blank">
-        Open the Admin UI
+        Admin
       </NavAnchor>
     )}
-    <NavLink route="signout">Sign Out</NavLink>
+    <span css={{ alignItems: 'center', display: 'inline-flex' }}>
+      <NavText css={hideOnMobile}>
+        <strong>{user.name}</strong>
+      </NavText>
+      <NavLink route="signout" title="Sign Out">
+        <SignoutIcon />
+      </NavLink>
+    </span>
   </div>
 );
 
