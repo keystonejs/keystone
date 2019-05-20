@@ -20,7 +20,7 @@ const cloudinaryAdapter = new CloudinaryAdapter({
 });
 
 const access = {
-  userIsAdmin: ({ authentication: { item: user } }) => user && !!user.isAdmin,
+  userIsAdmin: ({ authentication: { item: user } }) => !!(user && user.isAdmin),
   userIsAdminOrPath: path => ({ existingItem: item, authentication: { item: user } }) => {
     if (!user) return false;
     return user.isAdmin || user.id === item[path];
@@ -64,10 +64,14 @@ exports.Organiser = {
   access: access.readPublicWriteAdmin,
   fields: {
     user: { type: Relationship, ref: 'User' },
-    order: { type: Number },
+    order: { type: Integer },
     role: { type: Text },
   },
 };
+
+// TODO: We can't access the existing item at the list update level yet,
+// read access needs to check if event is "active" or if the user is admin
+// read: ({ existingItem, authentication }) => access.userIsAdmin({ authentication }) || !!(existingItem && existingItem.status === 'active'),
 
 exports.Event = {
   access: access.readPublicWriteAdmin,

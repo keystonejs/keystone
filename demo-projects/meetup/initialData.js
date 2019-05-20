@@ -1,59 +1,73 @@
+require('dotenv').config();
+
+// Lets not hardcode password, even for test data
+const password = process.env.INITIAL_DATA_PASSWORD;
+const PASSWORD_MIN_LENGTH = 8;
+
+if (!password) {
+  throw new Error(`To seed initial data, set the 'INITIAL_DATA_PASSWORD' environment variable`);
+} else if (password.length < PASSWORD_MIN_LENGTH) {
+  throw new Error(
+    `To seed initial data, the 'INITIAL_DATA_PASSWORD' environment variable must be at least ${PASSWORD_MIN_LENGTH} characters`
+  );
+}
+
 module.exports = {
   User: [
-    { name: 'Admin User', email: 'admin@keystonejs.com', isAdmin: true, password: 'password' },
+    { name: 'Admin User', email: 'admin@keystonejs.com', isAdmin: true, password },
     {
       name: 'Organiser 1',
       email: 'organiser1@keystonejs.com',
       twitterHandle: '@organiser1',
-      password: 'passwordorganiser1',
+      password,
     },
     {
       name: 'Organiser 2',
       email: 'organiser2@keystonejs.com',
       twitterHandle: '@organiser2',
-      password: 'passwordorganiser2',
+      password,
     },
     {
       name: 'Organiser 3',
       email: 'organiser3@keystonejs.com',
       twitterHandle: '@organiser3',
-      password: 'passwordorganiser3',
+      password,
     },
     {
       name: 'Speaker 1',
       email: 'speaker1@keystonejs.com',
       twitterHandle: '@speaker1',
-      password: 'passwordspeaker1',
+      password,
     },
     {
       name: 'Speaker 2',
       email: 'speaker2@keystonejs.com',
       twitterHandle: '@speaker2',
-      password: 'passwordspeaker2',
+      password,
     },
     {
       name: 'Speaker 3',
       email: 'speaker3@keystonejs.com',
       twitterHandle: '@speaker3',
-      password: 'passwordspeaker3',
+      password,
     },
     {
       name: 'Attendee 1',
       email: 'attendee1@keystonejs.com',
       twitterHandle: `@attendee1`,
-      password: 'passwordattendee1',
+      password,
     },
     {
       name: 'Attendee 2',
       email: 'attendee2@keystonejs.com',
       twitterHandle: `@attendee2`,
-      password: 'passwordattendee2',
+      password,
     },
     {
       name: 'Attendee 3',
       email: 'attendee3@keystonejs.com',
       twitterHandle: `@attendee3`,
-      password: 'passwordattendee3',
+      password,
     },
   ],
   Organiser: [

@@ -1,11 +1,16 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import getConfig from 'next/config';
 import { shadows, gridSize } from '../theme';
 
 import { Button } from '../primitives';
+import { getForegroundColor } from '../helpers';
 import { H2 } from '../primitives/Typography';
 
+const { publicRuntimeConfig } = getConfig();
+
 export default function CallToAction() {
+  const { meetup } = publicRuntimeConfig;
   return (
     <div
       css={{
@@ -27,7 +32,9 @@ export default function CallToAction() {
         Every <strong>3rd Wednesday of the month</strong> you'll find us talking about what we're
         doing and what's happening around us in the world of JavaScript.
       </p>
-      <Button>Join us now</Button>
+      <Button background={meetup.themeColor} foreground={getForegroundColor(meetup.themeColor)}>
+        Join us now
+      </Button>
     </div>
   );
 }

@@ -1,8 +1,13 @@
 import React, { Component, createContext, useContext } from 'react';
+import getConfig from 'next/config';
 import { withApollo } from 'react-apollo';
 import gql from 'graphql-tag';
 
-const apiEndpoint = 'http://localhost:3000/admin';
+const {
+  publicRuntimeConfig: { serverUrl },
+} = getConfig();
+
+const apiEndpoint = `${serverUrl}/admin`;
 
 /**
  * AuthContext
@@ -121,7 +126,7 @@ const signInWithEmail = async ({ email, password }) => {
 
 const signout = async () => {
   try {
-    const res = await fetch(`${apiEndpoint}/signout`, {
+    const res = await fetch(`${serverUrl}/api/signout`, {
       method: 'POST',
       credentials: 'same-origin',
       headers: { Accept: 'application/json' },

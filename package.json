@@ -124,6 +124,7 @@
     "gatsby-remark-images": "^3.0.10",
     "gatsby-source-filesystem": "^2.0.29",
     "gatsby-transformer-remark": "^2.3.8",
+    "get-contrast": "^2.0.0",
     "get-selection-range": "^0.1.0",
     "globby": "^9.1.0",
     "graphql": "^14.0.2",
