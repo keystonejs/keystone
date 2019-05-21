@@ -40,10 +40,12 @@ Minimum requirements for the Demo Projects:
 - [Node.js](https://nodejs.org/) >= 10.x
 - [MongoDB](https://v5.keystonejs.com/quick-start/mongodb) >= 4.x
 
-Download a copy of the Keystone 5 repo:
+Download a copy of the Keystone 5 repo, and check out the latest release:
 
 ```bash
-git clone --depth=1 https://github.com/keystonejs/keystone-5.git
+git clone https://github.com/keystonejs/keystone-5.git
+cd keystone-5
+git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
 ```
 
 Pick which demo project you want to run:
@@ -55,7 +57,7 @@ Pick which demo project you want to run:
 Then move into the directory for that demo, for example:
 
 ```bash
-cd keystone-5/demo-projects/todo
+cd demo-projects/todo
 ```
 
 Now install and run the project:
