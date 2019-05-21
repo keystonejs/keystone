@@ -15,7 +15,7 @@
        module.exports = {
          keystone,
       -  admin,
-      +  servers: [admin],
+      +  apps: [admin],
        }
       ```
     - The `keystone.prepare()` method (often used within a _Custom Server_

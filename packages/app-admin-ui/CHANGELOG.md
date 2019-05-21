@@ -1,8 +1,10 @@
-# @keystone-alpha/app-admin
+# @keystone-alpha/app-admin-ui
 
 ## 4.0.0
 
 ### Major Changes
+
+- This packages has been renamed from `admin-ui`.
 
 - [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
 
@@ -15,7 +17,7 @@
        module.exports = {
          keystone,
       -  admin,
-      +  servers: [admin],
+      +  apps: [admin],
        }
       ```
     - The `keystone.prepare()` method (often used within a _Custom Server_

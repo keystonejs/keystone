@@ -4,6 +4,8 @@
 
 ### Major Changes
 
+- This packages has been renamed from `server`.
+
 - [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
 
   Specify custom servers from within the index.js file
@@ -15,7 +17,7 @@
        module.exports = {
          keystone,
       -  admin,
-      +  servers: [admin],
+      +  apps: [admin],
        }
       ```
     - The `keystone.prepare()` method (often used within a _Custom Server_
