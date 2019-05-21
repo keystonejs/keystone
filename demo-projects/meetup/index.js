@@ -1,4 +1,5 @@
-//imports for Keystone app core
+require('dotenv').config();
+
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
@@ -9,10 +10,12 @@ const routes = require('./routes');
 const { Event, Talk, User, Rsvp, Organiser, Sponsor } = require('./schema');
 
 const MEETUP = require('./meetupConfig');
+const initialiseData = require('./initialData');
 
 const keystone = new Keystone({
   name: MEETUP.name,
   adapter: new MongooseAdapter(),
+  onConnect: initialiseData,
 });
 
 const authStrategy = keystone.createAuthStrategy({

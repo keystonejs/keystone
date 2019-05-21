@@ -9,7 +9,7 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "NODE_ENV=development DISABLE_LOGGING=true node server.js",
+    "start": "NODE_ENV=development DISABLE_LOGGING=true keystone",
     "build": "NODE_ENV=production next build"
   },
   "dependencies": {
