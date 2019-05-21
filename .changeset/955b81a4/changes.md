@@ -1,1 +1,0 @@
-Rename `@keystone-alpha/admin-ui` to `@keystone-alpha/app-admin`

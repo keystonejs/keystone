@@ -1,5 +1,14 @@
 # @keystone-alpha/fields
 
+## 6.2.0
+
+### Minor Changes
+
+- [c5a1d301](https://github.com/keystonejs/keystone-5/commit/c5a1d301):
+
+  - CloudinaryImage single image block correctly loads and displays saved image
+  - AdminUI deserialises fields JIT before rendering
+
 ## 6.1.1
 
 ### Patch Changes

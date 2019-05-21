@@ -1,5 +1,10 @@
 # @keystone-alpha/adapter-mongoose
 
+## 2.0.1
+
+- Updated dependencies [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+  - @keystone-alpha/keystone@5.0.0
+
 ## 2.0.0
 
 ### Major Changes
