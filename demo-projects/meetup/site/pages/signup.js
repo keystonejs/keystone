@@ -26,7 +26,7 @@ export default () => {
   const { isAuthenticated, signin } = useAuth();
   const { meetup } = publicRuntimeConfig;
 
-  const handleSubmit = createUser => {
+  const handleSubmit = createUser => event => {
     event.preventDefault();
     createUser({ variables: { name, email, password } });
   };
@@ -73,7 +73,7 @@ export default () => {
               <form
                 css={{ marginTop: gridSize * 3 }}
                 noValidate
-                onSubmit={() => handleSubmit(createUser)}
+                onSubmit={handleSubmit(createUser)}
               >
                 <Field>
                   <Label htmlFor="name">Name</Label>

@@ -62,7 +62,7 @@ export default class Event extends Component {
                 title={name}
               >
                 <p css={{ fontWeight: 100 }}>{locationAddress}</p>
-                {description ? <Html markup={description.replace(/style=".*?"/g, '')} /> : null}
+                <Html markup={description} />
                 <Rsvp eventId={id}>
                   {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
                     if (loading) return <Loading />;

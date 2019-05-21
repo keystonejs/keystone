@@ -27,9 +27,7 @@ const Talks = ({ talks }) => {
               <H5 as="h3">{talk.name}</H5>
             </div>
             <Content>
-              {talk.description ? (
-                <Html markup={talk.description.replace(/style=".*?"/g, '')} />
-              ) : null}
+              <Html markup={talk.description} />
               {hasSpeakers && <Byline speakers={talk.speakers} />}
             </Content>
           </Talk>
