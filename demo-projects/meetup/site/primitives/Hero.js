@@ -6,11 +6,11 @@ import { jsx } from '@emotion/core';
 import { Container } from '../primitives';
 import { H1 } from '../primitives/Typography';
 import { colors, fontSizes } from '../theme';
+import { getForegroundColor } from '../helpers';
 
 export const Hero = ({
   align,
   backgroundColor,
-  foregroundColor,
   children,
   subTitle,
   superTitle,
@@ -18,6 +18,8 @@ export const Hero = ({
   ...props
 }) => {
   const horizontalMargin = align === 'center' ? 'auto' : null;
+  const foregroundColor = getForegroundColor(backgroundColor);
+
   return (
     <>
       <Wrapper
@@ -49,7 +51,6 @@ Hero.propTypes = {
   align: PropTypes.oneOf(['left', 'center', 'right']),
   backgroundColor: PropTypes.string.isRequired,
   children: PropTypes.node,
-  foregroundColor: PropTypes.string.isRequired,
   subTitle: PropTypes.string,
   superTitle: PropTypes.string,
   title: PropTypes.string.isRequired,
@@ -57,7 +58,6 @@ Hero.propTypes = {
 Hero.defaultProps = {
   align: 'center',
   backgroundColor: colors.greyDark,
-  foregroundColor: 'white',
 };
 
 // styled components

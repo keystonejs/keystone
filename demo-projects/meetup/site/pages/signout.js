@@ -10,7 +10,6 @@ import { useAuth } from '../lib/authetication';
 import { Container } from '../primitives';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { colors } from '../theme';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -31,7 +30,7 @@ export default () => {
       <Head>
         <title>Sign out | {meetup.name}</title>
       </Head>
-      <Navbar background="white" foreground={colors.greyDark} />
+      <Navbar background="white" />
       <Container>
         <p css={{ margin: '100px', textAlign: 'center' }}>Signing you out...</p>
       </Container>

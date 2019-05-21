@@ -6,13 +6,13 @@ import Head from 'next/head';
 import getConfig from 'next/config';
 
 import Rsvp from '../components/Rsvp';
-import { Avatar, Container, Error, Hero, H1, H2, Html, Button, Loading } from '../primitives';
+import { Avatar, Container, Error, Hero, H1, H2, Html, Loading } from '../primitives';
 import Talks from '../components/Talks';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { colors, fontSizes, gridSize } from '../theme';
+import { fontSizes, gridSize } from '../theme';
 import { GET_EVENT_DETAILS } from '../graphql/events';
-import { isInFuture, formatFutureDate, formatPastDate, getForegroundColor } from '../helpers';
+import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -53,54 +53,24 @@ export default class Event extends Component {
                   {name} | {meetup.name}
                 </title>
               </Head>
-              <Navbar foreground={getForegroundColor(themeColor)} background={themeColor} />
+              <Navbar background={themeColor} />
               <Hero
                 align="left"
                 backgroundColor={themeColor}
-                foregroundColor={getForegroundColor(themeColor)}
                 superTitle={prettyDate}
                 title={name}
               >
                 <p css={{ fontWeight: 100 }}>{locationAddress}</p>
                 <Html markup={description} />
-                <Rsvp eventId={id}>
-                  {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
-                    if (loading) return <Loading />;
-                    if (error) {
-                      return <p css={{ fontSize: '0.85rem', margin: 0 }}>{error}</p>;
-                    }
-
-                    return (
-                      <div css={{ display: 'flex', alignItems: 'center' }}>
-                        <span css={{ padding: '0' }}>Will you be attending?</span>
-                        <Button
-                          disabled={isGoing || !canRsvp}
-                          outline={isGoing}
-                          background={isGoing ? themeColor : colors.greyLight}
-                          foreground={isGoing ? 'white' : colors.greyDark}
-                          css={{ marginLeft: '.5rem', color: isGoing ? 'white' : colors.greyDark }}
-                          onClick={() => rsvpToEvent('yes')}
-                        >
-                          yes
-                        </Button>
-                        <Button
-                          disabled={!isGoing}
-                          outline={!isGoing}
-                          background={!isGoing ? themeColor : colors.greyLight}
-                          foreground={!isGoing ? 'white' : colors.greyDark}
-                          css={{ marginLeft: '.5rem', color: !isGoing ? 'white' : colors.greyDark }}
-                          onClick={() => rsvpToEvent('no')}
-                        >
-                          no
-                        </Button>
-                      </div>
-                    );
-                  }}
-                </Rsvp>
               </Hero>
 
               <Container css={{ marginTop: gridSize * 3 }}>
-                <H2>Talks</H2>
+                <div css={{ float:'right' }}>
+                  <Rsvp event={data.Event} themeColor={themeColor}>
+                    {({ message, component }) => message || component}
+                  </Rsvp>
+                </div>
+                <H2 hasSeparator css={{ marginBottom: '2rem' }}>Talks</H2>
                 <Talks talks={talks} />
 
                 <div css={{ textAlign: 'center', marginTop: '3em' }}>

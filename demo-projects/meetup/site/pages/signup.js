@@ -54,7 +54,7 @@ export default () => {
       <Head>
         <title>Join | {meetup.name}</title>
       </Head>
-      <Navbar background="white" foreground={colors.greyDark} />
+      <Navbar background="white" />
       <Mutation
         mutation={CREATE_USER}
         onCompleted={() => {

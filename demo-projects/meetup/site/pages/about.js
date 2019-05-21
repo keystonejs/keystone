@@ -23,7 +23,7 @@ export default function About() {
         <title>About | {meetup.name}</title>
         <meta name="description" content={meetup.aboutIntro} />
       </Head>
-      <Navbar background="white" foreground={colors.greyDark} />
+      <Navbar background="white" />
       <Container css={{ marginTop: gridSize * 3 }}>
         <H1 hasSeparator css={{ marginBottom: '0.66em' }}>
           About
