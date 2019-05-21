@@ -126,7 +126,7 @@ const signInWithEmail = async ({ email, password }) => {
 
 const signout = async () => {
   try {
-    const res = await fetch(`${serverUrl}/api/signout`, {
+    const res = await fetch(`${apiEndpoint}/signout`, {
       method: 'POST',
       credentials: 'same-origin',
       headers: { Accept: 'application/json' },
