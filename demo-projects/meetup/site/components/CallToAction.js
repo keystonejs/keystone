@@ -14,14 +14,14 @@ export default function CallToAction() {
   return (
     <div
       css={{
-        position: 'relative',
-        zIndex: 2,
-        boxShadow: shadows.lg,
-        maxWidth: gridSize * 100,
-        margin: '0 auto',
         background: 'white',
+        boxShadow: shadows.lg,
+        margin: '0 auto',
+        maxWidth: gridSize * 100,
         padding: '2rem',
+        position: 'relative',
         textAlign: 'center',
+        zIndex: 2,
       }}
     >
       <H2 size={3} css={{ padding: '0 3rem' }}>
