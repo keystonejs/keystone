@@ -3,6 +3,7 @@ import { jsx } from '@emotion/core';
 
 import { H5, Html, AvatarStack } from '../primitives';
 import { mq } from '../helpers/media';
+import { colors } from '../theme';
 
 const Talks = ({ talks }) => {
   return (
@@ -23,8 +24,10 @@ const Talks = ({ talks }) => {
                   }}
                 />
               )}
-              {talk.isLightningTalk && <Bolt />}
-              <H5 as="h3">{talk.name}</H5>
+              <div css={{ position: 'relative' }}>
+                {talk.isLightningTalk && <Bolt>⚡️ Lightning Talk ⚡️</Bolt>}
+                <H5 as="h3">{talk.name}</H5>
+              </div>
             </div>
             <Content>
               <Html markup={talk.description} />
@@ -79,30 +82,17 @@ const Content = props => (
     {...props}
   />
 );
-const Bolt = props => {
-  const size = 32;
-  const offset = size / 4;
-
-  return (
-    <div
-      css={{
-        alignItems: 'center',
-        backgroundColor: 'white',
-        borderRadius: size,
-        display: 'flex',
-        height: size,
-        justifyContent: 'center',
-        left: -(CONTENT_GUTTER + size - offset),
-        position: 'absolute',
-        top: -offset,
-        width: size,
-      }}
-      {...props}
-    >
-      ⚡️
-    </div>
-  );
-};
+const Bolt = props => (
+  <div
+    css={{
+      color: colors.greyMedium,
+      fontSize: '0.75rem',
+      fontWeight: 500,
+      textTransform: 'uppercase',
+    }}
+    {...props}
+  />
+);
 const Byline = ({ speakers, ...props }) => (
   <div {...props}>
     by{' '}
