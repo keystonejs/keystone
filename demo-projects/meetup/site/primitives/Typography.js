@@ -2,8 +2,8 @@
 
 import PropTypes from 'prop-types';
 import { jsx } from '@emotion/core';
-import { fontSizes } from '../../theme';
-import { mq } from '../../helpers/media';
+import { fontSizes } from '../theme';
+import { mq } from '../helpers/media';
 
 const SIZE_MAP = [fontSizes.xxxl, fontSizes.xxl, fontSizes.xl, fontSizes.lg, fontSizes.md];
 const baseStyles = {
