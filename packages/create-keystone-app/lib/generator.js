@@ -44,10 +44,6 @@ const exec = (cmd, args) => {
  */
 function generate(name, noDeps) {
   const appName = createAppName(name);
-  const envVariables =
-    process.platform === 'win32'
-      ? 'SET NODE_ENV=development & SET DISABLE_LOGGING=true &'
-      : 'NODE_ENV=development DISABLE_LOGGING=true';
   const projectDir = `.${path.sep}${path.relative(process.cwd(), appName)}`;
   let hasYarn = true;
 

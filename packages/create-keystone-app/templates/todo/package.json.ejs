@@ -2,7 +2,7 @@
   "name": "<%= appName%>",
   "version": "0.0.0",
   "scripts": {
-    "start": "<%= envVariables%> keystone"
+    "start": "cross-env NODE_ENV=development DISABLE_LOGGING=true keystone"
   },
   "private": true,
   "dependencies": {
