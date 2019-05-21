@@ -176,8 +176,11 @@ You'll need to change the `dev` script in your `package.json` to run the server 
 + "dev": "NODE_ENV=development node server.js"
 ```
 
-Note that when using a custom server, you will no longer get the formatted
-console output when starting a server.
+_Note that when using a custom server, you will no longer get the formatted
+console output when starting a server._
+
+For more, see the [Custom Server
+Discussion](https://v5.keystonejs.com/discussions/custom-server).
 
 ### Production Build
 
