@@ -1,5 +1,45 @@
 # @keystone-alpha/api-tests
 
+## 1.0.8
+
+### Patch Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Specify custom servers from within the index.js file
+
+  - Major Changes:
+    - The `index.js` export for `admin` must now be exported in the `servers`
+      array:
+      ```diff
+       module.exports = {
+         keystone,
+      -  admin,
+      +  apps: [admin],
+       }
+      ```
+    - The `keystone.prepare()` method (often used within a _Custom Server_
+      `server.js`) no longer returns a `server`, it now returns a `middlewares`
+      array:
+      ```diff
+      +const express = require('express');
+       const port = 3000;
+       keystone.prepare({ port })
+      -  .then(async ({ server, keystone: keystoneApp }) => {
+      +  .then(async ({ middlewares, keystone: keystoneApp }) => {
+           await keystoneApp.connect();
+      -    await server.start();
+      +    const app = express();
+      +    app.use(middlewares);
+      +    app.listen(port)
+         });
+      ```
+
+* Updated dependencies [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
+  - @keystone-alpha/keystone@5.0.0
+  - @keystone-alpha/test-utils@2.0.3
+  - @keystone-alpha/app-graphql@6.0.0
+
 ## 1.0.7
 
 - Updated dependencies [9a0456ff](https://github.com/keystonejs/keystone-5/commit/9a0456ff):

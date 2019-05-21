@@ -1,1 +1,0 @@
-Capture early requests to the keystone server while still booting

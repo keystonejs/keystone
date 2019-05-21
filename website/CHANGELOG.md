@@ -1,5 +1,13 @@
 # @keystone-alpha/website
 
+## 1.0.9
+
+### Patch Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Remove unused dependency
+
 ## 1.0.8
 
 - Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
