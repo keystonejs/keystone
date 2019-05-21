@@ -31,5 +31,5 @@ export default async function init(directory: string) {
     })
   );
 
-  success(project.packages.length > 1 ? 'initialised packages!' : 'initialised package!');
+  success('initialised project!');
 }

@@ -1,12 +1,8 @@
 // @flow
 
-/*::
-import type { ItemUnion } from './types'
-*/
-
 export class FatalError extends Error {
-  item: ItemUnion;
-  constructor(message: string, item: ItemUnion) {
+  item: { +name: string };
+  constructor(message: string, item: { +name: string }) {
     super(message);
     this.item = item;
   }

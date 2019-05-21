@@ -44,5 +44,5 @@ export default async function dev(projectDir: string) {
 
   await Promise.all(promises);
 
-  success('created symlinks!');
+  success('created links!');
 }
