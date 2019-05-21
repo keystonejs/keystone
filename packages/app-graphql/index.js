@@ -28,7 +28,7 @@ class GraphQLApp {
   /**
    * @return Array<middlewares>
    */
-  prepareMiddleware({ keystone, port, dev }) {
+  prepareMiddleware({ keystone, dev }) {
     const middlewares = [];
 
     if (falsey(process.env.DISABLE_LOGGING)) {
@@ -51,7 +51,7 @@ class GraphQLApp {
     middlewares.push(
       createGraphQLMiddleware(
         server,
-        { apiPath: this._apiPath, graphiqlPath: this._graphiqlPath, port },
+        { apiPath: this._apiPath, graphiqlPath: this._graphiqlPath },
         { isPublic: true }
       )
     );

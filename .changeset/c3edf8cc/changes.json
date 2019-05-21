@@ -1,0 +1,90 @@
+{
+  "releases": [
+    { "name": "@keystone-alpha/app-admin-ui", "type": "major" },
+    { "name": "@keystone-alpha/app-graphql", "type": "major" }
+  ],
+  "dependents": [
+    {
+      "name": "@keystone-alpha/demo-project-blog",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/app-graphql"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-meetup",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/app-graphql"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/demo-project-todo",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/app-graphql"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-access-control",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/app-graphql"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-basic",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/app-graphql"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/app-graphql"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/cypress-project-social-login",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/app-admin-ui",
+        "@keystone-alpha/app-graphql"
+      ]
+    },
+    {
+      "name": "@keystone-alpha/keystone",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/app-graphql"]
+    },
+    {
+      "name": "@keystone-alpha/test-utils",
+      "type": "patch",
+      "dependencies": ["@keystone-alpha/keystone", "@keystone-alpha/app-graphql"]
+    },
+    {
+      "name": "@keystone-alpha/api-tests",
+      "type": "patch",
+      "dependencies": [
+        "@keystone-alpha/keystone",
+        "@keystone-alpha/test-utils",
+        "@keystone-alpha/app-graphql"
+      ]
+    }
+  ]
+}

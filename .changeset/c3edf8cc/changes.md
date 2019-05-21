@@ -1,0 +1,1 @@
+Remove usage of `port` arg from `prepareMiddleware()` and stop doing inline console.logs

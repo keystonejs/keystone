@@ -1,6 +1,14 @@
 const commandRunner = require('../../bin/command-runner');
 const version = require('../../package.json').version;
 
+const mockSpinner = {
+  text: '',
+  start: () => {},
+  succeed: () => {},
+  fail: () => {},
+  info: () => {},
+};
+
 describe('keystone CLI command-runner', () => {
   test('prints version', () => {
     expect(commandRunner.version()).toBe(version);
@@ -30,7 +38,8 @@ describe('keystone CLI command-runner', () => {
           hello: {
             exec: jest.fn(() => Promise.resolve(true)),
           },
-        }
+        },
+        mockSpinner
       )
     ).resolves.toEqual(expect.anything());
   });
@@ -43,7 +52,8 @@ describe('keystone CLI command-runner', () => {
           [commandRunner.DEFAULT_COMMAND]: {
             exec: jest.fn(() => Promise.resolve(true)),
           },
-        }
+        },
+        mockSpinner
       )
     ).resolves.toEqual(expect.anything());
   });

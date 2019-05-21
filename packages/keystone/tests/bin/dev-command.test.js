@@ -4,6 +4,14 @@ const http = require('http');
 const devCommand = require('../../bin/commands/dev');
 const constants = require('../../constants');
 
+const mockSpinner = {
+  text: '',
+  start: () => {},
+  succeed: () => {},
+  fail: () => {},
+  info: () => {},
+};
+
 async function expectServerResponds({ port, host = 'localhost', path = '/' }) {
   // A quick and dirty request for response code + headers (but no body)
   const { statusCode } = await new Promise((resolve, reject) => {
@@ -38,9 +46,9 @@ describe('dev command', () => {
   });
 
   test('rejects when --entry file not found', () => {
-    expect(devCommand.exec({ '--entry': 'foo.js', _cwd: __dirname })).rejects.toThrow(
-      /--entry=.*was passed.*but.*couldn't be found/
-    );
+    expect(
+      devCommand.exec({ '--entry': 'foo.js', _cwd: __dirname }, undefined, mockSpinner)
+    ).rejects.toThrow(/--entry=.*was passed.*but.*couldn't be found/);
   });
 
   test('is setup with a default server on default port', async () => {
@@ -59,7 +67,11 @@ describe('dev command', () => {
       }`
     );
 
-    const { server } = await localDevCommand.exec({ '--entry': serverFileObj.name });
+    const { server } = await localDevCommand.exec(
+      { '--entry': serverFileObj.name },
+      undefined,
+      mockSpinner
+    );
 
     await expectServerResponds({ port: constants.DEFAULT_PORT });
     return cleanupServer(server);
@@ -83,10 +95,14 @@ describe('dev command', () => {
 
     const port = 5000;
 
-    const { server } = await localDevCommand.exec({
-      '--entry': serverFileObj.name,
-      '--port': port,
-    });
+    const { server } = await localDevCommand.exec(
+      {
+        '--entry': serverFileObj.name,
+        '--port': port,
+      },
+      undefined,
+      mockSpinner
+    );
 
     await expectServerResponds({ port });
     return cleanupServer(server);
