@@ -5,17 +5,32 @@ title: Custom Server
 
 # Custom Server
 
-In some circumstances, you may want to do custom processing, or add extra routes
-the server which handles API requests.
+By default, the KeystoneJS CLI starts an `express`-powered server for you when
+running the `keystone dev` or `keystone start` commands.
 
-By default, the `keystone` CLI provides a server powered by `express` which is
-started for you when you run the CLI.
+In some circumstances, you may want to have more control over the server which
+handles the GraphQL API and Admin UI. Things such as:
 
-A _Custom Server_  will act as the entry point to your application (either in
-combination with, or as part of `index.js` which defines your schema) and must
-handle initialising a server and applying the Keystone Apps.
+- Add additional routes
+- Setup additional server middleware (`compress`/`brotli`/etc)
+- Notify a 3rd party service when the API is ready
+- ... etc
 
-Here are some different ways of creating a custom server:
+A **Custom Server** can replace the default and act as the entry point to your
+application which consumes your [schema definition](./schema.md). A Custom
+Server must handle initialising a http server which correctly executes any given
+[KeystoneJS Apps](./apps.md).
+
+_NOTE_: Before reaching for a custom server, consider using a [KeystoneJS
+App](./apps.md) which can enhance the functionality of the default server. Apps
+available in Keystone include:
+
+- [Static App](../keystone-alpha/app-static) for serving static files.
+- [Next.js App](../keystone-alpha/app-next) for serving a Next.js App on the same server as the API
+- ...[plus more](./apps.md)
+
+The following are some possible ways of setting up a custom server, roughly in
+order of complexity.
 
 ## Minimal Custom Server
 
