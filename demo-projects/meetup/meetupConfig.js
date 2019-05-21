@@ -29,11 +29,11 @@ const MEETUP = {
   </p>
 `,
   footer: {
-    callToActionText:`
+    callToActionText: `
 <h2>In Sydney and into JavaScript? <br>You need to join our meetup!</h2>
 <p>Every <strong>3rd Wednesday of the month</strong> you'll find us talking about what we're doing and what's happening around us in the world of JavaScript.</p>
 `,
-    callToActionButtonLabel:`Join us now`,
+    callToActionButtonLabel: `Join us now`,
     copyrightText: `
 <p>Copyright &copy; Thinkmill Pty Ltd, powered by <a href="https://v5.keystonejs.com">KeystoneJS</a>.</p>
 <p>If you run a meetup, please feel free to clone our site and make your own!

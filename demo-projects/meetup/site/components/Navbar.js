@@ -79,7 +79,7 @@ const UserActions = ({ user }) => (
   <div>
     {user.isAdmin && (
       <NavAnchor css={hideOnMobile} href="/admin" target="_blank">
-        Admin
+        Dashboard
       </NavAnchor>
     )}
     <span css={{ alignItems: 'center', display: 'inline-flex' }}>
