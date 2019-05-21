@@ -59,8 +59,37 @@ function extractAppMeta(apps) {
 async function executeDefaultServer(args, entryFile, distDir, spinner) {
   const port = args['--port'] ? args['--port'] : DEFAULT_PORT;
   const connectTo = args['--connect-to'] ? args['--connect-to'] : DEFAULT_CONNECT_TO;
+  let router;
+  let status = 'start-server';
 
+  spinner.text = 'Starting Keystone server';
+  const app = express();
+
+  app.use((req, res, next) => {
+    if (router) {
+      return router(req, res, next);
+    } else {
+      res.format({
+        default: () => res.sendFile(path.resolve(__dirname, './loading.html')),
+        'text/html': () => res.sendFile(path.resolve(__dirname, './loading.html')),
+        'application/json': () => res.json({ loading: true, status }),
+      });
+    }
+  });
+
+  const { server } = await new Promise((resolve, reject) => {
+    const server = app.listen(port, error => {
+      if (error) {
+        return reject(error);
+      }
+      return resolve({ server });
+    });
+  });
+
+  spinner.succeed(`Keystone server listening on port ${port}`);
   spinner.text = 'Initialising Keystone instance';
+
+  status = 'init-keystone';
 
   // Allow the spinner time to flush its output to the console.
   await new Promise(resolve => setTimeout(resolve, 100));
@@ -68,35 +97,33 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
   const { keystone, apps = [] } = require(path.resolve(entryFile));
 
   spinner.succeed('Initialised Keystone instance');
-  spinner.start('Preparing Keystone server');
+  spinner.start('Connecting to database');
 
-  const app = express();
+  status = 'db-connect';
+
   const dev = process.env.NODE_ENV !== 'production';
 
   const { middlewares } = await keystone.prepare({ apps, port, distDir, dev });
 
   await keystone.connect(connectTo);
 
-  app.use(middlewares);
+  spinner.succeed('Connected to database');
+  spinner.start('Preparing to accept requests');
 
-  return new Promise((resolve, reject) => {
-    spinner.text = 'Starting Keystone server';
-    const server = app.listen(port, error => {
-      if (error) {
-        return reject(error);
-      }
+  router = express.Router();
+  router.use(middlewares);
 
-      spinner.succeed(chalk.green.bold('Keystone server listening'));
-      const { adminPath, graphiqlPath, apiPath } = extractAppMeta(apps);
-      /* eslint-disable no-unused-expressions */
-      adminPath && ttyLink('Keystone Admin UI:', adminPath, port);
-      graphiqlPath && ttyLink('GraphQL Playground:', graphiqlPath, port);
-      apiPath && ttyLink('GraphQL API:\t', apiPath, port);
-      /* eslint-enable no-unused-expressions */
+  spinner.succeed(chalk.green.bold('Keystone instance is ready 🚀'));
 
-      return resolve({ port, server });
-    });
-  });
+  const { adminPath, graphiqlPath, apiPath } = extractAppMeta(apps);
+
+  /* eslint-disable no-unused-expressions */
+  adminPath && ttyLink('Keystone Admin UI:', adminPath, port);
+  graphiqlPath && ttyLink('GraphQL Playground:', graphiqlPath, port);
+  apiPath && ttyLink('GraphQL API:\t', apiPath, port);
+  /* eslint-enable no-unused-expressions */
+
+  return { port, server };
 }
 
 module.exports = {
