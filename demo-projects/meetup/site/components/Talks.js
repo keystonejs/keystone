@@ -1,8 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 
-import { H5, Html } from '../primitives';
-import { AvatarStack } from '../primitives/Avatar';
+import { H5, Html, AvatarStack } from '../primitives';
 import { mq } from '../helpers/media';
 import { colors } from '../theme';
 
@@ -31,7 +30,7 @@ const Talks = ({ talks }) => {
               </div>
             </div>
             <Content>
-              {talk.description ? <Html markup={talk.description} /> : null}
+              <Html markup={talk.description} />
               {hasSpeakers && <Byline speakers={talk.speakers} />}
             </Content>
           </Talk>

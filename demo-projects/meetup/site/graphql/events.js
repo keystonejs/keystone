@@ -61,6 +61,7 @@ export const GET_EVENT_DETAILS = gql`
     allRsvps(where: { event: { id: $event }, user_is_null: false }) {
       id
       user {
+        id
         name
         ...UserImage
       }

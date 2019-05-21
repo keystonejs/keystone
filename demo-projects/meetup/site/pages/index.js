@@ -15,6 +15,7 @@ import { GET_SPONSORS } from '../graphql/sponsors';
 import Talks from '../components/Talks';
 import Rsvp from '../components/Rsvp';
 import {
+  AvatarStack,
   Button,
   Container,
   Error,
@@ -25,7 +26,6 @@ import {
   PinIcon,
   UserIcon,
 } from '../primitives';
-import { AvatarStack } from '../primitives/Avatar';
 import { H2, H3 } from '../primitives/Typography';
 import { colors, gridSize, fontSizes } from '../theme';
 import {
@@ -204,7 +204,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                         {attending} {isInFuture(startTime) ? 'attending' : 'attended'}
                       </div>
                       <AvatarStack
-                        users={allRsvps.map(rsvp => rsvp.user)}
+                        users={allRsvps.filter(rsvp => rsvp.user).map(rsvp => rsvp.user)}
                         css={{ width: 50, height: 50 }}
                       />
                     </>
