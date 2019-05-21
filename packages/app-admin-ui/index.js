@@ -1,7 +1,5 @@
 const express = require('express');
 const webpack = require('webpack');
-const chalk = require('chalk');
-const terminalLink = require('terminal-link');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const compression = require('compression');
@@ -9,8 +7,6 @@ const { createSessionMiddleware } = require('@keystone-alpha/session');
 const path = require('path');
 const fs = require('fs');
 const fallback = require('express-history-api-fallback');
-
-const pkgInfo = require('./package.json');
 
 const getWebpackConfig = require('./server/getWebpackConfig');
 
@@ -69,8 +65,6 @@ class AdminUIApp {
   }
 
   build({ keystone, distDir }) {
-    console.log('Building Admin UI!');
-
     const builtAdminRoot = path.join(distDir, 'admin');
 
     const adminMeta = this.getAdminUIMeta(keystone);
@@ -126,11 +120,11 @@ class AdminUIApp {
     };
   }
 
-  prepareMiddleware({ keystone, port, distDir, dev }) {
+  prepareMiddleware({ keystone, distDir, dev }) {
     if (dev) {
-      return this.createDevMiddleware({ keystone, port });
+      return this.createDevMiddleware({ keystone });
     } else {
-      return this.createProdMiddleware({ keystone, distDir });
+      return this.createProdMiddleware({ distDir });
     }
   }
 
@@ -188,7 +182,7 @@ class AdminUIApp {
     return _app;
   }
 
-  createDevMiddleware({ keystone, port }) {
+  createDevMiddleware({ keystone }) {
     const app = express();
 
     const { adminPath } = this;
@@ -197,12 +191,6 @@ class AdminUIApp {
     }
 
     // ensure any non-resource requests are rewritten for history api fallback
-    const url = `http://localhost:${port}${adminPath}`;
-    const prettyUrl = chalk.blue(`${url}(/.*)?`);
-    const clickableUrl = terminalLink(prettyUrl, url, { fallback: () => prettyUrl });
-
-    console.log(`🔗 ${chalk.green('Keystone Admin UI:')} ${clickableUrl} (v${pkgInfo.version})`);
-
     app.use(adminPath, (req, res, next) => {
       // TODO: make sure that this change is OK. (regex was testing on url, not path)
       // Changed because this was preventing adminui pages loading when a querystrings
@@ -217,7 +205,12 @@ class AdminUIApp {
 
     const webpackMiddlewareConfig = {
       publicPath: adminPath,
-      stats: 'minimal',
+      stats: 'none',
+      logLevel: 'error',
+    };
+
+    const webpackHotMiddlewareConfig = {
+      log: null,
     };
 
     const secureCompiler = webpack(
@@ -228,7 +221,7 @@ class AdminUIApp {
     );
 
     const secureMiddleware = webpackDevMiddleware(secureCompiler, webpackMiddlewareConfig);
-    const secureHotMiddleware = webpackHotMiddleware(secureCompiler);
+    const secureHotMiddleware = webpackHotMiddleware(secureCompiler, webpackHotMiddlewareConfig);
 
     if (this.authStrategy) {
       const publicCompiler = webpack(
@@ -240,7 +233,7 @@ class AdminUIApp {
       );
 
       const publicMiddleware = webpackDevMiddleware(publicCompiler, webpackMiddlewareConfig);
-      const publicHotMiddleware = webpackHotMiddleware(publicCompiler);
+      const publicHotMiddleware = webpackHotMiddleware(publicCompiler, webpackHotMiddlewareConfig);
 
       // app.use(adminMiddleware);
       app.use((req, res, next) => {
