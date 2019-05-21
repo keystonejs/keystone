@@ -111,7 +111,9 @@ module.exports = class Keystone {
         })
       )
     ).then(() => {
-      if (this.eventHandlers.onConnect) this.eventHandlers.onConnect(this);
+      if (this.eventHandlers.onConnect) {
+        return this.eventHandlers.onConnect(this);
+      }
     });
   }
 
