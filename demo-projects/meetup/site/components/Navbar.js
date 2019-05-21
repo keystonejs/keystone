@@ -9,7 +9,7 @@ import { useAuth } from '../lib/authetication';
 import { SignoutIcon } from '../primitives';
 import { getForegroundColor } from '../helpers';
 import { mq } from '../helpers/media';
-import { colors, fontSizes, gridSize } from '../theme';
+import { colors, fontSizes, gridSize, shadows } from '../theme';
 
 const ThemeContext = createContext();
 const useTheme = () => useContext(ThemeContext);
@@ -19,7 +19,7 @@ const { publicRuntimeConfig } = getConfig();
 const NavAnchor = props => {
   const { foreground } = useTheme();
   const paddingHorizontal = [gridSize, gridSize, gridSize * 3];
-  const paddingVertical = [gridSize, gridSize * 3];
+  const paddingVertical = gridSize;
 
   return (
     <a
@@ -132,6 +132,7 @@ const Navbar = ({ foreground = colors.greyDark, background = 'white', ...props }
               height={meetup.logo.height}
               alt={meetup.name}
               css={mq({
+                boxShadow: shadows.sm,
                 marginRight: [gridSize, gridSize * 2],
                 width: [meetup.logo.width / 1.5, meetup.logo.width],
                 height: [meetup.logo.height / 1.5, meetup.logo.height],
