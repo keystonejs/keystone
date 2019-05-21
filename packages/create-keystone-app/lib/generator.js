@@ -61,7 +61,6 @@ function generate(name, noDeps) {
         copyTemplate(`${templateDir}/todo`, projectDir, {
           name,
           appName,
-          envVariables,
         }),
     },
     {
