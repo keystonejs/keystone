@@ -6,9 +6,7 @@ export const Html = ({ markup, ...props }) => {
     return null;
   }
 
-  return (
-    <div dangerouslySetInnerHTML={{ __html: markup }} {...props} />
-  );
+  return <div dangerouslySetInnerHTML={{ __html: markup }} {...props} />;
 };
 
 Html.propTypes = {
