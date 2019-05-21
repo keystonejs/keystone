@@ -82,22 +82,26 @@ Avatar.defaultProps = {
 
 // Stack
 
-export const AvatarStack = ({ size, users, ...props }) => (
-  <div css={{ position: 'relative', width: 70, height: 70 }} {...props}>
-    {users.map((user, idx) => (
-      <Avatar
-        key={user.id}
-        alt={`${user.name} Avatar`}
-        name={user.name}
-        size={size}
-        src={user.image && user.image.small}
-        css={{
-          boxShadow: `0 0 0 4px white`,
-          marginLeft: -idx * 10,
-          position: 'absolute',
-          zIndex: -idx,
-        }}
-      />
-    ))}
-  </div>
-);
+export const AvatarStack = ({ size, users, ...props }) => {
+  const sizePx = SIZE_MAP[size];
+
+  return (
+    <div css={{ position: 'relative', width: sizePx, height: sizePx }} {...props}>
+      {users.map((user, idx) => (
+        <Avatar
+          key={user.id}
+          alt={`${user.name} Avatar`}
+          name={user.name}
+          size={size}
+          src={user.image && user.image.small}
+          css={{
+            boxShadow: `0 0 0 4px white`,
+            marginLeft: -idx * 10,
+            position: 'absolute',
+            zIndex: -idx,
+          }}
+        />
+      ))}
+    </div>
+  );
+};
