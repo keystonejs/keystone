@@ -35,33 +35,34 @@ installed](https://docs.mongodb.com/manual/installation/#mongodb-community-editi
 
 ### Demo Projects
 
-First, you'll need Bolt installed:
+Minimum requirements for the Demo Projects:
+
+- [Node.js](https://nodejs.org/) >= 10.x
+- [MongoDB](https://v5.keystonejs.com/quick-start/mongodb) >= 4.x
+
+Download a copy of the Keystone 5 repo:
 
 ```bash
-yarn global add bolt
+git clone --depth=1 https://github.com/keystonejs/keystone-5.git
 ```
 
-You'll also need MongoDB installed. If you need help check out our [MongoDB Guide](https://v5.keystonejs.com/quick-start/mongodb)
+Pick which demo project you want to run:
 
-Then clone this repo and use Bolt to install the dependencies:
+- `todo`: A Todo app showcasing the AdminUI and how to create a minimal List
+- `blog`: A starting point for a blog including a WYSIWYG editor
+- `meetup`: A local community event website with speakers and sponsors
+
+Then move into the directory for that demo, for example:
 
 ```bash
-git clone https://github.com/keystonejs/keystone-5.git
-cd keystone-5
-bolt
+cd keystone-5/demo-projects/todo
 ```
 
-Finally, run the build and start a project:
+Now install and run the project:
 
 ```bash
-yarn build
+yarn
 yarn start
-```
-
-There are currently two projects available: `todo` and `blog`. You can specify the project you want to start:
-
-```bash
-yarn start blog
 ```
 
 ### Quick start
@@ -77,7 +78,7 @@ yarn start
 ### Manual Setup
 
 ```bash
-npm install --save @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/app-graphql @keystone-alpha/app-admin-ui`
+npm install --save @keystone-alpha/keystone @keystone-alpha/fields @keystone-alpha/adapter-mongoose @keystone-alpha/app-graphql @keystone-alpha/app-admin-ui
 ```
 
 Add a script to your `package.json`:
@@ -115,7 +116,7 @@ keystone.createList('Todo', {
 module.exports = {
   keystone,
   apps: [
-    new GraphQLApi(),
+    new GraphQLApp(),
     // Setup the optional Admin UI
     new AdminUIApp(),
   ],
@@ -151,7 +152,7 @@ Create the `server.js` file:
 const express = require('express');
 const { keystone, apps } = require('./index');
 
-keystone.prepare({ apps, port: 3000 })
+keystone.prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
   .then(({ middlewares }) => {
     keystone.connect();
     const app = express();
@@ -170,7 +171,7 @@ You'll need to change the `dev` script in your `package.json` to run the server 
 
 ```diff
 - "dev": "keystone"
-+ "dev": "node server.js"
++ "dev": "NODE_ENV=development node server.js"
 ```
 
 Note that when using a custom server, you will no longer get the formatted
