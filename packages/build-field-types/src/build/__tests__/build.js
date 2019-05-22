@@ -3,7 +3,6 @@ import build from '../';
 import fixturez from 'fixturez';
 import path from 'path';
 import { initBasic, snapshotDistFiles, install } from '../../../test-utils';
-import { confirms } from '../../messages';
 import { FatalError } from '../../errors';
 
 const f = fixturez(__dirname);
@@ -53,20 +52,17 @@ test('monorepo single package', async () => {
   expect(unsafeRequire(pkgPath).default).toBe(2);
 });
 
-test('needs @babel/runtime disallow install', async () => {
+test('needs @babel/runtime', async () => {
   let tmpPath = f.copy('use-babel-runtime');
   await install(tmpPath);
-  confirms.shouldInstallBabelRuntime.mockReturnValue(Promise.resolve(false));
 
   try {
     await build(tmpPath);
   } catch (err) {
     expect(err).toBeInstanceOf(FatalError);
     expect(err.message).toMatchInlineSnapshot(
-      `"@babel/runtime should be in dependencies of use-babel-runtime"`
+      `"Babel helpers (functions inserted by Babel transforms) should be imported from the @babel/runtime package to reduce bundle size but @babel/runtime is not in the dependencies of use-babel-runtime, please add it there."`
     );
-    // TODO: investigate why this is called more than one time
-    expect(confirms.shouldInstallBabelRuntime).toHaveBeenCalled();
     return;
   }
   expect(true).toBe(false);

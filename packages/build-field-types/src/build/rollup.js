@@ -9,14 +9,10 @@ import { StrictEntrypoint } from '../entrypoint';
 import { rollup as _rollup } from 'rollup';
 import type { Aliases } from './aliases';
 import { FatalError } from '../errors';
-import { confirms } from '../messages';
 import flowAndNodeDevProdEntry from '../rollup-plugins/flow-and-prod-dev-entry';
 import babel from '../rollup-plugins/babel';
-import { limit } from '../prompt';
 import { getNameForDist } from '../utils';
 import { EXTENSIONS } from '../constants';
-
-import installPackages from 'install-packages';
 
 // this makes sure nested imports of external packages are external
 const makeExternalPredicate = externalArr => {
@@ -122,26 +118,12 @@ export let getRollupConfig = (
         }
         case 'UNRESOLVED_IMPORT': {
           if (/^@babel\/runtime\/helpers\//.test(warning.source)) {
-            throw (async () => {
-              let shouldInstallBabelRuntime = await confirms.shouldInstallBabelRuntime(pkg);
-
-              if (shouldInstallBabelRuntime) {
-                await limit(() =>
-                  installPackages({
-                    packages: ['@babel/runtime'],
-                    cwd: pkg.directory,
-                    installPeers: false,
-                    packageManager: pkg.project.isBolt ? 'bolt' : undefined,
-                  })
-                );
-                await pkg.refresh();
-              } else {
-                throw new FatalError(
-                  `@babel/runtime should be in dependencies of ${pkg.name}`,
-                  pkg
-                );
-              }
-            })();
+            throw new FatalError(
+              `Babel helpers (functions inserted by Babel transforms) should be imported from the @babel/runtime package to reduce bundle size but @babel/runtime is not in the dependencies of ${
+                pkg.name
+              }, please add it there.`,
+              pkg
+            );
           }
           if (!warning.source.startsWith('.')) {
             throw new FatalError(
