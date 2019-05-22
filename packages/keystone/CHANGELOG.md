@@ -1,5 +1,63 @@
 # @keystone-alpha/keystone
 
+## 5.0.0
+
+### Major Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Specify custom servers from within the index.js file
+
+  - Major Changes:
+    - The `index.js` export for `admin` must now be exported in the `servers`
+      array:
+      ```diff
+       module.exports = {
+         keystone,
+      -  admin,
+      +  apps: [admin],
+       }
+      ```
+    - The `keystone.prepare()` method (often used within a _Custom Server_
+      `server.js`) no longer returns a `server`, it now returns a `middlewares`
+      array:
+      ```diff
+      +const express = require('express');
+       const port = 3000;
+       keystone.prepare({ port })
+      -  .then(async ({ server, keystone: keystoneApp }) => {
+      +  .then(async ({ middlewares, keystone: keystoneApp }) => {
+           await keystoneApp.connect();
+      -    await server.start();
+      +    const app = express();
+      +    app.use(middlewares);
+      +    app.listen(port)
+         });
+      ```
+
+### Minor Changes
+
+- [a8061c78](https://github.com/keystonejs/keystone-5/commit/a8061c78):
+
+  Add support for setting PORT and CONNECT_TO environment variables
+
+- [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
+
+  Improved DX with loading indicators when using keystone CLI
+
+- [a98bce08](https://github.com/keystonejs/keystone-5/commit/a98bce08):
+
+  Add support for an `onConnect` function to be passed to the Keystone constructor, which is called when all adapters have connected.
+
+### Patch Changes
+
+- [ff7547c5](https://github.com/keystonejs/keystone-5/commit/ff7547c5):
+
+  Capture early requests to the keystone server while still booting
+
+* Updated dependencies [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
+  - @keystone-alpha/app-graphql@6.0.0
+
 ## 4.0.0
 
 ### Major Changes

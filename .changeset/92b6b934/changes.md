@@ -1,1 +1,0 @@
-Add support for an `onConnect` function to be passed to the Keystone constructor, which is called when all adapters have connected.

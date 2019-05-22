@@ -12,6 +12,15 @@ const { User, Post, PostCategory, Comment } = require('./schema');
 const keystone = new Keystone({
   name: 'Keystone Demo Blog',
   adapter: new MongooseAdapter(),
+  onConnect: async () => {
+    // Initialise some data.
+    // NOTE: This is only for demo purposes and should not be used in production
+    const users = await keystone.lists.User.adapter.findAll();
+    if (!users.length) {
+      const initialData = require('./initialData');
+      await keystone.createItems(initialData);
+    }
+  },
 });
 
 const authStrategy = keystone.createAuthStrategy({

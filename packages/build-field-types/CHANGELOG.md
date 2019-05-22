@@ -1,5 +1,13 @@
 # @keystone-alpha/build-field-types
 
+## 1.0.2
+
+### Patch Changes
+
+- [01f12bfb](https://github.com/keystonejs/keystone-5/commit/01f12bfb):
+
+  Remove copy of preconstruct's require hook and use @preconstruct/hook instead
+
 ## 1.0.1
 
 ### Patch Changes

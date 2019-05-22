@@ -1,5 +1,10 @@
 # @keystone-alpha/adapter-knex
 
+## 1.0.8
+
+- Updated dependencies [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+  - @keystone-alpha/keystone@5.0.0
+
 ## 1.0.7
 
 ### Patch Changes

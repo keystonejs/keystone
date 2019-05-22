@@ -1,5 +1,13 @@
 # @keystone-alpha/field-views-loader
 
+## 2.1.1
+
+### Patch Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Fix Admin UI building on Windows
+
 ## 2.1.0
 
 ### Minor Changes
