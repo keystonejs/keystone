@@ -1,0 +1,1 @@
+Improve entrypoint package.json creation
