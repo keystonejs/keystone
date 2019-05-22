@@ -64,7 +64,7 @@ export class Package extends Item {
             contents = JSON.stringify(
               {
                 main: getValidMainField(pkg.name),
-                main: getValidModuleField(pkg.name),
+                module: getValidModuleField(pkg.name),
               },
               null,
               2
