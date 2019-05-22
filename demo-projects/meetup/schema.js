@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { sendEmail } = require('../emails');
 
 const {
   CloudinaryImage,
@@ -156,4 +157,63 @@ exports.Sponsor = {
     website: { type: Text },
     logo: { type: CloudinaryImage, adapter: cloudinaryAdapter },
   },
+};
+
+exports.ForggottenPasswordToken = {
+  fields: {
+    user: { type: Relationship, ref: 'User' },
+    token: { type: Text, isRequired: true, isUnique: true },
+    requestedAt: { type: DateTime, isRequired: true },
+    accessedAt: { type: DateTime },
+    expiresAt: { type: DateTime, isRequired: true },
+  },
+  hooks: {
+    afterChange: async ({ updatedItem, existingItem, actions: { query } }) => {
+      if (existingItem) return null;
+
+      const now = new Date.toISOString();
+
+      const { errors, data } = await query(
+        `
+        query GetUserAndToken($user: ID!, $now: DateTime!) {
+          User( where: { id: $user }) {
+            id
+            name
+            email
+          }
+          allForgottenPasswordTokens( where: { user: { id: $user }, expiresAt_gte: $now }) {
+            token
+            expiresAt
+          }
+        }
+      `,
+        { skipAccessControl: true, variables: { user: updatedItem.user.id, now } }
+      );
+
+      if (errors) {
+        console.error(errors, `Unable to construct password updated email.`);
+        return;
+      }
+
+      const { allForgottenPasswordTokens, user } = data;
+      const forgotPasswordKey = allForgottenPasswordTokens[0].token;
+      const url = process.env.SERVER_URL || 'http://localhost:3000';
+
+      const locals = {
+        forgotPasswordUrl: `${url}/change-password?key=${forgotPasswordKey}`,
+        recipientName: user.name,
+        recipientEmail: user.email,
+      };
+      const options = {
+        subject: 'Request for password reset',
+        to: user.email,
+        from: 'sean@thinkmill.com',
+        domain: process.env.MAILGUN_DOMAIN,
+        apiKey: process.env.MAILGUN_API_KEY,
+      };
+
+      sendEmail('forgot-password.jade', options, locals);
+    },
+  },
+  mutations: [{}],
 };

@@ -17,6 +17,7 @@
     "@keystone-alpha/adapter-mongoose": "^2.0.1",
     "@keystone-alpha/app-admin-ui": "^4.0.0",
     "@keystone-alpha/app-graphql": "^6.0.0",
+    "@keystone-alpha/email": "^1.0.2",
     "@keystone-alpha/fields": "^6.2.0",
     "@keystone-alpha/fields-wysiwyg-tinymce": "^3.0.0",
     "@keystone-alpha/file-adapters": "^1.0.2",

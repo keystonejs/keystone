@@ -35,6 +35,7 @@ order of complexity.
 ## Minimal Custom Server
 
 `package.json`
+
 ```json
 {
   "scripts": {
@@ -44,24 +45,29 @@ order of complexity.
 ```
 
 `index.js`
+
 ```javascript
 const { Keystone } = require('@keystone-alpha/keystone');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const keystone = new Keystone(/* ... */);
 module.exports = {
   keystone,
-  apps: [new GraphQLApp()]
-}
+  apps: [new GraphQLApp()],
+};
 ```
 
 `server.js`
+
 ```javascript
 const express = require('express');
 const { keystone, apps } = require('./index.js');
-keystone.prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
+keystone
+  .prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
   .then(async ({ middlewares }) => {
     await keystone.connect();
-    express().use(middlewares).listen(3000);
+    express()
+      .use(middlewares)
+      .listen(3000);
   });
 ```
 
@@ -72,6 +78,7 @@ In this example there is no `index.js` file, instead the `keystone` instance and
 `apps` are declared directly in `server.js`.
 
 `package.json`
+
 ```json
 {
   "scripts": {
@@ -81,6 +88,7 @@ In this example there is no `index.js` file, instead the `keystone` instance and
 ```
 
 `server.js`
+
 ```javascript
 const express = require('express');
 const { Keystone } = require('@keystone-alpha/keystone');
@@ -89,10 +97,13 @@ const keystone = new Keystone();
 keystone.createList(/* ... */);
 // ...
 const apps = [new GraphQLApp()];
-keystone.prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
+keystone
+  .prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
   .then(async ({ middlewares }) => {
     await keystone.connect();
-    express().use(middlewares).listen(3000);
+    express()
+      .use(middlewares)
+      .listen(3000);
   });
 ```
 
@@ -103,6 +114,7 @@ For really fine-grained control, a custom server skip calling
 function directly.
 
 `package.json`
+
 ```json
 {
   "scripts": {
@@ -112,6 +124,7 @@ function directly.
 ```
 
 `server.js`
+
 ```javascript
 const express = require('express');
 const { Keystone } = require('@keystone-alpha/keystone');
@@ -144,6 +157,7 @@ library](https://github.com/dougmoscrop/serverless-http)), we can run our
 Keystone instance in AWS Lambda:
 
 `lambda.js`
+
 ```javascript
 const express = require('express');
 const serverless = require('serverless-http');
