@@ -30,15 +30,15 @@ test('set main and module field', async () => {
   let pkg = await getPkg(tmpPath);
 
   expect(pkg).toMatchInlineSnapshot(`
-    Object {
-      "license": "MIT",
-      "main": "dist/basic-package.cjs.js",
-      "module": "dist/basic-package.esm.js",
-      "name": "basic-package",
-      "private": true,
-      "version": "1.0.0",
-    }
-  `);
+        Object {
+          "license": "MIT",
+          "main": "dist/basic-package.cjs.js",
+          "module": "dist/basic-package.esm.js",
+          "name": "basic-package",
+          "private": true,
+          "version": "1.0.0",
+        }
+    `);
 });
 
 test('monorepo', async () => {
@@ -56,26 +56,26 @@ test('monorepo', async () => {
   let pkg2 = await getPkg(path.join(tmpPath, 'packages', 'package-two'));
 
   expect(pkg1).toMatchInlineSnapshot(`
-    Object {
-      "license": "MIT",
-      "main": "dist/package-one.cjs.js",
-      "module": "dist/package-one.esm.js",
-      "name": "@some-scope/package-one",
-      "private": true,
-      "version": "1.0.0",
-    }
-  `);
+        Object {
+          "license": "MIT",
+          "main": "dist/package-one.cjs.js",
+          "module": "dist/package-one.esm.js",
+          "name": "@some-scope/package-one",
+          "private": true,
+          "version": "1.0.0",
+        }
+    `);
 
   expect(pkg2).toMatchInlineSnapshot(`
-    Object {
-      "license": "MIT",
-      "main": "dist/package-two.cjs.js",
-      "module": "dist/package-two.esm.js",
-      "name": "@some-scope/package-two",
-      "private": true,
-      "version": "1.0.0",
-    }
-  `);
+        Object {
+          "license": "MIT",
+          "main": "dist/package-two.cjs.js",
+          "module": "dist/package-two.esm.js",
+          "name": "@some-scope/package-two",
+          "private": true,
+          "version": "1.0.0",
+        }
+    `);
 });
 
 test('does not modify if already valid', async () => {
@@ -89,7 +89,7 @@ test('does not modify if already valid', async () => {
     Array [
       Array [
         "🎁 success",
-        "package already valid!",
+        "project already valid!",
       ],
     ]
   `);
@@ -103,16 +103,16 @@ test('invalid fields', async () => {
   let pkg = await getPkg(tmpPath);
 
   expect(pkg).toMatchInlineSnapshot(`
-    Object {
-      "license": "MIT",
-      "main": "dist/invalid-fields.cjs.js",
-      "module": "dist/invalid-fields.esm.js",
-      "name": "invalid-fields",
-      "private": true,
-      "react-native": "dist/index.native.js",
-      "version": "1.0.0",
-    }
-  `);
+        Object {
+          "license": "MIT",
+          "main": "dist/invalid-fields.cjs.js",
+          "module": "dist/invalid-fields.esm.js",
+          "name": "invalid-fields",
+          "private": true,
+          "react-native": "dist/index.native.js",
+          "version": "1.0.0",
+        }
+    `);
 });
 
 test('monorepo single package', async () => {
@@ -123,7 +123,7 @@ test('monorepo single package', async () => {
     Array [
       Array [
         "🎁 success",
-        "package already valid!",
+        "project already valid!",
       ],
     ]
   `);
