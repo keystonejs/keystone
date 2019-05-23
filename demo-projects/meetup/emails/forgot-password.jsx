@@ -6,7 +6,7 @@ module.exports = class extends React.Component {
       <html>
         <body>
           <div>
-            <p>Hi {this.props.email}</p>
+            <p>Hi {this.props.recipientEmail}</p>
             <div>
               <p>
                 We have received your request to reset your password. Please follow the link below

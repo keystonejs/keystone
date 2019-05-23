@@ -179,7 +179,6 @@ exports.ForggottenPasswordToken = {
         query GetUserAndToken($user: ID!, $now: DateTime!) {
           User( where: { id: $user }) {
             id
-            name
             email
           }
           allForgottenPasswordTokens( where: { user: { id: $user }, expiresAt_gte: $now }) {
@@ -200,9 +199,8 @@ exports.ForggottenPasswordToken = {
       const forgotPasswordKey = allForgottenPasswordTokens[0].token;
       const url = process.env.SERVER_URL || 'http://localhost:3000';
 
-      const locals = {
+      const props = {
         forgotPasswordUrl: `${url}/change-password?key=${forgotPasswordKey}`,
-        recipientName: user.name,
         recipientEmail: user.email,
       };
       const options = {
@@ -213,7 +211,7 @@ exports.ForggottenPasswordToken = {
         apiKey: process.env.MAILGUN_API_KEY,
       };
 
-      await sendEmail('forgot-password.jsx', options, locals);
+      await sendEmail('forgot-password.jsx', props, options);
     },
   },
   mutations: [
