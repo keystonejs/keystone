@@ -1,7 +1,7 @@
 module.exports = {
   presets: [
     [
-      '@babel/env',
+      '@babel/preset-env',
       {
         targets: {
           node: 10,
@@ -14,12 +14,18 @@ module.exports = {
         },
       },
     ],
-    '@babel/react',
+    '@babel/preset-react',
     '@babel/preset-flow',
   ],
   plugins: [
     '@babel/plugin-proposal-class-properties',
     '@babel/proposal-object-rest-spread',
     '@babel/plugin-syntax-dynamic-import',
+  ],
+  overrides: [
+    {
+      include: 'packages/fields/src/Controller.js',
+      presets: ['@babel/preset-env'],
+    },
   ],
 };
