@@ -1,0 +1,1 @@
+# @keystone-alpha/adapter-memory

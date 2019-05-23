@@ -1,0 +1,14 @@
+{
+  "name": "@keystone-alpha/adapter-memory",
+  "description": "KeystoneJS Memory Database adapter.",
+  "version": "0.0.0",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "dependencies": {
+    "@keystone-alpha/adapter-json": "^0.0.0",
+    "lowdb": "^1.0.0"
+  }
+}

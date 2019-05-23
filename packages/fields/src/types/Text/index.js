@@ -1,4 +1,4 @@
-import { Text, MongoTextInterface, KnexTextInterface } from './Implementation';
+import { Text, MongoTextInterface, KnexTextInterface, JSONTextInterface } from './Implementation';
 import { importView } from '@keystone-alpha/build-field-types';
 
 export default {
@@ -12,5 +12,6 @@ export default {
   adapters: {
     mongoose: MongoTextInterface,
     knex: KnexTextInterface,
+    json: JSONTextInterface,
   },
 };

@@ -130,10 +130,32 @@ function keystoneKnexRunner(setupKeystoneFn, testFn) {
   };
 }
 
+function keystoneJSONRunner(setupKeystoneFn, testFn) {
+  return async function() {
+    const setup = await setupKeystoneFn('json');
+    const { keystone } = setup;
+
+    await keystone.connect();
+
+    return pFinally(
+      testFn({
+        ...setup,
+        create: getCreate(keystone),
+        findById: getFindById(keystone),
+        findOne: getFindOne(keystone),
+        update: getUpdate(keystone),
+      }),
+      () => keystone.disconnect()
+    );
+  };
+}
+
+
 function multiAdapterRunners(only) {
   return [
     { runner: keystoneMongoRunner, adapterName: 'mongoose' },
     { runner: keystoneKnexRunner, adapterName: 'knex' },
+    { runner: keystoneJSONRunner, adapterName: 'json' },
   ].filter(a => typeof only === 'undefined' || a.adapterName === only);
 }
 

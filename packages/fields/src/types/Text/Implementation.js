@@ -1,6 +1,7 @@
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
+import { JSONFieldAdapter } from '@keystone-alpha/adapter-json';
 
 export class Text extends Implementation {
   constructor(path, { isMultiline }) {
@@ -69,3 +70,5 @@ export class KnexTextInterface extends CommonTextInterface(KnexFieldAdapter) {
     if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
   }
 }
+
+export class JSONTextInterface extends CommonTextInterface(JSONFieldAdapter) {}
