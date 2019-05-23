@@ -1,5 +1,6 @@
 require('dotenv').config();
-const { sendEmail } = require('../emails');
+const uuid = require('uuid/v4');
+const { sendEmail } = require('./emails');
 
 const {
   CloudinaryImage,
@@ -212,8 +213,87 @@ exports.ForggottenPasswordToken = {
         apiKey: process.env.MAILGUN_API_KEY,
       };
 
-      sendEmail('forgot-password.jade', options, locals);
+      await sendEmail('forgot-password.jsx', options, locals);
     },
   },
-  mutations: [{}],
+  mutations: [
+    {
+      schema: 'startPasswordRecovery(email: String!): ForgottenPasswordToken',
+      resolver: async (obj, { email }, context, info, { query }) => {
+        const token = uuid();
+
+        const tokenExpiration = process.env.RESET_PASSWORD_TOKEN_EXPIRY || 1000 * 60 * 60 * 24;
+        const now = Date.now();
+        const requestedAt = new Date(now).toISOString();
+        const expiresAt = new Date(now + tokenExpiration).toISOString();
+
+        const { errors: userErrors, data: userData } = await query(
+          `
+            query findUserByEmail($email: String!) {
+              allUsers(where: { email: $email }) {
+                id
+                email
+              }
+            }
+          `,
+          { variables: { email: email } },
+          { skipAcessControl: true }
+        );
+
+        if (userErrors) {
+          console.error(
+            userErrors,
+            `Unable to find user when trying to create forgotten password token.`
+          );
+          return;
+        }
+
+        const userId = userData.allUsers[0].id;
+
+        const result = {
+          userId,
+          token,
+          requestedAt,
+          expiresAt,
+        };
+
+        const { errors } = await query(
+          `
+            mutation createForgottenPasswordToken(
+              $userId: ID!,
+              $token: String,
+              $requestedAt: DateTime,
+              $expiresAt: DateTime,
+            ) {
+              createForgottenPasswordToken(data: {
+                user: { connect: { id: $userId }},
+                token: $token,
+                requestedAt: $requestedAt,
+                expiresAt: $expiresAt,
+              }) {
+                id
+                token
+                user {
+                  id
+                  name {
+                    full
+                  }
+                }
+                requestedAt
+                expiresAt
+              }
+            }
+          `,
+          { variables: result }
+        );
+
+        if (errors) {
+          console.error(errors, `Unable to create forgotten password token.`);
+          return;
+        }
+
+        return true;
+      },
+    },
+  ],
 };
