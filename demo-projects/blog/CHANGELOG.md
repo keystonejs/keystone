@@ -1,5 +1,13 @@
 # keystone_demo_blog
 
+## 1.2.1
+
+### Patch Changes
+
+- [af3f31dd](https://github.com/keystonejs/keystone-5/commit/af3f31dd):
+
+  Correct the blog demo build config
+
 ## 1.2.0
 
 ### Minor Changes

@@ -1,7 +1,0 @@
-{
-  "releases": [
-    { "name": "@keystone-alpha/app-next", "type": "patch" },
-    { "name": "@keystone-alpha/app-static", "type": "patch" }
-  ],
-  "dependents": []
-}
