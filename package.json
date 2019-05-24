@@ -91,6 +91,7 @@
     "cookie-signature": "^1.1.0",
     "cors": "^2.8.4",
     "cpy": "^7.2.0",
+    "cross-env": "^5.2.0",
     "cross-fetch": "^2.2.0",
     "cuid": "^2.1.6",
     "dataloader": "^1.4.0",

@@ -12,7 +12,7 @@
     "start": "node -r dotenv-safe/config server.js | sed -l -e 's/:\\s*undefined\\s*,/:null,/g' | tee out.log | pino-colada",
     "cypress:run:cmd": "node -r dotenv-safe/config `which cypress` run",
     "cypress:open:cmd": "node -r dotenv-safe/config `which cypress` open",
-    "prepare-test-server": "NODE_ENV=test DISABLE_LOGGING=true node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.code) })'",
+    "prepare-test-server": "cross-env NODE_ENV=test DISABLE_LOGGING=true node -r dotenv-safe/config -e 'require(`execa`)(`start-server-and-test`, [`start`, `http-get://localhost:${process.env.PORT}/admin`, process.argv[1]], { stdio: `inherit` }).catch(error => { console.error(error.toString()); process.exit(error.code) })'",
     "cypress:run:ci": "touch .env && yarn prepare-test-server cypress:run:cmd",
     "cypress:run": "if [ -f .env ]; then yarn prepare-test-server cypress:run:cmd; else echo \"\nError: Must create a test-projects/access-control/.env file.\nSee test-projects/access-control/.env.example for values\n\"; exit 1; fi",
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a test-projects/access-control/.env file.\nSee test-projects/access-control/.env.example for values\n\"; exit 1; fi"
@@ -24,6 +24,7 @@
     "@keystone-alpha/fields": "^6.2.0",
     "@keystone-alpha/keystone": "^5.0.0",
     "@keystone-alpha/utils": "^3.0.0",
+    "cross-env": "^5.2.0",
     "express": "^4.16.3"
   },
   "devDependencies": {
