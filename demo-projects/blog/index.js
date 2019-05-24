@@ -6,7 +6,7 @@ const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 const { NextApp } = require('@keystone-alpha/app-next');
 const { StaticApp } = require('@keystone-alpha/app-static');
 
-const { staticRoute, staticPath } = require('./config');
+const { staticRoute, staticPath, distDir } = require('./config');
 const { User, Post, PostCategory, Comment } = require('./schema');
 
 const keystone = new Keystone({
@@ -65,4 +65,5 @@ module.exports = {
     adminApp,
     new NextApp({ dir: 'app' }),
   ],
+  distDir,
 };

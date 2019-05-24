@@ -1,5 +1,19 @@
 # @keystone-alpha/build-field-types
 
+## 1.0.3
+
+### Patch Changes
+
+- [afc7e835](https://github.com/keystonejs/keystone-5/commit/afc7e835):
+
+  Remove broken automatic @babel/runtime installation
+
+- [a738a247](https://github.com/keystonejs/keystone-5/commit/a738a247):
+
+  Improve entrypoint package.json creation
+  Remove dead code
+  Update success messages
+
 ## 1.0.2
 
 ### Patch Changes
