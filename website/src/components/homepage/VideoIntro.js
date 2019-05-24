@@ -8,22 +8,31 @@ import videoThumbnailPNG from '../../assets/video-thumbnail.png';
 const VideoIntro = () => {
   const [showVideo, setShowVideo] = useState(false);
   return (
-    <div
-      css={mq({
-        marginLeft: [0, 0, 0, 50],
-        flex: [1, '0 1 600px'],
-      })}
-    >
+    <MainWrapper>
       <VideoWrapper>
-        <VideoEmbed showVideo={showVideo} />
+        <VideoEmbed
+          showVideo={showVideo}
+          onMouseEnter={() => setShowVideo(true)}
+          onClick={() => setShowVideo(true)}
+        />
         {!showVideo && <VideoStartButton onClick={() => setShowVideo(true)} />}
       </VideoWrapper>
       <VideoCta />
-    </div>
+    </MainWrapper>
   );
 };
 
 // Implementation components
+const MainWrapper = ({ children }) => (
+  <div
+    css={mq({
+      marginLeft: [0, 0, 0, 50],
+      flex: [1, '0 1 600px'],
+    })}
+  >
+    {children}
+  </div>
+);
 const VideoWrapper = ({ children, ...rest }) => (
   <div
     css={{
@@ -61,13 +70,13 @@ const VideoWrapper = ({ children, ...rest }) => (
   </div>
 );
 
-const VideoEmbed = ({ showVideo }) => (
+const VideoEmbed = ({ showVideo, ...props }) => (
   <div
     css={{
       position: 'absolute',
       height: '100%',
       width: '100%',
-      transition: 'opacity 0.2s',
+      transition: 'opacity 0.3s',
       opacity: showVideo ? 1 : 0,
       iframe: {
         width: '100%',
@@ -76,6 +85,7 @@ const VideoEmbed = ({ showVideo }) => (
         border: 0,
       },
     }}
+    {...props}
   >
     <iframe
       css={{ display: 'block' }}
