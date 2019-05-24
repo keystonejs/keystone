@@ -45,7 +45,7 @@ const Hero = () => (
         maxWidth: '100%',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: ['flex-start', 'flex-start', 'flex-end', 'center'],
+        alignItems: ['flex-start', 'flex-start', 'flex-start', 'center'],
         flexDirection: ['column', 'column', 'column', 'row'],
         fontSize: [14, 18],
         lineHeight: 1.6,
