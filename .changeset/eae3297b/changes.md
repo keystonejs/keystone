@@ -1,1 +1,0 @@
-Correct the blog demo build config
