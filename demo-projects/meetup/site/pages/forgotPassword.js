@@ -48,7 +48,7 @@ export default () => {
         {(startPasswordRecovery, { error: mutationError }) => {
           return (
             <Container css={{ marginTop: gridSize * 3 }}>
-              <H1>Join</H1>
+              <H1>Forgot password</H1>
               {mutationError && (
                 <p css={{ color: colors.red }}>There is no account with the email {email}</p>
               )}
@@ -71,7 +71,7 @@ export default () => {
                     onChange={e => setEmail(e.target.value)}
                   />
                 </Field>
-                <Button type="submit">Send email</Button>
+                <Button type="submit">Send recovery email</Button>
               </form>
             </Container>
           );

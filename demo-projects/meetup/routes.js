@@ -1,8 +1,8 @@
 const routes = require('next-routes');
 
 module.exports = routes()
-  .add('forgot-password', 'forgotPassword', '/forgot-password')
-  .add('change-password', 'changePassword', '/change-password')
+  .add('forgot-password', '/forgot-password', 'forgotPassword')
+  .add('change-password', '/change-password', 'changePassword')
   .add('signin')
   .add('signout')
   .add('signup')

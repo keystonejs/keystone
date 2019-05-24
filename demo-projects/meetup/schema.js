@@ -160,7 +160,7 @@ exports.Sponsor = {
   },
 };
 
-exports.ForggottenPasswordToken = {
+exports.ForgottenPasswordToken = {
   fields: {
     user: { type: Relationship, ref: 'User' },
     token: { type: Text, isRequired: true, isUnique: true },
@@ -172,7 +172,7 @@ exports.ForggottenPasswordToken = {
     afterChange: async ({ updatedItem, existingItem, actions: { query } }) => {
       if (existingItem) return null;
 
-      const now = new Date.toISOString();
+      const now = new Date().toISOString();
 
       const { errors, data } = await query(
         `
@@ -187,7 +187,7 @@ exports.ForggottenPasswordToken = {
           }
         }
       `,
-        { skipAccessControl: true, variables: { user: updatedItem.user.id, now } }
+        { skipAccessControl: true, variables: { user: updatedItem.user.toString(), now } }
       );
 
       if (errors) {
@@ -195,23 +195,26 @@ exports.ForggottenPasswordToken = {
         return;
       }
 
-      const { allForgottenPasswordTokens, user } = data;
+      const { allForgottenPasswordTokens, User } = data;
       const forgotPasswordKey = allForgottenPasswordTokens[0].token;
       const url = process.env.SERVER_URL || 'http://localhost:3000';
 
       const props = {
         forgotPasswordUrl: `${url}/change-password?key=${forgotPasswordKey}`,
-        recipientEmail: user.email,
+        recipientEmail: User.email,
       };
+
       const options = {
         subject: 'Request for password reset',
-        to: user.email,
-        from: 'sean@thinkmill.com',
+        to: User.email,
+        from: process.env.MAILGUN_FROM,
         domain: process.env.MAILGUN_DOMAIN,
         apiKey: process.env.MAILGUN_API_KEY,
       };
 
-      await sendEmail('forgot-password.jsx', props, options);
+      console.log('sending email', User.email);
+      const result = await sendEmail('forgot-password.jsx', props, options);
+      console.log(result);
     },
   },
   mutations: [
@@ -220,7 +223,9 @@ exports.ForggottenPasswordToken = {
       resolver: async (obj, { email }, context, info, { query }) => {
         const token = uuid();
 
-        const tokenExpiration = process.env.RESET_PASSWORD_TOKEN_EXPIRY || 1000 * 60 * 60 * 24;
+        const tokenExpiration =
+          parseInt(process.env.RESET_PASSWORD_TOKEN_EXPIRY) || 1000 * 60 * 60 * 24;
+
         const now = Date.now();
         const requestedAt = new Date(now).toISOString();
         const expiresAt = new Date(now + tokenExpiration).toISOString();
@@ -234,8 +239,7 @@ exports.ForggottenPasswordToken = {
               }
             }
           `,
-          { variables: { email: email } },
-          { skipAcessControl: true }
+          { variables: { email: email }, skipAccessControl: true }
         );
 
         if (userErrors) {
@@ -273,9 +277,6 @@ exports.ForggottenPasswordToken = {
                 token
                 user {
                   id
-                  name {
-                    full
-                  }
                 }
                 requestedAt
                 expiresAt
