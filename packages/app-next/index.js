@@ -1,5 +1,5 @@
 const next = require('next');
-const build = require('next/dist/build');
+const nextBuild = require('next/dist/build').default;
 
 class NextApp {
   constructor({ dir, nextRoutes }) {
@@ -19,7 +19,7 @@ class NextApp {
   }
 
   async build() {
-    return build(this._dir);
+    return nextBuild(this._dir);
   }
 }
 
