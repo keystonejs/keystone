@@ -1,0 +1,1 @@
+Documentation website now features the egghead intro video instead of the illustration. The only changes here are on the homepage.
