@@ -212,9 +212,7 @@ exports.ForgottenPasswordToken = {
         apiKey: process.env.MAILGUN_API_KEY,
       };
 
-      console.log('sending email', User.email);
-      const result = await sendEmail('forgot-password.jsx', props, options);
-      console.log(result);
+      await sendEmail('forgot-password.jsx', props, options);
     },
   },
   mutations: [
