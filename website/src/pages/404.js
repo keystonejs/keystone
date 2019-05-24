@@ -2,12 +2,11 @@
 
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { jsx, Global } from '@emotion/core';
-import { globalStyles } from '@arch-ui/theme';
+import { globalStyles, gridSize } from '@arch-ui/theme';
 import { SkipNavContent } from '@reach/skip-nav';
 
 import Layout from '../templates/layout';
 import { Container } from '../components/Container';
-import { gridSize } from '@arch-ui/theme';
 
 export default () => (
   <Layout>
