@@ -1,5 +1,13 @@
 # @keystone-alpha/fields
 
+## 6.2.1
+
+### Patch Changes
+
+- [07692ee7](https://github.com/keystonejs/keystone-5/commit/07692ee7):
+
+  Fix item details updating failures when Access Control enabled on a field, but that field is not edited (ie; we were sending unedited data to the mutation which would (correctly) fail).
+
 ## 6.2.0
 
 ### Minor Changes
