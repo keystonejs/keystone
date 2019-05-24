@@ -137,25 +137,6 @@ const IconSlack = props => (
   </Icon>
 );
 
-const A11yText = ({ tag: Tag, ...props }) => (
-  <Tag
-    css={{
-      border: 0,
-      clip: 'rect(1px, 1px, 1px, 1px)',
-      height: 1,
-      overflow: 'hidden',
-      padding: 0,
-      position: 'absolute',
-      whiteSpace: 'nowrap',
-      width: 1,
-    }}
-    {...props}
-  />
-);
-A11yText.defaultProps = {
-  tag: 'span',
-};
-
 // ==============================
 // Misc
 // ==============================
@@ -211,5 +192,24 @@ const Content = props => (
     {...props}
   />
 );
+
+const A11yText = ({ tag: Tag, ...props }) => (
+  <Tag
+    css={{
+      border: 0,
+      clip: 'rect(1px, 1px, 1px, 1px)',
+      height: 1,
+      overflow: 'hidden',
+      padding: 0,
+      position: 'absolute',
+      whiteSpace: 'nowrap',
+      width: 1,
+    }}
+    {...props}
+  />
+);
+A11yText.defaultProps = {
+  tag: 'span',
+};
 
 export { HomepageContent };
