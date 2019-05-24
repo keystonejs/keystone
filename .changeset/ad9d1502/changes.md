@@ -1,0 +1,1 @@
+Compile Controller base class to ES5 so that non-native classes can extend it
