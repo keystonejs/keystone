@@ -1,5 +1,13 @@
 # @keystone-alpha/website
 
+## 1.0.10
+
+### Patch Changes
+
+- [b47fb186](https://github.com/keystonejs/keystone-5/commit/b47fb186):
+
+  Documentation website now features the egghead intro video instead of the illustration. The only changes here are on the homepage.
+
 ## 1.0.9
 
 ### Patch Changes
