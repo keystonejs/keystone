@@ -21,4 +21,22 @@ export default class PasswordController extends FieldController {
       getInitialValue: () => true,
     },
   ];
+
+  serialize = data => {
+    // discard the "confirm" since we only need one version of the password
+    return data[this.path] ? data[this.path].inputPassword : undefined;
+  };
+
+  validateInput = ({ originalInput, addFieldValidationError, addFieldValidationWarning }) => {
+    if (originalInput[this.path].inputPassword !== originalInput[this.path].inputConfirm) {
+      addFieldValidationError('Passwords do not match');
+    }
+
+    // TODO
+    //const MIN_LENGTH = 8;
+
+    //if (originalInput[this.path].inputPassword.length < MIN_LENGTH) {
+    //  addFieldValidationError(`Password must be at least ${MIN_LENGTH} characters`);
+    //}
+  };
 }

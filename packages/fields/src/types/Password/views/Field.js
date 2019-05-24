@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Component, createRef } from 'react';
+import { Component, createRef, Fragment } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
 import { Input } from '@arch-ui/input';
@@ -21,8 +21,13 @@ export default class PasswordField extends Component {
   onChange = ({ target }) => {
     const { name, value } = target;
 
-    this.setState({ [name]: value }, () => {
-      if (name === 'inputPassword') this.props.onChange(value);
+    this.setState(({ inputPassword, inputConfirm }) => {
+      this.props.onChange({
+        inputPassword,
+        inputConfirm,
+        [name]: value,
+      });
+      return { [name]: value };
     });
   };
   toggleInterface = () => {
@@ -39,13 +44,39 @@ export default class PasswordField extends Component {
   };
   render() {
     const { isEditing, inputPassword, inputConfirm, showInputValue } = this.state;
-    const { autoFocus, field, value: serverValue } = this.props;
+    const { autoFocus, field, value: serverValue, errors, warnings } = this.props;
     const value = serverValue || '';
     const htmlID = `ks-input-${field.path}`;
 
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
+        {errors.length ? (
+          <Fragment>
+            <div>
+              {errors.length} Error{errors.length !== 1 ? 's' : ''}:
+            </div>
+            {errors.map(({ message, data }) => (
+              <div key={message}>
+                {message} - {JSON.stringify(data)}
+              </div>
+            ))}
+          </Fragment>
+        ) : null}
+
+        {warnings.length ? (
+          <Fragment>
+            <div>
+              {warnings.length} Warning{warnings.length !== 1 ? 's' : ''}:
+            </div>
+            {warnings.map(({ message, data }) => (
+              <div key={message}>
+                {message} - {JSON.stringify(data)}
+              </div>
+            ))}
+          </Fragment>
+        ) : null}
+
         <FieldInput>
           {isEditing ? (
             <FlexGroup growIndexes={[0, 1]}>
