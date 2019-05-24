@@ -1,0 +1,1 @@
+Allow passing relative paths to fileAdapter

@@ -9,8 +9,9 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "NODE_ENV=development DISABLE_LOGGING=true keystone",
-    "build": "keystone build"
+    "dev": "NODE_ENV=development DISABLE_LOGGING=true keystone dev",
+    "build": "keystone build",
+    "start": "NODE_ENV=production keystone start"
   },
   "dependencies": {
     "@arch-ui/layout": "^0.2.2",

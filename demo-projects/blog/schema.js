@@ -12,10 +12,11 @@ const { Wysiwyg } = require('@keystone-alpha/fields-wysiwyg-tinymce');
 const { LocalFileAdapter } = require('@keystone-alpha/file-adapters');
 const getYear = require('date-fns/get_year');
 
-const { staticRoute, staticPath } = require('./config');
+const { staticRoute, staticPath, distDir } = require('./config');
+const dev = process.env.NODE_ENV !== 'production';
 
 const fileAdapter = new LocalFileAdapter({
-  directory: `${staticPath}/uploads`,
+  directory: `${dev ? '' : `${distDir}/`}${staticPath}/uploads`,
   route: `${staticRoute}/uploads`,
 });
 
