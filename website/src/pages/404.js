@@ -7,6 +7,7 @@ import { SkipNavContent } from '@reach/skip-nav';
 
 import Layout from '../templates/layout';
 import { Container } from '../components/Container';
+import { mq } from '../utils/media';
 
 export default () => (
   <Layout>
@@ -31,11 +32,11 @@ const NotFound = () => (
       }}
     >
       <h1
-        css={{
+        css={mq({
           marginTop: 0,
           fontSize: ['2.4rem', '3.2rem'],
           lineHeight: 1,
-        }}
+        })}
       >
         Page Not Found
       </h1>
