@@ -1,123 +1,93 @@
 /** @jsx jsx */
 
-import React from 'react'; // eslint-disable-line no-unused-vars
-import { StaticQuery, graphql, Link } from 'gatsby';
-import { colors, gridSize } from '@arch-ui/theme';
+import React, { useEffect, useRef, useState } from 'react'; // eslint-disable-line no-unused-vars
 import { jsx } from '@emotion/core';
+import { gridSize } from '@arch-ui/theme';
+import throttle from 'lodash.throttle';
 
-export const Sidebar = () => (
-  <StaticQuery
-    query={graphql`
-      query HeadingQuery {
-        allSitePage(
-          filter: { path: { ne: "/dev-404-page/" } }
-          sort: { fields: [context___sortOrder, context___pageTitle] }
-        ) {
-          edges {
-            node {
-              path
-              context {
-                navGroup
-                isPackageIndex
-                pageTitle
-              }
-            }
-          }
-        }
-      }
-    `}
-    render={data => {
-      const navData = data.allSitePage.edges.reduce((pageList, { node }) => {
-        // finding out what directory the file is in (eg '/keystone-alpha')
-        if (node.context.navGroup !== null) {
-          pageList[node.context.navGroup] = pageList[node.context.navGroup] || [];
-          pageList[node.context.navGroup].push(node);
-        }
+import { Footer, SidebarNav, Search } from '../components';
+import { media, mediaMax } from '../utils/media';
 
-        return pageList;
-      }, {});
+const layoutGutter = gridSize * 4;
+let oldSidebarOffset = 0;
+let oldWindowOffset = 0;
 
-      const navGroups = Object.keys(navData);
+export const SIDEBAR_WIDTH = 280;
 
-      return (
-        <nav aria-label="Documentation Menu">
-          {navGroups.map(navGroup => {
-            const intro = navData[navGroup].find(node => node.context.pageTitle === 'Introduction');
-            const sectionId = `docs-menu-${navGroup}`;
-            return (
-              <div key={navGroup}>
-                <GroupHeading id={sectionId}>{navGroup.replace('-', ' ')}</GroupHeading>
-                <List aria-labelledby={sectionId}>
-                  {intro && (
-                    <ListItem key={intro.path} to={intro.path}>
-                      Introduction
-                    </ListItem>
-                  )}
-                  {navData[navGroup]
-                    .filter(node => node.context.pageTitle !== 'Introduction')
-                    .filter(node => navGroup !== 'packages' || node.context.isPackageIndex)
-                    .map(node => {
-                      return (
-                        <ListItem key={node.path} to={node.path}>
-                          {node.context.pageTitle}
-                        </ListItem>
-                      );
-                    })}
-                </List>
-              </div>
-            );
-          })}
-        </nav>
-      );
-    }}
-  />
-);
+export const Sidebar = ({ offsetTop, isVisible, mobileOnly = false }) => {
+  const asideRef = useRef();
+  const [isStuck, setSticky] = useState(false);
 
-const GroupHeading = props => (
-  <h3
-    css={{
-      color: colors.N80,
-      fontSize: '0.9rem',
-      fontWeight: 700,
-      marginTop: '2.4em',
-      textTransform: 'uppercase',
-    }}
-    {...props}
-  />
-);
-const List = props => (
-  <ul css={{ listStyle: 'none', fontSize: '0.9rem', padding: 0, margin: 0 }} {...props} />
-);
-const ListItem = props => (
-  <li>
-    <Link
+  const handleWindowScroll = () => {
+    oldWindowOffset = window.pageYOffset;
+    if (window.pageYOffset > offsetTop && !isStuck) {
+      setSticky(true);
+    }
+    if (window.pageYOffset <= offsetTop && isStuck) {
+      setSticky(false);
+    }
+  };
+
+  const maintainSidebarScroll = throttle(() => {
+    oldSidebarOffset = asideRef.current.scrollTop;
+  });
+
+  useEffect(() => {
+    const asideEl = asideRef.current; // maintain ref for cleanup
+    window.addEventListener('scroll', handleWindowScroll);
+    asideEl.addEventListener('scroll', maintainSidebarScroll);
+
+    // cleanup
+    return () => {
+      window.removeEventListener('scroll', handleWindowScroll);
+      asideEl.removeEventListener('scroll', maintainSidebarScroll);
+    };
+  });
+
+  // NOTE: maintain the user's scroll whilst navigating between pages.
+  // This is a symptom of Gatsby remounting the entire tree (template) on each
+  // page change via `createPage` in "gatsby-node.js".
+  useEffect(() => {
+    const scrollTop = oldWindowOffset ? oldSidebarOffset + offsetTop : oldSidebarOffset;
+    asideRef.current.scrollTop = scrollTop;
+  }, [asideRef.current]);
+
+  const stickyStyles = {
+    height: isStuck ? '100%' : `calc(100% - ${offsetTop}px)`,
+    position: isStuck ? 'fixed' : 'absolute',
+    width: SIDEBAR_WIDTH,
+    top: isStuck ? 0 : offsetTop,
+  };
+
+  // NOTE: the 5px gutter is to stop inner elements outline/box-shadow etc.
+  // being cropped because the aside has overflow-x hidden (due to y=auto).
+  const avoidCropGutter = 5;
+
+  return (
+    <aside
+      key="sidebar"
+      ref={asideRef}
       css={{
-        color: colors.N80,
-        borderRadius: 3,
-        display: 'block',
-        overflow: 'hidden',
-        marginBottom: 1,
-        outline: 0,
-        padding: `${gridSize * 0.75}px ${gridSize * 1.5}px`,
-        textDecoration: 'none',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
+        boxSizing: 'border-box',
+        overflowY: 'auto',
+        paddingBottom: '3rem',
+        paddingTop: layoutGutter,
+        marginLeft: -avoidCropGutter,
+        paddingLeft: avoidCropGutter,
 
-        ':hover, :focus': {
-          backgroundColor: colors.B.A5,
-          color: colors.N100,
-          textDecoration: 'none',
+        [mediaMax.sm]: {
+          display: isVisible ? 'block' : 'none',
         },
-        ':active': {
-          backgroundColor: colors.B.A10,
-        },
-
-        '&[aria-current="page"]': {
-          backgroundColor: colors.B.A10,
-          fontWeight: 500,
+        [media.sm]: {
+          display: mobileOnly ? 'none' : 'block',
+          paddingRight: layoutGutter,
+          ...stickyStyles,
         },
       }}
-      {...props}
-    />
-  </li>
-);
+    >
+      <Search />
+      <SidebarNav />
+      <Footer />
+    </aside>
+  );
+};

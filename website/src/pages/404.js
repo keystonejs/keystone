@@ -6,14 +6,17 @@ import { globalStyles, gridSize } from '@arch-ui/theme';
 import { SkipNavContent } from '@reach/skip-nav';
 
 import Layout from '../templates/layout';
-import { Container } from '../components/Container';
+import { Container, Sidebar } from '../components';
 import { mq } from '../utils/media';
 
 export default () => (
   <Layout>
-    {() => (
+    {({ sidebarIsVisible, sidebarOffset }) => (
       <>
         <Global styles={globalStyles} />
+        <Container>
+          <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} mobileOnly />
+        </Container>
         <NotFound />
       </>
     )}
