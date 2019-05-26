@@ -10,13 +10,17 @@ import { HomepageContent } from '../components/homepage/HomepageContent';
 import { VideoIntro } from '../components/homepage/VideoIntro';
 import { CONTAINER_GUTTERS } from '../components/Container';
 import { HEADER_HEIGHT } from '../components/Header';
+import { Container, Sidebar } from '../components';
 import { mq } from '../utils/media';
 
 export default () => (
   <Layout>
-    {() => (
+    {({ sidebarIsVisible, sidebarOffset }) => (
       <>
         <Global styles={globalStyles} />
+        <Container>
+          <Sidebar isVisible={sidebarIsVisible} offsetTop={sidebarOffset} mobileOnly />
+        </Container>
         <Hero />
       </>
     )}
