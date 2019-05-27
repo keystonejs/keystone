@@ -1,0 +1,1 @@
+Make previous and next buttons consistent with order in sidebar

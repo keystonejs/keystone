@@ -58,15 +58,13 @@ exports.createPages = ({ actions, graphql }) => {
     */
     const pages = result.data.allMdx.edges;
 
-    pages.forEach(({ node: { id, fields } }, index) => {
+    pages.forEach(({ node: { id, fields } }) => {
       // The 'fields' values are injected during the `onCreateNode` call below
       createPage({
         path: `${fields.slug}`,
         component: template,
         context: {
           mdPageId: id,
-          prev: index === 0 ? null : pages[index - 1].node,
-          next: index === pages.length - 1 ? null : pages[index + 1].node,
           ...fields,
         }, // additional data can be passed via context
       });

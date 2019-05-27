@@ -14,6 +14,7 @@ import Layout from '../templates/layout';
 import mdComponents from '../components/markdown';
 import { SiteMeta } from '../components/SiteMeta';
 import { media, mediaMax } from '../utils/media';
+import { useNavData } from '../utils/hooks';
 import { Container } from '../components';
 import { CONTAINER_GUTTERS } from '../components/Container';
 import { Sidebar, SIDEBAR_WIDTH } from '../components/Sidebar';
@@ -31,8 +32,19 @@ function titleCase(str, at = '-') {
 
 export default function Template({
   data: { mdx, site }, // this prop will be injected by the GraphQL query below.
-  pageContext: { prev, next },
+  pageContext: { slug },
 }) {
+  let navData = useNavData();
+  let flatNavData = [].concat(...Object.values(navData));
+  let currentPageIndex = flatNavData.findIndex(node => node.path === slug);
+  let prev, next;
+  if (currentPageIndex !== 0) {
+    prev = flatNavData[currentPageIndex - 1];
+  }
+  if (currentPageIndex !== flatNavData.length - 1) {
+    next = flatNavData[currentPageIndex + 1];
+  }
+
   const { code, fields } = mdx;
   const { siteMetadata } = site;
   const suffix = fields.navGroup ? ` (${titleCase(fields.navGroup)})` : '';
@@ -83,17 +95,17 @@ export default function Template({
               </EditSection>
               <Pagination aria-label="Pagination">
                 {prev ? (
-                  <PaginationButton to={prev.fields.slug}>
+                  <PaginationButton to={prev.path}>
                     <small>&larr; Prev</small>
-                    <span>{prev.fields.pageTitle}</span>
+                    <span>{prev.context.pageTitle}</span>
                   </PaginationButton>
                 ) : (
                   <PaginationPlaceholder />
                 )}
                 {next ? (
-                  <PaginationButton align="right" to={next.fields.slug}>
+                  <PaginationButton align="right" to={next.path}>
                     <small>Next &rarr;</small>
-                    <span>{next.fields.pageTitle}</span>
+                    <span>{next.context.pageTitle}</span>
                   </PaginationButton>
                 ) : (
                   <PaginationPlaceholder />
