@@ -5,7 +5,14 @@ import { jsx } from '@emotion/core';
 import { fontSizes } from '../theme';
 import { mq } from '../helpers/media';
 
-const SIZE_MAP = [fontSizes.xxxl, fontSizes.xl, fontSizes.lg, fontSizes.md, fontSizes.sm, fontSizes.xs];
+const SIZE_MAP = [
+  fontSizes.xxxl,
+  fontSizes.xl,
+  fontSizes.lg,
+  fontSizes.md,
+  fontSizes.sm,
+  fontSizes.xs,
+];
 const baseStyles = {
   fontWeight: 600,
   lineHeight: 1.05,

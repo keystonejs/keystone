@@ -8,7 +8,7 @@ import { colors, gridSize, shadows } from '../../theme';
 import { isInFuture, formatPastDate, formatFutureDate } from '../../helpers';
 import { mq } from '../../helpers/media';
 
-const EventItem = (event) => {
+const EventItem = event => {
   const {
     id,
     name,
@@ -62,7 +62,9 @@ const EventItem = (event) => {
               }}
             >
               <Mask />
-              <H5 as="div" css={{ textTransform: 'uppercase' }}>{prettyDate}</H5>
+              <H5 as="div" css={{ textTransform: 'uppercase' }}>
+                {prettyDate}
+              </H5>
               <H3
                 size={4}
                 css={{ wordWrap: 'break-word', lineHeight: '1.25', marginBottom: gridSize }}
@@ -87,7 +89,7 @@ const EventItem = (event) => {
             </a>
           </Link>
           <Rsvp event={event} themeColor={themeColor}>
-            {({ component }) => component ? <RsvpPositioner>{component}</RsvpPositioner> : null}
+            {({ component }) => (component ? <RsvpPositioner>{component}</RsvpPositioner> : null)}
           </Rsvp>
         </div>
       </div>

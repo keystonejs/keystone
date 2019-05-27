@@ -54,23 +54,20 @@ export default class Event extends Component {
                 </title>
               </Head>
               <Navbar background={themeColor} />
-              <Hero
-                align="left"
-                backgroundColor={themeColor}
-                superTitle={prettyDate}
-                title={name}
-              >
+              <Hero align="left" backgroundColor={themeColor} superTitle={prettyDate} title={name}>
                 <p css={{ fontWeight: 100 }}>{locationAddress}</p>
                 <Html markup={description} />
               </Hero>
 
               <Container css={{ marginTop: gridSize * 3 }}>
-                <div css={{ float:'right' }}>
+                <div css={{ float: 'right' }}>
                   <Rsvp event={data.Event} themeColor={themeColor}>
                     {({ message, component }) => message || component}
                   </Rsvp>
                 </div>
-                <H2 hasSeparator css={{ marginBottom: '2rem' }}>Talks</H2>
+                <H2 hasSeparator css={{ marginBottom: '2rem' }}>
+                  Talks
+                </H2>
                 <Talks talks={talks} />
 
                 <div css={{ textAlign: 'center', marginTop: '3em' }}>

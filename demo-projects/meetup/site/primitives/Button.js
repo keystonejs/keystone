@@ -26,9 +26,7 @@ const SIZE_MAP = {
 
 export default function Button({ background, outline, size, ...props }) {
   const Tag = getTag(props);
-  const foreground = background
-    ? getForegroundColor(background)
-    : colors.greyDark;
+  const foreground = background ? getForegroundColor(background) : colors.greyDark;
 
   const padding = SIZE_MAP[size];
 
@@ -55,11 +53,11 @@ export default function Button({ background, outline, size, ...props }) {
 Button.propTypes = {
   background: PropTypes.string,
   outline: PropTypes.bool,
-  size: PropTypes.oneOf(['medium', 'small'])
+  size: PropTypes.oneOf(['medium', 'small']),
 };
 
 Button.defaultProps = {
   background: colors.purple,
   outline: false,
-  size: 'medium'
+  size: 'medium',
 };

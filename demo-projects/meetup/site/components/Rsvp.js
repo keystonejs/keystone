@@ -32,13 +32,16 @@ const Rsvp = ({ children, event, themeColor }) => {
   const isPast = new Date() > new Date(event.startTime);
 
   if (!isAuthenticated) {
-    return isPast ? null : children({ component: (
-        <ButtonWrapper>
-          <span css={{ flex: 1 }}>Are you going?</span>
-          <Button route="/signin">Attending</Button>
-        </ButtonWrapper>
-      )
-    });
+    return isPast
+      ? null
+      : children({
+          component: (
+            <ButtonWrapper>
+              <span css={{ flex: 1 }}>Are you going?</span>
+              <Button route="/signin">Attending</Button>
+            </ButtonWrapper>
+          ),
+        });
   }
 
   return (
@@ -66,10 +69,7 @@ const Rsvp = ({ children, event, themeColor }) => {
         ];
 
         return (
-          <Mutation
-            mutation={hasResponded ? UPDATE_RSVP : ADD_RSVP}
-            refetchQueries={refetch}
-          >
+          <Mutation mutation={hasResponded ? UPDATE_RSVP : ADD_RSVP} refetchQueries={refetch}>
             {(updateRsvp, { error: mutationError }) => {
               if (mutationError) {
                 console.error(mutationError);
@@ -90,27 +90,29 @@ const Rsvp = ({ children, event, themeColor }) => {
 
               const isGoing = hasResponded ? userResponse.status === 'yes' : false;
 
-              return children({ component: (
-                <ButtonWrapper>
-                  <span css={{ padding: '0', flex: 1 }}>Are you going?</span>
-                  <Button
-                    disabled={loading || isGoing}
-                    isSelected={hasResponded && isGoing}
-                    background={themeColor}
-                    onClick={respondYes}
-                  >
-                    Yes
-                  </Button>
-                  <Button
-                    disabled={loading || !isGoing}
-                    isSelected={hasResponded && !isGoing}
-                    background={themeColor}
-                    onClick={respondNo}
-                  >
-                    No
-                  </Button>
-                </ButtonWrapper>
-              ) });
+              return children({
+                component: (
+                  <ButtonWrapper>
+                    <span css={{ padding: '0', flex: 1 }}>Are you going?</span>
+                    <Button
+                      disabled={loading || isGoing}
+                      isSelected={hasResponded && isGoing}
+                      background={themeColor}
+                      onClick={respondYes}
+                    >
+                      Yes
+                    </Button>
+                    <Button
+                      disabled={loading || !isGoing}
+                      isSelected={hasResponded && !isGoing}
+                      background={themeColor}
+                      onClick={respondNo}
+                    >
+                      No
+                    </Button>
+                  </ButtonWrapper>
+                ),
+              });
             }}
           </Mutation>
         );
@@ -120,16 +122,19 @@ const Rsvp = ({ children, event, themeColor }) => {
 };
 
 Rsvp.defaultProps = {
-  children: () => null
+  children: () => null,
 };
 
 const ButtonWrapper = props => (
-  <div css={{
-    alignItems: 'center',
-    display: 'flex',
-    flex: 1,
-    minHeight: 40, // NOTE: stop jumping around when no buttons
-  }} {...props} />
+  <div
+    css={{
+      alignItems: 'center',
+      display: 'flex',
+      flex: 1,
+      minHeight: 40, // NOTE: stop jumping around when no buttons
+    }}
+    {...props}
+  />
 );
 
 const Button = ({ background, isSelected, ...props }) => (
