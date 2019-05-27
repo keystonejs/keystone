@@ -13,6 +13,7 @@ import Footer from '../components/Footer';
 import { fontSizes, gridSize } from '../theme';
 import { GET_EVENT_DETAILS } from '../graphql/events';
 import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
+import { mq } from '../helpers/media';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -60,12 +61,12 @@ export default class Event extends Component {
               </Hero>
 
               <Container css={{ marginTop: gridSize * 3 }}>
-                <div css={{ float: 'right' }}>
+                <div css={mq({ float: [null, 'right'] })}>
                   <Rsvp event={data.Event} themeColor={themeColor}>
                     {({ message, component }) => message || component}
                   </Rsvp>
                 </div>
-                <H2 hasSeparator css={{ marginBottom: '2rem' }}>
+                <H2 hasSeparator css={mq({ marginBottom: '2rem', marginTop: ['2rem', null] })}>
                   Talks
                 </H2>
                 <Talks talks={talks} />

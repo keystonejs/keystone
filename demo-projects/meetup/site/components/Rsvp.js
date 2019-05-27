@@ -2,7 +2,7 @@
 import { Mutation, Query } from 'react-apollo';
 import { jsx } from '@emotion/core';
 
-import { Button as ButtonPrimitive } from '../primitives';
+import { Button as ButtonPrimitive, CheckmarkIcon } from '../primitives';
 import { useAuth } from '../lib/authetication';
 import { GET_RSVPS, UPDATE_RSVP, ADD_RSVP } from '../graphql/rsvps';
 
@@ -26,7 +26,7 @@ function validateRsvp({ loading, userRsvps, eventRsvps, event }) {
   return { okay: true };
 }
 
-const Rsvp = ({ children, event, themeColor }) => {
+const Rsvp = ({ children, event, text, themeColor }) => {
   const { isAuthenticated, user } = useAuth();
   const eventId = event.id;
   const isPast = new Date() > new Date(event.startTime);
@@ -37,8 +37,8 @@ const Rsvp = ({ children, event, themeColor }) => {
       : children({
           component: (
             <ButtonWrapper>
-              <span css={{ flex: 1 }}>Are you going?</span>
-              <Button route="/signin">Attending</Button>
+              <span css={{ marginRight: '0.5em', flex: 1 }}>{text}</span>
+              <Button route="/signin">Sign In</Button>
             </ButtonWrapper>
           ),
         });
@@ -93,7 +93,7 @@ const Rsvp = ({ children, event, themeColor }) => {
               return children({
                 component: (
                   <ButtonWrapper>
-                    <span css={{ padding: '0', flex: 1 }}>Are you going?</span>
+                    <span css={{ marginRight: '0.5em', flex: 1 }}>{text}</span>
                     <Button
                       disabled={loading || isGoing}
                       isSelected={hasResponded && isGoing}
@@ -123,6 +123,7 @@ const Rsvp = ({ children, event, themeColor }) => {
 
 Rsvp.defaultProps = {
   children: () => null,
+  text: 'Are you going?',
 };
 
 const ButtonWrapper = props => (
@@ -137,14 +138,21 @@ const ButtonWrapper = props => (
   />
 );
 
-const Button = ({ background, isSelected, ...props }) => (
+const Button = ({ background, children, isSelected, ...props }) => (
   <ButtonPrimitive
+    css={{
+      boxSizing: 'border-box',
+      marginLeft: '0.25em',
+      minWidth: 92,
+    }}
     background={isSelected ? background : null}
-    css={{ marginLeft: '0.25em', minWidth: 74, paddingLeft: 0, paddingRight: 0 }}
     outline={!isSelected}
     size="small"
     {...props}
-  />
+  >
+    {isSelected ? <CheckmarkIcon size={16} stroke={3} css={{ marginRight: '0.25rem' }} /> : null}
+    {children}
+  </ButtonPrimitive>
 );
 
 export default Rsvp;

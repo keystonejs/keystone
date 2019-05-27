@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 
 import { Link } from '../../../routes';
 import Rsvp from '../../components/Rsvp';
-import { H3, H5, Html } from '../../primitives';
+import { H3, H5, Html, PinIcon } from '../../primitives';
 import { colors, gridSize, shadows } from '../../theme';
 import { isInFuture, formatPastDate, formatFutureDate } from '../../helpers';
 import { mq } from '../../helpers/media';
@@ -72,8 +72,8 @@ const EventItem = event => {
                 {name}
               </H3>
               {locationDescription ? (
-                <p css={{ margin: 0, opacity: isInFuture(startTime) ? 1 : 0.5 }}>
-                  {locationDescription}
+                <p css={{ alignItems: 'center', color: colors.greyMedium, display: 'flex' }}>
+                  <PinIcon css={{ marginRight: '0.5em' }} /> {locationDescription}
                 </p>
               ) : null}
               <Html
@@ -88,7 +88,7 @@ const EventItem = event => {
               />
             </a>
           </Link>
-          <Rsvp event={event} themeColor={themeColor}>
+          <Rsvp event={event} text="Attending?" themeColor={themeColor}>
             {({ component }) => (component ? <RsvpPositioner>{component}</RsvpPositioner> : null)}
           </Rsvp>
         </div>

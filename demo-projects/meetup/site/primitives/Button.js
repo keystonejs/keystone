@@ -33,16 +33,19 @@ export default function Button({ background, outline, size, ...props }) {
   return (
     <Tag
       css={{
+        alignItems: 'center',
         background: outline ? 'transparent' : background,
-        border: `solid 2px ${outline ? colors.greyLight : 'transparent'}`,
+        border: `solid 2px ${outline ? 'rgba(0, 0, 0, 0.1)' : 'transparent'}`,
         borderRadius: 40,
         color: foreground,
         cursor: 'pointer',
-        display: 'inline-block',
+        display: 'inline-flex',
         fontWeight: 600,
-        lineHeight: 1,
+        lineHeight: 1.1,
+        justifyContent: 'center',
         outline: 'none',
         padding: padding,
+        textAlign: 'center',
         textDecoration: 'none',
       }}
       {...props}
