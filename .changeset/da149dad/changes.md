@@ -1,1 +1,1 @@
-Move frontmatter into comments
+Move frontmatter in docs into comments
