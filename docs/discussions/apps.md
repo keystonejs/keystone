@@ -20,7 +20,7 @@ A KeystoneJS **App** has two primary purposes
 2. Provide a `build()` method to create a static production build for this app
 
 The mimimum KeystoneJS application requires at least one app, the [GraphQL
-API](../keystone-alpha/app-graphql):
+API](../../keystone-alpha/app-graphql):
 
 `index.js`
 
@@ -65,11 +65,11 @@ In both cases, the `keystone dev` and `keystone start` commands will consume the
 exported `.apps` array, making their middleware available in the order the apps
 are specified.
 
-If you're using a [Custom Server](./custom-server.md), it will be your
+If you're using a [Custom Server](../custom-server.md), it will be your
 responsibility to ensure each app's middleware is correctly injected into any
 http server you setup.
 
 Other interesting KeystoneJS compatible Apps are:
 
-- [Static App](../keystone-alpha/app-static) for serving static files.
-- [Next.js App](../keystone-alpha/app-next) for serving a Next.js App on the same server as the API
+- [Static App](../../keystone-alpha/app-static) for serving static files.
+- [Next.js App](../../keystone-alpha/app-next) for serving a Next.js App on the same server as the API

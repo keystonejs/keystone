@@ -3,7 +3,6 @@ import is from 'sarcastic';
 import nodePath from 'path';
 import { promptInput } from './prompt';
 import globby from 'globby';
-import { readFileSync } from 'fs';
 import * as fs from 'fs-extra';
 import { Item } from './item';
 import { Package } from './package';
@@ -27,14 +26,6 @@ export class Project extends Item {
     let contents = await fs.readFile(filePath, 'utf-8');
     let project = new Project(filePath, contents);
     project.packages = await project._packages();
-
-    return project;
-  }
-  static createSync(directory: string): Project {
-    let filePath = nodePath.join(directory, 'package.json');
-    let contents = readFileSync(filePath, 'utf-8');
-    let project = new Project(filePath, contents);
-    project.packages = project._packagesSync();
 
     return project;
   }
@@ -85,20 +76,6 @@ export class Project extends Item {
         return pkg;
       })
     );
-    return packages;
-  }
-  _packagesSync(): Array<Package> {
-    let filenames = globby.sync(this.configPackages, {
-      cwd: this.directory,
-      onlyDirectories: true,
-      absolute: true,
-      expandDirectories: false,
-    });
-    let packages = filenames.map(x => {
-      let pkg = Package.createSync(x);
-      pkg.project = this;
-      return pkg;
-    });
     return packages;
   }
 }

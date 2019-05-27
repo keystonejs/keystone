@@ -17,17 +17,17 @@ handles the GraphQL API and Admin UI. Things such as:
 - ... etc
 
 A **Custom Server** can replace the default and act as the entry point to your
-application which consumes your [schema definition](./schema.md). A Custom
+application which consumes your [schema definition](../schema.md). A Custom
 Server must handle initialising a http server which correctly executes any given
-[KeystoneJS Apps](./apps.md).
+[KeystoneJS Apps](../apps.md).
 
 _NOTE_: Before reaching for a custom server, consider using a [KeystoneJS
-App](./apps.md) which can enhance the functionality of the default server. Apps
+App](../apps.md) which can enhance the functionality of the default server. Apps
 available in Keystone include:
 
-- [Static App](../keystone-alpha/app-static) for serving static files.
-- [Next.js App](../keystone-alpha/app-next) for serving a Next.js App on the same server as the API
-- ...[plus more](./apps.md)
+- [Static App](../../keystone-alpha/app-static) for serving static files.
+- [Next.js App](../../keystone-alpha/app-next) for serving a Next.js App on the same server as the API
+- ...[plus more](../apps.md)
 
 The following are some possible ways of setting up a custom server, roughly in
 order of complexity.
