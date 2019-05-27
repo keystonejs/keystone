@@ -11,12 +11,12 @@ function validateRsvp({ loading, userRsvps, eventRsvps, event }) {
     return { okay: false, message: 'RSVP is loading data...' };
   }
 
-  if (new Date() > new Date(event.startTime)) {
-    return { okay: false, message: 'This event is in the past.' };
-  }
-
   if (!event || !event.isRsvpAvailable) {
     return { okay: false, message: 'RSVP is not available.' };
+  }
+
+  if (new Date() > new Date(event.startTime)) {
+    return { okay: false, message: 'This event is in the past.' };
   }
 
   if (event.maxRsvps !== null && eventRsvps.length >= event.maxRsvps && !userRsvps.length) {
