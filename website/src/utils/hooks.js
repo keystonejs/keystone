@@ -32,7 +32,6 @@ export function useNavData() {
       }
     }
   `);
-  console.log(data.allSitePage.edges);
 
   const navData = data.allSitePage.edges.reduce((pageList, { node }) => {
     if (node.context.navGroup !== null) {
