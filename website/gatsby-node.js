@@ -2,7 +2,14 @@ const path = require('path');
 const bolt = require('bolt');
 const get = require('lodash.get');
 const slugify = require('@sindresorhus/slugify');
+const visit = require('unist-util-visit');
+const rawMDX = require('@mdx-js/mdx');
+const matter = require('gray-matter');
+const mdastToString = require('mdast-util-to-string');
+
 const generateUrl = require('./generateUrl');
+
+const compiler = rawMDX.createMdxAstCompiler({ mdPlugins: [] });
 
 const PROJECT_ROOT = path.resolve('..');
 const GROUPS = [
@@ -98,6 +105,19 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       pageTitle = workspaces[0].name;
     }
 
+    const ast = compiler.parse(matter(node.rawBody).content);
+    let description;
+    let heading;
+
+    visit(ast, node => {
+      if (!description && node.type === 'paragraph') {
+        description = mdastToString(node);
+      }
+      if (!heading && node.type === 'heading' && node.depth === 1) {
+        heading = mdastToString(node);
+      }
+    });
+
     // This value is added in `gatsby-config` as the "name" of the plugin.
     // Since we scan every workspace and add that as a separate plugin, we
     // have the opportunity there to add the "name", which we pull from the
@@ -111,6 +131,8 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       sortOrder: GROUPS.indexOf(navGroup),
       isPackageIndex: isPackage && relativePath === 'README.md',
       pageTitle: pageTitle,
+      description,
+      heading,
     };
 
     // see: https://github.com/gatsbyjs/gatsby/issues/1634#issuecomment-388899348
