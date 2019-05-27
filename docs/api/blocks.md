@@ -17,7 +17,7 @@ keystone.createList('Post', {
   fields: {
     body: {
       type: Content,
-      blocks: [Content.blocks.blockquote, CloudinaryImage.blocks.singleImage],
+      blocks: [Content.blocks.blockquote, CloudinaryImage.blocks.image],
     },
   },
 });
@@ -31,6 +31,7 @@ Each _Block_ is defined by the following API:
 {
   // (required)
   // A globally unique name for this block. Alpha-num characters only.
+  // NOTE: This must match the value exported from `viewPath#type`.
   type: 'MyBlock',
 
   // (required)
@@ -50,9 +51,9 @@ Each _Block_ is defined by the following API:
 
   // (optional)
   // Blocks can insert/render other blocks (eg; an image gallery can insert
-  // an image block). Define them here.
+  // an image block). Define the array of dependencies here.
   // It should be a regular block definition.
-  dependencies: ?, // image-container
+  dependencies: [/* ... */],
 }
 ```
 
@@ -60,6 +61,11 @@ The view file referenced from the `viewPath` option can have the following
 exports:
 
 ```javascript
+// (required)
+// A globally unique name for this block. Alpha-num characters only.
+// NOTE: This must match the value exported from the Block config .type
+export const type = 'MyBlock';
+
 // (required)
 // The element rendered into the slate.js editor.
 // Is passed all the props a slate.js `renderNode()` receives.
