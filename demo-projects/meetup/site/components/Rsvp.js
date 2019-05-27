@@ -50,6 +50,8 @@ const Rsvp = ({ children, event, themeColor }) => {
         }
 
         const { userRsvps, eventRsvps, event } = data;
+        const userResponse = userRsvps && userRsvps[0];
+        const hasResponded = Boolean(userResponse);
         const { okay, message } = validateRsvp({ loading, userRsvps, eventRsvps, event });
 
         if (!okay) {
@@ -65,7 +67,7 @@ const Rsvp = ({ children, event, themeColor }) => {
 
         return (
           <Mutation
-            mutation={userRsvps[0] ? UPDATE_RSVP : ADD_RSVP}
+            mutation={hasResponded ? UPDATE_RSVP : ADD_RSVP}
             refetchQueries={refetch}
           >
             {(updateRsvp, { error: mutationError }) => {
@@ -77,7 +79,7 @@ const Rsvp = ({ children, event, themeColor }) => {
               const doRespond = status =>
                 updateRsvp({
                   variables: {
-                    rsvp: userRsvps[0] ? userRsvps[0].id : null,
+                    rsvp: hasResponded ? userResponse.id : null,
                     event: eventId,
                     user: user.id,
                     status,
@@ -86,27 +88,26 @@ const Rsvp = ({ children, event, themeColor }) => {
               const respondYes = () => doRespond('yes');
               const respondNo = () => doRespond('no');
 
-              const isGoing = userRsvps[0] ? userRsvps[0].status === 'yes' : false;
-              const canRsvp = eventRsvps.length < event.maxRsvps;
+              const isGoing = hasResponded ? userResponse.status === 'yes' : false;
 
               return children({ component: (
                 <ButtonWrapper>
                   <span css={{ padding: '0', flex: 1 }}>Are you going?</span>
                   <Button
-                    disabled={isGoing || !canRsvp}
-                    isSelected={isGoing && canRsvp}
+                    disabled={loading || isGoing}
+                    isSelected={hasResponded && isGoing}
                     background={themeColor}
                     onClick={respondYes}
                   >
-                    yes
+                    Yes
                   </Button>
                   <Button
-                    disabled={!isGoing}
-                    isSelected={!isGoing && canRsvp}
+                    disabled={loading || !isGoing}
+                    isSelected={hasResponded && !isGoing}
                     background={themeColor}
                     onClick={respondNo}
                   >
-                    no
+                    No
                   </Button>
                 </ButtonWrapper>
               ) });
@@ -134,7 +135,7 @@ const ButtonWrapper = props => (
 const Button = ({ background, isSelected, ...props }) => (
   <ButtonPrimitive
     background={isSelected ? background : null}
-    css={{ marginLeft: '0.5em' }}
+    css={{ marginLeft: '0.25em', minWidth: 74, paddingLeft: 0, paddingRight: 0 }}
     outline={!isSelected}
     size="small"
     {...props}

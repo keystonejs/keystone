@@ -87,7 +87,7 @@ const EventItem = (event) => {
             </a>
           </Link>
           <Rsvp event={event} themeColor={themeColor}>
-            {({ component }) => <RsvpPositioner>{component}</RsvpPositioner> || null}
+            {({ component }) => component ? <RsvpPositioner>{component}</RsvpPositioner> : null}
           </Rsvp>
         </div>
       </div>
@@ -114,11 +114,12 @@ const Mask = props => (
 const RsvpPositioner = props => (
   <div
     css={{
-      background: 'linear-gradient(rgba(255, 255, 255, 0), white 66%)',
+      background: 'white',
+      boxShadow: '0 -1px 0 rgba(0, 0, 0, 0.1)',
       bottom: 0,
       boxSizing: 'border-box',
       left: 0,
-      padding: gridSize * 3,
+      padding: `${gridSize * 2}px ${gridSize * 3}px`,
       position: 'absolute',
       right: 0,
       zIndex: 20,
