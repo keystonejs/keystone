@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: field-types
 title: Color
----
+[meta]-->
 
 # Color
 

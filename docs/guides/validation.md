@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: guides
 title: Adding Validation Rules To Lists
----
+[meta]-->
 
 # Adding Validation Rules To Lists
 

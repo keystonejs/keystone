@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: guides
 title: Deploying Keystone to Heroku
----
+[meta]-->
 
 # Deploying Keystone to Heroku
 

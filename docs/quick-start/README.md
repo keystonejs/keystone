@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: quick-start
 title: Introduction
----
+[meta]-->
 
 # Quick Start
 

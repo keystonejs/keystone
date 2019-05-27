@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Field Views Loader
----
+[meta]-->
 
 # Field Views Loader
 

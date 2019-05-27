@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: api
 title: API Introduction
----
+[meta]-->
 
 # APIs
 
