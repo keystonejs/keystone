@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: api
 title: Content Blocks
----
+[meta]-->
 
 # Content Blocks API
 

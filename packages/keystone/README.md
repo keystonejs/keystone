@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Keystone
----
+[meta]-->
 
 # Keystone
 

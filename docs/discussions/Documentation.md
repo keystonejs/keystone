@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: discussions
 title: Docs Philosophy
----
+[meta]-->
 
 # Docs Philosophy
 

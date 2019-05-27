@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: discussions
 title: Mutation Lifecycle
----
+[meta]-->
 
 # Mutation Lifecycle
 

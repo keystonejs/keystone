@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: field-types
 title: Wysiwyg
----
+[meta]-->
 
 # WYSIWYG HTML Field powered by TinyMCE Editor
 

@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: discussions
 title: KeystoneJS Apps
----
+[meta]-->
 
 # KeystoneJS Apps
 

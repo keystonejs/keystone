@@ -96,8 +96,10 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
     const { sourceInstanceName, relativePath } = parent;
 
     const isPackage = !GROUPS_NO_PKG.includes(sourceInstanceName);
-    const navGroup = node.frontmatter.section;
-    let pageTitle = node.frontmatter.title;
+    let { data, content } = matter(node.rawBody, { delimiters: ['<!--[meta]', '[meta]-->'] });
+
+    const navGroup = data.section;
+    let pageTitle = data.title;
 
     if (isPackage && sourceInstanceName !== '@keystone-alpha/fields') {
       const { dir: rootDir } = await bolt.getProject({ cwd: '../' });
@@ -105,7 +107,7 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       pageTitle = workspaces[0].name;
     }
 
-    const ast = compiler.parse(matter(node.rawBody).content);
+    const ast = compiler.parse(content);
     let description;
     let heading;
 

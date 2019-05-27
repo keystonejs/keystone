@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Adapter Framework
----
+[meta]-->
 
 # Adapter Framework
 

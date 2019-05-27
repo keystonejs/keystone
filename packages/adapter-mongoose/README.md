@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Database Adapter - Mongoose
----
+[meta]-->
 
 # Mongoose Database Adapter
 
