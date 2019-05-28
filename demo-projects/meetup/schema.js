@@ -48,7 +48,7 @@ exports.User = {
     name: { type: Text },
     email: { type: Text, isUnique: true, access: { read: access.userIsAdminOrPath('id') } },
     password: { type: Password, isRequired: true },
-    isAdmin: { type: Checkbox, access: { update: access.userIsAdmin }, defaultValue: false },
+    isAdmin: { type: Checkbox, access: { update: access.userIsAdmin } },
     twitterHandle: { type: Text },
     image: { type: CloudinaryImage, adapter: cloudinaryAdapter },
     talks: {
