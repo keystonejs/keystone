@@ -184,14 +184,27 @@ exports.Sponsor = {
 
 exports.ForgottenPasswordToken = {
   access: {
-    create: access.userIsAdminOrPath('user'),
-    read: access.userIsAdminOrPath('user'),
-    update: access.userIsAdminOrPath('user'),
+    create: true,
+    read: true,
+    update: access.userIsAdmin,
     delete: access.userIsAdmin,
   },
   fields: {
-    user: { type: Relationship, ref: 'User' },
-    token: { type: Text, isRequired: true, isUnique: true },
+    user: {
+      type: Relationship,
+      ref: 'User',
+      access: {
+        read: access.userIsAdmin,
+      },
+    },
+    token: {
+      type: Text,
+      isRequired: true,
+      isUnique: true,
+      access: {
+        read: access.userIsAdmin,
+      },
+    },
     requestedAt: { type: DateTime, isRequired: true },
     accessedAt: { type: DateTime },
     expiresAt: { type: DateTime, isRequired: true },
