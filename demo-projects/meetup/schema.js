@@ -23,7 +23,7 @@ const cloudinaryAdapter = new CloudinaryAdapter({
 
 const access = {
   userIsAdmin: ({ authentication: { item: user } }) => Boolean(user && user.isAdmin),
-  userIsCurrentAuth: ({  authentication: { item } }) => {
+  userIsCurrentAuth: ({ authentication: { item } }) => {
     if (!item) {
       return false;
     }
@@ -127,7 +127,7 @@ exports.Rsvp = {
   access: {
     create: true,
     read: true,
-    update: ({  authentication: { item } }) => {
+    update: ({ authentication: { item } }) => {
       if (!item) {
         return false;
       }
