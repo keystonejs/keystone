@@ -4,6 +4,7 @@ import { jsx } from '@emotion/core';
 import { Component, createRef, Fragment } from 'react';
 
 import { FieldContainer, FieldLabel, FieldInput } from '@arch-ui/fields';
+import { Alert } from '@arch-ui/alert';
 import { Input } from '@arch-ui/input';
 import { FlexGroup } from '@arch-ui/layout';
 import { Button } from '@arch-ui/button';
@@ -51,32 +52,6 @@ export default class PasswordField extends Component {
     return (
       <FieldContainer>
         <FieldLabel htmlFor={htmlID}>{field.label}</FieldLabel>
-        {errors.length ? (
-          <Fragment>
-            <div>
-              {errors.length} Error{errors.length !== 1 ? 's' : ''}:
-            </div>
-            {errors.map(({ message, data }) => (
-              <div key={message}>
-                {message} - {JSON.stringify(data)}
-              </div>
-            ))}
-          </Fragment>
-        ) : null}
-
-        {warnings.length ? (
-          <Fragment>
-            <div>
-              {warnings.length} Warning{warnings.length !== 1 ? 's' : ''}:
-            </div>
-            {warnings.map(({ message, data }) => (
-              <div key={message}>
-                {message} - {JSON.stringify(data)}
-              </div>
-            ))}
-          </Fragment>
-        ) : null}
-
         <FieldInput>
           {isEditing ? (
             <FlexGroup growIndexes={[0, 1]}>
@@ -116,6 +91,26 @@ export default class PasswordField extends Component {
             </Button>
           )}
         </FieldInput>
+
+        {errors.length ? (
+          <Fragment>
+            {errors.map(({ message, data }) => (
+              <Alert appearance="danger" key={message}>
+                {message} - {JSON.stringify(data)}
+              </Alert>
+            ))}
+          </Fragment>
+        ) : null}
+
+        {warnings.length ? (
+          <Fragment>
+            {warnings.map(({ message, data }) => (
+              <Alert appearance="warning" key={message}>
+                {message} - {JSON.stringify(data)}
+              </Alert>
+            ))}
+          </Fragment>
+        ) : null}
       </FieldContainer>
     );
   }

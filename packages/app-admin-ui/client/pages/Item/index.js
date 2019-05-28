@@ -122,7 +122,7 @@ const ItemDetails = withRouter(
       );
     }
 
-    onSave = () => {
+    onSave = async () => {
       const { item, validationErrors, validationWarnings } = this.state;
 
       // There are errors, no need to proceed - the entire save can be aborted.
@@ -163,25 +163,27 @@ const ItemDetails = withRouter(
         let totalWarnings = 0;
 
         // Only validate fields whos values have changed
-        Object.keys(data).forEach(path => {
-          const addFieldValidationError = (message, data) => {
-            errors[path] = errors[path] || [];
-            errors[path].push({ message, data });
-            totalErrors++;
-          };
+        await Promise.all(
+          Object.keys(data).map(path => {
+            const addFieldValidationError = (message, data) => {
+              errors[path] = errors[path] || [];
+              errors[path].push({ message, data });
+              totalErrors++;
+            };
 
-          const addFieldValidationWarning = (message, data) => {
-            warnings[path] = warnings[path] || [];
-            warnings[path].push({ message, data });
-            totalWarnings++;
-          };
-          fieldsObject[path].validateInput({
-            resolvedData: data,
-            originalInput: item,
-            addFieldValidationError,
-            addFieldValidationWarning,
-          });
-        });
+            const addFieldValidationWarning = (message, data) => {
+              warnings[path] = warnings[path] || [];
+              warnings[path].push({ message, data });
+              totalWarnings++;
+            };
+            return fieldsObject[path].validateInput({
+              resolvedData: data,
+              originalInput: item,
+              addFieldValidationError,
+              addFieldValidationWarning,
+            });
+          })
+        );
 
         if (totalErrors + totalWarnings > 0) {
           const messages = [];
