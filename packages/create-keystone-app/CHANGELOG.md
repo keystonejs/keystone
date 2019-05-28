@@ -1,5 +1,13 @@
 # create-keystone-app
 
+## 0.6.1
+
+### Patch Changes
+
+- [b1cbde22](https://github.com/keystonejs/keystone-5/commit/b1cbde22):
+
+  Fixed broken link
+
 ## 0.6.0
 
 ### Minor Changes

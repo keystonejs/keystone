@@ -2,7 +2,14 @@ const path = require('path');
 const bolt = require('bolt');
 const get = require('lodash.get');
 const slugify = require('@sindresorhus/slugify');
+const visit = require('unist-util-visit');
+const rawMDX = require('@mdx-js/mdx');
+const matter = require('gray-matter');
+const mdastToString = require('mdast-util-to-string');
+
 const generateUrl = require('./generateUrl');
+
+const compiler = rawMDX.createMdxAstCompiler({ mdPlugins: [] });
 
 const PROJECT_ROOT = path.resolve('..');
 const GROUPS = [
@@ -51,15 +58,13 @@ exports.createPages = ({ actions, graphql }) => {
     */
     const pages = result.data.allMdx.edges;
 
-    pages.forEach(({ node: { id, fields } }, index) => {
+    pages.forEach(({ node: { id, fields } }) => {
       // The 'fields' values are injected during the `onCreateNode` call below
       createPage({
         path: `${fields.slug}`,
         component: template,
         context: {
           mdPageId: id,
-          prev: index === 0 ? null : pages[index - 1].node,
-          next: index === pages.length - 1 ? null : pages[index + 1].node,
           ...fields,
         }, // additional data can be passed via context
       });
@@ -91,14 +96,29 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
     const { sourceInstanceName, relativePath } = parent;
 
     const isPackage = !GROUPS_NO_PKG.includes(sourceInstanceName);
-    const navGroup = node.frontmatter.section;
-    let pageTitle = node.frontmatter.title;
+    let { data, content } = matter(node.rawBody, { delimiters: ['<!--[meta]', '[meta]-->'] });
+
+    const navGroup = data.section;
+    let pageTitle = data.title;
 
     if (isPackage && sourceInstanceName !== '@keystone-alpha/fields') {
       const { dir: rootDir } = await bolt.getProject({ cwd: '../' });
       const workspaces = await bolt.getWorkspaces({ cwd: rootDir, only: sourceInstanceName });
       pageTitle = workspaces[0].name;
     }
+
+    const ast = compiler.parse(content);
+    let description;
+    let heading;
+
+    visit(ast, node => {
+      if (!description && node.type === 'paragraph') {
+        description = mdastToString(node);
+      }
+      if (!heading && node.type === 'heading' && node.depth === 1) {
+        heading = mdastToString(node);
+      }
+    });
 
     // This value is added in `gatsby-config` as the "name" of the plugin.
     // Since we scan every workspace and add that as a separate plugin, we
@@ -113,6 +133,8 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       sortOrder: GROUPS.indexOf(navGroup),
       isPackageIndex: isPackage && relativePath === 'README.md',
       pageTitle: pageTitle,
+      description,
+      heading,
     };
 
     // see: https://github.com/gatsbyjs/gatsby/issues/1634#issuecomment-388899348

@@ -2,7 +2,7 @@
   "name": "<%= appName%>",
   "version": "0.0.0",
   "scripts": {
-    "start": "NODE_ENV=development DISABLE_LOGGING=true keystone"
+    "start": "cross-env NODE_ENV=development DISABLE_LOGGING=true keystone"
   },
   "private": true,
   "dependencies": {
@@ -11,6 +11,7 @@
     "@keystone-alpha/app-graphql": "latest",
     "@keystone-alpha/fields": "latest",
     "@keystone-alpha/keystone": "latest",
-    "@keystone-alpha/app-static": "latest"
+    "@keystone-alpha/app-static": "latest",
+    "cross-env": "^5.2.0"
   }
 }

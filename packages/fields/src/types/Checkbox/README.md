@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: field-types
 title: Checkbox
----
+[meta]-->
 
 # Checkbox
 

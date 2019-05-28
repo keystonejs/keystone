@@ -9,7 +9,7 @@
     "node": ">=8.4.0"
   },
   "scripts": {
-    "start": "NODE_ENV=development DISABLE_LOGGING=true keystone"
+    "start": "cross-env NODE_ENV=development DISABLE_LOGGING=true keystone"
   },
   "dependencies": {
     "@keystone-alpha/adapter-mongoose": "^2.0.1",
@@ -17,6 +17,7 @@
     "@keystone-alpha/app-graphql": "^6.0.0",
     "@keystone-alpha/fields": "^6.2.0",
     "@keystone-alpha/keystone": "^5.0.0",
-    "@keystone-alpha/app-static": "^1.0.0"
+    "@keystone-alpha/app-static": "^1.0.0",
+    "cross-env": "^5.2.0"
   }
 }

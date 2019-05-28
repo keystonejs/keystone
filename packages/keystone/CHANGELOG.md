@@ -1,5 +1,13 @@
 # @keystone-alpha/keystone
 
+## 5.0.1
+
+### Patch Changes
+
+- [af3f31dd](https://github.com/keystonejs/keystone-5/commit/af3f31dd):
+
+  Set the default build directory the CLI `keystone start` command
+
 ## 5.0.0
 
 ### Major Changes

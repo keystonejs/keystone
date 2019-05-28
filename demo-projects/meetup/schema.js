@@ -22,7 +22,7 @@ const cloudinaryAdapter = new CloudinaryAdapter({
 });
 
 const access = {
-  userIsAdmin: ({ authentication: { item: user } }) => !!(user && user.isAdmin),
+  userIsAdmin: ({ authentication: { item: user } }) => Boolean(user && user.isAdmin),
   userIsAdminOrPath: path => ({ existingItem: item, authentication: { item: user } }) => {
     if (!user) return false;
     return user.isAdmin || user.id === item[path];
@@ -101,7 +101,7 @@ exports.Event = {
   access: access.readPublicWriteAdmin,
   fields: {
     name: { type: Text },
-    status: { type: Select, options: 'draft, active' },
+    status: { type: Select, options: 'draft, active', defaultValue: 'draft' },
     themeColor: { type: Text },
     startTime: { type: DateTime },
     durationMins: { type: Integer },
@@ -109,8 +109,8 @@ exports.Event = {
     talks: { type: Relationship, ref: 'Talk.event', many: true },
     locationAddress: { type: Text },
     locationDescription: { type: Text },
-    maxRsvps: { type: Integer },
-    isRsvpAvailable: { type: Checkbox },
+    maxRsvps: { type: Integer, defaultValue: 120 },
+    isRsvpAvailable: { type: Checkbox, defaultValue: true },
   },
 };
 

@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Arch UI
----
+[meta]-->
 
 # Arch - Keystone UI Kit
 

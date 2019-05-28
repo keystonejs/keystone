@@ -1,5 +1,13 @@
 # @keystone-alpha/app-next
 
+## 1.0.1
+
+### Patch Changes
+
+- [af3f31dd](https://github.com/keystonejs/keystone-5/commit/af3f31dd):
+
+  Output builds to correct directory
+
 ## 1.0.0
 
 ### Major Changes

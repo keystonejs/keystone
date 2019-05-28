@@ -1,6 +1,11 @@
+const fs = require('fs-extra');
 const express = require('express');
 const pathModule = require('path');
-const cpy = require('cpy');
+
+const getDistDir = (src, distDir) => {
+  const srcRelative = pathModule.relative(process.cwd(), src);
+  return pathModule.resolve(pathModule.join(distDir, srcRelative));
+};
 
 class StaticApp {
   constructor({ path, src }) {
@@ -8,20 +13,17 @@ class StaticApp {
     this._src = src;
   }
 
-  prepareMiddleware({ dev, distDir = '.' } = {}) {
+  prepareMiddleware({ dev, distDir }) {
     const app = express();
-    let src = this._src;
-    if (!dev) {
-      src = pathModule.join(distDir, this._src);
-    }
-    app.use(this._path, express.static(pathModule.resolve(src)));
+    const folderToServe = dev ? this._src : getDistDir(this._src, distDir);
+    app.use(this._path, express.static(folderToServe));
     return app;
   }
 
   build({ distDir }) {
     const source = pathModule.resolve(this._src);
-    const destination = pathModule.resolve(pathModule.join(distDir, this._src));
-    return cpy(source, destination);
+    const destination = getDistDir(this._src, distDir);
+    return fs.copy(source, destination);
   }
 }
 

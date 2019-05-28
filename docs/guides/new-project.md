@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: guides
 title: Creating a New Keystone Project
----
+[meta]-->
 
 # Creating a New Keystone Project
 

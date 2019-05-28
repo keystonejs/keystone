@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: discussions
 title: Introduction
----
+[meta]-->
 
 # Discussion
 

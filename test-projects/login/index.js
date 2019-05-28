@@ -3,9 +3,6 @@ const { Text, Password, Relationship } = require('@keystone-alpha/fields');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
-const { StaticApp } = require('@keystone-alpha/app-static');
-
-const { staticRoute, staticPath } = require('./config');
 
 const keystone = new Keystone({
   name: 'Cypress Test Project For Login',
@@ -41,9 +38,5 @@ keystone.createList('Post', {
 
 module.exports = {
   keystone,
-  apps: [
-    new GraphQLApp(),
-    new StaticApp({ path: staticRoute, src: staticPath }),
-    new AdminUIApp({ adminPath: '/admin', authStrategy }),
-  ],
+  apps: [new GraphQLApp(), new AdminUIApp({ adminPath: '/admin', authStrategy })],
 };

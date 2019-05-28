@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: discussions
 title: Access Control
----
+[meta]-->
 
 # Access Control Guide
 

@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Passport Auth Strategy
----
+[meta]-->
 
 # Passport Auth Strategy
 
