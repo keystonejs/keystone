@@ -7,6 +7,7 @@ import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
 import { useAuth } from '../lib/authetication';
+import { Link } from '../../routes';
 import { Container, H1 } from '../primitives';
 import { Button, Field, Label, Input } from '../primitives/forms';
 import Navbar from '../components/Navbar';
@@ -83,6 +84,23 @@ export default () => {
               onChange={e => setPassword(e.target.value)}
             />
           </Field>
+          <Link route="forgot-password">
+            <a
+              css={{
+                color: 'inherit',
+                textDecoration: 'none',
+                cursor: 'pointer',
+                display: 'block',
+                margin: '10px 0',
+
+                ':hover': {
+                  textDecoration: 'underline',
+                },
+              }}
+            >
+              Forgot password
+            </a>
+          </Link>
           {isLoading ? (
             <Button disabled>Signing in...</Button>
           ) : (
