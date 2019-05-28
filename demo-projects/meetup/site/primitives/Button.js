@@ -3,6 +3,7 @@ import { jsx } from '@emotion/core';
 import PropTypes from 'prop-types';
 import { colors } from '../theme';
 import { Link as NextLink } from '../../routes';
+import { getForegroundColor } from '../helpers';
 
 const Link = ({ route, ...props }) => (
   <NextLink route={route} passHref>
@@ -18,31 +19,34 @@ const getTag = props => {
   return tag;
 };
 
-export default function Button({ background, foreground, outline, ...props }) {
+const SIZE_MAP = {
+  small: '.6rem 1.33rem',
+  medium: '.9rem 2rem',
+};
+
+export default function Button({ background, outline, size, ...props }) {
   const Tag = getTag(props);
+  const foreground = background ? getForegroundColor(background) : colors.greyDark;
+
+  const padding = SIZE_MAP[size];
 
   return (
     <Tag
       css={{
+        alignItems: 'center',
         background: outline ? 'transparent' : background,
-        border: `solid 2px ${outline ? colors.greyLight : 'transparent'}`,
+        border: `solid 2px ${outline ? 'rgba(0, 0, 0, 0.1)' : 'transparent'}`,
         borderRadius: 40,
-        color: outline ? colors.grey : foreground,
+        color: foreground,
         cursor: 'pointer',
-        display: 'inline-block',
+        display: 'inline-flex',
         fontWeight: 600,
-        lineHeight: 1,
+        lineHeight: 1.1,
+        justifyContent: 'center',
         outline: 'none',
-        padding: '.9rem 2rem',
+        padding: padding,
+        textAlign: 'center',
         textDecoration: 'none',
-
-        '&:active, &:focus': {
-          boxShadow: '0 0 0 4px rgba(0,0,0,0.1)',
-        },
-
-        '&:hover': {
-          textDecoration: 'underline',
-        },
       }}
       {...props}
     />
@@ -51,12 +55,12 @@ export default function Button({ background, foreground, outline, ...props }) {
 
 Button.propTypes = {
   background: PropTypes.string,
-  foreground: PropTypes.string,
   outline: PropTypes.bool,
+  size: PropTypes.oneOf(['medium', 'small']),
 };
 
 Button.defaultProps = {
   background: colors.purple,
-  foreground: 'white',
   outline: false,
+  size: 'medium',
 };

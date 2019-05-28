@@ -26,6 +26,13 @@ const FONT_MAP = {
   large: 24,
   xlarge: 32,
 };
+const STROKE_MAP = {
+  xsmall: 2,
+  small: 3,
+  medium: 4,
+  large: 5,
+  xlarge: 6,
+};
 
 const AvatarBase = ({ as: Tag = 'div', size, ...props }) => {
   const sizePx = SIZE_MAP[size];
@@ -81,23 +88,36 @@ Avatar.defaultProps = {
 };
 
 // Stack
+export const AvatarStack = ({ size, users, ...props }) => {
+  const stroke = STROKE_MAP[size];
+  const height = SIZE_MAP[size];
+  const width = SIZE_MAP[size] + (users.length - 1) * 10;
 
-export const AvatarStack = ({ size, users, ...props }) => (
-  <div css={{ position: 'relative', width: 70, height: 70 }} {...props}>
-    {users.map((user, idx) => (
-      <Avatar
-        key={user.id}
-        alt={`${user.name} Avatar`}
-        name={user.name}
-        size={size}
-        src={user.image && user.image.small}
-        css={{
-          boxShadow: `0 0 0 4px white`,
-          marginLeft: -idx * 10,
-          position: 'absolute',
-          zIndex: -idx,
-        }}
-      />
-    ))}
-  </div>
-);
+  return (
+    <div css={{ height, position: 'relative', width }} {...props}>
+      {users.map((user, idx) => (
+        <Avatar
+          key={user.id}
+          alt={`${user.name} Avatar`}
+          name={user.name}
+          size={size}
+          src={user.image && user.image.small}
+          css={{
+            boxShadow: `0 0 0 ${stroke}px white`,
+            position: 'absolute',
+            right: idx * 10 + (idx ? stroke : 0),
+            zIndex: idx,
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+AvatarStack.propTypes = {
+  size: PropTypes.oneOf(Object.keys(SIZE_MAP)),
+  users: PropTypes.arrayOf(PropTypes.object),
+};
+AvatarStack.defaultProps = {
+  size: 'medium',
+};

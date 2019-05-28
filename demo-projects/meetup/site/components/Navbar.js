@@ -9,7 +9,7 @@ import { useAuth } from '../lib/authetication';
 import { SignoutIcon } from '../primitives';
 import { getForegroundColor } from '../helpers';
 import { mq } from '../helpers/media';
-import { colors, fontSizes, gridSize, shadows } from '../theme';
+import { fontSizes, gridSize, shadows } from '../theme';
 
 const ThemeContext = createContext();
 const useTheme = () => useContext(ThemeContext);
@@ -117,9 +117,10 @@ const AnonActions = () => {
   );
 };
 
-const Navbar = ({ foreground = colors.greyDark, background = 'white', ...props }) => {
+const Navbar = ({ background = 'white', ...props }) => {
   const { meetup } = publicRuntimeConfig;
   const { isAuthenticated, user } = useAuth();
+  const foreground = getForegroundColor(background);
 
   return (
     <ThemeContext.Provider value={{ background, foreground }}>

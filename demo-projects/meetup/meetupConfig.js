@@ -1,5 +1,5 @@
 const MEETUP = {
-  name: 'KeystoneJS',
+  name: 'KeystoneJS Meetup',
   twitterHandle: '@keystonejs',
   themeColor: '#2377E7',
   logo: {

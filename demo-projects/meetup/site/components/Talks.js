@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 
-import { H5, Html, AvatarStack } from '../primitives';
+import { H3, Html, AvatarStack } from '../primitives';
 import { mq } from '../helpers/media';
 import { colors } from '../theme';
 
@@ -26,7 +26,7 @@ const Talks = ({ talks }) => {
               )}
               <div css={{ position: 'relative' }}>
                 {talk.isLightningTalk && <Bolt>⚡️ Lightning Talk ⚡️</Bolt>}
-                <H5 as="h3">{talk.name}</H5>
+                <H3>{talk.name}</H3>
               </div>
             </div>
             <Content>

@@ -48,7 +48,7 @@ export default () => {
       <Head>
         <title>Sign in | {meetup.name}</title>
       </Head>
-      <Navbar background="white" foreground={colors.greyDark} />
+      <Navbar background="white" />
       <Container css={{ marginTop: gridSize * 3 }}>
         <H1>Sign in</H1>
 

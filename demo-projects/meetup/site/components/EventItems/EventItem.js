@@ -3,24 +3,24 @@ import { jsx } from '@emotion/core';
 
 import { Link } from '../../../routes';
 import Rsvp from '../../components/Rsvp';
-import { Html, Button, Loading } from '../../primitives';
-import { H3 } from '../../primitives/Typography';
+import { H3, H5, Html, PinIcon } from '../../primitives';
 import { colors, gridSize, shadows } from '../../theme';
 import { isInFuture, formatPastDate, formatFutureDate } from '../../helpers';
 import { mq } from '../../helpers/media';
 
-const EventItem = ({
-  id,
-  name,
-  startTime,
-  description,
-  talks,
-  themeColor,
-  locationAddress,
-  locationDescription,
-  maxRsvps,
-  ...props
-}) => {
+const EventItem = event => {
+  const {
+    id,
+    name,
+    startTime,
+    description,
+    talks,
+    themeColor,
+    locationAddress,
+    locationDescription,
+    maxRsvps,
+    ...props
+  } = event;
   const prettyDate = isInFuture(startTime)
     ? formatFutureDate(startTime)
     : formatPastDate(startTime);
@@ -62,7 +62,9 @@ const EventItem = ({
               }}
             >
               <Mask />
-              <span css={{ textTransform: 'uppercase', fontWeight: 600 }}>{prettyDate}</span>
+              <H5 as="div" css={{ textTransform: 'uppercase' }}>
+                {prettyDate}
+              </H5>
               <H3
                 size={4}
                 css={{ wordWrap: 'break-word', lineHeight: '1.25', marginBottom: gridSize }}
@@ -70,8 +72,8 @@ const EventItem = ({
                 {name}
               </H3>
               {locationDescription ? (
-                <p css={{ margin: 0, opacity: isInFuture(startTime) ? 1 : 0.5 }}>
-                  {locationDescription}
+                <p css={{ alignItems: 'center', color: colors.greyMedium, display: 'flex' }}>
+                  <PinIcon css={{ marginRight: '0.5em' }} /> {locationDescription}
                 </p>
               ) : null}
               <Html
@@ -86,50 +88,9 @@ const EventItem = ({
               />
             </a>
           </Link>
-          {isInFuture(startTime) ? (
-            <Rsvp eventId={id}>
-              {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
-                if (loading) return <Loading css={{ position: 'relative', zIndex: 2 }} />;
-                if (error) return null;
-                return (
-                  <div
-                    css={{
-                      alignItems: 'center',
-                      background: 'linear-gradient(rgba(255, 255, 255, 0), white 66%)',
-                      bottom: 0,
-                      boxSizing: 'border-box',
-                      display: 'flex',
-                      left: 0,
-                      padding: gridSize * 3,
-                      position: 'absolute',
-                      right: 0,
-                      zIndex: 20,
-                    }}
-                  >
-                    <span css={{ padding: '0', flex: 1 }}>Attending?</span>
-                    <Button
-                      disabled={isGoing || !canRsvp}
-                      background={isGoing ? themeColor : colors.greyLight}
-                      foreground={isGoing ? 'white' : colors.greyDark}
-                      css={{ marginLeft: '.5rem', padding: '.6rem 1.33rem' }}
-                      onClick={() => rsvpToEvent('yes')}
-                    >
-                      yes
-                    </Button>
-                    <Button
-                      disabled={!isGoing}
-                      background={!isGoing ? themeColor : colors.greyLight}
-                      foreground={!isGoing ? 'white' : colors.greyDark}
-                      css={{ marginLeft: '.5rem', padding: '.6rem 1.33rem' }}
-                      onClick={() => rsvpToEvent('no')}
-                    >
-                      no
-                    </Button>
-                  </div>
-                );
-              }}
-            </Rsvp>
-          ) : null}
+          <Rsvp event={event} text="Attending?" themeColor={themeColor}>
+            {({ component }) => (component ? <RsvpPositioner>{component}</RsvpPositioner> : null)}
+          </Rsvp>
         </div>
       </div>
     </li>
@@ -148,6 +109,22 @@ const Mask = props => (
       background: 'linear-gradient(rgba(255, 255, 255, 0), white 66%)',
       width: '100%',
       height: 100,
+    }}
+    {...props}
+  />
+);
+const RsvpPositioner = props => (
+  <div
+    css={{
+      background: 'white',
+      boxShadow: '0 -1px 0 rgba(0, 0, 0, 0.1)',
+      bottom: 0,
+      boxSizing: 'border-box',
+      left: 0,
+      padding: `${gridSize * 2}px ${gridSize * 3}px`,
+      position: 'absolute',
+      right: 0,
+      zIndex: 20,
     }}
     {...props}
   />
