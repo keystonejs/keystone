@@ -96,7 +96,7 @@ exports.Talk = {
     name: { type: Text },
     event: { type: Relationship, ref: 'Event.talks' },
     speakers: { type: Relationship, ref: 'User.talks', many: true },
-    isLightningTalk: { type: Checkbox, defaultValue: false },
+    isLightningTalk: { type: Checkbox },
     description: { type: Wysiwyg },
   },
 };
