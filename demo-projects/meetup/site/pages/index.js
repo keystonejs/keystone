@@ -131,7 +131,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
             })}
           >
             <Rsvp event={event} themeColor={themeColor}>
-              {({ message, component }) => message || component}
+              {({ message, component }) => component || message}
             </Rsvp>
             <div
               css={{

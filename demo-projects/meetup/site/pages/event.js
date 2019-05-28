@@ -63,7 +63,7 @@ export default class Event extends Component {
               <Container css={{ marginTop: gridSize * 3 }}>
                 <div css={mq({ float: [null, 'right'] })}>
                   <Rsvp event={data.Event} themeColor={themeColor}>
-                    {({ message, component }) => message || component}
+                    {({ message, component }) => component || message}
                   </Rsvp>
                 </div>
                 <H2 hasSeparator css={mq({ marginBottom: '2rem', marginTop: ['2rem', null] })}>
