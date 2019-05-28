@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: guides
 title: Password Protecting Your Admin UI
----
+[meta]-->
 
 # Password Protecting Your Admin UI
 

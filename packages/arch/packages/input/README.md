@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: forms
 title: Input
----
+[meta]-->
 
 # Arch Input
 

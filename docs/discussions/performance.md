@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: discussions
 title: Performance
----
+[meta]-->
 
 # Performance
 

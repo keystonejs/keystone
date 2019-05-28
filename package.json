@@ -168,6 +168,7 @@
     "lodash.throttle": "^4.1.1",
     "luxon": "^1.11.4",
     "magic-string": "^0.25.1",
+    "mdast-util-to-string": "^1.0.6",
     "memoize-one": "^4.0.2",
     "meow": "^5.0.0",
     "mjml": "^4.3.1",

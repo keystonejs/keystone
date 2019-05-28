@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Admin UI
----
+[meta]-->
 
 # Admin UI
 

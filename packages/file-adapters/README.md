@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: File Adapters
----
+[meta]-->
 
 # File Adapters
 

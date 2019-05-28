@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: forms
 title: Controls
----
+[meta]-->
 
 # Arch Controls
 

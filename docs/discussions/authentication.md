@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: discussions
 title: Authentication
----
+[meta]-->
 
 # Authentication Guide
 

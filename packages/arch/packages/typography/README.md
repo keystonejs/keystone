@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: core
 title: Typography
----
+[meta]-->
 
 # Arch Typography
 
