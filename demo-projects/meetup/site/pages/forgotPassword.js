@@ -24,6 +24,7 @@ export const CREATE_FOGOT_PASSWORD_TOKEN = gql`
 
 export default () => {
   const [email, setEmail] = useState('');
+  const [emailSent, setEmailSent] = useState(false);
   const { isAuthenticated } = useAuth();
 
   const handleSubmit = startPasswordRecovery => event => {
@@ -44,8 +45,13 @@ export default () => {
         <title>Forgot password</title>
       </Head>
       <Navbar background="white" foreground={colors.greyDark} />
-      <Mutation mutation={CREATE_FOGOT_PASSWORD_TOKEN}>
-        {(startPasswordRecovery, { error: mutationError }) => {
+      <Mutation
+        mutation={CREATE_FOGOT_PASSWORD_TOKEN}
+        onCompleted={() => {
+          setEmailSent(true);
+        }}
+      >
+        {(startPasswordRecovery, { error: mutationError, loading }) => {
           return (
             <Container css={{ marginTop: gridSize * 3 }}>
               <H1>Forgot password</H1>
@@ -71,7 +77,15 @@ export default () => {
                     onChange={e => setEmail(e.target.value)}
                   />
                 </Field>
-                <Button type="submit">Send recovery email</Button>
+                {loading ? (
+                  <Button disabled>Sending email...</Button>
+                ) : emailSent ? (
+                  <Button disabled css={{ background: colors.greyLight, color: colors.greyMedium }}>
+                    Email sent
+                  </Button>
+                ) : (
+                  <Button type="submit">Send recovery email</Button>
+                )}
               </form>
             </Container>
           );

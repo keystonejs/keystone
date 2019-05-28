@@ -60,6 +60,28 @@ exports.User = {
       access: { update: access.userIsAdmin },
     },
   },
+  hooks: {
+    afterChange: async ({ updatedItem, existingItem }) => {
+      if (existingItem && updatedItem.password !== existingItem.password) {
+        const url = process.env.SERVER_URL || 'http://localhost:3000';
+
+        const props = {
+          recipientEmail: updatedItem.email,
+          signinUrl: `${url}/signin`,
+        };
+
+        const options = {
+          subject: 'Your password has been updated',
+          to: updatedItem,
+          from: process.env.MAILGUN_FROM,
+          domain: process.env.MAILGUN_DOMAIN,
+          apiKey: process.env.MAILGUN_API_KEY,
+        };
+
+        await sendEmail('password-updated.jsx', props, options);
+      }
+    },
+  },
 };
 
 exports.Organiser = {
@@ -162,8 +184,8 @@ exports.Sponsor = {
 
 exports.ForgottenPasswordToken = {
   fields: {
-    user: { type: Relationship, ref: 'User' },
-    token: { type: Text, isRequired: true, isUnique: true },
+    user: { type: Relationship, ref: 'User', access: access.userIsAdmin },
+    token: { type: Text, isRequired: true, isUnique: true, access: access.userIsAdmin },
     requestedAt: { type: DateTime, isRequired: true },
     accessedAt: { type: DateTime },
     expiresAt: { type: DateTime, isRequired: true },
@@ -281,13 +303,69 @@ exports.ForgottenPasswordToken = {
               }
             }
           `,
-          { variables: result }
+          { variables: result, skipAccessControl: true }
         );
 
         if (errors) {
           console.error(errors, `Unable to create forgotten password token.`);
           return;
         }
+
+        return true;
+      },
+    },
+    {
+      schema: 'changePasswordWithToken(token: String!, password: String!): User',
+      resolver: async (obj, { token, password }, context, info, { query }) => {
+        const now = Date.now();
+
+        const { errors, data } = await query(
+          `
+            query findUserFromToken($token: String!, $now: DateTime!) {
+              passwordTokens: allForgottenPasswordTokens(where: { token: $token, expiresAt_gte: $now }) {
+                id
+                token
+                user {
+                  id
+                }
+              }
+            }
+          `,
+          { variables: { token, now }, skipAccessControl: true }
+        );
+
+        if (errors || !data.passwordTokens || !data.passwordTokens.length) {
+          console.error(errors, `Unable to find token`);
+          throw errors.message;
+        }
+
+        const user = data.passwordTokens[0].user.id;
+        const tokenId = data.passwordTokens[0].id;
+
+        const { errors: passwordError } = await query(
+          `mutation UpdateUserPassword($user: ID!, $password: String!) {
+            updateUser(id: $user, data: { password: $password }) {
+              id
+            }
+          }
+        `,
+          { variables: { user, password }, skipAccessControl: true }
+        );
+
+        if (passwordError) {
+          console.error(passwordError, `Unable to change password`);
+          throw passwordError.message;
+        }
+
+        await query(
+          `mutation DeletePasswordToken($tokenId: ID!) {
+            deleteForgottenPasswordToken(id: $tokenId) {
+              id
+            }
+          }
+        `,
+          { variables: { tokenId }, skipAccessControl: true }
+        );
 
         return true;
       },
