@@ -7,7 +7,7 @@ const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
 const { NextApp } = require('@keystone-alpha/app-next');
 const routes = require('./routes');
 
-const { Event, Talk, User, Rsvp, Organiser, Sponsor } = require('./schema');
+const { Event, Talk, User, Rsvp, Organiser, Sponsor, ForgottenPasswordToken } = require('./schema');
 
 const MEETUP = require('./meetupConfig');
 const initialiseData = require('./initialData');
@@ -29,6 +29,7 @@ keystone.createList('Talk', Talk);
 keystone.createList('User', User);
 keystone.createList('Organiser', Organiser);
 keystone.createList('Sponsor', Sponsor);
+keystone.createList('ForgottenPasswordToken', ForgottenPasswordToken);
 
 const adminApp = new AdminUIApp({
   adminPath: '/admin',

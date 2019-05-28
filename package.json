@@ -256,6 +256,7 @@
     "to-pascal-case": "^1.0.0",
     "underscore.string": "^3.3.5",
     "unist-util-visit": "^1.4.0",
+    "uuid": "^3.3.2",
     "webpack": "4.28.4",
     "webpack-dev-middleware": "^3.6.1",
     "webpack-hot-middleware": "^2.24.3"

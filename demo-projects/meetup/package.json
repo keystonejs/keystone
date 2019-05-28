@@ -17,6 +17,7 @@
     "@keystone-alpha/adapter-mongoose": "^2.0.1",
     "@keystone-alpha/app-admin-ui": "^4.0.0",
     "@keystone-alpha/app-graphql": "^6.0.0",
+    "@keystone-alpha/email": "^3.0.0",
     "@keystone-alpha/fields": "^6.2.0",
     "@keystone-alpha/fields-wysiwyg-tinymce": "^3.0.0",
     "@keystone-alpha/file-adapters": "^1.0.2",
@@ -42,6 +43,7 @@
     "react-apollo": "2.4.0",
     "react-apollo-hooks": "^0.4.4",
     "react-toast-notifications": "^1.2.0",
-    "react-use-form-state": "^0.10.0"
+    "react-use-form-state": "^0.10.0",
+    "uuid": "^3.3.2"
   }
 }
