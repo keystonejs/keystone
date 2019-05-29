@@ -166,6 +166,7 @@
     "lodash.set": "^4.3.2",
     "lodash.snakecase": "^4.1.1",
     "lodash.throttle": "^4.1.1",
+    "lodash.uniqby": "^4.7.0",
     "luxon": "^1.11.4",
     "magic-string": "^0.25.1",
     "mdast-util-to-string": "^1.0.6",

@@ -2,20 +2,17 @@
 import { jsx } from '@emotion/core';
 import { Component } from 'react';
 import { Query } from 'react-apollo';
-import Head from 'next/head';
-import getConfig from 'next/config';
 
 import Rsvp from '../components/Rsvp';
 import { Avatar, Container, Error, Hero, H1, H2, Html, Loading } from '../primitives';
 import Talks from '../components/Talks';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import Meta, { makeMetaUrl } from '../components/Meta';
 import { fontSizes, gridSize } from '../theme';
 import { GET_EVENT_DETAILS } from '../graphql/events';
-import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
+import { isInFuture, formatFutureDate, formatPastDate, stripTags } from '../helpers';
 import { mq } from '../helpers/media';
-
-const { publicRuntimeConfig } = getConfig();
 
 export default class Event extends Component {
   static async getInitialProps({ query }) {
@@ -24,7 +21,6 @@ export default class Event extends Component {
   }
 
   render() {
-    const { meetup } = publicRuntimeConfig;
     const { id, loadingColor } = this.props;
 
     return (
@@ -47,13 +43,17 @@ export default class Event extends Component {
             ? formatFutureDate(startTime)
             : formatPastDate(startTime);
 
+          const metaDescription = `${prettyDate} -- ${stripTags(description)}`;
+
           return (
             <>
-              <Head>
-                <title>
-                  {name} | {meetup.name}
-                </title>
-              </Head>
+              <Meta title={name} description={stripTags(description)}>
+                <meta property="og:description" content={metaDescription} />
+                <meta property="og:url" content={makeMetaUrl(`/event/${id}`)} />
+                <meta property="og:title" content={name} />
+                <meta property="og:type" content="article" />
+                <meta name="twitter:description" content={metaDescription} />
+              </Meta>
               <Navbar background={themeColor} />
               <Hero align="left" backgroundColor={themeColor} superTitle={prettyDate} title={name}>
                 <p css={{ fontWeight: 100 }}>{locationAddress}</p>
