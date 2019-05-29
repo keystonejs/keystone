@@ -1,6 +1,13 @@
+import { useEffect, useRef } from 'react';
 import { format, isFuture } from 'date-fns';
+import getConfig from 'next/config';
 import contrast from 'get-contrast';
+
 import { colors } from '../theme';
+
+const {
+  publicRuntimeConfig: { meetup },
+} = getConfig();
 
 // Check if date is in future or past
 export const isInFuture = date => isFuture(date);
@@ -21,3 +28,32 @@ export const getForegroundColor = backgroundColor => {
 
   return darkFgScore - lightFgScore > 1 ? colors.greyDark : 'white';
 };
+
+// ==============================
+// Hooks
+// ==============================
+
+// Logo dimensions
+export const useLogoDimension = () => {
+  const logoWidth = meetup.logo.width;
+  const logoHeight = meetup.logo.height;
+  const logoWidthSm = logoWidth / 1.5;
+  const logoHeightSm = logoHeight / 1.5;
+
+  return { logoWidth, logoHeight, logoWidthSm, logoHeightSm };
+};
+
+// Key handling
+export function useKeydown(key, callback) {
+  useEffect(() => {
+    const handler = function(event) {
+      if (event.key === key) {
+        callback();
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => {
+      document.removeEventListener('keydown', handler);
+    };
+  }, []);
+}
