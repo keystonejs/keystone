@@ -55,7 +55,7 @@ export default class Event extends Component {
 
           return (
             <>
-              <Meta title={name} description={description}>
+              <Meta title={name} description={stripTags(description)}>
                 <meta property="og:description" content={metaDescription} />
                 <meta property="og:url" content={makeMetaUrl(`/event/${id}`)} />
                 <meta property="og:title" content={name} />
