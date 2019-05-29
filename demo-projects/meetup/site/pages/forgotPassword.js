@@ -17,7 +17,7 @@ export default () => {
         <title>Forgot password</title>
       </Head>
       <Navbar background="white" />
-      <Container css={{ marginTop: gridSize * 3 }}>
+      <Container width={420} css={{ marginTop: gridSize * 3 }}>
         <H1>Forgot password</H1>
         <ForgotPassword />
       </Container>
