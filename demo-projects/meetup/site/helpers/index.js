@@ -57,3 +57,8 @@ export function useKeydown(key, callback) {
     };
   }, []);
 }
+
+// Strip Tags
+export const stripTags = htmlString => {
+  return htmlString.replace(/(<([^>]+)>)/gi, '');
+};

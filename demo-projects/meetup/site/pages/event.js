@@ -8,10 +8,10 @@ import { Avatar, Container, Error, Hero, H1, H2, Html, Loading } from '../primit
 import Talks from '../components/Talks';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import Meta from '../components/Meta';
+import Meta, { makeMetaUrl } from '../components/Meta';
 import { fontSizes, gridSize } from '../theme';
 import { GET_EVENT_DETAILS } from '../graphql/events';
-import { isInFuture, formatFutureDate, formatPastDate } from '../helpers';
+import { isInFuture, formatFutureDate, formatPastDate, stripTags } from '../helpers';
 import { mq } from '../helpers/media';
 
 export default class Event extends Component {
@@ -36,16 +36,32 @@ export default class Event extends Component {
             return <p>Event not found</p>;
           }
 
-          const { description, name, startTime, locationAddress, themeColor, talks } = data.Event;
+          const {
+            description,
+            id,
+            name,
+            startTime,
+            locationAddress,
+            themeColor,
+            talks,
+          } = data.Event;
           const { allRsvps } = data;
 
           const prettyDate = isInFuture(startTime)
             ? formatFutureDate(startTime)
             : formatPastDate(startTime);
 
+          const metaDescription = `${prettyDate} -- ${stripTags(description)}`;
+
           return (
             <>
-              <Meta title={name} description={description} />
+              <Meta title={name} description={description}>
+                <meta property="og:description" content={metaDescription} />
+                <meta property="og:url" content={makeMetaUrl(`/event/${id}`)} />
+                <meta property="og:title" content={name} />
+                <meta property="og:type" content="article" />
+                <meta name="twitter:description" content={metaDescription} />
+              </Meta>
               <Navbar background={themeColor} />
               <Hero align="left" backgroundColor={themeColor} superTitle={prettyDate} title={name}>
                 <p css={{ fontWeight: 100 }}>{locationAddress}</p>
