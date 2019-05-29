@@ -5,6 +5,7 @@ import { jsx } from '@emotion/core';
 import { Button as ButtonPrimitive, CheckmarkIcon, Loading } from '../primitives';
 import { useAuth } from '../lib/authetication';
 import { GET_RSVPS, UPDATE_RSVP, ADD_RSVP } from '../graphql/rsvps';
+import AuthModal from './auth/modal';
 
 function validateRsvp({ userRsvps, eventRsvps, event }) {
   if (!event || !event.isRsvpAvailable) {
@@ -36,10 +37,16 @@ const Rsvp = ({ children, event, text, themeColor }) => {
       ? null
       : children({
           component: (
-            <ButtonWrapper>
-              <span css={{ marginRight: '0.5em', flex: 1 }}>{text}</span>
-              <Button route="/signin">Sign In</Button>
-            </ButtonWrapper>
+            <AuthModal mode="signin">
+              {({ openModal }) => (
+                <ButtonWrapper>
+                  <span css={{ marginRight: '0.5em', flex: 1 }}>{text}</span>
+                  <Button route="signin" onClick={openModal}>
+                    Sign In
+                  </Button>
+                </ButtonWrapper>
+              )}
+            </AuthModal>
           ),
         });
   }

@@ -7,14 +7,16 @@ import { jsx } from '@emotion/core';
 import { Link } from '../../routes';
 import { useAuth } from '../lib/authetication';
 import { SignoutIcon } from '../primitives';
-import { getForegroundColor } from '../helpers';
+import { getForegroundColor, useLogoDimension } from '../helpers';
 import { mq } from '../helpers/media';
 import { fontSizes, gridSize, shadows } from '../theme';
+import AuthModal from './auth/modal';
 
 const ThemeContext = createContext();
 const useTheme = () => useContext(ThemeContext);
 
 const { publicRuntimeConfig } = getConfig();
+const { meetup } = publicRuntimeConfig;
 
 const NavAnchor = props => {
   const { foreground } = useTheme();
@@ -46,15 +48,31 @@ const NavLink = ({ route, ...props }) => (
     <NavAnchor {...props} />
   </Link>
 );
+const NavButton = props => (
+  <NavLink
+    css={mq({
+      backgroundColor: meetup.themeColor,
+      border: 'none',
+      borderRadius: 40,
+      color: getForegroundColor(meetup.themeColor),
+      fontWeight: 600,
+      lineHeight: 1,
+      marginRight: [0, 0],
+      padding: '.9rem 2rem',
+    })}
+    {...props}
+  />
+);
 
 const NavText = props => {
   const { foreground } = useTheme();
   return <span css={{ color: foreground, fontSize: fontSizes.sm }} {...props} />;
 };
 
+export const HEADER_GUTTER = [gridSize * 2, gridSize * 6];
+
 const Header = props => {
   const { background } = useTheme();
-  const paddingHorizontal = [gridSize * 2, gridSize * 6];
 
   return (
     <header
@@ -62,8 +80,8 @@ const Header = props => {
         alignItems: 'center',
         background: background,
         display: 'flex',
-        paddingLeft: paddingHorizontal,
-        paddingRight: paddingHorizontal,
+        paddingLeft: HEADER_GUTTER,
+        paddingRight: HEADER_GUTTER,
       })}
       {...props}
     />
@@ -75,51 +93,56 @@ const hideOnMobile = mq({
 });
 
 // TODO: Implement log out
-const UserActions = ({ user }) => (
-  <div>
-    {user.isAdmin && (
-      <NavAnchor css={hideOnMobile} href="/admin" target="_blank">
-        Dashboard
-      </NavAnchor>
-    )}
-    <span css={{ alignItems: 'center', display: 'inline-flex' }}>
-      <NavText css={hideOnMobile}>
-        <strong>{user.name}</strong>
-      </NavText>
-      <NavLink route="signout" title="Sign Out">
-        <SignoutIcon />
-      </NavLink>
-    </span>
-  </div>
-);
+const UserActions = ({ user }) => {
+  const { signout } = useAuth();
+  const onSignout = event => {
+    event.preventDefault();
+    signout();
+  };
 
-const AnonActions = () => {
-  const { meetup } = publicRuntimeConfig;
   return (
     <div>
-      <NavLink route="signin">Sign in</NavLink>
-      <NavLink
-        route="signup"
-        css={mq({
-          backgroundColor: meetup.themeColor,
-          border: 'none',
-          borderRadius: 40,
-          color: getForegroundColor(meetup.themeColor),
-          fontWeight: 600,
-          lineHeight: 1,
-          marginRight: [0, 0],
-          padding: '.9rem 2rem',
-        })}
-      >
-        Join
-      </NavLink>
+      {user.isAdmin && (
+        <NavAnchor css={hideOnMobile} href="/admin" target="_blank">
+          Dashboard
+        </NavAnchor>
+      )}
+      <span css={{ alignItems: 'center', display: 'inline-flex' }}>
+        <NavText css={hideOnMobile}>
+          <strong>{user.name}</strong>
+        </NavText>
+        <NavLink route="signout" title="Sign Out" onClick={onSignout}>
+          <SignoutIcon />
+        </NavLink>
+      </span>
+    </div>
+  );
+};
+
+const AnonActions = () => {
+  return (
+    <div>
+      <AuthModal mode="signin">
+        {({ openModal }) => (
+          <NavLink route="signin" onClick={openModal}>
+            Sign in
+          </NavLink>
+        )}
+      </AuthModal>
+      <AuthModal mode="signup">
+        {({ openModal }) => (
+          <NavButton route="signup" onClick={openModal}>
+            Join
+          </NavButton>
+        )}
+      </AuthModal>
     </div>
   );
 };
 
 const Navbar = ({ background = 'white', ...props }) => {
-  const { meetup } = publicRuntimeConfig;
   const { isAuthenticated, user } = useAuth();
+  const { logoWidth, logoHeight, logoWidthSm, logoHeightSm } = useLogoDimension();
   const foreground = getForegroundColor(background);
 
   return (
@@ -129,14 +152,14 @@ const Navbar = ({ background = 'white', ...props }) => {
           <a>
             <img
               src={meetup.logo.src}
-              width={meetup.logo.width}
-              height={meetup.logo.height}
+              width={logoWidth}
+              height={logoHeight}
               alt={meetup.name}
               css={mq({
                 boxShadow: shadows.sm,
                 marginRight: [gridSize, gridSize * 2],
-                width: [meetup.logo.width / 1.5, meetup.logo.width],
-                height: [meetup.logo.height / 1.5, meetup.logo.height],
+                width: [logoWidthSm, logoWidth],
+                height: [logoHeightSm, logoHeight],
               })}
             />
           </a>
