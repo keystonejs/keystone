@@ -36,15 +36,7 @@ export default class Event extends Component {
             return <p>Event not found</p>;
           }
 
-          const {
-            description,
-            id,
-            name,
-            startTime,
-            locationAddress,
-            themeColor,
-            talks,
-          } = data.Event;
+          const { description, name, startTime, locationAddress, themeColor, talks } = data.Event;
           const { allRsvps } = data;
 
           const prettyDate = isInFuture(startTime)
