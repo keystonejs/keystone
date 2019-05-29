@@ -19,16 +19,16 @@ export const makeMetaUrl = path => {
 const logoPath = makeMetaUrl(meetup.logo.src);
 
 const rootTags = [
-  <meta dismiss property="og:url" content={meetup.siteUrl} />,
-  <meta dismiss property="og:type" content="website" />,
-  <meta dismiss property="og:locale" content="en" />,
-  <meta dismiss property="og:site_name" content={meetup.name} />,
-  <meta dismiss property="og:image" content={logoPath} />,
-  <meta dismiss property="og:image:width" content={meetup.logo.width} />,
-  <meta dismiss property="og:image:height" content={meetup.logo.height} />,
-  <meta dismiss name="twitter:site" content={meetup.twitterHandle} />,
-  <meta dismiss name="twitter:card" content="summary" />,
-  <meta dismiss name="twitter:image" content={logoPath} />,
+  <meta property="og:url" content={meetup.siteUrl} />,
+  <meta property="og:type" content="website" />,
+  <meta property="og:locale" content="en" />,
+  <meta property="og:site_name" content={meetup.name} />,
+  <meta property="og:image" content={logoPath} />,
+  <meta property="og:image:width" content={meetup.logo.width} />,
+  <meta property="og:image:height" content={meetup.logo.height} />,
+  <meta name="twitter:site" content={meetup.twitterHandle} />,
+  <meta name="twitter:card" content="summary" />,
+  <meta name="twitter:image" content={logoPath} />,
 ];
 
 function getUniqueTags(children) {
