@@ -52,17 +52,13 @@ export default () => {
     >
       {(createUser, { error: mutationError }) => {
         return (
-					<>
+          <>
             {mutationError && (
               <p css={{ color: colors.red }}>The email provided is already in use.</p>
             )}
             {errorState && <p css={{ color: colors.red }}>An unknown error has occured</p>}
 
-            <form
-              css={{ marginTop: gridSize * 3 }}
-              noValidate
-              onSubmit={handleSubmit(createUser)}
-            >
+            <form css={{ marginTop: gridSize * 3 }} noValidate onSubmit={handleSubmit(createUser)}>
               <Field>
                 <Label htmlFor="name">Name</Label>
                 <Input
@@ -105,13 +101,13 @@ export default () => {
                 />
               </Field>
 
-							{isLoading ? (
+              {isLoading ? (
                 <Button disabled>Creating account...</Button>
               ) : (
                 <Button type="submit">Sign up</Button>
               )}
             </form>
-					</>
+          </>
         );
       }}
     </Mutation>
