@@ -3,7 +3,6 @@
 import { useState, useEffect, Component } from 'react';
 import { Query, Mutation } from 'react-apollo';
 import Router from 'next/router';
-import Head from 'next/head';
 import { jsx } from '@emotion/core';
 
 import { useAuth } from '../lib/authetication';
@@ -11,6 +10,7 @@ import { Container, H1, Loading, Error } from '../primitives';
 import { Button, Field, Label, Input } from '../primitives/forms';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import Meta from '../components/Meta';
 import { gridSize, colors } from '../theme';
 import gql from 'graphql-tag';
 
@@ -74,9 +74,7 @@ const ChangePasswordForm = ({ token, accessedAt }) => {
 
   return (
     <>
-      <Head>
-        <title>Change password</title>
-      </Head>
+      <Meta title="Change password" />
       <Navbar background="white" foreground={colors.greyDark} />
       <Query query={GET_PASSWORD_TOKEN} variables={{ token, accessedAt }}>
         {({ data, loading, error }) => {

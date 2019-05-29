@@ -2,12 +2,12 @@
 
 import { Query } from 'react-apollo';
 import getConfig from 'next/config';
-import Head from 'next/head';
 import { jsx } from '@emotion/core';
 
 import { Avatar, Container, Error, H1, H2, H3, Html, Loading } from '../primitives';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import Meta from '../components/Meta';
 import { colors, gridSize } from '../theme';
 import { GET_ORGANISERS } from '../graphql/organisers';
 import { mq } from '../helpers/media';
@@ -19,10 +19,7 @@ export default function About() {
 
   return (
     <>
-      <Head>
-        <title>About | {meetup.name}</title>
-        <meta name="description" content={meetup.aboutIntro} />
-      </Head>
+      <Meta title="About" description={meetup.aboutIntro} />
       <Navbar background="white" />
       <Container css={{ marginTop: gridSize * 3 }}>
         <H1 hasSeparator css={{ marginBottom: '0.66em' }}>

@@ -1,13 +1,11 @@
 import React, { Component, useState, useCallback } from 'react';
 import gql from 'graphql-tag';
-import Head from 'next/head';
-import getConfig from 'next/config';
 import { useFormState } from 'react-use-form-state';
 import { withToastManager } from 'react-toast-notifications';
 import { useMutation } from 'react-apollo-hooks';
-import { AvatarUpload } from '../components/AvatarUpload';
 
-const { publicRuntimeConfig } = getConfig();
+import { AvatarUpload } from '../components/AvatarUpload';
+import Meta from '../components/Meta';
 
 export default class ProfilePage extends Component {
   static async getInitialProps(ctx) {
@@ -31,15 +29,10 @@ export default class ProfilePage extends Component {
   }
 
   render() {
-    const { meetup } = publicRuntimeConfig;
     if (this.props.error) return <h1>Error loading User Profile.</h1>;
     return (
       <>
-        <Head>
-          <title>
-            {this.props.user.name} | {meetup.name}
-          </title>
-        </Head>
+        <Meta title={this.props.user.name} />
         <Profile {...this.props} />
       </>
     );
