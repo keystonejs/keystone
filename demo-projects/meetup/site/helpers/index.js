@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { format, isFuture } from 'date-fns';
 import getConfig from 'next/config';
 import contrast from 'get-contrast';
