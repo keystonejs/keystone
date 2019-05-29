@@ -23,32 +23,30 @@ const cloudinaryAdapter = new CloudinaryAdapter({
 
 const access = {
   userIsAdmin: ({ authentication: { item: user } }) => Boolean(user && user.isAdmin),
-  userIsAdminOrPath: path => ({ existingItem: item, authentication: { item: user } }) => {
-    if (!user) return false;
-    return user.isAdmin || user.id === item[path];
+  userIsCurrentAuth: ({ authentication: { item } }) => {
+    if (!item) {
+      return false;
+    }
+    return { id: item.id };
   },
 };
 
-access.readPublicWriteAdmin = {
+// Read: public / Write: admin
+const DEFAULT_LIST_ACCESS = {
   create: access.userIsAdmin,
   read: true,
   update: access.userIsAdmin,
   delete: access.userIsAdmin,
 };
 
-// TODO: We can't access the existing item at the list update level yet,
-// so this kludge will allow the access control to work for now by
-// locking down the API to admins.
-access.userIsAdminOrPath = () => access.userIsAdmin;
-
 exports.User = {
   access: {
-    update: access.userIsAdminOrPath('id'),
+    update: access.userIsCurrentAuth,
     delete: access.userIsAdmin,
   },
   fields: {
     name: { type: Text },
-    email: { type: Text, isUnique: true, access: { read: access.userIsAdminOrPath('id') } },
+    email: { type: Text, isUnique: true, access: { read: access.userIsCurrentAuth } },
     password: { type: Password, isRequired: true },
     isAdmin: { type: Checkbox, access: { update: access.userIsAdmin } },
     twitterHandle: { type: Text },
@@ -85,7 +83,7 @@ exports.User = {
 };
 
 exports.Organiser = {
-  access: access.readPublicWriteAdmin,
+  access: DEFAULT_LIST_ACCESS,
   fields: {
     user: { type: Relationship, ref: 'User' },
     order: { type: Integer },
@@ -98,7 +96,7 @@ exports.Organiser = {
 // read: ({ existingItem, authentication }) => access.userIsAdmin({ authentication }) || !!(existingItem && existingItem.status === 'active'),
 
 exports.Event = {
-  access: access.readPublicWriteAdmin,
+  access: DEFAULT_LIST_ACCESS,
   fields: {
     name: { type: Text },
     status: { type: Select, options: 'draft, active', defaultValue: 'draft' },
@@ -115,7 +113,7 @@ exports.Event = {
 };
 
 exports.Talk = {
-  access: access.readPublicWriteAdmin,
+  access: DEFAULT_LIST_ACCESS,
   fields: {
     name: { type: Text },
     event: { type: Relationship, ref: 'Event.talks' },
@@ -129,7 +127,12 @@ exports.Rsvp = {
   access: {
     create: true,
     read: true,
-    update: access.userIsAdminOrPath('user'),
+    update: ({ authentication: { item } }) => {
+      if (!item) {
+        return false;
+      }
+      return { user: { id: item.id } };
+    },
     delete: access.userIsAdmin,
   },
   fields: {
@@ -174,7 +177,7 @@ exports.Rsvp = {
 };
 
 exports.Sponsor = {
-  access: access.readPublicWriteAdmin,
+  access: DEFAULT_LIST_ACCESS,
   fields: {
     name: { type: Text },
     website: { type: Text },
