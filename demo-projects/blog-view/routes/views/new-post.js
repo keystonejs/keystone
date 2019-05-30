@@ -26,6 +26,7 @@ module.exports = (keystone, app) => {
     view.on('post', async () => {
       const { title, body, admin } = req.body;
       const input = { title, body, author: { connect: { id: admin } } };
+      input.posted = new Date().toISOString();
       if (req.file) {
         const { buffer, originalname: filename, mimetype, encoding } = req.file;
         input['image'] = { stream: bufferToStream(buffer), filename, mimetype, encoding };

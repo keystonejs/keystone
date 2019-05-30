@@ -69,7 +69,7 @@ module.exports = (keystone, app) => {
     view.query(
       'demoUser',
       `{ 
-          allUsers(where: { email: "a@demo.user" }) {
+          allUsers(where: { email: "user@keystonejs.com" }) {
             name
             email
             id
