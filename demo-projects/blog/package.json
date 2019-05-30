@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "cross-env NODE_ENV=development DISABLE_LOGGING=true node -r dotenv-safe/config `yarn bin`/keystone dev",
-    "build": "cross-env node -r dotenv-safe/config `yarn bin`/keystone build",
+    "build": "cross-env NODE_ENV=production node -r dotenv-safe/config `yarn bin`/keystone build",
     "start": "cross-env NODE_ENV=production node -r dotenv-safe/config `yarn bin`/keystone start"
   },
   "dependencies": {

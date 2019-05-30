@@ -1,13 +1,13 @@
 # Starter Project - Todo List
 
-This is the todo list - the simplest implementation of Keystone. The todo list allows you to see what the minimum requirements are for running Keystone. It has no fancy extras and only one list - easy peasy!
+This is the todo list - the simplest implementation of Keystone. The todo list allows you to see what the minimum requirements are for running Keystone. It has no fancy extras and only one list.
 
 **[Read the Keystone Docs](https://v5.keystonejs.com)**
 
 ## Running the Project.
 
 ```
-yarn start
+yarn dev
 ```
 
 Then visit:
@@ -15,6 +15,13 @@ Then visit:
 - The Todo application at [`http://localhost:3000`](http://localhost:3000)
 - The KeystoneJS Admin UI at [`http://localhost:3000/admin`](http://localhost:3000/admin)
 - The GraphQL Playground at [`http://localhost:3000/admin/graphiql`](http://localhost:3000/admin/graphiql)
+
+## Production Build
+
+```
+yarn build
+yarn start
+```
 
 ## React App
 
