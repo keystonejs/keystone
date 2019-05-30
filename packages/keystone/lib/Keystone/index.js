@@ -419,7 +419,7 @@ module.exports = class Keystone {
     return mergeRelationships(createdItems, createdRelationships);
   }
 
-  async prepare({ port = DEFAULT_PORT, dev = false, apps = [], distDir } = {}) {
+  async prepare({ dev = false, apps = [], distDir } = {}) {
     const middlewares = flattenDeep(
       await Promise.all(
         [
@@ -433,7 +433,6 @@ module.exports = class Keystone {
           .map(app =>
             app.prepareMiddleware({
               keystone: this,
-              port,
               dev,
               distDir: distDir || DEFAULT_DIST_DIR,
             })
