@@ -7,7 +7,7 @@ const initialData = require('./data');
 keystone
   .prepare({ apps, port, dev: process.env.NODE_ENV !== 'production' })
   .then(async ({ middlewares }) => {
-    await keystone.connect();
+    await keystone.connect(process.env.MONGODB_URI);
 
     // Initialise some data.
     // NOTE: This is only for test purposes and should not be used in production
