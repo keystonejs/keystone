@@ -103,7 +103,7 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
 
   const dev = process.env.NODE_ENV !== 'production';
 
-  const { middlewares } = await keystone.prepare({ apps, port, distDir, dev });
+  const { middlewares } = await keystone.prepare({ apps, distDir, dev });
 
   await keystone.connect(connectTo);
 
