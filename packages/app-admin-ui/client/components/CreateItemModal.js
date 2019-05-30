@@ -3,24 +3,31 @@ import { jsx } from '@emotion/core';
 import { Component, Fragment, useCallback, useMemo, Suspense } from 'react';
 import { Mutation } from 'react-apollo';
 
-import { Button } from '@arch-ui/button';
+import { Button, LoadingButton } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
 import { arrayToObject, captureSuspensePromises } from '@keystone-alpha/utils';
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 
 import PageLoading from './PageLoading';
+import { validateFields } from '../util';
 
 let Render = ({ children }) => children();
+
+const countArrays = obj =>
+  Object.keys(obj).reduce((total, items) => total + (items ? items.length : 0), 0);
 
 class CreateItemModal extends Component {
   constructor(props) {
     super(props);
     const { list } = props;
     const item = list.getInitialItemData();
-    this.state = { item };
+    const validationErrors = {};
+    const validationWarnings = {};
+
+    this.state = { item, validationErrors, validationWarnings };
   }
-  onCreate = event => {
+  onCreate = async event => {
     // prevent form submission
     event.preventDefault();
     // we have to stop propagation so that if this modal is inside another form
@@ -38,10 +45,25 @@ class CreateItemModal extends Component {
       isLoading,
     } = this.props;
     if (isLoading) return;
-    const { item } = this.state;
+    const { item, validationWarnings } = this.state;
+
+    const data = arrayToObject(fields, 'path', field => field.serialize(item));
+
+    if (!countArrays(validationWarnings)) {
+      const { errors, warnings } = await validateFields(fields, item, data);
+
+      if (countArrays(errors) + countArrays(warnings) > 0) {
+        this.setState(() => ({
+          validationErrors: errors,
+          validationWarnings: warnings,
+        }));
+
+        return;
+      }
+    }
 
     createItem({
-      variables: { data: arrayToObject(fields, 'path', field => field.serialize(item)) },
+      variables: { data },
     }).then(data => {
       this.props.onCreate(data);
       this.setState({ item: this.props.list.getInitialItemData() });
@@ -62,7 +84,10 @@ class CreateItemModal extends Component {
   formComponent = props => <form autoComplete="off" onSubmit={this.onCreate} {...props} />;
   render() {
     const { isLoading, isOpen, list } = this.props;
-    const { item } = this.state;
+    const { item, validationErrors, validationWarnings } = this.state;
+
+    const hasWarnings = countArrays(validationWarnings);
+    const hasErrors = countArrays(validationErrors);
 
     const cypressId = 'create-item-modal-submit-button';
 
@@ -77,9 +102,16 @@ class CreateItemModal extends Component {
         slideInFrom="right"
         footer={
           <Fragment>
-            <Button appearance="primary" type="submit" id={cypressId}>
-              {isLoading ? 'Loading...' : 'Create'}
-            </Button>
+            <LoadingButton
+              appearance={hasWarnings && !hasErrors ? 'warning' : 'primary'}
+              id={cypressId}
+              isDisabled={hasErrors}
+              isLoading={isLoading}
+              onClick={this.onUpdate}
+              type="submit"
+            >
+              {hasWarnings && !hasErrors ? 'Ignore Warnings and Create' : 'Create'}
+            </LoadingButton>
             <Button appearance="warning" variant="subtle" onClick={this.onClose}>
               Cancel
             </Button>
@@ -107,6 +139,8 @@ class CreateItemModal extends Component {
                             ...item,
                             [field.path]: value,
                           },
+                          validationErrors: {},
+                          validationWarnings: {},
                         }));
                       }, []);
                       return useMemo(
@@ -116,12 +150,20 @@ class CreateItemModal extends Component {
                             value={item[field.path]}
                             field={field}
                             /* TODO: Permission query results */
-                            // error={}
+                            errors={validationErrors[field.path] || []}
+                            warnings={validationWarnings[field.path] || []}
                             onChange={onChange}
                             renderContext="dialog"
                           />
                         ),
-                        [i, item[field.path], field, onChange]
+                        [
+                          i,
+                          item[field.path],
+                          field,
+                          onChange,
+                          validationErrors[field.path],
+                          validationWarnings[field.path],
+                        ]
                       );
                     }}
                   </Render>
