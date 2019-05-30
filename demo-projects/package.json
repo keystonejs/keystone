@@ -1,0 +1,9 @@
+{
+	"scripts": {
+		"start": "yarn todo start",
+		"blog": "yarn --cwd blog",
+		"meetup": "yarn --cwd meetup",
+		"todo": "yarn --cwd todo"
+	},
+	"license": "MIT"
+}

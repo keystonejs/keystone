@@ -1,0 +1,10 @@
+{
+	"scripts": {
+		"start": "yarn basic start",
+		"access-control": "yarn --cwd access-control",
+		"basic": "yarn --cwd basic",
+		"login": "yarn --cwd login",
+		"social-login": "yarn --cwd social-login"
+	},
+	"license": "MIT"
+}
