@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Database Adapter - Knex
----
+[meta]-->
 
 # Knex Database Adapter
 

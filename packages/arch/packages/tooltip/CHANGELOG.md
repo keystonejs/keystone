@@ -1,5 +1,21 @@
 # @arch-ui/tooltip
 
+## 0.0.6
+
+### Patch Changes
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
+- [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+
+  - Update usage of transition API
+
+* Updated dependencies [a03fd601](https://github.com/keystonejs/keystone-5/commit/a03fd601):
+* Updated dependencies [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+  - @arch-ui/modal-utils@1.0.0
+
 ## 0.0.5
 
 - Updated dependencies [e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):

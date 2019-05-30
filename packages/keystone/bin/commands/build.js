@@ -1,7 +1,8 @@
+const chalk = require('chalk');
 const path = require('path');
 const fs = require('fs-extra');
-const keystone = require('@keystone-alpha/core');
 const { getEntryFileFullPath } = require('../utils');
+const { DEFAULT_ENTRY, DEFAULT_DIST_DIR } = require('../../constants');
 
 module.exports = {
   // prettier-ignore
@@ -16,31 +17,46 @@ module.exports = {
 
     Options
       --out, -o   Directory to save build [dist]
-      --entry     Entry file exporting keystone instance [${keystone.DEFAULT_ENTRY}]
+      --entry     Entry file exporting keystone instance [${DEFAULT_ENTRY}]
   `,
-  exec: async (args, { exeName, _cwd = process.cwd() } = {}) => {
+  exec: async (args, { exeName, _cwd = process.cwd() } = {}, spinner) => {
     process.env.NODE_ENV = 'production';
+
+    spinner.text = 'Validating project entry file';
     let entryFile = await getEntryFileFullPath(args, { exeName, _cwd });
-    let { admin, distDir = keystone.DEFAULT_DIST_DIR } = require(entryFile);
+    spinner.succeed(`Validated project entry file ./${path.relative(_cwd, entryFile)}`);
+
+    spinner.start('Initialising Keystone instance');
+    let { keystone, apps, distDir = DEFAULT_DIST_DIR } = require(entryFile);
+    spinner.succeed('Initialised Keystone instance');
 
     if (args['--out']) {
       distDir = args['--out'];
     }
     let resolvedDistDir = path.resolve(_cwd, distDir);
+    spinner.start(`Exporting Keystone build to ./${path.relative(_cwd, resolvedDistDir)}`);
+
     await fs.remove(resolvedDistDir);
 
-    if (admin) {
-      console.log('Building Admin UI!');
-      await admin.staticBuild({
-        apiPath: '/admin/api',
-        distDir: resolvedDistDir,
-        graphiqlPath: '/admin/graphiql',
-      });
-      console.log('Built Admin UI!');
+    if (apps) {
+      await Promise.all(
+        apps.map(app => {
+          return app.build({
+            apiPath: '/admin/api',
+            distDir: resolvedDistDir,
+            graphiqlPath: '/admin/graphiql',
+            keystone,
+          });
+        })
+      );
+
+      spinner.succeed(
+        chalk.green.bold(`Exported Keystone build to ./${path.relative(_cwd, resolvedDistDir)}`)
+      );
     } else {
-      console.log('Nothing to build.');
-      console.log(
-        `To create an Admin UI build, make sure you export 'admin' from ${path.relative(
+      spinner.info('Nothing to build.');
+      spinner.info(
+        `To create an Admin UI build, make sure you export 'admin' from ./${path.relative(
           _cwd,
           entryFile
         )}`

@@ -1,5 +1,67 @@
 # @keystone-alpha/test-utils
 
+## 2.0.3
+
+### Patch Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Specify custom servers from within the index.js file
+
+  - Major Changes:
+    - The `index.js` export for `admin` must now be exported in the `servers`
+      array:
+      ```diff
+       module.exports = {
+         keystone,
+      -  admin,
+      +  apps: [admin],
+       }
+      ```
+    - The `keystone.prepare()` method (often used within a _Custom Server_
+      `server.js`) no longer returns a `server`, it now returns a `middlewares`
+      array:
+      ```diff
+      +const express = require('express');
+       const port = 3000;
+       keystone.prepare({ port })
+      -  .then(async ({ server, keystone: keystoneApp }) => {
+      +  .then(async ({ middlewares, keystone: keystoneApp }) => {
+           await keystoneApp.connect();
+      -    await server.start();
+      +    const app = express();
+      +    app.use(middlewares);
+      +    app.listen(port)
+         });
+      ```
+
+* Updated dependencies [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
+  - @keystone-alpha/keystone@5.0.0
+  - @keystone-alpha/app-graphql@6.0.0
+
+## 2.0.2
+
+- Updated dependencies [9a0456ff](https://github.com/keystonejs/keystone-5/commit/9a0456ff):
+  - @keystone-alpha/adapter-mongoose@2.0.0
+
+## 2.0.1
+
+### Patch Changes
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
+* Updated dependencies [24cd26ee](https://github.com/keystonejs/keystone-5/commit/24cd26ee):
+* Updated dependencies [2ef2658f](https://github.com/keystonejs/keystone-5/commit/2ef2658f):
+* Updated dependencies [ae5cf6cc](https://github.com/keystonejs/keystone-5/commit/ae5cf6cc):
+* Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+* Updated dependencies [b22d6c16](https://github.com/keystonejs/keystone-5/commit/b22d6c16):
+  - @keystone-alpha/adapter-knex@1.0.7
+  - @keystone-alpha/adapter-mongoose@1.0.7
+  - @keystone-alpha/keystone@4.0.0
+  - @keystone-alpha/server@5.0.0
+
 ## 2.0.0
 
 - [patch][7b8d254d](https://github.com/keystonejs/keystone-5/commit/7b8d254d):

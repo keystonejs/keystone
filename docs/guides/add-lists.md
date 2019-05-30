@@ -1,12 +1,8 @@
----
+<!--[meta]
 section: guides
 title: Adding Lists To Your Keystone Project
----
+[meta]-->
 
 # Adding Lists To Your Keystone Project
 
-In this guide we will learn how to add list to your Keystone project.
-
-```DOCS_TODO
-TODO
-```
+See also: [Schema - Lists & Fields](../discussions/schema.md).

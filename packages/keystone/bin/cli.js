@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
 const arg = require('arg');
+const ora = require('ora');
 const path = require('path');
 const globby = require('globby');
+const ciInfo = require('ci-info');
+const devnull = require('dev-null');
 const commandRunner = require('./command-runner');
 
 const commandDir = path.join(__dirname, 'commands');
@@ -51,8 +54,15 @@ if (args['--help']) {
   process.exit(0);
 }
 
+const spinner = ora({
+  text: 'Initialising Keystone CLI',
+  // Don't show any loading output on CI
+  ...(ciInfo.isCI && { stream: devnull() }),
+}).start();
+
 // Everything else is assumed to be a command we want to execute
-commandRunner.exec(args, commands).catch(error => {
+commandRunner.exec(args, commands, spinner).catch(error => {
+  spinner.fail();
   console.error(error);
   process.exit(1);
 });

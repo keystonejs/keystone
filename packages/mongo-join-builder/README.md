@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Mongo Join Builder
----
+[meta]-->
 
 # Mongo Join Builder
 

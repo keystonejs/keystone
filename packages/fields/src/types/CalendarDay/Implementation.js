@@ -5,8 +5,12 @@ import { MongooseFieldAdapter } from '@keystone-alpha/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 
 export class CalendarDay extends Implementation {
-  constructor() {
+  constructor(path, { format, yearRangeFrom, yearRangeTo, yearPickerType }) {
     super(...arguments);
+    this.format = format;
+    this.yearRangeFrom = yearRangeFrom;
+    this.yearRangeTo = yearRangeTo;
+    this.yearPickerType = yearPickerType;
   }
 
   get gqlOutputFields() {
@@ -28,10 +32,10 @@ export class CalendarDay extends Implementation {
   extendAdminMeta(meta) {
     return {
       ...meta,
-      format: this.config.format,
-      yearRangeFrom: this.config.yearRangeFrom,
-      yearRangeTo: this.config.yearRangeTo,
-      yearPickerType: this.config.yearPickerType,
+      format: this.format,
+      yearRangeFrom: this.yearRangeFrom,
+      yearRangeTo: this.yearRangeTo,
+      yearPickerType: this.yearPickerType,
     };
   }
 }

@@ -1,9 +1,10 @@
-const pFinally = require('p-finally');
-const { Keystone } = require('@keystone-alpha/keystone');
-const { createApolloServer } = require('@keystone-alpha/server');
-const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
-const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
 const MongoDBMemoryServer = require('mongodb-memory-server').default;
+const pFinally = require('p-finally');
+const url = require('url');
+const { Keystone } = require('@keystone-alpha/keystone');
+const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { KnexAdapter } = require('@keystone-alpha/adapter-knex');
+const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
 
 const SCHEMA_NAME = 'testing';
 
@@ -17,7 +18,8 @@ function setupServer({ name, adapterName, createLists = () => {} }) {
 
   createLists(keystone);
 
-  createApolloServer(keystone, {}, SCHEMA_NAME);
+  // Has the side-effect of registering the schema with the keystone object
+  new GraphQLApp({ schemaName: SCHEMA_NAME }).prepareMiddleware({ keystone, dev: true });
 
   return { keystone };
 }
@@ -36,8 +38,11 @@ async function getMongoMemoryServerConfig() {
   mongoServerReferences++;
   // Passing `true` here generates a new, random DB name for us
   const mongoUri = await mongoServer.getConnectionString(true);
-  // The dbName is the last part of the URI path
-  const dbName = mongoUri.split('/').pop();
+  // In theory the dbName can contain query params so lets parse it then extract the db name
+  const dbName = url
+    .parse(mongoUri)
+    .pathname.split('/')
+    .pop();
 
   return { mongoUri, dbName };
 }
@@ -78,7 +83,7 @@ function getUpdate(keystone) {
 
 function keystoneMongoTest(setupKeystoneFn, testFn) {
   return async function() {
-    const setup = setupKeystoneFn('mongoose');
+    const setup = await setupKeystoneFn('mongoose');
     const { keystone } = setup;
 
     const { mongoUri, dbName } = await getMongoMemoryServerConfig();
@@ -100,7 +105,7 @@ function keystoneMongoTest(setupKeystoneFn, testFn) {
 
 function keystoneKnexTest(setupKeystoneFn, testFn) {
   return async function() {
-    const setup = setupKeystoneFn('knex');
+    const setup = await setupKeystoneFn('knex');
     const { keystone } = setup;
 
     await keystone.connect();

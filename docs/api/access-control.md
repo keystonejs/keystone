@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: api
 title: Access Control
----
+[meta]-->
 
 # Access Control API
 

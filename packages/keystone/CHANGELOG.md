@@ -1,5 +1,149 @@
 # @keystone-alpha/keystone
 
+## 5.0.1
+
+### Patch Changes
+
+- [af3f31dd](https://github.com/keystonejs/keystone-5/commit/af3f31dd):
+
+  Set the default build directory the CLI `keystone start` command
+
+## 5.0.0
+
+### Major Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Specify custom servers from within the index.js file
+
+  - Major Changes:
+    - The `index.js` export for `admin` must now be exported in the `servers`
+      array:
+      ```diff
+       module.exports = {
+         keystone,
+      -  admin,
+      +  apps: [admin],
+       }
+      ```
+    - The `keystone.prepare()` method (often used within a _Custom Server_
+      `server.js`) no longer returns a `server`, it now returns a `middlewares`
+      array:
+      ```diff
+      +const express = require('express');
+       const port = 3000;
+       keystone.prepare({ port })
+      -  .then(async ({ server, keystone: keystoneApp }) => {
+      +  .then(async ({ middlewares, keystone: keystoneApp }) => {
+           await keystoneApp.connect();
+      -    await server.start();
+      +    const app = express();
+      +    app.use(middlewares);
+      +    app.listen(port)
+         });
+      ```
+
+### Minor Changes
+
+- [a8061c78](https://github.com/keystonejs/keystone-5/commit/a8061c78):
+
+  Add support for setting PORT and CONNECT_TO environment variables
+
+- [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
+
+  Improved DX with loading indicators when using keystone CLI
+
+- [a98bce08](https://github.com/keystonejs/keystone-5/commit/a98bce08):
+
+  Add support for an `onConnect` function to be passed to the Keystone constructor, which is called when all adapters have connected.
+
+### Patch Changes
+
+- [ff7547c5](https://github.com/keystonejs/keystone-5/commit/ff7547c5):
+
+  Capture early requests to the keystone server while still booting
+
+* Updated dependencies [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
+  - @keystone-alpha/app-graphql@6.0.0
+
+## 4.0.0
+
+### Major Changes
+
+- [24cd26ee](https://github.com/keystonejs/keystone-5/commit/24cd26ee):
+
+  - Remove `.config` property from `Keystone` and `List` classes
+
+- [2ef2658f](https://github.com/keystonejs/keystone-5/commit/2ef2658f):
+
+  - Moved Social Login Strategies into its own package `@keystone-alpha/passport-auth`.
+  - Created base strategy `PassportAuthStrategy`. This enables quick addition of new Social Login Strategy based on PassportJs.
+  - Refactored Twitter and Facebook to extend base `PassportAuthStrategy`.
+  - Added Google and GitHub Auth Strategy by extending base `PassportAuthStrategy`.
+  - Removed `passport` and related dependencies from `@keystone-alpha/keystone`.
+  - `test-projects/facebook-login` project is renamed into `test-projects/social-login`
+  - `social-login` project now support for social login with Twitter, Facebook, Google and GitHub inbuilt strategies from `@keystone-alpha/passport-auth` along with an example of how to implement your own PassportJs strategy for WordPress in `WordPressAuthStrategy.js`
+
+- [ae5cf6cc](https://github.com/keystonejs/keystone-5/commit/ae5cf6cc):
+
+  - List adapter config must now be specified within the `adapterConfig` field, rather than directly on the `config` object.
+
+- [b22d6c16](https://github.com/keystonejs/keystone-5/commit/b22d6c16):
+
+  Remove custom server execution from the CLI.
+
+  The Keystone CLI does not execute custom servers anymore, instead of running `keystone` to start a Keystone instance that has a custom server, run the server file directly with `node`.
+
+  ```diff
+  - "start": "keystone",
+  + "start": "node server.js"
+  ```
+
+### Minor Changes
+
+- [6f598e83](https://github.com/keystonejs/keystone-5/commit/6f598e83):
+
+  - Add `build` and `start` commands
+
+- [6f598e83](https://github.com/keystonejs/keystone-5/commit/6f598e83):
+
+  - Add Admin UI static building
+
+### Patch Changes
+
+- [211b71c1](https://github.com/keystonejs/keystone-5/commit/211b71c1):
+
+  - Fix bug in resolver for createMany mutations
+
+- [bd0ea21f](https://github.com/keystonejs/keystone-5/commit/bd0ea21f):
+
+  - Add .isRequired and .isUnique properties to field adapters
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
+- [60181234](https://github.com/keystonejs/keystone-5/commit/60181234):
+
+  Use `unique()` from `@keystone-alpha/utils`
+
+- [9dbed649](https://github.com/keystonejs/keystone-5/commit/9dbed649):
+
+  Use explicit field properties rather than field.config.
+
+* Updated dependencies [e6e95173](https://github.com/keystonejs/keystone-5/commit/e6e95173):
+* Updated dependencies [9dbed649](https://github.com/keystonejs/keystone-5/commit/9dbed649):
+* Updated dependencies [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+* Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+* Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+* Updated dependencies [bd0ea21f](https://github.com/keystonejs/keystone-5/commit/bd0ea21f):
+* Updated dependencies [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+* Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+  - @keystone-alpha/fields@6.0.0
+  - @keystone-alpha/build-field-types@1.0.0
+  - @keystone-alpha/access-control@1.0.4
+  - @keystone-alpha/utils@3.0.0
+
 ## 3.1.0
 
 - [patch][5180d2fb](https://github.com/keystonejs/keystone-5/commit/5180d2fb):
@@ -333,3 +477,148 @@
 ## 0.1.1
 
 - [patch] Remove tests and markdown from npm [dc3ee7d](dc3ee7d)
+
+# @keystone-alpha/core
+
+## 2.0.4
+
+- Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+  - @keystone-alpha/server@5.0.0
+
+## 2.0.3
+
+- [patch][b69fb9b7](https://github.com/keystonejs/keystone-5/commit/b69fb9b7):
+
+  - Update dev devependencies
+
+- [patch][78d25c40](https://github.com/keystonejs/keystone-5/commit/78d25c40):
+
+  - Restructure internal code
+
+- Updated dependencies [656e90c2](https://github.com/keystonejs/keystone-5/commit/656e90c2):
+  - @keystone-alpha/server@4.0.0
+
+## 2.0.2
+
+- Updated dependencies [5ebf4c3a](https://github.com/keystonejs/keystone-5/commit/5ebf4c3a):
+  - @keystone-alpha/server@3.0.0
+
+## 2.0.1
+
+- [patch][5ddb2ed6](https://github.com/keystonejs/keystone-5/commit/5ddb2ed6):
+
+  - Always display clickable links when starting a server in dev mode
+
+## 2.0.0
+
+- [major][de616f7e](https://github.com/keystonejs/keystone-5/commit/de616f7e):
+
+  - Update authStrategy APIs
+    - Removes `authStrategy` from the `config` API of `Webserver`.
+    - Removes `authStrategy` from the `serverConfig` of the core `keystone` system builder.
+    - Removes the `setAuthStrategy` method from `AdminUI`.
+    - Adds `authStrategy` to the `config` API of `AdminUI`.
+    - `Webserver` checks `keystone.auth` to determine whether to set up auth session middlewares.
+
+## 1.0.1
+
+- [patch][1f0bc236](https://github.com/keystonejs/keystone-5/commit/1f0bc236):
+
+  - Update the package.json author field to "The Keystone Development Team"
+
+- [patch][9534f98f](https://github.com/keystonejs/keystone-5/commit/9534f98f):
+
+  - Add README.md to package
+
+## 1.0.0
+
+- [major] 8b6734ae:
+
+  - This is the first release of keystone-alpha (previously voussoir).
+    All packages in the `@voussoir` namespace are now available in the `@keystone-alpha` namespace, starting at version `1.0.0`.
+    To upgrade your project you must update any `@voussoir/<foo>` dependencies in `package.json` to point to `@keystone-alpha/<foo>: "^1.0.0"` and update any `require`/`import` statements in your code.
+
+# @voussoir/core
+
+## 3.0.0
+
+- [patch] 113e16d4:
+
+  - Remove unused dependencies
+
+- [major] 1db45262:
+
+  - Use the `@voussoir/core` package as the entry point for custom servers.
+
+    **Migration Guide**
+
+      <!-- prettier-ignore -->
+
+    1. Ensure your main entry point is `index.js`
+    1. Add the new keystone module: `yarn add @voussoir/keystone`
+    1. Remove the old keystone module: `yarn remove @voussoir/core`
+    1. Update your imports:
+       ```diff
+       - const { Keystone } = require('@voussoir/core');
+       + const { Keystone } = require('@voussoir/keystone');
+       ```
+    1. Update your `package.json` to start Keystone like so:
+       ```json
+       {
+         "scripts": {
+           "start": "keystone"
+         }
+       }
+       ```
+    1. Export your `keystone` and (optional) `admin` instances from `index.js`:
+       ```javascript
+       const keystone = new Keystone(/* .. */);
+       const admin = new AdminUI(/* .. */);
+       /* .. */
+       module.exports = {
+         keystone,
+         admin,
+       };
+       ```
+    1. Remove any usage of `@voussoir/server` / instantiations of `new WebServer()`
+    1. If using an auth strategy, export it:
+       ```javascript
+       const authStrategy = keystone.createAuthStrategy(/* .. */);
+       /* .. */
+       module.exports = {
+         keystone,
+         admin,
+         serverConfig: {
+           authStrategy,
+         },
+       };
+       ```
+    1. If using any custom routes / modifying `server.app` in any way you'll need a
+       _Custom Server_:
+
+       1. Create a `server.js` along side your `index.js`
+       1. Add the new core package: `yarn add @voussoir/core`
+       1. Start with this boilerplate custom server in `server.js`:
+
+          ```javascript
+          const keystoneServer = require('@voussoir/core');
+
+          keystoneServer
+            .prepare({ port: 3000 })
+            .then(({ server, keystone }) => {
+              // [*] Custom routes get attached to `server.app` here.
+              // If needed, you can access your Keystone instance via `keystone`.
+
+              return server.start();
+            })
+            .then(({ port }) => {
+              console.log(`Listening on port ${port}`);
+            })
+            .catch(error => {
+              console.error(error);
+            });
+          ```
+
+       1. Put your custom routes, etc, at the `[*]` marker in `server.js`.
+
+    1. Run `yarn start`

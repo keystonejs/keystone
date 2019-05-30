@@ -1,6 +1,13 @@
 import React, { Component, createContext, useContext } from 'react';
+import getConfig from 'next/config';
+import { withApollo } from 'react-apollo';
+import gql from 'graphql-tag';
 
-const apiEndpoint = 'http://localhost:3000/admin';
+const {
+  publicRuntimeConfig: { serverUrl },
+} = getConfig();
+
+const apiEndpoint = `${serverUrl}/admin`;
 
 /**
  * AuthContext
@@ -23,7 +30,7 @@ export const useAuth = () => useContext(AuthContext);
  * AuthProvider is a component which keeps track of the user's
  * authenticated state and provides methods for managing the auth state.
  */
-export class AuthProvider extends Component {
+class AuthProviderClass extends Component {
   constructor(props) {
     super(props);
 
@@ -38,39 +45,35 @@ export class AuthProvider extends Component {
   }
 
   checkSession = async () => {
-    await this.setState({ isLoading: true });
-    const { user, authenticated } = await checkSession();
-    await this.setState({
-      user: user,
+    if (!this.state.isLoading) {
+      this.setState({ isLoading: true });
+    }
+    const result = await checkSession(this.props.client);
+    const { user, isSignedIn } = result;
+    this.setState({
+      user,
+      isSignedIn,
       isLoading: false,
     });
-    return { authenticated };
+    return result;
   };
 
   signin = async ({ email, password }) => {
-    await this.setState({ isLoading: true });
-    const res = await signin({ email, password });
-    if (!res.success) {
-      await this.setState({ isLoading: false });
-      return res;
+    this.setState({ isLoading: true });
+    const result = await signInWithEmail({ email, password });
+
+    if (!result.success) {
+      this.setState({ isLoading: false });
+      return { success: false };
     }
 
-    const { authenticated } = await this.checkSession();
-    if (authenticated) {
-      return { success: true };
-    } else {
-      // This could be a cookie related error, or some other blocker.
-      return {
-        success: false,
-        message: 'There was a problem signing you in. Please try again later.',
-      };
-    }
+    return this.checkSession(this.props.client);
   };
 
   signout = async () => {
-    await this.setState({ isLoading: true });
-    const res = await signout();
-    if (res.success) {
+    this.setState({ isLoading: true });
+    const result = await signout();
+    if (result.success) {
       this.setState({
         user: undefined,
         isLoading: false,
@@ -86,7 +89,7 @@ export class AuthProvider extends Component {
     return (
       <AuthContext.Provider
         value={{
-          isAuthenticated: user && user.id,
+          isAuthenticated: !!user,
           isLoading,
           signin: this.signin,
           signout: this.signout,
@@ -99,13 +102,15 @@ export class AuthProvider extends Component {
   }
 }
 
-const signin = async ({ email, password }) => {
+export const AuthProvider = withApollo(AuthProviderClass);
+
+const signInWithEmail = async ({ email, password }) => {
   try {
     const res = await fetch(`${apiEndpoint}/signin`, {
       method: 'POST',
-      credential: 'same-origin',
-      headers: { 'Content-Type': 'application/json; charset=utf-8' },
-      body: JSON.stringify({ email, password }),
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json; charset=utf-8', Accept: 'application/json' },
+      body: JSON.stringify({ username: email, password }),
     }).then(r => r.json());
 
     if (res.success) {
@@ -114,7 +119,7 @@ const signin = async ({ email, password }) => {
       return { success: false, message: res.message };
     }
   } catch (error) {
-    console.error(error);
+    console.error('Error signing in:', error);
     return { success: false };
   }
 };
@@ -124,33 +129,42 @@ const signout = async () => {
     const res = await fetch(`${apiEndpoint}/signout`, {
       method: 'POST',
       credentials: 'same-origin',
+      headers: { Accept: 'application/json' },
     }).then(r => r.json());
+
     return {
       success: res.success === true,
     };
   } catch (error) {
-    console.error(error);
+    console.error('Error signing out:', error);
     return { success: false };
   }
 };
 
-const checkSession = async () => {
+const checkSession = async apolloClient => {
   try {
-    const res = await fetch(`${apiEndpoint}/session`, {
-      method: 'GET',
-      credentials: 'same-origin',
-    }).then(r => r.json());
+    const {
+      data: { authenticatedUser },
+    } = await apolloClient.query({
+      query: gql`
+        query {
+          authenticatedUser {
+            id
+            name
+            isAdmin
+          }
+        }
+      `,
+      fetchPolicy: 'network-only',
+    });
 
-    if (res.signedIn) {
-      return {
-        authenticated: true,
-        user: res.user,
-      };
+    if (authenticatedUser) {
+      return { success: true, isSignedIn: true, user: authenticatedUser };
     } else {
-      return { authenticated: false };
+      return { success: true, isSignedIn: false };
     }
   } catch (error) {
-    console.error(error);
+    console.error('Error checking session:', error);
     return { success: false, error: error.message };
   }
 };

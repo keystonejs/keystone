@@ -1,54 +1,42 @@
-import React from 'react';
-import gql from 'graphql-tag';
+/** @jsx jsx */
+
+import { jsx } from '@emotion/core';
+
 import { Query } from 'react-apollo';
-import EventItem from '../components/EventItem';
 
-export const EVENT_DATA = gql`
-  fragment EventData on Event {
-    id
-    name
-    startDate
-    description
-    talks {
-      id
-      name
-      speakers {
-        id
-        name
-      }
-    }
-  }
-`;
+import { Container, Loading, H2 } from '../primitives';
+import EventItems from '../components/EventItems';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import Meta from '../components/Meta';
+import { gridSize } from '../theme';
 
-const GET_ALL_EVENTS = gql`
-  {
-    allEvents {
-      ...EventData
-    }
-  }
-  ${EVENT_DATA}
-`;
+import { GET_ALL_EVENTS } from '../graphql/events';
 
 export default function Events() {
   return (
-    <div>
-      <h1>Events</h1>
-      <Query query={GET_ALL_EVENTS}>
-        {({ data, loading, error }) => {
-          if (loading) return <p>loading...</p>;
-          if (error) {
-            console.log(error);
-            return <p>Error!</p>;
-          }
-          return (
-            <ul>
-              {data.allEvents.map(event => (
-                <EventItem key={event.id} {...event} />
-              ))}
-            </ul>
-          );
-        }}
-      </Query>
-    </div>
+    <>
+      <Meta title="Events" />
+      <Navbar background="white" />
+      <Container css={{ marginTop: gridSize * 3 }}>
+        <H2>Events</H2>
+        <Query query={GET_ALL_EVENTS}>
+          {({ data, loading, error }) => {
+            if (loading) {
+              return <Loading isCentered size="xlarge" />;
+            }
+
+            if (error) {
+              console.error('Failed to load events', error);
+              return <p>Something went wrong. Please try again.</p>;
+            }
+
+            const { allEvents } = data;
+            return <EventItems events={allEvents} />;
+          }}
+        </Query>
+      </Container>
+      <Footer />
+    </>
   );
 }

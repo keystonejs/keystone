@@ -1,5 +1,97 @@
 # @keystone-alpha/cypress-project-access-control
 
+## 1.1.0
+
+### Minor Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Specify custom servers from within the index.js file
+
+  - Major Changes:
+    - The `index.js` export for `admin` must now be exported in the `servers`
+      array:
+      ```diff
+       module.exports = {
+         keystone,
+      -  admin,
+      +  apps: [admin],
+       }
+      ```
+    - The `keystone.prepare()` method (often used within a _Custom Server_
+      `server.js`) no longer returns a `server`, it now returns a `middlewares`
+      array:
+      ```diff
+      +const express = require('express');
+       const port = 3000;
+       keystone.prepare({ port })
+      -  .then(async ({ server, keystone: keystoneApp }) => {
+      +  .then(async ({ middlewares, keystone: keystoneApp }) => {
+           await keystoneApp.connect();
+      -    await server.start();
+      +    const app = express();
+      +    app.use(middlewares);
+      +    app.listen(port)
+         });
+      ```
+
+### Patch Changes
+
+- [8494e4cc](https://github.com/keystonejs/keystone-5/commit/8494e4cc):
+
+  `@keystone-alpha/app-admin-ui` no longer accepts a `keystone` paramater in its constructor. It is now automatically passed during the `keystone.prepare()` call.
+
+* Updated dependencies [666e15f5](https://github.com/keystonejs/keystone-5/commit/666e15f5):
+* Updated dependencies [b2651279](https://github.com/keystonejs/keystone-5/commit/b2651279):
+  - @keystone-alpha/keystone@5.0.0
+  - @keystone-alpha/app-admin-ui@4.0.0
+  - @keystone-alpha/app-graphql@6.0.0
+
+## 1.0.9
+
+### Patch Changes
+
+- [9b6fec3e](https://github.com/keystonejs/keystone-5/commit/9b6fec3e):
+
+  Remove unnecessary dependency from packages
+
+* Updated dependencies [9a0456ff](https://github.com/keystonejs/keystone-5/commit/9a0456ff):
+  - @keystone-alpha/fields@6.1.1
+  - @keystone-alpha/adapter-mongoose@2.0.0
+
+## 1.0.8
+
+### Patch Changes
+
+- [b22d6c16](https://github.com/keystonejs/keystone-5/commit/b22d6c16):
+
+  Remove custom server execution from the CLI.
+
+  The Keystone CLI does not execute custom servers anymore, instead of running `keystone` to start a Keystone instance that has a custom server, run the server file directly with `node`.
+
+  ```diff
+  - "start": "keystone",
+  + "start": "node server.js"
+  ```
+
+* Updated dependencies [24cd26ee](https://github.com/keystonejs/keystone-5/commit/24cd26ee):
+* Updated dependencies [9dbed649](https://github.com/keystonejs/keystone-5/commit/9dbed649):
+* Updated dependencies [2ef2658f](https://github.com/keystonejs/keystone-5/commit/2ef2658f):
+* Updated dependencies [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+* Updated dependencies [ae5cf6cc](https://github.com/keystonejs/keystone-5/commit/ae5cf6cc):
+* Updated dependencies [1a7b706c](https://github.com/keystonejs/keystone-5/commit/1a7b706c):
+* Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+* Updated dependencies [bd0ea21f](https://github.com/keystonejs/keystone-5/commit/bd0ea21f):
+* Updated dependencies [119448fc](https://github.com/keystonejs/keystone-5/commit/119448fc):
+* Updated dependencies [b7a2ea9c](https://github.com/keystonejs/keystone-5/commit/b7a2ea9c):
+  - @keystone-alpha/adapter-mongoose@1.0.7
+  - @keystone-alpha/keystone@4.0.0
+  - @keystone-alpha/admin-ui@3.2.0
+  - @keystone-alpha/fields@6.0.0
+  - @keystone-alpha/core@2.0.4
+  - @keystone-alpha/server@5.0.0
+  - @keystone-alpha/utils@3.0.0
+
 ## 1.0.7
 
 - [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):

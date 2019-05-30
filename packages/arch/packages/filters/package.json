@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/filters",
   "description": "Filter UI as used in @keystone-alpha Admin UI.",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/filters.cjs.js",
@@ -12,9 +12,9 @@
     "react": "^16.8.6"
   },
   "dependencies": {
-    "@arch-ui/controls": "^0.0.4",
-    "@arch-ui/layout": "^0.2.0",
-    "@arch-ui/theme": "^0.0.3",
+    "@arch-ui/controls": "^0.0.6",
+    "@arch-ui/layout": "^0.2.2",
+    "@arch-ui/theme": "^0.0.4",
     "@babel/runtime": "^7.4.3",
     "@emotion/core": "^10.0.10",
     "react-radios": "^1.1.0"

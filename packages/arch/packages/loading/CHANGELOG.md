@@ -1,5 +1,18 @@
 # @arch-ui/loading
 
+## 0.0.6
+
+- Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+  - @arch-ui/typography@0.0.6
+
+## 0.0.5
+
+### Patch Changes
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
 ## 0.0.4
 
 - Updated dependencies [e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):

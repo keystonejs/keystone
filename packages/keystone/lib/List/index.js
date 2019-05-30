@@ -121,7 +121,16 @@ module.exports = class List {
       path,
       adapterConfig = {},
     },
-    { getListByKey, getGraphQLQuery, adapter, defaultAccess, getAuth, createAuxList, isAuxList }
+    {
+      getListByKey,
+      getGraphQLQuery,
+      adapter,
+      defaultAccess,
+      getAuth,
+      registerType,
+      createAuxList,
+      isAuxList,
+    }
   ) {
     this.key = key;
     this._fields = fields;
@@ -223,13 +232,18 @@ module.exports = class List {
 
         if (!graphQLQuery) {
           return Promise.reject(
-            new Error('No executable schema is available. Have you setup `@keystone-alpha/server`?')
+            new Error(
+              'No executable schema is available. Have you setup `@keystone-alpha/app-graphql`?'
+            )
           );
         }
 
         return graphQLQuery(queryString, passThroughContext, variables);
       },
     };
+
+    // Tell Keystone about all the types we've seen
+    Object.values(fields).forEach(({ type }) => registerType(type));
   }
 
   initFields() {
@@ -320,8 +334,8 @@ module.exports = class List {
             this.fields
               .filter(field => skipAccessControl || field.access.read) // If it's globally set to false, makes sense to never show it
               .map(field =>
-                field.config.schemaDoc
-                  ? `""" ${field.config.schemaDoc} """ ${field.gqlOutputFields}`
+                field.schemaDoc
+                  ? `""" ${field.schemaDoc} """ ${field.gqlOutputFields}`
                   : field.gqlOutputFields
               )
           ).join('\n')}
@@ -969,8 +983,8 @@ module.exports = class List {
     );
     resolvedData = {
       ...resolvedData,
-      ...(await this._mapToFields(fields.filter(field => field.config.hooks.resolveInput), field =>
-        field.config.hooks.resolveInput({ resolvedData, ...args })
+      ...(await this._mapToFields(fields.filter(field => field.hooks.resolveInput), field =>
+        field.hooks.resolveInput({ resolvedData, ...args })
       )),
     };
 
@@ -1010,8 +1024,8 @@ module.exports = class List {
     args.addFieldValidationError = (msg, _data = {}, internalData = {}) =>
       fieldValidationErrors.push({ msg, data: _data, internalData });
     await this._mapToFields(fields, field => field[hookName](args));
-    await this._mapToFields(fields.filter(field => field.config.hooks[hookName]), field =>
-      field.config.hooks[hookName](args)
+    await this._mapToFields(fields.filter(field => field.hooks[hookName]), field =>
+      field.hooks[hookName](args)
     );
     if (fieldValidationErrors.length) {
       this._throwValidationFailure(fieldValidationErrors, operation, originalInput);
@@ -1073,8 +1087,8 @@ module.exports = class List {
   async _runHook(args, fieldObject, hookName) {
     const fields = this._fieldsFromObject(fieldObject);
     await this._mapToFields(fields, field => field[hookName](args));
-    await this._mapToFields(fields.filter(field => field.config.hooks[hookName]), field =>
-      field.config.hooks[hookName](args)
+    await this._mapToFields(fields.filter(field => field.hooks[hookName]), field =>
+      field.hooks[hookName](args)
     );
 
     if (this.hooks[hookName]) await this.hooks[hookName](args);

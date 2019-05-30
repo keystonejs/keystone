@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Authentication Strategies
----
+[meta]-->
 
 # Authentication Strategies
 

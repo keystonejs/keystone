@@ -1,13 +1,21 @@
-//imports for Keystone app core
-const { AdminUI } = require('@keystone-alpha/admin-ui');
+require('dotenv').config();
+
 const { Keystone, PasswordAuthStrategy } = require('@keystone-alpha/keystone');
 const { MongooseAdapter } = require('@keystone-alpha/adapter-mongoose');
+const { GraphQLApp } = require('@keystone-alpha/app-graphql');
+const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');
+const { NextApp } = require('@keystone-alpha/app-next');
+const routes = require('./routes');
 
-const { Event, Talk, User, Rsvp, Organiser } = require('./schema');
+const { Event, Talk, User, Rsvp, Organiser, Sponsor, ForgottenPasswordToken } = require('./schema');
+
+const MEETUP = require('./meetupConfig');
+const initialiseData = require('./initialData');
 
 const keystone = new Keystone({
-  name: 'Keystone Meetup',
+  name: MEETUP.name,
   adapter: new MongooseAdapter(),
+  onConnect: initialiseData,
 });
 
 const authStrategy = keystone.createAuthStrategy({
@@ -20,23 +28,25 @@ keystone.createList('Rsvp', Rsvp);
 keystone.createList('Talk', Talk);
 keystone.createList('User', User);
 keystone.createList('Organiser', Organiser);
+keystone.createList('Sponsor', Sponsor);
+keystone.createList('ForgottenPasswordToken', ForgottenPasswordToken);
 
-const admin = new AdminUI(keystone, {
+const adminApp = new AdminUIApp({
   adminPath: '/admin',
   authStrategy,
   pages: [
     {
       label: 'Meetup',
-      children: ['Event', 'Talk'],
+      children: ['Event', 'Talk', 'Organiser', 'Sponsor'],
     },
     {
       label: 'People',
-      children: ['User'],
+      children: ['User', 'Rsvp'],
     },
   ],
 });
 
 module.exports = {
   keystone,
-  admin,
+  apps: [new GraphQLApp(), adminApp, new NextApp({ dir: 'site', nextRoutes: routes })],
 };

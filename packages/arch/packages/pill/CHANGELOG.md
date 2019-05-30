@@ -1,5 +1,18 @@
 # @arch-ui/pill
 
+## 0.1.4
+
+- Updated dependencies [d580c298](https://github.com/keystonejs/keystone-5/commit/d580c298):
+  - @arch-ui/common@0.0.5
+
+## 0.1.3
+
+### Patch Changes
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
 ## 0.1.2
 
 - [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):

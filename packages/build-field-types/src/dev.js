@@ -26,7 +26,9 @@ export default async function dev(projectDir: string) {
               endent`
             'use strict';
 
-            let unregister = require('${require.resolve('./hook')}').___internalHook();
+            let unregister = require('${require.resolve('@preconstruct/hook')}').___internalHook('${
+                project.directory
+              }');
 
             module.exports = require('${entrypoint.source}');
 
@@ -42,5 +44,5 @@ export default async function dev(projectDir: string) {
 
   await Promise.all(promises);
 
-  success('created symlinks!');
+  success('created links!');
 }

@@ -1,5 +1,27 @@
 # @keystone-alpha/field-views-loader
 
+## 2.1.1
+
+### Patch Changes
+
+- [dfcabe6a](https://github.com/keystonejs/keystone-5/commit/dfcabe6a):
+
+  Fix Admin UI building on Windows
+
+## 2.1.0
+
+### Minor Changes
+
+- [22ec53a8](https://github.com/keystonejs/keystone-5/commit/22ec53a8):
+
+  - Adding support for custom pages in Admin UI
+
+### Patch Changes
+
+- [c9102446](https://github.com/keystonejs/keystone-5/commit/c9102446):
+
+  - Add a mechanism for loading multiple Suspense-aware components in parallel
+
 ## 2.0.0
 
 - [major][4131e232](https://github.com/keystonejs/keystone-5/commit/4131e232):

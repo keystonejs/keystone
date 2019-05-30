@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: field-types
 title: Content
----
+[meta]-->
 
 # Content
 

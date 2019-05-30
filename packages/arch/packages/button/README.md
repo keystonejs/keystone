@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: core
 title: Button
----
+[meta]-->
 
 # Arch Button
 

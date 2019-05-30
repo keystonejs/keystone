@@ -6,8 +6,12 @@ import { KnexFieldAdapter } from '@keystone-alpha/adapter-knex';
 import { Implementation } from '../../Implementation';
 
 class _DateTime extends Implementation {
-  constructor() {
+  constructor(path, { format, yearRangeFrom, yearRangeTo, yearPickerType }) {
     super(...arguments);
+    this.format = format;
+    this.yearRangeFrom = yearRangeFrom;
+    this.yearRangeTo = yearRangeTo;
+    this.yearPickerType = yearPickerType;
   }
 
   get gqlOutputFields() {
@@ -32,10 +36,10 @@ class _DateTime extends Implementation {
   extendAdminMeta(meta) {
     return {
       ...meta,
-      format: this.config.format,
-      yearRangeFrom: this.config.yearRangeFrom,
-      yearRangeTo: this.config.yearRangeTo,
-      yearPickerType: this.config.yearPickerType,
+      format: this.format,
+      yearRangeFrom: this.yearRangeFrom,
+      yearRangeTo: this.yearRangeTo,
+      yearPickerType: this.yearPickerType,
     };
   }
   get gqlAuxFieldResolvers() {

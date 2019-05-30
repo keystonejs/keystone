@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Access Control
----
+[meta]-->
 
 # Access Control
 

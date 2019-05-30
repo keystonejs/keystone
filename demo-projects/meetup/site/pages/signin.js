@@ -1,60 +1,36 @@
-import React, { useState, useEffect } from 'react';
+/** @jsx jsx */
+
+import { useEffect } from 'react';
 import Router from 'next/router';
+import { jsx } from '@emotion/core';
+
+import Signin from '../components/auth/signin';
 import { useAuth } from '../lib/authetication';
+import { Container, H1 } from '../primitives';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import Meta from '../components/Meta';
+import { gridSize } from '../theme';
 
 export default () => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const { isAuthenticated, isLoading, signin } = useAuth();
+  const { isAuthenticated } = useAuth();
 
-  const handleSubmit = () => {
-    event.preventDefault();
-    signin({ email, password });
-  };
-
-  // if login success - redirect to homepage
+  // if the user is logged in, redirect to the homepage
   useEffect(() => {
     if (isAuthenticated) {
       Router.push('/');
     }
-  });
+  }, [isAuthenticated]);
 
   return (
     <>
-      <p>Sign in to continue to create, collaborate, and discover.</p>
-
-      <form noValidate onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            required
-            type="text"
-            autoComplete="email"
-            placeholder="you@awesome.com"
-            disabled={isLoading}
-            onChange={e => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Passwor</label>
-          <input
-            required
-            type="password"
-            id="password"
-            minLength="8"
-            placeholder="supersecret"
-            autoComplete="new-password"
-            disabled={isLoading}
-            onChange={e => setPassword(e.target.value)}
-          />
-        </div>
-        {/* <a href="/forgot">Forgot password?</a> */}
-        {isLoading ? (
-          <button disabled>Signing in...</button>
-        ) : (
-          <button type="submit">Sign in</button>
-        )}
-      </form>
+      <Meta title="Sign in" />
+      <Navbar background="white" />
+      <Container width={420} css={{ marginTop: gridSize * 3 }}>
+        <H1>Sign in</H1>
+        <Signin />
+      </Container>
+      <Footer callToAction={false} />
     </>
   );
 };

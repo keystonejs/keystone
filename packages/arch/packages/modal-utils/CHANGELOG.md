@@ -1,5 +1,27 @@
 # @arch-ui/modal-utils
 
+## 1.0.0
+
+### Major Changes
+
+- [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+
+  - Change transition API from a component which uses cloneElement to a function that accepts a transitionState and returns a style object
+
+### Patch Changes
+
+- [a03fd601](https://github.com/keystonejs/keystone-5/commit/a03fd601):
+
+  - add some delight to the popout component
+
+- [81dc0be5](https://github.com/keystonejs/keystone-5/commit/81dc0be5):
+
+  - Update dependencies
+
+- [5f1a5cf3](https://github.com/keystonejs/keystone-5/commit/5f1a5cf3):
+
+  - Update usage of transition API
+
 ## 0.0.5
 
 - [patch][e75c105c](https://github.com/keystonejs/keystone-5/commit/e75c105c):
