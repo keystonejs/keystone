@@ -24,7 +24,7 @@ const {
   mergeRelationships,
 } = require('./relationship-utils');
 const List = require('../List');
-const { DEFAULT_PORT, DEFAULT_DIST_DIR } = require('../../constants');
+const { DEFAULT_DIST_DIR } = require('../../constants');
 
 const debugGraphQLSchemas = () => !!process.env.DEBUG_GRAPHQL_SCHEMAS;
 
