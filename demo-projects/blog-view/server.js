@@ -7,7 +7,7 @@ const initRoutes = require('./routes');
 const { logAdminRoutes } = require('./utils');
 
 keystone
-  .prepare({ apps, port, dev: process.env.NODE_ENV !== 'production' })
+  .prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
   .then(async ({ middlewares }) => {
     await keystone.connect();
 
