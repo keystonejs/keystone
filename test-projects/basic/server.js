@@ -5,9 +5,9 @@ const { port } = require('./config');
 const initialData = require('./data');
 
 keystone
-  .prepare({ 
+  .prepare({
     apps,
-    dev: process.env.NODE_ENV !== 'production'
+    dev: process.env.NODE_ENV !== 'production',
   })
   .then(async ({ middlewares }) => {
     await keystone.connect();
