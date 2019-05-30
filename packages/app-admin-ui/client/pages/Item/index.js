@@ -21,7 +21,12 @@ import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
 import Footer from './Footer';
-import { deconstructErrorsToDataShape, toastItemSuccess, toastError } from '../../util';
+import {
+  deconstructErrorsToDataShape,
+  toastItemSuccess,
+  toastError,
+  validateFields,
+} from '../../util';
 import { ItemTitle } from './ItemTitle';
 
 let Render = ({ children }) => children();
@@ -130,7 +135,7 @@ const ItemDetails = withRouter(
         return;
       }
 
-      const { onUpdate, toastManager, updateItem, item: initialData } = this.props;
+      const { onUpdate, toastManager, updateItem, item: initialData, list } = this.props;
 
       const fieldsObject = this.getFieldsObject();
 
@@ -156,34 +161,10 @@ const ItemDetails = withRouter(
       // Later, on every change, we reset the warnings, so we know if things
       // have changed since last time we checked.
       if (!countArrays(validationWarnings)) {
-        const errors = {};
-        const warnings = {};
+        const { errors, warnings } = await validateFields(list.fields, item, data);
 
-        let totalErrors = 0;
-        let totalWarnings = 0;
-
-        // Only validate fields whos values have changed
-        await Promise.all(
-          Object.keys(data).map(path => {
-            const addFieldValidationError = (message, data) => {
-              errors[path] = errors[path] || [];
-              errors[path].push({ message, data });
-              totalErrors++;
-            };
-
-            const addFieldValidationWarning = (message, data) => {
-              warnings[path] = warnings[path] || [];
-              warnings[path].push({ message, data });
-              totalWarnings++;
-            };
-            return fieldsObject[path].validateInput({
-              resolvedData: data,
-              originalInput: item,
-              addFieldValidationError,
-              addFieldValidationWarning,
-            });
-          })
-        );
+        const totalErrors = countArrays(errors);
+        const totalWarnings = countArrays(warnings);
 
         if (totalErrors + totalWarnings > 0) {
           const messages = [];

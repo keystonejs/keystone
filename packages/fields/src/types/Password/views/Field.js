@@ -96,7 +96,8 @@ export default class PasswordField extends Component {
           <Fragment>
             {errors.map(({ message, data }) => (
               <Alert appearance="danger" key={message}>
-                {message} - {JSON.stringify(data)}
+                {message}
+                {data ? ` - ${JSON.stringify(data)}` : null}
               </Alert>
             ))}
           </Fragment>
@@ -106,7 +107,8 @@ export default class PasswordField extends Component {
           <Fragment>
             {warnings.map(({ message, data }) => (
               <Alert appearance="warning" key={message}>
-                {message} - {JSON.stringify(data)}
+                {message}
+                {data ? ` - ${JSON.stringify(data)}` : null}
               </Alert>
             ))}
           </Fragment>
