@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const { keystone, apps } = require('./index');
 const { port } = require('./config');
 const initRoutes = require('./routes');
+const { logAdminRoutes } = require('./utils');
 
 keystone
   .prepare({ apps, port, dev: process.env.NODE_ENV !== 'production' })
@@ -20,6 +21,7 @@ keystone
 
     app.listen(port, error => {
       if (error) throw error;
+      logAdminRoutes(apps, port);
     });
   })
   .catch(error => {
