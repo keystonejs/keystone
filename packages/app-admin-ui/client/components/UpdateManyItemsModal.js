@@ -28,6 +28,9 @@ class UpdateManyModal extends Component {
     const { updateItem, isLoading, items } = this.props;
     const { item, selectedFields, validationErrors, validationWarnings } = this.state;
     if (isLoading) return;
+    if (countArrays(validationErrors)) {
+      return;
+    }
 
     const data = arrayToObject(selectedFields, 'path', field => field.serialize(item));
 

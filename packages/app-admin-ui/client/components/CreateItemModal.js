@@ -42,7 +42,11 @@ class CreateItemModal extends Component {
       isLoading,
     } = this.props;
     if (isLoading) return;
-    const { item, validationWarnings } = this.state;
+    const { item, validationErrors, validationWarnings } = this.state;
+
+    if (countArrays(validationErrors)) {
+      return;
+    }
 
     const data = arrayToObject(fields, 'path', field => field.serialize(item));
 
