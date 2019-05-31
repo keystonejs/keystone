@@ -75,8 +75,8 @@ export default class FieldController {
    * passed to this.serialize() for you
    * @return boolean
    */
-  hasChanged = async (initialData, currentData) =>
-    isEqual(initialData[this.path], currentData[this.path]);
+  hasChanged = (initialData, currentData) =>
+    !isEqual(initialData[this.path], currentData[this.path]);
 
   // eslint-disable-next-line no-unused-vars
   getDefaultValue = data => this.config.defaultValue || '';

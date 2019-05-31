@@ -1,21 +1,29 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
+import PropTypes from 'prop-types';
 import { mq } from '../helpers/media';
 
-export default function Container(props) {
-  const paddingHorizontal = ['1rem', '2rem'];
+export const CONTAINER_GUTTER = ['1rem', '2rem'];
 
+export default function Container({ width, ...props }) {
   return (
     <div
       css={mq({
         marginLeft: 'auto',
         marginRight: 'auto',
-        paddingLeft: paddingHorizontal,
-        paddingRight: paddingHorizontal,
-        maxWidth: 1000,
+        paddingLeft: CONTAINER_GUTTER,
+        paddingRight: CONTAINER_GUTTER,
+        maxWidth: width,
       })}
       {...props}
     />
   );
 }
+
+Container.propTypes = {
+  width: PropTypes.number,
+};
+Container.defaultProps = {
+  width: 1000,
+};

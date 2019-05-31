@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: discussions
 title: KeystoneJS Apps
----
+[meta]-->
 
 # KeystoneJS Apps
 
@@ -23,6 +23,7 @@ The mimimum KeystoneJS application requires at least one app, the [GraphQL
 API](../../keystone-alpha/app-graphql):
 
 `index.js`
+
 ```javascript
 const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 const { Keystone } = require('@keystone-alpha/keystone');
@@ -33,16 +34,15 @@ const keystone = new Keystone(/* ... */);
 
 module.exports = {
   keystone,
-  apps: [
-    new GraphQLApp(),
-  ]
-}
+  apps: [new GraphQLApp()],
+};
 ```
 
 Most of the time the `GraphQLApp` will be paired with an `AdminUIApp` which
 provides the functionality of the KeystoneJS Admin UI:
 
 `index.js`
+
 ```diff
  const { GraphQLApp } = require('@keystone-alpha/app-graphql');
 +const { AdminUIApp } = require('@keystone-alpha/app-admin-ui');

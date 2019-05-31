@@ -2,7 +2,7 @@
   "name": "@keystone-alpha/website",
   "description": "KeystoneJS documentation. Powered by Gatsby.",
   "private": true,
-  "version": "1.0.9",
+  "version": "1.0.10",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -44,6 +44,7 @@
     "lodash.get": "^4.4.2",
     "lodash.snakecase": "^4.1.1",
     "lodash.throttle": "^4.1.1",
+    "mdast-util-to-string": "^1.0.6",
     "pretty-proptypes": "^0.5.0",
     "prism-react-renderer": "^0.1.6",
     "react": "^16.8.6",

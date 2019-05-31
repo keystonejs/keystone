@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: guides
 title: Documentation Style
----
+[meta]-->
 
 # Documentation Style
 

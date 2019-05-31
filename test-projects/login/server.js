@@ -1,11 +1,10 @@
 const express = require('express');
 
 const { keystone, apps } = require('./index');
-const { port } = require('./config');
 const initialData = require('./data');
 
 keystone
-  .prepare({ apps, port, dev: process.env.NODE_ENV !== 'production' })
+  .prepare({ apps, dev: process.env.NODE_ENV !== 'production' })
   .then(async ({ middlewares }) => {
     await keystone.connect();
 
@@ -31,7 +30,7 @@ keystone
 
     app.use(middlewares);
 
-    app.listen(port, error => {
+    app.listen(process.env.PORT, error => {
       if (error) throw error;
     });
   })

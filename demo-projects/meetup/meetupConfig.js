@@ -1,6 +1,7 @@
 const MEETUP = {
-  name: 'KeystoneJS',
+  name: 'KeystoneJS Meetup',
   twitterHandle: '@keystonejs',
+  siteUrl: 'https://meetup.keystonejs.com/',
   themeColor: '#2377E7',
   logo: {
     src: '/static/logo.png',

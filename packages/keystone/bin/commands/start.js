@@ -1,6 +1,6 @@
 const path = require('path');
 const { executeDefaultServer, getEntryFileFullPath } = require('../utils');
-const { DEFAULT_PORT, DEFAULT_ENTRY } = require('../../constants');
+const { DEFAULT_DIST_DIR, DEFAULT_PORT, DEFAULT_ENTRY } = require('../../constants');
 
 module.exports = {
   // prettier-ignore
@@ -22,7 +22,7 @@ module.exports = {
   exec: async (args, { exeName, _cwd = process.cwd() } = {}, spinner) => {
     process.env.NODE_ENV = 'production';
 
-    const distDir = args._[1];
+    const distDir = args._[1] || DEFAULT_DIST_DIR;
 
     spinner.text = 'Validating project entry file';
     const entryFile = await getEntryFileFullPath(args, { exeName, _cwd });

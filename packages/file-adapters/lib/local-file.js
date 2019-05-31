@@ -4,7 +4,7 @@ const mkdirp = require('mkdirp');
 
 module.exports = class LocalFileAdapter {
   constructor({ directory, route }) {
-    this.directory = directory;
+    this.directory = path.resolve(directory);
     this.route = route;
 
     mkdirp.sync(this.directory);

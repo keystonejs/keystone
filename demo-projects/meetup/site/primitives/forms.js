@@ -1,11 +1,15 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
+import { Children } from 'react';
+import { Link as NextLink } from '../../routes';
 
-import { colors, fontSizes, gridSize, borderRadius } from '../theme';
+import { colors, gridSize, borderRadius } from '../theme';
 
 export const Label = props => (
-  <label css={{ display: 'block', color: colors.greyDark, fontSize: fontSizes.md }} {...props} />
+  <div>
+    <label css={{ color: colors.greyDark }} {...props} />
+  </div>
 );
 
 export const Field = props => (
@@ -15,19 +19,20 @@ export const Field = props => (
 export const Input = props => (
   <input
     css={{
-      backgroundColor: colors.greyLight,
-      border: `1px solid ${colors.greyLight}`,
+      background: 0,
+      border: '1px solid rgba(0, 0, 0, 0.1)',
       borderRadius: borderRadius,
+      boxSizing: 'border-box',
       color: colors.greyDark,
-      fontSize: fontSizes.md,
+      fontSize: 'inherit',
       margin: `${gridSize / 2}px 0`,
-      padding: `${gridSize * 1.5}px ${gridSize * 2}px`,
       outline: 0,
+      padding: `${gridSize * 1.5}px ${gridSize * 2}px`,
+      width: '100%',
 
       ':focus': {
         backgroundColor: 'white',
-        boxShadow: `inset 0 1px 2px rgba(0, 0, 0, 0.1)`,
-        borderColor: 'rgba(0, 0, 0, 0.2)',
+        borderColor: 'rgba(0, 0, 0, 0.33)',
       },
     }}
     {...props}
@@ -42,10 +47,55 @@ export const Button = props => (
       borderRadius: borderRadius,
       color: 'white',
       cursor: 'pointer',
-      fontSize: fontSizes.md,
+      fontSize: 'inherit',
       margin: `${gridSize / 2}px 0`,
       padding: `${gridSize * 1.5}px ${gridSize * 2}px`,
     }}
     {...props}
   />
+);
+
+export const Group = ({ children, ...props }) => {
+  const gutter = 4;
+  return (
+    <div
+      css={{
+        alignItems: 'center',
+        display: 'flex',
+        marginLeft: -gutter,
+        marginRight: -gutter,
+      }}
+      {...props}
+    >
+      {Children.map(children, (kid, idx) => (
+        <div
+          key={idx}
+          css={{
+            marginLeft: gutter,
+            marginRight: gutter,
+          }}
+        >
+          {kid}
+        </div>
+      ))}
+    </div>
+  );
+};
+export const Link = ({ route, ...props }) => (
+  <NextLink route={route} passHref>
+    <a
+      css={{
+        color: 'inherit',
+        cursor: 'pointer',
+        display: 'inline-block',
+        padding: `${gridSize * 1.5}px ${gridSize * 2}px`,
+        textDecoration: 'none',
+
+        ':hover': {
+          textDecoration: 'underline',
+        },
+      }}
+      {...props}
+    />
+  </NextLink>
 );

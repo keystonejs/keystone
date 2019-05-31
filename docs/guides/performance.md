@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: guides
 title: Monitoring Your GraphQL Performance
----
+[meta]-->
 
 # Monitoring Your GraphQL Performance
 

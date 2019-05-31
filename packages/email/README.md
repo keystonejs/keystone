@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Email Sending
----
+[meta]-->
 
 # Email Sending
 

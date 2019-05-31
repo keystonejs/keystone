@@ -1,13 +1,13 @@
 /** @jsx jsx */
 import { Query } from 'react-apollo';
 import getConfig from 'next/config';
-import Head from 'next/head';
 import { jsx } from '@emotion/core';
 
 import { Link } from '../../routes';
 import EventItems from '../components/EventItems';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import Meta from '../components/Meta';
 import { GET_CURRENT_EVENTS } from '../graphql/events';
 import { GET_EVENT_RSVPS } from '../graphql/rsvps';
 import { GET_SPONSORS } from '../graphql/sponsors';
@@ -16,7 +16,6 @@ import Talks from '../components/Talks';
 import Rsvp from '../components/Rsvp';
 import {
   AvatarStack,
-  Button,
   Container,
   Error,
   Hero,
@@ -125,46 +124,15 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
         <div css={{ padding: '1.5rem', background: 'white' }}>
           <div
             css={mq({
+              alignItems: 'center',
               display: 'flex',
               flexDirection: ['column', 'row'],
               justifyContent: 'space-between',
-              alignItems: 'center',
             })}
           >
-            <div
-              css={{ display: 'flex', flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}
-            >
-              <Rsvp eventId={id}>
-                {({ loading, error, isGoing, canRsvp, rsvpToEvent }) => {
-                  if (loading) return <Loading />;
-                  if (error) return <p css={{ color: colors.greyMedium, margin: 0 }}>{error}</p>;
-
-                  return (
-                    <div>
-                      <span css={{ padding: '0 1rem' }}>Will you be attending?</span>
-                      <Button
-                        disabled={isGoing || !canRsvp}
-                        background={isGoing ? event.themeColor : colors.greyLight}
-                        foreground={isGoing ? 'white' : colors.greyDark}
-                        css={{ marginLeft: '.5rem' }}
-                        onClick={() => rsvpToEvent('yes')}
-                      >
-                        Yes
-                      </Button>
-                      <Button
-                        disabled={!isGoing}
-                        background={!isGoing ? event.themeColor : colors.greyLight}
-                        foreground={!isGoing ? 'white' : colors.greyDark}
-                        css={{ marginLeft: '.5rem' }}
-                        onClick={() => rsvpToEvent('no')}
-                      >
-                        No
-                      </Button>
-                    </div>
-                  );
-                }}
-              </Rsvp>
-            </div>
+            <Rsvp event={event} themeColor={themeColor}>
+              {({ message, component }) => component || message}
+            </Rsvp>
             <div
               css={{
                 alignItems: 'center',
@@ -205,7 +173,7 @@ const FeaturedEvent = ({ isLoading, error, event }) => {
                       </div>
                       <AvatarStack
                         users={allRsvps.filter(rsvp => rsvp.user).map(rsvp => rsvp.user)}
-                        css={{ width: 50, height: 50 }}
+                        size="small"
                       />
                     </>
                   );
@@ -307,11 +275,8 @@ export default class Home extends Component {
           const { featuredEvent, moreEvents } = processEventsData(eventsData);
           return (
             <div>
-              <Head>
-                <title>{meetup.name}</title>
-                <meta name="description" content={meetup.intro} />
-              </Head>
-              <Navbar foreground="white" background={colors.greyDark} />
+              <Meta titleExclusive={meetup.name} description={meetup.intro} />
+              <Navbar background={colors.greyDark} />
               <Hero title={meetup.name}>
                 <Html markup={meetup.homeIntro} />
               </Hero>

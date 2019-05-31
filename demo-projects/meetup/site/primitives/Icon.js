@@ -74,3 +74,9 @@ export const UserIcon = props => (
     <circle cx="12" cy="7" r="4" />
   </Svg>
 );
+export const XIcon = props => (
+  <Svg {...props}>
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </Svg>
+);

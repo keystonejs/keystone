@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: guides
 title: Creating Relationships Between Lists
----
+[meta]-->
 
 # Creating Relationships Between Lists
 

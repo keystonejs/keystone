@@ -1,7 +1,7 @@
----
+<!--[meta]
 section: packages
 title: Apollo Helpers
----
+[meta]-->
 
 # Apollo Helpers
 
