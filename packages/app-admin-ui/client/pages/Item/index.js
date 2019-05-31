@@ -12,7 +12,13 @@ import { Button } from '@arch-ui/button';
 import { AutocompleteCaptor } from '@arch-ui/input';
 import { Card } from '@arch-ui/card';
 import { gridSize } from '@arch-ui/theme';
-import { mapKeys, arrayToObject, omitBy, captureSuspensePromises } from '@keystone-alpha/utils';
+import {
+  mapKeys,
+  arrayToObject,
+  omitBy,
+  captureSuspensePromises,
+  countArrays,
+} from '@keystone-alpha/utils';
 
 import CreateItemModal from '../../components/CreateItemModal';
 import DeleteItemModal from '../../components/DeleteItemModal';
@@ -43,9 +49,6 @@ const getValues = (fieldsObject, item) => mapKeys(fieldsObject, field => field.s
 // changed.
 const getInitialValues = memoizeOne(getValues);
 const getCurrentValues = memoizeOne(getValues);
-
-const countArrays = obj =>
-  Object.keys(obj).reduce((total, items) => total + (items ? items.length : 0), 0);
 
 const ItemDetails = withRouter(
   class ItemDetails extends Component {

@@ -5,7 +5,7 @@ import { Mutation } from 'react-apollo';
 
 import { Button, LoadingButton } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
-import { arrayToObject, captureSuspensePromises } from '@keystone-alpha/utils';
+import { arrayToObject, captureSuspensePromises, countArrays } from '@keystone-alpha/utils';
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 
@@ -13,9 +13,6 @@ import PageLoading from './PageLoading';
 import { validateFields } from '../util';
 
 let Render = ({ children }) => children();
-
-const countArrays = obj =>
-  Object.keys(obj).reduce((total, items) => total + (items ? items.length : 0), 0);
 
 class CreateItemModal extends Component {
   constructor(props) {
