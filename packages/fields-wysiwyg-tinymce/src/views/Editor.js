@@ -36,7 +36,7 @@ const GlobalStyles = () => (
 );
 
 const Editor = props => {
-  const { value, name, isDisabled, autoFocus, plugins, toolbar } = props;
+  const { value, id, name, isDisabled, autoFocus, plugins, toolbar } = props;
 
   const elementRef = useRef(null);
   const editorRef = useRef(null);
@@ -96,7 +96,7 @@ const Editor = props => {
   return (
     <>
       <GlobalStyles />
-      <textarea ref={elementRef} style={{ visibility: 'hidden', width: '100%' }} name={name} />
+      <textarea ref={elementRef} id={id} style={{ visibility: 'hidden', width: '100%' }} name={name} />
     </>
   );
 };
@@ -104,6 +104,7 @@ const Editor = props => {
 Editor.propTypes = {
   autoFocus: PropTypes.bool,
   isDisabled: PropTypes.bool,
+  id: PropTypes.string,
   name: PropTypes.string,
   onChange: PropTypes.func,
   plugins: PropTypes.array,

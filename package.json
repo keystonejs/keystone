@@ -86,6 +86,7 @@
     "ci-info": "^2.0.0",
     "cloudinary": "^1.13.2",
     "codecov": "^3.1.0",
+    "compose-function": "^3.0.3",
     "compression": "^1.7.4",
     "cookie": "^0.3.1",
     "cookie-signature": "^1.1.0",
@@ -99,6 +100,10 @@
     "dev-null": "^0.1.1",
     "diff": "^4.0.1",
     "dotenv": "^8.0.0",
+    "draft-js": "^0.10.5",
+    "draft-js-markdown-shortcuts-plugin": "^0.5.0",
+    "draft-js-plugins-editor": "^2.1.1",
+    "draftjs-md-converter": "^1.1.2",
     "dumb-passwords": "^0.2.1",
     "ejs": "^2.6.1",
     "emotion-server": "9.2.12",
@@ -301,6 +306,7 @@
   },
   "field-types": {
     "packages": [
+      "packages/fields-markdown-draftjs",
       "packages/fields-wysiwyg-tinymce",
       "packages/fields"
     ]

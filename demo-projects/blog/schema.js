@@ -8,7 +8,7 @@ const {
   CalendarDay,
   DateTime,
 } = require('@keystone-alpha/fields');
-const { Wysiwyg } = require('@keystone-alpha/fields-wysiwyg-tinymce');
+const { Markdown } = require('@keystone-alpha/fields-markdown-draftjs');
 const { LocalFileAdapter } = require('@keystone-alpha/file-adapters');
 const getYear = require('date-fns/get_year');
 
@@ -59,7 +59,7 @@ exports.Post = {
       defaultValue: 'draft',
       options: [{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }],
     },
-    body: { type: Wysiwyg },
+    body: { type: Markdown },
     posted: { type: DateTime, format: 'DD/MM/YYYY' },
     image: { type: File, adapter: fileAdapter },
   },

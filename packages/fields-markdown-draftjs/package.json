@@ -1,0 +1,38 @@
+{
+  "name": "@keystone-alpha/fields-markdown-draftjs",
+  "description": "KeystoneJS WYSIWYG HTML Field Type, powered by Draft-js",
+  "version": "1.0.0",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.4.0"
+  },
+  "dependencies": {
+    "@arch-ui/fields": "^0.0.5",
+    "@arch-ui/icons": "^0.0.4",
+    "@arch-ui/input": "^0.0.6",
+    "@arch-ui/theme": "^0.0.4",
+    "@babel/runtime": "^7.4.3",
+    "@emotion/core": "^10.0.10",
+    "@keystone-alpha/build-field-types": "^1.0.2",
+    "@keystone-alpha/fields": "^6.2.0",
+    "compose-function": "^3.0.3",
+    "cuid": "^2.1.6",
+    "draft-js": "^0.10.5",
+    "draft-js-markdown-shortcuts-plugin": "^0.5.0",
+    "draft-js-plugins-editor": "^2.1.1",
+    "draftjs-md-converter": "^1.1.2",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6"
+  },
+  "peerDependencies": {
+    "express": "^4.16.3"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      "views/Field"
+    ]
+  },
+  "main": "dist/fields-markdown-draftjs.cjs.js",
+  "module": "dist/fields-markdown-draftjs.esm.js"
+}
